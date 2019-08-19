@@ -1,0 +1,98 @@
+/*
+ * Copyright (c) 2012 - 2018 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import api.*
+import apiw.*
+import api.media.*
+import t9t.base.types.*
+import t9t.base.entities.*
+import t9t.base.api.*
+import t9t.base.output.*
+import t9t.base.search.*
+import t9t.base.crud.*
+import t9t.doc.recipients.*
+
+package (com.arvatosystems) t9t.doc.api {
+    default private unsigned trim noControlChars;
+    properties inherited,
+        tenantCategory is com.arvatosystems.t9t.annotations.TenantCategory(),
+        searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
+        serialized is com.arvatosystems.t9t.annotations.StoreSerialized,
+        noAutoMap is com.arvatosystems.t9t.annotations.NoAutoMap,
+        notupdatable is com.arvatosystems.t9t.annotations.NotUpdatable,
+        dropdown is com.arvatosystems.t9t.annotations.UseDropDownInUI(),
+        ref is com.arvatosystems.t9t.annotations.IsObjectRef;
+
+
+    type documentId                                 is defaultExternalId;
+
+    enum TemplateType {
+        DOCUMENT_ID     = "D",                      // template is defined by the ID and sits inside the DB
+        INLINE          = "I",                      // template is the string itself. Media type is assumed to be text
+        COMPONENT       = "C"                       // no template, but a text component
+        //URI             = "U"                       // actual document must be fetched from some other place => not supported
+    }
+
+    final class DocumentSelector cacheHash {
+        required t9tShortId                         entityId             properties notupdatable;           // subtenant or "-" if used for any
+        required languageTag                        languageCode         properties notupdatable;           // language code or "xx" for default
+        required countryCode                        countryCode          properties notupdatable;           // ISO 3166 country code or "XX" if default
+        required currencyCode                       currencyCode         properties notupdatable;           // ISO 4217 currency code or "XXX" if default
+    }
+
+    /** Request message which will schedule creation of a document and delivery to the recipients as specified. Multiple recipients are possible for a single document. */
+    class FormatDocumentRequest extends RequestParameters return FormatDocumentResponse {
+        required documentId                         documentId;         // determines the template for this document
+        required (DocumentSelector...)              documentSelector;   // specification of preferred language, country etc
+        required Element                            data;               // document data, which can be a Map, a List or a BonaPortable
+        required boolean                            binaryAsAttachments;// if true, then binary data (images) will not be inlined but returned as separate attachments, identified by CID
+        optional timeZoneId                         timeZone             properties dropdown="timeZoneId";  // one of joda DateTimeZone.getAvailableIds()
+    }
+
+    class FormatDocumentResponse extends ServiceResponse {
+        required xenum MediaXType                   mediaType;          // the format produced by the textual formatter
+        required Unicode(8000000) allowControlChars text;               // document in text or HTML
+        required (MediaData) Map<String>            attachments;        // not null if and only if the attachments have been requested
+    }
+
+    /** Request message which will schedule creation of a document and delivery to the recipients as specified. Multiple recipients are possible for a single document. */
+    class NewDocumentRequest extends RequestParameters return NewDocumentResponse {
+        required documentId                         documentId;         // determines the template for this document
+        required (DocumentSelector...)              documentSelector;   // specification of preferred language, country etc
+        required Element                            data;               // document data, which can be a Map, a List or a BonaPortable
+        required (Recipient...) required List<>     recipientList;      // lists all recipients
+        required (MediaData...) List<>              attachments;        // Additional documents, to be added as attachments (e.g. to emails)
+        optional timeZoneId                         timeZone             properties dropdown="timeZoneId";  // one of joda DateTimeZone.getAvailableIds()
+    }
+
+    /** Response for NewDocumentRequests. */
+    class NewDocumentResponse extends ServiceResponse {
+        required f42Ref List<>                      archiveSinkRefs;    // for every recipient of type Archive, the sinkRef is returned here, or null if no archive destinations have been found
+        required (MediaData...) List<>              data;               // directly returned data
+    }
+
+     /** To used from application modules: for example Customer, SalesOrder, DeliveryOrder, Return in OMS. */
+    class SendEditedEmailRequest extends RequestParameters return SendEditedEmailResponse {
+        required (Ref...)                            ref;
+        required documentId                         documentId    properties dropdown="docConfigId";
+        required (DocumentSelector...)              documentSelector;
+        required emailAddress                       to;
+        required (MediaData)                        mailMediaData;
+    }
+
+    class SendEditedEmailResponse extends ServiceResponse {
+        required f42Ref                             archiveSinkRefs;
+    }
+}

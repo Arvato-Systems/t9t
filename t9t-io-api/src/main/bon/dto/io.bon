@@ -1,0 +1,388 @@
+/*
+ * Copyright (c) 2012 - 2018 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import api.*
+import apiw.*
+import api.auth.*
+import api.media.*
+import t9t.base.types.*
+import t9t.base.api.*
+import t9t.base.entities.*
+import t9t.base.output.*
+
+/** Data types which are relevant for export of structured data (IOutputSession provider).
+ *
+ * <p>
+ * The following RTTIs are define here:
+ * <li> 12 - CsvConfiguration
+ * <li> 13 - DataSinkDTO
+ * <li> 14 - Sink
+ * <li> 15 - OutboundMessage
+ */
+package (com.arvatosystems) t9t.io {
+    default private unsigned trim noControlChars;
+    properties inherited, nullWhenZero, compact2, noJava, noDDL, simpleref, qualifierFor,
+        tenantCategory is com.arvatosystems.t9t.annotations.TenantCategory(),
+        searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
+        serialized is com.arvatosystems.t9t.annotations.StoreSerialized,
+        noAutoMap is com.arvatosystems.t9t.annotations.NoAutoMap,
+        notupdatable is com.arvatosystems.t9t.annotations.NotUpdatable,
+        dropdown is com.arvatosystems.t9t.annotations.UseDropDownInUI(),
+        ref is com.arvatosystems.t9t.annotations.IsObjectRef;
+
+    type csvConfigurationId                             is t9tShortId;                      // ID for the configuration
+    type csvDelimiter                                   is Unicode(8);                      // code to use for map/array start/end
+
+
+    enum CsvDateTimeStyleType {
+        LONG="L", MEDIUM="M", SHORT="S"
+    }
+
+    enum CamelExecutionScheduleType {
+        IN_TRANSACTION            = "I",  // immediate transfer in transaction
+        ASYNCHRONOUSLY            = "A",  // immediately afterwards, using an async post commit action
+        SCHEDULED                 = "S"   // not triggered by the export, run via separate scheduler or external trigger
+    }
+
+
+    /** Defines the target classification. Looked up from configuration table. */
+    enum CommunicationTargetChannelType {
+        NULL = "N",         // discard the data (no output channel is opened at all)
+        FILE = "F",         // output the result to a file (and possibly transmit the file via Apache Camel route)
+        BIGDATA_DB = "D",   // storage in Bigdata DB
+        QUEUE = "Q",        // output single message to a JMS queue
+        TOPIC = "T",        // output single messages to a JMS topic
+        CAMEL = "C",        // just produce internal temporary data which is sent via Apache Camel route
+        S3 = "3"            // directly write to an AWS S3 bucket
+    }
+
+    xenum CommunicationTargetChannelXType is CommunicationTargetChannelType;
+
+
+
+    /** Defines the principal type of a data sink. */
+    enum DataSinkCategoryType {
+        DATA_EXPORT             = "E",      // used for all kinds of (batched) data exports, i.e. logical data record output
+        REPORT                  = "R",      // this is a JasperReport output
+        CUSTOMER_COMMUNICATION  = "C",      // anything created through the communications module (predox)
+        MASTER_DATA             = "M",      // product images, user pictures, any stuff
+        USER_DATA               = "U"       // data requested via UI by a user
+    }
+
+    xenum DataSinkCategoryXType is DataSinkCategoryType;
+
+
+
+    /** Strategy for handling of a produced file after camel processing */
+    enum CamelPostProcStrategy {
+        NOOP                    = "N",      // no action
+        DELETE                  = "D",      // delete file
+        MOVE                    = "M"       // move file
+    }
+
+    /** RequestHandlerConfigDTO entries of type DOCUMENT_CREATED_CALLBACK must refer to jobParameters extending this class.
+     * It will be triggered when asynchronous events from external systems have completed (for example predox document creation).
+     */
+    abstract class DocumentCreatedCallbackRequest extends RequestParameters {
+        optional XEnum MediaXType               communicationFormatType;    // can be used to specify output, unless defined in configuration
+        optional f42Ref                         sinkRef;                    // for successful responses, reference to the Sink record
+        optional f42Ref                         originatorRef;              // optional link to object which is representing this file (parameter reference) (as in Sinks table)
+        optional f42Ref                         configurationRef;           // a reference to the configuration/source of the originator (application specific reference) (as in Sinks table)
+        optional Integer                        returnCode;                 // null if no returncode provided, 0 if no error, else implementation specific code
+        optional Unicode(80)                    returnDetails;              // some more textual information
+    }
+
+    class CsvConfigurationRef RTTI 12 extends Ref {
+    }
+
+    final class CsvConfigurationKey extends CsvConfigurationRef {
+        required csvConfigurationId                 csvConfigurationId  properties notupdatable;
+    }
+
+    /** Stores the configuration for CSV output. */
+    class CsvConfigurationDTO extends CsvConfigurationRef {
+        properties tenantCategory="E";    // E required, not just D, because Camel startup accesses all other tenants from @ tenant
+        required csvConfigurationId                 csvConfigurationId  properties notupdatable;
+        required boolean                            isActive            properties active;
+        optional languageTag                        languageCode        properties dropdown="languageCode"; // if null, the caller's locale will be used
+        optional Unicode(64)                        timeZone            properties dropdown="timeZoneId";   // one of joda DateTimeZone.getAvailableIds()
+        required boolean                            quoteDates;
+        required boolean                            removePoint;
+        required boolean                            zeroPadNumbers;
+        required boolean                            rightPadNumbers;
+        required boolean                            useGrouping;        // digit grouping (. or , every 3 digits)
+        required enum CsvDateTimeStyleType          dayStyle;
+        required enum CsvDateTimeStyleType          timeStyle;
+        optional Integer                            quote;              // 0 for unquoted
+        optional csvDelimiter                       quoteReplacement;
+        optional csvDelimiter                       ctrlReplacement;
+        optional csvDelimiter                       separator;
+        optional csvDelimiter                       objectStart;
+        optional csvDelimiter                       objectEnd;
+        optional csvDelimiter                       arrayStart;
+        optional csvDelimiter                       arrayEnd;
+        optional csvDelimiter                       mapStart;
+        optional csvDelimiter                       mapEnd;
+        optional Unicode(32)                        booleanTrue;
+        optional Unicode(32)                        booleanFalse;
+        optional Unicode(32)                        customDayFormat;
+        optional Unicode(32)                        customTimeFormat;
+        optional Unicode(32)                        customTimeWithMsFormat;
+        optional Unicode(32)                        customTsFormat;
+        optional Unicode(32)                        customTsWithMsFormat;
+        optional shortText                          description;  // should be required, but came late...
+    }
+
+
+    /** Configuration table for data targets. This is used to determine the actual values used for outputs (as stored in SinkEntity).
+     * The fileOrQueueNamePattern will be expanded, variables may be embedded using the ${name} pattern. Values can be provided as part
+     * of a map provided to the open() parameters, and in addition some default expansions are always available. These include
+     * tenantId, userId, fileExt, asOf, planDate, today.
+     *
+     */
+    class DataSinkRef RTTI 13 extends Ref {
+    }
+
+    final class DataSinkKey extends DataSinkRef {
+        required dataSinkId                             dataSinkId;                 // every data output is assigned a name
+    }
+    /** Class with useful properties, returned in the sink DTO, to allow filtering and display. */
+    final class DataSinkFilterProps extends DataSinkRef {
+        required dataSinkId                             dataSinkId;                 // every data output is assigned a name
+        required enum CommunicationTargetChannelType    commTargetChannelType;      // defines the type of output for this output
+        required xenum MediaXType                       commFormatType;             // defines the format for the output
+        required xenum DataSinkCategoryXType            category;                   // the type of data sink
+    }
+    class DataSinkDTO extends DataSinkRef {
+        properties tenantCategory="E";    // E required, not just D, because Camel startup accesses all other tenants from @ tenant
+        required dataSinkId                             dataSinkId  properties notupdatable;  // every data output is assigned a name
+        required boolean                                isActive    properties active;
+        required enum CommunicationTargetChannelType    commTargetChannelType;      // defines the type of output for this output
+        required xenum MediaXType                       commFormatType;             // defines the format for the output
+        required Unicode(255)                           fileOrQueueNamePattern;     // substitutions: DAY/TIME, TENANT,
+        required boolean                                compressed;                 // if true and the output type is a file, then it should be compressed (gzipped) on the fly
+        optional Ascii(8)                               originatorModule;           // REP, COMM, AROMA etc...
+        optional customizationQualifier                 preTransformerName properties qualifierFor="out.be.IPreOutputDataTransformer,in.services.IInputDataTransformer";     // custom pre-transform to transform output data before storing it
+        optional customizationQualifier                 commFormatName     properties qualifierFor="out.be.ICommunicationFormatGenerator,in.services.IInputFormatConverter"; // custom communication format name (done through DI lookup)
+        required xenum DataSinkCategoryXType            category;                   // the type of data sink
+        // 42: this is a ref there. in 28, it cannot be, because callbacks are defined in a different module
+        optional f42Ref                                 callbackRef     properties dropdown="cannedRequestId";                // link to CannedRequestRef   ...  the request handler to call for operation results (when an entry is finished or aborted with an error)
+        optional Unicode(64)                            gridId;                     // grid ID which initiated data output (output only)
+        // optional Enum EnumOutputType                    enumOutputType;             // for custom exports: defines which output method to use for enums
+        optional Ascii(24)                              outputEncoding  properties dropdown="charsetEncoding";             // encoding of the produced output
+        optional Ascii(64)                              genericParameter1;
+        optional Unicode(255)                           genericParameter2;
+
+        // camel routing stuff
+        optional Unicode(255)                           camelRoute;                 // camel route for output processing. Can be a valid camel route format (in this case parameter camelRouteFormatIsCamelRoute has to be true). Or can be an ID pointing to a camel route defined in /camel/camelEndpoints.properties.
+        optional Enum CamelPostProcStrategy             successRoutingStrategy;     // says what should happen with produced file after successful camel processing
+        optional Unicode(255)                           successDestPattern;         // pattern applied when camel processing was successful (usually used when successRoutingStrategy=MOVE)
+        optional Enum CamelPostProcStrategy             failedRoutingStrategy;      // says what should happen with produced file after failed camel processing
+        optional Unicode(255)                           failureDestPattern;         // pattern applied when camel processing was failed (usually used when successRoutingStrategy=MOVE)
+        optional Ascii(1024)                            jaxbContextPath;            // if not null, not the default JAXB context will be used, but one composed from this string
+
+        optional Ascii(8)                               environment;                // Camel routes are only processed if "t9t" is entered here (to avoid duplicate triggers with fortytwo)
+        optional Boolean                                logMessages;                // log messages (objects) in outboundMessages table. if set, the "outer" DTOs will be stored (after transformer if outbound, before transformer if inbound)
+        optional Boolean                                isInput;                    // if true then this is not a data sink but a data source
+        optional (CsvConfigurationRef..., CsvConfigurationDTO) csvConfigurationRef properties ref, dropdown="csvConfigurationId";        // may reference some CSV configuration
+        optional Unicode(100)                           baseClassPqon;              // for CSV parsers, the BClass PQON of the expected record
+        optional Unicode(200)                           xmlDefaultNamespace;        // xml default namespace
+        optional Unicode(64)                            xmlRootElementName;         // xml name of root element  (to be derived from object?)
+        optional Unicode(64)                            xmlRecordName;              // xml name of main record
+        optional Unicode(64)                            xmlNamespacePrefix;         // xml prefix of main record
+        optional Boolean                                writeTenantId;              // write the tenantId (currently primarily used in XML exports)
+        optional shortText                              description;                // should be required, but came late...
+        optional Integer                                maxNumberOfRecords;         // hint to the application to limit the number of records by this
+        optional Unicode(255)                           importQueueName;            // If provided, queue import data in an internal directory and proceed processing from this queue directory to disconnect data retrieval and processing
+        optional Boolean                                nationalNumberFormat;       // use national number formatters where applicable (CSV...)
+        optional Integer                                chunkSize;                  // number of records per chunk - for interfaces which support it
+        optional Boolean                                lazyOpen;                   // open output file only once a record is written - no file created for 0 record outputs
+        optional Boolean                                skipZeroRecordSinkRefs;     // do not write a sinkRef record if the entry has 0 records (and no outputStream was requested)
+        optional Unicode(255)                           storeImportUsingFilepattern; // Filename or pattern to store import data as
+        optional Boolean                                unwrapTracking;             // indicates a data transformer is used which does not accept DataWithTracking, but only the DTO
+        optional Json                                   z;                          // custom parameters
+        optional Enum CamelExecutionScheduleType        camelExecution;             // defines when a camel route should be triggered
+        optional Boolean                                checkDuplicateFilename;     // reject sending/receiving duplicate filenames on tenant level
+        optional Unicode(255)                           xmlNamespaceMappings;       // xml name space mappings: <namespace-prefix>=<namespace-url> {(; NEWLINE) [namespace-prefix]=[namespace-url]}
+        //optional (AsyncChannelRef..., AsyncChannelDTO)  copyToAsyncChannel properties ref, dropdown="asyncChannelId";        // may reference some async channel to mirror requests to
+        optional t9tShortId                             copyToAsyncChannel;         // may reference some async channel to mirror requests to
+        optional Boolean                                camelFormatIsFmtRoute;      // if the parameter camelRoute contains a valid formatted camel route string instead of only an ID (see parameter camelRoute)
+    }
+
+    /** Records all asynchronous outgoing communication. For every file created, there is one entry of this type.
+     * The time used to create this output can be measured by taking the difference between mTimestamp and cTimestamp
+     * in the underlying database table (or TrackingData).
+     *
+     * A sink contains either structured data (on a record basis), formatted in Bonaparte, XML or JSON format, but can
+     * also contain output from the reporting or communications module, in which case the data can be in additional
+     * formats such as PDF, XLS, CSV or plain text. Primarily for the latter case, the file type can also be defined
+     * by the actual program run and passed as part of the parameters to the open() method, and then will not be taken
+     * from the configuration table.
+     *
+     * Structured output will be logged into OutboundMessages if configured in the DataSink.
+     */
+
+    class SinkRef RTTI 14 extends Ref {
+    }
+
+    class SinkDTO extends SinkRef {
+        properties tenantCategory="I";
+        required enum CommunicationTargetChannelType    commTargetChannelType;          // filled from configuration lookup
+        required xenum MediaXType                       commFormatType;                 // filled from configuration lookup
+        required Unicode(255)                           fileOrQueueName;                // file name (including optional date/time pattern) or queue name
+        optional Integer                                numberOfSourceRecords;          // in case of structured output, the number of records written (pre Hook)
+        optional Integer                                numberOfMappedRecords;          // in case of structured output, the number of records written (post Hook)
+        optional Integer                                numberOfErrorRecords;           // for input: how many records resulted in an error?
+        optional Instant(0)                             plannedRunDate;                 // optional scheduled run date of the call (only for messages from the scheduler)
+        optional Integer                                processingTime;                 // how many milliseconds have been used to create or parse the file?
+        optional f42Ref                                 originatorRef;                  // optional link to object which is representing this file (params ref) (predox ref)
+        optional f42Ref                                 configurationRef;               // a reference to the configuration of the originator (application specific ref)
+        required (DataSinkRef..., DataSinkFilterProps)  dataSinkRef properties ref, notupdatable, searchprefix="dataSink", dropdown="dataSinkId";     // replaces configurationUsed
+        optional Long                                   fileSize;                       // size of the created file (if available)
+        optional Instant(0)                             lastDownloadTimestamp;          // timestamp of the last download. If null it was not downloaded yet
+        optional resourceId                             requiredPermission;             // non-null if access to this resource requires this permission (for reports, for example, the report permission is copied into this field)
+        optional f42Ref                                 genericRefs1;                   // additional reference which have been used for this Sink (for OMS reports: entityRef / org unit). This may be used for further filtering, or restrict permissions to this record
+        optional f42Ref                                 genericRefs2;                   // additional reference which have been used for this Sink (for OMS reports: locationRef). This may be used for further filtering, or restrict permissions to this record
+        optional Boolean                                isInput;                        // if true then this is not a data sink but a data source
+        optional XEnum DataSinkCategoryXType            category;                       // the type of data sink
+        optional Enum ExportStatusEnum                  camelTransferStatus properties nullWhenZero;  // non null for camel routes which have not yet been processed
+    }
+
+
+    /** Outbound messages. */
+    class OutboundMessageRef RTTI 15 extends Ref {}
+
+    final class OutboundMessageKey extends OutboundMessageRef {
+        required f42Ref                                 sinkRef;            // identifies file or queue or socket which accepted the record
+        required Integer                                mappedRecordNo;     // sequential record of the transmission (1..n) after data mapping
+    }
+
+    class OutboundMessageDTO extends OutboundMessageRef {
+        required f42Ref                                 sinkRef;            // identifies file or queue or socket which accepted the record
+        required Integer                                mappedRecordNo;     // sequential record of the transmission (1..n) after data mapping
+        // combines fields from the RequestHeader and ResponseHeader message types, plus more
+        required Integer                                sourceRecordNo;     // source record of the transmission (0 = header, N+1 = footer, 1..N = data records)
+        optional messageId                              messageId;          // optional message ID field - set only if can be filled uniquely
+        optional Object                                 requestParameters;  // serialized request
+        optional f42Ref                                 recordRef;          // reference to application object, if required. Passed in via a new method in the IoutputSession interface (as alternative to the store() method)
+        optional Long                                   recordId;           // unique ID assigned per written record. Assigned by the OutputSession implementation
+    }
+
+    class BinaryImportDTO {
+        required Unicode(255)                           fileOrQueueName;    // file name (including optional date/time pattern) or queue name
+        required xenum MediaXType                       commFormatType;     // filled from configuration lookup
+        required Binary(11500000)                       data;               // must be less than maxMessage size in length, when base64 encoded,
+    }
+
+    // Configuration for asynchronous messages
+
+    class AsyncQueueRef RTTI 17 extends Ref {}
+
+    final class AsyncQueueKey extends AsyncQueueRef {
+        required t9tShortId                             asyncQueueId;
+    }
+
+    /**
+     * Configuration for asynchronous queues. A queue represents one or more channels. All messages within a queue must be delivered in order.
+     * A queue is represented by a separate thread of name t9t-AsyncTx-(asyncQueueId) at runtime.
+     * The queue allows to override the timeout and throttling configuration of the XMl config.
+     * Changes in queue configuration and channel to queue assignment currently require a restart.
+     *
+     * The active flag of a queue determines if there are delivery attempts. If a queue is set to inactive, messages will be stored
+     * and delivered after the queue has been reactivated. This could cause some monitoring software to raise alerts if maxAgeInSeconds
+     * has been configured.
+     */
+    class AsyncQueueDTO extends AsyncQueueRef {
+        properties tenantCategory="E";    // E required, not just D, because Camel startup accesses all other tenants from @ tenant
+        required t9tShortId                             asyncQueueId   properties notupdatable;  // the ID of the queue
+        required boolean                                isActive       properties active;        // messages sent to inactive channels will be discarded (not generate an error!)
+        required shortText                              description;                             // some descriptive text
+        optional customizationQualifier                 defaultSerializerQualifier properties qualifierFor="out.services.IMarshallerExt"; // specific serialization code (for dependency injection)
+        optional customizationQualifier                 senderQualifier            properties qualifierFor="out.services.IAsyncSender";   // specific serialization code (for dependency injection)
+        optional Integer                                maxMessageAtStartup;    // how many persisted messages to load initially at max [100]
+        optional Integer                                timeoutIdleGreen;       // sleep time in ms when queue is empty and last request was green [500 ms]
+        optional Integer                                timeoutIdleRed;         // sleep time in ms after an error [5000 ms]
+        optional Integer                                timeoutExternal;        // max allowable duration of an external request [1000 ms]
+        optional Integer                                waitAfterExtError;      // sleep time in ms after an initial remote problem [10000 ms]
+        optional Integer                                waitAfterDbErrors;      // sleep time in ms after a database error [60000 ms]
+        optional Integer                                maxAgeInSeconds;        // can be used by monitoring to raise an alert if the queue's pending messages are stalled for this amount of time
+        optional Integer                                purgeAfterSeconds;      // a which age to delete sent messages
+        optional Json                                   z;                      // additional custom attributes
+    }
+
+    // Configuration for asynchronous messages
+    class AsyncChannelRef RTTI 16 extends Ref {}
+
+    final class AsyncChannelKey extends AsyncChannelRef {
+        required t9tShortId                             asyncChannelId;
+    }
+
+    /**
+     * Configuration of channels for asynchronous messages.
+     * A channel describes the message format and is associated with a logical structure.
+     * Multiple channels are grouped together in a queue, the queue determines the order of delivery.
+     * The active flag of the channel controls if a message will be processed or discarded.
+     */
+    class AsyncChannelDTO extends AsyncChannelRef {
+        properties tenantCategory="E";    // E required, not just D, because Camel startup accesses all other tenants from @ tenant
+        required t9tShortId                             asyncChannelId properties notupdatable;  // the ID of the channel
+        required boolean                                isActive       properties active;        // messages sent to inactive channels will be discarded (not generate an error!)
+        required shortText                              description;                             // some descriptive text
+        optional (AsyncQueueRef..., AsyncQueueDTO)      asyncQueueRef  properties ref, searchprefix="asyncQueue", simpleref="getObjectRef()", dropdown="asyncQueueId";
+        required Unicode(255)                           url;                                     // remote URL
+        optional t9tShortId                             authType;                                // basic, apikey etc... (for information / documentation in core, can be used by customizations)
+        optional Unicode(255)                           authParam;                               // userID / password or API-Key
+        optional Integer                                maxRetries;                              // can be used by monitoring to raise an alert after this number of attempts
+        required XEnum MediaXType                       payloadFormat;                           // XML, JSON etc. (for information / documentation in core, can be used by customizations supporting multiple formats)
+        optional customizationQualifier                 serializerQualifier properties qualifierFor="out.services.IMarshallerExt";  // specific serialization code (for dependency injection)
+        optional Integer                                timeoutInMs;                             // if not null, overrides the default timeout sprecified in the XML
+        optional Json                                   z;                      // additional custom attributes
+    }
+
+    class AsyncMessageRef RTTI 101 extends Ref {}
+    /** Asynchronous messages. Columns objectRef, cTimestamp and mTimestamp are actively used to track message persisting time and success time. */
+    class AsyncMessageDTO extends AsyncMessageRef {
+        required t9tShortId                             asyncChannelId properties dropdown="asyncChannelId";  // used to retrieve the URL and authentication parameters
+        optional (AsyncQueueRef..., AsyncQueueDTO)      asyncQueueRef  properties ref, searchprefix="asyncQueue", simpleref="getObjectRef()", dropdown="asyncQueueId";
+        optional Enum ExportStatusEnum                  status;                                  // specifies if the message must still be sent or has been sent
+        optional Instant(3)                             whenSent;                                // defines when the message was initiated (which is before the commit of the sending transaction is done, and before the EventBus transmission)
+        optional Instant(3)                             lastAttempt;                             // null if no initial send attempt done, date of transmission or last attempt otherwise
+        required integer                                attempts;                                // number of send attempts so far (initially 0)
+        required Object                                 payload properties serialized, compact2; // the serialized message
+        optional Ascii(4)                               refType;                                 // for debugging / maintenance: the type of reference
+        optional defaultExternalId                      refIdentifier;                           // for debugging / maintenance: order ID, customer ID etc.
+        optional f42Ref                                 ref;                                     // for debugging / maintenance: related objectRef
+        optional Integer                                httpResponseCode;                        // if the remote returned some http response code
+        optional Integer                                returnCode;                              // last return code returned by receiver (in payload)
+        optional Unicode(80)                            reference;                               // a reference to the client object, or text response or additional error code
+        optional Long                                   latency properties noJava, noDDL, noAutoMap;  // the time from creation until recent delivery attempt
+    }
+
+    /** Structure to be used for internal message propagation. */
+    final class InMemoryMessage {
+        required Long                                   tenantRef;                               // the tenant of the message
+        required t9tShortId                             asyncChannelId;                          // used to retrieve the URL and authentication parameters
+        optional Long                                   objectRef;                               // refers to a DB entry (to reset the status after a successful send)
+        required Object                                 payload;                                 // the message to be sent
+    }
+
+    final class AsyncHttpResponse {
+        required int                                    httpReturnCode;
+        optional shortText                              httpStatusMessage;
+        optional Element                                responseObject;                         // full response as received by web service
+        optional Integer                                clientReturnCode;                       // parsed business return code from the above (or null)
+        optional shortText                              clientReference;                        // parsed business reference / invocation reference
+    }
+}

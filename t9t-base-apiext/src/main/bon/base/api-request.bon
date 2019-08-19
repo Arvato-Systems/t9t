@@ -1,0 +1,281 @@
+/*
+ * Copyright (c) 2012 - 2018 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import t9t.base.types.*
+import t9t.base.api.*
+import t9t.base.event.*
+
+/**
+ * Package which contains the definitions of all essential message elements.
+ */
+package (com.arvatosystems) t9t.base.request {
+    default private unsigned trim noControlChars;
+    properties bpmId;
+
+
+    /** The BatchRequest allows to execute a series of commands in sequence within a single database transaction.
+     * The execution is stopped, if one of them returns business return code "NO" (1xxx), unless "allowNo" is true.
+     * If one of them returns a different return code than 0xxx or 1xxx, all operations will be rolled back.
+     * This is a simple mini-workflow (logical AND operation). For more complex scenarios, an explicit BPMN 2.0 workflow
+     * should be used.
+     *
+     * The response returned is the response of the last command executed, or a generic "OK", if the provided list was empty.
+     */
+    class BatchRequest extends RequestParameters {
+        boolean                                     allowNo;                    // continue batch if technically correct, but business "no" returned (CLASS 1)?
+        required (RequestParameters...) required List<> commands;               // list of requests
+    }
+
+    /** Executes the second request asynchronously in a separate transaction, once the first one has successfully completed. */
+    class AsyncBatchRequest extends RequestParameters {
+        boolean                                     allowNo;                    // continue batch if technically correct, but business "no" returned (CLASS 1)?
+        required (RequestParameters...)             primaryRequest;             // the initial request
+        required (RequestParameters...)             asyncRequest;               // the followup request to be initiated
+    }
+
+    /** Executes a request by a separate thread, as an autonomous transaction. Simialr to asynchronous, but awaits the completion and returns the response. */
+    class AutonomousTransactionRequest extends RequestParameters {
+        required (RequestParameters...)             request;                    // the request to perform
+    }
+
+    /** The simplest service request parameter, which provides no further information and requests just "is alive" response. */
+    final class PingRequest extends RequestParameters return ServiceResponse {
+    }
+
+    /** The simplest service request parameter, which provides no further information and requests just "is alive" response. */
+    class PauseRequest extends RequestParameters return PauseResponse {
+        optional Integer                            pingId;                     // if not null, the id will be echoed with the response
+        optional Integer                            delayInMillis;              // if not null, the response will be delayed by the given number of milliseconds
+    }
+
+    /** The response to the PauseRequest just sends the instant in time when the request has been executed on the server. */
+    class PauseResponse extends ServiceResponse {
+        optional Integer                            pingId;                     // the echoed pingId, if set with the request
+        required Instant(0)                         whenExecuted;
+        required Instant(0)                         whenFinished;
+    }
+
+    /** Execute a request which is provided in String notation.
+     * (Useful for interpreted commands / uplink targeted commands).
+     */
+    class ExecuteJsonRequest extends RequestParameters {
+        required Unicode(65536)                     request;                    // the request to perform in JSON
+    }
+
+    /** Execute a request which is provided as a JSON map.
+     * (Useful for interpreted commands / uplink targeted commands).
+     */
+    class ExecuteJsonMapRequest extends RequestParameters {
+        required Json                               request;                    // the request to perform in JSON
+    }
+
+    /** Execute a request until a certain number of executions have been done,
+     * of until a certain time has elapsed, whichever is first.
+     * If no parameters are passed, the subrequest will be executed until it throws an exception.
+     */
+    class PerformUntilRequest extends RequestParameters {
+        required boolean                            allowNo;                    // stop when the request returns a code 1xxx (if false, only stop at errors 2xxx and above)
+        optional Integer                            maxNumberOfRuns;
+        optional Integer                            maxNumberOfMilliseconds;
+        optional Instant                            stopAt;                     // also stop once this time has been reached
+        required (RequestParameters...)             request;                    // The request to perform
+    }
+
+    /** The simplest service request parameter, which provides no further information and requests just "is alive" response,
+     * but using the BPMN 2.0 engine.
+     */
+    class BpmPauseRequest extends RequestParameters return PauseResponse {
+        properties bpmId="bpmPingService";
+        optional Integer                            pingId;                     // if not null, the id will be echoed with the response
+        optional Integer                            delayInMillis;              // if not null, the response will be delayed by the given number of milliseconds
+    }
+
+    /** Technical (internal) request which is required for logging of unparseable messages.
+     * The ErrorRequest will create an error response from the parameters provided.
+     */
+    class ErrorRequest extends RequestParameters {
+        required int                                returnCode;                 // the most significant digit provides the error category. Field contains 0 if no error occured.
+        optional Unicode(512)                       errorDetails;               // a data parameter which allows to localize the error condition (offending field / parameter name etc.)
+        optional Binary(16777000)                   originalMessage;            // the unparseable message.
+    }
+
+    /** Technical (internal) request which is used to generate an internal exception.
+     */
+    class ExceptionRequest extends RequestParameters {
+        required int                                returnCode;                 // if > 0, a T9tException will be generated, otherwise a RuntimeException
+        optional Unicode(512)                       errorMessage;               // a data parameter which allows to localize the error condition (offending field / parameter name etc.)
+    }
+
+    /** For debugging: Just an info message into log
+     */
+    class LogMessageRequest extends RequestParameters {
+        required Unicode(512)                       message;                    // the message to log
+        optional Element                            data;                       // an optional data structure to print
+    }
+
+    /** For debugging: Log JDBC connection pool information (and return it)
+     */
+    class LogJdbcPoolRequest extends RequestParameters return LogJdbcPoolResponse {
+    }
+
+    /** Result of JDBC connections. For Hibernate / C3P0, the result structure is:
+     * - count (request count)
+     * - total
+     * - busy
+     * - idle
+     * - orphaned
+     */
+    class LogJdbcPoolResponse extends ServiceResponse {
+        required Integer required List<>            counts;                     // the different counts
+    }
+
+    /** For debugging / monitoring: List current processes, similar to UNIX ps. */
+    class ProcessStatusRequest extends RequestParameters  return ProcessStatusResponse {
+        required long                               minAgeInMs;                 // minimum age in milliseconds
+        optional tenantId                           tenantId;                   // filter by tenantId - implicitly done unless called from @ tenant
+        optional userId                             userId;                     // filter by userId
+    }
+
+    class StackLevel {
+        required int                                numberOfCallsThisLevel;     // the number of calls which have been started at this stack level
+        required int                                progressCounter;            // progress counter for this level
+        required pqon                               pqon;                       // request class PQON
+        optional Unicode(512)                       statusText;                 // task defined general status text
+    }
+
+    class ProcessStatusDTO {
+        required Long                               threadId;                   // thread identifier
+        required long                               ageInMs;                    // age in milliseconds
+        required Long                               sessionRef;                 // session reference (references additional login information)
+        required Long                               processRef;                 // unique request identifier
+        required Instant                            processStartedAt;           // when did it start
+        required tenantId                           tenantId;                   // process tenantId
+        required userId                             userId;                     // process userId
+        required pqon                               pqon;                       // request class PQON
+        optional Long                               invokingProcessRef;         // who requested it?
+        required int                                progressCounter;            // numeric progress counter, 1 per exported record for data exports, usually 1 per processed data record for batches
+        optional Unicode(512)                       statusText;                 // task defined general status text
+        optional Unicode(64)                        createdByThread;            // the name of the thread which created this context (which usually also is the one executing it)
+        required (StackLevel) List<>                callStack;                  // the invocation call stack
+    }
+
+    class ProcessStatusResponse extends ServiceResponse {
+        required (ProcessStatusDTO...) required List<> processes;               // current list of processes
+    }
+
+    /** Asks a process to be terminated. For security reasons, all parameters are required and must match.
+     * The data should be obtained via a prior ProcessStatusRequest.
+     */
+    class TerminateProcessRequest extends RequestParameters {
+        required tenantId                           tenantId;                   // must pass tenantId to avoid that non global users kill processes of other tenants
+        required Long                               threadId;                   // thread identifier
+        required Long                               processRef;                 // unique request identifier
+    }
+
+    /**
+     * The AbstractExportRequestParameters provide the superclass for export request handlers.
+     */
+    abstract class AbstractExportRequestParameters extends RequestParameters {
+        optional Instant                            startTime;                  // start timestamp of eligible data records for an export batch process
+        optional Instant                            endTime;                    // end timestamp of eligible data records for an export batch process
+        optional Integer                            slice;                      // tenant specific time duration (in seconds) between two export batch processes
+    }
+
+    /** Executes a request on a different server instance - requires special permissions for security reasons. */
+    class ExecuteRemoteRequest extends RequestParameters {
+        required (RequestParameters...)             remoteRequest;              // the request to be run remotely
+        required Unicode(255)                       url;                        // should end in /rpc or /rpcExt (not checked, it is the caller's responsibility to provide correct data)
+    }
+
+    /** Executes the second request asynchronously in a separate transaction, once the first one has successfully completed. */
+    class ExecuteAsyncRequest extends RequestParameters {
+        required (RequestParameters...)             asyncRequest;               // the request to be run asynchronously
+    }
+
+    /** The simplest service request parameter without a context. */
+    final class ContextlessLogMessageRequest extends ContextlessRequestParameters {
+        required Unicode(512)                       message;                    // the message to log
+        optional Element                            data;                       // an optional data structure to print
+    }
+
+    /** Process an event synchronously, with specified handler. Mainly for testing. */
+    class ProcessEventRequest extends RequestParameters {
+        required Unicode(255)                       eventHandlerQualifier;
+        required (EventParameters...)               eventData;
+    }
+
+    /** Creating an event (feeding the event mechanism at the source). Mainly for testing. */
+    class SendEventRequest extends RequestParameters {
+        required (EventParameters...)               eventData;
+    }
+
+    /** Creating an event (feeding the event mechanism at the source). Mainly for testing. */
+    class PublishEventRequest extends RequestParameters {
+        required (EventParameters...)               eventData;
+    }
+
+    /** Executes a request multiple times, used for simple benchmarks.
+     * This request is for a rough estimate only, is is not intended to substitute proper benchmarking.
+     */
+    class SimpleBenchmarkRequest extends RequestParameters return SimpleBenchmarkResponse {
+        required int                                numberOfIterations;         // how often to run the request
+        required boolean                            runAutonomous;              // do single transaction (false) or multiple?
+        required boolean                            ignoreErrors;               // ignore error responses - normally an error response aborts the benchmark
+        required boolean                            mustCopyRequest;            // provide a mutable copy of the request parameters for every invocation
+        required (RequestParameters...)             request;                    // the request to perform
+    }
+
+    class SimpleBenchmarkResponse extends ServiceResponse {
+        required long                               minNanos;                   // min execution time in nanoseconds
+        required long                               maxNanos;                   // max execution time in nanoseconds
+        required long                               avgNanos;                   // avg execution time in nanoseconds
+    }
+
+    /**
+     * Request information about installed components.
+     */
+    class RetrieveComponentInfoRequest extends RequestParameters return RetrieveComponentInfoResponse {
+    }
+    class RetrieveComponentInfoResponse extends ServiceResponse {
+
+        /** Component information */
+        required (ComponentInfoDTO...) required List<> components;
+    }
+
+    class ComponentInfoDTO {
+        /** group id */
+        required Unicode(64) groupId;
+
+        /** artifact id */
+        required Unicode(64) artifactId;
+
+        /** version string */
+        required Unicode(64) versionString;
+
+        /** source level, if available */
+        optional Ascii(40) commitId;
+    }
+
+    /**
+     * Returns all qualifiers for which implementations exist, for a given interface.
+     * Intended to support dropdowns.
+     */
+    class GetQualifiersRequest extends RequestParameters return GetQualifiersResponse {
+        required meta.identifier required List<>    fullyQualifiedClassNames;
+    }
+    class GetQualifiersResponse extends ServiceResponse {
+        required meta.identifier required Set<>     qualifiers;
+    }
+}

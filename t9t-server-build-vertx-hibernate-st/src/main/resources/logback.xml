@@ -1,0 +1,21 @@
+<configuration>
+    <jmxConfigurator />
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{dd.MM.YYYY HH:mm:ss.SSS} %-28([%thread]) %-5level %-40.40logger{40} - %msg%n</pattern>
+               <!-- %d %5.5p [%12.12t]  (%35.35c:%L) - %m%n  -->
+        </encoder>
+    </appender>
+
+    <!-- too many messages in DEBUG from hibernate and from de.jpaw, set those to INFO only (redundant with INFO at root level) -->
+    <logger name="org.hibernate.engine.internal.StatisticalLoggingSessionEventListener" level="WARN"/>
+    <logger name="com.hazelcast.nio.tcp.iobalancer.IOBalancer" level="INFO"/>
+    <logger name="de.jpaw" level="INFO"/>
+
+    <!-- this is where we are interested in -->
+    <logger name="com.arvatosystems" level="DEBUG"/>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>

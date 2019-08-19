@@ -1,0 +1,62 @@
+/*
+ * Copyright (c) 2012 - 2018 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import api.*
+import apiw.*
+import t9t.base.types.*
+import t9t.base.api.*
+
+
+package (com.arvatosystems) t9t.core {
+    default private unsigned trim noControlChars;
+    properties noJava, simpleref, compact2,
+        tenantCategory is com.arvatosystems.t9t.annotations.TenantCategory(),
+        searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
+        serialized is com.arvatosystems.t9t.annotations.StoreSerialized,
+        noAutoMap is com.arvatosystems.t9t.annotations.NoAutoMap,
+        notupdatable is com.arvatosystems.t9t.annotations.NotUpdatable,
+        ref is com.arvatosystems.t9t.annotations.IsObjectRef;
+
+//    /** A database table based key counter. */
+//    final class RefGeneratorKey extends CompositeKeyRef {
+//        required Integer                            rtti;
+//    }
+//    final class RefGeneratorDTO RTTI 6 extends CompositeKeyBase {
+//        required Integer                            rtti;
+//        required Long                               nextValue;
+//        required Integer                            requestsPerHour;    // dynamic adjustment attempts to allocate sufficient ids for 1 minute ahead, at minimum 10 units
+//        required instant                            mTimestamp;
+//        optional Instant                            prevTimestamp;
+//        optional Integer                            allocatedLast;      // allows to verify the prealloc: use rate = (mTimestamp - prevTimestamp) / allocatedLast
+//        optional Integer                            allocatedNow;       // how many have been allocated at mTimestamp?
+//    }
+
+
+    /** CannedRequest lists all available handlers for a given category. */
+    class CannedRequestRef RTTI 11 extends Ref {}
+
+    final class CannedRequestKey extends CannedRequestRef {
+        required cannedRequestId                    requestId           properties notupdatable;    // the logical key for this record
+    }
+
+    class CannedRequestDTO extends CannedRequestRef {
+        properties tenantCategory="D";
+        required cannedRequestId                    requestId           properties notupdatable;    // the logical key for this record
+        required Unicode(80)                        name;                                       // explanation / purpose in primary language
+        optional Unicode(255)                       jobRequestObjectName;                       // the PQON of the object extending RequestParameters (if null, then request itself must be populated)
+        optional Json                               jobParameters;                              // readable JSON format of the parameters
+        optional (RequestParameters...)             request             properties serialized, compact2;  // filled by backend (for CRUD C and U operations), the canned request including parameters
+    }
+}

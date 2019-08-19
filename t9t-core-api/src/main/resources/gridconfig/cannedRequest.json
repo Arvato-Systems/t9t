@@ -1,0 +1,12 @@
+{
+    "viewModel": "cannedRequest",
+    "filters": [
+        { "filterType": "E", "fieldName": "tenantRef" },
+        { "filterType": "W", "fieldName": "requestId" },
+        { "filterType": "W", "fieldName": "name" }
+    ],
+    "fields": [
+        "tenantRef", "requestId", "name", "jobRequestObjectName", "jobParameters"
+    ],
+    "fieldWidths": [ 100, 160, 240, 420, 640 ]
+}

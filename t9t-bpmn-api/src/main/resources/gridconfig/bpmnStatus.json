@@ -1,0 +1,10 @@
+{
+    "viewModel": "bpmnStatus",
+    "filters": [
+        { "filterType": "E", "fieldName": "processDefinitionId" },
+        { "filterType": "E", "fieldName": "targetObjectRef" }
+    ],
+    "fields": [
+        "processDefinitionId", "targetObjectRef", "yieldUntil", "nextStep", "returnCode", "errorDetails"
+    ]
+}

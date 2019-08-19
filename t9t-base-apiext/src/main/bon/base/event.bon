@@ -1,0 +1,104 @@
+/*
+ * Copyright (c) 2012 - 2018 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import t9t.base.types.*
+import t9t.base.api.*
+
+package (com.arvatosystems) t9t.base.event {
+    default private unsigned trim noControlChars;
+
+    /**
+     * Event header information, only used while transmitting the event over the eventBus, to store authentication information.
+     */
+    final class EventHeader {
+        required tenantId                               tenantId;
+        required f42Ref                                 tenantRef;
+        required f42Ref                                 invokingProcessRef;
+        required encodedJwt                             encodedJwt;
+    }
+
+    /** Event data as transmitted via vert.x eventBus (or other transport). */
+    final class EventData {
+        required (EventHeader)                          header;
+        required (EventParameters...)                   data;
+    }
+
+    /** Base class of all event payloads. Similar to RequestParameters, this only exists for type safety. */
+    abstract class EventParameters {}
+
+    /** Generic event payload data. Because the PQON is not useful here, we need an explicit eventID field. */
+    class GenericEvent extends EventParameters {
+        required Unicode(30)                            eventID;       // Identifier for this event type, used for subscription
+        optional Json                                   z;             //  additional generic information
+    }
+
+    /** Abstract parent for all Ref related events - subclasses are for CRUD types. */
+    abstract class AnyRefEvent extends EventParameters {
+        required f42Ref                                     objectRef;
+    }
+
+    /** Abstract parent for all object creation related events. */
+    abstract class AnyRefCreatedEvent extends AnyRefEvent {}
+
+    /** Abstract parent for all object update related events. */
+    abstract class AnyRefUpdatedEvent extends AnyRefEvent {}
+
+    /** Abstract parent for all object deletion related events. */
+    abstract class AnyRefDeletedEvent extends AnyRefEvent {}
+
+
+    /** Abstract parent for all Ref related events - subclasses are for CRUD types. */
+    abstract class GeneralRefEvent extends EventParameters {
+        required f42Ref                                     objectRef;
+        required typeId                                     typeId;
+    }
+
+    /** General object creation related events. */
+    final class GeneralRefCreatedEvent extends GeneralRefEvent {}
+
+    /** General object update related events. */
+    final class GeneralRefUpdatedEvent extends GeneralRefEvent {}
+
+    /** General object deletion related events. */
+    final class GeneralRefDeletedEvent extends GeneralRefEvent {}
+
+    /** Cache invalidation request (CRUD on cached entities).
+     * Events of this type are sent if the config says we're running in cluster mode.
+     */
+    final class InvalidateCacheEvent extends EventParameters {
+        required meta.identifier                            pqon;      // identifies the cache
+        optional Object                                     key;       // record which was changed - or null if whole cache should be cleared
+    }
+
+    /** Object written to the bucket queue. */
+    final immutable class BucketWriteKey {
+        required f42Ref                                     tenantRef; // the tenant
+        required f42Ref                                     objectRef; // the surrogate key
+        required typeId                                     typeId;    // the originator (usually the same as the bucket)
+    }
+
+    /** Enumeration for the bit positions of modes for buckets.
+     * T9tConstants.BUCKET_UPDATED = 1 << BucketDataMode.UPDATE.ordinal()
+     * T9tConstants.BUCKET_CREATED = 1 << BucketDataMode.CREATE.ordinal()
+     * T9tConstants.BUCKET_DELETED = 1 << BucketDataMode.DELETE.ordinal()
+     */
+    enum BucketDataMode {
+        UPDATE,
+        CREATE,
+        DELETE
+    }
+
+    enumset<int> BucketDataModeSet is BucketDataMode;
+}

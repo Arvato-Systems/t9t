@@ -1,0 +1,15 @@
+{
+    "viewModel": "docTemplate",
+    "filters": [
+        { "filterType": "E", "fieldName": "tenantRef" },
+        { "filterType": "W", "fieldName": "documentId" },
+        { "filterType": "W", "fieldName": "entityId" },
+        { "filterType": "E", "fieldName": "languageCode" },
+        { "filterType": "E", "fieldName": "countryCode" },
+        { "filterType": "E", "fieldName": "currencyCode" }
+    ],
+    "fields": [
+        "prio", "tenantRef", "documentId", "entityId", "languageCode", "countryCode", "currencyCode",
+        "mediaType", "name"
+    ]
+}

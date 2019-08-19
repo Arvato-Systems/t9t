@@ -1,0 +1,14 @@
+{
+    "viewModel": "emailLog",
+    "filters": [
+        { "filterType": "R", "fieldName": "cTimestamp" },
+        { "filterType": "R", "fieldName": "mTimestamp" },
+        { "filterType": "E", "fieldName": "messageId" },
+        { "filterType": "W", "fieldName": "emailSubject" },
+        { "filterType": "W", "fieldName": "emailTo" }
+    ],
+    "fields": [
+        "cTimestamp", "messageId", "emailSubject", "emailTo", "numberOfAttachments", "emailStatus"
+    ],
+    "fieldWidths": [ 140, 300, 400, 270, 180, 140 ]
+}

@@ -1,0 +1,9 @@
+{
+    "viewModel": "solrModuleCfg",
+    "filters": [
+        { "filterType": "E", "fieldName": "tenantRef" }
+    ],
+    "fields": [
+        "tenantRef", "baseUrl", "authenticationType", "userName", "password"
+    ]
+}

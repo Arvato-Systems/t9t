@@ -1,0 +1,62 @@
+/*
+ * Copyright (c) 2012 - 2018 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import apiw.*
+import t9t.base.types.*
+import t9t.base.api.*
+import t9t.base.output.*
+
+package (com.arvatosystems) t9t.batch {
+    default private unsigned trim noControlChars;
+    properties inherited, serialized, ref,
+        dropdown is com.arvatosystems.t9t.annotations.UseDropDownInUI(),
+        notupdatable is com.arvatosystems.t9t.annotations.NotUpdatable;
+
+    class StatisticsRef RTTI 51 extends Ref {
+    }
+
+    /** Stores information about execution times for batch process */
+    class StatisticsDTO extends StatisticsRef {
+        optional f42Ref                     jobRef;                 // scheduled job ref
+        required Unicode(30)                processId;
+        required Instant(3)                 startTime;              // process start time
+        required Instant(3)                 endTime;                // process end time
+        optional Integer                    recordsProcessed;       // number of processed records
+        optional Integer                    recordsError;           // number of records for which processing failed
+        optional Integer                    count1;                 // process specific informations
+        optional Integer                    count2;
+        optional Integer                    count3;
+        optional Integer                    count4;
+        optional Unicode(255)               info1;
+        optional Unicode(255)               info2;
+    }
+
+
+    class SliceTrackingRef RTTI 52 extends Ref {
+    }
+
+    final class SliceTrackingKey extends SliceTrackingRef {
+        required t9tShortId                 dataSinkId;             // ID of the output session's data sink
+        required defaultExternalId          id;                     // references any subordinate structure (location or entity ID or whatever required, or "-" if none applicable)
+    }
+
+    /** Stores information about execution slices for export batch processes */
+    class SliceTrackingDTO extends SliceTrackingRef {
+        required t9tShortId                 dataSinkId properties notupdatable; //, dropdown="dataSinkId" (does not work, is string here); // ID of the output session's data sink
+        required defaultExternalId          id         properties notupdatable;    // references any subordinate structure (location or entity ID or whatever required, or "-" if none applicable)
+        required Instant(0)                 exportedDataBefore;     // end timestamp of eligible data records of the last export batch process
+        optional f42Ref                     lastSinkRef;            // sinkRef of the previous export (if known & applicable)
+    }
+}

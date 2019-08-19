@@ -1,0 +1,164 @@
+/*
+ * Copyright (c) 2012 - 2018 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import t9t.base.types.*
+import t9t.base.entities.*
+import t9t.base.output.*
+import t9t.base.api.*
+
+import t9t.base.crud.*
+import t9t.base.search.*
+
+import t9t.bpmn.*
+
+/** BPM API module.
+ * RTTI values in range 600-699
+ *
+ * Assigned values are:
+ * 601 - ProcessDefinition
+ * 602 - ProcessExecutionStatusDTO
+ */
+package (com.arvatosystems) t9t.bpmn.request {
+    default private unsigned trim noControlChars;
+    properties inherited,
+        tenantCategory is com.arvatosystems.t9t.annotations.TenantCategory(),
+        searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
+        serialized is com.arvatosystems.t9t.annotations.StoreSerialized,
+        noAutoMap is com.arvatosystems.t9t.annotations.NoAutoMap,
+        notupdatable is com.arvatosystems.t9t.annotations.NotUpdatable,
+        ref is com.arvatosystems.t9t.annotations.IsObjectRef;
+
+    enum WorkflowActionEnum {
+        RUN              = "R",         // create it / run it (the default)
+        ERROR            = "E",         // throw an error
+        NO_ACTIVITY      = "N"          // no activity
+    }
+
+    /** Updates workflow data for the specified object. */
+    class UpdateProcessRequest extends RequestParameters return ExecuteProcessWithRefResponse {
+        required f42Ref                         targetObjectRef;            // target object ref to use in the process execution
+        required processDefinitionId            processDefinitionId;        // target process definition Id
+        optional Instant                        yieldUntil;                 // if not null, then the task will not restart before this instant has been reached
+        optional defaultExternalId              nextStep;                   // if not null, then the task will not start at the beginning, but at this step
+        optional Json                           currentParameters;          // the current task parameters, assigned when execution begins             // if not null, then do not start immediately, but wait for this number of seconds (yield)
+        optional Boolean                        directProcessing;           // start process immediately
+    }
+
+    /** Launches a new workflow for the specified object. */
+    class ExecuteProcessWithRefRequest extends RequestParameters return ExecuteProcessWithRefResponse {
+        required f42Ref                         targetObjectRef;            // target object ref to use in the process execution
+        required processDefinitionId            processDefinitionId;        // target process definition Id
+        optional Integer                        initialDelay;               // if not null, then do not start immediately, but wait for this number of seconds (yield)
+        optional Json                           initialParameters;          // if set, then these parameters override any default parameters in the step definition
+        optional Boolean                        restartAtBeginningIfExists; // if an existing workflow entry exists, reset the WF to the beginning (if null / false: continue)
+        optional Enum WorkflowActionEnum        ifNoEntryExists;            // activity to do if no current entry exists (if null: RUN)
+        optional Enum WorkflowActionEnum        ifEntryExists;              // activity to do if a current entry exists (if null: RUN)
+    }
+
+    class ExecuteProcessWithRefResponse extends ServiceResponse {
+        required f42Ref                         processCtrlRef;             // entry in the control table
+    }
+
+    class TerminateProcessRequest extends RequestParameters {
+        required processDefinitionId            processDefinitionId;        // target process definition Id
+        required f42Ref                         targetObjectRef;            // target object ref to use in the process execution
+    }
+
+    /** Starts execution of a current process once, optionally triggers asynchronous start of subsequent loops. */
+    class TriggerSingleProcessNowRequest extends RequestParameters {
+        required f42Ref                         processStatusRef;           // ref into the status table
+    }
+
+    /** Performs a single step (only for state machine). Does not use nor update any statusEntity. */
+    class PerformSingleStepRequest extends RequestParameters return PerformSingleStepResponse {
+        required processDefinitionId            processDefinitionId;
+        required f42Ref                         targetObjectRef;
+        required (T9tAbstractWorkflowStep...)   workflowStep;
+        optional Json                           parameters;
+    }
+
+    class PerformSingleStepResponse extends ServiceResponse {
+        required enum WorkflowReturnCode        workflowReturnCode;
+        required Json                           parameters;
+    }
+
+    /** Starts execution of all current processes.
+     * If minAgeInSeconds has been specified, only processes with this age are run.
+     * If onlyThisProcessId is specified, only processes with this definitionId are run.
+     */
+    class RestartAllActiveProcessesRequest extends RequestParameters {
+        optional Integer                        minAgeInSeconds;            // target object ref to use in the process execution
+        optional processDefinitionId            onlyThisProcessId;          // if not null, then only processes with this ID will be considered
+        optional Boolean                        includeErrorStatus;         // also rerun processes in error status
+    }
+
+    /** This methods sets a consistent lock mode for all workflows defines for this tenant. */
+    class SetLockModeForAllWorkflowsRequest extends RequestParameters {
+        required boolean                        lockMode;                   // true = bpm engine JVM lock, false = none or implementation specific lock
+    }
+
+    class ProcessDefinitionCrudRequest          extends CrudSurrogateKeyRequest<ProcessDefinitionRef, ProcessDefinitionDTO, FullTrackingWithVersion> { }
+    class ProcessDefinitionSearchRequest        extends SearchRequest<ProcessDefinitionDTO, FullTrackingWithVersion> { }
+    class LeanProcessDefinitionSearchRequest    extends LeanSearchRequest {}
+
+    class ProcessExecutionStatusSearchRequest   extends SearchRequest<ProcessExecutionStatusDTO, FullTrackingWithVersion> {}
+    class ProcessExecutionStatusCrudRequest     extends CrudSurrogateKeyRequest<ProcessExecutionStatusRef, ProcessExecutionStatusDTO, FullTrackingWithVersion> {}
+
+     /**
+     * Get process content for a specific process definition.
+     */
+    class GetProcessContentRequest extends RequestParameters return GetProcessContentResponse {
+        required (ProcessDefinitionRef...)      processDefinitionRef;
+    }
+
+    class GetProcessContentResponse extends ServiceResponse {
+        required Binary(1048576)                content;
+    }
+
+    /**
+     * Get process diagram for a specific process definition.
+     */
+    class GetProcessDiagramRequest extends RequestParameters return GetProcessDiagramResponse {
+        required (ProcessDefinitionRef...)      processDefinitionRef;
+    }
+
+    class GetProcessDiagramResponse extends ServiceResponse {
+        required Binary(1048576)                diagram;
+    }
+
+    /**
+     * Deploy new process definition.
+     */
+    class DeployNewProcessRequest extends RequestParameters return DeployNewProcessResponse {
+        optional Unicode(250) allowControlChars deploymentComment;
+        required Binary(1048576)                content;
+    }
+
+    class DeployNewProcessResponse extends ServiceResponse {
+        required (ProcessDefinitionDTO...)      processDefinition;
+    }
+
+    /**
+     * Deploy to replace existing process definition.
+     */
+    class DeployProcessRequest extends RequestParameters return DeployProcessResponse {
+        required (ProcessDefinitionRef...)      processDefinitionRef;
+        required Binary(1048576)                content;
+    }
+
+    class DeployProcessResponse extends ServiceResponse {
+        required Boolean                        wasDeployed;
+    }
+}

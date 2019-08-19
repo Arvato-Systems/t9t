@@ -1,0 +1,60 @@
+/*
+ * Copyright (c) 2012 - 2018 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import t9t.base.types.*
+import t9t.base.api.*
+import t9t.base.entities.*
+import t9t.base.output.*
+import t9t.base.search.*
+import t9t.base.crud.*
+import t9t.batch.*
+
+package (com.arvatosystems) t9t.batch.request {
+    default private unsigned trim noControlChars;
+    properties inherited, serialized, ref;
+
+    /**
+     * Request for creating statistics for batch process.
+     * Only Create operation is allowed.  Implemented as a wrapper to the CRUD request.
+     * Does not return any record, just a return code.
+     * */
+    class LogStatisticsRequest extends RequestParameters {
+        required (StatisticsDTO...)    statistics;
+    }
+
+    /**
+     * Request for creating statistics for batch process.
+     * Only Create operation is allowed.
+     * */
+    class StatisticsCrudRequest         extends CrudSurrogateKeyRequest<StatisticsRef, StatisticsDTO, WriteTracking> {}
+    class StatisticsSearchRequest       extends SearchRequest<StatisticsDTO, WriteTracking> {}
+
+
+    class SliceTrackingCrudRequest      extends CrudSurrogateKeyRequest<SliceTrackingRef, SliceTrackingDTO, FullTrackingWithVersion> {}
+    class SliceTrackingSearchRequest    extends SearchRequest<SliceTrackingDTO, FullTrackingWithVersion> {}
+
+    class GetNextTimeSliceResponse extends ServiceResponse {
+        required Instant(0)             startInstant;
+    }
+
+    /** Moves the tracking forward to the provided "asOf" instant and returns the previous one.
+     * This determines the interval to be processed as oldAsOf <= t < asOf
+     *  */
+    class GetNextTimeSliceRequest extends RequestParameters return GetNextTimeSliceResponse {
+        required (SliceTrackingKey)     sliceTrackingKey;       // the key of the record
+        required Instant(0)             endInstant;             // current "asOf", end of the interval, will be stored as the new date in the table
+        optional f42Ref                 sinkRef;                // sinkRef to be written to, if known, for maintenance and documentation purposes
+    }
+}

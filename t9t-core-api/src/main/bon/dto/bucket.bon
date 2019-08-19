@@ -1,0 +1,63 @@
+/*
+ * Copyright (c) 2012 - 2018 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import api.*
+import apiw.*
+import t9t.base.types.*
+
+package (com.arvatosystems) t9t.bucket {
+    default private unsigned trim noControlChars;
+    properties noJava, simpleref,
+        tenantCategory is com.arvatosystems.t9t.annotations.TenantCategory(),
+        searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
+        serialized is com.arvatosystems.t9t.annotations.StoreSerialized,
+        noAutoMap is com.arvatosystems.t9t.annotations.NoAutoMap,
+        notupdatable is com.arvatosystems.t9t.annotations.NotUpdatable,
+        dropdown is com.arvatosystems.t9t.annotations.UseDropDownInUI(),
+        ref is com.arvatosystems.t9t.annotations.IsObjectRef;
+
+    class BucketCounterRef extends Ref {}
+
+    final class BucketCounterKey extends BucketCounterRef {
+        required bucketId                       qualifier;
+    }
+
+    class BucketCounterDTO RTTI 96 extends BucketCounterRef {
+        required bucketId                       qualifier          properties notupdatable, dropdown="bucketId";
+        required int                            currentVal;
+        required int                            maxVal;
+    }
+
+    final class BucketEntryKey extends CompositeKeyRef {
+        required bucketId                       qualifier;
+        required Integer                        bucket;
+        required f42Ref                         ref;
+    }
+
+    class BucketEntryDTO RTTI 95 extends CompositeKeyBase {
+        required bucketId                       qualifier           properties dropdown="bucketId"; // determine the type of export
+        required Integer                        bucket;                 // bucket number
+        required f42Ref                         ref;                    // reference to the actual record to be exported
+        required Integer                        modes;                  // bit 0 = UPDATED, bit 1 = CREATED, bit 2 = DELETED
+        optional Integer                        exportErrorCode;        // if not null, indicates an error which occurred during construction or export of this record
+        optional Unicode(512)                   exportErrorDetails;     // if not null, indicates the error details corresponding to the error code
+    }
+
+    /** Data sent to DataSink / IOutputSession.store for bucket related exports. */
+    class DataWithTrackingAndMore<DTO extends Ref, TRACKING extends TrackingBase> extends DataWithTrackingW<!DTO, !TRACKING> {
+        required Integer                        modes;                  // bitmap of operations
+        optional Json                           z;                      // possible extensions
+    }
+}

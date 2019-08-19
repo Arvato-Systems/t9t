@@ -1,0 +1,11 @@
+{
+    "viewModel": "emailModuleCfg",
+    "filters": [
+        { "filterType": "E", "fieldName": "tenantRef" }
+    ],
+    "fields": [
+        "tenantRef", "implementation", "smtpServerTransport", "smtpServerAddress", "smtpServerPort",
+        "smtpServerUserId", "smtpServerPassword", "smtpServerTls"
+    ],
+    "fieldWidths": [ 160, 106, 164, 200, 146, 200, 200, 40 ]
+}

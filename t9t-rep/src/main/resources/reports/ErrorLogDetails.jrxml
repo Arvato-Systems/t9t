@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Error Log Details" pageWidth="668" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="628" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="4ff23e2b-86c1-49ed-8c73-a9d24478f910">
+    <property name="net.sf.jasperreports.export.xls.remove.empty.space.between.rows" value="true"/>
+    <property name="ireport.zoom" value="1.2100000000000006"/>
+    <property name="ireport.x" value="0"/>
+    <property name="ireport.y" value="0"/>
+    <import value="org.joda.time.LocalDateTime"/>
+    <parameter name="dateFrom" class="org.joda.time.LocalDateTime" isForPrompting="false">
+        <defaultValueExpression><![CDATA[new LocalDateTime(2014,01,01,0,0)]]></defaultValueExpression>
+    </parameter>
+    <parameter name="dateTo" class="org.joda.time.LocalDateTime" isForPrompting="false">
+        <defaultValueExpression><![CDATA[new LocalDateTime()]]></defaultValueExpression>
+    </parameter>
+    <parameter name="dateFromTimestamp" class="java.sql.Timestamp" isForPrompting="false">
+        <defaultValueExpression><![CDATA[new java.sql.Timestamp($P{dateFrom}.toDate().getTime())]]></defaultValueExpression>
+    </parameter>
+    <parameter name="dateToTimestamp" class="java.lang.String" isForPrompting="false">
+        <defaultValueExpression><![CDATA[new java.sql.Timestamp($P{dateTo}.toDate().getTime())]]></defaultValueExpression>
+    </parameter>
+    <parameter name="tenantId" class="java.lang.String"/>
+    <parameter name="translator" class="com.arvatosystems.t9t.translation.be.TranslationProvider"/>
+    <parameter name="timeFormatter" class="com.arvatosystems.t9t.rep.be.util.TimeFormatter"/>
+    <parameter name="dateToStr" class="java.lang.String">
+        <defaultValueExpression><![CDATA[$P{timeFormatter}.formatTimetoStr($P{dateTo})]]></defaultValueExpression>
+    </parameter>
+    <parameter name="dateFromStr" class="java.lang.String">
+        <defaultValueExpression><![CDATA[$P{timeFormatter}.formatTimetoStr($P{dateFrom})]]></defaultValueExpression>
+    </parameter>
+    <queryString>
+        <![CDATA[SELECT
+usr.user_id,
+msg.execution_started_at,
+tenant.tenant_id,
+tenant.name,
+msg.language_code,
+msg.processing_time_in_millisecs,
+msg.return_code,
+msg.error_details
+FROM p28_int_message msg
+LEFT OUTER JOIN p42_cfg_users usr ON (msg.user_id = usr.user_id)
+LEFT OUTER JOIN p42_cfg_tenants tenant ON (msg.tenant_ref = tenant.object_ref)
+WHERE msg.return_code > 99999999
+AND msg.execution_started_at >= to_timestamp($P{dateFromStr},'YYYY-MM-DD HH24:MI:SS.FF9')
+AND msg.execution_started_at <= to_timestamp($P{dateToStr},'YYYY-MM-DD HH24:MI:SS.FF9')]]>
+    </queryString>
+    <field name="user_id" class="java.lang.String">
+        <fieldDescription><![CDATA[User ID]]></fieldDescription>
+    </field>
+    <field name="execution_started_at" class="java.sql.Timestamp">
+        <fieldDescription><![CDATA[Created Time]]></fieldDescription>
+    </field>
+    <field name="tenant_id" class="java.lang.String">
+        <fieldDescription><![CDATA[Tenant ID]]></fieldDescription>
+    </field>
+    <field name="name" class="java.lang.String">
+        <fieldDescription><![CDATA[Tenant Name]]></fieldDescription>
+    </field>
+    <field name="language_code" class="java.lang.String">
+        <fieldDescription><![CDATA[Language Code]]></fieldDescription>
+    </field>
+    <field name="processing_time_in_millisecs" class="java.lang.Long">
+        <fieldDescription><![CDATA[Processing Time (milliseconds)]]></fieldDescription>
+    </field>
+    <field name="return_code" class="java.lang.String">
+        <fieldDescription><![CDATA[Return Code]]></fieldDescription>
+    </field>
+    <field name="error_details" class="java.lang.String">
+        <fieldDescription><![CDATA[Error Details]]></fieldDescription>
+    </field>
+    <title>
+        <band height="85" splitType="Stretch">
+            <textField>
+                <reportElement x="0" y="0" width="628" height="20" uuid="3fd90852-8681-465a-9c7d-9bdd8da14259"/>
+                <textElement>
+                    <font size="14" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{translator}.getReportTranslation($P{tenantId}, $P{REPORT_LOCALE}, "ErrorLogDetails", "reportTitle")]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="0" y="60" width="628" height="25" uuid="5f0c7d3f-668d-4975-9533-83960c7ae384"/>
+            </textField>
+            <textField>
+                <reportElement x="0" y="20" width="628" height="20" uuid="fb1e36dc-7291-4952-87c0-d75e2c77bf92"/>
+                <textElement>
+                    <font size="14" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{translator}.getReportTranslation($P{tenantId}, $P{REPORT_LOCALE}, "ReportHeader", "dateFrom")+DateFormat.getDateInstance(DateFormat.SHORT, $P{REPORT_LOCALE}).format($P{dateFrom}.toDate())
++" "+$P{translator}.getReportTranslation($P{tenantId}, $P{REPORT_LOCALE}, "ReportHeader", "dateTo")+DateFormat.getDateInstance(DateFormat.SHORT, $P{REPORT_LOCALE}).format($P{dateTo}.toDate())]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="0" y="40" width="628" height="20" uuid="2afceae9-308b-4a00-8708-44f7f3867229"/>
+                <textElement>
+                    <font size="14" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{translator}.getReportTranslation($P{tenantId}, $P{REPORT_LOCALE}, "ReportHeader", "createdAt")+DateFormat.getDateInstance(DateFormat.SHORT, $P{REPORT_LOCALE}).format(new java.util.Date())]]></textFieldExpression>
+            </textField>
+        </band>
+    </title>
+    <columnHeader>
+        <band height="45" splitType="Stretch">
+            <textField isBlankWhenNull="true">
+                <reportElement x="0" y="0" width="61" height="45" uuid="bcc29f64-0f58-4ed6-af4b-93c1fac4c2ae"/>
+                <textElement markup="none">
+                    <font isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{translator}.getReportTranslation($P{tenantId}, $P{REPORT_LOCALE}, "ErrorLogDetails", "userId")]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="61" y="0" width="74" height="45" uuid="4dc49120-d507-43bc-96a3-c763db870340"/>
+                <textElement markup="none">
+                    <font isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{translator}.getReportTranslation($P{tenantId}, $P{REPORT_LOCALE}, "ErrorLogDetails", "createdTime")]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="135" y="0" width="60" height="45" uuid="59b02062-7c24-4ad1-91f5-1116fc46d2fa"/>
+                <textElement markup="none">
+                    <font isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{translator}.getReportTranslation($P{tenantId}, $P{REPORT_LOCALE}, "ErrorLogDetails", "tenantId")]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="195" y="0" width="75" height="45" uuid="6972c470-5ba0-4f22-917d-ea817ea77dd4"/>
+                <textElement markup="none">
+                    <font isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{translator}.getReportTranslation($P{tenantId}, $P{REPORT_LOCALE}, "ErrorLogDetails", "tenantName")]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="270" y="0" width="65" height="45" uuid="dd799aac-6244-4bcc-82d8-2680ac6fde52"/>
+                <textElement markup="none">
+                    <font isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{translator}.getReportTranslation($P{tenantId}, $P{REPORT_LOCALE}, "ErrorLogDetails", "languageCode")]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="335" y="0" width="67" height="45" uuid="1ec0e3fd-35dd-4e17-97a6-425ebb777b0d"/>
+                <textElement markup="none">
+                    <font isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{translator}.getReportTranslation($P{tenantId}, $P{REPORT_LOCALE}, "ErrorLogDetails", "processingTime")]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="402" y="0" width="66" height="45" uuid="49d33187-fc56-46bd-b532-9ccfb88360e9"/>
+                <textElement markup="none">
+                    <font isBold="true"/>
+                    <paragraph rightIndent="5"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{translator}.getReportTranslation($P{tenantId}, $P{REPORT_LOCALE}, "ErrorLogDetails", "returnCode")]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="468" y="0" width="80" height="45" uuid="71d0926a-937b-46d6-8f1e-6daf0b0aeded"/>
+                <textElement markup="none">
+                    <font isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{translator}.getReportTranslation($P{tenantId}, $P{REPORT_LOCALE}, "ErrorLogDetails", "errorDetails")]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="548" y="0" width="80" height="45" uuid="b6151a35-245d-461b-b5e5-7bc6cadce9af"/>
+                <textElement markup="none">
+                    <font isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{translator}.getReportTranslation($P{tenantId}, $P{REPORT_LOCALE}, "ErrorLogDetails", "errorMessage")]]></textFieldExpression>
+            </textField>
+        </band>
+    </columnHeader>
+    <detail>
+        <band height="50" splitType="Stretch">
+            <textField isBlankWhenNull="true">
+                <reportElement x="0" y="0" width="61" height="50" uuid="2097e6bf-92c1-49f8-aa31-4fe6fbc6f6c2"/>
+                <textFieldExpression><![CDATA[$F{user_id}]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+                <reportElement stretchType="RelativeToBandHeight" x="61" y="0" width="74" height="50" uuid="eb44a93a-f988-41a2-a527-4b8e9d849f0e"/>
+                <textFieldExpression><![CDATA[DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT).format($F{c_timestamp})]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="135" y="0" width="60" height="50" uuid="c1c05ec3-ba32-4cc4-9d9d-d69006ccd603"/>
+                <textFieldExpression><![CDATA[$F{tenant_id}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="195" y="0" width="75" height="50" uuid="60b6d40c-fcac-41f0-b5bb-ad7f99f3792f"/>
+                <textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="270" y="0" width="65" height="50" uuid="078daf8a-4b8c-4d09-a753-3c9edcba3fb4"/>
+                <textFieldExpression><![CDATA[$F{language_code}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="335" y="0" width="67" height="50" uuid="d3653fac-e7cb-45bc-b19f-f8f98e100efd"/>
+                <textElement textAlignment="Right">
+                    <paragraph rightIndent="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{processing_time_in_millisecs}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="402" y="0" width="66" height="50" uuid="ba76f90d-e37e-4ef3-8c4f-7a19d4c7422b"/>
+                <textElement textAlignment="Right">
+                    <paragraph rightIndent="7"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{return_code}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="468" y="0" width="80" height="50" uuid="4bda8638-ffd8-420f-92ab-70c9b5c8d35f"/>
+                <textFieldExpression><![CDATA[$F{error_details}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="548" y="0" width="80" height="50" uuid="6766a12c-3e42-40e2-a34b-b325a198fcf3"/>
+                <textElement>
+                    <paragraph leftIndent="5"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{error_message}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+</jasperReport>

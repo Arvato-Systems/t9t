@@ -1,0 +1,82 @@
+/*
+ * Copyright (c) 2012 - 2018 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import t9t.setups.*
+import t9t.base.entities.*
+import t9t.io.*
+
+// entries are sorted such that references only go to entities listed before.
+
+@Generator(noMapper)
+package (com.arvatosystems) t9t.io.jpa.entities owner fortytwo prefix p28 {
+    fields private;
+
+    entity CsvConfigurationEntity category cfg is CsvConfigurationDTO {
+        cacheable
+        tenantClass InternalTenantRef42
+        pk (objectRef)
+        index unique (tenantRef, csvConfigurationId)
+    }
+
+    entity DataSinkEntity category cfg is DataSinkDTO tablename p42_cfg_data_sinks historytablename p42_his_data_sinks {
+        cacheable
+        tenantClass InternalTenantRef42
+        pk (objectRef)
+        index unique (tenantRef, dataSinkId)
+        @ManyToOne CsvConfigurationEntity csvConfiguration LAZY for (csvConfigurationRef)
+        //@ManyToOne AsyncChannelEntity     asyncChannel     LAZY for (csvConfigurationRef)
+    }
+
+    entity SinkEntity category datrw is SinkDTO tablename p42_dat_sinks {
+        tenantClass InternalTenantRef42
+        pk (objectRef)
+        index (dataSinkRef, tenantRef, cTimestamp)
+        index (camelTransferStatus)
+        index (fileOrQueueName, tenantRef)
+        @ManyToOne DataSinkEntity dataSink LAZY for (dataSinkRef)
+    }
+
+    entity OutboundMessageEntity category ^int is OutboundMessageDTO tablename p42_int_outbound_messages {
+        tenantClass InternalTenantRef42
+        pk (objectRef)
+        index unique (sinkRef, mappedRecordNo)
+//        @ManyToOne SinkEntity sink LAZY for (sinkRef)
+    }
+
+    @Generator(doMapper)
+    entity AsyncQueueEntity category cfg is AsyncQueueDTO {
+        cacheable
+        tenantClass InternalTenantRef42
+        pk (objectRef)
+        index unique (tenantRef, asyncQueueId)
+    }
+
+    @Generator(doMapper)
+    entity AsyncChannelEntity category cfg is AsyncChannelDTO {
+        cacheable
+        tenantClass InternalTenantRef42
+        pk (objectRef)
+        index unique (tenantRef, asyncChannelId)
+        @ManyToOne AsyncQueueEntity asyncQueue LAZY for (asyncQueueRef)
+    }
+
+    @Generator(doMapper)
+    entity AsyncMessageEntity category ^int is AsyncMessageDTO tablename p42_int_async_messages {
+        tenantClass InternalTenantRef42
+        pk (objectRef)
+        index (status)
+        @ManyToOne AsyncQueueEntity asyncQueue LAZY for (asyncQueueRef)
+    }
+}

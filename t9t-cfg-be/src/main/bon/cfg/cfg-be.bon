@@ -1,0 +1,144 @@
+/*
+ * Copyright (c) 2012 - 2018 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import api.media.*
+
+
+/**
+ * Package which contains the definitions of all essential message elements.
+ */
+package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
+    default private unsigned trim noControlChars;
+    properties cmdline;
+
+    type namedQualifier         is Ascii(20);
+
+    /** Brands for relational databases (accessed via JPA). */
+    enum DatabaseBrandType {
+        H2              = "H2",
+        POSTGRES        = "PSQL",
+        ORACLE          = "ORA",
+        MS_SQL_SERVER   = "MSSQL",
+        HANA            = "HANA"
+//        MYSQL           = "MYSQL"     // not yet supported
+    }
+
+    class T9tServerConfiguration xmlRoot {
+        required Ascii(16)                          persistenceUnitName     properties cmdline=";datasource";// technical username
+        optional (RelationalDatabaseConfiguration...) databaseConfiguration;
+        optional (NoSqlDatabaseConfiguration...)    noSqlConfiguration;
+        optional (KeyPrefetchConfiguration...)      keyPrefetchConfiguration;
+        optional (LogWriterConfiguration...)        logWriterConfiguration;
+        optional (ApplicationConfiguration...)      applicationConfiguration;
+        optional (ServerConfiguration...)           serverConfiguration;
+        optional (Bpm2Configuration...)             bpm2Configuration;
+        optional (AWSConfiguration...)              awsConfiguration;
+        optional (UplinkConfiguration...)           uplinkConfiguration;
+        optional (SearchConfiguration...)           searchConfiguration;
+        optional (AsyncTransmitterConfiguration...) asyncMsgConfiguration;
+        optional Long                               jwtValidityApiKey;      // validity duration of a JWT when signed on by API key
+        optional Long                               jwtValidityUserPassword;// validity duration of a JWT when signed on by username / password
+        required Ascii(16) List<>                   mocks;                  // entries for mocked SMTP, defacto etc.
+        optional Boolean                            runInCluster;           // if true, activates sending of cache invalidation events via vert.x event bus
+        optional Boolean                            disableScheduler;       // cluster server - if set, do not run jobs here
+        optional Ascii(8)                           importEnvironment;      // allows to select a subset of Camel import routes - all will be used if null
+        optional Ascii(8)                           eventEnvironment;       // allows to select a subset of event subscriptions - all will be used if null
+        required Unicode(2000) List<>               z;                      // arbitrary extension parameters, of the form (identifier)=(value)
+    }
+
+    class RelationalDatabaseConfiguration {
+        optional Ascii(16)                          username                properties cmdline=";dbuser";   // technical username
+        optional Ascii(16)                          password                properties cmdline=";dbpw";     // password
+        optional Enum DatabaseBrandType             databaseBrand;          // which vendor of DB you are using
+        optional Unicode(255)                       jdbcDriverClass;        // class name of JDBC driver
+        optional Unicode(255)                       jdbcConnectString;      // connect string for the data source
+        required Unicode(255) List<>                migrations;             // flyway migrations to check, if started with -m option
+        required Unicode(2000) List<>               z;                      // arbitrary extension parameters, of the form (identifier)=(value)
+    }
+
+    class NoSqlDatabaseConfiguration {
+        required Ascii(100)                         hostname;
+        required int                                port;
+        required Ascii(30)                          schemaName;
+    }
+
+    class KeyPrefetchConfiguration {
+        optional namedQualifier                     strategy;               // select the implementation
+        required int                                locationOffset;         // offset for the location (0 / 5000)
+        required int                                defaultKeyChunkSize;    // how many PK values to fetch at a time? (i.e. sequence scaling)
+        required int                                prefetchedKeyChunkSize; // how many PK values to fetch at a time for entities with prefetching?
+        required int                                numKeyFetchThreads;     // how many threads are actively fetching keys?
+        // maps not yet supported by XML
+        //required Int required Map<Integer>          prefetchByRtti;         // how many key values to prefetch for a given RTTI?
+    }
+
+    class Bpm2Configuration {
+        optional Boolean                            jobExecutorEnabled;     // Enable background BPMN job execution on this node? (default=true)
+        optional Integer                            jobExecutorQueueSize;   // Job executor queue size (default=3)
+        optional Integer                            jobExecutorMinWorker;   // Job executor thread pool min size (default=3)
+        optional Integer                            jobExecutorMaxWorker;   // Job executor thread pool max size (default=10)
+        optional Ascii(255)                         jobExecutorLockId;      // ID use to lock jobs for this node in DB. MUST BE UNIQUE IN CLUSTER SETUP! (default=random UUID)
+    }
+
+    class AWSConfiguration {
+        required Ascii(255)                         snsEndpoint;
+        required Ascii(255)                         sqsEndpoint;
+    }
+
+    class LogWriterConfiguration {
+        optional namedQualifier                     strategy;               // select the implementation
+        optional Integer                            queueSize;              // how many records can be written before the process blocks? (only for asynchronous)
+    }
+
+    class ServerConfiguration {
+        optional Integer                            port                    properties cmdline="p;port";    // on which port to listen
+        optional Unicode(80)                        filesystemContext;      // the base of the file system under $HOME, only used if pathRoot is not set, defaults to "fortytwo"
+        optional Unicode(255)                       filesystemPathRoot;     // the base of the file system (defaults to $HOME/fortytwo)
+        optional Boolean                            jcaBridge;              // defines if this instance should send events to a wildfly server
+        optional Boolean                            runScheduler;           // define if the quartz scheduler is supposed to be run on this server.
+        optional Unicode(255)                       keyStorePath;           // if set (recommended for production use!), overrides the standard keystore file (specifies file system path)
+        optional Unicode(63)                        keyStorePassword;       // if set (recommended for production use!), overrides the standard keystore password
+    }
+
+    class ApplicationConfiguration {
+        optional Integer                            workerPoolSize          properties cmdline=";workerPoolSize";           // vert.x DEFAULT_WORKER_POOL_SIZE [vert.x-worker-thread-(n)]
+        optional Integer                            eventLoopPoolSize       properties cmdline=";eventLoopPoolSize";        // vert.x DEFAULT_EVENT_LOOP_POOL_SIZE  [vert.x-eventloop-thread-(n)]
+        optional Integer                            maxWorkerExecuteTime    properties cmdline=";maxWorkerExecuteTime";     // vert.x DEFAULT_MAX_WORKER_EXECUTE_TIME, in seconds
+        optional Integer                            maxEventLoopExecuteTime properties cmdline=";maxEventLoopExecuteTime";  // vert.x DEFAULT_MAX_EVENT_LOOP_EXECUTE_TIME in seconds
+        optional Integer                            autonomousPoolSize;             // Executor pool size for autonomous transactions. Defaults to 4 [t9t-autonomous-(n)]
+        optional Integer                            localAsyncPoolSize;             // Executor pool size for async requests - for local servers (non vert.x based) it defaults to 4, for vert.x based servers if not configured, the standard worker pool will be used
+    }
+
+    class UplinkConfiguration {
+        required Unicode(255)                       url;                    // URL for uplink. If not provided, uplink calls will throw an Exception
+        optional Enum MediaType                     mediaType;              // which format to use (JSON, compact, bonaparte, default is compact bonaparte)
+    }
+
+    class SearchConfiguration {
+        required namedQualifier                     strategy;               // select the implementation (SOLR, Elastic etc...)
+        required Unicode(255)                       defaultUrl;             // default URL, for example of a SOLR server. Providers can override by DB
+    }
+
+    class AsyncTransmitterConfiguration {
+        required namedQualifier                     strategy;               // select the implementation. Currently only "LTQ" is available
+        required int                                maxMessageAtStartup;    // how many persisted messages to load initially at max [100]
+        required int                                timeoutIdleGreen;       // sleep time in ms when queue is empty and last request was green [500 ms]
+        required int                                timeoutIdleRed;         // sleep time in ms after an error [5000 ms]
+        required int                                timeoutShutdown;        // sleep time in ms while waiting for graceful shutdown [1000 ms]
+        required int                                timeoutExternal;        // max allowable duration of an external request [1000 ms]
+        required int                                waitAfterExtError;      // sleep time in ms after an initial remote problem [10000 ms]
+        required int                                waitAfterDbErrors;      // sleep time in ms after a database error [60000 ms]
+    }
+}

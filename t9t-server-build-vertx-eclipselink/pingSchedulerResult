@@ -1,0 +1,3 @@
+[T9tScheduler_Worker-1] INFO org.quartz.plugins.history.LoggingTriggerHistoryPlugin - Trigger MBI_TEST.A ping request for testing fired job MBI_TEST.A ping request for testing at:  00:40:00 12/29/2014
+[T9tScheduler_Worker-1] INFO org.quartz.plugins.history.LoggingTriggerHistoryPlugin - Trigger MBI_TEST.A ping request for testing completed firing job MBI_TEST.A ping request for testing at  00:40:00 12/29/2014 with resulting trigger instruction code: DO NOTHING
+

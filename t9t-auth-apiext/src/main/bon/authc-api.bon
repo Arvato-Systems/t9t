@@ -1,0 +1,123 @@
+/*
+ * Copyright (c) 2012 - 2018 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import api.*
+import apiw.*
+import api.auth.*
+import api.media.*
+import t9t.base.types.*
+import t9t.base.api.*
+import t9t.base.entities.*
+import t9t.base.auth.AuthenticationResponse
+
+/** External API - Authentication requests. */
+package (com.arvatosystems) t9t.authc.api {
+    default private unsigned trim noControlChars;
+    properties noJava, simpleref,
+        tenantCategory is com.arvatosystems.t9t.annotations.TenantCategory(),
+        searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
+        serialized is com.arvatosystems.t9t.annotations.StoreSerialized,
+        noAutoMap is com.arvatosystems.t9t.annotations.NoAutoMap,
+        notupdatable is com.arvatosystems.t9t.annotations.NotUpdatable,
+        ref is com.arvatosystems.t9t.annotations.IsObjectRef;
+
+    /** The GetTenantsRequest returns a list of tenants for which the user who is logged in has at least one role.
+     * If at least one role is assigned globally, and the user is not restricted to a tenant, then all tenants are returned.
+     */
+    class GetTenantsRequest extends RequestParameters return GetTenantsResponse {
+    }
+
+    class GetTenantsResponse extends ServiceResponse {
+        required (TenantDescription...) required List<> tenants;    // list of all tenants possible for this user
+    }
+
+    class TenantDescription {
+        required f42Ref                             tenantRef;
+        required tenantId                           tenantId;
+        required Unicode(80)                        name;
+        required boolean                            isActive;
+    }
+
+    /** The SwitchTenantRequest with the same tenantId as the existing serves as a JWT refresh (expiry extension). */
+    class SwitchTenantRequest extends RequestParameters return AuthenticationResponse {
+        required tenantId                           tenantId;           // tenant to select from now on
+    }
+
+    /** The SwitchLanguageRequest with the same language as the existing also serves as a JWT refresh (expiry extension). */
+    class SwitchLanguageRequest extends RequestParameters return AuthenticationResponse {
+        required languageTag                        language;           // new language to select from now on
+    }
+
+    /** The GetCurrentJwtRequest returns the current Jwt structure (useful for implementations where this is hidden by internal layers,
+     * as well as some test code). The request is a purely information (read only) request in the backend, but due to use of the
+     * same response object as SwitchTenant or SwitchLanguage, it will usually cause clearing of any caches in the client (such
+     * as the standard UI) and can be used precisely for this purpose.
+     * Please note that the request will NOT return the boolean and timestamp type fields, it will only populate the Jwt fields,
+     * and the tenant name.
+     */
+    class GetCurrentJwtRequest extends RequestParameters return AuthenticationResponse {
+        required boolean                            needTenantName;
+    }
+
+    class LogoutRequest extends RequestParameters return ServiceResponse {
+    }
+
+
+
+
+    /** Returns the image (Logo) of the currently selected tenant. (Authenticated access only) */
+    class GetTenantLogoRequest extends RequestParameters return GetTenantLogoResponse {
+    }
+
+    class GetTenantLogoResponse extends ServiceResponse {
+        optional (MediaData)                        tenantLogo;                 // logo of the tenant, for the UI, if it exists
+    }
+
+    class UserData {
+        required f42Ref                             userRef;                    // the technical key of the user
+        required userId                             userId;                     // User id to be used for login
+        required boolean                            isActive;
+        optional Json                               z;                          // extra data
+        optional shortText                          name;                       // christian name, surname
+        optional emailAddress                       emailAddress;                           // email address of user, if known
+        // do we need any of the following? Or should everything go into z?
+        optional shortText                          office;                                 // address
+        optional shortText                          department;                             // department
+        optional shortText                          jobTitle;                               // for signature of emails
+        optional shortText                          phoneNo;                                // phone no (landline)
+        optional shortText                          mobilePhoneNo;                          // phone no (mobile)
+    }
+
+    class GetUserDataByUserRefRequest extends RequestParameters return GetUserDataResponse {
+        required f42Ref                             userRef;
+    }
+
+    class GetUserDataByUserIdRequest extends RequestParameters return GetUserDataResponse {
+        required userId                             userId;
+    }
+
+    // different request because most likely other permissions apply
+    class GetMyUserDataRequest extends RequestParameters return GetUserDataResponse {
+    }
+
+    class GetUserDataResponse extends ServiceResponse {
+        required (UserData...)                      userData;
+    }
+
+    class ResetPasswordRequest extends RequestParameters {
+        required userId                             userId;         // userId of the user who wants a new password
+        required emailAddress                       emailAddress;   // email address for security
+    }
+}

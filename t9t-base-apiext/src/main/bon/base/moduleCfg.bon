@@ -1,0 +1,38 @@
+/*
+ * Copyright (c) 2012 - 2018 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import api.*
+
+package (com.arvatosystems) t9t.base.moduleCfg {
+    default private unsigned trim noControlChars;
+    properties noJava, simpleref,
+        tenantCategory is com.arvatosystems.t9t.annotations.TenantCategory(),
+        searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
+        serialized is com.arvatosystems.t9t.annotations.StoreSerialized,
+        noAutoMap is com.arvatosystems.t9t.annotations.NoAutoMap,
+        notupdatable is com.arvatosystems.t9t.annotations.NotUpdatable,
+        ref is com.arvatosystems.t9t.annotations.IsObjectRef;
+
+    /** Extended tenant configuration for data exceeding the generic tenant configuration of the application server.
+     * Records of this entity share the same artifical primary key tenantRef.
+     */
+    final class ModuleConfigKey extends CompositeKeyRef {}
+
+    /** Base class for all module configuration DTOs. */
+    abstract class ModuleConfigDTO RTTI 2001 extends CompositeKeyBase {
+        properties                                  tenantCategory="D";             // if entry missing, get the global one
+        optional Json                               z;                              // custom parameters: exist for all modules by default
+    }
+}

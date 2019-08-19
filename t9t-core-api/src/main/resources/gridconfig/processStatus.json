@@ -1,0 +1,13 @@
+{
+    "viewModel": "processStatus",
+    "filters": [
+        { "filterType": "W", "fieldName": "tenantId" },
+        { "filterType": "W", "fieldName": "userId" },
+        { "filterType": "L", "fieldName": "ageInMs" }
+    ],
+    "fields": [
+        "processStartedAt", "ageInMs", "pqon", "tenantId", "userId", "threadId", "sessionRef", "processRef",
+        "invokingProcessRef", "progressCounter", "statusText", "createdByThread"
+    ],
+    "fieldWidths": [ 140, 100, 323, 93, 120, 94, 98, 119, 200, 100, 200, 120 ]
+}

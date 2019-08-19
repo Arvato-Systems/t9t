@@ -1,0 +1,132 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+
+    Copyright (c) 2012 - 2018 Arvato Systems GmbH
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.arvato-systems.t9t</groupId>
+        <artifactId>t9t-settings</artifactId>
+        <version>3.11-SNAPSHOT</version>
+        <relativePath>../t9t-settings</relativePath>
+    </parent>
+
+    <artifactId>t9t-settings-sapi</artifactId>
+    <packaging>pom</packaging>
+    <description>Settings for all SAPI projects (internal service API), used for backend only</description>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>       <!-- translations are stored here -->
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/bon</directory>             <!-- bon source files -->
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <!-- For Xtext we must add the generated sources to the java source search path -->
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>add-source</goal>
+                            </goals>
+                            <configuration>
+                                <sources>
+                                    <source>src/generated/java</source>
+                                </sources>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-eclipse-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>default-cli</id>
+                            <goals>
+                                <goal>eclipse</goal>
+                            </goals>
+                            <configuration>
+                                <downloadSources>true</downloadSources>
+                                <downloadJavadocs>true</downloadJavadocs>
+                                <additionalBuildcommands>
+                                    <buildCommand>
+                                        <name>org.eclipse.xtext.ui.shared.xtextBuilder</name>
+                                    </buildCommand>
+                                    <buildCommand>
+                                        <name>org.eclipse.m2e.core.maven2Builder</name>
+                                    </buildCommand>
+                                </additionalBuildcommands>
+                                <additionalProjectnatures>
+                                    <projectnature>org.eclipse.xtext.ui.shared.xtextNature</projectnature>
+                                    <projectnature>org.eclipse.m2e.core.maven2Nature</projectnature>
+                                </additionalProjectnatures>
+                                <sourceIncludes>
+                                    <sourceInclude>**/generated/java/*</sourceInclude>
+                                </sourceIncludes>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.eclipse.xtext</groupId>
+                <artifactId>xtext-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>de.jpaw</groupId>
+            <artifactId>bonaparte-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.jpaw</groupId>
+            <artifactId>bonaparte-refs</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>

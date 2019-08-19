@@ -1,0 +1,71 @@
+/*
+ * Copyright (c) 2012 - 2018 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import t9t.base.api.*
+import t9t.base.types.*
+import t9t.base.crud.*
+import t9t.base.search.*
+import t9t.base.event.*
+import t9t.base.output.*
+import t9t.bucket.*
+import t9t.base.entities.*
+import t9t.base.entities.*
+
+package (com.arvatosystems) t9t.bucket.request {
+
+    class BucketCounterSearchRequest    extends SearchRequest<BucketCounterDTO, FullTrackingWithVersion> {}
+    class BucketCounterCrudRequest      extends CrudSurrogateKeyRequest<BucketCounterRef, BucketCounterDTO, FullTrackingWithVersion> {}
+    class LeanBucketCounterSearchRequest extends LeanSearchRequest {}
+
+    class BucketEntrySearchRequest      extends SearchRequest<BucketEntryDTO, BucketTracking> {}
+    class BucketEntryCrudRequest        extends CrudCompositeKeyRequest<BucketEntryKey, BucketEntryDTO, BucketTracking> {}
+
+    class DeleteBucketRequest extends RequestParameters{
+        required bucketId               qualifier; // defines the qualifier
+        required Integer                bucketNo;  // defines the bucket
+    }
+
+    class SwitchCurrentBucketNoRequest extends RequestParameters{
+        required bucketId               qualifier; // defines the qualifier
+        required boolean                deleteBeforeSwitch; // set to true to delete all entries belonging to the switched-to bucket number. default is true.
+    }
+
+    class SwitchCurrentBucketNoResponse extends ServiceResponse {
+        required int                    beforeSwitchBucketNo; // bucket number before switch
+        required int                    afterSwitchBucketNo; //  resulting bucket number after switch
+    }
+
+    /** Writes a single bucket - useful for testing. */
+    class SingleBucketWriteRequest extends RequestParameters {
+        required boolean                        async;      // if false, writes directly to the queue, else via executor
+        required f42Ref                         objectRef;  // the surrogate key
+        required Integer required Map<String>   values;     // map with key bucketId and value modes
+    }
+
+    /** Bucket batch export - abstract base request. */
+    abstract class AbstractBucketExportRequest extends RequestParameters { // return SinkCreatedResponse {
+        optional dataSinkId                     dataSinkId;  // if provided, overrides a dataSink property on the request itself
+        optional bucketId                       bucketId;
+        optional Boolean                        deleteBeforeSwitch;  // delete new target bucket before switching? default is true
+        optional Boolean                        switchBucket;        // switch target bucket before exporting? default is true (false only for testing)
+        optional Integer                        bucketNo;            // overrides bucketNo - only used for testing
+    }
+
+    /** Generic implementation, which takes an additional implementation / mapping argument. */
+    class GenericBucketExportRequest extends AbstractBucketExportRequest {
+        required boolean                        withTrackingAndMore;   // push DTO wrapped inside DataWithTrackingAndMore to outputSession
+        required Unicode(36)                    qualifier;             // implementation qualifier - can be the same as bucketId for standard exports
+    }
+}

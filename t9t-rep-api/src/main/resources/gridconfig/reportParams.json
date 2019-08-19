@@ -1,0 +1,12 @@
+{
+    "viewModel": "reportParams",
+    "filters": [
+        { "filterType": "E", "fieldName": "reportConfigRef" },
+        { "filterType": "E", "fieldName": "dataSinkId" },
+        { "filterType": "W", "fieldName": "reportParamsId" }
+    ],
+    "fields": [
+        "reportConfigRef.reportConfigId", "reportParamsId", "dataSinkId", "outputFileType", "isActive",
+        "intervalCategory","interval","factor","intervalDays","intervalSeconds","fromDate","toDate"
+    ]
+}

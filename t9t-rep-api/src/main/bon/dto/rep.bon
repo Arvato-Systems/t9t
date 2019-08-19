@@ -1,0 +1,140 @@
+/*
+ * Copyright (c) 2012 - 2018 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import apiw.*
+import api.media.*
+import t9t.base.types.*
+import t9t.base.api.*
+import t9t.base.entities.*
+import t9t.base.output.*
+import t9t.base.misc.*
+import t9t.doc.*
+
+/** Reporting API module.
+ * RTTI values in range 300-399
+ *
+ * Assigned values are:
+ * 300 - ReportConfig
+ * 301 - ReportParams
+ */
+package (com.arvatosystems) t9t.rep {
+    default private unsigned trim noControlChars;
+    properties noJava, simpleref,
+        tenantCategory is com.arvatosystems.t9t.annotations.TenantCategory(),
+        searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
+        serialized is com.arvatosystems.t9t.annotations.StoreSerialized,
+        noAutoMap is com.arvatosystems.t9t.annotations.NoAutoMap,
+        notupdatable is com.arvatosystems.t9t.annotations.NotUpdatable,
+        dropdown is com.arvatosystems.t9t.annotations.UseDropDownInUI(),
+        ref is com.arvatosystems.t9t.annotations.IsObjectRef;
+
+    type reportConfigId               is t9tShortId;        // specifies the report id (non technical key -> functional id)
+    type reportParamsId               is t9tShortId;        // specifies the report scheduling id (non technical key -> functional id)
+
+    /**
+     * Reports can be classified into serveral types. If a report was desigend for business purpose set the classification type to
+     * <tt>BUSINESS</tt>. If it is designed for operational purpose, set the type to <tt>OPERATION</tt>. Analoguous set the type either to <tt>MONITORING</tt>
+     * or to <tt>RECONCILIATION</tt> if they were designed for monitoring or reconcilation purpose.
+     */
+    enum ReportClassificationType {
+        BUSINESS="B", OPERATION="O", RECONCILIATION="R", MONITORING="M", ADMIN="A"
+    }
+
+    /** When defining a report recurrence event it can be executed daily, weekly, monthly, or yearly.
+     * OTHER allows the specification of the AbstractReportInterval.
+     */
+    enum ReportIntervalType {
+        MINUTELY="m", HOURLY="h", DAILY="D", WEEKLY="W", MONTHLY="M", YEARLY="Y"
+    }
+
+    enum ReportIntervalCategoryType {
+        BY_TIME="T", BY_DURATION="D", BY_RANGE="R"
+    }
+
+    /* Reports can be exported in several kinds of formats. Three types are supported by default:
+     * <ul>
+     *   <li>CSV: Comma-Separated Values files</li>
+     *   <li>PDF: Portable Document Format</li>
+     *   <li>XLS: microsoft eXcel Spreadsheet</li>
+     * </ul>
+     *
+     * We take these from the enums defined in the base module: base.api.MediaType.
+     * Please note that the UI will not support only the above of the referenced enum for reports.
+     */
+
+    /** This data transfer object contains the configuration of a report stored in the system.
+     * Its data is used as a base to simplify the configuration of a specific report schedule.
+     */
+    class ReportConfigRef RTTI 300 extends Ref {
+    }
+
+    final class ReportConfigKey extends ReportConfigRef {
+        public required reportConfigId              reportConfigId;                     // The report technical run ID
+    }
+    class ReportConfigDTO extends ReportConfigRef {
+        properties tenantCategory="D";
+        required reportConfigId                     reportConfigId  properties notupdatable;// The report name (functional key)
+        required shortText                          name;                               // name of report
+        required boolean                            isActive        properties active;  // if false, the config will not be listed for selection
+        required shortText                          jasperReportTemplateName;           // name of jasper report template. It has to be in the tenant's work directory
+        required Unicode(200)                       description;                        // The report description
+        required enum ReportClassificationType      classificationType;                 // The report classification type
+        required boolean                            intervalRequired;                   // true of the scheduling requires a configured coverage interval (false = current snapshot type)
+        optional Json                               z;                                  // extra parameters
+    }
+
+    class ReportParamsRef RTTI 301 extends Ref {
+    }
+
+    final class ReportParamsKey extends ReportParamsRef {
+        public required reportParamsId              reportParamsId;             // The report technical run ID
+    }
+
+
+    /** This data transfer object contains all information needed for a report definition. */
+    class ReportParamsDTO extends ReportParamsRef {
+        properties tenantCategory="I";
+        required boolean                                isActive;
+        required reportParamsId                         reportParamsId  properties notupdatable;  // The report name (functional key)
+        required (ReportConfigRef...,ReportConfigDTO)   reportConfigRef properties ref, searchprefix="reportConfigEntity", dropdown="reportConfigId"; // the report configuration to run
+        required dataSinkId                             dataSinkId      properties dropdown="dataSinkId";                     // references to output. This must be an ID to allow switching between @ and specific tenant ID
+        required enum MediaType                         outputFileType;                 // The report output file type
+        optional Json                                   z;                              // extra parameters
+        optional Enum ReportIntervalCategoryType        intervalCategory;        // type of interval. Every category requires two parameters
+        // next 2 required when BY_TIME
+        optional Enum ReportIntervalType                interval;        // Interval to cover. Don't mix with invocation frequency. A report can run daily and cover the past 7 days.
+        optional unsigned Integer                       factor;          // allows to define "every 10 minutes" with this category as well. In case of doubt, set to 1
+        // next 2 required when BY_DURATION
+        optional unsigned Integer                       intervalDays;    // number of days
+        optional unsigned Integer                       intervalSeconds; // number of seconds. If > 0, then days must be 0, and 86400 must be divisible by seconds.
+        // next 2 required when BY_RANGE
+        optional Timestamp(0)                           fromDate;        // explicit lower bound (t >= fromDate)
+        optional Timestamp(0)                           toDate;          // explicit upper bound (t < toDate)
+        optional Unicode(64)                            timeZone         properties dropdown="timeZoneId";
+        optional (ReportMailingRef...,ReportMailingDTO) mailingGroupRef  properties ref, searchprefix="mailingList", dropdown="mailGroupId";    // to send email when the report is done
+    }
+
+    class ReportMailingRef RTTI 302 extends Ref {}
+
+    final class ReportMailingKey extends ReportMailingRef {
+        required t9tShortId                             mailingGroupId; // mail group id
+    }
+
+    class ReportMailingDTO extends ReportMailingRef{
+        required t9tShortId                             mailingGroupId   properties notupdatable;
+        required defaultExternalId                      docConfigId      properties ref, dropdown="docConfigId"; // document template to use
+        optional Unicode(2048)                          mailingList;     // user id separated by ,
+    }
+}

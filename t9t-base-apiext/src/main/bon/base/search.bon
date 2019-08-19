@@ -1,0 +1,241 @@
+/*
+ * Copyright (c) 2012 - 2018 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import api.*
+import apiw.*
+import meta.*
+import t9t.base.types.*
+import t9t.base.api.*
+import t9t.base.output.*
+
+package (com.arvatosystems) t9t.base.search {
+    default private unsigned trim noControlChars;
+    properties inherited, active, ^default,
+        tenantCategory is com.arvatosystems.t9t.annotations.TenantCategory(),
+        searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
+        serialized is com.arvatosystems.t9t.annotations.StoreSerialized,
+        noAutoMap is com.arvatosystems.t9t.annotations.NoAutoMap,
+        notupdatable is com.arvatosystems.t9t.annotations.NotUpdatable,
+        ref is com.arvatosystems.t9t.annotations.IsObjectRef;
+
+    type fieldName                  is Ascii(64);       // can contain entity.fieldname pattern
+    type queryString                is Unicode(255);    // "google-like" query string, for Lucene / SOLR based searches.
+
+    /** filter types (for search filters) to indicate which type of constraint is defined by the field. */
+    enum SearchBoundType {
+        EQUALITY="=", UPPER_BOUND="U", LOWER_BOUND="L", WILDCARD="*", TENANT_SELECTION="T"
+    }
+
+    enum SearchFilterMatchTypeEnum {
+        EXACT,
+        START,
+        SUBSTRING
+    }
+
+    enum SearchFilterTypeEnum {
+        BOTH,
+        SOLR_ONLY,
+        DB_ONLY
+    }
+
+    enumset SearchFilterTypes is SearchFilterTypeEnum;
+
+    /** Response which is returned by export jobs or report runs.
+     * It transmits the key to the created file (or other export event).
+     */
+    class SinkCreatedResponse extends ServiceResponse {
+        optional f42Ref                                 sinkRef;                // the key to the sink table, if an export was performed
+        optional Long                                   numResults;             // the result count is populated if known
+    }
+
+    /**
+     * A simple request to return all relevant data records for a JPA entity. Do not use for tables which could contain huge data sets.
+     */
+    abstract class ReadAllRequest<DATA, TRACKING extends TrackingBase> extends RequestParameters return ReadAllResponse<!DATA,!TRACKING> { // dummy generics arg for symmetry reasons and return type definition
+        required boolean                                returnOnlyActive;
+    }
+
+    class SearchResponse<DATA, TRACKING extends TrackingBase, LIST_WITH_TENANT extends DataWithTracking<!DATA, !TRACKING>> extends SinkCreatedResponse {
+        required (!LIST_WITH_TENANT...) required List<> dataList; // the list of results
+    }
+    class ReadAllResponse<DATA, TRACKING extends TrackingBase> extends SearchResponse<!DATA, !TRACKING, DataWithTrackingW<!DATA, !TRACKING>> {
+    }
+
+    /** The type which defines filtering, sorting and data subsets for queries.
+     * This class contains the components searchFilters, searchOption and sortColumns, all of which may be null.
+     * If all components are null, the result set matches the result set of the CfgReadAllRequest (ignoring a possibly different sorting).
+     * <p>
+     * For filtering, the SearchFilter class is the abstract base class, which can be extended for customization purposes, in order to provide additional filters.
+     * In addition to the SearchFilter interface class, the corresponding implementation must be provided, overriding the <code>applyFilters</code> method of the CfgReadAllResponse generic class.
+     * <p>
+     * The SearchOption class just provides functionality to select a subset of the result, for paging views in the UI. As this does only make sense in conjunction with a defined ordering,
+     * ordering by the (artificial) primary key column is assumed in case no list of SortColumns is provided (objectRef ascending).
+     */
+    abstract class SearchCriteria extends RequestParameters {
+        required int                                limit;                                  // max rows (0 for unlimited)
+        required int                                offset;                                 // skip rows
+        optional (SearchFilter...)                  searchFilter;                           // optional restriction of the result set
+        required (SortColumn) List<>                sortColumns;                            // optional list of sorting columns
+        optional (OutputSessionParameters...)       searchOutputTarget;                     // if supplied, then the results will be redirected to a data sink
+        optional queryString                        expression;                             // Lucene / SOLR query expression (requires property documentName)
+        optional Boolean                            applyDistinct;                          // return distinct results (apply SQL SELECT DISTINCT)
+    }
+
+    /** allow to instantiate this for internal use. */
+    final class DummySearchCriteria extends SearchCriteria {
+    }
+
+    /** Provides filtering for enum. Alternatively, the caller could use a regular AsciiFilter or IntFilter.
+     * Search can be done on name as well as token (for tokenizable enums) or ordinal.
+     * Token search currently does not support the empty token, it is the caller's responsibility to create a NullFilter in this case.
+     */
+    final class EnumFilter extends FieldFilter {
+        required Ascii(63)                          enumPqon;           // partially qualified enum name
+        optional Unicode(63)                        equalsName;         // search for instance name - equals
+        required Unicode(63) List<>                 nameList;           // search for one of many names
+        optional Unicode(63)                        equalsToken;        // search for token equals
+        required Unicode(63) List<>                 tokenList;          // search for one of many tokens
+        optional Integer                            equalsOrdinal;      // search for token equals
+        required Integer List<>                     ordinalList;        // search for one of many tokens
+    }
+
+    /** Provides filtering for xenum.
+     * Search can be done on name as well as token.
+     * Token search currently does not support the empty token, it is the caller's responsibility to create a NullFilter in this case.
+     */
+    final class XenumFilter extends FieldFilter {
+        required Ascii(63)                          xenumPqon;          // partially qualified xenum name
+        optional Unicode(63)                        equalsName;         // search for instance name - equals
+        required Unicode(63) List<>                 nameList;           // search for one of many names
+        optional Unicode(63)                        equalsToken;        // search for token equals
+        required Unicode(63) List<>                 tokenList;          // search for one of many tokens
+    }
+
+    /** Provides filtering for enumsets. The result are all rows whith an enumset which contains the given name (instring).
+     * This only works for tokenizable enums.
+     * Token search currently does not support the empty token, it is the caller's responsibility to create a NullFilter in this case.
+     */
+    final class EnumsetFilter extends FieldFilter {
+        required Ascii(63)                          enumsetPqon;        // partially qualified object name
+        optional Unicode(63)                        equalsName;         // search for instance name - equals
+        optional Unicode(63)                        equalsToken;        // search for token equals
+        required boolean                            subset;             // if true, looking for any which contains this instance, else must match perfectly
+    }
+
+    /** Provides filtering for xenumsets.
+     * Token search currently does not support the empty token, it is the caller's responsibility to create a NullFilter in this case.
+     */
+    final class XenumsetFilter extends FieldFilter {
+        required Ascii(63)                          xenumsetPqon;       // partially qualified object name
+        optional Unicode(63)                        equalsName;         // search for instance name - equals
+        optional Unicode(63)                        equalsToken;        // search for token equals
+        required boolean                            subset;             // if true, looking for any which contains this instance, else must match perfectly
+    }
+
+    /**
+     * The request to be used when communicating with search based request handler for database based searches.
+     * This also sets the expectation of the return class.
+     */
+    abstract class SearchRequest<DATA, TRACKING extends TrackingBase> extends SearchCriteria return ReadAllResponse<!DATA, !TRACKING> {}
+
+    /** A wrapper around the low level SOLR access */
+    class GenericTextSearchRequest extends SearchCriteria return GenericTextSearchResponse {
+        required identifier                     documentName;
+        required identifier                     resultFieldName;
+    }
+
+    class GenericTextSearchResponse extends ServiceResponse {
+        required Long required List<>           results;
+    }
+
+    /**
+     * A search request which is based on some base search request for a parent class of the DTO.
+     * The search result will return the extended DTO, which is computed from the base DTO, for example adding derived fields.
+     * Implementations have to provide the converter method, which is a Function<BASEDTO, EXTENDEDDTO>, implemented as lambda or Singleton.
+     */
+    abstract class SearchReturningExtendedDataRequest<BASEDTO, EXTENDEDDTO, TRACKING extends TrackingBase> extends SearchRequest<!BASEDTO, !TRACKING> return ReadAllResponse<!EXTENDEDDTO, !TRACKING> {}
+
+
+    /** An abbreviated DTO which contains fields whoch are common in most DTOs for a surrogate key. */
+    class Description {
+        required f42Ref                         objectRef;
+        required defaultExternalId              id;
+        required shortText                      name;
+        required boolean                        isActive;
+        required boolean                        differentTenant;  // only relevant for IDs which query the default tenant as well: marks entries of the default tenant
+    }
+
+    /** Base class for searches with a very reduced result set.
+     * Usually used to populate dropdowns for the UI.
+     */
+    abstract class LeanSearchRequest extends SearchCriteria return LeanSearchResponse {}
+
+    /** Response class for searches with a very reduced result set. */
+    class LeanSearchResponse extends ServiceResponse {
+        required (Description) required List<>  descriptions;
+    }
+
+    /**
+     * Base class for searches with a very reduced result set, which return results grouped by some criteria.
+     * Usually used to populate dropdowns for the UI which depend on some additional attribute.
+     */
+    abstract class LeanGroupedSearchRequest extends SearchCriteria return LeanGroupedSearchResponse {}
+
+    class DescriptionList {
+        required (Description) required List<>  descriptions;
+    }
+
+    /**
+     * Response class for searches with a very reduced result set, grouped by some criteria,
+     * which is some object reference in most cases, but could be integral or even boolean as well (with 0 = false, 1 = true).
+     */
+    class LeanGroupedSearchResponse extends ServiceResponse {
+        required (DescriptionList) required Map<Long> results;
+    }
+
+    abstract class MassResolverRequest extends SearchCriteria return MassResolverResponse {}
+
+    /** Response which returns a list of surrogate keys for a given query on DTOs which inherit from Ref. */
+    class MassResolverResponse extends ServiceResponse {
+        required f42Ref required List<>                 refs;
+    }
+
+    /** Container for Constructor-Queries returning a PK and an additional ref. */
+    final class TwoRefs {
+        required f42Ref                                 objectRef;
+        optional f42Ref                                 otherRef;
+    }
+
+    /** ReadAllResponse on tables with an alphanumeric tenant ID. */
+    class ReadAll28Response<DATA, TRACKING extends TrackingBase> extends SearchResponse<!DATA, !TRACKING, DataWithTrackingS<!DATA, !TRACKING>> {
+    }
+
+    /** SearchRequest on tables with an alphanumeric tenant ID. */
+    abstract class Search28Request<DATA, TRACKING extends TrackingBase> extends SearchCriteria return ReadAll28Response<!DATA, !TRACKING> {}
+
+    abstract class AbstractExportRequest extends RequestParameters return SinkCreatedResponse {
+        required dataSinkId                         dataSinkId;           // allows to override a preconfigured default data sink ID
+        optional Integer                            chunkSize;            // number of records per chunk - for interfaces which support it (overrides dataSink config if set)
+        optional Integer                            maxNumberOfRecords;   // hint to the application to limit the number of records by this (overrides dataSink config if set
+    }
+
+    /** Request to return a list of keys (or DTOs or descriptions) for a given set of object references. */
+    abstract class AbstractGetDataRequest<DATA extends Ref> extends RequestParameters return GetDataResponse<!DATA> {
+        required f42Ref required Set<>              refs;
+    }
+    class GetDataResponse<DATA extends Ref> extends ServiceResponse {
+        required (!DATA) required List<>            data;
+    }
+}

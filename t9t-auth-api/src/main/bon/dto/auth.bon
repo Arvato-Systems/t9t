@@ -1,0 +1,276 @@
+/*
+ * Copyright (c) 2012 - 2018 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import api.*
+import apiw.*
+import api.auth.*
+import api.media.*
+import t9t.base.types.*
+import t9t.base.api.*
+import t9t.base.entities.*
+import t9t.base.moduleCfg.*
+
+/** Data types which are relevant for stored entities on the database, such as auditing data related.
+ * All DTOs in this package are final, because Customization is not supported for them (they are needed before we have the environment
+ * for customization built).
+ *
+ * <p>
+ * The following RTTIs are define here:
+ * <li> 1 - session
+ * <li> 2 - message
+ * <li> 3 - user
+ * <li> 4 - tenant
+ * <li> 5 - role
+ */
+package (com.arvatosystems) t9t.auth {
+    default private unsigned trim noControlChars;
+    properties noJava, simpleref,
+        tenantCategory is com.arvatosystems.t9t.annotations.TenantCategory(),
+        searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
+        serialized is com.arvatosystems.t9t.annotations.StoreSerialized,
+        noAutoMap is com.arvatosystems.t9t.annotations.NoAutoMap,
+        notupdatable is com.arvatosystems.t9t.annotations.NotUpdatable,
+        dropdown is com.arvatosystems.t9t.annotations.UseDropDownInUI(),
+        ref is com.arvatosystems.t9t.annotations.IsObjectRef;
+
+    type distinguishedName      is Unicode(255);        // common name + issuer, which must match the one in the SSL certificate, if access via X509 is done
+    type roleId                 is Ascii(32);          // role Id
+    type passwordHash           is Binary(64);
+
+
+    /** Extended tenant configuration for data exceeding the generic tenant configuration of the application server.
+     * Data in this class defaults to the entries for the global tenant if no record has been defined for this tenant.
+     * Records of this entity share the same artifical primary key tenantRef.
+     */
+    class AuthModuleCfgDTO RTTI 99 extends ModuleConfigDTO {
+        properties                                  tenantCategory="D";             // if entry missing, get the global one
+
+        optional Integer                            maxTokenValidityInMinutes           default "720";      // how many minutes can a JWT token last max.? (default 12 hrs)
+
+        optional Integer                            passwordMinimumLength               default "10";       // minimum length for a password in characters (default 10)
+        optional Integer                            passwordDifferPreviousN             default "3";        // from how many previous passwords must this one be different? (default 3)
+        optional Integer                            passwordExpirationInDays            default "60";       // after how many days does a password expired? (0 to disable expiry, 60 is default)
+        optional Integer                            passwordResetDurationInSec          default "86400";    // how long is a reset password valid? Default 86400 (1 day)
+        optional Integer                            passwordThrottlingAfterX            default "3";        // after how many incorrect attempts is the access throttled? (default 3)
+        optional Integer                            passwordThrottlingDuration          default "60";       // for how many seconds does the account not accept any login attempt after throttling? (60)
+        optional Integer                            passwordBlockingPeriod              default "0";        // Period in days saying how long an old password will be blocked before it can be used again. "0" Disables this feature
+    }
+
+    class TenantLogoDTO RTTI 98 extends ModuleConfigDTO {
+        properties                                  tenantCategory="D";                     // if entry missing, get the global one
+        required (MediaData)                        logo;                                   // the media data (or URL redirect if text)
+    }
+
+    /** The tenant. */
+    class TenantRef extends Ref {}
+    final class TenantKey extends TenantRef {
+        required tenantId                           tenantId      properties notupdatable;
+    }
+    final class TenantDTO RTTI 4 extends TenantRef {
+        properties tenantCategory="E";
+        required tenantId                           tenantId      properties notupdatable;
+        required boolean                            isActive      properties active;
+        required shortText                          name;                                   // tenant name
+        optional Json                               z;
+        optional (PermissionsDTO)                   permissions;
+    }
+
+
+    final class PermissionsDTO {
+        optional Enumset Permissionset              minPermissions;                         // permissions globally set (bypass resource specific checks)
+        optional Enumset Permissionset              maxPermissions;                         // permissions to reject if not set here
+        optional Enum UserLogLevelType              logLevel;                               // log level (if null, the module's log level will be used)
+        optional Enum UserLogLevelType              logLevelErrors;                         // different log level for error requests (if null, the standard logLevel will be used)
+        optional Instant                            validFrom;                              // earliest possible access, any iat >= this
+        optional Instant                            validTo;                                // latest possible access, any exp <= this
+        optional resourceId                         resourceRestriction;                    // if not null, then only resources within this prefix are allowed
+        optional Boolean                            resourceIsWildcard;                     // anything below the resource is allowed (at minPermissions)
+    }
+
+    /**
+     * The class representing a role a user has when interacting with the system.
+     */
+    class RoleRef RTTI 5 extends Ref {}
+    final class RoleKey extends RoleRef {
+        required roleId                             roleId;                                 // tenant Id in this special case not implicit
+    }
+    final class RoleDTO extends RoleRef {
+        properties tenantCategory="D";
+        required roleId                             roleId          properties notupdatable;    // tenant Id in this special case not implicit
+        required boolean                            isActive        properties active;
+        required shortText                          name;                                   // role name
+//        optional Enumset Permissionset              permissions;                            // default permissions which will be used for RoleToPermission assignments
+    }
+
+    /** A user which can log into the system or perform remote web service calls. */
+    class UserRef extends Ref {}
+
+    final class UserKey extends UserRef {
+        required userId                             userId          properties notupdatable;    // User id to be used for login
+    }
+    final class UserDTO RTTI 3 extends UserRef {
+        properties tenantCategory="D";
+        required userId                             userId          properties notupdatable;    // User id to be used for login
+        required boolean                            isActive        properties active;
+        optional shortText                          name;                                   // christian name, surname
+        optional Json                               z;
+        optional (PermissionsDTO)                   permissions;
+        optional (RoleRef...,RoleDTO)               roleRef         properties ref, searchprefix="role", simpleref="getObjectRef()", dropdown="roleId";  // reference a role if that is the only allowed role for this user
+        required boolean                            isTechnical;                            // added back in for documentation purposes
+
+        optional emailAddress                       emailAddress;                           // email address of user, if known
+        // do we need any of the following? Or should everything go into z?
+        optional shortText                          office;                                 // address
+        optional shortText                          department;                             // department
+        optional shortText                          jobTitle;                               // for signature of emails
+        optional shortText                          phoneNo;                                // phone no (landline)
+        optional shortText                          mobilePhoneNo;                          // phone no (mobile)
+    }
+    final class UserDescription extends UserRef {
+        required userId                             userId          properties notupdatable;    // User id to be used for login
+        required boolean                            isActive        properties active;
+        optional shortText                          name;                                   // christian name, surname
+    }
+
+    /**
+     * Defines which permissions are assigned to a role (specific to a tenant). The global tenant is used as a wildcard.
+     */
+    abstract class RoleToPermissionRef extends CompositeKeyRef {}
+    final class RoleToPermissionKey extends RoleToPermissionRef {
+        required (RoleRef...,RoleRef)               roleRef         properties notupdatable, ref, simpleref="getObjectRef()";
+        required resourceId                         permissionId    properties notupdatable;
+    }
+    final class RoleToPermissionInternalKey extends RoleToPermissionRef {
+        required f42Ref                             roleRef         properties notupdatable, dropdown="roleId";
+        required resourceId                         permissionId    properties notupdatable;
+        required f42Ref                             tenantRef       properties notupdatable;
+    }
+    class RoleToPermissionDTO extends CompositeKeyBase pk RoleToPermissionInternalKey {
+        properties tenantCategory="D";
+        required (RoleRef...,RoleDTO)               roleRef         properties notupdatable, ref, simpleref="getObjectRef()", dropdown="roleId", searchprefix="role";
+        required resourceId                         permissionId    properties notupdatable;
+        required enumset Permissionset              permissionSet;  // the bitmap of the allowed permissions
+    }
+
+    /**
+     * Defines which roles a user has been assigned (with possible restrictions to tenants).
+     */
+    abstract class UserTenantRoleRef extends CompositeKeyRef {}
+
+    final class UserTenantRoleKey extends UserTenantRoleRef {
+        required (UserRef...,UserRef)               userRef         properties notupdatable, ref, simpleref="getObjectRef()";
+        required (RoleRef...,RoleRef)               roleRef         properties notupdatable, ref, simpleref="getObjectRef()";
+    }
+    final class UserTenantRoleInternalKey extends UserTenantRoleRef {
+        required f42Ref                             userRef         properties notupdatable, dropdown="userId";
+        required f42Ref                             roleRef         properties notupdatable, dropdown="roleId";
+        required f42Ref                             tenantRef       properties notupdatable;
+    }
+    class UserTenantRoleDTO extends CompositeKeyBase pk UserTenantRoleInternalKey {
+        properties tenantCategory="D";
+        required (UserRef...,UserDescription)       userRef         properties notupdatable, ref, simpleref="getObjectRef()", dropdown="userId", searchprefix="user";
+        required (RoleRef...,RoleDTO)               roleRef         properties notupdatable, ref, simpleref="getObjectRef()", dropdown="roleId", searchprefix="role";
+    }
+
+
+    /** An access key. 0 to many can exist per user. */
+    class ApiKeyRef extends Ref {}
+
+    final class ApiKeyKey extends ApiKeyRef {
+        required Uuid                               apiKey;                                 // t9t issues API keys are UUIDs
+    }
+
+    final class ApiKeyDTO extends ApiKeyRef {
+        properties tenantCategory="I";
+        required (UserRef...,UserDTO)               userRef         properties ref, notupdatable, searchprefix="user", dropdown="userId";  // the user to whom this relates to
+        required boolean                            isActive        properties active;
+        required Uuid                               apiKey          properties notupdatable;    // issued API keys are UUIDs
+        optional Json                               z;
+        optional (PermissionsDTO)                   permissions;
+        optional (RoleRef...,RoleDTO)               roleRef         properties ref, searchprefix="role", dropdown="roleId", simpleref="getObjectRef()";  // reference a role if that is the only allowed role for this user
+        optional shortText                          name;                                   // comment, description
+    }
+
+
+
+    /**
+     * The UserStatus shares the same value for the primary key as the User, the corresponding database table holds data which
+     * Updated authentication request handler, added features:
+     * is frequently changing and therefore not suitable to keep in the User configuration table. It also does only exist if the
+     * user authenticates via the internal password logic, not if a user uses some external SSO or LDAP.
+     */
+    final class UserStatusKey extends CompositeKeyRef {
+        required f42Ref                             objectRef;                          // the user to whom this relates to
+    }
+    class UserStatusDTO RTTI 88 extends CompositeKeyBase {
+        required f42Ref                             objectRef;                          // the user to whom this relates to
+        required int                                currentPasswordSerialNumber;        // current valid password serial number; allows a single fetch join
+        required int                                numberOfIncorrectAttempts;          // for information to the user, also required to configure throttling of retries
+        optional Instant                            accountThrottledUntil;              // set after n unsuccessful attempts, locks out user for 1 minute.
+        optional Instant                            lastLogin;                          // for information to the user
+        optional Instant                            lastLoginByPassword;                // for information to the user
+        optional Instant                            lastLoginByApiKey;                  // for information to the user
+        optional Instant                            lastLoginByX509;                    // for information to the user
+        optional Instant                            prevLogin;                          // for information to the user
+        optional Instant                            prevLoginByPassword;                // for information to the user
+        optional Instant                            prevLoginByApiKey;                  // for information to the user
+        optional Instant                            prevLoginByX509;                    // for information to the user
+    }
+
+    final class PasswordKey extends CompositeKeyRef {
+        required f42Ref                             objectRef;                          // the user to whom this relates to
+        required int                                passwordSerialNumber;
+    }
+
+    class PasswordDTO RTTI 85 extends CompositeKeyBase {
+        required f42Ref                             objectRef;                          // the user to whom this relates to
+        required int                                passwordSerialNumber;
+        required passwordHash                       passwordHash;                       // salted hash
+        required Instant                            passwordExpiry;                     // when this date is reached, the only allowed action is to renew the password
+        required Instant                            userExpiry;                         // end of self service reset: when this date is reached, the user cannot log in any more (but every activity resets it)
+        required Instant                            passwordCreation;                   // when this password was set
+        required f42Ref                             passwordSetByUser;                  // reference of (technical) user who set this password
+    }
+
+
+
+
+    class SessionRef RTTI 1 extends Ref {
+    }
+
+    /** Records incoming communication. For every remote connection or file processed, there is one entry of this type,
+     * but only persisted after a user has successfully authenticated.
+     */
+    final class SessionDTO extends SessionRef {
+        properties tenantCategory="A";
+        required (UserRef...,UserKey)               userRef         properties notupdatable, searchprefix="user", ref, simpleref="getObjectRef()", dropdown="userId";
+        required (TenantRef...,TenantKey)           tenantRef       properties notupdatable, searchprefix="tenant", ref, simpleref="getObjectRef()";
+        optional Uuid                               sessionId;          // persistent session ID which stays the same across tenant changes
+        optional f42Ref                             continuesFromSession;   // for a tenant change: the session ref of the previous session entry
+        // further client info
+        Unicode(255)                                userAgent;          // user agent as reported by browser
+        Unicode(255)                                dataUri;            // filename or just protocol : port number
+        Unicode(255)                                zoneinfo;           // IANA time zone identifier
+        optional languageTag                        locale;             // language BCP47
+        // accounting information
+        Integer                                     numberOfRecords;    // this number is the sum of the next 4
+        Integer                                     numberSuccessful;   // returncode 0xxxxyyyy
+        Integer                                     numberDeclined;     // returncode 1xxxxyyyy
+        Integer                                     numberError;        // returncode [2-9]*
+        Integer                                     numberDuplicate;    // requests which have been identified as duplicate by either sourceNo/recordNo or messageId
+        Instant                                     firstRecordProcessedAt;
+        Instant                                     lastRecordProcessedAt;
+    }
+}

@@ -1,0 +1,103 @@
+/*
+ * Copyright (c) 2012 - 2018 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import meta.*
+import api.*
+import apiw.*
+import api.auth.*
+import api.media.*
+import t9t.base.types.*
+import t9t.base.api.*
+
+/** External API - Authentication requests for initial login - requests declared in this package do not require a valid JWT. */
+package (com.arvatosystems) t9t.base.auth {
+    default private unsigned trim noControlChars;
+    properties noJava, simpleref,
+        tenantCategory is com.arvatosystems.t9t.annotations.TenantCategory(),
+        searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
+        serialized is com.arvatosystems.t9t.annotations.StoreSerialized,
+        noAutoMap is com.arvatosystems.t9t.annotations.NoAutoMap,
+        notupdatable is com.arvatosystems.t9t.annotations.NotUpdatable,
+        ref is com.arvatosystems.t9t.annotations.IsObjectRef;
+
+    type distinguishedName      is Unicode(255);        // common name + issuer, which must match the one in the SSL certificate, if access via X509 is done
+    type passwordHash           is Binary(64);
+
+    enum PermissionType {
+        FRONTEND    = "U",          // permission to see UI screens or to use dialog elements
+        BACKEND     = "B",          // permission on request handlers. The trailing "Request(Handler)" can be omitted from the permission
+        PREPARED    = "P",          // permission on prepared (canned) requests (by ID). Evaluated by the ExecutePreparedRequest request.
+        REPORTING   = "R",          // permission to run specific reports
+        CHANNEL     = "C",          // permission to write to certain targets like queues or topics
+        EXTERNAL    = "X"           // permission to invoke requests on a remote server
+    }
+
+    /** Class to store cached permissions. */
+    final class PermissionEntry {
+        required resourceId                                 resourceId;
+        required enumset Permissionset                      permissions;        // permissions - only entries <> 0 are stored
+    }
+
+    /** Provides authentication information via password or serves as a "change password" request. */
+    final class PasswordAuthentication extends AuthenticationParameters {
+        required userId                                     userId;                     // every request will belong to the same user ID
+        required Unicode(32)                                password;                   // password
+        optional Unicode(32)                                newPassword;                // if set, then this is a change password request
+        optional tenantId                                   requestedTenantId;          // if set, then the login should use this tenant - if not possible the request fails
+    }
+
+    /** Provides authentication information via commonName, which has been provided by the SSL layer and taken from the peer's verified certificate. */
+    final class AuthX500DistinguishedName extends AuthenticationParameters {
+        required distinguishedName                          distinguishedName;  // distinguished name of the SSL certificate
+    }
+
+    /** Provides authentication information via random UUID API key. */
+    final class ApiKeyAuthentication extends AuthenticationParameters {
+        required Uuid                                       apiKey;                     // API Key for this user
+    }
+
+    /** Request used to authenticate first time. */
+    class AuthenticationRequest extends RequestParameters return AuthenticationResponse {
+        required (AuthenticationParameters...)              authenticationParameters;   // information how to validate authenticity
+        optional (SessionParameters...)                     sessionParameters;          // information about the session
+    }
+
+    class AuthenticationResponse extends ServiceResponse {
+        required encodedJwt                                 encodedJwt;                 // final (tenant defined) or temporary JWT
+        required (JwtInfo...)                               jwtInfo;                    // JWT contents in clear form
+        required shortText                                  tenantName;                 // name of the selected tenant
+        required boolean                                    tenantNotUnique;            // flag to indicate that additional tenants exist
+        required boolean                                    mustChangePassword;         // flag which indicates that the user must change the password now
+        optional Instant                                    lastLoginUser;              // last login for any method for this user
+        optional Instant                                    lastLoginMethod;            // last login for the used authentication method for this user
+        optional Instant                                    passwordExpires;            // if the password or token has limited validity: when does it expire?
+        optional Integer                                    numberOfIncorrentAttempts;  // for password authentication; how often has the user tried to log in before?
+    }
+
+    class ChangePasswordUI {
+        required Unicode(32)                                oldPassword;                   // password
+        required Unicode(32)                                newPassword;                // if set, then this is a change password request
+        optional Unicode(32)                                retypePassword;                // if set, then this is a change password request
+    }
+
+// currently not needed - implemented via internal interface IAuthorize
+//    class AuthorizationRequest extends RequestParameters return AuthorizationResponse {
+//        required auth.resourceId                            resourceId;                 // the web service which should be invoked
+//    }
+//
+//    class AuthorizationResponse extends ServiceResponse {
+//        required enumset Permissionset                      permissions;                // the permissions for that resource
+//    }
+}

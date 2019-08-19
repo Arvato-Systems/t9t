@@ -1,0 +1,68 @@
+/*
+ * Copyright (c) 2012 - 2018 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ import api.media.*
+import t9t.base.types.*
+import t9t.base.api.*
+import t9t.base.entities.*
+import t9t.base.entities.*
+import t9t.base.crud.*
+import t9t.base.search.*
+import t9t.base.output.*
+import t9t.auth.*
+
+package (com.arvatosystems) t9t.auth.request {
+    default private unsigned trim noControlChars;
+
+    /** Standard CRUD and search requests... */
+    class AuthModuleCfgCrudRequest              extends CrudModuleCfgRequest    <AuthModuleCfgDTO> {}
+    class AuthModuleCfgSearchRequest            extends SearchRequest           <AuthModuleCfgDTO, FullTrackingWithVersion> {}
+
+    class TenantLogoCrudRequest                 extends CrudModuleCfgRequest    <TenantLogoDTO> {}
+    class TenantLogoSearchRequest               extends SearchRequest           <TenantLogoDTO, FullTrackingWithVersion> {}
+
+    class RoleCrudRequest                       extends CrudSurrogateKeyRequest <RoleRef, RoleDTO, FullTrackingWithVersion> {}
+    class RoleSearchRequest                     extends SearchRequest           <RoleDTO, FullTrackingWithVersion> {}
+    class LeanRoleSearchRequest                 extends LeanSearchRequest {}
+
+    class UserCrudRequest                       extends CrudSurrogateKeyRequest <UserRef, UserDTO, FullTrackingWithVersion> {}
+    class UserSearchRequest                     extends SearchRequest           <UserDTO, FullTrackingWithVersion> {}
+    class LeanUserSearchRequest                 extends LeanSearchRequest {}
+
+    class TenantCrudRequest                     extends CrudSurrogateKeyRequest <TenantRef, TenantDTO, FullTrackingWithVersion> {}
+    class TenantSearchRequest                   extends SearchRequest           <TenantDTO, FullTrackingWithVersion> {}
+
+
+    class UserTenantRoleCrudRequest             extends CrudCompositeKeyRequest <UserTenantRoleRef, UserTenantRoleDTO, FullTrackingWithVersion> {}
+    class UserTenantRoleSearchRequest           extends SearchRequest           <UserTenantRoleDTO, FullTrackingWithVersion> {}
+
+    class RoleToPermissionCrudRequest           extends CrudCompositeKeyRequest <RoleToPermissionRef, RoleToPermissionDTO, FullTrackingWithVersion> {}
+    class RoleToPermissionSearchRequest         extends SearchRequest           <RoleToPermissionDTO, FullTrackingWithVersion> {}
+
+    class ApiKeyCrudRequest                     extends CrudSurrogateKeyRequest <ApiKeyRef, ApiKeyDTO, FullTrackingWithVersion> {}
+    class ApiKeySearchRequest                   extends SearchRequest           <ApiKeyDTO, FullTrackingWithVersion> {}
+
+    class SessionSearchRequest                  extends SearchRequest           <SessionDTO, SessionTracking> {}
+
+    /** Special request (admin only) which creates or updates a user and sets a specified password (or updates it to it).
+     * Only allows the CREATE and MERGE operations.
+     * The implementation performs the regular CRUD, followed by a set password.
+     * This implementation does not initiate an email.
+     */
+    class UserCrudAndSetPasswordRequest         extends CrudSurrogateKeyRequest <UserRef, UserDTO, FullTrackingWithVersion> {
+        required Unicode(32)                                password;                   // password
+    }
+
+}

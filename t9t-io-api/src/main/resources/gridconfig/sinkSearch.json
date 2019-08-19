@@ -1,0 +1,18 @@
+{
+    "viewModel": "sinkSearch",
+    "filters": [
+        { "filterType": "E", "fieldName": "dataSinkRef" },
+        { "filterType": "W", "fieldName": "fileOrQueueName" },
+        { "filterType": "E", "fieldName": "commFormatType" },
+        { "filterType": "E", "fieldName": "commTargetChannelType" },
+        { "filterType": "R", "fieldName": "cTimestamp" },
+        { "filterType": "E", "fieldName": "isInput" },
+        { "filterType": "E", "fieldName": "camelTransferStatus" },
+        { "filterType": "E", "fieldName": "category" }
+    ],
+    "fields": [
+        "cTimestamp", "dataSinkRef.dataSinkId", "commTargetChannelType", "commFormatType", "fileOrQueueName", "numberOfSourceRecords", "numberOfMappedRecords", "numberOfErrorRecords",
+        "processingTime", "camelTransferStatus"
+    ],
+    "fieldWidths": [ 150, 200, 100, 110, 360, 150, 150, 150, 150, 80 ]
+}

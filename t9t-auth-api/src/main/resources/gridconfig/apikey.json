@@ -1,0 +1,16 @@
+{
+    "viewModel": "apikey",
+    "filters": [
+        { "filterType": "E", "fieldName": "apiKey" },
+        { "filterType": "E", "fieldName": "userRef" },
+        { "filterType": "W", "fieldName": "name" }
+    ],
+    "fields": [
+        "apiKey", "userRef.userId", "name", "isActive", "roleRef.roleId",
+        "permissions.minPermissions", "permissions.maxPermissions",
+        "permissions.logLevel", "permissions.logLevelErrors",
+        "permissions.validFrom", "permissions.validTo",
+        "permissions.resourceIsWildcard", "permissions.resourceRestriction"
+    ],
+    "fieldWidths": [ 270, 160, 320, 45, 200, 170, 130, 121, 146, 150, 150, 40, 200 ]
+}

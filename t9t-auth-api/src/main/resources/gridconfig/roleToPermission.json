@@ -1,0 +1,12 @@
+{
+    "viewModel": "roleToPermission",
+    "filters": [
+        { "filterType": "E", "fieldName": "tenantRef" },
+        { "filterType": "E", "fieldName": "roleRef" },
+        { "filterType": "W", "fieldName": "permissionId" }
+    ],
+    "fields": [
+        "tenantRef", "roleRef.roleId", "roleRef.name", "permissionId", "permissionSet"
+    ],
+     "fieldWidths": [ 80, 120, 300, 300, 500 ]
+}

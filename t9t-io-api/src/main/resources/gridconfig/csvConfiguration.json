@@ -1,0 +1,12 @@
+{
+    "viewModel": "csvConfiguration",
+    "filters": [
+        { "filterType": "E", "fieldName": "tenantRef" },
+        { "filterType": "W", "fieldName": "csvConfigurationId" },
+        { "filterType": "W", "fieldName": "languageCode" }
+    ],
+    "fields": [
+        "tenantRef", "csvConfigurationId", "description", "languageCode"
+    ],
+    "fieldWidths": [ 80, 169, 277, 79 ]
+}

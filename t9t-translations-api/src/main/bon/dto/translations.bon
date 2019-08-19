@@ -1,0 +1,58 @@
+/*
+ * Copyright (c) 2012 - 2018 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import api.*
+import apiw.*
+import meta.*
+import t9t.base.types.*
+import t9t.base.api.*
+import t9t.base.trns.*
+import t9t.base.entities.*
+import t9t.base.entities.*
+import t9t.base.moduleCfg.*
+
+package (com.arvatosystems) t9t.trns {
+    default private unsigned trim noControlChars;
+    properties noJava, simpleref,
+        tenantCategory is com.arvatosystems.t9t.annotations.TenantCategory(),
+        searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
+        serialized is com.arvatosystems.t9t.annotations.StoreSerialized,
+        noAutoMap is com.arvatosystems.t9t.annotations.NoAutoMap,
+        notupdatable is com.arvatosystems.t9t.annotations.NotUpdatable,
+        ref is com.arvatosystems.t9t.annotations.IsObjectRef;
+
+    type translation is Unicode(2000) allowControlChars;
+
+    /** Extended tenant configuration for data exceeding the generic tenant configuration of the application server.
+     * Records of this entity share the same artifical primary key tenantRef.
+     */
+    class TrnsModuleCfgDTO RTTI 2001 extends ModuleConfigDTO {
+        properties                                  tenantCategory="D";             // if entry missing, get the global one
+        required boolean                            attemptLocalTenant;             // if false, only the global tenant will be check for translations
+        required boolean                            attemptDialects;                // if false, only 2 letter ISO639 codes will be checked for translations
+    }
+
+    // see also TranslationsPartialKey in t9t-base
+    class TranslationsKey {
+        required enum TextCategory                  category;
+        required identifier                         qualifier;                      // screen or grid ID or package name or enum PQON
+        required Unicode(30)                        id;                             // restricted to 30 due to Oracle column name compatibility
+        required languageTag                        languageCode;
+    }
+    class TranslationsDTO extends TranslationsKey pk TranslationsKey {
+        properties                                  tenantCategory="D";                                 // if entry missing, get the global one
+        required translation                        text;
+    }
+}

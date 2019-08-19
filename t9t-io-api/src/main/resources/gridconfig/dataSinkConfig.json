@@ -1,0 +1,12 @@
+{
+    "viewModel": "dataSinkConfig",
+    "filters": [
+        { "filterType": "E", "fieldName": "tenantRef" },
+        { "filterType": "W", "fieldName": "dataSinkId" },
+        { "filterType": "E", "fieldName": "commFormatType" }
+    ],
+    "fields": [
+        "tenantRef", "dataSinkId", "description", "commFormatType", "preTransformerName", "commFormatName", "outputEncoding", "camelFormatIsFmtRoute"
+    ],
+    "fieldWidths": [ 80, 180, 240, 110, 200, 200, 200, 200 ]
+}

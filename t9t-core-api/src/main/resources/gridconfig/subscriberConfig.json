@@ -1,0 +1,11 @@
+{
+    "viewModel": "subscriberConfig",
+    "filters": [
+        { "filterType": "W", "fieldName": "eventID" },
+        { "filterType": "W", "fieldName": "environment" }
+    ],
+    "fields": [
+        "eventID", "handlerClassName", "environment", "remark"
+    ],
+    "fieldWidths": [ 360, 360, 100, 600 ]
+}

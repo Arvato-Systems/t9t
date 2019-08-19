@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Transaction Time" pageWidth="524" pageHeight="700" whenNoDataType="AllSectionsNoDetail" columnWidth="484" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="00e55fe7-2087-4c5e-9806-672fa77d4a8a">
+    <property name="net.sf.jasperreports.export.xls.remove.empty.space.between.rows" value="true"/>
+    <property name="ireport.zoom" value="1.3310000000000004"/>
+    <property name="ireport.x" value="0"/>
+    <property name="ireport.y" value="0"/>
+    <import value="org.joda.time.*"/>
+    <parameter name="dateFrom" class="org.joda.time.LocalDateTime" isForPrompting="false">
+        <defaultValueExpression><![CDATA[new LocalDateTime(2013,9,1,0,0)]]></defaultValueExpression>
+    </parameter>
+    <parameter name="dateTo" class="org.joda.time.LocalDateTime" isForPrompting="false">
+        <defaultValueExpression><![CDATA[new LocalDateTime()]]></defaultValueExpression>
+    </parameter>
+    <parameter name="clientNow" class="org.joda.time.LocalDateTime" isForPrompting="false">
+        <defaultValueExpression><![CDATA[new LocalDateTime()]]></defaultValueExpression>
+    </parameter>
+    <parameter name="timeZone" class="java.lang.String"/>
+    <parameter name="tenantId" class="java.lang.String"/>
+    <parameter name="translator" class="com.arvatosystems.t9t.translation.be.TranslationProvider"/>
+    <parameter name="timeFormatter" class="com.arvatosystems.t9t.rep.be.util.TimeFormatter"/>
+    <parameter name="dateFromStr" class="java.lang.String">
+        <defaultValueExpression><![CDATA[$P{timeFormatter}.formatTimetoStr($P{dateFrom})]]></defaultValueExpression>
+    </parameter>
+    <parameter name="dateToStr" class="java.lang.String">
+        <defaultValueExpression><![CDATA[$P{timeFormatter}.formatTimetoStr($P{dateTo})]]></defaultValueExpression>
+    </parameter>
+    <queryString>
+        <![CDATA[SELECT
+request_parameter_pqon,
+count(1) total_rows,
+round(avg(msg.processing_time_in_millisecs),0) avg_time,
+max(msg.processing_time_in_millisecs) max_time,
+min(msg.processing_time_in_millisecs) min_time
+FROM p28_int_message msg
+LEFT OUTER JOIN p42_cfg_tenants tenant on (msg.tenant_ref = tenant.object_ref)
+WHERE
+msg.processing_time_in_millisecs IS NOT NULL
+AND msg.execution_started_at >= to_timestamp($P{dateFromStr},'YYYY-MM-DD HH24:MI:SS')
+AND msg.execution_started_at < to_timestamp($P{dateToStr},'YYYY-MM-DD HH24:MI:SS')
+GROUP by request_parameter_pqon
+ORDER BY  request_parameter_pqon]]>
+    </queryString>
+    <field name="total_rows" class="java.lang.Long"/>
+    <field name="max_time" class="java.lang.Integer"/>
+    <field name="avg_time" class="java.math.BigDecimal"/>
+    <field name="request_parameter_pqon" class="java.lang.String"/>
+    <field name="min_time" class="java.lang.Integer"/>
+    <background>
+        <band splitType="Stretch"/>
+    </background>
+    <title>
+        <band height="85" splitType="Stretch">
+            <textField>
+                <reportElement x="0" y="0" width="484" height="20" uuid="33d21dbb-f72b-41e5-b0ac-6cc9b87e6e1c"/>
+                <textElement>
+                    <font size="14" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{translator}.getReportTranslation($P{tenantId}, $P{REPORT_LOCALE}, "TransactionTime", "reportTitle")]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="0" y="60" width="484" height="25" uuid="84b684c5-26bf-4737-bfe9-2372633d7c55"/>
+            </textField>
+            <textField>
+                <reportElement x="0" y="20" width="484" height="20" uuid="bfd8443f-7c70-4c74-889a-d2bc79149185"/>
+                <textElement>
+                    <font size="14" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{translator}.getReportTranslation($P{tenantId}, $P{REPORT_LOCALE}, "ReportHeader", "dateFrom")+$P{timeFormatter}.formatDateTime($P{dateFrom},$P{timeZone},$P{REPORT_LOCALE})
++" "+$P{translator}.getReportTranslation($P{tenantId}, $P{REPORT_LOCALE}, "ReportHeader", "dateTo")+$P{timeFormatter}.formatDateTime($P{dateTo},$P{timeZone},$P{REPORT_LOCALE}) ]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="0" y="40" width="484" height="20" uuid="29ad1c89-1989-4457-92ae-c0eeb8666de1"/>
+                <textElement>
+                    <font size="14" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{translator}.getReportTranslation($P{tenantId}, $P{REPORT_LOCALE}, "ReportHeader", "createdAt")+ $P{timeFormatter}.formatDateTimeWithTargetTimeZone($P{clientNow}, $P{timeZone},$P{REPORT_LOCALE})]]></textFieldExpression>
+            </textField>
+        </band>
+    </title>
+    <columnHeader>
+        <band height="38" splitType="Stretch">
+            <textField isBlankWhenNull="true">
+                <reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="127" height="38" uuid="953d6af0-352b-49a1-9e5f-898acf5e1e25"/>
+                <textElement markup="none">
+                    <font size="9" isBold="false" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{translator}.getReportTranslation($P{tenantId}, $P{REPORT_LOCALE}, "TransactionTime", "request")]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement stretchType="RelativeToBandHeight" x="127" y="0" width="73" height="38" uuid="5d44bdf7-d1ab-4e54-a731-dc2b272cc218"/>
+                <textElement markup="none">
+                    <font size="9" isBold="false" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{translator}.getReportTranslation($P{tenantId}, $P{REPORT_LOCALE}, "TransactionTime", "countTransaction")]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement stretchType="RelativeToBandHeight" x="200" y="0" width="40" height="38" uuid="450ead90-14fe-475d-a58a-59603d0d0d48"/>
+                <textElement markup="none">
+                    <font size="9" isBold="false" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{translator}.getReportTranslation($P{tenantId}, $P{REPORT_LOCALE}, "TransactionTime", "averageTime")]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement stretchType="RelativeToBandHeight" x="240" y="0" width="39" height="38" uuid="55a18331-8f8e-4184-96f6-8d8bb8dc7d1c"/>
+                <textElement markup="none">
+                    <font size="9" isBold="false" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{translator}.getReportTranslation($P{tenantId}, $P{REPORT_LOCALE}, "TransactionTime", "minTime")]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement stretchType="RelativeToBandHeight" x="279" y="0" width="40" height="38" uuid="fa0a830b-23c7-4d19-87dc-620c365295b9"/>
+                <textElement markup="none">
+                    <font size="9" isBold="false" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{translator}.getReportTranslation($P{tenantId}, $P{REPORT_LOCALE}, "TransactionTime", "maxTime")]]></textFieldExpression>
+            </textField>
+        </band>
+    </columnHeader>
+    <detail>
+        <band height="30" splitType="Stretch">
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                <reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="127" height="30" isPrintWhenDetailOverflows="true" uuid="73f36fb9-8020-4c56-ad6c-66bed7563417"/>
+                <textElement>
+                    <font size="9" isBold="false" isPdfEmbedded="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{request_parameter_pqon}]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                <reportElement stretchType="RelativeToBandHeight" x="127" y="0" width="73" height="30" isPrintWhenDetailOverflows="true" uuid="a3ac4ff3-6829-4743-9c3d-b0a9b928a65e"/>
+                <textElement textAlignment="Right">
+                    <font size="9" isBold="false" isPdfEmbedded="true"/>
+                    <paragraph rightIndent="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{total_rows}]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                <reportElement stretchType="RelativeToBandHeight" x="200" y="0" width="40" height="30" isPrintWhenDetailOverflows="true" uuid="32ebb988-e4fe-430c-95ef-4badaf583b42"/>
+                <textElement textAlignment="Right">
+                    <font size="9" isBold="false" isPdfEmbedded="true"/>
+                    <paragraph rightIndent="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{avg_time}]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                <reportElement stretchType="RelativeToBandHeight" x="240" y="0" width="39" height="30" isPrintWhenDetailOverflows="true" uuid="1580aa07-18b9-4c1a-8e96-9ec921a3e926"/>
+                <textElement textAlignment="Right">
+                    <font size="9" isBold="false" isPdfEmbedded="true"/>
+                    <paragraph rightIndent="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{min_time}]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                <reportElement stretchType="RelativeToBandHeight" x="279" y="0" width="40" height="30" isPrintWhenDetailOverflows="true" uuid="6e50eff3-981e-4f24-a5b6-931f4c528e42"/>
+                <textElement textAlignment="Right">
+                    <font size="9" isBold="false" isPdfEmbedded="true"/>
+                    <paragraph rightIndent="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{max_time}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+</jasperReport>

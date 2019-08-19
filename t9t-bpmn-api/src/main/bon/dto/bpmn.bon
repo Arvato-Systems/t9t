@@ -1,0 +1,185 @@
+/*
+ * Copyright (c) 2012 - 2018 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import api.*
+import apiw.*
+import t9t.base.types.*
+import t9t.base.output.*
+
+import t9t.base.crud.*
+import t9t.base.search.*
+
+/** BPM API module.
+ * RTTI values in range 600-650
+ *
+ * Assigned values are:
+ * 601 - ProcessDefinition
+ * 602 - ProcessExecutionStatusDTO
+ */
+package (com.arvatosystems) t9t.bpmn {
+    default private unsigned trim noControlChars;
+    properties inherited, active, length, qualifierFor,
+        tenantCategory is com.arvatosystems.t9t.annotations.TenantCategory(),
+        searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
+        serialized is com.arvatosystems.t9t.annotations.StoreSerialized,
+        noAutoMap is com.arvatosystems.t9t.annotations.NoAutoMap,
+        notupdatable is com.arvatosystems.t9t.annotations.NotUpdatable,
+        dropdown is com.arvatosystems.t9t.annotations.UseDropDownInUI(),
+        ref is com.arvatosystems.t9t.annotations.IsObjectRef;
+
+    type processDefinitionId is t9tShortId;
+
+    enum WorkflowReturnCode {
+        PROCEED_NEXT,                   // execute next step in same transaction
+        COMMIT_RESTART,                 // end this transaction, but launch immediate further processing
+        YIELD,                          // commit and end for now, but the workflow will be resumed later (after some time gate probably). The current step will be executed again.
+        YIELD_NEXT,                     // commit and end for now, but the workflow will be resumed later (after some time gate probably). The next step will be executed. (It is like COMMIT_RESTART with a delay).
+        ERROR,                          // execution encountered an error, stored in "returnCode" and maybe "errorDetails". Execution will not proceed
+        GOTO,                           // internal code, instructs to jump to next step as already stored in status entity. Apart from that, identical to COMMIT_RESTART.
+        DONE                            // mark the workflow as completed, the entry is deleted from the workflow processing table
+    }
+
+    class ProcessDefinitionRef RTTI 601 extends Ref {
+
+    }
+
+    final class ProcessDefinitionKey extends ProcessDefinitionRef {
+        required processDefinitionId                    processDefinitionId;    // the key which defines the process. This does NOT contain any tenant part
+    }
+
+    class ProcessDefinitionDTO extends ProcessDefinitionRef {
+        properties tenantCategory="D";
+        required processDefinitionId                    processDefinitionId properties notupdatable; // the key which defines the process. This does NOT contain any tenant part
+        required boolean                                isActive            properties active;
+        required shortText                              name;
+        optional defaultExternalId                      factoryName properties qualifierFor="bpmn.IBPMObjectFactory"; // @Named qualifier for the workflow target object factory
+        optional Json                                   initialParams;         // if blank, the empty map
+        required (T9tWorkflow...)                       workflow  properties serialized, length="60000";
+        required boolean                                alwaysRestartAtStep1;  // fortytwo compatibility: ignore current position and always restart at the first step
+        required boolean                                useExclusiveLock;      // if true, a lock of the factory defined lock object will be obtained during execution
+        optional Ascii(8)                               engine;                // uses the internal state machine if blank
+        optional Long                                   jvmLockTimeoutInMillis; //JVM locks not set will use the default 5000 ms
+    }
+
+    /** For UI only use. */
+    enum WorkflowStepType {
+        JAVA_TASK, ADD_PARAMETER, STEP_GOTO, RESTART, YIELD, CONDITION
+    }
+
+    /** For UI only use. Flat version of the workflow step. */
+    final class UiOnlyWorkflowStep {
+        required enum WorkflowStepType                  workflowStepType;
+        required defaultExternalId                      label;
+        required shortText                              comment;
+        optional defaultExternalId                      stepName properties qualifierFor="bpmn.IWorkflowStep";
+        optional Json                                   parameters;
+        optional defaultExternalId                      toLabel;
+        optional Integer                                waitSeconds;
+        optional (T9tAbstractWorkflowCondition...)      condition;
+        optional (T9tAbstractWorkflowStep...) List<>    thenDo;
+        optional (T9tAbstractWorkflowStep...) List<>    elseDo;
+
+    }
+
+    abstract class T9tAbstractWorkflowStep {
+        optional defaultExternalId                      label;
+        optional shortText                              comment;
+    }
+
+    final class T9tWorkflowStepJavaTask extends T9tAbstractWorkflowStep {
+        required defaultExternalId                      stepName properties qualifierFor="bpmn.IWorkflowStep";     // Jdp qualifier of the workflow step
+    }
+
+    final class T9tWorkflowStepAddParameters extends T9tAbstractWorkflowStep {
+        required Json                                   parameters;   // map of key / value pairs
+    }
+
+    /** Go to the specified label. (Commit and restart at label). */
+    final class T9tWorkflowStepGoto extends T9tAbstractWorkflowStep {
+        required defaultExternalId                      toLabel;
+    }
+
+    /** Restart workflow at beginning. (commit and restart at beginning)*/
+    final class T9tWorkflowStepRestart extends T9tAbstractWorkflowStep {
+    }
+
+    final class T9tWorkflowStepYield extends T9tAbstractWorkflowStep {
+        required int                                    waitSeconds;  // 0 means continue immediately
+    }
+
+    /**
+     * The condition workflow step evaluates the condition (which usually requires application specific extensions).
+     * It then either executes the list of thenDo or elseDo steps, until a step results in an error, or returns a YIELD or DONE.
+     * The workflow step returns the WorkflowReturnCode of the last step executed (which usually is WorkflowReturnCode.PROCEED_NEXT),
+     * however any COMMIT_RESTART in intermediate steps is postponed and overrides any last PROCEED_NEXT.
+     */
+    final class T9tWorkflowStepCondition extends T9tAbstractWorkflowStep {
+        required (T9tAbstractWorkflowCondition...)              condition;
+        required (T9tAbstractWorkflowStep...) List<>     thenDo;
+        required (T9tAbstractWorkflowStep...) List<>     elseDo;
+    }
+
+    class T9tWorkflow {
+        required (T9tAbstractWorkflowStep...) required List<> steps;
+    }
+
+    // workflow conditions
+    abstract class T9tAbstractWorkflowCondition {}
+
+    final class T9tWorkflowConditionAnd extends T9tAbstractWorkflowCondition {
+        required (T9tAbstractWorkflowCondition...) required List<> conditions;
+    }
+    final class T9tWorkflowConditionOr extends T9tAbstractWorkflowCondition {
+        required (T9tAbstractWorkflowCondition...) required List<> conditions;
+    }
+    final class T9tWorkflowConditionNot extends T9tAbstractWorkflowCondition {
+        required (T9tAbstractWorkflowCondition...)       condition;
+    }
+    abstract class T9tAbstractWorkflowConditionVariable extends T9tAbstractWorkflowCondition {
+        required meta.identifier                         variableName;
+        required boolean                                 fromMap;  // if true, get the variable from the parameter map, else from the data object
+    }
+    final class T9tWorkflowConditionVariableIsNull extends T9tAbstractWorkflowConditionVariable {}
+    final class T9tWorkflowConditionVariableIsTrue extends T9tAbstractWorkflowConditionVariable {}
+    final class T9tWorkflowConditionVariableEquals extends T9tAbstractWorkflowConditionVariable {
+        required Element                                 value;
+    }
+    final class T9tWorkflowConditionVariableStartsOrEndsWith extends T9tAbstractWorkflowConditionVariable {
+        required Unicode(255)                            pattern;
+        required boolean                                 ends;
+    }
+    final class T9tWorkflowConditionVariableIsIn extends T9tAbstractWorkflowConditionVariable {
+        required Element required Set<>                 values;
+    }
+
+    // workflow status:
+    class ProcessExecutionStatusRef extends Ref {}
+
+    /** Status for a specific process concerning an individual object. */
+    final class ProcessExecutionStatusKey extends ProcessExecutionStatusRef {
+        required processDefinitionId                    processDefinitionId;        // the process ID
+        required f42Ref                                 targetObjectRef;            // 1:1 long key of masterdata or transaction data
+    }
+
+    class ProcessExecutionStatusDTO RTTI 602 extends ProcessExecutionStatusRef {
+        required processDefinitionId                    processDefinitionId properties notupdatable, dropdown="processDefinitionId";        // the process ID
+        required f42Ref                                 targetObjectRef     properties notupdatable;// 1:1 long key of masterdata or transaction data
+        optional Instant                                yieldUntil;         // if not null, then the task will not restart before this instant has been reached
+        optional defaultExternalId                      nextStep;           // if not null, then the task will not start at the beginning, but at this step
+        optional Json                                   currentParameters;  // the current task parameters, assigned when execution begins
+        optional Integer                                returnCode;         // execution return code (same as for requests)
+        optional Unicode(2048) allowControlChars        errorDetails;       // description of the error
+    }
+}

@@ -1,0 +1,16 @@
+{
+    "viewModel": "schedulerSetup",
+    "filters": [
+        { "filterType": "W", "fieldName": "schedulerId" },
+        { "filterType": "W", "fieldName": "name" },
+        { "filterType": "E", "fieldName": "request" },
+        { "filterType": "E", "fieldName": "userId" },
+        { "filterType": "E", "fieldName": "recurrencyType" }
+    ],
+    "fields": [
+        "schedulerId", "name", "request.requestId", "userId", "apiKey", "languageCode", "recurrencyType", "validFrom", "validTo",
+        "executionTime", "startHour", "endHour", "intervalMinutes", "intervalOffset", "setOfWeekdays",
+        "repeatCount", "intervalMilliseconds", "isActive"
+    ],
+    "fieldWidths": [ 160, 240, 160, 160, 260, 80, 1110, 150, 160, 90, 90, 90, 130, 130, 190, 140, 140, 40 ]
+}

@@ -1,0 +1,143 @@
+/*
+ * Copyright (c) 2012 - 2018 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import api.*
+import api.media.*
+
+package (com.arvatosystems) t9t.base.types {
+    default private unsigned trim noControlChars;
+
+    // generic type definitions for the t9t technical framework
+    type f42Ref                 is Long;                // platform-unique numeric ID
+    type t9tRef                 is Long;                // platform-unique numeric ID
+    type version                is Integer;             // separate field used for optimistic locking
+    type t9tShortId             is Unicode(1..16);      // a typical identifier
+    type eventTarget            is Ascii(100);          // an asynchronous target (target:name), with target XAsyncTargetType.token()
+
+    type tenantId               is t9tShortId;          // specifies the tenant
+    type userId                 is t9tShortId;          // external user Id
+    type cannedRequestId        is t9tShortId;          // ID which identifies some preconfigured request
+    type typeId                 is Ascii(3);            // some alphanumeric (easier to remember) mapping of the numeric RTTI
+    type bucketId               is typeId;              // using the same type for buckets
+    type eventId                is Unicode(100);        // size of event names
+
+    type defaultExternalId      is Unicode(36);         // default size for any external ID - large enough to contain an ASCII UUID
+    type shortText              is Unicode(80);         // type for all cfg item descriptions
+
+    type pqon                   is Unicode(255);        // partially qualified object name
+    type emailAddress           is Unicode(255);
+    type addressPart            is Unicode(80);         // data field of an address
+    type phoneNumber            is Ascii(32);           // telephone number
+
+    // ISO codes
+    type countryCode            is Uppercase(2);        // ISO 3166
+    type countryCodeA3          is Uppercase(3);
+    type countryCodeN3          is Ascii(3)  regexp "[0-9][0-9][0-9]?";
+    type currencyCode           is Uppercase(3);        // ISO 4217
+    type currencyCodeN3         is Ascii(3)  regexp "[0-9][0-9][0-9]?";
+    type languageCodeA2         is Lowercase(2);        // ISO 639-1
+    type languageCodeA5         is Ascii(5)  regexp "[a-z][a-z]([\\-_][A-Z][A-Z])?";        // ISO 639 with country, BCP47 with limited coverage
+    type languageCode           is languageCodeA5;      // pick one for the default
+
+    type timeZoneId             is Unicode(64);         // IANA time zone Id
+
+    type customizationQualifier is Unicode(32);         // a qualifier used to load a class via dependency injection
+    type encodedJwt             is Ascii(2048);         // a base64 (url) encoded JSON Web Token
+    type multipleEmailAddresses is Unicode(2048);       // multiple email addresses, separated by ";"
+
+    /** UI relevant category of underlying entity. The token of this enum should be available from DTO classes via class$Property("tenantCategory"). */
+    enum TenantIsolationCategoryType {
+        GLOBAL = "G",                   // no tenantId in table (includes "S"pecial tables)  (default if no column "tenantId" found)
+        ISOLATED = "I",                 // can only access own data (default if column "tenantId" found)
+        ISOLATED_WITH_DEFAULT = "D",    // can access own data + readonly access to "@" tenant (activated by "@TenantFilterMeOrGlobal")
+        ISOLATED_WITH_ADMIN = "A",      // global admin tenant has access to all data
+        ISOLATED_ADMIN_DEFAULT = "E",   // combines categories ISOLATED_WITH_DEFAULT and ISOLATED_WITH_ADMIN, i.e. @ has RW to everything, others can read @
+        SPECIAL = "S"                   // anything else
+    }
+
+    /** Used by the UI for filters on Boolean columns. */
+    enum BooleanEnum {
+        FALSE, TRUE
+    }
+
+    /** Used by the UI for filters on Null (any column types). */
+    enum NullEnum {
+        NULL
+    }
+
+    /** target types used with the IEvent interface and IAsyncRequestSender.
+     * The complete target specification is the token, a colon, and additional information, such as an S3 bucket name, a queue name or an eventbus address.
+     */
+    enum TargetChannelType {
+        DEV_NULL                = "null",
+        LOG                     = "log",                // no op target, but with a log message
+        ERROR                   = "error",              // error target, also used for targets without implementation
+        FILE                    = "file",
+        HTTPS_POST_WITH_AUTH    = "authpost",           // sends the encoded JWT as the Authorization header
+        HTTPS_POST              = "post",               //
+        CAMEL                   = "camel",              // a camel route
+        DATA_SINK               = "sink",
+        JMS_QUEUE               = "queue",
+        JMS_TOPIC               = "topic",
+        VERTX_EVENTBUS_SEND     = "vertxsnd",
+        VERTX_EVENTBUS_PUBLISH  = "vertxpub",
+        AWS_S3                  = "S3",
+        AWS_SQS                 = "SQS",
+        AWS_SNS                 = "SNS"
+    }
+    xenum XTargetChannelType is TargetChannelType:8;        // extend additional providers here
+
+    /** The AuthenticationParameters provide information about the authentication of a ServiceRequest.
+     * The parameters are either sent while opening a session, or with every request, or as a separate request.
+     */
+    abstract class AuthenticationParameters {}
+
+    final class AuthenticationJwt extends AuthenticationParameters {
+        required encodedJwt                                 encodedJwt;                 // JSON Web Token in encoded form, signature can be verified
+    }
+
+    /** The SessionParameters are provided once per connection / file upload and provide information about the connecting client.
+     * This is for debugging / auditing purposes only. */
+    class SessionParameters {
+        optional tenantId                                   tenantId;                   // desired tenant to select (leave null to determine automatically)
+        optional languageTag                                locale;                     // user language as a BCP47 language tag
+        optional Ascii(64)                                  zoneinfo;                   // client's time zone
+        optional Unicode(255)                               dataUri;                    // filename or just protocol : port number or queue name
+        optional Unicode(255)                               userAgent;                  // browser type or client application (remote endpoint)
+    }
+
+    /** A recipient determines a channel of transmission for a document. Not all document types are possible for every recipient type.
+     * (For example you cannot send a PDF document via SMS)
+     */
+    abstract class Recipient {
+        optional XEnum MediaXType                           communicationFormat;        // if specified, this format will be used
+    }
+
+    /** Runtime presentation of ListenerConfigDTO (as defined n t9t-core) per classification and tenant.
+     * This object is used by the JPA entity listeners.
+     */
+    final immutable class ListenerConfig {
+        required boolean            issueCreatedEvents;       // events on creation will be issued only if this bit is set
+        required boolean            issueDeletedEvents;       // events on deletion will be issued only if this bit is set
+        required boolean            issueUpdatedEvents;       // events on updates will be issued only if this bit is set
+        required boolean            issueSecondEvents;        // events on second object updates will be issued only if this bit is set
+        required boolean            issueThirdEvents;         // events on third object updates will be issued only if this bit is set
+        required bucketId Set<>     creationBuckets;          // set of bucket IDs to populate on create events
+        required bucketId Set<>     deletionBuckets;          // set of bucket IDs to populate on create events
+        required bucketId Set<>     updateBuckets;            // set of bucket IDs to populate on create events
+        required bucketId Set<>     secondBuckets;            // set of bucket IDs to populate on create events
+        required bucketId Set<>     thirdBuckets;             // set of bucket IDs to populate on create events
+    }
+}

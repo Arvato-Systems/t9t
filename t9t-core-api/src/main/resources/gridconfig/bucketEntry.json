@@ -1,0 +1,11 @@
+{
+    "viewModel": "bucketEntry",
+    "filters": [
+        { "filterType": "E", "fieldName": "qualifier" },
+        { "filterType": "L", "fieldName": "bucket" },
+        { "filterType": "L", "fieldName": "ref" }
+    ],
+    "fields": [
+        "qualifier", "bucket", "ref", "modes", "exportErrorCode", "exportErrorDetails"
+    ]
+}

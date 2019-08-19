@@ -1,0 +1,80 @@
+/*
+ * Copyright (c) 2012 - 2018 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import meta.*
+import apiw.*
+import t9t.base.types.*
+import t9t.base.api.*
+
+package (com.arvatosystems) t9t.event {
+    default private unsigned trim noControlChars;
+    properties inherited, serialized, ref, active, qualifierFor,
+        notupdatable is com.arvatosystems.t9t.annotations.NotUpdatable,
+        tenantCategory is com.arvatosystems.t9t.annotations.TenantCategory();
+
+
+    class SubscriberConfigRef RTTI 90 extends Ref {
+    }
+
+    final class SubscriberConfigKey extends SubscriberConfigRef {
+        required eventId            eventID;
+        required identifier         handlerClassName;
+    }
+
+    /**
+     * DTO for configuration table for event subscriptions.
+     * t9t loads entries without a dot in handlerClassName only. All other entries are reserved for fortytwo.
+     *
+     * On startup, for every distinct handlerClassName field, one handler instance is created which then subscribes to the event bus / topic etc given by event ID.
+     */
+    class SubscriberConfigDTO extends SubscriberConfigRef  {
+        properties tenantCategory="I";
+        required boolean            isActive            properties active;
+        required eventId            eventID             properties notupdatable;       // Identifier of the event type this subscription is intended for
+        required identifier         handlerClassName    properties notupdatable, qualifierFor="base.services.IEventHandler"; // Jdp qualifier of the handler that is subscribed
+        optional shortText          remark;                                            // Additional remark
+        optional Ascii(8)           environment;                                       // Server or server group on which this is relevant - all if null
+    }
+
+
+
+    class ListenerConfigRef RTTI 91 extends Ref {
+    }
+
+    final class ListenerConfigKey extends ListenerConfigRef {
+        required typeId             classification;
+    }
+
+    /**
+     * DTO for configuration table for JPA entity listeners.
+     *
+     */
+    class ListenerConfigDTO extends ListenerConfigRef  {
+        properties tenantCategory="I";
+        required boolean            isActive            properties active;
+        required typeId             classification      properties notupdatable;       // Identifier of the event type this listener configuration is intended for
+        required shortText          description;              // documentation
+        required boolean            issueCreatedEvents;       // events on creation will be issued only if this bit is set
+        required boolean            issueDeletedEvents;       // events on deletion will be issued only if this bit is set
+        required boolean            issueUpdatedEvents;       // events on updates will be issued only if this bit is set
+        required boolean            issueSecondEvents;        // events on second object updates will be issued only if this bit is set
+        required boolean            issueThirdEvents;         // events on third object updates will be issued only if this bit is set
+        optional Ascii(80)          creationBuckets;          // comma separated list of bucket IDs to populate on create events
+        optional Ascii(80)          deletionBuckets;          // comma separated list of bucket IDs to populate on create events
+        optional Ascii(80)          updateBuckets;            // comma separated list of bucket IDs to populate on create events
+        optional Ascii(80)          secondBuckets;            // comma separated list of bucket IDs to populate on create events
+        optional Ascii(80)          thirdBuckets;             // comma separated list of bucket IDs to populate on create events
+    }
+}

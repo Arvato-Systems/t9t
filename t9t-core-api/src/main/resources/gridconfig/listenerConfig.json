@@ -1,0 +1,11 @@
+{
+    "viewModel": "listenerConfig",
+    "filters": [
+        { "filterType": "W", "fieldName": "classification" }
+    ],
+    "fields": [
+        "classification", "description",
+        "issueCreatedEvents", "issueDeletedEvents", "issueUpdatedEvents", "issueSecondEvents", "issueThirdEvents",
+        "creationBuckets", "deletionBuckets", "updateBuckets", "secondBuckets", "thirdBuckets"
+    ]
+}

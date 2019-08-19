@@ -1,0 +1,77 @@
+/*
+ * Copyright (c) 2012 - 2018 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import api.auth.*
+import api.media.*
+import t9t.base.types.*
+import t9t.base.api.*
+import api.*
+
+/**
+ * Package which contains the definitions of all essential message elements.
+ */
+package (com.arvatosystems) t9t.base.output {
+    default private unsigned trim noControlChars;
+
+    type dataSinkId                                     is t9tShortId;                      // a token to specify OutputSession parameters
+
+
+    /** The OutputSessionParameters are provided once per outbound file / communication.
+     * They provide information required by the output processor in order to select the physical transport. */
+    class OutputSessionParameters {
+        required dataSinkId                         dataSinkId;                     // every data output is assigned a name
+        optional Instant                            asOf;                           // (planned) run date / cutoff date for the data provided
+        optional Json                               additionalParameters;           // additional application specific parameters for filename / queue name creation
+        optional XEnum MediaXType                   communicationFormatType;        // can be used to specify output, unless defined in configuration
+        optional f42Ref                             originatorRef;                  // optional reference to report params, documentRef etc.
+        optional f42Ref                             configurationRef;               // optional additional reference (report configuration, documentTemplate etc.)
+        optional Unicode(64)                        gridId;                         // gridID which initiated data output. This attribute overrides gridID defined in DataSinkDTO
+        optional Integer                            selection;                      // which configuration selection to do
+        optional Enum EnumOutputType                enumOutputType;                 // if not null and not DEFAULT, specifies how to output enums (only works for xls* and csv format types)
+        optional Boolean                            smartMappingForDataWithTracking;// optionally prepend field names with data. or tracking., if DataWithTracking is passed (set internally)
+        optional Boolean                            variantFilter;                  // use variant filter for output (OMS history & alike)
+        optional resourceId                         requiredPermission;             // non-null if access to this resource requires this permission (for reports, for example, the report permission is copied into this field)
+        optional f42Ref                             genericRefs1;                   // additional reference which have been used for this sink (for OMS reports: org unit). This may be used for further filtering, or restrict permissions to this record
+        optional f42Ref                             genericRefs2;                   // additional reference which have been used for this sink (for OMS reports: locationRef). This may be used for further filtering, or restrict permissions to this record
+        optional Object                             formatGeneratorParameters;      // any additional parameters - define your own object, for example for extra mappings
+        optional Boolean                            unwrapTracking;                 // removes the tracking columns - only for export
+    }
+
+    // specific leaner types for the UI data export
+    /** Defines the format of the data output. */
+    enum FoldableMediaType {
+        // structured output types (record output)
+        XLS = "X", XLSX="x", CSV = "C"
+    }
+
+    /** The status of a record with respect to some anticipated export. */
+    enum ExportStatusEnum {
+        UNDEFINED               = "U",      // default value
+        PROCESSING_ERROR        = "E",      // problem occurred before reaching a "READY_TO_EXPORT" status, mist likely due to missing or inconsistent configuration
+        READY_TO_EXPORT         = "0",      // this row can be exported now (waits to be picked up by some export batch)
+        EXPORTED                = "2",      // (after technical format conversion and export), waiting for feedback
+        RESPONSE_ERROR          = "e",      // (response received, but error indicated)
+        RESPONSE_OK             = ""        // maps to NULL on the database to allow an efficient index
+    }
+
+    /** Parameters which are used for data export from UI. */
+    class ExportParameters {
+        optional Enum FoldableMediaType             communicationFormatType;        // can be used to specify output, unless defined in configuration
+        optional Enum EnumOutputType                enumOutputType;                 // if not null and not DEFAULT, specifies how to output enums (only works for xls* and csv format types)
+        optional Integer                            offset;                         // how many to skip
+        optional Integer                            limit;                          // how many to export
+    }
+
+}

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Example2" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="30" bottomMargin="30" whenResourceMissingType="Empty" uuid="23057a0c-f62c-4e62-8336-03e87303a288">
+    <property name="ireport.zoom" value="1.0"/>
+    <property name="ireport.x" value="0"/>
+    <property name="ireport.y" value="0"/>
+    <parameter name="tenantId" class="java.lang.String"/>
+    <parameter name="translator" class="com.arvatosystems.t9t.translation.be.TranslationProvider"/>
+    <queryString>
+        <![CDATA[select user_id, name from p28_cfg_user]]>
+    </queryString>
+    <field name="user_id" class="java.lang.String"/>
+    <field name="name" class="java.lang.String"/>
+    <title>
+        <band height="50" splitType="Stretch">
+            <textField isStretchWithOverflow="true">
+                <reportElement uuid="70de3c12-5409-44e0-a008-9aba0d951cc6" x="0" y="0" width="297" height="25"/>
+                <textElement>
+                    <font size="14" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{translator}.getReportTranslation($P{tenantId}, $P{REPORT_LOCALE}, "ListCountryCodes", "reportTitle")]]></textFieldExpression>
+            </textField>
+        </band>
+    </title>
+    <columnHeader>
+        <band height="60">
+            <textField isStretchWithOverflow="true">
+                <reportElement uuid="720dbf78-7b9f-4961-a32e-3da3810ec148" x="0" y="0" width="80" height="25"/>
+                <textElement>
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{translator}.getReportTranslation($P{tenantId}, $P{REPORT_LOCALE}, "ListCountryCodes", "countryCode")]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true">
+                <reportElement uuid="e7e5fe9c-c240-4c16-97b5-eeb03c64de3a" x="80" y="0" width="80" height="25"/>
+                <textElement>
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{translator}.getReportTranslation($P{tenantId}, $P{REPORT_LOCALE}, "ListCountryCodes", "countryCodeA3")]]></textFieldExpression>
+            </textField>
+        </band>
+    </columnHeader>
+    <detail>
+        <band height="25" splitType="Stretch">
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                <reportElement uuid="ce5fd943-6b9d-464d-a281-b0dc94232d07" x="0" y="0" width="80" height="25"/>
+                <textElement>
+                    <font size="12"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{user_id}]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                <reportElement uuid="a28ce44a-8b1d-42fe-a849-45e03b57ca44" x="80" y="0" width="80" height="25"/>
+                <textElement>
+                    <font size="12"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+</jasperReport>

@@ -1,0 +1,9 @@
+if classes or interface have generic args, the following order holds:
+
+
+- REF		the (abstract) parent object of any key or dto
+- KEY		the JPA primary key
+- DTO		the DTO object (may depend on REF and / or KEY)
+- TRACKING	any tracking columns
+- REQUEST	the current request parameters object (extends RequestParameters)
+- ENTITY	the JPA entity

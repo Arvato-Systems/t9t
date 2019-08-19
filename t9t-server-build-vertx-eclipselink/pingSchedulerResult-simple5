@@ -1,0 +1,23 @@
+[T9tScheduler_Worker-2] INFO org.quartz.plugins.history.LoggingTriggerHistoryPlugin - Trigger MBI_TEST.Another ping request for testing fired job MBI_TEST.Another ping request for testing at:  23:40:02 12/29/2014
+[T9tScheduler_Worker-2] INFO org.quartz.plugins.history.LoggingTriggerHistoryPlugin - Trigger MBI_TEST.Another ping request for testing completed firing job MBI_TEST.Another ping request for testing at  23:40:02 12/29/2014 with resulting trigger instruction code: DO NOTHING
+[defaultEventExecutorGroup-4-1] INFO com.arvatosystems.t9t.server.T9tNettyMessageHandler - Incoming channel inactive
+[defaultEventExecutorGroup-4-1] INFO com.arvatosystems.t9t.core.be.session.SimpleServiceSession - Processed 1 records in 1986 ms, plus 0 fast pings
+[defaultEventExecutorGroup-4-1] INFO com.arvatosystems.t9t.core.be.session.SimpleServiceSession -   (average: 1986.0 ms / call
+
+
+[T9tScheduler_Worker-1] INFO org.quartz.plugins.history.LoggingTriggerHistoryPlugin - Trigger MBI_TEST.Another ping request for testing fired job MBI_TEST.Another ping request for testing at:  23:40:07 12/29/2014
+[T9tScheduler_Worker-1] INFO org.quartz.plugins.history.LoggingTriggerHistoryPlugin - Trigger MBI_TEST.Another ping request for testing completed firing job MBI_TEST.Another ping request for testing at  23:40:07 12/29/2014 with resulting trigger instruction code: DO NOTHING
+
+
+[T9tScheduler_Worker-2] INFO org.quartz.plugins.history.LoggingTriggerHistoryPlugin - Trigger MBI_TEST.Another ping request for testing fired job MBI_TEST.Another ping request for testing at:  23:40:12 12/29/2014
+[T9tScheduler_Worker-2] INFO org.quartz.plugins.history.LoggingTriggerHistoryPlugin - Trigger MBI_TEST.Another ping request for testing completed firing job MBI_TEST.Another ping request for testing at  23:40:12 12/29/2014 with resulting trigger instruction code: DO NOTHING
+
+
+[T9tScheduler_Worker-1] INFO org.quartz.plugins.history.LoggingTriggerHistoryPlugin - Trigger MBI_TEST.Another ping request for testing fired job MBI_TEST.Another ping request for testing at:  23:40:17 12/29/2014
+[T9tScheduler_Worker-1] INFO org.quartz.plugins.history.LoggingTriggerHistoryPlugin - Trigger MBI_TEST.Another ping request for testing completed firing job MBI_TEST.Another ping request for testing at  23:40:17 12/29/2014 with resulting trigger instruction code: DO NOTHING
+
+
+[T9tScheduler_Worker-2] INFO org.quartz.plugins.history.LoggingTriggerHistoryPlugin - Trigger MBI_TEST.Another ping request for testing fired job MBI_TEST.Another ping request for testing at:  23:40:22 12/29/2014
+[T9tScheduler_Worker-2] INFO org.quartz.plugins.history.LoggingTriggerHistoryPlugin - Trigger MBI_TEST.Another ping request for testing completed firing job MBI_TEST.Another ping request for testing at  23:40:22 12/29/2014 with resulting trigger instruction code: DELETE TRIGGER
+
+

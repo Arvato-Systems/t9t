@@ -1,0 +1,12 @@
+{
+    "viewModel": "tenant",
+    "filters": [
+        { "filterType": "W", "fieldName": "tenantId" },
+        { "filterType": "W", "fieldName": "name" }
+    ],
+    "fields": [
+        "tenantId", "name", "isActive",
+        "permissions.logLevel", "permissions.logLevelErrors",
+        "permissions.validFrom", "permissions.validTo"
+    ]
+}

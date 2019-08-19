@@ -1,0 +1,11 @@
+{
+    "viewModel": "voiceResponse",
+    "filters": [
+        { "filterType": "E", "fieldName": "applicationRef" },
+        { "filterType": "E", "fieldName": "languageCode" },
+        { "filterType": "W", "fieldName": "key" }
+    ],
+    "fields": [
+        "applicationRef.applicationId", "languageCode", "key", "isTemplate", "isSsml"
+    ]
+}

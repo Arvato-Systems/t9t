@@ -1,0 +1,15 @@
+{
+    "viewModel": "sessions",
+    "filters": [
+        { "filterType": "R", "fieldName": "cTimestamp" },
+        { "filterType": "E", "fieldName": "userRef" },
+        { "filterType": "W", "fieldName": "dataUri" },
+        { "filterType": "E", "fieldName": "locale" },
+        { "filterType": "E", "fieldName": "zoneinfo" },
+        { "filterType": "W", "fieldName": "userAgent" }
+    ],
+    "fields": [
+        "cTimestamp", "tenantRef.tenantId", "userRef.userId", "continuesFromSession", "objectRef", "sessionId", "dataUri", "locale", "zoneinfo", "userAgent"
+    ],
+    "fieldWidths": [ 150, 118, 122, 123, 109, 279, 249, 87, 169, 400 ]
+}

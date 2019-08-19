@@ -1,0 +1,11 @@
+{
+    "viewModel": "voiceUser",
+    "filters": [
+        { "filterType": "E", "fieldName": "applicationRef" },
+        { "filterType": "W", "fieldName": "internalId" },
+        { "filterType": "W", "fieldName": "providerId" }
+    ],
+    "fields": [
+        "applicationRef.applicationId", "isActive", "name", "internalId", "providerId"
+    ]
+}

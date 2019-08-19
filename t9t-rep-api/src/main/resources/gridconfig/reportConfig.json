@@ -1,0 +1,12 @@
+{
+    "viewModel": "reportConfig",
+    "filters": [
+        { "filterType": "E", "fieldName": "tenantRef" },
+        { "filterType": "W", "fieldName": "reportConfigId" },
+        { "filterType": "E", "fieldName": "classificationType" }
+    ],
+    "fields": [
+        "tenantRef", "reportConfigId", "name", "classificationType", "description", "isActive",
+         "intervalRequired", "description"
+    ]
+}

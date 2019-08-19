@@ -1,0 +1,9 @@
+{
+    "viewModel": "bucketCounter",
+    "filters": [
+        { "filterType": "E", "fieldName": "qualifier" }
+    ],
+    "fields": [
+        "qualifier", "currentVal", "maxVal"
+    ]
+}

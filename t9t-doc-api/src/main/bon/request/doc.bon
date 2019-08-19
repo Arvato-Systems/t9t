@@ -1,0 +1,67 @@
+/*
+ * Copyright (c) 2012 - 2018 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import t9t.base.entities.*
+import t9t.base.entities.*
+import t9t.base.search.*
+import t9t.base.crud.*
+import t9t.base.api.*
+import t9t.doc.*
+import t9t.doc.api.*
+
+package (com.arvatosystems) t9t.doc.request {
+    default private unsigned trim noControlChars;
+    properties inherited,
+        tenantCategory is com.arvatosystems.t9t.annotations.TenantCategory(),
+        searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
+        serialized is com.arvatosystems.t9t.annotations.StoreSerialized,
+        noAutoMap is com.arvatosystems.t9t.annotations.NoAutoMap,
+        notupdatable is com.arvatosystems.t9t.annotations.NotUpdatable,
+        ref is com.arvatosystems.t9t.annotations.IsObjectRef;
+
+
+    // standard CRUD and search requests
+    class DocModuleCfgCrudRequest                   extends CrudModuleCfgRequest<DocModuleCfgDTO> {}
+    class DocConfigCrudRequest                      extends CrudSurrogateKeyRequest<DocConfigRef,   DocConfigDTO,       FullTrackingWithVersion> {}
+    class DocEmailCfgCrudRequest                    extends CrudSurrogateKeyRequest<DocEmailCfgRef, DocEmailCfgDTO,     FullTrackingWithVersion> {}
+    class DocTemplateCrudRequest                    extends CrudSurrogateKeyRequest<DocTemplateRef, DocTemplateDTO,     FullTrackingWithVersion> {}
+    class DocComponentCrudRequest                   extends CrudSurrogateKeyRequest<DocComponentRef,DocComponentDTO,    FullTrackingWithVersion> {}
+
+    class DocModuleCfgSearchRequest                 extends SearchRequest<DocModuleCfgDTO, FullTrackingWithVersion> {}
+    class DocConfigSearchRequest                    extends SearchRequest<DocConfigDTO,    FullTrackingWithVersion> {}
+    class DocEmailCfgSearchRequest                  extends SearchRequest<DocEmailCfgDTO,  FullTrackingWithVersion> {}
+    class DocTemplateSearchRequest                  extends SearchRequest<DocTemplateDTO,  FullTrackingWithVersion> {}
+    class DocComponentSearchRequest                 extends SearchRequest<DocComponentDTO, FullTrackingWithVersion> {}
+
+    class LeanDocConfigSearchRequest                extends LeanSearchRequest {}
+
+    final class DocComponentResource {
+        required documentId                         key;        // variable name
+        required Ascii(10)                          ^type;      // mime type (field long enough for "POSTSCRIPT")
+        required Unicode(10000) allowControlChars   value;      // text
+    }
+
+    /** Reads multiple text components in a batch, performs a CRUD merge for each entry.
+     * Input format can be pre-parsed, text lines in CSV format, or JSON
+     */
+    class DocComponentBatchLoadRequest extends RequestParameters {
+        required (DocComponentKey)                  key;        // the key (ignore variable name)
+        optional Unicode(10000) List<>              csv;        // data in CSV format
+        optional (DocComponentResource) List<>      data;       // data in parsed format (mime type not yet converted to enum)
+        optional Element                            ^json;      // data as JSON array
+        optional Unicode(100000) allowControlChars  jsonString; // data as JSON source
+        optional Unicode(8) allowControlChars       multiLineJoin; // string to use for joining multi lines for JSON
+    }
+}

@@ -1,0 +1,131 @@
+/*
+ * Copyright (c) 2012 - 2018 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import api.*
+import api.auth.*
+import apiw.*
+import t9t.base.types.*
+import t9t.base.api.*
+import t9t.base.entities.*
+import t9t.base.output.*
+import t9t.base.misc.*
+import t9t.core.*
+
+/** In this package, the scheduler service related items are defined. (SSM API module)
+ * RTTI values in range 200-299
+ *
+ * Assigned values are:
+ * 200 - SchedulerSetup
+ * 201 - SchedulerConfig
+ */
+package (com.arvatosystems) t9t.ssm {
+    default private unsigned trim noControlChars;
+    properties noJava, simpleref,
+        tenantCategory is com.arvatosystems.t9t.annotations.TenantCategory(),
+        searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
+        serialized is com.arvatosystems.t9t.annotations.StoreSerialized,
+        noAutoMap is com.arvatosystems.t9t.annotations.NoAutoMap,
+        notupdatable is com.arvatosystems.t9t.annotations.NotUpdatable,
+        dropdown is com.arvatosystems.t9t.annotations.UseDropDownInUI(),
+        ref is com.arvatosystems.t9t.annotations.IsObjectRef;
+
+
+    type schedulerId            is t9tShortId;
+    type jobConfigId            is t9tShortId;
+
+    enum SchedulerSetupRecurrenceType {
+        SECONDLY    = "s",        // every (n) seconds
+        MINUTELY    = "m",        // every (n) minutes
+        HOURLY      = "h",        // every (n) hours
+        DAILY       = "D",
+        WEEKLY      = "W",
+        MONTHLY     = "M",
+        YEARLY      = "Y",
+        FAST        = "F",
+        CRON_NATIVE = "C"
+    }
+
+    /** For weekly events it is necessary to know the actual week day. */
+    enum SchedulerSetupRecurrenceWeekdayTypeEnum {
+        MONDAY="MON", TUESDAY="TUE", WEDNESDAY="WED", THURSDAY="THU", FRIDAY="FRI", SATURDAY="SAT", SUNDAY="SUN"
+    }
+
+    enumset SchedulerWeekDaysEnumSet is SchedulerSetupRecurrenceWeekdayTypeEnum;
+
+    class SchedulerSetupRef RTTI 200 extends Ref {
+    }
+
+    final class SchedulerSetupKey extends SchedulerSetupRef {
+        required schedulerId                        schedulerId; // The Scheduler configuration name
+    }
+
+    /** This data transfer object contains all information to setup a concrete execution (plan) of a Scheduler defined by SchedulerDTO.
+     *
+     * The field recurrencyType of type SchedulerSetupRecurrenceType determines the meaning of the other time related parameter fields
+     * (validFrom, validTo, executionTime, startHour, endHour, intervalMinutes, intervalOffset, setOfWeekdays, repeatCount, intervalMilliseconds) as follows:
+     *
+     * If recurrencyType is "FAST": Then only repeatCount and intervalMilliseconds are relevant, no other time related parameter. The repeat count defines the number of times the job is started,
+     * and intervalMilliseconds the interval between two subsequent triggers, in milliseconds.
+     *
+     * For any other value of recurrencyType, the fields repeatCount and intervalMilliseconds are unused (should be null).
+     *
+     * If recurrencyType is "DAILY" or anything less frequent, executionTime is relevant and defines the time of day when the job should be triggered, but startTime and endTime are ignored (should be null).
+     * Otherwise, if it is "HOURLY" or anything more frequent, executionTime is ignored (should be null), and startTime and endTime are optional, and if given, they determine the range within which the job is triggered.
+     * If startTime and endTime are not provided, startTime defaults to 0:00 and endTime to 23:59:59.
+     *
+     * If recurrency is "WEEKLY" and setOfWeekdays is given, then there could be multiple trigger for the week period, given by the days of the week, for example every Monday, Wednesday and Friday.
+     * If setOfWeekdays is specified, both intervalMinutes and intervalOffset must be null. For any other periodicity, setOfWeekdays must be null or empty.
+     *
+     * If setOfWeekdays is null or empty, intervalMinutes means "factor" and defines the factor for the periodicity.
+     * For example "DAILY" means once per day, but with intervalMinutes = 3 it means every 3rd day.
+     * "MONTHLY" with intervalMinutes = 3 means once per quarter. A null in intervalMinutes is assumed to be 1, 0 is an invalid number for this field.
+     * The meaning of intervalOffset depends on the value of intervalMinutes. If intervalMinutes is > 1, then it is an offset in the same measuring unit as recurrencyType,
+     * otherwise it is one unit smaller.
+     * Examples:
+     * 1) recurrencyType "HOURLY" with intervalMinutes = 1 and intervalOffset = 10 means 10 minutes after every full hour.
+     * 2) recurrencyType "HOURLY" with intervalMinutes = 12 and intervalOffset = 2 means at 2 a.m. and 2 p.m.
+     * 3) recurrencyType "MINUTELY" with intervalMinutes = 20 and intervalOffset = 10 means 10, 30, and 50 minutes after every full hour.
+     *
+     * The case recurrencyType "SECONDLY" with intervalMinutes = 1 and intervalOffset > 0 is invalid (we do not work with smaller units that seconds for recurrencyType != FAST).
+     * If intervalMinutes = 1, then the valid range for intervalOffset is [0 .. (max value of smaller time unit)], for example 0..59.
+     * If intervalMinutes > 1, then the valid range for intervalOffset is [0 .. intervalMinutes - 1].
+     */
+    class SchedulerSetupDTO extends SchedulerSetupRef {
+        required schedulerId                        schedulerId properties notupdatable; // Scheduler setup name (functional id)
+        required boolean                            isActive    properties active;
+        optional shortText                          name;                   // Some name or description of the setup
+
+        required (CannedRequestRef...,CannedRequestDTO) request properties ref, dropdown="cannedRequestId", searchprefix="cannedRequest";              // the ID referencing the invocation, using ExecuteCannedRequest()
+        required userId                             userId      properties dropdown="userId";          // the user ID to run this request under
+        optional Uuid                               apiKey;                 // the API key to use for job execution (required, but will be created on the fly)
+        optional languageTag                        languageCode;           // which language should the job use? (important for scheduled reports)
+
+        optional Timestamp                          validFrom;              // first execution date - used for all trigger types
+        optional Timestamp                          validTo;                // last execution date - used for all trigger type
+        required Enum SchedulerSetupRecurrenceType  recurrencyType;         // monthly, daily, yearly, weekly
+        // daily parameters
+        optional Time                               executionTime;          // start time of recurring Scheduler events. E.g. 1a.m. (only for cron type)
+        optional Time                               startHour;              // start time of recurring Scheduler events. E.g. 11p.m., when set also "intervalMinutes" and "endHour" must be set
+        optional Time                               endHour;                // end time of recurring Scheduler events. E.g. 11p.m., when set also "intervalMinutes" and "startHour" must be set
+        optional Int                                intervalMinutes;        // number of minutes after which the execution is repeated, when set also "startHour" and "endHour" must be
+        optional Int                                intervalOffset;         // number of minutes after which the execution is repeated, when set also "startHour" and "endHour" must be
+        optional Enumset SchedulerWeekDaysEnumSet   setOfWeekdays;          // only for "WEEKLY": the set of the days
+        optional Int                                repeatCount;            // only for "FAST": how often should the job run?
+        optional Long                               intervalMilliseconds;   // only for "FAST": how fast should it repeat?
+        optional Json                               z;                      // custom parameters
+        optional Ascii(200)                         cronExpression;
+        optional resourceId                         additionalPermissions;  //additional permissions that required by report scheduler
+    }
+}

@@ -1,0 +1,43 @@
+Case where API as well as BE is missing:
+
+
+
+[nioEventLoopGroup-2-1] INFO io.netty.handler.logging.LoggingHandler - [id: 0x6d7dc53c, /0:0:0:0:0:0:0:0:8842] RECEIVED: [id: 0x55d0775e, /127.0.0.1:52860 => /127.0.0.1:8842]
+[defaultEventExecutorGroup-4-1] INFO com.arvatosystems.t9t.server.T9tNettyMessageHandler - New incoming channel requested, requesting new ServiceSession instance
+[nioEventLoopGroup-3-1] ERROR de.jpaw.bonaparte.core.BonaPortableFactory - ClassNotFound exception for com.arvatosystems.fortytwo.demo.request.DoComplicatedWorkRequest, my CL = sun.misc.Launcher$AppClassLoader@55f96302, OCCL = sun.misc.Launcher$AppClassLoader@55f96302
+[nioEventLoopGroup-3-1] ERROR de.jpaw.bonaparte.netty.BonaparteNettyDecoder - Cannot parse 79 bytes of data: Exception {}
+de.jpaw.bonaparte.core.MessageParserException: Code 300017037 @ com.arvatosystems.fortytwo.demo.request.DoComplicatedWorkRequest.class at pos 0: (class could not be found or instantiated)
+	at de.jpaw.bonaparte.core.BonaPortableFactory.createObject(BonaPortableFactory.java:160)
+	at de.jpaw.bonaparte.core.ByteArrayParser.readObject(ByteArrayParser.java:884)
+	at com.arvatosystems.t9t.core.api.ServiceRequest.deserialize(ServiceRequest.java:417)
+	at de.jpaw.bonaparte.core.ByteArrayParser.readObject(ByteArrayParser.java:900)
+	at de.jpaw.bonaparte.core.ByteArrayParser.readRecord(ByteArrayParser.java:741)
+	at de.jpaw.bonaparte.netty.BonaparteNettyDecoder.decode(BonaparteNettyDecoder.java:55)
+	at io.netty.handler.codec.ByteToMessageDecoder.callDecode(ByteToMessageDecoder.java:247)
+	at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:147)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:333)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:319)
+	at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:161)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:333)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:319)
+	at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:787)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:130)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:511)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:468)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:382)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:354)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$2.run(SingleThreadEventExecutor.java:116)
+	at io.netty.util.concurrent.DefaultThreadFactory$DefaultRunnableDecorator.run(DefaultThreadFactory.java:137)
+	at java.lang.Thread.run(Thread.java:745)
+[nioEventLoopGroup-3-1] ERROR de.jpaw.bonaparte.netty.BonaparteNettyDecoder - Message received is <core.api.ServiceRequestdemo.request.DoComplicatedWorkRequest174
+>
+[defaultEventExecutorGroup-4-1] INFO com.arvatosystems.t9t.server.T9tNettyMessageHandler - Opening connection for remote INET: 127.0.0.1 unencrypted
+[defaultEventExecutorGroup-4-1] ERROR com.arvatosystems.t9t.core.be.RequestContext - returning error code 300017037 with details Code 300017037 @ Code 300017037 @ com.arvatosystems.fortytwo.demo.request.DoComplicatedWorkRequest.class at pos 0 for reason class could not be found or instantiated
+
+
+in case of just missing BE:
+
+[defaultEventExecutorGroup-4-1] ERROR com.arvatosystems.t9t.core.be.impl.NoHandlerPresentRequestHandler - No request handler found for request class demo.request.DoComplicatedWorkRequest and tenant @, or instantiation failed
+[defaultEventExecutorGroup-4-1] ERROR com.arvatosystems.t9t.core.be.RequestContext - returning error code 800020032 with details Code 800020032 @ ClassNotFoundException: com.arvatosystems.fortytwo.demo.request.DoComplicatedWorkRequestHandler for reason There is no request handler for the request parameter class
+
+

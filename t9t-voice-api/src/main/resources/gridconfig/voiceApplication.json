@@ -1,0 +1,10 @@
+{
+    "viewModel": "voiceApplication",
+    "filters": [
+        { "filterType": "E", "fieldName": "tenantRef" },
+        { "filterType": "W", "fieldName": "applicationId" }
+    ],
+    "fields": [
+        "tenantRef", "applicationId", "provider", "name", "isActive", "apiKey", "sessionPerExtSession", "providerId"
+    ]
+}

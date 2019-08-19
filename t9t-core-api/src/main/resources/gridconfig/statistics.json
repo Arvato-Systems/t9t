@@ -1,0 +1,18 @@
+{
+    "viewModel": "statistics",
+    "filters": [
+        { "filterType": "R", "fieldName": "startTime" },
+        { "filterType": "L", "fieldName": "recordsProcessed" },
+        { "filterType": "L", "fieldName": "recordsError" },
+        { "filterType": "R", "fieldName": "count1" },
+        { "filterType": "R", "fieldName": "count2" },
+        { "filterType": "W", "fieldName": "processId" },
+        { "filterType": "W", "fieldName": "info1" },
+        { "filterType": "W", "fieldName": "info2" }
+        
+    ],
+    "fields": [
+        "processId", "startTime", "endTime", "recordsProcessed", "recordsError", "count1", "count2", "count3", "count4", "info1", "info2"
+    ],
+    "fieldWidths": [ 140, 140, 140, 180, 180, 80, 80, 80, 80, 340, 340 ]
+}

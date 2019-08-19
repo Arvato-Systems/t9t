@@ -1,0 +1,12 @@
+{
+    "viewModel": "userTenantRole",
+    "filters": [
+        { "filterType": "E", "fieldName": "tenantRef" },
+        { "filterType": "E", "fieldName": "userRef" },
+        { "filterType": "E", "fieldName": "roleRef" }
+    ],
+    "fields": [
+        "tenantRef", "userRef.userId", "userRef.name", "roleRef.roleId", "roleRef.name"
+    ],
+     "fieldWidths": [ 80, 100, 300, 100, 300 ]
+}

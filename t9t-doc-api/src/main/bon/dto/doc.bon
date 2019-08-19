@@ -1,0 +1,181 @@
+/*
+ * Copyright (c) 2012 - 2018 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import api.*
+import apiw.*
+import api.media.*
+import de.jpaw.bonaparte.api.*
+import t9t.base.types.*
+import t9t.base.entities.*
+import t9t.base.output.*
+import t9t.base.moduleCfg.*
+import t9t.doc.api.*
+
+/** Configuration data for document templates. All configuration is tenant specific, because this usually is customized a lot.
+ * If a group of tenants is supposed to share a set of documents, then this can be solved by the standard shared tenant ID mapping.
+ */
+package (com.arvatosystems) t9t.doc {
+    default private unsigned trim noControlChars;
+    properties inherited,
+        tenantCategory is com.arvatosystems.t9t.annotations.TenantCategory(),
+        searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
+        serialized is com.arvatosystems.t9t.annotations.StoreSerialized,
+        noAutoMap is com.arvatosystems.t9t.annotations.NoAutoMap,
+        notupdatable is com.arvatosystems.t9t.annotations.NotUpdatable,
+        dropdown is com.arvatosystems.t9t.annotations.UseDropDownInUI(),
+        ref is com.arvatosystems.t9t.annotations.IsObjectRef;
+
+    /** Extended tenant configuration for data exceeding the generic tenant configuration of the application server.
+     * Records of this entity share the same artifical primary key tenantRef.
+     */
+    class DocModuleCfgDTO RTTI 2001 extends ModuleConfigDTO {
+        properties                                  tenantCategory="D";                                 // if entry missing, get the global one
+        required boolean                            considerGlobalTemplates;                            // include templates of global tenant in search
+        required boolean                            considerGlobalTexts;                                // include text components of global tenant in search
+        required boolean                            considerGlobalBinaries;                             // include binary components of global tenant in search
+        required int                                weightTenantMatch;                                  // weight of a tenant match
+        required int                                weightLanguageMatch;                                // weight of a language code match
+        required int                                weightCurrencyMatch;                                // weight of a currency code match
+        required int                                weightCountryMatch;                                 // weight of a tenant match
+        required int                                weightEntityMatch;                                  // weight of an entity ID match
+    }
+
+
+    /** Configuration for additional email copy addresses / replacement addresses.
+     * Exists for the basic document configuration and possibly also per language.
+     */
+    final class DocEmailReceiverDTO {
+        optional Unicode(160)                       emailSubject;                                       // subject line which may contain macros as ${} (subjectIsComponent = false) or names a component which defines the subject
+        optional emailAddress                       defaultFrom;                                        // originator. Used as a default if the recipient does not provide a specific one
+        optional emailAddress                       defaultReplyTo;                                     // replyTo address
+        optional multipleEmailAddresses             extraTo;                                            // additional receiver(s) (TO:)
+        optional multipleEmailAddresses             extraCc;                                            // additional receiver(s) (CC:)
+        optional multipleEmailAddresses             extraBcc;                                           // additional receiver(s) (BCC:)
+        optional Enum TemplateType                  subjectType;                                        // defines if the subject is an inline component or references a template or component
+        required boolean                            replaceFrom;                                        // if set, will override any predefined From, instead of using it as a default
+        required boolean                            replaceReplyTo;                                     // if set, with an empty replyTo, then it will clear any predefined replyTo
+        required boolean                            replaceTo;                                          // replace the TO: instead of appending it
+        required boolean                            replaceCc;                                          // replace the CC: instead of appending it
+        required boolean                            replaceBcc;                                         // replace the BCC: instead of appending it
+        required boolean                            storeEmail;                                         // store email body and attachments in email module for possible resends (leave false for password mails!)
+        required boolean                            sendSpooled;                                        // do not send the mail immediately, but via background task (requires storing it). Useful for testing and reviews.
+    }
+
+    /** Document template configuration data. The template can depend on subTenant (entity), country and language.
+     * If no configuration is available for a specified language, country or entity, then the default (stored under "-" or "XX" / "XXX") is used.
+     */
+    class DocConfigRef RTTI 450 extends Ref  {
+        // nothing in here, just a retyping
+    }
+    final class DocConfigKey extends DocConfigRef {
+        required documentId                         documentId;
+    }
+    class DocConfigDTO extends DocConfigRef {
+        properties                                  tenantCategory="D";                                 // if entry missing, get the global one
+        required documentId                         documentId   properties notupdatable;               // ID of this Document
+        optional documentId                         mappedId;                                           // if not null, overrides documentId for the template
+        optional XEnum XTargetChannelType           forwardToChannel;                                   // if specified, this format will be used for the document, or for forwarding
+        optional eventTarget                        forwardToAddress;                                   // if not null, then the document will not be created locally but sent to the target specified by this target
+        optional XEnum MediaXType                   communicationFormat;                                // if specified, this format will be used for the document, or for forwarding
+        required Unicode(80)                        description;                                        // description of the document configuration
+        required boolean                            useCids;                                            // if the format is HTML, use CIDs and store binary content as separate attachments. The variable name is the CID ID.
+        // email receiver configuration
+        required boolean                            emailConfigPerSelector;                             // if true, then the emailSettings are country / language / entity dependent
+        optional documentId                         emailBodyTemplateId;                                // if the document is binary and sent as attachment, an additional template for the body
+        required (DocEmailReceiverDTO...)           emailSettings;                                      // email recipient configuration
+        optional documentId                         alternateTemplateId;                                // if not null, provides a secondary documentId for the template of email bodies, as plain text
+        optional Boolean                            followMappedId;                                     // if TRUE, the config for the mappedId will be read
+        optional timeZoneId                         timeZone         properties dropdown="timeZoneId";  // one of joda DateTimeZone.getAvailableIds()
+    }
+
+    /** Document template configuration data. The template can depend on subTenant (entity), country and language.
+     * If no configuration is available for a specified language, country or entity, then the default (stored under "-" or "XX" / "XXX") is used.
+     */
+    class DocEmailCfgRef RTTI 451 extends Ref  {
+    }
+
+    final class DocEmailCfgKey extends DocEmailCfgRef {
+        required documentId                         documentId           properties notupdatable;           // ID of this Component
+        required t9tShortId                         entityId             properties notupdatable;           // subtenant or "-" if used for any
+        required languageTag                        languageCode         properties notupdatable;           // language code or "xx" for default
+        required countryCode                        countryCode          properties notupdatable;           // ISO 3166 country code or "XX" if default
+        required currencyCode                       currencyCode         properties notupdatable;           // ISO 4217 currency code or "XXX" if default
+    }
+
+    class DocEmailCfgDTO extends DocEmailCfgRef {
+        properties                                  tenantCategory="D";                                 // if entry missing, get the global one
+        required documentId                         documentId           properties notupdatable;           // ID of this Component
+        required t9tShortId                         entityId             properties notupdatable;           // subtenant or "-" if used for any
+        required languageTag                        languageCode         properties notupdatable;           // language code or "xx" for default
+        required countryCode                        countryCode          properties notupdatable, dropdown="countryCode";    // ISO 3166 country code or "XX" if default
+        required currencyCode                       currencyCode         properties notupdatable, dropdown="currencyCode";   // ISO 4217 currency code or "XXX" if default
+        optional Int                                prio;                                               // the higher the prio, the better a match is considered to be
+        required (DocEmailReceiverDTO...)           emailSettings;                                      // email recipient configuration
+    }
+
+    /** Document template configuration data. The template can depend on subTenant (entity), country and language.
+     * If no configuration is available for a specified language, country or entity, then the default (stored under "-" or "XX" / "XXX") is used.
+     */
+    class DocTemplateRef RTTI 451 extends Ref  {
+    }
+
+    final class DocTemplateKey extends DocTemplateRef {
+        required documentId                         documentId           properties notupdatable;           // ID of this Component
+        required t9tShortId                         entityId             properties notupdatable;           // subtenant or "-" if used for any
+        required languageTag                        languageCode         properties notupdatable;           // language code or "xx" for default
+        required countryCode                        countryCode          properties notupdatable;           // ISO 3166 country code or "XX" if default
+        required currencyCode                       currencyCode         properties notupdatable;           // ISO 4217 currency code or "XXX" if default
+    }
+
+    class DocTemplateDTO extends DocTemplateRef {
+        properties                                  tenantCategory="D";                                 // if entry missing, get the global one
+        required documentId                         documentId           properties notupdatable;           // ID of this Component
+        required t9tShortId                         entityId             properties notupdatable;           // subtenant or "-" if used for any
+        required languageTag                        languageCode         properties notupdatable;           // language code or "xx" for default
+        required countryCode                        countryCode          properties notupdatable, dropdown="countryCode";    // ISO 3166 country code or "XX" if default
+        required currencyCode                       currencyCode         properties notupdatable, dropdown="currencyCode";   // ISO 4217 currency code or "XXX" if default
+        optional Int                                prio;                                               // the higher the prio, the better a match is considered to be
+        required xenum MediaXType                   mediaType;                                          // the format of the template
+        required Unicode(8000000) allowControlChars template;                                           // the actual template
+        required Unicode(80)                        name;                                               // name / description of the Document
+        optional Boolean                            escapeToRaw;                                        // wrap strings into CDATA for HTML etc...
+    }
+
+    /** Component configuration data. The template can depend on subTenant (entity), country and language.
+     * If no configuration is available for a specified language, country or entity, then the default (stored under "-" or "XX" / "XXX") is used.
+     */
+    class DocComponentRef RTTI 452 extends Ref  {
+        // nothing in here, just a retyping
+    }
+    final class DocComponentKey extends DocComponentRef {
+        required documentId                         documentId           properties notupdatable;           // ID of this Component
+        required t9tShortId                         entityId             properties notupdatable;           // subtenant or "-" if used for any
+        required languageTag                        languageCode         properties notupdatable;           // language code or "xx" for default
+        required countryCode                        countryCode          properties notupdatable;           // ISO 3166 country code or "XX" if default
+        required currencyCode                       currencyCode         properties notupdatable;           // ISO 4217 currency code or "XXX" if default
+    }
+
+    class DocComponentDTO extends DocComponentRef {
+        properties                                  tenantCategory="D";                                 // if entry missing, get the global one
+        required documentId                         documentId           properties notupdatable;           // ID of this Component
+        required t9tShortId                         entityId             properties notupdatable;           // subtenant or "-" if used for any
+        required languageTag                        languageCode         properties notupdatable;           // language code or "xx" for default
+        required countryCode                        countryCode          properties notupdatable, dropdown="countryCode";    // ISO 3166 country code or "XX" if default
+        required currencyCode                       currencyCode         properties notupdatable, dropdown="currencyCode";   // ISO 4217 currency code or "XXX" if default
+        optional Int                                prio;                                               // the higher the prio, the better a match is considered to be
+        optional Unicode(80)                        name;                                               // name / description of the Logo / image
+        required (MediaData)                        data;                                               // the media data
+    }
+}

@@ -1,0 +1,11 @@
+{
+    "viewModel": "leanGridConfig",
+    "filters": [
+        { "filterType": "W", "fieldName": "gridId" },
+        { "filterType": "E", "fieldName": "variant" },
+        { "filterType": "E", "fieldName": "userRef" }
+    ],
+    "fields": [
+        "gridId", "variant", "userRef", "isActive"
+    ]
+}

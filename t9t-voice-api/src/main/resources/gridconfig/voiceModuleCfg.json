@@ -1,0 +1,11 @@
+{
+    "viewModel": "docModuleCfg",
+    "filters": [
+        { "filterType": "E", "fieldName": "tenantRef" }
+    ],
+    "fields": [
+        "tenantRef", "considerGlobalTemplates", "considerGlobalTexts", "considerGlobalBinaries",
+        "weightTenantMatch", "weightLanguageMatch", "weightCurrencyMatch", "weightCountryMatch", "weightEntityMatch"
+    ],
+    "fieldWidths": [ 160, 210, 240, 200, 130, 130, 130, 130, 130 ]
+}

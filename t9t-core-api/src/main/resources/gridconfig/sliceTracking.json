@@ -1,0 +1,10 @@
+{
+    "viewModel": "sliceTracking",
+    "filters": [
+        { "filterType": "W", "fieldName": "dataSinkId" },
+        { "filterType": "W", "fieldName": "id" }
+    ],
+    "fields": [
+        "dataSinkId", "id", "exportedDataBefore", "lastSinkRef"
+    ]
+}

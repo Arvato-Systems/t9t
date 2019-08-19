@@ -1,0 +1,11 @@
+{
+    "viewModel": "role",
+    "filters": [
+        { "filterType": "E", "fieldName": "tenantRef" },
+        { "filterType": "W", "fieldName": "roleId" },
+        { "filterType": "W", "fieldName": "name" }
+    ],
+    "fields": [
+        "tenantRef", "roleId", "name", "isActive"
+    ]
+}

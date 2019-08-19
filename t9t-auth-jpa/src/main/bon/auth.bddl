@@ -1,0 +1,106 @@
+/*
+ * Copyright (c) 2012 - 2018 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import t9t.base.types.*
+import t9t.setups.*
+import t9t.base.entities.*
+import t9t.base.jpa.entities.*
+import t9t.core.jpa.entities.*
+import t9t.auth.*
+
+// entries are sorted such that references only go to entities listed before.
+
+package (com.arvatosystems) t9t.auth.jpa.entities owner fortytwo prefix p28 {
+    fields private;
+
+    embeddable PermissionsEmbeddable is PermissionsDTO {}
+
+    entity AuthModuleCfgEntity is AuthModuleCfgDTO inherits ModuleConfigEntity {
+        cacheable
+    }
+
+    entity TenantLogoEntity    is TenantLogoDTO    inherits ModuleConfigEntity {
+        cacheable
+        @Embeddable MediaEmbeddable for logo prefix logo
+    }
+
+    entity TenantEntity category cfg is TenantDTO tablename p42_cfg_tenants historytablename p42_his_tenants {
+        //cache 100 objects for 5 minutes
+        cacheable
+        pk (objectRef)
+        index unique (tenantId)
+        @Embeddable PermissionsEmbeddable  for permissions
+    }
+
+    entity RoleEntity category cfg is RoleDTO tablename p42_cfg_roles historytablename p42_his_roles {
+        cacheable
+        tenantClass InternalTenantRef42
+        pk (objectRef)
+        index unique (tenantRef,roleId)
+    }
+
+    entity UserEntity category cfg is UserDTO tablename p42_cfg_users historytablename p42_his_users {
+        cacheable
+        tenantClass InternalTenantRef42
+        pk (objectRef)
+        index unique (userId)
+        @ManyToOne  RoleEntity roleE EAGER for (roleRef) // must be EAGER due to optional field
+        @Embeddable PermissionsEmbeddable  for permissions
+    }
+
+    entity RoleToPermissionEntity category cfg is RoleToPermissionDTO tablename p42_cfg_role_to_permissions historytablename p42_his_role_to_permissions {
+        cacheable
+        tenantClass InternalTenantRef42
+        pk is RoleToPermissionInternalKey
+        @ManyToOne  RoleEntity role LAZY for (roleRef)
+    }
+
+    entity UserTenantRoleEntity category cfg is UserTenantRoleDTO tablename p42_cfg_user_tenant_roles historytablename p42_his_user_tenant_roles {
+        cacheable
+        tenantClass InternalTenantRef42
+        pk is UserTenantRoleInternalKey
+        @ManyToOne  UserEntity user LAZY for (userRef)
+        @ManyToOne  RoleEntity role LAZY for (roleRef)
+    }
+
+
+    entity ApiKeyEntity category cfg is ApiKeyDTO tablename p42_cfg_api_key historytablename p42_his_api_key {
+        cacheable
+        tenantClass InternalTenantRef42
+        pk (objectRef)
+        index unique (apiKey)
+        @ManyToOne  RoleEntity role EAGER for (roleRef)  // must be EAGER due to optional field
+        @ManyToOne  UserEntity user EAGER for (userRef)  // EAGER because we need it every time
+        @Embeddable PermissionsEmbeddable for permissions
+    }
+
+    entity UserStatusEntity category datrw is UserStatusDTO tablename p42_dat_user_states {
+        cacheable
+        pk (objectRef)
+    }
+
+    entity PasswordEntity category datrw is PasswordDTO tablename p42_dat_passwords {
+        cacheable
+        pk is PasswordKey
+    }
+
+    // use the default mapper here for more flexibility (less requirements on injection) in the log writers
+    entity SessionEntity category datsource is SessionDTO {
+        pk (objectRef)
+        index (cTimestamp)
+        @ManyToOne TenantEntity ^tenant LAZY for (tenantRef)
+        @ManyToOne UserEntity user LAZY for (userRef)
+    }
+}

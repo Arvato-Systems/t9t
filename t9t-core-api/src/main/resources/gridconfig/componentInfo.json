@@ -1,0 +1,10 @@
+{
+    "viewModel": "componentInfo",
+    "filters": [
+        { "filterType": "W", "fieldName": "groupId" },
+        { "filterType": "W", "fieldName": "artifactId" }
+    ],
+    "fields": [
+        "groupId", "artifactId", "versionString", "commitId"
+    ]
+}

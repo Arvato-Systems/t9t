@@ -1,0 +1,5 @@
+The classes JWT and Crypto in this project contain sources and are derived from the vert.x project "vertx-jwt".
+Adaptions have been made to fit these classes into this application, and to allow use with different 3rd party dependencies.
+
+You can obtain the origin source here:
+https://github.com/vert-x3/vertx-auth/tree/master/vertx-jwt

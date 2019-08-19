@@ -1,0 +1,137 @@
+/*
+ * Copyright (c) 2012 - 2018 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import t9t.base.entities.*
+import com.arvatosystems.t9t.base.jpa.entityListeners.*      // Java import
+
+default
+    tablenamepattern "(prefix)_(category)_(entity)" dropSuffix "_entity"
+    tablespacepattern "rts42(category)0(DI)"
+    ;
+
+// users and DB roles should match fortytwo for now, to allow interoperability
+// object names should start with p28 to allow to differentiate
+
+package t9t.setups owner app42base prefix p28 {
+    grants apprw {  // read/write for regular tables
+//        p42user : SELECT,INSERT,UPDATE,DELETE;
+//        p42ro :   SELECT;
+//        p42rw :   SELECT,INSERT,UPDATE,DELETE;
+    }
+    grants appwo {  // write-only for log tables
+//        p42user : SELECT,INSERT;
+//        p42ro :   SELECT;
+//        p42rw :   SELECT,INSERT;
+    }
+    grants hisro {  // history tables: not required by application, for maintenance / audit purposes only
+//        p42rw :   SELECT;
+//        p42ro :   SELECT;
+    }
+
+    category cfg {
+        trackinggroup FullTrackingWithVersion entityListener FullTrackingVEntityListener tablespacepattern "rts42dat0(DI)"
+        history his sequence cm_idgen_5009_seq
+        requiresPK
+        beanVal
+        grants apprw
+    }
+
+    category his {
+        trackinggroup AdditionalHistoryTableColumns tablespacepattern "rts42dat0(DI)"
+        historyColumns history_seq_ref, history_change_type
+        requiresPK
+        grants hisro
+    }
+
+    // data without any tracking at all (suitable for dependent OneToMany childs only ever written at the same time as their parent)
+    category datnt {
+        trackinggroup api.NoTracking
+        tablenamepattern "(prefix)_dat_(entity)" dropSuffix "_entity" tablespacepattern "rts42dat0(DI)"
+        requiresPK
+        beanVal
+        grants apprw
+    }
+
+    // data write-only (logs for example), therefore very little columns required
+    category datwo {
+        trackinggroup WriteTracking entityListener WriteTrackingEntityListener
+        tablenamepattern "(prefix)_dat_(entity)" dropSuffix "_entity" tablespacepattern "rts42dat0(DI)"
+        requiresPK
+        beanVal
+        grants apprw
+    }
+
+    // special for the session table
+    category datsource {
+        trackinggroup SessionTracking entityListener SessionTrackingEntityListener
+        tablenamepattern "(prefix)_dat_(entity)" dropSuffix "_entity" tablespacepattern "rts42dat0(DI)"
+        requiresPK
+        beanVal
+        grants apprw
+    }
+
+    // basic R/W data without active column nor version
+    category datrw {
+        trackinggroup FullTracking entityListener FullTrackingEntityListener
+        tablenamepattern "(prefix)_dat_(entity)" dropSuffix "_entity" tablespacepattern "rts42dat0(DI)"
+        requiresPK
+        beanVal
+        grants apprw
+    }
+
+    // data for optimistic locking, without "active" column
+    category datv {
+        trackinggroup FullTrackingWithVersion entityListener FullTrackingVEntityListener
+        tablenamepattern "(prefix)_dat_(entity)" dropSuffix "_entity" tablespacepattern "rts42dat0(DI)"
+        requiresPK
+        beanVal
+        grants apprw
+    }
+
+    // data for optimistic locking - no entity listener defined
+    category datvz {
+        trackinggroup FullTrackingWithVersion
+        tablenamepattern "(prefix)_dat_(entity)" dropSuffix "_entity" tablespacepattern "rts42dat0(DI)"
+        requiresPK
+        beanVal
+        grants apprw
+    }
+
+    // data for optimistic locking - only bucket entry entity
+    category datb {
+        trackinggroup BucketTracking
+        tablenamepattern "(prefix)_dat_(entity)" dropSuffix "_entity" tablespacepattern "rts42dat0(DI)"
+        requiresPK
+        beanVal
+        grants apprw
+    }
+
+    category ^int {
+         trackinggroup WriteTracking entityListener WriteTrackingEntityListener
+         tablenamepattern "(prefix)_int_(entity)" dropSuffix "_entity" tablespacepattern "rts42dat0(DI)"
+         grants apprw  // share tablespaces with dat tables
+    }
+    category log {
+        trackinggroup WriteTracking entityListener WriteTrackingEntityListener
+        grants appwo
+    }
+    // counter tables are high frequency and must be used with pessimistic locking
+    category cnt {
+        trackinggroup FullTracking entityListener FullTrackingEntityListener
+        tablenamepattern "(prefix)_dat_(entity)" dropSuffix "_entity" tablespacepattern "rts42dat0(DI)"
+        beanVal
+        grants apprw
+    }  // share tablespaces with dat tables
+}

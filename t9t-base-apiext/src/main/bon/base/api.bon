@@ -1,0 +1,76 @@
+/*
+ * Copyright (c) 2012 - 2018 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import api.*
+
+import t9t.base.types.*
+
+/**
+ * Package which contains the definitions of all essential message elements.
+ */
+package (com.arvatosystems) t9t.base.api {
+    default private unsigned trim noControlChars;
+
+    type messageId              is Binary(16);
+    type jmsAddress             is Ascii(64);           // a name that can be used took lookup a jms ressource on jndi
+
+    /** Defines the behaviour how to deal with resent (duplicate sent) messages */
+    enum RetryAdviceType {
+        RETRY_ON_ERROR="E", NEVER_RETRY="N", ALWAYS_RETRY="A"
+    }
+
+    /** The ServiceRequestHeader is the definition of all common properties of a request. It is sent for any synchronous or asynchronous request.
+     */
+    class ServiceRequestHeader {
+        optional Integer                            recordNo;                   // serial number within logical processing (file line #, request within user session...)
+        optional messageId                          messageId;                  // a unique ID assigned by the sender or JMS transport, to allow detection of resent messages
+        optional Enum RetryAdviceType               idempotencyBehaviour;       // defaults to RETRY_ON_ERROR
+        optional languageTag                        languageCode;               // unless default language is desired, a specific language code.
+        optional Instant                            plannedRunDate;             // set by requests initiated by the scheduler - indicates the targeted execution time.
+        optional f42Ref                             invokingProcessRef;         // for asynchronous requests, the request which initiated this one
+        optional Boolean                            priorityRequest;            // if set, all sub requests will use the main thread pool
+    }
+
+    /** The JmsServiceRequestHeader is the definition of all common properties of a request sent with JMS. */
+    class JmsServiceRequestHeader extends ServiceRequestHeader {
+        optional jmsAddress                         responseAddress;            // queue or topic target name for the service response
+    }
+
+    /** The RequestParameters provide an artifical common base class, only required because JAXB cannot deal with interfaces (BonaPortable as common request parameter class). */
+    abstract class RequestParameters return ServiceResponse {
+    }
+
+    /** The ContextlessRequestParameters provide an artifical common base class for handlers operating outside of a request scope (scripts, macros, outer loops). */
+    abstract class ContextlessRequestParameters extends RequestParameters {
+    }
+
+    /** The ServiceRequest object defines all properties of a request. It is sent for any synchronous or asynchronous request, except JMS */
+    final class ServiceRequest {
+        optional (ServiceRequestHeader...)          requestHeader;              // the standardized request header (or an extended one, for example for JMS)
+        required (RequestParameters...)             requestParameters;          // arbitrary parameters to the request.
+        optional (AuthenticationParameters...)      authentication;             // how did the user authenticate? (if at all...)
+    }
+
+    /** The ServiceResponse is the base class of all response objects. */
+    class ServiceResponse {
+        // returnCode and errorDetails (and fields of inherited classes) must be filled by the application, the remaining ones will be populated by framework (setting them in a request handler is discouraged)
+        required int                                returnCode;                 // the most significant digit provides the error category. Field contains 0 if no error occurred.
+        optional tenantId                           tenantId;                   // tenantId specified for this request (unless defined in the session already)
+        optional f42Ref                             processRef;                 // created internally (unique reference). Not filled for FAST PING responses.
+        optional messageId                          messageId;                  // copied from request header
+        optional Unicode(512) allowControlChars     errorDetails;               // a data parameter which allows to localize the error condition (offending field / parameter name etc.)
+        optional Unicode(512) allowControlChars     errorMessage;               // optional lookup of the returnCode as a standard text message, as defined in T9tException and derived classes. Only for convenience, may be translated to the requester's language.
+    }
+}

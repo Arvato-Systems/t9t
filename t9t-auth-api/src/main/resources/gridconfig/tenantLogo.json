@@ -1,0 +1,9 @@
+{
+    "viewModel": "tenantLogo",
+    "filters": [
+        { "filterType": "E", "fieldName": "tenantRef" }
+    ],
+    "fields": [
+        "tenantRef", "logo"
+    ]
+}

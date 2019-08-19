@@ -1,0 +1,74 @@
+/*
+ * Copyright (c) 2012 - 2018 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import api.*
+import api.media.*
+import t9t.base.types.*
+import t9t.base.api.*
+
+package (com.arvatosystems) t9t.email.api {
+    default private unsigned trim noControlChars;
+    properties inherited,
+        tenantCategory is com.arvatosystems.t9t.annotations.TenantCategory(),
+        searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
+        serialized is com.arvatosystems.t9t.annotations.StoreSerialized,
+        noAutoMap is com.arvatosystems.t9t.annotations.NoAutoMap,
+        notupdatable is com.arvatosystems.t9t.annotations.NotUpdatable,
+        ref is com.arvatosystems.t9t.annotations.IsObjectRef;
+
+    /** Derived class which is required for RecipientType.EMAIL */
+    class RecipientEmail extends Recipient {
+        optional emailAddress                       from;               // originator. If blank, will default to an originator as configured with the template. Can be provided for agent specific emails
+        optional emailAddress                       replyTo;            // an optional reply-To address
+        required emailAddress required List<>       to;                 // receiver(s)
+        required emailAddress List<>                cc;                 // CC addresses
+        required emailAddress List<>                bcc;                // BCC addresses
+    }
+
+    /** A description of an email, simple or Mime multipart, for sending as well as receiving emails. */
+    class EmailMessage {
+        required (RecipientEmail)                   recipient;          // subject and addresses
+        optional Unicode(255)                       mailSubject;        // subject of the email as a plain text string
+        required (MediaData)                        mailBody;           // must be a text based format
+        required (MediaData) List<>                 attachments;        // a list of attachments
+        required (MediaData) Map<String>            cids;               // related parts for mailBody
+        optional (MediaData)                        alternateBody;      // must be a text based format, usually text/plain as a fallback if the client cannot render HTML
+    }
+
+    /** Low level email transmission without formatting. */
+    class SendEmailRequest extends RequestParameters return SendEmailResponse {
+        required (EmailMessage)                     email;              // the email with sender and receivers
+        required boolean                            storeEmail;         // store email body and attachments in email module for possible resends (leave false for password mails!)
+        required boolean                            sendSpooled;        // do not send the mail immediately, but via background task (requires storing it). Useful for testing and reviews.
+    }
+
+    class SendEmailResponse extends ServiceResponse {
+        required f42Ref                             emailRef;           // reference to the email table
+        required uuid                               emailMessageId;     // the unique email message ID
+    }
+
+    /** Simple connnectivity test to validate stored email configuration */
+    class SendTestEmailRequest extends RequestParameters return SendTestEmailResponse {
+        required Unicode(255)                       emailAddress;              // the email recipient
+        required Unicode(255)                       emailSubject;              // email subject , currently hard coded to "test"
+        required (MediaData)                        emailBody;                 // email body , currently hard coded to "Lorem Ipsum"
+    }
+
+    class SendTestEmailResponse extends ServiceResponse {
+        required f42Ref                             ref;                       // reference to the email table
+        required uuid                               id;                        // the unique email message ID
+    }
+
+}

@@ -1,0 +1,254 @@
+<!--
+
+    Copyright (c) 2012 - 2018 Arvato Systems GmbH
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.arvato-systems.t9t</groupId>
+        <artifactId>t9t-settings</artifactId>
+        <version>3.11-SNAPSHOT</version>
+        <relativePath>../t9t-settings</relativePath>
+    </parent>
+
+    <artifactId>t9t-test-server</artifactId>
+    <packaging>pom</packaging>
+    <description>Start vertx server and jetty</description>
+
+    <properties>
+        <vertx.artifactId>t9t-server-build-vertx-hibernate</vertx.artifactId>
+        <vertx.filename>t9t-server.jar</vertx.filename>
+        <vertx.rt.cfgFilename>rt-cfgfile-vertx.xml</vertx.rt.cfgFilename>
+        <server-logfile.name>server.log</server-logfile.name>
+
+        <maven.echo>vertx server args           ${run.command.args}</maven.echo>
+
+        <jetty.war.path>${vertx.server.path}${file.separator}restwar.war</jetty.war.path>
+        <jetty.logback-cfg.path>${user.home}${file.separator}fortytwo${file.separator}remote-test${file.separator}logback.xml</jetty.logback-cfg.path>
+        <jetty.war.context>api</jetty.war.context>
+
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>test-infra</id>
+
+            <dependencies>
+                <dependency>
+                    <groupId>com.arvato-systems.t9t</groupId>
+                    <artifactId>${vertx.artifactId}</artifactId>
+                    <version>${project.version}</version>
+                    <type>jar</type>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>*</groupId>
+                            <artifactId>*</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+                <!-- include some war for deployment on jetty here if there is one-->
+            </dependencies>
+
+            <build>
+                <plugins>
+                    <!-- echo some details -->
+                    <plugin>
+                        <groupId>com.google.code.echo-maven-plugin</groupId>
+                        <artifactId>echo-maven-plugin</artifactId>
+                        <configuration>
+                            <message>${maven.echo}</message>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>echo</goal>
+                                </goals>
+                                <phase>initialize</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+
+                    <!--Copy vertx server jar-->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                              <id>copy</id>
+                              <phase>test</phase>
+                              <goals>
+                                  <goal>copy</goal>
+                              </goals>
+                              <configuration>
+                                  <artifactItems>
+                                      <artifactItem>
+                                          <groupId>com.arvato-systems.t9t</groupId>
+                                          <artifactId>${vertx.artifactId}</artifactId>
+                                          <version>${project.version}</version>
+                                          <outputDirectory>${vertx.server.path}${file.separator}</outputDirectory>
+                                          <destFileName>${vertx.filename}</destFileName>
+                                      </artifactItem>
+                                  </artifactItems>
+                                  <overWriteReleases>false</overWriteReleases>
+                                  <overWriteSnapshots>true</overWriteSnapshots>
+                                  <overWriteIfNewer>true</overWriteIfNewer>
+                              </configuration>
+                            </execution>
+                            <!--<execution>
+                                <id>copy-rest-war</id>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>com.arvato-systems.t9t</groupId>
+                                            <artifactId>war</artifactId>
+                                            <type>war</type>
+                                            <outputDirectory>${vertx.server.path}${file.separator}</outputDirectory>
+                                            <destFileName>war.war</destFileName>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <overWriteReleases>false</overWriteReleases>
+                                    <overWriteSnapshots>true</overWriteSnapshots>
+                                    <overWriteIfNewer>true</overWriteIfNewer>
+                                </configuration>
+                            </execution>-->
+                        </executions>
+                    </plugin>
+
+                    <!--Start vertx server before tests, but after data loader -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>start-app-server</id>
+                                <phase>pre-integration-test</phase>
+                                <configuration>
+                                    <target>
+                                        <exec executable="${run.command}" spawn="true">
+                                            <arg value="${run.command.additional.arg}"/>
+                                            <arg value="${run.command.args}"/>
+                                        </exec>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+
+                            <execution>
+                                <id>start-app-server-delay</id>
+                                <phase>integration-test</phase>
+                                <configuration>
+                                    <target>
+                                        <sleep seconds="20" />
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- Also start Jetty -->
+                    <plugin>
+                        <groupId>org.eclipse.jetty</groupId>
+                        <artifactId>jetty-maven-plugin</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <groupId>ch.qos.logback</groupId>
+                                <artifactId>logback-classic</artifactId>
+                                <version>${logback.version}</version>
+                            </dependency>
+                        </dependencies>
+                        <configuration>
+                            <war>${jetty.war.path}</war>
+                            <stopKey>alpha</stopKey>
+                            <stopPort>9099</stopPort>
+                            <webApp>
+                                <contextPath>/${jetty.war.context}</contextPath>
+                            </webApp>
+                            <systemProperties>
+                                <systemProperty>
+                                    <name>logback.configurationFile</name>
+                                    <value>${jetty.logback-cfg.path}</value>
+                                </systemProperty>
+                            </systemProperties>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>deploy-jetty</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>deploy-war</goal>
+                                </goals>
+                                <configuration>
+                                    <daemon>true</daemon>
+                                    <scanIntervalSeconds>0</scanIntervalSeconds>
+                                    <httpConnector>
+                                        <port>8085</port>
+                                    </httpConnector>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>windows-properties</id>
+            <activation>
+                <os>
+                  <family>Windows</family>
+                </os>
+            </activation>
+            <properties>
+                <vertx.server.path>${user.home}${file.separator}tmp${file.separator}vertx${file.separator}${project.version}${file.separator}</vertx.server.path>
+                <vertx.server.complete.path>${vertx.server.path}${vertx.filename}</vertx.server.complete.path>
+                <run.command>cmd</run.command>
+                <run.command.additional.arg>/c</run.command.additional.arg>
+                <run.command.args>java -jar ${vertx.server.complete.path} --cfg ${user.home}${file.separator}serverconfig${file.separator}${vertx.rt.cfgFilename} > ${vertx.server.path}${server-logfile.name}</run.command.args>
+                <stop.command.args>wmic process where "CommandLine LIKE '%${vertx.filename}%${vertx.rt.cfgFilename}'" DELETE</stop.command.args>
+            </properties>
+        </profile>
+        <profile>
+            <id>linux-properties</id>
+            <activation>
+                <os>
+                  <family>unix</family>
+                </os>
+            </activation>
+            <properties>
+                <vertx.server.path>/tmp/vertx/${vertx.filename}/${project.version}/</vertx.server.path>
+                <vertx.server.complete.path>${vertx.server.path}${vertx.filename}</vertx.server.complete.path>
+                <run.command>sh</run.command>
+                <run.command.additional.arg>-c</run.command.additional.arg>
+                <run.command.args>java -jar ${vertx.server.complete.path} --cfg ${user.home}/serverconfig/${vertx.rt.cfgFilename} > ${vertx.server.path}${server-logfile.name}</run.command.args>
+                <stop.command.args>kill -15 $(ps -eo pid,user,args | grep '${run.command.args}' | grep -v grep 2> /dev/null | awk '{print $1}')</stop.command.args>
+            </properties>
+        </profile>
+
+    </profiles>
+
+</project>

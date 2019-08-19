@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2012 - 2018 Arvato Systems GmbH
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
+             http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd"
+             version="2.2">
+    <persistence-unit name="t9t-DS" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <!-- JPA 2.1 AttributeConverter classes -->
+        <class>de.jpaw.bonaparte.jpa.converters.ConverterByteArray</class>
+        <class>de.jpaw.bonaparte.jpa.converters.ConverterCompactBonaPortable</class>
+        <class>de.jpaw.bonaparte.jpa.converters.ConverterInstant</class>
+        <class>de.jpaw.bonaparte.jpa.converters.ConverterLocalDate</class>
+        <class>de.jpaw.bonaparte.jpa.converters.ConverterLocalTime</class>
+        <class>de.jpaw.bonaparte.jpa.converters.ConverterLocalDateTime</class>
+        <class>de.jpaw.bonaparte.jpa.converters.ConverterCompactJsonArray</class>
+        <class>de.jpaw.bonaparte.jpa.converters.ConverterCompactJsonElement</class>
+        <class>de.jpaw.bonaparte.jpa.converters.ConverterCompactJsonObject</class>
+        <class>de.jpaw.bonaparte.jpa.converters.ConverterStringJsonArray</class>
+        <class>de.jpaw.bonaparte.jpa.converters.ConverterStringJsonElement</class>
+        <class>de.jpaw.bonaparte.jpa.converters.ConverterStringJsonObject</class>
+        <!--
+        <class>de.jpaw.bonaparte.jpa.postgres.ConverterNativeJsonArray</class>
+        <class>de.jpaw.bonaparte.jpa.postgres.ConverterNativeJsonElement</class>
+        <class>de.jpaw.bonaparte.jpa.postgres.ConverterNativeJsonObject</class>
+         -->
+        <!-- t9t classes -->
+        <class>com.arvatosystems.t9t.auth.jpa.entities.ApiKeyEntity</class>
+        <class>com.arvatosystems.t9t.auth.jpa.entities.AuthModuleCfgEntity</class>
+        <class>com.arvatosystems.t9t.auth.jpa.entities.PasswordEntity</class>
+        <class>com.arvatosystems.t9t.auth.jpa.entities.RoleEntity</class>
+        <class>com.arvatosystems.t9t.auth.jpa.entities.RoleToPermissionEntity</class>
+        <class>com.arvatosystems.t9t.auth.jpa.entities.SessionEntity</class>
+        <class>com.arvatosystems.t9t.auth.jpa.entities.TenantEntity</class>
+        <class>com.arvatosystems.t9t.auth.jpa.entities.TenantLogoEntity</class>
+        <class>com.arvatosystems.t9t.auth.jpa.entities.UserEntity</class>
+        <class>com.arvatosystems.t9t.auth.jpa.entities.UserStatusEntity</class>
+        <class>com.arvatosystems.t9t.auth.jpa.entities.UserTenantRoleEntity</class>
+        <class>com.arvatosystems.t9t.batch.jpa.entities.SliceTrackingEntity</class>
+        <class>com.arvatosystems.t9t.batch.jpa.entities.StatisticsEntity</class>
+        <class>com.arvatosystems.t9t.bpmn.jpa.entities.ProcessDefinitionEntity</class>
+        <class>com.arvatosystems.t9t.bpmn.jpa.entities.ProcessExecStatusEntity</class>
+        <class>com.arvatosystems.t9t.bucket.jpa.entities.BucketCounterEntity</class>
+        <class>com.arvatosystems.t9t.bucket.jpa.entities.BucketEntryEntity</class>
+        <class>com.arvatosystems.t9t.core.jpa.entities.CannedRequestEntity</class>
+        <class>com.arvatosystems.t9t.core.jpa.entities.ModuleConfigEntity</class>
+        <class>com.arvatosystems.t9t.doc.jpa.entities.DocComponentEntity</class>
+        <class>com.arvatosystems.t9t.doc.jpa.entities.DocConfigEntity</class>
+        <class>com.arvatosystems.t9t.doc.jpa.entities.DocEmailCfgEntity</class>
+        <class>com.arvatosystems.t9t.doc.jpa.entities.DocModuleCfgEntity</class>
+        <class>com.arvatosystems.t9t.doc.jpa.entities.DocTemplateEntity</class>
+        <class>com.arvatosystems.t9t.email.jpa.entities.EmailAttachmentsEntity</class>
+        <class>com.arvatosystems.t9t.email.jpa.entities.EmailEntity</class>
+        <class>com.arvatosystems.t9t.email.jpa.entities.EmailModuleCfgEntity</class>
+        <class>com.arvatosystems.t9t.event.jpa.entities.ListenerConfigEntity</class>
+        <class>com.arvatosystems.t9t.event.jpa.entities.SubscriberConfigEntity</class>
+        <class>com.arvatosystems.t9t.genconf.jpa.entities.ConfigEntity</class>
+        <class>com.arvatosystems.t9t.io.jpa.entities.CsvConfigurationEntity</class>
+        <class>com.arvatosystems.t9t.io.jpa.entities.DataSinkEntity</class>
+        <class>com.arvatosystems.t9t.io.jpa.entities.OutboundMessageEntity</class>
+        <class>com.arvatosystems.t9t.io.jpa.entities.SinkEntity</class>
+        <class>com.arvatosystems.t9t.io.jpa.entities.AsyncChannelEntity</class>
+        <class>com.arvatosystems.t9t.io.jpa.entities.AsyncMessageEntity</class>
+        <class>com.arvatosystems.t9t.io.jpa.entities.AsyncQueueEntity</class>
+        <class>com.arvatosystems.t9t.msglog.jpa.entities.MessageEntity</class>
+        <class>com.arvatosystems.t9t.rep.jpa.entities.ReportConfigEntity</class>
+        <class>com.arvatosystems.t9t.rep.jpa.entities.ReportParamsEntity</class>
+        <class>com.arvatosystems.t9t.rep.jpa.entities.ReportMailingEntity</class>
+        <class>com.arvatosystems.t9t.solr.jpa.entities.SolrModuleCfgEntity</class>
+        <class>com.arvatosystems.t9t.ssm.jpa.entities.SchedulerSetupEntity</class>
+        <class>com.arvatosystems.t9t.uiprefsv3.jpa.entities.LeanGridConfigEntity</class>
+        <class>com.arvatosystems.t9t.voice.jpa.entities.VoiceApplicationEntity</class>
+        <class>com.arvatosystems.t9t.voice.jpa.entities.VoiceModuleCfgEntity</class>
+        <class>com.arvatosystems.t9t.voice.jpa.entities.VoiceResponseEntity</class>
+        <class>com.arvatosystems.t9t.voice.jpa.entities.VoiceUserEntity</class>
+
+        <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
+        <properties>
+            <!-- Common properties (most likely to be overwritten by values from the configuration file t9t-config.xml or its hardcoded fallback in project t9t-cfg-be) -->
+            <property name="javax.persistence.jdbc.driver"              value="org.postgresql.Driver" />
+            <property name="javax.persistence.jdbc.url"                 value="jdbc:postgresql://10.6.237.202:8432/fortytwo" />
+            <property name="javax.persistence.jdbc.user"                value="fortytwo" />
+            <property name="javax.persistence.jdbc.password"            value="secret/changeMe" />
+
+            <!-- Properties for Hibernate -->
+            <!-- C3P0 settings -->
+            <property name="hibernate.connection.provider_class"        value="org.hibernate.connection.C3P0ConnectionProvider" />
+            <property name="hibernate.c3p0.dataSourceName"              value="t9t-jdbc" />
+            <property name="hibernate.c3p0.min_size"                    value="5" />
+            <property name="hibernate.c3p0.max_size"                    value="96" />
+            <property name="hibernate.c3p0.max_statements"              value="96" />
+            <property name="hibernate.c3p0.acquire_increment"           value="2" />
+            <!-- C3P0 debugging settings - not required for production -->
+            <!-- <property name="hibernate.c3p0.unreturnedConnectionTimeout" value="60" />              -->     <!-- self healing of leaks -->
+            <!-- <property name="hibernate.c3p0.debugUnreturnedConnectionStackTraces" value="true" />   -->     <!-- stack traces for debugging (EXPENSIVE!) -->
+
+            <property name="hibernate.dialect"                          value="org.hibernate.dialect.PostgreSQL94Dialect" />
+            <property name="hibernate.connection.release_mode"          value="after_transaction" />   <!-- required for C3P0? -->
+            <property name="hibernate.connection.autocommit"            value="false" />
+            <property name="hibernate.archive.autodetection"            value="class" />  <!-- default in EE environments -->
+            <property name="hibernate.show_sql"                         value="false" />  <!-- activate for intense testing. Do not use (will use stdout), better way is to activate it in logback.xml -->
+            <property name="hibernate.generate_statistics"              value="true" />
+            <property name="hibernate.use_sql_comments"                 value="true" />
+            <!-- the next one speeds up connection time with remote DBs a lot -->
+            <property name="hibernate.temp.use_jdbc_metadata_defaults"  value="false" />  <!-- requires the dialect to be set explicitly! -->
+
+            <!-- <property name="hibernate.hbm2ddl.auto"                     value="create" />    -->   <!-- none / create-drop: set up and clean up tables -->
+            <!-- the transaction platform - required for standalone mode using bitronix
+            <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.BitronixJtaPlatform" /> -->
+
+            <property name="hibernate.cache.use_second_level_cache"     value="true"/>
+            <property name="hibernate.cache.use_query_cache"            value="false"/>
+            <property name="hibernate.cache.region.factory_class"       value="org.hibernate.cache.jcache.JCacheRegionFactory"/>
+            <property name="hibernate.javax.cache.provider"             value="org.ehcache.jsr107.EhcacheCachingProvider"/>
+
+            <!-- Ordering of inserts / updates. Provides some tuning (less roundtrips to the DB). -->
+            <property name="hibernate.order_inserts"                    value="false" />
+            <property name="hibernate.order_updates"                    value="false" />
+            <property name="hibernate.jdbc.batch_versioned_data"        value="true" />
+            <property name="hibernate.jdbc.batch_size"                  value="25" />
+
+            <property name="hibernate.proc.param_null_passing"          value="true" />
+        </properties>
+    </persistence-unit>
+</persistence>

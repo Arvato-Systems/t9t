@@ -1,0 +1,7 @@
+The migration scripts src/main/sql/ORACLE/Migration/V3.4.201803080936__TBE122.sql and 
+src/main/sql/POSTGRES/Migration/V3.4.201803080936__TBE122.sql in this project contain sources and are derived from the 
+Camunda BPMN Workflow Engine project "camunda-bpm-platform". The database DDL scripts have been included in the migration 
+scripts to integrate creation of engine tables in the migration process of t9t.
+
+You can obtain the origin source here:
+https://github.com/camunda/camunda-bpm-platform/tree/master/engine/src/main/resources/org/camunda/bpm/engine/db/create
