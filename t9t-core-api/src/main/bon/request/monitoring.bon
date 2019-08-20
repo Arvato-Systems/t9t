@@ -43,4 +43,15 @@ package (com.arvatosystems) t9t.monitoring.request {
         required long                    freeMemory;
         required long                    maxMemory;
     }
+
+    /**
+     * Sets one or multiple debugging / logging flags for the current JVM, for the current user's session.
+     * Setting a value of null for a specific setting will remove it.
+     * Calling the request with an empty map will clear all settings.
+     *
+     * All settings will also expire 15 minutes after setting them.
+     */
+    class SetJvmDebugFlagsRequest extends RequestParameters {
+        optional shortText required Map<String> values;
+    }
 }
