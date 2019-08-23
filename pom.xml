@@ -22,12 +22,12 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>global-build</artifactId>
-        <version>2.9-SNAPSHOT</version>
+        <version>2.9.3</version>
         <relativePath />
     </parent>
 
     <artifactId>t9t-build</artifactId>
-    <version>3.11-SNAPSHOT</version>
+    <version>3.11.3</version>
     <packaging>pom</packaging>
     <description>Build instructions for t9t</description>
 
