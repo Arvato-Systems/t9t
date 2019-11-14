@@ -33,7 +33,7 @@ public interface IResolverNewCompositeKey<
     KEY extends REF,
     TRACKING extends TrackingBase,
     ENTITY extends BonaPersistableKey<KEY> & BonaPersistableTracking<TRACKING>
-    > extends IResolverAnyKey<KEY, TRACKING, ENTITY> {
+  > extends IResolverAnyKey<KEY, TRACKING, ENTITY> {
 
     /** Return the full JPA entity for any given relevant key.
      * Returns null if the parameter entityRef is null.

@@ -28,12 +28,7 @@ import com.arvatosystems.t9t.base.crud.CrudSuperclassKeyResponse
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyRequest
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse
 import com.arvatosystems.t9t.base.crud.RefResolverResponse
-import com.arvatosystems.t9t.base.jpa.IEntityMapper
-import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudCompositeKeyRequestHandler
-import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudStringKeyRequestHandler
-import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSuperclassKeyRequestHandler
-import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKeyRequestHandler
-import com.arvatosystems.t9t.base.jpa.impl.AbstractEntityMapper
+import com.arvatosystems.t9t.base.jpa.IEntityMapper28
 import com.arvatosystems.t9t.base.search.ReadAll28Response
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler
 import com.arvatosystems.t9t.base.services.AbstractSearchRequestHandler
@@ -57,11 +52,16 @@ import org.eclipse.xtend.lib.macro.declaration.TypeReference
 import org.eclipse.xtend.lib.macro.declaration.Visibility
 
 import static extension com.arvatosystems.t9t.annotations.jpa.Tools.*
+import com.arvatosystems.t9t.base.jpa.impl.AbstractEntityMapper28
+import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudCompositeKey28RequestHandler
+import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudStringKey28RequestHandler
+import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSuperclassKey28RequestHandler
+import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKey28RequestHandler
 
-@Active(AutoMapProcessor) annotation AutoMap {}
+@Active(AutoMap28Processor) annotation AutoMap28 {}
 
 /** The automapper generates data copies for elements of same name and type only. Everything else must be handcoded. */
-class AutoMapProcessor extends AbstractClassProcessor {
+class AutoMap28Processor extends AbstractClassProcessor {
     static private final String REQUEST_PACKAGE_COMPONENT = "be.request"        // the piece after module...
     static private final String REQUEST_CRUD    = "CrudRequest"
     static private final String REQUEST_READALL = "ReadAllRequest"
@@ -152,7 +152,7 @@ class AutoMapProcessor extends AbstractClassProcessor {
         val requireLazyAnnoType = InitializeLazy.newTypeReference.type
 
         // We don't want this annotation on the java class (unwanted dependency)
-        c.removeAnnotation(c.annotations.findFirst[annotationTypeDeclaration === AutoMap.newTypeReference.type])
+        c.removeAnnotation(c.annotations.findFirst[annotationTypeDeclaration == AutoMap28.newTypeReference.type])
 
         // step 0: look for entity resolver reference
         val entityResolver = c.declaredFields.head
@@ -225,8 +225,8 @@ class AutoMapProcessor extends AbstractClassProcessor {
                 c.addError('''Entity type «entityClass.simpleName» must implement BonaTracking<something>''')
                 return
             }
-            val extendedAbstractInterface = IEntityMapper.newTypeReference(myKeyType, dto, myTrackingType, entity)
-            val extendedMapperClass = AbstractEntityMapper.newTypeReference(myKeyType, dto, myTrackingType, entity)
+            val extendedAbstractInterface = IEntityMapper28.newTypeReference(myKeyType, dto, myTrackingType, entity)
+            val extendedMapperClass = AbstractEntityMapper28.newTypeReference(myKeyType, dto, myTrackingType, entity)
             val myInterface = findInterface(c.getMapperInterfaceName(dto))
             myInterface => [
                 visibility = Visibility::PUBLIC
@@ -267,25 +267,25 @@ class AutoMapProcessor extends AbstractClassProcessor {
                     ]
                 }
 
-                if (entityClass.findFieldRecursively(T9tConstants.TENANT_REF_FIELD_NAME42) !== null) {
+                if (entityClass.findFieldRecursively(T9tConstants.TENANT_ID_FIELD_NAME) !== null) {
                     // add methods to get and set a tenant ref
-                    addMethod("getTenantRef") [
+                    addMethod("getTenantId") [
                         visibility = Visibility::PUBLIC
-                        returnType = longType
+                        returnType = stringType
                         addAnnotation(overrideAnno)
                         addParameter("entity", entity)
                         body = [ '''
-                            return entity.getTenantRef();
+                            return entity.getTenantId();
                         ''']
                     ]
-                    addMethod("setTenantRef") [
+                    addMethod("setTenantId") [
                         visibility = Visibility::PUBLIC
                         returnType = primitiveVoid
                         addAnnotation(overrideAnno)
                         addParameter("entity", entity)
-                        addParameter(T9tConstants.TENANT_REF_FIELD_NAME42, longType)
+                        addParameter(T9tConstants.TENANT_ID_FIELD_NAME, stringType)
                         body = [ '''
-                            entity.setTenantRef(tenantRef);
+                            entity.setTenantId(tenantId);
                         ''']
                     ]
                 }
@@ -567,19 +567,19 @@ class AutoMapProcessor extends AbstractClassProcessor {
                                 var TypeReference myReturnType = null
                                 if (CrudSurrogateKeyRequest.newTypeReference.isAssignableFrom(requestClassTypeRef)) {
                                     // artificial key: REF, DTO, TRACKING, REQUEST, ENTITY...
-                                    myParentClass = AbstractCrudSurrogateKeyRequestHandler.newTypeReference(p0, dto, myTrackingType, requestClassTypeRef, entity)
+                                    myParentClass = AbstractCrudSurrogateKey28RequestHandler.newTypeReference(p0, dto, myTrackingType, requestClassTypeRef, entity)
                                     myReturnType = CrudSurrogateKeyResponse.newTypeReference(dto, myTrackingType)
                                 } else if (CrudCompositeKeyRequest.newTypeReference.isAssignableFrom(requestClassTypeRef)) {
                                     // artificial key: KEY, DTO, TRACKING, REQUEST, ENTITY...
-                                    myParentClass = AbstractCrudCompositeKeyRequestHandler.newTypeReference(p0, dto, myTrackingType, requestClassTypeRef, entity)
+                                    myParentClass = AbstractCrudCompositeKey28RequestHandler.newTypeReference(p0, dto, myTrackingType, requestClassTypeRef, entity)
                                     myReturnType = CrudCompositeKeyResponse.newTypeReference(p0, dto, myTrackingType)
                                 } else if (CrudStringKeyRequest.newTypeReference.isAssignableFrom(requestClassTypeRef)) {
                                     // String key: DTO, TRACKING, REQUEST, ENTITY...
-                                    myParentClass = AbstractCrudStringKeyRequestHandler.newTypeReference(dto, myTrackingType, requestClassTypeRef, entity)
+                                    myParentClass = AbstractCrudStringKey28RequestHandler.newTypeReference(dto, myTrackingType, requestClassTypeRef, entity)
                                     myReturnType = CrudStringKeyResponse.newTypeReference(dto, myTrackingType)
                                 } else if (CrudSuperclassKeyRequest.newTypeReference.isAssignableFrom(requestClassTypeRef)) {
                                     // BonaPortable key: REF, KEY, DTO, TRACKING, REQUEST, ENTITY...
-                                    myParentClass = AbstractCrudSuperclassKeyRequestHandler.newTypeReference(p0, p1, dto, myTrackingType, requestClassTypeRef, entity)
+                                    myParentClass = AbstractCrudSuperclassKey28RequestHandler.newTypeReference(p0, p1, dto, myTrackingType, requestClassTypeRef, entity)
                                     myReturnType = CrudSuperclassKeyResponse.newTypeReference(p1, dto, myTrackingType)  // 3 params!!!
                                 } else {
                                     c.addError("Unknown CRUD parent for " + requestClassTypeRef.simpleName);

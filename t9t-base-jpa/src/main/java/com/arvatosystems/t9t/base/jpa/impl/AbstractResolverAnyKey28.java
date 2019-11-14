@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.jpa.IDataProcessor;
-import com.arvatosystems.t9t.base.jpa.IResolverAnyKey;
+import com.arvatosystems.t9t.base.jpa.IResolverAnyKey28;
 import com.arvatosystems.t9t.base.search.SearchCriteria;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
@@ -59,13 +59,13 @@ import de.jpaw.enums.TokenizableEnum;
 
 /** base implementation of the IEntityResolver interface, only suitable for simple configuration data tables */
 @Alternative
-public abstract class AbstractResolverAnyKey<
+public abstract class AbstractResolverAnyKey28<
     KEY extends Serializable,
     TRACKING extends TrackingBase,
     ENTITY extends BonaPersistableKey<KEY> & BonaPersistableTracking<TRACKING>
-> implements IResolverAnyKey<KEY, TRACKING, ENTITY> {
+> implements IResolverAnyKey28<KEY, TRACKING, ENTITY> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractResolverAnyKey.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractResolverAnyKey28.class);
 
     protected final Provider<PersistenceProviderJPA> jpaContextProvider = Jdp.getProvider(PersistenceProviderJPA.class);
     protected final Provider<RequestContext> contextProvider = Jdp.getProvider(RequestContext.class);
@@ -87,14 +87,6 @@ public abstract class AbstractResolverAnyKey<
      * {@inheritDoc}
      */
     @Override
-    public Long getTenantRef(ENTITY e) {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public String getSharedTenantId() {
         return contextProvider.get().tenantMapping.getSharedTenantId(getRtti());
     }
@@ -104,13 +96,6 @@ public abstract class AbstractResolverAnyKey<
      */
     @Override
     public void setTenantId(ENTITY e, String tenantId) {
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setTenantRef(ENTITY e, Long tenantRef) {
     }
 
     /**

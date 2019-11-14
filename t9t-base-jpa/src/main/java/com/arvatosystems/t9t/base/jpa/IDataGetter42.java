@@ -24,7 +24,7 @@ import de.jpaw.bonaparte.jpa.BonaData;
 import de.jpaw.bonaparte.jpa.BonaKey;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
 
-public interface IDataGetter {
+public interface IDataGetter42 {
     /** Query data using a POJO constructor. */
     public <D extends Ref> GetDataResponse<D> query(IResolverSurrogateKey42 resolver, String constructor, Class<D> keyClass, Set<Long> refs);
 

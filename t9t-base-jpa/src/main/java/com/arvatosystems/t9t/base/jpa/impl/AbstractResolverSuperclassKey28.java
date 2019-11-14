@@ -15,24 +15,22 @@
  */
 package com.arvatosystems.t9t.base.jpa.impl;
 
-import java.io.Serializable;
+import com.arvatosystems.t9t.base.jpa.IResolverSuperclassKey28;
 
-import com.arvatosystems.t9t.base.jpa.IResolverCompositeKey;
-
+import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
-import de.jpaw.bonaparte.pojos.api.CompositeKeyRef;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.dp.Alternative;
 
 /** Base implementation of the IEntityResolver interface, suitable for tables with a natural key. */
 @Alternative
-public abstract class AbstractResolverCompositeKey<
-    REF extends CompositeKeyRef,  //REQKEY
-    KEY extends Serializable,   // can be removed! //REQKEY
+public abstract class AbstractResolverSuperclassKey28<
+    REF extends BonaPortable,
+    KEY extends REF,
     TRACKING extends TrackingBase,
     ENTITY extends BonaPersistableKey<KEY> & BonaPersistableTracking<TRACKING>
-    > extends AbstractResolverAnyKey<KEY, TRACKING, ENTITY> implements IResolverCompositeKey<REF, KEY, TRACKING, ENTITY> {
+    > extends AbstractResolverAnyKey28<KEY, TRACKING, ENTITY> implements IResolverSuperclassKey28<REF, KEY, TRACKING, ENTITY> {
 
     @Override
     public final boolean hasArtificialPrimaryKey() {
@@ -53,7 +51,18 @@ public abstract class AbstractResolverCompositeKey<
 
     @Override
     public ENTITY getEntityData(REF entityRef, boolean onlyActive) {
-        return getEntityDataByGenericKey(resolveNestedRefs(entityRef), onlyActive);
+        if (entityRef == null) {
+            return null;        // play null-safe
+        }
+
+        Class<KEY> keyClass = getKeyClass();
+        entityRef = resolveNestedRefs(entityRef);
+        if (keyClass.isAssignableFrom(entityRef.getClass())) {
+            // access via primary key or supertype of it
+            KEY key = (keyClass != entityRef.getClass()) ? entityRef.copyAs(keyClass) : (KEY) entityRef;  // if it's some supertype: copy it down!
+            return getEntityDataForKey(key, onlyActive);
+        }
+        return getEntityDataByGenericKey(entityRef, onlyActive);
     }
 
 }

@@ -20,8 +20,8 @@ import javax.persistence.EntityManager;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.crud.CrudCompositeKeyRequest;
 import com.arvatosystems.t9t.base.crud.CrudCompositeKeyResponse;
-import com.arvatosystems.t9t.base.jpa.IEntityMapper;
-import com.arvatosystems.t9t.base.jpa.IResolverCompositeKey;
+import com.arvatosystems.t9t.base.jpa.IEntityMapper28;
+import com.arvatosystems.t9t.base.jpa.IResolverCompositeKey28;
 
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
@@ -31,18 +31,18 @@ import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.util.ApplicationException;
 
-public abstract class AbstractCrudCompositeKeyRequestHandler<
+public abstract class AbstractCrudCompositeKey28RequestHandler<
     KEY extends CompositeKeyRef,
     DTO extends CompositeKeyBase,
     TRACKING extends TrackingBase,
     REQUEST extends CrudCompositeKeyRequest<KEY, DTO, TRACKING>,
     ENTITY extends BonaPersistableKey<KEY> & BonaPersistableTracking<TRACKING>
-> extends AbstractCrudAnyKeyRequestHandler<KEY, DTO, TRACKING, REQUEST, ENTITY> {
+> extends AbstractCrudAnyKey28RequestHandler<KEY, DTO, TRACKING, REQUEST, ENTITY> {
 
     // execute function of the interface description, but additional parameters
     // required in order to work around type erasure
-    public CrudCompositeKeyResponse<KEY, DTO, TRACKING> execute(IEntityMapper<KEY, DTO, TRACKING, ENTITY> mapper,
-            IResolverCompositeKey<KEY, KEY, TRACKING, ENTITY> resolver, REQUEST crudRequest) {
+    public CrudCompositeKeyResponse<KEY, DTO, TRACKING> execute(IEntityMapper28<KEY, DTO, TRACKING, ENTITY> mapper,
+            IResolverCompositeKey28<KEY, KEY, TRACKING, ENTITY> resolver, REQUEST crudRequest) {
 
         // fields are set as required
         validateParameters(crudRequest, crudRequest.getKey() == null);
@@ -124,7 +124,7 @@ public abstract class AbstractCrudCompositeKeyRequestHandler<
      * @param resolver
      * @return
      */
-    protected boolean recordExists(KEY key, IResolverCompositeKey<KEY, KEY, TRACKING, ENTITY> resolver) {
+    protected boolean recordExists(KEY key, IResolverCompositeKey28<KEY, KEY, TRACKING, ENTITY> resolver) {
         try {
             ENTITY entity = resolver.find(key);
             return entity != null && resolver.isOfMatchingTenant(entity);

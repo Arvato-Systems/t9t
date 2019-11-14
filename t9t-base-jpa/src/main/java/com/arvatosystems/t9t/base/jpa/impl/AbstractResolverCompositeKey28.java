@@ -15,22 +15,25 @@
  */
 package com.arvatosystems.t9t.base.jpa.impl;
 
-import com.arvatosystems.t9t.base.jpa.IResolverSuperclassKey;
+import java.io.Serializable;
 
-import de.jpaw.bonaparte.core.BonaPortable;
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.jpa.IResolverCompositeKey28;
+
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
+import de.jpaw.bonaparte.pojos.api.CompositeKeyRef;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.dp.Alternative;
 
 /** Base implementation of the IEntityResolver interface, suitable for tables with a natural key. */
 @Alternative
-public abstract class AbstractResolverSuperclassKey<
-    REF extends BonaPortable,
-    KEY extends REF,
+public abstract class AbstractResolverCompositeKey28<
+    REF extends CompositeKeyRef,  //REQKEY
+    KEY extends Serializable,   // can be removed! //REQKEY
     TRACKING extends TrackingBase,
     ENTITY extends BonaPersistableKey<KEY> & BonaPersistableTracking<TRACKING>
-    > extends AbstractResolverAnyKey<KEY, TRACKING, ENTITY> implements IResolverSuperclassKey<REF, KEY, TRACKING, ENTITY> {
+    > extends AbstractResolverAnyKey28<KEY, TRACKING, ENTITY> implements IResolverCompositeKey28<REF, KEY, TRACKING, ENTITY> {
 
     @Override
     public final boolean hasArtificialPrimaryKey() {
@@ -51,18 +54,17 @@ public abstract class AbstractResolverSuperclassKey<
 
     @Override
     public ENTITY getEntityData(REF entityRef, boolean onlyActive) {
-        if (entityRef == null) {
-            return null;        // play null-safe
-        }
-
-        Class<KEY> keyClass = getKeyClass();
-        entityRef = resolveNestedRefs(entityRef);
-        if (keyClass.isAssignableFrom(entityRef.getClass())) {
-            // access via primary key or supertype of it
-            KEY key = (keyClass != entityRef.getClass()) ? entityRef.copyAs(keyClass) : (KEY) entityRef;  // if it's some supertype: copy it down!
-            return getEntityDataForKey(key, onlyActive);
-        }
-        return getEntityDataByGenericKey(entityRef, onlyActive);
+        return getEntityDataByGenericKey(resolveNestedRefs(entityRef), onlyActive);
     }
 
+    /** Convert any REF to a KEY (if supported). */
+    @Override
+    public KEY refToKey(REF arg) {
+        if (arg == null)
+            return null;
+        REF potentialKey = resolveNestedRefs(arg);
+        if (getKeyClass().isAssignableFrom(potentialKey.getClass()))
+            return (KEY)potentialKey;
+        throw new T9tException(T9tException.INVALID_REQUEST_PARAMETER_TYPE, potentialKey.getClass().getCanonicalName() + " is not a key for " + getEntityClass().getCanonicalName());
+    }
 }

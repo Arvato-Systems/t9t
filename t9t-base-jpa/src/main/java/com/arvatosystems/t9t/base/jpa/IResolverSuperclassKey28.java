@@ -13,32 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.base.jpa.impl;
-
-import com.arvatosystems.t9t.base.jpa.IResolverNewCompositeKey;
+package com.arvatosystems.t9t.base.jpa;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.dp.Alternative;
 
-/** Base implementation of the IEntityResolver interface, suitable for tables with a natural key. */
-@Alternative
-public abstract class AbstractResolverNewCompositeKey<
-    REF extends BonaPortable,  //REQKEY
-    KEY extends REF,   // can be removed! //REQKEY
+/** Defines methods to return either the artificial key (via any key) or the full JPA entity (via some key).
+ *
+ * For every relevant JPA entity, one separate interface is extended from this one, which works as a customization target for CDI.
+ * If the JPA entity is extended as part of customization, the base interface will stay untouched, but its implementation must point
+ * to a customized resolver, inheriting the base resolver.
+ */
+public interface IResolverSuperclassKey28<
+    REF extends BonaPortable,
+    KEY extends REF,
     TRACKING extends TrackingBase,
     ENTITY extends BonaPersistableKey<KEY> & BonaPersistableTracking<TRACKING>
-    > extends AbstractResolverAnyKey<KEY, TRACKING, ENTITY> implements IResolverNewCompositeKey<REF, KEY, TRACKING, ENTITY> {
-
-    @Override
-    public final boolean hasArtificialPrimaryKey() {
-        return false;
-    }
-
-    @Override
-    public ENTITY getEntityData(KEY entityRef, boolean onlyActive) {
-        return getEntityDataByGenericKey(entityRef, onlyActive);
-    }
+  > extends IResolverAnyKey28<KEY, TRACKING, ENTITY>, IResolverSuperclassKey<REF, KEY, TRACKING, ENTITY> {
 }

@@ -18,7 +18,7 @@ package com.arvatosystems.t9t.base.jpa.impl;
 import java.util.Collections;
 import java.util.List;
 
-import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey;
+import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey28;
 import com.arvatosystems.t9t.base.search.TwoRefs;
 import com.arvatosystems.t9t.base.services.IRefGenerator;
 
@@ -32,11 +32,11 @@ import de.jpaw.dp.Jdp;
 
 /** Base implementation of the IEntityResolver interface, suitable for entities with an artificial "Long" key. */
 @Alternative
-public abstract class AbstractResolverSurrogateKey<
+public abstract class AbstractResolverSurrogateKey28<
     REF extends Ref,
     TRACKING extends TrackingBase,
     ENTITY extends BonaPersistableKey<Long> & BonaPersistableTracking<TRACKING>
-    > extends AbstractResolverAnyKey<Long, TRACKING, ENTITY> implements IResolverSurrogateKey<REF, TRACKING, ENTITY> {
+    > extends AbstractResolverAnyKey28<Long, TRACKING, ENTITY> implements IResolverSurrogateKey28<REF, TRACKING, ENTITY> {
 
     private static final List<SortColumn> DEFAULT_SORT_ORDER = Collections.singletonList(new SortColumn("objectRef", false)); // descending: newest first!
 

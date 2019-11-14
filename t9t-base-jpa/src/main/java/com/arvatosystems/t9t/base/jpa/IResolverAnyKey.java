@@ -34,12 +34,14 @@ import de.jpaw.bonaparte.pojos.api.TrackingBase;
  * For every relevant JPA entity, one separate interface is extended from this one, which works as a customization target for CDI.
  * If the JPA entity is extended as part of customization, the base interface will stay untouched, but its implementation must point
  * to a customized resolver, inheriting the base resolver.
+ *
+ * Same as IResolverAnyKey, but using a tenantRef instead of tenantId.
  */
 public interface IResolverAnyKey<
     KEY extends Serializable,
     TRACKING extends TrackingBase,
     ENTITY extends BonaPersistableKey<KEY> & BonaPersistableTracking<TRACKING>
-> {
+  > {
 
     /** Returns the entityManager of the current context (creates one, if it does not yet exist).
      */
@@ -50,29 +52,6 @@ public interface IResolverAnyKey<
      */
     public boolean hasArtificialPrimaryKey();
 
-    /** returns the entity's tenantId without the use of reflection, or null if the entity does not contain
-     * a tenantId field.
-     * @param e
-     * @return the tenantId
-     */
-    public String getTenantId(ENTITY e);
-
-    /** returns the entity's tenantRef without the use of reflection, or null if the entity does not contain
-     * a tenantRef field.
-     * @param e
-     * @return the tenantRef
-     */
-    public Long getTenantRef(ENTITY e);
-
-    /**
-     * Returns the mapped tenantId for this entity. This is by default identical to the current tenantId, but may be overridden for specific tenants in
-     * specific projects. This method will be used to set default values for the entity and also for queries, therefore overwriting it will cause a shared use
-     * of tenants. A future default implementation will use a database based mapping.
-     *
-     * @return the tenantId to use for the database
-     */
-    public String getSharedTenantId();
-
     /**
      * Returns true is the provided entity is of the current (or shared) tenant, or has no tenant field.
      *
@@ -80,21 +59,7 @@ public interface IResolverAnyKey<
      */
     public boolean isOfMatchingTenant(ENTITY e);
 
-    /** Sets the entity's tenantId without the use of reflection, or NOOP if the entity does not contain
-     * a tenantId field.
-     * @param e - an instance of the Entity
-     * @param tenantId - the tenant to be set (if null, the current call's tenant ref wil be used)
-     */
-    public void setTenantId(ENTITY e, String tenantId);
-
-    /** Sets the entity's tenantRef without the use of reflection, or NOOP if the entity does not contain
-     * a tenantRef field.
-     * @param e - an instance of the Entity
-     * @param tenantRef - the tenant to be set (if null, the current call's tenant ref wil be used)
-     */
-    public void setTenantRef(ENTITY e, Long tenantRef);
-
-    /** Returns information if the entity has a field tenantId and data is therefore isolated between tenants.
+    /** Returns information if the entity has a field tenantRef and data is therefore isolated between tenants.
      * If set, appropriate additional criteria will be set for generic search.
      * The default implementation returns true. Only in case of shared tables, this should be overridden.
      *
@@ -149,22 +114,12 @@ public interface IResolverAnyKey<
     public Class<ENTITY> getEntityClass();
 
     /** Returns a new instance of the customized class of the entity.
-     * If the entity has a tenantId field, its contents will be initialized from the internalHeaderParameters.
+     * If the entity has a tenantRef field, its contents will be initialized from the internalHeaderParameters.
      *
      * @return a new instance of the customization of the JPA class object (Entity)
      * @throws T9tException if the class could not be resolved or not instantiated.
      */
     public ENTITY newEntityInstance();
-
-    /**
-     * Returns true if the current tenant is allowed to see a record of tenant (tenantId). The tenant passed must be the final (possibly mapped) tenant.
-     */
-    public boolean readAllowed(String tenantId);
-
-    /**
-     * Returns true if the current tenant is allowed to write a record of tenant (tenantId). The tenant passed must be the final (possibly mapped) tenant.
-     */
-    public boolean writeAllowed(String tenantId);
 
     /** Return a list of all JPA entities for any given table.
      * Provided for historic reasons.

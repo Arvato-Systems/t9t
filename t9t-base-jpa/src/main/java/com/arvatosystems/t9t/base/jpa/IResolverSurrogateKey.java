@@ -33,7 +33,7 @@ public interface IResolverSurrogateKey<
     REF extends Ref,
     TRACKING extends TrackingBase,
     ENTITY extends BonaPersistableKey<Long> & BonaPersistableTracking<TRACKING>
-    > extends IResolverAnyKey<Long, TRACKING, ENTITY> {
+  > extends IResolverAnyKey<Long, TRACKING, ENTITY> {
 
     /** Return a Long reference from any key object, if the Entity has an artificial primary key of type Long.
      * Throws a runtime / internal logic error exception if the entity has not a suitable key.

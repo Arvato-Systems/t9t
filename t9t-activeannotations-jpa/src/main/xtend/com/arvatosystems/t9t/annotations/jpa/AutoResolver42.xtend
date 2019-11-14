@@ -120,7 +120,7 @@ class AutoResolver42Processor extends AbstractClassProcessor {
         val sortOrderInitType = ArrayList.newTypeReference(sortColumnType)
 
         // We don't want this annotation on the java class (unwanted dependency)
-        m.removeAnnotation(m.annotations.findFirst[annotationTypeDeclaration === AutoResolver.newTypeReference.type])
+        m.removeAnnotation(m.annotations.findFirst[annotationTypeDeclaration == AutoResolver42.newTypeReference.type])
 
         for (r: m.declaredMethods) {
               val rt = r.returnType

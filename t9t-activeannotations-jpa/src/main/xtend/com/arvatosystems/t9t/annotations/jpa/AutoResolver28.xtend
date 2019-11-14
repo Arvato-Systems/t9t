@@ -17,16 +17,6 @@ package com.arvatosystems.t9t.annotations.jpa;
 
 import com.arvatosystems.t9t.annotations.jpa.relations.OrderBy
 import com.arvatosystems.t9t.base.T9tConstants
-import com.arvatosystems.t9t.base.jpa.IResolverCompositeKey
-import com.arvatosystems.t9t.base.jpa.IResolverNewCompositeKey
-import com.arvatosystems.t9t.base.jpa.IResolverStringKey
-import com.arvatosystems.t9t.base.jpa.IResolverSuperclassKey
-import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey
-import com.arvatosystems.t9t.base.jpa.impl.AbstractResolverCompositeKey
-import com.arvatosystems.t9t.base.jpa.impl.AbstractResolverNewCompositeKey
-import com.arvatosystems.t9t.base.jpa.impl.AbstractResolverStringKey
-import com.arvatosystems.t9t.base.jpa.impl.AbstractResolverSuperclassKey
-import com.arvatosystems.t9t.base.jpa.impl.AbstractResolverSurrogateKey
 import com.google.common.collect.ImmutableList
 import de.jpaw.bonaparte.api.CompositeKey
 import de.jpaw.bonaparte.core.BonaPortable
@@ -56,11 +46,21 @@ import org.eclipse.xtend.lib.macro.declaration.TypeReference
 import org.eclipse.xtend.lib.macro.declaration.Visibility
 
 import static extension com.arvatosystems.t9t.annotations.jpa.Tools.*
+import com.arvatosystems.t9t.base.jpa.IResolverCompositeKey28
+import com.arvatosystems.t9t.base.jpa.IResolverNewCompositeKey28
+import com.arvatosystems.t9t.base.jpa.IResolverStringKey28
+import com.arvatosystems.t9t.base.jpa.IResolverSuperclassKey28
+import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey28
+import com.arvatosystems.t9t.base.jpa.impl.AbstractResolverCompositeKey28
+import com.arvatosystems.t9t.base.jpa.impl.AbstractResolverNewCompositeKey28
+import com.arvatosystems.t9t.base.jpa.impl.AbstractResolverStringKey28
+import com.arvatosystems.t9t.base.jpa.impl.AbstractResolverSuperclassKey28
+import com.arvatosystems.t9t.base.jpa.impl.AbstractResolverSurrogateKey28
 
-@Active(AutoResolverProcessor) annotation AutoResolver {}
+@Active(AutoResolver28Processor) annotation AutoResolver28 {}
 
 /** The automapper generates data copies for elements of same name and type. It can also apply lookups / resolvers. */
-class AutoResolverProcessor extends AbstractClassProcessor {
+class AutoResolver28Processor extends AbstractClassProcessor {
     val resolverRevision = "2016-12-05 13:03 CET - added safeguard for empty IN parameters in findBy methods"
 
     def getResolverClassName(ClassDeclaration m, MethodDeclaration r) {
@@ -117,7 +117,7 @@ class AutoResolverProcessor extends AbstractClassProcessor {
         val sortOrderInitType = ArrayList.newTypeReference(sortColumnType)
 
         // We don't want this annotation on the java class (unwanted dependency)
-        m.removeAnnotation(m.annotations.findFirst[annotationTypeDeclaration === AutoResolver.newTypeReference.type])
+        m.removeAnnotation(m.annotations.findFirst[annotationTypeDeclaration == AutoResolver28.newTypeReference.type])
 
         for (r: m.declaredMethods) {
               val rt = r.returnType
@@ -188,25 +188,25 @@ class AutoResolverProcessor extends AbstractClassProcessor {
 
                 // all good, I think
                 val extendedResolverInterface = if (longKey)
-                        typeof(IResolverSurrogateKey).newTypeReference(source.type, myTrackingType, rt)
+                        typeof(IResolverSurrogateKey28).newTypeReference(source.type, myTrackingType, rt)
                     else if (stringKey)
-                        typeof(IResolverStringKey).newTypeReference(myTrackingType, rt)
+                        typeof(IResolverStringKey28).newTypeReference(myTrackingType, rt)
                     else if (natKey)
-                        typeof(IResolverCompositeKey).newTypeReference     (source.type, myKeyType, myTrackingType, rt)
+                        typeof(IResolverCompositeKey28).newTypeReference     (source.type, myKeyType, myTrackingType, rt)
                     else if (newNatKey)
-                        typeof(IResolverNewCompositeKey).newTypeReference(source.type, myKeyType, myTrackingType, rt)
+                        typeof(IResolverNewCompositeKey28).newTypeReference(source.type, myKeyType, myTrackingType, rt)
                     else
-                        typeof(IResolverSuperclassKey).newTypeReference(source.type, myKeyType, myTrackingType, rt)
+                        typeof(IResolverSuperclassKey28).newTypeReference(source.type, myKeyType, myTrackingType, rt)
                 val extendedResolverClass = if (longKey)
-                        typeof(AbstractResolverSurrogateKey).newTypeReference(source.type, myTrackingType, rt)
+                        typeof(AbstractResolverSurrogateKey28).newTypeReference(source.type, myTrackingType, rt)
                     else if (stringKey)
-                        typeof(AbstractResolverStringKey).newTypeReference(myTrackingType, rt)
+                        typeof(AbstractResolverStringKey28).newTypeReference(myTrackingType, rt)
                     else if (natKey)
-                        typeof(AbstractResolverCompositeKey).newTypeReference     (source.type, myKeyType, myTrackingType, rt)
+                        typeof(AbstractResolverCompositeKey28).newTypeReference     (source.type, myKeyType, myTrackingType, rt)
                     else if (newNatKey)
-                        typeof(AbstractResolverNewCompositeKey).newTypeReference(source.type, myKeyType, myTrackingType, rt)
+                        typeof(AbstractResolverNewCompositeKey28).newTypeReference(source.type, myKeyType, myTrackingType, rt)
                     else
-                        typeof(AbstractResolverSuperclassKey).newTypeReference(source.type, myKeyType, myTrackingType, rt)
+                        typeof(AbstractResolverSuperclassKey28).newTypeReference(source.type, myKeyType, myTrackingType, rt)
                 val resolverInterface = findInterface(m.getResolverInterfaceName(r))
 
                 if (resolverInterface === null) {

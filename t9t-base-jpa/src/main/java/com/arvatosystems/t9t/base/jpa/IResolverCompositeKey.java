@@ -35,7 +35,7 @@ public interface IResolverCompositeKey<
     KEY extends Serializable,  // can be removed!
     TRACKING extends TrackingBase,
     ENTITY extends BonaPersistableKey<KEY> & BonaPersistableTracking<TRACKING>
-    > extends IResolverAnyKey<KEY, TRACKING, ENTITY> {
+  > extends IResolverAnyKey<KEY, TRACKING, ENTITY> {
 
     /** Return the full JPA entity for any given relevant key.
      * Returns null if the parameter entityRef is null.
@@ -48,4 +48,7 @@ public interface IResolverCompositeKey<
      * @throws T9tException
      */
     ENTITY getEntityData(REF entityRef, boolean onlyActive);
+
+    /** Convert any REF to a KEY (if supported). */
+    public KEY refToKey(REF arg);
 }

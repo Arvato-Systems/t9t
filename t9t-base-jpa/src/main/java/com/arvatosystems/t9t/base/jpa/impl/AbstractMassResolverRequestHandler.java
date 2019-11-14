@@ -17,7 +17,7 @@ package com.arvatosystems.t9t.base.jpa.impl;
 
 import java.util.List;
 
-import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey42;
+import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey;
 import com.arvatosystems.t9t.base.search.MassResolverRequest;
 import com.arvatosystems.t9t.base.search.MassResolverResponse;
 import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;
@@ -27,9 +27,9 @@ import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
 
 public class AbstractMassResolverRequestHandler<S extends MassResolverRequest, E extends BonaPersistableKey<Long> & BonaPersistableTracking<?>> extends AbstractReadOnlyRequestHandler<S> {
-    protected final IResolverSurrogateKey42<?, ?, E> resolver;
+    protected final IResolverSurrogateKey<?, ?, E> resolver;
 
-    protected AbstractMassResolverRequestHandler(IResolverSurrogateKey42<?, ?, E> resolver) {
+    protected AbstractMassResolverRequestHandler(IResolverSurrogateKey<?, ?, E> resolver) {
         this.resolver = resolver;
     }
 

@@ -17,7 +17,6 @@ package com.arvatosystems.t9t.annotations.jpa;
 
 import com.arvatosystems.t9t.annotations.NotUpdatable
 import com.arvatosystems.t9t.base.T9tException
-import com.arvatosystems.t9t.base.jpa.impl.AbstractEntityMapper
 import de.jpaw.bonaparte.pojos.apiw.Ref
 import de.jpaw.dp.Singleton
 import de.jpaw.dp.Specializes
@@ -30,8 +29,9 @@ import org.eclipse.xtend.lib.macro.declaration.MutableClassDeclaration
 import org.eclipse.xtend.lib.macro.declaration.Visibility
 
 import static extension com.arvatosystems.t9t.annotations.jpa.Tools.*
+import com.arvatosystems.t9t.base.jpa.impl.AbstractEntityMapper28
 
-@Active(AutoExtendMapperProcessor) annotation AutoExtendMapper {}
+@Active(AutoExtendMapper28Processor) annotation AutoExtendMapper28 {}
 
 /** The AutoExtendMapper generates data copies for elements of same name and type only. Everything else must be handcoded.
  *
@@ -49,7 +49,7 @@ import static extension com.arvatosystems.t9t.annotations.jpa.Tools.*
  * The active annotation does not create any new classes / interfaces, it only provides a method body.
  */
 
-class AutoExtendMapperProcessor extends AbstractClassProcessor {
+class AutoExtendMapper28Processor extends AbstractClassProcessor {
 //    val mapperRevision = "2016-09-14 10:00 CEST (Xtend 2.10.0, Java 8)"
 
     override doTransform(MutableClassDeclaration c, extension TransformationContext context) {
@@ -61,7 +61,7 @@ class AutoExtendMapperProcessor extends AbstractClassProcessor {
 
 
         // We don't want this annotation on the java class (unwanted dependency)
-        c.removeAnnotation(c.annotations.findFirst[annotationTypeDeclaration === AutoExtendMapper.newTypeReference.type])
+        c.removeAnnotation(c.annotations.findFirst[annotationTypeDeclaration == AutoExtendMapper28.newTypeReference.type])
 
         // add a CDI @Specializes annotation, as well ApplicationScoped
         c.addAnnotation(Specializes.newAnnotationReference)
@@ -80,7 +80,7 @@ class AutoExtendMapperProcessor extends AbstractClassProcessor {
         val extendedEntityClass = manualE2DCopyMethod.parameters.get(0).type
         val extendedDtoClass = manualE2DCopyMethod.parameters.get(1).type
 
-        if (baseMapperClass === null || !AbstractEntityMapper.newTypeReference.isAssignableFrom(AbstractEntityMapper.newTypeReference)) {
+        if (baseMapperClass === null || !AbstractEntityMapper28.newTypeReference.isAssignableFrom(AbstractEntityMapper28.newTypeReference)) {
             c.addError('''This class must extend another class which inherits (directly or indirectly) AbstractEntityMapper''')
             return
         }

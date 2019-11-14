@@ -26,8 +26,8 @@ import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.crud.CrudAnyKeyRequest;
-import com.arvatosystems.t9t.base.jpa.IEntityMapper;
-import com.arvatosystems.t9t.base.jpa.IResolverAnyKey;
+import com.arvatosystems.t9t.base.jpa.IEntityMapper28;
+import com.arvatosystems.t9t.base.jpa.IResolverAnyKey28;
 import com.arvatosystems.t9t.base.jpa.ormspecific.IJpaCrudTechnicalExceptionMapper;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 
@@ -40,14 +40,14 @@ import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 
-abstract class AbstractCrudAnyKeyRequestHandler<
+abstract class AbstractCrudAnyKey28RequestHandler<
     KEY extends Serializable,
     DTO extends BonaPortable,
     TRACKING extends TrackingBase,
     REQUEST extends CrudAnyKeyRequest<DTO, TRACKING>,
     ENTITY extends BonaPersistableKey<KEY> & BonaPersistableTracking<TRACKING>
 > extends AbstractRequestHandler<REQUEST> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCrudAnyKeyRequestHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCrudAnyKey28RequestHandler.class);
 
     //@Inject
     protected final Provider<PersistenceProviderJPA> jpaContextProvider = Jdp.getProvider(PersistenceProviderJPA.class);
@@ -216,7 +216,7 @@ abstract class AbstractCrudAnyKeyRequestHandler<
     }
 
 
-    protected ENTITY performCreate(IEntityMapper<KEY, DTO, TRACKING, ENTITY> mapper, IResolverAnyKey<KEY, TRACKING, ENTITY> resolver,
+    protected ENTITY performCreate(IEntityMapper28<KEY, DTO, TRACKING, ENTITY> mapper, IResolverAnyKey28<KEY, TRACKING, ENTITY> resolver,
             REQUEST crudRequest, EntityManager entityManager) {
         // check
         validateCreate(crudRequest.getData()); // plausibility check
@@ -234,7 +234,7 @@ abstract class AbstractCrudAnyKeyRequestHandler<
         return result;
     }
 
-    protected ENTITY performUpdate(IEntityMapper<KEY, DTO, TRACKING, ENTITY> mapper, IResolverAnyKey<KEY, TRACKING, ENTITY> resolver,
+    protected ENTITY performUpdate(IEntityMapper28<KEY, DTO, TRACKING, ENTITY> mapper, IResolverAnyKey28<KEY, TRACKING, ENTITY> resolver,
             REQUEST crudRequest, EntityManager entityManager, KEY key) {
         DTO    dto    = crudRequest.getData();
         ENTITY result = resolver.find(key);

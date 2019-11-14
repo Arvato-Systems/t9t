@@ -157,7 +157,7 @@ class AutoMap42Processor extends AbstractClassProcessor {
         val requireLazyAnnoType = InitializeLazy.newTypeReference.type
 
         // We don't want this annotation on the java class (unwanted dependency)
-        c.removeAnnotation(c.annotations.findFirst[annotationTypeDeclaration === AutoMap.newTypeReference.type])
+        c.removeAnnotation(c.annotations.findFirst[annotationTypeDeclaration == AutoMap42.newTypeReference.type])
 
         // step 0: look for entity resolver reference
         val entityResolver = c.declaredFields.head

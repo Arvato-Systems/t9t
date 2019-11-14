@@ -20,8 +20,8 @@ import javax.persistence.EntityManager;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyRequest;
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
-import com.arvatosystems.t9t.base.jpa.IEntityMapper;
-import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey;
+import com.arvatosystems.t9t.base.jpa.IEntityMapper28;
+import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey28;
 import com.arvatosystems.t9t.base.services.IRefGenerator;
 
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
@@ -32,20 +32,20 @@ import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ApplicationException;
 
-public abstract class AbstractCrudSurrogateKeyRequestHandler<
+public abstract class AbstractCrudSurrogateKey28RequestHandler<
     REF extends Ref,
     DTO extends REF,
     TRACKING extends TrackingBase,
     REQUEST extends CrudSurrogateKeyRequest<REF, DTO, TRACKING>,
     ENTITY extends BonaPersistableKey<Long> & BonaPersistableTracking<TRACKING>
-> extends AbstractCrudAnyKeyRequestHandler<Long, DTO, TRACKING, REQUEST, ENTITY> {
+> extends AbstractCrudAnyKey28RequestHandler<Long, DTO, TRACKING, REQUEST, ENTITY> {
 
     protected final IRefGenerator genericRefGenerator = Jdp.getRequired(IRefGenerator.class);
 
     // execute function of the interface description, but additional parameters
     // required in order to work around type erasure
-    public CrudSurrogateKeyResponse<DTO, TRACKING> execute(IEntityMapper<Long, DTO, TRACKING, ENTITY> mapper,
-            IResolverSurrogateKey<REF, TRACKING, ENTITY> resolver, REQUEST crudRequest) {
+    public CrudSurrogateKeyResponse<DTO, TRACKING> execute(IEntityMapper28<Long, DTO, TRACKING, ENTITY> mapper,
+            IResolverSurrogateKey28<REF, TRACKING, ENTITY> resolver, REQUEST crudRequest) {
 
         // fields are set as required
         CrudSurrogateKeyResponse<DTO, TRACKING> rs = new CrudSurrogateKeyResponse<DTO, TRACKING>();

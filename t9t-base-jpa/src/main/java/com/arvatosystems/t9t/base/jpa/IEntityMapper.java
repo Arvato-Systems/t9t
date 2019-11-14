@@ -18,19 +18,18 @@ package com.arvatosystems.t9t.base.jpa;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.base.output.OutputSessionParameters;
-import com.arvatosystems.t9t.base.search.ReadAll28Response;
 import com.arvatosystems.t9t.base.search.SearchCriteria;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.SortColumn;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
+import de.jpaw.bonaparte.pojos.apiw.Ref;
 
 /** Defines a set of conversion methods between DTO and JPA entity classes.
  * The interface is parameterized and should be specialized for every DTO, using the name I(DTOname)Mapper (because the entity is implied by the DTO).
@@ -123,6 +122,8 @@ public interface IEntityMapper<KEY extends Serializable, DTO extends BonaPortabl
      */
     public List<DTO> mapListToDto(Collection<ENTITY> entityList);
 
+    public List<DTO> mapListToDto(Collection<ENTITY> entityList, Map<String, String> graph, String prefix, Map<String, Map<Long, Ref>> cache);
+
     /**
      * Maps a collection of DTOs to entities and adds those to an existing collection.
      *
@@ -130,26 +131,6 @@ public interface IEntityMapper<KEY extends Serializable, DTO extends BonaPortabl
      *            The input list. List entries may not be null.
      */
     public void mapCollectionToEntity(Collection<ENTITY> target, Collection<DTO> dtoList, boolean onlyActive);
-
-    /** Maps an entity to a DataWithTrackingS.
-     */
-    public DataWithTrackingS<DTO, TRACKING> mapToDwt(ENTITY entity);
-
-    /** Maps a collection of entities to a list of special DTOs which include the tracking columns.
-     * Used by generic search and generic "ReadAll".
-     * @param entityList The input list. List entries may not be null.
-     * @return a list, which may be empty.
-     */
-    public List<DataWithTrackingS<DTO, TRACKING>> mapListToDwt(Collection<ENTITY> entityList);
-
-    /** Postprocesses a search output, either mapping it to some ReadAllResponse, or exporting it via IOutputSession and
-     * returning the sinkRef (if op != null).
-     * @param data input data (list of entities)
-     * @param op  OutputSessionParameters - if not null, then the data will be exported instead of returned as a list
-     * @return the full web service response structure
-     * @throws Exception
-     */
-    public ReadAll28Response<DTO, TRACKING> createReadAllResponse(List<ENTITY> data, OutputSessionParameters op) throws Exception;
 
     /**
      * Verifies that no field with property "notupdatable" has a different value in the intended entity. Throws a T9tException.FIELD_MAY_NOT_BE_CHANGED if a
@@ -178,18 +159,4 @@ public interface IEntityMapper<KEY extends Serializable, DTO extends BonaPortabl
      *
      */
     public void processSearchPrefixForDB(SearchFilter filter, List<SortColumn> sortColumns);
-
-    /** returns the entity's tenantId without the use of reflection, or null if the entity does not contain
-     * a tenantId field.
-     * @param e
-     * @return the tenantRef
-     */
-    public String getTenantId(ENTITY e);
-
-    /** Sets the entity's tenantId without the use of reflection, or NOOP if the entity does not contain
-     * a tenantId field.
-     * @param e - an instance of the Entity
-     * @param tenantId - the tenant to be set (if null, the current call's tenant ID will be used)
-     */
-    public void setTenantId(ENTITY e, String tenantId);
 }

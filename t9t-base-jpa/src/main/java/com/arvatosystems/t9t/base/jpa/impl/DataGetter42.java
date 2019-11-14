@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.base.jpa.IDataGetter;
+import com.arvatosystems.t9t.base.jpa.IDataGetter42;
 import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey42;
 import com.arvatosystems.t9t.base.jpa.ormspecific.IQueryHintSetter;
 import com.arvatosystems.t9t.base.search.GetDataResponse;
@@ -42,8 +42,8 @@ import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 
 @Singleton
-public class DataGetter implements IDataGetter {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DataGetter.class);
+public class DataGetter42 implements IDataGetter42 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataGetter42.class);
     protected final IQueryHintSetter queryHintSetter = Jdp.getRequired(IQueryHintSetter.class);
 
     @Override

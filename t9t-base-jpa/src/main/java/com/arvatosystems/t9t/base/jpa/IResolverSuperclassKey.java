@@ -31,7 +31,7 @@ public interface IResolverSuperclassKey<
     KEY extends REF,
     TRACKING extends TrackingBase,
     ENTITY extends BonaPersistableKey<KEY> & BonaPersistableTracking<TRACKING>
-    > extends IResolverAnyKey<KEY, TRACKING, ENTITY> {
+  > extends IResolverAnyKey<KEY, TRACKING, ENTITY> {
 
     ENTITY getEntityData(REF entityRef, boolean onlyActive);
 }

@@ -18,10 +18,10 @@ package com.arvatosystems.t9t.base.jpa.impl;
 import javax.persistence.EntityManager;
 
 import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.base.crud.NewCrudCompositeKeyRequest;
-import com.arvatosystems.t9t.base.crud.NewCrudCompositeKeyResponse;
-import com.arvatosystems.t9t.base.jpa.IEntityMapper;
-import com.arvatosystems.t9t.base.jpa.IResolverNewCompositeKey;
+import com.arvatosystems.t9t.base.crud.CrudSuperclassKeyRequest;
+import com.arvatosystems.t9t.base.crud.CrudSuperclassKeyResponse;
+import com.arvatosystems.t9t.base.jpa.IEntityMapper28;
+import com.arvatosystems.t9t.base.jpa.IResolverSuperclassKey28;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
@@ -30,29 +30,84 @@ import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.util.ApplicationException;
 
-public abstract class AbstractCrudNewCompositeKeyRequestHandler<
+public abstract class AbstractCrudSuperclassKey28RequestHandler<
     REF extends BonaPortable,
     KEY extends REF,
-    DTO extends REF,
+    DTO extends KEY,
     TRACKING extends TrackingBase,
-    REQUEST extends NewCrudCompositeKeyRequest<REF, KEY, DTO, TRACKING>,
+    REQUEST extends CrudSuperclassKeyRequest<REF, KEY, DTO, TRACKING>,
     ENTITY extends BonaPersistableKey<KEY> & BonaPersistableTracking<TRACKING>
-> extends AbstractCrudAnyKeyRequestHandler<KEY, DTO, TRACKING, REQUEST, ENTITY> {
+> extends AbstractCrudAnyKey28RequestHandler<KEY, DTO, TRACKING, REQUEST, ENTITY> {
 
     // execute function of the interface description, but additional parameters
     // required in order to work around type erasure
-    public NewCrudCompositeKeyResponse<REF, KEY, DTO, TRACKING> execute(IEntityMapper<KEY, DTO, TRACKING, ENTITY> mapper,
-            IResolverNewCompositeKey<REF, KEY, TRACKING, ENTITY> resolver, REQUEST crudRequest) {
+    public CrudSuperclassKeyResponse<KEY, DTO, TRACKING> execute(
+            IEntityMapper28<KEY, DTO, TRACKING, ENTITY> mapper,
+            IResolverSuperclassKey28<REF, KEY, TRACKING, ENTITY> resolver,
+            REQUEST crudRequest) {
 
         // fields are set as required
-        validateParameters(crudRequest, crudRequest.getKey() == null);
-
-        NewCrudCompositeKeyResponse<REF, KEY, DTO, TRACKING> rs = new NewCrudCompositeKeyResponse<REF, KEY, DTO, TRACKING>();
+        CrudSuperclassKeyResponse<KEY, DTO, TRACKING> rs = new CrudSuperclassKeyResponse<KEY, DTO, TRACKING>();
         ENTITY result;
+
+        // check natural key.
+        switch (crudRequest.getCrud()) {
+        case MERGE:
+        case VERIFY:
+        case LOOKUP:
+            if (crudRequest.getNaturalKey() == null) {
+                throw new T9tException(T9tException.CRUD_NATURAL_KEY_MISSING, crudRequest.getCrud());
+            }
+            break;
+        default:
+        }
 
         EntityManager entityManager = jpaContextProvider.get().getEntityManager(); // copy it as we need it several times
 
+        // step 1: possible resolution of the natural key
+        if (crudRequest.getNaturalKey() != null) {
+            try {
+                KEY refFromCompositeKey = resolver.getEntityData(crudRequest.getNaturalKey(), false).ret$Key();
+                // provide it into the response
+                rs.setKey(refFromCompositeKey);
+
+                if (crudRequest.getKey() == null) {
+                    // use the obtained reference
+                    crudRequest.setKey(refFromCompositeKey);
+                } else {
+                    // both exists, compare them. If they are not equal, fail in any case
+                    if (!crudRequest.getKey().equals(refFromCompositeKey)) {
+                        throw new T9tException(T9tException.CRUD_BOTH_KEYS_MISMATCH, crudRequest.getKey().toString() + " <> " + refFromCompositeKey.toString());
+                    }
+                }
+            } catch (T9tException e) {
+                if (e.getErrorCode() != T9tException.RECORD_DOES_NOT_EXIST) {
+                    throw e; // we are not interested int his one
+                    // deal with non-existing records. In some cases, this is acceptable
+                }
+                // natural key has been specified, but record does not exist.
+                // we throw an exception as well, unless it is LOOKUP (in which case we return null) or MERGE (in which case we perform a CREATE)
+                switch (crudRequest.getCrud()) {
+                case LOOKUP:
+                    // missing data is OK, we return null
+                    rs.setReturnCode(0);
+                    return rs;
+                case MERGE:
+                    // missing data is OK, this means we perform a CREATE
+                    crudRequest.setCrud(OperationType.CREATE);
+                    break;
+                default:
+                    // any other case is a problem
+                    throw e;
+                }
+            }
+        }
+
+        // This was not there before, but should be present to avoid NPEs!
+        validateParameters(crudRequest, crudRequest.getKey() == null);
+
         try {
+
             switch (crudRequest.getCrud()) {
             case CREATE:
                 result = performCreate(mapper, resolver, crudRequest, entityManager);
@@ -69,6 +124,7 @@ public abstract class AbstractCrudNewCompositeKeyRequestHandler<
                 }
                 validateDelete(result);
                 entityManager.remove(result);
+                rs.setKey(crudRequest.getKey());
                 break;
             case INACTIVATE:
                 result = resolver.findActive(crudRequest.getKey(), crudRequest.getOnlyActive());
@@ -86,16 +142,25 @@ public abstract class AbstractCrudNewCompositeKeyRequestHandler<
                 break;
             case UPDATE:
                 result = performUpdate(mapper, resolver, crudRequest, entityManager, crudRequest.getKey());
+                rs.setKey(crudRequest.getKey());
                 break;
             case MERGE:
-                //If the key is passed in and result already exist then perform update.
+                // If the key is passed in and result already exist then perform update.
                 if (crudRequest.getKey() != null) {
                     result = performUpdate(mapper, resolver, crudRequest, entityManager, crudRequest.getKey());
                 } else {
                     result = performCreate(mapper, resolver, crudRequest, entityManager);
                     rs.setKey(result.ret$Key()); // just copy
                 }
+                rs.setKey(crudRequest.getKey());
                 break;
+            case VERIFY:
+                rs.setReturnCode(0);
+                return rs; // return here as we have no data (cannot fill tracking)
+            case LOOKUP:
+                // data was found, due to parameter verification
+                rs.setReturnCode(0);
+                return rs; // return here as we have no data (cannot fill tracking)
             default:
                 throw new T9tException(T9tException.INVALID_CRUD_COMMAND);
             }
@@ -112,8 +177,7 @@ public abstract class AbstractCrudNewCompositeKeyRequestHandler<
             // Therefore this catch is essential!
             throw e;
         } catch (ApplicationException e) {
-            throw new T9tException(T9tException.ENTITY_DATA_MAPPING_EXCEPTION, "Tracking columns: "
-                    + e.toString());
+            throw new T9tException(T9tException.ENTITY_DATA_MAPPING_EXCEPTION, "Tracking columns: " + e.toString());
         }
     }
 }

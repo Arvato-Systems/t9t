@@ -20,8 +20,8 @@ import javax.persistence.EntityManager;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.crud.CrudLongKeyRequest;
 import com.arvatosystems.t9t.base.crud.CrudLongKeyResponse;
-import com.arvatosystems.t9t.base.jpa.IEntityMapper;
-import com.arvatosystems.t9t.base.jpa.IResolverLongKey;
+import com.arvatosystems.t9t.base.jpa.IEntityMapper28;
+import com.arvatosystems.t9t.base.jpa.IResolverLongKey28;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
@@ -30,17 +30,17 @@ import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.util.ApplicationException;
 
-public abstract class AbstractCrudLongKeyRequestHandler<
+public abstract class AbstractCrudLongKey28RequestHandler<
     DTO extends BonaPortable,
     TRACKING extends TrackingBase,
     REQUEST extends CrudLongKeyRequest<DTO, TRACKING>,
     ENTITY extends BonaPersistableKey<Long> & BonaPersistableTracking<TRACKING>
-> extends AbstractCrudAnyKeyRequestHandler<Long, DTO, TRACKING, REQUEST, ENTITY> {
+> extends AbstractCrudAnyKey28RequestHandler<Long, DTO, TRACKING, REQUEST, ENTITY> {
 
     // execute function of the interface description, but additional parameters
     // required in order to work around type erasure
-    public CrudLongKeyResponse<DTO, TRACKING> execute(IEntityMapper<Long, DTO, TRACKING, ENTITY> mapper,
-            IResolverLongKey<TRACKING, ENTITY> resolver, REQUEST crudRequest) {
+    public CrudLongKeyResponse<DTO, TRACKING> execute(IEntityMapper28<Long, DTO, TRACKING, ENTITY> mapper,
+            IResolverLongKey28<TRACKING, ENTITY> resolver, REQUEST crudRequest) {
 
         // fields are set as required
         validateParameters(crudRequest, crudRequest.getKey() == null);

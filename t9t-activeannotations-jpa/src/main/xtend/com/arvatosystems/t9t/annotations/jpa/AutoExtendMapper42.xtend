@@ -61,7 +61,7 @@ class AutoExtendMapper42Processor extends AbstractClassProcessor {
 
 
         // We don't want this annotation on the java class (unwanted dependency)
-        c.removeAnnotation(c.annotations.findFirst[annotationTypeDeclaration === AutoExtendMapper.newTypeReference.type])
+        c.removeAnnotation(c.annotations.findFirst[annotationTypeDeclaration == AutoExtendMapper42.newTypeReference.type])
 
         // add a CDI @Specializes annotation, as well ApplicationScoped
         c.addAnnotation(Specializes.newAnnotationReference)
