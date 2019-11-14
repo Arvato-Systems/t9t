@@ -19,10 +19,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.eclipse.xtext.xbase.lib.Pair;
 import org.joda.time.Instant;
 
 import com.arvatosystems.t9t.auth.AuthModuleCfgDTO;
 import com.arvatosystems.t9t.auth.SessionDTO;
+import com.arvatosystems.t9t.auth.UserDTO;
 import com.arvatosystems.t9t.authc.api.TenantDescription;
 import com.arvatosystems.t9t.base.auth.PermissionEntry;
 import com.arvatosystems.t9t.base.services.RequestContext;
@@ -47,6 +49,8 @@ public interface IAuthPersistenceAccess {
     // specified resource. These are all resourceIds which are a substring of resource
 
     List<PermissionEntry> getAllDBPermissions(JwtInfo jwtInfo);
+    
+    Pair<Long, UserDTO> getUserById(String userId);
 
     AuthIntermediateResult getByApiKey(Instant now, UUID key);
     AuthIntermediateResult getByUserIdAndPassword(Instant now, String userId, String password, String newPassword);

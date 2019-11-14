@@ -133,6 +133,7 @@ class ConfigProvider {
             uplinkConfiguration     = a.uplinkConfiguration     ?: b.uplinkConfiguration
             searchConfiguration     = a.searchConfiguration     ?: b.searchConfiguration
             asyncMsgConfiguration   = a.asyncMsgConfiguration   ?: b.asyncMsgConfiguration
+            ldapConfiguration       = a.ldapConfiguration       ?: b.ldapConfiguration
             mocks                   = a.mocks                   ?: b.mocks
             runInCluster            = a.runInCluster            ?: b.runInCluster
             disableScheduler        = a.disableScheduler        ?: b.disableScheduler

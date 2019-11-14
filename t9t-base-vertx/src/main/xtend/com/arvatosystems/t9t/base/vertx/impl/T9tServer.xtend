@@ -222,11 +222,16 @@ class T9tServer extends AbstractVerticle {
                 options.maxEventLoopExecuteTime = configs.maxEventLoopExecuteTime * 1000000000L // convert seconds to nanoseconds
                 LOGGER.info("Setting vert.x max event loop execution time to {} seconds via configuration", configs.maxEventLoopExecuteTime)
             }
+            if (configs.blockedThreadCheckInterval !== null) {
+                options.blockedThreadCheckInterval = configs.blockedThreadCheckInterval * 1000L // convert seconds to nanoseconds
+                LOGGER.info("Setting vert.x blocked thread check interval to {} seconds via configuration", configs.blockedThreadCheckInterval)
+            }
         }
         LOGGER.info("vert.x worker pool size is {}", options.workerPoolSize)
         LOGGER.info("vert.x event loop pool size is {}", options.eventLoopPoolSize)
         LOGGER.info("vert.x max worker execution time is {} seconds", options.maxWorkerExecuteTime / 1000000000L)
         LOGGER.info("vert.x max event loop execution time is {} seconds", options.maxEventLoopExecuteTime / 1000000000L)
+        LOGGER.info("vert.x blocked thread check interval is {} seconds", options.blockedThreadCheckInterval / 1000L)
     }
 
     def static void addShutdownHook(Vertx myVertx) {

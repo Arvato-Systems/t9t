@@ -22,6 +22,7 @@ import com.arvatosystems.t9t.auth.UserDTO
 import com.arvatosystems.t9t.auth.be.impl.AuthResponseUtil
 import com.arvatosystems.t9t.auth.hooks.IJwtEnrichment
 import com.arvatosystems.t9t.auth.services.IAuthPersistenceAccess
+import com.arvatosystems.t9t.auth.services.IExternalAuthentication
 import com.arvatosystems.t9t.auth.services.ITenantResolver
 import com.arvatosystems.t9t.base.T9tConstants
 import com.arvatosystems.t9t.base.T9tException
@@ -32,6 +33,7 @@ import com.arvatosystems.t9t.base.auth.PasswordAuthentication
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler
 import com.arvatosystems.t9t.base.services.RequestContext
 import com.arvatosystems.t9t.base.types.AuthenticationParameters
+import com.arvatosystems.t9t.cfg.be.ConfigProvider
 import de.jpaw.annotations.AddLogger
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo
 import de.jpaw.dp.Inject
@@ -44,6 +46,7 @@ class AuthenticationRequestHandler extends AbstractRequestHandler<Authentication
     @Inject AuthResponseUtil        authResponseUtil
     @Inject ITenantResolver         tenantResolver
     @Inject IJwtEnrichment          jwtEnrichment
+    @Inject IExternalAuthentication externalAuthentication
 
     override AuthenticationResponse execute(RequestContext ctx, AuthenticationRequest rq) {
         val tempJwt = ctx.internalHeaderParameters.jwtInfo
@@ -178,7 +181,14 @@ class AuthenticationRequestHandler extends AbstractRequestHandler<Authentication
 
     /** Authenticates a user via username / password. Relevant information for the JWT is taken from the UserDTO, then the TenantDTO. */
     def protected dispatch AuthenticationResponse auth(RequestContext ctx, PasswordAuthentication pw, String locale, String zoneinfo) {
-        val authResult = persistenceAccess.getByUserIdAndPassword(ctx.executionStart, pw.userId, pw.password, pw.newPassword)
+        // check for external authentication first
+        val ldapConfiguration = ConfigProvider.configuration.ldapConfiguration
+        val authResult =  if (ldapConfiguration !== null) {
+            externalAuthentication.externalAuth(ctx, pw)
+        } else {
+            // internal authentication
+            persistenceAccess.getByUserIdAndPassword(ctx.executionStart, pw.userId, pw.password, pw.newPassword)
+        }
         if (authResult === null || (authResult.returnCode != 0 && authResult.returnCode != T9tException.PASSWORD_EXPIRED)) {
             LOGGER.debug("Incorrect authentication for userId {}", pw.userId)
             return null

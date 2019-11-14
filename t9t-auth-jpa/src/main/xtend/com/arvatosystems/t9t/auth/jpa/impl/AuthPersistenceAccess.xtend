@@ -206,18 +206,24 @@ class AuthPersistenceAccess implements IAuthPersistenceAccess, T9tConstants {
             return null;
         }
     }
+    
+    override getUserById(String userId) {
+        val userEntity = getUserIgnoringTenant(userId)
+        if (userEntity === null)
+            return null;
+        return Pair.of(userEntity.tenantRef, userEntity.ret$Data)
+    }
+    
 
     override getByUserIdAndPassword(Instant now, String userId, String password, String newPassword) {
-        val em = jpaContextProvider.get.entityManager
-        val hash = PasswordUtil.createPasswordHash(userId, password)
-
         val userEntity = getUserIgnoringTenant(userId) // first find the user
         if (userEntity === null)
             throw new T9tException(T9tException.USER_NOT_FOUND)
 
         // are UserTenantRoles even necessary in a jwt token context?
 
-        var TypedQuery<UserStatusEntity> userStatusQuery = em.createQuery("SELECT u FROM UserStatusEntity u WHERE u.objectRef = ?1", UserStatusEntity)
+        val em = jpaContextProvider.get.entityManager
+        val TypedQuery<UserStatusEntity> userStatusQuery = em.createQuery("SELECT u FROM UserStatusEntity u WHERE u.objectRef = ?1", UserStatusEntity)
         userStatusQuery.setParameter(1, userEntity.objectRef)
         var UserStatusEntity userStatus
         try {
@@ -231,7 +237,7 @@ class AuthPersistenceAccess implements IAuthPersistenceAccess, T9tConstants {
 
         var PasswordEntity passwordEntity
         // now check password validity
-        var TypedQuery<PasswordEntity> passwordQuery = em.createQuery("SELECT p FROM PasswordEntity p WHERE p.objectRef = ?1 AND p.passwordSerialNumber = ?2", PasswordEntity)
+        val TypedQuery<PasswordEntity> passwordQuery = em.createQuery("SELECT p FROM PasswordEntity p WHERE p.objectRef = ?1 AND p.passwordSerialNumber = ?2", PasswordEntity)
         passwordQuery.setParameter(1, userEntity.objectRef)
         passwordQuery.setParameter(2, userStatus.currentPasswordSerialNumber)
         try {
@@ -247,6 +253,7 @@ class AuthPersistenceAccess implements IAuthPersistenceAccess, T9tConstants {
         if (userEntity.roleRef !== null)
             resp.user.roleRef  = new RoleRef(userEntity.roleRef)
 
+        val hash = PasswordUtil.createPasswordHash(userId, password)
         // password is correct & not expired OR password is correct, expired, newPassword provided
         if (passwordEntity.getPasswordHash.equals(hash)) {
             // auth was successful
