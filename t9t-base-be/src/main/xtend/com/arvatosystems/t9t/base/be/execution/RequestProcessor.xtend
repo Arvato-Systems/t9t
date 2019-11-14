@@ -284,6 +284,7 @@ class RequestProcessor implements IRequestProcessor {
                 } else {
                     ctx.rollback
                     ctx.discardPostCommitActions
+                    ctx.applyPostFailureActions(rq, resp)
                 }
                 return resp
             } catch (Exception e) {

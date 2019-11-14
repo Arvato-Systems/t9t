@@ -16,8 +16,7 @@
 package com.arvatosystems.t9t.base.jpa.impl
 
 import com.arvatosystems.t9t.base.T9tException
-import com.arvatosystems.t9t.base.jpa.IEntityMapper
-import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey
+import com.arvatosystems.t9t.base.jpa.IEntityMapper28
 import com.arvatosystems.t9t.base.search.ReadAll28Response
 import com.arvatosystems.t9t.base.search.Search28Request
 import com.arvatosystems.t9t.base.search.SearchFilterMatchTypeEnum
@@ -47,6 +46,7 @@ import java.util.List
 import java.util.Map
 import org.eclipse.xtend.lib.annotations.Data
 import de.jpaw.bonaparte.pojos.api.NotFilter
+import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey28
 
 /**
  * The combined search evaluates if we have filter and/or sort criteria for DB and SOLR,
@@ -73,8 +73,8 @@ class AbstractCombinedTextDatabaseSearch28RequestHandler<REF extends Ref, DTO ex
     protected final IExecutor     executor    = Jdp.getRequired(IExecutor)
     protected final ISearchTools  searchTools = Jdp.getRequired(ISearchTools)
     protected final ITextSearch   textSearch  = Jdp.getRequired(ITextSearch)
-    protected IResolverSurrogateKey<REF, TRACKING, ENTITY> resolver          // set by constructor
-    protected IEntityMapper<Long, DTO, TRACKING, ENTITY>   mapper            // set by constructor
+    protected IResolverSurrogateKey28<REF, TRACKING, ENTITY> resolver          // set by constructor
+    protected IEntityMapper28<Long, DTO, TRACKING, ENTITY>   mapper            // set by constructor
     protected final List<SearchTypeMappingEntry> textSearchPathElements      // set by constructor
     protected final Map<String, String>          textSearchFieldMappings     // set by constructor
     protected final String documentName // set by constructor

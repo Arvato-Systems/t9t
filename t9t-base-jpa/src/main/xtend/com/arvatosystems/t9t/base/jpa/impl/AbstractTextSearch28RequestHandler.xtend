@@ -15,8 +15,7 @@
  */
 package com.arvatosystems.t9t.base.jpa.impl
 
-import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey
-import com.arvatosystems.t9t.base.jpa.IEntityMapper
+import com.arvatosystems.t9t.base.jpa.IEntityMapper28
 import com.arvatosystems.t9t.base.search.ReadAll28Response
 import com.arvatosystems.t9t.base.search.Search28Request
 import com.arvatosystems.t9t.base.services.AbstractSearchRequestHandler
@@ -34,6 +33,7 @@ import de.jpaw.dp.Jdp
 import java.util.List
 import java.util.Map
 import org.eclipse.xtend.lib.annotations.Data
+import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey28
 
 @Data
 class AbstractTextSearch28RequestHandler<
@@ -49,8 +49,8 @@ class AbstractTextSearch28RequestHandler<
     protected final ITextSearch               textSearch  = Jdp.getRequired(ITextSearch)
     // @Inject protected Provider<IOutputSession>      outputSessionProvider
 
-    protected IResolverSurrogateKey<REF, TRACKING, ENTITY>      resolver
-    protected IEntityMapper    <Long, DTO, TRACKING, ENTITY>    mapper
+    protected IResolverSurrogateKey28<REF, TRACKING, ENTITY>      resolver
+    protected IEntityMapper28    <Long, DTO, TRACKING, ENTITY>    mapper
     protected List<String>                                      textSearchOnlyPathElements
     protected Map<String, String>                               textSearchFieldMappings
     protected String                                            documentName
