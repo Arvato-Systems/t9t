@@ -341,7 +341,7 @@ package (com.arvatosystems) t9t.io {
         required boolean                                isActive       properties active;        // messages sent to inactive channels will be discarded (not generate an error!)
         required shortText                              description;                             // some descriptive text
         optional (AsyncQueueRef..., AsyncQueueDTO)      asyncQueueRef  properties ref, searchprefix="asyncQueue", simpleref="getObjectRef()", dropdown="asyncQueueId";
-        required Unicode(255)                           url;                                     // remote URL
+        required Unicode(300)                           url;                                     // remote URL
         optional t9tShortId                             authType;                                // basic, apikey etc... (for information / documentation in core, can be used by customizations)
         optional Unicode(255)                           authParam;                               // userID / password or API-Key
         optional Integer                                maxRetries;                              // can be used by monitoring to raise an alert after this number of attempts
