@@ -25,7 +25,7 @@ import com.arvatosystems.t9t.in.be.jackson.AbstractJsonFormatConverter
 
 @AddLogger
 @Dependent
-@Named("JSON") // generic JSON reader
+@Named("JSONJackson") // generic JSON reader
 class JsonStreamFormatConverter extends AbstractJsonFormatConverter {
 
     override process(InputStream is) {
