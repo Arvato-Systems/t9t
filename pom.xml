@@ -153,6 +153,7 @@
                 <module>t9t-rep</module>
                 <module>t9t-rep-api</module>
                 <module>t9t-rep-sapi</module>
+                <module>t9t-rep-proxy</module>
                 <module>t9t-rep-be</module>
                 <module>t9t-rep-jpa</module>
 
