@@ -25,6 +25,13 @@ import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Named;
 import de.jpaw.util.ApplicationException;
 
+/**
+ * Creates JSON output with @PQON information where required.
+ * 
+ * enums are output as ordinal and token by default.
+ * enums are output using instance names if SinkCfgDTo.genericParameter2 = "1"
+ *
+ */
 @Dependent
 @Named("JSON")
 public class FormatGeneratorJson extends FoldableFormatGenerator<IOException> {
@@ -41,6 +48,10 @@ public class FormatGeneratorJson extends FoldableFormatGenerator<IOException> {
     protected void openHook() throws IOException, ApplicationException {
         osw = new OutputStreamWriter(outputResource.getOutputStream(), encoding);
         jsonComposer = new JsonComposer(osw);
+        if ("1".equals(sinkCfg.getGenericParameter2())) {
+            jsonComposer.setWriteEnumOrdinals(false);
+            jsonComposer.setWriteEnumTokens(false);
+        }
         jsonComposer.startTransmission();
         super.openHook();
     }
