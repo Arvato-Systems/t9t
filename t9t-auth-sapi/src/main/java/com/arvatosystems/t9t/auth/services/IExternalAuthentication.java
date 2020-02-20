@@ -1,5 +1,8 @@
 package com.arvatosystems.t9t.auth.services;
 
+import org.eclipse.xtext.xbase.lib.Pair;
+
+import com.arvatosystems.t9t.auth.UserDTO;
 import com.arvatosystems.t9t.base.auth.PasswordAuthentication;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
@@ -7,10 +10,6 @@ import com.arvatosystems.t9t.base.services.RequestContext;
 public interface IExternalAuthentication {
     /**
      * Request external authentication for this user.
-     *
-     * @param user
-     * @param password
-     * @return
      */
-    AuthIntermediateResult externalAuth(RequestContext ctx, PasswordAuthentication pw);
+    AuthIntermediateResult externalAuth(RequestContext ctx, PasswordAuthentication pw, Pair<Long, UserDTO> user);
 }

@@ -40,7 +40,7 @@ import org.joda.time.Instant
 @Singleton
 class Authentication implements IAuthenticate {
     public static final int RTTI_MESSAGE_LOG = 2;       // defined separately because we cannot reference that class due to module isolation
-    private static final Permissionset EXEC_PERMISSIONS = Permissionset.ofTokens(OperationType.EXECUTE)
+    static final Permissionset EXEC_PERMISSIONS = Permissionset.ofTokens(OperationType.EXECUTE)
 
     @Inject IRefGenerator           refGenerator
     @Inject IRequestProcessor       requestProcessor

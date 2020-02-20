@@ -50,6 +50,7 @@ public interface IAuthPersistenceAccess {
 
     List<PermissionEntry> getAllDBPermissions(JwtInfo jwtInfo);
     
+    /** Returns the Pair of <tenantRef, UserDTO> of the user specified by userId, or null if there is no such user. */
     Pair<Long, UserDTO> getUserById(String userId);
 
     AuthIntermediateResult getByApiKey(Instant now, UUID key);

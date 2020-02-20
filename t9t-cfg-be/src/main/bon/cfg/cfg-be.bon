@@ -151,5 +151,6 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         required Unicode(255)                       securityPrincipal;  // admin / dn user ("uid=admin,ou=special users,o=xx.com")
         required Unicode(63)                        securityCredentials;// admin pw
         required Unicode(255)                       organization;       // o=xx.com
+        optional Boolean                            onlySelectedUsers;  // if set to TRUE, then only selected users will use LDAP / external authentication (reads user master data before)
     }
 }

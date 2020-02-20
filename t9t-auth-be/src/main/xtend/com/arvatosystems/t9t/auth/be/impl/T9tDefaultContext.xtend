@@ -23,7 +23,7 @@ import de.jpaw.bonaparte.pojos.api.auth.Permissionset
 import de.jpaw.bonaparte.pojos.api.auth.UserLogLevelType
 
 /** Utility class to provide default UserDTO and TenantDTO in case no other suitable instances are available. */
-public class T9tDefaultContext {
+class T9tDefaultContext {
 
     public static final JwtInfo DEFAULT_JWT = new JwtInfo => [
         userId             = T9tConstants.TECHNICAL_USER_ID

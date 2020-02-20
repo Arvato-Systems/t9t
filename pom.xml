@@ -162,6 +162,8 @@
                 <module>t9t-bpmn-be</module>
                 <module>t9t-bpmn-jpa</module>
 
+                <module>t9t-xml</module>
+
                 <!-- AWS cloud integration -->
                 <module>t9t-base-be-aws</module>
                 <module>t9t-io-be-aws</module>

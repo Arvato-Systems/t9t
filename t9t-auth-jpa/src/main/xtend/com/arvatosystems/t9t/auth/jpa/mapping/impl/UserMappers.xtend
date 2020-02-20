@@ -23,6 +23,7 @@ import com.arvatosystems.t9t.auth.jpa.entities.UserEntity
 import com.arvatosystems.t9t.auth.jpa.mapping.IRoleDTOMapper
 import com.arvatosystems.t9t.auth.jpa.persistence.IRoleEntityResolver
 import com.arvatosystems.t9t.auth.jpa.persistence.IUserEntityResolver
+import com.arvatosystems.t9t.auth.UserKey
 
 @AutoMap42
 class UserMappers {
@@ -35,12 +36,14 @@ class UserMappers {
 //    @AutoHandler("S42")   uses the sapi BE search
     @NeedMapping  // required because the DTO is final
     def void d2eUserDTO(UserEntity entity, UserDTO dto, boolean onlyActive) {
-        entity.roleRef = roleResolver.getRef(dto.roleRef, onlyActive)
+        entity.roleRef       = roleResolver.getRef(dto.roleRef,       onlyActive)
+        entity.supervisorRef = userResolver.getRef(dto.supervisorRef, onlyActive)
     }
 
     @NeedMapping  // required because the DTO is final
     def void e2dUserDTO(UserEntity entity, UserDTO dto) {
         dto.roleRef = roleMapper.mapToDto(entity.roleRef)
+        dto.supervisorRef = if (entity.supervisor !== null) new UserKey(entity.supervisor.objectRef, entity.supervisor.userId)
     }
 
     def void e2dUserDescription(UserEntity entity, UserDescription dto) {

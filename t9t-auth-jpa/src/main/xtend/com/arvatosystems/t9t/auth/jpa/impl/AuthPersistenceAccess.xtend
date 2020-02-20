@@ -200,25 +200,26 @@ class AuthPersistenceAccess implements IAuthPersistenceAccess, T9tConstants {
     def protected UserEntity getUserIgnoringTenant(String userId) {
         val query = userEntityResolver.getEntityManager().createQuery("SELECT e FROM UserEntity e WHERE e.userId = :userId", UserEntity);
         query.setParameter("userId", userId);
-        try {
-            return query.getSingleResult();
-        } catch (NoResultException ex) {
+        val results = query.getResultList();
+        if (results.empty) {
             return null;
         }
+        return results.get(0);
     }
-    
+
     override getUserById(String userId) {
         val userEntity = getUserIgnoringTenant(userId)
-        if (userEntity === null)
+        if (userEntity === null) {
             return null;
+        }
         return Pair.of(userEntity.tenantRef, userEntity.ret$Data)
     }
-    
 
     override getByUserIdAndPassword(Instant now, String userId, String password, String newPassword) {
         val userEntity = getUserIgnoringTenant(userId) // first find the user
-        if (userEntity === null)
+        if (userEntity === null) {
             throw new T9tException(T9tException.USER_NOT_FOUND)
+        }
 
         // are UserTenantRoles even necessary in a jwt token context?
 

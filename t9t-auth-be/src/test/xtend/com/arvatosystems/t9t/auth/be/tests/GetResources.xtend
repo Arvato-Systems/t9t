@@ -20,7 +20,7 @@ import org.junit.Test
 class GetResources {
 
     @Test
-    def public void getIcon() {
+    def void getIcon() {
 
         val keystore = GetResources.getResource("/t9tkeystore.jceks")
         if (keystore === null)

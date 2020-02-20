@@ -48,12 +48,12 @@ import java.util.concurrent.TimeUnit
 @Singleton
 @AddLogger
 class Authorization implements IAuthorize {
-    private static final List<PermissionEntry> EMPTY_PERMISSION_LIST = ImmutableList.of();
-    private static final Cache<Long, List<PermissionEntry>> permissionCache = CacheBuilder.newBuilder.maximumSize(1000L).expireAfterWrite(5L, TimeUnit.MINUTES).build
+    static final List<PermissionEntry> EMPTY_PERMISSION_LIST = ImmutableList.of();
+    static final Cache<Long, List<PermissionEntry>> permissionCache = CacheBuilder.newBuilder.maximumSize(1000L).expireAfterWrite(5L, TimeUnit.MINUTES).build
 
     @Inject IAuthPersistenceAccess authPersistenceAccess
 
-    public new() {
+    new() {
         NO_PERMISSIONS.freeze   // make the set immutable
         ALL_PERMISSIONS.freeze  // make the set immutable
         EXEC_PERMISSION.freeze  // make the set immutable

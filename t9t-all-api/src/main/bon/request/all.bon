@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import api.*
 import t9t.base.api.*
+import t9t.base.search.*
+import t9t.base.output.*
 import t9t.all.*
 
 package (com.arvatosystems) t9t.all.request {
@@ -34,5 +37,9 @@ package (com.arvatosystems) t9t.all.request {
      */
     class SetT9tModuleConfigsRequest            extends RequestParameters {
         required (T9tModuleConfigs...)          moduleConfigs;
+    }
+
+    /** Export User master data. Result set can be limited by searchFilter, a condition on current tenant does always apply (added internally). */
+    class UserExportRequest extends SearchCriteria return SinkCreatedResponse {
     }
 }

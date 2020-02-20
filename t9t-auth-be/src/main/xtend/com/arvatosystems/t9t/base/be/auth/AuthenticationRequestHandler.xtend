@@ -183,11 +183,23 @@ class AuthenticationRequestHandler extends AbstractRequestHandler<Authentication
     def protected dispatch AuthenticationResponse auth(RequestContext ctx, PasswordAuthentication pw, String locale, String zoneinfo) {
         // check for external authentication first
         val ldapConfiguration = ConfigProvider.configuration.ldapConfiguration
-        val authResult =  if (ldapConfiguration !== null) {
-            externalAuthentication.externalAuth(ctx, pw)
-        } else {
+        val authResult = if (ldapConfiguration === null) {
             // internal authentication
             persistenceAccess.getByUserIdAndPassword(ctx.executionStart, pw.userId, pw.password, pw.newPassword)
+        } else {
+            // always external authentication (pass UserDTO as null)
+            val user = persistenceAccess.getUserById(pw.userId);
+            if (user === null) {
+                LOGGER.debug("No master data record for userId {} - declining access", pw.userId)
+                return null  // throw new T9tException(T9tException.USER_NOT_FOUND);
+            }
+            if (Boolean.TRUE != ldapConfiguration.onlySelectedUsers || Boolean.TRUE == user.value.externalAuth) {
+                // all users authenticated by external auth, or external auth configured for this user
+                externalAuthentication.externalAuth(ctx, pw, user)
+            } else {
+                // internal authentication for this user
+                persistenceAccess.getByUserIdAndPassword(ctx.executionStart, pw.userId, pw.password, pw.newPassword)
+            }
         }
         if (authResult === null || (authResult.returnCode != 0 && authResult.returnCode != T9tException.PASSWORD_EXPIRED)) {
             LOGGER.debug("Incorrect authentication for userId {}", pw.userId)

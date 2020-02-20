@@ -32,12 +32,8 @@ public class ExternalAuthentication implements IExternalAuthentication {
     protected final IAuthPersistenceAccess persistenceAccess = Jdp.getRequired(IAuthPersistenceAccess.class);
 
     @Override
-    public AuthIntermediateResult externalAuth(RequestContext ctx, PasswordAuthentication pw) {
-        final Pair<Long, UserDTO> user = persistenceAccess.getUserById(pw.getUserId());
+    public AuthIntermediateResult externalAuth(RequestContext ctx, PasswordAuthentication pw, Pair<Long, UserDTO> user) {
         // the default provider required the user to exist in our local DB (for permissions)
-        if (user == null) {
-            throw new T9tException(T9tException.USER_NOT_FOUND);
-        }
         final AuthIntermediateResult resp = new AuthIntermediateResult();
         resp.setTenantRef(user.getKey());
         resp.setUser(user.getValue());

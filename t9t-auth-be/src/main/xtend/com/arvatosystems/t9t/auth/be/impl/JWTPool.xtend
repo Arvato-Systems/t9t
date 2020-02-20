@@ -25,7 +25,7 @@ import de.jpaw.dp.Singleton
 @Singleton
 class JWTPool implements IJWT {
 
-    private val pool = new ThreadLocal<IJWT>();
+    val pool = new ThreadLocal<IJWT>();
 
     // for injections where you are sure you have per thread scope as well
     def private get() {

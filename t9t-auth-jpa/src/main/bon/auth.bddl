@@ -56,8 +56,9 @@ package (com.arvatosystems) t9t.auth.jpa.entities owner fortytwo prefix p28 {
         tenantClass InternalTenantRef42
         pk (objectRef)
         index unique (userId)
-        @ManyToOne  RoleEntity roleE EAGER for (roleRef) // must be EAGER due to optional field
-        @Embeddable PermissionsEmbeddable  for permissions
+        @ManyToOne  RoleEntity roleE       EAGER for (roleRef) // must be EAGER due to optional field
+        @ManyToOne  UserEntity supervisor  LAZY  for (supervisorRef)
+        @Embeddable PermissionsEmbeddable        for permissions
     }
 
     entity RoleToPermissionEntity category cfg is RoleToPermissionDTO tablename p42_cfg_role_to_permissions historytablename p42_his_role_to_permissions {

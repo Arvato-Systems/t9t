@@ -24,7 +24,7 @@ import de.jpaw.dp.Inject
 import de.jpaw.bonaparte.annotations.FieldMapper
 import com.arvatosystems.t9t.authc.api.UserData
 
-class AbstractGetUserDataRequestHandler<T extends RequestParameters> extends AbstractReadOnlyRequestHandler<T> {
+abstract class AbstractGetUserDataRequestHandler<T extends RequestParameters> extends AbstractReadOnlyRequestHandler<T> {
     @Inject
     protected IUserResolver resolver
 
