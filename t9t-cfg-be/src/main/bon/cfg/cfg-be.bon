@@ -81,11 +81,11 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         required int                                defaultKeyChunkSize;            // how many PK values to fetch at a time? (i.e. sequence scaling)
         required int                                prefetchedKeyChunkSize;         // how many PK values to fetch at a time for entities with prefetching?
         required int                                numKeyFetchThreads;             // how many threads are actively fetching keys?
-        // maps not yet supported by XML                                            
+        // maps not yet supported by XML
         //required Int required Map<Integer>          prefetchByRtti;                 // how many key values to prefetch for a given RTTI?
     }
 
-    class Bpm2Configuration {                                                       
+    class Bpm2Configuration {
         optional Boolean                            jobExecutorEnabled;             // Enable background BPMN job execution on this node? (default=true)
         optional Integer                            jobExecutorQueueSize;           // Job executor queue size (default=3)
         optional Integer                            jobExecutorMinWorker;           // Job executor thread pool min size (default=3)

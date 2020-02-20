@@ -27,7 +27,7 @@ import de.jpaw.util.ApplicationException;
 
 /**
  * Creates JSON output with @PQON information where required.
- * 
+ *
  * enums are output as ordinal and token by default.
  * enums are output using instance names if SinkCfgDTo.genericParameter2 = "1"
  *

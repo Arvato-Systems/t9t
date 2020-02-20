@@ -46,8 +46,8 @@ import de.jpaw.dp.Provider;
 /** base implementation of the IEntityMapper42 interface, only suitable for simple configuration data tables */
 public abstract class AbstractEntityMapper<KEY extends Serializable, DTO extends BonaPortable, TRACKING extends TrackingBase, ENTITY extends BonaPersistableKey<KEY> & BonaPersistableTracking<TRACKING>>
   implements IEntityMapper<KEY, DTO, TRACKING, ENTITY> {
-	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractEntityMapper.class);
-	protected static final String SEARCH_PREFIX_PROPERTY = "searchprefix";
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractEntityMapper.class);
+    protected static final String SEARCH_PREFIX_PROPERTY = "searchprefix";
     protected static final Map<String, String> NO_GRAPH = Collections.emptyMap();
 
     //@Inject
