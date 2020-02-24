@@ -53,14 +53,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
-            <artifactId>camel-aws</artifactId>
-            <exclusions>
-                 <!-- exclude legacy / buggy logging -->
-                 <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-            </exclusions>
+            <artifactId>camel-aws-s3</artifactId>
         </dependency>
         <!-- use preferred logging -->
         <dependency>

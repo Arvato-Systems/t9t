@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.in.be.camel
+package com.arvatosystems.t9t.in.be.camel;
 
-import de.jpaw.annotations.AddLogger
-import java.util.Map
-import org.apache.camel.Component
-import org.apache.camel.impl.DefaultComponent
+import java.util.Map;
 
-@AddLogger
-class CamelT9tComponent extends DefaultComponent implements Component {
+import org.apache.camel.Component;
+import org.apache.camel.support.DefaultComponent;
 
-    override protected createEndpoint(String uri, String remaining, Map<String, Object> parameters) throws Exception {
-        val endpoint = new CamelT9tEndpoint(uri, this, remaining)
-        setProperties(endpoint, parameters)
-        return endpoint
+public class CamelT9tComponent extends DefaultComponent implements Component {
+
+    @Override
+    protected CamelT9tEndpoint createEndpoint(String uri, String remaining, Map<String, Object> parameters) throws Exception {
+        final CamelT9tEndpoint endpoint = new CamelT9tEndpoint(uri, this, remaining);
+        setProperties(endpoint, parameters);
+        return endpoint;
     }
 }

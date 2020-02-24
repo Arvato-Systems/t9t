@@ -19,7 +19,8 @@ import de.jpaw.annotations.AddLogger
 import org.apache.camel.Consumer
 import org.apache.camel.Processor
 import org.apache.camel.Producer
-import org.apache.camel.impl.DefaultEndpoint
+import org.apache.camel.support.DefaultEndpoint
+
 /**
  * CamelT9tEndpoint for the 't9t:*' camel component
  * To be noted: If any additional parameters should be added to the camel route (as in t9t:ROUTE?apiKey=* )
@@ -32,7 +33,7 @@ class CamelT9tEndpoint extends DefaultEndpoint {
     /*
      * Defines the APIKey
      */
-    private String apiKey =""
+    String apiKey =""
 
     new() {
     }
@@ -40,11 +41,6 @@ class CamelT9tEndpoint extends DefaultEndpoint {
     new(String uri, CamelT9tComponent component, String url) {
         super(uri, component);
         LOGGER.info("Created a t9t camel endpoint for URI {}, remaining = {}", uri, url)
-    }
-
-    @Deprecated
-    new(String endpointUri) {
-        super(endpointUri);
     }
 
     override Producer createProducer() throws Exception {

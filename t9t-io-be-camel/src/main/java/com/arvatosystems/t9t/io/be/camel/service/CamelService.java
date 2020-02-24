@@ -21,7 +21,9 @@ import java.util.List;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.ServiceStatus;
+import org.apache.camel.model.ModelCamelContext;
 import org.apache.camel.model.RouteDefinition;
+import org.apache.camel.spi.RouteController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,15 +82,17 @@ public class CamelService {
 
             LOGGER.debug("Try to stop and remove all routes for data sink id {}", dataSink.getDataSinkId());
             final List<String> routeIds = GenericT9tRoute.getPossibleRouteIds(dataSink);
+            final RouteController routeController = context.getRouteController();
 
             for (String routeId : routeIds) {
-                if (context.getRoute(routeId) != null
-                    && (context.getRouteStatus(routeId) == ServiceStatus.Started
-                        || context.getRouteStatus(routeId) == ServiceStatus.Starting
-                        || context.getRouteStatus(routeId) == ServiceStatus.Suspended
-                        || context.getRouteStatus(routeId) == ServiceStatus.Suspending)) {
-                    LOGGER.debug("Stop route id {}", routeId);
-                    context.stopRoute(routeId);
+                if (context.getRoute(routeId) != null) {
+                    if (routeController.getRouteStatus(routeId) == ServiceStatus.Started
+                     || routeController.getRouteStatus(routeId) == ServiceStatus.Starting
+                     || routeController.getRouteStatus(routeId) == ServiceStatus.Suspended
+                     || routeController.getRouteStatus(routeId) == ServiceStatus.Suspending) {
+                        LOGGER.debug("Stop route id {}", routeId);
+                        routeController.stopRoute(routeId);
+                    }
                 }
             }
 
@@ -101,11 +105,12 @@ public class CamelService {
                 }
             }
 
+            final ModelCamelContext mcc = context.adapt(ModelCamelContext.class);
             for (String routeId : routeIds) {
-                final RouteDefinition routeDefinition = context.getRouteDefinition(routeId);
+                final RouteDefinition routeDefinition = mcc.getRouteDefinition(routeId);
                 if (routeDefinition != null) {
                     LOGGER.debug("Remove route definition {}", routeId);
-                    context.removeRouteDefinition(routeDefinition);
+                    mcc.removeRouteDefinition(routeDefinition);
                 }
             }
         } catch (Exception e) {

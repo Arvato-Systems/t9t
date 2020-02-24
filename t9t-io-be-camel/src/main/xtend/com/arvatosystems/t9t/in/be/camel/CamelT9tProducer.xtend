@@ -31,13 +31,13 @@ import java.util.HashMap
 import java.util.Map
 import java.util.UUID
 import org.apache.camel.Exchange
-import org.apache.camel.impl.DefaultProducer
-import org.joda.time.LocalDateTime
-import org.apache.commons.io.FilenameUtils
+import org.apache.camel.support.DefaultProducer
 import org.apache.commons.io.FileUtils
+import org.apache.commons.io.FilenameUtils
+import org.joda.time.LocalDateTime
 
 @AddLogger
-class CamelT9tProducer extends DefaultProducer{
+class CamelT9tProducer extends DefaultProducer {
 
     @Inject
     IFileUtil fileUtil;

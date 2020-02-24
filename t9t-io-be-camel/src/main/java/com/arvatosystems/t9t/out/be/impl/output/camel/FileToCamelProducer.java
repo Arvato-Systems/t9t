@@ -88,7 +88,7 @@ public class FileToCamelProducer implements IFileToCamelProducer {
 
         ProducerTemplate producerTemplate = camelContext.get().createProducerTemplate();
         File file = new File(fileName);
-        GenericFile<File> genericFile = FileConsumer.asGenericFile("test", file, null);
+        GenericFile<File> genericFile = FileConsumer.asGenericFile("test", file, sinkCfg.getOutputEncoding(), false);
         Map<String, Object> headerMap = new HashMap<String, Object>();
         headerMap.put("fileName", fileName);
         headerMap.put("fileType", fileType);
