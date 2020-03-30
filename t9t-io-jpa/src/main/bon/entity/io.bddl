@@ -36,6 +36,7 @@ package (com.arvatosystems) t9t.io.jpa.entities owner fortytwo prefix p28 {
         pk (objectRef)
         index unique (tenantRef, dataSinkId)
         @ManyToOne CsvConfigurationEntity csvConfiguration LAZY for (csvConfigurationRef)
+        @ManyToOne DataSinkEntity         responseDataSink LAZY for (responseDataSinkRef)
         //@ManyToOne AsyncChannelEntity     asyncChannel     LAZY for (csvConfigurationRef)
     }
 

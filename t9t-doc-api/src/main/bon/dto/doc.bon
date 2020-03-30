@@ -55,6 +55,7 @@ package (com.arvatosystems) t9t.doc {
 
     /** Configuration for additional email copy addresses / replacement addresses.
      * Exists for the basic document configuration and possibly also per language.
+     * If "replaceTo" is true and "extraTo" is null or empty, no email will be sent.
      */
     final class DocEmailReceiverDTO {
         optional Unicode(160)                       emailSubject;                                       // subject line which may contain macros as ${} (subjectIsComponent = false) or names a component which defines the subject

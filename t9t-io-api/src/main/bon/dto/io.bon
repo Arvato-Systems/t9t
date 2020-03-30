@@ -219,6 +219,7 @@ package (com.arvatosystems) t9t.io {
         //optional (AsyncChannelRef..., AsyncChannelDTO)  copyToAsyncChannel properties ref, dropdown="asyncChannelId";        // may reference some async channel to mirror requests to
         optional t9tShortId                             copyToAsyncChannel;         // may reference some async channel to mirror requests to
         optional Boolean                                camelFormatIsFmtRoute;      // if the parameter camelRoute contains a valid formatted camel route string instead of only an ID (see parameter camelRoute)
+        optional (DataSinkRef..., DataSinkKey)          responseDataSinkRef         properties ref, dropdown="dataSinkId", searchprefix="dataSink";  // only for input data sinks: the output data sink for a response file
     }
 
     /** Records all asynchronous outgoing communication. For every file created, there is one entry of this type.
@@ -284,6 +285,11 @@ package (com.arvatosystems) t9t.io {
         required Unicode(255)                           fileOrQueueName;    // file name (including optional date/time pattern) or queue name
         required xenum MediaXType                       commFormatType;     // filled from configuration lookup
         required Binary(11500000)                       data;               // must be less than maxMessage size in length, when base64 encoded,
+    }
+
+    /** Simplest possible response data type, containing a single line of text only. */
+    class Text {
+        required Unicode(1000)                          text;
     }
 
     // Configuration for asynchronous messages

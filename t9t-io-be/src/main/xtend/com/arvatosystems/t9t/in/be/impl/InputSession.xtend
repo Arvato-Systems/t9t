@@ -30,6 +30,8 @@ import com.arvatosystems.t9t.io.DataSinkDTO
 import com.arvatosystems.t9t.io.DataSinkKey
 import com.arvatosystems.t9t.io.DataSinkRef
 import com.arvatosystems.t9t.io.SinkDTO
+import com.arvatosystems.t9t.io.request.CheckSinkFilenameUsedRequest
+import com.arvatosystems.t9t.io.request.CheckSinkFilenameUsedResponse
 import com.arvatosystems.t9t.io.request.DataSinkCrudRequest
 import com.arvatosystems.t9t.io.request.StoreSinkRequest
 import com.arvatosystems.t9t.server.services.IStatefulServiceSession
@@ -44,18 +46,22 @@ import de.jpaw.dp.Inject
 import de.jpaw.dp.Jdp
 import de.jpaw.util.ApplicationException
 import java.io.InputStream
+import java.util.ArrayList
 import java.util.HashMap
+import java.util.List
 import java.util.Map
 import java.util.UUID
 import java.util.concurrent.atomic.AtomicInteger
 import org.joda.time.Instant
-import com.arvatosystems.t9t.io.request.CheckSinkFilenameUsedRequest
-import com.arvatosystems.t9t.io.request.CheckSinkFilenameUsedResponse
+import com.arvatosystems.t9t.io.request.ImportStatusResponse
+import com.arvatosystems.t9t.io.request.WriteRecordsToDataSinkRequest
 
 // this class operates outside of a RequestContext!
 @AddLogger
 @Dependent
 class InputSession implements IInputSession {
+    static final int MAX_RESPONSES = 1000;  // maximum number of responses which are buffered
+
     @Inject IStatefulServiceSession session // holds the backend connection
     protected final AtomicInteger numSource = new AtomicInteger // unmapped records
     protected final AtomicInteger numProcessed = new AtomicInteger // mapped records
@@ -69,6 +75,7 @@ class InputSession implements IInputSession {
     protected final Map<String, Object> headerData = new HashMap<String, Object>();
     protected String sourceReference = null;
     protected boolean isDuplicateImport = false;
+    protected List<BonaPortable> responseBuffer = null;
 
     override open(String dataSourceId, UUID apiKey, String sourceURI, Map<String, Object> params) {
         LOGGER.info("Opening input session for dataSource ID {}, source URI {}", dataSourceId, sourceURI)
@@ -127,6 +134,10 @@ class InputSession implements IInputSession {
             inputTransformer = new IdentityTransformer()
         }
         inputTransformer.open(this, dataSinkCfg, session, params, baseBClass)
+
+        if (dataSinkCfg.responseDataSinkRef !== null) {
+            responseBuffer = new ArrayList<BonaPortable>(MAX_RESPONSES);
+        }
 
         sinkDTO.plannedRunDate  = start
         sinkDTO.commTargetChannelType = dataSinkCfg.commTargetChannelType
@@ -201,9 +212,42 @@ class InputSession implements IInputSession {
 
         numProcessed.incrementAndGet
         val result = session.execute(rp)
-        if (!ApplicationException.isOk(result.returnCode))
+        if (!ApplicationException.isOk(result.returnCode)) {
             numError.incrementAndGet
+        }
+        if (result instanceof ImportStatusResponse) {
+            if (result.responses !== null) {
+                if (!result.responses.empty) {
+                    addOrFlushResponses(result.responses)
+                }
+            }
+        }
         return result
+    }
+
+    /** Store additional responses, or flush the stored responses. */
+    def protected void addOrFlushResponses(List<BonaPortable> newResponses) {
+        if (responseBuffer === null) {
+            // no buffer: no response data sink => nothing to do
+            return
+        }
+        if (newResponses !== null) {
+            // there is a response data sink, and we have at least one new record to store and this is not the flush operation
+            if (newResponses.size + responseBuffer.size <= MAX_RESPONSES) {
+                // just buffer it, we take care later
+                responseBuffer.addAll(newResponses)
+                return
+            }
+            // fall through to write / flush because we have too many now
+        }
+        // we have stored records, and new ones, and want to write them now
+        val writeResponsesRequest = new WriteRecordsToDataSinkRequest => [
+            dataSinkId = (dataSinkCfg.responseDataSinkRef as DataSinkKey).dataSinkId
+            records1 = responseBuffer
+            records2 = newResponses
+        ]
+        session.execute(writeResponsesRequest)
+        responseBuffer.clear
     }
 
     override close() {
@@ -213,6 +257,9 @@ class InputSession implements IInputSession {
         // terminate the transformer. Flush it first
         inputTransformer.close
         inputFormatConverter.close
+
+        // write any remaining response records
+        addOrFlushResponses(null);
 
         // calculate statistics and write the sink record
         val end = System.currentTimeMillis

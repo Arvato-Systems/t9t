@@ -59,13 +59,33 @@ package (com.arvatosystems) t9t.io.request {
         required (SinkDTO...)                       dataSink;                   // only used internally to store the result of an import
     }
 
-    /** Invocation allows to output a simple header/footer document with no data items included.
+    /**
+     * Invocation allows to output a simple header/footer document with no data items included.
      * In some cases it will be an empty file, but still useful to see generated filenames or test connectivity.
      * Intended to be used from the configuration UI, but also for remote tests.
      */
     class DataSinkTestRequest extends RequestParameters return SinkCreatedResponse {
         required dataSinkId                         dataSinkId;                  // every data output is assigned a name
         required int                                numDataRecords;              // number of data records to send (0..n)
+    }
+
+    /**
+     * Request to write some object records to a data sink. Used by the InputSession to create response files. 
+     */
+    class WriteRecordsToDataSinkRequest extends RequestParameters return SinkCreatedResponse {
+        required dataSinkId                         dataSinkId;                  // every data output is assigned a name
+        required Object List<>                      records1;                    // first list of records
+        required Object List<>                      records2;                    // second list of records
+    }
+
+    /** Dummy request for testing, which echoes the parameters  */
+    class ImportStatusRequest extends RequestParameters return ImportStatusResponse {
+        required Object List<>                      responses;          // every list entry creates one response record 
+    }
+
+    /** Response type for return messages which should be written to the response data sink. */
+    class ImportStatusResponse extends ServiceResponse {
+        required Object List<>                      responses;          // every list entry creates one response record 
     }
 
     /** Request which can be used to download a file.
