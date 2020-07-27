@@ -28,11 +28,13 @@ target/
 bin/
 test-output/
 
-generated/
-# don't ignore generated SQL files, unless they start with p42_
-# */src/generated/java
-# */src/generated/resources
-# */src/generated/sql/*/*/p42_*
+# generated/
+*/src/generated/java
+*/src/generated/sql
+*/src/generated/resources/bonaparte.jpa
+# */src/generated/resources/xsd wanted
+# */src/generated/resources/(java-packages) wanted
+
 
 # generated files within XText / XTend projects that are used a eclipse source folders
 src-gen/

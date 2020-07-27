@@ -98,8 +98,7 @@ public abstract class AbstractConfigCache42<DTO extends Ref, TRACKING extends Tr
     protected Map<Ref, DTO> readWholeTenant(Long tenantRef) {
         TypedQuery<ENTITY> query = resolver.getEntityManager().createQuery(
                 "SELECT s FROM " + resolver.getBaseJpaEntityClass().getSimpleName()
-                + " s WHERE s.isActive = :active AND s.tenantRef = :tenantRef", resolver.getEntityClass());
-        query.setParameter("active", true);
+                + " s WHERE s.tenantRef = :tenantRef", resolver.getEntityClass());
         query.setParameter("tenantRef", tenantRef);
         queryHintSetter.setComment(query, "RefreshCache" + dtoClass.getSimpleName());
         queryHintSetter.setReadOnly(query);
