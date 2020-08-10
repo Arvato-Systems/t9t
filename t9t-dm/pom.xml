@@ -22,7 +22,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-build</artifactId>
-        <version>4.14.2</version>
+        <version>4.15-SNAPSHOT</version>
     </parent>
 
     <artifactId>t9t-dm</artifactId>
@@ -653,12 +653,6 @@
             </dependency>
 
             <!-- SQL files -->
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-sql-migration</artifactId>
-                <version>${project.version}</version>
-                <classifier>sql</classifier>
-            </dependency>
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-auth-jpa</artifactId>

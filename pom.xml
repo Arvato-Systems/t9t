@@ -22,12 +22,12 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>global-build</artifactId>
-        <version>4.14.2</version>
+        <version>4.15-SNAPSHOT</version>
         <relativePath />
     </parent>
 
     <artifactId>t9t-build</artifactId>
-    <version>4.14.2</version>
+    <version>4.15-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>Build instructions for t9t</description>
 
@@ -174,7 +174,6 @@
                 <module>t9t-demo-be</module>
 
                 <module>t9t-sql</module>
-                <module>t9t-sql-migration</module>
                 <module>t9t-sql-migration-executor</module>
 
                 <module>t9t-vertx-cluster</module>
