@@ -186,6 +186,7 @@ class T9tServer extends AbstractVerticle {
                 listen(tcpPort)
             ]
         }
+        Jdp.bindInstanceTo(vertx, Vertx)
         Jdp.bindInstanceTo(vertx.eventBus, EventBus)
         AsyncProcessor.register(vertx)
     }

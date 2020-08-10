@@ -161,10 +161,14 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
             if (rq.getIfEntryExists() == WorkflowActionEnum.NO_ACTIVITY) {
                 return existingEntity.getObjectRef();
             }
-            // null or RUN: default action
-            if (Boolean.TRUE.equals(rq.getRestartAtBeginningIfExists())) {
+            // PRIO 1: set next step explicitly if defined
+            if(rq.getWorkflowStep()!=null) {
+                existingEntity.setNextStep(rq.getWorkflowStep());
+            } // PRIO 2: else if RestartAtBeginning set next step to null
+            else if (Boolean.TRUE.equals(rq.getRestartAtBeginningIfExists())) {
                 existingEntity.setNextStep(null);  // reset to beginning
             }
+            // ELSE resume at current position (RUN: default action)
 
             existingEntity.setCurrentParameters(dto.getCurrentParameters());
             existingEntity.setYieldUntil(dto.getYieldUntil());

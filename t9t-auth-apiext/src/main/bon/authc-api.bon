@@ -120,4 +120,11 @@ package (com.arvatosystems) t9t.authc.api {
         required userId                             userId;         // userId of the user who wants a new password
         required emailAddress                       emailAddress;   // email address for security
     }
+
+    /** Retrieves the API Key for a password reset request. Used by web UIs. */
+    class GetPasswordResetApiKeyRequest extends RequestParameters return GetPasswordResetApiKeyResponse {}
+
+    class GetPasswordResetApiKeyResponse extends ServiceResponse {
+        optional Uuid                               apiKey;
+    }
 }

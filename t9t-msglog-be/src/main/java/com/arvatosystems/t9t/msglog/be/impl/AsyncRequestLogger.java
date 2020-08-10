@@ -32,6 +32,8 @@ import org.slf4j.LoggerFactory;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceRequestHeader;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
+import com.arvatosystems.t9t.cfg.be.ConfigProvider;
+import com.arvatosystems.t9t.cfg.be.LogWriterConfiguration;
 import com.arvatosystems.t9t.msglog.MessageDTO;
 import com.arvatosystems.t9t.msglog.services.IMsglogPersistenceAccess;
 import com.arvatosystems.t9t.server.ExecutionSummary;
@@ -52,6 +54,7 @@ public class AsyncRequestLogger implements IRequestLogger {
     private static final MessageDTO SHUTDOWN_RQ = new MessageDTO();
 
     // tunable parameters
+    private static final int DEFAULT_ALERT_ON_QUEUE_SIZE            = 1000; // max num of entries in queue before alert is triggered
     private static final int MAX_ELEMENTS_PER_BATCH                 = 200;  // max num of requests to log at a time
     private static final int MIN_ELEMENTS_FOR_RERUN                 = 100;  // if min. this num of requests had to be processed, rerun immediately!
 
@@ -60,11 +63,14 @@ public class AsyncRequestLogger implements IRequestLogger {
 
     private final AtomicInteger countGood = new AtomicInteger();
     private final AtomicInteger countErrors = new AtomicInteger();
+    private final AtomicInteger countCheck = new AtomicInteger();
     private final AtomicLong totalTime = new AtomicLong();
 
     private final LinkedTransferQueue<MessageDTO> queue = new LinkedTransferQueue<>();
     private ExecutorService executor;
     private Future<Boolean> writerResult;
+    private LogWriterConfiguration logWriterConfiguration;
+    private int alertOnQueueSize;
     private final IMsglogPersistenceAccess persistenceAccess = Jdp.getRequired(IMsglogPersistenceAccess.class);
 
     private class WriterThread implements Callable<Boolean> {
@@ -92,7 +98,16 @@ public class AsyncRequestLogger implements IRequestLogger {
                         if (num > 0) {
                             count += num;
                             LOGGER.info("Logging {} messages to disk", num);
+                            long beforeWrite = System.currentTimeMillis();
                             persistenceAccess.write(workPool);
+                            if (logWriterConfiguration.getMaxWriteTimeInMillis() != null) {
+                                long writingTime = System.currentTimeMillis() - beforeWrite;
+                                if (writingTime < logWriterConfiguration.getMaxWriteTimeInMillis().longValue()) {
+                                    LOGGER.debug("Writing {} entries took {} ms - GREEN", num, writingTime);
+                                } else {
+                                    LOGGER.warn("Writing {} entries took {} ms", num, writingTime);
+                                }
+                            }
                             if (num < MIN_ELEMENTS_FOR_RERUN) {
                                 // do not attempt to rerun now
                                 workPool.clear();
@@ -119,6 +134,11 @@ public class AsyncRequestLogger implements IRequestLogger {
         // launch a separate thread which continuously drains the transfer queue
         executor = Executors.newSingleThreadExecutor(call -> new Thread(call, "t9t-MsgLog"));
         writerResult = executor.submit(new WriterThread());
+        logWriterConfiguration = ConfigProvider.getConfiguration().getLogWriterConfiguration();
+        if (logWriterConfiguration == null) {
+            logWriterConfiguration = new LogWriterConfiguration();  // create a default one, to avoid double null checks
+        }
+        alertOnQueueSize = logWriterConfiguration.getAlertOnQueueSize() == null ? DEFAULT_ALERT_ON_QUEUE_SIZE : logWriterConfiguration.getAlertOnQueueSize().intValue();
     }
 
     @Override
@@ -155,6 +175,19 @@ public class AsyncRequestLogger implements IRequestLogger {
         m.setErrorDetails               (summary.getErrorDetails());
 
         queue.put(m);
+        if (logWriterConfiguration.getAlertInterval() != null) {
+            int alertCounter = countCheck.incrementAndGet();
+            if (alertCounter >= logWriterConfiguration.getAlertInterval().intValue()) {
+                // must check queue size
+                countCheck.set(0);  // reset
+                int currentQueueSize = queue.size();
+                if (currentQueueSize <= alertOnQueueSize) {
+                    LOGGER.debug("Log message queue size is currently {} - GREEN", currentQueueSize);
+                } else {
+                    LOGGER.warn("Log message queue size is currently {}", currentQueueSize);
+                }
+            }
+        }
     }
 
     @Override

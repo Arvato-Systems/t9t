@@ -215,7 +215,7 @@ class RequestProcessor implements IRequestProcessor {
                     try {
                         // request authorization - we are now within request context and can query the DB!
                         val permissions = authorizator.getPermissions(ihdr.jwtInfo, PermissionType.BACKEND, rq.ret$PQON)
-                        LOGGER.debug("Backend execution permissions checked for request {}, got {}", rq.ret$PQON, permissions)
+                        LOGGER.trace("Backend execution permissions checked for request {}, got {}", rq.ret$PQON, permissions)
                         if (!permissions.contains(OperationType.EXECUTE)) {
                             return new ServiceResponse => [
                                 returnCode          = T9tException.NOT_AUTHORIZED
@@ -236,7 +236,7 @@ class RequestProcessor implements IRequestProcessor {
                                     processRef          = ihdr.processRef
                                 ]
                             } else {
-                                LOGGER.debug("Also obtained additional permission {}", requiredPermission)
+                                LOGGER.trace("Also obtained additional permission {}", requiredPermission)
                             }
                         }
                     } catch (Exception e) {

@@ -230,7 +230,7 @@ public class RequestContext extends AbstractRequestContext {
     /** Releases all locks held by this context. */
     public void releaseAllLocks() {
         if (!OWNED_JVM_LOCKS.isEmpty())
-            LOGGER.debug("Releasing locks on {} refs", OWNED_JVM_LOCKS.size());
+            LOGGER.trace("Releasing locks on {} refs", OWNED_JVM_LOCKS.size());
         for (Semaphore sem : OWNED_JVM_LOCKS.values())
             sem.release();
         OWNED_JVM_LOCKS.clear();
@@ -244,18 +244,18 @@ public class RequestContext extends AbstractRequestContext {
                 final Semaphore globalSem = GLOBAL_JVM_LOCKS.get(ref, () -> new Semaphore(1, true));  // get a global Semaphore, or create one if non exists
                 if (!globalSem.tryAcquire(timeoutInMillis, TimeUnit.MILLISECONDS)) {
                     final String msg = ref + " after " + timeoutInMillis + " milliseconds";
-                    LOGGER.error("Could not acquire JVM lock on {}", msg);
+                    LOGGER.warn("Could not acquire JVM lock on {}", msg);
                     throw new T9tException(T9tException.COULD_NOT_ACQUIRE_LOCK, msg);
                 }
-                LOGGER.debug("Acquired JVM lock on ref {}", ref);
+                LOGGER.trace("Acquired JVM lock on ref {}", ref);
                 return globalSem;
             } catch (ExecutionException e) {
                 final String msg = ref + " after " + timeoutInMillis + " milliseconds due to ExecutionException " + ExceptionUtil.causeChain(e);
-                LOGGER.error("Could not acquire JVM lock on {}", msg);
+                LOGGER.warn("Could not acquire JVM lock on {}", msg);
                 throw new T9tException(T9tException.COULD_NOT_ACQUIRE_LOCK, msg);
             } catch (InterruptedException e) {
                 final String msg = ref + " after " + timeoutInMillis + " milliseconds due to InterruptedException " + ExceptionUtil.causeChain(e);
-                LOGGER.error("Could not acquire JVM lock on {}", msg);
+                LOGGER.warn("Could not acquire JVM lock on {}", msg);
                 throw new T9tException(T9tException.COULD_NOT_ACQUIRE_LOCK, msg);
             }
         });

@@ -42,7 +42,7 @@ public class ExecuteProcessWithRefRequestHandler extends AbstractRequestHandler<
         newStatus.setTargetObjectRef(rq.getTargetObjectRef());
         newStatus.setCurrentParameters(rq.getInitialParameters() != null ? rq.getInitialParameters() : pd.getInitialParams());
         newStatus.setYieldUntil(rq.getInitialDelay() != null ? ctx.executionStart.plus(rq.getInitialDelay() * 1000L) : ctx.executionStart);
-
+        newStatus.setNextStep(rq.getWorkflowStep());
         // handle restartAtBeginning; potential request parameter overrules process definition config
         if (rq.getRestartAtBeginningIfExists()==null) {
             rq.setRestartAtBeginningIfExists(pd.getAlwaysRestartAtStep1());

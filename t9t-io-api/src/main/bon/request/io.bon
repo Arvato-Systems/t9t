@@ -70,7 +70,7 @@ package (com.arvatosystems) t9t.io.request {
     }
 
     /**
-     * Request to write some object records to a data sink. Used by the InputSession to create response files. 
+     * Request to write some object records to a data sink. Used by the InputSession to create response files.
      */
     class WriteRecordsToDataSinkRequest extends RequestParameters return SinkCreatedResponse {
         required dataSinkId                         dataSinkId;                  // every data output is assigned a name
@@ -80,12 +80,12 @@ package (com.arvatosystems) t9t.io.request {
 
     /** Dummy request for testing, which echoes the parameters  */
     class ImportStatusRequest extends RequestParameters return ImportStatusResponse {
-        required Object List<>                      responses;          // every list entry creates one response record 
+        required Object List<>                      responses;          // every list entry creates one response record
     }
 
     /** Response type for return messages which should be written to the response data sink. */
     class ImportStatusResponse extends ServiceResponse {
-        required Object List<>                      responses;          // every list entry creates one response record 
+        required Object List<>                      responses;          // every list entry creates one response record
     }
 
     /** Request which can be used to download a file.

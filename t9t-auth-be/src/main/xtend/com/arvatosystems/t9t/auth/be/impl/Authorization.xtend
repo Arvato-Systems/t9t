@@ -60,7 +60,7 @@ class Authorization implements IAuthorize {
     }
 
     override getPermissions(JwtInfo jwtInfo, PermissionType permissionType, String resource1) {
-        LOGGER.debug("Permission requested for user {}, tenant {}, type {}, resource {}", jwtInfo.userId, jwtInfo.tenantId, permissionType, resource1);
+        LOGGER.trace("Permission requested for user {}, tenant {}, type {}, resource {}", jwtInfo.userId, jwtInfo.tenantId, permissionType, resource1);
 
         val resource =
             if (permissionType == PermissionType.BACKEND) {

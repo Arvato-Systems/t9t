@@ -124,6 +124,7 @@ public class T9tException extends ApplicationException {
     public static final int RESOLVE_ACCESS = OFFSET + 120;
     public static final int RESOLVE_PARAMETER = OFFSET + 121;
     public static final int RESOLVE_BAD_CLASS = OFFSET + 122;
+    public static final int ERROR_FILLING_RESTRICTION_CACHE = OFFSET + 123;
 
     // Codes specific to sorting
     public static final int UNRECOGNIZED_SORT_PARAMETER = OFFSET + 130;
@@ -381,6 +382,7 @@ public class T9tException extends ApplicationException {
             codeToDescription.put(RESOLVE_ACCESS, "key resolver access problem - key columns must be public");
             codeToDescription.put(RESOLVE_PARAMETER, "illegal parameter in key resolver");
             codeToDescription.put(RESOLVE_BAD_CLASS, "Bad class passed to key resolver (candidates must be final and not an interface)");
+            codeToDescription.put(ERROR_FILLING_RESTRICTION_CACHE, "Exception while filling the restriction cache");
 
             codeToDescription.put(UNRECOGNIZED_SORT_PARAMETER, "Passed sortring parameter is unknown.");
             codeToDescription.put(INCORRECT_RESPONSE_CLASS, "The result class was not of the expected type");

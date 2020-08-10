@@ -22,6 +22,7 @@ import static org.apache.commons.lang3.StringUtils.substring;
 import static org.apache.commons.lang3.StringUtils.trimToNull;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -73,15 +74,20 @@ public class AbstractFormatGeneratorXml extends AbstractFormatGenerator {
             return new QName(xmlDefaultNamespace, id, xmlNamespacePrefix);
     }
 
+    // writes the default namespace
+    protected void setDefaultNamespace() throws XMLStreamException {
+        if (xmlDefaultNamespace != null) {
+            writer.setDefaultNamespace(xmlDefaultNamespace);
+        }
+    }
+
     // creates the xml writer
     protected void createWriter() throws XMLStreamException {
         final XMLOutputFactory factory = XMLOutputFactory.newFactory();
         factory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
 
-        writer = factory.createXMLStreamWriter(outputResource.getOutputStream());
-        if (xmlDefaultNamespace != null) {
-            writer.setDefaultNamespace(xmlDefaultNamespace);
-        }
+        writer = factory.createXMLStreamWriter(outputResource.getOutputStream(), encoding.name());
+        setDefaultNamespace();
     }
 
     protected void doWriteTenantId() throws XMLStreamException, JAXBException {
@@ -157,7 +163,11 @@ public class AbstractFormatGeneratorXml extends AbstractFormatGenerator {
         try {
             createWriter();
 
-            writer.writeStartDocument();
+            if (sinkCfg.getOutputEncoding() == null) {
+                writer.writeStartDocument();
+            } else {
+                writer.writeStartDocument(encoding.name(), "1.0");
+            }
             nl();
 
             writeNamespaces();

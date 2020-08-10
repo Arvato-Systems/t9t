@@ -101,6 +101,9 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
     class LogWriterConfiguration {
         optional namedQualifier                     strategy;                       // select the implementation
         optional Integer                            queueSize;                      // how many records can be written before the process blocks? (only for asynchronous)
+        optional Integer                            alertOnQueueSize;               // how many records should be in the queue to trigger an alert?
+        optional Integer                            alertInterval;                  // since measuring queue size takes time, it is only done every n writes
+        optional Long                               maxWriteTimeInMillis;           // how long may the DB take to write the records?
     }
 
     class ServerConfiguration {
