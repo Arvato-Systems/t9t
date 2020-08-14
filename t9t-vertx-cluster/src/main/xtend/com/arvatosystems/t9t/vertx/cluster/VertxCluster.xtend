@@ -39,10 +39,7 @@ class VertxCluster {
         LOGGER.info('''t9t vert.x cluster based server starting...''')
         LOGGER.info("host address.."+InetAddress.localHost.hostAddress);
 
-        System.setProperty("org.jboss.logging.provider", "slf4j"); // configure hibernate to use slf4j
-        // System.setProperty("org.terracotta.quartz.skipUpdateCheck", "true");
-        // System.setProperty("vertx.disableFileCaching", "true");              // disable caching of resources in .vertx (for development)
-
+        T9tServer.configureSystemParameters
         T9tServer.parseCommandLine(args) // need to call the T9tServer commandline parsing because its port environment will be used for the vertx server
         T9tServer.readConfig()
 
@@ -51,7 +48,7 @@ class VertxCluster {
         // check hazelcast config file
         val systemProperty = System.getProperty("vertx.hazelcast.config")
         if (!systemProperty.nullOrEmpty) {
-                LOGGER.info("Attempting system property {}", systemProperty)
+            LOGGER.info("Attempting system property {}", systemProperty)
             try {
                 mgr.config = new XmlConfigBuilder(systemProperty).build
                 LOGGER.info("Hazelcast used from {}", systemProperty)
@@ -63,8 +60,10 @@ class VertxCluster {
         Init.initializeT9t
 
         val options = new VertxOptions().setClusterManager(mgr)
-        options.clusterHost = InetAddress.localHost.hostAddress;
-        options.clustered = true
+        val busOptions = options.eventBusOptions
+        busOptions.host = InetAddress.localHost.hostAddress;
+        busOptions.clustered = true
+
         T9tServer.mergePoolSizes(options)
 
         Vertx.clusteredVertx(

@@ -89,10 +89,13 @@ class DocComponentBatchLoadRequestHandler extends AbstractRequestHandler<DocComp
                 inData.key = obj.needKey("key").toString
                 inData.type = obj.needKey("type").toString
                 val fields = obj.needKey("text")
-                if (fields instanceof List)
+                if (fields === null) {
+                    inData.value = null
+                } else if (fields instanceof List) {
                     inData.value = if (joiner === null) fields.join else fields.join(joiner)
-                else
+                } else {
                     inData.value = fields.toString
+                }
                 load(ctx, inData, baseKey)
             }
         }
@@ -117,7 +120,9 @@ class DocComponentBatchLoadRequestHandler extends AbstractRequestHandler<DocComp
                 parser.source = line
                 val record = parser.readObject(DocComponentResource.meta$$this, DocComponentResource)
                 // unescape JSON
-                record.value = JsonUtil.unescapeJson(record.value)
+                if (record.value !== null && record.value.trim.length > 0) {
+                    record.value = JsonUtil.unescapeJson(record.value)
+                }
                 load(ctx, record, mutableKey)
             }
         }

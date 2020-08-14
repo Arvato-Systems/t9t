@@ -148,7 +148,7 @@ class T9tServer extends AbstractVerticle {
                     ])
                 }
                 if (cors) {
-                    LOGGER.info("Setting up cors handler for origin {}", corsParm)
+                    LOGGER.info("Setting up CORS handler for origin {}", corsParm)
                     route().handler(CorsHandler.create(corsParm)
                       .allowedMethod(HttpMethod.GET)
                       .allowedMethod(HttpMethod.POST)
@@ -175,7 +175,7 @@ class T9tServer extends AbstractVerticle {
                 ]
             ]
             vertx.createHttpServer => [
-                requestHandler [ router.accept(it) ]
+                requestHandler [ router.handle(it) ]
                 listen(port)
             ]
         }
@@ -279,13 +279,19 @@ class T9tServer extends AbstractVerticle {
         ])
     }
 
-    def static void main(String[] args) throws Exception {
-        LOGGER.info('''t9t vert.x single node based server starting...''')
-
+    /** Set system parameter which otherwise must be set via -D command line property. */
+    def static void configureSystemParameters() {
+        System.setProperty("java.awt.headless", "true");                        // required for operation of java image libraries (t9t-doc-be) and Jasper reports
         System.setProperty("org.jboss.logging.provider", "slf4j");              // configure hibernate to use slf4j
         System.setProperty("org.terracotta.quartz.skipUpdateCheck", "true");
         System.setProperty("vertx.disableFileCaching", "true");                 // disable caching of resources in .vertx (for development)
         System.setProperty("com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize", "true");   // prevent Illegal reflection access with Java 10 (fixed with jaxb 2.3.1)
+    }
+
+    def static void main(String[] args) throws Exception {
+        LOGGER.info('''t9t vert.x single node based server starting...''')
+
+        configureSystemParameters
 
         parseCommandLine(args);
 

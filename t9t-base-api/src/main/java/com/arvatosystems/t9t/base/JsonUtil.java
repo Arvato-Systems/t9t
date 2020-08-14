@@ -31,6 +31,8 @@ public class JsonUtil {
     }
 
     public static String unescapeJson(String s) {
+        if (s == null)
+            return null;
         boolean escaped = false;
         final int l = s.length();
         StringBuilder t = new StringBuilder(l);

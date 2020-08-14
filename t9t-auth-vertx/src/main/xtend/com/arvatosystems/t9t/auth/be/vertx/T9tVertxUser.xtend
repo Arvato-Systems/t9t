@@ -22,12 +22,12 @@ import io.vertx.core.json.JsonObject
 import io.vertx.ext.auth.AuthProvider
 import io.vertx.ext.auth.User
 
-public class T9tVertxUser implements User {
-    private final String jwtToken;          // encoded form, without "Bearer" prefix
-    private final JwtInfo info;             // decoded data in map form
-    private final JsonObject principal;     // token + decoded map
+class T9tVertxUser implements User {
+    final String jwtToken;          // encoded form, without "Bearer" prefix
+    final JwtInfo info;             // decoded data in map form
+    final JsonObject principal;     // token + decoded map
 
-    public new (String jwtToken, JwtInfo info) {
+    new (String jwtToken, JwtInfo info) {
         this.jwtToken = jwtToken;
         this.info = info
         principal = new JsonObject(#{ "jwt" -> jwtToken, "info" -> info })

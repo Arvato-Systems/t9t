@@ -35,7 +35,7 @@ class T9tJwtAuthHandlerImpl implements Handler<RoutingContext> {
 
     @Inject IJWT jwt
 
-    def public String sign(JwtInfo claims, Long expiresInSeconds, String algorithm) {
+    def String sign(JwtInfo claims, Long expiresInSeconds, String algorithm) {
         return jwt.sign(claims, expiresInSeconds, algorithm)
     }
 
