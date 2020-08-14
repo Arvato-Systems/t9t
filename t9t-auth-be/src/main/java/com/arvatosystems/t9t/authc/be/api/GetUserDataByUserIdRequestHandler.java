@@ -24,6 +24,6 @@ public class GetUserDataByUserIdRequestHandler extends AbstractGetUserDataReques
 
     @Override
     public GetUserDataResponse execute(RequestContext ctx, GetUserDataByUserIdRequest rq) {
-        return responseFromDto(resolver.getDTO(new UserKey(rq.getUserId())));
+        return new GetUserDataResponse(0, responseFromDto(resolver.getDTO(new UserKey(rq.getUserId()))));
     }
 }

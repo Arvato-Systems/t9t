@@ -23,6 +23,6 @@ public class GetUserDataByUserRefRequestHandler extends AbstractGetUserDataReque
 
     @Override
     public GetUserDataResponse execute(RequestContext ctx, GetUserDataByUserRefRequest rq) {
-        return responseFromDto(resolver.getDTO(rq.getUserRef()));
+        return new GetUserDataResponse(0, responseFromDto(resolver.getDTO(rq.getUserRef())));
     }
 }

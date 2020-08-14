@@ -116,6 +116,20 @@ package (com.arvatosystems) t9t.authc.api {
         required (UserData...)                      userData;
     }
 
+    class GetUserDataByUserRefsRequest extends RequestParameters return GetMultipleUserDataResponse {
+        required f42Ref required List<>             userRefs;
+    }
+
+    class GetUserDataByUserIdsRequest extends RequestParameters return GetMultipleUserDataResponse {
+        required userId required List<>             userIds;
+    }
+
+    class GetMultipleUserDataResponse extends ServiceResponse {
+        required (UserData...) required List<>      userData;
+    }
+
+
+
     class ResetPasswordRequest extends RequestParameters {
         required userId                             userId;         // userId of the user who wants a new password
         required emailAddress                       emailAddress;   // email address for security
