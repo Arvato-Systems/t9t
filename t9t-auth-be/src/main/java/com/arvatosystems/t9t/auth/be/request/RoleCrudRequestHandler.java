@@ -19,8 +19,8 @@ import com.arvatosystems.t9t.auth.RoleDTO;
 import com.arvatosystems.t9t.auth.RoleRef;
 import com.arvatosystems.t9t.auth.request.RoleCrudRequest;
 import com.arvatosystems.t9t.auth.services.IRoleResolver;
-import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.be.impl.AbstractCrudSurrogateKeyBERequestHandler;
+import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
@@ -31,7 +31,7 @@ public class RoleCrudRequestHandler extends AbstractCrudSurrogateKeyBERequestHan
     protected final IRoleResolver resolver = Jdp.getRequired(IRoleResolver.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, RoleCrudRequest crudRequest) {
+    public CrudSurrogateKeyResponse<RoleDTO, FullTrackingWithVersion> execute(RequestContext ctx, RoleCrudRequest crudRequest) {
         return execute(ctx, crudRequest, resolver);
     }
 }

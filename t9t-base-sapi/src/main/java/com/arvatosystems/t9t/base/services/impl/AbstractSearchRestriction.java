@@ -16,7 +16,6 @@
 package com.arvatosystems.t9t.base.services.impl;
 
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -76,36 +75,33 @@ public abstract class AbstractSearchRestriction implements ISearchRestriction {
         }
     }
 
-    /**
-     * Returns the passed object as an immutable list of a single entry of type Long.
-     * Due to encoding in JSON, the passed value could be returned as int or double, this is why we may need some conversion.
-     */
-    protected List<Long> asSingletonListOfLong(Object value) {
-        if (value instanceof Long) {
-            return ImmutableList.<Long>of(((Long) value));
-        } else if (value instanceof Number) {
-            // we cannot use it as is, but we can convert it
-            return ImmutableList.<Long>of((((Number) value).longValue()));
-        } else {
-            throw new T9tException(T9tException.INVALID_REQUEST_PARAMETER_TYPE, "Required a Long or Number, but got " + value.getClass().getCanonicalName());
-        }
-    }
+//    /**
+//     * Returns the passed object as an immutable list of a single entry of type Long.
+//     * Due to encoding in JSON, the passed value could be returned as int or double, this is why we may need some conversion.
+//     */
+//    protected List<Long> asSingletonListOfLong(Object value) {
+//        if (value instanceof Long) {
+//            return ImmutableList.<Long>of(((Long) value));
+//        } else if (value instanceof Number) {
+//            // we cannot use it as is, but we can convert it
+//            return ImmutableList.<Long>of((((Number) value).longValue()));
+//        } else {
+//            throw new T9tException(T9tException.INVALID_REQUEST_PARAMETER_TYPE, "Required a Long or Number, but got " + value.getClass().getCanonicalName());
+//        }
+//    }
 
     /** Optional common method to check for JWT information and to read from persistence layer otherwise.
      * It is expected that the lampda parameter is provided as a reference to an instance of an implementation
      * of the functional interface IRestrictionRefReader, this is why that is provided within this package.
      */
     protected List<Long> retrieveAllowedRefsUncached(final RequestContext ctx, IRestrictionRefReader reader, String idKey, String refKey) {
-        final Map<String, Object> z = ctx.internalHeaderParameters.getJwtInfo().getZ();
-        if (z != null) {
-            final Object id = z.get(idKey);
-            if ("*".equals(id)) {
-                return AbstractSearchRestriction.NO_REFS;
-            }
-            final Object ref = z.get(refKey);
-            if (ref != null) {
-                return asSingletonListOfLong(ref);
-            }
+        final String id = ctx.getZString(idKey);
+        if ("*".equals(id)) {
+            return AbstractSearchRestriction.NO_REFS;
+        }
+        final Long ref = ctx.getZLong(refKey);
+        if (ref != null) {
+            return ImmutableList.<Long>of(ref);
         }
         return reader.objectRefsForUser(ctx.userRef, ctx.tenantRef);
     }

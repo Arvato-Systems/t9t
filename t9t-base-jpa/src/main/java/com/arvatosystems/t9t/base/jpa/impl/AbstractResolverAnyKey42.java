@@ -49,6 +49,7 @@ import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
 import de.jpaw.bonaparte.jpa.api.JpaCriteriaBuilder;
 import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
+import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.SortColumn;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
@@ -354,11 +355,12 @@ public abstract class AbstractResolverAnyKey42<
 
     private void logSearch(Class<ENTITY> derivedEntityClass, SearchCriteria searchCriteria, String what) {
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Search on {} {} (offset={}, limit={}) with filter criteria {}",
+            LOGGER.debug("Search on {} {} (offset={}, limit={}, distinct={}) with filter criteria {}",
                 what,
                 derivedEntityClass.getCanonicalName(),
                 searchCriteria.getOffset(),
                 searchCriteria.getLimit(),
+                searchCriteria.getApplyDistinct(),
                 searchCriteria.getSearchFilter() == null ? "NONE" : searchCriteria.getSearchFilter());
         }
     }
@@ -404,6 +406,31 @@ public abstract class AbstractResolverAnyKey42<
         return runSearch(searchCriteria, criteriaBuilder, from, criteriaQuery);
     }
 
+    @Override
+    public Long count(SearchFilter filter, Boolean applyDistinct) {
+        // Get the criteria builder to start building the query
+        CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
+
+        // Create basic query without restrictions
+        Class<ENTITY> derivedEntityClass = (Class<ENTITY>) getEntityClass();
+        CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+        Root<ENTITY> from = criteriaQuery.from(derivedEntityClass);
+        criteriaQuery.select(criteriaBuilder.count(from));
+        if (Boolean.TRUE.equals(applyDistinct))
+            criteriaQuery = criteriaQuery.distinct(true);
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("SELECT COUNT on {} (distinct={}) with filter criteria {}",
+                derivedEntityClass.getCanonicalName(),
+                applyDistinct,
+                filter == null ? "NONE" : filter);
+        }
+        // apply and specific filters and also the tenant restriction
+        createWhereList(filter, criteriaBuilder, from, criteriaQuery);
+        // Run the query and return the results
+        return getEntityManager().createQuery(criteriaQuery).getSingleResult();
+    }
+
     /**
      * {@inheritDoc}
      *
@@ -421,18 +448,15 @@ public abstract class AbstractResolverAnyKey42<
         return r;
     }
 
-    private <R> List<R> runSearch(SearchCriteria searchCriteria, CriteriaBuilder criteriaBuilder, Root<ENTITY> from, CriteriaQuery<R> select)
-            {
-        if (LOGGER.isTraceEnabled())
-            LOGGER.trace("generic search requested for resolver class {}", getClass().getSimpleName());
-
+    /** Creates the WHERE conditions on the SELECT query. */
+    private <R> void createWhereList(SearchFilter filter, CriteriaBuilder criteriaBuilder, Root<ENTITY> from, CriteriaQuery<R> select) {
         // Add filters, if supplied
-        PathResolver r = new PathResolver(getEntityClass(), from);
-        JpaCriteriaBuilder bld = new JpaCriteriaBuilder(r, criteriaBuilder);
+        final PathResolver r = new PathResolver(getEntityClass(), from);
+        final JpaCriteriaBuilder bld = new JpaCriteriaBuilder(r, criteriaBuilder);
 
         Predicate whereList = null;
-        if (searchCriteria.getSearchFilter() != null) {
-            whereList = bld.buildPredicate(searchCriteria.getSearchFilter());
+        if (filter != null) {
+            whereList = bld.buildPredicate(filter);
         }
 
         // perform special filtering on tenant
@@ -460,10 +484,15 @@ public abstract class AbstractResolverAnyKey42<
                 }
             }
         }
-
         // Append restrictions to overall query if any available
-        if (whereList != null)
+        if (whereList != null) {
             select.where(whereList);
+        }
+    }
+
+    private <R> List<R> runSearch(SearchCriteria searchCriteria, CriteriaBuilder criteriaBuilder, Root<ENTITY> from, CriteriaQuery<R> select) {
+
+        createWhereList(searchCriteria.getSearchFilter(), criteriaBuilder, from, select);
 
         // determine the effective sort columns
         List<SortColumn> sortColumns = searchCriteria.getSortColumns();
@@ -474,8 +503,9 @@ public abstract class AbstractResolverAnyKey42<
         }
 
         // Sorting, if supplied
-        if (sortColumns != null) {
-            List<Order> orderList = new ArrayList<>();
+        if (sortColumns != null && !sortColumns.isEmpty()) {
+            final PathResolver r = new PathResolver(getEntityClass(), from);
+            final List<Order> orderList = new ArrayList<>();
             // Walk through the list of sort columns if any
             for (SortColumn column : sortColumns) {
                 Path<?> path = r.getPath(column.getFieldName());

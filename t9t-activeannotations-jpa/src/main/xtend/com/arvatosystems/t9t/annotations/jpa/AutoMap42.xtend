@@ -34,9 +34,9 @@ import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudStringKey42RequestHandler
 import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSuperclassKey42RequestHandler
 import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKey42RequestHandler
 import com.arvatosystems.t9t.base.jpa.impl.AbstractEntityMapper42
+import com.arvatosystems.t9t.base.jpa.impl.AbstractSearch42RequestHandler
 import com.arvatosystems.t9t.base.search.ReadAllResponse
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler
-import com.arvatosystems.t9t.base.services.AbstractSearchRequestHandler
 import com.arvatosystems.t9t.base.services.IExecutor
 import com.arvatosystems.t9t.base.services.impl.LazyInjection
 import de.jpaw.bonaparte.jpa.BonaKey
@@ -65,13 +65,13 @@ import static extension com.arvatosystems.t9t.annotations.jpa.Tools.*
 
 /** The automapper generates data copies for elements of same name and type only. Everything else must be handcoded. */
 class AutoMap42Processor extends AbstractClassProcessor {
-    static private final String REQUEST_PACKAGE_COMPONENT = "be.request"        // the piece after module...
-    static private final String REQUEST_CRUD    = "CrudRequest"
-    static private final String REQUEST_READALL = "ReadAllRequest"
-    static private final String REQUEST_RESOLVE = "ResolverRequest"
-    static private final String REQUEST_SEARCH  = "SearchRequest"
-    static private final String HANDLER         = "Handler"
-    val mapperRevision = "2017-01-31 16:07 CET (Xtend 2.10.0, Java 8, SearchSuperclass)"
+    static final String REQUEST_PACKAGE_COMPONENT = "be.request"        // the piece after module...
+    static final String REQUEST_CRUD    = "CrudRequest"
+    static final String REQUEST_READALL = "ReadAllRequest"
+    static final String REQUEST_RESOLVE = "ResolverRequest"
+    static final String REQUEST_SEARCH  = "SearchRequest"
+    static final String HANDLER         = "Handler"
+    val mapperRevision = "2020-08-18 14:17 CET (Xtend 2.21.0, Java 8, enhanced search)"
 
     def getMapperClassName(ClassDeclaration m, String r) {
         return m.packageName + "impl." + r + "Mapper"
@@ -553,13 +553,12 @@ class AutoMap42Processor extends AbstractClassProcessor {
                     if (autoHandler.indexOf("S", lastDot+1) >= 0) {
                         val requestClassTypeRef = getRequestClassTypeRef(c, rqPkgName, classNameComponent + REQUEST_SEARCH, context)
                         if (requestClassTypeRef !== null) {
-                            createHandler(c, rqhPkgName, requestClassTypeRef, AbstractSearchRequestHandler.newTypeReference(requestClassTypeRef), myInterface.newTypeReference, context, false) => [
+                            createHandler(c, rqhPkgName, requestClassTypeRef, AbstractSearch42RequestHandler.newTypeReference(
+                                myKeyType, dto, myTrackingType, requestClassTypeRef, entity
+                            ), myInterface.newTypeReference, context, false) => [
                                 returnType = ReadAllResponse.newTypeReference(dto, myTrackingType)
                                 body = [ '''
-                                    «IF autoHandler.indexOf("P", lastDot+1) >= 0»
-                                        mapper.processSearchPrefixForDB(request);       // convert the field with searchPrefix
-                                    «ENDIF»
-                                    return mapper.createReadAllResponse(resolver.search(request, null), request.getSearchOutputTarget());'''
+                                    return execute(request, resolver, mapper);'''
                                 ]
                             ]
                         }

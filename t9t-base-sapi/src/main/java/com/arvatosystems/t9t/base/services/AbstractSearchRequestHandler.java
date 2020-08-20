@@ -23,7 +23,7 @@ public abstract class AbstractSearchRequestHandler<REQUEST extends SearchCriteri
 
     @Override
     public boolean isReadOnly(REQUEST params) {
-        return true;
+        return params.getSearchOutputTarget() == null;  // a search request is "read only" if the result is not redirected to a data sink
     }
 
     @Override

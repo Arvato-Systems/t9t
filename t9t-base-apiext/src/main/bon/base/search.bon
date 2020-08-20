@@ -56,19 +56,19 @@ package (com.arvatosystems) t9t.base.search {
      * It transmits the key to the created file (or other export event).
      */
     class SinkCreatedResponse extends ServiceResponse {
-        optional f42Ref                                 sinkRef;                // the key to the sink table, if an export was performed
-        optional Long                                   numResults;             // the result count is populated if known
+        optional f42Ref                             sinkRef;                // the key to the sink table, if an export was performed
+        optional Long                               numResults;             // the result count is populated if known
     }
 
     /**
      * A simple request to return all relevant data records for a JPA entity. Do not use for tables which could contain huge data sets.
      */
     abstract class ReadAllRequest<DATA, TRACKING extends TrackingBase> extends RequestParameters return ReadAllResponse<!DATA,!TRACKING> { // dummy generics arg for symmetry reasons and return type definition
-        required boolean                                returnOnlyActive;
+        required boolean                            returnOnlyActive;
     }
 
     class SearchResponse<DATA, TRACKING extends TrackingBase, LIST_WITH_TENANT extends DataWithTracking<!DATA, !TRACKING>> extends SinkCreatedResponse {
-        required (!LIST_WITH_TENANT...) required List<> dataList; // the list of results
+        required (!LIST_WITH_TENANT...) required List<> dataList;                           // the list of results
     }
     class ReadAllResponse<DATA, TRACKING extends TrackingBase> extends SearchResponse<!DATA, !TRACKING, DataWithTrackingW<!DATA, !TRACKING>> {
     }
@@ -90,11 +90,26 @@ package (com.arvatosystems) t9t.base.search {
         required (SortColumn) List<>                sortColumns;                            // optional list of sorting columns
         optional (OutputSessionParameters...)       searchOutputTarget;                     // if supplied, then the results will be redirected to a data sink
         optional queryString                        expression;                             // Lucene / SOLR query expression (requires property documentName)
-        optional Boolean                            applyDistinct;                          // return distinct results (apply SQL SELECT DISTINCT)
+        optional Boolean                            applyDistinct;                          // return distinct results (apply SQL SELECT DISTINCT). Not supported by all request handlers.
+        optional Boolean                            countTotals;                            // return number of total results, in case of searches with limit. Not supported by all request handlers.
     }
 
     /** allow to instantiate this for internal use. */
     final class DummySearchCriteria extends SearchCriteria {
+    }
+
+    /** CountCriteria is a subset of SearchCriteria, which only contains the fields relevant for count requests. */
+    abstract class CountCriteria extends RequestParameters {
+        optional (SearchFilter...)                  searchFilter;                           // optional restriction of the result set
+        optional Boolean                            applyDistinct;                          // return distinct results (apply SQL SELECT DISTINCT)
+    }
+
+    /** CountRequest is a generic count request, with the only purpose to define the response class. */
+    abstract class CountRequest extends CountCriteria return CountResponse {}
+
+    /** CountResponse is the response class for all count requests. */
+    class CountResponse extends ServiceResponse {
+        required Long                               numResults;                             // the result count
     }
 
     /** Provides filtering for enum. Alternatively, the caller could use a regular AsciiFilter or IntFilter.

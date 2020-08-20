@@ -274,4 +274,33 @@ public class RequestContext extends AbstractRequestContext {
     public void setPriorityRequest(boolean priorityRequest) {
         this.priorityRequest = priorityRequest;
     }
+
+    /** Safe getter for a z field values, also works if z itself is null. */
+    public Object getZEntry(String key) {
+        final Map<String, Object> z = internalHeaderParameters.getJwtInfo().getZ();
+        return z == null ? null : z.get(key);
+    }
+
+    /** Safe getter for a z field values, also works if z itself is null, returns a String typed result, if required, by conversion. */
+    public String getZString(String key) {
+        final Object value = getZEntry(key);
+        return value == null ? null : value.toString();
+    }
+
+    /** Safe getter for a z field values, also works if z itself is null, returns a Long typed result, if required, by conversion. */
+    public Long getZLong(String key) {
+        final Object value = getZEntry(key);
+        if (value == null) {
+            return null;
+        }
+        if (value instanceof Long) {
+            return (Long)value;
+        }
+        if (value instanceof Number) {
+            return ((Number)value).longValue();
+        }
+        LOGGER.error("Required a Long or Number for JWT z entry {}, but got {}", key, value.getClass().getCanonicalName());
+        throw new T9tException(T9tException.INVALID_REQUEST_PARAMETER_TYPE, "Required a Long or Number for JWT z entry " + key
+                + ", but got " + value.getClass().getCanonicalName());
+    }
 }

@@ -36,10 +36,12 @@ package (com.arvatosystems) t9t.auth.request {
     class RoleCrudRequest                       extends CrudSurrogateKeyRequest <RoleRef, RoleDTO, FullTrackingWithVersion> {}
     class RoleSearchRequest                     extends SearchRequest           <RoleDTO, FullTrackingWithVersion> {}
     class LeanRoleSearchRequest                 extends LeanSearchRequest {}
+    class RoleCountRequest                      extends CountRequest {}
 
     class UserCrudRequest                       extends CrudSurrogateKeyRequest <UserRef, UserDTO, FullTrackingWithVersion> {}
     class UserSearchRequest                     extends SearchRequest           <UserDTO, FullTrackingWithVersion> {}
     class LeanUserSearchRequest                 extends LeanSearchRequest {}
+    class UserCountRequest                      extends CountRequest {}
 
     class TenantCrudRequest                     extends CrudSurrogateKeyRequest <TenantRef, TenantDTO, FullTrackingWithVersion> {}
     class TenantSearchRequest                   extends SearchRequest           <TenantDTO, FullTrackingWithVersion> {}

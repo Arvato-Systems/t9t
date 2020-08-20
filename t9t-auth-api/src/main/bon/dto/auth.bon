@@ -139,6 +139,8 @@ package (com.arvatosystems) t9t.auth {
         optional shortText                          mobilePhoneNo;                          // phone no (mobile)
         optional Boolean                            externalAuth;                           // set to true for LDAP or other external authentication source
         optional (UserRef...,UserKey)               supervisorRef   properties ref, simpleref="getObjectRef()", searchprefix="supervisor", dropdown="userId";
+        optional shortText                          salutation;                             // salutation
+        optional t9tShortId                         orgUnit;                                // org unit ID or provider ID
     }
     final class UserDescription extends UserRef {
         required userId                             userId          properties notupdatable;    // User id to be used for login

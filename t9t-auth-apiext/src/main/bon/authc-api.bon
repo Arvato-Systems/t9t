@@ -15,7 +15,6 @@
  */
 import api.*
 import apiw.*
-import api.auth.*
 import api.media.*
 import t9t.base.types.*
 import t9t.base.api.*
@@ -98,6 +97,8 @@ package (com.arvatosystems) t9t.authc.api {
         optional shortText                          jobTitle;                               // for signature of emails
         optional shortText                          phoneNo;                                // phone no (landline)
         optional shortText                          mobilePhoneNo;                          // phone no (mobile)
+        optional shortText                          salutation;                             // salutation
+        optional t9tShortId                         orgUnit;                                // org unit ID or provider ID
     }
 
     class GetUserDataByUserRefRequest extends RequestParameters return GetUserDataResponse {

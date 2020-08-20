@@ -35,6 +35,8 @@ import org.junit.Test
 
 import static extension com.arvatosystems.t9t.auth.extensions.AuthExtensions.*
 import de.jpaw.annotations.AddLogger
+import com.arvatosystems.t9t.auth.request.UserCountRequest
+import com.arvatosystems.t9t.base.search.CountResponse
 
 @AddLogger
 class UpdateUserOtherTenant {
@@ -72,7 +74,7 @@ class UpdateUserOtherTenant {
     }
 
     @Test
-    def public void attemptToUpdateUserOtherTenantTest() {
+    def void attemptToUpdateUserOtherTenantTest() {
         dlg.lastJwtInfo => [
             LOGGER.info("I am tenant {} (ref {}), user ID {} (ref {})", tenantId, tenantRef, userId, userRef)
         ]
@@ -94,5 +96,9 @@ class UpdateUserOtherTenant {
         ])
         readTenantOfUser
         val user3 = new UserKey(TEST_USER_ID).read(dlg)
+
+        // now count the number of users in the system
+        val countResp = dlg.typeIO(new UserCountRequest, CountResponse)
+        LOGGER.info("Found {} users", countResp.numResults)
     }
 }

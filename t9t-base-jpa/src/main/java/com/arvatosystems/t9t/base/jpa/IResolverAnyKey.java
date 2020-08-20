@@ -23,10 +23,13 @@ import javax.persistence.LockModeType;
 import javax.persistence.TypedQuery;
 
 import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.search.CountCriteria;
+import com.arvatosystems.t9t.base.search.CountResponse;
 import com.arvatosystems.t9t.base.search.SearchCriteria;
 
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
+import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 
 /** Defines methods to return either the artificial key (via any key) or the full JPA entity (via some key).
@@ -147,6 +150,24 @@ public interface IResolverAnyKey<
      * @throws T9tException
      */
     List<ENTITY> search(SearchCriteria criteria);
+
+    /** Perform generic search and return the size of the result set.
+    *
+    * @param criteria the search, sort and result subset criteria
+    * @return Long
+    * @throws T9tException
+    */
+    default CountResponse count(CountCriteria countCriteria) {
+        return new CountResponse(0, count(countCriteria.getSearchFilter(), countCriteria.getApplyDistinct()));
+    }
+
+    /** Perform generic search and return the size of the result set.
+    *
+    * @param criteria the search, sort and result subset criteria
+    * @return Long
+    * @throws T9tException
+    */
+    Long count(SearchFilter filter, Boolean applyDistinct);
 
     /** Perform generic search and return the result set (keys only).
      *

@@ -33,14 +33,14 @@ import org.eclipse.xtend.lib.macro.declaration.Type
 
 class Tools {
     /** Extension method for the String class to return the substring without the specified suffix (or the original string, if the parameter string does not end with the suffix). */
-    def public static String without(String text, String endingToRemove) {
+    def static String without(String text, String endingToRemove) {
         if (text.length > endingToRemove.length && text.endsWith(endingToRemove))
             return text.substring(0, text.length - endingToRemove.length)
         else
             return text
     }
     /** Extension method for the String class to return the substring without the specified prefix (or the original string, if the parameter string does not end with the suffix). */
-    def public static String behind(String text, String prefixToRemove) {
+    def static String behind(String text, String prefixToRemove) {
         if (text.length > prefixToRemove.length && text.startsWith(prefixToRemove))
             return text.substring(prefixToRemove.length)
         else
@@ -48,32 +48,32 @@ class Tools {
     }
 
     // the next 3 methods define the naming used for the generated classes and interfaces
-    def public static getPackageName(ClassDeclaration m) {
+    def static getPackageName(ClassDeclaration m) {
         return m.qualifiedName.without(m.simpleName).without("impl.")
     }
 
-    def public static isSimpleClass(TypeReference s) {
+    def static isSimpleClass(TypeReference s) {
         return !(s.isVoid || s.primitive || s.wrapper || s.array) && s.type instanceof ClassDeclaration
     }
 
-    def public static void xferParameters(MutableMethodDeclaration target, MutableMethodDeclaration src) {
+    def static void xferParameters(MutableMethodDeclaration target, MutableMethodDeclaration src) {
         if (src !== null)
             for (p: src.parameters)
                 target.addParameter(p.simpleName, p.type)
             // src.parameters.forEach[target.addParameter(simpleName, type)]
     }
 
-    def public static parameterList(Iterable<? extends MutableParameterDeclaration> m)
+    def static parameterList(Iterable<? extends MutableParameterDeclaration> m)
         '''«m.map[simpleName].join(',')»'''
 
-    def public static FieldDeclaration findFieldRecursively(ClassDeclaration cl, String fieldName) {
+    def static FieldDeclaration findFieldRecursively(ClassDeclaration cl, String fieldName) {
         // in some cases, there is no field, but only a getter/setter (for example for proxy methods
         // of embedded composite primary keys
         val field = cl.findDeclaredField(fieldName)
         return field ?: (cl.extendedClass?.type as ClassDeclaration)?.findFieldRecursively(fieldName)
     }
 
-    def public static MethodDeclaration findGetterRecursively(ClassDeclaration cl, String fieldName) {
+    def static MethodDeclaration findGetterRecursively(ClassDeclaration cl, String fieldName) {
         // in some cases, there is no field, but only a getter/setter (for example for proxy methods
         // of embedded composite primary keys
         val method = cl.findDeclaredMethod("get" + fieldName.toFirstUpper)
@@ -81,7 +81,7 @@ class Tools {
     }
 
     /** Creates a new list, consisting of the provided primary type reference, and adds optional additional list elements. */
-    def static public List<TypeReference> andMaybeAsWell(TypeReference primary, Iterable<? extends TypeReference> maybeMore) {
+    def static List<TypeReference> andMaybeAsWell(TypeReference primary, Iterable<? extends TypeReference> maybeMore) {
         if (maybeMore === null)
             return #[ primary ]
         else
@@ -121,10 +121,10 @@ class Tools {
         return false  // exists, but type differs, or got an exception
     }
 
-    def static public toBeSkipped(FieldDeclaration f) {
+    def static toBeSkipped(FieldDeclaration f) {
         return f.annotations.exists[annotationTypeDeclaration.simpleName == "NoAutoMap"]  // findAnnotation(NoAutoMap) == null, but need newTypeReference for that
     }
-    def static public CharSequence buildMapping(TypeReference dto, ClassDeclaration entityClass, String target, String src, boolean includeSuperClasses) {
+    def static CharSequence buildMapping(TypeReference dto, ClassDeclaration entityClass, String target, String src, boolean includeSuperClasses) {
         val dtoClass = dto.type as ClassDeclaration
         val superClassMapping = if (includeSuperClasses) (dtoClass.extendedClass?.buildMapping(entityClass, target, src, includeSuperClasses) ?: '''''') else ''''''
         return '''
@@ -132,7 +132,7 @@ class Tools {
         '''
     }
 
-    def static public exceptionCatcher(String f42Exception, String applException) '''
+    def static exceptionCatcher(String f42Exception, String applException) '''
         } catch («applException» _e) {
             // convert ApplicationExceptions (most likely thrown by enums toToken()) into T9tExceptions
             if (_e instanceof «f42Exception»)
@@ -141,7 +141,7 @@ class Tools {
         }
     '''
 
-    def static public createCheckNoUpdateFields(Iterable<? extends FieldDeclaration> fields) {
+    def static createCheckNoUpdateFields(Iterable<? extends FieldDeclaration> fields) {
         return fields.map[if (type.primitive) '''
             if (current.get«simpleName.toFirstUpper»() != intended.get«simpleName.toFirstUpper»())
                 throw new T9tException(T9tException.FIELD_MAY_NOT_BE_CHANGED, "«simpleName»");
@@ -153,7 +153,7 @@ class Tools {
     }
 
     // return the interface as implemented by this class or a superclass
-    def static public TypeReference findInterfaceRecursively(ClassDeclaration cd, String name, String name2) {
+    def static TypeReference findInterfaceRecursively(ClassDeclaration cd, String name, String name2) {
         val inClass = cd.implementedInterfaces.findFirst[type.simpleName == name || type.simpleName == name2]
         if (inClass === null)
             return (cd.extendedClass?.type as ClassDeclaration)?.findInterfaceRecursively(name, name2)
@@ -163,7 +163,7 @@ class Tools {
     }
 
     // extension method to get all implemented interfaces of a type
-    def static public void allImplementedInterfaces(TypeDeclaration typeDeclaration, Set<TypeReference> interfaces) {
+    def static void allImplementedInterfaces(TypeDeclaration typeDeclaration, Set<TypeReference> interfaces) {
         if (typeDeclaration === null) {
             return
         }
@@ -190,19 +190,19 @@ class Tools {
         }
     }
 
-    def static public void injected(MutableFieldDeclaration fld, extension TransformationContext context) {
+    def static void injected(MutableFieldDeclaration fld, extension TransformationContext context) {
         // fld.addAnnotation(Inject.newAnnotationReference)
         fld.final = true
         fld.initializer = [ '''«toJavaCode(Jdp.newTypeReference)».getRequired(«toJavaCode(fld.type)».class)''' ]
     }
 
-    def static public void injectedLazy(MutableFieldDeclaration fld, TypeReference target, extension TransformationContext context) {
+    def static void injectedLazy(MutableFieldDeclaration fld, TypeReference target, extension TransformationContext context) {
         // fld.addAnnotation(Inject.newAnnotationReference)
         fld.final = true
         fld.initializer = [ '''new LazyInjection<«toJavaCode(target)»>(() -> «toJavaCode(Jdp.newTypeReference)».getRequired(«toJavaCode(target)».class))''' ]
     }
 
-    def static public void removeAnnotation(MutableAnnotationTarget t, Type anno) {
+    def static void removeAnnotation(MutableAnnotationTarget t, Type anno) {
         val myself = t.findAnnotation(anno)
         if (myself !== null)
             t.removeAnnotation(myself)

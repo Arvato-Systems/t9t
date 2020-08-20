@@ -63,7 +63,7 @@ import static extension com.arvatosystems.t9t.annotations.jpa.Tools.*
 
 /** The automapper generates data copies for elements of same name and type. It can also apply lookups / resolvers. */
 class AutoResolver42Processor extends AbstractClassProcessor {
-    val resolverRevision = "2016-12-05 13:03 CET - added safeguard for empty IN parameters in findBy methods"
+    val resolverRevision = "2020-08-18 14:17 CET (Xtend 2.21.0)"
 
     def getResolverClassName(ClassDeclaration m, MethodDeclaration r) {
         return m.packageName + "impl." + r.simpleName.substring(3) + "Resolver"

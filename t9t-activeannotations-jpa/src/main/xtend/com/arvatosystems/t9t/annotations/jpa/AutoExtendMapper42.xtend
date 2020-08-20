@@ -50,7 +50,6 @@ import static extension com.arvatosystems.t9t.annotations.jpa.Tools.*
  */
 
 class AutoExtendMapper42Processor extends AbstractClassProcessor {
-//    val mapperRevision = "2016-09-14 10:00 CEST (Xtend 2.10.0, Java 8)"
 
     override doTransform(MutableClassDeclaration c, extension TransformationContext context) {
         val t9tException = T9tException.newTypeReference
@@ -58,7 +57,6 @@ class AutoExtendMapper42Processor extends AbstractClassProcessor {
         val overrideAnno = Override.newAnnotationReference
         val noUpdateAnnoType = NotUpdatable.newTypeReference.type
         val refType = Ref.newTypeReference
-
 
         // We don't want this annotation on the java class (unwanted dependency)
         c.removeAnnotation(c.annotations.findFirst[annotationTypeDeclaration == AutoExtendMapper42.newTypeReference.type])

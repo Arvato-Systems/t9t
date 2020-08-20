@@ -133,12 +133,12 @@ public abstract class AbstractJpaScResolver<REF extends AbstractRef, KEY extends
 
     // backwards compat workaround
     private SearchCriteria buildCriteria(int limit, int offset, SearchFilter filter, List<SortColumn> sortColumns) {
-        return new DummySearchCriteria(
-                limit, offset,
-                filter,
-                sortColumns,
-                null, null, null
-            );
+        final SearchCriteria dummyCriteria = new DummySearchCriteria();
+        dummyCriteria.setLimit(limit);
+        dummyCriteria.setOffset(offset);
+        dummyCriteria.setSearchFilter(filter);
+        dummyCriteria.setSortColumns(sortColumns);
+        return dummyCriteria;
     }
 
     @Override

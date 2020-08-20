@@ -21,7 +21,7 @@ import com.arvatosystems.t9t.auth.jpa.entities.ApiKeyEntity;
 import com.arvatosystems.t9t.auth.jpa.mapping.IApiKeyDTOMapper;
 import com.arvatosystems.t9t.auth.jpa.persistence.IApiKeyEntityResolver;
 import com.arvatosystems.t9t.auth.request.ApiKeyCrudRequest;
-import com.arvatosystems.t9t.base.api.ServiceResponse;
+import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKey42RequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
@@ -35,7 +35,7 @@ public class ApiKeyCrudRequestHandler extends AbstractCrudSurrogateKey42RequestH
     private final IApiKeyEntityResolver resolver = Jdp.getRequired(IApiKeyEntityResolver.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, ApiKeyCrudRequest crudRequest) {
+    public CrudSurrogateKeyResponse<ApiKeyDTO, FullTrackingWithVersion> execute(RequestContext ctx, ApiKeyCrudRequest crudRequest) {
         return execute(mapper, resolver, crudRequest);
     }
 }
