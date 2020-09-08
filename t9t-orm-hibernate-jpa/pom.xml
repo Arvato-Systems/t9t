@@ -22,7 +22,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-settings-jpa</artifactId>
-        <version>4.15-SNAPSHOT</version>
+        <version>4.15.5</version>
         <relativePath>../t9t-settings-jpa</relativePath>
     </parent>
 
