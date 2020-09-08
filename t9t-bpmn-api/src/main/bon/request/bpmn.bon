@@ -95,6 +95,16 @@ package (com.arvatosystems) t9t.bpmn.request {
         required Json                           parameters;
     }
 
+    /** Reads the current process status, or returns an empty response if non exists. */
+    class ReadProcessStatusRequest extends RequestParameters return ReadProcessStatusResponse {
+        required processDefinitionId            processDefinitionId;
+        required f42Ref                         targetObjectRef;
+    }
+
+    class ReadProcessStatusResponse extends ServiceResponse {
+        optional (ProcessExecutionStatusDTO)    processStatus;
+    }
+
     /** Starts execution of all current processes.
      * If minAgeInSeconds has been specified, only processes with this age are run.
      * If onlyThisProcessId is specified, only processes with this definitionId are run.

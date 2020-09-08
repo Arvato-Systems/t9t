@@ -53,6 +53,9 @@ public interface IBpmnPersistenceAccess {
     /** Update existing process execution status */
     Long createOrUpdateNewStatus(RequestContext ctx, ProcessExecutionStatusDTO dto, ExecuteProcessWithRefRequest rq);
 
-    /** Find existing process execution status */
+    /** Find existing process execution status, or throw an exception, if none exists. */
     ProcessExecutionStatusDTO getProcessExecutionStatusDTO(String processDefinitionId, Long targetObjectRef);
+
+    /** Find existing process execution status, or return null if non existing. */
+    ProcessExecutionStatusDTO getProcessExecutionStatusOpt(String processDefinitionId, Long targetObjectRef);
 }
