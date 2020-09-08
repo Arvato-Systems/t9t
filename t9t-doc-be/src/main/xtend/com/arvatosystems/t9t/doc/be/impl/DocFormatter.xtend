@@ -411,7 +411,7 @@ class DocFormatter implements IDocFormatter {
         return DateTimeZone.UTC
     }
 
-    override formatDocument(Long sharedTenantRef, TemplateType templateType, String template, DocumentSelector selector, String timeZone, Object data,
+    override formatDocument(String tenantId, Long sharedTenantRef, TemplateType templateType, String template, DocumentSelector selector, String timeZone, Object data,
         Map<String, MediaData> attachments
     ) {
         LOGGER.debug("formatDocument for template {}, type {} with selector {}, time zone {}", template, templateType, selector, timeZone)
@@ -490,7 +490,11 @@ class DocFormatter implements IDocFormatter {
             "i" -> new ImageGeneratorModel(mediaType, converter),
             "u" -> new Base64FromUrlGeneratorModel,
             "t" -> new TimestampGeneratorModel(myLocale, effectiveTimeZone),
-            "e" -> new MapModel(#{ "currencySymbol" -> currencySymbol, "timeZone" -> effectiveTimeZone.ID }, WRAPPER),
+            "e" -> new MapModel(#{
+                "currencySymbol" -> currencySymbol,
+                "tenantId" -> tenantId,
+                "timeZone" -> effectiveTimeZone.ID
+            }, WRAPPER),
             "debug" -> new DebugModel
         }, WRAPPER)
 

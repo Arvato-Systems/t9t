@@ -178,7 +178,7 @@ class NewDocumentRequestHandler extends AbstractRequestHandler<NewDocumentReques
         LOGGER.info("New document request for templateId {} (mapped to {}) with selectors {}", request.documentId, effectiveMainDocumentId, request.documentSelector)
         val generatedCidMap = new HashMap<String, MediaData>(32);
         val useCidsInMainDocument = docConfigDto.useCids && docConfigDto.emailBodyTemplateId === null  // CIDs are either used in the main document (no separate email body) or in the email body
-        val formatted = docFormatter.formatDocument(sharedTenantRef, TemplateType.DOCUMENT_ID, effectiveMainDocumentId,
+        val formatted = docFormatter.formatDocument(ctx.tenantId, sharedTenantRef, TemplateType.DOCUMENT_ID, effectiveMainDocumentId,
             request.documentSelector, effectiveTimeZone, request.data, if (useCidsInMainDocument) generatedCidMap
         )
         val attachmentList = new ArrayList<MediaData>(16)
@@ -202,7 +202,7 @@ class NewDocumentRequestHandler extends AbstractRequestHandler<NewDocumentReques
             if (containsEmailRecipient && docConfigDto.emailBodyTemplateId !== null) {
                 whereToSetAttachmentFileName = target
                 attachmentList.add(target)
-                docFormatter.formatDocument(sharedTenantRef, TemplateType.DOCUMENT_ID, docConfigDto.emailBodyTemplateId,
+                docFormatter.formatDocument(ctx.tenantId, sharedTenantRef, TemplateType.DOCUMENT_ID, docConfigDto.emailBodyTemplateId,
                     request.documentSelector, effectiveTimeZone, request.data, if (docConfigDto.useCids) generatedCidMap
                 )
             } else {
@@ -216,6 +216,7 @@ class NewDocumentRequestHandler extends AbstractRequestHandler<NewDocumentReques
         val emailSubject =
             if (containsEmailRecipient)
                 docFormatter.formatDocument(
+                    ctx.tenantId,
                     sharedTenantRef,
                     docEmailReceiverDto.subjectType  ?: TemplateType.COMPONENT,
                     docEmailReceiverDto.emailSubject ?: docConfigDto.documentId + "_subject",  // by default, use a component of name (templateId)_subject
@@ -263,6 +264,7 @@ class NewDocumentRequestHandler extends AbstractRequestHandler<NewDocumentReques
             val alternateBody =
                 if (docConfigDto.alternateTemplateId !== null)
                     docFormatter.formatDocument(
+                        ctx.tenantId,
                         sharedTenantRef,
                         TemplateType.DOCUMENT_ID, docConfigDto.alternateTemplateId,
                         request.documentSelector,

@@ -33,7 +33,7 @@ class FormatDocumentRequestHandler extends AbstractRequestHandler<FormatDocument
     override execute(RequestContext ctx, FormatDocumentRequest request) throws Exception {
         val attachments = if (request.binaryAsAttachments) new HashMap<String, MediaData>(16);
         val sharedTenantRef = ctx.tenantMapping.getSharedTenantRef(DocComponentDTO.class$rtti)
-        val result = docFormatter.formatDocument(sharedTenantRef, TemplateType.DOCUMENT_ID, request.documentId, request.documentSelector, request.timeZone, request.data, attachments)
+        val result = docFormatter.formatDocument(ctx.tenantId, sharedTenantRef, TemplateType.DOCUMENT_ID, request.documentId, request.documentSelector, request.timeZone, request.data, attachments)
         return new FormatDocumentResponse => [
             mediaType       = result.mediaType
             text            = result.text

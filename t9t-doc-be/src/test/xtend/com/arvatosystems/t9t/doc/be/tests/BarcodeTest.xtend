@@ -94,7 +94,7 @@ class BarcodeTest {
     @Ignore  // currently fails with Java 8 and 10, but with different results! Generated base64 is 4 times as long in Java 10
     @Test
     def void testBarcodes() {
-        val actual = new DocFormatter().formatDocument(136138L, TemplateType.DOCUMENT_ID, 'testId', new DocumentSelector => [
+        val actual = new DocFormatter().formatDocument("TEST", 136138L, TemplateType.DOCUMENT_ID, 'testId', new DocumentSelector => [
             languageCode = "de"
             countryCode  = "DE"
             currencyCode = "EUR"
