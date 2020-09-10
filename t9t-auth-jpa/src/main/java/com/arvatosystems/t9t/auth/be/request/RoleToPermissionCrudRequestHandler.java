@@ -39,6 +39,6 @@ public class RoleToPermissionCrudRequestHandler extends AbstractCrudCompositeRef
 
     @Override
     public ServiceResponse execute(RequestContext ctx, RoleToPermissionCrudRequest params) {
-        return execute(mapper, resolver, params);
+        return execute(ctx, mapper, resolver, params);
     }
 }

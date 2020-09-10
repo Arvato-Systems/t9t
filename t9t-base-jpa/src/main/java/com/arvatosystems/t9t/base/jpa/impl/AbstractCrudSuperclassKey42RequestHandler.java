@@ -22,6 +22,7 @@ import com.arvatosystems.t9t.base.crud.CrudSuperclassKeyRequest;
 import com.arvatosystems.t9t.base.crud.CrudSuperclassKeyResponse;
 import com.arvatosystems.t9t.base.jpa.IEntityMapper42;
 import com.arvatosystems.t9t.base.jpa.IResolverSuperclassKey42;
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
@@ -42,7 +43,7 @@ public abstract class AbstractCrudSuperclassKey42RequestHandler<
     // execute function of the interface description, but additional parameters
     // required in order to work around type erasure
     public CrudSuperclassKeyResponse<KEY, DTO, TRACKING> execute(
-            IEntityMapper42<KEY, DTO, TRACKING, ENTITY> mapper,
+    		RequestContext ctx, IEntityMapper42<KEY, DTO, TRACKING, ENTITY> mapper,
             IResolverSuperclassKey42<REF, KEY, TRACKING, ENTITY> resolver,
             REQUEST crudRequest) {
 

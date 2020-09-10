@@ -20,6 +20,7 @@ import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.request.AsyncBatchRequest;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.IExecutor;
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.dp.Jdp;
 
@@ -29,7 +30,7 @@ public class AsyncBatchRequestHandler extends AbstractRequestHandler<AsyncBatchR
     protected final IExecutor messaging = Jdp.getRequired(IExecutor.class);
 
     @Override
-    public ServiceResponse execute(AsyncBatchRequest request) {
+    public ServiceResponse execute(RequestContext ctx, AsyncBatchRequest request) {
         ServiceResponse resp = messaging.executeSynchronous(request.getPrimaryRequest());
         if (resp.getReturnCode() <= (request.getAllowNo() ? T9tConstants.MAX_DECLINE_RETURN_CODE : T9tConstants.MAX_OK_RETURN_CODE)) {
             // fine (preliminary check), secondary will be done after commit, to capture late exceptions

@@ -20,6 +20,7 @@ import com.arvatosystems.t9t.base.crud.RefResolverRequest;
 import com.arvatosystems.t9t.base.crud.RefResolverResponse;
 import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
@@ -32,7 +33,7 @@ public abstract class AbstractRefResolverRequestHandler<REF extends Ref, TRACKIN
     protected abstract IResolverSurrogateKey<REF, TRACKING, ENTITY> getResolver();
 
     @Override
-    public ServiceResponse execute(REQUEST request) throws Exception {
+    public ServiceResponse execute(RequestContext ctx, REQUEST request) throws Exception {
         RefResolverResponse rs = new RefResolverResponse();
         rs.setKey(getResolver().getRef(request.getRef(), true));
         rs.setReturnCode(0);

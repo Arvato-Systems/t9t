@@ -40,7 +40,7 @@ public class AsyncQueueCrudRequestHandler extends AbstractCrudSurrogateKey42Requ
 
     @Override
     public CrudSurrogateKeyResponse<AsyncQueueDTO, FullTrackingWithVersion> execute(final RequestContext ctx, final AsyncQueueCrudRequest request) {
-        final CrudSurrogateKeyResponse<AsyncQueueDTO, FullTrackingWithVersion> resp = execute(mapper, resolver, request);
+        final CrudSurrogateKeyResponse<AsyncQueueDTO, FullTrackingWithVersion> resp = execute(ctx, mapper, resolver, request);
         final AsyncQueueDTO data = resp.getData();
 
         switch (request.getCrud()) {

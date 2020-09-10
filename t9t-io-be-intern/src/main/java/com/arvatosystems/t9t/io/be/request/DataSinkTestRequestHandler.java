@@ -25,6 +25,7 @@ import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.base.search.SinkCreatedResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.IOutputSession;
+import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.io.request.DataSinkTestRequest;
 import com.arvatosystems.t9t.io.request.DemoRecord;
 
@@ -33,7 +34,7 @@ import de.jpaw.dp.Jdp;
 public class DataSinkTestRequestHandler extends AbstractRequestHandler<DataSinkTestRequest> {
 
     @Override
-    public ServiceResponse execute(DataSinkTestRequest request) throws Exception {
+    public ServiceResponse execute(RequestContext ctx, DataSinkTestRequest request) throws Exception {
         // Obtain a session first
         OutputSessionParameters sessionParams = new OutputSessionParameters();
         sessionParams.setDataSinkId(request.getDataSinkId());

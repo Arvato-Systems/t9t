@@ -21,6 +21,7 @@ import com.arvatosystems.t9t.auth.services.IApiKeyResolver;
 import com.arvatosystems.t9t.base.be.impl.AbstractSearchBERequestHandler;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.dp.Jdp;
 
@@ -30,7 +31,7 @@ public class ApiKeySearchRequestHandler extends AbstractSearchBERequestHandler<A
     protected final IApiKeyResolver resolver = Jdp.getRequired(IApiKeyResolver.class);
 
     @Override
-    public ReadAllResponse<ApiKeyDTO, FullTrackingWithVersion> execute(ApiKeySearchRequest request) {
+    public ReadAllResponse<ApiKeyDTO, FullTrackingWithVersion> execute(RequestContext ctx, ApiKeySearchRequest request) {
         return execute(resolver.query(
                 request.getLimit(),
                 request.getOffset(),

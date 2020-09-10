@@ -74,6 +74,6 @@ public class SubscriberConfigCrudRequestHandler extends AbstractCrudSurrogateKey
             }
             // TODO: update for activate / deactivate / delete as well
         }
-        return execute(sinksMapper, entityResolver, crudRequest);
+        return execute(ctx, sinksMapper, entityResolver, crudRequest);
     }
 }

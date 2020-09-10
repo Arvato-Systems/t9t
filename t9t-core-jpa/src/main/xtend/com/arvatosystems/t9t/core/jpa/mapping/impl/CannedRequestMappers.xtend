@@ -22,7 +22,7 @@ import com.arvatosystems.t9t.core.jpa.entities.CannedRequestEntity
 import com.arvatosystems.t9t.core.jpa.persistence.ICannedRequestEntityResolver
 
 @AutoMap42
-public class CannedRequestMappers {
+class CannedRequestMappers {
     ICannedRequestEntityResolver entityResolver
     @AutoHandler("R42")
     def void e2dCannedRequestDTO(CannedRequestEntity entity, CannedRequestDTO dto) {}

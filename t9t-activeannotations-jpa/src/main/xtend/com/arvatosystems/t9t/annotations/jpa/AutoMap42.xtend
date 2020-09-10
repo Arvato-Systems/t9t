@@ -60,6 +60,7 @@ import org.eclipse.xtend.lib.macro.declaration.TypeReference
 import org.eclipse.xtend.lib.macro.declaration.Visibility
 
 import static extension com.arvatosystems.t9t.annotations.jpa.Tools.*
+import com.arvatosystems.t9t.base.services.RequestContext
 
 @Active(AutoMap42Processor) annotation AutoMap42 {}
 
@@ -558,7 +559,7 @@ class AutoMap42Processor extends AbstractClassProcessor {
                             ), myInterface.newTypeReference, context, false) => [
                                 returnType = ReadAllResponse.newTypeReference(dto, myTrackingType)
                                 body = [ '''
-                                    return execute(request, resolver, mapper);'''
+                                    return execute(ctx, request, resolver, mapper);'''
                                 ]
                             ]
                         }
@@ -633,7 +634,7 @@ class AutoMap42Processor extends AbstractClassProcessor {
                                                 if (request.getCrud() != «toJavaCode(operationTypeType)».READ)
                                                     executor.clearCache(«toJavaCode(dto)».class.getSimpleName(), null);
                                             «ENDIF»
-                                            return execute(mapper, resolver, request);'''
+                                            return execute(ctx, mapper, resolver, request);'''
                                         ]
                                     ]
                                 }
@@ -674,6 +675,7 @@ class AutoMap42Processor extends AbstractClassProcessor {
             c.addError("Cannot find request class " + rqhPkgName + rqClassRef.simpleName + "Handler")
             return null
         }
+        val ctxType = RequestContext.newTypeReference
         rqhClass => [
             extendedClass = parent
             visibility = Visibility::PUBLIC
@@ -703,10 +705,11 @@ class AutoMap42Processor extends AbstractClassProcessor {
             addMethod("execute") [
                 visibility = Visibility::PUBLIC
                 addAnnotation(Override.newAnnotationReference)
+                addParameter("ctx", ctxType)
                 addParameter("request", rqClassRef)
                 exceptions = Exception.newTypeReference
             ]
         ]
-        return rqhClass.findDeclaredMethod("execute", rqClassRef)
+        return rqhClass.findDeclaredMethod("execute", ctxType, rqClassRef)
     }
 }

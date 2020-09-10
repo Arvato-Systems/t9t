@@ -25,6 +25,7 @@ import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.search.SinkCreatedResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.IOutputSession;
+import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.io.T9tIOException;
 import com.arvatosystems.t9t.io.request.FileUploadRequest;
 
@@ -40,7 +41,7 @@ public class FileUploadRequestHandler extends AbstractRequestHandler<FileUploadR
     private static final Logger LOGGER = LoggerFactory.getLogger(FileUploadRequestHandler.class);
 
     @Override
-    public ServiceResponse execute(FileUploadRequest params) throws Exception {
+    public ServiceResponse execute(RequestContext ctx, FileUploadRequest params) throws Exception {
         Long sinkRef;
         MediaXType communicationFormatType = params.getParameters().getCommunicationFormatType();
 

@@ -22,6 +22,7 @@ import com.arvatosystems.t9t.demo.be.init.IDemo;
 import com.arvatosystems.t9t.demo.request.ComplicatedWorkResponse;
 import com.arvatosystems.t9t.demo.request.DoComplicatedWorkRequest;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.dp.Jdp;
 
@@ -36,7 +37,7 @@ public class DoComplicatedWorkRequestHandler extends AbstractRequestHandler<DoCo
     }
 
     @Override
-    public ComplicatedWorkResponse execute(DoComplicatedWorkRequest rq) {
+    public ComplicatedWorkResponse execute(RequestContext ctx, DoComplicatedWorkRequest rq) {
         LOGGER.info("Hi, I'm doing complicated work now!");
 
         ComplicatedWorkResponse response = new ComplicatedWorkResponse();

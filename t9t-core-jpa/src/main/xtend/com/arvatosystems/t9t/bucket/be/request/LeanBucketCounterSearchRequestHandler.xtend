@@ -24,7 +24,7 @@ import com.arvatosystems.t9t.bucket.jpa.persistence.IBucketCounterEntityResolver
 
 class LeanBucketCounterSearchRequestHandler extends AbstractLeanSearchRequestHandler<LeanBucketCounterSearchRequest, BucketCounterEntity> {
 
-    public new() {
+    new() {
         super(Jdp.getRequired(IBucketCounterEntityResolver),
             [ return new Description(null, qualifier, qualifier, false, false) ]
         )

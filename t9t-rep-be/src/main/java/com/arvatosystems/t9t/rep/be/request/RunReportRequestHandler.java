@@ -188,11 +188,9 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
     }
 
     @Override
-    public SinkCreatedResponse execute(RunReportRequest request) throws Exception {
+    public SinkCreatedResponse execute(RequestContext ctx, RunReportRequest request) throws Exception {
         Long sinkRef; // holds the result
         final Map<String, Object> outputSessionAdditionalParametersList = new HashMap<String, Object>(10);
-        // @Inject
-        final RequestContext ctx = Jdp.getRequired(RequestContext.class);
 
         final ReportParamsDTO reportParamsDTO = (request.getReportParamsRef() instanceof ReportParamsDTO) ?
             // nothing to do, all data has been provided (adhoc report request)

@@ -36,6 +36,6 @@ public class ApiKeyCrudRequestHandler extends AbstractCrudSurrogateKey42RequestH
 
     @Override
     public CrudSurrogateKeyResponse<ApiKeyDTO, FullTrackingWithVersion> execute(RequestContext ctx, ApiKeyCrudRequest crudRequest) {
-        return execute(mapper, resolver, crudRequest);
+        return execute(ctx, mapper, resolver, crudRequest);
     }
 }

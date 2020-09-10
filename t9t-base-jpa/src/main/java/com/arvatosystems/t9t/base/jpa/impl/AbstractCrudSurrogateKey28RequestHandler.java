@@ -23,6 +23,7 @@ import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.jpa.IEntityMapper28;
 import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey28;
 import com.arvatosystems.t9t.base.services.IRefGenerator;
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
@@ -44,7 +45,7 @@ public abstract class AbstractCrudSurrogateKey28RequestHandler<
 
     // execute function of the interface description, but additional parameters
     // required in order to work around type erasure
-    public CrudSurrogateKeyResponse<DTO, TRACKING> execute(IEntityMapper28<Long, DTO, TRACKING, ENTITY> mapper,
+    public CrudSurrogateKeyResponse<DTO, TRACKING> execute(RequestContext ctx, IEntityMapper28<Long, DTO, TRACKING, ENTITY> mapper,
             IResolverSurrogateKey28<REF, TRACKING, ENTITY> resolver, REQUEST crudRequest) {
 
         // fields are set as required

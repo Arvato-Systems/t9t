@@ -48,7 +48,7 @@ public class UserCrudAndSetPasswordRequestHandler extends AbstractCrudSurrogateK
         default:
             throw new ApplicationException(T9tException.INVALID_CRUD_COMMAND, "only CREATE, UPDATE and MERGE allowed here");
         }
-        CrudSurrogateKeyResponse<UserDTO, FullTrackingWithVersion> resp = super.execute(mapper, resolver, request);
+        CrudSurrogateKeyResponse<UserDTO, FullTrackingWithVersion> resp = super.execute(ctx, mapper, resolver, request);
 
         if (resp.getReturnCode() == 0) {
             // perform the setting or update of the password

@@ -23,7 +23,7 @@ import com.arvatosystems.t9t.bpmn.jpa.entities.ProcessDefinitionEntity
 import com.arvatosystems.t9t.bpmn.jpa.persistence.IProcessDefinitionEntityResolver
 
 @AutoMap42
-public class ProcessDefinitionEntityMappers {
+class ProcessDefinitionEntityMappers {
     IProcessDefinitionEntityResolver processDefinitionResolver
 
     @AutoHandler("SP42")

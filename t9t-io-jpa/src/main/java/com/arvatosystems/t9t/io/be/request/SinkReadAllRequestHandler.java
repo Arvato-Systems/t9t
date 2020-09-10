@@ -19,6 +19,7 @@ import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.entities.FullTracking;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
+import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.io.SinkDTO;
 import com.arvatosystems.t9t.io.jpa.mapping.ISinkDTOMapper;
 import com.arvatosystems.t9t.io.jpa.persistence.ISinkEntityResolver;
@@ -34,7 +35,7 @@ public class SinkReadAllRequestHandler extends AbstractRequestHandler<SinkReadAl
     private final ISinkDTOMapper sinksMapper = Jdp.getRequired(ISinkDTOMapper.class);
 
     @Override
-    public ServiceResponse execute(SinkReadAllRequest request) throws Exception {
+    public ServiceResponse execute(RequestContext ctx, SinkReadAllRequest request) throws Exception {
         ReadAllResponse<SinkDTO, FullTracking> rs = new ReadAllResponse<SinkDTO, FullTracking>();
         rs.setDataList(sinksMapper.mapListToDwt(sinksResolver.readAll(request.getReturnOnlyActive())));
         rs.setReturnCode(0);

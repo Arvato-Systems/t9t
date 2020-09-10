@@ -22,6 +22,7 @@ import com.arvatosystems.t9t.base.crud.CrudCompositeKeyRequest;
 import com.arvatosystems.t9t.base.crud.CrudCompositeKeyResponse;
 import com.arvatosystems.t9t.base.jpa.IEntityMapper28;
 import com.arvatosystems.t9t.base.jpa.IResolverCompositeKey28;
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
@@ -41,7 +42,7 @@ public abstract class AbstractCrudCompositeKey28RequestHandler<
 
     // execute function of the interface description, but additional parameters
     // required in order to work around type erasure
-    public CrudCompositeKeyResponse<KEY, DTO, TRACKING> execute(IEntityMapper28<KEY, DTO, TRACKING, ENTITY> mapper,
+    public CrudCompositeKeyResponse<KEY, DTO, TRACKING> execute(RequestContext ctx, IEntityMapper28<KEY, DTO, TRACKING, ENTITY> mapper,
             IResolverCompositeKey28<KEY, KEY, TRACKING, ENTITY> resolver, REQUEST crudRequest) {
 
         // fields are set as required

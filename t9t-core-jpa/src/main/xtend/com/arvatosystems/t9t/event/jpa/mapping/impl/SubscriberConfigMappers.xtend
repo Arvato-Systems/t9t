@@ -22,7 +22,7 @@ import com.arvatosystems.t9t.event.jpa.entities.SubscriberConfigEntity
 import com.arvatosystems.t9t.event.jpa.persistence.ISubscriberConfigEntityResolver
 
 @AutoMap42
-public class SubscriberConfigMappers {
+class SubscriberConfigMappers {
 
     ISubscriberConfigEntityResolver entityResolver
 

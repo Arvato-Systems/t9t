@@ -21,6 +21,7 @@ import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.request.GetQualifiersRequest;
 import com.arvatosystems.t9t.base.request.GetQualifiersResponse;
 import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ExceptionUtil;
@@ -31,7 +32,7 @@ import de.jpaw.util.ExceptionUtil;
 public class GetQualifiersRequestHandler extends AbstractReadOnlyRequestHandler<GetQualifiersRequest> {
 
     @Override
-    public GetQualifiersResponse execute(GetQualifiersRequest rq) {
+    public GetQualifiersResponse execute(RequestContext ctx, GetQualifiersRequest rq) {
         final GetQualifiersResponse resp = new GetQualifiersResponse();
         resp.setQualifiers(new HashSet<>());
         try {

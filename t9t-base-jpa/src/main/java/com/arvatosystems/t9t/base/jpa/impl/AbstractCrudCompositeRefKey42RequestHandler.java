@@ -22,6 +22,7 @@ import com.arvatosystems.t9t.base.crud.CrudCompositeKeyRequest;
 import com.arvatosystems.t9t.base.crud.CrudCompositeKeyResponse;
 import com.arvatosystems.t9t.base.jpa.IEntityMapper42;
 import com.arvatosystems.t9t.base.jpa.IResolverCompositeKey42;
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
@@ -31,7 +32,7 @@ import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.util.ApplicationException;
 
-public class AbstractCrudCompositeRefKey42RequestHandler <
+public abstract class AbstractCrudCompositeRefKey42RequestHandler <
         REF extends CompositeKeyRef,
         KEY extends REF,
         DTO extends CompositeKeyBase,
@@ -42,7 +43,7 @@ public class AbstractCrudCompositeRefKey42RequestHandler <
 
     // execute function of the interface description, but additional parameters
     // required in order to work around type erasure
-    public CrudCompositeKeyResponse<KEY, DTO, TRACKING> execute(IEntityMapper42<KEY, DTO, TRACKING, ENTITY> mapper,
+    public CrudCompositeKeyResponse<KEY, DTO, TRACKING> execute(RequestContext ctx, IEntityMapper42<KEY, DTO, TRACKING, ENTITY> mapper,
             IResolverCompositeKey42<REF, KEY, TRACKING, ENTITY> resolver, REQUEST crudRequest) {
 
         // convert any REF key type to KEY, if provided

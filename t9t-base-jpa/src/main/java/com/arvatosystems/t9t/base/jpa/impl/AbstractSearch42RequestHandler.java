@@ -7,6 +7,7 @@ import com.arvatosystems.t9t.base.jpa.IResolverAnyKey42;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.base.search.SearchRequest;
 import com.arvatosystems.t9t.base.services.AbstractSearchRequestHandler;
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
@@ -23,6 +24,7 @@ public abstract class AbstractSearch42RequestHandler<
   > extends AbstractSearchRequestHandler<RQ> {
 
     protected ReadAllResponse<DATA, TRACKING> execute(
+        final RequestContext ctx,
         final RQ request,
         final IResolverAnyKey42<KEY, TRACKING, ENTITY> resolver,
         final IEntityMapper42<KEY, DATA, TRACKING, ENTITY> mapper

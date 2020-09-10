@@ -21,6 +21,7 @@ import com.arvatosystems.t9t.auth.services.IRoleResolver;
 import com.arvatosystems.t9t.base.be.impl.AbstractSearchBERequestHandler;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.dp.Jdp;
 
@@ -30,7 +31,7 @@ public class RoleSearchRequestHandler extends AbstractSearchBERequestHandler<Rol
     protected final IRoleResolver resolver = Jdp.getRequired(IRoleResolver.class);
 
     @Override
-    public ReadAllResponse<RoleDTO, FullTrackingWithVersion> execute(RoleSearchRequest request) {
+    public ReadAllResponse<RoleDTO, FullTrackingWithVersion> execute(RequestContext ctx, RoleSearchRequest request) {
         return execute(resolver.query(
                 request.getLimit(),
                 request.getOffset(),

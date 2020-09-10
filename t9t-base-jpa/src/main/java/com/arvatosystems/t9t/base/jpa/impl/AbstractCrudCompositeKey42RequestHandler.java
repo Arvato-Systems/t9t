@@ -22,6 +22,7 @@ import com.arvatosystems.t9t.base.crud.CrudCompositeKeyRequest;
 import com.arvatosystems.t9t.base.crud.CrudCompositeKeyResponse;
 import com.arvatosystems.t9t.base.jpa.IEntityMapper42;
 import com.arvatosystems.t9t.base.jpa.IResolverCompositeKey42;
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
@@ -31,7 +32,7 @@ import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.util.ApplicationException;
 
-public class AbstractCrudCompositeKey42RequestHandler <
+public abstract class AbstractCrudCompositeKey42RequestHandler <
         KEY extends CompositeKeyRef,
         DTO extends CompositeKeyBase,
         TRACKING extends TrackingBase,
@@ -41,7 +42,7 @@ public class AbstractCrudCompositeKey42RequestHandler <
 
     // execute function of the interface description, but additional parameters
     // required in order to work around type erasure
-    public CrudCompositeKeyResponse<KEY, DTO, TRACKING> execute(IEntityMapper42<KEY, DTO, TRACKING, ENTITY> mapper,
+    public CrudCompositeKeyResponse<KEY, DTO, TRACKING> execute(RequestContext ctx, IEntityMapper42<KEY, DTO, TRACKING, ENTITY> mapper,
             IResolverCompositeKey42<KEY, KEY, TRACKING, ENTITY> resolver, REQUEST crudRequest) {
 
         // fields are set as required

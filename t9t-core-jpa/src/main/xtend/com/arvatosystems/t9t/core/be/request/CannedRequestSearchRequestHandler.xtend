@@ -24,14 +24,15 @@ import com.arvatosystems.t9t.core.jpa.persistence.ICannedRequestEntityResolver
 import com.arvatosystems.t9t.core.request.CannedRequestSearchRequest
 import de.jpaw.annotations.AddLogger
 import de.jpaw.dp.Inject
+import com.arvatosystems.t9t.base.services.RequestContext
 
 @AddLogger
-public class CannedRequestSearchRequestHandler extends AbstractSearchRequestHandler<CannedRequestSearchRequest> {
+class CannedRequestSearchRequestHandler extends AbstractSearchRequestHandler<CannedRequestSearchRequest> {
     @Inject protected final ICannedRequestEntityResolver resolver
 
     @Inject protected final ICannedRequestDTOMapper mapper
 
-    override public ReadAllResponse<CannedRequestDTO, FullTrackingWithVersion> execute(CannedRequestSearchRequest request) throws Exception {
+    override ReadAllResponse<CannedRequestDTO, FullTrackingWithVersion> execute(RequestContext ctx, CannedRequestSearchRequest request) throws Exception {
         val response = mapper.createReadAllResponse(resolver.search(request, null), request.getSearchOutputTarget());
         if (Boolean.TRUE == request.suppressResponseParameters) {
               // null out explicit request parameters

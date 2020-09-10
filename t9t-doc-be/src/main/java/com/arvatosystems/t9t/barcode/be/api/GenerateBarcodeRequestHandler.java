@@ -18,6 +18,7 @@ package com.arvatosystems.t9t.barcode.be.api;
 import com.arvatosystems.t9t.barcode.api.GenerateBarcodeRequest;
 import com.arvatosystems.t9t.barcode.api.GenerateBarcodeResponse;
 import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;
+import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.doc.services.IBarcodeGenerator;
 import com.arvatosystems.t9t.doc.services.valueclass.ImageParameter;
 
@@ -29,7 +30,7 @@ public class GenerateBarcodeRequestHandler extends AbstractReadOnlyRequestHandle
     protected final IBarcodeGenerator generator = Jdp.getRequired(IBarcodeGenerator.class);
 
     @Override
-    public GenerateBarcodeResponse execute(GenerateBarcodeRequest rq) throws Exception {
+    public GenerateBarcodeResponse execute(RequestContext ctx, GenerateBarcodeRequest rq) throws Exception {
         final ImageParameter params = new ImageParameter(rq.getWidth(), rq.getHeight(), rq.getRotation(), rq.getFlipMode(), rq.getScale());
         MediaData m = generator.generateBarcode(rq.getBarcodeFormat(), rq.getText(), params);
 

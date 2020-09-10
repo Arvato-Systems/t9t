@@ -42,7 +42,7 @@ public class ListenerConfigCrudRequestHandler extends AbstractCrudSurrogateKey42
     @Override
     public CrudSurrogateKeyResponse<ListenerConfigDTO, FullTrackingWithVersion> execute(RequestContext ctx, ListenerConfigCrudRequest crudRequest) throws Exception {
         // TODO: update for delete as well
-        CrudSurrogateKeyResponse<ListenerConfigDTO, FullTrackingWithVersion> resp = execute(sinksMapper, entityResolver, crudRequest);
+        CrudSurrogateKeyResponse<ListenerConfigDTO, FullTrackingWithVersion> resp = execute(ctx, sinksMapper, entityResolver, crudRequest);
         final ListenerConfigDTO dto = resp.getData();
         if (dto != null) {
             switch (crudRequest.getCrud()) {

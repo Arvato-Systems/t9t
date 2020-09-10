@@ -25,6 +25,7 @@ import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKey42RequestHandler;
 import com.arvatosystems.t9t.base.services.IExecutor;
+import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.io.CamelPostProcStrategy;
 import com.arvatosystems.t9t.io.CommunicationTargetChannelType;
 import com.arvatosystems.t9t.io.DataSinkCategoryType;
@@ -57,7 +58,7 @@ public class DataSinkCrudRequestHandler extends AbstractCrudSurrogateKey42Reques
     private final IExecutor executor = Jdp.getRequired(IExecutor.class);
 
     @Override
-    public ServiceResponse execute(DataSinkCrudRequest crudRequest) throws Exception {
+    public ServiceResponse execute(RequestContext ctx, DataSinkCrudRequest crudRequest) throws Exception {
         DataSinkDTO data = crudRequest.getData();
         if (data != null) {
             // normalize by tenantId
@@ -70,7 +71,7 @@ public class DataSinkCrudRequestHandler extends AbstractCrudSurrogateKey42Reques
             dataSinkDTO = sinksMapper.mapToDto(sinksResolver.findActive(crudRequest.getKey(), false));
         }
 
-        final CrudSurrogateKeyResponse<DataSinkDTO, FullTrackingWithVersion> response = execute(sinksMapper, sinksResolver, crudRequest);
+        final CrudSurrogateKeyResponse<DataSinkDTO, FullTrackingWithVersion> response = execute(ctx, sinksMapper, sinksResolver, crudRequest);
 
         if (response.getReturnCode() == 0
             && (crudRequest.getCrud() == OperationType.ACTIVATE

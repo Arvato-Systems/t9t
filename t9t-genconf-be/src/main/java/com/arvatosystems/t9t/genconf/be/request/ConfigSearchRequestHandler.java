@@ -21,6 +21,7 @@ import com.arvatosystems.t9t.genconf.services.IConfigResolver;
 import com.arvatosystems.t9t.base.be.impl.AbstractSearchBERequestHandler;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.dp.Jdp;
 
@@ -30,7 +31,7 @@ public class ConfigSearchRequestHandler extends AbstractSearchBERequestHandler<C
     protected final IConfigResolver resolver = Jdp.getRequired(IConfigResolver.class);
 
     @Override
-    public ReadAllResponse<ConfigDTO, FullTrackingWithVersion> execute(ConfigSearchRequest request) throws Exception {
+    public ReadAllResponse<ConfigDTO, FullTrackingWithVersion> execute(RequestContext ctx, ConfigSearchRequest request) throws Exception {
         return execute(resolver.query(
                 request.getLimit(),
                 request.getOffset(),

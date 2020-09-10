@@ -39,6 +39,6 @@ public class UserTenantRoleCrudRequestHandler extends AbstractCrudCompositeRefKe
 
     @Override
     public ServiceResponse execute(RequestContext ctx, UserTenantRoleCrudRequest params) {
-        return execute(mapper, resolver, params);
+        return execute(ctx, mapper, resolver, params);
     }
 }

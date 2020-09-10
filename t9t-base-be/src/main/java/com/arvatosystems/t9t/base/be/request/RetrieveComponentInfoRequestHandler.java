@@ -32,6 +32,7 @@ import com.arvatosystems.t9t.base.request.ComponentInfoDTO;
 import com.arvatosystems.t9t.base.request.RetrieveComponentInfoRequest;
 import com.arvatosystems.t9t.base.request.RetrieveComponentInfoResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 public class RetrieveComponentInfoRequestHandler extends AbstractRequestHandler<RetrieveComponentInfoRequest> {
 
@@ -52,7 +53,7 @@ public class RetrieveComponentInfoRequestHandler extends AbstractRequestHandler<
     }
 
     @Override
-    public RetrieveComponentInfoResponse execute(RetrieveComponentInfoRequest request) {
+    public RetrieveComponentInfoResponse execute(RequestContext ctx, RetrieveComponentInfoRequest request) {
         return new RetrieveComponentInfoResponse(0, componentInfos);
     }
 

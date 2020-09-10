@@ -21,6 +21,7 @@ import com.arvatosystems.t9t.auth.services.ITenantResolver;
 import com.arvatosystems.t9t.base.be.impl.AbstractSearchBERequestHandler;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.dp.Jdp;
 
@@ -30,7 +31,7 @@ public class TenantSearchRequestHandler extends AbstractSearchBERequestHandler<T
     protected final ITenantResolver resolver = Jdp.getRequired(ITenantResolver.class);
 
     @Override
-    public ReadAllResponse<TenantDTO, FullTrackingWithVersion> execute(TenantSearchRequest request) {
+    public ReadAllResponse<TenantDTO, FullTrackingWithVersion> execute(RequestContext ctx, TenantSearchRequest request) {
         return execute(resolver.query(
                 request.getLimit(),
                 request.getOffset(),

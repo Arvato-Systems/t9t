@@ -22,6 +22,7 @@ import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKey42RequestHandler;
+import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.rep.ReportParamsDTO;
 import com.arvatosystems.t9t.rep.ReportParamsRef;
 import com.arvatosystems.t9t.rep.T9tRepException;
@@ -40,8 +41,8 @@ public class ReportParamsCrudRequestHandler extends
     protected final IReportParamsDTOMapper mapper = Jdp.getRequired(IReportParamsDTOMapper.class);
 
     @Override
-    public CrudSurrogateKeyResponse<ReportParamsDTO, FullTrackingWithVersion> execute(final ReportParamsCrudRequest request) throws Exception {
-        return execute(mapper, resolver, request);
+    public CrudSurrogateKeyResponse<ReportParamsDTO, FullTrackingWithVersion> execute(final RequestContext ctx, final ReportParamsCrudRequest request) throws Exception {
+        return execute(ctx, mapper, resolver, request);
     }
 
     @Override

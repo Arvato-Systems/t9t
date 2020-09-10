@@ -18,6 +18,7 @@ package com.arvatosystems.t9t.io.be.request;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKey42RequestHandler;
+import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.io.CsvConfigurationDTO;
 import com.arvatosystems.t9t.io.CsvConfigurationRef;
 import com.arvatosystems.t9t.io.jpa.entities.CsvConfigurationEntity;
@@ -36,7 +37,7 @@ public class CsvConfigurationCrudRequestHandler extends AbstractCrudSurrogateKey
     private final ICsvConfigurationDTOMapper sinksMapper = Jdp.getRequired(ICsvConfigurationDTOMapper.class);
 
     @Override
-    public ServiceResponse execute(CsvConfigurationCrudRequest crudRequest) throws Exception {
-        return execute(sinksMapper, sinksResolver, crudRequest);
+    public ServiceResponse execute(RequestContext ctx, CsvConfigurationCrudRequest crudRequest) throws Exception {
+        return execute(ctx, sinksMapper, sinksResolver, crudRequest);
     }
 }

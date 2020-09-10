@@ -21,6 +21,7 @@ import com.arvatosystems.t9t.auth.services.IUserResolver;
 import com.arvatosystems.t9t.base.be.impl.AbstractSearchBERequestHandler;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.dp.Jdp;
 
@@ -30,7 +31,7 @@ public class UserSearchRequestHandler extends AbstractSearchBERequestHandler<Use
     protected final IUserResolver resolver = Jdp.getRequired(IUserResolver.class);
 
     @Override
-    public ReadAllResponse<UserDTO, FullTrackingWithVersion> execute(UserSearchRequest request) {
+    public ReadAllResponse<UserDTO, FullTrackingWithVersion> execute(RequestContext ctx, UserSearchRequest request) {
         return execute(resolver.query(
                 request.getLimit(),
                 request.getOffset(),

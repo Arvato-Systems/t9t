@@ -22,7 +22,7 @@ import com.arvatosystems.t9t.event.jpa.entities.ListenerConfigEntity
 import com.arvatosystems.t9t.event.jpa.persistence.IListenerConfigEntityResolver
 
 @AutoMap42
-public class ListenerConfigMappers {
+class ListenerConfigMappers {
 
     IListenerConfigEntityResolver entityResolver
 

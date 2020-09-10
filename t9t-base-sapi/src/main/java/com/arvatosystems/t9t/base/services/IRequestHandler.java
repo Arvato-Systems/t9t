@@ -57,7 +57,5 @@ public interface IRequestHandler<REQUEST extends RequestParameters> {
      * @throws Exception
      *             in case of anything goes wrong
      */
-    default ServiceResponse execute(REQUEST request) throws Exception { throw new Exception("Requires the context"); }
-    default ServiceResponse execute(RequestContext ctx, REQUEST request) throws Exception { return execute(request); }
-
+    ServiceResponse execute(RequestContext ctx, REQUEST request) throws Exception;
 }

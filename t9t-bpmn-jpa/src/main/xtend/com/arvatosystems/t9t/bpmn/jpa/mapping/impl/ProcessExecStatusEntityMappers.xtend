@@ -22,7 +22,7 @@ import com.arvatosystems.t9t.bpmn.jpa.entities.ProcessExecStatusEntity
 import com.arvatosystems.t9t.bpmn.jpa.persistence.IProcessExecStatusEntityResolver
 
 @AutoMap42
-public class ProcessExecStatusEntityMappers {
+class ProcessExecStatusEntityMappers {
     IProcessExecStatusEntityResolver entityResolver
     @AutoHandler("CSP42")
     def void e2dProcessExecutionStatusDTO(ProcessExecStatusEntity entity, ProcessExecutionStatusDTO dto) {}

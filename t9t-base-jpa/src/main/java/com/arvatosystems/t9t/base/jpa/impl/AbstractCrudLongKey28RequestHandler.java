@@ -22,6 +22,7 @@ import com.arvatosystems.t9t.base.crud.CrudLongKeyRequest;
 import com.arvatosystems.t9t.base.crud.CrudLongKeyResponse;
 import com.arvatosystems.t9t.base.jpa.IEntityMapper28;
 import com.arvatosystems.t9t.base.jpa.IResolverLongKey28;
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
@@ -39,7 +40,7 @@ public abstract class AbstractCrudLongKey28RequestHandler<
 
     // execute function of the interface description, but additional parameters
     // required in order to work around type erasure
-    public CrudLongKeyResponse<DTO, TRACKING> execute(IEntityMapper28<Long, DTO, TRACKING, ENTITY> mapper,
+    public CrudLongKeyResponse<DTO, TRACKING> execute(RequestContext ctx, IEntityMapper28<Long, DTO, TRACKING, ENTITY> mapper,
             IResolverLongKey28<TRACKING, ENTITY> resolver, REQUEST crudRequest) {
 
         // fields are set as required

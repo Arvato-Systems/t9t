@@ -25,6 +25,7 @@ import com.arvatosystems.t9t.ssm.jpa.persistence.ISchedulerSetupEntityResolver
 import com.arvatosystems.t9t.ssm.request.SchedulerSetupSearchRequest
 import de.jpaw.annotations.AddLogger
 import de.jpaw.dp.Inject
+import com.arvatosystems.t9t.base.services.RequestContext
 
 @AddLogger
 public class SchedulerSetupSearchRequestHandler extends AbstractSearchRequestHandler<SchedulerSetupSearchRequest> {
@@ -32,7 +33,7 @@ public class SchedulerSetupSearchRequestHandler extends AbstractSearchRequestHan
 
     @Inject protected ISchedulerSetupDTOMapper mapper
 
-    override public ReadAllResponse<SchedulerSetupDTO, FullTrackingWithVersion> execute(SchedulerSetupSearchRequest request) throws Exception {
+    override public ReadAllResponse<SchedulerSetupDTO, FullTrackingWithVersion> execute(RequestContext ctx, SchedulerSetupSearchRequest request) throws Exception {
         val response = mapper.createReadAllResponse(resolver.search(request, null), request.getSearchOutputTarget());
         if (Boolean.TRUE == request.suppressResponseParameters) {
             // null out explicit request parameters

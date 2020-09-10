@@ -19,11 +19,12 @@ import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.request.ExceptionRequest;
 import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 public class ExceptionRequestHandler extends AbstractReadOnlyRequestHandler<ExceptionRequest> {
 
     @Override
-    public ServiceResponse execute(ExceptionRequest errorRequest) {
+    public ServiceResponse execute(RequestContext ctx, ExceptionRequest errorRequest) {
         final int code = errorRequest.getReturnCode();
         final String message = errorRequest.getErrorMessage();
         if (code > 0) {

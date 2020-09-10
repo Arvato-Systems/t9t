@@ -18,6 +18,7 @@ package com.arvatosystems.t9t.base.be.request;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.request.PingRequest;
 import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 
 /**
@@ -26,7 +27,7 @@ import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;
 public class PingRequestHandler extends AbstractReadOnlyRequestHandler<PingRequest> {
 
     @Override
-    public ServiceResponse execute(PingRequest pingRequest) {
+    public ServiceResponse execute(RequestContext ctx, PingRequest pingRequest) {
         return ok();
     }
 }

@@ -22,6 +22,7 @@ import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKey42RequestHandler;
 import com.arvatosystems.t9t.base.services.IExecutor;
+import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.bpmn.ProcessDefinitionDTO;
 import com.arvatosystems.t9t.bpmn.ProcessDefinitionRef;
 import com.arvatosystems.t9t.bpmn.T9tAbstractWorkflowStep;
@@ -39,9 +40,9 @@ public class ProcessDefinitionCrudRequestHandler extends AbstractCrudSurrogateKe
     protected final IExecutor executor = Jdp.getRequired(IExecutor.class);
 
     @Override
-    public CrudSurrogateKeyResponse<ProcessDefinitionDTO, FullTrackingWithVersion> execute(final ProcessDefinitionCrudRequest request) throws Exception {
+    public CrudSurrogateKeyResponse<ProcessDefinitionDTO, FullTrackingWithVersion> execute(final RequestContext ctx, final ProcessDefinitionCrudRequest request) throws Exception {
         executor.clearCache(ProcessDefinitionDTO.class.getSimpleName(), null);
-        return execute(mapper, resolver, request);
+        return execute(ctx, mapper, resolver, request);
     }
 
     protected void validateSteps(List<T9tAbstractWorkflowStep> steps) {

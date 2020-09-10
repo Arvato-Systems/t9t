@@ -27,6 +27,7 @@ import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.base.search.SinkCreatedResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.IOutputSession;
+import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.io.request.StoreMediaDataRequest;
 
 import de.jpaw.bonaparte.pojos.api.media.MediaData;
@@ -40,7 +41,7 @@ public class StoreMediaDataRequestHandler extends AbstractRequestHandler<StoreMe
     private static final Logger LOGGER = LoggerFactory.getLogger(StoreMediaDataRequestHandler.class);
 
     @Override
-    public ServiceResponse execute(StoreMediaDataRequest params) throws Exception {
+    public ServiceResponse execute(RequestContext ctx, StoreMediaDataRequest params) throws Exception {
         Long sinkRef;
         final MediaData m = params.getMediaData();
 
