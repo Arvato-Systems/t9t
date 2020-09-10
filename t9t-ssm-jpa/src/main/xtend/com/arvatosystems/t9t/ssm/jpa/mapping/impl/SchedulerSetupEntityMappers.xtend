@@ -24,7 +24,7 @@ import com.arvatosystems.t9t.ssm.jpa.entities.SchedulerSetupEntity
 import com.arvatosystems.t9t.ssm.jpa.persistence.ISchedulerSetupEntityResolver
 
 @AutoMap42
-public class SchedulerSetupEntityMappers {
+class SchedulerSetupEntityMappers {
     ISchedulerSetupEntityResolver   schedulerResolver
     ICannedRequestEntityResolver    requestResolver
     ICannedRequestDTOMapper         requestMapper

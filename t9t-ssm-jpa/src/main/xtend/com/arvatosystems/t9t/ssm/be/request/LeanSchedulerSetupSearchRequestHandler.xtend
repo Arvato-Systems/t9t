@@ -23,7 +23,7 @@ import com.arvatosystems.t9t.ssm.request.LeanSchedulerSetupSearchRequest
 import de.jpaw.dp.Jdp
 
 class LeanSchedulerSetupSearchRequestHandler extends AbstractLeanSearchRequestHandler<LeanSchedulerSetupSearchRequest, SchedulerSetupEntity> {
-    public new() {
+    new() {
         super(Jdp.getRequired(ISchedulerSetupEntityResolver),
             [ return new Description(null, schedulerId, name, false, false) ]
         )

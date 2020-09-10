@@ -16,16 +16,20 @@
 package com.arvatosystems.t9t.rep.be.request;
 
 import com.arvatosystems.t9t.base.api.ServiceResponse;
-import com.arvatosystems.t9t.base.services.AbstractSearchRequestHandler;
+import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
+import com.arvatosystems.t9t.base.jpa.impl.AbstractSearch42RequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.rep.ReportConfigDTO;
 import com.arvatosystems.t9t.rep.be.request.restriction.IReportConfigByUserPermissionRestriction;
+import com.arvatosystems.t9t.rep.jpa.entities.ReportConfigEntity;
 import com.arvatosystems.t9t.rep.jpa.mapping.IReportConfigDTOMapper;
 import com.arvatosystems.t9t.rep.jpa.persistence.IReportConfigEntityResolver;
 import com.arvatosystems.t9t.rep.request.ReportConfigSearchRequest;
 
 import de.jpaw.dp.Jdp;
 
-public class ReportConfigSearchRequestHandler extends AbstractSearchRequestHandler<ReportConfigSearchRequest> {
+public class ReportConfigSearchRequestHandler extends AbstractSearch42RequestHandler<Long, ReportConfigDTO, FullTrackingWithVersion,
+  ReportConfigSearchRequest, ReportConfigEntity> {
     protected final IReportConfigEntityResolver resolver = Jdp.getRequired(IReportConfigEntityResolver.class);
     protected final IReportConfigDTOMapper mapper = Jdp.getRequired(IReportConfigDTOMapper.class);
     protected final IReportConfigByUserPermissionRestriction reportConfigByUserPermissionRestriction = Jdp.getRequired(IReportConfigByUserPermissionRestriction.class);
@@ -33,6 +37,6 @@ public class ReportConfigSearchRequestHandler extends AbstractSearchRequestHandl
     @Override
     public ServiceResponse execute(RequestContext ctx, ReportConfigSearchRequest request) throws Exception {
         reportConfigByUserPermissionRestriction.apply(ctx, request);
-        return mapper.createReadAllResponse(resolver.search(request, null), request.getSearchOutputTarget());
+        return execute(ctx, request, resolver, mapper);
     }
 }

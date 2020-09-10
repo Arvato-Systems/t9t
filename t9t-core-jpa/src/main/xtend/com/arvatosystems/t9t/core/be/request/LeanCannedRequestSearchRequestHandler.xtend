@@ -23,7 +23,7 @@ import com.arvatosystems.t9t.core.request.LeanCannedRequestSearchRequest
 import de.jpaw.dp.Jdp
 
 class LeanCannedRequestSearchRequestHandler extends AbstractLeanSearchRequestHandler<LeanCannedRequestSearchRequest, CannedRequestEntity> {
-    public new() {
+    new() {
         super(Jdp.getRequired(ICannedRequestEntityResolver),
             [ return new Description(null, requestId, name, false, false) ]
         )

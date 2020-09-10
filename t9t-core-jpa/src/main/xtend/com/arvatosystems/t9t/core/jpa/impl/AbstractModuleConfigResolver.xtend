@@ -34,9 +34,9 @@ import java.util.concurrent.TimeUnit
 @AddLogger
 abstract class AbstractModuleConfigResolver<D extends ModuleConfigDTO, E extends ModuleConfigEntity & BonaPersistableData<D>>
  implements T9tConstants, IModuleConfigResolver<D> {
-    private final IResolverLongKey42<FullTrackingWithVersion, E> resolver
-    private String query
-    private final Cache<Long,D> dtoCache
+    final IResolverLongKey42<FullTrackingWithVersion, E> resolver
+    String query
+    final Cache<Long,D> dtoCache
     @Inject ICacheInvalidationRegistry cacheInvalidationRegistry
 
 

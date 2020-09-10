@@ -72,7 +72,7 @@ class AutoMap42Processor extends AbstractClassProcessor {
     static final String REQUEST_RESOLVE = "ResolverRequest"
     static final String REQUEST_SEARCH  = "SearchRequest"
     static final String HANDLER         = "Handler"
-    val mapperRevision = "2020-08-18 14:17 CET (Xtend 2.21.0, Java 8, enhanced search)"
+    val mapperRevision = "2020-09-10 16:40 CET (Xtend 2.23.0, Java 8, enhanced search)"
 
     def getMapperClassName(ClassDeclaration m, String r) {
         return m.packageName + "impl." + r + "Mapper"

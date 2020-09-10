@@ -24,7 +24,7 @@ public abstract class AbstractSearch28RequestHandler<
   > extends AbstractSearchRequestHandler<RQ> {
 
     protected ReadAll28Response<DATA, TRACKING> execute(
-        final RequestContext ctx, 
+        final RequestContext ctx,
         final RQ request,
         final IResolverAnyKey28<KEY, TRACKING, ENTITY> resolver,
         final IEntityMapper28<KEY, DATA, TRACKING, ENTITY> mapper

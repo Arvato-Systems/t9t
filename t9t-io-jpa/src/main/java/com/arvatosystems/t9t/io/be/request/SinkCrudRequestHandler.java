@@ -60,8 +60,8 @@ public class SinkCrudRequestHandler extends AbstractCrudSurrogateKey42RequestHan
     }
 
     private void validateFilePathPattern(String pattern) {
-        for (String vorbiddenElement : FORBIDDEN_FILE_PATH_ELEMENTS) {
-            if (pattern.contains(vorbiddenElement)) {
+        for (String forbiddenElement : FORBIDDEN_FILE_PATH_ELEMENTS) {
+            if (pattern.contains(forbiddenElement)) {
                 throw new T9tException(T9tIOException.FORBIDDEN_FILE_PATH_ELEMENTS);
             }
         }
