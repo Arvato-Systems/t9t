@@ -175,7 +175,7 @@ public class TranslationProvider implements ITranslationProvider {
         return trList;
     }
 
-    protected String getTranslation(Map<String, String> translations, String tenantId, String lang, String path) {
+    protected String getTranslation(Map<String, String> translations, String tenantId, String lang, String path, String indexStr) {
         String translation = null;
         if (useLocalTenantTranslation) {
             // only check local if it is different from the global one
@@ -196,14 +196,19 @@ public class TranslationProvider implements ITranslationProvider {
             if (translation == null) {
                 // strip qualifiers, if any
                 translation = translations.get(TranslationsStack.makeKey(lang, T9tConstants.GLOBAL_TENANT_ID, null));
-
-                // another attempt, if an index is part of the name, strip the index  (TODO!)
-//                if (translation == null) {
-//                    int bracketPos = simpleFieldName.indexOf('[');
-//                    if (bracketPos > 0)
-//                        translation = getDefaultTranslation(lang, T9tConstants.GLOBAL_TENANT_ID, simpleFieldName.substring(0, bracketPos));
-//                }
             }
+        }
+        if (indexStr != null && translation != null) {
+            /// parse the old index, add 1, and use it as new index
+            String replacement = " #?";
+            try {
+                final int oldIndex = Integer.parseInt(indexStr);
+                replacement = String.format(" #%d", oldIndex+1);
+            } catch(Exception e) {
+                LOGGER.error("Badly formatted index for {}[{}]: {}", path, indexStr, translation);
+                replacement = indexStr;
+            }
+            translation = translation.replace("#", replacement);
         }
         return translation;
     }
@@ -211,19 +216,53 @@ public class TranslationProvider implements ITranslationProvider {
     @Override
     public String getTranslation(String tenantId, String[] langs, String path, String fieldname) {
         Map<String, String> translations = TranslationsStack.getTranslationsForField(fieldname);
+        String indexStr = null;
 
         if (translations == null) {
-            int lastDot = fieldname.lastIndexOf('.');
-            if (lastDot > 0)
-                // fallback: no dots, only last component
-                translations = TranslationsStack.getTranslationsForField(fieldname.substring(lastDot+1));
-            if (translations == null)
-                return null;
+            // fallback 1: check for arrays
+            final int bracketPos1 = fieldname.indexOf('[');
+            if (bracketPos1 > 0) {
+                // try the wildcard ID
+                translations = TranslationsStack.getTranslationsForField(fieldname.substring(0, bracketPos1) + "*");
+            }
+            if (translations != null) {
+                // fallback 1 worked: set indexStr
+                final int bracketPos2 = fieldname.indexOf(']');
+                if (bracketPos2 > bracketPos1) {
+                    indexStr = fieldname.substring(bracketPos1+1, bracketPos2);
+                }
+            } else {
+                // fallback 2: check for base ID
+                int lastDot = fieldname.lastIndexOf('.');
+                if (lastDot > 0) {
+                    // no dots, only last component
+                    final String basename = fieldname.substring(lastDot+1);
+                    translations = TranslationsStack.getTranslationsForField(basename);
+                    if (translations == null && bracketPos1 > 0) {
+                        // fallback 3: check for arrays in last component
+                        final int bracketPos2 = basename.indexOf('[');
+                        if (bracketPos2 > 0) {
+                            translations = TranslationsStack.getTranslationsForField(basename.substring(0, bracketPos2) + "*");
+                            if (translations != null) {
+                                // fallback 3 worked: set indexStr
+                                final int bracketPos3 = fieldname.indexOf(']');
+                                if (bracketPos3 > bracketPos2) {
+                                    indexStr = fieldname.substring(bracketPos2+1, bracketPos3);
+                                }
+                            }
+                        }
+                    }
+                }
+                if (translations == null) {
+                    // still no translation: it does not exist!
+                    return null;
+                }
+            }
         }
 
         String translation = null;
         for (String lang : langs) { // usually country specific and general language, ex.: en_US, en
-            translation = getTranslation(translations, tenantId, lang, path);
+            translation = getTranslation(translations, tenantId, lang, path, indexStr);
             if (translation != null) {
                 break;
             }
