@@ -27,6 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.base.JsonUtil;
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
@@ -275,32 +276,25 @@ public class RequestContext extends AbstractRequestContext {
         this.priorityRequest = priorityRequest;
     }
 
-    /** Safe getter for a z field values, also works if z itself is null. */
+    /** Safe getter for z field values, also works if z itself is null. */
     public Object getZEntry(String key) {
         final Map<String, Object> z = internalHeaderParameters.getJwtInfo().getZ();
         return z == null ? null : z.get(key);
     }
 
-    /** Safe getter for a z field values, also works if z itself is null, returns a String typed result, if required, by conversion. */
+    /** Safe getter for z field values, also works if z itself is null, returns a String typed result, if required, by conversion. */
     public String getZString(String key) {
         final Object value = getZEntry(key);
         return value == null ? null : value.toString();
     }
 
-    /** Safe getter for a z field values, also works if z itself is null, returns a Long typed result, if required, by conversion. */
+    /** Safe getter for z field values, also works if z itself is null, returns a Long typed result, if required, by conversion. */
     public Long getZLong(String key) {
-        final Object value = getZEntry(key);
-        if (value == null) {
-            return null;
-        }
-        if (value instanceof Long) {
-            return (Long)value;
-        }
-        if (value instanceof Number) {
-            return ((Number)value).longValue();
-        }
-        LOGGER.error("Required a Long or Number for JWT z entry {}, but got {}", key, value.getClass().getCanonicalName());
-        throw new T9tException(T9tException.INVALID_REQUEST_PARAMETER_TYPE, "Required a Long or Number for JWT z entry " + key
-                + ", but got " + value.getClass().getCanonicalName());
+        return JsonUtil.getZLong(internalHeaderParameters.getJwtInfo().getZ(), key, null);
+    }
+
+    /** Safe getter for z field values, also works if z itself is null, returns an Integer typed result, if required, by conversion. */
+    public Integer getZInteger(String key) {
+        return JsonUtil.getZInteger(internalHeaderParameters.getJwtInfo().getZ(), key, null);
     }
 }

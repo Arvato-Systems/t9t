@@ -15,9 +15,16 @@
  */
 package com.arvatosystems.t9t.base;
 
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.jpaw.json.JsonException;
 
 public class JsonUtil {
+    private static final Logger LOGGER = LoggerFactory.getLogger(JsonUtil.class);
+
     private JsonUtil() {} // don't want instances of this class
 
     private static int hex(char c) {
@@ -80,5 +87,62 @@ public class JsonUtil {
         }
 
         return escaped ? t.toString() : s;
+    }
+
+    /** Safe getter for a z field value, also works if z itself is null. */
+    public static Object getZEntry(Map<String, Object> z, String key) {
+        return z == null ? null : z.get(key);
+    }
+
+    /** Safe getter for a z field value, also works if z itself is null, returns a String typed result, if required, by conversion. */
+    public static String getZString(Map<String, Object> z, String key, String defaultValue) {
+        final Object value = getZEntry(z, key);
+        return value == null ? defaultValue : value.toString();
+    }
+
+    /** Safe getter for a z field value, also works if z itself is null, returns a Long typed result, if required, by conversion. */
+    public static Long getZLong(Map<String, Object> z, String key, Long defaultValue) {
+        final Object value = getZEntry(z, key);
+        if (value == null) {
+            return defaultValue;
+        }
+        if (value instanceof Long) {
+            return (Long)value;
+        }
+        if (value instanceof Number) {
+            return ((Number)value).longValue();
+        }
+        try {
+            // attempt parsing a number
+            return Long.parseLong(value.toString());
+        } catch (Exception e) {
+            LOGGER.error("Cannot convert value {} for {} to numeric: {}", value, key, e);
+        }
+        LOGGER.error("Required Number for z entry {}, but got {}", key, value.getClass().getCanonicalName());
+        throw new T9tException(T9tException.INVALID_REQUEST_PARAMETER_TYPE, "Required a Number for z entry " + key
+                + ", but got " + value.getClass().getCanonicalName());
+    }
+
+    /** Safe getter for a z field value, also works if z itself is null, returns an Integer typed result, if required, by conversion. */
+    public static Integer getZInteger(Map<String, Object> z, String key, Integer defaultValue) {
+        final Object value = getZEntry(z, key);
+        if (value == null) {
+            return defaultValue;
+        }
+        if (value instanceof Integer) {
+            return (Integer)value;
+        }
+        if (value instanceof Number) {
+            return ((Number)value).intValue();
+        }
+        try {
+            // attempt parsing a number
+            return Integer.parseInt(value.toString());
+        } catch (Exception e) {
+            LOGGER.error("Cannot convert value {} for {} to numeric: {}", value, key, e);
+        }
+        LOGGER.error("Required Number for z entry {}, but got {}", key, value.getClass().getCanonicalName());
+        throw new T9tException(T9tException.INVALID_REQUEST_PARAMETER_TYPE, "Required a Number for z entry " + key
+                + ", but got " + value.getClass().getCanonicalName());
     }
 }
