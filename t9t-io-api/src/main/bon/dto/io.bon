@@ -259,6 +259,9 @@ package (com.arvatosystems) t9t.io {
         optional Boolean                                isInput;                        // if true then this is not a data sink but a data source
         optional XEnum DataSinkCategoryXType            category;                       // the type of data sink
         optional Enum ExportStatusEnum                  camelTransferStatus properties nullWhenZero;  // non null for camel routes which have not yet been processed
+        optional Boolean                                processed;                      // keeps track, if this data export has been processed further (for example emailed, printed etc.)
+        optional defaultExternalId                      genericId1;                     // some alphanumeric ID
+        optional defaultExternalId                      genericId2;                     // some alphanumeric ID
     }
 
 

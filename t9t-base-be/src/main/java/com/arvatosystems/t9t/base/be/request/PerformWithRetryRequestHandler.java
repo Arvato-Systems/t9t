@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
-import com.arvatosystems.t9t.base.request.PerformUntilRequest;
+import com.arvatosystems.t9t.base.request.PerformWithRetryRequest;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.IAutonomousExecutor;
 import com.arvatosystems.t9t.base.services.RequestContext;
@@ -29,14 +29,15 @@ import com.arvatosystems.t9t.base.services.RequestContext;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ApplicationException;
 
-public class PerformUntilRequestHandler extends AbstractRequestHandler<PerformUntilRequest> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(PerformUntilRequestHandler.class);
+public class PerformWithRetryRequestHandler extends AbstractRequestHandler<PerformWithRetryRequest> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PerformWithRetryRequestHandler.class);
 
     private final IAutonomousExecutor executor = Jdp.getRequired(IAutonomousExecutor.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, PerformUntilRequest request) {
+    public ServiceResponse execute(RequestContext ctx, PerformWithRetryRequest request) {
         int count = 0;
+        final long delay = request.getWaitBetweenRetries() == null ? 200L : request.getWaitBetweenRetries(); 
         Instant stopAt = request.getStopAt();
         if (request.getMaxNumberOfMilliseconds() != null) {
             long alsoStopAt = System.currentTimeMillis() + request.getMaxNumberOfMilliseconds().longValue();
@@ -44,38 +45,41 @@ public class PerformUntilRequestHandler extends AbstractRequestHandler<PerformUn
                 stopAt = new Instant(alsoStopAt);
         }
         final RequestParameters rp = request.getRequest();
+        ServiceResponse resp = new ServiceResponse();
 
         for (;;) {
+            ++count;
+
+            resp = executor.execute(ctx, rp);
+            switch (resp.getReturnCode() / ApplicationException.CLASSIFICATION_FACTOR) {
+            case ApplicationException.SUCCESS:
+                return ok();
+            case ApplicationException.CL_DENIED:
+                if (request.getAllowNo()) {
+                    return ok();
+                }
+                break;
+            default:
+                // any other error
+                break;
+            }
+            if (request.getMaxNumberOfRuns() != null && count >= request.getMaxNumberOfRuns()) {
+                LOGGER.info("Ending PerformWithRetry({}) after {} executions because max number of executions reached", rp.ret$PQON(), count);
+                break;
+            }
             if (stopAt != null) {
                 if (stopAt.isBefore(System.currentTimeMillis())) {
-                    LOGGER.info("Ending PerformUntil({}) after {} executions due to time expiry", rp.ret$PQON(), count);
+                    LOGGER.info("Ending PerformWithRetry({}) after {} executions due to time expiry", rp.ret$PQON(), count);
                     break;
                 }
             }
-            if (request.getMaxNumberOfRuns() != null && count >= request.getMaxNumberOfRuns()) {
-                LOGGER.info("Ending PerformUntil({}) after {} executions because max number of executions reached", rp.ret$PQON(), count);
+            ctx.incrementProgress();  // one per request done
+            try {
+                Thread.sleep(delay);
+            } catch (InterruptedException e) {
                 break;
             }
-            ++count;
-
-            final ServiceResponse resp = executor.execute(ctx, rp);
-            switch (resp.getReturnCode() / ApplicationException.CLASSIFICATION_FACTOR) {
-            case ApplicationException.SUCCESS:
-                break; // continue processing
-            case ApplicationException.CL_DENIED:
-                if (request.getAllowNo()) {
-                    break; // continue processing
-                } else {
-                    LOGGER.info("Ending PerformUntil({}) after {} executions because subrequest returns DENY", rp.ret$PQON(), count);
-                    return resp; // stop
-                }
-            default:
-                // any other error
-                LOGGER.info("Ending PerformUntil({}) after {} executions because subrequest return an Exception", rp.ret$PQON(), count);
-                return resp;
-            }
-            ctx.incrementProgress();  // one per request done
         }
-        return new ServiceResponse();
+        return resp;  // return the last response
     }
 }

@@ -84,12 +84,24 @@ package (com.arvatosystems) t9t.base.request {
     /** Execute a request until a certain number of executions have been done,
      * of until a certain time has elapsed, whichever is first.
      * If no parameters are passed, the subrequest will be executed until it throws an exception.
+     * Every subrequest is performed autonomically.
      */
     class PerformUntilRequest extends RequestParameters {
         required boolean                            allowNo;                    // stop when the request returns a code 1xxx (if false, only stop at errors 2xxx and above)
         optional Integer                            maxNumberOfRuns;
         optional Integer                            maxNumberOfMilliseconds;
         optional Instant                            stopAt;                     // also stop once this time has been reached
+        required (RequestParameters...)             request;                    // The request to perform
+    }
+
+    /** Execute a request until it is successful or until a certain number of executions have been done.
+     */
+    class PerformWithRetryRequest extends RequestParameters {
+        required boolean                            allowNo;                    // stop when the request returns a code 1xxx (if false, only stop at errors 2xxx and above)
+        optional Integer                            maxNumberOfRuns;            // if unspecified, perform 3 attemps max
+        optional Integer                            maxNumberOfMilliseconds;
+        optional Instant                            stopAt;                     // also stop once this time has been reached
+        optional Long                               waitBetweenRetries;         // how may ms to wait before the next attempt is done (default 200 ms)
         required (RequestParameters...)             request;                    // The request to perform
     }
 

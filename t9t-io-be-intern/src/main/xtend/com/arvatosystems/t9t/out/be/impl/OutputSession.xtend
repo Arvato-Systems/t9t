@@ -230,10 +230,12 @@ class OutputSession implements IOutputSession {
             configurationRef        = params.configurationRef
             dataSinkRef             = new DataSinkRef(sinkCfg.objectRef)
             requiredPermission      = params.requiredPermission
-            genericRefs1            = params.getGenericRefs1
-            genericRefs2            = params.getGenericRefs2
+            genericRefs1            = params.genericRefs1
+            genericRefs2            = params.genericRefs2
             isInput                 = Boolean.FALSE
             category                = sinkCfg.category
+            genericId1              = params.genericId1
+            genericId2              = params.genericId2
         ]
         thisSink.commTargetChannelType  = communicationTargetChannelType
         thisSink.commFormatType         = communicationFormatType

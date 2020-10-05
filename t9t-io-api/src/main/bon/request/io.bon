@@ -78,7 +78,7 @@ package (com.arvatosystems) t9t.io.request {
         required Object List<>                      records2;                    // second list of records
     }
 
-    /** Dummy request for testing, which echoes the parameters  */
+    /** Dummy request for testing, which echoes the parameters. */
     class ImportStatusRequest extends RequestParameters return ImportStatusResponse {
         required Object List<>                      responses;          // every list entry creates one response record
     }
@@ -86,6 +86,11 @@ package (com.arvatosystems) t9t.io.request {
     /** Response type for return messages which should be written to the response data sink. */
     class ImportStatusResponse extends ServiceResponse {
         required Object List<>                      responses;          // every list entry creates one response record
+    }
+
+    /** Request to mark a Sink entry as "processed". */
+    class MarkSinkAsProcessedRequest extends RequestParameters {
+        required f42Ref                             sinkRef;                        // references some existing Sink
     }
 
     /** Request which can be used to download a file.

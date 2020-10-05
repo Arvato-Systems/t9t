@@ -24,6 +24,7 @@ import com.arvatosystems.t9t.io.SinkDTO;
 /** Defines the communication layer between the backend modules (business logic / persistence layer). */
 public interface IOutPersistenceAccess {
 
+	/** Retrieve the DataSinkDTO for a given ID, either from the current tenant, or for the global one. */
     DataSinkDTO getDataSinkDTO(String dataSinkId);
 
     List<DataSinkDTO> getDataSinkDTOsForEnvironment(String environment);
@@ -35,4 +36,7 @@ public interface IOutPersistenceAccess {
 
     Long getNewOutboundMessageKey();
     void storeOutboundMessage(OutboundMessageDTO sink);
+    
+    /** Mark a sink as "has been processed". */
+    void markAsProcessed(Long sinkRef);
 }

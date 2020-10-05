@@ -27,6 +27,7 @@ import com.arvatosystems.t9t.io.DataSinkDTO;
 import com.arvatosystems.t9t.io.OutboundMessageDTO;
 import com.arvatosystems.t9t.io.SinkDTO;
 import com.arvatosystems.t9t.io.jpa.entities.DataSinkEntity;
+import com.arvatosystems.t9t.io.jpa.entities.SinkEntity;
 import com.arvatosystems.t9t.io.jpa.mapping.IDataSinkDTOMapper;
 import com.arvatosystems.t9t.io.jpa.mapping.IOutboundMessageDTOMapper;
 import com.arvatosystems.t9t.io.jpa.mapping.ISinkDTOMapper;
@@ -82,8 +83,7 @@ public class OutPersistenceAccess implements IOutPersistenceAccess {
             throw new T9tException(T9tException.ILE_RESULT_SET_WRONG_SIZE, "dataSinkId=" + dataSinkId);
         }
 
-        LOGGER.info("Export for dataSinkId {} will use configuration record of tenantRef = {}", dataSinkId,
-                sinks.get(0).getTenantRef());
+        LOGGER.debug("Export for dataSinkId {} will use configuration record of tenantRef = {}", dataSinkId, sinks.get(0).getTenantRef());
         return dataSinkMapper.mapToDto(sinks.get(0));
     }
 
@@ -114,5 +114,11 @@ public class OutPersistenceAccess implements IOutPersistenceAccess {
         typedQuery.setParameter("environment", environment);
         List<DataSinkEntity> resultList = (List<DataSinkEntity>)typedQuery.getResultList();
         return dataSinkMapper.mapListToDto(resultList);
+    }
+
+    @Override
+    public void markAsProcessed(Long sinkRef) {
+        final SinkEntity sink = sinkResolver.getEntityDataForKey(sinkRef, false);
+        sink.setProcessed(Boolean.TRUE);
     }
 }

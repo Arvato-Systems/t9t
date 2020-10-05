@@ -8,11 +8,13 @@
         { "filterType": "R", "fieldName": "cTimestamp" },
         { "filterType": "E", "fieldName": "isInput" },
         { "filterType": "E", "fieldName": "camelTransferStatus" },
-        { "filterType": "E", "fieldName": "category" }
+        { "filterType": "E", "fieldName": "category" },
+        { "filterType": "W", "fieldName": "genericId1" },
+        { "filterType": "W", "fieldName": "genericId2" }
     ],
     "fields": [
         "cTimestamp", "dataSinkRef.dataSinkId", "commTargetChannelType", "commFormatType", "fileOrQueueName", "numberOfSourceRecords", "numberOfMappedRecords", "numberOfErrorRecords",
-        "processingTime", "camelTransferStatus"
+        "processingTime", "camelTransferStatus", "processed", "genericId1", "genericId2"
     ],
     "fieldWidths": [ 150, 200, 100, 110, 360, 150, 150, 150, 150, 80 ]
 }
