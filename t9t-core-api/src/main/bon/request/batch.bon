@@ -47,6 +47,7 @@ package (com.arvatosystems) t9t.batch.request {
 
     class GetNextTimeSliceResponse extends ServiceResponse {
         required Instant(0)             startInstant;
+        required Instant(0)             endInstant;
     }
 
     /** Moves the tracking forward to the provided "asOf" instant and returns the previous one.
@@ -54,7 +55,7 @@ package (com.arvatosystems) t9t.batch.request {
      *  */
     class GetNextTimeSliceRequest extends RequestParameters return GetNextTimeSliceResponse {
         required (SliceTrackingKey)     sliceTrackingKey;       // the key of the record
-        required Instant(0)             endInstant;             // current "asOf", end of the interval, will be stored as the new date in the table
+        optional Instant(3)             overrideEndInstant;     // end of the interval, will be stored as the new date in the table. If null, the context's executionStart will be used
         optional f42Ref                 sinkRef;                // sinkRef to be written to, if known, for maintenance and documentation purposes
     }
 }

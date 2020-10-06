@@ -17,41 +17,22 @@ package com.arvatosystems.t9t.batch.be.request
 
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler
 import com.arvatosystems.t9t.base.services.RequestContext
-import com.arvatosystems.t9t.batch.jpa.persistence.ISliceTrackingEntityResolver
 import com.arvatosystems.t9t.batch.request.GetNextTimeSliceRequest
 import com.arvatosystems.t9t.batch.request.GetNextTimeSliceResponse
+import com.arvatosystems.t9t.batch.services.IGetNextTimeSliceService
 import de.jpaw.annotations.AddLogger
 import de.jpaw.dp.Inject
 
 @AddLogger
 class GetNextTimeSliceRequestHandler extends AbstractRequestHandler<GetNextTimeSliceRequest> {
-    @Inject ISliceTrackingEntityResolver resolver
+    @Inject IGetNextTimeSliceService sliceService
 
     override GetNextTimeSliceResponse execute(RequestContext ctx, GetNextTimeSliceRequest rq) {
+        val result = sliceService.getNextTimeSlice(ctx, rq.sliceTrackingKey.dataSinkId, rq.sliceTrackingKey.id, rq.overrideEndInstant, rq.sinkRef)
 
-        //should we search for available timeSlice, if none is available, create a new one
-        var slice = resolver.findByDataSinkIdAndId(false, rq.sliceTrackingKey.dataSinkId, rq.sliceTrackingKey.id)
-        if (slice === null) {
-            slice = resolver.newEntityInstance
-            slice => [
-                id = rq.sliceTrackingKey.id
-                dataSinkId = rq.sliceTrackingKey.dataSinkId
-                exportedDataBefore = ctx.executionStart
-            ]
-            resolver.save(slice)
-        }
-
-//        val slice                   = resolver.getEntityData(rq.sliceTrackingKey, false)
-        val response                = new GetNextTimeSliceResponse
-        if (LOGGER.isDebugEnabled) {
-            LOGGER.info("Advancing time slice for {} from {} to {} (by {} seconds)", rq.sliceTrackingKey,
-                slice.exportedDataBefore, rq.endInstant,
-                (rq.endInstant.millis - slice.exportedDataBefore.millis) / 1000L
-            )
-        }
-        response.startInstant       = slice.exportedDataBefore
-        slice.exportedDataBefore    = rq.endInstant
-        slice.lastSinkRef           = rq.sinkRef
+        val response             = new GetNextTimeSliceResponse
+        response.startInstant    = result.startInstant
+        response.endInstant      = result.endInstant
         return response
     }
 }

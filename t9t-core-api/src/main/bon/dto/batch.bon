@@ -52,11 +52,21 @@ package (com.arvatosystems) t9t.batch {
         required defaultExternalId          id;                     // references any subordinate structure (location or entity ID or whatever required, or "-" if none applicable)
     }
 
-    /** Stores information about execution slices for export batch processes */
+    /**
+     * Stores information about execution slices for export batch processes.
+     * Time sliced exports should consider the time interval [exportedDataBefore, floor(asOf) - gap)   (half open interval: start <= t < end).
+     */
     class SliceTrackingDTO extends SliceTrackingRef {
         required t9tShortId                 dataSinkId properties notupdatable; //, dropdown="dataSinkId" (does not work, is string here); // ID of the output session's data sink
         required defaultExternalId          id         properties notupdatable;    // references any subordinate structure (location or entity ID or whatever required, or "-" if none applicable)
         required Instant(0)                 exportedDataBefore;     // end timestamp of eligible data records of the last export batch process
         optional f42Ref                     lastSinkRef;            // sinkRef of the previous export (if known & applicable)
+        optional Integer                    gap;                    // the gap to not export (in seconds), if null, then 10 seconds are assumed.
+    }
+
+    /** Internal data object to pass an interval of two instants. */
+    final class SliceTrackingInterval {
+        required Instant(0)                 startInstant;
+        required Instant(0)                 endInstant;
     }
 }

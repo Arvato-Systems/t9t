@@ -5,6 +5,6 @@
         { "filterType": "W", "fieldName": "id" }
     ],
     "fields": [
-        "dataSinkId", "id", "exportedDataBefore", "lastSinkRef"
+        "dataSinkId", "id", "gap", "exportedDataBefore", "lastSinkRef"
     ]
 }
