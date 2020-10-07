@@ -69,4 +69,10 @@ package (com.arvatosystems) t9t.batch {
         required Instant(0)                 startInstant;
         required Instant(0)                 endInstant;
     }
+
+    /** Internal data object to pass an interval of two LocalDateTimes - for H2 based tests, which distinguish Instant from LocalDateTime. */
+    final class SliceTrackingLocalInterval {
+        required Timestamp(0)               start;
+        required Timestamp(0)               end;
+    }
 }

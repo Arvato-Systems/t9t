@@ -4,6 +4,7 @@ import org.joda.time.Instant;
 
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.batch.SliceTrackingInterval;
+import com.arvatosystems.t9t.batch.SliceTrackingLocalInterval;
 
 public interface IGetNextTimeSliceService {
     /**
@@ -16,4 +17,9 @@ public interface IGetNextTimeSliceService {
 
     /** Retrieves the start date of the next slice for a given key, without storing anything. */
     SliceTrackingInterval previewNextTimeSlice(RequestContext ctx, String dataSinkId, String id);
+
+    /** Converts the interval with instants to an interval of LocalDateTime types - in UTC. */
+    default SliceTrackingLocalInterval convertToLocal(SliceTrackingInterval interval) {
+        return new SliceTrackingLocalInterval(interval.getStartInstant().toDateTime().toLocalDateTime(), interval.getEndInstant().toDateTime().toLocalDateTime());
+    }
 }
