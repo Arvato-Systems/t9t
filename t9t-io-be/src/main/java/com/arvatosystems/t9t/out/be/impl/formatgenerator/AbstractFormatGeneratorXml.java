@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 - 2018 Arvato Systems GmbH
+ * Copyright (c) 2012 - 2020 Arvato Systems GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import static org.apache.commons.lang3.StringUtils.substring;
 import static org.apache.commons.lang3.StringUtils.trimToNull;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -100,9 +99,8 @@ public class AbstractFormatGeneratorXml extends AbstractFormatGenerator {
         Map<String, Object> map = outputSessionParameters.getAdditionalParameters();
         if (map != null) {
             Object value = map.get(id);
-            if (value != null && value instanceof String) {
-                JAXBElement<String> element = new JAXBElement<>(getQname(id), String.class, (String)value);
-                m.marshal(element, writer);
+            if (value != null) {
+                m.marshal(new JAXBElement(getQname(id), value.getClass(), value), writer);
                 nl();
             }
         }
@@ -118,6 +116,19 @@ public class AbstractFormatGeneratorXml extends AbstractFormatGenerator {
             for (Entry<String, String> nsMapping : xmlNamespaceMapping.entrySet()) {
                 LOGGER.debug("Define namespace prefix from data sink config: {}={}", nsMapping.getKey(), nsMapping.getValue());
                 writer.setPrefix(nsMapping.getKey(), nsMapping.getValue());
+            }
+        }
+    }
+
+    protected void writeCustomElements(String tagList) throws XMLStreamException, JAXBException {
+        if (tagList == null || tagList.isEmpty() || outputSessionParameters.getAdditionalParameters() == null) {
+            return; // nothing to do
+        }
+        // split the tagList into separate tags
+        final String [] tags = split(tagList, ',');
+        for (String tag: tags) {
+            if (tag != null && !tag.isEmpty()) {
+                writeCustomElement(tag);
             }
         }
     }
@@ -177,6 +188,7 @@ public class AbstractFormatGeneratorXml extends AbstractFormatGenerator {
             if (Boolean.TRUE.equals(writeTenantId)) {
                 doWriteTenantId();
             }
+            writeCustomElements(sinkCfg.getXmlHeaderElements());
         } catch (XMLStreamException | FactoryConfigurationError | JAXBException e1) {
             LOGGER.error(e1.getMessage(), e1);
             throw new T9tException(T9tIOException.XML_MARSHALLING_ERROR, e1.getClass().getSimpleName() + ": " + e1.getMessage());
@@ -198,10 +210,15 @@ public class AbstractFormatGeneratorXml extends AbstractFormatGenerator {
     @Override
     public void close() throws IOException, ApplicationException {
         try {
+            writeCustomElements(sinkCfg.getXmlFooterElements());
             writer.writeEndDocument();
-            nl();  // here woodstox breaks with some NPE!
+            try {
+                nl();  // here woodstox breaks with some NPE!
+            } catch (Exception e) {
+                LOGGER.warn("Exception in final nl() of XML document. Woodstox marshaller??? {}", ExceptionUtil.causeChain(e));
+            }
             writer.close();
-        } catch (XMLStreamException e) {
+        } catch (XMLStreamException | JAXBException e) {
             LOGGER.error(e.getMessage(), e);
             throw new T9tException(T9tIOException.XML_MARSHALLING_ERROR, ExceptionUtil.causeChain(e));
         }

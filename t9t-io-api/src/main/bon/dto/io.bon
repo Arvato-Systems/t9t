@@ -220,6 +220,8 @@ package (com.arvatosystems) t9t.io {
         optional t9tShortId                             copyToAsyncChannel;         // may reference some async channel to mirror requests to
         optional Boolean                                camelFormatIsFmtRoute;      // if the parameter camelRoute contains a valid formatted camel route string instead of only an ID (see parameter camelRoute)
         optional (DataSinkRef..., DataSinkKey)          responseDataSinkRef         properties ref, dropdown="dataSinkId", searchprefix="dataSink";  // only for input data sinks: the output data sink for a response file
+        optional Unicode(100)                           xmlHeaderElements;          // scalar header information
+        optional Unicode(100)                           xmlFooterElements;          // scalar footer information
     }
 
     /** Records all asynchronous outgoing communication. For every file created, there is one entry of this type.
