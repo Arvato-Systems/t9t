@@ -18,7 +18,7 @@ package com.arvatosystems.t9t.out.be.impl.output;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.out.be.ISpecificTranslationProvider;
+import com.arvatosystems.t9t.out.services.ISpecificTranslationProvider;
 import com.arvatosystems.t9t.translation.services.ITranslationProvider;
 
 import de.jpaw.bonaparte.enums.BonaTokenizableEnum;

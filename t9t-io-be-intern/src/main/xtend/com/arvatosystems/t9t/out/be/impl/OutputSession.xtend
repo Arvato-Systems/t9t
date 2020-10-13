@@ -32,10 +32,10 @@ import com.arvatosystems.t9t.io.T9tIOException
 import com.arvatosystems.t9t.io.request.CheckSinkFilenameUsedRequest
 import com.arvatosystems.t9t.io.request.CheckSinkFilenameUsedResponse
 import com.arvatosystems.t9t.io.request.ProcessCamelRouteRequest
-import com.arvatosystems.t9t.out.be.ICommunicationFormatGenerator
-import com.arvatosystems.t9t.out.be.IPreOutputDataTransformer
+import com.arvatosystems.t9t.out.services.ICommunicationFormatGenerator
+import com.arvatosystems.t9t.out.services.IPreOutputDataTransformer
 import com.arvatosystems.t9t.out.be.impl.formatgenerator.FormatGeneratorDumb
-import com.arvatosystems.t9t.out.be.impl.output.FoldableParams
+import com.arvatosystems.t9t.out.services.FoldableParams
 import com.arvatosystems.t9t.out.be.impl.output.PatternExpansionUtil
 import com.arvatosystems.t9t.out.be.impl.output.SpecificTranslationProvider
 import com.arvatosystems.t9t.out.services.IAsyncTransmitter

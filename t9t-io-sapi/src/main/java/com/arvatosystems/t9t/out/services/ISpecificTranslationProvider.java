@@ -13,20 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.out.be.impl.output
+package com.arvatosystems.t9t.out.services;
 
-import com.arvatosystems.t9t.out.be.ISpecificTranslationProvider
-import de.jpaw.bonaparte.pojos.api.media.EnumOutputType
-import java.util.List
-import org.eclipse.xtend.lib.annotations.Data
+import de.jpaw.bonaparte.enums.BonaTokenizableEnum;
+import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 
-@Data
-class FoldableParams {
-    // parameters for the constructor
-    List<String>                selectedFields;
-    List<String>                headers;
-    // parameters for the initDataGenerator call
-    EnumOutputType              relevantEnumType;
-    ISpecificTranslationProvider enumTranslator;
-    boolean                     applyVariantFilter;
+public interface ISpecificTranslationProvider {
+    public String translateEnum(EnumDataItem di, BonaTokenizableEnum n);
 }

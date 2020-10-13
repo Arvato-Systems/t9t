@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.out.be;
+package com.arvatosystems.t9t.out.services;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.io.DataSinkDTO;
-import com.arvatosystems.t9t.out.be.impl.output.FoldableParams;
-import com.arvatosystems.t9t.out.services.IOutputResource;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.media.MediaXType;

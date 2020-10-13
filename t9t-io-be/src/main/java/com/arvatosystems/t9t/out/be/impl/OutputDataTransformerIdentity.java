@@ -20,7 +20,7 @@ import java.util.List;
 
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.io.DataSinkDTO;
-import com.arvatosystems.t9t.out.be.IPreOutputDataTransformer;
+import com.arvatosystems.t9t.out.services.IPreOutputDataTransformer;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 

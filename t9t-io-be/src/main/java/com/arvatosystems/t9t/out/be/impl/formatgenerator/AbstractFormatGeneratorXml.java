@@ -100,7 +100,8 @@ public class AbstractFormatGeneratorXml extends AbstractFormatGenerator {
         if (map != null) {
             Object value = map.get(id);
             if (value != null) {
-                m.marshal(new JAXBElement(getQname(id), value.getClass(), value), writer);
+//                m.marshal(new JAXBElement(getQname(id), value.getClass(), value), writer);  // throws an Exception. LocalDateTime not a known type.
+                m.marshal(new JAXBElement<String>(getQname(id), String.class, value.toString()), writer);
                 nl();
             }
         }

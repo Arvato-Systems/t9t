@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.out.be;
+package com.arvatosystems.t9t.out.services;
 
 import java.util.List;
 
@@ -21,6 +21,7 @@ import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.base.services.IOutputSession;
 import com.arvatosystems.t9t.io.DataSinkDTO;
+import com.arvatosystems.t9t.io.services.IDataSinkDefaultConfigurationProvider;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 
@@ -30,7 +31,7 @@ import de.jpaw.bonaparte.core.BonaPortable;
  * @author LIEE001
  */
 @FunctionalInterface
-public interface IPreOutputDataTransformer {
+public interface IPreOutputDataTransformer extends IDataSinkDefaultConfigurationProvider {
 
     /**
      * Returns fixed header data.

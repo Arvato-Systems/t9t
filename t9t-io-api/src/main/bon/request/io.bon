@@ -252,4 +252,25 @@ package (com.arvatosystems) t9t.io.request {
         required f42Ref                             asyncMessageRef;        // the objectRef of the message
         required enum ExportStatusEnum              newStatus;
     }
+
+    /** Obtain the preset for a given qualifier. */
+    class GetDataSinkPresetRequest extends RequestParameters return GetDataSinkPresetsResponse {
+        optional Boolean                            isInput;
+        required customizationQualifier             qualifier;
+//         properties qualifierFor="out.be.IPreOutputDataTransformer,in.services.IInputDataTransformer";     // custom pre-transform to transform output data before storing it
+    }
+
+    class GetDataSinkPresetsResponse extends ServiceResponse {
+        optional (DataSinkPresets...)               preset;
+    }
+
+    /** Merge the preset for a data sink into a stored configuration and return the updated configuration. */
+    class MergeDataSinkPresetRequest extends RequestParameters return MergeDataSinkPresetResponse {
+        required f42Ref                             dataSinkRef;
+    }
+
+    class MergeDataSinkPresetResponse extends ServiceResponse {
+        required boolean                            wasMerged;       // if false, no Preset was found
+        required (apiw.DataWithTrackingW<DataSinkDTO,FullTrackingWithVersion>) dwt;
+    }
 }

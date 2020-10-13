@@ -18,8 +18,8 @@ package com.arvatosystems.t9t.out.be.impl.formatgenerator;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
+import com.arvatosystems.t9t.io.CSVTools;
 import com.arvatosystems.t9t.io.CsvConfigurationDTO;
-import com.arvatosystems.t9t.io.services.CSVTools;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.CSVComposer3;

@@ -13,14 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.io.services;
+package com.arvatosystems.t9t.io;
 
 import java.util.Locale;
 
 import org.joda.time.DateTimeZone;
-
-import com.arvatosystems.t9t.io.CsvConfigurationDTO;
-import com.arvatosystems.t9t.io.CsvDateTimeStyleType;
 
 import de.jpaw.bonaparte.core.CSVConfiguration;
 import de.jpaw.bonaparte.core.CSVStyle;

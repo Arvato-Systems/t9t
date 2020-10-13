@@ -19,6 +19,9 @@ import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
@@ -26,17 +29,23 @@ import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKey42RequestHandler;
 import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.in.services.IInputDataTransformer;
+import com.arvatosystems.t9t.in.services.IInputFormatConverter;
 import com.arvatosystems.t9t.io.CamelPostProcStrategy;
 import com.arvatosystems.t9t.io.CommunicationTargetChannelType;
 import com.arvatosystems.t9t.io.DataSinkCategoryType;
 import com.arvatosystems.t9t.io.DataSinkDTO;
 import com.arvatosystems.t9t.io.DataSinkRef;
+import com.arvatosystems.t9t.io.IOTools;
 import com.arvatosystems.t9t.io.T9tIOException;
 import com.arvatosystems.t9t.io.event.DataSinkChangedEvent;
 import com.arvatosystems.t9t.io.jpa.entities.DataSinkEntity;
 import com.arvatosystems.t9t.io.jpa.mapping.IDataSinkDTOMapper;
 import com.arvatosystems.t9t.io.jpa.persistence.IDataSinkEntityResolver;
 import com.arvatosystems.t9t.io.request.DataSinkCrudRequest;
+import com.arvatosystems.t9t.io.services.IDataSinkDefaultConfigurationProvider;
+import com.arvatosystems.t9t.out.services.ICommunicationFormatGenerator;
+import com.arvatosystems.t9t.out.services.IPreOutputDataTransformer;
 
 import de.jpaw.bonaparte.api.media.MediaTypeInfo;
 import de.jpaw.bonaparte.pojos.api.OperationType;
@@ -46,6 +55,7 @@ import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 import de.jpaw.dp.Jdp;
 
 public class DataSinkCrudRequestHandler extends AbstractCrudSurrogateKey42RequestHandler<DataSinkRef, DataSinkDTO, FullTrackingWithVersion, DataSinkCrudRequest, DataSinkEntity> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataSinkCrudRequestHandler.class);
 
     private static final String[] FORBIDDEN_FILE_PATH_ELEMENTS = { ":", "\\", "../" };
 
@@ -171,6 +181,27 @@ public class DataSinkCrudRequestHandler extends AbstractCrudSurrogateKey42Reques
             if (intended.getCommFormatName() != null) {
                 throw new T9tException(T9tException.INVALID_CONFIGURATION,
                     "Communication Format is not USER_DEFINED but custom communication format name is defined (NOT NULL)");
+            }
+        }
+
+        // check that we got valid qualifiers
+
+        final boolean isInput = Boolean.TRUE.equals(intended.getIsInput());
+        if (intended.getCommFormatName() != null) {
+            if (isInput) {
+                Jdp.getRequired(IInputFormatConverter.class, intended.getCommFormatName());
+            } else {
+                Jdp.getRequired(ICommunicationFormatGenerator.class, intended.getCommFormatName());
+            }
+        }
+        if (intended.getPreTransformerName() != null) {
+            final IDataSinkDefaultConfigurationProvider configPresetProvider = isInput ?
+              Jdp.getRequired(IInputDataTransformer.class,     intended.getPreTransformerName()) :
+              Jdp.getRequired(IPreOutputDataTransformer.class, intended.getPreTransformerName());
+            // if we use XML, but no root element has been specified, populate it by defaults
+            if (intended.getCommFormatType().getBaseEnum() == MediaType.XML && intended.getXmlRootElementName() == null) {
+                LOGGER.info("Storing XML configuratiom without root element: auto-filling fields");
+                IOTools.mergePreset(intended, configPresetProvider.getDefaultConfiguration(isInput));
             }
         }
     }
