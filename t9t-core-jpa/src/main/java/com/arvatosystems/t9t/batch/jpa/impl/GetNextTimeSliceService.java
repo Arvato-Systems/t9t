@@ -30,7 +30,6 @@ public class GetNextTimeSliceService implements IGetNextTimeSliceService {
         // we search for an existing timeSlice, if none is available, create a new one
         SliceTrackingEntity slice = resolver.findByDataSinkIdAndId(false, dataSinkId, id);
         if (slice == null) {
-            result.setStartInstant(REALLY_LONG_AGO);
             slice = resolver.newEntityInstance();
             slice.setDataSinkId(dataSinkId);
             slice.setId(id);
@@ -45,6 +44,9 @@ public class GetNextTimeSliceService implements IGetNextTimeSliceService {
             slice.setLastSinkRef(sinkRef);
             LOGGER.debug("Advancing time slice for {}/{} from {} to {} (by {} seconds)", dataSinkId, id, result.getStartInstant(), slice.getExportedDataBefore(), gap);
         }
+        if (result.getStartInstant() == null) {
+            result.setStartInstant(REALLY_LONG_AGO);
+        }
         result.setEndInstant(slice.getExportedDataBefore());
         return result;
     }
@@ -55,12 +57,14 @@ public class GetNextTimeSliceService implements IGetNextTimeSliceService {
         final SliceTrackingInterval result = new SliceTrackingInterval();
         final SliceTrackingEntity slice = resolver.findByDataSinkIdAndId(false, dataSinkId, id);
         if (slice == null) {
-            result.setStartInstant(REALLY_LONG_AGO);
             result.setEndInstant(endInstantRoundedDown.minus(DEFAULT_GAP_IN_MILLIS));
         } else {
             final Integer gap = slice.getGap() != null ? slice.getGap() : DEFAULT_GAP_IN_SECONDS;
             result.setStartInstant(slice.getExportedDataBefore());
             result.setEndInstant(endInstantRoundedDown.minus(gap * 1000L));
+        }
+        if (result.getStartInstant() == null) {
+            result.setStartInstant(REALLY_LONG_AGO);
         }
         return result;
     }
