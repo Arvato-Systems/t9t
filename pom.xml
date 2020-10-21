@@ -19,199 +19,609 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>com.arvato-systems.t9t</groupId>
-        <artifactId>global-build</artifactId>
-        <version>5.0-SNAPSHOT</version>
-        <relativePath />
-    </parent>
-
-    <artifactId>t9t-build</artifactId>
+	<groupId>com.arvato-systems.t9t</groupId>
+    <artifactId>global-build</artifactId>
     <version>5.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <description>Build instructions for t9t</description>
+    <description>Global root POM for the t9t framework</description>
+
+    <organization>
+        <name>arvato systems GmbH</name>
+        <url>http://www.arvato-systems.de</url>
+    </organization>
 
     <properties>
-        <!-- We do not need any further dependencies apart from "global" which is the parent! -->
+        <!-- to be used by dependent projects (same as project.version, but must be provided explicitly so that imports work) -->
+        <global.version>5.0-SNAPSHOT</global.version>  <!-- deprecated, use t9t.version instead! -->
+        <t9t.version>5.0-SNAPSHOT</t9t.version>
+
+        <!-- Build specific properties -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- variables to be overridden by Jenkins, to put build revisions into the JARs / WARs -->
+        <!-- See http://akeffalas.github.io/blog/2014/04/jenkins-build-info-maven-artifacts.html for a description. -->
+        <build.manifest.section>Build Details</build.manifest.section>
+        <build.unknown>UNKNOWN</build.unknown>
+        <build.number>${build.unknown}</build.number>
+        <build.revision>${build.unknown}</build.revision>
+
+        <!-- Plugin versions -->
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <maven-install-plugin.version>2.5.2</maven-install-plugin.version>
+        <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
+        <maven-dependency-plugin.version>3.1.2</maven-dependency-plugin.version>
+        <maven-eclipse-plugin.version>2.10</maven-eclipse-plugin.version>
+        <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
+        <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
+        <maven-assembly-plugin.version>3.2.0</maven-assembly-plugin.version>
+        <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
+        <maven-shade-plugin.version>3.2.1</maven-shade-plugin.version>
+        <maven-war-plugin.version>3.2.3</maven-war-plugin.version>
+        <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
+        <maven-jarjar-plugin.version>1.8</maven-jarjar-plugin.version>
+        <maven-enforcer-plugin.version>3.0.0-M3</maven-enforcer-plugin.version>
+        <maven-source-plugin.version>3.1.0</maven-source-plugin.version>
+        <owasp-maven-plugin.version>2.1.1</owasp-maven-plugin.version>
+        <spring-boot-maven-plugin.version>2.0.2.RELEASE</spring-boot-maven-plugin.version>
+        <tycho.version>1.7.0</tycho.version>
+        <git-commit-id-plugin.version>2.1.7</git-commit-id-plugin.version>
+        <jaxb2-maven-plugin.version>1.5</jaxb2-maven-plugin.version>
+        <jaxws-maven-plugin.version>2.3.3</jaxws-maven-plugin.version>
+        <eclipse-lifecycle-mapping.version>1.0.0</eclipse-lifecycle-mapping.version>
+        <bundle.plugin.version>3.0.1</bundle.plugin.version> <!-- felix, for pricing RCP -->
+        <exec.plugin.version>1.6.0</exec.plugin.version>
+        <jetty-maven-plugin.version>9.4.10.v20180503</jetty-maven-plugin.version>
+        <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>  <!-- 3.0.0 -->
+        <cxf-codegen-plugin.version>3.3.6</cxf-codegen-plugin.version>
+        <echo-maven-plugin.version>1.0.0</echo-maven-plugin.version>
+        <fortytwo-dataloader-maven.version>1.3.0</fortytwo-dataloader-maven.version>
+        <schema-loader-maven.version>1.2.2</schema-loader-maven.version>
+        <logback.version>1.2.3</logback.version>
+
+        <!-- reporting-->
+        <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
+        <maven-site-plugin.version>3.7.1</maven-site-plugin.version>
+        <maven-project-info-reports-plugin.version>3.0.0</maven-project-info-reports-plugin.version>
+        <maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
+
+        <!-- Versions of Xtext & Xtend plugins -->
+        <xtend-maven-plugin.version>2.23.0</xtend-maven-plugin.version>
+        <xtext-maven-plugin.version>2.23.0</xtext-maven-plugin.version>
+
+        <bonaparte-plugin.version>4.40.0</bonaparte-plugin.version>
+        <license-plugin.version>3.0</license-plugin.version>
+
+        <xtend-plugin-phase>generate-sources</xtend-plugin-phase>
+        <xtend-plugin-test-phase>generate-test-sources</xtend-plugin-test-phase>
+        <xtext-plugin-phase>generate-sources</xtext-plugin-phase>
+        <xtext-plugin-test-phase>generate-test-sources</xtext-plugin-test-phase>
+
+        <!-- ASCIIDoctor -->
+        <!-- the current version only works with a release candidate version of the maven plugin -->
+        <asciidoctor-maven-plugin.version>2.0.0-RC.1</asciidoctor-maven-plugin.version>
+        <asciidoctorj.version>2.2.0</asciidoctorj.version>
+        <!-- last 1.x version
+        <asciidoctor-maven-plugin.version>1.6.0</asciidoctor.maven.plugin.version>
+        <asciidoctorj.version>1.6.2</asciidoctorj.version>
+        -->
+        <jruby.version>9.2.9.0</jruby.version>
     </properties>
-
-    <profiles>
-        <profile>
-            <id>build</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <modules>
-                <module>t9t-dm</module>
-
-                <module>t9t-settings</module>
-                <module>t9t-settings-api</module>
-
-                <module>t9t-annotations-api</module>
-                <module>t9t-base-apiext</module>
-                <module>t9t-base-api</module>
-                <module>t9t-init</module>
-                <module>t9t-jdp</module>
-                <module>t9t-client-complex</module>
-
-                <module>t9t-settings-sapi</module>
-                <module>t9t-settings-xtend</module>
-                <module>t9t-settings-be</module>
-                <module>t9t-settings-jpa</module>
-
-                <module>t9t-jwt</module>
-
-                <module>t9t-core-api</module>
-                <module>t9t-server-sapi</module>
-                <module>t9t-base-sapi</module>
-                <module>t9t-httppool-be</module>
-
-                <module>t9t-auth-apiext</module>
-                <module>t9t-auth-api</module>
-                <module>t9t-auth-sapi</module>
-                <module>t9t-auth-mock</module>
-
-                <module>t9t-cfg-be</module>
-
-                <module>t9t-base-be</module>
-                <module>t9t-auth-be</module>
-                <module>t9t-base-vertx</module>
-                <module>t9t-auth-vertx</module>
-
-                <module>t9t-translation-api</module>
-                <module>t9t-translation-sapi</module>
-
-                <module>t9t-msglog-api</module>
-                <module>t9t-msglog-sapi</module>
-                <module>t9t-msglog-be</module>
-                <module>t9t-msglog-jpa</module>
-
-                <module>t9t-email-apiext</module>
-                <module>t9t-email-api</module>
-                <module>t9t-email-sapi</module>
-                <module>t9t-email-be</module>
-                <module>t9t-email-be-smtp</module>
-                <module>t9t-email-be-commons</module>
-                <module>t9t-email-be-vertx</module>
-                <module>t9t-email-jpa</module>
-
-                <module>t9t-doc-apiext</module>
-                <module>t9t-doc-api</module>
-                <module>t9t-doc-sapi</module>
-                <module>t9t-doc-be</module>
-                <module>t9t-doc-be-pdf</module>
-                <module>t9t-doc-jpa</module>
-
-                <module>t9t-voice-api</module>
-                <module>t9t-voice-sapi</module>
-                <module>t9t-voice-be</module>
-                <module>t9t-voice-jpa</module>
-
-                <module>t9t-translation-be</module>
-                <module>t9t-translation-be-intern</module>
-
-                <module>t9t-annotations-jpa</module>
-                <module>t9t-base-jpa</module>
-                <module>t9t-base-jpa-rl</module>
-                <module>t9t-base-jpa-jta</module>
-                <module>t9t-base-jpa-st</module>
-                <module>t9t-activeannotations-jpa</module>
-                <module>t9t-core-sapi</module>
-                <module>t9t-core-be</module>
-                <module>t9t-core-jpa</module>
-
-                <module>t9t-auth-jpa</module>
-
-                <module>t9t-orm-eclipselink-jpa</module>
-                <module>t9t-orm-hibernate-jpa</module>
-
-                <module>t9t-genconf-api</module>
-                <module>t9t-genconf-sapi</module>
-                <module>t9t-genconf-be</module>
-                <module>t9t-genconf-jpa</module>
-
-                <module>t9t-io-api</module>
-                <module>t9t-io-sapi</module>
-                <module>t9t-io-be</module>
-                <module>t9t-io-be-intern</module>
-                <module>t9t-io-be-camel</module>
-                <module>t9t-io-be-jackson</module>
-                <module>t9t-io-be-poi</module>
-                <module>t9t-io-jpa</module>
-
-                <module>t9t-solr-apiext</module>
-                <module>t9t-solr-api</module>
-                <module>t9t-solr-sapi</module>
-                <module>t9t-solr-be</module>
-                <module>t9t-solr-jpa</module>
-
-                <module>t9t-ssm-api</module>
-                <module>t9t-ssm-sapi</module>
-                <module>t9t-ssm-be</module>
-                <module>t9t-ssm-jpa</module>
-
-                <module>t9t-rep</module>
-                <module>t9t-rep-api</module>
-                <module>t9t-rep-sapi</module>
-                <module>t9t-rep-proxy</module>
-                <module>t9t-rep-be</module>
-                <module>t9t-rep-jpa</module>
-
-                <module>t9t-bpmn-api</module>
-                <module>t9t-bpmn-sapi</module>
-                <module>t9t-bpmn-be</module>
-                <module>t9t-bpmn-jpa</module>
-
-                <module>t9t-xml</module>
-
-                <!-- AWS cloud integration -->
-                <module>t9t-base-be-aws</module>
-                <module>t9t-io-be-aws</module>
-                <module>t9t-email-be-aws</module>
-
-                <!-- modules which are optional addons -->
-                <module>t9t-demo-api</module>
-                <module>t9t-demo-be</module>
-
-                <module>t9t-sql</module>
-                <module>t9t-sql-migration-executor</module>
-
-                <module>t9t-vertx-cluster</module>
-                <module>t9t-proxy</module>
-                <module>t9t-all-api</module>
-                <module>t9t-all</module>  <!-- t9t-all is t9t-all-be + t9t-all-jpa -->
-                <module>t9t-all-vertx</module>
-
-                <!-- <module>t9t-server-build-vertx-eclipselink</module> not used right now, skip in build to save time -->
-                <module>t9t-server-build-vertx-hibernate</module>
-                <module>t9t-server-build-vertx-hibernate-st</module>
-                <module>t9t-tests-auth</module>
-                <module>t9t-tests-misc</module>
-                <module>t9t-tests-doc</module>
-                <module>t9t-tests-all</module>
-                <module>t9t-tests-remote</module>
-                <module>t9t-tests-embedded</module>
-                <module>t9t-tests-unit</module>
-
-                <module>t9t-test-dbsetup</module>
-                <module>t9t-test-server</module>
-
-                <module>t9t-alexa</module>
-            </modules>
-        </profile>
-    </profiles>
-
     <build>
+        <pluginManagement>
+            <plugins>
+                <!-- java compiler -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin.version}</version>
+                    <configuration>
+                        <source>1.8</source>
+                        <target>1.8</target>
+                        <encoding>${project.build.sourceEncoding}</encoding>
+                    </configuration>
+                </plugin>
+
+                <!-- war-file properties -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>${maven-war-plugin.version}</version>
+                    <configuration>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                        <archive>
+                            <manifestEntries>
+                                <Implementation-Title>${project.name}</Implementation-Title>
+                                <Implementation-Version>${project.version}</Implementation-Version>
+                                <Implementation-Build-Number>${build.number}</Implementation-Build-Number>
+                                <Implementation-SCM-Revision>${build.revision}</Implementation-SCM-Revision>
+                            </manifestEntries>
+                        </archive>
+                    </configuration>
+                </plugin>
+
+                <!-- maven clean -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>${maven-clean-plugin.version}</version>
+                    <configuration>
+                        <filesets>
+                            <fileset>
+                                <directory>src/generated</directory>
+                                <includes>
+                                    <include>**</include>
+                                </includes>
+                                <excludes>
+                                    <exclude>**/.gitkeep</exclude>
+                                </excludes>
+                            </fileset>
+                            <fileset>
+                                <directory>src/main/xtend-gen</directory>
+                                <includes>
+                                    <include>**</include>
+                                </includes>
+                                <excludes>
+                                    <exclude>**/.gitkeep</exclude>
+                                </excludes>
+                            </fileset>
+                            <fileset>
+                                <directory>src/test/xtend-gen</directory>
+                                <includes>
+                                    <include>**</include>
+                                </includes>
+                                <excludes>
+                                    <exclude>**/.gitkeep</exclude>
+                                </excludes>
+                            </fileset>
+                        </filesets>
+                    </configuration>
+                </plugin>
+
+                <!-- xtext -->
+                <plugin>
+                    <groupId>org.eclipse.xtext</groupId>
+                    <artifactId>xtext-maven-plugin</artifactId>
+                    <version>${xtext-maven-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>compile</id>
+                            <phase>process-sources</phase>
+                            <goals>
+                                <goal>generate</goal>
+                            </goals>
+                            <configuration>
+                                <sourceRoots>
+                                    <sourceRoot>${project.basedir}/src/main/bon</sourceRoot>
+                                </sourceRoots>
+                                <languages>
+                                    <language>
+                                        <setup>de.jpaw.bonaparte.dsl.BonScriptStandaloneSetup</setup>
+                                        <outputConfigurations>
+                                            <outputConfiguration>
+                                                <outputDirectory>${project.basedir}/src/generated</outputDirectory>
+                                            </outputConfiguration>
+                                        </outputConfigurations>
+                                    </language>
+                                    <language>
+                                        <setup>de.jpaw.bonaparte.jpa.dsl.BDDLStandaloneSetup</setup>
+                                        <outputConfigurations>
+                                            <outputConfiguration>
+                                                <outputDirectory>${project.basedir}/src/generated</outputDirectory>
+                                            </outputConfiguration>
+                                        </outputConfigurations>
+                                    </language>
+                                </languages>
+                            </configuration>
+                        </execution>
+                    </executions>
+                    <dependencies>
+                        <dependency>
+                            <groupId>de.jpaw.bonaparte-dsl</groupId>
+                            <artifactId>de.jpaw.bonaparte.dsl</artifactId>
+                            <version>${bonaparte-plugin.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>de.jpaw.bonaparte-dsl</groupId>
+                            <artifactId>de.jpaw.bonaparte.jpa.dsl</artifactId>
+                            <version>${bonaparte-plugin.version}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+
+                <!-- xtend -->
+                <plugin>
+                    <groupId>org.eclipse.xtend</groupId>
+                    <artifactId>xtend-maven-plugin</artifactId>
+                    <version>${xtend-maven-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>compile</id>
+                            <phase>process-sources</phase>
+                            <goals>
+                                <goal>compile</goal>
+                            </goals>
+                            <configuration>
+                                <outputDirectory>${project.basedir}/src/main/xtend-gen</outputDirectory>
+                                <javaSourceVersion>1.8</javaSourceVersion>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>test-compile</id>
+                            <phase>process-test-sources</phase>
+                            <goals>
+                                <goal>testCompile</goal>
+                            </goals>
+                            <configuration>
+                                <testOutputDirectory>${project.basedir}/src/test/xtend-gen</testOutputDirectory>
+                                <javaSourceVersion>1.8</javaSourceVersion>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <!-- enforcer (no SNAPSHOTs in final builds) -->
+                <plugin>
+                    <!-- Maven enforcer plugin shall affect the MASTER branch build as this should
+                    be a none-Snapshot branch. The enforcer plugin ensures that the build does not
+                    have a references to Snapshot versions, otherwise the build shall fails. -->
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>${maven-enforcer-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>enforce-no-snapshots</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>enforce</goal>
+                            </goals>
+                            <configuration>
+                                <rules>
+                                    <requireReleaseDeps>
+                                        <message>No snapshots dependencies allowed on the master branch!</message>
+                                        <searchTransitive>true</searchTransitive>
+                                        <failWhenParentIsSnapshot>true</failWhenParentIsSnapshot>
+                                        <onlyWhenRelease>true</onlyWhenRelease>
+                                    </requireReleaseDeps>
+                                </rules>
+                                <fail>true</fail>
+                                <failFast>true</failFast>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <!-- dependency check -->
+                <plugin>
+                    <groupId>org.owasp</groupId>
+                    <artifactId>dependency-check-maven</artifactId>
+                    <version>${owasp-maven-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>check</id>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <!-- maven resources -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>${maven-resources-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>copy-resources</id>
+                            <phase>process-classes</phase>
+                            <goals>
+                                <goal>copy-resources</goal>
+                            </goals>
+                            <configuration>
+                                <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                                <resources>
+                                    <resource>
+                                        <directory>src/generated/resources</directory>
+                                        <filtering>false</filtering>
+                                    </resource>
+                                </resources>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <!-- maven source -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>${maven-source-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>jar-no-fork</goal>
+                            </goals>
+                            <configuration>
+                                <excludes>
+                                    <exclude>**/.gitkeep</exclude>
+                                    <exclude>**/.gitignore</exclude>
+                                </excludes>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <!-- maven surefire -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven-surefire-plugin.version}</version>
+                    <configuration>
+                        <systemPropertyVariables>
+                            <user.timezone>UTC</user.timezone>
+                        </systemPropertyVariables>
+                        <!-- Disable h2 web console during tests (opening the port may cause problems in CI environments) -->
+                        <argLine>-Dt9t.in-memory.h2.web=false</argLine>
+                    </configuration>
+                </plugin>
+
+                <!-- sql assembly -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>${maven-assembly-plugin.version}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.arvato-systems.t9t</groupId>
+                            <artifactId>global-sql-assembly</artifactId>
+                            <version>${global.version}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+
+                <!-- jetty -->
+                <plugin>
+                    <groupId>org.eclipse.jetty</groupId>
+                    <artifactId>jetty-maven-plugin</artifactId>
+                    <version>${jetty-maven-plugin.version}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>ch.qos.logback</groupId>
+                            <artifactId>logback-classic</artifactId>
+                            <version>${logback.version}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+
+                <!-- jax-ws -->
+                <plugin>
+                    <groupId>com.sun.xml.ws</groupId>
+                    <artifactId>jaxws-maven-plugin</artifactId>
+                    <version>${jaxws-maven-plugin.version}</version>
+                </plugin>
+
+                <!-- ASCIIDoctor lifecycle -->
+                <plugin>
+                    <groupId>org.asciidoctor</groupId>
+                    <artifactId>asciidoctor-maven-plugin</artifactId>
+                    <version>${asciidoctor-maven-plugin.version}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.jruby</groupId>
+                            <artifactId>jruby-complete</artifactId>
+                            <version>${jruby.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.asciidoctor</groupId>
+                            <artifactId>asciidoctorj</artifactId>
+                            <version>${asciidoctorj.version}</version>
+                        </dependency>
+                    </dependencies>
+                    <configuration>
+                        <sourceDirectory>src/main/asciidoc</sourceDirectory>
+                        <imagesDir>.</imagesDir>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>generate-html-doc</id>
+                            <phase>compile</phase>
+                            <goals>
+                                <goal>process-asciidoc</goal>
+                            </goals>
+                            <configuration>
+                                <backend>html5</backend>
+                                <doctype>book</doctype>
+                                <sourceHighlighter>coderay</sourceHighlighter>
+                                <preserveDirectories>true</preserveDirectories>
+                                <attributes>
+                                    <pageLayout>false</pageLayout>
+                                    <toc>left</toc>
+                                    <toclevels>3</toclevels>
+                                    <sectanchors>true</sectanchors>
+                                    <sectlinks>true</sectlinks>
+                                    <sectnums>true</sectnums>
+                                    <linkattrs>true</linkattrs>
+                                    <icons>font</icons>
+                                    <sourceLanguage>asciidoc</sourceLanguage>
+                                    <stem>true</stem>
+                                    <idprefix></idprefix>
+                                    <idseparator>-</idseparator>
+                                    <revnumber>${project.version}</revnumber>
+                                    <author>Arvato Systems GmbH</author>
+                                </attributes>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <!-- eclipse lifecycle -->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>${eclipse-lifecycle-mapping.version}</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.eclipse.xtext</groupId>
+                                        <artifactId>xtext-maven-plugin</artifactId>
+                                        <versionRange>[2.8.0,]</versionRange>
+                                        <goals>
+                                            <goal>generate</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore />
+                                    </action>
+                                </pluginExecution>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.apache.maven.plugins</groupId>
+                                        <artifactId>maven-enforcer-plugin</artifactId>
+                                        <versionRange>[1.2.0,]</versionRange>
+                                        <goals>
+                                            <goal>enforce</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore />
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+
+                <!-- reporting-->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>${maven-site-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>${maven-javadoc-plugin.version}</version>
+                    <configuration>
+                        <charset>${project.build.sourceEncoding}</charset>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>${maven-checkstyle-plugin.version}</version>
+                    <configuration>
+                        <configLocation>checkstyle.xml</configLocation>
+                        <encoding>UTF-8</encoding>
+                        <consoleOutput>true</consoleOutput>
+                        <failsOnError>true</failsOnError>
+                        <linkXRef>false</linkXRef>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-project-info-reports-plugin</artifactId>
+                    <version>${maven-project-info-reports-plugin.version}</version>
+                </plugin>
+
+                <!-- miscellaneous -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>${maven-antrun-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${maven-jar-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>${maven-dependency-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>${maven-shade-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring-boot-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-eclipse-plugin</artifactId>
+                    <version>${maven-eclipse-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>${build-helper-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>jaxb2-maven-plugin</artifactId>
+                    <version>${jaxb2-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.sonatype.plugins</groupId>
+                    <artifactId>jarjar-maven-plugin</artifactId>
+                    <version>${maven-jarjar-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>pl.project13.maven</groupId>
+                    <artifactId>git-commit-id-plugin</artifactId>
+                    <version>${git-commit-id-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.cxf</groupId>
+                    <artifactId>cxf-codegen-plugin</artifactId>
+                    <version>${cxf-codegen-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.google.code.echo-maven-plugin</groupId>
+                    <artifactId>echo-maven-plugin</artifactId>
+                    <version>${echo-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.arvato-systems.t9t</groupId>
+                    <artifactId>fortytwo-dataloader-maven</artifactId>
+                    <version>${fortytwo-dataloader-maven.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.arvato-systems.t9t.schema-loader</groupId>
+                    <artifactId>schema-loader-maven-plugin</artifactId>
+                    <version>${schema-loader-maven.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.mycila</groupId>
+                    <artifactId>license-maven-plugin</artifactId>
+                    <version>${license-plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
         <plugins>
+            <plugin>
+                <!-- The enforcer plugin shall be used in every project! -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+            </plugin>
             <!-- maven source -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
             </plugin>
+            <!-- plugin for license headers -->
             <plugin>
                 <groupId>com.mycila</groupId>
                 <artifactId>license-maven-plugin</artifactId>
-                <version>3.0</version>
                 <configuration>
                     <header>APACHE-2.txt</header>
                     <mapping>
@@ -222,7 +632,7 @@
                      </mapping>
                      <properties>
                         <owner>Arvato Systems GmbH</owner>
-                        <project.inceptionYear>2012 - 2018</project.inceptionYear>
+                        <project.inceptionYear>2012 - 2020</project.inceptionYear>
                      </properties>
                      <excludes>
                         <exclude>src/main/resources/**</exclude>
@@ -241,4 +651,236 @@
             </plugin>
         </plugins>
     </build>
+
+
+    <repositories>
+        <repository>
+            <id>codehaus-snapshots</id>
+            <url>http://nexus.codehaus.org/snapshots/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+        <repository>
+            <id>sonatype-snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+        <repository>
+            <id>central snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+    </repositories>
+
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>codehaus-snapshots</id>
+            <url>http://nexus.codehaus.org/snapshots/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </pluginRepository>
+        <pluginRepository>
+            <id>sonatype-snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </pluginRepository>
+        <pluginRepository>
+            <id>central snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </pluginRepository>
+    </pluginRepositories>
+
+	<modules>
+        <module>global-sql-assembly</module>
+        <module>global-dm</module>
+        <module>global-zk-dm</module>
+        <module>global-angular-dm</module>
+
+		<module>t9t-dm</module>
+
+		<module>t9t-settings</module>
+		<module>t9t-settings-api</module>
+
+		<module>t9t-annotations-api</module>
+		<module>t9t-base-apiext</module>
+		<module>t9t-base-api</module>
+		<module>t9t-init</module>
+		<module>t9t-jdp</module>
+		<module>t9t-client-complex</module>
+
+		<module>t9t-settings-sapi</module>
+		<module>t9t-settings-xtend</module>
+		<module>t9t-settings-be</module>
+		<module>t9t-settings-jpa</module>
+
+		<module>t9t-jwt</module>
+
+		<module>t9t-core-api</module>
+		<module>t9t-server-sapi</module>
+		<module>t9t-base-sapi</module>
+		<module>t9t-httppool-be</module>
+
+		<module>t9t-auth-apiext</module>
+		<module>t9t-auth-api</module>
+		<module>t9t-auth-sapi</module>
+		<module>t9t-auth-mock</module>
+
+		<module>t9t-cfg-be</module>
+
+		<module>t9t-base-be</module>
+		<module>t9t-auth-be</module>
+		<module>t9t-base-vertx</module>
+		<module>t9t-auth-vertx</module>
+
+		<module>t9t-translation-api</module>
+		<module>t9t-translation-sapi</module>
+
+		<module>t9t-msglog-api</module>
+		<module>t9t-msglog-sapi</module>
+		<module>t9t-msglog-be</module>
+		<module>t9t-msglog-jpa</module>
+
+		<module>t9t-email-apiext</module>
+		<module>t9t-email-api</module>
+		<module>t9t-email-sapi</module>
+		<module>t9t-email-be</module>
+		<module>t9t-email-be-smtp</module>
+		<module>t9t-email-be-commons</module>
+		<module>t9t-email-be-vertx</module>
+		<module>t9t-email-jpa</module>
+
+		<module>t9t-doc-apiext</module>
+		<module>t9t-doc-api</module>
+		<module>t9t-doc-sapi</module>
+		<module>t9t-doc-be</module>
+		<module>t9t-doc-be-pdf</module>
+		<module>t9t-doc-jpa</module>
+
+		<module>t9t-voice-api</module>
+		<module>t9t-voice-sapi</module>
+		<module>t9t-voice-be</module>
+		<module>t9t-voice-jpa</module>
+
+		<module>t9t-translation-be</module>
+		<module>t9t-translation-be-intern</module>
+
+		<module>t9t-annotations-jpa</module>
+		<module>t9t-base-jpa</module>
+		<module>t9t-base-jpa-rl</module>
+		<module>t9t-base-jpa-jta</module>
+		<module>t9t-base-jpa-st</module>
+		<module>t9t-activeannotations-jpa</module>
+		<module>t9t-core-sapi</module>
+		<module>t9t-core-be</module>
+		<module>t9t-core-jpa</module>
+
+		<module>t9t-auth-jpa</module>
+
+		<module>t9t-orm-eclipselink-jpa</module>
+		<module>t9t-orm-hibernate-jpa</module>
+
+		<module>t9t-genconf-api</module>
+		<module>t9t-genconf-sapi</module>
+		<module>t9t-genconf-be</module>
+		<module>t9t-genconf-jpa</module>
+
+		<module>t9t-io-api</module>
+		<module>t9t-io-sapi</module>
+		<module>t9t-io-be</module>
+		<module>t9t-io-be-intern</module>
+		<module>t9t-io-be-camel</module>
+		<module>t9t-io-be-jackson</module>
+		<module>t9t-io-be-poi</module>
+		<module>t9t-io-jpa</module>
+
+		<module>t9t-solr-apiext</module>
+		<module>t9t-solr-api</module>
+		<module>t9t-solr-sapi</module>
+		<module>t9t-solr-be</module>
+		<module>t9t-solr-jpa</module>
+
+		<module>t9t-ssm-api</module>
+		<module>t9t-ssm-sapi</module>
+		<module>t9t-ssm-be</module>
+		<module>t9t-ssm-jpa</module>
+
+		<module>t9t-rep</module>
+		<module>t9t-rep-api</module>
+		<module>t9t-rep-sapi</module>
+		<module>t9t-rep-proxy</module>
+		<module>t9t-rep-be</module>
+		<module>t9t-rep-jpa</module>
+
+		<module>t9t-bpmn-api</module>
+		<module>t9t-bpmn-sapi</module>
+		<module>t9t-bpmn-be</module>
+		<module>t9t-bpmn-jpa</module>
+
+		<module>t9t-xml</module>
+
+		<!-- AWS cloud integration -->
+		<module>t9t-base-be-aws</module>
+		<module>t9t-io-be-aws</module>
+		<module>t9t-email-be-aws</module>
+
+		<!-- modules which are optional addons -->
+		<module>t9t-demo-api</module>
+		<module>t9t-demo-be</module>
+
+		<module>t9t-sql</module>
+		<module>t9t-sql-migration-executor</module>
+
+		<module>t9t-vertx-cluster</module>
+		<module>t9t-proxy</module>
+		<module>t9t-all-api</module>
+		<module>t9t-all</module>  <!-- t9t-all is t9t-all-be + t9t-all-jpa -->
+		<module>t9t-all-vertx</module>
+
+		<!-- <module>t9t-server-build-vertx-eclipselink</module> not used right now, skip in build to save time -->
+		<module>t9t-server-build-vertx-hibernate</module>
+		<module>t9t-server-build-vertx-hibernate-st</module>
+		<module>t9t-tests-auth</module>
+		<module>t9t-tests-misc</module>
+		<module>t9t-tests-doc</module>
+		<module>t9t-tests-all</module>
+		<module>t9t-tests-remote</module>
+		<module>t9t-tests-embedded</module>
+		<module>t9t-tests-unit</module>
+
+		<module>t9t-test-dbsetup</module>
+		<module>t9t-test-server</module>
+
+		<module>t9t-alexa</module>
+	</modules>
+
 </project>

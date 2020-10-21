@@ -1,0 +1,908 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.arvato-systems.t9t</groupId>
+        <artifactId>global-build</artifactId>
+        <version>5.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>global-dm</artifactId>
+    <packaging>pom</packaging>
+    <description>Global dependency management for all backend projects</description>
+
+    <properties>
+        <jodatime.version>2.10.6</jodatime.version>
+        <org.slf4j-api.version>1.7.30</org.slf4j-api.version>
+
+        <!-- jpaw / bonaparte: versions for import of BOM. The plugin version is defined separately in SE/EE -->
+        <!-- Note that the version of the bonapart-dsl plugin is set in "global-settings" -->
+        <jpaw-bom.version>2.3.0</jpaw-bom.version>
+        <bonaparte-bom.version>4.40.0</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
+        <persistence-bom.version>4.40.0</persistence-bom.version>
+        <jdp-bom.version>1.3.0</jdp-bom.version>
+        <fixedpoint-bom.version>0.40.0</fixedpoint-bom.version>
+        <!-- jpaw / bonaparte: versions for explicit dependency -->
+        <xtendsions.version>1.9.0</xtendsions.version>
+
+        <!-- Versions of Xtext & Xtend -->
+        <!-- Note that the versions of the xtext/xtend plugins are ALSO set in "global-settings" -->
+        <xtend.version>2.23.0</xtend.version>
+        <xtext.version>2.23.0</xtext.version>
+
+        <!-- Database driver versions -->
+        <driver.ojdbc6.version>11.2.0</driver.ojdbc6.version>
+        <driver.ojdbc8.version>12.2.0.1.0</driver.ojdbc8.version>
+        <driver.postgresql.version>42.2.5</driver.postgresql.version>
+        <driver.sqlserver.version>6.2.2.jre8</driver.sqlserver.version>
+        <driver.hana.version>1.120.19.043e2a479158ce6ef060a5c605ae2b97161e6b25</driver.hana.version>
+        <h2.version>1.4.197</h2.version>
+
+        <!-- OR mappers -->
+        <eclipselink.version>2.7.5</eclipselink.version>
+        <hibernate.version>5.4.21.Final</hibernate.version>
+        <hibernate-validator.version>6.1.5.Final</hibernate-validator.version>
+        <ehcache.version>2.10.4</ehcache.version>
+        <ehcache3.version>3.5.3</ehcache3.version>
+
+        <!-- Javax -->
+        <jaxb.version>2.3.1</jaxb.version>
+        <javax-el.version>3.0.1-b08</javax-el.version> <!-- required by hibernate-validator, CVE-2013-2566 exists, no secure version known (3.0.0)! -->
+        <javax.inject.version>1</javax.inject.version>
+        <javax.servlet-api.version>3.1.0</javax.servlet-api.version>
+        <javax.activation.version>1.2.0</javax.activation.version>
+        <javax.validation-api.version>2.0.1.Final</javax.validation-api.version>
+        <javax.persistence.version>2.2.0</javax.persistence.version>
+
+        <!-- Commons -->
+        <commons-lang.version>2.6</commons-lang.version>
+        <commons-logging.version>1.1</commons-logging.version>
+        <commons-email.version>1.5</commons-email.version>
+        <commons-io.version>2.7</commons-io.version>
+        <commons-lang3.version>3.11</commons-lang3.version>
+        <commons-beanutils.version>1.9.4</commons-beanutils.version>      <!-- must be 1.9.2 at least due to CVE-2014-0114 -->
+        <commons-collections.version>3.2.2</commons-collections.version>  <!-- must be 3.2.2 at least due to CVE-2015-6420 -->
+        <commons-fileupload.version>1.4</commons-fileupload.version>      <!-- must be 1.3.3 at least due to CVE-2016-1000031 -->
+
+        <!-- AWS -->
+        <aws-bom.version>1.10.59</aws-bom.version>
+
+        <!-- Camunda BPMN -->
+        <camunda-bom.version>7.8.0</camunda-bom.version>
+
+        <!-- Java scripting engines -->
+        <groovy.version>2.4.13</groovy.version>
+
+        <!-- Test support -->
+        <junit.version>4.13</junit.version>
+        <hamcrest.version>1.3</hamcrest.version>   <!-- upgrade to 2.1 with next release -->
+        <byte-buddy.version>1.10.11</byte-buddy.version>
+        <org.mockito-core.version>2.23.4</org.mockito-core.version>
+
+        <!-- Others -->
+        <icu4j.version>67.1</icu4j.version>
+        <zxing.version>3.3.3</zxing.version>
+        <quartz.version>2.3.2</quartz.version>                         <!-- TODO: should check if 2.3.0 offers improvements (is newer, and Java 7+, quartz 2.2.3 is Java 6+) -->
+        <quartz-oracle.version>2.1.7</quartz-oracle.version>           <!-- no update since 2013! -->
+        <jasperreports.version>6.13.0</jasperreports.version>
+        <castor.version>1.2</castor.version>     <!-- pulled by jasper, version needed for CVE fix -->
+        <jdtcore.version>3.1.1</jdtcore.version>
+        <jsap.version>2.1</jsap.version>
+        <httpcore.version>4.4.9</httpcore.version>
+        <xmlunit.version>1.5</xmlunit.version>
+        <apache-poi.version>4.1.2</apache-poi.version>
+        <freemarker.version>2.3.23</freemarker.version>
+        <flyingsaucer.version>9.0.8</flyingsaucer.version>
+        <javassist.version>3.27.0-GA</javassist.version>
+        <guava.version>27.1-jre</guava.version>
+        <antlr.version>3.2</antlr.version>
+        <resteasy-jaxrs.version>3.0.19.Final</resteasy-jaxrs.version>
+        <googlemaps.services.version>0.2.5</googlemaps.services.version>
+        <uuid-generator.version>3.1.2</uuid-generator.version>
+
+        <spring-bom.version>5.0.3.RELEASE</spring-bom.version>
+        <spring-data-jpa.version>2.1.10.RELEASE</spring-data-jpa.version>
+
+        <netty.version>4.1.52.Final</netty.version>
+        <vertx3.version>3.9.2</vertx3.version>
+
+        <xmlbeans.version>3.1.0</xmlbeans.version>  <!-- 3.x is required for POI 4 (xlsx) -->
+
+        <!-- dependencies only for SE -->
+        <c3p0.version>0.9.5.3</c3p0.version>
+        <hikaricp.version>3.2.0</hikaricp.version>
+        <flyway.version>4.1.2</flyway.version>
+
+        <!-- dependencies for SE and EE, but with maybe differing versions -->
+        <javax.mail.version>1.6.0</javax.mail.version>
+        <jadira-usertype.version>4.0.0.GA</jadira-usertype.version>
+        <jackson.version>2.11.2</jackson.version>
+        <camel.version>3.4.2</camel.version>
+        <solr.version>6.6.1</solr.version>   <!-- must be 6.6.1 at least due to CVE-2017-9803 -->
+        <activiti.version>5.19.0.2</activiti.version>
+        <kafka.version>2.4.0</kafka.version>
+    </properties>
+
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- Created in this repo -->
+            <dependency>
+                <groupId>com.arvato-systems.t9t</groupId>
+                <artifactId>global-sql-assembly</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- JODA and SLF4J first, because they have no recursive dependencies -->
+            <dependency>
+                <groupId>joda-time</groupId>
+                <artifactId>joda-time</artifactId>
+                <version>${jodatime.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>${jaxb.version}</version>
+            </dependency>
+             <dependency>
+                <groupId>javax.xml.ws</groupId>
+                <artifactId>jaxws-api</artifactId>
+                <version>${jaxb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jaxb</groupId>
+                <artifactId>jaxb-runtime</artifactId>
+                <version>${jaxb.version}</version>
+            </dependency>
+
+            <!-- slf4j -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${org.slf4j-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jcl-over-slf4j</artifactId>
+                <version>${org.slf4j-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-ext</artifactId>
+                <version>${org.slf4j-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>${org.slf4j-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jul-to-slf4j</artifactId>
+                <version>${org.slf4j-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>log4j-over-slf4j</artifactId>
+                <version>${org.slf4j-api.version}</version>
+            </dependency>
+            <dependency>
+                <!-- currently used by some remote test project. Why? Should not! -->
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
+                <version>${org.slf4j-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.ibm.icu</groupId>
+                <artifactId>icu4j</artifactId>
+                <version>${icu4j.version}</version>
+            </dependency>
+
+            <!-- Import External BOMs -->
+            <!-- Important! The order of the import matters a lot, therefore the most up to date imports have to go first. -->
+            <dependency>
+                <groupId>de.jpaw</groupId>
+                <artifactId>jdp-bom</artifactId>
+                <version>${jdp-bom.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>de.jpaw</groupId>
+                <artifactId>jpaw-bom</artifactId>
+                <version>${jpaw-bom.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>de.jpaw</groupId>
+                <artifactId>fixedpoint-bom</artifactId>
+                <version>${fixedpoint-bom.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>de.jpaw</groupId>
+                <artifactId>bonaparte-bom</artifactId>
+                <version>${bonaparte-bom.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>de.jpaw</groupId>
+                <artifactId>persistence-bom</artifactId>
+                <version>${persistence-bom.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>com.amazonaws</groupId>
+                <artifactId>aws-java-sdk-bom</artifactId>
+                <version>${aws-bom.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-framework-bom</artifactId>
+                <version>${spring-bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.camunda.bpm</groupId>
+                <artifactId>camunda-bom</artifactId>
+                <version>${camunda-bom.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+
+            <!-- Xtext/Xtend for Eclipse -->
+            <dependency>
+                <groupId>org.eclipse.xtext</groupId>
+                <artifactId>org.eclipse.xtext.xbase.lib</artifactId>
+                <version>${xtend.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.xtend</groupId>
+                <artifactId>org.eclipse.xtend.core</artifactId>
+                <version>${xtend.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.xtend</groupId>
+                <artifactId>org.eclipse.xtend.lib</artifactId>
+                <version>${xtend.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <!-- We have to get control over the guava version number -->
+                        <groupId>com.google.guava</groupId>
+                        <artifactId>guava</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.persistence</groupId>
+                <artifactId>org.eclipse.persistence.jpa</artifactId>
+                <version>${eclipselink.version}</version>
+            </dependency>
+
+            <!-- Test support -->
+            <dependency>
+                <groupId>net.bytebuddy</groupId>
+                <artifactId>byte-buddy</artifactId>
+                <version>${byte-buddy.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.bytebuddy</groupId>
+                <artifactId>byte-buddy-agent</artifactId>
+                <version>${byte-buddy.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest-core</artifactId>
+                <version>${hamcrest.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest-library</artifactId>
+                <version>${hamcrest.version}</version>
+            </dependency>
+
+            <!-- Database Drivers -->
+            <dependency>
+                <!-- Postgres database driver -->
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${driver.postgresql.version}</version>
+            </dependency>
+            <dependency>
+                <!-- SAP HANA database driver -->
+                <groupId>com.sap</groupId>
+                <artifactId>ngdbc</artifactId>
+                <version>${driver.hana.version}</version>
+            </dependency>
+            <dependency>
+                <!-- ORACLE 11 database driver -->
+                <groupId>com.oracle</groupId>
+                <artifactId>ojdbc6</artifactId>
+                <version>${driver.ojdbc6.version}</version>
+            </dependency>
+            <dependency>
+                <!-- ORACLE 12.2 database driver -->
+                <groupId>com.oracle</groupId>
+                <artifactId>ojdbc8</artifactId>
+                <version>${driver.ojdbc8.version}</version>
+            </dependency>
+            <dependency>
+                <!-- MS SQL server database driver -->
+                <groupId>com.microsoft.sqlserver</groupId>
+                <artifactId>mssql-jdbc</artifactId>
+                <version>${driver.sqlserver.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>${h2.version}</version>
+            </dependency>
+
+            <!-- In-memory providers -->
+            <!-- OR mappers -->
+            <dependency>
+                <groupId>net.sf.ehcache</groupId>
+                <artifactId>ehcache</artifactId>
+                <version>${ehcache.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-ehcache</artifactId>
+                <version>${hibernate.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-jcache</artifactId>
+                <version>${hibernate.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-core</artifactId>
+                <version>${hibernate.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-entitymanager</artifactId>
+                <version>${hibernate.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate.validator</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${hibernate-validator.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator-annotation-processor</artifactId>
+                <version>${hibernate-validator.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-jpa</artifactId>
+                <version>${spring-data-jpa.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-core</artifactId>
+                <version>${flyway.version}</version>
+            </dependency>
+
+            <!-- Javax -->
+            <dependency>
+                <groupId>javax.inject</groupId>
+                <artifactId>javax.inject</artifactId>
+                <version>${javax.inject.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.validation</groupId>
+                <artifactId>validation-api</artifactId>
+                <version>${javax.validation-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>${javax.servlet-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.activation</groupId>
+                <artifactId>javax.activation-api</artifactId>
+                <version>${javax.activation.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.persistence</groupId>
+                <artifactId>javax.persistence</artifactId>
+                <version>${javax.persistence.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish</groupId>
+                <artifactId>javax.el</artifactId>
+                <version>${javax-el.version}</version>
+            </dependency>
+
+            <!-- Ehcache 3.x -->
+            <dependency>
+                <groupId>org.ehcache</groupId>
+                <artifactId>ehcache</artifactId>
+                <version>${ehcache3.version}</version>
+            </dependency>
+
+            <!-- Commons -->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-email</artifactId>
+                <version>${commons-email.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>${commons-lang.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging-api</artifactId>
+                <version>${commons-logging.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-beanutils</groupId>
+                <artifactId>commons-beanutils</artifactId>
+                <version>${commons-beanutils.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-collections</groupId>
+                <artifactId>commons-collections</artifactId>
+                <version>${commons-collections.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-fileupload</groupId>
+                <artifactId>commons-fileupload</artifactId>
+                <version>${commons-fileupload.version}</version>
+            </dependency>
+
+            <!-- Java scripting engines -->
+            <dependency>
+                <groupId>org.codehaus.groovy</groupId>
+                <artifactId>groovy-all</artifactId>
+                <version>${groovy.version}</version>
+                <!-- Scripting engines are only needed at runtime, thus this should be the default -->
+                <scope>runtime</scope>
+            </dependency>
+
+            <!-- Others -->
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpcore</artifactId>
+                <version>${httpcore.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.zxing</groupId>
+                <artifactId>javase</artifactId>
+                <version>${zxing.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.quartz-scheduler</groupId>
+                <artifactId>quartz</artifactId>
+                <version>${quartz.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.quartz-scheduler</groupId>
+                <artifactId>quartz-oracle</artifactId>
+                <version>${quartz-oracle.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.castor</groupId>
+                <artifactId>castor</artifactId>
+                <version>${castor.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.sf.jasperreports</groupId>
+                <artifactId>jasperreports</artifactId>
+                <version>${jasperreports.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>eclipse</groupId>
+                        <artifactId>jdtcore</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jdt</groupId>
+                <artifactId>core</artifactId>
+                <version>${jdtcore.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.martiansoftware</groupId>
+                <artifactId>jsap</artifactId>
+                <version>${jsap.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>xmlunit</groupId>
+                <artifactId>xmlunit</artifactId>
+                <version>${xmlunit.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi</artifactId>
+                <version>${apache-poi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml</artifactId>
+                <version>${apache-poi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.freemarker</groupId>
+                <artifactId>freemarker</artifactId>
+                <version>${freemarker.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.xhtmlrenderer</groupId>
+                <artifactId>flying-saucer-pdf</artifactId>
+                <version>${flyingsaucer.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.javassist</groupId>
+                <artifactId>javassist</artifactId>
+                <version>${javassist.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.maps</groupId>
+                <artifactId>google-maps-services</artifactId>
+                <version>${googlemaps.services.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr-runtime</artifactId>
+                <version>${antlr.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-jaxrs</artifactId>
+                <version>${resteasy-jaxrs.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-servlet-initializer</artifactId>
+                <version>${resteasy-jaxrs.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-jackson2-provider</artifactId>
+                <version>${resteasy-jaxrs.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-client</artifactId>
+                <version>${resteasy-jaxrs.version}</version>
+            </dependency>
+
+            <!-- netty -->
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-common</artifactId>
+                <version>${netty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-buffer</artifactId>
+                <version>${netty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-transport</artifactId>
+                <version>${netty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-handler</artifactId>
+                <version>${netty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-codec</artifactId>
+                <version>${netty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-codec-http</artifactId>
+                <version>${netty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-codec-http2</artifactId>
+                <version>${netty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-handler-proxy</artifactId>
+                <version>${netty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-resolver</artifactId>
+                <version>${netty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-resolver-dns</artifactId>
+                <version>${netty.version}</version>
+            </dependency>
+
+            <!-- Vertx -->
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-core</artifactId>
+                <version>${vertx3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-auth-jwt</artifactId>
+                <version>${vertx3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-web</artifactId>
+                <version>${vertx3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-unit</artifactId>
+                <version>${vertx3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-mail-client</artifactId>
+                <version>${vertx3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-jca-api</artifactId>
+                <version>${vertx3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-jca-adapter</artifactId>
+                <type>rar</type>
+                <version>${vertx3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-hazelcast</artifactId>
+                <version>${vertx3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.mchange</groupId>
+                <artifactId>c3p0</artifactId>
+                <version>${c3p0.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.zaxxer</groupId>
+                <artifactId>HikariCP</artifactId>
+                <version>${hikaricp.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-c3p0</artifactId>
+                <version>${hibernate.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-hikaricp</artifactId>
+                <version>${hibernate.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.mail</groupId>
+                <artifactId>javax.mail-api</artifactId>
+                <version>${javax.mail.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.mail</groupId>
+                <artifactId>javax.mail</artifactId>
+                <version>${javax.mail.version}</version>
+            </dependency>
+
+            <!-- Camel -->
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-vertx</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-core</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-jaxb</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-csv</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-stax</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-mail</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-ftp</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-jsch</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-aws-s3</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-aws-sqs</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-aws-sns</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-aws-ses</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-direct</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-file</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+
+            <!-- Others -->
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${org.mockito-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jadira.usertype</groupId>
+                <artifactId>usertype.core</artifactId>
+                <version>${jadira-usertype.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.hibernate</groupId>
+                        <artifactId>hibernate-entitymanager</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.module</groupId>
+                <artifactId>jackson-module-jaxb-annotations</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-joda</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.dataformat</groupId>
+                <artifactId>jackson-dataformat-cbor</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.uuid</groupId>
+                <artifactId>java-uuid-generator</artifactId>
+                <version>${uuid-generator.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <artifactId>solr-solrj</artifactId>
+                <groupId>org.apache.solr</groupId>
+                <version>${solr.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.xmlbeans</groupId>
+                <artifactId>xmlbeans</artifactId>
+                <version>${xmlbeans.version}</version>
+            </dependency>
+
+            <!-- Should be provided by a BOM, but is not!!! -->
+            <dependency>
+                <groupId>de.jpaw</groupId>
+                <artifactId>xtend-sions</artifactId>
+                <version>${xtendsions.version}</version>
+            </dependency>
+
+            <!-- Apache kafka related dependencies -->
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>kafka-clients</artifactId>
+                <version>${kafka.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>

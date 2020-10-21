@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.arvato-systems.t9t</groupId>
+        <artifactId>global-dm</artifactId>
+        <version>5.0-SNAPSHOT</version>
+        <relativePath>../global-dm</relativePath>
+    </parent>
+
+    <artifactId>global-zk-dm</artifactId>
+    <packaging>pom</packaging>
+    <description>Global dependency management for all ZK based UI projects</description>
+
+    <properties>
+        <!-- ZK libraries, COMMERCIAL !!! -->
+        <zk.version>8.6.4</zk.version>               <!-- https://www.zkoss.org/product/zk/releasenote/8.6.0 -->
+        <zk-ckez.version>4.11.1.0</zk-ckez.version>  <!-- https://github.com/zkoss/zkckeditor -->
+
+        <!-- older versions of jfree pulled by zkex, DM asks for newer -->
+        <org-jfree-jfreechart.version>1.0.19</org-jfree-jfreechart.version>
+        <org-jfree-jcommon.version>1.0.23</org-jfree-jcommon.version>
+
+        <shiro.version>1.5.3</shiro.version>
+    </properties>
+
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- ZK libraries, COMMERCIAL !!! -->
+            <dependency>
+                <groupId>org.zkoss.zk</groupId>
+                <artifactId>zkbind</artifactId>
+                <version>${zk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.zkoss.zk</groupId>
+                <artifactId>zk</artifactId>
+                <version>${zk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.zkoss.zk</groupId>
+                <artifactId>zhtml</artifactId>
+                <version>${zk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.zkoss.zk</groupId>
+                <artifactId>zml</artifactId>
+                <version>${zk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.zkoss.zk</groupId>
+                <artifactId>zul</artifactId>
+                <version>${zk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.zkoss.common</groupId>
+                <artifactId>zcommon</artifactId>
+                <version>${zk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.zkoss.common</groupId>
+                <artifactId>zweb</artifactId>
+                <version>${zk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.zkoss.common</groupId>
+                <artifactId>zel</artifactId>
+                <version>${zk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.zkoss.zk</groupId>
+                <artifactId>zkmax</artifactId>
+                <version>${zk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.zkoss.zk</groupId>
+                <artifactId>zkplus</artifactId>
+                <version>${zk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.zkoss.zk</groupId>
+                <artifactId>zkex</artifactId>
+                <version>${zk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.zkoss.zk</groupId>
+                <artifactId>zuti</artifactId>
+                <version>${zk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.zkoss.theme</groupId>
+                <artifactId>sapphire</artifactId>
+                <version>${zk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.zkoss.theme</groupId>
+                <artifactId>silvertail</artifactId>
+                <version>${zk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.zkoss.zkforge</groupId>
+                <artifactId>ckez</artifactId>
+                <version>${zk-ckez.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.shiro</groupId>
+                <artifactId>shiro-core</artifactId>
+                <version>${shiro.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.shiro</groupId>
+                <artifactId>shiro-web</artifactId>
+                <version>${shiro.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jfree</groupId>
+                <artifactId>jfreechart</artifactId>
+                <version>${org-jfree-jfreechart.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jfree</groupId>
+                <artifactId>jcommon</artifactId>
+                <version>${org-jfree-jcommon.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>
