@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,8 +62,10 @@ import de.jpaw.util.ApplicationException;
 @Singleton
 public class TranslationProvider implements ITranslationProvider {
     private static final Logger LOGGER = LoggerFactory.getLogger(TranslationProvider.class);
-    final boolean useLocalTenantTranslation = true;  // right now, only check for translations in the global tenant (TODO: make t9t config property, or tenant property)
+    private static final String REGEXP_FOR_INDEX = "\\[[0-9]+\\]";
+    private static final Pattern PATTERN_FOR_INDEX = Pattern.compile(REGEXP_FOR_INDEX);
 
+    final boolean useLocalTenantTranslation = true;  // right now, only check for translations in the global tenant (TODO: make t9t config property, or tenant property)
 
     /** Returns an array of one to 4 languages which should be checked. */
     @Override
@@ -202,7 +206,7 @@ public class TranslationProvider implements ITranslationProvider {
             /// parse the old index, add 1, and use it as new index
             String replacement = " #?";
             try {
-                final int oldIndex = Integer.parseInt(indexStr);
+                final int oldIndex = Integer.parseInt(indexStr.substring(1, indexStr.length()-1));
                 replacement = String.format(" #%d", oldIndex+1);
             } catch(Exception e) {
                 LOGGER.error("Badly formatted index for {}[{}]: {}", path, indexStr, translation);
@@ -213,6 +217,7 @@ public class TranslationProvider implements ITranslationProvider {
         return translation;
     }
 
+    /** Common evaluation method for all other external entry points. */
     @Override
     public String getTranslation(String tenantId, String[] langs, String path, String fieldname) {
         Map<String, String> translations = TranslationsStack.getTranslationsForField(fieldname);
@@ -223,13 +228,13 @@ public class TranslationProvider implements ITranslationProvider {
             final int bracketPos1 = fieldname.indexOf('[');
             if (bracketPos1 > 0) {
                 // try the wildcard ID
-                translations = TranslationsStack.getTranslationsForField(fieldname.substring(0, bracketPos1) + "*");
+                translations = TranslationsStack.getTranslationsForField(fieldname.replaceAll(REGEXP_FOR_INDEX, "*"));
             }
             if (translations != null) {
                 // fallback 1 worked: set indexStr
-                final int bracketPos2 = fieldname.indexOf(']');
-                if (bracketPos2 > bracketPos1) {
-                    indexStr = fieldname.substring(bracketPos1+1, bracketPos2);
+                final Matcher m = PATTERN_FOR_INDEX.matcher(fieldname);
+                if (m.find(bracketPos1)) {
+                    indexStr = m.group();
                 }
             } else {
                 // fallback 2: check for base ID
@@ -242,12 +247,12 @@ public class TranslationProvider implements ITranslationProvider {
                         // fallback 3: check for arrays in last component
                         final int bracketPos2 = basename.indexOf('[');
                         if (bracketPos2 > 0) {
-                            translations = TranslationsStack.getTranslationsForField(basename.substring(0, bracketPos2) + "*");
+                            translations = TranslationsStack.getTranslationsForField(basename.replaceAll(REGEXP_FOR_INDEX, "*"));
                             if (translations != null) {
                                 // fallback 3 worked: set indexStr
-                                final int bracketPos3 = fieldname.indexOf(']');
-                                if (bracketPos3 > bracketPos2) {
-                                    indexStr = fieldname.substring(bracketPos2+1, bracketPos3);
+                                final Matcher m = PATTERN_FOR_INDEX.matcher(basename);
+                                if (m.find(bracketPos2)) {
+                                    indexStr = m.group();
                                 }
                             }
                         }

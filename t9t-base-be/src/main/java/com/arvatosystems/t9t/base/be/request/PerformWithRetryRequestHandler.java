@@ -37,7 +37,7 @@ public class PerformWithRetryRequestHandler extends AbstractRequestHandler<Perfo
     @Override
     public ServiceResponse execute(RequestContext ctx, PerformWithRetryRequest request) {
         int count = 0;
-        final long delay = request.getWaitBetweenRetries() == null ? 200L : request.getWaitBetweenRetries(); 
+        final long delay = request.getWaitBetweenRetries() == null ? 200L : request.getWaitBetweenRetries();
         Instant stopAt = request.getStopAt();
         if (request.getMaxNumberOfMilliseconds() != null) {
             long alsoStopAt = System.currentTimeMillis() + request.getMaxNumberOfMilliseconds().longValue();

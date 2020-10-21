@@ -39,7 +39,7 @@ public class IOTools {
             dataSink.setXmlNamespacePrefix(preset.getXmlNamespacePrefix());
             dataSink.setXmlHeaderElements(preset.getXmlHeaderElements());
             dataSink.setXmlFooterElements(preset.getXmlFooterElements());
-            dataSink.setWriteTenantId(preset.getWriteTenantId());            
+            dataSink.setWriteTenantId(preset.getWriteTenantId());
         }
     }
 }
