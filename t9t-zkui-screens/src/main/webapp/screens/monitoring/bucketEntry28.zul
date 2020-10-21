@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="bucketEntry28"?>
+
+<window28 id="bucketEntryWin">
+    <threesections28 gridId="bucketEntry">
+        <crud28 cachesDropdown="bucketId"
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.components.crud.CrudSurrogateKeyVM', vmId='bucketEntry')"
+            currentMode="@load(vm.currentMode)">
+            <form28 id="bucketEntryCrud" aspect="2" numColumns="2">
+                <rows>
+                    <cells228 id ="qualifier"                       value ="@bind(vm.data.qualifier)                       @save(vm.data.qualifier,                before='commandSave')"
+                              id2="bucket"                          value2="@load(vm.data.bucket)                          @save(vm.data.bucket,                   before='commandSave')"/>
+                    <cells228 id ="ref"                             value ="@bind(vm.data.ref)                             @save(vm.data.ref,                      before='commandSave')"
+                              id2="modes"                           value2="@load(vm.data.modes)                           @save(vm.data.modes,                    before='commandSave')"/>
+                    <cells228 id ="exportErrorCode"                 value ="@bind(vm.data.exportErrorCode)                 @save(vm.data.exportErrorCode,          before='commandSave')"
+                              id2="exportErrorDetails"              value2="@load(vm.data.exportErrorDetails)              @save(vm.data.exportErrorDetails,       before='commandSave')"/>
+                </rows>
+            </form28>
+        </crud28>
+    </threesections28>
+</window28>

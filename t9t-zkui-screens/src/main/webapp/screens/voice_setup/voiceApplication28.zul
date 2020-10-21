@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="userLocation28"?>
+
+<window28 id="voiceApplicationWin">
+    <threesections28 gridId="voiceApplication">
+        <crud28
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.components.crud.CrudSurrogateKeyVM', vmId='voiceApplication')"
+            currentMode="@load(vm.currentMode)">
+            <form28 id="voiceApplicationCrud" aspect="2"
+                numColumns="2">
+                <rows>
+                    <cells228 id="applicationId"     value="@load(vm.data.applicationId)     @save(vm.data.applicationId,before='commandSave')"
+                              id2="isActive"         value2="@load(vm.data.isActive)         @save(vm.data.isActive,before='commandSave')" />
+                    <cells228 id="name"              value="@load(vm.data.name)              @save(vm.data.name,before='commandSave')"
+                              id2="provider"         value2="@load(vm.data.provider)         @save(vm.data.provider,before='commandSave')" />
+                    <cells228 id="providerId"        value="@load(vm.data.providerId)        @save(vm.data.providerId,before='commandSave')"
+                              id2="apiKey"           value2="@load(vm.data.apiKey)           @save(vm.data.apiKey,before='commandSave')" />
+                    <cells28  id="sessionPerExtSession"     value="@load(vm.data.sessionPerExtSession)     @save(vm.data.sessionPerExtSession, before='commandSave')"/>
+                </rows>
+            </form28>
+        </crud28>
+    </threesections28>
+</window28>

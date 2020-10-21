@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="asyncChannelCfg28"?>
+
+<window28 id="asyncChannelCfgWin">
+    <threesections28 gridId="asyncChannelCfg">
+        <crud28
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.components.crud.CrudSurrogateKeyVM', vmId='asyncChannelCfg')"
+            currentMode="@load(vm.currentMode)">
+            <form28 id="asyncChannelCfgCrud" aspect="2" numColumns="2">
+                <rows>
+                     <cells228 id ="tenantRef"               value ="@load(vm.tenantRef) @save(vm.tenantRef,before='commandSave')"
+                               id2="isActive"                value2="@bind(vm.data.isActive)"/>
+                     <cells228 id ="description"             value ="@load(vm.data.description) @save(vm.data.description,before='commandSave')"
+                               id2="url"                     value2="@load(vm.data.url) @save(vm.data.url,before='commandSave')"/>
+                     <cells228 id ="asyncChannelId"          value ="@load(vm.data.asyncChannelId) @save(vm.data.asyncChannelId,before='commandSave')"
+                               id2="asyncQueueRef"           value2="@load(vm.data.asyncQueueRef) @save(vm.data.asyncQueueRef,before='commandSave')"/>
+                     <cells228 id ="authType"                value ="@load(vm.data.authType) @save(vm.data.authType,before='commandSave')"
+                               id2="authParam"               value2="@load(vm.data.authParam) @save(vm.data.authParam,before='commandSave')"/>
+                     <cells228 id ="maxRetries"              value ="@load(vm.data.maxRetries) @save(vm.data.maxRetries,before='commandSave')"
+                               id2="timeoutInMs"             value2="@load(vm.data.timeoutInMs) @save(vm.data.timeoutInMs,before='commandSave')"/>
+                     <cells228 id ="payloadFormat"           value ="@load(vm.data.payloadFormat) @save(vm.data.payloadFormat,before='commandSave')"
+                               id2="serializerQualifier"     value2="@load(vm.data.serializerQualifier) @save(vm.data.serializerQualifier,before='commandSave')"/>
+                     <cells28  id ="z" colspan1="3" rows1="4" value ="@load(vm.data.z) @save(vm.data.z,before='commandSave')"/>
+                 </rows>
+            </form28>
+        </crud28>
+    </threesections28>
+</window28>

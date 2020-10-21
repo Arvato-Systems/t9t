@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="reportParams28"?>
+
+<window28 id="reportParamsWin">
+    <threesections28 gridId="reportParams">
+        <crud28
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.viewmodel.ReportParamsVM', vmId='reportParams')"
+            currentMode="@load(vm.currentMode)">
+            <form28 id="reportParamsCrud" aspect="2" numColumns="2">
+                <rows>
+                    <cells228 id ="tenantRef"                       value ="@bind(vm.tenantRef)"
+                              id2="isActive"                        value2="@load(vm.data.isActive)                        @save(vm.data.isActive,                 before='commandSave')"/>
+                    <cells228 id ="reportParamsId"                  value ="@load(vm.data.reportParamsId)                  @save(vm.data.reportParamsId,           before='commandSave')"
+                              id2="reportConfigRef"                 value2="@load(vm.data.reportConfigRef)                 @save(vm.data.reportConfigRef,          before='commandSave')"/>
+                    <cells228 id ="dataSinkId"                      value ="@load(vm.data.dataSinkId)                      @save(vm.data.dataSinkId,               before='commandSave')"
+                              id2="outputFileType"                  value2="@load(vm.data.outputFileType)                  @save(vm.data.outputFileType,           before='commandSave')" enums2="#reportOutputType"/>
+                    <cells28  id ="intervalCategory"                value ="@bind(vm.data.intervalCategory)"/>
+                    <cells228 id ="interval"                        value ="@bind(vm.data.interval)"
+                              id2="factor"                          value2="@bind(vm.data.factor)"            visible="@load(vm.data.intervalCategory.token eq 'T')"/>
+                    <cells228 id ="intervalDays"                    value ="@bind(vm.data.intervalDays)"
+                              id2="intervalSeconds"                 value2="@bind(vm.data.intervalSeconds)"   visible="@load(vm.data.intervalCategory.token eq 'D')"/>
+                    <cells228 id ="fromDate"                        value ="@bind(vm.data.fromDate)"
+                              id2="toDate"                          value2="@bind(vm.data.toDate)"            visible="@load(vm.data.intervalCategory.token eq 'R')"/>
+                    <cells228 id ="timeZone"                        value ="@bind(vm.data.timeZone)"
+                              id2 ="mailingGroupRef"                value2 ="@bind(vm.data.mailingGroupRef)"/>
+                    <cells28  id ="z" colspan1="3" rows1="4"        value ="@load(vm.data.z)                               @save(vm.data.z,                        before='commandSave')"/>
+                    <row>
+                        <cell colspan="4">
+                            <hlayout>
+                                <button28 id="runReport" onClick="@command('runReport')"/>
+                            </hlayout>
+                        </cell>
+                    </row>
+                </rows>
+            </form28>
+        </crud28>
+    </threesections28>
+</window28>

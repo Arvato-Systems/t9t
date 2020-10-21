@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="processDefinition28"?>
+<?xel-method prefix="l"  name="translate"  class="com.arvatosystems.t9t.tfi.web.ZulUtils" signature="String translate(String, String)"?>
+<window28 id="processDefinitionWin">
+    <threesections28 gridId="processDefinition" vflex2="2" vflex3="5">
+        <crud28
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.viewmodel.ProcessDefinitionVM', vmId='processDefinition')"
+            currentMode="@load(vm.currentMode)">
+            <tabbox id="taboxDetail" vflex="1">
+                <tabs>
+                    <tab28 id="generalTab" />
+                    <tab28 id="stepTab" />
+                    <tab28 id="bpmTab" />
+                </tabs>
+                <tabpanels vflex="1" id="tabpanelsDetail">
+                    <tabpanel vflex="1" id="processPanel">
+                        <form28 id="processDefinitionCrud" aspect="2"
+                            numColumns="2">
+                            <rows>
+                                <cells228 id ="processDefinitionId"          value ="@load(vm.data.processDefinitionId)    @save(vm.data.processDefinitionId, before='commandSave')"
+                                          id2="name"                         value2="@load(vm.data.name)                   @save(vm.data.name,                before='commandSave')" />
+                                <cells228 id="factoryName"                   value ="@load(vm.data.factoryName)            @save(vm.data.factoryName,         before='commandSave')"
+                                          id2="engine"                       value2="@load(vm.data.engine)                 @save(vm.data.engine,              before='commandSave')" />
+                                <cells228 id="alwaysRestartAtStep1"          value ="@load(vm.data.alwaysRestartAtStep1)   @save(vm.data.alwaysRestartAtStep1,before='commandSave')"
+                                          id2="useExclusiveLock"             value2="@load(vm.data.useExclusiveLock)       @save(vm.data.useExclusiveLock,    before='commandSave')" />
+                                <cells28  id ="initialParams" rows1="3"      value ="@load(vm.data.initialParams)          @save(vm.data.initialParams,       before='commandSave')"
+                                    colspan1="3" />
+                                <cells228 id ="isActive"                    value="@bind(vm.data.isActive)"
+                                          id2="jvmLockTimeoutInMillis"      value2="@load(vm.data.jvmLockTimeoutInMillis)  @save(vm.data.jvmLockTimeoutInMillis,  before='commandSave')"/>
+                            </rows>
+                        </form28>
+                    </tabpanel>
+                    <tabpanel vflex="1" id="stepsPanel">
+                    <viewModel28 viewModelId="workflowStepConfig">
+                        <hlayout vflex="1">
+                            <vbox vflex="1" pack="middle">
+                                <button28 id="addButton"
+                                    label=""
+                                    image="/img/drop-add.png" autodisable="addButton,removeButton,upButton,downButton"
+                                    onClick="@command('addSteps')"
+                                    width="44px" />
+                                <button28 id="removeButton"
+                                    label=""
+                                    image="/img/delete.png" autodisable="addButton,removeButton,,upButton,downButton"
+                                    onClick="@command('removeSteps', step=processListBox.selectedItem.value)"
+                                    width="44px" />
+                                <button28 id="upButton"
+                                    label=""
+                                    image="/img/arrow2up.png" autodisable="addButton,removeButton,,upButton,downButton"
+                                    onClick="@command('upSteps', step=processListBox.selectedItem.value)"
+                                    width="44px" />
+                                <button28 id="downButton"
+                                    label=""
+                                    image="/img/arrow2down.png" autodisable="addButton,removeButton,,upButton,downButton"
+                                    onClick="@command('downSteps', step=processListBox.selectedItem.value)"
+                                    width="44px" />
+
+                            </vbox>
+                            <listbox span="true" id="processListBox" sizedByContent="true" vflex="1" hflex="true"
+                                model="@load(vm.uiOnlyWorkflowSteps)" selectedItem="@save(vm.uiOnlyWorkflowStep)"
+                                emptyMessage="${l:translate('com','noDataFound')}"
+                                pagingPosition="bottom" nonselectableTags="" >
+                                <listhead menupopup="auto" sizable="true" columnsgroup="false">
+                                    <listheader  label="${l:translate('processDefinition','label')}*" sort="auto(label)"    hflex="1" />
+                                    <listheader  label="${l:translate('processDefinition','comment')}" sort="auto(comment)"  hflex="1" />
+                                    <listheader  label="${l:translate('processDefinition','type')}" hflex="1" />
+                                    <listheader  label="${l:translate('processDefinition','data')}" hflex="3    "/>
+                                </listhead>
+                                <template name="model">
+                                    <listitem>
+                                        <listcell>
+                                            <textbox constraint="no empty" maxlength="36" hflex="1" value="@load(each.label) @save(each.label, before={'saveData','addSteps','commandSave','removeSteps','downSteps','upSteps'})" />
+                                        </listcell>
+                                        <listcell>
+                                            <textbox maxlength="80" hflex="1" value="@load(each.comment) @save(each.comment, before={'saveData','addSteps','commandSave','removeSteps','downSteps','upSteps'})" />
+                                        </listcell>
+                                        <listcell>
+                                            <hbox>
+                                                <viewModel28 viewModelId="workflowStepConfig">
+                                                    <field28 id="workflowStepType[${forEachStatus.index}]" value="@bind(each.workflowStepType)" hflex="1" />
+                                                </viewModel28></hbox>
+                                        </listcell>
+                                        <listcell>
+                                            <hbox  hflex="3">
+                                            <viewModel28 viewModelId="workflowStepConfig">
+                                                <field28  id="stepName[${forEachStatus.index}]"     value="@load(each.stepName) @save(each.stepName, before={'saveData','addSteps','commandSave','removeSteps','downSteps','upSteps'})"       visible="@bind(each.workflowStepType eq 'JAVA_TASK')" />
+                                                <field28  id="parameters[${forEachStatus.index}]"   value="@load(each.parameters) @save(each.parameters, before={'saveData','addSteps','commandSave','removeSteps','downSteps','upSteps'})"   visible="@bind(each.workflowStepType eq 'ADD_PARAMETER')" />
+                                                <field28  id="toLabel[${forEachStatus.index}]"      value="@load(each.toLabel) @save(each.toLabel, before={'saveData','addSteps','commandSave','removeSteps','downSteps','upSteps'})"         visible="@bind(each.workflowStepType eq 'STEP_GOTO')" />
+                                                <field28  id="waitSeconds[${forEachStatus.index}]"  value="@load(each.waitSeconds) @save(each.waitSeconds, before={'saveData','addSteps','commandSave','removeSteps','downSteps','upSteps'})" visible="@bind(each.workflowStepType eq 'YIELD')" />
+                                                <cell>
+                                                <button28 id="Condition[${forEachStatus.index}]"   onClick="@command('editCondition', lb=processListBox)"                    visible="@bind(each.workflowStepType eq 'CONDITION')"/>
+                                                <button28 id="ThenDo[${forEachStatus.index}]"   onClick="@command('editThenDo', lb=processListBox)"                        visible="@bind(each.workflowStepType eq 'CONDITION')"/>
+                                                <button28 id="ElseDo[${forEachStatus.index}]"   onClick="@command('editElseDo', lb=processListBox)"                        visible="@bind(each.workflowStepType eq 'CONDITION')"/>
+                                                </cell>
+                                            </viewModel28>
+                                            </hbox>
+                                        </listcell>
+                                    </listitem>
+                                </template>
+                            </listbox>
+                        </hlayout>
+                        </viewModel28>
+                    </tabpanel>
+                    <tabpanel vflex="1" id="bpmPanel">
+                        <form28 id="bpmnDiagram" aspect="2" numColumns="2">
+                            <rows>
+                                <row>
+                                    <cell>
+                                        <button28 upload="true" id="uploadBpmn" onUpload="@command('uploadBpmn')" resourceId="button.uploadBpmn" />
+                                    </cell>
+                                    <cell>
+                                        <button28 id="downloadBpmn" onClick="@command('downloadBpmn')" resourceId="button.downloadBpmn" />
+                                    </cell>
+                                </row>
+                            </rows>
+                        </form28>
+                    </tabpanel>
+                </tabpanels>
+            </tabbox>
+        </crud28>
+    </threesections28>
+</window28>

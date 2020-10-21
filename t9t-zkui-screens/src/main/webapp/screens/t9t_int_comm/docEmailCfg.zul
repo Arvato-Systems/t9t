@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="docEmailCfg"?>
+
+<window28 id="docEmailCfgWin">
+    <threesections28 gridId="docEmailCfg">
+        <crud28
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.viewmodel.DocEmailConfigViewModel', vmId='docEmailCfg')"
+            currentMode="@load(vm.currentMode)">
+            <form28 id="docEmailCfgCrud" aspect="2" numColumns="2">
+                <rows>
+                    <cells228 id ="documentId"                          value ="@load(vm.data.documentId)                   @save(vm.data.documentId,before='commandSave')"
+                              id2="entityId"                            value2="@load(vm.data.entityId)                     @save(vm.data.entityId,before='commandSave')"/>
+                    <cells228 id ="countryCode"                         value ="@load(vm.data.countryCode)                  @save(vm.data.countryCode,before='commandSave')"
+                              id2="languageCode"                        value2="@load(vm.data.languageCode)                 @save(vm.data.languageCode,before='commandSave')"/>
+                    <cells228 id ="currencyCode"                        value ="@load(vm.data.currencyCode)                 @save(vm.data.currencyCode,before='commandSave')"
+                              id2="prio"                                value2="@load(vm.data.prio)                         @save(vm.data.prio,before='commandSave')"/>
+                    <cells228 id ="emailSettings.emailSubject"          value ="@load(vm.data.emailSettings.emailSubject)   @save(vm.data.emailSettings.emailSubject,before='commandSave')"
+                              id2="emailSettings.subjectType"           value2="@load(vm.data.emailSettings.subjectType)    @save(vm.data.emailSettings.subjectType,before='commandSave')"/>
+                    <cells228 id ="emailSettings.defaultFrom"           value ="@load(vm.data.emailSettings.defaultFrom)    @save(vm.data.emailSettings.defaultFrom,before='commandSave')"
+                              id2="emailSettings.replaceFrom"           value2="@load(vm.data.emailSettings.replaceFrom)    @save(vm.data.emailSettings.replaceFrom,before='commandSave')"/>
+                    <cells228 id ="emailSettings.defaultReplyTo"        value ="@load(vm.data.emailSettings.defaultReplyTo) @save(vm.data.emailSettings.defaultReplyTo,before='commandSave')"
+                              id2="emailSettings.replaceReplyTo"        value2="@load(vm.data.emailSettings.replaceReplyTo) @save(vm.data.emailSettings.replaceReplyTo,before='commandSave')"/>
+                    <cells228 id ="emailSettings.extraTo"               value ="@load(vm.data.emailSettings.extraTo)        @save(vm.data.emailSettings.extraTo,before='commandSave')"
+                              id2="emailSettings.replaceTo"             value2="@load(vm.data.emailSettings.replaceTo)      @save(vm.data.emailSettings.replaceTo,before='commandSave')"/>
+                    <cells228 id ="emailSettings.extraCc"               value ="@load(vm.data.emailSettings.extraCc)        @save(vm.data.emailSettings.extraCc,before='commandSave')"
+                              id2="emailSettings.replaceCc"             value2="@load(vm.data.emailSettings.replaceCc)      @save(vm.data.emailSettings.replaceCc,before='commandSave')"/>
+                    <cells228 id ="emailSettings.extraBcc"              value ="@load(vm.data.emailSettings.extraBcc)       @save(vm.data.emailSettings.extraBcc,before='commandSave')"
+                              id2="emailSettings.replaceBcc"            value2="@load(vm.data.emailSettings.replaceBcc)     @save(vm.data.emailSettings.replaceBcc,before='commandSave')"/>
+                    <cells228 id ="emailSettings.storeEmail"            value ="@load(vm.data.emailSettings.storeEmail)     @save(vm.data.emailSettings.storeEmail,before='commandSave')"
+                              id2="emailSettings.sendSpooled"           value2="@load(vm.data.emailSettings.sendSpooled)    @save(vm.data.emailSettings.sendSpooled,before='commandSave')"/>
+                </rows>
+            </form28>
+        </crud28>
+    </threesections28>
+</window28>

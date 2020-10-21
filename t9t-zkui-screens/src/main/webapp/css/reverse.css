@@ -1,0 +1,119 @@
+/**
+ * Copyright (c) 2012 - 2018 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/* Support reverse order (e.g., Arabic) */
+.reverse {
+    -webkit-transform: scaleX(-1);
+}
+
+/*  Display right to left but reverse the order back to default for each input component (only if it is revrse order) */
+.reverse .z-decimalbox,
+.reverse .z-intbox,
+.reverse .z-longbox,
+.reverse .z-doublebox,
+.reverse .z-listheader-cnt,
+.reverse .z-radio-cnt {
+    display: inline-block;
+    direction: rtl;
+    -webkit-transform: scaleX(-1);
+}
+
+.reverse .z-textbox {
+    display: inline-block;
+    direction: rtl;
+    -webkit-transform: scaleX(-1);
+}
+
+
+/* Reverse the order back to default but diplay the text on right */
+.reverse .z-combobox,
+.reverse .z-bandbox-rounded,
+.reverse .z-button,
+.reverse .z-image,
+.reverse .z-listcell,
+.reverse .z-window-embedded-header,
+.reverse .z-caption,
+.reverse .z-label,
+.reverse .z-paging,
+.reverse .z-tab-text,
+.reverse .z-listbox-empty-body,
+.reverse .z-datebox {
+    -webkit-transform: scaleX(-1);
+}
+
+.reverse .z-label {
+    display: inline-block;
+    -webkit-transform: scaleX(-1);
+}
+
+.reverse .t9t-info {
+    text-align: right;
+    direction: rtl;
+    -webkit-transform: scaleX(1);
+}
+
+.reverse .z-combobox-inp,
+.reverse .z-bandbox-rounded-inp,
+.reverse .z-window-embedded-header,
+.reverse .z-caption,
+.reverse .z-listcell,
+.reverse .z-listheader-cnt,
+.reverse .z-datebox-inp {
+    text-align: right;
+}
+
+
+
+
+/* Custom Bandbox & Combobox for reverse order */
+.z-bandbox-rounded-pp {
+    -webkit-transform: scaleX(-1);
+}
+
+.z-bandbox-rounded-pp .z-listheader-cnt,
+.z-bandbox-rounded-pp .z-listcell {
+    direction: rtl;
+    -webkit-transform: scaleX(-1);
+}
+
+.z-bandbox-rounded-pp .z-textbox {
+    direction: rtl;
+    -webkit-transform: scaleX(-1);
+}
+
+.z-bandbox-rounded-pp .z-combobox {
+    -webkit-transform: scaleX(-1);
+}
+
+.z-bandbox-rounded-pp .z-listheader-cnt,
+.z-bandbox-rounded-pp .z-combobox-inp {
+    text-align: right;
+}
+
+.z-bandbox-rounded-pp .z-button,
+.z-bandbox-rounded-pp .z-listbox-empty-body {
+    display: block;
+    -webkit-transform: scaleX(-1);
+}
+
+.z-comboitem .z-comboitem-text,
+.z-bandbox-rounded-pp z-bandbox-rounded-shadow {
+    text-align: right !important;
+}
+
+/*  Change the combo box button image for dynamic combo boxes to have differences between the two types */
+.dropdown .z-icon-caret-down::before {
+    content: "*";
+}

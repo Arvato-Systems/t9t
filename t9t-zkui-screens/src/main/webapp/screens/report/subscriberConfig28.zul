@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="subscriberConfig28"?>
+
+<window28 id="subscriberConfigWin">
+    <threesections28 gridId="subscriberConfig">
+        <crud28 viewModel="@id('vm') @init('com.arvatosystems.t9t.components.crud.CrudSurrogateKeyVM', vmId='subscriberConfig')"
+                currentMode="@load(vm.currentMode)">
+            <form28 id="subscriberConfigCrud" aspect="2" >
+                <rows>
+                    <cells28 id="eventID"           value ="@load(vm.data.eventID) @save(vm.data.eventID,before='commandSave')"/>
+                    <cells28 id="handlerClassName"  value ="@load(vm.data.handlerClassName) @save(vm.data.handlerClassName,before='commandSave')"/>
+                    <cells28 id="environment"       value="@bind(vm.data.environment)"/>
+                    <cells28 id="remark"            value="@bind(vm.data.remark)"/>
+                    <cells28 id="isActive"          value="@bind(vm.data.isActive)"/>
+                </rows>
+            </form28>
+        </crud28>
+    </threesections28>
+</window28>

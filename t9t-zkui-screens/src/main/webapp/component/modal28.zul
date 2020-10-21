@@ -1,0 +1,9 @@
+<vlayout id="vlayout">
+  <!-- childs go here... typically a form28 -->
+  <hlayout id="buttons" sclass="modal-buttons-container">
+     <label hflex="1"/>
+     <button28 id="okButton"/>
+     <button28 id="cancelButton"/>
+     <!-- <div width="8px"/>    align buttons with boxes -->
+  </hlayout>
+</vlayout>

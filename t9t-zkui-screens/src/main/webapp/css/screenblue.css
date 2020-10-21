@@ -1,0 +1,458 @@
+/**
+ * Copyright (c) 2012 - 2018 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+body {
+    font-family: Arial Unicode MS, Arial, sans-serif;
+    font-size: small;
+    font: normal 12px tahoma, arial, helvetica, sans-serif;
+    -webkit-text-size-adjust: none;
+}
+
+.z-listgroup-inner {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    border-color: #cfcfcf -moz-use-text-color;
+    border-image: none;
+    border-style: none;
+    border-width: 0;
+    background: #4286f4 repeat scroll 0 0;
+    overflow: hidden;
+    position: relative;
+}
+
+.z-listitem {
+    background: #FCFCFC none repeat scroll 0 0;
+}
+
+.z-listitem.z-listitem-selected.z-listitem-focus>.z-listcell {
+    background: #e3e3e3 repeat scroll 0 0;
+    border-color: #cfcfcf;
+    position: relative;
+}
+
+.z-listitem.z-listitem-selected.z-listitem-focus>.z-listcell>.z-listcell-content
+    {
+    color: #000000;
+}
+
+.z-listitem.z-listitem-selected.z-listitem-focus:hover>.z-listcell {
+    background: #e3e3e3 repeat scroll 0 0;
+    border-color: #cfcfcf;
+    position: relative;
+}
+
+.z-listitem.z-listitem-selected.z-listitem-focus:hover .z-listcell-content
+    {
+    color: #000000;
+}
+
+.z-listitem.z-listitem-selected>.z-listcell {
+    background: #e3e3e3 repeat scroll 0 0 padding-box;
+    position: relative;
+}
+
+.z-listitem.z-listitem-selected:hover>.z-listcell {
+    background: #d1d1d1 repeat scroll 0 0;
+    position: relative;
+}
+
+.z-listitem.z-listitem-selected:hover .z-listcell-content {
+    color: #000000;
+}
+
+.z-listitem:hover>.z-listcell>.z-listcell-content {
+    color: #000000;
+}
+
+.z-listitem-focus .z-listcell-content {
+    color: #000000;
+}
+
+.z-listitem-selected>.z-listcell>.z-listcell-content>.z-listitem-checkable .z-listitem-icon
+    {
+    color: #000000;
+    cursor: pointer;
+    display: block;
+    line-height: 14px;
+    padding-left: 0;
+}
+
+.z-window-header {
+    color: #000000;
+    cursor: default;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: bold;
+    line-height: 24px;
+    overflow: hidden;
+    padding: 0;
+}
+
+
+.z-window {
+    background: #4286f4 none repeat scroll 0 0;
+    border: 1px solid #9c9c9c;
+    border-radius: 4px;
+    overflow: hidden;
+    padding: 4px;
+}
+
+.z-window-content {
+    background: #4286f4 none repeat scroll 0 0;
+    overflow: hidden;
+
+}
+
+.z-listbox-body {
+    overflow: hidden;
+    position: relative;
+    background: #ffffff none repeat scroll 0 0;
+}
+
+.z-caption-content, .z-caption .z-label {
+    display: inline-block;
+    line-height: 24px;
+    padding: 0;
+    color: #000000;
+    font-weight: bold;
+}
+
+.z-listheader-content, .z-listcell-content, .z-listgroup-content,
+    .z-listgroupfoot-content, .z-listfooter-content {
+    color: #000000;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 24px;
+    overflow: hidden;
+    padding: 4px 5px 2px;
+}
+
+.z-listitem.z-listitem-selected>.z-listcell>.z-listcell-content {
+    color: #000000;
+}
+
+.z-listitem.z-listitem-selected.z-listitem-focus>.z-listcell {
+    background: #e3e3e3 repeat scroll 0 0 padding-box;
+    position: relative;
+}
+
+.z-listitem.z-listitem-selected.z-listitem-focus>.z-listcell>.z-listcell-content
+    {
+    color: #000000;
+}
+
+.z-tab-text {
+    color: #000000;
+    display: block;
+    font-style: normal;
+    line-height: 24px;
+    overflow: hidden;
+    padding: 4px 12px 2px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.z-listitem.z-listitem-selected.z-listitem-focus:hover>.z-listcell {
+    background: #e3e3e3 repeat scroll 0 0;
+    position: relative;
+}
+
+.z-listitem.z-listitem-selected.z-listitem-focus:hover .z-listcell-content
+    {
+    color: #000000;
+}
+
+.z-listitem-focus>.z-listcell {
+    background: #4286f4 repeat scroll 0 0 padding-box;
+    position: relative;
+}
+
+.z-listitem-focus .z-listcell-content {
+    color: #000000;
+}
+
+.theme-bgcolor {
+    background:  #235cba;
+}
+
+.z-center {
+    background: #4286f4;
+}
+
+/*deactive border*/
+.z-groupbox-3d>.z-groupbox-header {
+    background: rgba(0, 0, 0, 0)
+        linear-gradient(to bottom, #fefefe 0px, #eee 100%) repeat scroll 0 0;
+    font-weight: bold;
+    height: auto;
+    min-height: 32px;
+    padding: 3px 4px;
+}
+
+.z-groupbox-collapsed .z-groupbox-header {
+
+}
+
+.z-groupbox-notitle .z-groupbox-content {
+
+}
+
+.z-groupbox-content {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    border-style: none;
+    border-width: 0;
+    display: block;
+    height: inherit;
+    overflow: hidden;
+    padding: 0px;
+}
+
+.z-groupbox>.z-groupbox-header {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    border-style: none none none;
+    border-width: 0px 0px 0;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: bold;
+    background: #4286f4;
+    height: 16px;
+    line-height: 14px;
+    padding-left: 10px;
+    width: 100%;
+}
+
+.theme-bgcolor.z-row {
+    position: relative;
+    top: -14px;
+}
+
+.t9t-user-setting {
+    position: relative;
+    top: 5px;
+}
+
+.z-grid-body .z-cell {
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    line-height: 16px;
+}
+
+.theme-bgcolor > .z-grid-odd>.z-row-inner, .theme-bgcolor > .z-grid-odd>.z-cell {
+    background-color:  #235cba;
+    background:  #235cba;
+}
+
+.t9t-user-setting .z-row .z-grid-odd {
+    background-color:  #235cba;
+    background:  #235cba;
+}
+
+.theme-bgcolor .z-row .z-grid-odd {
+    background-color:  #235cba;
+    background:  #235cba;
+}
+
+.z-cell .theme-bgcolor {
+    background-color: #235cba;
+}
+.z-combobox-input[readonly] {
+    background-color: #FFFFFF;
+}
+.z-textbox, .z-decimalbox, .z-intbox, .z-longbox, .z-doublebox {
+    background: #ffffff none repeat scroll 0 0;
+    border: 1px solid #cfcfcf;
+    border-radius: 3px;
+    color: #000000;
+    font-family: Arial,sans-serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 14px;
+    margin: 0;
+    min-height: 24px;
+    padding: 4px 5px 3px;
+}
+.theme-bgcolor > .z-cell {
+    padding: 1px 2px;
+}
+.theme-bgcolor.z-row:hover > .z-cell , .t9t-user-setting.z-row:hover > .z-cell {
+    background: #235cba;
+}
+.grid > .z-cell {
+    border-left: 0px;
+}
+.z-grid-body .z-cell {
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    line-height: 12px;
+}
+tr.z-row td.z-row-inner, tr.z-row .z-cell {
+    line-height: 12px;
+}
+.z-row:hover > .z-row-inner, .z-row:hover > .z-cell {
+    background: #4286f4 none repeat scroll 0 0 padding-box;
+}
+.languageCombobox {
+    height: 10px;
+    position:relative;
+    top:2px;
+}
+.z-tabpanel {
+    border-image: none;
+    border-style: none none none none;
+    border-width: 0 0 0 0;
+    padding: 0px;
+}
+div.z-listbox-body .z-listcell {
+    padding: 2px;
+}
+.z-listgroup-icon {
+    height: 100%;
+    min-height: 16px;
+    vertical-align: middle;
+    width: 14px;
+}
+div.z-listcell-content > img {
+    padding-left: 15px;
+}
+td.z-listgroup-inner div.z-listcell-content {
+    font-size: 12px;
+    font-weight: bold;
+    width: auto;
+}
+div.z-listcell-content {
+    line-height: 12px;
+    padding: 0 0;
+}
+.z-listbox-autopaging .z-listcell-content {
+    height: 15px;
+    overflow: hidden;
+}
+td.z-listcell .z-listcell-content {
+    font-family: arial,sans-serif;
+    font-size: 12px;
+    font-weight: normal;
+    padding-left: 8px;
+    width: auto;
+}
+.z-tabs-content {
+    border-style:hidden;
+}
+.z-grid{
+    border:hidden;
+}
+.z-groupbox-content{
+    margin-top:-8px;
+}
+.listBox-data.z-div{
+    margin-top:-8px;
+}
+.z-paging {
+    position: relative;
+    top: -3px;
+}
+.grid .z-row .z-grid-odd>.z-cell {
+    background: #235cba
+}
+.z-button {
+    margin-left: 2px;
+    margin-right: 2px;
+}
+.form .grid, .form .z-grid, .form .z-grid-body {
+    border: none;
+    width: 100% !important;
+}
+.z-button-image{
+    width:18px;
+    height:18px;
+    position:relative;
+    top:-1px;
+}
+
+
+.zperms-content {
+    margin: 2px;
+    padding: 3px;
+    border-style: solid;
+    border-spacing: 2px;
+    border-radius: 4px;
+    border: 1px solid #a9a9a9;
+}
+
+/*  Change the combo box button image for dynamic combo boxes to have differences between the two types */
+.dropdown .z-icon-caret-down::before {
+    content: "*";
+}
+
+.z-notification-pointer ~ .z-notification-content {
+    border-radius: 5px;
+    display: table-cell;
+    height: 30px !important;
+    min-height: 30px !important;
+    padding: 5px 18px 5px 45px;
+    vertical-align: middle;
+    width: 125px;
+}
+
+.z-warn-bg {
+    background: #FFFFE0 none;
+}
+
+.z-color-red {
+    color: red !important;
+}
+
+.z-color-transparent {
+    color: transparent !important;
+}
+
+.z-row-style {
+    border: 0px !important;
+    background: #235cba !important;
+    background-color: #235cba !important;
+}
+
+.z-cell-style {
+    background: #235cba !important;
+    background-color: #235cba !important;
+}
+
+.z-grid .z-row-inner, .z-grid .z-cell {
+    background: #4286f4;
+}
+
+.z-panel-body > .z-panelchildren {
+    background: #4286f4;
+}
+
+tr.z-listgroup, div.z-listbox-body .z-listcell {
+    background: #4286f4;
+}
+
+.z-listitem td:last-child {
+    background: #fcfcfc;
+}

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xel-method prefix="l" name="i18nLabel" class="com.arvatosystems.t9t.tfi.web.ZulUtils" signature="String i18nLabel(String)"?>
+<window  title="Session Timeout" border="normal"
+    width="450px" position="center,center"  mode="overlapped">
+    <style>
+        body { background: url(img/bg.png) repeat-x fixed; }
+    </style>
+    <vbox>
+${l:i18nLabel('test.test')}<a href="/login.zul"> ${l:i18nLabel('login.title')}</a>
+<!-- 7 -->
+    </vbox>
+</window>

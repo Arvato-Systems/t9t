@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="docComponent"?>
+
+<window28 id="docComponentWin">
+    <threesections28 gridId="docComponent">
+        <crud28
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.components.crud.CrudSurrogateKeyVM', vmId='docComponent')"
+            currentMode="@load(vm.currentMode)">
+            <form28 id="docEmailCfgCrud" aspect="2" numColumns="2">
+                <rows>
+                    <cells228 id ="documentId"                          value ="@load(vm.data.documentId)      @save(vm.data.documentId,before='commandSave')"
+                              id2="entityId"                            value2="@load(vm.data.entityId)        @save(vm.data.entityId,before='commandSave')"/>
+                    <cells228 id= "countryCode"                         value ="@load(vm.data.countryCode)     @save(vm.data.countryCode,before='commandSave')"
+                              id2="languageCode"                        value2="@load(vm.data.languageCode)    @save(vm.data.languageCode,before='commandSave')"/>
+                    <cells228 id ="currencyCode"                        value ="@load(vm.data.currencyCode)    @save(vm.data.currencyCode,before='commandSave')"
+                              id2="prio"                                value2="@load(vm.data.prio)            @save(vm.data.prio,before='commandSave')"/>
+                    <ckeditor28 id ="data" colspan1="3"  rows1="10"     value ="@load(vm.data.data)            @save(vm.data.data,before='commandSave')"/>
+                </rows>
+            </form28>
+        </crud28>
+    </threesections28>
+</window28>

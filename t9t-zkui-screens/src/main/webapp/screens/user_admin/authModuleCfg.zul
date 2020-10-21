@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="authModuleCfg"?>
+
+<window28 id="authModuleCfgWin">
+    <threesections28 gridId="authModuleCfg" vflex3="2">
+        <crud28
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.components.crud.ModuleConfigVM', vmId='authModuleCfg')"
+            currentMode="@load(vm.currentMode)">
+            <form28 id="authModuleCfgCrud" aspect="2" numColumns="2">
+                <rows>
+                    <cells228 id ="tenantRef"                       value ="@load(vm.tenantRef)                            @save(vm.tenantRef,before='commandSave')"
+                              id2="maxTokenValidityInMinutes"       value2="@load(vm.data.maxTokenValidityInMinutes)       @save(vm.data.maxTokenValidityInMinutes,before='commandSave')"/>
+                    <cells228 id ="passwordMinimumLength"           value ="@load(vm.data.passwordMinimumLength)           @save(vm.data.passwordMinimumLength,before='commandSave')"
+                              id2="passwordDifferPreviousN"         value2="@load(vm.data.passwordDifferPreviousN)         @save(vm.data.passwordDifferPreviousN,before='commandSave')"/>
+                    <cells228 id ="passwordExpirationInDays"        value ="@load(vm.data.passwordExpirationInDays)        @save(vm.data.passwordExpirationInDays,before='commandSave')"
+                              id2="passwordResetDurationInSec"      value2="@load(vm.data.passwordResetDurationInSec)      @save(vm.data.passwordResetDurationInSec,before='commandSave')"/>
+                    <cells228 id ="passwordThrottlingAfterX"        value ="@load(vm.data.passwordThrottlingAfterX)        @save(vm.data.passwordThrottlingAfterX,before='commandSave')"
+                              id2="passwordThrottlingDuration"      value2="@load(vm.data.passwordThrottlingDuration)      @save(vm.data.passwordThrottlingDuration,before='commandSave')"/>
+                    <cells28  id ="passwordBlockingPeriod"          value ="@load(vm.data.passwordBlockingPeriod)          @save(vm.data.passwordBlockingPeriod,before='commandSave')"/>
+                    <cells28  id ="z" colspan1="3" rows1="4"        value ="@load(vm.data.z)                               @save(vm.data.z,before='commandSave')"/>
+                </rows>
+            </form28>
+        </crud28>
+    </threesections28>
+</window28>

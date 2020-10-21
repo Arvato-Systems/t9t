@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="emailModuleCfg"?>
+
+<window28 id="emailModuleCfgWin">
+    <threesections28 gridId="emailModuleCfg" vflex3="2">
+        <crud28
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.viewmodel.SendTestEmail', vmId='emailModuleCfg')"
+            currentMode="@load(vm.currentMode)">
+            <form28 id="emailModuleCfgCrud" aspect="2" numColumns="2">
+                <rows>
+                    <cells228 id ="tenantRef"                       value ="@load(vm.tenantRef)                            @save(vm.tenantRef,before='commandSave')"
+                              id2="implementation"                  value2="@load(vm.data.implementation)                  @save(vm.data.implementation,before='commandSave')"/>
+                    <cells228 id ="smtpServerTransport"             value ="@load(vm.data.smtpServerTransport)             @save(vm.data.smtpServerTransport,before='commandSave')"
+                              id2="smtpServerAddress"               value2="@load(vm.data.smtpServerAddress)               @save(vm.data.smtpServerAddress,before='commandSave')"/>
+                    <cells228 id ="smtpServerPort"                  value ="@load(vm.data.smtpServerPort)                  @save(vm.data.smtpServerPort,before='commandSave')"
+                              id2="smtpServerTls"                   value2="@load(vm.data.smtpServerTls)                   @save(vm.data.smtpServerTls,before='commandSave')"/>
+                    <cells228 id ="smtpServerUserId"                value ="@load(vm.data.smtpServerUserId)                @save(vm.data.smtpServerUserId,before='commandSave')"
+                              id2="smtpServerPassword"              value2="@load(vm.data.smtpServerPassword)              @save(vm.data.smtpServerPassword,before='commandSave')"/>
+                    <cells28  id ="z" colspan1="3" rows1="4"        value ="@load(vm.data.z)                               @save(vm.data.z,before='commandSave')"/>
+                     <row>
+                        <cell colspan="4">
+                            <hlayout>
+                                <button28 id="sendTestEmail" onClick="@command('popup')"></button28>
+                            </hlayout>
+                        </cell>
+                    </row>
+                </rows>
+            </form28>
+        </crud28>
+    </threesections28>
+</window28>

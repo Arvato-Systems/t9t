@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="schedulerSetup"?>
+
+<window28 id="schedulerSetupWin">
+    <threesections28 gridId="schedulerSetup">
+        <crud28 viewModel="@id('vm') @init('com.arvatosystems.t9t.viewmodel.SchedulerSetupViewModel', vmId='schedulerSetup')"
+                currentMode="@load(vm.currentMode)">
+            <form28 id="schedulerSetupCrud" aspect="2" numColumns="2">
+                <rows>
+                    <cells228 id ="schedulerId"          value ="@load(vm.data.schedulerId)          @save(vm.data.schedulerId,before='commandSave')"
+                              id2="name"                 value2="@load(vm.data.name)                 @save(vm.data.name,before='commandSave')"/>
+                    <cells228 id ="request"              value ="@load(vm.data.request)              @save(vm.data.request,before='commandSave')"
+                              id2="apiKey"               value2="@load(vm.data.apiKey)               @save(vm.data.apiKey,before='commandSave')"/>
+                    <cells228 id ="userId"               value ="@load(vm.data.userId)               @save(vm.data.userId,before='commandSave')"
+                              id2="languageCode"         value2="@load(vm.data.languageCode)         @save(vm.data.languageCode,before='commandSave')"/>
+                    <cells28  id ="additionalPermissions" value="@load(vm.data.additionalPermissions) @save(vm.data.additionalPermissions,before='commandSave')" colspan1="3"/>
+                    <cells228 visible="@load(vm.data.recurrencyType.token eq 'M' or vm.data.recurrencyType.token eq 'Y')"
+                              id ="validFrom"            value ="@load(vm.data.validFrom)            @save(vm.data.validFrom,before='commandSave')"
+                              id2="validTo"              value2="@load(vm.data.validTo)              @save(vm.data.validTo,before='commandSave')"/>
+                    <cells228 id ="recurrencyType"       value ="@bind(vm.data.recurrencyType)"
+                              id2="isActive"             value2="@bind(vm.data.isActive)"/>
+
+                    <cells228 visible="@load(vm.data.recurrencyType.token eq 'F')"
+                              id ="repeatCount"          value ="@load(vm.data.repeatCount)          @save(vm.data.repeatCount,before='commandSave')"
+                              id2="intervalMilliseconds" value2="@load(vm.data.intervalMilliseconds) @save(vm.data.intervalMilliseconds,before='commandSave')"/>
+
+                    <cells28  visible="@load(vm.data.recurrencyType.token eq 'W')" colspan1="3"
+                              id ="setOfWeekdays"        value ="@load(vm.data.setOfWeekdays)        @save(vm.data.setOfWeekdays,before='commandSave')"/>
+
+                    <cells28  visible="@load(vm.data.recurrencyType.token eq 'D' or vm.data.recurrencyType.token eq 'M' or vm.data.recurrencyType.token eq 'Y')"
+                              id ="executionTime"        value ="@load(vm.data.executionTime)        @save(vm.data.executionTime,before='commandSave')"/>
+                    <cells228 visible="@load(vm.data.recurrencyType.token eq 'm' or vm.data.recurrencyType.token eq 'h')"
+                              id ="startHour"            value ="@load(vm.data.startHour)            @save(vm.data.startHour,before='commandSave')"
+                              id2="endHour"              value2="@load(vm.data.endHour)              @save(vm.data.endHour,before='commandSave')"/>
+                    <cells228 visible="@load(vm.data.recurrencyType.token ne 'F' and vm.data.recurrencyType.token ne 'C')"
+                              id ="intervalMinutes"      value ="@load(vm.data.intervalMinutes)      @save(vm.data.intervalMinutes,before='commandSave')"
+                              id2="intervalOffset"       value2="@load(vm.data.intervalOffset)       @save(vm.data.intervalOffset,before='commandSave')"/>
+                    <cells28  visible="@load(vm.data.recurrencyType.token eq 'C')"
+                              id="cronExpression"        value="@load(vm.data.cronExpression)        @save(vm.data.cronExpression, before='commandSave')"/>
+                    <row>
+                        <cell>
+                            <button28 id="executeCannedRequest" onClick="@command('executeCannedRequest')" />
+                        </cell>
+                    </row>
+                 </rows>
+            </form28>
+        </crud28>
+    </threesections28>
+</window28>

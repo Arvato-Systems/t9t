@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xel-method prefix="l" name="translate" class="com.arvatosystems.t9t.tfi.web.ZulUtils" signature="String translate(String, String)"?>
+<div class="container">
+    <window id="main"
+    width="380px" apply="org.zkoss.bind.BindComposer"
+    viewModel="@id('vm') @init('com.arvatosystems.t9t.tfi.viewmodel.LoginViewModel')"
+    border="normal" mode="overlapped" position="center,center"
+    onClientInfo="@command('onClientInfo', eventData=event)"
+    xmlns:h="native" sclass="white-window"
+    xmlns:w="http://www.zkoss.org/2005/zk/client">
+
+    <style src="/css/login.css"/>
+
+    <h:script>
+        zk.afterMount(function() {
+             zkbind.$('$main').command('realTimezone', { tzid: Intl.DateTimeFormat().resolvedOptions().timeZone } );
+        });
+       </h:script>
+
+    <h:form id="f" class="form"  name="loginform" action="" method="POST">
+        <vbox vflex="1" align="center" width="100%">
+            <div sclass="logo">
+                <image src="/img/logo/company_logo.png" width="110px"></image>
+                <span sclass="logo-label">${l:translate('app', 'name')}</span>
+            </div>
+            <div sclass="block-field">
+                <div>
+                    <span sclass="h6">${l:translate('login', 'user')}</span>
+                </div>
+                <textbox id="userName" focus="@init(userName.value eq '')" name="user" maxlength="16" onOK="@command('login', username=userName.value, rememberMe=rememberMe.checked)" value="@init(vm.username)"></textbox>
+            </div>
+
+            <div sclass="block-field">
+                <div>
+                    <span sclass="h6">${l:translate('login', 'password')}</span>
+                </div>
+                <textbox id="passwordTxb" focus="@init(userName.value ne '')" type="password" name="pass" maxlength="64" onOK="@command('login', username=userName.value, rememberMe=rememberMe.checked)"></textbox>
+            </div>
+
+            <div class="block-field">
+               <div>
+                    <span sclass="h6">Language</span>
+                </div>
+                <combobox hflex="1" model="@bind(vm.languageListModel)"
+                    selectedItem="@bind(vm.selected)" rows="1" mold="default">
+                    <template name="model" var="language">
+                        <comboitem value="@bind(language)"
+                            label="@bind(language.name)" />
+                    </template>
+                    <attribute name="onChange"><![CDATA[
+                                String localeValue = ((com.arvatosystems.t9t.tfi.model.bean.ComboBoxItem) self.getSelectedItem().getValue()).getValue();
+                                Locale prefer_locale = null;
+                                if(localeValue!=null && localeValue.length()==5){
+                                 prefer_locale = new Locale(localeValue.substring(0,2),localeValue.substring(3,5));
+                                }else{
+                                 prefer_locale = new Locale(localeValue);
+                                }
+                                session.setAttribute(org.zkoss.web.Attributes.PREFERRED_LOCALE, prefer_locale);
+                                // execution.sendRedirect("");  // redirect would clear username / password. if reload is wanted, the user can press reload in the browser.
+                            ]]></attribute>
+                        </combobox>
+            </div>
+            <div class="block-field" style="line-height: 40px;" >
+                <checkbox id="rememberMe" label="${l:translate('login','rememberMe')}" name="rememberMe" checked="@init(userName.value ne '')"/>
+            </div>
+
+                <button id="btnLogin" label="${l:translate('login','title')}" sclass="square-btn login-btn"
+                           onClick="@command('login', username=userName.value, rememberMe=rememberMe.checked)"/>
+                <div sclass="login-error" visible="${not empty requestScope.loginFailure}"><label value="${l:translate('err','loginFailed')}" ></label></div>
+
+                 <a href="/screens/login/forgotPassword.zul" sclass="forget-password-link" label="${l:translate('forgotpw','title')}" />
+
+                <div>
+                        <div>
+                            <span sclass="version h6">
+                                ${desktop.webApp.version} - build ${desktop.webApp.build}
+                            </span>
+
+                            <span sclass="h6">${l:translate('app','companyName')}</span>
+                        </div>
+                        </div>
+
+        </vbox>
+    </h:form>
+
+</window>
+</div>

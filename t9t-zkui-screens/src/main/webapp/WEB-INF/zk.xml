@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zk>
+    <!-- Defines the application's name -->
+    <preference>
+        <name>org.zkoss.zk.ui.WebApp.name</name>
+        <value>t9t-zkui</value>
+    </preference>
+
+    <!-- Turn on if you want to debug JavaScript. Once turned on, the uncompressed JavaScript files will be loaded.     -->
+    <client-config>
+        <debug-js>true</debug-js>
+    </client-config>
+
+    <library-property>
+        <name>org.zkoss.theme.preferred</name>
+        <value>silvertail</value>
+    </library-property>
+
+    <!-- <library-property>
+        <name>org.zkoss.web.preferred.locale</name>
+        <value>en</value>
+    </library-property> -->
+
+    <!-- Turn on the following if you want to use the trendy mold as default for all buttons. -->
+    <library-property>
+        <name>org.zkoss.zul.Button.mold</name>
+        <value>trendy</value>
+    </library-property>
+
+    <!-- Turn on if you want to use language addons.-->
+    <language-config>
+        <addon-uri>/WEB-INF/t9t-lang-addon.xml</addon-uri>
+    </language-config>
+
+    <!-- Turn on if the processing time is longer than 9000 miliseconds. Default: -1 (turned off)
+        http://books.zkoss.org/wiki/ZK_Configuration_Reference/zk.xml/The_client-config_Element#The_resend-delay_Element
+    <client-config>
+        <resend-delay>9000</resend-delay>
+    </client-config>
+    -->
+
+
+    <system-config>
+        <label-location>/WEB-INF/resources/translations/t9t-zkui.properties</label-location>
+        <label-location>/WEB-INF/resources/t9t-zkui-configuration.properties</label-location>
+    </system-config>
+
+    <session-config>
+        <!-- Turn on the following if you want a different timeout
+            Note: The unit is seconds (while that of web.xml is minute)
+        <session-timeout>1800</session-timeout>
+        -->
+    </session-config>
+    <session-config>
+        <!-- Comment it out if you prefer to show a message instead of redirecting
+            Note: an empty URL can cause the browser to reload the same URL
+        -->
+        <timeout-uri>/timeout.zul</timeout-uri>
+
+    </session-config>
+
+    <!-- Turn on the following if you want to use ZK with a clustering server
+        or cloud environment (such as Google App Engine)
+    <system-config>
+        <disable-event-thread/>
+        <ui-factory-class>org.zkoss.zk.ui.http.SerializableUiFactory</ui-factory-class>
+    </system-config>
+    -->
+
+    <!-- Configure the error page -->
+    <error-page>
+        <exception-type>java.lang.Throwable</exception-type>
+        <location>/screens/common/error.zul</location>
+    </error-page>
+
+    <listener>
+        <listener-class>com.arvatosystems.t9t.tfi.web.SessionListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>com.arvatosystems.t9t.tfi.web.ApplicationListener</listener-class>
+    </listener>
+
+    <system-property>
+        <name>SEARCH_PATH_FOR_XENUMS_INIT</name>
+        <value>com.arvatosystems.t9t.tfi</value>
+    </system-property>
+</zk>

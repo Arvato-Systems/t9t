@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="sessions28"?>
+
+<window28 id="sessionWin">
+    <twosections28 pageSize="50" gridId="sessions" gridContext="requests"/>
+</window28>

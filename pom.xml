@@ -32,7 +32,6 @@
 
     <properties>
         <!-- to be used by dependent projects (same as project.version, but must be provided explicitly so that imports work) -->
-        <global.version>5.0-SNAPSHOT</global.version>  <!-- deprecated, use t9t.version instead! -->
         <t9t.version>5.0-SNAPSHOT</t9t.version>
 
         <!-- Build specific properties -->
@@ -377,7 +376,7 @@
                         <dependency>
                             <groupId>com.arvato-systems.t9t</groupId>
                             <artifactId>global-sql-assembly</artifactId>
-                            <version>${global.version}</version>
+                            <version>${t9t.version}</version>
                         </dependency>
                     </dependencies>
                 </plugin>
@@ -874,6 +873,8 @@
 		<module>t9t-tests-doc</module>
 		<module>t9t-tests-all</module>
 		<module>t9t-tests-remote</module>
+
+
 		<module>t9t-tests-embedded</module>
 		<module>t9t-tests-unit</module>
 
@@ -882,5 +883,47 @@
 
 		<module>t9t-alexa</module>
 	</modules>
+
+    <profiles>
+        <profile>
+            <id>ZKEE</id>
+            <activation>
+              <property>
+                <name>!ZKCE</name>
+              </property>
+            </activation>
+            <modules>
+                <module>t9t-settings-zkui</module>
+                <module>t9t-zkui-ce</module>
+                <module>t9t-zkui-ee</module>
+                <module>t9t-zkui-screens</module>
+                <module>t9t-zkui-war</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>ZKCE</id>
+            <activation>
+              <property>
+                <name>ZKCE</name>
+              </property>
+            </activation>
+            <!-- required for CKEZ if ZK EE is not available. -->
+            <repositories>
+                <repository>
+                    <id>ZK CE</id>
+                    <name>ZK CE Repository</name>
+                    <url>http://mavensync.zkoss.org/maven2</url>
+                </repository>
+            </repositories>
+
+            <modules>
+                <module>t9t-settings-zkui</module>
+                <module>t9t-zkui-ce</module>
+                <module>t9t-zkui-screens</module>
+                <module>t9t-zkui-war</module>
+            </modules>
+        </profile>
+    </profiles>
 
 </project>

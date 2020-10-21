@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="cannedRequest"?>
+
+<window28 id="cannedRequestWin">
+    <threesections28 gridId="cannedRequest">
+        <crud28 cachesDropdown="cannedRequestId"
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.viewmodel.CannedViewModel', vmId='cannedRequest')"
+            currentMode="@load(vm.currentMode)">
+            <form28 id="cannedRequestCrud" aspect="2" numColumns="2">
+                <rows>
+                    <cells228 id ="tenantRef"              value ="@load(vm.tenantRef)                 @save(vm.tenantRef,before='commandSave')"
+                              id2="requestId"              value2="@load(vm.data.requestId)            @save(vm.data.requestId,before='commandSave')"/>
+                    <cells228 id ="name"                   value ="@load(vm.data.name)                 @save(vm.data.name,before='commandSave')"
+                              id2="jobRequestObjectName"   value2="@load(vm.data.jobRequestObjectName) @save(vm.data.jobRequestObjectName,before='commandSave')"/>
+                    <cells28  id ="jobParameters"          value ="@bind(vm.data.jobParameters)"       colspan1="3" rows1="5"/>
+                    <cells28  id ="request"                value ="@load(vm.data.request)"             colspan1="3" rows1="5" readonly1="true"/>
+                    <row>
+                        <cell>
+                            <button28 id="executeCannedRequest" onClick="@command('executeCannedRequest')" />
+                        </cell>
+                    </row>
+                </rows>
+            </form28>
+        </crud28>
+    </threesections28>
+</window28>

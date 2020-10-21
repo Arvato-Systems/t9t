@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="genericConfig"?>
+
+<window28 id="genericConfigWin">
+    <threesections28 gridId="genericConfig">
+        <crud28 viewModel="@id('vm') @init('com.arvatosystems.t9t.components.crud.CrudSurrogateKeyVM', vmId='genericConfig')"
+                currentMode="@load(vm.currentMode)">
+            <form28 id="genericConfigCrud" aspect="2" numColumns="2">
+                <rows>
+                    <cells228 id ="configGroup"         value ="@load(vm.data.configGroup)    @save(vm.data.configGroup,   before='commandSave')"
+                              id2="configKey"           value2="@load(vm.data.configKey)      @save(vm.data.configKey,     before='commandSave')"/>
+                    <cells228 id ="genericRef1"         value ="@load(vm.data.genericRef1)    @save(vm.data.genericRef1,   before='commandSave')"
+                              id2="genericRef2"         value2="@load(vm.data.genericRef2)    @save(vm.data.genericRef2,   before='commandSave')"/>
+                    <cells228 id ="configTypeEnum"      value ="@bind(vm.data.configTypeEnum)"
+                              id2="isActive"            value2="@bind(vm.data.isActive)"/>
+                    <cells28  id ="booleanProperty"     value ="@bind(vm.data.booleanProperty)" colspan1="3" visible="@load(vm.data.configTypeEnum.token eq 'B')"/>
+                    <cells28  id ="decimalProperty"     value ="@bind(vm.data.decimalProperty)" colspan1="3" visible="@load(vm.data.configTypeEnum.token eq 'F')"/>
+                    <cells28  id ="integerProperty"     value ="@bind(vm.data.integerProperty)" colspan1="3" visible="@load(vm.data.configTypeEnum.token eq 'I')"/>
+                    <cells28  id ="stringProperty"      value ="@bind(vm.data.stringProperty)"  colspan1="3" visible="@load(vm.data.configTypeEnum.token eq 'T')"/>
+                    <cells28  id ="objectProperty"      value="@load(vm.data.objectProperty) @save(vm.data.objectProperty,before='commandSave')"  colspan1="3" visible="@load(vm.data.configTypeEnum.token eq 'O')" rows1="6"/>
+                </rows>
+            </form28>
+        </crud28>
+    </threesections28>
+</window28>

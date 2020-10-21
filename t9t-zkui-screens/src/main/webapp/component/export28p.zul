@@ -1,0 +1,10 @@
+<modal28 id="export" viewModel="@id('vm') @init('com.arvatosystems.t9t.components.GenericVM', inst=inst)">
+    <form28 id="exportParams" viewModelId="exportParams" aspect="2">
+        <rows>
+            <cells28 id="communicationFormatType" value="@bind(vm.data.communicationFormatType)"/>
+            <cells28 id="offset"         value="@bind(vm.data.offset)"/>
+            <cells28 id="limit"          value="@bind(vm.data.limit)"/>
+            <cells28 id="enumOutputType" value="@bind(vm.data.enumOutputType)"/>
+        </rows>
+    </form28>
+</modal28>

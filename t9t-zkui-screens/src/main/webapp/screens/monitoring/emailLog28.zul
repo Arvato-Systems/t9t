@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="emailLog"?>
+
+<window28 id="emailLogWin">
+    <threesections28 gridId="emailLog">
+        <crud28 viewModel="@id('vm') @init('com.arvatosystems.t9t.components.crud.CrudSurrogateKeyVM', vmId='emailLog')"
+                currentMode="@load(vm.currentMode)">
+            <form28 id="emailLogCrud" aspect="2" numColumns="2">
+                <rows>
+                    <cells228 id ="messageId"           value ="@load(vm.data.messageId)    @save(vm.data.messageId,     before='commandSave')"
+                              id2="emailFrom"           value2="@load(vm.data.emailFrom)    @save(vm.data.emailFrom,     before='commandSave')"/>
+                    <cells228 id ="emailTo"             value ="@load(vm.data.emailTo)      @save(vm.data.emailTo,       before='commandSave')"
+                              id2="replyTo"             value2="@load(vm.data.replyTo)      @save(vm.data.replyTo,       before='commandSave')"/>
+                    <cells228 id ="emailCc"             value ="@load(vm.data.emailCc)      @save(vm.data.emailCc,       before='commandSave')"
+                              id2="emailBcc"            value2="@load(vm.data.emailBcc)     @save(vm.data.emailBcc,      before='commandSave')"/>
+                    <cells228 id ="emailSubject"        value ="@load(vm.data.emailSubject) @save(vm.data.emailSubject,  before='commandSave')"
+                              id2="emailStatus"         value2="@load(vm.data.emailStatus)  @save(vm.data.emailStatus,   before='commandSave')"/>
+                    <cells28 id ="numberOfAttachments"  value ="@load(vm.data.numberOfAttachments) @save(vm.data.numberOfAttachments,before='commandSave')"/>
+                </rows>
+            </form28>
+        </crud28>
+    </threesections28>
+</window28>

@@ -57,7 +57,7 @@ public interface IRefGenerator {
      *
      * The rttiOffset should be in range
      *
-     * 500x for refs required by the fortytwo application server
+     * 500x for refs required by the t9t application server
      *
      * 600x for refs required by the main application
      *

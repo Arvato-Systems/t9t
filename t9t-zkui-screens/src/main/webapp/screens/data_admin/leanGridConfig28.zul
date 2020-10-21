@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="leanGridConfig"?>
+
+<window28 id="leanGridConfigWin">
+    <threesections28 gridId="leanGridConfig">
+        <crud28 viewModel="@id('vm') @init('com.arvatosystems.t9t.components.crud.CrudSurrogateKeyVM', vmId='leanGridConfig')"
+                currentMode="@load(vm.currentMode)">
+            <form28 id="leanGridConfigCrud" aspect="2" numColumns="2">
+                <rows>
+                    <cells228 id ="gridId"                    value ="@load(vm.data.gridId)   @save(vm.data.gridId,before='commandSave')"
+                              id2="variant"                   value2="@load(vm.data.variant)  @save(vm.data.variant,before='commandSave')"/>
+                    <cells228 id ="userRef"                   value ="@load(vm.data.userRef)  @save(vm.data.userRef,before='commandSave')"
+                              id2="isActive"                  value2="@load(vm.data.isActive) @save(vm.data.isActive,before='commandSave')"/>
+                    <cells28  id="gridPrefs"                  value ="@bind(vm.data.gridPrefs)" colspan1="3" rows1="10"/>
+                 </rows>
+            </form28>
+        </crud28>
+    </threesections28>
+</window28>

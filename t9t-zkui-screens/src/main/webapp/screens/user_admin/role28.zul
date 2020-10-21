@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="role28"?>
+
+<window28 id="roleWin">
+    <threesections28 gridId="role">
+        <crud28 cachesDropdown="roleId"
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.components.crud.CrudSurrogateKeyVM', vmId='role')"
+            currentMode="@load(vm.currentMode)">
+            <form28 id="roleCrud" aspect="2" numColumns="2">
+                <rows>
+                    <cells228 id ="tenantRef"                       value ="@bind(vm.tenantRef)"
+                              id2="isActive"                        value2="@bind(vm.data.isActive)"/>
+                    <cells228 id ="roleId"                          value ="@load(vm.data.roleId)      @save(vm.data.roleId, before='commandSave')"
+                              id2="name"                            value2="@load(vm.data.name)        @save(vm.data.name,   before='commandSave')"/>
+                </rows>
+            </form28>
+        </crud28>
+    </threesections28>
+</window28>

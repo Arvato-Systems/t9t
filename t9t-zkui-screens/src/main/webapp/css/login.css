@@ -1,0 +1,282 @@
+/**
+ * Copyright (c) 2012 - 2018 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/* Neutralize ZK generated default styles based on ZK 8.5 */
+@font-face { font-family: 'Helvetica Neue'; src: url('../fonts/HelveticaNeue-Regular.otf'); }
+
+@font-face {
+  font-family: 'Helvetica Neue';
+  src: url(../fonts/HelveticaNeue-Regular.otf), weight:normal;
+  src: url(../fonts/HelveticaNeue-Bold.otf), weight:bold;
+}
+
+body {
+    padding: 0;
+}
+
+body *:not([class*="z-icon-"]) {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
+.h6 {
+    font-size: 0.67em;
+}
+
+.fright {
+    float: right;
+}
+
+.fleft {
+    float: left;
+}
+
+.z-window {
+    border: 0;
+    border-radius: 0;
+}
+
+.z-window-content {
+    border: 0;
+}
+
+.z-grid {
+    border:0;
+}
+
+.z-textbox: focus {
+    outline: none;
+}
+
+.z-window-shadow {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+/* rebrand login */
+.z-page {
+    background-color: #ffffff;
+}
+
+.white-window {
+    background: #fff;
+}
+
+.container-title {
+    padding: 50px 10px 25px 10px;
+}
+
+.container-title > span {
+    font-size: 20px;
+    font-weight: bold;
+    color: #737373;
+}
+
+.textbox-with-icon, .comboboxWithIcon {
+    border: 1px solid #D8D8D8;
+    width: 260px;
+    overflow: hidden;
+    margin: 2px 0 2px 0;
+}
+
+.textbox-with-icon > .icon, .comboboxWithIcon > .icon {
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    border-right: 1px solid #d3d3d3;
+    float: left;
+    color: #6D6D72;
+    width: 34px; /* Fix it as not all icons has the same size */
+}
+
+.comboboxWithIcon > .z-combobox-readonly {
+    width: 202px;
+}
+
+.textbox-with-icon > input {
+    float: left;
+    overflow: hidden;
+    width: 224px;
+    line-height: 25px;
+    padding-left: 20px;
+}
+
+.forget-password-link {
+    color: #368AC0;
+    text-decoration: underline;
+}
+
+.comboboxWithIcon > .z-combobox {
+    line-height: 30px;
+}
+
+.square-btn {
+    height: 38px !important;
+    border: 0;
+    border-radius: 0;
+    background: #368AC0;
+    color: #fff;
+    text-transform: uppercase;
+    margin: 2px 0 2px 0;
+}
+
+.square-btn:hover, .square-btn:focus {
+    background: #368AC0;
+    color: #fff;
+}
+
+.login-btn {
+    width: 260px !important;
+}
+
+.footer {
+    padding: 5px 0 10px 0;
+}
+
+.version {
+    padding-bottom: 10px;
+    margin-top: 10px;
+    padding-right:5px;
+}
+
+.footer-icon {
+    position: absolute;
+    bottom: 40px;
+    left: 40px;
+}
+
+.login-error {
+    height: 19px;
+}
+
+.login-error > span {
+    color: #e74c3c;
+}
+
+.logo {
+    padding: 25px 0px;
+    width: 150px;
+}
+
+.logo img {
+    padding-bottom: 25px;
+}
+
+.logo-label > span {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.block-field {
+    text-align: left;
+}
+
+.block-field > div {
+    padding-bottom: 10px;
+}
+
+.block-field > div > span {
+    color: #5C5C5C;
+}
+
+.block-field > input {
+    width: 100%;
+}
+
+.block-field > .z-combobox {
+    width: 91% !important;
+}
+
+.block-field > .z-combobox > .z-combobox-input {
+    width: 100% !important;
+}
+
+.z-textbox {
+    min-height: 30px;
+    font-size: 14px;
+}
+
+.z-combobox-button {
+    border-left: none;
+    min-height: 30px;
+}
+
+.z-combobox-input {
+    min-height: 30px;
+}
+
+.z-button {
+    font-size: 14px;
+    text-shadow: none;
+}
+
+.tRight {
+    text-align: right;
+}
+
+
+/** Modal Windows UX Modification **/
+
+.z-messagebox-window {
+    background: #fff !important;
+    padding: 0px;
+}
+
+.z-messagebox-window .z-window-header {
+    font-size: 18px;
+    padding: 20px;
+}
+
+.z-messagebox-window .z-window-content {
+    padding: 0 !important;
+}
+
+.z-messagebox-window .z-separator {
+    display: none;
+}
+
+.z-messagebox-window .z-vbox, .z-window-modal .z-hbox, .z-window-modal table  {
+    width: 100% !important;
+}
+
+.z-messagebox-window .z-button {
+    display: inline-block;
+    width: 100% !important;
+    border: none;
+    background: #ffffff;
+    padding: 14px 28px;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+    border-top: 1px solid #9a9a9a;
+    border-radius: 0;
+    color: #368AC0;
+    font-weight: bold;
+    height: 50px !important;
+    margin-top: 30px;
+}
+
+.z-messagebox-window .z-window-content table table tr:not(:last-child) table  {
+    padding-left: 10px !important;
+}
+
+.z-messagebox-window .z-button:focus {
+    box-shadow: none;
+}
+
+.z-messagebox-window .z-button:hover {
+    background: #368AC0;
+    color: #fff;
+}

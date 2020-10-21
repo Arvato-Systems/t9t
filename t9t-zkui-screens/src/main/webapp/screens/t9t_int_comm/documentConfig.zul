@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="docConfig"?>
+
+<window28 id="docConfigWin">
+    <threesections28 gridId="docConfig">
+        <crud28 viewModel="@id('vm') @init('com.arvatosystems.t9t.viewmodel.DocConfigViewModel', vmId='docConfig')"
+                currentMode="@load(vm.currentMode)">
+            <tabbox id="taboxDetail" vflex="1">
+                <tabs>
+                    <tab28 id="docConfig"/>
+                    <tab28 id="emailSettings" />
+                </tabs>
+                <tabpanels vflex="1" id="tabpanelsDetail">
+                    <tabpanel vflex="1" id="docConfigTab.panel">
+                        <form28 id="docConfigCrud" aspect="2" numColumns="2">
+                            <rows>
+                                <cells228 id ="documentId"                   value ="@load(vm.data.documentId)                   @save(vm.data.documentId,before='commandSave')"
+                                          id2="mappedId"                     value2="@load(vm.data.mappedId)                     @save(vm.data.mappedId,before='commandSave')"/>
+                                <cells228 id ="emailBodyTemplateId"          value ="@load(vm.data.emailBodyTemplateId)          @save(vm.data.emailBodyTemplateId,before='commandSave')"
+                                          id2="alternateTemplateId"          value2="@load(vm.data.alternateTemplateId)          @save(vm.data.alternateTemplateId,before='commandSave')"/>
+                                <cells228 id= "description"                  value ="@load(vm.data.description)                  @save(vm.data.description,before='commandSave')"
+                                          id2="forwardToChannel"             value2="@load(vm.data.forwardToChannel)             @save(vm.data.forwardToChannel,before='commandSave')"/>
+                                <cells228 id ="forwardToAddress"             value ="@load(vm.data.forwardToAddress)             @save(vm.data.forwardToAddress,before='commandSave')"
+                                          id2="communicationFormat"          value2="@load(vm.data.communicationFormat)          @save(vm.data.communicationFormat,before='commandSave')"/>
+                                <cells228 id= "useCids"                      value ="@load(vm.data.useCids)                      @save(vm.data.useCids,before='commandSave')"
+                                          id2="emailConfigPerSelector"       value2="@load(vm.data.emailConfigPerSelector)       @save(vm.data.emailConfigPerSelector,before='commandSave')"/>
+                                <cells228 id ="followMappedId"               value ="@load(vm.data.followMappedId)               @save(vm.data.followMappedId,before='commandSave')"
+                                          id2="timeZone"                     value2="@load(vm.data.timeZone)                     @save(vm.data.timeZone,before='commandSave')"/>
+                            </rows>
+                        </form28>
+                    </tabpanel>
+                    <tabpanel vflex="1" id="emailSettingsTab.panel">
+                        <form28 id="docConfigEmailsettingsCrud" aspect="2" numColumns="2">
+                            <rows>
+                                <cells228 id= "emailSettings.emailSubject"   value ="@load(vm.data.emailSettings.emailSubject)   @save(vm.data.emailSettings.emailSubject,before='commandSave')"
+                                          id2="emailSettings.subjectType"    value2="@load(vm.data.emailSettings.subjectType)    @save(vm.data.emailSettings.subjectType,before='commandSave')"/>
+                                <cells228 id= "emailSettings.defaultFrom"    value ="@load(vm.data.emailSettings.defaultFrom)    @save(vm.data.emailSettings.defaultFrom,before='commandSave')"
+                                          id2="emailSettings.replaceFrom"    value2="@load(vm.data.emailSettings.replaceFrom)    @save(vm.data.emailSettings.replaceFrom,before='commandSave')"/>
+                                <cells228 id ="emailSettings.defaultReplyTo" value ="@load(vm.data.emailSettings.defaultReplyTo) @save(vm.data.emailSettings.defaultReplyTo,before='commandSave')"
+                                          id2="emailSettings.replaceReplyTo" value2="@load(vm.data.emailSettings.replaceReplyTo) @save(vm.data.emailSettings.replaceReplyTo,before='commandSave')"/>
+                                <cells228 id ="emailSettings.extraTo"        value ="@load(vm.data.emailSettings.extraTo)        @save(vm.data.emailSettings.extraTo,before='commandSave')"
+                                          id2="emailSettings.replaceTo"      value2="@load(vm.data.emailSettings.replaceTo)      @save(vm.data.emailSettings.replaceTo,before='commandSave')"/>
+                                <cells228 id ="emailSettings.extraCc"        value ="@load(vm.data.emailSettings.extraCc)        @save(vm.data.emailSettings.extraCc,before='commandSave')"
+                                          id2="emailSettings.replaceCc"      value2="@load(vm.data.emailSettings.replaceCc)      @save(vm.data.emailSettings.replaceCc,before='commandSave')"/>
+                                <cells228 id ="emailSettings.extraBcc"       value ="@load(vm.data.emailSettings.extraBcc)       @save(vm.data.emailSettings.extraBcc,before='commandSave')"
+                                          id2="emailSettings.replaceBcc"     value2="@load(vm.data.emailSettings.replaceBcc)     @save(vm.data.emailSettings.replaceBcc,before='commandSave')"/>
+                                <cells228 id ="emailSettings.storeEmail"     value ="@load(vm.data.emailSettings.storeEmail)     @save(vm.data.emailSettings.storeEmail,before='commandSave')"
+                                          id2="emailSettings.sendSpooled"    value2="@load(vm.data.emailSettings.sendSpooled)    @save(vm.data.emailSettings.sendSpooled,before='commandSave')"/>
+                            </rows>
+                        </form28>
+                    </tabpanel>
+                </tabpanels>
+            </tabbox>
+        </crud28>
+    </threesections28>
+</window28>

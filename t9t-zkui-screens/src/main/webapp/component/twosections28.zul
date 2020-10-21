@@ -1,0 +1,25 @@
+<!-- zul definition of the components used for a CRUD or SEARCH screen. -->
+<zk>
+    <borderlayout vflex="1">
+        <west size="250px" splittable="true" collapsible="true"
+            minsize="100" vflex="1">
+            <groupbox28 id="filterGroup" vflex="min">
+                <filter28 id="filters" />
+            </groupbox28>
+        </west>
+        <center>
+            <borderlayout sclass="inner-border">
+                <north splittable="true" collapsible="true" height="100%">
+                    <vlayout id="rightSection"  sclass="rightSection" vflex="true" hflex="1">
+                        <groupbox28 id="resultsGroup"
+                            sclass="resultsSection" vflex="true" hflex="1">
+                            <vlayout  vflex="true" hflex="1">
+                                <grid28 id="main" />
+                            </vlayout>
+                        </groupbox28>
+                    </vlayout>
+                </north>
+            </borderlayout>
+        </center>
+    </borderlayout>
+</zk>

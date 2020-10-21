@@ -1,0 +1,1204 @@
+/**
+ *          ***************************************************************
+ *          *                                                             *
+ *          *                           NOTICE                            *
+ *          *                                                             *
+ *          *   THIS SOFTWARE IS THE PROPERTY OF AND CONTAINS             *
+ *          *   CONFIDENTIAL INFORMATION OF INFOR AND/OR ITS AFFILIATES   *
+ *          *   OR SUBSIDIARIES AND SHALL NOT BE DISCLOSED WITHOUT PRIOR  *
+ *          *   WRITTEN PERMISSION. LICENSED CUSTOMERS MAY COPY AND       *
+ *          *   ADAPT THIS SOFTWARE FOR THEIR OWN USE IN ACCORDANCE WITH  *
+ *          *   THE TERMS OF THEIR SOFTWARE LICENSE AGREEMENT.            *
+ *          *   ALL OTHER RIGHTS RESERVED.                                *
+ *          *                                                             *
+ *          *   (c) COPYRIGHT 2018 INFOR.  ALL RIGHTS RESERVED.           *
+ *          *   THE WORD AND DESIGN MARKS SET FORTH HEREIN ARE            *
+ *          *   TRADEMARKS AND/OR REGISTERED TRADEMARKS OF INFOR          *
+ *          *   AND/OR ITS AFFILIATES AND SUBSIDIARIES. ALL RIGHTS        *
+ *          *   RESERVED.  ALL OTHER TRADEMARKS LISTED HEREIN ARE         *
+ *          *   THE PROPERTY OF THEIR RESPECTIVE OWNERS.                  *
+ *          *                                                             *
+ *          ***************************************************************
+ */
+@font-face { font-family: 'Helvetica Neue'; src: url('../fonts/HelveticaNeue-Regular.otf'); }
+
+@font-face {
+  font-family: 'Helvetica Neue';
+  src: url(../fonts/HelveticaNeue-Regular.otf);
+  font-weight: normal;
+  src: url(../fonts/HelveticaNeue-Bold.otf);
+  font-weight: bold;
+}
+
+body *:not([class*="z-icon-"]) {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 14px;
+    font: normal 14px tahoma, arial, helvetica, sans-serif;
+    -webkit-text-size-adjust: none;
+}
+
+
+.z-listgroup-inner {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    border-color: #cfcfcf -moz-use-text-color;
+    border-image: none;
+    border-style: none;
+    border-width: 0;
+    background: #fafafa repeat scroll 0 0;
+    overflow: hidden;
+    position: relative;
+}
+
+.z-listitem {
+    background: #FCFCFC none repeat scroll 0 0;
+}
+
+.z-listitem.z-listitem-selected.z-listitem-focus>.z-listcell {
+    background: #e3e3e3 repeat scroll 0 0;
+    border-color: #cfcfcf;
+    position: relative;
+}
+
+.z-listitem.z-listitem-selected.z-listitem-focus>.z-listcell>.z-listcell-content
+    {
+    color: #000000;
+}
+
+.z-listitem.z-listitem-selected.z-listitem-focus:hover>.z-listcell {
+    background: #e3e3e3 repeat scroll 0 0;
+    border-color: #cfcfcf;
+    position: relative;
+}
+
+.z-listitem.z-listitem-selected.z-listitem-focus:hover .z-listcell-content
+    {
+    color: #000000;
+}
+
+.z-listitem.z-listitem-selected>.z-listcell {
+    background: #e3e3e3 repeat scroll 0 0 padding-box;
+    position: relative;
+}
+
+.z-listitem.z-listitem-selected:hover>.z-listcell {
+    background: #d1d1d1 repeat scroll 0 0;
+    position: relative;
+}
+
+.z-listitem.z-listitem-selected:hover .z-listcell-content {
+    color: #000000;
+}
+
+.z-listitem:hover>.z-listcell>.z-listcell-content {
+    color: #000000;
+}
+
+.z-listitem-focus .z-listcell-content {
+    color: #000000;
+}
+
+.z-listitem-selected>.z-listcell>.z-listcell-content>.z-listitem-checkable .z-listitem-icon
+    {
+    color: #000000;
+    cursor: pointer;
+    display: block;
+    line-height: 14px;
+    padding-left: 0;
+}
+
+.z-window-header {
+    color: #000000;
+    cursor: default;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: bold;
+    line-height: 24px;
+    overflow: hidden;
+    padding: 0;
+}
+
+
+.z-window {
+    background: #fafafa none repeat scroll 0 0;
+    border: 1px solid #9c9c9c;
+    border-radius: 4px;
+    overflow: hidden;
+    padding: 4px;
+}
+
+.z-window-content {
+    background: #fafafa none repeat scroll 0 0;
+    overflow: hidden;
+
+}
+
+.z-listbox-body {
+    overflow: hidden;
+    position: relative;
+    background: #ffffff none repeat scroll 0 0;
+}
+
+.z-caption-content, .z-caption .z-label {
+    display: inline-block;
+    line-height: 24px;
+    padding: 0;
+    color: #000000;
+    font-weight: bold;
+}
+
+.z-listheader-content, .z-listcell-content, .z-listgroup-content,
+    .z-listgroupfoot-content, .z-listfooter-content {
+    color: #000000;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 24px;
+    overflow: hidden;
+    padding: 4px 5px 2px;
+}
+
+.z-listitem.z-listitem-selected>.z-listcell>.z-listcell-content {
+    color: #000000;
+}
+
+.z-listitem.z-listitem-selected.z-listitem-focus>.z-listcell {
+    background: #e3e3e3 repeat scroll 0 0 padding-box;
+    position: relative;
+}
+
+.z-listitem.z-listitem-selected.z-listitem-focus>.z-listcell>.z-listcell-content
+    {
+    color: #000000;
+}
+
+.z-tab-text {
+    color: #000000;
+    display: block;
+    font-style: normal;
+    line-height: 24px;
+    overflow: hidden;
+    padding: 4px 12px 2px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.z-listitem.z-listitem-selected.z-listitem-focus:hover>.z-listcell {
+    background: #e3e3e3 repeat scroll 0 0;
+    position: relative;
+}
+
+.z-listitem.z-listitem-selected.z-listitem-focus:hover .z-listcell-content
+    {
+    color: #000000;
+}
+
+.z-listitem-focus>.z-listcell {
+    background: #fafafa repeat scroll 0 0 padding-box;
+    position: relative;
+}
+
+.z-listitem-focus .z-listcell-content {
+    color: #000000;
+}
+
+.theme-bgcolor {
+    background:  #cccccc;
+}
+
+.z-center {
+    background: #FAFAFA;
+}
+
+/*deactive border*/
+.z-groupbox-3d>.z-groupbox-header {
+    background: rgba(0, 0, 0, 0)
+        linear-gradient(to bottom, #fefefe 0px, #eee 100%) repeat scroll 0 0;
+    font-weight: bold;
+    height: auto;
+    min-height: 32px;
+    padding: 3px 4px;
+}
+
+.z-groupbox-content {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    border-style: none;
+    border-width: 0;
+    display: block;
+    height: inherit;
+    overflow: hidden;
+    padding: 0px;
+}
+
+.z-groupbox>.z-groupbox-header {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    border-style: none none none;
+    border-width: 0px 0px 0;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: bold;
+    background: #fafafa;
+    height: 16px;
+    line-height: 26px;
+    padding-left: 10px;
+    width: 100%;
+}
+
+.theme-bgcolor.z-row {
+    position: relative;
+    top: -14px;
+}
+
+.t9t-user-setting {
+    position: relative;
+    top: 5px;
+}
+
+.z-grid-body .z-cell {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    line-height: 16px;
+}
+
+.theme-bgcolor > .z-grid-odd>.z-row-inner, .theme-bgcolor > .z-grid-odd>.z-cell {
+    background-color:  #cccccc;
+    background:  #cccccc;
+}
+
+.t9t-user-setting .z-row .z-grid-odd {
+    background-color:  #cccccc;
+    background:  #cccccc;
+}
+
+.theme-bgcolor .z-row .z-grid-odd {
+    background-color:  #cccccc;
+    background:  #cccccc;
+}
+
+.z-cell .theme-bgcolor {
+    background-color: #cccccc;
+}
+.z-combobox-input[readonly] {
+    background-color: #FFFFFF;
+}
+.z-textbox, .z-decimalbox, .z-intbox, .z-longbox, .z-doublebox {
+    background: #ffffff none repeat scroll 0 0;
+    border: 1px solid #cfcfcf;
+    border-radius: 3px;
+    color: #000000;
+    font-family: Arial,sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 14px;
+    margin: 0;
+    min-height: 24px;
+    padding: 4px 5px 3px;
+}
+.theme-bgcolor > .z-cell {
+    padding: 1px 2px;
+}
+.theme-bgcolor.z-row:hover > .z-cell , .t9t-user-setting.z-row:hover > .z-cell {
+    background: #cccccc;
+}
+.grid > .z-cell {
+    border-left: 0px;
+}
+.z-grid-body .z-cell {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    line-height: 14px;
+}
+tr.z-row td.z-row-inner, tr.z-row .z-cell {
+    line-height: 14px;
+}
+.z-row:hover > .z-row-inner, .z-row:hover > .z-cell {
+    background: #fafafa none repeat scroll 0 0 padding-box;
+}
+.languageCombobox {
+    height: 10px;
+    position:relative;
+    top:2px;
+    padding: 10px;
+}
+.z-tabpanel {
+    border-image: none;
+    border-style: none none none none;
+    border-width: 0 0 0 0;
+    padding: 0px;
+}
+div.z-listbox-body .z-listcell {
+    padding: 2px;
+}
+.z-listgroup-icon {
+    height: 100%;
+    min-height: 16px;
+    vertical-align: middle;
+    width: 14px;
+}
+div.z-listcell-content > img {
+    padding-left: 15px;
+}
+td.z-listgroup-inner div.z-listcell-content {
+    font-size: 14px;
+    font-weight: bold;
+    width: auto;
+}
+div.z-listcell-content {
+    line-height: 14px;
+    padding: 0 0;
+}
+.z-listbox-autopaging .z-listcell-content {
+    height: 15px;
+    overflow: hidden;
+}
+td.z-listcell .z-listcell-content {
+    font-family: arial,sans-serif;
+    font-size: 14px;
+    font-weight: normal;
+    padding-left: 8px;
+    width: auto;
+}
+.z-tabs-content {
+    border-style:hidden;
+}
+.z-grid{
+    border:hidden;
+}
+.z-groupbox-content{
+    margin-top:-14px;
+    border: 0;
+    padding-top: 20px;
+}
+.listBox-data.z-div{
+    margin-top:-8px;
+}
+.z-paging {
+    position: relative;
+    top: -3px;
+}
+.grid .z-row .z-grid-odd>.z-cell {
+    background: #cccccc
+}
+.z-button {
+    margin-left: 2px;
+    margin-right: 2px;
+}
+.form .grid, .form .z-grid, .form .z-grid-body {
+    border: none;
+    width: 100% !important;
+}
+.z-button-image{
+    width:18px;
+    height:18px;
+    position:relative;
+    top:-1px;
+}
+
+
+.zperms-content {
+    margin: 2px;
+    padding: 3px;
+    border-style: solid;
+    border-spacing: 2px;
+    border-radius: 4px;
+    border: 1px solid #a9a9a9;
+}
+
+/*  Change the combo box button image for dynamic combo boxes to have differences between the two types */
+.dropdown .z-icon-caret-down::before {
+    content: "*";
+}
+
+.z-notification-pointer ~ .z-notification-content {
+    border-radius: 5px;
+    display: table-cell;
+    height: 30px !important;
+    min-height: 30px !important;
+    padding: 5px 18px 5px 45px;
+    vertical-align: middle;
+    width: 125px;
+}
+
+.z-warn-bg {
+    background: #FFFFE0 none;
+}
+
+.z-color-red {
+    color: red !important;
+}
+
+.z-color-transparent {
+    color: transparent !important;
+}
+
+.z-row-style {
+    border: 0px !important;
+    background: #cccccc !important;
+    background-color: #cccccc !important;
+}
+
+.z-cell-style {
+    background: #cccccc !important;
+    background-color: #cccccc !important;
+}
+
+.z-grid .z-row-inner, .z-grid .z-cell {
+    background: #fafafa;
+}
+
+.z-panel-body > .z-panelchildren {
+    background: #fafafa;
+}
+
+tr.z-listgroup, div.z-listbox-body .z-listcell {
+    background: #fafafa;
+}
+
+.z-listitem td:last-child {
+    background: #fcfcfc;
+}
+
+/** Below are added after rebrand **/
+
+body {
+    padding: 0;
+}
+
+.container {
+    height: 100%;
+}
+
+.content {
+    height: 87%;
+}
+
+.z-window {
+    border-radius: 0;
+}
+
+.z-window-content {
+    padding: 0;
+}
+
+.header-background {
+    background: #2578A9;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+}
+
+.header-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.header-row-with-right-menu {
+    justify-content: flex-end;
+}
+
+.header-title {
+    color: #fff;
+    margin: 20px;
+    margin-right: auto;
+    font-size: 18px;
+}
+
+.header-logo {
+   margin: 5px;
+   margin-right: auto;
+}
+
+.header-title span {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.header-left-item {
+    margin-left: 10px;
+}
+
+.header-right-item {
+    align-self: center;
+    color: rgba(255, 255, 255, 0.7);
+    padding-left: 5px;
+    padding-right: 5px;
+    line-height: 60px;
+}
+
+.header-right-item-tenant {
+    background: #D8D8D8 !important;
+}
+
+.header-right-item:last-child {
+    margin-right: 10px;
+}
+
+.header-menu-text {
+    color: #fff;
+}
+
+.header-menu-icon {
+    font-size: 14px;
+}
+
+.header-nav {
+    height: 32px;
+}
+
+.header-nav>div>a, .no-decoration {
+    text-decoration: none;
+}
+
+.header-nav>div>a>span {
+    text-align: center;
+    width: 100%;
+    display: block;
+    line-height: 30px;
+    color: #fff;
+    transition: background-color 0.2s ease;
+}
+
+.header-nav>div:hover>a>span, .header-nav>.active>a>span {
+    border-bottom: 3px solid #fff;
+    transition: background-color 0.2s ease;
+}
+
+.header-nav>div>a>span>span {
+    padding-left: 10px;
+    padding-right: 10px;
+    white-space: nowrap;
+}
+
+.header-nav>div>div {
+    display: none;
+    overflow: hidden;
+    background-color: white;
+    width: 250px;
+    position: absolute;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px
+        rgba(0, 0, 0, 0.23);
+    z-index: 100;
+}
+
+.header-nav>div:hover>div {
+    display: block;
+}
+
+.header-nav>div>div>a {
+    display: block;
+    float: left;
+    padding: 8px 10px;
+    text-decoration: none;
+    background-color: #fff;
+    color: #000;
+    transition: background-color 0.2s ease;
+    width: 100%;
+    line-height: 20px;
+}
+
+.header-nav>div>div>a>span>span {
+    text-decoration: none;
+
+}
+
+.header-nav>div>div>a:hover {
+    background-color: #2578A9;
+    cursor: pointer;
+    color: #fff;
+}
+
+.header-nav-submenu {
+    min-width: 0 !important;
+    width: auto;
+    border: 0;
+
+}
+
+.header-nav-submenu > a {
+    background: none!important;
+    color: #fff;
+    border: 0;
+}
+
+.header-nav-submenu > a > span {
+    margin-top: 5px;
+}
+
+.header-nav-submenu > ul {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px
+        rgba(0, 0, 0, 0.23);
+    z-index: 100;
+    overflow-y: scroll;
+    top: 32px !important;
+    background: #212224;
+}
+
+.header-nav-submenu > ul > .z-navitem {
+    display: block;
+}
+
+.header-nav-submenu .z-navitem-content {
+    background: transparent !important;
+}
+
+.header-nav-submenu .z-navitem-content:hover > span {
+    color: #FFFFFF !important;
+}
+
+.z-navitem-selected .z-navitem-content {
+    background: #368AC0 !important;
+}
+
+.z-navitem-selected .z-navitem-content > span {
+    color: #FFFFFF !important;
+}
+
+.header-nav-submenu .z-navitem-content > span {
+    color: #ABAEB7;
+}
+
+.z-navitem-text {
+    line-height: 30px !important;
+    /* white-space: normal; */
+    padding-right: 10px;
+}
+
+.z-navbar-horizontal>ul ul {
+    left: auto;
+}
+
+.header-nav-submenu > .z-nav-content > img {
+    display: none;
+}
+
+.header-nav-submenu-2c ul{
+    -webkit-column-count: 2;
+    -moz-column-count: 2;
+    column-count: 2;
+}
+
+.header-nav-submenu-3c ul{
+    -webkit-column-count: 3;
+    -moz-column-count: 3;
+    column-count: 3;
+}
+
+.header-nav-submenu-4c ul{
+    -webkit-column-count: 4;
+    -moz-column-count: 4;
+    column-count: 4;
+}
+
+.header-nav-submenu-5c ul{
+    -webkit-column-count: 5;
+    -moz-column-count: 5;
+    column-count: 5;
+}
+
+.header-nav-submenu-2c ul li,
+.header-nav-submenu-3c ul li,
+.header-nav-submenu-4c ul li,
+.header-nav-submenu-5c ul li {
+    width: 300px;
+}
+
+.header-nav-subtitle {
+    /* text-align:center; */
+    /* line-height: 50px; */
+}
+
+.header-nav-subtitle .header-nav-subtitle-content {
+    text-decoration: underline;
+    color: #ABAEB7;
+    line-height:20px;
+    pointer-events: none;
+}
+
+.header-nav-subtitle .header-nav-subtitle-text {
+     font-size: 16px;
+     line-height: 40px;
+}
+
+.z-navbar-horizontal .z-nav-content:before, .z-navbar>ul ul .z-navitem-content {
+    background: #fff;
+}
+
+.z-navitem-content {
+    border: none;
+}
+
+.header-nav-submenu .z-navitem-image {
+    vertical-align: top;
+    margin-top: 5px;
+}
+
+.z-navbar .z-navitem-selected .z-navitem-content {
+    background: #2578A9;
+}
+
+.z-navbar .z-navitem-selected .z-navitem-content:hover {
+    background: #2578A9;
+}
+
+.right-nav > div:last-of-type > div {
+    right: 0;
+}
+
+.search-box {
+    background: #134D71;
+}
+
+.search-box > span {
+    padding: 5px;
+    background: #134D71;
+    margin-left: -1px;
+}
+
+.search-box > input {
+    background: #134D71;
+    border: none;
+    border-radius: 0;
+    color: #fff;
+}
+
+/* .header-nav > div:not(:first-of-type):not(:last-of-type) > div {
+  border-radius: 0 0 3px 3px;
+}
+
+.header-nav > div:first-of-type > div {
+  left: 0;
+  border-radius: 0 0 3px 0;
+}
+
+.header-nav > div:last-of-type > div {
+  right: 0;
+  border-radius: 0 0 3px 0;
+} */
+.no-scrollbar>ul::-webkit-scrollbar, .no-scrollbar>.z-grid-body::-webkit-scrollbar {
+  display: none;
+}
+
+.z-window-header {
+    height: 75px;
+    background: #133C59;
+    color: #fff;
+    padding: 20px;
+    font-size: 1.5em !important;
+}
+
+.z-button {
+    background: #BDBDBD;
+    color: #5C5C5C;
+    font-size: 14px !important;
+    font-weight: bold !important;
+    border-radius: 0;
+    text-shadow: none;
+}
+
+.z-button:hover {
+    background: #999999;
+}
+
+.z-button:focus {
+    background: #999999;
+    color: #5C5C5C;
+    font-size: 14px;
+}
+
+
+.z-button[disabled] {
+    background: #BDBDBD;
+    color: #5C5C5C;
+    font-weight: bold !important;
+    opacity: 0.5;
+}
+
+.z-window-noborder {
+    padding: 0;
+    border: 0;
+}
+
+.toggleButton {
+    padding-left: 10px;
+    text-align: left;
+    display: block;
+    color: #368AC0;
+}
+
+.filterCell {
+    background: #d8d8d8 !important;
+}
+
+.filterCell *{
+    background: transparent;
+}
+
+.z-listheader, .z-listbox-header {
+    background: #d8d8d8 !important;
+    border-right: 0;
+}
+
+.z-listheader-content {
+    line-height: 30px !important;
+    color: #292929 !important;
+}
+
+.z-listbox-body .z-listcell {
+    background: #f0f0f0;
+}
+
+.z-listitem-selected .z-listcell {
+    background: rgba(200,233,244,0.7) !important;
+}
+
+.z-paging span {
+    color: #5C5C5C;
+}
+
+.z-paging input {
+    color: #5C5C5C;
+    font-weight: bold;
+}
+
+.z-groupbox-header {
+    height: 25px;
+}
+
+.detailsSection .z-groupbox-header {
+    height: 15px;
+}
+
+.rightSection {
+    background: #fafafa;
+}
+
+.z-groupbox {
+    padding-top: 10px;
+    background: #fafafa;
+}
+
+.z-groupbox-title-content {
+    padding-top: 16px !important;
+    font-size: 14px !important;
+    font-weight: bold !important;
+}
+
+.z-groupbox-title {
+    background: transparent !important;
+}
+
+.z-menupopup {
+    background: #fff;
+}
+.z-menupopup-shadow {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px
+        rgba(0, 0, 0, 0.23);
+}
+
+.z-menupopup {
+    padding: 0;
+}
+
+.z-menupopup .z-menu-image {
+    min-width:0;
+    min-height:0;
+}
+
+.z-menupopup .z-menupopup-separator {
+    display: none;
+}
+
+.z-menupopup .z-menuitem-content, .z-menupopup .z-menu-content {
+    line-height: 30px;
+}
+
+.z-menu-hover> .z-menu-content, .z-menuitem-hover> .z-menuitem-content:hover, .z-menuitem-content:hover {
+    background: #d8d8d8;
+}
+
+.z-menu-content, .z-menuitem-content {
+     border: 0;
+     webkit-border-radius: 0;
+     -moz-border-radius: 0;
+     -o-border-radius: 0;
+     -ms-border-radius: 0;
+     border-radius: 0;
+     padding-right: 30px;
+}
+
+.z-menupopup .z-menuitem-text, .z-menupopup .z-menu-text {
+     padding: 5px 0px 5px 0;
+     text-shadow: none;
+}
+
+.z-menupopup .z-menuseparator {
+    min-height: 0;
+}
+
+.z-menupopup .z-menu-image, .z-menupopup .z-menuitem-image {
+    min-width: 0;
+    min-height: 0;
+}
+
+.z-menu-content, .z-menu-icon {
+    padding-right: 10px;
+}
+
+.z-tab-text {
+    line-height: 30px !important;
+    color: #5C5C5C;
+}
+
+.z-tab-selected .z-tab-text {
+    color: #2A83BD !important;
+    font-weight: normal;
+}
+
+.z-tab-selected {
+    border-bottom: 4px solid #2A83BD !important;
+}
+
+.z-tab {
+    background: #FAFAFA;
+    border:none;
+    border-radius:0;
+    margin-right:8px;
+    box-shadow: none !important;
+}
+
+.z-tab:hover {
+    background: #FFFFFF;
+    border-bottom: 4px solid #000;
+}
+
+.z-tab:hover .z-tab-text {
+    color: #1A1A1A;
+}
+
+.z-tabbox-icon {
+    height: 30px;
+    background: transparent;
+    border: none;
+}
+
+.z-tabbox-icon i {
+    line-height: 42px;
+}
+
+.no-padding-top .z-groupbox-content {
+    padding-top: 0 !important;
+}
+
+.header-nav * {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+.grid:not(.no-padding) .z-grid-body>table {
+    table-layout: auto !important;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+
+.z-window-noborder>.z-window-content:not(.no-padding) {
+     padding: 15px;
+}
+
+.content > .z-panel > .z-panel-body > .z-panelchildren > .z-window > .z-window-content {
+    padding: 0 !important;
+}
+
+.z-nav:not(.z-nav-selected) .z-nav-content:hover {
+    border-bottom: 4px solid #000;
+}
+
+.z-drop-disallow, .z-drop-allow {
+    background: #FAFAFA !important;
+}
+
+.z-drop-icon, .z-drop-text {
+    color: #1A1A1A !important;
+}
+
+/** Modal Windows UX Modification **/
+.z-messagebox-window, .z-window-move-ghost, .z-window-modal, .z-window-overlapped {
+    background: #fff !important;
+    padding: 0px;
+}
+
+.z-messagebox-window .z-window-header, .z-window-move-ghost .z-window-header, .z-window-modal .z-window-header, .z-window-overlapped .z-window-header {
+    font-size: 16px !important;
+    font-weight: bold;
+    padding: 20px;
+    background: none;
+    color: #292929;
+}
+
+.z-messagebox-window .z-window-content, .z-window-move-ghost dl, .z-window-modal .z-window-content, .z-window-overlapped .z-window-content {
+    padding: 0 !important;
+    border: 0;
+    background: none;
+}
+
+.z-messagebox-window .z-separator {
+    display: none;
+}
+
+.z-messagebox-window .z-vbox, .z-window-modal .z-hbox, .z-window-modal table, .z-messagebox-buttons>.z-hlayout-inner  {
+    width: 100% !important;
+    margin: 0;
+}
+
+.z-messagebox-buttons {
+    display: flex;
+}
+
+.z-messagebox-window .z-button {
+    border-top: 1px solid #9a9a9a;
+}
+
+.z-messagebox-window .z-button, .modalButtons .z-button {
+    display: inline-block;
+    width: 100% !important;
+    border: none;
+    background: #ffffff;
+    padding: 14px 28px;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+    border-radius: 0;
+    color: #5C5C5C;
+    font-weight: bold;
+    height: 50px !important;
+    margin-top: 30px;
+    margin-left: 0;
+    margin-right: 0;
+    border-right: 1px solid #BDBDBD;
+    border-top: 1px solid #BDBDBD;
+    border-bottom: 1px solid #BDBDBD;
+}
+
+.z-button.submit{
+    color: #368AC0;
+}
+
+.z-button:disabled {
+    opacity: 0.5;
+}
+
+.z-messagebox-window .z-window-content table table tr:not(:last-child) table {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+}
+
+.z-messagebox-window .z-window-content > .z-hbox, .z-window-overlapped .z-window-content .contentText, .z-window-modal .contentWrapper {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.z-messagebox-window .z-button:focus, , .modalButtons .z-button:hover {
+    box-shadow: none;
+}
+
+.z-messagebox-window .z-button:hover, .modalButtons .z-button:hover {
+    color: #383838;
+}
+
+.z-messagebox-window .submit:hover, .modalButtons .submit:hover {
+    color: #1D5F8A;
+}
+
+.z-messagebox-window .z-window-icon, .z-window-move-ghost .z-window-icon, .z-window-modal .z-window-icon {
+    background: none;
+    border: none;
+}
+
+.z-window-highlighted {
+    border-radius: 0 !important;
+}
+
+.z-messagebox-window {
+    -webkit-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.2) !important;
+    -moz-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.2) !important;
+    box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.2) !important;
+}
+
+.z-window-modal .z-cell {
+    background: none;
+}
+
+.z-window-modal .z-row:hover .z-cell {
+    background: none;
+}
+
+.z-window-modal .z-groupbox, .z-window-modal .z-groupbox-header {
+    background: none;
+}
+
+.modalButtons, .modalButtons .z-hlayout-inner {
+    width: 100%;
+    display: flex;
+    padding-right: 0 !important;
+}
+
+.z-window-modal input {
+    color: #999999;
+}
+
+.z-window-modal input:focus {
+    color: #368AC0;
+}
+
+.z-window-modal input:hover {
+    color: #1A1A1A;
+}
+
+.z-window-modal input:disabled {
+    color: #BDBDBD;
+}
+
+.z-window-modal .z-cell {
+    display: block;
+    height: auto !important;
+}
+
+.z-window-modal textarea {
+    width: 100%;
+}
+
+.embeddedTenantSelection > .z-window-content {
+    width: 246px;
+    margin: auto;
+}
+
+.button28 {
+    height: 22px;
+    min-width: 110px;
+}
+
+.previewXLSContent td {
+    border: 1px solid #D4D4D4;
+}
+
+.modal-buttons-container {
+    margin: 10px 15px 10px;
+}

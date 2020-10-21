@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xel-method prefix="l" name="translate" class="com.arvatosystems.t9t.tfi.web.ZulUtils" signature="String translate(String, String)"?>
+
+
+<window  title="Session Timeout" border="normal"
+    width="450px" position="center,center"  mode="overlapped">
+        <style src="/css/screen.css" />
+        <style src="/css/body.css" />
+    <vbox>
+        <div sclass="contentText">${l:translate('logout','timeout')}</div>
+        <div sclass="modalButtons"><button label=" ${l:translate('login','title')}" sclass="submit" href="/login.zul"></button></div>
+    </vbox>
+</window>

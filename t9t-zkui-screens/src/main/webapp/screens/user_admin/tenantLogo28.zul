@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="tenantLogo"?>
+
+<window28 id="tenantLogoWin">
+    <threesections28 gridId="tenantLogo" vflex3="2">
+        <crud28
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.components.crud.ModuleConfigVM', vmId='tenantLogo')"
+            currentMode="@load(vm.currentMode)">
+            <form28 id="authModuleCfgCrud" aspect="2" numColumns="2">
+                <rows>
+                    <cells28 id ="tenantRef"  value ="@load(vm.tenantRef)       @save(vm.tenantRef,before='commandSave')" />
+                    <ckeditor28 id ="logo" colspan1="3"  rows1="10"     value ="@load(vm.data.logo)            @save(vm.data.logo,before='commandSave')"/>
+                    <cells28  id ="z" colspan1="3" rows1="4"        value ="@load(vm.data.z)                               @save(vm.data.z,before='commandSave')"/>
+                </rows>
+            </form28>
+        </crud28>
+    </threesections28>
+</window28>

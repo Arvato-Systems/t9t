@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="componentInfo28"?>
+
+<window28 id="componentInfoWin">
+    <twosections28 pageSize="50" gridId="componentInfo"/>
+</window28>

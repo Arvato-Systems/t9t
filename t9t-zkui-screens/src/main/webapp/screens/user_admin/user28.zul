@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="user28"?>
+
+<window28 id="userWin">
+    <threesections28 gridId="user">
+        <crud28 cachesDropdown="userId"
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.viewmodel.UserVM', vmId='user')"
+            currentMode="@load(vm.currentMode)">
+            <tabbox id="taboxDetail" vflex="1">
+                <tabs>
+                    <tab28 id="generalTab"/>
+                    <tab28 id="detailTab" />
+                </tabs>
+                <tabpanels vflex="1" id="tabpanelsDetail">
+                    <tabpanel vflex="1" id="user.general.panel">
+                        <form28 id="userCrud" aspect="2" numColumns="2">
+                            <rows>
+                                <cells228 id ="userId"                          value ="@load(vm.data.userId)      @save(vm.data.userId,   before='commandSave')"
+                                          id2="name"                            value2="@load(vm.data.name)        @save(vm.data.name,     before='commandSave')"/>
+                                <cells228 id ="tenantRef"                       value ="@bind(vm.tenantRef)"
+                                          id2="isActive"                        value2="@load(vm.data.isActive)    @save(vm.data.isActive,before='commandSave')"/>
+                                <cells228 id= "roleRef"                         value ="@load(vm.data.roleRef)                         @save(vm.data.roleRef,                        before='commandSave')"
+                                          id2="permissions.resourceIsWildcard"  value2="@load(vm.data.permissions.resourceIsWildcard)  @save(vm.data.permissions.resourceIsWildcard, before='commandSave')"/>
+                                <cells28  id= "permissions.resourceRestriction" value ="@load(vm.data.permissions.resourceRestriction) @save(vm.data.permissions.resourceRestriction,before='commandSave')" colspan1="3"/>
+                                <cells228 id= "permissions.validFrom"           value ="@load(vm.data.permissions.validFrom)           @save(vm.data.permissions.validFrom,          before='commandSave')"
+                                          id2="permissions.validTo"             value2="@load(vm.data.permissions.validTo)             @save(vm.data.permissions.validTo,            before='commandSave')"/>
+                                <cells228 id= "permissions.minPermissions"      value ="@load(vm.data.permissions.minPermissions)      @save(vm.data.permissions.minPermissions,     before='commandSave')"
+                                          id2="permissions.maxPermissions"      value2="@load(vm.data.permissions.maxPermissions)      @save(vm.data.permissions.maxPermissions,     before='commandSave')"/>
+                                <cells228 id= "externalAuth"                    value ="@load(vm.data.externalAuth)                    @save(vm.data.externalAuth,                   before='commandSave')"
+                                          id2="supervisorRef"                   value2="@load(vm.data.supervisorRef)                   @save(vm.data.supervisorRef,                  before='commandSave')"/>
+                            </rows>
+                        </form28>
+                    </tabpanel>
+                    <tabpanel vflex="1" id="user.detail.panel">
+                        <form28 id="userCrud2" aspect="2" numColumns="2">
+                            <rows>
+                                <cells228 id= "permissions.logLevel"            value ="@load(vm.data.permissions.logLevel)            @save(vm.data.permissions.logLevel,           before='commandSave')"
+                                          id2="permissions.logLevelErrors"      value2="@load(vm.data.permissions.logLevelErrors)      @save(vm.data.permissions.logLevelErrors,     before='commandSave')"/>
+                                <cells228 id ="emailAddress"                    value ="@load(vm.data.emailAddress)                    @save(vm.data.emailAddress,    before='commandSave')"
+                                          id2="isTechnical"                     value2="@load(vm.data.isTechnical)                     @save(vm.data.isTechnical,     before='commandSave')"/>
+                                <cells228 id ="phoneNo"                         value ="@load(vm.data.phoneNo)                         @save(vm.data.phoneNo,         before='commandSave')"
+                                          id2="mobilePhoneNo"                   value2="@load(vm.data.mobilePhoneNo)                   @save(vm.data.mobilePhoneNo,   before='commandSave')"/>
+                                <cells228 id ="office"                          value ="@load(vm.data.office)                          @save(vm.data.office,          before='commandSave')"
+                                          id2="department"                      value2="@load(vm.data.department)                      @save(vm.data.department,      before='commandSave')"/>
+                                <cells228 id ="orgUnit"                         value ="@load(vm.data.orgUnit)                         @save(vm.data.orgUnit,          before='commandSave')"
+                                          id2="salutation"                      value2="@load(vm.data.salutation)                      @save(vm.data.salutation,      before='commandSave')"/>
+                                <cells28  id ="jobTitle"                        value ="@load(vm.data.jobTitle)                        @save(vm.data.jobTitle,        before='commandSave')"/>
+                                <cells28  id ="z" colspan1="3" rows1="4"        value ="@load(vm.data.z)                               @save(vm.data.z,before='commandSave')"/>
+                                <row>
+                                    <cell>
+                                       <button28 id="resetPw" onClick="@command('resetPassword')" />
+                                    </cell>
+                                </row>
+                            </rows>
+                        </form28>
+                    </tabpanel>
+                </tabpanels>
+            </tabbox>
+        </crud28>
+    </threesections28>
+</window28>

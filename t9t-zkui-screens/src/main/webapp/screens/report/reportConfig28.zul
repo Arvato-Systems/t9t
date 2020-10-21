@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="reportConfig28"?>
+
+<window28 id="reportConfigWin">
+    <threesections28 gridId="reportConfig">
+        <crud28 cachesDropdown="reportConfigId"
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.viewmodel.ReportConfigVM', vmId='reportConfig')"
+            currentMode="@load(vm.currentMode)">
+            <form28 id="reportConfigCrud" aspect="2" numColumns="2">
+                <rows>
+                    <cells228 id ="tenantRef"                       value ="@bind(vm.tenantRef)"
+                              id2="isActive"                        value2="@load(vm.data.isActive)                        @save(vm.data.isActive,                 before='commandSave')"/>
+                    <cells228 id ="reportConfigId"                  value ="@load(vm.data.reportConfigId)                  @save(vm.data.reportConfigId,           before='commandSave')"
+                              id2="name"                            value2="@load(vm.data.name)                            @save(vm.data.name,                     before='commandSave')"/>
+                    <cells28  id ="description" colspan1="3"        value ="@load(vm.data.description)                     @save(vm.data.description,              before='commandSave')"/>
+                    <cells228 id= "classificationType"              value ="@load(vm.data.classificationType)              @save(vm.data.classificationType,       before='commandSave')"
+                              id2="intervalRequired"                value2="@load(vm.data.intervalRequired)                @save(vm.data.intervalRequired,         before='commandSave')"/>
+                    <cells28  id= "jasperReportTemplateName"        value ="@load(vm.data.jasperReportTemplateName)        @save(vm.data.jasperReportTemplateName, before='commandSave')" colspan1="3"/>
+                    <cells28  id ="z" colspan1="3" rows1="4"        value ="@load(vm.data.z)                               @save(vm.data.z,                        before='commandSave')"/>
+                    <row>
+                        <cell>
+                            <button28 upload="true" id="uploadReport" onUpload="@command('uploadReport')" resourceId="button.uploadJrxml"/>
+                        </cell>
+                    </row>
+                </rows>
+            </form28>
+        </crud28>
+    </threesections28>
+</window28>

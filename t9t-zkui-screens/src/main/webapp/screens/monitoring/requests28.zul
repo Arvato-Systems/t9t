@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="requests28"?>
+
+<window28 id="requestWin">
+    <twosections28 pageSize="50" gridId="requests"
+       gridContext="showMessage,toSession,,rerun,alwaysRerun,,showRq,showRqAsJson,,showResp,showRespAsJson,,editRerun"/>
+</window28>

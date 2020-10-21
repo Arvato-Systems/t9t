@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="subscriberConfig28"?>
+
+<window28 id="reportMailingWin">
+    <threesections28 gridId="reportMailing">
+        <crud28 viewModel="@id('vm') @init('com.arvatosystems.t9t.components.crud.CrudSurrogateKeyVM', vmId='reportMailing')"
+                currentMode="@load(vm.currentMode)">
+            <form28 id="reportMailingCrud" aspect="2" numColumns="2">
+                <rows>
+                    <cells228 id="mailingGroupId"     value ="@load(vm.data.mailingGroupId) @save(vm.data.mailingGroupId, before='commandSave')"
+                              id2="docConfigId"       value2 ="@load(vm.data.docConfigId) @save(vm.data.docConfigId, before='commandSave')"/>
+                    <cells28  id="mailingList"  value ="@load(vm.data.mailingList) @save(vm.data.mailingList, before='commandSave')"/>
+                </rows>
+            </form28>
+        </crud28>
+    </threesections28>
+</window28>

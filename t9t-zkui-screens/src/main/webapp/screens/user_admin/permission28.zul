@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="permission28"?>
+
+<window28 id="roleToPermissionWin">
+    <threesections28 gridId="roleToPermission">
+        <crud28
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.viewmodel.RoleToPermissionVM', vmId='roleToPermission')"
+            currentMode="@load(vm.currentMode)">
+            <form28 id="roleToPermissionCrud" aspect="2" numColumns="2">
+                <rows>
+                    <cells28  id ="tenantRef"               value ="@load(vm.tenantRef)          @save(vm.tenantRef,before='commandSave')"/>
+                    <cells228 id= "roleRef"                 value ="@load(vm.data.roleRef)       @save(vm.data.roleRef,before='commandSave')"
+                              id2="permissionId"            value2="@load(vm.data.permissionId)  @save(vm.data.permissionId,before='commandSave')"/>
+                    <cells28  id= "permissionSet"           value ="@load(vm.data.permissionSet) @save(vm.data.permissionSet,before='commandSave')" colspan1="3" />
+                </rows>
+            </form28>
+        </crud28>
+    </threesections28>
+</window28>

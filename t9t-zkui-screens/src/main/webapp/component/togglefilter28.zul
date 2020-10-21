@@ -1,0 +1,32 @@
+<!-- zul definition of a toggleable filter (inherits from tabbox). -->
+<zk>
+    <tabs>
+        <tab id="stdTab"  closable="false" visible="false" selected="true" />
+        <tab id="solrTab" closable="false" visible="false" />
+    </tabs>
+    <tabpanels>
+        <tabpanel id="stdPanel">
+            <!-- <filter28 id="filters" showToggle="true"/>   created by separate  -->
+        </tabpanel>
+        <tabpanel id="solrPanel">
+            <grid class="grid" vflex="1">
+                <columns>
+                    <column label="" hflex="3" />
+                    <column label="" hflex="2" />
+                </columns>
+                <rows>
+                    <row>
+                        <cell>
+                            <textbox id="solrText" maxlength="256" hflex="1" />
+                        </cell>
+                        <cell align="left">
+                            <button28 id="searchButton2"/>
+                            <button28 id="resetButton2"/>
+                            <a id="toggleButton2" sclass="toggleButton"/>
+                        </cell>
+                    </row>
+                </rows>
+            </grid>
+        </tabpanel>
+    </tabpanels>
+</zk>

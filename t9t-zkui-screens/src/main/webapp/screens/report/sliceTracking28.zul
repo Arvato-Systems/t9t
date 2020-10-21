@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="sliceTracking28"?>
+
+<window28 id="sliceTracking28Win">
+    <threesections28 gridId="sliceTracking" gridContext="showSink">
+        <crud28 viewModel="@id('vm') @init('com.arvatosystems.t9t.components.crud.CrudSurrogateKeyVM', vmId='sliceTracking')"
+                currentMode="@load(vm.currentMode)">
+            <form28 id="sliceTrackingCrud" aspect="2" >
+                <rows>
+                    <cells28 id="dataSinkId"         value ="@load(vm.data.dataSinkId)         @save(vm.data.dataSinkId,before='commandSave')"/>
+                    <cells28 id="id"                 value ="@load(vm.data.id)                 @save(vm.data.id,before='commandSave')"/>
+                    <cells28 id="gap"                value ="@load(vm.data.gap)                @save(vm.data.gap,before='commandSave')"/>
+                    <cells28 id="exportedDataBefore" value ="@load(vm.data.exportedDataBefore) @save(vm.data.exportedDataBefore,before='commandSave')"/>
+                </rows>
+            </form28>
+        </crud28>
+    </threesections28>
+</window28>

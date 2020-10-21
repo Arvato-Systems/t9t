@@ -195,14 +195,14 @@ abstract class AbstractCrudAnyKey28RequestHandler<
 
     /**
      * Maps technical exception which occurred during entity crud operation to
-     * fortytwo business exception. If mapping is not possible then original
+     * t9t business exception. If mapping is not possible then original
      * technical exception is thrown further.
      *
      * @param technicalException
      *            caught exception that can be thrown during entity crud
      *            operation
      * @throws T9tException
-     *             fortytwo specific exception.
+     *             t9t specific exception.
      */
     protected void handleCrudTechnicalException(PersistenceException technicalException) {
         if (crudTechnicalExceptionMappers != null) {

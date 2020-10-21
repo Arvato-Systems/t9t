@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="apikey28"?>
+
+<window28 id="apikeyWin">
+    <threesections28 gridId="apikey">
+        <crud28
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.viewmodel.ApiKeyVM', vmId='apikey')"
+            currentMode="@load(vm.currentMode)">
+            <form28 id="apikeyCrud" aspect="2" numColumns="2">
+                <rows>
+                    <cells228 id ="apiKey"                          value ="@load(vm.data.apiKey)      @save(vm.data.apiKey,before='commandSave')"
+                              id2="name"                            value2="@load(vm.data.name)        @save(vm.data.name,before='commandSave')"/>
+                    <cells228 id= "userRef"                         value ="@load(vm.data.userRef)     @save(vm.data.userRef,before='commandSave')"
+                              id2="isActive"                        value2="@load(vm.data.isActive)    @save(vm.data.isActive,before='commandSave')"/>
+                    <cells228 id= "roleRef"                         value ="@load(vm.data.roleRef)                         @save(vm.data.roleRef,                        before='commandSave')"
+                              id2="permissions.resourceIsWildcard"  value2="@load(vm.data.permissions.resourceIsWildcard)  @save(vm.data.permissions.resourceIsWildcard, before='commandSave')"/>
+                    <cells28  id= "permissions.resourceRestriction" value ="@load(vm.data.permissions.resourceRestriction) @save(vm.data.permissions.resourceRestriction,before='commandSave')" colspan1="3"/>
+                    <cells228 id= "permissions.logLevel"            value ="@load(vm.data.permissions.logLevel)            @save(vm.data.permissions.logLevel,           before='commandSave')"
+                              id2="permissions.logLevelErrors"      value2="@load(vm.data.permissions.logLevelErrors)      @save(vm.data.permissions.logLevelErrors,     before='commandSave')"/>
+                    <cells228 id= "permissions.validFrom"           value ="@load(vm.data.permissions.validFrom)           @save(vm.data.permissions.validFrom,          before='commandSave')"
+                              id2="permissions.validTo"             value2="@load(vm.data.permissions.validTo)             @save(vm.data.permissions.validTo,            before='commandSave')"/>
+                    <cells228 id= "permissions.minPermissions"      value ="@load(vm.data.permissions.minPermissions)      @save(vm.data.permissions.minPermissions,     before='commandSave')"
+                              id2="permissions.maxPermissions"      value2="@load(vm.data.permissions.maxPermissions)      @save(vm.data.permissions.maxPermissions,     before='commandSave')"/>
+                    <cells28  id ="z" colspan1="3" rows1="4"        value ="@load(vm.data.z)                               @save(vm.data.z,before='commandSave')"/>
+                </rows>
+            </form28>
+        </crud28>
+    </threesections28>
+</window28>

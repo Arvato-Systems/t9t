@@ -1,0 +1,16 @@
+<!-- zul definition of the components used for a display grid.
+     this is a composite component, used in CRUD screens and search screens, as well as detail grids.
+     It offers a pagination functionality and an export button. -->
+<vlayout vflex="1" hflex="1" zclass="listbox-external-paging">
+    <!-- the listbox itself -->
+    <listbox id="lb" width="100%" autopaging="false" mold="default" paginal="${paging}"  vflex="true"/>
+
+
+    <!-- the custom paging and export bar -->
+    <hlayout hflex="1" class="paging-external">
+        <paging id="paging" hflex="1" detailed="true" pageSize="25"/>
+        <image id="info" src="img/questionMark.png"/>
+        <button28 id="exportButton" />
+        <!-- <div width="8px"/>    align export button with search button -->
+    </hlayout>
+</vlayout>

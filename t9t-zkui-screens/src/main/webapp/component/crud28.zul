@@ -1,0 +1,11 @@
+<zk>
+    <hlayout id="crudButtons">
+        <button28 id="saveButton" />
+        <button28 id="deleteButton"/>
+        <button28 id="newButton"/>
+        <button28 id="copyButton"/>
+        <button28 id="activateButton"/>
+        <button28 id="deactivateButton"/>
+        <label hflex="1"/>
+    </hlayout>
+</zk>

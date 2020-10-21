@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="userLocation28"?>
+
+<window28 id="voiceResponseWin">
+    <threesections28 gridId="voiceResponse">
+        <crud28
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.components.crud.CrudSurrogateKeyVM', vmId='voiceResponse')"
+            currentMode="@load(vm.currentMode)">
+            <form28 id="voiceResponseCrud" aspect="2"
+                numColumns="2">
+                <rows>
+                    <cells228 id="applicationRef"     value="@load(vm.data.applicationRef)   @save(vm.data.applicationRef,before='commandSave')"
+                              id2="languageCode"      value2="@load(vm.data.languageCode)    @save(vm.data.languageCode,before='commandSave')"   />
+                    <cells228 id="key"                value="@load(vm.data.key)              @save(vm.data.key,before='commandSave')"
+                              id2="isTemplate"        value2="@load(vm.data.isTemplate)      @save(vm.data.isTemplate,before='commandSave')" />
+                    <cells28  id="isSsml"             value="@load(vm.data.isSsml)           @save(vm.data.isSsml,before='commandSave')" />
+                    <cells28  id="text"               value="@load(vm.data.text)             @save(vm.data.text,before='commandSave')" colspan1="3" rows1="6"/>
+                </rows>
+            </form28>
+        </crud28>
+    </threesections28>
+</window28>

@@ -1,0 +1,32 @@
+<window width="350px"   border="none" >
+    <chart id="dial" title="Dial Plot" width="330px" height="330px" type="dial" paneColor="#DFE8F6">
+     <zscript><![CDATA[
+    import org.zkoss.zul.DialModel;
+    import org.zkoss.zul.DialModelScale;
+    import com.arvatosystems.t9t.tfi.web.SessionCounter;
+
+    DialModel dialmodel = new DialModel();
+    dialmodel.setFrameFgColor("#808080");
+    dialmodel.setFrameBgAlpha(255);
+    dialmodel.setFrameBgColor("#FFFFFF");
+    dialmodel.setFrameBgColor1("#000000");
+    dialmodel.setFrameBgColor2("#000000");
+    dialmodel.setCapRadius(0.1);
+    dialmodel.setGradientDirection("vertical");
+
+    DialModelScale scale = dialmodel.newScale(0.0, 100.0, -120.0, -300.0, 10.0,4);//scale's configuration data
+    //scale.setText("Online User");
+    scale.newRange(0, 10, "#0000FF", 0.61, 0.603); //blue
+    scale.newRange(10, 50, "#00FF00", 0.61, 0.603);  //green
+    scale.newRange(50, 70, "#FFFF00", 0.61, 0.603);  //yellow
+    scale.newRange(70, 100, "#FF0000", 0.61, 0.603);  //red
+
+    scale.setValue(SessionCounter.getActiveSessionNumber());
+    scale.setTickColor("#FFFFFF");
+    scale.setNeedleType("pin");
+    scale.setNeedleColor("#FF0000");
+    dial.setModel(dialmodel);
+]]></zscript>
+    </chart>
+
+</window>

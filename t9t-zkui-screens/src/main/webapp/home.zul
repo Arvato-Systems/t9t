@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="IGNORE"?>
+<?xel-method prefix="l" name="translate" class="com.arvatosystems.t9t.tfi.web.ZulUtils" signature="String translate(String, String)"?>
+<?xel-method prefix="l" name="translateArgs" class="com.arvatosystems.t9t.tfi.web.ZulUtils" signature="String translate(String, String, String)"?>
+<?xel-method prefix="l"  name="i18nLabel"  class="com.arvatosystems.t9t.tfi.web.ZulUtils" signature="String i18nLabel(String)"?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+
+<zk xmlns:w="client" xmlns:n="native">
+    <!-- Load the script -->
+    <script type="text/javascript" src="/js/form_effect/watermarkinput.js" />
+    <script type="text/javascript" src="/js/zk/override.js" />
+   <script>
+    $('*').contents().each(function() {
+        if(this.nodeType === Node.COMMENT_NODE) {
+            $(this).remove();
+        }
+    });
+
+    zk.afterLoad('zul.mesh', function () {
+        var _xColumnMenuWidget = {};
+        zk.override(zul.mesh.ColumnMenuWidget.prototype, _xColumnMenuWidget, {
+            _onColVisi: function (evt) {
+                _xColumnMenuWidget._onColVisi.apply(this, arguments); <!-- call the original method -->
+                var item = evt.currentTarget,
+                col = zk.Widget.$(item._col);
+                <!-- col.smartUpdate('visible', item.isChecked()); -->
+                zAu.send(new zk.Event(col, 'onColCheck', item.isChecked()));
+            }
+        });
+    });
+        <!--Temporary solution to the default screen not properly rendered. TODO: fixme -->
+    zk.afterMount(function() { setTimeout(function () {$(window).resize();}, 500) });
+    </script>
+    <window id="mainHome" height="100%" apply="org.zkoss.bind.BindComposer" ctrlKeys="@load(com.arvatosystems.t9t.tfi.viewmodel.ApplicationViewModel.CTRL_KEYS)" onCtrlKey="@command('ctrlKeyClick',item=event)"
+        viewModel="@id('vm') @init('com.arvatosystems.t9t.tfi.viewmodel.ApplicationViewModel')" contentSclass="no-padding"  onSessionExpirationAlert="@command('showSessionExpirationWarning')" onLogout="@command('logout')">
+     <style src="@load(vm.getTenantResource('/css/screen.css'))" />
+        <style id="reverse" />
+            <div sclass="container">
+             <div sclass="header-background">
+                 <div sclass="header">
+                     <div sclass="header-row">
+                         <div sclass="header-title">
+                             <label sclass="app-cur-page-title"></label>
+                         </div>
+                         <div sclass="header-logo">
+                             <a href="https://it.arvato.com/de.html">
+                                    <image src="/img/logo/company_logo.png" height="55px"/>
+                             </a>
+                         </div>
+                         <div sclass="header-right-item">
+                             <div sclass="search-box">
+                                 <span sclass="icon z-icon-search"></span>
+                                 <textbox id="search" onOK="@command('search', self_value=self.value)"
+                                     placeholder="Search Order" />
+                             </div>
+                         </div>
+                         <div sclass="header-right-item">
+                             <div sclass="header-nav right-nav">
+                                 <div>
+                                     <a>
+                                         <span
+                                             sclass="icon z-icon-ellipsis-h"
+                                             style="padding-left: 10px; padding-right: 10px;">
+                                         </span>
+                                     </a>
+                                     <div xmlns:ca="client/attribute">
+
+                                         <a ca:title="${l:translate('tenant','tenantIdTooltipSelection')}" onClick="@command('changeTenant')" sclass="header-right-item-tenant">
+                                             ${vm.selectedTenantId}
+                                         </a>
+                                         <div style="width: 100%;text-align: center;">
+                                                 <combobox
+                                                     id="languageSelectionCombo"
+                                                     apply="org.zkoss.bind.BindComposer"
+                                                     viewModel="@id('vm') @init('com.arvatosystems.t9t.tfi.viewmodel.LoginViewModel' , isInitialLogin=false)"
+                                                     class="languageCombobox"
+                                                     model="@bind(vm.languageListModel)"
+                                                     selectedItem="@bind(vm.selected)"
+                                                     inplace="false"
+                                                     tooltiptext="${l:translate('login','languageSelection')}"
+                                                     rows="1" mold="default"
+                                                     height="100%"
+                                                     readonly="true">
+                                                     <template
+                                                         name="model"
+                                                         var="language">
+                                                         <comboitem
+                                                             value="@bind(language)"
+                                                             label="@bind(language.name)" />
+                                                     </template>
+                                                     <attribute name="onChange"><![CDATA[
+                                              String localeValue = ((com.arvatosystems.t9t.tfi.model.bean.ComboBoxItem) self.getSelectedItem().getValue()).getValue();
+                                              Locale prefer_locale = null;
+                                              if(localeValue!=null && localeValue.length()==5){
+                                                  prefer_locale = new Locale(localeValue.substring(0,2),localeValue.substring(3,5));
+                                              }else{
+                                                  prefer_locale = new Locale(localeValue);
+                                              }
+                                              session.setAttribute(org.zkoss.web.Attributes.PREFERRED_LOCALE, prefer_locale);
+                                              Binder binder = org.zkoss.bind.impl.BinderUtil.getBinder(languageSelectionCombo);
+                                              binder.sendCommand("switchLanguage", null);
+                                              execution.sendRedirect("");
+                                        ]]></attribute>
+                                    </combobox>
+                                    </div>
+                                    <a onClick="@command('changePwd')">Change Password</a>
+                                         <a apply="com.arvatosystems.t9t.tfi.viewmodel.LogoutViewModel" id="logoff" ca:title="@load(vm.getUserId())"><label value="${l:translate('logout','title')}"
+                                           style="cursor:hand;cursor:pointer;font-style: italic;" /></a>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                    <div sclass="header-row header-nav header-left-item" >
+                    <navbar id="navbar" orient="horizontal" collapsed="false">
+                     <forEach begin="0" end="${(vm.naviGroupingViewModel.groupCount) - 1}" if="${vm.naviGroupingViewModel.groupCount > 0}" var="index" >
+                        <!--  <div sclass="@load(vm.naviGroupingViewModel.isGroupOpened(index) eq true ?'active':'')">
+                             <a>
+                                 <span>${vm.naviGroupingViewModel.getGroup(index)}</span>
+                             </a> -->
+                          <nav label="${vm.naviGroupingViewModel.getGroup(index)}" sclass="header-nav-submenu no-scrollbar ${vm.getSubMenuClass(vm.naviGroupingViewModel.getChildCount(index))}" xmlns:ca="client/attribute">
+                                 <forEach begin="0" end="${(vm.naviGroupingViewModel.getChildCount(index)) - 1}" var="childIndex" if="${vm.naviGroupingViewModel.getChildCount(index) > 0}">
+                                 <choose>
+                                     <when
+                                         test="@load(vm.subtitleShouldDisplay(index, childIndex))">
+                                         <navitem
+                                             label="${vm.naviGroupingViewModel.getChild(index, childIndex).subcategory}"
+                                             disabled="true"
+                                             zclass="header-nav-subtitle">
+                                         </navitem>
+                                     </when>
+                                 </choose>
+                                 <choose>
+                                            <when test="@load(vm.naviGroupingViewModel.getChild(index, childIndex).menuItemVisible)">
+                                              <navitem label="${vm.naviGroupingViewModel.getChild(index, childIndex).name}"
+                                                  image="${vm.naviGroupingViewModel.getChild(index, childIndex).img}"
+                                                  onClick="@command('setNaviSelection',navi=vm.naviGroupingViewModel.getChild(index, childIndex))"
+                                                  ca:onClick="collapseHeaderMenu();"
+                                                  ca:data-navi="${vm.naviGroupingViewModel.getChild(index, childIndex).naviId}"
+                                                  selected="@load(vm.selected eq vm.naviGroupingViewModel.getChild(index, childIndex))"/>
+                                          </when>
+                                     </choose>
+                                 </forEach>
+                           </nav>
+                         <!-- </div> -->
+                         </forEach>
+                         </navbar>
+                     </div>
+                 </div>
+            </div>
+
+            <div sclass="content" xmlns:ca="client/attribute" vflex="true">
+                <panel id="panel" width="100%" height="100%" >
+                    <panelchildren>
+                        <div style="padding-left:10px; padding-top:10px;">
+                            <div class="t9t-info">
+                                <label value="${l:translate('main','message')}" />
+                                <label value="@load(vm.getUserName())" />
+                                <label>,</label>
+                                <separator height="1px" />
+                                <label
+                                    visible="@load(not(vm.whenLastLoggedIn eq null))"
+                                    value="${l:translate('main','lastsuccess')}" />
+                                <label
+                                    value="@load(vm.whenLastLoggedIn)" />
+                            </div>
+                            <div
+                                visible="@load(not(vm.numberOfIncorrentAttempts eq null or vm.numberOfIncorrentAttempts eq '0'))">
+                                <separator height="1px" />
+                                <label value="${l:translate('main','invalid')}" style="color:red" />
+                                <label value="@load(vm.numberOfIncorrentAttempts)" style="color:red" />
+                            </div>
+                            <div visible="@load(not(vm.pwdExpiresInDays eq null) and vm.pwdExpiresInDays lt 10)">
+                                <separator height="1px" />
+                                <label value="@load(l:translateArgs('main','pwdExpires',vm.pwdExpiresInDays))"
+                                    style="color:red" />
+                            </div>
+                        </div>
+                    </panelchildren>
+                </panel>
+            </div>
+            </div>
+    </window>
+</zk>

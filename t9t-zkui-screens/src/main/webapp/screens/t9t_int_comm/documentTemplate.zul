@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="docTemplate"?>
+
+<window28 id="docTemplateWin">
+    <threesections28 gridId="docTemplate">
+        <crud28
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.components.crud.CrudSurrogateKeyVM', vmId='docTemplate')"
+            currentMode="@load(vm.currentMode)">
+            <form28 id="docEmailCfgCrud" aspect="2" numColumns="2">
+                <rows>
+                    <cells228 id ="documentId"            value ="@load(vm.data.documentId)      @save(vm.data.documentId,before='commandSave')"
+                              id2="entityId"              value2="@load(vm.data.entityId)        @save(vm.data.entityId,before='commandSave')" />
+                    <cells228 id ="countryCode"           value ="@load(vm.data.countryCode)     @save(vm.data.countryCode,before='commandSave')"
+                              id2="languageCode"          value2="@load(vm.data.languageCode)    @save(vm.data.languageCode,before='commandSave')" />
+                    <cells228 id ="currencyCode"          value ="@load(vm.data.currencyCode)    @save(vm.data.currencyCode,before='commandSave')"
+                              id2="prio"                  value2="@load(vm.data.prio)            @save(vm.data.prio,before='commandSave')" />
+                    <cells28  id ="escapeToRaw"           value ="@load(vm.data.escapeToRaw)     @save(vm.data.escapeToRaw,before='commandSave')"/>
+                    <cells228 id ="name"                  value ="@load(vm.data.name)            @save(vm.data.name,before='commandSave')"
+                              id2="mediaType"             value2="@load(vm.data.mediaType)       @save(vm.data.mediaType,before='commandSave')" />
+                    <cells28  id="template"               value ="@load(vm.data.template)        @save(vm.data.template,before='commandSave')" colspan1="3" rows1="10" />
+                </rows>
+            </form28>
+        </crud28>
+    </threesections28>
+</window28>

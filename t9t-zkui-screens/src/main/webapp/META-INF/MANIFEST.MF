@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Specification-Title: t9t
+Specification-Version: 1.0
+Specification-Vendor:
+Implementation-Title:
+Implementation-URL: https://it.arvato.com/en/industries/retail-cpg.html
+Implementation-Version: 1.0
+Implementation-Vendor:

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="asyncQueueCfg28"?>
+
+<window28 id="asyncQueueCfgWin">
+    <threesections28 gridId="asyncQueueCfg">
+        <crud28
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.components.crud.CrudSurrogateKeyVM', vmId='asyncQueueCfg')"
+            currentMode="@load(vm.currentMode)">
+            <form28 id="asyncQueueCfgCrud" aspect="2" numColumns="2">
+                <rows>
+                     <cells228 id ="tenantRef"               value ="@load(vm.tenantRef) @save(vm.tenantRef,before='commandSave')"
+                               id2="isActive"                value2="@bind(vm.data.isActive)"/>
+                     <cells228 id ="asyncQueueId"            value ="@load(vm.data.asyncQueueId)        @save(vm.data.asyncQueueId,before='commandSave')"
+                               id2="description"             value2="@load(vm.data.description)         @save(vm.data.description,before='commandSave')"/>
+                     <cells228 id ="defaultSerializerQualifier" value ="@load(vm.data.defaultSerializerQualifier) @save(vm.data.defaultSerializerQualifier,before='commandSave')"
+                               id2="senderQualifier"         value2="@load(vm.data.senderQualifier)     @save(vm.data.senderQualifier,before='commandSave')"/>
+                     <cells228 id ="maxMessageAtStartup"     value ="@load(vm.data.maxMessageAtStartup) @save(vm.data.maxMessageAtStartup,before='commandSave')"
+                               id2="timeoutIdleGreen"        value2="@load(vm.data.timeoutIdleGreen)    @save(vm.data.timeoutIdleGreen,before='commandSave')"/>
+                     <cells228 id ="timeoutIdleRed"          value ="@load(vm.data.timeoutIdleRed)      @save(vm.data.timeoutIdleRed,before='commandSave')"
+                               id2="timeoutExternal"         value2="@load(vm.data.timeoutExternal)     @save(vm.data.timeoutExternal,before='commandSave')"/>
+                     <cells228 id ="waitAfterExtError"       value ="@load(vm.data.waitAfterExtError)   @save(vm.data.waitAfterExtError,before='commandSave')"
+                               id2="waitAfterDbErrors"       value2="@load(vm.data.waitAfterDbErrors)   @save(vm.data.waitAfterDbErrors,before='commandSave')"/>
+                     <cells228 id ="maxAgeInSeconds"         value ="@load(vm.data.maxAgeInSeconds)     @save(vm.data.maxAgeInSeconds,before='commandSave')"
+                               id2="purgeAfterSeconds"       value2="@load(vm.data.purgeAfterSeconds)   @save(vm.data.purgeAfterSeconds,before='commandSave')"/>
+                     <cells28  id ="z" colspan1="3" rows1="4" value ="@load(vm.data.z) @save(vm.data.z,before='commandSave')"/>
+                 </rows>
+            </form28>
+        </crud28>
+    </threesections28>
+</window28>

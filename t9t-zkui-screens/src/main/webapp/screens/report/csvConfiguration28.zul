@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="csvConfiguration28"?>
+
+<window28 id="csvConfigurationWin">
+    <threesections28 gridId="csvConfiguration">
+        <crud28 cachesDropdown="csvConfigurationId"
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.components.crud.CrudSurrogateKeyVM', vmId='csvConfiguration')"
+            currentMode="@load(vm.currentMode)">
+            <tabbox id="taboxDetail" vflex="1">
+                <tabs>
+                    <tab28 id="mainTab"/>
+                    <tab28 id="datetimeTab" />
+                    <tab28 id="delimsTab" />
+                </tabs>
+                <tabpanels vflex="1" id="tabpanelsDetail">
+                    <tabpanel vflex="1" id="csvConfiguration.main.panel">
+                        <form28 id="csvConfigurationConfigCrudMain" aspect="1" numColumns="2">
+                            <rows>
+                                <cells228 id ="tenantRef"               value ="@load(vm.tenantRef) @save(vm.tenantRef,before='commandSave')"
+                                          id2="isActive"                value2="@bind(vm.data.isActive)"/>
+                                <cells228 id ="csvConfigurationId"      value ="@load(vm.data.csvConfigurationId) @save(vm.data.csvConfigurationId,before='commandSave')"
+                                          id2="description"             value2="@bind(vm.data.description)"/>
+                                <cells228 id ="timeZone"                value ="@bind(vm.data.timeZone)"
+                                          id2="languageCode"            value2="@bind(vm.data.languageCode)"/>
+
+                                <cells228 id ="separator"               value ="@bind(vm.data.separator)"
+                                          id2="ctrlReplacement"         value2="@bind(vm.data.ctrlReplacement)"/>
+                                <cells228 id ="quote"                   value ="@bind(vm.data.quote)"
+                                          id2="quoteReplacement"        value2="@bind(vm.data.quoteReplacement)"/>
+                            </rows>
+                        </form28>
+                    </tabpanel>
+                    <tabpanel vflex="1" id="csvConfiguration.datetime.panel">
+                        <form28 id="csvConfigurationConfigCrudDateTime" aspect="1" numColumns="2">
+                            <rows>
+                                <cells228 id ="booleanTrue"             value ="@bind(vm.data.booleanTrue)"
+                                          id2="booleanFalse"            value2="@bind(vm.data.booleanFalse)"/>
+                                <cells228 id ="dayStyle"                value ="@load(vm.data.dayStyle) @save(vm.data.dayStyle,before='commandSave')"
+                                          id2="timeStyle"               value2 ="@load(vm.data.timeStyle) @save(vm.data.timeStyle,before='commandSave')"/>
+                                <cells228 id ="quoteDates"              value ="@load(vm.data.quoteDates) @save(vm.data.quoteDates,before='commandSave')"
+                                          id2="customDayFormat"         value2="@bind(vm.data.customDayFormat)"/>
+                                <cells228 id ="customTimeFormat"        value ="@bind(vm.data.customTimeFormat)"
+                                          id2="customTimeWithMsFormat"  value2="@bind(vm.data.customTimeWithMsFormat)"/>
+                                <cells228 id ="customTsFormat"          value ="@bind(vm.data.customTsFormat)"
+                                          id2="customTsWithMsFormat"    value2="@bind(vm.data.customTsWithMsFormat)"/>
+
+                            </rows>
+                        </form28>
+                    </tabpanel>
+                    <tabpanel vflex="1" id="csvConfiguration.delims.panel">
+                        <form28 id="csvConfigurationConfigCrudDelims" aspect="1" numColumns="2">
+                            <rows>
+                                <cells228 id ="zeroPadNumbers"          value ="@bind(vm.data.zeroPadNumbers)"
+                                          id2="rightPadNumbers"         value2="@bind(vm.data.rightPadNumbers)"/>
+                                <cells228 id ="useGrouping"             value ="@bind(vm.data.useGrouping)"
+                                          id2="removePoint"             value2="@bind(vm.data.removePoint)"/>
+
+                                <cells228 id ="objectStart"                 value ="@bind(vm.data.objectStart)"
+                                          id2="objectEnd"                value2="@bind(vm.data.objectEnd)"/>
+                                <cells228 id ="arrayStart"               value ="@bind(vm.data.arrayStart)"
+                                          id2="arrayEnd"                 value2="@bind(vm.data.arrayEnd)"/>
+                                <cells228 id ="mapStart"                 value ="@bind(vm.data.mapStart)"
+                                          id2="mapEnd"                   value2="@bind(vm.data.mapEnd)"/>
+                            </rows>
+                        </form28>
+                    </tabpanel>
+                </tabpanels>
+            </tabbox>
+        </crud28>
+    </threesections28>
+</window28>

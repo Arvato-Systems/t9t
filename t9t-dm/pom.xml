@@ -737,7 +737,31 @@
                 <version>${project.version}</version>
                 <classifier>sql</classifier>
             </dependency>
-        </dependencies>
+
+			<!-- Dependencies for the ZK UI projects -->
+            <dependency>
+                <groupId>com.arvato-systems.t9t</groupId>
+                <artifactId>t9t-zkui-ce</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.arvato-systems.t9t</groupId>
+                <artifactId>t9t-zkui-ee</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.arvato-systems.t9t</groupId>
+                <artifactId>t9t-zkui-screens</artifactId>
+                <version>${project.version}</version>
+                <type>war</type>
+            </dependency>
+            <dependency>
+                <groupId>com.arvato-systems.t9t</groupId>
+                <artifactId>t9t-zkui-war</artifactId>
+                <version>${project.version}</version>
+                <type>war</type>
+            </dependency>
+		</dependencies>
     </dependencyManagement>
 
 </project>

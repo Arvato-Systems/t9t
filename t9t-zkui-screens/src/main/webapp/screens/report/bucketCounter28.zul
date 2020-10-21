@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="bucketCounter28"?>
+
+<window28 id="bucketCounterWin">
+    <threesections28 gridId="bucketCounter">
+        <crud28 cachesDropdown="bucketId"
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.components.crud.CrudSurrogateKeyVM', vmId='bucketCounter')"
+            currentMode="@load(vm.currentMode)">
+            <form28 id="bucketCounterCrud" aspect="2" numColumns="2">
+                <rows>
+                    <cells228 id ="qualifier"                       value ="@bind(vm.data.qualifier)                       @save(vm.data.qualifier,                before='commandSave')"
+                              id2="currentVal"                      value2="@load(vm.data.currentVal)                      @save(vm.data.currentVal,               before='commandSave')"/>
+                    <cells28  id ="maxVal"                          value ="@load(vm.data.maxVal)                          @save(vm.data.maxVal,                   before='commandSave')"/>
+                </rows>
+            </form28>
+        </crud28>
+    </threesections28>
+</window28>

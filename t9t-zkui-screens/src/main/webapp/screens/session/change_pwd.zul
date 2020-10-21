@@ -1,0 +1,20 @@
+<window28 id="changepwd" vflex="min"
+    viewModel="@id('vm') @init('com.arvatosystems.t9t.tfi.viewmodel.ChangePwdViewModel28')">
+    <groupbox28>
+        <form28 id="changePwdForm" viewModelId="changePwd"
+            numColumns="2">
+            <rows>
+                <cells28 id="oldPassword" type1="password"
+                    value="@load(vm.data.oldPassword) @save(vm.data.oldPassword ,before='saveData')" />
+                <cells28 id="newPassword" type1="password"
+                    value="@load(vm.data.newPassword) @save(vm.data.newPassword , before='saveData')" />
+                <cells28 id="retypePassword" type1="password"
+                    value="@load(vm.data.retypePassword) @save(vm.data.retypePassword ,before='saveData')" />
+            </rows>
+        </form28>
+    </groupbox28>
+    <hlayout>
+            <button28 id="saveButton" onClick="@command('saveData')"></button28>
+            <button28 id="resetButton" onClick="@command('reset')"></button28>
+    </hlayout>
+</window28>

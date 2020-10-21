@@ -1,0 +1,5 @@
+<!-- zul definition of the components used for a bandbox popup. -->
+<vbox hflex="1" vflex="1">
+    <filter28 id="filters" hflex="1" vflex="min"/>
+    <grid28   id="grid" vflex="1"/>
+</vbox>

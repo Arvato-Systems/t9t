@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="listenerConfig28"?>
+
+<window28 id="listenerConfigWin">
+    <threesections28 gridId="listenerConfig">
+        <crud28 viewModel="@id('vm') @init('com.arvatosystems.t9t.components.crud.CrudSurrogateKeyVM', vmId='listenerConfig')"
+                currentMode="@load(vm.currentMode)">
+            <form28 id="listenerConfigCrud" aspect="2" numColumns="2">
+                <rows>
+                    <cells228 id ="classification"     value ="@load(vm.data.classification)     @save(vm.data.classification,before='commandSave')"
+                              id2="isActive"           value2="@bind(vm.data.isActive)"/>
+                    <cells28  id ="description"        value ="@load(vm.data.description)        @save(vm.data.description,before='commandSave')" colspan1="3"/>
+                    <cells228 id ="issueCreatedEvents" value ="@load(vm.data.issueCreatedEvents) @save(vm.data.issueCreatedEvents,before='commandSave')"
+                              id2="creationBuckets"    value2="@load(vm.data.creationBuckets)    @save(vm.data.creationBuckets,before='commandSave')"/>
+                    <cells228 id ="issueDeletedEvents" value ="@load(vm.data.issueDeletedEvents) @save(vm.data.issueDeletedEvents,before='commandSave')"
+                              id2="deletionBuckets"    value2="@load(vm.data.deletionBuckets)    @save(vm.data.deletionBuckets,before='commandSave')"/>
+                    <cells228 id ="issueUpdatedEvents" value ="@load(vm.data.issueUpdatedEvents) @save(vm.data.issueUpdatedEvents,before='commandSave')"
+                              id2="updateBuckets"      value2="@load(vm.data.updateBuckets)      @save(vm.data.updateBuckets,before='commandSave')"/>
+                    <cells228 id ="issueSecondEvents"  value ="@load(vm.data.issueSecondEvents)  @save(vm.data.issueSecondEvents,before='commandSave')"
+                              id2="secondBuckets"      value2="@load(vm.data.secondBuckets)      @save(vm.data.secondBuckets,before='commandSave')"/>
+                    <cells228 id ="issueThirdEvents"   value ="@load(vm.data.issueThirdEvents)   @save(vm.data.issueThirdEvents,before='commandSave')"
+                              id2="thirdBuckets"       value2="@load(vm.data.thirdBuckets)       @save(vm.data.thirdBuckets,before='commandSave')"/>
+                </rows>
+            </form28>
+        </crud28>
+    </threesections28>
+</window28>
