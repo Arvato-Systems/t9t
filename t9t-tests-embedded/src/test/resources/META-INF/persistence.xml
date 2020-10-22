@@ -80,6 +80,8 @@
         <class>com.arvatosystems.t9t.io.jpa.entities.AsyncMessageEntity</class>
         <class>com.arvatosystems.t9t.io.jpa.entities.AsyncQueueEntity</class>
         <class>com.arvatosystems.t9t.msglog.jpa.entities.MessageEntity</class>
+        <class>com.arvatosystems.t9t.plugins.jpa.entities.LoadedPluginEntity</class>
+        <class>com.arvatosystems.t9t.plugins.jpa.entities.PluginLogEntity</class>
         <class>com.arvatosystems.t9t.rep.jpa.entities.ReportConfigEntity</class>
         <class>com.arvatosystems.t9t.rep.jpa.entities.ReportParamsEntity</class>
         <class>com.arvatosystems.t9t.rep.jpa.entities.ReportMailingEntity</class>

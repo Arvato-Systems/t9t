@@ -180,7 +180,8 @@ public class T9tException extends ApplicationException {
     // Cross module call
     public static final int REF_RESOLVER_WRONG_RESPONSE_TYPE = OFFSET + 350;
 
-
+    // plugin issues
+    public static final int NO_PLUGIN_AVAILABLE         = OFFSET + 360;
 
     public static final int NOT_AUTHENTICATED           = OFFSET + 401;
     public static final int NOT_AUTHORIZED              = OFFSET + 403;
@@ -425,6 +426,9 @@ public class T9tException extends ApplicationException {
 
             // IO errors
             codeToDescription.put(REF_RESOLVER_WRONG_RESPONSE_TYPE, "Unexpected service response type.");
+
+            // Plugin errors
+            codeToDescription.put(NO_PLUGIN_AVAILABLE, "Plugin not available.");
 
             // output session specific error descriptions
 

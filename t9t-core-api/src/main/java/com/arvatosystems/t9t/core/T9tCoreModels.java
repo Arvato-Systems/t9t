@@ -44,6 +44,9 @@ import com.arvatosystems.t9t.event.request.ListenerConfigCrudRequest;
 import com.arvatosystems.t9t.event.request.ListenerConfigSearchRequest;
 import com.arvatosystems.t9t.event.request.SubscriberConfigCrudRequest;
 import com.arvatosystems.t9t.event.request.SubscriberConfigSearchRequest;
+import com.arvatosystems.t9t.plugins.LoadedPluginDTO;
+import com.arvatosystems.t9t.plugins.request.LoadedPluginCrudRequest;
+import com.arvatosystems.t9t.plugins.request.LoadedPluginSearchRequest;
 
 import de.jpaw.bonaparte.pojos.api.NoTracking;
 
@@ -93,6 +96,11 @@ public class T9tCoreModels implements IViewModelContainer {
         NoTracking.BClass.INSTANCE,
         ComponentInfoSearchRequest.BClass.INSTANCE,
         null);
+    public static final CrudViewModel<LoadedPluginDTO, FullTrackingWithVersion> PLUGINS_VIEW_MODEL = new CrudViewModel<LoadedPluginDTO, FullTrackingWithVersion>(
+        LoadedPluginDTO.BClass.INSTANCE,
+        FullTrackingWithVersion.BClass.INSTANCE,
+        LoadedPluginSearchRequest.BClass.INSTANCE,
+        LoadedPluginCrudRequest.BClass.INSTANCE);
     static {
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("statistics",       STATISTICS_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("componentInfo",    COMPONENT_INFO_VIEW_MODEL);
@@ -103,5 +111,6 @@ public class T9tCoreModels implements IViewModelContainer {
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("listenerConfig",   LISTENER_CONFIG_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("bucketCounter",    BUCKET_COUNTER_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("bucketEntry",      BUCKET_ENTRY_VIEW_MODEL);
+        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("plugins",          PLUGINS_VIEW_MODEL);
     }
 }

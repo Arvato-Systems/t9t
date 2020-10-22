@@ -13,30 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.core;
+package com.arvatosystems.t9t.plugins.services;
 
-import java.util.Arrays;
 import java.util.List;
 
-import com.arvatosystems.t9t.base.ILeanGridConfigContainer;
+import com.arvatosystems.t9t.plugins.PluginInfo;
+import com.arvatosystems.t9t.plugins.PluginMethodInfo;
 
-public class T9tCoreLeanGridConfig implements ILeanGridConfigContainer {
+/**
+ * Defines the API a plugin has to provide.
+ **/
+public interface Plugin {
+    /** Starts the plugin (instantiates implementations). */
+    void startup();
 
-    private static String [] GRID_CONFIGS = {
-        "statistics",
-        "processStatus",
-        "componentInfo",
-        "subscriberConfig",
-        "listenerConfig",
-        "sliceTracking",
-        "cannedRequest",
-        "bucketCounter",
-        "bucketEntry",
-        "plugins"
-    };
+    /** Performs a cleanup, before the plugin is unloaded. */
+    void shutdown();
 
-    @Override
-    public List<String> getResourceNames() {
-        return Arrays.asList(GRID_CONFIGS);
-    }
+    /** Retrieves information about the plugin. */
+    PluginInfo getInfo();
+
+    /** get the list of implemented methods. Never returns null. */
+    List<PluginMethodInfo> getMethods();
 }

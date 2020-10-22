@@ -13,30 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.core;
+import t9t.setups.*
+import t9t.base.entities.*
+import t9t.plugins.*
 
-import java.util.Arrays;
-import java.util.List;
+package (com.arvatosystems) t9t.plugins.jpa.entities owner fortytwo prefix p28 {
+    fields private;
 
-import com.arvatosystems.t9t.base.ILeanGridConfigContainer;
+    entity LoadedPluginEntity category cfg is LoadedPluginDTO inheritance tablePerClass {
+        tenantClass InternalTenantRef42
+        pk (objectRef)
+        index unique (tenantRef, pluginId)
+    }
 
-public class T9tCoreLeanGridConfig implements ILeanGridConfigContainer {
-
-    private static String [] GRID_CONFIGS = {
-        "statistics",
-        "processStatus",
-        "componentInfo",
-        "subscriberConfig",
-        "listenerConfig",
-        "sliceTracking",
-        "cannedRequest",
-        "bucketCounter",
-        "bucketEntry",
-        "plugins"
-    };
-
-    @Override
-    public List<String> getResourceNames() {
-        return Arrays.asList(GRID_CONFIGS);
+    entity PluginLogEntity category datwo is PluginLogDTO inheritance tablePerClass {
+        tenantClass InternalTenantRef42
+        pk (objectRef)
     }
 }

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="plugins28"?>
+
+<window28 id="pluginsWin">
+    <threesections28 gridId="plugins">
+        <crud28 cachesDropdown="pluginId"
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.viewmodel.PluginsVM', vmId='plugins')"
+            currentMode="@load(vm.currentMode)">
+            <form28 id="pluginsCrud" aspect="2" numColumns="2">
+                <rows>
+                    <cells228 id ="isActive"                        value ="@load(vm.data.isActive)                        @save(vm.data.isActive,                       before='commandSave')"
+                              id2="priority"                        value2="@load(vm.data.priority)                        @save(vm.data.priority,                       before='commandSave')"/>
+                    <cells228 id= "pluginId"                        value ="@load(vm.data.pluginId)                        @save(vm.data.pluginId,                       before='commandSave')"
+                              id2="pluginVersion"                   value2="@load(vm.data.pluginVersion)                   @save(vm.data.pluginVersion,                  before='commandSave')"/>
+                    <cells28  id="description"                      value ="@load(vm.data.description)                     @save(vm.data.description,                    before='commandSave')"/>
+                    <row>
+                        <button28 upload="true" id="uploadPlugin" onUpload="@command('uploadPlugin')" resourceId="button.uploadPlugin" />
+                    </row>
+                </rows>
+            </form28>
+        </crud28>
+    </threesections28>
+</window28>

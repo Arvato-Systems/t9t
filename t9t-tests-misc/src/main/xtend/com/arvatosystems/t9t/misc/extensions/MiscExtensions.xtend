@@ -16,6 +16,7 @@
 package com.arvatosystems.t9t.misc.extensions
 
 import com.arvatosystems.t9t.base.ITestConnection
+import com.arvatosystems.t9t.base.api.RequestParameters
 import com.arvatosystems.t9t.base.crud.CrudModuleCfgResponse
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion
@@ -51,6 +52,9 @@ import com.arvatosystems.t9t.io.request.AsyncChannelCrudRequest
 import com.arvatosystems.t9t.io.request.AsyncQueueCrudRequest
 import com.arvatosystems.t9t.io.request.CsvConfigurationCrudRequest
 import com.arvatosystems.t9t.io.request.DataSinkCrudRequest
+import com.arvatosystems.t9t.plugins.LoadedPluginDTO
+import com.arvatosystems.t9t.plugins.LoadedPluginKey
+import com.arvatosystems.t9t.plugins.request.LoadedPluginCrudRequest
 import com.arvatosystems.t9t.rep.ReportConfigDTO
 import com.arvatosystems.t9t.rep.ReportConfigKey
 import com.arvatosystems.t9t.rep.ReportParamsDTO
@@ -63,9 +67,8 @@ import com.arvatosystems.t9t.ssm.request.SchedulerSetupCrudRequest
 import com.arvatosystems.t9t.uiprefsv3.LeanGridConfigDTO
 import com.arvatosystems.t9t.uiprefsv3.LeanGridConfigKey
 import com.arvatosystems.t9t.uiprefsv3.request.LeanGridConfigCrudRequest
-import de.jpaw.bonaparte.pojos.api.OperationType
-import com.arvatosystems.t9t.base.api.RequestParameters
 import de.jpaw.bonaparte.core.MapComposer
+import de.jpaw.bonaparte.pojos.api.OperationType
 
 class MiscExtensions {
 
@@ -206,6 +209,15 @@ class MiscExtensions {
             crud            = OperationType.MERGE
             data            = dto
             naturalKey      = new BucketCounterKey(dto.qualifier)
+        ], CrudSurrogateKeyResponse)
+    }
+
+    def static CrudSurrogateKeyResponse<LoadedPluginDTO, FullTrackingWithVersion> merge(LoadedPluginDTO dto, ITestConnection dlg) {
+        dto.validate
+        dlg.typeIO(new LoadedPluginCrudRequest => [
+            crud            = OperationType.MERGE
+            data            = dto
+            naturalKey      = new LoadedPluginKey(dto.pluginId)
         ], CrudSurrogateKeyResponse)
     }
 
