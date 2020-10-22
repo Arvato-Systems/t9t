@@ -1,0 +1,11 @@
+{
+    "viewModel": "processInstanceBpmn2",
+    "filters": [
+        { "filterType": "E", "fieldName": "processDefinitionId" },
+        { "filterType": "E", "fieldName": "processInstanceId" },
+        { "filterType": "W", "fieldName": "businessKey" }
+    ],
+    "fields": [
+        "processDefinitionId", "processDefinitionKey", "processInstanceId", "businessKey", "isActive", "isEnded"
+    ]
+}

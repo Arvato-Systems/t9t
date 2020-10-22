@@ -1,0 +1,188 @@
+[
+	{
+		"name": "T9T Workflow Step",
+		"id": "com.arvatosystems.t9t.bpmn2.be.camunda.delegate.WorkflowStepDelegate",
+		"appliesTo": [
+			"bpmn:ServiceTask",
+			"bpmn:SendTask"
+		],
+		"properties": [
+			{
+				"label": "Implementation Type",
+				"type": "String",
+				"value": "com.arvatosystems.t9t.bpmn2.be.camunda.delegate.WorkflowStepDelegate",
+				"editable": false,
+				"binding": {
+					"type": "property",
+					"name": "camunda:class"
+				}
+			},
+			{
+				"label": "Workflow Step Name",
+				"type": "String",
+				"binding": {
+					"type": "camunda:inputParameter",
+					"name": "workflowStepName"
+				},
+				"constraints": {
+					"notEmpty": true
+				}
+			}
+		],
+		"entriesVisible": {
+			"_all": true,
+			"delegate": false,
+			"implementation": false
+		}
+	},
+	{
+		"name": "Execute T9T Request",
+		"id": "com.arvatosystems.t9t.bpmn2.be.camunda.delegate.ExecuteRequestDelegate",
+		"appliesTo": [
+			"bpmn:ServiceTask",
+			"bpmn:SendTask"
+		],
+		"properties": [
+			{
+				"label": "Implementation Type",
+				"type": "String",
+				"value": "com.arvatosystems.t9t.bpmn2.be.camunda.delegate.ExecuteRequestDelegate",
+				"editable": false,
+				"binding": {
+					"type": "property",
+					"name": "camunda:class"
+				}
+			},
+			{
+				"label": "Request JSON",
+				"type": "Text",
+				"binding": {
+					"type": "camunda:inputParameter",
+					"name": "requestJson"
+				},
+				"constraints": {
+					"notEmpty": true
+				}
+			}
+		],
+		"entriesVisible": {
+			"_all": true,
+			"delegate": false,
+			"implementation": false
+		}
+	},
+	{
+		"name": "Send T9T Event",
+		"id": "com.arvatosystems.t9t.bpmn2.be.camunda.delegate.PublishEventDelegate",
+		"appliesTo": [
+			"bpmn:ServiceTask",
+			"bpmn:SendTask"
+		],
+		"properties": [
+			{
+				"label": "Implementation Type",
+				"type": "String",
+				"value": "com.arvatosystems.t9t.bpmn2.be.camunda.delegate.PublishEventDelegate",
+				"editable": false,
+				"binding": {
+					"type": "property",
+					"name": "camunda:class"
+				}
+			},
+			{
+				"label": "Event JSON",
+				"type": "Text",
+				"binding": {
+					"type": "camunda:inputParameter",
+					"name": "eventJson"
+				},
+				"constraints": {
+					"notEmpty": true
+				}
+			}
+		],
+		"entriesVisible": {
+			"_all": true,
+			"delegate": false,
+			"implementation": false
+		}
+	},
+	{
+		"name": "T9T Start Event",
+		"id": "com.arvatosystems.t9t.bpmn2.be.camunda.listener.WorkflowStartContextListener",
+		"appliesTo": [
+			"bpmn:StartEvent"
+		],
+		"properties": [
+			{
+				"label": "Init Workflow",
+				"type": "Boolean",
+				"value": true,
+				"binding": {
+					"type": "camunda:property",
+					"name": "InitWorkflow"
+				}
+			}
+		],
+		"entriesVisible": {
+			"_all": true
+		}
+	},
+	{
+		"name": "T9T Final Workflow Step",
+		"id": "com.arvatosystems.t9t.bpmn2.be.camunda.listener.ExecuteFinalWorkflowStepListener",
+		"appliesTo": [
+			"bpmn:EndEvent"
+		],
+		"properties": [
+			{
+				"label": "Workflow Step Name",
+				"type": "String",
+				"binding": {
+					"type": "camunda:property",
+					"name": "WorkflowStepName"
+				},
+				"constraints": {
+					"notEmpty": true
+				}
+			}
+		],
+		"entriesVisible": {
+			"_all": true
+		}
+	},
+	{
+		"name": "T9T Process",
+		"id": "com.arvatosystems.t9t.bpmn2.t9tProcess",
+		"appliesTo": [
+			"bpmn:Process"
+		],
+		"properties": [
+			{
+				"label": "API Key",
+				"type": "String",
+				"binding": {
+					"type": "camunda:property",
+					"name": "APIKey"
+				},
+				"constraints": {
+					"notEmpty": true
+				}
+			},
+            {
+                "label": "Workflow Type",
+                "type": "String",
+                "binding": {
+                    "type": "camunda:property",
+                    "name": "WorkflowType"
+                },
+                "constraints": {
+                    "notEmpty": true
+                }
+            }			
+		],
+		"entriesVisible": {
+			"_all": true
+		}
+	}
+]

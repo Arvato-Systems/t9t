@@ -1,0 +1,194 @@
+<!--
+
+    Copyright (c) 2012 - 2020 Arvato Systems GmbH
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.arvato-systems.t9t</groupId>
+        <artifactId>t9t-settings-be</artifactId>
+        <version>5.0-SNAPSHOT</version>
+        <relativePath>../t9t-settings-be</relativePath>
+    </parent>
+
+    <artifactId>t9t-bpmn2-camunda-be</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-bpmn2-sapi</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-base-be</artifactId>
+        </dependency>
+        <dependency>
+            <!-- Needed for Camunda binding -->
+            <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-base-jpa</artifactId>
+        </dependency>
+
+        <!-- Unfortunately, maven will mix up spring versions if this BPMN module is used with the t9t-base-jpa-st module -->
+        <!-- Thus, declare the needed spring dependencies explicitly by using the correct spring-bom, which will fix the spring version here -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+        </dependency>
+
+        <!-- BPMN engine -->
+        <dependency>
+            <groupId>org.camunda.bpm</groupId>
+            <artifactId>camunda-engine</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.camunda.bpm</groupId>
+            <artifactId>camunda-engine-spring</artifactId>
+        </dependency>
+
+        <!-- Add groovy as scripting engine -->
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Use UUID as ID to ensure cluster feature -->
+        <dependency>
+            <groupId>com.fasterxml.uuid</groupId>
+            <artifactId>java-uuid-generator</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>log4j-over-slf4j</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack BPMN sql</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeGroupIds>org.camunda.bpm</includeGroupIds>
+                            <includeArtifactIds>camunda-engine</includeArtifactIds>
+                            <includes>org/camunda/bpm/engine/db/create/*.sql</includes>
+                            <overWriteReleases>true</overWriteReleases>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                            <outputDirectory>${project.build.directory}/bpmn-sql</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>merge BPMN sql</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <!-- concat files to single SQL file to ensure execution dependencies -->
+                                <concat destfile="${project.build.directory}/sql/POSTGRES/Table/camunda-bpm.sql" force="yes">
+                                    <fileset file="${project.build.directory}/bpmn-sql/org/camunda/bpm/engine/db/create/activiti.postgres.create.engine.sql" />
+                                    <fileset file="${project.build.directory}/bpmn-sql/org/camunda/bpm/engine/db/create/activiti.postgres.create.identity.sql" />
+                                    <fileset file="${project.build.directory}/bpmn-sql/org/camunda/bpm/engine/db/create/activiti.postgres.create.history.sql" />
+                                    <fileset file="${project.build.directory}/bpmn-sql/org/camunda/bpm/engine/db/create/activiti.postgres.create.case.engine.sql" />
+                                    <fileset file="${project.build.directory}/bpmn-sql/org/camunda/bpm/engine/db/create/activiti.postgres.create.case.history.sql" />
+                                    <fileset file="${project.build.directory}/bpmn-sql/org/camunda/bpm/engine/db/create/activiti.postgres.create.decision.engine.sql" />
+                                    <fileset file="${project.build.directory}/bpmn-sql/org/camunda/bpm/engine/db/create/activiti.postgres.create.decision.history.sql" />
+                                </concat>
+                                <concat destfile="${project.build.directory}/sql/ORACLE/Table/camunda-bpm.sql" force="yes">
+                                    <fileset file="${project.build.directory}/bpmn-sql/org/camunda/bpm/engine/db/create/activiti.oracle.create.engine.sql" />
+                                    <fileset file="${project.build.directory}/bpmn-sql/org/camunda/bpm/engine/db/create/activiti.oracle.create.identity.sql" />
+                                    <fileset file="${project.build.directory}/bpmn-sql/org/camunda/bpm/engine/db/create/activiti.oracle.create.history.sql" />
+                                    <fileset file="${project.build.directory}/bpmn-sql/org/camunda/bpm/engine/db/create/activiti.oracle.create.case.engine.sql" />
+                                    <fileset file="${project.build.directory}/bpmn-sql/org/camunda/bpm/engine/db/create/activiti.oracle.create.case.history.sql" />
+                                    <fileset file="${project.build.directory}/bpmn-sql/org/camunda/bpm/engine/db/create/activiti.oracle.create.decision.engine.sql" />
+                                    <fileset file="${project.build.directory}/bpmn-sql/org/camunda/bpm/engine/db/create/activiti.oracle.create.decision.history.sql" />
+                                </concat>
+                                <concat destfile="${project.build.directory}/sql/MSSQLSERVER/Table/camunda-bpm.sql" force="yes">
+                                    <fileset file="${project.build.directory}/bpmn-sql/org/camunda/bpm/engine/db/create/activiti.mssql.create.engine.sql" />
+                                    <fileset file="${project.build.directory}/bpmn-sql/org/camunda/bpm/engine/db/create/activiti.mssql.create.identity.sql" />
+                                    <fileset file="${project.build.directory}/bpmn-sql/org/camunda/bpm/engine/db/create/activiti.mssql.create.history.sql" />
+                                    <fileset file="${project.build.directory}/bpmn-sql/org/camunda/bpm/engine/db/create/activiti.mssql.create.case.engine.sql" />
+                                    <fileset file="${project.build.directory}/bpmn-sql/org/camunda/bpm/engine/db/create/activiti.mssql.create.case.history.sql" />
+                                    <fileset file="${project.build.directory}/bpmn-sql/org/camunda/bpm/engine/db/create/activiti.mssql.create.decision.engine.sql" />
+                                    <fileset file="${project.build.directory}/bpmn-sql/org/camunda/bpm/engine/db/create/activiti.mssql.create.decision.history.sql" />
+                                </concat>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/assembly/sql.xml</descriptor>
+                        <descriptor>src/assembly/camundaModelerTemplates.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>assemble BPMN sql</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

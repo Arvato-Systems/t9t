@@ -652,6 +652,28 @@
                 <version>${project.version}</version>
             </dependency>
 
+            <!-- BPMN2 stuff files -->
+            <dependency>
+                <groupId>com.arvato-systems.t9t</groupId>
+                <artifactId>t9t-bpmn2-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.arvato-systems.t9t</groupId>
+                <artifactId>t9t-bpmn2-camunda-be</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.arvato-systems.t9t</groupId>
+                <artifactId>t9t-bpmn2-sapi</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.arvato-systems.t9t</groupId>
+                <artifactId>t9t-bpmn2-jpa</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
             <!-- SQL files -->
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>

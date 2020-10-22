@@ -1,0 +1,6 @@
+{
+    "viewModel": "incidents",
+    "fields": [
+        "incidentId", "incidentType", "message", "processInstanceId", "activityId", "created"
+    ]
+}

@@ -1,0 +1,100 @@
+/*
+ * Copyright (c) 2012 - 2020 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import api.*
+import apiw.*
+import t9t.base.types.*
+import t9t.base.output.*
+
+import t9t.base.crud.*
+import t9t.base.search.*
+
+import t9t.base.event.*
+
+/**
+ * BPM 2.0 API module
+ *
+ * RTTI values in range 651-699
+ */
+package (com.arvatosystems) t9t.bpmn2 {
+    default private unsigned trim noControlChars;
+    properties inherited, active, length,
+        tenantCategory is com.arvatosystems.t9t.annotations.TenantCategory(),
+        searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
+        serialized is com.arvatosystems.t9t.annotations.StoreSerialized,
+        noAutoMap is com.arvatosystems.t9t.annotations.NoAutoMap,
+        notupdatable is com.arvatosystems.t9t.annotations.NotUpdatable,
+        dropdown is com.arvatosystems.t9t.annotations.UseDropDownInUI(),
+        ref is com.arvatosystems.t9t.annotations.IsObjectRef;
+
+
+    type bpmnName            is Unicode(255);
+    type bpmnId              is Unicode(64);
+
+    class BPMNMessageEvent extends EventParameters implements com.arvatosystems.t9t.bpmn2.event.IHasBusinessKey {
+        required bpmnName                    messageName;
+        optional bpmnName                    businessKey;
+        required Object Map<String>          variables;
+    }
+
+    class ProcessDefinitionDTO {
+        required bpmnId                      processDefinitionId;
+        required bpmnId                      processDefinitionKey;
+        required boolean                     isActive                    properties active;
+        required bpmnName                    name;
+    }
+
+    class ProcessInstanceDTO {
+        required bpmnId                      processDefinitionId;
+        required bpmnId                      processDefinitionKey;
+        required bpmnId                      processInstanceId;
+        optional bpmnName                    businessKey;
+        required boolean                     isActive                    properties active;
+        required boolean                     isEnded;
+    }
+
+    class EventSubscriptionDTO {
+        required bpmnId                      subscriptionId;
+        required bpmnId                      processInstanceId;
+        required bpmnId                      activityId;
+        required bpmnName                    eventType;
+        required bpmnName                    eventName;
+        required Timestamp(0)                created;
+    }
+
+    class IncidentDTO {
+        required bpmnId                      incidentId;
+        required bpmnName                    incidentType;
+        optional bpmnName                    message;
+        optional bpmnId                      processInstanceId;
+        optional bpmnId                      activityId;
+        required Timestamp(0)                created;
+    }
+
+    class Bpmn2MessageQueueRef RTTI 651 extends Ref {}
+    class Bpmn2MessageQueueDTO extends Bpmn2MessageQueueRef {
+        required bpmnName                           messageName;            // Message name to trigger in BPMN
+        optional bpmnName                           businessKey;            // Business key on process instance level for target selection
+        optional (Bpmn2MessagePayloadDTO...)        payload properties serialized, noAutoMap, length="16777215"; // Variables to set on target process
+
+        optional Integer                            retryCounter;           // Counter of delivery retries left (if missing, no delivery retries will be done)
+
+        optional Integer                            returnCode;             // Error code if last message delivery failed
+        optional Unicode(512) allowControlChars     errorDetails;           // Further information about the error location
+    }
+    class Bpmn2MessagePayloadDTO {
+        required Element Map<String>                variables; // Variables to set on target process
+    }
+}

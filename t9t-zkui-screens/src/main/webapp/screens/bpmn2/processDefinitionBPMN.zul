@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="processDefinition"?>
+
+<window28 id="processDefinitionBPMN2">
+    <threesections28 gridId="processDefinitionBpmn2">
+        <tabbox28 filterFieldname="processDefinitionId">
+            <tabpanels>
+                <tabpanel28 id="deployment">
+                    <view28
+                        viewModel="@id('vm') @init('com.arvatosystems.t9t.viewmodel.CreateDeploymentVM', vmId='createDeploymentVM')">
+                        <vlayout height="200px">
+                            <form28 numColumns="2" viewModelId="createDeploymentVM">
+                                <rows>
+                                        <cells28 id="deploymentName" value="@bind(vm.data.deploymentName)" />
+                                        <row>
+                                            <cell>
+                                                <button28 upload="true" id="uploadBpmn" onUpload="@command('uploadBpmn')" resourceId="button.uploadBpmn" />
+                                            </cell>
+                                        </row>
+                                        <row>
+                                            <cell>
+                                                <button28 id="removeBPMNData"
+                                                        label=""
+                                                        image="/img/delete.png"
+                                                        visible="@load(not empty vm.data.resources)"
+                                                        autodisable="removeBPMNData"
+                                                        onClick="@command('removeBPMNData')"
+                                                        width="44px" />
+                                            </cell>
+                                            <cell>
+                                                <label value="@load(vm.data.resources[0].name)"></label>
+                                            </cell>
+                                        </row>
+                                        <row>
+                                            <cell>
+                                                <button28 width="200 px"
+                                                    id="createDeployment"
+                                                    onClick="@command('createDeployment')" />
+                                            </cell>
+                                        </row>
+                                </rows>
+                            </form28>
+                        </vlayout>
+                    </view28>
+                </tabpanel28>
+            </tabpanels>
+        </tabbox28>
+    </threesections28>
+</window28>

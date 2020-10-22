@@ -840,12 +840,19 @@
         <module>t9t-rep-be</module>
         <module>t9t-rep-jpa</module>
 
+        <module>t9t-xml</module>
+
+        <!-- state machine projects -->
         <module>t9t-bpmn-api</module>
         <module>t9t-bpmn-sapi</module>
         <module>t9t-bpmn-be</module>
         <module>t9t-bpmn-jpa</module>
 
-        <module>t9t-xml</module>
+        <!-- BPMN2 integration projects -->
+        <module>t9t-bpmn2-api</module>
+        <module>t9t-bpmn2-sapi</module>
+        <module>t9t-bpmn2-camunda-be</module>
+        <module>t9t-bpmn2-jpa</module>
 
         <!-- AWS cloud integration -->
         <module>t9t-base-be-aws</module>

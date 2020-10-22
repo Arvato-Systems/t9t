@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="processDefinition"?>
+
+<window28 id="processInstanceBPMN2">
+    <threesections28 gridId="processInstanceBpmn2">
+        <tabbox28 filterFieldname="processDefinitionId">
+            <tabpanels>
+                <tabpanel28 id="eventSubscriptions">
+                     <grid28 gridId="processInstance.eventSubscriptions" />
+                </tabpanel28>
+                <tabpanel28 id="incidents">
+                    <grid28 gridId="processInstance.incidents" />
+                </tabpanel28>
+            </tabpanels>
+        </tabbox28>
+    </threesections28>
+</window28>
