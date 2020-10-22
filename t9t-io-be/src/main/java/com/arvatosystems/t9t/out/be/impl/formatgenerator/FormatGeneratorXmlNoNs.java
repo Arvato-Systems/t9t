@@ -18,8 +18,6 @@ package com.arvatosystems.t9t.out.be.impl.formatgenerator;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 
-import com.arvatosystems.t9t.out.be.impl.formatgenerator.AbstractFormatGeneratorXml;
-
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Named;
 

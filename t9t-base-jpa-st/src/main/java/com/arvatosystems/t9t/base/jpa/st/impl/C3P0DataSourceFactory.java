@@ -19,6 +19,7 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
+import org.hibernate.ConnectionReleaseMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,6 +49,7 @@ public class C3P0DataSourceFactory implements IDataSourceFactory {
 
         final Properties properties = dataSource.getProperties();
         properties.put("com.mchange.v2.log.MLog", "com.mchange.v2.log.slf4j.Slf4jMLog");
+        properties.put("hibernate.connection.release_mode", ConnectionReleaseMode.AFTER_TRANSACTION);
         addCustomProperties(dbCfg, properties);
 
         return dataSource;
