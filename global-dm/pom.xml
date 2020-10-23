@@ -85,14 +85,14 @@
         <!-- AWS -->
         <aws-bom.version>1.10.59</aws-bom.version>
 
-        <!-- Camunda BPMN -->
-        <camunda-bom.version>7.8.0</camunda-bom.version>
+        <!-- Camunda BPMN: linked to spring version -->
+        <camunda-bom.version>7.14.0</camunda-bom.version>
 
         <!-- Java scripting engines -->
         <groovy.version>2.4.13</groovy.version>
 
         <!-- Test support -->
-        <junit.version>4.13</junit.version>
+        <junit.version>4.13.1</junit.version>
         <hamcrest.version>1.3</hamcrest.version>   <!-- upgrade to 2.1 with next release -->
         <byte-buddy.version>1.10.11</byte-buddy.version>
         <org.mockito-core.version>2.23.4</org.mockito-core.version>
@@ -118,8 +118,8 @@
         <googlemaps.services.version>0.2.5</googlemaps.services.version>
         <uuid-generator.version>3.1.2</uuid-generator.version>
 
-        <spring-bom.version>5.0.3.RELEASE</spring-bom.version>
-        <spring-data-jpa.version>2.1.10.RELEASE</spring-data-jpa.version>
+        <spring-bom.version>5.2.9.RELEASE</spring-bom.version>
+        <spring-data-jpa.version>2.3.4.RELEASE</spring-data-jpa.version>
 
         <netty.version>4.1.52.Final</netty.version>
         <vertx3.version>3.9.2</vertx3.version>
