@@ -74,7 +74,12 @@ public class RedirectViewModel {
 
             List<PermissionEntry> userPermissionForThisTenant = userDAO.getPermissions();
             ApplicationSession.get().storePermissions(userPermissionForThisTenant);
-            Executions.getCurrent().sendRedirect(Constants.ZulFiles.HOME + "?link=" + link);
+
+            String url = Constants.ZulFiles.HOME;
+            if (link != null) {
+                url += "?link=" + link;
+            }
+            Executions.getCurrent().sendRedirect(url);
 
         } catch (ReturnCodeException e) {
             LOGGER.error("Unable to switch tenant or to get permissions " + e);
