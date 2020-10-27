@@ -111,40 +111,7 @@
                              </div>
                          </div>
                      </div>
-                    <div sclass="header-row header-nav header-left-item" >
-                    <navbar id="navbar" orient="horizontal" collapsed="false">
-                     <forEach begin="0" end="${(vm.naviGroupingViewModel.groupCount) - 1}" if="${vm.naviGroupingViewModel.groupCount > 0}" var="index" >
-                        <!--  <div sclass="@load(vm.naviGroupingViewModel.isGroupOpened(index) eq true ?'active':'')">
-                             <a>
-                                 <span>${vm.naviGroupingViewModel.getGroup(index)}</span>
-                             </a> -->
-                          <nav label="${vm.naviGroupingViewModel.getGroup(index)}" sclass="header-nav-submenu no-scrollbar ${vm.getSubMenuClass(vm.naviGroupingViewModel.getChildCount(index))}" xmlns:ca="client/attribute">
-                                 <forEach begin="0" end="${(vm.naviGroupingViewModel.getChildCount(index)) - 1}" var="childIndex" if="${vm.naviGroupingViewModel.getChildCount(index) > 0}">
-                                 <choose>
-                                     <when
-                                         test="@load(vm.subtitleShouldDisplay(index, childIndex))">
-                                         <navitem
-                                             label="${vm.naviGroupingViewModel.getChild(index, childIndex).subcategory}"
-                                             disabled="true"
-                                             zclass="header-nav-subtitle">
-                                         </navitem>
-                                     </when>
-                                 </choose>
-                                 <choose>
-                                            <when test="@load(vm.naviGroupingViewModel.getChild(index, childIndex).menuItemVisible)">
-                                              <navitem label="${vm.naviGroupingViewModel.getChild(index, childIndex).name}"
-                                                  image="${vm.naviGroupingViewModel.getChild(index, childIndex).img}"
-                                                  onClick="@command('setNaviSelection',navi=vm.naviGroupingViewModel.getChild(index, childIndex))"
-                                                  ca:onClick="collapseHeaderMenu();"
-                                                  ca:data-navi="${vm.naviGroupingViewModel.getChild(index, childIndex).naviId}"
-                                                  selected="@load(vm.selected eq vm.naviGroupingViewModel.getChild(index, childIndex))"/>
-                                          </when>
-                                     </choose>
-                                 </forEach>
-                           </nav>
-                         <!-- </div> -->
-                         </forEach>
-                         </navbar>
+                    <div id="navbarContainer" sclass="header-row header-nav header-left-item" >
                      </div>
                  </div>
             </div>

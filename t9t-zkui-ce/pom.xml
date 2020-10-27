@@ -106,28 +106,6 @@
             <groupId>org.zkoss.common</groupId>
             <artifactId>zel</artifactId>
         </dependency>
-
-        <!-- ZK additional EE dependencies: FIXME, code requiring these should be in zkui-ee -->
-        <dependency>
-            <groupId>org.zkoss.zk</groupId>
-            <artifactId>zuti</artifactId>
-        </dependency>
-        <!-- zkex is a dependency of zkmax. It must be listed explicitly and before zkmax because jasper should be excluded -->
-        <dependency>
-            <groupId>org.zkoss.zk</groupId>
-            <artifactId>zkex</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>net.sf.jasperreports</groupId>
-                    <artifactId>jasperreports</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.zkoss.zk</groupId>
-            <artifactId>zkmax</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>org.zkoss.common</groupId>
             <artifactId>zcommon</artifactId>

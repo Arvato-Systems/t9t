@@ -41,15 +41,10 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.KeyEvent;
-import org.zkoss.zk.ui.event.OpenEvent;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zkmax.zul.Nav;
-import org.zkoss.zkmax.zul.Navbar;
-import org.zkoss.zkmax.zul.Navitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Messagebox.ClickEvent;
 import org.zkoss.zul.Panel;
@@ -58,15 +53,14 @@ import org.zkoss.zul.Style;
 import org.zkoss.zul.Window;
 
 import com.arvatosystems.t9t.component.fields.IField;
-import com.arvatosystems.t9t.components.Context28;
 import com.arvatosystems.t9t.components.tools.JumpTool;
-import com.arvatosystems.t9t.services.T9TRemoteUtils;
 import com.arvatosystems.t9t.tfi.general.ApplicationUtil;
 import com.arvatosystems.t9t.tfi.general.Constants;
 import com.arvatosystems.t9t.tfi.general.Constants.NaviConfig;
 import com.arvatosystems.t9t.tfi.general.Maps;
 import com.arvatosystems.t9t.tfi.model.bean.Navi;
 import com.arvatosystems.t9t.tfi.services.IApplicationDAO;
+import com.arvatosystems.t9t.tfi.services.INavBarCreator;
 import com.arvatosystems.t9t.tfi.viewmodel.navigation.NaviComparator;
 import com.arvatosystems.t9t.tfi.viewmodel.navigation.NaviGroupingViewModel;
 import com.arvatosystems.t9t.tfi.web.ApplicationSession;
@@ -99,6 +93,7 @@ public class ApplicationViewModel {
     private String selectedTenantId;
     private final ApplicationSession as = ApplicationSession.get();
     private final IApplicationDAO applicationDAO = Jdp.getRequired(IApplicationDAO.class);
+    private final INavBarCreator navbarCreator = Jdp.getRequired(INavBarCreator.class);
 
     private String userName;
     private String userId;
@@ -107,13 +102,11 @@ public class ApplicationViewModel {
     List<HtmlBasedComponent> htmlBasedFieldComponents;
     private final int MAX_NUMBER_SUBMENU_ITEMS_PER_COLUMN = 13;
 
-    @Wire private Navbar navbar;
+    @Wire("#navbarContainer") private Component navbar;
     @Wire("#mainHome") private Window mainHome;
     @Wire("#reverse")  private Style  reverse;
     @Wire("#panel")    private Panel  panel;
     public static String CTRL_KEYS;
-
-    private T9TRemoteUtils t9tRemoteUtils = Jdp.getRequired(T9TRemoteUtils.class);
 
     public ApplicationViewModel() {
 
@@ -183,7 +176,7 @@ public class ApplicationViewModel {
         boolean isDefaultOrder = Boolean.valueOf(ZulUtils.i18nLabel("isDefaultOrder"));
         mainHome.setSclass(isDefaultOrder ? "": "reverse");
         reverse.setSrc(!isDefaultOrder ? "/css/reverse.css" : "");
-        initHeaderMenu();
+        navbarCreator.createNavBar(this, navbar, getNaviGroupingViewModel());
 
         // redirect screen
         String link = Executions.getCurrent().getParameter("link");
@@ -195,44 +188,6 @@ public class ApplicationViewModel {
                 setSelectedFromJump(navi, null);
             }
         }
-    }
-
-    private void initHeaderMenu() {
-
-        final String CONTEXT_MENU_ID = "menu.ctx";
-        final String SET_AS_USER_DEFAULT_ID = "setAsUserDefault";
-        final String SET_AS_TENANT_DEFAULT_ID = "setAsTenantDefault";
-        final String RESET_USER_DEFAULT_ID = "resetUserDefault";
-        final String RESET_TENANT_DEFAULT_ID = "resetTenantDefault";
-
-        Context28 contextMenu = new Context28();
-        contextMenu.setId(CONTEXT_MENU_ID);
-        contextMenu.setContextOptions(SET_AS_USER_DEFAULT_ID + "," + SET_AS_TENANT_DEFAULT_ID + ",," + RESET_USER_DEFAULT_ID + "," + RESET_TENANT_DEFAULT_ID);
-        contextMenu.setParent(navbar.getParent());
-
-        //Register events for the menupopup/context menu
-        for (Component comp : navbar.getChildren()) {
-            if (comp instanceof Nav) {
-                Nav nav = (Nav) comp;
-                nav.addEventListener(Events.ON_OPEN, ev -> {
-                    for (Component comp2 : ev.getTarget().getChildren()) {
-                        if (comp2 instanceof Navitem) {
-                            ((Navitem) comp2).setContext(CONTEXT_MENU_ID);
-                        }
-                    }
-                });
-            }
-        }
-
-        contextMenu.addEventListener(Events.ON_OPEN, ev -> {
-            Component comp = ((OpenEvent)ev).getReference();
-            if (comp instanceof Navitem) {
-                Navitem item = (Navitem) comp;
-                for (Component comp2 : contextMenu.getChildren()) {
-                    comp2.setAttribute("data-navi", item.getClientAttribute("data-navi"));
-                }
-            }
-        });
     }
 
     /**

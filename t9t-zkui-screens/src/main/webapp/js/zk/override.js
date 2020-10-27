@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 //Override mimicMouseDown_
-zk.Widget.mimicMouseDown_ = function (wgt, noFocusChange, which) {
+zk.Widget.mimicMouseDown_ = function(wgt, noFocusChange, which) {
     var modal = zk.currentModal;
 
     //Skip modal with noautofocus = true
@@ -40,7 +40,7 @@ zk.Widget.mimicMouseDown_ = function (wgt, noFocusChange, which) {
                 if (zk.ie) wgtVParent.style.position = oldStyle;
             }
             zk._cfByMD = true;
-            setTimeout(function () {
+            setTimeout(function() {
                 zk._cfByMD = false;
                 zk._prevFocus = null;
             }, 0);
@@ -48,7 +48,7 @@ zk.Widget.mimicMouseDown_ = function (wgt, noFocusChange, which) {
         }
 
         if (wgt)
-            zWatch.fire('onFloatUp', wgt, {triggerByClick: which});
+            zWatch.fire('onFloatUp', wgt, { triggerByClick: which });
         else
             for (var dtid in zk.Desktop.all)
                 zWatch.fire('onFloatUp', zk.Desktop.all[dtid]);
@@ -62,7 +62,7 @@ zk.Widget.mimicMouseDown_ = function (wgt, noFocusChange, which) {
 function collapseHeaderMenu() {
     let e = document.getElementsByClassName("z-nav-open");
     if (e.length > 0) {
-        setTimeout(function () {
+        setTimeout(function() {
             e[0].children[0].click();
         }, 100);
     }
@@ -72,7 +72,7 @@ function collapseHeaderMenuWithDelay(delay) {
     if (delay === undefined) {
         delay = 1000;
     }
-    setTimeout(function () {
+    setTimeout(function() {
         collapseHeaderMenu()
     }, delay);
 }
@@ -81,7 +81,7 @@ function collapseHeaderMenuWithDelay(delay) {
 
 var isAlertShowing = false;
 keepSessionAlive();
-setInterval(function () {
+setInterval(function() {
     let maxTimeout = 600000;
     let alertBefore = 120000;
     let lastActive = window.localStorage.getItem('app.lastActive');
@@ -94,11 +94,11 @@ setInterval(function () {
     let idle = Date.now() - lastActive;
     if (idle > maxTimeout) {
         //console.log('Session expired. Logging out');
-        zAu.send(new zk.Event(zk.Widget.$('$mainHome'), "onLogout", {'': {'data': {'nodeId': ''}}}, {toServer: true}));
+        zAu.send(new zk.Event(zk.Widget.$('$mainHome'), "onLogout", { '': { 'data': { 'nodeId': '' } } }, { toServer: true }));
     } else if (idle > (maxTimeout - alertBefore)) {
         if (!isAlertShowing) {
             isAlertShowing = true;
-            zAu.send(new zk.Event(zk.Widget.$('$mainHome'), "onSessionExpirationAlert", {'': {'data': {'nodeId': ''}}}, {toServer: true}));
+            zAu.send(new zk.Event(zk.Widget.$('$mainHome'), "onSessionExpirationAlert", { '': { 'data': { 'nodeId': '' } } }, { toServer: true }));
         }
     }
 
@@ -121,12 +121,12 @@ function keepSessionAlive() {
 /**
  * Collapse opened menu when click outside the navbar / Default Screen menu
  */
-$(document).ready(function () {
-    $(document).click(function (event) {
+$(document).ready(function() {
+    $(document).click(function(event) {
         let opened = document.getElementsByClassName("z-nav-open").length > 0;
         let _target = $(event.target);
         if (opened == true && !(_target.hasClass('z-menuitem-text') || _target.hasClass('z-nav-text') || _target.hasClass('z-nav-content') || _target.hasClass('header-nav-subtitle'))) {
-            setTimeout(function () {
+            setTimeout(function() {
                 var e = document.getElementsByClassName("z-nav-open")[0];
                 if (e != undefined) {
                     e.children[0].click();
@@ -137,8 +137,21 @@ $(document).ready(function () {
 
     //ZK navbar will automatically pop the header menu at the page load (Default Screen),
     //to fix that we need to detect and collapse the menu on pageload.
-    setTimeout(function () {
+    setTimeout(function() {
         collapseHeaderMenu()
     }, 1000);
 });
 
+/**
+* Menubar indicator (for Default Nav Bar)
+*/
+function setNavi(menuId, subMenuId) {
+    console.log('menuId: ' + menuId + " subMenuId: " + subMenuId);
+    let selectedMenu = $($(".header-nav .z-menu[data-navi='" + menuId + "']")[0]);
+    $(".header-nav .z-menu").not(selectedMenu).removeClass('active');
+    selectedMenu.addClass('active');
+
+    let selectedSubmMenu = $($(".nav-menupopup .z-menuitem[data-navi='" + subMenuId + "']")[0]);
+    $(".nav-menupopup .z-menuitem").not(selectedMenu).removeClass('active');
+    selectedSubmMenu.addClass('active');
+}
