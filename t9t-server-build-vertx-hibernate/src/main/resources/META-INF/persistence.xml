@@ -57,6 +57,7 @@
         <class>com.arvatosystems.t9t.batch.jpa.entities.StatisticsEntity</class>
         <class>com.arvatosystems.t9t.bpmn.jpa.entities.ProcessDefinitionEntity</class>
         <class>com.arvatosystems.t9t.bpmn.jpa.entities.ProcessExecStatusEntity</class>
+        <class>com.arvatosystems.t9t.bpmn2.jpa.entities.Bpmn2MessageQueueEntity</class>
         <class>com.arvatosystems.t9t.bucket.jpa.entities.BucketCounterEntity</class>
         <class>com.arvatosystems.t9t.bucket.jpa.entities.BucketEntryEntity</class>
         <class>com.arvatosystems.t9t.core.jpa.entities.CannedRequestEntity</class>
@@ -80,6 +81,8 @@
         <class>com.arvatosystems.t9t.io.jpa.entities.AsyncMessageEntity</class>
         <class>com.arvatosystems.t9t.io.jpa.entities.AsyncQueueEntity</class>
         <class>com.arvatosystems.t9t.msglog.jpa.entities.MessageEntity</class>
+        <class>com.arvatosystems.t9t.plugins.jpa.entities.LoadedPluginEntity</class>
+        <class>com.arvatosystems.t9t.plugins.jpa.entities.PluginLogEntity</class>
         <class>com.arvatosystems.t9t.rep.jpa.entities.ReportConfigEntity</class>
         <class>com.arvatosystems.t9t.rep.jpa.entities.ReportParamsEntity</class>
         <class>com.arvatosystems.t9t.rep.jpa.entities.ReportMailingEntity</class>
