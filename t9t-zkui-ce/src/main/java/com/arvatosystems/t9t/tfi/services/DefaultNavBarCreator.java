@@ -10,7 +10,6 @@ import org.zkoss.zul.Menupopup;
 import com.arvatosystems.t9t.tfi.model.bean.Navi;
 import com.arvatosystems.t9t.tfi.viewmodel.ApplicationViewModel;
 import com.arvatosystems.t9t.tfi.viewmodel.navigation.NaviGroupingViewModel;
-import com.arvatosystems.t9t.tfi.web.ApplicationSession;
 
 import de.jpaw.dp.Fallback;
 import de.jpaw.dp.Jdp;
@@ -22,7 +21,6 @@ public class DefaultNavBarCreator implements INavBarCreator {
 
     private final int MAX_NUMBER_SUBMENU_ITEMS_PER_COLUMN = 13;
     private final IApplicationDAO applicationDAO = Jdp.getRequired(IApplicationDAO.class);
-    private final ApplicationSession as = ApplicationSession.get();
     protected NaviGroupingViewModel naviGroups = null;
     protected Object selected;
     protected ApplicationViewModel viewModel;
@@ -42,8 +40,11 @@ public class DefaultNavBarCreator implements INavBarCreator {
             Menu menu = createMenu(groupName, groupIndex);
             menubar.appendChild(menu);
             Menupopup menuPopup = new Menupopup();
-            menuPopup.addSclass("nav-menupopup");
-            menuPopup.addSclass(getSubMenuClass(naviGroups.getChildCount(groupIndex)));
+            // the following works for ZK >= 8.6.1, but the latest open CE release of the 8.6 tree is 8.6.0.1
+//            menuPopup.addSclass("nav-menupopup");
+//            menuPopup.addSclass(getSubMenuClass(naviGroups.getChildCount(groupIndex)));
+            addSClass(menuPopup, getSubMenuClass(naviGroups.getChildCount(groupIndex)));
+            addSClass(menuPopup, "nav-menupopup");
             menu.appendChild(menuPopup);
 
             for (int childIndex = 0; childIndex < naviGroups.getChildCount(groupIndex); childIndex++) {
@@ -67,13 +68,30 @@ public class DefaultNavBarCreator implements INavBarCreator {
                         setSelected(navi);
                     });
                     menuItem.setImage(navi.getImg());
-                    menuItem.setClientAttribute("onClick",
-                            "collapseHeaderMenu(); setNavi('" + groupName + "','" + navi.getNaviId() + "');");
+                    menuItem.setClientAttribute("onClick", "collapseHeaderMenu(); setNavi('" + groupName + "','" + navi.getNaviId() + "');");
                     menuItem.setClientAttribute("data-navi", navi.getNaviId());
                     menuPopup.appendChild(menuItem);
                 }
             }
         }
+    }
+
+    private void addSClass(Menupopup menuPopup, String toAdd) {
+        if (toAdd == null || toAdd.length() == 0) {
+            // nothing to do
+            return;
+        }
+        final String current = menuPopup.getSclass();
+        if (current == null || current.length() == 0) {
+            // just set it
+            menuPopup.setSclass(toAdd);
+        }
+        // both are not null, merge them. We assume the class to add is a single token
+        if (current.indexOf(toAdd) >= 0) {
+            // nothing to do, already there!
+            return;
+        }
+        menuPopup.setSclass(current + " " + toAdd);
     }
 
     private void setSelected(Object selected) {
