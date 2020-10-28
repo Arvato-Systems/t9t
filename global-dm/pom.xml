@@ -102,8 +102,7 @@
         <zxing.version>3.3.3</zxing.version>
         <quartz.version>2.3.2</quartz.version>                         <!-- TODO: should check if 2.3.0 offers improvements (is newer, and Java 7+, quartz 2.2.3 is Java 6+) -->
         <quartz-oracle.version>2.1.7</quartz-oracle.version>           <!-- no update since 2013! -->
-        <jasperreports.version>6.13.0</jasperreports.version>
-        <castor.version>1.2</castor.version>     <!-- pulled by jasper, version needed for CVE fix -->
+        <jasperreports.version>6.15.0</jasperreports.version>
         <jdtcore.version>3.1.1</jdtcore.version>
         <jsap.version>2.1</jsap.version>
         <httpcore.version>4.4.9</httpcore.version>
@@ -542,11 +541,6 @@
                 <groupId>org.quartz-scheduler</groupId>
                 <artifactId>quartz-oracle</artifactId>
                 <version>${quartz-oracle.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.codehaus.castor</groupId>
-                <artifactId>castor</artifactId>
-                <version>${castor.version}</version>
             </dependency>
             <dependency>
                 <groupId>net.sf.jasperreports</groupId>
