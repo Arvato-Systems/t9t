@@ -19,16 +19,12 @@ import de.jpaw.dp.Singleton;
 @Fallback
 public class DefaultNavBarCreator implements INavBarCreator {
 
-    private final int MAX_NUMBER_SUBMENU_ITEMS_PER_COLUMN = 13;
-    private final IApplicationDAO applicationDAO = Jdp.getRequired(IApplicationDAO.class);
-    protected NaviGroupingViewModel naviGroups = null;
-    protected Object selected;
-    protected ApplicationViewModel viewModel;
+    protected final int MAX_NUMBER_SUBMENU_ITEMS_PER_COLUMN = 13;
+    protected final IApplicationDAO applicationDAO = Jdp.getRequired(IApplicationDAO.class);
+    // protected Object selected;  // is set once, but never read... and cannot have instance fields per session in a singleton
 
     @Override
-    public void createNavBar(ApplicationViewModel viewModel, Component container, NaviGroupingViewModel naviGroups) {
-        this.naviGroups = naviGroups;
-        this.viewModel = viewModel;
+    public void createNavBar(final ApplicationViewModel viewModel, final Component container, final NaviGroupingViewModel naviGroups) {
         int groupCounts = naviGroups.getGroupCount();
         Menubar menubar = new Menubar("horizontal");
         menubar.setWidth("100%");
@@ -50,7 +46,7 @@ public class DefaultNavBarCreator implements INavBarCreator {
             for (int childIndex = 0; childIndex < naviGroups.getChildCount(groupIndex); childIndex++) {
                 Navi navi = naviGroups.getChild(groupIndex, childIndex);
                 // Display grouped subtitle (non clickable)
-                if (subtitleShouldDisplay(groupIndex, childIndex)) {
+                if (subtitleShouldDisplay(naviGroups, groupIndex, childIndex)) {
                     Menuitem menuItem = new Menuitem();
                     menuItem.setLabel(navi.getSubcategory());
                     menuItem.setDisabled(true);
@@ -65,7 +61,7 @@ public class DefaultNavBarCreator implements INavBarCreator {
                     menuItem.setLabel(navi.getName());
                     menuItem.setAttribute("navi", navi);
                     menuItem.addEventListener(Events.ON_CLICK, (ev) -> {
-                        setSelected(navi);
+                        setSelected(viewModel, naviGroups, navi, null);
                     });
                     menuItem.setImage(navi.getImg());
                     menuItem.setClientAttribute("onClick", "collapseHeaderMenu(); setNavi('" + groupName + "','" + navi.getNaviId() + "');");
@@ -94,17 +90,17 @@ public class DefaultNavBarCreator implements INavBarCreator {
         menuPopup.setSclass(current + " " + toAdd);
     }
 
-    private void setSelected(Object selected) {
-        if (selected instanceof String) {
-            setNaviGroup(String.valueOf(selected), true);
-        } else {
-            viewModel.createComponents((Navi) selected);
-            this.selected = selected;
-            setNaviGroup(((Navi) selected).getCategory(), false);
+    protected void setSelected(final ApplicationViewModel viewModel, final NaviGroupingViewModel naviGroups, Navi selectedNavi, String selectedGroup) {
+        if (selectedGroup != null) {
+            setNaviGroup(naviGroups, selectedGroup, true);  // used in the EE implementation
+        } else if (selectedNavi != null) {
+            viewModel.createComponents(selectedNavi);
+            // this.selected = selected;  // value is never read, skipping assignment
+            setNaviGroup(naviGroups, (selectedNavi).getCategory(), false);
         }
     }
 
-    private void setNaviGroup(String category, boolean isClosePermitted) {
+    protected void setNaviGroup(final NaviGroupingViewModel naviGroups, String category, boolean isClosePermitted) {
         Integer groupIndex = applicationDAO.getGroupIndexByCategory(category, naviGroups);
         if (groupIndex != null) {
             if (!naviGroups.isGroupOpened(groupIndex)) {
@@ -132,7 +128,7 @@ public class DefaultNavBarCreator implements INavBarCreator {
      * @param childIndex
      * @return
      */
-    public boolean subtitleShouldDisplay(int index, int childIndex) {
+    protected boolean subtitleShouldDisplay(final NaviGroupingViewModel naviGroups, int index, int childIndex) {
 
         if (childIndex != 0) {
             if (naviGroups.getChild(index, childIndex).getSubcategory() != null
@@ -147,7 +143,7 @@ public class DefaultNavBarCreator implements INavBarCreator {
         }
     }
 
-    public final String getSubMenuClass(int childCount) {
+    protected final String getSubMenuClass(int childCount) {
 
         if (childCount > MAX_NUMBER_SUBMENU_ITEMS_PER_COLUMN) {
             int i = childCount / MAX_NUMBER_SUBMENU_ITEMS_PER_COLUMN;
