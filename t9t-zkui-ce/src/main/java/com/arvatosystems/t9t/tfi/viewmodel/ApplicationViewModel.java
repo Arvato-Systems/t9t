@@ -52,6 +52,7 @@ import org.zkoss.zul.Panelchildren;
 import org.zkoss.zul.Style;
 import org.zkoss.zul.Window;
 
+import com.arvatosystems.t9t.authc.api.TenantDescription;
 import com.arvatosystems.t9t.component.fields.IField;
 import com.arvatosystems.t9t.components.tools.JumpTool;
 import com.arvatosystems.t9t.tfi.general.ApplicationUtil;
@@ -89,7 +90,7 @@ public class ApplicationViewModel {
 
     private String whenLastLoggedIn;
     private Long pwdExpiresInDays = null;
-    private Integer numberOfIncorrentAttempts;
+    private Integer numberOfIncorrectAttempts;
     private String selectedTenantId;
     private final ApplicationSession as = ApplicationSession.get();
     private final IApplicationDAO applicationDAO = Jdp.getRequired(IApplicationDAO.class);
@@ -101,6 +102,7 @@ public class ApplicationViewModel {
     List<IField> filters;
     List<HtmlBasedComponent> htmlBasedFieldComponents;
     private final int MAX_NUMBER_SUBMENU_ITEMS_PER_COLUMN = 13;
+    private final long MILLISECONDS_PER_DAY = 24L * 60L * 60L * 1000L;
 
     @Wire("#navbarContainer") private Component navbar;
     @Wire("#mainHome") private Window mainHome;
@@ -127,21 +129,19 @@ public class ApplicationViewModel {
             if (userName == null)
                 userName = "?";
 
-            numberOfIncorrentAttempts = as.getNumberOfIncorrentAttempts();
-            if (numberOfIncorrentAttempts == null)
-                numberOfIncorrentAttempts = Integer.valueOf(0);
-            Instant lastLoggedIn = as.getLastLoggedIn();
+            numberOfIncorrectAttempts = as.getNumberOfIncorrectAttempts();
+            if (numberOfIncorrectAttempts == null)
+                numberOfIncorrectAttempts = Integer.valueOf(0);
+            final Instant lastLoggedIn = as.getLastLoggedIn();
             if (lastLoggedIn != null) {
                 whenLastLoggedIn = CommonFns.formatDate(lastLoggedIn.toDate(), ZulUtils.i18nLabel("com.datetime.format"));
             }
-            Instant passwordExpires = as.getPasswordExpires();
+            final Instant passwordExpires = as.getPasswordExpires();
             if (passwordExpires != null) {
-                pwdExpiresInDays = passwordExpires.toDate().getTime() - System.currentTimeMillis();
-                Double doublePwdExpires = Math.ceil(new Double(pwdExpiresInDays) / (1000 * 60 * 60 * 24));
-                pwdExpiresInDays = doublePwdExpires.longValue();
+                pwdExpiresInDays = (passwordExpires.getMillis() - System.currentTimeMillis()) / MILLISECONDS_PER_DAY;
+                if (pwdExpiresInDays < 0L)
+                    pwdExpiresInDays = 0L;
             }
-
-            pwdExpiresInDays = 1l;
 
             LOGGER.info("New ApplicationViewModel created for user {}, now reading menu...", userId);
             as.readMenu();
@@ -155,17 +155,17 @@ public class ApplicationViewModel {
 
     @Command
     public void changeTenant() {
-        List allowedTenants= as.getAllowedTenants();
+        List<TenantDescription> allowedTenants= as.getAllowedTenants();
 
         if (allowedTenants.size() > 1) {
-                Map args = new HashMap();
-                args.put("isCancelClose", true);
-                args.put("isPopup", true);
-                final Window win = (Window) Executions.createComponents(Constants.ZulFiles.LOGIN_TENANT_SELECTION, null, args);
-                win.setClosable(true);
-                win.setMode(Window.MODAL);
-                win.doModal();
-                win.setSclass("embeddedTenantSelection");
+            Map args = new HashMap();
+            args.put("isCancelClose", true);
+            args.put("isPopup", true);
+            final Window win = (Window) Executions.createComponents(Constants.ZulFiles.LOGIN_TENANT_SELECTION, null, args);
+            win.setClosable(true);
+            win.setMode(Window.MODAL);
+            win.doModal();
+            win.setSclass("embeddedTenantSelection");
         }
     }
 
@@ -576,12 +576,12 @@ public class ApplicationViewModel {
         this.userName = userName;
     }
 
-    public Integer getNumberOfIncorrentAttempts() {
-        return numberOfIncorrentAttempts;
+    public Integer getNumberOfIncorrectAttempts() {
+        return numberOfIncorrectAttempts;
     }
 
-    public void setNumberOfIncorrentAttempts(Integer numberOfIncorrentAttempts) {
-        this.numberOfIncorrentAttempts = numberOfIncorrentAttempts;
+    public void setNumberOfIncorrectAttempts(Integer numberOfIncorrectAttempts) {
+        this.numberOfIncorrectAttempts = numberOfIncorrectAttempts;
     }
 
     public AImage getTenantLogo() {

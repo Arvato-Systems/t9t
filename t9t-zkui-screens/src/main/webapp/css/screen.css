@@ -13,20 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@font-face { font-family: 'Helvetica Neue'; src: url('../fonts/HelveticaNeue-Regular.otf'); }
-
-@font-face {
-  font-family: 'Helvetica Neue';
-  src: url(../fonts/HelveticaNeue-Regular.otf);
-  font-weight: normal;
-  src: url(../fonts/HelveticaNeue-Bold.otf);
-  font-weight: bold;
-}
-
 body *:not([class*="z-icon-"]) {
-    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-family: Calibri, Arial, sans-serif;
     font-size: 14px;
-    font: normal 14px tahoma, arial, helvetica, sans-serif;
     -webkit-text-size-adjust: none;
 }
 
@@ -486,7 +475,7 @@ body {
 }
 
 .header-background {
-    background: #2578A9;
+    background: linear-gradient(150deg, rgb(0, 39, 73), rgb(0, 104, 169) 40%, rgb(176, 200, 0) 100%);
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
 }
 
@@ -498,6 +487,8 @@ body {
 .header-row {
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
+    height: 70px;
 }
 
 .header-row-with-right-menu {
@@ -506,14 +497,21 @@ body {
 
 .header-title {
     color: #fff;
-    margin: 20px;
-    margin-right: auto;
+    padding: 20px;
     font-size: 18px;
+    min-width: 35%;
+    display: flex;
+    align-items: center;
 }
 
 .header-logo {
-   margin: 5px;
-   margin-right: auto;
+    position: absolute;
+    right: 61px;
+    top: calc((104px - 88px) / 2);
+}
+
+.header-logo img {
+    height: 88px;
 }
 
 .header-title span {
@@ -525,12 +523,20 @@ body {
     margin-left: 10px;
 }
 
+.header-middle-item {
+    align-self: center;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 60px;
+    width: 14%;
+    min-width: 200px;
+}
+
 .header-right-item {
     align-self: center;
     color: rgba(255, 255, 255, 0.7);
-    padding-left: 5px;
     padding-right: 5px;
     line-height: 60px;
+    min-width: 35%;
 }
 
 .header-right-item-tenant {
@@ -539,6 +545,11 @@ body {
 
 .header-right-item:last-child {
     margin-right: 10px;
+}
+
+.header-right-item .header-nav {
+    display: flex;
+    justify-content: flex-end;
 }
 
 .header-menu-text {
@@ -771,7 +782,7 @@ body {
     box-shadow: none;
 }
 
-.header-nav-submenu:not(.active):hover {
+.z-menubar .header-nav-submenu:not(.active):hover {
     border-bottom: 4px solid #000;
 
 }
@@ -801,12 +812,14 @@ body {
 
 .search-box {
     background: #134D71;
+    display: flex;
+    height: 32px;
+    align-items: center;
 }
 
 .search-box > span {
     padding: 5px;
     background: #134D71;
-    margin-left: -1px;
 }
 
 .search-box > input {
@@ -814,6 +827,7 @@ body {
     border: none;
     border-radius: 0;
     color: #fff;
+    width: 100%;
 }
 
 /* .header-nav > div:not(:first-of-type):not(:last-of-type) > div {

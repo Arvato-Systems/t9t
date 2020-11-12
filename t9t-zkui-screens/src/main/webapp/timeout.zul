@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xel-method prefix="l" name="translate" class="com.arvatosystems.t9t.tfi.web.ZulUtils" signature="String translate(String, String)"?>
-
+<?link rel="icon" type="image/x-icon" href="/favicon.ico"?>
 
 <window  title="Session Timeout" border="normal"
     width="450px" position="center,center"  mode="overlapped">

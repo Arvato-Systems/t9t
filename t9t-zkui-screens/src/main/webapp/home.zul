@@ -4,6 +4,7 @@
 <?xel-method prefix="l" name="translateArgs" class="com.arvatosystems.t9t.tfi.web.ZulUtils" signature="String translate(String, String, String)"?>
 <?xel-method prefix="l"  name="i18nLabel"  class="com.arvatosystems.t9t.tfi.web.ZulUtils" signature="String i18nLabel(String)"?>
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?link rel="icon" type="image/x-icon" href="/favicon.ico"?>
 
 <zk xmlns:w="client" xmlns:n="native">
     <!-- Load the script -->
@@ -42,19 +43,22 @@
                          <div sclass="header-title">
                              <label sclass="app-cur-page-title"></label>
                          </div>
-                         <div sclass="header-logo">
-                             <a href="https://it.arvato.com/de.html">
-                                    <image src="/img/logo/company_logo.png" height="55px"/>
-                             </a>
-                         </div>
-                         <div sclass="header-right-item">
+
+                         <div sclass="header-middle-item">
                              <div sclass="search-box">
                                  <span sclass="icon z-icon-search"></span>
                                  <textbox id="search" onOK="@command('search', self_value=self.value)"
                                      placeholder="Search Order" />
                              </div>
                          </div>
+
                          <div sclass="header-right-item">
+                             <div>
+                                 <a sclass="header-logo" href="https://it.arvato.com/de.html">
+                                     <image src="/img/logo/company_logo_transp.png"/>
+                                 </a>
+                             </div>
+
                              <div sclass="header-nav right-nav">
                                  <div>
                                      <a>
@@ -132,10 +136,10 @@
                                     value="@load(vm.whenLastLoggedIn)" />
                             </div>
                             <div
-                                visible="@load(not(vm.numberOfIncorrentAttempts eq null or vm.numberOfIncorrentAttempts eq '0'))">
+                                visible="@load(not(vm.numberOfIncorrectAttempts eq null or vm.numberOfIncorrectAttempts eq '0'))">
                                 <separator height="1px" />
                                 <label value="${l:translate('main','invalid')}" style="color:red" />
-                                <label value="@load(vm.numberOfIncorrentAttempts)" style="color:red" />
+                                <label value="@load(vm.numberOfIncorrectAttempts)" style="color:red" />
                             </div>
                             <div visible="@load(not(vm.pwdExpiresInDays eq null) and vm.pwdExpiresInDays lt 10)">
                                 <separator height="1px" />

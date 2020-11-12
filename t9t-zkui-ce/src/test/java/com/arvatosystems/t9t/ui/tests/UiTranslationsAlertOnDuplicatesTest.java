@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.ui.tests;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.arvatosystems.t9t.jdp.Init;
@@ -30,5 +31,19 @@ public class UiTranslationsAlertOnDuplicatesTest {
             System.out.println(numDuplicates + " overwritten translation entries exist - check logs for details");
             throw new Exception(numDuplicates + " duplicate translation entries exist");
         }
+    }
+
+    @Ignore // run this one manually only
+    @Test
+    public void alertOnTranslationsMatchingDefaultTest() throws Exception {
+        Init.initializeT9t();  // initialize
+        TranslationsStack.checkDuplicates(true, true, false);
+    }
+
+    @Ignore // run this one manually only
+    @Test
+    public void alertOnTranslationsDeMatchingEnTest() throws Exception {
+        Init.initializeT9t();  // initialize
+        TranslationsStack.checkDuplicates(false, true, true);
     }
 }

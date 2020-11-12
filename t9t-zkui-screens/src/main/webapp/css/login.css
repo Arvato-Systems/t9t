@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 /* Neutralize ZK generated default styles based on ZK 8.5 */
-@font-face { font-family: 'Helvetica Neue'; src: url('../fonts/HelveticaNeue-Regular.otf'); }
-
-@font-face {
-  font-family: 'Helvetica Neue';
-  src: url(../fonts/HelveticaNeue-Regular.otf), weight:normal;
-  src: url(../fonts/HelveticaNeue-Bold.otf), weight:bold;
-}
-
 body {
     padding: 0;
 }
 
 body *:not([class*="z-icon-"]) {
-    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-family: Calibri, Arial, sans-serif;
 }
 
 .h6 {
@@ -55,7 +47,7 @@ body *:not([class*="z-icon-"]) {
     border:0;
 }
 
-.z-textbox: focus {
+.z-textbox:focus {
     outline: none;
 }
 
@@ -113,7 +105,7 @@ body *:not([class*="z-icon-"]) {
     padding-left: 20px;
 }
 
-.forget-password-link {
+.forgot-password-link {
     color: #368AC0;
     text-decoration: underline;
 }
@@ -123,6 +115,7 @@ body *:not([class*="z-icon-"]) {
 }
 
 .square-btn {
+    width:100%;
     height: 38px !important;
     border: 0;
     border-radius: 0;
@@ -135,10 +128,6 @@ body *:not([class*="z-icon-"]) {
 .square-btn:hover, .square-btn:focus {
     background: #368AC0;
     color: #fff;
-}
-
-.login-btn {
-    width: 260px !important;
 }
 
 .footer {
@@ -165,20 +154,6 @@ body *:not([class*="z-icon-"]) {
     color: #e74c3c;
 }
 
-.logo {
-    padding: 25px 0px;
-    width: 150px;
-}
-
-.logo img {
-    padding-bottom: 25px;
-}
-
-.logo-label > span {
-    font-weight: bold;
-    font-size: 18px;
-}
-
 .block-field {
     text-align: left;
 }
@@ -196,10 +171,11 @@ body *:not([class*="z-icon-"]) {
 }
 
 .block-field > .z-combobox {
-    width: 91% !important;
+    width: 100% !important;
+    display:flex;
 }
 
-.block-field > .z-combobox > .z-combobox-input {
+.block-field .z-combobox-input {
     width: 100% !important;
 }
 
@@ -279,4 +255,117 @@ body *:not([class*="z-icon-"]) {
 .z-messagebox-window .z-button:hover {
     background: #368AC0;
     color: #fff;
+}
+
+.flex {
+    width: 100%;
+    min-height: 100vh;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.container {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+    justify-content: space-between;
+    width:75vw;
+    max-width:18em;
+}
+
+.row {
+    display: flex;
+    flex-flow: row wrap;
+    margin-bottom: 1rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.col {
+    flex: 0 0 100%;
+    max-width: 100%;
+    padding:0.2em;
+}
+
+.sm-6 {
+    flex: 0 0 50%;
+    max-width: 50%;
+}
+
+.title {
+    font-size: 1.2em;
+    font-weight: bold;
+    padding-bottom:1em;
+}
+
+.logo {
+    justify-content: center;
+    align-items: center;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+    padding: 25px 0px;
+}
+
+.logo-img {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo-img > img {
+    max-width: 100%;
+}
+
+.logo-label {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo-label .z-label {
+    font-weight: bold;
+    font-size: 1.5em;
+}
+
+.version, .vendor {
+    text-align: center;
+}
+
+.button-left {
+    padding-left: 0px;
+}
+
+.button-right {
+    padding-right: 0px;
+}
+
+.remember-me {
+    line-height: 0.5em;
+}
+
+.forgot-password {
+    text-align: center;
+}
+
+.btn-secondary {
+    background: #C4C4C4;
+}
+
+.actions {
+    margin-top:2em;
 }

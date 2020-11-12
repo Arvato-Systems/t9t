@@ -81,15 +81,38 @@ public abstract class AbstractField<E extends InputElement> implements IField {
         E c = createComponent(suffix);
         c.setId(cfg.getFieldName() + suffix);
         c.setHflex("1");
-        c.setPlaceholder(suffix == null || suffix.length() == 0 ? label : session.translate(gridId, fieldname + suffix));
+        c.setPlaceholder(suffix.length() == 0 ? label : translateFromOrTo(gridId, fieldname, suffix, label));
         components.add(c);
     }
 
+    /** Translate a label for "From" or "To". */
+    private String translateFromOrTo(String gridId, String fieldname, String suffix, String labelWithoutSuffix) {
+        // return session.translate(gridId, fieldname + suffix);
+        final String pattern = session.translate(null, suffix);
+        if (pattern.indexOf('#') < 0) {
+            // just a text: assume the translation is a suffix
+            return labelWithoutSuffix + " " + pattern;
+        }
+        // with #: replace it at flexible position
+        return pattern.replace("#", labelWithoutSuffix);
+    }
+
     protected void createComponents() {
-        if (cfg.getFilterType() == UIFilterType.RANGE) {
+        switch (cfg.getFilterType()) {
+        case RANGE:
             createComponentSub("From");
             createComponentSub("To");
-        } else {
+            break;
+        case LOWER_BOUND:
+            createComponentSub("From");
+            break;
+        case UPPER_BOUND:
+            createComponentSub("To");
+            break;
+        case LIKE:
+            createComponentSub("Like");
+            break;
+        default:
             createComponentSub("");
         }
     }

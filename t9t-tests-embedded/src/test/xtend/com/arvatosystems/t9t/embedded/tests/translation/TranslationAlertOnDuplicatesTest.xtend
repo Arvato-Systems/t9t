@@ -19,12 +19,13 @@ import com.arvatosystems.t9t.embedded.connect.InMemoryConnection
 import com.arvatosystems.t9t.translation.be.TranslationsStack
 import de.jpaw.annotations.AddLogger
 import org.junit.Test
+import org.junit.Ignore
 
 @AddLogger
 class TranslationAlertOnDuplicatesTest {
 
     @Test
-    def public void alertOnDuplicateTranslationsTest() {
+    def void alertOnDuplicateTranslationsTest() {
         new InMemoryConnection  // initialize
         val numDuplicates = TranslationsStack.numberOfDuplicateTranslations
         if (numDuplicates != 0) {
@@ -33,5 +34,19 @@ class TranslationAlertOnDuplicatesTest {
         } else {
             LOGGER.info("Everything fine - no duplicate translations found")
         }
+    }
+
+    @Ignore // run this one manually only
+    @Test
+    def void alertOnTranslationsMatchingDefaultTest() {
+        new InMemoryConnection  // initialize
+        TranslationsStack.checkDuplicates(true, true, false)
+    }
+
+    @Ignore // run this one manually only
+    @Test
+    def void alertOnTranslationsDeMatchingEnTest() {
+        new InMemoryConnection  // initialize
+        TranslationsStack.checkDuplicates(false, true, true)
     }
 }

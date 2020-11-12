@@ -83,7 +83,7 @@ package (com.arvatosystems) t9t.base.auth {
         optional Instant                                    lastLoginUser;              // last login for any method for this user
         optional Instant                                    lastLoginMethod;            // last login for the used authentication method for this user
         optional Instant                                    passwordExpires;            // if the password or token has limited validity: when does it expire?
-        optional Integer                                    numberOfIncorrentAttempts;  // for password authentication; how often has the user tried to log in before?
+        optional Integer                                    numberOfIncorrectAttempts;  // for password authentication; how often has the user tried to log in before?
     }
 
     class ChangePasswordUI {

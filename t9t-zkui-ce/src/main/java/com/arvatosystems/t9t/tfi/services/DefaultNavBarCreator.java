@@ -81,12 +81,12 @@ public class DefaultNavBarCreator implements INavBarCreator {
         if (current == null || current.length() == 0) {
             // just set it
             menuPopup.setSclass(toAdd);
-        }
-        // both are not null, merge them. We assume the class to add is a single token
-        if (current.indexOf(toAdd) >= 0) {
+            return;  // also do not execute final statement
+        } else if (current.indexOf(toAdd) >= 0) {
             // nothing to do, already there!
             return;
         }
+         // both are not null, merge them. We assume the class to add is a single token
         menuPopup.setSclass(current + " " + toAdd);
     }
 

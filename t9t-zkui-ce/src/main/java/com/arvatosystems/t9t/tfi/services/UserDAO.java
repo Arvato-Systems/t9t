@@ -113,7 +113,7 @@ public class UserDAO implements IUserDAO {
                 final ApplicationSession as = ApplicationSession.get();
                 as.setLastLoggedIn(resp.getLastLoginUser());
                 as.setPasswordExpires(resp.getPasswordExpires());
-                as.setNumberOfIncorrentAttempts(resp.getNumberOfIncorrentAttempts());
+                as.setNumberOfIncorrectAttempts(resp.getNumberOfIncorrectAttempts());
                 if (resp.getTenantNotUnique()) {
                     // request all tenants via additional remote call...
                     LOGGER.info("User {} has access to multiple tenants - retrieving list", username);

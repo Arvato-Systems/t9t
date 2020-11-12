@@ -1,0 +1,221 @@
+////
+Copyright (c) 2012 - 2018 Arvato Systems GmbH
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+////
+= BPMN 2 Module
+
+The current implementation of the BPMN 2 module is using Camunda. This documentation describes the integrations of Camunda into T9T.
+For a description of the workflow engine itself, please refer to Camunda documentation.
+
+== T9T Events &rarr; BPM Messages
+The BPMN 2 engine is triggered using T9T events by BPM messages.
+
+To deliver a T9T event as message, a `com.arvatosystems.t9t.base.services.IEventHandler` must be implemented as usual event handling.
+The BPM message is provided using the `t9t.bpmn2.request.DeliverMessageRequest` using a message name, 
+variables to provide and an optional business key.
+
+If no business key is provided, the message is provided to all subscriber (or none at all). 
+If a business key is provided, the message is delivered to exact one subscriber.
+
+Thus, the concept of business keys is used as an essential part of the integration.
+
+NOTE: By using a request to delivery a BPM message to the engine, failed message delivery (e.g.
+due to process not waiting on this message yet) will result in a failed request, which can be
+monitored using the regular T9T message log.
+
+
+== Process Instance Initialization
+Since BPM messages triggered by T9T events are also used to start a process instance, the initial variables might be limited. (E.g., only some kind of primary key.)
+
+To allow initialization of process instance variables, a `com.arvatosystems.t9t.bpmn2.IBPMNInitWorkflowCallback` is triggered during process instance start.
+
+NOTE: No listener need to be added to the process definition to trigger these callbacks. An appropriate listener will added added by T9T during BPM parse.
+To enable initialization the extension `camunda:properties` with the name `InitWorkflow` must be set to `true`.
+
+The implementation to use is defined using an extension `camunda:properties` with the name `WorkflowType` attached to the process definition.
+The provided value is used as qualifier to retrive the callback implementation from JDP.
+
+The callbacks `init` method is provided with a map of the current process instance variables which can also be used to add more variables during initialization.
+Furthermore, a read only map containing all available extension `camunda:properties` of the triggered start event is provided to allow passing more configuration values defined
+in the process definition. 
+
+
+== Locking
+To allow locking of object refs during processing, the `com.arvatosystems.t9t.bpmn2.IBPMNInitWorkflowCallback` is retrieved (as done during process instance initialization).
+
+Before process instance initialization and before asynchronous execution of process, the `lockRefs` method is called to allow locking needed object refs.
+
+
+== Java Delegates
+Following Java delegates are available for usage in service tasks or send tasks.
+
+=== Regular Workflow Steps
+The BPMN 2 implementation and the more simple state machine implementation can use the same workflow steps.
+
+In general, those steps implement the interface `com.arvatosystems.t9t.bpmn.IWorkflowStep`.
+
+To use those workflow steps, the generic java delegate `com.arvatosystems.t9t.bpmn2.be.camunda.delegate.WorkflowStepDelegate` has been created.
+Configuration is possible using following variables (which might be provided using static input variable mapping):
+
+[cols="2,1,4a",options=header]
+|===
+| Variable
+| Optional
+| Description
+
+| workflowStepName
+| no
+| Provide the qualifier of the workflow step implementation to use.
+The workflow step instance is retrieved from JDP as `IWorkflowStep` using the provided qualifier. 
+|===
+
+Following local variables are available (besides those created by the actual workflow step implementation) to retrieve results: 
+
+[cols="2,5a",options=header]
+|===
+| Variable
+| Description
+
+| resultValue
+| Contains the result value (`com.arvatosystems.t9t.bpmn.WorkflowReturnCode`).
+|===
+
+==== Workflow Data Creation
+The workflow data object, which is provided to the workflow step, is created using a factory, which is quite similar to its creation when using the simple state engine.
+ 
+Besides the simple state engine, the factory has to implement the interface `com.arvatosystems.t9t.bpmn2.IBPMNObjectFactory`. Its implementation is retrieved from JDP using the factory
+name returned by `IWorkflowStep#getFactoryName()`. If no name is provided an default implementation without any qualifier is retrieved from JDP.
+
+NOTE: While the workflow data object used by the simple state engine implementation is the actual data container, in this implementation it is only desinged as a proxy of the actual process instance variables to
+keep compatibility of the workflow step implementations with both engines. Thus, read and write access to this data object implementation need to be passed to the actual process instance variable scope.
+
+==== Process Variables
+The map of process variables provided to the workflow step is actually a proxy to the process instance variable scope. Read and write operations to this map are forwarded to the actual process instance variable scope, where all variables are available for read but write operations only affect the executions local scope.
+
+NOTE: Variables created within the workflow step need to be mapped to the outer scope using a output variable mapping.
+
+==== Execution
+The delegate first calls the `mayRun` method since the simple state engine would also do.
+Depending on its result, the execution is proceeded as following:
+
+[cols="1a,1a,3a",options=header]
+|===
+| `mayRun()`
+| perform `execute()`
+| result value
+
+| `RUN`
+| yes
+| Result value as provided by `execute` method.
+
+| `YIELD`
+| no
+| `YIELD`
+
+| `SKIP`
+| no
+| `PROCEED_NEXT`
+
+| `ERROR`
+| no
+| `ERROR`
+|===
+
+WARNING: In contrast to the simple state engine, the results `YIELD`, `YIELD_NEXT` and `COMMIT_RESTART` does not commit nor trigger any restart automatically.
+Furthermore, the result `DONE` does not stop the process execution. 
+If some kind of such behavior is needed, the result needs to be provided to a variable and this behavior needs to be explicit modeled using BPMN.
+
+In case of the return value `ERROR`, a BPM error with error code `workflowStepError` is created, which can be handled using an error boundary event.
+
+
+=== Execute Requests
+Besides execution of regular T9T workflow step implementations, execution of arbitrary requests is possible by using the 
+`com.arvatosystems.t9t.bpmn2.be.camunda.delegate.ExecuteRequestDelegate`.
+
+Configuration is possible using following variables (which might be provided using static input variable mapping):
+
+[cols="2,1,4a",options=header]
+|===
+| Variable
+| Optional
+| Description
+
+| requestJson
+| no
+| JSON of request to be executed. 
+It will be unmarshalled using Bonaparte and thus need to follow the Bonaparte rules for JSON. Furthermore, it must be a subclass of
+`com.arvatosystems.t9t.base.api.RequestParameters`.
+|===
+
+Following local variables are available for mapping:
+
+[cols="2,5a",options=header]
+|===
+| Variable
+| Description
+
+| response
+| Contains the response data. The result will be a `com.arvatosystems.t9t.base.api.ServiceResponse` or subclass - depending on the request.
+|===
+
+=== Publish T9T Events
+To allow sending arbitrary T9T events, the delegate `com.arvatosystems.t9t.bpmn2.be.camunda.delegate.PublishEventDelegate` can be used.
+
+Configuration is possible using following variables (which might be provided using static input variable mapping):
+
+[cols="2,1,4a",options=header]
+|===
+| Variable
+| Optional
+| Description
+
+| eventJson
+| no
+| JSON of request to be executed. It will be unmarshalled using Bonaparte and thus need to follow the Bonaparte rules for JSON.
+Furthermore, is must be a subclass of `com.arvatosystems.t9t.base.event.EventParameters`.
+|===
+
+
+== Process End Events
+All end events can also execute a regular workflow step. The step name to use is defined using an extension `camunda:properties` with the name `WorkflowStepName` attached to the process definition.
+  
+NOTE: No listener need to be added to the process definition to trigger these callbacks. An appropriate listener will added added by T9T during BPM parse.
+
+Execution is done as for regular workflow steps as java delegates, except that the workflow step has to provide the result `DONE`.
+
+
+== Background Job Execution
+Besides all requests defined in the bpmn2 API which execute some operations using the BPMN engine are executed in an existing request context, background jobs executed by the engines 
+executor does no longer have this request context by default. 
+
+To allow creation of an appropriate request context, an API key for authentication from within this job executor is necessary. This API key can be defined on multiple level. 
+
+At first place, the process instance definition, referred from the job, is searched for an extension `camunda:properties` with the name `APIKey` attached on process level. 
+If available its value is used as an API key for authentication.
+
+WARNING: Since an API key also implies a tenant for execution, please ensure to align the API keys tenant with the tenant the process definition is deployed to.
+
+If no API key is available, API keys can be configured using the `com.arvatosystems.t9t.bpmn2.be.camunda.jobExecutor.JobExecutionRequestWrapper` per tenant ref
+and one global fallback API key. 
+
+NOTE: In case the tenant implied by the API key and the tenant requested for job execution does not match, an error is thrown and the job will be handled as failed.
+
+
+== Tenant Mapping
+The tenant ref as available in T9T is also used as tenant id by the BPM engine. 
+Only the `@` tenant (with the ref 1001) is mapped as the no/empty tenant to the BPM engine. 
+
+[appendix]
+== Copyright and License
+include::LICENSE.adoc[]

@@ -103,7 +103,7 @@ public final class ApplicationSession {
     private Map<Long, TenantDescription>     tenantsByRef;
     private Instant                          lastLoggedIn;
     private Instant                          passwordExpires;
-    private Integer                          numberOfIncorrentAttempts;
+    private Integer                          numberOfIncorrectAttempts;
     private Cache<String, Map<String, String>> enumTranslationCache = CacheBuilder.newBuilder().build();
     private Cache<String, List<Description>> dropdownDataCache =
             CacheBuilder.newBuilder().expireAfterWrite(15L, TimeUnit.MINUTES).build();
@@ -601,12 +601,12 @@ public final class ApplicationSession {
         this.passwordExpires = passwordExpires;
     }
 
-    public Integer getNumberOfIncorrentAttempts() {
-        return numberOfIncorrentAttempts;
+    public Integer getNumberOfIncorrectAttempts() {
+        return numberOfIncorrectAttempts;
     }
 
-    public void setNumberOfIncorrentAttempts(Integer numberOfIncorrentAttempts) {
-        this.numberOfIncorrentAttempts = numberOfIncorrentAttempts;
+    public void setNumberOfIncorrectAttempts(Integer numberOfIncorrectAttempts) {
+        this.numberOfIncorrectAttempts = numberOfIncorrectAttempts;
     }
 
     public void storePermissions(List<PermissionEntry> perms) {

@@ -1,70 +1,97 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="IGNORE"?>
 <?xel-method prefix="l" name="translate" class="com.arvatosystems.t9t.tfi.web.ZulUtils" signature="String translate(String, String)"?>
-    <zk xmlns:c="client">
-    <window id="main" height="500px"
-    width="380px" apply="org.zkoss.bind.BindComposer"
-    viewModel="@id('vm') @init('com.arvatosystems.t9t.tfi.viewmodel.TenantSelectionViewModel')"
-    border="normal" mode="overlapped" position="center,center"
-    xmlns:h="native" sclass="white-window">
+<?link rel="icon" type="image/x-icon" href="/favicon.ico"?>
 
-    <style src="/css/login.css"/>
 
-    <h:script>
-        zk.afterMount(function() {
-             zkbind.$('$main').command('realTimezone', { tzid: Intl.DateTimeFormat().resolvedOptions().timeZone } );
-        });
-       </h:script>
+<zk xmlns:c="client">
+    <window id="main" height="100%"
+        width="100%" apply="org.zkoss.bind.BindComposer"
+        viewModel="@id('vm') @init('com.arvatosystems.t9t.tfi.viewmodel.TenantSelectionViewModel')"
+        border="normal" mode="overlapped" position="center,center"
+        xmlns:h="native" sclass="white-window">
 
- <div class="form">
-        <vbox vflex="1" align="center" width="100%">
-            <div sclass="logo">
-                <image src="/img/logo/company_logo.png" width="110px"></image>
-                <span sclass="logo-label">${l:translate('app','name')}</span>
-            </div>
-            <div style="height:20px" />
-            <div class="block-field">
-               <div>
-                    <span sclass="h6">${l:translate('tenant','choose')}</span>
+        <style src="/css/login.css"/>
+
+        <h:script>
+            zk.afterMount(function() {
+                 zkbind.$('$main').command('realTimezone', { tzid: Intl.DateTimeFormat().resolvedOptions().timeZone } );
+            });
+        </h:script>
+
+        <div sclass="flex">
+            <div sclass="container">
+                <div sclass="row">
+
+                    <div sclass="col logo">
+                        <div sclass="row">
+                            <div sclass="col logo-img">
+                                <image src="/img/logo/company_logo.png"></image>
+                            </div>
+
+                            <div sclass="col logo-label">
+                                ${l:translate('app','name')}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col tenant">
+
+                        <div sclass="row">
+                            <div sclass="col selection block-field">
+
+                                <div sclass="h6">${l:translate('tenant','choose')}</div>
+
+                                <combobox id="tenantList" model="@bind(vm.tenantListModel)" selectedItem="@bind(vm.selected)"
+                                                 rows="1" mold="default" focus="true"
+                                                extra="@searchType(AsciiFilter)@valueType(equalsValue)" onOK="@command('redirect')">
+                                                <template name="model">
+                                                    <comboitem label="@bind(each.tenantId)" />
+                                                </template>
+                                 </combobox>
+
+                            </div>
+
+                            <div sclass="col block-field actions">
+
+                                <button28 id="redirectButton" sclass="square-btn"
+                                            onClick="@command('redirect')"
+                                            autodisable="redirectButton,logoff" />
+                            </div>
+
+                            <div sclass="col block-field">
+                                <button28 id="logoff" sclass="square-btn btn-secondary"
+                                            apply="com.arvatosystems.t9t.tfi.viewmodel.LogoutViewModel"
+                                            autodisable="redirectButton,logoff"
+                                            visible="@load(not isCancelClose)" />
+
+                                <button28 id="cancelButton" onClick="main.onClose();"
+                                    sclass="square-btn btn-secondary" autodisable="redirectButton,logoff"
+                                    visible="@load(isCancelClose)" />
+
+                            </div>
+
+                            <div sclass="col login-error">
+                                <label value="${l:translate('err','loginFailed')}" visible="${not empty requestScope.loginFailure}"/>
+                            </div>
+
+                       </div>
+
+                    </div>
+
+                    <div class="col footer">
+                        <div sclass="row">
+                            <div sclass="col version h6">
+                                t9t ${l:translate('t9tframework', 'version')}, ZK ${desktop.webApp.version}
+                            </div>
+                            <div sclass="col vendor h6">${l:translate('app','ourCompanyName')}</div>
+                        </div>
+                    </div>
+
                 </div>
-                <combobox id="tenantList" model="@bind(vm.tenantListModel)" selectedItem="@bind(vm.selected)"
-                                 rows="1" mold="default" focus="true"
-                                extra="@searchType(AsciiFilter)@valueType(equalsValue)" onOK="@command('redirect')">
-                                <template name="model">
-                                    <comboitem label="@bind(each.tenantId)" />
-                                </template>
-                 </combobox>
             </div>
-            <div style="height:70px" />
-            <hbox>
-                <button28 id="redirectButton" sclass="square-btn"
-                    onClick="@command('redirect')"
-                    autodisable="redirectButton,logoff" />
-                &#160;&#160;&#160;
+        </div>
 
-                <button28 id="logoff" sclass="square-btn"
-                    apply="com.arvatosystems.t9t.tfi.viewmodel.LogoutViewModel"
-                    autodisable="redirectButton,logoff"
-                    visible="@load(not isCancelClose)" />
-
-                <button28 id="cancelButton" onClick="main.onClose();"
-                    sclass="square-btn" autodisable="redirectButton,logoff"
-                    visible="@load(isCancelClose)" />
-            </hbox>
-            <div sclass="login-error"><label value="${l:translate('err','loginFailed')}" visible="${not empty requestScope.loginFailure}"/></div>
-
-                 <div>
-                        <div>
-                            <span sclass="version h6">
-                                ${desktop.webApp.version} - build ${desktop.webApp.build}
-                            </span>
-
-                            <span sclass="h6">© Arvato Systems GmbH</span>
-                        </div>
-                        </div>
-        </vbox>
-    </div>
-
-</window>
+    </window>
 
 </zk>

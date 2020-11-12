@@ -66,7 +66,7 @@ class AuthenticationRequestHandler extends AbstractRequestHandler<Authentication
         }
         resp.mustChangePassword        = (resp.passwordExpires !== null && resp.passwordExpires.isBeforeNow)
         resp.encodedJwt                = authResponseUtil.authResponseFromJwt(jwt, rq.sessionParameters, null)
-        resp.numberOfIncorrentAttempts = resp.numberOfIncorrentAttempts
+        resp.numberOfIncorrectAttempts = resp.numberOfIncorrectAttempts
         resp.tenantNotUnique           = resp.jwtInfo.tenantId == T9tConstants.GLOBAL_TENANT_ID // only then the user has access to additional ones
         LOGGER.debug("User {} successfully logged in for tenant {}", resp.jwtInfo.userId, resp.jwtInfo.tenantId)
         return resp
@@ -222,7 +222,7 @@ class AuthenticationRequestHandler extends AbstractRequestHandler<Authentication
         if (authResult.userStatus !== null) {
             resp.lastLoginUser      = authResult.userStatus.prevLogin
             resp.lastLoginMethod    = authResult.userStatus.prevLoginByPassword
-            resp.numberOfIncorrentAttempts = authResult.userStatus.numberOfIncorrectAttempts
+            resp.numberOfIncorrectAttempts = authResult.userStatus.numberOfIncorrectAttempts
         }
         resp.returnCode             = authResult.returnCode
         return resp

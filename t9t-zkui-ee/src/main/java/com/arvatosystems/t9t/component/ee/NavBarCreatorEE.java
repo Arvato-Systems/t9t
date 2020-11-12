@@ -29,11 +29,13 @@ public class NavBarCreatorEE extends DefaultNavBarCreator implements INavBarCrea
         for (int groupIndex = 0; groupIndex < groupCounts; groupIndex++) {
             String groupName = naviGroups.getGroup(groupIndex);
             final Nav nav = new Nav();
+            int childCounts = naviGroups.getChildCount(groupIndex);
             nav.setLabel(groupName);
             nav.addSclass("header-nav-submenu no-scrollbar ");
+            nav.addSclass(getSubMenuClass(childCounts));
             navbar.appendChild(nav);
 
-            for (int childIndex = 0; childIndex < naviGroups.getChildCount(groupIndex); childIndex++) {
+            for (int childIndex = 0; childIndex < childCounts; childIndex++) {
                 Navi navi = naviGroups.getChild(groupIndex, childIndex);
                 // Display grouped subtitle (non clickable)
                 if (subtitleShouldDisplay(naviGroups, groupIndex, childIndex)) {

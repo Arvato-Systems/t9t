@@ -26,6 +26,15 @@
 
     <artifactId>t9t-translation-be</artifactId>
 
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>  <!-- replace the version number in translation property file -->
+            </resource>
+        </resources>
+    </build>
+
     <dependencies>
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>

@@ -82,7 +82,7 @@ function collapseHeaderMenuWithDelay(delay) {
 var isAlertShowing = false;
 keepSessionAlive();
 setInterval(function() {
-    let maxTimeout = 600000;
+    let maxTimeout = 3600000;
     let alertBefore = 120000;
     let lastActive = window.localStorage.getItem('app.lastActive');
 
