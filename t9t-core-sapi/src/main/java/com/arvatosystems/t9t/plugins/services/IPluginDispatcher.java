@@ -20,7 +20,7 @@ import com.arvatosystems.t9t.base.services.RequestContext;
 /**
  * Defines the entry to the plugin dispatcher.
  **/
-public interface PluginDispatcher {
+public interface IPluginDispatcher<I,O> {
     /** Defines the API to call a method of a plugin via the central dispatcher. In case of problems, a T9tException will be thrown. */
-    void execute(String pluginApiId, String pluginApiQualifier, RequestContext ctx, Object in, Object out);
+    void execute(String pluginApiId, String pluginApiQualifier, RequestContext ctx, I in, O out);
 }

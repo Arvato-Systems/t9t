@@ -78,6 +78,17 @@ class RequestContextScope extends JdpThreadLocalStrict<RequestContext> {
         return result
     }
 
+    def int numberOfProcesses(Long onlySessionRef, Long onlyTenantRef) {
+        var int count = 0;
+        for (inst: instances.values) {
+            if ((onlySessionRef === null || onlySessionRef == inst.internalHeaderParameters.jwtInfo.sessionRef) &&
+                (onlyTenantRef === null || onlyTenantRef == inst.tenantRef)) {
+                count += 1
+            }
+        }
+        return count
+    }
+
     def int terminateRequest(TerminateProcessRequest rq) {
         val processToTerminate = instances.get(rq.threadId)
         if (processToTerminate === null || processToTerminate.tenantId != rq.tenantId || processToTerminate.requestRef != rq.processRef) {

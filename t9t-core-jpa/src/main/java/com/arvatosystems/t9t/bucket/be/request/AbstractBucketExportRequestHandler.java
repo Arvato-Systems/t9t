@@ -86,7 +86,7 @@ public abstract class AbstractBucketExportRequestHandler<T extends AbstractBucke
         EntityManager em = entryResolver.getEntityManager();
         em.clear();
 
-        try (IOutputSession os = outputSessionprovider.get()) {
+        try (IOutputSession os = splittingOutputSessionprovider.get(rp.getMaxRecordsPerFile())) {
             OutputSessionParameters osp = new OutputSessionParameters();
             osp.setDataSinkId(dataSinkId);
             os.open(osp);

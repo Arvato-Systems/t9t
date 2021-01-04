@@ -41,6 +41,7 @@ import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.jpa.IDataProcessor;
 import com.arvatosystems.t9t.base.jpa.IResolverAnyKey42;
+import com.arvatosystems.t9t.base.search.DummySearchCriteria;
 import com.arvatosystems.t9t.base.search.SearchCriteria;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
@@ -49,6 +50,7 @@ import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
 import de.jpaw.bonaparte.jpa.api.JpaCriteriaBuilder;
 import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
+import de.jpaw.bonaparte.pojos.api.BooleanFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.SortColumn;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
@@ -208,52 +210,17 @@ public abstract class AbstractResolverAnyKey42<
         }
     }
 
+    static private final SearchCriteria SEARCH_CRITERIA_ONLY_ACTIVE = new DummySearchCriteria();
+    static private final SearchCriteria SEARCH_CRITERIA_ANY = new DummySearchCriteria();
+    static {
+        SEARCH_CRITERIA_ONLY_ACTIVE.setSearchFilter(new BooleanFilter("isActive", true));
+        SEARCH_CRITERIA_ONLY_ACTIVE.freeze();
+        SEARCH_CRITERIA_ANY.freeze();
+    }
+
     @Override
-    public List<ENTITY> readAll(boolean onlyActive) { // ? extends
-        Long myTenant = null;
-        int tenantParams = 0;
-
-        // Compute the effective class for the given tenant
-        Class<ENTITY> derivedEntityClass = getEntityClass(); // ? extends
-
-        // Create the query string
-        String queryString = String.format("SELECT u FROM %s u%s", derivedEntityClass.getSimpleName(), onlyActive ? " where u.isActive = true" : "");
-        if (isTenantIsolated()) {
-            myTenant = getSharedTenantRef();
-            if (myTenant.equals(T9tConstants.GLOBAL_TENANT_REF42)) {
-                // global tenant
-                if (!globalTenantCanAccessAll()) {
-                    // need single tenant restriction
-                    tenantParams = 1;
-                    queryString = queryString + " AND tenantRef = ?1";
-                }
-            } else {
-                // regular tenant
-                if (isTenantMeOrGlobal()) {
-                    tenantParams = 2;
-                    queryString = queryString + " AND tenantRef IN (?1, ?2)";
-                } else {
-                    tenantParams = 1;
-                    queryString = queryString + " AND tenantRef = ?1";
-                }
-            }
-        }
-        LOGGER.trace("Query string is {}", queryString);
-
-        // Perform the query on the database
-        TypedQuery<ENTITY> query = (TypedQuery<ENTITY>) getEntityManager().createQuery(queryString, derivedEntityClass); // ? extends
-
-        switch (tenantParams) {
-        case 2:
-            query.setParameter(2, T9tConstants.GLOBAL_TENANT_REF42);
-            // fall through
-        case 1:
-            query.setParameter(1, myTenant);
-            break;
-        }
-
-        // Create and return the response
-        return query.getResultList();
+    public List<ENTITY> readAll(boolean onlyActive) {
+        return search(onlyActive ? SEARCH_CRITERIA_ONLY_ACTIVE : SEARCH_CRITERIA_ANY);
     }
 
     @Override

@@ -36,4 +36,22 @@ package (com.arvatosystems) t9t.plugins.request {
     class PluginLogSearchRequest    extends SearchRequest <PluginLogDTO, WriteTracking> {}
     class PluginLogCrudRequest      extends CrudSurrogateKeyRequest <PluginLogRef, PluginLogDTO, WriteTracking> {}
 
+
+    /** Generic output parameter for request handler plugins. */
+    class ExecutePluginV1Response extends ServiceResponse {
+        optional f42Ref             refResult;
+        optional Long               numResult;
+        optional defaultExternalId  idResult;
+        optional shortText          textResult;
+        optional Json               mapResult;
+    }
+    /** Execute some function loaded by plugin. */
+    class ExecutePluginV1Request extends RequestParameters return ExecutePluginV1Response {
+        required pluginApiQualifier qualifier;        // the qualifier of the invoked plugin (the pluginApiId will always be "requestHandler")
+        optional f42Ref             refParameter;
+        optional Long               numParameter;
+        optional defaultExternalId  idParameter;
+        optional shortText          textParameter;
+        optional Json               mapParameter;
+    }
 }

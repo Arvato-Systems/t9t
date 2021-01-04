@@ -38,23 +38,6 @@ public class ApplicationDAO implements IApplicationDAO {
      * MENU related
     *************************************************************************************/
 
-    /*
-     * (non-Javadoc)
-     * @see com.arvatosystems.t9t.tfi.model.services.IApplicationDAO#
-     * getNavigationByhierarchy(int)
-     */
-    @Override
-    public final List<Navi> getNavigationByHierarchy(ApplicationSession as, int hierarchy) {
-        List<Navi> somenavis = new ArrayList<Navi>();
-        for (Iterator<Navi> i = as.getAllNavigations().iterator(); i.hasNext();) {
-            Navi tmp = i.next();
-            if (tmp.getHierarchy() == hierarchy) {
-                somenavis.add(tmp);
-            }
-        }
-        return somenavis;
-    }
-
     @Override
     public final Navi getNavigationByLink(ApplicationSession as, String link) {
         Navi somenavis = null;

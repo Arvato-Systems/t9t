@@ -40,6 +40,7 @@ public class DropdownDataField<T extends BonaPortable> extends AbstractDataField
         super(params);
         factory = dbFactory;
         c = dbFactory.createInstance();
+        c.setHflex("1");
         setConstraints(c, null);
     }
 

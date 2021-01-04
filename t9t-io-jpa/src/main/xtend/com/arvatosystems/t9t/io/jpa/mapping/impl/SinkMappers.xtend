@@ -29,7 +29,7 @@ class SinkMappers {
     IDataSinkEntityResolver sinkResolver
     IDataSinkFilterPropsMapper sinkMapper
 
-    @AutoHandler("SAR42P")
+    @AutoHandler("SR42P")
     def void d2eSinkDTO(SinkEntity entity, SinkDTO dto, boolean onlyActive) {
         entity.dataSinkRef = sinkResolver.getRef(dto.dataSinkRef, onlyActive)
     }

@@ -15,9 +15,7 @@
  */
 package com.arvatosystems.t9t.components.tools;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -29,23 +27,18 @@ import org.zkoss.bind.annotation.ContextParam;
 import org.zkoss.bind.annotation.ContextType;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.util.Pair;
-import org.zkoss.zhtml.Messagebox;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Wire;
-import org.zkoss.zul.ListModel;
-import org.zkoss.zul.ListModelList;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Listitem;
-import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Window;
 
-import com.arvatosystems.t9t.tfi.web.ApplicationSession;
 import com.arvatosystems.t9t.base.IGridConfigContainer;
 import com.arvatosystems.t9t.base.uiprefs.UIGridPreferences;
 
-import de.jpaw.bonaparte.pojos.ui.UIColumnConfiguration;
+import de.jpaw.dp.Jdp;
 
 public class EditGridViewModel {
 
@@ -53,102 +46,43 @@ public class EditGridViewModel {
     private Window windowComponent = null;
     private UIGridPreferences uiGridPreferences = null;
     private Set<String> currentGrid = null;
-    private Pair<List<String>, List<String>> addRemovePair = null;
-    private final ApplicationSession session = ApplicationSession.get();
+    private final IColumnConfigCreator columnConfigCreator = Jdp.getRequired(IColumnConfigCreator.class);
 
-    @Wire("#editListBox")
-    Listbox listbox;
+    @Wire("#component")
+    Div div;
 
     @SuppressWarnings("unchecked")
     @Init(superclass = true)
     public void init(@BindingParam("initParams") HashMap<String, Object> initParams,
             @ContextParam(ContextType.COMPONENT) Component component) {
-
         windowComponent = (Window) component.getRoot();
         if (initParams != null && initParams.get("gridId") != null) {
             uiGridPreferences = IGridConfigContainer.GRID_CONFIG_REGISTRY.get(initParams.get("gridId"));
-
             if (initParams.get("currentGridList") != null) {
                 currentGrid = ((List<String>) initParams.get("currentGridList")).stream().collect(Collectors.toSet());
             }
         }
-
-    }
-
-    @Command
-    public void closeWindow() {
-        Events.sendEvent("onClose", windowComponent, addRemovePair);
-        windowComponent.onClose();
-    }
-
-    @Command
-    public void updateGrid() {
-        List<Listitem> selectedItems = listbox.getItems();
-        List<String> addPair = new ArrayList<>();
-        List<String> removePair = new ArrayList<>();
-
-        if (listbox.getSelectedCount() == 0) {
-            Messagebox.show(session.translate("editGrid", "selectedFieldCountZero"));
-            return;
-        }
-
-        for (Listitem listItem : selectedItems) {
-            UIColumnConfiguration uiColumnConfiguration = uiGridPreferences.getColumns().get(listItem.getIndex());
-
-            if (listItem.isSelected()) {
-                if (!currentGrid.contains(uiColumnConfiguration.getFieldName())) {
-                    addPair.add(uiColumnConfiguration.getFieldName());
-                }
-            } else {
-                if (currentGrid.contains(uiColumnConfiguration.getFieldName())) {
-                    removePair.add(uiColumnConfiguration.getFieldName());
-                }
-            }
-        }
-
-        addRemovePair = new Pair<List<String>, List<String>>(addPair, removePair);
-        closeWindow();
     }
 
     @AfterCompose
     public void afterCompose(@ContextParam(ContextType.VIEW) Component view) {
         Selectors.wireComponents(view, this, false);
-
-        List<String> allAvailableFieldNames = new LinkedList<>();
-        uiGridPreferences.getColumns().stream().forEach(uiColumns->{allAvailableFieldNames.add(uiColumns.getFieldName());});
-        listbox.setItemRenderer(new ListitemRenderer<String>() {
-            @Override
-            public void render(Listitem item, String data, int index) throws Exception {
-                item.setValue(data);
-                item.setLabel(data);
-            }
-        });
-        ListModel<String> models = new ListModelList<>(allAvailableFieldNames,false);
-        listbox.setModel(models);
-        listbox.setCheckmark(true);
-        listbox.setMultiple(true);
-        listbox.renderAll();
-
-        listbox.getItems().stream().forEach(item->{
-            if (currentGrid.contains(item.getLabel())) {
-                item.setSelected(true);
-            }
-        });
+        columnConfigCreator.createColumnConfigComponent(div, uiGridPreferences, currentGrid);
     }
 
-    public UIGridPreferences getUiGridPreferences() {
-        return uiGridPreferences;
+    @Command
+    public void closeWindow() {
+        Events.sendEvent("onClose", windowComponent, null);
+        windowComponent.onClose();
     }
 
-    public void setUiGridPreferences(UIGridPreferences uiGridPreferences) {
-        this.uiGridPreferences = uiGridPreferences;
-    }
-
-    public Set<String> getCurrentGrid() {
-        return currentGrid;
-    }
-
-    public void setCurrentGrid(Set<String> currentGrid) {
-        this.currentGrid = currentGrid;
+    @Command
+    public void updateGrid() {
+        Pair<List<String>, List<String>> pairs = columnConfigCreator.getAddRemovePairs();
+        // do not allow user to close the dialog if nothing is selected
+        if (pairs != null) {
+            Events.sendEvent("onClose", windowComponent, pairs);
+            windowComponent.onClose();
+        }
     }
 }

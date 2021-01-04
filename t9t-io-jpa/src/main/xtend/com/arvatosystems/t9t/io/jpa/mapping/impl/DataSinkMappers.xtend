@@ -38,7 +38,7 @@ class DataSinkMappers {
         dto.responseDataSinkRef     = keyMapper.mapToDto(entity.responseDataSinkRef)
     }
 
-    @AutoHandler("SA42P")
+    @AutoHandler("S42P")
     def void d2eDataSinkDTO         (DataSinkEntity entity, DataSinkDTO dto, boolean onlyActive) {
         entity.csvConfigurationRef = csvResolver.getRef(dto.csvConfigurationRef, onlyActive)
         entity.responseDataSinkRef = entityResolver.getRef(dto.responseDataSinkRef, onlyActive)

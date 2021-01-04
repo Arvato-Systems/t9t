@@ -38,7 +38,6 @@ package (com.arvatosystems) t9t.ssm.request {
         notupdatable is com.arvatosystems.t9t.annotations.NotUpdatable,
         ref is com.arvatosystems.t9t.annotations.IsObjectRef;
 
-//    class SchedulerSetupReadAllRequest          extends ReadAllRequest<SchedulerSetupDTO, FullTrackingWithVersion> {}
     class SchedulerSetupCrudRequest             extends CrudSurrogateKeyRequest<SchedulerSetupRef, SchedulerSetupDTO, FullTrackingWithVersion> {
         optional Boolean                suppressResponseParameters;     // if set and a DTO is returned, then request will be null in the response (desired in case of uplink requests)
     }

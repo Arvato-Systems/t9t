@@ -15,9 +15,6 @@
  */
 package com.arvatosystems.t9t.tfi.general;
 
-import java.io.File;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,16 +34,12 @@ public class MenuUtil {
 
     /** MENU RELATED  **/
     private static final int NAVI_ID                = 0;
-    private static final int POSITION               = 1;
-    private static final int CATEGORY               = 2;
-    private static final int NAME                   = 3;
-    private static final int LINK                   = 4;
-    private static final int HIERARCHY              = 5;
-    private static final int PERMISSION             = 6;
-    private static final int CLOSEGROUP             = 7;
-    private static final int AUTH_TYPE_AVAILABILITY = 8; // list is separated with ";". "*" is a wildcard
-    private static final int MENU_ITEM_VISIBLE      = 9;
-    private static final int ITEM_IMAGE             = 10;
+    private static final int CATEGORY               = 1;
+    private static final int NAME                   = 2;
+    private static final int LINK                   = 3;
+    private static final int MENU_ITEM_VISIBLE      = 4;
+
+    private static final String MENU_GROUP = "menu.group";
 
     public static void readMenuConfiguration(ApplicationSession as, final List<Navi> navis) {
         navis.clear();
@@ -66,24 +59,21 @@ public class MenuUtil {
 
             for (Object menu : menuLines) {
                 menuitems = String.valueOf(menu).toString().trim().split("\\s*,\\s*"); // trim and split each element
-                Permissionset perms = as.getPermissions(String.valueOf(menuitems[PERMISSION]));
+                Permissionset perms = as.getPermissions(String.valueOf(menuitems[NAVI_ID]));
                 if (perms != null && perms.contains(OperationType.EXECUTE)) {
                     String thisCategory = String.valueOf(menuitems[CATEGORY]);
 
                     Navi navi = new Navi();
 
                     navi.setNaviId(String.valueOf(menuitems[NAVI_ID]));
-                    navi.setPosition(Integer.valueOf(String.valueOf(menuitems[POSITION])));
                     navi.setCategory(categories.computeIfAbsent(thisCategory, (key) -> as.translate("menu.group", key)));
-                    navi.setName(as.translate("menu.group", String.valueOf(menuitems[NAME])));
+                    navi.setName(as.translate(MENU_GROUP, String.format("%s.%s", thisCategory, menuitems[NAME])));
                     navi.setLink(String.valueOf(menuitems[LINK]));
-                    navi.setHierarchy(Integer.valueOf(String.valueOf(menuitems[HIERARCHY])));
-                    navi.setPermission(String.valueOf(menuitems[PERMISSION]));
-                    navi.setCloseGroup(Boolean.valueOf(String.valueOf(menuitems[CLOSEGROUP])));
+                    navi.setPermission(String.valueOf(menuitems[NAVI_ID]));
                     navi.setMenuItemVisible(Boolean.valueOf(String.valueOf(menuitems[MENU_ITEM_VISIBLE])));
 
-                    if (showMenuItem && menuitems.length >= 11) {
-                        navi.setImg(String.valueOf(menuitems[ITEM_IMAGE]));
+                    if (showMenuItem) {
+                        navi.setImg(String.format("/img/menu/%s.png", menuitems[NAVI_ID]));
                     } else {
                         navi.setImg("/img/transparent.png");
                     }
@@ -92,18 +82,8 @@ public class MenuUtil {
                 }
             }
         }
-        sortNaviAscListByPosition(navis);
+
         LOGGER.debug("Sorted menu is of size {}", navis.size());
     }
 
-    private static void sortNaviAscListByPosition(List<Navi> navis) {
-        Collections.sort(navis, new Comparator<Navi>() {
-            @Override
-            public int compare(Navi a, Navi b) {
-                return a.getPosition() < b.getPosition() ? -1
-                        : a.getPosition() > b.getPosition() ? 1
-                                : 0;
-            }
-        });
-    }
 }

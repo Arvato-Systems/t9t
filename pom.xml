@@ -857,6 +857,7 @@
         <!-- modules which are optional addons -->
         <module>t9t-demo-api</module>
         <module>t9t-demo-be</module>
+        <module>t9t-demo-plugin</module>
 
         <module>t9t-sql</module>
         <module>t9t-sql-migration-executor</module>

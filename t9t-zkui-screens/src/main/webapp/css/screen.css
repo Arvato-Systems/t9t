@@ -894,10 +894,6 @@ body {
     color: #368AC0;
 }
 
-.filterCell {
-    background: #d8d8d8 !important;
-}
-
 .filterCell *{
     background: transparent;
 }
@@ -910,6 +906,7 @@ body {
 .z-listheader-content {
     line-height: 30px !important;
     color: #292929 !important;
+    padding-left: 10px;
 }
 
 .z-listbox-body .z-listcell {
@@ -1028,6 +1025,7 @@ body {
 }
 
 .z-tab {
+    height: 40px;
     background: #FAFAFA;
     border:none;
     border-radius:0;
@@ -1072,6 +1070,31 @@ body {
     padding-right: 20px;
 }
 
+/** Fix component that will not be 100% with hflex in crud form**/
+.grid:not(.no-padding) .z-grid-body>table .z-textbox,
+.grid:not(.no-padding) .z-grid-body>table .z-bandbox,
+.grid:not(.no-padding) .z-grid-body>table .z-intbox,
+.grid:not(.no-padding) .z-grid-body>table .z-decimalbox,
+.grid:not(.no-padding) .z-grid-body>table .z-longbox,
+.grid:not(.no-padding) .z-grid-body>table .z-longbox
+{
+    width: 100% !important;
+}
+
+.grid:not(.no-padding) .z-grid-body>table .z-combobox,
+.grid:not(.no-padding) .z-grid-body>table .z-datebox,
+.grid:not(.no-padding) .z-grid-body>table .z-bandbox
+{
+    width: 100% !important;
+    display: flex;
+}
+
+.grid:not(.no-padding) .z-grid-body>table .z-combobox > input,
+.grid:not(.no-padding) .z-grid-body>table .z-datebox > input,
+.grid:not(.no-padding) .z-grid-body>table .z-bandbox > input
+{
+    width: 100% !important;
+}
 
 .z-window-noborder>.z-window-content:not(.no-padding) {
      padding: 15px;
@@ -1255,4 +1278,25 @@ body {
 
 .modal-buttons-container {
     margin: 10px 15px 10px;
+}
+.bandboxField28 {
+    top: 0px !important;
+    left: 0px !important;
+    margin: auto;
+    max-height: 606px;
+    max-width: 1006px;
+}
+
+.popup-window28 .z-vlayout-inner, .popup-window28 .z-hlayout-inner {
+   padding: 10px 0px 10px 0px;
+}
+
+.popup-window28 .padding {
+    padding-left: 25px;
+    padding-right: 25px;
+}
+
+.detailsSection .buttons {
+    padding-left: 10px;
+    padding-bottom: 10px;
 }

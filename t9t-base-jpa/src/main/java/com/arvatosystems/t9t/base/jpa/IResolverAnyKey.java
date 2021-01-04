@@ -125,7 +125,7 @@ public interface IResolverAnyKey<
     public ENTITY newEntityInstance();
 
     /** Return a list of all JPA entities for any given table.
-     * Provided for historic reasons.
+     * Provided for historic reasons. Use search() instead, with more control over offset / limit.
      *
      * @param onlyActive True if inactive records should be treated as nonexisting.
      * @return ENTITY

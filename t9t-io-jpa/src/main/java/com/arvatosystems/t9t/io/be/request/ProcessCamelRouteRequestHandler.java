@@ -73,9 +73,12 @@ public class ProcessCamelRouteRequestHandler extends AbstractRequestHandler<Proc
             }
             // assuming the transfer was successful if we did not get an exception here, mark the sink as transferred
             sink.setCamelTransferStatus(ExportStatusEnum.RESPONSE_OK);
+            sinkResolver.flush(); // to solve missing camel transfer status on aynsc request
+            LOGGER.debug("Setting Sink {} to camelTransferStatus: {} ", sink.getObjectRef(), sink.getCamelTransferStatus());
         } catch (Exception e) {
             LOGGER.error("Camel transfer failed: {}", ExceptionUtil.causeChain(e));
             sink.setCamelTransferStatus(ExportStatusEnum.RESPONSE_ERROR);
+            LOGGER.debug("Setting Sink {} to camelTransferStatus: {} ", sink.getObjectRef(), sink.getCamelTransferStatus());
             return ok(T9tIOException.NOT_TRANSFERRED);
         }
         return ok();

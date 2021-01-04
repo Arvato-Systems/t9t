@@ -48,7 +48,7 @@
                              <div sclass="search-box">
                                  <span sclass="icon z-icon-search"></span>
                                  <textbox id="search" onOK="@command('search', self_value=self.value)"
-                                     placeholder="Search Order" />
+                                     placeholder="${l:translate('main','search')}" />
                              </div>
                          </div>
 

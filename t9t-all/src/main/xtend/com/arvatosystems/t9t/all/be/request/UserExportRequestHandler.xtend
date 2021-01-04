@@ -63,7 +63,7 @@ class UserExportRequestHandler extends AbstractRequestHandler<UserExportRequest>
             dataSinkId = DATA_SINK_ID
         ])
         // export the data
-        val mySinkRef = exporter.storeAll(sessionParams, userDTOs)
+        val mySinkRef = exporter.storeAll(sessionParams, userDTOs, rq.maxRecords)
 
         val response = new SinkCreatedResponse => [
             sinkRef    = mySinkRef

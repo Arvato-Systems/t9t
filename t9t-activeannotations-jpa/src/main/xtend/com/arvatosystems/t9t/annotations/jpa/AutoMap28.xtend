@@ -65,7 +65,6 @@ import com.arvatosystems.t9t.base.services.RequestContext
 class AutoMap28Processor extends AbstractClassProcessor {
     static final String REQUEST_PACKAGE_COMPONENT = "be.request"        // the piece after module...
     static final String REQUEST_CRUD    = "CrudRequest"
-    static final String REQUEST_READALL = "ReadAllRequest"
     static final String REQUEST_RESOLVE = "ResolverRequest"
     static final String REQUEST_SEARCH  = "SearchRequest"
     static final String HANDLER         = "Handler"
@@ -112,8 +111,6 @@ class AutoMap28Processor extends AbstractClassProcessor {
                 val pkgName = if (lastDot < 0) requestHandlerPackageName else autoHandler.substring(0, lastDot+1)
                 if (autoHandler.indexOf("C", lastDot+1) >= 0)
                     context.registerClass(pkgName + classNameComponent + REQUEST_CRUD + HANDLER)
-                if (autoHandler.indexOf("A", lastDot+1) >= 0)
-                    context.registerClass(pkgName + classNameComponent + REQUEST_READALL + HANDLER)
                 if (autoHandler.indexOf("R", lastDot+1) >= 0)
                     context.registerClass(pkgName + classNameComponent + REQUEST_RESOLVE + HANDLER)
                 if (autoHandler.indexOf("S", lastDot+1) >= 0)
@@ -520,20 +517,6 @@ class AutoMap28Processor extends AbstractClassProcessor {
                                 returnType = ReadAll28Response.newTypeReference(dto, myTrackingType)
                                 body = [ '''
                                     return execute(ctx, request, resolver, mapper);'''
-                                ]
-                            ]
-                        }
-                    }
-                    if (autoHandler.indexOf("A", lastDot+1) >= 0) {
-                        val requestClassTypeRef = getRequestClassTypeRef(c, rqPkgName, classNameComponent + REQUEST_READALL, context)
-                        if (requestClassTypeRef !== null) {
-                            createHandler(c, rqhPkgName, requestClassTypeRef, AbstractRequestHandler.newTypeReference(requestClassTypeRef), myInterface.newTypeReference, context) => [ m |
-                                m.returnType = ReadAll28Response.newTypeReference(dto, myTrackingType)
-                                m.body = [ '''
-                                    «toJavaCode(m.returnType)» rs = new «toJavaCode(m.returnType)»();
-                                    rs.setDataList(mapper.mapListToDwt(resolver.readAll(request.getReturnOnlyActive())));
-                                    rs.setReturnCode(0);
-                                    return rs;'''
                                 ]
                             ]
                         }

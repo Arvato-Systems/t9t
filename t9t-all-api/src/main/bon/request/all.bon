@@ -41,5 +41,6 @@ package (com.arvatosystems) t9t.all.request {
 
     /** Export User master data. Result set can be limited by searchFilter, a condition on current tenant does always apply (added internally). */
     class UserExportRequest extends SearchCriteria return SinkCreatedResponse {
+        optional Integer                        maxRecords;  // split the output into files, containing this number max. each
     }
 }

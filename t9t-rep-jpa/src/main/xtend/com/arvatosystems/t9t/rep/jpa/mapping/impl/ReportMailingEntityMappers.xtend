@@ -23,10 +23,10 @@ import com.arvatosystems.t9t.rep.jpa.entities.ReportMailingEntity
 import com.arvatosystems.t9t.rep.jpa.persistence.IReportMailingEntityResolver
 
 @AutoMap42
-public class ReportMailingEntityMappers {
+class ReportMailingEntityMappers {
     IReportMailingEntityResolver reportMailingResolver
 
-    @AutoHandler("CASP42")
+    @AutoHandler("CSP42")
     def void e2dReportMailingDTO(ReportMailingEntity entity, ReportMailingDTO dto) {}
 
     def void d2eReportMailingDTO(ReportMailingEntity entity, ReportMailingDTO dto, boolean onlyActive) {}

@@ -57,7 +57,8 @@
                                           id2="commFormatName"          value2="@bind(vm.data.commFormatName)"/>
                                 <cells228 id ="outputEncoding"          value ="@bind(vm.data.outputEncoding)"
                                           id2="preTransformerName"      value2="@bind(vm.data.preTransformerName)"/>
-
+                                <cells228 id ="linesToSkip"             value ="@bind(vm.data.linesToSkip)"
+                                          id2="singleLineComment"       value2="@bind(vm.data.singleLineComment)"/>
                                 <cells228 id ="csvConfigurationRef"     value ="@bind(vm.data.csvConfigurationRef)"
                                           id2="baseClassPqon"           value2="@bind(vm.data.baseClassPqon)"/>
                                 <cells228 id ="writeTenantId"           value ="@bind(vm.data.writeTenantId)"

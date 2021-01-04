@@ -23,9 +23,9 @@ import com.arvatosystems.t9t.rep.jpa.entities.ReportConfigEntity
 import com.arvatosystems.t9t.rep.jpa.persistence.IReportConfigEntityResolver
 
 @AutoMap42
-public class ReportConfigEntityMappers {
+class ReportConfigEntityMappers {
     IReportConfigEntityResolver reportConfigResolver
-    @AutoHandler("CAP42")
+    @AutoHandler("CP42")
     def void e2dReportConfigDTO(ReportConfigEntity entity, ReportConfigDTO dto) {}
     def void e2dReportConfigKey(ReportConfigEntity entity, ReportConfigKey dto) {}
 }

@@ -2,7 +2,7 @@
 <?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="reportParams28"?>
 
 <window28 id="reportParamsWin">
-    <threesections28 gridId="reportParams">
+    <threesections28 gridId="reportParams" gridContext="showReportConfig,showDataSink">
         <crud28
             viewModel="@id('vm') @init('com.arvatosystems.t9t.viewmodel.ReportParamsVM', vmId='reportParams')"
             currentMode="@load(vm.currentMode)">

@@ -39,17 +39,7 @@ public class NaviGroupingViewModel extends GroupsModelArray<Navi, String, String
 
     public NaviGroupingViewModel(List<Navi> data, Comparator<Navi> cmpr, boolean showGroup) {
         super(data.toArray(new Navi[0]), cmpr);
-        closeGroup();
         this.showGroup = showGroup;
-    }
-    private  void closeGroup() {
-        Navi navi=null;
-        for (int i = 0; i < getGroupCount(); i++) {
-            navi = getChild(i, 0);
-            if (navi.isCloseGroup()) {
-                removeOpenGroup(i);
-            }
-        }
     }
 
     @Override

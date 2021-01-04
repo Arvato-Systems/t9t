@@ -2,7 +2,7 @@
 <?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="reportConfig28"?>
 
 <window28 id="reportConfigWin">
-    <threesections28 gridId="reportConfig">
+    <threesections28 gridId="reportConfig" gridContext="showReportParams">
         <crud28 cachesDropdown="reportConfigId"
             viewModel="@id('vm') @init('com.arvatosystems.t9t.viewmodel.ReportConfigVM', vmId='reportConfig')"
             currentMode="@load(vm.currentMode)">

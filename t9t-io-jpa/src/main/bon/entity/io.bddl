@@ -40,7 +40,7 @@ package (com.arvatosystems) t9t.io.jpa.entities owner fortytwo prefix p28 {
         //@ManyToOne AsyncChannelEntity     asyncChannel     LAZY for (csvConfigurationRef)
     }
 
-    entity SinkEntity category datrw is SinkDTO tablename p42_dat_sinks {
+    entity SinkEntity category datv is SinkDTO tablename p42_dat_sinks {
         tenantClass InternalTenantRef42
         pk (objectRef)
         index (dataSinkRef, tenantRef, cTimestamp)

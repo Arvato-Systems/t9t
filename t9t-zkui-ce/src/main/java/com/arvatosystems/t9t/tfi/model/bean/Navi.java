@@ -22,28 +22,22 @@ package com.arvatosystems.t9t.tfi.model.bean;
  */
 public class Navi {
     private String  naviId;
-    private int     position;
     private String  category;
     private String  name;
     private String  link;
-    private int     hierarchy;
     private String  permission;
-    private boolean closeGroup = false;
     private boolean menuItemVisible=true;
     private String  img;
     private String  subcategory;
 
-    public Navi(String naviId, int position, String category, String subcategory, String name, String link, int hierarchy, String permission, boolean closeGroup, boolean menuItemVisible,String img) {
+    public Navi(String naviId, String category, String subcategory, String name, String link, String permission, boolean menuItemVisible,String img) {
         super();
         this.naviId = naviId;
-        this.position = position;
         this.category = category;
         this.subcategory = subcategory;
         this.name = name;
         this.link = link;
-        this.hierarchy = hierarchy;
         this.permission = permission;
-        this.closeGroup = closeGroup;
         this.menuItemVisible = menuItemVisible;
         this.img = img;
     }
@@ -88,14 +82,6 @@ public class Navi {
         this.link = link;
     }
 
-    public final int getHierarchy() {
-        return hierarchy;
-    }
-
-    public final void setHierarchy(int hierarchy) {
-        this.hierarchy = hierarchy;
-    }
-
     /**
      * @return the permission
      */
@@ -111,20 +97,6 @@ public class Navi {
     }
 
     /**
-     * @return the closeGroup
-     */
-    public boolean isCloseGroup() {
-        return closeGroup;
-    }
-
-    /**
-     * @param closeGroup the closeGroup to set
-     */
-    public void setCloseGroup(boolean closeGroup) {
-        this.closeGroup = closeGroup;
-    }
-
-    /**
      * @return the img
      */
     public String getImg() {
@@ -136,14 +108,6 @@ public class Navi {
      */
     public void setImg(String img) {
         this.img = img;
-    }
-
-    public final int getPosition() {
-        return position;
-    }
-
-    public final void setPosition(int position) {
-        this.position = position;
     }
 
     /**
@@ -173,11 +137,10 @@ public class Navi {
      */
     @Override
     public String toString() {
-        return "Navi [naviId=" + naviId + ", position=" + position
-                + ", category=" + category + ", subcategory=\" + subcategory + \", name=" + name + ", link="
-                + link + ", hierarchy=" + hierarchy + ", permission="
-                + permission + ", closeGroup=" + closeGroup
-                + ", menuItemVisible=" + menuItemVisible + ", img=" + img + "]";
+        return "Navi [naviId=" + naviId + ", category=" + category
+                + ", subcategory=\" + subcategory + \", name=" + name + ", link="
+                + link + ", permission=" + permission + ", menuItemVisible=" + menuItemVisible
+                + ", img=" + img + "]";
     }
 
 

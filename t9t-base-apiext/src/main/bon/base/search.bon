@@ -60,13 +60,6 @@ package (com.arvatosystems) t9t.base.search {
         optional Long                               numResults;             // the result count is populated if known
     }
 
-    /**
-     * A simple request to return all relevant data records for a JPA entity. Do not use for tables which could contain huge data sets.
-     */
-    abstract class ReadAllRequest<DATA, TRACKING extends TrackingBase> extends RequestParameters return ReadAllResponse<!DATA,!TRACKING> { // dummy generics arg for symmetry reasons and return type definition
-        required boolean                            returnOnlyActive;
-    }
-
     class SearchResponse<DATA, TRACKING extends TrackingBase, LIST_WITH_TENANT extends DataWithTracking<!DATA, !TRACKING>> extends SinkCreatedResponse {
         required (!LIST_WITH_TENANT...) required List<> dataList;                           // the list of results
     }
@@ -75,7 +68,6 @@ package (com.arvatosystems) t9t.base.search {
 
     /** The type which defines filtering, sorting and data subsets for queries.
      * This class contains the components searchFilters, searchOption and sortColumns, all of which may be null.
-     * If all components are null, the result set matches the result set of the CfgReadAllRequest (ignoring a possibly different sorting).
      * <p>
      * For filtering, the SearchFilter class is the abstract base class, which can be extended for customization purposes, in order to provide additional filters.
      * In addition to the SearchFilter interface class, the corresponding implementation must be provided, overriding the <code>applyFilters</code> method of the CfgReadAllResponse generic class.

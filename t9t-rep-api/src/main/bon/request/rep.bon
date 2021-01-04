@@ -48,16 +48,13 @@ package (com.arvatosystems) t9t.rep.request {
     }
 
     abstract class AbstractReportConfigSearchRequest<DTO extends ReportConfigDTO> extends SearchRequest<!DTO, FullTrackingWithVersion> {}
-    class ReportParamsReadAllRequest                extends ReadAllRequest<ReportParamsDTO,FullTrackingWithVersion> {}
     class ReportParamsCrudRequest                   extends CrudSurrogateKeyRequest<ReportParamsRef, ReportParamsDTO, FullTrackingWithVersion> {}
     class ReportParamsSearchRequest                 extends SearchRequest<ReportParamsDTO, FullTrackingWithVersion> {}
-    class ReportConfigReadAllRequest                extends ReadAllRequest<ReportConfigDTO,FullTrackingWithVersion> {}
     class ReportConfigCrudRequest                   extends CrudSurrogateKeyRequest<ReportConfigRef, ReportConfigDTO, FullTrackingWithVersion> {}
     class ReportConfigSearchRequest                 extends AbstractReportConfigSearchRequest<ReportConfigDTO> {}
 
     class ReportMailingCrudRequest                  extends CrudSurrogateKeyRequest<ReportMailingRef, ReportMailingDTO, FullTrackingWithVersion> {}
     class ReportMailingSearchRequest                extends SearchRequest<ReportMailingDTO, FullTrackingWithVersion> {}
-    class ReportMailingReadAllRequest               extends ReadAllRequest<ReportMailingDTO,FullTrackingWithVersion> {}
 
     class LeanReportConfigSearchRequest             extends LeanSearchRequest {}  // for dropdown
     class LeanReportParamsSearchRequest             extends LeanSearchRequest {}  // for dropdown

@@ -61,6 +61,7 @@ package (com.arvatosystems) t9t.bucket.request {
         optional Boolean                        deleteBeforeSwitch;  // delete new target bucket before switching? default is true
         optional Boolean                        switchBucket;        // switch target bucket before exporting? default is true (false only for testing)
         optional Integer                        bucketNo;            // overrides bucketNo - only used for testing
+        optional Integer                        maxRecordsPerFile;   // maximum number of records per file
     }
 
     /** Generic implementation, which takes an additional implementation / mapping argument. */

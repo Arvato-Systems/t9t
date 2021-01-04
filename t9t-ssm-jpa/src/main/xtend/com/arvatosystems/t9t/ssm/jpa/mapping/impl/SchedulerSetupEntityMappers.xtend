@@ -29,7 +29,6 @@ class SchedulerSetupEntityMappers {
     ICannedRequestEntityResolver    requestResolver
     ICannedRequestDTOMapper         requestMapper
 
-//    @AutoHandler("S42")
     def void e2dSchedulerSetupDTO(SchedulerSetupEntity entity, SchedulerSetupDTO dto) {
         dto.request = requestMapper.mapToDto(entity.cannedRequest)
     }

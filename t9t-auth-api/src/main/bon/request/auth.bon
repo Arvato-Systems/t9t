@@ -66,4 +66,15 @@ package (com.arvatosystems) t9t.auth.request {
     class UserCrudAndSetPasswordRequest         extends CrudSurrogateKeyRequest <UserRef, UserDTO, FullTrackingWithVersion> {
         required Unicode(32)                                password;                   // password
     }
+
+    class SetDefaultScreenRequest               extends RequestParameters return ServiceResponse {
+        optional Unicode(64)                                defaultScreenId;
+    }
+
+    class GetDefaultScreenRequest               extends RequestParameters return GetDefaultScreenResponse {
+    }
+
+    class GetDefaultScreenResponse              extends ServiceResponse {
+        optional Unicode(64)                                defaultScreenId;
+    }
 }

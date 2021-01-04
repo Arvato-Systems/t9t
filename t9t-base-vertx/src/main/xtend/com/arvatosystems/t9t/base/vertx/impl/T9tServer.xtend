@@ -66,7 +66,7 @@ class T9tServer extends AbstractVerticle {
         try {
             val portBySysProp = System.getProperty("t9t.port.http")
             if (portBySysProp !== null) {
-                LOGGER.info("Found system property spec for t9t.port.http {}", portBySysProp)
+                LOGGER.info("Found system property for PORT: t9t.port.http {}", portBySysProp)
                 port = Integer.parseInt(portBySysProp)
             } else {
                 val portByEnv = System.getenv("PORT")
@@ -78,7 +78,7 @@ class T9tServer extends AbstractVerticle {
                 }
             }
         } catch (Exception e) {
-            LOGGER.error("Exception {}: {} while retrieving port setting", e.class.simpleName, e.message)
+            LOGGER.error("Exception {}: {} while retrieving PORT setting", e.class.simpleName, e.message)
         }
     }
 
@@ -174,6 +174,7 @@ class T9tServer extends AbstractVerticle {
                     response.end
                 ]
             ]
+            LOGGER.info("Listening on HTTP PORT {}", port)
             vertx.createHttpServer => [
                 requestHandler [ router.handle(it) ]
                 listen(port)
@@ -181,6 +182,7 @@ class T9tServer extends AbstractVerticle {
         }
         if (tcpPort > 0) {
             // compact format (requires ServiceRequest wrapper)
+            LOGGER.info("Listening on TCP PORT {} (low level socket I/O)", port)
             vertx.createNetServer => [
                 connectHandler [ new TcpSocketHandler(it) ]
                 listen(tcpPort)

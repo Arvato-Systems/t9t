@@ -31,6 +31,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.SortEvent;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listhead;
 import org.zkoss.zul.Listheader;
@@ -38,6 +39,7 @@ import org.zkoss.zul.Menu;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.Menuseparator;
+import org.zkoss.zul.Popup;
 import org.zkoss.zul.Window;
 import org.zkoss.zul.event.ColSizeEvent;
 import org.zkoss.zul.event.ZulEvents;
@@ -187,6 +189,22 @@ public class ListHeadRenderer28 {
         listheader.addEventListener("onColCheck", e -> {
             onColumnVisibilityChange(e);
         });
+
+        buildHeaderTooltip(listheader, fieldName, columnTranslation);
+    }
+
+    private void buildHeaderTooltip(Listheader listheader, String fieldName, String columnTranslation) {
+        String toolTipId =  String.format("%s.%s.infoTooltip", grid.getGridId(), fieldName);
+
+        Popup tooltip = new Popup();
+        tooltip.setParent(listheader);
+        tooltip.setId(toolTipId);
+
+        Label label = new Label();
+        label.setValue(columnTranslation);
+        label.setParent(tooltip);
+
+        listheader.setTooltip(toolTipId);
     }
 
     /**

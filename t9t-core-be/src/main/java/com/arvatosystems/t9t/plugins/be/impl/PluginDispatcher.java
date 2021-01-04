@@ -18,23 +18,23 @@ package com.arvatosystems.t9t.plugins.be.impl;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.services.RequestContext;
-import com.arvatosystems.t9t.plugins.services.PluginDispatcher;
-import com.arvatosystems.t9t.plugins.services.PluginManager;
+import com.arvatosystems.t9t.plugins.services.IPluginDispatcher;
+import com.arvatosystems.t9t.plugins.services.IPluginManager;
 import com.arvatosystems.t9t.plugins.services.PluginMethod;
 
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 
 @Singleton
-public class PluginDispatcherImpl<I,O> implements PluginDispatcher {
-    protected final PluginManager pluginManager = Jdp.getRequired(PluginManager.class);
+public class PluginDispatcher<I,O> implements IPluginDispatcher<I,O> {
+    protected final IPluginManager pluginManager = Jdp.getRequired(IPluginManager.class);
 
     @Override
-    public void execute(final String pluginApiId, final String pluginApiQualifier, final RequestContext ctx, final Object in, final Object out) {
+    public void execute(final String pluginApiId, final String pluginApiQualifier, final RequestContext ctx, final I in, final O out) {
         // obtain a tenant specific implementation, if it exists
         PluginMethod<I,O> plugin;
         try {
-             plugin = pluginManager.getPluginMethod(ctx.tenantRef , pluginApiId, pluginApiQualifier);
+             plugin = pluginManager.getPluginMethod(ctx.tenantRef, pluginApiId, pluginApiQualifier);
         } catch (Exception e) {
             try {
                 plugin = pluginManager.getPluginMethod(T9tConstants.GLOBAL_TENANT_REF42, pluginApiId, pluginApiQualifier);
@@ -44,6 +44,6 @@ public class PluginDispatcherImpl<I,O> implements PluginDispatcher {
         }
 
         // invoke the plugin
-        plugin.execute(ctx, (I)in, (O)out);
+        plugin.execute(ctx, in, out);
     }
 }

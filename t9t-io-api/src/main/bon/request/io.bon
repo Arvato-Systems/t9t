@@ -35,12 +35,10 @@ package (com.arvatosystems) t9t.io.request {
     }
 
 
-    class SinkReadAllRequest                    extends ReadAllRequest              <SinkDTO, FullTracking> {}
-    class SinkCrudRequest                       extends CrudSurrogateKeyRequest     <SinkRef, SinkDTO, FullTracking> {}
-    class SinkSearchRequest                     extends SearchRequest               <SinkDTO, FullTracking> {}
+    class SinkCrudRequest                       extends CrudSurrogateKeyRequest     <SinkRef, SinkDTO, FullTrackingWithVersion> {}
+    class SinkSearchRequest                     extends SearchRequest               <SinkDTO, FullTrackingWithVersion> {}
     class SinkResolverRequest                   extends RefResolverRequest          <SinkRef> {}
 
-    class DataSinkReadAllRequest                extends ReadAllRequest              <DataSinkDTO,FullTrackingWithVersion> {}
     class DataSinkCrudRequest                   extends CrudSurrogateKeyRequest     <DataSinkRef, DataSinkDTO, FullTrackingWithVersion> {}
     class DataSinkSearchRequest                 extends SearchRequest               <DataSinkDTO, FullTrackingWithVersion> {}
     class LeanDataSinkSearchRequest             extends LeanSearchRequest {}

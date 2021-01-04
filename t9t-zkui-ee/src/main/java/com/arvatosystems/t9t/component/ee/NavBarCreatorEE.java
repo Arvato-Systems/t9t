@@ -5,6 +5,8 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zkmax.zul.Nav;
 import org.zkoss.zkmax.zul.Navbar;
 import org.zkoss.zkmax.zul.Navitem;
+import org.zkoss.zul.Menu;
+import org.zkoss.zul.Menuitem;
 
 import com.arvatosystems.t9t.tfi.model.bean.Navi;
 import com.arvatosystems.t9t.tfi.services.DefaultNavBarCreator;
@@ -25,6 +27,7 @@ public class NavBarCreatorEE extends DefaultNavBarCreator implements INavBarCrea
         Navbar navbar = new Navbar("horizontal");
         navbar.setCollapsed(false);
         container.appendChild(navbar);
+        createContextMenu(container);
 
         for (int groupIndex = 0; groupIndex < groupCounts; groupIndex++) {
             String groupName = naviGroups.getGroup(groupIndex);
@@ -33,6 +36,7 @@ public class NavBarCreatorEE extends DefaultNavBarCreator implements INavBarCrea
             nav.setLabel(groupName);
             nav.addSclass("header-nav-submenu no-scrollbar ");
             nav.addSclass(getSubMenuClass(childCounts));
+            createContextMenuOnEachMenu(nav);
             navbar.appendChild(nav);
 
             for (int childIndex = 0; childIndex < childCounts; childIndex++) {
@@ -60,9 +64,20 @@ public class NavBarCreatorEE extends DefaultNavBarCreator implements INavBarCrea
                     navitem.setImage(navi.getImg());
                     navitem.setClientAttribute("onClick", "collapseHeaderMenu();");
                     navitem.setClientAttribute("data-navi", navi.getNaviId());
+                    navitem.setContext(CONTEXT_MENU_ID);
                     nav.appendChild(navitem);
                 }
             }
         }
+    }
+
+    private final void createContextMenuOnEachMenu(Nav nav) {
+        nav.addEventListener(Events.ON_OPEN, ev -> {
+            for (Component comp2 : ev.getTarget().getChildren()) {
+                if (comp2 instanceof Menuitem) {
+                    ((Navitem) comp2).setContext(CONTEXT_MENU_ID);
+                }
+            }
+        });
     }
 }

@@ -35,7 +35,7 @@ import com.arvatosystems.t9t.plugins.LoadedPluginDTO;
 import com.arvatosystems.t9t.plugins.PluginMethodInfo;
 import com.arvatosystems.t9t.plugins.request.LoadedPluginSearchRequest;
 import com.arvatosystems.t9t.plugins.services.Plugin;
-import com.arvatosystems.t9t.plugins.services.PluginManager;
+import com.arvatosystems.t9t.plugins.services.IPluginManager;
 import com.arvatosystems.t9t.plugins.services.PluginMethod;
 
 import de.jpaw.bonaparte.pojos.api.AndFilter;
@@ -49,11 +49,11 @@ import de.jpaw.dp.Singleton;
 import de.jpaw.util.ExceptionUtil;
 
 @Singleton
-public class PluginManagerImpl implements PluginManager{
+public class PluginManager implements IPluginManager{
 
     protected final IExecutor executor = Jdp.getRequired(IExecutor.class);
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PluginManagerImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PluginManager.class);
 
     private ConcurrentMap<String, LoadedClass<Plugin>> loadedPlugins = new ConcurrentHashMap<String, LoadedClass<Plugin>>();
     private ConcurrentMap<String, LoadedClass<PluginMethod>> loadedPluginMethods = new ConcurrentHashMap<String, LoadedClass<PluginMethod>>();
@@ -66,7 +66,7 @@ public class PluginManagerImpl implements PluginManager{
 
     private String sRootPath = new File("").getAbsolutePath();
 
-    public PluginManagerImpl() {
+    public PluginManager() {
        this.initPlugins();
     }
 

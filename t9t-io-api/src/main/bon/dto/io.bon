@@ -222,6 +222,8 @@ package (com.arvatosystems) t9t.io {
         optional (DataSinkRef..., DataSinkKey)          responseDataSinkRef         properties ref, dropdown="dataSinkId", searchprefix="dataSink";  // only for input data sinks: the output data sink for a response file
         optional Unicode(100)                           xmlHeaderElements;          // scalar header information
         optional Unicode(100)                           xmlFooterElements;          // scalar footer information
+        optional Integer                                linesToSkip;                // skip a number of initial lines. (does not count comment lines)
+        optional Unicode(8)                             singleLineComment;          // line starting with this line should be ignored
     }
 
     /** Configuration defaults for DataSinks, provided by the implementation. (Primarily intended to support the complex XML APIs). */

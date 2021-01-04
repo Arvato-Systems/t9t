@@ -17,9 +17,9 @@ package com.arvatosystems.t9t.in.be.impl
 
 import de.jpaw.annotations.AddLogger
 import java.io.BufferedReader
-import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
+import java.io.IOException
 
 @AddLogger
 abstract class AbstractTextFormatConverter extends AbstractInputFormatConverter {
@@ -27,10 +27,18 @@ abstract class AbstractTextFormatConverter extends AbstractInputFormatConverter 
     def abstract void process(String textLine);
 
     override process(InputStream is) {
-        val streamReader    = new BufferedReader(new InputStreamReader(is))
+        val singleLineComment = cfg.singleLineComment === null ? null cfg.singleLineComment  // avoid the need for duplicate test to null or ""
+        var int linesToSkip   = cfg.linesToSkip ?: 0
+        val streamReader      = new BufferedReader(new InputStreamReader(is))
         try {
             for (var String line = streamReader.readLine(); line !== null; line = streamReader.readLine()) {
-                process(line)
+                if (singleLineComment === null || !line.startsWith(singleLineComment)) {
+                    if (linesToSkip > 0) {
+                        linesToSkip--
+                    } else {
+                        process(line)
+                    }
+                }
             }
         } finally {
             try {

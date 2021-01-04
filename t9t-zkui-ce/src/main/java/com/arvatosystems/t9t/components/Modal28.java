@@ -56,6 +56,7 @@ public class Modal28 extends Window {
         Selectors.wireComponents(this, this, false);
         // set some properties
         setWidth("33%");
+        setStyle("min-width: 500px;"); //to avoid button being shrunk
         setClosable(true);
         setSizable(true);
         setMaximizable(true);

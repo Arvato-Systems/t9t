@@ -4,17 +4,13 @@
 <zk xmlns:c="client">
     <window apply="org.zkoss.bind.BindComposer"
         sizable="true" maximizable="true" mode="modal" width="50%"
-        height="50%" title="${l:translate('editGrid','addRemoveGridColumn')}"
+        height="80%" title="${l:translate('editGrid','addRemoveGridColumn')}"
         viewModel="@id('vm') @init('com.arvatosystems.t9t.components.tools.EditGridViewModel',initParams=arg)">
         <div class="form" vflex="1">
             <groupbox vflex="1" contentStyle="padding: 15px;">
                 <vlayout vflex="1">
                  <label class="label" value="${l:translate('editGrid', 'fieldName')}" />
-                    <listbox id="editListBox" class="inline-listbox" hflex="true" vflex="1" sizedByContent="true" span="true" emptyMessage="${l:translate('com', 'noDataFound')}">
-                        <listhead menupopup="auto" sizable="true" visible="false">
-                            <listheader label="${l:translate('editGrid', 'fieldName')}" valign="top" />
-                        </listhead>
-                    </listbox>
+                 <div id="component" />
                 </vlayout>
                 <vlayout vflex="min">
                     <hlayout style="padding: 20px 10px;text-align:right;">

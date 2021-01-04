@@ -17,7 +17,6 @@ package com.arvatosystems.t9t.io;
 
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.base.IViewModelContainer;
-import com.arvatosystems.t9t.base.entities.FullTracking;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.entities.WriteTracking;
 import com.arvatosystems.t9t.io.request.AsyncChannelCrudRequest;
@@ -43,9 +42,9 @@ public class T9tIOModels implements IViewModelContainer {
         FullTrackingWithVersion.BClass.INSTANCE,
         CsvConfigurationSearchRequest.BClass.INSTANCE,
         CsvConfigurationCrudRequest.BClass.INSTANCE);
-    public static final CrudViewModel<SinkDTO, FullTracking> SINK_VIEW_MODEL = new CrudViewModel<SinkDTO, FullTracking>(
+    public static final CrudViewModel<SinkDTO, FullTrackingWithVersion> SINK_VIEW_MODEL = new CrudViewModel<SinkDTO, FullTrackingWithVersion>(
         SinkDTO.BClass.INSTANCE,
-        FullTracking.BClass.INSTANCE,
+        FullTrackingWithVersion.BClass.INSTANCE,
         SinkSearchRequest.BClass.INSTANCE,
         SinkCrudRequest.BClass.INSTANCE);
     public static final CrudViewModel<AsyncQueueDTO, FullTrackingWithVersion> ASYNC_QUEUE_VIEW_MODEL = new CrudViewModel<AsyncQueueDTO, FullTrackingWithVersion>(

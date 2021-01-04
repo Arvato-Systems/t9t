@@ -16,5 +16,5 @@
         "cTimestamp", "dataSinkRef.dataSinkId", "commTargetChannelType", "commFormatType", "fileOrQueueName", "numberOfSourceRecords", "numberOfMappedRecords", "numberOfErrorRecords",
         "processingTime", "camelTransferStatus", "processed", "genericId1", "genericId2"
     ],
-    "fieldWidths": [ 150, 200, 100, 110, 360, 150, 150, 150, 150, 80 ]
+    "fieldWidths": [ 150, 200, 100, 110, 360, 150, 150, 150, 150, 80, 150, 200, 200 ]
 }

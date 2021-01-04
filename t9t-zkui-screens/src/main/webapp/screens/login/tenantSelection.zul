@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="IGNORE"?>
+<?xel-method prefix="l" name="translateDefault" class="com.arvatosystems.t9t.tfi.web.ZulUtils" signature="String translate(String)"?>
 <?xel-method prefix="l" name="translate" class="com.arvatosystems.t9t.tfi.web.ZulUtils" signature="String translate(String, String)"?>
 <?link rel="icon" type="image/x-icon" href="/favicon.ico"?>
 
@@ -84,7 +85,7 @@
                             <div sclass="col version h6">
                                 t9t ${l:translate('t9tframework', 'version')}, ZK ${desktop.webApp.version}
                             </div>
-                            <div sclass="col vendor h6">${l:translate('app','ourCompanyName')}</div>
+                            <div sclass="col vendor h6">${l:translateDefault('app.ourCompanyName')}</div>
                         </div>
                     </div>
 

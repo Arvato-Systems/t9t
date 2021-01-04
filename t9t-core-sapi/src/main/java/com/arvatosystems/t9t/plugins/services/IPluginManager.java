@@ -20,7 +20,7 @@ import com.arvatosystems.t9t.base.T9tException;
 /**
  * Defines the Plugin Manager for loading and unloading Plugins and PluginMethods
  **/
-public interface PluginManager {
+public interface IPluginManager {
     public Plugin loadPlugin(String path, Long tenantRef, String pluginId) throws ClassNotFoundException;
     public boolean closePlugin(Long tenantRef, String pluginId);
     public Plugin getPlugin(Long tenantRef, String pluginId) throws T9tException;

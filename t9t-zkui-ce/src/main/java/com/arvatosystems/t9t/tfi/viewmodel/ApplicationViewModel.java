@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -52,9 +53,12 @@ import org.zkoss.zul.Panelchildren;
 import org.zkoss.zul.Style;
 import org.zkoss.zul.Window;
 
+import com.arvatosystems.t9t.auth.request.GetDefaultScreenRequest;
+import com.arvatosystems.t9t.auth.request.GetDefaultScreenResponse;
 import com.arvatosystems.t9t.authc.api.TenantDescription;
 import com.arvatosystems.t9t.component.fields.IField;
-import com.arvatosystems.t9t.components.tools.JumpTool;
+import com.arvatosystems.t9t.services.ITitleBarSearch;
+import com.arvatosystems.t9t.services.T9TRemoteUtils;
 import com.arvatosystems.t9t.tfi.general.ApplicationUtil;
 import com.arvatosystems.t9t.tfi.general.Constants;
 import com.arvatosystems.t9t.tfi.general.Constants.NaviConfig;
@@ -69,7 +73,6 @@ import com.arvatosystems.t9t.tfi.web.CtrlKeyHandler;
 import com.arvatosystems.t9t.tfi.web.ZulUtils;
 import com.google.common.collect.ImmutableMap;
 
-import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
 import de.jpaw.dp.Jdp;
 /**
  * index View Model build the whole application.
@@ -95,6 +98,7 @@ public class ApplicationViewModel {
     private final ApplicationSession as = ApplicationSession.get();
     private final IApplicationDAO applicationDAO = Jdp.getRequired(IApplicationDAO.class);
     private final INavBarCreator navbarCreator = Jdp.getRequired(INavBarCreator.class);
+    private final ITitleBarSearch titleSearch = Jdp.getRequired(ITitleBarSearch.class);
 
     private String userName;
     private String userId;
@@ -187,6 +191,20 @@ public class ApplicationViewModel {
             } else {
                 setSelectedFromJump(navi, null);
             }
+        } else {
+            GetDefaultScreenResponse response = Jdp.getRequired(T9TRemoteUtils.class)
+                    .executeExpectOk(new GetDefaultScreenRequest(), GetDefaultScreenResponse.class);
+            if (response.getDefaultScreenId() != null) {
+                Optional<Navi> navi = as.getAllNavigations().stream().filter(i -> i.getNaviId().equals(response.getDefaultScreenId())).findFirst();
+                if (navi.isPresent()) {
+                    // the configured screen exists
+                    setNaviSelection(navi.get());
+                } else {
+                    // this is a valid case because a previously existing screen could be unavailable due to a mistake in realease upgrade,
+                    // or due to manual editing
+                    LOGGER.error("Configured default screen {} does not exist", response.getDefaultScreenId());
+                }
+            }
         }
     }
 
@@ -226,7 +244,7 @@ public class ApplicationViewModel {
         if (hierarchy == null) {
             naviGroupingViewModel = new NaviGroupingViewModel(as.getAllNavigations(), new NaviComparator(), false);
         } else {
-            naviGroupingViewModel = new NaviGroupingViewModel(applicationDAO.getNavigationByHierarchy(as, hierarchy), new NaviComparator(), false);
+            naviGroupingViewModel = new NaviGroupingViewModel(as.getAllNavigations(), new NaviComparator(), false);
         }
     }
 
@@ -528,11 +546,9 @@ public class ApplicationViewModel {
         //Create a dummy navi because it will be excluded from the menu configuration
         Navi navi = new Navi();
         navi.setNaviId("Session-Change Password");
-        navi.setPosition(95);
         navi.setCategory("Session");
         navi.setName("Change Password");
         navi.setLink("screens/session/change_pwd.zul");
-        navi.setHierarchy(0);
         navi.setPermission("changePasswordScreen");
 
         setNaviSelection(navi);
@@ -593,10 +609,8 @@ public class ApplicationViewModel {
     }
 
     @Command("search")
-    public void searchOrder(@BindingParam("self_value") String searchText) {
-        UnicodeFilter f = new UnicodeFilter("deliveryOrderId");
-        f.setLikeValue(searchText);
-        JumpTool.jump("screens/delivery/deliveryOrder28.zul", f, null);
+    public void searchTitle(@BindingParam("self_value") String searchText) {
+        titleSearch.search(searchText);
     }
 
     /**

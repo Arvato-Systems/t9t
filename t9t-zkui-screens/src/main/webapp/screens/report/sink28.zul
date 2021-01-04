@@ -2,5 +2,5 @@
 <?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="sink28"?>
 
 <window28 id="sinkWin">
-    <twosections28 pageSize="50" gridId="sinkSearch" gridContext="download,showTx,camelRetransfer"/>
+    <twosections28 pageSize="50" gridId="sinkSearch" gridContext="download,showTx,camelRetransfer,showDataSink"/>
 </window28>

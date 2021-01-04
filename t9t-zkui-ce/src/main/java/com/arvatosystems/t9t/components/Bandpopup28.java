@@ -24,6 +24,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Bandpopup;
 
 import com.arvatosystems.t9t.tfi.web.ApplicationSession;
@@ -51,6 +52,10 @@ public class Bandpopup28 extends Bandpopup implements IdSpace, IGridIdOwner {
     @Wire("#filters") protected Filter28 filters;
     @Wire("#grid")    protected Grid28 main;
 
+    @Wire("#selectButton") protected Button28 selectButton;
+    @Wire("#cancelButton") protected Button28 cancelButton;
+
+    protected EventDataSelect28 selectedData;
     protected Togglefilter28 toggleFilter;
 
     public Bandpopup28() {
@@ -72,11 +77,22 @@ public class Bandpopup28 extends Bandpopup implements IdSpace, IGridIdOwner {
                     main.setFilter1((SearchFilter) o);
             });
         }
+
+        cancelButton.addEventListener(Events.ON_CLICK, ev -> {
+            ((Bandbox) this.getParent()).setOpen(false);
+        });
     }
 
     public void addSelectReceiver(ISelectReceiver recv) {
+        selectButton.setDisabled(true);
+        selectButton.addEventListener(Events.ON_CLICK, ev -> {
+            ((Bandbox) this.getParent()).setOpen(false);
+            recv.setSelectionData(selectedData);
+        });
+
         main.addEventListener(EventDataSelect28.ON_DATA_SELECT, (Event ev) -> {
-            recv.setSelectionData((EventDataSelect28)ev.getData());
+            selectedData = (EventDataSelect28) ev.getData();
+            selectButton.setDisabled(false);
         });
     }
 

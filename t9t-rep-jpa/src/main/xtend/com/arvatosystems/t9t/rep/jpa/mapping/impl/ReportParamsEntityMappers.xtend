@@ -27,14 +27,14 @@ import com.arvatosystems.t9t.rep.jpa.persistence.IReportMailingEntityResolver
 import com.arvatosystems.t9t.rep.jpa.persistence.IReportParamsEntityResolver
 
 @AutoMap42
-public class ReportParamsEntityMappers {
+class ReportParamsEntityMappers {
     IReportParamsEntityResolver reportParamsResolver
     IReportConfigEntityResolver _er = null
     IReportConfigDTOMapper _em = null
     IReportMailingEntityResolver reportMailingEntityResolver
     IReportMailingDTOMapper reportMailingDTOMapper
 
-    @AutoHandler("ASP42")
+    @AutoHandler("SP42")
     def void e2dReportParamsDTO(ReportParamsEntity entity, ReportParamsDTO dto) {
         dto.reportConfigRef = _em.mapToDto(entity.reportConfigRef)
         if (entity.mailingGroupRef !== null) {

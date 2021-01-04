@@ -51,6 +51,12 @@ public class BandboxField extends AbstractField<Bandbox> implements ISelectRecei
         d.setId(cfg.getFieldName() + suffix);
         d.setHflex("1");
         d.setPlaceholder(label);
+        d.setSclass("bandboxField28");
+        d.setWidgetOverride("slideDown_", "function(pp) {" +
+            "jq(this.getPopupNode_()).css({'left': '0','top': '0', 'right':'0', 'bottom':'0', 'width':'80%', 'height':'85%', 'display':''});" +
+            "this.$supers('slideDown_',arguments);" +
+            "}");
+
         popup.setParent(d);
         popup.setId(cfg.getFieldName() + suffix + ".popup");
         popup.setGridId(bandboxGridId);

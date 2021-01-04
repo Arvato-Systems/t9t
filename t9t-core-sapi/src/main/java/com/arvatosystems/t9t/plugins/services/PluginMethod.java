@@ -15,9 +15,8 @@
  */
 package com.arvatosystems.t9t.plugins.services;
 
-import java.lang.reflect.ParameterizedType;
-
 import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.plugins.PluginMethodInfo;
 
 /**
  * Defines the API to call a method of a plugin. A single plugin can support multiple of these APIs.
@@ -27,4 +26,27 @@ import com.arvatosystems.t9t.base.services.RequestContext;
 public interface PluginMethod<I,O> {
     /** Execute an API method. In case of problems, a T9tException will be thrown. */
     void execute(RequestContext ctx, I in, O out);
+
+    /** Returns the API implemented. Will usually be provided by a default method. */
+    String implementsApi();
+
+    /** Returns the qualifier of this specific method. */
+    String getQualifier();
+
+    /** Returns the major revision of the API implemented. */
+    int versionMajor();
+
+    /** Returns the minimal minor revision of the API supported. */
+    int versionMinMinor();
+
+    /** Returns the information above in a consistent structure. */
+    default PluginMethodInfo getInfo() {
+        final PluginMethodInfo info = new PluginMethodInfo();
+
+        info.setImplementsApi(implementsApi());
+        info.setQualifier(getQualifier());
+        info.setVersionMajor(versionMajor());
+        info.setVersionMinMinor(versionMinMinor());
+        return info;
+    }
 }

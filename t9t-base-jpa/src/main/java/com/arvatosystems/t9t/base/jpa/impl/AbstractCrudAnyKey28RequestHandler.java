@@ -49,20 +49,9 @@ abstract class AbstractCrudAnyKey28RequestHandler<
 > extends AbstractRequestHandler<REQUEST> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCrudAnyKey28RequestHandler.class);
 
-    //@Inject
     protected final Provider<PersistenceProviderJPA> jpaContextProvider = Jdp.getProvider(PersistenceProviderJPA.class);
-
-    // @Inject @Any
     protected final List<IJpaCrudTechnicalExceptionMapper> crudTechnicalExceptionMappers = Jdp.getAll(IJpaCrudTechnicalExceptionMapper.class);
 
-
-    /**
-     * Provides the class object of the current implementation of the
-     * ReadAllRequest.
-     *
-     * @return The implementation class of the ReadAllRequest for the actual
-     *         ReadAllService
-     */
 
     @Override
     public boolean isReadOnly(REQUEST params) {

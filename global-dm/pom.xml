@@ -51,14 +51,14 @@
         <!-- Database driver versions -->
         <driver.ojdbc6.version>11.2.0</driver.ojdbc6.version>
         <driver.ojdbc8.version>12.2.0.1.0</driver.ojdbc8.version>
-        <driver.postgresql.version>42.2.18</driver.postgresql.version>
+        <driver.postgresql.version>42.2.14</driver.postgresql.version>  <!-- starting with 4.2.15, the driver adds a dependency to checker-qual 3.5.0 which conflicts with 2.5.2 pulled by guava -->
         <driver.sqlserver.version>6.2.2.jre8</driver.sqlserver.version>
         <driver.hana.version>1.120.19.043e2a479158ce6ef060a5c605ae2b97161e6b25</driver.hana.version>
         <h2.version>1.4.197</h2.version>
 
         <!-- OR mappers -->
         <eclipselink.version>2.7.5</eclipselink.version>
-        <hibernate.version>5.4.23.Final</hibernate.version>
+        <hibernate.version>5.4.25.Final</hibernate.version>
         <hibernate-validator.version>6.1.6.Final</hibernate-validator.version>
         <ehcache.version>2.10.4</ehcache.version>
         <ehcache3.version>3.5.3</ehcache3.version>
@@ -121,7 +121,7 @@
         <spring-data-jpa.version>2.3.4.RELEASE</spring-data-jpa.version>
 
         <netty.version>4.1.52.Final</netty.version>
-        <vertx3.version>3.9.2</vertx3.version>
+        <vertx3.version>3.9.4</vertx3.version>
 
         <xmlbeans.version>3.1.0</xmlbeans.version>  <!-- 3.x is required for POI 4 (xlsx) -->
 
@@ -134,7 +134,7 @@
         <javax.mail.version>1.6.0</javax.mail.version>
         <jadira-usertype.version>4.0.0.GA</jadira-usertype.version>
         <jackson.version>2.11.2</jackson.version>
-        <camel.version>3.4.2</camel.version>
+        <camel.version>3.4.4</camel.version>
         <solr.version>6.6.1</solr.version>   <!-- must be 6.6.1 at least due to CVE-2017-9803 -->
         <activiti.version>5.19.0.2</activiti.version>
         <kafka.version>2.4.0</kafka.version>

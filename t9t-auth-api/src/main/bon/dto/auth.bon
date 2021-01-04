@@ -141,6 +141,7 @@ package (com.arvatosystems) t9t.auth {
         optional (UserRef...,UserKey)               supervisorRef   properties ref, simpleref="getObjectRef()", searchprefix="supervisor", dropdown="userId";
         optional shortText                          salutation;                             // salutation
         optional t9tShortId                         orgUnit;                                // org unit ID or provider ID
+        optional Unicode(64)                        defaultScreenId;                        // default screen admin zk ui
     }
     final class UserDescription extends UserRef {
         required userId                             userId          properties notupdatable;    // User id to be used for login

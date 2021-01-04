@@ -187,6 +187,18 @@ package (com.arvatosystems) t9t.base.request {
         required (ProcessStatusDTO...) required List<> processes;               // current list of processes
     }
 
+    /**
+     * Waits until background processes have completed.
+     * Mainly used from remote tests.
+     */
+    class WaitUntilServerIdleRequest extends RequestParameters {
+        required boolean                            onlyMySession;              // if false: waits until whole server is idle. If true: only checks processes of same sessionRef
+        optional unsigned Long                      timeoutInMs;                // return a denied if server not idle within this time (defaults to 10 seconds)
+        optional unsigned Long                      delayInMs;                  // how much time to wait between probes (default 20 ms)
+        optional unsigned Long                      confirmAfterMs;             // if not null: once idle, wait this time and retry to make sure there was no transition
+        optional unsigned Integer                   confirmCount;               // how many times to confirm (default 3)
+    }
+
     /** Asks a process to be terminated. For security reasons, all parameters are required and must match.
      * The data should be obtained via a prior ProcessStatusRequest.
      */

@@ -212,15 +212,6 @@ class MiscExtensions {
         ], CrudSurrogateKeyResponse)
     }
 
-    def static CrudSurrogateKeyResponse<LoadedPluginDTO, FullTrackingWithVersion> merge(LoadedPluginDTO dto, ITestConnection dlg) {
-        dto.validate
-        dlg.typeIO(new LoadedPluginCrudRequest => [
-            crud            = OperationType.MERGE
-            data            = dto
-            naturalKey      = new LoadedPluginKey(dto.pluginId)
-        ], CrudSurrogateKeyResponse)
-    }
-
     /** Create a canned request, and return its objectRef */
     def static Long createCannedRequestWithParameters(ITestConnection dlg, String id, String description, RequestParameters params) {
         params.validate
@@ -232,5 +223,38 @@ class MiscExtensions {
             jobParameters        = MapComposer.marshal(params, false, true)
         ]
         return (rq.mergeReducedResponse(dlg)).key
+    }
+
+    // all methods for plugins */
+    def static CrudSurrogateKeyResponse<LoadedPluginDTO, FullTrackingWithVersion> merge(LoadedPluginDTO dto, ITestConnection dlg) {
+        dto.validate
+        dlg.typeIO(new LoadedPluginCrudRequest => [
+            crud            = OperationType.MERGE
+            data            = dto
+            naturalKey      = new LoadedPluginKey(dto.pluginId)
+        ], CrudSurrogateKeyResponse)
+    }
+    def static CrudSurrogateKeyResponse<LoadedPluginDTO, FullTrackingWithVersion> update(LoadedPluginDTO dto, ITestConnection dlg) {
+        dto.validate
+        return dlg.typeIO(new LoadedPluginCrudRequest => [
+            crud            = OperationType.UPDATE
+            data            = dto
+            key             = dto.objectRef
+        ], CrudSurrogateKeyResponse)
+    }
+    def static CrudSurrogateKeyResponse<LoadedPluginDTO, FullTrackingWithVersion> delete(LoadedPluginDTO dto, ITestConnection dlg) {
+        dto.validate
+        return dlg.typeIO(new LoadedPluginCrudRequest => [
+            crud            = OperationType.DELETE
+            data            = dto
+            key             = dto.objectRef
+        ], CrudSurrogateKeyResponse)
+    }
+    def static CrudSurrogateKeyResponse<LoadedPluginDTO, FullTrackingWithVersion> create(LoadedPluginDTO dto, ITestConnection dlg) {
+        dto.validate
+        return dlg.typeIO(new LoadedPluginCrudRequest => [
+            crud            = OperationType.CREATE
+            data            = dto
+        ], CrudSurrogateKeyResponse)
     }
 }

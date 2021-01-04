@@ -63,4 +63,12 @@ public class Button28 extends Button {
             setDisabled(true);
         }
     }
+
+    /** All the button use min-width instead of width to allow flex on button that has long text */
+    @Override
+    public void setWidth(String width) {
+        String style = this.getStyle() == null ? "" : this.getStyle();
+        this.setStyle(style + " min-width: " + width + ";");
+        super.setWidth(width);
+    }
 }
