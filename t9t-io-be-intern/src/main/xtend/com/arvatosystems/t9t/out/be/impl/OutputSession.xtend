@@ -32,10 +32,10 @@ import com.arvatosystems.t9t.io.T9tIOException
 import com.arvatosystems.t9t.io.request.CheckSinkFilenameUsedRequest
 import com.arvatosystems.t9t.io.request.CheckSinkFilenameUsedResponse
 import com.arvatosystems.t9t.io.request.ProcessCamelRouteRequest
-import com.arvatosystems.t9t.out.be.ICommunicationFormatGenerator
-import com.arvatosystems.t9t.out.be.IPreOutputDataTransformer
+import com.arvatosystems.t9t.out.services.ICommunicationFormatGenerator
+import com.arvatosystems.t9t.out.services.IPreOutputDataTransformer
 import com.arvatosystems.t9t.out.be.impl.formatgenerator.FormatGeneratorDumb
-import com.arvatosystems.t9t.out.be.impl.output.FoldableParams
+import com.arvatosystems.t9t.out.services.FoldableParams
 import com.arvatosystems.t9t.out.be.impl.output.PatternExpansionUtil
 import com.arvatosystems.t9t.out.be.impl.output.SpecificTranslationProvider
 import com.arvatosystems.t9t.out.services.IAsyncTransmitter
@@ -330,6 +330,7 @@ class OutputSession implements IOutputSession {
      */
     override void close() throws Exception {
         thisSink.camelTransferStatus = ExportStatusEnum.RESPONSE_OK  // means DONE
+        LOGGER.debug("Setting Sink {} to camelTransferStatus: {} on close()", thisSink.getObjectRef(), thisSink.camelTransferStatus)
 
         // if LAZY open, skip actual opening, then also closing is not required
         if (currentState != State.LAZY) {
@@ -353,6 +354,7 @@ class OutputSession implements IOutputSession {
             // check if there is a Camel transfer to be performed
             if (sinkCfg.camelRoute !== null && (sinkCfg.camelExecution == CamelExecutionScheduleType.SCHEDULED || sinkCfg.camelExecution == CamelExecutionScheduleType.ASYNCHRONOUSLY)) {
                 thisSink.camelTransferStatus = ExportStatusEnum.READY_TO_EXPORT;
+                LOGGER.debug("Setting Sink {} to camelTransferStatus: {} due to camel transfer to be performed", thisSink.getObjectRef(), thisSink.camelTransferStatus)
                 if (sinkCfg.camelExecution == CamelExecutionScheduleType.ASYNCHRONOUSLY) {
                     messaging.executeAsynchronous(ctx, new ProcessCamelRouteRequest(thisSink.objectRef))
                 }

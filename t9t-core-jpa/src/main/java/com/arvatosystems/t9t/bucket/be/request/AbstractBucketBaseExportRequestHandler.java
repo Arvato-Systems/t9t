@@ -26,6 +26,7 @@ import javax.persistence.TypedQuery;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.IAutonomousExecutor;
 import com.arvatosystems.t9t.base.services.IOutputSession;
+import com.arvatosystems.t9t.base.services.ISplittingOutputSessionProvider;
 import com.arvatosystems.t9t.bucket.jpa.entities.BucketEntryEntity;
 import com.arvatosystems.t9t.bucket.jpa.persistence.IBucketCounterEntityResolver;
 import com.arvatosystems.t9t.bucket.jpa.persistence.IBucketEntryEntityResolver;
@@ -41,6 +42,7 @@ public abstract class AbstractBucketBaseExportRequestHandler<T extends AbstractB
     protected final IBucketEntryEntityResolver   entryResolver   = Jdp.getRequired(IBucketEntryEntityResolver.class);
     protected final IAutonomousExecutor          autoExecutor    = Jdp.getRequired(IAutonomousExecutor.class);
     protected final Provider<IOutputSession> outputSessionprovider = Jdp.getProvider(IOutputSession.class);
+    protected final ISplittingOutputSessionProvider splittingOutputSessionprovider = Jdp.getRequired(ISplittingOutputSessionProvider.class);
 
     protected List<Long> getRefs(String qualifier, int bucketNoToSelect) {
         EntityManager em = entryResolver.getEntityManager();

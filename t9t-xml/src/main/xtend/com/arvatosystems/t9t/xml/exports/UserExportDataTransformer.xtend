@@ -18,7 +18,7 @@ package com.arvatosystems.t9t.xml.exports
 import com.arvatosystems.t9t.auth.UserDTO
 import com.arvatosystems.t9t.base.output.OutputSessionParameters
 import com.arvatosystems.t9t.io.DataSinkDTO
-import com.arvatosystems.t9t.out.be.IPreOutputDataTransformer
+import com.arvatosystems.t9t.out.services.IPreOutputDataTransformer
 import com.arvatosystems.t9t.xml.User001
 import de.jpaw.annotations.AddLogger
 import de.jpaw.bonaparte.core.BonaPortable
@@ -29,6 +29,7 @@ import com.arvatosystems.t9t.auth.RoleKey
 import com.arvatosystems.t9t.auth.RoleDTO
 import com.arvatosystems.t9t.auth.UserRef
 import com.arvatosystems.t9t.auth.UserKey
+import com.arvatosystems.t9t.io.DataSinkPresets
 
 @Named("xmlUserExport")
 @AddLogger
@@ -83,4 +84,19 @@ class UserExportDataTransformer implements IPreOutputDataTransformer {
         }
         return null;
     }
+
+    override getDefaultConfiguration(boolean isInput) {
+        return new DataSinkPresets => [
+            baseClassPqon           = "t9t.xml.User001"
+            jaxbContextPath         = "com.arvatosystems.t9t.xml"
+            xmlDefaultNamespace     = "http://arvatosystems.com/schema/t9t_config.xsd"
+            xmlNamespacePrefix      = "t9t_xml"
+            xmlRootElementName      = "t9t_xml:UserMaster"
+            xmlRecordName           = "records"
+            xmlHeaderElements       = null
+            xmlFooterElements       = null
+            writeTenantId           = true
+        ]
+    }
 }
+

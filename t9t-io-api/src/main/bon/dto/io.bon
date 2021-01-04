@@ -174,8 +174,8 @@ package (com.arvatosystems) t9t.io {
         required Unicode(255)                           fileOrQueueNamePattern;     // substitutions: DAY/TIME, TENANT,
         required boolean                                compressed;                 // if true and the output type is a file, then it should be compressed (gzipped) on the fly
         optional Ascii(8)                               originatorModule;           // REP, COMM, AROMA etc...
-        optional customizationQualifier                 preTransformerName properties qualifierFor="out.be.IPreOutputDataTransformer,in.services.IInputDataTransformer";     // custom pre-transform to transform output data before storing it
-        optional customizationQualifier                 commFormatName     properties qualifierFor="out.be.ICommunicationFormatGenerator,in.services.IInputFormatConverter"; // custom communication format name (done through DI lookup)
+        optional customizationQualifier                 preTransformerName properties qualifierFor="out.services.IPreOutputDataTransformer,in.services.IInputDataTransformer";     // custom pre-transform to transform output data before storing it
+        optional customizationQualifier                 commFormatName     properties qualifierFor="out.services.ICommunicationFormatGenerator,in.services.IInputFormatConverter"; // custom communication format name (done through DI lookup)
         required xenum DataSinkCategoryXType            category;                   // the type of data sink
         // 42: this is a ref there. in 28, it cannot be, because callbacks are defined in a different module
         optional f42Ref                                 callbackRef     properties dropdown="cannedRequestId";                // link to CannedRequestRef   ...  the request handler to call for operation results (when an entry is finished or aborted with an error)
@@ -222,6 +222,19 @@ package (com.arvatosystems) t9t.io {
         optional (DataSinkRef..., DataSinkKey)          responseDataSinkRef         properties ref, dropdown="dataSinkId", searchprefix="dataSink";  // only for input data sinks: the output data sink for a response file
         optional Unicode(100)                           xmlHeaderElements;          // scalar header information
         optional Unicode(100)                           xmlFooterElements;          // scalar footer information
+    }
+
+    /** Configuration defaults for DataSinks, provided by the implementation. (Primarily intended to support the complex XML APIs). */
+    final class DataSinkPresets {
+        optional Unicode(100)                           baseClassPqon;              // for CSV parsers, the BClass PQON of the expected record
+        optional Ascii(1024)                            jaxbContextPath;            // if not null, not the default JAXB context will be used, but one composed from this string
+        optional Unicode(200)                           xmlDefaultNamespace;        // xml default namespace
+        optional Unicode(64)                            xmlRootElementName;         // xml name of root element  (to be derived from object?)
+        optional Unicode(64)                            xmlRecordName;              // xml name of main record
+        optional Unicode(64)                            xmlNamespacePrefix;         // xml prefix of main record
+        optional Unicode(100)                           xmlHeaderElements;          // scalar header information
+        optional Unicode(100)                           xmlFooterElements;          // scalar footer information
+        optional Boolean                                writeTenantId;              // write the tenantId (currently primarily used in XML exports)
     }
 
     /** Records all asynchronous outgoing communication. For every file created, there is one entry of this type.

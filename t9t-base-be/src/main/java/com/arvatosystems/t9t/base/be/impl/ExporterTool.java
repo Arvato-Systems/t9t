@@ -22,6 +22,7 @@ import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.base.services.IExporterTool;
 import com.arvatosystems.t9t.base.services.IOutputSession;
+import com.arvatosystems.t9t.base.services.ISplittingOutputSessionProvider;
 import com.google.common.collect.ImmutableList;
 
 import de.jpaw.bonaparte.core.BonaPortable;
@@ -35,10 +36,11 @@ import de.jpaw.dp.Singleton;
  */
 @Singleton
 public class ExporterTool<DTO extends BonaPortable, TRACKING extends TrackingBase> implements IExporterTool<DTO, TRACKING> {
+    protected ISplittingOutputSessionProvider splittingOutputSessionProvider = Jdp.getRequired(ISplittingOutputSessionProvider.class);
 
     @Override
-    public Long storeAll(OutputSessionParameters op, List<DataWithTrackingW<DTO, TRACKING>> dataList) throws Exception {
-        try (IOutputSession outputSession = Jdp.getRequired(IOutputSession.class)) {
+    public Long storeAll(OutputSessionParameters op, List<DataWithTrackingW<DTO, TRACKING>> dataList, Integer maxRecords) throws Exception {
+        try (IOutputSession outputSession = splittingOutputSessionProvider.get(maxRecords)) {
             Long sinkRef = outputSession.open(op);
             if (outputSession.getUnwrapTracking(op.getUnwrapTracking())) {
                 for (DataWithTrackingW<DTO, TRACKING> data : dataList) {
@@ -63,7 +65,7 @@ public class ExporterTool<DTO extends BonaPortable, TRACKING extends TrackingBas
         } else {
             // push output into an outputSession (export it)
             op.setSmartMappingForDataWithTracking(Boolean.TRUE);
-            resp.setSinkRef(storeAll(op, dataList));
+            resp.setSinkRef(storeAll(op, dataList, null));
             resp.setDataList(ImmutableList.<DataWithTrackingW<DTO,TRACKING>>of());
         }
         return resp;

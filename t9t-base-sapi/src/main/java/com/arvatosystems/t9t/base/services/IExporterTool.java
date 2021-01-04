@@ -27,7 +27,7 @@ import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW;
 public interface IExporterTool<DTO extends BonaPortable, TRACKING extends TrackingBase> {
     /** Opens an output session, pushes all data into it, and returns the generated sinkRef.
      * @throws Exception */
-    Long storeAll(OutputSessionParameters op, List<DataWithTrackingW<DTO, TRACKING>> dataList) throws Exception;
+    Long storeAll(OutputSessionParameters op, List<DataWithTrackingW<DTO, TRACKING>> dataList, Integer maxRecords) throws Exception;
 
     ReadAllResponse<DTO, TRACKING> returnOrExport(List<DataWithTrackingW<DTO, TRACKING>> dataList, OutputSessionParameters op) throws Exception;
 

@@ -17,7 +17,7 @@ package com.arvatosystems.t9t.io.be.request;
 
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
-import com.arvatosystems.t9t.base.entities.FullTracking;
+import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKey42RequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.io.CommunicationTargetChannelType;
@@ -31,7 +31,7 @@ import com.arvatosystems.t9t.io.request.SinkCrudRequest;
 
 import de.jpaw.dp.Jdp;
 
-public class SinkCrudRequestHandler extends AbstractCrudSurrogateKey42RequestHandler<SinkRef, SinkDTO, FullTracking, SinkCrudRequest, SinkEntity> {
+public class SinkCrudRequestHandler extends AbstractCrudSurrogateKey42RequestHandler<SinkRef, SinkDTO, FullTrackingWithVersion, SinkCrudRequest, SinkEntity> {
 
     private static final String[] FORBIDDEN_FILE_PATH_ELEMENTS = { ":", "\\", "../" };
 

@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.out.be.impl.output;
 
-import com.arvatosystems.t9t.out.be.ISpecificTranslationProvider;
+import com.arvatosystems.t9t.out.services.ISpecificTranslationProvider;
 
 import de.jpaw.bonaparte.core.DelegatingBaseComposer;
 import de.jpaw.bonaparte.core.MessageComposer;

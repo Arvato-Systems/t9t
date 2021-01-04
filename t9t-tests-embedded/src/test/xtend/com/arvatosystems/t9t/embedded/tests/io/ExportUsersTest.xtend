@@ -41,8 +41,7 @@ class ExportUsersTest {
         dlg = new InMemoryConnection
     }
 
-    @Test
-    def void exportUsersTest() {
+    def void setupDataSink(String filenamePattern) {
         LOGGER.info("Creating DataSinkDTO ******************************")
         // create a new DataSinkDTO
         new DataSinkDTO => [
@@ -53,7 +52,7 @@ class ExportUsersTest {
             commFormatType          = MediaXType.of(MediaType.XML);
             category                = DataSinkCategoryXType.of(DataSinkCategoryType.DATA_EXPORT)
             unwrapTracking          = true
-            fileOrQueueNamePattern  = "users.xml";
+            fileOrQueueNamePattern  = filenamePattern
             preTransformerName      = "xmlUserExport"
             jaxbContextPath         = "com.arvatosystems.t9t.xml"
             xmlDefaultNamespace     = "http://arvatosystems.com/schema/t9t_config.xsd"     // default namespace
@@ -63,10 +62,26 @@ class ExportUsersTest {
             validate
             merge(dlg)
         ]
+    }
 
+    @Test
+    def void exportUsersTest() {
+        setupDataSink("users.xml")
         LOGGER.info("Exporting Users ******************************")
         // export the default user
         val resp = dlg.typeIO(new UserExportRequest, SinkCreatedResponse)
+        LOGGER.info("Done, count is {} ******************************", resp.numResults)
+    }
+
+    @Test
+    def void exportUsersSplittedTest() {
+        setupDataSink("users-${partNo}.xml")
+        LOGGER.info("Exporting Users ******************************")
+        // export the default user
+        val exportRq = new UserExportRequest => [
+            maxRecords           = 1
+        ]
+        val resp = dlg.typeIO(exportRq, SinkCreatedResponse)
         LOGGER.info("Done, count is {} ******************************", resp.numResults)
     }
 }

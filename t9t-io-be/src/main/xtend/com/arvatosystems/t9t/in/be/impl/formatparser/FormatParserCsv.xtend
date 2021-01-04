@@ -19,7 +19,7 @@ import com.arvatosystems.t9t.in.be.impl.AbstractTextFormatConverter
 import com.arvatosystems.t9t.in.services.IInputSession
 import com.arvatosystems.t9t.io.CsvConfigurationDTO
 import com.arvatosystems.t9t.io.DataSinkDTO
-import com.arvatosystems.t9t.io.services.CSVTools
+import com.arvatosystems.t9t.io.CSVTools
 import com.arvatosystems.t9t.server.services.IStatefulServiceSession
 import de.jpaw.annotations.AddLogger
 import de.jpaw.bonaparte.core.BonaPortableClass

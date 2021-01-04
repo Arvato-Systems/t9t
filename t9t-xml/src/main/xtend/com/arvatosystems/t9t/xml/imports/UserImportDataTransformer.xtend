@@ -25,6 +25,7 @@ import de.jpaw.annotations.AddLogger
 import de.jpaw.bonaparte.pojos.api.OperationType
 import de.jpaw.dp.Dependent
 import de.jpaw.dp.Named
+import com.arvatosystems.t9t.io.DataSinkPresets
 
 @Named("xmlUser001Import")
 @AddLogger
@@ -59,5 +60,19 @@ class UserImportDataTransformer extends AbstractInputDataTransformer<User001> {
         dto.z              = xml.z
 
         return dto
+    }
+
+    override getDefaultConfiguration(boolean isInput) {
+        return new DataSinkPresets => [
+            baseClassPqon           = "t9t.xml.User001"
+            jaxbContextPath         = "com.arvatosystems.t9t.xml"
+            xmlDefaultNamespace     = "http://arvatosystems.com/schema/t9t_config.xsd"
+            xmlNamespacePrefix      = "t9t_xml"
+            xmlRootElementName      = "t9t_xml:UserMaster"
+            xmlRecordName           = "records"
+            xmlHeaderElements       = null
+            xmlFooterElements       = null
+            writeTenantId           = true
+        ]
     }
 }
