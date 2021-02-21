@@ -32,7 +32,7 @@ import t9t.core.*
  */
 package (com.arvatosystems) t9t.ssm {
     default private unsigned trim noControlChars;
-    properties noJava, simpleref,
+    properties noJava, simpleref, qualifierFor,
         tenantCategory is com.arvatosystems.t9t.annotations.TenantCategory(),
         searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
         serialized is com.arvatosystems.t9t.annotations.StoreSerialized,
@@ -55,6 +55,14 @@ package (com.arvatosystems) t9t.ssm {
         YEARLY      = "Y",
         FAST        = "F",
         CRON_NATIVE = "C"
+    }
+    /** The SchedulerConcurrencyType defines what a task should do if the previous instance is still running. */
+    enum SchedulerConcurrencyType {
+        RUN_PARALLEL    = "P",      // start in parallel (default)
+        SKIP_INSTANCE   = "S",      // skip this run (just exit)
+        KILL_PREVIOUS   = "K",      // terminate the previous instance, then start
+        // DELAY_SELF      = "D",      // wait and start once the previous has finished  (probably not possible to implement without blocking threads)
+        CUSTOM          = "C"       // invoke custom hook (requires qualifier to be specified)
     }
 
     /** For weekly events it is necessary to know the actual week day. */
@@ -126,6 +134,11 @@ package (com.arvatosystems) t9t.ssm {
         optional Long                               intervalMilliseconds;   // only for "FAST": how fast should it repeat?
         optional Json                               z;                      // custom parameters
         optional Ascii(200)                         cronExpression;
-        optional resourceId                         additionalPermissions;  //additional permissions that required by report scheduler
+        optional resourceId                         additionalPermissions;  // additional permissions that required by report scheduler
+        optional Enum SchedulerConcurrencyType      concurrencyType;        // Concurrency setting while within limits. If null, it defaults to RUN_PARALLEL
+        optional Enum SchedulerConcurrencyType      concurrencyTypeStale;   // Concurrency setting after time limit exceeded. If null, it defaults to RUN_PARALLEL
+        optional customizationQualifier             concurrencyHook    properties qualifierFor = "ssm.services.ISchedulerHook"; 
+        optional Integer                            timeLimit;              // time limit for a single execution (in seconds). Once exceeded, the stale concurrency is used, and an email is generated (if the mailingGroup has been defined). If null, there is no limit 
+        optional t9tShortId                         mailingGroupId     properties dropdown="mailGroupId";
     }
 }

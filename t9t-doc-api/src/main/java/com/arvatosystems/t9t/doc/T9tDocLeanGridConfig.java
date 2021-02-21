@@ -27,7 +27,8 @@ public class T9tDocLeanGridConfig implements ILeanGridConfigContainer {
         "docTemplate",
         "docEmailCfg",
         "docComponent",
-        "docModuleCfg"
+        "docModuleCfg",
+        "mailingGroup"
     };
 
     @Override

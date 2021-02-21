@@ -166,6 +166,10 @@
         </dependency>
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-pdf-be</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-translation-be</artifactId>
         </dependency>
         <dependency>

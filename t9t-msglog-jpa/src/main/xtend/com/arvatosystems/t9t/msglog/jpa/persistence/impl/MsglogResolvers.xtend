@@ -19,6 +19,8 @@ import com.arvatosystems.t9t.annotations.jpa.AutoResolver42
 import com.arvatosystems.t9t.annotations.jpa.GlobalTenantCanAccessAll
 import com.arvatosystems.t9t.msglog.MessageRef
 import com.arvatosystems.t9t.msglog.jpa.entities.MessageEntity
+import com.arvatosystems.t9t.msglog.jpa.entities.MessageStatisticsEntity
+import com.arvatosystems.t9t.msglog.MessageStatisticsRef
 
 @AutoResolver42
 class MsglogResolvers {
@@ -40,4 +42,7 @@ class MsglogResolvers {
 
     @GlobalTenantCanAccessAll   // admin access to all tenant's data
     def MessageEntity       getMessageEntity(MessageRef     entityRef, boolean onlyActive) { return null; }
+
+    @GlobalTenantCanAccessAll   // admin access to all tenant's data
+    def MessageStatisticsEntity  getMessageStatisticsEntity(MessageStatisticsRef entityRef, boolean onlyActive) { return null; }
 }

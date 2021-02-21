@@ -1,0 +1,33 @@
+/*
+ * Copyright (c) 2012 - 2020 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import api.media.*
+import t9t.base.types.*
+import t9t.base.api.*
+import t9t.base.output.*
+import t9t.base.search.*
+
+package (com.arvatosystems) t9t.pdf.request {
+    default private unsigned trim noControlChars;
+
+    /**
+     * Request to concatenate multiple PDF documents. The result is stored as a new file in the specified outputDataSinkId.
+     * The response returns the sinkRef of the created file. The contents can be retrieved later via FileDownloadRequest(s).
+     */
+    class ConcatenatePDFsRequest                extends RequestParameters return SinkCreatedResponse {
+        required dataSinkId                     outputDataSinkId;   // the data sink to store the result in. Must have commFormatType = MediaType.PDF      
+        required f42Ref required List<>         sinkRefsToMerge;    // a non empty list of sink ref
+    }
+}

@@ -37,9 +37,10 @@ import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.IFileUtil;
 import com.arvatosystems.t9t.base.services.IOutputSession;
 import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.doc.MailingGroupDTO;
+import com.arvatosystems.t9t.doc.T9tDocTools;
 import com.arvatosystems.t9t.doc.api.DocumentSelector;
 import com.arvatosystems.t9t.rep.ReportConfigDTO;
-import com.arvatosystems.t9t.rep.ReportMailingDTO;
 import com.arvatosystems.t9t.rep.ReportParamsDTO;
 import com.arvatosystems.t9t.rep.T9tRepException;
 import com.arvatosystems.t9t.rep.be.IJasperReportFiller;
@@ -303,9 +304,8 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
         }
 
         if (reportParamsDTO.getMailingGroupRef() != null) {
-            ReportMailingDTO reportMailingDTO = ((ReportMailingDTO)reportParamsDTO.getMailingGroupRef()); // already mapper in ReportParam dto mapper
-            DocumentSelector selector= new DocumentSelector("-", ctx.internalHeaderParameters.getLanguageCode() != null ? ctx.internalHeaderParameters.getLanguageCode() : "en", "XX", "XXX");
-            reportNotifier.sendEmail(reportConfigDTO, reportParamsDTO, reportMailingDTO.getMailingList(), reportMailingDTO.getDocConfigId(), sinkRef, selector);
+            final String mailingGroupId = T9tDocTools.getMailingGroupId(reportParamsDTO.getMailingGroupRef()); // already mapper in ReportParam dto mapper
+            reportNotifier.sendEmail(reportConfigDTO, reportParamsDTO, mailingGroupId, null, sinkRef, null);
         }
 
         SinkCreatedResponse response = new SinkCreatedResponse();

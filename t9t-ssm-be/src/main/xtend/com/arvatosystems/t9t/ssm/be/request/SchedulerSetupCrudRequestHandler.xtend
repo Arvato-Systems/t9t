@@ -58,7 +58,7 @@ class SchedulerSetupCrudRequestHandler extends AbstractCrudSurrogateKeyBERequest
             intended.apiKey = current.apiKey
         } else {
             LOGGER.debug("UPDATE Scheduler with provided API-Key")
-           }
+        }
     }
 
     override void validateCreate(SchedulerSetupDTO intended) {
@@ -67,7 +67,7 @@ class SchedulerSetupCrudRequestHandler extends AbstractCrudSurrogateKeyBERequest
             createApiKey(intended)
         } else {
             LOGGER.debug("CREATE new Scheduler with provided API-Key")
-           }
+        }
     }
 
     override CrudSurrogateKeyResponse<SchedulerSetupDTO, FullTrackingWithVersion> execute(RequestContext ctx, SchedulerSetupCrudRequest crudRequest) throws Exception {
@@ -172,5 +172,4 @@ class SchedulerSetupCrudRequestHandler extends AbstractCrudSurrogateKeyBERequest
             }
         }
     }
-
 }

@@ -1300,3 +1300,21 @@ body {
     padding-left: 10px;
     padding-bottom: 10px;
 }
+
+.nestedGrid .z-detail-outer {
+    background: #fafafa;
+    padding: 5px 0;
+    border: none;
+}
+
+.nestedGrid .z-row-inner, .nestedGrid .z-detail-inner {
+    border: none !important;
+}
+
+.nestedGrid .z-grid-header {
+    display: none;
+}
+
+.z-div>.nestedGrid>.z-grid-header {
+    display: block !important;
+}

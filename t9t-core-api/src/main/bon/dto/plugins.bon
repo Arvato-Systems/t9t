@@ -32,7 +32,6 @@ package (com.arvatosystems) t9t.plugins {
     class PluginInfo {
         required pluginId           pluginId;
         required pluginVersion      version;
-
     }
 
     class PluginMethodInfo {
@@ -42,6 +41,18 @@ package (com.arvatosystems) t9t.plugins {
         required int                versionMinMinor;  // requires at least this minor version
     }
 
+    /** Information used internally for the key into the map of available plugins. */    
+    final immutable class StoredPluginKey {
+        required f42Ref             tenantRef;        // either global tenantRef, if the method is available for all tenants, or a specific tenant's ref
+        required pluginId           pluginId;         // qualifier of the implemented API
+    }
+    /** Information used internally for the key into the map of available methods, loaded by plugins. */    
+    final immutable class StoredPluginMethodKey {
+        required f42Ref             tenantRef;        // either global tenantRef, if the method is available for all tenants, or a specific tenant's ref
+        required pluginApiId        implementsApi;    // qualifier of the implemented API
+        optional pluginApiQualifier qualifier;        // the qualifier, for multi-slot type APIs
+        //required int                versionMajor;     // major version implemented - must match exactly
+    }
 
 
     class LoadedPluginRef RTTI 92 extends Ref {

@@ -29,8 +29,12 @@
     <packaging>pom</packaging>
     <description>Global dependency management for all backend projects</description>
 
+    <!-- useful commands to check current versions:
+         mvn dependency:resolve
+         mvn versions:display-dependency-updates
+    -->
     <properties>
-        <jodatime.version>2.10.6</jodatime.version>
+        <jodatime.version>2.10.10</jodatime.version>
         <org.slf4j-api.version>1.7.30</org.slf4j-api.version>
 
         <!-- jpaw / bonaparte: versions for import of BOM. The plugin version is defined separately in SE/EE -->
@@ -51,15 +55,15 @@
         <!-- Database driver versions -->
         <driver.ojdbc6.version>11.2.0</driver.ojdbc6.version>
         <driver.ojdbc8.version>12.2.0.1.0</driver.ojdbc8.version>
-        <driver.postgresql.version>42.2.14</driver.postgresql.version>  <!-- starting with 4.2.15, the driver adds a dependency to checker-qual 3.5.0 which conflicts with 2.5.2 pulled by guava -->
+        <driver.postgresql.version>42.2.18</driver.postgresql.version>  <!-- starting with 4.2.15, the driver adds a dependency to checker-qual 3.5.0 which conflicts with 2.5.2 pulled by guava -->
         <driver.sqlserver.version>6.2.2.jre8</driver.sqlserver.version>
         <driver.hana.version>1.120.19.043e2a479158ce6ef060a5c605ae2b97161e6b25</driver.hana.version>
         <h2.version>1.4.197</h2.version>
 
         <!-- OR mappers -->
-        <eclipselink.version>2.7.5</eclipselink.version>
-        <hibernate.version>5.4.25.Final</hibernate.version>
-        <hibernate-validator.version>6.1.6.Final</hibernate-validator.version>
+        <eclipselink.version>2.7.8</eclipselink.version>
+        <hibernate.version>5.4.28.Final</hibernate.version>
+        <hibernate-validator.version>6.2.0.Final</hibernate-validator.version>
         <ehcache.version>2.10.4</ehcache.version>
         <ehcache3.version>3.5.3</ehcache3.version>
 
@@ -92,13 +96,13 @@
         <groovy.version>2.4.13</groovy.version>
 
         <!-- Test support -->
-        <junit.version>4.13.1</junit.version>
+        <junit.version>4.13.2</junit.version>
         <hamcrest.version>1.3</hamcrest.version>   <!-- upgrade to 2.1 with next release -->
         <byte-buddy.version>1.10.11</byte-buddy.version>
         <org.mockito-core.version>2.23.4</org.mockito-core.version>
 
         <!-- Others -->
-        <icu4j.version>67.1</icu4j.version>
+        <icu4j.version>68.2</icu4j.version>
         <zxing.version>3.3.3</zxing.version>
         <quartz.version>2.3.2</quartz.version>                         <!-- TODO: should check if 2.3.0 offers improvements (is newer, and Java 7+, quartz 2.2.3 is Java 6+) -->
         <quartz-oracle.version>2.1.7</quartz-oracle.version>           <!-- no update since 2013! -->
@@ -106,6 +110,7 @@
         <jdtcore.version>3.1.1</jdtcore.version>
         <jsap.version>2.1</jsap.version>
         <httpcore.version>4.4.9</httpcore.version>
+        <pdfbox.version>2.0.22</pdfbox.version>
         <xmlunit.version>1.5</xmlunit.version>
         <apache-poi.version>4.1.2</apache-poi.version>
         <freemarker.version>2.3.23</freemarker.version>
@@ -120,13 +125,13 @@
         <spring-bom.version>5.2.9.RELEASE</spring-bom.version>
         <spring-data-jpa.version>2.3.4.RELEASE</spring-data-jpa.version>
 
-        <netty.version>4.1.52.Final</netty.version>
+        <netty.version>4.1.59.Final</netty.version>
         <vertx3.version>3.9.4</vertx3.version>
 
         <xmlbeans.version>3.1.0</xmlbeans.version>  <!-- 3.x is required for POI 4 (xlsx) -->
 
         <!-- dependencies only for SE -->
-        <c3p0.version>0.9.5.3</c3p0.version>
+        <c3p0.version>0.9.5.5</c3p0.version>
         <hikaricp.version>3.2.0</hikaricp.version>
         <flyway.version>4.1.2</flyway.version>
 
@@ -512,6 +517,12 @@
                 <artifactId>httpcore</artifactId>
                 <version>${httpcore.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.pdfbox</groupId>
+                <artifactId>pdfbox</artifactId>
+                <version>${pdfbox.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>com.google.zxing</groupId>
                 <artifactId>javase</artifactId>

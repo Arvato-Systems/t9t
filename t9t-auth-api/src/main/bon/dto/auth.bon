@@ -142,11 +142,14 @@ package (com.arvatosystems) t9t.auth {
         optional shortText                          salutation;                             // salutation
         optional t9tShortId                         orgUnit;                                // org unit ID or provider ID
         optional Unicode(64)                        defaultScreenId;                        // default screen admin zk ui
+        optional defaultExternalId                  userIdExt;                              // external user ID - only required to be unique within tenant and orgUnit.
     }
     final class UserDescription extends UserRef {
         required userId                             userId          properties notupdatable;    // User id to be used for login
         required boolean                            isActive        properties active;
         optional shortText                          name;                                   // christian name, surname
+        optional t9tShortId                         orgUnit;                                // org unit ID or provider ID
+        optional defaultExternalId                  userIdExt;                              // external user ID - only required to be unique within tenant and orgUnit.
     }
 
     /**

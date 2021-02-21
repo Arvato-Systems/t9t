@@ -15,13 +15,11 @@
  */
 package com.arvatosystems.t9t.base.be.auth
 
-import com.arvatosystems.t9t.auth.ApiKeyDTO
-import com.arvatosystems.t9t.auth.PermissionsDTO
-import com.arvatosystems.t9t.auth.TenantDTO
 import com.arvatosystems.t9t.auth.UserDTO
-import com.arvatosystems.t9t.auth.be.impl.AuthResponseUtil
 import com.arvatosystems.t9t.auth.hooks.IJwtEnrichment
+import com.arvatosystems.t9t.auth.hooks.IOtherAuthentication
 import com.arvatosystems.t9t.auth.services.IAuthPersistenceAccess
+import com.arvatosystems.t9t.auth.services.IAuthResponseUtil
 import com.arvatosystems.t9t.auth.services.IExternalAuthentication
 import com.arvatosystems.t9t.auth.services.ITenantResolver
 import com.arvatosystems.t9t.base.T9tConstants
@@ -35,7 +33,6 @@ import com.arvatosystems.t9t.base.services.RequestContext
 import com.arvatosystems.t9t.base.types.AuthenticationParameters
 import com.arvatosystems.t9t.cfg.be.ConfigProvider
 import de.jpaw.annotations.AddLogger
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo
 import de.jpaw.dp.Inject
 import de.jpaw.util.ApplicationException
 
@@ -43,16 +40,18 @@ import de.jpaw.util.ApplicationException
 class AuthenticationRequestHandler extends AbstractRequestHandler<AuthenticationRequest> {
 
     @Inject IAuthPersistenceAccess  persistenceAccess
-    @Inject AuthResponseUtil        authResponseUtil
+    @Inject IAuthResponseUtil       authResponseUtil
     @Inject ITenantResolver         tenantResolver
     @Inject IJwtEnrichment          jwtEnrichment
     @Inject IExternalAuthentication externalAuthentication
+    @Inject IOtherAuthentication    otherAuthentication
 
     override AuthenticationResponse execute(RequestContext ctx, AuthenticationRequest rq) {
         val tempJwt = ctx.internalHeaderParameters.jwtInfo
+        val ap = otherAuthentication.preprocess(ctx, rq.sessionParameters, rq.authenticationParameters)
         val resp    = auth(
             ctx,
-            rq.authenticationParameters,
+            ap,
             rq.sessionParameters?.locale   ?: tempJwt.locale,
             rq.sessionParameters?.zoneinfo ?: tempJwt.zoneinfo
         )      // dispatch and perform authentication
@@ -70,113 +69,6 @@ class AuthenticationRequestHandler extends AbstractRequestHandler<Authentication
         resp.tenantNotUnique           = resp.jwtInfo.tenantId == T9tConstants.GLOBAL_TENANT_ID // only then the user has access to additional ones
         LOGGER.debug("User {} successfully logged in for tenant {}", resp.jwtInfo.userId, resp.jwtInfo.tenantId)
         return resp
-    }
-
-    def protected void enrichJwtWithTenantDefaults(JwtInfo it, PermissionsDTO pt) {
-        if (pt !== null) {
-            if (permissionsMin === null)
-                permissionsMin = pt.minPermissions
-            if (permissionsMax === null)
-                permissionsMax = pt.maxPermissions
-            if (logLevel === null)
-                logLevel = pt.logLevel
-            if (logLevelErrors === null)
-                logLevelErrors = pt.logLevelErrors
-            // fallbacks for resource do not make sense
-        }
-        // check if min / max permissions are still null, then set to defaults...  (not required, those are assumed at evaluation time...)
-//        if (permissionsMin === null)
-//            permissionsMin = new Permissionset(0)
-//        if (permissionsMax === null)
-//            permissionsMax = new Permissionset(0xfffff)
-    }
-
-    def protected JwtInfo createJwt(UserDTO user, TenantDTO tenantDTO) {
-        val p = user.permissions
-        return new JwtInfo => [
-            issuer              = authResponseUtil.ISSUER_USERID_PASSWORD
-            roleRef             = user.roleRef?.objectRef
-            // same from here
-            userRef             = user.objectRef
-            userId              = user.userId
-            name                = user.name
-            tenantId            = tenantDTO.tenantId
-            tenantRef           = tenantDTO.objectRef
-            roleRef             = user.roleRef?.objectRef
-            z                   = jwtEnrichment.mergeZs(user.z, tenantDTO.z)
-            if (p !== null) {
-                permissionsMin      = p.minPermissions
-                permissionsMax      = p.maxPermissions
-                logLevel            = p.logLevel
-                logLevelErrors      = p.logLevelErrors
-                resource            = p.resourceRestriction
-                resourceIsWildcard  = p.resourceIsWildcard
-            }
-            enrichJwtWithTenantDefaults(tenantDTO.permissions)
-        ]
-    }
-
-    def protected JwtInfo createJwt(ApiKeyDTO apiKey, TenantDTO tenantDTO, UserDTO userDTO) {
-        val p = apiKey.permissions
-        val user = apiKey.userRef as UserDTO
-        val pu = user.permissions
-        return new JwtInfo => [
-            issuer              = authResponseUtil.ISSUER_APIKEY
-            roleRef             = apiKey.roleRef?.objectRef
-            // same from here
-            userRef             = user.objectRef
-            userId              = user.userId
-            name                = user.name
-            tenantId            = tenantDTO.tenantId
-            tenantRef           = tenantDTO.objectRef
-            roleRef             = apiKey.roleRef?.objectRef ?: user.roleRef?.objectRef
-            z                   = jwtEnrichment.mergeZs(user.z, tenantDTO.z)
-            if (p !== null) {
-                permissionsMin      = p.minPermissions ?: pu?.minPermissions
-                permissionsMax      = p.maxPermissions ?: pu?.maxPermissions
-                logLevel            = p.logLevel
-                logLevelErrors      = p.logLevelErrors
-                resource            = p.resourceRestriction
-                resourceIsWildcard  = p.resourceIsWildcard
-            }
-            enrichJwtWithTenantDefaults(tenantDTO.permissions)
-        ]
-    }
-
-    def protected boolean isUserAllowedToLogOn(RequestContext ctx, UserDTO userDto) {
-        if (!userDto.isActive) {
-            LOGGER.debug("Authentication of userId {} denied, user is inactive", userDto.userId)
-            return false
-        }
-        if (userDto.permissions !== null) {
-            if (userDto.permissions.validFrom !== null && userDto.permissions.validFrom.isAfter(ctx.executionStart)) {
-                LOGGER.debug("Authentication of userId {} denied, user is not allowed before {}", userDto.userId, userDto.permissions.validFrom)
-                return false
-            }
-            if (userDto.permissions.validTo !== null && userDto.permissions.validTo.isBefore(ctx.executionStart)) {
-                LOGGER.debug("Authentication of userId {} denied, user is not allowed after {}", userDto.userId, userDto.permissions.validTo)
-                return false
-            }
-        }
-        return true  // all tests passed
-    }
-
-    def protected boolean isApiKeyAllowed(RequestContext ctx, ApiKeyDTO apiKey) {
-        if (!apiKey.isActive) {
-            LOGGER.debug("Authentication via API key {} denied, key is inactive", apiKey.apiKey)
-            return false
-        }
-        if (apiKey.permissions !== null) {
-            if (apiKey.permissions.validFrom !== null && apiKey.permissions.validFrom.isAfter(ctx.executionStart)) {
-                LOGGER.debug("Authentication via API key {} denied, key is not allowed before {}", apiKey.apiKey, apiKey.permissions.validFrom)
-                return false
-            }
-            if (apiKey.permissions.validTo !== null && apiKey.permissions.validTo.isBefore(ctx.executionStart)) {
-                LOGGER.debug("Authentication via API key {} denied, key is not allowed after {}", apiKey.apiKey, apiKey.permissions.validTo)
-                return false
-            }
-        }
-        return true  // all tests passed
     }
 
     /** Authenticates a user via username / password. Relevant information for the JWT is taken from the UserDTO, then the TenantDTO. */
@@ -206,12 +98,12 @@ class AuthenticationRequestHandler extends AbstractRequestHandler<Authentication
             return null
         }
         val userDto                 = authResult.user
-        if (!isUserAllowedToLogOn(ctx, userDto))
+        if (!authResponseUtil.isUserAllowedToLogOn(ctx, userDto))
             return null
 
         val tenantDto               = tenantResolver.getDTO(authResult.tenantRef)
         val resp                    = new AuthenticationResponse
-        resp.jwtInfo                = createJwt(userDto, tenantDto)
+        resp.jwtInfo                = authResponseUtil.createJwt(userDto, tenantDto)
         resp.jwtInfo.locale         = locale
         resp.jwtInfo.zoneinfo       = zoneinfo
         jwtEnrichment.enrichJwt(resp.jwtInfo, tenantDto, userDto)
@@ -240,15 +132,15 @@ class AuthenticationRequestHandler extends AbstractRequestHandler<Authentication
             return null
 
         val apiKeyDto               = authResult.apiKey
-        if (!isApiKeyAllowed(ctx, apiKeyDto))
+        if (!authResponseUtil.isApiKeyAllowed(ctx, apiKeyDto))
             return null
 
         val userDto                 = apiKeyDto.userRef as UserDTO
-        if (!isUserAllowedToLogOn(ctx, userDto))
+        if (!authResponseUtil.isUserAllowedToLogOn(ctx, userDto))
             return null
 
         val resp                    = new AuthenticationResponse
-        resp.jwtInfo                = createJwt(apiKeyDto, tenantDto, userDto)
+        resp.jwtInfo                = authResponseUtil.createJwt(apiKeyDto, tenantDto, userDto)
         resp.jwtInfo.locale         = locale
         resp.jwtInfo.zoneinfo       = zoneinfo
         jwtEnrichment.enrichJwt(resp.jwtInfo, tenantDto, userDto, apiKeyDto)
@@ -263,6 +155,6 @@ class AuthenticationRequestHandler extends AbstractRequestHandler<Authentication
     }
 
     def protected dispatch auth(RequestContext ctx, AuthenticationParameters unknown, String locale, String zoneinfo) {
-        throw new UnsupportedOperationException("Unsupported authentication parameters")
+        return otherAuthentication.auth(ctx, unknown, locale, zoneinfo)
     }
 }

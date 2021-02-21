@@ -126,6 +126,17 @@ public abstract class AbstractBucketMultiOutputSessionExportRequestHandler<T ext
             LOGGER.error("Problem during export: ", e);
             throw e;
         }
+
+        // finally, also close the sessions (since we opened them)
+        for (IOutputSession session: os) {
+            try {
+                session.close();
+            } catch (Exception e) {
+                LOGGER.error("Could not close output sessions: ", e);
+                throw e;
+            }
+        }
+
         return ok();
     }
 }

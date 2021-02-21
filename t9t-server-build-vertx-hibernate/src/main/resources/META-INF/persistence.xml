@@ -67,6 +67,7 @@
         <class>com.arvatosystems.t9t.doc.jpa.entities.DocEmailCfgEntity</class>
         <class>com.arvatosystems.t9t.doc.jpa.entities.DocModuleCfgEntity</class>
         <class>com.arvatosystems.t9t.doc.jpa.entities.DocTemplateEntity</class>
+        <class>com.arvatosystems.t9t.doc.jpa.entities.MailingGroupEntity</class>
         <class>com.arvatosystems.t9t.email.jpa.entities.EmailAttachmentsEntity</class>
         <class>com.arvatosystems.t9t.email.jpa.entities.EmailEntity</class>
         <class>com.arvatosystems.t9t.email.jpa.entities.EmailModuleCfgEntity</class>
@@ -81,11 +82,11 @@
         <class>com.arvatosystems.t9t.io.jpa.entities.AsyncMessageEntity</class>
         <class>com.arvatosystems.t9t.io.jpa.entities.AsyncQueueEntity</class>
         <class>com.arvatosystems.t9t.msglog.jpa.entities.MessageEntity</class>
+        <class>com.arvatosystems.t9t.msglog.jpa.entities.MessageStatisticsEntity</class>
         <class>com.arvatosystems.t9t.plugins.jpa.entities.LoadedPluginEntity</class>
         <class>com.arvatosystems.t9t.plugins.jpa.entities.PluginLogEntity</class>
         <class>com.arvatosystems.t9t.rep.jpa.entities.ReportConfigEntity</class>
         <class>com.arvatosystems.t9t.rep.jpa.entities.ReportParamsEntity</class>
-        <class>com.arvatosystems.t9t.rep.jpa.entities.ReportMailingEntity</class>
         <class>com.arvatosystems.t9t.solr.jpa.entities.SolrModuleCfgEntity</class>
         <class>com.arvatosystems.t9t.ssm.jpa.entities.SchedulerSetupEntity</class>
         <class>com.arvatosystems.t9t.uiprefsv3.jpa.entities.LeanGridConfigEntity</class>

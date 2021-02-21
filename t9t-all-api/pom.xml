@@ -80,6 +80,10 @@
         </dependency>
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-pdf-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-translation-api</artifactId>
         </dependency>
         <dependency>

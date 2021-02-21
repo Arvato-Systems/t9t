@@ -46,6 +46,10 @@
             <artifactId>t9t-core-sapi</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-doc-apiext</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
             <exclusions>

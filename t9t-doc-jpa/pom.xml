@@ -30,6 +30,11 @@
 
     <dependencies>
         <dependency>
+            <!-- just to resolve email groups -->
+            <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-auth-apiext</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-doc-sapi</artifactId>
         </dependency>

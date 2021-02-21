@@ -15,33 +15,38 @@
  */
 package com.arvatosystems.t9t.plugins.be.request
 
-import com.arvatosystems.t9t.base.be.impl.AbstractCrudSurrogateKeyBERequestHandler
-import com.arvatosystems.t9t.plugins.LoadedPluginRef
-import com.arvatosystems.t9t.plugins.LoadedPluginDTO
-import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion
-import com.arvatosystems.t9t.plugins.request.LoadedPluginCrudRequest
-import de.jpaw.dp.Inject
-import com.arvatosystems.t9t.plugins.services.ILoadedPluginResolver
-import com.arvatosystems.t9t.base.api.ServiceResponse
-import com.arvatosystems.t9t.base.services.RequestContext
-import de.jpaw.bonaparte.pojos.api.OperationType
-import com.arvatosystems.t9t.plugins.PluginLogDTO
-import org.joda.time.Instant
-import com.arvatosystems.t9t.plugins.request.PluginLogCrudRequest
-import com.arvatosystems.t9t.base.services.IExecutor
-import com.arvatosystems.t9t.plugins.request.LoadedPluginSearchRequest
-import com.arvatosystems.t9t.base.search.ReadAllResponse
-import de.jpaw.bonaparte.pojos.api.AsciiFilter
-import de.jpaw.bonaparte.pojos.api.LongFilter
-import de.jpaw.bonaparte.pojos.api.AndFilter
-import de.jpaw.bonaparte.pojos.api.BooleanFilter
 import com.arvatosystems.t9t.base.T9tException
+import com.arvatosystems.t9t.base.be.impl.AbstractCrudSurrogateKeyBERequestHandler
+import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse
+import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion
+import com.arvatosystems.t9t.base.search.ReadAllResponse
+import com.arvatosystems.t9t.base.services.IExecutor
+import com.arvatosystems.t9t.base.services.RequestContext
+import com.arvatosystems.t9t.plugins.LoadedPluginDTO
+import com.arvatosystems.t9t.plugins.LoadedPluginRef
+import com.arvatosystems.t9t.plugins.PluginLogDTO
+import com.arvatosystems.t9t.plugins.request.LoadedPluginCrudRequest
+import com.arvatosystems.t9t.plugins.request.LoadedPluginSearchRequest
+import com.arvatosystems.t9t.plugins.request.PluginLogCrudRequest
+import com.arvatosystems.t9t.plugins.services.ILoadedPluginResolver
+import com.arvatosystems.t9t.plugins.services.IPluginManager
+import de.jpaw.bonaparte.pojos.api.AndFilter
+import de.jpaw.bonaparte.pojos.api.AsciiFilter
+import de.jpaw.bonaparte.pojos.api.BooleanFilter
+import de.jpaw.bonaparte.pojos.api.LongFilter
+import de.jpaw.bonaparte.pojos.api.OperationType
+import de.jpaw.dp.Inject
+import org.joda.time.Instant
 
-class LoadedPluginCrudRequestHandler  extends AbstractCrudSurrogateKeyBERequestHandler<LoadedPluginRef, LoadedPluginDTO, FullTrackingWithVersion, LoadedPluginCrudRequest>{
+// FIXME: There is a severe issue, in that for CREATE / UPDATE / MERGE, the pluginId of the data record is independent of the ID within the plugin itself.
+// We should either remove the ID within the plugin (solely trusting the user to assign IDs) or peek into the JAR before loading it, comparing the IDs,
+// or (preferred) use a completely different method to install JARs.
+class LoadedPluginCrudRequestHandler  extends AbstractCrudSurrogateKeyBERequestHandler<LoadedPluginRef, LoadedPluginDTO, FullTrackingWithVersion, LoadedPluginCrudRequest> {
     @Inject ILoadedPluginResolver resolver
     @Inject IExecutor executor
+    @Inject IPluginManager pluginManager
 
-    override ServiceResponse execute(RequestContext ctx, LoadedPluginCrudRequest crudRequest) {
+    override CrudSurrogateKeyResponse<LoadedPluginDTO, FullTrackingWithVersion> execute(RequestContext ctx, LoadedPluginCrudRequest crudRequest) {
         var DTO = new LoadedPluginDTO
         var oldEntry = new LoadedPluginDTO
         var entryExists = false
@@ -59,8 +64,8 @@ class LoadedPluginCrudRequestHandler  extends AbstractCrudSurrogateKeyBERequestH
             }
         }
 
-        if (entryExists){
-            if (crudRequest.crud != OperationType.CREATE){
+        if (entryExists) {
+            if (crudRequest.crud != OperationType.CREATE) {
                 // create plugin log entry
                 val pluginLogEntry = new PluginLogDTO
                 pluginLogEntry.isActive = false
@@ -74,21 +79,27 @@ class LoadedPluginCrudRequestHandler  extends AbstractCrudSurrogateKeyBERequestH
                 logRequest.crud = OperationType.CREATE
                 logRequest.data = pluginLogEntry
 
-                val resp = executor.executeSynchronous(ctx, logRequest)
-
-                if (resp.returnCode != 0) {
-                    return resp;
-                }
+                executor.executeSynchronousAndCheckResult(ctx, logRequest, CrudSurrogateKeyResponse)
             } else {
                 // remove loaded plugin
                 throw new T9tException(T9tException.RECORD_ALREADY_EXISTS);
             }
         }
 
-        return execute(ctx, crudRequest, resolver)
+        val response = execute(ctx, crudRequest, resolver) as CrudSurrogateKeyResponse<LoadedPluginDTO, FullTrackingWithVersion>
+        // database operation was successful: load plugin or delete it
+        switch (crudRequest.crud) {
+            case CREATE,
+            case MERGE,
+            case UPDATE:
+                pluginManager.loadPlugin(ctx.tenantRef, response.data.jarFile)
+            case DELETE:
+                pluginManager.removePlugin(ctx.tenantRef, response.data.pluginId)
+        }
+        return response
     }
 
-    def getLoadedPlugin(Long tenantRef, String pluginId){
+    def getLoadedPlugin(Long tenantRef, String pluginId) {
         val activeFilter = new BooleanFilter("isActive", true)
         val tenantFilter = new LongFilter("tenantRef", tenantRef, null, null, null)
         val pluginFilter = new AsciiFilter("pluginId", pluginId, null, null, null, null)

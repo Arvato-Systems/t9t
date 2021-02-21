@@ -27,8 +27,9 @@
                                 <cells228 id= "permissions.minPermissions"      value ="@load(vm.data.permissions.minPermissions)      @save(vm.data.permissions.minPermissions,     before='commandSave')"
                                           id2="permissions.maxPermissions"      value2="@load(vm.data.permissions.maxPermissions)      @save(vm.data.permissions.maxPermissions,     before='commandSave')"/>
                                 <cells228 id= "externalAuth"                    value ="@load(vm.data.externalAuth)                    @save(vm.data.externalAuth,                   before='commandSave')"
+                                          id2="userIdExt"                       value2="@load(vm.data.userIdExt)                       @save(vm.data.userIdExt,                      before='commandSave')"/>
+                                <cells228 id= "defaultScreenId"                 value ="@load(vm.data.defaultScreenId)                 @save(vm.data.defaultScreenId,                before='commandSave')"
                                           id2="supervisorRef"                   value2="@load(vm.data.supervisorRef)                   @save(vm.data.supervisorRef,                  before='commandSave')"/>
-                                <cells28  id= "defaultScreenId"                 value ="@load(vm.data.defaultScreenId)                 @save(vm.data.defaultScreenId,before='commandSave')"/>
                             </rows>
                         </form28>
                     </tabpanel>

@@ -24,8 +24,7 @@ public class T9tRepLeanGridConfig implements ILeanGridConfigContainer {
 
     private static String [] GRID_CONFIGS = {
         "reportConfig",
-        "reportParams",
-        "reportMailing"
+        "reportParams"
     };
 
     @Override

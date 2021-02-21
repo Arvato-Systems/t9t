@@ -30,6 +30,10 @@
         <url>http://www.arvato-systems.de</url>
     </organization>
 
+    <!-- useful commands to check current versions:
+         mvn dependency:resolve-plugins
+         mvn versions:display-plugin-updates
+    -->
     <properties>
         <!-- to be used by dependent projects (same as project.version, but must be provided explicitly so that imports work) -->
         <t9t.version>5.0-SNAPSHOT</t9t.version>
@@ -834,6 +838,9 @@
         <module>t9t-rep-proxy</module>
         <module>t9t-rep-be</module>
         <module>t9t-rep-jpa</module>
+
+        <module>t9t-pdf-api</module>
+        <module>t9t-pdf-be</module>
 
         <module>t9t-xml</module>
 

@@ -31,8 +31,9 @@ public class DemoRequestHandler implements IRequestHandlerPlugin {
 
     @Override
     public void execute(RequestContext ctx, ExecutePluginV1Request in, ExecutePluginV1Response out) {
-        LOGGER.info("demo: {}", in.getTextParameter());
+        LOGGER.info("demo request handler plugin: text={}, num={}", in.getTextParameter(), in.getNumParameter());
         out.setNumResult(in.getNumParameter() * in.getNumParameter());
+        LOGGER.info("demo request handler plugin: returning num={}", out.getNumResult());
     }
 
     @Override

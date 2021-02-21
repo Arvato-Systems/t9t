@@ -123,18 +123,6 @@ package (com.arvatosystems) t9t.rep {
         optional Timestamp(0)                           fromDate;        // explicit lower bound (t >= fromDate)
         optional Timestamp(0)                           toDate;          // explicit upper bound (t < toDate)
         optional Unicode(64)                            timeZone         properties dropdown="timeZoneId";
-        optional (ReportMailingRef...,ReportMailingDTO) mailingGroupRef  properties ref, searchprefix="mailingList", dropdown="mailGroupId";    // to send email when the report is done
-    }
-
-    class ReportMailingRef RTTI 302 extends Ref {}
-
-    final class ReportMailingKey extends ReportMailingRef {
-        required t9tShortId                             mailingGroupId; // mail group id
-    }
-
-    class ReportMailingDTO extends ReportMailingRef{
-        required t9tShortId                             mailingGroupId   properties notupdatable;
-        required defaultExternalId                      docConfigId      properties ref, dropdown="docConfigId"; // document template to use
-        optional Unicode(2048)                          mailingList;     // user id separated by ,
+        optional (MailingGroupRef...,MailingGroupDTO)   mailingGroupRef  properties ref, dropdown="mailGroupId";    // to send email when the report is done
     }
 }

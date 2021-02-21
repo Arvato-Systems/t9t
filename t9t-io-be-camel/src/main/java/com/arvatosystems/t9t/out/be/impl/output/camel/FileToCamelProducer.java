@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 import com.arvatosystems.t9t.base.services.SimplePatternEvaluator;
 import com.arvatosystems.t9t.io.CamelPostProcStrategy;
 import com.arvatosystems.t9t.io.DataSinkDTO;
+import com.arvatosystems.t9t.io.T9tIOException;
 import com.arvatosystems.t9t.out.services.IFileToCamelProducer;
 import com.google.common.collect.ImmutableMap;
 
@@ -43,6 +44,7 @@ import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
+import de.jpaw.util.ApplicationException;
 
 /**
  *
@@ -117,7 +119,14 @@ public class FileToCamelProducer implements IFileToCamelProducer {
             successfulRoutingPostProcessing(fileName, fileType, sinkCfg);
         } catch (CamelExecutionException e) {
             failedRoutingPostProcessing(fileName, fileType, sinkCfg);
-            throw e;
+            
+            LOGGER.error("CamelExecutionException", e);
+            
+            // Wrap camel execution error into Application error in order to prevent rollback
+            ApplicationException applicationException = new ApplicationException(T9tIOException.NOT_TRANSFERRED, e.getMessage());
+            applicationException.setStackTrace(e.getStackTrace());
+            applicationException.addSuppressed(e);
+            throw applicationException;
         }
     }
 

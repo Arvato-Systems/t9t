@@ -23,7 +23,8 @@ import com.arvatosystems.t9t.base.ILeanGridConfigContainer;
 public class T9tMsglogLeanGridConfig implements ILeanGridConfigContainer {
 
     private static String [] GRID_CONFIGS = {
-        "requests"
+        "requests",
+        "messageStatistics"
     };
 
     @Override

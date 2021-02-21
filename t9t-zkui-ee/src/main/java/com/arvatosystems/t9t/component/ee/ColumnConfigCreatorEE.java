@@ -21,6 +21,7 @@ import org.zkoss.zul.Grid;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Popup;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 
@@ -28,42 +29,44 @@ import com.arvatosystems.t9t.base.uiprefs.UIGridPreferences;
 import com.arvatosystems.t9t.components.tools.DefaultColumnConfigCreator;
 import com.arvatosystems.t9t.tfi.web.ApplicationSession;
 
-import de.jpaw.dp.Singleton;
+import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Specializes;
 
 /**
- * EE version of column configuration component that turn all available fields of a specific grid id into nested grouped list.
+ * EE version of column configuration component that turn all available fields
+ * of a specific grid id into nested grouped list.
  */
-@Singleton
+@Dependent
 @Specializes
 public class ColumnConfigCreatorEE extends DefaultColumnConfigCreator {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ColumnConfigCreatorEE.class);
 
-    private Logger LOGGER = LoggerFactory.getLogger(ColumnConfigCreatorEE.class);
-    private final ApplicationSession session = ApplicationSession.get();
-
-    Map<String, List<FieldNameModel>> columnsByKey = new HashMap<>();
+    protected final Map<String, List<FieldNameModel>> columnsByKey = new HashMap<>();
 
     private Set<String> currentGrid = null;
     private Set<String> selections = null;
 
     @Override
-    public void createColumnConfigComponent(Div parent, UIGridPreferences uiGridPreferences, Set<String> currentGrid) {
+    public void createColumnConfigComponent(ApplicationSession session, Div parent, UIGridPreferences uiGridPreferences, Set<String> currentGrid) {
 
         List<FieldNameModel> firstLevelColumns = new ArrayList<>();
 
         this.currentGrid = currentGrid;
-        this.selections = new HashSet<String>(currentGrid);
+        selections = new HashSet<String>(currentGrid);
+        viewModelId = uiGridPreferences.getViewModel();
 
         initUiGrids(uiGridPreferences, firstLevelColumns);
         Grid grid = new Grid();
+        parent.setVflex("1");
+        grid.setVflex("1");
         grid.setParent(parent);
         grid.setSclass("nestedGrid grid no-padding no-scrollbar");
-        createGrid(grid, firstLevelColumns);
+        createGrid(session, grid, firstLevelColumns);
     }
 
     @Override
-    public Pair<List<String>, List<String>> getAddRemovePairs() {
-        
+    public Pair<List<String>, List<String>> getAddRemovePairs(final ApplicationSession session) {
+
         if (selections.isEmpty()) {
             Messagebox.show(session.translate("editGrid", "selectedFieldCountZero"));
             return null;
@@ -77,8 +80,9 @@ public class ColumnConfigCreatorEE extends DefaultColumnConfigCreator {
     }
 
     /**
-     * The method group all the fields into hierarchy based on the path (separated by dot)
-     * then put into a map ready for lazy loading when expanding on the grouped list.
+     * The method group all the fields into hierarchy based on the path (separated
+     * by dot) then put into a map ready for lazy loading when expanding on the
+     * grouped list.
      */
     private void initUiGrids(UIGridPreferences uiGridPreferences, List<FieldNameModel> firstLevelColumns) {
         uiGridPreferences.getColumns().stream().forEach(uiColumns -> {
@@ -127,27 +131,32 @@ public class ColumnConfigCreatorEE extends DefaultColumnConfigCreator {
      * A recursive method to dynamically construct grid on first level also applied
      * on grouping item being opened
      */
-    private void createGrid(Grid grid, List<FieldNameModel> data) {
+    private void createGrid(ApplicationSession session, Grid grid, List<FieldNameModel> data) {
         Columns columns = new Columns();
         Column detail = new Column();
         detail.setWidth("40px");
         columns.appendChild(detail);
-        columns.appendChild(new Column("Field"));
+        columns.appendChild(new Column(session.translate("editGrid", "fieldName")));
+        columns.appendChild(new Column(session.translate("editGrid", "technicalName")));
 
         grid.appendChild(columns);
         grid.setRowRenderer(new RowRenderer<FieldNameModel>() {
 
             @Override
             public void render(Row row, FieldNameModel data, int index) throws Exception {
+                String fieldName = data.getFieldName();
+
+                String translatedLabel = session.translate(viewModelId, fieldName);
                 if (columnsByKey.containsKey(data.getFieldName())) {
                     Detail detail = new Detail();
                     detail.setAttribute("data", data);
                     detail.addEventListener(Events.ON_OPEN, (e) -> {
+                        e.getTarget().getChildren().clear();
                         FieldNameModel fnm = (FieldNameModel) e.getTarget().getAttribute("data");
                         Grid grid = new Grid();
                         grid.setParent(e.getTarget());
-                        createGrid(grid, columnsByKey.get(fnm.getFieldName()));
-                        LOGGER.info("EVENT: {} {}", fnm.getFieldName(), e.getTarget());
+                        createGrid(session, grid, columnsByKey.get(fnm.getFieldName()));
+                        LOGGER.debug("EVENT: {} {}", fnm.getFieldName(), e.getTarget());
                     });
                     detail.setParent(row);
                 } else {
@@ -164,7 +173,19 @@ public class ColumnConfigCreatorEE extends DefaultColumnConfigCreator {
                 }
 
                 // translate the label
-                new Label(session.translate(null, data.getFieldName())).setParent(row);
+                Popup tooltip = new Popup();
+                Div labelWrapper = new Div();
+                Label label = new Label(translatedLabel);
+                Label toolTipLabel = new Label(data.fieldName);
+                toolTipLabel.setParent(tooltip);
+                label.setTooltip(tooltip);
+                tooltip.setParent(labelWrapper);
+                label.setParent(labelWrapper);
+                labelWrapper.setParent(row);
+                
+                Label technicalName = new Label(data.fieldName);
+                technicalName.setParent(row);
+
             }
         });
         grid.setModel(new ListModelList<FieldNameModel>(data));

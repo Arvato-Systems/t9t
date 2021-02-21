@@ -28,13 +28,14 @@ import de.jpaw.util.ApplicationException;
 @Singleton
 @Fallback
 public class DefaultNavBarCreator implements INavBarCreator {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultNavBarCreator.class);
 
-    private final Logger LOGGER = LoggerFactory.getLogger(DefaultNavBarCreator.class);
-    protected final int MAX_NUMBER_SUBMENU_ITEMS_PER_COLUMN = 13;
-    protected final String VM_ID = "navbarCreator";
-    protected final String CONTEXT_MENU_ID = "menu.ctx";
-    protected final String SET_AS_USER_DEFAULT_ID = "setAsDefaultScreen";
-    protected final String RESET_USER_DEFAULT_ID = "resetDefaultScreen";
+    protected static final int MAX_NUMBER_SUBMENU_ITEMS_PER_COLUMN = 13;
+    protected static final String VM_ID = "navbarCreator";
+    protected static final String CONTEXT_MENU_ID = "menu.ctx";
+    protected static final String SET_AS_USER_DEFAULT_ID = "setAsDefaultScreen";
+    protected static final String RESET_USER_DEFAULT_ID = "resetDefaultScreen";
+
     protected final IApplicationDAO applicationDAO = Jdp.getRequired(IApplicationDAO.class);
     protected final T9TRemoteUtils t9tRemoteUtils = Jdp.getRequired(T9TRemoteUtils.class);
 

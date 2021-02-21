@@ -7,46 +7,72 @@ import java.util.Set;
 
 import org.zkoss.util.Pair;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listcell;
+import org.zkoss.zul.Listhead;
+import org.zkoss.zul.Listheader;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Popup;
 
 import com.arvatosystems.t9t.base.uiprefs.UIGridPreferences;
 import com.arvatosystems.t9t.tfi.web.ApplicationSession;
 
 import de.jpaw.bonaparte.pojos.ui.UIColumnConfiguration;
+import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Fallback;
-import de.jpaw.dp.Singleton;
 
 /**
  * CE version of column configuration component that list out all the fields available on a specific grid id
  */
-@Singleton
+@Dependent
 @Fallback
 public class DefaultColumnConfigCreator implements IColumnConfigCreator {
 
-    private final ApplicationSession session = ApplicationSession.get();
     private UIGridPreferences uiGridPreferences = null;
-    private Set<String> currentGrid = null;
-    private Listbox listbox = null;
+    private Set<String>       currentGrid = null;
+    private Listbox           listbox = null;
+    protected String          viewModelId = null;
 
     @Override
-    public void createColumnConfigComponent(Div parent, UIGridPreferences uiGridPreferences, Set<String> currentGrid) {
+    public void createColumnConfigComponent(ApplicationSession session, Div parent, UIGridPreferences uiGridPreferences, Set<String> currentGrid) {
         parent.setVflex("1");
         this.currentGrid = currentGrid;
+        viewModelId = uiGridPreferences.getViewModel();
         listbox = new Listbox();
         List<String> allAvailableFieldNames = new LinkedList<>();
         uiGridPreferences.getColumns().stream().forEach(uiColumns -> {
             allAvailableFieldNames.add(uiColumns.getFieldName());
         });
+        Listhead head = new Listhead();
+        Listheader checkboxHeader = new Listheader();
+        checkboxHeader.setWidth("40px");
+        checkboxHeader.setParent(head);
+        Listheader fieldHeader= new Listheader();
+        fieldHeader.setParent(head);
+        head.setParent(listbox);
         listbox.setItemRenderer(new ListitemRenderer<String>() {
             @Override
             public void render(Listitem item, String data, int index) throws Exception {
+                Div wrapper = new Div();
+                Listcell cell1 = new Listcell();
+                cell1.setParent(item);
+                Listcell cell2 = new Listcell();
+                cell2.setParent(item);
+                wrapper.setParent(cell2);
+                Popup tooltip = new Popup();
+                Label toolTipLabel = new Label(data);
+                toolTipLabel.setParent(tooltip);
+                tooltip.setParent(wrapper);
+                Label label = new Label(session.translate(viewModelId,  data));
+                label.setParent(wrapper);
+                label.setTooltip(tooltip);
+                item.setTooltip(tooltip);
                 item.setValue(data);
-                item.setLabel(session.translate(null, data));
             }
         });
         ListModel<String> models = new ListModelList<>(allAvailableFieldNames, false);
@@ -69,7 +95,7 @@ public class DefaultColumnConfigCreator implements IColumnConfigCreator {
     }
 
     @Override
-    public Pair<List<String>, List<String>> getAddRemovePairs() {
+    public Pair<List<String>, List<String>> getAddRemovePairs(ApplicationSession session) {
         List<Listitem> selectedItems = listbox.getItems();
         List<String> addPair = new ArrayList<>();
         List<String> removePair = new ArrayList<>();

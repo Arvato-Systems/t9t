@@ -69,7 +69,7 @@ public class DecimalConverter implements IItemConverter<BigDecimal> {
             String path = getPathWithoutDataOrTracking(fieldName);
             BigDecimal scaledValue = BigDecimalTools.retrieveScaled(root, path);
             if (scaledValue == null) {
-                LOGGER.info("Can't find BigDecimal value in {}#{}. Pleased check decimal property in bon file.", root.ret$PQON(), path);
+                LOGGER.warn("Can't find BigDecimal value in {}#{}. Pleased check decimal property in bon file.", root.ret$PQON(), path);
                 scaledValue = setDefaultMinScale(value);
             }
             return ComponentUtil.getLocalizedDecimalFormat(this.format, scaledValue.scale()).format(scaledValue);

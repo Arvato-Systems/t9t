@@ -15,15 +15,20 @@
  */
 package com.arvatosystems.t9t.plugins.services;
 
-import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.plugins.PluginInfo;
+
+import de.jpaw.util.ByteArray;
 
 /**
  * Defines the Plugin Manager for loading and unloading Plugins and PluginMethods
  **/
 public interface IPluginManager {
-    public Plugin loadPlugin(String path, Long tenantRef, String pluginId) throws ClassNotFoundException;
-    public boolean closePlugin(Long tenantRef, String pluginId);
-    public Plugin getPlugin(Long tenantRef, String pluginId) throws T9tException;
-    public PluginMethod getPluginMethod(Long tenantRef, String pluginId) throws T9tException;
-    public PluginMethod getPluginMethod(Long renantRef, String pluginId, String qualifier) throws T9tException;
+    /** Load all classes provided by the plugin and return its info structure. */
+    PluginInfo loadPlugin(Long tenantRef, ByteArray pluginData);
+
+    /** Remove all classes provided by the plugin and close its classloader. */
+    boolean removePlugin(Long tenantRef, String pluginId);
+
+    /** Retrieve a reference to a preloaded plugin method instance. */ 
+    PluginMethod getPluginMethod(Long tenantRef, String pluginId, String qualifier);
 }

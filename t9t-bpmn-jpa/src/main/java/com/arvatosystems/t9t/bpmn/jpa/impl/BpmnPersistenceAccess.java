@@ -18,6 +18,7 @@ package com.arvatosystems.t9t.bpmn.jpa.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.TypedQuery;
 
 import org.joda.time.Instant;
@@ -157,7 +158,9 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
     public Long createOrUpdateNewStatus(RequestContext ctx, ProcessExecutionStatusDTO dto, ExecuteProcessWithRefRequest rq) {
         Long objectRef = null;
         ProcessExecStatusEntity existingEntity = statusResolver.findByProcessDefinitionIdAndTargetObjectRef(true, dto.getProcessDefinitionId(), dto.getTargetObjectRef());
-        if (existingEntity != null) { // use object ref to prevent searching for existing entity every time
+        if (existingEntity != null && refresh(existingEntity) != null) { //refresh because it might be removed at another thread
+            ctx.lockRef(existingEntity.getObjectRef()); // lock the status ref
+            refresh(existingEntity); //refresh again after acquring the lock to avoid outdated version
             // Existing status: check what to do
             if (rq.getIfEntryExists() == WorkflowActionEnum.ERROR) {
                 LOGGER.error("Attempted to recreate an existing business process entry: {}:{}", rq.getProcessDefinitionId(), rq.getTargetObjectRef());
@@ -174,10 +177,8 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
                 existingEntity.setNextStep(null);  // reset to beginning
             }
             // ELSE resume at current position (RUN: default action)
-
             existingEntity.setCurrentParameters(dto.getCurrentParameters());
             existingEntity.setYieldUntil(dto.getYieldUntil());
-            statusResolver.update(existingEntity);
             objectRef = existingEntity.getObjectRef();
         } else {
             if (rq.getIfNoEntryExists() == WorkflowActionEnum.ERROR) {
@@ -188,6 +189,7 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
                 return null;
             }
             objectRef = persistNewStatus(dto);
+            ctx.lockRef(objectRef);
         }
         if (rq.getInitialDelay() == null) {
             // launch the process immediately
@@ -195,5 +197,15 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
             executor.executeAsynchronous(ctx, trigger);
         }
         return objectRef;
+    }
+
+    private ProcessExecStatusEntity refresh(ProcessExecStatusEntity statusEntity) {
+        try {
+            statusResolver.getEntityManager().refresh(statusEntity);
+        } catch (EntityNotFoundException enfe) {
+            LOGGER.debug("Status probably been removed at another thread.");
+            return null;
+        }
+        return statusEntity;
     }
 }

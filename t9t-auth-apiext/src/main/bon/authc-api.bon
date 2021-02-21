@@ -99,6 +99,7 @@ package (com.arvatosystems) t9t.authc.api {
         optional shortText                          mobilePhoneNo;                          // phone no (mobile)
         optional shortText                          salutation;                             // salutation
         optional t9tShortId                         orgUnit;                                // org unit ID or provider ID
+        optional defaultExternalId                  userIdExt;                              // external user ID - only required to be unique within tenant and orgUnit.
     }
 
     class GetUserDataByUserRefRequest extends RequestParameters return GetUserDataResponse {

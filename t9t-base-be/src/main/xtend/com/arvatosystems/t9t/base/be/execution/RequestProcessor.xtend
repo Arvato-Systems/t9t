@@ -265,7 +265,8 @@ class RequestProcessor implements IRequestProcessor {
                         '''«rq.ret$PQON()»(«ctx.internalHeaderParameters.processRef»): «e.message»''')
                 }
                 // close the context and clean up resources
-                if (ApplicationException.isOk(resp.returnCode)) {
+                if (resp.returnCode <  2 * ApplicationException.CLASSIFICATION_FACTOR) {
+                    // both OK and DENIED responses are technically OK and must be committed. Only PARAMETER ERRORs etc are technical exceptions which must be rolled back
                     try {
                         ctx.commit
                         ctx.applyPostCommitActions(rq, resp)

@@ -13,23 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.rep.jpa.mapping.impl
+package com.arvatosystems.t9t.doc.jpa.mapping.impl
 
 import com.arvatosystems.t9t.annotations.jpa.AutoHandler
 import com.arvatosystems.t9t.annotations.jpa.AutoMap42
-import com.arvatosystems.t9t.rep.ReportMailingDTO
-import com.arvatosystems.t9t.rep.ReportMailingKey
-import com.arvatosystems.t9t.rep.jpa.entities.ReportMailingEntity
-import com.arvatosystems.t9t.rep.jpa.persistence.IReportMailingEntityResolver
+import com.arvatosystems.t9t.doc.MailingGroupDTO
+import com.arvatosystems.t9t.doc.MailingGroupKey
+import com.arvatosystems.t9t.doc.jpa.entities.MailingGroupEntity
+import com.arvatosystems.t9t.doc.jpa.persistence.IMailingGroupEntityResolver
 
 @AutoMap42
-class ReportMailingEntityMappers {
-    IReportMailingEntityResolver reportMailingResolver
+class MailingGroupEntityMappers {
+    IMailingGroupEntityResolver mailingGroupResolver
 
-    @AutoHandler("CSP42")
-    def void e2dReportMailingDTO(ReportMailingEntity entity, ReportMailingDTO dto) {}
+    @AutoHandler("CRSP42")
+    def void e2dMailingGroupDTO(MailingGroupEntity entity, MailingGroupDTO dto) {}
 
-    def void d2eReportMailingDTO(ReportMailingEntity entity, ReportMailingDTO dto, boolean onlyActive) {}
+    def void d2eMailingGroupDTO(MailingGroupEntity entity, MailingGroupDTO dto, boolean onlyActive) {}
 
-    def void e2dReportMailingKey(ReportMailingEntity entity, ReportMailingKey dto) {}
+    def void e2dMailingGroupKey(MailingGroupEntity entity, MailingGroupKey dto) {}
 }

@@ -68,7 +68,7 @@ public class AsyncMessageEditContextHandler implements IGridContextMenu<AsyncMes
             Map<String, Object> jsonAsMap = (new JsonParser(d.getText(), false)).parseObject();
             BonaPortable edited = MapParser.asBonaPortable(jsonAsMap, StaticMeta.OUTER_BONAPORTABLE_FOR_JSON);
             if (edited.getClass().equals(payload.getClass())) {
-                LOGGER.info("UPDATING async message of ref {}, payload type {}", dto.getObjectRef(), payload.ret$PQON());
+                LOGGER.debug("UPDATING async message of ref {}, payload type {}", dto.getObjectRef(), payload.ret$PQON());
                 final AsyncMessageCrudRequest crud = new AsyncMessageCrudRequest();
                 crud.setCrud(OperationType.UPDATE);
                 crud.setKey(dto.getObjectRef());

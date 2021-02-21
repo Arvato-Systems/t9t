@@ -54,4 +54,10 @@ package (com.arvatosystems) t9t.doc.jpa.entities owner fortytwo prefix p28 {
         index unique (tenantRef, documentId, entityId, countryCode, currencyCode, languageCode)
         @Embeddable MediaEmbeddable for data
     }
+
+    entity MailingGroupEntity category cfg is MailingGroupDTO {
+        tenantClass InternalTenantRef42
+        pk (objectRef)
+        index unique (tenantRef, mailingGroupId)
+    }
 }

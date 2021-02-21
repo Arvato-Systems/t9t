@@ -1,9 +1,9 @@
 {
-    "viewModel": "reportMailing",
+    "viewModel": "mailingGroup",
     "filters": [
         { "filterType": "W", "fieldName": "mailingGroupId" }
     ],
     "fields": [
-        "mailingGroupId", "docConfigId", "mailingList"
+        "mailingGroupId", "docConfigId", "mailingList", "description"
     ]
 }

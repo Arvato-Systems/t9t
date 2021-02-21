@@ -23,7 +23,18 @@ import t9t.base.output.*
 import t9t.base.moduleCfg.*
 import t9t.doc.api.*
 
-/** Configuration data for document templates. All configuration is tenant specific, because this usually is customized a lot.
+/** Document creation API module.
+ * RTTI values in range 450-499 (plus 2001 for the module cfg).
+ *
+ * Assigned values are:
+ * 2001 - DocModuleCfgDTO
+ * 450 - DocConfig
+ * 451 - DocEmailCfg
+ * 452 - DocComponent
+ * 453 - DocTemplate
+ * 454 - MailingGroup
+ *
+ * Configuration data for document templates. All configuration is tenant specific, because this usually is customized a lot.
  * If a group of tenants is supposed to share a set of documents, then this can be solved by the standard shared tenant ID mapping.
  */
 package (com.arvatosystems) t9t.doc {
@@ -129,7 +140,7 @@ package (com.arvatosystems) t9t.doc {
     /** Document template configuration data. The template can depend on subTenant (entity), country and language.
      * If no configuration is available for a specified language, country or entity, then the default (stored under "-" or "XX" / "XXX") is used.
      */
-    class DocTemplateRef RTTI 451 extends Ref  {
+    class DocTemplateRef RTTI 453 extends Ref  {
     }
 
     final class DocTemplateKey extends DocTemplateRef {
@@ -178,5 +189,21 @@ package (com.arvatosystems) t9t.doc {
         optional Int                                prio;                                               // the higher the prio, the better a match is considered to be
         optional Unicode(80)                        name;                                               // name / description of the Logo / image
         required (MediaData)                        data;                                               // the media data
+    }
+
+    /**
+     * Mailing group configuration data. The group defines a set of internal users, which get informed by standard emails.
+     */
+    class MailingGroupRef RTTI 454 extends Ref {}
+
+    final class MailingGroupKey extends MailingGroupRef {
+        required t9tShortId                         mailingGroupId; // mail group id
+    }
+
+    class MailingGroupDTO extends MailingGroupRef {
+        required t9tShortId                         mailingGroupId   properties notupdatable;
+        required shortText                          description;     // the description of this group
+        required defaultExternalId                  docConfigId      properties ref, dropdown="docConfigId"; // document template to use
+        optional Unicode(2048)                      mailingList;     // a list of user IDs separated by comma. These will be resolved to email addresses.
     }
 }

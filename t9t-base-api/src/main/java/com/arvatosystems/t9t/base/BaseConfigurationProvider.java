@@ -25,14 +25,11 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.T9tException;
-
 /**
  * Reads a property file (path to this file given by VM argument -DbasePropertyFile).
  */
 
 public class BaseConfigurationProvider {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseConfigurationProvider.class);
 
     public static Properties getBaseProperties() {

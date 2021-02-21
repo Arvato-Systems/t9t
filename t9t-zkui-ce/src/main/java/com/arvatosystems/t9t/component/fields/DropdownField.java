@@ -64,7 +64,7 @@ public class DropdownField extends AbstractField<Combobox> {
                 LongFilter f = new LongFilter();
                 f.setFieldName(getFieldName());
                 Description rec = ((Dropdown28Db)cb).lookupById(v);
-                LOGGER.info("Text {} gives description {}", v, rec);
+                LOGGER.debug("Text {} gives description {}", v, rec);
                 f.setEqualsValue(rec == null ? null : rec.getObjectRef());
                 return f;
             }

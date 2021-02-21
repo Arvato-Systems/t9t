@@ -46,6 +46,11 @@ package (com.arvatosystems) t9t.doc.request {
     class DocComponentSearchRequest                 extends SearchRequest<DocComponentDTO, FullTrackingWithVersion> {}
 
     class LeanDocConfigSearchRequest                extends LeanSearchRequest {}
+    class LeanMailingGroupSearchRequest             extends LeanSearchRequest {}
+
+    class MailingGroupCrudRequest                   extends CrudSurrogateKeyRequest<MailingGroupRef, MailingGroupDTO, FullTrackingWithVersion> {}
+    class MailingGroupSearchRequest                 extends SearchRequest<MailingGroupDTO, FullTrackingWithVersion> {}
+    class MailingGroupResolverRequest               extends RefResolverRequest<MailingGroupRef> {}
 
     final class DocComponentResource {
         required documentId                         key;        // variable name

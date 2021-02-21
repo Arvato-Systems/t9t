@@ -119,7 +119,7 @@ public class Crud28 extends Vlayout implements IViewModelOwner, IDataSelectRecei
         GridIdTools.enforceViewModelId(this);
 
         perms = GridIdTools.getPermissionFromAnchestor(this);
-        LOGGER.info("Update all button to visible");
+        LOGGER.debug("Update all button to visible");
         if (!perms.contains(OperationType.DELETE))
             deleteButton.setVisible(false);
         if (!perms.contains(OperationType.CREATE)) {

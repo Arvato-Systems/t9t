@@ -42,6 +42,7 @@ import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.core.CannedRequestDTO;
 import com.arvatosystems.t9t.core.CannedRequestRef;
 import com.arvatosystems.t9t.core.services.ICannedRequestResolver;
+import com.arvatosystems.t9t.ssm.SchedulerConcurrencyType;
 import com.arvatosystems.t9t.ssm.SchedulerSetupDTO;
 import com.arvatosystems.t9t.ssm.SchedulerSetupRecurrenceType;
 import com.arvatosystems.t9t.ssm.SchedulerSetupRecurrenceWeekdayTypeEnum;
@@ -62,6 +63,9 @@ public class QuartzSchedulerService implements ISchedulerService {
     public static final String DM_API_KEY    = "apiKey";        // the API key which defines the tenant and user ID to run the request under
     public static final String DM_LANGUAGE   = "language";      // the desired language
     public static final String DM_REQUEST    = "request";       // a reference to the serialized request stored centrally
+    public static final String DM_CONC_TYPE  = "concType";      // the concurrency type
+    public static final String DM_CONC_TYPE2 = "concTypeStale"; // the concurrency type for old instances
+    public static final String DM_TIME_LIMIT = "timeLimit";     // aftre how many minutes a process is regarded as "old"
 
     protected final ICannedRequestResolver rqResolver = Jdp.getRequired(ICannedRequestResolver.class);
     protected final Scheduler scheduler = Jdp.getRequired(Scheduler.class);
@@ -72,6 +76,10 @@ public class QuartzSchedulerService implements ISchedulerService {
 
     private static final String CRON_REGEX_PATTERN = "(\\*|\\d{0,2}([-,]\\d{0,2})*(/\\d{0,2})?)\\s(\\*|\\d{0,2}([-,]\\d{0,2})*(/\\d{0,2})?)\\s(\\*|\\d{0,2}([-,]\\d{0,2})*(/\\d{0,2})?)\\s(\\*|\\d{0,2}([-,]\\d{0,2})*(/\\d{0,2})?|\\?)\\s(\\*|\\d{0,2}([-,]\\d{0,2})*(/\\d{0,2}))\\s(\\*|\\d{0,2}([-,]\\d{0,2})*(/\\d{0,2})?|\\?)(\\s(\\*|\\d{4}([-,]\\d{4})*))?";
 
+    /** returns the token (null safe) */
+    private String getToken(SchedulerConcurrencyType t) {
+        return t == null ? null : t.getToken();
+    }
 
     @Override
     public void createScheduledJob(SchedulerSetupDTO setup) {
@@ -91,6 +99,9 @@ public class QuartzSchedulerService implements ISchedulerService {
             m.put(DM_API_KEY,   setup.getApiKey().toString());
             m.put(DM_LANGUAGE,  setup.getLanguageCode());
             m.put(DM_REQUEST,   serializedRequest);
+            m.put(DM_CONC_TYPE,  getToken(setup.getConcurrencyType()));
+            // m.put(DM_CONC_TYPE2, getToken(setup.getConcurrencyTypeStale())); // not needed, if old jobs exist, a request handler will be invoked.
+            m.put(DM_TIME_LIMIT, setup.getTimeLimit() == null ? Integer.valueOf(0) : setup.getTimeLimit());
             Trigger trigger = getTrigger(setup);
             scheduler.scheduleJob(jobDetail, trigger);
 

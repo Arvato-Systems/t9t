@@ -83,6 +83,16 @@ package (com.arvatosystems) t9t.doc.api {
         required (MediaData...) List<>              data;               // directly returned data
     }
 
+    /** Send a document to a list of users. */
+    class MailToUsersRequest extends RequestParameters return NewDocumentResponse {
+        required t9tShortId                         mailingGroupId;     // specifies a mailing group
+        optional documentId                         documentId;         // overrides the documentId in the mailing group
+        optional (DocumentSelector...)              documentSelector;   // specification of preferred language, country etc
+        required Element                            data;               // document data, which can be a Map, a List or a BonaPortable
+        required (MediaData...) List<>              attachments;        // Additional documents, to be added as attachments (e.g. to emails)
+        optional timeZoneId                         timeZone             properties dropdown="timeZoneId";  // one of joda DateTimeZone.getAvailableIds()
+    }
+
      /** To used from application modules: for example Customer, SalesOrder, DeliveryOrder, Return in OMS. */
     class SendEditedEmailRequest extends RequestParameters return SendEditedEmailResponse {
         required (Ref...)                            ref;

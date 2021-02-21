@@ -13,20 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.ssm.be.request
+package com.arvatosystems.t9t.authc.be.stubs;
 
-import com.arvatosystems.t9t.base.services.AbstractRequestHandler
-import com.arvatosystems.t9t.base.services.RequestContext
-import com.arvatosystems.t9t.ssm.request.ClearAllRequest
-import de.jpaw.dp.Inject
-import org.quartz.Scheduler
+import com.arvatosystems.t9t.auth.hooks.IOtherAuthentication;
 
-class ClearAllRequestHandler extends AbstractRequestHandler<ClearAllRequest> {
+import de.jpaw.dp.Fallback;
+import de.jpaw.dp.Singleton;
 
-    @Inject Scheduler               scheduler
-
-    override execute(RequestContext ctx, ClearAllRequest crudRequest) throws Exception {
-        scheduler.clear
-        return ok
-    }
+@Singleton
+@Fallback
+public class OtherAuthenticationStub implements IOtherAuthentication {
+	// empty, use default methods only
 }

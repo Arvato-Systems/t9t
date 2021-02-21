@@ -114,7 +114,7 @@ public class LeanGridConfigResolver implements ILeanGridConfigResolver {
                 ClassDefinition meta2 = myCrudViewModel.dtoClass.getMetaData();
                 int num = meta2.getFields().size() > 10 ? 10 : meta2.getFields().size();
                 for (int i = 0; i < num; ++i)
-                    LOGGER.info("Field {} is {}", i, meta2.getFields().get(i).getName());
+                    LOGGER.debug("Field {} is {}", i, meta2.getFields().get(i).getName());
             }
         }
         widths = gridPrefs.getFieldWidths() == null ? new ArrayList<Integer>(gridPrefs.getFields().size()) : gridPrefs.getFieldWidths();
@@ -280,7 +280,7 @@ public class LeanGridConfigResolver implements ILeanGridConfigResolver {
 
     @Override
     public void setVariant(int variant) {
-        LOGGER.info("Setting variant of grid {} to {}", myGridId, variant);
+        LOGGER.debug("Setting variant of grid {} to {}", myGridId, variant);
         this.variant = variant;
         gridPrefsModified = true;   // could differ from default
     }

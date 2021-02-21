@@ -78,6 +78,37 @@ class RequestContextScope extends JdpThreadLocalStrict<RequestContext> {
         return result
     }
 
+    def List<ProcessStatusDTO> getProcessStatusForScheduler(Long forInvokingProcessRef) {
+        val result = new ArrayList<ProcessStatusDTO>(8)
+        val refAge = Instant.now.millis
+        instances.forEach[ threadId, it |
+            val hdr                 = internalHeaderParameters
+            if (forInvokingProcessRef == hdr.requestHeader?.invokingProcessRef) {
+                val dto                 = new ProcessStatusDTO
+                dto.threadId            = threadId
+                dto.ageInMs             = refAge - executionStart.millis
+                dto.tenantId            = tenantId
+                dto.userId              = userId
+                dto.sessionRef          = hdr.jwtInfo.sessionRef
+                dto.processRef          = requestRef
+                dto.processStartedAt    = executionStart
+                dto.pqon                = hdr.requestParameterPqon
+                dto.invokingProcessRef  = hdr.requestHeader?.invokingProcessRef
+                dto.progressCounter     = progressCounter
+                dto.callStack           = getCallStack();
+                if (statusText !== null) {
+                    dto.statusText      = if (statusText.length <= 512) statusText else statusText.substring(0, 512)
+                }
+                val threadName = createdByThread.name
+                if (threadName !== null) {
+                    dto.createdByThread = if (threadName.length <= 64) threadName else threadName.substring(0, 64)
+                }
+                result.add(dto)
+            }
+        ]
+        return result
+    }
+
     def int numberOfProcesses(Long onlySessionRef, Long onlyTenantRef) {
         var int count = 0;
         for (inst: instances.values) {

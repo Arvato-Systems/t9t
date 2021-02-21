@@ -5,7 +5,6 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zkmax.zul.Nav;
 import org.zkoss.zkmax.zul.Navbar;
 import org.zkoss.zkmax.zul.Navitem;
-import org.zkoss.zul.Menu;
 import org.zkoss.zul.Menuitem;
 
 import com.arvatosystems.t9t.tfi.model.bean.Navi;

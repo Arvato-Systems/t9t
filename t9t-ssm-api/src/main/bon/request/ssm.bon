@@ -47,4 +47,16 @@ package (com.arvatosystems) t9t.ssm.request {
     class LeanSchedulerSetupSearchRequest       extends LeanSearchRequest {}
 
     class ClearAllRequest                       extends RequestParameters {}
+
+    /**
+     * This request is invoked if a preliminary check on running tasks finds prior instances of ta scheduled job running.
+     * The request may kill older instances. It may not start the new instance, instead it returns if the scheduler is allowed to do so.
+     */
+    class DealWithPriorJobInstancesRequest extends RequestParameters return DealWithPriorJobInstancesResponse {
+        required f42Ref                         schedulerSetupRef;
+    }
+
+    class DealWithPriorJobInstancesResponse extends ServiceResponse {
+        required boolean                        invokeNewInstance;
+    }
 }

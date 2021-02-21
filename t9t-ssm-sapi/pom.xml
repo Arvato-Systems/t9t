@@ -33,6 +33,10 @@
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-ssm-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-base-sapi</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

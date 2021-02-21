@@ -53,10 +53,6 @@ package (com.arvatosystems) t9t.rep.request {
     class ReportConfigCrudRequest                   extends CrudSurrogateKeyRequest<ReportConfigRef, ReportConfigDTO, FullTrackingWithVersion> {}
     class ReportConfigSearchRequest                 extends AbstractReportConfigSearchRequest<ReportConfigDTO> {}
 
-    class ReportMailingCrudRequest                  extends CrudSurrogateKeyRequest<ReportMailingRef, ReportMailingDTO, FullTrackingWithVersion> {}
-    class ReportMailingSearchRequest                extends SearchRequest<ReportMailingDTO, FullTrackingWithVersion> {}
-
     class LeanReportConfigSearchRequest             extends LeanSearchRequest {}  // for dropdown
     class LeanReportParamsSearchRequest             extends LeanSearchRequest {}  // for dropdown
-    class LeanReportMailingSearchRequest            extends LeanSearchRequest {}  // for dropdown
 }

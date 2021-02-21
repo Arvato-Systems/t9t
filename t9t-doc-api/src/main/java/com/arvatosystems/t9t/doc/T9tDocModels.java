@@ -28,6 +28,8 @@ import com.arvatosystems.t9t.doc.request.DocModuleCfgCrudRequest;
 import com.arvatosystems.t9t.doc.request.DocModuleCfgSearchRequest;
 import com.arvatosystems.t9t.doc.request.DocTemplateCrudRequest;
 import com.arvatosystems.t9t.doc.request.DocTemplateSearchRequest;
+import com.arvatosystems.t9t.doc.request.MailingGroupCrudRequest;
+import com.arvatosystems.t9t.doc.request.MailingGroupSearchRequest;
 
 public class T9tDocModels implements IViewModelContainer {
     public static final CrudViewModel<DocConfigDTO, FullTrackingWithVersion> DOC_CONFIG_VIEW_MODEL = new CrudViewModel<DocConfigDTO, FullTrackingWithVersion>(
@@ -55,12 +57,18 @@ public class T9tDocModels implements IViewModelContainer {
         FullTrackingWithVersion.BClass.INSTANCE,
         DocModuleCfgSearchRequest.BClass.INSTANCE,
         DocModuleCfgCrudRequest.BClass.INSTANCE);
-
+    public static final CrudViewModel<MailingGroupDTO, FullTrackingWithVersion> MAILING_GROUP_VIEW_MODEL = new CrudViewModel<MailingGroupDTO, FullTrackingWithVersion>(
+            MailingGroupDTO.BClass.INSTANCE,
+            FullTrackingWithVersion.BClass.INSTANCE,
+            MailingGroupSearchRequest.BClass.INSTANCE,
+            MailingGroupCrudRequest.BClass.INSTANCE);
+    
     static {
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("docConfig",  DOC_CONFIG_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("docEmailCfg",  DOC_EMAIL_CFG_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("docTemplate",  DOC_TEMPLATE_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("docComponent",  DOC_COMPONENT_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("docModuleCfg",  DOC_MODULE_CFG_VIEW_MODEL);
+        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("mailingGroup",  MAILING_GROUP_VIEW_MODEL);
     }
 }

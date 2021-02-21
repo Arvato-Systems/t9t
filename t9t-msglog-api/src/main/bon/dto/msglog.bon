@@ -68,4 +68,29 @@ package (com.arvatosystems) t9t.msglog {
         optional Unicode(512) allowControlChars     errorDetails;           // further information about the error location
         optional f42Ref                             rerunByProcessRef;      // reference from the original request to the rerun - references this entity
     }
+
+
+
+    // MessageStatistics defines aggregated portions of MessageDTO for the purpose of SLA reporting and performance monitoring
+
+    class MessageStatisticsRef RTTI 19 extends Ref {}
+
+    class MessageStatisticsKey extends MessageStatisticsRef {
+        required f42Ref                             tenantRef;              // identifies the tenant
+        required userId                             userId;
+    	required Day                                ^day;
+        required pqon                               requestParameterPqon;   // partially qualified name of the request
+    }
+    final class MessageStatisticsDTO extends MessageStatisticsRef {
+        properties tenantCategory="A";
+        required f42Ref                             tenantRef;              // identifies the tenant
+        required userId                             userId;
+    	required Day                                ^day;
+        required pqon                               requestParameterPqon;   // partially qualified name of the request
+        required int                                countOk;                // requests with return code 0..199999999
+        required int                                countError;             // requests with return code 200000000..999999999
+        required Long                               processingTimeMin;      // minimum processing time in ms
+        required Long                               processingTimeMax;      // maximum processing time in ms
+        required Long                               processingTimeTotal;    // sum of processing times in ms
+    }
 }

@@ -58,6 +58,7 @@ import java.util.HashMap
 import java.util.Map
 import java.util.Objects
 import java.util.concurrent.atomic.AtomicInteger
+import javax.persistence.EntityNotFoundException
 import org.joda.time.Instant
 import org.slf4j.MDC
 
@@ -80,6 +81,9 @@ class BpmnRunner implements IBpmnRunner {
         // prepare...
         //////////////////////////////////////////////////
         // 1.) get status entity
+
+        ctx.lockRef(statusRef); // acquire & lock the statusRef 
+
         val statusEntity = statusResolver.find(statusRef) //, LockModeType.PESSIMISTIC_READ)
         if (statusEntity === null) {
             LOGGER.info("Process status entry {} has disappeared... which implies end of the workflow process")
@@ -141,7 +145,10 @@ class BpmnRunner implements IBpmnRunner {
         try {
             val workflowObject = factory.read(statusEntity.targetObjectRef, lockObjectRef, jvmLockAcquired)
             // only now the lock has been obtained
-            statusResolver.entityManager.refresh(statusEntity)  // inside the lock, read again before we make any changes
+            if (refresh(statusEntity) === null) {
+                LOGGER.info("Process status entry {} has disappeared... which implies end of the workflow process")
+                return false
+            }  // inside the lock, read again before we make any changes
             val parameters = statusEntity.currentParameters ?: new HashMap<String, Object>()  // do not work with the entity data, every getter / setter will convert!
             statusEntity.yieldUntil = ctx.executionStart;  // default entry for next execution
 
@@ -232,6 +239,17 @@ class BpmnRunner implements IBpmnRunner {
             MDC.remove(T9tConstants.MDC_BPMN_PROCESS);
             MDC.remove(T9tConstants.MDC_BPMN_PROCESS_INSTANCE);
         }
+    }
+
+    def protected ProcessExecStatusEntity refresh(ProcessExecStatusEntity statusEntity) {
+        try {
+            statusResolver.entityManager.refresh(statusEntity)
+        } catch (EntityNotFoundException enfe) {
+            LOGGER.debug("Status probably been removed.")
+            return null
+        }
+
+        statusEntity
     }
 
     def int findStep(ProcessDefinitionDTO pd, String label) {

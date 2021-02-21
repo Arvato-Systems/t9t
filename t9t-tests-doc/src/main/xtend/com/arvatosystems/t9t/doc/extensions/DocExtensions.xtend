@@ -40,6 +40,9 @@ import java.io.IOException
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 import java.util.List
+import com.arvatosystems.t9t.doc.MailingGroupDTO
+import com.arvatosystems.t9t.doc.request.MailingGroupCrudRequest
+import com.arvatosystems.t9t.doc.MailingGroupKey
 
 class DocExtensions {
     public static final String DEFAULT_LANGUAGE = "xx"
@@ -105,6 +108,15 @@ class DocExtensions {
             crud            = OperationType.MERGE
             data            = dto
             naturalKey      = new DocEmailCfgKey(dto.documentId, dto.entityId, dto.languageCode, dto.countryCode, dto.currencyCode)
+        ], CrudSurrogateKeyResponse)
+    }
+
+    def static CrudSurrogateKeyResponse<MailingGroupDTO, FullTrackingWithVersion> merge(MailingGroupDTO dto, ITestConnection dlg) {
+        dto.validate
+        return dlg.typeIO(new MailingGroupCrudRequest => [
+            crud            = OperationType.MERGE
+            data            = dto
+            naturalKey      = new MailingGroupKey(dto.mailingGroupId)
         ], CrudSurrogateKeyResponse)
     }
 

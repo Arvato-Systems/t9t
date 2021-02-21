@@ -22,7 +22,7 @@ import com.arvatosystems.t9t.msglog.jpa.entities.MessageEntity
 import com.arvatosystems.t9t.msglog.jpa.persistence.IMessageEntityResolver
 
 @AutoMap42
-public class MessageMappers {
+class MessageMappers {
     IMessageEntityResolver resolver
 
     @AutoHandler("SP42")

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="messageStatistics"?>
+
+<window28 id="messageStatisticsWin">
+    <twosections28 pageSize="50" gridId="messageStatistics"
+       gridContext="showOkRequest,showErrorRequest"/>
+</window28>

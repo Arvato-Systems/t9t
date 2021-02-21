@@ -36,6 +36,20 @@ package (com.arvatosystems) t9t.plugins.request {
     class PluginLogSearchRequest    extends SearchRequest <PluginLogDTO, WriteTracking> {}
     class PluginLogCrudRequest      extends CrudSurrogateKeyRequest <PluginLogRef, PluginLogDTO, WriteTracking> {}
 
+    class UploadPluginRequest       extends RequestParameters return UploadPluginResponse {
+        required shortText          description;        // documentation
+        required binary(8000000)    jarFile;            // the JAR file image
+	}
+
+    /** Uploads and installs a plugin. Plugins loaded this way will NOT be persisted in the LoadedPlugins entity. These are just for temporary code changes. */
+    class UploadPluginResponse      extends ServiceResponse {
+    	required (PluginInfo)       pluginInfo;
+    }
+
+    /** Unloads a plugin. Plugins unloaded this way will NOT be removed from the LoadedPlugins entity. These are just for temporary code changes. */
+    class UnloadPluginRequest       extends RequestParameters {
+    	required pluginId           pluginId;
+    }
 
     /** Generic output parameter for request handler plugins. */
     class ExecutePluginV1Response extends ServiceResponse {

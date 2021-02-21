@@ -23,7 +23,10 @@ import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.plugins.PluginInfo;
 import com.arvatosystems.t9t.plugins.PluginMethodInfo;
+import com.arvatosystems.t9t.plugins.request.ExecutePluginV1Request;
+import com.arvatosystems.t9t.plugins.request.ExecutePluginV1Response;
 import com.arvatosystems.t9t.plugins.services.Plugin;
+import com.arvatosystems.t9t.plugins.services.PluginMethod;
 
 public class Main implements Plugin {
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
@@ -31,6 +34,8 @@ public class Main implements Plugin {
     private static final String PLUGIN_ID = "demo"; // PLUGIN_ID
     private static final String MAJOR = "1"; // MAJOR
     private static final String MINOR = "0"; // MINOR
+    
+    private final PluginMethod<ExecutePluginV1Request, ExecutePluginV1Response> INSTANCE = new DemoRequestHandler();
 
     public static void main(String[] args) {
         System.out.println("t9t Demo plugin version 1.0");
@@ -48,29 +53,14 @@ public class Main implements Plugin {
 
     /** get the list of implemented methods. Never returns null. */
     @Override
-    public List<PluginMethodInfo> getMethods() {
-//        final PluginMethodInfo method1 = new PluginMethodInfo();
-//        method1.setImplementsApi("test");
-//        method1.setQualifier("HelloWorld");
-//        method1.setVersionMajor(1);
-//        method1.setVersionMinMinor(0);
-//
-//        final List<PluginMethodInfo> list = new ArrayList<PluginMethodInfo>();
-//        list.add(method1);
-//
-//        return list;
-        return Collections.singletonList(new DemoRequestHandler().getInfo());
+    public List<PluginMethod> getMethods() {
+        LOGGER.debug("demoPlugin list of instances requested");
+        return Collections.singletonList(INSTANCE);
     }
 
     /** Performs a cleanup, before the plugin is unloaded. */
     @Override
     public void shutdown() {
         LOGGER.debug("demoPlugin Main shutdown");
-    }
-
-    /** Starts the plugin (instantiates implementations). */
-    @Override
-    public void startup() {
-        LOGGER.debug("demoPlugin Main startup");
     }
 }

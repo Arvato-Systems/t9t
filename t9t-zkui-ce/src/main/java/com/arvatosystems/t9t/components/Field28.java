@@ -194,12 +194,11 @@ public class Field28 extends Cell {
 
     @Override
     public boolean setVisible(boolean visible) {
-        if (idf != null && idf.getComponent() != null) {
-            boolean old = idf.getComponent().isVisible();
-            idf.getComponent().setVisible(visible);
-            return old;
-        } else {
-            return super.setVisible(visible);
+        boolean oldValue = super.setVisible(visible); // apply to its cell
+        if (idf != null && idf.getComponent() != null) { // apply to its component (if applicable)
+            oldValue = idf.getComponent().isVisible();
+            idf.getComponent().setVisible(visible); 
         }
+        return oldValue;
     }
 }

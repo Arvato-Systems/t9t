@@ -35,12 +35,5 @@ package (com.arvatosystems) t9t.rep.jpa.entities owner fortytwo prefix p28 {
         pk (objectRef)
         index unique (tenantRef, reportParamsId)
         @ManyToOne ReportConfigEntity reportConfigEntity EAGER for ( reportConfigRef )
-        @ManyToOne ReportMailingEntity mailingList EAGER for ( mailingGroupRef )
-    }
-
-    entity ReportMailingEntity category cfg is ReportMailingDTO {
-        tenantClass InternalTenantRef42
-        pk (objectRef)
-        index unique (mailingGroupId)
     }
 }

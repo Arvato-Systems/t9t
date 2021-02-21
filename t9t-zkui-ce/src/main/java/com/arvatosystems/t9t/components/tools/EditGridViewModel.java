@@ -37,6 +37,7 @@ import org.zkoss.zul.Window;
 
 import com.arvatosystems.t9t.base.IGridConfigContainer;
 import com.arvatosystems.t9t.base.uiprefs.UIGridPreferences;
+import com.arvatosystems.t9t.tfi.web.ApplicationSession;
 
 import de.jpaw.dp.Jdp;
 
@@ -67,7 +68,7 @@ public class EditGridViewModel {
     @AfterCompose
     public void afterCompose(@ContextParam(ContextType.VIEW) Component view) {
         Selectors.wireComponents(view, this, false);
-        columnConfigCreator.createColumnConfigComponent(div, uiGridPreferences, currentGrid);
+        columnConfigCreator.createColumnConfigComponent(ApplicationSession.get(), div, uiGridPreferences, currentGrid);
     }
 
     @Command
@@ -78,7 +79,7 @@ public class EditGridViewModel {
 
     @Command
     public void updateGrid() {
-        Pair<List<String>, List<String>> pairs = columnConfigCreator.getAddRemovePairs();
+        Pair<List<String>, List<String>> pairs = columnConfigCreator.getAddRemovePairs(ApplicationSession.get());
         // do not allow user to close the dialog if nothing is selected
         if (pairs != null) {
             Events.sendEvent("onClose", windowComponent, pairs);

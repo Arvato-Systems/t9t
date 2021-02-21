@@ -20,8 +20,6 @@ import com.arvatosystems.t9t.base.IViewModelContainer;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.rep.request.ReportConfigCrudRequest;
 import com.arvatosystems.t9t.rep.request.ReportConfigSearchRequest;
-import com.arvatosystems.t9t.rep.request.ReportMailingCrudRequest;
-import com.arvatosystems.t9t.rep.request.ReportMailingSearchRequest;
 import com.arvatosystems.t9t.rep.request.ReportParamsCrudRequest;
 import com.arvatosystems.t9t.rep.request.ReportParamsSearchRequest;
 
@@ -36,15 +34,9 @@ public class T9tRepModels implements IViewModelContainer {
         FullTrackingWithVersion.BClass.INSTANCE,
         ReportParamsSearchRequest.BClass.INSTANCE,
         ReportParamsCrudRequest.BClass.INSTANCE);
-    public static final CrudViewModel<ReportMailingDTO, FullTrackingWithVersion> REPORT_MAILING_VIEW_MODEL = new CrudViewModel<ReportMailingDTO, FullTrackingWithVersion>(
-            ReportMailingDTO.BClass.INSTANCE,
-            FullTrackingWithVersion.BClass.INSTANCE,
-            ReportMailingSearchRequest.BClass.INSTANCE,
-            ReportMailingCrudRequest.BClass.INSTANCE);
 
     static {
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("reportConfig",    REPORT_CONFIG_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("reportParams",    REPORT_PARAMS_VIEW_MODEL);
-        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("reportMailing",   REPORT_MAILING_VIEW_MODEL);
     }
 }

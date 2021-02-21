@@ -135,6 +135,13 @@ package (com.arvatosystems) t9t.io.request {
         required boolean                            no;
     }
 
+    /**
+     * This request deletes files and/or sink entries which are older than the specified retention period.
+     * Only data for the current tenant will be deleted.
+     */
+    class PurgeOutdatedSinksAndFilesRequest extends RequestParameters {
+        optional dataSinkId                         onlyDataSinkId;                 // if not specified, the request handler iterates over all data sinks which have either retentionPeriodFiles != null or retentionPeriodSinks !0 null
+    }
 
 
     abstract class AbstractImportData {}

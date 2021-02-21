@@ -21,11 +21,14 @@ import com.arvatosystems.t9t.doc.DocComponentRef
 import com.arvatosystems.t9t.doc.DocConfigRef
 import com.arvatosystems.t9t.doc.DocEmailCfgRef
 import com.arvatosystems.t9t.doc.DocTemplateRef
+import com.arvatosystems.t9t.doc.MailingGroupRef
 import com.arvatosystems.t9t.doc.jpa.entities.DocComponentEntity
 import com.arvatosystems.t9t.doc.jpa.entities.DocConfigEntity
 import com.arvatosystems.t9t.doc.jpa.entities.DocEmailCfgEntity
 import com.arvatosystems.t9t.doc.jpa.entities.DocModuleCfgEntity
 import com.arvatosystems.t9t.doc.jpa.entities.DocTemplateEntity
+import com.arvatosystems.t9t.doc.jpa.entities.MailingGroupEntity
+import java.util.List
 
 /*
  * Generates resolver classes for all entities in the doc module. The generator class itself is not used.
@@ -43,4 +46,7 @@ class DocResolvers {
     def DocTemplateEntity       getDocTemplateEntity        (DocTemplateRef ref,        boolean onlyActive) {}
     @AllCanAccessGlobalTenant
     def DocComponentEntity      getDocComponentEntity       (DocComponentRef ref,       boolean onlyActive) {}
+
+    def MailingGroupEntity      getMailingGroupEntity       (MailingGroupRef ref,       boolean onlyActive) { return null; }
+    def List<MailingGroupEntity> findByMailingGroupIds(boolean onlyActive, List<String> mailingGroupId) { return null; }
 }

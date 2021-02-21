@@ -18,21 +18,17 @@ package com.arvatosystems.t9t.plugins.services;
 import java.util.List;
 
 import com.arvatosystems.t9t.plugins.PluginInfo;
-import com.arvatosystems.t9t.plugins.PluginMethodInfo;
 
 /**
  * Defines the API a plugin has to provide.
  **/
 public interface Plugin {
-    /** Starts the plugin (instantiates implementations). */
-    void startup();
+    /** Returns the list of provided method instances. On first call, it should perform any required instantiation. */
+	List<PluginMethod> getMethods();
 
     /** Performs a cleanup, before the plugin is unloaded. */
     void shutdown();
 
     /** Retrieves information about the plugin. */
     PluginInfo getInfo();
-
-    /** get the list of implemented methods. Never returns null. */
-    List<PluginMethodInfo> getMethods();
 }
