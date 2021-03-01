@@ -13,15 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.plugins.services;
+package com.arvatosystems.t9t.bpmn.services;
 
 import com.arvatosystems.t9t.base.T9tConstants;
-import com.arvatosystems.t9t.plugins.request.ExecutePluginV1Request;
-import com.arvatosystems.t9t.plugins.request.ExecutePluginV1Response;
+import com.arvatosystems.t9t.bpmn.IWorkflowStep;
+import com.arvatosystems.t9t.plugins.services.PluginMethod;
 
-public interface IRequestHandlerPlugin extends IGenericCompatiblePluginMethod<ExecutePluginV1Request, ExecutePluginV1Response> {
+/**
+ * A workflow plugin method extends a regular workflow step implementation directly, because the interface is defined in a suitable way (only defines methods returning basic data types).
+ */
+public interface IWorkflowStepPlugin<T> extends PluginMethod, IWorkflowStep<T> {
 
-    /** Returns the API implemented. Will usually be provided by a default method. */
+    /** Returns the API implemented. Will usually be provided by a default method. More specific workflow step types are allowed to override this method. */
     @Override
-    default String implementsApi() { return T9tConstants.PLUGIN_API_ID_REQUEST_HANDLER; }
+    default String implementsApi() { return T9tConstants.PLUGIN_API_ID_WORKFLOW_STEP; }
 }

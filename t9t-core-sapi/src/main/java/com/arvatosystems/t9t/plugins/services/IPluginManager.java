@@ -29,6 +29,12 @@ public interface IPluginManager {
     /** Remove all classes provided by the plugin and close its classloader. */
     boolean removePlugin(Long tenantRef, String pluginId);
 
-    /** Retrieve a reference to a preloaded plugin method instance. */ 
-    PluginMethod getPluginMethod(Long tenantRef, String pluginId, String qualifier);
+    /** Retrieve a reference to a preloaded plugin method instance and checks its expected type. May return null if no method has been registered for this tenant. */
+    <R extends PluginMethod>R  getPluginMethod(Long tenantRef, String pluginId, String qualifier, Class<R> requiredType, boolean allowNulls);
+
+    /**
+     * Retrieve a reference to a preloaded plugin method instance and checks its expected type. May return null if no method has been registered for this tenant.
+     * Convenience method without tenantRef. Retrieves the tenantRef from RequestContext and invokes the method above.
+     **/
+    <R extends PluginMethod>R  getPluginMethod(String pluginId, String qualifier, Class<R> requiredType, boolean allowNulls);
 }

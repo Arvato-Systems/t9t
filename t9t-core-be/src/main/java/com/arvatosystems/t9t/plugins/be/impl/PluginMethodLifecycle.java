@@ -13,15 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.plugins.services;
+package com.arvatosystems.t9t.plugins.be.impl;
 
-import com.arvatosystems.t9t.base.T9tConstants;
-import com.arvatosystems.t9t.plugins.request.ExecutePluginV1Request;
-import com.arvatosystems.t9t.plugins.request.ExecutePluginV1Response;
+import com.arvatosystems.t9t.plugins.services.IPluginMethodLifecycle;
 
-public interface IRequestHandlerPlugin extends IGenericCompatiblePluginMethod<ExecutePluginV1Request, ExecutePluginV1Response> {
+import de.jpaw.dp.Any;
+import de.jpaw.dp.Fallback;
+import de.jpaw.dp.Singleton;
 
-    /** Returns the API implemented. Will usually be provided by a default method. */
-    @Override
-    default String implementsApi() { return T9tConstants.PLUGIN_API_ID_REQUEST_HANDLER; }
+@Singleton
+@Fallback
+@Any
+public class PluginMethodLifecycle implements IPluginMethodLifecycle {
+    // all methods are the default implementations, i.e. do nothing
 }

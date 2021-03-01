@@ -15,18 +15,14 @@
  */
 package com.arvatosystems.t9t.plugins.services;
 
-import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.plugins.PluginMethodInfo;
 
 /**
  * Defines the API to call a method of a plugin. A single plugin can support multiple of these APIs.
- * For every provided extension point, a specialized interface which specifies I and O will be defined,
- * allowing to define the plugins in a type safe manner.
+ * This is an "abstract" interface, which means that any meaningful plugin must implement some
+ * extension of this interface, which also defines the execution / workload methods.
  **/
-public interface PluginMethod<I,O> {
-    /** Execute an API method. In case of problems, a T9tException will be thrown. */
-    void execute(RequestContext ctx, I in, O out);
-
+public interface PluginMethod {
     /** Returns the API implemented. Will usually be provided by a default method. */
     String implementsApi();
 

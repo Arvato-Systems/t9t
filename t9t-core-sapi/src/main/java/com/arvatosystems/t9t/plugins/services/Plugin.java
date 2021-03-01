@@ -24,7 +24,7 @@ import com.arvatosystems.t9t.plugins.PluginInfo;
  **/
 public interface Plugin {
     /** Returns the list of provided method instances. On first call, it should perform any required instantiation. */
-	List<PluginMethod> getMethods();
+    List<PluginMethod> getMethods();
 
     /** Performs a cleanup, before the plugin is unloaded. */
     void shutdown();
