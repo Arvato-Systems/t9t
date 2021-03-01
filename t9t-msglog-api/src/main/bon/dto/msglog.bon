@@ -78,14 +78,14 @@ package (com.arvatosystems) t9t.msglog {
     class MessageStatisticsKey extends MessageStatisticsRef {
         required f42Ref                             tenantRef;              // identifies the tenant
         required userId                             userId;
-    	required Day                                ^day;
+        required Day                                ^day;
         required pqon                               requestParameterPqon;   // partially qualified name of the request
     }
     final class MessageStatisticsDTO extends MessageStatisticsRef {
         properties tenantCategory="A";
         required f42Ref                             tenantRef;              // identifies the tenant
         required userId                             userId;
-    	required Day                                ^day;
+        required Day                                ^day;
         required pqon                               requestParameterPqon;   // partially qualified name of the request
         required int                                countOk;                // requests with return code 0..199999999
         required int                                countError;             // requests with return code 200000000..999999999

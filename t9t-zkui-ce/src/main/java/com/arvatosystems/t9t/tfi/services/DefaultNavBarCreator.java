@@ -1,4 +1,22 @@
+/*
+ * Copyright (c) 2012 - 2020 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.arvatosystems.t9t.tfi.services;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +53,8 @@ public class DefaultNavBarCreator implements INavBarCreator {
     protected static final String CONTEXT_MENU_ID = "menu.ctx";
     protected static final String SET_AS_USER_DEFAULT_ID = "setAsDefaultScreen";
     protected static final String RESET_USER_DEFAULT_ID = "resetDefaultScreen";
+    private static final String MENU_GROUP = "menu.group";
+    private static final String DEFAULT = "defaults";
 
     protected final IApplicationDAO applicationDAO = Jdp.getRequired(IApplicationDAO.class);
     protected final T9TRemoteUtils t9tRemoteUtils = Jdp.getRequired(T9TRemoteUtils.class);
@@ -50,17 +70,21 @@ public class DefaultNavBarCreator implements INavBarCreator {
         createContextMenu(container);
 
         for (int groupIndex = 0; groupIndex < groupCounts; groupIndex++) {
+            Map<String, Menupopup> folders = new HashMap<>(20);
             String groupName = naviGroups.getGroup(groupIndex);
             Menu menu = createMenu(groupName, groupIndex);
             menubar.appendChild(menu);
             Menupopup menuPopup = new Menupopup();
-            addSClass(menuPopup, getSubMenuClass(naviGroups.getChildCount(groupIndex)));
             addSClass(menuPopup, "nav-menupopup");
             menu.appendChild(menuPopup);
-            createContextMenuOnEachMenu(menu);
+            createContextMenuOnEachMenu(menuPopup);
+            String groupId = naviGroups.getChild(groupIndex, 0).getFolderCategoryId();
+            folders.put(groupId, menuPopup);
 
             for (int childIndex = 0; childIndex < naviGroups.getChildCount(groupIndex); childIndex++) {
                 Navi navi = naviGroups.getChild(groupIndex, childIndex);
+                Menupopup currentPopup = getOrCreateFolderIfNotExists(folders, navi.getCategoryId());
+
                 // Display grouped subtitle (non clickable)
                 if (subtitleShouldDisplay(naviGroups, groupIndex, childIndex)) {
                     Menuitem menuItem = new Menuitem();
@@ -68,7 +92,7 @@ public class DefaultNavBarCreator implements INavBarCreator {
                     menuItem.setDisabled(true);
                     menuItem.setZclass("header-nav-subtitle");
                     menuItem.setImage(navi.getImg());
-                    menuPopup.appendChild(menuItem);
+                    currentPopup.appendChild(menuItem);
                 }
 
                 // Menu items
@@ -83,9 +107,11 @@ public class DefaultNavBarCreator implements INavBarCreator {
                     menuItem.setClientAttribute("onClick",
                             "collapseHeaderMenu(); setNavi('" + groupName + "','" + navi.getNaviId() + "');");
                     menuItem.setClientAttribute("data-navi", navi.getNaviId());
-                    menuPopup.appendChild(menuItem);
+                    currentPopup.appendChild(menuItem);
                 }
             }
+            // check if multi columns needed
+            addSClass(menuPopup, getSubMenuClass(menuPopup.getChildren().size()));
         }
     }
 
@@ -165,8 +191,15 @@ public class DefaultNavBarCreator implements INavBarCreator {
 
         if (childCount > MAX_NUMBER_SUBMENU_ITEMS_PER_COLUMN) {
             int i = childCount / MAX_NUMBER_SUBMENU_ITEMS_PER_COLUMN;
-            if (i > 1)
+            if (childCount > MAX_NUMBER_SUBMENU_ITEMS_PER_COLUMN) {
+                int r = childCount % MAX_NUMBER_SUBMENU_ITEMS_PER_COLUMN;
+                if (r > MAX_NUMBER_SUBMENU_ITEMS_PER_COLUMN / 2)
+                    i++;
+            }
+
+            if (i > 1) {
                 return "header-nav-submenu-" + i + "c";
+            }
         }
 
         return "";
@@ -229,7 +262,7 @@ public class DefaultNavBarCreator implements INavBarCreator {
         }
     }
 
-    private final void createContextMenuOnEachMenu(Menu menu) {
+    private final void createContextMenuOnEachMenu(Menupopup menu) {
         menu.addEventListener(Events.ON_OPEN, ev -> {
             for (Component comp2 : ev.getTarget().getChildren()) {
                 if (comp2 instanceof Menuitem) {
@@ -237,5 +270,43 @@ public class DefaultNavBarCreator implements INavBarCreator {
                 }
             }
         });
+    }
+
+    /**
+     * Get existing folder, create if not existed.
+     */
+    protected Menupopup getOrCreateFolderIfNotExists(Map<String, Menupopup> folders, String folderCategoryId) {
+
+        Menupopup folder = folders.get(folderCategoryId);
+        if (folder == null) {
+
+            if (folder == null) {
+                // get parent, create if not existed recursively
+                String parentFolderCategoryId = Navi.getCategoryIdBeforeLastDot(folderCategoryId);
+                String lastPartCategoryId = Navi.getCategoryIdAfterLastDot(folderCategoryId);
+                Menupopup parentPopup = getOrCreateFolderIfNotExists(folders, parentFolderCategoryId);
+
+                Menu submenu = new Menu(getSubmenuFolderTranslated(ApplicationSession.get(), parentFolderCategoryId, lastPartCategoryId));
+                submenu.addSclass("nav-submenu");
+                submenu.setImage("/img/folder.png");
+                parentPopup.appendChild(submenu);
+                Menupopup submenuPopup = new Menupopup();
+                addSClass(submenuPopup, "nav-menupopup");
+                submenuPopup.setId(folderCategoryId);
+                submenu.appendChild(submenuPopup);
+                createContextMenuOnEachMenu(submenuPopup);
+                folders.put(folderCategoryId, submenuPopup);
+                return submenuPopup;
+            }
+        }
+
+        return folder;
+    }
+
+    protected static String getSubmenuFolderTranslated(ApplicationSession as, String prefix, String submenuId) {
+        String fieldname = String.format("%s.%s", prefix, submenuId);
+        String fallback = String.format("%s.%s", DEFAULT, submenuId);
+
+        return as.translateWithFallback(MENU_GROUP, fieldname, fallback);
     }
 }

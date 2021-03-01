@@ -22,6 +22,6 @@ import com.arvatosystems.t9t.ssm.SchedulerSetupDTO;
 
 /** Interface to be implemented for custom concurrency handlers. */
 public interface ISchedulerHook {
-    /** Determine / perform action on existing processes. Returns true if the new process should be invoked, false if it should be skipped. */ 
+    /** Determine / perform action on existing processes. Returns true if the new process should be invoked, false if it should be skipped. */
     boolean checkPriorInstances(RequestContext ctx, SchedulerSetupDTO setup, ProcessStatusDTO priorInstance);
 }

@@ -7,6 +7,6 @@
     ],
     "fields": [
         "tenantRef", "reportConfigId", "name", "classificationType", "description", "isActive",
-         "intervalRequired", "description"
+         "intervalRequired"
     ]
 }

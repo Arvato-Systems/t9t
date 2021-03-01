@@ -279,7 +279,11 @@
                 <artifactId>t9t-core-sapi</artifactId>
                 <version>${project.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>com.arvato-systems.t9t</groupId>
+                <artifactId>t9t-dataloader-maven</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-demo-api</artifactId>

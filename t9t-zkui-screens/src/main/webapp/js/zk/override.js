@@ -140,6 +140,9 @@ $(document).ready(function() {
     setTimeout(function() {
         collapseHeaderMenu()
     }, 1000);
+
+    // Turn off jq animation globally
+    $.fx.off = true;
 });
 
 /**

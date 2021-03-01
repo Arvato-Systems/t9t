@@ -20,21 +20,21 @@ import com.arvatosystems.t9t.bpmn.IBPMObjectFactory
 import com.arvatosystems.t9t.bpmn.IWorkflowStep
 import com.arvatosystems.t9t.bpmn.T9tBPMException
 import com.arvatosystems.t9t.bpmn.services.IWorkflowStepCache
-import com.google.common.collect.ImmutableMap
 import de.jpaw.annotations.AddLogger
 import de.jpaw.dp.Jdp
 import de.jpaw.dp.Singleton
 import java.util.Map
+import java.util.concurrent.ConcurrentHashMap
 
 @AddLogger
 @Singleton
 class WorkflowStepCache implements IWorkflowStepCache {
-    private Map<String, IWorkflowStep> workflowSteps = null
+    private final Map<String, IWorkflowStep> workflowSteps = new ConcurrentHashMap(200);
     private Map<String, IBPMObjectFactory> bpmObjectFactories = null
 
     override loadCaches() {
         try {
-            workflowSteps = Jdp.getInstanceMapPerQualifier(IWorkflowStep)
+            workflowSteps.putAll(Jdp.getInstanceMapPerQualifier(IWorkflowStep))  // allow extending this one later
             bpmObjectFactories = Jdp.getInstanceMapPerQualifier(IBPMObjectFactory)
         } catch (Exception e) {
             LOGGER.error("Initializer exception due to ", e)
@@ -76,11 +76,16 @@ class WorkflowStepCache implements IWorkflowStepCache {
         return step;
     }
 
-    override getAllSteps() {
-        return workflowSteps ?: ImmutableMap.of;  // this is save because the map is immutable
+    override addToCache(IWorkflowStep<?> step, String name) {
+        workflowSteps.put(name, step)
+        Jdp.bindInstanceTo(step, IWorkflowStep, name);
     }
 
-    override getAllFactories() {
-        return bpmObjectFactories ?: ImmutableMap.of;
-    }
+//    override getAllSteps() {
+//        return workflowSteps ?: ImmutableMap.of;  // this is save because the map is immutable
+//    }
+//
+//    override getAllFactories() {
+//        return bpmObjectFactories ?: ImmutableMap.of;
+//    }
 }

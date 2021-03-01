@@ -40,6 +40,7 @@ public class MenuUtil {
     private static final int MENU_ITEM_VISIBLE      = 4;
 
     private static final String MENU_GROUP = "menu.group";
+    private static final String DEFAULT = "defaults";
 
     public static void readMenuConfiguration(ApplicationSession as, final List<Navi> navis) {
         navis.clear();
@@ -65,9 +66,10 @@ public class MenuUtil {
 
                     Navi navi = new Navi();
 
+                    navi.setCategoryId(thisCategory);
                     navi.setNaviId(String.valueOf(menuitems[NAVI_ID]));
-                    navi.setCategory(categories.computeIfAbsent(thisCategory, (key) -> as.translate("menu.group", key)));
-                    navi.setName(as.translate(MENU_GROUP, String.format("%s.%s", thisCategory, menuitems[NAME])));
+                    navi.setCategory(categories.computeIfAbsent(navi.getPrefixCategoryId(), (key) -> as.translate("menu.group", key)));
+                    navi.setName(getMenuItemTranslation(as, navi, String.valueOf(menuitems[NAME])));
                     navi.setLink(String.valueOf(menuitems[LINK]));
                     navi.setPermission(String.valueOf(menuitems[NAVI_ID]));
                     navi.setMenuItemVisible(Boolean.valueOf(String.valueOf(menuitems[MENU_ITEM_VISIBLE])));
@@ -84,6 +86,13 @@ public class MenuUtil {
         }
 
         LOGGER.debug("Sorted menu is of size {}", navis.size());
+    }
+
+    private static String getMenuItemTranslation(ApplicationSession as, Navi navi, String menuItemName) {
+        String fieldname = String.format("%s.%s", navi.getCategoryId(), menuItemName);
+        String fallback = String.format("%s.%s", DEFAULT, menuItemName);
+
+        return as.translateWithFallback(MENU_GROUP, fieldname, fallback);
     }
 
 }

@@ -60,11 +60,11 @@ class SchedulerSetupNoParallelTest {
     @Test
     def void createSchedulerAndKillTest() {
         val requestRef = dlg.createCannedRequestWithParameters('testSlowHello', 'Say hello twice',
-        	new BatchRequest(false, #[
-        		new LogMessageRequest('A'),
-        		new PauseRequest(null, 2000),
-        		new LogMessageRequest('B')
-        	])
+            new BatchRequest(false, #[
+                new LogMessageRequest('A'),
+                new PauseRequest(null, 2000),
+                new LogMessageRequest('B')
+            ])
         )
 
         val cfg = new SchedulerSetupDTO => [
@@ -89,7 +89,7 @@ class SchedulerSetupNoParallelTest {
         ], CrudSurrogateKeyResponse)
 
         assertSingleApiKey
-        
+
         Thread.sleep(6000L)
     }
 }

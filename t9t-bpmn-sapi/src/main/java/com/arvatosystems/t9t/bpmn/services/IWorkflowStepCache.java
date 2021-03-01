@@ -15,19 +15,22 @@
  */
 package com.arvatosystems.t9t.bpmn.services;
 
-import java.util.Map;
-
 import com.arvatosystems.t9t.bpmn.IBPMObjectFactory;
 import com.arvatosystems.t9t.bpmn.IWorkflowStep;
 
 public interface IWorkflowStepCache {
+    /** Initializes the cache with all statically defined workflow steps. Invoked by @Startup(50080). */
     void loadCaches();
+
+    /** Add an additional workflow step instance at runtime. This is also registered via Jdp. */
+    void addToCache(IWorkflowStep<?> step, String name);
+
     IWorkflowStep<?> getWorkflowStepForName(String name);
     IBPMObjectFactory<?> getBPMObjectFactoryForName(String name);
 
-    /** Returns an immutable map of all eligible steps. */
-    Map<String,IWorkflowStep> getAllSteps();
-
-    /** Returns an immutable map of all eligible factories. */
-    Map<String,IBPMObjectFactory> getAllFactories();
+//    /** Returns an immutable map of all eligible steps. */
+//    Map<String,IWorkflowStep> getAllSteps();
+//
+//    /** Returns an immutable map of all eligible factories. */
+//    Map<String,IBPMObjectFactory> getAllFactories();
 }

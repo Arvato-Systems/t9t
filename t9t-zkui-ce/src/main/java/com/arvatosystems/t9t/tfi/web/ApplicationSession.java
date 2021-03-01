@@ -385,6 +385,10 @@ public final class ApplicationSession {
         String x = translationProvider.getTranslation(getTenantId(), userLanguages, path, fieldname);
         return x != null ? x : defaultValue;
     }
+    public String translateWithFallback(String path, String fieldname, String fallbackFieldname) {
+        String x = translationProvider.getTranslation(getTenantId(), userLanguages, path, fieldname);
+        return x == null ? translate(path, fallbackFieldname) : x;
+    }
 
     // translate a single enum instance. Uses the cached whole enum translation as a subroutine.
     public String translateEnum(final BonaEnum e) {

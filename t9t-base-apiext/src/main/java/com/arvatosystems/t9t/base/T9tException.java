@@ -181,11 +181,12 @@ public class T9tException extends ApplicationException {
     public static final int REF_RESOLVER_WRONG_RESPONSE_TYPE = OFFSET + 350;
 
     // plugin issues
-    public static final int NO_PLUGIN_AVAILABLE         = OFFSET + 360;
+    public static final int NO_PLUGIN_METHOD_AVAILABLE  = OFFSET + 360;
     public static final int PLUGIN_LOADING_ERROR        = OFFSET + 361;
     public static final int NO_MAIN_IN_PLUGIN           = OFFSET + 362;
     public static final int MAIN_IS_NOT_PLUGIN          = OFFSET + 363;
     public static final int PLUGIN_INSTANTIATION_ERROR  = OFFSET + 364;
+    public static final int PLUGIN_METHOD_WRONG_TYPE    = OFFSET + 365;
 
     public static final int NOT_AUTHENTICATED           = OFFSET + 401;
     public static final int NOT_AUTHORIZED              = OFFSET + 403;
@@ -432,11 +433,12 @@ public class T9tException extends ApplicationException {
             codeToDescription.put(REF_RESOLVER_WRONG_RESPONSE_TYPE, "Unexpected service response type.");
 
             // Plugin errors
-            codeToDescription.put(NO_PLUGIN_AVAILABLE, "Plugin not available.");
+            codeToDescription.put(NO_PLUGIN_METHOD_AVAILABLE, "Plugin method not available.");
             codeToDescription.put(PLUGIN_LOADING_ERROR, "Plugin could not be loaded");
             codeToDescription.put(NO_MAIN_IN_PLUGIN, "Plugin has no Main class");
             codeToDescription.put(MAIN_IS_NOT_PLUGIN, "Main class in plugin does not implement interface Plugin");
             codeToDescription.put(PLUGIN_INSTANTIATION_ERROR, "Problem instantiating the plugin");
+            codeToDescription.put(PLUGIN_METHOD_WRONG_TYPE, "The plugin provides an implemention of different type than expected");
 
             // output session specific error descriptions
 

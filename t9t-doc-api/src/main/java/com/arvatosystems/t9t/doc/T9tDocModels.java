@@ -62,7 +62,7 @@ public class T9tDocModels implements IViewModelContainer {
             FullTrackingWithVersion.BClass.INSTANCE,
             MailingGroupSearchRequest.BClass.INSTANCE,
             MailingGroupCrudRequest.BClass.INSTANCE);
-    
+
     static {
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("docConfig",  DOC_CONFIG_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("docEmailCfg",  DOC_EMAIL_CFG_VIEW_MODEL);

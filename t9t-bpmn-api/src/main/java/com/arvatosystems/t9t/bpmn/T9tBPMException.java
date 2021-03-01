@@ -46,6 +46,9 @@ public class T9tBPMException extends T9tException {
     public static final int BPM_NO_CURRENT_PROCESS = OFFSET + 21;
     public static final int BPM_CURRENT_PROCESS_EXISTS = OFFSET + 22;
 
+    public static final int BPM_PLUGIN_INCOMPATIBLE = OFFSET + 23;
+    public static final int BPM_PLUGIN_FACTORY_INCOMPATIBLE = OFFSET + 24;
+
     public static final int BPM_STEP_NOT_FOUND = OFFSET + 50;
     public static final int BPM_OBJECT_FACTORY_NOT_FOUND = OFFSET + 51;
     public static final int BPM_LABEL_NOT_FOUND = OFFSET + 52;
@@ -76,6 +79,9 @@ public class T9tBPMException extends T9tException {
         codeToDescription.put(BPM_EXECUTE_JAVA_TASK_RETURNED_NULL, "Java task returned null instead of a proper status");
         codeToDescription.put(BPM_NO_CURRENT_PROCESS,              "Expected existing running process, but did not find any");
         codeToDescription.put(BPM_CURRENT_PROCESS_EXISTS,          "Workflow already active");
+
+        codeToDescription.put(BPM_PLUGIN_INCOMPATIBLE,             "Plugin defines incompatible subclass of IWorkflowStep");
+        codeToDescription.put(BPM_PLUGIN_FACTORY_INCOMPATIBLE,     "Plugin defines incompatible factory to hardcoded instance");
 
         codeToDescription.put(BPM_STEP_NOT_FOUND,                  "No implementation found for BPM workflow step");
         codeToDescription.put(BPM_OBJECT_FACTORY_NOT_FOUND,        "No implementation found for BPM object factory");

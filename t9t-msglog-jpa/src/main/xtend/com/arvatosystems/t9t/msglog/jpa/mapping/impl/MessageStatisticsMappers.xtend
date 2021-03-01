@@ -27,6 +27,6 @@ class MessageStatisticsMappers {
 
     @AutoHandler("SP42")
     def void e2dMessageStatisticsDTO(MessageStatisticsEntity it, MessageStatisticsDTO dto) {}
-    
+
     def void d2eMessageStatisticsDTO(MessageStatisticsEntity it, MessageStatisticsDTO dto, boolean onlyActive) {}
 }

@@ -46,11 +46,12 @@ public class PatternExpansionUtil {
 
         // default parameters, always supplied
         if (ctx != null) {
-            patternReplacements.put("tenantId", ctx.tenantId);
-            patternReplacements.put("userId",   ctx.userId);
-            patternReplacements.put("language", ctx.internalHeaderParameters.getLanguageCode());
-            patternReplacements.put("planDate", ctx.internalHeaderParameters.getPlannedRunDate());
-            patternReplacements.put("now",      ctx.executionStart);
+            patternReplacements.put("tenantId",   ctx.tenantId);
+            patternReplacements.put("userId",     ctx.userId);
+            patternReplacements.put("requestRef", ctx.requestRef);
+            patternReplacements.put("language",   ctx.internalHeaderParameters.getLanguageCode());
+            patternReplacements.put("planDate",   ctx.internalHeaderParameters.getPlannedRunDate());
+            patternReplacements.put("now",        ctx.executionStart);
         }
         // we have 4 timestamps: now, ctx.executionStart, ctx.internalHeaderParameters.plannedRunDate and params.asOf
         final LocalDateTime now = LocalDateTime.now();

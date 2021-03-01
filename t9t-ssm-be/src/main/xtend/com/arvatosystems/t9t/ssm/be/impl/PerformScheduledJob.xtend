@@ -78,7 +78,7 @@ class PerformScheduledJob implements Job {
         val auth                = new ApiKeyAuthentication(UUID.fromString(apiKey))
         auth.freeze
         val srq                 = new ServiceRequest
-        srq.requestHeader       = header 
+        srq.requestHeader       = header
         srq.requestParameters   = requestParameters
         srq.authentication      = auth
 
@@ -89,7 +89,7 @@ class PerformScheduledJob implements Job {
         } else {
             try {
                 // check for previous instance
-                // we are outside of any RequestContext, and would need to invoke separate request handlers to perform any actions - therefore do first tests directly 
+                // we are outside of any RequestContext, and would need to invoke separate request handlers to perform any actions - therefore do first tests directly
                 val mayStartNewInstance = checkPriorInstances(dataMap, setupRef, header, auth)
                 if (mayStartNewInstance) {
                     val resp = inProcessExecutor.execute(srq)
@@ -128,7 +128,7 @@ class PerformScheduledJob implements Job {
         LOGGER.info("Scheduler congestion: There are {} prior instances running for setup objectRef {}", setupRef)
         // there are prior instances, and we expect some action required
         val srq                 = new ServiceRequest
-        srq.requestHeader       = header 
+        srq.requestHeader       = header
         srq.requestParameters   = new DealWithPriorJobInstancesRequest(setupRef)
         srq.authentication      = auth
         val resp = inProcessExecutor.executeTrusted(srq)

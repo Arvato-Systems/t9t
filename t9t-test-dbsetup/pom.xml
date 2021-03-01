@@ -60,7 +60,8 @@
                 <plugins>
                     <plugin>
                         <groupId>com.arvato-systems.t9t</groupId>
-                        <artifactId>fortytwo-dataloader-maven</artifactId>
+                        <artifactId>t9t-dataloader-maven</artifactId>
+                        <version>${project.version}</version>
                         <executions>
                             <execution>
                                 <phase>pre-integration-test</phase>
@@ -95,6 +96,82 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>schemaloader</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.arvato-systems.t9t</groupId>
+                        <artifactId>schema-loader-maven-plugin</artifactId>
+                        <version>${project.version}</version>
+                        <!-- Add JDBC driver dependencies like this. Postgres is included by default.
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.postgresql</groupId>
+                                <artifactId>postgresql</artifactId>
+                            </dependency>
+                        </dependencies>
+                        -->
+                        <configuration>
+                            <database>
+                                <jdbc-url>${db.jdbc-url}</jdbc-url>   <!--  jdbc:postgresql://hostname:5432/databasename?sslmode=require -->
+                                <user>${db.user}</user>               <!--  for Azure: userId@hostname -->
+                                <password>${db.password}</password>
+                                <driver-class>org.postgresql.Driver</driver-class>
+                                <db-type>POSTGRES</db-type>
+                            </database>
+                            <installation>
+                                <creates>
+                                    <create>Role</create>
+                                    <create>User</create>
+                                    <create>Tablespace</create>
+                                    <create>Table</create>
+                                    <create>Sequence</create>
+                                    <create>Function</create>
+                                    <create>View</create>
+                                </creates>
+                                <drops>
+                                    <drop>View</drop>
+                                    <drop>Trigger</drop>
+                                    <drop>Function</drop>
+                                    <drop>Table</drop>
+                                    <drop>Sequence</drop>
+                                </drops>
+                            </installation>
+                            <migration>
+                                <pre-drops>
+                                    <pre-drop>View</pre-drop>
+                                    <pre-drop>Trigger</pre-drop>
+                                    <pre-drop>Function</pre-drop>
+                                </pre-drops>
+                                <post-creates>
+                                    <post-create>View</post-create>
+                                    <post-create>Function</post-create>
+                                    <post-create>Trigger</post-create>
+                                </post-creates>
+                            </migration>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>install t9t</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>install</goal>
+                                </goals>
+                                <configuration>
+                                    <migration-log-table>fw_t9t</migration-log-table>
+                                    <sqlArtifacts>
+                                        <sqlArtifact>
+                                            <groupId>com.arvato-systems.t9t</groupId>
+                                            <artifactId>t9t-sql</artifactId>
+                                        </sqlArtifact>
+                                    </sqlArtifacts>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
-
 </project>

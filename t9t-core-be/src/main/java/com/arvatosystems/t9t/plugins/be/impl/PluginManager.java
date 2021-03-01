@@ -33,14 +33,18 @@ import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.plugins.PluginInfo;
 import com.arvatosystems.t9t.plugins.StoredPluginKey;
 import com.arvatosystems.t9t.plugins.StoredPluginMethodKey;
 import com.arvatosystems.t9t.plugins.services.IPluginManager;
+import com.arvatosystems.t9t.plugins.services.IPluginMethodLifecycle;
 import com.arvatosystems.t9t.plugins.services.Plugin;
 import com.arvatosystems.t9t.plugins.services.PluginMethod;
 import com.google.common.io.Files;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Provider;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ExceptionUtil;
@@ -48,6 +52,7 @@ import de.jpaw.util.ExceptionUtil;
 @Singleton
 public class PluginManager implements IPluginManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(PluginManager.class);
+    private final Provider<RequestContext> ctxProvider = Jdp.getProvider(RequestContext.class);
 
     private static class LoadedPlugin {
         final public Plugin         loadedClass;
@@ -58,8 +63,8 @@ public class PluginManager implements IPluginManager {
             this.classloader = classloader;
         }
     }
-    
-    private final Boolean LOCK = Boolean.TRUE; 
+
+    private final Boolean LOCK = Boolean.TRUE;
 
     private final ConcurrentMap<StoredPluginKey,       LoadedPlugin> loadedPlugins = new ConcurrentHashMap<>();
     private final ConcurrentMap<StoredPluginMethodKey, PluginMethod> loadedPluginMethods = new ConcurrentHashMap<>();
@@ -87,7 +92,7 @@ public class PluginManager implements IPluginManager {
                 //LOGGER.debug("Found JAR entry {}", je.getName());
                 if (je.getName().endsWith("/Main.class")) {
                     // -6 because of .class
-                    final String main = je.getName().substring(0,je.getName().length()-6).replace('/', '.'); 
+                    final String main = je.getName().substring(0,je.getName().length()-6).replace('/', '.');
                     LOGGER.debug("Using Main class {} due to match of naming convention scan", main);
                     return main;
                 }
@@ -95,14 +100,19 @@ public class PluginManager implements IPluginManager {
         }
         return null;
     }
-    
+
     protected void registerPluginMethods(final Long tenantRef, final Plugin loadedPlugin, boolean unload) {
-        for (PluginMethod<?, ?> pm: loadedPlugin.getMethods()) {
+        for (PluginMethod pm: loadedPlugin.getMethods()) {
             final StoredPluginMethodKey key = new StoredPluginMethodKey(tenantRef, pm.implementsApi(), pm.getQualifier());
+            final IPluginMethodLifecycle lifecycle = Jdp.getRequired(IPluginMethodLifecycle.class, pm.getQualifier());
             if (unload) {
+                lifecycle.unregisterPluginMethod(tenantRef, loadedPlugin, pm, true);
                 loadedPluginMethods.remove(key, pm);
+                lifecycle.unregisterPluginMethod(tenantRef, loadedPlugin, pm, false);
             } else {
+                lifecycle.registerPluginMethod(tenantRef, loadedPlugin, pm, true);
                 loadedPluginMethods.put(key, pm);
+                lifecycle.registerPluginMethod(tenantRef, loadedPlugin, pm, false);
             }
         }
     }
@@ -116,7 +126,7 @@ public class PluginManager implements IPluginManager {
             final File file = File.createTempFile("t9t-plugin-", ".jar");
             LOGGER.info("Created tmp file at {}", file.getAbsolutePath());
             Files.write(pluginData.getBytes(), file);
-            
+
             // reopen it as a JAR file for analysis
             final JarFile jar = new JarFile(file);
             String mainClassName = getMainClassFromManifest(jar);
@@ -126,7 +136,7 @@ public class PluginManager implements IPluginManager {
                     throw new T9tException(T9tException.NO_MAIN_IN_PLUGIN);
                 }
             }
-    
+
             final URL[] urls = { new URL("jar:file:" + file.getAbsolutePath() + "!/") };
             cl = new URLClassLoader(urls, this.getClass().getClassLoader());
 
@@ -167,24 +177,36 @@ public class PluginManager implements IPluginManager {
             throw new T9tException(T9tException.PLUGIN_INSTANTIATION_ERROR, ExceptionUtil.causeChain(e));
         }
     }
-    
 
     @Override
-    public PluginMethod getPluginMethod(Long tenantRef, String pluginId, String qualifier) {
-        final StoredPluginMethodKey key = new StoredPluginMethodKey(tenantRef, pluginId, qualifier);
+    public <R extends PluginMethod>R getPluginMethod(String pluginApiId, String qualifier, Class<R> requiredType, boolean allowNulls) {
+        return getPluginMethod(ctxProvider.get().tenantRef, pluginApiId, qualifier, requiredType, allowNulls);
+    }
+
+    @Override
+    public <R extends PluginMethod>R getPluginMethod(Long tenantRef, String pluginApiId, String qualifier, Class<R> requiredType, boolean allowNulls) {
+        final StoredPluginMethodKey key = new StoredPluginMethodKey(tenantRef, pluginApiId, qualifier);
         PluginMethod method = loadedPluginMethods.get(key);
         if (method == null && !tenantRef.equals(T9tConstants.GLOBAL_TENANT_REF42)) {
             // perform another attempt using the global tenant
-            final StoredPluginMethodKey key2 = new StoredPluginMethodKey(T9tConstants.GLOBAL_TENANT_REF42, pluginId, qualifier);
+            final StoredPluginMethodKey key2 = new StoredPluginMethodKey(T9tConstants.GLOBAL_TENANT_REF42, pluginApiId, qualifier);
             method = loadedPluginMethods.get(key2);
-            if (method == null) {
-                throw new T9tException(T9tException.NO_PLUGIN_AVAILABLE, key);
-            }
         }
-        return method;
+        if (method == null) {
+            if (allowNulls) {
+                return null;
+            }
+            throw new T9tException(T9tException.NO_PLUGIN_METHOD_AVAILABLE, pluginApiId + ":" + qualifier);
+        }
+        // check its type
+        if (!requiredType.isAssignableFrom(method.getClass())) {
+            LOGGER.error("Expected type {} in plugin {}:{}, but got type {}", requiredType.getCanonicalName(), pluginApiId, qualifier, method.getClass().getCanonicalName());
+            throw new T9tException(T9tException.PLUGIN_METHOD_WRONG_TYPE, pluginApiId + ":" + qualifier);
+        }
+        return (R)method;
     }
 
-    
+
     @Override
     public boolean removePlugin(Long tenantRef, String pluginId) {
         final StoredPluginKey key = new StoredPluginKey(tenantRef, pluginId);

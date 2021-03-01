@@ -33,17 +33,16 @@ public class NaviComparator implements Comparator<Navi>, GroupComparator<Navi>,
 
     @Override
     public final int compare(Navi o1, Navi o2) {
-        return o1.getCategory().compareTo(o2.getCategory().toString());
+        return o1.getPrefixCategoryId().compareTo(o2.getPrefixCategoryId().toString());
     }
 
     @Override
     public final int compareGroup(Navi o1, Navi o2) {
-        if (o1.getCategory().equals(o2.getCategory())) {
+        if (o1.getPrefixCategoryId().equals(o2.getPrefixCategoryId())) {
             return 0;
         }
         else{
             return 1;
         }
     }
-
 }

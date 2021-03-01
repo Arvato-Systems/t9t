@@ -1,4 +1,22 @@
+/*
+ * Copyright (c) 2012 - 2020 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.arvatosystems.t9t.component.ee;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Events;
@@ -12,6 +30,7 @@ import com.arvatosystems.t9t.tfi.services.DefaultNavBarCreator;
 import com.arvatosystems.t9t.tfi.services.INavBarCreator;
 import com.arvatosystems.t9t.tfi.viewmodel.ApplicationViewModel;
 import com.arvatosystems.t9t.tfi.viewmodel.navigation.NaviGroupingViewModel;
+import com.arvatosystems.t9t.tfi.web.ApplicationSession;
 
 import de.jpaw.dp.Singleton;
 import de.jpaw.dp.Specializes;
@@ -29,17 +48,21 @@ public class NavBarCreatorEE extends DefaultNavBarCreator implements INavBarCrea
         createContextMenu(container);
 
         for (int groupIndex = 0; groupIndex < groupCounts; groupIndex++) {
+            Map<String, Nav> folders = new HashMap<>(20);
             String groupName = naviGroups.getGroup(groupIndex);
-            final Nav nav = new Nav();
+            final Nav mainNav = new Nav();
             int childCounts = naviGroups.getChildCount(groupIndex);
-            nav.setLabel(groupName);
-            nav.addSclass("header-nav-submenu no-scrollbar ");
-            nav.addSclass(getSubMenuClass(childCounts));
-            createContextMenuOnEachMenu(nav);
-            navbar.appendChild(nav);
+            mainNav.setLabel(groupName);
+            mainNav.addSclass("header-nav-submenu no-scrollbar ");
+            createContextMenuOnEachMenu(mainNav);
+            navbar.appendChild(mainNav);
+            String groupId = naviGroups.getChild(groupIndex, 0).getFolderCategoryId();
+            folders.put(groupId, mainNav);
 
             for (int childIndex = 0; childIndex < childCounts; childIndex++) {
                 Navi navi = naviGroups.getChild(groupIndex, childIndex);
+                Nav currentNav = getOrCreateNavFolderIfNotExists(folders, navi.getCategoryId());
+
                 // Display grouped subtitle (non clickable)
                 if (subtitleShouldDisplay(naviGroups, groupIndex, childIndex)) {
                     Navitem navitem = new Navitem();
@@ -47,7 +70,7 @@ public class NavBarCreatorEE extends DefaultNavBarCreator implements INavBarCrea
                     navitem.setDisabled(true);
                     navitem.setZclass("header-nav-subtitle");
                     navitem.setImage(navi.getImg());
-                    nav.appendChild(navitem);
+                    currentNav.appendChild(navitem);
                 }
 
                 // Menu items
@@ -64,9 +87,12 @@ public class NavBarCreatorEE extends DefaultNavBarCreator implements INavBarCrea
                     navitem.setClientAttribute("onClick", "collapseHeaderMenu();");
                     navitem.setClientAttribute("data-navi", navi.getNaviId());
                     navitem.setContext(CONTEXT_MENU_ID);
-                    nav.appendChild(navitem);
+                    currentNav.appendChild(navitem);
                 }
             }
+
+            // check if multi columns needed
+            mainNav.addSclass(getSubMenuClass(mainNav.getChildren().size()));
         }
     }
 
@@ -78,5 +104,30 @@ public class NavBarCreatorEE extends DefaultNavBarCreator implements INavBarCrea
                 }
             }
         });
+    }
+
+    /**
+     * Get existing folder, create if not existed.
+     */
+    protected Nav getOrCreateNavFolderIfNotExists(Map<String, Nav> folders, String folderCategoryId) {
+
+        Nav folder = folders.get(folderCategoryId);
+
+        if (folder == null) {
+            // get parent, create if not existed recursively
+            String parentFolderCategoryId = Navi.getCategoryIdBeforeLastDot(folderCategoryId);
+            String lastPartCategoryId = Navi.getCategoryIdAfterLastDot(folderCategoryId);
+            Nav parentNav = getOrCreateNavFolderIfNotExists(folders, parentFolderCategoryId);
+
+            folder = new Nav(
+                    getSubmenuFolderTranslated(ApplicationSession.get(), parentFolderCategoryId, lastPartCategoryId));
+            folder.setSclass("header-nav-nested-menu no-highlight");
+            folder.setImage("/img/folder.png");
+            folder.setId(folderCategoryId);
+            parentNav.appendChild(folder);
+            folders.put(folderCategoryId, folder);
+        }
+
+        return folder;
     }
 }

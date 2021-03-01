@@ -329,19 +329,19 @@ class OutputSession implements IOutputSession {
      * {@inheritDoc}
      */
     override void close() throws Exception {
-        
+
         if (sinkCfg.camelRoute === null) {
-        	thisSink.camelTransferStatus = ExportStatusEnum.RESPONSE_OK  // means DONE
+            thisSink.camelTransferStatus = ExportStatusEnum.RESPONSE_OK  // means DONE
         } else {
-        	// if a camelRoute exists, we don't know the export status yet
-        	thisSink.camelTransferStatus = ExportStatusEnum.UNDEFINED
+            // if a camelRoute exists, we don't know the export status yet
+            thisSink.camelTransferStatus = ExportStatusEnum.UNDEFINED
         }
-                
+
         LOGGER.debug("Setting Sink {} to camelTransferStatus: {} on close()", thisSink.getObjectRef(), thisSink.camelTransferStatus)
 
-		// Store camel exceptions, throw after sink setup
-		var Exception outputResourceCloseError = null;
-		
+        // Store camel exceptions, throw after sink setup
+        var Exception outputResourceCloseError = null;
+
         // if LAZY open, skip actual opening, then also closing is not required
         if (currentState != State.LAZY) {
             if (currentState != State.OPENED) {
@@ -360,7 +360,7 @@ class OutputSession implements IOutputSession {
 
             // close the destination
             try {
-                outputResource.close    
+                outputResource.close
                 thisSink.camelTransferStatus = ExportStatusEnum.RESPONSE_OK
             } catch(Exception e) {
                 thisSink.camelTransferStatus = ExportStatusEnum.RESPONSE_ERROR
@@ -392,9 +392,9 @@ class OutputSession implements IOutputSession {
         thisSinkRef = null;
         usedFormat = null;
         currentState = State.CLOSED;
-        
+
         if(outputResourceCloseError !== null) {
-        	// if outputResource throws an error: throw it now after sink setup
+            // if outputResource throws an error: throw it now after sink setup
             throw outputResourceCloseError;
         }
     }

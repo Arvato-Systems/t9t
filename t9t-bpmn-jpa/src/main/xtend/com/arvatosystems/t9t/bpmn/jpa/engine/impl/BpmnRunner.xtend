@@ -82,7 +82,7 @@ class BpmnRunner implements IBpmnRunner {
         //////////////////////////////////////////////////
         // 1.) get status entity
 
-        ctx.lockRef(statusRef); // acquire & lock the statusRef 
+        ctx.lockRef(statusRef); // acquire & lock the statusRef
 
         val statusEntity = statusResolver.find(statusRef) //, LockModeType.PESSIMISTIC_READ)
         if (statusEntity === null) {

@@ -29,6 +29,7 @@ public class Navi {
     private boolean menuItemVisible=true;
     private String  img;
     private String  subcategory;
+    private String  categoryId;
 
     public Navi(String naviId, String category, String subcategory, String name, String link, String permission, boolean menuItemVisible,String img) {
         super();
@@ -132,6 +133,14 @@ public class Navi {
         this.subcategory = subcategory;
     }
 
+    public String getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(String categoryId) {
+        this.categoryId = categoryId;
+    }
+
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
@@ -143,6 +152,38 @@ public class Navi {
                 + ", img=" + img + "]";
     }
 
+    /**
+     * This method get the first part of the category id.
+     */
+    public String getPrefixCategoryId() {
+        int i = categoryId.indexOf(".");
+        if (i > -1) {
+            return categoryId.substring(0, i);
+        }
+        return categoryId;
+    }
 
+    /**
+     * This method get all parts before the last part.
+     */
+    public String getFolderCategoryId() {
+        return getCategoryIdBeforeLastDot(categoryId);
+    }
+
+    public static String getCategoryIdBeforeLastDot(String categoryId) {
+        int i = categoryId.lastIndexOf(".");
+        if (i > -1 ) {
+            return categoryId.substring(0, i);
+        }
+        return categoryId;
+    }
+
+    public static String getCategoryIdAfterLastDot(String categoryId) {
+        int i = categoryId.lastIndexOf(".");
+        if (i > -1 ) {
+            return categoryId.substring(i + 1);
+        }
+        return categoryId;
+    }
 
 }

@@ -31,7 +31,7 @@ class ITSessions {
             sortColumns = # [
                 new SortColumn => [
                     descending = true
-                    fieldName = "cTimestamp"
+                    fieldName = "objectRef"
                 ]
             ]
             limit = 20

@@ -23,5 +23,5 @@ import de.jpaw.dp.Singleton;
 @Singleton
 @Fallback
 public class OtherAuthenticationStub implements IOtherAuthentication {
-	// empty, use default methods only
+    // empty, use default methods only
 }

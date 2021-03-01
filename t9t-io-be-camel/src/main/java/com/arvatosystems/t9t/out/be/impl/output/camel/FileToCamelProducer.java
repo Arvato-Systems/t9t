@@ -119,9 +119,9 @@ public class FileToCamelProducer implements IFileToCamelProducer {
             successfulRoutingPostProcessing(fileName, fileType, sinkCfg);
         } catch (CamelExecutionException e) {
             failedRoutingPostProcessing(fileName, fileType, sinkCfg);
-            
+
             LOGGER.error("CamelExecutionException", e);
-            
+
             // Wrap camel execution error into Application error in order to prevent rollback
             ApplicationException applicationException = new ApplicationException(T9tIOException.NOT_TRANSFERRED, e.getMessage());
             applicationException.setStackTrace(e.getStackTrace());

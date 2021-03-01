@@ -28,7 +28,7 @@ public class T9tMsglogModels implements IViewModelContainer {
         NoTracking.BClass.INSTANCE,
         MessageSearchRequest.BClass.INSTANCE,
         null);
-    
+
     public static final CrudViewModel<MessageStatisticsDTO, NoTracking> MESSAGE_STATISTICS_VIEW_MODEL = new CrudViewModel<MessageStatisticsDTO, NoTracking>(
             MessageStatisticsDTO.BClass.INSTANCE,
             NoTracking.BClass.INSTANCE,

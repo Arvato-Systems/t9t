@@ -136,5 +136,6 @@ public interface T9tConstants {
     public static final String MDC_BPMN_PROCESS_INSTANCE = "bpmnProcessInstance";
     public static final String MDC_BPMN_STEP = "bpmnStep";
 
-    public static final String PLUGIN_API_ID_REQUEST_HANDLER = "requestHandler";  // ID for plugins implementing IPluginRequestHandler
+    public static final String PLUGIN_API_ID_REQUEST_HANDLER = "requestHandler";  // ID for plugins implementing IRequestHandlerPlugin
+    public static final String PLUGIN_API_ID_WORKFLOW_STEP   = "workflowStep";    // ID for plugins implementing IWorkflowStepPlugin
 }

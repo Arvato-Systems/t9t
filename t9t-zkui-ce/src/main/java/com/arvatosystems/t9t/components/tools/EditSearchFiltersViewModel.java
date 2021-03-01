@@ -73,7 +73,7 @@ public class EditSearchFiltersViewModel {
         div.setVflex("1");
         searchFilterConfigCreator.createComponent(div, uiGridPreferences, gridConfigResolver.getFilters());
     }
-    
+
 
     @Command
     public void closeWindow() {
@@ -129,14 +129,14 @@ public class EditSearchFiltersViewModel {
     private boolean validate(List<SearchFilterRowVM> selectedFilters) {
         dropDownMissing = false;
         selectionEmpty = selectedFilters.isEmpty();
-        
+
         for (SearchFilterRowVM f : selectedFilters) {
             if (f.getSelected() && (f.getCurrentSelection() == null || f.getCurrentSelection().equals(""))) {
                 dropDownMissing = true;
                 break;
             }
         }
-        
+
         return !(this.dropDownMissing || this.selectionEmpty);
     }
 

@@ -22,9 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.plugins.PluginInfo;
-import com.arvatosystems.t9t.plugins.PluginMethodInfo;
-import com.arvatosystems.t9t.plugins.request.ExecutePluginV1Request;
-import com.arvatosystems.t9t.plugins.request.ExecutePluginV1Response;
+import com.arvatosystems.t9t.plugins.services.IRequestHandlerPlugin;
 import com.arvatosystems.t9t.plugins.services.Plugin;
 import com.arvatosystems.t9t.plugins.services.PluginMethod;
 
@@ -34,8 +32,8 @@ public class Main implements Plugin {
     private static final String PLUGIN_ID = "demo"; // PLUGIN_ID
     private static final String MAJOR = "1"; // MAJOR
     private static final String MINOR = "0"; // MINOR
-    
-    private final PluginMethod<ExecutePluginV1Request, ExecutePluginV1Response> INSTANCE = new DemoRequestHandler();
+
+    private final IRequestHandlerPlugin INSTANCE = new DemoRequestHandler();
 
     public static void main(String[] args) {
         System.out.println("t9t Demo plugin version 1.0");

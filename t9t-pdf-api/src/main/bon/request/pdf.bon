@@ -27,7 +27,7 @@ package (com.arvatosystems) t9t.pdf.request {
      * The response returns the sinkRef of the created file. The contents can be retrieved later via FileDownloadRequest(s).
      */
     class ConcatenatePDFsRequest                extends RequestParameters return SinkCreatedResponse {
-        required dataSinkId                     outputDataSinkId;   // the data sink to store the result in. Must have commFormatType = MediaType.PDF      
+        required dataSinkId                     outputDataSinkId;   // the data sink to store the result in. Must have commFormatType = MediaType.PDF
         required f42Ref required List<>         sinkRefsToMerge;    // a non empty list of sink ref
     }
 }
