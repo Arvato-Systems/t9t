@@ -339,7 +339,8 @@ td.z-listgroup-inner div.z-listcell-content {
 }
 div.z-listcell-content {
     line-height: 14px;
-    padding: 0 0;
+    padding: 7px 0;
+    white-space: nowrap;
 }
 .z-listbox-autopaging .z-listcell-content {
     height: 15px;
@@ -916,7 +917,15 @@ body {
 }
 
 .filterCell *{
-    background: transparent;
+    background: #ffffff;
+}
+
+.filtergrid .z-cell {
+    background: #f4f4f4 !important;
+}
+
+.z-west-body {
+    background: #f4f4f4;
 }
 
 .z-listheader, .z-listbox-header {

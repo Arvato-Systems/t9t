@@ -102,4 +102,8 @@
         <name>SEARCH_PATH_FOR_XENUMS_INIT</name>
         <value>com.arvatosystems.t9t.tfi</value>
     </system-property>
+    <library-property>
+        <name>org.zkoss.zul.borderlayout.animation.disabled</name>
+        <value>true</value>
+    </library-property>
 </zk>

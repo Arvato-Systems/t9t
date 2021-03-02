@@ -77,7 +77,7 @@ public class Filter28 extends Grid implements IGridIdOwner {
         super();
         LOGGER.debug("new Filter28() created");
         setVflex("min");
-        setSclass("grid no-scrollbar no-padding");
+        setSclass("filtergrid grid no-scrollbar no-padding");
 
     }
 

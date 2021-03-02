@@ -1,2 +1,4 @@
 # t9t
-Backend of the Arvato Systems t9t framework
+Backend and administration user interface of the Arvato Systems t9t framework.
+
+Sources of any dependencies / libraries not found on Maven Central are located under github.com/jpaw.

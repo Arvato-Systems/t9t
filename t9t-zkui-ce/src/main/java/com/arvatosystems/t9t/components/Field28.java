@@ -27,7 +27,6 @@ import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.impl.InputElement;
 
-import com.arvatosystems.t9t.tfi.web.ApplicationSession;
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.base.FieldMappers;
 import com.arvatosystems.t9t.component.datafields.DataFieldParameters;
@@ -36,10 +35,10 @@ import com.arvatosystems.t9t.component.datafields.GroupedDropdownDataField;
 import com.arvatosystems.t9t.component.datafields.IDataField;
 import com.arvatosystems.t9t.component.ext.IDataFieldFactory;
 import com.arvatosystems.t9t.component.ext.IViewModelOwner;
+import com.arvatosystems.t9t.tfi.web.ApplicationSession;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.util.FieldGetter;
 import de.jpaw.dp.Jdp;
@@ -66,6 +65,7 @@ public class Field28 extends Cell {
     private boolean disabled1= false;
     private String decimals1 = null;
     protected Form28 form = null;
+    protected boolean _visible = true; // added due to a bug on zk cell. setting visible dynamically on specific custom list will crash
 
     public void setValue(Object t) {
         LOGGER.debug("{}.setValue({}) called", getId(), t);
@@ -97,7 +97,7 @@ public class Field28 extends Cell {
         Component dataField = idf != null ? idf.getComponent() : null;
         if (dataField != null) {
             dataField.setParent(this);
-            dataField.setVisible(this.isVisible());
+            dataField.setVisible(_visible);
             // also forward the onChange event to allow saving of changed data
             dataField.addEventListener(Events.ON_CHANGE, (ev) -> {
                 LOGGER.debug("onChange caught for {}, current value is {}", getId(), getValue());
@@ -194,11 +194,20 @@ public class Field28 extends Cell {
 
     @Override
     public boolean setVisible(boolean visible) {
-        boolean oldValue = super.setVisible(visible); // apply to its cell
+        boolean oldValue = this.isVisible();
+        _visible = visible;
+
+        if (isVisibleAllowToSet())
+            oldValue = super.setVisible(visible); // apply to its cell
+
         if (idf != null && idf.getComponent() != null) { // apply to its component (if applicable)
             oldValue = idf.getComponent().isVisible();
             idf.getComponent().setVisible(visible);
         }
         return oldValue;
+    }
+
+    private boolean isVisibleAllowToSet() {
+        return !(this.getParent() instanceof ViewModel28);
     }
 }
