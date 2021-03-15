@@ -28,7 +28,7 @@ import de.jpaw.bonaparte.pojos.apiw.Ref;
 
 public class GroupedDropdownDataField extends AbstractDataField<GroupedDropdown28Db<Ref>, Ref>{
 
-    private final Logger LOGGER = LoggerFactory.getLogger(GroupedDropdownDataField.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GroupedDropdownDataField.class);
 
     private final GroupedDropdown28Db<Ref> c;
     private final IGroupedDropdown28DbFactory<Ref> factory;

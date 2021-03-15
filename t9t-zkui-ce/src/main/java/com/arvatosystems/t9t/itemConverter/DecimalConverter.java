@@ -37,16 +37,13 @@ import de.jpaw.dp.Singleton;
 public class DecimalConverter implements IItemConverter<BigDecimal> {
     private static final Logger LOGGER = LoggerFactory.getLogger(DecimalConverter.class);
 
-    private String format;
+    private final String format;
 
-    public DecimalConverter(String format) {
+    private DecimalConverter(String format) {
         if (format == null) {
             throw new NullPointerException("format not set in constructor");
         }
-        this.format = Labels.getLabel(format);
-        if (this.format == null) {
-            this.format = "###,##0.00";
-        }
+        this.format = Labels.getLabel(format, "###,##0.00");
     }
 
     public DecimalConverter() {

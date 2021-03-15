@@ -71,7 +71,7 @@ public class QuartzSchedulerService implements ISchedulerService {
     protected final Scheduler scheduler = Jdp.getRequired(Scheduler.class);
     protected final Provider<RequestContext> ctxProvider = Jdp.getProvider(RequestContext.class);
 
-    private List<SchedulerSetupRecurrenceType> DAILY_OR_LESS_FREQ = Arrays.asList(SchedulerSetupRecurrenceType.DAILY,
+    private final List<SchedulerSetupRecurrenceType> DAILY_OR_LESS_FREQ = Arrays.asList(SchedulerSetupRecurrenceType.DAILY,
             SchedulerSetupRecurrenceType.WEEKLY, SchedulerSetupRecurrenceType.MONTHLY, SchedulerSetupRecurrenceType.YEARLY);
 
     private static final String CRON_REGEX_PATTERN = "(\\*|\\d{0,2}([-,]\\d{0,2})*(/\\d{0,2})?)\\s(\\*|\\d{0,2}([-,]\\d{0,2})*(/\\d{0,2})?)\\s(\\*|\\d{0,2}([-,]\\d{0,2})*(/\\d{0,2})?)\\s(\\*|\\d{0,2}([-,]\\d{0,2})*(/\\d{0,2})?|\\?)\\s(\\*|\\d{0,2}([-,]\\d{0,2})*(/\\d{0,2}))\\s(\\*|\\d{0,2}([-,]\\d{0,2})*(/\\d{0,2})?|\\?)(\\s(\\*|\\d{4}([-,]\\d{4})*))?";

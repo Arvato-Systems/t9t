@@ -30,6 +30,7 @@ import java.util.concurrent.LinkedTransferQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.annotations.IsLogicallyFinal;
 import com.arvatosystems.t9t.base.event.BucketWriteKey;
 import com.arvatosystems.t9t.base.services.IBucketWriter;
 import com.arvatosystems.t9t.bucket.services.IBucketPersistenceAccess;
@@ -52,9 +53,12 @@ public class AsyncBucketWriter implements IBucketWriter {
     private static final long SHORT_SLEEP_DURATION_AFTER_ACTIVITY   = 250L; // time to sleep after requests have been processed
 
     private final LinkedTransferQueue<Map<BucketWriteKey, Integer>> queue = new LinkedTransferQueue<Map<BucketWriteKey, Integer>>();
-    private ExecutorService executor;
-    private Future<Boolean> writerResult;
     private final IBucketPersistenceAccess persistenceAccess = Jdp.getRequired(IBucketPersistenceAccess.class);
+
+    @IsLogicallyFinal  // set within open()
+    private ExecutorService executor;
+    @IsLogicallyFinal  // set within open()
+    private Future<Boolean> writerResult;
 
     private class WriterThread implements Callable<Boolean> {
         private int count = 0;

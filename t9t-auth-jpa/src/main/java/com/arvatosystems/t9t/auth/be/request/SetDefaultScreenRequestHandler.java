@@ -28,9 +28,9 @@ import com.arvatosystems.t9t.base.services.RequestContext;
 import de.jpaw.dp.Jdp;
 
 public class SetDefaultScreenRequestHandler extends AbstractRequestHandler<SetDefaultScreenRequest> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SetDefaultScreenRequestHandler.class);
 
     protected final IUserEntityResolver resolver = Jdp.getRequired(IUserEntityResolver.class);
-    private final Logger LOGGER = LoggerFactory.getLogger(SetDefaultScreenRequestHandler.class);
 
     @Override
     public ServiceResponse execute(RequestContext ctx, SetDefaultScreenRequest request) throws Exception {

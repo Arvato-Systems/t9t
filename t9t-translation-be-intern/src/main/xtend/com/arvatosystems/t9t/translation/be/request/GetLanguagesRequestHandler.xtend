@@ -24,7 +24,7 @@ import java.util.List
 
 class GetLanguagesRequestHandler extends AbstractReadOnlyRequestHandler<GetLanguagesRequest> {
 
-    static List<UILanguageDTO> LANGUAGES = #[
+    static final List<UILanguageDTO> LANGUAGES = #[
         new UILanguageDTO('en',    'English',             'English'),
         new UILanguageDTO('de',    'German',              'Deutsch'),
         new UILanguageDTO('fr',    'French',              'Français'),

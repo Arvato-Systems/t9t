@@ -22,6 +22,7 @@ import org.apache.camel.impl.DefaultCamelContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.annotations.IsLogicallyFinal;
 import com.arvatosystems.t9t.base.services.IAsyncRequestProcessor;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.io.DataSinkDTO;
@@ -45,9 +46,10 @@ import de.jpaw.util.ExceptionUtil;
 @Startup(95000)
 @Singleton
 public class CamelContextProvider implements StartupShutdown, Provider<CamelContext> {
-
-    private CamelContext camelContext = null;
     private static final Logger LOGGER = LoggerFactory.getLogger(CamelContextProvider.class);
+
+    @IsLogicallyFinal  // set by startup
+    private CamelContext camelContext = null;
 
     protected final IOutPersistenceAccess iOutPersistenceAccess = Jdp.getRequired(IOutPersistenceAccess.class);
     protected final CamelService camelService = Jdp.getRequired(CamelService.class);

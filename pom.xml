@@ -884,6 +884,7 @@
         <module>t9t-sql</module>
         <module>t9t-sql-migration-executor</module>
 
+        <module>t9t-tests-arch</module>
         <module>t9t-vertx-cluster</module>
         <module>t9t-proxy</module>
         <module>t9t-all-api</module>

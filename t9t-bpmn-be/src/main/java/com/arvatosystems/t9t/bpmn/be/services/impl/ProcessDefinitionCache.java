@@ -36,7 +36,7 @@ import de.jpaw.util.ExceptionUtil;
 
 @Singleton
 public class ProcessDefinitionCache implements IProcessDefinitionCache {
-    protected static final Logger LOGGER  = LoggerFactory.getLogger(ProcessDefinitionCache.class);
+    private static final Logger LOGGER  = LoggerFactory.getLogger(ProcessDefinitionCache.class);
 
     protected final Cache<String, ProcessDefinitionDTO> cache = CacheBuilder
         .newBuilder().expireAfterWrite(2L,  TimeUnit.MINUTES).build();

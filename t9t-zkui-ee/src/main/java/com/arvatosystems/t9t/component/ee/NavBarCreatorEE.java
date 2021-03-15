@@ -47,17 +47,20 @@ public class NavBarCreatorEE extends DefaultNavBarCreator implements INavBarCrea
         container.appendChild(navbar);
         createContextMenu(container);
 
+        Map<String, Nav> folders = new HashMap<>(100);
         for (int groupIndex = 0; groupIndex < groupCounts; groupIndex++) {
-            Map<String, Nav> folders = new HashMap<>(20);
-            String groupName = naviGroups.getGroup(groupIndex);
-            final Nav mainNav = new Nav();
-            int childCounts = naviGroups.getChildCount(groupIndex);
-            mainNav.setLabel(groupName);
-            mainNav.addSclass("header-nav-submenu no-scrollbar ");
-            createContextMenuOnEachMenu(mainNav);
-            navbar.appendChild(mainNav);
             String groupId = naviGroups.getChild(groupIndex, 0).getFolderCategoryId();
-            folders.put(groupId, mainNav);
+            Nav mainNav = folders.get(groupId);
+            int childCounts = naviGroups.getChildCount(groupIndex);
+            if (mainNav == null) {
+                String groupName = naviGroups.getGroup(groupIndex);
+                mainNav = new Nav();
+                mainNav.setLabel(groupName);
+                mainNav.addSclass("header-nav-submenu no-scrollbar ");
+                createContextMenuOnEachMenu(mainNav);
+                navbar.appendChild(mainNav);
+                folders.put(groupId, mainNav);
+            }
 
             for (int childIndex = 0; childIndex < childCounts; childIndex++) {
                 Navi navi = naviGroups.getChild(groupIndex, childIndex);

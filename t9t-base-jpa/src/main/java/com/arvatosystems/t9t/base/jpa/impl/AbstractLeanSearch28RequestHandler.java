@@ -29,11 +29,11 @@ import com.arvatosystems.t9t.base.services.RequestContext;
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
 
-public class AbstractLeanSearchRequestHandler28 <S extends LeanSearchRequest, E extends BonaPersistableKey<Long> & BonaPersistableTracking<?>> extends AbstractReadOnlyRequestHandler<S> {
+public class AbstractLeanSearch28RequestHandler <S extends LeanSearchRequest, E extends BonaPersistableKey<Long> & BonaPersistableTracking<?>> extends AbstractReadOnlyRequestHandler<S> {
     protected final IResolverSurrogateKey28<?, ?, E> resolver;
     protected final Function<E, Description> mapper;
 
-    protected AbstractLeanSearchRequestHandler28(
+    protected AbstractLeanSearch28RequestHandler(
             IResolverSurrogateKey28<?, ?, E> resolver,
             Function<E, Description> mapper) {
         this.resolver = resolver;

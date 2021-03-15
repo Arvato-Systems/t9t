@@ -30,16 +30,13 @@ import de.jpaw.bonaparte.util.BigDecimalTools;
 public class DecimalConverter implements Converter {
     private static final Logger LOGGER = LoggerFactory.getLogger(DecimalConverter.class);
 
-    private String format;
+    private final String format;
 
     public DecimalConverter(String format) {
         if (format == null) {
             throw new NullPointerException("format not set in constructor");
         }
-        this.format = Labels.getLabel(format);
-        if (this.format == null) {
-            this.format = format;
-        }
+        this.format = Labels.getLabel(format, format);
     }
 
     @Override

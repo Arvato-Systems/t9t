@@ -79,6 +79,11 @@
             </dependency>
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
+                <artifactId>t9t-tests-arch</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-pdf-api</artifactId>
                 <version>${project.version}</version>
             </dependency>

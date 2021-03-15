@@ -36,7 +36,7 @@ import de.jpaw.dp.Singleton;
  */
 @Singleton
 public class ExporterTool<DTO extends BonaPortable, TRACKING extends TrackingBase> implements IExporterTool<DTO, TRACKING> {
-    protected ISplittingOutputSessionProvider splittingOutputSessionProvider = Jdp.getRequired(ISplittingOutputSessionProvider.class);
+    protected final ISplittingOutputSessionProvider splittingOutputSessionProvider = Jdp.getRequired(ISplittingOutputSessionProvider.class);
 
     @Override
     public Long storeAll(OutputSessionParameters op, List<DataWithTrackingW<DTO, TRACKING>> dataList, Integer maxRecords) throws Exception {

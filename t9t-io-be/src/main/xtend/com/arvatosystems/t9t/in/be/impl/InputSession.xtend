@@ -55,6 +55,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import org.joda.time.Instant
 import com.arvatosystems.t9t.io.request.ImportStatusResponse
 import com.arvatosystems.t9t.io.request.WriteRecordsToDataSinkRequest
+import com.arvatosystems.t9t.base.output.ExportStatusEnum
 
 // this class operates outside of a RequestContext!
 @AddLogger
@@ -75,7 +76,9 @@ class InputSession implements IInputSession {
     protected final Map<String, Object> headerData = new HashMap<String, Object>();
     protected String sourceReference = null;
     protected boolean isDuplicateImport = false;
+    protected boolean isProcessingError = false;
     protected List<BonaPortable> responseBuffer = null;
+
 
     override open(String dataSourceId, UUID apiKey, String sourceURI, Map<String, Object> params) {
         LOGGER.info("Opening input session for dataSource ID {}, source URI {}", dataSourceId, sourceURI)
@@ -139,6 +142,13 @@ class InputSession implements IInputSession {
             responseBuffer = new ArrayList<BonaPortable>(MAX_RESPONSES);
         }
 
+        if (dataSinkCfg.camelRoute === null) {
+            sinkDTO.camelTransferStatus = ExportStatusEnum.RESPONSE_OK  // means DONE
+        } else {
+            // if a camelRoute exists, we don't know the export status yet
+            sinkDTO.camelTransferStatus = ExportStatusEnum.UNDEFINED
+        }
+
         sinkDTO.plannedRunDate  = start
         sinkDTO.commTargetChannelType = dataSinkCfg.commTargetChannelType
         sinkDTO.commFormatType  = dataSinkCfg.commFormatType
@@ -158,7 +168,12 @@ class InputSession implements IInputSession {
     }
 
     override void process(InputStream is) {
-        inputFormatConverter.process(is)
+        try {
+            inputFormatConverter.process(is)
+        } catch (Exception e) {
+            sinkDTO.camelTransferStatus = ExportStatusEnum.PROCESSING_ERROR
+            throw e
+        }
     }
 
     // log according to configured severity and return an error request
@@ -267,6 +282,13 @@ class InputSession implements IInputSession {
         sinkDTO.numberOfSourceRecords = numSource.get
         sinkDTO.numberOfMappedRecords = numProcessed.get
         sinkDTO.numberOfErrorRecords = numError.get
+
+        if (dataSinkCfg.camelRoute !== null) {
+            if(ExportStatusEnum.UNDEFINED.equals(sinkDTO.camelTransferStatus)) {
+                sinkDTO.camelTransferStatus = ExportStatusEnum.RESPONSE_OK
+            }
+        }
+
         session.execute(new StoreSinkRequest(sinkDTO))
 
         session.close

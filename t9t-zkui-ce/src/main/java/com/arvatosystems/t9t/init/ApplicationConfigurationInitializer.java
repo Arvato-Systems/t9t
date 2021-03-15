@@ -31,7 +31,7 @@ import de.jpaw.dp.Singleton;
 public class ApplicationConfigurationInitializer {
     private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationConfigurationInitializer.class);
 
-    private String forgetPasswordApiKey = null;
+    private final String forgetPasswordApiKey;
 
     public ApplicationConfigurationInitializer() {
         LOGGER.debug("Trying to retrieve passwordReset API KEY");

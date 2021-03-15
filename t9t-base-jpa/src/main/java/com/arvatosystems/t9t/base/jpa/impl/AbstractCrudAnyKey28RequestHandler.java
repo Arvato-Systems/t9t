@@ -40,7 +40,7 @@ import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 
-abstract class AbstractCrudAnyKey28RequestHandler<
+public abstract class AbstractCrudAnyKey28RequestHandler<
     KEY extends Serializable,
     DTO extends BonaPortable,
     TRACKING extends TrackingBase,

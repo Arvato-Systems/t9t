@@ -44,10 +44,10 @@ import de.jpaw.util.ApplicationException;
 
 @Init(superclass=true)
 public class CreateDeploymentVM extends ViewOnlyVM<CreateDeploymentRequest, FullTrackingWithVersion> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CreateDeploymentVM.class);
 
     protected final IT9TMessagingDAO messagingDAO = Jdp.getRequired(IT9TMessagingDAO.class);
     protected final T9TRemoteUtils t9tremoteUtils = Jdp.getRequired(T9TRemoteUtils.class);
-    protected static final Logger LOGGER = LoggerFactory.getLogger(CreateDeploymentVM.class);
 
 
     @Command

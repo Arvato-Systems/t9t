@@ -60,19 +60,27 @@ class CamelT9tProducer extends DefaultProducer {
 
         var InputStream inputStream;
 
-        if (dataSinkDTO.storeImportUsingFilepattern !== null) {
-            val File storageFile = new File(fileUtil.getAbsolutePathForTenant(inputSession.tenantId, importFilename));
+        try {
 
-            storeImport(exchange.in.getBody(InputStream), storageFile)
+            if (dataSinkDTO.storeImportUsingFilepattern !== null) {
 
-            inputStream = new BufferedInputStream(new FileInputStream(storageFile));
-        } else {
-            inputStream = exchange.in.getBody(InputStream)
+                val File storageFile = new File(fileUtil.getAbsolutePathForTenant(inputSession.tenantId, importFilename));
+                storeImport(exchange.in.getBody(InputStream), storageFile)
+                inputStream = new BufferedInputStream(new FileInputStream(storageFile));
+
+            } else {
+                inputStream = exchange.in.getBody(InputStream)
+            }
+
+            inputSession.process(inputStream)
+
+        } catch(Exception e) {
+            LOGGER.error("Processor error for dataSinkDTO {}: {}", dataSinkDTO, e)
+            throw e
+        } finally {
+            inputSession.close
+            inputStream.close
         }
-
-        inputSession.process(inputStream)
-        inputSession.close
-        inputStream.close
     }
 
     def String deriveImportFilename(DataSinkDTO dataSinkDTO, Exchange e) throws IOException {

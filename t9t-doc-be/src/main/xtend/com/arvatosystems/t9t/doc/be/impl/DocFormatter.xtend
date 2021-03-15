@@ -390,7 +390,7 @@ class DocFormatter implements IDocFormatter {
     }
 
 
-    protected static Cache<ComponentCacheKey, Map<String, MediaData>> componentCache = CacheBuilder.newBuilder().expireAfterWrite(5, TimeUnit.MINUTES).build
+    protected static final Cache<ComponentCacheKey, Map<String, MediaData>> componentCache = CacheBuilder.newBuilder().expireAfterWrite(5, TimeUnit.MINUTES).build
 
     def static clearCache() {
         componentCache.invalidateAll

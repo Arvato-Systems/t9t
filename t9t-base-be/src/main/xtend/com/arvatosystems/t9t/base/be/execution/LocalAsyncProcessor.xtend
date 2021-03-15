@@ -29,6 +29,7 @@ import de.jpaw.dp.Singleton
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
+import com.arvatosystems.t9t.annotations.IsLogicallyFinal
 
 // async processor without cross-server scaling. For vert.x please see AsyncProcessor which uses the event bus
 @AddLogger
@@ -37,6 +38,7 @@ class LocalAsyncProcessor implements IAsyncRequestProcessor {
     // private static LinkedTransferQueue<ServiceRequest> ltq = new LinkedTransferQueue<ServiceRequest>
 
     // must be lazy due to cyclic dependency
+    @IsLogicallyFinal
     @Lazy IUnauthenticatedServiceRequestExecutor serviceRequestExecutor = Jdp.getRequired(IUnauthenticatedServiceRequestExecutor)
 
     protected final ExecutorService executorService

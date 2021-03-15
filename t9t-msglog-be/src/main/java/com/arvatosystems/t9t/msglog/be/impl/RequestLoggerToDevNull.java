@@ -16,6 +16,7 @@
 package com.arvatosystems.t9t.msglog.be.impl;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,10 +31,10 @@ import de.jpaw.dp.Singleton;
 @Singleton
 public class RequestLoggerToDevNull implements IMsglogPersistenceAccess {
     private static final Logger LOGGER = LoggerFactory.getLogger(RequestLoggerToDevNull.class);
-    private int count = 0;
+    private final AtomicInteger count = new AtomicInteger();
 
     public int getCount() {
-        return count;
+        return count.get();
     }
 
     @Override
@@ -43,7 +44,7 @@ public class RequestLoggerToDevNull implements IMsglogPersistenceAccess {
 
     @Override
     public void write(List<MessageDTO> entries) {
-        ++count;
+        count.incrementAndGet();
     }
 
     @Override

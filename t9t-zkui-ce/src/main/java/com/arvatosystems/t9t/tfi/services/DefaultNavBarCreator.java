@@ -68,18 +68,22 @@ public class DefaultNavBarCreator implements INavBarCreator {
         menubar.setAutodrop(false);
         container.appendChild(menubar);
         createContextMenu(container);
+        Map<String, Menupopup> folders = new HashMap<>(100);
 
         for (int groupIndex = 0; groupIndex < groupCounts; groupIndex++) {
-            Map<String, Menupopup> folders = new HashMap<>(20);
-            String groupName = naviGroups.getGroup(groupIndex);
-            Menu menu = createMenu(groupName, groupIndex);
-            menubar.appendChild(menu);
-            Menupopup menuPopup = new Menupopup();
-            addSClass(menuPopup, "nav-menupopup");
-            menu.appendChild(menuPopup);
-            createContextMenuOnEachMenu(menuPopup);
             String groupId = naviGroups.getChild(groupIndex, 0).getFolderCategoryId();
-            folders.put(groupId, menuPopup);
+            String groupName = naviGroups.getGroup(groupIndex);
+            Menupopup menuPopup = folders.get(groupId);
+
+            if (menuPopup == null) {
+                Menu menu = createMenu(groupName, groupIndex);
+                menubar.appendChild(menu);
+                menuPopup = new Menupopup();
+                addSClass(menuPopup, "nav-menupopup");
+                menu.appendChild(menuPopup);
+                createContextMenuOnEachMenu(menuPopup);
+                folders.put(groupId, menuPopup);
+            }
 
             for (int childIndex = 0; childIndex < naviGroups.getChildCount(groupIndex); childIndex++) {
                 Navi navi = naviGroups.getChild(groupIndex, childIndex);

@@ -36,7 +36,7 @@ import de.jpaw.dp.Singleton;
 
 @Singleton
 public class SearchFilterUtil implements ISearchFilterUtil {
-    private ISearchTools searchTools = Jdp.getRequired(ISearchTools.class);
+    private final ISearchTools searchTools = Jdp.getRequired(ISearchTools.class);
 
     private boolean hasDirectWantedChild(AndFilter andFilter, Set<String> wantedFieldNames) {
         List<SearchFilter> childFilters = Arrays.asList(andFilter.getFilter1(), andFilter.getFilter2());

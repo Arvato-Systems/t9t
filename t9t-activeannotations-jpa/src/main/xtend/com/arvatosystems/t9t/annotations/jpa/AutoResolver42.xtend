@@ -396,6 +396,7 @@ class AutoResolver42Processor extends AbstractClassProcessor {
                     resolverClass.addField("DEFAULT_SORT_ORDER") [
                         visibility = Visibility::PRIVATE
                         static = true
+                        final = true
                         type = sortOrderType
                         initializer = [ '''new «toJavaCode(sortOrderInitType)»()«IF (!myKeyType.isWrapper)»{{«makeInitializer(myKeyType.type as ClassDeclaration, toJavaCode(sortColumnType))»}}«ENDIF»''']
                     ]

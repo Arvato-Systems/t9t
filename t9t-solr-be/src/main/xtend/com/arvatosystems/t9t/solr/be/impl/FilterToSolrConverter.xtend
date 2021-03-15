@@ -52,8 +52,8 @@ import org.joda.time.format.ISODateTimeFormat
 @Singleton
 class FilterToSolrConverter implements IFilterToSolrConverter {
 
-    static private DateTimeFormatter isoFmt = ISODateTimeFormat.dateTimeNoMillis
-    static private DateTimeFormatter isoDay = ISODateTimeFormat.date
+    static final DateTimeFormatter isoFmt = ISODateTimeFormat.dateTimeNoMillis
+    static final DateTimeFormatter isoDay = ISODateTimeFormat.date
 
     @Inject IEnumResolver enumResolver
 
@@ -97,23 +97,69 @@ class FilterToSolrConverter implements IFilterToSolrConverter {
 
     def dispatch toSolr(AsciiFilter it)     '''«equalsValue.forSolr ?: likeValue.forSolr»'''
 
-    def dispatch toSolr(IntFilter it)       '''[«lowerBound ?: '*'» TO «upperBound ?: '*'»]'''
+    def dispatch toSolr(IntFilter it) {
+        if (equalsValue !== null) {
+            return equalsValue
+        }
+        return '''[«lowerBound ?: '*'» TO «upperBound ?: '*'»]'''
 
-    def dispatch toSolr(LongFilter it)      '''[«lowerBound ?: '*'» TO «upperBound ?: '*'»]'''
+    }
 
-    def dispatch toSolr(DecimalFilter it)   '''[«lowerBound ?: '*'» TO «upperBound ?: '*'»]'''
+    def dispatch toSolr(LongFilter it) {
+        if (equalsValue !== null) {
+            return equalsValue
+        }
+        return '''[«lowerBound ?: '*'» TO «upperBound ?: '*'»]'''
+    }
 
-    def dispatch toSolr(TimeFilter it)      '''[«lowerBound.forSolr ?: '*'» TO «upperBound.forSolr ?: '*'»]'''
+    def dispatch toSolr(DecimalFilter it) {
+        if (equalsValue !== null) {
+            return equalsValue
+        }
+        return '''[«lowerBound ?: '*'» TO «upperBound ?: '*'»]'''
+    }
 
-    def dispatch toSolr(InstantFilter it)   '''[«lowerBound.forSolr ?: '*'» TO «upperBound.forSolr ?: '*'»]'''
+    def dispatch toSolr(TimeFilter it) {
+        if (equalsValue !== null) {
+            return equalsValue.forSolr
+        }
+        return '''[«lowerBound.forSolr ?: '*'» TO «upperBound.forSolr ?: '*'»]'''
+    }
 
-    def dispatch toSolr(TimestampFilter it) '''[«lowerBound.forSolr ?: '*'» TO «upperBound.forSolr ?: '*'»]'''
+    def dispatch toSolr(InstantFilter it) {
+        if (equalsValue !== null) {
+            return equalsValue.forSolr
+        }
+        return '''[«lowerBound.forSolr ?: '*'» TO «upperBound.forSolr ?: '*'»]'''
+    }
 
-    def dispatch toSolr(DayFilter it)       '''[«lowerBound.forSolr ?: '*'» TO «upperBound.forSolr ?: '*'»]'''
+    def dispatch toSolr(TimestampFilter it) {
+        if (equalsValue !== null) {
+            return equalsValue.forSolr
+        }
+        return '''[«lowerBound.forSolr ?: '*'» TO «upperBound.forSolr ?: '*'»]'''
+    }
 
-    def dispatch toSolr(DoubleFilter it)    '''[«lowerBound ?: '*'» TO «upperBound ?: '*'»]'''
+    def dispatch toSolr(DayFilter it) {
+        if (equalsValue !== null) {
+            return equalsValue.forSolr
+        }
+        return '''[«lowerBound.forSolr ?: '*'» TO «upperBound.forSolr ?: '*'»]'''
+    }
 
-    def dispatch toSolr(FloatFilter it)     '''[«lowerBound ?: '*'» TO «upperBound ?: '*'»]'''
+    def dispatch toSolr(DoubleFilter it) {
+        if (equalsValue !== null) {
+            return equalsValue
+        }
+        return '''[«lowerBound ?: '*'» TO «upperBound ?: '*'»]'''
+    }
+
+    def dispatch toSolr(FloatFilter it) {
+        if (equalsValue !== null) {
+            return equalsValue
+        }
+        return '''[«lowerBound ?: '*'» TO «upperBound ?: '*'»]'''
+    }
 
     //def dispatch toSolr(NullFilter it)      '''[* TO *]'''
 

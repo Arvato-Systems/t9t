@@ -25,11 +25,13 @@ import de.jpaw.dp.Jdp
 import de.jpaw.dp.Singleton
 import java.util.Map
 import java.util.concurrent.ConcurrentHashMap
+import com.arvatosystems.t9t.annotations.IsLogicallyFinal
 
 @AddLogger
 @Singleton
 class WorkflowStepCache implements IWorkflowStepCache {
     private final Map<String, IWorkflowStep> workflowSteps = new ConcurrentHashMap(200);
+    @IsLogicallyFinal
     private Map<String, IBPMObjectFactory> bpmObjectFactories = null
 
     override loadCaches() {
@@ -80,12 +82,4 @@ class WorkflowStepCache implements IWorkflowStepCache {
         workflowSteps.put(name, step)
         Jdp.bindInstanceTo(step, IWorkflowStep, name);
     }
-
-//    override getAllSteps() {
-//        return workflowSteps ?: ImmutableMap.of;  // this is save because the map is immutable
-//    }
-//
-//    override getAllFactories() {
-//        return bpmObjectFactories ?: ImmutableMap.of;
-//    }
 }

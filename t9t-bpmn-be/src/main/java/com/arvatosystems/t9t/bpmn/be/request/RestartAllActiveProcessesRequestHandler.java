@@ -32,7 +32,7 @@ import com.arvatosystems.t9t.statistics.services.IAutonomousRunner;
 import de.jpaw.dp.Jdp;
 
 public class RestartAllActiveProcessesRequestHandler extends AbstractRequestHandler<RestartAllActiveProcessesRequest> {
-    protected static final Logger LOGGER  = LoggerFactory.getLogger(RestartAllActiveProcessesRequestHandler.class);
+    private static final Logger LOGGER  = LoggerFactory.getLogger(RestartAllActiveProcessesRequestHandler.class);
     protected final IAutonomousRunner runner = Jdp.getRequired(IAutonomousRunner.class);
     protected final IBpmnPersistenceAccess persistenceAccess = Jdp.getRequired(IBpmnPersistenceAccess.class);
 

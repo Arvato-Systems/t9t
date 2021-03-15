@@ -388,6 +388,7 @@ class AutoResolver28Processor extends AbstractClassProcessor {
                     resolverClass.addField("DEFAULT_SORT_ORDER") [
                         visibility = Visibility::PRIVATE
                         static = true
+                        final = true
                         type = sortOrderType
                         initializer = [ '''new «toJavaCode(sortOrderInitType)»() {{«makeInitializer(myKeyType.type as ClassDeclaration, toJavaCode(sortColumnType))»}}''']
                     ]

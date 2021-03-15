@@ -54,6 +54,7 @@ import java.util.Set
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
 import com.arvatosystems.t9t.base.api.ServiceRequestHeader
+import com.arvatosystems.t9t.annotations.IsLogicallyFinal
 
 @AddLogger
 @Singleton
@@ -62,12 +63,16 @@ class AsyncProcessor implements IAsyncRequestProcessor {
     // private fields
     static final String ASYNC_EVENTBUS_ADDRESS = "t9tasync"
     static final String EVENTBUS_BASE_42 = "event42.";
-    static EventBus bus = null;
-    static Vertx myVertx = null;
     static final ConcurrentMap<Pair<String, Long>, Set<IEventHandler>> SUBSCRIBERS = new ConcurrentHashMap<Pair<String, Long>, Set<IEventHandler>>();
     static final ConcurrentMap<String, EventMessageHandler> REGISTERED_HANDLER = new ConcurrentHashMap
 
+    @IsLogicallyFinal
+    static EventBus bus = null;      // set during register()
+    @IsLogicallyFinal
+    static Vertx myVertx = null;    // set during register()
+    @IsLogicallyFinal
     static IUnauthenticatedServiceRequestExecutor serviceRequestExecutor
+    @IsLogicallyFinal
     static WorkerExecutor asyncExecutorPool = null  // possibly assigned during register()
 
     new() {

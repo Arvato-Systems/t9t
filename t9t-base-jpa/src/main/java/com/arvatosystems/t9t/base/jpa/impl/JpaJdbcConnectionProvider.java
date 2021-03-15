@@ -30,20 +30,20 @@ import de.jpaw.dp.Singleton;
 
 @Singleton
 public class JpaJdbcConnectionProvider implements IJdbcConnectionProvider {
-    private static AtomicInteger counter = new AtomicInteger();
+    private static final AtomicInteger COUNTER = new AtomicInteger();
 
     protected final Provider<PersistenceProviderJPA> jpaContextProvider = Jdp.getProvider(PersistenceProviderJPA.class);
     protected final IJpaJdbcConnectionProvider connProvider = Jdp.getRequired(IJpaJdbcConnectionProvider.class);
 
     @Override
     public Connection getJDBCConnection() {
-        counter.incrementAndGet();
+        COUNTER.incrementAndGet();
         return connProvider.get(jpaContextProvider.get().getEntityManager());
     }
 
     @Override
     public List<Integer> checkHealth() {
-        Integer count = counter.get();
+        Integer count = COUNTER.get();
         return Collections.singletonList(count);
     }
 }

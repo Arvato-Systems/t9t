@@ -133,14 +133,6 @@ public class CamelService {
             LOGGER.error("dataSink {} does not contain a commFormatName for an InputFormatConverter.", dataSink.getDataSinkId());
             return false;
         }
-        if (dataSink.getPreTransformerName() == null || dataSink.getPreTransformerName().isEmpty()) {
-            LOGGER.error("dataSink {} does not contain a preTransformerName for an InputDataTransformer.", dataSink.getDataSinkId());
-            return false;
-        }
-        if (dataSink.getBaseClassPqon() == null || dataSink.getBaseClassPqon().isEmpty()) {
-            LOGGER.error("dataSink {} does not contain a baseClassPqon.", dataSink.getDataSinkId());
-            return false;
-        }
         return true;
     }
 

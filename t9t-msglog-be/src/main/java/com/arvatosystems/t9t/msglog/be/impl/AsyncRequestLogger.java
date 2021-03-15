@@ -29,6 +29,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.annotations.IsLogicallyFinal;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceRequestHeader;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
@@ -67,11 +68,16 @@ public class AsyncRequestLogger implements IRequestLogger {
     private final AtomicLong totalTime = new AtomicLong();
 
     private final LinkedTransferQueue<MessageDTO> queue = new LinkedTransferQueue<>();
-    private ExecutorService executor;
-    private Future<Boolean> writerResult;
-    private LogWriterConfiguration logWriterConfiguration;
-    private int alertOnQueueSize;
     private final IMsglogPersistenceAccess persistenceAccess = Jdp.getRequired(IMsglogPersistenceAccess.class);
+
+    @IsLogicallyFinal  // set by open() method
+    private ExecutorService executor;
+    @IsLogicallyFinal  // set by open() method
+    private Future<Boolean> writerResult;
+    @IsLogicallyFinal  // set by open() method
+    private LogWriterConfiguration logWriterConfiguration;
+    @IsLogicallyFinal  // set by open() method
+    private int alertOnQueueSize;
 
     private class WriterThread implements Callable<Boolean> {
         private int count = 0;
