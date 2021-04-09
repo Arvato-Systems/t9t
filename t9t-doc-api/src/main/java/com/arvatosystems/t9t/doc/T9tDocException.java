@@ -26,9 +26,13 @@ public class T9tDocException extends T9tException {
     private static final int OFFSET = (CL_PARAMETER_ERROR * CLASSIFICATION_FACTOR) + 170000;
 
     // Error codes
-    public static final int UNKNOWN_SKU_KEY_IMPLEMENTATION = OFFSET + 59;
+    public static final int UNKNOWN_SKU_KEY_IMPLEMENTATION       = OFFSET + 59;
+    public static final int CONVERSION_EXCEEDS_MAX_TEMPLATE_SIZE = OFFSET + 60;
+    public static final int CONVERSION_EXCEEDS_MAX_SUBJECT_SIZE  = OFFSET + 61;
 
     static {
         codeToDescription.put(UNKNOWN_SKU_KEY_IMPLEMENTATION, "unknown sku key implementation");
+        codeToDescription.put(CONVERSION_EXCEEDS_MAX_TEMPLATE_SIZE, "The conversion would exceed the maximum size of a template.");
+        codeToDescription.put(CONVERSION_EXCEEDS_MAX_SUBJECT_SIZE, "The conversion would exceed the maximum size of an inline email subject template.");
     }
 }

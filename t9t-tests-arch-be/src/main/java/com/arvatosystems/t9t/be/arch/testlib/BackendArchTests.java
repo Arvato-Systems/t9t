@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.arch.testlib;
+package com.arvatosystems.t9t.be.arch.testlib;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 
+import com.arvatosystems.t9t.arch.testlib.StandardArchTests;
 import com.arvatosystems.t9t.base.services.IRequestHandler;
 import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchRule;

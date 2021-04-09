@@ -53,14 +53,14 @@ public interface IOutputResource {
      * @param data output data in bytes
      * @throws T9tException if there is an error writing output data
      */
-    void write(byte[] buffer, int offset, int len, boolean isDataRecord);
+    void write(String partitionKey, String recordKey, byte[] buffer, int offset, int len, boolean isDataRecord);
 
     /**
      * Write string of data to this output resource. The encoding as specified in the DataSink is respected.
      * @param data output data in string
      * @throws T9tException if there is an error writing output data
      */
-    void write(String data);
+    void write(String partitionKey, String recordKey, String data);
 
     /**
      * Close this output resource for cleanup.

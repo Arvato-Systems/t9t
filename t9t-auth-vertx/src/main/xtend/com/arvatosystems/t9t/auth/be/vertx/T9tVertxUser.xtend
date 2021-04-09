@@ -21,6 +21,7 @@ import io.vertx.core.Handler
 import io.vertx.core.json.JsonObject
 import io.vertx.ext.auth.AuthProvider
 import io.vertx.ext.auth.User
+import io.vertx.ext.auth.authorization.Authorization
 
 class T9tVertxUser implements User {
     final String jwtToken;          // encoded form, without "Bearer" prefix
@@ -52,8 +53,14 @@ class T9tVertxUser implements User {
     override isAuthorized(String authority, Handler<AsyncResult<Boolean>> resultHandler) {
         throw new UnsupportedOperationException("TODO: auto-generated method stub")
     }
+    override isAuthorized(Authorization authority, Handler<AsyncResult<Boolean>> resultHandler) {
+        throw new UnsupportedOperationException("TODO: auto-generated method stub")
+    }
 
     override setAuthProvider(AuthProvider authProvider) {
+        throw new UnsupportedOperationException("TODO: auto-generated method stub")
+    }
+    override JsonObject attributes() {
         throw new UnsupportedOperationException("TODO: auto-generated method stub")
     }
 }

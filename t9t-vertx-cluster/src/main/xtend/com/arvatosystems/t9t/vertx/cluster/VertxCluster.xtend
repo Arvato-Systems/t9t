@@ -62,7 +62,6 @@ class VertxCluster {
         val options = new VertxOptions().setClusterManager(mgr)
         val busOptions = options.eventBusOptions
         busOptions.host = InetAddress.localHost.hostAddress;
-        busOptions.clustered = true
 
         T9tServer.mergePoolSizes(options)
 

@@ -104,10 +104,9 @@ class AsyncProcessor implements IAsyncRequestProcessor {
                     if (tentativeEventData instanceof EventData) {
                         val theEventId = tentativeEventData.data.ret$PQON
                         val eventTenantRef = tentativeEventData.header.tenantRef
-                        val qualifier = getQualifierForTenant(eventTenantRef)
 
-                        LOGGER.debug("Event {} with qualifier {} for tenant {} will now trigger a ProcessEventRequest", theEventId, qualifier, eventTenantRef)
-                        executeEvent(qualifier, new AuthenticationJwt(tentativeEventData.header.encodedJwt), tentativeEventData.data, tentativeEventData.header?.invokingProcessRef)
+                        LOGGER.debug("Event {} for tenant {} will now trigger a ProcessEventRequest(s)", theEventId, eventTenantRef)
+                        executeAllEvents(eventTenantRef, theEventId, new AuthenticationJwt(tentativeEventData.header.encodedJwt), tentativeEventData.data, tentativeEventData.header?.invokingProcessRef)
                     }
                 } else { // otherwise deal with a raw json event without PQON
                     val theEventID = msgBody.getString("eventID")
@@ -200,6 +199,36 @@ class AsyncProcessor implements IAsyncRequestProcessor {
         myVertx.runInWorkerThread(srq)
     }
 
+    def private static void executeAllEvents(Long tenantRef, String eventId, AuthenticationJwt authenticationJwt, EventParameters eventParams, Long invokingProcessRef) {
+        val key = new Pair(eventId, tenantRef)
+        var subscribers = SUBSCRIBERS.get(key)
+        if ((subscribers === null || subscribers.empty) && tenantRef != T9tConstants.GLOBAL_TENANT_REF42) {
+            subscribers = SUBSCRIBERS.get(new Pair(eventId, T9tConstants.GLOBAL_TENANT_REF42))
+        }
+        if (subscribers === null) {
+            LOGGER.debug("No subscribers registered for event ID {} - nothing to do", eventId)
+            return  // nothing to do
+        }
+        for (subscriber: subscribers) {
+            LOGGER.debug("Invoking event handler {}", subscriber.class.canonicalName);
+            val qualifier = subscriber.class.getAnnotation(Named)?.value
+            val rq = new ProcessEventRequest => [
+                eventHandlerQualifier   = qualifier
+                eventData               = eventParams
+            ]
+            val srq = new ServiceRequest => [
+                requestParameters       = rq
+                authentication          = authenticationJwt
+            ]
+            if (invokingProcessRef !== null) {
+                val hdr                 = new ServiceRequestHeader
+                hdr.invokingProcessRef  = invokingProcessRef
+                srq.requestHeader       = hdr
+            }
+            myVertx.runInWorkerThread(srq)
+        }
+    }
+
     /** Register an IEventHandler as subscriber for an eventID. */
     override registerSubscriber(String eventID, Long tenantRef, IEventHandler subscriber) {
 
@@ -208,15 +237,17 @@ class AsyncProcessor implements IAsyncRequestProcessor {
         var isNewSubscriber = true
 
         val key = new Pair(eventID, tenantRef)
-        var currentEventHandler = SUBSCRIBERS.get(key)
+        var currentEventHandlers = SUBSCRIBERS.get(key)
 
-        if (currentEventHandler === null) {
+        if (currentEventHandlers === null) {
             var newSubscriberSet = new HashSet()
             newSubscriberSet.add(subscriber)
             SUBSCRIBERS.put(key, newSubscriberSet)
-        } else if (!currentEventHandler.contains(subscriber)) {
-            currentEventHandler.add(subscriber)
-            SUBSCRIBERS.put(key, currentEventHandler)
+            LOGGER.debug("  (this is the initial handler for this event)");
+        } else if (!currentEventHandlers.contains(subscriber)) {
+            currentEventHandlers.add(subscriber)
+            SUBSCRIBERS.put(key, currentEventHandlers)
+            LOGGER.debug("  (this event now has {} registered handlers)", SUBSCRIBERS.size);
         } else {
             isNewSubscriber = false
             LOGGER.info("Subscriber {} already registered for event {} in tenant {}. Skip this one.", subscriber, eventID, tenantRef)

@@ -50,7 +50,7 @@ public class FormatGeneratorCsv extends FoldableFormatGenerator<IOException> {
     }
 
     @Override
-    public void generateData(int recordNo, int mappedRecordNo, long recordId, BonaPortable record) throws IOException, ApplicationException {
+    public void generateData(int recordNo, int mappedRecordNo, long recordId, String partitionKey, String recordKey, BonaPortable record) throws IOException, ApplicationException {
         foldingComposer.writeRecord(record);
     }
 

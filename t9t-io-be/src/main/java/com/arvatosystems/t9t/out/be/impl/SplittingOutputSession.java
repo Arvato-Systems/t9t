@@ -106,6 +106,12 @@ public class SplittingOutputSession implements IOutputSession {
         os.store(recordRef, record);
     }
 
+	@Override
+	public void store(Long recordRef, String partitionKey, String recordKey, BonaPortable record) {
+        switchFileIfRowCountReached();
+        os.store(recordRef, partitionKey, recordKey, record);
+	}
+
     @Override
     public void close() throws Exception {
         os.close();

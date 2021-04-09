@@ -24,9 +24,6 @@ import de.jpaw.bonaparte.pojos.ui.UIFilterType;
 
 /** Interface for the dynamically created fields. */
 public interface IField<E extends Component> {
-    /** Returns a translated label for the field. */
-    String getLabel();
-
     /** Returns the field path. */
     String getFieldName();
 

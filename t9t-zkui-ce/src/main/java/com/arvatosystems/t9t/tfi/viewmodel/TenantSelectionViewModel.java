@@ -146,7 +146,15 @@ public class TenantSelectionViewModel {
            Messagebox.show("Unable to switch tenant or to get permissions - " + e.getReturnCodeMessage() + ZulUtils.translate("err", "unableToSwitchTenant"), ZulUtils.translate("err", "title"), Messagebox.OK, Messagebox.ERROR);
            return;
         }
-        Executions.getCurrent().sendRedirect(Constants.ZulFiles.HOME);
+
+        String additionalScreenConfig = ZulUtils.readConfig("login.additional.selections.qualifier");
+        if (additionalScreenConfig == null) {
+            Executions.getCurrent().sendRedirect(Constants.ZulFiles.HOME);
+        } else {
+            String url = String.format("%s?qualifier=%s", Constants.ZulFiles.ADDITIONAL_SELECTIONS, additionalScreenConfig);
+            LOGGER.info("redirecting to selections page with {} qualifier, complete url as {}", additionalScreenConfig, url);
+            Executions.getCurrent().sendRedirect(url);
+        }
     }
 
     private void setTenantInfo() throws ReturnCodeException {

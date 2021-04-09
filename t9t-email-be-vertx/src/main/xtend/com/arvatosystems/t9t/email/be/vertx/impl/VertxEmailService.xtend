@@ -36,6 +36,7 @@ import java.util.ArrayList
 import java.util.List
 import java.util.Map
 import java.util.UUID
+import io.vertx.ext.mail.impl.MailAttachmentImpl
 
 /** Implementation of IEmailSender using the vert.x client. This is an asynchronous implementation. */
 @AddLogger
@@ -64,16 +65,18 @@ class VertxEmailService implements IEmailSender {
 
     // add attachments to the message - the list of attachments is not empty
     def List<MailAttachment> toVertx(List<MediaData> attachments) {
-        return attachments.map[
+        val result = new ArrayList<MailAttachment>(attachments.size)
+        attachments.forEach[
             val mds = new MediaDataSource(it)
             val fileName = z?.get("attachmentName")?.toString
-            return new MailAttachment => [
+            result.add(new MailAttachmentImpl => [
                 contentType = mds.contentType
                 data        = mds.asBuffer
                 if (fileName !== null)
                    name     = fileName
-            ]
-        ].toList
+            ])
+        ]
+        return result
     }
 
     // add CIDs to an HTML email
@@ -82,7 +85,7 @@ class VertxEmailService implements IEmailSender {
         val result = new ArrayList<MailAttachment>(cids.size)
         cids.forEach[
             val mds = new MediaDataSource($1)
-            result.add(new MailAttachment => [
+            result.add(new MailAttachmentImpl => [
                 contentType = mds.contentType
                 data        = mds.asBuffer
                 contentId   = mds.name

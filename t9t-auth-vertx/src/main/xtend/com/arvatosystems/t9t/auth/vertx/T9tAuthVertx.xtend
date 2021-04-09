@@ -157,8 +157,8 @@ class T9tAuthVertx extends T9tJwtAuthHandlerImpl implements IServiceModule {
         router.post("/login").handler [                                             // create a new JWT token
             val origin = request.headers.get(ORIGIN)
             val ct = request.headers.get(CONTENT_TYPE)?.stripCharset
-            LOGGER.info("Logging in for locale {} (new: {}), content type {}, origin {}",
-                preferredLanguage?.language, preferredLanguage?.tag, ct, origin
+            LOGGER.info("Logging in for locale {}, content type {}, origin {}",
+                preferredLanguage?.tag, ct, origin
             ) // TODO switch to preferredLanguage() (deprecation in vert.x)
 
             if (ct === null) {
@@ -175,7 +175,7 @@ class T9tAuthVertx extends T9tJwtAuthHandlerImpl implements IServiceModule {
             val ctx = it
             val session = new SessionParameters => [
                 userAgent           = ctx.request.headers.get(USER_AGENT)
-                locale              = ctx.preferredLanguage?.language ?: "en"     // fix me: get BCP 47 string here
+                locale              = ctx.preferredLanguage?.tag ?: "en"     // fix me: get BCP 47 string here
                 dataUri             = ctx.request.remoteAddress?.host
             ]
             LOGGER.debug("Connection info is: remote address {}, user agent {}", session.dataUri, session.userAgent)

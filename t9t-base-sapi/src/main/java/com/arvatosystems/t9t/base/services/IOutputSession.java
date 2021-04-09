@@ -26,6 +26,8 @@ import de.jpaw.bonaparte.pojos.api.media.MediaXType;
 /** represents a single session within the executor (which spans multiple requests) */
 
 public interface IOutputSession extends AutoCloseable {
+    public static final String NO_PARTITION_KEY = "";
+    public static final String NO_RECORD_KEY = "";
 
     /**
      * open() must be called exactly once, immediately after instancing a new object of type IOutputSession. The productive implementation creates an entry in
@@ -82,6 +84,17 @@ public interface IOutputSession extends AutoCloseable {
      */
     void store(Long recordRef, BonaPortable record);
 
+    /**
+     * store() is called for every record of structured data to be written. It creates a logging entry into table base_int_outbound_messages and then writes the
+     * message either to the file or to the JMS queue or Kafka. This is the preferred format, because it transmits the partitioning information.
+     *
+     * @param recordRef
+     *            the record reference
+     * @param record
+     *            the data record to be written.
+     * @throws T9tException
+     */
+    void store(Long recordRef, String partitionKey, String recordKey, BonaPortable record);
 
     /**
      * Method to terminate the output.

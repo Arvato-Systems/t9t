@@ -132,6 +132,7 @@ class ConfigProvider {
             awsConfiguration        = a.awsConfiguration        ?: b.awsConfiguration
             uplinkConfiguration     = a.uplinkConfiguration     ?: b.uplinkConfiguration
             searchConfiguration     = a.searchConfiguration     ?: b.searchConfiguration
+            kafkaConfiguration      = a.kafkaConfiguration      ?: b.kafkaConfiguration
             asyncMsgConfiguration   = a.asyncMsgConfiguration   ?: b.asyncMsgConfiguration
             ldapConfiguration       = a.ldapConfiguration       ?: b.ldapConfiguration
             mocks                   = a.mocks                   ?: b.mocks

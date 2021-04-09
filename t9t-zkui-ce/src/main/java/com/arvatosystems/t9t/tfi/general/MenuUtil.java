@@ -45,12 +45,12 @@ public class MenuUtil {
     public static void readMenuConfiguration(ApplicationSession as, final List<Navi> navis) {
         navis.clear();
 
-        Boolean showMenuItem = Boolean.valueOf(ZulUtils.i18nLabel("menu.use_menu_icons"));
+        Boolean showMenuItem = Boolean.valueOf(ZulUtils.readConfig("menu.use_menu_icons"));
 
         Map<String, String> categories = new HashMap<String, String>(40); // caches the CATEGORY translations because they are likely to occur multiple times
-        String[] menuConfigurations = ZulUtils.i18nLabel("menu.config").split("\\s*,\\s*"); // trim and split each element
+        String[] menuConfigurations = ZulUtils.readConfig("menu.config").split("\\s*,\\s*"); // trim and split each element
         for (String menuConfigKey : menuConfigurations) {
-            String menuConfig = ZulUtils.i18nLabel("menu."+menuConfigKey);
+            String menuConfig = ZulUtils.readConfig("menu."+menuConfigKey);
             //if (key.equals("$")) continue; // this is in case of switching languages there is an additional (default) set of entries. we need to skip it
             LOGGER.debug("Menu Config-key: {} - Config-value: \n{}", menuConfigKey, menuConfig);
 

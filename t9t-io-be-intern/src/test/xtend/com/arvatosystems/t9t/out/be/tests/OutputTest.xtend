@@ -29,6 +29,7 @@ import java.nio.charset.StandardCharsets
 import org.junit.Assert
 import org.junit.BeforeClass
 import org.junit.Test
+import com.arvatosystems.t9t.base.services.IOutputSession
 
 @AddLogger
 class OutputTest {
@@ -59,8 +60,8 @@ class OutputTest {
 
         val csv = new FormatGeneratorCsv
         csv.open(myDataSink, myOutputSessionParameters, type.mediaType, null, iors, StandardCharsets.UTF_8, "ACME")
-        csv.generateData(1, 1, 6263636363L, myRecord)
-        csv.generateData(2, 2, 6263636364L, myRecord)
+        csv.generateData(1, 1, 6263636363L, IOutputSession.NO_PARTITION_KEY, IOutputSession.NO_RECORD_KEY, myRecord)
+        csv.generateData(2, 2, 6263636364L, IOutputSession.NO_PARTITION_KEY, IOutputSession.NO_RECORD_KEY, myRecord)
         csv.close
 
         val expected = '''
@@ -78,8 +79,8 @@ class OutputTest {
 
         val csv = new FormatGeneratorJson
         csv.open(myDataSink, myOutputSessionParameters, type.mediaType, null, iors, StandardCharsets.UTF_8, "ACME")
-        csv.generateData(1, 1, 6263636363L, myRecord)
-        csv.generateData(2, 2, 6263636364L, myRecord)
+        csv.generateData(1, 1, 6263636363L, IOutputSession.NO_PARTITION_KEY, IOutputSession.NO_RECORD_KEY, myRecord)
+        csv.generateData(2, 2, 6263636364L, IOutputSession.NO_PARTITION_KEY, IOutputSession.NO_RECORD_KEY, myRecord)
         csv.close
 
         val expected = '''

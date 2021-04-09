@@ -94,6 +94,7 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
     private static final long serialVersionUID = -8203405703032080582L;
     private static final Logger LOGGER = LoggerFactory.getLogger(Grid28.class);
     public static final String PREFIX_GRID28 = "com.grid";
+    public static final String ON_SEARCH_COMPLETED = "onSearchCompleted";
 
     private final ApplicationSession session = ApplicationSession.get();
     protected Permissionset permissions = Permissionset.ofTokens();
@@ -327,6 +328,10 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
         );
     }
 
+    private void postSearchResultEvent() {
+        Events.postEvent(new Event(ON_SEARCH_COMPLETED, this, this.totalSize));
+    }
+
     protected List<SortColumn> createSortDirective() {
         try {
             UILeanGridPreferences gridPreferences = leanGridConfigResolver.getGridPreferences();
@@ -384,6 +389,7 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
         lastSearchRequest = rq;
         exportButton.setDisabled(dwt.isEmpty() || !permissions.contains(OperationType.EXPORT));
         postSelectedEvent(dwt.isEmpty() ? null : dwt.get(0));
+        postSearchResultEvent();
 
     }
 

@@ -19,6 +19,7 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.HttpClientRequest;
+import io.vertx.core.http.HttpClientResponse;
 
 /*
  * sample code the server is based on (plain Java, for comparison)
@@ -31,24 +32,43 @@ public class Proxy extends AbstractVerticle {
         HttpClient client = vertx.createHttpClient(new HttpClientOptions());
         vertx.createHttpServer().requestHandler(req -> {
             System.out.println("Proxying request: " + req.uri());
-            HttpClientRequest c_req = client.request(req.method(), 8282, "localhost", req.uri(), c_res -> {
-                System.out.println("Proxying response: " + c_res.statusCode());
-                req.response().setChunked(true);
-                req.response().setStatusCode(c_res.statusCode());
-                req.response().headers().setAll(c_res.headers());
-                c_res.handler(data -> {
-                    System.out.println("Proxying response body: " + data.toString("ISO-8859-1"));
-                    req.response().write(data);
+            client.request(req.method(), 8282, "localhost", req.uri(), asyncRequestHandler -> {
+
+                HttpClientRequest c_req = asyncRequestHandler.result();
+                if (c_req == null) {
+                    System.out.println("Proxying request is NULL!");
+                    return;
+                }
+
+                c_req.setChunked(true);
+                c_req.headers().setAll(req.headers());
+
+                c_req.response().onComplete( responseHandler -> {
+                    HttpClientResponse response = responseHandler.result();
+                    if (response == null) {
+                        System.out.println("Proxying response is NULL!");
+                        return;
+                    }
+
+                    System.out.println("Proxying response: " + response.statusCode());
+                    req.response().setChunked(true);
+                    req.response().setStatusCode(response.statusCode());
+                    req.response().headers().setAll(response.headers());
+
+                    response.handler(data -> {
+                        System.out.println("Proxying response body: " + data.toString("ISO-8859-1"));
+                        req.response().write(data);
+                    });
+
+                    response.endHandler((v) -> req.response().end());
                 });
-                c_res.endHandler((v) -> req.response().end());
+
+                req.handler(data -> {
+                    System.out.println("Proxying request body " + data.toString("ISO-8859-1"));
+                    c_req.write(data);
+                });
+                req.endHandler((v) -> c_req.end());
             });
-            c_req.setChunked(true);
-            c_req.headers().setAll(req.headers());
-            req.handler(data -> {
-                System.out.println("Proxying request body " + data.toString("ISO-8859-1"));
-                c_req.write(data);
-            });
-            req.endHandler((v) -> c_req.end());
         }).listen(8080);
     }
 }

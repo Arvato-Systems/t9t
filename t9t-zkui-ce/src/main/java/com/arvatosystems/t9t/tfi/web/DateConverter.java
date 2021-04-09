@@ -64,7 +64,7 @@ public class DateConverter implements Converter<Object, Object, Component> {
         }
 
         // check if format-rule is configured
-        final String formatPattern = ZulUtils.i18nLabel(format);
+        final String formatPattern = ZulUtils.readConfig(format);
         if (formatPattern == null) {
             throw new NullPointerException("format pattern attribute not found in zk-lable.properties");
         }

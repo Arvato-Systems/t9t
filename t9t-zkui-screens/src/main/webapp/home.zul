@@ -2,7 +2,6 @@
 <?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="IGNORE"?>
 <?xel-method prefix="l" name="translate" class="com.arvatosystems.t9t.tfi.web.ZulUtils" signature="String translate(String, String)"?>
 <?xel-method prefix="l" name="translateArgs" class="com.arvatosystems.t9t.tfi.web.ZulUtils" signature="String translate(String, String, String)"?>
-<?xel-method prefix="l"  name="i18nLabel"  class="com.arvatosystems.t9t.tfi.web.ZulUtils" signature="String i18nLabel(String)"?>
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <?link rel="icon" type="image/x-icon" href="/favicon.ico"?>
 

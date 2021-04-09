@@ -42,14 +42,14 @@ public interface ICommunicationFormatGenerator {
             String tenantId) throws IOException, ApplicationException;
 
     /**
-     * Generate record datas in a specific format.
+     * Generate record data in a specific format.
      * @param recordNo source record no (counts records submitted by the application)
      * @param mappedRecordNo mapped record no (after preoutput transformer step)
      * @param recordId unique record id
      * @param record the record
      * @throws IOException, ApplicationException if there is an issue generating record data
      */
-    void generateData(int recordNo, int mappedRecordNo, long recordId, BonaPortable record) throws IOException, ApplicationException;
+    void generateData(int recordNo, int mappedRecordNo, long recordId, String partitionKey, String recordKey, BonaPortable record) throws IOException, ApplicationException;
 
     /**
      * Generate footer datas in a specific format. Does not close the underlying OutputStream.

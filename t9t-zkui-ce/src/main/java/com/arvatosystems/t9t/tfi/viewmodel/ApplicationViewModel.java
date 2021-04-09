@@ -138,7 +138,7 @@ public class ApplicationViewModel {
                 numberOfIncorrectAttempts = Integer.valueOf(0);
             final Instant lastLoggedIn = as.getLastLoggedIn();
             if (lastLoggedIn != null) {
-                whenLastLoggedIn = CommonFns.formatDate(lastLoggedIn.toDate(), ZulUtils.i18nLabel("com.datetime.format"));
+                whenLastLoggedIn = CommonFns.formatDate(lastLoggedIn.toDate(), ZulUtils.readConfig("com.datetime.format"));
             }
             final Instant passwordExpires = as.getPasswordExpires();
             if (passwordExpires != null) {
@@ -153,7 +153,7 @@ public class ApplicationViewModel {
             //Reset all screens in hash for each new reloading the menus
             /*FT-808*/  naviContentMap = new HashMap<String, Panelchildren>();
             //          paramMap = new HashMap<String, Object>();
-            CTRL_KEYS = ZulUtils.i18nLabel("keys.ctrlKeys.ctrlKeys");
+            CTRL_KEYS = ZulUtils.readConfig("keys.ctrlKeys.ctrlKeys");
         }
     }
 
@@ -177,7 +177,7 @@ public class ApplicationViewModel {
     public void afterCompose(@ContextParam(ContextType.VIEW) Component view) {
         Selectors.wireComponents(view, this, false);
 
-        boolean isDefaultOrder = Boolean.valueOf(ZulUtils.i18nLabel("isDefaultOrder"));
+        boolean isDefaultOrder = Boolean.valueOf(ZulUtils.readConfig("isDefaultOrder"));
         mainHome.setSclass(isDefaultOrder ? "": "reverse");
         reverse.setSrc(!isDefaultOrder ? "/css/reverse.css" : "");
         navbarCreator.createNavBar(this, navbar, getNaviGroupingViewModel());

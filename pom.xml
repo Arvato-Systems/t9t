@@ -21,7 +21,7 @@
 
     <groupId>com.arvato-systems.t9t</groupId>
     <artifactId>global-build</artifactId>
-    <version>5.0-SNAPSHOT</version>
+    <version>5.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>Global root POM for the t9t framework</description>
 
@@ -36,7 +36,7 @@
     -->
     <properties>
         <!-- to be used by dependent projects (same as project.version, but must be provided explicitly so that imports work) -->
-        <t9t.version>5.0-SNAPSHOT</t9t.version>
+        <t9t.version>5.1-SNAPSHOT</t9t.version>
 
         <!-- Build specific properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -831,6 +831,7 @@
         <module>t9t-io-sapi</module>
         <module>t9t-io-be</module>
         <module>t9t-io-be-intern</module>
+        <module>t9t-io-be-kafka</module>
         <module>t9t-io-be-camel</module>
         <module>t9t-io-be-jackson</module>
         <module>t9t-io-be-poi</module>
@@ -885,6 +886,7 @@
         <module>t9t-sql-migration-executor</module>
 
         <module>t9t-tests-arch</module>
+        <module>t9t-tests-arch-be</module>
         <module>t9t-vertx-cluster</module>
         <module>t9t-proxy</module>
         <module>t9t-all-api</module>

@@ -40,10 +40,9 @@ import de.jpaw.dp.StartupShutdown;
 import de.jpaw.util.ExceptionUtil;
 
 /**
- *
- * @author LUEC034
+ * Create routes for all camel routes.
  */
-@Startup(95000)
+@Startup(95002)
 @Singleton
 public class CamelContextProvider implements StartupShutdown, Provider<CamelContext> {
     private static final Logger LOGGER = LoggerFactory.getLogger(CamelContextProvider.class);

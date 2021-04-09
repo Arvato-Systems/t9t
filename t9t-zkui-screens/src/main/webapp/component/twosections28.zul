@@ -9,11 +9,11 @@
         </west>
         <center>
             <borderlayout sclass="inner-border">
-                <north splittable="true" collapsible="true" height="100%">
-                    <vlayout id="rightSection"  sclass="rightSection" vflex="true" hflex="1">
+                <north id="north" splittable="true" collapsible="true" size="100%">
+                    <vlayout id="rightSection"  sclass="rightSection" vflex="1" hflex="1">
                         <groupbox28 id="resultsGroup"
-                            sclass="resultsSection" vflex="true" hflex="1">
-                            <vlayout  vflex="true" hflex="1">
+                            sclass="resultsSection" vflex="1" hflex="1">
+                            <vlayout  vflex="1" hflex="1">
                                 <grid28 id="main" />
                             </vlayout>
                         </groupbox28>

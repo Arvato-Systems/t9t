@@ -223,7 +223,6 @@ class AlexaServer extends AbstractVerticle {
                 ]
             ]
             vertx.createHttpServer => [
-                requestHandler [ router.accept(it) ]
                 listen(port)
             ]
         }

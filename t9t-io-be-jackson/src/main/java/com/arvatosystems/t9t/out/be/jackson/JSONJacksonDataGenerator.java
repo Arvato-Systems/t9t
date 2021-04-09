@@ -103,7 +103,7 @@ public class JSONJacksonDataGenerator extends AbstractFormatGenerator {
      * {@inheritDoc}
      */
     @Override
-    public void generateData(int recordNo, int mappedRecordNo, long recordId, BonaPortable object) throws IOException, ApplicationException {
+    public void generateData(int recordNo, int mappedRecordNo, long recordId, String partitionKey, String recordKey, BonaPortable object) throws IOException, ApplicationException {
 
         try {
             objectMapper.writer(filters).writeValue(osw, object);

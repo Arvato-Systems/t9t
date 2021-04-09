@@ -174,7 +174,7 @@ public abstract class AbstractViewModel extends FormValidator {
     }
 
     public final void setSuccessMessageTransaction() {
-        setSuccessMessage(ZulUtils.i18nLabel("com.success.transaction"));
+        setSuccessMessage(ZulUtils.translate("com", "success.transaction"));
     }
 
     // //////////////////////////////////////////////////////////////////

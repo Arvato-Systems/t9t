@@ -120,7 +120,6 @@ class T9tServer extends AbstractVerticle {
                 ]
             ]
             vertx.createHttpServer => [
-                requestHandler [ router.accept(it) ]
                 listen(port)
             ]
         }

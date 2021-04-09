@@ -24,7 +24,7 @@ import de.jpaw.dp.Named;
 public class FormatGeneratorToString extends AbstractFormatGenerator {
 
     @Override
-    public void generateData(int recordNo, int mappedRecordNo, long recordId, BonaPortable record) {
-        outputResource.write(record.toString());
+    public void generateData(int recordNo, int mappedRecordNo, long recordId, String partitionKey, String recordKey, BonaPortable record) {
+        outputResource.write(partitionKey, recordKey, record.toString());
     }
 }

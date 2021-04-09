@@ -47,6 +47,7 @@
                     <xs:element name="awsConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:AWSConfiguration"/>
                     <xs:element name="uplinkConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:UplinkConfiguration"/>
                     <xs:element name="searchConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:SearchConfiguration"/>
+                    <xs:element name="kafkaConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:KafkaConfiguration"/>
                     <xs:element name="asyncMsgConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:AsyncTransmitterConfiguration"/>
                     <xs:element name="ldapConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:LdapConfiguration"/>
                     <xs:element name="jwtValidityApiKey" minOccurs="0" nillable="true">
@@ -96,6 +97,22 @@
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="KafkaConfiguration">
+        <xs:complexContent>
+            <xs:extension base="bon:BONAPORTABLE">
+                <xs:sequence>
+                    <xs:element name="defaultBootstrapServers" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="1024"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="defaultImportApiKey" minOccurs="0" nillable="true" type="bon:UUID"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>

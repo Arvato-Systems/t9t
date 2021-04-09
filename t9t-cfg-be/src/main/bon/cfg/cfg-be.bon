@@ -47,6 +47,7 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional (AWSConfiguration...)              awsConfiguration;
         optional (UplinkConfiguration...)           uplinkConfiguration;
         optional (SearchConfiguration...)           searchConfiguration;
+        optional (KafkaConfiguration...)            kafkaConfiguration;
         optional (AsyncTransmitterConfiguration...) asyncMsgConfiguration;
         optional (LdapConfiguration...)             ldapConfiguration;              // optional external authentication provider (null if none)
         optional Long                               jwtValidityApiKey;              // validity duration of a JWT when signed on by API key
@@ -57,6 +58,11 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional Ascii(8)                           importEnvironment;              // allows to select a subset of Camel import routes - all will be used if null
         optional Ascii(8)                           eventEnvironment;               // allows to select a subset of event subscriptions - all will be used if null
         required Unicode(2000) List<>               z;                              // arbitrary extension parameters, of the form (identifier)=(value)
+    }
+
+    class KafkaConfiguration {
+        optional Unicode(1024)                      defaultBootstrapServers;        // comma-separated list of bootstrap servers (default for DataSinkDTO.z.get("bootstrap.servers"))
+        optional Uuid                               defaultImportApiKey;            // API-Key for data imports
     }
 
     class RelationalDatabaseConfiguration {

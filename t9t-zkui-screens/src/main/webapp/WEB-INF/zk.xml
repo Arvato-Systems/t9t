@@ -44,6 +44,12 @@
         <value>trendy</value>
     </library-property>
 
+    <!-- Turn off CSS3 flex implementation and fallback to ZK Flex -->
+    <library-property>
+        <name>org.zkoss.zul.css.flex</name>
+        <value>false</value>
+    </library-property>
+
     <!-- Turn on if you want to use language addons.-->
     <language-config>
         <addon-uri>/WEB-INF/t9t-lang-addon.xml</addon-uri>

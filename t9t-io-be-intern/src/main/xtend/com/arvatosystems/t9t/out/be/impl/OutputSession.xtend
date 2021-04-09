@@ -266,7 +266,7 @@ class OutputSession implements IOutputSession {
             thisSink.fileOrQueueName = alteredName
         }
 
-        storeListOfMappedRecords(null, transformer.headerData(sinkCfg, params));
+        storeListOfMappedRecords(null, IOutputSession.NO_PARTITION_KEY, IOutputSession.NO_RECORD_KEY, transformer.headerData(sinkCfg, params));
     }
 
     def protected void writeOutboundMessage(Long recordRef, BonaPortable record) {
@@ -282,7 +282,7 @@ class OutputSession implements IOutputSession {
     }
 
 
-    def protected void storeListOfMappedRecords(Long recordRef, List<BonaPortable> records) {
+    def protected void storeListOfMappedRecords(Long recordRef, String partitionKey, String recordKey, List<BonaPortable> records) {
         if (records !== null) {
             for (BonaPortable r : records) {
                 val long recRef = if (recordRef !== null) recordRef.longValue else 0L;
@@ -294,7 +294,7 @@ class OutputSession implements IOutputSession {
                 if (sinkCfg.copyToAsyncChannel !== null)
                     asyncTransmitter.transmitMessage(sinkCfg.copyToAsyncChannel, r, recordRef, "SINK", sinkCfg.dataSinkId)
                 // and write it to file
-                dataGenerator.generateData(sourceRecordCounter, mappedRecordCounter, recRef, r)
+                dataGenerator.generateData(sourceRecordCounter, mappedRecordCounter, recRef, partitionKey, recordKey, r)
             }
         }
     }
@@ -302,7 +302,7 @@ class OutputSession implements IOutputSession {
     /**
      * {@inheritDoc}
      */
-    override void store(Long recordRef, BonaPortable record) {
+    override void store(Long recordRef, String partitionKey, String recordKey, BonaPortable record) {
         // see if LAZY
         if (currentState == State.LAZY)
             openStream();
@@ -312,10 +312,17 @@ class OutputSession implements IOutputSession {
 
         ctx.incrementProgress();
         sourceRecordCounter += 1;
-        storeListOfMappedRecords(recordRef, transformer.transformData(record, sinkCfg, params));
+        storeListOfMappedRecords(recordRef, partitionKey, recordKey, transformer.transformData(record, sinkCfg, params));
         if ((sourceRecordCounter % 250) == 0) {   // log a status every 250 records...}
             LOGGER.debug("Stored source record {} ({} mapped records)", sourceRecordCounter, mappedRecordCounter);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    override void store(Long recordRef, BonaPortable record) {
+        store(recordRef, "", "", record);
     }
 
     /**
@@ -352,7 +359,7 @@ class OutputSession implements IOutputSession {
 
             // done writing!
             sourceRecordCounter += 1;  // marks EOF-records
-            storeListOfMappedRecords(null, transformer.footerData(sinkCfg, params));
+            storeListOfMappedRecords(null, IOutputSession.NO_PARTITION_KEY, IOutputSession.NO_RECORD_KEY, transformer.footerData(sinkCfg, params));
             sourceRecordCounter -= 1;  // marks EOF-records
 
             // technical footers

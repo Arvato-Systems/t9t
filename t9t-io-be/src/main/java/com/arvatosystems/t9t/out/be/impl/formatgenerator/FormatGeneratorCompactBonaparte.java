@@ -36,9 +36,9 @@ public class FormatGeneratorCompactBonaparte extends FoldableFormatGenerator<IOE
     }
 
     @Override
-    public void generateData(int recordNo, int mappedRecordNo, long recordId, BonaPortable record) throws IOException, ApplicationException {
+    public void generateData(int recordNo, int mappedRecordNo, long recordId, String partitionKey, String recordKey, BonaPortable record) throws IOException, ApplicationException {
         cbac.reset();
         foldingComposer.writeRecord(record);
-        outputResource.write(cbac.getBuffer(), 0, cbac.getLength(), true);
+        outputResource.write(partitionKey, recordKey, cbac.getBuffer(), 0, cbac.getLength(), true);
     }
 }

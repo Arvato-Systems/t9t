@@ -111,7 +111,7 @@ public final class ApplicationSession {
             CacheBuilder.newBuilder().expireAfterWrite(15L, TimeUnit.MINUTES).build();
     private final ConcurrentMap<String, Permissionset> permissionCache = new ConcurrentHashMap<>(100);
     private final List<Navi>                 navis = new ArrayList<Navi>();
-    private Long                             primaryTenant;
+    private String                           entityId;
 
     public final List<Navi> getAllNavigations() {
         return navis;
@@ -373,8 +373,11 @@ public final class ApplicationSession {
 
     public String translate(String path, String fieldname, Object... args) {
         String translatedText = translate(path, fieldname);
-        MessageFormat format = new MessageFormat(translatedText);
-        return format.format(args);
+        if (args != null) {
+            MessageFormat format = new MessageFormat(translatedText);
+            return format.format(args);
+        }
+        return translatedText;
     }
 
     public String translate(String path, String fieldname) {
@@ -690,7 +693,7 @@ public final class ApplicationSession {
         }
 
         // fallback using logo.img
-        String path = ZulUtils.i18nLabel("logo.img");
+        String path = ZulUtils.readConfig("logo.img");
         LOGGER.info("Logo path: {} ", path);
 
         try {
@@ -749,4 +752,11 @@ public final class ApplicationSession {
         }
     }
 
+    public String getEntityId() {
+        return entityId;
+    }
+
+    public void setEntityId(String entityId) {
+        this.entityId = entityId;
+    }
 }

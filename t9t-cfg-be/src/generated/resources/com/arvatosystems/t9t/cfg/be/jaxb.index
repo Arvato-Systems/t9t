@@ -1,4 +1,5 @@
 T9tServerConfiguration
+KafkaConfiguration
 RelationalDatabaseConfiguration
 NoSqlDatabaseConfiguration
 KeyPrefetchConfiguration

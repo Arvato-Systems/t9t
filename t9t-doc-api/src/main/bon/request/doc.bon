@@ -20,6 +20,7 @@ import t9t.base.crud.*
 import t9t.base.api.*
 import t9t.doc.*
 import t9t.doc.api.*
+import api.*
 
 package (com.arvatosystems) t9t.doc.request {
     default private unsigned trim noControlChars;
@@ -53,20 +54,49 @@ package (com.arvatosystems) t9t.doc.request {
     class MailingGroupResolverRequest               extends RefResolverRequest<MailingGroupRef> {}
 
     final class DocComponentResource {
-        required documentId                         key;        // variable name
-        required Ascii(10)                          ^type;      // mime type (field long enough for "POSTSCRIPT")
-        required Unicode(10000) allowControlChars   value;      // text
+        required documentId                         key;            // variable name
+        required Ascii(10)                          ^type;          // mime type (field long enough for "POSTSCRIPT")
+        required Unicode(10000) allowControlChars   value;          // text
     }
 
-    /** Reads multiple text components in a batch, performs a CRUD merge for each entry.
+    /**
+     * Reads multiple text components in a batch, performs a CRUD merge for each entry.
      * Input format can be pre-parsed, text lines in CSV format, or JSON
      */
     class DocComponentBatchLoadRequest extends RequestParameters {
-        required (DocComponentKey)                  key;        // the key (ignore variable name)
-        optional Unicode(10000) List<>              csv;        // data in CSV format
-        optional (DocComponentResource) List<>      data;       // data in parsed format (mime type not yet converted to enum)
-        optional Element                            ^json;      // data as JSON array
-        optional Unicode(100000) allowControlChars  jsonString; // data as JSON source
-        optional Unicode(8) allowControlChars       multiLineJoin; // string to use for joining multi lines for JSON
+        required (DocComponentKey)                  key;            // the key (ignore variable name)
+        optional Unicode(10000) List<>              csv;            // data in CSV format
+        optional (DocComponentResource) List<>      data;           // data in parsed format (mime type not yet converted to enum)
+        optional Element                            ^json;          // data as JSON array
+        optional Unicode(100000) allowControlChars  jsonString;     // data as JSON source
+        optional Unicode(8) allowControlChars       multiLineJoin;  // string to use for joining multi lines for JSON
+    }
+
+    /**
+     * Converts templates to new structures.
+     * Required to perform bulk updates in case of changed prefixes.
+     */
+    class ConvertTemplatesRequest extends RequestParameters {
+        optional documentId                         documentId;     // if not null, process only templates using this ID
+        optional (ConvertTemplatesRule)             customRules;
+    }
+
+    /** Comversion parameter to apply in case of manual invocation. */
+    final class ConvertTemplatesRule {
+        required Unicode(64)                        prefixOld;
+        required Unicode(64)                        prefixNew;
+        required Unicode(64) List<>                 fieldsToExclude;
+    }
+
+    /**
+     * Converts a single templates to new prefixes, for testing.
+     */
+    class ConvertSingleTemplateRequest extends RequestParameters {
+        required documentId                         documentId;     // the template ID to direct the conversion
+        required Unicode(8000000)                   template;       // the input template
+    }
+
+    class ConvertSingleTemplateResponse extends ServiceResponse {
+        required Unicode(8000000)                   template;       // the converted template
     }
 }

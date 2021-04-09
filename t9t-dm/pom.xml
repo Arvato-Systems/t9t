@@ -22,7 +22,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>global-build</artifactId>
-        <version>5.0-SNAPSHOT</version>
+        <version>5.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>t9t-dm</artifactId>
@@ -80,6 +80,11 @@
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-tests-arch</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.arvato-systems.t9t</groupId>
+                <artifactId>t9t-tests-arch-be</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -499,6 +504,11 @@
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-io-be-intern</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.arvato-systems.t9t</groupId>
+                <artifactId>t9t-io-be-kafka</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

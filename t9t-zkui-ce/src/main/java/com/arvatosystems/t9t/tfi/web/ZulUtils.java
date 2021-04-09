@@ -190,17 +190,6 @@ public class ZulUtils {
         return result != null ? result : "{" + key + "}";
     }
 
-
-    /**
-     * @param label
-     *        String
-     * @return String
-     */
-    @Deprecated
-    public static String i18nLabel(String label) {
-        return i18nDefaultLabel(label, null);
-    }
-
     public static final ConcurrentMap<String, Object> MISSING_TRANSLATIONS = new ConcurrentHashMap<String, Object>(100);
     public static void dumpMissingTranslations() {
         for (String s: MISSING_TRANSLATIONS.keySet())
@@ -208,61 +197,29 @@ public class ZulUtils {
     }
 
     /**
-     * i18nDefaultLabel.
-     * @param label
-     *        String
-     * @param defaultValue
-     *        String
-     * @return String
+     * Read config by key from configuration property file
+     * @param key
+     * @return
      */
-    @Deprecated
-    public static String i18nDefaultLabel(String label, String defaultValue) {
-        String currentTenantId = ApplicationSession.get().getTenantId();
-        String tenantIdLabel = currentTenantId == null ? "_" + label : label + "_" + currentTenantId;
-        String internationalizationLabel = Labels.getLabel(tenantIdLabel);
-
-        if (internationalizationLabel == null) {
-            internationalizationLabel = Labels.getLabel(label);
-        }
-        if ((internationalizationLabel == null) && (defaultValue == null)) {
-            internationalizationLabel = "{" + label + "}";
-            MISSING_TRANSLATIONS.put(label, "x");
-        } else if ((internationalizationLabel == null) && (defaultValue != null)) { return i18nDefaultLabel(defaultValue, null); }
-
-        if (internationalizationLabel != null) {
-            String temp = internationalizationLabel.replaceAll("\\\\n", "\n");
-            return temp;
-        } else {
-            return internationalizationLabel;
-        }
+    public static String readConfig(String key) {
+        return Labels.getLabel(key);
     }
 
     /**
-     * @param label
-     *        String
-     * @param args
-     *        String
-     * @return String
+     * Read tenant config by key from configuration property file
+     * use current tenant as key, fallback to @ if not found
      */
-    @Deprecated
-    public static String i18nLabel(String label, String args) {
-        Object[] arguments = args == null ? null : args.replace("{", "").replace("}", "").split(",");
-
-        return i18nLabel(label, arguments);
-    }
-
-    @Deprecated
-    public static String i18nLabel(String label, Object[] arguments) {
+    public static String readTenantConfig(String key) {
         String currentTenantId = ApplicationSession.get().getTenantId();
-        String tenantIdLabel = currentTenantId == null ? "_" + label : label + "_" + currentTenantId;
-        String internationalizationLabel = Labels.getLabel(tenantIdLabel, arguments);
-        if (internationalizationLabel == null) {
-            internationalizationLabel = Labels.getLabel(label, arguments);
+        String value = null;
+        if (currentTenantId != null) {
+            value = readConfig(currentTenantId + ":" + key);
         }
-        if (internationalizationLabel == null) {
-            internationalizationLabel = "{" + label + "}";
+        // fallback to @
+        if (value == null) {
+            value = readConfig("@:" + key);
         }
-        return internationalizationLabel;
+        return value;
     }
 
     /**
@@ -373,7 +330,7 @@ public class ZulUtils {
 
         } else {
             LOGGER.debug("#### getLabelByKey({}, {})  Not an enum!!", comboClass, key);
-            String propertyValues = ZulUtils.i18nLabel(comboClass);
+            String propertyValues = ZulUtils.readConfig(comboClass);
             String[] listOfItems = propertyValues.split("\n");
             for (int i = 0; i < listOfItems.length; i++) {
                 String[] keyValue = listOfItems[i].split("=");
@@ -577,14 +534,14 @@ public class ZulUtils {
         ErrorPopupEntity nonScreenIdBasedConfig = null;
         nonScreenIdBasedConfig = null;
 
-        String[] menuConfigurations = ZulUtils.i18nLabel("error.popup.config").split("\\s*,\\s*"); // trim and split each element
+        String[] menuConfigurations = ZulUtils.readConfig("error.popup.config").split("\\s*,\\s*"); // trim and split each element
 
         //String[] errorPopupConfigurations = ZulUtils.i18nLabel("err.popup.config").split("\n");
         if (menuConfigurations[0].trim().equals("")) {
             return null;
         } else {
             for (String menuConfigKey : menuConfigurations) {
-                String menuConfig = ZulUtils.i18nLabel("error.popup." + menuConfigKey);
+                String menuConfig = ZulUtils.readConfig("error.popup." + menuConfigKey);
                 String[] menuLines = menuConfig.split("\n");
                 for (String errorPopupConfigLine : menuLines) {
                     // LOGGER.debug("Error poup lines: {} ",

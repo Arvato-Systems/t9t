@@ -38,11 +38,11 @@ class OutputResourceInMemory implements IOutputResource {
         this.encoding = encoding;
     }
 
-    override write(byte[] buffer, int offset, int len, boolean isDataRecord) {
+    override write(String partitionKey, String recordKey, byte[] buffer, int offset, int len, boolean isDataRecord) {
         baos.write(buffer, offset, len);
     }
 
-    override write(String data) {
+    override write(String partitionKey, String recordKey, String data) {
         baos.write(data.getBytes(encoding))
     }
 

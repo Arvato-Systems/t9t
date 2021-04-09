@@ -108,11 +108,11 @@ class OutputResourceS3 implements IOutputResource {
         }
     }
 
-    override write(byte[] buffer, int offset, int len, boolean isDataRecord) {
+    override write(String partitionKey, String recordKey, byte[] buffer, int offset, int len, boolean isDataRecord) {
         os.write(buffer, offset, len)
     }
 
-    override write(String data) {
+    override write(String partitionKey, String recordKey, String data) {
         if (data !== null) {
             val bytes = data.getBytes(cs)
             os.write(bytes)

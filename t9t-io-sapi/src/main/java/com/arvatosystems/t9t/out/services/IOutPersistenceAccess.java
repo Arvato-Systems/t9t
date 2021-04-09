@@ -17,6 +17,7 @@ package com.arvatosystems.t9t.out.services;
 
 import java.util.List;
 
+import com.arvatosystems.t9t.io.CommunicationTargetChannelType;
 import com.arvatosystems.t9t.io.DataSinkDTO;
 import com.arvatosystems.t9t.io.OutboundMessageDTO;
 import com.arvatosystems.t9t.io.SinkDTO;
@@ -27,7 +28,11 @@ public interface IOutPersistenceAccess {
     /** Retrieve the DataSinkDTO for a given ID, either from the current tenant, or for the global one. */
     DataSinkDTO getDataSinkDTO(String dataSinkId);
 
+    /** Retrieve all DataSinkDTO for a given environment, which are INPUT. */
     List<DataSinkDTO> getDataSinkDTOsForEnvironment(String environment);
+
+    /** Retrieve all DataSinkDTO for a given channel, which are INPUT. */
+    List<DataSinkDTO> getDataSinkDTOsForChannel(CommunicationTargetChannelType channel);
 
     /** Assigns a new primary key for the sink (required before persisting it, because it will be used by the OutboundMessageDTOs as well). */
     Long getNewSinkKey();

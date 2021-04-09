@@ -1350,6 +1350,14 @@ body {
     display: block !important;
 }
 
+.resultsSection .z-groupbox-header {
+    display: none;
+}
+
+.resultsSection .z-groupbox-content {
+    padding: 0px;
+}
+
 /** Remove z-listhead-bar as it has bug on showing wrong position **/
 .z-listbox .z-listhead-bar {
     display: none;

@@ -25,15 +25,17 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zul.North;
 import org.zkoss.zul.Vlayout;
 
-import com.arvatosystems.t9t.tfi.web.ApplicationSession;
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.component.ext.EventDataSelect28;
 import com.arvatosystems.t9t.component.ext.IDataSelectReceiver;
 import com.arvatosystems.t9t.component.ext.IGridIdOwner;
 import com.arvatosystems.t9t.component.ext.IPermissionOwner;
 import com.arvatosystems.t9t.component.fields.fixedfilters.IFixedFilter;
+import com.arvatosystems.t9t.tfi.web.ApplicationSession;
+import com.arvatosystems.t9t.tfi.web.ZulUtils;
 import com.google.common.base.Strings;
 
 import de.jpaw.bonaparte.api.SearchFilters;
@@ -55,10 +57,11 @@ public class TwoSections28 extends Vlayout implements IGridIdOwner, IPermissionO
     protected boolean isSolr;
     protected Permissionset permissions = Permissionset.ofTokens();
     protected SearchFilter fixedFilter = null;
-
+    protected boolean autoCollapse;
 
     @Wire("#resultsGroup") protected Groupbox28 resultsGroup;
     @Wire("#filterGroup") protected Groupbox28 filterGroup;
+    @Wire("#north") protected North north; // result section of border layout
     @Wire protected Filter28 filters;
     @Wire protected Grid28 main;
 
@@ -71,6 +74,10 @@ public class TwoSections28 extends Vlayout implements IGridIdOwner, IPermissionO
         Executions.createComponents("/component/twosections28.zul", this, null);
         Selectors.wireComponents(this, this, false);
         // Selectors.wireEventListeners(this, this);
+        final String defaultAutocollapse = ZulUtils.readConfig("grid.results.autoCollapse");
+        if (defaultAutocollapse != null) {
+            autoCollapse = Boolean.valueOf(defaultAutocollapse);
+        }
 
         filters.addEventListener("onSearch", (Event ev) -> {
             Object o = ev.getData();
@@ -80,6 +87,15 @@ public class TwoSections28 extends Vlayout implements IGridIdOwner, IPermissionO
             );
             if (o == null || o instanceof SearchFilter) {
                 main.setFilter1(SearchFilters.and(fixedFilter, (SearchFilter) o));
+            }
+        });
+        north.setTitle(ApplicationSession.get().translate(null, "resultsGroup"));
+        main.addEventListener(Grid28.ON_SEARCH_COMPLETED, (Event ev) -> {
+            long totalRecordSize = (long) ev.getData();
+            if (autoCollapse && totalRecordSize == 1) {
+                north.setOpen(false);
+            } else {
+                north.setOpen(true);
             }
         });
     }
@@ -251,5 +267,13 @@ public class TwoSections28 extends Vlayout implements IGridIdOwner, IPermissionO
 
     public Filter28 getFilters() {
         return filters;
+    }
+
+    public boolean isAutoCollapse() {
+        return autoCollapse;
+    }
+
+    public void setAutoCollapse(boolean autoCollapse) {
+        this.autoCollapse = autoCollapse;
     }
 }

@@ -105,15 +105,8 @@ public class DataSinkCrudRequestHandler extends AbstractCrudSurrogateKey42Reques
     // do a plausibility check to prevent the creation of incorrect data
     // TODO this method is too complex. Refactor in a simplere on with less ifs..
     protected void checkConfiguration(DataSinkDTO intended) {
-        switch (intended.getCommTargetChannelType()) {
-        case BIGDATA_DB:
-        case NULL:
-            throw new T9tException(T9tException.NOT_YET_IMPLEMENTED, "Channel target: " + intended.getCommTargetChannelType().toString());
-        default:
-            break; // check passed
-        }
-        MediaTypeDescriptor desc = MediaTypeInfo.getFormatByType(intended.getCommFormatType());
-        MediaType baseType = intended.getCommFormatType().getBaseEnum() instanceof MediaType ? (MediaType)intended.getCommFormatType().getBaseEnum() : null;
+        final MediaTypeDescriptor desc = MediaTypeInfo.getFormatByType(intended.getCommFormatType());
+        final MediaType baseType = intended.getCommFormatType().getBaseEnum() instanceof MediaType ? (MediaType)intended.getCommFormatType().getBaseEnum() : null;
 
         // if category is "REPORT", then only CSV, XLS and PDF are allowed (or a delegation to the report config)
         Enum<?> anyEnum = intended.getCategory().getBaseEnum();
@@ -123,7 +116,7 @@ public class DataSinkCrudRequestHandler extends AbstractCrudSurrogateKey42Reques
             case REPORT:
                 switch (intended.getCommTargetChannelType()) {
                 case FILE:
-                case BIGDATA_DB:
+                case KAFKA:
                 case NULL:
                     break; // all OK
                 default:

@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.io.CommunicationTargetChannelType;
 import com.arvatosystems.t9t.io.DataSinkDTO;
 import com.arvatosystems.t9t.io.OutboundMessageDTO;
 import com.arvatosystems.t9t.io.SinkDTO;
@@ -40,23 +41,15 @@ import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 
 @Singleton
-@SuppressWarnings("unchecked")
 public class OutPersistenceAccess implements IOutPersistenceAccess {
     private static final Logger LOGGER = LoggerFactory.getLogger(OutPersistenceAccess.class);
 
-    // @Inject
     private final IDataSinkEntityResolver dataSinkEntityResolver = Jdp.getRequired(IDataSinkEntityResolver.class);
-    // @Inject
-    private final IDataSinkDTOMapper dataSinkMapper = Jdp.getRequired(IDataSinkDTOMapper.class);
-    // @Inject
-    private final ISinkEntityResolver sinkResolver = Jdp.getRequired(ISinkEntityResolver.class);
-    // @Inject
-    private final ISinkDTOMapper sinkMapper = Jdp.getRequired(ISinkDTOMapper.class);
-    // @Inject
-    private final IOutboundMessageEntityResolver outboundMessageResolver = Jdp
-            .getRequired(IOutboundMessageEntityResolver.class);
-    // @Inject
-    private final IOutboundMessageDTOMapper outboundMessageMapper = Jdp.getRequired(IOutboundMessageDTOMapper.class);
+    private final IDataSinkDTOMapper      dataSinkMapper         = Jdp.getRequired(IDataSinkDTOMapper.class);
+    private final ISinkEntityResolver     sinkResolver           = Jdp.getRequired(ISinkEntityResolver.class);
+    private final ISinkDTOMapper          sinkMapper             = Jdp.getRequired(ISinkDTOMapper.class);
+    private final IOutboundMessageEntityResolver outboundMessageResolver = Jdp.getRequired(IOutboundMessageEntityResolver.class);
+    private final IOutboundMessageDTOMapper      outboundMessageMapper   = Jdp.getRequired(IOutboundMessageDTOMapper.class);
 
     /**
      * Read the configuration data. The configuration record can be tenant
@@ -109,10 +102,19 @@ public class OutPersistenceAccess implements IOutPersistenceAccess {
 
     @Override
     public List<DataSinkDTO> getDataSinkDTOsForEnvironment(String environment) {
-        TypedQuery<? extends DataSinkEntity> typedQuery = dataSinkEntityResolver
+        TypedQuery<DataSinkEntity> typedQuery = dataSinkEntityResolver
                 .constructQuery("select i from DataSinkEntity i where i.environment = :environment and i.isInput = true");
         typedQuery.setParameter("environment", environment);
-        List<DataSinkEntity> resultList = (List<DataSinkEntity>)typedQuery.getResultList();
+        final List<DataSinkEntity> resultList = typedQuery.getResultList();
+        return dataSinkMapper.mapListToDto(resultList);
+    }
+
+    @Override
+    public List<DataSinkDTO> getDataSinkDTOsForChannel(CommunicationTargetChannelType channel) {
+        TypedQuery<DataSinkEntity> typedQuery = dataSinkEntityResolver.constructQuery(
+    		"select i from DataSinkEntity i where i.commTargetChannelType = :commTargetChannelType and i.isInput = true and i.isActive = true ORDER BY i.tenantRef");
+        typedQuery.setParameter("commTargetChannelType", channel.getToken());
+        final List<DataSinkEntity> resultList = typedQuery.getResultList();
         return dataSinkMapper.mapListToDto(resultList);
     }
 

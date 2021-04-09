@@ -32,9 +32,9 @@ import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.io.DataSinkDTO;
 import com.arvatosystems.t9t.out.be.impl.output.camel.GenericT9tRoute;
 
-import de.jpaw.bonaparte.pojos.api.media.MediaType;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
+import de.jpaw.util.ExceptionUtil;
 
 /**
  * Central service to manage camel routes.
@@ -43,7 +43,6 @@ import de.jpaw.dp.Singleton;
  */
 @Singleton
 public class CamelService {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(CamelService.class);
 
     public static final String DEFAULT_ENVIRONMENT = "t9t";
@@ -51,34 +50,30 @@ public class CamelService {
     private final IFileUtil fileUtil = Jdp.getRequired(IFileUtil.class);
 
     public void addRoutes(DataSinkDTO dataSink) {
-        try {
-            final String serverEnvironment = firstNonNull(ConfigProvider.getConfiguration()
-                                                                        .getImportEnvironment(),
-                                                          DEFAULT_ENVIRONMENT);
-            final String dataSinkEnvironment = dataSink.getEnvironment();
+        final String serverEnvironment = firstNonNull(ConfigProvider.getConfiguration().getImportEnvironment(), DEFAULT_ENVIRONMENT);
+        final String dataSinkEnvironment = dataSink.getEnvironment();
 
-            if (!serverEnvironment.equals(dataSinkEnvironment)) {
-                LOGGER.debug("Route with dataSinkID {} not configured, since route is bound to environment {}, but current environment is {}",
-                             dataSink.getDataSinkId(), dataSinkEnvironment, serverEnvironment);
-                return;
-            }
+        if (!serverEnvironment.equals(dataSinkEnvironment)) {
+            LOGGER.debug("Route with dataSinkID {} not configured, since route is bound to environment {}, but current environment is {}",
+                         dataSink.getDataSinkId(), dataSinkEnvironment, serverEnvironment);
+            return;
+        }
 
-            if (validateT9TCamelComponent(dataSink)) {
+        if (isCamelDataSink(dataSink)) {
+            try {
                 Jdp.getProvider(CamelContext.class)
                    .get()
                    .addRoutes(new GenericT9tRoute(dataSink, fileUtil));
-            } else {
-                LOGGER.error("There have been problems while configuring route with dataSinkID: {} ", dataSink.getDataSinkId());
+            } catch (Exception e) {
+                LOGGER.error("Exception configuring camel route: {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
+                throw new RuntimeException(e);
             }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
     }
 
     public void removeRoutes(DataSinkDTO dataSink) {
         try {
-            final CamelContext context = Jdp.getProvider(CamelContext.class)
-                                            .get();
+            final CamelContext context = Jdp.getProvider(CamelContext.class).get();
 
             LOGGER.debug("Try to stop and remove all routes for data sink id {}", dataSink.getDataSinkId());
             final List<String> routeIds = GenericT9tRoute.getPossibleRouteIds(dataSink);
@@ -114,6 +109,7 @@ public class CamelService {
                 }
             }
         } catch (Exception e) {
+            LOGGER.error("Exception removing camel route: {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
             throw new RuntimeException(e);
         }
     }
@@ -124,16 +120,11 @@ public class CamelService {
      * @return True if the DataSink contains a camelRoute, commFormatName, preTransformerName and baseClassPqon. Otherwise false!
      *
      */
-    private boolean validateT9TCamelComponent(DataSinkDTO dataSink) {
+    private boolean isCamelDataSink(DataSinkDTO dataSink) {
         if (dataSink.getCamelRoute() == null || dataSink.getCamelRoute().isEmpty()) {
-            LOGGER.error("dataSink {} does not contain a camelRoute field.", dataSink.getDataSinkId());
-            return false;
-        }
-        if (dataSink.getCommFormatType().getBaseEnum() == MediaType.USER_DEFINED && (dataSink.getCommFormatName() == null || dataSink.getCommFormatName().isEmpty())) {
-            LOGGER.error("dataSink {} does not contain a commFormatName for an InputFormatConverter.", dataSink.getDataSinkId());
+            LOGGER.debug("dataSink {} does not contain a camelRoute field - not setting up any route.", dataSink.getDataSinkId());
             return false;
         }
         return true;
     }
-
 }

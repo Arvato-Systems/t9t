@@ -197,7 +197,7 @@ public class AbstractFormatGeneratorXml extends AbstractFormatGenerator {
     }
 
     @Override
-    public void generateData(int recordNo, int mappedRecordNo, long recordId, BonaPortable record) throws IOException, ApplicationException {
+    public void generateData(int recordNo, int mappedRecordNo, long recordId, String partitionKey, String recordKey, BonaPortable record) throws IOException, ApplicationException {
         try {
             JAXBElement<BonaPortable> element = new JAXBElement<>(getQname(xmlRecordName), (Class<BonaPortable>) record.getClass(), record);
             m.marshal(element, writer);

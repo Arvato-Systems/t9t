@@ -77,21 +77,35 @@ class HttpUtils {
     }
 
     def static void proxy(HttpClient client, HttpServerRequest req, String host, int port, boolean mapContentType, String uriPrefix) {
-        val c_req = client.request(req.method, port, host, uriPrefix + req.uri, [ c_res |
-            System.out.println("Proxying response: " + c_res.statusCode());
-            req.response().setChunked(true);
-            req.response().setStatusCode(c_res.statusCode());
-            req.response().headers().setAll(c_res.headers());
+
+        client.request(req.method, port, host, uriPrefix + req.uri, [ aSyncRequestHandler |
+            val c_req = aSyncRequestHandler.result
+            if (c_req === null) {
+                return
+            }
+
+            c_req.setChunked(true);
+            c_req.headers().setAll(req.headers());
             if (mapContentType)
-                req.response().headers.map(INT_CT_42, EXT_CT)
-            c_res.handler [ req.response().write(it) ]
-            c_res.endHandler [ req.response().end() ]
+               c_req.headers.map(EXT_CT, INT_CT_42)
+
+            c_req.response.onComplete[ responseHandler |
+                val c_res = responseHandler.result
+                System.out.println("Proxying response: " + c_res.statusCode());
+
+                req.response().setChunked(true);
+                req.response().setStatusCode(c_res.statusCode());
+                req.response().headers().setAll(c_res.headers());
+                if (mapContentType)
+                    req.response().headers.map(INT_CT_42, EXT_CT)
+
+                c_res.handler [ req.response().write(it) ]
+                c_res.endHandler [ req.response().end() ]
+            ]
+
+            req.handler [ c_req.write(it) ]
+            req.endHandler [ c_req.end() ]
         ])
-        c_req.setChunked(true);
-        c_req.headers().setAll(req.headers());
-        if (mapContentType)
-            c_req.headers.map(EXT_CT, INT_CT_42)
-        req.handler [ c_req.write(it) ]
-        req.endHandler [ c_req.end() ]
+
     }
 }

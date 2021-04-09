@@ -28,7 +28,7 @@ public class BooleanTranslationConverter implements IItemConverter<Boolean> {
 
     @Override
     public String getFormattedLabel(Boolean value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
-        return ZulUtils.i18nLabel(String.format("com.boolean.%s.format", value));
+        return ZulUtils.readConfig(String.format("com.boolean.%s.format", value));
     }
 
     @Override

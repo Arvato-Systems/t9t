@@ -16,6 +16,7 @@
 package com.arvatosystems.t9t.xml.tests
 
 import com.arvatosystems.t9t.base.output.OutputSessionParameters
+import com.arvatosystems.t9t.base.services.IOutputSession
 import com.arvatosystems.t9t.io.DataSinkDTO
 import com.arvatosystems.t9t.out.be.IStandardNamespaceWriter
 import com.arvatosystems.t9t.out.be.impl.formatgenerator.FormatGeneratorXml
@@ -68,7 +69,7 @@ class OutputWithZTest {
 
         val xml = new FormatGeneratorXml
         xml.open(myDataSink, myOutputSessionParameters, type.mediaType, null, iors, StandardCharsets.UTF_8, "ACME")
-        xml.generateData(1, 1, 1234L, myUser)
+        xml.generateData(1, 1, 1234L, IOutputSession.NO_PARTITION_KEY, IOutputSession.NO_RECORD_KEY, myUser)
         xml.close
 
         println(iors)

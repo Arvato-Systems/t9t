@@ -61,7 +61,7 @@ package (com.arvatosystems) t9t.io {
     enum CommunicationTargetChannelType {
         NULL = "N",         // discard the data (no output channel is opened at all)
         FILE = "F",         // output the result to a file (and possibly transmit the file via Apache Camel route)
-        BIGDATA_DB = "D",   // storage in Bigdata DB
+        KAFKA = "K",        // kafka topic
         QUEUE = "Q",        // output single message to a JMS queue
         TOPIC = "T",        // output single messages to a JMS topic
         CAMEL = "C",        // just produce internal temporary data which is sent via Apache Camel route

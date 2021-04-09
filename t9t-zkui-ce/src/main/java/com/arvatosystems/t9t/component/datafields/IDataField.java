@@ -23,9 +23,6 @@ import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 
 /** Interface for the dynamically created fields. */
 public interface IDataField<E extends Component, T> {
-    /** Returns a translated label for the field. */
-    String getLabel();
-
     /** Returns the field path. */
     String getFieldName();
 

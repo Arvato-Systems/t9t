@@ -56,11 +56,6 @@ public abstract class AbstractField<E extends InputElement> implements IField {
     }
 
     @Override
-    public String getLabel() {
-        return label;
-    }
-
-    @Override
     public List<E> getComponents() {
         return components;
     }

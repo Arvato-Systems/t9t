@@ -60,7 +60,7 @@ public abstract class AbstractFormatGenerator implements ICommunicationFormatGen
     }
 
     @Override
-    public void generateData(int recordNo, int mappedRecordNo, long recordId, BonaPortable record) throws IOException, ApplicationException {
+    public void generateData(int recordNo, int mappedRecordNo, long recordId, String partitionKey, String recordKey, BonaPortable record) throws IOException, ApplicationException {
         throw new T9tException(T9tIOException.NO_RECORD_BASED_OUTPUT, effectiveType.name());
     }
 

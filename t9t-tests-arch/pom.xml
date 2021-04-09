@@ -21,7 +21,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-settings-xtend</artifactId>
-        <version>5.0-SNAPSHOT</version>
+        <version>5.1-SNAPSHOT</version>
         <relativePath>../t9t-settings-xtend</relativePath>
     </parent>
 
@@ -35,20 +35,12 @@
             <artifactId>t9t-base-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.arvato-systems.t9t</groupId>
-            <artifactId>t9t-jdp</artifactId>
-        </dependency>
-
-        <!-- backend dependencies are optional, because the UI projects will not need them -->
-        <dependency>
-            <groupId>com.arvato-systems.t9t</groupId>
-            <artifactId>t9t-base-be</artifactId>
-            <!-- <optional>true</optional> -->
+            <groupId>de.jpaw</groupId>
+            <artifactId>jdp-plain</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.arvato-systems.t9t</groupId>
-            <artifactId>t9t-base-jpa</artifactId>
-            <!-- <optional>true</optional> -->
+            <groupId>de.jpaw</groupId>
+            <artifactId>jdp-core</artifactId>
         </dependency>
 
         <!-- archUnit is provided as compile time dependency, because this project shall be used as a library, providing standard test rules -->
