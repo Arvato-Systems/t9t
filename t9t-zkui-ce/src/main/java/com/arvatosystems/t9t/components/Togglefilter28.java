@@ -45,6 +45,7 @@ public class Togglefilter28 extends Tabbox {
 
     public Togglefilter28() {
         super();
+        this.setVflex("1");
         LOGGER.debug("new Togglefilter28() created");
         Executions.createComponents("/component/togglefilter28.zul", this, null);
         Selectors.wireComponents(this, this, false);

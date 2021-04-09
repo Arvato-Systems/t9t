@@ -42,6 +42,7 @@ public class Context28 extends Menupopup {
 
     public Context28() {
         super();
+        this.setSclass("context28");
     }
 
 

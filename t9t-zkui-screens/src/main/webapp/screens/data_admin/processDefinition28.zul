@@ -61,10 +61,10 @@
                                 emptyMessage="${l:translate('com','noDataFound')}"
                                 pagingPosition="bottom" nonselectableTags="" >
                                 <listhead menupopup="auto" sizable="true" columnsgroup="false">
-                                    <listheader  label="${l:translate('processDefinition','label')}*" sort="auto(label)"    hflex="1" />
-                                    <listheader  label="${l:translate('processDefinition','comment')}" sort="auto(comment)"  hflex="1" />
-                                    <listheader  label="${l:translate('processDefinition','type')}" hflex="1" />
-                                    <listheader  label="${l:translate('processDefinition','data')}" hflex="3    "/>
+                                    <listheader  label="${l:translate('processDefinition','label')}*" sort="auto(label)"  width="222px"/>
+                                    <listheader  label="${l:translate('processDefinition','comment')}" sort="auto(comment)" width="350px" />
+                                    <listheader  label="${l:translate('processDefinition','type')}" width="190px"/>
+                                    <listheader  label="${l:translate('processDefinition','data')}"  width="460px"/>
                                 </listhead>
                                 <template name="model">
                                     <listitem>
@@ -80,9 +80,8 @@
                                                     <field28 id="workflowStepType[${forEachStatus.index}]" value="@bind(each.workflowStepType)" hflex="1" />
                                                 </viewModel28></hbox>
                                         </listcell>
-                                        <listcell>
+                                        <listcell sclass="max-width-cell">
                                             <hbox  hflex="3">
-                                            <viewModel28 viewModelId="workflowStepConfig">
                                                 <field28  id="stepName[${forEachStatus.index}]"     value="@load(each.stepName) @save(each.stepName, before={'saveData','addSteps','commandSave','removeSteps','downSteps','upSteps'})"       visible="@bind(each.workflowStepType eq 'JAVA_TASK')" />
                                                 <field28  id="parameters[${forEachStatus.index}]"   value="@load(each.parameters) @save(each.parameters, before={'saveData','addSteps','commandSave','removeSteps','downSteps','upSteps'})"   visible="@bind(each.workflowStepType eq 'ADD_PARAMETER')" />
                                                 <field28  id="toLabel[${forEachStatus.index}]"      value="@load(each.toLabel) @save(each.toLabel, before={'saveData','addSteps','commandSave','removeSteps','downSteps','upSteps'})"         visible="@bind(each.workflowStepType eq 'STEP_GOTO')" />
@@ -92,7 +91,6 @@
                                                 <button28 id="ThenDo[${forEachStatus.index}]"   onClick="@command('editThenDo', lb=processListBox)"                        visible="@bind(each.workflowStepType eq 'CONDITION')"/>
                                                 <button28 id="ElseDo[${forEachStatus.index}]"   onClick="@command('editElseDo', lb=processListBox)"                        visible="@bind(each.workflowStepType eq 'CONDITION')"/>
                                                 </cell>
-                                            </viewModel28>
                                             </hbox>
                                         </listcell>
                                     </listitem>

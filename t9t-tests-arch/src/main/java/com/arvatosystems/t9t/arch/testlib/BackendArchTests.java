@@ -35,7 +35,6 @@ public class BackendArchTests extends StandardArchTests {
                 .should().implement(IRequestHandler.class)
                 .andShould().notBeAnnotatedWith(Singleton.class)
                 .andShould().notBeAnnotatedWith(Dependent.class)
-                .andShould().haveOnlyFinalFields()  // apply the rule for @Singletons, which they are in fact
                 .andShould().bePublic()
                 .because("Naming convention of RequestHandlers should not be violated, and they do not use dependency injection");
 

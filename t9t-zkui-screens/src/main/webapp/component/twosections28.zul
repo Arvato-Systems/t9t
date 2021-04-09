@@ -1,9 +1,9 @@
 <!-- zul definition of the components used for a CRUD or SEARCH screen. -->
 <zk>
     <borderlayout vflex="1">
-        <west size="250px" splittable="true" collapsible="true"
+        <west size="260px" splittable="true" collapsible="true"
             minsize="100" vflex="1">
-            <groupbox28 id="filterGroup" vflex="min">
+            <groupbox28 id="filterGroup" vflex="1">
                 <filter28 id="filters" />
             </groupbox28>
         </west>

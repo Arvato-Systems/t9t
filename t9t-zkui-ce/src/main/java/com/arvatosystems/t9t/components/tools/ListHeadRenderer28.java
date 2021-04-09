@@ -204,7 +204,7 @@ public class ListHeadRenderer28 {
         label.setValue(columnTranslation);
         label.setParent(tooltip);
 
-        listheader.setTooltip(toolTipId);
+        listheader.setTooltipAttributes(tooltip, "before_start", null, null, null);
     }
 
     /**

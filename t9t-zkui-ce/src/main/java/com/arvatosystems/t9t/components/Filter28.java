@@ -76,9 +76,8 @@ public class Filter28 extends Grid implements IGridIdOwner {
     public Filter28() {
         super();
         LOGGER.debug("new Filter28() created");
-        setVflex("min");
-        setSclass("filtergrid grid no-scrollbar no-padding");
-
+        setVflex("1");
+        setSclass("filtergrid grid no-padding");
     }
 
     @Override
@@ -86,7 +85,6 @@ public class Filter28 extends Grid implements IGridIdOwner {
         LOGGER.debug("Filter28() assigned grid ID {}", gridId);
         this.gridId = gridId;
         setViewModelId(GridIdTools.getViewModelIdByGridId(gridId));
-
         addColumns();
         populateFilters(0); //use default during init
     }
@@ -183,7 +181,6 @@ public class Filter28 extends Grid implements IGridIdOwner {
         rows.appendChild(eachRow);
 
         for (UIFilter filter : leanGridConfigResolver.getFilters()) {
-            eachRow = new Row();
             String fieldname = filter.getFieldName();
             FieldDefinition fieldDef = FieldMappers.getFieldDefinitionForPath(fieldname, crudViewModel);
             // nope we need the list of components here, similar but different
@@ -194,6 +191,7 @@ public class Filter28 extends Grid implements IGridIdOwner {
                 // add each component
                 List<Component> components = field.getComponents();
                 for (Component c : components) {
+                    eachRow = new Row();
                     Cell eachCell = new Cell();
                     eachCell.appendChild(c);
                     eachRow.appendChild(eachCell);

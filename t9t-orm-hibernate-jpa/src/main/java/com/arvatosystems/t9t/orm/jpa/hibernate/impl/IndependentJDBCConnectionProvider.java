@@ -37,11 +37,11 @@ import de.jpaw.dp.Singleton;
 @Named("independent")
 public class IndependentJDBCConnectionProvider implements IJdbcConnectionProvider {
     private   static final Logger LOGGER = LoggerFactory.getLogger(IndependentJDBCConnectionProvider.class);
+
     protected static final long   SECONDS_BETWEEN_INFO = 60L;
     public    static final String POOLED_DATASOURCE_NAME = "t9t-jdbc";
 
     protected final AtomicInteger counter = new AtomicInteger();
-    protected long nextTimeInfo = 0L;
 
     protected static class LazyPoolWrapper {
         protected static final PooledDataSource pds = C3P0Registry.pooledDataSourceByName(POOLED_DATASOURCE_NAME);

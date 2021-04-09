@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.components;
 
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 
 import com.arvatosystems.t9t.tfi.web.ApplicationSession;
@@ -33,6 +34,13 @@ public class Button28 extends Button {
     public Button28() {
         super();
         setSclass("button28");
+    }
+
+    /**
+     * This is to fix button stays in focus after every clicks
+     */
+    public void onClick() {
+        Clients.evalJavaScript("$(':button').trigger('blur');");
     }
 
     /** The Button28 setImage() method disables the automatic label translation, if used before setId(). */

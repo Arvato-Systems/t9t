@@ -339,8 +339,11 @@ td.z-listgroup-inner div.z-listcell-content {
 }
 div.z-listcell-content {
     line-height: 14px;
-    padding: 7px 0;
+    padding: 0px;
     white-space: nowrap;
+}
+.listbox-external-paging .z-listcell-content {
+    padding: 4px 0;
 }
 .z-listbox-autopaging .z-listcell-content {
     height: 15px;
@@ -363,9 +366,6 @@ td.z-listcell .z-listcell-content {
     margin-top:-14px;
     border: 0;
     padding-top: 20px;
-}
-.listBox-data.z-div{
-    margin-top:-8px;
 }
 .z-paging {
     position: relative;
@@ -1348,4 +1348,23 @@ body {
 
 .z-div>.nestedGrid>.z-grid-header {
     display: block !important;
+}
+
+/** Remove z-listhead-bar as it has bug on showing wrong position **/
+.z-listbox .z-listhead-bar {
+    display: none;
+}
+
+/** narrow the menu item height to display more items **/
+.context28 .z-menuitem-content {
+    line-height: 22px;
+}
+
+.context28 .z-menuitem-text {
+    padding: 2px 0 2px 0;
+}
+
+/** hack to make the component inside a table enlarge to 100% **/
+.max-width-cell table, .max-width-cell table td > *:not(button) {
+    width: 90%;
 }
