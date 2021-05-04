@@ -32,11 +32,12 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.JsonUtil;
+import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.cfg.be.KafkaConfiguration;
 import com.arvatosystems.t9t.io.DataSinkDTO;
+import com.arvatosystems.t9t.io.T9tIOException;
 import com.arvatosystems.t9t.out.services.IOutputResource;
 
 import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
@@ -52,8 +53,16 @@ public class OutputResourceKafka implements IOutputResource {
     protected static Producer<String, byte[]> createKafkaProducer(DataSinkDTO config, Long sinkRef) {
         final Properties props = new Properties();
         final KafkaConfiguration defaults = ConfigProvider.getConfiguration().getKafkaConfiguration();
+        if (defaults == null) {
+            throw new T9tException(T9tIOException.MISSING_KAFKA_CONFIGURAION, "No kafkaConfiguration entry in config.xml");
+        }
+
         final String defaultBootstrapServers = defaults == null ? null : defaults.getDefaultBootstrapServers();
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, JsonUtil.getZString(config.getZ(), ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, defaultBootstrapServers));
+        final String bootstrapServers = config.getBootstrapServers() != null ? config.getBootstrapServers() : defaultBootstrapServers;
+        if (bootstrapServers == null) {
+            throw new T9tException(T9tIOException.MISSING_KAFKA_CONFIGURAION, "No bootstrap servers defined in DataSink nor config.xml");
+        }
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ProducerConfig.CLIENT_ID_CONFIG, config.getDataSinkId() + ":" + sinkRef.toString());
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ByteArraySerializer.class.getName());

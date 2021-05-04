@@ -22,7 +22,7 @@
                     <cells228 id ="fromDate"                        value ="@bind(vm.data.fromDate)"
                               id2="toDate"                          value2="@bind(vm.data.toDate)"            visible="@load(vm.data.intervalCategory.token eq 'R')"/>
                     <cells228 id ="timeZone"                        value ="@bind(vm.data.timeZone)"
-                              id2 ="mailingGroupRef"                value2 ="@bind(vm.data.mailingGroupRef)"/>
+                              id2 ="mailingGroupRef"                value2="@bind(vm.data.mailingGroupRef)"/>
                     <cells28  id ="z" colspan1="3" rows1="4"        value ="@load(vm.data.z)                               @save(vm.data.z,                        before='commandSave')"/>
                     <row>
                         <cell colspan="4">

@@ -95,6 +95,7 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
     private static final Logger LOGGER = LoggerFactory.getLogger(Grid28.class);
     public static final String PREFIX_GRID28 = "com.grid";
     public static final String ON_SEARCH_COMPLETED = "onSearchCompleted";
+    private static final String GRID_LINE_WRAP = "grid.lineWrap";
 
     private final ApplicationSession session = ApplicationSession.get();
     protected Permissionset permissions = Permissionset.ofTokens();
@@ -143,6 +144,10 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
     public Grid28() {
         super();
         setVflex("1");
+        String gridLineWrapConfig = ZulUtils.readConfig(GRID_LINE_WRAP);
+        if (Boolean.TRUE.equals(Boolean.valueOf(gridLineWrapConfig))) {
+            setSclass("gridLineWrap");
+        }
         LOGGER.debug("new Grid28() created");
         Executions.createComponents("/component/grid28.zul", this, null);
         Selectors.wireComponents(this, this, false);

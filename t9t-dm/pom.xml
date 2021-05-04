@@ -508,6 +508,11 @@
             </dependency>
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
+                <artifactId>t9t-cluster-kafka</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-io-be-kafka</artifactId>
                 <version>${project.version}</version>
             </dependency>

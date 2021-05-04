@@ -342,6 +342,9 @@ div.z-listcell-content {
     padding: 0px;
     white-space: nowrap;
 }
+.gridLineWrap .z-listcell-content {
+    white-space: normal !important;
+}
 .listbox-external-paging .z-listcell-content {
     padding: 4px 0;
 }
@@ -966,6 +969,7 @@ body {
 
 .rightSection {
     background: #fafafa;
+    padding-top: 4px;
 }
 
 .z-groupbox {
@@ -1374,5 +1378,5 @@ body {
 
 /** hack to make the component inside a table enlarge to 100% **/
 .max-width-cell table, .max-width-cell table td > *:not(button) {
-    width: 90%;
+    width: 90% !important;
 }

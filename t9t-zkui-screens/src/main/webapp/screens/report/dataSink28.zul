@@ -94,6 +94,8 @@
                                           id2="storeImportUsingFilepattern" value2="@bind(vm.data.storeImportUsingFilepattern)"/>
                                 <cells228 id ="checkDuplicateFilename"  value ="@bind(vm.data.checkDuplicateFilename)"
                                           id2="copyToAsyncChannel"      value2="@bind(vm.data.copyToAsyncChannel)"/>
+                                <cells228 id ="apiKey"                  value ="@bind(vm.data.apiKey)"
+                                          id2="bootstrapServers"        value2="@bind(vm.data.bootstrapServers)"/>
                                 <cells28  id ="z" colspan1="3" rows1="4"        value ="@load(vm.data.z)                               @save(vm.data.z,before='commandSave')"/>
                             </rows>
                         </form28>

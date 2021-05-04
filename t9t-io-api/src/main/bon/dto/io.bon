@@ -226,6 +226,8 @@ package (com.arvatosystems) t9t.io {
         optional Unicode(8)                             singleLineComment;          // line starting with this line should be ignored
         optional Integer                                retentionPeriodFiles;       // the number of days after which an associated file can be deleted (never if null)
         optional Integer                                retentionPeriodSinks;       // the number of days after which an associated sink entry can be deleted (never if null)
+        optional Uuid                                   apiKey;                     // the API key to use for data imports (kafka or Camel)
+        optional Unicode(1024)                          bootstrapServers;           // Kafka bootstrap servers for data exports
     }
 
     /** Configuration defaults for DataSinks, provided by the implementation. (Primarily intended to support the complex XML APIs). */

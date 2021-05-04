@@ -376,7 +376,9 @@ class OutputSession implements IOutputSession {
             }
 
             // check if there is a Camel transfer to be performed
-            if (sinkCfg.camelRoute !== null && (sinkCfg.camelExecution == CamelExecutionScheduleType.SCHEDULED || sinkCfg.camelExecution == CamelExecutionScheduleType.ASYNCHRONOUSLY)) {
+            if (sinkCfg.camelRoute !== null && (sinkCfg.camelExecution == CamelExecutionScheduleType.SCHEDULED || sinkCfg.camelExecution == CamelExecutionScheduleType.ASYNCHRONOUSLY) 
+                && !(sourceRecordCounter == 0 && Boolean.FALSE == sinkCfg.skipZeroRecordSinkRefs && sinkCfg.lazyOpen) // TBE-451: make sure the camelTransferStatus is set to RESPONSE_OK because camel will throw exception on empty file 
+            ) {
                 thisSink.camelTransferStatus = ExportStatusEnum.READY_TO_EXPORT;
                 LOGGER.debug("Setting Sink {} to camelTransferStatus: {} due to camel transfer to be performed", thisSink.getObjectRef(), thisSink.camelTransferStatus)
                 if (sinkCfg.camelExecution == CamelExecutionScheduleType.ASYNCHRONOUSLY) {

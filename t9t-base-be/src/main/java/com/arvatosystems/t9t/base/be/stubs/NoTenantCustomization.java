@@ -15,8 +15,12 @@
  */
 package com.arvatosystems.t9t.base.be.stubs;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
@@ -26,6 +30,7 @@ import com.arvatosystems.t9t.base.services.ITenantCustomization;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.dp.Jdp;
+import de.jpaw.util.ExceptionUtil;
 
 /** This implementation serves as a base implementation which provides some of the features required to do tenant specific customization,
  * such as the map for tenant specific request handlers.
@@ -33,6 +38,7 @@ import de.jpaw.dp.Jdp;
  * This implementation provides no
  */
 public class NoTenantCustomization implements ITenantCustomization {
+    private static final Logger LOGGER = LoggerFactory.getLogger(NoTenantCustomization.class);
 
     private final IRequestHandlerResolver requestHandlerResolver = Jdp.getRequired(IRequestHandlerResolver.class);
     private final boolean usesCustomRequestHandlers;
@@ -51,10 +57,12 @@ public class NoTenantCustomization implements ITenantCustomization {
     @Override
     public <DTO extends BonaPortable> DTO newDtoInstance(int rtti, Class<DTO> baseClass) {
         try {
-            return baseClass.newInstance();
-        } catch (InstantiationException e) {
+            return baseClass.getDeclaredConstructor().newInstance();
+        } catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | InstantiationException e) {
+            LOGGER.error("This should not happen: {}: {}: {}", e.getClass().getCanonicalName(), e.getMessage(), ExceptionUtil.causeChain(e));
             throw new T9tException(T9tException.METHOD_INSTANTIATION_EXCEPTION, baseClass.getCanonicalName());
         } catch (IllegalAccessException e) {
+            LOGGER.error("This should not happen: {}: {}: {}", e.getClass().getCanonicalName(), e.getMessage(), ExceptionUtil.causeChain(e));
             throw new T9tException(T9tException.CONSTRUCTOR_ILLEGAL_ACCESS_EXCEPTION, baseClass.getCanonicalName());
         }
     }
@@ -67,10 +75,12 @@ public class NoTenantCustomization implements ITenantCustomization {
     @Override
     public <ENTITY> ENTITY newEntityInstance(int rtti, Class<ENTITY> baseClass) {
         try {
-            return baseClass.newInstance();
-        } catch (InstantiationException e) {
+            return baseClass.getDeclaredConstructor().newInstance();
+        } catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | InstantiationException e) {
+            LOGGER.error("This should not happen: {}: {}: {}", e.getClass().getCanonicalName(), e.getMessage(), ExceptionUtil.causeChain(e));
             throw new T9tException(T9tException.METHOD_INSTANTIATION_EXCEPTION, baseClass.getCanonicalName());
         } catch (IllegalAccessException e) {
+            LOGGER.error("This should not happen: {}: {}: {}", e.getClass().getCanonicalName(), e.getMessage(), ExceptionUtil.causeChain(e));
             throw new T9tException(T9tException.CONSTRUCTOR_ILLEGAL_ACCESS_EXCEPTION, baseClass.getCanonicalName());
         }
     }

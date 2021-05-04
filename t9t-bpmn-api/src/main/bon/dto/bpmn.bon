@@ -181,5 +181,6 @@ package (com.arvatosystems) t9t.bpmn {
         optional Json                                   currentParameters;  // the current task parameters, assigned when execution begins
         optional Integer                                returnCode;         // execution return code (same as for requests)
         optional Unicode(2048) allowControlChars        errorDetails;       // description of the error
+        optional unsigned Integer                       runOnNode;          // if not null: specifies a cluster node to execute this workflow
     }
 }

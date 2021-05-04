@@ -181,7 +181,7 @@ package (com.arvatosystems) t9t.base.search {
         required defaultExternalId              id;
         required shortText                      name;
         required boolean                        isActive;
-        required boolean                        differentTenant;  // only relevant for IDs which query the default tenant as well: marks entries of the default tenant
+        required boolean                        differentTenant;    // only relevant for IDs which query the default tenant as well: marks entries of the default tenant
     }
 
     /** Base class for searches with a very reduced result set.
@@ -244,5 +244,17 @@ package (com.arvatosystems) t9t.base.search {
     }
     class GetDataResponse<DATA extends Ref> extends ServiceResponse {
         required (!DATA) required List<>            data;
+    }
+
+    /**
+     * Reads the ID and description for any ref (by RTTI).
+     */
+    class ResolveAnyRefRequest extends RequestParameters {
+        required f42Ref                 ref;                // the objectRef of any object with a surrogate primary key
+    }
+
+    class ResolveAnyRefResponse extends ServiceResponse {
+        optional meta.identifier        entityClass;        // the simple class name of the entity (useful to look up a translation of the type name) - if null, no entity with this RTTI is known
+        optional (Description)          description;        // the result of the corresponding LeanSearchRequest - if null, no entity with this key exists
     }
 }

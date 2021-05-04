@@ -82,6 +82,7 @@
                                         </listcell>
                                         <listcell sclass="max-width-cell">
                                             <hbox  hflex="3">
+                                              <viewModel28 viewModelId="workflowStepConfig">
                                                 <field28  id="stepName[${forEachStatus.index}]"     value="@load(each.stepName) @save(each.stepName, before={'saveData','addSteps','commandSave','removeSteps','downSteps','upSteps'})"       visible="@bind(each.workflowStepType eq 'JAVA_TASK')" />
                                                 <field28  id="parameters[${forEachStatus.index}]"   value="@load(each.parameters) @save(each.parameters, before={'saveData','addSteps','commandSave','removeSteps','downSteps','upSteps'})"   visible="@bind(each.workflowStepType eq 'ADD_PARAMETER')" />
                                                 <field28  id="toLabel[${forEachStatus.index}]"      value="@load(each.toLabel) @save(each.toLabel, before={'saveData','addSteps','commandSave','removeSteps','downSteps','upSteps'})"         visible="@bind(each.workflowStepType eq 'STEP_GOTO')" />
@@ -91,6 +92,7 @@
                                                 <button28 id="ThenDo[${forEachStatus.index}]"   onClick="@command('editThenDo', lb=processListBox)"                        visible="@bind(each.workflowStepType eq 'CONDITION')"/>
                                                 <button28 id="ElseDo[${forEachStatus.index}]"   onClick="@command('editElseDo', lb=processListBox)"                        visible="@bind(each.workflowStepType eq 'CONDITION')"/>
                                                 </cell>
+                                               </viewModel28>
                                             </hbox>
                                         </listcell>
                                     </listitem>

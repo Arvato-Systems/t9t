@@ -19,17 +19,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.jpa.IAnyKeySearchRegistry;
 import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey28;
 import com.arvatosystems.t9t.base.search.Description;
+import com.arvatosystems.t9t.base.search.DummySearchCriteria;
 import com.arvatosystems.t9t.base.search.LeanSearchRequest;
 import com.arvatosystems.t9t.base.search.LeanSearchResponse;
+import com.arvatosystems.t9t.base.search.SearchCriteria;
 import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
+import de.jpaw.bonaparte.pojos.api.LongFilter;
+import de.jpaw.dp.Jdp;
 
 public class AbstractLeanSearch28RequestHandler <S extends LeanSearchRequest, E extends BonaPersistableKey<Long> & BonaPersistableTracking<?>> extends AbstractReadOnlyRequestHandler<S> {
+    protected final IAnyKeySearchRegistry searchRegistry = Jdp.getRequired(IAnyKeySearchRegistry.class);
     protected final IResolverSurrogateKey28<?, ?, E> resolver;
     protected final Function<E, Description> mapper;
 
@@ -38,11 +45,20 @@ public class AbstractLeanSearch28RequestHandler <S extends LeanSearchRequest, E 
             Function<E, Description> mapper) {
         this.resolver = resolver;
         this.mapper = mapper;
+        // dangerous: use self-reference in constructor!
+        searchRegistry.registerLeanSearchRequest(this::search, resolver.getRtti(), resolver.getBaseJpaEntityClass().getSimpleName());
     }
 
-    @Override
-    public LeanSearchResponse execute(RequestContext ctx, S rq) {
-        final List<E> result = resolver.search(rq);
+    private final List<Description> search(RequestContext ctx, Long ref) {
+        final DummySearchCriteria srq = new DummySearchCriteria();
+        final LongFilter objectRefFilter = new LongFilter(T9tConstants.OBJECT_REF_FIELD_NAME);
+        objectRefFilter.setEqualsValue(ref);
+        srq.setSearchFilter(objectRefFilter);
+        return search(ctx, srq);
+    }
+
+    private final List<Description> search(RequestContext ctx, SearchCriteria srq) {
+        final List<E> result = resolver.search(srq);
         final List<Description> desc = new ArrayList<Description>(result.size());
         for (E e : result) {
             // get a first mapping (id, name)
@@ -56,8 +72,13 @@ public class AbstractLeanSearch28RequestHandler <S extends LeanSearchRequest, E 
                 d.setName("?");
             desc.add(d);
         }
-        LeanSearchResponse resp = new LeanSearchResponse();
-        resp.setDescriptions(desc);
+        return desc;
+    }
+
+    @Override
+    public LeanSearchResponse execute(RequestContext ctx, S rq) {
+        final LeanSearchResponse resp = new LeanSearchResponse();
+        resp.setDescriptions(search(ctx, rq));
         return resp;
     }
 }

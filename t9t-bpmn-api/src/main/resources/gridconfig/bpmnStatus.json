@@ -5,6 +5,6 @@
         { "filterType": "E", "fieldName": "targetObjectRef" }
     ],
     "fields": [
-        "processDefinitionId", "targetObjectRef", "yieldUntil", "nextStep", "returnCode", "errorDetails"
+        "processDefinitionId", "targetObjectRef", "runOnNode", "yieldUntil", "nextStep", "returnCode", "errorDetails"
     ]
 }

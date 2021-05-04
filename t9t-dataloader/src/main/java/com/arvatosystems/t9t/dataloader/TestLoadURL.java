@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Base64;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +43,7 @@ public class TestLoadURL {
         final URL url = new URL(
                 "http://degtlun2951.server.arvato-systems.de:8088/xwiki/bin/download/aroma42+Features/aroma42+Business+Docs+%28afds%29/Gesamt%2DPDF_Sommerflyer_2013.pdf");
 
-        String encoding = new sun.misc.BASE64Encoder().encode(auth.getBytes());
+        String encoding = Base64.getEncoder().encodeToString(auth.getBytes());
         final URLConnection conn = url.openConnection();
         conn.setRequestProperty("Authorization", "Basic " + encoding);
         final InputStream is = new BufferedInputStream(conn.getInputStream());

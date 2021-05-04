@@ -17,7 +17,6 @@ package com.arvatosystems.t9t.components;
 
 import java.util.ArrayList;
 import java.util.Collections;
-
 import java.util.List;
 import java.util.Map;
 
@@ -29,13 +28,11 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Hlayout;
-import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Vlayout;
 
 import com.arvatosystems.t9t.base.CrudViewModel;
@@ -80,9 +77,6 @@ public class Crud28 extends Vlayout implements IViewModelOwner, IDataSelectRecei
     protected final ApplicationSession session = ApplicationSession.get();
     protected final List<Form28> childForms = new ArrayList<Form28>(8);
     protected String cachesDropdown = null;  // if set to non null, a DELETE or SAVE will invalidate the cache for this ID
-    protected final static String COMMON = "com";
-    protected final static String DELETE_CONFIRMATION = "deleteConfirmation";
-    protected final static String DELETE_CONFIRMATION_MESSAGE = "deleteConfirmationMessage";
     protected final Map<String, Object> NO_ARGS = ImmutableMap.<String, Object>of();
 
     public Crud28() {
@@ -172,23 +166,9 @@ public class Crud28 extends Vlayout implements IViewModelOwner, IDataSelectRecei
         saveButton      .addEventListener(Events.ON_CLICK, ev -> { binder.sendCommand("commandSave", NO_ARGS); invalidateCache(); });
         newButton       .addEventListener(Events.ON_CLICK, ev -> binder.sendCommand("commandNew", NO_ARGS));
         copyButton      .addEventListener(Events.ON_CLICK, ev -> binder.sendCommand("commandCopy", NO_ARGS));
-        deleteButton    .addEventListener(Events.ON_CLICK, ev -> deleteConfirmationDialog(ev, new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                if (event.getName().equals(Messagebox.ON_YES)) {
-                    binder.sendCommand("commandDelete", NO_ARGS); 
-                    invalidateCache();
-                }
-            }
-        }));
+        deleteButton    .addEventListener(Events.ON_CLICK, ev -> { binder.sendCommand("commandDelete", NO_ARGS); invalidateCache(); });
         activateButton  .addEventListener(Events.ON_CLICK, ev -> binder.sendCommand("commandActivate", NO_ARGS));
         deactivateButton.addEventListener(Events.ON_CLICK, ev -> binder.sendCommand("commandDeactivate", NO_ARGS));
-    }
-
-    protected void deleteConfirmationDialog(Event event, EventListener<Event> eventListener) { 
-        Messagebox.show(session.translate(COMMON, DELETE_CONFIRMATION_MESSAGE),
-                session.translate(COMMON, DELETE_CONFIRMATION), Messagebox.YES | Messagebox.CANCEL,
-                Messagebox.EXCLAMATION, eventListener);
     }
 
     protected void invalidateCache() {

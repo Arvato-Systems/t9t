@@ -49,6 +49,7 @@ import com.arvatosystems.t9t.components.Filter28;
 import com.arvatosystems.t9t.components.Grid28;
 import com.arvatosystems.t9t.components.TwoSections28;
 import com.arvatosystems.t9t.tfi.web.ApplicationSession;
+import com.arvatosystems.t9t.tfi.web.ZulUtils;
 
 import de.jpaw.bonaparte.core.BonaPortableClass;
 import de.jpaw.bonaparte.pojos.api.OperationType;
@@ -62,6 +63,7 @@ public class ListHeadRenderer28 {
     private static final Logger LOGGER              = LoggerFactory.getLogger(ListHeadRenderer28.class);
     private static final String GRID_CHANGE_STYLE   = "border:1px solid #DD4B39;";
     public  static final String PREFIX_GRIDCONFIG28 = "com.gridconfig";
+    private static final String MARK_RED_ON_SORT    = "grid.markRedOnSort";
     private final ApplicationSession session = ApplicationSession.get();
     private final ListItemRenderer28<?> defaultListItemRenderer;
     private final ILeanGridConfigResolver gridConfigResolver;
@@ -229,7 +231,7 @@ public class ListHeadRenderer28 {
     private void onColSizeListHeader(ColSizeEvent ev) {
         LOGGER.debug("Column resize of col {}: from {} to {}", ev.getColIndex(), ev.getPreviousWidth(), ev.getWidth());
         gridConfigResolver.changeWidth(ev.getColIndex(), parseWidth(ev.getWidth()), parseWidth(ev.getPreviousWidth()));
-        //gridHasChanged(); // not sure why we need the red border here
+        gridHasChanged();
         //redrawListbox(); //remove it as it will caused the event 'onColCheck' not being fired and i dont see the need of redraw on size change.
     }
 
@@ -279,8 +281,15 @@ public class ListHeadRenderer28 {
         LOGGER.debug("Sort event for {}", fieldname);
 
         gridConfigResolver.newSort(fieldname, !isAscending);
-        gridHasChanged();
         grid.search();
+        boolean markRedOnSort = false;
+        String markRedOnSortConfig = ZulUtils.readConfig(MARK_RED_ON_SORT);
+        if (markRedOnSortConfig != null) {
+            markRedOnSort = Boolean.valueOf(markRedOnSortConfig);
+        }
+        if (markRedOnSort) {
+            gridHasChanged();
+        }
         redrawListbox();
     }
 
@@ -427,6 +436,7 @@ public class ListHeadRenderer28 {
             public void onEvent(Event closeEvent) throws Exception {
                 if (closeEvent.getData() != null) {
                     findAndUpdateSearchFiltersComponent();
+                    gridHasChanged();
                 }
             }
         });
@@ -483,6 +493,7 @@ public class ListHeadRenderer28 {
                             gridConfigResolver.addField(toAdd);
                         }
                     }
+                    gridHasChanged();
                     redrawListbox();
                     grid.search();
                 }

@@ -64,7 +64,7 @@ public class ConvertTemplatesRequestHandler extends AbstractRequestHandler<Conve
         TENANT_FILTER.freeze();
         TENANT_CRITERIA.setSearchFilter(TENANT_FILTER);
         TENANT_CRITERIA.freeze();
-        
+
         String offendingDocumentId = null;
         final SearchCriteria criteriaToApply;
         if (request.getDocumentId() == null) {

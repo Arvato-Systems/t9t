@@ -774,6 +774,7 @@
         <module>t9t-auth-be</module>
         <module>t9t-base-vertx</module>
         <module>t9t-auth-vertx</module>
+        <module>t9t-cluster-kafka</module>
 
         <module>t9t-translation-api</module>
         <module>t9t-translation-sapi</module>

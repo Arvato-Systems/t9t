@@ -47,12 +47,12 @@ package (com.arvatosystems) t9t.voice {
     /** Extended tenant configuration for data exceeding the generic tenant configuration of the application server.
      * Records of this entity share the same artifical primary key tenantRef.
      */
-    class VoiceModuleCfgDTO RTTI 2001 extends ModuleConfigDTO {
+    class VoiceModuleCfgDTO extends ModuleConfigDTO {
         properties                                  tenantCategory="D";                                 // if entry missing, get the global one
     }
 
     /** Maps external technical application IDs (usually UUID based) to specific (human readable) names. */
-    class VoiceApplicationRef extends Ref {}
+    class VoiceApplicationRef RTTI 901 extends Ref {}
 
     final class VoiceApplicationKey extends VoiceApplicationRef {
         required t9tShortId                         applicationId   properties notupdatable;

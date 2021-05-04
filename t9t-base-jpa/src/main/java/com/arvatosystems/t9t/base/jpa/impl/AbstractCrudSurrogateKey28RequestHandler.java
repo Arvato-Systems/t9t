@@ -70,7 +70,7 @@ public abstract class AbstractCrudSurrogateKey28RequestHandler<
         if (crudRequest.getNaturalKey() != null) {
             try {
                 ENTITY entityFoundByNaturalKeyQuery = resolver.getEntityData(crudRequest.getNaturalKey(), false);
-                boolean entityFoundByNaturalKeyQueryIsOfOtherTenant = !resolver.getSharedTenantId().equals(resolver.getTenantId(entityFoundByNaturalKeyQuery));
+                boolean entityFoundByNaturalKeyQueryIsOfOtherTenant = resolver.isTenantIsolated() && !resolver.getSharedTenantId().equals(resolver.getTenantId(entityFoundByNaturalKeyQuery));
                 Long refFromCompositeKey = entityFoundByNaturalKeyQuery.ret$Key();
                 // provide it into the response
                 rs.setKey(refFromCompositeKey);

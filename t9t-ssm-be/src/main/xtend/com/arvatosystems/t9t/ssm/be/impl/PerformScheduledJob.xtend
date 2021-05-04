@@ -40,6 +40,7 @@ import org.quartz.JobDetail
 import org.quartz.JobExecutionContext
 import org.quartz.JobExecutionException
 import org.slf4j.MDC
+import com.arvatosystems.t9t.base.services.IClusterEnvironment
 
 /**
  * This class implements the Quartz {@link Job} interface and therefore the method {@link Job#execute(JobExecutionContext)}.
@@ -53,6 +54,7 @@ class PerformScheduledJob implements Job {
     @Inject IAsyncRequestProcessor sessionFactory
     @Inject IUnauthenticatedServiceRequestExecutor inProcessExecutor
     @Inject RequestContextScope requestContextScope
+    @Inject IClusterEnvironment clusterEnvironment
 
     /**
      * In this method the reference to the scheduler setup entry is extracted from the job data map part of the job detail object accessed through the passed context object.
@@ -62,6 +64,19 @@ class PerformScheduledJob implements Job {
      */
     override final void execute(JobExecutionContext context) throws JobExecutionException {
         val dataMap             = context.jobDetail.jobDataMap
+
+        try {
+            val runOnNode       = dataMap.getInt   (QuartzSchedulerService.DM_RUN_ON_NODE);
+            if (runOnNode != QuartzSchedulerService.RUN_ON_ALL_NODES) {
+                // this task should be run on a specific node only, check if that's us
+                val tenantRef   = dataMap.getLong  (QuartzSchedulerService.DM_TENANT_REF);
+                if (!clusterEnvironment.processOnThisNode(tenantRef, runOnNode)) {
+                    return;  // not suitable for this node
+                }
+            }
+        } catch (Exception e) {
+            // some of the variables are missing - old scheduler setup for single node environment
+        }
 
         val apiKey              = dataMap.getString(QuartzSchedulerService.DM_API_KEY);
         val language            = dataMap.getString(QuartzSchedulerService.DM_LANGUAGE);

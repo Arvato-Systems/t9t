@@ -66,6 +66,7 @@ package (com.arvatosystems) t9t.bpmn.request {
         optional Enum WorkflowActionEnum        ifNoEntryExists;            // activity to do if no current entry exists (if null: RUN)
         optional Enum WorkflowActionEnum        ifEntryExists;              // activity to do if a current entry exists (if null: RUN)
         optional defaultExternalId              workflowStep;               // the workflow step to start at
+        optional unsigned Integer               runOnNode;                  // specifies a parameter which determines the execution node
     }
 
     class ExecuteProcessWithRefResponse extends ServiceResponse {

@@ -72,6 +72,8 @@ public class T9tIOException extends T9tException {
     public static final int UNDEFINED_CAMEL_SUCCESS_DEST_PATH_ERROR = OFFSET + 257;
     public static final int UNDEFINED_CAMEL_FAILURE_DEST_PATH_ERROR = OFFSET + 258;
 
+    public static final int MISSING_KAFKA_CONFIGURAION = OFFSET + 270;
+
     static {
         codeToDescription.put(NOT_TRANSFERRED,              "Camel transfer not successful");
 
@@ -109,5 +111,7 @@ public class T9tIOException extends T9tException {
         codeToDescription.put(UNDEFINED_CAMEL_SUCCESS_DEST_PATH_ERROR, "Unknown destination where to move a file after successful Camel routing.");
         codeToDescription.put(UNDEFINED_CAMEL_FAILURE_DEST_PATH_ERROR, "Unknown destination where to move a file after failed Camel routing.");
         codeToDescription.put(OUTPUT_COMM_CHANNEL_NO_SRC_HANDLER, "No data source handler available for type");
+
+        codeToDescription.put(MISSING_KAFKA_CONFIGURAION, "No / missing configuration for kafka");
     }
 }

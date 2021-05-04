@@ -62,7 +62,11 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
 
     class KafkaConfiguration {
         optional Unicode(1024)                      defaultBootstrapServers;        // comma-separated list of bootstrap servers (default for DataSinkDTO.z.get("bootstrap.servers"))
+        optional Unicode(1024)                      topicPattern;                   // if not null, subscribe to this pattern instead of individual topics collected via DataSinks (saves resubscribe after DataSinkChanged events)
         optional Uuid                               defaultImportApiKey;            // API-Key for data imports
+        optional Integer                            separateWorkerPoolSize;         // specifies the size of a separate input processor thread pool size
+        optional Unicode(200)                       customerManagerGroupId;         // leave null to use the default of "ClusterManager"
+        optional Unicode(200)                       customerManagerTopicName;       // leave null to use the default of "t9t.cluster"
     }
 
     class RelationalDatabaseConfiguration {

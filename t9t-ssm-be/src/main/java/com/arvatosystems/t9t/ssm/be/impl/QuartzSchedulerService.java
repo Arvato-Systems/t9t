@@ -60,12 +60,16 @@ public class QuartzSchedulerService implements ISchedulerService {
     private static final Logger LOGGER = LoggerFactory.getLogger(QuartzSchedulerService.class);
 
     public static final String DM_SETUP_REF  = "setupRef";      // the reference to the stored request setup, for auditing purposes
+    public static final String DM_TENANT_REF = "tenantRef";     // the reference to the tenant (implicitly defined via API-Key, but required upfront)
     public static final String DM_API_KEY    = "apiKey";        // the API key which defines the tenant and user ID to run the request under
     public static final String DM_LANGUAGE   = "language";      // the desired language
     public static final String DM_REQUEST    = "request";       // a reference to the serialized request stored centrally
     public static final String DM_CONC_TYPE  = "concType";      // the concurrency type
     public static final String DM_CONC_TYPE2 = "concTypeStale"; // the concurrency type for old instances
-    public static final String DM_TIME_LIMIT = "timeLimit";     // aftre how many minutes a process is regarded as "old"
+    public static final String DM_TIME_LIMIT = "timeLimit";     // after how many minutes a process is regarded as "old"
+    public static final String DM_RUN_ON_NODE = "runOnNode";    // on which node to run this task, or null for any node
+    public static final Integer RUN_ON_ALL_NODES = Integer.valueOf(-1);
+    public static final Integer NO_TIME_LIMIT    = Integer.valueOf(0);
 
     protected final ICannedRequestResolver rqResolver = Jdp.getRequired(ICannedRequestResolver.class);
     protected final Scheduler scheduler = Jdp.getRequired(Scheduler.class);
@@ -95,13 +99,15 @@ public class QuartzSchedulerService implements ISchedulerService {
 
             JobDetail jobDetail = JobBuilder.newJob(PerformScheduledJob.class).withIdentity(setup.getSchedulerId(), ctx.tenantId).build();
             JobDataMap m = jobDetail.getJobDataMap();
-            m.put(DM_SETUP_REF, setup.getObjectRef());
-            m.put(DM_API_KEY,   setup.getApiKey().toString());
-            m.put(DM_LANGUAGE,  setup.getLanguageCode());
-            m.put(DM_REQUEST,   serializedRequest);
+            m.put(DM_TENANT_REF, ctx.tenantRef);
+            m.put(DM_SETUP_REF,  setup.getObjectRef());
+            m.put(DM_API_KEY,    setup.getApiKey().toString());
+            m.put(DM_LANGUAGE,   setup.getLanguageCode());
+            m.put(DM_REQUEST,    serializedRequest);
             m.put(DM_CONC_TYPE,  getToken(setup.getConcurrencyType()));
             // m.put(DM_CONC_TYPE2, getToken(setup.getConcurrencyTypeStale())); // not needed, if old jobs exist, a request handler will be invoked.
-            m.put(DM_TIME_LIMIT, setup.getTimeLimit() == null ? Integer.valueOf(0) : setup.getTimeLimit());
+            m.put(DM_TIME_LIMIT, setup.getTimeLimit() == null ? NO_TIME_LIMIT    : setup.getTimeLimit());
+            m.put(DM_TIME_LIMIT, setup.getRunOnNode() == null ? RUN_ON_ALL_NODES : setup.getRunOnNode());
             Trigger trigger = getTrigger(setup);
             scheduler.scheduleJob(jobDetail, trigger);
 
@@ -157,10 +163,10 @@ public class QuartzSchedulerService implements ISchedulerService {
 
     @Override
     public void removeScheduledJob(String schedulerId) {
+        final RequestContext ctx = ctxProvider.get();
         try {
-            RequestContext ctx = ctxProvider.get();
             LOGGER.info("Removing scheduled job {}.{}.", ctx.tenantId, schedulerId);
-            JobKey jobKey = new JobKey(schedulerId, ctx.tenantId);
+            final JobKey jobKey = new JobKey(schedulerId, ctx.tenantId);
             boolean result = scheduler.deleteJob(jobKey);
             if (!result) {
                 LOGGER.error("Tried to remove scheduled job {}.{}, but job was not found!", ctx.tenantId, schedulerId);
@@ -168,7 +174,7 @@ public class QuartzSchedulerService implements ISchedulerService {
                 LOGGER.info("Deleted job {}.{}.", ctx.tenantId, schedulerId);
             }
         } catch (Exception underlyingException) {
-            String message = ctxProvider.get().tenantId + "." + schedulerId;
+            String message = ctx.tenantId + "." + schedulerId;
             LOGGER.error("Failed to delete scheduled job {}", message, underlyingException);
             throw new T9tException(T9tSsmException.SCHEDULER_UPDATE_JOB_EXCEPTION, message, underlyingException);
         }

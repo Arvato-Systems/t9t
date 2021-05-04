@@ -43,8 +43,9 @@ public class ExecuteProcessWithRefRequestHandler extends AbstractRequestHandler<
         newStatus.setCurrentParameters(rq.getInitialParameters() != null ? rq.getInitialParameters() : pd.getInitialParams());
         newStatus.setYieldUntil(rq.getInitialDelay() != null ? ctx.executionStart.plus(rq.getInitialDelay() * 1000L) : ctx.executionStart);
         newStatus.setNextStep(rq.getWorkflowStep());
+        newStatus.setRunOnNode(rq.getRunOnNode());
         // handle restartAtBeginning; potential request parameter overrules process definition config
-        if (rq.getRestartAtBeginningIfExists()==null) {
+        if (rq.getRestartAtBeginningIfExists() == null) {
             rq.setRestartAtBeginningIfExists(pd.getAlwaysRestartAtStep1());
         }
         Long ref = persistenceAccess.createOrUpdateNewStatus(ctx, newStatus, rq);

@@ -21,14 +21,21 @@ import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zul.Messagebox;
 
 import com.arvatosystems.t9t.base.crud.CrudAnyKeyRequest;
 import com.arvatosystems.t9t.base.crud.CrudAnyKeyResponse;
+import com.arvatosystems.t9t.base.search.Description;
+import com.arvatosystems.t9t.base.search.ResolveAnyRefRequest;
+import com.arvatosystems.t9t.base.search.ResolveAnyRefResponse;
 
 import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.pojos.api.DataWithTracking;
 import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
+import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.bonaparte.util.ToStringHelper;
 
 @Init(superclass=true)
@@ -48,7 +55,12 @@ public abstract class AbstractCrudVM<
         CURRENT,        // editing some existing record
         CURRENT_RO      // showing some existing record, no edit allowed (no permissions)
     }
-    protected CrudMode currentMode = CrudMode.NONE;
+    protected CrudMode currentMode                            = CrudMode.NONE;
+    protected final static String COMMON                      = "com";
+    protected final static String ENTITY                      = "entity";
+    protected final static String DELETE_CONFIRMATION         = "deleteConfirmation";
+    protected final static String DELETE_CONFIRMATION_MESSAGE = "deleteConfirmationMessage";
+    protected final static String DELETE_CONFIRMATION_DETAIL  = "deleteConfirmationDetail";
 
     public void setHardLink(ICrudNotifier notifier) {
         // link to the crud component to avoid boilerplate caused by @Notifier
@@ -96,9 +108,17 @@ public abstract class AbstractCrudVM<
     }
     @Command
     public void commandDelete() {
-        CrudAnyKeyRequest<DTO, TRACKING> crudRq = createCrudWithKey();
-        crudRq.setCrud(OperationType.DELETE);
-        runCrud(crudRq, Boolean.FALSE);
+        showDeleteConfirmationDialog(new EventListener<Event>() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                if (event.getName().equals(Messagebox.ON_YES)) {
+                    CrudAnyKeyRequest<DTO, TRACKING> crudRq = createCrudWithKey();
+                    crudRq.setCrud(OperationType.DELETE);
+                    runCrud(crudRq, Boolean.FALSE);
+                }
+            }
+        });
     }
     @NotifyChange("data.isActive")
     @Command
@@ -189,4 +209,27 @@ public abstract class AbstractCrudVM<
         //No tenant restriction
         return CrudMode.CURRENT;
     }
+
+    protected void showDeleteConfirmationDialog(EventListener<Event> eventListener) { 
+
+        if (data instanceof Ref) {
+            ResolveAnyRefRequest rq = new ResolveAnyRefRequest(((Ref) data).getObjectRef());
+            ResolveAnyRefResponse res = remoteUtil.executeExpectOk(rq, ResolveAnyRefResponse.class);
+            if (res.getEntityClass() != null || res.getDescription() != null) {
+                Description desc = res.getDescription();
+                String translatedEntityName = session.translate(ENTITY, res.getEntityClass());
+                String formattedMessage = session.translate(COMMON, DELETE_CONFIRMATION_DETAIL, translatedEntityName, desc.getId(), desc.getName());
+
+                Messagebox.show(formattedMessage,
+                        session.translate(COMMON, DELETE_CONFIRMATION), Messagebox.YES | Messagebox.CANCEL,
+                        Messagebox.EXCLAMATION, eventListener);
+                return;
+            }
+        }
+
+      Messagebox.show(session.translate(COMMON, DELETE_CONFIRMATION_MESSAGE),
+              session.translate(COMMON, DELETE_CONFIRMATION), Messagebox.YES | Messagebox.CANCEL,
+              Messagebox.EXCLAMATION, eventListener);
+  }
+
 }
