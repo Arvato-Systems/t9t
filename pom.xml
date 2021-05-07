@@ -92,7 +92,7 @@
         <xtend-maven-plugin.version>2.23.0</xtend-maven-plugin.version>
         <xtext-maven-plugin.version>2.23.0</xtext-maven-plugin.version>
 
-        <bonaparte-plugin.version>4.40.0</bonaparte-plugin.version>
+        <bonaparte-plugin.version>4.40.1</bonaparte-plugin.version>
         <license-plugin.version>3.0</license-plugin.version>
 
         <xtend-plugin-phase>generate-sources</xtend-plugin-phase>

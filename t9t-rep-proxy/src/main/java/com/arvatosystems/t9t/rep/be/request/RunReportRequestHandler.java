@@ -15,27 +15,103 @@
  */
 package com.arvatosystems.t9t.rep.be.request;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
+import com.arvatosystems.t9t.base.search.SinkCreatedResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
+import com.arvatosystems.t9t.base.services.IFileUtil;
 import com.arvatosystems.t9t.base.services.IForeignRequest;
 import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.io.CommunicationTargetChannelType;
+import com.arvatosystems.t9t.io.SinkDTO;
+import com.arvatosystems.t9t.io.T9tIOException;
+import com.arvatosystems.t9t.io.request.FileDownloadRequest;
+import com.arvatosystems.t9t.io.request.FileDownloadResponse;
+import com.arvatosystems.t9t.out.services.IOutPersistenceAccess;
 import com.arvatosystems.t9t.rep.request.RunReportRequest;
 
 import de.jpaw.dp.Jdp;
+import de.jpaw.util.ApplicationException;
 
 public class RunReportRequestHandler extends AbstractRequestHandler<RunReportRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(RunReportRequestHandler.class);
 
     private final IForeignRequest remoteCaller = Jdp.getRequired(IForeignRequest.class);
+    private final IOutPersistenceAccess outPersistenceAccess = Jdp.getRequired(IOutPersistenceAccess.class);
+    private final IFileUtil fileUtil = Jdp.getRequired(IFileUtil.class);
 
     @Override
     public ServiceResponse execute(RequestContext ctx, RunReportRequest request) throws Exception {
         LOGGER.debug("Calling remote runReportRequest");
-        ServiceResponse remoteResponse = remoteCaller.execute(ctx, request);
-        LOGGER.debug("Remote runReportRequest returned code {}", remoteResponse.getReturnCode());
+        final ServiceResponse remoteResponse = remoteCaller.execute(ctx, request);
+        LOGGER.debug("Remote runReportRequest returned code {}, and type {}", remoteResponse.getReturnCode(), remoteResponse.getClass().getSimpleName());
+        if (ApplicationException.isOk(remoteResponse.getReturnCode()) && remoteResponse instanceof SinkCreatedResponse) {
+            // a report has been created. Now transfer it to this node
+            final SinkCreatedResponse sinkResponse = (SinkCreatedResponse)remoteResponse;
+            final Long sinkRef = sinkResponse.getSinkRef();
+            // first, get the full SinkDTO record, to retrieve the path
+            final SinkDTO sink = outPersistenceAccess.getSink(sinkRef);
+            final boolean isFile = sink.getCommTargetChannelType() == CommunicationTargetChannelType.FILE;
+            if (!isFile) {
+                LOGGER.debug("Report output was written to channel {} - no transfer triggered", sink.getCommTargetChannelType());
+            } else {
+                final String absolutePath = fileUtil.getAbsolutePathForTenant(ctx.tenantId, sink.getFileOrQueueName());
+                final File myFile = new File(absolutePath);
+                final boolean fileAlreadyExists = myFile.exists();
+                LOGGER.debug("File path is {} ({})", absolutePath, fileAlreadyExists ? "already exists on local FS" : "does not exist in local FS");
+                if (!fileAlreadyExists) {
+                    // transfer it
+                    try (FileOutputStream os = new FileOutputStream(myFile)) {
+                        Long size = transferFile(ctx, os, sinkRef);
+                        LOGGER.debug("Transferred report of length {} from remote to local FS", size);
+                    } catch (IOException ex) {
+                        LOGGER.error(ex.getMessage() + ": " + absolutePath, ex);
+                        throw new T9tException(T9tIOException.OUTPUT_FILE_OPEN_EXCEPTION, absolutePath);
+                    }
+                }
+            }
+        }
+
         return remoteResponse;
+    }
+
+    protected Long transferFile(RequestContext ctx, FileOutputStream os, Long sinkRef) throws IOException {
+        long offset = 0;
+        // set given chunkSizeInBytes as limit or default 8 MB
+        int limit = 8 * 1024 * 1024;
+        // is needed for the loop breakup
+        boolean hasMore = true;
+
+        while (hasMore) {
+            FileDownloadResponse fileDownloadResponse = execFileDownloadRequest(ctx, sinkRef, offset, limit);
+
+            // Get the data
+            byte[] data = fileDownloadResponse.getData().getBytes();
+            hasMore = fileDownloadResponse.getHasMore();
+            LOGGER.debug("Download: Chunk/content-length:{}. Has-more-chunks:{} (offset:{}/limit:{})", data.length, hasMore, offset, limit);
+
+            // Collect data
+            os.write(data);
+
+            // calculate new offset and limit --> if hasMore == false the calculation has no effect
+            offset = offset + limit;
+        }
+        return offset;
+    }
+
+    private FileDownloadResponse execFileDownloadRequest(RequestContext ctx, Long sinkObjectRef, long offset, int limit) {
+        FileDownloadRequest fileDownloadRequest = new FileDownloadRequest();
+        fileDownloadRequest.setSinkRef(sinkObjectRef);
+        fileDownloadRequest.setOffset(offset);
+        fileDownloadRequest.setLimit(limit);
+        FileDownloadResponse fileDownloadResponse = (FileDownloadResponse)remoteCaller.execute(ctx, fileDownloadRequest);
+        return fileDownloadResponse;
     }
 }

@@ -37,7 +37,11 @@ public interface IOutPersistenceAccess {
     /** Assigns a new primary key for the sink (required before persisting it, because it will be used by the OutboundMessageDTOs as well). */
     Long getNewSinkKey();
 
+    /** Persist a sink. */
     void storeNewSink(SinkDTO sink);
+
+    /** Retrieve a sink record. */
+    SinkDTO getSink(Long sinkRef);
 
     Long getNewOutboundMessageKey();
     void storeOutboundMessage(OutboundMessageDTO sink);

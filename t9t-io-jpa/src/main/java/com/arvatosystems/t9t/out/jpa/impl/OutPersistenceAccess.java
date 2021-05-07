@@ -91,6 +91,11 @@ public class OutPersistenceAccess implements IOutPersistenceAccess {
     }
 
     @Override
+    public SinkDTO getSink(Long sinkRef) {
+        return sinkMapper.mapToDto(sinkRef);
+    }
+
+    @Override
     public Long getNewOutboundMessageKey() {
         return outboundMessageResolver.createNewPrimaryKey();
     }
@@ -112,7 +117,7 @@ public class OutPersistenceAccess implements IOutPersistenceAccess {
     @Override
     public List<DataSinkDTO> getDataSinkDTOsForChannel(CommunicationTargetChannelType channel) {
         TypedQuery<DataSinkEntity> typedQuery = dataSinkEntityResolver.constructQuery(
-    		"select i from DataSinkEntity i where i.commTargetChannelType = :commTargetChannelType and i.isInput = true and i.isActive = true ORDER BY i.tenantRef");
+            "select i from DataSinkEntity i where i.commTargetChannelType = :commTargetChannelType and i.isInput = true and i.isActive = true ORDER BY i.tenantRef");
         typedQuery.setParameter("commTargetChannelType", channel.getToken());
         final List<DataSinkEntity> resultList = typedQuery.getResultList();
         return dataSinkMapper.mapListToDto(resultList);
