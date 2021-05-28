@@ -34,7 +34,7 @@ import de.jpaw.dp.StartupOnly;
 import de.jpaw.util.ExceptionUtil;
 
 
-// instantiate all LeanSearchRequestHandlers. This causes them to register in IAnyKeySearchRegistry, which is required for the ResolveAnyRefRequest to work 
+// instantiate all LeanSearchRequestHandlers. This causes them to register in IAnyKeySearchRegistry, which is required for the ResolveAnyRefRequest to work
 
 @Startup(30052)
 public class Init30052AnyRefResolver implements StartupOnly {

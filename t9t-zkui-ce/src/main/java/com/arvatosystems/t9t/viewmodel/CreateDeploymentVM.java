@@ -75,7 +75,7 @@ public class CreateDeploymentVM extends ViewOnlyVM<CreateDeploymentRequest, Full
     @Command
     @NotifyChange("data")
     public void createDeployment() {
-        if(!validation()) {
+        if (!validation()) {
             return;
         }
 
@@ -89,7 +89,7 @@ public class CreateDeploymentVM extends ViewOnlyVM<CreateDeploymentRequest, Full
     }
 
     private boolean validation() {
-        if(this.data.getResources() == null || this.data.getResources().isEmpty()) {
+        if (this.data.getResources() == null || this.data.getResources().isEmpty()) {
             Messagebox.show(session.translate("CreateDeploymentVM","err.resourcenotfound"), session.translate("CreateDeploymentVM","com.badinput"), Messagebox.OK,
                     Messagebox.ERROR);
             return false;

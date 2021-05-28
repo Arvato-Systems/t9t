@@ -30,15 +30,11 @@
     <dependencies>
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
-            <artifactId>t9t-auth-api</artifactId>
+            <artifactId>t9t-auth-apiext</artifactId>
         </dependency>
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-base-apiext</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.arvato-systems.t9t</groupId>
-            <artifactId>t9t-auth-sapi</artifactId>
         </dependency>
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>

@@ -210,7 +210,7 @@ public abstract class AbstractCrudVM<
         return CrudMode.CURRENT;
     }
 
-    protected void showDeleteConfirmationDialog(EventListener<Event> eventListener) { 
+    protected void showDeleteConfirmationDialog(EventListener<Event> eventListener) {
 
         if (data instanceof Ref) {
             ResolveAnyRefRequest rq = new ResolveAnyRefRequest(((Ref) data).getObjectRef());

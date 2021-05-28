@@ -52,7 +52,10 @@ import de.jpaw.util.ExceptionUtil;
  * JWT and JWS implementation draft-ietf-oauth-json-web-token-32.
  *
  * @author Paulo Lopes
- * Modified to fit into bonaparte environment by Arvato Systems
+ * Modified to fit into bonaparte environment by Arvato Systems.
+ *
+ * This class is not annoted by @Singleton, because this project does not have a Jdp dependency,
+ * and also because in t9t we use a pool of JWTs.
  */
 public final class JWT implements IJWT {
     private static final Logger LOGGER = LoggerFactory.getLogger(JWT.class);

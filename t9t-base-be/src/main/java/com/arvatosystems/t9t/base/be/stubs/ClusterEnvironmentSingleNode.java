@@ -36,4 +36,9 @@ public class ClusterEnvironmentSingleNode implements IClusterEnvironment {
     public Collection<Long> getListOfTenantRefs() {
         return Collections.emptyList();
     }
+
+    @Override
+    public int getNumberOfNodes() {
+        return 1;
+    }
 }

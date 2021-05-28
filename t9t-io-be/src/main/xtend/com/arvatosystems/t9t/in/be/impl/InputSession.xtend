@@ -284,7 +284,7 @@ class InputSession implements IInputSession {
         sinkDTO.numberOfErrorRecords = numError.get
 
         if (dataSinkCfg.camelRoute !== null) {
-            if(ExportStatusEnum.UNDEFINED.equals(sinkDTO.camelTransferStatus)) {
+            if (ExportStatusEnum.UNDEFINED.equals(sinkDTO.camelTransferStatus)) {
                 sinkDTO.camelTransferStatus = ExportStatusEnum.RESPONSE_OK
             }
         }

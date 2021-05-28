@@ -180,6 +180,9 @@ public class ApplicationViewModel {
         boolean isDefaultOrder = Boolean.valueOf(ZulUtils.readConfig("isDefaultOrder"));
         mainHome.setSclass(isDefaultOrder ? "": "reverse");
         reverse.setSrc(!isDefaultOrder ? "/css/reverse.css" : "");
+        if (!isDefaultOrder) {
+            Clients.evalJavaScript("enableRTL();");
+        }
         navbarCreator.createNavBar(this, navbar, getNaviGroupingViewModel());
 
         // redirect screen
@@ -367,7 +370,7 @@ public class ApplicationViewModel {
 
         panel.getChildren().clear();
 
-        if(previouslyCachingTypeWasCreateWithoutCaching && previousNaviKey != null) {
+        if (previouslyCachingTypeWasCreateWithoutCaching && previousNaviKey != null) {
             naviContentMap.remove(previousNaviKey);
         }
 
@@ -385,8 +388,8 @@ public class ApplicationViewModel {
         }
 
         if (!naviContentMap.containsKey(key) ||
-                (cachingType==Constants.Application.CachingType.CREATE_AND_CACH) ||
-                (cachingType==Constants.Application.CachingType.CREATE_WITHOUT_CACHING)) {
+            (cachingType==Constants.Application.CachingType.CREATE_AND_CACH) ||
+            (cachingType==Constants.Application.CachingType.CREATE_WITHOUT_CACHING)) {
 
             if (cachingType == Constants.Application.CachingType.CREATE_WITHOUT_CACHING) {
                 naviContentMap.remove(key); // clear the content map
@@ -407,7 +410,7 @@ public class ApplicationViewModel {
 
             if (cachingType == Constants.Application.CachingType.CREATE_WITHOUT_CACHING) {
                 previouslyCachingTypeWasCreateWithoutCaching= true;
-            }else{
+            } else {
                 naviContentMap.put(key, panelChildren);
             }
 

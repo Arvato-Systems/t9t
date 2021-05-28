@@ -60,4 +60,8 @@ class AutonomousExecutor implements IAutonomousExecutor {
         ]
         return f.get
     }
+
+    override getExecutorServiceForMetering() {
+        return executorService;
+    }
 }

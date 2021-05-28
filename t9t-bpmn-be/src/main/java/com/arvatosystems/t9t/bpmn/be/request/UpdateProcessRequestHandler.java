@@ -35,15 +35,15 @@ public class UpdateProcessRequestHandler extends AbstractRequestHandler<UpdatePr
         ProcessExecutionStatusDTO dto = persistenceAccess.getProcessExecutionStatusDTO(rq.getProcessDefinitionId(), rq.getTargetObjectRef());
         ExecuteProcessWithRefRequest bpmRefRequest = new ExecuteProcessWithRefRequest();
 
-        if(rq.getCurrentParameters() != null) {
+        if (rq.getCurrentParameters() != null) {
             dto.setCurrentParameters(rq.getCurrentParameters());
         }
 
-        if(rq.getNextStep() != null) {
+        if (rq.getNextStep() != null) {
             dto.setNextStep(rq.getNextStep());
         }
 
-        if(rq.getYieldUntil() != null) {
+        if (rq.getYieldUntil() != null) {
             dto.setYieldUntil(rq.getYieldUntil());
         }
 
@@ -54,7 +54,7 @@ public class UpdateProcessRequestHandler extends AbstractRequestHandler<UpdatePr
         bpmRefRequest.setIfEntryExists(WorkflowActionEnum.RUN);
         bpmRefRequest.setInitialDelay(0);
 
-        if(Boolean.TRUE.equals(rq.getDirectProcessing())) {
+        if (Boolean.TRUE.equals(rq.getDirectProcessing())) {
             bpmRefRequest.setInitialDelay(null); // direct process trigger
         }
 

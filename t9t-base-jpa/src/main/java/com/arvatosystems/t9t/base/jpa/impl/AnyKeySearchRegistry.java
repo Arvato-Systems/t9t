@@ -43,7 +43,7 @@ public class AnyKeySearchRegistry implements IAnyKeySearchRegistry {
         final Integer rtti = (int)(ref % 10000L);
         final BiFunction<RequestContext, Long, List<Description>> resolver = resolverByRtti.get(rtti);
         final ResolveAnyRefResponse resp = new ResolveAnyRefResponse();
-        resp.setEntityClass(classnameByRtti.get(rtti)); 
+        resp.setEntityClass(classnameByRtti.get(rtti));
         if (resolver != null) {
             // it is possible to find a description
             List<Description> descs = resolver.apply(ctx, ref);

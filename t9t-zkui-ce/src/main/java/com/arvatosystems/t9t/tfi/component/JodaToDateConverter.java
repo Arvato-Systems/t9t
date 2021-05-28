@@ -86,9 +86,9 @@ public class JodaToDateConverter implements Converter {
             return ApplicationSession.get().format((LocalDate)value);
         } else if (value instanceof Date) {
             return dateFormat.format((value));
-        }else if (value instanceof LocalDateTime) {
+        } else if (value instanceof LocalDateTime) {
             return ApplicationSession.get().format((LocalDateTime)value);
-        }else if (value instanceof Instant) {
+        } else if (value instanceof Instant) {
             return ApplicationSession.get().format((Instant)value);
         } else {
             throw new UnsupportedOperationException("Instance " + value.getClass().getName() + " is not supported");

@@ -78,7 +78,9 @@
         <exec.plugin.version>1.6.0</exec.plugin.version>
         <jetty-maven-plugin.version>9.4.10.v20180503</jetty-maven-plugin.version>
         <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>  <!-- 3.0.0 -->
-        <cxf-codegen-plugin.version>3.3.6</cxf-codegen-plugin.version>
+        <cxf-codegen-plugin.version>3.3.10</cxf-codegen-plugin.version>
+        <cxf-wadl2java-plugin.version>3.3.10</cxf-wadl2java-plugin.version>
+        <cxf-xjc-plugin.version>3.3.1</cxf-xjc-plugin.version>   <!-- older than the other CXF plugins, but no newer release available -->
         <echo-maven-plugin.version>1.0.0</echo-maven-plugin.version>
         <logback.version>1.2.3</logback.version>
 
@@ -601,6 +603,16 @@
                     <version>${cxf-codegen-plugin.version}</version>
                 </plugin>
                 <plugin>
+                    <groupId>org.apache.cxf</groupId>
+                    <artifactId>cxf-wadl2java-plugin</artifactId>
+                    <version>${cxf-wadl2java-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.cxf</groupId>
+                    <artifactId>cxf-xjc-plugin</artifactId>
+                    <version>${cxf-xjc-plugin.version}</version>
+                </plugin>
+                <plugin>
                     <groupId>com.google.code.echo-maven-plugin</groupId>
                     <artifactId>echo-maven-plugin</artifactId>
                     <version>${echo-maven-plugin.version}</version>
@@ -889,6 +901,7 @@
         <module>t9t-tests-arch</module>
         <module>t9t-tests-arch-be</module>
         <module>t9t-vertx-cluster</module>
+        <module>t9t-vertx-metrics</module>
         <module>t9t-proxy</module>
         <module>t9t-all-api</module>
         <module>t9t-all</module>  <!-- t9t-all is t9t-all-be + t9t-all-jpa -->

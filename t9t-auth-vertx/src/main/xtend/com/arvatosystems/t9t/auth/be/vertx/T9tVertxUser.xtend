@@ -57,6 +57,7 @@ class T9tVertxUser implements User {
         throw new UnsupportedOperationException("TODO: auto-generated method stub")
     }
 
+    @Deprecated
     override setAuthProvider(AuthProvider authProvider) {
         throw new UnsupportedOperationException("TODO: auto-generated method stub")
     }

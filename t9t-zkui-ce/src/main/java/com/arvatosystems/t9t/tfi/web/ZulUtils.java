@@ -488,46 +488,43 @@ public class ZulUtils {
     }
 
     public static ErrorPopupEntity getErrorPopupInfo(ReturnCodeException returnCodeException, String inScreenId) {
-        ErrorPopupEntity retunValue = null;
+        ErrorPopupEntity returnValue = null;
         String returnCodePrefix;
         if (null == returnCodeException) {
-            return retunValue;
+            return returnValue;
         }
         try {
             //
             returnCodePrefix = String.valueOf(returnCodeException.getReturnCode());
             returnCodePrefix = returnCodePrefix.substring(0, 1);
-            retunValue = readErrorPopupConfiguration(returnCodePrefix, inScreenId);
+            returnValue = readErrorPopupConfiguration(returnCodePrefix, inScreenId);
 
-            if (retunValue == null) {
+            if (returnValue == null) {
                 LOGGER.error("ERROR: "+returnCodeException.getReturnMessage());
-                retunValue = new ErrorPopupEntity();
-                retunValue.setPopupTitle(ZulUtils.translate("err", "title"));
-                retunValue.setPopupImg("~./zul/img/msgbox/stop-btn.png");
-                retunValue.setReturnCode(String.valueOf(returnCodeException.getReturnCode()));
-                retunValue.setReturnMessage(returnCodeException.getReturnMessage());
-                retunValue.setErrorDetails(returnCodeException.getErrorDetails());
-
-
-            }else{
-                retunValue.setReturnCode(String.valueOf(returnCodeException.getReturnCode()));
-                retunValue.setReturnMessage(returnCodeException.getReturnMessage());
-                retunValue.setErrorDetails(returnCodeException.getErrorDetails());
+                returnValue = new ErrorPopupEntity();
+                returnValue.setPopupTitle(ZulUtils.translate("err", "title"));
+                returnValue.setPopupImg("~./zul/img/msgbox/stop-btn.png");
+                returnValue.setReturnCode(String.valueOf(returnCodeException.getReturnCode()));
+                returnValue.setReturnMessage(returnCodeException.getReturnMessage());
+                returnValue.setErrorDetails(returnCodeException.getErrorDetails());
+            } else {
+                returnValue.setReturnCode(String.valueOf(returnCodeException.getReturnCode()));
+                returnValue.setReturnMessage(returnCodeException.getReturnMessage());
+                returnValue.setErrorDetails(returnCodeException.getErrorDetails());
             }
-
 
         } catch (Exception e) {
             LOGGER.error("ERROR in getErrorPopupInfo: screenId={}, retCodeEx={}\nNew exception= {}",
                     inScreenId,
                     ExceptionUtil.causeChain(returnCodeException),
                     ExceptionUtil.causeChain(e));
-            retunValue = new ErrorPopupEntity();
-            retunValue.setPopupTitle(ZulUtils.translate("err","title"));
-            retunValue.setPopupImg("~./zul/img/msgbox/stop-btn.png");
-            retunValue.setReturnCode(String.valueOf(Constants.ErrorCodes.GENERAL_EXCEPTION));
-            retunValue.setReturnMessage("general error");
+            returnValue = new ErrorPopupEntity();
+            returnValue.setPopupTitle(ZulUtils.translate("err","title"));
+            returnValue.setPopupImg("~./zul/img/msgbox/stop-btn.png");
+            returnValue.setReturnCode(String.valueOf(Constants.ErrorCodes.GENERAL_EXCEPTION));
+            returnValue.setReturnMessage("general error");
         }
-        return retunValue;
+        return returnValue;
     }
 
     private static ErrorPopupEntity readErrorPopupConfiguration(String returnCodePrefix, String inScreenId) {

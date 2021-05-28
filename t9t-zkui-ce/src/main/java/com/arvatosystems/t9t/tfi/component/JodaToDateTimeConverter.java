@@ -90,7 +90,7 @@ public class JodaToDateTimeConverter implements Converter {
             return ApplicationSession.get().format((Instant) value);
             // dateFormat.format(new LocalDateTime(((Instant) value).getMillis(), DateTimeZone.forID(TimeZones.getCurrent().getID())).toDate());
 
-        }else {
+        } else {
             throw new UnsupportedOperationException("Instance " + value.getClass().getName() + " is not supported");
         }
     }

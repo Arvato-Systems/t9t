@@ -148,6 +148,10 @@
         <solr-commons-csv.version>3.5.0</solr-commons-csv.version>
         <activiti.version>5.19.0.2</activiti.version>
         <kafka.version>2.7.0</kafka.version>
+
+        <!-- Monitoring -->
+        <micrometer.version>1.6.7</micrometer.version>
+        <prometheus.version>0.10.0</prometheus.version>
     </properties>
 
 
@@ -689,6 +693,27 @@
                 <version>${resteasy-jaxrs.version}</version>
             </dependency>
 
+            <!-- prometheus -->
+            <dependency>
+                <groupId>io.prometheus</groupId>
+                <artifactId>simpleclient_bom</artifactId>
+                <version>${prometheus.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+
+            <!-- micrometer -->
+            <dependency>
+                <groupId>io.micrometer</groupId>
+                <artifactId>micrometer-core</artifactId>
+                <version>${micrometer.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.micrometer</groupId>
+                <artifactId>micrometer-registry-prometheus</artifactId>
+                <version>${micrometer.version}</version>
+            </dependency>
+
             <!-- netty -->
             <dependency>
                 <groupId>io.netty</groupId>
@@ -783,6 +808,12 @@
                 <artifactId>vertx-hazelcast</artifactId>
                 <version>${vertx4.version}</version>
             </dependency>
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-micrometer-metrics</artifactId>
+                <version>${vertx4.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>com.mchange</groupId>
                 <artifactId>c3p0</artifactId>

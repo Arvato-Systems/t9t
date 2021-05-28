@@ -208,7 +208,7 @@ public class TranslationProvider implements ITranslationProvider {
             try {
                 final int oldIndex = Integer.parseInt(indexStr.substring(1, indexStr.length()-1));
                 replacement = String.format(" #%d", oldIndex+1);
-            } catch(Exception e) {
+            } catch (Exception e) {
                 LOGGER.error("Badly formatted index for {}[{}]: {}", path, indexStr, translation);
                 replacement = indexStr;
             }

@@ -45,10 +45,10 @@ public interface IBpmnPersistenceAccess {
     Long persistNewStatus(ProcessExecutionStatusDTO dto);
 
     /** Retrieves all processDefinitions of current tasks. */
-    List<ProcessExecutionStatusDTO> getTasksDue(String onlyForProcessDefinitionId, Instant whenDue, boolean includeErrorStatus);
+    List<ProcessExecutionStatusDTO> getTasksDue(String onlyForProcessDefinitionId, Instant whenDue, boolean includeErrorStatus, boolean allClusterNodes);
 
     /** Retrieves all processDefinitions of current tasks. */
-    List<Long> getTaskRefsDue(String onlyForProcessDefinitionId, Instant whenDue, boolean includeErrorStatus);
+    List<Long> getTaskRefsDue(String onlyForProcessDefinitionId, Instant whenDue, boolean includeErrorStatus, boolean allClusterNodes);
 
     /** Update existing process execution status */
     Long createOrUpdateNewStatus(RequestContext ctx, ProcessExecutionStatusDTO dto, ExecuteProcessWithRefRequest rq);

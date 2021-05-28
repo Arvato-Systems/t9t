@@ -158,3 +158,10 @@ function setNavi(menuId, subMenuId) {
     $(".nav-menupopup .z-menuitem").not(selectedMenu).removeClass('active');
     selectedSubmMenu.addClass('active');
 }
+
+/**
+* RTL: apply rtl class to body (needed for all pop ups)
+*/ 
+function enableRTL() {
+  document.body.classList+=" rtl ";
+}

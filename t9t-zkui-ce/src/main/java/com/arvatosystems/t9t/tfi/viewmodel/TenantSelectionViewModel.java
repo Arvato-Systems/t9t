@@ -24,14 +24,14 @@ import org.apache.shiro.mgt.RealmSecurityManager;
 import org.apache.shiro.realm.Realm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zhtml.Messagebox;
-import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
 
+import com.arvatosystems.t9t.authc.api.TenantDescription;
+import com.arvatosystems.t9t.base.auth.PermissionEntry;
 import com.arvatosystems.t9t.tfi.general.ApplicationUtil;
 import com.arvatosystems.t9t.tfi.general.Constants;
 import com.arvatosystems.t9t.tfi.services.IUserDAO;
@@ -39,8 +39,6 @@ import com.arvatosystems.t9t.tfi.services.ReturnCodeException;
 import com.arvatosystems.t9t.tfi.web.ApplicationSession;
 import com.arvatosystems.t9t.tfi.web.ZulUtils;
 import com.arvatosystems.t9t.tfi.web.shiro.ICacheableAuthorizationRealm;
-import com.arvatosystems.t9t.authc.api.TenantDescription;
-import com.arvatosystems.t9t.base.auth.PermissionEntry;
 
 import de.jpaw.dp.Jdp;
 
@@ -61,9 +59,9 @@ public class TenantSelectionViewModel {
     @Init
     public void init() {
         Boolean arg = (Boolean) Executions.getCurrent().getArg().get("isCancelClose");
-        try{
+        try {
             isCancelClose = arg == null ? new Boolean(false) : arg;
-        }catch(Exception s){
+        } catch (Exception s) {
             s.printStackTrace();
         }
     }

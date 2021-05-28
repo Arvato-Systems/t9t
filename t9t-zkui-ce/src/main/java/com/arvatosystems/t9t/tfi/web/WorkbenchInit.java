@@ -28,8 +28,8 @@ import com.arvatosystems.t9t.tfi.general.Constants;
 
 
 /**
- *         This is a class which catches the initialization of a ZK page and
- *         redirects accordingly if no user credentials are found
+ * This is a class which catches the initialization of a ZK page and
+ * redirects accordingly if no user credentials are found
  */
 public class WorkbenchInit implements Initiator {
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkbenchInit.class);

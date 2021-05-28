@@ -127,14 +127,14 @@
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:element>
-                    <xs:element name="customerManagerGroupId" minOccurs="0" nillable="true">
+                    <xs:element name="clusterManagerGroupId" minOccurs="0" nillable="true">
                         <xs:simpleType>
                             <xs:restriction base="xs:normalizedString">
                                 <xs:maxLength value="200"/>
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:element>
-                    <xs:element name="customerManagerTopicName" minOccurs="0" nillable="true">
+                    <xs:element name="clusterManagerTopicName" minOccurs="0" nillable="true">
                         <xs:simpleType>
                             <xs:restriction base="xs:normalizedString">
                                 <xs:maxLength value="200"/>

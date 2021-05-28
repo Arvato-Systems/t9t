@@ -15,9 +15,12 @@
  */
 package com.arvatosystems.t9t.base.vertx.impl
 
+import com.arvatosystems.t9t.auth.jwt.JWT
+import com.arvatosystems.t9t.base.T9tConstants
 import com.arvatosystems.t9t.base.api.ServiceResponse
 import com.arvatosystems.t9t.base.services.IFileUtil
 import com.arvatosystems.t9t.base.vertx.IServiceModule
+import com.arvatosystems.t9t.base.vertx.IVertxMetricsProvider
 import com.arvatosystems.t9t.base.vertx.MultiThreadMessageCoderFactory2
 import com.arvatosystems.t9t.cfg.be.ConfigProvider
 import com.arvatosystems.t9t.cfg.be.StatusProvider
@@ -30,6 +33,7 @@ import com.martiansoftware.jsap.Switch
 import de.jpaw.annotations.AddLogger
 import de.jpaw.bonaparte.api.codecs.IMessageCoderFactory
 import de.jpaw.bonaparte.core.BonaPortable
+import de.jpaw.bonaparte.util.DeprecationWarner
 import de.jpaw.dp.Jdp
 import io.vertx.core.AbstractVerticle
 import io.vertx.core.Vertx
@@ -43,22 +47,23 @@ import io.vertx.ext.web.handler.CorsHandler
 import io.vertx.ext.web.handler.StaticHandler
 import java.util.ArrayList
 import java.util.Collections
-import de.jpaw.bonaparte.util.DeprecationWarner
 import java.util.function.Consumer
-import com.arvatosystems.t9t.auth.jwt.JWT
-import com.arvatosystems.t9t.base.T9tConstants
+
+import static de.jpaw.bonaparte.util.DeprecationWarner.*
 
 @AddLogger
 class T9tServer extends AbstractVerticle {
     public static final long MORE_THAN_ONE_YEAR = 500L * 86400L * 1000L;     // JVM update due at least once per year (at least every 500 days)
     // private fields
     static boolean cors     = false;
+    static boolean metrics  = false;
     static int     port     = 8024           // default for http
-    static int     tcpPort  = 8023           // default for TCP/IP
+    static int     tcpPort  = 0              // default for TCP/IP (0 = disabled)
     static String  cfgFile  = null;
     static String  filePath = null;
     static String  corsParm = "*";
     static boolean migrateDb = false;
+    static IVertxMetricsProvider metricsProvider = null;
     final IMessageCoderFactory<BonaPortable, ServiceResponse, byte[]> coderFactory = new MultiThreadMessageCoderFactory2(BonaPortable, ServiceResponse)
 
     // autodetect the port assigned on AWS
@@ -90,6 +95,7 @@ class T9tServer extends AbstractVerticle {
         options.add(new FlaggedOption("tcpport",  JSAP.INTEGER_PARSER, Integer.toString(tcpPort),   JSAP.NOT_REQUIRED, 'P', "tcpport",  "listener port for plain socket (0 to disable)"));
         options.add(new FlaggedOption("corsParm", JSAP.STRING_PARSER,  "*",                         JSAP.NOT_REQUIRED, 'C', "corsParm", "parameter to the CORS handler"));
         options.add(new Switch       ("cors",                                                                          'X', "cors",     "activate CORS handler"));
+        options.add(new Switch       ("metrics",                                                                       'M', "metrics",  "activate (micro)metrics handler"));
         options.add(new FlaggedOption("migrateDb",JSAP.BOOLEAN_PARSER, migrateDb.toString,          JSAP.NOT_REQUIRED, 'm', "migrateDb","Flag whether to migrate db"));
 
         val commandLineOptions = new SimpleJSAP("t9t server", "Runs a simple vert.x / t9t based server", options.toArray(newArrayOfSize(options.size)))
@@ -104,6 +110,7 @@ class T9tServer extends AbstractVerticle {
         tcpPort  = cmd.getInt("tcpport");
         cors     = cmd.getBoolean("cors")
         corsParm = cmd.getString("corsParm");
+        metrics  = cmd.getBoolean("metrics")
         migrateDb= cmd.getBoolean("migrateDb");
 
         // SQL migration: flag must be stored as a system property to allow execution via Jdp startup
@@ -122,7 +129,7 @@ class T9tServer extends AbstractVerticle {
         Collections.sort(modules)
         LOGGER.info("T9t Vert.x server started, modules found are: " + modules.map[moduleName].join(', '))
         val uploadsFolder = Jdp.getRequired(IFileUtil).getAbsolutePath("file-uploads");
-        LOGGER.info("Pathname for file uploads will be {}", uploadsFolder)
+        LOGGER.info("Pathname for file uploads will be {}, CORS is {}, metrics is {}", uploadsFolder, cors, metrics)
 
         if (port > 0) {
             val router = Router.router(vertx) => [
@@ -146,6 +153,9 @@ class T9tServer extends AbstractVerticle {
                         allowRootFileSystemAccess = true
                         maxAgeSeconds             = 5  // no caching while testing
                     ])
+                }
+                if (metricsProvider !== null) {
+                    route("/metrics").handler(metricsProvider.metricsHandler)
                 }
                 if (cors) {
                     LOGGER.info("Setting up CORS handler for origin {}", corsParm)
@@ -182,7 +192,7 @@ class T9tServer extends AbstractVerticle {
         }
         if (tcpPort > 0) {
             // compact format (requires ServiceRequest wrapper)
-            LOGGER.info("Listening on TCP PORT {} (low level socket I/O)", port)
+            LOGGER.info("Listening on TCP PORT {} (low level socket I/O)", tcpPort)
             vertx.createNetServer => [
                 connectHandler [ new TcpSocketHandler(it) ]
                 listen(tcpPort)
@@ -274,6 +284,9 @@ class T9tServer extends AbstractVerticle {
                 additionalInits?.accept(myVertx)
 
                 addShutdownHook(myVertx);
+                if (metricsProvider !== null) {
+                    metricsProvider.installMeters(myVertx);
+                }
                 new Thread([for (;;) Thread.sleep(MORE_THAN_ONE_YEAR)], "t9t-keepalive").start // wait in some other thread
             } else {
                 LOGGER.error("Could not deploy T9tServer verticle", cause)
@@ -290,6 +303,18 @@ class T9tServer extends AbstractVerticle {
         System.setProperty("com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize", "true");   // prevent Illegal reflection access with Java 10 (fixed with jaxb 2.3.1)
     }
 
+    def static void checkForMetricsAndInitialize(VertxOptions options) {
+        options.mergePoolSizes
+        if (metrics) {
+            metricsProvider = Jdp.getOptional(IVertxMetricsProvider);
+            if (metricsProvider !== null) {
+                metricsProvider.setOptions(options);
+            } else {
+                LOGGER.warn("metrics requested via command line, but no metrics provider part of JAR")
+            }
+        }
+    }
+
     def static void main(String[] args) throws Exception {
         LOGGER.info('''t9t vert.x single node based server starting...''')
 
@@ -302,7 +327,7 @@ class T9tServer extends AbstractVerticle {
         Init.initializeT9t
 
         val options = new VertxOptions
-        options.mergePoolSizes
+        checkForMetricsAndInitialize(options)
         Vertx.vertx(options).deployAndRun(null)
     }
 }

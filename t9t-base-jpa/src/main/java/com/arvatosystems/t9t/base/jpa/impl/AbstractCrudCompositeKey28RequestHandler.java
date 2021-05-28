@@ -129,7 +129,7 @@ public abstract class AbstractCrudCompositeKey28RequestHandler<
         try {
             ENTITY entity = resolver.find(key);
             return entity != null && resolver.isOfMatchingTenant(entity);
-        } catch(T9tException e) {
+        } catch (T9tException e) {
             return false;
         }
     }

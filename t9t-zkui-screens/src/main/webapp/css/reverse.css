@@ -24,24 +24,20 @@
 .reverse .z-longbox,
 .reverse .z-doublebox,
 .reverse .z-listheader-cnt,
-.reverse .z-radio-cnt {
-    display: inline-block;
-    direction: rtl;
-    -webkit-transform: scaleX(-1);
-}
-
+.reverse .z-radio-cnt,
+.reverse .z-listheader-content,
+.reverse .z-a,
 .reverse .z-textbox {
     display: inline-block;
     direction: rtl;
     -webkit-transform: scaleX(-1);
 }
 
-
 /* Reverse the order back to default but diplay the text on right */
-.reverse .z-combobox,
+.reverse .z-combobox-input,
 .reverse .z-bandbox-rounded,
 .reverse .z-button,
-.reverse .z-image,
+.reverse .z-a,
 .reverse .z-listcell,
 .reverse .z-window-embedded-header,
 .reverse .z-caption,
@@ -49,33 +45,61 @@
 .reverse .z-paging,
 .reverse .z-tab-text,
 .reverse .z-listbox-empty-body,
-.reverse .z-datebox {
+.reverse .z-nav-text,
+.reverse .z-navitem-text,
+.reverse .z-groupbox-title-content,
+.reverse .z-listbox-emptybody-content,
+.reverse .z-caption-content,
+.reverse .z-checkbox input,
+.reverse .z-button-image,
+.reverse .z-datebox-input
+{
     -webkit-transform: scaleX(-1);
 }
 
-.reverse .z-label {
+.reverse .z-a > .z-label {
+    -webkit-transform: scale(1);
+}
+
+.reverse .z-listcell .z-decimalbox,
+.reverse .z-listcell .z-intbox,
+.reverse .z-listcell .z-longbox,
+.reverse .z-listcell .z-doublebox,
+.reverse .z-listcell .z-listheader-cnt,
+.reverse .z-listcell .z-radio-cnt,
+.reverse .z-listcell .z-listheader-content,
+.reverse .z-listcell .z-a,
+.reverse .z-listcell .z-textbox,
+.reverse .z-listcell .z-checkbox input {
+    -webkit-transform: scaleX(1);
+}
+.reverse .z-listcell .z-combobox {
+    -webkit-transform: scaleX(-1);
+}
+
+.reverse .z-label,
+.reverse .z-checkbox-content {
     display: inline-block;
     -webkit-transform: scaleX(-1);
+    direction: rtl;
 }
 
 .reverse .t9t-info {
-    text-align: right;
+    text-align: left;
     direction: rtl;
     -webkit-transform: scaleX(1);
 }
 
-.reverse .z-combobox-inp,
-.reverse .z-bandbox-rounded-inp,
+.reverse .z-combobox-input,
+.reverse .z-combobox-content > .z-comboitem,
+.reverse .z-bandbox-rounded-input,
 .reverse .z-window-embedded-header,
 .reverse .z-caption,
 .reverse .z-listcell,
 .reverse .z-listheader-cnt,
-.reverse .z-datebox-inp {
+.reverse .z-datebox-input {
     text-align: right;
 }
-
-
-
 
 /* Custom Bandbox & Combobox for reverse order */
 .z-bandbox-rounded-pp {
@@ -116,4 +140,102 @@
 /*  Change the combo box button image for dynamic combo boxes to have differences between the two types */
 .dropdown .z-icon-caret-down::before {
     content: "*";
+}
+
+.dropdown .z-combobox-input,
+.reverse .z-datebox-input,
+.reverse .z-textbox  {
+    padding-right: 15px;
+}
+
+.z-combobox-popup {
+    -webkit-transform: scaleX(-1);
+}
+
+.z-combobox-popup .z-comboitem {
+    -webkit-transform: scaleX(-1);
+    text-align: right;
+}
+
+.reverse .z-north-header,
+.reverse .z-north-collapsed {
+    -webkit-transform: scaleX(-1);
+    direction: rtl;
+}
+
+/** fix the toggle of search result icon on rtl */
+.reverse .z-north-header i,
+.reverse .z-north-collapsed i {
+    right: unset;
+    left: 0px;
+}
+
+/** fix the right nav bar is not at right place **/
+.reverse .right-nav .z-a {
+    display: block;
+}
+
+/* error pop up  for RTL **/
+.rtl .z-errorbox {
+    -webkit-transform: scaleX(-1);
+    margin-left: -10px;
+}
+
+.rtl .z-errorbox-content {
+    -webkit-transform: scaleX(-1);
+    direction: rtl;
+}
+
+.rtl .z-errorbox-pointer {
+    display: none !important;
+}
+/** pop up outside reverse class div */
+.rtl > .z-window,
+.rtl > .z-menupopup {
+    direction: rtl;
+}
+
+.rtl .z-menuitem-content {
+    padding-right: 10px;
+    padding-left: 15px;
+}
+
+.rtl > .z-menupopup .z-menuitem-icon {
+    left: unset;
+}
+
+.rtl > .z-window td {
+    text-align: right;
+}
+
+.rtl > .z-window .z-window-icons {
+    float: left;
+}
+
+.rtl > .z-datebox-popup {
+    direction: rtl;
+}
+
+.rtl > .z-datebox-popup .z-timebox {
+     -webkit-transform: scaleX(-1);
+}
+
+.rtl > .z-datebox-popup .z-timebox-input {
+     -webkit-transform: scaleX(-1);
+     padding-right: 5px
+}
+
+.rtl .z-loading {
+    left: unset !important;
+    right: 0;
+    direction: rtl;
+}
+
+.rtl > .z-window .z-combobox {
+    -webkit-transform: scaleX(-1);
+}
+
+.rtl > .z-window .z-combobox-input {
+    -webkit-transform: scaleX(-1);
+    padding-right: 10px;
 }

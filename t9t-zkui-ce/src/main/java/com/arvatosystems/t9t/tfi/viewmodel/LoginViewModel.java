@@ -174,9 +174,9 @@ public class LoginViewModel {
     public void onLanguageChanged(@BindingParam("localeValue") String localeValue) {
         // String localeValue = ((com.arvatosystems.t9t.tfi.model.bean.ComboBoxItem) self.getSelectedItem().getValue()).getValue();
         Locale prefer_locale = null;
-        if(localeValue!=null && localeValue.length()==5){
+        if (localeValue != null && localeValue.length() == 5) {
             prefer_locale = new Locale(localeValue.substring(0,2),localeValue.substring(3,5));
-        }else{
+        } else {
             prefer_locale = new Locale(localeValue);
         }
         Sessions.getCurrent().setAttribute(org.zkoss.web.Attributes.PREFERRED_LOCALE, prefer_locale);
@@ -206,10 +206,10 @@ public class LoginViewModel {
     public void onLanguageChange() {
         String localeValue = selected.getValue();
         Locale prefer_locale = null;
-        if(localeValue!=null && localeValue.length()==5){
-         prefer_locale = new Locale(localeValue.substring(0,2),localeValue.substring(3,5));
-        }else{
-         prefer_locale = new Locale(localeValue);
+        if (localeValue!=null && localeValue.length() == 5) {
+            prefer_locale = new Locale(localeValue.substring(0,2),localeValue.substring(3,5));
+        } else {
+            prefer_locale = new Locale(localeValue);
         }
         Sessions.getCurrent().setAttribute(org.zkoss.web.Attributes.PREFERRED_LOCALE, prefer_locale);
     }

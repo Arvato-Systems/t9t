@@ -148,7 +148,7 @@ public class CkEditor28 extends Row {
                 }
                 mediaDataByteArray = mediaData.getRawData().getBytes();
                 anchorToDisplayImage.setContent(image);
-            }else {
+            } else {
                 mediaDataByteArray = null;
                 anchorToDisplayImage.setSrc(null);
             }

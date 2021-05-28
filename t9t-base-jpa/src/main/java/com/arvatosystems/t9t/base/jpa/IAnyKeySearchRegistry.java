@@ -14,7 +14,7 @@ public interface IAnyKeySearchRegistry {
 
     /** Register a new LeanSearchRequestHandler, to resolve a ref of specific RTTI. */
     void registerLeanSearchRequest(BiFunction<RequestContext, Long, List<Description>> resolver, int rtti, String classname);
-    
+
     /** Apply a search. */
     ResolveAnyRefResponse performLookup(RequestContext ctx, Long ref);
 }

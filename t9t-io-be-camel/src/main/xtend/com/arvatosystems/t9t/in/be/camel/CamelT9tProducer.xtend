@@ -74,7 +74,7 @@ class CamelT9tProducer extends DefaultProducer {
 
             inputSession.process(inputStream)
 
-        } catch(Exception e) {
+        } catch (Exception e) {
             LOGGER.error("Processor error for dataSinkDTO {}: {}", dataSinkDTO, e)
             throw e
         } finally {

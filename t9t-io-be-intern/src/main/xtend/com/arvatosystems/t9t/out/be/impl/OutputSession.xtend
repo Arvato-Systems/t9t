@@ -369,15 +369,15 @@ class OutputSession implements IOutputSession {
             try {
                 outputResource.close
                 thisSink.camelTransferStatus = ExportStatusEnum.RESPONSE_OK
-            } catch(Exception e) {
+            } catch (Exception e) {
                 thisSink.camelTransferStatus = ExportStatusEnum.RESPONSE_ERROR
                 // throw this error after writing sink
                 outputResourceCloseError = e;
             }
 
             // check if there is a Camel transfer to be performed
-            if (sinkCfg.camelRoute !== null && (sinkCfg.camelExecution == CamelExecutionScheduleType.SCHEDULED || sinkCfg.camelExecution == CamelExecutionScheduleType.ASYNCHRONOUSLY) 
-                && !(sourceRecordCounter == 0 && Boolean.FALSE == sinkCfg.skipZeroRecordSinkRefs && sinkCfg.lazyOpen) // TBE-451: make sure the camelTransferStatus is set to RESPONSE_OK because camel will throw exception on empty file 
+            if (sinkCfg.camelRoute !== null && (sinkCfg.camelExecution == CamelExecutionScheduleType.SCHEDULED || sinkCfg.camelExecution == CamelExecutionScheduleType.ASYNCHRONOUSLY)
+                && !(sourceRecordCounter == 0 && Boolean.FALSE == sinkCfg.skipZeroRecordSinkRefs && sinkCfg.lazyOpen) // TBE-451: make sure the camelTransferStatus is set to RESPONSE_OK because camel will throw exception on empty file
             ) {
                 thisSink.camelTransferStatus = ExportStatusEnum.READY_TO_EXPORT;
                 LOGGER.debug("Setting Sink {} to camelTransferStatus: {} due to camel transfer to be performed", thisSink.getObjectRef(), thisSink.camelTransferStatus)
@@ -402,7 +402,7 @@ class OutputSession implements IOutputSession {
         usedFormat = null;
         currentState = State.CLOSED;
 
-        if(outputResourceCloseError !== null) {
+        if (outputResourceCloseError !== null) {
             // if outputResource throws an error: throw it now after sink setup
             throw outputResourceCloseError;
         }

@@ -1,3 +1,18 @@
+/*
+ * Copyright (c) 2012 - 2020 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.arvatosystems.t9t.cluster.be.kafka.impl;
 
 import java.time.Duration;
@@ -123,7 +138,7 @@ public class KafkaClusterManagerInitializer implements StartupShutdown {
         final Map<String, Object> props = new HashMap<>(10);
         final String defaultBootstrapServers = defaults == null ? null : defaults.getDefaultBootstrapServers();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, defaultBootstrapServers);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, nvl(defaults.getCustomerManagerGroupId(), KAFKA_CLUSTER_GROUP_ID));
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, nvl(defaults.getClusterManagerGroupId(), KAFKA_CLUSTER_GROUP_ID));
 //        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
 //        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ByteArrayDeserializer.class.getName());
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, Boolean.FALSE);  // or "false" as found in examples?
@@ -137,7 +152,7 @@ public class KafkaClusterManagerInitializer implements StartupShutdown {
             LOGGER.info("No Kafka input initialization - missing or incomplete Kafka configuration in config XML: bootstrap servers or API key missing");
             return;
         }
-        topicName = nvl(defaults.getCustomerManagerTopicName(), KAFKA_CLUSTER_TOPIC_NAME);
+        topicName = nvl(defaults.getClusterManagerTopicName(), KAFKA_CLUSTER_TOPIC_NAME);
         LOGGER.info("Setting up Kafka consumer for cluster node management, using topic {}", topicName);
         executorKafkaIO = Executors.newSingleThreadExecutor(call -> new Thread(call, "t9t-KafkaCluster"));
         writerResult = executorKafkaIO.submit(new WriterThread());

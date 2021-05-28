@@ -48,7 +48,7 @@ public class T9tDocTools {
      * Convert a template. All occurrences of prefixOld will be replaced by prefixNew, unless it is followed fieldsToExclude.
      * This is not a 100% safe conversion, because we do not parse the full template. An occurrence of "d." within regular text could
      * be falsely converted, but the probability is low.
-     * It is not sufficient to check for ${d. only, because the variable could be used within an expression.    
+     * It is not sufficient to check for ${d. only, because the variable could be used within an expression.
      **/
     public static String convertTemplateAddOrSwapPrefix(String templateIn, String prefixOld, String prefixNew, Collection<String> rawFieldsToExclude) {
         final String oldPattern = COMMON_PREFIX + prefixOld;
@@ -64,7 +64,7 @@ public class T9tDocTools {
                 fieldsToExclude = rawFieldsToExclude;
             }
         }
-        int nextCandidatePos = templateIn.indexOf(oldPattern); 
+        int nextCandidatePos = templateIn.indexOf(oldPattern);
         if (nextCandidatePos < 0) {
             // shortcut: no single occurrence
             return templateIn;
@@ -79,9 +79,9 @@ public class T9tDocTools {
             // source is [readPos ... nextCandidatePos + COMMON_PREFIX.length)
             sb.append(templateIn.substring(transferredUpTo, nextCandidatePos + COMMON_PREFIX.length()));
             transferredUpTo = nextCandidatePos + COMMON_PREFIX.length();
-            
+
             // check if the previous character is not part of the same identifier
-            final char previousChar = nextCandidatePos == 0 ? ' ' : templateIn.charAt(nextCandidatePos-1); 
+            final char previousChar = nextCandidatePos == 0 ? ' ' : templateIn.charAt(nextCandidatePos-1);
             if (previousChar != UNDERSCORE && !Character.isLetterOrDigit(previousChar)) {
                 boolean skipThis = false;
                 for (String exclusion: fieldsToExclude) {
