@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.tfi.model.bean.Navi;
 import com.arvatosystems.t9t.tfi.web.ApplicationSession;
+import com.arvatosystems.t9t.tfi.web.T9TConfigConstants;
 import com.arvatosystems.t9t.tfi.web.ZulUtils;
 
 import de.jpaw.bonaparte.pojos.api.OperationType;
@@ -45,7 +46,7 @@ public class MenuUtil {
     public static void readMenuConfiguration(ApplicationSession as, final List<Navi> navis) {
         navis.clear();
 
-        Boolean showMenuItem = Boolean.valueOf(ZulUtils.readConfig("menu.use_menu_icons"));
+        final boolean showMenuItem = ZulUtils.readBooleanConfig(T9TConfigConstants.MENU_USE_ICONS);
 
         Map<String, String> categories = new HashMap<String, String>(40); // caches the CATEGORY translations because they are likely to occur multiple times
         String[] menuConfigurations = ZulUtils.readConfig("menu.config").split("\\s*,\\s*"); // trim and split each element

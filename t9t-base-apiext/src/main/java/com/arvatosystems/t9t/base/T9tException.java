@@ -177,6 +177,8 @@ public class T9tException extends ApplicationException {
     public static final int UPSTREAM_BAD_RESPONSE       = OFFSET_TIMEOUT + 311;
     public static final int UPSTREAM_BAD_MEDIA_TYPE     = OFFSET_TIMEOUT + 312;
 
+    public static final int REQUEST_STILL_PROCESSING    = OFFSET_TIMEOUT + 333;
+
     // Cross module call
     public static final int REF_RESOLVER_WRONG_RESPONSE_TYPE = OFFSET + 350;
 
@@ -262,6 +264,13 @@ public class T9tException extends ApplicationException {
     public static final int UNSUPPORTED_OPERAND = OFFSET + 993;
 
 
+    // constants for messages which are accessed directly
+    public static final String MSG_REQUEST_STILL_PROCESSING     = "Duplicate request detected - other thread still processing";
+    public static final String MSG_SHUTDOWN_IN_PROGRESS         = "Server shutdown initiated, no more requests will be served - try again later";
+    public static final String MSG_JWT_INCOMPLETE               = "The JWT is missing some required data";
+    public static final String MSG_JWT_EXPIRED                  = "The JWT is no longer valid, please obtain a new one";
+
+
     // CHECKSTYLE.ON: DeclarationOrder
     // CHECKSTYLE.ON: JavadocVariable
 
@@ -336,13 +345,13 @@ public class T9tException extends ApplicationException {
             codeToDescription.put(WRITE_ACCESS_NOT_FOUND_PROBABLY_OTHER_TENANT, "Record for update not found, probably due to existing one in different tenant");
             codeToDescription.put(COULD_NOT_ACQUIRE_LOCK, "Could not acquire lock (Semaphore) on object within allowed time");
 
-            codeToDescription.put(JWT_EXPIRED, "The JWT is no longer valid, please obtain a new one");
+            codeToDescription.put(JWT_EXPIRED, MSG_JWT_EXPIRED);
             codeToDescription.put(JWT_TIMING,  "The JWT has unplausible time information");
-            codeToDescription.put(JWT_INCOMPLETE,  "The JWT is missing some required data");
+            codeToDescription.put(JWT_INCOMPLETE,  MSG_JWT_INCOMPLETE);
             codeToDescription.put(BAD_TIME_SLICE, "The time slice should allow an integral number of runs per day, i.e. be a divisor of 86400.");
             codeToDescription.put(FIND_ON_NULL_KEY, "Attempt to find a record with a null for ID");
             codeToDescription.put(STALLED_LOG_WRITER, "Failed to write log, logwriter thread crashed?");
-            codeToDescription.put(SHUTDOWN_IN_PROGRESS, "Server shutdown initiated, no more requests will be served - try again later");
+            codeToDescription.put(SHUTDOWN_IN_PROGRESS, MSG_SHUTDOWN_IN_PROGRESS);
             codeToDescription.put(CANNOT_CLOSE_SINK, "Exception while closing data sink");
             codeToDescription.put(UPSTREAM_NULL_RESPONSE, "Received no response from upstream");
             codeToDescription.put(UPSTREAM_BAD_RESPONSE, "Received a response of bad type, expected ServiceResponse");
@@ -491,6 +500,8 @@ public class T9tException extends ApplicationException {
             codeToDescription.put(BAD_S3_BUCKET_NAME, "Bad S3 Bucket name (must be bucket:path)");
             codeToDescription.put(S3_WRITE_ERROR, "Exception writing to S3 bucket");
             codeToDescription.put(SQS_WRITE_ERROR, "Exception writing to SQS bucket");
+
+            codeToDescription.put(REQUEST_STILL_PROCESSING, MSG_REQUEST_STILL_PROCESSING);
 
             codeToDescription.put(INVALID_EVENT_TYPE, "Can't handle this type of event");
             codeToDescription.put(THREAD_INTERRUPTED, "The thread was interrupted (got a termination signal)");

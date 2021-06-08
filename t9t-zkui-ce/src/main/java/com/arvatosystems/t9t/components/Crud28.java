@@ -43,6 +43,8 @@ import com.arvatosystems.t9t.components.crud.AbstractCrudVM;
 import com.arvatosystems.t9t.components.crud.AbstractCrudVM.CrudMode;
 import com.arvatosystems.t9t.components.crud.ICrudNotifier;
 import com.arvatosystems.t9t.tfi.web.ApplicationSession;
+import com.arvatosystems.t9t.tfi.web.T9TConfigConstants;
+import com.arvatosystems.t9t.tfi.web.ZulUtils;
 import com.google.common.collect.ImmutableMap;
 
 import de.jpaw.bonaparte.core.BonaPortable;
@@ -67,10 +69,12 @@ public class Crud28 extends Vlayout implements IViewModelOwner, IDataSelectRecei
     @Wire("#deleteButton")     protected Button28 deleteButton;
     @Wire("#activateButton")   protected Button28 activateButton;
     @Wire("#deactivateButton") protected Button28 deactivateButton;
+    @Wire("#editButton")       protected Button28 editButton;
 
     protected IDataSelectReceiver detailsSection;  // the data form, which may be a tabbbox with separate panels
     protected Permissionset perms;  // available after onCreate
     protected CrudMode currentMode = CrudMode.NONE;
+    protected boolean useProtectedView = ZulUtils.readBooleanConfig(T9TConfigConstants.CRUD_PROTECTED_VIEW); // see also AbstractCrudVM
 
     protected String viewModelId;
     protected CrudViewModel<BonaPortable, TrackingBase> crudViewModel;  // set when gridId is defined
@@ -98,6 +102,16 @@ public class Crud28 extends Vlayout implements IViewModelOwner, IDataSelectRecei
             deleteButton.setDisabled    (true);
             activateButton.setDisabled  (true);
             deactivateButton.setDisabled(true);
+            editButton.setDisabled      (true);
+            break;
+        case CURRENT_PROTECTED_VIEW:
+            editButton.setDisabled      (false);
+            saveButton.setDisabled      (true);
+            newButton.setDisabled       (false);
+            copyButton.setDisabled      (false);
+            deleteButton.setDisabled    (false);
+            activateButton.setDisabled  (false);
+            deactivateButton.setDisabled(false);
             break;
         case CURRENT:
         case CURRENT_RO:
@@ -107,6 +121,7 @@ public class Crud28 extends Vlayout implements IViewModelOwner, IDataSelectRecei
             deleteButton.setDisabled    (currentMode == CrudMode.CURRENT_RO);
             activateButton.setDisabled  (currentMode == CrudMode.CURRENT_RO);
             deactivateButton.setDisabled(currentMode == CrudMode.CURRENT_RO);
+            editButton.setDisabled      (true);
             break;
         }
         // update child forms
@@ -127,8 +142,13 @@ public class Crud28 extends Vlayout implements IViewModelOwner, IDataSelectRecei
             copyButton.setVisible(false);
             newButton.setVisible(false);
         }
-        if (!perms.contains(OperationType.UPDATE))  // saveButton is needed for NEW / COPY as well, to persist!
+        editButton.setVisible(false);
+        if (!perms.contains(OperationType.UPDATE)) { // saveButton is needed for NEW / COPY as well, to persist!
             saveButton.setVisible(false);
+            if (useProtectedView) {
+                editButton.setVisible(true);
+            }
+        }
         if (!perms.contains(OperationType.ACTIVATE))
             activateButton.setVisible(false);
         if (!perms.contains(OperationType.INACTIVATE))
@@ -141,6 +161,7 @@ public class Crud28 extends Vlayout implements IViewModelOwner, IDataSelectRecei
             AbstractCrudVM viewModelInstance = (AbstractCrudVM)binder.getViewModel();
             LOGGER.debug("viewmodel is of class {}", viewModelInstance.getClass().getCanonicalName());
             viewModelInstance.setHardLink(this);
+            viewModelInstance.setUseProtectedView(useProtectedView);
         }
         // move contents and wire events: A row selected event has to be forwarded to the contents of this component
         List<Component> children = ComponentTools28.moveChilds(this, crudButtons, null);
@@ -169,6 +190,7 @@ public class Crud28 extends Vlayout implements IViewModelOwner, IDataSelectRecei
         deleteButton    .addEventListener(Events.ON_CLICK, ev -> { binder.sendCommand("commandDelete", NO_ARGS); invalidateCache(); });
         activateButton  .addEventListener(Events.ON_CLICK, ev -> binder.sendCommand("commandActivate", NO_ARGS));
         deactivateButton.addEventListener(Events.ON_CLICK, ev -> binder.sendCommand("commandDeactivate", NO_ARGS));
+        editButton      .addEventListener(Events.ON_CLICK, ev -> binder.sendCommand("commandEdit", NO_ARGS));
     }
 
     protected void invalidateCache() {
@@ -226,6 +248,10 @@ public class Crud28 extends Vlayout implements IViewModelOwner, IDataSelectRecei
 
     public CrudMode getCurrentMode() {
         return currentMode;
+    }
+
+    public void setUseProtectedView(boolean useProtectedView) {
+        this.useProtectedView = useProtectedView;
     }
 
     @Override

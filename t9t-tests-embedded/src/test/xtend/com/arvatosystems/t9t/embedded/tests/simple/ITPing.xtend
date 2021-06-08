@@ -66,7 +66,10 @@ class ITPing {
 
         // launch 10 requests which take a while...
         for (var int i = 0; i < 10; i += 1) {
-            dlg.okIO(new ExecuteAsyncRequest(new PauseRequest(i, 1000)))     // 1 sec pause
+            val pause = new PauseRequest
+            pause.delayInMillis = 1000
+            pause.pingId = i
+            dlg.okIO(new ExecuteAsyncRequest(pause))     // 1 sec pause
             Thread.sleep(50L)   // wait 50 ms
         }
         // query status now
@@ -84,8 +87,10 @@ class ITPing {
     @Test
     def public void exceptionAndPingTest() {            // 1 ping after an exception
         val dlg = new Connection
-
-        dlg.doIO(new ExceptionRequest(334756835, "expected error"))
+        val erq = new ExceptionRequest
+        erq.returnCode = 334756835
+        erq.errorMessage = "expected error"
+        dlg.doIO(erq)
         dlg.okIO(new PingRequest)
     }
 

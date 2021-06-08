@@ -1,6 +1,7 @@
 <zk>
     <hlayout id="crudButtons" sclass="buttons">
         <button28 id="saveButton" />
+        <button28 id="editButton" />
         <button28 id="deleteButton"/>
         <button28 id="newButton"/>
         <button28 id="copyButton"/>

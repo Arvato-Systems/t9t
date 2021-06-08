@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.base;
 
+import java.util.UUID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +28,6 @@ import com.arvatosystems.t9t.base.auth.PermissionType;
 
 import de.jpaw.bonaparte.core.BonaPortableFactory;
 import de.jpaw.util.ApplicationException;
-import de.jpaw.util.ByteArray;
 
 /**
  * Utility class in charge of providing common utility functionality to be used in the scope of the overall message processing.
@@ -126,7 +127,7 @@ public final class MessagingUtil {
      * @param errorCode
      *            The error code to include in the response
      */
-    public static ServiceResponse createServiceResponse(int errorCode, String errorDetails, ByteArray messageId, Long processRef) {
+    public static ServiceResponse createServiceResponse(int errorCode, String errorDetails, UUID messageId, Long processRef) {
         ServiceResponse response = new ServiceResponse();
         if (errorCode > 99999999) {
             String errorMessage = T9tException.codeToString(errorCode);
@@ -154,13 +155,13 @@ public final class MessagingUtil {
         return resp;
     }
 
-    public static ServiceResponse createError(ApplicationException e, String tenantId, ByteArray messageId, Long processRef) {
+    public static ServiceResponse createError(ApplicationException e, String tenantId, UUID messageId, Long processRef) {
         ServiceResponse resp = new ServiceResponse();
         resp.setReturnCode(e.getErrorCode());
         resp.setErrorMessage(truncField(e.getMessage(), ServiceResponse.meta$$errorMessage.getLength()));
         resp.setTenantId(tenantId);
         resp.setProcessRef(processRef);
-        if (messageId != null && messageId.length() <= ServiceResponse.meta$$messageId.getLength())
+        if (messageId != null)
             resp.setMessageId(messageId);
         return resp;
     }

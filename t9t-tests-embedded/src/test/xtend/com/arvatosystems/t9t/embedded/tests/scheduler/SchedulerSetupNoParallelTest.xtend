@@ -59,10 +59,12 @@ class SchedulerSetupNoParallelTest {
 
     @Test
     def void createSchedulerAndKillTest() {
+        val pause = new PauseRequest
+        pause.delayInMillis = 2000
         val requestRef = dlg.createCannedRequestWithParameters('testSlowHello', 'Say hello twice',
             new BatchRequest(false, #[
                 new LogMessageRequest('A'),
-                new PauseRequest(null, 2000),
+                pause,
                 new LogMessageRequest('B')
             ])
         )

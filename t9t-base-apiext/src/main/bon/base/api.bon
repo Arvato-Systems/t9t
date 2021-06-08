@@ -23,7 +23,7 @@ import t9t.base.types.*
 package (com.arvatosystems) t9t.base.api {
     default private unsigned trim noControlChars;
 
-    type messageId              is Binary(16);
+    type messageId              is Uuid;
     type jmsAddress             is Ascii(64);           // a name that can be used took lookup a jms ressource on jndi
 
     /** Defines the behaviour how to deal with resent (duplicate sent) messages */
@@ -50,6 +50,8 @@ package (com.arvatosystems) t9t.base.api {
 
     /** The RequestParameters provide an artifical common base class, only required because JAXB cannot deal with interfaces (BonaPortable as common request parameter class). */
     abstract class RequestParameters return ServiceResponse {
+        optional messageId                          messageId;                  // a unique ID assigned by the sender or JMS transport, to allow detection of resent messages
+        optional Enum RetryAdviceType               idempotencyBehaviour;       // defaults to RETRY_ON_ERROR
     }
 
     /** The ContextlessRequestParameters provide an artifical common base class for handlers operating outside of a request scope (scripts, macros, outer loops). */

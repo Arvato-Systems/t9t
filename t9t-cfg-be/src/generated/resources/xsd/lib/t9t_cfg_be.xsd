@@ -463,6 +463,20 @@
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:element>
+                    <xs:element name="idempotencyCacheMaxEntries" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:unsignedInt">
+                                <xs:maxInclusive value="2147483647"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="idempotencyCacheExpiry" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:unsignedInt">
+                                <xs:maxInclusive value="2147483647"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>

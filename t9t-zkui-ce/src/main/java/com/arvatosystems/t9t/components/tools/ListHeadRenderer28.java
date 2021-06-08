@@ -49,6 +49,7 @@ import com.arvatosystems.t9t.components.Filter28;
 import com.arvatosystems.t9t.components.Grid28;
 import com.arvatosystems.t9t.components.TwoSections28;
 import com.arvatosystems.t9t.tfi.web.ApplicationSession;
+import com.arvatosystems.t9t.tfi.web.T9TConfigConstants;
 import com.arvatosystems.t9t.tfi.web.ZulUtils;
 
 import de.jpaw.bonaparte.core.BonaPortableClass;
@@ -63,7 +64,6 @@ public class ListHeadRenderer28 {
     private static final Logger LOGGER              = LoggerFactory.getLogger(ListHeadRenderer28.class);
     private static final String GRID_CHANGE_STYLE   = "border:1px solid #DD4B39;";
     public  static final String PREFIX_GRIDCONFIG28 = "com.gridconfig";
-    private static final String MARK_RED_ON_SORT    = "grid.markRedOnSort";
     private final ApplicationSession session = ApplicationSession.get();
     private final ListItemRenderer28<?> defaultListItemRenderer;
     private final ILeanGridConfigResolver gridConfigResolver;
@@ -282,11 +282,7 @@ public class ListHeadRenderer28 {
 
         gridConfigResolver.newSort(fieldname, !isAscending);
         grid.search();
-        boolean markRedOnSort = false;
-        String markRedOnSortConfig = ZulUtils.readConfig(MARK_RED_ON_SORT);
-        if (markRedOnSortConfig != null) {
-            markRedOnSort = Boolean.valueOf(markRedOnSortConfig);
-        }
+        boolean markRedOnSort = ZulUtils.readBooleanConfig(T9TConfigConstants.GRID_MARK_RED_ON_SORT);
         if (markRedOnSort) {
             gridHasChanged();
         }

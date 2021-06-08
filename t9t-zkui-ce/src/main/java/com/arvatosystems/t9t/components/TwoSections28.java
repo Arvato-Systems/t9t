@@ -35,6 +35,7 @@ import com.arvatosystems.t9t.component.ext.IGridIdOwner;
 import com.arvatosystems.t9t.component.ext.IPermissionOwner;
 import com.arvatosystems.t9t.component.fields.fixedfilters.IFixedFilter;
 import com.arvatosystems.t9t.tfi.web.ApplicationSession;
+import com.arvatosystems.t9t.tfi.web.T9TConfigConstants;
 import com.arvatosystems.t9t.tfi.web.ZulUtils;
 import com.google.common.base.Strings;
 
@@ -74,10 +75,7 @@ public class TwoSections28 extends Vlayout implements IGridIdOwner, IPermissionO
         Executions.createComponents("/component/twosections28.zul", this, null);
         Selectors.wireComponents(this, this, false);
         // Selectors.wireEventListeners(this, this);
-        final String defaultAutocollapse = ZulUtils.readConfig("grid.results.autoCollapse");
-        if (defaultAutocollapse != null) {
-            autoCollapse = Boolean.valueOf(defaultAutocollapse);
-        }
+        autoCollapse = ZulUtils.readBooleanConfig(T9TConfigConstants.GRID_AUTOCOLLAPSE);
 
         filters.addEventListener("onSearch", (Event ev) -> {
             Object o = ev.getData();

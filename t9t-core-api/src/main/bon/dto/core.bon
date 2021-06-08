@@ -21,7 +21,7 @@ import t9t.base.api.*
 
 package (com.arvatosystems) t9t.core {
     default private unsigned trim noControlChars;
-    properties noJava, simpleref, compact2,
+    properties noJava, simpleref, dontStoreNulls, compact2,
         tenantCategory is com.arvatosystems.t9t.annotations.TenantCategory(),
         searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
         serialized is com.arvatosystems.t9t.annotations.StoreSerialized,
@@ -48,15 +48,15 @@ package (com.arvatosystems) t9t.core {
     class CannedRequestRef RTTI 11 extends Ref {}
 
     final class CannedRequestKey extends CannedRequestRef {
-        required cannedRequestId                    requestId           properties notupdatable;    // the logical key for this record
+        required cannedRequestId                    requestId           properties notupdatable;            // the logical key for this record
     }
 
     class CannedRequestDTO extends CannedRequestRef {
         properties tenantCategory="D";
-        required cannedRequestId                    requestId           properties notupdatable;    // the logical key for this record
-        required Unicode(80)                        name;                                       // explanation / purpose in primary language
-        optional Unicode(255)                       jobRequestObjectName;                       // the PQON of the object extending RequestParameters (if null, then request itself must be populated)
-        optional Json                               jobParameters;                              // readable JSON format of the parameters
-        optional (RequestParameters...)             request             properties serialized, compact2;  // filled by backend (for CRUD C and U operations), the canned request including parameters
+        required cannedRequestId                    requestId           properties notupdatable;            // the logical key for this record
+        required Unicode(80)                        name;                                                   // explanation / purpose in primary language
+        optional Unicode(255)                       jobRequestObjectName;                                   // the PQON of the object extending RequestParameters (if null, then request itself must be populated)
+        optional Json                               jobParameters       properties dontStoreNulls;          // readable JSON format of the parameters (omitting nulls)
+        optional (RequestParameters...)             request             properties serialized, compact2;    // filled by backend (for CRUD C and U operations), the canned request including parameters
     }
 }

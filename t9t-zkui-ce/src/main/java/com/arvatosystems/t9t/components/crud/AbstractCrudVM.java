@@ -30,6 +30,8 @@ import com.arvatosystems.t9t.base.crud.CrudAnyKeyResponse;
 import com.arvatosystems.t9t.base.search.Description;
 import com.arvatosystems.t9t.base.search.ResolveAnyRefRequest;
 import com.arvatosystems.t9t.base.search.ResolveAnyRefResponse;
+import com.arvatosystems.t9t.tfi.web.T9TConfigConstants;
+import com.arvatosystems.t9t.tfi.web.ZulUtils;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.DataWithTracking;
@@ -48,12 +50,18 @@ public abstract class AbstractCrudVM<
   > extends AbstractViewOnlyVM<DTO, TRACKING> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCrudVM.class);
     protected ICrudNotifier hardLink = null;
+    protected boolean useProtectedView;
+
+    public void setUseProtectedView(boolean useProtectedView) {
+        this.useProtectedView = useProtectedView;
+    }
 
     public enum CrudMode {
         NONE,           // no current record, not yet pushed "NEW"
         UNSAVED_NEW,    // editing new record, not yet saved
         CURRENT,        // editing some existing record
-        CURRENT_RO      // showing some existing record, no edit allowed (no permissions)
+        CURRENT_RO,      // showing some existing record, no edit allowed (no permissions),
+        CURRENT_PROTECTED_VIEW    // this is a protected view mode to avoid unintentional modification
     }
     protected CrudMode currentMode                            = CrudMode.NONE;
     protected final static String COMMON                      = "com";
@@ -83,12 +91,17 @@ public abstract class AbstractCrudVM<
             crudRq.setCrud(OperationType.CREATE);
             crudRq.setData(data);
             runCrud(crudRq, Boolean.FALSE);
-            setCurrentMode(CrudMode.CURRENT);
+            setCurrentMode(useProtectedView ? CrudMode.CURRENT_PROTECTED_VIEW : CrudMode.CURRENT);
         } else {
             CrudAnyKeyRequest<DTO, TRACKING> crudRq = createCrudWithKey();
             crudRq.setCrud(OperationType.UPDATE);
             crudRq.setData(data);
             runCrud(crudRq, Boolean.TRUE);
+        }
+        boolean showMessage = ZulUtils.readBooleanConfig(T9TConfigConstants.CRUD_SHOW_MESSAGE);
+        if (showMessage) {
+            Messagebox.show(session.translate(COMMON, "saved"), session.translate(COMMON, "info"), Messagebox.OK,
+                    Messagebox.INFORMATION);
         }
     }
     @NotifyChange("*")
@@ -129,6 +142,11 @@ public abstract class AbstractCrudVM<
     @Command
     public void commandDeactivate() {
         activateDeactivate(false);
+    }
+    @NotifyChange("*")
+    @Command
+    public void commandEdit() {
+        setCurrentMode(CrudMode.CURRENT);
     }
 
     protected abstract CrudAnyKeyRequest<DTO, TRACKING> createCrudWithKey();
@@ -191,23 +209,25 @@ public abstract class AbstractCrudVM<
     }
 
     private CrudMode tenantAccessCheck() {
+        
+        CrudMode currentMode = useProtectedView ? CrudMode.CURRENT_PROTECTED_VIEW : CrudMode.CURRENT;
 
         if (tenantId != null) {
             /*
              *  Check tenantId first because tenantId is not initialized, if it is not null
              *  means it is from data with DataWithTrackingW
              */
-            return tenantId.equals(this.session.getTenantId())? CrudMode.CURRENT : CrudMode.CURRENT_RO;
+            return tenantId.equals(this.session.getTenantId())? currentMode : CrudMode.CURRENT_RO;
         } else if (tenantRef != null) {
             /*
              * TenantRef has being initialized as session.getTenantId during class initial,
              * so if the data is not null and it is DataWithTrackingS, use this to validate
              */
-            return tenantRef.equals(this.session.getTenantRef())? CrudMode.CURRENT : CrudMode.CURRENT_RO;
+            return tenantRef.equals(this.session.getTenantRef())? currentMode : CrudMode.CURRENT_RO;
         }
 
         //No tenant restriction
-        return CrudMode.CURRENT;
+        return currentMode;
     }
 
     protected void showDeleteConfirmationDialog(EventListener<Event> eventListener) {

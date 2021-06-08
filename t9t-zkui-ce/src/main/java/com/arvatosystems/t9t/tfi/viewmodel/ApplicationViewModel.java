@@ -177,7 +177,7 @@ public class ApplicationViewModel {
     public void afterCompose(@ContextParam(ContextType.VIEW) Component view) {
         Selectors.wireComponents(view, this, false);
 
-        boolean isDefaultOrder = Boolean.valueOf(ZulUtils.readConfig("isDefaultOrder"));
+        boolean isDefaultOrder = ZulUtils.readBooleanConfig("isDefaultOrder");
         mainHome.setSclass(isDefaultOrder ? "": "reverse");
         reverse.setSrc(!isDefaultOrder ? "/css/reverse.css" : "");
         if (!isDefaultOrder) {

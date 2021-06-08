@@ -123,6 +123,7 @@ public class Form28 extends Grid implements IDataFactoryOwner, IViewModelOwner {
                 }
             }
             break;
+        case CURRENT_PROTECTED_VIEW:
         case CURRENT_RO:
         case NONE:
             // disable all

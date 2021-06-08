@@ -21,6 +21,7 @@ import com.arvatosystems.t9t.base.T9tException
 import com.arvatosystems.t9t.base.T9tResponses
 import com.arvatosystems.t9t.base.api.ContextlessRequestParameters
 import com.arvatosystems.t9t.base.api.RequestParameters
+import com.arvatosystems.t9t.base.api.RetryAdviceType
 import com.arvatosystems.t9t.base.api.ServiceRequestHeader
 import com.arvatosystems.t9t.base.api.ServiceResponse
 import com.arvatosystems.t9t.base.auth.PermissionType
@@ -50,6 +51,7 @@ import de.jpaw.util.ExceptionUtil
 import java.util.Objects
 import org.joda.time.Instant
 import org.slf4j.MDC
+import com.arvatosystems.t9t.base.services.IIdempotencyChecker
 
 // process requests once the user has been authenticated
 @Singleton
@@ -60,6 +62,7 @@ class RequestProcessor implements IRequestProcessor {
     @Inject protected IRefGenerator             refGenerator
     @Inject protected IExecutor                 executor
     @Inject protected IRequestLogger            messageLogger
+    @Inject protected IIdempotencyChecker       idempotencyChecker
     @Inject protected IBucketWriter             bucketWriter
     @Inject protected IAuthorize                authorizator
     @Inject protected ICustomization            customizationProvider
@@ -95,9 +98,9 @@ class RequestProcessor implements IRequestProcessor {
             if (!skipAuthorization && StatusProvider.isShutdownInProgress) {
                 LOGGER.info("Denying processing of {}@{}:{}, shutdown is in progress", jwtInfo.userId, jwtInfo.tenantId, pqon)
                 return new ServiceResponse() => [
-                    returnCode          = T9tException.SHUTDOWN_IN_PROGRESS
                     tenantId            = jwtInfo.tenantId
-                    errorMessage        = ApplicationException.codeToString(returnCode)
+                    returnCode          = T9tException.SHUTDOWN_IN_PROGRESS
+                    errorMessage        = T9tException.MSG_SHUTDOWN_IN_PROGRESS
                 ]
             }
 
@@ -108,20 +111,33 @@ class RequestProcessor implements IRequestProcessor {
                     LOGGER.info("Denying processing of {}@{}:{}, JWT has expired {} ms ago",
                     jwtInfo.userId, jwtInfo.tenantId, pqon, expiredBy)
                     return new ServiceResponse() => [
-                        returnCode          = T9tException.JWT_EXPIRED
                         tenantId            = jwtInfo.tenantId
+                        returnCode          = T9tException.JWT_EXPIRED
+                        errorMessage        = T9tException.MSG_JWT_EXPIRED
                         errorDetails        = Long.toString(expiredBy)
-                        errorMessage        = ApplicationException.codeToString(returnCode)
                     ]
                 }
             }
             if (jwtInfo.userId === null || jwtInfo.userRef === null || jwtInfo.tenantId === null || jwtInfo.tenantRef === null || jwtInfo.sessionId === null || jwtInfo.sessionRef === null) {
                 LOGGER.info("Denying processing of {}@{}:{}, JWT is missing some fields", jwtInfo.userId, jwtInfo.tenantId, pqon)
                 return new ServiceResponse() => [
-                    returnCode          = T9tException.JWT_INCOMPLETE
                     tenantId            = jwtInfo.tenantId
-                    errorMessage        = ApplicationException.codeToString(returnCode)
+                    returnCode          = T9tException.JWT_INCOMPLETE
+                    errorMessage        = T9tException.MSG_JWT_INCOMPLETE
                 ]
+            }
+
+            // 0. check for resend of the request
+            val messageId               = rp.messageId ?: optHdr?.messageId
+            val idempotencyBehaviour    = rp.idempotencyBehaviour ?: optHdr?.idempotencyBehaviour
+            var boolean storeResult     = false
+            if (messageId !== null && (idempotencyBehaviour === RetryAdviceType.NEVER_RETRY || idempotencyBehaviour === RetryAdviceType.RETRY_ON_ERROR)) {
+                // must do a check for a prior execution of this request
+                val idempotenceResponse = idempotencyChecker.runIdempotencyCheck(jwtInfo.tenantId, messageId, idempotencyBehaviour, rp)
+                if (idempotenceResponse !== null) {
+                    return idempotenceResponse
+                }
+                storeResult = true
             }
 
             // 1. create a request context
@@ -165,6 +181,9 @@ class RequestProcessor implements IRequestProcessor {
                 processingDuration, if (logged) "(LOGGED)" else "(unlogged)",
                 jwtInfo.sessionRef, ihdr.processRef, returnCodeAsString
             )
+            if (storeResult) {
+                idempotencyChecker.storeIdempotencyResult(jwtInfo.tenantId, messageId, idempotencyBehaviour, rp, resp)
+            }
 
             if (logged) {
                 // prepare the message for transition

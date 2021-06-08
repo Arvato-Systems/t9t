@@ -182,7 +182,10 @@ class InputSession implements IInputSession {
         val errorCode = if (e instanceof ApplicationException) e.errorCode else T9tException.GENERAL_EXCEPTION
         val details = '''«where»: «sourceReference», record «recordNo»: «e.class.simpleName»: «e.message»'''
         LOGGER.error(details, e)
-        return new ErrorRequest(errorCode, details, null)
+        val errorRq = new ErrorRequest;
+        errorRq.errorDetails = details
+        errorRq.returnCode = errorCode
+        return errorRq
     }
 
     override process(BonaPortable dto) {

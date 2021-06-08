@@ -206,6 +206,23 @@ public class ZulUtils {
     }
 
     /**
+     * Read boolean config by key from configuration property file
+     * @param key
+     * @return
+     */
+    private static final Map<String, Boolean> booleanConfigCache = new ConcurrentHashMap<>(20);
+
+    public static boolean readBooleanConfig(final String key) {
+        return booleanConfigCache.computeIfAbsent(key, k -> {
+            String configInString = ZulUtils.readConfig(k);
+            if (configInString != null) {
+                return Boolean.valueOf(configInString);
+            }
+            return Boolean.FALSE;
+        });
+    }
+
+    /**
      * Read tenant config by key from configuration property file
      * use current tenant as key, fallback to @ if not found
      */

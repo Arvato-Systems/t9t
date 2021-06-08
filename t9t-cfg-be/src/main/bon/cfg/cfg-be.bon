@@ -134,6 +134,8 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional Integer                            blockedThreadCheckInterval  properties cmdline=";blockedThreadCheckInterval";  // vert.x DEFAULT_BLOCKED_THREAD_CHECK_INTERVAL in seconds
         optional Integer                            autonomousPoolSize;             // Executor pool size for autonomous transactions. Defaults to 4 [t9t-autonomous-(n)]
         optional Integer                            localAsyncPoolSize;             // Executor pool size for async requests - for local servers (non vert.x based) it defaults to 4, for vert.x based servers if not configured, the standard worker pool will be used
+        optional Integer                            idempotencyCacheMaxEntries;     // How many entries to allow per tenant for the idempotency cache (null means deactivate cache)
+        optional Integer                            idempotencyCacheExpiry;         // How many seconds before expiry in the idempotency cache (null means no expiry)
     }
 
     class UplinkConfiguration {
