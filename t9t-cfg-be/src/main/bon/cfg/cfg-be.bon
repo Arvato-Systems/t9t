@@ -91,6 +91,8 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         required int                                defaultKeyChunkSize;            // how many PK values to fetch at a time? (i.e. sequence scaling)
         required int                                prefetchedKeyChunkSize;         // how many PK values to fetch at a time for entities with prefetching?
         required int                                numKeyFetchThreads;             // how many threads are actively fetching keys?
+        optional Integer                            cacheSize;                      // common default cache size across all RTTIs for the scaled IDs (scaled = * 10000 + RTTI + locationOffset)
+        optional Integer                            cacheSizeUnscaled;              // common default cache size for the unscaled sequence results
         // maps not yet supported by XML
         //required Int required Map<Integer>          prefetchByRtti;                 // how many key values to prefetch for a given RTTI?
     }

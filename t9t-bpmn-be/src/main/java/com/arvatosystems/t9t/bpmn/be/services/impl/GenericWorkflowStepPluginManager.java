@@ -31,12 +31,12 @@ public class GenericWorkflowStepPluginManager<T> extends AbstractWorkflowStepPlu
     }
 
     @Override
-    public Class<GenericWorkflowStepWithPlugin<T>> getPluginWrapperClass(IWorkflowStep<T> pluginInstance) {
+    public Class<GenericWorkflowStepWithPlugin<T>> getPluginWrapperClass(final IWorkflowStep<T> pluginInstance) {
         return (Class)GenericWorkflowStepWithPlugin.class;
     }
 
     @Override
-    public GenericWorkflowStepWithPlugin<T> createWrapper(String qualifier, IWorkflowStep<T> existingInstance) {
+    public GenericWorkflowStepWithPlugin<T> createWrapper(final String qualifier, final IWorkflowStep<T> existingInstance) {
         return new GenericWorkflowStepWithPlugin(qualifier, existingInstance);
     }
 }

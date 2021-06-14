@@ -44,8 +44,8 @@ public class GetProcessContentRequestHandler extends AbstractRequestHandler<GetP
      * {@inheritDoc}
      */
     @Override
-    public GetProcessContentResponse execute(RequestContext requestCtx, final GetProcessContentRequest request) throws Exception {
-        GetProcessContentResponse response = new GetProcessContentResponse();
+    public GetProcessContentResponse execute(final RequestContext requestCtx, final GetProcessContentRequest request) throws Exception {
+        final GetProcessContentResponse response = new GetProcessContentResponse();
 
         if (bpmService == null) {
             LOGGER.error("Fail to lookup implementation for IBpmService. Please check your deployment package");
@@ -53,12 +53,12 @@ public class GetProcessContentRequestHandler extends AbstractRequestHandler<GetP
         }
 
         try {
-            byte[] contentInBytes = bpmService.getProcessContent(request.getProcessDefinitionRef());
+            final byte[] contentInBytes = bpmService.getProcessContent(request.getProcessDefinitionRef());
 
             response.setContent(new ByteArray(contentInBytes));
             response.setReturnCode(0);
             return response;
-        } catch (T9tBPMException ex) {
+        } catch (final T9tBPMException ex) {
             LOGGER.error(String.format("Failed to get process content (tenantId: %s, userId:%s, processDefinitionRef: %s).",
                     requestCtx.tenantId, requestCtx.userId, request.getProcessDefinitionRef()), ex);
 

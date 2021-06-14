@@ -50,23 +50,23 @@
 
         <!-- Plugin versions -->
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
-        <maven-install-plugin.version>2.5.2</maven-install-plugin.version>
+        <maven-install-plugin.version>3.0.0-M1</maven-install-plugin.version>
         <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
         <maven-dependency-plugin.version>3.1.2</maven-dependency-plugin.version>
         <maven-eclipse-plugin.version>2.10</maven-eclipse-plugin.version>
         <maven-plugin-annotations.version>3.6.0</maven-plugin-annotations.version>
         <maven-project.version>2.2.1</maven-project.version>
         <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
-        <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
         <maven-plugin-plugin.version>3.6.0</maven-plugin-plugin.version>
-        <maven-assembly-plugin.version>3.2.0</maven-assembly-plugin.version>
+        <maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
         <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
         <maven-shade-plugin.version>3.2.1</maven-shade-plugin.version>
-        <maven-war-plugin.version>3.2.3</maven-war-plugin.version>
+        <maven-war-plugin.version>3.3.1</maven-war-plugin.version>
         <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
         <maven-jarjar-plugin.version>1.8</maven-jarjar-plugin.version>
         <maven-enforcer-plugin.version>3.0.0-M3</maven-enforcer-plugin.version>
-        <maven-source-plugin.version>3.1.0</maven-source-plugin.version>
+        <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <owasp-maven-plugin.version>2.1.1</owasp-maven-plugin.version>
         <spring-boot-maven-plugin.version>2.0.2.RELEASE</spring-boot-maven-plugin.version>  <!-- => 2.4.3 in release 5.1 -->
         <tycho.version>1.7.0</tycho.version>
@@ -74,10 +74,10 @@
         <jaxb2-maven-plugin.version>1.5</jaxb2-maven-plugin.version>
         <jaxws-maven-plugin.version>2.3.3</jaxws-maven-plugin.version>
         <eclipse-lifecycle-mapping.version>1.0.0</eclipse-lifecycle-mapping.version>
-        <bundle.plugin.version>3.0.1</bundle.plugin.version> <!-- felix, for pricing RCP -->
-        <exec.plugin.version>1.6.0</exec.plugin.version>
+        <bundle.plugin.version>5.1.2</bundle.plugin.version> <!-- felix, for pricing RCP -->
+        <exec.plugin.version>3.0.0</exec.plugin.version>
         <jetty-maven-plugin.version>9.4.10.v20180503</jetty-maven-plugin.version>
-        <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>  <!-- 3.0.0 -->
+        <maven-antrun-plugin.version>3.0.0</maven-antrun-plugin.version>  <!-- 3.0.0 -->
         <cxf-codegen-plugin.version>3.3.10</cxf-codegen-plugin.version>
         <cxf-wadl2java-plugin.version>3.3.10</cxf-wadl2java-plugin.version>
         <cxf-xjc-plugin.version>3.3.1</cxf-xjc-plugin.version>   <!-- older than the other CXF plugins, but no newer release available -->
@@ -91,10 +91,10 @@
         <maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
 
         <!-- Versions of Xtext & Xtend plugins -->
-        <xtend-maven-plugin.version>2.23.0</xtend-maven-plugin.version>
-        <xtext-maven-plugin.version>2.23.0</xtext-maven-plugin.version>
+        <xtend-maven-plugin.version>2.25.0</xtend-maven-plugin.version>
+        <xtext-maven-plugin.version>2.25.0</xtext-maven-plugin.version>
 
-        <bonaparte-plugin.version>4.40.1</bonaparte-plugin.version>
+        <bonaparte-plugin.version>4.40.2</bonaparte-plugin.version>
         <license-plugin.version>3.0</license-plugin.version>
 
         <xtend-plugin-phase>generate-sources</xtend-plugin-phase>

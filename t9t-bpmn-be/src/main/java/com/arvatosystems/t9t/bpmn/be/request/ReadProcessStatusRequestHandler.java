@@ -27,7 +27,7 @@ public class ReadProcessStatusRequestHandler extends AbstractRequestHandler<Read
     protected final IBpmnPersistenceAccess persistenceAccess = Jdp.getRequired(IBpmnPersistenceAccess.class);
 
     @Override
-    public ReadProcessStatusResponse execute(RequestContext ctx, ReadProcessStatusRequest rq) {
+    public ReadProcessStatusResponse execute(final RequestContext ctx, final ReadProcessStatusRequest rq) {
         final ReadProcessStatusResponse resp = new ReadProcessStatusResponse();
         resp.setProcessStatus(persistenceAccess.getProcessExecutionStatusOpt(rq.getProcessDefinitionId(), rq.getTargetObjectRef()));
         return resp;

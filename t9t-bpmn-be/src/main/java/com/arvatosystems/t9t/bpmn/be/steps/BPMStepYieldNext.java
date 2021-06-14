@@ -27,7 +27,7 @@ import de.jpaw.dp.Singleton;
 public class BPMStepYieldNext extends AbstractAlwaysRunnableNoFactoryWorkflowStep {
 
     @Override
-    public WorkflowReturnCode execute(Object data, Map<String, Object> parameters) {
+    public WorkflowReturnCode execute(final Object data, final Map<String, Object> parameters) {
         return WorkflowReturnCode.YIELD_NEXT;
     }
 }

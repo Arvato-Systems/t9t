@@ -31,8 +31,8 @@ public class BPMStepLogger extends AbstractAlwaysRunnableNoFactoryWorkflowStep {
     private static final Logger LOGGER = LoggerFactory.getLogger(BPMStepLogger.class);
 
     @Override
-    public WorkflowReturnCode execute(Object data, Map<String, Object> parameters) {
-        Object text = parameters.get("message");
+    public WorkflowReturnCode execute(final Object data, final Map<String, Object> parameters) {
+        final Object text = parameters.get("message");
         LOGGER.info(text == null ? "(no text provided)" : text.toString());
         return WorkflowReturnCode.PROCEED_NEXT;
     }

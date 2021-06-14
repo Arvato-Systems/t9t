@@ -39,21 +39,21 @@ public class DeployNewProcessRequestHandler extends AbstractRequestHandler<Deplo
     private final IBPMService bpmService = Jdp.getOptional(IBPMService.class);
 
     @Override
-    public DeployNewProcessResponse execute(RequestContext requestCtx,final DeployNewProcessRequest request) throws Exception {
-        DeployNewProcessResponse response = new DeployNewProcessResponse();
+    public DeployNewProcessResponse execute(final RequestContext requestCtx,final DeployNewProcessRequest request) throws Exception {
+        final DeployNewProcessResponse response = new DeployNewProcessResponse();
         if (bpmService == null) {
             LOGGER.error("Fail to lookup implementation for IBpmService. Please check your deployment package");
             throw new T9tException(T9tBPMException.BPM_NO_BPMN_ENGINE);
         }
 
         try {
-            ProcessDefinitionDTO processDefinitionDTO = bpmService.deployNewProcess(request.getDeploymentComment(),
+            final ProcessDefinitionDTO processDefinitionDTO = bpmService.deployNewProcess(request.getDeploymentComment(),
                     request.getContent().getBytes());
 
             response.setProcessDefinition(processDefinitionDTO);
             response.setReturnCode(0);
             return response;
-        } catch (T9tBPMException ex) {
+        } catch (final T9tBPMException ex) {
             // T9tBPMException signifies a technical exception
             LOGGER.error("Failed to deploy new process (tenantId: {}, userId: {}).", requestCtx.tenantId, requestCtx.userId, ex.getMessage());
             throw ex;

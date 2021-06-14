@@ -28,16 +28,15 @@ import de.jpaw.dp.Singleton;
 @Singleton
 @Named("delay")
 public class BPMStepDelay extends AbstractAlwaysRunnableNoFactoryWorkflowStep {
-    private static final long TO_MILLISECONDS = 1L;  // value is already in milliseconds
 
     @Override
-    public WorkflowReturnCode execute(Object data, Map<String, Object> parameters) {
-        Object yu = parameters.get("yieldUntil");
+    public WorkflowReturnCode execute(final Object data, final Map<String, Object> parameters) {
+        Object yu = parameters.get(PROCESS_VARIABLE_YIELD_UNTIL);
         if (yu != null) {
             if (Number.class.isAssignableFrom(yu.getClass())) { // Long, Double, BigDecimal...
                 // an Instant which has been serialized as JSON and later deserialized will appear as a numeric value, representing the number of (milli)seconds since the Epoch
-                yu = new Instant(TO_MILLISECONDS * ((Number)yu).longValue());
-                parameters.put("yieldUntil", yu);
+                yu = new Instant(((Number)yu).longValue());
+                parameters.put(PROCESS_VARIABLE_YIELD_UNTIL, yu);
             }
             if (yu instanceof Instant) {
                 // the target time has been defined
@@ -47,13 +46,13 @@ public class BPMStepDelay extends AbstractAlwaysRunnableNoFactoryWorkflowStep {
             }
         }
         // no end time defined yet - compute it now
-        Object ds = parameters.get("delayInSeconds");
+        final Object ds = parameters.get("delayInSeconds");
         if (ds != null && ds instanceof Integer) {
-            parameters.put("yieldUntil", Instant.ofEpochMilli(System.currentTimeMillis() + 1000L * (Integer)ds));
+            parameters.put(PROCESS_VARIABLE_YIELD_UNTIL, Instant.ofEpochMilli((System.currentTimeMillis() / 1000L + (Integer)ds) * 1000L));  // obtain a value rounded to full seconds
             return WorkflowReturnCode.YIELD;
         }
         // missing information!
-        parameters.put("returnCode", T9tException.ILLEGAL_REQUEST_PARAMETER);  // set a default error code
+        parameters.put(PROCESS_VARIABLE_RETURN_CODE, T9tException.ILLEGAL_REQUEST_PARAMETER);  // set a default error code
         return WorkflowReturnCode.ERROR;
     }
 }

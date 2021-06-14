@@ -27,7 +27,7 @@ public class PerformSingleStepRequestHandler extends AbstractRequestHandler<Perf
     private final IBpmnRunner bpmService = Jdp.getRequired(IBpmnRunner.class);
 
     @Override
-    public PerformSingleStepResponse execute(RequestContext ctx, final PerformSingleStepRequest request) {
+    public PerformSingleStepResponse execute(final RequestContext ctx, final PerformSingleStepRequest request) {
         return bpmService.singleStep(ctx, request);
     }
 }

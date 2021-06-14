@@ -41,8 +41,8 @@ public class GetProcessDiagramRequestHandler extends AbstractRequestHandler<GetP
     private final IBPMService bpmService = Jdp.getOptional(IBPMService.class);
 
     @Override
-    public GetProcessDiagramResponse execute(RequestContext requestCtx, final GetProcessDiagramRequest request) throws Exception {
-        GetProcessDiagramResponse response = new GetProcessDiagramResponse();
+    public GetProcessDiagramResponse execute(final RequestContext requestCtx, final GetProcessDiagramRequest request) throws Exception {
+        final GetProcessDiagramResponse response = new GetProcessDiagramResponse();
 
         if (bpmService == null) {
             LOGGER.error("Fail to lookup implementation for IBpmService. Please check your deployment package");
@@ -50,12 +50,12 @@ public class GetProcessDiagramRequestHandler extends AbstractRequestHandler<GetP
         }
 
         try {
-            byte[] diagramInBytes = bpmService.getProcessDiagram(request.getProcessDefinitionRef());
+            final byte[] diagramInBytes = bpmService.getProcessDiagram(request.getProcessDefinitionRef());
 
             response.setDiagram(new ByteArray(diagramInBytes));
             response.setReturnCode(0);
             return response;
-        } catch (T9tBPMException ex) {
+        } catch (final T9tBPMException ex) {
             LOGGER.error(String.format("Failed to get process diagrams (tenantId: %s, userId:%s, processDefinitionRef: %s).",
                     requestCtx.tenantId, requestCtx.userId, request.getProcessDefinitionRef()), ex);
 

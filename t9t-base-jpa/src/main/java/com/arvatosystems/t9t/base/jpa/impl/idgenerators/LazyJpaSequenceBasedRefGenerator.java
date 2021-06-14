@@ -20,13 +20,14 @@ import java.security.InvalidParameterException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.base.services.IRefGenerator;
+import com.arvatosystems.t9t.cfg.be.DatabaseBrandType;
+import com.arvatosystems.t9t.cfg.be.KeyPrefetchConfiguration;
+import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration;
+
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
-
-import com.arvatosystems.t9t.base.services.IRefGenerator;
-import com.arvatosystems.t9t.cfg.be.DatabaseBrandType;
-import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration;
 
 /**
  * Provides generators for technical Ids (database table primary keys). Standard JPA auto generated keys cannot be used for several reasons:
@@ -44,9 +45,10 @@ import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration;
 public class LazyJpaSequenceBasedRefGenerator implements IRefGenerator {
     private static final Logger LOGGER = LoggerFactory.getLogger(LazyJpaSequenceBasedRefGenerator.class);
 
-
-    private static final int NUM_SEQUENCES = 100; // how many sequences we use to obtain the IDs
-    private static final int NUM_SEQUENCES_UNSCALED = 10; // how many sequences we use to obtain unscaled IDs
+    private static final int DEFAULT_CACHE_SIZE          = 500; // how many sequences we generate per single DB-sequence fetch for scaled keys
+    private static final int DEFAULT_CACHE_SIZE_UNSCALED =  10; // how many sequences we generate per single DB-sequence fetch for unscaled keys
+    private static final int NUM_SEQUENCES               = 100; // how many sequences we use to obtain the IDs
+    private static final int NUM_SEQUENCES_UNSCALED      =  10; // how many sequences we use to obtain unscaled IDs
     private final LazyJpaSequenceBasedSingleRefGenerator[] generatorTab = new LazyJpaSequenceBasedSingleRefGenerator[NUM_SEQUENCES];
     private final LazyJpaSequenceBasedSingleRefGenerator[] generatorTab50xx = new LazyJpaSequenceBasedSingleRefGenerator[NUM_SEQUENCES_UNSCALED];
     private final LazyJpaSequenceBasedSingleRefGenerator[] generatorTab60xx = new LazyJpaSequenceBasedSingleRefGenerator[NUM_SEQUENCES_UNSCALED];
@@ -57,22 +59,33 @@ public class LazyJpaSequenceBasedRefGenerator implements IRefGenerator {
     private final T9tServerConfiguration configuration = Jdp.getRequired(T9tServerConfiguration.class);
 
     public LazyJpaSequenceBasedRefGenerator() {
-        DatabaseBrandType dialect = configuration.getDatabaseConfiguration().getDatabaseBrand();
+        final DatabaseBrandType dialect = configuration.getDatabaseConfiguration().getDatabaseBrand();
         LOGGER.info("Creating object references by SQL SEQUENCES via JPA for database {}", dialect.name());
+        final KeyPrefetchConfiguration keyConfig = configuration.getKeyPrefetchConfiguration();
+        final int cacheSize;
+        final int cacheSizeUnscaled;
 
-        scaledOffsetForLocation = (long) configuration.getKeyPrefetchConfiguration().getLocationOffset() * LazyJpaSequenceBasedRefGenerator.OFFSET_BACKUP_LOCATION;
+        if (keyConfig != null) {
+            scaledOffsetForLocation = (long) keyConfig.getLocationOffset() * LazyJpaSequenceBasedRefGenerator.OFFSET_BACKUP_LOCATION;
+            cacheSize = keyConfig.getCacheSize() == null ? DEFAULT_CACHE_SIZE : keyConfig.getCacheSize().intValue();
+            cacheSizeUnscaled = keyConfig.getCacheSizeUnscaled() == null ? DEFAULT_CACHE_SIZE_UNSCALED : keyConfig.getCacheSizeUnscaled().intValue();
+        } else {
+            scaledOffsetForLocation = 0;
+            cacheSize = DEFAULT_CACHE_SIZE;
+            cacheSizeUnscaled = DEFAULT_CACHE_SIZE_UNSCALED;
+        }
         for (int i = 0; i < NUM_SEQUENCES; ++i) {
-            generatorTab[i] = new LazyJpaSequenceBasedSingleRefGenerator(i, dialect, 500);
+            generatorTab[i] = new LazyJpaSequenceBasedSingleRefGenerator(i, dialect, cacheSize);
         }
         for (int i = 0; i < NUM_SEQUENCES_UNSCALED; ++i) {
-            generatorTab50xx[i] = new LazyJpaSequenceBasedSingleRefGenerator(5000 + i, dialect, 10);
-            generatorTab60xx[i] = new LazyJpaSequenceBasedSingleRefGenerator(6000 + i, dialect, 10);
-            generatorTab70xx[i] = new LazyJpaSequenceBasedSingleRefGenerator(7000 + i, dialect, 10);
+            generatorTab50xx[i] = new LazyJpaSequenceBasedSingleRefGenerator(5000 + i, dialect, cacheSizeUnscaled);
+            generatorTab60xx[i] = new LazyJpaSequenceBasedSingleRefGenerator(6000 + i, dialect, cacheSizeUnscaled);
+            generatorTab70xx[i] = new LazyJpaSequenceBasedSingleRefGenerator(7000 + i, dialect, cacheSizeUnscaled);
         }
     }
 
     @Override
-    public long generateRef(int rttiOffset) {
+    public long generateRef(final int rttiOffset) {
         if ((rttiOffset < 0) || (rttiOffset >= OFFSET_BACKUP_LOCATION)) {
             throw new InvalidParameterException("Bad rtti offset: " + rttiOffset);
         }
@@ -80,7 +93,7 @@ public class LazyJpaSequenceBasedRefGenerator implements IRefGenerator {
     }
 
     @Override
-    public long generateUnscaledRef(int rttiOffset) {
+    public long generateUnscaledRef(final int rttiOffset) {
         LazyJpaSequenceBasedSingleRefGenerator g = null;
         if ((rttiOffset >= 5000) && (rttiOffset < (5000 + NUM_SEQUENCES_UNSCALED))) {
             g = generatorTab50xx[rttiOffset - 5000];

@@ -37,7 +37,7 @@ public class GenericWorkflowStepWithPlugin<T> implements IWorkflowStep<T> {
     final public String qualifier;
     final private IWorkflowStep<T> staticStep;
 
-    public GenericWorkflowStepWithPlugin(String qualifier, IWorkflowStep<T> staticStep) {
+    public GenericWorkflowStepWithPlugin(final String qualifier, final IWorkflowStep<T> staticStep) {
         this.qualifier = qualifier;
         this.staticStep = staticStep;
     }
@@ -54,12 +54,12 @@ public class GenericWorkflowStepWithPlugin<T> implements IWorkflowStep<T> {
     }
 
     @Override
-    public WorkflowReturnCode execute(T data, Map<String, Object> parameters) {
+    public WorkflowReturnCode execute(final T data, final Map<String, Object> parameters) {
         return getImplementation().execute(data, parameters);
     }
 
     @Override
-    public WorkflowRunnableCode mayRun(T data, Map<String, Object> parameters) {
+    public WorkflowRunnableCode mayRun(final T data, final Map<String, Object> parameters) {
         return getImplementation().mayRun(data, parameters);
     }
 }

@@ -27,8 +27,8 @@ import java.io.InputStream;
  */
 public final class ProcessDefinition {
 
-    private String id;
-    private InputStream inputStream;
+    private final String id;
+    private final InputStream inputStream;
 
     public ProcessDefinition(final String id, final InputStream inputStream) {
         this.id = id;

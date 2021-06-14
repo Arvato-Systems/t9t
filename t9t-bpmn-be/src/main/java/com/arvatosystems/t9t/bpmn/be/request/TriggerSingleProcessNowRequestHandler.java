@@ -29,8 +29,8 @@ public class TriggerSingleProcessNowRequestHandler extends AbstractRequestHandle
     protected final IExecutor executor = Jdp.getRequired(IExecutor.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, TriggerSingleProcessNowRequest rq) {
-        boolean again = runner.run(ctx, rq.getProcessStatusRef());
+    public ServiceResponse execute(final RequestContext ctx, final TriggerSingleProcessNowRequest rq) {
+        final boolean again = runner.run(ctx, rq.getProcessStatusRef());
         if (again)
             executor.executeAsynchronous(ctx, rq);
         return ok();

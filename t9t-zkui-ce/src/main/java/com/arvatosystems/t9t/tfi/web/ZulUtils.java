@@ -51,13 +51,13 @@ import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.impl.InputElement;
 
+import com.arvatosystems.t9t.authc.api.TenantDescription;
+import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.init.InitContainers;
 import com.arvatosystems.t9t.tfi.general.Constants;
 import com.arvatosystems.t9t.tfi.model.bean.ComboBoxItem;
 import com.arvatosystems.t9t.tfi.model.bean.ErrorPopupEntity;
 import com.arvatosystems.t9t.tfi.services.ReturnCodeException;
-import com.arvatosystems.t9t.authc.api.TenantDescription;
-import com.arvatosystems.t9t.base.T9tConstants;
-import com.arvatosystems.t9t.init.InitContainers;
 import com.google.common.collect.ImmutableList;
 
 import de.jpaw.bonaparte.core.BonaPortable;
@@ -76,22 +76,22 @@ import de.jpaw.util.ExceptionUtil;
 public class ZulUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(ZulUtils.class);
 
-    public static void findErrorMessages(Component component) {
+    public static void findErrorMessages(final Component component) {
         if (component instanceof InputElement) {
-            InputElement element = (InputElement) component;
+            final InputElement element = (InputElement) component;
             if (StringUtils.isNotBlank(element.getErrorMessage())) {
                 LOGGER.debug("Component:{} - ErrorMessage:{}", component, element.getErrorMessage());
             }
         }
-        for (Component childComponent : component.getChildren()) {
+        for (final Component childComponent : component.getChildren()) {
             findErrorMessages(childComponent);
         }
     }
 
-    public static void debugOutput(Component component, int level) {
+    public static void debugOutput(final Component component, int level) {
         LOGGER.debug("{}:{}", StringUtils.leftPad(String.valueOf(level), level*4), component);
         level++;
-        for (Component childComponent : component.getChildren()) {
+        for (final Component childComponent : component.getChildren()) {
             debugOutput(childComponent, level);
         }
     }
@@ -101,7 +101,7 @@ public class ZulUtils {
     /*  translations should use the standard (going via ApplicationSession translator)
     /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
-    public static boolean isI18nLabelNull(String label) {
+    public static boolean isI18nLabelNull(final String label) {
         if (label == null) {
             return false;
         }
@@ -112,7 +112,7 @@ public class ZulUtils {
      *        String
      * @return String
      */
-    public static String newI18nLabel(String label) {
+    public static String newI18nLabel(final String label) {
         return newI18nDefaultLabel(label, null);
     }
 
@@ -126,8 +126,8 @@ public class ZulUtils {
      *
      * Just a shorthand for the translation in the application session
      */
-    public static String newI18nDefaultLabel(String label, String defaultValue) {
-        String result = ApplicationSession.get().translateWithDefault(null, label, defaultValue);
+    public static String newI18nDefaultLabel(final String label, final String defaultValue) {
+        final String result = ApplicationSession.get().translateWithDefault(null, label, defaultValue);
         LOGGER.debug("i18nDefaultLabel({}) with default {} returns {}", label, defaultValue, result);
         return result != null ? result : "{" + label + "}";
     }
@@ -139,17 +139,17 @@ public class ZulUtils {
      *        String
      * @return String
      */
-    public static String newI18nLabel(String label, String args) {
-        Object[] arguments = args == null ? null : args.replace("{", "").replace("}", "").split(",");
+    public static String newI18nLabel(final String label, final String args) {
+        final Object[] arguments = args == null ? null : args.replace("{", "").replace("}", "").split(",");
 
         return newI18nLabel(label, arguments);
     }
 
-    public static String newI18nLabel(String label, Object[] arguments) {
-        String result1 = newI18nDefaultLabel(label, null);
+    public static String newI18nLabel(final String label, final Object[] arguments) {
+        final String result1 = newI18nDefaultLabel(label, null);
         if (arguments == null || arguments.length == 0)
             return result1;
-        Locale userLocale = ApplicationSession.get().getUserLocale();
+        final Locale userLocale = ApplicationSession.get().getUserLocale();
         return MessageFormats.format(result1, arguments, userLocale);
     }
 
@@ -158,7 +158,7 @@ public class ZulUtils {
      * @param key
      * @return String
      */
-    public static String translate(String key) {
+    public static String translate(final String key) {
         return translate(null, key);
     }
 
@@ -168,7 +168,7 @@ public class ZulUtils {
      * @param key
      * @return String
      */
-    public static String translate(String path, String key) {
+    public static String translate(final String path, final String key) {
         return translate(path, key, "");
     }
 
@@ -179,20 +179,20 @@ public class ZulUtils {
      * @param args
      * @return
      */
-    public static String translate(String path, String key, String args) {
-        Object[] arguments = args == null || args == "" ? null : args.replace("{", "").replace("}", "").split(",");
+    public static String translate(final String path, final String key, final String args) {
+        final Object[] arguments = args == null || args == "" ? null : args.replace("{", "").replace("}", "").split(",");
         return translate(path, key, arguments);
     }
 
-    public static String translate(String path, String key, Object[] arguments) {
-        String result = ApplicationSession.get().translate(path, key, arguments);
+    public static String translate(final String path, final String key, final Object[] arguments) {
+        final String result = ApplicationSession.get().translate(path, key, arguments);
         LOGGER.debug("translate({}) with path {} with arguments {} returns {}", key, path, arguments, result);
         return result != null ? result : "{" + key + "}";
     }
 
     public static final ConcurrentMap<String, Object> MISSING_TRANSLATIONS = new ConcurrentHashMap<String, Object>(100);
     public static void dumpMissingTranslations() {
-        for (String s: MISSING_TRANSLATIONS.keySet())
+        for (final String s: MISSING_TRANSLATIONS.keySet())
             System.out.println(s);
     }
 
@@ -201,7 +201,7 @@ public class ZulUtils {
      * @param key
      * @return
      */
-    public static String readConfig(String key) {
+    public static String readConfig(final String key) {
         return Labels.getLabel(key);
     }
 
@@ -214,11 +214,13 @@ public class ZulUtils {
 
     public static boolean readBooleanConfig(final String key) {
         return booleanConfigCache.computeIfAbsent(key, k -> {
-            String configInString = ZulUtils.readConfig(k);
+            Boolean result = Boolean.FALSE;
+            final String configInString = ZulUtils.readConfig(k);
             if (configInString != null) {
-                return Boolean.valueOf(configInString);
+                result = Boolean.valueOf(configInString);
             }
-            return Boolean.FALSE;
+            LOGGER.info("Evaluated boolean config property {} to be {}", key, result);
+            return result;
         });
     }
 
@@ -226,8 +228,8 @@ public class ZulUtils {
      * Read tenant config by key from configuration property file
      * use current tenant as key, fallback to @ if not found
      */
-    public static String readTenantConfig(String key) {
-        String currentTenantId = ApplicationSession.get().getTenantId();
+    public static String readTenantConfig(final String key) {
+        final String currentTenantId = ApplicationSession.get().getTenantId();
         String value = null;
         if (currentTenantId != null) {
             value = readConfig(currentTenantId + ":" + key);
@@ -244,12 +246,12 @@ public class ZulUtils {
      * @return
      */
     @Deprecated
-    public static String getTenantIdByRef(Long tenantRef) {
+    public static String getTenantIdByRef(final Long tenantRef) {
         if (T9tConstants.GLOBAL_TENANT_REF42.equals(tenantRef)) {
             return T9tConstants.GLOBAL_TENANT_ID;
         }
-        List<TenantDescription> tenants = ApplicationSession.get().getAllowedTenants();
-        for (TenantDescription td : tenants) {
+        final List<TenantDescription> tenants = ApplicationSession.get().getAllowedTenants();
+        for (final TenantDescription td : tenants) {
             if (td.getTenantRef().equals(tenantRef))
                 return td.getTenantId();
         }
@@ -258,12 +260,12 @@ public class ZulUtils {
     }
 
     @Deprecated // only used by some not yet updated pricing module screens
-    public static Object[] createEnumComboModelByProperty(String enumPQON, Class<?> enumClazz, Boolean consistEmptyItem,
-            String... hardAvailableEnum) {
+    public static Object[] createEnumComboModelByProperty(final String enumPQON, final Class<?> enumClazz, final Boolean consistEmptyItem,
+            final String... hardAvailableEnum) {
         Object[] comboModel = null;
         try {
-            ArrayList<Object> filteredEnumsList = new ArrayList<Object>();
-            Set<String> filteredEnumSet = new HashSet<>();
+            final ArrayList<Object> filteredEnumsList = new ArrayList<Object>();
+            final Set<String> filteredEnumSet = new HashSet<>();
 
             if (hardAvailableEnum != null && hardAvailableEnum.length > 0) {
                 for (int i = 0; i < hardAvailableEnum.length; i++) {
@@ -272,24 +274,24 @@ public class ZulUtils {
             } else {
                 // If HardAvailableEnum is not provided, get all the values in
                 // the enum instead
-                Field idsField = enumClazz.getDeclaredField("_ids");
+                final Field idsField = enumClazz.getDeclaredField("_ids");
                 idsField.setAccessible(true);
-                Object _ids = idsField.get(enumClazz);
+                final Object _ids = idsField.get(enumClazz);
                 LOGGER.debug("_ids retrieved. ");
-                for (String s : (ImmutableList<String>) _ids) {
+                for (final String s : (ImmutableList<String>) _ids) {
                     LOGGER.debug("_ids loop {}", s);
                     filteredEnumSet.add(s);
                 }
             }
 
-            Map<String, String> translations = ApplicationSession.get().translateEnum(enumPQON);
+            final Map<String, String> translations = ApplicationSession.get().translateEnum(enumPQON);
 
-            Method factoryMethod = enumClazz.getMethod("factory", String.class);
+            final Method factoryMethod = enumClazz.getMethod("factory", String.class);
 
-            EnumDefinition enumDefinition = InitContainers.getEnumByPQON(enumPQON);
+            final EnumDefinition enumDefinition = InitContainers.getEnumByPQON(enumPQON);
             LOGGER.debug("enumDefinition ids={}, tokens = {}", enumDefinition.getIds(), enumDefinition.getTokens());
 
-            Map<String, String> idToTokenMap = new HashMap<String, String>();
+            final Map<String, String> idToTokenMap = new HashMap<String, String>();
             for (int i = 0; i < enumDefinition.getIds().size(); i++) {
                 idToTokenMap.put(enumDefinition.getIds().get(i), enumDefinition.getTokens().get(i));
             }
@@ -302,7 +304,7 @@ public class ZulUtils {
                                                                     // both it
                                                                     // will be
                                                                     // displayed
-                        ComboBoxItem cbi = new ComboBoxItem(entry.getValue(), idToTokenMap.get(entry.getKey()));
+                        final ComboBoxItem cbi = new ComboBoxItem(entry.getValue(), idToTokenMap.get(entry.getKey()));
                         LOGGER.debug("Added combobox item where name =  {}, value =  {}", cbi.getName(),
                                 cbi.getValue());
                         try {
@@ -318,7 +320,7 @@ public class ZulUtils {
                 filteredEnumsList.add(null);
             }
             comboModel = filteredEnumsList.toArray();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.error("ERROR in createEnumComboModelByProperty: enumPQON={}, {}", enumPQON,
                     ExceptionUtil.causeChain(e));
             return null;
@@ -329,28 +331,28 @@ public class ZulUtils {
 
     // Using reflection results in really bad performance. This is why this class has been deprecated.
     @Deprecated
-    private static boolean isEnum(String classAsString) {
+    private static boolean isEnum(final String classAsString) {
         try {
-            Class<?> cls = Class.forName(classAsString);
+            final Class<?> cls = Class.forName(classAsString);
             // cls.isEnum() can't be used because of the xenums
             return TokenizableEnum.class.isAssignableFrom(cls);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             return false;
         }
     }
 
     @Deprecated // used by very old screens only! Use ApplicationSession.translate() instead.
-    public static String getLabelByKey(String comboClass, String key) {
+    public static String getLabelByKey(final String comboClass, final String key) {
         if (isEnum(comboClass)) {
             LOGGER.warn("#### using outdated enum translation for {} / {}", comboClass, key);
             return "##FIXME##";  // old enum translation is no longer supported
 
         } else {
             LOGGER.debug("#### getLabelByKey({}, {})  Not an enum!!", comboClass, key);
-            String propertyValues = ZulUtils.readConfig(comboClass);
-            String[] listOfItems = propertyValues.split("\n");
+            final String propertyValues = ZulUtils.readConfig(comboClass);
+            final String[] listOfItems = propertyValues.split("\n");
             for (int i = 0; i < listOfItems.length; i++) {
-                String[] keyValue = listOfItems[i].split("=");
+                final String[] keyValue = listOfItems[i].split("=");
                 if (keyValue[0].trim().equals(key)) {
                     String name = null;
                     if (keyValue.length < 2) {
@@ -367,16 +369,16 @@ public class ZulUtils {
     }
 
     @Deprecated  // only used by not yet updated pricing screens
-    public static String getEnumTokenTranslationByPQON(String enumPQON, String key) {
+    public static String getEnumTokenTranslationByPQON(final String enumPQON, String key) {
         LOGGER.debug("getEnumTokenTranslationByPQON({}, {})", enumPQON, key);
 
         if (key != null && enumPQON != null && !key.isEmpty() && !enumPQON.isEmpty()) {
-            Map<String, String> translations = ApplicationSession.get().translateEnum(enumPQON);
+            final Map<String, String> translations = ApplicationSession.get().translateEnum(enumPQON);
             LOGGER.debug("translations {}", translations);
-            EnumDefinition enumDefinition = InitContainers.getEnumByPQON(enumPQON);
+            final EnumDefinition enumDefinition = InitContainers.getEnumByPQON(enumPQON);
             LOGGER.debug("enumDefinition ids={}, tokens = {}", enumDefinition.getIds(), enumDefinition.getTokens());
 
-            Map<String, String> idToTokenMap = new HashMap<String, String>();
+            final Map<String, String> idToTokenMap = new HashMap<String, String>();
             for (int i = 0; i < enumDefinition.getIds().size(); i++) {
                 idToTokenMap.put(enumDefinition.getTokens().get(i), enumDefinition.getIds().get(i));
             }
@@ -388,9 +390,9 @@ public class ZulUtils {
 
 
     // old method, still used as of 3.2.0
-    public static void resizeComponent(Component componentToBeResized, String vflexMin, String vflexMax, Component fireResizeNotificationToComponent, boolean setToMaxVflex) throws Exception {
+    public static void resizeComponent(final Component componentToBeResized, final String vflexMin, final String vflexMax, final Component fireResizeNotificationToComponent, final boolean setToMaxVflex) throws Exception {
        //Clients.alert("onOpen: self.isOpen(): "+ self.isOpen());
-       HtmlBasedComponent componentToBeResizedHtml = (HtmlBasedComponent) componentToBeResized;
+       final HtmlBasedComponent componentToBeResizedHtml = (HtmlBasedComponent) componentToBeResized;
         if (setToMaxVflex) { // set to max
             componentToBeResizedHtml.setVflex(vflexMax);
             Clients.resize(fireResizeNotificationToComponent);
@@ -404,58 +406,58 @@ public class ZulUtils {
         Clients.resize(fireResizeNotificationToComponent);
     }
 
-    public static DecimalFormat getLocalizedDecimalFormat(String pattern) {
+    public static DecimalFormat getLocalizedDecimalFormat(final String pattern) {
         final DecimalFormat df = (DecimalFormat) NumberFormat.getInstance(Locales.getCurrent());
         df.applyPattern(pattern);
         return df;
     }
 
     public static String getDefaultLanguageCode() {
-        Session current = Sessions.getCurrent();
+        final Session current = Sessions.getCurrent();
         if ((current != null) && (current.getAttribute(Attributes.PREFERRED_LOCALE) != null)) {
-            Locale locale = (Locale) current.getAttribute(Attributes.PREFERRED_LOCALE);
+            final Locale locale = (Locale) current.getAttribute(Attributes.PREFERRED_LOCALE);
             return locale.toString();
         } else {
             return Library.getProperty(Attributes.PREFERRED_LOCALE);
         }
     }
 
-    public static String join(List<String> list, String separator) {
+    public static String join(final List<String> list, final String separator) {
         return list != null ? StringUtils.join(list.toArray(new String[list.size()]), separator) : null;
     }
 
-    public static String convertToString(Object value) {
+    public static String convertToString(final Object value) {
         return value != null ? String.valueOf(value) : null;
     }
 
-    public static void download(String file) {
+    public static void download(final String file) {
         try {
             Filedownload.save(new File(file), null);
-        } catch (FileNotFoundException e) {
+        } catch (final FileNotFoundException e) {
             Messagebox.show(e.getMessage());
         }
     }
 
-    public static HashMap<?,?> asMap(Object arg) {
+    public static HashMap<?,?> asMap(final Object arg) {
         if ((arg == null) || !(arg instanceof HashMap)) {
             throw new IllegalArgumentException("Error getting argument HashMap<>. Passed arg is not instanceof java.util.HashMap. It is " + arg);
         }
         return new HashMap<>(((HashMap<?, ?>) arg));
     }
 
-    public static String bonaPortableToStringMultiline(BonaPortable bonaPortable) {
+    public static String bonaPortableToStringMultiline(final BonaPortable bonaPortable) {
         if (bonaPortable == null) {
             return null;
         }
-        int maxList = ToStringHelper.maxList;
-        int maxMap = ToStringHelper.maxMap;
-        int maxSet = ToStringHelper.maxSet;
+        final int maxList = ToStringHelper.maxList;
+        final int maxMap = ToStringHelper.maxMap;
+        final int maxSet = ToStringHelper.maxSet;
         // set to unlimited
         ToStringHelper.maxList = -1;
         ToStringHelper.maxMap = -1;
         ToStringHelper.maxSet = -1;
 
-        String readableBonaPortable = ToStringHelper.toStringML(bonaPortable);
+        final String readableBonaPortable = ToStringHelper.toStringML(bonaPortable);
 
         // restore old values
         ToStringHelper.maxList = maxList;
@@ -500,11 +502,11 @@ public class ZulUtils {
     //        return errorIntroductionRetunValue;
     //    }
     //
-    public static ErrorPopupEntity getErrorPopupInfo(ReturnCodeException returnCodeException) {
+    public static ErrorPopupEntity getErrorPopupInfo(final ReturnCodeException returnCodeException) {
         return getErrorPopupInfo(returnCodeException, null);
     }
 
-    public static ErrorPopupEntity getErrorPopupInfo(ReturnCodeException returnCodeException, String inScreenId) {
+    public static ErrorPopupEntity getErrorPopupInfo(final ReturnCodeException returnCodeException, final String inScreenId) {
         ErrorPopupEntity returnValue = null;
         String returnCodePrefix;
         if (null == returnCodeException) {
@@ -530,7 +532,7 @@ public class ZulUtils {
                 returnValue.setErrorDetails(returnCodeException.getErrorDetails());
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.error("ERROR in getErrorPopupInfo: screenId={}, retCodeEx={}\nNew exception= {}",
                     inScreenId,
                     ExceptionUtil.causeChain(returnCodeException),
@@ -544,33 +546,33 @@ public class ZulUtils {
         return returnValue;
     }
 
-    private static ErrorPopupEntity readErrorPopupConfiguration(String returnCodePrefix, String inScreenId) {
+    private static ErrorPopupEntity readErrorPopupConfiguration(final String returnCodePrefix, final String inScreenId) {
         ErrorPopupEntity nonScreenIdBasedConfig = null;
         nonScreenIdBasedConfig = null;
 
-        String[] menuConfigurations = ZulUtils.readConfig("error.popup.config").split("\\s*,\\s*"); // trim and split each element
+        final String[] menuConfigurations = ZulUtils.readConfig("error.popup.config").split("\\s*,\\s*"); // trim and split each element
 
         //String[] errorPopupConfigurations = ZulUtils.i18nLabel("err.popup.config").split("\n");
         if (menuConfigurations[0].trim().equals("")) {
             return null;
         } else {
-            for (String menuConfigKey : menuConfigurations) {
-                String menuConfig = ZulUtils.readConfig("error.popup." + menuConfigKey);
-                String[] menuLines = menuConfig.split("\n");
-                for (String errorPopupConfigLine : menuLines) {
+            for (final String menuConfigKey : menuConfigurations) {
+                final String menuConfig = ZulUtils.readConfig("error.popup." + menuConfigKey);
+                final String[] menuLines = menuConfig.split("\n");
+                for (final String errorPopupConfigLine : menuLines) {
                     // LOGGER.debug("Error poup lines: {} ",
                     // errorPopupConfigLine);
-                    Object[] errorPopupConfigItems = errorPopupConfigLine.split("\\s*,\\s*");
+                    final Object[] errorPopupConfigItems = errorPopupConfigLine.split("\\s*,\\s*");
 
-                    String screenId = String.valueOf(errorPopupConfigItems[0]).equals("NULL") ? null
+                    final String screenId = String.valueOf(errorPopupConfigItems[0]).equals("NULL") ? null
                             : String.valueOf(errorPopupConfigItems[0]);
-                    String returnCode = String.valueOf(errorPopupConfigItems[1]).equals("NULL") ? null
+                    final String returnCode = String.valueOf(errorPopupConfigItems[1]).equals("NULL") ? null
                             : String.valueOf(errorPopupConfigItems[1]);
-                    String popupTitle = String.valueOf(errorPopupConfigItems[2]).equals("NULL") ? null
+                    final String popupTitle = String.valueOf(errorPopupConfigItems[2]).equals("NULL") ? null
                             : String.valueOf(errorPopupConfigItems[2]);
-                    String poupImage = String.valueOf(errorPopupConfigItems[3]).equals("NULL") ? null
+                    final String poupImage = String.valueOf(errorPopupConfigItems[3]).equals("NULL") ? null
                             : String.valueOf(errorPopupConfigItems[3]);
-                    String introduction = String.valueOf(errorPopupConfigItems[4]).equals("NULL") ? null
+                    final String introduction = String.valueOf(errorPopupConfigItems[4]).equals("NULL") ? null
                             : String.valueOf(errorPopupConfigItems[4]);
 
                     if ((screenId != null) && (inScreenId != null) && screenId.equals(inScreenId)
@@ -588,22 +590,22 @@ public class ZulUtils {
     }
     /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
-    private static boolean isPermitted(String permissionKey, OperationType operation) {
-        Permissionset perms = ApplicationSession.get().getPermissions(permissionKey);
+    private static boolean isPermitted(final String permissionKey, final OperationType operation) {
+        final Permissionset perms = ApplicationSession.get().getPermissions(permissionKey);
         return perms != null && perms.contains(operation);
     }
     @Deprecated // only used by old hotbucket screen
-    public static boolean isCreatePermitted(String permissionKey) {
+    public static boolean isCreatePermitted(final String permissionKey) {
         return isPermitted(permissionKey, OperationType.CREATE);
     }
 
     @Deprecated // only used by old clarification screen
-    public static boolean isUpdatePermitted(String permissionKey) {
+    public static boolean isUpdatePermitted(final String permissionKey) {
         return isPermitted(permissionKey, OperationType.UPDATE);
     }
 
-    public static Object getViewModel(Component component) {
-        Binder binderListbox = BinderUtil.getBinder(component, true);
+    public static Object getViewModel(final Component component) {
+        final Binder binderListbox = BinderUtil.getBinder(component, true);
         return binderListbox.getViewModel();
     }
 }

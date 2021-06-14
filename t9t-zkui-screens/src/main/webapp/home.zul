@@ -71,7 +71,7 @@
                                          <a ca:title="${l:translate('tenant','tenantIdTooltipSelection')}" onClick="@command('changeTenant')" sclass="header-right-item-tenant">
                                              ${vm.selectedTenantId}
                                          </a>
-                                         <div style="width: 100%;text-align: center;">
+                                         <div style="width: 100%;text-align: center; padding: 0px 7px;">
                                                  <combobox
                                                      id="languageSelectionCombo"
                                                      apply="org.zkoss.bind.BindComposer"
@@ -83,6 +83,7 @@
                                                      tooltiptext="${l:translate('login','languageSelection')}"
                                                      rows="1" mold="default"
                                                      height="100%"
+                                                     width="100%"
                                                      readonly="true">
                                                      <template
                                                          name="model"

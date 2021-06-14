@@ -25,7 +25,7 @@ import de.jpaw.bonaparte.core.BonaPortable;
  */
 public final class ProcessOutput {
 
-    private Map<String, BonaPortable> output;
+    private final Map<String, BonaPortable> output;
 
     /**
      * Creates a new ProcessOutput instance.

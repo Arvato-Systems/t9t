@@ -53,14 +53,14 @@ public abstract class AbstractWorkflowStepPluginManager<T, S extends IWorkflowSt
     abstract protected M createWrapper(String qualifier, S existingInstance);
 
     @Override
-    public void registerPluginMethod(final Long tenantRef, final Plugin loadedPlugin, final PluginMethod method, boolean before) {
+    public void registerPluginMethod(final Long tenantRef, final Plugin loadedPlugin, final PluginMethod method, final boolean before) {
         if (before) {
             return;
         }
         registerInstance((IWorkflowStepPlugin<T>)method);
     }
 
-    private void registerInstance(IWorkflowStepPlugin<T> step) {
+    private void registerInstance(final IWorkflowStepPlugin<T> step) {
         final String qualifier = step.getQualifier();
         final S oldInstance = (S)Jdp.getOptional(IWorkflowStep.class, qualifier);
         final M newInstance;

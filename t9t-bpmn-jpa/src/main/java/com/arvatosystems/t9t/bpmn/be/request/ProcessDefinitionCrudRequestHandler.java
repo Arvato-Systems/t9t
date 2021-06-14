@@ -45,8 +45,8 @@ public class ProcessDefinitionCrudRequestHandler extends AbstractCrudSurrogateKe
         return execute(ctx, mapper, resolver, request);
     }
 
-    protected void validateSteps(List<T9tAbstractWorkflowStep> steps) {
-        for (T9tAbstractWorkflowStep step: steps) {
+    protected void validateSteps(final List<T9tAbstractWorkflowStep> steps) {
+        for (final T9tAbstractWorkflowStep step: steps) {
             if (step.getLabel() == null) {
                 throw new T9tException(T9tBPMException.BPM_NO_LABEL, step.getComment());
             }
@@ -54,11 +54,11 @@ public class ProcessDefinitionCrudRequestHandler extends AbstractCrudSurrogateKe
     }
 
     @Override
-    protected void validateUpdate(ProcessDefinitionEntity current, ProcessDefinitionDTO intended) {
+    protected void validateUpdate(final ProcessDefinitionEntity current, final ProcessDefinitionDTO intended) {
         validateSteps(intended.getWorkflow().getSteps());
     }
     @Override
-    protected void validateCreate(ProcessDefinitionDTO intended) {
+    protected void validateCreate(final ProcessDefinitionDTO intended) {
         validateSteps(intended.getWorkflow().getSteps());
     }
 }

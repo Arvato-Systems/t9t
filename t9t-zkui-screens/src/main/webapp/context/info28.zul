@@ -1,9 +1,9 @@
 <modal28 id="infoWin" viewModel="@id('vm') @init('com.arvatosystems.t9t.components.GenericVM', inst=inst)">
-    <form28 id="infoData" viewModelId="info" aspect="2">
+    <form28 id="infoData" viewModelId="info" aspect="1">
         <rows>
             <row>
-                <cell colspan="2">
-                    <textbox multiline="true" rows="30" cols="160" value="@bind(vm.data.text)"/>
+                <cell hflex="1">
+                    <textbox multiline="true" rows="30" cols="160" value="@bind(vm.data.text)" hflex="1"/>
                 </cell>
             </row>
         </rows>

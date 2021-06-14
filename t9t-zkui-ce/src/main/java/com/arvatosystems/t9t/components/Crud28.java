@@ -145,9 +145,9 @@ public class Crud28 extends Vlayout implements IViewModelOwner, IDataSelectRecei
         editButton.setVisible(false);
         if (!perms.contains(OperationType.UPDATE)) { // saveButton is needed for NEW / COPY as well, to persist!
             saveButton.setVisible(false);
-            if (useProtectedView) {
-                editButton.setVisible(true);
-            }
+        }
+        if (useProtectedView) {
+            editButton.setVisible(true);
         }
         if (!perms.contains(OperationType.ACTIVATE))
             activateButton.setVisible(false);

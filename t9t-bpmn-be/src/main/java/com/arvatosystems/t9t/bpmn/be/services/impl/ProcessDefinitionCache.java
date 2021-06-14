@@ -54,12 +54,12 @@ public class ProcessDefinitionCache implements IProcessDefinitionCache {
         try {
             return cache.get(key, () -> {
                 LOGGER.info("Loading cache for ProcessDefinition {} for tenant {}", processDefinitionId, tenantId);
-                ProcessDefinitionDTO dto = persistenceAccess.getProcessDefinitionDTO(processDefinitionId);
+                final ProcessDefinitionDTO dto = persistenceAccess.getProcessDefinitionDTO(processDefinitionId);
                 dto.freeze();  // because it's used by many processes, it should not be modifiable any more
                 return dto;
             });
-        } catch (ExecutionException e) {
-            Throwable cause = e.getCause();
+        } catch (final ExecutionException e) {
+            final Throwable cause = e.getCause();
             if (cause instanceof ApplicationException)
                 throw (ApplicationException)cause;
             LOGGER.error("Exception during cache loading of ProcessDefinitionDTO: {}", ExceptionUtil.causeChain(e));

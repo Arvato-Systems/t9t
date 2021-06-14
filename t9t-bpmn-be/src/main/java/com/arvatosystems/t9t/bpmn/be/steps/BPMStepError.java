@@ -28,11 +28,11 @@ import de.jpaw.dp.Singleton;
 public class BPMStepError extends AbstractAlwaysRunnableNoFactoryWorkflowStep {
 
     @Override
-    public WorkflowReturnCode execute(Object data, Map<String, Object> parameters) {
+    public WorkflowReturnCode execute(final Object data, final Map<String, Object> parameters) {
         // returnCode and errorDetails should be set in the parameter
-        Object code = parameters.get("returnCode");
+        final Object code = parameters.get(PROCESS_VARIABLE_RETURN_CODE);
         if (code == null || !(code instanceof Integer))
-            parameters.put("returnCode", T9tException.UNSUPPORTED_OPERATION);  // set a default error code
+            parameters.put(PROCESS_VARIABLE_RETURN_CODE, T9tException.UNSUPPORTED_OPERATION);  // set a default error code
         return WorkflowReturnCode.ERROR;
     }
 }

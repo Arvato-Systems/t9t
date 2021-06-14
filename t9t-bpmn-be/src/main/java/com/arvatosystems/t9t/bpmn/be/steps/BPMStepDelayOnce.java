@@ -33,23 +33,23 @@ import de.jpaw.dp.Singleton;
 public class BPMStepDelayOnce extends AbstractAlwaysRunnableNoFactoryWorkflowStep {
 
     @Override
-    public WorkflowReturnCode execute(Object data, Map<String, Object> parameters) {
+    public WorkflowReturnCode execute(final Object data, final Map<String, Object> parameters) {
         final Integer waitTime = JsonUtil.getZInteger(parameters, "delayOnceHours", null);
         if (waitTime != null) {
             parameters.remove("delayOnceHours"); // do not use it again
-            parameters.put("yieldUntil", Instant.ofEpochMilli(System.currentTimeMillis() + 1000L * 3600L * waitTime));
+            parameters.put(PROCESS_VARIABLE_YIELD_UNTIL, Instant.ofEpochMilli(System.currentTimeMillis() + 1000L * 3600L * waitTime));
             return WorkflowReturnCode.YIELD_NEXT;
         }
         final Integer waitTime2 = JsonUtil.getZInteger(parameters, "delayOnceMinutes", null);
         if (waitTime2 != null) {
             parameters.remove("delayOnceMinutes"); // do not use it again
-            parameters.put("yieldUntil", Instant.ofEpochMilli(System.currentTimeMillis() + 1000L * 60L * waitTime2));
+            parameters.put(PROCESS_VARIABLE_YIELD_UNTIL, Instant.ofEpochMilli(System.currentTimeMillis() + 1000L * 60L * waitTime2));
             return WorkflowReturnCode.YIELD_NEXT;
         }
         final Integer waitTime3 = JsonUtil.getZInteger(parameters, "delayOnceSeconds", null);
         if (waitTime3 != null) {
             parameters.remove("delayOnceSeconds"); // do not use it again
-            parameters.put("yieldUntil", Instant.ofEpochMilli(System.currentTimeMillis() + 1000L * waitTime3));
+            parameters.put(PROCESS_VARIABLE_YIELD_UNTIL, Instant.ofEpochMilli(System.currentTimeMillis() + 1000L * waitTime3));
             return WorkflowReturnCode.YIELD_NEXT;
         }
         return WorkflowReturnCode.PROCEED_NEXT;

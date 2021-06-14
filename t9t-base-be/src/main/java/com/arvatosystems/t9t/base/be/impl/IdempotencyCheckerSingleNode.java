@@ -54,15 +54,15 @@ public class IdempotencyCheckerSingleNode implements IIdempotencyChecker {
         if (applCfg == null || applCfg.getIdempotencyCacheMaxEntries() == null) {
             requestCache = null;
             idempotencyCacheMaxEntries = null;
-            idempotencyCacheExpiry = null;    
+            idempotencyCacheExpiry = null;
         } else {
             // there should be a cache
             requestCache = new ConcurrentHashMap<>(8);
             idempotencyCacheMaxEntries = applCfg.getIdempotencyCacheMaxEntries();
-            idempotencyCacheExpiry = applCfg.getIdempotencyCacheExpiry();    
+            idempotencyCacheExpiry = applCfg.getIdempotencyCacheExpiry();
         }
     }
-    
+
     protected Cache<UUID, ServiceResponse> buildNewCache() {
         final CacheBuilder builder = CacheBuilder.newBuilder().maximumSize(idempotencyCacheMaxEntries);  // why doesn't newBuilder() allow generic parameters?
         if (idempotencyCacheExpiry != null) {

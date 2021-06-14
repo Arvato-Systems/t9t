@@ -37,11 +37,11 @@ public class RestartAllActiveProcessesRequestHandler extends AbstractRequestHand
     protected final IBpmnPersistenceAccess persistenceAccess = Jdp.getRequired(IBpmnPersistenceAccess.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, RestartAllActiveProcessesRequest rq) {
+    public ServiceResponse execute(final RequestContext ctx, final RestartAllActiveProcessesRequest rq) {
         final String displayId = rq.getOnlyThisProcessId() == null ? "*" : rq.getOnlyThisProcessId();
         ctx.statusText = "Querying refs to process for " + displayId;
-        Instant dueWhen = rq.getMinAgeInSeconds() == null ? ctx.executionStart : ctx.executionStart.minus(1000L * rq.getMinAgeInSeconds());
-        List<Long> taskRefs = persistenceAccess.getTaskRefsDue(rq.getOnlyThisProcessId(), dueWhen,
+        final Instant dueWhen = rq.getMinAgeInSeconds() == null ? ctx.executionStart : ctx.executionStart.minus(1000L * rq.getMinAgeInSeconds());
+        final List<Long> taskRefs = persistenceAccess.getTaskRefsDue(rq.getOnlyThisProcessId(), dueWhen,
             Boolean.TRUE.equals(rq.getIncludeErrorStatus()), Boolean.TRUE.equals(rq.getRunProcessesOfAnyNode()));
 
         final int numRecords = taskRefs.size();

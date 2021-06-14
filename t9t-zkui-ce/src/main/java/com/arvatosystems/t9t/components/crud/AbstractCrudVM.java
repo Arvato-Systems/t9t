@@ -52,8 +52,9 @@ public abstract class AbstractCrudVM<
     protected ICrudNotifier hardLink = null;
     protected boolean useProtectedView;
 
-    public void setUseProtectedView(boolean useProtectedView) {
+    public void setUseProtectedView(final boolean useProtectedView) {
         this.useProtectedView = useProtectedView;
+        LOGGER.debug("useProtectedView set to {}", useProtectedView);
     }
 
     public enum CrudMode {
@@ -70,7 +71,7 @@ public abstract class AbstractCrudVM<
     protected final static String DELETE_CONFIRMATION_MESSAGE = "deleteConfirmationMessage";
     protected final static String DELETE_CONFIRMATION_DETAIL  = "deleteConfirmationDetail";
 
-    public void setHardLink(ICrudNotifier notifier) {
+    public void setHardLink(final ICrudNotifier notifier) {
         // link to the crud component to avoid boilerplate caused by @Notifier
         this.hardLink = notifier;
     }
@@ -87,18 +88,18 @@ public abstract class AbstractCrudVM<
     public void commandSave() {
         saveHook();
         if (currentMode == CrudMode.UNSAVED_NEW) {
-            CrudAnyKeyRequest<DTO, TRACKING> crudRq = crudViewModel.crudClass.newInstance();
+            final CrudAnyKeyRequest<DTO, TRACKING> crudRq = crudViewModel.crudClass.newInstance();
             crudRq.setCrud(OperationType.CREATE);
             crudRq.setData(data);
             runCrud(crudRq, Boolean.FALSE);
             setCurrentMode(useProtectedView ? CrudMode.CURRENT_PROTECTED_VIEW : CrudMode.CURRENT);
         } else {
-            CrudAnyKeyRequest<DTO, TRACKING> crudRq = createCrudWithKey();
+            final CrudAnyKeyRequest<DTO, TRACKING> crudRq = createCrudWithKey();
             crudRq.setCrud(OperationType.UPDATE);
             crudRq.setData(data);
             runCrud(crudRq, Boolean.TRUE);
         }
-        boolean showMessage = ZulUtils.readBooleanConfig(T9TConfigConstants.CRUD_SHOW_MESSAGE);
+        final boolean showMessage = ZulUtils.readBooleanConfig(T9TConfigConstants.CRUD_SHOW_MESSAGE);
         if (showMessage) {
             Messagebox.show(session.translate(COMMON, "saved"), session.translate(COMMON, "info"), Messagebox.OK,
                     Messagebox.INFORMATION);
@@ -124,9 +125,9 @@ public abstract class AbstractCrudVM<
         showDeleteConfirmationDialog(new EventListener<Event>() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(final Event event) throws Exception {
                 if (event.getName().equals(Messagebox.ON_YES)) {
-                    CrudAnyKeyRequest<DTO, TRACKING> crudRq = createCrudWithKey();
+                    final CrudAnyKeyRequest<DTO, TRACKING> crudRq = createCrudWithKey();
                     crudRq.setCrud(OperationType.DELETE);
                     runCrud(crudRq, Boolean.FALSE);
                 }
@@ -152,18 +153,18 @@ public abstract class AbstractCrudVM<
     protected abstract CrudAnyKeyRequest<DTO, TRACKING> createCrudWithKey();
     protected abstract void clearKey();  // required before some CREATE
 
-    protected void activateDeactivate(boolean newActive) {
-        CrudAnyKeyRequest<DTO, TRACKING> crudRq = createCrudWithKey();
+    protected void activateDeactivate(final boolean newActive) {
+        final CrudAnyKeyRequest<DTO, TRACKING> crudRq = createCrudWithKey();
         crudRq.setCrud(newActive ? OperationType.ACTIVATE : OperationType.INACTIVATE);
         runCrud(crudRq, Boolean.TRUE);  // performs Grid28.refreshCurrentItem(); via event
     }
 
-    protected void runCrud(CrudAnyKeyRequest<DTO, TRACKING> crudRq, Object eventData) {
+    protected void runCrud(final CrudAnyKeyRequest<DTO, TRACKING> crudRq, final Object eventData) {
         if (LOGGER.isTraceEnabled()) {
             LOGGER.trace("runCrud {} with key = {}, data = {}",
                 crudRq.getCrud(), crudRq.getData() == null ? "NULL" : ToStringHelper.toStringML(crudRq.getData()));
         }
-        CrudAnyKeyResponse<BonaPortable, TrackingBase> crudRs = remoteUtil.executeExpectOk(crudRq, CrudAnyKeyResponse.class);
+        final CrudAnyKeyResponse<BonaPortable, TrackingBase> crudRs = remoteUtil.executeExpectOk(crudRq, CrudAnyKeyResponse.class);
         if (eventData != null) {
             setRefresher(eventData);  // Component to issue an event
         }
@@ -175,7 +176,7 @@ public abstract class AbstractCrudVM<
 
     @Command
     @NotifyChange("*")
-    public void setSelectionData(@BindingParam("dwt") DataWithTracking<DTO, TRACKING> dwt) {
+    public void setSelectionData(@BindingParam("dwt") final DataWithTracking<DTO, TRACKING> dwt) {
         if (dwt != null) {
             LOGGER.debug("setSelectionData(some data)");
             loadData(dwt);
@@ -190,12 +191,12 @@ public abstract class AbstractCrudVM<
     public CrudMode getCurrentMode() {
         return currentMode;
     }
-    public void setCurrentMode(CrudMode currentMode) {
+    public void setCurrentMode(final CrudMode currentMode) {
         this.currentMode = currentMode;
-        LOGGER.debug("Updating button states to {} in viewmodel", currentMode);
+        LOGGER.debug("Updating button states to new currentMode {} in viewmodel", currentMode);
         modeNotifier();
     }
-    public void setRefresher(Object refresher) {
+    public void setRefresher(final Object refresher) {
         LOGGER.debug("Setting refresher to {}", refresher);
         if (hardLink != null)
             hardLink.setRefresher(refresher);
@@ -209,8 +210,8 @@ public abstract class AbstractCrudVM<
     }
 
     private CrudMode tenantAccessCheck() {
-        
-        CrudMode currentMode = useProtectedView ? CrudMode.CURRENT_PROTECTED_VIEW : CrudMode.CURRENT;
+
+        final CrudMode currentMode = useProtectedView ? CrudMode.CURRENT_PROTECTED_VIEW : CrudMode.CURRENT;
 
         if (tenantId != null) {
             /*
@@ -230,15 +231,15 @@ public abstract class AbstractCrudVM<
         return currentMode;
     }
 
-    protected void showDeleteConfirmationDialog(EventListener<Event> eventListener) {
+    protected void showDeleteConfirmationDialog(final EventListener<Event> eventListener) {
 
         if (data instanceof Ref) {
-            ResolveAnyRefRequest rq = new ResolveAnyRefRequest(((Ref) data).getObjectRef());
-            ResolveAnyRefResponse res = remoteUtil.executeExpectOk(rq, ResolveAnyRefResponse.class);
+            final ResolveAnyRefRequest rq = new ResolveAnyRefRequest(((Ref) data).getObjectRef());
+            final ResolveAnyRefResponse res = remoteUtil.executeExpectOk(rq, ResolveAnyRefResponse.class);
             if (res.getEntityClass() != null || res.getDescription() != null) {
-                Description desc = res.getDescription();
-                String translatedEntityName = session.translate(ENTITY, res.getEntityClass());
-                String formattedMessage = session.translate(COMMON, DELETE_CONFIRMATION_DETAIL, translatedEntityName, desc.getId(), desc.getName());
+                final Description desc = res.getDescription();
+                final String translatedEntityName = session.translate(ENTITY, res.getEntityClass());
+                final String formattedMessage = session.translate(COMMON, DELETE_CONFIRMATION_DETAIL, translatedEntityName, desc.getId(), desc.getName());
 
                 Messagebox.show(formattedMessage,
                         session.translate(COMMON, DELETE_CONFIRMATION), Messagebox.YES | Messagebox.CANCEL,

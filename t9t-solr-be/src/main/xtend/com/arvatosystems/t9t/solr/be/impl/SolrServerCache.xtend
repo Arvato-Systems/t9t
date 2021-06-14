@@ -40,7 +40,7 @@ class SolrServerCache implements ISolrServerCache {
 
         return serverCache.get(solrCoreUrl) [
             LOGGER.info('''Creating new SOLR client for URL «solrCoreUrl»''')
-            new HttpSolrClient(solrCoreUrl)
+            return new HttpSolrClient.Builder(solrCoreUrl).build
         ];
     }
 }

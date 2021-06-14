@@ -24,6 +24,7 @@ import com.arvatosystems.t9t.bpmn.request.ExecuteProcessWithRefResponse;
 import com.arvatosystems.t9t.bpmn.request.UpdateProcessRequest;
 import com.arvatosystems.t9t.bpmn.request.WorkflowActionEnum;
 import com.arvatosystems.t9t.bpmn.services.IBpmnPersistenceAccess;
+
 import de.jpaw.dp.Jdp;
 
 public class UpdateProcessRequestHandler extends AbstractRequestHandler<UpdateProcessRequest> {
@@ -31,9 +32,9 @@ public class UpdateProcessRequestHandler extends AbstractRequestHandler<UpdatePr
     protected final IExecutor messaging = Jdp.getRequired(IExecutor.class);
 
     @Override
-    public ExecuteProcessWithRefResponse execute(RequestContext ctx, UpdateProcessRequest rq) {
-        ProcessExecutionStatusDTO dto = persistenceAccess.getProcessExecutionStatusDTO(rq.getProcessDefinitionId(), rq.getTargetObjectRef());
-        ExecuteProcessWithRefRequest bpmRefRequest = new ExecuteProcessWithRefRequest();
+    public ExecuteProcessWithRefResponse execute(final RequestContext ctx, final UpdateProcessRequest rq) {
+        final ProcessExecutionStatusDTO dto = persistenceAccess.getProcessExecutionStatusDTO(rq.getProcessDefinitionId(), rq.getTargetObjectRef());
+        final ExecuteProcessWithRefRequest bpmRefRequest = new ExecuteProcessWithRefRequest();
 
         if (rq.getCurrentParameters() != null) {
             dto.setCurrentParameters(rq.getCurrentParameters());
@@ -58,8 +59,8 @@ public class UpdateProcessRequestHandler extends AbstractRequestHandler<UpdatePr
             bpmRefRequest.setInitialDelay(null); // direct process trigger
         }
 
-        Long ref = persistenceAccess.createOrUpdateNewStatus(ctx, dto, bpmRefRequest);
-        ExecuteProcessWithRefResponse response = new ExecuteProcessWithRefResponse();
+        final Long ref = persistenceAccess.createOrUpdateNewStatus(ctx, dto, bpmRefRequest);
+        final ExecuteProcessWithRefResponse response = new ExecuteProcessWithRefResponse();
         response.setProcessCtrlRef(ref);
 
         return response;

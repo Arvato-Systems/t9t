@@ -264,19 +264,19 @@ class BpmnRunner implements IBpmnRunner {
     }
 
     def protected WorkflowReturnCode dealWithError(ProcessExecStatusEntity statusEntity, Map<String, Object> parameters) {
-        val retCode = parameters.get("returnCode")
+        val retCode = parameters.get(IWorkflowStep.PROCESS_VARIABLE_RETURN_CODE)
         statusEntity.returnCode = if (retCode === null || !(retCode instanceof Integer))
             T9tBPMException.BPM_NO_ERROR
         else
             retCode as Integer;
-        statusEntity.errorDetails = MessagingUtil.truncField(parameters.get("errorDetails"), ProcessExecutionStatusDTO.meta$$errorDetails.length)
-        parameters.remove("returnCode")
-        parameters.remove("errorDetails")
+        statusEntity.errorDetails = MessagingUtil.truncField(parameters.get(IWorkflowStep.PROCESS_VARIABLE_ERROR_DETAILS), ProcessExecutionStatusDTO.meta$$errorDetails.length)
+        parameters.remove(IWorkflowStep.PROCESS_VARIABLE_RETURN_CODE)
+        parameters.remove(IWorkflowStep.PROCESS_VARIABLE_ERROR_DETAILS)
         return WorkflowReturnCode.YIELD
     }
 
     def protected WorkflowReturnCode dealWithDelay(ProcessExecStatusEntity statusEntity, Map<String, Object> parameters, WorkflowReturnCode code) {
-        val tilWhen = parameters.get("yieldUntil")
+        val tilWhen = parameters.get(IWorkflowStep.PROCESS_VARIABLE_YIELD_UNTIL)
         if (tilWhen !== null && tilWhen instanceof Instant) {
             statusEntity.yieldUntil = tilWhen as Instant
         }

@@ -31,13 +31,13 @@ public class ExecuteProcessWithRefRequestHandler extends AbstractRequestHandler<
     protected final IProcessDefinitionCache pdCache = Jdp.getRequired(IProcessDefinitionCache.class);
 
     @Override
-    public ExecuteProcessWithRefResponse execute(RequestContext ctx, ExecuteProcessWithRefRequest rq) {
+    public ExecuteProcessWithRefResponse execute(final RequestContext ctx, final ExecuteProcessWithRefRequest rq) {
         // this just creates the entry in the process execution table, and then launches the process asynchronously
         // 1.) validate that the processId exists
-        ProcessDefinitionDTO pd = pdCache.getCachedProcessDefinitionDTO(ctx.tenantId, rq.getProcessDefinitionId());
+        final ProcessDefinitionDTO pd = pdCache.getCachedProcessDefinitionDTO(ctx.tenantId, rq.getProcessDefinitionId());
 
         // 2.) create or validate the entry in the status table
-        ProcessExecutionStatusDTO newStatus = new ProcessExecutionStatusDTO();
+        final ProcessExecutionStatusDTO newStatus = new ProcessExecutionStatusDTO();
         newStatus.setProcessDefinitionId(rq.getProcessDefinitionId());
         newStatus.setTargetObjectRef(rq.getTargetObjectRef());
         newStatus.setCurrentParameters(rq.getInitialParameters() != null ? rq.getInitialParameters() : pd.getInitialParams());
@@ -48,9 +48,9 @@ public class ExecuteProcessWithRefRequestHandler extends AbstractRequestHandler<
         if (rq.getRestartAtBeginningIfExists() == null) {
             rq.setRestartAtBeginningIfExists(pd.getAlwaysRestartAtStep1());
         }
-        Long ref = persistenceAccess.createOrUpdateNewStatus(ctx, newStatus, rq);
+        final Long ref = persistenceAccess.createOrUpdateNewStatus(ctx, newStatus, rq);
 
-        ExecuteProcessWithRefResponse resp = new ExecuteProcessWithRefResponse();
+        final ExecuteProcessWithRefResponse resp = new ExecuteProcessWithRefResponse();
         resp.setProcessCtrlRef(ref == null ? Long.valueOf(0L) : ref);  // special case: did not exist and "IGNORE IF NEW"
         return resp;
     }
