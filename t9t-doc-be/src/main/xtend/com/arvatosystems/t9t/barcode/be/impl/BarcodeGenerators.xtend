@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.barcode.be.impl
 
-import com.arvatosystems.t9t.doc.services.valueclass.ImageParameter
+import com.arvatosystems.t9t.doc.services.ImageParameter
 import com.arvatosystems.t9t.image.be.impl.AbstractImageGenerator
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.aztec.AztecWriter

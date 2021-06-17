@@ -36,7 +36,7 @@ import org.eclipse.xtend.lib.annotations.Data
 import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey28
 
 @Data
-class AbstractTextSearch28RequestHandler<
+abstract class AbstractTextSearch28RequestHandler<
     REF extends Ref,
     DTO extends REF,
     TRACKING extends TrackingBase,

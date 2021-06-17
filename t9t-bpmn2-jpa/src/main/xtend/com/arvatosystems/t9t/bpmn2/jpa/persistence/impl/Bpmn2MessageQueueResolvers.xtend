@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.bpmn2.jpa.persistence.impl
 
-import com.arvatosystems.t9t.annotations.jpa.AutoResolver42
+import com.arvatosystems.t9t.annotations.jpa.active.AutoResolver42
 import com.arvatosystems.t9t.bpmn2.Bpmn2MessageQueueRef
 import com.arvatosystems.t9t.bpmn2.jpa.entities.Bpmn2MessageQueueEntity
 

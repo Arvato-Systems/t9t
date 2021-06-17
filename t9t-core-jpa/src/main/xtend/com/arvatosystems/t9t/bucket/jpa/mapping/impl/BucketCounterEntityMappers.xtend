@@ -16,7 +16,7 @@
 package com.arvatosystems.t9t.bucket.jpa.mapping.impl
 
 import com.arvatosystems.t9t.annotations.jpa.AutoHandler
-import com.arvatosystems.t9t.annotations.jpa.AutoMap42
+import com.arvatosystems.t9t.annotations.jpa.active.AutoMap42
 import com.arvatosystems.t9t.bucket.BucketCounterDTO
 import com.arvatosystems.t9t.bucket.jpa.entities.BucketCounterEntity
 import com.arvatosystems.t9t.bucket.jpa.persistence.IBucketCounterEntityResolver

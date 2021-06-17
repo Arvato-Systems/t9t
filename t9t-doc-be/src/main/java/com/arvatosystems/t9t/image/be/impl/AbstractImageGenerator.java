@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.barcode.api.FlipMode;
 import com.arvatosystems.t9t.doc.services.IImageGenerator;
-import com.arvatosystems.t9t.doc.services.valueclass.ImageParameter;
+import com.arvatosystems.t9t.doc.services.ImageParameter;
 import com.google.zxing.common.BitMatrix;
 
 import de.jpaw.bonaparte.api.media.MediaTypes;

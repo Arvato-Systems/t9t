@@ -21,7 +21,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-settings-be</artifactId>
-        <version>5.2-SNAPSHOT</version>
+        <version>5.3-SNAPSHOT</version>
         <relativePath>../t9t-settings-be</relativePath>
     </parent>
 
@@ -48,7 +48,11 @@
         </dependency>
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
-            <artifactId>t9t-base-apiext</artifactId>
+            <artifactId>t9t-annotations-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-base-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.xtend</groupId>
@@ -61,12 +65,12 @@
 
         <!-- required for Java 9 and later -->
         <dependency>
-             <groupId>javax.xml.bind</groupId>
-             <artifactId>jaxb-api</artifactId>
+             <groupId>jakarta.xml.bind</groupId>
+             <artifactId>jakarta.xml.bind-api</artifactId>
         </dependency>
         <dependency>
-             <groupId>javax.activation</groupId>
-             <artifactId>javax.activation-api</artifactId>
+             <groupId>com.sun.activation</groupId>
+             <artifactId>jakarta.activation</artifactId>
         </dependency>
         <dependency>
              <groupId>com.sun.xml.bind</groupId>

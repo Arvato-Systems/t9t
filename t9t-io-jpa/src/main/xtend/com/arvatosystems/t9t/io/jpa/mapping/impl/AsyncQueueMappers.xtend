@@ -16,7 +16,7 @@
 package com.arvatosystems.t9t.io.jpa.mapping.impl
 
 import com.arvatosystems.t9t.annotations.jpa.AutoHandler
-import com.arvatosystems.t9t.annotations.jpa.AutoMap42
+import com.arvatosystems.t9t.annotations.jpa.active.AutoMap42
 import com.arvatosystems.t9t.io.AsyncQueueDTO
 import com.arvatosystems.t9t.io.jpa.entities.AsyncQueueEntity
 import com.arvatosystems.t9t.io.jpa.persistence.IAsyncQueueEntityResolver

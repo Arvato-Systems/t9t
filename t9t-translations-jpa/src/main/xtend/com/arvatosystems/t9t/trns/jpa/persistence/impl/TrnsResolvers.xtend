@@ -16,7 +16,7 @@
 package com.arvatosystems.t9t.trns.jpa.persistence.impl
 
 import com.arvatosystems.t9t.annotations.jpa.AllCanAccessGlobalTenant
-import com.arvatosystems.t9t.annotations.jpa.AutoResolver42
+import com.arvatosystems.t9t.annotations.jpa.active.AutoResolver42
 import com.arvatosystems.t9t.trns.TranslationsRef
 import com.arvatosystems.t9t.trns.jpa.entities.TranslationsEntity
 import com.arvatosystems.t9t.trns.jpa.entities.TrnsModuleCfgEntity

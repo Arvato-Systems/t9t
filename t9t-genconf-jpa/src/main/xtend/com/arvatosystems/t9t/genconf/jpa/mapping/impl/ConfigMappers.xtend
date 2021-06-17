@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.genconf.jpa.mapping.impl
 
-import com.arvatosystems.t9t.annotations.jpa.AutoMap42
+import com.arvatosystems.t9t.annotations.jpa.active.AutoMap42
 import com.arvatosystems.t9t.genconf.ConfigDTO
 import com.arvatosystems.t9t.genconf.jpa.entities.ConfigEntity
 import com.arvatosystems.t9t.genconf.jpa.persistence.IConfigEntityResolver

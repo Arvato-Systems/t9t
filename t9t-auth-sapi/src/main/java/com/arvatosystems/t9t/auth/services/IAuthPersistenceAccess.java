@@ -34,7 +34,7 @@ import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 public interface IAuthPersistenceAccess {
 
     //changeMe to correct specification
-    public static final AuthModuleCfgDTO DEFAULT_MODULE_CFG = new AuthModuleCfgDTO(
+    AuthModuleCfgDTO DEFAULT_MODULE_CFG = new AuthModuleCfgDTO(
               null
             , 0
             , 0
@@ -61,4 +61,6 @@ public interface IAuthPersistenceAccess {
 
     Map<String, Object> getUserZ(Long userRef);
     Map<String, Object> getTenantZ(Long tenantRef);
+
+    String assignNewPasswordIfEmailMatches(RequestContext ctx, String userId, String emailAddress);
 }

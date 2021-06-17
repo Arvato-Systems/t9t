@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.batch.jpa.persistence.impl
 
-import com.arvatosystems.t9t.annotations.jpa.AutoResolver42
+import com.arvatosystems.t9t.annotations.jpa.active.AutoResolver42
 import com.arvatosystems.t9t.batch.SliceTrackingRef
 import com.arvatosystems.t9t.batch.StatisticsRef
 import com.arvatosystems.t9t.batch.jpa.entities.SliceTrackingEntity

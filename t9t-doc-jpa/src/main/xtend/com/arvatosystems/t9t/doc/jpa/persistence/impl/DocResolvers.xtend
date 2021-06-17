@@ -16,7 +16,7 @@
 package com.arvatosystems.t9t.doc.jpa.persistence.impl
 
 import com.arvatosystems.t9t.annotations.jpa.AllCanAccessGlobalTenant
-import com.arvatosystems.t9t.annotations.jpa.AutoResolver42
+import com.arvatosystems.t9t.annotations.jpa.active.AutoResolver42
 import com.arvatosystems.t9t.doc.DocComponentRef
 import com.arvatosystems.t9t.doc.DocConfigRef
 import com.arvatosystems.t9t.doc.DocEmailCfgRef

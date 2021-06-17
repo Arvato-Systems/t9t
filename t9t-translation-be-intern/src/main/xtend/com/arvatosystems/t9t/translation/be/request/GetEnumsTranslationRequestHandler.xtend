@@ -23,16 +23,16 @@ import com.arvatosystems.t9t.translation.request.GetEnumsTranslationRequest
 import com.arvatosystems.t9t.translation.request.GetEnumsTranslationResponse
 import com.arvatosystems.t9t.translation.services.ITranslationProvider
 import de.jpaw.annotations.AddLogger
-import de.jpaw.dp.Inject
 import java.util.ArrayList
 import com.arvatosystems.t9t.init.InitContainers
 import com.arvatosystems.t9t.base.T9tException
 import de.jpaw.util.ApplicationException
+import de.jpaw.dp.Jdp
 
 @AddLogger
 class GetEnumsTranslationRequestHandler extends AbstractReadOnlyRequestHandler<GetEnumsTranslationRequest> {
 
-    @Inject protected ITranslationProvider translationProvider
+    val protected ITranslationProvider translationProvider = Jdp.getRequired(ITranslationProvider)
 
     def protected EnumTranslationDTO translateEnum(RequestContext ctx, String pqon, String language, Boolean useFallback) {
         val result = new EnumTranslationDTO => [

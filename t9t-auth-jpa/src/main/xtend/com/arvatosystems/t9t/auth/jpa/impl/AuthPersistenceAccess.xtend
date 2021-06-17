@@ -49,6 +49,7 @@ import javax.persistence.EntityManager
 import javax.persistence.NoResultException
 import javax.persistence.TypedQuery
 import org.joda.time.Instant
+import com.arvatosystems.t9t.auth.jpa.IPasswordSettingService
 
 @AddLogger
 @Singleton
@@ -56,10 +57,9 @@ class AuthPersistenceAccess implements IAuthPersistenceAccess, T9tConstants {
     static final List<PermissionEntry> EMPTY_PERMISSION_LIST = ImmutableList.of();
 
     @Inject Provider<PersistenceProviderJPA> jpaContextProvider
-
     @Inject IUserEntityResolver userEntityResolver
-
     @Inject PasswordChangeService passwordChangeService
+    @Inject IPasswordSettingService passwordSettingService
 
     // return the unfiltered permissions from DB
     // unfiltered means:
@@ -399,5 +399,23 @@ class AuthPersistenceAccess implements IAuthPersistenceAccess, T9tConstants {
         val em = jpaContextProvider.get.entityManager
         val userEntity = em.find(UserEntity, userRef)
         return userEntity?.z
+    }
+
+    override String assignNewPasswordIfEmailMatches(RequestContext ctx, String userId, String emailAddress) {
+        val userEntity = getUserIgnoringTenant(userId)
+        if (userEntity === null)
+            throw new T9tException(T9tException.NOT_AUTHENTICATED)  // user does not exist
+
+        // validate that the user is active and that the email address matches
+        if (!userEntity.isActive || !emailAddress.equalsIgnoreCase(userEntity.emailAddress))
+            throw new T9tException(T9tException.NOT_AUTHENTICATED)  // wrong email address
+
+        // checks OK, proceed
+
+        // The request creates an initial random password for the specified user, or creates a new password for that user.
+        val newPassword = PasswordUtil.generateRandomPassword(T9tConstants.DEFAULT_RANDOM_PASS_LENGTH)
+
+        passwordSettingService.setPasswordForUser(ctx, userEntity, newPassword)
+        return newPassword
     }
 }

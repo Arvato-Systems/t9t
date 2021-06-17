@@ -23,7 +23,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.out.be.impl.OutputHeading;
+import com.arvatosystems.t9t.io.OutputHeading;
 import com.arvatosystems.t9t.out.be.impl.output.EnumTranslatorComposerFilter;
 import com.arvatosystems.t9t.out.be.impl.output.VariantComposerFilter;
 
@@ -76,7 +76,7 @@ public abstract class FoldableFormatGenerator<E extends Exception> extends Abstr
             return;
         try {
             getMessageComposer().writeRecord(new OutputHeading(foldableParams.getHeaders()));
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.error("Failed to write header to output.", e);
         }
     }

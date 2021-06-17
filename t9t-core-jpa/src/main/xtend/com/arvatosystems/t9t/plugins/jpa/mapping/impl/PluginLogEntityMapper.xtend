@@ -16,7 +16,7 @@
 package com.arvatosystems.t9t.plugins.jpa.mapping.impl
 
 import com.arvatosystems.t9t.annotations.jpa.AutoHandler
-import com.arvatosystems.t9t.annotations.jpa.AutoMap42
+import com.arvatosystems.t9t.annotations.jpa.active.AutoMap42
 import com.arvatosystems.t9t.plugins.jpa.entities.PluginLogEntity
 import com.arvatosystems.t9t.plugins.PluginLogDTO
 import com.arvatosystems.t9t.plugins.jpa.persistence.IPluginLogEntityResolver

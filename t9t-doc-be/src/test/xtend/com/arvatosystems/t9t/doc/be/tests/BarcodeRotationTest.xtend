@@ -17,7 +17,7 @@ package com.arvatosystems.t9t.doc.be.tests
 
 import com.arvatosystems.t9t.barcode.api.FlipMode
 import com.arvatosystems.t9t.barcode.be.impl.BarcodeCode128Generator
-import com.arvatosystems.t9t.doc.services.valueclass.ImageParameter
+import com.arvatosystems.t9t.doc.services.ImageParameter
 import com.google.common.io.Files
 import java.io.File
 import org.junit.Ignore

@@ -16,7 +16,7 @@
 package com.arvatosystems.t9t.uiprefsv3.jpa.persistence.impl
 
 import com.arvatosystems.t9t.annotations.jpa.AllCanAccessGlobalTenant
-import com.arvatosystems.t9t.annotations.jpa.AutoResolver42
+import com.arvatosystems.t9t.annotations.jpa.active.AutoResolver42
 import com.arvatosystems.t9t.uiprefsv3.LeanGridConfigRef
 import com.arvatosystems.t9t.uiprefsv3.jpa.entities.LeanGridConfigEntity
 

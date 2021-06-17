@@ -22,7 +22,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>global-build</artifactId>
-        <version>5.2-SNAPSHOT</version>
+        <version>5.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>t9t-dm</artifactId>
@@ -180,11 +180,6 @@
             </dependency>
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-base-apiext</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-base-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -327,11 +322,6 @@
             </dependency>
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-doc-apiext</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-doc-be</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -380,11 +370,6 @@
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-email-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-email-apiext</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

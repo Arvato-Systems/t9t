@@ -16,7 +16,7 @@
 package com.arvatosystems.t9t.event.jpa.mapping.impl
 
 import com.arvatosystems.t9t.annotations.jpa.AutoHandler
-import com.arvatosystems.t9t.annotations.jpa.AutoMap42
+import com.arvatosystems.t9t.annotations.jpa.active.AutoMap42
 import com.arvatosystems.t9t.event.SubscriberConfigDTO
 import com.arvatosystems.t9t.event.jpa.entities.SubscriberConfigEntity
 import com.arvatosystems.t9t.event.jpa.persistence.ISubscriberConfigEntityResolver

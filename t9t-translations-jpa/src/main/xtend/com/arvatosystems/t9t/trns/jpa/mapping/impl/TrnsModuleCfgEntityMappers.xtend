@@ -16,7 +16,7 @@
 package com.arvatosystems.t9t.trns.jpa.mapping.impl
 
 import com.arvatosystems.t9t.annotations.jpa.AutoHandler
-import com.arvatosystems.t9t.annotations.jpa.AutoMap42
+import com.arvatosystems.t9t.annotations.jpa.active.AutoMap42
 import com.arvatosystems.t9t.trns.TrnsModuleCfgDTO
 import com.arvatosystems.t9t.trns.jpa.entities.TrnsModuleCfgEntity
 import com.arvatosystems.t9t.trns.jpa.persistence.ITrnsModuleCfgEntityResolver

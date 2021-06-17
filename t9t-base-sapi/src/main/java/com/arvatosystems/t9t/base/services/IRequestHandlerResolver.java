@@ -15,6 +15,10 @@
  */
 package com.arvatosystems.t9t.base.services;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 
@@ -24,24 +28,29 @@ import com.arvatosystems.t9t.base.api.RequestParameters;
  *
  *   Also methods to overwrite an existing implementation are provided, this is used by caching algorithms, plugging into the cross module resolvers. */
 public interface IRequestHandlerResolver {
-    public static final String PREFIX = MessagingUtil.TWENTYEIGHT_PACKAGE_PREFIX + ".";
-    public static final int PREFIX_LENGTH = PREFIX.length();
+    String PREFIX = MessagingUtil.TWENTYEIGHT_PACKAGE_PREFIX + ".";
+    int PREFIX_LENGTH = PREFIX.length();
 
-    public <RQ extends RequestParameters> IRequestHandler<RQ> getHandlerInstance(Class<RQ> requestClass);
+    <RQ extends RequestParameters> IRequestHandler<RQ> getHandlerInstance(Class<RQ> requestClass);
 
-    public <RQ extends RequestParameters> void setHandlerInstance(Class<RQ> requestClass, IRequestHandler<RQ> newInstance);
+    <RQ extends RequestParameters> void setHandlerInstance(Class<RQ> requestClass, IRequestHandler<RQ> newInstance);
 
 
     // see also NoTenantCustomization
-    default public <RQ extends RequestParameters> String getRequestHandlerClassname(Class<RQ> requestClass) {
+    default <RQ extends RequestParameters> List<String> getRequestHandlerClassnameCandidates(final Class<RQ> requestClass) {
         // default strategy: insert a ".be" after "com.arvato-systems.t9t.[a-z]*"
-        String base = requestClass.getCanonicalName();
+        final String base = requestClass.getCanonicalName();
         if (base.startsWith(PREFIX)) {
-            int nextDot = base.indexOf('.', PREFIX_LENGTH);
+            final int nextDot = base.indexOf('.', PREFIX_LENGTH);
             if (nextDot > 0) {
-                return base.substring(0, nextDot) + ".be" + base.substring(nextDot) + "Handler";
+                final String part1 = base.substring(0, nextDot);
+                final String part2 = base.substring(nextDot);
+                final List<String> result = new ArrayList<>();
+                result.add(part1 + ".be" + part2 + "Handler");
+                result.add(part1 + ".jpa" + part2 + "Handler");
+                return result;
             }
         }
-        return base + "Handler";
+        return Collections.emptyList();
     }
 }

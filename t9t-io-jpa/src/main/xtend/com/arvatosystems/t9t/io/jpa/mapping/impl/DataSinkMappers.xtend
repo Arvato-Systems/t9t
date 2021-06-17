@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.io.jpa.mapping.impl
 
-import com.arvatosystems.t9t.annotations.jpa.AutoMap42
+import com.arvatosystems.t9t.annotations.jpa.active.AutoMap42
 import com.arvatosystems.t9t.io.DataSinkDTO
 import com.arvatosystems.t9t.io.DataSinkFilterProps
 import com.arvatosystems.t9t.io.DataSinkKey

@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.ssm.jpa.mapping.impl
 
-import com.arvatosystems.t9t.annotations.jpa.AutoMap42
+import com.arvatosystems.t9t.annotations.jpa.active.AutoMap42
 import com.arvatosystems.t9t.core.jpa.mapping.ICannedRequestDTOMapper
 import com.arvatosystems.t9t.core.jpa.persistence.ICannedRequestEntityResolver
 import com.arvatosystems.t9t.ssm.SchedulerSetupDTO

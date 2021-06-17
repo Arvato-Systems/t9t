@@ -16,7 +16,7 @@
 package com.arvatosystems.t9t.bpmn2.jpa.mapping.impl
 
 import com.arvatosystems.t9t.annotations.jpa.AutoHandler
-import com.arvatosystems.t9t.annotations.jpa.AutoMap42
+import com.arvatosystems.t9t.annotations.jpa.active.AutoMap42
 import com.arvatosystems.t9t.bpmn2.Bpmn2MessageQueueDTO
 import com.arvatosystems.t9t.bpmn2.jpa.entities.Bpmn2MessageQueueEntity
 import com.arvatosystems.t9t.bpmn2.jpa.persistence.IBpmn2MessageQueueEntityResolver

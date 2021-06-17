@@ -21,7 +21,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-settings-be</artifactId>
-        <version>5.2-SNAPSHOT</version>
+        <version>5.3-SNAPSHOT</version>
         <relativePath>../t9t-settings-be</relativePath>
     </parent>
 
@@ -33,10 +33,11 @@
             <groupId>de.jpaw</groupId>
             <artifactId>bonaparte-core</artifactId>
         </dependency>
-        <dependency>
+<!--         <dependency>
             <groupId>de.jpaw</groupId>
             <artifactId>bonaparte8-vertx3</artifactId>
         </dependency>
+ -->
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-core</artifactId>
@@ -44,6 +45,10 @@
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-auth-common</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.xtend</groupId>

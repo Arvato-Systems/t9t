@@ -21,7 +21,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-settings-jpa</artifactId>
-        <version>5.2-SNAPSHOT</version>
+        <version>5.3-SNAPSHOT</version>
         <relativePath>../t9t-settings-jpa</relativePath>
     </parent>
 
@@ -53,7 +53,16 @@
             <groupId>de.jpaw</groupId>
             <artifactId>persistence-api</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+        </dependency>
+<!--
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>javax.persistence</artifactId>
+        </dependency>
+ -->
         <!-- JDBC drivers. Only open source drivers are added here, others (HANA, Oracle, MS SQL) only on demand due to redistribution legalese. -->
         <dependency>
             <!-- Postgres database driver -->

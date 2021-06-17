@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.base.services;
 
+import java.util.List;
+
 import com.arvatosystems.t9t.base.api.RequestParameters;
 
 import de.jpaw.bonaparte.core.BonaPortable;
@@ -28,18 +30,18 @@ import de.jpaw.bonaparte.core.BonaPortable;
  */
 public interface ITenantCustomization {
     // DTO mapping
-    public <DTO extends BonaPortable> DTO newDtoInstance(int rtti, Class<DTO> baseClass);
+    <DTO extends BonaPortable> DTO newDtoInstance(int rtti, Class<DTO> baseClass);
 
-    public <DTO extends BonaPortable> Class<? extends DTO> getDtoClass(int rtti, Class<DTO> baseClass);
+    <DTO extends BonaPortable> Class<? extends DTO> getDtoClass(int rtti, Class<DTO> baseClass);
 
     // Entity mapping
-    public <ENTITY> ENTITY newEntityInstance(int rtti, Class<ENTITY> baseClass);
+    <ENTITY> ENTITY newEntityInstance(int rtti, Class<ENTITY> baseClass);
 
-    public <ENTITY> Class<ENTITY> getEntityClass(int rtti, Class<ENTITY> baseClass);
+    <ENTITY> Class<ENTITY> getEntityClass(int rtti, Class<ENTITY> baseClass);
 
     // Request handler name mapping
-    public String getRequestHandlerClassname(RequestParameters params);
+    List<String> getRequestHandlerClassnameCandidates(RequestParameters params);
 
     /** Return a cached instance of a request handler. */
-    public <P extends RequestParameters> IRequestHandler<P> getRequestHandler(P params);
+    <P extends RequestParameters> IRequestHandler<P> getRequestHandler(P params);
 }

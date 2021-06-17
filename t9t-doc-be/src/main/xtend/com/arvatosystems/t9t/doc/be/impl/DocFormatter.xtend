@@ -27,7 +27,7 @@ import com.arvatosystems.t9t.doc.services.IDocFormatter
 import com.arvatosystems.t9t.doc.services.IDocModuleCfgDtoResolver
 import com.arvatosystems.t9t.doc.services.IDocPersistenceAccess
 import com.arvatosystems.t9t.doc.services.IImageGenerator
-import com.arvatosystems.t9t.doc.services.valueclass.ImageParameter
+import com.arvatosystems.t9t.doc.services.ImageParameter
 import com.arvatosystems.t9t.translation.services.ITranslationProvider
 import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder

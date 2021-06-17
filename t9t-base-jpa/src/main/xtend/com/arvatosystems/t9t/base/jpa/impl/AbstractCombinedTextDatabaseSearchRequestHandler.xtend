@@ -68,7 +68,7 @@ import com.arvatosystems.t9t.base.search.SearchCriteria
  */
 @AddLogger
 @Data
-class AbstractCombinedTextDatabaseSearchRequestHandler<REF extends Ref, DTO extends REF, TRACKING extends TrackingBase,
+abstract class AbstractCombinedTextDatabaseSearchRequestHandler<REF extends Ref, DTO extends REF, TRACKING extends TrackingBase,
   REQ extends SearchRequest<DTO, TRACKING>, ENTITY extends BonaPersistableKey<Long> & BonaPersistableTracking<TRACKING>
   > extends AbstractSearchRequestHandler<REQ> {
     final static int MAX_ITERATIONS = 50;  // limit the number of loop iterations. Will produce results too small, but that is better than choking the system.

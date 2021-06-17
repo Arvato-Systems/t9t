@@ -415,4 +415,9 @@ package (com.arvatosystems) t9t.io {
         optional Integer                                clientReturnCode;                       // parsed business return code from the above (or null)
         optional shortText                              clientReference;                        // parsed business reference / invocation reference
     }
+
+    /** Used internally to write field headers into output file */
+    class OutputHeading {
+        required Unicode(80) required List <>     headers;
+    }
 }

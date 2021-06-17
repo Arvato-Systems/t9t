@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.ssm.jpa.persistence.impl
 
-import com.arvatosystems.t9t.annotations.jpa.AutoResolver42
+import com.arvatosystems.t9t.annotations.jpa.active.AutoResolver42
 import com.arvatosystems.t9t.ssm.SchedulerSetupRef
 import com.arvatosystems.t9t.ssm.jpa.entities.SchedulerSetupEntity
 

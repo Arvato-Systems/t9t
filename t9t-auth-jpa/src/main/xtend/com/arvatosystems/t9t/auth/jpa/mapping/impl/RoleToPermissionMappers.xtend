@@ -16,7 +16,7 @@
 package com.arvatosystems.t9t.auth.jpa.mapping.impl
 
 import com.arvatosystems.t9t.annotations.jpa.AutoHandler
-import com.arvatosystems.t9t.annotations.jpa.AutoMap42
+import com.arvatosystems.t9t.annotations.jpa.active.AutoMap42
 import com.arvatosystems.t9t.auth.RoleToPermissionDTO
 import com.arvatosystems.t9t.auth.jpa.entities.RoleToPermissionEntity
 import com.arvatosystems.t9t.auth.jpa.mapping.IRoleDTOMapper

@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.function.Function;
 
 import com.arvatosystems.t9t.base.T9tConstants;
-import com.arvatosystems.t9t.base.jpa.IAnyKeySearchRegistry;
 import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey42;
 import com.arvatosystems.t9t.base.search.Description;
 import com.arvatosystems.t9t.base.search.DummySearchCriteria;
@@ -28,6 +27,7 @@ import com.arvatosystems.t9t.base.search.LeanSearchRequest;
 import com.arvatosystems.t9t.base.search.LeanSearchResponse;
 import com.arvatosystems.t9t.base.search.SearchCriteria;
 import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;
+import com.arvatosystems.t9t.base.services.IAnyKeySearchRegistry;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;

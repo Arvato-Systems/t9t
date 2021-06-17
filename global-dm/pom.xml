@@ -22,7 +22,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>global-build</artifactId>
-        <version>5.2-SNAPSHOT</version>
+        <version>5.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>global-dm</artifactId>
@@ -39,13 +39,13 @@
 
         <!-- jpaw / bonaparte: versions for import of BOM. The plugin version is defined separately in SE/EE -->
         <!-- Note that the version of the bonapart-dsl plugin is set in "global-settings" -->
-        <jpaw-bom.version>2.4.0</jpaw-bom.version>
-        <bonaparte-bom.version>4.41.0</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
-        <persistence-bom.version>4.41.0</persistence-bom.version>
-        <jdp-bom.version>1.4.0</jdp-bom.version>
+        <jpaw-bom.version>2.5.0</jpaw-bom.version>
+        <bonaparte-bom.version>4.42.0</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
+        <persistence-bom.version>4.42.0</persistence-bom.version>
+        <jdp-bom.version>1.5.0</jdp-bom.version>
         <fixedpoint-bom.version>0.40.0</fixedpoint-bom.version>
         <!-- jpaw / bonaparte: versions for explicit dependency -->
-        <xtendsions.version>1.9.0</xtendsions.version>
+        <xtendsions.version>1.10.1</xtendsions.version>
 
         <!-- Versions of Xtext & Xtend -->
         <!-- Note that the versions of the xtext/xtend plugins are ALSO set in "global-settings" -->
@@ -66,20 +66,26 @@
         <ehcache.version>2.10.4</ehcache.version>
         <ehcache3.version>3.5.3</ehcache3.version>
 
-        <!-- Javax -->
-        <!-- the jaxb stuff is confusing. There is jaxb-core, jaxb-impl, jaxb-runtime and txw2. jaxb-impl seems to be the merge of txw2 and jaxb-runtime, also it exists with the highest 2.3.x version (and matches the jaxws-rt one) -->
-        <!-- We define all artifacts, and later exclude all except jaxb-impl. It's just a mess! -->
-        <jaxb.version>2.3.1</jaxb.version>
-        <jaxb-core.version>2.3.0.1</jaxb-core.version>
+        <!-- Javax (FIXME, outdated) -->
         <jaxb-impl.version>2.3.4</jaxb-impl.version>
+        <jaxws-api.version>2.3.1</jaxws-api.version>
         <jaxws-rt.version>2.3.4</jaxws-rt.version>
 
-        <javax-el.version>3.0.1-b08</javax-el.version> <!-- required by hibernate-validator, CVE-2013-2566 exists, no secure version known (3.0.0)! -->
         <javax.inject.version>1</javax.inject.version>
         <javax.servlet-api.version>3.1.0</javax.servlet-api.version>
-        <javax.activation.version>1.2.0</javax.activation.version>
-        <javax.validation-api.version>2.0.1.Final</javax.validation-api.version>
         <javax.persistence.version>2.2.0</javax.persistence.version>
+
+        <!-- new Jakarta stuff (versions in comment denote jakarta namespace)-->
+        <jakarta.xml-bind-api.version>2.3.3</jakarta.xml-bind-api.version>              <!-- 3.0.1 for jakarta namespace -->
+        <jakarta.xml-bind.version>2.3.4</jakarta.xml-bind.version>                      <!-- 3.0.1 for jakarta namespace -->
+        <jakarta.activation-api.version>1.2.2</jakarta.activation-api.version>          <!-- 2.0.1 for jakarta namespace -->
+        <jakarta.activation.version>1.2.2</jakarta.activation.version>                  <!-- 2.0.1 for jakarta namespace -->
+        <jakarta.mail-api.version>1.6.7</jakarta.mail-api.version>                      <!-- 2.0.1 for jakarta namespace -->
+        <jakarta.mail.version>1.6.7</jakarta.mail.version>                              <!-- 2.0.1 for jakarta namespace -->
+        <jakarta.el-api.version>3.0.3</jakarta.el-api.version>                          <!-- 4.0.1 for jakarta namespace -->
+        <jakarta.el.version>3.0.3</jakarta.el.version>                                  <!-- 4.0.1 for jakarta namespace -->
+        <jakarta.validation-api.version>2.0.2</jakarta.validation-api.version>          <!-- validation API, implemented by hibernate validator -->
+        <jakarta.persistence-api.version>2.2.3</jakarta.persistence-api.version>        <!-- validation API, implemented by hibernate ORM -->
 
         <!-- Commons -->
         <commons-lang.version>2.6</commons-lang.version>
@@ -102,33 +108,37 @@
         <groovy.version>2.4.13</groovy.version>
 
         <!-- Test support -->
-        <junit.version>4.13.2</junit.version>
-        <hamcrest.version>1.3</hamcrest.version>   <!-- upgrade to 2.1 with next release -->
+        <junit.version>4.13.2</junit.version>      <!-- groupId is junit -->
+        <junit5.version>5.7.2</junit5.version>     <!-- groupId is org.junit, therefore is can coexist with junit4 in dependency management -->
+        <hamcrest.version>1.3</hamcrest.version>   <!-- upgrade to 2.2 with next release -->
         <byte-buddy.version>1.10.22</byte-buddy.version>
         <org.mockito-core.version>2.23.4</org.mockito-core.version>
         <archunit.version>0.17.0</archunit.version>
 
         <!-- Others -->
         <icu4j.version>68.2</icu4j.version>
-        <zxing.version>3.3.3</zxing.version>
-        <quartz.version>2.3.2</quartz.version>                         <!-- TODO: should check if 2.3.0 offers improvements (is newer, and Java 7+, quartz 2.2.3 is Java 6+) -->
+        <zxing.version>3.4.1</zxing.version>
+        <quartz.version>2.3.2</quartz.version>
         <quartz-oracle.version>2.1.7</quartz-oracle.version>           <!-- no update since 2013! -->
-        <jasperreports.version>6.15.0</jasperreports.version>
-        <itext.version>2.1.7.js8</itext.version>                       <!-- enforce the one required by jasper (flyingsaucer references the unpatched one) -->
         <jdtcore.version>3.1.1</jdtcore.version>
         <jsap.version>2.1</jsap.version>
         <httpcore.version>4.4.14</httpcore.version>
         <pdfbox.version>2.0.22</pdfbox.version>
         <xmlunit.version>1.5</xmlunit.version>
-        <apache-poi.version>4.1.2</apache-poi.version>
-        <freemarker.version>2.3.23</freemarker.version>
-        <flyingsaucer.version>9.1.20</flyingsaucer.version>
-        <javassist.version>3.27.0-GA</javassist.version>
-        <guava.version>27.1-jre</guava.version>
+        <freemarker.version>2.3.31</freemarker.version>
+        <jasperreports.version>6.15.0</jasperreports.version>
+        <itext.version>2.1.7.js8</itext.version>                       <!-- enforce the one required by jasper (flyingsaucer references the unpatched one) -->
+        <flyingsaucer.version>9.1.22</flyingsaucer.version>
+        <openpdf.version>1.3.26</openpdf.version>
+
+        <javassist.version>3.28.0-GA</javassist.version>
+        <guava.version>30.1.1-jre</guava.version>
         <antlr.version>3.2</antlr.version>
         <resteasy-jaxrs.version>3.0.19.Final</resteasy-jaxrs.version>
         <googlemaps.services.version>0.2.5</googlemaps.services.version>
         <uuid-generator.version>3.1.2</uuid-generator.version>
+        <apache-poi.version>5.0.0</apache-poi.version>
+        <xmlbeans.version>5.0.0</xmlbeans.version>  <!-- 3.x is required for POI 4 (xlsx) -->
 
         <spring-bom.version>5.2.9.RELEASE</spring-bom.version>
         <spring-data-jpa.version>2.3.4.RELEASE</spring-data-jpa.version>
@@ -137,22 +147,20 @@
         <netty.version>4.1.59.Final</netty.version>
         <vertx4.version>4.0.3</vertx4.version>
 
-        <xmlbeans.version>3.1.0</xmlbeans.version>  <!-- 3.x is required for POI 4 (xlsx) -->
         <snakeyaml.version>1.28</snakeyaml.version>
 
         <c3p0.version>0.9.5.5</c3p0.version>
-        <hikaricp.version>3.2.0</hikaricp.version>
+        <hikaricp.version>4.0.3</hikaricp.version>
         <flyway.version>4.1.2</flyway.version>
         <reflections.version>0.9.10</reflections.version>
-        <maven-plugin-api.version>3.6.3</maven-plugin-api.version>
-        <javax.mail.version>1.6.0</javax.mail.version>
-        <jadira-usertype.version>4.0.0.GA</jadira-usertype.version>
+        <maven-plugin-api.version>3.8.1</maven-plugin-api.version>
+        <jadira-usertype.version>6.0.1.GA</jadira-usertype.version>
         <jackson.version>2.11.4</jackson.version>
-        <camel.version>3.8.0</camel.version>
         <solr.version>7.7.3</solr.version>   <!-- must be 6.6.1 at least due to CVE-2017-9803 -->
         <solr-commons-csv.version>3.5.0</solr-commons-csv.version>
-        <activiti.version>5.19.0.2</activiti.version>
+        <camel.version>3.8.0</camel.version>
         <kafka.version>2.7.0</kafka.version>
+        <error-prone.version>2.7.1</error-prone.version>
 
         <!-- Monitoring -->
         <micrometer.version>1.6.7</micrometer.version>
@@ -180,36 +188,85 @@
                 <artifactId>reflections</artifactId>
                 <version>${reflections.version}</version>
             </dependency>
+
             <dependency>
-                <groupId>com.sun.xml.bind</groupId>
-                <artifactId>jaxb-core</artifactId>
-                <version>${jaxb-core.version}</version>
+                <groupId>com.google.errorprone</groupId>
+                <artifactId>error_prone_core</artifactId>
+                <version>${error-prone.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.errorprone</groupId>
+                <artifactId>error_prone_annotations</artifactId>
+                <version>${error-prone.version}</version>
+            </dependency>
+
+            <!-- jakarta activation -->
+            <dependency>
+                <groupId>jakarta.activation</groupId>
+                <artifactId>jakarta.activation-api</artifactId>
+                <version>${jakarta.activation-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.activation</groupId>
+                <artifactId>jakarta.activation</artifactId>
+                <version>${jakarta.activation.version}</version>
+            </dependency>
+
+            <!-- jakarta XML bind (JAXB) -->
+            <dependency>
+                <groupId>jakarta.xml.bind</groupId>
+                <artifactId>jakarta.xml.bind-api</artifactId>
+                <version>${jakarta.xml-bind-api.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.sun.xml.bind</groupId>
                 <artifactId>jaxb-impl</artifactId>
-                <version>${jaxb-impl.version}</version>
+                <version>${jakarta.xml-bind.version}</version>
             </dependency>
+
             <dependency>
-                <groupId>javax.xml.bind</groupId>
-                <artifactId>jaxb-api</artifactId>
-                <version>${jaxb.version}</version>
-            </dependency>
-             <dependency>
                 <groupId>javax.xml.ws</groupId>
                 <artifactId>jaxws-api</artifactId>
-                <version>${jaxb.version}</version>
+                <version>${jaxws-api.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.glassfish.jaxb</groupId>
-                <artifactId>jaxb-runtime</artifactId>
-                <version>${jaxb.version}</version>
-            </dependency>
-            <dependency>
+             <dependency>
                 <groupId>com.sun.xml.ws</groupId>
                 <artifactId>jaxws-rt</artifactId>
                 <type>pom</type>
                 <version>${jaxws-rt.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>jakarta.mail</groupId>
+                <artifactId>jakarta.mail-api</artifactId>
+                <version>${jakarta.mail-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.mail</groupId>
+                <artifactId>jakarta.mail</artifactId>
+                <version>${jakarta.mail.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>jakarta.el</groupId>
+                <artifactId>jakarta.el-api</artifactId>
+                <version>${jakarta.el-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish</groupId>
+                <artifactId>jakarta.el</artifactId>
+                <version>${jakarta.el.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>jakarta.persistence</groupId>
+                <artifactId>jakarta.persistence-api</artifactId>
+                <version>${jakarta.persistence-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.validation</groupId>
+                <artifactId>jakarta.validation-api</artifactId>
+                <version>${jakarta.validation-api.version}</version>
             </dependency>
 
             <!-- slf4j -->
@@ -289,6 +346,13 @@
                 <groupId>de.jpaw</groupId>
                 <artifactId>persistence-bom</artifactId>
                 <version>${persistence-bom.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${junit5.version}</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
@@ -479,16 +543,11 @@
                 <version>${spring-boot.version}</version>
             </dependency>
 
-            <!-- Javax -->
+            <!-- Javax (FIXME, outdated) -->
             <dependency>
                 <groupId>javax.inject</groupId>
                 <artifactId>javax.inject</artifactId>
                 <version>${javax.inject.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>javax.validation</groupId>
-                <artifactId>validation-api</artifactId>
-                <version>${javax.validation-api.version}</version>
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
@@ -496,19 +555,9 @@
                 <version>${javax.servlet-api.version}</version>
             </dependency>
             <dependency>
-                <groupId>javax.activation</groupId>
-                <artifactId>javax.activation-api</artifactId>
-                <version>${javax.activation.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.eclipse.persistence</groupId>
                 <artifactId>javax.persistence</artifactId>
                 <version>${javax.persistence.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish</groupId>
-                <artifactId>javax.el</artifactId>
-                <version>${javax-el.version}</version>
             </dependency>
 
             <!-- Ehcache 3.x -->
@@ -794,6 +843,11 @@
             </dependency>
             <dependency>
                 <groupId>io.vertx</groupId>
+                <artifactId>vertx-auth-common</artifactId>
+                <version>${vertx4.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.vertx</groupId>
                 <artifactId>vertx-web</artifactId>
                 <version>${vertx4.version}</version>
             </dependency>
@@ -848,16 +902,6 @@
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-hikaricp</artifactId>
                 <version>${hibernate.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>javax.mail</groupId>
-                <artifactId>javax.mail-api</artifactId>
-                <version>${javax.mail.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.mail</groupId>
-                <artifactId>javax.mail</artifactId>
-                <version>${javax.mail.version}</version>
             </dependency>
 
             <!-- Apache kafka related dependencies, should be specified before camel, in order to set the kafka version before camel-kafka is pulled in. -->
@@ -1045,6 +1089,18 @@
                 <groupId>org.apache.maven</groupId>
                 <artifactId>maven-project</artifactId>
                 <version>${maven-project.version}</version>
+            </dependency>
+
+            <!-- flying-saucer with librepdf -->
+            <dependency>
+                <groupId>com.github.librepdf</groupId>
+                <artifactId>openpdf</artifactId>
+                <version>${openpdf.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.xhtmlrenderer</groupId>
+                <artifactId>flying-saucer-pdf-openpdf</artifactId>
+                <version>${flyingsaucer.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

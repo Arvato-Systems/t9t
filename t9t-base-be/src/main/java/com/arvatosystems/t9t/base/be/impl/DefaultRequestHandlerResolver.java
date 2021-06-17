@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.base.be.impl;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -22,7 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.api.RequestParameters;
-import com.arvatosystems.t9t.base.be.impl.NoHandlerPresentRequestHandler;
 import com.arvatosystems.t9t.base.services.IRequestHandler;
 import com.arvatosystems.t9t.base.services.IRequestHandlerResolver;
 
@@ -45,34 +45,36 @@ public class DefaultRequestHandlerResolver implements IRequestHandlerResolver {
 
     /** Obtains a cached instance of a request handler, or creates a default one. */
     @Override
-    public <RQ extends RequestParameters> IRequestHandler<RQ> getHandlerInstance(Class<RQ> requestClass) {
-        IRequestHandler<?> instance = cachedHandlerInstances.get(requestClass.getCanonicalName());
-        if (instance == null) {
+    public <RQ extends RequestParameters> IRequestHandler<RQ> getHandlerInstance(final Class<RQ> requestClass) {
+        final IRequestHandler<?> instance = cachedHandlerInstances.computeIfAbsent(requestClass.getCanonicalName(), (x) -> {
             // create a new instance. It is accepted that in the beginning at application start, due to race conditions, multiple
             // instances of the same handler may be created and subsequently used. Long term, the last stored instance will be used
             // by subsequent calls.
-            try {
-                Class<?> handlerClass = Class.forName(getRequestHandlerClassname(requestClass));
-                if (!IRequestHandler.class.isAssignableFrom(handlerClass)) {
-                    LOGGER.error("Class {} is not a request handler class (i.e. does not implement the IRequestHandler interface", handlerClass.getCanonicalName());
-                    instance = new NoHandlerPresentRequestHandler(handlerClass.getCanonicalName() + " does not implement IRequestHandler<?>");
-                } else {
-                    instance = (IRequestHandler<?>) handlerClass.newInstance();
+            final List<String> handlerCandidates = getRequestHandlerClassnameCandidates(requestClass);
+            String cause = "No candidate";
+            for (final String handlerClassNameCandidate: handlerCandidates) {
+                try {
+                    final Class<?> handlerClass = Class.forName(handlerClassNameCandidate);
+                    if (!IRequestHandler.class.isAssignableFrom(handlerClass)) {
+                        LOGGER.error("Class {} is not a request handler class (i.e. does not implement the IRequestHandler interface", handlerClass.getCanonicalName());
+                        return new NoHandlerPresentRequestHandler(handlerClass.getCanonicalName() + " does not implement IRequestHandler<?>");
+                    } else {
+                        return (IRequestHandler<?>) handlerClass.newInstance();
+                    }
+                } catch (final Exception e) {
+                    cause = ExceptionUtil.causeChain(e);
+                    LOGGER.error("Required request handler class {} for {} not found, creating an exception handler. [Reason: {}]",
+                            handlerClassNameCandidate, requestClass.getCanonicalName(), cause);
                 }
-            } catch (Exception e) {
-                String causeChain = ExceptionUtil.causeChain(e);
-                LOGGER.error("Required request handler class {} for {} not found, creating an exception handler. [Reason: {}]",
-                        getRequestHandlerClassname(requestClass), requestClass.getCanonicalName(), causeChain);
-                instance = new NoHandlerPresentRequestHandler(causeChain);
             }
-            cachedHandlerInstances.put(requestClass.getCanonicalName(), instance);
-        }
+            return new NoHandlerPresentRequestHandler(cause);
+        });
         return (IRequestHandler<RQ>) instance;
     }
 
     /** Defines a new request handler for subsequent use. */
     @Override
-    public <RQ extends RequestParameters> void setHandlerInstance(Class<RQ> requestClass, IRequestHandler<RQ> newInstance) {
+    public <RQ extends RequestParameters> void setHandlerInstance(final Class<RQ> requestClass, final IRequestHandler<RQ> newInstance) {
         cachedHandlerInstances.put(requestClass.getCanonicalName(), newInstance);
     }
 }

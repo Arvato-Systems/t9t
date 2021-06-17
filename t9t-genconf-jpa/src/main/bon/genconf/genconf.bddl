@@ -17,7 +17,6 @@ import t9t.base.entities.*
 import t9t.core.jpa.entities.*
 import t9t.setups.*
 import t9t.genconf.*
-
 // entries are sorted such that references only go to entities listed before.
 
 @Generator(noMapper)

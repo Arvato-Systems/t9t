@@ -16,7 +16,7 @@
 package com.arvatosystems.t9t.rep.jpa.mapping.impl
 
 import com.arvatosystems.t9t.annotations.jpa.AutoHandler
-import com.arvatosystems.t9t.annotations.jpa.AutoMap42
+import com.arvatosystems.t9t.annotations.jpa.active.AutoMap42
 import com.arvatosystems.t9t.rep.ReportParamsDTO
 import com.arvatosystems.t9t.rep.ReportParamsKey
 import com.arvatosystems.t9t.rep.jpa.entities.ReportParamsEntity

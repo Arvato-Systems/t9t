@@ -16,7 +16,7 @@
 package com.arvatosystems.t9t.rep.jpa.persistence.impl
 
 import com.arvatosystems.t9t.annotations.jpa.AllCanAccessGlobalTenant
-import com.arvatosystems.t9t.annotations.jpa.AutoResolver42
+import com.arvatosystems.t9t.annotations.jpa.active.AutoResolver42
 import com.arvatosystems.t9t.rep.ReportConfigRef
 import com.arvatosystems.t9t.rep.ReportParamsRef
 import com.arvatosystems.t9t.rep.jpa.entities.ReportConfigEntity

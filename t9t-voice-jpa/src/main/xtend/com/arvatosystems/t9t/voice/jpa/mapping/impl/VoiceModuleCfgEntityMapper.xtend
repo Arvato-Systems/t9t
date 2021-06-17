@@ -16,7 +16,7 @@
 package com.arvatosystems.t9t.voice.jpa.mapping.impl
 
 import com.arvatosystems.t9t.annotations.jpa.AutoHandler
-import com.arvatosystems.t9t.annotations.jpa.AutoMap42
+import com.arvatosystems.t9t.annotations.jpa.active.AutoMap42
 import com.arvatosystems.t9t.voice.VoiceModuleCfgDTO
 import com.arvatosystems.t9t.voice.jpa.entities.VoiceModuleCfgEntity
 import com.arvatosystems.t9t.voice.jpa.persistence.IVoiceModuleCfgEntityResolver

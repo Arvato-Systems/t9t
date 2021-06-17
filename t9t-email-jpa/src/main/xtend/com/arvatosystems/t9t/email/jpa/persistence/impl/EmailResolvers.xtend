@@ -16,7 +16,7 @@
 package com.arvatosystems.t9t.email.jpa.persistence.impl
 
 import com.arvatosystems.t9t.annotations.jpa.AllCanAccessGlobalTenant
-import com.arvatosystems.t9t.annotations.jpa.AutoResolver42
+import com.arvatosystems.t9t.annotations.jpa.active.AutoResolver42
 import com.arvatosystems.t9t.email.EmailAttachmentsKey
 import com.arvatosystems.t9t.email.EmailRef
 import com.arvatosystems.t9t.email.jpa.entities.EmailAttachmentsEntity

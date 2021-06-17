@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.msglog.jpa.persistence.impl
 
-import com.arvatosystems.t9t.annotations.jpa.AutoResolver42
+import com.arvatosystems.t9t.annotations.jpa.active.AutoResolver42
 import com.arvatosystems.t9t.annotations.jpa.GlobalTenantCanAccessAll
 import com.arvatosystems.t9t.msglog.MessageRef
 import com.arvatosystems.t9t.msglog.jpa.entities.MessageEntity

@@ -36,7 +36,7 @@ import org.eclipse.xtend.lib.annotations.Data
 import com.arvatosystems.t9t.base.jpa.IEntityMapper42
 
 @Data
-class AbstractTextSearchRequestHandler<
+abstract class AbstractTextSearchRequestHandler<
     REF extends Ref,
     DTO extends REF,
     TRACKING extends TrackingBase,

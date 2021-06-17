@@ -21,7 +21,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-settings-api</artifactId>
-        <version>5.2-SNAPSHOT</version>
+        <version>5.3-SNAPSHOT</version>
         <relativePath>../t9t-settings-api</relativePath>
     </parent>
 
@@ -29,10 +29,6 @@
     <description></description>
 
     <dependencies>
-        <dependency>
-            <groupId>com.arvato-systems.t9t</groupId>
-            <artifactId>t9t-doc-apiext</artifactId>
-        </dependency>
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-base-api</artifactId>

@@ -16,6 +16,7 @@
 package com.arvatosystems.t9t.base.be.stubs;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -55,49 +56,49 @@ public class NoTenantCustomization implements ITenantCustomization {
     }
 
     @Override
-    public <DTO extends BonaPortable> DTO newDtoInstance(int rtti, Class<DTO> baseClass) {
+    public <DTO extends BonaPortable> DTO newDtoInstance(final int rtti, final Class<DTO> baseClass) {
         try {
             return baseClass.getDeclaredConstructor().newInstance();
         } catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | InstantiationException e) {
             LOGGER.error("This should not happen: {}: {}: {}", e.getClass().getCanonicalName(), e.getMessage(), ExceptionUtil.causeChain(e));
             throw new T9tException(T9tException.METHOD_INSTANTIATION_EXCEPTION, baseClass.getCanonicalName());
-        } catch (IllegalAccessException e) {
+        } catch (final IllegalAccessException e) {
             LOGGER.error("This should not happen: {}: {}: {}", e.getClass().getCanonicalName(), e.getMessage(), ExceptionUtil.causeChain(e));
             throw new T9tException(T9tException.CONSTRUCTOR_ILLEGAL_ACCESS_EXCEPTION, baseClass.getCanonicalName());
         }
     }
 
     @Override
-    public <DTO extends BonaPortable> Class<? extends DTO> getDtoClass(int rtti, Class<DTO> baseClass) {
+    public <DTO extends BonaPortable> Class<? extends DTO> getDtoClass(final int rtti, final Class<DTO> baseClass) {
         return baseClass;
     }
 
     @Override
-    public <ENTITY> ENTITY newEntityInstance(int rtti, Class<ENTITY> baseClass) {
+    public <ENTITY> ENTITY newEntityInstance(final int rtti, final Class<ENTITY> baseClass) {
         try {
             return baseClass.getDeclaredConstructor().newInstance();
         } catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | InstantiationException e) {
             LOGGER.error("This should not happen: {}: {}: {}", e.getClass().getCanonicalName(), e.getMessage(), ExceptionUtil.causeChain(e));
             throw new T9tException(T9tException.METHOD_INSTANTIATION_EXCEPTION, baseClass.getCanonicalName());
-        } catch (IllegalAccessException e) {
+        } catch (final IllegalAccessException e) {
             LOGGER.error("This should not happen: {}: {}: {}", e.getClass().getCanonicalName(), e.getMessage(), ExceptionUtil.causeChain(e));
             throw new T9tException(T9tException.CONSTRUCTOR_ILLEGAL_ACCESS_EXCEPTION, baseClass.getCanonicalName());
         }
     }
 
     @Override
-    public <ENTITY> Class<ENTITY> getEntityClass(int rtti, Class<ENTITY> baseClass) {
+    public <ENTITY> Class<ENTITY> getEntityClass(final int rtti, final Class<ENTITY> baseClass) {
         return baseClass;
     }
 
     @Override
-    public String getRequestHandlerClassname(RequestParameters params) {
-        return requestHandlerResolver.getRequestHandlerClassname(params.getClass());
+    public List<String> getRequestHandlerClassnameCandidates(final RequestParameters params) {
+        return requestHandlerResolver.getRequestHandlerClassnameCandidates(params.getClass());
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public <P extends RequestParameters> IRequestHandler<P> getRequestHandler(P params) {
+    public <P extends RequestParameters> IRequestHandler<P> getRequestHandler(final P params) {
 //        return (IRequestHandler<P>) requestHandlerLookup.getIfPresent(params);
         IRequestHandler<?> hdlr = tenantRequestHandlerCache.get(params.ret$PQON());
         if (hdlr == null) {

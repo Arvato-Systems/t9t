@@ -67,7 +67,7 @@ import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey28
  */
 @AddLogger
 @Data
-class AbstractCombinedTextDatabaseSearch28RequestHandler<REF extends Ref, DTO extends REF, TRACKING extends TrackingBase, REQ extends Search28Request<DTO, TRACKING>, ENTITY extends BonaPersistableKey<Long> & BonaPersistableTracking<TRACKING>> extends AbstractSearchRequestHandler<REQ> {
+abstract class AbstractCombinedTextDatabaseSearch28RequestHandler<REF extends Ref, DTO extends REF, TRACKING extends TrackingBase, REQ extends Search28Request<DTO, TRACKING>, ENTITY extends BonaPersistableKey<Long> & BonaPersistableTracking<TRACKING>> extends AbstractSearchRequestHandler<REQ> {
     final static int MAX_ITERATIONS = 50;  // limit the number of loop iterations. Will produce results too small, but that is better than choking the system.
 
     protected final IExecutor     executor    = Jdp.getRequired(IExecutor)

@@ -16,7 +16,7 @@
 package com.arvatosystems.t9t.auth.jpa.mapping.impl
 
 import com.arvatosystems.t9t.annotations.jpa.AutoHandler
-import com.arvatosystems.t9t.annotations.jpa.AutoMap42
+import com.arvatosystems.t9t.annotations.jpa.active.AutoMap42
 import com.arvatosystems.t9t.auth.AuthModuleCfgDTO
 import com.arvatosystems.t9t.auth.jpa.entities.AuthModuleCfgEntity
 import com.arvatosystems.t9t.auth.jpa.persistence.IAuthModuleCfgEntityResolver

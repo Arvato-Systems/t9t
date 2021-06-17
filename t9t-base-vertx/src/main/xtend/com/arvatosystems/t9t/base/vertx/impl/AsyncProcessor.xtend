@@ -15,8 +15,10 @@
  */
 package com.arvatosystems.t9t.base.vertx.impl
 
+import com.arvatosystems.t9t.annotations.IsLogicallyFinal
 import com.arvatosystems.t9t.base.T9tConstants
 import com.arvatosystems.t9t.base.api.ServiceRequest
+import com.arvatosystems.t9t.base.api.ServiceRequestHeader
 import com.arvatosystems.t9t.base.api.ServiceResponse
 import com.arvatosystems.t9t.base.event.EventData
 import com.arvatosystems.t9t.base.event.EventParameters
@@ -33,7 +35,6 @@ import de.jpaw.bonaparte.core.BonaPortable
 import de.jpaw.bonaparte.core.JsonComposer
 import de.jpaw.bonaparte.core.MapComposer
 import de.jpaw.bonaparte.core.MapParser
-import de.jpaw.bonaparte8.vertx3.CompactMessageCodec
 import de.jpaw.dp.Default
 import de.jpaw.dp.Jdp
 import de.jpaw.dp.Named
@@ -53,8 +54,6 @@ import java.util.Map
 import java.util.Set
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
-import com.arvatosystems.t9t.base.api.ServiceRequestHeader
-import com.arvatosystems.t9t.annotations.IsLogicallyFinal
 
 @AddLogger
 @Singleton

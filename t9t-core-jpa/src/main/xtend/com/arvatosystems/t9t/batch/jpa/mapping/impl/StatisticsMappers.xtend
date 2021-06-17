@@ -16,7 +16,7 @@
 package com.arvatosystems.t9t.batch.jpa.mapping.impl
 
 import com.arvatosystems.t9t.annotations.jpa.AutoHandler
-import com.arvatosystems.t9t.annotations.jpa.AutoMap42
+import com.arvatosystems.t9t.annotations.jpa.active.AutoMap42
 import com.arvatosystems.t9t.batch.StatisticsDTO
 import com.arvatosystems.t9t.batch.jpa.entities.StatisticsEntity
 import com.arvatosystems.t9t.batch.jpa.persistence.IStatisticsEntityResolver

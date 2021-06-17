@@ -16,7 +16,7 @@
 package com.arvatosystems.t9t.doc.jpa.mapping.impl
 
 import com.arvatosystems.t9t.annotations.jpa.AutoHandler
-import com.arvatosystems.t9t.annotations.jpa.AutoMap42
+import com.arvatosystems.t9t.annotations.jpa.active.AutoMap42
 import com.arvatosystems.t9t.doc.DocModuleCfgDTO
 import com.arvatosystems.t9t.doc.jpa.entities.DocModuleCfgEntity
 import com.arvatosystems.t9t.doc.jpa.persistence.IDocModuleCfgEntityResolver
