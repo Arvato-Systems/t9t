@@ -117,7 +117,7 @@
         <itext.version>2.1.7.js8</itext.version>                       <!-- enforce the one required by jasper (flyingsaucer references the unpatched one) -->
         <jdtcore.version>3.1.1</jdtcore.version>
         <jsap.version>2.1</jsap.version>
-        <httpcore.version>4.4.9</httpcore.version>
+        <httpcore.version>4.4.14</httpcore.version>
         <pdfbox.version>2.0.22</pdfbox.version>
         <xmlunit.version>1.5</xmlunit.version>
         <apache-poi.version>4.1.2</apache-poi.version>
