@@ -28,8 +28,8 @@ import de.jpaw.bonaparte.api.media.MediaTypeInfo
 import de.jpaw.bonaparte.api.media.MediaTypes
 import de.jpaw.dp.Jdp
 import java.nio.charset.StandardCharsets
-import org.junit.Assert
-import org.junit.Test
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Test
 
 import static extension com.arvatosystems.t9t.base.MessagingUtil.*
 
@@ -72,13 +72,13 @@ class OutputWithZTest {
         xml.generateData(1, 1, 1234L, IOutputSession.NO_PARTITION_KEY, IOutputSession.NO_RECORD_KEY, myUser)
         xml.close
 
-        println(iors)
+        LOGGER.info("Output is {}", iors)
         val expected = '''
             <?xml version="1.0" ?>
             <UserMaster xmlns="http://arvatosystems.com/schema/t9t_xml.xsd" xmlns:bon="http://www.jpaw.de/schema/bonaparte.xsd">
             <t9t_xml:records xmlns:t9t_xml="http://arvatosystems.com/schema/t9t_xml.xsd"><t9t_xml:userId>testUser22</t9t_xml:userId><t9t_xml:name>Test user number 22</t9t_xml:name><t9t_xml:emailAddress>test@supertest.de</t9t_xml:emailAddress><t9t_xml:isActive>true</t9t_xml:isActive><t9t_xml:isTechnical>false</t9t_xml:isTechnical><t9t_xml:externalAuth>true</t9t_xml:externalAuth><t9t_xml:z><bon:kvp><bon:key>XYZ</bon:key><bon:bool>true</bon:bool></bon:kvp></t9t_xml:z></t9t_xml:records>
             </UserMaster>
         '''
-        Assert.assertEquals(expected.normalizeEOLs, iors.toString.normalizeEOLs)
+        Assertions.assertEquals(expected.normalizeEOLs, iors.toString.normalizeEOLs)
     }
 }

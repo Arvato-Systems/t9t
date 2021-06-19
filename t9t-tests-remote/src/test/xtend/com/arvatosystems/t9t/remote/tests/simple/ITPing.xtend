@@ -32,7 +32,7 @@ import com.arvatosystems.t9t.uiprefs.request.GridConfigRequest
 import com.arvatosystems.t9t.uiprefs.request.GridConfigResponse
 import de.jpaw.bonaparte.util.ToStringHelper
 import java.util.UUID
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class ITPing {
     @Test

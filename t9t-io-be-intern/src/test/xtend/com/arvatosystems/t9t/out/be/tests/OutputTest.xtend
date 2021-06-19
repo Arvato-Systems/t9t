@@ -26,15 +26,15 @@ import de.jpaw.bonaparte.api.media.MediaTypeInfo
 import de.jpaw.bonaparte.api.media.MediaTypes
 import de.jpaw.dp.Jdp
 import java.nio.charset.StandardCharsets
-import org.junit.Assert
-import org.junit.BeforeClass
-import org.junit.Test
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 import com.arvatosystems.t9t.base.services.IOutputSession
 
 @AddLogger
 class OutputTest {
 
-    @BeforeClass
+    @BeforeAll
     def static void setup() {
         Jdp.reset
         // use real implementations only if they are defined within this project and use stubs for everything else
@@ -68,7 +68,7 @@ class OutputTest {
             4711;;12;;"bad field xyz";
             4711;;12;;"bad field xyz";
         '''
-        Assert.assertEquals(expected, iors.toString)
+        Assertions.assertEquals(expected, iors.toString)
     }
 
     @Test
@@ -87,6 +87,6 @@ class OutputTest {
             [{"@PQON":"t9t.base.api.ServiceResponse","returnCode":4711,"processRef":12,"errorDetails":"bad field xyz"}
             ,{"@PQON":"t9t.base.api.ServiceResponse","returnCode":4711,"processRef":12,"errorDetails":"bad field xyz"}
             ]'''
-        Assert.assertEquals(expected, iors.toString)
+        Assertions.assertEquals(expected, iors.toString)
     }
 }

@@ -30,9 +30,9 @@ import de.jpaw.annotations.AddLogger
 import de.jpaw.bonaparte.pojos.api.OperationType
 import de.jpaw.bonaparte.pojos.api.UnicodeFilter
 import org.joda.time.LocalTime
-import org.junit.Assert
-import org.junit.BeforeClass
-import org.junit.Test
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 
 import static extension com.arvatosystems.t9t.misc.extensions.MiscExtensions.*
 
@@ -41,7 +41,7 @@ class SchedulerSetupTest {
 
     static ITestConnection dlg
 
-    @BeforeClass
+    @BeforeAll
     def static void createConnection() {
         // use a single connection for all tests (faster)
         dlg = new InMemoryConnection
@@ -54,7 +54,7 @@ class SchedulerSetupTest {
             ]
         ]
         val result = dlg.typeIO(searchRq, ReadAllResponse)
-        // Assert.assertEquals("Expected 1 ApiKey", 1, result.dataList.size)  // not working when running in CI environment
+        // Assertions.assertEquals("Expected 1 ApiKey", 1, result.dataList.size)  // not working when running in CI environment
     }
 
     @Test

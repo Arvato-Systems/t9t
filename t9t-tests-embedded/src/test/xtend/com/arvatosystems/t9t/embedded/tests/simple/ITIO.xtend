@@ -21,7 +21,7 @@ import com.arvatosystems.t9t.io.CommunicationTargetChannelType
 import com.arvatosystems.t9t.io.DataSinkRef
 import com.arvatosystems.t9t.io.SinkDTO
 import com.arvatosystems.t9t.io.request.StoreSinkRequest
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import de.jpaw.bonaparte.pojos.api.media.MediaXType
 import de.jpaw.bonaparte.pojos.api.media.MediaType
 import de.jpaw.dp.Jdp

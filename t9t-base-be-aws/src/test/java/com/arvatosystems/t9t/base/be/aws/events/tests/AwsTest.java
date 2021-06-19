@@ -15,8 +15,8 @@
  */
 package com.arvatosystems.t9t.base.be.aws.events.tests;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import com.arvatosystems.t9t.base.services.IEventImpl;
 import com.arvatosystems.t9t.jdp.Init;
@@ -41,7 +41,7 @@ public class AwsTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testS3Put() throws Exception {
         initAndMockCaches();
         IEventImpl s3Impl = Jdp.getRequired(IEventImpl.class, "S3");
@@ -49,7 +49,7 @@ public class AwsTest {
         s3Impl.asyncEvent("t9t-test:samples/test2.json", createJson(), MediaTypeInfo.getFormatByType(MediaTypes.MEDIA_XTYPE_JSON));
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void testSQSSend() throws Exception {
         initAndMockCaches();

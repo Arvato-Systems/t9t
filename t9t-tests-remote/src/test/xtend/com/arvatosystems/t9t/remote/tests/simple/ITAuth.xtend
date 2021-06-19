@@ -23,7 +23,7 @@ import com.arvatosystems.t9t.base.auth.PasswordAuthentication
 import com.arvatosystems.t9t.base.request.PingRequest
 import com.arvatosystems.t9t.remote.connect.Connection
 import java.util.UUID
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 import static extension com.arvatosystems.t9t.auth.extensions.AuthExtensions.*
 import static extension com.arvatosystems.t9t.doc.extensions.DocExtensions.*

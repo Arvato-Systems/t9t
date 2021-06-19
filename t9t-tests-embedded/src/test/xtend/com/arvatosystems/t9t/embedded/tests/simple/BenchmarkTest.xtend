@@ -19,14 +19,14 @@ import com.arvatosystems.t9t.base.ITestConnection
 import com.arvatosystems.t9t.base.request.PingRequest
 import com.arvatosystems.t9t.base.request.SimpleBenchmarkRequest
 import com.arvatosystems.t9t.embedded.connect.InMemoryConnection
-import org.junit.BeforeClass
-import org.junit.Test
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 
 class BenchmarkTest {
 
     static private ITestConnection dlg
 
-    @BeforeClass
+    @BeforeAll
     def public static void createConnection() {
         // use a single connection for all tests (faster)
         dlg = new InMemoryConnection

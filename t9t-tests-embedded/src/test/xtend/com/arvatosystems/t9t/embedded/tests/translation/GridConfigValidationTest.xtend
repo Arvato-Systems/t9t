@@ -19,14 +19,14 @@ import com.arvatosystems.t9t.base.ITestConnection
 import com.arvatosystems.t9t.embedded.connect.InMemoryConnection
 import com.arvatosystems.t9t.init.UiGridConfigPrefs
 import de.jpaw.annotations.AddLogger
-import org.junit.BeforeClass
-import org.junit.Test
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 
 @AddLogger
 class GridConfigValidationTest {
     static private ITestConnection dlg
 
-    @BeforeClass
+    @BeforeAll
     def public static void createConnection() {
         // use a single connection for all tests (faster)
         dlg = new InMemoryConnection

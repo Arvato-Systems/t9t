@@ -15,13 +15,9 @@
  */
 package com.arvatosystems.t9t.archtests;
 
-import org.junit.runner.RunWith;
-
 import com.arvatosystems.t9t.be.arch.testlib.BackendArchTests;
 import com.tngtech.archunit.junit.AnalyzeClasses;
-import com.tngtech.archunit.junit.ArchUnitRunner;
 
-@RunWith(ArchUnitRunner.class)
 @AnalyzeClasses(packages = "com.arvatosystems.t9t")
 public class T9tVertxArchTests extends BackendArchTests {
 }

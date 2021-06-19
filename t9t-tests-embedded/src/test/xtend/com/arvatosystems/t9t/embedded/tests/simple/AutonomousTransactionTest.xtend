@@ -20,14 +20,14 @@ import com.arvatosystems.t9t.base.request.AutonomousTransactionRequest
 import com.arvatosystems.t9t.base.request.BatchRequest
 import com.arvatosystems.t9t.base.request.LogMessageRequest
 import com.arvatosystems.t9t.embedded.connect.InMemoryConnection
-import org.junit.BeforeClass
-import org.junit.Test
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 
 class AutonomousTransactionTest {
 
     static private ITestConnection dlg
 
-    @BeforeClass
+    @BeforeAll
     def public static void createConnection() {
         // use a single connection for all tests (faster)
         dlg = new InMemoryConnection

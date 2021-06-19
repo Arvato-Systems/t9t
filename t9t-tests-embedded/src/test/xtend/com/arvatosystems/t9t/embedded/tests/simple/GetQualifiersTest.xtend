@@ -19,14 +19,14 @@ import com.arvatosystems.t9t.base.T9tException
 import com.arvatosystems.t9t.base.request.GetQualifiersRequest
 import com.arvatosystems.t9t.base.request.GetQualifiersResponse
 import com.arvatosystems.t9t.embedded.connect.InMemoryConnection
-import org.junit.Assert
-import org.junit.BeforeClass
-import org.junit.Test
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 
 class GetQualifiersTest {
     static InMemoryConnection dlg
 
-    @BeforeClass
+    @BeforeAll
     def static void createConnection() {
         // use a single connection for all tests (faster)
         dlg = new InMemoryConnection
@@ -35,17 +35,17 @@ class GetQualifiersTest {
     @Test
     def void goodQualifierTest() {
         val result = dlg.typeIO(new GetQualifiersRequest(#[ "com.arvatosystems.t9t.out.services.IMarshallerExt" ]), GetQualifiersResponse);
-        Assert.assertEquals(1, result.qualifiers.size)
-        Assert.assertEquals("XML", result.qualifiers.iterator.next)
+        Assertions.assertEquals(1, result.qualifiers.size)
+        Assertions.assertEquals("XML", result.qualifiers.iterator.next)
     }
     @Test
     def void noQualifiersTest() {
         val result = dlg.typeIO(new GetQualifiersRequest(#[ "com.arvatosystems.t9t.base.services.IExecutor" ]), GetQualifiersResponse);
-        Assert.assertEquals(0, result.qualifiers.size)  // only unqualified implementations exist
+        Assertions.assertEquals(0, result.qualifiers.size)  // only unqualified implementations exist
     }
     @Test
     def void badClassTest() {
         val result = dlg.doIO(new GetQualifiersRequest(#[ "com.arvatosystems.t9t.thereIsNoSuch.Class" ]));
-        Assert.assertEquals(T9tException.INVALID_REQUEST_PARAMETER_TYPE, result.returnCode)
+        Assertions.assertEquals(T9tException.INVALID_REQUEST_PARAMETER_TYPE, result.returnCode)
     }
 }

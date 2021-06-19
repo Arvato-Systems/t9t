@@ -15,8 +15,8 @@
  */
 package com.arvatosystems.t9t.base.be.tests;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.arvatosystems.t9t.base.T9tException;
 
@@ -54,7 +54,7 @@ public class FieldnameConverterTest {
         String in = "extraCustomerIds[0]";
 
         String converted = unrollIndexedFieldNames(in);
-        Assert.assertEquals("extraCustomerIds01", converted);
+        Assertions.assertEquals("extraCustomerIds01", converted);
     }
 
 }

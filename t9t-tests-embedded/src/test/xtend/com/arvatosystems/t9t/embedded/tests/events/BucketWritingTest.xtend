@@ -20,15 +20,15 @@ import com.arvatosystems.t9t.bucket.request.BucketEntrySearchRequest
 import com.arvatosystems.t9t.bucket.request.SingleBucketWriteRequest
 import com.arvatosystems.t9t.embedded.connect.InMemoryConnection
 import de.jpaw.bonaparte.pojos.api.AsciiFilter
-import org.junit.BeforeClass
-import org.junit.Test
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 import com.arvatosystems.t9t.base.search.ReadAllResponse
-import org.junit.Assert
+import org.junit.jupiter.api.Assertions
 
 class BucketWritingTest {
     static private ITestConnection dlg
 
-    @BeforeClass
+    @BeforeAll
     def public static void createConnection() {
         // use a single connection for all tests (faster)
         dlg = new InMemoryConnection
@@ -41,7 +41,7 @@ class BucketWritingTest {
             ]
         ]
         val rs = dlg.typeIO(rq, ReadAllResponse)
-        Assert.assertEquals(1, rs.dataList.size)
+        Assertions.assertEquals(1, rs.dataList.size)
     }
 
     @Test

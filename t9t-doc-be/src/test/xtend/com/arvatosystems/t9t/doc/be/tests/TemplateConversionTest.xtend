@@ -15,16 +15,16 @@
  */
 package com.arvatosystems.t9t.doc.be.tests
 
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import com.arvatosystems.t9t.doc.T9tDocTools
-import static extension org.junit.Assert.*
+import static extension org.junit.jupiter.api.Assertions.*
 
 class TemplateConversionTest {
     @Test
     def testNoPattern() {
         val oldTemplate = "The quick brown fox"
         val newTemplate = T9tDocTools.convertTemplateAddOrSwapPrefix(oldTemplate, "", "so.", null)
-        assertEquals("No conversion expected", oldTemplate, newTemplate)
+        assertEquals(oldTemplate, newTemplate, "No conversion expected")
     }
 
     @Test
@@ -32,7 +32,7 @@ class TemplateConversionTest {
         val oldTemplate = "Order ${d.orderId} has ${d.totalTax} tax"
         val expTemplate = "Order ${d.so.orderId} has ${d.totalTax} tax"
         val newTemplate = T9tDocTools.convertTemplateAddOrSwapPrefix(oldTemplate, "", "so.", #[ "totalTax" ])
-        assertEquals("No conversion expected", expTemplate, newTemplate)
+        assertEquals(expTemplate, newTemplate, "No conversion expected")
     }
 
     @Test
@@ -40,7 +40,7 @@ class TemplateConversionTest {
         val oldTemplate = "Order ${d.orderId} has ${d.totalTax} tax"
         val expTemplate = "Order ${d.so.orderId} has ${d.so.totalTax} tax"
         val newTemplate = T9tDocTools.convertTemplateAddOrSwapPrefix(oldTemplate, "", "so.", null)
-        assertEquals("No conversion expected", expTemplate, newTemplate)
+        assertEquals(expTemplate, newTemplate, "No conversion expected")
     }
 
     @Test
@@ -48,7 +48,7 @@ class TemplateConversionTest {
         val oldTemplate = "Order ${ d.orderId} has sd.tax tax"
         val expTemplate = "Order ${ d.so.orderId} has sd.tax tax"
         val newTemplate = T9tDocTools.convertTemplateAddOrSwapPrefix(oldTemplate, "", "so.", null)
-        assertEquals("No conversion expected", expTemplate, newTemplate)
+        assertEquals(expTemplate, newTemplate, "No conversion expected")
     }
 
     @Test
@@ -57,7 +57,7 @@ class TemplateConversionTest {
         val expTemplate = "Order ${d.so.orderId} has ${d.totalTax} tax"
         val midTemplate = T9tDocTools.convertTemplateAddOrSwapPrefix(oldTemplate, "", "so.", #[ "totalTax" ])
         val newTemplate = T9tDocTools.convertTemplateAddOrSwapPrefix(midTemplate, "", "so.", #[ "totalTax" ])
-        assertEquals("No conversion expected", expTemplate, newTemplate)
+        assertEquals(expTemplate, newTemplate, "No conversion expected")
     }
 
     @Test
@@ -66,6 +66,6 @@ class TemplateConversionTest {
         val expTemplate = "Order ${d.so.orderId} has ${d.so.totalTax} tax"
         val midTemplate = T9tDocTools.convertTemplateAddOrSwapPrefix(oldTemplate, "", "so.", null)
         val newTemplate = T9tDocTools.convertTemplateAddOrSwapPrefix(midTemplate, "", "so.", null)
-        assertEquals("No conversion expected", expTemplate, newTemplate)
+        assertEquals(expTemplate, newTemplate, "No conversion expected")
     }
 }

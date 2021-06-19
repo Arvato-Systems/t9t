@@ -37,8 +37,8 @@ import de.jpaw.bonaparte.pojos.api.OperationType
 import de.jpaw.bonaparte.pojos.api.UnicodeFilter
 import java.util.UUID
 import org.joda.time.Instant
-import org.junit.Assert
-import org.junit.Test
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Test
 
 import static extension com.arvatosystems.t9t.misc.extensions.MiscExtensions.*
 
@@ -88,7 +88,7 @@ class ITCacheBenchmark {
             ]
         ], ReadAllResponse) as ReadAllResponse<StatisticsDTO, WriteTracking>
 
-        Assert.assertTrue(sresp.dataList.size == 1)
+        Assertions.assertTrue(sresp.dataList.size == 1)
         val statisticsObjectRef = sresp.dataList.get(0).data.objectRef
 
         val readUncachedByPkRequest = new StatisticsCrudRequest => [
@@ -97,7 +97,7 @@ class ITCacheBenchmark {
         ]
         // validate it's working
         val res1 = dlg.typeIO(readUncachedByPkRequest, CrudSurrogateKeyResponse) as CrudSurrogateKeyResponse<StatisticsDTO, WriteTracking>
-        Assert.assertEquals(randomData, res1.data.info2)
+        Assertions.assertEquals(randomData, res1.data.info2)
          return readUncachedByPkRequest
     }
 
@@ -114,7 +114,7 @@ class ITCacheBenchmark {
         ]
         // validate it's working
         val res1 = dlg.typeIO(readRq, CrudSurrogateKeyResponse) as CrudSurrogateKeyResponse<SubscriberConfigDTO, FullTrackingWithVersion>
-        Assert.assertEquals(SUBSCRIBER_KEY.eventID, res1.data.eventID)
+        Assertions.assertEquals(SUBSCRIBER_KEY.eventID, res1.data.eventID)
         return new SubscriberConfigCrudRequest => [
             crud       = OperationType.READ
             key        = res1.data.objectRef

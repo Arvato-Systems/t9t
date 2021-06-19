@@ -29,8 +29,8 @@ import com.arvatosystems.t9t.ssm.SchedulerSetupRecurrenceType
 import com.arvatosystems.t9t.ssm.request.ClearAllRequest
 import com.arvatosystems.t9t.ssm.request.SchedulerSetupCrudRequest
 import de.jpaw.bonaparte.pojos.api.OperationType
-import org.junit.BeforeClass
-import org.junit.Test
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 import static extension com.arvatosystems.t9t.misc.extensions.MiscExtensions.*
 
 class CannedRequest2Test {
@@ -38,7 +38,7 @@ class CannedRequest2Test {
     val SCHEDULER_ID    = "fastPause"
     static private ITestConnection dlg
 
-    @BeforeClass
+    @BeforeAll
     def public static void createConnection() {
         // use a single connection for all tests (faster)
         dlg = new InMemoryConnection

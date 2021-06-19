@@ -21,8 +21,8 @@ import com.arvatosystems.t9t.email.be.smtp.impl.SmtpEmailService
 import de.jpaw.bonaparte.api.media.MediaTypes
 import de.jpaw.bonaparte.pojos.api.media.MediaData
 import java.util.UUID
-import org.junit.Ignore
-import org.junit.Test
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
 import com.arvatosystems.t9t.email.api.EmailMessage
 
 class SendEmailBySmtpTest {
@@ -45,7 +45,7 @@ class SendEmailBySmtpTest {
         replyTo             = "noOne@example.com"
     ]
 
-    @Ignore
+    @Disabled
     @Test
     def public void testSimpleEmail() {
 
@@ -65,7 +65,7 @@ class SendEmailBySmtpTest {
         )
     }
 
-    @Ignore
+    @Disabled
     @Test
     def public void testHtmlEmail() {
 

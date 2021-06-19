@@ -17,15 +17,15 @@ package com.arvatosystems.t9t.dataloader.maven.config;
 
 
 import org.apache.maven.plugin.MojoExecutionException;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DatabaseTest {
 
     private Database database;
 
-    @Before
+    @BeforeEach
     public void init() {
         database = new Database();
         database.jdbcUrl = "jdbc:something/myDatabase";
@@ -33,34 +33,42 @@ public class DatabaseTest {
         database.password = "password";
     }
 
-    @Test(expected = MojoExecutionException.class)
+    @Test
     public void emptyJdbcUrl() throws MojoExecutionException {
-        database.jdbcUrl = null;
-        database.verifyParameters();
+        Assertions.assertThrows(MojoExecutionException.class, () -> {
+            database.jdbcUrl = null;
+            database.verifyParameters();
+        });
     }
 
-    @Test(expected = MojoExecutionException.class)
+    @Test
     public void incorrectJdbcUrl() throws MojoExecutionException {
-        database.jdbcUrl = "incorrect";
-        database.verifyParameters();
+        Assertions.assertThrows(MojoExecutionException.class, () -> {
+            database.jdbcUrl = "incorrect";
+            database.verifyParameters();
+        });
     }
 
     @Test
     public void correctJdbcUrl() throws MojoExecutionException {
         database.verifyParameters();
-        Assert.assertEquals("myDatabase", database.getDatabase());
+        Assertions.assertEquals("myDatabase", database.getDatabase());
     }
 
-    @Test(expected = MojoExecutionException.class)
+    @Test
     public void emptyUser() throws MojoExecutionException {
-        database.user = null;
-        database.verifyParameters();
+        Assertions.assertThrows(MojoExecutionException.class, () -> {
+            database.user = null;
+            database.verifyParameters();
+        });
     }
 
-    @Test(expected = MojoExecutionException.class)
+    @Test
     public void emptyPassword() throws MojoExecutionException {
-        database.password = null;
-        database.verifyParameters();
+        Assertions.assertThrows(MojoExecutionException.class, () -> {
+            database.password = null;
+            database.verifyParameters();
+        });
     }
 
 }

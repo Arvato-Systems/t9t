@@ -29,8 +29,8 @@ import com.arvatosystems.t9t.bpmn.request.TriggerSingleProcessNowRequest
 import com.arvatosystems.t9t.embedded.connect.InMemoryConnection
 import de.jpaw.annotations.AddLogger
 import java.util.ArrayList
-import org.junit.BeforeClass
-import org.junit.Test
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 
 import static extension com.arvatosystems.t9t.misc.extensions.BpmExtensions.*
 import de.jpaw.bonaparte.util.ToStringHelper
@@ -43,7 +43,7 @@ class BpmRestartParamsTest {
 
     static ITestConnection dlg
 
-    @BeforeClass
+    @BeforeAll
     def static void createConnection() {
         // use a single connection for all tests (faster)
         dlg = new InMemoryConnection

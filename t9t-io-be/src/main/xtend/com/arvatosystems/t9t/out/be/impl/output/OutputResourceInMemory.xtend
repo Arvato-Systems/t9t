@@ -34,7 +34,7 @@ class OutputResourceInMemory implements IOutputResource {
         return baos
     }
 
-    override open(DataSinkDTO config, OutputSessionParameters params, Long sinkRef, String targetName, MediaTypeDescriptor mediaType, Charset encoding) {
+    override void open(DataSinkDTO config, OutputSessionParameters params, Long sinkRef, String targetName, MediaTypeDescriptor mediaType, Charset encoding) {
         this.encoding = encoding;
     }
 

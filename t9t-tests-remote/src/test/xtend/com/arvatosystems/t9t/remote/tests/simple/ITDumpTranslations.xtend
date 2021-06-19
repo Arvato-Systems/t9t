@@ -18,7 +18,7 @@ package com.arvatosystems.t9t.remote.tests.simple
 import com.arvatosystems.t9t.remote.connect.Connection
 import com.arvatosystems.t9t.uiprefs.request.DumpUntranslatedDefaultsRequest
 import com.arvatosystems.t9t.uiprefs.request.DumpUntranslatedHeadersRequest
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class ITDumpTranslations {
     @Test

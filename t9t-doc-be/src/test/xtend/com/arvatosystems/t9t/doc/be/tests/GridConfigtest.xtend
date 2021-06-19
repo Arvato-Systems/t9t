@@ -20,8 +20,10 @@ import com.arvatosystems.t9t.doc.DocComponentDTO
 import de.jpaw.bonaparte.api.ColumnCollector
 import de.jpaw.bonaparte.pojos.ui.UIDefaults
 import de.jpaw.bonaparte.util.ToStringHelper
-import org.junit.Test
+import org.junit.jupiter.api.Test
+import de.jpaw.annotations.AddLogger
 
+@AddLogger
 class GridConfigtest {
     public static final UIDefaults MY_DEFAULTS = new UIDefaults => [
         renderMaxArrayColumns = 5
@@ -38,13 +40,13 @@ class GridConfigtest {
     def void testColumnCollector() {
         val cc = new ColumnCollector(MY_DEFAULTS)
         cc.addToColumns(FullTrackingWithVersion.class$MetaData)
-        println('''Columns are «ToStringHelper.toStringML(cc.columns)»''')
+        LOGGER.info("Columns are {}", ToStringHelper.toStringML(cc.columns))
     }
 
     @Test
     def void testColumnCollector2() {
         val cc = new ColumnCollector(MY_DEFAULTS)
         cc.addToColumns(DocComponentDTO.class$MetaData)
-        println('''Columns are «ToStringHelper.toStringML(cc.columns)»''')
+        LOGGER.info("Columns are {}", ToStringHelper.toStringML(cc.columns))
     }
 }

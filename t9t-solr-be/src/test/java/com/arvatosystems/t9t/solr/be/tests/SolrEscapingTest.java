@@ -16,7 +16,7 @@
 package com.arvatosystems.t9t.solr.be.tests;
 
 import org.apache.solr.client.solrj.util.ClientUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SolrEscapingTest {
 

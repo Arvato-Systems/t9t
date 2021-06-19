@@ -27,15 +27,15 @@ import com.arvatosystems.t9t.io.request.GetQueueStatusResponse
 import com.arvatosystems.t9t.io.request.PerformAsyncRequest
 import de.jpaw.bonaparte.api.media.MediaTypes
 import de.jpaw.bonaparte.pojos.api.OperationType
-import org.junit.BeforeClass
-import org.junit.Test
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 
 import static extension com.arvatosystems.t9t.misc.extensions.MiscExtensions.*
 
 class QueueRestartTest {
     static ITestConnection dlg
 
-    @BeforeClass
+    @BeforeAll
     def static void createConnection() {
         // use a single connection for all tests (faster)
         dlg = new InMemoryConnection

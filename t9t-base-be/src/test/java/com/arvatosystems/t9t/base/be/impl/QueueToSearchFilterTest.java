@@ -18,9 +18,9 @@ package com.arvatosystems.t9t.base.be.impl;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.arvatosystems.t9t.base.services.ISearchTools;
@@ -36,7 +36,7 @@ public class QueueToSearchFilterTest {
     SearchFilterUtil util;
     private ISearchTools searchTools = Mockito.mock(ISearchTools.class);
 
-    @Before
+    @BeforeEach
     public void setupMocks() {
         Jdp.bindInstanceTo(searchTools, ISearchTools.class);
     }
@@ -53,9 +53,9 @@ public class QueueToSearchFilterTest {
 
 
         SearchFilter filter = util.generateSearchFilterFromQueue(filterQueue, null);
-        Assert.assertTrue(filter instanceof AndFilter);
-        Assert.assertTrue(((AndFilter)filter).getFilter1() instanceof AsciiFilter);
-        Assert.assertTrue(((AndFilter)filter).getFilter2() instanceof NotFilter);
+        Assertions.assertTrue(filter instanceof AndFilter);
+        Assertions.assertTrue(((AndFilter)filter).getFilter1() instanceof AsciiFilter);
+        Assertions.assertTrue(((AndFilter)filter).getFilter2() instanceof NotFilter);
     }
 
     @Test
@@ -72,13 +72,13 @@ public class QueueToSearchFilterTest {
 
 
         SearchFilter filter = util.generateSearchFilterFromQueue(filterQueue, null);
-        Assert.assertTrue(filter instanceof NotFilter);
-        Assert.assertTrue(((NotFilter)filter).getFilter() instanceof AndFilter);
+        Assertions.assertTrue(filter instanceof NotFilter);
+        Assertions.assertTrue(((NotFilter)filter).getFilter() instanceof AndFilter);
 
         AndFilter andFilter = (AndFilter)((NotFilter)filter).getFilter();
-        Assert.assertTrue(andFilter.getFilter1() instanceof OrFilter);
-        Assert.assertTrue(andFilter.getFilter2() instanceof AsciiFilter);
-        Assert.assertEquals("C", ((AsciiFilter)andFilter.getFilter2()).getFieldName());
+        Assertions.assertTrue(andFilter.getFilter1() instanceof OrFilter);
+        Assertions.assertTrue(andFilter.getFilter2() instanceof AsciiFilter);
+        Assertions.assertEquals("C", ((AsciiFilter)andFilter.getFilter2()).getFieldName());
     }
 
 

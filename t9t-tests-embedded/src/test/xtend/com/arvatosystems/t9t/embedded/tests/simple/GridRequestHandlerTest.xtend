@@ -22,14 +22,14 @@ import com.arvatosystems.t9t.uiprefs.request.GridConfigResponse
 import com.arvatosystems.t9t.uiprefsv3.request.LeanGridConfigRequest
 import com.arvatosystems.t9t.uiprefsv3.request.LeanGridConfigResponse
 import de.jpaw.bonaparte.util.ToStringHelper
-import org.junit.Assert
-import org.junit.BeforeClass
-import org.junit.Test
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 
 class GridRequestHandlerTest {
     static private ITestConnection dlg
 
-    @BeforeClass
+    @BeforeAll
     def public static void createConnection() {
         // use a single connection for all tests (faster)
         dlg = new InMemoryConnection
@@ -69,7 +69,7 @@ class GridRequestHandlerTest {
         println("\n\nResult of LeanGridConfigResponse: ");
         println(ToStringHelper.toStringML(leanGridCfg.headers))
 
-        Assert.assertEquals(gridCfg.headers, leanGridCfg.headers)
+        Assertions.assertEquals(gridCfg.headers, leanGridCfg.headers)
     }
 
     @Test
@@ -102,7 +102,7 @@ class GridRequestHandlerTest {
         println("\n\nResult of LeanGridConfigResponse: ");
         println(ToStringHelper.toStringML(leanGridCfg.headers))
 
-        Assert.assertEquals(gridCfg.headers, leanGridCfg.headers)
+        Assertions.assertEquals(gridCfg.headers, leanGridCfg.headers)
     }
 
     @Test
@@ -135,6 +135,6 @@ class GridRequestHandlerTest {
         println("\n\nResult of LeanGridConfigResponse: ");
         println(ToStringHelper.toStringML(leanGridCfg.headers))
 
-        Assert.assertEquals(gridCfg.headers, leanGridCfg.headers)
+        Assertions.assertEquals(gridCfg.headers, leanGridCfg.headers)
     }
 }

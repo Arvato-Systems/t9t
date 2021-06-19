@@ -35,9 +35,9 @@ import com.arvatosystems.t9t.io.request.StoreSinkRequest
 import de.jpaw.bonaparte.pojos.api.AsciiFilter
 import de.jpaw.bonaparte.pojos.api.media.MediaType
 import de.jpaw.bonaparte.pojos.api.media.MediaXType
-import org.junit.BeforeClass
-import org.junit.Ignore
-import org.junit.Test
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
 
 import static extension com.arvatosystems.t9t.misc.extensions.MiscExtensions.*
 
@@ -46,7 +46,7 @@ class OutputSessionExceptionHandlingTest {
 
     static private ITestConnection dlg
 
-    @BeforeClass
+    @BeforeAll
     def public static void createConnection() {
         // use a single connection for all tests (faster)
         dlg = new InMemoryConnection
@@ -62,7 +62,7 @@ class OutputSessionExceptionHandlingTest {
         ]), T9tIOException.MISSING_CONFIGURATION)
     }
 
-    @Ignore  // referential integrity error
+    @Disabled  // referential integrity error
     @Test
     def public void storeSingleSinkTest() {
 

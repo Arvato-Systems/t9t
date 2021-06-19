@@ -18,7 +18,7 @@ package com.arvatosystems.t9t.embedded.tests.simple
 import com.arvatosystems.t9t.base.T9tConstants
 import com.arvatosystems.t9t.msglog.MessageDTO
 import org.joda.time.Instant
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 // errors have been reported with language codes according to BCP47
 

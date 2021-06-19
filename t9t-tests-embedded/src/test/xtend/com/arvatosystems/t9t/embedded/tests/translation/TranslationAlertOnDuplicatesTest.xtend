@@ -18,8 +18,8 @@ package com.arvatosystems.t9t.embedded.tests.translation
 import com.arvatosystems.t9t.embedded.connect.InMemoryConnection
 import com.arvatosystems.t9t.translation.be.TranslationsStack
 import de.jpaw.annotations.AddLogger
-import org.junit.Test
-import org.junit.Ignore
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.Disabled
 
 @AddLogger
 class TranslationAlertOnDuplicatesTest {
@@ -36,14 +36,14 @@ class TranslationAlertOnDuplicatesTest {
         }
     }
 
-    @Ignore // run this one manually only
+    @Disabled // run this one manually only
     @Test
     def void alertOnTranslationsMatchingDefaultTest() {
         new InMemoryConnection  // initialize
         TranslationsStack.checkDuplicates(true, true, false)
     }
 
-    @Ignore // run this one manually only
+    @Disabled // run this one manually only
     @Test
     def void alertOnTranslationsDeMatchingEnTest() {
         new InMemoryConnection  // initialize

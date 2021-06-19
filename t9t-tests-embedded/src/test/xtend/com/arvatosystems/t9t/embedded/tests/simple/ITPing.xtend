@@ -24,7 +24,7 @@ import com.arvatosystems.t9t.base.request.PingRequest
 import com.arvatosystems.t9t.base.request.ProcessStatusRequest
 import com.arvatosystems.t9t.base.request.ProcessStatusResponse
 import com.arvatosystems.t9t.embedded.connect.Connection
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import com.arvatosystems.t9t.base.request.ContextlessLogMessageRequest
 
 class ITPing {

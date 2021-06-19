@@ -1,5 +1,6 @@
 module com.arvatosystems.t9t.cfg {
 	exports com.arvatosystems.t9t.cfg.be;
+	opens com.arvatosystems.t9t.cfg.be;   // jaxb.index must be found by reflection
 
 	requires com.google.common;
 	requires de.jpaw.annotations;

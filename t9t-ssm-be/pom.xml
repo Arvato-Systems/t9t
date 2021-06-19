@@ -65,5 +65,11 @@
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- JUnit Test -->
+        <dependency>
+           <groupId>org.junit.jupiter</groupId>
+           <artifactId>junit-jupiter-api</artifactId>
+           <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

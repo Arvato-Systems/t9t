@@ -26,7 +26,7 @@ import de.jpaw.bonaparte.core.CompactByteArrayComposer
 import de.jpaw.bonaparte.core.CompactByteArrayParser
 import de.jpaw.bonaparte.core.StaticMeta
 import de.jpaw.util.ByteUtil
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 @AddLogger
 class Serialization {

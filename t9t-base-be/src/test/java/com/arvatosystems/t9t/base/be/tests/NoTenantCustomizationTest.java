@@ -17,8 +17,8 @@ package com.arvatosystems.t9t.base.be.tests;
 
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.be.impl.DefaultRequestHandlerResolver;
@@ -36,8 +36,8 @@ public class NoTenantCustomizationTest {
         // prep:
         Jdp.bindInstanceTo(new DefaultRequestHandlerResolver(), IRequestHandlerResolver.class);
 
-        final List<String> actualName = new NoTenantCustomization().getRequestHandlerClassnameCandidates(new PauseRequest());
-        Assert.assertEquals("expect 2 possible handler names", 2, actualName.size());
-        Assert.assertEquals("first name should be in the be package", MessagingUtil.TWENTYEIGHT_PACKAGE_PREFIX + ".base.be.request.PauseRequestHandler", actualName);
+        final List<String> actualNames = new NoTenantCustomization().getRequestHandlerClassnameCandidates(new PauseRequest());
+        Assertions.assertEquals(2, actualNames.size(), "expect 2 possible handler names");
+        Assertions.assertEquals(MessagingUtil.TWENTYEIGHT_PACKAGE_PREFIX + ".base.be.request.PauseRequestHandler", actualNames.get(0), "first name should be in the be package");
     }
 }

@@ -28,7 +28,7 @@ import com.arvatosystems.t9t.ssm.SchedulerSetupRecurrenceType
 import com.arvatosystems.t9t.ssm.request.ClearAllRequest
 import com.arvatosystems.t9t.ssm.request.SchedulerSetupCrudRequest
 import de.jpaw.bonaparte.pojos.api.OperationType
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 import static extension com.arvatosystems.t9t.misc.extensions.MiscExtensions.*
 

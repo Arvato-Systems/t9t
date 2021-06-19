@@ -15,8 +15,8 @@
  */
 package com.arvatosystems.t9t.ui.tests;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import com.arvatosystems.t9t.jdp.Init;
 import com.arvatosystems.t9t.translation.be.TranslationsStack;
@@ -33,14 +33,14 @@ public class UiTranslationsAlertOnDuplicatesTest {
         }
     }
 
-    @Ignore // run this one manually only
+    @Disabled // run this one manually only
     @Test
     public void alertOnTranslationsMatchingDefaultTest() throws Exception {
         Init.initializeT9t();  // initialize
         TranslationsStack.checkDuplicates(true, true, false);
     }
 
-    @Ignore // run this one manually only
+    @Disabled // run this one manually only
     @Test
     public void alertOnTranslationsDeMatchingEnTest() throws Exception {
         Init.initializeT9t();  // initialize

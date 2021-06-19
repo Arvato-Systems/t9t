@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.auth.be.tests
 
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class GetResources {
 

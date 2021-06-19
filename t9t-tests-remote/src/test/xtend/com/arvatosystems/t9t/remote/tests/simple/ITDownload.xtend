@@ -19,7 +19,7 @@ import com.arvatosystems.t9t.io.request.FileDownloadRequest
 import com.arvatosystems.t9t.io.request.FileDownloadResponse
 import com.arvatosystems.t9t.remote.connect.Connection
 import com.arvatosystems.t9t.remote.connect.ConnectionTypes
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class ITDownload {
     @Test

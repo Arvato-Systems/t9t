@@ -21,8 +21,8 @@ import de.jpaw.bonaparte.api.media.MediaDataUtil
 import java.io.ByteArrayInputStream
 import java.nio.charset.StandardCharsets
 import javax.xml.bind.JAXBContext
-import org.junit.Assert
-import org.junit.Test
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Test
 
 /**
  * Imports a user from an XML file.
@@ -39,12 +39,12 @@ class ImportWithZTest {
         m.schema = null
         val srcStream = new ByteArrayInputStream(sourceXml.getBytes(StandardCharsets.UTF_8))
         val result = m.unmarshal(srcStream)
-        Assert.assertNotNull("XML parse result should not be null", result)
-        Assert.assertEquals("Result should be of type UserMaster", UserMaster, result.class)
+        Assertions.assertNotNull(result, "XML parse result should not be null")
+        Assertions.assertEquals(UserMaster, result.class, "Result should be of type UserMaster")
         val pm = result as UserMaster
-        Assert.assertEquals("Result should hold 1 user record", 1, pm.records.size)
+        Assertions.assertEquals(1, pm.records.size, "Result should hold 1 user record")
         val sku = pm.records.get(0)
-        Assert.assertNotNull("User should have a z field", sku.z)
-        Assert.assertEquals("XYZ should be true", true, sku.z.get("XYZ"))
+        Assertions.assertNotNull(sku.z, "User should have a z field")
+        Assertions.assertEquals(true, sku.z.get("XYZ"), "XYZ should be true")
     }
 }

@@ -39,12 +39,18 @@
 
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
-            <artifactId>t9t-genconf-sapi</artifactId>
+            <artifactId>t9t-genconf-api</artifactId>
         </dependency>
 
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-translation-sapi</artifactId>
+        </dependency>
+         <!-- JUnit Test -->
+        <dependency>
+           <groupId>org.junit.jupiter</groupId>
+           <artifactId>junit-jupiter-api</artifactId>
+           <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

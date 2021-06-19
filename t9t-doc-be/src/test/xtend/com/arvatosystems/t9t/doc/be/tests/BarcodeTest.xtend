@@ -30,14 +30,16 @@ import com.arvatosystems.t9t.doc.services.IImageGenerator
 import com.google.common.collect.ImmutableMap
 import de.jpaw.bonaparte.api.media.MediaTypes
 import de.jpaw.dp.Jdp
-import org.junit.Assert
-import org.junit.Before
-import org.junit.BeforeClass
-import org.junit.Test
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 
 import static extension de.jpaw.dp.JdpExtensions.*
-import org.junit.Ignore
+import org.junit.jupiter.api.Disabled
+import de.jpaw.annotations.AddLogger
 
+@AddLogger
 class BarcodeTest {
 
     // mock the persistence access
@@ -75,7 +77,7 @@ class BarcodeTest {
         }
     }
 
-    @BeforeClass
+    @BeforeAll
     def static void setup() {
         Jdp.reset
         IDocModuleCfgDtoResolver.isNow(new MockedDocModuleCfgDtoResolver)
@@ -85,13 +87,13 @@ class BarcodeTest {
         IDocComponentConverter  .isNow(new ConverterToHtml, "HTML")
     }
 
-    @Before
+    @BeforeEach
     def void clearCache() {
         // because we feed different data into the formatter with the same key, the cache must be invalidated before every test
         DocFormatter.clearCache
     }
 
-    @Ignore  // currently fails with Java 8 and 10, but with different results! Generated base64 is 4 times as long in Java 10
+    @Disabled  // currently fails with Java 8 and 10, but with different results! Generated base64 is 4 times as long in Java 10
     @Test
     def void testBarcodes() {
         val actual = new DocFormatter().formatDocument("TEST", 136138L, TemplateType.DOCUMENT_ID, 'testId', new DocumentSelector => [
@@ -115,8 +117,8 @@ class BarcodeTest {
                 </body>
             </html>
         '''
-        println(actual.text)
-        println('''Length of expected is «expected.length», length of actual is «actual.text.length»''')
-        Assert.assertEquals(expected, actual.text)
+        LOGGER.info("Generated text is {}", actual.text)
+        LOGGER.info("Length of expected is {}, length of actual is {}", expected.length, actual.text.length)
+        Assertions.assertEquals(expected, actual.text)
     }
 }

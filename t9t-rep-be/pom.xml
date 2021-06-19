@@ -37,7 +37,7 @@
             <!-- see http://community.jaspersoft.com/jasperreports-library/issues/2594-0 -->
             <id>jaspersoft</id>
             <name>Jasper Soft</name>
-            <url>http://jasperreports.sourceforge.net/maven2/</url>
+            <url>https://jasperreports.sourceforge.net/maven2/</url>
         </repository>
     </repositories>
 
@@ -57,10 +57,6 @@
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

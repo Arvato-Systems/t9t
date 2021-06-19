@@ -21,14 +21,14 @@ import com.arvatosystems.t9t.uiprefs.request.GridConfigRequest
 import com.arvatosystems.t9t.uiprefs.request.GridConfigResponse
 import de.jpaw.bonaparte.core.JsonComposer
 import de.jpaw.bonaparte.util.ToStringHelper
-import org.junit.BeforeClass
-import org.junit.Test
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 
 class GridJsonTest {
 
     static private ITestConnection dlg
 
-    @BeforeClass
+    @BeforeAll
     def public static void createConnection() {
         // use a single connection for all tests (faster)
         dlg = new InMemoryConnection

@@ -20,9 +20,9 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.arvatosystems.t9t.base.services.ISearchTools;
@@ -75,7 +75,7 @@ public class SearchFilterToQueueTest {
         return notFilter;
     }
 
-    @Before
+    @BeforeEach
     public void setupMocks() {
         Jdp.bindInstanceTo(searchTools, ISearchTools.class);
     }
@@ -90,11 +90,11 @@ public class SearchFilterToQueueTest {
         Queue<SearchFilter> filterQueue = new LinkedList<>();
         util.populateQueue(createSearchFilter(), Collections.singleton("B"), filterQueue);
 
-        Assert.assertEquals(1, filterQueue.size());
+        Assertions.assertEquals(1, filterQueue.size());
 
         SearchFilter filter1 = filterQueue.poll();
-        Assert.assertTrue(filter1 instanceof FieldFilter);
-        Assert.assertEquals("B", ((FieldFilter)filter1).getFieldName());
+        Assertions.assertTrue(filter1 instanceof FieldFilter);
+        Assertions.assertEquals("B", ((FieldFilter)filter1).getFieldName());
     }
 
     @Test
@@ -108,19 +108,19 @@ public class SearchFilterToQueueTest {
         Queue<SearchFilter> filterQueue = new LinkedList<>();
         util.populateQueue(createSearchFilter(), Sets.newHashSet("A", "B"), filterQueue);
 
-        Assert.assertEquals(3, filterQueue.size());
+        Assertions.assertEquals(3, filterQueue.size());
 
         //1 expected AndFilter
-        Assert.assertTrue(filterQueue.poll() instanceof AndFilter);
+        Assertions.assertTrue(filterQueue.poll() instanceof AndFilter);
 
         //2 and 3 expected FieldFilters
         SearchFilter filter2 = filterQueue.poll();
-        Assert.assertTrue(filter2 instanceof FieldFilter);
-        Assert.assertEquals("A", ((FieldFilter)filter2).getFieldName());
+        Assertions.assertTrue(filter2 instanceof FieldFilter);
+        Assertions.assertEquals("A", ((FieldFilter)filter2).getFieldName());
 
         SearchFilter filter3 = filterQueue.poll();
-        Assert.assertTrue(filter3 instanceof FieldFilter);
-        Assert.assertEquals("B", ((FieldFilter)filter3).getFieldName());
+        Assertions.assertTrue(filter3 instanceof FieldFilter);
+        Assertions.assertEquals("B", ((FieldFilter)filter3).getFieldName());
     }
 
     @Test
@@ -135,7 +135,7 @@ public class SearchFilterToQueueTest {
         Queue<SearchFilter> filterQueue = new LinkedList<>();
         util.populateQueue(createSearchFilter(), Sets.newHashSet("A", "B", "C"), filterQueue);
 
-        Assert.assertEquals(6, filterQueue.size());
+        Assertions.assertEquals(6, filterQueue.size());
     }
 
     @Test
@@ -150,11 +150,11 @@ public class SearchFilterToQueueTest {
         Queue<SearchFilter> filterQueue = new LinkedList<>();
         util.populateQueue(createSearchFilter(), Sets.newHashSet("B", "C"), filterQueue);
 
-        Assert.assertEquals(4, filterQueue.size());
-        Assert.assertTrue(filterQueue.poll() instanceof OrFilter);
-        Assert.assertTrue(filterQueue.poll() instanceof FieldFilter);
-        Assert.assertTrue(filterQueue.poll() instanceof NotFilter);
-        Assert.assertTrue(filterQueue.poll() instanceof FieldFilter);
+        Assertions.assertEquals(4, filterQueue.size());
+        Assertions.assertTrue(filterQueue.poll() instanceof OrFilter);
+        Assertions.assertTrue(filterQueue.poll() instanceof FieldFilter);
+        Assertions.assertTrue(filterQueue.poll() instanceof NotFilter);
+        Assertions.assertTrue(filterQueue.poll() instanceof FieldFilter);
     }
 
     @Test
@@ -169,11 +169,11 @@ public class SearchFilterToQueueTest {
         Queue<SearchFilter> filterQueue = new LinkedList<>();
         util.populateQueue(createSearchFilter(), Sets.newHashSet("A", "D"), filterQueue);
 
-        Assert.assertEquals(4, filterQueue.size());
-        Assert.assertTrue(filterQueue.poll() instanceof AndFilter);
-        Assert.assertTrue(filterQueue.poll() instanceof FieldFilter); // A
-        Assert.assertTrue(filterQueue.poll() instanceof NotFilter);
-        Assert.assertTrue(filterQueue.poll() instanceof FieldFilter); // D
+        Assertions.assertEquals(4, filterQueue.size());
+        Assertions.assertTrue(filterQueue.poll() instanceof AndFilter);
+        Assertions.assertTrue(filterQueue.poll() instanceof FieldFilter); // A
+        Assertions.assertTrue(filterQueue.poll() instanceof NotFilter);
+        Assertions.assertTrue(filterQueue.poll() instanceof FieldFilter); // D
     }
 
     @Test
@@ -187,7 +187,7 @@ public class SearchFilterToQueueTest {
         Queue<SearchFilter> filterQueue = new LinkedList<>();
         util.populateQueue(createSearchFilter02(), Sets.newHashSet("A", "B", "C"), filterQueue);
 
-        Assert.assertEquals(6, filterQueue.size());
+        Assertions.assertEquals(6, filterQueue.size());
     }
 
 }

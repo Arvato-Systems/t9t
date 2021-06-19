@@ -22,20 +22,22 @@ import com.arvatosystems.t9t.doc.api.TemplateType
 import com.arvatosystems.t9t.doc.be.impl.DocFormatter
 import com.arvatosystems.t9t.doc.services.IDocModuleCfgDtoResolver
 import com.arvatosystems.t9t.doc.services.IDocPersistenceAccess
+import com.arvatosystems.t9t.translation.services.ITranslationProvider
 import com.google.common.collect.ImmutableMap
+import de.jpaw.annotations.AddLogger
 import de.jpaw.bonaparte.api.media.MediaTypes
+import de.jpaw.bonaparte.enums.BonaTokenizableEnum
 import de.jpaw.bonaparte.pojos.api.media.MediaData
 import de.jpaw.dp.Jdp
-import org.junit.Assert
-import org.junit.Before
-import org.junit.BeforeClass
-import org.junit.Test
-import com.arvatosystems.t9t.translation.services.ITranslationProvider
-import de.jpaw.bonaparte.enums.BonaTokenizableEnum
 import java.util.List
 import java.util.Locale
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 /** This test documents the use of the p and q translations functions to access property translations. */
+@AddLogger
 class FormatDocumentTranslateTest {
 
     // mock the persistence access
@@ -110,7 +112,7 @@ class FormatDocumentTranslateTest {
         }
     }
 
-    @BeforeClass
+    @BeforeAll
     def static void setup() {
         Jdp.reset
         Jdp.bindInstanceTo(new MockedDocModuleCfgDtoResolver, IDocModuleCfgDtoResolver)
@@ -118,7 +120,7 @@ class FormatDocumentTranslateTest {
         Jdp.bindInstanceTo(new MockedTranslationProvider, ITranslationProvider)
     }
 
-    @Before
+    @BeforeEach
     def void clearCache() {
         // because we feed different data into the formatter with the same key, the cache must be invalidated before every test
         DocFormatter.clearCache
@@ -139,7 +141,7 @@ class FormatDocumentTranslateTest {
             p needs dot replacement as in XXX t9t.base.api XXX RetryAdviceType XXX!
             p translates like XXX t9t.base.api.RetryAdviceType XXX RETRY_ON_ERROR XXX!
         '''
-        println(actual.text)
-        Assert.assertEquals(expected, actual.text)
+        LOGGER.info("Generated text is {}", actual.text)
+        Assertions.assertEquals(expected, actual.text)
     }
 }

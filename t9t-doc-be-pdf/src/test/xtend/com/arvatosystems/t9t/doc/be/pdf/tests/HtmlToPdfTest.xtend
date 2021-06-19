@@ -19,7 +19,7 @@ import com.arvatosystems.t9t.doc.services.IDocConverter
 import com.arvatosystems.t9t.jdp.Init
 import de.jpaw.bonaparte.pojos.api.media.MediaData
 import de.jpaw.bonaparte.pojos.api.media.MediaType
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 import static extension de.jpaw.dp.Jdp.*
 

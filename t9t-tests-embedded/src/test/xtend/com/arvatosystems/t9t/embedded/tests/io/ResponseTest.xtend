@@ -29,9 +29,9 @@ import de.jpaw.bonaparte.core.BonaPortable
 import de.jpaw.bonaparte.pojos.api.media.MediaType
 import de.jpaw.bonaparte.pojos.api.media.MediaXType
 import java.util.ArrayList
-import org.junit.Assert
-import org.junit.BeforeClass
-import org.junit.Test
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 
 import static extension com.arvatosystems.t9t.misc.extensions.MiscExtensions.*
 import static extension com.arvatosystems.t9t.auth.extensions.AuthExtensions.*
@@ -51,7 +51,7 @@ class ResponseTest {
     static val MY_ID_IN = "requestJson"
     static final UUID DUMMY_API_KEY = UUID.fromString("beefbeef-affe-cafe-babe-2a539c291111")
 
-    @BeforeClass
+    @BeforeAll
     def static void createConnection() {
         // use a single connection for all tests (faster)
         dlg = new InMemoryConnection
@@ -118,7 +118,7 @@ class ResponseTest {
         rq.records2 = createRecords("bar", 5)
         val resp = dlg.typeIO(rq, SinkCreatedResponse)
         LOGGER.info("Done, count is {} ******************************", resp.numResults)
-        Assert.assertEquals("Number of written records", 8, resp.numResults)
+        Assertions.assertEquals(8, resp.numResults, "Number of written records")
     }
 
     static val JSON = '''[

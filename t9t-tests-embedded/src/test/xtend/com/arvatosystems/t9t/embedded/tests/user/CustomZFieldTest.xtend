@@ -26,13 +26,13 @@ import com.arvatosystems.t9t.embedded.connect.InMemoryConnection
 import de.jpaw.bonaparte.pojos.api.OperationType
 import de.jpaw.util.ExceptionUtil
 import java.util.UUID
-import org.junit.BeforeClass
-import org.junit.Test
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 
 import static extension com.arvatosystems.t9t.auth.extensions.AuthExtensions.*
 import static extension com.arvatosystems.t9t.doc.extensions.DocExtensions.*
 import com.arvatosystems.t9t.auth.TenantKey
-import org.junit.Assert
+import org.junit.jupiter.api.Assertions
 
 class CustomZFieldTest {
     static ITestConnection dlg
@@ -40,7 +40,7 @@ class CustomZFieldTest {
     static final String TEST_USER_ID = "testZ"
     static final String TEST_EMAIL = "test@nowhere.com"
 
-    @BeforeClass
+    @BeforeAll
     def static void createConnection() {
         try {
             // use a single connection for all tests (faster)
@@ -90,9 +90,9 @@ class CustomZFieldTest {
         val dlgx = new InMemoryConnection(TEST_USER_ID, "secret12345")
         val info = dlgx.lastJwtInfo
         println('''The z field of the login is «info.z»''')
-        Assert.assertNotNull("There should be a z field in the JWT", info.z)
-        Assert.assertEquals("There should be 2 entries in the z field", 2, info.z.size)
-        Assert.assertEquals("test1", info.z.get("userField"))
-        Assert.assertEquals("test2", info.z.get("tenantField"))
+        Assertions.assertNotNull(info.z, "There should be a z field in the JWT")
+        Assertions.assertEquals(2, info.z.size, "There should be 2 entries in the z field")
+        Assertions.assertEquals(info.z.get("userField"), "test1")
+        Assertions.assertEquals(info.z.get("tenantField"), "test2")
     }
 }

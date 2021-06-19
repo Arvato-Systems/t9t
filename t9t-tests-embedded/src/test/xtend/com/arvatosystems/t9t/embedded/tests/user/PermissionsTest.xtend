@@ -33,9 +33,9 @@ import de.jpaw.bonaparte.pojos.api.auth.Permissionset
 import de.jpaw.bonaparte.pojos.api.auth.UserLogLevelType
 import de.jpaw.bonaparte.util.ToStringHelper
 import java.util.UUID
-import org.junit.Assert
-import org.junit.BeforeClass
-import org.junit.Test
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 
 class PermissionsTest {
     static private ITestConnection dlg
@@ -57,7 +57,7 @@ class PermissionsTest {
         }
     }
 
-    @BeforeClass
+    @BeforeAll
     def public static void createConnection() {
         // use a single connection for all tests (faster)
         dlg = new InMemoryConnection;
@@ -79,21 +79,21 @@ class PermissionsTest {
     def public void QueryPermissionsTest() {
         val result = dlg.typeIO(new QueryPermissionsRequest(PermissionType.FRONTEND), QueryPermissionsResponse)
         println('''Result is «ToStringHelper.toStringML(result)»''')
-        Assert.assertEquals(result.permissions.size, 1)
-        Assert.assertEquals(new PermissionEntry(myPermissionId, Permissionset.ofTokens(OperationType.CONTEXT, OperationType.LOOKUP)), result.permissions.get(0))
+        Assertions.assertEquals(result.permissions.size, 1)
+        Assertions.assertEquals(new PermissionEntry(myPermissionId, Permissionset.ofTokens(OperationType.CONTEXT, OperationType.LOOKUP)), result.permissions.get(0))
     }
 
     @Test
     def public void QuerySinglePermissionTest() {
         val result = dlg.typeIO(new QuerySinglePermissionRequest(PermissionType.FRONTEND, "testperm-id.x"), QuerySinglePermissionResponse)
         println('''Result is «ToStringHelper.toStringML(result)»''')
-        Assert.assertEquals(Permissionset.ofTokens(OperationType.CONTEXT, OperationType.LOOKUP), result.permissions)
+        Assertions.assertEquals(Permissionset.ofTokens(OperationType.CONTEXT, OperationType.LOOKUP), result.permissions)
     }
 
     @Test
     def public void QueryAnotherSinglePermissionTest() {
         val result = dlg.typeIO(new QuerySinglePermissionRequest(PermissionType.FRONTEND, "no-perm"), QuerySinglePermissionResponse)
         println('''Result is «ToStringHelper.toStringML(result)»''')
-        Assert.assertEquals(Permissionset.ofTokens(), result.permissions)
+        Assertions.assertEquals(Permissionset.ofTokens(), result.permissions)
     }
 }

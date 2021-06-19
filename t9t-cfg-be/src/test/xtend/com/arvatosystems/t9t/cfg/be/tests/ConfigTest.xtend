@@ -15,16 +15,17 @@
  */
 package com.arvatosystems.t9t.cfg.be.tests
 
-import com.arvatosystems.t9t.cfg.be.ConfigProvider
-import org.junit.Test
-import static org.junit.Assert.*
-import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration
-import org.junit.Ignore
 import com.arvatosystems.t9t.cfg.be.ApplicationConfiguration
+import com.arvatosystems.t9t.cfg.be.ConfigProvider
+import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
+
+import static org.junit.jupiter.api.Assertions.*
 
 class ConfigTest {
 
-    @Ignore  // do not do file output in regression runs
+    @Disabled  // do not do file output in regression runs
     @Test
     def void writeConfig() {
         val cfg = ConfigProvider.configuration

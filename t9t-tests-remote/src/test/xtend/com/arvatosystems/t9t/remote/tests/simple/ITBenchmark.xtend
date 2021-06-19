@@ -21,7 +21,7 @@ import com.arvatosystems.t9t.remote.connect.Connection
 import de.jpaw.annotations.AddLogger
 import de.jpaw.bonaparte.util.impl.RecordMarshallerBonaparte
 import java.util.function.IntConsumer
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 // benchmark the pooled connection vs the basic connection
 @AddLogger

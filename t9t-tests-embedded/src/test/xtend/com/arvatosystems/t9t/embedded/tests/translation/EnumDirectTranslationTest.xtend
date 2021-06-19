@@ -21,14 +21,14 @@ import com.arvatosystems.t9t.embedded.connect.InMemoryConnection
 import com.arvatosystems.t9t.io.CommunicationTargetChannelType
 import com.arvatosystems.t9t.translation.services.ITranslationProvider
 import de.jpaw.dp.Jdp
-import org.junit.Assert
-import org.junit.BeforeClass
-import org.junit.Test
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 
 class EnumDirectTranslationTest {
     static private ITestConnection dlg
 
-    @BeforeClass
+    @BeforeAll
     def public static void createConnection() {
         // use a single connection for all tests (faster)
         dlg = new InMemoryConnection
@@ -41,6 +41,6 @@ class EnumDirectTranslationTest {
         val xlates = translator.getEnumTranslation(T9tConstants.GLOBAL_TENANT_ID, CommunicationTargetChannelType.enum$MetaData.name, "de", false)
         for (e: xlates.entrySet)
             println('''«e.key» maps to «e.value»''')
-        Assert.assertEquals("Datei", xlates.get("FILE"))
+        Assertions.assertEquals("Datei", xlates.get("FILE"))
     }
 }

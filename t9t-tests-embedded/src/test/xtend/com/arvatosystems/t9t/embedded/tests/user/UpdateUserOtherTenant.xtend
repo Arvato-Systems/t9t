@@ -29,9 +29,9 @@ import de.jpaw.bonaparte.pojos.api.OperationType
 import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW
 import de.jpaw.util.ExceptionUtil
 import java.util.UUID
-import org.junit.Assert
-import org.junit.BeforeClass
-import org.junit.Test
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 
 import static extension com.arvatosystems.t9t.auth.extensions.AuthExtensions.*
 import de.jpaw.annotations.AddLogger
@@ -46,7 +46,7 @@ class UpdateUserOtherTenant {
     static private final String TEST_EMAIL = "test@nowhere.com"
     static private UUID otherTenantUUID;
 
-    @BeforeClass
+    @BeforeAll
     def public static void createConnection() {
         try {
             // use a single connection for all tests (faster)
@@ -67,7 +67,7 @@ class UpdateUserOtherTenant {
                 equalsValue  = TEST_USER_ID
             ]
         ], ReadAllResponse).dataList
-        Assert.assertEquals(1, users.size)
+        Assertions.assertEquals(1, users.size)
 
         val myUser = users.get(0) as DataWithTrackingW<UserDTO, FullTrackingWithVersion>
         LOGGER.info("TenantRef is {}", myUser.tenantRef)

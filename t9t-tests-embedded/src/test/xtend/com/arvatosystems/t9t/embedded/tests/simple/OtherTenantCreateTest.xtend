@@ -25,18 +25,18 @@ import com.arvatosystems.t9t.io.DataSinkDTO
 import com.arvatosystems.t9t.io.request.DataSinkSearchRequest
 import de.jpaw.bonaparte.pojos.api.media.MediaType
 import java.util.UUID
-import org.junit.BeforeClass
-import org.junit.Test
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 
 import static extension com.arvatosystems.t9t.misc.extensions.MiscExtensionsCreate.*
-import org.junit.Assert
+import org.junit.jupiter.api.Assertions
 import de.jpaw.bonaparte.pojos.api.AsciiFilter
 
 class OtherTenantCreateTest {
 
     static private ITestConnection dlg
 
-    @BeforeClass
+    @BeforeAll
     def public static void createConnection() {
         // use a single connection for all tests (faster)
         dlg = new InMemoryConnection
@@ -72,6 +72,6 @@ class OtherTenantCreateTest {
         equalsValue  = myDataSinkId
         ]
         ] ), ReadAllResponse)
-        Assert.assertEquals(2, dataSinks.dataList.size)
+        Assertions.assertEquals(2, dataSinks.dataList.size)
     }
 }

@@ -27,8 +27,8 @@ import de.jpaw.bonaparte.pojos.api.OperationType
 import de.jpaw.util.ApplicationException
 import de.jpaw.util.ExceptionUtil
 import java.util.UUID
-import org.junit.BeforeClass
-import org.junit.Test
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 
 import static extension com.arvatosystems.t9t.auth.extensions.AuthExtensions.*
 import static extension com.arvatosystems.t9t.doc.extensions.DocExtensions.*
@@ -39,7 +39,7 @@ class PasswordOtherTenantTest {
     static private final String TEST_USER_ID = "userOT"
     static private final String TEST_EMAIL = "test@nowhere.com"
 
-    @BeforeClass
+    @BeforeAll
     def public static void createConnection() {
         try {
             // use a single connection for all tests (faster)

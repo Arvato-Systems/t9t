@@ -20,7 +20,7 @@ import com.arvatosystems.t9t.base.search.GenericTextSearchResponse
 import com.arvatosystems.t9t.embedded.connect.Connection
 import de.jpaw.bonaparte.pojos.api.UnicodeFilter
 import java.util.UUID
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class ITSolr {
     private static final UUID MOON_UUID = UUID.fromString("f3b8d497-529c-487f-b788-21b80c622d12")

@@ -67,5 +67,11 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
         </dependency>
+         <!-- JUnit Test -->
+        <dependency>
+           <groupId>org.junit.jupiter</groupId>
+           <artifactId>junit-jupiter-api</artifactId>
+           <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

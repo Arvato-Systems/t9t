@@ -27,7 +27,7 @@ import com.arvatosystems.t9t.base.request.SimpleBenchmarkResponse
 import com.arvatosystems.t9t.remote.connect.Connection
 import de.jpaw.bonaparte.pojos.api.OperationType
 import java.util.UUID
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class ITUpdateBenchmark {
     val WARMUP_COUNT = 1000

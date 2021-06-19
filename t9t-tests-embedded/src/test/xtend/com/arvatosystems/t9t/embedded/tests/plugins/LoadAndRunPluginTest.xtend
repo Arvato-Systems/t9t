@@ -26,8 +26,8 @@ import de.jpaw.annotations.AddLogger
 import de.jpaw.bonaparte.api.media.MediaDataUtil
 import de.jpaw.bonaparte.pojos.api.OperationType
 import org.joda.time.Instant
-import org.junit.BeforeClass
-import org.junit.Test
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 import com.arvatosystems.t9t.plugins.request.UnloadPluginRequest
 
 @AddLogger
@@ -35,7 +35,7 @@ class LoadAndRunPluginTest {
 
     static ITestConnection dlg
 
-    @BeforeClass
+    @BeforeAll
     def static void createConnection() {
         dlg = new InMemoryConnection
     }

@@ -23,14 +23,16 @@ import com.arvatosystems.t9t.doc.be.impl.DocFormatter
 import com.arvatosystems.t9t.doc.services.IDocModuleCfgDtoResolver
 import com.arvatosystems.t9t.doc.services.IDocPersistenceAccess
 import com.google.common.collect.ImmutableMap
+import de.jpaw.annotations.AddLogger
 import de.jpaw.bonaparte.api.media.MediaTypes
 import de.jpaw.bonaparte.pojos.api.media.MediaData
 import de.jpaw.dp.Jdp
-import org.junit.Assert
-import org.junit.Before
-import org.junit.BeforeClass
-import org.junit.Test
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
+@AddLogger
 class FormatDocumentTest {
 
     // mock the persistence access
@@ -75,14 +77,14 @@ class FormatDocumentTest {
         }
     }
 
-    @BeforeClass
+    @BeforeAll
     def public static void setup() {
         Jdp.reset
         Jdp.bindInstanceTo(new MockedDocModuleCfgDtoResolver, IDocModuleCfgDtoResolver)
         Jdp.bindInstanceTo(new MockedPersistenceAccess, IDocPersistenceAccess)
     }
 
-    @Before
+    @BeforeEach
     def public void clearCache() {
         // because we feed different data into the formatter with the same key, the cache must be invalidated before every test
         DocFormatter.clearCache
@@ -103,8 +105,8 @@ class FormatDocumentTest {
             sie haben in der Verlosung 422,78 € (EUR) gewonnen.
             Mit freundlichen Grüßen
         '''
-        println(actual.text)
-        Assert.assertEquals(expected, actual.text)
+        LOGGER.info("Generated text is {}", actual.text)
+        Assertions.assertEquals(expected, actual.text)
     }
 
     @Test
@@ -122,7 +124,7 @@ class FormatDocumentTest {
             you've won 422.78 £ (GBP)!
             Best regards
         '''
-        println(actual.text)
-        Assert.assertEquals(expected, actual.text)
+        LOGGER.info("Generated text is {}", actual.text)
+        Assertions.assertEquals(expected, actual.text)
     }
 }

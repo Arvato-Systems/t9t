@@ -19,7 +19,7 @@ import com.arvatosystems.t9t.base.request.PingRequest
 import com.arvatosystems.t9t.io.request.FlushPendingAsyncRequest
 import com.arvatosystems.t9t.io.request.PerformAsyncRequest
 import com.arvatosystems.t9t.remote.connect.Connection
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import de.jpaw.bonaparte.util.ToStringHelper
 
 class ITPerformAsync {

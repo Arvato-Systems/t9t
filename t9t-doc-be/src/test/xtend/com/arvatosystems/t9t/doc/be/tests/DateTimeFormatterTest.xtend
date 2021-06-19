@@ -30,19 +30,21 @@ import org.joda.time.LocalDate
 import org.joda.time.LocalDateTime
 import org.joda.time.LocalTime
 import org.joda.time.format.DateTimeFormat
-import org.junit.Assert
-import org.junit.Before
-import org.junit.BeforeClass
-import org.junit.Test
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
+import de.jpaw.annotations.AddLogger
 
 /** Note: Java 10 and Java 8 differ in day and timestamp formatting (space vs - for GB, and additional commas separating day and time for timestamp. **/
+@AddLogger
 class DateTimeFormatterTest {
 
     static char hy = ' '          // hyphen or space to separate date fields in GB ('-' for 1.8, space for 9 and 10
     static String comma = ",";    // separates time and date (empty for 1.8, comma for 9 and 10)
 
     def void print(String language, String country) {
-        println('''Date / time format for «language», «country»''')
+        LOGGER.info("Date / time format for {}, {}", language, country)
         val now = new LocalDateTime()
         val time = new LocalTime
         val date = new LocalDate
@@ -56,9 +58,8 @@ class DateTimeFormatterTest {
             val nowS  = DateTimeFormat.forStyle('''«it»«it»''').withLocale(locale).print(now);
             val dayS  = DateTimeFormat.forStyle('''«it»-''').withLocale(locale).print(date);
             val timeS = DateTimeFormat.forStyle('''-«it»''').withLocale(locale).print(time);
-            println('''For modifier «it», the date is «dayS», the time «timeS», and full «nowS»''')
+            LOGGER.info("For modifier {}, the date is {}, the time {}, and full {}", it, dayS, timeS, nowS)
         ]
-        println
     }
 
 
@@ -114,7 +115,7 @@ class DateTimeFormatterTest {
         }
     }
 
-    @BeforeClass
+    @BeforeAll
     def static void setup() {
         Jdp.reset
         Jdp.bindInstanceTo(new MockedDocModuleCfgDtoResolver, IDocModuleCfgDtoResolver)
@@ -122,14 +123,14 @@ class DateTimeFormatterTest {
 
         // set Java 8 / later differences
         val version = System.getProperty("java.version")
-        println('''Java version is «version»''')
+        LOGGER.info("Java version is {}", version)
         if (version.startsWith("1.8")) {
             comma = ""
             hy = "-"
         }
     }
 
-    @Before
+    @BeforeEach
     def void clearCache() {
         // because we feed different data into the formatter with the same key, the cache must be invalidated before every test
         DocFormatter.clearCache
@@ -157,8 +158,8 @@ class DateTimeFormatterTest {
             Jahr:       2016,
             Wochentag:  Montag August,
         '''
-        println(actual.text)
-        Assert.assertEquals(expected, actual.text)
+        LOGGER.info("Generated text is {}", actual.text)
+        Assertions.assertEquals(expected, actual.text)
     }
 
     @Test
@@ -177,8 +178,8 @@ class DateTimeFormatterTest {
             Jahr:       2016,
             Wochentag:  Montag August,
         '''
-        println(actual.text)
-        Assert.assertEquals(expected, actual.text)
+        LOGGER.info("Generated text is {}", actual.text)
+        Assertions.assertEquals(expected, actual.text)
     }
 
     @Test
@@ -197,8 +198,8 @@ class DateTimeFormatterTest {
             Custom:     2016,
             DoW, month: Monday August,
         '''
-        println(actual.text)
-        Assert.assertEquals(expected, actual.text)
+        LOGGER.info("Generated text is {}", actual.text)
+        Assertions.assertEquals(expected, actual.text)
     }
 
     @Test
@@ -217,7 +218,7 @@ class DateTimeFormatterTest {
             Custom:     2016,
             DoW, month: Monday August,
         '''
-        println(actual.text)
-        Assert.assertEquals(expected, actual.text)
+        LOGGER.info("Generated text is {}", actual.text)
+        Assertions.assertEquals(expected, actual.text)
     }
 }

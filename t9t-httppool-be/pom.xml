@@ -37,11 +37,11 @@
             <artifactId>t9t-base-api</artifactId>
         </dependency>
 
-        <!-- test scope dependencies -->
+        <!-- JUnit Test -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
+           <groupId>org.junit.jupiter</groupId>
+           <artifactId>junit-jupiter-api</artifactId>
+           <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

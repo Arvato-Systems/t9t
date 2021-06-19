@@ -44,7 +44,7 @@ class OutputResourceNull implements IOutputResource {
         return NULL_STREAM
     }
 
-    override open(DataSinkDTO config, OutputSessionParameters params, Long sinkRef, String targetName, MediaTypeDescriptor mediaType, Charset encoding) {}
+    override void open(DataSinkDTO config, OutputSessionParameters params, Long sinkRef, String targetName, MediaTypeDescriptor mediaType, Charset encoding) {}
 
     override write(String partitionKey, String recordKey, byte[] buffer, int offset, int len, boolean isDataRecord) {}
 

@@ -26,8 +26,8 @@ import com.arvatosystems.t9t.io.DataSinkDTO
 import de.jpaw.annotations.AddLogger
 import de.jpaw.bonaparte.pojos.api.media.MediaType
 import de.jpaw.bonaparte.pojos.api.media.MediaXType
-import org.junit.BeforeClass
-import org.junit.Test
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 
 import static extension com.arvatosystems.t9t.misc.extensions.MiscExtensions.*
 
@@ -35,7 +35,7 @@ import static extension com.arvatosystems.t9t.misc.extensions.MiscExtensions.*
 class ExportUsersTest {
     static ITestConnection dlg
 
-    @BeforeClass
+    @BeforeAll
     def static void createConnection() {
         // use a single connection for all tests (faster)
         dlg = new InMemoryConnection

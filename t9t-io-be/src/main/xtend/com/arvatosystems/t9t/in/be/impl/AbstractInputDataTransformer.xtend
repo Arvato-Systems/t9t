@@ -28,7 +28,7 @@ abstract class AbstractInputDataTransformer<T extends BonaPortable> implements I
     protected DataSinkDTO   cfg;
     protected BonaPortableClass<?> baseBClass
 
-    override open(IInputSession inputSession, DataSinkDTO sinkCfg, IStatefulServiceSession session, Map<String, Object> params, BonaPortableClass<?> baseBClass) {
+    override void open(IInputSession inputSession, DataSinkDTO sinkCfg, IStatefulServiceSession session, Map<String, Object> params, BonaPortableClass<?> baseBClass) {
         this.inputSession    = inputSession
         this.cfg             = sinkCfg
         this.baseBClass      = baseBClass

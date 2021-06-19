@@ -20,12 +20,12 @@ import com.arvatosystems.t9t.barcode.be.impl.BarcodeCode128Generator
 import com.arvatosystems.t9t.doc.services.ImageParameter
 import com.google.common.io.Files
 import java.io.File
-import org.junit.Ignore
-import org.junit.Test
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
 
 class BarcodeRotationTest {
 
-    @Ignore
+    @Disabled
     @Test
     def public void testBarcodeNormal() {
         val generator = new BarcodeCode128Generator
@@ -35,7 +35,7 @@ class BarcodeRotationTest {
         sink.write(barcode.rawData.bytes);
     }
 
-    @Ignore
+    @Disabled
     @Test
     def public void testBarcodeRotation() {
         val generator = new BarcodeCode128Generator
@@ -45,7 +45,7 @@ class BarcodeRotationTest {
         sink.write(barcode.rawData.bytes);
     }
 
-    @Ignore
+    @Disabled
     @Test
     def public void testBarcodeRotationAndMirrored() {
         val generator = new BarcodeCode128Generator
@@ -55,7 +55,7 @@ class BarcodeRotationTest {
         sink.write(barcode.rawData.bytes);
     }
 
-    @Ignore
+    @Disabled
     @Test
     def public void testBarcodeHorizontalFlip() {
         val generator = new BarcodeCode128Generator

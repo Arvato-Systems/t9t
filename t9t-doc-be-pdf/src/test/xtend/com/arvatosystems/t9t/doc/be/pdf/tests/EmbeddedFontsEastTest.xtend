@@ -18,7 +18,7 @@ package com.arvatosystems.t9t.doc.be.pdf.tests
 import com.lowagie.text.pdf.BaseFont
 import java.io.File
 import java.io.FileOutputStream
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import org.xhtmlrenderer.pdf.ITextRenderer
 
 class EmbeddedFontsEastTest {

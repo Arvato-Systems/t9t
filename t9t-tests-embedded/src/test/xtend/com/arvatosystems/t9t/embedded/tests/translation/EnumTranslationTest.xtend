@@ -22,15 +22,15 @@ import com.arvatosystems.t9t.translation.request.GetEnumsTranslationRequest
 import com.arvatosystems.t9t.translation.request.GetEnumsTranslationResponse
 import de.jpaw.annotations.AddLogger
 import de.jpaw.bonaparte.util.ToStringHelper
-import org.junit.Assert
-import org.junit.BeforeClass
-import org.junit.Test
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 
 @AddLogger
 class EnumTranslationTest {
     static private ITestConnection dlg
 
-    @BeforeClass
+    @BeforeAll
     def public static void createConnection() {
         // use a single connection for all tests (faster)
         dlg = new InMemoryConnection
@@ -43,7 +43,7 @@ class EnumTranslationTest {
             useFallback         = doUseFallback
         ]
         val res = dlg.typeIO(rq, GetEnumsTranslationResponse).translations.get(0)
-        Assert.assertEquals(res.enumPQON, pqon)
+        Assertions.assertEquals(res.enumPQON, pqon)
         LOGGER.info(ToStringHelper.toStringML(res.instances))
     }
     def void testEnumTranslation(String pqon, String language, boolean doUseFallback, int expectedError) {

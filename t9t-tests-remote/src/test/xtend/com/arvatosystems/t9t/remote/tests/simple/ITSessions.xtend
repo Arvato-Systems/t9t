@@ -20,7 +20,7 @@ import com.arvatosystems.t9t.base.search.ReadAllResponse
 import com.arvatosystems.t9t.remote.connect.Connection
 import de.jpaw.bonaparte.pojos.api.SortColumn
 import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class ITSessions {
     @Test

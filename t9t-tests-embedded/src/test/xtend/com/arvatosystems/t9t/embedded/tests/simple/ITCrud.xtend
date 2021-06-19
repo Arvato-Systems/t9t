@@ -21,7 +21,7 @@ import com.arvatosystems.t9t.auth.tests.setup.SetupUserTenantRoleNoDeletePermiss
 import com.arvatosystems.t9t.embedded.connect.Connection
 import de.jpaw.bonaparte.pojos.api.OperationType
 import java.util.UUID
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import com.arvatosystems.t9t.base.T9tException
 
 class ITCrud {

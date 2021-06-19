@@ -20,7 +20,7 @@ import com.arvatosystems.t9t.base.request.ProcessEventRequest
 import com.arvatosystems.t9t.base.request.PublishEventRequest
 import com.arvatosystems.t9t.event.SubscriberConfigDTO
 import com.arvatosystems.t9t.remote.connect.Connection
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 import static extension com.arvatosystems.t9t.misc.extensions.MiscExtensions.*
 

@@ -17,9 +17,9 @@ package com.arvatosystems.t9t.base.be.impl;
 
 import java.util.Set;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.arvatosystems.t9t.base.services.ISearchFilterUtil;
@@ -41,7 +41,7 @@ public class SearchFilterToSpecificSearchFilterTest {
     ISearchFilterUtil searchFilterUtil;
     private ISearchTools searchTools = Mockito.mock(ISearchTools.class);
 
-    @Before
+    @BeforeEach
     public void setup() {
         Jdp.bindInstanceTo(searchTools, ISearchTools.class);
     }
@@ -74,14 +74,14 @@ public class SearchFilterToSpecificSearchFilterTest {
 
         SearchFilter copySearchFilter = searchFilterUtil.selectFiltersBasedOnFieldName(createSearchFilter(), Sets.newHashSet("B", "D"));
 
-        Assert.assertTrue(copySearchFilter instanceof OrFilter);
+        Assertions.assertTrue(copySearchFilter instanceof OrFilter);
         OrFilter orFilter = (OrFilter)copySearchFilter;
-        Assert.assertTrue(orFilter.getFilter1() instanceof FieldFilter);
-        Assert.assertEquals("B", ((FieldFilter)orFilter.getFilter1()).getFieldName());
-        Assert.assertTrue(orFilter.getFilter2() instanceof NotFilter);
+        Assertions.assertTrue(orFilter.getFilter1() instanceof FieldFilter);
+        Assertions.assertEquals("B", ((FieldFilter)orFilter.getFilter1()).getFieldName());
+        Assertions.assertTrue(orFilter.getFilter2() instanceof NotFilter);
         NotFilter notFilter = (NotFilter)orFilter.getFilter2();
-        Assert.assertTrue(notFilter.getFilter() instanceof FieldFilter);
-        Assert.assertEquals("D", ((FieldFilter)notFilter.getFilter()).getFieldName());
+        Assertions.assertTrue(notFilter.getFilter() instanceof FieldFilter);
+        Assertions.assertEquals("D", ((FieldFilter)notFilter.getFilter()).getFieldName());
     }
 
 

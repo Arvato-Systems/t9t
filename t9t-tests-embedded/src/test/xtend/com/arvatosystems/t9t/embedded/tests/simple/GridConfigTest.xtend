@@ -24,14 +24,14 @@ import com.arvatosystems.t9t.embedded.connect.InMemoryConnection
 import com.arvatosystems.t9t.solr.request.SolrModuleCfgSearchRequest
 import com.arvatosystems.t9t.uiprefs.request.GridConfigRequest
 import de.jpaw.bonaparte.util.ToStringHelper
-import org.junit.BeforeClass
-import org.junit.Test
-import org.junit.Assert
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.Assertions
 
 class GridConfigTest {
     static ITestConnection dlg
 
-    @BeforeClass
+    @BeforeAll
     def static void createConnection() {
         // use a single connection for all tests (faster)
         dlg = new InMemoryConnection
@@ -49,7 +49,7 @@ class GridConfigTest {
     def void readEmailModuleConfigTest() {
         val rq = new EmailModuleCfgSearchRequest
         val resp = dlg.typeIO(rq, ReadAllResponse)
-        Assert.assertEquals(0, resp.dataList.size)
+        Assertions.assertEquals(0, resp.dataList.size)
     }
 
     // doc module config search request
@@ -57,7 +57,7 @@ class GridConfigTest {
     def void readDocModuleConfigTest() {
         val rq = new DocModuleCfgSearchRequest
         val resp = dlg.typeIO(rq, ReadAllResponse)
-        Assert.assertEquals(0, resp.dataList.size)
+        Assertions.assertEquals(0, resp.dataList.size)
     }
 
     // auth module config search request
@@ -65,7 +65,7 @@ class GridConfigTest {
     def void readAuthModuleConfigTest() {
         val rq = new AuthModuleCfgSearchRequest
         val resp = dlg.typeIO(rq, ReadAllResponse)
-        Assert.assertEquals(0, resp.dataList.size)
+        Assertions.assertEquals(0, resp.dataList.size)
     }
 
     // SOLR module config search request
@@ -73,7 +73,7 @@ class GridConfigTest {
     def void readSolrModuleConfigTest() {
         val rq = new SolrModuleCfgSearchRequest
         val resp = dlg.typeIO(rq, ReadAllResponse)
-        Assert.assertEquals(0, resp.dataList.size)
+        Assertions.assertEquals(0, resp.dataList.size)
     }
 
     @Test

@@ -26,7 +26,7 @@ import de.jpaw.annotations.AddLogger
 import de.jpaw.bonaparte.pojos.api.OperationType
 import de.jpaw.bonaparte.pojos.api.auth.Permissionset
 import de.jpaw.bonaparte.pojos.api.auth.UserLogLevelType
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 @AddLogger
 class CreateUserTwiceTest {

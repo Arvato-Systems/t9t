@@ -18,21 +18,19 @@ package com.arvatosystems.t9t.client.tests
 import com.arvatosystems.t9t.base.request.PauseRequest
 import com.arvatosystems.t9t.client.TestSession
 import io.vertx.ext.unit.TestContext
-import io.vertx.ext.unit.junit.VertxUnitRunner
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
-@RunWith(VertxUnitRunner)
+// @RunWith(VertxUnitRunner)
 public class TestClientTest extends TestSession {
 
-    @Before
+    @BeforeEach
     override public void setUp(TestContext context) {
         super.setUp(context)
     }
 
-    @After
+    @AfterEach
     override public void tearDown(TestContext context) {
         super.tearDown(context)
     }

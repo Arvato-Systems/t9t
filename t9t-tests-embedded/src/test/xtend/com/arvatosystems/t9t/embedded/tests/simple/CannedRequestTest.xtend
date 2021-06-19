@@ -21,8 +21,8 @@ import com.arvatosystems.t9t.core.CannedRequestDTO
 import com.arvatosystems.t9t.core.CannedRequestKey
 import com.arvatosystems.t9t.core.request.ExecuteCannedRequest
 import com.arvatosystems.t9t.embedded.connect.InMemoryConnection
-import org.junit.BeforeClass
-import org.junit.Test
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 
 import static extension com.arvatosystems.t9t.misc.extensions.MiscExtensions.*
 
@@ -30,7 +30,7 @@ class CannedRequestTest {
 
     static private ITestConnection dlg
 
-    @BeforeClass
+    @BeforeAll
     def public static void createConnection() {
         // use a single connection for all tests (faster)
         dlg = new InMemoryConnection

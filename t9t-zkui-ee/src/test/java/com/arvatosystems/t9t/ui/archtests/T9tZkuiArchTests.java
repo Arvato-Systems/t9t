@@ -15,13 +15,9 @@
  */
 package com.arvatosystems.t9t.ui.archtests;
 
-import org.junit.runner.RunWith;
-
 import com.arvatosystems.t9t.arch.testlib.StandardArchTests;
 import com.tngtech.archunit.junit.AnalyzeClasses;
-import com.tngtech.archunit.junit.ArchUnitRunner;
 
-@RunWith(ArchUnitRunner.class)
 @AnalyzeClasses(packages = "com.arvatosystems.t9t")
 public class T9tZkuiArchTests extends StandardArchTests {
 }

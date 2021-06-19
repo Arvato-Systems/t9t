@@ -31,12 +31,14 @@ import de.jpaw.util.ByteArray
 import java.nio.charset.StandardCharsets
 import java.util.HashMap
 import org.eclipse.xtend.lib.annotations.Data
-import org.junit.Assert
-import org.junit.Before
-import org.junit.BeforeClass
-import org.junit.Test
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 import org.joda.time.LocalDateTime
+import de.jpaw.annotations.AddLogger
 
+@AddLogger
 class FormatHtmlDocTest {
 
     // mock the persistence access
@@ -80,14 +82,14 @@ class FormatHtmlDocTest {
         }
     }
 
-    @BeforeClass
+    @BeforeAll
     def public static void setup() {
         Jdp.reset
         Init.initializeT9t    // required to get the converters
         Jdp.bindInstanceTo(new MockedDocModuleCfgDtoResolver, IDocModuleCfgDtoResolver)
     }
 
-    @Before
+    @BeforeEach
     def public void clearCache() {
         // because we feed different data into the formatter with the same key, the cache must be invalidated before every test
         DocFormatter.clearCache
@@ -123,8 +125,8 @@ class FormatHtmlDocTest {
                 </body>
             </html>
         '''
-        println(actual.text)
-        Assert.assertEquals(expected, actual.text)
+        LOGGER.info("Generated text is {}", actual.text)
+        Assertions.assertEquals(expected, actual.text)
     }
 
     @Test
@@ -161,8 +163,8 @@ class FormatHtmlDocTest {
                 </body>
             </html>
         '''
-        println(actual.text)
-        Assert.assertEquals(expected, actual.text)
+        LOGGER.info("Generated text is {}", actual.text)
+        Assertions.assertEquals(expected, actual.text)
     }
 
     @Test
@@ -200,9 +202,9 @@ class FormatHtmlDocTest {
                 </body>
             </html>
         '''
-        println(actual.text)
-        Assert.assertEquals(1, attachments.size)
-        Assert.assertEquals(expected, actual.text)
+        LOGGER.info("Generated text is {}", actual.text)
+        Assertions.assertEquals(1, attachments.size)
+        Assertions.assertEquals(expected, actual.text)
     }
 
     @Test
@@ -231,7 +233,7 @@ class FormatHtmlDocTest {
                 </body>
             </html>
         '''
-        println(actual.text)
-        Assert.assertEquals(expected, actual.text)
+        LOGGER.info("Generated text is {}", actual.text)
+        Assertions.assertEquals(expected, actual.text)
     }
 }

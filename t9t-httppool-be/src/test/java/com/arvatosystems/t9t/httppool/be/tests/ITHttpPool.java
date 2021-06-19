@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.httppool.be.tests;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.request.PingRequest;

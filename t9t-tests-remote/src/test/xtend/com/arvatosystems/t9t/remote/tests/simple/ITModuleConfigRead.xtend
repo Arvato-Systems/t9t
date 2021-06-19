@@ -23,13 +23,13 @@ import com.arvatosystems.t9t.email.request.EmailModuleCfgSearchRequest
 import com.arvatosystems.t9t.remote.connect.Connection
 import com.arvatosystems.t9t.solr.request.SolrModuleCfgSearchRequest
 import de.jpaw.bonaparte.util.ToStringHelper
-import org.junit.BeforeClass
-import org.junit.Test
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 
 class ITModuleConfigRead {
     static ITestConnection dlg
 
-    @BeforeClass
+    @BeforeAll
     def static void createConnection() {
         // use a single connection for all tests (faster)
         dlg = new Connection
