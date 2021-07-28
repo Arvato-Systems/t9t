@@ -82,6 +82,6 @@ class NullEvent implements IEventImpl {
 class LogEvent implements IEventImpl {
 
     override asyncEvent(String address, MediaData data, MediaTypeDescriptor description) {
-        LOGGER.info("Log event target {} for media type {}", address, data.mediaType.token)
+        LOGGER.debug("Log event target {} for media type {}", address, data.mediaType.token)
     }
 }

@@ -1,5 +1,5 @@
 module com.arvatosystems.t9t.translation.sapi {
 	exports com.arvatosystems.t9t.translation.services;
 
-	requires de.jpaw.bonaparte.core;
+	requires transitive de.jpaw.bonaparte.core;
 }

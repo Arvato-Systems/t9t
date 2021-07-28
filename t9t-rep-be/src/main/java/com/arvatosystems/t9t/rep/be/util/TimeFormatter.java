@@ -29,7 +29,7 @@ import org.joda.time.format.DateTimeFormat;
 public class TimeFormatter {
     public static String formatTimetoStr(LocalDateTime dateTime) {
 
-        return dateTime.toString("yyyy-MM-dd HH:mm:SS");
+        return dateTime.toString("yyyy-MM-dd HH:mm:ss");
 
     }
 

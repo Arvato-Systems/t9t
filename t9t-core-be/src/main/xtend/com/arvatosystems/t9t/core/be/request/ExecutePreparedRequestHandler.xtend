@@ -37,7 +37,7 @@ class ExecutePreparedRequestHandler extends AbstractRequestHandler<ExecutePrepar
 
     override ServiceResponse execute(RequestContext ctx, ExecutePreparedRequest rq) {
         val permissions = authorizator.getPermissions(ctx.internalHeaderParameters.jwtInfo, PermissionType.PREPARED, rq.requestId)
-        LOGGER.debug("Prepared process execution permissions checked for request {}, got {}", rq.ret$PQON, permissions)
+        LOGGER.debug("Prepared process execution permissions checked for request {}:{}, got {}", rq.ret$PQON, rq.requestId, permissions)
         if (!permissions.contains(OperationType.EXECUTE)) {
             return new ServiceResponse => [
                 returnCode          = T9tException.NOT_AUTHORIZED

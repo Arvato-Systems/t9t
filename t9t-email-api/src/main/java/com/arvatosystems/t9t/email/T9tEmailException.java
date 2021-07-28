@@ -26,7 +26,7 @@ public class T9tEmailException extends T9tException {
     /*
      * Offset for all codes in this class.
      */
-    private static final int CORE_OFFSET = 190000;
+    private static final int CORE_OFFSET = 29000;
     private static final int OFFSET = (CL_PARAMETER_ERROR * CLASSIFICATION_FACTOR) + CORE_OFFSET;
 
     public static final int SMTP_IMPLEMENTATION_MISSING      = OFFSET + 966;

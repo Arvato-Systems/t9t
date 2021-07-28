@@ -20,6 +20,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -63,10 +64,23 @@ public class OutputResourceKafka implements IOutputResource {
             throw new T9tException(T9tIOException.MISSING_KAFKA_CONFIGURAION, "No bootstrap servers defined in DataSink nor config.xml");
         }
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        props.put(ProducerConfig.CLIENT_ID_CONFIG, config.getDataSinkId() + ":" + sinkRef.toString());
+//        props.put(ProducerConfig.CLIENT_ID_CONFIG, config.getDataSinkId() + ":" + sinkRef.toString());
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ByteArraySerializer.class.getName());
+        props.put(ProducerConfig.LINGER_MS_CONFIG, 100);
+        props.put(ProducerConfig.RETRIES_CONFIG, 2);
+        props.put(ProducerConfig.BATCH_SIZE_CONFIG, 8000);  // approx 5 orders
         //props.put(ProducerConfig.PARTITIONER_CLASS_CONFIG, CustomPartitioner.class.getName());
+        if (config.getZ() != null) {
+            final Object extraKafkaConfig = config.getZ().get("kafka");
+            if (extraKafkaConfig instanceof Map) {
+                final Map<?,?> extraKafkaConfigMap = (Map<?,?>)extraKafkaConfig;
+                LOGGER.info("Found {} additional Producer configuration properties for kafka in data sink {}", extraKafkaConfigMap.size(), config.getDataSinkId());
+                for (Map.Entry<?, ?> entry: extraKafkaConfigMap.entrySet()) {
+                    props.put(entry.getKey(), entry.getValue());
+                }
+            }
+        }
         return new KafkaProducer<>(props);
     }
 
@@ -82,7 +96,7 @@ public class OutputResourceKafka implements IOutputResource {
         producer = createKafkaProducer(config, sinkRef);
         final List<PartitionInfo> partitions = producer.partitionsFor(topic);
         numberOfPartitions = partitions.size();
-        LOGGER.debug("Topic {} has {} partitions: {}", topic, numberOfPartitions);
+        LOGGER.debug("Topic {} has {} partitions", topic, numberOfPartitions);
     }
 
     @Override
@@ -92,7 +106,7 @@ public class OutputResourceKafka implements IOutputResource {
 
     @Override
     public void write(final String partitionKey, final String recordKey, byte[] buffer, int offset, int len, boolean isDataRecord) {
-        final byte [] data = (offset == 0 && (len < 0 || len == buffer.length)) ? buffer : Arrays.copyOfRange(buffer, offset, offset+len-1);
+        final byte [] data = (offset == 0 && (len < 0 || len == buffer.length)) ? buffer : Arrays.copyOfRange(buffer, offset, offset+len);
         final int partition = (partitionKey.hashCode() & 0x7fffffff) % numberOfPartitions;
         producer.send(new ProducerRecord<String, byte[]>(topic, Integer.valueOf(partition), recordKey, data), (meta, e) -> {
             if (e != null) {

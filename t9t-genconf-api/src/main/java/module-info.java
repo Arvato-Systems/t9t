@@ -6,12 +6,12 @@ module com.arvatosystems.t9t.genconf.api {
 	exports com.arvatosystems.t9t.uiprefs;
 	exports com.arvatosystems.t9t.genconf.request;
 
-	requires com.arvatosystems.t9t.annotations;
-	requires com.arvatosystems.t9t.base.api;
-	requires com.google.common;
-	requires de.jpaw.bonaparte.api;
-	requires de.jpaw.bonaparte.core;
-	requires de.jpaw.jpaw.enums;
-	requires de.jpaw.jpaw.util;
-	requires org.joda.time;
+	requires transitive com.arvatosystems.t9t.annotations;
+	requires transitive com.arvatosystems.t9t.base.api;
+	requires transitive com.google.common;
+	requires transitive de.jpaw.bonaparte.api;
+	requires transitive de.jpaw.bonaparte.core;
+	requires transitive de.jpaw.jpaw.enums;
+	requires transitive de.jpaw.jpaw.util;
+	requires transitive org.joda.time;
 }

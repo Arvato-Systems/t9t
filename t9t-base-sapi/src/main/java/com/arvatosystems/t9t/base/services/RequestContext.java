@@ -183,7 +183,7 @@ public class RequestContext extends AbstractRequestContext {
 
     public void discardPostCommitActions() {
         if (postCommitList != null) {
-            LOGGER.info("Discarding {} stored post commit actions", postCommitList.size());
+            LOGGER.debug("Discarding {} stored post commit actions", postCommitList.size());
             postCommitList.clear();
         }
     }
@@ -192,7 +192,7 @@ public class RequestContext extends AbstractRequestContext {
         // all persistence units have successfully committed...
         // now invoke possible postCommit hooks
         if (postCommitList != null) {
-            LOGGER.info("Performing {} stored post commit actions", postCommitList.size());
+            LOGGER.debug("Performing {} stored post commit actions", postCommitList.size());
             for (IPostCommitHook hook : postCommitList)
                 hook.postCommit(this, rq, rs);
             // avoid duplicate execution...
@@ -203,7 +203,7 @@ public class RequestContext extends AbstractRequestContext {
     public void applyPostFailureActions(RequestParameters rq, ServiceResponse rs) {
         // request returned an error. You can now notify someone...
         if (postFailureList != null) {
-            LOGGER.info("Performing {} stored post failure actions", postFailureList.size());
+            LOGGER.debug("Performing {} stored post failure actions", postFailureList.size());
             for (IPostCommitHook hook : postFailureList)
                 hook.postCommit(this, rq, rs);
             // avoid duplicate execution...

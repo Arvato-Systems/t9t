@@ -871,6 +871,13 @@ body {
   display: none;
 }
 
+/** Firefox specific css **/
+@-moz-document url-prefix() {
+    .no-scrollbar>ul, .no-scrollbar>.z-grid-body, .nav-menupopup {
+        scrollbar-width: none;
+    }
+}
+
 .z-window-header {
     height: 75px;
     background: #133C59;
@@ -1378,4 +1385,8 @@ body {
 /** hack to make the component inside a table enlarge to 100% **/
 .max-width-cell table, .max-width-cell table td > *:not(button) {
     width: 90% !important;
+}
+/** make the text in the disabled component look more obvious **/
+.z-textbox[disabled], .z-decimalbox[disabled], .z-intbox[disabled], .z-longbox[disabled], .z-doublebox[disabled], .z-combobox-input[disabled], .z-datebox-input[disabled], .z-bandbox-input[disabled] {
+    color: #333 !important;
 }

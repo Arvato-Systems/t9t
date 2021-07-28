@@ -172,8 +172,13 @@ class T9tServer extends AbstractVerticle {
                       .allowedHeader(HttpHeaders.AUTHORIZATION.toString())
                     );
                 }
+                get("/ping").handler [
+                    response.statusMessage = "OK"
+                    response.statusCode = 200
+                    response.end
+                ]
                 get("/favicon.ico").handler [
-                    LOGGER.info("favicon requested")
+                    LOGGER.debug("favicon requested")
                     response.sendFile("web/favicon.ico")
                 ]
                 route.handler [           // no matching path or method

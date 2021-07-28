@@ -130,10 +130,10 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
     private SearchCriteria lastSearchRequest;    // combined search request with sorting
 
     private String contextEntries = null;
-
     protected final T9TRemoteUtils remoteUtil = Jdp.getRequired(T9TRemoteUtils.class);
     protected final IT9TMessagingDAO messagingDAO = Jdp.getRequired(IT9TMessagingDAO.class);
     protected IKeyFromDataProvider keyFromDataProvider;
+    protected boolean dynamicColumnSize;
 
 /*
     public void setNumRows(int numRows) {
@@ -145,6 +145,7 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
         super();
         setVflex("1");
         boolean gridLineWrapConfig = ZulUtils.readBooleanConfig(T9TConfigConstants.GRID_LINE_WRAP);
+        dynamicColumnSize      = ZulUtils.readBooleanConfig(T9TConfigConstants.GRID_DYNAMIC_COL_SIZE);
         if (gridLineWrapConfig) {
             setSclass("gridLineWrap");
         }
@@ -181,6 +182,8 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
     public void onCreate() {
         LOGGER.debug("Grid28.onCreate()");
         GridIdTools.enforceGridId(this);
+
+        initializeGrid();
 
         // provide the info tooltip
         String toolTipId = gridId + ".infoTooltip";
@@ -222,11 +225,13 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
         permissions = session.getPermissions(gridId);
         LOGGER.debug("Grid ID {} has permissions {}", gridId, permissions);
         setViewModelId(GridIdTools.getViewModelIdByGridId(gridId));
+    }
 
-        // create the grid config resolver
+    private void initializeGrid() {
+     // create the grid config resolver
         leanGridConfigResolver = new LeanGridConfigResolver(gridId, session);
         defaultListItemRenderer = new ListItemRenderer28<>(crudViewModel.dtoClass, true);
-        defaultListHeadRenderer = new ListHeadRenderer28(defaultListItemRenderer, leanGridConfigResolver, this, lb, permissions, listHeaders, crudViewModel.dtoClass);
+        defaultListHeadRenderer = new ListHeadRenderer28(defaultListItemRenderer, leanGridConfigResolver, this, lb, permissions, listHeaders, crudViewModel.dtoClass, dynamicColumnSize);
         lb.setItemRenderer(defaultListItemRenderer);
         lb.setEmptyMessage(ZulUtils.translate("com","noDataFound"));
 
@@ -253,7 +258,6 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
                initSearch=true;
             }
         });
-
     }
 
 
@@ -608,6 +612,18 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
         postSelectedEvent(dwt);
 
         lb.renderAll();
-
     }
+
+    /**
+     * Override the grid setting to have dynamic column width depends on the content's length.
+     * Enable this will disable the width setting defined in the grid configuration.
+     *
+     * To apply globally, set grid.dynamicColumnSize at the configuration properties file.
+     *
+     * @param dynamicColumnSize
+     */
+    public void setDynamicColumnSize(boolean dynamicColumnSize) {
+        this.dynamicColumnSize = dynamicColumnSize;
+    }
+
 }

@@ -128,6 +128,7 @@
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-bpmn2-jpa</artifactId>
         </dependency>
+        <!--
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-rep-be</artifactId>
@@ -136,6 +137,7 @@
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-rep</artifactId>
         </dependency>
+        -->
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-rep-jpa</artifactId>

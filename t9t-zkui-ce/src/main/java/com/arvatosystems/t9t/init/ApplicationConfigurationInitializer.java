@@ -16,6 +16,7 @@
 package com.arvatosystems.t9t.init;
 
 import java.util.Properties;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,19 +37,23 @@ public class ApplicationConfigurationInitializer {
     public ApplicationConfigurationInitializer() {
         LOGGER.debug("Trying to retrieve passwordReset API KEY");
         forgetPasswordApiKey = getForgetPasswordApiKeyFromFile();
+        if (forgetPasswordApiKey == null) {
+            LOGGER.error("No API-KEY present!");
+        } else {
+            try {
+                UUID.fromString(forgetPasswordApiKey);
+            } catch (final Exception e) {
+                LOGGER.error("Specified ResetPassword-API-KEY is not a valid UUID!");
+            }
+        }
     }
 
     public String getForgetPasswordApiKey() {
         return forgetPasswordApiKey;
     }
 
-    public String getForgetPasswordApiKeyFromFile() {
-        Properties baseProperties = BaseConfigurationProvider.getBaseProperties();
-        if (baseProperties.getProperty("forget.password.api.key") != null) {
-            return (String) baseProperties.getProperty("forget.password.api.key");
-        } else {
-            return null;
-        }
+    private final String getForgetPasswordApiKeyFromFile() {
+        final Properties baseProperties = BaseConfigurationProvider.getBaseProperties();
+        return baseProperties.getProperty("forget.password.api.key");  // this can be null!
     }
-
 }

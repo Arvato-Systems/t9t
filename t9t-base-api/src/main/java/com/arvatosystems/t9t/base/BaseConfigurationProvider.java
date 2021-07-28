@@ -33,18 +33,16 @@ public class BaseConfigurationProvider {
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseConfigurationProvider.class);
 
     public static Properties getBaseProperties() {
-        Properties properties = new Properties();
-        File file = null;
+        final Properties properties = new Properties();
 
         // if propertyFile parameter exists, use this file instead of the one from the project
-        if (System.getProperty("basePropertyFile") != null) {
-            File fileFromVmArgument = new File(System.getProperty("basePropertyFile"));
-            if (fileFromVmArgument.canRead()) {
-                file = fileFromVmArgument;
-            }
+        final String basePropertyFileName = System.getProperty("basePropertyFile");
+        if (basePropertyFileName != null) {
+            final File fileFromVmArgument = new File(basePropertyFileName);
+            final File file = fileFromVmArgument.canRead() ? fileFromVmArgument : null;
 
             if (file == null) {
-                LOGGER.error("Cannot find following base property file: {}", System.getProperty("propertyFile"));
+                LOGGER.error("Cannot find following base property file: {}", basePropertyFileName);
                 throw new T9tException(T9tException.INVALID_CONFIGURATION, "Base configuration file not found");
             } else {
                 LOGGER.info("Use following base property file: {}", file.getAbsolutePath());
@@ -55,20 +53,20 @@ public class BaseConfigurationProvider {
             try {
                 stream = new BufferedInputStream(new FileInputStream(file));
                 properties.load(stream);
-            } catch (FileNotFoundException e1) {
+            } catch (final FileNotFoundException e1) {
                 LOGGER.error("Cannot find following base property file: {}", file.getAbsolutePath());
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 LOGGER.error("Cannot load following base property file: {}", file.getAbsolutePath());
             } finally {
                  try {
                     stream.close();
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     LOGGER.error("Cannot close stream to following base property file: {}", file.getAbsolutePath());
                 }
             }
 
         } else {
-            LOGGER.info("No VM argument for base property file (including resetPassword API Key) given!");
+            LOGGER.info("No VM argument for base property file name (-DbasePropertyFileName=...) (including resetPassword API Key) given!");
         }
 
         return properties;

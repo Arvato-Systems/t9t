@@ -32,7 +32,10 @@ import org.junit.jupiter.api.Test
 
 import static extension com.arvatosystems.t9t.auth.extensions.AuthExtensions.*
 import static extension com.arvatosystems.t9t.doc.extensions.DocExtensions.*
+import com.arvatosystems.t9t.base.T9tException
+import de.jpaw.annotations.AddLogger
 
+@AddLogger
 class PasswordOtherTenantTest {
     static private ITestConnection dlg
 
@@ -89,8 +92,24 @@ class PasswordOtherTenantTest {
             new InMemoryConnection(TEST_USER_ID, "secret12344")
             throw new RuntimeException("exception expected")
         } catch (ApplicationException e) {
-            if (e.errorCode != 100020040)
+            if (e.errorCode != T9tException.T9T_ACCESS_DENIED) {
+                LOGGER.error("Expected exception {}, but got {}", T9tException.T9T_ACCESS_DENIED, e.errorCode)
                 throw e
+            }
+            // else OK, expected this exception
+        }
+    }
+
+    @Test
+    def public void loginViaBadUserTest() {
+        try {
+            new InMemoryConnection("NoRealUser", "secret12344")
+            throw new RuntimeException("exception expected")
+        } catch (ApplicationException e) {
+            if (e.errorCode != T9tException.USER_NOT_FOUND) {
+                LOGGER.error("Expected exception {}, but got {}", T9tException.USER_NOT_FOUND, e.errorCode)  // TODO: check if this should be replaced by a generic error code
+                throw e
+            }
             // else OK, expected this exception
         }
     }

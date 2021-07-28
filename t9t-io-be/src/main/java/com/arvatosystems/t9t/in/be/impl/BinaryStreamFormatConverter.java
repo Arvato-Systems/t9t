@@ -46,5 +46,4 @@ public class BinaryStreamFormatConverter extends AbstractInputFormatConverter {
             throw new RuntimeException("Error reading binary input data", e);
         }
     }
-
 }

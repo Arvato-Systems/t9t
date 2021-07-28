@@ -17,28 +17,24 @@ package com.arvatosystems.t9t.out.be.impl.formatgenerator;
 
 import java.io.IOException;
 
+import com.arvatosystems.t9t.out.be.IThreadSafeFormatGenerator;
+
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.CompactByteArrayComposer;
-import de.jpaw.bonaparte.core.MessageComposer;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Named;
 import de.jpaw.util.ApplicationException;
 
 @Dependent
 @Named("COMPACT_BONAPARTE")
-public class FormatGeneratorCompactBonaparte extends FoldableFormatGenerator<IOException> {
-
-    protected final CompactByteArrayComposer cbac = new CompactByteArrayComposer();
-
-    @Override
-    protected MessageComposer<IOException> getMessageComposer() {
-        return cbac;
-    }
+public class FormatGeneratorCompactBonaparte extends AbstractFormatGenerator implements IThreadSafeFormatGenerator {
 
     @Override
     public void generateData(int recordNo, int mappedRecordNo, long recordId, String partitionKey, String recordKey, BonaPortable record) throws IOException, ApplicationException {
+        final CompactByteArrayComposer cbac = new CompactByteArrayComposer(false);
         cbac.reset();
-        foldingComposer.writeRecord(record);
+        cbac.writeRecord(record);
         outputResource.write(partitionKey, recordKey, cbac.getBuffer(), 0, cbac.getLength(), true);
+        cbac.close();
     }
 }

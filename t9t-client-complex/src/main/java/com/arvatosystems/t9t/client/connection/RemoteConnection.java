@@ -42,6 +42,7 @@ public class RemoteConnection extends AbstractRemoteConnection {
     protected final AbstractConfigurationProvider configurationProvider = Jdp.getRequired(AbstractConfigurationProvider.class);
     // protected final IMarshaller marshaller = new RecordMarshallerBonaparte();
     protected final IMarshaller marshaller = new RecordMarshallerCompactBonaparteIdentity();  // preserve objects within Json fields!
+    protected final String basePath = "http://" + configurationProvider.getRemoteHost() + ":" + configurationProvider.getRemotePort();
 
 //    protected final IConnection connection = Jdp.getRequired(IConnection.class);
 //    protected final IConnection connection;
@@ -54,19 +55,19 @@ public class RemoteConnection extends AbstractRemoteConnection {
 //                16,
 //                marshaller);
 //    }
-    protected String makeUrl(String path) {
-        return "http://" + configurationProvider.getRemoteHost() + ":" + configurationProvider.getRemotePort() + path;
+    protected String makeUrl(final String path) {
+        return basePath + path;
     }
 
     @Override
-    public ServiceResponse execute(String authenticationHeader, RequestParameters rp) {
-        String url = makeUrl(configurationProvider.getRemotePathRequests());
-        HttpPostClient dlg = new HttpPostClient(url, false, true, false, false, marshaller);
+    public ServiceResponse execute(final String authenticationHeader, final RequestParameters rp) {
+        final String url = makeUrl(configurationProvider.getRemotePathRequests());
+        final HttpPostClient dlg = new HttpPostClient(url, false, true, false, false, marshaller);
         dlg.setAuthentication(authenticationHeader);
         return execSub(dlg, rp);
     }
 
-    protected ServiceResponse execSub(HttpPostClient dlg, RequestParameters rp) {
+    protected ServiceResponse execSub(final HttpPostClient dlg, final RequestParameters rp) {
         try {
             LOGGER.info("Sending request of type {}", rp.ret$PQON());
             final HttpPostResponseObject resp = dlg.doIO2(rp);
@@ -78,14 +79,22 @@ public class RemoteConnection extends AbstractRemoteConnection {
             }
             final BonaPortable response = resp.getResponseObject();
             if (response == null) {
-                LOGGER.info("Response object is null for http code {}, status {}", resp.getHttpReturnCode(), resp.getHttpStatusMessage());
-                return MessagingUtil.createServiceResponse(
-                        T9tException.BAD_REMOTE_RESPONSE,
-                        Integer.toString(resp.getHttpReturnCode()),
-                        null, null);
+                if (rp instanceof AuthenticationRequest) {
+                    LOGGER.info("Response object is null for AUTHENTICATION: http code {}, status {}", resp.getHttpReturnCode(), resp.getHttpStatusMessage());
+                    return MessagingUtil.createServiceResponse(
+                            T9tException.GENERAL_AUTH_PROBLEM,
+                            AuthenticationResponse.class.getCanonicalName(),
+                            null, null);
+                } else {
+                    LOGGER.info("Response object is null for GENERAL request: http code {}, status {}", resp.getHttpReturnCode(), resp.getHttpStatusMessage());
+                    return MessagingUtil.createServiceResponse(
+                            T9tException.BAD_REMOTE_RESPONSE,
+                            Integer.toString(resp.getHttpReturnCode()),
+                            null, null);
+                }
             }
             if (response instanceof ServiceResponse) {
-                ServiceResponse r = (ServiceResponse)response;
+                final ServiceResponse r = (ServiceResponse)response;
                 LOGGER.info("Received response type {} with return code {}", r.ret$PQON(), r.getReturnCode());
                 if (r.getReturnCode() != 0) {
                     LOGGER.info("Error details are {}, message is {}", r.getErrorDetails(), r.getErrorMessage());
@@ -93,29 +102,23 @@ public class RemoteConnection extends AbstractRemoteConnection {
                 return r;
             }
 
-            if (rp instanceof AuthenticationRequest && response == null) {
-                return MessagingUtil.createServiceResponse(
-                        T9tException.GENERAL_AUTH_PROBLEM,
-                        AuthenticationResponse.class.getCanonicalName(),
-                        null, null);
-            }
 
             LOGGER.error("Response is of wrong type: {}", response.getClass().getCanonicalName());
             return MessagingUtil.createServiceResponse(
                     T9tException.GENERAL_EXCEPTION,
                     response.getClass().getCanonicalName(),
                     null, null);
-        } catch (Exception e) {
-            String causeChain = ExceptionUtil.causeChain(e);
+        } catch (final Exception e) {
+            final String causeChain = ExceptionUtil.causeChain(e);
             LOGGER.error("I/O error for PQON {}: {}", rp.ret$PQON(), causeChain);
             return MessagingUtil.createServiceResponse(T9tException.GENERAL_EXCEPTION, causeChain, null, null);
         }
     }
 
     @Override
-    public ServiceResponse executeAuthenticationRequest(AuthenticationRequest rp) {
-        String url = makeUrl(configurationProvider.getRemotePathAuthentication());
-        HttpPostClient dlg = new HttpPostClient(url, false, true, false, false, marshaller);
+    public ServiceResponse executeAuthenticationRequest(final AuthenticationRequest rp) {
+        final String url = makeUrl(configurationProvider.getRemotePathAuthentication());
+        final HttpPostClient dlg = new HttpPostClient(url, false, true, false, false, marshaller);
         return execSub(dlg, rp);
     }
 }

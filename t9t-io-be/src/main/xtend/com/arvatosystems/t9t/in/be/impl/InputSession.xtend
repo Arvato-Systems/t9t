@@ -176,6 +176,15 @@ class InputSession implements IInputSession {
         }
     }
 
+    override void process(byte[] data) {
+        try {
+            inputFormatConverter.process(data)
+        } catch (Exception e) {
+            sinkDTO.camelTransferStatus = ExportStatusEnum.PROCESSING_ERROR
+            throw e
+        }
+    }
+
     // log according to configured severity and return an error request
     // this is called if an exception occurs during construction of either the DTO or the request
     def protected conditionalLog(String where, int recordNo, Exception e) {

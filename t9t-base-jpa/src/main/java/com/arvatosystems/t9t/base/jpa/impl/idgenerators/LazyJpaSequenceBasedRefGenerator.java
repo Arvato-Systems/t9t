@@ -66,7 +66,7 @@ public class LazyJpaSequenceBasedRefGenerator implements IRefGenerator {
         final int cacheSizeUnscaled;
 
         if (keyConfig != null) {
-            scaledOffsetForLocation = (long) keyConfig.getLocationOffset() * LazyJpaSequenceBasedRefGenerator.OFFSET_BACKUP_LOCATION;
+            scaledOffsetForLocation = (long) keyConfig.getLocationOffset() * OFFSET_BACKUP_LOCATION;
             cacheSize = keyConfig.getCacheSize() == null ? DEFAULT_CACHE_SIZE : keyConfig.getCacheSize().intValue();
             cacheSizeUnscaled = keyConfig.getCacheSizeUnscaled() == null ? DEFAULT_CACHE_SIZE_UNSCALED : keyConfig.getCacheSizeUnscaled().intValue();
         } else {
@@ -89,7 +89,7 @@ public class LazyJpaSequenceBasedRefGenerator implements IRefGenerator {
         if ((rttiOffset < 0) || (rttiOffset >= OFFSET_BACKUP_LOCATION)) {
             throw new InvalidParameterException("Bad rtti offset: " + rttiOffset);
         }
-        return (generatorTab[rttiOffset % NUM_SEQUENCES].getnextId() * LazyJpaSequenceBasedRefGenerator.KEY_FACTOR) + scaledOffsetForLocation + rttiOffset;
+        return (generatorTab[rttiOffset % NUM_SEQUENCES].getnextId() * KEY_FACTOR) + scaledOffsetForLocation + rttiOffset;
     }
 
     @Override

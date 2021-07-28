@@ -39,6 +39,10 @@
         </dependency>
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-jdp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-base-vertx</artifactId>
         </dependency>
     </dependencies>

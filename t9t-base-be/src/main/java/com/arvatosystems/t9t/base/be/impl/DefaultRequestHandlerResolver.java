@@ -51,7 +51,7 @@ public class DefaultRequestHandlerResolver implements IRequestHandlerResolver {
             // instances of the same handler may be created and subsequently used. Long term, the last stored instance will be used
             // by subsequent calls.
             final List<String> handlerCandidates = getRequestHandlerClassnameCandidates(requestClass);
-            String cause = "No candidate";
+            String cause = "";
             for (final String handlerClassNameCandidate: handlerCandidates) {
                 try {
                     final Class<?> handlerClass = Class.forName(handlerClassNameCandidate);
@@ -62,12 +62,13 @@ public class DefaultRequestHandlerResolver implements IRequestHandlerResolver {
                         return (IRequestHandler<?>) handlerClass.newInstance();
                     }
                 } catch (final Exception e) {
-                    cause = ExceptionUtil.causeChain(e);
-                    LOGGER.error("Required request handler class {} for {} not found, creating an exception handler. [Reason: {}]",
-                            handlerClassNameCandidate, requestClass.getCanonicalName(), cause);
+                    // track causes
+                    cause = (cause.length() == 0 ? "" : "; ") + handlerClassNameCandidate + ": " + ExceptionUtil.causeChain(e);
                 }
             }
-            return new NoHandlerPresentRequestHandler(cause);
+            final String finalCause = handlerCandidates.isEmpty() ? "No candicates" : cause;
+            LOGGER.error("Required request handler for {} not found, creating an exception handler. [Reason: {}]", requestClass.getCanonicalName(), finalCause);
+            return new NoHandlerPresentRequestHandler(finalCause);
         });
         return (IRequestHandler<RQ>) instance;
     }

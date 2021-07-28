@@ -1,12 +1,12 @@
 module com.arvatosystems.t9t.vertx.cluster {
 	exports com.arvatosystems.t9t.vertx.cluster;
 
-	requires com.arvatosystems.t9t.jdp;
-	requires com.arvatosystems.t9t.vertx.base;
-	requires com.hazelcast.core;
-	requires de.jpaw.annotations;
-	requires io.vertx.clustermanager.hazelcast;
-	requires io.vertx.core;
-	requires org.eclipse.xtext.xbase.lib;
+	requires transitive com.arvatosystems.t9t.jdp;
+	requires transitive com.arvatosystems.t9t.vertx.base;
+	requires transitive com.hazelcast.core;
+	requires transitive de.jpaw.annotations;
+	requires transitive io.vertx.clustermanager.hazelcast;
+	requires transitive io.vertx.core;
+	requires transitive org.eclipse.xtext.xbase.lib;
 	requires org.slf4j;
 }

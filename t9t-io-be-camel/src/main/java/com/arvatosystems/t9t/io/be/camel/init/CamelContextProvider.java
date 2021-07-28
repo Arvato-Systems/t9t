@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import com.arvatosystems.t9t.annotations.IsLogicallyFinal;
 import com.arvatosystems.t9t.base.services.IAsyncRequestProcessor;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
+import com.arvatosystems.t9t.io.CommunicationTargetChannelType;
 import com.arvatosystems.t9t.io.DataSinkDTO;
 import com.arvatosystems.t9t.io.be.camel.service.CamelDataSinkChangeListener;
 import com.arvatosystems.t9t.io.be.camel.service.CamelService;
@@ -82,7 +83,7 @@ public class CamelContextProvider implements StartupShutdown, Provider<CamelCont
             if (environment == null) {
                 environment = CamelService.DEFAULT_ENVIRONMENT;
             }
-            List<DataSinkDTO> dataSinkDTOList = iOutPersistenceAccess.getDataSinkDTOsForEnvironment(environment);
+            List<DataSinkDTO> dataSinkDTOList = iOutPersistenceAccess.getDataSinkDTOsForEnvironmentAndChannel(environment, CommunicationTargetChannelType.FILE);
             LOGGER.info("Looking for Camel import routes for environment {}: {} routes found", environment, dataSinkDTOList.size());
             for (DataSinkDTO dataSinkDTO : dataSinkDTOList) {
                 if (dataSinkDTO.getIsActive()) {
@@ -102,7 +103,7 @@ public class CamelContextProvider implements StartupShutdown, Provider<CamelCont
             LOGGER.error("CamelContext could not be started... ", e);
         }
         // Register listener to receive data sink changes
-//        asyncProcessor.registerSubscriber(DataSinkChangedEvent.BClass.INSTANCE.getPqon(), Jdp.getRequired(CamelDataSinkChangeListener.class, "IOCamelDataSinkChange"));
+        asyncProcessor.registerSubscriber(DataSinkChangedEvent.BClass.INSTANCE.getPqon(), Jdp.getRequired(CamelDataSinkChangeListener.class, "IOCamelDataSinkChange"));
     }
 
     @Override

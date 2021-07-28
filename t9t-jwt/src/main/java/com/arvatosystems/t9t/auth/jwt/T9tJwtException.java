@@ -24,14 +24,14 @@ public class T9tJwtException extends ApplicationException {
     /*
      * Offset for all codes in this class.
      */
-    private static final int CORE_OFFSET            = 510000;
-    private static final int OFFSET                 = CORE_OFFSET + CLASSIFICATION_FACTOR * CL_INTERNAL_LOGIC_ERROR;
+    private static final int CORE_OFFSET            = 25000;
+    private static final int OFFSET_LOGIC_ERROR     = CORE_OFFSET + CLASSIFICATION_FACTOR * CL_INTERNAL_LOGIC_ERROR;
 
     // decoding issues
-    public static final int NUMBER_SEGMENTS         = OFFSET + 1;
-    public static final int MISSING_SIGNATURE       = OFFSET + 2;
-    public static final int ALGORITHM_NOT_SUPPORTED = OFFSET + 3;
-    public static final int VERIFICATION_FAILED     = OFFSET + 4;
+    public static final int NUMBER_SEGMENTS         = OFFSET_LOGIC_ERROR + 1;
+    public static final int MISSING_SIGNATURE       = OFFSET_LOGIC_ERROR + 2;
+    public static final int ALGORITHM_NOT_SUPPORTED = OFFSET_LOGIC_ERROR + 3;
+    public static final int VERIFICATION_FAILED     = OFFSET_LOGIC_ERROR + 4;
 
     // encoding issues
 

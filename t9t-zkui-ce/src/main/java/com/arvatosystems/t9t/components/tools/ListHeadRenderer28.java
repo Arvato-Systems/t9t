@@ -72,12 +72,13 @@ public class ListHeadRenderer28 {
     private final Permissionset permissions;
     private final BonaPortableClass<?> bclass;
     private List<String> listHeaders;  // extra headers for Lists
+    private boolean dynamicColumnSize;
 
     public ListHeadRenderer28(ListItemRenderer28<?> defaultListItemRenderer,
             ILeanGridConfigResolver gridConfigResolver,
             Grid28 grid, Listbox lb, Permissionset permissions,
             List<String> listHeaders,
-            BonaPortableClass<?> bclass) {
+            BonaPortableClass<?> bclass, boolean dynamicColumnSize) {
         this.defaultListItemRenderer = defaultListItemRenderer;
         this.gridConfigResolver = gridConfigResolver;
         this.grid = grid;
@@ -85,6 +86,7 @@ public class ListHeadRenderer28 {
         this.permissions = permissions;
         this.listHeaders = listHeaders;
         this.bclass = bclass;
+        this.dynamicColumnSize = dynamicColumnSize;
     }
 
     // single caller from AbstractListBox
@@ -169,7 +171,12 @@ public class ListHeadRenderer28 {
         listheader.setVisible(width > 0);
         listheader.setValue(fieldName);
         listheader.setLabel(columnTranslation);
-        listheader.setWidth(String.format("%spx", width)); // setting width does not allow automatic distribution of non used space in list header after upgrade to ZK8
+
+        if (dynamicColumnSize) {
+            listheader.setHflex("min");
+        } else {
+            listheader.setWidth(String.format("%spx", width)); // setting width does not allow automatic distribution of non used space in list header after upgrade to ZK8
+        }
         // this criteria is a bit too pessimistic, but want to be on the safe side initially.
         if (!isDotted && !isIndexed && !isUnsortable && Multiplicity.LIST != columnDescriptor.getMultiplicity())
             listheader.setSort("auto");
@@ -536,5 +543,9 @@ public class ListHeadRenderer28 {
     public void setListHeaders(List<String> listHeaders) {
         this.listHeaders = listHeaders;
         redrawListbox();
+    }
+
+    public void setDynamicColumnSize(boolean dynamicColumnSize) {
+        this.dynamicColumnSize = dynamicColumnSize;
     }
 }

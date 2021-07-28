@@ -17,6 +17,8 @@ package com.arvatosystems.t9t.out.be.impl.formatgenerator;
 
 import java.io.IOException;
 
+import com.arvatosystems.t9t.out.be.IThreadSafeFormatGenerator;
+
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.JsonComposer;
 import de.jpaw.dp.Dependent;
@@ -32,25 +34,29 @@ import de.jpaw.util.ApplicationException;
  */
 @Dependent
 @Named("JSON-Kafka")
-public class FormatGeneratorJsonKafka extends AbstractFormatGenerator {
-    final StringBuilder buff = new StringBuilder(4000);
-    final JsonComposer jsonComposer = new JsonComposer(buff);
+public class FormatGeneratorJsonKafka extends AbstractFormatGenerator implements IThreadSafeFormatGenerator {
+    boolean writePqonInfo = false;
+    boolean writeEnumNames = false;
 
     @Override
     protected void openHook() throws IOException, ApplicationException {
-        jsonComposer.setWritePqonInfo("1".equals(sinkCfg.getGenericParameter1()));
-        if ("1".equals(sinkCfg.getGenericParameter2())) {
-            jsonComposer.setWriteEnumOrdinals(false);
-            jsonComposer.setWriteEnumTokens(false);
-        }
+        writePqonInfo  = "1".equals(sinkCfg.getGenericParameter1());
+        writeEnumNames = "1".equals(sinkCfg.getGenericParameter2());
         super.openHook();
     }
 
     @Override
     public void generateData(int recordNo, int mappedRecordNo, long recordId, String partitionKey, String recordKey, BonaPortable record) throws IOException, ApplicationException {
-        buff.setLength(0);
+        final StringBuilder buff = new StringBuilder(4000);
+        final JsonComposer jsonComposer = new JsonComposer(buff);
+        jsonComposer.setWritePqonInfo(writePqonInfo);
+        if (writeEnumNames) {
+            jsonComposer.setWriteEnumOrdinals(false);
+            jsonComposer.setWriteEnumTokens(false);
+        }
         jsonComposer.writeObject(record);
         outputResource.write(partitionKey, recordKey, buff.toString());
+        jsonComposer.close();
     }
 
     @Override

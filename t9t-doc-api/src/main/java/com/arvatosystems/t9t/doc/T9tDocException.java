@@ -23,7 +23,9 @@ import com.arvatosystems.t9t.base.T9tException;
  */
 public class T9tDocException extends T9tException {
     private static final long serialVersionUID = -8665896096631210L;
-    private static final int OFFSET = (CL_PARAMETER_ERROR * CLASSIFICATION_FACTOR) + 170000;
+
+    private static final int CORE_OFFSET = 34000;
+    private static final int OFFSET = (CL_PARAMETER_ERROR * CLASSIFICATION_FACTOR) + CORE_OFFSET;
 
     // Error codes
     public static final int UNKNOWN_SKU_KEY_IMPLEMENTATION       = OFFSET + 59;

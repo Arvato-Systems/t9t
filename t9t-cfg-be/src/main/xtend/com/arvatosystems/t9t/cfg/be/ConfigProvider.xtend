@@ -123,6 +123,7 @@ class ConfigProvider {
         myConfiguration = new T9tServerConfiguration => [
             persistenceUnitName     = a.persistenceUnitName     ?: b.persistenceUnitName
             databaseConfiguration   = a.databaseConfiguration   ?: b.databaseConfiguration
+            secondaryDatabaseConfig = a.secondaryDatabaseConfig ?: b.secondaryDatabaseConfig
             noSqlConfiguration      = a.noSqlConfiguration      ?: b.noSqlConfiguration
             keyPrefetchConfiguration= a.keyPrefetchConfiguration?: b.keyPrefetchConfiguration
             logWriterConfiguration  = a.logWriterConfiguration  ?: b.logWriterConfiguration
@@ -130,6 +131,7 @@ class ConfigProvider {
             serverConfiguration     = a.serverConfiguration     ?: b.serverConfiguration
             bpm2Configuration       = a.bpm2Configuration       ?: b.bpm2Configuration
             awsConfiguration        = a.awsConfiguration        ?: b.awsConfiguration
+            azureConfiguration      = a.azureConfiguration      ?: b.azureConfiguration
             uplinkConfiguration     = a.uplinkConfiguration     ?: b.uplinkConfiguration
             searchConfiguration     = a.searchConfiguration     ?: b.searchConfiguration
             kafkaConfiguration      = a.kafkaConfiguration      ?: b.kafkaConfiguration

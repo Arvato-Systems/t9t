@@ -64,6 +64,15 @@ package t9t.setups owner app42base prefix p28 {
         grants apprw
     }
 
+    // data with timestamp tracking only
+    category datts {
+        trackinggroup TimestampTracking
+        tablenamepattern "(prefix)_dat_(entity)" dropSuffix "_entity" tablespacepattern "rts42dat0(DI)"
+        requiresPK
+        beanVal
+        grants apprw
+    }
+
     // data write-only (logs for example), therefore very little columns required
     category datwo {
         trackinggroup WriteTracking entityListener WriteTrackingEntityListener

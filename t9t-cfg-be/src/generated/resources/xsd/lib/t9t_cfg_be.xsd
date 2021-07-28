@@ -38,6 +38,7 @@
                         </xs:simpleType>
                     </xs:element>
                     <xs:element name="databaseConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:RelationalDatabaseConfiguration"/>
+                    <xs:element name="secondaryDatabaseConfig" minOccurs="0" nillable="true" type="t9t_cfg_be:RelationalDatabaseConfiguration"/>
                     <xs:element name="noSqlConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:NoSqlDatabaseConfiguration"/>
                     <xs:element name="keyPrefetchConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:KeyPrefetchConfiguration"/>
                     <xs:element name="logWriterConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:LogWriterConfiguration"/>
@@ -45,6 +46,7 @@
                     <xs:element name="serverConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:ServerConfiguration"/>
                     <xs:element name="bpm2Configuration" minOccurs="0" nillable="true" type="t9t_cfg_be:Bpm2Configuration"/>
                     <xs:element name="awsConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:AWSConfiguration"/>
+                    <xs:element name="azureConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:AzureConfiguration"/>
                     <xs:element name="uplinkConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:UplinkConfiguration"/>
                     <xs:element name="searchConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:SearchConfiguration"/>
                     <xs:element name="kafkaConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:KafkaConfiguration"/>
@@ -74,6 +76,7 @@
                     </xs:element>
                     <xs:element name="runInCluster" minOccurs="0" nillable="true" type="xs:boolean"/>
                     <xs:element name="disableScheduler" minOccurs="0" nillable="true" type="xs:boolean"/>
+                    <xs:element name="sessionLogSysout" minOccurs="0" nillable="true" type="xs:boolean"/>
                     <xs:element name="importEnvironment" minOccurs="0" nillable="true">
                         <xs:simpleType>
                             <xs:restriction base="xs:normalizedString">
@@ -180,6 +183,7 @@
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:element>
+                    <xs:element name="readonly" minOccurs="0" nillable="true" type="xs:boolean"/>
                     <xs:element name="migrations" minOccurs="0" maxOccurs="unbounded">
                         <xs:simpleType>
                             <xs:restriction base="xs:normalizedString">
@@ -202,7 +206,8 @@
         <xs:complexContent>
             <xs:extension base="bon:BONAPORTABLE">
                 <xs:sequence>
-                    <xs:element name="hostname">
+                    <xs:element name="strategy" minOccurs="0" nillable="true" type="t9t_cfg_be:namedQualifier"/>
+                    <xs:element name="hostname" minOccurs="0" nillable="true">
                         <xs:simpleType>
                             <xs:restriction base="xs:normalizedString">
                                 <xs:maxLength value="100"/>
@@ -210,14 +215,14 @@
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:element>
-                    <xs:element name="port">
+                    <xs:element name="port" minOccurs="0" nillable="true">
                         <xs:simpleType>
                             <xs:restriction base="xs:unsignedInt">
                                 <xs:maxInclusive value="2147483647"/>
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:element>
-                    <xs:element name="schemaName">
+                    <xs:element name="schemaName" minOccurs="0" nillable="true">
                         <xs:simpleType>
                             <xs:restriction base="xs:normalizedString">
                                 <xs:maxLength value="30"/>
@@ -322,7 +327,14 @@
         <xs:complexContent>
             <xs:extension base="bon:BONAPORTABLE">
                 <xs:sequence>
-                    <xs:element name="snsEndpoint">
+                    <xs:element name="region" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="255"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="snsEndpoint" minOccurs="0" nillable="true">
                         <xs:simpleType>
                             <xs:restriction base="xs:normalizedString">
                                 <xs:maxLength value="255"/>
@@ -330,11 +342,63 @@
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:element>
-                    <xs:element name="sqsEndpoint">
+                    <xs:element name="sqsEndpoint" minOccurs="0" nillable="true">
                         <xs:simpleType>
                             <xs:restriction base="xs:normalizedString">
                                 <xs:maxLength value="255"/>
                                 <xs:pattern value="\p{IsBasicLatin}*"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="dynamoEndpoint" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="255"/>
+                                <xs:pattern value="\p{IsBasicLatin}*"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="dynamoSecret" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="255"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="AzureConfiguration">
+        <xs:complexContent>
+            <xs:extension base="bon:BONAPORTABLE">
+                <xs:sequence>
+                    <xs:element name="region" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="255"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="userAgent" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="64"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="cosmosEndpoint" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="255"/>
+                                <xs:pattern value="\p{IsBasicLatin}*"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="cosmosSecret" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="255"/>
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:element>

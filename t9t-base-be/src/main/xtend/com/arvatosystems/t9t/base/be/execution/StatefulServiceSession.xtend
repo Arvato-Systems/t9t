@@ -29,70 +29,88 @@ import de.jpaw.bonaparte.pojos.api.auth.JwtInfo
 import de.jpaw.dp.Dependent
 import de.jpaw.dp.Inject
 import org.joda.time.Instant
+import java.util.concurrent.atomic.AtomicReference
+import de.jpaw.annotations.AddLogger
 
 /** This class implements a stateful session. It connects to a stateless backend.
  * The class is not multithreading-capable, except for execute requests - a separate client is required per session.
  */
+@AddLogger
 @Dependent
 class StatefulServiceSession implements IStatefulServiceSession {
-    String encodedJwt
-    SessionParameters sessionParameters
-    JwtInfo jwtInfo
+    val AtomicReference<AuthInfo> authInfo = new AtomicReference(null)
 
     @Inject IRequestProcessor processor
     @Inject IAuthenticate authBackend
 
+    def private authenticate(SessionParameters sessionParameters, AuthenticationParameters authenticationParameters) {
+        val r = authBackend.login(new AuthenticationRequest => [
+            it.sessionParameters        = sessionParameters
+            it.authenticationParameters = authenticationParameters
+        ])
+        if (r !== null && r.returnCode == 0) {
+            // success
+            return new AuthInfo(sessionParameters, authenticationParameters, r.jwtInfo, r.encodedJwt)
+        }
+        // failure
+        return null
+    }
+
     override void open(SessionParameters sessionParameters, AuthenticationParameters authenticationParameters) {
-        this.sessionParameters = sessionParameters  // store for future enrichment of logins
-        jwtInfo     = null;
-        encodedJwt  = null;
-        if (authenticationParameters !== null) {
-            // attempt to authenticate
-            val r = authBackend.login(new AuthenticationRequest => [
-                it.sessionParameters        = sessionParameters
-                it.authenticationParameters = authenticationParameters
-            ])
-            if (r !== null && r.returnCode == 0) {
-                // success
-                jwtInfo         = r.jwtInfo
-                encodedJwt      = r.encodedJwt
-            } else {
-                throw new T9tException(T9tException.NOT_AUTHENTICATED)
-            }
+        authenticationParameters.freeze
+        val info = authenticate(sessionParameters, authenticationParameters)
+        authInfo.set(info)
+        if (info === null) {
+            throw new T9tException(T9tException.NOT_AUTHENTICATED)
         }
     }
 
     override boolean isOpen() {
-        return encodedJwt !== null
+        return authInfo.get !== null
     }
 
     override void close() {
-        encodedJwt = null
-        jwtInfo = null
+        authInfo.set(null)
     }
 
     override ServiceResponse execute(RequestParameters rp) {
         // regular request: JWT required!
-        if (!isOpen)
+        val info = authInfo.get()
+        if (info === null)
             throw new T9tException(T9tException.NOT_AUTHENTICATED)
         // OK, authenticated!
-        val resp = processor.execute(null, rp, jwtInfo, encodedJwt, false)
+        val resp = processor.execute(null, rp, info.jwtInfo, info.encodedJwt, false)
         if (resp.returnCode == 0) {
             if (resp instanceof AuthenticationResponse) {
                 // update JWT
-                jwtInfo         = resp.jwtInfo
-                encodedJwt      = resp.encodedJwt
+                if (rp instanceof AuthenticationRequest) {
+                    authInfo.set(new AuthInfo(rp.sessionParameters, rp.authenticationParameters, resp.jwtInfo, resp.encodedJwt))
+                } else {
+                    // keep the old ones
+                    authInfo.set(new AuthInfo(info.sessionParameters, info.authenticationParameters, resp.jwtInfo, resp.encodedJwt))
+                }
+            }
+        } else {
+            // any issue
+            if (resp.returnCode == T9tException.JWT_EXPIRED) {
+                // expired: must do a retry
+                LOGGER.info("JWT expired, performing reauth")
+                val newInfo = authenticate(info.sessionParameters, info.authenticationParameters)
+                if (newInfo === null) {
+                    throw new T9tException(T9tException.NOT_AUTHENTICATED)
+                }
+                authInfo.set(newInfo)
+                return processor.execute(null, rp, newInfo.jwtInfo, newInfo.encodedJwt, false)
             }
         }
         return resp
     }
 
     override Instant authenticatedUntil() {
-        return jwtInfo?.expiresAt
+        return authInfo.get()?.jwtInfo?.expiresAt
     }
 
     override String getTenantId() {
-        return jwtInfo?.tenantId;
+        return authInfo.get()?.jwtInfo?.tenantId;
     }
-
 }

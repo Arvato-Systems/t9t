@@ -106,19 +106,19 @@ public class OutPersistenceAccess implements IOutPersistenceAccess {
     }
 
     @Override
-    public List<DataSinkDTO> getDataSinkDTOsForEnvironment(String environment) {
-        TypedQuery<DataSinkEntity> typedQuery = dataSinkEntityResolver
-                .constructQuery("select i from DataSinkEntity i where i.environment = :environment and i.isInput = true");
-        typedQuery.setParameter("environment", environment);
-        final List<DataSinkEntity> resultList = typedQuery.getResultList();
-        return dataSinkMapper.mapListToDto(resultList);
-    }
-
-    @Override
-    public List<DataSinkDTO> getDataSinkDTOsForChannel(CommunicationTargetChannelType channel) {
-        TypedQuery<DataSinkEntity> typedQuery = dataSinkEntityResolver.constructQuery(
-            "select i from DataSinkEntity i where i.commTargetChannelType = :commTargetChannelType and i.isInput = true and i.isActive = true ORDER BY i.tenantRef");
-        typedQuery.setParameter("commTargetChannelType", channel.getToken());
+    public List<DataSinkDTO> getDataSinkDTOsForEnvironmentAndChannel(String environment, CommunicationTargetChannelType channel) {
+        final String sql = "SELECT i FROM DataSinkEntity i WHERE "
+                + (channel     == null ? "" : "i.commTargetChannelType = :commTargetChannelType AND ")
+                + (environment == null ? "" : "i.environment = :environment AND ")
+                + "i.isInput = true AND i.isActive = true ORDER BY i.tenantRef";
+        LOGGER.info("Querying DataSinks for environment {} and channel {} with <{}>", environment, channel, sql);
+        final TypedQuery<DataSinkEntity> typedQuery = dataSinkEntityResolver.constructQuery(sql);
+        if (channel != null) {
+            typedQuery.setParameter("commTargetChannelType", channel.getToken());
+        }
+        if (environment != null) {
+            typedQuery.setParameter("environment", environment);
+        }
         final List<DataSinkEntity> resultList = typedQuery.getResultList();
         return dataSinkMapper.mapListToDto(resultList);
     }

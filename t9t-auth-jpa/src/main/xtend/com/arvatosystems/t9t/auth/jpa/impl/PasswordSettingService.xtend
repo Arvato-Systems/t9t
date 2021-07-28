@@ -27,6 +27,7 @@ import com.arvatosystems.t9t.base.services.RequestContext
 import de.jpaw.annotations.AddLogger
 import de.jpaw.dp.Inject
 import de.jpaw.dp.Singleton
+import com.arvatosystems.t9t.base.JsonUtil
 
 @AddLogger
 @Singleton
@@ -36,9 +37,9 @@ class PasswordSettingService implements IPasswordSettingService {
     @Inject IPasswordEntityResolver passwordResolver
 
     override setPasswordForUser(RequestContext ctx, UserEntity userEntity, String newPassword) {
-        var int newPasswordNo = 1
-        val authModuleCfg     = moduleConfigResolver.moduleConfiguration
-        val passwordExpirationInDays = authModuleCfg?.passwordExpirationInDays ?: 60  // TODO: use centrally defined default config
+        var int nextPasswordNo = 1
+        val authModuleCfg      = moduleConfigResolver.moduleConfiguration
+        val passwordExpirationInDays = JsonUtil.getZInteger(authModuleCfg.z, "initialPasswordExpiry", authModuleCfg.passwordExpirationInDays ?: 60)
 
         val userStatusEntity = userEntityResolver.entityManager.find(UserStatusEntity, userEntity.objectRef)
         if (userStatusEntity === null) {
@@ -49,8 +50,8 @@ class PasswordSettingService implements IPasswordSettingService {
             ]
             userEntityResolver.entityManager.persist(newUserStatusEntity)
         } else {
-            newPasswordNo = userStatusEntity.currentPasswordSerialNumber + 1;
-            userStatusEntity.currentPasswordSerialNumber = newPasswordNo
+            nextPasswordNo = userStatusEntity.currentPasswordSerialNumber + 1;
+            userStatusEntity.currentPasswordSerialNumber = nextPasswordNo
         }
 
         // finally create and store the new password
@@ -62,7 +63,7 @@ class PasswordSettingService implements IPasswordSettingService {
             passwordExpiry    = ctx.executionStart.plus(T9tConstants.ONE_DAY_IN_MS * passwordExpirationInDays)
             userExpiry        = ctx.executionStart.plus(T9tConstants.ONE_DAY_IN_MS * T9tConstants.DEFAULT_MAXIUM_NUMBER_OF_DAYS_IN_BETWEEN_USER_ACTIVITIES)
         ]
-        newPasswordEntity.passwordSerialNumber = newPasswordNo
+        newPasswordEntity.passwordSerialNumber = nextPasswordNo
         passwordResolver.save(newPasswordEntity)
         LOGGER.info("Password for user {} has been successfully reset", userEntity.userId)
     }

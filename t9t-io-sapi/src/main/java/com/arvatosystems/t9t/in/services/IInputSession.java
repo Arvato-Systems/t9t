@@ -48,9 +48,12 @@ public interface IInputSession {
 
     /** Process stream data. Only possible with a configured commFormat.
      * If used, then the other process methods will be invoked as required.
-     * The stream is not */
+     * The stream is not closed by the method. The result will be forwarded to process(BonaPortable). */
     void process(InputStream is);
 
+    /** Process byte[] data. Only possible with a configured commFormat.
+     * If used, then the other process methods (process(BonaPortable etc) will be invoked as required. */
+    void process(byte[] data);
 
     /** Processes a single record (or preassembled group of records) via backend call in a single transaction.
      * The record will be pushed through a configured transformer, if one exists. */

@@ -70,6 +70,7 @@ class T9tJwtAuthHandlerImpl implements Handler<RoutingContext> {
         }
         val authorizationHeader = ctx.request.headers.get(AUTHORIZATION)
         if (authorizationHeader === null || authorizationHeader.length < 8) {
+            LOGGER.debug("No or too short Authorization http Header")
             ctx.response.statusMessage = "No or too short Authorization http Header"
             ctx.fail(401)
             return
@@ -89,6 +90,7 @@ class T9tJwtAuthHandlerImpl implements Handler<RoutingContext> {
                 }
             } else {
                 // denied! Do not waste time, this may be a DOS attack
+                LOGGER.debug("Repeated attempt for declined header {}", authorizationHeader)
                 ctx.response.statusMessage = "Told ya, hands off!"
                 ctx.fail(403)
                 return
@@ -103,6 +105,7 @@ class T9tJwtAuthHandlerImpl implements Handler<RoutingContext> {
                 ctx.next
                 return
             } else {
+                LOGGER.debug("Invalid JWT detected")
                 ctx.response.statusMessage = "Invalid JWT"
                 ctx.fail(403)
                 return

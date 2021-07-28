@@ -30,6 +30,15 @@
 
     <dependencies>
         <dependency>
+            <groupId>jakarta.activation</groupId>
+            <artifactId>jakarta.activation-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.activation</groupId>
+            <artifactId>jakarta.activation</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-base-jpa</artifactId>
         </dependency>

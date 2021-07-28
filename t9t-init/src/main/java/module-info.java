@@ -1,14 +1,14 @@
 module com.arvatosystems.t9t.init {
 	exports com.arvatosystems.t9t.init;
 
-	requires com.arvatosystems.t9t.base.api;
-	requires com.google.common;
-	requires de.jpaw.bonaparte.api;
-	requires de.jpaw.bonaparte.core;
-	requires de.jpaw.jpaw.enums;
-	requires de.jpaw.jpaw.util;
-	requires de.jpaw.jpaw.xenuminit;
-	requires org.joda.time;
+	requires transitive com.arvatosystems.t9t.base.api;
+	requires transitive com.google.common;
+	requires transitive de.jpaw.bonaparte.api;
+	requires transitive de.jpaw.bonaparte.core;
+	requires transitive de.jpaw.jpaw.enums;
+	requires transitive de.jpaw.jpaw.util;
+	requires transitive de.jpaw.jpaw.xenuminit;
+	requires transitive org.joda.time;
 	requires org.slf4j;
-	requires reflections;
+	requires transitive reflections;
 }

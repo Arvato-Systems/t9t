@@ -274,4 +274,9 @@ public class TwoSections28 extends Vlayout implements IGridIdOwner, IPermissionO
     public void setAutoCollapse(boolean autoCollapse) {
         this.autoCollapse = autoCollapse;
     }
+
+    public void setDynamicColumnSize(boolean dynamicColumnSize) {
+        main.setDynamicColumnSize(dynamicColumnSize);
+    }
+
 }

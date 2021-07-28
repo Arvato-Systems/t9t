@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.in.services;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Map;
 
@@ -27,14 +28,22 @@ import de.jpaw.bonaparte.core.BonaPortableClass;
 @FunctionalInterface
 public interface IInputFormatConverter {
     /** Performs any optional initial output. */
-    default void open(IInputSession inputSession, DataSinkDTO cfg, IStatefulServiceSession session, Map<String, Object> params,
-            BonaPortableClass<?> baseBClass) {
+    default void open(IInputSession inputSession, DataSinkDTO cfg, IStatefulServiceSession session, Map<String, Object> params, BonaPortableClass<?> baseBClass) {
         // no action required in simple cases
     }
 
-    /** Processes a whole stream of data. Should invoke inutSession.setHeaderData() per header field and inputSession.process(BonaPortable)
-     * per data record. */
+    /**
+     * Processes a whole stream of data. Should invoke inutSession.setHeaderData() per header field and inputSession.process(BonaPortable)
+     * per data record.
+     * */
     void process(InputStream is);
+
+    /**
+     * Processes a byte array. Optional. By default, transforms into the stream method. If present, then allows for faster processing
+     * if the format converter also processes byte[].
+     * */
+    default void process(byte [] data) { new ByteArrayInputStream(data); }
+
 
     /** Ends processing, writes a summary into the sink table. */
     default void close() {

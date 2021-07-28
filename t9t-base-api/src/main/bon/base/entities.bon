@@ -53,6 +53,14 @@ package (com.arvatosystems) t9t.base.entities {
         required instant                    mTimestamp      properties currentTimestamp;
     }
 
+    /** Special tracking class just to track creation and modification timestamps.
+     * An entity listener for this won't need the current execution context.
+     */
+    class TimestampTracking extends TrackingBase {
+        required instant                    cTimestamp      properties noupdate, currentTimestamp;  // noinsert removed, causes problems with H2 unit tests
+        required instant                    mTimestamp      properties currentTimestamp;
+    }
+
     /** Special tracking class for the buckets. Here we have no processRef, and the user is part of the DTO.
      * An entity listener for this won't need the current execution context.
      */

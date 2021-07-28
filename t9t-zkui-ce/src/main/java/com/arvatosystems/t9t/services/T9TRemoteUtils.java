@@ -36,7 +36,7 @@ import com.arvatosystems.t9t.base.search.ReadAll28Response;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.base.search.SearchCriteria;
 import com.arvatosystems.t9t.base.search.SearchRequest;
-import com.arvatosystems.t9t.client.connection.IRemoteConnection;
+import com.arvatosystems.t9t.base.IRemoteConnection;
 
 import de.jpaw.bonaparte.converter.StringConverterEmptyToNull;
 import de.jpaw.bonaparte.core.BonaPortable;
@@ -261,7 +261,7 @@ public class T9TRemoteUtils {
             LOGGER.error(message);
             throw new IllegalArgumentException(message);
         }
-        if ((response.getReturnCode() != 0) && (response.getReturnCode() != T9tException.PASSWORD_EXPIRED)) {
+        if (!ApplicationException.isOk(response.getReturnCode()) && (response.getReturnCode() != T9tException.PASSWORD_EXPIRED)) {
             LOGGER.error("Error: {} - Message: {} -- {}", response.getReturnCode(), response.getErrorMessage(), response.getErrorDetails());
             throw new ReturnCodeException(response.getReturnCode(), response.getErrorMessage(), response.getErrorDetails());
         }

@@ -7,7 +7,7 @@ module com.arvatosystems.t9t.io.sapi {
 	requires transitive com.arvatosystems.t9t.base.sapi;
 	requires transitive com.arvatosystems.t9t.io.api;
 	requires transitive com.arvatosystems.t9t.server;
-	requires de.jpaw.bonaparte.api.media;
-	requires de.jpaw.bonaparte.core;
-	requires de.jpaw.jpaw.util;
+	requires transitive de.jpaw.bonaparte.api.media;
+	requires transitive de.jpaw.bonaparte.core;
+	requires transitive de.jpaw.jpaw.util;
 }

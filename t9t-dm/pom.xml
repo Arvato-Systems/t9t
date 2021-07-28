@@ -180,12 +180,32 @@
             </dependency>
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
+                <artifactId>t9t-client-jdk11</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.arvato-systems.t9t</groupId>
+                <artifactId>t9t-client-jdk11async</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.arvato-systems.t9t</groupId>
+                <artifactId>t9t-client-apache</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-base-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-base-be</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.arvato-systems.t9t</groupId>
+                <artifactId>t9t-base-jdbc</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -312,6 +332,12 @@
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-demo-plugin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.arvato-systems.t9t</groupId>
+                <artifactId>t9t-aws-refgenerator</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

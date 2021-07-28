@@ -74,11 +74,7 @@
         </dependency>
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
-            <artifactId>t9t-client-complex</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.arvato-systems.t9t</groupId>
-            <artifactId>t9t-httppool-be</artifactId>
+            <artifactId>t9t-client-jdk11</artifactId>
         </dependency>
 
         <!-- ZK dependencies -->

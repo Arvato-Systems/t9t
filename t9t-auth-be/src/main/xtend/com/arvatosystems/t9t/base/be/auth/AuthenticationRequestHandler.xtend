@@ -55,7 +55,7 @@ class AuthenticationRequestHandler extends AbstractRequestHandler<Authentication
             rq.sessionParameters?.locale   ?: tempJwt.locale,
             rq.sessionParameters?.zoneinfo ?: tempJwt.zoneinfo
         )      // dispatch and perform authentication
-        if (resp === null || resp.returnCode != 0 || resp.jwtInfo === null)
+        if (resp === null || (!ApplicationException.isOk(resp.returnCode) && resp.returnCode != T9tException.PASSWORD_EXPIRED) || resp.jwtInfo === null)
             throw new ApplicationException(T9tException.T9T_ACCESS_DENIED)
 
         val jwt                        = resp.jwtInfo
@@ -93,7 +93,7 @@ class AuthenticationRequestHandler extends AbstractRequestHandler<Authentication
                 persistenceAccess.getByUserIdAndPassword(ctx.executionStart, pw.userId, pw.password, pw.newPassword)
             }
         }
-        if (authResult === null || (authResult.returnCode != 0 && authResult.returnCode != T9tException.PASSWORD_EXPIRED)) {
+        if (authResult === null || (!ApplicationException.isOk(authResult.returnCode) && authResult.returnCode != T9tException.PASSWORD_EXPIRED)) {
             LOGGER.debug("Incorrect authentication for userId {}", pw.userId)
             return null
         }
@@ -123,7 +123,7 @@ class AuthenticationRequestHandler extends AbstractRequestHandler<Authentication
     /** Authenticates a user via API key. Relevant information for the JWT is taken from the ApiKeyDTO, then the UserDTO, finally the TenantDTO. */
     def protected dispatch AuthenticationResponse auth(RequestContext ctx, ApiKeyAuthentication ap, String locale, String zoneinfo) {
         val authResult = persistenceAccess.getByApiKey(ctx.executionStart, ap.apiKey)
-        if (authResult === null || authResult.returnCode != 0) {
+        if (authResult === null || (!ApplicationException.isOk(authResult.returnCode) && authResult.returnCode != T9tException.PASSWORD_EXPIRED)) {
             LOGGER.debug("Incorrect authentication for API key {}", ap.apiKey)
             return null
         }

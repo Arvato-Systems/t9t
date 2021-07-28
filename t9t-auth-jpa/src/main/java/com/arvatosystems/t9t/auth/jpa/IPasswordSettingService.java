@@ -19,5 +19,6 @@ import com.arvatosystems.t9t.auth.jpa.entities.UserEntity;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
 public interface IPasswordSettingService {
+    /** This method is invoked if an administor changes a password for another user. */
     void setPasswordForUser(RequestContext ctx, UserEntity user, String password);
 }

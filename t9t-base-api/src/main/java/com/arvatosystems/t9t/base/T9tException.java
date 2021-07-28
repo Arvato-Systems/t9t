@@ -85,6 +85,7 @@ public class T9tException extends ApplicationException {
     public static final int SHUTDOWN_IN_PROGRESS = OFFSET_TIMEOUT + 52;
     public static final int CANNOT_CLOSE_SINK = OFFSET_DB_ERROR + 55;
 
+    public static final int OPTIMISTIC_LOCKING_EXCEPTION = OFFSET_DB_ERROR + 94;
     public static final int REQUEST_PARAMETER_BAD_INHERITANCE = OFFSET + 95;
     public static final int TRANSACTION_RETRY_REQUEST = OFFSET_DB_ERROR + 96;
     public static final int GENERAL_EXCEPTION_CENTRAL = OFFSET_LOGIC_ERROR + 97;
@@ -154,7 +155,7 @@ public class T9tException extends ApplicationException {
     public static final int ACCOUNT_TEMPORARILY_FROZEN = OFFSET + 205;
     public static final int PASSWORD_NOT_FOUND = OFFSET + 206;
     public static final int PASSWORD_EXPIRED_DUE_TO_USER_INACTIVITY = OFFSET + 207;
-    public static final int PASSWORD_EXPIRED = OFFSET_DENIED + 208;   // this must be a denied code, because the login was correct and must be recorded
+    public static final int PASSWORD_EXPIRED = 208;                                  // this is an OK code, because the login was correct and must be recorded. It is responsibility of the UI to request a new PW
     public static final int WRONG_PASSWORD = OFFSET + 209;
     public static final int NEW_PASSWORD_MATCHES_ONE_OF_THE_LAST = OFFSET + 210;
     public static final int NEW_PASSWORD_MATCHES_ONE_AND_CANT_BE_REUSED_YET = OFFSET + 211;
@@ -196,6 +197,8 @@ public class T9tException extends ApplicationException {
     public static final int JWT_TIMING                  = OFFSET_LOGIC_ERROR + 405;
     public static final int JWT_INCOMPLETE              = OFFSET_LOGIC_ERROR + 406;
     public static final int JWT_EXPIRED                 = OFFSET_DENIED + 407;
+
+    public static final int DYNAMODB_EXCEPTION          = OFFSET_DB_ERROR + 501;
 
     // Error codes specific to solr search
     public static final int SOLR_SERVER_NOT_AVAILABLE   = OFFSET + 701;
@@ -262,6 +265,8 @@ public class T9tException extends ApplicationException {
     public static final int THREAD_INTERRUPTED = OFFSET_TIMEOUT + 991;
     public static final int UNSUPPORTED_OPERATION = OFFSET + 992;
     public static final int UNSUPPORTED_OPERAND = OFFSET + 993;
+
+    public static final int HTTP_ERROR = OFFSET_VALIDATION_ERROR + 8000;  // whole range 8000..8999 is used, where the offset is the http status code
 
 
     // constants for messages which are accessed directly
@@ -338,6 +343,7 @@ public class T9tException extends ApplicationException {
             codeToDescription.put(READ_ACCESS_ONLY_CURRENT_TENANT, "Access to other tenant's records is not allowed");
             codeToDescription.put(NOT_CURRENT_RECORD_OPTIMISTIC_LOCKING, "Not updating record because someone else has modified it already. Please reread and retry.");
             codeToDescription.put(ILLEGAL_REQUEST_PARAMETER, "The supplied request parameter class cannot be instantiated.");
+            codeToDescription.put(OPTIMISTIC_LOCKING_EXCEPTION, "Optimistic locking exception");
             codeToDescription.put(REQUEST_PARAMETER_BAD_INHERITANCE, "The supplied request parameter class does not inherited the expected superclass.");
             codeToDescription.put(REQUEST_HANDLER_NOT_FOUND, "There is no request handler for the request parameter class");
             codeToDescription.put(T9T_ACCESS_DENIED, "Access denied, reason undisclosed for security reasons, see server logs");
@@ -507,10 +513,18 @@ public class T9tException extends ApplicationException {
             codeToDescription.put(THREAD_INTERRUPTED, "The thread was interrupted (got a termination signal)");
             codeToDescription.put(UNSUPPORTED_OPERATION, "The requested operation is not supported");
             codeToDescription.put(UNSUPPORTED_OPERAND, "The provided operand or parameter is not supported");
+
+            codeToDescription.put(DYNAMODB_EXCEPTION, "DynamoDB returned an Exception");
+
+            codeToDescription.put(HTTP_ERROR + 400, "Bad request");
+            codeToDescription.put(HTTP_ERROR + 401, "Not authorized");
+            codeToDescription.put(HTTP_ERROR + 403, "Forbidden");
+            codeToDescription.put(HTTP_ERROR + 415, "Mediatype not supported");
+            codeToDescription.put(HTTP_ERROR + 500, "Server error");
     }
 
     /**
-     * concatenates all parameters to one comma-seperated string
+     * concatenates all parameters to one comma-separated string
      *
      * @param detailParameters
      * @return String - with all params

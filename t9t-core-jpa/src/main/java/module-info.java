@@ -36,27 +36,27 @@ module com.arvatosystems.t9t.core.jpa {
 	exports com.arvatosystems.t9t.bucket.jpa.entities;
 	exports com.arvatosystems.t9t.core.jpa.persistence;
 
-	requires com.arvatosystems.t9t.annotations.jpa;
-	requires com.arvatosystems.t9t.base.api;
-	requires com.arvatosystems.t9t.base.jpa;
-	requires com.arvatosystems.t9t.base.sapi;
-	requires com.arvatosystems.t9t.core.api;
-	requires com.arvatosystems.t9t.core.sapi;
-	requires com.arvatosystems.t9t.server;
-	requires com.arvatosystems.t9t.cfg;  // FIXME: remove this, only needed in a single place, replace by lookup method
-	requires com.google.common;
-	requires de.jpaw.annotations;
-	requires de.jpaw.bonaparte.api;
-	requires de.jpaw.bonaparte.core;
-	requires de.jpaw.bonaparte.refs;
-	requires de.jpaw.jdp;
-	requires de.jpaw.jpaw.enums;
-	requires de.jpaw.jpaw.util;
-	requires de.jpaw.persistence.core;
-	requires de.jpaw.persistence.refs;
-	requires java.validation;
-	requires java.persistence;
-	requires org.eclipse.xtext.xbase.lib;
-	requires org.joda.time;
+	requires transitive com.arvatosystems.t9t.annotations.jpa;
+	requires transitive com.arvatosystems.t9t.base.api;
+	requires transitive com.arvatosystems.t9t.base.jpa;
+	requires transitive com.arvatosystems.t9t.base.sapi;
+	requires transitive com.arvatosystems.t9t.core.api;
+	requires transitive com.arvatosystems.t9t.core.sapi;
+	requires transitive com.arvatosystems.t9t.server;
+	requires transitive com.arvatosystems.t9t.cfg;  // FIXME: remove this, only needed in a single place, replace by lookup method
+	requires transitive com.google.common;
+	requires transitive de.jpaw.annotations;
+	requires transitive de.jpaw.bonaparte.api;
+	requires transitive de.jpaw.bonaparte.core;
+	requires transitive de.jpaw.bonaparte.refs;
+	requires transitive de.jpaw.jdp;
+	requires transitive de.jpaw.jpaw.enums;
+	requires transitive de.jpaw.jpaw.util;
+	requires transitive de.jpaw.persistence.core;
+	requires transitive de.jpaw.persistence.refs;
+	requires transitive java.validation;
+	requires transitive java.persistence;
+	requires transitive org.eclipse.xtext.xbase.lib;
+	requires transitive org.joda.time;
 	requires org.slf4j;
 }

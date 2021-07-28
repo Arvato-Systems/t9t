@@ -5,6 +5,7 @@ NoSqlDatabaseConfiguration
 KeyPrefetchConfiguration
 Bpm2Configuration
 AWSConfiguration
+AzureConfiguration
 LogWriterConfiguration
 ServerConfiguration
 ApplicationConfiguration

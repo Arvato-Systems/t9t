@@ -31,15 +31,16 @@ import org.joda.time.LocalDateTime
 import com.arvatosystems.t9t.auth.services.IAuthModuleCfgDtoResolver
 import com.arvatosystems.t9t.auth.services.IAuthPersistenceAccess
 import com.arvatosystems.t9t.base.T9tException
+import com.arvatosystems.t9t.auth.jpa.IPasswordChangeService
 
 @AddLogger
 @Singleton
-class PasswordChangeService {
+class PasswordChangeService implements IPasswordChangeService {
 
     @Inject IPasswordEntityResolver passwordResolver
     @Inject IAuthModuleCfgDtoResolver authModuleCfgResolver
 
-    def changePassword(String newPassword, UserEntity userEntity, UserStatusEntity userStatusEntity) {
+    override changePassword(String newPassword, UserEntity userEntity, UserStatusEntity userStatusEntity) {
         val authModuleCfg = authModuleCfgResolver.moduleConfiguration ?: IAuthPersistenceAccess.DEFAULT_MODULE_CFG
 
         // minimum check length

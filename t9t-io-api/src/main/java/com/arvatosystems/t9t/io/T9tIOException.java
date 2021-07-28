@@ -24,11 +24,13 @@ import com.arvatosystems.t9t.base.T9tException;
  */
 public class T9tIOException extends T9tException {
     private static final long serialVersionUID = -8665896096651910L;
-    private static final int OFFSET = (CL_PARAMETER_ERROR * CLASSIFICATION_FACTOR) + 180000;
-    private static final int OFFSET_NO = (CL_DENIED * CLASSIFICATION_FACTOR) + 180000;
+
+    private static final int CORE_OFFSET = 28000;
+    private static final int OFFSET                     = CORE_OFFSET + CLASSIFICATION_FACTOR * CL_PARAMETER_ERROR;
+    private static final int OFFSET_DENIED              = CORE_OFFSET + CLASSIFICATION_FACTOR * CL_DENIED;
 
     // Decline codes: This is not a technical error in order to allow the status to be written
-    public static final int NOT_TRANSFERRED             = OFFSET_NO + 3333;
+    public static final int NOT_TRANSFERRED             = OFFSET_DENIED + 333;
 
     // Error codes
     public static final int NO_RECORD_BASED_OUTPUT      = OFFSET + 100;

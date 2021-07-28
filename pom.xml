@@ -76,10 +76,10 @@
         <eclipse-lifecycle-mapping.version>1.0.0</eclipse-lifecycle-mapping.version>
         <bundle.plugin.version>5.1.2</bundle.plugin.version> <!-- felix, for pricing RCP -->
         <exec.plugin.version>3.0.0</exec.plugin.version>
-        <jetty-maven-plugin.version>9.4.10.v20180503</jetty-maven-plugin.version>
-        <maven-antrun-plugin.version>3.0.0</maven-antrun-plugin.version>  <!-- 3.0.0 -->
-        <cxf-codegen-plugin.version>3.3.10</cxf-codegen-plugin.version>
-        <cxf-wadl2java-plugin.version>3.3.10</cxf-wadl2java-plugin.version>
+        <jetty-maven-plugin.version>10.0.5</jetty-maven-plugin.version>
+        <maven-antrun-plugin.version>3.0.0</maven-antrun-plugin.version>
+        <cxf-codegen-plugin.version>3.3.11</cxf-codegen-plugin.version>      <!-- 3.4.4 ? -->
+        <cxf-wadl2java-plugin.version>3.3.11</cxf-wadl2java-plugin.version>  <!-- 3.4.4 ? -->
         <cxf-xjc-plugin.version>3.3.1</cxf-xjc-plugin.version>   <!-- older than the other CXF plugins, but no newer release available -->
         <echo-maven-plugin.version>1.0.0</echo-maven-plugin.version>
         <logback.version>1.2.3</logback.version>
@@ -808,6 +808,9 @@
         <module>t9t-jdp</module>
         <module>t9t-jwt</module>
         <module>t9t-client-complex</module>
+        <module>t9t-client-jdk11</module>
+        <module>t9t-client-jdk11async</module>
+        <module>t9t-client-apache</module>
         <module>t9t-httppool-be</module>
 
         <module>t9t-server-sapi</module>
@@ -817,10 +820,12 @@
         <module>t9t-annotations-jpa</module>
 
         <module>t9t-base-be</module>
+        <module>t9t-base-jdbc</module>
         <module>t9t-base-jpa</module>
         <module>t9t-base-jpa-rl</module>
         <module>t9t-base-jpa-jta</module>
         <module>t9t-base-jpa-st</module>
+        <module>t9t-aws-refgenerator</module>
 
         <module>t9t-activeannotations-jpa</module>
 

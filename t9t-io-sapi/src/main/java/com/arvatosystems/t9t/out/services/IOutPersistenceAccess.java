@@ -29,10 +29,19 @@ public interface IOutPersistenceAccess {
     DataSinkDTO getDataSinkDTO(String dataSinkId);
 
     /** Retrieve all DataSinkDTO for a given environment, which are INPUT. */
-    List<DataSinkDTO> getDataSinkDTOsForEnvironment(String environment);
+    @Deprecated
+    default List<DataSinkDTO> getDataSinkDTOsForEnvironment(String environment) {
+        return getDataSinkDTOsForEnvironmentAndChannel(environment, null);
+    }
 
     /** Retrieve all DataSinkDTO for a given channel, which are INPUT. */
-    List<DataSinkDTO> getDataSinkDTOsForChannel(CommunicationTargetChannelType channel);
+    @Deprecated
+    default List<DataSinkDTO> getDataSinkDTOsForChannel(CommunicationTargetChannelType channel) {
+        return getDataSinkDTOsForEnvironmentAndChannel(null, channel);
+    }
+
+    /** Retrieve all DataSinkDTO for a given channel and environment, which are INPUT. */
+    List<DataSinkDTO> getDataSinkDTOsForEnvironmentAndChannel(String environment, CommunicationTargetChannelType channel);
 
     /** Assigns a new primary key for the sink (required before persisting it, because it will be used by the OutboundMessageDTOs as well). */
     Long getNewSinkKey();

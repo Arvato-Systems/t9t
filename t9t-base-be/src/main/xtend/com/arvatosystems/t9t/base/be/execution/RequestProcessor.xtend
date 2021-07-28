@@ -157,10 +157,10 @@ class RequestProcessor implements IRequestProcessor {
             MDC.put(T9tConstants.MDC_PROCESS_REF, Objects.toString(ihdr.processRef, null))
 
             val prioText = if (Boolean.TRUE == ihdr.priorityRequest) "priority" else "regular"
-            LOGGER.info("Starting {} request {}@{}:{}, S/R = {}/{}, need authorization={}",
+            LOGGER.debug("Starting {} request {}@{}:{}, S/R = {}/{}, need authorization={}",
             prioText, jwtInfo.userId, jwtInfo.tenantId, pqon, jwtInfo.sessionRef, ihdr.processRef, !skipAuthorization)
 
-            val resp                    = executeSynchronous(rp, ihdr, skipAuthorization)
+            val resp                    = executeSynchronousWithRetries(rp, ihdr, skipAuthorization)
             val endOfProcessing         = new Instant
             val processingDuration      = endOfProcessing.millis - ihdr.executionStartedAt.millis
             resp.tenantId               = jwtInfo.tenantId
@@ -175,7 +175,7 @@ class RequestProcessor implements IRequestProcessor {
             val logged = logLevel.ordinal >= UserLogLevelType.MESSAGE_ENTRY.ordinal
             val returnCodeAsString = if (ApplicationException.isOk(resp.returnCode)) "OK" else ApplicationException.codeToString(resp.returnCode)
 
-            LOGGER.info("Finished {} request {}@{}:{} with return code {} ({}) in {} ms {}, S/R = {}/{} ({})",
+            LOGGER.debug("Finished {} request {}@{}:{} with return code {} ({}) in {} ms {}, S/R = {}/{} ({})",
                 prioText, jwtInfo.userId, jwtInfo.tenantId, pqon, resp.returnCode,
                 resp.errorDetails ?: "",
                 processingDuration, if (logged) "(LOGGED)" else "(unlogged)",
@@ -203,8 +203,8 @@ class RequestProcessor implements IRequestProcessor {
         }
     }
 
-    // migrated from IExecutor, because the only callers are in this class
-        /** Executes a request in a new request context. This is the only method which creates a new context.
+    /**
+     * Executes a request in a new request context. This is the only method which creates a new context.
      * All external or asynchronous requests have to pass this method, subsequent synchronous executions use different entries.
      * In addition a final boolean indicates whether authorization is required, because it is the initial call from some external source.
      */
@@ -270,7 +270,7 @@ class RequestProcessor implements IRequestProcessor {
                     }
                 }
                 var ServiceResponse resp = executor.executeSynchronous(ctx, rq) ?: new ServiceResponse(T9tException.REQUEST_HANDLER_RETURNED_NULL)
-                if (resp.returnCode > T9tConstants.MAX_OK_RETURN_CODE && resp.errorMessage === null)
+                if (!ApplicationException.isOk(resp.returnCode) && resp.errorMessage === null)
                     resp.errorMessage = MessagingUtil.truncErrorMessage(T9tException.codeToString(resp.returnCode)) // Make sure to attach necessary reference information to the outgoing response
                 ctx.fillResponseStandardFields(resp) // validate the response
                 try {
@@ -294,11 +294,16 @@ class RequestProcessor implements IRequestProcessor {
                     } catch (Exception e) {
                         // commit exception: some constraint will be violated, we urgently need the cause in the log for analysis. Descend exception list...
                         val causeChain = ExceptionUtil.causeChain(e)
-                        LOGGER.error("Commit failed: {}", causeChain)
-                        if (e instanceof NullPointerException)
-                            LOGGER.error("NPE Stack trace is ", e)
-                        ctx.discardPostCommitActions
                         resp = MessagingUtil.createServiceResponse(T9tException.JTA_EXCEPTION, causeChain, null, null)
+                        if (e instanceof NullPointerException) {
+                            LOGGER.error("NullPointerException: Stack trace is ", e)
+                        } else if (e.getClass().getCanonicalName() == "javax.persistence.RollbackException") {
+                            if (e.getCause() !== null && e.getCause().getClass().getCanonicalName().equals("javax.persistence.OptimisticLockException")) {
+                                resp.returnCode = T9tException.OPTIMISTIC_LOCKING_EXCEPTION;
+                            }
+                        }
+                        LOGGER.error("Commit failed: {}", causeChain)
+                        ctx.discardPostCommitActions
                         ctx.applyPostFailureActions(rq, resp)
                     }
                 } else {
@@ -335,6 +340,23 @@ class RequestProcessor implements IRequestProcessor {
         }
     }
 
+    def protected ServiceResponse executeSynchronousWithRetries(RequestParameters rq, InternalHeaderParameters ihdr, boolean skipAuthorization) {
+        var int attemptsToCommit = 3;  // number of attempts fighting optimistic locking
+        for (;;) {
+            val response = executeSynchronous(rq, ihdr, skipAuthorization)
+            if (response.returnCode != T9tException.OPTIMISTIC_LOCKING_EXCEPTION) {
+                return response;
+            }
+            attemptsToCommit -= 1;
+            if (attemptsToCommit > 0) {
+                LOGGER.info("Optimistic locking exception detected - retrying ({} attempts left)", attemptsToCommit)
+            } else {
+                LOGGER.error("Optimistic locking exception detected -problem persists, giving up")
+                return response
+            }
+        }
+    }
+
     /**
      * Invokes executeSynchronous() and checks the result for correctness and the response type. (New context variant)
      * This method is called for the login process.
@@ -348,14 +370,16 @@ class RequestProcessor implements IRequestProcessor {
             MDC.put(T9tConstants.MDC_SESSION_REF, Objects.toString(ihdr.jwtInfo.sessionRef, null))
             MDC.put(T9tConstants.MDC_PROCESS_REF, Objects.toString(ihdr.processRef, null))
 
-            var ServiceResponse response = executeSynchronous(params, ihdr, skipAuthorization)
-            if ((response.returnCode > T9tConstants.MAX_OK_RETURN_CODE)) {
-                LOGGER.error("Error during request handler execution for {} (returnCode={}, errorMsg={}, errorDetails={})",
-                    params.ret$PQON(), response.returnCode, response.errorMessage, response.errorDetails)
-                throw new T9tException(response.returnCode)
-            }
+            val response = executeSynchronousWithRetries(params, ihdr, skipAuthorization)
+
             // the response must be a subclass of the expected one
             if (!requiredType.isAssignableFrom(response.class)) {
+                if (!ApplicationException.isOk(response.returnCode)) {
+                    // in case of an error, this is allowed
+                    LOGGER.error("Error during request handler execution for {} (returnCode={}, errorMsg={}, errorDetails={})",
+                        params.ret$PQON(), response.returnCode, response.errorMessage, response.errorDetails)
+                    throw new T9tException(response.returnCode)
+                }
                 LOGGER.error("Error during request handler execution for {}, expected response class {} but got {}",
                     params.ret$PQON(), requiredType.simpleName, response.ret$PQON())
                 throw new T9tException(T9tException.INCORRECT_RESPONSE_CLASS, requiredType.simpleName)

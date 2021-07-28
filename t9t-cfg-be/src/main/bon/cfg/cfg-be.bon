@@ -38,6 +38,7 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
     class T9tServerConfiguration xmlRoot {
         required Ascii(16)                          persistenceUnitName properties cmdline=";datasource";// technical username
         optional (RelationalDatabaseConfiguration...) databaseConfiguration;
+        optional (RelationalDatabaseConfiguration...) secondaryDatabaseConfig;
         optional (NoSqlDatabaseConfiguration...)    noSqlConfiguration;
         optional (KeyPrefetchConfiguration...)      keyPrefetchConfiguration;
         optional (LogWriterConfiguration...)        logWriterConfiguration;
@@ -45,6 +46,7 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional (ServerConfiguration...)           serverConfiguration;
         optional (Bpm2Configuration...)             bpm2Configuration;
         optional (AWSConfiguration...)              awsConfiguration;
+        optional (AzureConfiguration...)            azureConfiguration;
         optional (UplinkConfiguration...)           uplinkConfiguration;
         optional (SearchConfiguration...)           searchConfiguration;
         optional (KafkaConfiguration...)            kafkaConfiguration;
@@ -55,6 +57,7 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         required Ascii(16) List<>                   mocks;                          // entries for mocked SMTP, defacto etc.
         optional Boolean                            runInCluster;                   // if true, activates sending of cache invalidation events via vert.x event bus
         optional Boolean                            disableScheduler;               // cluster server - if set, do not run jobs here
+        optional Boolean                            sessionLogSysout;               // session log to stdout / LOGGER: MUST be set in readonly environments
         optional Ascii(8)                           importEnvironment;              // allows to select a subset of Camel import routes - all will be used if null
         optional Ascii(8)                           eventEnvironment;               // allows to select a subset of event subscriptions - all will be used if null
         required Unicode(2000) List<>               z;                              // arbitrary extension parameters, of the form (identifier)=(value)
@@ -75,14 +78,16 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional Enum DatabaseBrandType             databaseBrand;                  // which vendor of DB you are using
         optional Unicode(255)                       jdbcDriverClass;                // class name of JDBC driver
         optional Unicode(255)                       jdbcConnectString;              // connect string for the data source
+        optional Boolean                            readonly;                       // set to true, if the provided URL is readonly
         required Unicode(255) List<>                migrations;                     // flyway migrations to check, if started with -m option
         required Unicode(2000) List<>               z;                              // arbitrary extension parameters, of the form (identifier)=(value)
     }
 
     class NoSqlDatabaseConfiguration {
-        required Ascii(100)                         hostname;
-        required int                                port;
-        required Ascii(30)                          schemaName;
+        optional namedQualifier                     strategy;                       // select the implementation
+        optional Ascii(100)                         hostname;
+        optional Integer                            port;
+        optional Ascii(30)                          schemaName;
     }
 
     class KeyPrefetchConfiguration {
@@ -106,8 +111,18 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
     }
 
     class AWSConfiguration {
-        required Ascii(255)                         snsEndpoint;
-        required Ascii(255)                         sqsEndpoint;
+        optional Unicode(255)                       region;
+        optional Ascii(255)                         snsEndpoint;
+        optional Ascii(255)                         sqsEndpoint;
+        optional Ascii(255)                         dynamoEndpoint;
+        optional Unicode(255)                       dynamoSecret;
+    }
+
+    class AzureConfiguration {
+        optional Unicode(255)                       region;
+        optional Unicode(64)                        userAgent;
+        optional Ascii(255)                         cosmosEndpoint;
+        optional Unicode(255)                       cosmosSecret;
     }
 
     class LogWriterConfiguration {

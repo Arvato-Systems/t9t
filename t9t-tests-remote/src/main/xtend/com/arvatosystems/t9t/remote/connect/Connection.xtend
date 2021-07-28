@@ -132,7 +132,7 @@ class Connection extends AbstractConnection {
 
 
     // just a proxy
-    override final BonaPortable doIO(BonaPortable rp) {
+    override BonaPortable doIO(BonaPortable rp) {
         return dlg.doIO(rp)
     }
 

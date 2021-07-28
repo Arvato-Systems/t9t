@@ -50,6 +50,8 @@ import javax.persistence.NoResultException
 import javax.persistence.TypedQuery
 import org.joda.time.Instant
 import com.arvatosystems.t9t.auth.jpa.IPasswordSettingService
+import de.jpaw.bonaparte.pojos.api.auth.UserLogLevelType
+import com.arvatosystems.t9t.auth.jpa.IPasswordChangeService
 
 @AddLogger
 @Singleton
@@ -58,7 +60,7 @@ class AuthPersistenceAccess implements IAuthPersistenceAccess, T9tConstants {
 
     @Inject Provider<PersistenceProviderJPA> jpaContextProvider
     @Inject IUserEntityResolver userEntityResolver
-    @Inject PasswordChangeService passwordChangeService
+    @Inject IPasswordChangeService passwordChangeService
     @Inject IPasswordSettingService passwordSettingService
 
     // return the unfiltered permissions from DB
@@ -182,6 +184,9 @@ class AuthPersistenceAccess implements IAuthPersistenceAccess, T9tConstants {
     /** Update the timestamp in the user status with the current login data. */
     def protected updateUserStatusEntityForApiKeyLogin(EntityManager em, ApiKeyEntity a, Instant now) {
         var UserStatusEntity userStatus = em.find(UserStatusEntity, a.userRef)
+        if (a.permissions !== null && UserLogLevelType.STEALTH == a.permissions.logLevel) {
+            return userStatus;  // no updates
+        }
         if (userStatus === null) {
             // create a new one
             userStatus = new UserStatusEntity

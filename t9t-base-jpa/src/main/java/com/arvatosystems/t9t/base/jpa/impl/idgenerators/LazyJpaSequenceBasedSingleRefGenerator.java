@@ -15,9 +15,6 @@
  */
 package com.arvatosystems.t9t.base.jpa.impl.idgenerators;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
@@ -79,17 +76,8 @@ class LazyJpaSequenceBasedSingleRefGenerator {
             Query q = em.createNativeQuery(sqlCommandForNextValue);
             Object result = q.getSingleResult();
             long nextval;
-            if (result instanceof Long) {
-                // default type
-                nextval = (Long) result;
-            } else if (result instanceof BigInteger) {
-                // Some DB returns BigInteger: must convert data type
-                nextval = ((BigInteger) result).longValue();
-            } else if (result instanceof BigDecimal) {
-                // Oracle: must convert data type
-                nextval = ((BigDecimal) result).longValue();
-            } else if (result instanceof Number) {
-                // approach to cover some of the above as well...
+            if (result instanceof Number) {
+                // approach to cover all numeric values...
                 nextval = ((Number) result).longValue();
             } else {
                 LOGGER.error("sequence query returned type {} which cannot be processed (yet)", result.getClass().getCanonicalName());

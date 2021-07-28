@@ -41,6 +41,7 @@ import com.arvatosystems.t9t.authc.api.TenantDescription;
 import com.arvatosystems.t9t.authz.api.QueryPermissionsRequest;
 import com.arvatosystems.t9t.authz.api.QueryPermissionsResponse;
 import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.auth.ApiKeyAuthentication;
 import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
@@ -52,6 +53,7 @@ import com.arvatosystems.t9t.services.T9TRemoteUtils;
 
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
+import de.jpaw.util.ApplicationException;
 
 
 /**
@@ -109,7 +111,7 @@ public class UserDAO implements IUserDAO {
             }
             authenticationRequest.setSessionParameters(makeSessionParameters(username));
             AuthenticationResponse resp = t9tRemoteUtils.executeAndHandle(authenticationRequest, AuthenticationResponse.class);
-            if (resp.getReturnCode() == 0) {
+            if (ApplicationException.isOk(resp.getReturnCode()) || resp.getReturnCode() == T9tException.PASSWORD_EXPIRED) {
                 final ApplicationSession as = ApplicationSession.get();
                 as.setLastLoggedIn(resp.getLastLoginUser());
                 as.setPasswordExpires(resp.getPasswordExpires());

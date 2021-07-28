@@ -24,6 +24,7 @@ import com.arvatosystems.t9t.auth.UserDTO
 import com.arvatosystems.t9t.auth.UserRef
 import com.arvatosystems.t9t.auth.hooks.IJwtEnrichment
 import com.arvatosystems.t9t.auth.services.IAuthPersistenceAccess
+import com.arvatosystems.t9t.auth.services.IAuthResponseUtil
 import com.arvatosystems.t9t.auth.services.IAuthenticator
 import com.arvatosystems.t9t.base.services.IRefGenerator
 import com.arvatosystems.t9t.base.services.RequestContext
@@ -31,11 +32,11 @@ import com.arvatosystems.t9t.base.types.SessionParameters
 import com.arvatosystems.t9t.cfg.be.ConfigProvider
 import de.jpaw.annotations.AddLogger
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo
+import de.jpaw.bonaparte.pojos.api.auth.UserLogLevelType
 import de.jpaw.bonaparte.util.ToStringHelper
 import de.jpaw.dp.Inject
 import de.jpaw.dp.Singleton
 import java.util.UUID
-import com.arvatosystems.t9t.auth.services.IAuthResponseUtil
 
 @AddLogger
 @Singleton
@@ -51,10 +52,13 @@ class AuthResponseUtil implements IAuthResponseUtil {
 
     final Long jwtValidityApiKey;
     final Long jwtValidityUserPassword;
+    final boolean sessionLogSysout
 
     new() {
-        jwtValidityApiKey       = ConfigProvider.getConfiguration.jwtValidityApiKey       ?: DEFAULT_JWT_VALIDITY
-        jwtValidityUserPassword = ConfigProvider.getConfiguration.jwtValidityUserPassword ?: DEFAULT_JWT_VALIDITY
+        val serverCfg = ConfigProvider.getConfiguration;
+        jwtValidityApiKey       = serverCfg.jwtValidityApiKey       ?: DEFAULT_JWT_VALIDITY
+        jwtValidityUserPassword = serverCfg.jwtValidityUserPassword ?: DEFAULT_JWT_VALIDITY
+        sessionLogSysout        = Boolean.TRUE == serverCfg.sessionLogSysout
     }
 
     override boolean isUserAllowedToLogOn(RequestContext ctx, UserDTO userDto) {
@@ -128,7 +132,15 @@ class AuthResponseUtil implements IAuthResponseUtil {
             }
         ]
 
-        persistenceAccess.storeSession(session)
+        if (UserLogLevelType.STEALTH != jwt.logLevel) {
+            // only if we do not want ANY info (such as from ping requests)
+            if (sessionLogSysout) {
+                // do not store session info to DB
+                LOGGER.info("New session created: tenant {}, user {}, sessionRef {}", jwt.tenantId, jwt.userId, jwt.sessionRef)
+            } else {
+                persistenceAccess.storeSession(session)
+            }
+        }
 
         LOGGER.debug("About to sign the following Jwt: {}", ToStringHelper.toStringML(jwt))
         val duration = if (ISSUER_APIKEY == jwt.issuer) jwtValidityApiKey else if (ISSUER_USERID_PASSWORD == jwt.issuer) jwtValidityUserPassword else DEFAULT_JWT_VALIDITY

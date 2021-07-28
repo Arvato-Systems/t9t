@@ -38,6 +38,10 @@
             <name>Jasper Soft</name>
             <url>https://jasperreports.sourceforge.net/maven2/</url>
         </repository>
+        <repository>
+            <id>jaspersoft-third-party</id>
+            <url>https://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts/</url>
+        </repository>
     </repositories>
 
     <dependencies>

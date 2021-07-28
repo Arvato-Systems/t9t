@@ -45,7 +45,7 @@ class AutonomousExecutor implements IAutonomousExecutor {
         val counter = new AtomicInteger()
         executorService =  Executors.newFixedThreadPool(autoPoolSize) [
             val threadName = "t9t-autonomous-" + counter.incrementAndGet
-            LOGGER.info("Launching thread {} of {} for local autonomous transactions", threadName, autoPoolSize)
+            LOGGER.debug("Launching thread {} of {} for local autonomous transactions", threadName, autoPoolSize)
             return new Thread(it, threadName)
         ]
     }
