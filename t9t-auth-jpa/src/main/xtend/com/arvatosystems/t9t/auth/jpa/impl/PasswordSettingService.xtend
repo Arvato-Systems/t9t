@@ -39,7 +39,6 @@ class PasswordSettingService implements IPasswordSettingService {
     override setPasswordForUser(RequestContext ctx, UserEntity userEntity, String newPassword) {
         var int nextPasswordNo = 1
         val authModuleCfg      = moduleConfigResolver.moduleConfiguration
-        val passwordExpirationInDays = JsonUtil.getZInteger(authModuleCfg.z, "initialPasswordExpiry", authModuleCfg.passwordExpirationInDays ?: 60)
 
         val userStatusEntity = userEntityResolver.entityManager.find(UserStatusEntity, userEntity.objectRef)
         if (userStatusEntity === null) {
@@ -60,7 +59,7 @@ class PasswordSettingService implements IPasswordSettingService {
             passwordSetByUser = ctx.userRef  // only self-reset has userEntity.objectRef here
             passwordHash      = PasswordUtil.createPasswordHash(userEntity.userId, newPassword)
             passwordCreation  = ctx.executionStart
-            passwordExpiry    = ctx.executionStart.plus(T9tConstants.ONE_DAY_IN_MS * passwordExpirationInDays)
+            passwordExpiry    = ctx.executionStart.plus(T9tConstants.ONE_DAY_IN_MS * authModuleCfg.initialPasswordExpiration)
             userExpiry        = ctx.executionStart.plus(T9tConstants.ONE_DAY_IN_MS * T9tConstants.DEFAULT_MAXIUM_NUMBER_OF_DAYS_IN_BETWEEN_USER_ACTIVITIES)
         ]
         newPasswordEntity.passwordSerialNumber = nextPasswordNo

@@ -172,8 +172,10 @@ public class Bandpopup28 extends Bandpopup implements IdSpace, IGridIdOwner {
             toggleFilter.addEventListener("onSearch", ev -> {
                 Object o = ev.getData();
                 LOGGER.debug("Got onSearch event from SOLR! data is {}", o == null ? "NULL" : o.getClass().getCanonicalName());
-                if (o == null || o instanceof String)
+                if (o == null || o instanceof String) {
                     main.setFilter1((String) o);  // SOLR type search
+                    main.search();
+                }
             });
         }
     }

@@ -134,6 +134,7 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
     protected final IT9TMessagingDAO messagingDAO = Jdp.getRequired(IT9TMessagingDAO.class);
     protected IKeyFromDataProvider keyFromDataProvider;
     protected boolean dynamicColumnSize;
+    protected boolean searchAfterInit;
 
 /*
     public void setNumRows(int numRows) {
@@ -182,16 +183,7 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
     public void onCreate() {
         LOGGER.debug("Grid28.onCreate()");
         GridIdTools.enforceGridId(this);
-
         initializeGrid();
-
-        // provide the info tooltip
-        String toolTipId = gridId + ".infoTooltip";
-        buildInfoTooltip(toolTipId);
-        if (infoImage != null)
-            infoImage.setTooltip(toolTipId);
-        else
-            LOGGER.error("Cannot get infoImage");
 
         // export button only enabled if permission exists
         if (!permissions.contains(OperationType.EXPORT))
@@ -211,6 +203,9 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
             }
             p = p.getParent();
         }
+
+        if (searchAfterInit)
+            search();
     }
 
     @Override
@@ -225,6 +220,13 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
         permissions = session.getPermissions(gridId);
         LOGGER.debug("Grid ID {} has permissions {}", gridId, permissions);
         setViewModelId(GridIdTools.getViewModelIdByGridId(gridId));
+        // provide the info tooltip
+        String toolTipId = gridId + ".infoTooltip";
+        buildInfoTooltip(toolTipId);
+        if (infoImage != null)
+            infoImage.setTooltip(toolTipId);
+        else
+            LOGGER.error("Cannot get infoImage");
     }
 
     private void initializeGrid() {
@@ -310,20 +312,20 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
     public void setFilter1(String filter) {
         solrFilter = filter;
         filter1 = null;
-        search();
+        searchAfterInit = true;
     }
 
     /** filter from Filter28 */
     public void setFilter1(SearchFilter filter) {
         filter1 = filter;
         solrFilter = null;
-        search();
+        searchAfterInit = true;
     }
 
     /** filter from selected row of other grid */
     public void setFilter2(SearchFilter filter) {
         filter2 = filter;
-        search();
+        searchAfterInit = true;
     }
 
     private List<DataWithTracking<BonaPortable, TrackingBase>> readData(SearchCriteria rq) {

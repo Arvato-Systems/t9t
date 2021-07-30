@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.util.Pair;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.UiException;
 import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
@@ -205,15 +206,19 @@ public class ListHeadRenderer28 {
     private void buildHeaderTooltip(Listheader listheader, String fieldName, String columnTranslation) {
         String toolTipId =  String.format("%s.%s.infoTooltip", grid.getGridId(), fieldName);
 
-        Popup tooltip = new Popup();
-        tooltip.setParent(listheader);
-        tooltip.setId(toolTipId);
+        try {
+            Popup tooltip = new Popup();
+            tooltip.setParent(listheader);
+            tooltip.setId(toolTipId);
 
-        Label label = new Label();
-        label.setValue(columnTranslation);
-        label.setParent(tooltip);
+            Label label = new Label();
+            label.setValue(columnTranslation);
+            label.setParent(tooltip);
 
-        listheader.setTooltipAttributes(tooltip, "before_start", null, null, null);
+            listheader.setTooltipAttributes(tooltip, "before_start", null, null, null);
+        } catch (UiException uie) {
+            LOGGER.debug("Tooltip {} already existed in the IdSpaces, do not need to register again.");
+        }
     }
 
     /**

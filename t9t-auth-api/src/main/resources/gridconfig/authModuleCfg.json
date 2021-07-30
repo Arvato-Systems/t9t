@@ -5,6 +5,6 @@
     ],
     "fields": [
         "tenantRef", "maxTokenValidityInMinutes", "passwordMinimumLength", "passwordDifferPreviousN", "passwordExpirationInDays",
-        "passwordResetDurationInSec", "passwordThrottlingAfterX", "passwordThrottlingDuration", "passwordBlockingPeriod"
+        "passwordResetDurationInSec", "passwordThrottlingAfterX", "passwordThrottlingDuration", "passwordBlockingPeriod", "initialPasswordExpiration"
     ]
 }

@@ -16,7 +16,8 @@
                               id2="passwordResetDurationInSec"      value2="@load(vm.data.passwordResetDurationInSec)      @save(vm.data.passwordResetDurationInSec,before='commandSave')"/>
                     <cells228 id ="passwordThrottlingAfterX"        value ="@load(vm.data.passwordThrottlingAfterX)        @save(vm.data.passwordThrottlingAfterX,before='commandSave')"
                               id2="passwordThrottlingDuration"      value2="@load(vm.data.passwordThrottlingDuration)      @save(vm.data.passwordThrottlingDuration,before='commandSave')"/>
-                    <cells28  id ="passwordBlockingPeriod"          value ="@load(vm.data.passwordBlockingPeriod)          @save(vm.data.passwordBlockingPeriod,before='commandSave')"/>
+                    <cells228 id ="passwordBlockingPeriod"          value ="@load(vm.data.passwordBlockingPeriod)          @save(vm.data.passwordBlockingPeriod,before='commandSave')"
+                              id2="initialPasswordExpiration"       value2="@load(vm.data.initialPasswordExpiration)       @save(vm.data.initialPasswordExpiration, before='commandSave')"/>
                     <cells28  id ="z" colspan1="3" rows1="4"        value ="@load(vm.data.z)                               @save(vm.data.z,before='commandSave')"/>
                 </rows>
             </form28>

@@ -33,7 +33,8 @@ class AuthModuleCfgDtoResolver extends AbstractModuleConfigResolver<AuthModuleCf
         86400,      // passwordResetDurationInSec: how long is a reset password valid? (default 1 day)
         3,          // passwordThrottlingAfterX:   after how many incorrect attempts is the access throttled? (default 3)
         60,         // passwordThrottlingDuration: for how many seconds does the account not accept any login attempt after throttling?
-        0           // passwordBlockingPeriod:     Period in days saying how long an old password will be blocked before it can be used again. "0" Disables this feature
+        0,          // passwordBlockingPeriod:     Period in days saying how long an old password will be blocked before it can be used again. "0" Disables this feature
+        0           // initialPasswordExpiration:  Period in days a password change is required on a newly created user
     );
 
     new() {

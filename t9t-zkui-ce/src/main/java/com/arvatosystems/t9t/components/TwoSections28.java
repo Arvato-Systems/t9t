@@ -85,6 +85,7 @@ public class TwoSections28 extends Vlayout implements IGridIdOwner, IPermissionO
             );
             if (o == null || o instanceof SearchFilter) {
                 main.setFilter1(SearchFilters.and(fixedFilter, (SearchFilter) o));
+                main.search();
             }
         });
         north.setTitle(ApplicationSession.get().translate(null, "resultsGroup"));

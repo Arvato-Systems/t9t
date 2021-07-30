@@ -151,8 +151,10 @@ public class Tabpanel28 extends Tabpanel implements IdSpace, IGridIdOwner, IData
             }
         }
 
-        if (targetGrid != null)
+        if (targetGrid != null) {
             targetGrid.setFilter2(filter);
+            targetGrid.search();
+        }
     }
 
     public Grid28 getTargetGrid() {

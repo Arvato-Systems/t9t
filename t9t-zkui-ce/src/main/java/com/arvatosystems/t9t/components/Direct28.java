@@ -81,6 +81,7 @@ public class Direct28 extends Div implements IdSpace, IGridIdOwner, IDataSelectR
 
         if (targetGrid != null) {
             targetGrid.setFilter2(SearchFilters.FALSE);
+            targetGrid.search();
         }
     }
 
@@ -134,8 +135,10 @@ public class Direct28 extends Div implements IdSpace, IGridIdOwner, IDataSelectR
             }
         }
 
-        if (targetGrid != null)
+        if (targetGrid != null) {
             targetGrid.setFilter2(filter);
+            targetGrid.search();
+        }
     }
 
     public Grid28 getTargetGrid() {

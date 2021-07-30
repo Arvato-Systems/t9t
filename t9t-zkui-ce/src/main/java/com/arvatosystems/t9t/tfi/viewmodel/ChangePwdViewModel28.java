@@ -49,6 +49,7 @@ public class ChangePwdViewModel28 extends AbstractViewOnlyVM<ChangePasswordUI, T
 
         userDAO.changePassword(data.getOldPassword(), data.getNewPassword());
         postProcessHook();
+        ApplicationSession.get().setPasswordExpires(null);
     }
 
     public void postProcessHook() {
