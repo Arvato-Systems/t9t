@@ -20,8 +20,8 @@
 
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
-        <artifactId>t9t-settings-jpa</artifactId>
-        <version>5.3-SNAPSHOT</version>
+        <artifactId>t9t-settings-be</artifactId>
+        <version>5.4-SNAPSHOT</version>
         <relativePath>../t9t-settings-be</relativePath>
     </parent>
 
@@ -45,13 +45,5 @@
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>dynamodb</artifactId>
         </dependency>
-<!--         <dependency>
-            <groupId>de.jpaw</groupId>
-            <artifactId>persistence-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.persistence</groupId>
-            <artifactId>jakarta.persistence-api</artifactId>
-        </dependency>
- -->    </dependencies>
+    </dependencies>
 </project>
