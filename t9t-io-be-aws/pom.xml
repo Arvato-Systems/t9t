@@ -36,7 +36,7 @@
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-io-be</artifactId>
         </dependency>
-        <dependency>
+<!--         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-s3</artifactId>
         </dependency>
@@ -44,16 +44,16 @@
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-core</artifactId>
             <exclusions>
-                 <!-- exclude legacy / buggy logging -->
+                 exclude legacy / buggy logging
                  <exclusion>
                     <groupId>commons-logging</groupId>
                     <artifactId>commons-logging</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
-        <dependency>
+ -->        <dependency>
             <groupId>org.apache.camel</groupId>
-            <artifactId>camel-aws-s3</artifactId>
+            <artifactId>camel-aws2-s3</artifactId>
         </dependency>
         <!-- use preferred logging -->
         <dependency>

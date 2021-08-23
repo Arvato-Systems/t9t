@@ -181,10 +181,8 @@ public class AbstractFormatGeneratorXml extends AbstractFormatGenerator {
                 writer.writeStartDocument(encoding.name(), "1.0");
             }
             nl();
-
-            writeNamespaces();
-
             writer.writeStartElement(xmlDefaultNamespace, sinkCfg.getXmlRootElementName());
+            writeNamespaces();
             nl();
             if (Boolean.TRUE.equals(writeTenantId)) {
                 doWriteTenantId();

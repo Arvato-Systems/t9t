@@ -20,9 +20,14 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
-    <!-- this file is overwritten by another one in the WAR project -->
-
-    <description><![CDATA[My ZK Application]]></description>
+<!-- does not work with
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
+it does not start any more, see https://forum.zkoss.org/question/95682/jetty-9-and-zk-702-dont-work-with-webxml-version-25-30-and-31/
+ -->
+    <description><![CDATA[ZK t9t Application]]></description>
     <display-name>t9t-zkui</display-name>
 
     <context-param>
@@ -30,8 +35,10 @@
         <param-value>WEB-INF/shiro.ini</param-value>
     </context-param>
 
-    <!-- //// -->
     <!-- ZK -->
+    <listener>
+        <listener-class>com.arvatosystems.t9t.init.T9tInitializer</listener-class>
+    </listener>
     <listener>
         <listener-class>com.arvatosystems.t9t.tfi.web.SessionCounter</listener-class>
     </listener>
@@ -40,28 +47,31 @@
         <listener-class>org.zkoss.zk.ui.http.HttpSessionListener</listener-class>
     </listener>
     <listener>
+        <!-- for shiro... -->
         <listener-class>com.arvatosystems.t9t.tfi.web.CdiWebEnvironmentLoaderListener</listener-class>
     </listener>
+
+    <!-- The following servlet entry is needed to disable the possibility to browser through the code folders via the UI -->
+    <servlet>
+        <servlet-name>default</servlet-name>
+        <servlet-class>org.eclipse.jetty.servlet.DefaultServlet</servlet-class>
+        <init-param>
+            <param-name>dirAllowed</param-name>
+            <param-value>false</param-value>
+        </init-param>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
 
     <servlet>
         <description>ZK loader for ZUML pages</description>
         <servlet-name>zkLoader</servlet-name>
         <servlet-class>org.zkoss.zk.ui.http.DHtmlLayoutServlet</servlet-class>
 
-        <!-- Must. Specifies URI of the update engine (DHtmlUpdateServlet). It
-            must be the same as <url-pattern> for the update engine. -->
+        <!-- Must. Specifies URI of the update engine (DHtmlUpdateServlet). It must be the same as <url-pattern> for the update engine. -->
         <init-param>
             <param-name>update-uri</param-name>
             <param-value>/zkau</param-value>
         </init-param>
-        <!-- Optional. Specifies whether to compress the output of the ZK loader.
-            It speeds up the transmission over slow Internet. However, if you configure
-            a filter to post-processing the output, you might have to disable it. Default:
-            true <init-param> <param-name>compress</param-name> <param-value>true</param-value>
-            </init-param> -->
-        <!-- [Optional] Specifies the default log level: OFF, ERROR, WARNING, INFO,
-            DEBUG and FINER. If not specified, the system default is used. <init-param>
-            <param-name>log-level</param-name> <param-value>OFF</param-value> </init-param> -->
         <load-on-startup>2</load-on-startup><!-- Must -->
     </servlet>
     <servlet>
@@ -69,12 +79,12 @@
         <servlet-class>com.arvatosystems.t9t.tfi.general.InitServlet</servlet-class>
         <load-on-startup>1</load-on-startup><!-- Must -->
     </servlet>
-    <!-- <listener> see http://docs.jboss.org/weld/reference/latest/en-US/html/environments.html
-        <listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>
-        </listener> -->
-    <!-- <resource-env-ref> <description>Object factory for the CDI Bean Manager</description>
-        <resource-env-ref-name>BeanManager</resource-env-ref-name> <resource-env-ref-type>javax.enterprise.inject.spi.BeanManager</resource-env-ref-type>
-        </resource-env-ref> -->
+    <servlet>
+        <description>The asynchronous update engine for ZK</description>
+        <servlet-name>auEngine</servlet-name>
+        <servlet-class>org.zkoss.zk.au.http.DHtmlUpdateServlet</servlet-class>
+    </servlet>
+
     <servlet-mapping>
         <servlet-name>zkLoader</servlet-name>
         <url-pattern>*.zul</url-pattern>
@@ -83,33 +93,10 @@
         <servlet-name>zkLoader</servlet-name>
         <url-pattern>*.zhtml</url-pattern>
     </servlet-mapping>
-    <!-- [Optional] Uncomment it if you want to use richlets. <servlet-mapping>
-        <servlet-name>zkLoader</servlet-name> <url-pattern>/zk/*</url-pattern> </servlet-mapping> -->
-    <servlet>
-        <description>The asynchronous update engine for ZK</description>
-        <servlet-name>auEngine</servlet-name>
-        <servlet-class>org.zkoss.zk.au.http.DHtmlUpdateServlet</servlet-class>
-
-        <!-- [Optional] Specifies whether to compress the output of the ZK loader.
-            It speeds up the transmission over slow Internet. However, if your server
-            will do the compression, you might have to disable it. Default: true <init-param>
-            <param-name>compress</param-name> <param-value>true</param-value> </init-param> -->
-        <!-- [Optional] Specifies the AU extension for particular prefix. <init-param>
-            <param-name>extension0</param-name> <param-value>/upload=com.my.MyUploader</param-value>
-            </init-param> -->
-    </servlet>
     <servlet-mapping>
         <servlet-name>auEngine</servlet-name>
         <url-pattern>/zkau/*</url-pattern>
     </servlet-mapping>
-
-    <!-- [Optional] Uncomment if you want to use the ZK filter to post process
-        the HTML output generated by other technology, such as JSP and velocity.
-        <filter> <filter-name>zkFilter</filter-name> <filter-class>org.zkoss.zk.ui.http.DHtmlLayoutFilter</filter-class>
-        <init-param> <param-name>extension</param-name> <param-value>html</param-value>
-        </init-param> <init-param> <param-name>compress</param-name> <param-value>true</param-value>
-        </init-param> </filter> <filter-mapping> <filter-name>zkFilter</filter-name>
-        <url-pattern>your URI pattern</url-pattern> </filter-mapping> -->
 
     <filter>
         <filter-name>ShiroFilter</filter-name>
@@ -125,14 +112,6 @@
         <dispatcher>ERROR</dispatcher>
     </filter-mapping>
     <!-- //// -->
-
-    <!-- ///////////// -->
-    <!-- DSP (optional) Uncomment it if you want to use DSP However, it is turned
-        on since zksandbox uses DSP to generate CSS. <servlet> <servlet-name>dspLoader</servlet-name>
-        <servlet-class>org.zkoss.web.servlet.dsp.InterpreterServlet</servlet-class>
-        <init-param> <param-name>class-resource</param-name> <param-value>true</param-value>
-        </init-param> </servlet> <servlet-mapping> <servlet-name>dspLoader</servlet-name>
-        <url-pattern>*.dsp</url-pattern> </servlet-mapping> -->
 
     <!-- /////////// -->
     <!-- [Optional] Session timeout -->

@@ -20,24 +20,22 @@
 
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
-        <artifactId>t9t-settings-jpa</artifactId>
+        <artifactId>t9t-settings-be</artifactId>
         <version>5.4-SNAPSHOT</version>
-        <relativePath>../t9t-settings-jpa</relativePath>
+        <relativePath>../t9t-settings-be</relativePath>
     </parent>
 
-    <artifactId>t9t-base-jpa-jta</artifactId>
-    <packaging>jar</packaging>
-
-    <description>JPA interface for JTA environments</description>
+    <artifactId>t9t-bpmn2-mock</artifactId>
 
     <dependencies>
+    <dependency>
+            <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-bpmn-sapi</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
-            <artifactId>t9t-base-jpa</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.transaction</groupId>
-            <artifactId>jakarta.transaction-api</artifactId>
+            <artifactId>t9t-bpmn2-sapi</artifactId>
         </dependency>
     </dependencies>
+
 </project>

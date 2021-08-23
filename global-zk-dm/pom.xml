@@ -32,14 +32,14 @@
 
     <properties>
         <!-- ZK libraries, COMMERCIAL !!! -->
-        <zk.version>9.5.1.3</zk.version>
+        <zk.version>9.6.0</zk.version>
         <zk-ckez.version>4.14.0.1</zk-ckez.version>  <!-- https://github.com/zkoss/zkckeditor -->
 
         <!-- older versions of jfree pulled by zkex, DM asks for newer -->
         <org-jfree-jfreechart.version>1.0.19</org-jfree-jfreechart.version>
         <org-jfree-jcommon.version>1.0.23</org-jfree-jcommon.version>
 
-        <shiro.version>1.5.3</shiro.version>
+        <shiro.version>1.7.1</shiro.version>
     </properties>
 
 

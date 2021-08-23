@@ -52,6 +52,13 @@
            <artifactId>junit-jupiter-api</artifactId>
            <scope>test</scope>
         </dependency>
+
+         <dependency>
+            <groupId>com.fasterxml.woodstox</groupId>
+            <artifactId>woodstox-core</artifactId>
+            <type>jar</type>
+        </dependency>
+
     </dependencies>
 
     <build>

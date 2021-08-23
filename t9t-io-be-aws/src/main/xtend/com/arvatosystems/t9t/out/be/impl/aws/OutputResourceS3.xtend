@@ -15,9 +15,6 @@
  */
 package com.arvatosystems.t9t.out.be.impl.aws
 
-import com.amazonaws.services.s3.AmazonS3Client
-import com.amazonaws.services.s3.model.ObjectMetadata
-import com.amazonaws.services.s3.model.PutObjectRequest
 import com.arvatosystems.t9t.base.T9tException
 import com.arvatosystems.t9t.base.output.OutputSessionParameters
 import com.arvatosystems.t9t.io.DataSinkDTO
@@ -27,10 +24,12 @@ import de.jpaw.annotations.AddLogger
 import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor
 import de.jpaw.dp.Dependent
 import de.jpaw.dp.Named
-import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.nio.charset.Charset
+import software.amazon.awssdk.core.sync.RequestBody
+import software.amazon.awssdk.services.s3.S3Client
+import software.amazon.awssdk.services.s3.model.PutObjectRequest
 
 @AddLogger
 @Named("S3")  // name of CommunicationTargetChannelType instance
@@ -40,7 +39,7 @@ class OutputResourceS3 implements IOutputResource {
 
     protected static final String GZIP_EXTENSION = ".gz";
 
-    protected final AmazonS3Client s3Client = new AmazonS3Client
+    protected final S3Client s3Client = S3Client.builder.build
     protected Charset encoding;
     protected ByteArrayOutputStream os;
     protected Charset cs
@@ -65,14 +64,15 @@ class OutputResourceS3 implements IOutputResource {
 
         try {
             val bytes   = os.toByteArray
-            val stream  = new ByteArrayInputStream(bytes)
-            val meta    = new ObjectMetadata => [
-                contentType     = mediaType.mimeType
-                contentLength   = bytes.length
-            ]
+//            val stream  = new ByteArrayInputStream(bytes)
+//            val meta    = new ObjectMetadata => [
+//                contentType     = mediaType.mimeType
+//                contentLength   = bytes.length
+//            ]
             LOGGER.debug("Object upload start: bucket {}, path {}", bucket, path)
-            val result = s3Client.putObject(new PutObjectRequest(bucket, path, stream, meta))
-            LOGGER.debug("Object uploaded, created Etag {}", result.ETag)
+            val putRq = PutObjectRequest.builder().bucket(bucket).key(path).build() as PutObjectRequest
+            val result = s3Client.putObject(putRq, RequestBody.fromBytes(bytes))
+            LOGGER.debug("Object uploaded, created Etag {}", result.eTag)
         } catch (Throwable e) {
             LOGGER.error("Could not store S3 data of type {} to {}: {}: {}", mediaType.mediaType.name, targetName, e.class.simpleName, e.message)
             throw new T9tException(T9tException.S3_WRITE_ERROR, bucket + ":" + path)

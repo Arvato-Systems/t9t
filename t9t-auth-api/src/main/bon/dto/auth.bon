@@ -66,7 +66,7 @@ package (com.arvatosystems) t9t.auth {
         optional Integer                            passwordThrottlingAfterX            default "3";        // after how many incorrect attempts is the access throttled? (default 3)
         optional Integer                            passwordThrottlingDuration          default "60";       // for how many seconds does the account not accept any login attempt after throttling? (60)
         optional Integer                            passwordBlockingPeriod              default "0";        // Period in days saying how long an old password will be blocked before it can be used again. "0" Disables this feature
-        optional Integer                            initialPasswordExpiration           default "0";        // Period in days a password change is required on a newly created user 
+        optional Integer                            initialPasswordExpiration           default "0";        // Period in days a password change is required on a newly created user
     }
 
     class TenantLogoDTO RTTI 98 extends ModuleConfigDTO {

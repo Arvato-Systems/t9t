@@ -52,6 +52,7 @@ public class DefaultProcessEngineConfigurationFactory implements IProcessEngineC
     public ProcessEngineConfiguration createConfiguration() {
         final T9tServerConfiguration serverConfiguration = Jdp.getRequired(T9tServerConfiguration.class);
         final DataSource dataSource = Jdp.getOptional(DataSource.class);
+        final DataSource dataSource2 = Jdp.getOptional(DataSource.class, "JDBC2");
         final PlatformTransactionManager transactionManager = Jdp.getOptional(PlatformTransactionManager.class);
         final EntityManagerFactory emf = Jdp.getOptional(EntityManagerFactory.class);
 
@@ -62,9 +63,11 @@ public class DefaultProcessEngineConfigurationFactory implements IProcessEngineC
             // This is the recommended setup
             LOGGER.debug("Using data source {}", dataSource);
             engineConfiguration.setDataSource(dataSource);
+        } else if (dataSource2 != null) {
+            LOGGER.debug("Using data source from secondary DB connection {}", dataSource2);
+            engineConfiguration.setDataSource(dataSource2);
         } else {
-            LOGGER.error(
-                         "No javax.sql.DataSource found by JDP. Configure direct JDBC access for BPMN engine. Neither transactions will be synchronized nor shared JDBC pooling will be used! THIS SETUP IS NOT RECOMMENDED!");
+            LOGGER.error("No javax.sql.DataSource found by JDP. Configure direct JDBC access for BPMN engine. Neither transactions will be synchronized nor shared JDBC pooling will be used! THIS SETUP IS NOT RECOMMENDED!");
 
             final T9tServerConfiguration cfg = Jdp.getRequired(T9tServerConfiguration.class);
             final RelationalDatabaseConfiguration dbCfg = cfg.getDatabaseConfiguration();
@@ -87,8 +90,7 @@ public class DefaultProcessEngineConfigurationFactory implements IProcessEngineC
             final T9tServerConfiguration cfg = Jdp.getRequired(T9tServerConfiguration.class);
 
             if (cfg.getPersistenceUnitName() != null) {
-                LOGGER.error(
-                             "Configure BPMN engine to use persistence unit name {}. Workflow engine will create its own JPA entity manager, thus JPA transactions will be independend! THIS SETUP IS NOT RECOMMENDED!",
+                LOGGER.error("Configure BPMN engine to use persistence unit name {}. Workflow engine will create its own JPA entity manager, thus JPA transactions will be independend! THIS SETUP IS NOT RECOMMENDED!",
                              cfg.getPersistenceUnitName());
                 engineConfiguration.setJpaPersistenceUnitName(cfg.getPersistenceUnitName());
                 engineConfiguration.setJpaHandleTransaction(true);
@@ -103,8 +105,7 @@ public class DefaultProcessEngineConfigurationFactory implements IProcessEngineC
             LOGGER.debug("Using transaction manager {}", transactionManager);
             engineConfiguration.setTransactionManager(transactionManager);
         } else {
-            LOGGER.error(
-                         "No org.springframework.transaction.PlatformTransactionManager found by JDP. Transactions will be synchronized! THIS SETUP IS NOT RECOMMENDED!");
+            LOGGER.error("No {} found by JDP. Transactions will be synchronized! THIS SETUP IS NOT RECOMMENDED!", PlatformTransactionManager.class.getCanonicalName());
         }
 
         engineConfiguration.setDatabaseSchemaUpdate(DB_SCHEMA_UPDATE_FALSE);
@@ -126,8 +127,7 @@ public class DefaultProcessEngineConfigurationFactory implements IProcessEngineC
         }
 
         engineConfiguration.setCustomPostBPMNParseListeners(new ArrayList<>());
-        engineConfiguration.getCustomPostBPMNParseListeners()
-                           .add(new T9tBPMNParseListener());
+        engineConfiguration.getCustomPostBPMNParseListeners().add(new T9tBPMNParseListener());
 
         engineConfiguration.setArtifactFactory(new JdpArtifactFactory());
         engineConfiguration.setIdGenerator(new StrongUuidGenerator());
@@ -152,5 +152,4 @@ public class DefaultProcessEngineConfigurationFactory implements IProcessEngineC
 
         return engineConfiguration;
     }
-
 }

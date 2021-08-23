@@ -39,10 +39,6 @@ import com.arvatosystems.t9t.bpmn.pojo.ProcessOutput;
  */
 public interface IBPMService {
 
-    public static final String ENGINE_ACTIVITI = "activiti";
-    public static final String BPMN_WORKFLOW_DATA = "bpmObject";
-    public static final String CONTENT_RESOURCE = "content.bpmn20.xml";
-
     /**
      * Deploy a new business process.
      *

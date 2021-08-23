@@ -65,7 +65,7 @@
         <maven-war-plugin.version>3.3.1</maven-war-plugin.version>
         <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
         <maven-jarjar-plugin.version>1.8</maven-jarjar-plugin.version>
-        <maven-enforcer-plugin.version>3.0.0-M3</maven-enforcer-plugin.version>
+        <maven-enforcer-plugin.version>3.0.0</maven-enforcer-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <owasp-maven-plugin.version>2.1.1</owasp-maven-plugin.version>
         <spring-boot-maven-plugin.version>2.0.2.RELEASE</spring-boot-maven-plugin.version>  <!-- => 2.4.3 in release 5.1 -->
@@ -929,6 +929,7 @@
         <module>t9t-bpmn2-sapi</module>
         <module>t9t-bpmn2-camunda-be</module>
         <module>t9t-bpmn2-jpa</module>
+        <module>t9t-bpmn2-mock</module>
 
         <!-- AWS cloud integration -->
         <module>t9t-base-be-aws</module>
@@ -985,7 +986,7 @@
                 <module>t9t-zkui-ce</module>
                 <module>t9t-zkui-ee</module>
                 <module>t9t-zkui-screens</module>
-                <module>t9t-zkui-war</module>
+                <!-- <module>t9t-zkui-war</module>   not needed, just a sample -->
             </modules>
         </profile>
 
@@ -1009,7 +1010,7 @@
                 <module>t9t-settings-zkui</module>
                 <module>t9t-zkui-ce</module>
                 <module>t9t-zkui-screens</module>
-                <module>t9t-zkui-war</module>
+                <!-- <module>t9t-zkui-war</module>   not needed, just a sample -->
             </modules>
         </profile>
     </profiles>

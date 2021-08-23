@@ -20,13 +20,14 @@ import java.io.InputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.S3Object;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.io.services.IMediaDataSource;
 
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
+import software.amazon.awssdk.core.ResponseInputStream;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 
 // file download handler implementation for S3 buckets
 @Singleton
@@ -34,7 +35,7 @@ import de.jpaw.dp.Singleton;
 public class MediaDataSourceS3 implements IMediaDataSource {
     private static final Logger LOGGER = LoggerFactory.getLogger(MediaDataSourceS3.class);
     private static final char DELIMITER = ':';
-    protected final AmazonS3Client s3Client = new AmazonS3Client();
+    protected final S3Client s3Client = S3Client.builder().build();
 
     @Override
     public InputStream open(String targetName) throws Exception {
@@ -48,7 +49,8 @@ public class MediaDataSourceS3 implements IMediaDataSource {
         final String bucket = targetName.substring(0, ind).trim();
         final String path = targetName.substring(ind+1).trim();
 
-         S3Object o = s3Client.getObject(bucket, path);
-         return o.getObjectContent();
+        GetObjectRequest getObjectRequest = GetObjectRequest.builder().bucket(bucket).key(bucket).build();
+        ResponseInputStream o = s3Client.getObject(getObjectRequest);
+        return o;
     }
 }

@@ -141,11 +141,11 @@ class Executor implements IExecutor, T9tConstants {
      * Invokes executeSynchronous() and checks the result for correctness and the response type.
      */
     override <T extends ServiceResponse> T executeSynchronousAndCheckResult(RequestContext ctx, RequestParameters params, Class<T> requiredType) {
-        var ServiceResponse response = executeSynchronous(ctx, params)
+        val ServiceResponse response = executeSynchronous(ctx, params)
         if ((response.returnCode > T9tConstants.MAX_OK_RETURN_CODE)) {
             LOGGER.error("Error during request handler execution for {} (returnCode={}, errorMsg={}, errorDetails={})",
                 params.ret$PQON(), response.returnCode, response.errorMessage, response.errorDetails)
-            throw new T9tException(response.returnCode)
+            throw new T9tException(response.returnCode, response.errorDetails)
         }
         // the response must be a subclass of the expected one
         if (!requiredType.isAssignableFrom(response.class)) {

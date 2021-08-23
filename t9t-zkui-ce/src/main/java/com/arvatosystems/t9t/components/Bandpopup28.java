@@ -75,6 +75,7 @@ public class Bandpopup28 extends Bandpopup implements IdSpace, IGridIdOwner {
                 LOGGER.debug("Got onSearch event from filter28! data is {}", o == null ? "NULL" : o.getClass().getCanonicalName());
                 if (o == null || o instanceof SearchFilter)
                     main.setFilter1((SearchFilter) o);
+                    main.search();
             });
         }
 

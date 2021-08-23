@@ -1294,7 +1294,6 @@ body {
 }
 
 .z-window-modal .z-cell {
-    display: block;
     height: auto !important;
 }
 

@@ -5,7 +5,7 @@
     <threesections28 gridId="processDefinitionBpmn2">
         <tabbox28 filterFieldname="processDefinitionId">
             <tabpanels>
-                <tabpanel28 id="deployment">
+                <tabpanel28 id="deployment" filterName="processDefinition">
                     <view28
                         viewModel="@id('vm') @init('com.arvatosystems.t9t.viewmodel.CreateDeploymentVM', vmId='createDeploymentVM')">
                         <vlayout height="200px">

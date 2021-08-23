@@ -467,7 +467,7 @@ public final class ApplicationSession {
         return dayFormat.print(d);
     }
     public String format(LocalDateTime dt) {
-        DateTime ldt = dt.toDateTime(DateTimeZone.UTC);
+        DateTime ldt = dt.toDateTime(DateTimeZone.forTimeZone(TimeZone.getDefault()));
         return timestampFormat.print(ldt);  // dt currently isnt't really a local date time, but also an instant...
     }
     public String format(LocalTime t) {

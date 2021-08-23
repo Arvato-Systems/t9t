@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.base.jdbc.impl;
 
+import javax.sql.DataSource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,6 +62,7 @@ public class InitJdbc {
 //            dataSource.prepStmtCacheSize=250
 //            dataSource.prepStmtCacheSqlLimit=2048
             final HikariDataSource ds = new HikariDataSource(hcfg);
+            Jdp.bindInstanceTo(ds, DataSource.class, "JDBC2");  // make it known to consumers such as BPMN2
             Jdp.registerWithCustomProvider(PersistenceProviderJdbc.class, new PersistenceProviderJdbcProvider(ds));
         }
     }

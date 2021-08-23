@@ -16,7 +16,9 @@
 package com.arvatosystems.t9t.component.datafields;
 
 import java.util.Date;
+import java.util.TimeZone;
 
+import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 import org.zkoss.zul.Datebox;
 
@@ -54,6 +56,7 @@ public class TimestampDataField extends AbstractDataField<Datebox, LocalDateTime
 
     @Override
     public void setValue(LocalDateTime data) {
-        c.setValue(data == null ? null : data.toDate());
+        // convert date based on the server timezone because date is saved in local timezone
+        c.setValue(data == null ? null : data.toDate(TimeZone.getDefault()));
     }
 }
