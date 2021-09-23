@@ -37,6 +37,23 @@ public class StandardT9tNamespaceWriter implements IStandardNamespaceWriter {
     private final Object lock = new Object();
     private final AtomicReference<JAXBContext> context = new AtomicReference<JAXBContext>();
 
+    public static final String T9T_JAXB_PATH = "com.arvatosystems.t9t.xml:com.arvatosystems.t9t.xml.auth";
+    public static final String T9T_NAMESPACES = "xmlns:bon=\"http://www.jpaw.de/schema/bonaparte.xsd\""
+            + " xmlns:t9t_xml=\"http://arvatosystems.com/schema/t9t_xml.xsd\""
+            + " xmlns:t9t_xml_auth=\"http://arvatosystems.com/schema/t9t_xml_auth.xsd\"";
+
+    @Override
+    public void writeApplicationNamespaces(XMLStreamWriter writer) throws XMLStreamException {
+        writer.writeNamespace("bon",          "http://www.jpaw.de/schema/bonaparte.xsd");
+        writer.writeNamespace("t9t_xml",      "http://arvatosystems.com/schema/t9t_xml.xsd");
+        writer.writeNamespace("t9t_xml_auth", "http://arvatosystems.com/schema/t9t_xml_auth.xsd");
+    }
+
+    @Override
+    public String getStandardJAXBPath() {
+        return T9T_JAXB_PATH;
+    }
+
     @Override
     public JAXBContext getStandardJAXBContext() {
         JAXBContext currentContext = context.get();
@@ -59,15 +76,5 @@ public class StandardT9tNamespaceWriter implements IStandardNamespaceWriter {
             context.set(currentContext);
         }
         return currentContext;
-    }
-
-    @Override
-    public void writeApplicationNamespaces(XMLStreamWriter writer) throws XMLStreamException {
-        // no additional namespaces used in the framework itself
-    }
-
-    @Override
-    public String getStandardJAXBPath() {
-        return "";
     }
 }

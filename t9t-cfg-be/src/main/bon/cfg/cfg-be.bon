@@ -52,6 +52,8 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional (KafkaConfiguration...)            kafkaConfiguration;
         optional (AsyncTransmitterConfiguration...) asyncMsgConfiguration;
         optional (LdapConfiguration...)             ldapConfiguration;              // optional external authentication provider (null if none)
+        optional Uuid                               noDbBackendApiKey;              // API key for servers running without DB access
+        required Unicode(255) List<>                noDbBackendPermittedRequests;   // entries for additional request PQONs to be permitted for the above API key
         optional Long                               jwtValidityApiKey;              // validity duration of a JWT when signed on by API key
         optional Long                               jwtValidityUserPassword;        // validity duration of a JWT when signed on by username / password
         required Ascii(16) List<>                   mocks;                          // entries for mocked SMTP, defacto etc.

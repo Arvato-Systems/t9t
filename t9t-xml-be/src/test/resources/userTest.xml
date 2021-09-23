@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<UserMaster xmlns="http://arvatosystems.com/schema/t9t_xml.xsd" xmlns:bon="http://www.jpaw.de/schema/bonaparte.xsd">
+  <records>
+    <userId>testUser22</userId>
+    <name>Test user number 22</name>
+    <isActive>true</isActive>
+    <emailAddress>test@supertest.de</emailAddress>
+    <isTechnical>false</isTechnical>
+    <externalAuth>true</externalAuth>
+    <z>
+      <bon:kvp>
+        <bon:key>XYZ</bon:key>
+        <bon:bool>true</bon:bool>
+      </bon:kvp>
+    </z>
+  </records>
+</UserMaster>

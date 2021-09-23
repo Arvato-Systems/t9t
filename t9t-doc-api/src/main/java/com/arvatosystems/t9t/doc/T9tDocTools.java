@@ -32,14 +32,14 @@ public class T9tDocTools {
     private T9tDocTools() {}
 
     public static FormatStyle styleFor(char x) {
-    	switch (x) {
-    		case 'F': return FormatStyle.FULL;
-    		case 'S': return FormatStyle.SHORT;
-    		case 'M': return FormatStyle.MEDIUM;
-    		case 'L': return FormatStyle.LONG;
-    	}
-		LOGGER.error("Bad style character given: {}, returning default formatter", x);
-    	return FormatStyle.MEDIUM;
+        switch (x) {
+            case 'F': return FormatStyle.FULL;
+            case 'S': return FormatStyle.SHORT;
+            case 'M': return FormatStyle.MEDIUM;
+            case 'L': return FormatStyle.LONG;
+        }
+        LOGGER.error("Bad style character given: {}, returning default formatter", x);
+        return FormatStyle.MEDIUM;
     }
 
     public static String getMailingGroupId(MailingGroupRef ref) {

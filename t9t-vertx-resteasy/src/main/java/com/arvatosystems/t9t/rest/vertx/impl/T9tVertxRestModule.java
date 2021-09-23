@@ -28,7 +28,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.vertx.IRestModule;
-import com.arvatosystems.t9t.rest.vertx.IT9tRestEndpoint;
+import com.arvatosystems.t9t.rest.converters.JavaTimeParamConverterProvider;
+import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
 import com.arvatosystems.t9t.rest.vertx.xml.XmlMediaTypeDecoder;
 import com.arvatosystems.t9t.rest.vertx.xml.XmlMediaTypeEncoder;
 
@@ -56,8 +57,6 @@ public class T9tVertxRestModule implements IRestModule {
                 registry.addSingletonResource(instance);
             }
         }
-
-        
     }
 
     @Override
@@ -69,6 +68,7 @@ public class T9tVertxRestModule implements IRestModule {
         final VertxRegistry registry = deployment.getRegistry();
         addEndpoints(registry);
         final List<Class> providers = new ArrayList<>();
+        providers.add(JavaTimeParamConverterProvider.class);  // Java 8 date/time support for GET parameters
         providers.add(JacksonObjectMapper.class);  // JSON
         providers.add(XmlMediaTypeDecoder.class);  // XML decoder
         providers.add(XmlMediaTypeEncoder.class);  // XML encoder

@@ -21,7 +21,7 @@
 
     <groupId>com.arvato-systems.t9t</groupId>
     <artifactId>global-build</artifactId>
-    <version>5.5-SNAPSHOT</version>
+    <version>5.6-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>Global root POM for the t9t framework</description>
 
@@ -36,7 +36,7 @@
     -->
     <properties>
         <!-- to be used by dependent projects (same as project.version, but must be provided explicitly so that imports work) -->
-        <t9t.version>5.5-SNAPSHOT</t9t.version>
+        <t9t.version>5.6-SNAPSHOT</t9t.version>
 
         <!-- Build specific properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -783,6 +783,7 @@
 
         <module>t9t-server-sapi</module>
         <module>t9t-base-sapi</module>
+        <module>t9t-rest-sapi</module>
         <module>t9t-cfg-be</module>
 
         <module>t9t-annotations-jpa</module>
@@ -811,6 +812,7 @@
         <module>t9t-auth-be</module>
         <module>t9t-auth-jpa</module>
         <module>t9t-auth-mock</module>
+        <module>t9t-auth-nodb</module>
 
         <module>t9t-base-vertx</module>
         <module>t9t-auth-vertx</module>
@@ -885,7 +887,9 @@
         <module>t9t-pdf-api</module>
         <module>t9t-pdf-be</module>
 
-        <module>t9t-xml</module>
+        <module>t9t-xml-apiext</module>
+        <module>t9t-xml-restapi</module>
+        <module>t9t-xml-be</module>
 
         <!-- state machine projects -->
         <module>t9t-bpmn-api</module>
@@ -918,6 +922,8 @@
         <module>t9t-vertx-cluster</module>
         <module>t9t-vertx-metrics</module>
         <module>t9t-vertx-resteasy</module>
+        <module>t9t-jetty-resteasy</module>
+        <module>t9t-jetty-restgateway</module>
         <module>t9t-proxy</module>
         <module>t9t-all-api</module>
         <module>t9t-all</module>  <!-- t9t-all is t9t-all-be + t9t-all-jpa -->

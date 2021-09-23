@@ -119,6 +119,7 @@ public class ConfigurationFactory {
         return new PropertiesPropertySource(file.toString(), factory.getObject());
     }
 
+    // invoked from Main for SchemaLoaderConfiguration
     public <T> T load(Class<T> configClass) {
         try {
             // Create bean structure using spring boots properties system by binding system properties to bean

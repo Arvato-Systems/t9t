@@ -39,7 +39,7 @@ public class PerformUntilRequestHandler extends AbstractRequestHandler<PerformUn
         int count = 0;
         Instant stopAt = request.getStopAt();
         if (request.getMaxNumberOfMilliseconds() != null) {
-        	final Instant alsoStopAt = Instant.now().plusMillis(request.getMaxNumberOfMilliseconds().longValue());
+            final Instant alsoStopAt = Instant.now().plusMillis(request.getMaxNumberOfMilliseconds().longValue());
             if (stopAt == null || stopAt.isAfter(alsoStopAt))
                 stopAt = alsoStopAt;
         }

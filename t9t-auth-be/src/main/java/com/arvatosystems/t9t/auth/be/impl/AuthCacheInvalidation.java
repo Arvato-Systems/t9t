@@ -26,11 +26,11 @@ import de.jpaw.dp.Singleton;
 public class AuthCacheInvalidation implements IAuthCacheInvalidation {
     protected final IExecutor executor = Jdp.getRequired(IExecutor.class);
 
-	@Override
-	public void invalidateAuthCache(RequestContext ctx, String classname, Long ref, String id) {
-		// first, do the standard cache invalidation
-		executor.clearCache(ctx, classname, null);
-		// also, do the specific auth cache invalidation
-		executor.clearCache(ctx, AUTH_CACHE_ID, null);
-	}
+    @Override
+    public void invalidateAuthCache(RequestContext ctx, String classname, Long ref, String id) {
+        // first, do the standard cache invalidation
+        executor.clearCache(ctx, classname, null);
+        // also, do the specific auth cache invalidation
+        executor.clearCache(ctx, AUTH_CACHE_ID, null);
+    }
 }

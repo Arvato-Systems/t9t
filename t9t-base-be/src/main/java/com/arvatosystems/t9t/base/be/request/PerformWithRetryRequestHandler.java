@@ -40,7 +40,7 @@ public class PerformWithRetryRequestHandler extends AbstractRequestHandler<Perfo
         final long delay = request.getWaitBetweenRetries() == null ? 200L : request.getWaitBetweenRetries();
         Instant stopAt = request.getStopAt();
         if (request.getMaxNumberOfMilliseconds() != null) {
-        	final Instant alsoStopAt = Instant.now().plusMillis(request.getMaxNumberOfMilliseconds().longValue());
+            final Instant alsoStopAt = Instant.now().plusMillis(request.getMaxNumberOfMilliseconds().longValue());
             if (stopAt == null || stopAt.isAfter(alsoStopAt))
                 stopAt = alsoStopAt;
         }

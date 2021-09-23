@@ -22,7 +22,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>global-build</artifactId>
-        <version>5.5-SNAPSHOT</version>
+        <version>5.6-SNAPSHOT</version>
     </parent>
 
     <artifactId>t9t-settings-zkui</artifactId>
@@ -56,7 +56,7 @@
                 <configuration>
                     <source>11</source>
                     <target>11</target>
-					<release>11</release>
+                    <release>11</release>
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>

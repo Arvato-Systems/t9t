@@ -138,6 +138,8 @@ class ConfigProvider {
             asyncMsgConfiguration   = a.asyncMsgConfiguration   ?: b.asyncMsgConfiguration
             ldapConfiguration       = a.ldapConfiguration       ?: b.ldapConfiguration
             mocks                   = a.mocks                   ?: b.mocks
+            noDbBackendApiKey       = a.noDbBackendApiKey       ?: b.noDbBackendApiKey
+            noDbBackendPermittedRequests = a.noDbBackendPermittedRequests ?: b.noDbBackendPermittedRequests
             runInCluster            = a.runInCluster            ?: b.runInCluster
             disableScheduler        = a.disableScheduler        ?: b.disableScheduler
             importEnvironment       = a.importEnvironment       ?: b.importEnvironment

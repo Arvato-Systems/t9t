@@ -47,7 +47,16 @@ package (com.arvatosystems) t9t.base.auth {
     /** Class to store cached permissions. */
     final class PermissionEntry {
         required resourceId                                 resourceId;
-        required enumset Permissionset                      permissions;        // permissions - only entries <> 0 are stored
+        required enumset Permissionset                      permissions;                // permissions - only entries <> 0 are stored
+    }
+
+    // internal class - change into Java 17 record once available
+    final class AuthenticationInfo {
+//        required int                                        returnCode;                 // result of the login call - or specific other codes if it hasn't been attempted
+        optional Integer                                    httpStatusCode;             // the HTTP status to return - only set if not successful
+        optional Unicode(200)                               message;                    // reason of the failure (only set if not successful)
+        optional encodedJwt                                 encodedJwt;                 // JSON Web Token in encoded form, signature can be verified
+        optional (JwtInfo...)                               jwtInfo;                    // JWT contents in clear form
     }
 
     /** Provides authentication information via password or serves as a "change password" request. */
@@ -60,7 +69,7 @@ package (com.arvatosystems) t9t.base.auth {
 
     /** Provides authentication information via commonName, which has been provided by the SSL layer and taken from the peer's verified certificate. */
     final class AuthX500DistinguishedName extends AuthenticationParameters {
-        required distinguishedName                          distinguishedName;  // distinguished name of the SSL certificate
+        required distinguishedName                          distinguishedName;          // distinguished name of the SSL certificate
     }
 
     /** Provides authentication information via random UUID API key. */

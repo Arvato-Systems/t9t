@@ -1,0 +1,45 @@
+/*
+ * Copyright (c) 2012 - 2020 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ /** Definitions for authentication. */
+package (com.arvatosystems) t9t.xml.auth XML PROPERTY bundle t9t.config {
+    properties path;
+
+    final class SessionParameters {
+        optional Ascii(32)                          languageTag;                // BCP 47 language tag  (de, en-US etc...)
+        optional Ascii(64)                          zoneInfo;                   // time zone
+        optional Unicode(255)                       dataUri;                    // filename or corresponding source info
+        optional Unicode(255)                       userAgent;                  // client application (including versions)
+    }
+
+    /** Authenticate via API KEY. */
+    final class AuthByApiKey xmlRoot {
+        properties path = "apikey";
+        required uuid                               apiKey;                     // specifies the API key
+        optional (SessionParameters)                sessionParameters;
+    }
+
+    /** Authenticate via user ID / password. */
+    final class AuthByUserIdPassword xmlRoot {
+        properties path = "userpw";
+        required Unicode(16)                        userId;
+        required Unicode(32)                        password;
+        optional (SessionParameters)                sessionParameters;
+    }
+
+    final class AuthenticationResult xmlRoot {
+        required Ascii(1024)                        jwt;                        // encoded JSON web token
+    }
+}

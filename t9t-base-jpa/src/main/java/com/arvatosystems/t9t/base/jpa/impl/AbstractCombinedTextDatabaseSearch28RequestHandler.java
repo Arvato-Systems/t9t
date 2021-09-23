@@ -1,12 +1,12 @@
-/**
+/*
  * Copyright (c) 2012 - 2020 Arvato Systems GmbH
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -467,13 +467,13 @@ import org.slf4j.LoggerFactory;
 /**
  * The combined search evaluates if we have filter and/or sort criteria for DB and SOLR,
  * and selects an appropriate approach to find the best strategy (at least it attempts to do so, based on the input data).
- * 
+ *
  * The strategy is as follows:
  * If filter and sort all allow a DB search, then DB search is done.
  * If filter and sort all allow a SOLR search, then SOLR search is done.
  * Otherwise, if the sort is DB only, query by DB and filter via SOLR.
  * Otherwise, sort via SOLR and intersect with DB results.
- * 
+ *
  * It is assumed that the DB can do all types of sorts, which means we only have
  * - no sort
  * - DB_ONLY sort
@@ -490,18 +490,18 @@ public abstract class AbstractCombinedTextDatabaseSearch28RequestHandler<REF ext
   @Data
   protected static class SearchTypeMappingEntry {
     protected final String name;
-    
+
     protected final SearchFilterTypeEnum searchType;
-    
+
     protected final SearchFilterMatchTypeEnum matchType;
-    
+
     public SearchTypeMappingEntry(final String name, final SearchFilterTypeEnum searchType, final SearchFilterMatchTypeEnum matchType) {
       super();
       this.name = name;
       this.searchType = searchType;
       this.matchType = matchType;
     }
-    
+
     @Override
     @Pure
     public int hashCode() {
@@ -511,7 +511,7 @@ public abstract class AbstractCombinedTextDatabaseSearch28RequestHandler<REF ext
       result = prime * result + ((this.searchType== null) ? 0 : this.searchType.hashCode());
       return prime * result + ((this.matchType== null) ? 0 : this.matchType.hashCode());
     }
-    
+
     @Override
     @Pure
     public boolean equals(final Object obj) {
@@ -539,7 +539,7 @@ public abstract class AbstractCombinedTextDatabaseSearch28RequestHandler<REF ext
         return false;
       return true;
     }
-    
+
     @Override
     @Pure
     public String toString() {
@@ -549,45 +549,45 @@ public abstract class AbstractCombinedTextDatabaseSearch28RequestHandler<REF ext
       b.add("matchType", this.matchType);
       return b.toString();
     }
-    
+
     @Pure
     public String getName() {
       return this.name;
     }
-    
+
     @Pure
     public SearchFilterTypeEnum getSearchType() {
       return this.searchType;
     }
-    
+
     @Pure
     public SearchFilterMatchTypeEnum getMatchType() {
       return this.matchType;
     }
   }
-  
+
   private static final int MAX_ITERATIONS = 50;
-  
+
   protected final IExecutor executor = Jdp.<IExecutor>getRequired(IExecutor.class);
-  
+
   protected final ISearchTools searchTools = Jdp.<ISearchTools>getRequired(ISearchTools.class);
-  
+
   protected final ITextSearch textSearch = Jdp.<ITextSearch>getRequired(ITextSearch.class);
-  
+
   protected final IResolverSurrogateKey28<REF, TRACKING, ENTITY> resolver;
-  
+
   protected final IEntityMapper28<Long, DTO, TRACKING, ENTITY> mapper;
-  
+
   protected final List<AbstractCombinedTextDatabaseSearch28RequestHandler.SearchTypeMappingEntry> textSearchPathElements;
-  
+
   protected final Map<String, String> textSearchFieldMappings;
-  
+
   protected final String documentName;
-  
+
   protected final String keyFieldName;
-  
+
   protected final BonaPortableClass<Search28Request<DTO, TRACKING>> bclass;
-  
+
   @Override
   public ReadAll28Response<DTO, TRACKING> execute(final RequestContext ctx, final REQ rq) {
     try {
@@ -627,7 +627,7 @@ public abstract class AbstractCombinedTextDatabaseSearch28RequestHandler<REF ext
       if ((sortType == null)) {
         this.executeBOTHSearchDrivenBySolr(ctx, rq, solrRequest, dbRequest, finalResultList);
       } else {
-        if ((Objects.equal(sortType, SearchFilterTypeEnum.DB_ONLY) || 
+        if ((Objects.equal(sortType, SearchFilterTypeEnum.DB_ONLY) ||
           ((!filterTypes.contains(SearchFilterTypeEnum.SOLR_ONLY)) && (!filterTypes.contains(SearchFilterTypeEnum.BOTH))))) {
           this.executeBOTHSearchDrivenByDb(ctx, rq, solrRequest, dbRequest, finalResultList);
         } else {
@@ -639,7 +639,7 @@ public abstract class AbstractCombinedTextDatabaseSearch28RequestHandler<REF ext
       throw Exceptions.sneakyThrow(_e);
     }
   }
-  
+
   protected ReadAll28Response<DTO, TRACKING> executeDBSearch(final REQ rq) {
     try {
       AbstractCombinedTextDatabaseSearch28RequestHandler.LOGGER.debug("Using DB only search");
@@ -649,7 +649,7 @@ public abstract class AbstractCombinedTextDatabaseSearch28RequestHandler<REF ext
       throw Exceptions.sneakyThrow(_e);
     }
   }
-  
+
   protected ReadAll28Response<DTO, TRACKING> executeSOLRSearch(final RequestContext ctx, final REQ rq) {
     try {
       this.searchTools.mapNames(rq, this.textSearchFieldMappings);
@@ -678,7 +678,7 @@ public abstract class AbstractCombinedTextDatabaseSearch28RequestHandler<REF ext
       throw Exceptions.sneakyThrow(_e);
     }
   }
-  
+
   protected void executeBOTHSearchDrivenBySolr(final RequestContext ctx, final REQ rq, final Search28Request<DTO, TRACKING> solrRequest, final Search28Request<DTO, TRACKING> dbRequest, final ArrayList<ENTITY> finalResultList) {
     AbstractCombinedTextDatabaseSearch28RequestHandler.LOGGER.debug("SOLR driven combined search performed");
     final boolean byRelevance = IterableExtensions.isNullOrEmpty(rq.getSortColumns());
@@ -766,7 +766,7 @@ public abstract class AbstractCombinedTextDatabaseSearch28RequestHandler<REF ext
       }
     }
   }
-  
+
   protected void xfer(final List<Long> orderForNoSort, final ArrayList<ENTITY> finalResultList, final List<ENTITY> temp, final boolean byRelevance) {
     if ((!byRelevance)) {
       finalResultList.addAll(temp);
@@ -787,7 +787,7 @@ public abstract class AbstractCombinedTextDatabaseSearch28RequestHandler<REF ext
       }
     }
   }
-  
+
   protected void executeBOTHSearchDrivenByDb(final RequestContext ctx, final REQ rq, final Search28Request<DTO, TRACKING> solrRequest, final Search28Request<DTO, TRACKING> dbRequest, final ArrayList<ENTITY> finalResultList) {
     AbstractCombinedTextDatabaseSearch28RequestHandler.LOGGER.debug("DB driven combined search performed");
     dbRequest.setSortColumns(rq.getSortColumns());
@@ -873,7 +873,7 @@ public abstract class AbstractCombinedTextDatabaseSearch28RequestHandler<REF ext
       }
     }
   }
-  
+
   protected void xfer(final List<Long> orderForNoSort, final ArrayList<ENTITY> finalResultList, final List<Long> temp) {
     int _size = temp.size();
     int _multiply = (2 * _size);
@@ -892,7 +892,7 @@ public abstract class AbstractCombinedTextDatabaseSearch28RequestHandler<REF ext
       }
     }
   }
-  
+
   /**
    * Method splits the searchFilters in the original request into two requests that are solr only and dbOnly
    */
@@ -927,7 +927,7 @@ public abstract class AbstractCombinedTextDatabaseSearch28RequestHandler<REF ext
       }
     }
   }
-  
+
   /**
    * Determines which search engine(s) can process all filters. Also validates that only AND conditions are used.
    * For performance reasons, the result is passed in by reference (avoids GC overhead due to temp object constructions).
@@ -950,7 +950,7 @@ public abstract class AbstractCombinedTextDatabaseSearch28RequestHandler<REF ext
       }
     }
   }
-  
+
   /**
    * Determines which search engine(s) can process a certain field.
    * The data is available in the list textSearchPathElements. If no entry can be found, a default of DBONLY is assumed.
@@ -966,7 +966,7 @@ public abstract class AbstractCombinedTextDatabaseSearch28RequestHandler<REF ext
     }
     return entry.searchType;
   }
-  
+
   /**
    * Returns true if path matches the mapping entry, depending on type of match, otherwise false.
    */
@@ -986,9 +986,9 @@ public abstract class AbstractCombinedTextDatabaseSearch28RequestHandler<REF ext
     }
     return false;
   }
-  
+
   private static final Logger LOGGER = LoggerFactory.getLogger(com.arvatosystems.t9t.base.jpa.impl.AbstractCombinedTextDatabaseSearch28RequestHandler.class);
-  
+
   public AbstractCombinedTextDatabaseSearch28RequestHandler(final IResolverSurrogateKey28<REF, TRACKING, ENTITY> resolver, final IEntityMapper28<Long, DTO, TRACKING, ENTITY> mapper, final List<AbstractCombinedTextDatabaseSearch28RequestHandler.SearchTypeMappingEntry> textSearchPathElements, final Map<String, String> textSearchFieldMappings, final String documentName, final String keyFieldName, final BonaPortableClass<Search28Request<DTO, TRACKING>> bclass) {
     super();
     this.resolver = resolver;
@@ -999,7 +999,7 @@ public abstract class AbstractCombinedTextDatabaseSearch28RequestHandler<REF ext
     this.keyFieldName = keyFieldName;
     this.bclass = bclass;
   }
-  
+
   @Override
   @Pure
   public int hashCode() {
@@ -1016,7 +1016,7 @@ public abstract class AbstractCombinedTextDatabaseSearch28RequestHandler<REF ext
     result = prime * result + ((this.keyFieldName== null) ? 0 : this.keyFieldName.hashCode());
     return prime * result + ((this.bclass== null) ? 0 : this.bclass.hashCode());
   }
-  
+
   @Override
   @Pure
   public boolean equals(final Object obj) {
@@ -1079,60 +1079,60 @@ public abstract class AbstractCombinedTextDatabaseSearch28RequestHandler<REF ext
       return false;
     return true;
   }
-  
+
   @Override
   @Pure
   public String toString() {
     return new ToStringBuilder(this)
-    	.addAllFields()
-    	.toString();
+        .addAllFields()
+        .toString();
   }
-  
+
   @Pure
   public IExecutor getExecutor() {
     return this.executor;
   }
-  
+
   @Pure
   public ISearchTools getSearchTools() {
     return this.searchTools;
   }
-  
+
   @Pure
   public ITextSearch getTextSearch() {
     return this.textSearch;
   }
-  
+
   @Pure
   public IResolverSurrogateKey28<REF, TRACKING, ENTITY> getResolver() {
     return this.resolver;
   }
-  
+
   @Pure
   public IEntityMapper28<Long, DTO, TRACKING, ENTITY> getMapper() {
     return this.mapper;
   }
-  
+
   @Pure
   public List<AbstractCombinedTextDatabaseSearch28RequestHandler.SearchTypeMappingEntry> getTextSearchPathElements() {
     return this.textSearchPathElements;
   }
-  
+
   @Pure
   public Map<String, String> getTextSearchFieldMappings() {
     return this.textSearchFieldMappings;
   }
-  
+
   @Pure
   public String getDocumentName() {
     return this.documentName;
   }
-  
+
   @Pure
   public String getKeyFieldName() {
     return this.keyFieldName;
   }
-  
+
   @Pure
   public BonaPortableClass<Search28Request<DTO, TRACKING>> getBclass() {
     return this.bclass;

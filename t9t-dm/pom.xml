@@ -22,7 +22,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>global-build</artifactId>
-        <version>5.5-SNAPSHOT</version>
+        <version>5.6-SNAPSHOT</version>
     </parent>
 
     <artifactId>t9t-dm</artifactId>
@@ -129,6 +129,21 @@
             </dependency>
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
+                <artifactId>t9t-jetty-resteasy</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.arvato-systems.t9t</groupId>
+                <artifactId>t9t-jetty-restgateway</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.arvato-systems.t9t</groupId>
+                <artifactId>t9t-xml-restapi</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-activeannotations-jpa</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -165,6 +180,11 @@
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-auth-mock</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.arvato-systems.t9t</groupId>
+                <artifactId>t9t-auth-nodb</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -462,6 +482,12 @@
 
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
+                <artifactId>t9t-rest-sapi</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-init</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -477,7 +503,12 @@
             </dependency>
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-xml</artifactId>
+                <artifactId>t9t-xml-apiext</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.arvato-systems.t9t</groupId>
+                <artifactId>t9t-xml-be</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

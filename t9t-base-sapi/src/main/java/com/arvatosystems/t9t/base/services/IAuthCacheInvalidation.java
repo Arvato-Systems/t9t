@@ -18,6 +18,6 @@ package com.arvatosystems.t9t.base.services;
 public interface IAuthCacheInvalidation {
     public static final String AUTH_CACHE_ID = "AuthCache";
 
-	/** Invalidate the auth cache. Some or multiple of the parameters could be null. */
+    /** Invalidate the auth cache. Some or multiple of the parameters could be null. */
     void invalidateAuthCache(RequestContext ctx, String classname, Long ref, String id);
 }

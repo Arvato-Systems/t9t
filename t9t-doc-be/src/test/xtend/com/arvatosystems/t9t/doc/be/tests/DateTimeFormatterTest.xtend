@@ -157,14 +157,14 @@ class DateTimeFormatterTest {
 
     @Test
     def void verySimpleTest() {
-    	val ts = LocalDateTime.of(2016, 8, 15, 17, 26, 58)
-    	LOGGER.info("ISO timestamp is {}", ts.format(DateTimeFormatter.ISO_DATE_TIME))
+        val ts = LocalDateTime.of(2016, 8, 15, 17, 26, 58)
+        LOGGER.info("ISO timestamp is {}", ts.format(DateTimeFormatter.ISO_DATE_TIME))
         val localFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.MEDIUM)
         .withLocale(Locale.GERMAN) //.withZone(ZoneId.of("Europe/Berlin"));
-    	LOGGER.info("local timestamp is {}", ts.format(localFormatter))  
-    	val inst = ts.toInstant(ZoneOffset.UTC)
-    	val zdt = inst.atZone(ZoneId.of("Europe/Berlin"))
-    	LOGGER.info("local instant is {}", zdt.format(localFormatter))  
+        LOGGER.info("local timestamp is {}", ts.format(localFormatter))
+        val inst = ts.toInstant(ZoneOffset.UTC)
+        val zdt = inst.atZone(ZoneId.of("Europe/Berlin"))
+        LOGGER.info("local instant is {}", zdt.format(localFormatter))
     }
 
     @Test

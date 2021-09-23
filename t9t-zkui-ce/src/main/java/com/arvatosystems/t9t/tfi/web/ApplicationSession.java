@@ -417,7 +417,7 @@ public final class ApplicationSession {
            ? DateTimeFormatter.ofPattern(localizedPattern) : getDateTimeFormatterWithStyle(fallback);
         return userZoneId == null ? input.withLocale(userLocale).withZone(ZoneOffset.UTC) : input.withLocale(userLocale).withZone(userZoneId);
     }
-    
+
     public DateTimeFormatter getDateTimeFormatterWithStyle(String style) {
 
         if (style.charAt(0) == '-') {
@@ -435,8 +435,8 @@ public final class ApplicationSession {
         case 'S': return FormatStyle.SHORT;
         case 'L': return FormatStyle.LONG;
         case 'F': return FormatStyle.FULL;
-        case 'M': 
-        default: 
+        case 'M':
+        default:
             return FormatStyle.MEDIUM;
         }
     }

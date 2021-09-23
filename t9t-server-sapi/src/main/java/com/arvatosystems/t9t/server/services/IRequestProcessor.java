@@ -22,12 +22,15 @@ import com.arvatosystems.t9t.server.InternalHeaderParameters;
 
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 
-/** Interface between a specific server implementation (for example servlet, netty, or vert.x based) and the execution backend.
+/**
+ * Interface between a specific server implementation (for example servlet, netty, or vert.x based) and the execution backend.
  * Can also be used for a client, in which case the implementation will send the request to the remote server.
- * This is a specialized & streamlined version of bonaparte.api.auth.IRequestProcessor, without the support methods required by generics. */
+ * This is a specialized & streamlined version of bonaparte.api.auth.IRequestProcessor, without the support methods required by generics.
+ **/
 
 public interface IRequestProcessor {
-    /** Execute a request. For server implementations, authentication has been performed and jwtInfo is the decoded user / session information,
+    /**
+     * Execute a request. For server implementations, authentication has been performed and jwtInfo is the decoded user / session information,
      * and encodedJwt provides the signed token in case nested executions have to be performed.
      * Implementations have to catch all exceptions and populate a return code and error details in case anything fails.
      * skipAuthorization can be set to true, if the caller is known to originate from an internal context and has been pre-authorized (i.e. for sub services).
