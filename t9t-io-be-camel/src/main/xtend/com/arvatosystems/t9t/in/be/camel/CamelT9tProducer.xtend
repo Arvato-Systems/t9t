@@ -34,7 +34,8 @@ import org.apache.camel.Exchange
 import org.apache.camel.support.DefaultProducer
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.FilenameUtils
-import org.joda.time.LocalDateTime
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @AddLogger
 class CamelT9tProducer extends DefaultProducer {
@@ -138,7 +139,7 @@ class CamelT9tProducer extends DefaultProducer {
         if (dt === null) {
             return datePattern.replaceAll("\\w", "0");
         } else {
-            return dt.toString(datePattern);
+            return dt.format(DateTimeFormatter.ofPattern(datePattern));
         }
     }
 }

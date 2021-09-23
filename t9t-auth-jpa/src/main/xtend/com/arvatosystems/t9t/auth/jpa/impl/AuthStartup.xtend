@@ -37,7 +37,7 @@ import de.jpaw.dp.Provider
 import de.jpaw.dp.Startup
 import de.jpaw.dp.StartupOnly
 import javax.persistence.EntityManager
-import org.joda.time.Instant
+import java.time.Instant
 
 /** The class implements a check if we are started on an empty database, and in that case, creates the global tenant and the admin user with a default password,
  * for bootstrap reasons.
@@ -47,7 +47,6 @@ import org.joda.time.Instant
 @Startup(50010)
 @AddLogger
 class AuthStartup implements StartupOnly, T9tConstants {
-    static final long ONE_DAY_IN_MS = 1000L * 24L * 3600L;
 
     @Inject Provider<PersistenceProviderJPA> jpaContextProvider
 
@@ -132,16 +131,15 @@ class AuthStartup implements StartupOnly, T9tConstants {
         ]
         em.persist(userStatus)
 
-        val now = System.currentTimeMillis
         val password = new PasswordEntity => [
             put$Key(new PasswordKey => [
                 objectRef              = ADMIN_USER_REF42
                 passwordSerialNumber = 1
             ])
             passwordSetByUser       = ADMIN_USER_REF42
-            passwordCreation        = new Instant(now)
-            passwordExpiry          = new Instant(now + 30 * ONE_DAY_IN_MS)
-            userExpiry              = new Instant(now + 3650 * ONE_DAY_IN_MS)
+            passwordCreation        = Instant.now
+            passwordExpiry          = passwordCreation.plusSeconds(30 * T9tConstants.ONE_DAY_IN_S)
+            userExpiry              = passwordCreation.plusSeconds(3650 * T9tConstants.ONE_DAY_IN_S)
             passwordHash            = PasswordUtil.createPasswordHash(ADMIN_USER_ID, "changeMe")
         ]
         em.persist(password)

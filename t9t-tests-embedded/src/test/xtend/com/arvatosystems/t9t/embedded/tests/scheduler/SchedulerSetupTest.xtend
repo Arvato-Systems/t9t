@@ -29,7 +29,7 @@ import com.arvatosystems.t9t.ssm.request.SchedulerSetupCrudRequest
 import de.jpaw.annotations.AddLogger
 import de.jpaw.bonaparte.pojos.api.OperationType
 import de.jpaw.bonaparte.pojos.api.UnicodeFilter
-import org.joda.time.LocalTime
+import java.time.LocalTime
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test

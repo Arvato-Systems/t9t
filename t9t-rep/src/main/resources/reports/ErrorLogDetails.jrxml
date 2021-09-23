@@ -4,12 +4,12 @@
     <property name="ireport.zoom" value="1.2100000000000006"/>
     <property name="ireport.x" value="0"/>
     <property name="ireport.y" value="0"/>
-    <import value="org.joda.time.LocalDateTime"/>
-    <parameter name="dateFrom" class="org.joda.time.LocalDateTime" isForPrompting="false">
-        <defaultValueExpression><![CDATA[new LocalDateTime(2014,01,01,0,0)]]></defaultValueExpression>
+    <import value="java.time.LocalDateTime"/>
+    <parameter name="dateFrom" class="java.time.LocalDateTime" isForPrompting="false">
+        <defaultValueExpression><![CDATA[LocalDateTime.of(2014,01,01,0,0)]]></defaultValueExpression>
     </parameter>
-    <parameter name="dateTo" class="org.joda.time.LocalDateTime" isForPrompting="false">
-        <defaultValueExpression><![CDATA[new LocalDateTime()]]></defaultValueExpression>
+    <parameter name="dateTo" class="java.time.LocalDateTime" isForPrompting="false">
+        <defaultValueExpression><![CDATA[LocalDateTime.now()]]></defaultValueExpression>
     </parameter>
     <parameter name="dateFromTimestamp" class="java.sql.Timestamp" isForPrompting="false">
         <defaultValueExpression><![CDATA[new java.sql.Timestamp($P{dateFrom}.toDate().getTime())]]></defaultValueExpression>

@@ -15,7 +15,8 @@
  */
 package com.arvatosystems.t9t.context;
 
-import org.joda.time.Instant;
+import java.time.Instant;
+import java.time.ZoneId;
 
 import com.arvatosystems.t9t.components.Grid28;
 import com.arvatosystems.t9t.components.tools.JumpTool;
@@ -52,8 +53,8 @@ public class ShowOkRequestContextMenuHandler implements IGridContextMenu<Message
         pQONFilter.setEqualsValue(dto.getRequestParameterPqon());
 
         InstantFilter executionStartedAtFilter  = new InstantFilter(MessageDTO.meta$$executionStartedAt.getName());
-        final Instant fromInstant = Instant.ofEpochMilli(dto.getDay().toDateTimeAtStartOfDay().getMillis());
-        final Instant toInstant = Instant.ofEpochMilli(dto.getDay().plusDays(1).toDateTimeAtStartOfDay().getMillis());
+        final Instant fromInstant = dto.getDay().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();
+        final Instant toInstant = dto.getDay().plusDays(1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();
         executionStartedAtFilter.setLowerBound(fromInstant);
         executionStartedAtFilter.setUpperBound(toInstant);
 

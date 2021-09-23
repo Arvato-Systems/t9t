@@ -40,6 +40,12 @@ test-output/
 src-gen/
 xtend-gen/
 
+# eclipse project files
+.classpath
+.project
+.settings
+.checkstyle
+
 # intellij
 *.iml
 .idea

@@ -70,11 +70,10 @@ public class RequestContext extends AbstractRequestContext {
     public volatile String statusText;
     private volatile boolean priorityRequest = false;   // can be set explicitly, or via ServiceRequestHeader
     // keeping track of call stack...
-    private String currentPQON;                 // if a subrequest is called, this field keeps track of the innermost request type
-    int depth = -1;                             // the current call stack depth. -1 = initialization, 0 = in main request, 1... in subrequest
-    int numberOfCallsThisLevel = 0;             // the number of calls which have been started at this stack level
-    //int numberOfCallsTotal = 0;                 // the total number of subexecutions
-    private List<StackLevel> callStack = new ArrayList<StackLevel>();  // needs to be concurrent because the processStatus request will read it!
+    private String currentPQON;                         // if a subrequest is called, this field keeps track of the innermost request type
+    private int depth                   = -1;           // the current call stack depth. -1 = initialization, 0 = in main request, 1... in subrequest
+    private int numberOfCallsThisLevel  = 0;            // the number of calls which have been started at this stack level
+    private List<StackLevel> callStack  = new ArrayList<StackLevel>();  // needs to be concurrent because the processStatus request will read it!
     private final Object lockForNesting = new Object();
 
     public void pushCallStack(String newPQON) {
@@ -127,6 +126,13 @@ public class RequestContext extends AbstractRequestContext {
             copy.add(new StackLevel(numberOfCallsThisLevel, progressCounter.get(), currentPQON, MessagingUtil.truncField(statusText, maxLen)));  // add one more for the current level
             return copy;
         }
+    }
+
+    /**
+     * Return true if the current request on the request context is the first request being invoked
+     */
+    public boolean isTopLevelRequest() {
+        return depth == 0;
     }
 
     public void incrementProgress() {

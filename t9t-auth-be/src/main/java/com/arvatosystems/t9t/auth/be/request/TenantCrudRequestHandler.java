@@ -22,16 +22,24 @@ import com.arvatosystems.t9t.auth.services.ITenantResolver;
 import com.arvatosystems.t9t.base.be.impl.AbstractCrudSurrogateKeyBERequestHandler;
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
+import com.arvatosystems.t9t.base.services.IAuthCacheInvalidation;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
+import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.dp.Jdp;
 
 public class TenantCrudRequestHandler extends AbstractCrudSurrogateKeyBERequestHandler<TenantRef, TenantDTO, FullTrackingWithVersion, TenantCrudRequest> {
 
     protected final ITenantResolver resolver = Jdp.getRequired(ITenantResolver.class);
+    protected final IAuthCacheInvalidation cacheInvalidator = Jdp.getRequired(IAuthCacheInvalidation.class);
 
     @Override
     public CrudSurrogateKeyResponse<TenantDTO, FullTrackingWithVersion> execute(RequestContext ctx, TenantCrudRequest crudRequest) {
-        return execute(ctx, crudRequest, resolver);
+        final CrudSurrogateKeyResponse<TenantDTO, FullTrackingWithVersion> result = execute(ctx, crudRequest, resolver);
+        if (crudRequest.getCrud() != OperationType.READ) {
+            final String tenantId = result.getData() != null ? result.getData().getTenantId() : null;
+            cacheInvalidator.invalidateAuthCache(ctx, TenantDTO.class.getSimpleName(), result.getKey(), tenantId);
+        }
+        return result;
     }
 }

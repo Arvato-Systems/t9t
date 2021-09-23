@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.eclipse.xtext.xbase.lib.Pair;
-import org.joda.time.Instant;
+import java.time.Instant;
 
 import com.arvatosystems.t9t.auth.AuthModuleCfgDTO;
 import com.arvatosystems.t9t.auth.SessionDTO;

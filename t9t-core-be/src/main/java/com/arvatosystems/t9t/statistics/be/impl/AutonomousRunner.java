@@ -18,7 +18,7 @@ package com.arvatosystems.t9t.statistics.be.impl;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import org.joda.time.Instant;
+import java.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,8 +65,8 @@ public class AutonomousRunner implements IAutonomousRunner {
         }
         ctx.statusText = "Writing statistics";
 
-        Instant now = new Instant();
-        long timeTaken = now.getMillis() - ctx.executionStart.getMillis();
+        Instant now = Instant.now();
+        long timeTaken = now.toEpochMilli() - ctx.executionStart.toEpochMilli();
         LOGGER.info("Processed {} tasks ({} errors) in {} ms", numRecords, numErrors, timeTaken);
         StatisticsDTO stat = new StatisticsDTO();
         stat.setRecordsProcessed(numProcessed);

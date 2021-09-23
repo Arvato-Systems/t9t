@@ -17,12 +17,15 @@ import t9t.base.types.*
 import t9t.core.*
 import t9t.setups.*
 import t9t.base.entities.*
+import api.media.*
 
 // entries are sorted such that references only go to entities listed before.
 
 @Generator(noMapper)
 package (com.arvatosystems) t9t.core.jpa.entities owner fortytwo prefix p28 {
     fields private;
+
+    embeddable MediaEmbeddable is MediaData {}
 
     entity CannedRequestEntity category cfg is CannedRequestDTO {
         tenantClass InternalTenantRef42

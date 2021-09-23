@@ -17,7 +17,7 @@ package com.arvatosystems.t9t.component.datafields;
 
 import java.util.Date;
 
-import org.joda.time.Instant;
+import java.time.Instant;
 import org.zkoss.zul.Datebox;
 
 public class InstantDataField extends AbstractDataField<Datebox, Instant> {
@@ -49,11 +49,11 @@ public class InstantDataField extends AbstractDataField<Datebox, Instant> {
         Date d = c.getValue();
         if (d == null)
             return null;
-        return new Instant(d.getTime());
+        return Instant.ofEpochMilli(d.getTime());
     }
 
     @Override
     public void setValue(Instant data) {
-        c.setValue(data == null ? null : new Date(data.getMillis()));
+        c.setValue(data == null ? null : new Date(data.toEpochMilli()));
     }
 }

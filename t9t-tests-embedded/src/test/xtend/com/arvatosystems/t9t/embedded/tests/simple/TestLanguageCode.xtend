@@ -17,7 +17,7 @@ package com.arvatosystems.t9t.embedded.tests.simple
 
 import com.arvatosystems.t9t.base.T9tConstants
 import com.arvatosystems.t9t.msglog.MessageDTO
-import org.joda.time.Instant
+import java.time.Instant
 import org.junit.jupiter.api.Test
 
 // errors have been reported with language codes according to BCP47
@@ -30,7 +30,7 @@ class TestLanguageCode {
             sessionRef              = 1L
             tenantRef               = T9tConstants.GLOBAL_TENANT_REF42
             userId                  = "john"
-            executionStartedAt      = new Instant
+            executionStartedAt      = Instant.now
             requestParameterPqon    = "dummy.PingRequest"
             validate
         ]

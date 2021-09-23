@@ -36,7 +36,7 @@ import com.arvatosystems.t9t.remote.connect.Connection
 import de.jpaw.bonaparte.pojos.api.OperationType
 import de.jpaw.bonaparte.pojos.api.UnicodeFilter
 import java.util.UUID
-import org.joda.time.Instant
+import java.time.Instant
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
@@ -73,7 +73,7 @@ class ITCacheBenchmark {
         // create test data
         val stat = new StatisticsDTO => [
             processId           = "Benchmark"
-            startTime           = new Instant
+            startTime           = Instant.now
             endTime             = startTime
             recordsProcessed    = 1
             recordsError        = 0

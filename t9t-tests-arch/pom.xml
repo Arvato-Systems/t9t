@@ -21,7 +21,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-settings-xtend</artifactId>
-        <version>5.4-SNAPSHOT</version>
+        <version>5.5-SNAPSHOT</version>
         <relativePath>../t9t-settings-xtend</relativePath>
     </parent>
 
@@ -33,10 +33,6 @@
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-base-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>de.jpaw</groupId>
-            <artifactId>jdp-plain</artifactId>
         </dependency>
         <dependency>
             <groupId>de.jpaw</groupId>

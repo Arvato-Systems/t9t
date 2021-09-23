@@ -22,7 +22,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>global-build</artifactId>
-        <version>5.4-SNAPSHOT</version>
+        <version>5.5-SNAPSHOT</version>
     </parent>
 
     <artifactId>global-dm</artifactId>
@@ -39,11 +39,10 @@
 
         <!-- jpaw / bonaparte: versions for import of BOM. The plugin version is defined separately in SE/EE -->
         <!-- Note that the version of the bonapart-dsl plugin is set in "global-settings" -->
-        <jpaw-bom.version>2.5.1</jpaw-bom.version>
-        <bonaparte-bom.version>4.42.1</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
-        <persistence-bom.version>4.42.0</persistence-bom.version>
+        <jpaw-bom.version>2.7.3</jpaw-bom.version>
+        <bonaparte-bom.version>4.70.0</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
+        <persistence-bom.version>4.70.0</persistence-bom.version>
         <jdp-bom.version>1.5.0</jdp-bom.version>
-        <fixedpoint-bom.version>0.40.0</fixedpoint-bom.version>
         <!-- jpaw / bonaparte: versions for explicit dependency -->
         <xtendsions.version>1.10.1</xtendsions.version>
 
@@ -61,25 +60,21 @@
 
         <!-- OR mappers -->
         <eclipselink.version>2.7.8</eclipselink.version>
-        <hibernate.version>5.5.6.Final</hibernate.version>
+        <hibernate.version>5.5.7.Final</hibernate.version>
         <hibernate-validator.version>6.2.0.Final</hibernate-validator.version>
         <ehcache.version>2.10.4</ehcache.version>
         <ehcache3.version>3.5.3</ehcache3.version>
 
-        <!-- Javax (FIXME, outdated) -->
-        <jaxb-impl.version>2.3.4</jaxb-impl.version>
-        <jaxb-xjc.version>2.3.4</jaxb-xjc.version>
-        <jaxws-api.version>2.3.1</jaxws-api.version>
-        <jaxws-rt.version>2.3.4</jaxws-rt.version>
-<!--
-        <javax.inject.version>1</javax.inject.version>
-        <javax.servlet-api.version>3.1.0</javax.servlet-api.version>
-        <javax.persistence.version>2.2.0</javax.persistence.version>
- -->
+        <!-- Javax ws / rs implementation versions (com.sun.xml.*), for jakarta 8 -->
+        <jaxb-impl.version>2.3.5</jaxb-impl.version>
+        <jaxb-xjc.version>2.3.5</jaxb-xjc.version>
+        <jaxws-rt.version>2.3.5</jaxws-rt.version>
+        <jaxws-api.version>2.3.1-do-not-use</jaxws-api.version>  <!-- use jakarta.xml.ws-api instead -->
+
         <!-- new Jakarta stuff (versions in comment denote jakarta namespace)-->
         <jakarta.xml-bind-api.version>2.3.3</jakarta.xml-bind-api.version>              <!-- 3.0.1 for jakarta namespace -->
-        <jakarta.xml-bind.version>2.3.4</jakarta.xml-bind.version>                      <!-- 3.0.1 for jakarta namespace -->
-        <jakarta.xml-jaxb-core.version>2.3.0.1</jakarta.xml-jaxb-core.version>                      <!-- 3.0.1 for jakarta namespace -->
+        <jakarta.xml-bind.version>2.3.5</jakarta.xml-bind.version>                      <!-- 3.0.1 for jakarta namespace -->
+        <jakarta.xml-jaxb-core.version>2.3.0.1-do-not-use</jakarta.xml-jaxb-core.version>                      <!-- 3.0.1 for jakarta namespace -->
         <jakarta.annotation-api.version>1.3.5</jakarta.annotation-api.version>            <!-- 2.0.0 for jakarta namespace -->
 
         <jakarta.activation-api.version>1.2.2</jakarta.activation-api.version>          <!-- 2.0.1 for jakarta namespace -->
@@ -88,6 +83,7 @@
         <jakarta.mail.version>1.6.7</jakarta.mail.version>                              <!-- 2.0.1 for jakarta namespace -->
         <jakarta.el-api.version>3.0.3</jakarta.el-api.version>                          <!-- 4.0.1 for jakarta namespace -->
         <jakarta.el.version>3.0.3</jakarta.el.version>                                  <!-- 4.0.1 for jakarta namespace -->
+        <jakarta.xml.ws-api.version>2.3.3</jakarta.xml.ws-api.version>
         <jakarta.soap-api.version>1.4.2</jakarta.soap-api.version>
         <jakarta.soap.version>1.5.3</jakarta.soap.version>
         <jakarta.jws-api.version>2.1.0</jakarta.jws-api.version>                        <!-- 3.0.0 for jakarta namespace -->
@@ -110,11 +106,9 @@
         <commons-email.version>1.5</commons-email.version>
         <commons-cli.version>1.4</commons-cli.version>
         <commons-codec.version>1.15</commons-codec.version>
-        <commons-io.version>2.7</commons-io.version>
-        <commons-lang.version>2.6</commons-lang.version>
-        <commons-lang3.version>3.11</commons-lang3.version>
+        <commons-io.version>2.11.0</commons-io.version>                   <!-- regularly updated again -->
+        <commons-lang3.version>3.12.0</commons-lang3.version>             <!-- regularly updated again -->
         <commons-beanutils.version>1.9.4</commons-beanutils.version>      <!-- must be 1.9.2 at least due to CVE-2014-0114 -->
-        <commons-collections.version>3.2.2</commons-collections.version>  <!-- must be 3.2.2 at least due to CVE-2015-6420 -->
         <commons-collections4.version>4.4</commons-collections4.version>
         <commons-fileupload.version>1.4</commons-fileupload.version>      <!-- must be 1.3.3 at least due to CVE-2016-1000031 -->
 
@@ -134,9 +128,9 @@
 
         <!-- Test support -->
         <junit.version>4.13.2</junit.version>      <!-- groupId is junit -->
-        <junit5.version>5.7.2</junit5.version>     <!-- groupId is org.junit, therefore is can coexist with junit4 in dependency management -->
+        <junit5.version>5.8.0</junit5.version>     <!-- groupId is org.junit, therefore is can coexist with junit4 in dependency management -->
         <hamcrest.version>1.3</hamcrest.version>   <!-- upgrade to 2.2 with next release -->
-        <byte-buddy.version>1.10.22</byte-buddy.version>
+        <byte-buddy.version>1.11.12</byte-buddy.version>
         <org.mockito-core.version>2.23.4</org.mockito-core.version>
         <archunit.version>0.19.0</archunit.version>
         <hdrhistogram.version>2.1.12</hdrhistogram.version>
@@ -174,12 +168,12 @@
         <apache-poi.version>5.0.0</apache-poi.version>
         <xmlbeans.version>5.0.1</xmlbeans.version>  <!-- 3.x is required for POI 4 (xlsx), 4.x or 5.x for POI 5.0 -->
 
-        <spring-bom.version>5.2.16.RELEASE</spring-bom.version>
-        <spring-data-jpa.version>2.3.9.RELEASE</spring-data-jpa.version>
-        <spring-boot.version>1.5.22.RELEASE</spring-boot.version>
+        <spring-bom.version>5.2.17.RELEASE</spring-bom.version>
+        <spring-data-jpa.version>2.5.4</spring-data-jpa.version>
+        <spring-boot.version>2.5.4</spring-boot.version>
 
-        <netty.version>4.1.66.Final</netty.version>
-        <vertx4.version>4.1.2</vertx4.version>
+        <netty.version>4.1.67.Final</netty.version>
+        <vertx4.version>4.1.3</vertx4.version>
 
         <snakeyaml.version>1.28</snakeyaml.version>
 
@@ -188,10 +182,8 @@
         <flyway.version>4.1.2</flyway.version>
         <reflections.version>0.9.10</reflections.version>
         <maven-plugin-api.version>3.8.1</maven-plugin-api.version>
-        <jadira-usertype.version>6.0.1.GA</jadira-usertype.version>
-        <jackson.version>2.12.3</jackson.version>
-        <solr.version>7.7.3</solr.version>   <!-- must be 6.6.1 at least due to CVE-2017-9803 -->
-        <solr-commons-csv.version>3.5.0</solr-commons-csv.version>
+        <jackson.version>2.12.5</jackson.version>
+        <solr.version>8.9.0</solr.version>
         <camel.version>3.11.1</camel.version>
         <kafka.version>2.7.0</kafka.version>
         <error-prone.version>2.7.1</error-prone.version>
@@ -316,7 +308,12 @@
                 <artifactId>jaxws-api</artifactId>
                 <version>${jaxws-api.version}</version>
             </dependency>
-             <dependency>
+            <dependency>
+                <groupId>com.sun.xml.ws</groupId>
+                <artifactId>rt</artifactId>
+                <version>${jaxws-rt.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.sun.xml.ws</groupId>
                 <artifactId>jaxws-rt</artifactId>
                 <type>pom</type>
@@ -345,6 +342,11 @@
                 <version>${jakarta.el.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>jakarta.xml.ws</groupId>
+                <artifactId>jakarta.xml.ws-api</artifactId>
+                <version>${jakarta.xml.ws-api.version}</version>
+            </dependency>
             <dependency>
                 <groupId>jakarta.jws</groupId>
                 <artifactId>jakarta.jws-api</artifactId>
@@ -473,13 +475,6 @@
                 <groupId>de.jpaw</groupId>
                 <artifactId>jpaw-bom</artifactId>
                 <version>${jpaw-bom.version}</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-            <dependency>
-                <groupId>de.jpaw</groupId>
-                <artifactId>fixedpoint-bom</artifactId>
-                <version>${fixedpoint-bom.version}</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
@@ -703,24 +698,6 @@
                 <version>${spring-boot.version}</version>
             </dependency>
 
-            <!-- Javax (FIXME, outdated) -->
-<!--
-            <dependency>
-                <groupId>javax.inject</groupId>
-                <artifactId>javax.inject</artifactId>
-                <version>${javax.inject.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>javax.servlet-api</artifactId>
-                <version>${javax.servlet-api.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.persistence</groupId>
-                <artifactId>javax.persistence</artifactId>
-                <version>${javax.persistence.version}</version>
-            </dependency>
- -->
             <!-- Ehcache 3.x -->
             <dependency>
                 <groupId>org.ehcache</groupId>
@@ -750,11 +727,6 @@
                 <version>${commons-io.version}</version>
             </dependency>
             <dependency>
-                <groupId>commons-lang</groupId>
-                <artifactId>commons-lang</artifactId>
-                <version>${commons-lang.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>commons-logging</groupId>
                 <artifactId>commons-logging-api</artifactId>
                 <version>${commons-logging.version}</version>
@@ -768,11 +740,6 @@
                 <groupId>commons-beanutils</groupId>
                 <artifactId>commons-beanutils</artifactId>
                 <version>${commons-beanutils.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-collections</groupId>
-                <artifactId>commons-collections</artifactId>
-                <version>${commons-collections.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -872,6 +839,11 @@
                 </exclusions>
             </dependency>
             <dependency>
+                <groupId>net.sf.jasperreports</groupId>
+                <artifactId>jasperreports-fonts</artifactId>
+                <version>${jasperreports.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.eclipse.jdt</groupId>
                 <artifactId>core</artifactId>
                 <version>${jdtcore.version}</version>
@@ -950,6 +922,11 @@
             <dependency>
                <groupId>org.jboss.resteasy</groupId>
                <artifactId>resteasy-jaxb-provider</artifactId>
+               <version>${resteasy-jaxrs.version}</version>
+            </dependency>
+            <dependency>
+               <groupId>org.jboss.resteasy</groupId>
+               <artifactId>resteasy-vertx</artifactId>
                <version>${resteasy-jaxrs.version}</version>
             </dependency>
 
@@ -1035,6 +1012,16 @@
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-resolver-dns</artifactId>
+                <version>${netty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-transport-native-unix-common</artifactId>
+                <version>${netty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-transport-native-epoll</artifactId>
                 <version>${netty.version}</version>
             </dependency>
 
@@ -1124,13 +1111,15 @@
                 <version>${jetty.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-client</artifactId>
-                <version>${jetty.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.eclipse.jetty.http2</groupId>
                 <artifactId>http2-server</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <!--  excluded due to conflict with jtty client 9.4, still needed by SOLRJ (which is still compatible with Java 11 from 9.4.12 onwards) -->
+            <!--
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-client</artifactId>
                 <version>${jetty.version}</version>
             </dependency>
             <dependency>
@@ -1138,6 +1127,7 @@
                 <artifactId>http2-client</artifactId>
                 <version>${jetty.version}</version>
             </dependency>
+  -->
 
             <!-- Apache kafka related dependencies, should be specified before camel, in order to set the kafka version before camel-kafka is pulled in. -->
             <dependency>
@@ -1258,17 +1248,6 @@
                 <version>${org.mockito-core.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.jadira.usertype</groupId>
-                <artifactId>usertype.core</artifactId>
-                <version>${jadira-usertype.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.hibernate</groupId>
-                        <artifactId>hibernate-entitymanager</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
                 <version>${jackson.version}</version>
@@ -1290,7 +1269,7 @@
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.datatype</groupId>
-                <artifactId>jackson-datatype-joda</artifactId>
+                <artifactId>jackson-datatype-jsr310</artifactId>
                 <version>${jackson.version}</version>
             </dependency>
             <dependency>
@@ -1313,11 +1292,6 @@
                 <groupId>org.apache.solr</groupId>
                 <artifactId>solr-solrj</artifactId>
                 <version>${solr.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.solr</groupId>
-                <artifactId>solr-commons-csv</artifactId>
-                <version>${solr-commons-csv.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.xmlbeans</groupId>

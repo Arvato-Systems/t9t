@@ -73,4 +73,7 @@ public interface IExecutor {
      * key can be null, or specifies an element.
      */
     void clearCache(String cacheId, BonaPortable key);
+
+    /** Same, but with existing RequestContext (saves lookup to retrieve it). */
+    void clearCache(RequestContext ctx, String cacheId, BonaPortable key);
 }

@@ -15,19 +15,16 @@
  */
 package com.arvatosystems.t9t.base.services;
 
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.Temporal;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.joda.time.DateTime;
-import org.joda.time.Instant;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.joda.time.ReadableInstant;
-import org.joda.time.ReadablePartial;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,25 +39,11 @@ public final class SimplePatternEvaluator {
         // prevent instantiation of util class
     }
 
-    private static boolean isDateReplacement(final Object obj) {
-        return (obj instanceof Date || obj instanceof LocalDateTime || obj instanceof LocalDate || obj instanceof DateTime || obj instanceof Instant);
-    }
-
-    private static ReadablePartial convertToJodaCompatibleDateTime(final Object obj) {
-        if (obj instanceof ReadablePartial) {
-            return (ReadablePartial) obj;
-        } else if (obj instanceof Date) {
-            return LocalDateTime.fromDateFields((Date) obj);
-        } else {
-            throw new UnsupportedOperationException("Unsupported Object type to be converted");
-        }
-    }
-
     public static String evaluate(final String pattern, final Map<String, Object> patternReplacements) {
         String result = pattern;
         for (Map.Entry<String, Object> replacementEntry : patternReplacements.entrySet()) {
             Object replacementValue = replacementEntry.getValue();
-            if (isDateReplacement(replacementValue)) {
+            if (replacementValue instanceof Temporal) {
                 Pattern formattedPattern = Pattern.compile(String.format(FORMATTED_PATTERN_FORMAT, replacementEntry.getKey()));
                 Matcher matcher = formattedPattern.matcher(result);
 
@@ -77,17 +60,22 @@ public final class SimplePatternEvaluator {
 
                     DateTimeFormatter formatter;
                     try {
-                        formatter = DateTimeFormat.forPattern(dateFormat);
+                        formatter = DateTimeFormatter.ofPattern(dateFormat);
                     } catch (IllegalArgumentException ex) {
                         LOGGER.warn("Invalid date/time format \"{}\" for pattern \"{}\". Using default format.", dateFormat, replacementEntry.getKey());
-                        formatter = DateTimeFormat.forPattern(DEFAULT_DATE_FORMAT);
+                        formatter = DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT);
                     }
 
                     final String formattedDate;
-                    if (replacementValue instanceof ReadableInstant) {
-                        formattedDate = formatter.print((ReadableInstant) replacementValue);
+                    if (replacementValue instanceof LocalDate) {
+                        formattedDate = ((LocalDate) replacementValue).format(formatter);
+                    } else if (replacementValue instanceof LocalDateTime) {
+                        formattedDate = ((LocalDateTime) replacementValue).format(formatter);
+                    } else if (replacementValue instanceof Instant) {
+                        formattedDate = LocalDateTime.ofInstant((Instant) replacementValue, ZoneOffset.UTC).format(formatter);
                     } else {
-                        formattedDate = formatter.print(convertToJodaCompatibleDateTime(replacementValue));
+                        LOGGER.error("Class {} not (yet) supported for date/time formats.", replacementValue.getClass().getCanonicalName());
+                        formattedDate = "***NYS***";
                     }
 
                     result = result.replaceAll(Pattern.quote(toBeReplaced), formattedDate);

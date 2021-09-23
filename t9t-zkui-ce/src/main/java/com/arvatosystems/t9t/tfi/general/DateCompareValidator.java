@@ -17,9 +17,11 @@ package com.arvatosystems.t9t.tfi.general;
 
 import java.util.Date;
 
-import org.joda.time.Instant;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.ValidationContext;
@@ -88,11 +90,11 @@ public class DateCompareValidator extends AbstractValidator {
 
     long getDateInMiliseconds(Object dateValue) {
         if (dateValue instanceof LocalDateTime) {
-            return ((LocalDateTime) dateValue).toDate().getTime();
+            return ((LocalDateTime) dateValue).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
         } else if (dateValue instanceof LocalDate) {
-            return ((LocalDate) dateValue).toDate().getTime();
+            return ((LocalDate) dateValue).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
         } else if (dateValue instanceof Instant) {
-            return ((Instant) dateValue).toDate().getTime();
+            return ((Instant) dateValue).toEpochMilli();
         } else if (dateValue instanceof Date) {
             return ((Date) dateValue).getTime();
         }

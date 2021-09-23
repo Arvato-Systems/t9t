@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.tfi.viewmodel;
 
+import java.time.Instant;
+
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.Executions;
 
@@ -30,7 +32,7 @@ public class ExpiredCredentialsViewModel28 extends ChangePwdViewModel28 {
     void init() {
         super.init();
         final ApplicationSession as = ApplicationSession.get();
-        if (as != null && as.getPasswordExpires() != null && as.getPasswordExpires().isAfterNow()) {
+        if (as != null && as.getPasswordExpires() != null && as.getPasswordExpires().isAfter(Instant.now())) {
             pwdExpired = false;
             postProcessHook();
         }

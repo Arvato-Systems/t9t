@@ -34,7 +34,7 @@ import de.jpaw.dp.Inject
 import de.jpaw.dp.Singleton
 import de.jpaw.util.ApplicationException
 import java.util.UUID
-import org.joda.time.Instant
+import java.time.Instant
 
 @AddLogger
 @Singleton
@@ -47,7 +47,7 @@ class Authentication implements IAuthenticate {
     @Inject IRequestLogger          messageLogger
 
     def protected createInternalHeaderParametersForLogin(AuthenticationRequest rq) {
-        val now = new Instant
+        val now = Instant.now
         // create an internal JWT structure for the login process
         val jwt = new JwtInfo => [
             issuedAt            = now
@@ -89,11 +89,11 @@ class Authentication implements IAuthenticate {
         // skip authorization since the IHDR is an artificial one anyway.
         val resp = requestProcessor.executeSynchronousAndCheckResult(rq, ihdr, AuthenticationResponse, true)
 
-        val endOfProcessing         = new Instant
+        val endOfProcessing         = Instant.now
 
         // for logging, use the new Jwt, in case it exists
         val jwtInfo                 = if (resp.returnCode == 0) resp.jwtInfo else ihdr.jwtInfo  // FIXME: use resp.jwtinfo in case of success
-        val processingDuration      = endOfProcessing.millis - ihdr.executionStartedAt.millis
+        val processingDuration      = endOfProcessing.toEpochMilli - ihdr.executionStartedAt.toEpochMilli
         resp.tenantId               = ihdr.jwtInfo.tenantId
         resp.processRef             = ihdr.processRef
 

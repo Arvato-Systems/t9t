@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.context.bpmn;
 
-import org.joda.time.Instant;
+import java.time.Instant;
 
 import com.arvatosystems.t9t.bpmn.ProcessExecutionStatusDTO;
 import com.arvatosystems.t9t.bpmn.request.ProcessExecutionStatusCrudRequest;
@@ -38,7 +38,7 @@ public class ProcessScheduleContextMenuHandler implements IGridContextMenu<Proce
     @Override
     public void selected(Grid28 lb, DataWithTracking<ProcessExecutionStatusDTO, TrackingBase> dwt) {
         ProcessExecutionStatusDTO dto = dwt.getData();
-        dto.setYieldUntil(new Instant());
+        dto.setYieldUntil(Instant.now());
         dto.setReturnCode(null);
         dto.setErrorDetails(null);
         ProcessExecutionStatusCrudRequest rq = new ProcessExecutionStatusCrudRequest();

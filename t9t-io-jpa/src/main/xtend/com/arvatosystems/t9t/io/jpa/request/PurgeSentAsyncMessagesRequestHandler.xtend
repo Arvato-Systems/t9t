@@ -36,7 +36,7 @@ class PurgeSentAsyncMessagesRequestHandler extends AbstractRequestHandler<PurgeS
         if (queue.tenantRef != ctx.tenantRef)
             throw new T9tException(T9tException.WRITE_ACCESS_ONLY_CURRENT_TENANT)
         val maxAge = (rq.overrideAge ?: queue.purgeAfterSeconds) ?: 86400 * 8;
-        val purgeAfter = ctx.executionStart.minus(1000L * maxAge)
+        val purgeAfter = ctx.executionStart.minusSeconds(maxAge)
         LOGGER.info("Purging async sent message of age {} seconds for queue {}", maxAge, queue.asyncQueueId)
 
         val purge = "DELETE FROM AsyncMessageEntity m WHERE m.tenantRef = :tenantRef AND m.cTimestamp > :purgeAfter";

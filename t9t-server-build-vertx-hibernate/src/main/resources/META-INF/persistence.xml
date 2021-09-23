@@ -26,10 +26,6 @@
         <!-- JPA 2.1 AttributeConverter classes -->
         <class>de.jpaw.bonaparte.jpa.converters.ConverterByteArray</class>
         <class>de.jpaw.bonaparte.jpa.converters.ConverterCompactBonaPortable</class>
-        <class>de.jpaw.bonaparte.jpa.converters.ConverterInstant</class>
-        <class>de.jpaw.bonaparte.jpa.converters.ConverterLocalDate</class>
-        <class>de.jpaw.bonaparte.jpa.converters.ConverterLocalTime</class>
-        <class>de.jpaw.bonaparte.jpa.converters.ConverterLocalDateTime</class>
         <class>de.jpaw.bonaparte.jpa.converters.ConverterCompactJsonArray</class>
         <class>de.jpaw.bonaparte.jpa.converters.ConverterCompactJsonElement</class>
         <class>de.jpaw.bonaparte.jpa.converters.ConverterCompactJsonObject</class>

@@ -53,6 +53,11 @@ public class FormatGeneratorXmlNoNs2 extends AbstractFormatGeneratorXml {
 
     @Override
     protected void writeNamespaces() throws XMLStreamException {
+        // do not write namespace information
+    }
+
+    @Override
+    protected void setNamespaceContext() throws XMLStreamException {
         LOGGER.debug("Setting namespace context");
         // do not write namespace information
         // https://stackoverflow.com/questions/2816176/how-to-marshal-without-a-namespace

@@ -21,9 +21,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.joda.time.LocalTime;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+
 import org.zkoss.util.Locales;
 import org.zkoss.util.resource.Labels;
 
@@ -47,11 +49,11 @@ public class FormatConverter implements Converter {
         } else if (value instanceof Date) {
             return getDateFormat(this.format).format((Date) value);
         } else if (value instanceof LocalDateTime) {
-            return getDateFormat(this.format).format(((LocalDateTime) value).toDate());
+            return getDateFormat(this.format).format(Date.from(((LocalDateTime) value).atZone(ZoneId.systemDefault()).toInstant()));
         } else if (value instanceof LocalTime) {
-            return getDateFormat(this.format).format(((LocalTime) value).toDateTimeToday().toDate());
+            return getDateFormat(this.format).format(Date.from(((LocalTime) value).atDate(LocalDate.now()).atZone(ZoneId.systemDefault()).toInstant()));
         } else if (value instanceof LocalDate) {
-            return getDateFormat(this.format).format(((LocalDate) value).toDate());
+            return getDateFormat(this.format).format(Date.from(((LocalDate) value).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
         } else {
             throw new UnsupportedOperationException("Instance " + value.getClass().getName() + " is not supported. Field:" + fieldName + "->" + value);
         }

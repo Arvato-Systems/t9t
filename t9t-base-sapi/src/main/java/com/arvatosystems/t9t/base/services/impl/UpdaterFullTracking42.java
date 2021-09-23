@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.base.services.impl;
 
-import org.joda.time.Instant;
+import java.time.Instant;
 
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.entities.FullTracking;

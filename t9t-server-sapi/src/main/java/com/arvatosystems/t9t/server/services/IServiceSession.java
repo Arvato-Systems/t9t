@@ -17,7 +17,7 @@ package com.arvatosystems.t9t.server.services;
 
 import java.io.Closeable;
 
-import org.joda.time.Instant;
+import java.time.Instant;
 
 import com.arvatosystems.t9t.base.api.ServiceRequest;
 import com.arvatosystems.t9t.base.api.ServiceResponse;

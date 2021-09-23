@@ -23,7 +23,7 @@ import de.jpaw.dp.JdpThreadLocalStrict
 import de.jpaw.dp.Singleton
 import java.util.ArrayList
 import java.util.List
-import org.joda.time.Instant
+import java.time.Instant
 import com.arvatosystems.t9t.base.request.TerminateProcessRequest
 import com.arvatosystems.t9t.base.T9tException
 
@@ -45,10 +45,10 @@ class RequestContextScope extends JdpThreadLocalStrict<RequestContext> {
     }
 
     def List<ProcessStatusDTO> getProcessStatus(ProcessStatusRequest filters, Instant myExecutionStart) {
-        val refAge = myExecutionStart.millis
+        val refAge = myExecutionStart.toEpochMilli
         val result = new ArrayList<ProcessStatusDTO>(30)
         instances.forEach[ threadId, it |
-            val thisAge = refAge - executionStart.millis
+            val thisAge = refAge - executionStart.toEpochMilli
             if (thisAge >= filters.minAgeInMs &&
                (filters.tenantId === null || filters.tenantId == tenantId) &&
                (filters.userId   === null || filters.userId == userId)) {
@@ -80,13 +80,13 @@ class RequestContextScope extends JdpThreadLocalStrict<RequestContext> {
 
     def List<ProcessStatusDTO> getProcessStatusForScheduler(Long forInvokingProcessRef) {
         val result = new ArrayList<ProcessStatusDTO>(8)
-        val refAge = Instant.now.millis
+        val refAge = Instant.now.toEpochMilli
         instances.forEach[ threadId, it |
             val hdr                 = internalHeaderParameters
             if (forInvokingProcessRef == hdr.requestHeader?.invokingProcessRef) {
                 val dto                 = new ProcessStatusDTO
                 dto.threadId            = threadId
-                dto.ageInMs             = refAge - executionStart.millis
+                dto.ageInMs             = refAge - executionStart.toEpochMilli
                 dto.tenantId            = tenantId
                 dto.userId              = userId
                 dto.sessionRef          = hdr.jwtInfo.sessionRef

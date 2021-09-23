@@ -15,11 +15,10 @@
  */
 package com.arvatosystems.t9t.component.datafields;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
-import java.util.TimeZone;
 
-import org.joda.time.DateTimeZone;
-import org.joda.time.LocalDateTime;
 import org.zkoss.zul.Datebox;
 
 public class TimestampDataField extends AbstractDataField<Datebox, LocalDateTime> {
@@ -51,12 +50,12 @@ public class TimestampDataField extends AbstractDataField<Datebox, LocalDateTime
         Date d = c.getValue();
         if (d == null)
             return null;
-        return LocalDateTime.fromDateFields(d);
+        return LocalDateTime.ofInstant(d.toInstant(), ZoneId.systemDefault());
     }
 
     @Override
     public void setValue(LocalDateTime data) {
         // convert date based on the server timezone because date is saved in local timezone
-        c.setValue(data == null ? null : data.toDate(TimeZone.getDefault()));
+        c.setValue(data == null ? null : Date.from(data.atZone(ZoneId.systemDefault()).toInstant()));
     }
 }

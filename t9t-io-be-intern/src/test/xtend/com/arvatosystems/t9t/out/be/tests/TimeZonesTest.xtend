@@ -15,16 +15,16 @@
  */
 package com.arvatosystems.t9t.out.be.tests
 
-import org.joda.time.DateTimeZone
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.Assertions
 import de.jpaw.annotations.AddLogger
+import java.time.ZoneId
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Test
 
 @AddLogger
 class TimeZonesTest {
     @Test
     def void getZoneIds() {
-        val ids = DateTimeZone.availableIDs
+        val ids = ZoneId.availableZoneIds
         LOGGER.debug("Number of time zones found: {}", ids.size)
         Assertions.assertTrue(ids.contains("Europe/Berlin"))
 

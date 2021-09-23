@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.base.be.request;
 
-import org.joda.time.Instant;
+import java.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +38,7 @@ public class PauseRequestHandler extends AbstractReadOnlyRequestHandler<PauseReq
         PauseResponse response = new PauseResponse();
         response.setReturnCode(0);
         response.setPingId(pingRequest.getPingId());
-        response.setWhenExecuted(new Instant());
+        response.setWhenExecuted(Instant.now());
 
         Integer delayInMillis = pingRequest.getDelayInMillis();
         if ((delayInMillis != null) && (delayInMillis.intValue() > 0)) {
@@ -51,7 +51,7 @@ public class PauseRequestHandler extends AbstractReadOnlyRequestHandler<PauseReq
             }
         }
 
-        response.setWhenFinished(new Instant());
+        response.setWhenFinished(Instant.now());
         return response;
     }
 }

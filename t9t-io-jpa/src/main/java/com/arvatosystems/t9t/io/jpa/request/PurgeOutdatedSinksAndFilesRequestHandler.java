@@ -39,9 +39,7 @@ import com.arvatosystems.t9t.io.request.PurgeOutdatedSinksAndFilesRequest;
 import de.jpaw.dp.Jdp;
 
 public class PurgeOutdatedSinksAndFilesRequestHandler extends AbstractRequestHandler<PurgeOutdatedSinksAndFilesRequest> {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(PurgeOutdatedSinksAndFilesRequestHandler.class);
-    private static final long MILLIS_PER_DAY = 86_400_000L;
 
     private final IDataSinkEntityResolver dataSinkResolver = Jdp.getRequired(IDataSinkEntityResolver.class);
     private final ISinkEntityResolver sinkResolver = Jdp.getRequired(ISinkEntityResolver.class);
@@ -91,7 +89,7 @@ public class PurgeOutdatedSinksAndFilesRequestHandler extends AbstractRequestHan
         final TypedQuery<String> q = sinkResolver.getEntityManager().createQuery(SELECT_SINKS_SQL, String.class);
         q.setParameter("tenantRef", sinkResolver.getSharedTenantRef());
         q.setParameter("dataSinkRef", dataSink.getObjectRef());
-        q.setParameter("cutoff", ctx.executionStart.minus(MILLIS_PER_DAY * (long)dataSink.getRetentionPeriodFiles()));
+        q.setParameter("cutoff", ctx.executionStart.minusSeconds(T9tConstants.ONE_DAY_IN_S * (long)dataSink.getRetentionPeriodFiles()));
         final List<String> filesToDelete = q.getResultList();
         LOGGER.info("Data sink {}: Attempting to delete {} files older than {} days", dataSink.getDataSinkId(), filesToDelete.size(), dataSink.getRetentionPeriodFiles());
         for (String filename: filesToDelete) {
@@ -111,7 +109,7 @@ public class PurgeOutdatedSinksAndFilesRequestHandler extends AbstractRequestHan
         final TypedQuery<String> q = sinkResolver.getEntityManager().createQuery(DELETE_SINKS_SQL, String.class);
         q.setParameter("tenantRef", sinkResolver.getSharedTenantRef());
         q.setParameter("dataSinkRef", dataSink.getObjectRef());
-        q.setParameter("cutoff", ctx.executionStart.minus(MILLIS_PER_DAY * (long)dataSink.getRetentionPeriodSinks()));
+        q.setParameter("cutoff", ctx.executionStart.minusSeconds(T9tConstants.ONE_DAY_IN_S * (long)dataSink.getRetentionPeriodSinks()));
         final int recordsDeleted = q.executeUpdate();
         LOGGER.info("Data sink {}: Deleted {} sink entries older than {} days", dataSink.getDataSinkId(), recordsDeleted, dataSink.getRetentionPeriodSinks());
     }

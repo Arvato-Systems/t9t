@@ -18,7 +18,7 @@ package com.arvatosystems.t9t.base.jpa.entityListeners;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 
-import org.joda.time.Instant;
+import java.time.Instant;
 
 import com.arvatosystems.t9t.base.entities.SessionTracking;
 

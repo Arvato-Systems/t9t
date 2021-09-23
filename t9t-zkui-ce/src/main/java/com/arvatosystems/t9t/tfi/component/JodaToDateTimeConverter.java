@@ -18,9 +18,11 @@ package com.arvatosystems.t9t.tfi.component;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.joda.time.DateTimeZone;
-import org.joda.time.Instant;
-import org.joda.time.LocalDateTime;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.util.TimeZones;
@@ -105,11 +107,11 @@ public class JodaToDateTimeConverter implements Converter {
         }
 
         if (value instanceof LocalDateTime) {
-            return ((LocalDateTime) value).toDate();
+            return Date.from(((LocalDateTime) value).atZone(ZoneId.systemDefault()).toInstant());
         } else if (value instanceof Date) {
             return value;
         } else if (value instanceof Instant) {
-            return new LocalDateTime(((Instant) value).getMillis(), DateTimeZone.forID(TimeZones.getCurrent().getID())).toDate();
+            return Date.from((Instant) value);
         } else {
             throw new UnsupportedOperationException("Instance " + value.getClass().getName() + " is not supported");
         }

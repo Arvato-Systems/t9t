@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import org.joda.time.LocalDateTime;
+import java.time.LocalDateTime;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
 import org.quartz.DateBuilder;
@@ -187,7 +187,7 @@ public class QuartzSchedulerService implements ISchedulerService {
         // Do the common work here (identity + start + end)
         TriggerBuilder<Trigger> builder = TriggerBuilder.newTrigger().withIdentity(setup.getSchedulerId(), ctx.tenantId);
         if (setup.getValidFrom() != null) {
-            Date startAt = setup.getValidFrom().toDate();
+            Date startAt = java.sql.Timestamp.valueOf(setup.getValidFrom());
             Date now = new Date();
             if (startAt.compareTo(now) > 0) {
                 builder.startAt(startAt);
@@ -197,7 +197,7 @@ public class QuartzSchedulerService implements ISchedulerService {
         }
         addSchedule(builder, setup);
         if (setup.getValidTo() != null) {
-            builder.endAt(setup.getValidTo().toDate());
+            builder.endAt(java.sql.Timestamp.valueOf(setup.getValidTo()));
         }
         return builder.build();
     }
@@ -232,15 +232,15 @@ public class QuartzSchedulerService implements ISchedulerService {
         }
 
         if (setup.getStartHour() != null) {
-            validateByDateBuilder("HOUR", setup.getStartHour().getHourOfDay());
-            hour.append(setup.getStartHour().getHourOfDay());
+            validateByDateBuilder("HOUR", setup.getStartHour().getHour());
+            hour.append(setup.getStartHour().getHour());
         } else {
             hour.append("0");
         }
 
         if (setup.getEndHour() != null) {
-            validateByDateBuilder("HOUR", setup.getEndHour().getHourOfDay());
-            hour.append("-").append(setup.getEndHour().getHourOfDay());
+            validateByDateBuilder("HOUR", setup.getEndHour().getHour());
+            hour.append("-").append(setup.getEndHour().getHour());
         } else {
             hour.append("-").append("23");
         }
@@ -257,9 +257,9 @@ public class QuartzSchedulerService implements ISchedulerService {
 
         if (DAILY_OR_LESS_FREQ.contains(setup.getRecurrencyType())) {
             if (setup.getExecutionTime() != null) {
-                hr = setup.getExecutionTime().getHourOfDay();
-                min = setup.getExecutionTime().getMinuteOfHour();
-                sec = setup.getExecutionTime().getSecondOfMinute();
+                hr = setup.getExecutionTime().getHour();
+                min = setup.getExecutionTime().getMinute();
+                sec = setup.getExecutionTime().getSecond();
 
                 validateByDateBuilder("HOUR", hr);
                 validateByDateBuilder("MINUTE", min);
@@ -426,7 +426,7 @@ public class QuartzSchedulerService implements ISchedulerService {
             }
 
             LocalDateTime startDate = setup.getValidFrom();
-            int monthOfYear = startDate.getMonthOfYear();
+            int monthOfYear = startDate.getMonthValue();
             int dayOfMonth = startDate.getDayOfMonth();
 
             String year = "*";

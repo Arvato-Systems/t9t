@@ -32,7 +32,7 @@ import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.PropertyWriter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.dp.Dependent;
@@ -58,7 +58,7 @@ public class JSONJacksonDataGenerator extends AbstractFormatGenerator {
     protected void openHook() throws IOException, ApplicationException {
         super.openHook();
         osw = new OutputStreamWriter(outputResource.getOutputStream(), encoding);
-        objectMapper.registerModule(new JodaModule());
+        objectMapper.registerModule(new JavaTimeModule());
         // add "regexFilter" ID to base class i.e. Object class
         objectMapper.addMixInAnnotations(Object.class, RegexFilterMixIn.class);
 

@@ -18,7 +18,7 @@ package com.arvatosystems.t9t.io.jpa.request;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-import org.joda.time.Instant;
+import java.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -103,7 +103,7 @@ public class FileDownloadRequestHandler extends AbstractRequestHandler<FileDownl
     }
 
     private void updateLastDownloadTimestamp(SinkEntity mySinkEntity) {
-        mySinkEntity.setLastDownloadTimestamp(new Instant());
+        mySinkEntity.setLastDownloadTimestamp(Instant.now());
         sinkResolver.update(mySinkEntity);
         sinkResolver.flush();
     }

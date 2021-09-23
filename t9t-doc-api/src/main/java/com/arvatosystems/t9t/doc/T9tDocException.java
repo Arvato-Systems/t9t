@@ -28,13 +28,19 @@ public class T9tDocException extends T9tException {
     private static final int OFFSET = (CL_PARAMETER_ERROR * CLASSIFICATION_FACTOR) + CORE_OFFSET;
 
     // Error codes
-    public static final int UNKNOWN_SKU_KEY_IMPLEMENTATION       = OFFSET + 59;
     public static final int CONVERSION_EXCEEDS_MAX_TEMPLATE_SIZE = OFFSET + 60;
     public static final int CONVERSION_EXCEEDS_MAX_SUBJECT_SIZE  = OFFSET + 61;
+    public static final int CANNOT_ADD_FONT_IO                   = OFFSET + 62;
+    public static final int CANNOT_ADD_FONT_DOC                  = OFFSET + 63;
+    public static final int DOCUMENT_PDF_CONVERSION_ERROR_IO     = OFFSET + 64;
+    public static final int DOCUMENT_PDF_CONVERSION_ERROR_DOC    = OFFSET + 65;
 
     static {
-        codeToDescription.put(UNKNOWN_SKU_KEY_IMPLEMENTATION, "unknown sku key implementation");
         codeToDescription.put(CONVERSION_EXCEEDS_MAX_TEMPLATE_SIZE, "The conversion would exceed the maximum size of a template.");
-        codeToDescription.put(CONVERSION_EXCEEDS_MAX_SUBJECT_SIZE, "The conversion would exceed the maximum size of an inline email subject template.");
+        codeToDescription.put(CONVERSION_EXCEEDS_MAX_SUBJECT_SIZE,  "The conversion would exceed the maximum size of an inline email subject template.");
+        codeToDescription.put(CANNOT_ADD_FONT_IO,                   "Could add front to document (I/O issue)");
+        codeToDescription.put(CANNOT_ADD_FONT_DOC,                  "Could add front to document (Doc issue)");
+        codeToDescription.put(DOCUMENT_PDF_CONVERSION_ERROR_IO,     "Could not convert document to PDF (I/O issue)");
+        codeToDescription.put(DOCUMENT_PDF_CONVERSION_ERROR_DOC,    "Could not convert document to PDF (Doc issue)");
     }
 }

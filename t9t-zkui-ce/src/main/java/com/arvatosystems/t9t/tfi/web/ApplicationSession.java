@@ -20,6 +20,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -40,14 +41,13 @@ import java.util.concurrent.TimeUnit;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.UnavailableSecurityManagerException;
 import org.apache.shiro.session.Session;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Instant;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.joda.time.LocalTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.image.AImage;
@@ -359,7 +359,6 @@ public final class ApplicationSession {
     private String userLanguage = "en";  // never null
     private String [] userLanguages = new String [] { "en" };  // languages with fallbacks
     private Locale userLocale = Locale.ENGLISH;
-    private DateTimeZone userJodaTimeZone;
     private TimeZone userTimeZone;
     private ZoneId userZoneId;
     protected DateTimeFormatter dayFormat;            // day without time (Joda)
@@ -415,8 +414,31 @@ public final class ApplicationSession {
         String localizedPattern = translate("system.format", resource);
         DateTimeFormatter input =
            (localizedPattern != null && localizedPattern.charAt(0) != '$' && localizedPattern.charAt(0) != '{')
-           ? DateTimeFormat.forPattern(localizedPattern) : DateTimeFormat.forStyle(fallback);
-        return userJodaTimeZone == null ? input.withLocale(userLocale).withZoneUTC() : input.withLocale(userLocale).withZone(userJodaTimeZone);
+           ? DateTimeFormatter.ofPattern(localizedPattern) : getDateTimeFormatterWithStyle(fallback);
+        return userZoneId == null ? input.withLocale(userLocale).withZone(ZoneOffset.UTC) : input.withLocale(userLocale).withZone(userZoneId);
+    }
+    
+    public DateTimeFormatter getDateTimeFormatterWithStyle(String style) {
+
+        if (style.charAt(0) == '-') {
+            return DateTimeFormatter.ofLocalizedTime(getFormatStyle(style.charAt(1)));
+        } else if (style.charAt(1) == '-') {
+            return DateTimeFormatter.ofLocalizedDate(getFormatStyle(style.charAt(0)));
+        } else {
+            return DateTimeFormatter.ofLocalizedDateTime(getFormatStyle(style.charAt(0)),
+                    getFormatStyle(style.charAt(1)));
+        }
+    }
+
+    private static FormatStyle getFormatStyle(char style) {
+        switch (style) {
+        case 'S': return FormatStyle.SHORT;
+        case 'L': return FormatStyle.LONG;
+        case 'F': return FormatStyle.FULL;
+        case 'M': 
+        default: 
+            return FormatStyle.MEDIUM;
+        }
     }
 
     private static final Map<String, String> ZONE_REPLACEMENTS = new ConcurrentHashMap<String, String>();
@@ -436,12 +458,10 @@ public final class ApplicationSession {
         try {
             userZoneId = ZoneId.of(rawZoneId);
             userTimeZone = TimeZone.getTimeZone(userZoneId);
-            userJodaTimeZone = DateTimeZone.forID(rawZoneId);
         } catch (Exception e) {
             LOGGER.error("Timezone conversion error - falling back, using UTC: {}", ExceptionUtil.causeChain(e));
             userZoneId = ZoneId.systemDefault();
             userTimeZone = TimeZone.getDefault();
-            userJodaTimeZone = DateTimeZone.UTC;
         }
 
         userLanguage = rawLanguage == null ? "en" : rawLanguage;
@@ -464,44 +484,40 @@ public final class ApplicationSession {
     }
 
     public String format(LocalDate d) {
-        return dayFormat.print(d);
+        return d.format(dayFormat);
     }
     public String format(LocalDateTime dt) {
-        DateTime ldt = dt.toDateTime(DateTimeZone.forTimeZone(TimeZone.getDefault()));
-        return timestampFormat.print(ldt);  // dt currently isnt't really a local date time, but also an instant...
+        return dt.format(timestampFormat);
     }
     public String format(LocalTime t) {
-        return timeFormat.print(t);
+        return t.format(timeFormat);
     }
     public String format(Instant t) {
-        // return timestampFormat.print(new LocalDateTime(t.getMillis(), userJodaTimeZone)); // works but is complicated
-        return timestampFormat.print(t);
+        return timestampFormat.format(t);
     }
 
     // ZK operates with java.util.date, provide converters which respect the time zone...
     public Date toDate(LocalDateTime ldt) {
-        DateTime dt = ldt.toDateTime(userJodaTimeZone);
-        return dt.toDate();
+        return Date.from(ldt.atZone(userZoneId).toInstant());
     }
     public Date toDate(Instant t) {
-        DateTime dt = t.toDateTime(userJodaTimeZone);
-        return dt.toDate();
+        return Date.from(t.atZone(userZoneId).toInstant());
     }
     public Date toDate(LocalDate t) {
-        return t.toDate();
+        return Date.from(t.atStartOfDay(userZoneId).toInstant());
     }
 //    public Date toDate(LocalTime t) {
 //        return t.toDate();
 //    }
     public LocalDateTime toLocalDateTime(Date t) {
-        // create a localdatetime for UTC for date
-        LocalDateTime ldt = new LocalDateTime(t.getTime());
-        // interpret ldt as in userJodaTimeZone and convert to UTC
+        // create a localdatetime for system default zone id (usually UTC) for date
+        LocalDateTime ldt = LocalDateTime.ofInstant(t.toInstant(), userZoneId);
+        // interpret ldt as in userJodaTimeZone and convert to system default zone id (usually UTC)
         return ldt;
     }
     public Instant toInstant(Date t) {
         // create an instant for a given date
-        return new Instant(t.getTime());   // TODO: respect zone...
+        return t.toInstant();
     }
 
     /**

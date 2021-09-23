@@ -6,7 +6,7 @@
     <parameter name="tenantId" class="java.lang.String"/>
     <parameter name="translator" class="com.arvatosystems.t9t.translation.be.TranslationProvider"/>
     <queryString>
-        <![CDATA[select user_id, name from p28_cfg_user]]>
+        <![CDATA[select user_id, name from p42_cfg_users]]>
     </queryString>
     <field name="user_id" class="java.lang.String"/>
     <field name="name" class="java.lang.String"/>

@@ -17,7 +17,7 @@ package com.arvatosystems.t9t.bpmn.be.request;
 
 import java.util.List;
 
-import org.joda.time.Instant;
+import java.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +40,7 @@ public class RestartAllActiveProcessesRequestHandler extends AbstractRequestHand
     public ServiceResponse execute(final RequestContext ctx, final RestartAllActiveProcessesRequest rq) {
         final String displayId = rq.getOnlyThisProcessId() == null ? "*" : rq.getOnlyThisProcessId();
         ctx.statusText = "Querying refs to process for " + displayId;
-        final Instant dueWhen = rq.getMinAgeInSeconds() == null ? ctx.executionStart : ctx.executionStart.minus(1000L * rq.getMinAgeInSeconds());
+        final Instant dueWhen = rq.getMinAgeInSeconds() == null ? ctx.executionStart : ctx.executionStart.minusSeconds(rq.getMinAgeInSeconds());
         final List<Long> taskRefs = persistenceAccess.getTaskRefsDue(rq.getOnlyThisProcessId(), dueWhen,
             Boolean.TRUE.equals(rq.getIncludeErrorStatus()), Boolean.TRUE.equals(rq.getRunProcessesOfAnyNode()));
 

@@ -293,6 +293,7 @@ public class CkEditor28 extends Row {
         ckEditor.setHflex("1");
         ckEditor.setVisible(false);
         ckEditor.setCustomConfigurationsPath("/js/config/ckeditor.config.js");
+        ckEditor.setHeight("500px");
 
         // also forward the onChange event to allow saving of changed data
         ckEditor.addEventListener(Events.ON_CHANGE, (ev) -> {

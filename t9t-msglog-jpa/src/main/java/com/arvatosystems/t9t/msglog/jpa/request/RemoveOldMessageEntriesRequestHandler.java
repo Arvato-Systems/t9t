@@ -25,10 +25,11 @@ import com.arvatosystems.t9t.msglog.request.RemoveOldMessageEntriesRequest;
 import de.jpaw.dp.Jdp;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Duration;
-import org.joda.time.Instant;
-import org.joda.time.LocalDate;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class RemoveOldMessageEntriesRequestHandler extends AbstractRequestHandler<RemoveOldMessageEntriesRequest> {
     protected final IMessageEntityResolver resolver = Jdp.getRequired(IMessageEntityResolver.class);
@@ -50,8 +51,8 @@ public class RemoveOldMessageEntriesRequestHandler extends AbstractRequestHandle
 
         Query q = em.createQuery(query);
 
-        Instant today = LocalDate.now().toDateTimeAtStartOfDay(DateTimeZone.UTC).toInstant();
-        q.setParameter("deleteUntil", today.minus(Duration.standardDays(request.getKeepMaxDaysAg())));
+        LocalDateTime thisMorning = LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0));
+        q.setParameter("deleteUntil", thisMorning.minusDays(request.getKeepMaxDaysAg()));
         q.executeUpdate();
 
         return ok();

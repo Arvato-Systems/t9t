@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.out.jpa.impl;
 
-import org.joda.time.Instant;
+import java.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +46,7 @@ public class DefaultAsyncTransmitter implements IAsyncTransmitter {
         m.setObjectRef(objectRef);
         m.setAsyncChannelId(asyncChannelId);
         m.setStatus(ExportStatusEnum.READY_TO_EXPORT);
-        m.setWhenSent(new Instant());
+        m.setWhenSent(Instant.now());
         m.setAttempts(0);
         m.setPayload(payload);
         m.setRef(ref);

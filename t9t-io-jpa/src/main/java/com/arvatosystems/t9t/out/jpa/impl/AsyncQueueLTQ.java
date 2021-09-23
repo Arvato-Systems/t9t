@@ -30,7 +30,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 
-import org.joda.time.Instant;
+import java.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -180,7 +180,7 @@ public class AsyncQueueLTQ<R extends BonaPortable> implements IAsyncQueue {
                             Thread.sleep(serverConfig.getWaitAfterExtError());
                         } else {
                             // eat message, it was sent successfully
-                            lastMessageSent.set(new Instant());
+                            lastMessageSent.set(Instant.now());
                             if (queue.poll() == null) {
                                 LOGGER.error("ILE: queue element no longer available!");
                             }

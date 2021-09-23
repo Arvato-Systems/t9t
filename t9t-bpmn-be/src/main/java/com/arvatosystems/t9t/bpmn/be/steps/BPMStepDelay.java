@@ -17,7 +17,7 @@ package com.arvatosystems.t9t.bpmn.be.steps;
 
 import java.util.Map;
 
-import org.joda.time.Instant;
+import java.time.Instant;
 
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.bpmn.WorkflowReturnCode;
@@ -35,12 +35,12 @@ public class BPMStepDelay extends AbstractAlwaysRunnableNoFactoryWorkflowStep {
         if (yu != null) {
             if (Number.class.isAssignableFrom(yu.getClass())) { // Long, Double, BigDecimal...
                 // an Instant which has been serialized as JSON and later deserialized will appear as a numeric value, representing the number of (milli)seconds since the Epoch
-                yu = new Instant(((Number)yu).longValue());
+                yu = Instant.ofEpochMilli(((Number)yu).longValue());
                 parameters.put(PROCESS_VARIABLE_YIELD_UNTIL, yu);
             }
             if (yu instanceof Instant) {
                 // the target time has been defined
-                if (((Instant)yu).isBeforeNow())
+                if (((Instant)yu).isBefore(Instant.now()))
                     return WorkflowReturnCode.PROCEED_NEXT;  // limit has been reached
                 return WorkflowReturnCode.YIELD;
             }

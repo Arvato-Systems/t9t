@@ -45,7 +45,7 @@ import de.jpaw.util.ByteArray
 import java.util.HashMap
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Data
-import org.joda.time.LocalDateTime
+import java.time.LocalDateTime
 
 import static extension com.arvatosystems.t9t.misc.extensions.MiscExtensions.*
 import org.apache.commons.io.IOUtils

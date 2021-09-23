@@ -16,8 +16,8 @@
 package com.arvatosystems.t9t.base.be.tests;
 
 import java.nio.charset.Charset;
+import java.time.ZoneId;
 
-import org.joda.time.DateTimeZone;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -25,10 +25,10 @@ public class ShowIds {
 
     @Test
     public void showZoneIds() throws Exception {
-        for (String s: DateTimeZone.getAvailableIDs()) {
+        for (String s: ZoneId.getAvailableZoneIds()) {
             System.out.println(s);
         }
-        Assertions.assertTrue(DateTimeZone.getAvailableIDs().contains("Europe/Berlin"));
+        Assertions.assertTrue(ZoneId.getAvailableZoneIds().contains("Europe/Berlin"));
     }
     @Test
     public void showEncodings() throws Exception {

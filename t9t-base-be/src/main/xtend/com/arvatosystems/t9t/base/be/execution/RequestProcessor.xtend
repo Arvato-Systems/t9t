@@ -49,7 +49,7 @@ import de.jpaw.dp.Singleton
 import de.jpaw.util.ApplicationException
 import de.jpaw.util.ExceptionUtil
 import java.util.Objects
-import org.joda.time.Instant
+import java.time.Instant
 import org.slf4j.MDC
 import com.arvatosystems.t9t.base.services.IIdempotencyChecker
 
@@ -74,8 +74,8 @@ class RequestProcessor implements IRequestProcessor {
 
         // check permissions - first step
         val pqon                    = rp.ret$PQON
-        val now                     = new Instant
-        val millis                  = now.millis
+        val now                     = Instant.now
+        val millis                  = now.toEpochMilli
 
         // validate the request header, if it exists
         if (optHdr !== null) {
@@ -106,7 +106,7 @@ class RequestProcessor implements IRequestProcessor {
 
             // check if JWT is still valid
             if (jwtInfo.expiresAt !== null) {
-                val expiredBy = millis - jwtInfo.expiresAt.millis
+                val expiredBy = millis - jwtInfo.expiresAt.toEpochMilli
                 if (expiredBy > 100L) {  // allow some millis to avoid race conditions
                     LOGGER.info("Denying processing of {}@{}:{}, JWT has expired {} ms ago",
                     jwtInfo.userId, jwtInfo.tenantId, pqon, expiredBy)
@@ -161,8 +161,8 @@ class RequestProcessor implements IRequestProcessor {
             prioText, jwtInfo.userId, jwtInfo.tenantId, pqon, jwtInfo.sessionRef, ihdr.processRef, !skipAuthorization)
 
             val resp                    = executeSynchronousWithRetries(rp, ihdr, skipAuthorization)
-            val endOfProcessing         = new Instant
-            val processingDuration      = endOfProcessing.millis - ihdr.executionStartedAt.millis
+            val endOfProcessing         = Instant.now
+            val processingDuration      = endOfProcessing.toEpochMilli - ihdr.executionStartedAt.toEpochMilli
             resp.tenantId               = jwtInfo.tenantId
             resp.processRef             = ihdr.processRef
             resp.messageId              = optHdr?.messageId

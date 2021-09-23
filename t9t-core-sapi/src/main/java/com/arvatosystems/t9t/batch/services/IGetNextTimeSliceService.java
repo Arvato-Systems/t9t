@@ -15,7 +15,9 @@
  */
 package com.arvatosystems.t9t.batch.services;
 
-import org.joda.time.Instant;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.batch.SliceTrackingInterval;
@@ -35,6 +37,8 @@ public interface IGetNextTimeSliceService {
 
     /** Converts the interval with instants to an interval of LocalDateTime types - in UTC. */
     default SliceTrackingLocalInterval convertToLocal(SliceTrackingInterval interval) {
-        return new SliceTrackingLocalInterval(interval.getStartInstant().toDateTime().toLocalDateTime(), interval.getEndInstant().toDateTime().toLocalDateTime());
+        return new SliceTrackingLocalInterval(
+            LocalDateTime.ofInstant(interval.getStartInstant(), ZoneOffset.UTC),
+            LocalDateTime.ofInstant(interval.getEndInstant(), ZoneOffset.UTC));
     }
 }

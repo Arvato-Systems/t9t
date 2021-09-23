@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.context.bpmn;
 
-import org.joda.time.Instant;
+import java.time.Instant;
 
 import com.arvatosystems.t9t.bpmn.ProcessExecutionStatusDTO;
 import com.arvatosystems.t9t.bpmn.request.ProcessExecutionStatusCrudRequest;
@@ -33,7 +33,7 @@ import de.jpaw.dp.Singleton;
 @Singleton
 @Named("bpmnStatus.ctx.stall")
 public class ProcessStallContextMenuHandler implements IGridContextMenu<ProcessExecutionStatusDTO> {
-    public static final Instant FAR_AWAY = new Instant((129L * 365L + 24L) * 86400L * 1000L); // 1.1.1970 to 31.12.2099 = 129 years and 24 days
+    public static final Instant FAR_AWAY = Instant.ofEpochSecond((129L * 365L + 24L) * 86400L); // 1.1.1970 to 31.12.2099 = 129 years and 24 days
     protected final T9TRemoteUtils remoteUtils = Jdp.getRequired(T9TRemoteUtils.class);
 
     @Override

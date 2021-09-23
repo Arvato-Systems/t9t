@@ -26,8 +26,7 @@ import de.jpaw.annotations.AddLogger
 import de.jpaw.dp.Inject
 import de.jpaw.dp.Singleton
 import de.jpaw.util.ByteArray
-import org.joda.time.Instant
-import org.joda.time.LocalDateTime
+import java.time.Instant
 import com.arvatosystems.t9t.auth.services.IAuthModuleCfgDtoResolver
 import com.arvatosystems.t9t.auth.services.IAuthPersistenceAccess
 import com.arvatosystems.t9t.base.T9tException
@@ -61,10 +60,9 @@ class PasswordChangeService implements IPasswordChangeService {
         newPasswordEntity.objectRef = userEntity.objectRef
         newPasswordEntity.passwordSetByUser = userEntity.objectRef
         newPasswordEntity.passwordHash = newPasswordHash
-        newPasswordEntity.passwordCreation = new Instant
-        newPasswordEntity.passwordExpiry = new Instant(newPasswordEntity.passwordCreation).plus(T9tConstants.ONE_DAY_IN_MS * authModuleCfg.passwordExpirationInDays)
-        newPasswordEntity.userExpiry = new Instant(newPasswordEntity.passwordCreation)
-                .plus(T9tConstants.ONE_DAY_IN_MS * T9tConstants.DEFAULT_MAXIUM_NUMBER_OF_DAYS_IN_BETWEEN_USER_ACTIVITIES)
+        newPasswordEntity.passwordCreation = Instant.now
+        newPasswordEntity.passwordExpiry = newPasswordEntity.passwordCreation.plusSeconds(T9tConstants.ONE_DAY_IN_S * authModuleCfg.passwordExpirationInDays)
+        newPasswordEntity.userExpiry = newPasswordEntity.passwordCreation.plusSeconds(T9tConstants.ONE_DAY_IN_S * T9tConstants.DEFAULT_MAXIUM_NUMBER_OF_DAYS_IN_BETWEEN_USER_ACTIVITIES)
         newPasswordEntity.passwordSerialNumber = userStatusEntity.currentPasswordSerialNumber
         passwordResolver.save(newPasswordEntity)
 
@@ -107,9 +105,8 @@ class PasswordChangeService implements IPasswordChangeService {
             query.setParameter("passwordHash", newPassswordHash)
 
             val matchedPassword = query.singleResult
-            val earliestDatePasswordCanBeUsedAgain = matchedPassword.passwordCreation.toDateTime.toLocalDateTime
-                    .plusDays(passwordBlockingPeriod)
-            if (earliestDatePasswordCanBeUsedAgain.isAfter(new LocalDateTime)) {
+            val earliestDatePasswordCanBeUsedAgain = matchedPassword.passwordCreation.plusSeconds(T9tConstants.ONE_DAY_IN_S * passwordBlockingPeriod)
+            if (earliestDatePasswordCanBeUsedAgain.isAfter(Instant.now)) {
                 LOGGER.error("Can't reuse password before {}", earliestDatePasswordCanBeUsedAgain)
                 throw new T9tException(T9tAuthException.PASSWORD_VALIDATION_FAILED)
             }

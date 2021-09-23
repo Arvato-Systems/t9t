@@ -161,7 +161,7 @@ class DocComponentBatchLoadRequestHandler extends AbstractRequestHandler<DocComp
         }
 
         // if in cluster mode, send a cache invalidation event
-        executor.clearCache(DocComponentDTO.simpleName, null);
+        executor.clearCache(ctx, DocComponentDTO.simpleName, null);
         return ok
     }
 }

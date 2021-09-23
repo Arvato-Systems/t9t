@@ -4,15 +4,15 @@
     <property name="ireport.zoom" value="1.3310000000000004"/>
     <property name="ireport.x" value="0"/>
     <property name="ireport.y" value="0"/>
-    <import value="org.joda.time.*"/>
-    <parameter name="dateFrom" class="org.joda.time.LocalDateTime" isForPrompting="false">
-        <defaultValueExpression><![CDATA[new LocalDateTime(2013,9,1,0,0)]]></defaultValueExpression>
+    <import value="java.time.*"/>
+    <parameter name="dateFrom" class="java.time.LocalDateTime" isForPrompting="false">
+        <defaultValueExpression><![CDATA[LocalDateTime.of(2013,9,1,0,0)]]></defaultValueExpression>
     </parameter>
-    <parameter name="dateTo" class="org.joda.time.LocalDateTime" isForPrompting="false">
-        <defaultValueExpression><![CDATA[new LocalDateTime()]]></defaultValueExpression>
+    <parameter name="dateTo" class="java.time.LocalDateTime" isForPrompting="false">
+        <defaultValueExpression><![CDATA[LocalDateTime.now()]]></defaultValueExpression>
     </parameter>
-    <parameter name="clientNow" class="org.joda.time.LocalDateTime" isForPrompting="false">
-        <defaultValueExpression><![CDATA[new LocalDateTime()]]></defaultValueExpression>
+    <parameter name="clientNow" class="java.time.LocalDateTime" isForPrompting="false">
+        <defaultValueExpression><![CDATA[LocalDateTime.now()]]></defaultValueExpression>
     </parameter>
     <parameter name="timeZone" class="java.lang.String"/>
     <parameter name="tenantId" class="java.lang.String"/>

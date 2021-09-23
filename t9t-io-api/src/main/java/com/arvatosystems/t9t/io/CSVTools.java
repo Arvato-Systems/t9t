@@ -15,9 +15,8 @@
  */
 package com.arvatosystems.t9t.io;
 
+import java.time.ZoneId;
 import java.util.Locale;
-
-import org.joda.time.DateTimeZone;
 
 import de.jpaw.bonaparte.core.CSVConfiguration;
 import de.jpaw.bonaparte.core.CSVStyle;
@@ -50,7 +49,7 @@ public class CSVTools {
                 cfgDTO.getBooleanTrue(),
                 cfgDTO.getBooleanFalse(),
                 cfgDTO.getLanguageCode()!= null? Locale.forLanguageTag(cfgDTO.getLanguageCode()): null,
-                cfgDTO.getTimeZone() != null ? DateTimeZone.forID(cfgDTO.getTimeZone()): null,
+                cfgDTO.getTimeZone() != null ? ZoneId.of(cfgDTO.getTimeZone()): null,
                 t2b(cfgDTO.getDayStyle()),
                 t2b(cfgDTO.getTimeStyle()),
                 cfgDTO.getCustomDayFormat(),

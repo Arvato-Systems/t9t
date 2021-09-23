@@ -59,7 +59,7 @@ import java.util.Map
 import java.util.Objects
 import java.util.concurrent.atomic.AtomicInteger
 import javax.persistence.EntityNotFoundException
-import org.joda.time.Instant
+import java.time.Instant
 import org.slf4j.MDC
 
 @Singleton
@@ -282,7 +282,7 @@ class BpmnRunner implements IBpmnRunner {
         }
         if (tilWhen !== null && Number.isAssignableFrom(tilWhen.class)) {
             // an Instant which has been serialized as JSON and later deserialized will appear as a numeric value, representing the number of seconds since the Epoch
-            statusEntity.yieldUntil = new Instant((tilWhen as Number).longValue)
+            statusEntity.yieldUntil = Instant.ofEpochMilli((tilWhen as Number).longValue)
         }
         return code;
     }
@@ -406,7 +406,7 @@ class BpmnRunner implements IBpmnRunner {
         RequestContext ctx, ProcessDefinitionDTO pd, ProcessExecStatusEntity statusEntity,
         Object workflowObject, Map<String, Object> parameters
     ) {
-        statusEntity.yieldUntil = ctx.executionStart.plus(1000L * step.waitSeconds)
+        statusEntity.yieldUntil = ctx.executionStart.plusSeconds(step.waitSeconds)
         return WorkflowReturnCode.YIELD_NEXT   // must be YIELD_NEXT, not YIELD, because YIELD would result in an endless loop.
     }
 

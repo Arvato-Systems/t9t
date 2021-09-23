@@ -36,7 +36,7 @@ public class DocComponentCrudRequestHandler extends AbstractCrudSurrogateKeyBERe
     @Override
     public ServiceResponse execute(RequestContext ctx, DocComponentCrudRequest crudRequest) throws Exception {
         DocFormatter.clearCache();   // this could change the configuration, clear the cache immediately!
-        executor.clearCache(DocComponentDTO.class.getSimpleName(), null);
+        executor.clearCache(ctx, DocComponentDTO.class.getSimpleName(), null);
         return execute(ctx, crudRequest, resolver);
     }
 }

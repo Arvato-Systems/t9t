@@ -18,7 +18,9 @@ package com.arvatosystems.t9t.component.datafields;
 import java.util.Date;
 import java.util.TimeZone;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
+import java.time.ZoneId;
+
 import org.zkoss.zul.Datebox;
 
 public class DayDataField extends AbstractDataField<Datebox, LocalDate> {
@@ -51,11 +53,11 @@ public class DayDataField extends AbstractDataField<Datebox, LocalDate> {
         Date d = c.getValue();
         if (d == null)
             return null;
-        return LocalDate.fromDateFields(d);
+        return LocalDate.ofInstant(d.toInstant(), ZoneId.systemDefault());
     }
 
     @Override
     public void setValue(LocalDate data) {
-        c.setValue(data == null ? null : data.toDate());
+        c.setValue(data == null ? null : Date.from(data.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
     }
 }

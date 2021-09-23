@@ -18,6 +18,7 @@ package com.arvatosystems.t9t.tfi.viewmodel;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +26,7 @@ import java.util.Optional;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
-import org.joda.time.Instant;
+import java.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.AfterCompose;
@@ -138,11 +139,11 @@ public class ApplicationViewModel {
                 numberOfIncorrectAttempts = Integer.valueOf(0);
             final Instant lastLoggedIn = as.getLastLoggedIn();
             if (lastLoggedIn != null) {
-                whenLastLoggedIn = CommonFns.formatDate(lastLoggedIn.toDate(), ZulUtils.readConfig("com.datetime.format"));
+                whenLastLoggedIn = CommonFns.formatDate(Date.from(lastLoggedIn), ZulUtils.readConfig("com.datetime.format"));
             }
             final Instant passwordExpires = as.getPasswordExpires();
             if (passwordExpires != null) {
-                pwdExpiresInDays = (passwordExpires.getMillis() - System.currentTimeMillis()) / MILLISECONDS_PER_DAY;
+                pwdExpiresInDays = (passwordExpires.toEpochMilli() - System.currentTimeMillis()) / MILLISECONDS_PER_DAY;
                 if (pwdExpiresInDays < 0L)
                     pwdExpiresInDays = 0L;
             }

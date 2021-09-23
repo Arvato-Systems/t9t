@@ -16,7 +16,7 @@
 package com.arvatosystems.t9t.auth.jwt.tests;
 
 
-import org.joda.time.Instant;
+import java.time.Instant;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -41,7 +41,7 @@ public class JwtTest {
         Instant whenSigned = info.getIssuedAt();  // the system timestamp written back
 
         Assertions.assertNotNull(whenSigned);
-        Assertions.assertTrue(now >= whenSigned.getMillis());
+        Assertions.assertTrue(now >= whenSigned.toEpochMilli());
         Assertions.assertEquals(whenSigned, info2.getIssuedAt());
     }
 }

@@ -22,7 +22,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>global-dm</artifactId>
-        <version>5.4-SNAPSHOT</version>
+        <version>5.5-SNAPSHOT</version>
         <relativePath>../global-dm</relativePath>
     </parent>
 
@@ -32,7 +32,7 @@
 
     <properties>
         <!-- ZK libraries, COMMERCIAL !!! -->
-        <zk.version>9.6.0</zk.version>
+        <zk.version>9.6.0.1</zk.version>
         <zk-ckez.version>4.14.0.1</zk-ckez.version>  <!-- https://github.com/zkoss/zkckeditor -->
 
         <!-- older versions of jfree pulled by zkex, DM asks for newer -->

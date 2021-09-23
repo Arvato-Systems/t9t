@@ -15,35 +15,34 @@
  */
 package com.arvatosystems.t9t.tfi.general;
 
-import java.text.SimpleDateFormat;
-
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import com.arvatosystems.t9t.tfi.web.ZulUtils;
 
 public class DateUtils {
-    private static SimpleDateFormat dateFormat;
-    private static SimpleDateFormat dateTimeFormat;
+    private static DateTimeFormatter dateFormat;
+    private static DateTimeFormatter dateTimeFormat;
 
     public static final String getDate(LocalDate date) {
-        return getDateFormat().format(date.toDate());
+        return date.format(getDateFormat());
     }
 
     public static final String getDateTime(LocalDateTime dateTime) {
-        return getDateTimeFormat().format(dateTime.toDate());
+        return dateTime.format(getDateTimeFormat());
     }
 
-    private static SimpleDateFormat getDateFormat() {
+    private static DateTimeFormatter getDateFormat() {
         if (dateFormat == null) {
-            dateFormat = new SimpleDateFormat(ZulUtils.translate("com","dateFormat"));
+            dateFormat = DateTimeFormatter.ofPattern(ZulUtils.translate("com","dateFormat"));
         }
         return dateFormat;
     }
 
-    private static SimpleDateFormat getDateTimeFormat() {
+    private static DateTimeFormatter getDateTimeFormat() {
         if (dateTimeFormat == null) {
-            dateTimeFormat = new SimpleDateFormat(ZulUtils.translate("com","datetimeFormat"));
+            dateTimeFormat = DateTimeFormatter.ofPattern(ZulUtils.translate("com","datetimeFormat"));
         }
         return dateTimeFormat;
     }

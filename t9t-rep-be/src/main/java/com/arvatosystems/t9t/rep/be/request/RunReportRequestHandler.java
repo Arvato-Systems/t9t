@@ -16,16 +16,14 @@
 package com.arvatosystems.t9t.rep.be.request;
 
 import java.io.File;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.joda.time.Duration;
-import org.joda.time.Instant;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,9 +35,7 @@ import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.IFileUtil;
 import com.arvatosystems.t9t.base.services.IOutputSession;
 import com.arvatosystems.t9t.base.services.RequestContext;
-import com.arvatosystems.t9t.doc.MailingGroupDTO;
 import com.arvatosystems.t9t.doc.T9tDocTools;
-import com.arvatosystems.t9t.doc.api.DocumentSelector;
 import com.arvatosystems.t9t.rep.ReportConfigDTO;
 import com.arvatosystems.t9t.rep.ReportParamsDTO;
 import com.arvatosystems.t9t.rep.T9tRepException;
@@ -88,7 +84,7 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
     private static final String JR_TEMPLATE_EXT = ".jrxml";
     private static final String COMPILED_JR_TEMPLATE_EXT = ".jasper";
     //protected static final DateTimeFormatter dayFormatter = DateTimeFormat.forStyle("M-").withZoneUTC();  // this gives a local format
-    protected static final DateTimeFormatter dayFormatter = ISODateTimeFormat.basicDate(); // this gives yyyyMMdd
+    protected static final DateTimeFormatter dayFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
 
     private final IFileUtil fileUtil = Jdp.getRequired(IFileUtil.class);
     private final IJasperParameterEnricher jasperParamEnricher = Jdp.getRequired(IJasperParameterEnricher.class);
@@ -103,9 +99,9 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
 
     protected void resolveInterval(Map<String, Object> parameters, LocalDateTime relevantDate, ReportParamsDTO interval,
             Map<String, Object> outputSessionAdditionalParametersList) {
-        int millisSinceMidnight = relevantDate.getMillisOfDay();
+        int secondsSinceMidnight = relevantDate.toLocalTime().toSecondOfDay();
         // default setting is toDate = most recent midnight
-        LocalDateTime fromDate = null, toDate = relevantDate.minus(new Duration(millisSinceMidnight));
+        LocalDateTime fromDate = null, toDate = relevantDate.minusSeconds(secondsSinceMidnight);
         switch (interval.getIntervalCategory()) {
         case BY_DURATION:
             if (interval.getIntervalDays() > 0) {
@@ -113,8 +109,8 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
             } else {
                 // sub-day interval: must use different rounding: millisOfDay modulus interval
                 if (interval.getIntervalSeconds() > 0) {
-                    int relevantDiff = millisSinceMidnight % (interval.getIntervalSeconds() * 1000);
-                    toDate = relevantDate.minus(new Duration(relevantDiff));
+                    int relevantDiff = secondsSinceMidnight % interval.getIntervalSeconds();
+                    toDate = relevantDate.minusSeconds(relevantDiff);
                 } else {
                     toDate = relevantDate;
                 }
@@ -132,11 +128,11 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
                 fromDate = toDate.minusDays(factor);
                 break;
             case MINUTELY:
-                toDate = relevantDate.minus(new Duration(millisSinceMidnight % 60000));
+                toDate = relevantDate.minusSeconds(secondsSinceMidnight % 60);
                 fromDate = toDate.minusMinutes(factor);
                 break;
             case HOURLY:
-                toDate = relevantDate.minus(new Duration(millisSinceMidnight % 3600000));
+                toDate = relevantDate.minusSeconds(secondsSinceMidnight % 3600);
                 fromDate = toDate.minusHours(factor);
                 break;
             case MONTHLY:
@@ -158,8 +154,8 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
         LOGGER.info("Report run for period from {} to {}", fromDate.toString(), toDate.toString());
         parameters.put(DATE_FROM, fromDate);
         parameters.put(DATE_TO, toDate);
-        outputSessionAdditionalParametersList.put("reportDateFrom", dayFormatter.print(fromDate));
-        outputSessionAdditionalParametersList.put("reportDateTo", dayFormatter.print(toDate.minusSeconds(1)));
+        outputSessionAdditionalParametersList.put("reportDateFrom", fromDate.format(dayFormatter));
+        outputSessionAdditionalParametersList.put("reportDateTo", toDate.minusSeconds(1).format(dayFormatter));
     }
 
 
@@ -209,7 +205,7 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
 
         Instant relevantDate = ctx.internalHeaderParameters.getPlannedRunDate();
         if (relevantDate == null) {
-            relevantDate = new Instant();
+            relevantDate = Instant.now();
         }
 
         JasperReport jasperReport = null;
@@ -349,7 +345,7 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
         if (!compiledJrTemplateFile.exists() || (compiledJrTemplateFile.lastModified() < jrTemplateFile.lastModified())) {
             fileUtil.createFileLocation(compiledTemplatePath);
             JasperCompileManager.compileReportToFile(jrTemplateFile.getAbsolutePath(), compiledJrTemplateFile.getAbsolutePath());
-            compiledJrTemplateFile.setLastModified(new LocalDateTime().toDate().getTime());
+            compiledJrTemplateFile.setLastModified(System.currentTimeMillis());
         }
 
         return (JasperReport) JRLoader.loadObject(compiledJrTemplateFile);

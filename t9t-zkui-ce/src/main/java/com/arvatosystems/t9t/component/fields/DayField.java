@@ -17,7 +17,9 @@ package com.arvatosystems.t9t.component.fields;
 
 import java.util.Date;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
+import java.time.ZoneId;
+
 import org.zkoss.zul.Datebox;
 
 import com.arvatosystems.t9t.tfi.web.ApplicationSession;
@@ -47,7 +49,7 @@ public class DayField extends AbstractField<Datebox> {
 
     protected LocalDate getVal(Datebox d) {
         Date vv = d.getValue();
-        return vv == null ? null : LocalDate.fromDateFields(vv);
+        return vv == null ? null : LocalDate.ofInstant(vv.toInstant(), ZoneId.systemDefault());
     }
 
     @Override

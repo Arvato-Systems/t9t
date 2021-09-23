@@ -20,9 +20,9 @@
 
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
-        <artifactId>t9t-settings-sapi</artifactId>
-        <version>5.4-SNAPSHOT</version>
-        <relativePath>../t9t-settings-sapi</relativePath>
+        <artifactId>t9t-settings-java</artifactId>
+        <version>5.5-SNAPSHOT</version>
+        <relativePath>../t9t-settings-java</relativePath>
     </parent>
 
     <artifactId>t9t-solr-sapi</artifactId>

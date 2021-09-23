@@ -25,7 +25,7 @@ import com.arvatosystems.t9t.plugins.request.UploadPluginResponse
 import de.jpaw.annotations.AddLogger
 import de.jpaw.bonaparte.api.media.MediaDataUtil
 import de.jpaw.bonaparte.pojos.api.OperationType
-import org.joda.time.Instant
+import java.time.Instant
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import com.arvatosystems.t9t.plugins.request.UnloadPluginRequest

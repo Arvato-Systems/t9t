@@ -23,7 +23,7 @@ import java.util.List;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.TypedQuery;
 
-import org.joda.time.Instant;
+import java.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

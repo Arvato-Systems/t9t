@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.bpmn2.be.camunda.utils;
 
-import org.joda.time.Instant;
+import java.time.Instant;
 
 import com.arvatosystems.t9t.base.entities.FullTracking;
 

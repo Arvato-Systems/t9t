@@ -34,6 +34,7 @@ import de.jpaw.dp.Singleton
 import de.jpaw.util.ApplicationException
 import java.util.concurrent.TimeUnit
 import org.eclipse.xtend.lib.annotations.Data
+import java.time.Instant
 
 // process ServiceRequests from unauthenticated sources. Blocking operation
 @Singleton
@@ -70,7 +71,7 @@ class ServiceRequestExecutor implements IUnauthenticatedServiceRequestExecutor {
             throw new T9tException(T9tException.NOT_AUTHENTICATED);
         }
         var AuthData adata = authCache.getIfPresent(ap)
-        if (adata !== null && !(ap instanceof AuthenticationJwt) && adata.jwtInfo.expiresAt.isAfterNow) {
+        if (adata !== null && !(ap instanceof AuthenticationJwt) && adata.jwtInfo.expiresAt.isAfter(Instant.now)) {
             adata = null  // force reauth due to expiry
         }
         if (adata === null) {

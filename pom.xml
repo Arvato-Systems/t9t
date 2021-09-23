@@ -21,7 +21,7 @@
 
     <groupId>com.arvato-systems.t9t</groupId>
     <artifactId>global-build</artifactId>
-    <version>5.4-SNAPSHOT</version>
+    <version>5.5-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>Global root POM for the t9t framework</description>
 
@@ -36,7 +36,7 @@
     -->
     <properties>
         <!-- to be used by dependent projects (same as project.version, but must be provided explicitly so that imports work) -->
-        <t9t.version>5.4-SNAPSHOT</t9t.version>
+        <t9t.version>5.5-SNAPSHOT</t9t.version>
 
         <!-- Build specific properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -68,15 +68,15 @@
         <maven-enforcer-plugin.version>3.0.0</maven-enforcer-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <owasp-maven-plugin.version>2.1.1</owasp-maven-plugin.version>
-        <spring-boot-maven-plugin.version>2.0.2.RELEASE</spring-boot-maven-plugin.version>  <!-- => 2.4.3 in release 5.1 -->
-        <tycho.version>1.7.0</tycho.version>
+        <spring-boot-maven-plugin.version>2.5.4</spring-boot-maven-plugin.version>  <!-- => 2.4.3 in release 5.1 -->
+        <tycho.version>2.3.0</tycho.version>
         <git-commit-id-plugin.version>2.1.7</git-commit-id-plugin.version>
         <jaxb2-maven-plugin.version>1.5</jaxb2-maven-plugin.version>
         <jaxws-maven-plugin.version>2.3.3</jaxws-maven-plugin.version>
         <eclipse-lifecycle-mapping.version>1.0.0</eclipse-lifecycle-mapping.version>
         <bundle.plugin.version>5.1.2</bundle.plugin.version> <!-- felix, for pricing RCP -->
         <exec.plugin.version>3.0.0</exec.plugin.version>
-        <jetty-maven-plugin.version>10.0.5</jetty-maven-plugin.version>
+        <jetty-maven-plugin.version>10.0.6</jetty-maven-plugin.version>
         <maven-antrun-plugin.version>3.0.0</maven-antrun-plugin.version>
         <cxf-codegen-plugin.version>3.3.11</cxf-codegen-plugin.version>      <!-- 3.4.4 ? -->
         <cxf-wadl2java-plugin.version>3.3.11</cxf-wadl2java-plugin.version>  <!-- 3.4.4 ? -->
@@ -94,7 +94,7 @@
         <xtend-maven-plugin.version>2.25.0</xtend-maven-plugin.version>
         <xtext-maven-plugin.version>2.25.0</xtext-maven-plugin.version>
 
-        <bonaparte-plugin.version>4.40.2</bonaparte-plugin.version>
+        <bonaparte-plugin.version>4.70.5</bonaparte-plugin.version>
         <license-plugin.version>3.0</license-plugin.version>
 
         <xtend-plugin-phase>generate-sources</xtend-plugin-phase>
@@ -120,38 +120,6 @@
                         <target>1.8</target>
                         <encoding>${project.build.sourceEncoding}</encoding>
                     </configuration>
-                    <executions>
-                        <execution>
-                            <id>default-compile</id>
-                            <goals>
-                                <goal>compile</goal>
-                            </goals>
-                            <configuration>
-                                <source>11</source>
-                                <target>11</target>
-                            </configuration>
-                        </execution>
-                        <execution>
-                            <id>module-compile</id>
-                            <phase>compile</phase>
-                            <goals>
-                                <goal>compile</goal>
-                           </goals>
-                            <configuration>
-                                <release>11</release>
-                                <compileSourceRoots>
-                                    <compileSourceRoot>${project.basedir}/src/main/java</compileSourceRoot>
-                                    <compileSourceRoot>${project.basedir}/src/generated/java</compileSourceRoot>
-                                </compileSourceRoots>
-<!--
-              <compilerArgs>
-                <arg>- -patch-module</arg>
-                <arg>${module-name}=${project.build.outputDirectory}</arg>
-              </compilerArgs>
- -->
-                            </configuration>
-                        </execution>
-                    </executions>
                 </plugin>
 
                 <!-- war-file properties -->
@@ -790,7 +758,7 @@
 
         <module>t9t-settings</module>
         <module>t9t-settings-api</module>
-        <module>t9t-settings-sapi</module>
+        <module>t9t-settings-java</module>
         <module>t9t-settings-xtend</module>
         <module>t9t-settings-be</module>
         <module>t9t-settings-jpa</module>
@@ -863,6 +831,7 @@
         <module>t9t-email-be-vertx</module>
         <module>t9t-email-jpa</module>
 
+        <module>t9t-fonts</module>
         <module>t9t-doc-sapi</module>
         <module>t9t-doc-be</module>
         <module>t9t-doc-be-pdf</module>
@@ -948,6 +917,7 @@
         <module>t9t-tests-arch-be</module>
         <module>t9t-vertx-cluster</module>
         <module>t9t-vertx-metrics</module>
+        <module>t9t-vertx-resteasy</module>
         <module>t9t-proxy</module>
         <module>t9t-all-api</module>
         <module>t9t-all</module>  <!-- t9t-all is t9t-all-be + t9t-all-jpa -->
@@ -986,7 +956,6 @@
                 <module>t9t-zkui-ce</module>
                 <module>t9t-zkui-ee</module>
                 <module>t9t-zkui-screens</module>
-                <!-- <module>t9t-zkui-war</module>   not needed, just a sample -->
             </modules>
         </profile>
 

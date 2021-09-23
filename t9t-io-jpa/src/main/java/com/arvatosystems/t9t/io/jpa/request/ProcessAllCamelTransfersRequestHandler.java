@@ -52,7 +52,7 @@ public class ProcessAllCamelTransfersRequestHandler extends AbstractRequestHandl
         if (rq.getOnlySinkId() != null)
             query.setParameter("dataSinkId", rq.getOnlySinkId());
         int minusMinutes = rq.getMinimumAge() == null ? 60 : rq.getMinimumAge().intValue();
-        query.setParameter("until", ctx.executionStart.minus(minusMinutes * 60_000L));
+        query.setParameter("until", ctx.executionStart.minusSeconds(minusMinutes * 60L));
         List<Long> sinkRefs = query.getResultList();
 
         int numRecords = sinkRefs.size();

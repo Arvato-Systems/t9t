@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
-import org.joda.time.LocalDateTime
+import java.time.LocalDateTime
 import de.jpaw.annotations.AddLogger
 
 @AddLogger
@@ -223,7 +223,7 @@ class FormatHtmlDocTest {
             currencyCode = "EUR"
         ], null, #{
             "name" -> "John",
-            "orderDate" -> new LocalDateTime(2018,12,14,9,27,0)
+            "orderDate" -> LocalDateTime.of(2018,12,14,9,27,0)
         }, null)
 
         val expected = '''

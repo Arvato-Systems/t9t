@@ -17,7 +17,7 @@ package com.arvatosystems.t9t.component.fields;
 
 import java.util.Date;
 
-import org.joda.time.Instant;
+import java.time.Instant;
 import org.zkoss.zul.Datebox;
 
 import com.arvatosystems.t9t.tfi.web.ApplicationSession;
@@ -46,7 +46,7 @@ public class InstantField extends AbstractField<Datebox> {
 
     protected Instant getVal(Datebox d) {
         Date vv = d.getValue();
-        return vv == null ? null : new Instant(vv.getTime());
+        return vv == null ? null : vv.toInstant();
     }
 
     @Override

@@ -41,19 +41,18 @@ import de.jpaw.bonaparte.pojos.api.UnicodeFilter
 import de.jpaw.bonaparte.pojos.api.UuidFilter
 import de.jpaw.dp.Inject
 import de.jpaw.dp.Singleton
-import org.joda.time.Instant
-import org.joda.time.LocalDate
-import org.joda.time.LocalDateTime
-import org.joda.time.LocalTime
-import org.joda.time.format.DateTimeFormatter
-import org.joda.time.format.ISODateTimeFormat
+import java.time.Instant
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 @AddLogger
 @Singleton
 class FilterToSolrConverter implements IFilterToSolrConverter {
 
-    static final DateTimeFormatter isoFmt = ISODateTimeFormat.dateTimeNoMillis
-    static final DateTimeFormatter isoDay = ISODateTimeFormat.date
+    static final DateTimeFormatter isoFmt = DateTimeFormatter.ISO_LOCAL_DATE_TIME
+    static final DateTimeFormatter isoDay = DateTimeFormatter.ISO_LOCAL_DATE
 
     @Inject IEnumResolver enumResolver
 
@@ -65,28 +64,28 @@ class FilterToSolrConverter implements IFilterToSolrConverter {
 
     def private static forSolr(LocalDate t) {
         if (t !== null)
-            isoDay.print(t)
+            isoDay.format(t)
         else
             "*"
     }
 
     def private static forSolr(LocalTime t) {
         if (t !== null)
-            isoFmt.print(t).replace(":", "\\:")
+            isoFmt.format(t).replace(":", "\\:")
         else
             "*"
     }
 
     def private static forSolr(LocalDateTime t) {
         if (t !== null)
-            isoFmt.print(t).replace(":", "\\:") + "Z"
+            isoFmt.format(t).replace(":", "\\:") + "Z"
         else
             "*"
     }
 
     def private static forSolr(Instant t) {
         if (t !== null)
-            isoFmt.print(t).replace(":", "\\:") + "Z"
+            isoFmt.format(t).replace(":", "\\:") + "Z"
         else
             "*"
     }

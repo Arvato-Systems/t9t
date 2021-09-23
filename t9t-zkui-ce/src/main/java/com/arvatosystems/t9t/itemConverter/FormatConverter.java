@@ -20,9 +20,11 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.joda.time.LocalTime;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+
 import org.zkoss.util.Locales;
 import org.zkoss.util.resource.Labels;
 
@@ -49,11 +51,11 @@ public class FormatConverter implements IItemConverter {
         } else if (value instanceof Date) {
             return getDateFormat(this.format).format((Date) value);
         } else if (value instanceof LocalDateTime) {
-            return getDateFormat(this.format).format(((LocalDateTime) value).toDate());
+            return ((LocalDateTime) value).format(DateTimeFormatter.ofPattern(this.format));
         } else if (value instanceof LocalTime) {
-            return getDateFormat(this.format).format(((LocalTime) value).toDateTimeToday().toDate());
+            return ((LocalTime) value).format(DateTimeFormatter.ofPattern(this.format));
         } else if (value instanceof LocalDate) {
-            return getDateFormat(this.format).format(((LocalDate) value).toDate());
+            return ((LocalDate) value).format(DateTimeFormatter.ofPattern(this.format));
         } else {
             throw new UnsupportedOperationException("Instance " + value.getClass().getName() + " is not supported. Field:" + fieldName + "->" + value);
         }

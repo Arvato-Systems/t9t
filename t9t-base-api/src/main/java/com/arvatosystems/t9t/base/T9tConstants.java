@@ -107,6 +107,7 @@ public interface T9tConstants {
     public static final String TENANT_REF_FIELD_NAME42  = "tenantRef";
 
     public static final int DEFAULT_MAXIUM_NUMBER_OF_DAYS_IN_BETWEEN_USER_ACTIVITIES = 3650;
+    public static final long ONE_DAY_IN_S  = 24L * 3600L;
     public static final long ONE_DAY_IN_MS = 1000L * 24L * 3600L;
     public static final int DEFAULT_RANDOM_PASS_LENGTH = 12;
 

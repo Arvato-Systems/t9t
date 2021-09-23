@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.authc.be.api
 
+import com.arvatosystems.t9t.auth.UserDTO
+import com.arvatosystems.t9t.base.services.IAuthCacheInvalidation
 import com.arvatosystems.t9t.auth.services.IAuthPersistenceAccess
 import com.arvatosystems.t9t.authc.api.ResetPasswordRequest
 import com.arvatosystems.t9t.base.api.ServiceResponse
@@ -32,6 +34,7 @@ import de.jpaw.dp.Inject
 class ResetPasswordRequestHandler extends AbstractRequestHandler<ResetPasswordRequest>{
     @Inject IExecutor executor
     @Inject IAuthPersistenceAccess authPersistenceAccess
+    @Inject IAuthCacheInvalidation cacheInvalidator
 
     static final String RESET_PASSWORD_DOC_ID = "passwordReset"
 
@@ -39,6 +42,7 @@ class ResetPasswordRequestHandler extends AbstractRequestHandler<ResetPasswordRe
     override ServiceResponse execute(RequestContext ctx, ResetPasswordRequest rq) {
         // enabled only for administrators, by permissions - but this one is handled centrally, so we ignore
         val newPassword = authPersistenceAccess.assignNewPasswordIfEmailMatches(ctx, rq.userId, rq.emailAddress);
+        cacheInvalidator.invalidateAuthCache(ctx, UserDTO.simpleName, null, rq.userId)
 
         // The password is emailed to the user
         val emailRequest = new NewDocumentRequest => [

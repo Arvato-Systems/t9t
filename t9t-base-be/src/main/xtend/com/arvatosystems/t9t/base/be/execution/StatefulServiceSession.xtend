@@ -28,7 +28,7 @@ import com.arvatosystems.t9t.server.services.IStatefulServiceSession
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo
 import de.jpaw.dp.Dependent
 import de.jpaw.dp.Inject
-import org.joda.time.Instant
+import java.time.Instant
 import java.util.concurrent.atomic.AtomicReference
 import de.jpaw.annotations.AddLogger
 

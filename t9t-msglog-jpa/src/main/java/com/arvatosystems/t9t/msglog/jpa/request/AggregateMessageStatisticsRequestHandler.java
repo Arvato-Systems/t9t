@@ -23,9 +23,13 @@ import java.util.stream.Collectors;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
-import org.joda.time.Instant;
-import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -123,7 +127,7 @@ public class AggregateMessageStatisticsRequestHandler extends AbstractRequestHan
     private List<MessageStatisticsDTO> queryMessageStatistics(AggregateMessageStatisticsRequest request) {
         LocalDate fromDate = request.getDay() == null ? LocalDate.now().minusDays(1) : request.getDay();
         LocalDate toDate = fromDate.plusDays(1);
-        String dayStr =  fromDate.toString(DateTimeFormat.forPattern("yyyy-MM-dd"));
+        String dayStr =  fromDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
         StringBuilder sb = new StringBuilder();
         sb.append(" SELECT    new com.arvatosystems.t9t.msglog.be.request.MessageStatisticsDTOWrapper(");
@@ -154,8 +158,8 @@ public class AggregateMessageStatisticsRequestHandler extends AbstractRequestHan
         sb.append(" GROUP BY  m.tenantRef, m.userId, m.requestParameterPqon");
 
         TypedQuery<MessageStatisticsDTOWrapper> query = resolver.getEntityManager().createQuery(sb.toString(), MessageStatisticsDTOWrapper.class);
-        query.setParameter("fromDate", Instant.ofEpochMilli(fromDate.toDateTimeAtStartOfDay().getMillis()));
-        query.setParameter("toDate", Instant.ofEpochMilli(toDate.toDateTimeAtStartOfDay().getMillis()));
+        query.setParameter("fromDate", LocalDateTime.of(fromDate, LocalTime.of(0, 0)).toInstant(ZoneOffset.UTC));
+        query.setParameter("toDate", LocalDateTime.of(toDate, LocalTime.of(0, 0)).toInstant(ZoneOffset.UTC));
 
         if (request.getUserId() != null) {
             query.setParameter("userId", request.getUserId());
@@ -187,7 +191,7 @@ class MessageStatisticsDTOWrapper {
         dto = new MessageStatisticsDTO(
             tenantRef,
             userId,
-            LocalDate.parse(day, DateTimeFormat.forPattern("yyyy-MM-dd")),
+            LocalDate.parse(day, DateTimeFormatter.ofPattern("yyyy-MM-dd")),
             requestParameterPqon,
             countOk.intValue(),
             countError.intValue(),

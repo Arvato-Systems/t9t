@@ -17,12 +17,13 @@ package com.arvatosystems.t9t.init;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 
-import org.joda.time.DateTimeZone;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,11 +66,13 @@ public class InitContainers {
     }
 
     public static void checkUTC() {
-        DateTimeZone tz = DateTimeZone.getDefault();
-        if (tz.isFixed() && tz.convertUTCToLocal(0L) == 0L)
-            LOGGER.info("Running on UTC or equivalent time zone - good");
-        else
-            LOGGER.warn("Running time zone {} - NOT RECOMMENDED, timestamp conversions will not work as expected", tz);
+        final String oldId = ZoneId.systemDefault().getId();
+        if (!"GMT".equals(oldId)) {
+            TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+            LOGGER.info("Setting time zone to GMT (UTC) (was {} before)", oldId);
+        } else {
+            LOGGER.info("Time zone already set to GMT - good");
+        }
     }
 
     /** Full initialization - for backend server or UI. */

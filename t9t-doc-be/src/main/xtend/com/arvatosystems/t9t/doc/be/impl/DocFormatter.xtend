@@ -19,6 +19,7 @@ import com.arvatosystems.t9t.barcode.api.FlipMode
 import com.arvatosystems.t9t.base.T9tConstants
 import com.arvatosystems.t9t.base.services.ICacheInvalidationRegistry
 import com.arvatosystems.t9t.doc.DocComponentDTO
+import com.arvatosystems.t9t.doc.T9tDocTools
 import com.arvatosystems.t9t.doc.api.DocumentSelector
 import com.arvatosystems.t9t.doc.api.TemplateType
 import com.arvatosystems.t9t.doc.be.converters.impl.ConverterToHtmlUsingCids
@@ -59,21 +60,19 @@ import java.io.InputStream
 import java.io.StringReader
 import java.io.StringWriter
 import java.net.URL
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.Currency
+import java.util.HashMap
 import java.util.List
 import java.util.Locale
 import java.util.Map
 import java.util.concurrent.TimeUnit
 import org.eclipse.xtend.lib.annotations.Data
-import org.joda.time.DateTimeZone
-import org.joda.time.LocalDate
-import org.joda.time.LocalDateTime
-import org.joda.time.LocalTime
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.format.ISODateTimeFormat
-import java.util.HashMap
-import java.util.TimeZone
-import org.joda.time.format.DateTimeFormatter
+import java.time.ZoneOffset
 
 @Singleton
 @AddLogger
@@ -119,18 +118,29 @@ class DocFormatter implements IDocFormatter {
     /** Class serves as formatter for date and time. */
     @Data
     protected static class TimestampGeneratorModel implements TemplateMethodModelEx {
-        private Locale        locale
-        private DateTimeZone  zone
+        Locale        locale
+        ZoneId        zone
 
-        def private formatTime(DateTimeFormatter localFormatter, LocalDateTime t) {
-            // return localFormatter.print(t.toDate().time);
-            return localFormatter.print(t.toDate(TimeZone.getTimeZone("UTC")).time);
+        def private getFormatterForStyle(String styleS) {
+            if (styleS === null || styleS.length != 2) {
+                LOGGER.error("Bad style given: {}, returning default formatter", styleS)
+                return DateTimeFormatter.ISO_INSTANT;
+            }
+            if (styleS.charAt(0) === MINUS) {
+                // time only
+                return DateTimeFormatter.ofLocalizedTime(T9tDocTools.styleFor(styleS.charAt(1)))
+            } else if (styleS.charAt(1) === MINUS) {
+                // day only
+                return DateTimeFormatter.ofLocalizedDate(T9tDocTools.styleFor(styleS.charAt(0)))
+            } else {
+                return DateTimeFormatter.ofLocalizedDateTime(T9tDocTools.styleFor(styleS.charAt(0)), T9tDocTools.styleFor(styleS.charAt(1)))
+            }
         }
 
         // parameters are of type freemarker.template.SimpleScalar / SimpleNumber etc.
         // usage is 1st parameter: ISO string
-        // 2nd parameter: style as in http://www.joda.org/joda-time/apidocs/org/joda/time/format/DateTimeFormat.html
-        // 2nd paramter consists of 2 chars. First is for date, second is for time. S=short format, M=medium format, L=long format, -= skip . Example: 'S-' in combination with third parameter 'D' converts LocalDateTime to Date only
+        // 2nd parameter: style as in http://www.joda.java-time/apidocs/java/time/format/DateTimeFormat.html
+        // 2nd parameter consists of 2 chars. First is for date, second is for time. S=short format, M=medium format, L=long format, -= skip . Example: 'S-' in combination with third parameter 'D' converts LocalDateTime to Date only
         // optional parameter 3: force conversion from timestamp to day or time
         // optional parameter 4: separately supplied format in JODA format
         override exec(List arguments) throws TemplateModelException {
@@ -153,49 +163,78 @@ class DocFormatter implements IDocFormatter {
                 return ""
             }
 
-            val formatter = if (jodaFormat === null) DateTimeFormat.forStyle(styleS) else DateTimeFormat.forPattern(jodaFormat)
-            val localFormatter = formatter.withLocale(locale).withZone(zone)
+            val formatter = if (jodaFormat === null) getFormatterForStyle(styleS) else DateTimeFormatter.ofPattern(jodaFormat)
+            val localFormatter = formatter.withLocale(locale)
 
             if (forceConversion !== null) {
+                try {
                 // arg 3 to convert timestamp to day or time, and apply the style formatter
                 switch (forceConversion) {
                     case "D": {// timestamp to date, interpreted as day
-                        val t = LocalDateTime.parse(isoStringS, ISODateTimeFormat.dateTimeParser())
-                        return localFormatter.print(t.toLocalDate);
+                        val l = isoStringS.length
+                        // workaround for bad input: adapt to cases when just a date is given
+                        if (l == 10) {
+                            // do the same as for 'd'
+                            LOGGER.warn("Date/time conversion mismatch: force='D', style={}, format={}, input={}: You should use 'd' in this case!", styleS, jodaFormat, isoStringS)
+                            val t = LocalDate.parse(isoStringS)
+                            return localFormatter.format(t);
+                        } else {
+                            // another workaround for for extra Z suffix: drop it, it would cause a conversion error
+                            val gotTimezoneSuffix = isoStringS.endsWith("Z")
+                            if (gotTimezoneSuffix) {
+                                LOGGER.warn("Date/time conversion mismatch: force='D', style={}, format={}, input={}: Dropping time zone suffix. Bug in data provider?", styleS, jodaFormat, isoStringS)
+                            }
+                            val t = LocalDateTime.parse(if (gotTimezoneSuffix) isoStringS.substring(0, l-1) else isoStringS)
+                            val tt = t.atZone(ZoneOffset.UTC).withZoneSameInstant(zone).toLocalDateTime  // timezone conversion
+                            return localFormatter.format(tt.toLocalDate);
+                        }
                     }
                     case "T": {// timestamp to date, interpreted as time
-                        val t = LocalDateTime.parse(isoStringS, ISODateTimeFormat.dateTimeParser())
-                        return localFormatter.print(t.toLocalTime);
+                        val t = LocalDateTime.parse(isoStringS)
+                        val tt = t.atZone(ZoneOffset.UTC).withZoneSameInstant(zone).toLocalDateTime  // timezone conversion
+                        return localFormatter.format(tt.toLocalTime);
                     }
                     case "d": {// day
-                        val t = LocalDate.parse(isoStringS, ISODateTimeFormat.dateParser())
-                        return localFormatter.print(t);
+                        val t = LocalDate.parse(isoStringS)
+                        return localFormatter.format(t);
                     }
                     case "t": {// time
-                        val t = LocalTime.parse(isoStringS, ISODateTimeFormat.timeParser())
-                        return localFormatter.print(t);
+                        val t = LocalTime.parse(isoStringS)
+                        return localFormatter.format(t);
                     }
                     case "i": {// instant
-                        val t = LocalDateTime.parse(isoStringS, ISODateTimeFormat.dateTimeParser())
-                        return formatTime(localFormatter, t)
+                        val t = LocalDateTime.parse(isoStringS)
+                        val tt = t.atZone(ZoneOffset.UTC).withZoneSameInstant(zone).toLocalDateTime  // timezone conversion
+                        return tt.format(localFormatter)
                     }
                     default: {
+                        LOGGER.error("Unknown conversion rule: {}", forceConversion)
                     }
+                }
+                } catch (Exception e) {
+                    LOGGER.error("Date/time conversion error: force={}, style={}, format={}, input={}", forceConversion, styleS, jodaFormat, isoStringS)
+                    return "***ERROR***"
                 }
             }
 
+            try {
             if (styleS.charAt(0) === MINUS) {
                 // time only
-                val t = LocalTime.parse(isoStringS, ISODateTimeFormat.timeParser())
-                return localFormatter.print(t);
+                val t = LocalTime.parse(isoStringS)
+                return localFormatter.format(t);
             } else if (styleS.charAt(1) === MINUS) {
                 // day only
-                val t = LocalDate.parse(isoStringS, ISODateTimeFormat.dateParser())
-                return localFormatter.print(t);
+                val t = LocalDate.parse(isoStringS)
+                return localFormatter.format(t);
             } else {
                 // day + time
-                val t = LocalDateTime.parse(isoStringS, ISODateTimeFormat.dateTimeParser())
-                return formatTime(localFormatter, t)
+                val t = LocalDateTime.parse(isoStringS)
+                val tt = t.atZone(ZoneOffset.UTC).withZoneSameInstant(zone).toLocalDateTime  // timezone conversion
+                return tt.format(localFormatter)
+            }
+            } catch (Exception e) {
+                LOGGER.error("Date/time conversion error: style={}, format={}, input={}", forceConversion, styleS, jodaFormat, isoStringS)
+                return "***ERROR***"
             }
         }
     }
@@ -401,14 +440,12 @@ class DocFormatter implements IDocFormatter {
     }
 
     def protected getZone(String zoneId) {
-        if (zoneId === null)
-            return DateTimeZone.UTC
         try {
-            return DateTimeZone.forID(zoneId)
+            return ZoneId.of(zoneId === null ? "UTC" : zoneId)
         } catch (Exception e) {
             LOGGER.error("Invalid time zone, exception for ID {}", zoneId)
         }
-        return DateTimeZone.UTC
+        return ZoneId.of("UTC");
     }
 
     override formatDocument(String tenantId, Long sharedTenantRef, TemplateType templateType, String template, DocumentSelector selector, String timeZone, Object data,
@@ -493,7 +530,7 @@ class DocFormatter implements IDocFormatter {
             "e" -> new MapModel(#{
                 "currencySymbol" -> currencySymbol,
                 "tenantId" -> tenantId,
-                "timeZone" -> effectiveTimeZone.ID
+                "timeZone" -> effectiveTimeZone.id
             }, WRAPPER),
             "debug" -> new DebugModel
         }, WRAPPER)

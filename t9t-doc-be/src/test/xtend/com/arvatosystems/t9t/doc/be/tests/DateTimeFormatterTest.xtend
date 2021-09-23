@@ -23,18 +23,24 @@ import com.arvatosystems.t9t.doc.be.impl.DocFormatter
 import com.arvatosystems.t9t.doc.services.IDocModuleCfgDtoResolver
 import com.arvatosystems.t9t.doc.services.IDocPersistenceAccess
 import com.google.common.collect.ImmutableMap
+import de.jpaw.annotations.AddLogger
 import de.jpaw.bonaparte.api.media.MediaTypes
 import de.jpaw.dp.Jdp
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.ZoneId
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.util.Locale
-import org.joda.time.LocalDate
-import org.joda.time.LocalDateTime
-import org.joda.time.LocalTime
-import org.joda.time.format.DateTimeFormat
+import java.util.TimeZone
 import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import de.jpaw.annotations.AddLogger
+
+import static java.time.format.FormatStyle.*
 
 /** Note: Java 10 and Java 8 differ in day and timestamp formatting (space vs - for GB, and additional commas separating day and time for timestamp. **/
 @AddLogger
@@ -45,19 +51,19 @@ class DateTimeFormatterTest {
 
     def void print(String language, String country) {
         LOGGER.info("Date / time format for {}, {}", language, country)
-        val now = new LocalDateTime()
-        val time = new LocalTime
-        val date = new LocalDate
+        val now = LocalDateTime.now()
+        val time = now.toLocalTime
+        val date = now.toLocalDate
         val locale = new Locale(language, country)
 //        val fmt = ISODateTimeFormat.basicDateTime
 //        val string = fmt.print(now)
 //        println('''It is now «string»''')
 
-        val formats = #[ 'S', 'M', 'L', 'F' ]
+        val formats = #[ SHORT, MEDIUM ] //  LONG, FULL not working, see https://stackoverflow.com/questions/59531046/java-time-datetimeexception-unable-to-extract-zoneid-from-temporal
         formats.forEach[
-            val nowS  = DateTimeFormat.forStyle('''«it»«it»''').withLocale(locale).print(now);
-            val dayS  = DateTimeFormat.forStyle('''«it»-''').withLocale(locale).print(date);
-            val timeS = DateTimeFormat.forStyle('''-«it»''').withLocale(locale).print(time);
+            val nowS  = now.format(DateTimeFormatter.ofLocalizedDateTime(it, it).withLocale(locale));
+            val dayS  = date.format(DateTimeFormatter.ofLocalizedDate(it).withLocale(locale));
+            val timeS = time.format(DateTimeFormatter.ofLocalizedTime(it).withLocale(locale));
             LOGGER.info("For modifier {}, the date is {}, the time {}, and full {}", it, dayS, timeS, nowS)
         ]
     }
@@ -117,6 +123,13 @@ class DateTimeFormatterTest {
 
     @BeforeAll
     def static void setup() {
+        val oldId = ZoneId.systemDefault().getId();
+        if ("GMT" != oldId) {
+            TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+            LOGGER.info("Setting time zone to GMT (UTC) (was {} before)", oldId);
+        } else {
+            LOGGER.info("Time zone already set to GMT - good");
+        }
         Jdp.reset
         Jdp.bindInstanceTo(new MockedDocModuleCfgDtoResolver, IDocModuleCfgDtoResolver)
         Jdp.bindInstanceTo(new MockedPersistenceAccess, IDocPersistenceAccess)
@@ -137,9 +150,21 @@ class DateTimeFormatterTest {
     }
 
     val data = #{
-        "day"  -> new LocalDate(2016, 8, 15),
-        "time" -> new LocalTime(17, 26, 58),
-        "ts"   -> new LocalDateTime(2016, 8, 15, 17, 26, 58)
+        "day"  -> LocalDate.of(2016, 8, 15),
+        "time" -> LocalTime.of(17, 26, 58),
+        "ts"   -> LocalDateTime.of(2016, 8, 15, 17, 26, 58)
+    }
+
+    @Test
+    def void verySimpleTest() {
+    	val ts = LocalDateTime.of(2016, 8, 15, 17, 26, 58)
+    	LOGGER.info("ISO timestamp is {}", ts.format(DateTimeFormatter.ISO_DATE_TIME))
+        val localFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.MEDIUM)
+        .withLocale(Locale.GERMAN) //.withZone(ZoneId.of("Europe/Berlin"));
+    	LOGGER.info("local timestamp is {}", ts.format(localFormatter))  
+    	val inst = ts.toInstant(ZoneOffset.UTC)
+    	val zdt = inst.atZone(ZoneId.of("Europe/Berlin"))
+    	LOGGER.info("local instant is {}", zdt.format(localFormatter))  
     }
 
     @Test
@@ -154,11 +179,11 @@ class DateTimeFormatterTest {
             Uhrzeit:    17:26:58,
             Datum+Zeit: 15.08.2016«comma» 19:26:58
             Tagesdatum: 15.08.2016,
-            Uhrzeit:    17:26:58,
+            Uhrzeit:    19:26:58,
             Jahr:       2016,
             Wochentag:  Montag August,
         '''
-        LOGGER.info("Generated text is {}", actual.text)
+        LOGGER.info("Generated text is {}, current zone ID {}", actual.text, ZoneId.systemDefault.id)
         Assertions.assertEquals(expected, actual.text)
     }
 
@@ -178,7 +203,7 @@ class DateTimeFormatterTest {
             Jahr:       2016,
             Wochentag:  Montag August,
         '''
-        LOGGER.info("Generated text is {}", actual.text)
+        LOGGER.info("Generated text is {}, current zone ID {}", actual.text, ZoneId.systemDefault.id)
         Assertions.assertEquals(expected, actual.text)
     }
 

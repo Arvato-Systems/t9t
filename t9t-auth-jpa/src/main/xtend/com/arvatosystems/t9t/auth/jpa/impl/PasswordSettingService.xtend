@@ -27,7 +27,6 @@ import com.arvatosystems.t9t.base.services.RequestContext
 import de.jpaw.annotations.AddLogger
 import de.jpaw.dp.Inject
 import de.jpaw.dp.Singleton
-import com.arvatosystems.t9t.base.JsonUtil
 
 @AddLogger
 @Singleton
@@ -59,8 +58,8 @@ class PasswordSettingService implements IPasswordSettingService {
             passwordSetByUser = ctx.userRef  // only self-reset has userEntity.objectRef here
             passwordHash      = PasswordUtil.createPasswordHash(userEntity.userId, newPassword)
             passwordCreation  = ctx.executionStart
-            passwordExpiry    = ctx.executionStart.plus(T9tConstants.ONE_DAY_IN_MS * authModuleCfg.initialPasswordExpiration)
-            userExpiry        = ctx.executionStart.plus(T9tConstants.ONE_DAY_IN_MS * T9tConstants.DEFAULT_MAXIUM_NUMBER_OF_DAYS_IN_BETWEEN_USER_ACTIVITIES)
+            passwordExpiry    = ctx.executionStart.plusSeconds(T9tConstants.ONE_DAY_IN_S * authModuleCfg.initialPasswordExpiration)
+            userExpiry        = ctx.executionStart.plusSeconds(T9tConstants.ONE_DAY_IN_S * T9tConstants.DEFAULT_MAXIUM_NUMBER_OF_DAYS_IN_BETWEEN_USER_ACTIVITIES)
         ]
         newPasswordEntity.passwordSerialNumber = nextPasswordNo
         passwordResolver.save(newPasswordEntity)

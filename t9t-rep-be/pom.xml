@@ -20,9 +20,9 @@
 
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
-        <artifactId>t9t-settings-be</artifactId>
-        <version>5.4-SNAPSHOT</version>
-        <relativePath>../t9t-settings-be</relativePath>
+        <artifactId>t9t-settings-java</artifactId>
+        <version>5.5-SNAPSHOT</version>
+        <relativePath>../t9t-settings-java</relativePath>
     </parent>
 
     <artifactId>t9t-rep-be</artifactId>
@@ -48,6 +48,14 @@
     <dependencies>
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-jdp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-fonts</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-rep-sapi</artifactId>
         </dependency>
         <dependency>
@@ -61,6 +69,10 @@
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-fonts</artifactId>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

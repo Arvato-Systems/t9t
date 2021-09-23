@@ -22,6 +22,7 @@ import io.vertx.core.json.JsonObject
 import io.vertx.ext.auth.AuthProvider
 import io.vertx.ext.auth.User
 import io.vertx.ext.auth.authorization.Authorization
+import java.time.Instant
 
 class T9tVertxUser implements User {
     final String jwtToken;          // encoded form, without "Bearer" prefix
@@ -38,7 +39,7 @@ class T9tVertxUser implements User {
         return info !== null && jwtToken !== null
     }
     def isStillValid() {
-        info.expiresAt === null || info.expiresAt.isAfterNow
+        info.expiresAt === null || info.expiresAt.isAfter(Instant.now)
     }
     def getUserId() {
         return info?.userId

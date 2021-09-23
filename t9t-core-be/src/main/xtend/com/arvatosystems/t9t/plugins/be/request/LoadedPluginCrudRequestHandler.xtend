@@ -36,7 +36,7 @@ import de.jpaw.bonaparte.pojos.api.BooleanFilter
 import de.jpaw.bonaparte.pojos.api.LongFilter
 import de.jpaw.bonaparte.pojos.api.OperationType
 import de.jpaw.dp.Inject
-import org.joda.time.Instant
+import java.time.Instant
 
 // FIXME: There is a severe issue, in that for CREATE / UPDATE / MERGE, the pluginId of the data record is independent of the ID within the plugin itself.
 // We should either remove the ID within the plugin (solely trusting the user to assign IDs) or peek into the JAR before loading it, comparing the IDs,

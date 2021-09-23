@@ -35,6 +35,7 @@ import com.arvatosystems.t9t.cfg.be.ConfigProvider
 import de.jpaw.annotations.AddLogger
 import de.jpaw.dp.Inject
 import de.jpaw.util.ApplicationException
+import java.time.Instant
 
 @AddLogger
 class AuthenticationRequestHandler extends AbstractRequestHandler<AuthenticationRequest> {
@@ -63,7 +64,7 @@ class AuthenticationRequestHandler extends AbstractRequestHandler<Authentication
             jwt.locale                 = rq.sessionParameters.locale
             jwt.zoneinfo               = rq.sessionParameters.zoneinfo
         }
-        resp.mustChangePassword        = (resp.passwordExpires !== null && resp.passwordExpires.isBeforeNow)
+        resp.mustChangePassword        = (resp.passwordExpires !== null && resp.passwordExpires.isBefore(Instant.now))
         resp.encodedJwt                = authResponseUtil.authResponseFromJwt(jwt, rq.sessionParameters, null)
         resp.numberOfIncorrectAttempts = resp.numberOfIncorrectAttempts
         resp.tenantNotUnique           = resp.jwtInfo.tenantId == T9tConstants.GLOBAL_TENANT_ID // only then the user has access to additional ones

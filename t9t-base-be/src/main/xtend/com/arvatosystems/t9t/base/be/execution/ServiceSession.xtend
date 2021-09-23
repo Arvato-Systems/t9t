@@ -30,7 +30,7 @@ import com.arvatosystems.t9t.server.services.IServiceSession
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo
 import de.jpaw.dp.Dependent
 import de.jpaw.dp.Inject
-import org.joda.time.Instant
+import java.time.Instant
 
 /** This class implements a stateful session. It connects to a stateless backend.
  * The class is not multithreading-capable - a separate client is required per session.

@@ -22,7 +22,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 
-import org.joda.time.Instant;
+import java.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +59,7 @@ public class AsyncMessageUpdater implements IAsyncMessageUpdater {
         final AsyncMessageEntity m = em.find(AsyncMessageEntity.class, objectRef);
         if (m != null) {
             m.setAttempts(m.getAttempts() + 1);
-            m.setLastAttempt(new Instant());
+            m.setLastAttempt(Instant.now());
             m.setStatus(newStatus);
             m.setHttpResponseCode(httpCode);
             m.setReturnCode(clientCode);

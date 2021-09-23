@@ -52,7 +52,7 @@ import java.util.List
 import java.util.Map
 import java.util.UUID
 import java.util.concurrent.atomic.AtomicInteger
-import org.joda.time.Instant
+import java.time.Instant
 import com.arvatosystems.t9t.io.request.ImportStatusResponse
 import com.arvatosystems.t9t.io.request.WriteRecordsToDataSinkRequest
 import com.arvatosystems.t9t.base.output.ExportStatusEnum
@@ -67,7 +67,7 @@ class InputSession implements IInputSession {
     protected final AtomicInteger numSource = new AtomicInteger // unmapped records
     protected final AtomicInteger numProcessed = new AtomicInteger // mapped records
     protected final AtomicInteger numError = new AtomicInteger // errors
-    protected final Instant start = new Instant(System.currentTimeMillis)
+    protected final Instant start = Instant.now
     protected final SinkDTO sinkDTO = new SinkDTO
     protected DataSinkDTO dataSinkCfg
     protected BonaPortableClass<?> baseBClass
@@ -290,7 +290,7 @@ class InputSession implements IInputSession {
 
         // calculate statistics and write the sink record
         val end = System.currentTimeMillis
-        sinkDTO.processingTime = (end - start.millis) as int
+        sinkDTO.processingTime = (end - start.toEpochMilli) as int
         sinkDTO.numberOfSourceRecords = numSource.get
         sinkDTO.numberOfMappedRecords = numProcessed.get
         sinkDTO.numberOfErrorRecords = numError.get

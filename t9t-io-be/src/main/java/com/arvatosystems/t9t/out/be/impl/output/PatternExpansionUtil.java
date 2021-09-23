@@ -18,7 +18,8 @@ package com.arvatosystems.t9t.out.be.impl.output;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.joda.time.LocalDateTime;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.base.services.RequestContext;
@@ -34,7 +35,7 @@ public class PatternExpansionUtil {
     static final String DATE_PATTERN = "yyyy-MM-dd";
 
     private static String formatDate(LocalDateTime dt, String datePattern) {
-        return dt == null ? datePattern.replaceAll(CLEAR_DATE_PATTERN, "0") : dt.toString(datePattern);
+        return dt == null ? datePattern.replaceAll(CLEAR_DATE_PATTERN, "0") : dt.format(DateTimeFormatter.ofPattern(datePattern));
     }
 
     private static Map<String, Object> buildOutputPatternReplacementsFromParameters(

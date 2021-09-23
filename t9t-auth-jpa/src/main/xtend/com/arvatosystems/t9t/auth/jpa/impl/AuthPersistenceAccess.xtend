@@ -48,7 +48,7 @@ import java.util.UUID
 import javax.persistence.EntityManager
 import javax.persistence.NoResultException
 import javax.persistence.TypedQuery
-import org.joda.time.Instant
+import java.time.Instant
 import com.arvatosystems.t9t.auth.jpa.IPasswordSettingService
 import de.jpaw.bonaparte.pojos.api.auth.UserLogLevelType
 import com.arvatosystems.t9t.auth.jpa.IPasswordChangeService
@@ -234,7 +234,7 @@ class AuthPersistenceAccess implements IAuthPersistenceAccess, T9tConstants {
         var UserStatusEntity userStatus
         try {
             userStatus = userStatusQuery.singleResult // then check the user status if the user is frozen
-            if (userStatus.accountThrottledUntil !== null && userStatus.accountThrottledUntil.isAfterNow) {
+            if (userStatus.accountThrottledUntil !== null && userStatus.accountThrottledUntil.isAfter(now)) {
                 throw new T9tException(T9tException.ACCOUNT_TEMPORARILY_FROZEN)
             }
         } catch (NoResultException e) {
@@ -265,7 +265,7 @@ class AuthPersistenceAccess implements IAuthPersistenceAccess, T9tConstants {
             // auth was successful
             // OK if password is still valid, or if user is providing a new one now (this means if the password is no longer valid, the user MUST change it while authenticating)
             val gotANewPasswordNow = newPassword !== null && !newPassword.trim.isEmpty
-            if (passwordEntity.passwordExpiry.afterNow || gotANewPasswordNow) {
+            if (passwordEntity.passwordExpiry.isAfter(now) || gotANewPasswordNow) {
                 if (gotANewPasswordNow) {
                     // we want to change our password: reject if the new one does not satisfy checking criteria, otherwise accept
                     passwordChangeService.changePassword(newPassword, userEntity, userStatus)
@@ -287,7 +287,7 @@ class AuthPersistenceAccess implements IAuthPersistenceAccess, T9tConstants {
             // incorrect auth: increment attemptCounter
             userStatus.numberOfIncorrectAttempts = userStatus.numberOfIncorrectAttempts + 1
             if (userStatus.numberOfIncorrectAttempts >= 5) // TODO: configurable
-                userStatus.accountThrottledUntil = now.plus(5 * 60 * 1000)  // 5 minutes
+                userStatus.accountThrottledUntil = now.plusSeconds(5 * 60)  // 5 minutes
             resp.returnCode                = T9tException.WRONG_PASSWORD
             resp.userStatus                = userStatus.ret$Data
             return resp

@@ -107,6 +107,10 @@ public class AbstractFormatGeneratorXml extends AbstractFormatGenerator {
         }
     }
 
+    protected void setNamespaceContext() throws XMLStreamException {
+        // do nothing
+    }
+
     protected void writeNamespaces() throws XMLStreamException {
         writer.setPrefix("bon", "http://www.jpaw.de/schema/bonaparte.xsd");
 
@@ -181,6 +185,7 @@ public class AbstractFormatGeneratorXml extends AbstractFormatGenerator {
                 writer.writeStartDocument(encoding.name(), "1.0");
             }
             nl();
+            setNamespaceContext();
             writer.writeStartElement(xmlDefaultNamespace, sinkCfg.getXmlRootElementName());
             writeNamespaces();
             nl();
@@ -211,11 +216,6 @@ public class AbstractFormatGeneratorXml extends AbstractFormatGenerator {
         try {
             writeCustomElements(sinkCfg.getXmlFooterElements());
             writer.writeEndDocument();
-            try {
-                nl();  // here woodstox breaks with some NPE!
-            } catch (Exception e) {
-                LOGGER.warn("Exception in final nl() of XML document. Woodstox marshaller??? {}", ExceptionUtil.causeChain(e));
-            }
             writer.close();
         } catch (XMLStreamException | JAXBException e) {
             LOGGER.error(e.getMessage(), e);

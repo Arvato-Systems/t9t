@@ -41,7 +41,7 @@ public class ExecuteProcessWithRefRequestHandler extends AbstractRequestHandler<
         newStatus.setProcessDefinitionId(rq.getProcessDefinitionId());
         newStatus.setTargetObjectRef(rq.getTargetObjectRef());
         newStatus.setCurrentParameters(rq.getInitialParameters() != null ? rq.getInitialParameters() : pd.getInitialParams());
-        newStatus.setYieldUntil(rq.getInitialDelay() != null ? ctx.executionStart.plus(rq.getInitialDelay() * 1000L) : ctx.executionStart);
+        newStatus.setYieldUntil(rq.getInitialDelay() != null ? ctx.executionStart.plusSeconds(rq.getInitialDelay()) : ctx.executionStart);
         newStatus.setNextStep(rq.getWorkflowStep());
         newStatus.setRunOnNode(rq.getRunOnNode());
         // handle restartAtBeginning; potential request parameter overrules process definition config

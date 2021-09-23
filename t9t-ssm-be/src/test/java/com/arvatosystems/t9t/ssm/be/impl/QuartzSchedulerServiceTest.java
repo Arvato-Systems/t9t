@@ -15,8 +15,8 @@
  */
 package com.arvatosystems.t9t.ssm.be.impl;
 
-import org.joda.time.LocalDateTime;
-import org.joda.time.LocalTime;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -95,8 +95,8 @@ public class QuartzSchedulerServiceTest {
         setup.setRecurrencyType(SchedulerSetupRecurrenceType.SECONDLY);
         setup.setIntervalMinutes(10);
         setup.setIntervalOffset(3);
-        setup.setStartHour(new LocalTime(12, 12));
-        setup.setEndHour(new LocalTime(15, 12));
+        setup.setStartHour(LocalTime.of(12, 12));
+        setup.setEndHour(LocalTime.of(15, 12));
 
         String cronExpression = service.determineCronExpression(setup);
         Assertions.assertEquals("3/10 * 12-15 ? * *", cronExpression);
@@ -138,8 +138,8 @@ public class QuartzSchedulerServiceTest {
         setup.setRecurrencyType(SchedulerSetupRecurrenceType.MINUTELY);
         setup.setIntervalMinutes(10);
         setup.setIntervalOffset(3);
-        setup.setStartHour(new LocalTime(12, 12));
-        setup.setEndHour(new LocalTime(15, 12));
+        setup.setStartHour(LocalTime.of(12, 12));
+        setup.setEndHour(LocalTime.of(15, 12));
 
         String cronExpression = service.determineCronExpression(setup);
         Assertions.assertEquals("0 3/10 12-15 ? * *", cronExpression);
@@ -151,8 +151,8 @@ public class QuartzSchedulerServiceTest {
         setup.setRecurrencyType(SchedulerSetupRecurrenceType.MINUTELY);
         setup.setIntervalMinutes(1);
         setup.setIntervalOffset(3);
-        setup.setStartHour(new LocalTime(12, 12));
-        setup.setEndHour(new LocalTime(15, 12));
+        setup.setStartHour(LocalTime.of(12, 12));
+        setup.setEndHour(LocalTime.of(15, 12));
 
         String cronExpression = service.determineCronExpression(setup);
         Assertions.assertEquals("3 * 12-15 ? * *", cronExpression);
@@ -214,7 +214,7 @@ public class QuartzSchedulerServiceTest {
     public void testDailyWithOnlyRequiredParameter() {
         SchedulerSetupDTO setup = new SchedulerSetupDTO();
         setup.setRecurrencyType(SchedulerSetupRecurrenceType.DAILY);
-        setup.setExecutionTime(new LocalTime(12, 30));
+        setup.setExecutionTime(LocalTime.of(12, 30));
 
         String cronExpression = service.determineCronExpression(setup);
         Assertions.assertEquals("0 30 12 * * ?", cronExpression);
@@ -227,7 +227,7 @@ public class QuartzSchedulerServiceTest {
             setup.setRecurrencyType(SchedulerSetupRecurrenceType.DAILY);
             setup.setStartHour(LocalTime.now());
             setup.setEndHour(LocalTime.now());
-            setup.setExecutionTime(new LocalTime(12, 30));
+            setup.setExecutionTime(LocalTime.of(12, 30));
 
             service.determineCronExpression(setup);
         });
@@ -247,8 +247,8 @@ public class QuartzSchedulerServiceTest {
     public void testMonthlyWithRequiredParam() {
         SchedulerSetupDTO setup = new SchedulerSetupDTO();
         setup.setRecurrencyType(SchedulerSetupRecurrenceType.MONTHLY);
-        setup.setExecutionTime(new LocalTime(12, 30));
-        setup.setValidFrom(new LocalDateTime(2018, 1, 10, 0, 0));
+        setup.setExecutionTime(LocalTime.of(12, 30));
+        setup.setValidFrom(LocalDateTime.of(2018, 1, 10, 0, 0));
 
         String cronExpression = service.determineCronExpression(setup);
         Assertions.assertEquals("0 30 12 10 * ?", cronExpression);
@@ -258,9 +258,9 @@ public class QuartzSchedulerServiceTest {
     public void testMonthlyWithIntervalAndExecutionTime() {
         SchedulerSetupDTO setup = new SchedulerSetupDTO();
         setup.setRecurrencyType(SchedulerSetupRecurrenceType.MONTHLY);
-        setup.setExecutionTime(new LocalTime(12, 30));
+        setup.setExecutionTime(LocalTime.of(12, 30));
         setup.setIntervalMinutes(10);
-        setup.setValidFrom(new LocalDateTime(2018, 1, 10, 0, 0));
+        setup.setValidFrom(LocalDateTime.of(2018, 1, 10, 0, 0));
 
         String cronExpression = service.determineCronExpression(setup);
         Assertions.assertEquals("0 30 12 10 1/10 ?", cronExpression);
@@ -271,7 +271,7 @@ public class QuartzSchedulerServiceTest {
         Assertions.assertThrows(T9tException.class, () -> {
             SchedulerSetupDTO setup = new SchedulerSetupDTO();
             setup.setRecurrencyType(SchedulerSetupRecurrenceType.YEARLY);
-            setup.setValidFrom(new LocalDateTime(2018, 1, 10, 0, 0));
+            setup.setValidFrom(LocalDateTime.of(2018, 1, 10, 0, 0));
 
             service.determineCronExpression(setup);
         });
@@ -281,8 +281,8 @@ public class QuartzSchedulerServiceTest {
     public void testYearlyWithRequiredParam() {
         SchedulerSetupDTO setup = new SchedulerSetupDTO();
         setup.setRecurrencyType(SchedulerSetupRecurrenceType.YEARLY);
-        setup.setExecutionTime(new LocalTime(12, 30));
-        setup.setValidFrom(new LocalDateTime(2018, 1, 10, 0, 0));
+        setup.setExecutionTime(LocalTime.of(12, 30));
+        setup.setValidFrom(LocalDateTime.of(2018, 1, 10, 0, 0));
 
         String cronExpression = service.determineCronExpression(setup);
         Assertions.assertEquals("0 30 12 10 1 ? *", cronExpression);
@@ -292,9 +292,9 @@ public class QuartzSchedulerServiceTest {
     public void testYearlyWithValidTo() {
         SchedulerSetupDTO setup = new SchedulerSetupDTO();
         setup.setRecurrencyType(SchedulerSetupRecurrenceType.YEARLY);
-        setup.setExecutionTime(new LocalTime(12, 30));
-        setup.setValidFrom(new LocalDateTime(2018, 1, 10, 0, 0));
-        setup.setValidTo(new LocalDateTime(2030, 1, 10, 0, 0));
+        setup.setExecutionTime(LocalTime.of(12, 30));
+        setup.setValidFrom(LocalDateTime.of(2018, 1, 10, 0, 0));
+        setup.setValidTo(LocalDateTime.of(2030, 1, 10, 0, 0));
 
         String cronExpression = service.determineCronExpression(setup);
         Assertions.assertEquals("0 30 12 10 1 ? 2018-2030", cronExpression);
@@ -304,7 +304,7 @@ public class QuartzSchedulerServiceTest {
     public void testWeeklyWithSetOfWeekdaysParams() {
         SchedulerSetupDTO setup = new SchedulerSetupDTO();
         setup.setRecurrencyType(SchedulerSetupRecurrenceType.WEEKLY);
-        setup.setExecutionTime(new LocalTime(12, 30));
+        setup.setExecutionTime(LocalTime.of(12, 30));
         setup.setSetOfWeekdays(SchedulerWeekDaysEnumSet.ofTokens(SchedulerSetupRecurrenceWeekdayTypeEnum.MONDAY, SchedulerSetupRecurrenceWeekdayTypeEnum.WEDNESDAY));
 
         String cronExpression = service.determineCronExpression(setup);
@@ -316,7 +316,7 @@ public class QuartzSchedulerServiceTest {
         Assertions.assertThrows(T9tException.class, () -> {
             SchedulerSetupDTO setup = new SchedulerSetupDTO();
             setup.setRecurrencyType(SchedulerSetupRecurrenceType.WEEKLY);
-            setup.setExecutionTime(new LocalTime(12, 30));
+            setup.setExecutionTime(LocalTime.of(12, 30));
             setup.setSetOfWeekdays(SchedulerWeekDaysEnumSet.ofTokens(SchedulerSetupRecurrenceWeekdayTypeEnum.MONDAY));
             setup.setIntervalMinutes(10);
 
@@ -328,7 +328,7 @@ public class QuartzSchedulerServiceTest {
     public void testWeeklyWithIntervalParams() {
         SchedulerSetupDTO setup = new SchedulerSetupDTO();
         setup.setRecurrencyType(SchedulerSetupRecurrenceType.WEEKLY);
-        setup.setExecutionTime(new LocalTime(12, 30));
+        setup.setExecutionTime(LocalTime.of(12, 30));
         setup.setIntervalMinutes(3);
 
         String cronExpression = service.determineCronExpression(setup);
@@ -341,7 +341,7 @@ public class QuartzSchedulerServiceTest {
         setup.setRecurrencyType(SchedulerSetupRecurrenceType.DAILY);
         setup.setIntervalMinutes(10);
         setup.setIntervalOffset(3);
-        setup.setExecutionTime(new LocalTime(12, 30));
+        setup.setExecutionTime(LocalTime.of(12, 30));
 
         String cronExpression = service.determineCronExpression(setup);
         Assertions.assertEquals("0 30 12 1/10 * ?", cronExpression);

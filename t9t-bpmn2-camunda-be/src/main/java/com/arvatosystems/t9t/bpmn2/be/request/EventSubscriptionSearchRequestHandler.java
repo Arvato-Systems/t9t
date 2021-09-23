@@ -19,12 +19,12 @@ import static com.arvatosystems.t9t.bpmn2.be.camunda.utils.IdentifierConverter.b
 import static com.arvatosystems.t9t.bpmn2.be.camunda.utils.IdentifierConverter.t9tTenantRefToBPMNTenantId;
 import static java.util.stream.Collectors.toList;
 
+import java.time.ZoneId;
 import java.util.List;
 
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.runtime.EventSubscription;
 import org.camunda.bpm.engine.runtime.EventSubscriptionQuery;
-import org.joda.time.LocalDateTime;
 
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
@@ -112,7 +112,7 @@ public class EventSubscriptionSearchRequestHandler extends AbstractBPMNRequestHa
         dto.setActivityId(subscription.getActivityId());
         dto.setEventName(subscription.getEventName());
         dto.setEventType(subscription.getEventType());
-        dto.setCreated(LocalDateTime.fromDateFields(subscription.getCreated()));
+        dto.setCreated(subscription.getCreated().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
 
         final DataWithTrackingW<EventSubscriptionDTO, NoTracking> result = new DataWithTrackingW<>();
         result.setTenantRef(bpmnTenantIdToT9tTenantRef(subscription.getTenantId()));

@@ -48,6 +48,7 @@ public abstract class AbstractEntityMapper<KEY extends Serializable, DTO extends
   implements IEntityMapper<KEY, DTO, TRACKING, ENTITY> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractEntityMapper.class);
     protected static final String SEARCH_PREFIX_PROPERTY = "searchprefix";
+    protected static final String SEARCH_PREFIX_PROPERTY_TWO = "searchprefix2"; // for third level
     protected static final Map<String, String> NO_GRAPH = Collections.emptyMap();
 
     //@Inject
@@ -202,15 +203,38 @@ public abstract class AbstractEntityMapper<KEY extends Serializable, DTO extends
      * This implementation is currently restricted to replacements at top level only.
      */
     private String processSearchPrefixForDBSub(final String fieldName) {
+        String result = fieldName;
         int dotPos = fieldName.indexOf('.');
         if ((dotPos >= 0) && (fieldName.length() > dotPos)) {  // TODO: can the second condition ever be true? dotPos < length should always hold!
+            // check if fieldName is nested (has third level)
+            int secondDotPos = fieldName.indexOf('.', dotPos + 1);
+            if (secondDotPos >= 0) { // has third level
+                // try to find alternative prefix from searchprefix2
+                String targetField = fieldName.substring(0, dotPos);
+                String searchprefix2 = getProperty(targetField + "." + SEARCH_PREFIX_PROPERTY_TWO);
+                if (searchprefix2 != null) {
+                    String targetPrefixField = fieldName.substring(dotPos + 1, secondDotPos) + ":";
+                    final String[] level2Mappings = searchprefix2.split(",");
+                    for (String l2Mapping: level2Mappings) {
+                        if (l2Mapping.startsWith(targetPrefixField)) {
+                            // this is the mapping of relevance
+                            String alternativePrefix = l2Mapping.substring(targetPrefixField.length());
+                            // third level prefix found, replace only the middle part.
+                            result = fieldName.substring(0, dotPos) + "." + alternativePrefix
+                                    + fieldName.substring(secondDotPos);
+                            break;
+                        }
+                    }
+                }
+            }
+
             // this is a candidate: if the initial portion has a property "searchprefix", then replace it
             String alternatePrefix = getProperty(fieldName.substring(0, dotPos) + "." + SEARCH_PREFIX_PROPERTY);
             if (alternatePrefix != null) {
                 // special case: replace it by nothing... (skipping it, as required by some composite objects)
                 if (alternatePrefix.length() == 0)
                     ++dotPos;  // skip the "."
-                String result = alternatePrefix + fieldName.substring(dotPos); // temporary var to avoid duplicate construction of string when log level is debug
+                result = alternatePrefix + result.substring(dotPos); // temporary var to avoid duplicate construction of string when log level is debug
                 LOGGER.debug("{}: replacing column {} by {}", getClass().getCanonicalName(), fieldName, result);
                 return result;
             }

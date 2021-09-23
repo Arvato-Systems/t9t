@@ -32,7 +32,7 @@ class AsyncMessageMappers {
     @AutoHandler("SC42")
     def void e2dAsyncMessageDTO(AsyncMessageEntity entity, AsyncMessageDTO dto) {
         if (entity.lastAttempt !== null && entity.whenSent !== null)
-            dto.latency = entity.lastAttempt.millis - entity.whenSent.millis
+            dto.latency = entity.lastAttempt.toEpochMilli - entity.whenSent.toEpochMilli
         dto.asyncQueueRef = queueMapper.mapToDto(entity.asyncQueue)
     }
     def void d2eAsyncMessageDTO(AsyncMessageEntity entity, AsyncMessageDTO dto, boolean onlyActive) {

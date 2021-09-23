@@ -16,12 +16,13 @@
 package com.arvatosystems.t9t.tfi.web;
 
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Date;
 
-import org.joda.time.Instant;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.joda.time.LocalTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.BindContext;
@@ -51,11 +52,11 @@ public class DateConverter implements Converter<Object, Object, Component> {
         }
 
         if (val instanceof LocalDateTime) {
-            val = ((LocalDateTime)val).toDate();
+            val = Date.from(((LocalDateTime)val).atZone(ZoneId.systemDefault()).toInstant());
         } else if (val instanceof LocalDate) {
-            val = ((LocalDate)val).toDate();
+            val = Date.from(((LocalDate) val).atStartOfDay(ZoneId.systemDefault()).toInstant());
         } else if (val instanceof Instant) {
-            val = ((Instant) val).toDate();
+            val = Date.from((Instant) val);
         }
         // if "format" (@converter(... format='com.date.format'...)) is not given, pass the original value back -> nothing to do
         String format = (String) ctx.getConverterArg("format");
@@ -116,23 +117,23 @@ public class DateConverter implements Converter<Object, Object, Component> {
         if (val instanceof Date) {
             if (returnObject.equalsIgnoreCase("LocalDateTime")) {
                 Date date= (Date)val;
-                final LocalDateTime localDateTime = new LocalDateTime(date.getTime());
+                final LocalDateTime localDateTime = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
                 LOGGER.trace("#coerceToBean: Component: {}/{} Date:raw:{} conv:{}", new Object[]{comp.getWidgetClass(), comp.getId(), val, localDateTime});
                 return localDateTime;
             } else if (returnObject.equalsIgnoreCase("LocalDate")) {
                 Date date= (Date)val;
-                final LocalDate localDate = new LocalDate(date.getTime());
+                final LocalDate localDate = LocalDate.ofInstant(date.toInstant(), ZoneId.systemDefault());
                 LOGGER.trace("#coerceToBean: Component: {}/{} Date:raw:{} conv:{}", new Object[]{comp.getWidgetClass(), comp.getId(), val, localDate});
                 return localDate;
             }  else if (returnObject.equalsIgnoreCase("LocalTime")) {
                 Date date=(Date)val;
-                final LocalTime localTime=new LocalTime(date.getTime());
+                final LocalTime localTime=LocalTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
                 LOGGER.trace("#coerceToBean: Component: {}/{} Date:raw:{} conv:{}", new Object[]{comp.getWidgetClass(), comp.getId(), val, localTime});
                 return localTime;
             }
             else if (returnObject.equalsIgnoreCase("Instant")) {
                 Date date = (Date) val;
-                final Instant localDate = new Instant(date.getTime());
+                final Instant localDate = date.toInstant();
                 LOGGER.trace("#coerceToBean: Component: {}/{} Date:raw:{} conv:{}", new Object[] { comp.getWidgetClass(), comp.getId(), val, localDate });
                 return localDate;
             } else {

@@ -26,7 +26,7 @@ import de.jpaw.dp.Singleton
 import java.util.List
 import java.util.Map
 import javax.persistence.EntityManagerFactory
-import org.joda.time.Instant
+import java.time.Instant
 
 @Singleton
 @AddLogger
@@ -50,7 +50,7 @@ class BucketPersistenceAccess implements IBucketPersistenceAccess {
 
     override write(Map<BucketWriteKey, Integer> m) {
         try {
-            val now = new Instant
+            val now = Instant.now
             val em = emf.createEntityManager
 
             try {

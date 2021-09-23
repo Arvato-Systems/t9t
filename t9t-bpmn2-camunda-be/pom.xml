@@ -20,9 +20,9 @@
 
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
-        <artifactId>t9t-settings-be</artifactId>
-        <version>5.4-SNAPSHOT</version>
-        <relativePath>../t9t-settings-be</relativePath>
+        <artifactId>t9t-settings-api</artifactId>
+        <version>5.5-SNAPSHOT</version>
+        <relativePath>../t9t-settings-api</relativePath>
     </parent>
 
     <artifactId>t9t-bpmn2-camunda-be</artifactId>
@@ -127,7 +127,6 @@
             </plugin>
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.8</version>
                 <executions>
                     <execution>
                         <id>merge BPMN sql</id>

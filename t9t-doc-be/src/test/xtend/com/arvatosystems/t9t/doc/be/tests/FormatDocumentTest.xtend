@@ -31,6 +31,8 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.time.ZoneId
+import java.util.TimeZone
 
 @AddLogger
 class FormatDocumentTest {
@@ -79,6 +81,14 @@ class FormatDocumentTest {
 
     @BeforeAll
     def public static void setup() {
+        val oldId = ZoneId.systemDefault().getId();
+        if ("GMT" != oldId) {
+            TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+            val newId = ZoneId.systemDefault().getId();
+            LOGGER.info("Setting time zone to GMT (UTC) (was {} before, now changed to {})", oldId, newId);
+        } else {
+            LOGGER.info("Time zone already set to GMT - good");
+        }
         Jdp.reset
         Jdp.bindInstanceTo(new MockedDocModuleCfgDtoResolver, IDocModuleCfgDtoResolver)
         Jdp.bindInstanceTo(new MockedPersistenceAccess, IDocPersistenceAccess)

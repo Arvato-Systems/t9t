@@ -15,15 +15,32 @@
  */
 package com.arvatosystems.t9t.doc;
 
+import java.time.format.FormatStyle;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.doc.request.ConvertTemplatesRule;
 
 public class T9tDocTools {
+    private static final Logger LOGGER = LoggerFactory.getLogger(T9tDocTools.class);
+
     private T9tDocTools() {}
+
+    public static FormatStyle styleFor(char x) {
+    	switch (x) {
+    		case 'F': return FormatStyle.FULL;
+    		case 'S': return FormatStyle.SHORT;
+    		case 'M': return FormatStyle.MEDIUM;
+    		case 'L': return FormatStyle.LONG;
+    	}
+		LOGGER.error("Bad style character given: {}, returning default formatter", x);
+    	return FormatStyle.MEDIUM;
+    }
 
     public static String getMailingGroupId(MailingGroupRef ref) {
         if (ref == null)

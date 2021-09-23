@@ -51,6 +51,9 @@ import static io.vertx.core.http.HttpHeaders.*
 import static extension com.arvatosystems.t9t.base.vertx.impl.HttpUtils.*
 import io.vertx.core.Handler
 import io.vertx.core.AsyncResult
+import de.jpaw.dp.Optional
+import com.arvatosystems.t9t.base.services.ICacheInvalidationRegistry
+import com.arvatosystems.t9t.base.services.IAuthCacheInvalidation
 
 @AddLogger
 @Named("auth")
@@ -59,6 +62,11 @@ class T9tAuthVertx extends T9tJwtAuthHandlerImpl implements IServiceModule {
 
     @Inject IAuthenticate authModule;
     @Inject IRequestProcessor requestProcessor;
+    @Inject @Optional ICacheInvalidationRegistry cacheInvalidationRegistry
+
+    new () {
+        cacheInvalidationRegistry?.registerInvalidator(IAuthCacheInvalidation.AUTH_CACHE_ID, [ authCache.invalidateAll ])
+    }
 
     override getExceptionOffset() {
         return 1_000

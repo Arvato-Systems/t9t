@@ -50,6 +50,7 @@ import java.util.Collections
 import java.util.function.Consumer
 
 import static de.jpaw.bonaparte.util.DeprecationWarner.*
+import com.arvatosystems.t9t.base.vertx.IRestModule
 
 @AddLogger
 class T9tServer extends AbstractVerticle {
@@ -57,8 +58,9 @@ class T9tServer extends AbstractVerticle {
     // private fields
     static boolean cors     = false;
     static boolean metrics  = false;
-    static int     port     = 8024           // default for http
-    static int     tcpPort  = 0              // default for TCP/IP (0 = disabled)
+    static int     tcpPort  = 0              // default for TCP/IP, 0 = disabled
+    static int     port     = 8024           // default for http (RPC)
+    static int     restPort = 0              // default for REST (JAX-RS), 0 = disabled
     static String  cfgFile  = null;
     static String  filePath = null;
     static String  corsParm = "*";
@@ -93,6 +95,7 @@ class T9tServer extends AbstractVerticle {
         options.add(new FlaggedOption("cfg",      JSAP.STRING_PARSER,  cfgFile,                     JSAP.NOT_REQUIRED, 'c', "cfg",      "configuration filename"));
         options.add(new FlaggedOption("port",     JSAP.INTEGER_PARSER, Integer.toString(port),      JSAP.NOT_REQUIRED, 'p', "port",     "listener port http (0 to disable)"));
         options.add(new FlaggedOption("tcpport",  JSAP.INTEGER_PARSER, Integer.toString(tcpPort),   JSAP.NOT_REQUIRED, 'P', "tcpport",  "listener port for plain socket (0 to disable)"));
+        options.add(new FlaggedOption("restport", JSAP.INTEGER_PARSER, Integer.toString(restPort),  JSAP.NOT_REQUIRED, 'R', "restport", "listener port for REST (JAX-RS) (0 to disable)"));
         options.add(new FlaggedOption("corsParm", JSAP.STRING_PARSER,  "*",                         JSAP.NOT_REQUIRED, 'C', "corsParm", "parameter to the CORS handler"));
         options.add(new Switch       ("cors",                                                                          'X', "cors",     "activate CORS handler"));
         options.add(new Switch       ("metrics",                                                                       'M', "metrics",  "activate (micro)metrics handler"));
@@ -106,8 +109,9 @@ class T9tServer extends AbstractVerticle {
         }
         filePath = cmd.getString("filePath");
         cfgFile  = cmd.getString("cfg");
-        port     = cmd.getInt("port");
         tcpPort  = cmd.getInt("tcpport");
+        port     = cmd.getInt("port");
+        restPort = cmd.getInt("restport");
         cors     = cmd.getBoolean("cors")
         corsParm = cmd.getString("corsParm");
         metrics  = cmd.getBoolean("metrics")
@@ -205,6 +209,9 @@ class T9tServer extends AbstractVerticle {
         }
         Jdp.bindInstanceTo(vertx, Vertx)
         Jdp.bindInstanceTo(vertx.eventBus, EventBus)
+        if (restPort > 0) {
+            Jdp.getRequired(IRestModule).createRestServer(vertx, restPort)
+        }
         AsyncProcessor.register(vertx)
     }
 
@@ -306,6 +313,7 @@ class T9tServer extends AbstractVerticle {
         System.setProperty("org.terracotta.quartz.skipUpdateCheck", "true");
         System.setProperty("vertx.disableFileCaching", "true");                 // disable caching of resources in .vertx (for development)
         System.setProperty("com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize", "true");   // prevent Illegal reflection access with Java 10 (fixed with jaxb 2.3.1)
+        System.setProperty("javax.xml.bind.JAXBContextFactory", "com.sun.xml.bind.v2.ContextFactory");   // do not access the "internal" ContextFactory // UPDATE FOR JAKARTA!
     }
 
     def static void checkForMetricsAndInitialize(VertxOptions options) {

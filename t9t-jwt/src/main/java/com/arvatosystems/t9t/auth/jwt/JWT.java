@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.crypto.Mac;
 
-import org.joda.time.Instant;
+import java.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -247,11 +247,11 @@ public final class JWT implements IJWT {
 
         // set the "issued at" field
         long timestamp = System.currentTimeMillis() / 1000L;  // divide it to get 1 second precision
-        info.setIssuedAt(new Instant(timestamp * 1000L));
+        info.setIssuedAt(Instant.ofEpochSecond(timestamp));
 
         // if a duration has been given, set the expiry time
         if (expiresInSeconds != null)
-            info.setExpiresAt(new Instant((timestamp + expiresInSeconds.longValue()) * 1000L));
+            info.setExpiresAt(Instant.ofEpochSecond(timestamp + expiresInSeconds.longValue()));
 
         Map<String, Object> payload = JwtConverter.asMap(info);
         payload.put(MimeTypes.JSON_FIELD_PQON, "api.auth.JwtPayload");

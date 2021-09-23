@@ -19,12 +19,12 @@ import static com.arvatosystems.t9t.bpmn2.be.camunda.utils.IdentifierConverter.b
 import static com.arvatosystems.t9t.bpmn2.be.camunda.utils.IdentifierConverter.t9tTenantRefToBPMNTenantId;
 import static java.util.stream.Collectors.toList;
 
+import java.time.ZoneId;
 import java.util.List;
 
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.runtime.Incident;
 import org.camunda.bpm.engine.runtime.IncidentQuery;
-import org.joda.time.LocalDateTime;
 
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
@@ -116,7 +116,7 @@ public class IncidentSearchRequestHandler extends AbstractBPMNRequestHandler<Inc
         dto.setProcessInstanceId(incident.getProcessInstanceId());
         dto.setActivityId(incident.getActivityId());
         dto.setMessage(incident.getIncidentMessage());
-        dto.setCreated(LocalDateTime.fromDateFields(incident.getIncidentTimestamp()));
+        dto.setCreated(incident.getIncidentTimestamp().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
 
         final DataWithTrackingW<IncidentDTO, NoTracking> result = new DataWithTrackingW<>();
         result.setTenantRef(bpmnTenantIdToT9tTenantRef(incident.getTenantId()));

@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.base.be.request;
 
-import org.joda.time.Instant;
+import java.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,9 +40,9 @@ public class PerformWithRetryRequestHandler extends AbstractRequestHandler<Perfo
         final long delay = request.getWaitBetweenRetries() == null ? 200L : request.getWaitBetweenRetries();
         Instant stopAt = request.getStopAt();
         if (request.getMaxNumberOfMilliseconds() != null) {
-            long alsoStopAt = System.currentTimeMillis() + request.getMaxNumberOfMilliseconds().longValue();
+        	final Instant alsoStopAt = Instant.now().plusMillis(request.getMaxNumberOfMilliseconds().longValue());
             if (stopAt == null || stopAt.isAfter(alsoStopAt))
-                stopAt = new Instant(alsoStopAt);
+                stopAt = alsoStopAt;
         }
         final RequestParameters rp = request.getRequest();
         ServiceResponse resp = new ServiceResponse();
@@ -68,7 +68,7 @@ public class PerformWithRetryRequestHandler extends AbstractRequestHandler<Perfo
                 break;
             }
             if (stopAt != null) {
-                if (stopAt.isBefore(System.currentTimeMillis())) {
+                if (stopAt.isBefore(Instant.now())) {
                     LOGGER.info("Ending PerformWithRetry({}) after {} executions due to time expiry", rp.ret$PQON(), count);
                     break;
                 }

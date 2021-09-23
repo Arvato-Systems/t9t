@@ -237,7 +237,8 @@ class Executor implements IExecutor, T9tConstants {
             ctx.writeBucket(id, ref, mode)
     }
 
-    /** Publishes an event to clear caches.
+    /**
+     * Publishes an event to clear caches.
      * cacheId usually is the DTO simple name or JPA entity base class name (or PQON),
      * key can be null, or specifies an element.
      */
@@ -245,6 +246,18 @@ class Executor implements IExecutor, T9tConstants {
         // if in cluster mode, send a cache invalidation event also to other nodes (after successful commit)
 //        if (Boolean.TRUE.equals(ConfigProvider.getConfiguration().getRunInCluster())) {
             publishEvent(new InvalidateCacheEvent(cacheId, key));
+//        }
+    }
+
+    /**
+     * Publishes an event to clear caches.
+     * cacheId usually is the DTO simple name or JPA entity base class name (or PQON),
+     * key can be null, or specifies an element.
+     */
+    override void clearCache(RequestContext ctx, String cacheId, BonaPortable key) {
+        // if in cluster mode, send a cache invalidation event also to other nodes (after successful commit)
+//        if (Boolean.TRUE.equals(ConfigProvider.getConfiguration().getRunInCluster())) {
+            publishEvent(ctx, new InvalidateCacheEvent(cacheId, key));
 //        }
     }
 }
