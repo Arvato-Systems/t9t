@@ -202,6 +202,7 @@
                                 <javaSourceVersion>1.8</javaSourceVersion>  <!-- could set to 11 now -->
                                 <compilerSourceLevel>1.8</compilerSourceLevel>
                                 <compilerTargetLevel>1.8</compilerTargetLevel>
+                                <addOutputDirectoriesToCompileSourceRoots>false</addOutputDirectoriesToCompileSourceRoots>
                                 <sourceRoots>
                                     <sourceRoot>${project.basedir}/src/main/bon</sourceRoot>
                                 </sourceRoots>
