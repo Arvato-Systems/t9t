@@ -69,7 +69,7 @@
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <owasp-maven-plugin.version>2.1.1</owasp-maven-plugin.version>
         <spring-boot-maven-plugin.version>2.5.4</spring-boot-maven-plugin.version>  <!-- => 2.4.3 in release 5.1 -->
-        <tycho.version>2.3.0</tycho.version>
+        <tycho.version>2.5.0</tycho.version>
         <git-commit-id-plugin.version>2.1.7</git-commit-id-plugin.version>
         <jaxb2-maven-plugin.version>1.5</jaxb2-maven-plugin.version>
         <jaxws-maven-plugin.version>2.3.3</jaxws-maven-plugin.version>
@@ -90,10 +90,10 @@
         <maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
 
         <!-- Versions of Xtext & Xtend plugins -->
-        <xtend-maven-plugin.version>2.25.0</xtend-maven-plugin.version>
-        <xtext-maven-plugin.version>2.25.0</xtext-maven-plugin.version>
+        <xtend-maven-plugin.version>2.26.0.M2</xtend-maven-plugin.version>
+        <xtext-maven-plugin.version>2.26.0.M2</xtext-maven-plugin.version>
 
-        <bonaparte-plugin.version>4.71.0</bonaparte-plugin.version>
+        <bonaparte-plugin.version>4.80.0</bonaparte-plugin.version>
         <license-plugin.version>3.0</license-plugin.version>
 
         <xtend-plugin-phase>generate-sources</xtend-plugin-phase>
