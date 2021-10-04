@@ -20,7 +20,7 @@ import t9t.auth.*
 /**
  * Package which contains the definitions of t9t XML interfaces.
  */
-package (com.arvatosystems) t9t.xml XML PROPERTY bundle t9t.config {
+package (com.arvatosystems) t9t.xml XML PROPERTY bundle t9t.config swagger {
     default private unsigned trim noControlChars;
     properties path;
 
@@ -45,7 +45,7 @@ package (com.arvatosystems) t9t.xml XML PROPERTY bundle t9t.config {
     /** request a reply. */
     final class Ping xmlRoot {
         properties path = "ping";
-        optional Integer                                pingId;                 // some optional number to return in objectRef
+        optional Integer                                pingId example "7474001";   // some optional number to uniquely define this instance of the ping request
     }
 
     /** Common response header for all error messages, and some requests except authentication. */
@@ -53,9 +53,9 @@ package (com.arvatosystems) t9t.xml XML PROPERTY bundle t9t.config {
         required Long                                   processRef;             // reference to execution entry
         required int                                    returnCode;             // execution response code, < 2,000,000,000 for technically correctly processed responses
         optional Unicode(512)                           errorDetails;           // a data parameter which allows to localize the error condition (offending field / parameter name etc.)
-        optional Unicode(512)                           errorMessage;           // optional lookup of the returnCode as a standard text message, as defined in FortytwoException and derived classes. Only for convenience, may be translated to the requester's language.
+        optional Unicode(512)                           errorMessage;           // optional lookup of the returnCode as a standard text message, as defined in ApplicationException and derived classes. Only for convenience, may be translated to the requester's language.
         optional Long                                   objectRef;              // technical ID
-        optional externalId                             objectId;               // obect identifier
+        optional externalId                             objectId;               // object identifier
         optional Integer                                count;                  // integral numeric result
 //        optional amount                                 amount;                 // monetary amount
 //        optional quantity                               quantity;               // quantity
@@ -65,7 +65,7 @@ package (com.arvatosystems) t9t.xml XML PROPERTY bundle t9t.config {
 
     /** User I/O record. For security reasons, fields of the PermissionsDTO components cannot be imported. */
     final class User001 {
-        required userId                             userId;              // User id to be used for login
+        required userId                             userId;              // User ID, to be used for login
         required shortText                          name;                // Christian name, surname, or description
         optional emailAddress                       emailAddress;        // email address of user, if known
         optional Boolean                            isActive;            // defaults to true
@@ -83,6 +83,6 @@ package (com.arvatosystems) t9t.xml XML PROPERTY bundle t9t.config {
 
     /** IMPORT/EXPORT API: User master data. */
     final class UserMaster xmlRoot {
-        required (User001) required List<>          records;
+        required (User001) required List<>          records;             // the list of one or multiple user records
     }
 }

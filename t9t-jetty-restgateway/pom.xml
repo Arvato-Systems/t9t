@@ -20,9 +20,9 @@
 
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
-        <artifactId>a28-settings-java</artifactId>
+        <artifactId>t9t-settings-java</artifactId>
         <version>5.6-SNAPSHOT</version>
-        <relativePath>../a28-settings-java/</relativePath>
+        <relativePath>../t9t-settings-java/</relativePath>
     </parent>
 
     <artifactId>t9t-jetty-restgateway</artifactId>
@@ -49,6 +49,11 @@
 
         <finalName>t9t-jetty-restgateway</finalName>
         <plugins>
+            <plugin>
+                <groupId>io.swagger.core.v3</groupId>
+                <artifactId>swagger-maven-plugin</artifactId>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>

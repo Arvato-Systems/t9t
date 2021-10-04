@@ -18,12 +18,32 @@ package com.arvatosystems.t9t.jetty.impl;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * Creates a HTTP Response with status and Payload
  * @author LUEC034
  */
-public class ResponseFactory {
+public class RestUtils {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RestUtils.class);
+
+    private static boolean representsFalse(final char x) {
+        return x == '0' || x == 'n' || x == 'N';
+    }
+
+    private static boolean isSet(final String value, final String byWhat) {
+        if (value == null || value.length() == 0 || representsFalse(value.charAt(0))) {
+            return false;
+        }
+        LOGGER.info("Property {} set (value {})", byWhat, value);
+        return true;
+    }
+
+    public static boolean checkIfSet(final String systemPropertyName, final String envVariableName) {
+        return isSet(System.getProperty(systemPropertyName), systemPropertyName) || isSet(System.getenv(envVariableName), envVariableName);
+    }
 
     public static Response create(final Response.Status status, final Object payload, final String acceptHeader) {
         final Response.ResponseBuilder response = Response.status(status);

@@ -26,7 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.jetty.impl.ResponseFactory;
+import com.arvatosystems.t9t.jetty.impl.RestUtils;
 import com.arvatosystems.t9t.xml.GenericResult;
 
 @Provider
@@ -51,7 +51,7 @@ public class GeneralExceptionHandler implements ExceptionMapper<Exception> {
         genericResult.setErrorDetails(String.format("   %s -> %s", authContext.getUri().getPath(), (e.getMessage() != null ? e.getMessage() : e.toString())));
         genericResult.setErrorMessage(T9tException.codeToString(T9tException.GENERAL_EXCEPTION));
         genericResult.setReturnCode(T9tException.GENERAL_EXCEPTION);
-        final String acceptHeader = httpHeaders.getHeaderString("Accept");
-        return ResponseFactory.create(Response.Status.INTERNAL_SERVER_ERROR, genericResult, acceptHeader);
+        final String acceptHeader = httpHeaders.getHeaderString(HttpHeaders.ACCEPT);
+        return RestUtils.create(Response.Status.INTERNAL_SERVER_ERROR, genericResult, acceptHeader);
     }
 }

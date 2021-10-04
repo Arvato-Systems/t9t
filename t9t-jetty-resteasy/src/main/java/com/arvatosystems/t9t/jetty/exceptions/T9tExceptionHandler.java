@@ -26,7 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.jetty.impl.ResponseFactory;
+import com.arvatosystems.t9t.jetty.impl.RestUtils;
 import com.arvatosystems.t9t.xml.GenericResult;
 
 /**
@@ -52,7 +52,7 @@ public class T9tExceptionHandler implements ExceptionMapper<T9tException> {
         genericResult.setErrorDetails(exception.getMessage());
         genericResult.setErrorMessage(exception.getStandardDescription());
         genericResult.setReturnCode(exception.getErrorCode());
-        final String acceptHeader = httpHeaders.getHeaderString("Accept");
-        return ResponseFactory.create(Response.Status.BAD_REQUEST, genericResult, acceptHeader);
+        final String acceptHeader = httpHeaders.getHeaderString(HttpHeaders.ACCEPT);
+        return RestUtils.create(Response.Status.BAD_REQUEST, genericResult, acceptHeader);
     }
 }

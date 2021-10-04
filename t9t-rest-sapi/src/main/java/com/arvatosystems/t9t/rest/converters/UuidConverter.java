@@ -13,19 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.jaxrs.xml;
+package com.arvatosystems.t9t.rest.converters;
 
-import com.arvatosystems.t9t.out.be.IStandardNamespaceWriter;
+import java.util.UUID;
 
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Startup;
-import de.jpaw.dp.StartupOnly;
+import javax.ws.rs.ext.ParamConverter;
 
-@Startup(90000)
-public class XmlContextEagerInitialization implements StartupOnly {
+/**
+ * JAX-RS parameter converter for UUID. This is unfortunately still required.
+ */
+public class UuidConverter implements ParamConverter<UUID> {
 
     @Override
-    public void onStartup() {
-        Jdp.getRequired(IStandardNamespaceWriter.class).getStandardJAXBContext();
+    public UUID fromString(String value) {
+        if (value == null)
+            return null;
+        return UUID.fromString(value);
+    }
+
+    @Override
+    public String toString(UUID value) {
+        if (value == null)
+            return null;
+        return value.toString();
     }
 }

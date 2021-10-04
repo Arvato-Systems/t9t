@@ -55,6 +55,14 @@ public class JettyServer {
         }
     }
 
+    public static String getContextPath() {
+        return ConfigProvider.getConfig().getOptionalValue("jetty.contextRoot", String.class).orElse(DEFAULT_CONTEXT_ROOT);
+    }
+
+    public static String getApplicationPath() {
+        return ConfigProvider.getConfig().getOptionalValue("jetty.applicationPath", String.class).orElse(DEFAULT_APPLICATION_PATH);
+    }
+
     public void run() throws Exception {
 
         Config config = ConfigProvider.getConfig();
@@ -67,8 +75,8 @@ public class JettyServer {
         int minThreads = config.getOptionalValue("jetty.threadPool.minThreads", Integer.class).orElse(DEFAULT_MIN_THREADS);
         int maxThreads = config.getOptionalValue("jetty.threadPool.maxThreads", Integer.class).orElse(DEFAULT_MAX_THREADS);
         int idleTimeout = config.getOptionalValue("jetty.threadPool.idleTimeout", Integer.class).orElse(DEFAULT_IDLE_TIMEOUT);  // in millis
-        String contextRoot = config.getOptionalValue("jetty.contextRoot", String.class).orElse(DEFAULT_CONTEXT_ROOT);
-        String applicationPath = config.getOptionalValue("jetty.applicationPath", String.class).orElse(DEFAULT_APPLICATION_PATH);
+        String contextRoot = getContextPath();
+        String applicationPath = getApplicationPath();
 
         LOGGER.info("Using the following configuration values: port {}, min/max threads = {}/{}", port, minThreads, maxThreads);
         LOGGER.info("  idle timeout = {}, context = {}, application path = {}", idleTimeout, contextRoot, applicationPath);
@@ -98,7 +106,7 @@ public class JettyServer {
         // This is also known as the handler tree (in Jetty speak).
         final ServletContextHandler context = new ServletContextHandler(server, contextRoot);
 
-        // Setup RESTEasy's HttpServletDispatcher at "/api/*".
+        // Setup RESTEasy's HttpServletDispatcher at "/{applicationPath}/*".
         final ServletHolder restEasyServlet = new ServletHolder(new HttpServletDispatcher());
         restEasyServlet.setInitParameter("resteasy.servlet.mapping.prefix", applicationPath);
         restEasyServlet.setInitParameter("javax.ws.rs.Application", ApplicationConfig.class.getCanonicalName());

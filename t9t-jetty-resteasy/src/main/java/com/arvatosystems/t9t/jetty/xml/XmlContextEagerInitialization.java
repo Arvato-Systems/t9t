@@ -13,10 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.out.be.impl;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package com.arvatosystems.t9t.jetty.xml;
 
 import com.arvatosystems.t9t.out.be.IStandardNamespaceWriter;
 
@@ -24,16 +21,11 @@ import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Startup;
 import de.jpaw.dp.StartupOnly;
 
-@Startup(30057)
-public class JaxbContextInitializer implements StartupOnly {
-    private static final Logger LOGGER = LoggerFactory.getLogger(JaxbContextInitializer.class);
+@Startup(90000)
+public class XmlContextEagerInitialization implements StartupOnly {
 
     @Override
     public void onStartup() {
-        LOGGER.info("Creating initial JAXB context");
-        // get the standard namespace and initialize a first JaxbContext
-        // This is done because an initialization after SOAP has been used has caused issues.
-        final IStandardNamespaceWriter namespaceWriter = Jdp.getRequired(IStandardNamespaceWriter.class);
-        namespaceWriter.getStandardJAXBContext();
+        Jdp.getRequired(IStandardNamespaceWriter.class).getStandardJAXBContext();
     }
 }

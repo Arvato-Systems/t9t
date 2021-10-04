@@ -64,16 +64,20 @@ public class T9tVertxRestModule implements IRestModule {
         LOGGER.info("Starting http server for REST on port {}", port);
 
         final VertxResteasyDeployment deployment = new VertxResteasyDeployment();
+
+        final List<Object> providers = new ArrayList<>();
+        providers.add(new JavaTimeParamConverterProvider());  // Java 8 date/time support for GET parameters
+        providers.add(new JacksonObjectMapper());  // JSON
+        providers.add(new XmlMediaTypeDecoder());  // XML decoder
+        providers.add(new XmlMediaTypeEncoder());  // XML encoder
+        providers.add(new ApplicationExceptionHandler());  // exception / error handler
+        deployment.setProviders(providers);
+
         deployment.start();
         final VertxRegistry registry = deployment.getRegistry();
+
+        // add endpoints after the providers
         addEndpoints(registry);
-        final List<Class> providers = new ArrayList<>();
-        providers.add(JavaTimeParamConverterProvider.class);  // Java 8 date/time support for GET parameters
-        providers.add(JacksonObjectMapper.class);  // JSON
-        providers.add(XmlMediaTypeDecoder.class);  // XML decoder
-        providers.add(XmlMediaTypeEncoder.class);  // XML encoder
-        providers.add(ApplicationExceptionHandler.class);  // exception / error handler
-        deployment.setActualProviderClasses(providers);
 
         final Handler<HttpServerRequest> restHandler = new VertxRequestHandler(vertx, deployment);
         vertx.createHttpServer().requestHandler(restHandler).listen(port);

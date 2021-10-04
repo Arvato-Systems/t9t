@@ -20,7 +20,7 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.jetty.impl.ResponseFactory;
+import com.arvatosystems.t9t.jetty.impl.RestUtils;
 
 import de.jpaw.util.ApplicationException;
 
@@ -36,21 +36,21 @@ public class ApplicationExceptionHandler implements ExceptionMapper<ApplicationE
         int errorCode = exception.getErrorCode();
         switch (errorCode) {
             case T9tException.NOT_AUTHORIZED:
-                return ResponseFactory.error(Response.Status.UNAUTHORIZED, exception.getStandardDescription());
+                return RestUtils.error(Response.Status.UNAUTHORIZED, exception.getStandardDescription());
             case T9tException.NOT_AUTHENTICATED:
-                return ResponseFactory.error(Response.Status.UNAUTHORIZED, exception.getStandardDescription());
+                return RestUtils.error(Response.Status.UNAUTHORIZED, exception.getStandardDescription());
             case T9tException.ACCESS_DENIED:
-                return ResponseFactory.error(Response.Status.UNAUTHORIZED, exception.getStandardDescription());
+                return RestUtils.error(Response.Status.UNAUTHORIZED, exception.getStandardDescription());
             case T9tException.USER_INACTIVE:
-                return ResponseFactory.error(Response.Status.UNAUTHORIZED, exception.getStandardDescription());
+                return RestUtils.error(Response.Status.UNAUTHORIZED, exception.getStandardDescription());
             case T9tException.USER_NOT_FOUND:
-                return ResponseFactory.error(Response.Status.UNAUTHORIZED, exception.getStandardDescription());
+                return RestUtils.error(Response.Status.UNAUTHORIZED, exception.getStandardDescription());
             case T9tException.CL_PARAMETER_ERROR:
-                return ResponseFactory.error(Response.Status.BAD_REQUEST, exception.getStandardDescription());
+                return RestUtils.error(Response.Status.BAD_REQUEST, exception.getStandardDescription());
             case T9tException.CL_DENIED:
-                return ResponseFactory.error(Response.Status.NOT_ACCEPTABLE, exception.getStandardDescription());
+                return RestUtils.error(Response.Status.NOT_ACCEPTABLE, exception.getStandardDescription());
             default:
-                return ResponseFactory.error(Response.Status.BAD_REQUEST, exception.getStandardDescription());
+                return RestUtils.error(Response.Status.BAD_REQUEST, exception.getStandardDescription());
         }
 
     }

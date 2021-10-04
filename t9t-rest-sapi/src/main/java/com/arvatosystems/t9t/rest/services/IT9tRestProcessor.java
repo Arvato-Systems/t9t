@@ -16,6 +16,7 @@
 package com.arvatosystems.t9t.rest.services;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import javax.ws.rs.container.AsyncResponse;
@@ -24,6 +25,7 @@ import javax.ws.rs.core.Response;
 
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
+import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
 import com.arvatosystems.t9t.xml.GenericResult;
 
 import de.jpaw.bonaparte.core.BonaPortable;
@@ -48,5 +50,8 @@ public interface IT9tRestProcessor {
     GenericResult createResultFromServiceResponse(final ServiceResponse response);
 
     /** Returns a response without using the worker thread. */
-    void returnAsyncResult(final HttpHeaders httpHeaders, final AsyncResponse resp, final Response.Status status, final Object result);
+    void returnAsyncResult(final String acceptHeader, final AsyncResponse resp, final Response.Status status, final Object result);
+
+    /** Performs the authentication request asynchronously, using a generic response mapper. */
+    void performAsyncAuthBackendRequest(final HttpHeaders httpHeaders, final AsyncResponse resp, final AuthenticationRequest requestParameters, final Consumer<String> cacheUpdater);
 }

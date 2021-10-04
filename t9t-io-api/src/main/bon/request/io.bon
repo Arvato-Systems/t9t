@@ -181,6 +181,14 @@ package (com.arvatosystems) t9t.io.request {
         optional f42Ref                             genericRefs2;
     }
 
+    /** Retrieves data from a data sink (assumes that the data fits into 16 MB size). */
+    class RetrieveMediaDataRequest extends RequestParameters return RetrieveMediaDataResponse {
+        required f42Ref                             sinkRef;                // the sink reference
+    }
+    class RetrieveMediaDataResponse extends ServiceResponse {
+        required (MediaData...)                     mediaData;              // the data
+    }
+
     /** Used to asynchronously transfer a file via Camel route. */
     class ProcessCamelRouteRequest extends RequestParameters {
         required f42Ref                             sinkRef;

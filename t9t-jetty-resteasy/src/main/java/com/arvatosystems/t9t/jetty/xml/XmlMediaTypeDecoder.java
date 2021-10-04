@@ -18,7 +18,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.arvatosystems.t9t.jaxrs.xml;
+package com.arvatosystems.t9t.jetty.xml;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -23,7 +23,7 @@ import javax.ws.rs.ext.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.jetty.impl.GenericResultFactory;
+import com.arvatosystems.t9t.jetty.impl.RestUtils;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -38,7 +38,7 @@ public class StandaloneObjectMapper implements ContextResolver<ObjectMapper> {
 
     public StandaloneObjectMapper() {
         this.objectMapper = new ObjectMapper();
-        boolean useNulls = GenericResultFactory.checkIfSet("t9t.restapi.jsonAlsoNulls", "T9T_RESTAPI_JSON_ALSO_NULLS");
+        boolean useNulls = RestUtils.checkIfSet("t9t.restapi.jsonAlsoNulls", "T9T_RESTAPI_JSON_ALSO_NULLS");
         if (!useNulls) {
             objectMapper.setSerializationInclusion(Include.NON_NULL);
         }

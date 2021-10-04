@@ -20,22 +20,36 @@ import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.UUID;
 
 import javax.ws.rs.ext.ParamConverter;
 import javax.ws.rs.ext.ParamConverterProvider;
 import javax.ws.rs.ext.Provider;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Provider
 public class JavaTimeParamConverterProvider implements ParamConverterProvider {
+    private static final Logger LOGGER = LoggerFactory.getLogger(JavaTimeParamConverterProvider.class);
+    // ensure we instantiate the converters only once
+    private final ParamConverter<LocalDate>     localDateConverter = new LocalDateConverter();
+    private final ParamConverter<LocalDateTime> localDateTimeConverter = new LocalDateTimeConverter();
+    private final ParamConverter<LocalTime>     localTimeConverter = new LocalTimeConverter();
+    private final ParamConverter<UUID>          uuidConverter = new UuidConverter();
 
     @Override
-    public ParamConverter getConverter(Class rawType, Type genericType, Annotation[] annotations) {
+    public <T> ParamConverter<T> getConverter(Class<T> rawType, Type genericType, Annotation[] annotations) {
+        LOGGER.debug("Requesting converter for class {}", rawType.getCanonicalName());
+
         if (rawType.equals(LocalDate.class))
-            return (ParamConverter) new LocalDateConverter();
+            return (ParamConverter) localDateConverter;
         if (rawType.equals(LocalDateTime.class))
-            return (ParamConverter) new LocalDateTimeConverter();
+            return (ParamConverter) localDateTimeConverter;
         if (rawType.equals(LocalTime.class))
-            return (ParamConverter) new LocalTimeConverter();
+            return (ParamConverter) localTimeConverter;
+        if (rawType.equals(UUID.class))
+            return (ParamConverter) localTimeConverter;
         return null;
     }
 }

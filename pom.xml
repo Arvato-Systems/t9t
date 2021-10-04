@@ -82,7 +82,6 @@
         <cxf-wadl2java-plugin.version>3.3.11</cxf-wadl2java-plugin.version>  <!-- 3.4.4 ? -->
         <cxf-xjc-plugin.version>3.3.1</cxf-xjc-plugin.version>   <!-- older than the other CXF plugins, but no newer release available -->
         <echo-maven-plugin.version>1.0.0</echo-maven-plugin.version>
-        <logback.version>1.2.3</logback.version>
 
         <!-- reporting-->
         <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
@@ -94,7 +93,7 @@
         <xtend-maven-plugin.version>2.25.0</xtend-maven-plugin.version>
         <xtext-maven-plugin.version>2.25.0</xtext-maven-plugin.version>
 
-        <bonaparte-plugin.version>4.70.5</bonaparte-plugin.version>
+        <bonaparte-plugin.version>4.71.0</bonaparte-plugin.version>
         <license-plugin.version>3.0</license-plugin.version>
 
         <xtend-plugin-phase>generate-sources</xtend-plugin-phase>
@@ -102,11 +101,18 @@
         <xtext-plugin-phase>generate-sources</xtext-plugin-phase>
         <xtext-plugin-test-phase>generate-test-sources</xtext-plugin-test-phase>
 
+        <logback.version>1.2.6</logback.version>
+
+        <!-- Swagger -->
+        <swagger-maven-plugin.version>2.1.10</swagger-maven-plugin.version>
+        <swagger-ui-webjars.version>3.52.1</swagger-ui-webjars.version>
+
         <!-- ASCIIDoctor -->
         <asciidoctor-maven-plugin.version>2.1.0</asciidoctor-maven-plugin.version>
         <asciidoctorj.version>2.4.1</asciidoctorj.version>
         <jruby.version>9.2.13.0</jruby.version>
     </properties>
+
     <build>
         <pluginManagement>
             <plugins>
@@ -554,6 +560,28 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-project-info-reports-plugin</artifactId>
                     <version>${maven-project-info-reports-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>io.swagger.core.v3</groupId>
+                    <artifactId>swagger-maven-plugin</artifactId>
+                    <version>${swagger-maven-plugin.version}</version>
+                    <configuration>
+                        <outputFileName>openapi</outputFileName>
+                        <outputPath>${project.build.outputDirectory}/openapi/</outputPath>
+                        <outputFormat>JSON</outputFormat>
+                        <resourcePackages>
+                            <package>com.arvatosystems.t9t</package>
+                        </resourcePackages>
+                        <prettyPrint>TRUE</prettyPrint>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <phase>compile</phase>
+                            <goals>
+                                <goal>resolve</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
 
                 <!-- miscellaneous -->

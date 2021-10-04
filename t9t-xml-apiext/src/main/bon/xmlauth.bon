@@ -14,28 +14,28 @@
  * limitations under the License.
  */
  /** Definitions for authentication. */
-package (com.arvatosystems) t9t.xml.auth XML PROPERTY bundle t9t.config {
+package (com.arvatosystems) t9t.xml.auth XML PROPERTY bundle t9t.config swagger {
     properties path;
 
     final class SessionParameters {
-        optional Ascii(32)                          languageTag;                // BCP 47 language tag  (de, en-US etc...)
-        optional Ascii(64)                          zoneInfo;                   // time zone
-        optional Unicode(255)                       dataUri;                    // filename or corresponding source info
-        optional Unicode(255)                       userAgent;                  // client application (including versions)
+        optional Ascii(32)                          languageTag example "en-US";                // BCP 47 language tag  (de, en-US etc...)
+        optional Ascii(64)                          zoneInfo    example "Europe/Berlin";        // time zone
+        optional Unicode(255)                       dataUri     example "updates/data-2021-07-31"; // filename or corresponding source info
+        optional Unicode(255)                       userAgent   example "ACME space app v4.73"; // client application (including versions)
     }
 
     /** Authenticate via API KEY. */
     final class AuthByApiKey xmlRoot {
         properties path = "apikey";
-        required uuid                               apiKey;                     // specifies the API key
+        required uuid                               apiKey      example "a7d1b722-6541-3021-81a7-4588ee014312";                     // specifies the API key
         optional (SessionParameters)                sessionParameters;
     }
 
     /** Authenticate via user ID / password. */
     final class AuthByUserIdPassword xmlRoot {
         properties path = "userpw";
-        required Unicode(16)                        userId;
-        required Unicode(32)                        password;
+        required Unicode(16)                        userId      example "john";
+        required Unicode(32)                        password    example "Zx55dggZ!/J";
         optional (SessionParameters)                sessionParameters;
     }
 

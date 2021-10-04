@@ -26,6 +26,7 @@ import static de.jpaw.util.ApplicationException.CL_TIMEOUT;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import javax.ws.rs.container.AsyncResponse;
@@ -44,6 +45,7 @@ import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.auth.AuthenticationInfo;
+import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
 import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
 import com.arvatosystems.t9t.server.services.ICachingAuthenticationProcessor;
 import com.arvatosystems.t9t.server.services.IRequestProcessor;
@@ -72,16 +74,17 @@ public class T9tRestProcessor implements IT9tRestProcessor {
     public <T extends ServiceResponse> void performAsyncBackendRequest(HttpHeaders httpHeaders, AsyncResponse resp,
             RequestParameters requestParameters, String infoMsg, Class<T> backendResponseClass,
             Function<T, BonaPortable> responseMapper) {
+        final String acceptHeader = httpHeaders.getHeaderString(HttpHeaders.ACCEPT);
         try {
             requestParameters.validate();  // validate the request before e launch a worker thread!
         } catch (ApplicationException e) {
             LOGGER.error("Exception during request validation: {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
-            returnAsyncResult(httpHeaders, resp, Status.BAD_REQUEST, createErrorResult(e.getErrorCode(), e.getMessage()));  // missing parameter
+            returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, createErrorResult(e.getErrorCode(), e.getMessage()));  // missing parameter
             return;
         }
         final String authHeader = httpHeaders.getHeaderString(HttpHeaders.AUTHORIZATION);
         if (authHeader == null || authHeader.length() < 8) {
-            returnAsyncResult(httpHeaders, resp, Status.UNAUTHORIZED, null);  // missing auth header
+            returnAsyncResult(acceptHeader, resp, Status.UNAUTHORIZED, "Missing or too short Authorization header");  // missing auth header
             return;
         }
         vertx.<ServiceResponse>executeBlocking(
@@ -92,7 +95,11 @@ public class T9tRestProcessor implements IT9tRestProcessor {
                     // get the authentication info
                     final AuthenticationInfo authInfo = authenticationProcessor.getCachedJwt(authHeader);
                     if (authInfo.getEncodedJwt() == null) {
-                        promise.fail("Not authenticated");
+                        // promise.fail("Not authenticated");
+                        final ServiceResponse errorResp = new ServiceResponse();
+                        errorResp.setReturnCode(authInfo.getHttpStatusCode() + T9tException.HTTP_ERROR);
+                        errorResp.setErrorDetails(authInfo.getMessage());
+                        promise.complete(errorResp);
                         return;
                     }
                     // Authentication is valid. Now populate the MDC and start processing the request.
@@ -113,6 +120,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
                     final ServiceResponse sr = ar.result();
                     if (!ApplicationException.isOk(sr.getReturnCode())) {
                         final Response.ResponseBuilder responseBuilder = createResponseBuilder(sr.getReturnCode());
+                        responseBuilder.entity(sr.getErrorDetails() != null ? sr.getErrorDetails() : T9tException.codeToString(sr.getReturnCode()));
                         final Response responseObj = responseBuilder.build();
                         resp.resume(responseObj);
                     }
@@ -128,6 +136,8 @@ public class T9tRestProcessor implements IT9tRestProcessor {
                         resp.resume(error(Status.INTERNAL_SERVER_ERROR, "Response type mismatch"));
                     }
                 } else {
+                    final Throwable cause = ar.cause();
+                    LOGGER.error("Processing failed due to {}", cause == null ? "(no cause)" : ExceptionUtil.causeChain(cause));
                     resp.resume(error(Status.INTERNAL_SERVER_ERROR, "Processing failed"));
                 }
             }
@@ -159,10 +169,9 @@ public class T9tRestProcessor implements IT9tRestProcessor {
     }
 
     @Override
-    public void returnAsyncResult(final HttpHeaders httpHeaders, final AsyncResponse resp, final Response.Status status, final Object result) {
-        final String acceptHeader = httpHeaders.getHeaderString("Accept");
+    public void returnAsyncResult(final String acceptHeader, final AsyncResponse resp, final Response.Status status, final Object result) {
         final Response.ResponseBuilder response = Response.status(status);
-        response.type(acceptHeader == null || acceptHeader.length() == 0 ? "application/json" : acceptHeader);
+        response.type(acceptHeader == null || acceptHeader.length() == 0 ? MediaType.APPLICATION_JSON : acceptHeader);
         if (result != null) {
             response.entity(result);
         }
@@ -225,9 +234,10 @@ public class T9tRestProcessor implements IT9tRestProcessor {
     public <T> void performAsyncBackendRequest(HttpHeaders httpHeaders, AsyncResponse resp,
             String infoMsg, List<T> inputData,
             Function<T, RequestParameters> requestConverterSingle, Function<List<T>, RequestParameters> requestConverterBatch) {
+        final String acceptHeader = httpHeaders.getHeaderString(HttpHeaders.ACCEPT);
         if (inputData == null || inputData.isEmpty()) {
             LOGGER.error("{}: No input data provided", infoMsg);
-            returnAsyncResult(httpHeaders, resp, Status.BAD_REQUEST, createErrorResult(T9tException.MISSING_PARAMETER, null));  // missing parameter
+            returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, createErrorResult(T9tException.MISSING_PARAMETER, null));  // missing parameter
             return;
         }
         final RequestParameters rq;
@@ -236,31 +246,37 @@ public class T9tRestProcessor implements IT9tRestProcessor {
                 rq = requestConverterSingle.apply(inputData.get(0));
             } catch (ApplicationException e) {
                 LOGGER.error("Exception during request conversion (single): {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
-                returnAsyncResult(httpHeaders, resp, Status.BAD_REQUEST, createErrorResult(e.getErrorCode(), e.getMessage()));  // missing parameter
+                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, createErrorResult(e.getErrorCode(), e.getMessage()));  // missing parameter
                 return;
             } catch (Exception e) {
                 LOGGER.error("Exception during request conversion (single): {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
-                returnAsyncResult(httpHeaders, resp, Status.BAD_REQUEST, createErrorResult(T9tException.GENERAL_EXCEPTION, e.getMessage()));  // missing parameter
+                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, createErrorResult(T9tException.GENERAL_EXCEPTION, e.getMessage()));  // missing parameter
                 return;
             }
         } else {
             if (requestConverterBatch == null) {
                 LOGGER.error("{}: More than one record provided ({})", infoMsg, inputData.size());
-                returnAsyncResult(httpHeaders, resp, Status.BAD_REQUEST, createErrorResult(T9tException.TOO_MANY_RECORDS, null));  // too many parameters
+                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, createErrorResult(T9tException.TOO_MANY_RECORDS, null));  // too many parameters
                 return;
             }
             try {
                 rq = requestConverterBatch.apply(inputData);
             } catch (ApplicationException e) {
                 LOGGER.error("Exception during request conversion (multi): {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
-                returnAsyncResult(httpHeaders, resp, Status.BAD_REQUEST, createErrorResult(e.getErrorCode(), e.getMessage()));  // missing parameter
+                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, createErrorResult(e.getErrorCode(), e.getMessage()));  // missing parameter
                 return;
             } catch (Exception e) {
                 LOGGER.error("Exception during request conversion (multi): {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
-                returnAsyncResult(httpHeaders, resp, Status.BAD_REQUEST, createErrorResult(T9tException.GENERAL_EXCEPTION, e.getMessage()));  // missing parameter
+                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, createErrorResult(T9tException.GENERAL_EXCEPTION, e.getMessage()));  // missing parameter
                 return;
             }
         }
         performAsyncBackendRequest(httpHeaders, resp, rq, infoMsg, ServiceResponse.class, sr -> createResultFromServiceResponse(sr));
+    }
+
+    @Override
+    public void performAsyncAuthBackendRequest(HttpHeaders httpHeaders, AsyncResponse resp, AuthenticationRequest requestParameters, Consumer<String> cacheUpdater) {
+        final String acceptHeader = httpHeaders.getHeaderString(HttpHeaders.ACCEPT);
+        returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, createErrorResult(T9tException.NOT_YET_IMPLEMENTED, "Auth not supported by internal REST API"));
     }
 }

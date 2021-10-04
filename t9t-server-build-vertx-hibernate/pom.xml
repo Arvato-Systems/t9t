@@ -90,7 +90,12 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- Generate Swagger documentation for embedded REST endpoints. -->
+            <plugin>
+                <groupId>io.swagger.core.v3</groupId>
+                <artifactId>swagger-maven-plugin</artifactId>
+            </plugin>
         </plugins>
     </build>
-
 </project>

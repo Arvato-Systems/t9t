@@ -25,12 +25,14 @@ import java.net.URL
 import de.jpaw.util.ByteArray
 import java.nio.charset.StandardCharsets
 import java.io.InputStream
+import java.io.OutputStream
 
 @AddLogger
 class RESTConnection extends ConnectionDefaults {
     protected IMarshaller marshaller = new RecordMarshallerJson();
     protected String authentication = null;
     protected final String baseRestUrl;
+    protected String requestMethod = "POST";
 
     new() {
         baseRestUrl = getInitialRestUrl
@@ -46,6 +48,10 @@ class RESTConnection extends ConnectionDefaults {
 
     def void setAuthentication(String authentication) {
         this.authentication = authentication
+    }
+
+    def void setRequestMethod(String requestMethod) {
+        this.requestMethod = requestMethod
     }
 
     def protected void setRequestProperties(HttpURLConnection connection) {
@@ -69,7 +75,7 @@ class RESTConnection extends ConnectionDefaults {
 
     def ByteBuilder doIO(URL url, ByteArray request, boolean expectError) {
         val connection = url.openConnection() as HttpURLConnection
-        connection.requestMethod = "POST"
+        connection.requestMethod = requestMethod
 
         setRequestProperties(connection);
         if (authentication !== null)
@@ -77,10 +83,13 @@ class RESTConnection extends ConnectionDefaults {
 
         connection.setRequestProperty("Content-Length", "" + request.length());
 
+        var OutputStream wr = null
         // write the request
-        val wr = connection.getOutputStream();
-        request.toOutputStream(wr);
-        wr.flush();
+        if (requestMethod == "POST" || requestMethod == "PUT") { // TODO check PUT, DELETE
+             wr = connection.getOutputStream();
+             request.toOutputStream(wr);
+             wr.flush();
+        }
 
         // the status should be available after getInputStream for GET, but before for POST
         // in either case, swapping the order would cause a nasty IOException!
@@ -107,7 +116,9 @@ class RESTConnection extends ConnectionDefaults {
         val serializedResponse = new ByteBuilder();
         serializedResponse.readFromInputStream(is, 0);
         is.close();
-        wr.close();
+
+        if (wr !== null) { wr.close(); }
+
 //        if (!isOK(returnCode)) {
 //            LOGGER.error("Received return code {}: {}", returnCode, statusMessage)
 //            LOGGER.error("Response was {}", serializedResponse)
