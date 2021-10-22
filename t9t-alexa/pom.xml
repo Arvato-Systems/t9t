@@ -21,7 +21,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-settings-be</artifactId>
-        <version>5.6-SNAPSHOT</version>
+        <version>5.7-SNAPSHOT</version>
         <relativePath>../t9t-settings-be</relativePath>
     </parent>
 
@@ -35,7 +35,7 @@
         </dependency>
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
-            <artifactId>t9t-client-complex</artifactId>
+            <artifactId>t9t-client-jdk11</artifactId>
         </dependency>
         <dependency>
             <groupId>de.jpaw</groupId>

@@ -36,6 +36,7 @@ import com.arvatosystems.t9t.io.CommunicationTargetChannelType;
 import com.arvatosystems.t9t.io.DataSinkCategoryType;
 import com.arvatosystems.t9t.io.DataSinkDTO;
 import com.arvatosystems.t9t.io.DataSinkRef;
+import com.arvatosystems.t9t.io.InputProcessingType;
 import com.arvatosystems.t9t.io.IOTools;
 import com.arvatosystems.t9t.io.T9tIOException;
 import com.arvatosystems.t9t.io.event.DataSinkChangedEvent;
@@ -73,6 +74,18 @@ public class DataSinkCrudRequestHandler extends AbstractCrudSurrogateKey42Reques
         if (data != null) {
             // normalize by tenantId
             // not required ATM, since no object ref specified ... if (data.getTenantRef()...)
+        }
+
+        // Validation for operation CREATE, MERGE & UPDATE
+        if (crudRequest.getCrud() == OperationType.CREATE
+            || crudRequest.getCrud() == OperationType.MERGE
+            || crudRequest.getCrud() == OperationType.UPDATE) {
+
+            // If inputProccessingType is not null & not LOCAL, inputProcessingTarget must not be empty
+            if (data.getInputProcessingType() != null && !InputProcessingType.LOCAL.equals(data.getInputProcessingType())
+                    && (data.getInputProcessingTarget() == null || data.getInputProcessingTarget().isEmpty())) {
+                throw new T9tException(T9tException.ILE_REQUIRED_PARAMETER_IS_NULL, "Input processing target must not be empty.");
+            }
         }
 
         DataSinkDTO dataSinkDTO = null;

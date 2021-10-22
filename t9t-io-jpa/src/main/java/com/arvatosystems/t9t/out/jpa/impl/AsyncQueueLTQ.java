@@ -132,7 +132,7 @@ public class AsyncQueueLTQ<R extends BonaPortable> implements IAsyncQueue {
     private static class WriterThread implements Runnable {
         private final LinkedTransferQueue<InMemoryMessage> queue = new LinkedTransferQueue<>();
         private final String threadName;
-        private final Boolean lock = new Boolean(true);  // separate object used as semaphore
+        private final Object lock = new Object();  // separate object used as semaphore
         private final AtomicBoolean gate = new AtomicBoolean();  // true is GREEN, false is RED
         private final AtomicBoolean shutdownInProgress = new AtomicBoolean();
         private final AsyncTransmitterConfiguration serverConfig;
@@ -231,6 +231,7 @@ public class AsyncQueueLTQ<R extends BonaPortable> implements IAsyncQueue {
                     em.clear();
                 } catch (Exception e) {
                     LOGGER.error("Database query exception: {}", ExceptionUtil.causeChain(e));
+                    LOGGER.error("Wait for {}", serverConfig.getWaitAfterDbErrors());
                     try {
                         Thread.sleep(serverConfig.getWaitAfterDbErrors());
                     } catch (InterruptedException e1) {

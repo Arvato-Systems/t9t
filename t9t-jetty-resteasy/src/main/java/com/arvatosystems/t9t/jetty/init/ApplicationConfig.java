@@ -23,16 +23,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Context;
 
-import io.swagger.v3.oas.models.servers.Server;
-import io.swagger.v3.oas.models.servers.ServerVariable;
-import io.swagger.v3.oas.models.servers.ServerVariables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.MessagingUtil;
-import com.arvatosystems.t9t.client.init.AbstractConfigurationProvider;
-import com.arvatosystems.t9t.client.init.JndiConfigurationProvider;
-import com.arvatosystems.t9t.client.init.SystemConfigurationProvider;
 import com.arvatosystems.t9t.jdp.Init;
 import com.arvatosystems.t9t.jetty.exceptions.ApplicationExceptionHandler;
 import com.arvatosystems.t9t.jetty.exceptions.GeneralExceptionHandler;
@@ -60,6 +54,9 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.security.SecurityScheme.In;
 import io.swagger.v3.oas.models.security.SecurityScheme.Type;
+import io.swagger.v3.oas.models.servers.Server;
+import io.swagger.v3.oas.models.servers.ServerVariable;
+import io.swagger.v3.oas.models.servers.ServerVariables;
 
 public class ApplicationConfig extends Application {
     private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationConfig.class);
@@ -75,15 +72,7 @@ public class ApplicationConfig extends Application {
         LOGGER.info("t9t servlet context initialization COMPLETE");
 
         // get remote connection config BEFORE we call a connection
-        try {
-            LOGGER.info("Initializing remote - trying JNDI");
-            Jdp.bindInstanceTo(new JndiConfigurationProvider(), AbstractConfigurationProvider.class);
-        } catch (final Exception e) {
-            LOGGER.error("Error initializing via JNDI: {}: {}, fallback using system",
-                    e.getClass().getSimpleName(),
-                    e.getMessage());
-            Jdp.bindInstanceTo(new SystemConfigurationProvider(), AbstractConfigurationProvider.class);
-        }
+//        Jdp.bindInstanceTo(new SystemConfigurationProvider(), IRemoteDefaultUrlRetriever.class);
 
         // determine (and instantiate) all endpoints.
         allSingletons = new HashSet<Object>(Jdp.getAll(IT9tRestEndpoint.class));

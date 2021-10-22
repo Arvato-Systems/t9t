@@ -33,7 +33,6 @@ class ApiKeyMappers {
     IUserEntityResolver     userResolver
     IUserDTOMapper          userMapper
 
-//    @AutoHandler("S42")
     @NeedMapping  // required because the DTO is final
     def void e2dApiKeyDTO(ApiKeyEntity entity, ApiKeyDTO dto) {
         dto.roleRef = roleMapper.mapToDto(entity.roleRef)

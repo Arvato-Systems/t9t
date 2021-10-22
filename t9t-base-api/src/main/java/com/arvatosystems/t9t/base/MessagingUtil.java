@@ -85,7 +85,8 @@ public final class MessagingUtil {
 
     /** converts a request class PQON to the corresponding resource ID. */
     public static String toPerm(String requestClassPqon) {
-        return PermissionType.BACKEND.getToken() + "." + (requestClassPqon.endsWith("Request") ? requestClassPqon.substring(0, requestClassPqon.length() - 7) : requestClassPqon);
+        return PermissionType.BACKEND.getToken() + "."
+          + (requestClassPqon.endsWith("Request") ? requestClassPqon.substring(0, requestClassPqon.length() - 7) : requestClassPqon);
     }
 
     public static String truncField(Object text, int maxLength) {

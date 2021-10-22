@@ -15,7 +15,6 @@
  */
 package com.arvatosystems.t9t.io.jpa.mapping.impl
 
-import com.arvatosystems.t9t.annotations.jpa.AutoHandler
 import com.arvatosystems.t9t.annotations.jpa.active.AutoMap42
 import com.arvatosystems.t9t.io.AsyncQueueDTO
 import com.arvatosystems.t9t.io.jpa.entities.AsyncQueueEntity
@@ -25,7 +24,6 @@ import com.arvatosystems.t9t.io.jpa.persistence.IAsyncQueueEntityResolver
 class AsyncQueueMappers {
     IAsyncQueueEntityResolver resolver
 
-    @AutoHandler("S42")
     def void e2dAsyncQueueDTO(AsyncQueueEntity entity, AsyncQueueDTO dto) {}
     def void d2eAsyncQueueDTO(AsyncQueueEntity entity, AsyncQueueDTO dto, boolean onlyActive) {}
 }

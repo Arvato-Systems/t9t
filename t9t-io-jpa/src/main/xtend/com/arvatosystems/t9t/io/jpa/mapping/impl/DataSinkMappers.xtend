@@ -24,7 +24,6 @@ import com.arvatosystems.t9t.io.jpa.mapping.ICsvConfigurationDTOMapper
 import com.arvatosystems.t9t.io.jpa.mapping.IDataSinkKeyMapper
 import com.arvatosystems.t9t.io.jpa.persistence.ICsvConfigurationEntityResolver
 import com.arvatosystems.t9t.io.jpa.persistence.IDataSinkEntityResolver
-import com.arvatosystems.t9t.annotations.jpa.AutoHandler
 
 @AutoMap42
 class DataSinkMappers {
@@ -38,7 +37,6 @@ class DataSinkMappers {
         dto.responseDataSinkRef     = keyMapper.mapToDto(entity.responseDataSinkRef)
     }
 
-    @AutoHandler("S42P")
     def void d2eDataSinkDTO         (DataSinkEntity entity, DataSinkDTO dto, boolean onlyActive) {
         entity.csvConfigurationRef = csvResolver.getRef(dto.csvConfigurationRef, onlyActive)
         entity.responseDataSinkRef = entityResolver.getRef(dto.responseDataSinkRef, onlyActive)

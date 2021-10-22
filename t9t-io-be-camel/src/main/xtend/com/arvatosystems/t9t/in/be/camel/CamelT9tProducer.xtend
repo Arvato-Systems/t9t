@@ -78,9 +78,12 @@ class CamelT9tProducer extends DefaultProducer {
         } catch (Exception e) {
             LOGGER.error("Processor error for dataSinkDTO {}: {}", dataSinkDTO, e)
             throw e
-        } finally {
-            inputSession.close
-            inputStream.close
+        } finally {        
+            if (inputSession !== null)
+                inputSession.close
+            
+            if (inputStream !== null)
+                inputStream.close
         }
     }
 

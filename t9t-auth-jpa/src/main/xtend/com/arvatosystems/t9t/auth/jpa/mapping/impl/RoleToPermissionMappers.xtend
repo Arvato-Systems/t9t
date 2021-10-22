@@ -15,7 +15,6 @@
  */
 package com.arvatosystems.t9t.auth.jpa.mapping.impl
 
-import com.arvatosystems.t9t.annotations.jpa.AutoHandler
 import com.arvatosystems.t9t.annotations.jpa.active.AutoMap42
 import com.arvatosystems.t9t.auth.RoleToPermissionDTO
 import com.arvatosystems.t9t.auth.jpa.entities.RoleToPermissionEntity
@@ -33,7 +32,6 @@ class RoleToPermissionMappers {
         entity.roleRef = roleResolver.getRef(roleRef, onlyActive)
     }
 
-    @AutoHandler("SP42")
     def void e2dRoleToPermissionDTO(RoleToPermissionEntity it, RoleToPermissionDTO dto) {
         dto.roleRef = roleMapper.mapToDto(roleRef)
     }

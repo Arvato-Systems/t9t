@@ -40,71 +40,70 @@ import com.arvatosystems.t9t.authc.api.ResetPasswordRequest;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 
 public final class T9tAuthModels implements IViewModelContainer {
-    public T9tAuthModels() { }
 
-    public static final CrudViewModel<TenantDTO, FullTrackingWithVersion> TENANT_VIEW_MODEL
+    private static final CrudViewModel<TenantDTO, FullTrackingWithVersion> TENANT_VIEW_MODEL
       = new CrudViewModel<TenantDTO, FullTrackingWithVersion>(
         TenantDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         TenantSearchRequest.BClass.INSTANCE,
         TenantCrudRequest.BClass.INSTANCE);
-    public static final CrudViewModel<UserDTO, FullTrackingWithVersion> USER_VIEW_MODEL
+    private static final CrudViewModel<UserDTO, FullTrackingWithVersion> USER_VIEW_MODEL
       = new CrudViewModel<UserDTO, FullTrackingWithVersion>(
         UserDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         UserSearchRequest.BClass.INSTANCE,
         UserCrudRequest.BClass.INSTANCE);
-    public static final CrudViewModel<RoleDTO, FullTrackingWithVersion> ROLE_VIEW_MODEL
+    private static final CrudViewModel<RoleDTO, FullTrackingWithVersion> ROLE_VIEW_MODEL
       = new CrudViewModel<RoleDTO, FullTrackingWithVersion>(
         RoleDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         RoleSearchRequest.BClass.INSTANCE,
         RoleCrudRequest.BClass.INSTANCE);
-    public static final CrudViewModel<ApiKeyDTO, FullTrackingWithVersion> APIKEY_VIEW_MODEL
+    private static final CrudViewModel<ApiKeyDTO, FullTrackingWithVersion> APIKEY_VIEW_MODEL
       = new CrudViewModel<ApiKeyDTO, FullTrackingWithVersion>(
         ApiKeyDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         ApiKeySearchRequest.BClass.INSTANCE,
         ApiKeyCrudRequest.BClass.INSTANCE);
-    public static final CrudViewModel<SessionDTO, SessionTracking> SESSION_VIEW_MODEL
+    private static final CrudViewModel<SessionDTO, SessionTracking> SESSION_VIEW_MODEL
       = new CrudViewModel<SessionDTO, SessionTracking>(
         SessionDTO.BClass.INSTANCE,
         SessionTracking.BClass.INSTANCE,
         SessionSearchRequest.BClass.INSTANCE,
         null);
-    public static final CrudViewModel<RoleToPermissionDTO, FullTrackingWithVersion> ROLE_PERMISSION_VIEW_MODEL
+    private static final CrudViewModel<RoleToPermissionDTO, FullTrackingWithVersion> ROLE_PERMISSION_VIEW_MODEL
       = new CrudViewModel<RoleToPermissionDTO, FullTrackingWithVersion>(
         RoleToPermissionDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         RoleToPermissionSearchRequest.BClass.INSTANCE,
         RoleToPermissionCrudRequest.BClass.INSTANCE);
-    public static final CrudViewModel<UserTenantRoleDTO, FullTrackingWithVersion> USER_TENANT_ROLE_VIEW_MODEL
+    private static final CrudViewModel<UserTenantRoleDTO, FullTrackingWithVersion> USER_TENANT_ROLE_VIEW_MODEL
       = new CrudViewModel<UserTenantRoleDTO, FullTrackingWithVersion>(
         UserTenantRoleDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         UserTenantRoleSearchRequest.BClass.INSTANCE,
         UserTenantRoleCrudRequest.BClass.INSTANCE);
-    public static final CrudViewModel<AuthModuleCfgDTO, FullTrackingWithVersion> AUTH_MODULE_CFG_VIEW_MODEL
+    private static final CrudViewModel<AuthModuleCfgDTO, FullTrackingWithVersion> AUTH_MODULE_CFG_VIEW_MODEL
       = new CrudViewModel<AuthModuleCfgDTO, FullTrackingWithVersion>(
         AuthModuleCfgDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         AuthModuleCfgSearchRequest.BClass.INSTANCE,
         AuthModuleCfgCrudRequest.BClass.INSTANCE);
-    public static final CrudViewModel<TenantLogoDTO, FullTrackingWithVersion> TENANT_LOGO_VIEW_MODEL
+    private static final CrudViewModel<TenantLogoDTO, FullTrackingWithVersion> TENANT_LOGO_VIEW_MODEL
       = new CrudViewModel<TenantLogoDTO, FullTrackingWithVersion>(
         TenantLogoDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         TenantLogoSearchRequest.BClass.INSTANCE,
         TenantLogoCrudRequest.BClass.INSTANCE);
-    public static final CrudViewModel<ResetPasswordRequest, TrackingBase> RESET_PWD_VIEW_MODEL
+    private static final CrudViewModel<ResetPasswordRequest, TrackingBase> RESET_PWD_VIEW_MODEL
       = new CrudViewModel<ResetPasswordRequest, TrackingBase>(
         ResetPasswordRequest.BClass.INSTANCE,
         null,
         null,
         null);
 
-
-    static {
+    @Override
+    public void register() {
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("sessions",         SESSION_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("tenant",           TENANT_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("user",             USER_VIEW_MODEL);

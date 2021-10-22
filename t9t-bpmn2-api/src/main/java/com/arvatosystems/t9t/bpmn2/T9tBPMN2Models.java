@@ -23,24 +23,30 @@ import com.arvatosystems.t9t.bpmn2.request.IncidentSearchRequest;
 import com.arvatosystems.t9t.bpmn2.request.ProcessDefinitionSearchRequest;
 import com.arvatosystems.t9t.bpmn2.request.ProcessInstanceSearchRequest;
 
-public class T9tBPMN2Models implements IViewModelContainer {
-    public static final CrudViewModel<ProcessDefinitionDTO, FullTrackingWithVersion> PROCESS_DEFINITION_BPMN2_VIEW_MODEL = new CrudViewModel<ProcessDefinitionDTO, FullTrackingWithVersion>(
+public final class T9tBPMN2Models implements IViewModelContainer {
+
+    private static final CrudViewModel<ProcessDefinitionDTO, FullTrackingWithVersion> PROCESS_DEFINITION_BPMN2_VIEW_MODEL
+      = new CrudViewModel<ProcessDefinitionDTO, FullTrackingWithVersion>(
         ProcessDefinitionDTO.BClass.INSTANCE, FullTrackingWithVersion.BClass.INSTANCE,
         ProcessDefinitionSearchRequest.BClass.INSTANCE, null);
 
-    public static final CrudViewModel<ProcessInstanceDTO, FullTrackingWithVersion> PROCESS_INSTANCE_BPMN2_VIEW_MODEL = new CrudViewModel<ProcessInstanceDTO, FullTrackingWithVersion>(
+    private static final CrudViewModel<ProcessInstanceDTO, FullTrackingWithVersion> PROCESS_INSTANCE_BPMN2_VIEW_MODEL
+      = new CrudViewModel<ProcessInstanceDTO, FullTrackingWithVersion>(
         ProcessInstanceDTO.BClass.INSTANCE, FullTrackingWithVersion.BClass.INSTANCE,
         ProcessInstanceSearchRequest.BClass.INSTANCE, null);
 
-    public static final CrudViewModel<EventSubscriptionDTO, FullTrackingWithVersion> EVENT_SUBSCRIPTIONS_VIEW_MODEL = new CrudViewModel<EventSubscriptionDTO, FullTrackingWithVersion>(
+    private static final CrudViewModel<EventSubscriptionDTO, FullTrackingWithVersion> EVENT_SUBSCRIPTIONS_VIEW_MODEL
+      = new CrudViewModel<EventSubscriptionDTO, FullTrackingWithVersion>(
         EventSubscriptionDTO.BClass.INSTANCE, FullTrackingWithVersion.BClass.INSTANCE,
         EventSubscriptionSearchRequest.BClass.INSTANCE, null);
 
-    public static final CrudViewModel<IncidentDTO, FullTrackingWithVersion> INCIDENTS_VIEW_MODEL = new CrudViewModel<IncidentDTO, FullTrackingWithVersion>(
+    private static final CrudViewModel<IncidentDTO, FullTrackingWithVersion> INCIDENTS_VIEW_MODEL
+      = new CrudViewModel<IncidentDTO, FullTrackingWithVersion>(
         IncidentDTO.BClass.INSTANCE, FullTrackingWithVersion.BClass.INSTANCE,
         IncidentSearchRequest.BClass.INSTANCE, null);
 
-    static {
+    @Override
+    public void register() {
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("processDefinitionBpmn2", PROCESS_DEFINITION_BPMN2_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("processInstanceBpmn2", PROCESS_INSTANCE_BPMN2_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("eventSubscriptions", EVENT_SUBSCRIPTIONS_VIEW_MODEL);

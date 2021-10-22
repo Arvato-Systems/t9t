@@ -15,7 +15,6 @@
  */
 package com.arvatosystems.t9t.voice.jpa.impl;
 
-import com.arvatosystems.t9t.base.T9tConstants
 import com.arvatosystems.t9t.voice.jpa.entities.VoiceUserEntity
 import com.arvatosystems.t9t.voice.jpa.mapping.IVoiceUserDTOMapper
 import com.arvatosystems.t9t.voice.jpa.persistence.IVoiceUserEntityResolver
@@ -26,7 +25,7 @@ import de.jpaw.dp.Singleton
 
 @Singleton
 @AddLogger
-public class VoicePersistenceAccess implements IVoicePersistenceAccess, T9tConstants {
+class VoicePersistenceAccess implements IVoicePersistenceAccess {
     @Inject protected IVoiceUserEntityResolver voiceUserResolver
     @Inject protected IVoiceUserDTOMapper      voiceUserMapper
 

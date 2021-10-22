@@ -23,13 +23,11 @@ import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.msglog.jpa.persistence.IMessageEntityResolver;
 import com.arvatosystems.t9t.msglog.request.RemoveOldMessageEntriesRequest;
 import de.jpaw.dp.Jdp;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import java.time.Duration;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 public class RemoveOldMessageEntriesRequestHandler extends AbstractRequestHandler<RemoveOldMessageEntriesRequest> {
     protected final IMessageEntityResolver resolver = Jdp.getRequired(IMessageEntityResolver.class);

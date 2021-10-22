@@ -23,8 +23,10 @@ import com.arvatosystems.t9t.base.api.ServiceResponse;
 import de.jpaw.util.ApplicationException;
 
 /** A utility class to provide response messages. */
-public class T9tResponses {
+public final class T9tResponses {
     private static final Logger LOGGER = LoggerFactory.getLogger(T9tResponses.class);
+
+    private T9tResponses() { }
 
     /** Create a ServiceResponse, using a provided error code (or OK). */
     public static ServiceResponse createOk(int returnCode) {

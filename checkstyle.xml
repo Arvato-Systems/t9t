@@ -106,7 +106,9 @@
     <module name="LocalFinalVariableName"/>
     <module name="LocalVariableName"/>
     <module name="MemberName"/>
-    <module name="MethodName"/>
+    <module name="MethodName">
+      <property name="format" value="^(operator_)?[a-z][a-zA-Z0-9]*$"/>  <!-- support operator overloading for xtend as long as we still use it -->
+    </module>
     <module name="PackageName"/>
     <module name="ParameterName"/>
     <module name="StaticVariableName"/>
@@ -122,7 +124,7 @@
     <!-- Checks for Size Violations.                    -->
     <!-- See https://checkstyle.org/config_sizes.html -->
     <module name="MethodLength">
-	  <property name="max" value="200"/>
+      <property name="max" value="200"/>
       <property name="countEmpty" value="false"/>  <!-- leaving it at true could lead to deletion of empty lines or comments! -->
     </module>
     <module name="ParameterNumber"/>
@@ -148,7 +150,7 @@
       <property name="tokens" value="COMMA, SEMI, LITERAL_IF, LITERAL_ELSE, LITERAL_WHILE, LITERAL_DO, LITERAL_FOR, DO_WHILE"/>
     </module>
     <module name="WhitespaceAround"/>
-	<!-- does not seem to work. Not critical, because global search/replace {} => { } will cure it (and could also be reverted easily later if desired).
+    <!-- does not seem to work. Not critical, because global search/replace {} => { } will cure it (and could also be reverted easily later if desired).
       <property name="allowEmptyConstructors" value="true"/>
       <property name="allowEmptyMethods" value="true"/>
     </module> -->
@@ -160,7 +162,9 @@
 
     <!-- Checks for blocks. You know, those {}'s         -->
     <!-- See https://checkstyle.org/config_blocks.html -->
-    <module name="AvoidNestedBlocks"/>
+    <module name="AvoidNestedBlocks">
+      <property name="allowInSwitchCase" value="true"/>
+    </module>
     <module name="EmptyBlock"/>
     <module name="LeftCurly"/>
 
@@ -182,19 +186,19 @@
     </module>
     <module name="IllegalInstantiation"/>
     <module name="InnerAssignment"/>
-	<!-- TODO: decide which checks we want
+    <!-- TODO: decide which checks we want
     <module name="MagicNumber"/>
-	-->
-	<!-- deactivating: a default maskes no sense if all enum instances have been addressed!
+    -->
+    <!-- deactivating: a default maskes no sense if all enum instances have been addressed!
     <module name="MissingSwitchDefault"/>
-	-->
+    -->
     <module name="MultipleVariableDeclarations"/>
     <module name="SimplifyBooleanExpression"/>
     <module name="SimplifyBooleanReturn"/>
 
     <!-- Checks for class design                         -->
     <!-- See https://checkstyle.org/config_design.html -->
-	<module name="DesignForExtension">
+    <module name="DesignForExtension">
       <property name="ignoredAnnotations" value="Override, Test"/>
     </module>
     <module name="FinalClass"/>
@@ -208,11 +212,12 @@
     <!-- Miscellaneous other checks.                   -->
     <!-- See https://checkstyle.org/config_misc.html -->
     <module name="ArrayTypeStyle"/>
-	<!--  FIXME: We want this!
+    <!--  FIXME: We want this!
     <module name="FinalParameters"/>
-	-->
+    -->
     <module name="TodoComment">
       <property name="format" value="(TODO)|(FIXME)"/>
+      <property name="severity" value="warning"/>
     </module>
     <module name="UpperEll"/>
 

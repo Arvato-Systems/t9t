@@ -15,7 +15,6 @@
  */
 package com.arvatosystems.t9t.msglog.jpa.mapping.impl
 
-import com.arvatosystems.t9t.annotations.jpa.AutoHandler
 import com.arvatosystems.t9t.annotations.jpa.active.AutoMap42
 import com.arvatosystems.t9t.msglog.MessageStatisticsDTO
 import com.arvatosystems.t9t.msglog.jpa.entities.MessageStatisticsEntity
@@ -25,8 +24,6 @@ import com.arvatosystems.t9t.msglog.jpa.persistence.IMessageStatisticsEntityReso
 class MessageStatisticsMappers {
     IMessageStatisticsEntityResolver resolver
 
-    @AutoHandler("SP42")
     def void e2dMessageStatisticsDTO(MessageStatisticsEntity it, MessageStatisticsDTO dto) {}
-
     def void d2eMessageStatisticsDTO(MessageStatisticsEntity it, MessageStatisticsDTO dto, boolean onlyActive) {}
 }

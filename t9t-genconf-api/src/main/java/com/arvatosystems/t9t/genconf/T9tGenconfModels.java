@@ -21,14 +21,17 @@ import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.genconf.request.ConfigCrudRequest;
 import com.arvatosystems.t9t.genconf.request.ConfigSearchRequest;
 
-public class T9tGenconfModels implements IViewModelContainer {
-    public static final CrudViewModel<ConfigDTO, FullTrackingWithVersion> GENERIC_CONFIG_VIEW_MODEL = new CrudViewModel<ConfigDTO, FullTrackingWithVersion>(
+public final class T9tGenconfModels implements IViewModelContainer {
+
+    private static final CrudViewModel<ConfigDTO, FullTrackingWithVersion> GENERIC_CONFIG_VIEW_MODEL
+      = new CrudViewModel<ConfigDTO, FullTrackingWithVersion>(
         ConfigDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         ConfigSearchRequest.BClass.INSTANCE,
         ConfigCrudRequest.BClass.INSTANCE);
 
-    static {
+    @Override
+    public void register() {
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("genericConfig",        GENERIC_CONFIG_VIEW_MODEL);
     }
 }

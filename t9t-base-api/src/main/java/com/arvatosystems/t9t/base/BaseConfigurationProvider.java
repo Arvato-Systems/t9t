@@ -61,8 +61,9 @@ public final class BaseConfigurationProvider {
             } catch (final IOException e) {
                 LOGGER.error("Cannot load following base property file: {}", file.getAbsolutePath());
             } finally {
-                 try {
-                    stream.close();
+                try {
+                    if (stream != null)
+                        stream.close();
                 } catch (final IOException e) {
                     LOGGER.error("Cannot close stream to following base property file: {}", file.getAbsolutePath());
                 }

@@ -50,9 +50,9 @@ import de.jpaw.bonaparte.pojos.ui.UIMeta;
 import de.jpaw.json.JsonParser;
 import de.jpaw.util.ExceptionUtil;
 
-public class UiGridConfigPrefs {
+public final class UiGridConfigPrefs {
     private static final Logger LOGGER = LoggerFactory.getLogger(UiGridConfigPrefs.class);
-    private static final AtomicInteger errorCounter = new AtomicInteger(0);
+    private static final AtomicInteger ERROR_COUNTER = new AtomicInteger(0);
     public static final UIDefaults MY_DEFAULTS = new UIDefaults(
         50,     // renderMaxArrayColumns: we have up to 7 address lines (and 6 tax levels) (but 50 in other applications)
         160,    // widthObject
@@ -64,7 +64,9 @@ public class UiGridConfigPrefs {
         400     // widthMax
     );  // default is (5, 32, 24, 80, 120, 10, 12, 200);
 
-    private static void addUiMeta(CrudViewModel<?,?> vm, String viewModelId, UIGridPreferences ui, String gridId) {
+    private UiGridConfigPrefs() { }
+
+    private static void addUiMeta(CrudViewModel<?, ?> vm, String viewModelId, UIGridPreferences ui, String gridId) {
         if (IViewModelContainer.VIEW_MODEL_BY_GRID_ID_REGISTRY.putIfAbsent(gridId, viewModelId) != null)
             LOGGER.error("view model by grid config {} defined multiple times", gridId);
         ColumnCollector cc = new ColumnCollector(MY_DEFAULTS);
@@ -84,7 +86,7 @@ public class UiGridConfigPrefs {
                     m.setFieldProperties(empty2minus(m.getFieldProperties()));
                 }
             } catch (Exception e1) {
-                errorCounter.incrementAndGet();
+                ERROR_COUNTER.incrementAndGet();
                 LOGGER.error("Cannot obtain meta data for grid config {}, field {}, maybe used a wrong prefix? [{}: {}]",
                         gridId, col.getFieldName(), e1.getClass().getSimpleName(), e1.getMessage());
             }
@@ -92,7 +94,7 @@ public class UiGridConfigPrefs {
         ui.validate();
         ui.freeze();
         if (IGridConfigContainer.GRID_CONFIG_REGISTRY.putIfAbsent(gridId, ui) != null) {
-            errorCounter.incrementAndGet();
+            ERROR_COUNTER.incrementAndGet();
             LOGGER.error("grid config {} defined multiple times", gridId);
         }
     }
@@ -103,11 +105,11 @@ public class UiGridConfigPrefs {
             URL url = Resources.getResource("gridconfig/" + resourceId + ".json");
             String json = Resources.toString(url, Charsets.UTF_8);
 
-            Map<String,Object> config = new JsonParser(json, false).parseObject();
+            Map<String, Object> config = new JsonParser(json, false).parseObject();
 
             // add the "allowSorting" data, by default false
-            List<Map<String,Object>> columns = (List<Map<String, Object>>) config.get("columns");
-            for (Map<String,Object> column: columns) {
+            List<Map<String, Object>> columns = (List<Map<String, Object>>) config.get("columns");
+            for (Map<String, Object> column: columns) {
                 column.put("allowSorting", true);
                 column.put("negateFilter", false);
             }
@@ -117,13 +119,13 @@ public class UiGridConfigPrefs {
             // enrich the UI meta data of the columns, if a viewModel is referenced
             String viewModelId = ui.getViewModel();
             if (viewModelId == null) {
-                errorCounter.incrementAndGet();
+                ERROR_COUNTER.incrementAndGet();
                 LOGGER.error("No view model reference defined for grid config {} - screens won't work", gridId);
                 return;
             }
-            CrudViewModel<?,?> vm = IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.get(viewModelId);
+            CrudViewModel<?, ?> vm = IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.get(viewModelId);
             if (vm == null) {
-                errorCounter.incrementAndGet();
+                ERROR_COUNTER.incrementAndGet();
                 LOGGER.error("No view model definition found for {}, as specified in grid config {}", viewModelId, gridId);
             } else {
                 LOGGER.debug("Grid config {} maps to view model {} ({})", gridId, viewModelId, vm.dtoClass.getPqon());
@@ -133,16 +135,16 @@ public class UiGridConfigPrefs {
                 // ui.setClassProperties(vm.dtoClass.getMetaData().getProperties());
             }
         } catch (Exception e) {
-            errorCounter.incrementAndGet();
+            ERROR_COUNTER.incrementAndGet();
             LOGGER.error("Parsing error for grid config {}: {}", gridId, ExceptionUtil.causeChain(e));
         }
     }
 
-    static Map<String,String> empty2minus(Map<String, String> map) {
+    static Map<String, String> empty2minus(Map<String, String> map) {
         if (map == null || map.isEmpty())
             return map;
         // the input is an ImmutableMap, we have to copy it to support changes to the (expected) empty components
-        Map<String,String> r = new HashMap<String, String>(2 * map.size());
+        Map<String, String> r = new HashMap<String, String>(2 * map.size());
         for (Map.Entry<String, String> e : map.entrySet()) {
             String v = e.getValue();
             r.put(e.getKey(), v == null || v.length() == 0 ? T9tConstants.UI_META_NO_ASSIGNED_VALUE : v);
@@ -156,11 +158,11 @@ public class UiGridConfigPrefs {
             URL url = Resources.getResource("gridconfig/" + gridId + ".json");
             String json = Resources.toString(url, Charsets.UTF_8);
 
-            Map<String,Object> config = new JsonParser(json, false).parseObject();
+            Map<String, Object> config = new JsonParser(json, false).parseObject();
             UILeanGridPreferences prefs = new UILeanGridPreferences();
             MapParser.populateFrom(prefs, config);
             if (ILeanGridConfigContainer.LEAN_GRID_CONFIG_REGISTRY.putIfAbsent(gridId, prefs) != null) {
-                errorCounter.incrementAndGet();
+                ERROR_COUNTER.incrementAndGet();
                 LOGGER.error("lean grid config {} defined multiple times", gridId);
             }
 
@@ -168,7 +170,7 @@ public class UiGridConfigPrefs {
             String viewModelId = prefs.getViewModel();
             CrudViewModel<?, ?> vm = IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.get(viewModelId);
             if (vm == null) {
-                errorCounter.incrementAndGet();
+                ERROR_COUNTER.incrementAndGet();
                 LOGGER.error("No view model definition found for {}, as specified in grid config {}", viewModelId, gridId);
                 return;
             }
@@ -214,7 +216,7 @@ public class UiGridConfigPrefs {
                     String s = FieldMappers.stripIndexes(f.getFieldName());
                     UIColumnConfiguration d = colMap.get(s);
                     if (d == null) {
-                        errorCounter.incrementAndGet();
+                        ERROR_COUNTER.incrementAndGet();
                         LOGGER.error("cannot find field {} ({}) referenced as a filter by grid ID {}", f.getFieldName(), s, gridId);
                     } else {
                         d.setFilterType(f.getFilterType());
@@ -228,7 +230,7 @@ public class UiGridConfigPrefs {
                 String s = FieldMappers.stripIndexes(fld);
                 UIColumnConfiguration d = colMap.get(s);
                 if (d == null) {
-                    errorCounter.incrementAndGet();
+                    ERROR_COUNTER.incrementAndGet();
                     LOGGER.error("cannot find field {} ({}) referenced as visible by grid ID {}", fld, s, gridId);
                 } else {
                     d.setVisible(true);
@@ -241,7 +243,7 @@ public class UiGridConfigPrefs {
                     String s = FieldMappers.stripIndexes(fld);
                     UIColumnConfiguration d = colMap.get(s);
                     if (d == null) {
-                        errorCounter.incrementAndGet();
+                        ERROR_COUNTER.incrementAndGet();
                         LOGGER.error("cannot find field {} ({}) referenced as unsortable by grid ID {}", fld, s, gridId);
                     } else {
                         d.setAllowSorting(false);
@@ -252,7 +254,7 @@ public class UiGridConfigPrefs {
             // enrich UI meta, validate and store it
             addUiMeta(vm, viewModelId, ui, gridId);
         } catch (Exception e) {
-            errorCounter.incrementAndGet();
+            ERROR_COUNTER.incrementAndGet();
             LOGGER.error("Parsing error for lean grid config {}: {}", gridId, ExceptionUtil.causeChain(e));
         }
     }
@@ -270,12 +272,12 @@ public class UiGridConfigPrefs {
     }
 
     public static int getErrorCount() {
-        return errorCounter.get();
+        return ERROR_COUNTER.get();
     }
 
     // only visible from InitContainers
     static void reset() {
-        errorCounter.set(0);
+        ERROR_COUNTER.set(0);
         IViewModelContainer.VIEW_MODEL_BY_GRID_ID_REGISTRY.clear();
         IGridConfigContainer.GRID_CONFIG_REGISTRY.clear();
         ILeanGridConfigContainer.LEAN_GRID_CONFIG_REGISTRY.clear();

@@ -15,7 +15,6 @@
  */
 package com.arvatosystems.t9t.io.jpa.mapping.impl
 
-import com.arvatosystems.t9t.annotations.jpa.AutoHandler
 import com.arvatosystems.t9t.annotations.jpa.active.AutoMap42
 import com.arvatosystems.t9t.io.AsyncMessageDTO
 import com.arvatosystems.t9t.io.jpa.entities.AsyncMessageEntity
@@ -29,7 +28,6 @@ class AsyncMessageMappers {
     IAsyncQueueEntityResolver queueResolver
     IAsyncQueueDTOMapper queueMapper
 
-    @AutoHandler("SC42")
     def void e2dAsyncMessageDTO(AsyncMessageEntity entity, AsyncMessageDTO dto) {
         if (entity.lastAttempt !== null && entity.whenSent !== null)
             dto.latency = entity.lastAttempt.toEpochMilli - entity.whenSent.toEpochMilli

@@ -128,7 +128,7 @@ abstract class AbstractConnection extends ConnectionDefaults implements ITestCon
         }
     }
 
-    override switchLanguage(String newLanguage) throws Exception {
+    override switchLanguage(String newLanguage) {
         val rq = new SwitchLanguageRequest(newLanguage)
         val authResult = typeIO(rq, AuthenticationResponse)
         lastJwtInfo    = authResult.jwtInfo

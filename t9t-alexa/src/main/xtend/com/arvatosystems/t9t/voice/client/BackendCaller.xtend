@@ -21,7 +21,6 @@ import com.arvatosystems.t9t.base.auth.ApiKeyAuthentication
 import com.arvatosystems.t9t.base.auth.AuthenticationRequest
 import com.arvatosystems.t9t.base.auth.AuthenticationResponse
 import com.arvatosystems.t9t.base.types.SessionParameters
-import com.arvatosystems.t9t.client.connection.IRemoteConnection
 import com.arvatosystems.t9t.voice.VoiceProvider
 import com.arvatosystems.t9t.voice.request.ProvideSessionRequest
 import com.arvatosystems.t9t.voice.request.ProvideSessionResponse
@@ -32,6 +31,7 @@ import de.jpaw.dp.Inject
 import de.jpaw.dp.Singleton
 import java.util.UUID
 import java.util.concurrent.TimeUnit
+import com.arvatosystems.t9t.base.IRemoteConnection
 
 @AddLogger
 @Singleton

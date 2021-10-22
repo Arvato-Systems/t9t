@@ -6,7 +6,9 @@
         { "filterType": "E", "fieldName": "commFormatType" }
     ],
     "fields": [
-        "tenantRef", "dataSinkId", "description", "commFormatType", "preTransformerName", "commFormatName", "outputEncoding", "camelFormatIsFmtRoute"
+        "tenantRef", "dataSinkId", "description", "commFormatType", "preTransformerName", "commFormatName", "outputEncoding"
+        , "camelFormatIsFmtRoute", "inputProcessingType", "inputProcessingTarget", "inputProcessingParallel", "inputProcessingSplitter"
     ],
-    "fieldWidths": [ 80, 180, 240, 110, 200, 200, 200, 200 ]
+    "fieldWidths": [ 80, 180, 240, 110, 200, 200, 200
+                    , 200, 200, 200, 200, 200 ]
 }

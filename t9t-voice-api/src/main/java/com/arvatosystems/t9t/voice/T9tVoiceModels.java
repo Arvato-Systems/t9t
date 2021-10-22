@@ -27,29 +27,35 @@ import com.arvatosystems.t9t.voice.request.VoiceResponseSearchRequest;
 import com.arvatosystems.t9t.voice.request.VoiceUserCrudRequest;
 import com.arvatosystems.t9t.voice.request.VoiceUserSearchRequest;
 
-public class T9tVoiceModels implements IViewModelContainer {
-    public static final CrudViewModel<VoiceApplicationDTO, FullTrackingWithVersion> VOICE_APPLICATION_VIEW_MODEL = new CrudViewModel<VoiceApplicationDTO, FullTrackingWithVersion>(
+public final class T9tVoiceModels implements IViewModelContainer {
+
+    private static final CrudViewModel<VoiceApplicationDTO, FullTrackingWithVersion> VOICE_APPLICATION_VIEW_MODEL
+      = new CrudViewModel<VoiceApplicationDTO, FullTrackingWithVersion>(
         VoiceApplicationDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         VoiceApplicationSearchRequest.BClass.INSTANCE,
         VoiceApplicationCrudRequest.BClass.INSTANCE);
-    public static final CrudViewModel<VoiceUserDTO, FullTrackingWithVersion> VOICE_USER_VIEW_MODEL = new CrudViewModel<VoiceUserDTO, FullTrackingWithVersion>(
+    private static final CrudViewModel<VoiceUserDTO, FullTrackingWithVersion> VOICE_USER_VIEW_MODEL
+      = new CrudViewModel<VoiceUserDTO, FullTrackingWithVersion>(
         VoiceUserDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         VoiceUserSearchRequest.BClass.INSTANCE,
         VoiceUserCrudRequest.BClass.INSTANCE);
-    public static final CrudViewModel<VoiceResponseDTO, FullTrackingWithVersion> VOICE_RESPONSE_VIEW_MODEL = new CrudViewModel<VoiceResponseDTO, FullTrackingWithVersion>(
+    private static final CrudViewModel<VoiceResponseDTO, FullTrackingWithVersion> VOICE_RESPONSE_VIEW_MODEL
+      = new CrudViewModel<VoiceResponseDTO, FullTrackingWithVersion>(
         VoiceResponseDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         VoiceResponseSearchRequest.BClass.INSTANCE,
         VoiceResponseCrudRequest.BClass.INSTANCE);
-    public static final CrudViewModel<VoiceModuleCfgDTO, FullTrackingWithVersion> VOICE_MODULE_CFG_VIEW_MODEL = new CrudViewModel<VoiceModuleCfgDTO, FullTrackingWithVersion>(
+    private static final CrudViewModel<VoiceModuleCfgDTO, FullTrackingWithVersion> VOICE_MODULE_CFG_VIEW_MODEL
+      = new CrudViewModel<VoiceModuleCfgDTO, FullTrackingWithVersion>(
         VoiceModuleCfgDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         VoiceModuleCfgSearchRequest.BClass.INSTANCE,
         VoiceModuleCfgCrudRequest.BClass.INSTANCE);
 
-    static {
+    @Override
+    public void register() {
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("voiceApplication", VOICE_APPLICATION_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("voiceUser",        VOICE_USER_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("voiceResponse",    VOICE_RESPONSE_VIEW_MODEL);

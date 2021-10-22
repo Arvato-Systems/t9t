@@ -24,7 +24,7 @@ import com.arvatosystems.t9t.auth.jpa.entities.TenantEntity
 import com.arvatosystems.t9t.auth.jpa.entities.UserEntity
 import com.arvatosystems.t9t.auth.jpa.entities.UserStatusEntity
 import com.arvatosystems.t9t.auth.jpa.entities.UserTenantRoleEntity
-import com.arvatosystems.t9t.base.T9tConstants
+import static com.arvatosystems.t9t.base.T9tConstants.*
 import com.arvatosystems.t9t.base.event.InvalidateCacheEvent
 import com.arvatosystems.t9t.event.jpa.entities.SubscriberConfigEntity
 import com.arvatosystems.t9t.server.services.IAuthorize
@@ -38,6 +38,7 @@ import de.jpaw.dp.Startup
 import de.jpaw.dp.StartupOnly
 import javax.persistence.EntityManager
 import java.time.Instant
+import com.arvatosystems.t9t.base.T9tConstants
 
 /** The class implements a check if we are started on an empty database, and in that case, creates the global tenant and the admin user with a default password,
  * for bootstrap reasons.
@@ -46,7 +47,7 @@ import java.time.Instant
  */
 @Startup(50010)
 @AddLogger
-class AuthStartup implements StartupOnly, T9tConstants {
+class AuthStartup implements StartupOnly {
 
     @Inject Provider<PersistenceProviderJPA> jpaContextProvider
 

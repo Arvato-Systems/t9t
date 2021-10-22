@@ -22,20 +22,24 @@ import com.arvatosystems.t9t.msglog.request.MessageStatisticsSearchRequest;
 
 import de.jpaw.bonaparte.pojos.api.NoTracking;
 
-public class T9tMsglogModels implements IViewModelContainer {
-    public static final CrudViewModel<MessageDTO, NoTracking> MESSAGE_VIEW_MODEL = new CrudViewModel<MessageDTO, NoTracking>(
+public final class T9tMsglogModels implements IViewModelContainer {
+
+    private static final CrudViewModel<MessageDTO, NoTracking> MESSAGE_VIEW_MODEL
+      = new CrudViewModel<MessageDTO, NoTracking>(
         MessageDTO.BClass.INSTANCE,
         NoTracking.BClass.INSTANCE,
         MessageSearchRequest.BClass.INSTANCE,
         null);
 
-    public static final CrudViewModel<MessageStatisticsDTO, NoTracking> MESSAGE_STATISTICS_VIEW_MODEL = new CrudViewModel<MessageStatisticsDTO, NoTracking>(
-            MessageStatisticsDTO.BClass.INSTANCE,
-            NoTracking.BClass.INSTANCE,
-            MessageStatisticsSearchRequest.BClass.INSTANCE,
-            null);
+    private static final CrudViewModel<MessageStatisticsDTO, NoTracking> MESSAGE_STATISTICS_VIEW_MODEL
+      = new CrudViewModel<MessageStatisticsDTO, NoTracking>(
+        MessageStatisticsDTO.BClass.INSTANCE,
+        NoTracking.BClass.INSTANCE,
+        MessageStatisticsSearchRequest.BClass.INSTANCE,
+        null);
 
-    static {
+    @Override
+    public void register() {
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("requests", MESSAGE_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("messageStatistics", MESSAGE_STATISTICS_VIEW_MODEL);
     }

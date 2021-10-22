@@ -18,8 +18,9 @@ package com.arvatosystems.t9t.base;
 import de.jpaw.util.ApplicationException;
 
 /**
- * Container class that provides a consolidated list of exception that might occur in the scope of the t9t project. This class extends the generic {@link ApplicationException} in order to provide
- * error details which are specific to all applications based on the t9t platform.
+ * Container class that provides a consolidated list of exception that might occur in the scope of the t9t project.
+ * This class extends the generic {@link ApplicationException} in order to provide error details
+ * which are specific to all applications based on the t9t platform.
  */
 public class T9tException extends ApplicationException {
 
@@ -155,7 +156,10 @@ public class T9tException extends ApplicationException {
     public static final int ACCOUNT_TEMPORARILY_FROZEN = OFFSET + 205;
     public static final int PASSWORD_NOT_FOUND = OFFSET + 206;
     public static final int PASSWORD_EXPIRED_DUE_TO_USER_INACTIVITY = OFFSET + 207;
-    public static final int PASSWORD_EXPIRED = 208;                                  // this is an OK code, because the login was correct and must be recorded. It is responsibility of the UI to request a new PW
+
+    /** This code is an OK code, because the login was correct and must be recorded. It is responsibility of the UI to request a new PW. */
+    public static final int PASSWORD_EXPIRED = 208;
+
     public static final int WRONG_PASSWORD = OFFSET + 209;
     public static final int NEW_PASSWORD_MATCHES_ONE_OF_THE_LAST = OFFSET + 210;
     public static final int NEW_PASSWORD_MATCHES_ONE_AND_CANT_BE_REUSED_YET = OFFSET + 211;
@@ -182,6 +186,7 @@ public class T9tException extends ApplicationException {
 
     // Cross module call
     public static final int REF_RESOLVER_WRONG_RESPONSE_TYPE = OFFSET + 350;
+    public static final int ILE_MISSING_DEPENDENCY = OFFSET_LOGIC_ERROR + 351;
 
     // plugin issues
     public static final int NO_PLUGIN_METHOD_AVAILABLE  = OFFSET + 360;
@@ -276,9 +281,6 @@ public class T9tException extends ApplicationException {
     public static final String MSG_JWT_EXPIRED                  = "The JWT is no longer valid, please obtain a new one";
 
 
-    // CHECKSTYLE.ON: DeclarationOrder
-    // CHECKSTYLE.ON: JavadocVariable
-
     /** Protected no args constructor - just there to avoid that instances of subclasses are created. */
     protected T9tException() {
         super(0);
@@ -289,21 +291,18 @@ public class T9tException extends ApplicationException {
     }
 
     /**
-     * Create an exception for a specific error code. Please do not put redundant text (duplicating the text of the error code) into detailParameter, only additional info.
+     * Creates an exception for a specific error code.
+     * Please do not put redundant text (duplicating the text of the error code) into detailParameter, only additional info.
      *
-     * @param errorCode
-     *            The unique code describing the error cause.
-     * @param detailParameters
-     *            Any additional informations / parameters. Do not put redundant text from the error code itself here! In most cases this should be just the value causing the problem.
+     * @param errorCode         the unique code describing the error cause
+     * @param detailParameters  Any additional information / parameters.
+     *                          Do not put redundant text from the error code itself here!
+     *                          In most cases this should be just the value causing the problem.
      */
     public T9tException(int errorCode, Object... detailParameters) {
         super(errorCode, createParamsString(detailParameters));
     }
 
-    /**
-     * Method uploads textual descriptions only once they're needed for this type of exception class. The idea is that in working environments, we will never need them ;-). There is a small chance of
-     * duplicate initialization, because the access to the flag textsInitialized is not synchronized, but duplicate upload does not hurt (is idempoten.t)
-     */
     static {
             codeToDescription.put(INVALID_CRUD_COMMAND, "Attempted to use an invalid or unimplemented CRUD command");
             codeToDescription.put(RECORD_ALREADY_EXISTS, "Attempted to create a record which already exists");
@@ -334,21 +333,24 @@ public class T9tException extends ApplicationException {
             codeToDescription.put(NOT_YET_IMPLEMENTED, "The requested functionality has not yet been implemented.");
             codeToDescription.put(NO_LONGER_SUPPORTED, "The requested functionality is no longer supported.");
             codeToDescription.put(ILE_REQUIRED_PARAMETER_IS_NULL, "A required parameter has not been supplied");
-            codeToDescription.put(ILE_RESULT_SET_WRONG_SIZE, "More result records retrieved than should be possible through table constraints. DB setup problem?");
+            codeToDescription.put(ILE_RESULT_SET_WRONG_SIZE,
+              "More result records retrieved than should be possible through table constraints. DB setup problem?");
             codeToDescription.put(ENTITY_KEY_EXCEPTION, "Could not extract the key of a JPA entity. Possibly incorrect enum token.");
             codeToDescription.put(ENTITY_DATA_MAPPING_EXCEPTION, "Exception mapping from JPA entity data to DTO. Possibly invalid enum token.");
             codeToDescription.put(RESPONSE_VALIDATION_ERROR, "Constructed a response which is invalid");
             codeToDescription.put(REQUEST_VALIDATION_ERROR, "Received response parameters which don't satisfy the interface spec");
             codeToDescription.put(WRITE_ACCESS_ONLY_CURRENT_TENANT, "Creation and update of records only allowed for current tenant");
             codeToDescription.put(READ_ACCESS_ONLY_CURRENT_TENANT, "Access to other tenant's records is not allowed");
-            codeToDescription.put(NOT_CURRENT_RECORD_OPTIMISTIC_LOCKING, "Not updating record because someone else has modified it already. Please reread and retry.");
+            codeToDescription.put(NOT_CURRENT_RECORD_OPTIMISTIC_LOCKING,
+              "Not updating record because someone else has modified it already. Please reread and retry.");
             codeToDescription.put(ILLEGAL_REQUEST_PARAMETER, "The supplied request parameter class cannot be instantiated.");
             codeToDescription.put(OPTIMISTIC_LOCKING_EXCEPTION, "Optimistic locking exception");
             codeToDescription.put(REQUEST_PARAMETER_BAD_INHERITANCE, "The supplied request parameter class does not inherited the expected superclass.");
             codeToDescription.put(REQUEST_HANDLER_NOT_FOUND, "There is no request handler for the request parameter class");
             codeToDescription.put(T9T_ACCESS_DENIED, "Access denied, reason undisclosed for security reasons, see server logs");
             codeToDescription.put(REQUEST_HANDLER_RETURNED_NULL, "A request handler returned a null response");
-            codeToDescription.put(WRITE_ACCESS_NOT_FOUND_PROBABLY_OTHER_TENANT, "Record for update not found, probably due to existing one in different tenant");
+            codeToDescription.put(WRITE_ACCESS_NOT_FOUND_PROBABLY_OTHER_TENANT,
+              "Record for update not found, probably due to existing one in different tenant");
             codeToDescription.put(COULD_NOT_ACQUIRE_LOCK, "Could not acquire lock (Semaphore) on object within allowed time");
 
             codeToDescription.put(JWT_EXPIRED, MSG_JWT_EXPIRED);
@@ -365,7 +367,8 @@ public class T9tException extends ApplicationException {
 
             codeToDescription.put(SESSION_NOT_OPENED, "Attempted to execute a request on a session which was not opened (or closed already)");
             codeToDescription.put(SESSION_OPEN_ERROR, "Attempted to execute a request on a session which was not opened successfully");
-            codeToDescription.put(REF_RESOLVER_REQUEST_PARAMETER, "Cross module resolver was called with a missing parameter (first parameter may not be null)");
+            codeToDescription.put(REF_RESOLVER_REQUEST_PARAMETER,
+              "Cross module resolver was called with a missing parameter (first parameter may not be null)");
             codeToDescription.put(NOT_REQUEST_PARAMETERS, "Object is not of type RequestParameters");
             codeToDescription.put(ENUM_MAPPING,                 "Cannot map enum instance");
             codeToDescription.put(NOT_AN_ENUM,                  "Not an enum");
@@ -426,8 +429,10 @@ public class T9tException extends ApplicationException {
             codeToDescription.put(NEW_PASSWORD_MATCHES_ONE_AND_CANT_BE_REUSED_YET, "New password matches one and can't be reused yet");
             codeToDescription.put(ROLE_NOT_FOUND, "Role not found");
             codeToDescription.put(CANNOT_RESET_PASSWORD_NO_EMAIL_SET_FOR_USER, "Can't reset password, no email address has been set on the user account.");
-            codeToDescription.put(CANNOT_RESET_PASSWORD_PROVIDED_EMAIL_DOESNT_MATCH_STORED_ONE, "Can't reset password, the provided password does not match the stored one.");
-            codeToDescription.put(GENERAL_AUTH_PROBLEM, "Password should be correct and the new one should differ from the old one and fit password requirements.");
+            codeToDescription.put(CANNOT_RESET_PASSWORD_PROVIDED_EMAIL_DOESNT_MATCH_STORED_ONE,
+              "Can't reset password, the provided password does not match the stored one.");
+            codeToDescription.put(GENERAL_AUTH_PROBLEM,
+              "Password should be correct and the new one should differ from the old one and fit password requirements.");
 
 
             codeToDescription.put(METHOD_ILLEGAL_ACCESS_EXCEPTION, "Could not access class or method");
@@ -446,6 +451,7 @@ public class T9tException extends ApplicationException {
 
             // IO errors
             codeToDescription.put(REF_RESOLVER_WRONG_RESPONSE_TYPE, "Unexpected service response type.");
+            codeToDescription.put(ILE_MISSING_DEPENDENCY, "A dependency is missing because the implementation for an interface cannot be found.");
 
             // Plugin errors
             codeToDescription.put(NO_PLUGIN_METHOD_AVAILABLE, "Plugin method not available.");
@@ -524,16 +530,17 @@ public class T9tException extends ApplicationException {
     }
 
     /**
-     * concatenates all parameters to one comma-separated string
+     * Concatenates all parameters to one comma separated string.
      *
-     * @param detailParameters
-     * @return String - with all params
+     * @param detailParameters  various parameters to the exception
+     * @return                  concatenated string of all parameters
      */
-    private static final String createParamsString(Object... detailParameters) {
+    private static String createParamsString(Object... detailParameters) {
 
         if ((detailParameters != null) && (detailParameters.length > 0)) {
             if (detailParameters.length == 1) {
-                return detailParameters[0] == null ? "NULL" : detailParameters[0].toString();  // shortcut in case a single parameter exists: avoid GC due to object creation
+                // shortcut in case a single parameter exists: avoid GC due to object creation
+                return detailParameters[0] == null ? "NULL" : detailParameters[0].toString();
             }
 
             final StringBuilder paramsSb = new StringBuilder();
@@ -561,7 +568,7 @@ public class T9tException extends ApplicationException {
         return true;
     }
 
-    /** returns a text representation of an error code */
+    /** Returns a text representation of an error code. */
     public static String codeToString(int errorCode) {
         return new T9tException(errorCode).getStandardDescription();
     }

@@ -15,8 +15,6 @@
  */
 package com.arvatosystems.t9t.out.services;
 
-import java.util.List;
-
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.io.AsyncQueueDTO;
 import com.arvatosystems.t9t.io.request.QueueStatus;

@@ -16,7 +16,7 @@
 package com.arvatosystems.t9t.doc.jpa.impl;
 
 import com.arvatosystems.t9t.base.MessagingUtil
-import com.arvatosystems.t9t.base.T9tConstants
+import static com.arvatosystems.t9t.base.T9tConstants.GLOBAL_TENANT_REF42
 import com.arvatosystems.t9t.doc.DocConfigDTO
 import com.arvatosystems.t9t.doc.DocConfigKey
 import com.arvatosystems.t9t.doc.DocConstants
@@ -51,7 +51,7 @@ import com.arvatosystems.t9t.base.T9tException
 
 @Singleton
 @AddLogger
-class DocPersistenceAccess implements IDocPersistenceAccess, DocConstants, T9tConstants {
+class DocPersistenceAccess implements IDocPersistenceAccess, DocConstants {
     static final Map<String,MediaData> NO_COMPONENTS = ImmutableMap.of();
 
     @Inject IDocConfigEntityResolver        docConfigResolver

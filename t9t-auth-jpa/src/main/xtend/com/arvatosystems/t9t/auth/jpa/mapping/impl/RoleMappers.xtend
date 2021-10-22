@@ -23,6 +23,5 @@ import com.arvatosystems.t9t.auth.jpa.persistence.IRoleEntityResolver
 @AutoMap42
 class RoleMappers {
     IRoleEntityResolver resolver
-//    @AutoHandler("S42")   uses the sapi BE search
     def void e2dRoleDTO(RoleEntity entity, RoleDTO dto) {}
 }

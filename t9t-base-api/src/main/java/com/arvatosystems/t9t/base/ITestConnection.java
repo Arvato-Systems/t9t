@@ -27,37 +27,132 @@ import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 
 /** Common methods for embedded and remote tests. */
 public interface ITestConnection {
-    /** Authenticate a new user by API key. */
-    void switchUser(UUID newApiKey)                                 throws Exception;
+    /**
+     * Authenticates a new user by API key.
+     *
+     * @param newApiKey         the API key for authentication
+     * @throws T9tException     if the authentication was not successful
+     */
+    void switchUser(UUID newApiKey);
 
-    /** Switches connection to use another user. */
-    void switchUser(String userId, String password)                 throws Exception;
+    /**
+     * Switches connection to use another user, using username / password authentication.
+     *
+     * @param userId            the user ID to switch to
+     * @param password          the password of the new user
+     * @throws T9tException     if the authentication was not successful
+     * */
+    void switchUser(String userId, String password);
 
-    /** Switches connection to use another tenant (given the user has permission to it). */
-    void switchTenant(String newTenantId, int expectedCode)         throws Exception;
+    /**
+     * Switches connection to use another tenant (given the user has permission to it).
+     *
+     * @param newTenantId       the ID of the new tenant
+     * @param expectedCode      the expected code (OK or denied)
+     * @throws T9tException     if the authentication returned a different than the expected result
+     */
+    void switchTenant(String newTenantId, int expectedCode);
 
-    /** Switches connection to use another language. */
-    void switchLanguage(String newLanguage)                         throws Exception;
+    /**
+     * Switches connection to use another language.
+     *
+     * @param newLanguage       the BCP 47 language tag of the new target language
+     */
+    void switchLanguage(String newLanguage);
 
-    BonaPortable doIO(BonaPortable rp)                              throws Exception;   // send any request
-    ServiceResponse srIO(RequestParameters rp)                      throws Exception;   // send any request and perform a type check
-    ServiceResponse okIO(RequestParameters rp)                      throws Exception;   // send any request and check result for OK, throws an Exception if not OK
-    <T extends ServiceResponse> T typeIO(RequestParameters rp, Class<T> responseClass) throws Exception; // send any request and check result for OK, throws an Exception if not OK or not of the expected class
-    void errIO(RequestParameters rp, int errorCode)                 throws Exception;   // send any request and check result for a specific error code, throws an Exception if another result was received
-    AuthenticationResponse auth(AuthenticationParameters params)    throws Exception;   // authenticate, throw an Exception if it fails, store the credentials for subsequent requests if everything OK
-    AuthenticationResponse auth(String myUserId, String myPassword) throws Exception;   // authenticate as in the general case, shorthand for username / password
-    AuthenticationResponse auth(UUID apiKey)                        throws Exception;   // authenticate as in the general case, shorthand for API key
-    void logout()                                                   throws Exception;   // terminate communication (close connection for remote tests)
+    /**
+     * Performs an invocation of the backend.
+     * This is a technical internal method and not used by most tests.
+     *
+     * @param rp                the object to send (which is usually a subclass of <code>RequestParameters</code>)
+     * @return                  the result of the request execution
+     */
+    BonaPortable doIO(BonaPortable rp);
 
-    /** Set a specific Authorization header. (Only for remote tests, required to be able to test incorrect authentications.) */
+    /**
+     * Performs an invocation of the backend for request.
+     * This method also performs a check for the general type of ServicerResponse.
+     *
+     * @param rp                the request parameters
+     * @return                  the result of the request execution
+     */
+    ServiceResponse srIO(RequestParameters rp);
+
+    /**
+     * Performs an invocation of the backend for request.
+     * This method also performs a check for the general type of ServiceResponse.
+     * It also checks for an OK return code and throws an exception if the returnCode does not belong to CL_OK.
+     *
+     * @param rp                the request parameters
+     * @return                  the result of the request execution
+     */
+    ServiceResponse okIO(RequestParameters rp);
+
+    /**
+     * Performs an invocation of the backend for request.
+     * This method also performs a check for the specific type of ServiceResponse. IT always expects an OK result.
+     *
+     * @param rp                the request parameters
+     * @return                  the result of the request execution
+     * @throws                  a T9tException if the return code was not successful or the result returned was not of the expected type
+     */
+    <T extends ServiceResponse> T typeIO(RequestParameters rp, Class<T> responseClass);
+
+
+    /**
+     * Performs an invocation of the backend for request.
+     * This method also performs a check for a specific error code in the field <code>returnCode</code> of ServiceResponse.
+     *
+     * @param rp                the request parameters
+     * @param errorCode         the expected error return code
+     * @throws                  a T9tException if the return code did not match the expected error code
+     */
+    void errIO(RequestParameters rp, int errorCode);
+
+    // authenticate, throw an Exception if it fails, store the credentials for subsequent requests if everything OK
+    AuthenticationResponse auth(AuthenticationParameters params);
+
+    // authenticate as in the general case, shorthand for username / password
+    AuthenticationResponse auth(String myUserId, String myPassword);
+
+    // authenticate as in the general case, shorthand for API key
+    AuthenticationResponse auth(UUID apiKey);
+
+    // terminate communication (close connection for remote tests)
+    void logout();
+
+    /**
+     * Set a specific Authorization header.
+     * This method only exists to support remote tests, required to be able to test incorrect authentications.
+     *
+     * @param header            the header to send as HTTP request parameter "Authorization"
+     */
     void setAuthentication(String header);
 
-    /** Changes the password for the specified user. */
-    AuthenticationResponse changePassword(String myUserId, String myPassword, String newPassword) throws Exception;
+    /**
+     * Changes the password for the specified user.
+     * The implementation may perform checks on password requirements such as minimum length, character set, matches to previous passwords etc.
+     * and reject the new password if it does not comply with the specified requirements. The change will also be rejected if the current user
+     * is not an administrator or if the current password is not correct.
+     *
+     * @param myUserId          the user ID to change the password for
+     * @param myPassword        the current password of the user
+     * @param newPassword       the intended new password for the user
+     * @return                  the result of the request execution
+     */
+    AuthenticationResponse changePassword(String myUserId, String myPassword, String newPassword);
 
-    /** Retrieves the JWT as encoded string. */
+    /**
+     * Retrieves the JWT as encoded string.
+     *
+     * @return                  the Base64 encoded JWT
+     */
     String getLastJwt();
 
-    /** Retrieves the JWT as decoded data structure. */
+    /**
+     * Retrieves the JWT as decoded data structure.
+     *
+     * @return                  the JWT parsed into an instance of class <code>JwtInfo</code>
+     */
     JwtInfo getLastJwtInfo();
 }

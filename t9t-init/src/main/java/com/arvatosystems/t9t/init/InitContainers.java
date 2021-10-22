@@ -46,23 +46,25 @@ import de.jpaw.xenums.init.ExceptionInitializer;
 import de.jpaw.xenums.init.ReflectionsPackageCache;
 import de.jpaw.xenums.init.XenumInitializer;
 
-public class InitContainers {
+public final class InitContainers {
     private static final Logger LOGGER = LoggerFactory.getLogger(InitContainers.class);
 
-    private static final Map<String, EnumDefinition>     enumByPqon     = new HashMap<String, EnumDefinition>(500);
-    private static final Map<String, EnumSetDefinition>  enumsetByPqon  = new HashMap<String, EnumSetDefinition>(500);
-    private static final Map<String, XEnumSetDefinition> xenumsetByPqon = new HashMap<String, XEnumSetDefinition>(500);
+    private static final Map<String, EnumDefinition>     ENUM_BY_PQON     = new HashMap<String, EnumDefinition>(500);
+    private static final Map<String, EnumSetDefinition>  ENUMSET_BY_PQON  = new HashMap<String, EnumSetDefinition>(500);
+    private static final Map<String, XEnumSetDefinition> XENUMSET_BY_PQON = new HashMap<String, XEnumSetDefinition>(500);
+
+    private InitContainers() { }
 
     public static EnumDefinition getEnumByPQON(String pqon) {
-        return enumByPqon.get(pqon);
+        return ENUM_BY_PQON.get(pqon);
     }
 
     public static EnumSetDefinition getEnumsetByPQON(String pqon) {
-        return enumsetByPqon.get(pqon);
+        return ENUMSET_BY_PQON.get(pqon);
     }
 
     public static XEnumSetDefinition getXEnumsetByPQON(String pqon) {
-        return xenumsetByPqon.get(pqon);
+        return XENUMSET_BY_PQON.get(pqon);
     }
 
     public static void checkUTC() {
@@ -76,10 +78,10 @@ public class InitContainers {
     }
 
     /** Full initialization - for backend server or UI. */
-    public static Reflections [] initializeT9t() {
+    public static Reflections[] initializeT9t() {
         UiGridConfigPrefs.reset();  // clear all view model containers and reset error counter
 
-        final Reflections [] scannedPackages = initializeT9tForClients();
+        final Reflections[] scannedPackages = initializeT9tForClients();
         collectCrudViewModels(scannedPackages);
         LOGGER.info("{} crudViewModels found", IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.size());
 
@@ -91,30 +93,30 @@ public class InitContainers {
     }
 
     /** Subset of the initialization - for remote tests. */
-    public static Reflections [] initializeT9tForClients() {
+    public static Reflections[] initializeT9tForClients() {
         final String javaVersion = System.getProperty("java.version");
         final String javaVendor  = System.getProperty("java.vendor");
         LOGGER.info("Running Java version {} (vendor {})", javaVersion != null ? javaVersion : "(UNDEFINED)", javaVendor != null ? javaVendor : "(UNDEFINED)");
 
         checkUTC();
         MessagingUtil.initializeBonaparteParsers();
-        final Reflections [] scannedPackages = ReflectionsPackageCache.getAll(MessagingUtil.PACKAGES_TO_SCAN_FOR_XENUMS);
+        final Reflections[] scannedPackages = ReflectionsPackageCache.getAll(MessagingUtil.PACKAGES_TO_SCAN_FOR_XENUMS);
 
         ExceptionInitializer.initializeExceptionClasses(scannedPackages);       // init all 3 packages with one invocation
         XenumInitializer.initializeXenums(scannedPackages);
 
         collectEnums(scannedPackages);
-        LOGGER.info("{} enums found", enumByPqon.size());
+        LOGGER.info("{} enums found", ENUM_BY_PQON.size());
 
         collectStringEnumsets(scannedPackages);
-        LOGGER.info("{} enumsets found", enumsetByPqon.size());
+        LOGGER.info("{} enumsets found", ENUMSET_BY_PQON.size());
 
         collectXEnumsets(scannedPackages);
-        LOGGER.info("{} xenumsets found", xenumsetByPqon.size());
+        LOGGER.info("{} xenumsets found", XENUMSET_BY_PQON.size());
         return scannedPackages;
     }
 
-    private static void collectEnums(Reflections ... packages) {
+    private static void collectEnums(Reflections... packages) {
         for (Reflections pkg: packages) {
             // we search separately because just looking for BonaEnum (which should work) does not give any results...
             collectEnums(pkg, BonaTokenizableEnum.class);
@@ -134,7 +136,7 @@ public class InitContainers {
                     if (o != null && o instanceof EnumDefinition) {
                         ++counter;
                         EnumDefinition def = (EnumDefinition)o;
-                        EnumDefinition prev = enumByPqon.put(def.getName(), def);
+                        EnumDefinition prev = ENUM_BY_PQON.put(def.getName(), def);
                         if (prev != null)
                             LOGGER.error("2 different enums of same PQON {}", def.getName());
                     } else {
@@ -148,7 +150,7 @@ public class InitContainers {
         LOGGER.debug("Found {} instances of enum subtype {}", counter, subTypesOf.getSimpleName());
     }
 
-    private static void collectStringEnumsets(Reflections ... packages) {
+    private static void collectStringEnumsets(Reflections... packages) {
         int counter = 0;
         for (Reflections pkg: packages) {
             for (Class<? extends AbstractStringEnumSet> cls : pkg.getSubTypesOf(AbstractStringEnumSet.class)) {
@@ -158,7 +160,7 @@ public class InitContainers {
                     if (o != null && o instanceof EnumSetDefinition) {
                         ++counter;
                         EnumSetDefinition def = (EnumSetDefinition)o;
-                        EnumSetDefinition prev = enumsetByPqon.put(def.getName(), def);
+                        EnumSetDefinition prev = ENUMSET_BY_PQON.put(def.getName(), def);
                         if (prev != null)
                             LOGGER.error("2 different enumsets of same PQON {}", def.getName());
                     } else {
@@ -172,7 +174,7 @@ public class InitContainers {
         LOGGER.debug("Found {} instances of enumset", counter);
     }
 
-    private static void collectXEnumsets(Reflections ... packages) {
+    private static void collectXEnumsets(Reflections... packages) {
         int counter = 0;
         for (Reflections pkg: packages) {
             for (Class<? extends AbstractStringXEnumSet> cls : pkg.getSubTypesOf(AbstractStringXEnumSet.class)) {
@@ -182,7 +184,7 @@ public class InitContainers {
                     if (o != null && o instanceof XEnumSetDefinition) {
                         ++counter;
                         XEnumSetDefinition def = (XEnumSetDefinition)o;
-                        XEnumSetDefinition prev = xenumsetByPqon.put(def.getName(), def);
+                        XEnumSetDefinition prev = XENUMSET_BY_PQON.put(def.getName(), def);
                         if (prev != null)
                             LOGGER.error("2 different xenumsets of same PQON {}", def.getName());
                     } else {
@@ -197,13 +199,13 @@ public class InitContainers {
         LOGGER.debug("Found {} instances of xenumset", counter);
     }
 
-    private static void collectCrudViewModels(Reflections ... packages) {
+    private static void collectCrudViewModels(Reflections... packages) {
         for (Reflections pkg: packages) {
             for (Class<? extends IViewModelContainer> cls : pkg.getSubTypesOf(IViewModelContainer.class)) {
                 try {
                     LOGGER.debug("Found viewModel container {}", cls.getCanonicalName());
-                    // Class.forName(cls.getCanonicalName()); // initialize class
-                    cls.newInstance();     // may be faster than searching again
+                    // create an instance of the class and use it to invoke the registration method
+                    cls.getDeclaredConstructor().newInstance().register();
                 } catch (Exception e) {
                     LOGGER.warn("Cannot initialize viewModelContainer {}: {}", cls.getCanonicalName(), ExceptionUtil.causeChain(e));
                 }
@@ -211,11 +213,11 @@ public class InitContainers {
         }
     }
 
-    private static void collectLeanGridConfigurations(Reflections ... packages) {
+    private static void collectLeanGridConfigurations(Reflections... packages) {
         for (Reflections pkg: packages) {
             for (Class<? extends ILeanGridConfigContainer> cls : pkg.getSubTypesOf(ILeanGridConfigContainer.class)) {
                 try {
-                    List<String> configs = cls.newInstance().getResourceNames();
+                    List<String> configs = cls.getDeclaredConstructor().newInstance().getResourceNames();
                     LOGGER.debug("Grid config container {} holds {} lean grid configurations", cls.getCanonicalName(), configs.size());
                     for (String resourceId : configs) {
                         UiGridConfigPrefs.getLeanGridConfigAsObject(resourceId);

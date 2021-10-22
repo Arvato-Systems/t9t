@@ -23,14 +23,14 @@ import javax.servlet.ServletContextListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.tfi.component.dropdown.Dropdown28Registry;
-import com.arvatosystems.t9t.tfi.component.dropdown.IDropdown28BasicFactory;
-import com.arvatosystems.t9t.client.init.AbstractConfigurationProvider;
+import com.arvatosystems.t9t.base.IRemoteDefaultUrlRetriever;
 import com.arvatosystems.t9t.client.init.JndiConfigurationProvider;
 import com.arvatosystems.t9t.client.init.SystemConfigurationProvider;
 import com.arvatosystems.t9t.itemConverter.AllItemConverters;
 import com.arvatosystems.t9t.itemConverter.IItemConverter;
 import com.arvatosystems.t9t.jdp.Init;
+import com.arvatosystems.t9t.tfi.component.dropdown.Dropdown28Registry;
+import com.arvatosystems.t9t.tfi.component.dropdown.IDropdown28BasicFactory;
 
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
@@ -48,12 +48,12 @@ public class T9tInitializer implements ServletContextListener {
         Init.initializeT9t();
         try {
             LOGGER.info("Initializing remote - trying JNDI");
-            Jdp.bindInstanceTo(new JndiConfigurationProvider(), AbstractConfigurationProvider.class);
+            Jdp.bindInstanceTo(new JndiConfigurationProvider(), IRemoteDefaultUrlRetriever.class);
         } catch (Exception e) {
             LOGGER.error("Error initializing via JNDI: {}: {}, fallback using system",
                     e.getClass().getSimpleName(),
                     e.getMessage());
-            Jdp.bindInstanceTo(new SystemConfigurationProvider(), AbstractConfigurationProvider.class);
+            Jdp.bindInstanceTo(new SystemConfigurationProvider(), IRemoteDefaultUrlRetriever.class);
         }
         LOGGER.debug("T9tInitializer CONSTRUCTOR (JDP scanning) COMPLETE");
         LOGGER.debug(Jdp.dump());  // list all scanned interfaces / classes

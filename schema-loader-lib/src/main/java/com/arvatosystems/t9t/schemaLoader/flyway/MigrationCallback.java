@@ -17,12 +17,15 @@ package com.arvatosystems.t9t.schemaLoader.flyway;
 
 import java.sql.Connection;
 
-import org.flywaydb.core.api.callback.BaseFlywayCallback;
+import org.flywaydb.core.api.callback.BaseCallback;
+import org.flywaydb.core.api.callback.Context;
+import org.flywaydb.core.api.callback.Event;
 
 import com.arvatosystems.t9t.schemaLoader.SchemaElements;
 import com.arvatosystems.t9t.schemaLoader.config.SchemaLoaderConfiguration;
 
-public class MigrationCallback extends BaseFlywayCallback {
+
+public class MigrationCallback extends BaseCallback {
 
     private final SchemaElements schemaElements;
     private final SchemaLoaderConfiguration configuration;
@@ -33,19 +36,30 @@ public class MigrationCallback extends BaseFlywayCallback {
     }
 
     @Override
-    public void beforeMigrate(Connection connection) {
+    public boolean supports(Event event, Context context) {
+        return Event.BEFORE_MIGRATE.equals(event) || Event.AFTER_MIGRATE.equals(event);
+    }
+
+    @Override
+    public void handle(Event event, Context context) {
+        if (Event.BEFORE_MIGRATE.equals(event)) {
+            beforeMigrate(context.getConnection());
+        } else if (Event.AFTER_MIGRATE.equals(event)) {
+            afterMigrate(context.getConnection());
+        }
+    }
+
+    private void beforeMigrate(Connection connection) {
         for (String dbObjectType : configuration.getMigration()
-                                                .getPreDrop()) {
+                .getPreDrop()) {
             schemaElements.executeDrop(connection, dbObjectType);
         }
     }
 
-    @Override
-    public void afterMigrate(Connection connection) {
+    private void afterMigrate(Connection connection) {
         for (String dbObjectType : configuration.getMigration()
-                                                .getPostCreate()) {
+                .getPostCreate()) {
             schemaElements.executeCreate(connection, dbObjectType);
         }
     }
-
 }

@@ -31,39 +31,41 @@ import com.arvatosystems.t9t.doc.request.DocTemplateSearchRequest;
 import com.arvatosystems.t9t.doc.request.MailingGroupCrudRequest;
 import com.arvatosystems.t9t.doc.request.MailingGroupSearchRequest;
 
-public class T9tDocModels implements IViewModelContainer {
-    public static final CrudViewModel<DocConfigDTO, FullTrackingWithVersion> DOC_CONFIG_VIEW_MODEL = new CrudViewModel<DocConfigDTO, FullTrackingWithVersion>(
+public final class T9tDocModels implements IViewModelContainer {
+
+    private static final CrudViewModel<DocConfigDTO, FullTrackingWithVersion> DOC_CONFIG_VIEW_MODEL = new CrudViewModel<DocConfigDTO, FullTrackingWithVersion>(
         DocConfigDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         DocConfigSearchRequest.BClass.INSTANCE,
         DocConfigCrudRequest.BClass.INSTANCE);
-    public static final CrudViewModel<DocEmailCfgDTO, FullTrackingWithVersion> DOC_EMAIL_CFG_VIEW_MODEL = new CrudViewModel<DocEmailCfgDTO, FullTrackingWithVersion>(
+    private static final CrudViewModel<DocEmailCfgDTO, FullTrackingWithVersion> DOC_EMAIL_CFG_VIEW_MODEL = new CrudViewModel<DocEmailCfgDTO, FullTrackingWithVersion>(
         DocEmailCfgDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         DocEmailCfgSearchRequest.BClass.INSTANCE,
         DocEmailCfgCrudRequest.BClass.INSTANCE);
-    public static final CrudViewModel<DocTemplateDTO, FullTrackingWithVersion> DOC_TEMPLATE_VIEW_MODEL = new CrudViewModel<DocTemplateDTO, FullTrackingWithVersion>(
+    private static final CrudViewModel<DocTemplateDTO, FullTrackingWithVersion> DOC_TEMPLATE_VIEW_MODEL = new CrudViewModel<DocTemplateDTO, FullTrackingWithVersion>(
         DocTemplateDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         DocTemplateSearchRequest.BClass.INSTANCE,
         DocTemplateCrudRequest.BClass.INSTANCE);
-    public static final CrudViewModel<DocComponentDTO, FullTrackingWithVersion> DOC_COMPONENT_VIEW_MODEL = new CrudViewModel<DocComponentDTO, FullTrackingWithVersion>(
+    private static final CrudViewModel<DocComponentDTO, FullTrackingWithVersion> DOC_COMPONENT_VIEW_MODEL = new CrudViewModel<DocComponentDTO, FullTrackingWithVersion>(
         DocComponentDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         DocComponentSearchRequest.BClass.INSTANCE,
         DocComponentCrudRequest.BClass.INSTANCE);
-    public static final CrudViewModel<DocModuleCfgDTO, FullTrackingWithVersion> DOC_MODULE_CFG_VIEW_MODEL = new CrudViewModel<DocModuleCfgDTO, FullTrackingWithVersion>(
+    private static final CrudViewModel<DocModuleCfgDTO, FullTrackingWithVersion> DOC_MODULE_CFG_VIEW_MODEL = new CrudViewModel<DocModuleCfgDTO, FullTrackingWithVersion>(
         DocModuleCfgDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         DocModuleCfgSearchRequest.BClass.INSTANCE,
         DocModuleCfgCrudRequest.BClass.INSTANCE);
-    public static final CrudViewModel<MailingGroupDTO, FullTrackingWithVersion> MAILING_GROUP_VIEW_MODEL = new CrudViewModel<MailingGroupDTO, FullTrackingWithVersion>(
-            MailingGroupDTO.BClass.INSTANCE,
-            FullTrackingWithVersion.BClass.INSTANCE,
-            MailingGroupSearchRequest.BClass.INSTANCE,
-            MailingGroupCrudRequest.BClass.INSTANCE);
+    private static final CrudViewModel<MailingGroupDTO, FullTrackingWithVersion> MAILING_GROUP_VIEW_MODEL = new CrudViewModel<MailingGroupDTO, FullTrackingWithVersion>(
+        MailingGroupDTO.BClass.INSTANCE,
+        FullTrackingWithVersion.BClass.INSTANCE,
+        MailingGroupSearchRequest.BClass.INSTANCE,
+        MailingGroupCrudRequest.BClass.INSTANCE);
 
-    static {
+    @Override
+    public void register() {
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("docConfig",  DOC_CONFIG_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("docEmailCfg",  DOC_EMAIL_CFG_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("docTemplate",  DOC_TEMPLATE_VIEW_MODEL);

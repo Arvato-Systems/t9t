@@ -15,7 +15,6 @@
  */
 package com.arvatosystems.t9t.io.jpa.mapping.impl
 
-import com.arvatosystems.t9t.annotations.jpa.AutoHandler
 import com.arvatosystems.t9t.annotations.jpa.active.AutoMap42
 import com.arvatosystems.t9t.io.SinkDTO
 import com.arvatosystems.t9t.io.jpa.entities.SinkEntity
@@ -29,7 +28,6 @@ class SinkMappers {
     IDataSinkEntityResolver sinkResolver
     IDataSinkFilterPropsMapper sinkMapper
 
-    @AutoHandler("SR42P")
     def void d2eSinkDTO(SinkEntity entity, SinkDTO dto, boolean onlyActive) {
         entity.dataSinkRef = sinkResolver.getRef(dto.dataSinkRef, onlyActive)
     }

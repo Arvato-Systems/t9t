@@ -15,7 +15,6 @@
  */
 package com.arvatosystems.t9t.io.jpa.mapping.impl
 
-import com.arvatosystems.t9t.annotations.jpa.AutoHandler
 import com.arvatosystems.t9t.annotations.jpa.active.AutoMap42
 import com.arvatosystems.t9t.io.AsyncChannelDTO
 import com.arvatosystems.t9t.io.jpa.entities.AsyncChannelEntity
@@ -29,7 +28,6 @@ class AsyncChannelMappers {
     IAsyncQueueEntityResolver queueResolver
     IAsyncQueueDTOMapper queueMapper
 
-    @AutoHandler("SC42")
     def void e2dAsyncChannelDTO(AsyncChannelEntity entity, AsyncChannelDTO dto) {
         dto.asyncQueueRef = queueMapper.mapToDto(entity.asyncQueue)
     }

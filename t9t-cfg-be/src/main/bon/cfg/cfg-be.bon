@@ -158,9 +158,10 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional Integer                            idempotencyCacheExpiry;         // How many seconds before expiry in the idempotency cache (null means no expiry)
     }
 
+    /** The uplink configuration has been reassigned to provide the link to the report server. */
     class UplinkConfiguration {
         required Unicode(255)                       url;                            // URL for uplink. If not provided, uplink calls will throw an Exception
-        optional Enum MediaType                     mediaType;                      // which format to use (JSON, compact, bonaparte, default is compact bonaparte)
+        optional Enum MediaType                     mediaType;                      // which format to use (JSON, compact, bonaparte, default is compact bonaparte, entry currently ignored)
     }
 
     class SearchConfiguration {

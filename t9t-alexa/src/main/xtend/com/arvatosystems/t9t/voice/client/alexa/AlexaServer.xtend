@@ -15,13 +15,12 @@
  */
 package com.arvatosystems.t9t.voice.client.alexa
 
+import com.arvatosystems.t9t.base.IRemoteDefaultUrlRetriever
 import com.arvatosystems.t9t.cfg.be.ConfigProvider
-import com.arvatosystems.t9t.client.init.AbstractConfigurationProvider
 import com.arvatosystems.t9t.client.init.SystemConfigurationProvider
 import com.arvatosystems.t9t.jdp.Init
 import com.arvatosystems.t9t.voice.VoiceProvider
 import com.arvatosystems.t9t.voice.client.SessionCache
-import com.arvatosystems.t9t.voice.client.alexa.IGenericIntent
 import com.martiansoftware.jsap.FlaggedOption
 import com.martiansoftware.jsap.JSAP
 import com.martiansoftware.jsap.Parameter
@@ -269,7 +268,7 @@ class AlexaServer extends AbstractVerticle {
         readConfig       // update a possible new location of the config file before we run the startup process
 
         Init.initializeT9t
-        Jdp.bindInstanceTo(new SystemConfigurationProvider, AbstractConfigurationProvider);
+//        Jdp.bindInstanceTo(new SystemConfigurationProvider, IRemoteDefaultUrlRetriever);
 
         val options = new VertxOptions
         options.mergePoolSizes

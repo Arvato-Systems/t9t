@@ -28,7 +28,6 @@ import com.arvatosystems.t9t.base.event.EventParameters
 import com.arvatosystems.t9t.base.event.InvalidateCacheEvent
 import com.arvatosystems.t9t.base.services.IAsyncRequestProcessor
 import com.arvatosystems.t9t.base.services.IExecutor
-import com.arvatosystems.t9t.base.services.IForeignRequest
 import com.arvatosystems.t9t.base.services.RequestContext
 import com.arvatosystems.t9t.base.types.AuthenticationJwt
 import de.jpaw.annotations.AddLogger
@@ -50,8 +49,7 @@ import org.slf4j.MDC
  */
 @AddLogger
 @Singleton
-class Executor implements IExecutor, T9tConstants {
-    @Inject protected IForeignRequest           foreignRequestExecutor
+class Executor implements IExecutor {
     @Inject protected IAsyncRequestProcessor    asyncProcessor
     @Inject protected Provider<RequestContext>  contextProvider
 
@@ -69,7 +67,7 @@ class Executor implements IExecutor, T9tConstants {
             // log the offending request, plus the process ref (for better DB research later), and the validation error message
             // more info
             LOGGER.error("Synchronous request validation problem for tenantId {} and parameter object type {}", ctx.tenantId, params.ret$PQON())
-            LOGGER.error('''Full request parameters are «params»''')
+            LOGGER.error("Full request parameters are {}", params)
             return T9tResponses.createServiceResponse(T9tException.REQUEST_VALIDATION_ERROR, '''«params.ret$PQON()»(«ctx.internalHeaderParameters.processRef»): «e.message»''')
         }
         var ServiceResponse response = null
@@ -80,13 +78,6 @@ class Executor implements IExecutor, T9tConstants {
         try {
             MDC.put(T9tConstants.MDC_REQUEST_PQON, bp.pqon)
             ctx.pushCallStack(params.ret$PQON);
-            // check for alien requests
-            if (!bp.pqon.startsWith("t9t.")) {
-                // call out to external system
-                // LOGGER.debug("FT-2454: foreign request, sending to wildfly")
-                return foreignRequestExecutor.execute(ctx, params)
-            }
-            // LOGGER.debug("FT-2454: local request, doing myself!")
 
             val handler = ctx.customization.getRequestHandler(params)
             response = handler.execute(ctx, params) // execute the new method, possibly redirected temporarily by AbstractRequestHandler

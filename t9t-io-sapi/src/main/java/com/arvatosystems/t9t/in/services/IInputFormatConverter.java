@@ -19,8 +19,6 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Map;
 
-import com.arvatosystems.t9t.io.DataSinkDTO;
-
 import de.jpaw.bonaparte.core.BonaPortableClass;
 
 // implementations must be thread safe for method transform

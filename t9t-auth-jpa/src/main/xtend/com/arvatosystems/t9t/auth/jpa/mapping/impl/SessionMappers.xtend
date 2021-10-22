@@ -15,9 +15,8 @@
  */
 package com.arvatosystems.t9t.auth.jpa.mapping.impl
 
-import com.arvatosystems.t9t.annotations.jpa.AutoHandler
-import com.arvatosystems.t9t.annotations.jpa.active.AutoMap42
 import com.arvatosystems.t9t.annotations.jpa.NeedMapping
+import com.arvatosystems.t9t.annotations.jpa.active.AutoMap42
 import com.arvatosystems.t9t.auth.SessionDTO
 import com.arvatosystems.t9t.auth.TenantKey
 import com.arvatosystems.t9t.auth.UserKey
@@ -32,7 +31,6 @@ class SessionMappers {
     ITenantEntityResolver  tenantResolver
     IUserEntityResolver    userResolver
 
-    @AutoHandler("S42")
     @NeedMapping
     def void e2dSessionDTO(SessionEntity it, SessionDTO dto) {
         val tenant    = tenantResolver.find(tenantRef)

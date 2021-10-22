@@ -35,9 +35,7 @@ public class SinkCrudRequestHandler extends AbstractCrudSurrogateKey42RequestHan
 
     private static final String[] FORBIDDEN_FILE_PATH_ELEMENTS = { ":", "\\", "../" };
 
-//  @Inject
     private final ISinkEntityResolver sinksResolver = Jdp.getRequired(ISinkEntityResolver.class);
-//  @Inject
     private final ISinkDTOMapper sinksMapper = Jdp.getRequired(ISinkDTOMapper.class);
 
     @Override

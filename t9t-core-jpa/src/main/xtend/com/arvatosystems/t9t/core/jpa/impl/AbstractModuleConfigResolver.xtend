@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit
 /** Implementation of a class which reads module tenant configuration (and caches the entries). */
 @AddLogger
 abstract class AbstractModuleConfigResolver<D extends ModuleConfigDTO, E extends ModuleConfigEntity & BonaPersistableData<D>>
- implements T9tConstants, IModuleConfigResolver<D> {
+  implements IModuleConfigResolver<D> {
     final IResolverLongKey42<FullTrackingWithVersion, E> resolver
     String query
     final Cache<Long,D> dtoCache
@@ -57,7 +57,7 @@ abstract class AbstractModuleConfigResolver<D extends ModuleConfigDTO, E extends
             return cacheHit;
         // not in cache: read database
         val em = resolver.entityManager
-        val tenants = if (GLOBAL_TENANT_REF42.equals(tenantRef)) #[ GLOBAL_TENANT_REF42 ] else #[ GLOBAL_TENANT_REF42, tenantRef ]
+        val tenants = if (T9tConstants.GLOBAL_TENANT_REF42.equals(tenantRef)) #[ T9tConstants.GLOBAL_TENANT_REF42 ] else #[ T9tConstants.GLOBAL_TENANT_REF42, tenantRef ]
         query    = '''SELECT e FROM «resolver.entityClass.simpleName» e WHERE e.tenantRef IN :tenants ORDER BY e.tenantRef DESC'''
 
         var D result = getDefaultModuleConfiguration

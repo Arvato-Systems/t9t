@@ -15,8 +15,10 @@
  */
 package com.arvatosystems.t9t.embedded.connect
 
+import com.arvatosystems.t9t.authc.api.SwitchLanguageRequest
 import com.arvatosystems.t9t.authc.api.SwitchTenantRequest
 import com.arvatosystems.t9t.base.ITestConnection
+import com.arvatosystems.t9t.base.T9tException
 import com.arvatosystems.t9t.base.api.RequestParameters
 import com.arvatosystems.t9t.base.api.ServiceRequest
 import com.arvatosystems.t9t.base.api.ServiceResponse
@@ -31,12 +33,11 @@ import com.arvatosystems.t9t.server.services.IAuthenticate
 import com.arvatosystems.t9t.server.services.IRequestProcessor
 import com.arvatosystems.t9t.server.services.IUnauthenticatedServiceRequestExecutor
 import de.jpaw.annotations.AddLogger
+import de.jpaw.bonaparte.core.BonaPortable
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo
 import de.jpaw.dp.Inject
 import de.jpaw.util.ApplicationException
 import java.util.UUID
-import de.jpaw.bonaparte.core.BonaPortable
-import com.arvatosystems.t9t.authc.api.SwitchLanguageRequest
 
 @AddLogger
 abstract class AbstractConnection implements ITestConnection {
@@ -180,14 +181,17 @@ abstract class AbstractConnection implements ITestConnection {
         throw new UnsupportedOperationException     // not available for local tests
     }
 
-    override doIO(BonaPortable rp) throws Exception {
-        if (rp instanceof RequestParameters)
+    override doIO(BonaPortable rp) {
+        if (rp instanceof RequestParameters) {
             return doIO(rp)
-        else
-            throw new UnsupportedOperationException("TODO: auto-generated method stub")
+        } else if (rp === null) {
+            throw new T9tException(T9tException.NOT_YET_IMPLEMENTED, "Cannot send a NULL request")
+        } else {
+            throw new T9tException(T9tException.NOT_YET_IMPLEMENTED, "Cannot send a request of class " + rp.class.canonicalName)
+        }
     }
 
-    override switchLanguage(String newLanguage) throws Exception {
+    override switchLanguage(String newLanguage) {
         val rq = new SwitchLanguageRequest(newLanguage)
         val authResult = typeIO(rq, AuthenticationResponse)
         jwtInfo        = authResult.jwtInfo

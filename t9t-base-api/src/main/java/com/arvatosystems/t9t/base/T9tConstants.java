@@ -19,7 +19,8 @@ package com.arvatosystems.t9t.base;
 /**
  * Global constants to used all over the application.
  */
-public interface T9tConstants {
+public final class T9tConstants {
+    private T9tConstants() { }
 
     /**
      * The tenant ID representing the global / default / admin tenant.
@@ -95,7 +96,7 @@ public interface T9tConstants {
     /**
      * The maximum return code which is considered as a decline, but technically OK (i.e. does not perform a rollback).
      */
-    public static int MAX_DECLINE_RETURN_CODE = 199999999;
+    public static final int MAX_DECLINE_RETURN_CODE = 199999999;
 
     // some fortytwo compatibility data
     public static final Long GLOBAL_TENANT_REF42        = 1001L;

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.configuration.FluentConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,18 +43,20 @@ public class SqlMigrationExecutor {
     private static final Logger LOGGER = LoggerFactory.getLogger(SqlMigrationExecutor.class);
 
     public static Flyway configureFlywayForDatabase(String locations, String migrationTable, RelationalDatabaseConfiguration dbConfiguration) {
-        Flyway flyway = new Flyway();
-        flyway.setLocations(locations);
-        flyway.setCleanDisabled(true);
-        flyway.setCleanOnValidationError(false);
-        flyway.setOutOfOrder(true);
-        flyway.setEncoding("UTF-8");
-        flyway.setTable(migrationTable);
-        flyway.setInstalledBy("admin");
-        flyway.setIgnoreMissingMigrations(true);
-        flyway.setBaselineOnMigrate(true);
-        flyway.setDataSource(dbConfiguration.getJdbcConnectString(), dbConfiguration.getUsername(), dbConfiguration.getPassword());
 
+        FluentConfiguration config = Flyway.configure();
+        config.locations(locations);
+        config.cleanDisabled(true);
+        config.cleanOnValidationError(false);
+        config.outOfOrder(true);
+        config.encoding("UTF-8");
+        config.table(migrationTable);
+        config.installedBy("admin");
+        config.ignoreMissingMigrations(true);
+        config.baselineOnMigrate(true);
+        config.dataSource(dbConfiguration.getJdbcConnectString(), dbConfiguration.getUsername(), dbConfiguration.getPassword());
+
+        Flyway flyway = new Flyway(config);
         return flyway;
     }
 

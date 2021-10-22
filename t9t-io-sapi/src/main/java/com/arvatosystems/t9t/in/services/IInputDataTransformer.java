@@ -18,7 +18,6 @@ package com.arvatosystems.t9t.in.services;
 import java.util.Map;
 
 import com.arvatosystems.t9t.base.api.RequestParameters;
-import com.arvatosystems.t9t.io.DataSinkDTO;
 import com.arvatosystems.t9t.io.services.IDataSinkDefaultConfigurationProvider;
 
 import de.jpaw.bonaparte.core.BonaPortable;

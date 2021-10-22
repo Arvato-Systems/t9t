@@ -17,25 +17,28 @@ package org.flywaydb.core;
 
 import static java.util.stream.Collectors.toList;
 
-import java.sql.Connection;
 import java.util.List;
 import java.util.stream.Stream;
 
 import org.flywaydb.core.api.FlywayException;
 import org.flywaydb.core.api.MigrationInfo;
-import org.flywaydb.core.api.callback.FlywayCallback;
-import org.flywaydb.core.api.resolver.MigrationResolver;
-import org.flywaydb.core.internal.dbsupport.DbSupport;
-import org.flywaydb.core.internal.dbsupport.Schema;
-import org.flywaydb.core.internal.metadatatable.AppliedMigration;
-import org.flywaydb.core.internal.metadatatable.MetaDataTable;
-import org.flywaydb.core.internal.util.jdbc.JdbcUtils;
+import org.flywaydb.core.api.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ExtendedFlyway extends Flyway {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ExtendedFlyway.class);
+
+    /**
+     * Creates a new instance of Flyway with this configuration. In general the Flyway.configure() factory method should
+     * be preferred over this constructor, unless you need to create or reuse separate Configuration objects.
+     *
+     * @param configuration The configuration to use.
+     */
+    public ExtendedFlyway(Configuration configuration) {
+        super(configuration);
+    }
 
     /**
      * Skip all pending migrations by just adding them to the migration log. Thus those migrations are not executed and
@@ -62,34 +65,19 @@ public class ExtendedFlyway extends Flyway {
             return 0;
         }
 
-        return execute(new Command<Integer>() {
-            @Override
-            public Integer execute(Connection connectionMetaDataTable,
-                                   MigrationResolver migrationResolver,
-                                   MetaDataTable metaDataTable,
-                                   DbSupport dbSupport,
-                                   Schema[] schemas,
-                                   FlywayCallback[] flywayCallbacks) {
+        return execute(
+                (migrationResolver, schemaHistory, database, schemas, callbackExecutor, statementInterceptor) -> {
+                    try {
+                        for (MigrationInfo migration : migrationsToSkip) {
+                            LOGGER.debug("Skip migration script {} ({}) of version {}", migration.getScript(), migration.getType(), migration.getVersion());
+                            schemaHistory.addAppliedMigration(migration.getVersion(), migration.getDescription(),
+                                    migration.getType(), migration.getScript(), migration.getChecksum(), 0, true);
+                        }
 
-                final Connection connection = dbSupport.useSingleConnection() ? connectionMetaDataTable : JdbcUtils.openConnection(getDataSource());
-
-                try {
-                    for (MigrationInfo migration : migrationsToSkip) {
-                        LOGGER.debug("Skip migration script {} ({}) of version {}", migration.getScript(), migration.getType(), migration.getVersion());
-                        final AppliedMigration skipMigra = new AppliedMigration(migration.getVersion(), migration.getDescription(),
-                                                                                migration.getType(), migration.getScript(), migration.getChecksum(),
-                                                                                0, true);
-                        metaDataTable.addAppliedMigration(skipMigra);
+                        return migrationsToSkip.size();
+                    } finally {
+                        database.close();
                     }
-
-                    return migrationsToSkip.size();
-                } finally {
-                    if (!dbSupport.useSingleConnection()) {
-                        JdbcUtils.closeConnection(connection);
-                    }
-                }
-            }
-        });
+                }, true);
     }
-
 }

@@ -137,8 +137,9 @@ public class KafkaClusterManagerInitializer implements StartupShutdown {
     protected static Consumer<String, byte[]> createKafkaConsumer(final KafkaConfiguration defaults) {
         final Map<String, Object> props = new HashMap<>(10);
         final String defaultBootstrapServers = defaults == null ? null : defaults.getDefaultBootstrapServers();
+        final String clusterManagerGroupId = defaults == null ? null : defaults.getClusterManagerGroupId();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, defaultBootstrapServers);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, nvl(defaults.getClusterManagerGroupId(), KAFKA_CLUSTER_GROUP_ID));
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, nvl(clusterManagerGroupId, KAFKA_CLUSTER_GROUP_ID));
 //        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
 //        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ByteArrayDeserializer.class.getName());
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, Boolean.FALSE);  // or "false" as found in examples?

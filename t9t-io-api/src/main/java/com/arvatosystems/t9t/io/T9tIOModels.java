@@ -31,39 +31,47 @@ import com.arvatosystems.t9t.io.request.DataSinkSearchRequest;
 import com.arvatosystems.t9t.io.request.SinkCrudRequest;
 import com.arvatosystems.t9t.io.request.SinkSearchRequest;
 
-public class T9tIOModels implements IViewModelContainer {
-    public static final CrudViewModel<DataSinkDTO, FullTrackingWithVersion> DATA_SINK_VIEW_MODEL = new CrudViewModel<DataSinkDTO, FullTrackingWithVersion>(
+public final class T9tIOModels implements IViewModelContainer {
+
+    private static final CrudViewModel<DataSinkDTO, FullTrackingWithVersion> DATA_SINK_VIEW_MODEL
+      = new CrudViewModel<DataSinkDTO, FullTrackingWithVersion>(
         DataSinkDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         DataSinkSearchRequest.BClass.INSTANCE,
         DataSinkCrudRequest.BClass.INSTANCE);
-    public static final CrudViewModel<CsvConfigurationDTO, FullTrackingWithVersion> CSV_CONFIGURATION_VIEW_MODEL = new CrudViewModel<CsvConfigurationDTO, FullTrackingWithVersion>(
+    private static final CrudViewModel<CsvConfigurationDTO, FullTrackingWithVersion> CSV_CONFIGURATION_VIEW_MODEL
+      = new CrudViewModel<CsvConfigurationDTO, FullTrackingWithVersion>(
         CsvConfigurationDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         CsvConfigurationSearchRequest.BClass.INSTANCE,
         CsvConfigurationCrudRequest.BClass.INSTANCE);
-    public static final CrudViewModel<SinkDTO, FullTrackingWithVersion> SINK_VIEW_MODEL = new CrudViewModel<SinkDTO, FullTrackingWithVersion>(
+    private static final CrudViewModel<SinkDTO, FullTrackingWithVersion> SINK_VIEW_MODEL
+      = new CrudViewModel<SinkDTO, FullTrackingWithVersion>(
         SinkDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         SinkSearchRequest.BClass.INSTANCE,
         SinkCrudRequest.BClass.INSTANCE);
-    public static final CrudViewModel<AsyncQueueDTO, FullTrackingWithVersion> ASYNC_QUEUE_VIEW_MODEL = new CrudViewModel<AsyncQueueDTO, FullTrackingWithVersion>(
+    private static final CrudViewModel<AsyncQueueDTO, FullTrackingWithVersion> ASYNC_QUEUE_VIEW_MODEL
+      = new CrudViewModel<AsyncQueueDTO, FullTrackingWithVersion>(
         AsyncQueueDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         AsyncQueueSearchRequest.BClass.INSTANCE,
         AsyncQueueCrudRequest.BClass.INSTANCE);
-    public static final CrudViewModel<AsyncChannelDTO, FullTrackingWithVersion> ASYNC_CHANNEL_VIEW_MODEL = new CrudViewModel<AsyncChannelDTO, FullTrackingWithVersion>(
+    private static final CrudViewModel<AsyncChannelDTO, FullTrackingWithVersion> ASYNC_CHANNEL_VIEW_MODEL
+      = new CrudViewModel<AsyncChannelDTO, FullTrackingWithVersion>(
         AsyncChannelDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         AsyncChannelSearchRequest.BClass.INSTANCE,
         AsyncChannelCrudRequest.BClass.INSTANCE);
-    public static final CrudViewModel<AsyncMessageDTO, WriteTracking> ASYNC_MESSAGE_VIEW_MODEL = new CrudViewModel<AsyncMessageDTO, WriteTracking>(
+    private static final CrudViewModel<AsyncMessageDTO, WriteTracking> ASYNC_MESSAGE_VIEW_MODEL
+      = new CrudViewModel<AsyncMessageDTO, WriteTracking>(
         AsyncMessageDTO.BClass.INSTANCE,
         WriteTracking.BClass.INSTANCE,
         AsyncMessageSearchRequest.BClass.INSTANCE,
         null);
 
-    static {
+    @Override
+    public void register() {
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("sinkSearch",        SINK_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("dataSinkConfig",    DATA_SINK_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("csvConfiguration",  CSV_CONFIGURATION_VIEW_MODEL);

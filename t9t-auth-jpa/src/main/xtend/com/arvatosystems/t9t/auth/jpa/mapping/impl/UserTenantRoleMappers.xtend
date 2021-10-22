@@ -15,7 +15,6 @@
  */
 package com.arvatosystems.t9t.auth.jpa.mapping.impl
 
-import com.arvatosystems.t9t.annotations.jpa.AutoHandler
 import com.arvatosystems.t9t.annotations.jpa.active.AutoMap42
 import com.arvatosystems.t9t.auth.UserTenantRoleDTO
 import com.arvatosystems.t9t.auth.jpa.entities.UserTenantRoleEntity
@@ -38,7 +37,6 @@ class UserTenantRoleMappers {
         entity.roleRef = roleResolver.getRef(roleRef, onlyActive)
     }
 
-    @AutoHandler("P42")
     def void e2dUserTenantRoleDTO(UserTenantRoleEntity it, UserTenantRoleDTO dto) {
         dto.userRef = userMapper.mapToDto(userRef)
         dto.roleRef = roleMapper.mapToDto(roleRef)

@@ -31,9 +31,6 @@ class UserMappers {
     IRoleEntityResolver roleResolver
     IRoleDTOMapper roleMapper
 
-//    @AutoHandler("com.arvatosystems.t9t.core.smutr.request.CARS")  // NPE
-//    @AutoHandler("CAS")
-//    @AutoHandler("S42")   uses the sapi BE search
     @NeedMapping  // required because the DTO is final
     def void d2eUserDTO(UserEntity entity, UserDTO dto, boolean onlyActive) {
         entity.roleRef       = roleResolver.getRef(dto.roleRef,       onlyActive)

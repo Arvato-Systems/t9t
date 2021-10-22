@@ -125,6 +125,8 @@ public class DataFieldFactory implements IDataFieldFactory {
                     return new LongDataField(params);
                 case "biginteger":
                     return new NumberDataField(params);
+                case "microunits":
+                    return new MicroUnitsDataField(params);
                 }
                 break;
             case NUMERIC:

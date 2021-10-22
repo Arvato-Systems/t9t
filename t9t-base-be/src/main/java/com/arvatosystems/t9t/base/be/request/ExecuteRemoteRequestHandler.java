@@ -31,7 +31,6 @@ import com.arvatosystems.t9t.server.services.IAuthorize;
 
 import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
-import de.jpaw.bonaparte.pojos.api.media.MediaType;
 import de.jpaw.dp.Jdp;
 
 public class ExecuteRemoteRequestHandler extends AbstractRequestHandler<ExecuteRemoteRequest> {
@@ -51,7 +50,7 @@ public class ExecuteRemoteRequestHandler extends AbstractRequestHandler<ExecuteR
         }
         ctx.statusText = remoteRequest.ret$PQON();
         // obtain an remoter for single use
-        SimpleCallOutExecutor remoteClient = new SimpleCallOutExecutor(request.getUrl(), MediaType.COMPACT_BONAPARTE);
+        SimpleCallOutExecutor remoteClient = new SimpleCallOutExecutor(request.getUrl());
         return remoteClient.execute(ctx, request.getRemoteRequest());
     }
 }

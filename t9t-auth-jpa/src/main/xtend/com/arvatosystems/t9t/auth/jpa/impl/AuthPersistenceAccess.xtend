@@ -55,7 +55,7 @@ import com.arvatosystems.t9t.auth.jpa.IPasswordChangeService
 
 @AddLogger
 @Singleton
-class AuthPersistenceAccess implements IAuthPersistenceAccess, T9tConstants {
+class AuthPersistenceAccess implements IAuthPersistenceAccess {
     static final List<PermissionEntry> EMPTY_PERMISSION_LIST = ImmutableList.of();
 
     @Inject Provider<PersistenceProviderJPA> jpaContextProvider
@@ -112,7 +112,7 @@ class AuthPersistenceAccess implements IAuthPersistenceAccess, T9tConstants {
                                  + " AND utr.tenantRef IN :tenants"
                                  + " AND utr.userRef = :userRef"
                                  + " ORDER BY rtp.permissionId", PermissionEntryInt)
-            val tenants = if (GLOBAL_TENANT_REF42.equals(jwtInfo.tenantRef)) #[ GLOBAL_TENANT_REF42 ] else #[ GLOBAL_TENANT_REF42, jwtInfo.tenantRef ]
+            val tenants = if (T9tConstants.GLOBAL_TENANT_REF42.equals(jwtInfo.tenantRef)) #[ T9tConstants.GLOBAL_TENANT_REF42 ] else #[ T9tConstants.GLOBAL_TENANT_REF42, jwtInfo.tenantRef ]
             query.setParameter("tenants", tenants)
             query.setParameter("userRef", jwtInfo.userRef)
             val results = query.resultList

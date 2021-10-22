@@ -38,6 +38,7 @@ import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.MigrationInfo;
 import org.flywaydb.core.api.MigrationInfoService;
 import org.flywaydb.core.api.MigrationVersion;
+import org.flywaydb.core.api.configuration.FluentConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,10 +60,9 @@ public class MigrationElements {
 
     public void info() {
         LOGGER.info("Show schema info");
-        final Flyway flyway = createFlyway();
+        final Flyway flyway = createFlyway(null);
 
-        final MigrationInfo[] migrations = flyway.info()
-                                                 .all();
+        final MigrationInfo[] migrations = flyway.info().all();
 
         if (migrations == null || migrations.length == 0) {
             LOGGER.info("No schema information available");
@@ -112,16 +112,16 @@ public class MigrationElements {
 
     public void repair() {
         LOGGER.info("Repair migrations");
-        final Flyway flyway = createFlyway();
+        final Flyway flyway = createFlyway(null);
 
         flyway.repair();
     }
 
     public void migrate() {
         LOGGER.info("Perform migration");
-        final Flyway flyway = createFlyway();
+        final Flyway flyway = createFlyway(null);
 
-        final int migrationCount = flyway.migrate();
+        final int migrationCount = flyway.migrate().migrations.size();
         LOGGER.info("{} migrations applied", migrationCount);
     }
 
@@ -142,10 +142,9 @@ public class MigrationElements {
 
     public void baseline() {
         LOGGER.info("Perform schema baseline");
-        final ExtendedFlyway flyway = createFlyway();
+        ExtendedFlyway flyway = createFlyway(null);
 
-        MigrationInfo[] pending = flyway.info()
-                                        .pending();
+        MigrationInfo[] pending = flyway.info().pending();
 
         final String maxMigration;
         if (pending == null) {
@@ -161,26 +160,28 @@ public class MigrationElements {
             LOGGER.debug("Max available migration version is {}", maxMigration);
         }
 
-        switch (configuration.getInstall()
-                             .getBaselineVersion()) {
+        MigrationVersion baselineVersion;
+        switch (configuration.getInstall().getBaselineVersion()) {
             case BASELINE_VERSION_LATEST: {
-                flyway.setBaselineVersionAsString(maxMigration);
+                baselineVersion = MigrationVersion.fromVersion(maxMigration);
                 break;
             }
             case BASELINE_VERSION_LATEST_MAJOR: {
-                flyway.setBaselineVersionAsString(truncateVersion(maxMigration, 1));
+                baselineVersion = MigrationVersion.fromVersion(truncateVersion(maxMigration, 1));
                 break;
             }
             case BASELINE_VERSION_LATEST_MINOR: {
-                flyway.setBaselineVersionAsString(truncateVersion(maxMigration, 2));
+                baselineVersion = MigrationVersion.fromVersion(truncateVersion(maxMigration, 2));
                 break;
             }
             default: {
-                flyway.setBaselineVersionAsString(configuration.getInstall()
-                                                               .getBaselineVersion());
+                baselineVersion = MigrationVersion.fromVersion(configuration.getInstall().getBaselineVersion());
                 break;
             }
         }
+
+        // Recreate new flyway instance with baseline version
+        flyway = createFlyway(baselineVersion);
 
         flyway.baseline();
         flyway.skipPendingMigrations();
@@ -207,30 +208,32 @@ public class MigrationElements {
         return version;
     }
 
-    private ExtendedFlyway createFlyway() {
+    private ExtendedFlyway createFlyway(MigrationVersion baselineVersion) {
         final DatabaseConfiguration dbConfig = configuration.getSelectedDatabaseConfiguration();
+        FluentConfiguration config = Flyway.configure(configuration.getClassloader());
 
-        final ExtendedFlyway flyway = new ExtendedFlyway();
-        flyway.setClassLoader(configuration.getClassloader());
-        flyway.setDataSource(dbConfig.getUrl(),
-                             dbConfig.getUsername(),
-                             dbConfig.getPassword());
-        flyway.setTable(configuration.getMigrationLogTable());
-        flyway.setCallbacks(new MigrationCallback(configuration,
-                                                  schemaElements));
-        flyway.setLocations(configuration.getMigration()
-                                         .getMigrationScriptPaths()
-                                         .toArray(new String[configuration.getMigration()
-                                                                          .getMigrationScriptPaths()
-                                                                          .size()]));
-        flyway.setEncoding(configuration.getScriptEncoding());
-        flyway.setBaselineDescription("Baseline");
+        config.dataSource(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword());
+        config.table(configuration.getMigrationLogTable());
+        config.callbacks(new MigrationCallback(configuration,  schemaElements));
+        config.locations(configuration.getMigration()
+                                      .getMigrationScriptPaths()
+                                      .toArray(new String[configuration.getMigration()
+                                                                       .getMigrationScriptPaths()
+                                                                       .size()]));
 
-        flyway.setIgnoreMissingMigrations(true);
-        flyway.setCleanOnValidationError(false);
-        flyway.setCleanDisabled(true);
-        flyway.setOutOfOrder(true);
+        config.encoding(configuration.getScriptEncoding());
+        config.baselineDescription("Baseline");
 
+        config.ignoreIgnoredMigrations(true);
+        config.cleanOnValidationError(false);
+        config.cleanDisabled(true);
+        config.outOfOrder(true);
+
+        if (baselineVersion != null) {
+            config.baselineVersion(baselineVersion);
+        }
+
+        final ExtendedFlyway flyway = new ExtendedFlyway(config);
         return flyway;
     }
 

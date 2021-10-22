@@ -16,7 +16,6 @@
 package com.arvatosystems.t9t.auth.be.impl
 
 import com.arvatosystems.t9t.auth.services.IAuthenticator
-import com.arvatosystems.t9t.base.T9tConstants
 import com.arvatosystems.t9t.base.be.execution.RequestContextScope
 import com.arvatosystems.t9t.base.services.ICustomization
 import com.arvatosystems.t9t.base.services.RequestContext
@@ -28,7 +27,7 @@ import de.jpaw.dp.StartupOnly
 
 @Startup(50005)
 @AddLogger
-class AuthCreateStartupContext implements StartupOnly, T9tConstants {
+class AuthCreateStartupContext implements StartupOnly {
 //    private static final long ONE_DAY_IN_MS = 1000L * 24L * 3600L;
 
     @Inject IAuthenticator              authenticator

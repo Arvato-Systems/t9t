@@ -85,11 +85,18 @@ package (com.arvatosystems) t9t.io {
 
 
 
-    /** Strategy for handling of a produced file after camel processing */
+    /** Strategy for handling of a produced file after camel processing. */
     enum CamelPostProcStrategy {
         NOOP                    = "N",      // no action
         DELETE                  = "D",      // delete file
         MOVE                    = "M"       // move file
+    }
+
+    /** Strategy for processing of large input data. */
+    enum InputProcessingType {
+        LOCAL                   = "L",      // use the current connection for processing
+        KAFKA                   = "K",      // distribute work to a kafka topic
+        REMOTE                  = "R"       // send requests to remote via HTTP
     }
 
     /** RequestHandlerConfigDTO entries of type DOCUMENT_CREATED_CALLBACK must refer to jobParameters extending this class.
@@ -228,6 +235,10 @@ package (com.arvatosystems) t9t.io {
         optional Integer                                retentionPeriodSinks;       // the number of days after which an associated sink entry can be deleted (never if null)
         optional Uuid                                   apiKey;                     // the API key to use for data imports (kafka or Camel)
         optional Unicode(1024)                          bootstrapServers;           // Kafka bootstrap servers for data exports
+        optional Enum InputProcessingType               inputProcessingType;        // defines how / where to process input records (default is LOCAL)
+        optional Integer                                inputProcessingParallel;    // defines the number of parallel threads to use for processing
+        optional customizationQualifier                 inputProcessingSplitter properties qualifierFor="in.services.IInputQueuePartitioner"; // method to determine partition to use (if blank and inputProcessingParallel > 1: use round robin) 
+        optional Unicode(255)                           inputProcessingTarget;      // required for KAFKA or REMOTE: the topic or the remote path to use for processing
     }
 
     /** Configuration defaults for DataSinks, provided by the implementation. (Primarily intended to support the complex XML APIs). */

@@ -23,19 +23,23 @@ import com.arvatosystems.t9t.rep.request.ReportConfigSearchRequest;
 import com.arvatosystems.t9t.rep.request.ReportParamsCrudRequest;
 import com.arvatosystems.t9t.rep.request.ReportParamsSearchRequest;
 
-public class T9tRepModels implements IViewModelContainer {
-    public static final CrudViewModel<ReportConfigDTO, FullTrackingWithVersion> REPORT_CONFIG_VIEW_MODEL = new CrudViewModel<ReportConfigDTO, FullTrackingWithVersion>(
+public final class T9tRepModels implements IViewModelContainer {
+
+    private static final CrudViewModel<ReportConfigDTO, FullTrackingWithVersion> REPORT_CONFIG_VIEW_MODEL
+      = new CrudViewModel<ReportConfigDTO, FullTrackingWithVersion>(
         ReportConfigDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         ReportConfigSearchRequest.BClass.INSTANCE,
         ReportConfigCrudRequest.BClass.INSTANCE);
-    public static final CrudViewModel<ReportParamsDTO, FullTrackingWithVersion> REPORT_PARAMS_VIEW_MODEL = new CrudViewModel<ReportParamsDTO, FullTrackingWithVersion>(
+    private static final CrudViewModel<ReportParamsDTO, FullTrackingWithVersion> REPORT_PARAMS_VIEW_MODEL
+      = new CrudViewModel<ReportParamsDTO, FullTrackingWithVersion>(
         ReportParamsDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         ReportParamsSearchRequest.BClass.INSTANCE,
         ReportParamsCrudRequest.BClass.INSTANCE);
 
-    static {
+    @Override
+    public void register() {
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("reportConfig",    REPORT_CONFIG_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("reportParams",    REPORT_PARAMS_VIEW_MODEL);
     }

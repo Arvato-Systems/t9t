@@ -107,7 +107,8 @@ public final class FieldMappers {
         return result;
     }
 
-    public static <DTO extends BonaPortable, TRACKING extends TrackingBase> FieldDefinition getFieldDefinitionForPath(String fieldname, CrudViewModel<DTO, TRACKING> model) {
+    public static <DTO extends BonaPortable, TRACKING extends TrackingBase> FieldDefinition
+      getFieldDefinitionForPath(String fieldname, CrudViewModel<DTO, TRACKING> model) {
         if (model.trackingClass == null) {
             //plain object
             return  FieldGetter.getFieldDefinitionForPathname(model.dtoClass.getMetaData(), fieldname);

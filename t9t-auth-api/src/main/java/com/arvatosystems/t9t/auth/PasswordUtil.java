@@ -27,7 +27,8 @@ import de.jpaw.util.ByteArray;
 public final class PasswordUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(PasswordUtil.class);
     private static final String CHARSET = "abcdefghijkmnopqrstuvwxyxABCDEFGHIJKLMNPQRSTUVWXYZ023456789!$&%/1O";
-
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
+    
     private PasswordUtil() { }
 
     /**
@@ -53,9 +54,8 @@ public final class PasswordUtil {
     }
 
     public static String generateRandomPassword(int length) {
-        SecureRandom rng = new SecureRandom();
         byte[] randomBytes = new byte[length];
-        rng.nextBytes(randomBytes);
+        SECURE_RANDOM.nextBytes(randomBytes);
         StringBuilder result = new StringBuilder(length);
         for (int i = 0; i < length; ++i) {
             result.append(CHARSET.charAt(randomBytes[i] & 0x3f));

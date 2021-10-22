@@ -24,11 +24,14 @@ import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
+import com.arvatosystems.t9t.base.be.impl.SimpleCallOutExecutor;
 import com.arvatosystems.t9t.base.search.SinkCreatedResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.IFileUtil;
 import com.arvatosystems.t9t.base.services.IForeignRequest;
 import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.cfg.be.ConfigProvider;
+import com.arvatosystems.t9t.cfg.be.UplinkConfiguration;
 import com.arvatosystems.t9t.io.CommunicationTargetChannelType;
 import com.arvatosystems.t9t.io.SinkDTO;
 import com.arvatosystems.t9t.io.T9tIOException;
@@ -43,9 +46,15 @@ import de.jpaw.util.ApplicationException;
 public class RunReportRequestHandler extends AbstractRequestHandler<RunReportRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(RunReportRequestHandler.class);
 
-    private final IForeignRequest remoteCaller = Jdp.getRequired(IForeignRequest.class);
+    private final IForeignRequest remoteCaller;
     private final IOutPersistenceAccess outPersistenceAccess = Jdp.getRequired(IOutPersistenceAccess.class);
     private final IFileUtil fileUtil = Jdp.getRequired(IFileUtil.class);
+
+    /** Constructor to initialize the callout executor. */
+    public RunReportRequestHandler() {
+    	final UplinkConfiguration reportServerConfig = ConfigProvider.getConfiguration().getUplinkConfiguration();
+    	remoteCaller = new SimpleCallOutExecutor(reportServerConfig.getUrl());
+    }
 
     @Override
     public ServiceResponse execute(RequestContext ctx, RunReportRequest request) throws Exception {

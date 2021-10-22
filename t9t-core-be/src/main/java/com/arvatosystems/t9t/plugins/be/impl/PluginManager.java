@@ -64,7 +64,7 @@ public class PluginManager implements IPluginManager {
         }
     }
 
-    private final Boolean LOCK = Boolean.TRUE;
+    private final Object LOCK = new Object();
 
     private final ConcurrentMap<StoredPluginKey,       LoadedPlugin> loadedPlugins = new ConcurrentHashMap<>();
     private final ConcurrentMap<StoredPluginMethodKey, PluginMethod> loadedPluginMethods = new ConcurrentHashMap<>();

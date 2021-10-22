@@ -23,6 +23,5 @@ import com.arvatosystems.t9t.auth.jpa.persistence.ITenantEntityResolver
 @AutoMap42
 class TenantMappers {
     ITenantEntityResolver resolver
-//    @AutoHandler("S42")   uses the sapi BE search
     def void e2dTenantDTO(TenantEntity entity, TenantDTO dto) {}
 }

@@ -21,7 +21,7 @@
 
     <groupId>com.arvato-systems.t9t</groupId>
     <artifactId>global-build</artifactId>
-    <version>5.6-SNAPSHOT</version>
+    <version>5.7-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>Global root POM for the t9t framework</description>
 
@@ -35,10 +35,10 @@
          mvn versions:display-plugin-updates
     -->
     <properties>
-        <min-maven.version>3.6.0</min-maven.version>  <!-- up to 3.8.1 ASAP -->
+        <min-maven.version>3.8.1</min-maven.version>  <!-- up to 3.8.1 ASAP -->
 
         <!-- to be used by dependent projects (same as project.version, but must be provided explicitly so that imports work) -->
-        <t9t.version>5.6-SNAPSHOT</t9t.version>
+        <t9t.version>5.7-SNAPSHOT</t9t.version>
 
         <!-- Build specific properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -71,7 +71,7 @@
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <owasp-maven-plugin.version>2.1.1</owasp-maven-plugin.version>
         <spring-boot-maven-plugin.version>2.5.5</spring-boot-maven-plugin.version>  <!-- => 2.4.3 in release 5.1 -->
-        <tycho.version>2.3.0</tycho.version>
+        <tycho.version>2.5.0</tycho.version>
         <git-commit-id-plugin.version>2.1.7</git-commit-id-plugin.version>
         <jaxb2-maven-plugin.version>1.5</jaxb2-maven-plugin.version>
         <jaxws-maven-plugin.version>2.3.3</jaxws-maven-plugin.version>
@@ -92,10 +92,10 @@
         <maven-javadoc-plugin.version>3.3.1</maven-javadoc-plugin.version>
 
         <!-- Versions of Xtext & Xtend plugins -->
-        <xtend-maven-plugin.version>2.25.0</xtend-maven-plugin.version>
-        <xtext-maven-plugin.version>2.25.0</xtext-maven-plugin.version>
+        <xtend-maven-plugin.version>2.26.0.M2</xtend-maven-plugin.version>
+        <xtext-maven-plugin.version>2.26.0.M2</xtext-maven-plugin.version>
 
-        <bonaparte-plugin.version>4.71.0</bonaparte-plugin.version>
+        <bonaparte-plugin.version>4.80.0</bonaparte-plugin.version>
         <license-plugin.version>3.0</license-plugin.version>
 
         <spotbugs.version>4.4.2</spotbugs.version>
@@ -124,8 +124,9 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>${maven-compiler-plugin.version}</version>
                     <configuration>
-                        <source>1.8</source>
-                        <target>1.8</target>
+                        <source>11</source>
+                        <target>11</target>
+                        <release>11</release>
                         <encoding>${project.build.sourceEncoding}</encoding>
                     </configuration>
                 </plugin>
@@ -201,9 +202,10 @@
                                 <goal>generate</goal>
                             </goals>
                             <configuration>
-                                <javaSourceVersion>1.8</javaSourceVersion>  <!-- could set to 11 now -->
-                                <compilerSourceLevel>1.8</compilerSourceLevel>
-                                <compilerTargetLevel>1.8</compilerTargetLevel>
+                                <javaSourceVersion>11</javaSourceVersion>  <!-- could set to 11 now -->
+                                <compilerSourceLevel>11</compilerSourceLevel>
+                                <compilerTargetLevel>11</compilerTargetLevel>
+                                <addOutputDirectoriesToCompileSourceRoots>false</addOutputDirectoriesToCompileSourceRoots>
                                 <sourceRoots>
                                     <sourceRoot>${project.basedir}/src/main/bon</sourceRoot>
                                 </sourceRoots>
@@ -256,7 +258,7 @@
                             </goals>
                             <configuration>
                                 <outputDirectory>${project.basedir}/src/main/xtend-gen</outputDirectory>
-                                <javaSourceVersion>1.8</javaSourceVersion>  <!-- could set to 11 now -->
+                                <javaSourceVersion>11</javaSourceVersion>  <!-- could set to 11 now -->
                             </configuration>
                         </execution>
                         <execution>
@@ -267,7 +269,7 @@
                             </goals>
                             <configuration>
                                 <testOutputDirectory>${project.basedir}/src/test/xtend-gen</testOutputDirectory>
-                                <javaSourceVersion>1.8</javaSourceVersion>  <!-- could set to 11 now -->
+                                <javaSourceVersion>11</javaSourceVersion>  <!-- could set to 11 now -->
                             </configuration>
                         </execution>
                     </executions>
@@ -873,7 +875,7 @@
         <module>t9t-init</module>
         <module>t9t-jdp</module>
         <module>t9t-jwt</module>
-        <module>t9t-client-complex</module>
+        <module>t9t-client-config</module>
         <module>t9t-client-jdk11</module>
         <module>t9t-client-jdk11async</module>
         <module>t9t-client-apache</module>
