@@ -26,6 +26,7 @@ import java.util.UUID;
 import com.arvatosystems.t9t.base.T9tException;
 
 import de.jpaw.bonaparte.core.MessageParserException;
+import de.jpaw.fixedpoint.types.MicroUnits;
 
 /**
  * A collection of parsers.
@@ -38,6 +39,7 @@ public class RestParameterParsers {
             if (required) {
                 throw new T9tException(MessageParserException.EMPTY_BUT_REQUIRED_FIELD, where);
             }
+            return null;
         }
         try {
             return UUID.fromString(asString);
@@ -51,6 +53,7 @@ public class RestParameterParsers {
             if (required) {
                 throw new T9tException(MessageParserException.EMPTY_BUT_REQUIRED_FIELD, where);
             }
+            return null;
         }
         try {
             return LocalDate.parse(asString, DateTimeFormatter.ISO_LOCAL_DATE);
@@ -64,6 +67,7 @@ public class RestParameterParsers {
             if (required) {
                 throw new T9tException(MessageParserException.EMPTY_BUT_REQUIRED_FIELD, where);
             }
+            return null;
         }
         try {
             return LocalTime.parse(asString, DateTimeFormatter.ISO_LOCAL_TIME);
@@ -77,6 +81,7 @@ public class RestParameterParsers {
             if (required) {
                 throw new T9tException(MessageParserException.EMPTY_BUT_REQUIRED_FIELD, where);
             }
+            return null;
         }
         try {
             return LocalDateTime.parse(asString, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
@@ -90,9 +95,24 @@ public class RestParameterParsers {
             if (required) {
                 throw new T9tException(MessageParserException.EMPTY_BUT_REQUIRED_FIELD, where);
             }
+            return null;
         }
         try {
             return LocalDateTime.parse(asString, DateTimeFormatter.ISO_INSTANT).toInstant(ZoneOffset.UTC);
+        } catch (Exception e) {
+            throw new T9tException(MessageParserException.FIELD_PARSE, where);
+        }
+    }
+
+    public static MicroUnits parseMicroUnits(String asString, String where, boolean required) {
+        if (asString == null || asString.length() == 0) {
+            if (required) {
+                throw new T9tException(MessageParserException.EMPTY_BUT_REQUIRED_FIELD, where);
+            }
+            return null;
+        }
+        try {
+            return MicroUnits.valueOf(asString);
         } catch (Exception e) {
             throw new T9tException(MessageParserException.FIELD_PARSE, where);
         }

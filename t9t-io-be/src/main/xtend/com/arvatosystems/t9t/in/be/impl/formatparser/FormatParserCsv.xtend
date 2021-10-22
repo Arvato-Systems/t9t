@@ -17,10 +17,8 @@ package com.arvatosystems.t9t.in.be.impl.formatparser
 
 import com.arvatosystems.t9t.in.be.impl.AbstractTextFormatConverter
 import com.arvatosystems.t9t.in.services.IInputSession
-import com.arvatosystems.t9t.io.CsvConfigurationDTO
-import com.arvatosystems.t9t.io.DataSinkDTO
 import com.arvatosystems.t9t.io.CSVTools
-import com.arvatosystems.t9t.server.services.IStatefulServiceSession
+import com.arvatosystems.t9t.io.CsvConfigurationDTO
 import de.jpaw.annotations.AddLogger
 import de.jpaw.bonaparte.core.BonaPortableClass
 import de.jpaw.bonaparte.core.CSVConfiguration
@@ -37,8 +35,9 @@ class FormatParserCsv extends AbstractTextFormatConverter {
     protected CSVConfiguration csvCfg
     protected StringCSVParser parser
 
-    override open(IInputSession inputSession, DataSinkDTO cfg, IStatefulServiceSession session, Map<String, Object> params, BonaPortableClass<?> baseBClass) {
-        super.open(inputSession, cfg, session, params, baseBClass)
+    override open(IInputSession inputSession, Map<String, Object> params, BonaPortableClass<?> baseBClass) {
+        super.open(inputSession, params, baseBClass)
+        val cfg = inputSession.dataSinkDTO
         csvCfg = CSVTools.getCsvConfiguration(cfg.csvConfigurationRef as CsvConfigurationDTO);
         parser = new StringCSVParser(csvCfg, "")
         if (Boolean.TRUE == cfg.nationalNumberFormat)

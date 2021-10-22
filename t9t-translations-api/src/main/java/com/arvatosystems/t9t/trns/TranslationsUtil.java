@@ -19,7 +19,7 @@ import com.arvatosystems.t9t.base.trns.TextCategory;
 import com.arvatosystems.t9t.base.trns.TranslationsPartialKey;
 
 public class TranslationsUtil {
-    private TranslationsUtil() {}
+    private TranslationsUtil() { }
 
     public static String getKey(TranslationsDTO dto) {
         if (dto.getCategory() == TextCategory.DEFAULT)

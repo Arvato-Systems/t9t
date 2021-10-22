@@ -21,4 +21,4 @@ import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 
 import de.jpaw.bonaparte.refsw.RefResolver;
 
-public interface IRoleResolver extends RefResolver<RoleRef, RoleDTO, FullTrackingWithVersion> {}
+public interface IRoleResolver extends RefResolver<RoleRef, RoleDTO, FullTrackingWithVersion> { }

@@ -15,15 +15,20 @@
  */
 package com.arvatosystems.t9t.tfi.viewmodel;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.Map.Entry;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import java.time.Instant;
@@ -63,7 +68,6 @@ import com.arvatosystems.t9t.services.T9TRemoteUtils;
 import com.arvatosystems.t9t.tfi.general.ApplicationUtil;
 import com.arvatosystems.t9t.tfi.general.Constants;
 import com.arvatosystems.t9t.tfi.general.Constants.NaviConfig;
-import com.arvatosystems.t9t.tfi.general.Maps;
 import com.arvatosystems.t9t.tfi.model.bean.Navi;
 import com.arvatosystems.t9t.tfi.services.IApplicationDAO;
 import com.arvatosystems.t9t.tfi.services.INavBarCreator;
@@ -74,6 +78,9 @@ import com.arvatosystems.t9t.tfi.web.CtrlKeyHandler;
 import com.arvatosystems.t9t.tfi.web.ZulUtils;
 import com.google.common.collect.ImmutableMap;
 
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
+import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.dp.Jdp;
 /**
  * index View Model build the whole application.
@@ -163,7 +170,7 @@ public class ApplicationViewModel {
         List<TenantDescription> allowedTenants= as.getAllowedTenants();
 
         if (allowedTenants.size() > 1) {
-            Map args = new HashMap();
+            Map<String, Object> args = new HashMap<>();
             args.put("isCancelClose", true);
             args.put("isPopup", true);
             final Window win = (Window) Executions.createComponents(Constants.ZulFiles.LOGIN_TENANT_SELECTION, null, args);
@@ -423,7 +430,7 @@ public class ApplicationViewModel {
 
         previousNaviKey = key;
 
-        LOGGER.debug("----> {} {} {}","x", panel.getLastChild().getId(), panel.getLastChild().hashCode());
+        LOGGER.debug("Childs are {} {} {}", "x", panel.getLastChild().getId(), panel.getLastChild().hashCode());
 
         //set screen title
         String command = String.format("setAppCurrentPageTitle('%s');", navi.getName());
@@ -479,7 +486,7 @@ public class ApplicationViewModel {
         String paramsToDisplay;
         if (params instanceof Map) {
             Map<Object, Object> toStringMap = Generics.cast(params);
-            paramsToDisplay = Maps.mapToString(toStringMap);
+            paramsToDisplay = mapToString(toStringMap);
         } else {
             paramsToDisplay = params != null ? String.valueOf(params) : null;
         }
@@ -667,4 +674,57 @@ public class ApplicationViewModel {
     public void logout() {
         Executions.sendRedirect(Constants.ZulFiles.LOGOUT);
     }
+
+    private static String mapToString(Map<Object, Object> map) {
+        if (map == null) {
+            return "null";
+        }
+        final int maxWidth = 80;
+        Set<Entry<Object, Object>> entrySet = map.entrySet();
+        Iterator<Entry<Object, Object>> i = entrySet.iterator();
+        if (!i.hasNext()) {
+            return "{}";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append('{');
+        for (;;) {
+            Entry<?, ?> e = i.next();
+            Object key = e.getKey();
+            Object value = e.getValue();
+            sb.append(key == map ? "(this Map)" : key);
+            sb.append('=');
+            if (value instanceof Map) {
+                Map<Object, Object> innerMap = Generics.cast(value);
+                sb.append(mapToString(innerMap));
+            } else if (value instanceof BonaPortable) {
+
+                sb.append("((");
+                BonaPortable bonaPortable = Generics.cast(value);
+                List<FieldDefinition> fieldDefinitions = bonaPortable != null ? bonaPortable.ret$MetaData().getFields() : Collections.<FieldDefinition>emptyList();
+                for (FieldDefinition fieldDefinition : fieldDefinitions) {
+                    if (fieldDefinition instanceof ObjectReference) {
+                        try {
+                            Field field = bonaPortable.getClass().getDeclaredField(fieldDefinition.getName());
+                            field.setAccessible(true);
+                            sb.append(StringUtils.abbreviate(String.valueOf(field.get(bonaPortable)), maxWidth));
+                        } catch (Exception e1) {
+                            sb.append(String.valueOf(e1.getMessage()));
+                        }
+                        sb.append(',').append(' ');
+                    }
+                }
+                sb.append("))");
+
+            } else {
+                sb.append(StringUtils.abbreviate((value == map ? "(this Map)" : String.valueOf(value)), maxWidth));
+            }
+            if (!i.hasNext()) {
+                return sb.append('}').toString();
+            } else {
+                sb.append(',').append(' ');
+            }
+        }
+    }
+
 }

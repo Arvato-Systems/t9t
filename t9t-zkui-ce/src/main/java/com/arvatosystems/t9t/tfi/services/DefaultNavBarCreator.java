@@ -179,9 +179,8 @@ public class DefaultNavBarCreator implements INavBarCreator {
     protected boolean subtitleShouldDisplay(final NaviGroupingViewModel naviGroups, int index, int childIndex) {
 
         if (childIndex != 0) {
-            if (naviGroups.getChild(index, childIndex).getSubcategory() != null
-                    && naviGroups.getChild(index, childIndex).getSubcategory() != naviGroups
-                            .getChild(index, childIndex - 1).getSubcategory()) {
+            if (naviGroups.getChild(index, childIndex).getSubcategory() != null &&
+                naviGroups.getChild(index, childIndex).getSubcategory() != naviGroups.getChild(index, childIndex - 1).getSubcategory()) {
                 return true;
             } else {
                 return false;
@@ -283,25 +282,22 @@ public class DefaultNavBarCreator implements INavBarCreator {
 
         Menupopup folder = folders.get(folderCategoryId);
         if (folder == null) {
+            // get parent, create if not existed recursively
+            String parentFolderCategoryId = Navi.getCategoryIdBeforeLastDot(folderCategoryId);
+            String lastPartCategoryId = Navi.getCategoryIdAfterLastDot(folderCategoryId);
+            Menupopup parentPopup = getOrCreateFolderIfNotExists(folders, parentFolderCategoryId);
 
-            if (folder == null) {
-                // get parent, create if not existed recursively
-                String parentFolderCategoryId = Navi.getCategoryIdBeforeLastDot(folderCategoryId);
-                String lastPartCategoryId = Navi.getCategoryIdAfterLastDot(folderCategoryId);
-                Menupopup parentPopup = getOrCreateFolderIfNotExists(folders, parentFolderCategoryId);
-
-                Menu submenu = new Menu(getSubmenuFolderTranslated(ApplicationSession.get(), parentFolderCategoryId, lastPartCategoryId));
-                submenu.addSclass("nav-submenu");
-                submenu.setImage("/img/folder.png");
-                parentPopup.appendChild(submenu);
-                Menupopup submenuPopup = new Menupopup();
-                addSClass(submenuPopup, "nav-menupopup");
-                submenuPopup.setId(folderCategoryId);
-                submenu.appendChild(submenuPopup);
-                createContextMenuOnEachMenu(submenuPopup);
-                folders.put(folderCategoryId, submenuPopup);
-                return submenuPopup;
-            }
+            Menu submenu = new Menu(getSubmenuFolderTranslated(ApplicationSession.get(), parentFolderCategoryId, lastPartCategoryId));
+            submenu.addSclass("nav-submenu");
+            submenu.setImage("/img/folder.png");
+            parentPopup.appendChild(submenu);
+            Menupopup submenuPopup = new Menupopup();
+            addSClass(submenuPopup, "nav-menupopup");
+            submenuPopup.setId(folderCategoryId);
+            submenu.appendChild(submenuPopup);
+            createContextMenuOnEachMenu(submenuPopup);
+            folders.put(folderCategoryId, submenuPopup);
+            return submenuPopup;
         }
 
         return folder;

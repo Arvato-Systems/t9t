@@ -39,7 +39,8 @@ import de.jpaw.dp.Jdp;
  * @author BORUS01
  *
  */
-public class SubscriberConfigCrudRequestHandler extends AbstractCrudSurrogateKey42RequestHandler<SubscriberConfigRef, SubscriberConfigDTO, FullTrackingWithVersion, SubscriberConfigCrudRequest, SubscriberConfigEntity> {
+public class SubscriberConfigCrudRequestHandler extends AbstractCrudSurrogateKey42RequestHandler<SubscriberConfigRef, SubscriberConfigDTO,
+  FullTrackingWithVersion, SubscriberConfigCrudRequest, SubscriberConfigEntity> {
 
     private final ISubscriberConfigEntityResolver entityResolver = Jdp.getRequired(ISubscriberConfigEntityResolver.class);
     private final ISubscriberConfigDTOMapper sinksMapper = Jdp.getRequired(ISubscriberConfigDTOMapper.class);
@@ -56,15 +57,15 @@ public class SubscriberConfigCrudRequestHandler extends AbstractCrudSurrogateKey
             case CREATE:
             case MERGE:
             case UPDATE:
-                LOGGER.debug("Received {} CRUD request for SubscriberConfig.",crudRequest.getCrud());
+                LOGGER.debug("Received {} CRUD request for SubscriberConfig.", crudRequest.getCrud());
                 ctx.addPostCommitHook((ctx2, rq, rs) -> {
                     IEventHandler eventHandler = Jdp.getOptional(IEventHandler.class, dto.getHandlerClassName());
                     if (eventHandler != null) {
                         asyncProcessor.registerSubscriber(dto.getEventID(), ctx.tenantRef, eventHandler);
                         EventSubscriptionCache.updateRegistration(dto.getEventID(), dto.getHandlerClassName(), ctx.tenantRef, dto.getIsActive());
-                    }
-                    else {
-                        LOGGER.error("Can't find eventHandler with name '{}' to register for event id={}. Skipping this SubscriberConfig entry.",dto.getHandlerClassName(),dto.getEventID());
+                    } else {
+                        LOGGER.error("Can't find eventHandler with name '{}' to register for event id={}. Skipping this SubscriberConfig entry.",
+                          dto.getHandlerClassName(), dto.getEventID());
                         throw new T9tException(T9tException.INVALID_CONFIGURATION, "Can't find event handler with that name!");
                     }
                 });

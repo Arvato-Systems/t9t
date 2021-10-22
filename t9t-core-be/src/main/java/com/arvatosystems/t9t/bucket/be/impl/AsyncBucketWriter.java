@@ -95,7 +95,8 @@ public class AsyncBucketWriter implements IBucketWriter {
                                     currentSize = 0;
                                 }
                                 if (e1.size() > MAX_ELEMENTS_TOTAL) {
-                                    LOGGER.warn("Single Transaction too big to write buckets - fallback: Buckets of single source TX may be written by multiple writer TX");
+                                    LOGGER.warn(
+                                      "Single Transaction too big to write buckets - fallback: Buckets of single source TX may be written by multiple writer TX");
                                     for (Map.Entry<BucketWriteKey, Integer> bi: e1.entrySet()) {
                                         sortedPool.merge(bi.getKey(), bi.getValue(), (a, b) -> Integer.valueOf(a.intValue() | b.intValue()));
                                         // flush once max. number of tx has been reached
@@ -143,7 +144,9 @@ public class AsyncBucketWriter implements IBucketWriter {
         LOGGER.info("Async bucket writer selected - any bucket entries will be written by a separate thread");
         persistenceAccess.open();   // open disk channel
         // launch a separate thread which continuously drains the transfer queue
-        executor = Executors.newSingleThreadExecutor((call) -> { return new Thread(call, "t9t-BucketWriter"); });
+        executor = Executors.newSingleThreadExecutor((call) -> {
+            return new Thread(call, "t9t-BucketWriter");
+        });
         writerResult = executor.submit(new WriterThread());
     }
 

@@ -29,8 +29,11 @@ import org.slf4j.LoggerFactory;
  * Reads a property file (path to this file given by VM argument -DbasePropertyFile).
  */
 
-public class BaseConfigurationProvider {
+public final class BaseConfigurationProvider {
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseConfigurationProvider.class);
+
+    private BaseConfigurationProvider() {
+    }
 
     public static Properties getBaseProperties() {
         final Properties properties = new Properties();

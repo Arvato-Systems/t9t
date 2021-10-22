@@ -57,7 +57,8 @@ public class GetNextTimeSliceService implements IGetNextTimeSliceService {
             final Integer gap = slice.getGap() != null ? slice.getGap() : DEFAULT_GAP_IN_SECONDS;
             slice.setExportedDataBefore(overrideAsOf != null ? overrideAsOf : endInstantRoundedDown.minusMillis(gap * 1000L));
             slice.setLastSinkRef(sinkRef);
-            LOGGER.debug("Advancing time slice for {}/{} from {} to {} (by {} seconds)", dataSinkId, id, result.getStartInstant(), slice.getExportedDataBefore(), gap);
+            LOGGER.debug("Advancing time slice for {}/{} from {} to {} (by {} seconds)", dataSinkId, id,
+              result.getStartInstant(), slice.getExportedDataBefore(), gap);
         }
         if (result.getStartInstant() == null) {
             result.setStartInstant(REALLY_LONG_AGO);

@@ -117,7 +117,7 @@ package (com.arvatosystems) t9t.io {
         required csvConfigurationId                 csvConfigurationId  properties notupdatable;
         required boolean                            isActive            properties active;
         optional languageTag                        languageCode        properties dropdown="languageCode"; // if null, the caller's locale will be used
-        optional Unicode(64)                        timeZone            properties dropdown="timeZoneId";   // one of joda DateTimeZone.getAvailableIds()
+        optional Unicode(64)                        timeZone            properties dropdown="timeZoneId";   // a time zone identifier such as "Europe/Berlin"
         required boolean                            quoteDates;
         required boolean                            removePoint;
         required boolean                            zeroPadNumbers;

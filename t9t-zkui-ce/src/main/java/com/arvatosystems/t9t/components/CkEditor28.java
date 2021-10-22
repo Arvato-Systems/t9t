@@ -222,12 +222,13 @@ public class CkEditor28 extends Row {
         }
     }
 
-    // @Listen("onCreate")
     protected void myOnCreate() {
-        // LOGGER.debug("cells 28 onCreate");
         IViewModelOwner vmOwner = GridIdTools.getAnchestorOfType(this, IViewModelOwner.class);
-        LOGGER.debug("vmOwner is {}",
-                vmOwner == null ? "NULL" : vmOwner.getClass().getSimpleName() + ":" + vmOwner.getViewModelId());
+        if (vmOwner == null) {
+            LOGGER.error("****  FATAL: unable to create ckeditor28 inside viewModel {}, vmOwner is null.", viewModelId);
+            throw new RuntimeException("Unable to create ckeditor28 inside viewModel " + viewModelId);
+        }
+        LOGGER.debug("vmOwner is {}", vmOwner.getClass().getSimpleName() + ":" + vmOwner.getViewModelId());
         viewModelId = GridIdTools.enforceViewModelId(vmOwner);
         crudViewModel = vmOwner.getCrudViewModel();
         as = vmOwner.getSession();
@@ -293,7 +294,6 @@ public class CkEditor28 extends Row {
         ckEditor.setHflex("1");
         ckEditor.setVisible(false);
         ckEditor.setCustomConfigurationsPath("/js/config/ckeditor.config.js");
-        ckEditor.setHeight("500px");
 
         // also forward the onChange event to allow saving of changed data
         ckEditor.addEventListener(Events.ON_CHANGE, (ev) -> {
@@ -334,7 +334,7 @@ public class CkEditor28 extends Row {
         uploadButton.setId(dataFieldId + ".img.e");
         uploadButton.setParent(uploadSection);
         uploadButton.setUpload("true");
-        uploadButton.setLabel(as.get().translate("IMAGE_UPLOAD", "uploadImage"));
+        uploadButton.setLabel(as.translate("IMAGE_UPLOAD", "uploadImage"));
         uploadButton.addEventListener(Events.ON_UPLOAD, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {

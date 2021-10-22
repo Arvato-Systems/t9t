@@ -144,12 +144,13 @@ public class Cells28 extends Row {
         return res;
     }
 
-    // @Listen("onCreate")
     protected void myOnCreate() {
-        // LOGGER.debug("cells 28 onCreate");
         IViewModelOwner vmOwner = GridIdTools.getAnchestorOfType(this, IViewModelOwner.class);
-        LOGGER.debug("vmOwner is {}",
-                vmOwner == null ? "NULL" : vmOwner.getClass().getSimpleName() + ":" + vmOwner.getViewModelId());
+        if (vmOwner == null) {
+            LOGGER.error("****  FATAL: unable to create cells28 inside viewModel {}, vmOwner is null.", viewModelId);
+            throw new RuntimeException("Unable to create cells28 inside viewModel " + viewModelId);
+        }
+        LOGGER.debug("vmOwner is {}", vmOwner.getClass().getSimpleName() + ":" + vmOwner.getViewModelId());
         viewModelId = GridIdTools.enforceViewModelId(vmOwner);
         crudViewModel = vmOwner.getCrudViewModel();
         as = vmOwner.getSession();

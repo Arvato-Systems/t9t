@@ -40,13 +40,12 @@ import de.jpaw.bonaparte.util.FieldGetter;
 /**
  * Utility methods to perform field mapping (path root mapping when using the foldingComposer with the DataWithTracking object.
  *
- * @author BISC02
- *
  */
-public class FieldMappers {
+public final class FieldMappers {
     private static final Logger LOGGER = LoggerFactory.getLogger(FieldMappers.class);
 
-    private FieldMappers() {} // don't want instances of this class
+    private FieldMappers() {
+    }
 
     public static final List<String> TRACKING_COLUMN_NAMES = new ArrayList<String>(Arrays.asList(
             "cTimestamp", "cTechUserId", "cAppUserId", "cProcessRef",
@@ -179,8 +178,9 @@ public class FieldMappers {
 
     /** Indexes a DTO list into an existing map. */
     public static <D extends Ref> void index(final Map<Long, D> result, final Collection<D> data) {
-        for (D d : data)
+        for (D d : data) {
             result.put(d.getObjectRef(), d);
+        }
     }
 
     /** Indexes a DTO list into a new map. */

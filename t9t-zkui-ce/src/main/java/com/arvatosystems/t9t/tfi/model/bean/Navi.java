@@ -43,7 +43,7 @@ public class Navi {
         this.img = img;
     }
 
-    public Navi() {}
+    public Navi() { }
 
     /**
      * @return the menuItemVisible

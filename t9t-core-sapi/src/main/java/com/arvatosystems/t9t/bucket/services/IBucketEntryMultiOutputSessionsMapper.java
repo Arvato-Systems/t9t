@@ -27,6 +27,8 @@ import com.arvatosystems.t9t.bucket.request.GenericBucketExportRequest;
  * Implementations must implement one of the default methods.
  *  */
 public interface IBucketEntryMultiOutputSessionsMapper {
-    default boolean alwaysNeedModes() { return false; }
+    default boolean alwaysNeedModes() {
+        return false;
+    }
     void writeEntities(GenericBucketExportRequest rp, List<Long> refs, Map<Long, Integer> entries, boolean withTrackingAndMore, List<IOutputSession> os);
 }

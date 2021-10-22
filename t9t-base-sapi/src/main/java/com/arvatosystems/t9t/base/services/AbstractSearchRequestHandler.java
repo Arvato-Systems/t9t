@@ -28,6 +28,7 @@ public abstract class AbstractSearchRequestHandler<REQUEST extends SearchCriteri
 
     @Override
     public OperationType getAdditionalRequiredPermission(REQUEST request) {
-        return request.getSearchOutputTarget() != null ? OperationType.EXPORT : OperationType.SEARCH;       // must have permission EXPORT for output to data sink
+        // must have permission EXPORT for output to data sink
+        return request.getSearchOutputTarget() != null ? OperationType.EXPORT : OperationType.SEARCH;
     }
 }

@@ -58,7 +58,7 @@ package (com.arvatosystems) t9t.doc.api {
         required (DocumentSelector...)              documentSelector;   // specification of preferred language, country etc
         required Element                            data;               // document data, which can be a Map, a List or a BonaPortable
         required boolean                            binaryAsAttachments;// if true, then binary data (images) will not be inlined but returned as separate attachments, identified by CID
-        optional timeZoneId                         timeZone             properties dropdown="timeZoneId";  // one of joda DateTimeZone.getAvailableIds()
+        optional timeZoneId                         timeZone             properties dropdown="timeZoneId";  // a time zone identifier such as "Europe/Berlin"
     }
 
     class FormatDocumentResponse extends ServiceResponse {
@@ -74,7 +74,7 @@ package (com.arvatosystems) t9t.doc.api {
         required Element                            data;               // document data, which can be a Map, a List or a BonaPortable
         required (Recipient...) required List<>     recipientList;      // lists all recipients
         required (MediaData...) List<>              attachments;        // Additional documents, to be added as attachments (e.g. to emails)
-        optional timeZoneId                         timeZone             properties dropdown="timeZoneId";  // one of joda DateTimeZone.getAvailableIds()
+        optional timeZoneId                         timeZone             properties dropdown="timeZoneId";  // a time zone identifier such as "Europe/Berlin"
     }
 
     /** Response for NewDocumentRequests. */
@@ -90,7 +90,7 @@ package (com.arvatosystems) t9t.doc.api {
         optional (DocumentSelector...)              documentSelector;   // specification of preferred language, country etc
         required Element                            data;               // document data, which can be a Map, a List or a BonaPortable
         required (MediaData...) List<>              attachments;        // Additional documents, to be added as attachments (e.g. to emails)
-        optional timeZoneId                         timeZone             properties dropdown="timeZoneId";  // one of joda DateTimeZone.getAvailableIds()
+        optional timeZoneId                         timeZone             properties dropdown="timeZoneId";  // a time zone identifier such as "Europe/Berlin"
     }
 
      /** To used from application modules: for example Customer, SalesOrder, DeliveryOrder, Return in OMS. */

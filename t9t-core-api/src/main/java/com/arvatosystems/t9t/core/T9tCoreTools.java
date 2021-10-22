@@ -20,8 +20,8 @@ import com.arvatosystems.t9t.bucket.BucketCounterDTO;
 import com.arvatosystems.t9t.bucket.BucketCounterKey;
 import com.arvatosystems.t9t.bucket.BucketCounterRef;
 
-public class T9tCoreTools {
-    private T9tCoreTools() {}
+public final class T9tCoreTools {
+    private T9tCoreTools() { }
 
     public static String getRequestId(CannedRequestRef ref) {
         if (ref == null)

@@ -17,7 +17,9 @@ package com.arvatosystems.t9t.tfi.general;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 import com.arvatosystems.t9t.tfi.web.ZulUtils;
 
@@ -45,5 +47,15 @@ public class DateUtils {
             dateTimeFormat = DateTimeFormatter.ofPattern(ZulUtils.translate("com","datetimeFormat"));
         }
         return dateTimeFormat;
+    }
+
+    /**
+     * Convenient method to convert LocalDateTime to Date
+     */
+    public static final Date toDate(LocalDateTime localDateTime) {
+        if (localDateTime == null)
+            return null;
+
+        return Date.from((localDateTime).atZone(ZoneId.systemDefault()).toInstant());
     }
 }

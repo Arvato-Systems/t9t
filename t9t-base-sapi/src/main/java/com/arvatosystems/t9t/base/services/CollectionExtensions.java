@@ -20,7 +20,9 @@ import java.util.function.ToIntFunction;
 
 /** Extension methods for xtend classes, working on collections.
  * Replaces jpaw8 dependency. */
-public class CollectionExtensions {
+public final class CollectionExtensions {
+    private CollectionExtensions() {
+    }
 
     /** Returns the collection element which has the maximum weight of all. */
     public static <T> T ofMaxWeight(Collection<T> list, ToIntFunction<? super T> evaluator) {

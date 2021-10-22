@@ -76,7 +76,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
             Function<T, BonaPortable> responseMapper) {
         final String acceptHeader = httpHeaders.getHeaderString(HttpHeaders.ACCEPT);
         try {
-            requestParameters.validate();  // validate the request before e launch a worker thread!
+            requestParameters.validate();  // validate the request before we launch a worker thread!
         } catch (ApplicationException e) {
             LOGGER.error("Exception during request validation: {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
             returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, createErrorResult(e.getErrorCode(), e.getMessage()));  // missing parameter
@@ -120,9 +120,11 @@ public class T9tRestProcessor implements IT9tRestProcessor {
                     final ServiceResponse sr = ar.result();
                     if (!ApplicationException.isOk(sr.getReturnCode())) {
                         final Response.ResponseBuilder responseBuilder = createResponseBuilder(sr.getReturnCode());
-                        responseBuilder.entity(sr.getErrorDetails() != null ? sr.getErrorDetails() : T9tException.codeToString(sr.getReturnCode()));
+                        responseBuilder.type(acceptHeader == null || acceptHeader.length() == 0 ? MediaType.APPLICATION_JSON : acceptHeader);
+                        responseBuilder.entity(createResultFromServiceResponse(sr));
                         final Response responseObj = responseBuilder.build();
                         resp.resume(responseObj);
+                        return;
                     }
                     if (backendResponseClass.isAssignableFrom(sr.getClass())) {
                         final BonaPortable resultForREST = responseMapper.apply((T)sr);

@@ -40,12 +40,10 @@ import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
  * - oi (String) orgUnitId if the user is restricted to a single orgUnit, "*" if there is no restriction. In other cases, it is left null.
  * - or (Long)   orgUnitRef if the user is restricted to a single orgUnit
  * - od (String) the orgUnitId of a default selection (in case more than one is possible, but one is the preferred one)
- * - li (String) locationId if the user is restricted to a single location (drop shipper or retail store), "*" if there is no restriction. In other cases, it is left null.
+ * - li (String) locationId if the user is restricted to a single location (drop shipper or retail store), "*" if there is no restriction.
+ *               In other cases, it is left null.
  * - lr (Long)   locationRef if the user is restricted to a single location
  * - ld (String) the locationId of a default selection (in case more than one is possible, but one is the preferred one)
- *
- * @since 3.0.2
- * @author BISC02
  *
  */
 public interface IJwtEnrichment {
@@ -53,10 +51,12 @@ public interface IJwtEnrichment {
     void enrichJwt(JwtInfo jwt, TenantDTO tenant, UserDTO user);
 
     /** Called to enrich the Jwt after authentication via API key. */
-    default void enrichJwt(JwtInfo jwt, TenantDTO tenant, UserDTO user, ApiKeyDTO apiKey) {}
+    default void enrichJwt(JwtInfo jwt, TenantDTO tenant, UserDTO user, ApiKeyDTO apiKey) { }
 
-    /** Called to enrich the Jwt after a SwitchTenantRequest (which can also be used to refresh the Jwt or to switch languages, check if old and new tenant are identical). */
-    default void enrichJwt(JwtInfo jwt, JwtInfo oldJwt) {}
+    /**
+     * Called to enrich the Jwt after a SwitchTenantRequest (which can also be used to refresh the Jwt or to switch languages,
+     * check if old and new tenant are identical). */
+    default void enrichJwt(JwtInfo jwt, JwtInfo oldJwt) { }
 
     default void storeIfNotNull(JwtInfo jwt, String key, Object value) {
         if (value == null) {

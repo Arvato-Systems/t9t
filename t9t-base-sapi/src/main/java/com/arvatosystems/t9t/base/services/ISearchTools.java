@@ -29,30 +29,34 @@ import de.jpaw.bonaparte.pojos.api.SortColumn;
 public interface ISearchTools {
 
     default Function<String, String> mapMapper(final Map<String, String> nameMappings) {
-        if (nameMappings == null)
+        if (nameMappings == null) {
             // return identity function
             return fieldName -> fieldName;
-        else
+        } else {
             // return mapping function
-            return fieldName -> { String replacement = nameMappings.get(fieldName); return replacement == null ? fieldName : replacement; };
+            return fieldName -> {
+                final String replacement = nameMappings.get(fieldName);
+                return replacement == null ? fieldName : replacement;
+            };
+        }
     }
 
     /** Maps field names in search requests, for use by other search engines than the DB, for example SOLR.
      * Injectable in order to allow extension by additional filter types. */
-    void mapNames(SearchCriteria searchCriteria, final Function<String, String> mapper);
-    void mapNames(SearchFilter searchFilter,     final Function<String, String> mapper);
-    void mapNames(List<SortColumn> sortColumns,  final Function<String, String> mapper);
+    void mapNames(SearchCriteria searchCriteria, Function<String, String> mapper);
+    void mapNames(SearchFilter searchFilter,     Function<String, String> mapper);
+    void mapNames(List<SortColumn> sortColumns,  Function<String, String> mapper);
 
     /** Maps field names in search requests, for use by other search engines than the DB, for example SOLR.
      * Injectable in order to allow extension by additional filter types. */
-    void mapNames(SearchCriteria searchCriteria, final Map<String, String> nameMappings);
-    void mapNames(SearchFilter searchFilter,     final Map<String, String> nameMappings);
-    void mapNames(List<SortColumn> sortColumns,  final Map<String, String> nameMappings);
+    void mapNames(SearchCriteria searchCriteria, Map<String, String> nameMappings);
+    void mapNames(SearchFilter searchFilter,     Map<String, String> nameMappings);
+    void mapNames(List<SortColumn> sortColumns,  Map<String, String> nameMappings);
 
     /* Checks is a certain path element is part of a field name. */
-    boolean containsFieldPathElements(SearchCriteria searchCriteria, final List<String> pathElements);
-    boolean containsFieldPathElements(SearchFilter searchFilter,     final List<String> pathElements);
-    boolean containsFieldPathElements(List<SortColumn> sortColumns,  final List<String> pathElements);
+    boolean containsFieldPathElements(SearchCriteria searchCriteria, List<String> pathElements);
+    boolean containsFieldPathElements(SearchFilter searchFilter,     List<String> pathElements);
+    boolean containsFieldPathElements(List<SortColumn> sortColumns,  List<String> pathElements);
 
     /** Searches if the expression contains an AND condition with a FieldFilter for name fieldname.
      * Returns true if found, else false.
@@ -63,7 +67,7 @@ public interface ISearchTools {
      * @param converter
      * @return
      */
-    boolean searchForAndFieldname(SearchCriteria searchCriteria, String fieldname, Function<SearchFilter,SearchFilter> converter);
+    boolean searchForAndFieldname(SearchCriteria searchCriteria, String fieldname, Function<SearchFilter, SearchFilter> converter);
 
     /**
      * retrieve all FieldFilter fieldNames of the SearchFilter to the set of fieldNames

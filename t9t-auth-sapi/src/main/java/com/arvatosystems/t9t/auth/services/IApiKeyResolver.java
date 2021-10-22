@@ -21,4 +21,4 @@ import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 
 import de.jpaw.bonaparte.refsw.RefResolver;
 
-public interface IApiKeyResolver extends RefResolver<ApiKeyRef, ApiKeyDTO, FullTrackingWithVersion> {}
+public interface IApiKeyResolver extends RefResolver<ApiKeyRef, ApiKeyDTO, FullTrackingWithVersion> { }

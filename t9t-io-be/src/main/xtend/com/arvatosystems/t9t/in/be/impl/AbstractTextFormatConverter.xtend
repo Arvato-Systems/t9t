@@ -27,6 +27,7 @@ abstract class AbstractTextFormatConverter extends AbstractInputFormatConverter 
     def abstract void process(String textLine);
 
     override process(InputStream is) {
+        val cfg = inputSession.dataSinkDTO
         val singleLineComment = cfg.singleLineComment === null ? null cfg.singleLineComment  // avoid the need for duplicate test to null or ""
         var int linesToSkip   = cfg.linesToSkip ?: 0
         val streamReader      = new BufferedReader(new InputStreamReader(is))

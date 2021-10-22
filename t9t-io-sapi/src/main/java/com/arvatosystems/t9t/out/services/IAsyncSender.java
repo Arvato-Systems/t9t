@@ -37,5 +37,5 @@ public interface IAsyncSender {
     AsyncHttpResponse send(AsyncChannelDTO channel, BonaPortable payload, int timeout, Long messageObjectRef) throws Exception;
 
     /** Called when the corresponding writer thread is shut down. */
-    default void close() {}
+    default void close() { }
 }

@@ -20,17 +20,21 @@ import java.util.concurrent.ConcurrentMap;
 
 import com.arvatosystems.t9t.base.types.ListenerConfig;
 
-/** The cache for JPA listener configuration.
+/**
+ * The cache for JPA listener configuration.
  * The cache is a double nested Map, the first level addressing the classification (one element per JPA entity)
  * and this is never empty for existing entity classes (it is created either when the entity listener is created or
  * when the cache is loaded).
  * The elements are concurrent hash maps.
  * The second level maps tenantRefs to the cached configurations.
  * This level is updated with the ListenerConfig CRUD command.
- * The second level may be empty (inactive DTO entries correspond to non existing entries here). */
-
+ * The second level may be empty (inactive DTO entries correspond to non existing entries here).
+ */
 public class ListenerConfigCache {
-    private static final ConcurrentMap<String, ConcurrentMap<Long, ListenerConfig>> LISTENER_CONFIG = new ConcurrentHashMap<String, ConcurrentMap<Long, ListenerConfig>>();
+    private ListenerConfigCache() { }
+
+    private static final ConcurrentMap<String, ConcurrentMap<Long, ListenerConfig>> LISTENER_CONFIG
+      = new ConcurrentHashMap<String, ConcurrentMap<Long, ListenerConfig>>();
 
     /** Returns the unique registration map for a given classification.
      * Creates an entry if none exists.

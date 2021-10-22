@@ -122,7 +122,7 @@ package (com.arvatosystems) t9t.rep {
         // next 2 required when BY_RANGE
         optional Timestamp(0)                           fromDate;        // explicit lower bound (t >= fromDate)
         optional Timestamp(0)                           toDate;          // explicit upper bound (t < toDate)
-        optional Unicode(64)                            timeZone         properties dropdown="timeZoneId";
+        optional Unicode(64)                            timeZone         properties dropdown="timeZoneId";          // a time zone identifier such as "Europe/Berlin"
         optional (MailingGroupRef...,MailingGroupDTO)   mailingGroupRef  properties ref, dropdown="mailGroupId";    // to send email when the report is done
     }
 }

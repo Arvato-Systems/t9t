@@ -24,9 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.in.services.IInputSession;
-import com.arvatosystems.t9t.io.DataSinkDTO;
 import com.arvatosystems.t9t.io.T9tIOException;
-import com.arvatosystems.t9t.server.services.IStatefulServiceSession;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.BonaPortableClass;
@@ -48,11 +46,11 @@ public class CompactBonaparteFormatConverter extends AbstractInputFormatConverte
     protected int maxSize = 64000;
 
     @Override
-    public void open(IInputSession inputSession, DataSinkDTO sinkCfg, IStatefulServiceSession session, Map<String, Object> params, BonaPortableClass<?> baseBClass) {
-        super.open(inputSession, sinkCfg, session, params, baseBClass);
-
-        if (sinkCfg.getGenericParameter1() != null) {
-            maxSize = Integer.parseInt(sinkCfg.getGenericParameter1());
+    public void open(IInputSession inputSession, Map<String, Object> params, BonaPortableClass<?> baseBClass) {
+        super.open(inputSession, params, baseBClass);
+        final String sizeParam = inputSession.getDataSinkDTO().getGenericParameter1();
+        if (sizeParam != null) {
+            maxSize = Integer.parseInt(sizeParam);
         }
     }
 

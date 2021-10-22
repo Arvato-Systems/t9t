@@ -26,8 +26,8 @@ import de.jpaw.bonaparte.pojos.api.media.MediaXType;
 /** represents a single session within the executor (which spans multiple requests) */
 
 public interface IOutputSession extends AutoCloseable {
-    public static final String NO_PARTITION_KEY = "";
-    public static final String NO_RECORD_KEY = "";
+    final String NO_PARTITION_KEY = "";
+    final String NO_RECORD_KEY = "";
 
     /**
      * open() must be called exactly once, immediately after instancing a new object of type IOutputSession. The productive implementation creates an entry in
@@ -39,7 +39,7 @@ public interface IOutputSession extends AutoCloseable {
      * @return the artificial primary key of the new entry in table p42_dat_sinks
      * @throws T9tException
      */
-    public Long open(OutputSessionParameters params);
+    Long open(OutputSessionParameters params);
 
     /**
      * Method to return the created OutputStream in case of file based output. If this method is used, binary data such as PDF or XLS documents can be written

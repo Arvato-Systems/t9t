@@ -40,18 +40,6 @@
         <dependency>
             <groupId>org.apache.solr</groupId>
             <artifactId>solr-solrj</artifactId>
-            <exclusions>
-                <!-- SOLRJ pulls in woodstox, which are really old and unmaintained libraries, also they break 4 unit tests in a28, so kick them out! -->
-                <!--They should be optional according to http://mail-archives.apache.org/mod_mbox/lucene-dev/201508.mbox/%3CCABEwPvGrUHxamoBpn1BVVKDBkD4-2v593r127RvCwqAsXUWMAg@mail.gmail.com%3E -->
-                <exclusion>
-                    <groupId>org.codehaus.woodstox</groupId>
-                    <artifactId>stax2-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.codehaus.woodstox</groupId>
-                    <artifactId>woodstox-core-asl</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <!-- JUnit Test -->
         <dependency>

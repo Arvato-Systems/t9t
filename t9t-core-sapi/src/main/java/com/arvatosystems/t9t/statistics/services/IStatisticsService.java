@@ -31,6 +31,6 @@ public interface IStatisticsService {
      * @param data
      *            data to store
      */
-    public void saveStatisticsData(StatisticsDTO data);
+    void saveStatisticsData(StatisticsDTO data);
 
 }

@@ -56,22 +56,24 @@ public class DefaultRequestHandlerResolver implements IRequestHandlerResolver {
                 try {
                     final Class<?> handlerClass = Class.forName(handlerClassNameCandidate);
                     if (!IRequestHandler.class.isAssignableFrom(handlerClass)) {
-                        LOGGER.error("Class {} is not a request handler class (i.e. does not implement the IRequestHandler interface", handlerClass.getCanonicalName());
+                        LOGGER.error("Class {} is not a request handler class (i.e. does not implement the IRequestHandler interface",
+                          handlerClass.getCanonicalName());
                         return new NoHandlerPresentRequestHandler(handlerClass.getCanonicalName() + " does not implement IRequestHandler<?>");
                     } else {
                         return (IRequestHandler<?>) handlerClass.newInstance();
                     }
                 } catch (final ClassNotFoundException e) {
                     LOGGER.debug("Class {} not found - trying next candidate", handlerClassNameCandidate);
-                    ; // skip:
                 } catch (final Exception e) {
                     // track causes
                     LOGGER.error("Cannot instantiate RequestHandler " + handlerClassNameCandidate, e);
                     cause = (cause.length() == 0 ? "" : cause + "; ") + handlerClassNameCandidate + ": " + ExceptionUtil.causeChain(e);
                 }
             }
-            final String finalCause = handlerCandidates.isEmpty() ? " (No candicates)" : (cause.length() == 0 ? " (None of the candidates found)" : (" (Reason: " + cause + ")"));
-            LOGGER.error("Required request handler for {} not found, creating an exception handler.{}", requestClass.getCanonicalName(), finalCause);
+            final String finalCause = handlerCandidates.isEmpty() ? " (No candicates)"
+              : (cause.length() == 0 ? " (None of the candidates found)" : (" (Reason: " + cause + ")"));
+            LOGGER.error("Required request handler for {} not found, creating an exception handler.{}",
+              requestClass.getCanonicalName(), finalCause);
             return new NoHandlerPresentRequestHandler(finalCause);
         });
         return (IRequestHandler<RQ>) instance;

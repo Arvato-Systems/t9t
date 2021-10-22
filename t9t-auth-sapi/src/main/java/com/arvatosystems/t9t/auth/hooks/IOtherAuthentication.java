@@ -25,7 +25,8 @@ import com.arvatosystems.t9t.base.types.SessionParameters;
  * The default implementation throws some exception.
  */
 public interface IOtherAuthentication {
-    /** The preprocess method allows to convert AuthenticationParameters of one type into some of another type, for example just a different user selection type. */
+    /** The preprocess method allows to convert AuthenticationParameters of one type into some of another type,
+     * for example just a different user selection type. */
     default AuthenticationParameters preprocess(RequestContext ctx, SessionParameters sp, AuthenticationParameters ap) {
         return ap;
     }

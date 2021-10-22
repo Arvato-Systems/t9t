@@ -27,13 +27,15 @@ import com.arvatosystems.t9t.server.services.IRequestLogger;
 
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Startup;
+import de.jpaw.dp.StartupOnly;
 
 @Startup(30000)
-public class Init30000FrameworkAndPlausis {
+public class Init30000FrameworkAndPlausis implements StartupOnly {
     private static final Logger LOGGER = LoggerFactory.getLogger(Init30000FrameworkAndPlausis.class);
     private static final String UNSPECIFIED = "noop";
 
-    public static void onStartup() {
+    @Override
+    public void onStartup() {
         final T9tServerConfiguration cfg = Jdp.getRequired(T9tServerConfiguration.class);
         // verify that RequestHandler implementations are not in any (no)DI scope (wouldn't hurt, but indicates extra overhead)
         Jdp.forAllEntries(AbstractRequestHandler.class, cls -> {

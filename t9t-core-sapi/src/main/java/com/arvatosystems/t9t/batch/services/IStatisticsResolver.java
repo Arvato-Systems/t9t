@@ -21,4 +21,4 @@ import com.arvatosystems.t9t.batch.StatisticsRef;
 
 import de.jpaw.bonaparte.refsw.RefResolver;
 
-public interface IStatisticsResolver extends RefResolver<StatisticsRef, StatisticsDTO, WriteTracking> {}
+public interface IStatisticsResolver extends RefResolver<StatisticsRef, StatisticsDTO, WriteTracking> { }

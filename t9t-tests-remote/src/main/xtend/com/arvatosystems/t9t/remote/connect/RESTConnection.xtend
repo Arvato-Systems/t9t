@@ -32,7 +32,7 @@ class RESTConnection extends ConnectionDefaults {
     protected IMarshaller marshaller = new RecordMarshallerJson();
     protected String authentication = null;
     protected final String baseRestUrl;
-    protected String requestMethod = "POST";
+    protected RequestMethod requestMethod = RequestMethod.POST;
 
     new() {
         baseRestUrl = getInitialRestUrl
@@ -50,7 +50,7 @@ class RESTConnection extends ConnectionDefaults {
         this.authentication = authentication
     }
 
-    def void setRequestMethod(String requestMethod) {
+    def void setRequestMethod(RequestMethod requestMethod) {
         this.requestMethod = requestMethod
     }
 
@@ -75,7 +75,7 @@ class RESTConnection extends ConnectionDefaults {
 
     def ByteBuilder doIO(URL url, ByteArray request, boolean expectError) {
         val connection = url.openConnection() as HttpURLConnection
-        connection.requestMethod = requestMethod
+        connection.requestMethod = requestMethod.toString
 
         setRequestProperties(connection);
         if (authentication !== null)
@@ -85,7 +85,10 @@ class RESTConnection extends ConnectionDefaults {
 
         var OutputStream wr = null
         // write the request
-        if (requestMethod == "POST" || requestMethod == "PUT") { // TODO check PUT, DELETE
+        if (#[
+            RequestMethod.POST,
+            RequestMethod.PUT
+        ].contains(requestMethod)) {
              wr = connection.getOutputStream();
              request.toOutputStream(wr);
              wr.flush();

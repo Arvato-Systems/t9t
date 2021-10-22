@@ -43,7 +43,7 @@ import com.arvatosystems.t9t.jetty.oas.DateTimeConverters;
 import com.arvatosystems.t9t.jetty.rest.endpoints.StaticResourcesResource;
 import com.arvatosystems.t9t.jetty.xml.XmlMediaTypeDecoder;
 import com.arvatosystems.t9t.jetty.xml.XmlMediaTypeEncoder;
-import com.arvatosystems.t9t.rest.converters.JavaTimeParamConverterProvider;
+import com.arvatosystems.t9t.rest.converters.JaxrsParamConverterProvider;
 import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
 
 import de.jpaw.bonaparte.core.BonaPortableFactory;
@@ -112,7 +112,7 @@ public class ApplicationConfig extends Application {
         allClasses.add(RestExceptionHandler.class);
         allClasses.add(GeneralExceptionHandler.class);
         allClasses.add(StandaloneObjectMapper.class);
-        allClasses.add(JavaTimeParamConverterProvider.class);
+        allClasses.add(JaxrsParamConverterProvider.class);
 
         // Expose openapi.json via GET request
         allClasses.add(OpenApiResource.class);

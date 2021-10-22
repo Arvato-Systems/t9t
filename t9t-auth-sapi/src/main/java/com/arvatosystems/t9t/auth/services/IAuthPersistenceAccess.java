@@ -35,16 +35,16 @@ public interface IAuthPersistenceAccess {
 
     //changeMe to correct specification
     AuthModuleCfgDTO DEFAULT_MODULE_CFG = new AuthModuleCfgDTO(
-              null
-            , 0
-            , 0
-            , 0
-            , 0
-            , 0
-            , 0
-            , 0
-            , 0
-            , 1);
+        null,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1);
 
     // returns permission entries from the database which are relevant for the user / tenant as specified by the jwtInfo record, and which are relevant for the
     // specified resource. These are all resourceIds which are a substring of resource

@@ -5,7 +5,7 @@
         { "filterType": "W", "fieldName": "name" }
     ],
     "fields": [
-        "tenantId", "name", "isActive",
+        "tenantId", "name", "isActive", "timeZone",
         "permissions.logLevel", "permissions.logLevelErrors",
         "permissions.validFrom", "permissions.validTo"
     ]

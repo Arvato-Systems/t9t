@@ -102,7 +102,7 @@ public abstract class AbstractCrudSurrogateKeyBERequestHandler<REF extends Ref, 
      * @throws ApplicationException
      *             if a plausibility check has been found to fail.
      */
-    protected void validateUpdate(DTO current, DTO intended) {}
+    protected void validateUpdate(DTO current, DTO intended) { }
 
     /**
      * Validates data before it is mapped or persisted. Hook to be overridden by
@@ -113,7 +113,7 @@ public abstract class AbstractCrudSurrogateKeyBERequestHandler<REF extends Ref, 
      * @throws ApplicationException
      *             if a plausibility check has been found to fail.
      */
-    protected void validateCreate(DTO intended) {}
+    protected void validateCreate(DTO intended) { }
 
     /**
      * Validates before deletion. Can also be used to perform additional
@@ -124,19 +124,19 @@ public abstract class AbstractCrudSurrogateKeyBERequestHandler<REF extends Ref, 
      * @throws ApplicationException
      *             if a plausibility check has been found to fail.
      */
-    protected void validateDelete(DTO current) {}
+    protected void validateDelete(DTO current) { }
 
     /** Called before a status is changed active / inactive.
      * Only called if there is a real change.
      * If the change happens as part of an update, it is called after validateUpdate. */
-    protected void activationChange(DTO current, boolean newState) {}
+    protected void activationChange(DTO current, boolean newState) { }
 
     /**
      * Hook which allows to populate fields in the DTO which are not read from
      * disk directly, but also to hide data. Can be used by customizations. The
      * default implementation just returns the parameter unmodified.
      */
-    protected void postRead(DTO result) {}
+    protected void postRead(DTO result) { }
 
 
     // execute function of the interface description, but additional parameters
@@ -296,15 +296,4 @@ public abstract class AbstractCrudSurrogateKeyBERequestHandler<REF extends Ref, 
         rs.setReturnCode(0);
         return rs;
     }
-
-//    protected DataWithTracking<DTO, TRACKING>  performUpdate(IEntityMapper<KEY, DTO, TRACKING, ENTITY> mapper, IResolverAnyKey<KEY, TRACKING, ENTITY> resolver,
-//            REQUEST crudRequest, EntityManager entityManager, KEY key) {
-//
-//
-//            entityManager.flush();
-//            entityManager.refresh(result); // update references to other entities
-//
-//        return result;
-//    }
-
 }

@@ -21,4 +21,4 @@ import com.arvatosystems.t9t.plugins.PluginLogRef;
 
 import de.jpaw.bonaparte.refsw.RefResolver;
 
-public interface IPluginLogResolver extends RefResolver<PluginLogRef, PluginLogDTO, FullTrackingWithVersion> {}
+public interface IPluginLogResolver extends RefResolver<PluginLogRef, PluginLogDTO, FullTrackingWithVersion> { }

@@ -21,14 +21,18 @@ import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Startup;
+import de.jpaw.dp.StartupOnly;
 
-// this is required before the JPA layer initializes, because it injects the contextprovider
+/**
+ * Framework initialization class.
+ * This must be scheduled before the JPA layer initializes, because it injects the context provider.
+ */
 @Startup(1800)
-public class Init01800Basics {
-    public static void onStartup() {
+public class Init01800Basics implements StartupOnly {
 
+    @Override
+    public void onStartup() {
         // create a custom scope for the request context. This is for the getters!
-//        Jdp.registerWithCustomProvider(RequestContext.class, RequestContextWithScope.getProvider());
         Jdp.registerWithCustomProvider(RequestContext.class, Jdp.getRequired(RequestContextScope.class));
     }
 }

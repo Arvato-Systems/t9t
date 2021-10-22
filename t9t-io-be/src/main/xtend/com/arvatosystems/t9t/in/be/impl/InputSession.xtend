@@ -129,14 +129,14 @@ class InputSession implements IInputSession {
             throw new T9tException(T9tException.INVALID_CONFIGURATION, "Input format Converter has not been defined for camelRoute "+ dataSinkCfg.camelRoute)
         }
         if (inputFormatConverter !== null) {
-            inputFormatConverter.open(this, dataSinkCfg, session, params, baseBClass)
+            inputFormatConverter.open(this, params, baseBClass)
         }
         if (dataSinkCfg.preTransformerName !== null) {
             inputTransformer = Jdp.getRequired(IInputDataTransformer, dataSinkCfg.preTransformerName)
         } else {
             inputTransformer = new IdentityTransformer()
         }
-        inputTransformer.open(this, dataSinkCfg, session, params, baseBClass)
+        inputTransformer.open(this, params, baseBClass)
 
         if (dataSinkCfg.responseDataSinkRef !== null) {
             responseBuffer = new ArrayList<BonaPortable>(MAX_RESPONSES);
@@ -323,5 +323,9 @@ class InputSession implements IInputSession {
 
     override setHeaderData(String name, Object value) {
         headerData.put(name, value)
+    }
+
+    override getDataSinkDTO() {
+        return dataSinkCfg;
     }
 }

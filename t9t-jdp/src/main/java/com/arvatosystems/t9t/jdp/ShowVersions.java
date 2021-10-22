@@ -26,13 +26,16 @@ import de.jpaw.dp.Startup;
 import de.jpaw.util.ExceptionUtil;
 
 @Startup(101)
-public class ShowVersions {
+public final class ShowVersions {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShowVersions.class);
     private static final String UNKNOWN      = "UNKNOWN";
     private static String xarName            = UNKNOWN; // WAR or JAR name
     private static String applicationVersion = UNKNOWN; // version (tag or SNAPSHOT)
     private static String buildNumber        = UNKNOWN; // Jenkins build number
     private static String scmRevision        = UNKNOWN; // git commit tag
+
+    private ShowVersions() {
+    }
 
     // started by Jdp initialization
     public static void onStartup() {

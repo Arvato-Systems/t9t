@@ -77,7 +77,7 @@ public class SearchFilterUtil implements ISearchFilterUtil {
         if (searchFilter instanceof NotFilter) {
             if (hasWantedChild((NotFilter)searchFilter, wantedFieldNames)) {
                 filterQueue.add(new NotFilter());
-                populateQueue(((NotFilter) searchFilter).getFilter(), wantedFieldNames, filterQueue);
+                populateQueue(((NotFilter)searchFilter).getFilter(), wantedFieldNames, filterQueue);
             }
 
         } else if (searchFilter instanceof AndFilter) {
@@ -132,8 +132,10 @@ public class SearchFilterUtil implements ISearchFilterUtil {
         if (copyFilter instanceof AndFilter) {
             //always try on the outer predicate first
 
-            if ((isPredicate(((AndFilter)copyFilter).getFilter2()) && addOnNextEmptyFilterField(((AndFilter)copyFilter).getFilter2(), newFilterToBeAdded)) == false) {
-                if ((isPredicate(((AndFilter)copyFilter).getFilter1()) && addOnNextEmptyFilterField(((AndFilter)copyFilter).getFilter1(), newFilterToBeAdded)) == false) {
+            if ((isPredicate(((AndFilter)copyFilter).getFilter2())
+              && addOnNextEmptyFilterField(((AndFilter)copyFilter).getFilter2(), newFilterToBeAdded)) == false) {
+                if ((isPredicate(((AndFilter)copyFilter).getFilter1())
+                  && addOnNextEmptyFilterField(((AndFilter)copyFilter).getFilter1(), newFilterToBeAdded)) == false) {
                     return setChildFilter((AndFilter)copyFilter, newFilterToBeAdded);
                 } else
                     return true;
@@ -141,8 +143,10 @@ public class SearchFilterUtil implements ISearchFilterUtil {
                 return true;
 
         } else if (copyFilter instanceof OrFilter) {
-            if ((isPredicate(((OrFilter)copyFilter).getFilter2()) && addOnNextEmptyFilterField(((OrFilter)copyFilter).getFilter2(), newFilterToBeAdded)) == false) {
-                if ((isPredicate(((OrFilter)copyFilter).getFilter1()) && addOnNextEmptyFilterField(((OrFilter)copyFilter).getFilter1(), newFilterToBeAdded)) == false) {
+            if ((isPredicate(((OrFilter)copyFilter).getFilter2())
+              && addOnNextEmptyFilterField(((OrFilter)copyFilter).getFilter2(), newFilterToBeAdded)) == false) {
+                if ((isPredicate(((OrFilter)copyFilter).getFilter1())
+                  && addOnNextEmptyFilterField(((OrFilter)copyFilter).getFilter1(), newFilterToBeAdded)) == false) {
                     return setChildFilter((OrFilter)copyFilter, newFilterToBeAdded);
                 } else
                     return true;

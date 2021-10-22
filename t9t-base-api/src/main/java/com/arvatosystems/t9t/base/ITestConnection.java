@@ -27,10 +27,18 @@ import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 
 /** Common methods for embedded and remote tests. */
 public interface ITestConnection {
-    void switchUser(UUID newApiKey)                                 throws Exception;   // authenticate a new user by API key
+    /** Authenticate a new user by API key. */
+    void switchUser(UUID newApiKey)                                 throws Exception;
+
+    /** Switches connection to use another user. */
     void switchUser(String userId, String password)                 throws Exception;
-    void switchTenant(String newTenantId, int expectedCode)         throws Exception;   // switch to a new tenant
-    void switchLanguage(String newLanguage)                         throws Exception;   // switch to a different language
+
+    /** Switches connection to use another tenant (given the user has permission to it). */
+    void switchTenant(String newTenantId, int expectedCode)         throws Exception;
+
+    /** Switches connection to use another language. */
+    void switchLanguage(String newLanguage)                         throws Exception;
+
     BonaPortable doIO(BonaPortable rp)                              throws Exception;   // send any request
     ServiceResponse srIO(RequestParameters rp)                      throws Exception;   // send any request and perform a type check
     ServiceResponse okIO(RequestParameters rp)                      throws Exception;   // send any request and check result for OK, throws an Exception if not OK
@@ -40,11 +48,16 @@ public interface ITestConnection {
     AuthenticationResponse auth(String myUserId, String myPassword) throws Exception;   // authenticate as in the general case, shorthand for username / password
     AuthenticationResponse auth(UUID apiKey)                        throws Exception;   // authenticate as in the general case, shorthand for API key
     void logout()                                                   throws Exception;   // terminate communication (close connection for remote tests)
-    // methods not required for normal operation, but for testing of specific scenarios
-    void setAuthentication(String header);                                              // set a faked Authorization header (only for remote tests)
 
+    /** Set a specific Authorization header. (Only for remote tests, required to be able to test incorrect authentications.) */
+    void setAuthentication(String header);
+
+    /** Changes the password for the specified user. */
     AuthenticationResponse changePassword(String myUserId, String myPassword, String newPassword) throws Exception;
 
+    /** Retrieves the JWT as encoded string. */
     String getLastJwt();
+
+    /** Retrieves the JWT as decoded data structure. */
     JwtInfo getLastJwtInfo();
 }

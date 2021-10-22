@@ -41,6 +41,7 @@ class XmlStreamFormatConverter extends AbstractXmlFormatConverter {
         val elementClass       = baseBClass.bonaPortableClass
         val staxFactory        = XMLInputFactory.newInstance();
         val reader             = staxFactory.createXMLStreamReader(xml)
+        val cfg                = inputSession.dataSinkDTO;
         var int event          = if (reader.hasNext()) reader.nextTag() else XMLStreamConstants.END_DOCUMENT
 
         while (event != XMLStreamConstants.END_DOCUMENT) {

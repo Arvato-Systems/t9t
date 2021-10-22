@@ -28,7 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.vertx.IRestModule;
-import com.arvatosystems.t9t.rest.converters.JavaTimeParamConverterProvider;
+import com.arvatosystems.t9t.rest.converters.JaxrsParamConverterProvider;
 import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
 import com.arvatosystems.t9t.rest.vertx.xml.XmlMediaTypeDecoder;
 import com.arvatosystems.t9t.rest.vertx.xml.XmlMediaTypeEncoder;
@@ -66,7 +66,7 @@ public class T9tVertxRestModule implements IRestModule {
         final VertxResteasyDeployment deployment = new VertxResteasyDeployment();
 
         final List<Object> providers = new ArrayList<>();
-        providers.add(new JavaTimeParamConverterProvider());  // Java 8 date/time support for GET parameters
+        providers.add(new JaxrsParamConverterProvider());  // Java 8 date/time support for GET parameters
         providers.add(new JacksonObjectMapper());  // JSON
         providers.add(new XmlMediaTypeDecoder());  // XML decoder
         providers.add(new XmlMediaTypeEncoder());  // XML encoder

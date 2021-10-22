@@ -494,7 +494,7 @@ public abstract class AbstractResolverAnyKey42<
     /** Obtains a default sort order to make backend pagination reliable. */
     protected abstract List<SortColumn> getDefaultSortColumns();
 
-    protected void createNewArtificialKeyIfRequired(final ENTITY entity) {}
+    protected void createNewArtificialKeyIfRequired(final ENTITY entity) { }
 
     /**
      * {@inheritDoc}

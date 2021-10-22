@@ -43,7 +43,8 @@ public class ExecutePluginV1RequestHandler extends AbstractRequestHandler<Execut
     public ExecutePluginV1Response execute(RequestContext ctx, ExecutePluginV1Request request) throws Exception {
         final ExecutePluginV1Response result = new ExecutePluginV1Response();
         LOGGER.info("Calling request handler plugin {} with parameters {}", request.getQualifier(), request);
-        pluginManager.getPluginMethod(ctx.tenantRef, T9tConstants.PLUGIN_API_ID_REQUEST_HANDLER, request.getQualifier(), IRequestHandlerPlugin.class, false).execute(ctx, request, result);
+        pluginManager.getPluginMethod(ctx.tenantRef, T9tConstants.PLUGIN_API_ID_REQUEST_HANDLER, request.getQualifier(), IRequestHandlerPlugin.class, false)
+          .execute(ctx, request, result);
         LOGGER.info("Returning from request handler plugin {} with response {}", request.getQualifier(), result);
         return result;
     }

@@ -1,0 +1,45 @@
+html {
+    box-sizing: border-box;
+    overflow: -moz-scrollbars-vertical;
+    overflow-y: scroll;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
+
+body {
+    margin: 0;
+    background: #fafafa;
+}
+
+.scheme-container .servers {
+    visibility: hidden;
+    height: 0;
+}
+
+.scheme-container .servers-title {
+    visibility: hidden;
+    height: 0;
+}
+
+.custom-toolbar {
+    background: #0068a9;
+    height: 80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px 16px;
+}
+
+.custom-toolbar .application-logo {
+    height: 56px;
+    width: auto;
+}
+
+.custom-toolbar .company-logo {
+    height: 80px;
+    width: auto;
+}

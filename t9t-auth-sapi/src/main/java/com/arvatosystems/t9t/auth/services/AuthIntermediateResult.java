@@ -22,7 +22,7 @@ import com.arvatosystems.t9t.auth.TenantDTO;
 import com.arvatosystems.t9t.auth.UserDTO;
 import com.arvatosystems.t9t.auth.UserStatusDTO;
 
-public class AuthIntermediateResult {
+public final class AuthIntermediateResult {
     private int                   returnCode;        // 0 = success, anything else is an error
     private Long                  tenantRef;
     private ApiKeyDTO             apiKey;

@@ -39,7 +39,8 @@ public class ExporterTool2<DTO extends BonaPortable, EXTDTO extends DTO, TRACKIN
     protected final ISplittingOutputSessionProvider splittingOutputSessionProvider = Jdp.getRequired(ISplittingOutputSessionProvider.class);
 
     @Override
-    public Long storeAll(OutputSessionParameters op, List<DataWithTrackingW<DTO, TRACKING>> dataList, Integer maxRecords, Function<DTO, EXTDTO> converter) throws Exception {
+    public Long storeAll(OutputSessionParameters op, List<DataWithTrackingW<DTO, TRACKING>> dataList, Integer maxRecords, Function<DTO, EXTDTO> converter)
+      throws Exception {
         try (IOutputSession outputSession = splittingOutputSessionProvider.get(maxRecords)) {
             Long sinkRef = outputSession.open(op);
             for (DataWithTrackingW<DTO, TRACKING> data : dataList) {
@@ -55,7 +56,8 @@ public class ExporterTool2<DTO extends BonaPortable, EXTDTO extends DTO, TRACKIN
     }
 
     @Override
-    public ReadAllResponse<EXTDTO, TRACKING> returnOrExport(final List<DataWithTrackingW<DTO, TRACKING>> dataList, final OutputSessionParameters op, Function<DTO, EXTDTO> converter) throws Exception {
+    public ReadAllResponse<EXTDTO, TRACKING> returnOrExport(
+      final List<DataWithTrackingW<DTO, TRACKING>> dataList, final OutputSessionParameters op, Function<DTO, EXTDTO> converter) throws Exception {
         final ReadAllResponse<EXTDTO, TRACKING> resp = new ReadAllResponse<EXTDTO, TRACKING>();
         // if a searchOutputTarget has been defined, push the data into it, otherwise return the ReadAllResponse
         if (op == null) {
@@ -65,7 +67,8 @@ public class ExporterTool2<DTO extends BonaPortable, EXTDTO extends DTO, TRACKIN
                 EXTDTO extDto = converter.apply(data.getData());
                 if (extDto != null) {
                     data.setData(extDto);  // replace the data with the extended one
-                    extDataList.add((DataWithTrackingW<EXTDTO, TRACKING>) data); // do a cast instead of new allocation, because that supports extensions of DataWithTrackingW as well
+                    // do a cast instead of new allocation, because that supports extensions of DataWithTrackingW as well
+                    extDataList.add((DataWithTrackingW<EXTDTO, TRACKING>)data);
                 }
             }
             resp.setDataList(extDataList);
@@ -73,7 +76,7 @@ public class ExporterTool2<DTO extends BonaPortable, EXTDTO extends DTO, TRACKIN
             // push output into an outputSession (export it)
             op.setSmartMappingForDataWithTracking(Boolean.TRUE);
             resp.setSinkRef(storeAll(op, dataList, null, converter));
-            resp.setDataList(ImmutableList.<DataWithTrackingW<EXTDTO,TRACKING>>of());
+            resp.setDataList(ImmutableList.<DataWithTrackingW<EXTDTO, TRACKING>>of());
         }
         return resp;
     }

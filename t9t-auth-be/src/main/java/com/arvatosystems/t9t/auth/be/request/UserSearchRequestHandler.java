@@ -27,7 +27,6 @@ import de.jpaw.dp.Jdp;
 
 public class UserSearchRequestHandler extends AbstractSearchBERequestHandler<UserDTO, FullTrackingWithVersion, UserSearchRequest> {
 
-    // @Inject
     protected final IUserResolver resolver = Jdp.getRequired(IUserResolver.class);
 
     @Override

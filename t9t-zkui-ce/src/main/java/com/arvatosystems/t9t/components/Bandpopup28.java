@@ -109,16 +109,6 @@ public class Bandpopup28 extends Bandpopup implements IdSpace, IGridIdOwner {
 //            main.setGridContext(gridContext, getId() == null ? gridId : getId());
 //        }
 
-//        // examine args
-//        Map<?, ?> args = Executions.getCurrent().getArg();
-//        if (args == null) {
-//            LOGGER.debug("args are null");
-//        } else {
-//            LOGGER.debug("arg map has {} entries", args.size());
-//            for (Map.Entry<?, ?> me : args.entrySet()) {
-//                LOGGER.debug("Map entry is {} -> {}", me.getKey(), me.getValue());
-//            }
-//        }
         // use own param passing
         SearchFilter f = as.getFilterForPresetSearch();
         if (f != null) {

@@ -52,9 +52,10 @@ import de.jpaw.util.ExceptionUtil;
  *
  * Any functionality relating to customization has been moved to a separate class (separation of concerns).
  */
-public class RequestContext extends AbstractRequestContext {
+public class RequestContext extends AbstractRequestContext {  // FIXME: this class should be final, but some unit test in t9t-ssm-be relies on non-finalness
     private static final Logger LOGGER = LoggerFactory.getLogger(RequestContext.class);
-    static private final Cache<Long, Semaphore> GLOBAL_JVM_LOCKS = CacheBuilder.newBuilder().expireAfterAccess(1, TimeUnit.MINUTES).initialCapacity(1000).build();
+    private static final Cache<Long, Semaphore> GLOBAL_JVM_LOCKS = CacheBuilder.newBuilder()
+        .expireAfterAccess(1, TimeUnit.MINUTES).initialCapacity(1000).build();
 
     public final InternalHeaderParameters internalHeaderParameters;
     public final Thread createdByThread = Thread.currentThread();
@@ -118,12 +119,16 @@ public class RequestContext extends AbstractRequestContext {
             final int maxLen = StackLevel.meta$$statusText.getLength();
             for (StackLevel sl: callStack) {
                 final String status = sl.getStatusText();
-                if (status == null || status.length() <= maxLen)
+                if (status == null || status.length() <= maxLen) {
+                    // status text fits into field - use 1:1
                     copy.add(sl);
-                else
-                    copy.add(new StackLevel(numberOfCallsThisLevel, progressCounter.get(), sl.getPqon(), status.substring(0, maxLen)));  // use a truncated message text
+                } else {
+                    // use a truncated message text
+                    copy.add(new StackLevel(numberOfCallsThisLevel, progressCounter.get(), sl.getPqon(), status.substring(0, maxLen)));
+                }
             }
-            copy.add(new StackLevel(numberOfCallsThisLevel, progressCounter.get(), currentPQON, MessagingUtil.truncField(statusText, maxLen)));  // add one more for the current level
+         // add one more for the current level
+            copy.add(new StackLevel(numberOfCallsThisLevel, progressCounter.get(), currentPQON, MessagingUtil.truncField(statusText, maxLen)));
             return copy;
         }
     }
@@ -199,8 +204,9 @@ public class RequestContext extends AbstractRequestContext {
         // now invoke possible postCommit hooks
         if (postCommitList != null) {
             LOGGER.debug("Performing {} stored post commit actions", postCommitList.size());
-            for (IPostCommitHook hook : postCommitList)
+            for (IPostCommitHook hook : postCommitList) {
                 hook.postCommit(this, rq, rs);
+            }
             // avoid duplicate execution...
             postCommitList.clear();
         }
@@ -210,8 +216,9 @@ public class RequestContext extends AbstractRequestContext {
         // request returned an error. You can now notify someone...
         if (postFailureList != null) {
             LOGGER.debug("Performing {} stored post failure actions", postFailureList.size());
-            for (IPostCommitHook hook : postFailureList)
+            for (IPostCommitHook hook : postFailureList) {
                 hook.postCommit(this, rq, rs);
+            }
             // avoid duplicate execution...
             postFailureList.clear();
         }
@@ -238,8 +245,9 @@ public class RequestContext extends AbstractRequestContext {
     public void releaseAllLocks() {
         if (!OWNED_JVM_LOCKS.isEmpty())
             LOGGER.trace("Releasing locks on {} refs", OWNED_JVM_LOCKS.size());
-        for (Semaphore sem : OWNED_JVM_LOCKS.values())
+        for (Semaphore sem : OWNED_JVM_LOCKS.values()) {
             sem.release();
+        }
         OWNED_JVM_LOCKS.clear();
     }
 

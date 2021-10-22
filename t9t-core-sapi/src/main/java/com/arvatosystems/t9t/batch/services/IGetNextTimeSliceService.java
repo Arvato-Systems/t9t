@@ -28,7 +28,8 @@ public interface IGetNextTimeSliceService {
      * Advances the slice tracking entry identified by the key (dataSinkId, id).
      * All parameters are not nullable, except the optional overrideAsOf and sinkRef.
      * If overrideAsOf is null, ctx.executionStart will be used, minus a configurable gap.
-     * If overrideAsOf is not null, it will be used as the precise end instant. It is the responsibility of the caller to ensure that it is rounded to full seconds.
+     * If overrideAsOf is not null, it will be used as the precise end instant.
+     * It is the responsibility of the caller to ensure that it is rounded to full seconds.
      */
     SliceTrackingInterval getNextTimeSlice(RequestContext ctx, String dataSinkId, String id, Instant overrideAsOf, Long sinkRef);
 

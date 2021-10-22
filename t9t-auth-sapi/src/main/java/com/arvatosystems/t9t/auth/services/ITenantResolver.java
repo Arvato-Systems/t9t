@@ -22,4 +22,4 @@ import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import de.jpaw.bonaparte.refsw.RefResolver;
 
 /** Implemented via cache. */
-public interface ITenantResolver extends RefResolver<TenantRef, TenantDTO, FullTrackingWithVersion> {}
+public interface ITenantResolver extends RefResolver<TenantRef, TenantDTO, FullTrackingWithVersion> { }

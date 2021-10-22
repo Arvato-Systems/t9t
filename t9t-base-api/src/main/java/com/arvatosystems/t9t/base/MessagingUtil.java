@@ -38,12 +38,15 @@ public final class MessagingUtil {
     public static final String BONAPARTE_PACKAGE_PREFIX   = "de.jpaw.bonaparte";                // just the bonaparte libraries
     public static final String TWENTYEIGHT_PACKAGE_PREFIX = "com.arvatosystems.t9t";            // prefix for t9t and a28
 
-    static private final String DEFAULT_LANGUAGE = "en";
+    private static final String DEFAULT_LANGUAGE = "en";
 
-    public static String [] PACKAGES_TO_SCAN_FOR_XENUMS = {
+    public static final String[] PACKAGES_TO_SCAN_FOR_XENUMS = {
         JPAW_PACKAGE_PREFIX,
         TWENTYEIGHT_PACKAGE_PREFIX
     };
+
+    private MessagingUtil() {
+    }
 
     /**
      * Initialization method to install a suitable package prefix resolution for the Bonaparte parsers.
@@ -54,29 +57,29 @@ public final class MessagingUtil {
     }
 
     /** Get the list of languages to examine, with fallbacks. */
-    public static String [] getLanguagesWithFallback(String language) {
+    public static String[] getLanguagesWithFallback(String language) {
         return getLanguagesWithFallback(language, DEFAULT_LANGUAGE);
     }
 
     /** Get the list of languages to examine, with fallbacks. */
-    public static String [] getLanguagesWithFallback(String language, String defaultLanguage) {
+    public static String[] getLanguagesWithFallback(String language, String defaultLanguage) {
         if (language == null) {
             return new String[] { defaultLanguage };
         }
         final boolean isDefault = language.startsWith(defaultLanguage);
 
         if (language.length() <= 2) {
-            return isDefault ?
-                new String[] { defaultLanguage } :
-                new String[] { language, defaultLanguage };
+            return isDefault
+                ? new String[] { defaultLanguage }
+                : new String[] { language, defaultLanguage };
         } else if (language.length() <= 5) {
-            return isDefault ?
-                new String[] { language, language.substring(0, 2) } :
-                new String[] { language, language.substring(0, 2), defaultLanguage };
+            return isDefault
+                ? new String[] { language, language.substring(0, 2) }
+                : new String[] { language, language.substring(0, 2), defaultLanguage };
         } else {
-            return isDefault ?
-                new String[] { language, language.substring(0, 5), language.substring(0, 2) } :
-                new String[] { language, language.substring(0, 5), language.substring(0, 2), defaultLanguage };
+            return isDefault
+                ? new String[] { language, language.substring(0, 5), language.substring(0, 2) }
+                : new String[] { language, language.substring(0, 5), language.substring(0, 2), defaultLanguage };
         }
     }
 

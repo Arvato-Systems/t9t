@@ -44,7 +44,7 @@ import de.jpaw.dp.Singleton;
 @Singleton
 public class CachingAuthenticationProcessor implements ICachingAuthenticationProcessor {
     private static final Logger LOGGER = LoggerFactory.getLogger(CachingAuthenticationProcessor.class);
-    protected static final Cache<String,AuthenticationInfo> authCache = CacheBuilder.newBuilder()
+    protected static final Cache<String, AuthenticationInfo> AUTH_CACHE = CacheBuilder.newBuilder()
             .expireAfterWrite(50L, TimeUnit.MINUTES).maximumSize(200L).build();
     protected static final AuthenticationInfo ACCESS_DENIED_DUE_TO_EXCEPTION = new AuthenticationInfo();
     static {
@@ -83,7 +83,7 @@ public class CachingAuthenticationProcessor implements ICachingAuthenticationPro
     public CachingAuthenticationProcessor() {
         final ICacheInvalidationRegistry cacheInvalidationRegistry = Jdp.getOptional(ICacheInvalidationRegistry.class);
         if (cacheInvalidationRegistry != null) {
-            cacheInvalidationRegistry.registerInvalidator(IAuthCacheInvalidation.AUTH_CACHE_ID, dto -> authCache.invalidateAll());
+            cacheInvalidationRegistry.registerInvalidator(IAuthCacheInvalidation.AUTH_CACHE_ID, dto -> AUTH_CACHE.invalidateAll());
         }
     }
 
@@ -100,7 +100,7 @@ public class CachingAuthenticationProcessor implements ICachingAuthenticationPro
         final AuthenticationInfo authInfo = new AuthenticationInfo();
         authInfo.setEncodedJwt(encodedJwt);
         authInfo.setJwtInfo(jwtInfo);
-        authCache.put(header, authInfo);
+        AUTH_CACHE.put(header, authInfo);
         return authInfo;
     }
 
@@ -111,7 +111,7 @@ public class CachingAuthenticationProcessor implements ICachingAuthenticationPro
             return storeSuccessful(header, jwtToken, info);
         } catch (Exception e) {
             LOGGER.info("JWT rejected: {}: {}", e.getClass().getSimpleName(), e.getMessage());
-            authCache.put(header, ACCESS_DENIED_DUE_TO_EXCEPTION);
+            AUTH_CACHE.put(header, ACCESS_DENIED_DUE_TO_EXCEPTION);
         }
         return ACCESS_DENIED_DUE_TO_EXCEPTION;
     }
@@ -128,7 +128,7 @@ public class CachingAuthenticationProcessor implements ICachingAuthenticationPro
         } catch (Exception e) {
             LOGGER.info("Bad API Key auth: {}: {}", e.getClass().getSimpleName(), e.getMessage());
         }
-        authCache.put(header, ACCESS_DENIED_INVALID_API_KEY);
+        AUTH_CACHE.put(header, ACCESS_DENIED_INVALID_API_KEY);
         return ACCESS_DENIED_INVALID_API_KEY;
     }
 
@@ -137,31 +137,35 @@ public class CachingAuthenticationProcessor implements ICachingAuthenticationPro
             final String decoded = new String(Base64.getUrlDecoder().decode(header.substring(6).trim()), StandardCharsets.UTF_8);
             final int colonPos = decoded.indexOf(':');
             if (colonPos > 0 && colonPos < decoded.length()) {
-                final AuthenticationResponse authResp = authModule.login(new AuthenticationRequest(new PasswordAuthentication(decoded.substring(0, colonPos), decoded.substring(colonPos+1))));
+                final AuthenticationResponse authResp = authModule.login(new AuthenticationRequest(
+                  new PasswordAuthentication(decoded.substring(0, colonPos), decoded.substring(colonPos + 1))));
                 if (authResp.getReturnCode() == 0) {
                     return storeSuccessful(header, authResp.getEncodedJwt(), authResp.getJwtInfo());
                 } else {
-                    LOGGER.info("Auth by Basic username / PW rejected: Code {}: {} {}", authResp.getReturnCode(), authResp.getErrorMessage(), authResp.getErrorDetails());
+                    LOGGER.info("Auth by Basic username / PW rejected: Code {}: {} {}",
+                      authResp.getReturnCode(), authResp.getErrorMessage(), authResp.getErrorDetails());
                 }
             }
         } catch (Exception e) {
             LOGGER.info("Bad Basic auth: {}: {}", e.getClass().getSimpleName(), e.getMessage());
         }
-        authCache.put(header, ACCESS_DENIED_INVALID_BASIC);
+        AUTH_CACHE.put(header, ACCESS_DENIED_INVALID_BASIC);
         return ACCESS_DENIED_INVALID_BASIC;
     }
 
     @Override
     public AuthenticationInfo getCachedJwt(String authorizationHeader) {
         // cache test is common for all types of headers
-        final AuthenticationInfo cachedUser = authCache.getIfPresent(authorizationHeader);
+        final AuthenticationInfo cachedUser = AUTH_CACHE.getIfPresent(authorizationHeader);
         if (cachedUser != null) {
             if (isOrWasValid(cachedUser)) {
                 if (isStillValid(cachedUser)) {
-                    LOGGER.debug("Found cached authentication entry for user {}, method {}", cachedUser.getJwtInfo().getUserId(), authorizationHeader.substring(0, 7));
+                    LOGGER.debug("Found cached authentication entry for user {}, method {}",
+                      cachedUser.getJwtInfo().getUserId(), authorizationHeader.substring(0, 7));
                     return cachedUser;
                 } else {
-                    LOGGER.debug("Authentication: cached JWT for {} has expired, performing new authentication", cachedUser.getJwtInfo().getUserId());
+                    LOGGER.debug("Authentication: cached JWT for {} has expired, performing new authentication",
+                      cachedUser.getJwtInfo().getUserId());
                     // fall through
                 }
             } else {

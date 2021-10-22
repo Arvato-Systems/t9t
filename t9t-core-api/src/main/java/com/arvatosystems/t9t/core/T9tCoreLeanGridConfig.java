@@ -20,9 +20,9 @@ import java.util.List;
 
 import com.arvatosystems.t9t.base.ILeanGridConfigContainer;
 
-public class T9tCoreLeanGridConfig implements ILeanGridConfigContainer {
+public final class T9tCoreLeanGridConfig implements ILeanGridConfigContainer {
 
-    private static String [] GRID_CONFIGS = {
+    private static final String[] GRID_CONFIGS = {
         "statistics",
         "processStatus",
         "componentInfo",

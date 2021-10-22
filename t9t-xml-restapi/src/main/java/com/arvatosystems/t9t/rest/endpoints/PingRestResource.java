@@ -27,7 +27,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +42,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Ping endpoint. Handles a single PingRequest from the external API. This is
@@ -58,10 +58,10 @@ public class PingRestResource implements IT9tRestEndpoint {
 
     @Operation(
         summary = "Health check (quick)",
-        description = "A successful GET confirms that the server is listening on the specified port",
+        description = "A successful GET confirms that the server is listening on the specified port.",
         responses = {
-            @ApiResponse(description = "request passed", content = @Content(mediaType = "application/json", schema = @Schema(implementation = GenericResult.class))),
-            @ApiResponse(responseCode = "400", description = "bad request")}
+            @ApiResponse(description = "Request passed.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = GenericResult.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request.")}
     )
     @GET
     public Response testPingGet(@Context final HttpHeaders httpHeaders) {
@@ -99,10 +99,11 @@ public class PingRestResource implements IT9tRestEndpoint {
 
     @Operation(
         summary = "Health check (logged)",
-        description = "A successful POST confirms that the server is listening on the specified port and the worker pool has available processing slots",
+        description = "A successful POST confirms that the server is listening on the specified port and the worker pool has available processing slots.",
         responses = {
-            @ApiResponse(description = "request passed", content = @Content(schema = @Schema(implementation = GenericResult.class))),
-            @ApiResponse(responseCode = "400", description = "bad request")}
+            @ApiResponse(description = "Request passed.", content = @Content(schema = @Schema(implementation = GenericResult.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request.")
+        }
     )
     @POST
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })

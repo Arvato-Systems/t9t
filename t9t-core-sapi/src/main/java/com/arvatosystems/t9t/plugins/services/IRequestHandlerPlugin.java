@@ -23,5 +23,7 @@ public interface IRequestHandlerPlugin extends IGenericCompatiblePluginMethod<Ex
 
     /** Returns the API implemented. Will usually be provided by a default method. */
     @Override
-    default String implementsApi() { return T9tConstants.PLUGIN_API_ID_REQUEST_HANDLER; }
+    default String implementsApi() {
+        return T9tConstants.PLUGIN_API_ID_REQUEST_HANDLER;
+    }
 }

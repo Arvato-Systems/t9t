@@ -28,7 +28,8 @@ import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 
 @Singleton
-public class SliceTrackingResolver extends AbstractJpaResolver<SliceTrackingRef, SliceTrackingDTO, FullTrackingWithVersion, SliceTrackingEntity> implements ISliceTrackingResolver {
+public class SliceTrackingResolver extends AbstractJpaResolver<SliceTrackingRef, SliceTrackingDTO, FullTrackingWithVersion, SliceTrackingEntity>
+  implements ISliceTrackingResolver {
 
     public SliceTrackingResolver() {
         super("SliceTracking", Jdp.getRequired(ISliceTrackingEntityResolver.class), Jdp.getRequired(ISliceTrackingDTOMapper.class));

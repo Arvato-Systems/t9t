@@ -201,7 +201,6 @@
             <plugin>
                 <!-- Download Swagger UI webjar. -->
                 <artifactId>maven-dependency-plugin</artifactId>
-                <version>${maven-dependency-plugin.version}</version>
                 <executions>
                     <execution>
                         <phase>prepare-package</phase>
@@ -224,7 +223,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>${maven-resources-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>copy-resources</id>
@@ -243,6 +241,9 @@
                                     </directory>
                                     <excludes>
                                         <exclude>index.html</exclude>
+                                        <exclude>index.html.gz</exclude>
+                                        <exclude>favicon-16x16.png</exclude>
+                                        <exclude>favicon-32x32.png</exclude>
                                     </excludes>
                                 </resource>
                             </resources>

@@ -35,16 +35,17 @@ import de.jpaw.bonaparte.pojos.api.NullFilter;
 public abstract class AbstractSearchRestriction implements ISearchRestriction {
     private final Cache<Long, List<Long>> allowedRefsCache = CacheBuilder.newBuilder().expireAfterWrite(15L, TimeUnit.MINUTES).<Long, List<Long>>build();
 
-    protected static List<Long> NO_REFS = ImmutableList.<Long>of();
-    protected static List<String> NO_FIELDS = ImmutableList.<String>of();
+    protected static final List<Long> NO_REFS = ImmutableList.<Long>of();
+    protected static final List<String> NO_FIELDS = ImmutableList.<String>of();
 
     @Override
-    public void addRestrictionsForFields(final RequestContext ctx, final SearchCriteria srq, final List<String> pathnames) {
+    public final void addRestrictionsForFields(final RequestContext ctx, final SearchCriteria srq, final List<String> pathnames) {
         this.addRestrictionsForFields(ctx, srq, pathnames, AbstractSearchRestriction.NO_FIELDS);
     }
 
     @Override
-    public void addRestrictionsForFields(final RequestContext ctx, final SearchCriteria srq, final List<String> requiredFields, final List<String> optionalFields) {
+    public final void addRestrictionsForFields(final RequestContext ctx, final SearchCriteria srq, final List<String> requiredFields,
+      final List<String> optionalFields) {
         final List<Long> allowedRefs = this.retrieveAllowedRefsCached(ctx);
         if (allowedRefs == null || allowedRefs.isEmpty()) {
             return;
@@ -56,21 +57,21 @@ public abstract class AbstractSearchRestriction implements ISearchRestriction {
                 longFilter.setEqualsValue(singleRef);
                 srq.setSearchFilter(SearchFilters.and(srq.getSearchFilter(), longFilter));
             }
-            for (final String name_1 : optionalFields) {
-                final LongFilter longFilter = new LongFilter(name_1);
+            for (final String name1 : optionalFields) {
+                final LongFilter longFilter = new LongFilter(name1);
                 longFilter.setEqualsValue(singleRef);
-                srq.setSearchFilter(SearchFilters.and(srq.getSearchFilter(), SearchFilters.or(new NullFilter(name_1), longFilter)));
+                srq.setSearchFilter(SearchFilters.and(srq.getSearchFilter(), SearchFilters.or(new NullFilter(name1), longFilter)));
             }
         } else {
-            for (final String name_2 : requiredFields) {
-                final LongFilter longFilter = new LongFilter(name_2);
+            for (final String name2 : requiredFields) {
+                final LongFilter longFilter = new LongFilter(name2);
                 longFilter.setValueList(allowedRefs);
                 srq.setSearchFilter(SearchFilters.and(srq.getSearchFilter(), longFilter));
             }
-            for (final String name_3 : optionalFields) {
-                final LongFilter longFilter = new LongFilter(name_3);
+            for (final String name3 : optionalFields) {
+                final LongFilter longFilter = new LongFilter(name3);
                 longFilter.setValueList(allowedRefs);
-                srq.setSearchFilter(SearchFilters.and(srq.getSearchFilter(), SearchFilters.or(new NullFilter(name_3), longFilter)));
+                srq.setSearchFilter(SearchFilters.and(srq.getSearchFilter(), SearchFilters.or(new NullFilter(name3), longFilter)));
             }
         }
     }

@@ -20,7 +20,8 @@ import com.arvatosystems.t9t.base.auth.ChangePasswordUI;
 
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 
-public class T9tBaseModels implements IViewModelContainer {
+public final class T9tBaseModels implements IViewModelContainer {
+    public T9tBaseModels() { }
 
     public static final CrudViewModel<ExportParameters, TrackingBase> EXPORT_PARAMS_VIEW_MODEL
       = new CrudViewModel<ExportParameters, TrackingBase>(ExportParameters.BClass.INSTANCE, null, null, null);

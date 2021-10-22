@@ -55,7 +55,7 @@ public class PluginManager implements IPluginManager {
     private final Provider<RequestContext> ctxProvider = Jdp.getProvider(RequestContext.class);
 
     private static class LoadedPlugin {
-        final public Plugin         loadedClass;
+        public final Plugin         loadedClass;
         final public URLClassLoader classloader;
 
         LoadedPlugin(Plugin loadedClass, URLClassLoader classloader) {
@@ -92,7 +92,7 @@ public class PluginManager implements IPluginManager {
                 //LOGGER.debug("Found JAR entry {}", je.getName());
                 if (je.getName().endsWith("/Main.class")) {
                     // -6 because of .class
-                    final String main = je.getName().substring(0,je.getName().length()-6).replace('/', '.');
+                    final String main = je.getName().substring(0, je.getName().length() - 6).replace('/', '.');
                     LOGGER.debug("Using Main class {} due to match of naming convention scan", main);
                     return main;
                 }
@@ -179,12 +179,12 @@ public class PluginManager implements IPluginManager {
     }
 
     @Override
-    public <R extends PluginMethod>R getPluginMethod(String pluginApiId, String qualifier, Class<R> requiredType, boolean allowNulls) {
+    public <R extends PluginMethod> R getPluginMethod(String pluginApiId, String qualifier, Class<R> requiredType, boolean allowNulls) {
         return getPluginMethod(ctxProvider.get().tenantRef, pluginApiId, qualifier, requiredType, allowNulls);
     }
 
     @Override
-    public <R extends PluginMethod>R getPluginMethod(Long tenantRef, String pluginApiId, String qualifier, Class<R> requiredType, boolean allowNulls) {
+    public <R extends PluginMethod> R getPluginMethod(Long tenantRef, String pluginApiId, String qualifier, Class<R> requiredType, boolean allowNulls) {
         final StoredPluginMethodKey key = new StoredPluginMethodKey(tenantRef, pluginApiId, qualifier);
         PluginMethod method = loadedPluginMethods.get(key);
         if (method == null && !tenantRef.equals(T9tConstants.GLOBAL_TENANT_REF42)) {
@@ -200,7 +200,8 @@ public class PluginManager implements IPluginManager {
         }
         // check its type
         if (!requiredType.isAssignableFrom(method.getClass())) {
-            LOGGER.error("Expected type {} in plugin {}:{}, but got type {}", requiredType.getCanonicalName(), pluginApiId, qualifier, method.getClass().getCanonicalName());
+            LOGGER.error("Expected type {} in plugin {}:{}, but got type {}",
+              requiredType.getCanonicalName(), pluginApiId, qualifier, method.getClass().getCanonicalName());
             throw new T9tException(T9tException.PLUGIN_METHOD_WRONG_TYPE, pluginApiId + ":" + qualifier);
         }
         return (R)method;

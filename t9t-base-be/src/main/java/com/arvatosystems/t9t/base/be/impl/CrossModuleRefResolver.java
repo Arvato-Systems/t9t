@@ -59,8 +59,8 @@ public class CrossModuleRefResolver implements ICrossModuleRefResolver {
     }
 
     @Override
-    public <REF extends Ref, DTO extends REF, TRACKING extends TrackingBase, REQ extends CrudSurrogateKeyRequest<REF, DTO, TRACKING>> DTO getData(REQ req, Long objectRef, boolean onlyActive)
-            {
+    public <REF extends Ref, DTO extends REF, TRACKING extends TrackingBase, REQ extends CrudSurrogateKeyRequest<REF, DTO, TRACKING>>
+      DTO getData(REQ req, Long objectRef, boolean onlyActive) {
         if (objectRef == null) {
             return null; // play null-safe
         }
@@ -76,7 +76,8 @@ public class CrossModuleRefResolver implements ICrossModuleRefResolver {
     }
 
     @Override
-    public <REF extends Ref, DTO extends REF, TRACKING extends TrackingBase, REQ extends CrudSurrogateKeyRequest<REF, DTO, TRACKING>> DTO getData(REQ req, REF ref, boolean onlyActive) {
+    public <REF extends Ref, DTO extends REF, TRACKING extends TrackingBase, REQ extends CrudSurrogateKeyRequest<REF, DTO, TRACKING>>
+      DTO getData(REQ req, REF ref, boolean onlyActive) {
         if (ref == null) {
             return null; // play null-safe
         }
@@ -97,12 +98,14 @@ public class CrossModuleRefResolver implements ICrossModuleRefResolver {
     }
 
     @Override
-    public <REF extends Ref, DTO extends REF, TRACKING extends TrackingBase, REQ extends CrudSurrogateKeyRequest<REF, DTO, TRACKING>> DTO getData(REQ req, Long objectRef) {
+    public <REF extends Ref, DTO extends REF, TRACKING extends TrackingBase, REQ extends CrudSurrogateKeyRequest<REF, DTO, TRACKING>>
+      DTO getData(REQ req, Long objectRef) {
         return getData(req, objectRef, false);
     }
 
     @Override
-    public <REF extends Ref, DTO extends REF, TRACKING extends TrackingBase, REQ extends CrudSurrogateKeyRequest<REF, DTO, TRACKING>> DTO getData(REQ req, REF ref) {
+    public <REF extends Ref, DTO extends REF, TRACKING extends TrackingBase, REQ extends CrudSurrogateKeyRequest<REF, DTO, TRACKING>>
+      DTO getData(REQ req, REF ref) {
         return getData(req, ref, false);
     }
 }

@@ -343,11 +343,13 @@ public class LeanGridConfigResolver implements ILeanGridConfigResolver {
         gridPrefs.getFields().add(fieldname);
 
         FieldDefinition fd = FieldMappers.getFieldDefinitionForPath(fieldname, myCrudViewModel);
-        if (fd == null)
+        if (fd == null) {
             LOGGER.error("Unresolvable field name in {}: {} for DTO {}", fieldname, myGridId, myCrudViewModel.dtoClass.getBonaPortableClass().getSimpleName());
-        pathToFieldDef.put(fieldname, fd);
-        allFieldDefs.add(fd);
-        widths.add(defaultWidth(fd));
+        } else {
+            pathToFieldDef.put(fieldname, fd);
+            allFieldDefs.add(fd);
+            widths.add(defaultWidth(fd));
+        }
         translations.add(as.translate(myGridId, fieldname));
     }
 

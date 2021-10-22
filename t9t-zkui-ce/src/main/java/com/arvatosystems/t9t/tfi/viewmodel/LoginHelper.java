@@ -94,7 +94,7 @@ public class LoginHelper {
                 Enumeration<String> headers = req.getHeaders(headerName);
                 while (headers.hasMoreElements()) {
                     String headerValue = headers.nextElement();
-                    LOGGER.debug("--> {}", headerValue);
+                    LOGGER.debug("  {}", headerValue);
                 }
 
             }
@@ -110,7 +110,7 @@ public class LoginHelper {
                 String[] paramValues = req.getParameterValues(paramName);
                 for (int i = 0; i < paramValues.length; i++) {
                     String paramValue = paramValues[i];
-                    LOGGER.debug("--> {}", paramValue);
+                    LOGGER.debug("  {}", paramValue);
                 }
 
             }

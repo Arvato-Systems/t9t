@@ -37,5 +37,9 @@ public interface IRequestProcessor {
      */
     ServiceResponse execute(ServiceRequestHeader hdr, RequestParameters rq, JwtInfo jwtInfo, String encodedJwt, boolean skipAuthorization);
 
-    <T extends ServiceResponse> T executeSynchronousAndCheckResult(RequestParameters params, InternalHeaderParameters ihdr, Class<T> requiredType, boolean skipAuthorization);
+    /**
+     * Execute a request and in case of a non-exceptional result (0xxx or 1xxx), also checks the type of the response.
+     */
+    <T extends ServiceResponse> T executeSynchronousAndCheckResult(RequestParameters params, InternalHeaderParameters ihdr, Class<T> requiredType,
+        boolean skipAuthorization);
 }

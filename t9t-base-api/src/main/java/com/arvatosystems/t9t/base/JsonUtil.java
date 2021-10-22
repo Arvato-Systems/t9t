@@ -22,10 +22,11 @@ import org.slf4j.LoggerFactory;
 
 import de.jpaw.json.JsonException;
 
-public class JsonUtil {
+public final class JsonUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonUtil.class);
 
-    private JsonUtil() {} // don't want instances of this class
+    private JsonUtil() {
+    }
 
     private static int hex(char c) {
         if (c >= '0' && c <= '9')

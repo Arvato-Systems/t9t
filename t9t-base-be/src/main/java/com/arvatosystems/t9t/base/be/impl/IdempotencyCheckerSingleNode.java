@@ -64,15 +64,16 @@ public class IdempotencyCheckerSingleNode implements IIdempotencyChecker {
     }
 
     protected Cache<UUID, ServiceResponse> buildNewCache() {
-        final CacheBuilder builder = CacheBuilder.newBuilder().maximumSize(idempotencyCacheMaxEntries);  // why doesn't newBuilder() allow generic parameters?
+        final CacheBuilder<Object, Object> builder = CacheBuilder.newBuilder().maximumSize(idempotencyCacheMaxEntries);
         if (idempotencyCacheExpiry != null) {
             builder.expireAfterWrite(idempotencyCacheExpiry, TimeUnit.SECONDS);
         }
-        return builder.build();
+        return builder.<UUID, ServiceResponse>build();
     }
 
     @Override
-    public ServiceResponse runIdempotencyCheck(final String tenantId, final UUID messageId, final RetryAdviceType idempotencyBehaviour, final RequestParameters rp) {
+    public ServiceResponse runIdempotencyCheck(final String tenantId, final UUID messageId, final RetryAdviceType idempotencyBehaviour,
+            final RequestParameters rp) {
         if (requestCache == null) {
             return null;
         }
@@ -101,7 +102,8 @@ public class IdempotencyCheckerSingleNode implements IIdempotencyChecker {
     }
 
     @Override
-    public void storeIdempotencyResult(final String tenantId, final UUID messageId, final RetryAdviceType idempotencyBehaviour, final RequestParameters rp, final ServiceResponse resp) {
+    public void storeIdempotencyResult(final String tenantId, final UUID messageId, final RetryAdviceType idempotencyBehaviour,
+      final RequestParameters rp, final ServiceResponse resp) {
         if (requestCache == null) {
             return;
         }

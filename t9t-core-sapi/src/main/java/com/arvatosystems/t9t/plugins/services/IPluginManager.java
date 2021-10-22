@@ -23,18 +23,26 @@ import de.jpaw.util.ByteArray;
  * Defines the Plugin Manager for loading and unloading Plugins and PluginMethods
  **/
 public interface IPluginManager {
-    /** Load all classes provided by the plugin and return its info structure. */
+    /**
+     * Loads all classes provided by the plugin and return its info structure.
+     */
     PluginInfo loadPlugin(Long tenantRef, ByteArray pluginData);
 
-    /** Remove all classes provided by the plugin and close its classloader. */
+    /**
+     * Removes all classes provided by the plugin and close its classloader.
+     */
     boolean removePlugin(Long tenantRef, String pluginId);
 
-    /** Retrieve a reference to a preloaded plugin method instance and checks its expected type. May return null if no method has been registered for this tenant. */
-    <R extends PluginMethod>R  getPluginMethod(Long tenantRef, String pluginId, String qualifier, Class<R> requiredType, boolean allowNulls);
+    /**
+     * Retrieves a reference to a preloaded plugin method instance and checks its expected type.
+     * May return null if no method has been registered for this tenant.
+     */
+    <R extends PluginMethod> R getPluginMethod(Long tenantRef, String pluginId, String qualifier, Class<R> requiredType, boolean allowNulls);
 
     /**
-     * Retrieve a reference to a preloaded plugin method instance and checks its expected type. May return null if no method has been registered for this tenant.
+     * Retrieves a reference to a preloaded plugin method instance and checks its expected type.
+     * May return null if no method has been registered for this tenant.
      * Convenience method without tenantRef. Retrieves the tenantRef from RequestContext and invokes the method above.
-     **/
-    <R extends PluginMethod>R  getPluginMethod(String pluginId, String qualifier, Class<R> requiredType, boolean allowNulls);
+     */
+    <R extends PluginMethod> R getPluginMethod(String pluginId, String qualifier, Class<R> requiredType, boolean allowNulls);
 }

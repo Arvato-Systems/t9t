@@ -34,14 +34,16 @@ import de.jpaw.util.ExceptionUtil;
 @Singleton
 public class MutexSingleJVM<T> implements IMutex<T> {
     private static final Logger LOGGER = LoggerFactory.getLogger(MutexSingleJVM.class);
-    static private final Cache<Long,Object> ACTIVE_MUTEXES = CacheBuilder.newBuilder().expireAfterAccess(1, TimeUnit.MINUTES).build();
+    private static final Cache<Long, Object> ACTIVE_MUTEXES = CacheBuilder.newBuilder().expireAfterAccess(1, TimeUnit.MINUTES).build();
 
     @Override
     public T runSynchronizedOn(final Long objectRef, final Supplier<T> code) {
 
         try {
             // acquire the lock. For every objectRef there is a separate lock
-            final Object lock = ACTIVE_MUTEXES.get(objectRef, () -> { return new Object(); } );
+            final Object lock = ACTIVE_MUTEXES.get(objectRef, () -> {
+                return new Object();
+            });
             synchronized (lock) {
                 return code.get();
             }

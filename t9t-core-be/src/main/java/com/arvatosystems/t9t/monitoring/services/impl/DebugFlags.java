@@ -38,7 +38,7 @@ public class DebugFlags implements IDebugFlags {
     protected final Provider<RequestContext> ctxProvider = Jdp.getProvider(RequestContext.class);
 
     protected final Cache<Long, ConcurrentMap<String, String>> settingsStore
-        = CacheBuilder.newBuilder().expireAfterWrite(15L, TimeUnit.MINUTES).<Long,ConcurrentMap<String, String>>build();
+        = CacheBuilder.newBuilder().expireAfterWrite(15L, TimeUnit.MINUTES).<Long, ConcurrentMap<String, String>>build();
 
     protected Long getSession(RequestContext ctx) {
         return ctx.internalHeaderParameters.getJwtInfo().getSessionRef();

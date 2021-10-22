@@ -57,7 +57,8 @@ public class ExporterTool<DTO extends BonaPortable, TRACKING extends TrackingBas
     }
 
     @Override
-    public ReadAllResponse<DTO, TRACKING> returnOrExport(final List<DataWithTrackingW<DTO, TRACKING>> dataList, final OutputSessionParameters op) throws Exception {
+    public ReadAllResponse<DTO, TRACKING> returnOrExport(
+      final List<DataWithTrackingW<DTO, TRACKING>> dataList, final OutputSessionParameters op) throws Exception {
         final ReadAllResponse<DTO, TRACKING> resp = new ReadAllResponse<DTO, TRACKING>();
         // if a searchOutputTarget has been defined, push the data into it, otherwise return the ReadAllResponse
         if (op == null) {
@@ -66,7 +67,7 @@ public class ExporterTool<DTO extends BonaPortable, TRACKING extends TrackingBas
             // push output into an outputSession (export it)
             op.setSmartMappingForDataWithTracking(Boolean.TRUE);
             resp.setSinkRef(storeAll(op, dataList, null));
-            resp.setDataList(ImmutableList.<DataWithTrackingW<DTO,TRACKING>>of());
+            resp.setDataList(ImmutableList.<DataWithTrackingW<DTO, TRACKING>>of());
         }
         return resp;
     }

@@ -19,17 +19,17 @@ public interface IRefGenerator {
     /**
      * Factor to multiply the value obtained from sequences with.
      */
-    public static final long KEY_FACTOR = 10000L;
+    final long KEY_FACTOR = 10000L;
 
     /**
      * Offset to be added to scaled keys generated in the backup location.
      */
-    public static final int OFFSET_BACKUP_LOCATION = 5000;
+    final int OFFSET_BACKUP_LOCATION = 5000;
 
     /** Offsets of sequences which are unscaled (don't contain a RTTI). */
-    public static final int OFFSET_UNSCALED_T9T           = 5000;
-    public static final int OFFSET_UNSCALED_APPLICATION   = 6000;
-    public static final int OFFSET_UNSCALED_CUSTOMIZATION = 7000;
+    final int OFFSET_UNSCALED_T9T           = 5000;
+    final int OFFSET_UNSCALED_APPLICATION   = 6000;
+    final int OFFSET_UNSCALED_CUSTOMIZATION = 7000;
 
     /**
      * Returns a valid technical Id which is guaranteed to be unique for all keys obtained through this method.
@@ -38,7 +38,7 @@ public interface IRefGenerator {
      *            An offset for run time type information
      * @return The new generated key value
      */
-    public abstract long generateRef(int rttiOffset);
+    long generateRef(int rttiOffset);
 
     /**
      * Retrieves the run time type information from a generated key.
@@ -47,7 +47,7 @@ public interface IRefGenerator {
      *            The key to extract the RTTI from.
      * @return the RTTI
      */
-    default public int getRtti(long id) {
+    default int getRtti(long id) {
         int rttiPlusLocation = (int) (id % KEY_FACTOR);
         return rttiPlusLocation >= OFFSET_BACKUP_LOCATION ? rttiPlusLocation - OFFSET_BACKUP_LOCATION : rttiPlusLocation;
     }
@@ -67,6 +67,5 @@ public interface IRefGenerator {
      *            An offset for run time type information
      * @return The new generated key value
      */
-    public abstract long generateUnscaledRef(int rttiOffset);
-
+    long generateUnscaledRef(int rttiOffset);
 }

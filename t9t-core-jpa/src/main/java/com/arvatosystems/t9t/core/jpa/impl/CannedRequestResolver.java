@@ -28,7 +28,8 @@ import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 
 @Singleton
-public class CannedRequestResolver extends AbstractJpaResolver<CannedRequestRef, CannedRequestDTO, FullTrackingWithVersion, CannedRequestEntity> implements ICannedRequestResolver {
+public class CannedRequestResolver extends AbstractJpaResolver<CannedRequestRef, CannedRequestDTO, FullTrackingWithVersion, CannedRequestEntity>
+  implements ICannedRequestResolver {
 
     public CannedRequestResolver() {
         super("CannedRequest", Jdp.getRequired(ICannedRequestEntityResolver.class), Jdp.getRequired(ICannedRequestDTOMapper.class));

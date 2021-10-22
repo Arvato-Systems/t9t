@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LazyInjection<V> {
+public final class LazyInjection<V> {
     private static final Logger LOGGER = LoggerFactory.getLogger(LazyInjection.class);
     final Callable<V> initializer;
     final AtomicReference<V> value;
@@ -43,7 +43,8 @@ public class LazyInjection<V> {
             } else if (oldVal == val) {
                 LOGGER.debug("Lazy initialization of {} performed DUPLICATE (safe)", val.getClass().getCanonicalName());
             } else {
-                LOGGER.error("DUPLICATE lazy initialization of {} performed, factory is NOT IDEMPOTENT (this may be an issue, check your code!)", val.getClass().getCanonicalName());
+                LOGGER.error("DUPLICATE lazy initialization of {} performed, factory is NOT IDEMPOTENT (this may be an issue, check your code!)",
+                  val.getClass().getCanonicalName());
                 throw new RuntimeException("Duplicate lazy initialization with non idempotent factory");
             }
         }

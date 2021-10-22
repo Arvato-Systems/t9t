@@ -1,3 +1,9 @@
 # empty file to ensure that the directory is checked in (Eclipse otherwise complains)
 swagger-ui/*
+!swagger-ui/application_logo.png
+!swagger-ui/company_logo.png
+!swagger-ui/custom-script.js
+!swagger-ui/custom-style.css
+!swagger-ui/favicon.ico
 !swagger-ui/index.html
+!swagger-ui/swagger-style.css

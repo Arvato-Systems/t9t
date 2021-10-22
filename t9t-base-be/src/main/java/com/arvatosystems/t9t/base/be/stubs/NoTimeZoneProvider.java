@@ -1,0 +1,54 @@
+package com.arvatosystems.t9t.base.be.stubs;
+
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.arvatosystems.t9t.base.services.ITimeZoneProvider;
+import com.arvatosystems.t9t.cfg.be.ConfigProvider;
+import com.arvatosystems.t9t.cfg.be.ServerConfiguration;
+
+import de.jpaw.dp.Fallback;
+import de.jpaw.dp.Singleton;
+
+/**
+ * Provides a time zone.
+ *
+ * This implementation ignores the tenant and returns a global time zone.
+ * It is used in configurations which do not have access to a data base.
+ */
+@Fallback
+@Singleton
+public class NoTimeZoneProvider implements ITimeZoneProvider {
+    private static final Logger LOGGER = LoggerFactory.getLogger(NoTimeZoneProvider.class);
+
+    private final ZoneId serverTimeZone;
+
+    private final ZoneId getServerTimeZone() {  // checkstyle complains about a redundant "final" keyword.
+                                                // This method should be final because it is called from the constructor, but is that done automatically?
+        final ServerConfiguration serverConfig = ConfigProvider.getConfiguration().getServerConfiguration();
+        if (serverConfig == null || serverConfig.getTimeZone() == null) {
+            LOGGER.info("No default server application time zone has been configured - using UTC");
+            return ZoneOffset.UTC;
+        } else {
+            try {
+                LOGGER.info("Setting server time zone to {}", serverConfig.getTimeZone());
+                return ZoneId.of(serverConfig.getTimeZone());
+            } catch (Exception e) {
+                LOGGER.error("Could not process time zone, falling back to UTC: {} {}", e.getClass().getSimpleName(), e.getMessage());
+                return ZoneOffset.UTC;
+            }
+        }
+    }
+
+    public NoTimeZoneProvider() {
+        serverTimeZone = getServerTimeZone();
+    }
+
+    @Override
+    public ZoneId getTimeZoneOfTenant(Long tenantRef) {
+        return serverTimeZone;
+    }
+}

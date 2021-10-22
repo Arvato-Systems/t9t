@@ -21,4 +21,4 @@ import com.arvatosystems.t9t.batch.SliceTrackingRef;
 
 import de.jpaw.bonaparte.refsw.RefResolver;
 
-public interface ISliceTrackingResolver extends RefResolver<SliceTrackingRef, SliceTrackingDTO, FullTrackingWithVersion> {}
+public interface ISliceTrackingResolver extends RefResolver<SliceTrackingRef, SliceTrackingDTO, FullTrackingWithVersion> { }

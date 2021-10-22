@@ -31,7 +31,7 @@ import com.arvatosystems.t9t.tfi.general.Constants;
 public class LogoutViewModel extends GenericForwardComposer<Component> {
     private static final long serialVersionUID = -3398694299050788517L;
 
-    public LogoutViewModel() {}
+    public LogoutViewModel() { }
 
     /**
      *

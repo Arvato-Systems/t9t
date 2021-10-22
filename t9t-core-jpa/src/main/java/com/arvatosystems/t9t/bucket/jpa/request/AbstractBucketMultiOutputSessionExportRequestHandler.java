@@ -34,13 +34,14 @@ import com.arvatosystems.t9t.bucket.request.SwitchCurrentBucketNoRequest;
 
 import de.jpaw.util.ApplicationException;
 
-public abstract class AbstractBucketMultiOutputSessionExportRequestHandler<T extends AbstractBucketExportRequest> extends AbstractBucketBaseExportRequestHandler<T> {
+public abstract class AbstractBucketMultiOutputSessionExportRequestHandler<T extends AbstractBucketExportRequest>
+  extends AbstractBucketBaseExportRequestHandler<T> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractBucketMultiOutputSessionExportRequestHandler.class);
 
-    abstract protected void exportChunk(List<IOutputSession> os, List<Long> refs, T request, String qualifier, int bucketNoToSelect);
+    protected abstract void exportChunk(List<IOutputSession> os, List<Long> refs, T request, String qualifier, int bucketNoToSelect);
 
     /** open sessions takes an empty list and opens output sessions as required. */
-    abstract protected void openOutputSessions(List<IOutputSession> os, T request);
+    protected abstract void openOutputSessions(List<IOutputSession> os, T request);
 
     @Override
     public ServiceResponse execute(RequestContext ctx, T rp) throws Exception {
@@ -56,7 +57,8 @@ public abstract class AbstractBucketMultiOutputSessionExportRequestHandler<T ext
         int newBucketNo = oldBucketNo + 1;  // new number - but only valid if switching
         if (newBucketNo >= counterEntity.getMaxVal())
             newBucketNo = 0;  // restart
-        final int bucketNoToSelect = rp.getBucketNo() != null ? rp.getBucketNo() : (switchBucket ? oldBucketNo : (oldBucketNo > 0 ? oldBucketNo - 1 : counterEntity.getMaxVal() - 1));
+        final int bucketNoToSelect = rp.getBucketNo() != null ? rp.getBucketNo()
+          : (switchBucket ? oldBucketNo : (oldBucketNo > 0 ? oldBucketNo - 1 : counterEntity.getMaxVal() - 1));
 
         // first, delete the target bucket, unless disabled
         if (deleteBucket && switchBucket) {

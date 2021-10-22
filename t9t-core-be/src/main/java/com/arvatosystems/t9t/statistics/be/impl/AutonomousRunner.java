@@ -43,7 +43,7 @@ public class AutonomousRunner implements IAutonomousRunner {
 
     @Override
     public <T> void runSingleAutonomousTx(RequestContext ctx, int expectedTotal,
-            Iterable<T> iterable, Function<T,RequestParameters> requestProvider,
+            Iterable<T> iterable, Function<T, RequestParameters> requestProvider,
             Consumer<StatisticsDTO> logEnhancer, String processId) {
         int numRecords = expectedTotal;
         int numErrors = 0;

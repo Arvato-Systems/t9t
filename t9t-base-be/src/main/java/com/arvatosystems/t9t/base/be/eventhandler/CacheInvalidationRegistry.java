@@ -32,7 +32,8 @@ import de.jpaw.dp.Singleton;
  * Usually for configuration data, the whole cache is cleared, ignoring any specific entry.
  * Bigger caches could choose to clear selected entries only.
  *
- * This strategy allows to register a single event listener for all kinds of caches (the map.get here is faster than launching a separate EventListener per cache).
+ * This strategy allows to register a single event listener for all kinds of caches
+ * (the map.get here is faster than launching a separate EventListener per cache).
  *
  */
 @Singleton

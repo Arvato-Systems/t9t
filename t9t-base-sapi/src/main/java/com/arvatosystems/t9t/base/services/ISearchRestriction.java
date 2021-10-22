@@ -18,7 +18,6 @@ package com.arvatosystems.t9t.base.services;
 import java.util.List;
 
 import com.arvatosystems.t9t.base.search.SearchCriteria;
-import com.arvatosystems.t9t.base.services.RequestContext;
 
 /** Provides cached access to search restrictions, for Ref based JPA entities.
  * Implementations are singletons, qualified by some name.

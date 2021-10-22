@@ -57,6 +57,7 @@ public class DefaultColumnConfigCreator implements IColumnConfigCreator {
     public void createColumnConfigComponent(ApplicationSession session, Div parent, UIGridPreferences uiGridPreferences, Set<String> currentGrid) {
         parent.setVflex("1");
         this.currentGrid = currentGrid;
+        this.uiGridPreferences = uiGridPreferences;
         viewModelId = uiGridPreferences.getViewModel();
         listbox = new Listbox();
         List<String> allAvailableFieldNames = new LinkedList<>();

@@ -143,6 +143,7 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional Boolean                            runScheduler;                   // define if the quartz scheduler is supposed to be run on this server.
         optional Unicode(255)                       keyStorePath;                   // if set (recommended for production use!), overrides the standard keystore file (specifies file system path)
         optional Unicode(63)                        keyStorePassword;               // if set (recommended for production use!), overrides the standard keystore password
+        optional Unicode(64)                        timeZone;                       // a time zone identifier such as "Europe/Berlin", to define the default time zone of the application
     }
 
     class ApplicationConfiguration {

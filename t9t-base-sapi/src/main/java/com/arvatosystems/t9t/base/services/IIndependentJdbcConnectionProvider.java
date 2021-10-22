@@ -28,6 +28,6 @@ public interface IIndependentJdbcConnectionProvider extends Closeable {
 
     /** Closes the connection if it exists and is open. */
     @Override
-    public void close() throws IOException;
+    void close() throws IOException;
 
 }

@@ -64,6 +64,7 @@ import com.google.common.cache.CacheBuilder;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -94,9 +95,9 @@ public class LoginApiKeyResource implements IT9tRestEndpoint {
 
     @Operation(
         summary = "Create a session / JWT token by API key",
-        description = "The request creates a session at the host and returns a JWT which can be used as authentication token for subsequent requests. Authentication is by API key",
+        description = "The request creates a session at the host and returns a JWT which can be used as authentication token for subsequent requests. Authentication is by API key.",
         responses = {
-            @ApiResponse(description = "Authentication successful", content = @Content(schema = @Schema(implementation = AuthenticationResult.class)))
+            @ApiResponse(description = "Authentication successful.", content = @Content(schema = @Schema(implementation = AuthenticationResult.class)))
         }
     )
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -114,15 +115,16 @@ public class LoginApiKeyResource implements IT9tRestEndpoint {
 
     @Operation(
         summary = "Create a session / JWT token by API key",
-        description = "The request creates a session at the host and returns a JWT which can be used as authentication token for subsequent requests. Authentication is by API key",
+        description = "The request creates a session at the host and returns a JWT which can be used as authentication token for subsequent requests. Authentication is by API key.",
         responses = {
-            @ApiResponse(description = "Authentication successful", content = @Content(schema = @Schema(implementation = AuthenticationResult.class)))
+            @ApiResponse(description = "Authentication successful.", content = @Content(schema = @Schema(implementation = AuthenticationResult.class)))
         }
     )
     @GET
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Path("/{apikey}")
-    public void login(@Context final HttpHeaders httpHeaders, @Suspended final AsyncResponse resp, @PathParam("apikey") final String apiKey) {
+    public void login(@Context final HttpHeaders httpHeaders, @Suspended final AsyncResponse resp,
+            @Parameter(required = true, description = "Api key.") @PathParam("apikey") final String apiKey) {
         loginSub(httpHeaders, resp, RestParameterParsers.parseUUID(apiKey, "apikey", true), null);
     }
 

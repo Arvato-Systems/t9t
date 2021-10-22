@@ -34,7 +34,8 @@ public class CannedRequestSearchRequestHandler extends AbstractSearch42RequestHa
     protected final ICannedRequestDTOMapper mapper = Jdp.getRequired(ICannedRequestDTOMapper.class);
 
     @Override
-    public ReadAllResponse<CannedRequestDTO, FullTrackingWithVersion> execute(final RequestContext ctx, final CannedRequestSearchRequest request) throws Exception {
+    public ReadAllResponse<CannedRequestDTO, FullTrackingWithVersion> execute(final RequestContext ctx, final CannedRequestSearchRequest request)
+      throws Exception {
         final ReadAllResponse<CannedRequestDTO, FullTrackingWithVersion> response = execute(ctx, request, resolver, mapper);
 
         /** Clear request, if asked to do so. */

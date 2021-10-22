@@ -86,6 +86,7 @@ package (com.arvatosystems) t9t.auth {
         required shortText                          name;                                   // tenant name
         optional Json                               z;
         optional (PermissionsDTO)                   permissions;
+        optional Unicode(64)                        timeZone      properties dropdown="timeZoneId";   // a time zone identifier such as "Europe/Berlin", to define the default time zone of the tenant
     }
 
 

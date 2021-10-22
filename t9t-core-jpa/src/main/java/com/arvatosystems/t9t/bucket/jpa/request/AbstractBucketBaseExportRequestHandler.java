@@ -59,16 +59,17 @@ public abstract class AbstractBucketBaseExportRequestHandler<T extends AbstractB
     protected Map<Long, BucketEntryEntity> getEntries(String qualifier, int bucketNoToSelect, List<Long> refs) {
         EntityManager em = entryResolver.getEntityManager();
         TypedQuery<BucketEntryEntity> query = em.createQuery(
-                "SELECT be FROM BucketEntryEntity be WHERE be.tenantRef = :tenantRef AND be.qualifier = :qualifier AND be.bucket = :bucketNo AND be.ref IN :refs",
-                BucketEntryEntity.class);
+          "SELECT be FROM BucketEntryEntity be WHERE be.tenantRef = :tenantRef AND be.qualifier = :qualifier AND be.bucket = :bucketNo AND be.ref IN :refs",
+          BucketEntryEntity.class);
         query.setParameter("tenantRef", entryResolver.getSharedTenantRef());
         query.setParameter("qualifier", qualifier);
         query.setParameter("bucketNo",  bucketNoToSelect);
         query.setParameter("refs",      refs);
         List<BucketEntryEntity> result = query.getResultList();
         Map<Long, BucketEntryEntity> indexedResult = new HashMap<Long, BucketEntryEntity>(2 * result.size());
-        for (BucketEntryEntity e : result)
+        for (BucketEntryEntity e : result) {
             indexedResult.put(e.getRef(), e);
+        }
         return indexedResult;
     }
 
@@ -76,16 +77,17 @@ public abstract class AbstractBucketBaseExportRequestHandler<T extends AbstractB
     protected Map<Long, Integer> getModes(String qualifier, int bucketNoToSelect, List<Long> refs) {
         EntityManager em = entryResolver.getEntityManager();
         TypedQuery<BucketEntryEntity> query = em.createQuery(
-                "SELECT be FROM BucketEntryEntity be WHERE be.tenantRef = :tenantRef AND be.qualifier = :qualifier AND be.bucket = :bucketNo AND be.ref IN :refs",
-                BucketEntryEntity.class);
+          "SELECT be FROM BucketEntryEntity be WHERE be.tenantRef = :tenantRef AND be.qualifier = :qualifier AND be.bucket = :bucketNo AND be.ref IN :refs",
+          BucketEntryEntity.class);
         query.setParameter("tenantRef", entryResolver.getSharedTenantRef());
         query.setParameter("qualifier", qualifier);
         query.setParameter("bucketNo",  bucketNoToSelect);
         query.setParameter("refs",      refs);
         List<BucketEntryEntity> result = query.getResultList();
         Map<Long, Integer> indexedResult = new HashMap<Long, Integer>(2 * result.size());
-        for (BucketEntryEntity e : result)
+        for (BucketEntryEntity e : result) {
             indexedResult.put(e.getRef(), e.getModes());
+        }
         return indexedResult;
     }
 }

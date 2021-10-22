@@ -18,7 +18,7 @@ package com.arvatosystems.t9t.io;
 import com.arvatosystems.t9t.base.T9tException;
 
 public class IOTools {
-    private IOTools() {}
+    private IOTools() { }
 
     public static String getCsvConfigurationId(CsvConfigurationRef ref) {
         if (ref == null)

@@ -34,9 +34,9 @@ public class WaitUntilServerIdleRequestHandler extends AbstractReadOnlyRequestHa
     private static final Logger LOGGER = LoggerFactory.getLogger(WaitUntilServerIdleRequestHandler.class);
 
     private final RequestContextScope requestContextScope = Jdp.getRequired(RequestContextScope.class);
-    private final long DEFAULT_DELAY   = 20l;
-    private final long DEFAULT_TIMEOUT = 10_000l;
-    private final long DEFAULT_CONFIRM_DELAY = 10l;
+    private final long DEFAULT_DELAY   = 20L;
+    private final long DEFAULT_TIMEOUT = 10_000L;
+    private final long DEFAULT_CONFIRM_DELAY = 10L;
     private final int  DEFAULT_CONFIRM_COUNT = 3;
 
     @Override

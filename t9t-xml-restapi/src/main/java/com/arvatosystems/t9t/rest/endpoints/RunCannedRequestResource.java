@@ -33,10 +33,10 @@ import com.arvatosystems.t9t.xml.GenericResult;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
@@ -50,15 +50,16 @@ public class RunCannedRequestResource implements IT9tRestEndpoint {
 
     @Operation(
         summary = "Run a preconfigured request",
-        description = "Run a request which has been preconfigured with all parameters",
+        description = "The request runs a request which has been preconfigured with all parameters.",
         responses = {
-            @ApiResponse(description = "request passed", content = @Content(mediaType = "application/json", schema = @Schema(implementation = GenericResult.class))),
-            @ApiResponse(responseCode = "400", description = "bad request")}
+            @ApiResponse(description = "Request passed.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = GenericResult.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request.")}
     )
     @POST
     @Path("/{id}")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public void runCannedRequestWithId(@Context final HttpHeaders httpHeaders, @PathParam("id") final String id, @Suspended final AsyncResponse resp) {
+    public void runCannedRequestWithId(@Context final HttpHeaders httpHeaders, @Suspended final AsyncResponse resp,
+            @Parameter(required = true, description = "Request ID.") @PathParam("id") final String id) {
         final ExecutePreparedRequest requestParameters = new ExecutePreparedRequest();
         requestParameters.setRequestId(id);
         restProcessor.performAsyncBackendRequest(httpHeaders, resp, requestParameters, "POST /runAsync");

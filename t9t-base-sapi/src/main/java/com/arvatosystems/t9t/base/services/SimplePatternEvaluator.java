@@ -68,11 +68,11 @@ public final class SimplePatternEvaluator {
 
                     final String formattedDate;
                     if (replacementValue instanceof LocalDate) {
-                        formattedDate = ((LocalDate) replacementValue).format(formatter);
+                        formattedDate = ((LocalDate)replacementValue).format(formatter);
                     } else if (replacementValue instanceof LocalDateTime) {
-                        formattedDate = ((LocalDateTime) replacementValue).format(formatter);
+                        formattedDate = ((LocalDateTime)replacementValue).format(formatter);
                     } else if (replacementValue instanceof Instant) {
-                        formattedDate = LocalDateTime.ofInstant((Instant) replacementValue, ZoneOffset.UTC).format(formatter);
+                        formattedDate = LocalDateTime.ofInstant((Instant)replacementValue, ZoneOffset.UTC).format(formatter);
                     } else {
                         LOGGER.error("Class {} not (yet) supported for date/time formats.", replacementValue.getClass().getCanonicalName());
                         formattedDate = "***NYS***";

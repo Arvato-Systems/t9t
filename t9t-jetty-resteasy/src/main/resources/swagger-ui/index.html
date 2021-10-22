@@ -1,56 +1,41 @@
-<!-- HTML for static distribution bundle build -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8">
     <title>Swagger UI</title>
     <link rel="stylesheet" type="text/css" href="./swagger-ui.css" />
-    <link rel="icon" type="image/png" href="./favicon-32x32.png" sizes="32x32" />
-    <link rel="icon" type="image/png" href="./favicon-16x16.png" sizes="16x16" />
-    <style>
-      html
-      {
-        box-sizing: border-box;
-        overflow: -moz-scrollbars-vertical;
-        overflow-y: scroll;
-      }
-
-      *,
-      *:before,
-      *:after
-      {
-        box-sizing: inherit;
-      }
-
-      body
-      {
-        margin:0;
-        background: #fafafa;
-      }
-    </style>
+    <link rel="stylesheet" type="text/css" href="./swagger-style.css" />
+    <link rel="stylesheet" type="text/css" href="./custom-style.css" />
+    <link rel="icon" type="image/png" href="./favicon.ico" />
   </head>
 
   <body>
+    <div id="custom-toolbar" class="custom-toolbar">
+      <img class="application-logo" src="./application_logo.png">
+      <img class="company-logo" src="./company_logo.png">
+    </div>
+
     <div id="swagger-ui"></div>
 
     <script src="./swagger-ui-bundle.js" charset="UTF-8"> </script>
     <script src="./swagger-ui-standalone-preset.js" charset="UTF-8"> </script>
+    <script src="./custom-script.js" charset="UTF-8"> </script>
     <script>
-    window.onload = function() {
-      // Begin Swagger UI call region
-      const ui = SwaggerUIBundle({
-        url: "/rest/openapi.json",
-        dom_id: '#swagger-ui',
-        deepLinking: true,
-        presets: [
-          SwaggerUIBundle.presets.apis,
-          SwaggerUIStandalonePreset
-        ]
-      });
-      // End Swagger UI call region
+      window.onload = function() {
+        // Begin Swagger UI call region
+        const ui = SwaggerUIBundle({
+          url: "../openapi.json",
+          dom_id: '#swagger-ui',
+          deepLinking: true,
+          presets: [
+            SwaggerUIBundle.presets.apis,
+            SwaggerUIStandalonePreset
+          ]
+        });
+        // End Swagger UI call region
 
-      window.ui = ui;
-    };
-  </script>
+        window.ui = ui;
+      };
+    </script>
   </body>
 </html>

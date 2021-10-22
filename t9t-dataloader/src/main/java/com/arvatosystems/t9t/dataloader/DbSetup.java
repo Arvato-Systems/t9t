@@ -269,7 +269,7 @@ public class DbSetup {
             callDataloader("", targetDatabase, workdir, createDDL, runDropTable, runCreateTable, importDumpFiles, roots, loadOnlyFromElementsList
                     , exportDumpFiles, logDDLFile, sourceDatabase, runDropView, runDropFunction, runCreateView, runCreateFunction, runDropSequence, runCreateSequence, runDropTrigger, runCreateTrigger);
         } else {
-            for(String project : projectFilterIncludingOrderList) {
+            for (String project : projectFilterIncludingOrderList) {
                 callDataloader(project, targetDatabase, workdir, createDDL, runDropTable, runCreateTable, importDumpFiles, roots, loadOnlyFromElementsList
                     , exportDumpFiles, logDDLFile, sourceDatabase, runDropView, runDropFunction, runCreateView, runCreateFunction, runDropSequence, runCreateSequence, runDropTrigger, runCreateTrigger);
             }

@@ -29,6 +29,7 @@ import io.swagger.v3.core.converter.ModelConverter;
 import io.swagger.v3.core.converter.ModelConverterContext;
 import io.swagger.v3.core.util.Json;
 import io.swagger.v3.oas.models.media.IntegerSchema;
+import io.swagger.v3.oas.models.media.NumberSchema;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
 
@@ -52,11 +53,17 @@ public class DateTimeConverters implements ModelConverter {
                 if (UUID.class.isAssignableFrom(cls)) {
                     return createSchema("550e8400-e29b-11d4-a716-446655440000", "36 character string, representing a UUID", "hhhhhhhh-hhh-hhhh-hhhh-hhhhhhhhhhhh");
                 }
+                if (cls.getCanonicalName().equals("de.jpaw.fixedpoint.MicroUnits")) {
+                    final NumberSchema ns = new NumberSchema();
+                    ns.setExample("3.14");
+                    ns.setDescription("Numeric value with at most 6 fractional digits");
+                    return ns;
+                }
                 if (Instant.class.isAssignableFrom(cls)) {
                     final IntegerSchema is = new IntegerSchema();
-                    is.setExample("1610612736");
-                    is.setDescription("Instant in UNIX time (seconds since 1.1.1970). Example is morning of January 14th, 2021");
-                    return new IntegerSchema();
+                    is.setExample("1610612736 (JSON), 2021-01-14T08:25:36Z (XML)");
+                    is.setDescription("Instant in UNIX time (seconds since Jan 1st, 1970, 00:00:00 UTC). Example is morning of January 14th, 2021");
+                    return is;
                 }
             }
         }

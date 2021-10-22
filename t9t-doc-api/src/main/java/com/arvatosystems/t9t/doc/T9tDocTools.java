@@ -29,7 +29,7 @@ import com.arvatosystems.t9t.doc.request.ConvertTemplatesRule;
 public class T9tDocTools {
     private static final Logger LOGGER = LoggerFactory.getLogger(T9tDocTools.class);
 
-    private T9tDocTools() {}
+    private T9tDocTools() { }
 
     public static FormatStyle styleFor(char x) {
         switch (x) {

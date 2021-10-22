@@ -23,5 +23,5 @@ public interface IEventHandler {
 
     /** Perform activity for a trigger described by eventData.
      * Returns 0 is processing was successful, otherwise an error code. */
-    public int execute(RequestContext ctx, EventParameters eventData);
+    int execute(RequestContext ctx, EventParameters eventData);
 }

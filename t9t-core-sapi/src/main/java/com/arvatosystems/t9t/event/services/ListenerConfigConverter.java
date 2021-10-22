@@ -21,11 +21,13 @@ import com.arvatosystems.t9t.base.types.ListenerConfig;
 import com.arvatosystems.t9t.event.ListenerConfigDTO;
 import com.google.common.collect.ImmutableSet;
 
-public class ListenerConfigConverter {
+public final class ListenerConfigConverter {
+    private ListenerConfigConverter() { }
+
     public static Set<String> csvToSet(String buckets) {
         if (buckets == null || buckets.length() == 0)
             return null;
-        String [] bucketArray = buckets.split(",");
+        String[] bucketArray = buckets.split(",");
         return ImmutableSet.copyOf(bucketArray);
     }
 

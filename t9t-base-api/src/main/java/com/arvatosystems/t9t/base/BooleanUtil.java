@@ -15,11 +15,12 @@
  */
 package com.arvatosystems.t9t.base;
 
-public class BooleanUtil {
-    private BooleanUtil() {} // don't want instances of this class
+public final class BooleanUtil {
+    private BooleanUtil() {
+    }
 
     /** Convenience method to avoid duplicate evaluation of b, to check if a Boolean is TRUE. */
-    public static boolean isTrue(Boolean b) {
+    public static boolean isTrue(final Boolean b) {
         return b == null ? false : b.booleanValue();
     }
 }

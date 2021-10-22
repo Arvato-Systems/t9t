@@ -189,7 +189,7 @@
         </dependency>
         <dependency>
             <groupId>de.jpaw</groupId>
-            <artifactId>xtend-sions</artifactId>
+            <artifactId>jpaw-annotations</artifactId>
         </dependency>
         <dependency>
             <groupId>org.hibernate.validator</groupId>

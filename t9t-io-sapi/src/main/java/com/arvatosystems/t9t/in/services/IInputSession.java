@@ -34,6 +34,9 @@ public interface IInputSession {
     /** Opens the import, reads the configuration, establishes the backend session. */
     DataSinkDTO open(String dataSourceId, UUID apiKey, String sourceURI, Map<String, Object> params);
 
+    /** Retrieves the data sink configuration record (for use from converters). */
+    DataSinkDTO getDataSinkDTO();
+
     /**
      * Retrieve the sourceUri as provided with {#link {@link #open(String, UUID, String, Map)}}.
      */

@@ -23,11 +23,11 @@ import com.arvatosystems.t9t.base.search.AbstractExportRequest;
 import com.arvatosystems.t9t.base.search.SinkCreatedResponse;
 
 public interface IOutputSessionExporter {
-    public <D> SinkCreatedResponse runExport(
-            final AbstractExportRequest request,
-            final String defaultDataSinkId,
-            final Map<String, Object> params,  // optional
-            final BiFunction<Long, Integer, List<D>> chunkReader,
-            final BiFunction<List<D>, IOutputSession, Long> chunkWriter,  // alternative to writer
-            final BiFunction<D, IOutputSession, Long> writer);
+    <D> SinkCreatedResponse runExport(
+        AbstractExportRequest request,
+        String defaultDataSinkId,
+        Map<String, Object> params,  // optional
+        BiFunction<Long, Integer, List<D>> chunkReader,
+        BiFunction<List<D>, IOutputSession, Long> chunkWriter,  // alternative to writer
+        BiFunction<D, IOutputSession, Long> writer);
 }

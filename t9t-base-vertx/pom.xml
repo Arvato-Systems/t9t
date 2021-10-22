@@ -63,10 +63,6 @@
             <artifactId>t9t-server-sapi</artifactId>
         </dependency>
         <dependency>
-            <groupId>de.jpaw</groupId>
-            <artifactId>xtend-sions</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.martiansoftware</groupId>
             <artifactId>jsap</artifactId>
         </dependency>

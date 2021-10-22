@@ -55,7 +55,7 @@ public class ShowCallTreeContextHandler implements IGridContextMenu<ProcessStatu
             }
             Info info = new Info();
             info.setText(tree.toString());
-            ModalWindows.runModal("/context/info28.zul", lb.getParent(), info, false, (d) -> {});
+            ModalWindows.runModal("/context/info28.zul", lb.getParent(), info, false, (d) -> { });
         }
     }
 }

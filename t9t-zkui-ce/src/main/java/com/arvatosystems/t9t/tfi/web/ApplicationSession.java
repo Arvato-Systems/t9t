@@ -112,6 +112,7 @@ public final class ApplicationSession {
     private final ConcurrentMap<String, Permissionset> permissionCache = new ConcurrentHashMap<>(100);
     private final List<Navi>                 navis = new ArrayList<Navi>();
     private String                           entityId;
+    private Map<String, Object>              sessionValues; // session based values cache
 
     public final List<Navi> getAllNavigations() {
         return navis;
@@ -775,4 +776,19 @@ public final class ApplicationSession {
     public void setEntityId(String entityId) {
         this.entityId = entityId;
     }
+
+    public Object getSessionValue(String key) {
+        if (sessionValues == null) {
+            return null;
+        }
+        return sessionValues.get(key);
+    }
+
+    public void setSessionValue(String key, Object value) {
+        if (sessionValues == null) {
+            sessionValues = new HashMap<>();
+        }
+        sessionValues.put(key, value);
+    }
+
 }

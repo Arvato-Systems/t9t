@@ -69,12 +69,12 @@ public class DbConnection {
         connection = DriverManager.getConnection(connectURI, properties);
 
         if (connectURI.contains("postgres")) {
-            if(properties.containsKey("schema")) {
+            if (properties.containsKey("schema")) {
                 logger.debug("Use schema: ".concat(properties.getProperty("schema")));
                 connection.createStatement().execute("SET SCHEMA '"+ properties.getProperty("schema") + "'");
             }
         } else if (connectURI.contains("oracle")) {
-            if(properties.containsKey("schema")) {
+            if (properties.containsKey("schema")) {
                 logger.debug("Use schema: ".concat(properties.getProperty("schema")));
                 connection.createStatement().execute("alter session set current_schema="+properties.getProperty("schema"));
             }

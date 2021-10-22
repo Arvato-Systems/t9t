@@ -22,8 +22,8 @@ package com.arvatosystems.t9t.plugins.services;
  */
 public interface IPluginMethodLifecycle {
     /** This method is called twice during plugin initialization, once before the method is added to the dispatcher, once afterwards. */
-    default void registerPluginMethod(final Long tenantRef, final Plugin loadedPlugin, final PluginMethod method, boolean before) {}
+    default void registerPluginMethod(final Long tenantRef, final Plugin loadedPlugin, final PluginMethod method, boolean before) { }
 
     /** This method is called twice during plugin initialization, once before the method is added to the dispatcher, once afterwards. */
-    default void unregisterPluginMethod(final Long tenantRef, final Plugin loadedPlugin, final PluginMethod method, boolean before) {}
+    default void unregisterPluginMethod(final Long tenantRef, final Plugin loadedPlugin, final PluginMethod method, boolean before) { }
 }

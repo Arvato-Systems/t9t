@@ -40,35 +40,35 @@ public interface IStatefulServiceSession extends Closeable {
      * If authentication parameters are passed and the authentication fails, the session is not opened and an exception thrown.
      * @param sessionParameters the session parameters
      */
-    public void open(SessionParameters sessionParameters, AuthenticationParameters authenticationParameters);
+    void open(SessionParameters sessionParameters, AuthenticationParameters authenticationParameters);
 
     /**
      * Returns the state of the connection.
      *
      * @return {@code true} when the connection is open, {@code false} otherwise.
      */
-    public boolean isOpen();
+    boolean isOpen();
 
     /**
      * Returns the state of the connection.
      *
      * @return {@code null} if no valid authentication has been performed, otherwise the expiry timestamp of the related JWT.
      */
-    public Instant authenticatedUntil();
+    Instant authenticatedUntil();
 
     /**
      * Return the tenant the current connection is authenticated for.
      *
      * @return {@code null} if no valid authentication has been performed, otherwise the tenant id of the related JWT.
      */
-    public String getTenantId();
+    String getTenantId();
 
     /**
      * Executes a service request. Throws an exception if the session is not authenticated / open.
      *
      * @param request a service request to be executed. Invokes the handler on the result, in case a handler has been provided.
      */
-    public ServiceResponse execute(RequestParameters request);
+    ServiceResponse execute(RequestParameters request);
 
     /**
      * Method to gracefully shutdown the driver.

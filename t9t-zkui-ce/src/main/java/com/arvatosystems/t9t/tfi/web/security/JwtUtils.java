@@ -21,14 +21,12 @@ import java.util.Base64;
 
 import de.jpaw.bonaparte.api.auth.JwtConverter;
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
-import de.jpaw.bonaparte.util.impl.MarshallerBonaparte;
 
 public class JwtUtils {
 
     private static final Charset UTF8 = StandardCharsets.UTF_8;
 
     public static JwtInfo getJwtPayload(String decodedJwt) {
-        MarshallerBonaparte marshaller = new MarshallerBonaparte();
         if (decodedJwt != null) {
             int firstDot = decodedJwt.indexOf(".");
             if (firstDot != -1) {

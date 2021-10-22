@@ -25,19 +25,19 @@ import javax.persistence.criteria.CriteriaQuery;
  */
 public interface IQueryHintSetter {
     /** Set flush mode to manual, which may offer advantages over COMMIT if native SQL is used. */
-    default void setManualFlushMode(EntityManager em) {}
+    default void setManualFlushMode(EntityManager em) { }
 
     /** Set all queries in a session by default to read-only (true) or read/write (false). */
-    default void setReadOnly(EntityManager em, Object entity, boolean readOnly) {}
+    default void setReadOnly(EntityManager em, Object entity, boolean readOnly) { }
 
     /** Set all queries in a session by default to read-only. */
-    default void setReadOnlySession(EntityManager em) {}
+    default void setReadOnlySession(EntityManager em) { }
 
     /** Set a query to read-only. This saves space because a second copy per entity is not required, and also no dirty-checking required. */
-    default void setReadOnly(CriteriaQuery<?> q) {}
+    default void setReadOnly(CriteriaQuery<?> q) { }
 
     /** Provide a query comment. This usually appears in the logs and can be used to identify the source. */
-    default void setComment(CriteriaQuery<?> q, String text) {}
+    default void setComment(CriteriaQuery<?> q, String text) { }
 
     /** Set a query to read-only. This saves space because a second copy per entity is not required, and also no dirty-checking required. */
     void setReadOnly(Query q);

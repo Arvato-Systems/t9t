@@ -19,11 +19,12 @@ import com.arvatosystems.t9t.base.services.RequestContext;
 
 /**
  * Defines the API to call a plugin which provides a single method.
- * The method has been defined such newer releases of the core can enhance the IN as well as OUT data structures, and technically, older plugins can continue to work
+ * The method has been defined such newer releases of the core can enhance the IN as well as OUT data structures,
+ * and technically, older plugins can continue to work
  * (provided the caller supports that in these cases only a fraction of the fields on the OUT class has been populated.
  **/
 
-public interface IGenericCompatiblePluginMethod<I,O> extends PluginMethod {
+public interface IGenericCompatiblePluginMethod<I, O> extends PluginMethod {
     /** Execute an API method. In case of problems, a T9tException will be thrown. */
     void execute(RequestContext ctx, I in, O out);
 }

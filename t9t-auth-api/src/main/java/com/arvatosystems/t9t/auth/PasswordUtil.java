@@ -24,9 +24,11 @@ import org.slf4j.LoggerFactory;
 
 import de.jpaw.util.ByteArray;
 
-public class PasswordUtil {
+public final class PasswordUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(PasswordUtil.class);
-    static private final String CHARSET = "abcdefghijkmnopqrstuvwxyxABCDEFGHIJKLMNPQRSTUVWXYZ023456789!$&%/1O";
+    private static final String CHARSET = "abcdefghijkmnopqrstuvwxyxABCDEFGHIJKLMNPQRSTUVWXYZ023456789!$&%/1O";
+
+    private PasswordUtil() { }
 
     /**
      * Creates a password hash for the given user and password.

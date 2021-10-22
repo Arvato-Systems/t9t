@@ -182,9 +182,9 @@ public class T9tAuthVertx implements IServiceModule {
                         ctx.response().putHeader(HttpHeaders.CONTENT_TYPE, ct);
                         ctx.response().end(Buffer.buffer(respMsg));
 
-                    } catch(MessageParserException e) {
+                    } catch (MessageParserException e) {
                         IServiceModule.error(ctx, 400, e.getMessage());
-                    } catch(Exception e) {
+                    } catch (Exception e) {
                         IServiceModule.error(ctx, 500, e.getMessage());
                     }
                     promise.complete();
@@ -223,7 +223,7 @@ public class T9tAuthVertx implements IServiceModule {
                         JwtInfo jwtInfo = authInfo.getJwtInfo();
                         promise.complete(this.requestProcessor.execute(null, new GetTenantLogoRequest(), jwtInfo, authInfo.getEncodedJwt(), false));
 
-                    } catch(Exception e) {
+                    } catch (Exception e) {
                         LOGGER.info("{} in request: {}", e.getClass().getSimpleName(), e.getMessage());
                         promise.fail(e);
                     }

@@ -50,7 +50,7 @@ public class PasswordUtils {
 
     StringBuffer verficationMessage = new StringBuffer("... not yet verified ...");
 
-    public PasswordUtils() {}
+    public PasswordUtils() { }
 
     /**
      * minimum password length - compete password.

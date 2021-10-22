@@ -11,8 +11,9 @@
                     <cells228 id ="tenantId"                        value ="@load(vm.data.tenantId)                        @save(vm.data.tenantId,                       before='commandSave')"
                               id2="name"                            value2="@load(vm.data.name)                            @save(vm.data.name,                           before='commandSave')"/>
                     <cells228 id= "isActive"                        value ="@load(vm.data.isActive)                        @save(vm.data.isActive,                       before='commandSave')"
-                              id2="permissions.resourceIsWildcard"  value2="@load(vm.data.permissions.resourceIsWildcard)  @save(vm.data.permissions.resourceIsWildcard, before='commandSave')"/>
+                              id2="timeZone"                        value2="@load(vm.data.timeZone)                        @save(vm.data.timeZone,                       before='commandSave')"/>
                     <cells28  id= "permissions.resourceRestriction" value ="@load(vm.data.permissions.resourceRestriction) @save(vm.data.permissions.resourceRestriction,before='commandSave')" colspan1="3"/>
+                    <cells28  id= "permissions.resourceIsWildcard"  value ="@load(vm.data.permissions.resourceIsWildcard)  @save(vm.data.permissions.resourceIsWildcard, before='commandSave')"/>
                     <cells228 id= "permissions.logLevel"            value ="@load(vm.data.permissions.logLevel)            @save(vm.data.permissions.logLevel,           before='commandSave')"
                               id2="permissions.logLevelErrors"      value2="@load(vm.data.permissions.logLevelErrors)      @save(vm.data.permissions.logLevelErrors,     before='commandSave')"/>
                     <cells228 id= "permissions.validFrom"           value ="@load(vm.data.permissions.validFrom)           @save(vm.data.permissions.validFrom,          before='commandSave')"

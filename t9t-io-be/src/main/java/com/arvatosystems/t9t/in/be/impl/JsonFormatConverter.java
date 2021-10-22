@@ -28,7 +28,6 @@ import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.in.services.IInputSession;
 import com.arvatosystems.t9t.io.DataSinkDTO;
 import com.arvatosystems.t9t.io.T9tIOException;
-import com.arvatosystems.t9t.server.services.IStatefulServiceSession;
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
 
@@ -62,15 +61,15 @@ public class JsonFormatConverter extends AbstractInputFormatConverter {
     protected boolean useTokens = true;
 
     @Override
-    public void open(IInputSession inputSession, DataSinkDTO sinkCfg, IStatefulServiceSession session, Map<String, Object> params, BonaPortableClass<?> baseBClass) {
+    public void open(IInputSession inputSession, Map<String, Object> params, BonaPortableClass<?> baseBClass) {
         metaDataForOuter = new ObjectReference(Visibility.PRIVATE, false, "",
                 Multiplicity.SCALAR, IndexType.NONE, 0, 0, DataCategory.OBJECT, "json", "Map", false, false, null, true, "Map",
                 baseBClass.getMetaData(), null, null);
-        if ("1".equals(sinkCfg.getGenericParameter2())) {
+        if ("1".equals(inputSession.getDataSinkDTO().getGenericParameter2())) {
             useOrdinals = false;
             useTokens = false;
         }
-        super.open(inputSession, sinkCfg, session, params, baseBClass);
+        super.open(inputSession, params, baseBClass);
     }
 
     protected void processBonaPortable(Map<String, Object> map) {
@@ -85,7 +84,7 @@ public class JsonFormatConverter extends AbstractInputFormatConverter {
 
     @Override
     public void process(InputStream is) {
-        final Charset encoding = cfg.getOutputEncoding() == null ? Charsets.UTF_8 : Charset.forName(cfg.getOutputEncoding());
+        final Charset encoding = inputSession.getDataSinkDTO().getOutputEncoding() == null ? Charsets.UTF_8 : Charset.forName(inputSession.getDataSinkDTO().getOutputEncoding());
         final String inputData;
         try {
             inputData = CharStreams.toString(new InputStreamReader(is, encoding));

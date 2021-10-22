@@ -180,7 +180,7 @@ public class ZulUtils {
      * @return
      */
     public static String translate(final String path, final String key, final String args) {
-        final Object[] arguments = args == null || args == "" ? null : args.replace("{", "").replace("}", "").split(",");
+        final Object[] arguments = args == null || args.length() == 0 ? null : args.replace("{", "").replace("}", "").split(",");
         return translate(path, key, arguments);
     }
 

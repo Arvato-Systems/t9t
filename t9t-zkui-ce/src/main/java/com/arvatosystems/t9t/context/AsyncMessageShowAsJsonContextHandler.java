@@ -38,7 +38,7 @@ public class AsyncMessageShowAsJsonContextHandler implements IGridContextMenu<As
         if (rp != null) {
             Info info = new Info();
             info.setText(JsonComposerPrettyPrint.toJsonString(rp));
-            ModalWindows.runModal("/context/info28.zul", lb.getParent(), info, false, (d) -> {});
+            ModalWindows.runModal("/context/info28.zul", lb.getParent(), info, false, (d) -> { });
         }
     }
 }

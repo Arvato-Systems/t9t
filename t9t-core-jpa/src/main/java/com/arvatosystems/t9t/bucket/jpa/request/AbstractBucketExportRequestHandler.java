@@ -37,7 +37,7 @@ import de.jpaw.util.ApplicationException;
 public abstract class AbstractBucketExportRequestHandler<T extends AbstractBucketExportRequest> extends AbstractBucketBaseExportRequestHandler<T> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractBucketExportRequestHandler.class);
 
-    abstract protected void exportChunk(IOutputSession os, List<Long> refs, T request, String qualifier, int bucketNoToSelect);
+    protected abstract void exportChunk(IOutputSession os, List<Long> refs, T request, String qualifier, int bucketNoToSelect);
 
     @Override
     public ServiceResponse execute(RequestContext ctx, T rp) throws Exception {
@@ -53,7 +53,8 @@ public abstract class AbstractBucketExportRequestHandler<T extends AbstractBucke
         int newBucketNo = oldBucketNo + 1;  // new number - but only valid if switching
         if (newBucketNo >= counterEntity.getMaxVal())
             newBucketNo = 0;  // restart
-        final int bucketNoToSelect = rp.getBucketNo() != null ? rp.getBucketNo() : (switchBucket ? oldBucketNo : (oldBucketNo > 0 ? oldBucketNo - 1 : counterEntity.getMaxVal() - 1));
+        final int bucketNoToSelect = rp.getBucketNo() != null ? rp.getBucketNo()
+          : (switchBucket ? oldBucketNo : (oldBucketNo > 0 ? oldBucketNo - 1 : counterEntity.getMaxVal() - 1));
 
         // first, delete the target bucket, unless disabled
         if (deleteBucket && switchBucket) {

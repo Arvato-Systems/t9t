@@ -39,18 +39,21 @@ public class NoopRefGenerator implements IRefGenerator {
     // @Inject
     private final T9tServerConfiguration configuration = Jdp.getRequired(T9tServerConfiguration.class);
     private final long scaledOffsetForLocation;
-    private final AtomicLong [] generatorTab = new AtomicLong[OFFSET_BACKUP_LOCATION];
-    private final AtomicLong [] generatorTabUnscaled = new AtomicLong[3 * NUM_SEQUENCES_UNSCALED];
-    private final long randomOffset = (System.currentTimeMillis() - 1492_000_000_000L) * 10000;  // current time minus some offset to keep numbers as small as possible (FT-3222)
+    private final AtomicLong[] generatorTab = new AtomicLong[OFFSET_BACKUP_LOCATION];
+    private final AtomicLong[] generatorTabUnscaled = new AtomicLong[3 * NUM_SEQUENCES_UNSCALED];
+    /** current time minus some offset to keep numbers as small as possible (FT-3222) */
+    private final long randomOffset = (System.currentTimeMillis() - 1492_000_000_000L) * 10000;
 
     public NoopRefGenerator() {
         LOGGER.warn("Time based in memory Ref generator selected, be sure this is for testing / single instance only!");
 
-        scaledOffsetForLocation = (long) configuration.getKeyPrefetchConfiguration().getLocationOffset() * OFFSET_BACKUP_LOCATION;
-        for (int i = 0; i < OFFSET_BACKUP_LOCATION; ++i)
+        scaledOffsetForLocation = (long)configuration.getKeyPrefetchConfiguration().getLocationOffset() * OFFSET_BACKUP_LOCATION;
+        for (int i = 0; i < OFFSET_BACKUP_LOCATION; ++i) {
             generatorTab[i] = new AtomicLong();
-        for (int i = 0; i < 3 * NUM_SEQUENCES_UNSCALED; ++i)
+        }
+        for (int i = 0; i < 3 * NUM_SEQUENCES_UNSCALED; ++i) {
             generatorTabUnscaled[i] = new AtomicLong();
+        }
     }
 
     @Override

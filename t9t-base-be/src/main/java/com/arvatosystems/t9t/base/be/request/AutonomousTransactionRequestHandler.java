@@ -29,7 +29,7 @@ import de.jpaw.dp.Jdp;
 
 @AddLogger
 public class AutonomousTransactionRequestHandler extends AbstractRequestHandler<AutonomousTransactionRequest> {
-    private final static Logger LOGGER = LoggerFactory.getLogger(com.arvatosystems.t9t.base.be.request.AutonomousTransactionRequestHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(com.arvatosystems.t9t.base.be.request.AutonomousTransactionRequestHandler.class);
     protected final IAutonomousExecutor autoExecutor = Jdp.getRequired(IAutonomousExecutor.class);
 
     @Override

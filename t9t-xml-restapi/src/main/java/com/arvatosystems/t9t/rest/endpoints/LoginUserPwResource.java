@@ -82,9 +82,9 @@ public class LoginUserPwResource implements IT9tRestEndpoint {
 
     @Operation(
         summary = "Create a session / JWT token by user ID / password",
-        description = "The request creates a session at the host and returns a JWT which can be used as authentication token for subsequent requests. Authentication is by user name / password",
+        description = "The request creates a session at the host and returns a JWT which can be used as authentication token for subsequent requests. Authentication is by user name / password.",
         responses = {
-            @ApiResponse(description = "Authentication successful", content = @Content(schema = @Schema(implementation = AuthenticationResult.class)))
+            @ApiResponse(description = "Authentication successful.", content = @Content(schema = @Schema(implementation = AuthenticationResult.class)))
         }
     )
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -118,7 +118,6 @@ public class LoginUserPwResource implements IT9tRestEndpoint {
         authenticationParamsRequest.setAuthenticationParameters(passwordAuthentication);
         authenticationParamsRequest.setSessionParameters(LoginApiKeyResource.convertSessionParameters(authByUserPw.getSessionParameters()));
 
-        // execute ServiceRequest
         // execute ServiceRequest
         restProcessor.performAsyncAuthBackendRequest(httpHeaders, resp, authenticationParamsRequest, s -> basicAuthHashToJwtCache.put(cacheKey, s));
     }

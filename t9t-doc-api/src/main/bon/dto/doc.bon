@@ -109,7 +109,7 @@ package (com.arvatosystems) t9t.doc {
         required (DocEmailReceiverDTO...)           emailSettings;                                      // email recipient configuration
         optional documentId                         alternateTemplateId;                                // if not null, provides a secondary documentId for the template of email bodies, as plain text
         optional Boolean                            followMappedId;                                     // if TRUE, the config for the mappedId will be read
-        optional timeZoneId                         timeZone         properties dropdown="timeZoneId";  // one of joda DateTimeZone.getAvailableIds()
+        optional timeZoneId                         timeZone         properties dropdown="timeZoneId";  // a time zone identifier such as "Europe/Berlin"
     }
 
     /** Document template configuration data. The template can depend on subTenant (entity), country and language.

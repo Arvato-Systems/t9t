@@ -33,14 +33,16 @@ import com.arvatosystems.t9t.event.services.ListenerConfigConverter;
 
 import de.jpaw.dp.Jdp;
 
-public class ListenerConfigCrudRequestHandler extends AbstractCrudSurrogateKey42RequestHandler<ListenerConfigRef, ListenerConfigDTO, FullTrackingWithVersion, ListenerConfigCrudRequest, ListenerConfigEntity> {
+public class ListenerConfigCrudRequestHandler extends
+  AbstractCrudSurrogateKey42RequestHandler<ListenerConfigRef, ListenerConfigDTO, FullTrackingWithVersion, ListenerConfigCrudRequest, ListenerConfigEntity> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ListenerConfigCrudRequestHandler.class);
 
     private final IListenerConfigEntityResolver entityResolver = Jdp.getRequired(IListenerConfigEntityResolver.class);
     private final IListenerConfigDTOMapper sinksMapper = Jdp.getRequired(IListenerConfigDTOMapper.class);
 
     @Override
-    public CrudSurrogateKeyResponse<ListenerConfigDTO, FullTrackingWithVersion> execute(RequestContext ctx, ListenerConfigCrudRequest crudRequest) throws Exception {
+    public CrudSurrogateKeyResponse<ListenerConfigDTO, FullTrackingWithVersion> execute(RequestContext ctx, ListenerConfigCrudRequest crudRequest)
+      throws Exception {
         // TODO: update for delete as well
         CrudSurrogateKeyResponse<ListenerConfigDTO, FullTrackingWithVersion> resp = execute(ctx, sinksMapper, entityResolver, crudRequest);
         final ListenerConfigDTO dto = resp.getData();

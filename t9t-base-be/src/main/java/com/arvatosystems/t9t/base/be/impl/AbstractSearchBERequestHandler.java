@@ -37,11 +37,12 @@ import de.jpaw.util.ExceptionUtil;
 
 /** The abstract superclass of all search and export requests is responsible to perform the optional data export portion of the request,
  * as well as applying extra user related restrictions. */
-public abstract class AbstractSearchBERequestHandler<DTO extends BonaPortable, TRACKING extends TrackingBase, REQUEST extends SearchRequest<DTO, TRACKING>> extends AbstractSearchRequestHandler<REQUEST> {
+public abstract class AbstractSearchBERequestHandler<DTO extends BonaPortable, TRACKING extends TrackingBase, REQUEST extends SearchRequest<DTO, TRACKING>>
+  extends AbstractSearchRequestHandler<REQUEST> {
     private final List<DataWithTrackingW<DTO, TRACKING>> EMPTY_RESULT_LIST = new ArrayList<DataWithTrackingW<DTO, TRACKING>>(0);
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractSearchBERequestHandler.class);
 
-    protected ReadAllResponse<DTO,TRACKING> execute(List<DataWithTrackingW<DTO,TRACKING>> result, OutputSessionParameters op) {
+    protected ReadAllResponse<DTO, TRACKING> execute(List<DataWithTrackingW<DTO, TRACKING>> result, OutputSessionParameters op) {
         ReadAllResponse<DTO, TRACKING> rs = new ReadAllResponse<DTO, TRACKING>();
         LOGGER.debug("{} result size has size {}", this.getClass().getSimpleName(), result.size());
 
@@ -53,8 +54,9 @@ public abstract class AbstractSearchBERequestHandler<DTO extends BonaPortable, T
             op.setSmartMappingForDataWithTracking(Boolean.TRUE);
             try (IOutputSession outputSession = Jdp.getRequired(IOutputSession.class)) {
                 Long sinkRef = outputSession.open(op);
-                for (DataWithTrackingW<DTO,TRACKING> e : result)
+                for (DataWithTrackingW<DTO, TRACKING> e : result) {
                     outputSession.store(e);
+                }
                 // successful close: store ref
                 rs.setSinkRef(sinkRef);
                 rs.setDataList(EMPTY_RESULT_LIST);

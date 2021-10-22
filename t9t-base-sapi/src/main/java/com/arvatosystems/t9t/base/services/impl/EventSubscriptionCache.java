@@ -34,7 +34,7 @@ public class EventSubscriptionCache {
     public static void updateRegistration(String eventID, String qualifier, Long tenantRef, boolean active) {
         final String key = eventID + ":" + qualifier + ":" + tenantRef.toString();
         ACTIVE_SUBSCRIPTIONS.put(key, Boolean.valueOf(active));
-        LOGGER.info("Updated EventSubscriptionCache with key:{}, active:{}",key,active);
+        LOGGER.info("Updated EventSubscriptionCache with key:{}, active:{}", key, active);
     }
 
     public static boolean isActive(String eventID, String qualifier, Long tenantRef) {

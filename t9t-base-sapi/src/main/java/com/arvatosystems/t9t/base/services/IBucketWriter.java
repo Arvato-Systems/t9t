@@ -30,7 +30,7 @@ public interface IBucketWriter extends Closeable {
 
     /** Flushes unwritten buffers immediately - perform to sync.
      * Only required if the writer buffers data, otherwise a no-op. */
-    default void flush() {}
+    default void flush() { }
 
     /** Shuts down the writer - last call in regular lifecycle. */
     @Override
