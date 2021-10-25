@@ -19,8 +19,12 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.bind.BindContext;
+import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.Events;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
@@ -71,5 +75,10 @@ public class GenericVM {
 
     public String getTenantId() {
         return tenantId;
+    }
+
+    @Command
+    public void okCommand(BindContext ctx) {
+        Events.postEvent(new Event(Events.ON_OK, ctx.getComponent(), null));
     }
 }

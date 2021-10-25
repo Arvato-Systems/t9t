@@ -31,8 +31,6 @@ import java.util.zip.ZipInputStream;
 
 public class Util {
 
-    private static final DateFormat DATE_SUFFIX = new SimpleDateFormat("yyyyMMdd-HHmmss-SSS");
-
     /**
      * <p>
      * Checks if a String is whitespace, empty ("") or null.
@@ -117,7 +115,7 @@ public class Util {
     public static String createArchiveFilename(String fileName) {
         StringBuilder stringBuilder = new StringBuilder(fileName);
         // stringBuilder.replace(fileName.lastIndexOf("."), fileName.lastIndexOf(".") + 1, "." + extension + ".");
-        stringBuilder.replace(fileName.lastIndexOf("."), fileName.length(), "." + DATE_SUFFIX.format(new Date()) + ".archive");
+        stringBuilder.replace(fileName.lastIndexOf("."), fileName.length(), "." + new SimpleDateFormat("yyyyMMdd-HHmmss-SSS").format(new Date()) + ".archive");
         return stringBuilder.toString();
     }
 

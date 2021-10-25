@@ -107,6 +107,7 @@ public class T9tServer extends AbstractVerticle {
     public void start() throws Exception {
         super.start();
 
+        // FIXME: bonaparte: Write to static field de.jpaw.bonaparte.util.DeprecationWarner.setWarner from instance method 
         DeprecationWarner.setWarner = null;  // no noise in the logs on the server side - warnings are primarily intended for clients!
 
         List<IServiceModule> modules = Jdp.getOneInstancePerQualifier(IServiceModule.class);

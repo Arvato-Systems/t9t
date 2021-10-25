@@ -127,13 +127,19 @@
       <property name="max" value="200"/>
       <property name="countEmpty" value="false"/>  <!-- leaving it at true could lead to deletion of empty lines or comments! -->
     </module>
-    <module name="ParameterNumber"/>
+    <module name="ParameterNumber">
+      <property name="max" value="15"/>
+    </module>
 
     <!-- Checks for whitespace                               -->
     <!-- See https://checkstyle.org/config_whitespace.html -->
     <module name="EmptyForIteratorPad"/>
     <module name="GenericWhitespace"/>
-    <module name="MethodParamPad"/>
+<!--    <module name="MethodParamPad"/> -->
+    <module name="MethodParamPad">
+      <property name="tokens" value="CTOR_DEF, LITERAL_NEW, SUPER_CTOR_CALL"/>  <!-- allow before "METHOD_DEF, METHOD_CALL" for alignment -->
+      <property name="option" value="nospace"/>
+    </module>
 
     <module name="NoWhitespaceAfter"> <!-- omitting ARRAY_INIT and TYPECAST from default, adding METHOD_REF -->
       <property name="tokens" value="AT, INC, DEC, UNARY_MINUS, UNARY_PLUS, BNOT, LNOT, DOT, ARRAY_DECLARATOR, INDEX_OP,  METHOD_REF"/>
@@ -198,9 +204,11 @@
 
     <!-- Checks for class design                         -->
     <!-- See https://checkstyle.org/config_design.html -->
+	<!-- deactivated because it depends on Javadoc, which we will do later
     <module name="DesignForExtension">
       <property name="ignoredAnnotations" value="Override, Test"/>
     </module>
+	-->
     <module name="FinalClass"/>
     <module name="HideUtilityClassConstructor"/>
     <module name="InterfaceIsType"/>

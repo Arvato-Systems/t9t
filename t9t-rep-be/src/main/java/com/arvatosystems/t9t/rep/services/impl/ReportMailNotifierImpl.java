@@ -53,28 +53,29 @@ public class ReportMailNotifierImpl implements IReportMailNotifier {
     private static final Logger LOGGER = LoggerFactory.getLogger(ReportMailNotifierImpl.class);
 
     @Override
-    public void sendEmail(ReportConfigDTO reportConfigDTO, ReportParamsDTO reportParamsDTO, String mailingGroupId, String docConfigId, Long sinkRef, DocumentSelector selector) {
+    public void sendEmail(final ReportConfigDTO reportConfigDTO, final ReportParamsDTO reportParamsDTO, final String mailingGroupId, final String docConfigId,
+      final Long sinkRef, final DocumentSelector selector) {
 
-        RequestContext ctx = Jdp.getRequired(RequestContext.class);
+        final RequestContext ctx = Jdp.getRequired(RequestContext.class);
 
         if (mailingGroupId != null && sinkRef != null) {
 
-            SinkDTO sinkDTO = crossModuleRefResolver.getData(new SinkCrudRequest(), sinkRef);
-            String absolutePath = fileUtil.getAbsolutePathForTenant(ctx.tenantId, sinkDTO.getFileOrQueueName());
+            final SinkDTO sinkDTO = crossModuleRefResolver.getData(new SinkCrudRequest(), sinkRef);
+            final String absolutePath = fileUtil.getAbsolutePathForTenant(ctx.tenantId, sinkDTO.getFileOrQueueName());
 
-            Map<String, Object> zField = new HashMap<>();
+            final Map<String, Object> zField = new HashMap<>();
             zField.put("attachmentName", sinkDTO.getFileOrQueueName());
-            MediaData mediaData = new MediaData();
+            final MediaData mediaData = new MediaData();
             mediaData.setMediaType(sinkDTO.getCommFormatType());
             mediaData.setZ(zField);
 
-            File reportFile = new File(absolutePath);
+            final File reportFile = new File(absolutePath);
             try (FileInputStream fis = new FileInputStream(reportFile)) {
-                int fileLength = (int) reportFile.length();
-                byte[] byteArray = new byte[fileLength];
+                final int fileLength = (int) reportFile.length();
+                final byte[] byteArray = new byte[fileLength];
                 fis.read(byteArray, 0, fileLength);
                 mediaData.setRawData(new ByteArray(byteArray));
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 LOGGER.error("Unable to send report email due to", e);
                 throw new T9tException(T9tRepException.UNABLE_TO_NOTIFY_REPORT_COMPLETION);
             }
@@ -85,7 +86,7 @@ public class ReportMailNotifierImpl implements IReportMailNotifier {
             request.setDocumentSelector(selector);
             request.setAttachments(Lists.newArrayList(mediaData));
 
-            Map<String, Object> parameterMap = new HashMap<>();
+            final Map<String, Object> parameterMap = new HashMap<>();
             parameterMap.put("r", reportConfigDTO);
             parameterMap.put("param", reportParamsDTO);
 

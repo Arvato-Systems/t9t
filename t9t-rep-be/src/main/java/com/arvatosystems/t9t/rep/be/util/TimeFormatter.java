@@ -25,9 +25,11 @@ import java.time.format.FormatStyle;
 import java.time.temporal.Temporal;
 import java.util.Locale;
 
-public class TimeFormatter {
+public final class TimeFormatter {
 
-    public static String formatTimetoStr(LocalDateTime dateTime) {
+    private TimeFormatter() { }
+
+    public static String formatTimetoStr(final LocalDateTime dateTime) {
         return dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
@@ -38,16 +40,16 @@ public class TimeFormatter {
      * @param locale
      * @return formatted UTC time based on locale and time zone
      */
-    public static String formatDateTime(Temporal dateTime, String timeZone, Locale locale) {
+    public static String formatDateTime(final Temporal dateTime, final String timeZone, final Locale locale) {
         if (dateTime == null) {
             return null;
         }
         String formattedDateTime = null;
         if (dateTime instanceof LocalDate) {
-            LocalDate d = (LocalDate)dateTime;
+            final LocalDate d = (LocalDate)dateTime;
             formattedDateTime = d.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(locale));
         } else if (dateTime instanceof Instant) {
-            LocalDateTime d = LocalDateTime.ofInstant((Instant)dateTime, ZoneId.of(timeZone));
+            final LocalDateTime d = LocalDateTime.ofInstant((Instant)dateTime, ZoneId.of(timeZone));
             formattedDateTime = d.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.MEDIUM).withLocale(locale));
         } else if (dateTime instanceof LocalDateTime) {
             LocalDateTime d = (LocalDateTime)dateTime;
@@ -65,11 +67,11 @@ public class TimeFormatter {
      * @param locale
      * @return formatted date/date time (plus the pass in time zone difference) based on the time zone and locale
      */
-    public static String formatDateTime(Instant dateTimeInstant, String timeZone, Locale locale) {
+    public static String formatDateTime(final Instant dateTimeInstant, final String timeZone, final Locale locale) {
         if (dateTimeInstant == null) {
             return null;
         }
-        LocalDateTime localDateTime = LocalDateTime.ofInstant(dateTimeInstant, ZoneOffset.UTC);
+        final LocalDateTime localDateTime = LocalDateTime.ofInstant(dateTimeInstant, ZoneOffset.UTC);
         return formatDateTime(localDateTime, timeZone, locale);
     }
 
@@ -79,11 +81,11 @@ public class TimeFormatter {
      * @param locale
      * @return  formatted date/datetime (plus the pass in time zone difference) based on the time zone and locale
      */
-    public static String formatDateTimeWithTargetTimeZone(Instant dateTimeInstant, String timeZone, Locale locale) {
+    public static String formatDateTimeWithTargetTimeZone(final Instant dateTimeInstant, final String timeZone, final Locale locale) {
         if (dateTimeInstant == null) {
             return null;
         }
-        LocalDateTime localDateTime = LocalDateTime.ofInstant(dateTimeInstant, ZoneId.of(timeZone));
+        final LocalDateTime localDateTime = LocalDateTime.ofInstant(dateTimeInstant, ZoneId.of(timeZone));
         return formatDateTime(localDateTime, timeZone, locale);
     }
 
@@ -93,7 +95,7 @@ public class TimeFormatter {
      * @param locale
      * @return  formatted date/datetime (plus the pass in time zone difference) based on the time zone and locale
      */
-    public static String formatDateTimeWithTargetTimeZone(LocalDateTime localDateTime, String timeZone, Locale locale) {
+    public static String formatDateTimeWithTargetTimeZone(final LocalDateTime localDateTime, final String timeZone, final Locale locale) {
         if (localDateTime == null) {
             return null;
         }

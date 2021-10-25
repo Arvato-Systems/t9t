@@ -19,6 +19,8 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.bind.Binder;
+import org.zkoss.bind.impl.BinderUtil;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
@@ -62,8 +64,8 @@ public class Modal28 extends Window {
         setMaximizable(true);
 
         // wire events
+        okButton    .addEventListener(Events.ON_CLICK, ev -> { BinderUtil.getBinder(this).sendCommand("okCommand", null);});
         cancelButton.addEventListener(Events.ON_CLICK, ev -> cancelWindow());
-        okButton    .addEventListener(Events.ON_CLICK, ev -> confirmWindow());
     }
 
     @Override

@@ -83,8 +83,8 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
     private static final String COMPILED_JR_TEMPLATES_SUBFOLDER = "reports/bin";
     private static final String JR_TEMPLATE_EXT = ".jrxml";
     private static final String COMPILED_JR_TEMPLATE_EXT = ".jasper";
-    //protected static final DateTimeFormatter dayFormatter = DateTimeFormat.forStyle("M-").withZoneUTC();  // this gives a local format
-    protected static final DateTimeFormatter dayFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+    //protected static final DateTimeFormatter DAY_FORMATTER = DateTimeFormat.forStyle("M-").withZoneUTC();  // this gives a local format
+    protected static final DateTimeFormatter DAY_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
 
     private final IFileUtil fileUtil = Jdp.getRequired(IFileUtil.class);
     private final IJasperParameterEnricher jasperParamEnricher = Jdp.getRequired(IJasperParameterEnricher.class);
@@ -93,15 +93,16 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
     private final IReportMailNotifier reportNotifier = Jdp.getRequired(IReportMailNotifier.class);
 
     @Override
-    public boolean isReadOnly(RunReportRequest request) {
+    public boolean isReadOnly(final RunReportRequest request) {
         return false;
     }
 
-    protected void resolveInterval(Map<String, Object> parameters, LocalDateTime relevantDate, ReportParamsDTO interval,
-            Map<String, Object> outputSessionAdditionalParametersList) {
-        int secondsSinceMidnight = relevantDate.toLocalTime().toSecondOfDay();
+    protected void resolveInterval(final Map<String, Object> parameters, final LocalDateTime relevantDate, final ReportParamsDTO interval,
+            final Map<String, Object> outputSessionAdditionalParametersList) {
+        final int secondsSinceMidnight = relevantDate.toLocalTime().toSecondOfDay();
         // default setting is toDate = most recent midnight
-        LocalDateTime fromDate = null, toDate = relevantDate.minusSeconds(secondsSinceMidnight);
+        LocalDateTime fromDate = null;
+        LocalDateTime toDate = relevantDate.minusSeconds(secondsSinceMidnight);
         switch (interval.getIntervalCategory()) {
         case BY_DURATION:
             if (interval.getIntervalDays() > 0) {
@@ -109,7 +110,7 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
             } else {
                 // sub-day interval: must use different rounding: millisOfDay modulus interval
                 if (interval.getIntervalSeconds() > 0) {
-                    int relevantDiff = secondsSinceMidnight % interval.getIntervalSeconds();
+                    final int relevantDiff = secondsSinceMidnight % interval.getIntervalSeconds();
                     toDate = relevantDate.minusSeconds(relevantDiff);
                 } else {
                     toDate = relevantDate;
@@ -122,7 +123,7 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
             toDate   = interval.getToDate();
             break;
         case BY_TIME:
-            int factor = interval.getFactor() == null ? 1 : interval.getFactor().intValue();
+            final int factor = interval.getFactor() == null ? 1 : interval.getFactor().intValue();
             switch (interval.getInterval()) {
             case DAILY:
                 fromDate = toDate.minusDays(factor);
@@ -154,12 +155,12 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
         LOGGER.info("Report run for period from {} to {}", fromDate.toString(), toDate.toString());
         parameters.put(DATE_FROM, fromDate);
         parameters.put(DATE_TO, toDate);
-        outputSessionAdditionalParametersList.put("reportDateFrom", fromDate.format(dayFormatter));
-        outputSessionAdditionalParametersList.put("reportDateTo", toDate.minusSeconds(1).format(dayFormatter));
+        outputSessionAdditionalParametersList.put("reportDateFrom", fromDate.format(DAY_FORMATTER));
+        outputSessionAdditionalParametersList.put("reportDateTo", toDate.minusSeconds(1).format(DAY_FORMATTER));
     }
 
 
-    protected void addDefaultParameters(RequestContext ctx, Map<String, Object> parameters) {
+    protected void addDefaultParameters(final RequestContext ctx, final Map<String, Object> parameters) {
         parameters.put(PROCESS_REF, ctx.requestRef);
         parameters.put(TENANT_ID,   ctx.tenantId);
         parameters.put(USER_ID,     ctx.userId);
@@ -171,10 +172,10 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
 
 
     // filter parameters suitable for slim debugging (do not output whole objects)
-    private Map<String, Object> filterBasic(Map<String, Object> parameters) {
-        Map<String, Object> mapForOutput = new HashMap<>(parameters.size());
-        for (String k : parameters.keySet()) {
-            Object val = parameters.get(k);
+    private Map<String, Object> filterBasic(final Map<String, Object> parameters) {
+        final Map<String, Object> mapForOutput = new HashMap<>(parameters.size());
+        for (final String k : parameters.keySet()) {
+            final Object val = parameters.get(k);
             if ((val != null)
                     && ((val instanceof String) || (val instanceof Integer) || (val instanceof Long) || (val instanceof LocalDate)
                             || (val instanceof LocalDateTime) || (val instanceof Date) || (val instanceof Boolean))) {
@@ -185,16 +186,18 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
     }
 
     @Override
-    public SinkCreatedResponse execute(RequestContext ctx, RunReportRequest request) throws Exception {
+    public SinkCreatedResponse execute(final RequestContext ctx, final RunReportRequest request) throws Exception {
         Long sinkRef; // holds the result
         final Map<String, Object> outputSessionAdditionalParametersList = new HashMap<String, Object>(10);
 
-        final ReportParamsDTO reportParamsDTO = (request.getReportParamsRef() instanceof ReportParamsDTO) ?
-            // nothing to do, all data has been provided (adhoc report request)
-            (ReportParamsDTO) request.getReportParamsRef()
-        :
-            dpl.getParamsDTO(request.getReportParamsRef())
-        ;
+        final ReportParamsDTO reportParamsDTO = (request.getReportParamsRef() instanceof ReportParamsDTO)
+          ? (ReportParamsDTO) request.getReportParamsRef() // nothing to do, all data has been provided (adhoc report request)
+          : dpl.getParamsDTO(request.getReportParamsRef());
+
+        if (reportParamsDTO == null) {
+            LOGGER.error("Report parameter can not be loaded:", request.getReportParamsRef());
+            throw new T9tException(T9tRepException.CL_PARAMETER_ERROR, request);
+        }
 
         final ReportConfigDTO reportConfigDTO = dpl.getConfigDTO(reportParamsDTO.getReportConfigRef());
 
@@ -203,27 +206,25 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
 
         MediaType outputFileType = reportParamsDTO.getOutputFileType();
 
-        Instant relevantDate = ctx.internalHeaderParameters.getPlannedRunDate();
-        if (relevantDate == null) {
-            relevantDate = Instant.now();
-        }
-
         JasperReport jasperReport = null;
         JasperPrint jasperPrint = null;
 
         try (IOutputSession outputSession = Jdp.getRequired(IOutputSession.class)) {
             jasperReport = loadJasperReport(ctx, reportConfigDTO.getJasperReportTemplateName());
 
-            OutputSessionParameters outputSessionParameters = new OutputSessionParameters();
-            Map<String, Object> parameters = new HashMap<String, Object>();
+            final OutputSessionParameters outputSessionParameters = new OutputSessionParameters();
+            final Map<String, Object> parameters = new HashMap<String, Object>();
             addDefaultParameters(ctx, parameters);
             jasperParamEnricher.enrichParameter(parameters, reportParamsDTO, outputSessionAdditionalParametersList, outputSessionParameters);
 
-            //if timezone information still empty after enricher. set timezone
-            if (ctx.internalHeaderParameters != null && !Strings.isNullOrEmpty(ctx.internalHeaderParameters.getJwtInfo().getZoneinfo())) {
+            final Instant relevantDate = ctx.internalHeaderParameters.getPlannedRunDate() != null
+              ? ctx.internalHeaderParameters.getPlannedRunDate()
+              : Instant.now();
+
+            // if timezone information still empty after enricher. set timezone
+            if (ctx.internalHeaderParameters.getJwtInfo() != null && !Strings.isNullOrEmpty(ctx.internalHeaderParameters.getJwtInfo().getZoneinfo())) {
                 parameters.putIfAbsent(T9tJasperParameterEnricher.TIME_ZONE, ctx.internalHeaderParameters.getJwtInfo().getZoneinfo());
-            }
-            else {
+            } else {
                 parameters.putIfAbsent(T9tJasperParameterEnricher.TIME_ZONE, "UTC");
             }
 
@@ -244,46 +245,46 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
             sinkRef = outputSession.open(outputSessionParameters);
 
             // fill additional parameters
-            if (reportParamsDTO != null && reportParamsDTO.getZ() != null && !reportParamsDTO.getZ().isEmpty()) {
+            if (reportParamsDTO.getZ() != null && !reportParamsDTO.getZ().isEmpty()) {
                 parameters.putAll(reportParamsDTO.getZ());
             }
 
             jasperPrint = jasperReportFiller.fillReport(jasperReport, reportParamsDTO, parameters);
             Exporter<ExporterInput, ?, ?, ?> exporter = null;
 
-            MediaXType tmpType = outputSession.getCommunicationFormatType(); // get merged type (with configuration)
+            final MediaXType tmpType = outputSession.getCommunicationFormatType(); // get merged type (with configuration)
             if (tmpType == null || !(tmpType.getBaseEnum() instanceof MediaType)) {
                 throw new T9tException(T9tRepException.JASPER_REPORT_CREATION_JR_EXCEPTION, "null or bad OFT");
             }
             outputFileType = (MediaType)(tmpType.getBaseEnum());
             switch (outputFileType) {
             case CSV:
-                JRCsvExporter exporterCsv = new JRCsvExporter();
+                final JRCsvExporter exporterCsv = new JRCsvExporter();
                 exporterCsv.setExporterOutput(new SimpleWriterExporterOutput(outputSession.getOutputStream()));
                 exporter = exporterCsv;
                 break;
             case JSON:
-                JRCsvExporter exporterJson = new JRCsvExporter();
+                final JRCsvExporter exporterJson = new JRCsvExporter();
                 exporterJson.setExporterOutput(new SimpleWriterExporterOutput(outputSession.getOutputStream()));
                 exporter = exporterJson;
                 break;
             case HTML:
-                HtmlExporter exporterHtml = new HtmlExporter();
+                final HtmlExporter exporterHtml = new HtmlExporter();
                 exporterHtml.setExporterOutput(new SimpleHtmlExporterOutput(outputSession.getOutputStream()));
                 exporter = exporterHtml;
                 break;
             case PDF:
-                JRPdfExporter exporterPdf = new JRPdfExporter();
+                final JRPdfExporter exporterPdf = new JRPdfExporter();
                 exporterPdf.setExporterOutput(new SimpleOutputStreamExporterOutput(outputSession.getOutputStream()));
                 exporter = exporterPdf;
                 break;
             case XLS:
-                JRXlsExporter exporterXls = new JRXlsExporter();
+                final JRXlsExporter exporterXls = new JRXlsExporter();
                 exporterXls.setExporterOutput(new SimpleOutputStreamExporterOutput(outputSession.getOutputStream()));
                 exporter = exporterXls;
                 break;
             case XLSX:
-                JRXlsxExporter exporterXlsx = new JRXlsxExporter();
+                final JRXlsxExporter exporterXlsx = new JRXlsxExporter();
                 exporterXlsx.setExporterOutput(new SimpleOutputStreamExporterOutput(outputSession.getOutputStream()));
                 exporter = exporterXlsx;
                 break;
@@ -294,7 +295,7 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
             exporter.exportReport();
 
 //            outputSession.close();
-        } catch (JRException e) {
+        } catch (final JRException e) {
             LOGGER.error("Jasper throw an exception:", e);
             throw new T9tException(T9tRepException.JASPER_REPORT_CREATION_JR_EXCEPTION, e.getMessage());
         }
@@ -304,15 +305,15 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
             reportNotifier.sendEmail(reportConfigDTO, reportParamsDTO, mailingGroupId, null, sinkRef, null);
         }
 
-        SinkCreatedResponse response = new SinkCreatedResponse();
+        final SinkCreatedResponse response = new SinkCreatedResponse();
         response.setReturnCode(0);
         response.setSinkRef(sinkRef);
         return response;
     }
 
-    private JasperReport loadJasperReport(RequestContext ctx, String pathToReport) throws JRException {
-        String currentTenantId = ctx.tenantId;
-        String filesRootLocation = fileUtil.getFilePathPrefix();
+    private JasperReport loadJasperReport(final RequestContext ctx, final String pathToReport) throws JRException {
+        final String currentTenantId = ctx.tenantId;
+        final String filesRootLocation = fileUtil.getFilePathPrefix();
 
         JasperReport report = getCompiledJrTemplate(filesRootLocation, currentTenantId, pathToReport);
         if (report == null) {
@@ -328,19 +329,19 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
         return report;
     }
 
-    private JasperReport getCompiledJrTemplate(String filesRootLocation, String tenantId, String jrTemplateRelativePath) throws JRException {
-        String jrTemplatePath = fileUtil.buildPath(filesRootLocation, tenantId, JR_TEMPLATES_SUBFOLDER, jrTemplateRelativePath);
+    private JasperReport getCompiledJrTemplate(final String filesRootLocation, final String tenantId, final String jrTemplateRelativePath) throws JRException {
+        final String jrTemplatePath = fileUtil.buildPath(filesRootLocation, tenantId, JR_TEMPLATES_SUBFOLDER, jrTemplateRelativePath);
         LOGGER.debug("Report template path: '{}'", jrTemplatePath);
 
-        File jrTemplateFile = new File(jrTemplatePath);
+        final File jrTemplateFile = new File(jrTemplatePath);
         if (!jrTemplateFile.exists()) {
             LOGGER.info("Report template does not exist. {}", jrTemplatePath);
             return null;
         }
 
-        String compiledTemplatePath = buildCompiledJrTemplatePath(filesRootLocation, tenantId, jrTemplateRelativePath);
+        final String compiledTemplatePath = buildCompiledJrTemplatePath(filesRootLocation, tenantId, jrTemplateRelativePath);
         LOGGER.debug("Compiled report template path: '{}'", compiledTemplatePath);
-        File compiledJrTemplateFile = new File(compiledTemplatePath);
+        final File compiledJrTemplateFile = new File(compiledTemplatePath);
 
         if (!compiledJrTemplateFile.exists() || (compiledJrTemplateFile.lastModified() < jrTemplateFile.lastModified())) {
             fileUtil.createFileLocation(compiledTemplatePath);
@@ -351,11 +352,11 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
         return (JasperReport) JRLoader.loadObject(compiledJrTemplateFile);
     }
 
-    private String buildCompiledJrTemplatePath(String filesRootLocation, String tenantId, String pathToReport) {
+    private String buildCompiledJrTemplatePath(final String filesRootLocation, final String tenantId, final String pathToReport) {
         String compilerJrTemplatePath;
 
         if (pathToReport.endsWith(JR_TEMPLATE_EXT)) {
-            int ind = pathToReport.lastIndexOf(JR_TEMPLATE_EXT);
+            final int ind = pathToReport.lastIndexOf(JR_TEMPLATE_EXT);
             compilerJrTemplatePath = pathToReport.substring(0, ind) + COMPILED_JR_TEMPLATE_EXT;
         } else {
             compilerJrTemplatePath = pathToReport + COMPILED_JR_TEMPLATE_EXT;

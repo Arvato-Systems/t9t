@@ -26,11 +26,11 @@ import java.util.Vector;
 
 public class OrderedProperties extends Properties {
 
-    private static final DateFormat datef = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static final long serialVersionUID = -8322955026256703344L;
 
     private Vector<Object> keys;
     private StringBuffer raw = new StringBuffer();
+    private final DateFormat datef = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public OrderedProperties() {
         super();

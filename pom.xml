@@ -98,6 +98,7 @@
         <bonaparte-plugin.version>4.80.0</bonaparte-plugin.version>
         <license-plugin.version>3.0</license-plugin.version>
 
+        <checkstyle.version>9.0.1</checkstyle.version>
         <spotbugs.version>4.4.2</spotbugs.version>
         <logback.version>1.2.6</logback.version>
 
@@ -578,17 +579,17 @@
                     <artifactId>maven-checkstyle-plugin</artifactId>
                     <version>${maven-checkstyle-plugin.version}</version>
                     <configuration>
-                        <configLocation>${maven.multiModuleProjectDirectory}/checkstyle.xml</configLocation>
+                        <configLocation>./checkstyle.xml</configLocation>
                         <encoding>UTF-8</encoding>
                         <consoleOutput>true</consoleOutput>
-<!--                        <failsOnError>true</failsOnError>  FIXME -->
+                        <failsOnError>true</failsOnError>
                         <linkXRef>false</linkXRef>
                     </configuration>
                     <dependencies>
                         <dependency>
                             <groupId>com.puppycrawl.tools</groupId>
                             <artifactId>checkstyle</artifactId>
-                            <version>9.0.1</version>
+                            <version>${checkstyle.version}</version>
                         </dependency>
                     </dependencies>
                 </plugin>
