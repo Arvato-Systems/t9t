@@ -30,17 +30,17 @@ import com.arvatosystems.t9t.base.types.ListenerConfig;
  * This level is updated with the ListenerConfig CRUD command.
  * The second level may be empty (inactive DTO entries correspond to non existing entries here).
  */
-public class ListenerConfigCache {
+public final class ListenerConfigCache {
     private ListenerConfigCache() { }
 
     private static final ConcurrentMap<String, ConcurrentMap<Long, ListenerConfig>> LISTENER_CONFIG
-      = new ConcurrentHashMap<String, ConcurrentMap<Long, ListenerConfig>>();
+      = new ConcurrentHashMap<>();
 
     /** Returns the unique registration map for a given classification.
      * Creates an entry if none exists.
      * Never returns null. Unfortunately the Java 8 implementation is not lock free.
      */
-    public static ConcurrentMap<Long, ListenerConfig> getRegistrationForClassification(String classification) {
+    public static ConcurrentMap<Long, ListenerConfig> getRegistrationForClassification(final String classification) {
         // "old" Java 7 way... complicated...
 //        final ConcurrentMap<Long, ListenerConfig> existingMap = LISTENER_CONFIG.get(classification);
 //        if (existingMap != null)
@@ -49,13 +49,13 @@ public class ListenerConfigCache {
 //        final ConcurrentMap<Long, ListenerConfig> mapCreatedByRaceCondition = LISTENER_CONFIG.putIfAbsent(classification, newMap);
 //        return mapCreatedByRaceCondition != null ? mapCreatedByRaceCondition : newMap;
         // all built-in with Java 8, no more race conditions, never creates a map which is thrown away
-        return LISTENER_CONFIG.computeIfAbsent(classification, (k) -> new ConcurrentHashMap<Long, ListenerConfig>());
+        return LISTENER_CONFIG.computeIfAbsent(classification, (k) -> new ConcurrentHashMap<>());
     }
 
     /** Updates an entry or deletes it (if newEntry == null) */
-    public static void updateRegistration(String classification, Long tenantRef, ListenerConfig newEntry) {
+    public static void updateRegistration(final String classification, final Long tenantRef, final ListenerConfig newEntry) {
         // step 1: get the entry for the given classification
-        ConcurrentMap<Long, ListenerConfig> existingMap = getRegistrationForClassification(classification);
+        final ConcurrentMap<Long, ListenerConfig> existingMap = getRegistrationForClassification(classification);
         if (newEntry == null)
             existingMap.remove(tenantRef);
         else

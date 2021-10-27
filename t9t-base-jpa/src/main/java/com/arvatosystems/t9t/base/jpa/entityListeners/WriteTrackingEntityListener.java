@@ -26,14 +26,14 @@ public class WriteTrackingEntityListener extends AbstractEntityListener<WriteTra
 
     @PrePersist
     @Override
-    public void prePersist(BonaPersistableTracking<WriteTracking> entity) {
-        FullTracking tr = new FullTracking();
+    public void prePersist(final BonaPersistableTracking<WriteTracking> entity) {
+        final FullTracking tr = new FullTracking();
         createTracking(tr);
         entity.put$Tracking(tr);
     }
 
     @Override
-    public void preUpdate(BonaPersistableTracking<WriteTracking> entity) {
+    public void preUpdate(final BonaPersistableTracking<WriteTracking> entity) {
     }
 
 }

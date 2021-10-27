@@ -15,6 +15,12 @@
  */
 package com.arvatosystems.t9t.auth.mocks;
 
+import java.util.Collections;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.arvatosystems.t9t.base.auth.PermissionEntry;
 import com.arvatosystems.t9t.base.auth.PermissionType;
 import com.arvatosystems.t9t.server.services.IAuthorize;
@@ -25,12 +31,6 @@ import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 import de.jpaw.dp.Fallback;
 import de.jpaw.dp.Singleton;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Collections;
-import java.util.List;
-
 @Fallback
 @Singleton
 public class AuthorizationMock implements IAuthorize {
@@ -38,7 +38,7 @@ public class AuthorizationMock implements IAuthorize {
     private static final Permissionset NO_PERMISSIONS = new Permissionset();
 
     @Override
-    public Permissionset getPermissions(JwtInfo jwtInfo, PermissionType permissionType, String resource) {
+    public Permissionset getPermissions(final JwtInfo jwtInfo, final PermissionType permissionType, final String resource) {
         LOGGER.debug("Permission requested for user {}, tenant {}, type {}, resource {}", jwtInfo.getUserId(), jwtInfo.getTenantId(), permissionType, resource);
         if (jwtInfo.getPermissionsMin() != null) {
             return jwtInfo.getPermissionsMin();
@@ -47,10 +47,10 @@ public class AuthorizationMock implements IAuthorize {
     }
 
     @Override
-    public List<PermissionEntry> getAllPermissions(JwtInfo jwtInfo, PermissionType permissionType) {
+    public List<PermissionEntry> getAllPermissions(final JwtInfo jwtInfo, final PermissionType permissionType) {
         LOGGER.debug("Full permission list requested for user {}, tenant {}, type {}", jwtInfo.getUserId(), jwtInfo.getTenantId(), permissionType);
         if (PermissionType.BACKEND == permissionType) {
-            PermissionEntry backendPermissionEntry = new PermissionEntry("B.testRequest", Permissionset.ofTokens(OperationType.EXECUTE));
+            final PermissionEntry backendPermissionEntry = new PermissionEntry("B.testRequest", Permissionset.ofTokens(OperationType.EXECUTE));
             return Collections.singletonList(backendPermissionEntry);
         } else {
             return Collections.emptyList();

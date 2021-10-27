@@ -31,30 +31,30 @@ public class QueryHintSetter implements IQueryHintSetter {
 
     @Override
     public
-    void setManualFlushMode(EntityManager em) {
-        Session session = em.unwrap(Session.class);
+    void setManualFlushMode(final EntityManager em) {
+        final Session session = em.unwrap(Session.class);
         session.setHibernateFlushMode(FlushMode.MANUAL);
     }
 
     @Override
-    public void setReadOnly(EntityManager em, Object entity, boolean readOnly) {
-        Session session = em.unwrap(Session.class);
+    public void setReadOnly(final EntityManager em, final Object entity, final boolean readOnly) {
+        final Session session = em.unwrap(Session.class);
         session.setReadOnly(entity, readOnly);
     }
 
     @Override
-    public void setReadOnlySession(EntityManager em) {
-        Session session = em.unwrap(Session.class);
+    public void setReadOnlySession(final EntityManager em) {
+        final Session session = em.unwrap(Session.class);
         session.setDefaultReadOnly(true);
     }
 
     @Override
-    public void setReadOnly(Query query) {
+    public void setReadOnly(final Query query) {
         query.setHint(QueryHints.HINT_READONLY, true);
     }
 
     @Override
-    public void setComment(Query query, String text) {
+    public void setComment(final Query query, final String text) {
         query.setHint(QueryHints.HINT_COMMENT, text);
     }
 }

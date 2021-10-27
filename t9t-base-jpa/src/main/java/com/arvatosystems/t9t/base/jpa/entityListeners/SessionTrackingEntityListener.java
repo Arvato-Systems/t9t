@@ -15,21 +15,21 @@
  */
 package com.arvatosystems.t9t.base.jpa.entityListeners;
 
+import java.time.Instant;
+
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
-
-import java.time.Instant;
 
 import com.arvatosystems.t9t.base.entities.SessionTracking;
 
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
 
-public class SessionTrackingEntityListener extends AbstractEntityListener<SessionTracking>{
+public class SessionTrackingEntityListener extends AbstractEntityListener<SessionTracking> {
 
     @PreUpdate
     @Override
-    public void preUpdate(BonaPersistableTracking<SessionTracking> entity) {
-        SessionTracking tr = entity.ret$Tracking();
+    public void preUpdate(final BonaPersistableTracking<SessionTracking> entity) {
+        final SessionTracking tr = entity.ret$Tracking();
         tr.setMTimestamp(Instant.now());
         tr.setMTechUserId(getCutUserId());
         entity.put$Tracking(tr);
@@ -37,8 +37,8 @@ public class SessionTrackingEntityListener extends AbstractEntityListener<Sessio
 
     @PrePersist
     @Override
-    public void prePersist(BonaPersistableTracking<SessionTracking> entity) {
-        SessionTracking tr = entity.ret$Tracking();
+    public void prePersist(final BonaPersistableTracking<SessionTracking> entity) {
+        final SessionTracking tr = entity.ret$Tracking();
         tr.setCTimestamp(Instant.now());
         tr.setCTechUserId(getCutUserId());
         tr.setMTimestamp(tr.getCTimestamp());

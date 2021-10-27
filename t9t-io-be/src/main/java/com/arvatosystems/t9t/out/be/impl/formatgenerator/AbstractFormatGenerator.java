@@ -47,20 +47,21 @@ public abstract class AbstractFormatGenerator implements ICommunicationFormatGen
     }
 
     @Override
-    public void open(DataSinkDTO sinkCfg, OutputSessionParameters outputSessionParameters, MediaXType effectiveType, FoldableParams foldableParams, IOutputResource destination, Charset encoding,
-            String tenantId) throws IOException, ApplicationException {
-        this.outputResource = destination;
-        this.effectiveType = effectiveType;
-        this.sinkCfg = sinkCfg;
-        this.outputSessionParameters = outputSessionParameters;
-        this.encoding = encoding;
-        this.foldableParams = foldableParams;
-        this.tenantId = tenantId;
+    public void open(final DataSinkDTO mySinkCfg, final OutputSessionParameters myOutputSessionParameters, final MediaXType myEffectiveType,
+      final FoldableParams myFoldableParams, final IOutputResource myOutputResource, final Charset myEncoding, final String myTenantId) throws IOException {
+        this.outputResource = myOutputResource;
+        this.effectiveType = myEffectiveType;
+        this.sinkCfg = mySinkCfg;
+        this.outputSessionParameters = myOutputSessionParameters;
+        this.encoding = myEncoding;
+        this.foldableParams = myFoldableParams;
+        this.tenantId = myTenantId;
         openHook();
     }
 
     @Override
-    public void generateData(int recordNo, int mappedRecordNo, long recordId, String partitionKey, String recordKey, BonaPortable record) throws IOException, ApplicationException {
+    public void generateData(final int recordNo, final int mappedRecordNo, final long recordId, final String partitionKey, final String recordKey,
+      final BonaPortable record) throws IOException {
         throw new T9tException(T9tIOException.NO_RECORD_BASED_OUTPUT, effectiveType.name());
     }
 

@@ -36,11 +36,11 @@ import io.swagger.v3.oas.models.media.StringSchema;
 public class DateTimeConverters implements ModelConverter {
 
     @Override
-    public Schema resolve(AnnotatedType type, ModelConverterContext context, Iterator<ModelConverter> chain) {
+    public Schema resolve(final AnnotatedType type, final ModelConverterContext context, final Iterator<ModelConverter> chain) {
         if (type.isSchemaProperty()) {
-            JavaType _type = Json.mapper().constructType(type.getType());
-            if (_type != null) {
-                Class<?> cls = _type.getRawClass();
+            final JavaType myType = Json.mapper().constructType(type.getType());
+            if (myType != null) {
+                final Class<?> cls = myType.getRawClass();
                 if (LocalDateTime.class.isAssignableFrom(cls)) {
                     return createSchema("2021-01-14T08:25:36", "ISO8601 formatted timestamp, assumed in UTC", "YYYY-MM-ddThh:mm:ss");
                 }
@@ -51,7 +51,8 @@ public class DateTimeConverters implements ModelConverter {
                     return createSchema("08:25:36", "ISO8601 formatted local time", "hh:mm:ss");
                 }
                 if (UUID.class.isAssignableFrom(cls)) {
-                    return createSchema("550e8400-e29b-11d4-a716-446655440000", "36 character string, representing a UUID", "hhhhhhhh-hhh-hhhh-hhhh-hhhhhhhhhhhh");
+                    return createSchema("550e8400-e29b-11d4-a716-446655440000",
+                      "36 character string, representing a UUID", "hhhhhhhh-hhh-hhhh-hhhh-hhhhhhhhhhhh");
                 }
                 if (cls.getCanonicalName().equals("de.jpaw.fixedpoint.MicroUnits")) {
                     final NumberSchema ns = new NumberSchema();
@@ -74,7 +75,7 @@ public class DateTimeConverters implements ModelConverter {
         }
     }
 
-    private StringSchema createSchema(String example, String description, String format) {
+    private StringSchema createSchema(final String example, final String description, final String format) {
         final StringSchema ss = new StringSchema();
         ss.setExample(example);
         ss.setDescription(description);

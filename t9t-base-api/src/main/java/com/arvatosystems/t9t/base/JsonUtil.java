@@ -28,7 +28,7 @@ public final class JsonUtil {
     private JsonUtil() {
     }
 
-    private static int hex(char c) {
+    private static int hex(final char c) {
         if (c >= '0' && c <= '9')
             return c - '0';
         if (c >= 'A' && c <= 'F')
@@ -38,12 +38,12 @@ public final class JsonUtil {
         throw new JsonException(JsonException.JSON_BAD_ESCAPE, "invalid hex digit " + c);
     }
 
-    public static String unescapeJson(String s) {
+    public static String unescapeJson(final String s) {
         if (s == null)
             return null;
         boolean escaped = false;
         final int l = s.length();
-        StringBuilder t = new StringBuilder(l);
+        final StringBuilder t = new StringBuilder(l);
         int i = 0;
         while (i < l) {
             char c = s.charAt(i);
@@ -91,18 +91,18 @@ public final class JsonUtil {
     }
 
     /** Safe getter for a z field value, also works if z itself is null. */
-    public static Object getZEntry(Map<String, Object> z, String key) {
+    public static Object getZEntry(final Map<String, Object> z, final String key) {
         return z == null ? null : z.get(key);
     }
 
     /** Safe getter for a z field value, also works if z itself is null, returns a String typed result, if required, by conversion. */
-    public static String getZString(Map<String, Object> z, String key, String defaultValue) {
+    public static String getZString(final Map<String, Object> z, final String key, final String defaultValue) {
         final Object value = getZEntry(z, key);
         return value == null ? defaultValue : value.toString();
     }
 
     /** Safe getter for a z field value, also works if z itself is null, returns a Long typed result, if required, by conversion. */
-    public static Long getZLong(Map<String, Object> z, String key, Long defaultValue) {
+    public static Long getZLong(final Map<String, Object> z, final String key, final Long defaultValue) {
         final Object value = getZEntry(z, key);
         if (value == null) {
             return defaultValue;
@@ -116,7 +116,7 @@ public final class JsonUtil {
         try {
             // attempt parsing a number
             return Long.parseLong(value.toString());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.error("Cannot convert value {} for {} to numeric: {}", value, key, e);
         }
         LOGGER.error("Required Number for z entry {}, but got {}", key, value.getClass().getCanonicalName());
@@ -125,7 +125,7 @@ public final class JsonUtil {
     }
 
     /** Safe getter for a z field value, also works if z itself is null, returns an Integer typed result, if required, by conversion. */
-    public static Integer getZInteger(Map<String, Object> z, String key, Integer defaultValue) {
+    public static Integer getZInteger(final Map<String, Object> z, final String key, final Integer defaultValue) {
         final Object value = getZEntry(z, key);
         if (value == null) {
             return defaultValue;
@@ -139,7 +139,7 @@ public final class JsonUtil {
         try {
             // attempt parsing a number
             return Integer.parseInt(value.toString());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.error("Cannot convert value {} for {} to numeric: {}", value, key, e);
         }
         LOGGER.error("Required Number for z entry {}, but got {}", key, value.getClass().getCanonicalName());

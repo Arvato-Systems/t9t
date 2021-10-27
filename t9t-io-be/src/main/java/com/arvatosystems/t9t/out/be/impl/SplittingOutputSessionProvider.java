@@ -31,7 +31,7 @@ public class SplittingOutputSessionProvider implements ISplittingOutputSessionPr
     protected final Provider<IOutputSession> outputSessionProvider = Jdp.getProvider(IOutputSession.class);
 
     @Override
-    public IOutputSession get(Integer maxRecords) {
+    public IOutputSession get(final Integer maxRecords) {
         LOGGER.debug("starting OutputSession with maxRecords = {}", maxRecords == null ? "NULL" : maxRecords);
         if (maxRecords == null || maxRecords.intValue() == 0) {
             return outputSessionProvider.get(); // regular session

@@ -91,13 +91,15 @@ public class EMFBeanCustomizer implements IEMFBeanCustomizer {
         // Ordering of inserts / updates. Provides some tuning (less roundtrips to the DB).
         // See https://vladmihalcea.com/2015/03/18/how-to-batch-insert-and-update-statements-with-hibernate/
         // Note: This does not cause any rewriting of separate inserts into batch inserts, you need a DB specific option for that.
-        // For example reWriteBatchedInserts for postgres. See http://www.postgresql-archive.org/Batches-of-single-insert-statements-vs-batches-of-multi-insert-statements-td5906499.html
+        // For example reWriteBatchedInserts for postgres.
+        // See http://www.postgresql-archive.org/Batches-of-single-insert-statements-vs-batches-of-multi-insert-statements-td5906499.html
         jpaProperties.put("hibernate.order_inserts", "true");
         jpaProperties.put("hibernate.order_updates", "true");
         //jpaProperties.put("hibernate.jdbc.batch_versioned_data", "true");
         //jpaProperties.put("hibernate.jdbc.batch_size", "25");
 
-        // needed for calling Oracle stored procedures, see https://stackoverflow.com/questions/22045641/is-it-possible-to-pass-a-null-parameter-to-a-stored-procedure-in-java-jpa-2-1
+        // needed for calling Oracle stored procedures,
+        // see https://stackoverflow.com/questions/22045641/is-it-possible-to-pass-a-null-parameter-to-a-stored-procedure-in-java-jpa-2-1
         jpaProperties.put("hibernate.proc.param_null_passing", "true");
 
         addCustomProperties(settings, jpaProperties);

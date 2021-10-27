@@ -49,7 +49,7 @@ import io.vertx.micrometer.backends.BackendRegistries;
 @Singleton
 public class VertxPrometheusMetricsProvider implements IVertxMetricsProvider {
     private static final Logger LOGGER = LoggerFactory.getLogger(VertxPrometheusMetricsProvider.class);
-    final private AtomicBoolean metricsEnabled = new AtomicBoolean(false);
+    private final AtomicBoolean metricsEnabled = new AtomicBoolean(false);
 
     @Override
     public Handler<RoutingContext> getMetricsHandler() {
@@ -58,7 +58,7 @@ public class VertxPrometheusMetricsProvider implements IVertxMetricsProvider {
     }
 
     @Override
-    public void setOptions(VertxOptions options) {
+    public void setOptions(final VertxOptions options) {
         final MicrometerMetricsOptions metricsOptions = new MicrometerMetricsOptions()
           .setEnabled(true)
           .setPrometheusOptions(new VertxPrometheusOptions().setEnabled(true));
@@ -68,13 +68,13 @@ public class VertxPrometheusMetricsProvider implements IVertxMetricsProvider {
     }
 
     @Override
-    public void installMeters(Vertx vertx) {
+    public void installMeters(final Vertx vertx) {
         LOGGER.info("Registering histogram meter...");
         final PrometheusMeterRegistry registry = (PrometheusMeterRegistry) BackendRegistries.getDefaultNow();
         registry.config().meterFilter(
           new MeterFilter() {
             @Override
-            public DistributionStatisticConfig configure(Meter.Id id, DistributionStatisticConfig config) {
+            public DistributionStatisticConfig configure(final Meter.Id id, final DistributionStatisticConfig config) {
               return DistributionStatisticConfig.builder()
                 .percentilesHistogram(true)
                 .build()

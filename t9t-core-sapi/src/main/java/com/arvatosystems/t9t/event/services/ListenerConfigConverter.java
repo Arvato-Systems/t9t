@@ -24,14 +24,14 @@ import com.google.common.collect.ImmutableSet;
 public final class ListenerConfigConverter {
     private ListenerConfigConverter() { }
 
-    public static Set<String> csvToSet(String buckets) {
+    public static Set<String> csvToSet(final String buckets) {
         if (buckets == null || buckets.length() == 0)
             return null;
-        String[] bucketArray = buckets.split(",");
+        final String[] bucketArray = buckets.split(",");
         return ImmutableSet.copyOf(bucketArray);
     }
 
-    public static ListenerConfig convert(ListenerConfigDTO cfg) {
+    public static ListenerConfig convert(final ListenerConfigDTO cfg) {
         if (!cfg.getIsActive())
             return null;
 

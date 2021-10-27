@@ -16,19 +16,17 @@
 
 package com.arvatosystems.t9t.msglog.jpa.request;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,15 +48,15 @@ public class AggregateMessageStatisticsRequestHandler extends AbstractRequestHan
     protected final IMessageStatisticsDTOMapper mapper = Jdp.getRequired(IMessageStatisticsDTOMapper.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, AggregateMessageStatisticsRequest request) throws Exception {
+    public ServiceResponse execute(final RequestContext ctx, final AggregateMessageStatisticsRequest request) throws Exception {
         // Delete existing MessageStatistics
         deleteMessageStatistics(request);
 
-        List<MessageStatisticsDTO> results = queryMessageStatistics(request);
+        final List<MessageStatisticsDTO> results = queryMessageStatistics(request);
 
         // Save MessageStatistics
-        for (MessageStatisticsDTO result : results) {
-            MessageStatisticsEntity entity = mapper.mapToEntity(result, false);
+        for (final MessageStatisticsDTO result : results) {
+            final MessageStatisticsEntity entity = mapper.mapToEntity(result, false);
             resolver.save(entity);
         }
 
@@ -73,10 +71,10 @@ public class AggregateMessageStatisticsRequestHandler extends AbstractRequestHan
         ;
      *
      */
-    private void deleteMessageStatistics(AggregateMessageStatisticsRequest request) {
-        LocalDate day = request.getDay() == null ? LocalDate.now().minusDays(1) : request.getDay();
+    private void deleteMessageStatistics(final AggregateMessageStatisticsRequest request) {
+        final LocalDate day = request.getDay() == null ? LocalDate.now().minusDays(1) : request.getDay();
 
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         sb.append("     DELETE");
         sb.append("     FROM      MessageStatisticsEntity ms");
         sb.append("     WHERE     ms.day = :day");
@@ -89,7 +87,7 @@ public class AggregateMessageStatisticsRequestHandler extends AbstractRequestHan
             sb.append(" AND       ms.requestParameterPqon = :requestParameterPqon");
         }
 
-        Query query = resolver.getEntityManager().createQuery(sb.toString());
+        final Query query = resolver.getEntityManager().createQuery(sb.toString());
         query.setParameter("day", day);
 
         if (request.getUserId() != null) {
@@ -100,7 +98,7 @@ public class AggregateMessageStatisticsRequestHandler extends AbstractRequestHan
             query.setParameter("requestParameterPqon", request.getRequestParameterPqon());
         }
 
-        int noOfDeletedRow = query.executeUpdate();
+        final int noOfDeletedRow = query.executeUpdate();
         LOGGER.debug("{} of rows deleted in MessageStatistics.", noOfDeletedRow);
     }
 
@@ -124,12 +122,12 @@ public class AggregateMessageStatisticsRequestHandler extends AbstractRequestHan
         ;
      *
      */
-    private List<MessageStatisticsDTO> queryMessageStatistics(AggregateMessageStatisticsRequest request) {
-        LocalDate fromDate = request.getDay() == null ? LocalDate.now().minusDays(1) : request.getDay();
-        LocalDate toDate = fromDate.plusDays(1);
-        String dayStr =  fromDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    private List<MessageStatisticsDTO> queryMessageStatistics(final AggregateMessageStatisticsRequest request) {
+        final LocalDate fromDate = request.getDay() == null ? LocalDate.now().minusDays(1) : request.getDay();
+        final LocalDate toDate = fromDate.plusDays(1);
+        final String dayStr =  fromDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         sb.append(" SELECT    new com.arvatosystems.t9t.msglog.be.request.MessageStatisticsDTOWrapper(");
         sb.append("               m.tenantRef,");
         sb.append("               m.userId,");
@@ -157,7 +155,7 @@ public class AggregateMessageStatisticsRequestHandler extends AbstractRequestHan
 
         sb.append(" GROUP BY  m.tenantRef, m.userId, m.requestParameterPqon");
 
-        TypedQuery<MessageStatisticsDTOWrapper> query = resolver.getEntityManager().createQuery(sb.toString(), MessageStatisticsDTOWrapper.class);
+        final TypedQuery<MessageStatisticsDTOWrapper> query = resolver.getEntityManager().createQuery(sb.toString(), MessageStatisticsDTOWrapper.class);
         query.setParameter("fromDate", LocalDateTime.of(fromDate, LocalTime.of(0, 0)).toInstant(ZoneOffset.UTC));
         query.setParameter("toDate", LocalDateTime.of(toDate, LocalTime.of(0, 0)).toInstant(ZoneOffset.UTC));
 
@@ -169,7 +167,7 @@ public class AggregateMessageStatisticsRequestHandler extends AbstractRequestHan
             query.setParameter("requestParameterPqon", request.getRequestParameterPqon());
         }
 
-        List<MessageStatisticsDTOWrapper> dtoWrappers = query.getResultList();
+        final List<MessageStatisticsDTOWrapper> dtoWrappers = query.getResultList();
 
         return dtoWrappers.isEmpty() ? new ArrayList<>() : query.getResultList().stream().map(wrapper -> wrapper.getDto()).collect(Collectors.toList());
     }
@@ -178,16 +176,15 @@ public class AggregateMessageStatisticsRequestHandler extends AbstractRequestHan
 class MessageStatisticsDTOWrapper {
     private final MessageStatisticsDTO dto;
 
-    public MessageStatisticsDTOWrapper(Long tenantRef
-    , String userId
-    , String day
-    , String requestParameterPqon
-    , Long countOk
-    , Long countError
-    , Long processingTimeMin
-    , Long processingTimeMax
-    , Long processingTimeTotal
-    ) {
+    MessageStatisticsDTOWrapper(final Long tenantRef,
+     final String userId,
+     final String day,
+     final String requestParameterPqon,
+     final Long countOk,
+     final Long countError,
+     final Long processingTimeMin,
+     final Long processingTimeMax,
+     final Long processingTimeTotal) {
         dto = new MessageStatisticsDTO(
             tenantRef,
             userId,

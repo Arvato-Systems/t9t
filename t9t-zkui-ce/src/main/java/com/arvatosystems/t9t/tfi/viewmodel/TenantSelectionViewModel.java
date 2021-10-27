@@ -44,7 +44,6 @@ import de.jpaw.dp.Jdp;
 
 /**
  * TenantDescription selection ViewModel.
- * @author INCI02
  */
 public class TenantSelectionViewModel {
     private List<TenantDescription> tenantListModel = new ArrayList<TenantDescription>();
@@ -58,10 +57,10 @@ public class TenantSelectionViewModel {
 
     @Init
     public void init() {
-        Boolean arg = (Boolean) Executions.getCurrent().getArg().get("isCancelClose");
+        final Boolean arg = (Boolean) Executions.getCurrent().getArg().get("isCancelClose");
         try {
-            isCancelClose = arg == null ? new Boolean(false) : arg;
-        } catch (Exception s) {
+            isCancelClose = arg == null ? Boolean.FALSE : arg;
+        } catch (final Exception s) {
             s.printStackTrace();
         }
     }
@@ -91,7 +90,7 @@ public class TenantSelectionViewModel {
     /**
      * @param visible the visible to set
      */
-    public final void setVisible(boolean visible) {
+    public final void setVisible(final boolean visible) {
         this.visible = visible;
     }
 
@@ -109,7 +108,7 @@ public class TenantSelectionViewModel {
     /**
      * @param tenantListModel the tenantListModel to set
      */
-    public final void setTenantListModel(List<TenantDescription> tenantListModel) {
+    public final void setTenantListModel(final List<TenantDescription> tenantListModel) {
         this.tenantListModel = tenantListModel;
     }
 
@@ -117,7 +116,7 @@ public class TenantSelectionViewModel {
         return selected;
     }
 
-    public final void setSelected(TenantDescription selected) {
+    public final void setSelected(final TenantDescription selected) {
         this.selected = selected;
     }
 
@@ -137,19 +136,19 @@ public class TenantSelectionViewModel {
                 userDAO.switchTenant(selected.getTenantId());
             }
             setTenantInfo();
-            List<PermissionEntry> userPermissionForThisTenant = userDAO.getPermissions();
+            final List<PermissionEntry> userPermissionForThisTenant = userDAO.getPermissions();
             ApplicationSession.get().storePermissions(userPermissionForThisTenant);
-        } catch (ReturnCodeException e) {
+        } catch (final ReturnCodeException e) {
            LOGGER.error("Unable to switch tenant or to get permissions " + e);
            Messagebox.show("Unable to switch tenant or to get permissions - " + e.getReturnCodeMessage() + ZulUtils.translate("err", "unableToSwitchTenant"), ZulUtils.translate("err", "title"), Messagebox.OK, Messagebox.ERROR);
            return;
         }
 
-        String additionalScreenConfig = ZulUtils.readConfig("login.additional.selections.qualifier");
+        final String additionalScreenConfig = ZulUtils.readConfig("login.additional.selections.qualifier");
         if (additionalScreenConfig == null) {
             Executions.getCurrent().sendRedirect(Constants.ZulFiles.HOME);
         } else {
-            String url = String.format("%s?qualifier=%s", Constants.ZulFiles.ADDITIONAL_SELECTIONS, additionalScreenConfig);
+            final String url = Constants.ZulFiles.ADDITIONAL_SELECTIONS + "?qualifier=" + additionalScreenConfig;
             LOGGER.info("redirecting to selections page with {} qualifier, complete url as {}", additionalScreenConfig, url);
             Executions.getCurrent().sendRedirect(url);
         }
@@ -159,8 +158,8 @@ public class TenantSelectionViewModel {
         LOGGER.info("setTenantInfo(): Not sure why we have to set data in ApplicationSession here ... probably not required, commenting out");
 
         // clear authorization realms
-        RealmSecurityManager securityManager = (RealmSecurityManager) SecurityUtils.getSecurityManager();
-        for (Realm realm : securityManager.getRealms()) {
+        final RealmSecurityManager securityManager = (RealmSecurityManager) SecurityUtils.getSecurityManager();
+        for (final Realm realm : securityManager.getRealms()) {
             if (realm instanceof ICacheableAuthorizationRealm) {
                 ((ICacheableAuthorizationRealm) realm).clearAuthorizationCache();
             }
@@ -169,9 +168,9 @@ public class TenantSelectionViewModel {
 
     void setTenantFromCookie() {
         if (tenantListModel != null) {
-            String cookieTenant  =        ApplicationUtil.getCookie(TENANT_COOKIE);
+            final String cookieTenant  = ApplicationUtil.getCookie(TENANT_COOKIE);
             if (null != cookieTenant) {
-                int index = tenantListModel.stream()
+                final int index = tenantListModel.stream()
                         .map(i -> i.getTenantId())
                         .collect(Collectors.toList())
                         .indexOf(cookieTenant);
@@ -186,7 +185,7 @@ public class TenantSelectionViewModel {
         return isCancelClose;
     }
 
-    public void setIsCancelClose(Boolean isCancelClose) {
+    public void setIsCancelClose(final Boolean isCancelClose) {
         this.isCancelClose = isCancelClose;
     }
 }

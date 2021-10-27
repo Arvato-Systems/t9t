@@ -29,7 +29,7 @@ public class LogMessageRequestHandler extends AbstractReadOnlyRequestHandler<Log
     private static final Logger LOGGER = LoggerFactory.getLogger(LogMessageRequestHandler.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, LogMessageRequest rq) {
+    public ServiceResponse execute(final RequestContext ctx, final LogMessageRequest rq) {
         LOGGER.info("Log message: {}", rq.getMessage());
         ctx.statusText = rq.getMessage();
         if (rq.getData() != null)

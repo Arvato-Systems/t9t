@@ -95,7 +95,7 @@ public abstract class AbstractSearchRestriction implements ISearchRestriction {
      * It is expected that the lampda parameter is provided as a reference to an instance of an implementation
      * of the functional interface IRestrictionRefReader, this is why that is provided within this package.
      */
-    protected List<Long> retrieveAllowedRefsUncached(final RequestContext ctx, IRestrictionRefReader reader, String idKey, String refKey) {
+    protected List<Long> retrieveAllowedRefsUncached(final RequestContext ctx, final IRestrictionRefReader reader, final String idKey, final String refKey) {
         final String id = ctx.getZString(idKey);
         if ("*".equals(id)) {
             return AbstractSearchRestriction.NO_REFS;
@@ -118,7 +118,7 @@ public abstract class AbstractSearchRestriction implements ISearchRestriction {
                 return this.retrieveAllowedRefsUncached(ctx);
             }
             return this.allowedRefsCache.get(sessionRef, () -> this.retrieveAllowedRefsUncached(ctx));
-        } catch (ExecutionException e) {
+        } catch (final ExecutionException e) {
             throw new T9tException(T9tException.ERROR_FILLING_RESTRICTION_CACHE, this.getClass().getCanonicalName());
         }
     }

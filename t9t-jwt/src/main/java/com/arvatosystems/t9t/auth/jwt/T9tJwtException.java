@@ -37,25 +37,28 @@ public class T9tJwtException extends ApplicationException {
 
 
 
-    public T9tJwtException(int errorCode) {
+    public T9tJwtException(final int errorCode) {
         super(errorCode);
     }
 
     /**
-     * Create an exception for a specific error code. Please do not put redundant text (duplicating the text of the error code) into detailParameter, only additional info.
+     * Creates an exception for a specific error code.
+     * Please do not put redundant text (duplicating the text of the error code) into detailParameter, only additional info.
      *
      * @param errorCode
      *            The unique code describing the error cause.
      * @param params
-     *            Any additional informations / parameters. Do not put redundant text from the error code itself here! In most cases this should be just the value causing the problem.
+     *            Any additional informations / parameters.
+     *            Do not put redundant text from the error code itself here! In most cases this should be just the value causing the problem.
      */
-    public T9tJwtException(int errorCode, String params) {
+    public T9tJwtException(final int errorCode, final String params) {
         super(errorCode, params);
     }
 
     /**
-     * Method uploads textual descriptions only once they're needed for this type of exception class. The idea is that in working environments, we will never need them ;-). There is a small chance of
-     * duplicate initialization, because the access to the flag textsInitialized is not synchronized, but duplicate upload does not hurt (is idempoten.t)
+     * Uploads textual descriptions only once they're needed for this type of exception class.
+     * The idea is that in working environments, we will never need them ;-). There is a small chance of
+     * duplicate initialization, because the access to the flag textsInitialized is not synchronized, but duplicate upload does not hurt (is idempotent).
      */
     static {
         codeToDescription.put(NUMBER_SEGMENTS,          "Not enough or too many segments in base64 encoded token");
@@ -66,7 +69,7 @@ public class T9tJwtException extends ApplicationException {
 
 
     /** returns a text representation of an error code */
-    public static String codeToString(int errorCode) {
+    public static String codeToString(final int errorCode) {
         return new T9tJwtException(errorCode).getStandardDescription();
     }
 }

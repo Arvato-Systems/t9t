@@ -48,7 +48,7 @@ public class QuartzLifecycle implements StartupShutdown {
             LOGGER.info("Starting quartz");
         }
 
-        StdSchedulerFactory quartzSchedulerFactory = new StdSchedulerFactory();
+        final StdSchedulerFactory quartzSchedulerFactory = new StdSchedulerFactory();
 
         try {
             final IQuartzPropertyProvider propertyProvider = Jdp.getOptional(IQuartzPropertyProvider.class);
@@ -60,7 +60,7 @@ public class QuartzLifecycle implements StartupShutdown {
             Jdp.bindInstanceTo(scheduler, Scheduler.class);
 //            scheduler.setJobFactory(myJdpJobFactory);             // not required with Jdp?
             scheduler.start();
-        } catch (SchedulerException e) {
+        } catch (final SchedulerException e) {
             LOGGER.error("Error creating Quartz scheduler.", e);
         }
     }
@@ -71,7 +71,7 @@ public class QuartzLifecycle implements StartupShutdown {
             return;  // scheduler was not started - don't try to shut it down
         try {
             scheduler.shutdown(true);
-        } catch (SchedulerException e) {
+        } catch (final SchedulerException e) {
             LOGGER.error("Error shutting down Quartz scheduler", e);
         }
     }

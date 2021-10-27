@@ -35,7 +35,7 @@ public class StatisticsResolver extends AbstractJpaResolver<StatisticsRef, Stati
     }
 
     @Override
-    public StatisticsRef createKey(Long ref) {
+    public StatisticsRef createKey(final Long ref) {
         return ref == null ? null : new StatisticsRef(ref);
     }
 }

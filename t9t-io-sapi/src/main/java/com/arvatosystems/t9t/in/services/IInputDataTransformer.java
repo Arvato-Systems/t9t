@@ -27,7 +27,7 @@ import de.jpaw.bonaparte.core.BonaPortableClass;
 public interface IInputDataTransformer<T extends BonaPortable> extends IDataSinkDefaultConfigurationProvider {
 
     /** Performs any optional initial output. */
-    default void open(IInputSession inputSession, Map<String, Object> params, BonaPortableClass<?> baseBClass) {
+    default void open(final IInputSession inputSession, final Map<String, Object> params, final BonaPortableClass<?> baseBClass) {
         // no action required in simple cases
     }
 
@@ -37,7 +37,9 @@ public interface IInputDataTransformer<T extends BonaPortable> extends IDataSink
     RequestParameters transform(T dto);
 
     /** Returns any request which was postponed for buffering purposes before. */
-    default RequestParameters getPending() { return null; }
+    default RequestParameters getPending() {
+        return null;
+    }
 
     /** Ends processing, writes a summary into the sink table. */
     default void close() {

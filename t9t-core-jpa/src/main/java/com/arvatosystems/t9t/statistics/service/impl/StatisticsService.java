@@ -37,8 +37,8 @@ public class StatisticsService implements IStatisticsService {
     protected final IStatisticsDTOMapper statisticsDataDTOMappers = Jdp.getRequired(IStatisticsDTOMapper.class);
 
     @Override
-    public void saveStatisticsData(StatisticsDTO data) {
-        StatisticsEntity entity = statisticsDataDTOMappers.mapToEntity(data, true);
+    public void saveStatisticsData(final StatisticsDTO data) {
+        final StatisticsEntity entity = statisticsDataDTOMappers.mapToEntity(data, true);
         entity.setObjectRef(statisticsEntityResolver.createNewPrimaryKey());
         statisticsEntityResolver.save(entity);
     }

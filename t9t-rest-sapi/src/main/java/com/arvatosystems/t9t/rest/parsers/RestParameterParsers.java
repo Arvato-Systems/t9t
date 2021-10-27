@@ -33,8 +33,10 @@ import de.jpaw.fixedpoint.types.MicroUnits;
  * These are used when the parameters are declared as string, and parsed manually.
  * The parsers throw an ApplicationException, because that is caught by the specific exception handler.
  */
-public class RestParameterParsers {
-    public static UUID parseUUID(String asString, String where, boolean required) {
+public final class RestParameterParsers {
+    private RestParameterParsers() { }
+
+    public static UUID parseUUID(final String asString, final String where, final boolean required) {
         if (asString == null || asString.length() == 0) {
             if (required) {
                 throw new T9tException(MessageParserException.EMPTY_BUT_REQUIRED_FIELD, where);
@@ -43,12 +45,12 @@ public class RestParameterParsers {
         }
         try {
             return UUID.fromString(asString);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new T9tException(MessageParserException.BAD_UUID_FORMAT, where);
         }
     }
 
-    public static LocalDate parseLocalDate(String asString, String where, boolean required) {
+    public static LocalDate parseLocalDate(final String asString, final String where, final boolean required) {
         if (asString == null || asString.length() == 0) {
             if (required) {
                 throw new T9tException(MessageParserException.EMPTY_BUT_REQUIRED_FIELD, where);
@@ -57,12 +59,12 @@ public class RestParameterParsers {
         }
         try {
             return LocalDate.parse(asString, DateTimeFormatter.ISO_LOCAL_DATE);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new T9tException(MessageParserException.FIELD_PARSE, where);
         }
     }
 
-    public static LocalTime parseLocalTime(String asString, String where, boolean required) {
+    public static LocalTime parseLocalTime(final String asString, final String where, final boolean required) {
         if (asString == null || asString.length() == 0) {
             if (required) {
                 throw new T9tException(MessageParserException.EMPTY_BUT_REQUIRED_FIELD, where);
@@ -71,12 +73,12 @@ public class RestParameterParsers {
         }
         try {
             return LocalTime.parse(asString, DateTimeFormatter.ISO_LOCAL_TIME);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new T9tException(MessageParserException.FIELD_PARSE, where);
         }
     }
 
-    public static LocalDateTime parseLocalDateTime(String asString, String where, boolean required) {
+    public static LocalDateTime parseLocalDateTime(final String asString, final String where, final boolean required) {
         if (asString == null || asString.length() == 0) {
             if (required) {
                 throw new T9tException(MessageParserException.EMPTY_BUT_REQUIRED_FIELD, where);
@@ -85,12 +87,12 @@ public class RestParameterParsers {
         }
         try {
             return LocalDateTime.parse(asString, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new T9tException(MessageParserException.FIELD_PARSE, where);
         }
     }
 
-    public static Instant parseInstant(String asString, String where, boolean required) {
+    public static Instant parseInstant(final String asString, final String where, final boolean required) {
         if (asString == null || asString.length() == 0) {
             if (required) {
                 throw new T9tException(MessageParserException.EMPTY_BUT_REQUIRED_FIELD, where);
@@ -99,12 +101,12 @@ public class RestParameterParsers {
         }
         try {
             return LocalDateTime.parse(asString, DateTimeFormatter.ISO_INSTANT).toInstant(ZoneOffset.UTC);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new T9tException(MessageParserException.FIELD_PARSE, where);
         }
     }
 
-    public static MicroUnits parseMicroUnits(String asString, String where, boolean required) {
+    public static MicroUnits parseMicroUnits(final String asString, final String where, final boolean required) {
         if (asString == null || asString.length() == 0) {
             if (required) {
                 throw new T9tException(MessageParserException.EMPTY_BUT_REQUIRED_FIELD, where);
@@ -113,7 +115,7 @@ public class RestParameterParsers {
         }
         try {
             return MicroUnits.valueOf(asString);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new T9tException(MessageParserException.FIELD_PARSE, where);
         }
     }

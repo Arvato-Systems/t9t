@@ -35,7 +35,7 @@ public class EMFCustomizer implements IEMFCustomizer {
     private static final Logger LOGGER = LoggerFactory.getLogger(EMFCustomizer.class);
     private static final String DIALECT_KEY = "hibernate.dialect";
 
-    private static void putOpt(Map<String, Object> myProps, String key, String value) {
+    private static void putOpt(final Map<String, Object> myProps, final String key, final String value) {
         if (value != null) {
             myProps.put(key,  value);
         }
@@ -44,12 +44,12 @@ public class EMFCustomizer implements IEMFCustomizer {
     /**
      * Add properties for creation of the EntityManagerFactory
      */
-    protected void configureProperties(Map<String, Object> properties) {
+    protected void configureProperties(final Map<String, Object> properties) {
         // Extension point for customization
     }
 
     @Override
-    public EntityManagerFactory getCustomizedEmf(String puName, RelationalDatabaseConfiguration settings) throws Exception {
+    public EntityManagerFactory getCustomizedEmf(final String puName, final RelationalDatabaseConfiguration settings) throws Exception {
         final Map<String, Object> myProps = new HashMap<>();
 
         configureProperties(myProps);
@@ -60,7 +60,7 @@ public class EMFCustomizer implements IEMFCustomizer {
         putOpt(myProps, "javax.persistence.jdbc.password", settings.getPassword());
 
         // see http://docs.jboss.org/hibernate/orm/4.3/javadocs/org/hibernate/dialect/package-summary.html
-        DatabaseBrandType dbName = settings.getDatabaseBrand();
+        final DatabaseBrandType dbName = settings.getDatabaseBrand();
         if (dbName != null) {
             switch (dbName) {
             case HANA:
@@ -85,12 +85,12 @@ public class EMFCustomizer implements IEMFCustomizer {
 
         // also transfer custom parameters, if provided
         if (settings.getZ() != null) {
-            for (String customSetting: settings.getZ()) {
-                int equalsPos = customSetting.indexOf('=');
+            for (final String customSetting: settings.getZ()) {
+                final int equalsPos = customSetting.indexOf('=');
                 if (equalsPos > 0) {
                     // store key/value pair
-                    String key = customSetting.substring(0, equalsPos).trim();
-                    String value = customSetting.substring(equalsPos+1).trim();
+                    final String key = customSetting.substring(0, equalsPos).trim();
+                    final String value = customSetting.substring(equalsPos + 1).trim();
                     LOGGER.info("Setting custom value for persistence.xml: key = {}, value = {}", key, value);
                     myProps.put(key, value);
                 } else {

@@ -70,10 +70,13 @@ public class T9tBPMException extends T9tException {
         codeToDescription.put(BPM_DEPLOYMENT_ERROR, "An error occured during BPMN deployment.");
         codeToDescription.put(BPM_DEPLOYMENT_MULTI_PROCESS_DEFINITION, "Attempted to deploy more than 1 process definition in 1 single file.");
         codeToDescription.put(BPM_DEPLOYMENT_DATA_NOT_IN_SYNC, "Deployment data doesn't seems to be in sync with Activiti tables data.");
-        codeToDescription.put(BPM_DEPLOYMENT_PROCESS_DEFINITION_ID_NOT_IN_SYNC, "Deployed process definition id data doesn't seems to be in sync with process definition entity configuration data.");
-        codeToDescription.put(BPM_DEPLOYMENT_PROCESS_DEFINITION_EXIST, "An error occured during BPMN deployment. Process definition with the same id already exist.");
+        codeToDescription.put(BPM_DEPLOYMENT_PROCESS_DEFINITION_ID_NOT_IN_SYNC,
+          "Deployed process definition id data doesn't seems to be in sync with process definition entity configuration data.");
+        codeToDescription.put(BPM_DEPLOYMENT_PROCESS_DEFINITION_EXIST,
+          "An error occured during BPMN deployment. Process definition with the same id already exist.");
         codeToDescription.put(BPM_AUTO_DEPLOYMENT_ERROR,           "An error occured during auto deployment.");
-        codeToDescription.put(BPM_PROCESS_CONTENT_ERROR,           "An error occurred while trying to decorate/undecorate process definition XML with tenant id information.");
+        codeToDescription.put(BPM_PROCESS_CONTENT_ERROR,
+          "An error occurred while trying to decorate/undecorate process definition XML with tenant id information.");
         codeToDescription.put(BPM_DEPLOYMENT_TENANT_PERMISSION,    "Attempted deployment to a tenant to which we have no write permission.");
 
         codeToDescription.put(BPM_EXECUTE_JAVA_TASK_RETURNED_NULL, "Java task returned null instead of a proper status");

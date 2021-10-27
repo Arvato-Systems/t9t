@@ -23,8 +23,7 @@ import com.arvatosystems.t9t.ssm.request.SchedulerSetupSearchRequest;
 
 public final class T9tSsmModels implements IViewModelContainer {
 
-    private static final CrudViewModel<SchedulerSetupDTO, FullTrackingWithVersion> SCHEDULER_SETUP_VIEW_MODEL
-      = new CrudViewModel<SchedulerSetupDTO, FullTrackingWithVersion>(
+    private static final CrudViewModel<SchedulerSetupDTO, FullTrackingWithVersion> SCHEDULER_SETUP_VIEW_MODEL = new CrudViewModel<>(
         SchedulerSetupDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         SchedulerSetupSearchRequest.BClass.INSTANCE,

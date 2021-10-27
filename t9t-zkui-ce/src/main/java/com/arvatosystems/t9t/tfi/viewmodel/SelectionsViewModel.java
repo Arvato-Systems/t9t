@@ -52,8 +52,8 @@ public class SelectionsViewModel {
     Div div;
 
     @AfterCompose
-    public void afterCompose(@ContextParam(ContextType.VIEW) Component view,
-            @QueryParam("qualifier") String qualifier) {
+    public void afterCompose(@ContextParam(ContextType.VIEW) final Component view,
+            @QueryParam("qualifier") final String qualifier) {
         Selectors.wireComponents(view, this, false);
         if (qualifier == null) {
             LOGGER.debug("No additional selections required, redirect to homepage.");
@@ -65,15 +65,15 @@ public class SelectionsViewModel {
         LOGGER.debug("Resolving additional selections with qualifier {}", qualifier);
         selectionResolver = Jdp.getRequired(ISelectionsResolver.class, qualifier);
         title = ZulUtils.translate("selections", qualifier);
-        Dropdown28Db<?> dropdownComponent = selectionResolver.getDropdownComponent();
-        List<String> selections = selectionResolver.getSelections();
+        final Dropdown28Db<?> dropdownComponent = selectionResolver.getDropdownComponent();
+        final List<String> selections = selectionResolver.getSelections();
         if (dropdownComponent != null) {
             // use dropdown28db
             dropdownComponent.setParent(div);
             dropdownComponent.setFocus(true);
             dropdownComponent.addEventListener(Events.ON_OK, (e) -> this.submit());
             dropdownComponent.addEventListener(Events.ON_CHANGE, (e) -> {
-                InputEvent ie = (InputEvent) e;
+                final InputEvent ie = (InputEvent) e;
                 selected = ie.getValue();
             });
             if (dropdownComponent.getItemCount() == 0) {
@@ -97,8 +97,8 @@ public class SelectionsViewModel {
      * @param qualifier
      */
     private void setDefaultAndGotoNext(final String qualifier) {
-        String configKey = String.format("login.additional.selections.%s.defaultIfEmpty", qualifier);
-        String value = ZulUtils.readConfig(configKey);
+        final String configKey = "login.additional.selections." + qualifier + ".defaultIfEmpty";
+        final String value = ZulUtils.readConfig(configKey);
         if (value != null) {
             selectionResolver.setSelection(value);
             gotoNextScreen();
@@ -116,14 +116,14 @@ public class SelectionsViewModel {
      * if null, jump to homepage
      */
     private void gotoNextScreen() {
-        String nextScreen = selectionResolver.getNextScreen();
+        final String nextScreen = selectionResolver.getNextScreen();
 
         if (nextScreen == null) {
             LOGGER.debug("No next screen configured, redirect to homepage.");
             Executions.getCurrent().sendRedirect(Constants.ZulFiles.HOME);
             return;
         }
-        String url = String.format("%s?qualifier=%s", Constants.ZulFiles.ADDITIONAL_SELECTIONS, nextScreen);
+        final String url = Constants.ZulFiles.ADDITIONAL_SELECTIONS + "?qualifier=" + nextScreen;
         LOGGER.info("redirecting to selections page with {} qualifier, complete url as {}", nextScreen, url);
         Executions.getCurrent().sendRedirect(url);
     }
@@ -131,12 +131,12 @@ public class SelectionsViewModel {
     /**
      * create a combobox for the selections
      */
-    private Combobox createBasicComboBox(Component parent, List<String> selections) {
-        Combobox c = new Combobox();
+    private Combobox createBasicComboBox(final Component parent, final List<String> selections) {
+        final Combobox c = new Combobox();
         c.setModel(new ListModelList<String>(selections));
         c.setFocus(true);
         c.addEventListener(Events.ON_CHANGE, (e) -> {
-            InputEvent ie = (InputEvent) e;
+            final InputEvent ie = (InputEvent) e;
             selected = ie.getValue();
         });
         c.addEventListener(Events.ON_OK, (e) -> this.submit());
@@ -149,7 +149,7 @@ public class SelectionsViewModel {
         return selected;
     }
 
-    public void setSelected(String selected) {
+    public void setSelected(final String selected) {
         this.selected = selected;
     }
 

@@ -37,25 +37,25 @@ public class PathResolver implements JpaPathResolver {
     private final Class<?> entityClass;
     private final From<?, ?> root;
 
-    public PathResolver(Class<?> entityClass, From<?, ?> root) {
+    public PathResolver(final Class<?> entityClass, final From<?, ?> root) {
         this.entityClass = entityClass;
         this.root = root;
     }
 
     // looks for the field of name fieldname in the class, or returns null if it cannot be found (which is not good)
-    private Field searchField(Class<?> current, String fieldname) {
+    private Field searchField(Class<?> current, final String fieldname) {
         for (;;) {
             // getField() returns only public fields, therefore we have to use getDeclaredField and recurse the class inheritance tree
 
             try {
                 return current.getDeclaredField(fieldname);
-            } catch (SecurityException e) {
+            } catch (final SecurityException e) {
                 LOGGER.error("Denied to get field {} of class {}", fieldname, current.getCanonicalName());
                 throw new T9tException(T9tException.INVALID_FILTER_PARAMETERS, "Denied access to field of name " + fieldname + " in class "
                         + current.getCanonicalName());
-            } catch (NoSuchFieldException e2) {
+            } catch (final NoSuchFieldException e2) {
                 // try the superclass, unless it's "Object"
-                Class<?> parent = current.getSuperclass();
+                final Class<?> parent = current.getSuperclass();
                 // if parent is null, we did not find the field. Not good. Most likely an error in the query syntax.
                 if ((parent == null) || (parent == Object.class)) {
                     throw new T9tException(T9tException.INVALID_FILTER_PARAMETERS, "No field of name " + fieldname);
@@ -66,19 +66,19 @@ public class PathResolver implements JpaPathResolver {
     }
 
     @Override
-    public Path<?> getPath(String fieldName) {
+    public Path<?> getPath(final String fieldName) {
         Class<?> currentClass = entityClass;
 
         if (fieldName.indexOf('.') >= 0) {
             Path<?> compoundAttributePath = root;
-            String[] components = fieldName.split(COMPOUND_ATTRIBUTE_SPLIT_SEPARATOR);
+            final String[] components = fieldName.split(COMPOUND_ATTRIBUTE_SPLIT_SEPARATOR);
             for (int i = 0; i < components.length; ++i) {
                 if (i > 0) {
                     // currently, we can only join at the root level
                     compoundAttributePath = compoundAttributePath.get(components[i]);
                 } else {
                     final Field fld = searchField(currentClass, components[i]);
-                    Class<?> thisType = fld.getType();
+                    final Class<?> thisType = fld.getType();
                     if (Collection.class.isAssignableFrom(thisType) || Map.class.isAssignableFrom(thisType)) {
                         // use of join is required
                         LOGGER.debug("generic search uses join for path component {} of {} in {}", components[i], currentClass.getSimpleName(),

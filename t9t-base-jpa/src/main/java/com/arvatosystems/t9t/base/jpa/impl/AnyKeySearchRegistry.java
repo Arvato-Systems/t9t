@@ -38,7 +38,7 @@ public class AnyKeySearchRegistry implements IAnyKeySearchRegistry {
     private static final Map<Integer, BiFunction<RequestContext, Long, List<Description>>> resolverByRtti = new ConcurrentHashMap<>(50);
 
     @Override
-    public void registerLeanSearchRequest(BiFunction<RequestContext, Long, List<Description>> resolver, int rtti, String classname) {
+    public void registerLeanSearchRequest(final BiFunction<RequestContext, Long, List<Description>> resolver, final int rtti, final String classname) {
         if (rtti <= 0) {
             LOGGER.error("Cannot register resolver for rtti <= 0: {}", classname);
             return;
@@ -54,16 +54,16 @@ public class AnyKeySearchRegistry implements IAnyKeySearchRegistry {
     }
 
     @Override
-    public ResolveAnyRefResponse performLookup(RequestContext ctx, Long ref) {
+    public ResolveAnyRefResponse performLookup(final RequestContext ctx, final Long ref) {
         final Integer rtti = (int)(ref % 10000L);
         final BiFunction<RequestContext, Long, List<Description>> resolver = resolverByRtti.get(rtti);
         final ResolveAnyRefResponse resp = new ResolveAnyRefResponse();
         resp.setEntityClass(classnameByRtti.get(rtti));
         if (resolver != null) {
             // it is possible to find a description
-            List<Description> descs = resolver.apply(ctx, ref);
+            final List<Description> descs = resolver.apply(ctx, ref);
             if (!descs.isEmpty()) {
-                for (Description desc : descs) {
+                for (final Description desc : descs) {
                     if (desc.getObjectRef().equals(ref)) {
                         resp.setDescription(desc);
                         break;

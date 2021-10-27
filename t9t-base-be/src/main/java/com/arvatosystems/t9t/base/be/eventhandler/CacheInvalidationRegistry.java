@@ -39,19 +39,19 @@ import de.jpaw.dp.Singleton;
 @Singleton
 public class CacheInvalidationRegistry implements ICacheInvalidationRegistry {
     private static final Logger LOGGER = LoggerFactory.getLogger(CacheInvalidationRegistry.class);
-    private static final ConcurrentHashMap<String, Consumer<BonaPortable>> invalidators = new ConcurrentHashMap<String, Consumer<BonaPortable>>(16);
+    private static final ConcurrentHashMap<String, Consumer<BonaPortable>> INVALIDATORS = new ConcurrentHashMap<>(16);
 
     @Override
-    public void registerInvalidator(String dto, Consumer<BonaPortable> invalidator) {
+    public void registerInvalidator(final String dto, final Consumer<BonaPortable> invalidator) {
         LOGGER.info("{} cache invalidator for {}", invalidator == null ? "Deleting" : "Registering", dto);
         if (invalidator == null)
-            invalidators.remove(dto);
+            INVALIDATORS.remove(dto);
         else
-            invalidators.put(dto, invalidator);
+            INVALIDATORS.put(dto, invalidator);
     }
 
     @Override
-    public Consumer<BonaPortable> getInvalidator(String dto) {
-        return invalidators.get(dto);
+    public Consumer<BonaPortable> getInvalidator(final String dto) {
+        return INVALIDATORS.get(dto);
     }
 }

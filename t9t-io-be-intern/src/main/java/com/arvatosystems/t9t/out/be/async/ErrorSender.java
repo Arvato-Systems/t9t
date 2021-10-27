@@ -36,14 +36,14 @@ public class ErrorSender implements IAsyncSender {
     private static final Logger LOGGER = LoggerFactory.getLogger(ErrorSender.class);
 
     @Override
-    public void init(AsyncQueueDTO queue) {
+    public void init(final AsyncQueueDTO queue) {
         LOGGER.info("Creating IAsyncSender ERROR for queue {}", queue.getAsyncQueueId());
     }
 
     @Override
-    public AsyncHttpResponse send(AsyncChannelDTO channel, BonaPortable payload, int timeout, Long messageObjectRef) {
+    public AsyncHttpResponse send(final AsyncChannelDTO channel, final BonaPortable payload, final int timeout, final Long messageObjectRef) {
         LOGGER.debug("Returning error for channel {}, object {}", channel.getAsyncChannelId(), payload.ret$PQON());
-        AsyncHttpResponse resp = new AsyncHttpResponse();
+        final AsyncHttpResponse resp = new AsyncHttpResponse();
         resp.setHttpReturnCode(500);
         resp.setHttpStatusMessage("Error");
         return resp;

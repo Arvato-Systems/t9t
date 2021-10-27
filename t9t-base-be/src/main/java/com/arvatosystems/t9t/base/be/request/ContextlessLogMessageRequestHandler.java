@@ -29,7 +29,7 @@ public class ContextlessLogMessageRequestHandler extends AbstractReadOnlyRequest
     private static final Logger LOGGER = LoggerFactory.getLogger(ContextlessLogMessageRequestHandler.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, ContextlessLogMessageRequest rq) {
+    public ServiceResponse execute(final RequestContext ctx, final ContextlessLogMessageRequest rq) {
         LOGGER.info("Log message: {}", rq.getMessage());
         if (rq.getData() != null)
             LOGGER.info("Log data: {}", ToStringHelper.toStringML(rq.getData()));

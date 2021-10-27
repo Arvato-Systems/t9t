@@ -46,7 +46,7 @@ public class AuthenticationMock implements IAuthenticate {
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationMock.class);
     private static final UUID DEMO_API_KEY_UUID = UUID.fromString(DEMO_API_KEY);
     private static final JwtInfo DEMO_JWT_INFO = getDemoJwtInfo();
-    private static final AtomicLong sessionCounter = new AtomicLong(77000L);
+    private static final AtomicLong SESSION_COUNTER = new AtomicLong(77000L);
 
     private static final String DEMO_USER_ID = "john";
     private static final String DEMO_PASSWORD = "password";
@@ -54,7 +54,7 @@ public class AuthenticationMock implements IAuthenticate {
     private final IAuthenticator authenticator = Jdp.getRequired(IAuthenticator.class);
 
     private static JwtInfo getDemoJwtInfo() {
-        JwtInfo jwtInfo = new JwtInfo();
+        final JwtInfo jwtInfo = new JwtInfo();
         jwtInfo.setUserId("john");
         jwtInfo.setUserRef(Long.valueOf(93847593L));
         jwtInfo.setTenantId("ACME");
@@ -63,27 +63,28 @@ public class AuthenticationMock implements IAuthenticate {
         jwtInfo.setLocale("en");
         jwtInfo.setZoneinfo("UTC");
         jwtInfo.setPermissionsMin(Permissionset.ofTokens(OperationType.EXECUTE, OperationType.READ, OperationType.CREATE));
-        jwtInfo.setPermissionsMax(Permissionset.ofTokens(OperationType.EXECUTE, OperationType.READ, OperationType.CREATE, OperationType.DELETE, OperationType.UPDATE));
+        jwtInfo.setPermissionsMax(Permissionset.ofTokens(OperationType.EXECUTE, OperationType.READ, OperationType.CREATE,
+          OperationType.DELETE, OperationType.UPDATE));
         jwtInfo.freeze();
         return jwtInfo;
     }
 
     @Override
-    public AuthenticationResponse login(AuthenticationRequest rq) {
-        AuthenticationParameters ap = rq.getAuthenticationParameters();
+    public AuthenticationResponse login(final AuthenticationRequest rq) {
+        final AuthenticationParameters ap = rq.getAuthenticationParameters();
         if (ap == null) {
             LOGGER.info("Authentication without parameters");
             throw new ObjectValidationException(ObjectValidationException.MAY_NOT_BE_BLANK);
         }
         LOGGER.info("Authentication for method {}", ap.ret$PQON());
 
-        JwtInfo jwt = auth(ap);
+        final JwtInfo jwt = auth(ap);
 
         if (jwt == null) {
             throw new ApplicationException(((ApplicationException.CL_DENIED * 100000000) + 1));
         }
 
-        AuthenticationResponse response = new AuthenticationResponse();
+        final AuthenticationResponse response = new AuthenticationResponse();
         response.setJwtInfo(jwt);
         response.setEncodedJwt(this.authenticator.doSign(jwt));
         response.setTenantName("ACME Corp.");
@@ -93,35 +94,35 @@ public class AuthenticationMock implements IAuthenticate {
         return response;
     }
 
-    protected JwtInfo authWithApiKey(ApiKeyAuthentication ap) {
+    protected JwtInfo authWithApiKey(final ApiKeyAuthentication ap) {
         if (ap.getApiKey() != DEMO_API_KEY_UUID) {
             return null;
         }
-        JwtInfo myInfo = DEMO_JWT_INFO.ret$MutableClone(false, false);
-        myInfo.setSessionRef(sessionCounter.incrementAndGet());
+        final JwtInfo myInfo = DEMO_JWT_INFO.ret$MutableClone(false, false);
+        myInfo.setSessionRef(SESSION_COUNTER.incrementAndGet());
         myInfo.setJsonTokenIdentifier(myInfo.getSessionRef().toString());
         return myInfo;
     }
 
-    protected JwtInfo authWithPassword(PasswordAuthentication ap) {
+    protected JwtInfo authWithPassword(final PasswordAuthentication ap) {
         if (DEMO_USER_ID != ap.getUserId() || DEMO_PASSWORD != ap.getPassword()) {
             return null;
         }
         final JwtInfo myInfo = DEMO_JWT_INFO.ret$MutableClone(false, false);
-        myInfo.setSessionRef(sessionCounter.incrementAndGet());
+        myInfo.setSessionRef(SESSION_COUNTER.incrementAndGet());
         myInfo.setJsonTokenIdentifier(myInfo.getSessionRef().toString());
         return myInfo;
     }
 
-    protected JwtInfo authWithAuthX500(AuthX500DistinguishedName dn) {
+    protected JwtInfo authWithAuthX500(final AuthX500DistinguishedName dn) {
         throw new UnsupportedOperationException("TODO: auto-generated method stub");
     }
 
-    protected JwtInfo authWithUnknown(AuthenticationParameters unknown) {
+    protected JwtInfo authWithUnknown(final AuthenticationParameters unknown) {
         throw new UnsupportedOperationException("Unsupported authentication parameters");
     }
 
-    protected JwtInfo auth(AuthenticationParameters ap) {
+    protected JwtInfo auth(final AuthenticationParameters ap) {
         if (ap instanceof ApiKeyAuthentication) {
             return authWithApiKey((ApiKeyAuthentication) ap);
         } else if (ap instanceof AuthX500DistinguishedName) {

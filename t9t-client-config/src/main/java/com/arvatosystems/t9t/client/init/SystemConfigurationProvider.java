@@ -24,7 +24,7 @@ import de.jpaw.dp.Singleton;
 public class SystemConfigurationProvider extends DefaultsConfigurationProvider {
     private static final Logger LOGGER = LoggerFactory.getLogger(SystemConfigurationProvider.class);
 
-    private static final String lookup(String name1, String name2) {
+    private static String lookup(final String name1, final String name2) {
         String val = System.getProperty(name1);
         if (val != null) {
             LOGGER.debug("Obtained {} via JVM System property as {}", name1, val);

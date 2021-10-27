@@ -42,31 +42,31 @@ public class EventOrBucketCreator implements IEventOrBucketCreator {
     protected final Provider<RequestContext> ctxProvider = Jdp.getProvider(RequestContext.class);
 
     @Override
-    public void createBucketOrEvent(String typeId, Long ref, BucketDataMode mode) {
+    public void createBucketOrEvent(final String typeId, final Long ref, final BucketDataMode mode) {
         createBucketOrEvent(ctxProvider.get(), typeId, ref, mode);
     }
 
     /** Overridable hook to create special events where required. */
-    protected void createEvent(String typeId, Long ref) {
+    protected void createEvent(final String typeId, final Long ref) {
         executor.publishEvent(new GeneralRefCreatedEvent(ref, typeId));
     }
 
     /** Overridable hook to create special events where required. */
-    protected void deleteEvent(String typeId, Long ref) {
+    protected void deleteEvent(final String typeId, final Long ref) {
         executor.publishEvent(new GeneralRefDeletedEvent(ref, typeId));
     }
 
     /** Overridable hook to create special events where required. */
-    protected void updateEvent(String typeId, Long ref) {
+    protected void updateEvent(final String typeId, final Long ref) {
         executor.publishEvent(new GeneralRefUpdatedEvent(ref, typeId));
     }
 
     @Override
-    public void createBucketOrEvent(RequestContext ctx, String typeId, Long ref, BucketDataMode mode) {
-        ConcurrentMap<Long, ListenerConfig> settings = ListenerConfigCache.getRegistrationForClassification(typeId);
+    public void createBucketOrEvent(final RequestContext ctx, final String typeId, final Long ref, final BucketDataMode mode) {
+        final ConcurrentMap<Long, ListenerConfig> settings = ListenerConfigCache.getRegistrationForClassification(typeId);
         if (settings == null)
             return;  // nothing configured
-        ListenerConfig cfg = settings.get(ctx.tenantRef);
+        final ListenerConfig cfg = settings.get(ctx.tenantRef);
         if (cfg == null)
             return;  // nothing configured
 

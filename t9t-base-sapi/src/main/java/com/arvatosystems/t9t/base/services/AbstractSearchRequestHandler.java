@@ -22,12 +22,12 @@ import de.jpaw.bonaparte.pojos.api.OperationType;
 public abstract class AbstractSearchRequestHandler<REQUEST extends SearchCriteria> extends AbstractRequestHandler<REQUEST> {
 
     @Override
-    public boolean isReadOnly(REQUEST params) {
+    public boolean isReadOnly(final REQUEST params) {
         return params.getSearchOutputTarget() == null;  // a search request is "read only" if the result is not redirected to a data sink
     }
 
     @Override
-    public OperationType getAdditionalRequiredPermission(REQUEST request) {
+    public OperationType getAdditionalRequiredPermission(final REQUEST request) {
         // must have permission EXPORT for output to data sink
         return request.getSearchOutputTarget() != null ? OperationType.EXPORT : OperationType.SEARCH;
     }

@@ -39,12 +39,12 @@ public class ExporterTool2<DTO extends BonaPortable, EXTDTO extends DTO, TRACKIN
     protected final ISplittingOutputSessionProvider splittingOutputSessionProvider = Jdp.getRequired(ISplittingOutputSessionProvider.class);
 
     @Override
-    public Long storeAll(OutputSessionParameters op, List<DataWithTrackingW<DTO, TRACKING>> dataList, Integer maxRecords, Function<DTO, EXTDTO> converter)
-      throws Exception {
+    public Long storeAll(final OutputSessionParameters op, final List<DataWithTrackingW<DTO, TRACKING>> dataList, final Integer maxRecords,
+      final Function<DTO, EXTDTO> converter) throws Exception {
         try (IOutputSession outputSession = splittingOutputSessionProvider.get(maxRecords)) {
-            Long sinkRef = outputSession.open(op);
-            for (DataWithTrackingW<DTO, TRACKING> data : dataList) {
-                EXTDTO extDto = converter.apply(data.getData());
+            final Long sinkRef = outputSession.open(op);
+            for (final DataWithTrackingW<DTO, TRACKING> data : dataList) {
+                final EXTDTO extDto = converter.apply(data.getData());
                 if (extDto != null) {
                     data.setData(extDto);  // replace the data with the extended one
                 }
@@ -57,14 +57,14 @@ public class ExporterTool2<DTO extends BonaPortable, EXTDTO extends DTO, TRACKIN
 
     @Override
     public ReadAllResponse<EXTDTO, TRACKING> returnOrExport(
-      final List<DataWithTrackingW<DTO, TRACKING>> dataList, final OutputSessionParameters op, Function<DTO, EXTDTO> converter) throws Exception {
-        final ReadAllResponse<EXTDTO, TRACKING> resp = new ReadAllResponse<EXTDTO, TRACKING>();
+      final List<DataWithTrackingW<DTO, TRACKING>> dataList, final OutputSessionParameters op, final Function<DTO, EXTDTO> converter) throws Exception {
+        final ReadAllResponse<EXTDTO, TRACKING> resp = new ReadAllResponse<>();
         // if a searchOutputTarget has been defined, push the data into it, otherwise return the ReadAllResponse
         if (op == null) {
             // conversion of the data list is required
-            final List<DataWithTrackingW<EXTDTO, TRACKING>> extDataList = new ArrayList<DataWithTrackingW<EXTDTO, TRACKING>>(dataList.size());
-            for (DataWithTrackingW<DTO, TRACKING> data : dataList) {
-                EXTDTO extDto = converter.apply(data.getData());
+            final List<DataWithTrackingW<EXTDTO, TRACKING>> extDataList = new ArrayList<>(dataList.size());
+            for (final DataWithTrackingW<DTO, TRACKING> data : dataList) {
+                final EXTDTO extDto = converter.apply(data.getData());
                 if (extDto != null) {
                     data.setData(extDto);  // replace the data with the extended one
                     // do a cast instead of new allocation, because that supports extensions of DataWithTrackingW as well

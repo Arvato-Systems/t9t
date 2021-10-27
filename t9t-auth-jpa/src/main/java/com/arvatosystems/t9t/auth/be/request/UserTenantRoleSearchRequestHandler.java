@@ -28,13 +28,17 @@ import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.pojos.api.LongFilter;
 import de.jpaw.dp.Jdp;
 
-/** This search request has to add conditions on the tenant of the child entities of user and role: none of the returned objects may refer to an entity of a different non-@ tenant. */
+/**
+ * This search request has to add conditions on the tenant of the child entities of user and role:
+ * none of the returned objects may refer to an entity of a different non-@ tenant.
+ */
 public class UserTenantRoleSearchRequestHandler extends AbstractSearchRequestHandler<UserTenantRoleSearchRequest> {
     protected final IUserTenantRoleEntityResolver resolver = Jdp.getRequired(IUserTenantRoleEntityResolver.class);
     protected final IUserTenantRoleDTOMapper mapper = Jdp.getRequired(IUserTenantRoleDTOMapper.class);
 
     @Override
-    public ReadAllResponse<UserTenantRoleDTO, FullTrackingWithVersion> execute(final RequestContext ctx, final UserTenantRoleSearchRequest request) throws Exception {
+    public ReadAllResponse<UserTenantRoleDTO, FullTrackingWithVersion>
+      execute(final RequestContext ctx, final UserTenantRoleSearchRequest request) throws Exception {
         mapper.processSearchPrefixForDB(request); // convert the field with searchPrefix
 
         final LongFilter userFilter = ctx.tenantFilter("user.tenantRef");

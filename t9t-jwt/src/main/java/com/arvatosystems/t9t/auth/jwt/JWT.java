@@ -28,6 +28,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.X509Certificate;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
@@ -37,7 +38,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.crypto.Mac;
 
-import java.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +54,7 @@ import de.jpaw.util.ExceptionUtil;
  * @author Paulo Lopes
  * Modified to fit into bonaparte environment by Arvato Systems.
  *
- * This class is not annoted by @Singleton, because this project does not have a Jdp dependency,
+ * This class is not annotated by @Singleton, because this project does not have a Jdp dependency,
  * and also because in t9t we use a pool of JWTs.
  */
 public final class JWT implements IJWT {
@@ -62,49 +62,49 @@ public final class JWT implements IJWT {
     private static final Charset UTF8 = StandardCharsets.UTF_8;
     private static final AtomicBoolean INSTANCES_CREATED = new AtomicBoolean();
 
-    private final Map<String, Crypto> CRYPTO_MAP;
-    private static String DEFAULT_KEYSTORE = "/t9tkeystore.jceks";
-    private static String DEFAULT_KEYSTORE_PW = "secret/changeMe";
-    private static boolean KEYSTORE_FROM_RESOURCE = true;         // load the keystore from resource instead of file system
+    private final Map<String, Crypto> cryptoMap;
+    private static String defaultKeystore = "/t9tkeystore.jceks";
+    private static String defaultKeystorePw = "secret/changeMe";
+    private static boolean keystoreFromResource = true;         // load the keystore from resource instead of file system
 
-    static public void setKeyStore(String path, String password, boolean isResource) {
+    public static void setKeyStore(final String path, final String password, final boolean isResource) {
         if (INSTANCES_CREATED.get()) {
             throw new RuntimeException("Cannot modify static parameters after default JWTs have been created");
         }
         if (password != null) {
-            DEFAULT_KEYSTORE_PW = password;
+            defaultKeystorePw = password;
         }
         if (path != null) {
-            DEFAULT_KEYSTORE = path;
-            KEYSTORE_FROM_RESOURCE = isResource;
+            defaultKeystore = path;
+            keystoreFromResource = isResource;
         }
     }
 
-    static public JWT createDefaultJwt() {
+    public static JWT createDefaultJwt() {
         INSTANCES_CREATED.set(true);
         try {
-            return createJwt(KEYSTORE_FROM_RESOURCE
-                    ? IJWT.class.getResourceAsStream(DEFAULT_KEYSTORE)
-                    : new FileInputStream(DEFAULT_KEYSTORE),
-                    DEFAULT_KEYSTORE_PW);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException("No keystore file " + DEFAULT_KEYSTORE + " found");
+            return createJwt(keystoreFromResource
+                    ? IJWT.class.getResourceAsStream(defaultKeystore)
+                    : new FileInputStream(defaultKeystore),
+                    defaultKeystorePw);
+        } catch (final FileNotFoundException e) {
+            throw new RuntimeException("No keystore file " + defaultKeystore + " found");
         }
     }
 
-    static public JWT createJwt(InputStream in, String password) {
+    public static JWT createJwt(final InputStream in, final String password) {
         if (in == null) {
             LOGGER.info("No keystore inputstream provided - keystore file may be missing from the deployment");
             throw new RuntimeException("No inputstream for keyfile provided");
         }
         LOGGER.debug("Creating new JWT authentication instance");
         try {
-            KeyStore ks = KeyStore.getInstance("jceks");
+            final KeyStore ks = KeyStore.getInstance("jceks");
             ks.load(in, password.toCharArray());
             in.close();
 
             return new JWT(ks, password.toCharArray());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -114,30 +114,30 @@ public final class JWT implements IJWT {
         final Map<String, Crypto> tmp = new HashMap<>();
 
         // load MACs
-        for (String alg : Arrays.<String> asList("HS256", "HS384", "HS512")) {
+        for (final String alg : Arrays.<String>asList("HS256", "HS384", "HS512")) {
             try {
-                Mac mac = getMac(keyStore, keyStorePassword, alg);
+                final Mac mac = getMac(keyStore, keyStorePassword, alg);
                 if (mac != null) {
                     tmp.put(alg, new CryptoMac(mac));
                 } else {
                     LOGGER.warn("{} not available", alg);
                 }
-            } catch (RuntimeException e) {
+            } catch (final RuntimeException e) {
                 LOGGER.warn(alg + " not supported", e);
             }
         }
 
         // load SIGNATUREs
-        for (String alg : Arrays.<String> asList("RS256", "RS384", "RS512", "ES256", "ES384", "ES512")) {
+        for (final String alg : Arrays.<String>asList("RS256", "RS384", "RS512", "ES256", "ES384", "ES512")) {
             try {
-                X509Certificate certificate = getCertificate(keyStore, alg);
-                PrivateKey privateKey = getPrivateKey(keyStore, keyStorePassword, alg);
+                final X509Certificate certificate = getCertificate(keyStore, alg);
+                final PrivateKey privateKey = getPrivateKey(keyStore, keyStorePassword, alg);
                 if (certificate != null && privateKey != null) {
                     tmp.put(alg, new CryptoSignature(certificate, privateKey));
                 } else {
                     LOGGER.warn("JWT algorithm {} not available", alg);
                 }
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 LOGGER.warn("{} not supported: {}", alg, ExceptionUtil.causeChain(e));
             }
         }
@@ -145,7 +145,7 @@ public final class JWT implements IJWT {
         // Spec requires "none" to always be available, but according to https://www.owasp.org/index.php/JSON_Web_Token_(JWT)_Cheat_Sheet_for_Java
         // that would be a very bad idea! Therefore we do not do that.
 
-        CRYPTO_MAP = Collections.unmodifiableMap(tmp);
+        cryptoMap = Collections.unmodifiableMap(tmp);
     }
 
     /**
@@ -164,7 +164,7 @@ public final class JWT implements IJWT {
                 return null;
             }
 
-            Mac mac = Mac.getInstance(secretKey.getAlgorithm());
+            final Mac mac = Mac.getInstance(secretKey.getAlgorithm());
             mac.init(secretKey);
 
             return mac;
@@ -176,7 +176,7 @@ public final class JWT implements IJWT {
     private X509Certificate getCertificate(final KeyStore keyStore, final String alias) {
         try {
             return (X509Certificate) keyStore.getCertificate(alias);
-        } catch (KeyStoreException e) {
+        } catch (final KeyStoreException e) {
             throw new RuntimeException(e);
         }
     }
@@ -192,14 +192,14 @@ public final class JWT implements IJWT {
 
     @Override
     public JwtInfo decode(final String token) {
-        String[] segments = token.split("\\.");
+        final String[] segments = token.split("\\.");
         if (segments.length != 3)
             throw new T9tJwtException(T9tJwtException.NUMBER_SEGMENTS, Integer.toString(segments.length));
 
         // All segment should be base64
-        String headerSeg = segments[0];
-        String payloadSeg = segments[1];
-        String signatureSeg = segments[2];
+        final String headerSeg = segments[0];
+        final String payloadSeg = segments[1];
+        final String signatureSeg = segments[2];
 
         if (signatureSeg.length() == 0)
             throw new T9tJwtException(T9tJwtException.MISSING_SIGNATURE);
@@ -210,22 +210,22 @@ public final class JWT implements IJWT {
         try {
             header = JwtConverter.parseAlg(new String(base64urlDecode(headerSeg), UTF8));
             payload = JwtConverter.parseJwtInfo(new String(base64urlDecode(payloadSeg), UTF8));
-        } catch (IllegalArgumentException e) { // Decoding illegal information will throw an IllegalArgumentException which should be caught!
+        } catch (final IllegalArgumentException e) { // Decoding illegal information will throw an IllegalArgumentException which should be caught!
             throw new T9tJwtException(T9tJwtException.VERIFICATION_FAILED);
         }
 
-        Crypto crypto = CRYPTO_MAP.get(header.getAlg());
+        final Crypto crypto = cryptoMap.get(header.getAlg());
 
         if (crypto == null)
             throw new T9tJwtException(T9tJwtException.ALGORITHM_NOT_SUPPORTED, header.getAlg());
 
         // verify signature. `sign` will return base64 string.
-        String signingInput = headerSeg + "." + payloadSeg;
+        final String signingInput = headerSeg + "." + payloadSeg;
 
         try {
             if (!crypto.verify(base64urlDecode(signatureSeg), signingInput.getBytes(UTF8)))
                 throw new T9tJwtException(T9tJwtException.VERIFICATION_FAILED);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new RuntimeException(e);
         }
 
@@ -234,51 +234,51 @@ public final class JWT implements IJWT {
     }
 
     @Override
-    public String sign(JwtInfo info, Long expiresInSeconds, String algorithmOverride) {
+    public String sign(final JwtInfo info, final Long expiresInSeconds, final String algorithmOverride) {
         final String algorithm = algorithmOverride == null ? "HS256" : algorithmOverride;
 
-        Crypto crypto = CRYPTO_MAP.get(algorithm);
+        final Crypto crypto = cryptoMap.get(algorithm);
 
         if (crypto == null)
             throw new T9tJwtException(T9tJwtException.ALGORITHM_NOT_SUPPORTED, algorithm);
 
         // header, typ is fixed value.
-        String header = "{\"typ\":\"JWT\",\"alg\":\"" + algorithm + "\"}";
+        final String header = "{\"typ\":\"JWT\",\"alg\":\"" + algorithm + "\"}";
 
         // set the "issued at" field
-        long timestamp = System.currentTimeMillis() / 1000L;  // divide it to get 1 second precision
+        final long timestamp = System.currentTimeMillis() / 1000L;  // divide it to get 1 second precision
         info.setIssuedAt(Instant.ofEpochSecond(timestamp));
 
         // if a duration has been given, set the expiry time
         if (expiresInSeconds != null)
             info.setExpiresAt(Instant.ofEpochSecond(timestamp + expiresInSeconds.longValue()));
 
-        Map<String, Object> payload = JwtConverter.asMap(info);
+        final Map<String, Object> payload = JwtConverter.asMap(info);
         payload.put(MimeTypes.JSON_FIELD_PQON, "api.auth.JwtPayload");
 
-        String json = BonaparteJsonEscaper.asJson(payload);
+        final String json = BonaparteJsonEscaper.asJson(payload);
 
         try {
             // create segments, all segment should be base64 string
-            String headerSegment = base64urlEncode(header);
-            String payloadSegment = base64urlEncode(json);
-            String signingInput = headerSegment + "." + payloadSegment;
-            String signSegment = base64urlEncode(crypto.sign(signingInput.getBytes(UTF8)));
+            final String headerSegment = base64urlEncode(header);
+            final String payloadSegment = base64urlEncode(json);
+            final String signingInput = headerSegment + "." + payloadSegment;
+            final String signSegment = base64urlEncode(crypto.sign(signingInput.getBytes(UTF8)));
             return headerSegment + "." + payloadSegment + "." + signSegment;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private static byte[] base64urlDecode(String str) {
+    private static byte[] base64urlDecode(final String str) {
         return Base64.getUrlDecoder().decode(str.getBytes(UTF8));
     }
 
-    private static String base64urlEncode(String str) {
+    private static String base64urlEncode(final String str) {
         return base64urlEncode(str.getBytes(UTF8));
     }
 
-    private static String base64urlEncode(byte[] bytes) {
+    private static String base64urlEncode(final byte[] bytes) {
         return Base64.getUrlEncoder().encodeToString(bytes);
     }
 }

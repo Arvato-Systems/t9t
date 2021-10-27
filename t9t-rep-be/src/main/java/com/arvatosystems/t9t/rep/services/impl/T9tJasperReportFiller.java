@@ -33,7 +33,8 @@ public class T9tJasperReportFiller implements IJasperReportFiller {
     protected final IJdbcConnectionProvider jdbcProvider = Jdp.getRequired(IJdbcConnectionProvider.class);
 
     @Override
-    public JasperPrint fillReport(JasperReport jasperReport, ReportParamsDTO reportParamsDTO, Map<String, Object> parameters) throws JRException {
+    public JasperPrint fillReport(final JasperReport jasperReport, final ReportParamsDTO reportParamsDTO,
+      final Map<String, Object> parameters) throws JRException {
         return JasperFillManager.fillReport(jasperReport, parameters, jdbcProvider.getJDBCConnection());
     }
 }

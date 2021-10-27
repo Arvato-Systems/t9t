@@ -15,18 +15,18 @@
  */
 package com.arvatosystems.t9t.base;
 
-import com.arvatosystems.t9t.base.output.ExportParameters;
 import com.arvatosystems.t9t.base.auth.ChangePasswordUI;
+import com.arvatosystems.t9t.base.output.ExportParameters;
 
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 
 public final class T9tBaseModels implements IViewModelContainer {
 
     private static final CrudViewModel<ExportParameters, TrackingBase> EXPORT_PARAMS_VIEW_MODEL
-      = new CrudViewModel<ExportParameters, TrackingBase>(ExportParameters.BClass.INSTANCE, null, null, null);
+      = new CrudViewModel<>(ExportParameters.BClass.INSTANCE, null, null, null);
 
     private static final CrudViewModel<ChangePasswordUI, TrackingBase> CHANGE_PWD_VIEW_MODEL
-      = new CrudViewModel<ChangePasswordUI, TrackingBase>(ChangePasswordUI.BClass.INSTANCE, null, null, null);
+      = new CrudViewModel<>(ChangePasswordUI.BClass.INSTANCE, null, null, null);
 
     @Override
     public void register() {

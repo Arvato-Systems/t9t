@@ -20,11 +20,14 @@ import com.arvatosystems.t9t.bpmn.IWorkflowStep;
 import com.arvatosystems.t9t.plugins.services.PluginMethod;
 
 /**
- * A workflow plugin method extends a regular workflow step implementation directly, because the interface is defined in a suitable way (only defines methods returning basic data types).
+ * A workflow plugin method extends a regular workflow step implementation directly,
+ * because the interface is defined in a suitable way (only defines methods returning basic data types).
  */
 public interface IWorkflowStepPlugin<T> extends PluginMethod, IWorkflowStep<T> {
 
     /** Returns the API implemented. Will usually be provided by a default method. More specific workflow step types are allowed to override this method. */
     @Override
-    default String implementsApi() { return T9tConstants.PLUGIN_API_ID_WORKFLOW_STEP; }
+    default String implementsApi() {
+        return T9tConstants.PLUGIN_API_ID_WORKFLOW_STEP;
+    }
 }

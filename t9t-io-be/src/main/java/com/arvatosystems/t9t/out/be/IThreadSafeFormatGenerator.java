@@ -16,4 +16,4 @@
 package com.arvatosystems.t9t.out.be;
 
 /** Just a marker interface to emphasis which interfaces can be used across multiple threads (foldable ones cannot). */
-public interface IThreadSafeFormatGenerator {}
+public interface IThreadSafeFormatGenerator { }

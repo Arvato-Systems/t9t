@@ -45,25 +45,26 @@ import de.jpaw.bonaparte.pojos.apiw.Ref;
  * The generator will perform any code referenced in these methods after automated mappings have been done.
  * For this purpose, the code is moved to a private method, which is invoked.
  */
-public interface IEntityMapper<KEY extends Serializable, DTO extends BonaPortable, TRACKING extends TrackingBase, ENTITY extends BonaPersistableKey<KEY> & BonaPersistableTracking<TRACKING>> {
+public interface IEntityMapper<KEY extends Serializable, DTO extends BonaPortable, TRACKING extends TrackingBase,
+  ENTITY extends BonaPersistableKey<KEY> & BonaPersistableTracking<TRACKING>> {
 
     /** Returns a new instance of the customized class of the DTO.
      *
      * @return a new instance of the customization of the DTO class object.
      * @throws T9tException if the class could not be resolved or not instantiated.
      */
-    public DTO newDtoInstance(); // create a new (customized extension) of the DTO
+    DTO newDtoInstance(); // create a new (customized extension) of the DTO
 
-    public int getRtti(); // get the DTO's RTTI value
+    int getRtti(); // get the DTO's RTTI value
 
-    public Class<DTO> getBaseDtoClass(); // get the DTO's base class
+    Class<DTO> getBaseDtoClass(); // get the DTO's base class
 
     /** Returns the customized class of the DTO.
      *
      * @return the class object of the DTO which is valid for the given customization.
      * @throws T9tException if the class could not be resolved.
      */
-    public Class<? extends DTO> getDtoClass();
+    Class<? extends DTO> getDtoClass();
 
     /**
      * Converts a JPA entity into a DTO. The caller does not need to worry about allocating a new object. If the entity has been converted to a DTO before and
@@ -76,7 +77,7 @@ public interface IEntityMapper<KEY extends Serializable, DTO extends BonaPortabl
      *            - the JPA entity
      * @return - the entity mapped to a DTO
      */
-    public DTO mapToDto(ENTITY entity);
+    DTO mapToDto(ENTITY entity);
 
     /**
      * Converts a JPA entity into a DTO, when the entity itself is not available, only its primary key. This is just a shorthand for
@@ -86,7 +87,7 @@ public interface IEntityMapper<KEY extends Serializable, DTO extends BonaPortabl
      *            - the key
      * @return - the entity mapped to a DTO
      */
-    public DTO mapToDto(KEY key);
+    DTO mapToDto(KEY key);
 
     /**
      * Creates a new Entity class of the current customization and fills it from the entity provided as parameter. The call is null-safe, i.e. if the DTO is
@@ -96,7 +97,7 @@ public interface IEntityMapper<KEY extends Serializable, DTO extends BonaPortabl
      * @param onlyActive
      * @return the entity
      */
-    public ENTITY mapToEntity(DTO dto, boolean onlyActive); // convert a DTO into an entity
+    ENTITY mapToEntity(DTO dto, boolean onlyActive); // convert a DTO into an entity
 
     // protected void dto2Entity(ENTITY entity, DTO dto, boolean onlyActive);  // helper method which is overridden by extensions / customizations
     // protected void entity2Dto(ENTITY entity, DTO dto);  // helper method which is overridden by extensions / customizations
@@ -111,7 +112,7 @@ public interface IEntityMapper<KEY extends Serializable, DTO extends BonaPortabl
      *            - a DTO with data to be updated.
      * @param onlyActive
      */
-    public void merge2Entity(ENTITY entity, DTO dto, boolean onlyActive); // synonym for protected dto2Entity
+    void merge2Entity(ENTITY entity, DTO dto, boolean onlyActive); // synonym for protected dto2Entity
 
     /**
      * Maps a collection of entities to a list of standard DTOs.
@@ -120,9 +121,9 @@ public interface IEntityMapper<KEY extends Serializable, DTO extends BonaPortabl
      *            The input list. List entries may not be null.
      * @return a list, which may be empty.
      */
-    public List<DTO> mapListToDto(Collection<ENTITY> entityList);
+    List<DTO> mapListToDto(Collection<ENTITY> entityList);
 
-    public List<DTO> mapListToDto(Collection<ENTITY> entityList, Map<String, String> graph, String prefix, Map<String, Map<Long, Ref>> cache);
+    List<DTO> mapListToDto(Collection<ENTITY> entityList, Map<String, String> graph, String prefix, Map<String, Map<Long, Ref>> cache);
 
     /**
      * Maps a collection of DTOs to entities and adds those to an existing collection.
@@ -130,7 +131,7 @@ public interface IEntityMapper<KEY extends Serializable, DTO extends BonaPortabl
      * @param dtoList
      *            The input list. List entries may not be null.
      */
-    public void mapCollectionToEntity(Collection<ENTITY> target, Collection<DTO> dtoList, boolean onlyActive);
+    void mapCollectionToEntity(Collection<ENTITY> target, Collection<DTO> dtoList, boolean onlyActive);
 
     /**
      * Verifies that no field with property "notupdatable" has a different value in the intended entity. Throws a T9tException.FIELD_MAY_NOT_BE_CHANGED if a
@@ -139,24 +140,25 @@ public interface IEntityMapper<KEY extends Serializable, DTO extends BonaPortabl
      * @param current
      * @param intended
      */
-    public void checkNoUpdateFields(ENTITY current, DTO intended);
+    void checkNoUpdateFields(ENTITY current, DTO intended);
 
     /**
-     * Queries a property of the DTO class for its value. Returns the value or null if no property has been set. Returns an empty string if no value was assigned.
+     * Queries a property of the DTO class for its value. Returns the value or null if no property has been set.
+     * Returns an empty string if no value was assigned.
      * Implementation currently works for properties of the base DTO only. Subclass mappers have to override it in order to provide properties of subclasses.
      */
-    public String getProperty(String propertyname);
+    String getProperty(String propertyname);
 
     /**
      * Replaces field references in a generic search request which are path elements (indicated by property searchPrefix), for the critera builder.
      *
      * @param searchRequest the entity specific search request
      */
-    public void processSearchPrefixForDB(SearchCriteria searchCriteria);
+    void processSearchPrefixForDB(SearchCriteria searchCriteria);
 
     /**
-     * Replaces field references in a generic search request which are path elements (indicated by property searchPrefix), for the critera builder - two parameter version.
-     *
+     * Replaces field references in a generic search request which are path elements (indicated by property searchPrefix), for the critera builder.
+     * Two parameter version.
      */
-    public void processSearchPrefixForDB(SearchFilter filter, List<SortColumn> sortColumns);
+    void processSearchPrefixForDB(SearchFilter filter, List<SortColumn> sortColumns);
 }

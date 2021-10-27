@@ -32,7 +32,7 @@ public class UnloadPluginRequestHandler extends AbstractRequestHandler<UnloadPlu
     private final IPluginManager pluginManager = Jdp.getRequired(IPluginManager.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, UnloadPluginRequest rq) throws Exception {
+    public ServiceResponse execute(final RequestContext ctx, final UnloadPluginRequest rq) throws Exception {
         final boolean removed = pluginManager.removePlugin(ctx.tenantRef, rq.getPluginId());
         LOGGER.info("The plugin {} {}", rq.getPluginId(), removed ? "has been removed" : "was not found");
         return ok();

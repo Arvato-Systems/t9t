@@ -15,6 +15,30 @@
  */
 package com.arvatosystems.t9t.base.jpa.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+
+import javax.persistence.EntityManager;
+
+import org.eclipse.xtend.lib.annotations.Data;
+import org.eclipse.xtext.xbase.lib.CollectionLiterals;
+import org.eclipse.xtext.xbase.lib.Exceptions;
+import org.eclipse.xtext.xbase.lib.Functions.Function1;
+import org.eclipse.xtext.xbase.lib.IterableExtensions;
+import org.eclipse.xtext.xbase.lib.ObjectExtensions;
+import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
+import org.eclipse.xtext.xbase.lib.Pure;
+import org.eclipse.xtext.xbase.lib.StringExtensions;
+import org.eclipse.xtext.xbase.lib.util.ToStringBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 ///*
 //* Copyright (c) 2012 - 2020 Arvato Systems GmbH
 //*
@@ -487,6 +511,7 @@ import com.arvatosystems.t9t.base.services.ISearchTools;
 import com.arvatosystems.t9t.base.services.ITextSearch;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.google.common.base.Objects;
+
 import de.jpaw.annotations.AddLogger;
 import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.core.BonaPortableClass;
@@ -502,27 +527,6 @@ import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.dp.Jdp;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
-import javax.persistence.EntityManager;
-import org.eclipse.xtend.lib.annotations.Data;
-import org.eclipse.xtext.xbase.lib.CollectionLiterals;
-import org.eclipse.xtext.xbase.lib.Exceptions;
-import org.eclipse.xtext.xbase.lib.Functions.Function1;
-import org.eclipse.xtext.xbase.lib.IterableExtensions;
-import org.eclipse.xtext.xbase.lib.ObjectExtensions;
-import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
-import org.eclipse.xtext.xbase.lib.Pure;
-import org.eclipse.xtext.xbase.lib.StringExtensions;
-import org.eclipse.xtext.xbase.lib.util.ToStringBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The combined search evaluates if we have filter and/or sort criteria for DB and SOLR,
@@ -581,7 +585,7 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<REF exten
         return false;
       if (getClass() != obj.getClass())
         return false;
-      AbstractCombinedTextDatabaseSearchRequestHandler.SearchTypeMappingEntry other = (AbstractCombinedTextDatabaseSearchRequestHandler.SearchTypeMappingEntry) obj;
+      final AbstractCombinedTextDatabaseSearchRequestHandler.SearchTypeMappingEntry other = (AbstractCombinedTextDatabaseSearchRequestHandler.SearchTypeMappingEntry) obj;
       if (this.name == null) {
         if (other.name != null)
           return false;
@@ -603,7 +607,7 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<REF exten
     @Override
     @Pure
     public String toString() {
-      ToStringBuilder b = new ToStringBuilder(this);
+      final ToStringBuilder b = new ToStringBuilder(this);
       b.add("name", this.name);
       b.add("searchType", this.searchType);
       b.add("matchType", this.matchType);
@@ -655,14 +659,14 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<REF exten
   protected void processPrefixes(final SearchCriteria rq) {
     this.mapper.processSearchPrefixForDB(rq);
     final Map<String, String> mappings = this.getExtraMappings();
-    Map<String, String> _extraMappings = this.getExtraMappings();
-    boolean _tripleNotEquals = (_extraMappings != null);
+    final Map<String, String> _extraMappings = this.getExtraMappings();
+    final boolean _tripleNotEquals = (_extraMappings != null);
     if (_tripleNotEquals) {
-      final Function<String, String> _function = (String path) -> {
-        boolean _contains = path.contains("Ref.");
+      final Function<String, String> _function = (final String path) -> {
+        final boolean _contains = path.contains("Ref.");
         if (_contains) {
           String tmp = path;
-          Set<Map.Entry<String, String>> _entrySet = mappings.entrySet();
+          final Set<Map.Entry<String, String>> _entrySet = mappings.entrySet();
           for (final Map.Entry<String, String> r : _entrySet) {
             tmp = tmp.replace(r.getKey(), r.getValue());
           }
@@ -678,19 +682,19 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<REF exten
   @Override
   public ReadAllResponse<DTO, TRACKING> execute(final RequestContext ctx, final REQ rq) {
     try {
-      boolean _isNullOrEmpty = StringExtensions.isNullOrEmpty(rq.getExpression());
-      boolean _not = (!_isNullOrEmpty);
+      final boolean _isNullOrEmpty = StringExtensions.isNullOrEmpty(rq.getExpression());
+      final boolean _not = (!_isNullOrEmpty);
       if (_not) {
         return this.executeSOLRSearch(ctx, rq);
       }
       final SearchFilterTypes filterTypes = new SearchFilterTypes();
-      SearchFilter _searchFilter = rq.getSearchFilter();
+      final SearchFilter _searchFilter = rq.getSearchFilter();
       if (_searchFilter!=null) {
         this.decideFilterAssociation(_searchFilter, filterTypes);
       }
       SearchFilterTypeEnum _xifexpression = null;
-      boolean _isNullOrEmpty_1 = IterableExtensions.isNullOrEmpty(rq.getSortColumns());
-      boolean _not_1 = (!_isNullOrEmpty_1);
+      final boolean _isNullOrEmpty_1 = IterableExtensions.isNullOrEmpty(rq.getSortColumns());
+      final boolean _not_1 = (!_isNullOrEmpty_1);
       if (_not_1) {
         _xifexpression = this.filterTypeForField(rq.getSortColumns().get(0).getFieldName());
       }
@@ -709,8 +713,8 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<REF exten
       if (((solrRequest.getSearchFilter() == null) && (dbRequest.getSearchFilter() == null))) {
         throw new T9tException(T9tException.ILE_SOLR_DB_COMBINED_FILTERS);
       }
-      int _limit = rq.getLimit();
-      final ArrayList<ENTITY> finalResultList = new ArrayList<ENTITY>(_limit);
+      final int _limit = rq.getLimit();
+      final ArrayList<ENTITY> finalResultList = new ArrayList<>(_limit);
       if ((sortType == null)) {
         this.executeBOTHSearchDrivenBySolr(ctx, rq, solrRequest, dbRequest, finalResultList);
       } else {
@@ -726,7 +730,7 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<REF exten
         }
       }
       return this.mapper.createReadAllResponse(finalResultList, rq.getSearchOutputTarget());
-    } catch (Throwable _e) {
+    } catch (final Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
     }
   }
@@ -736,7 +740,7 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<REF exten
       AbstractCombinedTextDatabaseSearchRequestHandler.LOGGER.debug("Using DB only search");
       this.processPrefixes(rq);
       return this.mapper.createReadAllResponse(this.resolver.search(rq, null), rq.getSearchOutputTarget());
-    } catch (Throwable _e) {
+    } catch (final Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
     }
   }
@@ -746,17 +750,17 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<REF exten
       this.searchTools.mapNames(rq, this.textSearchFieldMappings);
       AbstractCombinedTextDatabaseSearchRequestHandler.LOGGER.debug("SOLR request mapped: {}", rq);
       final List<Long> refs = this.textSearch.search(ctx, rq, this.documentName, this.keyFieldName);
-      boolean _isEmpty = refs.isEmpty();
+      final boolean _isEmpty = refs.isEmpty();
       if (_isEmpty) {
-        ReadAllResponse<DTO, TRACKING> _readAllResponse = new ReadAllResponse<DTO, TRACKING>();
-        final Procedure1<ReadAllResponse<DTO, TRACKING>> _function = (ReadAllResponse<DTO, TRACKING> it) -> {
+        final ReadAllResponse<DTO, TRACKING> _readAllResponse = new ReadAllResponse<>();
+        final Procedure1<ReadAllResponse<DTO, TRACKING>> _function = (final ReadAllResponse<DTO, TRACKING> it) -> {
           it.setDataList(Collections.<DataWithTrackingW<DTO, TRACKING>>unmodifiableList(CollectionLiterals.<DataWithTrackingW<DTO, TRACKING>>newArrayList()));
         };
         return ObjectExtensions.<ReadAllResponse<DTO, TRACKING>>operator_doubleArrow(_readAllResponse, _function);
       }
-      SearchRequest<DTO, TRACKING> _newInstance = this.bclass.newInstance();
-      final Procedure1<SearchRequest<DTO, TRACKING>> _function_1 = (SearchRequest<DTO, TRACKING> it) -> {
-        LongFilter _longFilter = new LongFilter("objectRef", null, null, null, refs);
+      final SearchRequest<DTO, TRACKING> _newInstance = this.bclass.newInstance();
+      final Procedure1<SearchRequest<DTO, TRACKING>> _function_1 = (final SearchRequest<DTO, TRACKING> it) -> {
+        final LongFilter _longFilter = new LongFilter("objectRef", null, null, null, refs);
         it.setSearchFilter(_longFilter);
         it.setSortColumns(rq.getSortColumns());
         it.setSearchOutputTarget(rq.getSearchOutputTarget());
@@ -765,7 +769,7 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<REF exten
       AbstractCombinedTextDatabaseSearchRequestHandler.LOGGER.debug("solr only new searchReq: {}", newSearchRq);
       this.processPrefixes(newSearchRq);
       return this.mapper.createReadAllResponse(this.resolver.search(newSearchRq, null), newSearchRq.getSearchOutputTarget());
-    } catch (Throwable _e) {
+    } catch (final Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
     }
   }
@@ -777,17 +781,17 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<REF exten
       this.searchTools.mapNames(rq, this.textSearchFieldMappings);
       AbstractCombinedTextDatabaseSearchRequestHandler.LOGGER.debug("SOLR request mapped: {}", rq);
       final List<Long> refs = this.textSearch.search(ctx, rq, this.documentName, this.keyFieldName);
-      boolean _isEmpty = refs.isEmpty();
+      final boolean _isEmpty = refs.isEmpty();
       if (_isEmpty) {
-        ReadAllResponse<DTO, TRACKING> _readAllResponse = new ReadAllResponse<DTO, TRACKING>();
-        final Procedure1<ReadAllResponse<DTO, TRACKING>> _function = (ReadAllResponse<DTO, TRACKING> it) -> {
+        final ReadAllResponse<DTO, TRACKING> _readAllResponse = new ReadAllResponse<>();
+        final Procedure1<ReadAllResponse<DTO, TRACKING>> _function = (final ReadAllResponse<DTO, TRACKING> it) -> {
           it.setDataList(Collections.<DataWithTrackingW<DTO, TRACKING>>unmodifiableList(CollectionLiterals.<DataWithTrackingW<DTO, TRACKING>>newArrayList()));
         };
         return ObjectExtensions.<ReadAllResponse<DTO, TRACKING>>operator_doubleArrow(_readAllResponse, _function);
       }
-      SearchRequest<DTO, TRACKING> _newInstance = this.bclass.newInstance();
-      final Procedure1<SearchRequest<DTO, TRACKING>> _function_1 = (SearchRequest<DTO, TRACKING> it) -> {
-        LongFilter _longFilter = new LongFilter("objectRef", null, null, null, refs);
+      final SearchRequest<DTO, TRACKING> _newInstance = this.bclass.newInstance();
+      final Procedure1<SearchRequest<DTO, TRACKING>> _function_1 = (final SearchRequest<DTO, TRACKING> it) -> {
+        final LongFilter _longFilter = new LongFilter("objectRef", null, null, null, refs);
         it.setSearchFilter(_longFilter);
         it.setSortColumns(sortCols);
         it.setSearchOutputTarget(rq.getSearchOutputTarget());
@@ -796,7 +800,7 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<REF exten
       AbstractCombinedTextDatabaseSearchRequestHandler.LOGGER.debug("solr only with DB sort new searchReq for DB: {}", newSearchRq);
       this.processPrefixes(newSearchRq);
       return this.mapper.createReadAllResponse(this.resolver.search(newSearchRq, null), newSearchRq.getSearchOutputTarget());
-    } catch (Throwable _e) {
+    } catch (final Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
     }
   }
@@ -811,9 +815,9 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<REF exten
     this.searchTools.mapNames(solrRequest, this.textSearchFieldMappings);
     this.processPrefixes(dbRequest);
     int resultsToSkip = rq.getOffset();
-    int _limit = rq.getLimit();
-    int _multiply = (_limit * 4);
-    int increasedLimit = Math.min(_multiply, 1000);
+    final int _limit = rq.getLimit();
+    final int _multiply = (_limit * 4);
+    final int increasedLimit = Math.min(_multiply, 1000);
     int iteration = 0;
     boolean doMoreSearchRequests = true;
     int foundResults = 0;
@@ -822,65 +826,65 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<REF exten
       {
         solrRequest.setOffset((increasedLimit * iteration));
         final List<Long> refs = this.textSearch.search(ctx, solrRequest, this.documentName, this.keyFieldName);
-        int _size = refs.size();
-        boolean _lessThan = (_size < increasedLimit);
+        final int _size = refs.size();
+        final boolean _lessThan = (_size < increasedLimit);
         if (_lessThan) {
           doMoreSearchRequests = false;
         }
-        boolean _isEmpty = refs.isEmpty();
+        final boolean _isEmpty = refs.isEmpty();
         if (_isEmpty) {
           return;
         }
-        LongFilter _longFilter = new LongFilter();
-        final Procedure1<LongFilter> _function = (LongFilter it) -> {
+        final LongFilter _longFilter = new LongFilter();
+        final Procedure1<LongFilter> _function = (final LongFilter it) -> {
           it.setFieldName("objectRef");
           it.setValueList(refs);
         };
-        LongFilter _doubleArrow = ObjectExtensions.<LongFilter>operator_doubleArrow(_longFilter, _function);
-        AndFilter _andFilter = new AndFilter(dbRequestFilter, _doubleArrow);
+        final LongFilter _doubleArrow = ObjectExtensions.<LongFilter>operator_doubleArrow(_longFilter, _function);
+        final AndFilter _andFilter = new AndFilter(dbRequestFilter, _doubleArrow);
         dbRequest.setSearchFilter(_andFilter);
-        int _limit_1 = rq.getLimit();
-        int _minus = (_limit_1 - foundResults);
-        int _plus = (_minus + resultsToSkip);
+        final int _limit_1 = rq.getLimit();
+        final int _minus = (_limit_1 - foundResults);
+        final int _plus = (_minus + resultsToSkip);
         dbRequest.setLimit(_plus);
-        List<ENTITY> tempResult = this.resolver.search(dbRequest, null);
+        final List<ENTITY> tempResult = this.resolver.search(dbRequest, null);
         if ((resultsToSkip > 0)) {
-          int _size_1 = tempResult.size();
-          boolean _greaterEqualsThan = (resultsToSkip >= _size_1);
+          final int _size_1 = tempResult.size();
+          final boolean _greaterEqualsThan = (resultsToSkip >= _size_1);
           if (_greaterEqualsThan) {
-            int _resultsToSkip = resultsToSkip;
-            int _size_2 = tempResult.size();
+            final int _resultsToSkip = resultsToSkip;
+            final int _size_2 = tempResult.size();
             resultsToSkip = (_resultsToSkip - _size_2);
           } else {
-            int _size_3 = tempResult.size();
-            int _minus_1 = (_size_3 - resultsToSkip);
-            int _limit_2 = rq.getLimit();
-            int _minus_2 = (_limit_2 - foundResults);
+            final int _size_3 = tempResult.size();
+            final int _minus_1 = (_size_3 - resultsToSkip);
+            final int _limit_2 = rq.getLimit();
+            final int _minus_2 = (_limit_2 - foundResults);
             final int sizeToAdd = Math.min(_minus_1, _minus_2);
             this.xfer(refs, finalResultList, tempResult.subList(resultsToSkip, sizeToAdd), byRelevance);
-            int _foundResults = foundResults;
+            final int _foundResults = foundResults;
             foundResults = (_foundResults + sizeToAdd);
             resultsToSkip = 0;
           }
         } else {
-          int _size_4 = tempResult.size();
-          int _limit_3 = rq.getLimit();
-          int _minus_3 = (_limit_3 - foundResults);
-          boolean _lessEqualsThan = (_size_4 <= _minus_3);
+          final int _size_4 = tempResult.size();
+          final int _limit_3 = rq.getLimit();
+          final int _minus_3 = (_limit_3 - foundResults);
+          final boolean _lessEqualsThan = (_size_4 <= _minus_3);
           if (_lessEqualsThan) {
             this.xfer(refs, finalResultList, tempResult, byRelevance);
-            int _foundResults_1 = foundResults;
-            int _size_5 = tempResult.size();
+            final int _foundResults_1 = foundResults;
+            final int _size_5 = tempResult.size();
             foundResults = (_foundResults_1 + _size_5);
           } else {
-            int _limit_4 = rq.getLimit();
-            int _minus_4 = (_limit_4 - foundResults);
+            final int _limit_4 = rq.getLimit();
+            final int _minus_4 = (_limit_4 - foundResults);
             this.xfer(refs, finalResultList, tempResult.subList(0, _minus_4), byRelevance);
             foundResults = rq.getLimit();
           }
         }
-        int _plusPlus = iteration++;
-        boolean _greaterEqualsThan_1 = (_plusPlus >= AbstractCombinedTextDatabaseSearchRequestHandler.MAX_ITERATIONS);
+        final int _plusPlus = iteration++;
+        final boolean _greaterEqualsThan_1 = (_plusPlus >= AbstractCombinedTextDatabaseSearchRequestHandler.MAX_ITERATIONS);
         if (_greaterEqualsThan_1) {
           AbstractCombinedTextDatabaseSearchRequestHandler.LOGGER.warn("combined search prematurely stopped due to iteration count limit");
           doMoreSearchRequests = false;
@@ -893,9 +897,9 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<REF exten
     if ((!byRelevance)) {
       finalResultList.addAll(temp);
     } else {
-      int _size = temp.size();
-      int _multiply = (2 * _size);
-      final HashMap<Long, ENTITY> indexMap = new HashMap<Long, ENTITY>(_multiply);
+      final int _size = temp.size();
+      final int _multiply = (2 * _size);
+      final HashMap<Long, ENTITY> indexMap = new HashMap<>(_multiply);
       for (final ENTITY e : temp) {
         indexMap.put(e.ret$Key(), e);
       }
@@ -918,9 +922,9 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<REF exten
     this.searchTools.mapNames(solrRequest, this.textSearchFieldMappings);
     this.processPrefixes(dbRequest);
     int resultsToSkip = rq.getOffset();
-    int _limit = rq.getLimit();
-    int _multiply = (_limit * 4);
-    int increasedLimit = Math.min(_multiply, 1000);
+    final int _limit = rq.getLimit();
+    final int _multiply = (_limit * 4);
+    final int increasedLimit = Math.min(_multiply, 1000);
     int iteration = 0;
     boolean doMoreSearchRequests = true;
     int foundResults = 0;
@@ -929,65 +933,65 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<REF exten
       {
         dbRequest.setOffset((increasedLimit * iteration));
         final List<Long> refs = this.resolver.searchKey(dbRequest);
-        int _size = refs.size();
-        boolean _lessThan = (_size < increasedLimit);
+        final int _size = refs.size();
+        final boolean _lessThan = (_size < increasedLimit);
         if (_lessThan) {
           doMoreSearchRequests = false;
         }
-        boolean _isEmpty = refs.isEmpty();
+        final boolean _isEmpty = refs.isEmpty();
         if (_isEmpty) {
           return;
         }
-        LongFilter _longFilter = new LongFilter();
-        final Procedure1<LongFilter> _function = (LongFilter it) -> {
+        final LongFilter _longFilter = new LongFilter();
+        final Procedure1<LongFilter> _function = (final LongFilter it) -> {
           it.setFieldName("objectRef");
           it.setValueList(refs);
         };
-        LongFilter _doubleArrow = ObjectExtensions.<LongFilter>operator_doubleArrow(_longFilter, _function);
-        AndFilter _andFilter = new AndFilter(solrRequestFilter, _doubleArrow);
+        final LongFilter _doubleArrow = ObjectExtensions.<LongFilter>operator_doubleArrow(_longFilter, _function);
+        final AndFilter _andFilter = new AndFilter(solrRequestFilter, _doubleArrow);
         solrRequest.setSearchFilter(_andFilter);
-        int _limit_1 = rq.getLimit();
-        int _minus = (_limit_1 - foundResults);
-        int _plus = (_minus + resultsToSkip);
+        final int _limit_1 = rq.getLimit();
+        final int _minus = (_limit_1 - foundResults);
+        final int _plus = (_minus + resultsToSkip);
         solrRequest.setLimit(_plus);
         final List<Long> tempResult = this.textSearch.search(ctx, solrRequest, this.documentName, this.keyFieldName);
         if ((resultsToSkip > 0)) {
-          int _size_1 = tempResult.size();
-          boolean _greaterEqualsThan = (resultsToSkip >= _size_1);
+          final int _size_1 = tempResult.size();
+          final boolean _greaterEqualsThan = (resultsToSkip >= _size_1);
           if (_greaterEqualsThan) {
-            int _resultsToSkip = resultsToSkip;
-            int _size_2 = tempResult.size();
+            final int _resultsToSkip = resultsToSkip;
+            final int _size_2 = tempResult.size();
             resultsToSkip = (_resultsToSkip - _size_2);
           } else {
-            int _size_3 = tempResult.size();
-            int _minus_1 = (_size_3 - resultsToSkip);
-            int _limit_2 = rq.getLimit();
-            int _minus_2 = (_limit_2 - foundResults);
+            final int _size_3 = tempResult.size();
+            final int _minus_1 = (_size_3 - resultsToSkip);
+            final int _limit_2 = rq.getLimit();
+            final int _minus_2 = (_limit_2 - foundResults);
             final int sizeToAdd = Math.min(_minus_1, _minus_2);
             this.xfer(refs, finalResultList, tempResult.subList(resultsToSkip, sizeToAdd));
-            int _foundResults = foundResults;
+            final int _foundResults = foundResults;
             foundResults = (_foundResults + sizeToAdd);
             resultsToSkip = 0;
           }
         } else {
-          int _size_4 = tempResult.size();
-          int _limit_3 = rq.getLimit();
-          int _minus_3 = (_limit_3 - foundResults);
-          boolean _lessEqualsThan = (_size_4 <= _minus_3);
+          final int _size_4 = tempResult.size();
+          final int _limit_3 = rq.getLimit();
+          final int _minus_3 = (_limit_3 - foundResults);
+          final boolean _lessEqualsThan = (_size_4 <= _minus_3);
           if (_lessEqualsThan) {
             this.xfer(refs, finalResultList, tempResult);
-            int _foundResults_1 = foundResults;
-            int _size_5 = tempResult.size();
+            final int _foundResults_1 = foundResults;
+            final int _size_5 = tempResult.size();
             foundResults = (_foundResults_1 + _size_5);
           } else {
-            int _limit_4 = rq.getLimit();
-            int _minus_4 = (_limit_4 - foundResults);
+            final int _limit_4 = rq.getLimit();
+            final int _minus_4 = (_limit_4 - foundResults);
             this.xfer(refs, finalResultList, tempResult.subList(0, _minus_4));
             foundResults = rq.getLimit();
           }
         }
-        int _plusPlus = iteration++;
-        boolean _greaterEqualsThan_1 = (_plusPlus >= AbstractCombinedTextDatabaseSearchRequestHandler.MAX_ITERATIONS);
+        final int _plusPlus = iteration++;
+        final boolean _greaterEqualsThan_1 = (_plusPlus >= AbstractCombinedTextDatabaseSearchRequestHandler.MAX_ITERATIONS);
         if (_greaterEqualsThan_1) {
           AbstractCombinedTextDatabaseSearchRequestHandler.LOGGER.warn("combined search prematurely stopped due to iteration count limit");
           doMoreSearchRequests = false;
@@ -997,13 +1001,13 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<REF exten
   }
 
   protected void xfer(final List<Long> orderForNoSort, final ArrayList<ENTITY> finalResultList, final List<Long> temp) {
-    int _size = temp.size();
-    int _multiply = (2 * _size);
-    final HashSet<Long> indexMap = new HashSet<Long>(_multiply);
+    final int _size = temp.size();
+    final int _multiply = (2 * _size);
+    final HashSet<Long> indexMap = new HashSet<>(_multiply);
     indexMap.addAll(temp);
     final EntityManager em = this.resolver.getEntityManager();
     for (final Long r : orderForNoSort) {
-      boolean _contains = indexMap.contains(r);
+      final boolean _contains = indexMap.contains(r);
       if (_contains) {
         final ENTITY ee = em.<ENTITY>find(this.resolver.getBaseJpaEntityClass(), r);
         if ((ee == null)) {
@@ -1020,7 +1024,7 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<REF exten
    */
   protected void splitSearches(final SearchFilter originalFilter, final SearchRequest<DTO, TRACKING> solrRequest, final SearchRequest<DTO, TRACKING> dbRequest) {
     if ((originalFilter instanceof FieldFilter)) {
-      SearchFilterTypeEnum _filterTypeForField = this.filterTypeForField(((FieldFilter)originalFilter).getFieldName());
+      final SearchFilterTypeEnum _filterTypeForField = this.filterTypeForField(((FieldFilter)originalFilter).getFieldName());
       if (_filterTypeForField != null) {
         switch (_filterTypeForField) {
           case DB_ONLY:
@@ -1066,7 +1070,7 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<REF exten
           this.decideFilterAssociation(((AndFilter)originalFilter).getFilter1(), result);
           this.decideFilterAssociation(((AndFilter)originalFilter).getFilter2(), result);
         } else {
-          String _ret$PQON = originalFilter.ret$PQON();
+          final String _ret$PQON = originalFilter.ret$PQON();
           throw new T9tException(T9tException.ILLEGAL_SOLR_DB_COMBINED_FILTER_EXPRESSION, _ret$PQON);
         }
       }
@@ -1079,7 +1083,7 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<REF exten
    * Never returns null.
    */
   protected SearchFilterTypeEnum filterTypeForField(final String path) {
-    final Function1<AbstractCombinedTextDatabaseSearchRequestHandler.SearchTypeMappingEntry, Boolean> _function = (AbstractCombinedTextDatabaseSearchRequestHandler.SearchTypeMappingEntry it) -> {
+    final Function1<AbstractCombinedTextDatabaseSearchRequestHandler.SearchTypeMappingEntry, Boolean> _function = (final AbstractCombinedTextDatabaseSearchRequestHandler.SearchTypeMappingEntry it) -> {
       return Boolean.valueOf(this.thatMatches(it, path));
     };
     final AbstractCombinedTextDatabaseSearchRequestHandler.SearchTypeMappingEntry entry = IterableExtensions.<AbstractCombinedTextDatabaseSearchRequestHandler.SearchTypeMappingEntry>findFirst(this.textSearchPathElements, _function);
@@ -1148,7 +1152,7 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<REF exten
       return false;
     if (getClass() != obj.getClass())
       return false;
-    AbstractCombinedTextDatabaseSearchRequestHandler<?, ?, ?, ?, ?> other = (AbstractCombinedTextDatabaseSearchRequestHandler<?, ?, ?, ?, ?>) obj;
+    final AbstractCombinedTextDatabaseSearchRequestHandler<?, ?, ?, ?, ?> other = (AbstractCombinedTextDatabaseSearchRequestHandler<?, ?, ?, ?, ?>) obj;
     if (this.executor == null) {
       if (other.executor != null)
         return false;

@@ -37,10 +37,10 @@ public class DefaultsConfigurationProvider implements IRemoteDefaultUrlRetriever
         this("DEFAULTS", null, null, null);
     }
     protected DefaultsConfigurationProvider(
-      String source,
-      String remotePort,
-      String remoteHost,
-      String remotePathRequests) {
+      final String source,
+      final String remotePort,
+      final String remoteHost,
+      final String remotePathRequests) {
         this.remotePort         = remotePort         == null ? DEFAULT_REMOTE_PORT  : Integer.parseInt(remotePort);
         this.remoteHost         = remoteHost         == null ? DEFAULT_REMOTE_HOST  : remoteHost;
         this.remotePathRequests = remotePathRequests == null ? DEFAULT_REQUEST_PATH : remotePathRequests;

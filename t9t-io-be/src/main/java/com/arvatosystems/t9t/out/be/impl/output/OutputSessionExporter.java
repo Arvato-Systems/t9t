@@ -38,8 +38,8 @@ import de.jpaw.util.ExceptionUtil;
 @Singleton
 public class OutputSessionExporter implements IOutputSessionExporter {
     private static final Logger LOGGER = LoggerFactory.getLogger(OutputSessionExporter.class);
-    protected final Integer DEFAULT_CHUNK_SIZE            = 200;
-    protected final Integer DEFAULT_MAX_NUMBER_OF_RECORDS = Integer.MAX_VALUE;
+    private static final Integer DEFAULT_CHUNK_SIZE            = 200;
+    private static final Integer DEFAULT_MAX_NUMBER_OF_RECORDS = Integer.MAX_VALUE;
     protected final Provider<IOutputSession> osp = Jdp.getProvider(IOutputSession.class);
 
     @Override
@@ -89,7 +89,7 @@ public class OutputSessionExporter implements IOutputSessionExporter {
             if (chunkWriter != null) {
                 lastRecordDone = chunkWriter.apply(chunk, outputSession);
             } else {
-                for (D record : chunk) {
+                for (final D record : chunk) {
                     lastRecordDone = writer.apply(record, outputSession);
                 }
             }
@@ -100,7 +100,7 @@ public class OutputSessionExporter implements IOutputSessionExporter {
         }
         try {
             outputSession.close();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.error("Could not close data sink: {}", ExceptionUtil.causeChain(e));
             throw new T9tException(T9tIOException.IO_EXCEPTION, "Could not close", e);
         }

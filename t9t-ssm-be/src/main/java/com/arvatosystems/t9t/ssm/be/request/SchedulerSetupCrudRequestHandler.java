@@ -34,10 +34,10 @@ import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.core.CannedRequestDTO;
 import com.arvatosystems.t9t.core.CannedRequestRef;
+import com.arvatosystems.t9t.core.request.CannedRequestCrudRequest;
 import com.arvatosystems.t9t.core.services.ICannedRequestResolver;
 import com.arvatosystems.t9t.ssm.SchedulerSetupDTO;
 import com.arvatosystems.t9t.ssm.SchedulerSetupRef;
-import com.arvatosystems.t9t.ssm.be.impl.Workarounds;
 import com.arvatosystems.t9t.ssm.request.SchedulerSetupCrudRequest;
 import com.arvatosystems.t9t.ssm.services.ISchedulerService;
 import com.arvatosystems.t9t.ssm.services.ISchedulerSetupResolver;
@@ -48,7 +48,8 @@ import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 
-public class SchedulerSetupCrudRequestHandler extends AbstractCrudSurrogateKeyBERequestHandler<SchedulerSetupRef, SchedulerSetupDTO, FullTrackingWithVersion, SchedulerSetupCrudRequest> {
+public class SchedulerSetupCrudRequestHandler extends
+  AbstractCrudSurrogateKeyBERequestHandler<SchedulerSetupRef, SchedulerSetupDTO, FullTrackingWithVersion, SchedulerSetupCrudRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(com.arvatosystems.t9t.ssm.be.request.SchedulerSetupCrudRequestHandler.class);
 
     private final IExecutor executor = Jdp.getRequired(IExecutor.class);
@@ -79,7 +80,8 @@ public class SchedulerSetupCrudRequestHandler extends AbstractCrudSurrogateKeyBE
     }
 
     @Override
-    public CrudSurrogateKeyResponse<SchedulerSetupDTO, FullTrackingWithVersion> execute(final RequestContext ctx, final SchedulerSetupCrudRequest crudRequest) throws Exception {
+    public CrudSurrogateKeyResponse<SchedulerSetupDTO, FullTrackingWithVersion>
+      execute(final RequestContext ctx, final SchedulerSetupCrudRequest crudRequest) throws Exception {
         final SchedulerSetupDTO oldSetup;
         if (crudRequest.getCrud() == OperationType.DELETE || crudRequest.getCrud() == OperationType.UPDATE) {
             if (crudRequest.getKey() != null) {
@@ -94,7 +96,7 @@ public class SchedulerSetupCrudRequestHandler extends AbstractCrudSurrogateKeyBE
         }
 
         if (crudRequest.getCrud() == OperationType.CREATE || crudRequest.getCrud() == OperationType.UPDATE) {
-            crudRequest.getData().setRequest(Workarounds.getData(this.refResolver, crudRequest.getData().getRequest()));
+            crudRequest.getData().setRequest(refResolver.getData(new CannedRequestCrudRequest(), crudRequest.getData().getRequest()));
         }
 
         // perform the regular CRUD
@@ -172,7 +174,7 @@ public class SchedulerSetupCrudRequestHandler extends AbstractCrudSurrogateKeyBE
             dto.setApiKey(apiKeyDTO.getApiKey());
             try {
                 this.executor.executeSynchronousAndCheckResult(ctx, rq, CrudSurrogateKeyResponse.class);
-            } catch (T9tException e) {
+            } catch (final T9tException e) {
                 if (e.getErrorCode()  != T9tException.RECORD_ALREADY_EXISTS) {
                     throw e;
                 }

@@ -15,7 +15,9 @@
  */
 package com.arvatosystems.t9t.doc;
 
-public interface DocConstants {
+public final class DocConstants {
+    private DocConstants() { }
+
     public static final String DEFAULT_LANGUAGE_CODE = "xx";
     public static final String DEFAULT_COUNTRY_CODE  = "XX";
     public static final String DEFAULT_CURRENCY_CODE = "XXX";

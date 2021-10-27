@@ -27,7 +27,7 @@ public class SetJvmDebugFlagsRequestHandler extends AbstractReadOnlyRequestHandl
     protected final IDebugFlags debugFlags = Jdp.getRequired(IDebugFlags.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, SetJvmDebugFlagsRequest rq) throws Exception {
+    public ServiceResponse execute(final RequestContext ctx, final SetJvmDebugFlagsRequest rq) throws Exception {
         debugFlags.setFlags(ctx, rq.getValues());
         return ok();
     }

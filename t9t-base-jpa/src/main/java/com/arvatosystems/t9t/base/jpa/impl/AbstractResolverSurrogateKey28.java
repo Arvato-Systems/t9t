@@ -56,12 +56,12 @@ public abstract class AbstractResolverSurrogateKey28<
      *
      * If no matching type is found, the method should always fall back and return super.resolverNestedRefs() to allow nested implementations.
      * */
-    protected REF resolveNestedRefs(REF arg) {
+    protected REF resolveNestedRefs(final REF arg) {
         return arg;
     }
 
     @Override
-    public Long getRef(REF entityRef, boolean onlyActive) {
+    public Long getRef(final REF entityRef, final boolean onlyActive) {
         if (entityRef == null) {
             return null;        // play null-safe
         }
@@ -73,7 +73,7 @@ public abstract class AbstractResolverSurrogateKey28<
     }
 
     @Override
-    public <Z> Z getField(REF entityRef, boolean onlyActive, String fieldName, Class<Z> cls) {
+    public <Z> Z getField(final REF entityRef, final boolean onlyActive, final String fieldName, final Class<Z> cls) {
         if (entityRef == null) {
             return null;        // play null-safe
         }
@@ -81,19 +81,19 @@ public abstract class AbstractResolverSurrogateKey28<
     }
 
     @Override
-    public TwoRefs getRefs(REF entityRef, boolean onlyActive, String fieldName) {
+    public TwoRefs getRefs(final REF entityRef, final boolean onlyActive, final String fieldName) {
         return getEntityDataByGenericKey(resolveNestedRefs(entityRef), TwoRefs.class,
             (t, cb) -> cb.construct(TwoRefs.class, t.get("objectRef"), t.get(fieldName)),
             onlyActive);
     }
 
     @Override
-    public ENTITY getEntityData(REF entityRef, boolean onlyActive) {
+    public ENTITY getEntityData(final REF entityRef, final boolean onlyActive) {
 
         if (entityRef == null) {
             return null;        // play null-safe
         }
-        Long r = entityRef.getObjectRef();
+        final Long r = entityRef.getObjectRef();
         if (r != null) {
             return findInternal(r, onlyActive, true);
         }

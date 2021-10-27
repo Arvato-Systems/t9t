@@ -24,8 +24,8 @@ import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.base.services.IOutputSession;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
+import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW;
 import de.jpaw.dp.Jdp;
 
 /**
@@ -50,21 +50,21 @@ public class DataExporter {
      * @return id of created sink
      * @throws Exception
      */
-    public final <DTO extends BonaPortable> Long exportData(List<DTO> data, OutputSessionParameters op) throws Exception {
+    public final <DTO extends BonaPortable> Long exportData(final List<DTO> data, final OutputSessionParameters op) throws Exception {
         if (op == null) {
             return null;
         }
 
         // push output into an outputSession (export it)
-        IOutputSession os = Jdp.getRequired(IOutputSession.class);
+        final IOutputSession os = Jdp.getRequired(IOutputSession.class);
         Long sinkRef = null;
         try {
             sinkRef = os.open(op);
-            for (DTO e : data) {
+            for (final DTO e : data) {
                 os.store(e);
             }
             os.close();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.error("An error occurred on exporting data.", e);
             os.close(); // avoid resource leak
             throw e;
@@ -83,8 +83,8 @@ public class DataExporter {
      * @return id of created sink
      * @throws Exception
      */
-    public final <DTO extends BonaPortable, TRACKING extends TrackingBase> Long exportDataWithTrackingW(List<DataWithTrackingW<DTO, TRACKING>> data,
-            OutputSessionParameters op) throws Exception {
+    public final <DTO extends BonaPortable, TRACKING extends TrackingBase> Long exportDataWithTrackingW(final List<DataWithTrackingW<DTO, TRACKING>> data,
+            final OutputSessionParameters op) throws Exception {
         if (op == null) {
             return null;
         }
@@ -92,15 +92,15 @@ public class DataExporter {
         op.setSmartMappingForDataWithTracking(Boolean.TRUE);
 
         // push output into an outputSession (export it)
-        IOutputSession os = Jdp.getRequired(IOutputSession.class);
+        final IOutputSession os = Jdp.getRequired(IOutputSession.class);
         Long sinkRef = null;
         try {
             sinkRef = os.open(op);
-            for (DataWithTrackingW<DTO, TRACKING> e : data) {
+            for (final DataWithTrackingW<DTO, TRACKING> e : data) {
                 os.store(e);
             }
             os.close();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.error("An error occurred on exporting data with tracking.", e);
             os.close(); // avoid resource leak
             throw e;

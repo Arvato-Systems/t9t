@@ -28,7 +28,7 @@ public final class PasswordUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(PasswordUtil.class);
     private static final String CHARSET = "abcdefghijkmnopqrstuvwxyxABCDEFGHIJKLMNPQRSTUVWXYZ023456789!$&%/1O";
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
-    
+
     private PasswordUtil() { }
 
     /**
@@ -44,7 +44,7 @@ public final class PasswordUtil {
         MessageDigest md = null;
         try {
             md = MessageDigest.getInstance("SHA-512");
-        } catch (NoSuchAlgorithmException e) {
+        } catch (final NoSuchAlgorithmException e) {
             LOGGER.error("The standard algorithm \"SHA-512\" is not available. This should never happen. It is recommended to re-install Java.");
             throw new RuntimeException(e);
         }
@@ -53,10 +53,10 @@ public final class PasswordUtil {
         return new ByteArray(md.digest(password.getBytes()));
     }
 
-    public static String generateRandomPassword(int length) {
-        byte[] randomBytes = new byte[length];
+    public static String generateRandomPassword(final int length) {
+        final byte[] randomBytes = new byte[length];
         SECURE_RANDOM.nextBytes(randomBytes);
-        StringBuilder result = new StringBuilder(length);
+        final StringBuilder result = new StringBuilder(length);
         for (int i = 0; i < length; ++i) {
             result.append(CHARSET.charAt(randomBytes[i] & 0x3f));
         }

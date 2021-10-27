@@ -104,10 +104,10 @@ public class AsyncRequestLogger implements IRequestLogger {
                         if (num > 0) {
                             count += num;
                             LOGGER.info("Logging {} messages to disk", num);
-                            long beforeWrite = System.currentTimeMillis();
+                            final long beforeWrite = System.currentTimeMillis();
                             persistenceAccess.write(workPool);
                             if (logWriterConfiguration.getMaxWriteTimeInMillis() != null) {
-                                long writingTime = System.currentTimeMillis() - beforeWrite;
+                                final long writingTime = System.currentTimeMillis() - beforeWrite;
                                 if (writingTime < logWriterConfiguration.getMaxWriteTimeInMillis().longValue()) {
                                     LOGGER.debug("Writing {} entries took {} ms - GREEN", num, writingTime);
                                 } else {
@@ -121,7 +121,7 @@ public class AsyncRequestLogger implements IRequestLogger {
                             }
                         }
                     }
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     LOGGER.error("Exception {} while writing messages to disk", ExceptionUtil.causeChain(e));
                     LOGGER.error("Stack trace is ", e);
                     LOGGER.info("Skipping messages and continuing");
@@ -144,11 +144,12 @@ public class AsyncRequestLogger implements IRequestLogger {
         if (logWriterConfiguration == null) {
             logWriterConfiguration = new LogWriterConfiguration();  // create a default one, to avoid double null checks
         }
-        alertOnQueueSize = logWriterConfiguration.getAlertOnQueueSize() == null ? DEFAULT_ALERT_ON_QUEUE_SIZE : logWriterConfiguration.getAlertOnQueueSize().intValue();
+        alertOnQueueSize = logWriterConfiguration.getAlertOnQueueSize() == null
+          ? DEFAULT_ALERT_ON_QUEUE_SIZE : logWriterConfiguration.getAlertOnQueueSize().intValue();
     }
 
     @Override
-    public void logRequest(InternalHeaderParameters hdr, ExecutionSummary summary, RequestParameters params, ServiceResponse response) {
+    public void logRequest(final InternalHeaderParameters hdr, final ExecutionSummary summary, final RequestParameters params, final ServiceResponse response) {
         // silently discard them (but aggregate data)...
         if (ApplicationException.isOk(summary.getReturnCode()))
             countGood.incrementAndGet();
@@ -166,7 +167,7 @@ public class AsyncRequestLogger implements IRequestLogger {
         m.setLanguageCode           (hdr.getLanguageCode());
         m.setRequestParameterPqon   (hdr.getRequestParameterPqon());
 
-        ServiceRequestHeader h = hdr.getRequestHeader();
+        final ServiceRequestHeader h = hdr.getRequestHeader();
         if (h != null) {
             m.setMessageId           (h.getMessageId());
             m.setRecordNo            (h.getRecordNo());
@@ -182,11 +183,11 @@ public class AsyncRequestLogger implements IRequestLogger {
 
         queue.put(m);
         if (logWriterConfiguration.getAlertInterval() != null) {
-            int alertCounter = countCheck.incrementAndGet();
+            final int alertCounter = countCheck.incrementAndGet();
             if (alertCounter >= logWriterConfiguration.getAlertInterval().intValue()) {
                 // must check queue size
                 countCheck.set(0);  // reset
-                int currentQueueSize = queue.size();
+                final int currentQueueSize = queue.size();
                 if (currentQueueSize <= alertOnQueueSize) {
                     LOGGER.debug("Log message queue size is currently {} - GREEN", currentQueueSize);
                 } else {
@@ -205,16 +206,16 @@ public class AsyncRequestLogger implements IRequestLogger {
         LOGGER.info("Async message log: Normal shutdown after {} successful and {} error requests. Total processing time was {} ms.",
                 countGood.get(), countErrors.get(), totalTime.get());
         // drain queue
-        long start = System.currentTimeMillis();
+        final long start = System.currentTimeMillis();
         queue.put(SHUTDOWN_RQ);
         try {
             writerResult.get();
-        } catch (InterruptedException e) {
+        } catch (final InterruptedException e) {
             LOGGER.error("Interrupted:", e);
-        } catch (ExecutionException e) {
+        } catch (final ExecutionException e) {
             LOGGER.error("ExecutionException:", e);
         }
-        long end = System.currentTimeMillis();
+        final long end = System.currentTimeMillis();
         LOGGER.info("Queue drained after {} ms.", end - start);
         executor.shutdown();
         persistenceAccess.close();   // close disk channel

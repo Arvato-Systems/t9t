@@ -35,8 +35,6 @@ import de.jpaw.util.ApplicationException;
 /**
  * Implementation of {@linkplain ITextDataGenerator} which generates output data in JSON format.
  * The current implementation utilises Jackson library for JSON generation.
- *
- * @author LIEE001
  */
 @Dependent
 @Named("JSONJackson")
@@ -57,11 +55,12 @@ public class JSONJacksonDataGenerator extends AbstractFormatGenerator {
      * {@inheritDoc}
      */
     @Override
-    public void generateData(int recordNo, int mappedRecordNo, long recordId, String partitionKey, String recordKey, BonaPortable object) throws ApplicationException {
+    public void generateData(final int recordNo, final int mappedRecordNo, final long recordId, final String partitionKey, final String recordKey,
+      final BonaPortable object) {
 
         try {
             objectMapper.writer().writeValue(osw, object);
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             LOGGER.error("Failed to generate JSON data for output", ex);
             throw new T9tException(T9tIOException.OUTPUT_JSON_EXCEPTION, "Failed to generate JSON data");
         }

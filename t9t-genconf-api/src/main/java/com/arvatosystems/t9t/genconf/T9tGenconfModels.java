@@ -24,7 +24,7 @@ import com.arvatosystems.t9t.genconf.request.ConfigSearchRequest;
 public final class T9tGenconfModels implements IViewModelContainer {
 
     private static final CrudViewModel<ConfigDTO, FullTrackingWithVersion> GENERIC_CONFIG_VIEW_MODEL
-      = new CrudViewModel<ConfigDTO, FullTrackingWithVersion>(
+      = new CrudViewModel<>(
         ConfigDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         ConfigSearchRequest.BClass.INSTANCE,

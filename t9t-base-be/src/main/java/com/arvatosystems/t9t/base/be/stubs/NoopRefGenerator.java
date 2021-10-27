@@ -57,7 +57,7 @@ public class NoopRefGenerator implements IRefGenerator {
     }
 
     @Override
-    public long generateRef(int rttiOffset) {
+    public long generateRef(final int rttiOffset) {
         if ((rttiOffset < 0) || (rttiOffset >= OFFSET_BACKUP_LOCATION)) {
             throw new InvalidParameterException("Bad rtti offset: " + rttiOffset);
         }
@@ -65,7 +65,7 @@ public class NoopRefGenerator implements IRefGenerator {
     }
 
     @Override
-    public long generateUnscaledRef(int rttiOffset) {
+    public long generateUnscaledRef(final int rttiOffset) {
         int ind = 0;
         if ((rttiOffset >= 5000) && (rttiOffset < (5000 + NUM_SEQUENCES_UNSCALED))) {
             ind = rttiOffset - 5000;

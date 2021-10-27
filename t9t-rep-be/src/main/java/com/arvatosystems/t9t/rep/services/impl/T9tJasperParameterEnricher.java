@@ -38,12 +38,12 @@ public class T9tJasperParameterEnricher implements IJasperParameterEnricher {
     public static final String TIME_ZONE = "timeZone";
 
     @Override
-    public void enrichParameter(Map<String, Object> parameters, ReportParamsDTO reportParamsDTO,
-            Map<String, Object> outputSessionAdditionalParametersList,
-            OutputSessionParameters outputSessionParameters) {
+    public void enrichParameter(final Map<String, Object> parameters, final ReportParamsDTO reportParamsDTO,
+            final Map<String, Object> outputSessionAdditionalParametersList,
+            final OutputSessionParameters outputSessionParameters) {
 
         final RequestContext ctx = Jdp.getRequired(RequestContext.class);
-        Locale locale = resolveReportLocale(ctx);
+        final Locale locale = resolveReportLocale(ctx);
         parameters.put(JRParameter.REPORT_LOCALE, locale);
         parameters.put(LANGUAGE_CODE, locale.getLanguage());
 
@@ -55,9 +55,9 @@ public class T9tJasperParameterEnricher implements IJasperParameterEnricher {
         }
     }
 
-    protected Locale resolveReportLocale(RequestContext ctx) {
+    protected Locale resolveReportLocale(final RequestContext ctx) {
         Locale locale = null;
-        String selectedLanguageCode = ctx.internalHeaderParameters.getLanguageCode();
+        final String selectedLanguageCode = ctx.internalHeaderParameters.getLanguageCode();
 
         if (selectedLanguageCode != null) {
             locale = selectedLanguageCode.length() == 5

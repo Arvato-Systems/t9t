@@ -40,20 +40,20 @@ import de.jpaw.dp.Specializes;
 public class NavBarCreatorEE extends DefaultNavBarCreator implements INavBarCreator {
 
     @Override
-    public void createNavBar(ApplicationViewModel viewModel, Component container, NaviGroupingViewModel naviGroups) {
-        int groupCounts = naviGroups.getGroupCount();
-        Navbar navbar = new Navbar("horizontal");
+    public void createNavBar(final ApplicationViewModel viewModel, final Component container, final NaviGroupingViewModel naviGroups) {
+        final int groupCounts = naviGroups.getGroupCount();
+        final Navbar navbar = new Navbar("horizontal");
         navbar.setCollapsed(false);
         container.appendChild(navbar);
         createContextMenu(container);
 
-        Map<String, Nav> folders = new HashMap<>(100);
+        final Map<String, Nav> folders = new HashMap<>(100);
         for (int groupIndex = 0; groupIndex < groupCounts; groupIndex++) {
-            String groupId = naviGroups.getChild(groupIndex, 0).getFolderCategoryId();
+            final String groupId = naviGroups.getChild(groupIndex, 0).getFolderCategoryId();
             Nav mainNav = folders.get(groupId);
-            int childCounts = naviGroups.getChildCount(groupIndex);
+            final int childCounts = naviGroups.getChildCount(groupIndex);
             if (mainNav == null) {
-                String groupName = naviGroups.getGroup(groupIndex);
+                final String groupName = naviGroups.getGroup(groupIndex);
                 mainNav = new Nav();
                 mainNav.setLabel(groupName);
                 mainNav.addSclass("header-nav-submenu no-scrollbar ");
@@ -63,12 +63,12 @@ public class NavBarCreatorEE extends DefaultNavBarCreator implements INavBarCrea
             }
 
             for (int childIndex = 0; childIndex < childCounts; childIndex++) {
-                Navi navi = naviGroups.getChild(groupIndex, childIndex);
-                Nav currentNav = getOrCreateNavFolderIfNotExists(folders, navi.getCategoryId());
+                final Navi navi = naviGroups.getChild(groupIndex, childIndex);
+                final Nav currentNav = getOrCreateNavFolderIfNotExists(folders, navi.getCategoryId());
 
                 // Display grouped subtitle (non clickable)
                 if (subtitleShouldDisplay(naviGroups, groupIndex, childIndex)) {
-                    Navitem navitem = new Navitem();
+                    final Navitem navitem = new Navitem();
                     navitem.setLabel(navi.getSubcategory());
                     navitem.setDisabled(true);
                     navitem.setZclass("header-nav-subtitle");
@@ -78,7 +78,7 @@ public class NavBarCreatorEE extends DefaultNavBarCreator implements INavBarCrea
 
                 // Menu items
                 if (navi.isMenuItemVisible()) {
-                    Navitem navitem = new Navitem();
+                    final Navitem navitem = new Navitem();
                     navitem.setLabel(navi.getName());
                     // navitem.setSelected(selected == navi);
                     navitem.setAttribute("navi", navi);
@@ -99,9 +99,9 @@ public class NavBarCreatorEE extends DefaultNavBarCreator implements INavBarCrea
         }
     }
 
-    private final void createContextMenuOnEachMenu(Nav nav) {
+    private void createContextMenuOnEachMenu(final Nav nav) {
         nav.addEventListener(Events.ON_OPEN, ev -> {
-            for (Component comp2 : ev.getTarget().getChildren()) {
+            for (final Component comp2 : ev.getTarget().getChildren()) {
                 if (comp2 instanceof Menuitem) {
                     ((Navitem) comp2).setContext(CONTEXT_MENU_ID);
                 }
@@ -112,15 +112,15 @@ public class NavBarCreatorEE extends DefaultNavBarCreator implements INavBarCrea
     /**
      * Get existing folder, create if not existed.
      */
-    protected Nav getOrCreateNavFolderIfNotExists(Map<String, Nav> folders, String folderCategoryId) {
+    protected Nav getOrCreateNavFolderIfNotExists(final Map<String, Nav> folders, final String folderCategoryId) {
 
         Nav folder = folders.get(folderCategoryId);
 
         if (folder == null) {
             // get parent, create if not existed recursively
-            String parentFolderCategoryId = Navi.getCategoryIdBeforeLastDot(folderCategoryId);
-            String lastPartCategoryId = Navi.getCategoryIdAfterLastDot(folderCategoryId);
-            Nav parentNav = getOrCreateNavFolderIfNotExists(folders, parentFolderCategoryId);
+            final String parentFolderCategoryId = Navi.getCategoryIdBeforeLastDot(folderCategoryId);
+            final String lastPartCategoryId = Navi.getCategoryIdAfterLastDot(folderCategoryId);
+            final Nav parentNav = getOrCreateNavFolderIfNotExists(folders, parentFolderCategoryId);
 
             folder = new Nav(
                     getSubmenuFolderTranslated(ApplicationSession.get(), parentFolderCategoryId, lastPartCategoryId));

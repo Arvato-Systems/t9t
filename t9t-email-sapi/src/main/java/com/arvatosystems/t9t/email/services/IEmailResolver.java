@@ -21,4 +21,4 @@ import com.arvatosystems.t9t.email.EmailRef;
 
 import de.jpaw.bonaparte.refsw.RefResolver;
 
-public interface IEmailResolver extends RefResolver<EmailRef, EmailDTO, FullTrackingWithVersion> {}
+public interface IEmailResolver extends RefResolver<EmailRef, EmailDTO, FullTrackingWithVersion> { }

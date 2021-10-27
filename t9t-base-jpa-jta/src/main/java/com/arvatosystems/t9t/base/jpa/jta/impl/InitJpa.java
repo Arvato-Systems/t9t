@@ -29,29 +29,33 @@ import com.arvatosystems.t9t.init.InitContainers;
 import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Startup;
+import de.jpaw.dp.StartupOnly;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @Startup(12000)
-public class InitJpa {
-
+public class InitJpa implements StartupOnly {
     private static final Logger LOGGER = LoggerFactory.getLogger(InitJpa.class);
 
     @PersistenceContext(unitName = "t9t-DS")
-    public static EntityManager presetEntityManager;  // HAS TO be defined in scenarios inside a Java EE server
+    private EntityManager presetEntityManager;  // HAS TO be defined in scenarios inside a Java EE server
 
-    public static void onStartup() {
+    @Override
+    public void onStartup() {
         T9tServerConfiguration cfg = Jdp.getRequired(T9tServerConfiguration.class);
         LOGGER.info("Binding preset JPA EM for PU name {}", cfg.getPersistenceUnitName());
         Jdp.bindInstanceTo(presetEntityManager, EntityManager.class);
         Jdp.registerWithCustomProvider(PersistenceProviderJPA.class, new PersistenceProviderJPAProvider(presetEntityManager));
         // next lines are just for user info
         final Set<Class<?>> mcl = InitContainers.getClassesAnnotatedWith(MappedSuperclass.class);
-        for (Class<?> e : mcl)
+        for (Class<?> e : mcl) {
             LOGGER.info("Found mapped Superclass class {}", e.getCanonicalName());
+        }
 
         final Set<Class<?>> entities = InitContainers.getClassesAnnotatedWith(Entity.class);
-        for (Class<?> e : entities)
+        for (Class<?> e : entities) {
             LOGGER.info("Found entity class {}", e.getCanonicalName());
+        }
     }
 }

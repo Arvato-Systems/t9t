@@ -31,13 +31,14 @@ import com.arvatosystems.t9t.base.services.RequestContext;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ApplicationException;
 
-public class UserCrudAndSetPasswordRequestHandler extends AbstractCrudSurrogateKey42RequestHandler<UserRef, UserDTO, FullTrackingWithVersion, UserCrudAndSetPasswordRequest, UserEntity> {
+public class UserCrudAndSetPasswordRequestHandler extends AbstractCrudSurrogateKey42RequestHandler<UserRef, UserDTO,
+  FullTrackingWithVersion, UserCrudAndSetPasswordRequest, UserEntity> {
     protected final IUserEntityResolver resolver = Jdp.getRequired(IUserEntityResolver.class);
     protected final IUserDTOMapper mapper = Jdp.getRequired(IUserDTOMapper.class);
     protected final IPasswordSettingService passwordSettingService = Jdp.getRequired(IPasswordSettingService.class);
 
     @Override
-    public CrudSurrogateKeyResponse<UserDTO, FullTrackingWithVersion> execute(RequestContext ctx, final UserCrudAndSetPasswordRequest request) {
+    public CrudSurrogateKeyResponse<UserDTO, FullTrackingWithVersion> execute(final RequestContext ctx, final UserCrudAndSetPasswordRequest request) {
 
         // check for allowed subset of return codes
         switch (request.getCrud()) {
@@ -48,11 +49,11 @@ public class UserCrudAndSetPasswordRequestHandler extends AbstractCrudSurrogateK
         default:
             throw new ApplicationException(T9tException.INVALID_CRUD_COMMAND, "only CREATE, UPDATE and MERGE allowed here");
         }
-        CrudSurrogateKeyResponse<UserDTO, FullTrackingWithVersion> resp = super.execute(ctx, mapper, resolver, request);
+        final CrudSurrogateKeyResponse<UserDTO, FullTrackingWithVersion> resp = super.execute(ctx, mapper, resolver, request);
 
         if (resp.getReturnCode() == 0) {
             // perform the setting or update of the password
-            UserEntity userEntity = resolver.getEntityManager().find(UserEntity.class, resp.getKey());
+            final UserEntity userEntity = resolver.getEntityManager().find(UserEntity.class, resp.getKey());
             passwordSettingService.setPasswordForUser(ctx, userEntity, request.getPassword());
         }
         return resp;

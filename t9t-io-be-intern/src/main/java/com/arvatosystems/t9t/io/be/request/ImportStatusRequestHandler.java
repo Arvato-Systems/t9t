@@ -23,8 +23,8 @@ import com.arvatosystems.t9t.io.request.ImportStatusResponse;
 public class ImportStatusRequestHandler extends AbstractReadOnlyRequestHandler<ImportStatusRequest> {
 
     @Override
-    public ImportStatusResponse execute(RequestContext ctx, ImportStatusRequest rq) {
-        ImportStatusResponse resp = new ImportStatusResponse();
+    public ImportStatusResponse execute(final RequestContext ctx, final ImportStatusRequest rq) {
+        final ImportStatusResponse resp = new ImportStatusResponse();
         resp.setReturnCode(0);
         resp.setResponses(rq.getResponses());
         return resp;

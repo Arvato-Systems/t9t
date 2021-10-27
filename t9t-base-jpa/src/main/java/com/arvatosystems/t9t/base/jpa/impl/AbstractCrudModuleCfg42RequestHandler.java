@@ -49,8 +49,8 @@ public abstract class AbstractCrudModuleCfg42RequestHandler<
 
     // execute function of the interface description, but additional parameters
     // required in order to work around type erasure
-    public CrudModuleCfgResponse<DTO> execute(RequestContext ctx, IEntityMapper42<Long, DTO, FullTrackingWithVersion, ENTITY> mapper,
-            IResolverLongKey42<FullTrackingWithVersion, ENTITY> resolver, REQUEST crudRequest) {
+    public CrudModuleCfgResponse<DTO> execute(final RequestContext ctx, final IEntityMapper42<Long, DTO, FullTrackingWithVersion, ENTITY> mapper,
+            final IResolverLongKey42<FullTrackingWithVersion, ENTITY> resolver, final REQUEST crudRequest) {
 
         // as the key is empty, provide it if it was not provided by the caller, for convenience
         if (crudRequest.getCrud() != OperationType.CREATE && crudRequest.getKey() == null)
@@ -59,10 +59,10 @@ public abstract class AbstractCrudModuleCfg42RequestHandler<
         // fields are set as required
         validateParameters(crudRequest, crudRequest.getKey() == null);
 
-        CrudModuleCfgResponse<DTO> rs = new CrudModuleCfgResponse<DTO>();
+        final CrudModuleCfgResponse<DTO> rs = new CrudModuleCfgResponse<>();
         ENTITY result;
 
-        EntityManager entityManager = jpaContextProvider.get().getEntityManager(); // copy it as we need it several times
+        final EntityManager entityManager = jpaContextProvider.get().getEntityManager(); // copy it as we need it several times
 
         try {
             switch (crudRequest.getCrud()) {
@@ -121,19 +121,19 @@ public abstract class AbstractCrudModuleCfg42RequestHandler<
             executor.clearCache(resolver.getBaseJpaEntityClass().getSimpleName(), null);
             rs.setReturnCode(0);
             return rs;
-        } catch (T9tException e) {
+        } catch (final T9tException e) {
             // careful! Catching only ApplicationException masks standard T9tExceptions such as RECORD_INACTIVE or RECORD_NOT_FOUND!
             // We must return the original exception if we got a T9tException already!
             // Therefore this catch is essential!
             throw e;
-        } catch (ApplicationException e) {
+        } catch (final ApplicationException e) {
             throw new T9tException(T9tException.ENTITY_DATA_MAPPING_EXCEPTION, "Tracking columns: " + e.toString());
         }
     }
 
 
-    private boolean isExists(Long tenantRef, IResolverLongKey42<FullTrackingWithVersion, ENTITY> resolver) {
-        ENTITY entity = resolver.find(tenantRef);
+    private boolean isExists(final Long tenantRef, final IResolverLongKey42<FullTrackingWithVersion, ENTITY> resolver) {
+        final ENTITY entity = resolver.find(tenantRef);
         return entity != null;
     }
 }

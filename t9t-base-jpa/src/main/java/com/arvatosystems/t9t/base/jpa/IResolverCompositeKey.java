@@ -49,6 +49,6 @@ public interface IResolverCompositeKey<
      */
     ENTITY getEntityData(REF entityRef, boolean onlyActive);
 
-    /** Convert any REF to a KEY (if supported). */
-    public KEY refToKey(REF arg);
+    /** Converts any REF to a KEY (if supported). */
+    KEY refToKey(REF arg);
 }

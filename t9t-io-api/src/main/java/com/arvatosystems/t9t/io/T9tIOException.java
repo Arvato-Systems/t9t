@@ -18,9 +18,7 @@ package com.arvatosystems.t9t.io;
 import com.arvatosystems.t9t.base.T9tException;
 
 /**
- * exception class for all output module specific exceptions.
- *
- *
+ * Exception class for all output module specific exceptions.
  */
 public class T9tIOException extends T9tException {
     private static final long serialVersionUID = -8665896096651910L;
@@ -87,7 +85,7 @@ public class T9tIOException extends T9tException {
         codeToDescription.put(IMPORT_FINISHED_WITH_ERRORS,  "Data import finished - not all records successful");
 
         codeToDescription.put(OUTPUT_FILE_IS_DIRECTORY,     "Specified output file name is a directory");
-        codeToDescription.put(OUTPUT_FILE_PATH_NOT_ABSOLUTE,"Output file path is not absolute (required for security reasons)");
+        codeToDescription.put(OUTPUT_FILE_PATH_NOT_ABSOLUTE, "Output file path is not absolute (required for security reasons)");
         codeToDescription.put(OUTPUT_FILE_OPEN_EXCEPTION,   "Exception during open file");
 
         codeToDescription.put(NO_JAXB_CONTEXT_PATH,         "XML output: No Jaxb context path has been configured for this data sink");

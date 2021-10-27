@@ -24,10 +24,11 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Creates a HTTP Response with status and Payload
- * @author LUEC034
  */
-public class RestUtils {
+public final class RestUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(RestUtils.class);
+
+    private RestUtils() { }
 
     private static boolean representsFalse(final char x) {
         return x == '0' || x == 'n' || x == 'N';
@@ -61,7 +62,7 @@ public class RestUtils {
         return response.build();
     }
 
-    public static Response error(final Response.Status status) { // maybe extend for better error handling, i.e. parsing internal status codes to HTTP status codes.
+    public static Response error(final Response.Status status) {
         final Response.ResponseBuilder response = Response.status(status);
         return response.build();
     }

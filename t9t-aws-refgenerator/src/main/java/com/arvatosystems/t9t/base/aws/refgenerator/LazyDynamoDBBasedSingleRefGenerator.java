@@ -41,7 +41,7 @@ class LazyDynamoDBBasedSingleRefGenerator {
     private volatile int remainingCachedIds;
     private final int cacheSize;
     private final String counterKey;
-    private final Map<String,AttributeValue> keyMap;
+    private final Map<String, AttributeValue> keyMap;
 //    private final Map<String,AttributeValue> counterMap;
     private final DynamoDbClient client;
 
@@ -49,7 +49,7 @@ class LazyDynamoDBBasedSingleRefGenerator {
     private static final String COLUMN_NAME_KEY = "rtti";
     private static final String COLUMN_NAME_DATA = "counter";
 
-    public LazyDynamoDBBasedSingleRefGenerator(int index, DynamoDbClient client, int cacheSize) {
+    LazyDynamoDBBasedSingleRefGenerator(int index, DynamoDbClient client, int cacheSize) {
 
         lastProvidedValue = -1L;
         remainingCachedIds = 0;
@@ -89,7 +89,7 @@ class LazyDynamoDBBasedSingleRefGenerator {
             // use the current thread's EntityManager to request a new value
             // from the database, because then we do not need to synchronize
             // different threads requesting different values at the same time.
-            final Map<String,AttributeValueUpdate> updates = Collections.singletonMap(COLUMN_NAME_DATA, AttributeValueUpdate.builder()
+            final Map<String, AttributeValueUpdate> updates = Collections.singletonMap(COLUMN_NAME_DATA, AttributeValueUpdate.builder()
                     .value(AttributeValue.builder().n("1").build())
                     .action(AttributeAction.ADD)  // https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_UpdateItem.html
                     .build());
@@ -103,7 +103,7 @@ class LazyDynamoDBBasedSingleRefGenerator {
 
             try {
                 UpdateItemResponse result = client.updateItem(putReq);
-                Map<String,AttributeValue> attributes = result.attributes();
+                Map<String, AttributeValue> attributes = result.attributes();
                 if (attributes == null || attributes.isEmpty()) {
                     LOGGER.error("Did not receive any attributes");
                     throw new T9tException(T9tException.DYNAMODB_EXCEPTION, "No attributes returned");

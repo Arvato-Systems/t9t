@@ -52,7 +52,7 @@ public abstract class AbstractCamelProcessor {
         }
     }
 
-    private static synchronized void loadCamelConfig(String propsPath) {
+    private static synchronized void loadCamelConfig(final String propsPath) {
         if (camelPropsInitiated) {
             return;
         }
@@ -60,7 +60,7 @@ public abstract class AbstractCamelProcessor {
         LOGGER.info("Initialize camel config.");
         try (InputStream inputStream = new FileInputStream(propsPath)) {
             camelProps.load(inputStream);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LOGGER.error("Failed to read camel config from: {}", propsPath);
             LOGGER.error("Camel config load error.", e);
             throw new T9tException(T9tException.LOAD_CAMEL_CONFIG_ERROR);
@@ -80,7 +80,7 @@ public abstract class AbstractCamelProcessor {
         camelPropsInitiated = true;
     }
 
-    protected String getEndporintURI(String endpointTag) {
+    protected String getEndporintURI(final String endpointTag) {
         initIfRequired();
         return camelProps.getProperty(endpointTag);
     }

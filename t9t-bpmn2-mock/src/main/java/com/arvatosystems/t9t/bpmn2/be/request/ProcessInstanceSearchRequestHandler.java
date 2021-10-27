@@ -28,10 +28,10 @@ import com.arvatosystems.t9t.bpmn2.request.ProcessInstanceSearchRequest;
 public class ProcessInstanceSearchRequestHandler extends AbstractRequestHandler<ProcessInstanceSearchRequest> {
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, ProcessInstanceSearchRequest request) throws Exception {
+    public ServiceResponse execute(final RequestContext ctx, final ProcessInstanceSearchRequest request) throws Exception {
         final ReadAllResponse<ProcessInstanceDTO, FullTrackingWithVersion> response = new ReadAllResponse<>();
         response.setDataList(Collections.emptyList());
-        response.setNumResults(0l);
+        response.setNumResults(0L);
         return response;
     }
 }

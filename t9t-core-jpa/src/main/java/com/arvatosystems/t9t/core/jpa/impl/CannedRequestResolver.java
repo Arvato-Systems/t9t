@@ -36,7 +36,7 @@ public class CannedRequestResolver extends AbstractJpaResolver<CannedRequestRef,
     }
 
     @Override
-    public CannedRequestRef createKey(Long ref) {
+    public CannedRequestRef createKey(final Long ref) {
         return ref == null ? null : new CannedRequestRef(ref);
     }
 }

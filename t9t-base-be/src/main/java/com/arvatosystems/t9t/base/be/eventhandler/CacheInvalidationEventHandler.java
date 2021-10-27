@@ -38,11 +38,11 @@ public class CacheInvalidationEventHandler implements IEventHandler {
     protected final ICacheInvalidationRegistry registry = Jdp.getRequired(ICacheInvalidationRegistry.class);
 
     @Override
-    public int execute(RequestContext ctx, EventParameters eventData) {
+    public int execute(final RequestContext ctx, final EventParameters eventData) {
         if (eventData instanceof InvalidateCacheEvent) {
             // OK, query registry and invoke invalidator, if any exists
-            InvalidateCacheEvent ice = (InvalidateCacheEvent)eventData;
-            Consumer<BonaPortable> invalidator = registry.getInvalidator(ice.getPqon());
+            final InvalidateCacheEvent ice = (InvalidateCacheEvent)eventData;
+            final Consumer<BonaPortable> invalidator = registry.getInvalidator(ice.getPqon());
             if (invalidator != null) {
                 LOGGER.debug("Performing cache invalidation for {} with key {}", ice.getPqon(), ice.getKey());
                 invalidator.accept(ice.getKey());

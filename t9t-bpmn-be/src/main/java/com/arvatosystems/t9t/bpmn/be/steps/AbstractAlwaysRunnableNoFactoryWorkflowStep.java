@@ -27,7 +27,7 @@ public abstract class AbstractAlwaysRunnableNoFactoryWorkflowStep implements IWo
     }
 
     @Override
-    public WorkflowRunnableCode mayRun(Object data, Map<String, Object> parameters) {
+    public WorkflowRunnableCode mayRun(final Object data, final Map<String, Object> parameters) {
         return WorkflowRunnableCode.RUN;
     }
 }

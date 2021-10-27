@@ -44,10 +44,10 @@ public abstract class AbstractXMLMarshallerExt<R> implements IMarshallerExt<R> {
         unmarshalContext = null;
     }
 
-    protected AbstractXMLMarshallerExt(Class<?> responseClass) {
+    protected AbstractXMLMarshallerExt(final Class<?> responseClass) {
         try {
             unmarshalContext = JAXBContext.newInstance(responseClass);
-        } catch (JAXBException e) {
+        } catch (final JAXBException e) {
             LOGGER.error("JAXB error: cannot set response class to {}: {}", responseClass.getCanonicalName(), ExceptionUtil.causeChain(e));
             throw new RuntimeException(e);
         }
@@ -59,25 +59,25 @@ public abstract class AbstractXMLMarshallerExt<R> implements IMarshallerExt<R> {
     }
 
     @Override
-    public ByteArray marshal(BonaPortable obj) throws Exception {
-        Marshaller marshaller = jaxbContextProvider.getStandardJAXBContext().createMarshaller();
+    public ByteArray marshal(final BonaPortable obj) throws Exception {
+        final Marshaller marshaller = jaxbContextProvider.getStandardJAXBContext().createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        final ByteArrayOutputStream os = new ByteArrayOutputStream();
         marshaller.marshal(obj, os);
         return ByteArray.fromByteArrayOutputStream(os);
     }
 
     @Override
-    public BonaPortable unmarshal(ByteBuilder buffer) throws Exception {
+    public BonaPortable unmarshal(final ByteBuilder buffer) throws Exception {
         if (LOGGER.isTraceEnabled()) {
             LOGGER.trace("Received data\n{}\n", ByteUtil.dump(buffer.getBytes(), 64));
         }
         if (unmarshalContext == null)
             return null;   // cannot parse without a target object in XML
         try {
-            Unmarshaller unmarshaller = unmarshalContext.createUnmarshaller();
+            final Unmarshaller unmarshaller = unmarshalContext.createUnmarshaller();
             return (BonaPortable)unmarshaller.unmarshal(buffer.asByteArrayInputStream());
-        } catch (Exception e ) {
+        } catch (final Exception e) {
             LOGGER.error("Could not unmarshal message due to {}. Message was <{}>", ExceptionUtil.causeChain(e), buffer.toString());
             throw e;
         }

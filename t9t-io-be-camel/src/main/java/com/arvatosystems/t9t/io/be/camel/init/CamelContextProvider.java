@@ -63,13 +63,13 @@ public class CamelContextProvider implements StartupShutdown, Provider<CamelCont
         // AbstractExtensionCamelRouteBuilder
         // these should be static routes that are not configurable (like
         // FileRoute)
-        List<AbstractExtensionCamelRouteBuilder> classList = Jdp.getAll(AbstractExtensionCamelRouteBuilder.class);
+        final List<AbstractExtensionCamelRouteBuilder> classList = Jdp.getAll(AbstractExtensionCamelRouteBuilder.class);
         if (classList != null) {
-            for (AbstractExtensionCamelRouteBuilder clazz : classList) {
+            for (final AbstractExtensionCamelRouteBuilder clazz : classList) {
                 try {
                     LOGGER.info("Adding route: {}", clazz.getClass());
                     camelContext.addRoutes(clazz);
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     // in case of problems rather skip a single route instead of not initializing the context at all!
                     LOGGER.debug("There was a problem initializing route: {} due to ", clazz.getClass(), e);
                 }
@@ -83,14 +83,15 @@ public class CamelContextProvider implements StartupShutdown, Provider<CamelCont
             if (environment == null) {
                 environment = CamelService.DEFAULT_ENVIRONMENT;
             }
-            List<DataSinkDTO> dataSinkDTOList = iOutPersistenceAccess.getDataSinkDTOsForEnvironmentAndChannel(environment, CommunicationTargetChannelType.FILE);
+            final List<DataSinkDTO> dataSinkDTOList
+              = iOutPersistenceAccess.getDataSinkDTOsForEnvironmentAndChannel(environment, CommunicationTargetChannelType.FILE);
             LOGGER.info("Looking for Camel import routes for environment {}: {} routes found", environment, dataSinkDTOList.size());
-            for (DataSinkDTO dataSinkDTO : dataSinkDTOList) {
+            for (final DataSinkDTO dataSinkDTO : dataSinkDTOList) {
                 if (dataSinkDTO.getIsActive()) {
                     LOGGER.info("Starting Camel route {}", dataSinkDTO.getDataSinkId());
                     try {
                         camelService.addRoutes(dataSinkDTO);
-                    } catch (Exception e) {
+                    } catch (final Exception e) {
                         LOGGER.error("Could not add Camel route for {} due to {}", dataSinkDTO.getDataSinkId(), ExceptionUtil.causeChain(e));
                     }
                 } else {
@@ -99,11 +100,12 @@ public class CamelContextProvider implements StartupShutdown, Provider<CamelCont
             }
             camelContext.start();
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.error("CamelContext could not be started... ", e);
         }
         // Register listener to receive data sink changes
-        asyncProcessor.registerSubscriber(DataSinkChangedEvent.BClass.INSTANCE.getPqon(), Jdp.getRequired(CamelDataSinkChangeListener.class, "IOCamelDataSinkChange"));
+        asyncProcessor.registerSubscriber(DataSinkChangedEvent.BClass.INSTANCE.getPqon(),
+          Jdp.getRequired(CamelDataSinkChangeListener.class, "IOCamelDataSinkChange"));
     }
 
     @Override
@@ -119,7 +121,7 @@ public class CamelContextProvider implements StartupShutdown, Provider<CamelCont
             try {
                 camelContext.stop();
                 LOGGER.info("Camel context successfully shut down");
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 LOGGER.error("Exception while shutting down Camel context:", e);
                 // unfortunately we cannot do anything about it, but the system is shutting down anyway at this point
             }

@@ -61,19 +61,22 @@ import de.jpaw.util.ExceptionUtil;
 @Singleton
 public class T9tRestProcessor implements IT9tRestProcessor {
     private static final Logger LOGGER = LoggerFactory.getLogger(T9tRestProcessor.class);
-    private static final AtomicInteger counter = new AtomicInteger();
+    private static final AtomicInteger COUNTER = new AtomicInteger();
     private static IRemoteConnection connection = Jdp.getRequired(IRemoteConnection.class);
 
     @Override
-    public void performAsyncBackendRequest(HttpHeaders httpHeaders, AsyncResponse resp, RequestParameters requestParameters, String infoMsg) {
+    public void performAsyncBackendRequest(final HttpHeaders httpHeaders, final AsyncResponse resp, final RequestParameters requestParameters,
+      final String infoMsg) {
         performAsyncBackendRequest(httpHeaders, resp, requestParameters, infoMsg, ServiceResponse.class, sr -> createResultFromServiceResponse(sr));
     }
 
     @Override
-    public <T> void performAsyncBackendRequest(HttpHeaders httpHeaders, AsyncResponse resp, String infoMsg,
-            List<T> inputData, Function<T, RequestParameters> requestConverterSingle,
-            Function<List<T>, RequestParameters> requestConverterBatch) {
-        final String acceptHeader = httpHeaders.getHeaderString(HttpHeaders.ACCEPT);  // must evaluate it now, because httpHeaders is a proxy and no longer valid in the other thread
+    public <T> void performAsyncBackendRequest(final HttpHeaders httpHeaders, final AsyncResponse resp, final String infoMsg,
+            final List<T> inputData, final Function<T, RequestParameters> requestConverterSingle,
+            final Function<List<T>, RequestParameters> requestConverterBatch) {
+
+        // must evaluate httpHeaders now, because httpHeaders is a proxy and no longer valid in the other thread (when we process the response)
+        final String acceptHeader = determineResponseType(httpHeaders);
         if (inputData == null || inputData.isEmpty()) {
             LOGGER.error("{}: No input data provided", infoMsg);
             returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, createErrorResult(T9tException.MISSING_PARAMETER, null));  // missing parameter
@@ -83,30 +86,30 @@ public class T9tRestProcessor implements IT9tRestProcessor {
         if (inputData.size() == 1) {
             try {
                 rq = requestConverterSingle.apply(inputData.get(0));
-            } catch (ApplicationException e) {
+            } catch (final ApplicationException e) {
                 LOGGER.error("Exception during request conversion (single): {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
                 returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, createErrorResult(e.getErrorCode(), e.getMessage()));  // missing parameter
                 return;
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 LOGGER.error("Exception during request conversion (single): {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
-                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, createErrorResult(T9tException.GENERAL_EXCEPTION, e.getMessage()));  // missing parameter
+                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, createErrorResult(T9tException.GENERAL_EXCEPTION, e.getMessage()));
                 return;
             }
         } else {
             if (requestConverterBatch == null) {
                 LOGGER.error("{}: More than one record provided ({})", infoMsg, inputData.size());
-                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, createErrorResult(T9tException.TOO_MANY_RECORDS, null));  // too many parameters
+                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, createErrorResult(T9tException.TOO_MANY_RECORDS, null));
                 return;
             }
             try {
                 rq = requestConverterBatch.apply(inputData);
-            } catch (ApplicationException e) {
+            } catch (final ApplicationException e) {
                 LOGGER.error("Exception during request conversion (multi): {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
-                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, createErrorResult(e.getErrorCode(), e.getMessage()));  // missing parameter
+                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, createErrorResult(e.getErrorCode(), e.getMessage()));
                 return;
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 LOGGER.error("Exception during request conversion (multi): {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
-                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, createErrorResult(T9tException.GENERAL_EXCEPTION, e.getMessage()));  // missing parameter
+                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, createErrorResult(T9tException.GENERAL_EXCEPTION, e.getMessage()));
                 return;
             }
         }
@@ -114,7 +117,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
     }
 
     @Override
-    public GenericResult createResultFromServiceResponse(ServiceResponse response) {
+    public GenericResult createResultFromServiceResponse(final ServiceResponse response) {
         final GenericResult result = new GenericResult();
         result.setErrorDetails(response.getErrorDetails());
         result.setErrorMessage(response.getErrorMessage());
@@ -124,7 +127,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
     }
 
     @Override
-    public void returnAsyncResult(final String acceptHeader, AsyncResponse resp, Response.Status status, Object result) {
+    public void returnAsyncResult(final String acceptHeader, final AsyncResponse resp, final Response.Status status, final Object result) {
         final Response.ResponseBuilder response = Response.status(status);
         response.type(acceptHeader == null || acceptHeader.length() == 0 ? "application/json" : acceptHeader);
         response.entity(result);
@@ -132,7 +135,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
         resp.resume(responseObj);
     }
 
-    private static GenericResult createErrorResult(int returnCode, String errorDetails) {
+    private static GenericResult createErrorResult(final int returnCode, final String errorDetails) {
         final GenericResult result = new GenericResult();
         result.setErrorDetails(errorDetails);
         result.setErrorMessage(T9tException.codeToString(returnCode));
@@ -141,9 +144,9 @@ public class T9tRestProcessor implements IT9tRestProcessor {
         return result;
     }
 
-    private static Response.ResponseBuilder createResponseBuilder(int returncode) {
+    private static Response.ResponseBuilder createResponseBuilder(final int returncode) {
         // special case for already transformed http status codes:
-        if (returncode >= T9tException.HTTP_ERROR + 100 && returncode <= T9tException.HTTP_ERROR + 599) {  // 100..599 is the allowed range for http status codes
+        if (returncode >= T9tException.HTTP_ERROR + 100 && returncode <= T9tException.HTTP_ERROR + 599) { // 100..599 is the allowed range for http status codes
             return Response.status(returncode - T9tException.HTTP_ERROR);
         }
         // default: map via classification
@@ -200,9 +203,10 @@ public class T9tRestProcessor implements IT9tRestProcessor {
      * as well as a response generator.
      **/
     @Override
-    public <T extends ServiceResponse> void performAsyncBackendRequest(HttpHeaders httpHeaders, AsyncResponse resp,
-            RequestParameters requestParameters, String infoMsg, Class<T> backendResponseClass, Function<T, BonaPortable> responseMapper) {
-        final int invocationNo = counter.incrementAndGet();
+    public <T extends ServiceResponse> void performAsyncBackendRequest(final HttpHeaders httpHeaders, final AsyncResponse resp,
+      final RequestParameters requestParameters, final String infoMsg,
+      final Class<T> backendResponseClass, final Function<T, BonaPortable> responseMapper) {
+        final int invocationNo = COUNTER.incrementAndGet();
         final String authorizationHeader = httpHeaders.getHeaderString(HttpHeaders.AUTHORIZATION);
         final String acceptHeader = httpHeaders.getHeaderString(HttpHeaders.ACCEPT);
         LOGGER.debug("Starting {}: {}", invocationNo, infoMsg);
@@ -256,8 +260,10 @@ public class T9tRestProcessor implements IT9tRestProcessor {
     }
 
     @Override
-    public void performAsyncAuthBackendRequest(HttpHeaders httpHeaders, AsyncResponse resp, AuthenticationRequest requestParameters, Consumer<String> cacheUpdater) {
-        final String acceptHeader = httpHeaders.getHeaderString(HttpHeaders.ACCEPT);  // must evaluate it now, because httpHeaders is a proxy and no longer valid in the other thread
+    public void performAsyncAuthBackendRequest(final HttpHeaders httpHeaders, final AsyncResponse resp, final AuthenticationRequest requestParameters,
+      final Consumer<String> cacheUpdater) {
+        // must evaluate httpHeaders now, because httpHeaders is a proxy and no longer valid in the other thread
+        final String acceptHeader = determineResponseType(httpHeaders);
         final CompletableFuture<ServiceResponse> readResponse = connection.executeAuthenticationAsync(requestParameters);
         readResponse.thenAccept(sr -> {
             final Response.ResponseBuilder responseBuilder = createResponseBuilder(sr.getReturnCode());

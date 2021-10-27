@@ -32,13 +32,12 @@ public interface ICamelOutMessageTransformer {
      *            endpoint the message should be send to
      * @return the modified exchange
      */
-    public Exchange transformMessage(Exchange exchange, Endpoint endpoint);
+    Exchange transformMessage(Exchange exchange, Endpoint endpoint);
 
     /**
      * Type of endpoint this transformer is used for
      *
      * @return endpoint type
      */
-    public Class<? extends Endpoint> forType();
-
+    Class<? extends Endpoint> forType();
 }

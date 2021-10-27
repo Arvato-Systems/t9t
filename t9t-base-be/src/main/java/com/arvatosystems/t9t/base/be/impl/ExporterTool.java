@@ -39,15 +39,15 @@ public class ExporterTool<DTO extends BonaPortable, TRACKING extends TrackingBas
     protected final ISplittingOutputSessionProvider splittingOutputSessionProvider = Jdp.getRequired(ISplittingOutputSessionProvider.class);
 
     @Override
-    public Long storeAll(OutputSessionParameters op, List<DataWithTrackingW<DTO, TRACKING>> dataList, Integer maxRecords) throws Exception {
+    public Long storeAll(final OutputSessionParameters op, final List<DataWithTrackingW<DTO, TRACKING>> dataList, final Integer maxRecords) throws Exception {
         try (IOutputSession outputSession = splittingOutputSessionProvider.get(maxRecords)) {
-            Long sinkRef = outputSession.open(op);
+            final Long sinkRef = outputSession.open(op);
             if (outputSession.getUnwrapTracking(op.getUnwrapTracking())) {
-                for (DataWithTrackingW<DTO, TRACKING> data : dataList) {
+                for (final DataWithTrackingW<DTO, TRACKING> data : dataList) {
                     outputSession.store(data.getData());
                 }
             } else {
-                for (DataWithTrackingW<DTO, TRACKING> data : dataList) {
+                for (final DataWithTrackingW<DTO, TRACKING> data : dataList) {
                     outputSession.store(data);
                 }
             }
@@ -59,7 +59,7 @@ public class ExporterTool<DTO extends BonaPortable, TRACKING extends TrackingBas
     @Override
     public ReadAllResponse<DTO, TRACKING> returnOrExport(
       final List<DataWithTrackingW<DTO, TRACKING>> dataList, final OutputSessionParameters op) throws Exception {
-        final ReadAllResponse<DTO, TRACKING> resp = new ReadAllResponse<DTO, TRACKING>();
+        final ReadAllResponse<DTO, TRACKING> resp = new ReadAllResponse<>();
         // if a searchOutputTarget has been defined, push the data into it, otherwise return the ReadAllResponse
         if (op == null) {
             resp.setDataList(dataList);
@@ -73,7 +73,7 @@ public class ExporterTool<DTO extends BonaPortable, TRACKING extends TrackingBas
     }
 
     @Override
-    public <X> List<X> cut(List<X> dataList, int offset, int limit) {
+    public <X> List<X> cut(final List<X> dataList, final int offset, final int limit) {
         if (offset == 0 && limit == 0)
             return dataList;
         final int len = dataList.size();

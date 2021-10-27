@@ -28,12 +28,14 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Startup;
+import de.jpaw.dp.StartupOnly;
 
 @Startup(12033)
-public class InitJdbc {
+public class InitJdbc implements StartupOnly {
     private static final Logger LOGGER = LoggerFactory.getLogger(InitJdbc.class);
 
-    public static void onStartup() throws Exception {
+    @Override
+    public void onStartup() {
         final T9tServerConfiguration cfg = Jdp.getRequired(T9tServerConfiguration.class);
         final RelationalDatabaseConfiguration db2cfg = cfg.getSecondaryDatabaseConfig();
         if (db2cfg == null) {
@@ -48,7 +50,7 @@ public class InitJdbc {
 
             if (db2cfg.getZ() != null && !db2cfg.getZ().isEmpty()) {
                 // construct some additional data source properties
-                for (String s: db2cfg.getZ()) {
+                for (final String s: db2cfg.getZ()) {
                     final String[] kvp = s.split("=");
                     if (kvp.length == 2) {
                         final String key = kvp[0].trim();

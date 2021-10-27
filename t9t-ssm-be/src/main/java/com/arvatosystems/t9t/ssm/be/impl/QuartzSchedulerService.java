@@ -16,12 +16,12 @@
 package com.arvatosystems.t9t.ssm.be.impl;
 
 import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import java.time.LocalDateTime;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
 import org.quartz.DateBuilder;
@@ -75,30 +75,36 @@ public class QuartzSchedulerService implements ISchedulerService {
     protected final Scheduler scheduler = Jdp.getRequired(Scheduler.class);
     protected final Provider<RequestContext> ctxProvider = Jdp.getProvider(RequestContext.class);
 
-    private final List<SchedulerSetupRecurrenceType> DAILY_OR_LESS_FREQ = Arrays.asList(SchedulerSetupRecurrenceType.DAILY,
+    private static final List<SchedulerSetupRecurrenceType> DAILY_OR_LESS_FREQ = Arrays.asList(SchedulerSetupRecurrenceType.DAILY,
             SchedulerSetupRecurrenceType.WEEKLY, SchedulerSetupRecurrenceType.MONTHLY, SchedulerSetupRecurrenceType.YEARLY);
 
-    private static final String CRON_REGEX_PATTERN = "(\\*|\\d{0,2}([-,]\\d{0,2})*(/\\d{0,2})?)\\s(\\*|\\d{0,2}([-,]\\d{0,2})*(/\\d{0,2})?)\\s(\\*|\\d{0,2}([-,]\\d{0,2})*(/\\d{0,2})?)\\s(\\*|\\d{0,2}([-,]\\d{0,2})*(/\\d{0,2})?|\\?)\\s(\\*|\\d{0,2}([-,]\\d{0,2})*(/\\d{0,2}))\\s(\\*|\\d{0,2}([-,]\\d{0,2})*(/\\d{0,2})?|\\?)(\\s(\\*|\\d{4}([-,]\\d{4})*))?";
+    private static final String CRON_REGEX_PATTERN
+      = "(\\*|\\d{0,2}([-,]\\d{0,2})*(/\\d{0,2})?)\\s(\\*|\\d{0,2}([-,]\\d{0,2})*"
+      + "(/\\d{0,2})?)\\s(\\*|\\d{0,2}([-,]\\d{0,2})*"
+      + "(/\\d{0,2})?)\\s(\\*|\\d{0,2}([-,]\\d{0,2})*"
+      + "(/\\d{0,2})?|\\?)\\s(\\*|\\d{0,2}([-,]\\d{0,2})*"
+      + "(/\\d{0,2}))\\s(\\*|\\d{0,2}([-,]\\d{0,2})*"
+      + "(/\\d{0,2})?|\\?)(\\s(\\*|\\d{4}([-,]\\d{4})*))?";
 
     /** returns the token (null safe) */
-    private String getToken(SchedulerConcurrencyType t) {
+    private String getToken(final SchedulerConcurrencyType t) {
         return t == null ? null : t.getToken();
     }
 
     @Override
-    public void createScheduledJob(SchedulerSetupDTO setup) {
+    public void createScheduledJob(final SchedulerSetupDTO setup) {
         final CannedRequestRef rqRef = setup.getRequest();
         final CannedRequestDTO requestDTO = rqRef instanceof CannedRequestDTO ? (CannedRequestDTO)rqRef : rqResolver.getDTO(rqRef);
 
         // convert the request invocation into a String
-        String serializedRequest = StringBuilderComposer.marshal(StaticMeta.OUTER_BONAPORTABLE, requestDTO.getRequest());
+        final String serializedRequest = StringBuilderComposer.marshal(StaticMeta.OUTER_BONAPORTABLE, requestDTO.getRequest());
 
         try {
             final RequestContext ctx = ctxProvider.get();
             LOGGER.info("Creating scheduled job {}.{}, triggerDescription={}.", ctx.tenantId, setup.getSchedulerId(), setup);
 
-            JobDetail jobDetail = JobBuilder.newJob(PerformScheduledJob.class).withIdentity(setup.getSchedulerId(), ctx.tenantId).build();
-            JobDataMap m = jobDetail.getJobDataMap();
+            final JobDetail jobDetail = JobBuilder.newJob(PerformScheduledJob.class).withIdentity(setup.getSchedulerId(), ctx.tenantId).build();
+            final JobDataMap m = jobDetail.getJobDataMap();
             m.put(DM_TENANT_REF, ctx.tenantRef);
             m.put(DM_SETUP_REF,  setup.getObjectRef());
             m.put(DM_API_KEY,    setup.getApiKey().toString());
@@ -108,19 +114,19 @@ public class QuartzSchedulerService implements ISchedulerService {
             // m.put(DM_CONC_TYPE2, getToken(setup.getConcurrencyTypeStale())); // not needed, if old jobs exist, a request handler will be invoked.
             m.put(DM_TIME_LIMIT, setup.getTimeLimit() == null ? NO_TIME_LIMIT    : setup.getTimeLimit());
             m.put(DM_TIME_LIMIT, setup.getRunOnNode() == null ? RUN_ON_ALL_NODES : setup.getRunOnNode());
-            Trigger trigger = getTrigger(setup);
+            final Trigger trigger = getTrigger(setup);
             scheduler.scheduleJob(jobDetail, trigger);
 
             LOGGER.info("Scheduled job {}.{}. Next execution will be at: {}", ctx.tenantId, setup.getSchedulerId(), trigger.getFireTimeAfter(null));
-        } catch (Exception underlyingException) {
-            String message = "Failed to create job with description=" + setup.toString();
+        } catch (final Exception underlyingException) {
+            final String message = "Failed to create job with description=" + setup.toString();
             LOGGER.error(message + " Caught exception: ", underlyingException);
             throw new T9tException(T9tSsmException.SCHEDULER_CREATE_JOB_EXCEPTION, message, underlyingException);
         }
     }
 
     @Override
-    public void updateScheduledJob(SchedulerSetupDTO oldSetup, SchedulerSetupDTO setup) {
+    public void updateScheduledJob(final SchedulerSetupDTO oldSetup, final SchedulerSetupDTO setup) {
         try {
             final RequestContext ctx = ctxProvider.get();
             LOGGER.info("Updating scheduled job {}.{} to triggerDescription={}.", ctx.tenantId, setup.getSchedulerId(), setup);
@@ -132,7 +138,8 @@ public class QuartzSchedulerService implements ISchedulerService {
                 final Trigger trigger = getTrigger(setup);
                 final Date date = scheduler.rescheduleJob(trigger.getKey(), trigger);
                 if (date == null) {
-                    LOGGER.error("Tried to reschedule job {}.{}, but job was not found! Trying to create a new job instead.", ctx.tenantId, setup.getSchedulerId());
+                    LOGGER.error("Tried to reschedule job {}.{}, but job was not found! Trying to create a new job instead.",
+                      ctx.tenantId, setup.getSchedulerId());
                     createScheduledJob(setup);
                 } else {
                     LOGGER.info("Rescheduled job {}.{}. Next execution will be at: {}", ctx.tenantId, setup.getSchedulerId(), trigger.getFireTimeAfter(null));
@@ -145,7 +152,7 @@ public class QuartzSchedulerService implements ISchedulerService {
         }
     }
 
-    protected boolean needsNewJobMap(SchedulerSetupDTO oldSetup, SchedulerSetupDTO setup) {
+    protected boolean needsNewJobMap(final SchedulerSetupDTO oldSetup, final SchedulerSetupDTO setup) {
         if (!oldSetup.getRequest().equals(setup.getRequest())) {
             LOGGER.debug("Request has changed - replacing job");
             return true;
@@ -162,33 +169,33 @@ public class QuartzSchedulerService implements ISchedulerService {
     }
 
     @Override
-    public void removeScheduledJob(String schedulerId) {
+    public void removeScheduledJob(final String schedulerId) {
         final RequestContext ctx = ctxProvider.get();
         try {
             LOGGER.info("Removing scheduled job {}.{}.", ctx.tenantId, schedulerId);
             final JobKey jobKey = new JobKey(schedulerId, ctx.tenantId);
-            boolean result = scheduler.deleteJob(jobKey);
+            final boolean result = scheduler.deleteJob(jobKey);
             if (!result) {
                 LOGGER.error("Tried to remove scheduled job {}.{}, but job was not found!", ctx.tenantId, schedulerId);
             } else {
                 LOGGER.info("Deleted job {}.{}.", ctx.tenantId, schedulerId);
             }
-        } catch (Exception underlyingException) {
-            String message = ctx.tenantId + "." + schedulerId;
+        } catch (final Exception underlyingException) {
+            final String message = ctx.tenantId + "." + schedulerId;
             LOGGER.error("Failed to delete scheduled job {}", message, underlyingException);
             throw new T9tException(T9tSsmException.SCHEDULER_UPDATE_JOB_EXCEPTION, message, underlyingException);
         }
     }
 
 
-    protected Trigger getTrigger(SchedulerSetupDTO setup) throws ParseException {
+    protected Trigger getTrigger(final SchedulerSetupDTO setup) throws ParseException {
 
-        RequestContext ctx = ctxProvider.get();
+        final RequestContext ctx = ctxProvider.get();
         // Do the common work here (identity + start + end)
-        TriggerBuilder<Trigger> builder = TriggerBuilder.newTrigger().withIdentity(setup.getSchedulerId(), ctx.tenantId);
+        final TriggerBuilder<Trigger> builder = TriggerBuilder.newTrigger().withIdentity(setup.getSchedulerId(), ctx.tenantId);
         if (setup.getValidFrom() != null) {
-            Date startAt = java.sql.Timestamp.valueOf(setup.getValidFrom());
-            Date now = new Date();
+            final Date startAt = java.sql.Timestamp.valueOf(setup.getValidFrom());
+            final Date now = new Date();
             if (startAt.compareTo(now) > 0) {
                 builder.startAt(startAt);
             } else {
@@ -208,7 +215,7 @@ public class QuartzSchedulerService implements ISchedulerService {
      *            see method description for details.
      */
     // override this in order to add additional trigger types.
-    protected void addSchedule(TriggerBuilder<Trigger> builder, final SchedulerSetupDTO setup) throws ParseException {
+    protected void addSchedule(final TriggerBuilder<Trigger> builder, final SchedulerSetupDTO setup) throws ParseException {
         // Handle the different trigger cases
 
         if (setup.getRecurrencyType() == SchedulerSetupRecurrenceType.FAST) {
@@ -224,8 +231,8 @@ public class QuartzSchedulerService implements ISchedulerService {
         }
     }
 
-    private StringBuilder getHourlyOrMoreOftenHour(SchedulerSetupDTO setup) {
-        StringBuilder hour = new StringBuilder();
+    private StringBuilder getHourlyOrMoreOftenHour(final SchedulerSetupDTO setup) {
+        final StringBuilder hour = new StringBuilder();
 
         if (setup.getStartHour() == null && setup.getEndHour() == null) {
             return hour.append("*");
@@ -250,7 +257,7 @@ public class QuartzSchedulerService implements ISchedulerService {
 
     // override this in order to add additional trigger types.
     @Override
-    public String determineCronExpression(SchedulerSetupDTO setup) {
+    public String determineCronExpression(final SchedulerSetupDTO setup) {
         int hr  = 0;
         int min = 0;
         int sec = 0;
@@ -278,7 +285,7 @@ public class QuartzSchedulerService implements ISchedulerService {
                         "intervalOffset should be < intervalMinutes.");
             }
 
-            String secondly = String.format("%s * %s ? * *",
+            final String secondly = String.format("%s * %s ? * *",
                     getIntervalString(setup.getIntervalMinutes(), setup.getIntervalOffset()),
                     getHourlyOrMoreOftenHour(setup).toString());
             LOGGER.debug("Determined cron expression='{}' for type=SECONDLY", secondly);
@@ -299,17 +306,17 @@ public class QuartzSchedulerService implements ISchedulerService {
                 secondOffset = String.valueOf(setup.getIntervalOffset());
             } else if (setup.getIntervalMinutes() != null && setup.getIntervalMinutes() > 1) {
                 validateByDateBuilder("MINUTE", setup.getIntervalMinutes());
-                minute = String.format("%s/%s", setup.getIntervalOffset() == null? 0 : setup.getIntervalOffset(), setup.getIntervalMinutes());
+                minute = String.format("%s/%s", setup.getIntervalOffset() == null ? 0 : setup.getIntervalOffset(), setup.getIntervalMinutes());
             }
 
-            String minutely = String.format("%s %s %s ? * *", secondOffset, minute, getHourlyOrMoreOftenHour(setup).toString());
+            final String minutely = String.format("%s %s %s ? * *", secondOffset, minute, getHourlyOrMoreOftenHour(setup).toString());
             LOGGER.debug("Determined cron expression='{}' for type=MINUTELY", minutely);
             return minutely;
 
         case HOURLY:
             if (setup.getExecutionTime() != null && setup.getRepeatCount() != null && setup.getIntervalMilliseconds() != null) {
                 throw new T9tException(T9tSsmException.IRRELEVANT_SCHEDULER_PARAM_ERR,
-                        "For HOURLY recurrencyType, only startTime(optional), endTime(optional), intervalMinutes(interval) and intervalOffset(offset) should be set.");
+                 "For HOURLY recurrencyType, only startTime(optional), endTime(optional), intervalMinutes(interval) and intervalOffset(offset) should be set.");
             }
 
             StringBuilder hour = getHourlyOrMoreOftenHour(setup);
@@ -330,12 +337,13 @@ public class QuartzSchedulerService implements ISchedulerService {
                 min = setup.getIntervalOffset();
             }
 
-            String hourly = String.format("0 %s %s ? * *", min, hour.toString());
+            final String hourly = String.format("0 %s %s ? * *", min, hour.toString());
             LOGGER.debug("Determined cron expression='{}' for type=HOURLY, passed hour={}, interval={}", hourly, hour.toString(), setup.getIntervalOffset());
             return hourly;
 
         case DAILY:
-            if (setup.getEndHour() != null || setup.getStartHour() != null || setup.getIntervalMilliseconds() != null || (setup.getSetOfWeekdays() != null && !setup.getSetOfWeekdays().isEmpty())) {
+            if (setup.getEndHour() != null || setup.getStartHour() != null || setup.getIntervalMilliseconds() != null
+              || (setup.getSetOfWeekdays() != null && !setup.getSetOfWeekdays().isEmpty())) {
                 throw new T9tException(T9tSsmException.IRRELEVANT_SCHEDULER_PARAM_ERR,
                         "For DAILY reccurencyType, only executionTime should be set.");
             }
@@ -349,7 +357,7 @@ public class QuartzSchedulerService implements ISchedulerService {
             if (setup.getIntervalMinutes() != null)
                 dayStr = "1/" + setup.getIntervalMinutes();
 
-            String daily = String.format("%s %s %s %s * ?", sec, min, hr, dayStr);
+            final String daily = String.format("%s %s %s %s * ?", sec, min, hr, dayStr);
             LOGGER.debug("Determined cron expression='{}' for type=DAILY, executionTime={}", daily, setup.getExecutionTime());
             return daily;
 
@@ -359,7 +367,8 @@ public class QuartzSchedulerService implements ISchedulerService {
                         "For WEEKLY recurrencyType, only execution time and either of setOfWeekdays or interval are relevant.");
             }
 
-            if ((setup.getSetOfWeekdays() != null && !setup.getSetOfWeekdays().isEmpty()) && (setup.getIntervalMinutes() != null || setup.getIntervalOffset() != null)) {
+            if ((setup.getSetOfWeekdays() != null && !setup.getSetOfWeekdays().isEmpty())
+              && (setup.getIntervalMinutes() != null || setup.getIntervalOffset() != null)) {
                 throw new T9tException(T9tSsmException.SCHEDULE_SETUP_PARAM_VALIDATION_ERR,
                         "For reccurencyType WEEKLY, if setOfWeekdays is set, intervalMinutes and intervalOffset shouldn't be set.");
             }
@@ -370,16 +379,16 @@ public class QuartzSchedulerService implements ISchedulerService {
                 return determineCronExpression(setup);
             }
 
-            Integer [] days = new Integer[setup.getSetOfWeekdays().size()];
+            final Integer[] days = new Integer[setup.getSetOfWeekdays().size()];
             int i = 0;
-            for (SchedulerSetupRecurrenceWeekdayTypeEnum day : setup.getSetOfWeekdays()) {
+            for (final SchedulerSetupRecurrenceWeekdayTypeEnum day : setup.getSetOfWeekdays()) {
                 if (day == SchedulerSetupRecurrenceWeekdayTypeEnum.SUNDAY)
                     days[i++] = 1;
                 else
                     days[i++] = day.ordinal() + 2;
             }
-            CronTrigger mutableTrigger = (CronTrigger) CronScheduleBuilder.atHourAndMinuteOnGivenDaysOfWeek(hr, min, days).build();
-            String result = mutableTrigger.getCronExpression();
+            final CronTrigger mutableTrigger = (CronTrigger) CronScheduleBuilder.atHourAndMinuteOnGivenDaysOfWeek(hr, min, days).build();
+            final String result = mutableTrigger.getCronExpression();
 
             LOGGER.debug("Determined cron expression='{}' for type=WEEKLY, hourOfDay={}, minuteOfHour={}, dayOfWeek={}.", result, hr, min, days);
             return result;
@@ -395,18 +404,18 @@ public class QuartzSchedulerService implements ISchedulerService {
                         "For MONTHLY recurrencyType, executionTime can't be null.");
             }
 
-            if (setup.getValidFrom() == null){
+            if (setup.getValidFrom() == null) {
                 throw new T9tException(T9tSsmException.SCHEDULE_VALID_FROM_NOT_PROVIDED,
                         "Valid From Date is missing when setup Monthly Schedule.");
             }
 
-            String dayOfMonth = String.valueOf(setup.getValidFrom().getDayOfMonth());
+            final String dayOfMonth = String.valueOf(setup.getValidFrom().getDayOfMonth());
 
             String month = "*";
             if (setup.getIntervalMinutes() != null)
                 month = String.format("1/%s", setup.getIntervalMinutes());
 
-            String monthly = String.format("%d %d %d %s %s ?", sec, min, hr, dayOfMonth, month);
+            final String monthly = String.format("%d %d %d %s %s ?", sec, min, hr, dayOfMonth, month);
             LOGGER.debug("Determined cron expression='{}' for type=MONTHLY, hourOfDay={}, minuteOfHour={}, dayOfMonth={}.", monthly, hr, min, month);
             return monthly;
         }
@@ -420,14 +429,14 @@ public class QuartzSchedulerService implements ISchedulerService {
                 throw new T9tException(T9tSsmException.REQUIRED_SCHEDULER_PARAM_MISSING,
                         "For MONTHLY recurrencyType, executionTime can't be null.");
             }
-            if (setup.getValidFrom() == null){
+            if (setup.getValidFrom() == null) {
                 throw new T9tException(T9tSsmException.SCHEDULE_VALID_FROM_NOT_PROVIDED,
                         "Valid From Date is missing when setup Yearly Schedule.");
             }
 
-            LocalDateTime startDate = setup.getValidFrom();
-            int monthOfYear = startDate.getMonthValue();
-            int dayOfMonth = startDate.getDayOfMonth();
+            final LocalDateTime startDate = setup.getValidFrom();
+            final int monthOfYear = startDate.getMonthValue();
+            final int dayOfMonth = startDate.getDayOfMonth();
 
             String year = "*";
             if (setup.getValidTo() != null) {
@@ -436,8 +445,9 @@ public class QuartzSchedulerService implements ISchedulerService {
 
             validateByDateBuilder("MONTH", monthOfYear);
             validateByDateBuilder("DAYOFMONTH", dayOfMonth);
-            String result = String.format("%d %d %d %d %d ? %s", sec, min, hr, dayOfMonth, monthOfYear, year);
-            LOGGER.debug("Determined cron expression='{}' for type=YEARLY, hourOfDay={}, minuteOfHour={}, dayOfMonth={}, monthOfYear={}.", result, hr, min, dayOfMonth, monthOfYear);
+            final String result = String.format("%d %d %d %d %d ? %s", sec, min, hr, dayOfMonth, monthOfYear, year);
+            LOGGER.debug("Determined cron expression='{}' for type=YEARLY, hourOfDay={}, minuteOfHour={}, dayOfMonth={}, monthOfYear={}.",
+              result, hr, min, dayOfMonth, monthOfYear);
             return result;
         }
 
@@ -459,13 +469,13 @@ public class QuartzSchedulerService implements ISchedulerService {
 
         default:
             // Make sure we don't miss any value here
-            String message = "Unknown Enum value for SchedulerSetupRecurrenceTypeEnum. Found " + setup.getRecurrencyType() + ". This type was not considered.";
+            final String message = "Unknown Enum value for SchedulerSetupRecurrenceTypeEnum. Found " + setup.getRecurrencyType();
             throw new T9tException(T9tException.NOT_YET_IMPLEMENTED, message);
         }
     }
 
 
-    private String getIntervalString(Integer interval, Integer intervalOffset) {
+    private String getIntervalString(final Integer interval, final Integer intervalOffset) {
         if (interval == null || interval == 0 || interval == 1) {
             return "*";
         } else {
@@ -480,7 +490,7 @@ public class QuartzSchedulerService implements ISchedulerService {
      * @param type
      * @param value
      */
-    private void validateByDateBuilder(String type, int value) {
+    private void validateByDateBuilder(final String type, final int value) {
         try {
             switch (type) {
             case "SECOND":
@@ -501,7 +511,7 @@ public class QuartzSchedulerService implements ISchedulerService {
             default:
                 throw new T9tException(T9tException.GENERAL_EXCEPTION_CENTRAL);
             }
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             throw new T9tException(T9tSsmException.SCHEDULE_SETUP_INTERVAL_VALIDATION_ERR, e.getMessage());
         }
     }

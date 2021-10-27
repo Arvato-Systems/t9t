@@ -32,7 +32,7 @@ public class LoggerEventHandler implements IEventHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(LoggerEventHandler.class);
 
     @Override
-    public int execute(RequestContext ctx, EventParameters eventData) {
+    public int execute(final RequestContext ctx, final EventParameters eventData) {
         LOGGER.info("Event data is {}", ToStringHelper.toStringML(eventData));
         return 0;
     }

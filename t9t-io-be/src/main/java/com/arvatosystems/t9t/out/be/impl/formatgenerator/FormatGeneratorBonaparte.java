@@ -22,7 +22,6 @@ import de.jpaw.bonaparte.core.ByteArrayComposer;
 import de.jpaw.bonaparte.core.MessageComposer;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Named;
-import de.jpaw.util.ApplicationException;
 
 @Dependent
 @Named("BONAPARTE")
@@ -36,7 +35,8 @@ public class FormatGeneratorBonaparte extends FoldableFormatGenerator<RuntimeExc
     }
 
     @Override
-    public void generateData(int recordNo, int mappedRecordNo, long recordId, String partitionKey, String recordKey, BonaPortable record) throws IOException, ApplicationException {
+    public void generateData(final int recordNo, final int mappedRecordNo, final long recordId, final String partitionKey, final String recordKey,
+      final BonaPortable record) throws IOException {
         bac.reset();
         foldingComposer.writeRecord(record);
         outputResource.write(partitionKey, recordKey, bac.getBuffer(), 0, bac.getLength(), true);

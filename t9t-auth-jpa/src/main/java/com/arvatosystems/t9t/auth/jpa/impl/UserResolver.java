@@ -38,12 +38,12 @@ public class UserResolver extends AbstractJpaResolver<UserRef, UserDTO, FullTrac
     }
 
     @Override
-    protected TypedQuery<UserEntity> createQuery(EntityManager em) {
+    protected TypedQuery<UserEntity> createQuery(final EntityManager em) {
         return em.createQuery("SELECT e FROM UserEntity e", UserEntity.class);
     }
 
     @Override
-    public UserRef createKey(Long ref) {
+    public UserRef createKey(final Long ref) {
         return ref == null ? null : new UserRef(ref);
     }
 }

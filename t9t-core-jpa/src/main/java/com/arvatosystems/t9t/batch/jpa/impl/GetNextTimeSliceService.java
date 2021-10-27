@@ -16,6 +16,7 @@
 package com.arvatosystems.t9t.batch.jpa.impl;
 
 import java.time.Instant;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +39,8 @@ public class GetNextTimeSliceService implements IGetNextTimeSliceService {
     protected final ISliceTrackingEntityResolver resolver = Jdp.getRequired(ISliceTrackingEntityResolver.class);
 
     @Override
-    public SliceTrackingInterval getNextTimeSlice(RequestContext ctx, String dataSinkId, String id, Instant overrideAsOf, Long sinkRef) {
+    public SliceTrackingInterval getNextTimeSlice(final RequestContext ctx, final String dataSinkId, final String id, final Instant overrideAsOf,
+      final Long sinkRef) {
         final Instant endInstantRoundedDown = ctx.executionStart.minusMillis(ctx.executionStart.toEpochMilli() % 1000L);
 
         final SliceTrackingInterval result = new SliceTrackingInterval();
@@ -68,7 +70,7 @@ public class GetNextTimeSliceService implements IGetNextTimeSliceService {
     }
 
     @Override
-    public SliceTrackingInterval previewNextTimeSlice(RequestContext ctx, String dataSinkId, String id) {
+    public SliceTrackingInterval previewNextTimeSlice(final RequestContext ctx, final String dataSinkId, final String id) {
         final Instant endInstantRoundedDown = ctx.executionStart.minusMillis(ctx.executionStart.toEpochMilli() % 1000L);
         final SliceTrackingInterval result = new SliceTrackingInterval();
         final SliceTrackingEntity slice = resolver.findByDataSinkIdAndId(false, dataSinkId, id);

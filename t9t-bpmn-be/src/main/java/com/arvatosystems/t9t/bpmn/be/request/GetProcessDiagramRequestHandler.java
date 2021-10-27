@@ -29,10 +29,10 @@ import com.arvatosystems.t9t.bpmn.services.IBPMService;
 
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ByteArray;
+import de.jpaw.util.ExceptionUtil;
 
 /**
  * Implementation {@linkplain IRequestHandler} which handles {@linkplain GetProcessDiagramRequest}.
- * @author LIEE001
  */
 
 public class GetProcessDiagramRequestHandler extends AbstractRequestHandler<GetProcessDiagramRequest> {
@@ -56,11 +56,9 @@ public class GetProcessDiagramRequestHandler extends AbstractRequestHandler<GetP
             response.setReturnCode(0);
             return response;
         } catch (final T9tBPMException ex) {
-            LOGGER.error(String.format("Failed to get process diagrams (tenantId: %s, userId:%s, processDefinitionRef: %s).",
-                    requestCtx.tenantId, requestCtx.userId, request.getProcessDefinitionRef()), ex);
-
+            LOGGER.error("Failed to get process diagrams (tenantId: {}, userId: {}, processDefinitionRef: {}). {}",
+                requestCtx.tenantId, requestCtx.userId, request.getProcessDefinitionRef(), ExceptionUtil.causeChain(ex));
             throw ex;
         }
     }
-
 }

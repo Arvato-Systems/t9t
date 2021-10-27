@@ -39,7 +39,7 @@ public class NoopBucketWriter implements IBucketWriter {
     }
 
     @Override
-    public void writeToBuckets(Map<BucketWriteKey, Integer> cmds) {
+    public void writeToBuckets(final Map<BucketWriteKey, Integer> cmds) {
         LOGGER.debug("No-OP bucket writer: Disarding {}", ToStringHelper.toStringML(cmds));
     }
 

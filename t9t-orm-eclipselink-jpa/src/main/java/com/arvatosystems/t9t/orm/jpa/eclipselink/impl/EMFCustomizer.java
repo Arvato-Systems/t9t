@@ -35,13 +35,13 @@ public class EMFCustomizer implements IEMFCustomizer {
     private static final Logger LOGGER = LoggerFactory.getLogger(EMFCustomizer.class);
     private static final String DIALECT_KEY = "eclipselink.target-database";
 
-    private static void putOpt(Map<String, Object> myProps, String key, String value) {
+    private static void putOpt(final Map<String, Object> myProps, final String key, final String value) {
         if (value != null)
             myProps.put(key,  value);
     }
 
     @Override
-    public EntityManagerFactory getCustomizedEmf(String puName, RelationalDatabaseConfiguration settings) throws Exception {
+    public EntityManagerFactory getCustomizedEmf(final String puName, final RelationalDatabaseConfiguration settings) throws Exception {
         final Map<String, Object> myProps = new HashMap<>();
 
         putOpt(myProps, "javax.persistence.jdbc.driver",   settings.getJdbcDriverClass());
@@ -49,7 +49,7 @@ public class EMFCustomizer implements IEMFCustomizer {
         putOpt(myProps, "javax.persistence.jdbc.user",     settings.getUsername());
         putOpt(myProps, "javax.persistence.jdbc.password", settings.getPassword());
 
-        DatabaseBrandType dbName = settings.getDatabaseBrand();
+        final DatabaseBrandType dbName = settings.getDatabaseBrand();
         if (dbName != null) {
             switch (dbName) {
             case HANA:
@@ -71,12 +71,12 @@ public class EMFCustomizer implements IEMFCustomizer {
 
         // also transfer custom parameters, if provided
         if (settings.getZ() != null) {
-            for (String customSetting: settings.getZ()) {
-                int equalsPos = customSetting.indexOf('=');
+            for (final String customSetting: settings.getZ()) {
+                final int equalsPos = customSetting.indexOf('=');
                 if (equalsPos > 0) {
                     // store key/value pair
-                    String key = customSetting.substring(0, equalsPos-1).trim();
-                    String value = customSetting.substring(equalsPos+1).trim();
+                    final String key = customSetting.substring(0, equalsPos - 1).trim();
+                    final String value = customSetting.substring(equalsPos + 1).trim();
                     LOGGER.info("Setting custom value for persistence.xml: key = {}, value = {}", key, value);
                     myProps.put(key, value);
                 } else {

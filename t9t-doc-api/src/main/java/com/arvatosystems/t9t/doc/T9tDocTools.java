@@ -26,12 +26,12 @@ import org.slf4j.LoggerFactory;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.doc.request.ConvertTemplatesRule;
 
-public class T9tDocTools {
+public final class T9tDocTools {
     private static final Logger LOGGER = LoggerFactory.getLogger(T9tDocTools.class);
 
     private T9tDocTools() { }
 
-    public static FormatStyle styleFor(char x) {
+    public static FormatStyle styleFor(final char x) {
         switch (x) {
             case 'F': return FormatStyle.FULL;
             case 'S': return FormatStyle.SHORT;
@@ -42,7 +42,7 @@ public class T9tDocTools {
         return FormatStyle.MEDIUM;
     }
 
-    public static String getMailingGroupId(MailingGroupRef ref) {
+    public static String getMailingGroupId(final MailingGroupRef ref) {
         if (ref == null)
             return null;
         if (ref instanceof MailingGroupKey) {
@@ -57,7 +57,7 @@ public class T9tDocTools {
     private static final String COMMON_PREFIX = "d.";
     private static final char UNDERSCORE = '_';
 
-    public static String convertTemplateAddOrSwapPrefix(String templateIn, ConvertTemplatesRule rule) {
+    public static String convertTemplateAddOrSwapPrefix(final String templateIn, final ConvertTemplatesRule rule) {
         return convertTemplateAddOrSwapPrefix(templateIn, rule.getPrefixOld(), rule.getPrefixNew(), rule.getFieldsToExclude());
     }
 
@@ -67,16 +67,17 @@ public class T9tDocTools {
      * be falsely converted, but the probability is low.
      * It is not sufficient to check for ${d. only, because the variable could be used within an expression.
      **/
-    public static String convertTemplateAddOrSwapPrefix(String templateIn, String prefixOld, String prefixNew, Collection<String> rawFieldsToExclude) {
+    public static String convertTemplateAddOrSwapPrefix(final String templateIn, final String prefixOld, final String prefixNew,
+      final Collection<String> rawFieldsToExclude) {
         final String oldPattern = COMMON_PREFIX + prefixOld;
         final Collection<String> fieldsToExclude;
         if (rawFieldsToExclude == null || rawFieldsToExclude.isEmpty()) {
             // the only string to exclude is the new prefix, to avoid duplicate conversions
-            fieldsToExclude = prefixNew.endsWith(".") ? Collections.singleton(prefixNew.substring(0, prefixNew.length()-1)) : Collections.emptySet();
+            fieldsToExclude = prefixNew.endsWith(".") ? Collections.singleton(prefixNew.substring(0, prefixNew.length() - 1)) : Collections.emptySet();
         } else {
             if (prefixNew.endsWith(".")) {
                 fieldsToExclude = new HashSet<>(rawFieldsToExclude);
-                fieldsToExclude.add(prefixNew.substring(0, prefixNew.length()-1));
+                fieldsToExclude.add(prefixNew.substring(0, prefixNew.length() - 1));
             } else {
                 fieldsToExclude = rawFieldsToExclude;
             }
@@ -98,10 +99,10 @@ public class T9tDocTools {
             transferredUpTo = nextCandidatePos + COMMON_PREFIX.length();
 
             // check if the previous character is not part of the same identifier
-            final char previousChar = nextCandidatePos == 0 ? ' ' : templateIn.charAt(nextCandidatePos-1);
+            final char previousChar = nextCandidatePos == 0 ? ' ' : templateIn.charAt(nextCandidatePos - 1);
             if (previousChar != UNDERSCORE && !Character.isLetterOrDigit(previousChar)) {
                 boolean skipThis = false;
-                for (String exclusion: fieldsToExclude) {
+                for (final String exclusion: fieldsToExclude) {
                     if (skipThis || isExcluded(templateIn, nextCandidatePos, oldPattern, exclusion)) {
                         skipThis = true;
                     }
@@ -121,7 +122,7 @@ public class T9tDocTools {
         return sb.toString();
     }
 
-    private static final boolean isExcluded(String templateIn, int nextCandidatePos, String oldPattern, String exclusion) {
+    private static boolean isExcluded(final String templateIn, final int nextCandidatePos, final String oldPattern, final String exclusion) {
         if (!templateIn.startsWith(exclusion, nextCandidatePos + oldPattern.length())) {
             return false;  // does not start with it
         }
@@ -130,7 +131,7 @@ public class T9tDocTools {
             return true;   // exclusions ends by end of document
         }
         // start with it, now check for end of word
-        char nextChar = templateIn.charAt(nextCandidatePos + oldPattern.length() + exclusion.length());
+        final char nextChar = templateIn.charAt(nextCandidatePos + oldPattern.length() + exclusion.length());
         if (nextChar == UNDERSCORE || Character.isLetterOrDigit(nextChar)) {
             return false;  // starts with it, but identifier is continued
         }

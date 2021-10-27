@@ -35,7 +35,7 @@ import de.jpaw.dp.Singleton;
 public class StandardT9tNamespaceWriter implements IStandardNamespaceWriter {
     private static final Logger LOGGER = LoggerFactory.getLogger(StandardT9tNamespaceWriter.class);
     private final Object lock = new Object();
-    private final AtomicReference<JAXBContext> context = new AtomicReference<JAXBContext>();
+    private final AtomicReference<JAXBContext> context = new AtomicReference<>();
 
     public static final String T9T_JAXB_PATH = "com.arvatosystems.t9t.xml:com.arvatosystems.t9t.xml.auth";
     public static final String T9T_NAMESPACES = "xmlns:bon=\"http://www.jpaw.de/schema/bonaparte.xsd\""
@@ -43,7 +43,7 @@ public class StandardT9tNamespaceWriter implements IStandardNamespaceWriter {
             + " xmlns:t9t_xml_auth=\"http://arvatosystems.com/schema/t9t_xml_auth.xsd\"";
 
     @Override
-    public void writeApplicationNamespaces(XMLStreamWriter writer) throws XMLStreamException {
+    public void writeApplicationNamespaces(final XMLStreamWriter writer) throws XMLStreamException {
         writer.writeNamespace("bon",          "http://www.jpaw.de/schema/bonaparte.xsd");
         writer.writeNamespace("t9t_xml",      "http://arvatosystems.com/schema/t9t_xml.xsd");
         writer.writeNamespace("t9t_xml_auth", "http://arvatosystems.com/schema/t9t_xml_auth.xsd");
@@ -65,11 +65,11 @@ public class StandardT9tNamespaceWriter implements IStandardNamespaceWriter {
             currentContext = context.get();
             if (currentContext != null)
                 return currentContext;
-            String path = getStandardJAXBPath();
+            final String path = getStandardJAXBPath();
             LOGGER.info("Initializing JAXB Context for path {}", path);
             try {
                 currentContext = JAXBContext.newInstance(path);
-            } catch (JAXBException e) {
+            } catch (final JAXBException e) {
                 LOGGER.error("Severe error initializing the JAXBContext: {} ", e);
                 return null;
             }

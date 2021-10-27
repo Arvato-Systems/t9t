@@ -15,9 +15,8 @@
  */
 package com.arvatosystems.t9t.base.jpa.entityListeners;
 
-import java.util.concurrent.atomic.AtomicReference;
-
 import java.time.Instant;
+import java.util.concurrent.atomic.AtomicReference;
 
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.entities.FullTracking;
@@ -37,29 +36,29 @@ import de.jpaw.dp.Provider;
 public abstract class AbstractEntityListener<T extends TrackingBase> implements IEntityListener<T> {
     private static final Long ZERO = Long.valueOf(0L);
 
-    static private final AtomicReference<LazyReferences> refs = new AtomicReference<LazyReferences>();
+    private static final AtomicReference<LazyReferences> REFS = new AtomicReference<>();
 
     // a simpler logic would work in EclipseLink, but Hibernate creates all EntityListeners already when the EntityManagerFactory is set up,
     // and then the providers may not yet be known
 
-    static private class LazyReferences {
+    private static class LazyReferences {
         private final T9tServerConfiguration configuration = Jdp.getRequired(T9tServerConfiguration.class);
         private final Provider<RequestContext> contextProvider = Jdp.getProvider(RequestContext.class);
         private final String cutUser = cutUser(configuration.getDatabaseConfiguration().getUsername());
     }
 
     private static LazyReferences getRef() {
-        LazyReferences myRef = refs.get();
+        LazyReferences myRef = REFS.get();
         if (myRef != null)
             return myRef;
         // init it
         myRef = new LazyReferences();
-        refs.compareAndSet(null, myRef);
-        return refs.get();
+        REFS.compareAndSet(null, myRef);
+        return REFS.get();
     }
 
-    public static String cutUser(String userId) {
-        return userId.length() > 8 ? userId.substring(0,8) : userId;
+    public static String cutUser(final String userId) {
+        return userId.length() > 8 ? userId.substring(0, 8) : userId;
     }
 
     protected final String getCutUserId() {
@@ -70,10 +69,10 @@ public abstract class AbstractEntityListener<T extends TrackingBase> implements 
         return getRef().contextProvider.get();
     }
 
-    protected final void updateTracking(FullTracking rw, boolean clear) {
+    protected final void updateTracking(final FullTracking rw, final boolean clear) {
         final LazyReferences ref = getRef();
-        Instant now = Instant.now();
-        RequestContext ctx = ref.contextProvider.get();
+        final Instant now = Instant.now();
+        final RequestContext ctx = ref.contextProvider.get();
         rw.setMTechUserId(ref.cutUser);
         rw.setMTimestamp(now);
         if (ctx != null) {
@@ -91,7 +90,7 @@ public abstract class AbstractEntityListener<T extends TrackingBase> implements 
         }
     }
 
-    protected final void createTracking(FullTracking rw) {
+    protected final void createTracking(final FullTracking rw) {
         updateTracking(rw, false);
         rw.setCTechUserId(rw.getMTechUserId());
         rw.setCTimestamp(rw.getMTimestamp());

@@ -66,7 +66,7 @@ public class AbstractFormatGeneratorXml extends AbstractFormatGenerator {
     protected Map<String, String> xmlNamespaceMapping = emptyMap();
     protected Boolean writeTenantId;
 
-    protected QName getQname(String id) {
+    protected QName getQname(final String id) {
         if (xmlNamespacePrefix == null)
             return new QName(xmlDefaultNamespace, id);
         else
@@ -90,18 +90,18 @@ public class AbstractFormatGeneratorXml extends AbstractFormatGenerator {
     }
 
     protected void doWriteTenantId() throws XMLStreamException, JAXBException {
-        JAXBElement<String> element = new JAXBElement<>(getQname("tenantId"), String.class, tenantId);
+        final JAXBElement<String> element = new JAXBElement<>(getQname("tenantId"), String.class, tenantId);
         m.marshal(element, writer);
         nl();
     }
 
-    protected void writeCustomElement(String id) throws XMLStreamException, JAXBException {
-        Map<String, Object> map = outputSessionParameters.getAdditionalParameters();
+    protected void writeCustomElement(final String id) throws XMLStreamException, JAXBException {
+        final Map<String, Object> map = outputSessionParameters.getAdditionalParameters();
         if (map != null) {
-            Object value = map.get(id);
+            final Object value = map.get(id);
             if (value != null) {
 //                m.marshal(new JAXBElement(getQname(id), value.getClass(), value), writer);  // throws an Exception. LocalDateTime not a known type.
-                m.marshal(new JAXBElement<String>(getQname(id), String.class, value.toString()), writer);
+                m.marshal(new JAXBElement<>(getQname(id), String.class, value.toString()), writer);
                 nl();
             }
         }
@@ -118,20 +118,20 @@ public class AbstractFormatGeneratorXml extends AbstractFormatGenerator {
             LOGGER.debug("Define namespace prefix using namespace writer {}", writer);
             namespaceWriter.writeApplicationNamespaces(writer);
         } else {
-            for (Entry<String, String> nsMapping : xmlNamespaceMapping.entrySet()) {
+            for (final Entry<String, String> nsMapping : xmlNamespaceMapping.entrySet()) {
                 LOGGER.debug("Define namespace prefix from data sink config: {}={}", nsMapping.getKey(), nsMapping.getValue());
                 writer.setPrefix(nsMapping.getKey(), nsMapping.getValue());
             }
         }
     }
 
-    protected void writeCustomElements(String tagList) throws XMLStreamException, JAXBException {
+    protected void writeCustomElements(final String tagList) throws XMLStreamException, JAXBException {
         if (tagList == null || tagList.isEmpty() || outputSessionParameters.getAdditionalParameters() == null) {
             return; // nothing to do
         }
         // split the tagList into separate tags
-        final String [] tags = split(tagList, ',');
-        for (String tag: tags) {
+        final String[] tags = split(tagList, ',');
+        for (final String tag: tags) {
             if (tag != null && !tag.isEmpty()) {
                 writeCustomElement(tag);
             }
@@ -164,7 +164,7 @@ public class AbstractFormatGeneratorXml extends AbstractFormatGenerator {
                 jaxbContexts.putIfAbsent(path, context);
             }
             m = context.createMarshaller();
-        } catch (JAXBException e) {
+        } catch (final JAXBException e) {
             LOGGER.error(e.getMessage(), e);
             throw new T9tException(T9tIOException.XML_SETUP_ERROR, ExceptionUtil.causeChain(e));
         }
@@ -172,7 +172,7 @@ public class AbstractFormatGeneratorXml extends AbstractFormatGenerator {
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);      // does not work with the XMLStreamWriter without a separate indenting writer
             m.setProperty(Marshaller.JAXB_ENCODING, encoding.name());
             m.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
-        } catch (PropertyException e) {
+        } catch (final PropertyException e) {
             LOGGER.error(e.getMessage(), e);
             throw new T9tException(T9tIOException.XML_SET_PROPERTY_ERROR, ExceptionUtil.causeChain(e));
         }
@@ -200,9 +200,10 @@ public class AbstractFormatGeneratorXml extends AbstractFormatGenerator {
     }
 
     @Override
-    public void generateData(int recordNo, int mappedRecordNo, long recordId, String partitionKey, String recordKey, BonaPortable record) throws IOException, ApplicationException {
+    public void generateData(final int recordNo, final int mappedRecordNo, final long recordId, final String partitionKey, final String recordKey,
+      final BonaPortable record) throws IOException {
         try {
-            JAXBElement<BonaPortable> element = new JAXBElement<>(getQname(xmlRecordName), (Class<BonaPortable>) record.getClass(), record);
+            final JAXBElement<BonaPortable> element = new JAXBElement<>(getQname(xmlRecordName), (Class<BonaPortable>) record.getClass(), record);
             m.marshal(element, writer);
             nl();
         } catch (JAXBException | XMLStreamException e) {
@@ -223,12 +224,12 @@ public class AbstractFormatGeneratorXml extends AbstractFormatGenerator {
         }
     }
 
-    private static Map<String, String> parseNamespaceMapping(String mappingString) {
+    private static Map<String, String> parseNamespaceMapping(final String mappingString) {
         final Map<String, String> result = new HashMap<>();
 
         if (mappingString != null) {
             int counter = 0;
-            for (String namespaceEntry : split(mappingString, ";\n\r")) {
+            for (final String namespaceEntry : split(mappingString, ";\n\r")) {
                 if (isBlank(namespaceEntry)) {
                     continue;
                 }
@@ -239,10 +240,10 @@ public class AbstractFormatGeneratorXml extends AbstractFormatGenerator {
 
                 if (firstDelimiter > 0) {
                     key = trimToNull(substring(namespaceEntry, 0, firstDelimiter));
-                    value = trimToNull(substring(namespaceEntry, firstDelimiter+1));
+                    value = trimToNull(substring(namespaceEntry, firstDelimiter + 1));
                 } else if (firstDelimiter == 0) {
                     key = "ns" + counter++;
-                    value = trimToNull(substring(namespaceEntry, firstDelimiter+1));
+                    value = trimToNull(substring(namespaceEntry, firstDelimiter + 1));
                 } else {
                     key = "ns" + counter++;
                     value = trimToNull(namespaceEntry);

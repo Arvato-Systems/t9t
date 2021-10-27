@@ -22,7 +22,7 @@ import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 
 public class BaseJWTPool implements IJWT {
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseJWTPool.class);
-    private final ThreadLocal<IJWT> pool = new ThreadLocal<IJWT>();
+    private final ThreadLocal<IJWT> pool = new ThreadLocal<>();
 
     // for injections where you are sure you have per thread scope as well
     private IJWT get() {
@@ -37,12 +37,12 @@ public class BaseJWTPool implements IJWT {
     }
 
     @Override
-    public JwtInfo decode(String token) {
+    public JwtInfo decode(final String token) {
         return get().decode(token);
     }
 
     @Override
-    public String sign(JwtInfo info, Long expiresInSeconds, String algorithmOverride) {
+    public String sign(final JwtInfo info, final Long expiresInSeconds, final String algorithmOverride) {
         return get().sign(info, expiresInSeconds, algorithmOverride);
     }
 }

@@ -21,4 +21,4 @@ import com.arvatosystems.t9t.ssm.SchedulerSetupRef;
 
 import de.jpaw.bonaparte.refsw.RefResolver;
 
-public interface ISchedulerSetupResolver extends RefResolver<SchedulerSetupRef, SchedulerSetupDTO, FullTrackingWithVersion> {}
+public interface ISchedulerSetupResolver extends RefResolver<SchedulerSetupRef, SchedulerSetupDTO, FullTrackingWithVersion> { }

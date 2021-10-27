@@ -27,7 +27,7 @@ import javax.ws.rs.ext.Provider;
 public class RestExceptionHandler implements ExceptionMapper<WebApplicationException> {
 
     @Override
-    public Response toResponse(WebApplicationException exception) {
+    public Response toResponse(final WebApplicationException exception) {
         return exception.getResponse();
     }
 }

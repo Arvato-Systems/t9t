@@ -30,7 +30,7 @@ public interface IResolverLongKey<
     ENTITY extends BonaPersistableKey<Long> & BonaPersistableTracking<TRACKING>
   > extends IResolverAnyKey<Long, TRACKING, ENTITY> {
 
-    default ENTITY getEntityData(Long entityRef, boolean onlyActive) {
+    default ENTITY getEntityData(final Long entityRef, final boolean onlyActive) {
         return getEntityDataForKey(entityRef, onlyActive);
     }
 }

@@ -25,13 +25,14 @@ import com.arvatosystems.t9t.uiprefsv3.services.ILeanGridConfigResolver;
 
 import de.jpaw.dp.Jdp;
 
-public class LeanGridConfigSearchRequestHandler extends AbstractSearchBERequestHandler<LeanGridConfigDTO, FullTrackingWithVersion, LeanGridConfigSearchRequest> {
+public class LeanGridConfigSearchRequestHandler extends
+  AbstractSearchBERequestHandler<LeanGridConfigDTO, FullTrackingWithVersion, LeanGridConfigSearchRequest> {
 
     // @Inject
     protected final ILeanGridConfigResolver resolver = Jdp.getRequired(ILeanGridConfigResolver.class);
 
     @Override
-    public ReadAllResponse<LeanGridConfigDTO, FullTrackingWithVersion> execute(RequestContext ctx, LeanGridConfigSearchRequest request) throws Exception {
+    public ReadAllResponse<LeanGridConfigDTO, FullTrackingWithVersion> execute(final RequestContext ctx, final LeanGridConfigSearchRequest request) {
         return execute(resolver.query(
                 request.getLimit(),
                 request.getOffset(),

@@ -28,7 +28,7 @@ public class UserCountRequestHandler extends AbstractReadOnlyRequestHandler<User
     private final IUserEntityResolver resolver = Jdp.getRequired(IUserEntityResolver.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, UserCountRequest rq) {
+    public ServiceResponse execute(final RequestContext ctx, final UserCountRequest rq) {
         return resolver.count(rq);
     }
 }

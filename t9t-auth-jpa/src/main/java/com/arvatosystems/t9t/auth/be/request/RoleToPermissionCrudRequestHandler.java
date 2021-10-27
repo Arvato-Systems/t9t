@@ -38,7 +38,7 @@ public class RoleToPermissionCrudRequestHandler extends AbstractCrudCompositeRef
     private final IRoleToPermissionEntityResolver resolver = Jdp.getRequired(IRoleToPermissionEntityResolver.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, RoleToPermissionCrudRequest params) {
+    public ServiceResponse execute(final RequestContext ctx, final RoleToPermissionCrudRequest params) {
         return execute(ctx, mapper, resolver, params);
     }
 }

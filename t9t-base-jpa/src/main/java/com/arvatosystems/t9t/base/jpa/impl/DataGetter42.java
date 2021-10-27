@@ -47,7 +47,7 @@ public class DataGetter42 implements IDataGetter42 {
     protected final IQueryHintSetter queryHintSetter = Jdp.getRequired(IQueryHintSetter.class);
 
     @Override
-    public <D extends Ref> GetDataResponse<D> query(IResolverSurrogateKey42 resolver, String constructor, Class<D> keyClass, Set<Long> refs) {
+    public <D extends Ref> GetDataResponse<D> query(final IResolverSurrogateKey42 resolver, final String constructor, final Class<D> keyClass, final Set<Long> refs) {
         final GetDataResponse<D> resp = new GetDataResponse<>();
         if (refs.isEmpty()) {
             // shortcut 0 entries (should not happen, but would lead to an error if not treated separately here)
@@ -65,8 +65,8 @@ public class DataGetter42 implements IDataGetter42 {
         return resp;
     }
 
-    protected <D> List<D> directQuery(String queryString, IResolverSurrogateKey42 resolver, Class<D> keyClass, Collection<Long> refs) {
-        TypedQuery<D> q = resolver.getEntityManager().createQuery(queryString, keyClass);
+    protected <D> List<D> directQuery(final String queryString, final IResolverSurrogateKey42 resolver, final Class<D> keyClass, final Collection<Long> refs) {
+        final TypedQuery<D> q = resolver.getEntityManager().createQuery(queryString, keyClass);
         q.setParameter("tenantRef", resolver.getSharedTenantRef());
         q.setParameter("refs", refs);
         queryHintSetter.setReadOnly(q);
@@ -74,23 +74,23 @@ public class DataGetter42 implements IDataGetter42 {
         return q.getResultList();
     }
 
-    protected <D> List<D> queryWithOracleDbLimitationWorkaround(String queryString, IResolverSurrogateKey42 resolver, Class<D> keyClass, Set<Long> refs) {
+    protected <D> List<D> queryWithOracleDbLimitationWorkaround(final String queryString, final IResolverSurrogateKey42 resolver, final Class<D> keyClass, final Set<Long> refs) {
         LOGGER.warn("Query on {} refs of class {} requested - splitting", refs.size(), keyClass.getSimpleName());
         final List<D> resultList = new ArrayList<>(refs.size());
-        for (List<Long> partition : Iterables.partition(refs, 1000)) {
+        for (final List<Long> partition : Iterables.partition(refs, 1000)) {
             resultList.addAll(directQuery(queryString, resolver, keyClass, partition));
         }
         return resultList;
     }
 
     @Override
-    public <D extends Ref, E extends BonaKey<Long> & BonaData<D>> GetDataResponse<D> query(IResolverSurrogateKey42 resolver, Class<E> entityClass, Class<D> keyClass, Set<Long> refs) {
+    public <D extends Ref, E extends BonaKey<Long> & BonaData<D>> GetDataResponse<D> query(final IResolverSurrogateKey42 resolver, final Class<E> entityClass, final Class<D> keyClass, final Set<Long> refs) {
         return query(resolver, entityClass, keyClass, refs, null, null);
     }
 
     @Override
-    public <D extends Ref, E extends BonaKey<Long> & BonaData<D>> GetDataResponse<D> query(IResolverSurrogateKey42 resolver, Class<E> entityClass, Class<D> keyClass, Set<Long> refs,
-      String entityGraphName, BiConsumer<D, E> updater) {
+    public <D extends Ref, E extends BonaKey<Long> & BonaData<D>> GetDataResponse<D> query(final IResolverSurrogateKey42 resolver, final Class<E> entityClass, final Class<D> keyClass, final Set<Long> refs,
+      final String entityGraphName, final BiConsumer<D, E> updater) {
         final GetDataResponse<D> resp = new GetDataResponse<>();
         if (refs.isEmpty()) {
             // shortcut 0 entries (should not happen, but would lead to an error if not treated separately here)
@@ -105,8 +105,8 @@ public class DataGetter42 implements IDataGetter42 {
             throw new T9tException(T9tException.RECORD_DOES_NOT_EXIST, "refs for " + keyClass.getSimpleName());
         }
         final List<D> mapped = new ArrayList<>(result.size());
-        for (E e: result) {
-            D d = e.ret$Data();
+        for (final E e: result) {
+            final D d = e.ret$Data();
             d.setObjectRef(e.ret$Key());
             if (updater != null)
                 updater.accept(d, e);
@@ -116,15 +116,15 @@ public class DataGetter42 implements IDataGetter42 {
         return resp;
     }
 
-    protected <E> List<E> directQuery(String queryString, IResolverSurrogateKey42 resolver, String entityGraphName, Collection<Long> refs) {
-        TypedQuery<E> q = resolver.getEntityManager().createQuery(queryString, resolver.getBaseJpaEntityClass());
+    protected <E> List<E> directQuery(final String queryString, final IResolverSurrogateKey42 resolver, final String entityGraphName, final Collection<Long> refs) {
+        final TypedQuery<E> q = resolver.getEntityManager().createQuery(queryString, resolver.getBaseJpaEntityClass());
         q.setParameter("tenantRef", resolver.getSharedTenantRef());
         q.setParameter("refs", refs);
         queryHintSetter.setReadOnly(q);
         queryHintSetter.setComment(q, "NQ:selectData");
         if (entityGraphName != null) {
             queryHintSetter.setComment(q, "NQ:selectDataWithEG_" + entityGraphName);
-            EntityGraph entityGraph = resolver.getEntityManager().getEntityGraph(entityGraphName);
+            final EntityGraph entityGraph = resolver.getEntityManager().getEntityGraph(entityGraphName);
             q.setHint("javax.persistence.loadgraph", entityGraph);
         } else {
             queryHintSetter.setComment(q, "NQ:selectData");
@@ -132,10 +132,10 @@ public class DataGetter42 implements IDataGetter42 {
         return q.getResultList();
     }
 
-    protected <E> List<E> queryWithOracleDbLimitationWorkaround(String queryString, IResolverSurrogateKey42 resolver, String entityGraphName, Set<Long> refs) {
+    protected <E> List<E> queryWithOracleDbLimitationWorkaround(final String queryString, final IResolverSurrogateKey42 resolver, final String entityGraphName, final Set<Long> refs) {
         LOGGER.warn("Query on {} refs of class {} requested - splitting", refs.size(), resolver.getBaseJpaEntityClass().getSimpleName());
         final List<E> resultList = new ArrayList<>(refs.size());
-        for (List<Long> partition : Iterables.partition(refs, 1000)) {
+        for (final List<Long> partition : Iterables.partition(refs, 1000)) {
             resultList.addAll(directQuery(queryString, resolver, entityGraphName, partition));
         }
         return resultList;

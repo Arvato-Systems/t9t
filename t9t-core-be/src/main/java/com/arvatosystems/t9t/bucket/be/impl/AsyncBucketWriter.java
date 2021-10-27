@@ -42,7 +42,7 @@ import de.jpaw.util.ExceptionUtil;
 @Singleton
 public class AsyncBucketWriter implements IBucketWriter {
     private static final Logger LOGGER = LoggerFactory.getLogger(AsyncBucketWriter.class);
-    private static final Map<BucketWriteKey, Integer> SHUTDOWN_RQ = new HashMap<BucketWriteKey, Integer>();  // empoty map for shutdown
+    private static final Map<BucketWriteKey, Integer> SHUTDOWN_RQ = new HashMap<>();  // empoty map for shutdown
 
     // tunable parameters
     private static final int MAX_ELEMENTS_TOTAL                     = 1000; // max num of entries at a time (do not increase, Oracle limit)
@@ -52,7 +52,7 @@ public class AsyncBucketWriter implements IBucketWriter {
     private static final long LONG_SLEEP_DURATION_AFTER_IDLE        = 500L; // time to sleep after no requests have been found
     private static final long SHORT_SLEEP_DURATION_AFTER_ACTIVITY   = 250L; // time to sleep after requests have been processed
 
-    private final LinkedTransferQueue<Map<BucketWriteKey, Integer>> queue = new LinkedTransferQueue<Map<BucketWriteKey, Integer>>();
+    private final LinkedTransferQueue<Map<BucketWriteKey, Integer>> queue = new LinkedTransferQueue<>();
     private final IBucketPersistenceAccess persistenceAccess = Jdp.getRequired(IBucketPersistenceAccess.class);
 
     @IsLogicallyFinal  // set within open()
@@ -66,7 +66,7 @@ public class AsyncBucketWriter implements IBucketWriter {
         @Override
         public Boolean call() throws Exception {
             boolean atEnd = false;
-            List<Map<BucketWriteKey, Integer>> workPool = new ArrayList<Map<BucketWriteKey, Integer>>(MAX_ELEMENTS_PER_BATCH);
+            List<Map<BucketWriteKey, Integer>> workPool = new ArrayList<>(MAX_ELEMENTS_PER_BATCH);
             do {
                 int num = queue.drainTo(workPool, MAX_ELEMENTS_PER_BATCH);
                 if (num == 0) {
@@ -87,8 +87,8 @@ public class AsyncBucketWriter implements IBucketWriter {
 
                             // combine all the entries. For this create a common map, keeping the insertion order
                             int currentSize = 0;
-                            Map<BucketWriteKey, Integer> sortedPool = new LinkedHashMap<BucketWriteKey, Integer>(2 * MAX_ELEMENTS_TOTAL);
-                            for (Map<BucketWriteKey, Integer> e1: workPool) {
+                            final Map<BucketWriteKey, Integer> sortedPool = new LinkedHashMap<>(2 * MAX_ELEMENTS_TOTAL);
+                            for (final Map<BucketWriteKey, Integer> e1: workPool) {
                                 if (currentSize + e1.size() > MAX_ELEMENTS_TOTAL && currentSize > 0) {
                                     LOGGER.info("EXTRA writing bucket required due to MAX_TOTAL limit");
                                     flushPool(sortedPool, num, currentSize);
@@ -96,8 +96,9 @@ public class AsyncBucketWriter implements IBucketWriter {
                                 }
                                 if (e1.size() > MAX_ELEMENTS_TOTAL) {
                                     LOGGER.warn(
-                                      "Single Transaction too big to write buckets - fallback: Buckets of single source TX may be written by multiple writer TX");
-                                    for (Map.Entry<BucketWriteKey, Integer> bi: e1.entrySet()) {
+                                        "Single Transaction too big to write buckets - fallback: "
+                                      + "Buckets of single source TX may be written by multiple writer TX");
+                                    for (final Map.Entry<BucketWriteKey, Integer> bi: e1.entrySet()) {
                                         sortedPool.merge(bi.getKey(), bi.getValue(), (a, b) -> Integer.valueOf(a.intValue() | b.intValue()));
                                         // flush once max. number of tx has been reached
                                         if (sortedPool.size() >= MAX_ELEMENTS_TOTAL)
@@ -107,7 +108,7 @@ public class AsyncBucketWriter implements IBucketWriter {
                                         flushPool(sortedPool, num, MAX_ELEMENTS_TOTAL);
                                 } else {
                                     // aggregated approach - faster
-                                    for (Map.Entry<BucketWriteKey, Integer> bi: e1.entrySet()) {
+                                    for (final Map.Entry<BucketWriteKey, Integer> bi: e1.entrySet()) {
                                         sortedPool.merge(bi.getKey(), bi.getValue(), (a, b) -> Integer.valueOf(a.intValue() | b.intValue()));
                                     }
                                     currentSize += e1.size();
@@ -121,7 +122,7 @@ public class AsyncBucketWriter implements IBucketWriter {
                                 Thread.sleep(SHORT_SLEEP_DURATION_AFTER_ACTIVITY);
                             }
                         }
-                    } catch (Exception e) {
+                    } catch (final Exception e) {
                         LOGGER.error("Exception caught in AsyncBucketWriter - discarding some entries and recovering", ExceptionUtil.causeChain(e));
                     }
                 }
@@ -132,7 +133,7 @@ public class AsyncBucketWriter implements IBucketWriter {
         }
     }
 
-    protected void flushPool(Map<BucketWriteKey, Integer> sortedPool, int num, int currentSize) {
+    protected void flushPool(final Map<BucketWriteKey, Integer> sortedPool, final int num, final int currentSize) {
         LOGGER.info("Writing bucket entries of {} transactions to disk: combined {} total entries to {}", num, currentSize, sortedPool.size());
         persistenceAccess.write(sortedPool);
         LOGGER.debug("Writing complete");
@@ -151,7 +152,7 @@ public class AsyncBucketWriter implements IBucketWriter {
     }
 
     @Override
-    public void writeToBuckets(Map<BucketWriteKey, Integer> cmds) {
+    public void writeToBuckets(final Map<BucketWriteKey, Integer> cmds) {
         queue.put(cmds);
     }
 
@@ -163,16 +164,16 @@ public class AsyncBucketWriter implements IBucketWriter {
     public void close() {
         LOGGER.info("Async bucket writer: Normal shutdown.");
         // drain queue
-        long start = System.currentTimeMillis();
+        final long start = System.currentTimeMillis();
         queue.put(SHUTDOWN_RQ);
         try {
             writerResult.get();
-        } catch (InterruptedException e) {
+        } catch (final InterruptedException e) {
             LOGGER.error("Interrupted:", e);
-        } catch (ExecutionException e) {
+        } catch (final ExecutionException e) {
             LOGGER.error("ExecutionException:", e);
         }
-        long end = System.currentTimeMillis();
+        final long end = System.currentTimeMillis();
         LOGGER.info("Queue drained after {} ms.", end - start);
         executor.shutdown();
         persistenceAccess.close();   // close disk channel

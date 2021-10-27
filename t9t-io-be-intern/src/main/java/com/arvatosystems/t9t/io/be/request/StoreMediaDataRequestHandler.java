@@ -41,12 +41,12 @@ public class StoreMediaDataRequestHandler extends AbstractRequestHandler<StoreMe
     private static final Logger LOGGER = LoggerFactory.getLogger(StoreMediaDataRequestHandler.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, StoreMediaDataRequest params) throws Exception {
+    public ServiceResponse execute(final RequestContext ctx, final StoreMediaDataRequest params) throws Exception {
         Long sinkRef;
         final MediaData m = params.getMediaData();
 
         // create outputSessionParameters
-        OutputSessionParameters osp = new OutputSessionParameters();
+        final OutputSessionParameters osp = new OutputSessionParameters();
         osp.setDataSinkId(params.getDataSinkId());
         osp.setCommunicationFormatType(m.getMediaType());
         osp.setOriginatorRef   (params.getOriginatorRef());
@@ -57,18 +57,18 @@ public class StoreMediaDataRequestHandler extends AbstractRequestHandler<StoreMe
         try (IOutputSession os = Jdp.getRequired(IOutputSession.class)) {
             // open the session (creates the file, if using files)
             sinkRef = os.open(osp);
-            OutputStream oStream = os.getOutputStream();
+            final OutputStream oStream = os.getOutputStream();
             if (m.getRawData() != null) {
                 m.getRawData().toOutputStream(oStream);
             } else if (m.getText() != null) {
                 oStream.write(m.getText().getBytes(StandardCharsets.UTF_8));
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             // In case of any error returnCode <> 0.
             LOGGER.error("Exception occured during file storage (OutputSession) - Error Message {} ", e);
             throw new T9tException(T9tException.GENERAL_EXCEPTION, e.getMessage());
         }
-        SinkCreatedResponse response = new SinkCreatedResponse();
+        final SinkCreatedResponse response = new SinkCreatedResponse();
         response.setReturnCode(0);
         response.setSinkRef(sinkRef);
         return response;

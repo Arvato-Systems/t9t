@@ -47,7 +47,7 @@ public class MutexSingleJVM<T> implements IMutex<T> {
             synchronized (lock) {
                 return code.get();
             }
-        } catch (ExecutionException e) {
+        } catch (final ExecutionException e) {
             LOGGER.error("running synchronized exited with {}", ExceptionUtil.causeChain(e));
             if (e.getCause() instanceof ApplicationException)
                 throw (ApplicationException)e.getCause();

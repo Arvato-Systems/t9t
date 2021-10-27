@@ -32,20 +32,22 @@ public interface IAsyncQueue {
     Long sendAsync(String asyncChannelId, BonaPortable payload, Long objectRef);
 
     /** Initializes all queues. */
-    default void open() { };
+    default void open() { }
 
     /** Closes all queues. */
-    default void close() { };
+    default void close() { }
 
     /** Closes a specific queue (shuts it down). */
-    default void close(Long queueRef) { };
+    default void close(final Long queueRef) { }
 
     /** Clear all queues (queueRef = null) or a specific one. */
-    default void clearQueue(Long queueRef) { };  // removes any items from the queue, required after removing dead items
+    default void clearQueue(final Long queueRef) { }  // removes any items from the queue, required after removing dead items
 
     /** Opens a specific new queue, if it did not exist before. */
-    default void open(AsyncQueueDTO queue) { };
+    default void open(final AsyncQueueDTO queue) { }
 
     /** returns the queue status for one or all queues. Only for queues supporting it. */
-    default QueueStatus getQueueStatus(Long queueRef, String queueId) { throw new T9tException(T9tException.NOT_YET_IMPLEMENTED); }
+    default QueueStatus getQueueStatus(final Long queueRef, final String queueId) {
+        throw new T9tException(T9tException.NOT_YET_IMPLEMENTED);
+    }
 }

@@ -67,31 +67,35 @@ public class FileToCamelProducer implements IFileToCamelProducer {
      *            configuration parameters
      */
     @Override
-    public void sendFileOverCamel(String fileName, MediaTypeDescriptor fileType, DataSinkDTO sinkCfg) {
+    public void sendFileOverCamel(final String fileName, final MediaTypeDescriptor fileType, final DataSinkDTO sinkCfg) {
         doSendFileOverCamel(fileName, fileType, sinkCfg, null, null);
     }
 
     @Override
-    public void sendFileOverCamelUsingTargetFileName(String fileName, MediaTypeDescriptor fileType, DataSinkDTO sinkCfg, String targetFileName) {
+    public void sendFileOverCamelUsingTargetFileName(final String fileName, final MediaTypeDescriptor fileType, final DataSinkDTO sinkCfg,
+      final String targetFileName) {
         doSendFileOverCamel(fileName, fileType, sinkCfg, targetFileName, null);
     }
 
     @Override
-    public void sendFileOverCamelUsingTargetCamelRoute(String fileName, MediaTypeDescriptor fileType, DataSinkDTO sinkCfg, String targetCamelRoute) {
+    public void sendFileOverCamelUsingTargetCamelRoute(final String fileName, final MediaTypeDescriptor fileType, final DataSinkDTO sinkCfg,
+      final String targetCamelRoute) {
         doSendFileOverCamel(fileName, fileType, sinkCfg, null, targetCamelRoute);
     }
 
     @Override
-    public void sendFileOverCamelUsingTargetFileNameAndTargetCamelRoute(String fileName, MediaTypeDescriptor fileType, DataSinkDTO sinkCfg, String targetFileName, String targetCamelRoute) {
+    public void sendFileOverCamelUsingTargetFileNameAndTargetCamelRoute(final String fileName, final MediaTypeDescriptor fileType, final DataSinkDTO sinkCfg,
+      final String targetFileName, final String targetCamelRoute) {
         doSendFileOverCamel(fileName, fileType, sinkCfg, targetFileName, targetCamelRoute);
     }
 
-    public void doSendFileOverCamel(String fileName, MediaTypeDescriptor fileType, DataSinkDTO sinkCfg, String targetFileName, String targetCamelRoute) {
+    public void doSendFileOverCamel(final String fileName, final MediaTypeDescriptor fileType, final DataSinkDTO sinkCfg, final String targetFileName,
+      final String targetCamelRoute) {
 
-        ProducerTemplate producerTemplate = camelContext.get().createProducerTemplate();
-        File file = new File(fileName);
-        GenericFile<File> genericFile = FileConsumer.asGenericFile("test", file, sinkCfg.getOutputEncoding(), false);
-        Map<String, Object> headerMap = new HashMap<String, Object>();
+        final ProducerTemplate producerTemplate = camelContext.get().createProducerTemplate();
+        final File file = new File(fileName);
+        final GenericFile<File> genericFile = FileConsumer.asGenericFile("test", file, sinkCfg.getOutputEncoding(), false);
+        final Map<String, Object> headerMap = new HashMap<>();
         headerMap.put("fileName", fileName);
         headerMap.put("fileType", fileType);
 
@@ -117,13 +121,13 @@ public class FileToCamelProducer implements IFileToCamelProducer {
         try {
             producerTemplate.sendBodyAndHeaders("direct:outputFile", genericFile, headerMap);
             successfulRoutingPostProcessing(fileName, fileType, sinkCfg);
-        } catch (CamelExecutionException e) {
+        } catch (final CamelExecutionException e) {
             failedRoutingPostProcessing(fileName, fileType, sinkCfg);
 
             LOGGER.error("CamelExecutionException", e);
 
             // Wrap camel execution error into Application error in order to prevent rollback
-            ApplicationException applicationException = new ApplicationException(T9tIOException.NOT_TRANSFERRED, e.getMessage());
+            final ApplicationException applicationException = new ApplicationException(T9tIOException.NOT_TRANSFERRED, e.getMessage());
             applicationException.setStackTrace(e.getStackTrace());
             applicationException.addSuppressed(e);
             throw applicationException;
@@ -131,10 +135,10 @@ public class FileToCamelProducer implements IFileToCamelProducer {
     }
 
     // stuff for Camel
-    private static String resolveSimpleFileName(String filePath) {
-        String normalizedPath = filePath.replaceAll("\\\\", "/");
-        int startIdx = normalizedPath.lastIndexOf("/");
-        int endIdx = normalizedPath.lastIndexOf(".");
+    private static String resolveSimpleFileName(final String filePath) {
+        final String normalizedPath = filePath.replaceAll("\\\\", "/");
+        final int startIdx = normalizedPath.lastIndexOf("/");
+        final int endIdx = normalizedPath.lastIndexOf(".");
 
         if ((startIdx > -1) && (endIdx > -1)) {
             return normalizedPath.substring(startIdx + 1, endIdx);
@@ -143,7 +147,7 @@ public class FileToCamelProducer implements IFileToCamelProducer {
         return "";
     }
 
-    private static String resolveFileExtension(String filePath) {
+    private static String resolveFileExtension(final String filePath) {
         if (filePath.contains(".")) {
             return filePath.substring(filePath.lastIndexOf(".") + 1);
         }
@@ -151,14 +155,14 @@ public class FileToCamelProducer implements IFileToCamelProducer {
         return "";
     }
 
-    private static String expandForCamel(String srcFilePath) {
+    private static String expandForCamel(final String srcFilePath) {
         return SimplePatternEvaluator.evaluate(srcFilePath, ImmutableMap.of(
                 "fileExtension", resolveFileExtension(srcFilePath),
                 "simpleFileName", resolveSimpleFileName(srcFilePath))
         );
     }
 
-    private void successfulRoutingPostProcessing(String fileName, MediaTypeDescriptor fileType, DataSinkDTO sinkCfg) {
+    private void successfulRoutingPostProcessing(final String fileName, final MediaTypeDescriptor fileType, final DataSinkDTO sinkCfg) {
         LOGGER.debug("Post processing after camel successful routing");
 
         if (sinkCfg.getSuccessRoutingStrategy() == null) {
@@ -171,7 +175,7 @@ public class FileToCamelProducer implements IFileToCamelProducer {
             break;
         case MOVE:
             if (sinkCfg.getSuccessDestPattern() != null) {
-                String dstFileName = expandForCamel(sinkCfg.getSuccessDestPattern());
+                final String dstFileName = expandForCamel(sinkCfg.getSuccessDestPattern());
                 moveFile(fileName, dstFileName);
             } else {
                 LOGGER.error("SuccessRoutingStrategy is set to {} but SuccessDestPath is null", CamelPostProcStrategy.MOVE);
@@ -183,9 +187,9 @@ public class FileToCamelProducer implements IFileToCamelProducer {
         }
     }
 
-    private void failedRoutingPostProcessing(String fileName, MediaTypeDescriptor fileType, DataSinkDTO sinkCfg) {
+    private void failedRoutingPostProcessing(final String fileName, final MediaTypeDescriptor fileType, final DataSinkDTO sinkCfg) {
         LOGGER.error("Post processing after camel failed routing");
-        LOGGER.error("Filename: {}, FileType: {}",fileName, fileType);
+        LOGGER.error("Filename: {}, FileType: {}", fileName, fileType);
         LOGGER.error("SinkCfg: {}", sinkCfg);
         if (sinkCfg.getFailedRoutingStrategy() == null) {
             return;
@@ -197,7 +201,7 @@ public class FileToCamelProducer implements IFileToCamelProducer {
             break;
         case MOVE:
             if (sinkCfg.getFailureDestPattern() != null) {
-                String dstFileName = expandForCamel(sinkCfg.getFailureDestPattern());
+                final String dstFileName = expandForCamel(sinkCfg.getFailureDestPattern());
                 moveFile(fileName, dstFileName);
             } else {
                 LOGGER.error("SuccessRoutingStrategy is set to {} but SuccessDestPath is null", CamelPostProcStrategy.MOVE);
@@ -209,31 +213,31 @@ public class FileToCamelProducer implements IFileToCamelProducer {
         }
     }
 
-    private void moveFile(String fileName, String destination) {
+    private void moveFile(final String fileName, final String destination) {
         createDestinationFolder(destination);
-        Path srcFile = Paths.get(fileName);
-        Path targetFile = Paths.get(destination);
+        final Path srcFile = Paths.get(fileName);
+        final Path targetFile = Paths.get(destination);
 
         try {
             Files.move(srcFile, targetFile, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LOGGER.error("File {} couldn't be moved!", fileName);
             LOGGER.error("An error occurred while moving file.", e);
         }
     }
 
-    private void createDestinationFolder(String path) {
-        File file = new File(path);
+    private void createDestinationFolder(final String path) {
+        final File file = new File(path);
 
         if (!file.getParentFile().exists()) {
             file.getParentFile().mkdirs();
         }
     }
 
-    private void deleteFile(String fileName) {
+    private void deleteFile(final String fileName) {
         try {
             Files.deleteIfExists(Paths.get(fileName));
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LOGGER.error("File {} couldn't be deleted!", fileName);
             LOGGER.error("An error occurred while deleting file.", e);
         }

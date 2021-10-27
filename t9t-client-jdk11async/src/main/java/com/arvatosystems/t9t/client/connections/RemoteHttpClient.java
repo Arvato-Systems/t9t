@@ -61,7 +61,7 @@ class RemoteHttpClient {
         }
     }
 
-    public RemoteHttpClient(int threadPoolSize, int parallelConnections) {
+    RemoteHttpClient(final int threadPoolSize, final int parallelConnections) {
         LOGGER.info("Creating new HttpClient for remote connections, using {} threads and {} separate instances", threadPoolSize, parallelConnections);
         executorService = Executors.newFixedThreadPool(threadPoolSize, (r) -> {
             final String threadName = "t9t-http-async-" + threadCounter.incrementAndGet();
@@ -153,7 +153,7 @@ class RemoteHttpClient {
         if (resp.getHttpReturnCode() / 100 != 2) {
             final BonaPortable response = resp.getResponseObject();
             if (response instanceof ServiceResponse) {
-                ServiceResponse sr = (ServiceResponse)response;
+                final ServiceResponse sr = (ServiceResponse)response;
                 if (!ApplicationException.isOk(sr.getReturnCode())) {
                     return MessagingUtil.createServiceResponse(
                         T9tException.HTTP_ERROR + resp.getHttpReturnCode(),

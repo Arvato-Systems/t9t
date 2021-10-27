@@ -46,7 +46,7 @@ public class CompactBonaparteFormatConverter extends AbstractInputFormatConverte
     protected int maxSize = 64000;
 
     @Override
-    public void open(IInputSession inputSession, Map<String, Object> params, BonaPortableClass<?> baseBClass) {
+    public void open(final IInputSession inputSession, final Map<String, Object> params, final BonaPortableClass<?> baseBClass) {
         super.open(inputSession, params, baseBClass);
         final String sizeParam = inputSession.getDataSinkDTO().getGenericParameter1();
         if (sizeParam != null) {
@@ -55,20 +55,20 @@ public class CompactBonaparteFormatConverter extends AbstractInputFormatConverte
     }
 
     @Override
-    public void process(InputStream is) {
+    public void process(final InputStream is) {
         // convert the inputStrem to byte array
         try {
             final ByteArray ba = ByteArray.fromInputStream(is, maxSize);
             final BonaPortable obj = new CompactByteArrayParser(ba.getBytes(), 0, -1).readRecord();
             inputSession.process(obj);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LOGGER.error("IOException {}", ExceptionUtil.causeChain(e));
             throw new T9tException(T9tIOException.IO_EXCEPTION, ExceptionUtil.causeChain(e));
         }
     }
 
     @Override
-    public void process(byte[] data) {
+    public void process(final byte[] data) {
         final BonaPortable obj = new CompactByteArrayParser(data, 0, -1).readRecord();
         inputSession.process(obj);
     }

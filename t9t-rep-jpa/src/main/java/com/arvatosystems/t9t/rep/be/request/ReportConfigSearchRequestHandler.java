@@ -32,10 +32,11 @@ public class ReportConfigSearchRequestHandler extends AbstractSearch42RequestHan
   ReportConfigSearchRequest, ReportConfigEntity> {
     protected final IReportConfigEntityResolver resolver = Jdp.getRequired(IReportConfigEntityResolver.class);
     protected final IReportConfigDTOMapper mapper = Jdp.getRequired(IReportConfigDTOMapper.class);
-    protected final IReportConfigByUserPermissionRestriction reportConfigByUserPermissionRestriction = Jdp.getRequired(IReportConfigByUserPermissionRestriction.class);
+    protected final IReportConfigByUserPermissionRestriction reportConfigByUserPermissionRestriction
+      = Jdp.getRequired(IReportConfigByUserPermissionRestriction.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, ReportConfigSearchRequest request) throws Exception {
+    public ServiceResponse execute(final RequestContext ctx, final ReportConfigSearchRequest request) throws Exception {
         reportConfigByUserPermissionRestriction.apply(ctx, request);
         return execute(ctx, request, resolver, mapper);
     }

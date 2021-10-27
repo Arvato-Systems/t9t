@@ -37,7 +37,7 @@ public interface IGetNextTimeSliceService {
     SliceTrackingInterval previewNextTimeSlice(RequestContext ctx, String dataSinkId, String id);
 
     /** Converts the interval with instants to an interval of LocalDateTime types - in UTC. */
-    default SliceTrackingLocalInterval convertToLocal(SliceTrackingInterval interval) {
+    default SliceTrackingLocalInterval convertToLocal(final SliceTrackingInterval interval) {
         return new SliceTrackingLocalInterval(
             LocalDateTime.ofInstant(interval.getStartInstant(), ZoneOffset.UTC),
             LocalDateTime.ofInstant(interval.getEndInstant(), ZoneOffset.UTC));

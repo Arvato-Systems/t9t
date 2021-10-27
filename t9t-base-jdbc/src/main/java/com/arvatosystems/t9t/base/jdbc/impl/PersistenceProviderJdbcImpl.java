@@ -32,12 +32,12 @@ class PersistenceProviderJdbcImpl implements PersistenceProviderJdbc {
     private Connection connection;
 
     /** The constructor of the provider is usually invoked by some application specific producer. */
-    public PersistenceProviderJdbcImpl(HikariDataSource ds) {
+    PersistenceProviderJdbcImpl(final HikariDataSource ds) {
         LOGGER.trace("new(): creating Connection");
         try {
             connection = ds.getConnection();
             connection.setAutoCommit(false);
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             LOGGER.error("{} on JDBC new connection: {}", e.getClass().getSimpleName(), e.getMessage());
             throw new T9tException(T9tException.JDBC_GENERAL_SQL, e.getClass().getSimpleName());
         }
@@ -68,7 +68,7 @@ class PersistenceProviderJdbcImpl implements PersistenceProviderJdbc {
         LOGGER.trace("rollback(): terminating transaction");
         try {
             connection.rollback();
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             // cannot do anything because we are rolling back already anyway
             LOGGER.error("{} on JDBC rollback: {}", e.getClass().getSimpleName(), e.getMessage());
         }
@@ -79,7 +79,7 @@ class PersistenceProviderJdbcImpl implements PersistenceProviderJdbc {
         LOGGER.trace("commit(): transaction end");
         try {
             connection.commit();
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             // cannot do anything because we are rolling back already anyway
             LOGGER.error("{} on JDBC commit: {}", e.getClass().getSimpleName(), e.getMessage());
         }
@@ -92,7 +92,7 @@ class PersistenceProviderJdbcImpl implements PersistenceProviderJdbc {
         if (connection != null) {
             try {
                 connection.close();
-            } catch (SQLException e) {
+            } catch (final SQLException e) {
                 // cannot do anything except reporting it
                 LOGGER.error("{} on JDBC close: {}", e.getClass().getSimpleName(), e.getMessage());
             }

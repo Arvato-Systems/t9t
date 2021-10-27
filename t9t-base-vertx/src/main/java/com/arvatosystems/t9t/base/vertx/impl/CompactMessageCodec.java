@@ -36,7 +36,7 @@ public class CompactMessageCodec implements MessageCodec<BonaPortable, BonaPorta
 
     @Override
     public BonaPortable decodeFromWire(final int pos, final Buffer buffer) {
-        final byte [] buff = buffer.getBytes();
+        final byte[] buff = buffer.getBytes();
         final CompactByteArrayParser cbap = new CompactByteArrayParser(buff, pos, buff.length);
         try {
             return cbap.readObject(StaticMeta.OUTER_BONAPORTABLE, BonaPortable.class);

@@ -42,9 +42,9 @@ public class DateTimeServiceTest {
         final LocalDate when = LocalDate.of(2021, 10, 17);
         // get the timestamp in UTC
         LocalDateTime timestampUTC = dateTimeService.toLocalDateTimeAtStartOfDay(T9tConstants.GLOBAL_TENANT_REF42, when);
-        Assertions.assertEquals(when.getDayOfMonth()-1, timestampUTC.getDayOfMonth(), "expect UTC date to be one day before");
+        Assertions.assertEquals(when.getDayOfMonth() - 1, timestampUTC.getDayOfMonth(), "expect UTC date to be one day before");
         Assertions.assertEquals(22, timestampUTC.getHour(), "expect UTC time to be 2 hours back");
-        
+
         // convert back 3 timestamps:
         LocalDateTime before = timestampUTC.minusHours(3L);
         LocalDateTime after = timestampUTC.plusHours(3L);

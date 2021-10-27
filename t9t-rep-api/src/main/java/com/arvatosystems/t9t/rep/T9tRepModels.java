@@ -26,13 +26,13 @@ import com.arvatosystems.t9t.rep.request.ReportParamsSearchRequest;
 public final class T9tRepModels implements IViewModelContainer {
 
     private static final CrudViewModel<ReportConfigDTO, FullTrackingWithVersion> REPORT_CONFIG_VIEW_MODEL
-      = new CrudViewModel<ReportConfigDTO, FullTrackingWithVersion>(
+      = new CrudViewModel<>(
         ReportConfigDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         ReportConfigSearchRequest.BClass.INSTANCE,
         ReportConfigCrudRequest.BClass.INSTANCE);
     private static final CrudViewModel<ReportParamsDTO, FullTrackingWithVersion> REPORT_PARAMS_VIEW_MODEL
-      = new CrudViewModel<ReportParamsDTO, FullTrackingWithVersion>(
+      = new CrudViewModel<>(
         ReportParamsDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         ReportParamsSearchRequest.BClass.INSTANCE,

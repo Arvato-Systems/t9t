@@ -39,7 +39,7 @@ public class CamelDataSinkChangeListener implements IEventHandler {
 
     @SuppressWarnings("incomplete-switch")
     @Override
-    public int execute(RequestContext context, EventParameters untypedEvent) {
+    public int execute(final RequestContext context, final EventParameters untypedEvent) {
         final DataSinkChangedEvent event = (DataSinkChangedEvent) untypedEvent;
         final DataSinkDTO dataSink = event.getDataSink();
 
@@ -71,11 +71,11 @@ public class CamelDataSinkChangeListener implements IEventHandler {
         return 0;
     }
 
-    private void remove(DataSinkDTO dataSink) {
+    private void remove(final DataSinkDTO dataSink) {
         camelService.removeRoutes(dataSink);
     }
 
-    private void add(DataSinkDTO dataSink) {
+    private void add(final DataSinkDTO dataSink) {
 
         if (Boolean.FALSE.equals(dataSink.getIsInput())
             && dataSink.getCamelRoute() != null) {

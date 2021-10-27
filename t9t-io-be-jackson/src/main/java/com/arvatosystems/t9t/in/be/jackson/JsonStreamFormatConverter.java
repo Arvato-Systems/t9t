@@ -23,11 +23,12 @@ public class JsonStreamFormatConverter extends AbstractJsonFormatConverter {
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonStreamFormatConverter.class);
 
     @Override
-    public void process(InputStream is) {
+    public void process(final InputStream is) {
         try {
             final Class<? extends BonaPortable> baseClass = this.baseBClass.getBonaPortableClass();
             final JsonParser parser = objectMapper.getFactory().createParser(is);
-            final String recordName = inputSession.getDataSinkDTO().getXmlRecordName(); // will be in this case the records field like {'tenantId': "X", 'records':[{bonaparte object}, {bona...}]}
+            final String recordName = inputSession.getDataSinkDTO().getXmlRecordName(); // will be in this case the records field like
+                // {'tenantId': "X", 'records':[{bonaparte object}, {bona...}]}
             JsonToken current = parser.nextToken();
 
             if (recordName == null) {  // no recordname: expect an array at outer level, no additional fields at main object level (simple structure)
@@ -64,7 +65,7 @@ public class JsonStreamFormatConverter extends AbstractJsonFormatConverter {
                     }
                 }
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LOGGER.error("Jackson JSON exception for data sink {}: {}", inputSession.getDataSinkDTO().getDataSinkId(), ExceptionUtil.causeChain(e));
             throw new T9tException(T9tIOException.IO_EXCEPTION, e.getMessage());
         }

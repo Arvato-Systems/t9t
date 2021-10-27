@@ -38,12 +38,12 @@ public class ApiKeyResolver extends AbstractJpaResolver<ApiKeyRef, ApiKeyDTO, Fu
     }
 
     @Override
-    protected TypedQuery<ApiKeyEntity> createQuery(EntityManager em) {
+    protected TypedQuery<ApiKeyEntity> createQuery(final EntityManager em) {
         return em.createQuery("SELECT e FROM ApiKeyEntity e", ApiKeyEntity.class);
     }
 
     @Override
-    public ApiKeyRef createKey(Long ref) {
+    public ApiKeyRef createKey(final Long ref) {
         return ref == null ? null : new ApiKeyRef(ref);
     }
 }

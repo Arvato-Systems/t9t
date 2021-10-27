@@ -39,26 +39,26 @@ public class SinkCrudRequestHandler extends AbstractCrudSurrogateKey42RequestHan
     private final ISinkDTOMapper sinksMapper = Jdp.getRequired(ISinkDTOMapper.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, SinkCrudRequest crudRequest) throws Exception {
+    public ServiceResponse execute(final RequestContext ctx, final SinkCrudRequest crudRequest) throws Exception {
         return execute(ctx, sinksMapper, sinksResolver, crudRequest);
     }
 
     @Override
-    protected final void validateUpdate(SinkEntity current, SinkDTO intended) {
+    protected final void validateUpdate(final SinkEntity current, final SinkDTO intended) {
         if (intended.getCommTargetChannelType().equals(CommunicationTargetChannelType.FILE)) {
             validateFilePathPattern(intended.getFileOrQueueName());
         }
     }
 
     @Override
-    protected final void validateCreate(SinkDTO intended) {
+    protected final void validateCreate(final SinkDTO intended) {
         if (intended.getCommTargetChannelType().equals(CommunicationTargetChannelType.FILE)) {
             validateFilePathPattern(intended.getFileOrQueueName());
         }
     }
 
-    private void validateFilePathPattern(String pattern) {
-        for (String forbiddenElement : FORBIDDEN_FILE_PATH_ELEMENTS) {
+    private void validateFilePathPattern(final String pattern) {
+        for (final String forbiddenElement : FORBIDDEN_FILE_PATH_ELEMENTS) {
             if (pattern.contains(forbiddenElement)) {
                 throw new T9tException(T9tIOException.FORBIDDEN_FILE_PATH_ELEMENTS);
             }

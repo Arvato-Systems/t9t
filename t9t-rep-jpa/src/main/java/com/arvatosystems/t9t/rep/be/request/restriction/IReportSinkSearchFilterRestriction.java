@@ -26,10 +26,10 @@ import de.jpaw.bonaparte.pojos.api.FieldFilter;
  * @author RREN001
  */
 public interface IReportSinkSearchFilterRestriction {
-    public static final String COMM_TARGET_CHANNEL_FIELD_NAME = "commTargetChannelType";
-    public static final String DATA_SINK_CATEGORY_FIELD_NAME = "dataSink.category";
-    public static final String COMM_FORMAT_TYPE_FIELD_NAME = "commFormatType";
-    public static final String FILE_OR_QUEUE_FIELD_NAME = "fileOrQueueName";
+    String COMM_TARGET_CHANNEL_FIELD_NAME = "commTargetChannelType";
+    String DATA_SINK_CATEGORY_FIELD_NAME = "dataSink.category";
+    String COMM_FORMAT_TYPE_FIELD_NAME = "commFormatType";
+    String FILE_OR_QUEUE_FIELD_NAME = "fileOrQueueName";
 
     /**
      * do searchFilter checking depending on the fieldName

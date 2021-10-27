@@ -40,7 +40,7 @@ public interface IPreOutputDataTransformer extends IDataSinkDefaultConfiguration
      * @return header data
      * @throws T9tException if there is an issue creating header data
      */
-    default List<BonaPortable> headerData(DataSinkDTO sinkCfg, OutputSessionParameters outputSessionParameters) {
+    default List<BonaPortable> headerData(final DataSinkDTO sinkCfg, final OutputSessionParameters outputSessionParameters) {
         return null;
     }
 
@@ -61,7 +61,7 @@ public interface IPreOutputDataTransformer extends IDataSinkDefaultConfiguration
      * @return footer data
      * @throws T9tException if there is an issue creating footer data
      */
-    default List<BonaPortable> footerData(DataSinkDTO sinkCfg, OutputSessionParameters outputSessionParameters) {
+    default List<BonaPortable> footerData(final DataSinkDTO sinkCfg, final OutputSessionParameters outputSessionParameters) {
         return null;
     }
 }

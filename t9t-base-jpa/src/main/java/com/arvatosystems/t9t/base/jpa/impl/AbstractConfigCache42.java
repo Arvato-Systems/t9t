@@ -56,7 +56,7 @@ public abstract class AbstractConfigCache42<DTO extends Ref, TRACKING extends Tr
     protected final ICacheInvalidationRegistry cacheInvalidationRegistry = Jdp.getOptional(ICacheInvalidationRegistry.class);
     protected final IQueryHintSetter           queryHintSetter = Jdp.getOptional(IQueryHintSetter.class);
 
-    protected AbstractConfigCache42(IResolverAnyKey42<Long, TRACKING, ENTITY> resolver, Class<DTO> dtoClass, boolean fallbackDefaultTenant) {
+    protected AbstractConfigCache42(final IResolverAnyKey42<Long, TRACKING, ENTITY> resolver, final Class<DTO> dtoClass, final boolean fallbackDefaultTenant) {
         LOGGER.info("Creating a new Cache for {}" , dtoClass.getSimpleName());
         this.resolver = resolver;
         this.dtoClass = dtoClass;
@@ -86,7 +86,7 @@ public abstract class AbstractConfigCache42<DTO extends Ref, TRACKING extends Tr
         Map<Ref, DTO> tenantCache;
         try {
             tenantCache = configCache.get(tenantRef, () -> readWholeTenant(tenantRef));
-        } catch (ExecutionException e) {
+        } catch (final ExecutionException e) {
             LOGGER.error("Cannot read {} for tenant {}: {}", dtoClass.getSimpleName(), tenantRef, e);
             throw new T9tException(T9tException.RECORD_DOES_NOT_EXIST, ExceptionUtil.causeChain(e));
         }
@@ -95,18 +95,18 @@ public abstract class AbstractConfigCache42<DTO extends Ref, TRACKING extends Tr
 
     abstract protected void populateCache(Map<Ref, DTO> cache, ENTITY e);
 
-    protected Map<Ref, DTO> readWholeTenant(Long tenantRef) {
-        TypedQuery<ENTITY> query = resolver.getEntityManager().createQuery(
+    protected Map<Ref, DTO> readWholeTenant(final Long tenantRef) {
+        final TypedQuery<ENTITY> query = resolver.getEntityManager().createQuery(
                 "SELECT s FROM " + resolver.getBaseJpaEntityClass().getSimpleName()
                 + " s WHERE s.tenantRef = :tenantRef", resolver.getEntityClass());
         query.setParameter("tenantRef", tenantRef);
         queryHintSetter.setComment(query, "RefreshCache" + dtoClass.getSimpleName());
         queryHintSetter.setReadOnly(query);
-        List<ENTITY> results = query.getResultList();
+        final List<ENTITY> results = query.getResultList();
         LOGGER.debug("Filling cache for {} for tenantRef {}: got {} entries", dtoClass.getSimpleName(), tenantRef, results.size());
         // create a hashMap for concurrent access, with size known, it will never be modified later, so use the 3 arg constructor
-        ConcurrentMap<Ref, DTO> resultMap = new ConcurrentHashMap<Ref, DTO>(results.size() * 4, 0.75f, 1);
-        for (ENTITY r: results) {
+        final ConcurrentMap<Ref, DTO> resultMap = new ConcurrentHashMap<>(results.size() * 4, 0.75f, 1);
+        for (final ENTITY r: results) {
             populateCache(resultMap, r);
         }
         return resultMap;

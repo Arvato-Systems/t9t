@@ -45,7 +45,8 @@ public class PublishEventDelegate implements JavaDelegate {
     @Override
     public void execute(DelegateExecution execution) throws Exception {
         try (AutoCloseable mdc = MDCHelper.put(execution)) {
-            final EventParameters eventParameters = requireNonNull(getValueAsBonaPortable(execution, "eventJson", null), "Variable 'eventJson' must not be empty");
+            final EventParameters eventParameters = requireNonNull(getValueAsBonaPortable(execution, "eventJson", null),
+              "Variable 'eventJson' must not be empty");
 
             executor.publishEvent(eventParameters);
         } catch (ApplicationException e) {

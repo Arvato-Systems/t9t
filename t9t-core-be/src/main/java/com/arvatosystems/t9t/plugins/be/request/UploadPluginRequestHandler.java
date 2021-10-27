@@ -33,7 +33,7 @@ public class UploadPluginRequestHandler extends AbstractRequestHandler<UploadPlu
     private final IPluginManager pluginManager = Jdp.getRequired(IPluginManager.class);
 
     @Override
-    public UploadPluginResponse execute(RequestContext ctx, UploadPluginRequest rq) throws Exception {
+    public UploadPluginResponse execute(final RequestContext ctx, final UploadPluginRequest rq) throws Exception {
         final PluginInfo info = pluginManager.loadPlugin(ctx.tenantRef, rq.getJarFile());
         final UploadPluginResponse resp = new UploadPluginResponse();
         LOGGER.info("Temporarily loaded plugin {} of version {}", info.getPluginId(), info.getVersion());

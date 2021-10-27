@@ -24,7 +24,7 @@ import com.arvatosystems.t9t.solr.request.SolrModuleCfgSearchRequest;
 public final class T9tSolrModels implements IViewModelContainer {
 
     private static final CrudViewModel<SolrModuleCfgDTO, FullTrackingWithVersion> SOLR_MODULE_CFG_VIEW_MODEL
-      = new CrudViewModel<SolrModuleCfgDTO, FullTrackingWithVersion>(
+      = new CrudViewModel<>(
         SolrModuleCfgDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         SolrModuleCfgSearchRequest.BClass.INSTANCE,

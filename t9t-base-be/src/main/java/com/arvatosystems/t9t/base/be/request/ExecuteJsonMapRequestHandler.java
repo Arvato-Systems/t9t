@@ -33,9 +33,9 @@ public class ExecuteJsonMapRequestHandler extends AbstractRequestHandler<Execute
     protected final IExecutor messaging = Jdp.getRequired(IExecutor.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, ExecuteJsonMapRequest request) {
-        BonaPortable obj = MapParser.asBonaPortable(request.getRequest(), ServiceRequest.meta$$requestParameters);
-        RequestParameters rp = (RequestParameters)obj;
+    public ServiceResponse execute(final RequestContext ctx, final ExecuteJsonMapRequest request) {
+        final BonaPortable obj = MapParser.asBonaPortable(request.getRequest(), ServiceRequest.meta$$requestParameters);
+        final RequestParameters rp = (RequestParameters)obj;
         ctx.statusText = rp.ret$PQON();
         return messaging.executeSynchronous(ctx, rp);
     }

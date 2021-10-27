@@ -30,10 +30,10 @@ public class DeleteBucketRequestHandler extends AbstractRequestHandler<DeleteBuc
     protected final IBucketEntryEntityResolver resolver = Jdp.getRequired(IBucketEntryEntityResolver.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, DeleteBucketRequest rp) {
-        EntityManager em = resolver.getEntityManager();
+    public ServiceResponse execute(final RequestContext ctx, final DeleteBucketRequest rp) {
+        final EntityManager em = resolver.getEntityManager();
 
-        Query q = em.createQuery(
+        final Query q = em.createQuery(
                 "DELETE FROM BucketEntryEntity be WHERE be.tenantRef = :tenantRef AND be.qualifier = :qualifier AND be.bucket = :bucketNo"
         );
         q.setParameter("tenantRef", resolver.getSharedTenantRef());

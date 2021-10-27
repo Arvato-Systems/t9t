@@ -64,7 +64,7 @@ public class ApplicationConfig extends Application {
     private final Set<Object> allSingletons;         // we use singletons for REST endpoints and the media en/decoder
     private final Set<Class<?>> allClasses;          // anything else
 
-    public ApplicationConfig(@Context ServletConfig servletConfig) {
+    public ApplicationConfig(@Context final ServletConfig servletConfig) {
         LOGGER.info("t9t servlet context initialization START");
         MessagingUtil.initializeBonaparteParsers();
         BonaPortableFactory.useFixedClassLoader(null);
@@ -75,7 +75,7 @@ public class ApplicationConfig extends Application {
 //        Jdp.bindInstanceTo(new SystemConfigurationProvider(), IRemoteDefaultUrlRetriever.class);
 
         // determine (and instantiate) all endpoints.
-        allSingletons = new HashSet<Object>(Jdp.getAll(IT9tRestEndpoint.class));
+        allSingletons = new HashSet<>(Jdp.getAll(IT9tRestEndpoint.class));
         final Set<String> allPackages = new HashSet<>(30);
 
         LOGGER.info("Found {} endpoints:", allSingletons.size());
@@ -113,7 +113,7 @@ public class ApplicationConfig extends Application {
         final boolean enableSwagger = RestUtils.checkIfSet("t9t.restapi.swagger", "T9T_RESTAPI_SWAGGER");
         if (enableSwagger) {
             LOGGER.info("Enabling Swagger REST API documentation endpoints");
-            StaticResourcesResource.enableSwagger = true;
+            StaticResourcesResource.setEnableSwagger(true);
             configureOpenApi(servletConfig, allPackages);
         } else {
             LOGGER.info("Swagger REST API documentation endpoints NOT enabled");
@@ -135,22 +135,25 @@ public class ApplicationConfig extends Application {
               .application(this)
               .openApiConfiguration(oasConfig)
               .buildContext(true);
-        } catch (OpenApiConfigurationException e) {
+        } catch (final OpenApiConfigurationException e) {
              throw new RuntimeException(e.getMessage(), e);
         }
     }
 
-    private OpenAPI createConfiguredOpenApi(Info info) {
+    private OpenAPI createConfiguredOpenApi(final Info info) {
         final OpenAPI oas = new OpenAPI();
         oas.info(info);
         oas.addSecurityItem(new SecurityRequirement().addList("apiKey"));
-        oas.schemaRequirement("apiKey",    new SecurityScheme().type(Type.APIKEY).in(In.HEADER).name("Authorization").description("Use API-Key to authorize access to application - most endpoints are secured"));
-//        oas.schemaRequirement("JWT token", new SecurityScheme().type(Type.APIKEY).in(In.HEADER).name("Authorization").description("Use JWT Token to authorize to application - some of endpoints are secured"));
+        oas.schemaRequirement("apiKey", new SecurityScheme()
+          .type(Type.APIKEY)
+          .in(In.HEADER)
+          .name("Authorization")
+          .description("Use API-Key to authorize access to application - most endpoints are secured"));
 
         final String basePath = JettyServer.getContextPath() + JettyServer.getApplicationPath();
         final String basePathKey = "basePath";
-        ServerVariables variables = new ServerVariables();
-        ServerVariable variable = new ServerVariable();
+        final ServerVariables variables = new ServerVariables();
+        final ServerVariable variable = new ServerVariable();
         variable.setDefault(basePath);
         variables.addServerVariable(basePathKey, variable);
         oas.addServersItem(new Server().url("{" + basePathKey + "}").description("Base Path").variables(variables));

@@ -15,9 +15,9 @@
  */
 package com.arvatosystems.t9t.bpmn.be.request;
 
+import java.time.Instant;
 import java.util.List;
 
-import java.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

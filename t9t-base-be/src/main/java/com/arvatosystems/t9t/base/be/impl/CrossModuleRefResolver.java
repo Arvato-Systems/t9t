@@ -40,7 +40,7 @@ public class CrossModuleRefResolver implements ICrossModuleRefResolver {
     protected final IExecutor messaging = Jdp.getRequired(IExecutor.class);
 
     @Override
-    public <REF extends Ref, REQ extends RefResolverRequest<REF>> Long getRef(REQ req, REF ref) {
+    public <REF extends Ref, REQ extends RefResolverRequest<REF>> Long getRef(final REQ req, final REF ref) {
         if (ref == null) {
             return null; // play null-safe
         }
@@ -54,13 +54,13 @@ public class CrossModuleRefResolver implements ICrossModuleRefResolver {
             throw new T9tException(T9tException.REF_RESOLVER_REQUEST_PARAMETER);
         }
         req.setRef(ref);
-        RefResolverResponse serviceResponse = messaging.executeSynchronousAndCheckResult(req, RefResolverResponse.class);
+        final RefResolverResponse serviceResponse = messaging.executeSynchronousAndCheckResult(req, RefResolverResponse.class);
         return serviceResponse.getKey();
     }
 
     @Override
     public <REF extends Ref, DTO extends REF, TRACKING extends TrackingBase, REQ extends CrudSurrogateKeyRequest<REF, DTO, TRACKING>>
-      DTO getData(REQ req, Long objectRef, boolean onlyActive) {
+      DTO getData(final REQ req, final Long objectRef, final boolean onlyActive) {
         if (objectRef == null) {
             return null; // play null-safe
         }
@@ -71,13 +71,13 @@ public class CrossModuleRefResolver implements ICrossModuleRefResolver {
         req.setCrud(OperationType.READ);
         req.setKey(objectRef);
         req.setOnlyActive(onlyActive);
-        CrudSurrogateKeyResponse<DTO, TRACKING> serviceResponse = messaging.executeSynchronousAndCheckResult(req, CrudSurrogateKeyResponse.class);
+        final CrudSurrogateKeyResponse<DTO, TRACKING> serviceResponse = messaging.executeSynchronousAndCheckResult(req, CrudSurrogateKeyResponse.class);
         return serviceResponse.getData();
     }
 
     @Override
     public <REF extends Ref, DTO extends REF, TRACKING extends TrackingBase, REQ extends CrudSurrogateKeyRequest<REF, DTO, TRACKING>>
-      DTO getData(REQ req, REF ref, boolean onlyActive) {
+      DTO getData(final REQ req, final REF ref, final boolean onlyActive) {
         if (ref == null) {
             return null; // play null-safe
         }
@@ -93,19 +93,19 @@ public class CrossModuleRefResolver implements ICrossModuleRefResolver {
         req.setCrud(OperationType.READ);
         req.setNaturalKey(ref);
         req.setOnlyActive(onlyActive);
-        CrudSurrogateKeyResponse<DTO, TRACKING> serviceResponse = messaging.executeSynchronousAndCheckResult(req, CrudSurrogateKeyResponse.class);
+        final CrudSurrogateKeyResponse<DTO, TRACKING> serviceResponse = messaging.executeSynchronousAndCheckResult(req, CrudSurrogateKeyResponse.class);
         return serviceResponse.getData();
     }
 
     @Override
     public <REF extends Ref, DTO extends REF, TRACKING extends TrackingBase, REQ extends CrudSurrogateKeyRequest<REF, DTO, TRACKING>>
-      DTO getData(REQ req, Long objectRef) {
+      DTO getData(final REQ req, final Long objectRef) {
         return getData(req, objectRef, false);
     }
 
     @Override
     public <REF extends Ref, DTO extends REF, TRACKING extends TrackingBase, REQ extends CrudSurrogateKeyRequest<REF, DTO, TRACKING>>
-      DTO getData(REQ req, REF ref) {
+      DTO getData(final REQ req, final REF ref) {
         return getData(req, ref, false);
     }
 }

@@ -50,20 +50,20 @@ public class GridConfigRequestHandler extends AbstractRequestHandler<GridConfigR
     private final ITranslationProvider translationProvider = Jdp.getRequired(ITranslationProvider.class);
     private final IExecutor executor = Jdp.getRequired(IExecutor.class);
 
-    public static final ConcurrentMap<String, Object> UNTRANSLATED_HEADERS = new ConcurrentHashMap<String, Object>();
-    public static final ConcurrentMap<String, Object> UNTRANSLATED_DEFAULTS = new ConcurrentHashMap<String, Object>();
+    public static final ConcurrentMap<String, Object> UNTRANSLATED_HEADERS = new ConcurrentHashMap<>();
+    public static final ConcurrentMap<String, Object> UNTRANSLATED_DEFAULTS = new ConcurrentHashMap<>();
 
     @Override
-    public GridConfigResponse execute(RequestContext ctx, GridConfigRequest request) throws Exception {
+    public GridConfigResponse execute(final RequestContext ctx, final GridConfigRequest request) throws Exception {
         final String gridId = request.getGridId();
 
         // Get the LeanGridConfigResponse using GridConfigRequest
-        LeanGridConfigRequest leanGridConfigRequest = new LeanGridConfigRequest();
+        final LeanGridConfigRequest leanGridConfigRequest = new LeanGridConfigRequest();
         leanGridConfigRequest.setGridId(request.getGridId());
         leanGridConfigRequest.setNoFallbackLanguages(request.getNoFallbackLanguages());
         leanGridConfigRequest.setOverrideLanguage(request.getOverrideLanguage());
         leanGridConfigRequest.setSelection(request.getSelection());
-        LeanGridConfigResponse leanGridConfigResponse = executor.executeSynchronousAndCheckResult(leanGridConfigRequest,
+        final LeanGridConfigResponse leanGridConfigResponse = executor.executeSynchronousAndCheckResult(leanGridConfigRequest,
                 LeanGridConfigResponse.class);
 
         if (leanGridConfigResponse == null) {
@@ -73,7 +73,7 @@ public class GridConfigRequestHandler extends AbstractRequestHandler<GridConfigR
                     "No configuration stored for lean grid ID: " + gridId);
         }
 
-        UILeanGridPreferences leanPrefs = leanGridConfigResponse.getLeanGridConfig();
+        final UILeanGridPreferences leanPrefs = leanGridConfigResponse.getLeanGridConfig();
 
         if (leanPrefs == null) {
             LOGGER.warn("No lean grid configuration found, I have {}",
@@ -95,18 +95,19 @@ public class GridConfigRequestHandler extends AbstractRequestHandler<GridConfigR
             LOGGER.warn("No grid configuration found, I have {}", ToStringHelper.toStringML(IGridConfigContainer.GRID_CONFIG_REGISTRY.keySet()));
             throw new T9tException(T9tException.RECORD_DOES_NOT_EXIST, "No configuration stored for grid ID: " + gridId);
         }
-        boolean alsoInvisible = request.getTranslateInvisibleHeaders();
+        final boolean alsoInvisible = request.getTranslateInvisibleHeaders();
 
         // Reorder the UIGridPreferences based on UILeanGridPreferences
         prefs = reorderColumns(prefs, leanPrefs);
 
         // mix in the translations...
-        List<String> selectedFields = new ArrayList<String>(prefs.getColumns().size());
-        for (UIColumnConfiguration c : prefs.getColumns())
+        final List<String> selectedFields = new ArrayList<>(prefs.getColumns().size());
+        for (final UIColumnConfiguration c : prefs.getColumns()) {
             if (alsoInvisible || c.getVisible())
                 selectedFields.add(c.getFieldName());
+        }
 
-        GridConfigResponse response = new GridConfigResponse();
+        final GridConfigResponse response = new GridConfigResponse();
         response.setGridConfig(prefs);
         response.setHeaders(translationProvider.getHeaderTranslations(
                 ctx.tenantId,
@@ -118,18 +119,18 @@ public class GridConfigRequestHandler extends AbstractRequestHandler<GridConfigR
         LOGGER.debug("Headers length check for {} fields ({} xlated)", selectedFields.size(), response.getHeaders().size());
         int index = 0;
         int maxlength = 0;
-        for (String s: response.getHeaders()) {
+        for (final String s: response.getHeaders()) {
             if (s != null) {
                 if (s.length() > maxlength)
                     maxlength = s.length();
                 if (s.startsWith("${")) {
-                    String pqon = s.substring(2, s.length()-1);
+                    final String pqon = s.substring(2, s.length() - 1);
                     UNTRANSLATED_HEADERS.putIfAbsent(pqon, "x");
-                    int i = pqon.lastIndexOf('.');
+                    final int i = pqon.lastIndexOf('.');
                     if (i < 0)
                         UNTRANSLATED_DEFAULTS.putIfAbsent(pqon, "x");
                     else
-                        UNTRANSLATED_DEFAULTS.putIfAbsent(pqon.substring(i+1), "x");
+                        UNTRANSLATED_DEFAULTS.putIfAbsent(pqon.substring(i + 1), "x");
                 }
                 if (s.length() > 160) {
                     LOGGER.error("Translation for header {}: {} is too long: {} characters: {}",
@@ -151,31 +152,31 @@ public class GridConfigRequestHandler extends AbstractRequestHandler<GridConfigR
      * @param uiLeanGrid
      * @return
      */
-    private UIGridPreferences reorderColumns(UIGridPreferences uiGridSource, UILeanGridPreferences uiLeanGrid) {
+    private UIGridPreferences reorderColumns(final UIGridPreferences uiGridSource, final UILeanGridPreferences uiLeanGrid) {
         if (uiGridSource == null || uiLeanGrid == null) {
             LOGGER.warn("Unable to merge due to UIGridPreferences or UILeanGridPreferences object is null. ");
             throw new T9tException(T9tException.CL_INTERNAL_LOGIC_ERROR,
                     "No configuration passed into convert method ");
         }
 
-        UIGridPreferences targetUIGridPreferences = uiGridSource.ret$MutableClone(true, true);
+        final UIGridPreferences targetUIGridPreferences = uiGridSource.ret$MutableClone(true, true);
 
-        Map<String, UIColumnConfiguration> uiColumnConfMap = new HashMap<>();
+        final Map<String, UIColumnConfiguration> uiColumnConfMap = new HashMap<>();
 
         /**
          * Put all the uiGridPreference Columns into a map with its fieldname as
          * key.
          */
-        for (UIColumnConfiguration colConf : targetUIGridPreferences.getColumns()) {
+        for (final UIColumnConfiguration colConf : targetUIGridPreferences.getColumns()) {
             uiColumnConfMap.put(colConf.getFieldName(), colConf);
         }
 
-        List<UIColumnConfiguration> orderedUIColConfigurations = new ArrayList<>();
+        final List<UIColumnConfiguration> orderedUIColConfigurations = new ArrayList<>();
 
         /** Reorder based on the ordering on UILeanGridPreferences **/
         // Fields -> visible = true
-        for (String uiLeanColFieldname : uiLeanGrid.getFields()) {
-            UIColumnConfiguration conf = uiColumnConfMap.get(uiLeanColFieldname);
+        for (final String uiLeanColFieldname : uiLeanGrid.getFields()) {
+            final UIColumnConfiguration conf = uiColumnConfMap.get(uiLeanColFieldname);
             if (conf == null) {
                 LOGGER.error("Problem in grid configuration: Cannot find column of name {} in lean grid for vm {} / {}",
                         uiLeanColFieldname, uiGridSource.getViewModel(), uiLeanGrid.getViewModel());
@@ -187,11 +188,11 @@ public class GridConfigRequestHandler extends AbstractRequestHandler<GridConfigR
 
         // Filter field name does not exist in fields -> visible = false
         if (uiLeanGrid.getFilters() != null) {
-            for (UIFilter filter : uiLeanGrid.getFilters()) {
-                String uiLeanColFilterFieldname = filter.getFieldName();
+            for (final UIFilter filter : uiLeanGrid.getFilters()) {
+                final String uiLeanColFilterFieldname = filter.getFieldName();
 
                 if (!uiLeanGrid.getFields().contains(uiLeanColFilterFieldname)) {
-                    UIColumnConfiguration conf = uiColumnConfMap.get(uiLeanColFilterFieldname);
+                    final UIColumnConfiguration conf = uiColumnConfMap.get(uiLeanColFilterFieldname);
                     conf.setVisible(false);
                     orderedUIColConfigurations.add(conf);
                 }

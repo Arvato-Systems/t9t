@@ -36,7 +36,7 @@ public class DocTemplateResolver extends AbstractJpaResolver<DocTemplateRef, Doc
     }
 
     @Override
-    public DocTemplateRef createKey(Long ref) {
+    public DocTemplateRef createKey(final Long ref) {
         return ref == null ? null : new DocTemplateRef(ref);
     }
 }

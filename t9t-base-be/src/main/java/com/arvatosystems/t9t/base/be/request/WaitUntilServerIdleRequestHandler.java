@@ -34,10 +34,10 @@ public class WaitUntilServerIdleRequestHandler extends AbstractReadOnlyRequestHa
     private static final Logger LOGGER = LoggerFactory.getLogger(WaitUntilServerIdleRequestHandler.class);
 
     private final RequestContextScope requestContextScope = Jdp.getRequired(RequestContextScope.class);
-    private final long DEFAULT_DELAY   = 20L;
-    private final long DEFAULT_TIMEOUT = 10_000L;
-    private final long DEFAULT_CONFIRM_DELAY = 10L;
-    private final int  DEFAULT_CONFIRM_COUNT = 3;
+    private static final long DEFAULT_DELAY   = 20L;
+    private static final long DEFAULT_TIMEOUT = 10_000L;
+    private static final long DEFAULT_CONFIRM_DELAY = 10L;
+    private static final int  DEFAULT_CONFIRM_COUNT = 3;
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final WaitUntilServerIdleRequest rq) {
@@ -76,7 +76,7 @@ public class WaitUntilServerIdleRequestHandler extends AbstractReadOnlyRequestHa
                 Thread.sleep(delay);
                 ++retries;
             } while (System.currentTimeMillis() < timeoutAt);
-        } catch (InterruptedException e) {
+        } catch (final InterruptedException e) {
             LOGGER.info("Interrupted while waiting for {} idle after {} ms", what, System.currentTimeMillis() - startAt);
             resp.setReturnCode(2);  // not idle within timeout
             return resp;
@@ -86,7 +86,7 @@ public class WaitUntilServerIdleRequestHandler extends AbstractReadOnlyRequestHa
         return resp;
     }
 
-    private boolean isNowIdle(Long onlySessionRef, Long onlyTenantRef, int confirmCount, long confirmAfterMs) throws InterruptedException {
+    private boolean isNowIdle(final Long onlySessionRef, final Long onlyTenantRef, int confirmCount, final long confirmAfterMs) throws InterruptedException {
         for (;;) {
             if (requestContextScope.numberOfProcesses(onlySessionRef, onlyTenantRef) > 1) {
                 // not idle

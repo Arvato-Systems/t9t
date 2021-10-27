@@ -26,7 +26,7 @@ import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 public class EnumTranslatorComposerFilter<E extends Exception> extends DelegatingBaseComposer<E> {
     private final ISpecificTranslationProvider translator;
 
-    public EnumTranslatorComposerFilter(MessageComposer<E> delegateComposer, ISpecificTranslationProvider translator) {
+    public EnumTranslatorComposerFilter(final MessageComposer<E> delegateComposer, final ISpecificTranslationProvider translator) {
         super(delegateComposer);
         this.translator = translator;
     }
@@ -42,7 +42,7 @@ public class EnumTranslatorComposerFilter<E extends Exception> extends Delegatin
     // enum with alphanumeric expansion: delegate to Null/String
     // use the existing token meta here, because the name is better, depsite the length may be too short
     @Override
-    public void addEnum(EnumDataItem di, AlphanumericElementaryDataItem token, BonaTokenizableEnum n) throws E {
+    public void addEnum(final EnumDataItem di, final AlphanumericElementaryDataItem token, final BonaTokenizableEnum n) throws E {
         delegateComposer.addField(token, n == null ? null : translator.translateEnum(di, n));
     }
 

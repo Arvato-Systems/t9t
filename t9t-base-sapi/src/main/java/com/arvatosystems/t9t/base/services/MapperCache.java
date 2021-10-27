@@ -25,22 +25,22 @@ public final class MapperCache {
     }
 
     /** Produces a field path name from a given prefix and a field name. */
-    public static String concat(String prefix, String field) {
+    public static String concat(final String prefix, final String field) {
         return prefix == null ? field : (prefix + "." + field);
     }
-    public static Map<Long, Ref> getCache(Map<String, Map<Long, Ref>> cache, String pqon) {
-        return cache.computeIfAbsent(pqon, (x) -> new HashMap<Long, Ref>());
+    public static Map<Long, Ref> getCache(final Map<String, Map<Long, Ref>> cache, final String pqon) {
+        return cache.computeIfAbsent(pqon, (x) -> new HashMap<>());
     }
-    public static Map<Long, Ref> getCache(Map<String, Map<Long, Ref>> cache, String pqon, int initialSize) {
-        return cache.computeIfAbsent(pqon, (x) -> new HashMap<Long, Ref>(initialSize * 2));
+    public static Map<Long, Ref> getCache(final Map<String, Map<Long, Ref>> cache, final String pqon, final int initialSize) {
+        return cache.computeIfAbsent(pqon, (x) -> new HashMap<>(initialSize * 2));
     }
-    public static <V extends Ref> Map<Long, V> getCache(Map<String, Map<Long, Ref>> cache, Class<V> dtoCls, int initialSize) {
-        return (Map<Long, V>) cache.computeIfAbsent(dtoCls.getSimpleName(), x -> new HashMap<Long, Ref>(initialSize * 2));
+    public static <V extends Ref> Map<Long, V> getCache(final Map<String, Map<Long, Ref>> cache, final Class<V> dtoCls, final int initialSize) {
+        return (Map<Long, V>) cache.computeIfAbsent(dtoCls.getSimpleName(), x -> new HashMap<>(initialSize * 2));
     }
-    public static void addToCache(Map<String, Map<Long, Ref>> cache, String pqon, Long key, Ref dto) {
+    public static void addToCache(final Map<String, Map<Long, Ref>> cache, final String pqon, final Long key, final Ref dto) {
         getCache(cache, pqon).put(key, dto);
     }
-    public static Ref getFromCache(Map<String, Map<Long, Ref>> cache, String pqon, Long key) {
+    public static Ref getFromCache(final Map<String, Map<Long, Ref>> cache, final String pqon, final Long key) {
         return getCache(cache, pqon).get(key);
     }
 }

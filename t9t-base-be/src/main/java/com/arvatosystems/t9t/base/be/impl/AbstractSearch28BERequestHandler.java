@@ -15,7 +15,6 @@
  */
 package com.arvatosystems.t9t.base.be.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -27,10 +26,11 @@ import com.arvatosystems.t9t.base.search.ReadAll28Response;
 import com.arvatosystems.t9t.base.search.Search28Request;
 import com.arvatosystems.t9t.base.services.AbstractSearchRequestHandler;
 import com.arvatosystems.t9t.base.services.IOutputSession;
+import com.google.common.collect.ImmutableList;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
+import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ApplicationException;
 import de.jpaw.util.ExceptionUtil;
@@ -39,11 +39,11 @@ import de.jpaw.util.ExceptionUtil;
  * as well as applying extra user related restrictions. */
 public abstract class AbstractSearch28BERequestHandler<DTO extends BonaPortable, TRACKING extends TrackingBase, REQUEST
   extends Search28Request<DTO, TRACKING>> extends AbstractSearchRequestHandler<REQUEST> {
-    private final List<DataWithTrackingS<DTO, TRACKING>> EMPTY_RESULT_LIST = new ArrayList<DataWithTrackingS<DTO, TRACKING>>(0);
+    private final List<DataWithTrackingS<DTO, TRACKING>> emptyResultList = ImmutableList.<DataWithTrackingS<DTO, TRACKING>>of();
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractSearch28BERequestHandler.class);
 
-    protected ReadAll28Response<DTO, TRACKING> execute(List<DataWithTrackingS<DTO, TRACKING>> result, OutputSessionParameters op) {
-        ReadAll28Response<DTO, TRACKING> rs = new ReadAll28Response<DTO, TRACKING>();
+    protected ReadAll28Response<DTO, TRACKING> execute(final List<DataWithTrackingS<DTO, TRACKING>> result, final OutputSessionParameters op) {
+        final ReadAll28Response<DTO, TRACKING> rs = new ReadAll28Response<>();
         LOGGER.debug("{} result size has size {}", this.getClass().getSimpleName(), result.size());
 
         if (op == null) {
@@ -53,14 +53,14 @@ public abstract class AbstractSearch28BERequestHandler<DTO extends BonaPortable,
             // push output into an outputSession (export it)
             op.setSmartMappingForDataWithTracking(Boolean.TRUE);
             try (IOutputSession outputSession = Jdp.getRequired(IOutputSession.class)) {
-                Long sinkRef = outputSession.open(op);
-                for (DataWithTrackingS<DTO, TRACKING> e : result) {
+                final Long sinkRef = outputSession.open(op);
+                for (final DataWithTrackingS<DTO, TRACKING> e : result) {
                     outputSession.store(e);
                 }
                 // successful close: store ref
                 rs.setSinkRef(sinkRef);
-                rs.setDataList(EMPTY_RESULT_LIST);
-            } catch (Exception e) {
+                rs.setDataList(emptyResultList);
+            } catch (final Exception e) {
                 if (e instanceof ApplicationException)
                     throw (ApplicationException)e;
                 throw new ApplicationException(T9tException.GENERAL_EXCEPTION, ExceptionUtil.causeChain(e));

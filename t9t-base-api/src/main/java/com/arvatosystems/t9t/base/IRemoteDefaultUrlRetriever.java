@@ -33,7 +33,7 @@ public interface IRemoteDefaultUrlRetriever {
     }
 
     /** Get the path for login requests. This is derived from the regular path. */
-    static String getDefaultRemoteUrlLogin(String mainUrl) {
+    static String getDefaultRemoteUrlLogin(final String mainUrl) {
         final int lastSlash = mainUrl.lastIndexOf('/');
         return mainUrl.substring(0, lastSlash) + "/login";
     }

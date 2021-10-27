@@ -27,7 +27,7 @@ import com.arvatosystems.t9t.base.services.RequestContext;
 public class PingRequestHandler extends AbstractReadOnlyRequestHandler<PingRequest> {
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, PingRequest pingRequest) {
+    public ServiceResponse execute(final RequestContext ctx, final PingRequest pingRequest) {
         return ok();
     }
 }

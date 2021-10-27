@@ -25,7 +25,7 @@ import de.jpaw.bonaparte.core.BonaPortableClass;
 @FunctionalInterface
 public interface IInputFormatConverter {
     /** Performs any optional initial output. */
-    default void open(IInputSession inputSession, Map<String, Object> params, BonaPortableClass<?> baseBClass) {
+    default void open(final IInputSession inputSession, final Map<String, Object> params, final BonaPortableClass<?> baseBClass) {
         // no action required in simple cases
     }
 
@@ -39,7 +39,9 @@ public interface IInputFormatConverter {
      * Processes a byte array. Optional. By default, transforms into the stream method. If present, then allows for faster processing
      * if the format converter also processes byte[].
      * */
-    default void process(byte [] data) { new ByteArrayInputStream(data); }
+    default void process(final byte[] data) {
+        new ByteArrayInputStream(data);
+    }
 
 
     /** Ends processing, writes a summary into the sink table. */

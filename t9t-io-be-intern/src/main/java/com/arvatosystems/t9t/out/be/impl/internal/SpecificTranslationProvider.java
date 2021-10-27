@@ -36,15 +36,15 @@ public class SpecificTranslationProvider implements ISpecificTranslationProvider
     private final String language;
 
     // boilerplate code...
-    public SpecificTranslationProvider(ITranslationProvider translationProvider, String tenantId, String language) {
+    public SpecificTranslationProvider(final ITranslationProvider translationProvider, final String tenantId, final String language) {
         this.translationProvider = translationProvider;
         this.tenantId = tenantId;
         this.language = language;
     }
 
     @Override
-    public String translateEnum(EnumDataItem di, BonaTokenizableEnum n) {
-        String translation = translationProvider.getEnumTranslation(n, tenantId, language);
+    public String translateEnum(final EnumDataItem di, final BonaTokenizableEnum n) {
+        final String translation = translationProvider.getEnumTranslation(n, tenantId, language);
 
         if (translation == null) {
             LOGGER.warn("Missing enum translation. class: {}, symbol: {}, tenantId: {}, language: {}", n.getClass(), n, tenantId, language);

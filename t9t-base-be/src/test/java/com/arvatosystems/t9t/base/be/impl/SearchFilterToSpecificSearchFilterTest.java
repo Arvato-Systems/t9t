@@ -38,7 +38,6 @@ import de.jpaw.dp.Jdp;
 
 public class SearchFilterToSpecificSearchFilterTest {
 
-    ISearchFilterUtil searchFilterUtil;
     private ISearchTools searchTools = Mockito.mock(ISearchTools.class);
 
     @BeforeEach
@@ -65,7 +64,7 @@ public class SearchFilterToSpecificSearchFilterTest {
 
     @Test
     public void shouldReduceFilterToWantedFields() {
-        searchFilterUtil = new SearchFilterUtil();
+        final ISearchFilterUtil searchFilterUtil = new SearchFilterUtil();
 
         Mockito.when(searchTools.getAllSearchFilterFieldName(Mockito.any(AndFilter.class), Mockito.any(Set.class)))
                 .thenReturn(Sets.newHashSet("C", "D"));

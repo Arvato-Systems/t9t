@@ -45,12 +45,12 @@ public class XEnumsetChosenboxDataField<E extends AbstractXEnumBase<E>, S extend
     protected final Chosenbox c = new Chosenbox();
     protected final XEnumSetDefinition xesd;
     protected final XEnumDefinition xed;
-    protected final Map<E, ComboBoxItem2<E>> cbItems = new HashMap<E, ComboBoxItem2<E>>();
+    protected final Map<E, ComboBoxItem2<E>> cbItems = new HashMap<>();
     protected final Set<String> enumRestrictions;
 
-    public XEnumsetChosenboxDataField(DataFieldParameters params, String enumDtoRestrictions) {
+    public XEnumsetChosenboxDataField(final DataFieldParameters params, final String enumDtoRestrictions) {
         super(params);
-        XEnumSetDataItem xdi = (XEnumSetDataItem)params.cfg;
+        final XEnumSetDataItem xdi = (XEnumSetDataItem)params.cfg;
         xesd = xdi.getBaseXEnumset();
         xed = xesd.getBaseXEnum();
 
@@ -85,24 +85,25 @@ public class XEnumsetChosenboxDataField<E extends AbstractXEnumBase<E>, S extend
 
     @Override
     public S getValue() {
-        Class<S> cls = xesd.getClassRef();
+        final Class<S> cls = xesd.getClassRef();
         try {
-            Set<E> data = c.getSelectedObjects();
-            S instance = cls.newInstance();
+            final Set<E> data = c.getSelectedObjects();
+            final S instance = cls.newInstance();
             if (data == null || data.isEmpty())
                 return instance;
                 // return isRequired ? instance : null;  // return null for empty sets, unless the field is required, which means return an empty set
-            for (E x : data)
+            for (final E x : data) {
                 instance.add(x);
+            }
             return instance;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.error("Cannot construct XEnumset {} ({}): {}", getFieldName(), cls.getSimpleName(), ExceptionUtil.causeChain(e));
             return null;
         }
     }
 
     @Override
-    public void setValue(S data) {
+    public void setValue(final S data) {
         LOGGER.debug("{}.setData({})", getFieldName(), data);
         if (data == null) {
             clear();
@@ -112,7 +113,7 @@ public class XEnumsetChosenboxDataField<E extends AbstractXEnumBase<E>, S extend
     }
 
     @Override
-    public void setDisabled(boolean disabled) {
+    public void setDisabled(final boolean disabled) {
         c.setDisabled(disabled);
     }
 }

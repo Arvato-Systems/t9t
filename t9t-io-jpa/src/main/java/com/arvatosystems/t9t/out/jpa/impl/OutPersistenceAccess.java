@@ -62,12 +62,12 @@ public class OutPersistenceAccess implements IOutPersistenceAccess {
      *             if configuration can't be found
      */
     @Override
-    public DataSinkDTO getDataSinkDTO(String dataSinkId) {
+    public DataSinkDTO getDataSinkDTO(final String dataSinkId) {
         if (dataSinkId == null) {
             throw new T9tException(T9tException.ILE_REQUIRED_PARAMETER_IS_NULL, "dataSinkId");
         }
 
-        List<DataSinkEntity> sinks = dataSinkEntityResolver.findByDataSinkIdWithDefault(true, dataSinkId);
+        final List<DataSinkEntity> sinks = dataSinkEntityResolver.findByDataSinkIdWithDefault(true, dataSinkId);
         if ((sinks == null) || sinks.isEmpty()) {
             throw new T9tException(T9tException.MISSING_CONFIGURATION, "dataSinkId=" + dataSinkId);
         }
@@ -86,12 +86,12 @@ public class OutPersistenceAccess implements IOutPersistenceAccess {
     }
 
     @Override
-    public void storeNewSink(SinkDTO sink) {
+    public void storeNewSink(final SinkDTO sink) {
         sinkResolver.save(sinkMapper.mapToEntity(sink, false));
     }
 
     @Override
-    public SinkDTO getSink(Long sinkRef) {
+    public SinkDTO getSink(final Long sinkRef) {
         return sinkMapper.mapToDto(sinkRef);
     }
 
@@ -101,12 +101,12 @@ public class OutPersistenceAccess implements IOutPersistenceAccess {
     }
 
     @Override
-    public void storeOutboundMessage(OutboundMessageDTO sink) {
+    public void storeOutboundMessage(final OutboundMessageDTO sink) {
         outboundMessageResolver.save(outboundMessageMapper.mapToEntity(sink, false));
     }
 
     @Override
-    public List<DataSinkDTO> getDataSinkDTOsForEnvironmentAndChannel(String environment, CommunicationTargetChannelType channel) {
+    public List<DataSinkDTO> getDataSinkDTOsForEnvironmentAndChannel(final String environment, final CommunicationTargetChannelType channel) {
         final String sql = "SELECT i FROM DataSinkEntity i WHERE "
                 + (channel     == null ? "" : "i.commTargetChannelType = :commTargetChannelType AND ")
                 + (environment == null ? "" : "i.environment = :environment AND ")
@@ -124,7 +124,7 @@ public class OutPersistenceAccess implements IOutPersistenceAccess {
     }
 
     @Override
-    public void markAsProcessed(Long sinkRef) {
+    public void markAsProcessed(final Long sinkRef) {
         final SinkEntity sink = sinkResolver.getEntityDataForKey(sinkRef, false);
         sink.setProcessed(Boolean.TRUE);
     }

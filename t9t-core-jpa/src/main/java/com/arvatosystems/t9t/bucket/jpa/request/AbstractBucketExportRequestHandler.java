@@ -40,7 +40,7 @@ public abstract class AbstractBucketExportRequestHandler<T extends AbstractBucke
     protected abstract void exportChunk(IOutputSession os, List<Long> refs, T request, String qualifier, int bucketNoToSelect);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, T rp) throws Exception {
+    public ServiceResponse execute(final RequestContext ctx, final T rp) throws Exception {
         final String qualifier  = rp.getBucketId()   == null ? rp.ret$MetaData().getProperties().get("bucketId")   : rp.getBucketId();
         final String dataSinkId = rp.getDataSinkId() == null ? rp.ret$MetaData().getProperties().get("dataSinkId") : rp.getDataSinkId();
         if (qualifier == null || dataSinkId == null)
@@ -59,10 +59,10 @@ public abstract class AbstractBucketExportRequestHandler<T extends AbstractBucke
         // first, delete the target bucket, unless disabled
         if (deleteBucket && switchBucket) {
             ctx.statusText = "Deleting new bucket " + qualifier + ":" + newBucketNo;
-            DeleteBucketRequest dbrq = new DeleteBucketRequest();
+            final DeleteBucketRequest dbrq = new DeleteBucketRequest();
             dbrq.setQualifier(qualifier);
             dbrq.setBucketNo(newBucketNo);
-            ServiceResponse deleteResp = autoExecutor.execute(ctx, dbrq);
+            final ServiceResponse deleteResp = autoExecutor.execute(ctx, dbrq);
             if (!ApplicationException.isOk(deleteResp.getReturnCode()))
                 return deleteResp;
         }
@@ -70,10 +70,10 @@ public abstract class AbstractBucketExportRequestHandler<T extends AbstractBucke
         // next, switch the bucket
         if (switchBucket) {
             ctx.statusText = "Switching to new bucket " + qualifier + ":" + newBucketNo;
-            SwitchCurrentBucketNoRequest srq = new SwitchCurrentBucketNoRequest();
+            final SwitchCurrentBucketNoRequest srq = new SwitchCurrentBucketNoRequest();
             srq.setQualifier(qualifier);
             srq.setDeleteBeforeSwitch(switchBucket);
-            ServiceResponse switchResp = autoExecutor.execute(ctx, srq);
+            final ServiceResponse switchResp = autoExecutor.execute(ctx, srq);
             if (!ApplicationException.isOk(switchResp.getReturnCode()))
                 return switchResp;
 
@@ -83,31 +83,31 @@ public abstract class AbstractBucketExportRequestHandler<T extends AbstractBucke
         }
 
         ctx.statusText = "Selecting bucket refs for bucket " + qualifier + ":" + bucketNoToSelect;
-        List<Long> refsToExport = getRefs(qualifier, bucketNoToSelect);
-        EntityManager em = entryResolver.getEntityManager();
+        final List<Long> refsToExport = getRefs(qualifier, bucketNoToSelect);
+        final EntityManager em = entryResolver.getEntityManager();
         em.clear();
 
         try (IOutputSession os = splittingOutputSessionprovider.get(rp.getMaxRecordsPerFile())) {
-            OutputSessionParameters osp = new OutputSessionParameters();
+            final OutputSessionParameters osp = new OutputSessionParameters();
             osp.setDataSinkId(dataSinkId);
             os.open(osp);
 
             Integer chunkSize = os.getChunkSize();
             if (chunkSize == null || chunkSize < 1 || chunkSize > MAX_CHUNK_SIZE)
                 chunkSize = MAX_CHUNK_SIZE;
-            int chunks = (refsToExport.size() + (chunkSize - 1)) / chunkSize;
+            final int chunks = (refsToExport.size() + (chunkSize - 1)) / chunkSize;
 
             for (int chunk = 0; chunk < chunks; ++chunk) {
                 ctx.statusText = "Exporting chunk " + (chunk + 1) + " of " + chunks + " for bucket " + qualifier;
-                int endIndex = chunk < chunks - 1 ? (chunk + 1) * chunkSize : refsToExport.size();
-                List<Long> subListToProcess = refsToExport.subList(chunk * chunkSize, endIndex);  // a list of min 1 and max CHUNK_SIZE entries
+                final int endIndex = chunk < chunks - 1 ? (chunk + 1) * chunkSize : refsToExport.size();
+                final List<Long> subListToProcess = refsToExport.subList(chunk * chunkSize, endIndex);  // a list of min 1 and max CHUNK_SIZE entries
                 LOGGER.debug("Processing chunk of {} entries", subListToProcess.size());
 
                 exportChunk(os, subListToProcess, rp, qualifier, bucketNoToSelect);
                 em.flush();
                 em.clear();
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.error("Problem during export: ", e);
             throw e;
         }

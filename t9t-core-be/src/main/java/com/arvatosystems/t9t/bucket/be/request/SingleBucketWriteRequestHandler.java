@@ -34,15 +34,15 @@ public class SingleBucketWriteRequestHandler extends AbstractRequestHandler<Sing
     protected final IExecutor executor = Jdp.getRequired(IExecutor.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, SingleBucketWriteRequest rq) {
+    public ServiceResponse execute(final RequestContext ctx, final SingleBucketWriteRequest rq) {
         if (!rq.getAsync()) {
-            Map<BucketWriteKey, Integer> cmds = new HashMap<BucketWriteKey, Integer>(2 * rq.getValues().size());
-            for (Map.Entry<String, Integer> me: rq.getValues().entrySet()) {
+            final Map<BucketWriteKey, Integer> cmds = new HashMap<>(2 * rq.getValues().size());
+            for (final Map.Entry<String, Integer> me: rq.getValues().entrySet()) {
                 cmds.put(new BucketWriteKey(ctx.tenantRef, rq.getObjectRef(), me.getKey()), me.getValue());
             }
             bucketWriter.writeToBuckets(cmds);
         } else {
-            for (Map.Entry<String, Integer> me: rq.getValues().entrySet()) {
+            for (final Map.Entry<String, Integer> me: rq.getValues().entrySet()) {
                 executor.writeToBuckets(Collections.singleton(me.getKey()), rq.getObjectRef(), me.getValue());
             }
         }

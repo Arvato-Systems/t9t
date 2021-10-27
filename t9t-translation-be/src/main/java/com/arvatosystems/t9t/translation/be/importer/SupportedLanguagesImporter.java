@@ -46,12 +46,12 @@ public class SupportedLanguagesImporter {
      * @return
      */
     public Set<? extends String> readSupportedLanguages() {
-        Set<String> su = new HashSet<>();
+        final Set<String> su = new HashSet<>();
         LOGGER.info("Reading property file with languages supported in translations of headers and enums");
 
-        ClassLoader cl = this.getClass().getClassLoader();
+        final ClassLoader cl = this.getClass().getClassLoader();
         try {
-            Enumeration<URL> urls = cl.getResources(SUPPORTED_LANGUAGES_FILE_NAME);
+            final Enumeration<URL> urls = cl.getResources(SUPPORTED_LANGUAGES_FILE_NAME);
 
             while (urls.hasMoreElements()) {
                 try (BufferedReader br = new BufferedReader(new InputStreamReader(urls.nextElement().openStream()))) {
@@ -63,11 +63,11 @@ public class SupportedLanguagesImporter {
 
                         su.add(line.trim());
                     }
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     LOGGER.error("Reading property file with supported languages failed.", e);
                 }
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LOGGER.error("Reading property file with supported languages failed.", e);
         }
 

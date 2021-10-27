@@ -33,8 +33,8 @@ public abstract class AbstractRefResolverRequestHandler<REF extends Ref, TRACKIN
     protected abstract IResolverSurrogateKey<REF, TRACKING, ENTITY> getResolver();
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, REQUEST request) throws Exception {
-        RefResolverResponse rs = new RefResolverResponse();
+    public ServiceResponse execute(final RequestContext ctx, final REQUEST request) throws Exception {
+        final RefResolverResponse rs = new RefResolverResponse();
         rs.setKey(getResolver().getRef(request.getRef(), true));
         rs.setReturnCode(0);
         return rs;

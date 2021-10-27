@@ -42,8 +42,8 @@ public class ImportWithZTest {
 
         m.setSchema(null);
 
-        byte[] _bytes = sourceXml.getBytes(StandardCharsets.UTF_8);
-        ByteArrayInputStream srcStream = new ByteArrayInputStream(_bytes);
+        byte[] bytes = sourceXml.getBytes(StandardCharsets.UTF_8);
+        ByteArrayInputStream srcStream = new ByteArrayInputStream(bytes);
         Object result = m.unmarshal(srcStream);
 
         Assertions.assertNotNull(result, "XML parse result should not be null");

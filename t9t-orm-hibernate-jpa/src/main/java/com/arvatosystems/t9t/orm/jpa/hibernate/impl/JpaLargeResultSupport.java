@@ -55,10 +55,10 @@ public class JpaLargeResultSupport<E> implements IJpaLargeResultSupport<E> {
     }
 
     @Override
-    public void start(EntityManager em, TypedQuery<E> query, int chunkSize) {
-        this.em = em;
-        this.chunkSize = chunkSize;
-        HibernateQuery hq = (HibernateQuery) query;
+    public void start(final EntityManager withEM, final TypedQuery<E> query, final int withChunkSize) {
+        this.em = withEM;
+        this.chunkSize = withChunkSize;
+        final HibernateQuery hq = (HibernateQuery) query;
         untypedHibernateQuery = hq.getHibernateQuery();
         untypedHibernateQuery.setFetchSize(Integer.valueOf(chunkSize));
         untypedHibernateQuery.setReadOnly(true);
@@ -85,7 +85,7 @@ public class JpaLargeResultSupport<E> implements IJpaLargeResultSupport<E> {
         if (NEED_CLEAR) {
             em.clear();
         }
-        List<E> resultSet = new ArrayList<E>(chunkSize);
+        final List<E> resultSet = new ArrayList<>(chunkSize);
         int i = 0;
         while ((i < chunkSize) && results.next()) {
             resultSet.add((E) results.get(0));
@@ -95,11 +95,10 @@ public class JpaLargeResultSupport<E> implements IJpaLargeResultSupport<E> {
     }
 
     @Override
-    public void end(TypedQuery<E> query) {
+    public void end(final TypedQuery<E> query) {
         results.close();
         results = null;
         em = null;
         untypedHibernateQuery = null;
     }
-
 }

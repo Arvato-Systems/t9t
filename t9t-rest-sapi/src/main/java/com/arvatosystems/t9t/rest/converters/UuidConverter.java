@@ -25,14 +25,14 @@ import javax.ws.rs.ext.ParamConverter;
 public class UuidConverter implements ParamConverter<UUID> {
 
     @Override
-    public UUID fromString(String value) {
+    public UUID fromString(final String value) {
         if (value == null)
             return null;
         return UUID.fromString(value);
     }
 
     @Override
-    public String toString(UUID value) {
+    public String toString(final UUID value) {
         if (value == null)
             return null;
         return value.toString();

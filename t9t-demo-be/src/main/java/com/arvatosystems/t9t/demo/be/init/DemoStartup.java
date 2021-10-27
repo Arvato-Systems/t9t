@@ -19,12 +19,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.jpaw.dp.Startup;
+import de.jpaw.dp.StartupOnly;
 
 @Startup(9999)
-public class DemoStartup {
+public class DemoStartup implements StartupOnly {
     private static final Logger LOGGER = LoggerFactory.getLogger(DemoStartup.class);
 
-    public static void onStartup() {
+    @Override
+    public void onStartup() {
         LOGGER.info("Startup code in extra JARs");
     }
 }

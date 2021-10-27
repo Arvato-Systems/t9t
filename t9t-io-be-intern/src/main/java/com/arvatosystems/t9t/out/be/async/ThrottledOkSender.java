@@ -36,15 +36,16 @@ public class ThrottledOkSender implements IAsyncSender {
     private static final Logger LOGGER = LoggerFactory.getLogger(ThrottledOkSender.class);
 
     @Override
-    public void init(AsyncQueueDTO queue) {
+    public void init(final AsyncQueueDTO queue) {
         LOGGER.info("Creating IAsyncSender OK for queue {}", queue.getAsyncQueueId());
     }
 
     @Override
-    public AsyncHttpResponse send(AsyncChannelDTO channel, BonaPortable payload, int timeout, Long messageObjectRef) throws InterruptedException {
+    public AsyncHttpResponse send(final AsyncChannelDTO channel, final BonaPortable payload, final int timeout, final Long messageObjectRef)
+      throws InterruptedException {
         if (timeout > 0)
             Thread.sleep(timeout);
-        AsyncHttpResponse resp = new AsyncHttpResponse();
+        final AsyncHttpResponse resp = new AsyncHttpResponse();
         resp.setHttpReturnCode(200);
         return resp;
     }

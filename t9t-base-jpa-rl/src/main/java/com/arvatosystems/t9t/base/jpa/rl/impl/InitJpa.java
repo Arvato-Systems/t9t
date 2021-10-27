@@ -32,42 +32,43 @@ import com.arvatosystems.t9t.init.InitContainers;
 import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Startup;
+import de.jpaw.dp.StartupOnly;
 
 @Startup(12000)
-public class InitJpa {
+public class InitJpa implements StartupOnly {
     private static final Logger LOGGER = LoggerFactory.getLogger(InitJpa.class);
 
-    public static EntityManagerFactory presetEntityManagerFactory = null;  // can be defined in scenarios inside a Java EE server
+    @Override
+    public void onStartup() {
+        final EntityManagerFactory emf;
+        final T9tServerConfiguration cfg = Jdp.getRequired(T9tServerConfiguration.class);
+        final String puName = cfg.getPersistenceUnitName();
 
-    public static void onStartup() throws Exception {
-        if (presetEntityManagerFactory == null) {
-            EntityManagerFactory emf;
-            T9tServerConfiguration cfg = Jdp.getRequired(T9tServerConfiguration.class);
-            String puName = cfg.getPersistenceUnitName();
-
-            if (cfg.getDatabaseConfiguration() != null) {
-                LOGGER.info("Creating customized JPA EMF for PU name {}", puName);
-                IEMFCustomizer cst = Jdp.getRequired(IEMFCustomizer.class);
+        if (cfg.getDatabaseConfiguration() != null) {
+            LOGGER.info("Creating customized JPA EMF for PU name {}", puName);
+            final IEMFCustomizer cst = Jdp.getRequired(IEMFCustomizer.class);
+            try {
                 emf = cst.getCustomizedEmf(puName, cfg.getDatabaseConfiguration());
-            } else {
-                LOGGER.info("Creating default JPA EMF for PU name {}", puName);
-                emf = Persistence.createEntityManagerFactory(puName);
+            } catch (final Exception e1) {
+                LOGGER.error("Exception calling EMF customizer: ", e1);
+                throw new RuntimeException(e1);
             }
-            Jdp.bindInstanceTo(emf, EntityManagerFactory.class);
-            Jdp.registerWithCustomProvider(PersistenceProviderJPA.class, new PersistenceProviderJPAProvider(emf));
         } else {
-            LOGGER.info("Using preset JPA EMF");
-            Jdp.bindInstanceTo(presetEntityManagerFactory, EntityManagerFactory.class);
-            Jdp.registerWithCustomProvider(PersistenceProviderJPA.class, new PersistenceProviderJPAProvider(presetEntityManagerFactory));
+            LOGGER.info("Creating default JPA EMF for PU name {}", puName);
+            emf = Persistence.createEntityManagerFactory(puName);
         }
+        Jdp.bindInstanceTo(emf, EntityManagerFactory.class);
+        Jdp.registerWithCustomProvider(PersistenceProviderJPA.class, new PersistenceProviderJPAProvider(emf));
 
         // next lines are just for user info
         final Set<Class<?>> mcl = InitContainers.getClassesAnnotatedWith(MappedSuperclass.class);
-        for (Class<?> e : mcl)
+        for (final Class<?> e : mcl) {
             LOGGER.info("Found mapped Superclass class {}", e.getCanonicalName());
+        }
 
         final Set<Class<?>> entities = InitContainers.getClassesAnnotatedWith(Entity.class);
-        for (Class<?> e : entities)
+        for (final Class<?> e : entities) {
             LOGGER.info("Found entity class {}", e.getCanonicalName());
+        }
     }
 }

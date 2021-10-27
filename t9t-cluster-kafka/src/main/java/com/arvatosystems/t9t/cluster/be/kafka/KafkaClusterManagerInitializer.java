@@ -56,7 +56,7 @@ public class KafkaClusterManagerInitializer implements StartupShutdown {
     public static final String KAFKA_CLUSTER_TOPIC_NAME = "t9t.cluster";
 
     private static final Collection<TopicPartition> MY_SHARDS = new HashSet<>(100);
-    protected static Collection<Integer> MY_INDEXES = Collections.singletonList(Integer.valueOf(0));  // single node
+    protected static Collection<Integer> myIndexes = Collections.singletonList(Integer.valueOf(0));  // single node
     protected static int totalNumberOfPartitons = 1;  // single node
 
     @IsLogicallyFinal  // set by open() method
@@ -72,28 +72,28 @@ public class KafkaClusterManagerInitializer implements StartupShutdown {
     @IsLogicallyFinal
     private volatile boolean pleaseStop = false;
 
-    private static String nvl(String a, String b) {
+    private static String nvl(final String a, final String b) {
         if (a == null || a.isEmpty()) {
             return b;
         }
         return a;
     }
 
-    private static void dumpPartitions(String intro, boolean recomputePartitions) {
+    private static void dumpPartitions(final String intro, final boolean recomputePartitions) {
         LOGGER.info("{} number of shards is {}", intro, MY_SHARDS.size());
         LOGGER.info("Partitions are: {}", MY_SHARDS.stream().map(tp -> Integer.toString(tp.partition())).collect(Collectors.joining(", ")));
         if (recomputePartitions) {
             final List<Integer> shards = new ArrayList<>(MY_SHARDS.size());
-            for (TopicPartition tp: MY_SHARDS) {
+            for (final TopicPartition tp: MY_SHARDS) {
                 shards.add(tp.partition());
             }
-            MY_INDEXES = Collections.unmodifiableCollection(shards);
+            myIndexes = Collections.unmodifiableCollection(shards);
         }
     }
 
     private static class MyRebalancer implements ConsumerRebalanceListener {
         @Override
-        public void onPartitionsRevoked(Collection<TopicPartition> partitions) {
+        public void onPartitionsRevoked(final Collection<TopicPartition> partitions) {
             LOGGER.info("Rebalance! {} partitions revoked", partitions.size());
             dumpPartitions("BEFORE", false);
             MY_SHARDS.removeAll(partitions);
@@ -101,7 +101,7 @@ public class KafkaClusterManagerInitializer implements StartupShutdown {
         }
 
         @Override
-        public void onPartitionsAssigned(Collection<TopicPartition> partitions) {
+        public void onPartitionsAssigned(final Collection<TopicPartition> partitions) {
             LOGGER.info("Rebalance! {} partitions assigned", partitions.size());
             dumpPartitions("BEFORE", false);
             MY_SHARDS.addAll(partitions);
@@ -118,7 +118,7 @@ public class KafkaClusterManagerInitializer implements StartupShutdown {
             consumer.subscribe(Collections.singletonList(topicName), new MyRebalancer());
             final List<PartitionInfo> partitions = consumer.partitionsFor(topicName);
             LOGGER.info("Initially {} partitions have been assigned", partitions.size());
-            for (PartitionInfo pi: partitions) {
+            for (final PartitionInfo pi: partitions) {
                 MY_SHARDS.add(new TopicPartition(pi.topic(), pi.partition()));
             }
             dumpPartitions("INITIAL", true);
@@ -129,7 +129,7 @@ public class KafkaClusterManagerInitializer implements StartupShutdown {
             }
             LOGGER.info("Termination requested, waiting for all pending commands...");
             consumer.commitAsync();
-            consumer.close(Duration.ofMillis(2000l));
+            consumer.close(Duration.ofMillis(2000L));
             return Boolean.TRUE;
         }
     }

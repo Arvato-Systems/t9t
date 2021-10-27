@@ -37,8 +37,8 @@ public class AsyncQueueNoop implements IAsyncQueue {
     }
 
     @Override
-    public Long sendAsync(String asyncChannelId, BonaPortable payload, Long objectRef) {
-        int num = counter.incrementAndGet();
+    public Long sendAsync(final String asyncChannelId, final BonaPortable payload, final Long objectRef) {
+        final int num = counter.incrementAndGet();
         LOGGER.debug("async message {} of type {} sent to channel {}", num, payload.getClass().getCanonicalName(), asyncChannelId);
         return null;
     }

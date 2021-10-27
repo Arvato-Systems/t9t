@@ -27,7 +27,7 @@ import javax.xml.bind.Marshaller
 @AddLogger
 class ConfigProvider {
     static final String DEFAULT_CFG_FILENAME = System.getProperty("user.home") + "/.t9tconfig.xml"
-    static final ConcurrentMap<String,String> customParameters = new ConcurrentHashMap<String,String>(16);
+    static final ConcurrentMap<String, String> customParameters = new ConcurrentHashMap<String, String>(16);
     static final char EQUALS_SIGN = '=';
 
     static val postgresConfig = new T9tServerConfiguration => [

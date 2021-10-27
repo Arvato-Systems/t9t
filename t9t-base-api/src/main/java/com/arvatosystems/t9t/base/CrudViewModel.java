@@ -30,10 +30,10 @@ public class CrudViewModel<DTO extends BonaPortable, TRACKING extends TrackingBa
     public final BonaPortableClass<? extends CrudAnyKeyRequest<DTO, TRACKING>> crudClass;
 
     public CrudViewModel(
-            BonaPortableClass<DTO> dtoClass,
-            BonaPortableClass<TRACKING> trackingClass,
-            BonaPortableClass<? extends SearchCriteria> searchClass,
-            BonaPortableClass<? extends CrudAnyKeyRequest<DTO, TRACKING>> crudClass) {
+            final BonaPortableClass<DTO> dtoClass,
+            final BonaPortableClass<TRACKING> trackingClass,
+            final BonaPortableClass<? extends SearchCriteria> searchClass,
+            final BonaPortableClass<? extends CrudAnyKeyRequest<DTO, TRACKING>> crudClass) {
         this.dtoClass = dtoClass;
         this.trackingClass = trackingClass;
         this.searchClass = searchClass;

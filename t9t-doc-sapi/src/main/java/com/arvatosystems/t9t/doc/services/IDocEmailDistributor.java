@@ -34,7 +34,7 @@ public interface IDocEmailDistributor {
         DocumentSelector    documentSelector,
         MediaData           emailSubject,
         MediaData           emailBody,
-        Map<String,MediaData> cids,
+        Map<String, MediaData> cids,
         MediaData           alternateBody,
         List<MediaData>     attachments,
         boolean             storeEmail,

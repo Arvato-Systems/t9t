@@ -19,17 +19,17 @@ public interface IRefGenerator {
     /**
      * Factor to multiply the value obtained from sequences with.
      */
-    final long KEY_FACTOR = 10000L;
+    long KEY_FACTOR = 10000L;
 
     /**
      * Offset to be added to scaled keys generated in the backup location.
      */
-    final int OFFSET_BACKUP_LOCATION = 5000;
+    int OFFSET_BACKUP_LOCATION = 5000;
 
     /** Offsets of sequences which are unscaled (don't contain a RTTI). */
-    final int OFFSET_UNSCALED_T9T           = 5000;
-    final int OFFSET_UNSCALED_APPLICATION   = 6000;
-    final int OFFSET_UNSCALED_CUSTOMIZATION = 7000;
+    int OFFSET_UNSCALED_T9T           = 5000;
+    int OFFSET_UNSCALED_APPLICATION   = 6000;
+    int OFFSET_UNSCALED_CUSTOMIZATION = 7000;
 
     /**
      * Returns a valid technical Id which is guaranteed to be unique for all keys obtained through this method.
@@ -47,8 +47,8 @@ public interface IRefGenerator {
      *            The key to extract the RTTI from.
      * @return the RTTI
      */
-    default int getRtti(long id) {
-        int rttiPlusLocation = (int) (id % KEY_FACTOR);
+    default int getRtti(final long id) {
+        final int rttiPlusLocation = (int) (id % KEY_FACTOR);
         return rttiPlusLocation >= OFFSET_BACKUP_LOCATION ? rttiPlusLocation - OFFSET_BACKUP_LOCATION : rttiPlusLocation;
     }
     /**

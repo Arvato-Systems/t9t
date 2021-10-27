@@ -35,12 +35,12 @@ import de.jpaw.dp.Singleton;
 public class UniqueConstraintExceptionMapper implements IJpaCrudTechnicalExceptionMapper {
 
     @Override
-    public boolean handles(PersistenceException e) {
+    public boolean handles(final PersistenceException e) {
         return e.getCause() instanceof ConstraintViolationException;
     }
 
     @Override
-    public T9tException mapException(PersistenceException e) {
+    public T9tException mapException(final PersistenceException e) {
         return new T9tException(T9tException.UNIQUE_CONSTRAINT_VIOLATION);
     }
 

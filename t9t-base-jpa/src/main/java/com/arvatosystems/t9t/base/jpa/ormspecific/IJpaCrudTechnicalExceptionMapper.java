@@ -35,7 +35,7 @@ public interface IJpaCrudTechnicalExceptionMapper {
      *            technical exception thrown during entity crud operation
      * @return <code>true</code> if mapper can map given exception into business exception, <code>false</code> otherwise.
      */
-    public boolean handles(PersistenceException technicalException);
+    boolean handles(PersistenceException technicalException);
 
     /**
      * Maps given technical exception into business exception.
@@ -44,6 +44,5 @@ public interface IJpaCrudTechnicalExceptionMapper {
      *            technical exception thrown during entity crud operation
      * @return corresponding business exception
      */
-    public T9tException mapException(PersistenceException technicalException);
-
+    T9tException mapException(PersistenceException technicalException);
 }

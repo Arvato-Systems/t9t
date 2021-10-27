@@ -41,10 +41,10 @@ public class ListenerConfigCrudRequestHandler extends
     private final IListenerConfigDTOMapper sinksMapper = Jdp.getRequired(IListenerConfigDTOMapper.class);
 
     @Override
-    public CrudSurrogateKeyResponse<ListenerConfigDTO, FullTrackingWithVersion> execute(RequestContext ctx, ListenerConfigCrudRequest crudRequest)
+    public CrudSurrogateKeyResponse<ListenerConfigDTO, FullTrackingWithVersion> execute(final RequestContext ctx, final ListenerConfigCrudRequest crudRequest)
       throws Exception {
         // TODO: update for delete as well
-        CrudSurrogateKeyResponse<ListenerConfigDTO, FullTrackingWithVersion> resp = execute(ctx, sinksMapper, entityResolver, crudRequest);
+        final CrudSurrogateKeyResponse<ListenerConfigDTO, FullTrackingWithVersion> resp = execute(ctx, sinksMapper, entityResolver, crudRequest);
         final ListenerConfigDTO dto = resp.getData();
         if (dto != null) {
             switch (crudRequest.getCrud()) {

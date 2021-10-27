@@ -17,12 +17,14 @@ package com.arvatosystems.t9t.cfg.be;
 
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Startup;
+import de.jpaw.dp.StartupOnly;
 
 @Startup(0)
-public class InitCfgBe {
+public final class InitCfgBe implements StartupOnly {
 
     // started by Jdp initialization
-    public static void onStartup() {
+    @Override
+    public void onStartup() {
         Jdp.bind(ConfigProvider.getConfiguration());
     }
 }

@@ -33,14 +33,14 @@ public interface IEntityMapper28<KEY extends Serializable, DTO extends BonaPorta
 
     /** Maps an entity to a DataWithTrackingS.
      */
-    public DataWithTrackingS<DTO, TRACKING> mapToDwt(ENTITY entity);
+    DataWithTrackingS<DTO, TRACKING> mapToDwt(ENTITY entity);
 
     /** Maps a collection of entities to a list of special DTOs which include the tracking columns.
      * Used by generic search and generic "ReadAll".
      * @param entityList The input list. List entries may not be null.
      * @return a list, which may be empty.
      */
-    public List<DataWithTrackingS<DTO, TRACKING>> mapListToDwt(Collection<ENTITY> entityList);
+    List<DataWithTrackingS<DTO, TRACKING>> mapListToDwt(Collection<ENTITY> entityList);
 
     /** Postprocesses a search output, either mapping it to some ReadAllResponse, or exporting it via IOutputSession and
      * returning the sinkRef (if op != null).
@@ -49,19 +49,19 @@ public interface IEntityMapper28<KEY extends Serializable, DTO extends BonaPorta
      * @return the full web service response structure
      * @throws Exception
      */
-    public ReadAll28Response<DTO, TRACKING> createReadAllResponse(List<ENTITY> data, OutputSessionParameters op) throws Exception;
+    ReadAll28Response<DTO, TRACKING> createReadAllResponse(List<ENTITY> data, OutputSessionParameters op) throws Exception;
 
     /** returns the entity's tenantId without the use of reflection, or null if the entity does not contain
      * a tenantId field.
      * @param e
      * @return the tenantRef
      */
-    public String getTenantId(ENTITY e);
+    String getTenantId(ENTITY e);
 
     /** Sets the entity's tenantId without the use of reflection, or NOOP if the entity does not contain
      * a tenantId field.
      * @param e - an instance of the Entity
      * @param tenantId - the tenant to be set (if null, the current call's tenant ID will be used)
      */
-    public void setTenantId(ENTITY e, String tenantId);
+    void setTenantId(ENTITY e, String tenantId);
 }

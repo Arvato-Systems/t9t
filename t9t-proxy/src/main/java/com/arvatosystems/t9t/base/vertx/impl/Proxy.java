@@ -29,22 +29,22 @@ public class Proxy extends AbstractVerticle {
 
     @Override
     public void start() throws Exception {
-        HttpClient client = vertx.createHttpClient(new HttpClientOptions());
+        final HttpClient client = vertx.createHttpClient(new HttpClientOptions());
         vertx.createHttpServer().requestHandler(req -> {
             System.out.println("Proxying request: " + req.uri());
             client.request(req.method(), 8282, "localhost", req.uri(), asyncRequestHandler -> {
 
-                HttpClientRequest c_req = asyncRequestHandler.result();
-                if (c_req == null) {
+                final HttpClientRequest cReq = asyncRequestHandler.result();
+                if (cReq == null) {
                     System.out.println("Proxying request is NULL!");
                     return;
                 }
 
-                c_req.setChunked(true);
-                c_req.headers().setAll(req.headers());
+                cReq.setChunked(true);
+                cReq.headers().setAll(req.headers());
 
-                c_req.response().onComplete( responseHandler -> {
-                    HttpClientResponse response = responseHandler.result();
+                cReq.response().onComplete(responseHandler -> {
+                    final HttpClientResponse response = responseHandler.result();
                     if (response == null) {
                         System.out.println("Proxying response is NULL!");
                         return;
@@ -65,9 +65,9 @@ public class Proxy extends AbstractVerticle {
 
                 req.handler(data -> {
                     System.out.println("Proxying request body " + data.toString("ISO-8859-1"));
-                    c_req.write(data);
+                    cReq.write(data);
                 });
-                req.endHandler((v) -> c_req.end());
+                req.endHandler((v) -> cReq.end());
             });
         }).listen(8080);
     }

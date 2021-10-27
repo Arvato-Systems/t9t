@@ -43,7 +43,7 @@ public class FormatGeneratorXmlNoNs2 extends AbstractFormatGeneratorXml {
     }
 
     @Override
-    protected QName getQname(String id) {
+    protected QName getQname(final String id) {
         LOGGER.trace("Getting QNAME for {}", id);
         if (xmlNamespacePrefix == null || xmlNamespacePrefix.trim().length() == 0)
             return new QName(xmlDefaultNamespace, id);
@@ -63,17 +63,17 @@ public class FormatGeneratorXmlNoNs2 extends AbstractFormatGeneratorXml {
         // https://stackoverflow.com/questions/2816176/how-to-marshal-without-a-namespace
         writer.setNamespaceContext(new NamespaceContext() {
             @Override
-            public Iterator getPrefixes(String namespaceURI) {
+            public Iterator getPrefixes(final String namespaceURI) {
                 return null;
             }
 
             @Override
-            public String getPrefix(String namespaceURI) {
+            public String getPrefix(final String namespaceURI) {
                 return "";
             }
 
             @Override
-            public String getNamespaceURI(String prefix) {
+            public String getNamespaceURI(final String prefix) {
                 return null;
             }
         });

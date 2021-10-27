@@ -53,17 +53,17 @@ public abstract class AbstractCrudAnyKey42RequestHandler<
     protected final List<IJpaCrudTechnicalExceptionMapper> crudTechnicalExceptionMappers = Jdp.getAll(IJpaCrudTechnicalExceptionMapper.class);
 
     @Override
-    public boolean isReadOnly(REQUEST params) {
+    public boolean isReadOnly(final REQUEST params) {
         return params.getCrud() == OperationType.READ || params.getCrud() == OperationType.LOOKUP || params.getCrud() == OperationType.VERIFY;
     }
 
     @Override
-    public OperationType getAdditionalRequiredPermission(REQUEST request) {
+    public OperationType getAdditionalRequiredPermission(final REQUEST request) {
         return request.getCrud();       // must have permission for the crud operation
     }
 
     // plausi checks for parameters
-    protected void validateParameters(CrudAnyKeyRequest<DTO, TRACKING> rq, boolean keyIsNull) {
+    protected void validateParameters(final CrudAnyKeyRequest<DTO, TRACKING> rq, final boolean keyIsNull) {
         // check version, if required
         // check data: CREATE and MERGE need data! Anything else should not have it, but plausis deactivated because the UI sends data records
         switch (rq.getCrud()) {
@@ -103,7 +103,7 @@ public abstract class AbstractCrudAnyKey42RequestHandler<
      * @throws T9tException
      *             if a plausibility check has been found to fail.
      */
-    protected void validateUpdate(ENTITY current, DTO intended) {
+    protected void validateUpdate(final ENTITY current, final DTO intended) {
         // no operation in the default implementation, provided as a hook for
         // customization
     }
@@ -136,7 +136,7 @@ public abstract class AbstractCrudAnyKey42RequestHandler<
      * @throws T9tException
      *             if a plausibility check has been found to fail.
      */
-    protected void validateCreate(DTO intended) {
+    protected void validateCreate(final DTO intended) {
         // no operation in the default implementation, provided as a hook for
         // customization
     }
@@ -153,7 +153,7 @@ public abstract class AbstractCrudAnyKey42RequestHandler<
      * @throws T9tException
      *             if a plausibility check has been found to fail.
      */
-    protected void validateCreate(ENTITY intended, DTO dto) {
+    protected void validateCreate(final ENTITY intended, final DTO dto) {
         // no operation in the default implementation, provided as a hook for
         // customization
     }
@@ -167,7 +167,7 @@ public abstract class AbstractCrudAnyKey42RequestHandler<
      * @throws T9tException
      *             if a plausibility check has been found to fail.
      */
-    protected void validateDelete(ENTITY current) {
+    protected void validateDelete(final ENTITY current) {
         // no operation in the default implementation, provided as a hook for
         // customization
     }
@@ -177,7 +177,7 @@ public abstract class AbstractCrudAnyKey42RequestHandler<
      * disk directly, but also to hide data. Can be used by customizations. The
      * default implementation just returns the parameter unmodified.
      */
-    protected DTO postRead(DTO result, ENTITY data) {
+    protected DTO postRead(final DTO result, final ENTITY data) {
         return result;
     }
 
@@ -192,9 +192,9 @@ public abstract class AbstractCrudAnyKey42RequestHandler<
      * @throws T9tException
      *             t9t specific exception.
      */
-    protected void handleCrudTechnicalException(PersistenceException technicalException) {
+    protected void handleCrudTechnicalException(final PersistenceException technicalException) {
         if (crudTechnicalExceptionMappers != null) {
-            for (IJpaCrudTechnicalExceptionMapper exceptionMapper : crudTechnicalExceptionMappers) {
+            for (final IJpaCrudTechnicalExceptionMapper exceptionMapper : crudTechnicalExceptionMappers) {
                 if (exceptionMapper.handles(technicalException)) {
                     throw exceptionMapper.mapException(technicalException);
                 }
@@ -204,28 +204,28 @@ public abstract class AbstractCrudAnyKey42RequestHandler<
     }
 
 
-    protected ENTITY performCreate(IEntityMapper42<KEY, DTO, TRACKING, ENTITY> mapper, IResolverAnyKey42<KEY, TRACKING, ENTITY> resolver,
-            REQUEST crudRequest, EntityManager entityManager) {
+    protected ENTITY performCreate(final IEntityMapper42<KEY, DTO, TRACKING, ENTITY> mapper, final IResolverAnyKey42<KEY, TRACKING, ENTITY> resolver,
+            final REQUEST crudRequest, final EntityManager entityManager) {
         // check
         validateCreate(crudRequest.getData()); // plausibility check
-        ENTITY result = mapper.mapToEntity(crudRequest.getData(), crudRequest.getOnlyActive());
+        final ENTITY result = mapper.mapToEntity(crudRequest.getData(), crudRequest.getOnlyActive());
         validateCreate(result, crudRequest.getData()); // plausibility
 
         try {
             resolver.save(result);
             entityManager.flush();
             entityManager.refresh(result); // update references to other entities
-        } catch (PersistenceException e) {
+        } catch (final PersistenceException e) {
             handleCrudTechnicalException(e);
         }
 
         return result;
     }
 
-    protected ENTITY performUpdate(IEntityMapper42<KEY, DTO, TRACKING, ENTITY> mapper, IResolverAnyKey42<KEY, TRACKING, ENTITY> resolver,
-            REQUEST crudRequest, EntityManager entityManager, KEY key) {
-        DTO dto = crudRequest.getData();
-        ENTITY result = resolver.find(key);
+    protected ENTITY performUpdate(final IEntityMapper42<KEY, DTO, TRACKING, ENTITY> mapper, final IResolverAnyKey42<KEY, TRACKING, ENTITY> resolver,
+            final REQUEST crudRequest, final EntityManager entityManager, final KEY key) {
+        final DTO dto = crudRequest.getData();
+        final ENTITY result = resolver.find(key);
         if (result == null) {
             throw new T9tException(T9tException.WRITE_ACCESS_NOT_FOUND_PROBABLY_OTHER_TENANT, "key is " + key.toString() + " of class " + key.getClass().getSimpleName());
         }
@@ -245,7 +245,7 @@ public abstract class AbstractCrudAnyKey42RequestHandler<
         try {
             entityManager.flush();
             entityManager.refresh(result); // update references to other entities
-        } catch (PersistenceException e) {
+        } catch (final PersistenceException e) {
             handleCrudTechnicalException(e);
         }
 

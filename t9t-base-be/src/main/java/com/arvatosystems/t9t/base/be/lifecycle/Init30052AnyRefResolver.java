@@ -52,14 +52,14 @@ public class Init30052AnyRefResolver implements StartupOnly {
         // reuse the results of some prior scan (or scan now)
         final Reflections reflections = ReflectionsPackageCache.get(MessagingUtil.TWENTYEIGHT_PACKAGE_PREFIX);
         int count = 0;
-        for (Class<? extends LeanSearchRequest> cls : reflections.getSubTypesOf(LeanSearchRequest.class)) {
+        for (final Class<? extends LeanSearchRequest> cls : reflections.getSubTypesOf(LeanSearchRequest.class)) {
             if (!Modifier.isAbstract(cls.getModifiers())) {
                 // create an instance of this request, and use it to access the request handler
                 try {
                     final LeanSearchRequest dummyRequestInstance = cls.getDeclaredConstructor().newInstance();
                     globalCustomization.getRequestHandler(dummyRequestInstance);
                     ++count;
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     LOGGER.warn("Exception obtaining instance of request class {}: {}", cls.getCanonicalName(), ExceptionUtil.causeChain(e));
                 }
             }

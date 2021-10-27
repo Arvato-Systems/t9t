@@ -29,9 +29,9 @@ public class GetDefaultScreenRequestHandler extends AbstractRequestHandler<GetDe
     protected final IUserEntityResolver resolver = Jdp.getRequired(IUserEntityResolver.class);
 
     @Override
-    public GetDefaultScreenResponse execute(RequestContext ctx, GetDefaultScreenRequest request) throws Exception {
-        UserEntity userEntity = resolver.find(ctx.userRef);
-        GetDefaultScreenResponse response = new GetDefaultScreenResponse();
+    public GetDefaultScreenResponse execute(final RequestContext ctx, final GetDefaultScreenRequest request) throws Exception {
+        final UserEntity userEntity = resolver.find(ctx.userRef);
+        final GetDefaultScreenResponse response = new GetDefaultScreenResponse();
         response.setDefaultScreenId(userEntity.getDefaultScreenId());
         return response;
     }

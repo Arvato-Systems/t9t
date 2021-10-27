@@ -26,20 +26,20 @@ import com.arvatosystems.t9t.email.request.EmailSearchRequest;
 public final class T9tEmailModels implements IViewModelContainer {
 
     private static final CrudViewModel<EmailDTO, FullTrackingWithVersion> EMAIL_LOG_VIEW_MODEL
-      = new CrudViewModel<EmailDTO, FullTrackingWithVersion>(
+      = new CrudViewModel<>(
         EmailDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         EmailSearchRequest.BClass.INSTANCE,
         EmailCrudRequest.BClass.INSTANCE);
     private static final CrudViewModel<EmailModuleCfgDTO, FullTrackingWithVersion> EMAIL_MODULE_CFG_VIEW_MODEL
-      = new CrudViewModel<EmailModuleCfgDTO, FullTrackingWithVersion>(
+      = new CrudViewModel<>(
         EmailModuleCfgDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         EmailModuleCfgSearchRequest.BClass.INSTANCE,
         EmailModuleCfgCrudRequest.BClass.INSTANCE);
 
-	@Override
-	public void register() {
+    @Override
+    public void register() {
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("emailLog",  EMAIL_LOG_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("emailModuleCfg",  EMAIL_MODULE_CFG_VIEW_MODEL);
     }

@@ -45,7 +45,7 @@ public class ProcessCamelRouteRequestHandler extends AbstractRequestHandler<Proc
     protected final IDataSinkDTOMapper dataSinkMapper = Jdp.getRequired(IDataSinkDTOMapper.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, ProcessCamelRouteRequest rq) throws Exception {
+    public ServiceResponse execute(final RequestContext ctx, final ProcessCamelRouteRequest rq) throws Exception {
         final SinkEntity sink = sinkResolver.getEntityDataForKey(rq.getSinkRef(), false);
         if (sink.getCamelTransferStatus() == ExportStatusEnum.RESPONSE_OK) {
             LOGGER.info("Sink {} for {} was already transferred - skipping", rq.getSinkRef(), sink.getFileOrQueueName());
@@ -59,15 +59,19 @@ public class ProcessCamelRouteRequestHandler extends AbstractRequestHandler<Proc
                 absolutePath += GZIP_EXTENSION;
             }
         }
-        MediaTypeDescriptor mediaType = MediaTypeInfo.getFormatByType(sink.getCommFormatType());
+        final MediaTypeDescriptor mediaType = MediaTypeInfo.getFormatByType(sink.getCommFormatType());
         LOGGER.info("Transferring sink {} as {} for path {}", rq.getSinkRef(), mediaType, absolutePath);
         try {
-            if (rq.getTargetFileName() != null && rq.getTargetFileName().length() > 0 && rq.getTargetCamelRoute() != null && rq.getTargetCamelRoute().length() > 0) {
-                fileToCamelProducer.sendFileOverCamelUsingTargetFileNameAndTargetCamelRoute(absolutePath, mediaType, dataSinkMapper.mapToDto(sink.getDataSink()), rq.getTargetFileName(), rq.getTargetCamelRoute());
+            if (rq.getTargetFileName() != null && rq.getTargetFileName().length() > 0
+              && rq.getTargetCamelRoute() != null && rq.getTargetCamelRoute().length() > 0) {
+                fileToCamelProducer.sendFileOverCamelUsingTargetFileNameAndTargetCamelRoute(absolutePath, mediaType,
+                  dataSinkMapper.mapToDto(sink.getDataSink()), rq.getTargetFileName(), rq.getTargetCamelRoute());
             } else if (rq.getTargetFileName() != null && rq.getTargetFileName().length() > 0) {
-                fileToCamelProducer.sendFileOverCamelUsingTargetFileName(absolutePath, mediaType, dataSinkMapper.mapToDto(sink.getDataSink()), rq.getTargetFileName());
+                fileToCamelProducer.sendFileOverCamelUsingTargetFileName(absolutePath, mediaType,
+                  dataSinkMapper.mapToDto(sink.getDataSink()), rq.getTargetFileName());
             } else if (rq.getTargetCamelRoute() != null && rq.getTargetCamelRoute().length() > 0) {
-                fileToCamelProducer.sendFileOverCamelUsingTargetCamelRoute(absolutePath, mediaType, dataSinkMapper.mapToDto(sink.getDataSink()), rq.getTargetCamelRoute());
+                fileToCamelProducer.sendFileOverCamelUsingTargetCamelRoute(absolutePath, mediaType,
+                  dataSinkMapper.mapToDto(sink.getDataSink()), rq.getTargetCamelRoute());
             } else {
                 fileToCamelProducer.sendFileOverCamel(absolutePath, mediaType, dataSinkMapper.mapToDto(sink.getDataSink()));
             }
@@ -75,7 +79,7 @@ public class ProcessCamelRouteRequestHandler extends AbstractRequestHandler<Proc
             sink.setCamelTransferStatus(ExportStatusEnum.RESPONSE_OK);
             sinkResolver.flush(); // to solve missing camel transfer status on aynsc request
             LOGGER.debug("Setting Sink {} to camelTransferStatus: {} ", sink.getObjectRef(), sink.getCamelTransferStatus());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.error("Camel transfer failed: {}", ExceptionUtil.causeChain(e));
             sink.setCamelTransferStatus(ExportStatusEnum.RESPONSE_ERROR);
             LOGGER.debug("Setting Sink {} to camelTransferStatus: {} ", sink.getObjectRef(), sink.getCamelTransferStatus());

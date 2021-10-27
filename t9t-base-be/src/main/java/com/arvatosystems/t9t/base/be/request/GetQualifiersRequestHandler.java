@@ -32,16 +32,16 @@ import de.jpaw.util.ExceptionUtil;
 public class GetQualifiersRequestHandler extends AbstractReadOnlyRequestHandler<GetQualifiersRequest> {
 
     @Override
-    public GetQualifiersResponse execute(RequestContext ctx, GetQualifiersRequest rq) {
+    public GetQualifiersResponse execute(final RequestContext ctx, final GetQualifiersRequest rq) {
         final GetQualifiersResponse resp = new GetQualifiersResponse();
         resp.setQualifiers(new HashSet<>());
         try {
             // perform lookup for a list of classes
-            for (String fqcn: rq.getFullyQualifiedClassNames()) {
-                Class<?> type = Class.forName(fqcn);
+            for (final String fqcn: rq.getFullyQualifiedClassNames()) {
+                final Class<?> type = Class.forName(fqcn);
                 resp.getQualifiers().addAll(Jdp.getQualifiers(type));
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new T9tException(T9tException.INVALID_REQUEST_PARAMETER_TYPE, ExceptionUtil.causeChain(e));
         }
         return resp;

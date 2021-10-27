@@ -30,8 +30,8 @@ public class AsyncBatchRequestHandler extends AbstractRequestHandler<AsyncBatchR
     protected final IExecutor messaging = Jdp.getRequired(IExecutor.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, AsyncBatchRequest request) {
-        ServiceResponse resp = messaging.executeSynchronous(request.getPrimaryRequest());
+    public ServiceResponse execute(final RequestContext ctx, final AsyncBatchRequest request) {
+        final ServiceResponse resp = messaging.executeSynchronous(request.getPrimaryRequest());
         if (resp.getReturnCode() <= (request.getAllowNo() ? T9tConstants.MAX_DECLINE_RETURN_CODE : T9tConstants.MAX_OK_RETURN_CODE)) {
             // fine (preliminary check), secondary will be done after commit, to capture late exceptions
             messaging.executeAsynchronous(request.getAsyncRequest());

@@ -22,5 +22,7 @@ import com.arvatosystems.t9t.base.uiprefs.UIGridPreferences;
 
 /** Marker interface, should be implemented by classes which contribute to the default grid configuration settings. */
 public interface IGridConfigContainer {
-    Map<String, UIGridPreferences> GRID_CONFIG_REGISTRY = new ConcurrentHashMap<String, UIGridPreferences>(100);
+    Map<String, UIGridPreferences> GRID_CONFIG_REGISTRY = new ConcurrentHashMap<>(100);
+
+    default void register() { }  // unused, but keeps checkstyle happy
 }

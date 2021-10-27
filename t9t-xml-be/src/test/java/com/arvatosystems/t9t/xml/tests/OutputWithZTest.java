@@ -70,7 +70,10 @@ public class OutputWithZTest {
         builder.append(StandardT9tNamespaceWriter.T9T_NAMESPACES);
         builder.append(">");
         builder.newLineIfNotEmpty();
-        builder.append("<t9t_xml:records><t9t_xml:userId>testUser22</t9t_xml:userId><t9t_xml:name>Test user number 22</t9t_xml:name><t9t_xml:emailAddress>test@supertest.de</t9t_xml:emailAddress><t9t_xml:isActive>true</t9t_xml:isActive><t9t_xml:isTechnical>false</t9t_xml:isTechnical><t9t_xml:externalAuth>true</t9t_xml:externalAuth><t9t_xml:z><bon:kvp><bon:key>XYZ</bon:key><bon:bool>true</bon:bool></bon:kvp></t9t_xml:z></t9t_xml:records>");
+        builder.append(
+           "<t9t_xml:records><t9t_xml:userId>testUser22</t9t_xml:userId><t9t_xml:name>Test user number 22</t9t_xml:name><t9t_xml:emailAddress>test@supertest.de"
+         + "</t9t_xml:emailAddress><t9t_xml:isActive>true</t9t_xml:isActive><t9t_xml:isTechnical>false</t9t_xml:isTechnical><t9t_xml:externalAuth>true</t9t_xml"
+         + ":externalAuth><t9t_xml:z><bon:kvp><bon:key>XYZ</bon:key><bon:bool>true</bon:bool></bon:kvp></t9t_xml:z></t9t_xml:records>");
         builder.newLine();
         builder.append("</UserMaster>");
 

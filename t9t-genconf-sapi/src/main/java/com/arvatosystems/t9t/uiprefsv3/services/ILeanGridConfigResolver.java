@@ -21,4 +21,4 @@ import com.arvatosystems.t9t.uiprefsv3.LeanGridConfigRef;
 
 import de.jpaw.bonaparte.refsw.RefResolver;
 
-public interface ILeanGridConfigResolver extends RefResolver<LeanGridConfigRef, LeanGridConfigDTO, FullTrackingWithVersion> {}
+public interface ILeanGridConfigResolver extends RefResolver<LeanGridConfigRef, LeanGridConfigDTO, FullTrackingWithVersion> { }

@@ -28,7 +28,7 @@ public class MarkSinkAsProcessedRequestHandler extends AbstractRequestHandler<Ma
     protected final IOutPersistenceAccess dpl = Jdp.getRequired(IOutPersistenceAccess.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, MarkSinkAsProcessedRequest rq) {
+    public ServiceResponse execute(final RequestContext ctx, final MarkSinkAsProcessedRequest rq) {
         dpl.markAsProcessed(rq.getSinkRef());
         return ok();
     }

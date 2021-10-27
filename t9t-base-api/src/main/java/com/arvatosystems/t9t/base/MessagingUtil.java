@@ -57,12 +57,12 @@ public final class MessagingUtil {
     }
 
     /** Get the list of languages to examine, with fallbacks. */
-    public static String[] getLanguagesWithFallback(String language) {
+    public static String[] getLanguagesWithFallback(final String language) {
         return getLanguagesWithFallback(language, DEFAULT_LANGUAGE);
     }
 
     /** Get the list of languages to examine, with fallbacks. */
-    public static String[] getLanguagesWithFallback(String language, String defaultLanguage) {
+    public static String[] getLanguagesWithFallback(final String language, final String defaultLanguage) {
         if (language == null) {
             return new String[] { defaultLanguage };
         }
@@ -84,29 +84,29 @@ public final class MessagingUtil {
     }
 
     /** converts a request class PQON to the corresponding resource ID. */
-    public static String toPerm(String requestClassPqon) {
+    public static String toPerm(final String requestClassPqon) {
         return PermissionType.BACKEND.getToken() + "."
           + (requestClassPqon.endsWith("Request") ? requestClassPqon.substring(0, requestClassPqon.length() - 7) : requestClassPqon);
     }
 
-    public static String truncField(Object text, int maxLength) {
+    public static String truncField(final Object text, final int maxLength) {
         if (text == null)
             return null;
         return truncField(text.toString(), maxLength);
     }
 
-    public static String truncField(String text, int maxLength) {
+    public static String truncField(final String text, final int maxLength) {
         return text == null || text.length() <= maxLength ? text : text.substring(0, maxLength);
     }
-    public static String truncErrorDetails(String text) {
+    public static String truncErrorDetails(final String text) {
         return truncField(text, ServiceResponse.meta$$errorDetails.getLength());
     }
-    public static String truncErrorMessage(String text) {
+    public static String truncErrorMessage(final String text) {
         return truncField(text, ServiceResponse.meta$$errorMessage.getLength());
     }
 
     /** Normalize the line end characters (\r\n or \r to \n) so they can be compared in unit tests cross platform. */
-    public static String normalizeEOLs(String in) {
+    public static String normalizeEOLs(final String in) {
         return in.replaceAll("\\r\\n?", "\n");
     }
 
@@ -117,7 +117,7 @@ public final class MessagingUtil {
      *            The request parameters the service request shall include
      * @return The new {@link ServiceRequest} instance
      */
-    public static ServiceRequest createServiceRequest(RequestParameters requestParameters) {
+    public static ServiceRequest createServiceRequest(final RequestParameters requestParameters) {
         // Create and fill the service request
         return new ServiceRequest(null, requestParameters, null);
     }
@@ -131,10 +131,10 @@ public final class MessagingUtil {
      * @param errorCode
      *            The error code to include in the response
      */
-    public static ServiceResponse createServiceResponse(int errorCode, String errorDetails, UUID messageId, Long processRef) {
-        ServiceResponse response = new ServiceResponse();
+    public static ServiceResponse createServiceResponse(final int errorCode, final String errorDetails, final UUID messageId, final Long processRef) {
+        final ServiceResponse response = new ServiceResponse();
         if (errorCode > 99999999) {
-            String errorMessage = T9tException.codeToString(errorCode);
+            final String errorMessage = T9tException.codeToString(errorCode);
             LOGGER.error("returning error code " + errorCode + " with details " + errorDetails + " for reason " + errorMessage);
             response.setErrorMessage(truncField(errorMessage, ServiceResponse.meta$$errorMessage.getLength()));
         } else {
@@ -147,20 +147,20 @@ public final class MessagingUtil {
         return response;
     }
 
-    public static ServiceResponse createServiceResponse(int errorCode, String errorDetails, ServiceRequestHeader hdr) {
+    public static ServiceResponse createServiceResponse(final int errorCode, final String errorDetails, final ServiceRequestHeader hdr) {
         return createServiceResponse(errorCode, errorDetails, hdr == null ? null : hdr.getMessageId(), null);
     }
 
-    public static ServiceResponse createError(int errorCode, ServiceRequestHeader hdr, Long processRef) {
-        ServiceResponse resp = new ServiceResponse();
+    public static ServiceResponse createError(final int errorCode, final ServiceRequestHeader hdr, final Long processRef) {
+        final ServiceResponse resp = new ServiceResponse();
         resp.setReturnCode(errorCode);
         resp.setProcessRef(processRef);
         resp.setMessageId(hdr.getMessageId());
         return resp;
     }
 
-    public static ServiceResponse createError(ApplicationException e, String tenantId, UUID messageId, Long processRef) {
-        ServiceResponse resp = new ServiceResponse();
+    public static ServiceResponse createError(final ApplicationException e, final String tenantId, final UUID messageId, final Long processRef) {
+        final ServiceResponse resp = new ServiceResponse();
         resp.setReturnCode(e.getErrorCode());
         resp.setErrorMessage(truncField(e.getMessage(), ServiceResponse.meta$$errorMessage.getLength()));
         resp.setTenantId(tenantId);

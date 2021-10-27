@@ -27,12 +27,12 @@ import de.jpaw.dp.Singleton;
 public class BooleanTranslationConverter implements IItemConverter<Boolean> {
 
     @Override
-    public String getFormattedLabel(Boolean value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
-        return ZulUtils.readConfig(String.format("com.boolean.%s.format", value));
+    public String getFormattedLabel(final Boolean value, final BonaPortable wholeDataObject, final String fieldName, final FieldDefinition meta) {
+        return ZulUtils.readConfig("com.boolean." + value + ".format");
     }
 
     @Override
-    public Object getConvertedValue(Boolean value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
+    public Object getConvertedValue(final Boolean value, final BonaPortable wholeDataObject, final String fieldName, final FieldDefinition meta) {
         return value;
     }
 }

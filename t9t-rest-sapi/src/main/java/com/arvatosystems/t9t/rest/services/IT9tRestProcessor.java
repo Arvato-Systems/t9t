@@ -32,26 +32,40 @@ import de.jpaw.bonaparte.core.BonaPortable;
 
 public interface IT9tRestProcessor {
     /** Performs the request asynchronously, using a generic response mapper. */
-    void performAsyncBackendRequest(final HttpHeaders httpHeaders, final AsyncResponse resp, final RequestParameters requestParameters, final String infoMsg);
+    void performAsyncBackendRequest(HttpHeaders httpHeaders, AsyncResponse resp, RequestParameters requestParameters, String infoMsg);
 
     /** Performs the request asynchronously, using a specific response mapper. */
-    <T extends ServiceResponse> void performAsyncBackendRequest(final HttpHeaders httpHeaders, final AsyncResponse resp, final RequestParameters requestParameters,
-            final String infoMsg, final Class<T> backendResponseClass, final Function<T, BonaPortable> responseMapper);
+    <T extends ServiceResponse> void performAsyncBackendRequest(HttpHeaders httpHeaders, AsyncResponse resp, RequestParameters requestParameters,
+            String infoMsg, Class<T> backendResponseClass, Function<T, BonaPortable> responseMapper);
 
     /**
      * Performs the request asynchronously, with a specific request mapper.
-     * If the provided list has a single element, the first converter is applied, otherwise the second (which may be null, in which case a BAD_REQUEST will be returned).
+     * If the provided list has a single element, the first converter is applied,
+     * otherwise the second (which may be null, in which case a BAD_REQUEST will be returned).
      * Both request converters are executed in the I/O thread.
      **/
-    <T> void performAsyncBackendRequest(final HttpHeaders httpHeaders, final AsyncResponse resp, final String infoMsg,
+    <T> void performAsyncBackendRequest(HttpHeaders httpHeaders, AsyncResponse resp, String infoMsg,
         List<T> inputData, Function<T, RequestParameters> requestConverterSingle, Function<List<T>, RequestParameters> requestConverterBatch);
 
     /** Could be static, but declared in the interface to allow overriding. */
-    GenericResult createResultFromServiceResponse(final ServiceResponse response);
+    GenericResult createResultFromServiceResponse(ServiceResponse response);
 
     /** Returns a response without using the worker thread. */
-    void returnAsyncResult(final String acceptHeader, final AsyncResponse resp, final Response.Status status, final Object result);
+    void returnAsyncResult(String acceptHeader, AsyncResponse resp, Response.Status status, Object result);
 
     /** Performs the authentication request asynchronously, using a generic response mapper. */
-    void performAsyncAuthBackendRequest(final HttpHeaders httpHeaders, final AsyncResponse resp, final AuthenticationRequest requestParameters, final Consumer<String> cacheUpdater);
+    void performAsyncAuthBackendRequest(HttpHeaders httpHeaders, AsyncResponse resp, AuthenticationRequest requestParameters, Consumer<String> cacheUpdater);
+
+
+    /**
+     * Determines which format to use for the response.
+     * The type of the response is either the type requested by ACCEPT, or, in case that is null, matches the content type.
+     *
+     * @param httpHeaders   the HTTP headers provided to the REST request
+     * @return              the type of response, or null
+     */
+    default String determineResponseType(final HttpHeaders httpHeaders) {
+        final String accept = httpHeaders.getHeaderString(HttpHeaders.ACCEPT);
+        return accept != null ? accept : httpHeaders.getHeaderString(HttpHeaders.CONTENT_TYPE);
+    }
 }

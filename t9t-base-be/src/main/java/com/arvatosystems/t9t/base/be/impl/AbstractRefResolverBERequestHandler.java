@@ -27,12 +27,12 @@ public abstract class AbstractRefResolverBERequestHandler<REF extends Ref, REQUE
         AbstractRequestHandler<REQUEST> {
 
     @Override
-    public boolean isReadOnly(REQUEST params) {
+    public boolean isReadOnly(final REQUEST params) {
         return true;
     }
 
-    protected RefResolverResponse execute(RequestContext ctx, REQUEST request, RefResolver<REF, ?, ?> resolver) {
-        RefResolverResponse rs = new RefResolverResponse();
+    protected RefResolverResponse execute(final RequestContext ctx, final REQUEST request, final RefResolver<REF, ?, ?> resolver) {
+        final RefResolverResponse rs = new RefResolverResponse();
         rs.setKey(resolver.getRef(request.getRef()));
         rs.setReturnCode(0);
         return rs;

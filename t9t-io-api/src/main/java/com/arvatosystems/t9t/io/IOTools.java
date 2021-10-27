@@ -17,10 +17,10 @@ package com.arvatosystems.t9t.io;
 
 import com.arvatosystems.t9t.base.T9tException;
 
-public class IOTools {
+public final class IOTools {
     private IOTools() { }
 
-    public static String getCsvConfigurationId(CsvConfigurationRef ref) {
+    public static String getCsvConfigurationId(final CsvConfigurationRef ref) {
         if (ref == null)
             return null;
         if (ref instanceof CsvConfigurationKey) {
@@ -32,7 +32,7 @@ public class IOTools {
         throw new T9tException(T9tException.NOT_YET_IMPLEMENTED, "CsvConfigurationRef of type " + ref.getClass().getCanonicalName());
     }
 
-    public static String getDataSinkId(DataSinkRef ref) {
+    public static String getDataSinkId(final DataSinkRef ref) {
         if (ref == null)
             return null;
         if (ref instanceof DataSinkKey) {
@@ -44,7 +44,7 @@ public class IOTools {
         throw new T9tException(T9tException.NOT_YET_IMPLEMENTED, "DataSinkRef of type " + ref.getClass().getCanonicalName());
     }
 
-    public static void mergePreset(DataSinkDTO dataSink, DataSinkPresets preset) {
+    public static void mergePreset(final DataSinkDTO dataSink, final DataSinkPresets preset) {
         if (preset != null) {
             dataSink.setBaseClassPqon(preset.getBaseClassPqon());
             dataSink.setJaxbContextPath(preset.getJaxbContextPath());

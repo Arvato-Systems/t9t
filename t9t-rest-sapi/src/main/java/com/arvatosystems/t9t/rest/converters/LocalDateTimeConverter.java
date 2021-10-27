@@ -25,14 +25,14 @@ import javax.ws.rs.ext.ParamConverter;
 public class LocalDateTimeConverter implements ParamConverter<LocalDateTime> {
 
     @Override
-    public LocalDateTime fromString(String value) {
+    public LocalDateTime fromString(final String value) {
         if (value == null)
             return null;
         return LocalDateTime.parse(value);
     }
 
     @Override
-    public String toString(LocalDateTime value) {
+    public String toString(final LocalDateTime value) {
         if (value == null)
             return null;
         return value.toString();

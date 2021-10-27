@@ -38,12 +38,12 @@ public class TenantResolver extends AbstractJpaResolver<TenantRef, TenantDTO, Fu
     }
 
     @Override
-    protected TypedQuery<TenantEntity> createQuery(EntityManager em) {
+    protected TypedQuery<TenantEntity> createQuery(final EntityManager em) {
         return em.createQuery("SELECT e FROM TenantEntity e", TenantEntity.class);
     }
 
     @Override
-    public TenantRef createKey(Long ref) {
+    public TenantRef createKey(final Long ref) {
         return ref == null ? null : new TenantRef(ref);
     }
 }

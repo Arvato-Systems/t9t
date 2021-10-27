@@ -43,12 +43,12 @@ public abstract class AbstractCrudSuperclassKey28RequestHandler<
     // execute function of the interface description, but additional parameters
     // required in order to work around type erasure
     public CrudSuperclassKeyResponse<KEY, DTO, TRACKING> execute(
-            RequestContext ctx, IEntityMapper28<KEY, DTO, TRACKING, ENTITY> mapper,
-            IResolverSuperclassKey28<REF, KEY, TRACKING, ENTITY> resolver,
-            REQUEST crudRequest) {
+            final RequestContext ctx, final IEntityMapper28<KEY, DTO, TRACKING, ENTITY> mapper,
+            final IResolverSuperclassKey28<REF, KEY, TRACKING, ENTITY> resolver,
+            final REQUEST crudRequest) {
 
         // fields are set as required
-        CrudSuperclassKeyResponse<KEY, DTO, TRACKING> rs = new CrudSuperclassKeyResponse<KEY, DTO, TRACKING>();
+        final CrudSuperclassKeyResponse<KEY, DTO, TRACKING> rs = new CrudSuperclassKeyResponse<>();
         ENTITY result;
 
         // check natural key.
@@ -63,12 +63,12 @@ public abstract class AbstractCrudSuperclassKey28RequestHandler<
         default:
         }
 
-        EntityManager entityManager = jpaContextProvider.get().getEntityManager(); // copy it as we need it several times
+        final EntityManager entityManager = jpaContextProvider.get().getEntityManager(); // copy it as we need it several times
 
         // step 1: possible resolution of the natural key
         if (crudRequest.getNaturalKey() != null) {
             try {
-                KEY refFromCompositeKey = resolver.getEntityData(crudRequest.getNaturalKey(), false).ret$Key();
+                final KEY refFromCompositeKey = resolver.getEntityData(crudRequest.getNaturalKey(), false).ret$Key();
                 // provide it into the response
                 rs.setKey(refFromCompositeKey);
 
@@ -81,7 +81,7 @@ public abstract class AbstractCrudSuperclassKey28RequestHandler<
                         throw new T9tException(T9tException.CRUD_BOTH_KEYS_MISMATCH, crudRequest.getKey().toString() + " <> " + refFromCompositeKey.toString());
                     }
                 }
-            } catch (T9tException e) {
+            } catch (final T9tException e) {
                 if (e.getErrorCode() != T9tException.RECORD_DOES_NOT_EXIST) {
                     throw e; // we are not interested int his one
                     // deal with non-existing records. In some cases, this is acceptable
@@ -172,12 +172,12 @@ public abstract class AbstractCrudSuperclassKey28RequestHandler<
             }
             rs.setReturnCode(0);
             return rs;
-        } catch (T9tException e) {
+        } catch (final T9tException e) {
             // careful! Catching only ApplicationException masks standard T9tExceptions such as RECORD_INACTIVE or RECORD_NOT_FOUND!
             // We must return the original exception if we got a T9tException already!
             // Therefore this catch is essential!
             throw e;
-        } catch (ApplicationException e) {
+        } catch (final ApplicationException e) {
             throw new T9tException(T9tException.ENTITY_DATA_MAPPING_EXCEPTION, "Tracking columns: " + e.toString());
         }
     }

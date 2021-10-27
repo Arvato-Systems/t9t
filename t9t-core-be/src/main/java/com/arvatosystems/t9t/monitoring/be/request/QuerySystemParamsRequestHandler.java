@@ -27,7 +27,7 @@ public class QuerySystemParamsRequestHandler extends AbstractRequestHandler<Quer
     private static final Logger LOGGER = LoggerFactory.getLogger(QuerySystemParamsRequestHandler.class);
 
     @Override
-    public QuerySystemParamsResponse execute(RequestContext ctx, QuerySystemParamsRequest rq) {
+    public QuerySystemParamsResponse execute(final RequestContext ctx, final QuerySystemParamsRequest rq) {
         final Runtime rt = Runtime.getRuntime();
         final QuerySystemParamsResponse rs = new QuerySystemParamsResponse();
         rs.setCurrentTimeMillis(System.currentTimeMillis());

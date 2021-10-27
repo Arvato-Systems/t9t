@@ -44,13 +44,13 @@ public abstract class AbstractWorkflowStepPluginManager<T, S extends IWorkflowSt
     protected final IWorkflowStepCache stepCache = Jdp.getRequired(IWorkflowStepCache.class);
 
     /** Returns the minimum common denominator for an existing implementation. */
-    abstract protected Class<S> getCompatibleSuperclass();  // FIXME: should be Class<S>, but does not compile due to generics
+    protected abstract Class<S> getCompatibleSuperclass();  // FIXME: should be Class<S>, but does not compile due to generics
 
     /** Returns the class which is dynamically generated as a proxy. */
-    abstract protected Class<M> getPluginWrapperClass(IWorkflowStep<T> pluginInstance);  // FIXME: should be Class<M>, but does not compile due to generics
+    protected abstract Class<M> getPluginWrapperClass(IWorkflowStep<T> pluginInstance);  // FIXME: should be Class<M>, but does not compile due to generics
 
     /** Create a wrapper / dispatcher / proxy for the step. */
-    abstract protected M createWrapper(String qualifier, S existingInstance);
+    protected abstract M createWrapper(String qualifier, S existingInstance);
 
     @Override
     public void registerPluginMethod(final Long tenantRef, final Plugin loadedPlugin, final PluginMethod method, final boolean before) {
@@ -72,7 +72,8 @@ public abstract class AbstractWorkflowStepPluginManager<T, S extends IWorkflowSt
             // exists already, only register in Manager
             newInstance = (M)oldInstance;
         } else if (!getCompatibleSuperclass().isAssignableFrom(oldInstance.getClass())) {
-           throw new T9tException(T9tBPMException.BPM_PLUGIN_INCOMPATIBLE, getCompatibleSuperclass().getCanonicalName() + " <> " + oldInstance.getClass().getCanonicalName());
+           throw new T9tException(T9tBPMException.BPM_PLUGIN_INCOMPATIBLE,
+             getCompatibleSuperclass().getCanonicalName() + " <> " + oldInstance.getClass().getCanonicalName());
         } else {
             // it is a valid fallback, unless there is a clash in factories
             if (oldInstance.getFactoryName() != null && step.getFactoryName() != null && !oldInstance.getFactoryName().equals(step.getFactoryName())) {

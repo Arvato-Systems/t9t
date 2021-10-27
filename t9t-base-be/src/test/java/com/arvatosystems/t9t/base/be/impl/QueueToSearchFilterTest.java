@@ -33,7 +33,6 @@ import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.dp.Jdp;
 
 public class QueueToSearchFilterTest {
-    SearchFilterUtil util;
     private ISearchTools searchTools = Mockito.mock(ISearchTools.class);
 
     @BeforeEach
@@ -43,7 +42,7 @@ public class QueueToSearchFilterTest {
 
     @Test
     public void shouldTranslateToSearchFilter() {
-        util = new SearchFilterUtil();
+        SearchFilterUtil util = new SearchFilterUtil();
 
         Queue<SearchFilter> filterQueue = new LinkedList<>();
         filterQueue.add(new AndFilter());
@@ -60,7 +59,7 @@ public class QueueToSearchFilterTest {
 
     @Test
     public void shouldTranslateToSearchFilter02() {
-        util = new SearchFilterUtil();
+        SearchFilterUtil util = new SearchFilterUtil();
 
         Queue<SearchFilter> filterQueue = new LinkedList<>();
         filterQueue.add(new NotFilter());
@@ -80,6 +79,4 @@ public class QueueToSearchFilterTest {
         Assertions.assertTrue(andFilter.getFilter2() instanceof AsciiFilter);
         Assertions.assertEquals("C", ((AsciiFilter)andFilter.getFilter2()).getFieldName());
     }
-
-
 }

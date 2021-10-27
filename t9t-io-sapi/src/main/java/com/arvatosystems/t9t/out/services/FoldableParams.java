@@ -15,8 +15,9 @@
  */
 package com.arvatosystems.t9t.out.services;
 
-import de.jpaw.bonaparte.pojos.api.media.EnumOutputType;
 import java.util.List;
+
+import de.jpaw.bonaparte.pojos.api.media.EnumOutputType;
 
 /** Immutable data class, mostly boilerplate code. */
 public class FoldableParams {

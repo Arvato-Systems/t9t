@@ -33,29 +33,31 @@ import com.arvatosystems.t9t.base.T9tConstants;
 /**
  * Utility method to store a translation.
  */
-public class TranslationsStack {
+public final class TranslationsStack {
     private static final Logger LOGGER = LoggerFactory.getLogger(TranslationsStack.class);
 
+    private TranslationsStack() { }
+
     /** An internal counter for duplicate translations, which is read by tests and causes failures / alerts if we have duplicates. */
-    private static final AtomicInteger duplicateTranslationCounter = new AtomicInteger(0);
+    private static final AtomicInteger DUPLICATE_TRANSLATION_COUNTER = new AtomicInteger(0);
 
     // the top level map is indexed by field name. Beneath this, there is a map which provides language:tenant:path to translation
-    private static final ConcurrentMap<String, ConcurrentMap<String, String>> translations = new ConcurrentHashMap<>(1000);
+    private static final ConcurrentMap<String, ConcurrentMap<String, String>> TRANSLATIONS = new ConcurrentHashMap<>(1000);
 
-    public static String makeKey(String language, String tenantId, String path) {
+    public static String makeKey(final String language, final String tenantId, final String path) {
         return tenantId + ":" + language + (path == null ? "" : ":" + path);
     }
 
     /** Retrieves the number of duplicate (overwritten / discarded) translation entries. */
     public static int getNumberOfDuplicateTranslations() {
-        return duplicateTranslationCounter.get();
+        return DUPLICATE_TRANSLATION_COUNTER.get();
     }
 
     /** Clears all imported translations and resets the duplicate counter, use when multiple startups occur, for example multiple unit tests in the same JVM. */
     public static void reset() {
         LOGGER.info("Translations RESET");
-        duplicateTranslationCounter.set(0);
-        translations.clear();
+        DUPLICATE_TRANSLATION_COUNTER.set(0);
+        TRANSLATIONS.clear();
     }
 
     /**
@@ -72,21 +74,21 @@ public class TranslationsStack {
      * @param translation
      *            translation value
      */
-    public static void addTranslation(String language, String tenantId, String path, String inFieldname, String translation) {
+    public static void addTranslation(final String language, final String tenantId, final String path, final String inFieldname, final String translation) {
         // internalize the keys because they probably occur many times
         final String key = makeKey(language, tenantId, path).intern();
         final String fieldname = inFieldname.intern();
 
-        ConcurrentMap<String, String> fieldTranslations = translations.get(fieldname);
+        ConcurrentMap<String, String> fieldTranslations = TRANSLATIONS.get(fieldname);
         if (fieldTranslations == null) {
             fieldTranslations = new ConcurrentHashMap<>(8);
-            ConcurrentMap<String, String> tmp = translations.putIfAbsent(fieldname, fieldTranslations);
+            final ConcurrentMap<String, String> tmp = TRANSLATIONS.putIfAbsent(fieldname, fieldTranslations);
             if (tmp != null) // race condition: make sure only the first map created is used, discard the second
                 fieldTranslations = tmp;
         }
-        String oldTrans = fieldTranslations.put(key, translation);
+        final String oldTrans = fieldTranslations.put(key, translation);
         if (oldTrans != null) {
-            duplicateTranslationCounter.incrementAndGet();
+            DUPLICATE_TRANSLATION_COUNTER.incrementAndGet();
             LOGGER.warn("Duplicate translation for field {}, key {}: {} and {}.", fieldname, key, oldTrans, translation);
         }
     }
@@ -95,20 +97,20 @@ public class TranslationsStack {
      * @param fieldname
      * @return the translations stored, for any language
      */
-    public static Map<String, String> getTranslationsForField(String fieldname) {
-        return translations.get(fieldname);
+    public static Map<String, String> getTranslationsForField(final String fieldname) {
+        return TRANSLATIONS.get(fieldname);
     }
 
-    public static void dump(boolean detail) {
-        final Collection<String> allFields = translations.keySet();
+    public static void dump(final boolean detail) {
+        final Collection<String> allFields = TRANSLATIONS.keySet();
         LOGGER.info("{} translation keys are stored in total", allFields.size());
         if (detail && LOGGER.isDebugEnabled()) {
-            StringBuilder b = new StringBuilder();
+            final StringBuilder b = new StringBuilder();
             b.append("Sorted keys:\n");
-            ArrayList<String> keys = new ArrayList<String>(allFields);
-            List<String> subList = keys.subList(1, keys.size());
+            final ArrayList<String> keys = new ArrayList<>(allFields);
+            final List<String> subList = keys.subList(1, keys.size());
             Collections.sort(subList);
-            for (String e: subList) {
+            for (final String e: subList) {
                 b.append(e);
                 b.append('\n');
             }
@@ -117,32 +119,32 @@ public class TranslationsStack {
     }
 
     // print all entries for a given key
-    public static void dump(String key) {
-        final Map<String, String> tx = translations.get(key);
+    public static void dump(final String key) {
+        final Map<String, String> tx = TRANSLATIONS.get(key);
         LOGGER.info("{} translations for key {}", tx == null ? 0 : tx.size(), key);
         if (LOGGER.isDebugEnabled() && tx != null) {
-            for (Map.Entry<String, String> e: tx.entrySet()) {
+            for (final Map.Entry<String, String> e: tx.entrySet()) {
                 LOGGER.debug("Translation for {} is {}", e.getKey(), e.getValue());
             }
         }
     }
 
     // perform a dup check on all entries
-    public static void checkDuplicates(boolean doOtherLangs, boolean doGerman, boolean checkMatchEn) {
-        final Collection<String> allFields = translations.keySet();
-        for (String field: allFields) {
+    public static void checkDuplicates(final boolean doOtherLangs, final boolean doGerman, final boolean checkMatchEn) {
+        final Collection<String> allFields = TRANSLATIONS.keySet();
+        for (final String field: allFields) {
             checkDuplicates(field, doOtherLangs, doGerman, checkMatchEn);
         }
     }
 
     // perform a dup check on a specific entry
-    public static void checkDuplicates(String key, boolean doOtherLangs, boolean doGerman, boolean checkMatchEn) {
-        final Map<String, String> tx = translations.get(key);
+    public static void checkDuplicates(final String key, final boolean doOtherLangs, final boolean doGerman, final boolean checkMatchEn) {
+        final Map<String, String> tx = TRANSLATIONS.get(key);
         // convert the entries to a nested map, by language, by path. Store the default entry by path ""
         final Map<String, Map<String, String>> restructured = new HashMap<>(20);
-        for (Map.Entry<String, String> e: tx.entrySet()) {
+        for (final Map.Entry<String, String> e: tx.entrySet()) {
             // split the key
-            String [] keyParts = e.getKey().split(":");
+            final String[] keyParts = e.getKey().split(":");
             if (keyParts.length < 2) {
                 LOGGER.error("Bad key for {}: {}", key, e.getKey());
             } else {
@@ -171,8 +173,8 @@ public class TranslationsStack {
                 }
             }
             if (doOtherLangs) {
-                for (Map.Entry<String, Map<String, String>> other: restructured.entrySet()) {
-                    String thisLang = other.getKey();
+                for (final Map.Entry<String, Map<String, String>> other: restructured.entrySet()) {
+                    final String thisLang = other.getKey();
                     if (!thisLang.equals("de") && !thisLang.equals("en")) {
                         checkForRedundantToDefaultAndEn(b, thisLang, other.getValue(), translationsForEn, checkMatchEn);
                     }
@@ -185,7 +187,7 @@ public class TranslationsStack {
         }
     }
 
-    private static void addToLog(final StringBuilder b, String language, int match, int noMatch, int matchEn) {
+    private static void addToLog(final StringBuilder b, final String language, final int match, final int noMatch, final int matchEn) {
         if (match > 0 || matchEn > 0) {
             if (b.length() > 0) {
                 b.append(", ");
@@ -207,10 +209,8 @@ public class TranslationsStack {
         }
         int match = 0;
         int noMatch = 0;
-        for (Map.Entry<String, String> e: translationsForLanguage.entrySet()) {
-            if (e.getKey().length() == 0) {
-                // is default: skip!
-            } else {
+        for (final Map.Entry<String, String> e: translationsForLanguage.entrySet()) {
+            if (e.getKey().length() != 0) {
                 if (defaultEntry.equalsIgnoreCase(e.getValue())) {
                     ++match;
                 } else {
@@ -221,20 +221,21 @@ public class TranslationsStack {
         addToLog(b, "en", match, noMatch, 0);
     }
 
-    private static void checkForRedundantToDefaultAndEn(final StringBuilder b, final String language, final Map<String, String> translationsForLanguage, final Map<String, String> translationsForEn, boolean checkMatchEn) {
+    private static void checkForRedundantToDefaultAndEn(final StringBuilder b, final String language, final Map<String,
+      String> translationsForLanguage, final Map<String, String> translationsForEn, final boolean checkMatchEn) {
         final String defaultEntry = translationsForLanguage.get("");
         int match = 0;
         int noMatch = 0;
         int matchEn = 0;
-        for (Map.Entry<String, String> e: translationsForLanguage.entrySet()) {
-            String defaultEn = translationsForEn.get("");
+        for (final Map.Entry<String, String> e: translationsForLanguage.entrySet()) {
+            final String defaultEn = translationsForEn.get("");
             if (e.getKey().length() == 0) {
                 // is default: skip!
                 if (checkMatchEn && defaultEn != null && defaultEntry != null && defaultEntry.equalsIgnoreCase(defaultEn)) {
                     ++matchEn;
                 }
             } else {
-                String thisEntry = e.getValue();
+                final String thisEntry = e.getValue();
                 if (thisEntry != null) {
                     if (defaultEntry != null) {
                         if (defaultEntry.equalsIgnoreCase(thisEntry)) {

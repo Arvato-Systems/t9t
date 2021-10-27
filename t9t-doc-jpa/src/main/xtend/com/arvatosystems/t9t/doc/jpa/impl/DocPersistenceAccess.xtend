@@ -19,7 +19,10 @@ import com.arvatosystems.t9t.base.MessagingUtil
 import static com.arvatosystems.t9t.base.T9tConstants.GLOBAL_TENANT_REF42
 import com.arvatosystems.t9t.doc.DocConfigDTO
 import com.arvatosystems.t9t.doc.DocConfigKey
-import com.arvatosystems.t9t.doc.DocConstants
+import static com.arvatosystems.t9t.doc.DocConstants.DEFAULT_COUNTRY_CODE
+import static com.arvatosystems.t9t.doc.DocConstants.DEFAULT_CURRENCY_CODE
+import static com.arvatosystems.t9t.doc.DocConstants.DEFAULT_ENTITY_ID
+import static com.arvatosystems.t9t.doc.DocConstants.DEFAULT_LANGUAGE_CODE
 import com.arvatosystems.t9t.doc.DocEmailCfgDTO
 import com.arvatosystems.t9t.doc.DocModuleCfgDTO
 import com.arvatosystems.t9t.doc.DocTemplateDTO
@@ -51,7 +54,7 @@ import com.arvatosystems.t9t.base.T9tException
 
 @Singleton
 @AddLogger
-class DocPersistenceAccess implements IDocPersistenceAccess, DocConstants {
+class DocPersistenceAccess implements IDocPersistenceAccess {
     static final Map<String,MediaData> NO_COMPONENTS = ImmutableMap.of();
 
     @Inject IDocConfigEntityResolver        docConfigResolver

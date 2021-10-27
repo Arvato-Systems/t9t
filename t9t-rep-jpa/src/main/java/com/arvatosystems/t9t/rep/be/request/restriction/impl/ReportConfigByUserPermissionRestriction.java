@@ -38,13 +38,13 @@ public class ReportConfigByUserPermissionRestriction implements IReportConfigByU
     protected final IReportConfigResolverRestriction reportConfigRestriction = Jdp.getRequired(IReportConfigResolverRestriction.class);
 
     @Override
-    public void apply(RequestContext ctx, SearchCriteria searchRequest) {
-        List<String> permittedReportIds = reportConfigRestriction.getPermissionIdList(ctx);
+    public void apply(final RequestContext ctx, final SearchCriteria searchRequest) {
+        final List<String> permittedReportIds = reportConfigRestriction.getPermissionIdList(ctx);
 
         if (permittedReportIds == null || permittedReportIds.isEmpty())
             return;
 
-        AsciiFilter idFilter = new AsciiFilter("reportConfigId");
+        final AsciiFilter idFilter = new AsciiFilter("reportConfigId");
         if (permittedReportIds.size() == 1)
             idFilter.setEqualsValue(permittedReportIds.get(0));  // single entry => use equals
         else

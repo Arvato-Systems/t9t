@@ -49,7 +49,9 @@ public class MutexTest {
         LOGGER.info("submitting tasks START");
         for (int i = 0; i < 10; ++i) {
             final int jjj = i;
-            execs.execute(() -> { mutex.runSynchronizedOn(Long.valueOf(jjj % 3), task); } );
+            execs.execute(() -> {
+                mutex.runSynchronizedOn(Long.valueOf(jjj % 3), task);
+            });
         }
         LOGGER.info("submitting tasks END");
         LOGGER.info("Mutexttest END");

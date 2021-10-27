@@ -29,8 +29,8 @@ public class FilePathPrefixRequestHandler extends AbstractRequestHandler<FilePat
     protected final  IFileUtil fileUtil = Jdp.getRequired(IFileUtil.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, FilePathPrefixRequest request) throws Exception {
-        FilePathPrefixResponse response = new FilePathPrefixResponse();
+    public ServiceResponse execute(final RequestContext ctx, final FilePathPrefixRequest request) throws Exception {
+        final FilePathPrefixResponse response = new FilePathPrefixResponse();
         response.setReturnCode(0);
         response.setPrefix(fileUtil.getFilePathPrefix());
         return response;

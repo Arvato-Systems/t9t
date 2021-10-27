@@ -25,7 +25,7 @@ public interface IBpmnRunner {
     boolean run(RequestContext ctx, Long statusRef);
 
     /** For debugging. */
-    default PerformSingleStepResponse singleStep(RequestContext ctx, PerformSingleStepRequest rq) {
+    default PerformSingleStepResponse singleStep(final RequestContext ctx, final PerformSingleStepRequest rq) {
         throw new T9tException(T9tException.NOT_YET_IMPLEMENTED, "Not available for this engine");
     }
 }

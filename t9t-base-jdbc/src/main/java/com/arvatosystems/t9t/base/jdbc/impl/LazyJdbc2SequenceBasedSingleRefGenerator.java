@@ -39,11 +39,12 @@ class LazyJdbc2SequenceBasedSingleRefGenerator {
 
     private final Supplier<Connection> connectionProvider;
 
-    public LazyJdbc2SequenceBasedSingleRefGenerator(int index, DatabaseBrandType dialect, int cacheSize, Supplier<Connection> connectionProvider) {
+    LazyJdbc2SequenceBasedSingleRefGenerator(final int index, final DatabaseBrandType dialect, final int cacheSize,
+      final Supplier<Connection> connectionProvider) {
         this.connectionProvider = connectionProvider;
         lastProvidedValue = -1L;
         remainingCachedIds = 0;
-        this.cacheSize = cacheSize;  // intentionally not tunable via xml config due to the risk of overlapping IDs if someone decreases values between restarts.
+        this.cacheSize = cacheSize; // intentionally not tunable via xml config due to the risk of overlapping IDs if someone decreases values between restarts.
         switch (dialect) {
         case POSTGRES:
             sqlCommandForNextValue = String.format("SELECT nextval('cm_idgen_%04d_seq')", index);
@@ -77,7 +78,7 @@ class LazyJdbc2SequenceBasedSingleRefGenerator {
             try (Statement stmt  = conn.createStatement();
                  ResultSet rs    = stmt.executeQuery(sqlCommandForNextValue)) {
                 if (rs.next()) {
-                    Object result = rs.getObject(1);
+                    final Object result = rs.getObject(1);
                     if (result instanceof Number) {
                         // approach to cover all numeric values...
                         nextval = ((Number) result).longValue();
@@ -89,7 +90,7 @@ class LazyJdbc2SequenceBasedSingleRefGenerator {
                     LOGGER.error("No result returned from sequence query {}", sqlCommandForNextValue);
                     throw new T9tException(T9tException.JDBC_NO_RESULT_RETURNED, sqlCommandForNextValue);
                 }
-            } catch (SQLException e) {
+            } catch (final SQLException e) {
                 LOGGER.error("General SQL exception: Could not obtain next sequence value: {}", ExceptionUtil.causeChain(e));
                 throw new T9tException(T9tException.JDBC_GENERAL_SQL, ExceptionUtil.causeChain(e));
             }

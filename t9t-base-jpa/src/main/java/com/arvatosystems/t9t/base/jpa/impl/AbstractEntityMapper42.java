@@ -36,14 +36,14 @@ import de.jpaw.dp.Jdp;
 /** base implementation of the IEntityMapper42 interface, only suitable for simple configuration data tables */
 public abstract class AbstractEntityMapper42<KEY extends Serializable, DTO extends BonaPortable, TRACKING extends TrackingBase, ENTITY extends BonaPersistableKey<KEY> & BonaPersistableTracking<TRACKING>>
   extends AbstractEntityMapper<KEY, DTO, TRACKING, ENTITY> implements IEntityMapper42<KEY, DTO, TRACKING, ENTITY> {
-    private final List<DataWithTrackingW<DTO, TRACKING>> EMPTY_RESULT_LIST = new ArrayList<DataWithTrackingW<DTO, TRACKING>>(0);
+    private final List<DataWithTrackingW<DTO, TRACKING>> EMPTY_RESULT_LIST = new ArrayList<>(0);
 
     @Override
-    public final DataWithTrackingW<DTO, TRACKING> mapToDwt(ENTITY entity) {
+    public final DataWithTrackingW<DTO, TRACKING> mapToDwt(final ENTITY entity) {
         if (entity == null) {
             return null;
         }
-        final DataWithTrackingW<DTO, TRACKING> entry = new DataWithTrackingW<DTO, TRACKING>();
+        final DataWithTrackingW<DTO, TRACKING> entry = new DataWithTrackingW<>();
         entry.setTracking(entity.ret$Tracking());
         entry.setData(mapToDto(entity));
         entry.setTenantRef(getTenantRef(entity));  // either tenantId or tenantRef has been defined in the data (category D) or it is of no interest to the caller
@@ -51,14 +51,14 @@ public abstract class AbstractEntityMapper42<KEY extends Serializable, DTO exten
     }
 
     @Override
-    public final List<DataWithTrackingW<DTO, TRACKING>> mapListToDwt(Collection<ENTITY> entityList) {
+    public final List<DataWithTrackingW<DTO, TRACKING>> mapListToDwt(final Collection<ENTITY> entityList) {
         if (entityList == null) {
             return null;
         }
-        List<DataWithTrackingW<DTO, TRACKING>> resultList = new ArrayList<>(entityList.size());
+        final List<DataWithTrackingW<DTO, TRACKING>> resultList = new ArrayList<>(entityList.size());
         if (!haveCollectionToDtoMapper()) {
             // use single element mapping
-            for (ENTITY entity : entityList) {
+            for (final ENTITY entity : entityList) {
                 resultList.add(mapToDwt(entity));
             }
         } else {
@@ -66,8 +66,8 @@ public abstract class AbstractEntityMapper42<KEY extends Serializable, DTO exten
             final List<DTO> resultList2 = new ArrayList<>(entityList.size());
             batchMapToDto(entityList, resultList2, NO_GRAPH, null, new HashMap<>());
             int i = 0;
-            for (ENTITY entity : entityList) {
-                final DataWithTrackingW<DTO, TRACKING> entry = new DataWithTrackingW<DTO, TRACKING>();
+            for (final ENTITY entity : entityList) {
+                final DataWithTrackingW<DTO, TRACKING> entry = new DataWithTrackingW<>();
                 entry.setTracking(entity.ret$Tracking());
                 entry.setData(resultList2.get(i));
                 entry.setTenantRef(getTenantRef(entity));  // either tenantId or tenantRef has been defined in the data (category D) or it is of no interest to the caller
@@ -80,24 +80,24 @@ public abstract class AbstractEntityMapper42<KEY extends Serializable, DTO exten
 
 
     @Override
-    public final ReadAllResponse<DTO, TRACKING> createReadAllResponse(List<ENTITY> data, OutputSessionParameters op) throws Exception {
-        ReadAllResponse<DTO, TRACKING> rs = new ReadAllResponse<DTO, TRACKING>();
+    public final ReadAllResponse<DTO, TRACKING> createReadAllResponse(final List<ENTITY> data, final OutputSessionParameters op) throws Exception {
+        final ReadAllResponse<DTO, TRACKING> rs = new ReadAllResponse<>();
         if (op == null) {
             // fill the result
             rs.setDataList(mapListToDwt(data));
         } else {
             // push output into an outputSession (export it)
             try (IOutputSession outputSession = Jdp.getRequired(IOutputSession.class)) {
-                Long sinkRef = outputSession.open(op);
+                final Long sinkRef = outputSession.open(op);
                 if (outputSession.getUnwrapTracking(op.getUnwrapTracking())) {
                     op.setSmartMappingForDataWithTracking(Boolean.FALSE);
-                    for (ENTITY entity : data) {
+                    for (final ENTITY entity : data) {
                         outputSession.store(mapToDto(entity));
                     }
                 } else {
                     op.setSmartMappingForDataWithTracking(Boolean.TRUE);
-                    DataWithTrackingW<DTO, TRACKING> entry = new DataWithTrackingW<DTO, TRACKING>();
-                    for (ENTITY entity : data) {
+                    final DataWithTrackingW<DTO, TRACKING> entry = new DataWithTrackingW<>();
+                    for (final ENTITY entity : data) {
                         entry.setTracking(entity.ret$Tracking());
                         entry.setData(mapToDto(entity));
                         entry.setTenantRef(getTenantRef(entity));  // either tenantId or tenantRef has been defined in the data (category D) or it is of no interest to the caller
@@ -120,7 +120,7 @@ public abstract class AbstractEntityMapper42<KEY extends Serializable, DTO exten
      * @return the tenantRef
      */
     @Override
-    public Long getTenantRef(ENTITY e) {
+    public Long getTenantRef(final ENTITY e) {
         return null;
     }
 
@@ -130,6 +130,6 @@ public abstract class AbstractEntityMapper42<KEY extends Serializable, DTO exten
      * @param tenantRef - the tenant to be set (if null, the current call's tenant ref wil be used)
      */
     @Override
-    public void setTenantRef(ENTITY e, Long tenantRef) {
+    public void setTenantRef(final ENTITY e, final Long tenantRef) {
     }
 }

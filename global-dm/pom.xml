@@ -39,9 +39,9 @@
 
         <!-- jpaw / bonaparte: versions for import of BOM. The plugin version is defined separately in SE/EE -->
         <!-- Note that the version of the bonapart-dsl plugin is set in "global-settings" -->
-        <jpaw-bom.version>2.8.7</jpaw-bom.version>
-        <bonaparte-bom.version>4.80.3</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
-        <persistence-bom.version>4.80.3</persistence-bom.version>
+        <jpaw-bom.version>2.8.8</jpaw-bom.version>
+        <bonaparte-bom.version>4.80.4</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
+        <persistence-bom.version>4.80.4</persistence-bom.version>
         <jdp-bom.version>1.5.0</jdp-bom.version>
 
         <!-- Versions of Xtext & Xtend -->

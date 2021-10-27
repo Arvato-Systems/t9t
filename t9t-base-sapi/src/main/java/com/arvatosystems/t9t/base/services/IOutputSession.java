@@ -26,8 +26,8 @@ import de.jpaw.bonaparte.pojos.api.media.MediaXType;
 /** represents a single session within the executor (which spans multiple requests) */
 
 public interface IOutputSession extends AutoCloseable {
-    final String NO_PARTITION_KEY = "";
-    final String NO_RECORD_KEY = "";
+    String NO_PARTITION_KEY = "";
+    String NO_RECORD_KEY = "";
 
     /**
      * open() must be called exactly once, immediately after instancing a new object of type IOutputSession. The productive implementation creates an entry in

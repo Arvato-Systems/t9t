@@ -27,9 +27,9 @@ public class DumpUntranslatedHeadersRequestHandler extends AbstractRequestHandle
     private static final Logger LOGGER = LoggerFactory.getLogger(DumpUntranslatedHeadersRequestHandler.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, DumpUntranslatedHeadersRequest request) throws Exception {
-        StringBuilder buff = new StringBuilder(10000);
-        for (String s: GridConfigRequestHandler.UNTRANSLATED_HEADERS.keySet()) {
+    public ServiceResponse execute(final RequestContext ctx, final DumpUntranslatedHeadersRequest request) throws Exception {
+        final StringBuilder buff = new StringBuilder(10000);
+        for (final String s: GridConfigRequestHandler.UNTRANSLATED_HEADERS.keySet()) {
             buff.append(s);
             buff.append("=\n");
         }

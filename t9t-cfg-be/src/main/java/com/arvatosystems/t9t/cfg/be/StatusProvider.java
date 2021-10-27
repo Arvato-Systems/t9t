@@ -17,14 +17,16 @@ package com.arvatosystems.t9t.cfg.be;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class StatusProvider {
-    private static final AtomicBoolean shutdownInProgress = new AtomicBoolean(false);
+public final class StatusProvider {
+    private static final AtomicBoolean SHUTDOWN_IN_PROGRESS = new AtomicBoolean(false);
+
+    private StatusProvider() { }
 
     public static void setShutdownInProgress() {
-        shutdownInProgress.set(true);
+        SHUTDOWN_IN_PROGRESS.set(true);
     }
 
     public static boolean isShutdownInProgress() {
-        return shutdownInProgress.get();
+        return SHUTDOWN_IN_PROGRESS.get();
     }
 }

@@ -16,7 +16,6 @@
 package com.arvatosystems.t9t.server.services;
 
 import java.io.Closeable;
-
 import java.time.Instant;
 
 import com.arvatosystems.t9t.base.api.RequestParameters;

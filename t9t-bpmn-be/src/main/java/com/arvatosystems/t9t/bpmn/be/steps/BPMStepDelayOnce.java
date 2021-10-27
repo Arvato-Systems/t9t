@@ -15,9 +15,8 @@
  */
 package com.arvatosystems.t9t.bpmn.be.steps;
 
-import java.util.Map;
-
 import java.time.Instant;
+import java.util.Map;
 
 import com.arvatosystems.t9t.base.JsonUtil;
 import com.arvatosystems.t9t.bpmn.WorkflowReturnCode;

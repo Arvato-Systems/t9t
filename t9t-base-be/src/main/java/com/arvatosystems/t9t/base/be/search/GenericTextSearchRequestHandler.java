@@ -28,7 +28,7 @@ public class GenericTextSearchRequestHandler extends AbstractSearchRequestHandle
 
     @Override
     public GenericTextSearchResponse execute(final RequestContext ctx, final GenericTextSearchRequest rq) {
-        GenericTextSearchResponse resp = new GenericTextSearchResponse();
+        final GenericTextSearchResponse resp = new GenericTextSearchResponse();
         resp.setResults(engine.search(ctx, rq, rq.getDocumentName(), rq.getResultFieldName()));
         return resp;
     }

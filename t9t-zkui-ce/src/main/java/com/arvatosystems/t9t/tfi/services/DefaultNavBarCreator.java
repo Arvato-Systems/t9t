@@ -62,21 +62,21 @@ public class DefaultNavBarCreator implements INavBarCreator {
     @Override
     public void createNavBar(final ApplicationViewModel viewModel, final Component container,
             final NaviGroupingViewModel naviGroups) {
-        int groupCounts = naviGroups.getGroupCount();
-        Menubar menubar = new Menubar("horizontal");
+        final int groupCounts = naviGroups.getGroupCount();
+        final Menubar menubar = new Menubar("horizontal");
         menubar.setWidth("100%");
         menubar.setAutodrop(false);
         container.appendChild(menubar);
         createContextMenu(container);
-        Map<String, Menupopup> folders = new HashMap<>(100);
+        final Map<String, Menupopup> folders = new HashMap<>(100);
 
         for (int groupIndex = 0; groupIndex < groupCounts; groupIndex++) {
-            String groupId = naviGroups.getChild(groupIndex, 0).getFolderCategoryId();
-            String groupName = naviGroups.getGroup(groupIndex);
+            final String groupId = naviGroups.getChild(groupIndex, 0).getFolderCategoryId();
+            final String groupName = naviGroups.getGroup(groupIndex);
             Menupopup menuPopup = folders.get(groupId);
 
             if (menuPopup == null) {
-                Menu menu = createMenu(groupName, groupIndex);
+                final Menu menu = createMenu(groupName, groupIndex);
                 menubar.appendChild(menu);
                 menuPopup = new Menupopup();
                 addSClass(menuPopup, "nav-menupopup");
@@ -86,12 +86,12 @@ public class DefaultNavBarCreator implements INavBarCreator {
             }
 
             for (int childIndex = 0; childIndex < naviGroups.getChildCount(groupIndex); childIndex++) {
-                Navi navi = naviGroups.getChild(groupIndex, childIndex);
-                Menupopup currentPopup = getOrCreateFolderIfNotExists(folders, navi.getCategoryId());
+                final Navi navi = naviGroups.getChild(groupIndex, childIndex);
+                final Menupopup currentPopup = getOrCreateFolderIfNotExists(folders, navi.getCategoryId());
 
                 // Display grouped subtitle (non clickable)
                 if (subtitleShouldDisplay(naviGroups, groupIndex, childIndex)) {
-                    Menuitem menuItem = new Menuitem();
+                    final Menuitem menuItem = new Menuitem();
                     menuItem.setLabel(navi.getSubcategory());
                     menuItem.setDisabled(true);
                     menuItem.setZclass("header-nav-subtitle");
@@ -101,7 +101,7 @@ public class DefaultNavBarCreator implements INavBarCreator {
 
                 // Menu items
                 if (navi.isMenuItemVisible()) {
-                    Menuitem menuItem = new Menuitem();
+                    final Menuitem menuItem = new Menuitem();
                     menuItem.setLabel(navi.getName());
                     menuItem.setAttribute("navi", navi);
                     menuItem.addEventListener(Events.ON_CLICK, (ev) -> {
@@ -119,7 +119,7 @@ public class DefaultNavBarCreator implements INavBarCreator {
         }
     }
 
-    private void addSClass(Menupopup menuPopup, String toAdd) {
+    private void addSClass(final Menupopup menuPopup, final String toAdd) {
         if (toAdd == null || toAdd.length() == 0) {
             // nothing to do
             return;
@@ -138,7 +138,7 @@ public class DefaultNavBarCreator implements INavBarCreator {
     }
 
     protected void setSelected(final ApplicationViewModel viewModel, final NaviGroupingViewModel naviGroups,
-            Navi selectedNavi, String selectedGroup) {
+            final Navi selectedNavi, final String selectedGroup) {
         if (selectedGroup != null) {
             setNaviGroup(naviGroups, selectedGroup, true); // used in the EE implementation
         } else if (selectedNavi != null) {
@@ -148,8 +148,8 @@ public class DefaultNavBarCreator implements INavBarCreator {
         }
     }
 
-    protected void setNaviGroup(final NaviGroupingViewModel naviGroups, String category, boolean isClosePermitted) {
-        Integer groupIndex = applicationDAO.getGroupIndexByCategory(category, naviGroups);
+    protected void setNaviGroup(final NaviGroupingViewModel naviGroups, final String category, final boolean isClosePermitted) {
+        final Integer groupIndex = applicationDAO.getGroupIndexByCategory(category, naviGroups);
         if (groupIndex != null) {
             if (!naviGroups.isGroupOpened(groupIndex)) {
                 naviGroups.addOpenGroup(groupIndex.intValue());
@@ -159,9 +159,9 @@ public class DefaultNavBarCreator implements INavBarCreator {
         }
     }
 
-    private Menu createMenu(String groupName, int groupIndex) {
+    private Menu createMenu(final String groupName, final int groupIndex) {
         // String sclass = "header-nav-submenu no-scrollbar ";
-        Menu menu = new Menu();
+        final Menu menu = new Menu();
         menu.setLabel(groupName);
         menu.setSclass("header-nav-submenu no-scrollbar ");
         menu.setClientAttribute("data-navi", groupName);
@@ -176,7 +176,7 @@ public class DefaultNavBarCreator implements INavBarCreator {
      * @param childIndex
      * @return
      */
-    protected boolean subtitleShouldDisplay(final NaviGroupingViewModel naviGroups, int index, int childIndex) {
+    protected boolean subtitleShouldDisplay(final NaviGroupingViewModel naviGroups, final int index, final int childIndex) {
 
         if (childIndex != 0) {
             if (naviGroups.getChild(index, childIndex).getSubcategory() != null &&
@@ -190,12 +190,12 @@ public class DefaultNavBarCreator implements INavBarCreator {
         }
     }
 
-    protected final String getSubMenuClass(int childCount) {
+    protected final String getSubMenuClass(final int childCount) {
 
         if (childCount > MAX_NUMBER_SUBMENU_ITEMS_PER_COLUMN) {
             int i = childCount / MAX_NUMBER_SUBMENU_ITEMS_PER_COLUMN;
             if (childCount > MAX_NUMBER_SUBMENU_ITEMS_PER_COLUMN) {
-                int r = childCount % MAX_NUMBER_SUBMENU_ITEMS_PER_COLUMN;
+                final int r = childCount % MAX_NUMBER_SUBMENU_ITEMS_PER_COLUMN;
                 if (r > MAX_NUMBER_SUBMENU_ITEMS_PER_COLUMN / 2)
                     i++;
             }
@@ -213,22 +213,22 @@ public class DefaultNavBarCreator implements INavBarCreator {
      *
      * @param component
      */
-    protected final void createContextMenu(Component container) {
-        Context28 contextMenu = new Context28();
+    protected final void createContextMenu(final Component container) {
+        final Context28 contextMenu = new Context28();
         contextMenu.setId(CONTEXT_MENU_ID);
         contextMenu.setContextOptions(SET_AS_USER_DEFAULT_ID + ",," + RESET_USER_DEFAULT_ID);
         contextMenu.setParent(container);
 
         contextMenu.addEventListener(Events.ON_OPEN, ev -> {
-            Component comp = ((OpenEvent) ev).getReference();
+            final Component comp = ((OpenEvent) ev).getReference();
             if (comp != null) {
-                for (Component comp2 : contextMenu.getChildren()) {
+                for (final Component comp2 : contextMenu.getChildren()) {
                     comp2.setAttribute("data-navi", comp.getClientAttribute("data-navi"));
                 }
             }
         });
 
-        for (Component comp : contextMenu.getChildren()) {
+        for (final Component comp : contextMenu.getChildren()) {
 
             if (comp.getId().isEmpty()) {
                 continue;
@@ -237,9 +237,9 @@ public class DefaultNavBarCreator implements INavBarCreator {
             if (comp.getId().equals(CONTEXT_MENU_ID + "." + SET_AS_USER_DEFAULT_ID)) {
                 // setAsUserDefault
                 comp.addEventListener(Events.ON_CLICK, ev -> {
-                    SetDefaultScreenRequest request = new SetDefaultScreenRequest();
+                    final SetDefaultScreenRequest request = new SetDefaultScreenRequest();
                     request.setDefaultScreenId((String) ev.getTarget().getAttribute("data-navi"));
-                    ServiceResponse response = t9tRemoteUtils.executeExpectOk(request, ServiceResponse.class);
+                    final ServiceResponse response = t9tRemoteUtils.executeExpectOk(request, ServiceResponse.class);
                     if (response.getReturnCode() == ApplicationException.SUCCESS) {
                         Messagebox.show(ApplicationSession.get().translate(VM_ID, "defaultUserScreen.success"),
                                 ApplicationSession.get().translate(VM_ID, "defaultScreen"), Messagebox.OK,
@@ -249,9 +249,9 @@ public class DefaultNavBarCreator implements INavBarCreator {
             } else if (comp.getId().equals(CONTEXT_MENU_ID + "." + RESET_USER_DEFAULT_ID)) {
                 // resetUserDefault
                 comp.addEventListener(Events.ON_CLICK, ev -> {
-                    SetDefaultScreenRequest request = new SetDefaultScreenRequest();
+                    final SetDefaultScreenRequest request = new SetDefaultScreenRequest();
                     request.setDefaultScreenId(null);
-                    ServiceResponse response = t9tRemoteUtils.executeExpectOk(request, ServiceResponse.class);
+                    final ServiceResponse response = t9tRemoteUtils.executeExpectOk(request, ServiceResponse.class);
                     if (response.getReturnCode() == ApplicationException.SUCCESS) {
                         Messagebox.show(ApplicationSession.get().translate(VM_ID, "resetDefaultUserScreen.success"),
                                 ApplicationSession.get().translate(VM_ID, "defaultScreen"), Messagebox.OK,
@@ -265,9 +265,9 @@ public class DefaultNavBarCreator implements INavBarCreator {
         }
     }
 
-    private final void createContextMenuOnEachMenu(Menupopup menu) {
+    private final void createContextMenuOnEachMenu(final Menupopup menu) {
         menu.addEventListener(Events.ON_OPEN, ev -> {
-            for (Component comp2 : ev.getTarget().getChildren()) {
+            for (final Component comp2 : ev.getTarget().getChildren()) {
                 if (comp2 instanceof Menuitem) {
                     ((Menuitem) comp2).setContext(CONTEXT_MENU_ID);
                 }
@@ -278,20 +278,20 @@ public class DefaultNavBarCreator implements INavBarCreator {
     /**
      * Get existing folder, create if not existed.
      */
-    protected Menupopup getOrCreateFolderIfNotExists(Map<String, Menupopup> folders, String folderCategoryId) {
+    protected Menupopup getOrCreateFolderIfNotExists(final Map<String, Menupopup> folders, final String folderCategoryId) {
 
-        Menupopup folder = folders.get(folderCategoryId);
+        final Menupopup folder = folders.get(folderCategoryId);
         if (folder == null) {
             // get parent, create if not existed recursively
-            String parentFolderCategoryId = Navi.getCategoryIdBeforeLastDot(folderCategoryId);
-            String lastPartCategoryId = Navi.getCategoryIdAfterLastDot(folderCategoryId);
-            Menupopup parentPopup = getOrCreateFolderIfNotExists(folders, parentFolderCategoryId);
+            final String parentFolderCategoryId = Navi.getCategoryIdBeforeLastDot(folderCategoryId);
+            final String lastPartCategoryId = Navi.getCategoryIdAfterLastDot(folderCategoryId);
+            final Menupopup parentPopup = getOrCreateFolderIfNotExists(folders, parentFolderCategoryId);
 
-            Menu submenu = new Menu(getSubmenuFolderTranslated(ApplicationSession.get(), parentFolderCategoryId, lastPartCategoryId));
+            final Menu submenu = new Menu(getSubmenuFolderTranslated(ApplicationSession.get(), parentFolderCategoryId, lastPartCategoryId));
             submenu.addSclass("nav-submenu");
             submenu.setImage("/img/folder.png");
             parentPopup.appendChild(submenu);
-            Menupopup submenuPopup = new Menupopup();
+            final Menupopup submenuPopup = new Menupopup();
             addSClass(submenuPopup, "nav-menupopup");
             submenuPopup.setId(folderCategoryId);
             submenu.appendChild(submenuPopup);
@@ -303,9 +303,9 @@ public class DefaultNavBarCreator implements INavBarCreator {
         return folder;
     }
 
-    protected static String getSubmenuFolderTranslated(ApplicationSession as, String prefix, String submenuId) {
-        String fieldname = String.format("%s.%s", prefix, submenuId);
-        String fallback = String.format("%s.%s", DEFAULT, submenuId);
+    protected static String getSubmenuFolderTranslated(final ApplicationSession as, final String prefix, final String submenuId) {
+        final String fieldname = prefix + "." + submenuId;
+        final String fallback = DEFAULT + "." + submenuId;
 
         return as.translateWithFallback(MENU_GROUP, fieldname, fallback);
     }

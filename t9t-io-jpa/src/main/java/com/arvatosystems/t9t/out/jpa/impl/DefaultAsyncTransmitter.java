@@ -16,6 +16,7 @@
 package com.arvatosystems.t9t.out.jpa.impl;
 
 import java.time.Instant;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,8 +42,9 @@ public class DefaultAsyncTransmitter implements IAsyncTransmitter {
         LOGGER.info("Created an asynchronous message sender");
     }
 
-    private void persistInDb(Long objectRef, Long queueRef, String asyncChannelId, BonaPortable payload, Long ref, String category, String identifier) {
-        AsyncMessageEntity m = asyncMessageResolver.newEntityInstance();
+    private void persistInDb(final Long objectRef, final Long queueRef, final String asyncChannelId, final BonaPortable payload, final Long ref,
+      final String category, final String identifier) {
+        final AsyncMessageEntity m = asyncMessageResolver.newEntityInstance();
         m.setObjectRef(objectRef);
         m.setAsyncChannelId(asyncChannelId);
         m.setStatus(ExportStatusEnum.READY_TO_EXPORT);
@@ -57,7 +59,7 @@ public class DefaultAsyncTransmitter implements IAsyncTransmitter {
     }
 
     @Override
-    public Long transmitMessage(String asyncChannelId, BonaPortable payload, Long ref, String category, String identifier) {
+    public Long transmitMessage(final String asyncChannelId, final BonaPortable payload, final Long ref, final String category, final String identifier) {
         // check if the message is valid (due to the asynchronous nature, invalid messages would cause hard to detect problems)
         payload.validate();
 

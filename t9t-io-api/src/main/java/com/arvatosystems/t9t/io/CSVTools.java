@@ -21,17 +21,19 @@ import java.util.Locale;
 import de.jpaw.bonaparte.core.CSVConfiguration;
 import de.jpaw.bonaparte.core.CSVStyle;
 
-public class CSVTools {
-    private static CSVStyle t2b(CsvDateTimeStyleType t) {
+public final class CSVTools {
+    private CSVTools() { }
+
+    private static CSVStyle t2b(final CsvDateTimeStyleType t) {
         return t == null ? null : CSVStyle.factory(t.getToken());
     }
 
-    public static CSVConfiguration getCsvConfiguration(CsvConfigurationDTO cfgDTO) {
+    public static CSVConfiguration getCsvConfiguration(final CsvConfigurationDTO cfgDTO) {
         if (cfgDTO == null)
             return CSVConfiguration.CSV_DEFAULT_CONFIGURATION;
         else {
             // create a custom configuration
-            Integer quote = cfgDTO.getQuote();
+            final Integer quote = cfgDTO.getQuote();
 
             return new CSVConfiguration(
                 cfgDTO.getSeparator(),
@@ -48,8 +50,8 @@ public class CSVTools {
                 cfgDTO.getObjectEnd(),
                 cfgDTO.getBooleanTrue(),
                 cfgDTO.getBooleanFalse(),
-                cfgDTO.getLanguageCode()!= null? Locale.forLanguageTag(cfgDTO.getLanguageCode()): null,
-                cfgDTO.getTimeZone() != null ? ZoneId.of(cfgDTO.getTimeZone()): null,
+                cfgDTO.getLanguageCode() != null ? Locale.forLanguageTag(cfgDTO.getLanguageCode()) : null,
+                cfgDTO.getTimeZone() != null ? ZoneId.of(cfgDTO.getTimeZone()) : null,
                 t2b(cfgDTO.getDayStyle()),
                 t2b(cfgDTO.getTimeStyle()),
                 cfgDTO.getCustomDayFormat(),

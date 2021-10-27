@@ -36,15 +36,15 @@ public class SchedulerSetupSearchRequestHandler extends AbstractSearch42RequestH
     protected final ISchedulerSetupDTOMapper mapper = Jdp.getRequired(ISchedulerSetupDTOMapper.class);
 
     @Override
-    public ReadAllResponse<SchedulerSetupDTO, FullTrackingWithVersion> execute(final RequestContext ctx,
-            final SchedulerSetupSearchRequest request) throws Exception {
+    public ReadAllResponse<SchedulerSetupDTO, FullTrackingWithVersion> execute(final RequestContext ctx, final SchedulerSetupSearchRequest request)
+      throws Exception {
         final ReadAllResponse<SchedulerSetupDTO, FullTrackingWithVersion> response = this.execute(ctx, request, resolver, mapper);
 
         if (Boolean.TRUE.equals(request.getSuppressResponseParameters())) {
             for (final DataWithTrackingW<SchedulerSetupDTO, FullTrackingWithVersion> dwt : response.getDataList()) {
-                final CannedRequestRef _request = dwt.getData().getRequest();
-                if (_request != null) {
-                    ((CannedRequestDTO) _request).setRequest(null);
+                final CannedRequestRef rq = dwt.getData().getRequest();
+                if (rq != null) {
+                    ((CannedRequestDTO) rq).setRequest(null);
                 }
             }
         }

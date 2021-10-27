@@ -41,7 +41,7 @@ public class SchedulerSetupResolver extends AbstractJpaResolver<SchedulerSetupRe
     }
 
     @Override
-    public void update(SchedulerSetupDTO dto) {
+    public void update(final SchedulerSetupDTO dto) {
         if (dto.getRecurrencyType() != SchedulerSetupRecurrenceType.FAST)
             dto.setCronExpression(schedulerService.determineCronExpression(dto));
         super.update(dto);
@@ -49,7 +49,7 @@ public class SchedulerSetupResolver extends AbstractJpaResolver<SchedulerSetupRe
 
 
     @Override
-    public void create(SchedulerSetupDTO dto) {
+    public void create(final SchedulerSetupDTO dto) {
         if (dto.getRecurrencyType() != SchedulerSetupRecurrenceType.FAST)
             dto.setCronExpression(schedulerService.determineCronExpression(dto));
         super.create(dto);
@@ -57,7 +57,7 @@ public class SchedulerSetupResolver extends AbstractJpaResolver<SchedulerSetupRe
 
 
     @Override
-    public SchedulerSetupRef createKey(Long ref) {
+    public SchedulerSetupRef createKey(final Long ref) {
         return ref == null ? null : new SchedulerSetupRef(ref);
     }
 }

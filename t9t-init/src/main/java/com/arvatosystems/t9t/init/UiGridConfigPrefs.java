@@ -66,12 +66,12 @@ public final class UiGridConfigPrefs {
 
     private UiGridConfigPrefs() { }
 
-    private static void addUiMeta(CrudViewModel<?, ?> vm, String viewModelId, UIGridPreferences ui, String gridId) {
+    private static void addUiMeta(final CrudViewModel<?, ?> vm, final String viewModelId, final UIGridPreferences ui, final String gridId) {
         if (IViewModelContainer.VIEW_MODEL_BY_GRID_ID_REGISTRY.putIfAbsent(gridId, viewModelId) != null)
             LOGGER.error("view model by grid config {} defined multiple times", gridId);
-        ColumnCollector cc = new ColumnCollector(MY_DEFAULTS);
-        List<UIColumnConfiguration> cols = ui.getColumns();
-        for (UIColumnConfiguration col : cols) {
+        final ColumnCollector cc = new ColumnCollector(MY_DEFAULTS);
+        final List<UIColumnConfiguration> cols = ui.getColumns();
+        for (final UIColumnConfiguration col : cols) {
             try {
                 if (FieldMappers.isTenantRef(col.getFieldName()))
                     cc.createUIMeta(col, InternalTenantRef42.class$MetaData());
@@ -80,12 +80,12 @@ public final class UiGridConfigPrefs {
                 else
                     cc.createUIMeta(col, vm.dtoClass.getMetaData());
                 // workaround for ZK UI: the UI changes all empty fields to nulls, we have to avoid empty strings in the interaction with the UI for that reason
-                UIMeta m = col.getMeta();
+                final UIMeta m = col.getMeta();
                 if (m != null) {
                     m.setClassProperties(empty2minus(m.getClassProperties()));
                     m.setFieldProperties(empty2minus(m.getFieldProperties()));
                 }
-            } catch (Exception e1) {
+            } catch (final Exception e1) {
                 ERROR_COUNTER.incrementAndGet();
                 LOGGER.error("Cannot obtain meta data for grid config {}, field {}, maybe used a wrong prefix? [{}: {}]",
                         gridId, col.getFieldName(), e1.getClass().getSimpleName(), e1.getMessage());
@@ -99,31 +99,31 @@ public final class UiGridConfigPrefs {
         }
     }
 
-    public static void getGridConfigAsObject(String resourceId) {
-        String gridId = resourceId.replace('$', '/');
+    public static void getGridConfigAsObject(final String resourceId) {
+        final String gridId = resourceId.replace('$', '/');
         try {
-            URL url = Resources.getResource("gridconfig/" + resourceId + ".json");
-            String json = Resources.toString(url, Charsets.UTF_8);
+            final URL url = Resources.getResource("gridconfig/" + resourceId + ".json");
+            final String json = Resources.toString(url, Charsets.UTF_8);
 
-            Map<String, Object> config = new JsonParser(json, false).parseObject();
+            final Map<String, Object> config = new JsonParser(json, false).parseObject();
 
             // add the "allowSorting" data, by default false
-            List<Map<String, Object>> columns = (List<Map<String, Object>>) config.get("columns");
-            for (Map<String, Object> column: columns) {
+            final List<Map<String, Object>> columns = (List<Map<String, Object>>) config.get("columns");
+            for (final Map<String, Object> column: columns) {
                 column.put("allowSorting", true);
                 column.put("negateFilter", false);
             }
             config.put("sortDescending", false);
             config.put("@PQON", "t9t.base.uiprefs.UIGridPreferences");      // avoid a warning
-            UIGridPreferences ui = (UIGridPreferences) MapParser.asBonaPortable(config, UIGridPreferences.meta$$this);
+            final UIGridPreferences ui = (UIGridPreferences) MapParser.asBonaPortable(config, UIGridPreferences.meta$$this);
             // enrich the UI meta data of the columns, if a viewModel is referenced
-            String viewModelId = ui.getViewModel();
+            final String viewModelId = ui.getViewModel();
             if (viewModelId == null) {
                 ERROR_COUNTER.incrementAndGet();
                 LOGGER.error("No view model reference defined for grid config {} - screens won't work", gridId);
                 return;
             }
-            CrudViewModel<?, ?> vm = IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.get(viewModelId);
+            final CrudViewModel<?, ?> vm = IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.get(viewModelId);
             if (vm == null) {
                 ERROR_COUNTER.incrementAndGet();
                 LOGGER.error("No view model definition found for {}, as specified in grid config {}", viewModelId, gridId);
@@ -134,32 +134,32 @@ public final class UiGridConfigPrefs {
                 // set root level class properties - remove "" entry!
                 // ui.setClassProperties(vm.dtoClass.getMetaData().getProperties());
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             ERROR_COUNTER.incrementAndGet();
             LOGGER.error("Parsing error for grid config {}: {}", gridId, ExceptionUtil.causeChain(e));
         }
     }
 
-    static Map<String, String> empty2minus(Map<String, String> map) {
+    static Map<String, String> empty2minus(final Map<String, String> map) {
         if (map == null || map.isEmpty())
             return map;
         // the input is an ImmutableMap, we have to copy it to support changes to the (expected) empty components
-        Map<String, String> r = new HashMap<String, String>(2 * map.size());
-        for (Map.Entry<String, String> e : map.entrySet()) {
-            String v = e.getValue();
+        final Map<String, String> r = new HashMap<>(2 * map.size());
+        for (final Map.Entry<String, String> e : map.entrySet()) {
+            final String v = e.getValue();
             r.put(e.getKey(), v == null || v.length() == 0 ? T9tConstants.UI_META_NO_ASSIGNED_VALUE : v);
         }
         return r;
     }
 
-    public static void getLeanGridConfigAsObject(String resourceId) {
-        String gridId = resourceId.replace('$', '/');
+    public static void getLeanGridConfigAsObject(final String resourceId) {
+        final String gridId = resourceId.replace('$', '/');
         try {
-            URL url = Resources.getResource("gridconfig/" + gridId + ".json");
-            String json = Resources.toString(url, Charsets.UTF_8);
+            final URL url = Resources.getResource("gridconfig/" + gridId + ".json");
+            final String json = Resources.toString(url, Charsets.UTF_8);
 
-            Map<String, Object> config = new JsonParser(json, false).parseObject();
-            UILeanGridPreferences prefs = new UILeanGridPreferences();
+            final Map<String, Object> config = new JsonParser(json, false).parseObject();
+            final UILeanGridPreferences prefs = new UILeanGridPreferences();
             MapParser.populateFrom(prefs, config);
             if (ILeanGridConfigContainer.LEAN_GRID_CONFIG_REGISTRY.putIfAbsent(gridId, prefs) != null) {
                 ERROR_COUNTER.incrementAndGet();
@@ -167,8 +167,8 @@ public final class UiGridConfigPrefs {
             }
 
             // obtain the viewModel
-            String viewModelId = prefs.getViewModel();
-            CrudViewModel<?, ?> vm = IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.get(viewModelId);
+            final String viewModelId = prefs.getViewModel();
+            final CrudViewModel<?, ?> vm = IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.get(viewModelId);
             if (vm == null) {
                 ERROR_COUNTER.incrementAndGet();
                 LOGGER.error("No view model definition found for {}, as specified in grid config {}", viewModelId, gridId);
@@ -178,23 +178,23 @@ public final class UiGridConfigPrefs {
 
             // also convert it to old style...
             // must determine available columns...
-            ColumnCollector cc = new ColumnCollector(MY_DEFAULTS, true);
+            final ColumnCollector cc = new ColumnCollector(MY_DEFAULTS, true);
 
             if (vm.trackingClass != null)
                 cc.addToColumns(vm.trackingClass.getMetaData());
 
-            String tenantCategory = vm.dtoClass.getProperty("tenantCategory");
+            final String tenantCategory = vm.dtoClass.getProperty("tenantCategory");
             if (!TenantIsolationCategoryType.GLOBAL.getToken().equals(tenantCategory))
                 cc.addToColumns(InternalTenantRef42.class$MetaData());
 
             cc.addToColumns(vm.dtoClass.getMetaData());
 
             // convert into new format, build a fast access map
-            UIGridPreferences ui = new UIGridPreferences();
-            Map<String, UIColumnConfiguration> colMap = new HashMap<String, UIColumnConfiguration>(2 * cc.columns.size());
-            List<UIColumnConfiguration> cols = new ArrayList<UIColumnConfiguration>(cc.columns.size());
-            for (UIColumn c : cc.columns) {
-                UIColumnConfiguration d = convertColumn(c);
+            final UIGridPreferences ui = new UIGridPreferences();
+            final Map<String, UIColumnConfiguration> colMap = new HashMap<>(2 * cc.columns.size());
+            final List<UIColumnConfiguration> cols = new ArrayList<>(cc.columns.size());
+            for (final UIColumn c : cc.columns) {
+                final UIColumnConfiguration d = convertColumn(c);
                 colMap.put(c.getFieldName(), d);
                 cols.add(d);
                 if (c.getFieldName().indexOf('[') >= 0) {
@@ -212,9 +212,9 @@ public final class UiGridConfigPrefs {
 
             // now set any filters
             if (prefs.getFilters() != null) {
-                for (UIFilter f : prefs.getFilters()) {
-                    String s = FieldMappers.stripIndexes(f.getFieldName());
-                    UIColumnConfiguration d = colMap.get(s);
+                for (final UIFilter f : prefs.getFilters()) {
+                    final String s = FieldMappers.stripIndexes(f.getFieldName());
+                    final UIColumnConfiguration d = colMap.get(s);
                     if (d == null) {
                         ERROR_COUNTER.incrementAndGet();
                         LOGGER.error("cannot find field {} ({}) referenced as a filter by grid ID {}", f.getFieldName(), s, gridId);
@@ -226,9 +226,9 @@ public final class UiGridConfigPrefs {
             }
 
             // now set column visibility
-            for (String fld : prefs.getFields()) {
-                String s = FieldMappers.stripIndexes(fld);
-                UIColumnConfiguration d = colMap.get(s);
+            for (final String fld : prefs.getFields()) {
+                final String s = FieldMappers.stripIndexes(fld);
+                final UIColumnConfiguration d = colMap.get(s);
                 if (d == null) {
                     ERROR_COUNTER.incrementAndGet();
                     LOGGER.error("cannot find field {} ({}) referenced as visible by grid ID {}", fld, s, gridId);
@@ -239,9 +239,9 @@ public final class UiGridConfigPrefs {
 
             // now set fields which are not sortable (in the backend)
             if (prefs.getUnsortableFields() != null) {
-                for (String fld : prefs.getUnsortableFields()) {
-                    String s = FieldMappers.stripIndexes(fld);
-                    UIColumnConfiguration d = colMap.get(s);
+                for (final String fld : prefs.getUnsortableFields()) {
+                    final String s = FieldMappers.stripIndexes(fld);
+                    final UIColumnConfiguration d = colMap.get(s);
                     if (d == null) {
                         ERROR_COUNTER.incrementAndGet();
                         LOGGER.error("cannot find field {} ({}) referenced as unsortable by grid ID {}", fld, s, gridId);
@@ -253,14 +253,14 @@ public final class UiGridConfigPrefs {
 
             // enrich UI meta, validate and store it
             addUiMeta(vm, viewModelId, ui, gridId);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             ERROR_COUNTER.incrementAndGet();
             LOGGER.error("Parsing error for lean grid config {}: {}", gridId, ExceptionUtil.causeChain(e));
         }
     }
 
-    private static UIColumnConfiguration convertColumn(UIColumn src) {
-        UIColumnConfiguration dst = new UIColumnConfiguration();
+    private static UIColumnConfiguration convertColumn(final UIColumn src) {
+        final UIColumnConfiguration dst = new UIColumnConfiguration();
         dst.setAllowSorting(true);
         dst.setNegateFilter(false);
         dst.setVisible(false);

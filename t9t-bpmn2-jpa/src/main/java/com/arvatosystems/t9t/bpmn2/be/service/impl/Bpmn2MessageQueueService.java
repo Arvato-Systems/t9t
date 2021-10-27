@@ -36,7 +36,7 @@ public class Bpmn2MessageQueueService implements IBpmn2MessageQueueService {
     private final IBpmn2MessageQueueDTOMapper mapper = Jdp.getRequired(IBpmn2MessageQueueDTOMapper.class);
 
     @Override
-    public void queueMessage(Bpmn2MessageQueueDTO message) {
+    public void queueMessage(final Bpmn2MessageQueueDTO message) {
         final Bpmn2MessageQueueEntity messageEntity = mapper.mapToEntity(message, false);
         resolver.save(messageEntity);
 

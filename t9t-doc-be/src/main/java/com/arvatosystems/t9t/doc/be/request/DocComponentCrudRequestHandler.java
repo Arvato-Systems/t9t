@@ -28,13 +28,14 @@ import com.arvatosystems.t9t.doc.services.IDocComponentResolver;
 
 import de.jpaw.dp.Jdp;
 
-public class DocComponentCrudRequestHandler extends AbstractCrudSurrogateKeyBERequestHandler<DocComponentRef, DocComponentDTO, FullTrackingWithVersion, DocComponentCrudRequest> {
+public class DocComponentCrudRequestHandler extends
+  AbstractCrudSurrogateKeyBERequestHandler<DocComponentRef, DocComponentDTO, FullTrackingWithVersion, DocComponentCrudRequest> {
 
     protected final IDocComponentResolver resolver = Jdp.getRequired(IDocComponentResolver.class);
     protected final IExecutor executor = Jdp.getRequired(IExecutor.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, DocComponentCrudRequest crudRequest) throws Exception {
+    public ServiceResponse execute(final RequestContext ctx, final DocComponentCrudRequest crudRequest) throws Exception {
         DocFormatter.clearCache();   // this could change the configuration, clear the cache immediately!
         executor.clearCache(ctx, DocComponentDTO.class.getSimpleName(), null);
         return execute(ctx, crudRequest, resolver);

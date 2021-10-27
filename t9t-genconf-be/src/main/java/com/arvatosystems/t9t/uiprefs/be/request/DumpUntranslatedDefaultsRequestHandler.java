@@ -27,9 +27,9 @@ public class DumpUntranslatedDefaultsRequestHandler extends AbstractRequestHandl
     private static final Logger LOGGER = LoggerFactory.getLogger(DumpUntranslatedDefaultsRequestHandler.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, DumpUntranslatedDefaultsRequest request) throws Exception {
-        StringBuilder buff = new StringBuilder(10000);
-        for (String s: GridConfigRequestHandler.UNTRANSLATED_DEFAULTS.keySet()) {
+    public ServiceResponse execute(final RequestContext ctx, final DumpUntranslatedDefaultsRequest request) throws Exception {
+        final StringBuilder buff = new StringBuilder(10000);
+        for (final String s: GridConfigRequestHandler.UNTRANSLATED_DEFAULTS.keySet()) {
             buff.append(s);
             buff.append("=\n");
         }

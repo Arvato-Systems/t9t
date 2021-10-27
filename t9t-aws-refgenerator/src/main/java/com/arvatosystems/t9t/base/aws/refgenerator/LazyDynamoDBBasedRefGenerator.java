@@ -63,7 +63,7 @@ public class LazyDynamoDBBasedRefGenerator implements IRefGenerator {
     private final T9tServerConfiguration configuration = Jdp.getRequired(T9tServerConfiguration.class);
 
 
-    private final DynamoDbClient initDynamoDBAccess() {
+    private DynamoDbClient initDynamoDBAccess() {
         final AWSConfiguration awsCfg = ConfigProvider.getConfiguration().getAwsConfiguration();
         Region region = Region.EU_CENTRAL_1;
 
@@ -80,7 +80,7 @@ public class LazyDynamoDBBasedRefGenerator implements IRefGenerator {
         return xclient;
     }
 
-    private final void describeTable(String tableName) {
+    private void describeTable(String tableName) {
 
         try {
             final DescribeTableRequest request = DescribeTableRequest.builder()

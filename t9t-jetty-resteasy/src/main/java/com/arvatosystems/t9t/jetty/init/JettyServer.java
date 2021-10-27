@@ -43,14 +43,15 @@ public class JettyServer {
     static final String DEFAULT_CONTEXT_ROOT = "/rest";
     static final String DEFAULT_APPLICATION_PATH = "";
 
-    public static void main( String[] args ) throws Exception {
+    public static void main(final String[] args) throws Exception {
 //        System.setProperty("java.util.concurrent.ForkJoinPool.common.threadFactory", DirtyHackForkJoinPool.class.getCanonicalName());
 
-        System.setProperty("javax.xml.bind.JAXBContextFactory", "com.sun.xml.bind.v2.ContextFactory");   // do not access the "internal" ContextFactory // UPDATE FOR JAKARTA!
+        // do not access the "internal" ContextFactory // TODO: UPDATE FOR JAKARTA!
+        System.setProperty("javax.xml.bind.JAXBContextFactory", "com.sun.xml.bind.v2.ContextFactory");
 
         try {
             new JettyServer().run();
-        } catch (Throwable t) {
+        } catch (final Throwable t) {
             t.printStackTrace();
         }
     }
@@ -65,18 +66,18 @@ public class JettyServer {
 
     public void run() throws Exception {
 
-        Config config = ConfigProvider.getConfig();
-        for (ConfigSource cfgSrc: config.getConfigSources()) {
-            Map<String,String> values = cfgSrc.getProperties();
+        final Config config = ConfigProvider.getConfig();
+        for (final ConfigSource cfgSrc: config.getConfigSources()) {
+            final Map<String, String> values = cfgSrc.getProperties();
             LOGGER.info("Have config source of prio {}: {} with {} values", cfgSrc.getOrdinal(), cfgSrc.getName(), values.size());
         }
 
-        int port = config.getOptionalValue("jetty.http.port", Integer.class).orElse(DEFAULT_PORT);
-        int minThreads = config.getOptionalValue("jetty.threadPool.minThreads", Integer.class).orElse(DEFAULT_MIN_THREADS);
-        int maxThreads = config.getOptionalValue("jetty.threadPool.maxThreads", Integer.class).orElse(DEFAULT_MAX_THREADS);
-        int idleTimeout = config.getOptionalValue("jetty.threadPool.idleTimeout", Integer.class).orElse(DEFAULT_IDLE_TIMEOUT);  // in millis
-        String contextRoot = getContextPath();
-        String applicationPath = getApplicationPath();
+        final int port = config.getOptionalValue("jetty.http.port", Integer.class).orElse(DEFAULT_PORT);
+        final int minThreads = config.getOptionalValue("jetty.threadPool.minThreads", Integer.class).orElse(DEFAULT_MIN_THREADS);
+        final int maxThreads = config.getOptionalValue("jetty.threadPool.maxThreads", Integer.class).orElse(DEFAULT_MAX_THREADS);
+        final int idleTimeout = config.getOptionalValue("jetty.threadPool.idleTimeout", Integer.class).orElse(DEFAULT_IDLE_TIMEOUT);  // in millis
+        final String contextRoot = getContextPath();
+        final String applicationPath = getApplicationPath();
 
         LOGGER.info("Using the following configuration values: port {}, min/max threads = {}/{}", port, minThreads, maxThreads);
         LOGGER.info("  idle timeout = {}, context = {}, application path = {}", idleTimeout, contextRoot, applicationPath);
@@ -94,11 +95,11 @@ public class JettyServer {
         final Server server = new Server(threadPool);
 
         // code below is for adding http/2 (h2c). Works, but also throws sporadic exceptions
-        HttpConfiguration hconfig = new HttpConfiguration();
+        final HttpConfiguration hconfig = new HttpConfiguration();
         // ... configure
-        HttpConnectionFactory http1 = new HttpConnectionFactory(hconfig);
-        HTTP2CServerConnectionFactory http2c = new HTTP2CServerConnectionFactory(hconfig);
-        ServerConnector connector = new ServerConnector(server, http1, http2c);
+        final HttpConnectionFactory http1 = new HttpConnectionFactory(hconfig);
+        final HTTP2CServerConnectionFactory http2c = new HTTP2CServerConnectionFactory(hconfig);
+        final ServerConnector connector = new ServerConnector(server, http1, http2c);
         connector.setPort(port);
         server.addConnector(connector);
 

@@ -77,7 +77,8 @@ public class T9tSsmException extends T9tException {
         codeToDescription.put(VALIDATION_CREATION_NO_TENANT_REF, "Tenant Ref has to be either in InternalHeaderParameters or in ReportDTO");
         codeToDescription.put(SERVICESESSION_IS_NULL, "The service session for the job execution is null");
         codeToDescription.put(SCHEDULER_JOB_EXECUTION_FAILURE, "Failed to execute job");
-        codeToDescription.put(SCHEDULER_SETUP_FAILURE_INTERVAL, "If a minute interval should be used the fields for start hour, end hour and minute interval have to be filled");
+        codeToDescription.put(SCHEDULER_SETUP_FAILURE_INTERVAL,
+          "If a minute interval should be used the fields for start hour, end hour and minute interval have to be filled");
         codeToDescription.put(SCHEDULE_VALID_FROM_NOT_PROVIDED, "Please provided Valid From Date.");
         codeToDescription.put(SCHEDULE_EXECUTION_TIME_MISSING, "Execution Time is missing");
         codeToDescription.put(SCHEDULE_CRON_EXPRESSION_MISSING, "Required cronExpression is missing");

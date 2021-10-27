@@ -28,7 +28,7 @@ public class ExecuteAsyncRequestHandler extends AbstractRequestHandler<ExecuteAs
     protected final IExecutor executor = Jdp.getRequired(IExecutor.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, ExecuteAsyncRequest request) throws Exception {
+    public ServiceResponse execute(final RequestContext ctx, final ExecuteAsyncRequest request) throws Exception {
         executor.executeAsynchronous(ctx, request.getAsyncRequest());
         return ok();
     }

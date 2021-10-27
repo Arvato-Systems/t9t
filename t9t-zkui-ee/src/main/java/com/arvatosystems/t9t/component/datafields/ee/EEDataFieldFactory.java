@@ -30,17 +30,17 @@ public class EEDataFieldFactory extends DataFieldFactory implements IDataFieldFa
     // ZK edition specific data fields
     // ZK enterprise edition implementation
     @Override
-    protected IDataField createEnumsetNumDataField(final DataFieldParameters params, String enumDtoRestrictions) {
+    protected IDataField createEnumsetNumDataField(final DataFieldParameters params, final String enumDtoRestrictions) {
         return new EnumsetDataField(params, enumDtoRestrictions);
     }
 
     @Override
-    protected IDataField createEnumsetAlphaDataField(final DataFieldParameters params, String enumDtoRestrictions) {
+    protected IDataField createEnumsetAlphaDataField(final DataFieldParameters params, final String enumDtoRestrictions) {
         return new EnumsetDataField(params, enumDtoRestrictions);
     }
 
     @Override
-    protected IDataField createXenumsetDataField(final DataFieldParameters params, String enumDtoRestrictions) {
+    protected IDataField createXenumsetDataField(final DataFieldParameters params, final String enumDtoRestrictions) {
         return new XEnumsetChosenboxDataField(params, enumDtoRestrictions);
     }
 }

@@ -26,6 +26,7 @@ import com.arvatosystems.t9t.auth.jpa.entities.TenantEntity;
 
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Startup;
+import de.jpaw.dp.StartupOnly;
 
 /**
  * Performs a query on the tenants table.
@@ -34,16 +35,17 @@ import de.jpaw.dp.Startup;
  * Not doing this would work as well, but obfuscate subsequent logs (because the initialization logs could appear in asynchronous threads then.)
  */
 @Startup(30003)
-public class LifecycleJpaLaunch {
+public class LifecycleJpaLaunch implements StartupOnly {
     private static final Logger LOGGER = LoggerFactory.getLogger(LifecycleJpaLaunch.class);
 
-    public static void onStartup() {
+    @Override
+    public void onStartup() {
         LOGGER.info("Initial query to initialize connection pool STARTED");
 
         final EntityManagerFactory emf = Jdp.getRequired(EntityManagerFactory.class);
         final EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
-        TypedQuery<TenantEntity> query = em.createQuery("SELECT q FROM TenantEntity q", TenantEntity.class);
+        final TypedQuery<TenantEntity> query = em.createQuery("SELECT q FROM TenantEntity q", TenantEntity.class);
         query.setMaxResults(1);
         query.getResultList();
         em.getTransaction().commit();

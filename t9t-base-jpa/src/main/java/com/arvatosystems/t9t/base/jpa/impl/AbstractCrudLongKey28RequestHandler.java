@@ -40,16 +40,16 @@ public abstract class AbstractCrudLongKey28RequestHandler<
 
     // execute function of the interface description, but additional parameters
     // required in order to work around type erasure
-    public CrudLongKeyResponse<DTO, TRACKING> execute(RequestContext ctx, IEntityMapper28<Long, DTO, TRACKING, ENTITY> mapper,
-            IResolverLongKey28<TRACKING, ENTITY> resolver, REQUEST crudRequest) {
+    public CrudLongKeyResponse<DTO, TRACKING> execute(final RequestContext ctx, final IEntityMapper28<Long, DTO, TRACKING, ENTITY> mapper,
+            final IResolverLongKey28<TRACKING, ENTITY> resolver, final REQUEST crudRequest) {
 
         // fields are set as required
         validateParameters(crudRequest, crudRequest.getKey() == null);
 
-        CrudLongKeyResponse<DTO, TRACKING> rs = new CrudLongKeyResponse<DTO, TRACKING>();
+        final CrudLongKeyResponse<DTO, TRACKING> rs = new CrudLongKeyResponse<>();
         ENTITY result;
 
-        EntityManager entityManager = jpaContextProvider.get().getEntityManager(); // copy it as we need it several times
+        final EntityManager entityManager = jpaContextProvider.get().getEntityManager(); // copy it as we need it several times
 
         try {
             switch (crudRequest.getCrud()) {
@@ -105,12 +105,12 @@ public abstract class AbstractCrudLongKey28RequestHandler<
             }
             rs.setReturnCode(0);
             return rs;
-        } catch (T9tException e) {
+        } catch (final T9tException e) {
             // careful! Catching only ApplicationException masks standard T9tExceptions such as RECORD_INACTIVE or RECORD_NOT_FOUND!
             // We must return the original exception if we got a T9tException already!
             // Therefore this catch is essential!
             throw e;
-        } catch (ApplicationException e) {
+        } catch (final ApplicationException e) {
             throw new T9tException(T9tException.ENTITY_DATA_MAPPING_EXCEPTION, "Tracking columns: " + e.toString());
         }
     }

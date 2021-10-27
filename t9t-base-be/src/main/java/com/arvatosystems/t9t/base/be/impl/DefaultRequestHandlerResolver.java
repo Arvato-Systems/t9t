@@ -41,7 +41,7 @@ import de.jpaw.util.ExceptionUtil;
 @Singleton
 public class DefaultRequestHandlerResolver implements IRequestHandlerResolver {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultRequestHandlerResolver.class);
-    private final Map<String, IRequestHandler<?>> cachedHandlerInstances = new ConcurrentHashMap<String, IRequestHandler<?>>(250);
+    private final Map<String, IRequestHandler<?>> cachedHandlerInstances = new ConcurrentHashMap<>(250);
 
     /** Obtains a cached instance of a request handler, or creates a default one. */
     @Override

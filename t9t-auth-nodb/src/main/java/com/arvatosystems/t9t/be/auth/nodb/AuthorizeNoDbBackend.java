@@ -41,9 +41,9 @@ import de.jpaw.dp.Singleton;
 public class AuthorizeNoDbBackend implements IAuthorize {
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthorizeNoDbBackend.class);
     private static final Permissionset NO_PERMISSIONS = new Permissionset();
-    private final List<PermissionEntry> BACKEND_PERMISSIONS = new ArrayList<>(10);
+    private static final List<PermissionEntry> BACKEND_PERMISSIONS = new ArrayList<>(10);
 
-    private final void addPermission(ClassDefinition cd) {
+    private void addPermission(final ClassDefinition cd) {
         final PermissionEntry newEntry = new PermissionEntry("B." +  cd.getName(), Permissionset.ofTokens(OperationType.EXECUTE));
         newEntry.freeze();
         BACKEND_PERMISSIONS.add(newEntry);
@@ -56,7 +56,7 @@ public class AuthorizeNoDbBackend implements IAuthorize {
         addPermission(TerminateProcessRequest.class$MetaData());
         final List<String> permittedRequests = ConfigProvider.getConfiguration().getNoDbBackendPermittedRequests();
         if (permittedRequests != null) {
-            for (String pqonToPermit: permittedRequests) {
+            for (final String pqonToPermit: permittedRequests) {
                 final PermissionEntry newEntry = new PermissionEntry("B." +  pqonToPermit, Permissionset.ofTokens(OperationType.EXECUTE));
                 newEntry.freeze();
                 BACKEND_PERMISSIONS.add(newEntry);
@@ -65,7 +65,7 @@ public class AuthorizeNoDbBackend implements IAuthorize {
     }
 
     @Override
-    public List<PermissionEntry> getAllPermissions(JwtInfo jwtInfo, PermissionType permissionType) {
+    public List<PermissionEntry> getAllPermissions(final JwtInfo jwtInfo, final PermissionType permissionType) {
         LOGGER.debug("Full permission list requested for user {}, tenant {}, type {}", jwtInfo.getUserId(), jwtInfo.getTenantId(), permissionType);
         if (permissionType == PermissionType.BACKEND)
             return Collections.unmodifiableList(BACKEND_PERMISSIONS);
@@ -74,7 +74,7 @@ public class AuthorizeNoDbBackend implements IAuthorize {
     }
 
     @Override
-    public Permissionset getPermissions(JwtInfo jwtInfo, PermissionType permissionType, String resource) {
+    public Permissionset getPermissions(final JwtInfo jwtInfo, final PermissionType permissionType, final String resource) {
         LOGGER.debug("Permission requested for user {}, tenant {}, type {}, resource {}", jwtInfo.getUserId(), jwtInfo.getTenantId(), permissionType, resource);
 
         return jwtInfo.getPermissionsMin() == null ? NO_PERMISSIONS : jwtInfo.getPermissionsMin();

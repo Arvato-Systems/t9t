@@ -46,7 +46,7 @@ public abstract class AbstractConfigCacheFieldwiseInvalidation42<DTO extends Ref
     protected final ICacheInvalidationRegistry cacheInvalidationRegistry = Jdp.getOptional(ICacheInvalidationRegistry.class);
     protected final IQueryHintSetter           queryHintSetter = Jdp.getOptional(IQueryHintSetter.class);
 
-    protected AbstractConfigCacheFieldwiseInvalidation42(IResolverAnyKey42<Long, TRACKING, ENTITY> resolver, Class<DTO> dtoClass) {
+    protected AbstractConfigCacheFieldwiseInvalidation42(final IResolverAnyKey42<Long, TRACKING, ENTITY> resolver, final Class<DTO> dtoClass) {
         LOGGER.info("Creating a new Cache for {}" , dtoClass.getSimpleName());
         this.resolver = resolver;
         this.dtoClass = dtoClass;
@@ -83,7 +83,7 @@ public abstract class AbstractConfigCacheFieldwiseInvalidation42<DTO extends Ref
                 dto.freeze();
                 return dto;
             });
-        } catch (ExecutionException e) {
+        } catch (final ExecutionException e) {
             LOGGER.error("Cannot read {} for objectRef {}: {}", dtoClass.getSimpleName(), key, e);
             throw new T9tException(T9tException.RECORD_DOES_NOT_EXIST, ExceptionUtil.causeChain(e));
         }
@@ -98,7 +98,7 @@ public abstract class AbstractConfigCacheFieldwiseInvalidation42<DTO extends Ref
                 LOGGER.debug("Filling resolver cache {} for tenantRef {}, id {} to resolve to {}", dtoClass.getSimpleName(), key.getTenantRef(), key.getId(), ref);
                 return ref;
             });
-        } catch (ExecutionException e) {
+        } catch (final ExecutionException e) {
             LOGGER.error("Cannot read {} for tenantRef {}, id {}: {}", dtoClass.getSimpleName(), key.getTenantRef(), key.getId(), e);
             throw new T9tException(T9tException.RECORD_DOES_NOT_EXIST, ExceptionUtil.causeChain(e));
         }

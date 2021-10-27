@@ -1,5 +1,13 @@
 package com.arvatosystems.t9t.base.vertx.impl;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.arvatosystems.t9t.auth.jwt.JWT;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
@@ -13,6 +21,7 @@ import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.cfg.be.ServerConfiguration;
 import com.arvatosystems.t9t.cfg.be.StatusProvider;
 import com.arvatosystems.t9t.jdp.Init;
+
 import de.jpaw.bonaparte.api.codecs.IMessageCoderFactory;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.util.DeprecationWarner;
@@ -33,24 +42,18 @@ import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.CorsHandler;
 import io.vertx.ext.web.handler.StaticHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParameterException;
 import picocli.CommandLine.UnmatchedArgumentException;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
 
 public class T9tServer extends AbstractVerticle {
     private static final Logger LOGGER = LoggerFactory.getLogger(T9tServer.class);
     public static final long MORE_THAN_ONE_YEAR = 500L * 86400L * 1000L;     // JVM update due at least once per year (at least every 500 days)
 
     private IVertxMetricsProvider metricsProvider = null;
-    private final IMessageCoderFactory<BonaPortable, ServiceResponse, byte[]> coderFactory = new MultiThreadMessageCoderFactory2(BonaPortable.class, ServiceResponse.class);
+    private final IMessageCoderFactory<BonaPortable, ServiceResponse, byte[]> coderFactory
+      = new MultiThreadMessageCoderFactory2(BonaPortable.class, ServiceResponse.class);
 
     @Option(names = { "--filePath", "-f" }, description = "path to serve files for /fs from")
     private String filePath;
@@ -85,12 +88,12 @@ public class T9tServer extends AbstractVerticle {
     // autodetect the port assigned on AWS
     public void portAutoDetect() {
         try {
-            String portBySysProp = System.getProperty("t9t.port.http");
+            final String portBySysProp = System.getProperty("t9t.port.http");
             if (portBySysProp != null) {
                 LOGGER.info("Found system property for PORT: t9t.port.http {}", portBySysProp);
                 port = Integer.parseInt(portBySysProp);
             } else {
-                String portByEnv = System.getenv("PORT");
+                final String portByEnv = System.getenv("PORT");
                 if (portByEnv != null) {
                     LOGGER.info("Found environment spec for PORT: {}, assuming we run on AWS Elastic Beanstalk", portByEnv);
                     port = Integer.parseInt(portByEnv);
@@ -98,7 +101,7 @@ public class T9tServer extends AbstractVerticle {
                     LOGGER.info("No PORT environment setting found, assuming we are not on AWS, using port {}", port);
                 }
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.error("Exception {}: {} while retrieving PORT setting", e.getClass().getSimpleName(), e.getMessage());
         }
     }
@@ -107,14 +110,14 @@ public class T9tServer extends AbstractVerticle {
     public void start() throws Exception {
         super.start();
 
-        // FIXME: bonaparte: Write to static field de.jpaw.bonaparte.util.DeprecationWarner.setWarner from instance method 
+        // FIXME: bonaparte: Write to static field de.jpaw.bonaparte.util.DeprecationWarner.setWarner from instance method
         DeprecationWarner.setWarner = null;  // no noise in the logs on the server side - warnings are primarily intended for clients!
 
-        List<IServiceModule> modules = Jdp.getOneInstancePerQualifier(IServiceModule.class);
+        final List<IServiceModule> modules = Jdp.getOneInstancePerQualifier(IServiceModule.class);
         Collections.sort(modules);
 
         String moduleNames = "";
-        for (IServiceModule module: modules) {
+        for (final IServiceModule module: modules) {
             if (moduleNames.isEmpty()) {
                 moduleNames += module.getModuleName();
             } else {
@@ -123,26 +126,27 @@ public class T9tServer extends AbstractVerticle {
         }
 
         LOGGER.info("T9t Vert.x server started, modules found are: " + moduleNames);
-        String uploadsFolder = Jdp.getRequired(IFileUtil.class).getAbsolutePath("file-uploads");
+        final String uploadsFolder = Jdp.getRequired(IFileUtil.class).getAbsolutePath("file-uploads");
         LOGGER.info("Pathname for file uploads will be {}, CORS is {}, metrics is {}", uploadsFolder, cors, metrics);
 
         if (port > 0) {
-            Router router = Router.router(vertx);
-            router.route().handler(BodyHandler.create(uploadsFolder).setBodyLimit(16777100)); // must be before any possible execBlocking, see https://github.com/vert-x3/vertx-web/issues/198
+            final Router router = Router.router(vertx);
+            // must be before any possible execBlocking, see https://github.com/vert-x3/vertx-web/issues/198
+            router.route().handler(BodyHandler.create(uploadsFolder).setBodyLimit(16777100));
 
             // register the web paths of the injected modules
-            for (IServiceModule module : modules) {
+            for (final IServiceModule module : modules) {
                 module.mountRouters(router, vertx, coderFactory);
             }
 
-            StaticHandler staticHandler = StaticHandler.create();
+            final StaticHandler staticHandler = StaticHandler.create();
             staticHandler.setWebRoot("web");
             staticHandler.setFilesReadOnly(true);
             staticHandler.setMaxAgeSeconds(12 * 60 * 60); // 12 hours (1 working day)
             router.route("/static/*").handler(staticHandler);
 
             if (filePath != null) {
-                StaticHandler filePathHandler = StaticHandler.create();
+                final StaticHandler filePathHandler = StaticHandler.create();
                 filePathHandler.setWebRoot(filePath);
                 filePathHandler.setFilesReadOnly(false);
                 filePathHandler.setCachingEnabled(false);
@@ -171,20 +175,20 @@ public class T9tServer extends AbstractVerticle {
                 );
             }
 
-            router.get("/ping").handler((RoutingContext it) -> {
+            router.get("/ping").handler((final RoutingContext it) -> {
                 it.response().setStatusMessage("OK");
                 it.response().setStatusCode(200);
                 it.response().end();
             });
 
-            router.get("/favicon.ico").handler((RoutingContext it) -> {
+            router.get("/favicon.ico").handler((final RoutingContext it) -> {
                 LOGGER.debug("favicon requested");
                 it.response().sendFile("web/favicon.ico");
             });
 
             // no matching path or method
-            router.route().handler((RoutingContext it) -> {
-                String errorMsg = "Request method «request.method» for path «request.path» not supported";
+            router.route().handler((final RoutingContext it) -> {
+                final String errorMsg = "Request method «request.method» for path «request.path» not supported";
                 LOGGER.info(errorMsg);
                 it.response().setStatusMessage(errorMsg);
                 it.response().setStatusCode(404);
@@ -192,16 +196,16 @@ public class T9tServer extends AbstractVerticle {
             });
 
             LOGGER.info("Listening on HTTP PORT {}", port);
-            HttpServer httpServer = vertx.createHttpServer();
-            httpServer.requestHandler((HttpServerRequest it) -> router.handle(it));
+            final HttpServer httpServer = vertx.createHttpServer();
+            httpServer.requestHandler((final HttpServerRequest it) -> router.handle(it));
             httpServer.listen(port);
         }
 
         if (tcpPort > 0) {
             // compact format (requires ServiceRequest wrapper)
             LOGGER.info("Listening on TCP PORT {} (low level socket I/O)", tcpPort);
-            NetServer netServer = vertx.createNetServer();
-            netServer.connectHandler((NetSocket it) -> new TcpSocketHandler(it));
+            final NetServer netServer = vertx.createNetServer();
+            netServer.connectHandler((final NetSocket it) -> new TcpSocketHandler(it));
             netServer.listen(tcpPort);
         }
 
@@ -217,7 +221,7 @@ public class T9tServer extends AbstractVerticle {
     public void readConfig() {
         // require this in other modules
         ConfigProvider.readConfiguration(cfgFile);
-        ServerConfiguration serverCfg = ConfigProvider.getConfiguration().getServerConfiguration();
+        final ServerConfiguration serverCfg = ConfigProvider.getConfiguration().getServerConfiguration();
         if (serverCfg != null && (serverCfg.getKeyStorePassword() != null || serverCfg.getKeyStorePath() != null)) {
             JWT.setKeyStore(serverCfg.getKeyStorePath(), serverCfg.getKeyStorePassword(), serverCfg.getKeyStorePath() == null);
             LOGGER.info("Using environment specific keystore and/or password from local config file. Good.");
@@ -225,9 +229,9 @@ public class T9tServer extends AbstractVerticle {
             LOGGER.warn("No environment specific keystore parameters. Using defaults, do not use this in production!");
         }
     }
-    
-    public void mergePoolSizes(VertxOptions options) {
-        ApplicationConfiguration configs = ConfigProvider.getConfiguration().getApplicationConfiguration();
+
+    public void mergePoolSizes(final VertxOptions options) {
+        final ApplicationConfiguration configs = ConfigProvider.getConfiguration().getApplicationConfiguration();
         if (configs != null) {
             if (configs.getWorkerPoolSize() != null) {
                 options.setWorkerPoolSize(configs.getWorkerPoolSize());
@@ -238,17 +242,17 @@ public class T9tServer extends AbstractVerticle {
                 LOGGER.info("Setting vert.x event loop pool size to {} via configuration", configs.getEventLoopPoolSize());
             }
             if (configs.getMaxWorkerExecuteTime() != null) {
-                Long maxWorkerExecuteTime = configs.getMaxWorkerExecuteTime() * 1000000000L; // convert seconds to nanoseconds
+                final Long maxWorkerExecuteTime = configs.getMaxWorkerExecuteTime() * 1000000000L; // convert seconds to nanoseconds
                 options.setMaxWorkerExecuteTime(maxWorkerExecuteTime);
                 LOGGER.info("Setting vert.x max worker execution time to {} seconds via configuration", configs.getMaxWorkerExecuteTime());
             }
             if (configs.getMaxEventLoopExecuteTime() != null) {
-                Long maxEventLoopExecuteTime = configs.getMaxEventLoopExecuteTime() * 1000000000L; // convert seconds to nanoseconds
+                final Long maxEventLoopExecuteTime = configs.getMaxEventLoopExecuteTime() * 1000000000L; // convert seconds to nanoseconds
                 options.setMaxEventLoopExecuteTime(maxEventLoopExecuteTime);
                 LOGGER.info("Setting vert.x max event loop execution time to {} seconds via configuration", configs.getMaxEventLoopExecuteTime());
             }
             if (configs.getBlockedThreadCheckInterval() != null) {
-                Long blockedThreadCheckInterval = configs.getBlockedThreadCheckInterval() * 1000L; // convert seconds to nanoseconds
+                final Long blockedThreadCheckInterval = configs.getBlockedThreadCheckInterval() * 1000L; // convert seconds to nanoseconds
                 options.setBlockedThreadCheckInterval(blockedThreadCheckInterval);
                 LOGGER.info("Setting vert.x blocked thread check interval to {} seconds via configuration", configs.getBlockedThreadCheckInterval());
             }
@@ -260,7 +264,7 @@ public class T9tServer extends AbstractVerticle {
         LOGGER.info("vert.x blocked thread check interval is {} seconds", options.getBlockedThreadCheckInterval() / 1000L);
     }
 
-    public void addShutdownHook(Vertx myVertx) {
+    public void addShutdownHook(final Vertx myVertx) {
         LOGGER.info("Registering shutdown hook");
 
         // A hook that initiates a graceful shutdown if the server has been stopped via SIGTERM / SIGINT
@@ -273,8 +277,8 @@ public class T9tServer extends AbstractVerticle {
                 // obtaining the deployment IDs
                 final Set<String> idsToUndeploy = myVertx.deploymentIDs();
                 LOGGER.info("Undeploying {} verticles", idsToUndeploy.size());
-                for (String id : idsToUndeploy) {
-                    myVertx.undeploy(id, (AsyncResult<Void> it) -> {
+                for (final String id : idsToUndeploy) {
+                    myVertx.undeploy(id, (final AsyncResult<Void> it) -> {
                         if (it.succeeded()) {
                             LOGGER.debug("Undeployment of ID {} completed", id);
                         } else {
@@ -284,7 +288,7 @@ public class T9tServer extends AbstractVerticle {
                 }
                 try {
                     Thread.sleep(250L);  // settle down...
-                } catch (InterruptedException e) {
+                } catch (final InterruptedException e) {
                     LOGGER.error("Interrupted.", e);
                 }
 
@@ -298,7 +302,7 @@ public class T9tServer extends AbstractVerticle {
     public void deployAndRun(final Vertx myVertx, final Consumer<Vertx> additionalInits) {
         Jdp.bindInstanceTo(myVertx, Vertx.class);  // make the Vertx instance available to other services (required by email client)
         portAutoDetect();
-        myVertx.deployVerticle(this, (AsyncResult<String> it) -> {
+        myVertx.deployVerticle(this, (final AsyncResult<String> it) -> {
             if (it.succeeded()) {
                 LOGGER.info("Successfully deploy single instance verticle");
                 if (additionalInits != null) {
@@ -314,7 +318,7 @@ public class T9tServer extends AbstractVerticle {
                     for (;;) {
                         try {
                             Thread.sleep(MORE_THAN_ONE_YEAR);
-                        } catch (InterruptedException e) {
+                        } catch (final InterruptedException e) {
                             LOGGER.error("Interrupted.", e);
                         }
                     }
@@ -325,7 +329,7 @@ public class T9tServer extends AbstractVerticle {
         });
     }
 
-    public void checkForMetricsAndInitialize(VertxOptions options) {
+    public void checkForMetricsAndInitialize(final VertxOptions options) {
         mergePoolSizes(options);
         if (metrics) {
             metricsProvider = Jdp.getOptional(IVertxMetricsProvider.class);
@@ -365,16 +369,16 @@ public class T9tServer extends AbstractVerticle {
      * @param args arguments from command line
      * @param serverConsumer provide T9tServer instance
      */
-    public static void parseCommandLine(String[] args, Consumer<T9tServer> serverConsumer) {
-        T9tServer server = new T9tServer();
-        CommandLine cmd = new CommandLine(server);
+    public static void parseCommandLine(final String[] args, final Consumer<T9tServer> serverConsumer) {
+        final T9tServer server = new T9tServer();
+        final CommandLine cmd = new CommandLine(server);
 
         try {
             cmd.parseArgs(args);
 
             if (cmd.isUsageHelpRequested()) {
                 cmd.usage(cmd.getOut());
-                int exitCode = cmd.getCommandSpec().exitCodeOnUsageHelp();
+                final int exitCode = cmd.getCommandSpec().exitCodeOnUsageHelp();
                 System.exit(exitCode);
             }
 
@@ -382,28 +386,28 @@ public class T9tServer extends AbstractVerticle {
 
             serverConsumer.accept(server);
 
-        } catch (ParameterException e) {
+        } catch (final ParameterException e) {
             cmd.getErr().println(e.getMessage());
             if (!UnmatchedArgumentException.printSuggestions(e, cmd.getErr())) {
                 e.getCommandLine().usage(cmd.getErr());
             }
 
-            int exitCode = cmd.getCommandSpec().exitCodeOnInvalidInput();
+            final int exitCode = cmd.getCommandSpec().exitCodeOnInvalidInput();
             System.exit(exitCode);
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         configureSystemParameters();
 
-        parseCommandLine(args, (T9tServer server) -> {
+        parseCommandLine(args, (final T9tServer server) -> {
             LOGGER.info("t9t vert.x single node based server starting...");
 
             server.readConfig(); // update a possible new location of the config file before we run the startup process
 
             Init.initializeT9t();
 
-            VertxOptions options = new VertxOptions();
+            final VertxOptions options = new VertxOptions();
             server.checkForMetricsAndInitialize(options);
             server.deployAndRun(Vertx.vertx(options), null);
         });

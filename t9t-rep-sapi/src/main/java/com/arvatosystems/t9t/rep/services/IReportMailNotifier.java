@@ -21,8 +21,6 @@ import com.arvatosystems.t9t.rep.ReportParamsDTO;
 
 /**
  * Reponsible to send the email containing the report to user's email.
- * @author NGTZ001
- *
  */
 public interface IReportMailNotifier {
 
@@ -34,6 +32,6 @@ public interface IReportMailNotifier {
      * @param sinkRef sink ref for the generated report
      * @param selector document selector
      */
-    void sendEmail(ReportConfigDTO reportConfigDTO, ReportParamsDTO reportParamsDTO, String mailGroup, String docConfigId, Long sinkRef, DocumentSelector selector);
-
+    void sendEmail(ReportConfigDTO reportConfigDTO, ReportParamsDTO reportParamsDTO, String mailGroup, String docConfigId,
+      Long sinkRef, DocumentSelector selector);
 }

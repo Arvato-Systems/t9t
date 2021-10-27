@@ -35,8 +35,8 @@ import de.jpaw.util.ApplicationException;
 @Dependent
 @Named("JSON-Kafka")
 public class FormatGeneratorJsonKafka extends AbstractFormatGenerator implements IThreadSafeFormatGenerator {
-    boolean writePqonInfo = false;
-    boolean writeEnumNames = false;
+    private boolean writePqonInfo = false;
+    private boolean writeEnumNames = false;
 
     @Override
     protected void openHook() throws IOException, ApplicationException {
@@ -46,7 +46,8 @@ public class FormatGeneratorJsonKafka extends AbstractFormatGenerator implements
     }
 
     @Override
-    public void generateData(int recordNo, int mappedRecordNo, long recordId, String partitionKey, String recordKey, BonaPortable record) throws IOException, ApplicationException {
+    public void generateData(final int recordNo, final int mappedRecordNo, final long recordId, final String partitionKey, final String recordKey,
+      final BonaPortable record) throws IOException {
         final StringBuilder buff = new StringBuilder(4000);
         final JsonComposer jsonComposer = new JsonComposer(buff);
         jsonComposer.setWritePqonInfo(writePqonInfo);

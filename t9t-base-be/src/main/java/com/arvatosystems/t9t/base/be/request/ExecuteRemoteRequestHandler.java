@@ -40,17 +40,18 @@ public class ExecuteRemoteRequestHandler extends AbstractRequestHandler<ExecuteR
     protected final IAuthorize authorizator = Jdp.getRequired(IAuthorize.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, ExecuteRemoteRequest request) throws Exception {
-        RequestParameters remoteRequest = request.getRemoteRequest();
-        Permissionset permissions = authorizator.getPermissions(ctx.internalHeaderParameters.getJwtInfo(), PermissionType.EXTERNAL, remoteRequest.ret$PQON());
+    public ServiceResponse execute(final RequestContext ctx, final ExecuteRemoteRequest request) throws Exception {
+        final RequestParameters remoteRequest = request.getRemoteRequest();
+        final Permissionset permissions = authorizator.getPermissions(
+          ctx.internalHeaderParameters.getJwtInfo(), PermissionType.EXTERNAL, remoteRequest.ret$PQON());
         LOGGER.debug("External execution execution permissions checked for request {}, got {}", remoteRequest.ret$PQON(), permissions);
-        boolean allowed = permissions.contains(OperationType.EXECUTE);
+        final boolean allowed = permissions.contains(OperationType.EXECUTE);
         if (!allowed) {
             throw new T9tException(T9tException.ACCESS_DENIED, "No EXECUTE permission on {}.{}", PermissionType.EXTERNAL, remoteRequest.ret$PQON());
         }
         ctx.statusText = remoteRequest.ret$PQON();
         // obtain an remoter for single use
-        SimpleCallOutExecutor remoteClient = new SimpleCallOutExecutor(request.getUrl());
+        final SimpleCallOutExecutor remoteClient = new SimpleCallOutExecutor(request.getUrl());
         return remoteClient.execute(ctx, request.getRemoteRequest());
     }
 }

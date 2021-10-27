@@ -21,4 +21,4 @@ import com.arvatosystems.t9t.doc.DocComponentRef;
 
 import de.jpaw.bonaparte.refsw.RefResolver;
 
-public interface IDocComponentResolver extends RefResolver<DocComponentRef, DocComponentDTO, FullTrackingWithVersion> {}
+public interface IDocComponentResolver extends RefResolver<DocComponentRef, DocComponentDTO, FullTrackingWithVersion> { }

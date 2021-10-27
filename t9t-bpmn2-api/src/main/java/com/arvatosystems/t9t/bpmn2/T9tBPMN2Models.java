@@ -26,22 +26,22 @@ import com.arvatosystems.t9t.bpmn2.request.ProcessInstanceSearchRequest;
 public final class T9tBPMN2Models implements IViewModelContainer {
 
     private static final CrudViewModel<ProcessDefinitionDTO, FullTrackingWithVersion> PROCESS_DEFINITION_BPMN2_VIEW_MODEL
-      = new CrudViewModel<ProcessDefinitionDTO, FullTrackingWithVersion>(
+      = new CrudViewModel<>(
         ProcessDefinitionDTO.BClass.INSTANCE, FullTrackingWithVersion.BClass.INSTANCE,
         ProcessDefinitionSearchRequest.BClass.INSTANCE, null);
 
     private static final CrudViewModel<ProcessInstanceDTO, FullTrackingWithVersion> PROCESS_INSTANCE_BPMN2_VIEW_MODEL
-      = new CrudViewModel<ProcessInstanceDTO, FullTrackingWithVersion>(
+      = new CrudViewModel<>(
         ProcessInstanceDTO.BClass.INSTANCE, FullTrackingWithVersion.BClass.INSTANCE,
         ProcessInstanceSearchRequest.BClass.INSTANCE, null);
 
     private static final CrudViewModel<EventSubscriptionDTO, FullTrackingWithVersion> EVENT_SUBSCRIPTIONS_VIEW_MODEL
-      = new CrudViewModel<EventSubscriptionDTO, FullTrackingWithVersion>(
+      = new CrudViewModel<>(
         EventSubscriptionDTO.BClass.INSTANCE, FullTrackingWithVersion.BClass.INSTANCE,
         EventSubscriptionSearchRequest.BClass.INSTANCE, null);
 
     private static final CrudViewModel<IncidentDTO, FullTrackingWithVersion> INCIDENTS_VIEW_MODEL
-      = new CrudViewModel<IncidentDTO, FullTrackingWithVersion>(
+      = new CrudViewModel<>(
         IncidentDTO.BClass.INSTANCE, FullTrackingWithVersion.BClass.INSTANCE,
         IncidentSearchRequest.BClass.INSTANCE, null);
 

@@ -45,7 +45,8 @@ public class FormatGeneratorXls extends FoldableFormatGenerator<RuntimeException
     }
 
     @Override
-    public void generateData(int recordNo, int mappedRecordNo, long recordId, String partitionKey, String recordKey, BonaPortable record) throws IOException, ApplicationException {
+    public void generateData(final int recordNo, final int mappedRecordNo, final long recordId, final String partitionKey, final String recordKey,
+      final BonaPortable record) throws IOException {
         foldingComposer.writeRecord(record);
     }
 

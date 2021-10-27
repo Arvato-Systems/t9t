@@ -23,7 +23,7 @@ import org.apache.camel.support.DefaultComponent;
 public class CamelT9tComponent extends DefaultComponent implements Component {
 
     @Override
-    protected CamelT9tEndpoint createEndpoint(String uri, String remaining, Map<String, Object> parameters) throws Exception {
+    protected CamelT9tEndpoint createEndpoint(final String uri, final String remaining, final Map<String, Object> parameters) throws Exception {
         final CamelT9tEndpoint endpoint = new CamelT9tEndpoint(uri, this, remaining);
         setProperties(endpoint, parameters);
         return endpoint;

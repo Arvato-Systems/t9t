@@ -33,12 +33,12 @@ public class KafkaDataSinkChangeListener implements IEventHandler {
     @IsLogicallyFinal
     private BiConsumer<RequestContext, DataSinkChangedEvent> processor;
 
-    public void setProcessor(BiConsumer<RequestContext, DataSinkChangedEvent> processor) {
+    public void setProcessor(final BiConsumer<RequestContext, DataSinkChangedEvent> processor) {
         this.processor = processor;
     }
 
     @Override
-    public int execute(RequestContext ctx, EventParameters untypedEvent) {
+    public int execute(final RequestContext ctx, final EventParameters untypedEvent) {
         final DataSinkChangedEvent event = (DataSinkChangedEvent) untypedEvent;
         if (processor != null) {
             processor.accept(ctx, event);

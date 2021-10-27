@@ -49,21 +49,21 @@ import de.jpaw.xenums.init.XenumInitializer;
 public final class InitContainers {
     private static final Logger LOGGER = LoggerFactory.getLogger(InitContainers.class);
 
-    private static final Map<String, EnumDefinition>     ENUM_BY_PQON     = new HashMap<String, EnumDefinition>(500);
-    private static final Map<String, EnumSetDefinition>  ENUMSET_BY_PQON  = new HashMap<String, EnumSetDefinition>(500);
-    private static final Map<String, XEnumSetDefinition> XENUMSET_BY_PQON = new HashMap<String, XEnumSetDefinition>(500);
+    private static final Map<String, EnumDefinition>     ENUM_BY_PQON     = new HashMap<>(500);
+    private static final Map<String, EnumSetDefinition>  ENUMSET_BY_PQON  = new HashMap<>(500);
+    private static final Map<String, XEnumSetDefinition> XENUMSET_BY_PQON = new HashMap<>(500);
 
     private InitContainers() { }
 
-    public static EnumDefinition getEnumByPQON(String pqon) {
+    public static EnumDefinition getEnumByPQON(final String pqon) {
         return ENUM_BY_PQON.get(pqon);
     }
 
-    public static EnumSetDefinition getEnumsetByPQON(String pqon) {
+    public static EnumSetDefinition getEnumsetByPQON(final String pqon) {
         return ENUMSET_BY_PQON.get(pqon);
     }
 
-    public static XEnumSetDefinition getXEnumsetByPQON(String pqon) {
+    public static XEnumSetDefinition getXEnumsetByPQON(final String pqon) {
         return XENUMSET_BY_PQON.get(pqon);
     }
 
@@ -116,8 +116,8 @@ public final class InitContainers {
         return scannedPackages;
     }
 
-    private static void collectEnums(Reflections... packages) {
-        for (Reflections pkg: packages) {
+    private static void collectEnums(final Reflections... packages) {
+        for (final Reflections pkg: packages) {
             // we search separately because just looking for BonaEnum (which should work) does not give any results...
             collectEnums(pkg, BonaTokenizableEnum.class);
             collectEnums(pkg, BonaNonTokenizableEnum.class);
@@ -125,24 +125,24 @@ public final class InitContainers {
         }
     }
 
-    private static void collectEnums(Reflections pkg, Class<? extends BonaEnum> subTypesOf) {
+    private static void collectEnums(final Reflections pkg, final Class<? extends BonaEnum> subTypesOf) {
         int counter = 0;
-        for (Class<? extends BonaEnum> cls : pkg.getSubTypesOf(subTypesOf)) {
+        for (final Class<? extends BonaEnum> cls : pkg.getSubTypesOf(subTypesOf)) {
             if (!cls.isInterface()) {
                 // skip the base interfaces itself
                 try {
-                    Method method = cls.getMethod("enum$MetaData");
-                    Object o = method.invoke(null);
+                    final Method method = cls.getMethod("enum$MetaData");
+                    final Object o = method.invoke(null);
                     if (o != null && o instanceof EnumDefinition) {
                         ++counter;
-                        EnumDefinition def = (EnumDefinition)o;
-                        EnumDefinition prev = ENUM_BY_PQON.put(def.getName(), def);
+                        final EnumDefinition def = (EnumDefinition)o;
+                        final EnumDefinition prev = ENUM_BY_PQON.put(def.getName(), def);
                         if (prev != null)
                             LOGGER.error("2 different enums of same PQON {}", def.getName());
                     } else {
                         LOGGER.error("Could not obtain EnumDefinition for class {}", cls.getCanonicalName());
                     }
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     LOGGER.warn("Exception obtaining EnumDefinition from {}: {}", cls.getCanonicalName(), ExceptionUtil.causeChain(e));
                 }
             }
@@ -150,23 +150,23 @@ public final class InitContainers {
         LOGGER.debug("Found {} instances of enum subtype {}", counter, subTypesOf.getSimpleName());
     }
 
-    private static void collectStringEnumsets(Reflections... packages) {
+    private static void collectStringEnumsets(final Reflections... packages) {
         int counter = 0;
-        for (Reflections pkg: packages) {
-            for (Class<? extends AbstractStringEnumSet> cls : pkg.getSubTypesOf(AbstractStringEnumSet.class)) {
+        for (final Reflections pkg: packages) {
+            for (final Class<? extends AbstractStringEnumSet> cls : pkg.getSubTypesOf(AbstractStringEnumSet.class)) {
                 try {
-                    Method method = cls.getMethod("enumset$MetaData");
-                    Object o = method.invoke(null);
+                    final Method method = cls.getMethod("enumset$MetaData");
+                    final Object o = method.invoke(null);
                     if (o != null && o instanceof EnumSetDefinition) {
                         ++counter;
-                        EnumSetDefinition def = (EnumSetDefinition)o;
-                        EnumSetDefinition prev = ENUMSET_BY_PQON.put(def.getName(), def);
+                        final EnumSetDefinition def = (EnumSetDefinition)o;
+                        final EnumSetDefinition prev = ENUMSET_BY_PQON.put(def.getName(), def);
                         if (prev != null)
                             LOGGER.error("2 different enumsets of same PQON {}", def.getName());
                     } else {
                         LOGGER.error("Could not obtain EnumSetDefinition for class {}", cls.getCanonicalName());
                     }
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     LOGGER.warn("Exception obtaining EnumSetDefinition from {}: {}", cls.getCanonicalName(), ExceptionUtil.causeChain(e));
                 }
             }
@@ -174,23 +174,23 @@ public final class InitContainers {
         LOGGER.debug("Found {} instances of enumset", counter);
     }
 
-    private static void collectXEnumsets(Reflections... packages) {
+    private static void collectXEnumsets(final Reflections... packages) {
         int counter = 0;
-        for (Reflections pkg: packages) {
-            for (Class<? extends AbstractStringXEnumSet> cls : pkg.getSubTypesOf(AbstractStringXEnumSet.class)) {
+        for (final Reflections pkg: packages) {
+            for (final Class<? extends AbstractStringXEnumSet> cls : pkg.getSubTypesOf(AbstractStringXEnumSet.class)) {
                 try {
-                    Method method = cls.getMethod("xenumset$MetaData");
-                    Object o = method.invoke(null);
+                    final Method method = cls.getMethod("xenumset$MetaData");
+                    final Object o = method.invoke(null);
                     if (o != null && o instanceof XEnumSetDefinition) {
                         ++counter;
-                        XEnumSetDefinition def = (XEnumSetDefinition)o;
-                        XEnumSetDefinition prev = XENUMSET_BY_PQON.put(def.getName(), def);
+                        final XEnumSetDefinition def = (XEnumSetDefinition)o;
+                        final XEnumSetDefinition prev = XENUMSET_BY_PQON.put(def.getName(), def);
                         if (prev != null)
                             LOGGER.error("2 different xenumsets of same PQON {}", def.getName());
                     } else {
                         LOGGER.error("Could not obtain XEnumSetDefinition for class {}", cls.getCanonicalName());
                     }
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     LOGGER.warn("Exception obtaining XEnumSetDefinition from {}: {}",
                             cls.getCanonicalName(), ExceptionUtil.causeChain(e));
                 }
@@ -199,37 +199,37 @@ public final class InitContainers {
         LOGGER.debug("Found {} instances of xenumset", counter);
     }
 
-    private static void collectCrudViewModels(Reflections... packages) {
-        for (Reflections pkg: packages) {
-            for (Class<? extends IViewModelContainer> cls : pkg.getSubTypesOf(IViewModelContainer.class)) {
+    private static void collectCrudViewModels(final Reflections... packages) {
+        for (final Reflections pkg: packages) {
+            for (final Class<? extends IViewModelContainer> cls : pkg.getSubTypesOf(IViewModelContainer.class)) {
                 try {
                     LOGGER.debug("Found viewModel container {}", cls.getCanonicalName());
                     // create an instance of the class and use it to invoke the registration method
                     cls.getDeclaredConstructor().newInstance().register();
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     LOGGER.warn("Cannot initialize viewModelContainer {}: {}", cls.getCanonicalName(), ExceptionUtil.causeChain(e));
                 }
             }
         }
     }
 
-    private static void collectLeanGridConfigurations(Reflections... packages) {
-        for (Reflections pkg: packages) {
-            for (Class<? extends ILeanGridConfigContainer> cls : pkg.getSubTypesOf(ILeanGridConfigContainer.class)) {
+    private static void collectLeanGridConfigurations(final Reflections... packages) {
+        for (final Reflections pkg: packages) {
+            for (final Class<? extends ILeanGridConfigContainer> cls : pkg.getSubTypesOf(ILeanGridConfigContainer.class)) {
                 try {
-                    List<String> configs = cls.getDeclaredConstructor().newInstance().getResourceNames();
+                    final List<String> configs = cls.getDeclaredConstructor().newInstance().getResourceNames();
                     LOGGER.debug("Grid config container {} holds {} lean grid configurations", cls.getCanonicalName(), configs.size());
-                    for (String resourceId : configs) {
+                    for (final String resourceId : configs) {
                         UiGridConfigPrefs.getLeanGridConfigAsObject(resourceId);
                     }
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     LOGGER.warn("Cannot initialize leanGridConfigContainer {}: {}", cls.getCanonicalName(), ExceptionUtil.causeChain(e));
                 }
             }
         }
     }
 
-    public static Set<Class<?>> getClassesAnnotatedWith(Class<? extends Annotation> annotation) {
+    public static Set<Class<?>> getClassesAnnotatedWith(final Class<? extends Annotation> annotation) {
         final Reflections t9t = ReflectionsPackageCache.get(MessagingUtil.TWENTYEIGHT_PACKAGE_PREFIX);
         return t9t.getTypesAnnotatedWith(annotation);
     }

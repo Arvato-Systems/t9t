@@ -30,11 +30,11 @@ public class GenerateBarcodeRequestHandler extends AbstractReadOnlyRequestHandle
     protected final IBarcodeGenerator generator = Jdp.getRequired(IBarcodeGenerator.class);
 
     @Override
-    public GenerateBarcodeResponse execute(RequestContext ctx, GenerateBarcodeRequest rq) throws Exception {
+    public GenerateBarcodeResponse execute(final RequestContext ctx, final GenerateBarcodeRequest rq) throws Exception {
         final ImageParameter params = new ImageParameter(rq.getWidth(), rq.getHeight(), rq.getRotation(), rq.getFlipMode(), rq.getScale());
-        MediaData m = generator.generateBarcode(rq.getBarcodeFormat(), rq.getText(), params);
+        final MediaData m = generator.generateBarcode(rq.getBarcodeFormat(), rq.getText(), params);
 
-        GenerateBarcodeResponse r = new GenerateBarcodeResponse();
+        final GenerateBarcodeResponse r = new GenerateBarcodeResponse();
         r.setBarcode(m);
         return r;
     }

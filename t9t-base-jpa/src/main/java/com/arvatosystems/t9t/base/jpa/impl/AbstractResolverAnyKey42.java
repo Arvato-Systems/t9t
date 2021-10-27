@@ -82,7 +82,7 @@ public abstract class AbstractResolverAnyKey42<
      * {@inheritDoc}
      */
     @Override
-    public Long getTenantRef(ENTITY e) {
+    public Long getTenantRef(final ENTITY e) {
         return null;
     }
 
@@ -98,7 +98,7 @@ public abstract class AbstractResolverAnyKey42<
      * {@inheritDoc}
      */
     @Override
-    public void setTenantRef(ENTITY e, Long tenantRef) {
+    public void setTenantRef(final ENTITY e, final Long tenantRef) {
     }
 
     /** Returns information if the entity has a field tenantRef and data is isolated between tenants.
@@ -118,7 +118,7 @@ public abstract class AbstractResolverAnyKey42<
      * {@inheritDoc}
      */
     @Override
-    public boolean isOfMatchingTenant(ENTITY e) {
+    public boolean isOfMatchingTenant(final ENTITY e) {
         return !isTenantIsolated() || getSharedTenantRef().equals(getTenantRef(e));
     }
 
@@ -153,8 +153,8 @@ public abstract class AbstractResolverAnyKey42<
      */
     @Override
     public ENTITY newEntityInstance() {
-        RequestContext ctx = contextProvider.get();
-        ENTITY e = ctx.customization.newEntityInstance(getRtti(), getBaseJpaEntityClass());
+        final RequestContext ctx = contextProvider.get();
+        final ENTITY e = ctx.customization.newEntityInstance(getRtti(), getBaseJpaEntityClass());
         setTenantRef(e, ctx.tenantMapping.getSharedTenantRef(getRtti()));
         return e;
     }
@@ -171,9 +171,9 @@ public abstract class AbstractResolverAnyKey42<
      * {@inheritDoc}
      */
     @Override
-    public boolean readAllowed(Long tenantRef) {
+    public boolean readAllowed(final Long tenantRef) {
         if (isTenantIsolated()) {
-            Long myTenant = getSharedTenantRef();
+            final Long myTenant = getSharedTenantRef();
             if (myTenant.equals(tenantRef)) {
                 return true; // always access to own tenant allowed
             }
@@ -191,8 +191,8 @@ public abstract class AbstractResolverAnyKey42<
      * {@inheritDoc}
      */
     @Override
-    public boolean writeAllowed(Long tenantRef) {
-        Long myTenant = getSharedTenantRef();
+    public boolean writeAllowed(final Long tenantRef) {
+        final Long myTenant = getSharedTenantRef();
         if (myTenant.equals(tenantRef)) {
             return true; // always access to own tenant allowed
         }
@@ -219,12 +219,12 @@ public abstract class AbstractResolverAnyKey42<
     }
 
     @Override
-    public List<ENTITY> readAll(boolean onlyActive) {
+    public List<ENTITY> readAll(final boolean onlyActive) {
         return search(onlyActive ? SEARCH_CRITERIA_ONLY_ACTIVE : SEARCH_CRITERIA_ANY);
     }
 
     @Override
-    public String entityNameAndKey(Object key) {
+    public String entityNameAndKey(final Object key) {
         return getBaseJpaEntityClass().getSimpleName() + ": " + (key instanceof BonaPortable ? key.toString() : "(" + key.getClass().getSimpleName() + ")" + key.toString());
     }
 
@@ -244,19 +244,19 @@ public abstract class AbstractResolverAnyKey42<
      *
      * @throws T9tException
      */
-    protected ENTITY findInternal(final KEY key, boolean onlyActive, boolean nullCheck, LockModeType lockMode) {
+    protected ENTITY findInternal(final KEY key, final boolean onlyActive, final boolean nullCheck, final LockModeType lockMode) {
         nullCheck(key);
-        ENTITY e = getEntityManager().find(getEntityClass(), key, lockMode == null ? LockModeType.PESSIMISTIC_WRITE : lockMode);
+        final ENTITY e = getEntityManager().find(getEntityClass(), key, lockMode == null ? LockModeType.PESSIMISTIC_WRITE : lockMode);
         return findInternalSub(e, key, onlyActive, nullCheck);
     }
 
-    protected ENTITY findInternal(final KEY key, boolean onlyActive, boolean nullCheck) {
+    protected ENTITY findInternal(final KEY key, final boolean onlyActive, final boolean nullCheck) {
         nullCheck(key);
-        ENTITY e = getEntityManager().find(getEntityClass(), key);
+        final ENTITY e = getEntityManager().find(getEntityClass(), key);
         return findInternalSub(e, key, onlyActive, nullCheck);
     }
 
-    protected ENTITY findInternalSub(final ENTITY e, final KEY key, boolean onlyActive, boolean nullCheck) {
+    protected ENTITY findInternalSub(final ENTITY e, final KEY key, final boolean onlyActive, final boolean nullCheck) {
         if (e == null) {
             if (nullCheck) {
                 throw new T9tException(T9tException.RECORD_DOES_NOT_EXIST, entityNameAndKey(key));
@@ -282,7 +282,7 @@ public abstract class AbstractResolverAnyKey42<
     @Override
     public ENTITY find(final KEY key) {
         nullCheck(key);
-        ENTITY e = getEntityManager().find(getEntityClass(), key);
+        final ENTITY e = getEntityManager().find(getEntityClass(), key);
         if ((e != null) && !readAllowed(getTenantRef(e))) {
             LOGGER.error("Attempted access violation in {}.find(): {}", this.getClass().getSimpleName(), entityNameAndKey(key));
             throw new T9tException(T9tException.READ_ACCESS_ONLY_CURRENT_TENANT, entityNameAndKey(key));
@@ -296,7 +296,7 @@ public abstract class AbstractResolverAnyKey42<
      * @throws T9tException
      */
     @Override
-    public ENTITY find(final KEY key, LockModeType lockMode) {
+    public ENTITY find(final KEY key, final LockModeType lockMode) {
         return findInternal(key, false, false, lockMode);
     }
 
@@ -306,7 +306,7 @@ public abstract class AbstractResolverAnyKey42<
      * @throws T9tException
      */
     @Override
-    public ENTITY findActive(final KEY key, boolean onlyActive) {
+    public ENTITY findActive(final KEY key, final boolean onlyActive) {
         return findInternal(key, onlyActive, true);
     }
 
@@ -316,11 +316,11 @@ public abstract class AbstractResolverAnyKey42<
      * @throws T9tException
      */
     @Override
-    public ENTITY findActive(final KEY key, boolean onlyActive, LockModeType lockMode) {
+    public ENTITY findActive(final KEY key, final boolean onlyActive, final LockModeType lockMode) {
         return findInternal(key, onlyActive, true, lockMode);
     }
 
-    private void logSearch(Class<ENTITY> derivedEntityClass, SearchCriteria searchCriteria, String what) {
+    private void logSearch(final Class<ENTITY> derivedEntityClass, final SearchCriteria searchCriteria, final String what) {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Search on {} {} (offset={}, limit={}, distinct={}) with filter criteria {}",
                 what,
@@ -333,15 +333,15 @@ public abstract class AbstractResolverAnyKey42<
     }
 
     @Override
-    public List<KEY> searchKey(SearchCriteria searchCriteria) {
+    public List<KEY> searchKey(final SearchCriteria searchCriteria) {
         // Get the criteria builder to start building the query
-        CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
+        final CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
 
         // Create basic query without restrictions
 
-        Class<ENTITY> derivedEntityClass = (Class<ENTITY>) getEntityClass();
+        final Class<ENTITY> derivedEntityClass = getEntityClass();
         CriteriaQuery<KEY> criteriaQuery = criteriaBuilder.createQuery(getKeyClass());
-        Root<ENTITY> from = criteriaQuery.from(derivedEntityClass);
+        final Root<ENTITY> from = criteriaQuery.from(derivedEntityClass);
         criteriaQuery = criteriaQuery.select(from.<KEY> get(hasArtificialPrimaryKey() ? "objectRef" : "key"));
         if (Boolean.TRUE.equals(searchCriteria.getApplyDistinct()))
             criteriaQuery = criteriaQuery.distinct(true);
@@ -356,15 +356,15 @@ public abstract class AbstractResolverAnyKey42<
      * @throws T9tException
      */
     @Override
-    public List<ENTITY> search(SearchCriteria searchCriteria) {
+    public List<ENTITY> search(final SearchCriteria searchCriteria) {
 
         // Get the criteria builder to start building the query
-        CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
+        final CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
 
         // Create basic query without restrictions
-        Class<ENTITY> derivedEntityClass = (Class<ENTITY>) getEntityClass();
+        final Class<ENTITY> derivedEntityClass = getEntityClass();
         CriteriaQuery<ENTITY> criteriaQuery = criteriaBuilder.createQuery(derivedEntityClass);
-        Root<ENTITY> from = criteriaQuery.from(derivedEntityClass);
+        final Root<ENTITY> from = criteriaQuery.from(derivedEntityClass);
         criteriaQuery = criteriaQuery.select(from);
         if (Boolean.TRUE.equals(searchCriteria.getApplyDistinct()))
             criteriaQuery = criteriaQuery.distinct(true);
@@ -374,14 +374,14 @@ public abstract class AbstractResolverAnyKey42<
     }
 
     @Override
-    public Long count(SearchFilter filter, Boolean applyDistinct) {
+    public Long count(final SearchFilter filter, final Boolean applyDistinct) {
         // Get the criteria builder to start building the query
-        CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
+        final CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
 
         // Create basic query without restrictions
-        Class<ENTITY> derivedEntityClass = (Class<ENTITY>) getEntityClass();
+        final Class<ENTITY> derivedEntityClass = getEntityClass();
         CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
-        Root<ENTITY> from = criteriaQuery.from(derivedEntityClass);
+        final Root<ENTITY> from = criteriaQuery.from(derivedEntityClass);
         criteriaQuery.select(criteriaBuilder.count(from));
         if (Boolean.TRUE.equals(applyDistinct))
             criteriaQuery = criteriaQuery.distinct(true);
@@ -404,19 +404,19 @@ public abstract class AbstractResolverAnyKey42<
      * @throws T9tException
      */
     @Override
-    public List<ENTITY> search(SearchCriteria searchCriteria, IDataProcessor<KEY, TRACKING, ENTITY> processor) {
-        List<ENTITY> r = search(searchCriteria);
+    public List<ENTITY> search(final SearchCriteria searchCriteria, final IDataProcessor<KEY, TRACKING, ENTITY> processor) {
+        final List<ENTITY> r = search(searchCriteria);
         if (processor != null) {
-            for (ENTITY e : r) {
+            for (final ENTITY e : r) {
                 processor.process(e);
             }
-            return new ArrayList<ENTITY>(0);
+            return new ArrayList<>(0);
         }
         return r;
     }
 
     /** Creates the WHERE conditions on the SELECT query. */
-    private <R> void createWhereList(SearchFilter filter, CriteriaBuilder criteriaBuilder, Root<ENTITY> from, CriteriaQuery<R> select) {
+    private <R> void createWhereList(final SearchFilter filter, final CriteriaBuilder criteriaBuilder, final Root<ENTITY> from, final CriteriaQuery<R> select) {
         // Add filters, if supplied
         final PathResolver r = new PathResolver(getEntityClass(), from);
         final JpaCriteriaBuilder bld = new JpaCriteriaBuilder(r, criteriaBuilder);
@@ -428,16 +428,16 @@ public abstract class AbstractResolverAnyKey42<
 
         // perform special filtering on tenant
         if (isTenantIsolated()) {
-            Long tenantRef = getSharedTenantRef();
+            final Long tenantRef = getSharedTenantRef();
             if (!tenantRef.equals(T9tConstants.GLOBAL_TENANT_REF42)) {
                 Predicate tenantPredicate = null;
                 // regular tenant
                 if (isTenantMeOrGlobal()) {
                     // IN (global, me)
-                    List<Long> tenants = new ArrayList<Long>(2);
+                    final List<Long> tenants = new ArrayList<>(2);
                     tenants.add(T9tConstants.GLOBAL_TENANT_REF42);
                     tenants.add(tenantRef);
-                    Expression<Long> exp = from.get(T9tConstants.TENANT_REF_FIELD_NAME42);
+                    final Expression<Long> exp = from.get(T9tConstants.TENANT_REF_FIELD_NAME42);
                     tenantPredicate = exp.in(tenants);
                 } else {
                     tenantPredicate = criteriaBuilder.equal(from.<Long> get(T9tConstants.TENANT_REF_FIELD_NAME42), tenantRef);
@@ -446,7 +446,7 @@ public abstract class AbstractResolverAnyKey42<
             } else {
                 // global tenant
                 if (!globalTenantCanAccessAll()) {
-                    Predicate tenantPredicate = criteriaBuilder.equal(from.<Long> get(T9tConstants.TENANT_REF_FIELD_NAME42), tenantRef);
+                    final Predicate tenantPredicate = criteriaBuilder.equal(from.<Long> get(T9tConstants.TENANT_REF_FIELD_NAME42), tenantRef);
                     whereList = whereList == null ? tenantPredicate : criteriaBuilder.and(whereList, tenantPredicate);
                 }
             }
@@ -457,13 +457,13 @@ public abstract class AbstractResolverAnyKey42<
         }
     }
 
-    private <R> List<R> runSearch(SearchCriteria searchCriteria, CriteriaBuilder criteriaBuilder, Root<ENTITY> from, CriteriaQuery<R> select) {
+    private <R> List<R> runSearch(final SearchCriteria searchCriteria, final CriteriaBuilder criteriaBuilder, final Root<ENTITY> from, final CriteriaQuery<R> select) {
 
         createWhereList(searchCriteria.getSearchFilter(), criteriaBuilder, from, select);
 
         // determine the effective sort columns
         List<SortColumn> sortColumns = searchCriteria.getSortColumns();
-        int limit = searchCriteria.getLimit();
+        final int limit = searchCriteria.getLimit();
         if ((sortColumns == null || sortColumns.isEmpty()) && (searchCriteria.getOffset() != 0 || limit != 0)) {
             // There is no sorting provided, but pagination requested. Add a default sort order.
             sortColumns = getDefaultSortColumns();
@@ -474,15 +474,15 @@ public abstract class AbstractResolverAnyKey42<
             final PathResolver r = new PathResolver(getEntityClass(), from);
             final List<Order> orderList = new ArrayList<>();
             // Walk through the list of sort columns if any
-            for (SortColumn column : sortColumns) {
-                Path<?> path = r.getPath(column.getFieldName());
+            for (final SortColumn column : sortColumns) {
+                final Path<?> path = r.getPath(column.getFieldName());
                 orderList.add(column.getDescending() ? criteriaBuilder.desc(path) : criteriaBuilder.asc(path));
             }
             select.orderBy(orderList);
         }
 
         // Run the query and return the results
-        TypedQuery<R> createQuery = getEntityManager().createQuery(select);
+        final TypedQuery<R> createQuery = getEntityManager().createQuery(select);
 
         // Apply pagination from searchOptions
         createQuery.setFirstResult(searchCriteria.getOffset());
@@ -550,36 +550,36 @@ public abstract class AbstractResolverAnyKey42<
     }
 
     /** called by generated resolver subclasses. */
-    protected void logFindBy(String name) {
+    protected void logFindBy(final String name) {
         if (LOGGER.isTraceEnabled())
             LOGGER.trace("{} requested for resolver class {}", name, getClass().getSimpleName());
     }
 
     /** called by subclasses. */
-    protected ENTITY getEntityDataByGenericKey(BonaPortable entityRef, boolean onlyActive) {
+    protected ENTITY getEntityDataByGenericKey(final BonaPortable entityRef, final boolean onlyActive) {
         if (entityRef == null) {
             return null;        // play null-safe
         }
-        ENTITY e = getEntityDataByGenericKey(entityRef, getEntityClass(), (t, cb) -> t, false);
+        final ENTITY e = getEntityDataByGenericKey(entityRef, getEntityClass(), (t, cb) -> t, false);
         if (onlyActive && !e.ret$Active()) {
             throw new T9tException(T9tException.RECORD_INACTIVE, entityNameAndKey(entityRef));
         }
         return e;
     }
 
-    protected <ZZ> ZZ getEntityDataByGenericKey(BonaPortable entityRef, Class<ZZ> clz,
-            BiFunction<Root<ENTITY>, CriteriaBuilder, Selection<ZZ>> cvter, boolean addActiveWhereClause) {
+    protected <ZZ> ZZ getEntityDataByGenericKey(BonaPortable entityRef, final Class<ZZ> clz,
+            final BiFunction<Root<ENTITY>, CriteriaBuilder, Selection<ZZ>> cvter, final boolean addActiveWhereClause) {
         if (LOGGER.isTraceEnabled())
             LOGGER.trace("read by generic key({}) requested for resolver class {}", entityRef, getClass().getSimpleName());
 
         // no primary key reference available, build a query by alternate key
         // use all fields of the instance of entityRef (which must be not null, else we throw an exception)
         // We want only the ...Key classes here. As a plausibility check, we required the ref class to be final.
-        int refClassModifiers = entityRef.getClass().getModifiers();
+        final int refClassModifiers = entityRef.getClass().getModifiers();
         if (!Modifier.isFinal(refClassModifiers) || Modifier.isInterface(refClassModifiers)) {
             // in some cases, a Ref might be passed... Work around and create a Ref which does not contain other fields
             if (entityRef instanceof Ref && (((Ref)entityRef).getObjectRef() != null)) {
-                Long pk = ((Ref)entityRef).getObjectRef();
+                final Long pk = ((Ref)entityRef).getObjectRef();
                 LOGGER.debug("getEntityDataByGenericKey called where primary key was available: {}({})", entityRef.ret$PQON(), pk);
                 entityRef = new Ref(pk);
             } else {
@@ -589,27 +589,27 @@ public abstract class AbstractResolverAnyKey42<
             }
         }
         // further checks here...
-        Class<ENTITY> entityClass = getEntityClass();
-        CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
-        CriteriaQuery<ZZ> criteriaQuery = criteriaBuilder.createQuery(clz);
-        Root<ENTITY> from = criteriaQuery.from(entityClass);
-        CriteriaQuery<ZZ> select = ((CriteriaQuery<ZZ>) criteriaQuery).select(cvter.apply(from, criteriaBuilder));
-        List<Predicate> whereList = new ArrayList<Predicate>();
+        final Class<ENTITY> entityClass = getEntityClass();
+        final CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
+        final CriteriaQuery<ZZ> criteriaQuery = criteriaBuilder.createQuery(clz);
+        final Root<ENTITY> from = criteriaQuery.from(entityClass);
+        final CriteriaQuery<ZZ> select = criteriaQuery.select(cvter.apply(from, criteriaBuilder));
+        final List<Predicate> whereList = new ArrayList<>();
         Long tenantRef = null;
         Object entRef = entityRef;
 
         try {
             @SuppressWarnings("unused")
             boolean tenantRefSet = false; // we may want this for diagnosis
-            for (Field f : entityRef.getClass().getDeclaredFields()) {
+            for (final Field f : entityRef.getClass().getDeclaredFields()) {
                 f.setAccessible(true);
                 if (!Modifier.isStatic(f.getModifiers())) {
                     if (f.getType() == int.class) {
-                        Integer ref = Integer.valueOf(f.getInt(entityRef));
+                        final Integer ref = Integer.valueOf(f.getInt(entityRef));
                         entRef = ref;
                         whereList.add(criteriaBuilder.equal(from.<Integer> get(f.getName()), ref));
                     } else if (f.getType() == long.class) {
-                        Long ref = Long.valueOf(f.getLong(entityRef));
+                        final Long ref = Long.valueOf(f.getLong(entityRef));
                         entRef = ref;
                         whereList.add(criteriaBuilder.equal(from.<Long> get(f.getName()), ref));
                     } else {
@@ -630,10 +630,10 @@ public abstract class AbstractResolverAnyKey42<
                     // regular tenant
                     if (isTenantMeOrGlobal()) {
                         // IN (global, me)
-                        List<Long> tenants = new ArrayList<Long>(2);
+                        final List<Long> tenants = new ArrayList<>(2);
                         tenants.add(T9tConstants.GLOBAL_TENANT_REF42);
                         tenants.add(tenantRef);
-                        Expression<Long> exp = from.get(T9tConstants.TENANT_REF_FIELD_NAME42);
+                        final Expression<Long> exp = from.get(T9tConstants.TENANT_REF_FIELD_NAME42);
                         whereList.add(exp.in(tenants));
                         select.orderBy(criteriaBuilder.desc(from.get(T9tConstants.TENANT_REF_FIELD_NAME42)));   // desc to ensure current tenant entry is first
                     } else {
@@ -648,10 +648,10 @@ public abstract class AbstractResolverAnyKey42<
                     }
                 }
             }
-        } catch (IllegalArgumentException e1) {
+        } catch (final IllegalArgumentException e1) {
             LOGGER.error("resolver caused IllegalArgumentException", e1);
             throw new T9tException(T9tException.RESOLVE_PARAMETER, entityRef.ret$PQON());
-        } catch (IllegalAccessException e1) {
+        } catch (final IllegalAccessException e1) {
             LOGGER.error("resolver caused IllegalAccessException", e1);
             throw new T9tException(T9tException.RESOLVE_ACCESS, entityRef.ret$PQON());
         }
@@ -661,7 +661,7 @@ public abstract class AbstractResolverAnyKey42<
         }
         // Append restrictions to overall query if any available
         if (whereList.size() > 0) {
-            Predicate[] predicates = new Predicate[whereList.size()];
+            final Predicate[] predicates = new Predicate[whereList.size()];
             whereList.toArray(predicates);
             select.where(criteriaBuilder.and(predicates));
         } else {
@@ -671,8 +671,8 @@ public abstract class AbstractResolverAnyKey42<
         }
 
         // Run the query and return the results
-        TypedQuery<ZZ> query = getEntityManager().createQuery(select);
-        List<ZZ> resultList = query.getResultList();
+        final TypedQuery<ZZ> query = getEntityManager().createQuery(select);
+        final List<ZZ> resultList = query.getResultList();
         if (resultList.isEmpty()) {
             // this can be a regular business case and is not necessarily an error
             LOGGER.debug("No result for fetching entity data for tenantRef {}, entityClass {}, key {}", tenantRef, entityClass, entRef);
@@ -688,16 +688,16 @@ public abstract class AbstractResolverAnyKey42<
         return resultList.get(0);
     }
 
-    private Object getFieldValue(Field f, BonaPortable entityRef) throws IllegalArgumentException, IllegalAccessException {
+    private Object getFieldValue(final Field f, final BonaPortable entityRef) throws IllegalArgumentException, IllegalAccessException {
         Object entRef = null;
         if (f.getType().isEnum()) {
             if (TokenizableEnum.class.isAssignableFrom(f.getType())) {
-                TokenizableEnum tokenizableEnum = (TokenizableEnum) f.get(entityRef);
+                final TokenizableEnum tokenizableEnum = (TokenizableEnum) f.get(entityRef);
                 if (tokenizableEnum != null) {
                     entRef = tokenizableEnum.getToken();
                 }
             } else {
-                Enum<?> enumz = (Enum<?>) f.get(entityRef);
+                final Enum<?> enumz = (Enum<?>) f.get(entityRef);
                 if (enumz != null) {
                     entRef = enumz.ordinal();
                 }
@@ -713,13 +713,13 @@ public abstract class AbstractResolverAnyKey42<
      * {@inheritDoc}
      */
     @Override
-    public TypedQuery<ENTITY> constructQuery(String query) {
+    public TypedQuery<ENTITY> constructQuery(final String query) {
         return getEntityManager().createQuery(query, getEntityClass());
     }
 
     @Override
-    public ENTITY getEntityDataForKey(KEY key, boolean onlyActive) {
-        ENTITY e = find(key);
+    public ENTITY getEntityDataForKey(final KEY key, final boolean onlyActive) {
+        final ENTITY e = find(key);
         if (e == null)
             throw new T9tException(T9tException.RECORD_DOES_NOT_EXIST, entityNameAndKey(key));
         if (onlyActive && !e.ret$Active())

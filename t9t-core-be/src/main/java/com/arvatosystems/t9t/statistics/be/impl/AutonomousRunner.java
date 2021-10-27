@@ -15,10 +15,10 @@
  */
 package com.arvatosystems.t9t.statistics.be.impl;
 
+import java.time.Instant;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import java.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,33 +42,33 @@ public class AutonomousRunner implements IAutonomousRunner {
     protected final IAutonomousExecutor autonomousExecutor = Jdp.getRequired(IAutonomousExecutor.class);
 
     @Override
-    public <T> void runSingleAutonomousTx(RequestContext ctx, int expectedTotal,
-            Iterable<T> iterable, Function<T, RequestParameters> requestProvider,
-            Consumer<StatisticsDTO> logEnhancer, String processId) {
-        int numRecords = expectedTotal;
+    public <T> void runSingleAutonomousTx(final RequestContext ctx, final int expectedTotal,
+            final Iterable<T> iterable, final Function<T, RequestParameters> requestProvider,
+            final Consumer<StatisticsDTO> logEnhancer, final String processId) {
+        final int numRecords = expectedTotal;
         int numErrors = 0;
         int numProcessed = 0;
         ctx.statusText = "Processing " + numRecords + " records";
 
         LOGGER.debug("Running autonomous transactions for {} records", numRecords);
-        for (T object : iterable) {
+        for (final T object : iterable) {
             if (StatusProvider.isShutdownInProgress()) {
                 LOGGER.info("Shutdown in progress detected - stopping after processing {} of {} requests", numProcessed, numRecords);
                 break;
             }
             ++numProcessed;
             ctx.incrementProgress();
-            RequestParameters request = requestProvider.apply(object);
-            int retCode = autonomousExecutor.execute(ctx, request).getReturnCode();
+            final RequestParameters request = requestProvider.apply(object);
+            final int retCode = autonomousExecutor.execute(ctx, request).getReturnCode();
             if (!ApplicationException.isOk(retCode))
                 ++numErrors;
         }
         ctx.statusText = "Writing statistics";
 
-        Instant now = Instant.now();
-        long timeTaken = now.toEpochMilli() - ctx.executionStart.toEpochMilli();
+        final Instant now = Instant.now();
+        final long timeTaken = now.toEpochMilli() - ctx.executionStart.toEpochMilli();
         LOGGER.info("Processed {} tasks ({} errors) in {} ms", numRecords, numErrors, timeTaken);
-        StatisticsDTO stat = new StatisticsDTO();
+        final StatisticsDTO stat = new StatisticsDTO();
         stat.setRecordsProcessed(numProcessed);
         stat.setRecordsError(numErrors);
         stat.setStartTime(ctx.executionStart);

@@ -38,21 +38,27 @@ import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration;
 import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Startup;
+import de.jpaw.dp.StartupOnly;
 
 @Startup(12000)
-public class InitJpa {
-
+public class InitJpa implements StartupOnly {
     private static final Logger LOGGER = LoggerFactory.getLogger(InitJpa.class);
 
-    public static void onStartup() throws Exception {
+    @Override
+    public void onStartup() {
         LOGGER.info("Using JPA support with global transaction management by Spring transaction");
 
         final T9tServerConfiguration cfg = Jdp.getRequired(T9tServerConfiguration.class);
         final RelationalDatabaseConfiguration dbCfg = cfg.getDatabaseConfiguration();
 
         // Create initial DataSource (or get from pooling like c3p0 or commons-pool)
-        final DataSource dataSource = DiagnoseDataSourceProxy.createProxy(Jdp.getRequired(IDataSourceFactory.class)
-                                                                             .createDataSource());
+        final DataSource dataSource;
+        try {
+            dataSource = DiagnoseDataSourceProxy.createProxy(Jdp.getRequired(IDataSourceFactory.class).createDataSource());
+        } catch (Exception e) {
+            LOGGER.error("Fatal: exception.", e);
+            throw new RuntimeException(e);
+        }
 
         // Wrap as transaction aware to be included in global transaction management
         // (This is the data source to be normally used!)
@@ -89,5 +95,4 @@ public class InitJpa {
         // binding of the same type above.
         Jdp.bindInstanceTo(new JDBCConnectionProvider(dataSource), IJdbcConnectionProvider.class, "independent");
     }
-
 }

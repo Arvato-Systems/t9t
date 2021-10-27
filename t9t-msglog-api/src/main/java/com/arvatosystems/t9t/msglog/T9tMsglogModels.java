@@ -25,14 +25,14 @@ import de.jpaw.bonaparte.pojos.api.NoTracking;
 public final class T9tMsglogModels implements IViewModelContainer {
 
     private static final CrudViewModel<MessageDTO, NoTracking> MESSAGE_VIEW_MODEL
-      = new CrudViewModel<MessageDTO, NoTracking>(
+      = new CrudViewModel<>(
         MessageDTO.BClass.INSTANCE,
         NoTracking.BClass.INSTANCE,
         MessageSearchRequest.BClass.INSTANCE,
         null);
 
     private static final CrudViewModel<MessageStatisticsDTO, NoTracking> MESSAGE_STATISTICS_VIEW_MODEL
-      = new CrudViewModel<MessageStatisticsDTO, NoTracking>(
+      = new CrudViewModel<>(
         MessageStatisticsDTO.BClass.INSTANCE,
         NoTracking.BClass.INSTANCE,
         MessageStatisticsSearchRequest.BClass.INSTANCE,

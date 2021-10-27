@@ -27,7 +27,7 @@ public class ResolveAnyRefRequestHandler extends AbstractReadOnlyRequestHandler<
     protected final IAnyKeySearchRegistry searchRegistry = Jdp.getRequired(IAnyKeySearchRegistry.class);
 
     @Override
-    public ResolveAnyRefResponse execute(RequestContext ctx, ResolveAnyRefRequest request) throws Exception {
+    public ResolveAnyRefResponse execute(final RequestContext ctx, final ResolveAnyRefRequest request) throws Exception {
         return searchRegistry.performLookup(ctx, request.getRef());
     }
 }

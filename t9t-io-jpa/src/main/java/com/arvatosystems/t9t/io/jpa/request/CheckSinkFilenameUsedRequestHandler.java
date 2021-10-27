@@ -31,7 +31,7 @@ public class CheckSinkFilenameUsedRequestHandler extends AbstractRequestHandler<
     private final SinkEntityResolver sinkResolver = Jdp.getRequired(SinkEntityResolver.class);
 
     @Override
-    public ServiceResponse execute(RequestContext context, CheckSinkFilenameUsedRequest request) throws Exception {
+    public ServiceResponse execute(final RequestContext context, final CheckSinkFilenameUsedRequest request) throws Exception {
         final EntityManager em = sinkResolver.getEntityManager();
 
         final Long sinkCount = em.createQuery(new StringBuilder()

@@ -27,13 +27,13 @@ import com.arvatosystems.t9t.bpmn.request.ProcessExecutionStatusSearchRequest;
 public final class T9tBpmnModels implements IViewModelContainer {
 
     private static final CrudViewModel<ProcessDefinitionDTO, FullTrackingWithVersion> PROCESS_DEFINITION_VIEW_MODEL
-      = new CrudViewModel<ProcessDefinitionDTO, FullTrackingWithVersion>(
+      = new CrudViewModel<>(
         ProcessDefinitionDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         ProcessDefinitionSearchRequest.BClass.INSTANCE,
         ProcessDefinitionCrudRequest.BClass.INSTANCE);
     private static final CrudViewModel<ProcessExecutionStatusDTO, FullTrackingWithVersion> PROCESS_STATUS_VIEW_MODEL
-      = new CrudViewModel<ProcessExecutionStatusDTO, FullTrackingWithVersion>(
+      = new CrudViewModel<>(
         ProcessExecutionStatusDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         ProcessExecutionStatusSearchRequest.BClass.INSTANCE,

@@ -42,16 +42,16 @@ public abstract class AbstractCrudCompositeKey42RequestHandler <
 
     // execute function of the interface description, but additional parameters
     // required in order to work around type erasure
-    public CrudCompositeKeyResponse<KEY, DTO, TRACKING> execute(RequestContext ctx, IEntityMapper42<KEY, DTO, TRACKING, ENTITY> mapper,
-            IResolverCompositeKey42<KEY, KEY, TRACKING, ENTITY> resolver, REQUEST crudRequest) {
+    public CrudCompositeKeyResponse<KEY, DTO, TRACKING> execute(final RequestContext ctx, final IEntityMapper42<KEY, DTO, TRACKING, ENTITY> mapper,
+            final IResolverCompositeKey42<KEY, KEY, TRACKING, ENTITY> resolver, final REQUEST crudRequest) {
 
         // fields are set as required
         validateParameters(crudRequest, crudRequest.getKey() == null);
 
-        CrudCompositeKeyResponse<KEY, DTO, TRACKING> rs = new CrudCompositeKeyResponse<KEY, DTO, TRACKING>();
+        final CrudCompositeKeyResponse<KEY, DTO, TRACKING> rs = new CrudCompositeKeyResponse<>();
         ENTITY result;
 
-        EntityManager entityManager = jpaContextProvider.get().getEntityManager(); // copy it as we need it several times
+        final EntityManager entityManager = jpaContextProvider.get().getEntityManager(); // copy it as we need it several times
 
         try {
             switch (crudRequest.getCrud()) {
@@ -107,12 +107,12 @@ public abstract class AbstractCrudCompositeKey42RequestHandler <
             }
             rs.setReturnCode(0);
             return rs;
-        } catch (T9tException e) {
+        } catch (final T9tException e) {
             // careful! Catching only ApplicationException masks standard T9tExceptions such as RECORD_INACTIVE or RECORD_NOT_FOUND!
             // We must return the original exception if we got a T9tException already!
             // Therefore this catch is essential!
             throw e;
-        } catch (ApplicationException e) {
+        } catch (final ApplicationException e) {
             throw new T9tException(T9tException.ENTITY_DATA_MAPPING_EXCEPTION, "Tracking columns: "
                     + e.toString());
         }
@@ -125,11 +125,11 @@ public abstract class AbstractCrudCompositeKey42RequestHandler <
      * @param resolver
      * @return
      */
-    protected boolean recordExists(KEY key, IResolverCompositeKey42<KEY, KEY, TRACKING, ENTITY> resolver) {
+    protected boolean recordExists(final KEY key, final IResolverCompositeKey42<KEY, KEY, TRACKING, ENTITY> resolver) {
         try {
-            ENTITY entity = resolver.find(key);
+            final ENTITY entity = resolver.find(key);
             return entity != null && resolver.isOfMatchingTenant(entity);
-        } catch (T9tException e) {
+        } catch (final T9tException e) {
             return false;
         }
     }

@@ -38,12 +38,16 @@ public interface IOutputResource {
     void open(DataSinkDTO config, OutputSessionParameters params, Long sinkRef, String targetName, MediaTypeDescriptor mediaType, Charset encoding);
 
     /**
-     * Returns a possible replacement of the file name, or null if not supported. Used to return modified file names, for example when writing to compressed targets.
+     * Returns a possible replacement of the file name, or null if not supported. Used to return modified file names,
+     * for example when writing to compressed targets.
      */
-    default String getEffectiveFilename() { return null; }
+    default String getEffectiveFilename() {
+        return null;
+    }
 
     /**
-     * Returns the underlying output stream used by this OutputResource, if available. Throws an UnsupportedOperationException if this Resource does not support it, or implements internal buffering.
+     * Returns the underlying output stream used by this OutputResource, if available.
+     * Throws an UnsupportedOperationException if this Resource does not support it, or implements internal buffering.
      */
     OutputStream getOutputStream();
 

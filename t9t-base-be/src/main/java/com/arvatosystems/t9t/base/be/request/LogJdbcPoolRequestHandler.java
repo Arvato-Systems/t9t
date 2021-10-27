@@ -28,8 +28,8 @@ public class LogJdbcPoolRequestHandler extends AbstractReadOnlyRequestHandler<Lo
     private final IJdbcConnectionProvider jdbcProvider = Jdp.getRequired(IJdbcConnectionProvider.class, "independent");
 
     @Override
-    public LogJdbcPoolResponse execute(RequestContext ctx, LogJdbcPoolRequest rq) {
-        LogJdbcPoolResponse resp = new LogJdbcPoolResponse();
+    public LogJdbcPoolResponse execute(final RequestContext ctx, final LogJdbcPoolRequest rq) {
+        final LogJdbcPoolResponse resp = new LogJdbcPoolResponse();
         resp.setCounts(jdbcProvider.checkHealth());
         return resp;
     }

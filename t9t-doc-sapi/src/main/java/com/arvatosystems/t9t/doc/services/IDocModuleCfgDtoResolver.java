@@ -19,7 +19,7 @@ import com.arvatosystems.t9t.doc.DocModuleCfgDTO;
 import com.arvatosystems.t9t.server.services.IModuleConfigResolver;
 
 public interface IDocModuleCfgDtoResolver extends IModuleConfigResolver<DocModuleCfgDTO> {
-    public static final DocModuleCfgDTO DEFAULT_MODULE_CFG = new DocModuleCfgDTO(
+    DocModuleCfgDTO DEFAULT_MODULE_CFG = new DocModuleCfgDTO(
         null,       // Json z
         true,       // considerGlobalTemplates
         true,       // considerGlobalTexts

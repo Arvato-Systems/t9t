@@ -36,24 +36,24 @@ public class DateTimeService implements IDateTimeService {
     protected final ITimeZoneProvider timeZoneProvider = Jdp.getRequired(ITimeZoneProvider.class);
 
     @Override
-    public LocalDate toLocalDate(Long tenantRef, Instant when) {
+    public LocalDate toLocalDate(final Long tenantRef, final Instant when) {
         final ZoneId timeZone = timeZoneProvider.getTimeZoneOfTenant(tenantRef);
         return LocalDate.ofInstant(when, timeZone);
     }
 
     @Override
-    public LocalDate toLocalDate(Long tenantRef, LocalDateTime when) {
+    public LocalDate toLocalDate(final Long tenantRef, final LocalDateTime when) {
         return toLocalDate(tenantRef, when.toInstant(ZoneOffset.UTC));  // convert the timestamp to an instant and use the existing method for that
     }
 
     @Override
-    public Instant toInstantAtStartOfDay(Long tenantRef, LocalDate when) {
+    public Instant toInstantAtStartOfDay(final Long tenantRef, final LocalDate when) {
         final ZoneId timeZone = timeZoneProvider.getTimeZoneOfTenant(tenantRef);
         return LocalDateTime.of(when, LocalTime.MIDNIGHT).atZone(timeZone).toInstant();
     }
 
     @Override
-    public LocalDateTime toLocalDateTimeAtStartOfDay(Long tenantRef, LocalDate when) {
+    public LocalDateTime toLocalDateTimeAtStartOfDay(final Long tenantRef, final LocalDate when) {
         return LocalDateTime.ofInstant(toInstantAtStartOfDay(tenantRef, when), ZoneOffset.UTC);  // reduce it to the existing method for the instant
     }
 }

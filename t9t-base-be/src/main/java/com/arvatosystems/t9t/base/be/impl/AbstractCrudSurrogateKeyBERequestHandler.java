@@ -45,24 +45,24 @@ public abstract class AbstractCrudSurrogateKeyBERequestHandler<REF extends Ref, 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCrudSurrogateKeyBERequestHandler.class);
 
     @Override
-    public boolean isReadOnly(REQUEST params) {
+    public boolean isReadOnly(final REQUEST params) {
         return params.getCrud() == OperationType.READ || params.getCrud() == OperationType.LOOKUP || params.getCrud() == OperationType.VERIFY;
     }
 
     @Override
-    public OperationType getAdditionalRequiredPermission(REQUEST request) {
+    public OperationType getAdditionalRequiredPermission(final REQUEST request) {
         return request.getCrud();       // must have permission for the crud operation
     }
 
     protected final IRefGenerator genericRefGenerator = Jdp.getRequired(IRefGenerator.class);
 
-    protected void checkActive(DTO result, boolean onlyActive) {
+    protected void checkActive(final DTO result, final boolean onlyActive) {
         if (onlyActive && !result.ret$Active())
             throw new T9tException(T9tException.RECORD_INACTIVE, result.getObjectRef().toString());
     }
 
     // plausi checks for parameters
-    protected void validateParameters(CrudAnyKeyRequest<DTO, TRACKING> rq, boolean keyIsNull) {
+    protected void validateParameters(final CrudAnyKeyRequest<DTO, TRACKING> rq, final boolean keyIsNull) {
         // check version if required
         // check key
         switch (rq.getCrud()) {
@@ -102,7 +102,7 @@ public abstract class AbstractCrudSurrogateKeyBERequestHandler<REF extends Ref, 
      * @throws ApplicationException
      *             if a plausibility check has been found to fail.
      */
-    protected void validateUpdate(DTO current, DTO intended) { }
+    protected void validateUpdate(final DTO current, final DTO intended) { }
 
     /**
      * Validates data before it is mapped or persisted. Hook to be overridden by
@@ -113,7 +113,7 @@ public abstract class AbstractCrudSurrogateKeyBERequestHandler<REF extends Ref, 
      * @throws ApplicationException
      *             if a plausibility check has been found to fail.
      */
-    protected void validateCreate(DTO intended) { }
+    protected void validateCreate(final DTO intended) { }
 
     /**
      * Validates before deletion. Can also be used to perform additional
@@ -124,27 +124,28 @@ public abstract class AbstractCrudSurrogateKeyBERequestHandler<REF extends Ref, 
      * @throws ApplicationException
      *             if a plausibility check has been found to fail.
      */
-    protected void validateDelete(DTO current) { }
+    protected void validateDelete(final DTO current) { }
 
     /** Called before a status is changed active / inactive.
      * Only called if there is a real change.
      * If the change happens as part of an update, it is called after validateUpdate. */
-    protected void activationChange(DTO current, boolean newState) { }
+    protected void activationChange(final DTO current, final boolean newState) { }
 
     /**
      * Hook which allows to populate fields in the DTO which are not read from
      * disk directly, but also to hide data. Can be used by customizations. The
      * default implementation just returns the parameter unmodified.
      */
-    protected void postRead(DTO result) { }
+    protected void postRead(final DTO result) { }
 
 
     // execute function of the interface description, but additional parameters
     // required in order to work around type erasure
-    protected CrudSurrogateKeyResponse<DTO, TRACKING> execute(RequestContext ctx, REQUEST crudRequest, RefResolver<REF, DTO, TRACKING> resolver) {
+    protected CrudSurrogateKeyResponse<DTO, TRACKING> execute(final RequestContext ctx, final REQUEST crudRequest,
+      final RefResolver<REF, DTO, TRACKING> resolver) {
 
         // fields are set as required
-        CrudSurrogateKeyResponse<DTO, TRACKING> rs = new CrudSurrogateKeyResponse<DTO, TRACKING>();
+        final CrudSurrogateKeyResponse<DTO, TRACKING> rs = new CrudSurrogateKeyResponse<>();
 
         LOGGER.trace("{}: {} called for surrogate key = {}, natural key = {}",
                 this.getClass().getSimpleName(),
@@ -169,7 +170,7 @@ public abstract class AbstractCrudSurrogateKeyBERequestHandler<REF extends Ref, 
         // step 1: possible resolution of the natural key
         if (crudRequest.getNaturalKey() != null) {
             try {
-                Long refFromCompositeKey = resolver.getRef(crudRequest.getNaturalKey());
+                final Long refFromCompositeKey = resolver.getRef(crudRequest.getNaturalKey());
                 // provide it into the response
                 rs.setKey(refFromCompositeKey);
 
@@ -182,7 +183,7 @@ public abstract class AbstractCrudSurrogateKeyBERequestHandler<REF extends Ref, 
                         throw new T9tException(T9tException.CRUD_BOTH_KEYS_MISMATCH, crudRequest.getKey().toString() + " <> " + refFromCompositeKey.toString());
                     }
                 }
-            } catch (T9tException e) {
+            } catch (final T9tException e) {
                 if (e.getErrorCode() != T9tException.RECORD_DOES_NOT_EXIST) {
                     throw e; // we are not interested in this one
                     // deal with non-existing records. In some cases, this is acceptable
@@ -234,7 +235,7 @@ public abstract class AbstractCrudSurrogateKeyBERequestHandler<REF extends Ref, 
             break;
         case INACTIVATE:
         case ACTIVATE:
-            boolean newState = crudRequest.getCrud() == OperationType.ACTIVATE;
+            final boolean newState = crudRequest.getCrud() == OperationType.ACTIVATE;
             dto = resolver.getDTO(crudRequest.getKey());
             checkActive(dto, crudRequest.getOnlyActive());
 //            if (!resolver.writeAllowed(resolver.getTenantId(result))) {
@@ -248,7 +249,7 @@ public abstract class AbstractCrudSurrogateKeyBERequestHandler<REF extends Ref, 
             }
             break;
         case UPDATE:
-            DTO old = resolver.getDTO(crudRequest.getKey());
+            final DTO old = resolver.getDTO(crudRequest.getKey());
             checkActive(old, crudRequest.getOnlyActive());
 //          if (!resolver.writeAllowed(resolver.getTenantId(result))) {
 //              throw new T9tException(T9tException.WRITE_ACCESS_ONLY_CURRENT_TENANT);

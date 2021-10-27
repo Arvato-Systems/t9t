@@ -47,7 +47,8 @@ public class ExecuteRequestDelegate implements JavaDelegate {
     @Override
     public void execute(DelegateExecution execution) throws Exception {
         try (AutoCloseable mdc = MDCHelper.put(execution)) {
-            final RequestParameters requestObject = requireNonNull(getValueAsBonaPortable(execution, "requestJson", null), "Variable 'requestJson' must not be empty");
+            final RequestParameters requestObject = requireNonNull(getValueAsBonaPortable(execution, "requestJson", null),
+              "Variable 'requestJson' must not be empty");
 
             final ServiceResponse response = executor.executeSynchronousAndCheckResult(requestObject, ServiceResponse.class);
             execution.setVariableLocal("response", response);

@@ -36,7 +36,7 @@ public class LoadedPluginResolver extends AbstractJpaResolver<LoadedPluginRef, L
     }
 
     @Override
-    public LoadedPluginRef createKey(Long ref) {
+    public LoadedPluginRef createKey(final Long ref) {
         return ref == null ? null : new LoadedPluginRef(ref);
     }
 }

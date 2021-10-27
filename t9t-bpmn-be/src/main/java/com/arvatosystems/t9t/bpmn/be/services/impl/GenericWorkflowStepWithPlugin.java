@@ -32,10 +32,10 @@ import de.jpaw.dp.Jdp;
  * @param <T> the type of workflow data
  */
 public class GenericWorkflowStepWithPlugin<T> implements IWorkflowStep<T> {
-    final private IPluginManager pluginManager = Jdp.getRequired(IPluginManager.class);
+    private final IPluginManager pluginManager = Jdp.getRequired(IPluginManager.class);
 
-    final public String qualifier;
-    final private IWorkflowStep<T> staticStep;
+    public final String qualifier;
+    private final IWorkflowStep<T> staticStep;
 
     public GenericWorkflowStepWithPlugin(final String qualifier, final IWorkflowStep<T> staticStep) {
         this.qualifier = qualifier;
@@ -44,7 +44,8 @@ public class GenericWorkflowStepWithPlugin<T> implements IWorkflowStep<T> {
 
     /** returns the relevant implementation of the plugin, or the static step (by tenantRef) or throw an exception, if there is none. */
     private IWorkflowStep<T> getImplementation() {
-        final IWorkflowStepPlugin<T> plugin = pluginManager.getPluginMethod(T9tConstants.PLUGIN_API_ID_WORKFLOW_STEP, qualifier, IWorkflowStepPlugin.class, staticStep != null);
+        final IWorkflowStepPlugin<T> plugin
+          = pluginManager.getPluginMethod(T9tConstants.PLUGIN_API_ID_WORKFLOW_STEP, qualifier, IWorkflowStepPlugin.class, staticStep != null);
         return plugin != null ? plugin : staticStep;
     }
 

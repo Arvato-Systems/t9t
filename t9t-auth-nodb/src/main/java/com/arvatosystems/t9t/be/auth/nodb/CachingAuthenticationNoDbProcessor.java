@@ -52,7 +52,7 @@ public class CachingAuthenticationNoDbProcessor implements ICachingAuthenticatio
     protected final IJWT jwt = Jdp.getRequired(IJWT.class);
     protected final IAuthenticate authModule = Jdp.getRequired(IAuthenticate.class);
 
-    protected AuthenticationInfo storeSuccessful(String header, String encodedJwt, JwtInfo jwtInfo) {
+    protected AuthenticationInfo storeSuccessful(final String header, final String encodedJwt, final JwtInfo jwtInfo) {
         final AuthenticationInfo authInfo = new AuthenticationInfo();
         authInfo.setEncodedJwt(encodedJwt);
         authInfo.setJwtInfo(jwtInfo);
@@ -61,7 +61,7 @@ public class CachingAuthenticationNoDbProcessor implements ICachingAuthenticatio
     }
 
     @Override
-    public AuthenticationInfo getCachedJwt(String authorizationHeader) {
+    public AuthenticationInfo getCachedJwt(final String authorizationHeader) {
         if (!authorizationHeader.startsWith("API-Key ")) {
             return UNSUPPORTED_AUTH_METHOD;
         }
@@ -73,7 +73,7 @@ public class CachingAuthenticationNoDbProcessor implements ICachingAuthenticatio
             } else {
                 LOGGER.info("Auth by API key rejected: Code {}: {} {}", authResp.getReturnCode(), authResp.getErrorMessage(), authResp.getErrorDetails());
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.info("Bad API Key auth: {}: {}", e.getClass().getSimpleName(), e.getMessage());
         }
         return ACCESS_DENIED_INVALID_API_KEY;

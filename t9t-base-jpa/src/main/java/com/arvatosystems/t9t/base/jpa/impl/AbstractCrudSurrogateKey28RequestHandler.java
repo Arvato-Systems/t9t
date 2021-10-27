@@ -45,11 +45,11 @@ public abstract class AbstractCrudSurrogateKey28RequestHandler<
 
     // execute function of the interface description, but additional parameters
     // required in order to work around type erasure
-    public CrudSurrogateKeyResponse<DTO, TRACKING> execute(RequestContext ctx, IEntityMapper28<Long, DTO, TRACKING, ENTITY> mapper,
-            IResolverSurrogateKey28<REF, TRACKING, ENTITY> resolver, REQUEST crudRequest) {
+    public CrudSurrogateKeyResponse<DTO, TRACKING> execute(final RequestContext ctx, final IEntityMapper28<Long, DTO, TRACKING, ENTITY> mapper,
+            final IResolverSurrogateKey28<REF, TRACKING, ENTITY> resolver, final REQUEST crudRequest) {
 
         // fields are set as required
-        CrudSurrogateKeyResponse<DTO, TRACKING> rs = new CrudSurrogateKeyResponse<DTO, TRACKING>();
+        final CrudSurrogateKeyResponse<DTO, TRACKING> rs = new CrudSurrogateKeyResponse<>();
         ENTITY result;
 
         // check natural key.
@@ -64,14 +64,14 @@ public abstract class AbstractCrudSurrogateKey28RequestHandler<
         default:
         }
 
-        EntityManager entityManager = jpaContextProvider.get().getEntityManager(); // copy it as we need it several times
+        final EntityManager entityManager = jpaContextProvider.get().getEntityManager(); // copy it as we need it several times
 
         // step 1: possible resolution of the natural key
         if (crudRequest.getNaturalKey() != null) {
             try {
-                ENTITY entityFoundByNaturalKeyQuery = resolver.getEntityData(crudRequest.getNaturalKey(), false);
-                boolean entityFoundByNaturalKeyQueryIsOfOtherTenant = resolver.isTenantIsolated() && !resolver.getSharedTenantId().equals(resolver.getTenantId(entityFoundByNaturalKeyQuery));
-                Long refFromCompositeKey = entityFoundByNaturalKeyQuery.ret$Key();
+                final ENTITY entityFoundByNaturalKeyQuery = resolver.getEntityData(crudRequest.getNaturalKey(), false);
+                final boolean entityFoundByNaturalKeyQueryIsOfOtherTenant = resolver.isTenantIsolated() && !resolver.getSharedTenantId().equals(resolver.getTenantId(entityFoundByNaturalKeyQuery));
+                final Long refFromCompositeKey = entityFoundByNaturalKeyQuery.ret$Key();
                 // provide it into the response
                 rs.setKey(refFromCompositeKey);
 
@@ -90,7 +90,7 @@ public abstract class AbstractCrudSurrogateKey28RequestHandler<
                     crudRequest.setKey(null);
                     crudRequest.setCrud(OperationType.CREATE);
                 }
-            } catch (T9tException e) {
+            } catch (final T9tException e) {
                 if (e.getErrorCode() != T9tException.RECORD_DOES_NOT_EXIST) {
                     throw e; // we are not interested int his one
                     // deal with non-existing records. In some cases, this is acceptable
@@ -122,7 +122,7 @@ public abstract class AbstractCrudSurrogateKey28RequestHandler<
             case CREATE:
                 // HACK: for CREATE, must provide the new artificial key to the mapper, just in case the entity
                 // has child entities which reference this. The only way to pass it into the mapper is via the DTO...
-                Long newKey = resolver.createNewPrimaryKey();
+                final Long newKey = resolver.createNewPrimaryKey();
                 crudRequest.getData().setObjectRef(newKey);
                 result = performCreate(mapper, resolver, crudRequest, entityManager);
                 rs.setKey(result.ret$Key()); // just copy
@@ -168,7 +168,7 @@ public abstract class AbstractCrudSurrogateKey28RequestHandler<
                     rs.setKey(crudRequest.getKey());
                     result = performUpdate(mapper, resolver, crudRequest, entityManager, crudRequest.getKey());
                 } else {
-                    Long newKey1 = resolver.createNewPrimaryKey();
+                    final Long newKey1 = resolver.createNewPrimaryKey();
                     crudRequest.getData().setObjectRef(newKey1);
                     result = performCreate(mapper, resolver, crudRequest, entityManager);
                     rs.setKey(result.ret$Key()); // just copy
@@ -191,12 +191,12 @@ public abstract class AbstractCrudSurrogateKey28RequestHandler<
             }
             rs.setReturnCode(0);
             return rs;
-        } catch (T9tException e) {
+        } catch (final T9tException e) {
             // careful! Catching only ApplicationException masks standard T9tExceptions such as RECORD_INACTIVE or RECORD_NOT_FOUND!
             // We must return the original exception if we got a T9tException already!
             // Therefore this catch is essential!
             throw e;
-        } catch (ApplicationException e) {
+        } catch (final ApplicationException e) {
             throw new T9tException(T9tException.ENTITY_DATA_MAPPING_EXCEPTION, "Tracking columns: " + e.toString());
         }
     }

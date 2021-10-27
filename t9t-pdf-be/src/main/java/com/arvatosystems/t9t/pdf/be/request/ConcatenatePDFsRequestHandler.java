@@ -50,60 +50,62 @@ public class ConcatenatePDFsRequestHandler extends AbstractRequestHandler<Concat
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final ConcatenatePDFsRequest concatRequest) throws Exception {
-        PDFMergerUtility pdfMergerUtility = new PDFMergerUtility();
+        final PDFMergerUtility pdfMergerUtility = new PDFMergerUtility();
 
         // Lookup PDFs to be merged
-        ReadAllResponse<SinkDTO, FullTrackingWithVersion> sinkSearchResponse = getDataSinks(ctx, concatRequest.getSinkRefsToMerge(), null);
-        SinkDTO[] toMergeSinkDTOs = sortToMergeDataSinks(sinkSearchResponse.getDataList(), concatRequest.getSinkRefsToMerge());
+        final ReadAllResponse<SinkDTO, FullTrackingWithVersion> sinkSearchResponse = getDataSinks(ctx, concatRequest.getSinkRefsToMerge(), null);
+        final SinkDTO[] toMergeSinkDTOs = sortToMergeDataSinks(sinkSearchResponse.getDataList(), concatRequest.getSinkRefsToMerge());
 
-        for (SinkDTO toMerge : toMergeSinkDTOs) {
+        for (final SinkDTO toMerge : toMergeSinkDTOs) {
             pdfMergerUtility.addSource(fileUtil.getAbsolutePathForTenant(ctx.tenantId, toMerge.getFileOrQueueName()));
         }
 
         // create output sink
         Long outputSinkRef;
-        OutputSessionParameters sessionParams = new OutputSessionParameters();
+        final OutputSessionParameters sessionParams = new OutputSessionParameters();
         sessionParams.setDataSinkId(concatRequest.getOutputDataSinkId());
 
         try (IOutputSession os = Jdp.getRequired(IOutputSession.class)) {
             outputSinkRef = os.open(sessionParams);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.error("Exception create output file - Error Message {} ", e.getMessage());
             throw new T9tException(T9tException.GENERAL_EXCEPTION, e.getMessage());
         }
 
-        ReadAllResponse<SinkDTO, FullTrackingWithVersion> outputSink = getDataSinks(ctx, null, outputSinkRef);
-        pdfMergerUtility.setDestinationFileName(fileUtil.getAbsolutePathForTenant(ctx.tenantId, outputSink.getDataList().get(0).getData().getFileOrQueueName()));
+        final ReadAllResponse<SinkDTO, FullTrackingWithVersion> outputSink = getDataSinks(ctx, null, outputSinkRef);
+        pdfMergerUtility.setDestinationFileName(
+          fileUtil.getAbsolutePathForTenant(ctx.tenantId, outputSink.getDataList().get(0).getData().getFileOrQueueName()));
 
         try {
             pdfMergerUtility.mergeDocuments(MemoryUsageSetting.setupMainMemoryOnly());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.error("Exception during merging PDFs - Error Message {} ", e.getMessage());
             throw new T9tException(T9tException.GENERAL_EXCEPTION, e.getMessage());
         }
 
-        SinkCreatedResponse response = new SinkCreatedResponse();
+        final SinkCreatedResponse response = new SinkCreatedResponse();
         response.setReturnCode(0);
         response.setSinkRef(outputSinkRef);
         return response;
     }
 
-    private ReadAllResponse<SinkDTO, FullTrackingWithVersion> getDataSinks(RequestContext ctx, List<Long> valueList, Long equalsValue) {
-        SinkSearchRequest sinkSearchRequest = new SinkSearchRequest();
+    private ReadAllResponse<SinkDTO, FullTrackingWithVersion> getDataSinks(final RequestContext ctx, final List<Long> valueList, final Long equalsValue) {
+        final SinkSearchRequest sinkSearchRequest = new SinkSearchRequest();
         sinkSearchRequest.setSearchFilter(new LongFilter("objectRef", equalsValue, null, null, valueList));
         return executor.executeSynchronousAndCheckResult(ctx, sinkSearchRequest, ReadAllResponse.class);
     }
 
-    private SinkDTO[] sortToMergeDataSinks(List<DataWithTrackingW<SinkDTO, FullTrackingWithVersion>> dataList, List<Long> sinkRefs) {
+    private SinkDTO[] sortToMergeDataSinks(final List<DataWithTrackingW<SinkDTO, FullTrackingWithVersion>> dataList, final List<Long> sinkRefs) {
 
         // ensure same amount of PDF files are merged as requested
         if (dataList.size() != sinkRefs.size()) {
-            throw new T9tException(T9tException.RECORD_DOES_NOT_EXIST, "Requested files to merge is " + sinkRefs.size() + " but actual files found is " + dataList.size());
+            throw new T9tException(T9tException.RECORD_DOES_NOT_EXIST,
+              "Requested files to merge is " + sinkRefs.size() + " but actual files found is " + dataList.size());
         }
 
-        SinkDTO[] sortedSinks = new SinkDTO[sinkRefs.size()];
-        for (DataWithTrackingW<SinkDTO, FullTrackingWithVersion> item : dataList) {
-            int idx = sinkRefs.indexOf(item.getData().getObjectRef());
+        final SinkDTO[] sortedSinks = new SinkDTO[sinkRefs.size()];
+        for (final DataWithTrackingW<SinkDTO, FullTrackingWithVersion> item : dataList) {
+            final int idx = sinkRefs.indexOf(item.getData().getObjectRef());
             sortedSinks[idx] = item.getData();
         }
 

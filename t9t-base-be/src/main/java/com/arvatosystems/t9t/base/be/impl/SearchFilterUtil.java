@@ -38,8 +38,8 @@ import de.jpaw.dp.Singleton;
 public class SearchFilterUtil implements ISearchFilterUtil {
     private final ISearchTools searchTools = Jdp.getRequired(ISearchTools.class);
 
-    private boolean hasDirectWantedChild(AndFilter andFilter, Set<String> wantedFieldNames) {
-        List<SearchFilter> childFilters = Arrays.asList(andFilter.getFilter1(), andFilter.getFilter2());
+    private boolean hasDirectWantedChild(final AndFilter andFilter, final Set<String> wantedFieldNames) {
+        final List<SearchFilter> childFilters = Arrays.asList(andFilter.getFilter1(), andFilter.getFilter2());
 
         return childFilters.stream().anyMatch(childFilter -> {
             if (childFilter instanceof FieldFilter) {
@@ -49,8 +49,8 @@ public class SearchFilterUtil implements ISearchFilterUtil {
         });
     }
 
-    private boolean hasDirectWantedChild(OrFilter orFilter, Set<String> wantedFieldNames) {
-        List<SearchFilter> childFilters = Arrays.asList(orFilter.getFilter1(), orFilter.getFilter2());
+    private boolean hasDirectWantedChild(final OrFilter orFilter, final Set<String> wantedFieldNames) {
+        final List<SearchFilter> childFilters = Arrays.asList(orFilter.getFilter1(), orFilter.getFilter2());
 
         return childFilters.stream().anyMatch(childFilter -> {
             if (childFilter instanceof FieldFilter) {
@@ -60,19 +60,19 @@ public class SearchFilterUtil implements ISearchFilterUtil {
         });
     }
 
-    private boolean hasWantedChild(NotFilter notFilter, Set<String> wantedFieldNames) {
-        return searchTools.containsFieldPathElements((SearchFilter)notFilter, new ArrayList<>(wantedFieldNames));
+    private boolean hasWantedChild(final NotFilter notFilter, final Set<String> wantedFieldNames) {
+        return searchTools.containsFieldPathElements(notFilter, new ArrayList<>(wantedFieldNames));
     }
 
-    private boolean hasMoreThanOneWantedFieldNames(SearchFilter searchFilter, Set<String> wantedFieldNames) {
-         Set<String> fieldNames = searchTools.getAllSearchFilterFieldName(searchFilter, new HashSet<>());
+    private boolean hasMoreThanOneWantedFieldNames(final SearchFilter searchFilter, final Set<String> wantedFieldNames) {
+         final Set<String> fieldNames = searchTools.getAllSearchFilterFieldName(searchFilter, new HashSet<>());
 
         return fieldNames.stream().filter(fieldName -> {
             return wantedFieldNames.contains(fieldName);
         }).count() > 1;
     }
 
-    public void populateQueue(SearchFilter searchFilter, Set<String> wantedFieldNames, Queue<SearchFilter> filterQueue) {
+    public void populateQueue(final SearchFilter searchFilter, final Set<String> wantedFieldNames, final Queue<SearchFilter> filterQueue) {
 
         if (searchFilter instanceof NotFilter) {
             if (hasWantedChild((NotFilter)searchFilter, wantedFieldNames)) {
@@ -86,8 +86,8 @@ public class SearchFilterUtil implements ISearchFilterUtil {
             }
 
             //process child tree
-            List<SearchFilter> childFilters = Arrays.asList(((AndFilter)searchFilter).getFilter1(), ((AndFilter)searchFilter).getFilter2());
-            for (SearchFilter childFilter: childFilters) {
+            final List<SearchFilter> childFilters = Arrays.asList(((AndFilter)searchFilter).getFilter1(), ((AndFilter)searchFilter).getFilter2());
+            for (final SearchFilter childFilter: childFilters) {
                 if (childFilter instanceof FieldFilter) {
                     if (wantedFieldNames.contains(((FieldFilter)childFilter).getFieldName())) {
                         filterQueue.add(childFilter);
@@ -104,8 +104,8 @@ public class SearchFilterUtil implements ISearchFilterUtil {
             }
 
             //process child tree
-            List<SearchFilter> childFilters = Arrays.asList(((OrFilter)searchFilter).getFilter1(), ((OrFilter)searchFilter).getFilter2());
-            for (SearchFilter childFilter : childFilters) {
+            final List<SearchFilter> childFilters = Arrays.asList(((OrFilter)searchFilter).getFilter1(), ((OrFilter)searchFilter).getFilter2());
+            for (final SearchFilter childFilter : childFilters) {
                 if (childFilter instanceof FieldFilter) {
                     if (wantedFieldNames.contains(((FieldFilter)childFilter).getFieldName())) {
                         filterQueue.add(childFilter);
@@ -123,19 +123,19 @@ public class SearchFilterUtil implements ISearchFilterUtil {
         }
     }
 
-    private boolean isPredicate(SearchFilter searchFilter) {
+    private boolean isPredicate(final SearchFilter searchFilter) {
         return searchFilter != null && (searchFilter instanceof AndFilter || searchFilter instanceof OrFilter || searchFilter instanceof NotFilter);
     }
 
 
-    private boolean addOnNextEmptyFilterField(SearchFilter copyFilter, SearchFilter newFilterToBeAdded) {
+    private boolean addOnNextEmptyFilterField(final SearchFilter copyFilter, final SearchFilter newFilterToBeAdded) {
         if (copyFilter instanceof AndFilter) {
             //always try on the outer predicate first
 
-            if ((isPredicate(((AndFilter)copyFilter).getFilter2())
-              && addOnNextEmptyFilterField(((AndFilter)copyFilter).getFilter2(), newFilterToBeAdded)) == false) {
-                if ((isPredicate(((AndFilter)copyFilter).getFilter1())
-                  && addOnNextEmptyFilterField(((AndFilter)copyFilter).getFilter1(), newFilterToBeAdded)) == false) {
+            if (!(isPredicate(((AndFilter)copyFilter).getFilter2())
+              && addOnNextEmptyFilterField(((AndFilter)copyFilter).getFilter2(), newFilterToBeAdded))) {
+                if (!(isPredicate(((AndFilter)copyFilter).getFilter1())
+                  && addOnNextEmptyFilterField(((AndFilter)copyFilter).getFilter1(), newFilterToBeAdded))) {
                     return setChildFilter((AndFilter)copyFilter, newFilterToBeAdded);
                 } else
                     return true;
@@ -143,10 +143,10 @@ public class SearchFilterUtil implements ISearchFilterUtil {
                 return true;
 
         } else if (copyFilter instanceof OrFilter) {
-            if ((isPredicate(((OrFilter)copyFilter).getFilter2())
-              && addOnNextEmptyFilterField(((OrFilter)copyFilter).getFilter2(), newFilterToBeAdded)) == false) {
-                if ((isPredicate(((OrFilter)copyFilter).getFilter1())
-                  && addOnNextEmptyFilterField(((OrFilter)copyFilter).getFilter1(), newFilterToBeAdded)) == false) {
+            if (!(isPredicate(((OrFilter)copyFilter).getFilter2())
+              && addOnNextEmptyFilterField(((OrFilter)copyFilter).getFilter2(), newFilterToBeAdded))) {
+                if (!(isPredicate(((OrFilter)copyFilter).getFilter1())
+                  && addOnNextEmptyFilterField(((OrFilter)copyFilter).getFilter1(), newFilterToBeAdded))) {
                     return setChildFilter((OrFilter)copyFilter, newFilterToBeAdded);
                 } else
                     return true;
@@ -164,7 +164,7 @@ public class SearchFilterUtil implements ISearchFilterUtil {
         return false;
     }
 
-    public SearchFilter generateSearchFilterFromQueue(Queue<SearchFilter> filterQueue, SearchFilter newSearchFilter) {
+    public SearchFilter generateSearchFilterFromQueue(final Queue<SearchFilter> filterQueue, SearchFilter newSearchFilter) {
 
         SearchFilter currSearchFilter = filterQueue.poll();
         while (currSearchFilter != null) {
@@ -180,7 +180,7 @@ public class SearchFilterUtil implements ISearchFilterUtil {
         return newSearchFilter;
     }
 
-    private boolean setChildFilter(AndFilter andFilter, SearchFilter childFilter) {
+    private boolean setChildFilter(final AndFilter andFilter, final SearchFilter childFilter) {
         if (andFilter.getFilter1() == null) {
             andFilter.setFilter1(childFilter);
             return true;
@@ -192,7 +192,7 @@ public class SearchFilterUtil implements ISearchFilterUtil {
     }
 
 
-    private boolean setChildFilter(OrFilter andFilter, SearchFilter childFilter) {
+    private boolean setChildFilter(final OrFilter andFilter, final SearchFilter childFilter) {
         if (andFilter.getFilter1() == null) {
             andFilter.setFilter1(childFilter);
             return true;
@@ -204,8 +204,8 @@ public class SearchFilterUtil implements ISearchFilterUtil {
     }
 
     @Override
-    public SearchFilter selectFiltersBasedOnFieldName(SearchFilter searchFilter, Set<String> fieldNamesWanted) {
-        Queue<SearchFilter> filterQueue = new LinkedList<>();
+    public SearchFilter selectFiltersBasedOnFieldName(final SearchFilter searchFilter, final Set<String> fieldNamesWanted) {
+        final Queue<SearchFilter> filterQueue = new LinkedList<>();
         populateQueue(searchFilter, fieldNamesWanted, filterQueue);
         return generateSearchFilterFromQueue(filterQueue, null);
 

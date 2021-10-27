@@ -38,19 +38,19 @@ public class MediaDataSourceS3 implements IMediaDataSource {
     protected final S3Client s3Client = S3Client.builder().build();
 
     @Override
-    public InputStream open(String targetName) throws Exception {
+    public InputStream open(final String targetName) throws Exception {
         final int ind = targetName.indexOf(DELIMITER);
-        if (ind < 1 || ind == targetName.length()-1) {
+        if (ind < 1 || ind == targetName.length() - 1) {
             LOGGER.error("file pattern not good, expected (something):(something else), got {}", targetName);
             throw new T9tException(T9tException.BAD_S3_BUCKET_NAME, targetName);
         }
 
         // determine the target
         final String bucket = targetName.substring(0, ind).trim();
-        final String path = targetName.substring(ind+1).trim();
+        final String path = targetName.substring(ind + 1).trim();
 
-        GetObjectRequest getObjectRequest = GetObjectRequest.builder().bucket(bucket).key(bucket).build();
-        ResponseInputStream o = s3Client.getObject(getObjectRequest);
+        final GetObjectRequest getObjectRequest = GetObjectRequest.builder().bucket(bucket).key(bucket).build();
+        final ResponseInputStream o = s3Client.getObject(getObjectRequest);
         return o;
     }
 }

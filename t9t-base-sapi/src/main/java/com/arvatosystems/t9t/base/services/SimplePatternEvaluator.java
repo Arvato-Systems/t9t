@@ -41,18 +41,18 @@ public final class SimplePatternEvaluator {
 
     public static String evaluate(final String pattern, final Map<String, Object> patternReplacements) {
         String result = pattern;
-        for (Map.Entry<String, Object> replacementEntry : patternReplacements.entrySet()) {
-            Object replacementValue = replacementEntry.getValue();
+        for (final Map.Entry<String, Object> replacementEntry : patternReplacements.entrySet()) {
+            final Object replacementValue = replacementEntry.getValue();
             if (replacementValue instanceof Temporal) {
-                Pattern formattedPattern = Pattern.compile(String.format(FORMATTED_PATTERN_FORMAT, replacementEntry.getKey()));
-                Matcher matcher = formattedPattern.matcher(result);
+                final Pattern formattedPattern = Pattern.compile(String.format(FORMATTED_PATTERN_FORMAT, replacementEntry.getKey()));
+                final Matcher matcher = formattedPattern.matcher(result);
 
                 // we need to match ALL matching patterns which each can have different date formats
                 // e.g. ${now|YYYY} and ${now|MM}
                 while (matcher.find()) {
                     String dateFormat = DEFAULT_DATE_FORMAT;
-                    String toBeReplaced = matcher.group(0);
-                    String passedDateFormat = matcher.group(2);
+                    final String toBeReplaced = matcher.group(0);
+                    final String passedDateFormat = matcher.group(2);
 
                     if (passedDateFormat != null && !passedDateFormat.isEmpty()) {
                         dateFormat = passedDateFormat;
@@ -61,7 +61,7 @@ public final class SimplePatternEvaluator {
                     DateTimeFormatter formatter;
                     try {
                         formatter = DateTimeFormatter.ofPattern(dateFormat);
-                    } catch (IllegalArgumentException ex) {
+                    } catch (final IllegalArgumentException ex) {
                         LOGGER.warn("Invalid date/time format \"{}\" for pattern \"{}\". Using default format.", dateFormat, replacementEntry.getKey());
                         formatter = DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT);
                     }
@@ -81,8 +81,8 @@ public final class SimplePatternEvaluator {
                     result = result.replaceAll(Pattern.quote(toBeReplaced), formattedDate);
                   }
             } else {
-                String key = Pattern.quote(String.format(PATTERN_FORMAT, replacementEntry.getKey()));
-                String value = replacementEntry.getValue() == null ? null : replacementEntry.getValue().toString();
+                final String key = Pattern.quote(String.format(PATTERN_FORMAT, replacementEntry.getKey()));
+                final String value = replacementEntry.getValue() == null ? null : replacementEntry.getValue().toString();
                 result = result.replaceAll(key, value);
             }
         }

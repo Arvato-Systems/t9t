@@ -36,13 +36,13 @@ public class SimpleCallOutExecutor implements IForeignRequest {
 
     protected final IRemoteConnection remoteConnection;
 
-    public SimpleCallOutExecutor(String url) {
+    public SimpleCallOutExecutor(final String url) {
         LOGGER.info("Simple call out connector - custom for URL {}", url);
         remoteConnection = new RemoteConnection(url);
     }
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, RequestParameters rp) {
+    public ServiceResponse execute(final RequestContext ctx, final RequestParameters rp) {
         final ServiceResponse resp = remoteConnection.execute("Bearer " + ctx.internalHeaderParameters.getEncodedJwt(), rp);
         if (resp == null) {
             final ServiceResponse resp2 = new ServiceResponse();

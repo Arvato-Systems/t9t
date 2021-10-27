@@ -30,25 +30,25 @@ import com.arvatosystems.t9t.voice.request.VoiceUserSearchRequest;
 public final class T9tVoiceModels implements IViewModelContainer {
 
     private static final CrudViewModel<VoiceApplicationDTO, FullTrackingWithVersion> VOICE_APPLICATION_VIEW_MODEL
-      = new CrudViewModel<VoiceApplicationDTO, FullTrackingWithVersion>(
+      = new CrudViewModel<>(
         VoiceApplicationDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         VoiceApplicationSearchRequest.BClass.INSTANCE,
         VoiceApplicationCrudRequest.BClass.INSTANCE);
     private static final CrudViewModel<VoiceUserDTO, FullTrackingWithVersion> VOICE_USER_VIEW_MODEL
-      = new CrudViewModel<VoiceUserDTO, FullTrackingWithVersion>(
+      = new CrudViewModel<>(
         VoiceUserDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         VoiceUserSearchRequest.BClass.INSTANCE,
         VoiceUserCrudRequest.BClass.INSTANCE);
     private static final CrudViewModel<VoiceResponseDTO, FullTrackingWithVersion> VOICE_RESPONSE_VIEW_MODEL
-      = new CrudViewModel<VoiceResponseDTO, FullTrackingWithVersion>(
+      = new CrudViewModel<>(
         VoiceResponseDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         VoiceResponseSearchRequest.BClass.INSTANCE,
         VoiceResponseCrudRequest.BClass.INSTANCE);
     private static final CrudViewModel<VoiceModuleCfgDTO, FullTrackingWithVersion> VOICE_MODULE_CFG_VIEW_MODEL
-      = new CrudViewModel<VoiceModuleCfgDTO, FullTrackingWithVersion>(
+      = new CrudViewModel<>(
         VoiceModuleCfgDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         VoiceModuleCfgSearchRequest.BClass.INSTANCE,

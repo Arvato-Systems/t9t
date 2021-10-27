@@ -47,24 +47,24 @@ public class CamelOutputProcessor extends AbstractCamelProcessor {
     private final List<ICamelOutMessageTransformer> transformers = Jdp.getAll(ICamelOutMessageTransformer.class);
 
     public void process(Exchange exchange) throws Exception {
-        String camelRoute = exchange.getIn().getHeader("camelRoute", String.class);
+        final String camelRoute = exchange.getIn().getHeader("camelRoute", String.class);
 
         Endpoint endpoint = null;
 
-        Boolean camelRouteIsValidCamelRoute = exchange.getIn().getHeader("camelRouteIsValidCamelRoute", Boolean.class);
+        final Boolean camelRouteIsValidCamelRoute = exchange.getIn().getHeader("camelRouteIsValidCamelRoute", Boolean.class);
 
-        if (camelRouteIsValidCamelRoute != null && camelRouteIsValidCamelRoute == true) {
+        if (camelRouteIsValidCamelRoute != null && camelRouteIsValidCamelRoute) {
             // directly take endpoint from provided camel route string
             endpoint = camelContext.get().getEndpoint(camelRoute);
         } else {
             // camelRoute provided is only an ID to the actual route. Get the corresponding endpoint URI from a separate properties file
-            String camelEndpoint = getEndporintURI(camelRoute);
+            final String camelEndpoint = getEndporintURI(camelRoute);
             // Get the endpoint for the route
              endpoint = camelContext.get().getEndpoint(camelEndpoint);
         }
 
         // Transform the message
-        ICamelOutMessageTransformer transformer = getTransformer(endpoint.getClass());
+        final ICamelOutMessageTransformer transformer = getTransformer(endpoint.getClass());
 
         if (transformer != null) {
             exchange = transformer.transformMessage(exchange, endpoint);
@@ -72,7 +72,7 @@ public class CamelOutputProcessor extends AbstractCamelProcessor {
 
         // Process the message via the endpoints producer
 
-        Producer producer = endpoint.createProducer();
+        final Producer producer = endpoint.createProducer();
 
         producer.start();
 
@@ -82,9 +82,9 @@ public class CamelOutputProcessor extends AbstractCamelProcessor {
 
     }
 
-    private ICamelOutMessageTransformer getTransformer(Class<? extends Endpoint> endpointClass) {
+    private ICamelOutMessageTransformer getTransformer(final Class<? extends Endpoint> endpointClass) {
         if (transformers != null) {
-            for (ICamelOutMessageTransformer transformer : transformers) {
+            for (final ICamelOutMessageTransformer transformer : transformers) {
                 if (transformer.forType().equals(endpointClass)) {
                     return transformer;
                 }

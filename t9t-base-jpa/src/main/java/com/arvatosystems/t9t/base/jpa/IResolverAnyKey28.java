@@ -38,7 +38,7 @@ public interface IResolverAnyKey28<
      * @param e
      * @return the tenantId
      */
-    public String getTenantId(ENTITY e);
+    String getTenantId(ENTITY e);
 
     /**
      * Returns the mapped tenantId for this entity. This is by default identical to the current tenantId, but may be overridden for specific tenants in
@@ -47,22 +47,22 @@ public interface IResolverAnyKey28<
      *
      * @return the tenantId to use for the database
      */
-    public String getSharedTenantId();
+    String getSharedTenantId();
 
     /** Sets the entity's tenantId without the use of reflection, or NOOP if the entity does not contain
      * a tenantId field.
      * @param e - an instance of the Entity
      * @param tenantId - the tenant to be set (if null, the current call's tenant ref wil be used)
      */
-    public void setTenantId(ENTITY e, String tenantId);
+    void setTenantId(ENTITY e, String tenantId);
 
     /**
      * Returns true if the current tenant is allowed to see a record of tenant (tenantRef). The tenant passed must be the final (possibly mapped) tenant.
      */
-    public boolean readAllowed(String tenantId);
+    boolean readAllowed(String tenantId);
 
     /**
      * Returns true if the current tenant is allowed to write a record of tenant (tenantRef). The tenant passed must be the final (possibly mapped) tenant.
      */
-    public boolean writeAllowed(String tenantId);
+    boolean writeAllowed(String tenantId);
 }

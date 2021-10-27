@@ -26,16 +26,16 @@ public class FullTrackingEntityListener extends AbstractEntityListener<FullTrack
 
     @PreUpdate
     @Override
-    public void preUpdate(BonaPersistableTracking<FullTracking> entity) {
-        FullTracking tr = entity.ret$Tracking();
+    public void preUpdate(final BonaPersistableTracking<FullTracking> entity) {
+        final FullTracking tr = entity.ret$Tracking();
         updateTracking(tr, true);
         entity.put$Tracking(tr);
     }
 
     @PrePersist
     @Override
-    public void prePersist(BonaPersistableTracking<FullTracking> entity) {
-        FullTracking tr = new FullTracking();
+    public void prePersist(final BonaPersistableTracking<FullTracking> entity) {
+        final FullTracking tr = new FullTracking();
         createTracking(tr);
         entity.put$Tracking(tr);
     }

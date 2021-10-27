@@ -15,13 +15,15 @@
  */
 package com.arvatosystems.t9t.ssm.be.request;
 
+import org.quartz.Scheduler;
+
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.ssm.request.ClearAllRequest;
+
 import de.jpaw.dp.Inject;
 import de.jpaw.dp.Jdp;
-import org.quartz.Scheduler;
 
 public class ClearAllRequestHandler extends AbstractRequestHandler<ClearAllRequest> {
     @Inject

@@ -33,8 +33,8 @@ public class SetDefaultScreenRequestHandler extends AbstractRequestHandler<SetDe
     protected final IUserEntityResolver resolver = Jdp.getRequired(IUserEntityResolver.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, SetDefaultScreenRequest request) throws Exception {
-        UserEntity userEntity = resolver.find(ctx.userRef);
+    public ServiceResponse execute(final RequestContext ctx, final SetDefaultScreenRequest request) throws Exception {
+        final UserEntity userEntity = resolver.find(ctx.userRef);
         userEntity.setDefaultScreenId(request.getDefaultScreenId());
         LOGGER.info("set default screen as {} to user {}", request.getDefaultScreenId(), userEntity.getObjectRef());
         return ok();

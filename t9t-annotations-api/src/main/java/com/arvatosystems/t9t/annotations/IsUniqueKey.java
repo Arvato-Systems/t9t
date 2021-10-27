@@ -21,14 +21,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation to be placed as a marker in DTOs to mark a class as a unique key (or primary key) class. The value is the DTO to which it is a key. (If that DTO
- * inherits this class, it is a PK, else a secondary key).
- *
- * @author BISC02
- *
+ * Annotation to be placed as a marker in DTOs to mark a class as a unique key (or primary key) class.
+ * The value is the DTO to which it is a key. (If that DTO inherits this class, it is a PK, else a secondary key).
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
 public @interface IsUniqueKey {
-    public String value();
+    String value();
 }

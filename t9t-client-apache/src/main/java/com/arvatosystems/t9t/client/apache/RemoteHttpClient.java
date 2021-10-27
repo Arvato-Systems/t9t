@@ -49,7 +49,7 @@ class RemoteHttpClient {
     protected final AtomicInteger threadCounter = new AtomicInteger();
     protected final CloseableHttpAsyncClient httpClient = HttpAsyncClients.createDefault();
 
-    public RemoteHttpClient(int threadPoolSize) {
+    RemoteHttpClient(final int threadPoolSize) {
         LOGGER.info("Creating new HttpClient for remote connections, using {} threads", threadPoolSize);
 //        final ExecutorService executorService = Executors.newFixedThreadPool(threadPoolSize, (r) -> {
 //            final String threadName = "t9t-http-async-" + threadCounter.incrementAndGet();
@@ -71,7 +71,7 @@ class RemoteHttpClient {
         bac.writeRecord(request);
         bac.close();
 
-        SimpleHttpRequest rq = SimpleHttpRequests.post(uri);
+        final SimpleHttpRequest rq = SimpleHttpRequests.post(uri);
         rq.setBody(bac.getBytes(), ContentType.create(MimeTypes.MIME_TYPE_COMPACT_BONAPARTE));
 //                .version(Version.HTTP_2)
 //                .POST(BodyPublishers.ofByteArray(bac.getBuffer(), 0, bac.getLength()))
@@ -108,12 +108,12 @@ class RemoteHttpClient {
         httpClient.execute(httpRq, new FutureCallback<SimpleHttpResponse>() {
 
             @Override
-            public void completed(SimpleHttpResponse response2) {
+            public void completed(final SimpleHttpResponse response2) {
                 respF.complete(response2object(response2));
             }
 
             @Override
-            public void failed(Exception ex) {
+            public void failed(final Exception ex) {
                 respF.completeExceptionally(ex);
             }
 

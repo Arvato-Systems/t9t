@@ -34,15 +34,15 @@ public class MergeDataSinkPresetRequestHandler extends AbstractRequestHandler<Me
     protected final IDataSinkDTOMapper mapper = Jdp.getRequired(IDataSinkDTOMapper.class);
 
     @Override
-    public MergeDataSinkPresetResponse execute(RequestContext ctx, MergeDataSinkPresetRequest rq) {
+    public MergeDataSinkPresetResponse execute(final RequestContext ctx, final MergeDataSinkPresetRequest rq) {
         final MergeDataSinkPresetResponse resp = new MergeDataSinkPresetResponse();
         resp.setWasMerged(false);
         final DataSinkEntity dataSink = resolver.getEntityDataForKey(rq.getDataSinkRef(), false);
         if (dataSink.getPreTransformerName() != null) {
             final boolean isInput = Boolean.TRUE.equals(dataSink.getIsInput());
-            final IDataSinkDefaultConfigurationProvider configPresetProvider = isInput ?
-              Jdp.getRequired(IInputDataTransformer.class,     dataSink.getPreTransformerName()) :
-              Jdp.getRequired(IPreOutputDataTransformer.class, dataSink.getPreTransformerName());
+            final IDataSinkDefaultConfigurationProvider configPresetProvider = isInput
+              ? Jdp.getRequired(IInputDataTransformer.class,     dataSink.getPreTransformerName())
+              : Jdp.getRequired(IPreOutputDataTransformer.class, dataSink.getPreTransformerName());
             final DataSinkPresets preset = configPresetProvider.getDefaultConfiguration(isInput);
             if (preset != null) {
                 resp.setWasMerged(true);

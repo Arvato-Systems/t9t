@@ -30,7 +30,7 @@ public abstract class AbstractAsyncRemoteConnection implements IRemoteConnection
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAsyncRemoteConnection.class);
 
     @Override
-    public ServiceResponse execute(String authenticationHeader, RequestParameters rp) {
+    public ServiceResponse execute(final String authenticationHeader, final RequestParameters rp) {
         try {
             return executeAsync(authenticationHeader, rp).get();
         } catch (InterruptedException | ExecutionException e) {
@@ -40,7 +40,7 @@ public abstract class AbstractAsyncRemoteConnection implements IRemoteConnection
     }
 
     @Override
-    public ServiceResponse executeAuthenticationRequest(AuthenticationRequest rp) {
+    public ServiceResponse executeAuthenticationRequest(final AuthenticationRequest rp) {
         try {
             return executeAuthenticationAsync(rp).get();
         } catch (InterruptedException | ExecutionException e) {

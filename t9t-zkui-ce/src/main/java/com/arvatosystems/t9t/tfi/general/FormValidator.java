@@ -33,8 +33,8 @@ public class FormValidator {
         Clients.clearWrongValue(ctx.getBindContext().getComponent());
         boolean errorOcured = false;
 
-        Boolean isValidationRequiered = (Boolean) ctx.getBindContext().getValidatorArg("isValidationRequiered");
-        if (((isValidationRequiered != null) && !isValidationRequiered)) {
+        Boolean isValidationRequired = (Boolean) ctx.getBindContext().getValidatorArg("isValidationRequired");
+        if (((isValidationRequired != null) && !isValidationRequired)) {
             return errorOcured;
         }
         String constraintString = null;
@@ -58,12 +58,12 @@ public class FormValidator {
         return errorOcured;
     }
 
-    public boolean isValidationRequiered(ValidationContext ctx) {
-        Boolean isValidationRequiered = (Boolean) ctx.getBindContext().getValidatorArg("isValidationRequiered");
-        return isValidationRequiered == null ? true : isValidationRequiered;
+    public boolean isValidationRequired(ValidationContext ctx) {
+        Boolean isValidationRequired = (Boolean) ctx.getBindContext().getValidatorArg("isValidationRequired");
+        return isValidationRequired == null ? true : isValidationRequired;
     }
 
-    protected boolean isCustomValidationRequiered(ValidationContext ctx) {
+    protected boolean isCustomValidationRequired(ValidationContext ctx) {
         return true;
     }
 
@@ -71,10 +71,10 @@ public class FormValidator {
         return new AbstractValidator() {
             @Override
             public void validate(ValidationContext ctx) {
-                if (!isValidationRequiered(ctx)) {
+                if (!isValidationRequired(ctx)) {
                     return;
                 }
-                if (!isCustomValidationRequiered(ctx)) {
+                if (!isCustomValidationRequired(ctx)) {
                     return;
                 }
                 boolean errorOcured = simpleConstraintValidator(ctx);

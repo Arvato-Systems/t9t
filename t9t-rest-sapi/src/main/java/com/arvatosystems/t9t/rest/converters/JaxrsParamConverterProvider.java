@@ -42,7 +42,7 @@ public class JaxrsParamConverterProvider implements ParamConverterProvider {
     private final ParamConverter<MicroUnits>    microUnitsConverter    = new MicroUnitsConverter();
 
     @Override
-    public <T> ParamConverter<T> getConverter(Class<T> rawType, Type genericType, Annotation[] annotations) {
+    public <T> ParamConverter<T> getConverter(final Class<T> rawType, final Type genericType, final Annotation[] annotations) {
         LOGGER.debug("Requesting converter for class {}", rawType.getCanonicalName());
 
         if (rawType.equals(LocalDate.class))

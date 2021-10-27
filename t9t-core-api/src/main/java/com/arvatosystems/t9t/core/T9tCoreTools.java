@@ -23,7 +23,7 @@ import com.arvatosystems.t9t.bucket.BucketCounterRef;
 public final class T9tCoreTools {
     private T9tCoreTools() { }
 
-    public static String getRequestId(CannedRequestRef ref) {
+    public static String getRequestId(final CannedRequestRef ref) {
         if (ref == null)
             return null;
         if (ref instanceof CannedRequestKey) {
@@ -36,7 +36,7 @@ public final class T9tCoreTools {
     }
 
 
-    public static String getBucketId(BucketCounterRef ref) {
+    public static String getBucketId(final BucketCounterRef ref) {
         if (ref == null)
             return null;
         if (ref instanceof BucketCounterKey) {

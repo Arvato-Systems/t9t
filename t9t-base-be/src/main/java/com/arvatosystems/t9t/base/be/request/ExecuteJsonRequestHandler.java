@@ -36,10 +36,10 @@ public class ExecuteJsonRequestHandler extends AbstractRequestHandler<ExecuteJso
     protected final IExecutor messaging = Jdp.getRequired(IExecutor.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, ExecuteJsonRequest request) {
-        Map<String, Object> map = new JsonParser(request.getRequest(), false).parseObject();
-        BonaPortable obj = MapParser.asBonaPortable(map, ServiceRequest.meta$$requestParameters);
-        RequestParameters rp = (RequestParameters)obj;
+    public ServiceResponse execute(final RequestContext ctx, final ExecuteJsonRequest request) {
+        final Map<String, Object> map = new JsonParser(request.getRequest(), false).parseObject();
+        final BonaPortable obj = MapParser.asBonaPortable(map, ServiceRequest.meta$$requestParameters);
+        final RequestParameters rp = (RequestParameters)obj;
         ctx.statusText = rp.ret$PQON();
         return messaging.executeSynchronous(ctx, rp);
     }

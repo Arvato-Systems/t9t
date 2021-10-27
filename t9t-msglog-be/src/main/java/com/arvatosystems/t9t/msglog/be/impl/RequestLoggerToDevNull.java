@@ -43,7 +43,7 @@ public class RequestLoggerToDevNull implements IMsglogPersistenceAccess {
     }
 
     @Override
-    public void write(List<MessageDTO> entries) {
+    public void write(final List<MessageDTO> entries) {
         count.incrementAndGet();
     }
 

@@ -29,14 +29,14 @@ import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
 public class AbstractMassResolverRequestHandler<S extends MassResolverRequest, E extends BonaPersistableKey<Long> & BonaPersistableTracking<?>> extends AbstractReadOnlyRequestHandler<S> {
     protected final IResolverSurrogateKey<?, ?, E> resolver;
 
-    protected AbstractMassResolverRequestHandler(IResolverSurrogateKey<?, ?, E> resolver) {
+    protected AbstractMassResolverRequestHandler(final IResolverSurrogateKey<?, ?, E> resolver) {
         this.resolver = resolver;
     }
 
     @Override
-    public MassResolverResponse execute(RequestContext ctx, S rq) {
+    public MassResolverResponse execute(final RequestContext ctx, final S rq) {
         final List<Long> refs = resolver.searchKey(rq);
-        MassResolverResponse resp = new MassResolverResponse();
+        final MassResolverResponse resp = new MassResolverResponse();
         resp.setRefs(refs);
         return resp;
     }

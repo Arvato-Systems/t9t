@@ -15,9 +15,9 @@
  */
 package com.arvatosystems.t9t.base.jpa.entityListeners;
 
-import javax.persistence.PrePersist;
-
 import java.time.Instant;
+
+import javax.persistence.PrePersist;
 
 import com.arvatosystems.t9t.base.entities.MessageTracking;
 
@@ -27,15 +27,15 @@ public class MessageTrackingEntityListener extends AbstractEntityListener<Messag
 
     @PrePersist
     @Override
-    public void prePersist(BonaPersistableTracking<MessageTracking> entity) {
-        MessageTracking tr = new MessageTracking();
+    public void prePersist(final BonaPersistableTracking<MessageTracking> entity) {
+        final MessageTracking tr = new MessageTracking();
         tr.setCTimestamp(Instant.now());
         tr.setCTechUserId(getCutUserId());
         entity.put$Tracking(tr);
     }
 
     @Override
-    public void preUpdate(BonaPersistableTracking<MessageTracking> entity) {
+    public void preUpdate(final BonaPersistableTracking<MessageTracking> entity) {
         //  no updates ?
     }
 }

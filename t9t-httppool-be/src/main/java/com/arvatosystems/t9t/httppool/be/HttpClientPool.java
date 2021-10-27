@@ -77,7 +77,7 @@ public class HttpClientPool implements IConnection {
     private final ConnectionReuseStrategy connStrategy = DefaultConnectionReuseStrategy.INSTANCE;
     private final List<BasicHeader> defaultHeaders = new ArrayList<>();
 
-    public HttpClientPool(String host, int port, int maxConnections, IMarshaller marshaller) {
+    public HttpClientPool(final String host, final int port, final int maxConnections, final IMarshaller marshaller) {
         LOGGER.info("Creating a new http connection pool of {} connections for http://{}:{}",
                 maxConnections, host, port);
 
@@ -123,55 +123,57 @@ public class HttpClientPool implements IConnection {
     }
 
     @Override
-    public ServiceResponse executeRequest(RequestParameters rq, String requestUri, String encodedJwt) {
+    public ServiceResponse executeRequest(final RequestParameters rq, final String requestUri, final String encodedJwt) {
         return executeRequest(rq, requestUri, (encodedJwt == null ? null : "Bearer " + encodedJwt), null);
     }
 
     @Override
-    public ServiceResponse executeRequest(RequestParameters rq, String requestUri, String authentication,
-            Map<String, String> extraHttpParams) {
+    public ServiceResponse executeRequest(final RequestParameters rq, final String requestUri, final String authentication,
+            final Map<String, String> extraHttpParams) {
 
         ServiceResponse result = null;
         BasicPoolEntry entry = null;
         boolean reusable = false;
 
         try {
-            Future<BasicPoolEntry> future = pool.lease(this.httpHost, null);
+            final Future<BasicPoolEntry> future = pool.lease(this.httpHost, null);
             entry = future.get();
-            HttpClientConnection conn = entry.getConnection();
+            final HttpClientConnection conn = entry.getConnection();
 
-            BasicHttpEntityEnclosingRequest request = new BasicHttpEntityEnclosingRequest(REQUEST_METHOD, requestUri);
+            final BasicHttpEntityEnclosingRequest request = new BasicHttpEntityEnclosingRequest(REQUEST_METHOD, requestUri);
             LOGGER.debug("Sending object {} to request URI {}", rq.ret$PQON(), request.getRequestLine().getUri());
 
             if (authentication != null)
                 request.setHeader(new BasicHeader("Authorization", authentication));
             if (extraHttpParams != null) {
-                for (Entry<String, String> e : extraHttpParams.entrySet())
+                for (final Entry<String, String> e : extraHttpParams.entrySet()) {
                     request.setHeader(new BasicHeader(e.getKey(), e.getValue()));
+                }
             }
-            for (BasicHeader b: defaultHeaders)
+            for (final BasicHeader b: defaultHeaders) {
                 request.setHeader(b);
+            }
 
-            ByteArray serializedRequest = marshaller.marshal(rq);
+            final ByteArray serializedRequest = marshaller.marshal(rq);
             // request.setHeader(new BasicHeader("Content-Length", "" + serializedRequest.length()));
             request.setEntity(new ByteArrayEntity(serializedRequest.getBytes()));
 
             httpexecutor.preProcess(request, httpProcessor, coreContext);
-            HttpResponse response = httpexecutor.execute(request, conn, coreContext);
+            final HttpResponse response = httpexecutor.execute(request, conn, coreContext);
             httpexecutor.postProcess(response, httpProcessor, coreContext);
             LOGGER.debug("Received response {}", response.getStatusLine());
 
             reusable = connStrategy.keepAlive(response, coreContext);
 
-            InputStream is = response.getEntity().getContent();
-            ByteBuilder serializedResponse = new ByteBuilder();
+            final InputStream is = response.getEntity().getContent();
+            final ByteBuilder serializedResponse = new ByteBuilder();
             serializedResponse.readFromInputStream(is, 0);
             is.close();
 
             result = serializedResponse.length() == 0 ? null
                     : (ServiceResponse) marshaller.unmarshal(serializedResponse);
 
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             LOGGER.error("Request to {} failed due to {}: {}", this.httpHost, ex.getClass().getSimpleName(), ex.getMessage());
             throw new T9tException(T9tException.GENERAL_EXCEPTION, ex.getMessage());
         } finally {

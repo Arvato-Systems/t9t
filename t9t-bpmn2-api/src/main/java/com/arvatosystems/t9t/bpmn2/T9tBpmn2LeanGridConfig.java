@@ -22,7 +22,7 @@ import com.arvatosystems.t9t.base.ILeanGridConfigContainer;
 
 public class T9tBpmn2LeanGridConfig implements ILeanGridConfigContainer {
 
-    private static String [] GRID_CONFIGS = {
+    private static final String[] GRID_CONFIGS = {
         "processDefinitionBpmn2",
         "processInstanceBpmn2",
         "processInstance.eventSubscriptions",

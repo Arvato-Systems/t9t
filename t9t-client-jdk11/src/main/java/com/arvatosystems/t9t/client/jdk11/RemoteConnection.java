@@ -60,8 +60,8 @@ public class RemoteConnection implements IRemoteConnection {
     protected final URI authUri;
     protected final URI rpcUri;
 
-    public RemoteConnection(String regular) {
-    	final String regularPath = regular == null ? cfgRetriever.getDefaultRemoteUrl() : regular;
+    public RemoteConnection(final String regular) {
+        final String regularPath = regular == null ? cfgRetriever.getDefaultRemoteUrl() : regular;
         try {
             rpcUri = new URI(regularPath);
         } catch (final URISyntaxException e) {
@@ -77,7 +77,7 @@ public class RemoteConnection implements IRemoteConnection {
     }
 
     public RemoteConnection() {
-    	this (null);
+        this (null);
     }
 
     @Override
@@ -196,6 +196,8 @@ public class RemoteConnection implements IRemoteConnection {
         final HttpRequest httpRq = buildRequest(uri, authentication, request);
         final BodyHandler<byte[]> serializedRequest = HttpResponse.BodyHandlers.ofByteArray();
         final CompletableFuture<HttpResponse<byte[]>> responseF = httpClient.sendAsync(httpRq, serializedRequest);
-        return responseF.thenApply(response -> { return convertResponse(response, request instanceof AuthenticationRequest); });
+        return responseF.thenApply(response -> {
+            return convertResponse(response, request instanceof AuthenticationRequest);
+        });
     }
 }

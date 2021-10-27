@@ -22,9 +22,6 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation to be placed on injected resolvers / mappers in EntityMappers, to indicate required lazy initialization.
- *
- * @author BISC02
- *
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD })

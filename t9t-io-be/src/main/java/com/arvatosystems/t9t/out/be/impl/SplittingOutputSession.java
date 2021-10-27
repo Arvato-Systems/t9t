@@ -31,13 +31,13 @@ import de.jpaw.dp.Jdp;
  * by invoking a specific constructor with parameter: maximumNumberOfRecordsPerFile.
  */
 public class SplittingOutputSession implements IOutputSession {
-    final int maximumNumberOfRecordsPerFile;   // 0 = unlimited
-    int currentRecordCountInFile = 0;
-    int part = 0;
-    IOutputSession os = Jdp.getRequired(IOutputSession.class);  // current instance of OutputSession (one is valid at any point in time).
-    OutputSessionParameters params;
+    private final int maximumNumberOfRecordsPerFile;   // 0 = unlimited
+    private int currentRecordCountInFile = 0;
+    private int part = 0;
+    private IOutputSession os = Jdp.getRequired(IOutputSession.class);  // current instance of OutputSession (one is valid at any point in time).
+    private OutputSessionParameters params;
 
-    public SplittingOutputSession(int maximumNumberOfRecordsPerFile) {
+    public SplittingOutputSession(final int maximumNumberOfRecordsPerFile) {
         this.maximumNumberOfRecordsPerFile = maximumNumberOfRecordsPerFile;
     }
 
@@ -56,7 +56,7 @@ public class SplittingOutputSession implements IOutputSession {
             // close the current one first
             try {
                 os.close();
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 // ignore (for now)
             }
             // create a new instance of an IOutputSession
@@ -69,15 +69,15 @@ public class SplittingOutputSession implements IOutputSession {
     }
 
     @Override
-    public Long open(OutputSessionParameters params) {
+    public Long open(final OutputSessionParameters myParams) {
         // make sure there is a modifiable map of parameters
-        if (params.getAdditionalParameters() == null) {
-            params.setAdditionalParameters(new HashMap<>());
+        if (myParams.getAdditionalParameters() == null) {
+            myParams.setAdditionalParameters(new HashMap<>());
         } else {
             // defensive copy, modifiable
-            params.setAdditionalParameters(new HashMap<>(params.getAdditionalParameters()));
+            myParams.setAdditionalParameters(new HashMap<>(myParams.getAdditionalParameters()));
         }
-        this.params = params;
+        this.params = myParams;
         return switchFile();  // caveat: this is no longer a unique sinkRef
     }
 
@@ -95,19 +95,19 @@ public class SplittingOutputSession implements IOutputSession {
     }
 
     @Override
-    public void store(BonaPortable record) {
+    public void store(final BonaPortable record) {
         switchFileIfRowCountReached();
         os.store(record);
     }
 
     @Override
-    public void store(Long recordRef, BonaPortable record) {
+    public void store(final Long recordRef, final BonaPortable record) {
         switchFileIfRowCountReached();
         os.store(recordRef, record);
     }
 
     @Override
-    public void store(Long recordRef, String partitionKey, String recordKey, BonaPortable record) {
+    public void store(final Long recordRef, final String partitionKey, final String recordKey, final BonaPortable record) {
         switchFileIfRowCountReached();
         os.store(recordRef, partitionKey, recordKey, record);
     }
@@ -133,12 +133,12 @@ public class SplittingOutputSession implements IOutputSession {
     }
 
     @Override
-    public boolean getUnwrapTracking(Boolean ospSetting) {
+    public boolean getUnwrapTracking(final Boolean ospSetting) {
         return os.getUnwrapTracking(ospSetting);
     }
 
     @Override
-    public Object getZ(String key) {
+    public Object getZ(final String key) {
         return os.getZ(key);
     }
 }

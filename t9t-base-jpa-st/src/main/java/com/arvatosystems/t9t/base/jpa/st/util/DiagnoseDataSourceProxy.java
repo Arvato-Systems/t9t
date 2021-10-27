@@ -39,9 +39,10 @@ import org.slf4j.LoggerFactory;
  *
  * Only for analysis and testing purpose. Using this proxy in production setup is not recommended!
  */
-public class DiagnoseDataSourceProxy {
-
+public final class DiagnoseDataSourceProxy {
     private static final Logger LOGGER = LoggerFactory.getLogger(DiagnoseDataSourceProxy.class);
+
+    private DiagnoseDataSourceProxy() { }
 
     public static DataSource createProxy(DataSource target) {
         if (LOGGER.isTraceEnabled()) {
@@ -52,7 +53,7 @@ public class DiagnoseDataSourceProxy {
         }
     }
 
-    private static class DataSourceInvocationHandler implements InvocationHandler {
+    private static final class DataSourceInvocationHandler implements InvocationHandler {
 
         private final DataSource target;
 
@@ -110,7 +111,7 @@ public class DiagnoseDataSourceProxy {
         private long threadId;
         private String threadName;
 
-        public InvocationContext() {
+        InvocationContext() {
             final Thread thread = Thread.currentThread();
             this.timestamp = new Date();
             this.stackTrace = thread.getStackTrace();
@@ -136,7 +137,7 @@ public class DiagnoseDataSourceProxy {
         }
     }
 
-    private static class ConnectionInvocationHandler implements InvocationHandler {
+    private static final class ConnectionInvocationHandler implements InvocationHandler {
 
         private final Connection target;
         private final DataSourceInvocationHandler dataSourceHandler;

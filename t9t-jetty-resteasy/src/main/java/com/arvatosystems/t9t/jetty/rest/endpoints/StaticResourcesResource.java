@@ -15,11 +15,8 @@
  */
 package com.arvatosystems.t9t.jetty.rest.endpoints;
 
-import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
-import de.jpaw.dp.Singleton;
-import io.swagger.v3.oas.annotations.Operation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.InputStream;
+import java.util.Objects;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -27,15 +24,24 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import java.io.InputStream;
-import java.util.Objects;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
+
+import de.jpaw.dp.Singleton;
+import io.swagger.v3.oas.annotations.Operation;
 
 @Path("")
 @Singleton
 public class StaticResourcesResource implements IT9tRestEndpoint {
     private static final Logger LOGGER = LoggerFactory.getLogger(StaticResourcesResource.class);
 
-    public static boolean enableSwagger = false;
+    private static boolean enableSwagger = false;
+
+    public static void setEnableSwagger(final boolean enableSwagger) {
+        StaticResourcesResource.enableSwagger = enableSwagger;
+    }
 
     /**
      * Serving webjar dependencies
@@ -48,8 +54,8 @@ public class StaticResourcesResource implements IT9tRestEndpoint {
             return Response.status(Status.FORBIDDEN).entity("Swagger not enabled").build();
         }
         LOGGER.debug("handling webjars: {}", path);
-        String absolutePath = "/META-INF/resources/" + path;
-        InputStream resource = StaticResourcesResource.class.getResourceAsStream(absolutePath);
+        final String absolutePath = "/META-INF/resources/" + path;
+        final InputStream resource = StaticResourcesResource.class.getResourceAsStream(absolutePath);
         return Objects.isNull(resource)
                 ? Response.status(Response.Status.NOT_FOUND).build()
                 : Response.ok().entity(resource).build();
@@ -71,8 +77,8 @@ public class StaticResourcesResource implements IT9tRestEndpoint {
             return Response.status(Status.FORBIDDEN).entity("Swagger not enabled").build();
         }
         LOGGER.debug("handling assets: {}", path);
-        String absolutePath = "/WEB-INF/" + path;
-        InputStream resource = StaticResourcesResource.class.getResourceAsStream(absolutePath);
+        final String absolutePath = "/WEB-INF/" + path;
+        final InputStream resource = StaticResourcesResource.class.getResourceAsStream(absolutePath);
         return null == resource
                 ? Response.status(Response.Status.NOT_FOUND).build()
                 : Response.ok().entity(resource).build();
@@ -88,8 +94,8 @@ public class StaticResourcesResource implements IT9tRestEndpoint {
         if (!enableSwagger) {
             return Response.status(Status.FORBIDDEN).entity("Swagger not enabled").build();
         }
-        String absolutePath = "/" + path;
-        InputStream resource = StaticResourcesResource.class.getResourceAsStream(absolutePath);
+        final String absolutePath = "/" + path;
+        final InputStream resource = StaticResourcesResource.class.getResourceAsStream(absolutePath);
         return null == resource
                 ? Response.status(Response.Status.NOT_FOUND).build()
                 : Response.ok().entity(resource).build();

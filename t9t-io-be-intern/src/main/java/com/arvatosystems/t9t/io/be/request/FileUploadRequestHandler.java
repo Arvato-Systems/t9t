@@ -41,9 +41,9 @@ public class FileUploadRequestHandler extends AbstractRequestHandler<FileUploadR
     private static final Logger LOGGER = LoggerFactory.getLogger(FileUploadRequestHandler.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, FileUploadRequest params) throws Exception {
+    public ServiceResponse execute(final RequestContext ctx, final FileUploadRequest params) throws Exception {
         Long sinkRef;
-        MediaXType communicationFormatType = params.getParameters().getCommunicationFormatType();
+        final MediaXType communicationFormatType = params.getParameters().getCommunicationFormatType();
 
         if ((communicationFormatType == null) || (communicationFormatType.getBaseEnum() == MediaType.UNDEFINED)) {
             throw new T9tException(T9tIOException.OUTPUT_COMM_CHANNEL_REQUIRED);
@@ -52,14 +52,14 @@ public class FileUploadRequestHandler extends AbstractRequestHandler<FileUploadR
         try (IOutputSession os = Jdp.getRequired(IOutputSession.class)) {
             // open the session (creates the file, if using files)
             sinkRef = os.open(params.getParameters());
-            OutputStream oStream = os.getOutputStream();
+            final OutputStream oStream = os.getOutputStream();
             oStream.write(params.getData().getBytes());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             // In case of any error returnCode <> 0.
             LOGGER.error("Exception occured during file storage (OutputSession) - Error Message {} ", e);
             throw new T9tException(T9tException.GENERAL_EXCEPTION, e.getMessage());
         }
-        SinkCreatedResponse response = new SinkCreatedResponse();
+        final SinkCreatedResponse response = new SinkCreatedResponse();
         response.setReturnCode(0);
         response.setSinkRef(sinkRef);
         return response;

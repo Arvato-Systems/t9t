@@ -28,16 +28,14 @@ import com.arvatosystems.t9t.io.request.CsvConfigurationCrudRequest;
 
 import de.jpaw.dp.Jdp;
 
-public class CsvConfigurationCrudRequestHandler extends AbstractCrudSurrogateKey42RequestHandler<CsvConfigurationRef, CsvConfigurationDTO, FullTrackingWithVersion, CsvConfigurationCrudRequest, CsvConfigurationEntity> {
+public class CsvConfigurationCrudRequestHandler extends AbstractCrudSurrogateKey42RequestHandler<CsvConfigurationRef, CsvConfigurationDTO,
+  FullTrackingWithVersion, CsvConfigurationCrudRequest, CsvConfigurationEntity> {
 
-//  @Inject
     private final ICsvConfigurationEntityResolver sinksResolver = Jdp.getRequired(ICsvConfigurationEntityResolver.class);
-
-//  @Inject
     private final ICsvConfigurationDTOMapper sinksMapper = Jdp.getRequired(ICsvConfigurationDTOMapper.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, CsvConfigurationCrudRequest crudRequest) throws Exception {
+    public ServiceResponse execute(final RequestContext ctx, final CsvConfigurationCrudRequest crudRequest) throws Exception {
         return execute(ctx, sinksMapper, sinksResolver, crudRequest);
     }
 }

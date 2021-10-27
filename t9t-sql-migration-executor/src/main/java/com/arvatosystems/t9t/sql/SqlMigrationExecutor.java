@@ -36,15 +36,17 @@ import com.martiansoftware.jsap.Parameter;
 import com.martiansoftware.jsap.SimpleJSAP;
 
 import de.jpaw.dp.Startup;
+import de.jpaw.dp.StartupOnly;
 
 /** Runs an SQL migration, if requested by command line parameter (or system property). */
 @Startup(67)
-public class SqlMigrationExecutor {
+public class SqlMigrationExecutor implements StartupOnly {
     private static final Logger LOGGER = LoggerFactory.getLogger(SqlMigrationExecutor.class);
 
-    public static Flyway configureFlywayForDatabase(String locations, String migrationTable, RelationalDatabaseConfiguration dbConfiguration) {
+    public static Flyway configureFlywayForDatabase(final String locations, final String migrationTable,
+      final RelationalDatabaseConfiguration dbConfiguration) {
 
-        FluentConfiguration config = Flyway.configure();
+        final FluentConfiguration config = Flyway.configure();
         config.locations(locations);
         config.cleanDisabled(true);
         config.cleanOnValidationError(false);
@@ -56,7 +58,7 @@ public class SqlMigrationExecutor {
         config.baselineOnMigrate(true);
         config.dataSource(dbConfiguration.getJdbcConnectString(), dbConfiguration.getUsername(), dbConfiguration.getPassword());
 
-        Flyway flyway = new Flyway(config);
+        final Flyway flyway = new Flyway(config);
         return flyway;
     }
 
@@ -65,11 +67,11 @@ public class SqlMigrationExecutor {
         final RelationalDatabaseConfiguration dbConfiguration = serverConfiguration.getDatabaseConfiguration();
         final List<String> migrations = dbConfiguration.getMigrations();
 
-        for (String migration : migrations) {
-            String[] locationsAndMigrationTable = migration.split("=");
+        for (final String migration : migrations) {
+            final String[] locationsAndMigrationTable = migration.split("=");
 
             // migrate
-            Flyway flyway = configureFlywayForDatabase(locationsAndMigrationTable[0], locationsAndMigrationTable[1], dbConfiguration);
+            final Flyway flyway = configureFlywayForDatabase(locationsAndMigrationTable[0], locationsAndMigrationTable[1], dbConfiguration);
 
             LOGGER.info("Trying to migrate database based on following information: " + migration);
             flyway.migrate();
@@ -77,12 +79,13 @@ public class SqlMigrationExecutor {
     }
 
     // startup entry point - invoked during Jdp initialization - the system is not yet up
-    public static void onStartup() {
+    @Override
+    public void onStartup() {
         if (System.getProperty(T9tConstants.START_MIGRATION_PROPERTY) != null) {
             LOGGER.info("Database migration requested - staring flyway");
             try {
                 migrate();
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 LOGGER.error("Flyway migration failed - FATAL, HARD STOP!", e);
                 // Die! In case of such a hard error, do not continue
                 System.exit(1);
@@ -94,14 +97,14 @@ public class SqlMigrationExecutor {
      * Main entry for executable jar
      * @param args
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         try {
             getServerConfigurationFromCommandLine(args);
             SqlMigrationExecutor.migrate();
-        } catch (JSAPException e) {
+        } catch (final JSAPException e) {
             LOGGER.error("Could not parse command line - aborting");
             System.exit(1);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LOGGER.error("SQL migration failed.", e);
             System.exit(1);
         }
@@ -111,15 +114,15 @@ public class SqlMigrationExecutor {
      * Retrieves T9tServerConfiguration from command line.
      * @param args Same to vertex server argument the T9tServerConfiguration file path needs to be provided with the --cfg option.
      */
-    public static void getServerConfigurationFromCommandLine(String[] args) throws JSAPException {
-        ArrayList<Parameter> options = new ArrayList<Parameter>();
+    public static void getServerConfigurationFromCommandLine(final String[] args) throws JSAPException {
+        final ArrayList<Parameter> options = new ArrayList<>();
         options.add(new FlaggedOption("cfg",      JSAP.STRING_PARSER,  null,                     JSAP.NOT_REQUIRED, 'c', "cfg",      "configuration filename"));
 
-        Parameter[] optionsArray = new Parameter[options.size()];
+        final Parameter[] optionsArray = new Parameter[options.size()];
         System.arraycopy(options.toArray(), 0, optionsArray, 0, optionsArray.length);
 
-        SimpleJSAP commandLineOptions = new SimpleJSAP("t9t DB migrator", "Runs database schema upgrades", optionsArray);
-        JSAPResult cmd = commandLineOptions.parse(args);
+        final SimpleJSAP commandLineOptions = new SimpleJSAP("t9t DB migrator", "Runs database schema upgrades", optionsArray);
+        final JSAPResult cmd = commandLineOptions.parse(args);
         if (commandLineOptions.messagePrinted()) {
             System.err.println("(use option --help for usage)");
             System.exit(1);

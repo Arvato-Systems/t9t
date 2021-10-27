@@ -34,7 +34,7 @@ import de.jpaw.util.ByteArray;
 public class BinaryStreamFormatConverter extends AbstractInputFormatConverter {
 
     @Override
-    public void process(InputStream is) {
+    public void process(final InputStream is) {
         try {
             final String sourceURI = inputSession.getSourceURI();
             final MediaXType formatType = inputSession.getDataSinkDTO().getCommFormatType();
@@ -42,7 +42,7 @@ public class BinaryStreamFormatConverter extends AbstractInputFormatConverter {
             final ByteArray inputData = ByteArray.fromInputStream(is, 11500000);
 
             inputSession.process(new BinaryImportDTO(sourceURI, formatType, inputData));
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new RuntimeException("Error reading binary input data", e);
         }
     }

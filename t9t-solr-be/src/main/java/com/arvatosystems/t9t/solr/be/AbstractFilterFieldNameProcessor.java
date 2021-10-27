@@ -20,17 +20,16 @@ import java.util.Map;
 public abstract class AbstractFilterFieldNameProcessor implements IFilterFieldNameProcessor {
 
     @Override
-    public String processFieldName(String fieldName) {
-        Map<String,String> fieldNames = getFieldNameMappings();
-        String destValue = fieldNames.get(fieldName);
+    public String processFieldName(final String fieldName) {
+        final Map<String, String> fieldNames = getFieldNameMappings();
+        final String destValue = fieldNames.get(fieldName);
         if (destValue != null) {
             return destValue;
-        }
-        else {
+        } else {
             return fieldName;
         }
     }
 
 
-    public abstract Map<String,String> getFieldNameMappings();
+    public abstract Map<String, String> getFieldNameMappings();
 }

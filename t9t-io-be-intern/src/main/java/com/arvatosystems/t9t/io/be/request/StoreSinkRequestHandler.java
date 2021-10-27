@@ -28,11 +28,11 @@ public class StoreSinkRequestHandler extends AbstractRequestHandler<StoreSinkReq
     protected final IOutPersistenceAccess dpl = Jdp.getRequired(IOutPersistenceAccess.class);
 
     @Override
-    public SinkCreatedResponse execute(RequestContext ctx, StoreSinkRequest rq) {
-        Long sinkRef = dpl.getNewSinkKey();
+    public SinkCreatedResponse execute(final RequestContext ctx, final StoreSinkRequest rq) {
+        final Long sinkRef = dpl.getNewSinkKey();
         rq.getDataSink().setObjectRef(sinkRef);
         dpl.storeNewSink(rq.getDataSink());
-        SinkCreatedResponse sinkCreatedResponse = new SinkCreatedResponse();
+        final SinkCreatedResponse sinkCreatedResponse = new SinkCreatedResponse();
         sinkCreatedResponse.setSinkRef(sinkRef);
         sinkCreatedResponse.setReturnCode(0);
         return sinkCreatedResponse;

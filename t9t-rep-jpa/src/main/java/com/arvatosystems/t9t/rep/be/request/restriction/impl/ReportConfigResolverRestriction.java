@@ -18,6 +18,7 @@ package com.arvatosystems.t9t.rep.be.request.restriction.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.arvatosystems.t9t.authz.api.QueryPermissionsRequest;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.auth.PermissionEntry;
 import com.arvatosystems.t9t.base.auth.PermissionType;
@@ -52,15 +53,15 @@ public class ReportConfigResolverRestriction implements IReportConfigResolverRes
      * @throws T9tException.RESTRICTED_ACCESS to specify that the user is trying to access restricted report
      */
     @Override
-    public Long apply(Long ref) {
-        ReportConfigEntity reportConfigEntity = resolver.findActive(ref, true);
+    public Long apply(final Long ref) {
+        final ReportConfigEntity reportConfigEntity = resolver.findActive(ref, true);
         checkUserAccessOk(reportConfigEntity.getReportConfigId());
         return ref;
     }
 
     //We are having objectRef, thus restriction will be handled by apply(Long ref)
     @Override
-    public ReportConfigRef apply(ReportConfigRef ref) {
+    public ReportConfigRef apply(final ReportConfigRef ref) {
         throw new UnsupportedOperationException();
     }
 
@@ -71,14 +72,14 @@ public class ReportConfigResolverRestriction implements IReportConfigResolverRes
      * @throws T9tException.RESTRICTED_ACCESS to specify that the user is trying to access restricted report
      */
     @Override
-    public ReportConfigEntity apply(ReportConfigEntity entity) {
+    public ReportConfigEntity apply(final ReportConfigEntity entity) {
         checkUserAccessOk(entity.getReportConfigId());
         return entity;
     }
 
-    private void checkUserAccessOk(String id) {
-        RequestContext ctx = Jdp.getRequired(RequestContext.class);
-        Permissionset perms = authorizer.getPermissions(ctx.internalHeaderParameters.getJwtInfo(), PermissionType.REPORTING, id);
+    private void checkUserAccessOk(final String id) {
+        final RequestContext ctx = Jdp.getRequired(RequestContext.class);
+        final Permissionset perms = authorizer.getPermissions(ctx.internalHeaderParameters.getJwtInfo(), PermissionType.REPORTING, id);
         if (!perms.contains(OperationType.EXECUTE)) {
             throw new T9tException(T9tException.RESTRICTED_ACCESS, id);
         }
@@ -88,10 +89,10 @@ public class ReportConfigResolverRestriction implements IReportConfigResolverRes
      * resolve all of the permissionId that's allowed for the user, using {@link QueryPermissionsRequest}
      */
     @Override
-    public List<String> getPermissionIdList(RequestContext ctx) {
+    public List<String> getPermissionIdList(final RequestContext ctx) {
         final List<PermissionEntry> permissions = authorizer.getAllPermissions(ctx.internalHeaderParameters.getJwtInfo(), PermissionType.REPORTING);
         final List<String> reportIdPermissions = new ArrayList<>(permissions.size());
-        for (PermissionEntry perm: permissions) {
+        for (final PermissionEntry perm: permissions) {
             if (perm.getResourceId().startsWith("R.") && perm.getPermissions().contains(OperationType.EXECUTE))
                 reportIdPermissions.add(perm.getResourceId().substring(2));
         }

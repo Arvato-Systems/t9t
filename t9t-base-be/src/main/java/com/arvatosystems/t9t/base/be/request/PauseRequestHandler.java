@@ -16,6 +16,7 @@
 package com.arvatosystems.t9t.base.be.request;
 
 import java.time.Instant;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,19 +34,19 @@ public class PauseRequestHandler extends AbstractReadOnlyRequestHandler<PauseReq
     private static final Logger LOGGER = LoggerFactory.getLogger(PauseRequestHandler.class);
 
     @Override
-    public PauseResponse execute(RequestContext ctx, PauseRequest pingRequest) {
+    public PauseResponse execute(final RequestContext ctx, final PauseRequest pingRequest) {
 
-        PauseResponse response = new PauseResponse();
+        final PauseResponse response = new PauseResponse();
         response.setReturnCode(0);
         response.setPingId(pingRequest.getPingId());
         response.setWhenExecuted(Instant.now());
 
-        Integer delayInMillis = pingRequest.getDelayInMillis();
+        final Integer delayInMillis = pingRequest.getDelayInMillis();
         if ((delayInMillis != null) && (delayInMillis.intValue() > 0)) {
             try {
                 ctx.statusText = "Sleep for " + delayInMillis.toString() + " ms";
                 Thread.sleep(delayInMillis);
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException e) {
                 LOGGER.warn("A PauseRequest with delay {} milliseconds has been interrupted and sent the response earlier.", delayInMillis);
                 throw new T9tException(T9tException.THREAD_INTERRUPTED);
             }

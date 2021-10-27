@@ -81,7 +81,7 @@ public class LoginApiKeyResource implements IT9tRestEndpoint {
 
     protected final IT9tRestProcessor restProcessor = Jdp.getRequired(IT9tRestProcessor.class);
 
-    public static SessionParameters convertSessionParameters(com.arvatosystems.t9t.xml.auth.SessionParameters spIn) {
+    public static SessionParameters convertSessionParameters(final com.arvatosystems.t9t.xml.auth.SessionParameters spIn) {
         if (spIn == null) {
             return null;
         }
@@ -95,7 +95,8 @@ public class LoginApiKeyResource implements IT9tRestEndpoint {
 
     @Operation(
         summary = "Create a session / JWT token by API key",
-        description = "The request creates a session at the host and returns a JWT which can be used as authentication token for subsequent requests. Authentication is by API key.",
+        description = "The request creates a session at the host and returns a JWT which can be used as authentication token for subsequent requests."
+          + " Authentication is by API key.",
         responses = {
             @ApiResponse(description = "Authentication successful.", content = @Content(schema = @Schema(implementation = AuthenticationResult.class)))
         }
@@ -106,7 +107,7 @@ public class LoginApiKeyResource implements IT9tRestEndpoint {
     public void login(@Context final HttpHeaders httpHeaders, @Suspended final AsyncResponse resp, final AuthByApiKey authByApiKey) {
         if (authByApiKey == null) {
             LOGGER.error("Login attempted at /apikey without any data...");
-            final String acceptHeader = httpHeaders.getHeaderString(HttpHeaders.ACCEPT);  // must evaluate it now, because httpHeaders is a proxy and no longer valid in the other thread
+            final String acceptHeader = determineResponseType(httpHeaders);
             restProcessor.returnAsyncResult(acceptHeader, resp, Response.Status.BAD_REQUEST, "Null parameter");
             return;
         }
@@ -115,7 +116,8 @@ public class LoginApiKeyResource implements IT9tRestEndpoint {
 
     @Operation(
         summary = "Create a session / JWT token by API key",
-        description = "The request creates a session at the host and returns a JWT which can be used as authentication token for subsequent requests. Authentication is by API key.",
+        description = "The request creates a session at the host and returns a JWT which can be used as authentication token for subsequent requests."
+          + " Authentication is by API key.",
         responses = {
             @ApiResponse(description = "Authentication successful.", content = @Content(schema = @Schema(implementation = AuthenticationResult.class)))
         }
@@ -132,7 +134,7 @@ public class LoginApiKeyResource implements IT9tRestEndpoint {
      * Caches the ApiKey and connects it to a JWT.
      * This cache must expire significantly faster than the JWT duration (max 1/2 of it).
      */
-    private static final Cache<UUID, String> apiKeyToJwtCache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.HOURS).build();
+    private static final Cache<UUID, String> API_KEY_TO_JWT_CACHE = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.HOURS).build();
 
     public void loginSub(final HttpHeaders httpHeaders, final AsyncResponse resp, final UUID apiKey, final SessionParameters sp) {
         LOGGER.debug("Login attempted at /apikey ...");
@@ -141,9 +143,9 @@ public class LoginApiKeyResource implements IT9tRestEndpoint {
             LOGGER.error("NULL apiKey - exception");
             throw new T9tException(T9tException.ACCESS_DENIED);  // can occur in case of malformatted API keys
         }
-        String jwt = apiKeyToJwtCache.getIfPresent(apiKey);
+        final String jwt = API_KEY_TO_JWT_CACHE.getIfPresent(apiKey);
         if (jwt != null) {
-            final String acceptHeader = httpHeaders.getHeaderString(HttpHeaders.ACCEPT);  // must evaluate it now, because httpHeaders is a proxy and no longer valid in the other thread
+            final String acceptHeader = determineResponseType(httpHeaders);
             LOGGER.debug("JWT already cached for ApiKey.");
             final AuthenticationResult result = new AuthenticationResult();
             result.setJwt(jwt);
@@ -154,6 +156,6 @@ public class LoginApiKeyResource implements IT9tRestEndpoint {
         authenticationParamsRequest.setAuthenticationParameters(new ApiKeyAuthentication(apiKey));
         authenticationParamsRequest.setSessionParameters(sp);
         // execute ServiceRequest
-        restProcessor.performAsyncAuthBackendRequest(httpHeaders, resp, authenticationParamsRequest, s -> apiKeyToJwtCache.put(apiKey, s));
+        restProcessor.performAsyncAuthBackendRequest(httpHeaders, resp, authenticationParamsRequest, s -> API_KEY_TO_JWT_CACHE.put(apiKey, s));
     }
 }

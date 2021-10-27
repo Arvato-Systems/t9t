@@ -39,13 +39,13 @@ public class RepPersistenceAccess implements IRepPersistenceAccess {
     private final IReportConfigResolverRestriction reportConfigResolverRestriction = Jdp.getRequired(IReportConfigResolverRestriction.class);
 
     @Override
-    public ReportConfigDTO getConfigDTO(ReportConfigRef configRef) throws Exception {
+    public ReportConfigDTO getConfigDTO(final ReportConfigRef configRef) throws Exception {
         return reportConfigMapper.mapToDto(
                 reportConfigResolverRestriction.apply(reportConfigResolver.getEntityData(configRef, true)));
     }
 
     @Override
-    public ReportParamsDTO getParamsDTO(ReportParamsRef paramsRef) throws Exception {
+    public ReportParamsDTO getParamsDTO(final ReportParamsRef paramsRef) throws Exception {
         return reportParamsMapper.mapToDto(reportParamsResolver.getEntityData(paramsRef, true));
     }
 

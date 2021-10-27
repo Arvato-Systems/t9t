@@ -53,11 +53,11 @@ public class RetrieveComponentInfoRequestHandler extends AbstractRequestHandler<
     }
 
     @Override
-    public RetrieveComponentInfoResponse execute(RequestContext ctx, RetrieveComponentInfoRequest request) {
+    public RetrieveComponentInfoResponse execute(final RequestContext ctx, final RetrieveComponentInfoRequest request) {
         return new RetrieveComponentInfoResponse(0, componentInfos);
     }
 
-    private ComponentInfoDTO readComponentInfo(String pomPropertiesRes) {
+    private ComponentInfoDTO readComponentInfo(final String pomPropertiesRes) {
         try (InputStream in = RetrieveComponentInfoRequestHandler.class.getResourceAsStream("/" + pomPropertiesRes)) {
             if (in != null) {
                 final Properties p = new Properties();
@@ -72,7 +72,7 @@ public class RetrieveComponentInfoRequestHandler extends AbstractRequestHandler<
             } else {
                 throw new IOException("Resource not found: " + pomPropertiesRes);
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LOGGER.warn("Failed to read component info from pom.properties: " + pomPropertiesRes, e);
             return null;
         }

@@ -54,10 +54,10 @@ public abstract class FoldableFormatGenerator<E extends Exception> extends Abstr
             if (foldableParams.getRelevantEnumType() != null) {
                 switch (foldableParams.getRelevantEnumType()) {
                 case NAME:
-                    baseComposer = new EnumAsTokenComposerFilter<E>(baseComposer);
+                    baseComposer = new EnumAsTokenComposerFilter<>(baseComposer);
                     break;
                 case DESCRIPTION:
-                    baseComposer = new EnumTranslatorComposerFilter<E>(baseComposer, foldableParams.getEnumTranslator());
+                    baseComposer = new EnumTranslatorComposerFilter<>(baseComposer, foldableParams.getEnumTranslator());
                     break;
                 default:
                       // intentionally no activity
@@ -68,7 +68,7 @@ public abstract class FoldableFormatGenerator<E extends Exception> extends Abstr
                 baseComposer = new VariantComposerFilter<>(baseComposer);
             }
         }
-        foldingComposer = map == null ? baseComposer : new FoldingComposer<E>(baseComposer, map, FoldingStrategy.TRY_SUPERCLASS);
+        foldingComposer = map == null ? baseComposer : new FoldingComposer<>(baseComposer, map, FoldingStrategy.TRY_SUPERCLASS);
     }
 
     protected void writeTitles() {

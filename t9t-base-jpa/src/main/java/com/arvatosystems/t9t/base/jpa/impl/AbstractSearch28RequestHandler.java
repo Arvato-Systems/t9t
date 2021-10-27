@@ -53,10 +53,10 @@ public abstract class AbstractSearch28RequestHandler<
                     return result;  // we are done
                 }
             } else {
-                int actualResults = result.getDataList().size();
+                final int actualResults = result.getDataList().size();
                 if (request.getOffset() > 0 && actualResults == 0) {
                     // offset could have been exceeded number of results, must search!
-                    ; // fall through, have to query again
+                     // fall through, have to query again
                 }
                 if (request.getLimit() == 0 || actualResults < request.getLimit()) {
                     // all results are known due to query with untruncated result set

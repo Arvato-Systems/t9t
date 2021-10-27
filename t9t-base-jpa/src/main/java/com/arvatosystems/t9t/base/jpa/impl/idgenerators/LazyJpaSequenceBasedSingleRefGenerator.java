@@ -38,7 +38,7 @@ class LazyJpaSequenceBasedSingleRefGenerator {
     // @Inject
     private final EntityManagerFactory emf = Jdp.getRequired(EntityManagerFactory.class);
 
-    public LazyJpaSequenceBasedSingleRefGenerator(int index, DatabaseBrandType dialect, int cacheSize) {
+    LazyJpaSequenceBasedSingleRefGenerator(final int index, final DatabaseBrandType dialect, final int cacheSize) {
 
         lastProvidedValue = -1L;
         remainingCachedIds = 0;
@@ -71,10 +71,10 @@ class LazyJpaSequenceBasedSingleRefGenerator {
             // use the current thread's EntityManager to request a new value
             // from the database, because then we do not need to synchronize
             // different threads requesting different values at the same time.
-            EntityManager em = emf.createEntityManager();
+            final EntityManager em = emf.createEntityManager();
             em.getTransaction().begin();
-            Query q = em.createNativeQuery(sqlCommandForNextValue);
-            Object result = q.getSingleResult();
+            final Query q = em.createNativeQuery(sqlCommandForNextValue);
+            final Object result = q.getSingleResult();
             long nextval;
             if (result instanceof Number) {
                 // approach to cover all numeric values...

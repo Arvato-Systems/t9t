@@ -20,11 +20,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/** Annotation to be placed as a marker in DTOs to mark fields in them and in corresponding JPA entities
- * as not changeable after creation.
- *
- * @author BISC02
- *
+/**
+ * Annotation to be placed as a marker in DTOs to mark fields in them and in corresponding JPA entities as not changeable after creation.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD })

@@ -43,7 +43,7 @@ import io.vertx.core.http.HttpServerRequest;
 public class T9tVertxRestModule implements IRestModule {
     private static final Logger LOGGER = LoggerFactory.getLogger(T9tVertxRestModule.class);
 
-    protected void addEndpoints(Registry registry) {
+    protected void addEndpoints(final Registry registry) {
         final List<IT9tRestEndpoint> allEndpoints = Jdp.getAll(IT9tRestEndpoint.class);
 
         LOGGER.info("Found {} endpoints:", allEndpoints.size());
@@ -60,7 +60,7 @@ public class T9tVertxRestModule implements IRestModule {
     }
 
     @Override
-    public void createRestServer(Vertx vertx, int port) {
+    public void createRestServer(final Vertx vertx, final int port) {
         LOGGER.info("Starting http server for REST on port {}", port);
 
         final VertxResteasyDeployment deployment = new VertxResteasyDeployment();

@@ -26,12 +26,13 @@ import com.arvatosystems.t9t.doc.services.IDocTemplateResolver;
 
 import de.jpaw.dp.Jdp;
 
-public class DocTemplateCrudRequestHandler extends AbstractCrudSurrogateKeyBERequestHandler<DocTemplateRef, DocTemplateDTO, FullTrackingWithVersion, DocTemplateCrudRequest> {
+public class DocTemplateCrudRequestHandler extends
+  AbstractCrudSurrogateKeyBERequestHandler<DocTemplateRef, DocTemplateDTO, FullTrackingWithVersion, DocTemplateCrudRequest> {
 
     protected final IDocTemplateResolver resolver = Jdp.getRequired(IDocTemplateResolver.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, DocTemplateCrudRequest crudRequest) throws Exception {
+    public ServiceResponse execute(final RequestContext ctx, final DocTemplateCrudRequest crudRequest) throws Exception {
         return execute(ctx, crudRequest, resolver);
     }
 }

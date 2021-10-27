@@ -47,14 +47,14 @@ public interface IEntityMapper42<KEY extends Serializable, DTO extends BonaPorta
 
     /** Maps an entity to a DataWithTrackingW.
      */
-    public DataWithTrackingW<DTO, TRACKING> mapToDwt(ENTITY entity);
+    DataWithTrackingW<DTO, TRACKING> mapToDwt(ENTITY entity);
 
     /** Maps a collection of entities to a list of special DTOs which include the tracking columns.
      * Used by generic search and generic "ReadAll".
      * @param entityList The input list. List entries may not be null.
      * @return a list, which may be empty.
      */
-    public List<DataWithTrackingW<DTO, TRACKING>> mapListToDwt(Collection<ENTITY> entityList);
+    List<DataWithTrackingW<DTO, TRACKING>> mapListToDwt(Collection<ENTITY> entityList);
 
     /** Postprocesses a search output, either mapping it to some ReadAllResponse, or exporting it via IOutputSession and
      * returning the sinkRef (if op != null).
@@ -62,19 +62,19 @@ public interface IEntityMapper42<KEY extends Serializable, DTO extends BonaPorta
      * @param op  OutputSessionParameters - if not null, then the data will be exported instead of returned as a list
      * @return the full web service response structure
      */
-    public ReadAllResponse<DTO, TRACKING> createReadAllResponse(List<ENTITY> data, OutputSessionParameters op) throws Exception;
+    ReadAllResponse<DTO, TRACKING> createReadAllResponse(List<ENTITY> data, OutputSessionParameters op) throws Exception;
 
     /** returns the entity's tenantRef without the use of reflection, or null if the entity does not contain
      * a tenantRef field.
      * @param e
      * @return the tenantRef
      */
-    public Long getTenantRef(ENTITY e);
+    Long getTenantRef(ENTITY e);
 
     /** Sets the entity's tenantRef without the use of reflection, or NOOP if the entity does not contain
      * a tenantRef field.
      * @param e - an instance of the Entity
      * @param tenantRef - the tenant to be set (if null, the current call's tenant ref will be used)
      */
-    public void setTenantRef(ENTITY e, Long tenantRef);
+    void setTenantRef(ENTITY e, Long tenantRef);
 }

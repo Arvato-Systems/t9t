@@ -20,13 +20,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/** Annotation to be placed as a marker in DTOs to mark the treatment of the tenant.
- *
- * @author BISC02
- *
+/**
+ * Annotation to be placed as a marker in DTOs to mark the treatment of the tenant.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
 public @interface TenantCategory {
-    public String value();
+    String value();
 }

@@ -286,7 +286,7 @@ public class T9tException extends ApplicationException {
         super(0);
     }
 
-    public T9tException(int errorCode) {
+    public T9tException(final int errorCode) {
         super(errorCode);
     }
 
@@ -299,7 +299,7 @@ public class T9tException extends ApplicationException {
      *                          Do not put redundant text from the error code itself here!
      *                          In most cases this should be just the value causing the problem.
      */
-    public T9tException(int errorCode, Object... detailParameters) {
+    public T9tException(final int errorCode, final Object... detailParameters) {
         super(errorCode, createParamsString(detailParameters));
     }
 
@@ -535,7 +535,7 @@ public class T9tException extends ApplicationException {
      * @param detailParameters  various parameters to the exception
      * @return                  concatenated string of all parameters
      */
-    private static String createParamsString(Object... detailParameters) {
+    private static String createParamsString(final Object... detailParameters) {
 
         if ((detailParameters != null) && (detailParameters.length > 0)) {
             if (detailParameters.length == 1) {
@@ -559,8 +559,8 @@ public class T9tException extends ApplicationException {
     }
 
     /** Decision function to determine if a transaction should be rolled back or is a nonzero return code which anyway should proceed. */
-    public static boolean codeImpliesRollback(int returnCode) {
-        int classification = returnCode / CLASSIFICATION_FACTOR;
+    public static boolean codeImpliesRollback(final int returnCode) {
+        final int classification = returnCode / CLASSIFICATION_FACTOR;
         if ((classification == ApplicationException.SUCCESS) || (classification == ApplicationException.CL_DENIED)) {
             return false; // these two are OK
         }
@@ -569,7 +569,7 @@ public class T9tException extends ApplicationException {
     }
 
     /** Returns a text representation of an error code. */
-    public static String codeToString(int errorCode) {
+    public static String codeToString(final int errorCode) {
         return new T9tException(errorCode).getStandardDescription();
     }
 }

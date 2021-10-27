@@ -21,4 +21,4 @@ import com.arvatosystems.t9t.genconf.ConfigRef;
 
 import de.jpaw.bonaparte.refsw.RefResolver;
 
-public interface IConfigResolver extends RefResolver<ConfigRef, ConfigDTO, FullTrackingWithVersion> {}
+public interface IConfigResolver extends RefResolver<ConfigRef, ConfigDTO, FullTrackingWithVersion> { }

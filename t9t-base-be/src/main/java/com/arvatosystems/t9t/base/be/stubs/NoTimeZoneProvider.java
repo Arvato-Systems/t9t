@@ -26,7 +26,7 @@ public class NoTimeZoneProvider implements ITimeZoneProvider {
 
     private final ZoneId serverTimeZone;
 
-    private final ZoneId getServerTimeZone() {  // checkstyle complains about a redundant "final" keyword.
+    private ZoneId getServerTimeZone() {  // checkstyle complains about a redundant "final" keyword.
                                                 // This method should be final because it is called from the constructor, but is that done automatically?
         final ServerConfiguration serverConfig = ConfigProvider.getConfiguration().getServerConfiguration();
         if (serverConfig == null || serverConfig.getTimeZone() == null) {
@@ -36,7 +36,7 @@ public class NoTimeZoneProvider implements ITimeZoneProvider {
             try {
                 LOGGER.info("Setting server time zone to {}", serverConfig.getTimeZone());
                 return ZoneId.of(serverConfig.getTimeZone());
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 LOGGER.error("Could not process time zone, falling back to UTC: {} {}", e.getClass().getSimpleName(), e.getMessage());
                 return ZoneOffset.UTC;
             }
@@ -48,7 +48,7 @@ public class NoTimeZoneProvider implements ITimeZoneProvider {
     }
 
     @Override
-    public ZoneId getTimeZoneOfTenant(Long tenantRef) {
+    public ZoneId getTimeZoneOfTenant(final Long tenantRef) {
         return serverTimeZone;
     }
 }

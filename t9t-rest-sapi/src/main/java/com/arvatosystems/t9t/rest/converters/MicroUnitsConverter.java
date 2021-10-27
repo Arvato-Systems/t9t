@@ -25,14 +25,14 @@ import de.jpaw.fixedpoint.types.MicroUnits;
 public class MicroUnitsConverter implements ParamConverter<MicroUnits> {
 
     @Override
-    public MicroUnits fromString(String value) {
+    public MicroUnits fromString(final String value) {
         if (value == null)
             return null;
         return MicroUnits.valueOf(value);
     }
 
     @Override
-    public String toString(MicroUnits value) {
+    public String toString(final MicroUnits value) {
         if (value == null)
             return null;
         return value.toString();

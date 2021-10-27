@@ -16,6 +16,7 @@
 package com.arvatosystems.t9t.base.be.request;
 
 import java.time.Instant;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +36,7 @@ public class PerformWithRetryRequestHandler extends AbstractRequestHandler<Perfo
     private final IAutonomousExecutor executor = Jdp.getRequired(IAutonomousExecutor.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, PerformWithRetryRequest request) {
+    public ServiceResponse execute(final RequestContext ctx, final PerformWithRetryRequest request) {
         int count = 0;
         final long delay = request.getWaitBetweenRetries() == null ? 200L : request.getWaitBetweenRetries();
         Instant stopAt = request.getStopAt();
@@ -76,7 +77,7 @@ public class PerformWithRetryRequestHandler extends AbstractRequestHandler<Perfo
             ctx.incrementProgress();  // one per request done
             try {
                 Thread.sleep(delay);
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException e) {
                 break;
             }
         }

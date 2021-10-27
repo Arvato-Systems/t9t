@@ -34,8 +34,6 @@ import com.arvatosystems.t9t.bpmn.pojo.ProcessOutput;
  * will first check if the passed process definition reference is actually exist
  * and active. Non-existent (or not active) record for the process definition
  * reference will throw {@linkplain T9tBPMN2Exception}.
- *
- * @author LIEE001
  */
 public interface IBPMService {
 
@@ -47,7 +45,7 @@ public interface IBPMService {
      * @return process definition configuration entity
      * @throws T9tBPMException if there is any error occurred during deployment
      */
-    ProcessDefinitionDTO deployNewProcess(final String comment, final byte[] processDefinitionContent);
+    ProcessDefinitionDTO deployNewProcess(String comment, byte[] processDefinitionContent);
 
     /**
      * Re-deploy a single business process content.
@@ -69,7 +67,7 @@ public interface IBPMService {
      * Deploy global business process.
      * @param processDefinition process definition
      */
-    void deployGlobalProcess(ProcessDefinition processDefinition) ;
+    void deployGlobalProcess(ProcessDefinition processDefinition);
 
     /**
      * Check if a global business process is already deployed.
@@ -84,7 +82,7 @@ public interface IBPMService {
      * @return process output
      * @ when there is an error executing the process
      */
-    ProcessOutput executeProcess(String processDefinitionId) ;
+    ProcessOutput executeProcess(String processDefinitionId);
 
     /**
      * Execute a process.
@@ -93,7 +91,7 @@ public interface IBPMService {
      * @return process output
      * @ when there is an error executing the process
      */
-    ProcessOutput executeProcess(String processDefinitionId, Map<String, ? extends Object> params) ;
+    ProcessOutput executeProcess(String processDefinitionId, Map<String, ? extends Object> params);
 
     /**
      * Get process content for specific process definition.

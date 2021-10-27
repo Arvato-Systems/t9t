@@ -35,28 +35,26 @@ import com.arvatosystems.t9t.base.types.ListenerConfig;
 import de.jpaw.bonaparte.jpa.BonaPersistableNoData;
 import de.jpaw.dp.Jdp;
 
-public abstract class AbstractEntityListenerForEvents<
-    E extends BonaPersistableNoData<Long, FullTrackingWithVersion> & IsTenantSpecific
-  > {
+public abstract class AbstractEntityListenerForEvents<E extends BonaPersistableNoData<Long, FullTrackingWithVersion> & IsTenantSpecific> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractEntityListenerForEvents.class);
     protected final String typeId;
     protected final String typeId2;
     protected final String typeId3;
     protected final ConcurrentMap<Long, ListenerConfig> settings;
 
-    protected AbstractEntityListenerForEvents(String typeId, String typeId2, String typeId3) {
+    protected AbstractEntityListenerForEvents(final String typeId, final String typeId2, final String typeId3) {
         this.typeId  = typeId;
         this.typeId2 = typeId2;
         this.typeId3 = typeId3;
         settings = ListenerConfigCache.getRegistrationForClassification(typeId);
     }
 
-    static private final AtomicReference<MoreLazyReferences> moreRefs = new AtomicReference<MoreLazyReferences>();
+    private static final AtomicReference<MoreLazyReferences> moreRefs = new AtomicReference<>();
 
     // a simpler logic would work in EclipseLink, but Hibernate creates all EntityListeners already when the EntityManagerFactory is set up,
     // and then the providers may not yet be known
 
-    static private class MoreLazyReferences {
+    private static class MoreLazyReferences {
         private final IExecutor executor = Jdp.getRequired(IExecutor.class);
     }
 
@@ -71,33 +69,33 @@ public abstract class AbstractEntityListenerForEvents<
     }
 
     /** Retrieves a secondary ref (for example sales order for a return or delivery order, or null if not applicable. */
-    protected Long getSecondRef(E entity) {
+    protected Long getSecondRef(final E entity) {
         return null;
     }
     /** Retrieves a tertiary ref (for example customer for a return or order. */
-    protected Long getThirdRef(E entity) {
+    protected Long getThirdRef(final E entity) {
         return null;
     }
 
-    protected EventParameters createEvent(E entity) {
+    protected EventParameters createEvent(final E entity) {
         return new GeneralRefCreatedEvent(entity.ret$Key(), typeId);
     }
-    protected EventParameters deleteEvent(E entity) {
+    protected EventParameters deleteEvent(final E entity) {
         return new GeneralRefDeletedEvent(entity.ret$Key(), typeId);
     }
-    protected EventParameters updateEvent(E entity) {
+    protected EventParameters updateEvent(final E entity) {
         return new GeneralRefUpdatedEvent(entity.ret$Key(), typeId);
     }
-    protected EventParameters secondEvent(Long ref2, String classification2) {
+    protected EventParameters secondEvent(final Long ref2, final String classification2) {
         return new GeneralRefUpdatedEvent(ref2, classification2);
     }
-    protected EventParameters thirdEvent(Long ref3, String classification3) {
+    protected EventParameters thirdEvent(final Long ref3, final String classification3) {
         return new GeneralRefUpdatedEvent(ref3, classification3);
     }
 
     // @PostPersist
-    protected void postPersist(E entity) {
-        ListenerConfig cfg = settings.get(entity.getTenantRef());
+    protected void postPersist(final E entity) {
+        final ListenerConfig cfg = settings.get(entity.getTenantRef());
         LOGGER.trace("CREATE for {} on tenant {} / ref {}: cfg = {}", typeId, entity.getTenantRef(), entity.ret$Key(), cfg);
         if (cfg == null)
             return;
@@ -108,8 +106,8 @@ public abstract class AbstractEntityListenerForEvents<
     }
 
     // @PostRemove
-    protected void postRemove(E entity) {
-        ListenerConfig cfg = settings.get(entity.getTenantRef());
+    protected void postRemove(final E entity) {
+        final ListenerConfig cfg = settings.get(entity.getTenantRef());
         LOGGER.trace("REMOVE for {} on tenant {} / ref {}: cfg = {}", typeId, entity.getTenantRef(), entity.ret$Key(), cfg);
         if (cfg == null)
             return;
@@ -120,8 +118,8 @@ public abstract class AbstractEntityListenerForEvents<
     }
 
     // @PostUpdate
-    protected void postUpdate(E entity) {
-        ListenerConfig cfg = settings.get(entity.getTenantRef());
+    protected void postUpdate(final E entity) {
+        final ListenerConfig cfg = settings.get(entity.getTenantRef());
         LOGGER.trace("UPDATE for {} on tenant {} / ref {}: cfg = {}", typeId, entity.getTenantRef(), entity.ret$Key(), cfg);
         if (cfg == null)
             return;

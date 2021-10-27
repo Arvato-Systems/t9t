@@ -35,14 +35,14 @@ import de.jpaw.dp.Jdp;
 /** base implementation of the IEntityMapper28 interface, only suitable for simple configuration data tables */
 public abstract class AbstractEntityMapper28<KEY extends Serializable, DTO extends BonaPortable, TRACKING extends TrackingBase, ENTITY extends BonaPersistableKey<KEY> & BonaPersistableTracking<TRACKING>>
   extends AbstractEntityMapper<KEY, DTO, TRACKING, ENTITY> implements IEntityMapper28<KEY, DTO, TRACKING, ENTITY> {
-    private final List<DataWithTrackingS<DTO, TRACKING>> EMPTY_RESULT_LIST = new ArrayList<DataWithTrackingS<DTO, TRACKING>>(0);
+    private final List<DataWithTrackingS<DTO, TRACKING>> EMPTY_RESULT_LIST = new ArrayList<>(0);
 
     @Override
-    public final DataWithTrackingS<DTO, TRACKING> mapToDwt(ENTITY entity) {
+    public final DataWithTrackingS<DTO, TRACKING> mapToDwt(final ENTITY entity) {
         if (entity == null) {
             return null;
         }
-        DataWithTrackingS<DTO, TRACKING> entry = new DataWithTrackingS<DTO, TRACKING>();
+        final DataWithTrackingS<DTO, TRACKING> entry = new DataWithTrackingS<>();
         entry.setTracking(entity.ret$Tracking());
         // entry.setIsActive(entity.ret$Active());
         entry.setData(mapToDto(entity));
@@ -51,36 +51,36 @@ public abstract class AbstractEntityMapper28<KEY extends Serializable, DTO exten
     }
 
     @Override
-    public final List<DataWithTrackingS<DTO, TRACKING>> mapListToDwt(Collection<ENTITY> entityList) {
+    public final List<DataWithTrackingS<DTO, TRACKING>> mapListToDwt(final Collection<ENTITY> entityList) {
         if (entityList == null) {
             return null;
         }
-        List<DataWithTrackingS<DTO, TRACKING>> resultList = new ArrayList<>(entityList.size());
-        for (ENTITY entity : entityList) {
+        final List<DataWithTrackingS<DTO, TRACKING>> resultList = new ArrayList<>(entityList.size());
+        for (final ENTITY entity : entityList) {
             resultList.add(mapToDwt(entity));
         }
         return resultList;
     }
 
     @Override
-    public final ReadAll28Response<DTO, TRACKING> createReadAllResponse(List<ENTITY> data, OutputSessionParameters op) throws Exception {
-        ReadAll28Response<DTO, TRACKING> rs = new ReadAll28Response<DTO, TRACKING>();
+    public final ReadAll28Response<DTO, TRACKING> createReadAllResponse(final List<ENTITY> data, final OutputSessionParameters op) throws Exception {
+        final ReadAll28Response<DTO, TRACKING> rs = new ReadAll28Response<>();
         if (op == null) {
             // fill the result
             rs.setDataList(mapListToDwt(data));
         } else {
             // push output into an outputSession (export it)
             try (IOutputSession outputSession = Jdp.getRequired(IOutputSession.class)) {
-                Long sinkRef = outputSession.open(op);
+                final Long sinkRef = outputSession.open(op);
                 if (outputSession.getUnwrapTracking(op.getUnwrapTracking())) {
                     op.setSmartMappingForDataWithTracking(Boolean.FALSE);
-                    for (ENTITY entity : data) {
+                    for (final ENTITY entity : data) {
                         outputSession.store(mapToDto(entity));
                     }
                 } else {
                     op.setSmartMappingForDataWithTracking(Boolean.TRUE);
-                    DataWithTrackingS<DTO, TRACKING> entry = new DataWithTrackingS<DTO, TRACKING>();
-                    for (ENTITY entity : data) {
+                    final DataWithTrackingS<DTO, TRACKING> entry = new DataWithTrackingS<>();
+                    for (final ENTITY entity : data) {
                         entry.setTracking(entity.ret$Tracking());
                         entry.setData(mapToDto(entity));
                         entry.setTenantId(getTenantId(entity));  // either tenantId or tenantRef has been defined in the data (category D) or it is of no interest to the caller
@@ -102,7 +102,7 @@ public abstract class AbstractEntityMapper28<KEY extends Serializable, DTO exten
      * @return the tenantRef
      */
     @Override
-    public String getTenantId(ENTITY e) {
+    public String getTenantId(final ENTITY e) {
         return null;
     }
 
@@ -112,6 +112,6 @@ public abstract class AbstractEntityMapper28<KEY extends Serializable, DTO exten
      * @param tenantRef - the tenant to be set (if null, the current call's tenant ref wil be used)
      */
     @Override
-    public void setTenantId(ENTITY e, String tenantId) {
+    public void setTenantId(final ENTITY e, final String tenantId) {
     }
 }

@@ -15,9 +15,8 @@
  */
 package com.arvatosystems.t9t.bpmn.be.steps;
 
-import java.util.Map;
-
 import java.time.Instant;
+import java.util.Map;
 
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.bpmn.WorkflowReturnCode;
@@ -34,7 +33,8 @@ public class BPMStepDelay extends AbstractAlwaysRunnableNoFactoryWorkflowStep {
         Object yu = parameters.get(PROCESS_VARIABLE_YIELD_UNTIL);
         if (yu != null) {
             if (Number.class.isAssignableFrom(yu.getClass())) { // Long, Double, BigDecimal...
-                // an Instant which has been serialized as JSON and later deserialized will appear as a numeric value, representing the number of (milli)seconds since the Epoch
+                // an Instant which has been serialized as JSON and later deserialized will appear as a numeric value,
+                // representing the number of (milli)seconds since the Epoch
                 yu = Instant.ofEpochMilli(((Number)yu).longValue());
                 parameters.put(PROCESS_VARIABLE_YIELD_UNTIL, yu);
             }
@@ -48,7 +48,8 @@ public class BPMStepDelay extends AbstractAlwaysRunnableNoFactoryWorkflowStep {
         // no end time defined yet - compute it now
         final Object ds = parameters.get("delayInSeconds");
         if (ds != null && ds instanceof Integer) {
-            parameters.put(PROCESS_VARIABLE_YIELD_UNTIL, Instant.ofEpochMilli((System.currentTimeMillis() / 1000L + (Integer)ds) * 1000L));  // obtain a value rounded to full seconds
+            // obtain a value rounded to full seconds
+            parameters.put(PROCESS_VARIABLE_YIELD_UNTIL, Instant.ofEpochMilli((System.currentTimeMillis() / 1000L + (Integer)ds) * 1000L));
             return WorkflowReturnCode.YIELD;
         }
         // missing information!

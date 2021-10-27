@@ -41,23 +41,24 @@ public class ReportParamsCrudRequestHandler extends
     protected final IReportParamsDTOMapper mapper = Jdp.getRequired(IReportParamsDTOMapper.class);
 
     @Override
-    public CrudSurrogateKeyResponse<ReportParamsDTO, FullTrackingWithVersion> execute(final RequestContext ctx, final ReportParamsCrudRequest request) throws Exception {
+    public CrudSurrogateKeyResponse<ReportParamsDTO, FullTrackingWithVersion>
+      execute(final RequestContext ctx, final ReportParamsCrudRequest request) throws Exception {
         return execute(ctx, mapper, resolver, request);
     }
 
     @Override
-    protected void validateCreate(ReportParamsDTO intended) {
+    protected void validateCreate(final ReportParamsDTO intended) {
         validateInterval(intended);
         super.validateCreate(intended);
     }
 
     @Override
-    protected void validateUpdate(ReportParamsEntity current, ReportParamsDTO intended) {
+    protected void validateUpdate(final ReportParamsEntity current, final ReportParamsDTO intended) {
         validateInterval(intended);
         super.validateUpdate(current, intended);
     }
 
-    void validateInterval(ReportParamsDTO reportParamsDTO) {
+    void validateInterval(final ReportParamsDTO reportParamsDTO) {
 
         switch (reportParamsDTO.getIntervalCategory()) {
         case BY_TIME: {

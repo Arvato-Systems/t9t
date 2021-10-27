@@ -38,7 +38,7 @@ public class StandaloneObjectMapper implements ContextResolver<ObjectMapper> {
 
     public StandaloneObjectMapper() {
         this.objectMapper = new ObjectMapper();
-        boolean useNulls = RestUtils.checkIfSet("t9t.restapi.jsonAlsoNulls", "T9T_RESTAPI_JSON_ALSO_NULLS");
+        final boolean useNulls = RestUtils.checkIfSet("t9t.restapi.jsonAlsoNulls", "T9T_RESTAPI_JSON_ALSO_NULLS");
         if (!useNulls) {
             objectMapper.setSerializationInclusion(Include.NON_NULL);
         }

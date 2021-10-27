@@ -43,7 +43,7 @@ public class JpaJdbcConnectionProvider implements IJdbcConnectionProvider {
 
     @Override
     public List<Integer> checkHealth() {
-        Integer count = COUNTER.get();
+        final Integer count = COUNTER.get();
         return Collections.singletonList(count);
     }
 }

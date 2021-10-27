@@ -77,7 +77,7 @@ public abstract class AbstractTextSearch28RequestHandler<REF extends Ref, DTO ex
 
             // end here if there are no results - DB query would return an error
             if (refs.isEmpty()) {
-                final ReadAll28Response<DTO, TRACKING> resp = new ReadAll28Response<DTO, TRACKING>();
+                final ReadAll28Response<DTO, TRACKING> resp = new ReadAll28Response<>();
                 resp.setDataList(Collections.<DataWithTrackingS<DTO, TRACKING>>emptyList());
                 return resp;
             }

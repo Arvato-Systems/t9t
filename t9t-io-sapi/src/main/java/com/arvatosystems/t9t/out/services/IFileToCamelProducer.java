@@ -20,11 +20,12 @@ import com.arvatosystems.t9t.io.DataSinkDTO;
 import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 
 public interface IFileToCamelProducer {
-    public void sendFileOverCamel(String fileName, MediaTypeDescriptor fileType, DataSinkDTO sinkCfg);
+    void sendFileOverCamel(String fileName, MediaTypeDescriptor fileType, DataSinkDTO sinkCfg);
 
-    public void sendFileOverCamelUsingTargetFileName(String fileName, MediaTypeDescriptor fileType, DataSinkDTO sinkCfg, String targetFileName);
+    void sendFileOverCamelUsingTargetFileName(String fileName, MediaTypeDescriptor fileType, DataSinkDTO sinkCfg, String targetFileName);
 
-    public void sendFileOverCamelUsingTargetCamelRoute(String fileName, MediaTypeDescriptor fileType, DataSinkDTO sinkCfg, String targetCamelRoute);
+    void sendFileOverCamelUsingTargetCamelRoute(String fileName, MediaTypeDescriptor fileType, DataSinkDTO sinkCfg, String targetCamelRoute);
 
-    public void sendFileOverCamelUsingTargetFileNameAndTargetCamelRoute(String fileName, MediaTypeDescriptor fileType, DataSinkDTO sinkCfg, String targetFileName, String targetCamelRoute);
+    void sendFileOverCamelUsingTargetFileNameAndTargetCamelRoute(String fileName, MediaTypeDescriptor fileType, DataSinkDTO sinkCfg,
+      String targetFileName, String targetCamelRoute);
 }

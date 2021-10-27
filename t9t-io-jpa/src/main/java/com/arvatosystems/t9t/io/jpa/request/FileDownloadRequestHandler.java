@@ -17,8 +17,8 @@ package com.arvatosystems.t9t.io.jpa.request;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-
 import java.time.Instant;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,13 +47,13 @@ public class FileDownloadRequestHandler extends AbstractRequestHandler<FileDownl
     private final ISinkDTOMapper sinksMapper = Jdp.getRequired(ISinkDTOMapper.class);
 
     @Override
-    public FileDownloadResponse execute(RequestContext ctx, FileDownloadRequest request) throws Exception {
-        SinkEntity mySinkEntity = sinkResolver.find(request.getSinkRef());
+    public FileDownloadResponse execute(final RequestContext ctx, final FileDownloadRequest request) throws Exception {
+        final SinkEntity mySinkEntity = sinkResolver.find(request.getSinkRef());
         if (mySinkEntity == null) {
             throw new ApplicationException(T9tException.RECORD_DOES_NOT_EXIST, "no Sink for Ref " + request.getSinkRef());
         }
-        FileDownloadResponse response = new FileDownloadResponse();
-        SinkDTO mySink = sinksMapper.mapToDto(mySinkEntity);
+        final FileDownloadResponse response = new FileDownloadResponse();
+        final SinkDTO mySink = sinksMapper.mapToDto(mySinkEntity);
         // create a response with some default settings
         response.setSink(mySink);
         response.setReturnCode(0);
@@ -66,7 +66,7 @@ public class FileDownloadRequestHandler extends AbstractRequestHandler<FileDownl
             throw new T9tException(T9tIOException.OUTPUT_COMM_CHANNEL_NO_SRC_HANDLER, mySinkEntity.getCommTargetChannelType().name());
         }
 
-        String filePath = srcHandler.getAbsolutePath(mySinkEntity.getFileOrQueueName(), ctx);
+        final String filePath = srcHandler.getAbsolutePath(mySinkEntity.getFileOrQueueName(), ctx);
         response.setReturnCode(T9tIOException.OUTPUT_COMM_CHANNEL_IO_ERROR);
         try (InputStream fis = srcHandler.open(filePath)) {
             fis.skip(request.getOffset());
@@ -74,18 +74,18 @@ public class FileDownloadRequestHandler extends AbstractRequestHandler<FileDownl
             if (myMaxsize == 0 || myMaxsize > T9tConstants.MAXIMUM_MESSAGE_LENGTH) {
                 myMaxsize = T9tConstants.MAXIMUM_MESSAGE_LENGTH;
             }
-            byte[] buffer = new byte[myMaxsize];
+            final byte[] buffer = new byte[myMaxsize];
             int numRead = 0;
             // do a loop here, because an initial read may not return the full number of bytes
             while (numRead < myMaxsize) {
-                int lastRead = fis.read(buffer, numRead, myMaxsize - numRead);
+                final int lastRead = fis.read(buffer, numRead, myMaxsize - numRead);
                 LOGGER.trace("read returned {} bytes", lastRead);
                 if (lastRead < 0) {
                     break; // EOF
                 }
                 numRead += lastRead;
             }
-            boolean hasMore = srcHandler.hasMore(fis);
+            final boolean hasMore = srcHandler.hasMore(fis);
             LOGGER.debug("received {} bytes in total for {}, hasMore = {}", numRead, filePath, hasMore);
             // transfer data to response
             response.setHasMore(hasMore);
@@ -95,14 +95,14 @@ public class FileDownloadRequestHandler extends AbstractRequestHandler<FileDownl
             }
             response.setData(new ByteArray(buffer, 0, numRead));
             response.setReturnCode(0);
-        } catch (FileNotFoundException e) {
+        } catch (final FileNotFoundException e) {
             LOGGER.error("{} resource {} was not found", mySinkEntity.getCommTargetChannelType().name(), filePath);
             throw new T9tException(T9tException.FILE_NOT_FOUND_FOR_DOWNLOAD, filePath);
         }
         return response;
     }
 
-    private void updateLastDownloadTimestamp(SinkEntity mySinkEntity) {
+    private void updateLastDownloadTimestamp(final SinkEntity mySinkEntity) {
         mySinkEntity.setLastDownloadTimestamp(Instant.now());
         sinkResolver.update(mySinkEntity);
         sinkResolver.flush();

@@ -48,21 +48,21 @@ public abstract class AbstractResolverCompositeKey42<
      *
      * If no matching type is found, the method should always fall back and return super.resolverNestedRefs() to allow nested implementations.
      * */
-    protected REF resolveNestedRefs(REF arg) {
+    protected REF resolveNestedRefs(final REF arg) {
         return arg;
     }
 
     @Override
-    public ENTITY getEntityData(REF entityRef, boolean onlyActive) {
+    public ENTITY getEntityData(final REF entityRef, final boolean onlyActive) {
         return getEntityDataByGenericKey(resolveNestedRefs(entityRef), onlyActive);
     }
 
     /** Convert any REF to a KEY (if supported). */
     @Override
-    public KEY refToKey(REF arg) {
+    public KEY refToKey(final REF arg) {
         if (arg == null)
             return null;
-        REF potentialKey = resolveNestedRefs(arg);
+        final REF potentialKey = resolveNestedRefs(arg);
         if (getKeyClass().isAssignableFrom(potentialKey.getClass()))
             return (KEY)potentialKey;
         throw new T9tException(T9tException.INVALID_REQUEST_PARAMETER_TYPE, potentialKey.getClass().getCanonicalName() + " is not a key for " + getEntityClass().getCanonicalName());

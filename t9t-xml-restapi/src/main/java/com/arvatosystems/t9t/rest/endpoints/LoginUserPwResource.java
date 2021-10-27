@@ -78,11 +78,12 @@ public class LoginUserPwResource implements IT9tRestEndpoint {
      * Caches the basicAuth String in form of the Hash and connects it to a JWT.
      * This cache must expire significantly faster than the JWT duration (max 1/2 of it).
      */
-    private static final Cache<String, String> basicAuthHashToJwtCache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.HOURS).build();
+    private static final Cache<String, String> BASIC_AUTH_TO_JWT_CACHE = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.HOURS).build();
 
     @Operation(
         summary = "Create a session / JWT token by user ID / password",
-        description = "The request creates a session at the host and returns a JWT which can be used as authentication token for subsequent requests. Authentication is by user name / password.",
+        description = "The request creates a session at the host and returns a JWT which can be used as authentication token for subsequent requests."
+          + " Authentication is by user name / password.",
         responses = {
             @ApiResponse(description = "Authentication successful.", content = @Content(schema = @Schema(implementation = AuthenticationResult.class)))
         }
@@ -91,7 +92,7 @@ public class LoginUserPwResource implements IT9tRestEndpoint {
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @POST
     public void login(@Context final HttpHeaders httpHeaders, @Suspended final AsyncResponse resp, final AuthByUserIdPassword authByUserPw) {
-        final String acceptHeader = httpHeaders.getHeaderString(HttpHeaders.ACCEPT);  // must evaluate it now, because httpHeaders is a proxy and no longer valid in the other thread
+        final String acceptHeader = determineResponseType(httpHeaders);
         if (authByUserPw == null) {
             LOGGER.error("Login attempted at /userpw without any data...");
             restProcessor.returnAsyncResult(acceptHeader, resp, Response.Status.BAD_REQUEST, "Null parameter");
@@ -100,7 +101,7 @@ public class LoginUserPwResource implements IT9tRestEndpoint {
         final String cacheKey = authByUserPw.getUserId() + ":" + authByUserPw.getPassword();
 
         LOGGER.debug("Attempting to retrieve JWT for basic authenticaton.");
-        String jwt = basicAuthHashToJwtCache.getIfPresent(cacheKey);
+        final String jwt = BASIC_AUTH_TO_JWT_CACHE.getIfPresent(cacheKey);
         if (jwt != null) {
             LOGGER.debug("JWT already cached for user {}. Returning...", authByUserPw.getUserId());
             final AuthenticationResult result = new AuthenticationResult();
@@ -112,13 +113,13 @@ public class LoginUserPwResource implements IT9tRestEndpoint {
         // create AuthenticationParamsRequest
         final AuthenticationRequest authenticationParamsRequest = new AuthenticationRequest();
         // create User+Password Hash
-        PasswordAuthentication passwordAuthentication = new PasswordAuthentication();
+        final PasswordAuthentication passwordAuthentication = new PasswordAuthentication();
         passwordAuthentication.setUserId(authByUserPw.getUserId());
         passwordAuthentication.setPassword(authByUserPw.getPassword());
         authenticationParamsRequest.setAuthenticationParameters(passwordAuthentication);
         authenticationParamsRequest.setSessionParameters(LoginApiKeyResource.convertSessionParameters(authByUserPw.getSessionParameters()));
 
         // execute ServiceRequest
-        restProcessor.performAsyncAuthBackendRequest(httpHeaders, resp, authenticationParamsRequest, s -> basicAuthHashToJwtCache.put(cacheKey, s));
+        restProcessor.performAsyncAuthBackendRequest(httpHeaders, resp, authenticationParamsRequest, s -> BASIC_AUTH_TO_JWT_CACHE.put(cacheKey, s));
     }
 }

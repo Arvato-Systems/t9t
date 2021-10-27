@@ -29,12 +29,12 @@ public class RetrieveParametersRequestHandler extends AbstractRequestHandler<Ret
     protected final IMessageEntityResolver resolver = Jdp.getRequired(IMessageEntityResolver.class);
 
     @Override
-    public RetrieveParametersResponse execute(RequestContext ctx, RetrieveParametersRequest rq) {
+    public RetrieveParametersResponse execute(final RequestContext ctx, final RetrieveParametersRequest rq) {
         final MessageEntity loggedRequest = resolver.find(rq.getProcessRef());
         if (loggedRequest == null)
             throw new T9tException(T9tException.RECORD_DOES_NOT_EXIST, rq.getProcessRef());
 
-        RetrieveParametersResponse resp = new RetrieveParametersResponse();
+        final RetrieveParametersResponse resp = new RetrieveParametersResponse();
         if (rq.getRequestParameters())
             resp.setRequestParameters(loggedRequest.getRequestParameters());
         if (rq.getServiceResponse())

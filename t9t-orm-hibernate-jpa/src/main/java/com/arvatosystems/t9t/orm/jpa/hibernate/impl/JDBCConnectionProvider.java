@@ -30,8 +30,7 @@ import de.jpaw.dp.Singleton;
 public class JDBCConnectionProvider implements IJpaJdbcConnectionProvider {
 
     @Override
-    public Connection get(EntityManager em) {
+    public Connection get(final EntityManager em) {
         return ((SessionImpl)em.unwrap(Session.class)).connection();
     }
-
 }

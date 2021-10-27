@@ -46,27 +46,28 @@ import de.jpaw.dp.Singleton;
 @Produces("application/xml")
 @Singleton
 public class XmlMediaTypeEncoder implements MessageBodyWriter<BonaPortable> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(XmlMediaTypeEncoder.class);
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(XmlMediaTypeEncoder.class);
     private final IStandardNamespaceWriter jaxbContextProvider = Jdp.getRequired(IStandardNamespaceWriter.class);
 
     @Override
-    public boolean isWriteable(Class<?> type, Type type1, Annotation[] antns, MediaType mt) {
+    public boolean isWriteable(final Class<?> type, final Type type1, final Annotation[] antns, final MediaType mt) {
         return (mt.equals(MediaType.APPLICATION_XML_TYPE) && (type.isAnnotationPresent(XmlRootElement.class)));
     }
 
     @Override
-    public long getSize(BonaPortable t, Class<?> type, Type type1, Annotation[] antns, MediaType mt) {
+    public long getSize(final BonaPortable t, final Class<?> type, final Type type1, final Annotation[] antns, final MediaType mt) {
         return 0;
     }
 
     @Override
-    public void writeTo(BonaPortable t, Class<?> type, Type type1, Annotation[] antns, MediaType mt, MultivaluedMap<String, Object> mm, OutputStream out) throws IOException, WebApplicationException {
+    public void writeTo(final BonaPortable t, final Class<?> type, final Type type1, final Annotation[] antns, final MediaType mt,
+      final MultivaluedMap<String, Object> mm, final OutputStream out) throws IOException, WebApplicationException {
         try {
-            Marshaller marshaller = jaxbContextProvider.getStandardJAXBContext().createMarshaller();
+            final Marshaller marshaller = jaxbContextProvider.getStandardJAXBContext().createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             marshaller.marshal(t, out);
-        } catch (JAXBException e) {
+        } catch (final JAXBException e) {
             LOGGER.error("There has been an error while marshalling the object {} with exception {}", t, e);
         }
     }

@@ -28,6 +28,7 @@ import com.arvatosystems.t9t.bpmn.request.DeployProcessResponse;
 import com.arvatosystems.t9t.bpmn.services.IBPMService;
 
 import de.jpaw.dp.Jdp;
+import de.jpaw.util.ExceptionUtil;
 
 /**
  * Implementation {@linkplain IRequestHandler} which handles {@linkplain DeployProcessRequest}.
@@ -55,9 +56,8 @@ public class DeployProcessRequestHandler extends AbstractRequestHandler<DeployPr
             return response;
         } catch (final T9tBPMException ex) {
             // T9tBPMException signifies a technical exception
-            LOGGER.error(String.format("Failed to deploy process (tenantId: %s, userId:%s, processDefinitionRef: %s).",
-                    requestCtx.tenantId, requestCtx.userId, request.getProcessDefinitionRef()), ex);
-
+            LOGGER.error("Failed to deploy process (tenantId: {}, userId: {}, processDefinitionRef: {}). {}",
+                requestCtx.tenantId, requestCtx.userId, request.getProcessDefinitionRef(), ExceptionUtil.causeChain(ex));
             throw ex;
         }
     }

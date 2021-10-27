@@ -33,7 +33,7 @@ public class RerunRequestHandler extends AbstractRequestHandler<RerunRequest> {
     protected final IMessageEntityResolver resolver = Jdp.getRequired(IMessageEntityResolver.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, RerunRequest rq) {
+    public ServiceResponse execute(final RequestContext ctx, final RerunRequest rq) {
         final MessageEntity loggedRequest = resolver.find(rq.getProcessRef());
         if (loggedRequest == null)
             throw new T9tException(T9tException.RECORD_DOES_NOT_EXIST, rq.getProcessRef());
@@ -41,7 +41,7 @@ public class RerunRequestHandler extends AbstractRequestHandler<RerunRequest> {
             throw new T9tException(T9tException.RERUN_NOT_APPLICABLE_DONE, rq.getProcessRef());
         if (ApplicationException.isOk(loggedRequest.getReturnCode()))
             throw new T9tException(T9tException.RERUN_NOT_APPLICABLE_RET, rq.getProcessRef());
-        RequestParameters recordedRequest = loggedRequest.getRequestParameters();
+        final RequestParameters recordedRequest = loggedRequest.getRequestParameters();
         if (recordedRequest == null)
             throw new T9tException(T9tException.RERUN_NOT_POSSIBLE_NO_RECORDED_REQUEST, rq.getProcessRef());
         // all checks OK: perform the rerun

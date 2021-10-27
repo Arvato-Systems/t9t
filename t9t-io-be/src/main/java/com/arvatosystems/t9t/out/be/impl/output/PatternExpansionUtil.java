@@ -15,11 +15,10 @@
  */
 package com.arvatosystems.t9t.out.be.impl.output;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.base.services.RequestContext;
@@ -27,22 +26,25 @@ import com.arvatosystems.t9t.base.services.SimplePatternEvaluator;
 
 import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 
-public class PatternExpansionUtil {
-    static final String CLEAR_DATE_PATTERN = "\\w";
-    static final String YEAR_PATTERN = "yyyy";
-    static final String MONTH_PATTERN = "MM";
-    static final String DAY_PATTERN = "dd";
-    static final String DATE_PATTERN = "yyyy-MM-dd";
+public final class PatternExpansionUtil {
 
-    private static String formatDate(LocalDateTime dt, String datePattern) {
+    private PatternExpansionUtil() { }
+
+    private static final String CLEAR_DATE_PATTERN = "\\w";
+    private static final String YEAR_PATTERN = "yyyy";
+    private static final String MONTH_PATTERN = "MM";
+    private static final String DAY_PATTERN = "dd";
+    private static final String DATE_PATTERN = "yyyy-MM-dd";
+
+    private static String formatDate(final LocalDateTime dt, final String datePattern) {
         return dt == null ? datePattern.replaceAll(CLEAR_DATE_PATTERN, "0") : dt.format(DateTimeFormatter.ofPattern(datePattern));
     }
 
     private static Map<String, Object> buildOutputPatternReplacementsFromParameters(
-            RequestContext ctx,
-            OutputSessionParameters params,
-            MediaTypeDescriptor communicationFormatType,
-            Map<String, String> additionalParams) {
+            final RequestContext ctx,
+            final OutputSessionParameters params,
+            final MediaTypeDescriptor communicationFormatType,
+            final Map<String, String> additionalParams) {
         final Map<String, Object> patternReplacements = new HashMap<>(31);
 
         // default parameters, always supplied
@@ -85,8 +87,8 @@ public class PatternExpansionUtil {
         return patternReplacements;
     }
 
-    public static String expandFileOrQueueName(RequestContext ctx, String pattern, OutputSessionParameters params,
-            MediaTypeDescriptor communicationFormatType, Map<String, String> additionalParams) {
+    public static String expandFileOrQueueName(final RequestContext ctx, final String pattern, final OutputSessionParameters params,
+            final MediaTypeDescriptor communicationFormatType, final Map<String, String> additionalParams) {
         return SimplePatternEvaluator.evaluate(pattern, buildOutputPatternReplacementsFromParameters(ctx, params, communicationFormatType, additionalParams));
     }
 }

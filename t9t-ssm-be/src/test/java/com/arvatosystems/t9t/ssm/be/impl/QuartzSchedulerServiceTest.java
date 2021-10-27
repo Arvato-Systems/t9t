@@ -305,7 +305,8 @@ public class QuartzSchedulerServiceTest {
         SchedulerSetupDTO setup = new SchedulerSetupDTO();
         setup.setRecurrencyType(SchedulerSetupRecurrenceType.WEEKLY);
         setup.setExecutionTime(LocalTime.of(12, 30));
-        setup.setSetOfWeekdays(SchedulerWeekDaysEnumSet.ofTokens(SchedulerSetupRecurrenceWeekdayTypeEnum.MONDAY, SchedulerSetupRecurrenceWeekdayTypeEnum.WEDNESDAY));
+        setup.setSetOfWeekdays(SchedulerWeekDaysEnumSet.ofTokens(SchedulerSetupRecurrenceWeekdayTypeEnum.MONDAY,
+          SchedulerSetupRecurrenceWeekdayTypeEnum.WEDNESDAY));
 
         String cronExpression = service.determineCronExpression(setup);
         Assertions.assertEquals("0 30 12 ? * 2,4", cronExpression);

@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.bpmn.jpa.impl;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -23,7 +24,6 @@ import java.util.List;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.TypedQuery;
 
-import java.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +54,7 @@ import de.jpaw.dp.Singleton;
 
 @Singleton
 public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
-    private final static Logger LOGGER = LoggerFactory.getLogger(BpmnPersistenceAccess.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BpmnPersistenceAccess.class);
     protected final IProcessDefinitionEntityResolver resolver = Jdp.getRequired(IProcessDefinitionEntityResolver.class);
     protected final IProcessDefinitionDTOMapper mapper = Jdp.getRequired(IProcessDefinitionDTOMapper.class);
     protected final IProcessExecStatusEntityResolver statusResolver = Jdp.getRequired(IProcessExecStatusEntityResolver.class);
@@ -63,8 +63,8 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
     protected final IClusterEnvironment clusterEnvironment = Jdp.getRequired(IClusterEnvironment.class);
 
     @Override
-    public ProcessDefinitionDTO getProcessDefinitionDTO(String processDefinitionId) {
-        List<ProcessDefinitionEntity> r = resolver.findByProcessIdWithDefault(true, processDefinitionId);
+    public ProcessDefinitionDTO getProcessDefinitionDTO(final String processDefinitionId) {
+        final List<ProcessDefinitionEntity> r = resolver.findByProcessIdWithDefault(true, processDefinitionId);
         if (r == null || r.isEmpty()) {
             throw new T9tException(T9tException.RECORD_DOES_NOT_EXIST, "bpmnId = " + processDefinitionId);
         }
@@ -74,16 +74,16 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
 
     /** Reads a process definition using the usual fallback rule for some general reference. Throws an Exception if none exists. */
     @Override
-    public ProcessDefinitionDTO getProcessDefinitionDTO(ProcessDefinitionRef ref) {
+    public ProcessDefinitionDTO getProcessDefinitionDTO(final ProcessDefinitionRef ref) {
         return mapper.mapToDto(resolver.getEntityData(ref, true));
     }
 
     /** Reads all process definitions. */
     @Override
-    public List<DataWithTrackingW<ProcessDefinitionDTO, FullTrackingWithVersion>> getAllProcessDefinitionsForEngine(String engine) {
+    public List<DataWithTrackingW<ProcessDefinitionDTO, FullTrackingWithVersion>> getAllProcessDefinitionsForEngine(final String engine) {
         final List<ProcessDefinitionEntity> defs = resolver.readAll(true);
         final List<DataWithTrackingW<ProcessDefinitionDTO, FullTrackingWithVersion>> results = new ArrayList<>(defs.size());
-        for (ProcessDefinitionEntity e: defs) {
+        for (final ProcessDefinitionEntity e: defs) {
             if (Objects.equal(engine,  e.getEngine()))
                 results.add(mapper.mapToDwt(e));
         }
@@ -91,8 +91,8 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
     }
 
     @Override
-    public void save(ProcessDefinitionDTO dto) {
-        ProcessDefinitionEntity entity = mapper.mapToEntity(dto, true);
+    public void save(final ProcessDefinitionDTO dto) {
+        final ProcessDefinitionEntity entity = mapper.mapToEntity(dto, true);
         entity.setObjectRef(resolver.createNewPrimaryKey());
 
         resolver.save(entity);
@@ -101,15 +101,15 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
     }
 
     @Override
-    public Long persistNewStatus(ProcessExecutionStatusDTO dto) {
-        ProcessExecStatusEntity entity = statusMapper.mapToEntity(dto, false);
+    public Long persistNewStatus(final ProcessExecutionStatusDTO dto) {
+        final ProcessExecStatusEntity entity = statusMapper.mapToEntity(dto, false);
         statusResolver.save(entity);
         return entity.getObjectRef();
     }
 
     @Override
-    public ProcessExecutionStatusDTO getProcessExecutionStatusDTO(String processDefinitionId, Long targetObjectRef) {
-        ProcessExecStatusEntity existingEntity = statusResolver.findByProcessDefinitionIdAndTargetObjectRef(true, processDefinitionId, targetObjectRef);
+    public ProcessExecutionStatusDTO getProcessExecutionStatusDTO(final String processDefinitionId, final Long targetObjectRef) {
+        final ProcessExecStatusEntity existingEntity = statusResolver.findByProcessDefinitionIdAndTargetObjectRef(true, processDefinitionId, targetObjectRef);
         if (existingEntity == null) {
             throw new T9tException(T9tBPMException.BPM_NO_CURRENT_PROCESS, processDefinitionId + ":" + targetObjectRef);
         }
@@ -118,11 +118,12 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
     }
 
     @Override
-    public ProcessExecutionStatusDTO getProcessExecutionStatusOpt(String processDefinitionId, Long targetObjectRef) {
+    public ProcessExecutionStatusDTO getProcessExecutionStatusOpt(final String processDefinitionId, final Long targetObjectRef) {
         return statusMapper.mapToDto(statusResolver.findByProcessDefinitionIdAndTargetObjectRef(true, processDefinitionId, targetObjectRef));
     }
 
-    protected <E> List<E> getQueryForDueTasks(Class<E> type, String field, String onlyForProcessDefinitionId, Instant whenDue, boolean includeErrorStatus, boolean allClusterNodes) {
+    protected <E> List<E> getQueryForDueTasks(final Class<E> type, final String field, final String onlyForProcessDefinitionId, final Instant whenDue,
+      final boolean includeErrorStatus, final boolean allClusterNodes) {
         String nodeCondition = "";
         int numPartitions = 1;
         Collection<Integer> shards = Collections.emptyList();
@@ -161,19 +162,23 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
 
     // unused? At least not used in t9t
     @Override
-    public List<ProcessExecutionStatusDTO> getTasksDue(String onlyForProcessDefinitionId, Instant whenDue, boolean includeErrorStatus, boolean allClusterNodes) {
-        return statusMapper.mapListToDto(getQueryForDueTasks(ProcessExecStatusEntity.class, "", onlyForProcessDefinitionId, whenDue, includeErrorStatus, allClusterNodes));
+    public List<ProcessExecutionStatusDTO> getTasksDue(final String onlyForProcessDefinitionId, final Instant whenDue,
+      final boolean includeErrorStatus, final boolean allClusterNodes) {
+        return statusMapper.mapListToDto(getQueryForDueTasks(ProcessExecStatusEntity.class, "",
+          onlyForProcessDefinitionId, whenDue, includeErrorStatus, allClusterNodes));
     }
 
     @Override
-    public List<Long> getTaskRefsDue(String onlyForProcessDefinitionId, Instant whenDue, boolean includeErrorStatus, boolean allClusterNodes) {
+    public List<Long> getTaskRefsDue(final String onlyForProcessDefinitionId, final Instant whenDue, final boolean includeErrorStatus,
+      final boolean allClusterNodes) {
         return getQueryForDueTasks(Long.class, ".objectRef", onlyForProcessDefinitionId, whenDue, includeErrorStatus, allClusterNodes);
     }
 
     @Override
-    public Long createOrUpdateNewStatus(RequestContext ctx, ProcessExecutionStatusDTO dto, ExecuteProcessWithRefRequest rq) {
+    public Long createOrUpdateNewStatus(final RequestContext ctx, final ProcessExecutionStatusDTO dto, final ExecuteProcessWithRefRequest rq) {
         Long objectRef = null;
-        ProcessExecStatusEntity existingEntity = statusResolver.findByProcessDefinitionIdAndTargetObjectRef(true, dto.getProcessDefinitionId(), dto.getTargetObjectRef());
+        final ProcessExecStatusEntity existingEntity
+          = statusResolver.findByProcessDefinitionIdAndTargetObjectRef(true, dto.getProcessDefinitionId(), dto.getTargetObjectRef());
         if (existingEntity != null && refresh(existingEntity) != null) { //refresh because it might be removed at another thread
             ctx.lockRef(existingEntity.getObjectRef()); // lock the status ref
             refresh(existingEntity); //refresh again after acquiring the lock to avoid outdated version
@@ -185,11 +190,12 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
             if (rq.getIfEntryExists() == WorkflowActionEnum.NO_ACTIVITY) {
                 return existingEntity.getObjectRef();
             }
-            // PRIO 1: set next step explicitly if defined
+
             if (rq.getWorkflowStep() != null) {
+                // PRIO 1: set next step explicitly if defined
                 existingEntity.setNextStep(rq.getWorkflowStep());
-            } // PRIO 2: else if RestartAtBeginning set next step to null
-            else if (Boolean.TRUE.equals(rq.getRestartAtBeginningIfExists())) {
+            } else if (Boolean.TRUE.equals(rq.getRestartAtBeginningIfExists())) {
+                // PRIO 2: else if RestartAtBeginning set next step to null
                 existingEntity.setNextStep(null);  // reset to beginning
             }
             // ELSE resume at current position (RUN: default action)
@@ -211,16 +217,16 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
         }
         if (rq.getInitialDelay() == null) {
             // launch the process immediately
-            TriggerSingleProcessNowRequest trigger = new TriggerSingleProcessNowRequest(objectRef);
+            final TriggerSingleProcessNowRequest trigger = new TriggerSingleProcessNowRequest(objectRef);
             executor.executeAsynchronous(ctx, trigger);
         }
         return objectRef;
     }
 
-    private ProcessExecStatusEntity refresh(ProcessExecStatusEntity statusEntity) {
+    private ProcessExecStatusEntity refresh(final ProcessExecStatusEntity statusEntity) {
         try {
             statusResolver.getEntityManager().refresh(statusEntity);
-        } catch (EntityNotFoundException enfe) {
+        } catch (final EntityNotFoundException enfe) {
             LOGGER.debug("Status probably been removed at another thread.");
             return null;
         }

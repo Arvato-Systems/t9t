@@ -32,8 +32,8 @@ import de.jpaw.util.ApplicationException;
 public class ApplicationExceptionHandler implements ExceptionMapper<ApplicationException> {
 
     @Override
-    public Response toResponse(ApplicationException exception) {
-        int errorCode = exception.getErrorCode();
+    public Response toResponse(final ApplicationException exception) {
+        final int errorCode = exception.getErrorCode();
         switch (errorCode) {
             case T9tException.NOT_AUTHORIZED:
                 return RestUtils.error(Response.Status.UNAUTHORIZED, exception.getStandardDescription());

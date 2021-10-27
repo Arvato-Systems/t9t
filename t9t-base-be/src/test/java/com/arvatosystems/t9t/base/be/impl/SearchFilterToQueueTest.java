@@ -39,7 +39,6 @@ import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.dp.Jdp;
 
 public class SearchFilterToQueueTest {
-    SearchFilterUtil util;
 
     private ISearchTools searchTools = Mockito.mock(ISearchTools.class);
 
@@ -82,7 +81,7 @@ public class SearchFilterToQueueTest {
 
     @Test
     public void shouldCreateQueueWithA() {
-        util = new SearchFilterUtil();
+        SearchFilterUtil util = new SearchFilterUtil();
 
         Mockito.when(searchTools.getAllSearchFilterFieldName(Mockito.any(SearchFilter.class), Mockito.any())).thenReturn(Sets.newHashSet("A", "B", "C", "D"));
         Mockito.when(searchTools.containsFieldPathElements(Mockito.any(NotFilter.class), Mockito.any())).thenReturn(false);
@@ -99,11 +98,14 @@ public class SearchFilterToQueueTest {
 
     @Test
     public void shouldCreateQueueWithAndAB() {
-        util = new SearchFilterUtil();
+        SearchFilterUtil util = new SearchFilterUtil();
 
-        Mockito.when(searchTools.getAllSearchFilterFieldName(Mockito.any(AndFilter.class), Mockito.any(Set.class))).thenReturn(Sets.newHashSet("A", "B", "C", "D"));
-        Mockito.when(searchTools.getAllSearchFilterFieldName(Mockito.any(OrFilter.class), Mockito.any(Set.class))).thenReturn(Sets.newHashSet("B", "C", "D"));
-        Mockito.when(searchTools.containsFieldPathElements(Mockito.any(NotFilter.class), Mockito.any())).thenReturn(false);
+        Mockito.when(searchTools.getAllSearchFilterFieldName(Mockito.any(AndFilter.class),
+          Mockito.any(Set.class))).thenReturn(Sets.newHashSet("A", "B", "C", "D"));
+        Mockito.when(searchTools.getAllSearchFilterFieldName(Mockito.any(OrFilter.class),
+          Mockito.any(Set.class))).thenReturn(Sets.newHashSet("B", "C", "D"));
+        Mockito.when(searchTools.containsFieldPathElements(Mockito.any(NotFilter.class),
+          Mockito.any())).thenReturn(false);
 
         Queue<SearchFilter> filterQueue = new LinkedList<>();
         util.populateQueue(createSearchFilter(), Sets.newHashSet("A", "B"), filterQueue);
@@ -125,7 +127,7 @@ public class SearchFilterToQueueTest {
 
     @Test
     public void shouldCreateQueueWithABC() {
-        util = new SearchFilterUtil();
+        SearchFilterUtil util = new SearchFilterUtil();
 
         Mockito.when(searchTools.getAllSearchFilterFieldName(Mockito.any(AndFilter.class), Mockito.any(Set.class)))
                 .thenReturn(Sets.newHashSet("A", "B", "C", "D"), Sets.newHashSet("C", "D"));
@@ -140,7 +142,7 @@ public class SearchFilterToQueueTest {
 
     @Test
     public void shouldCreateQueueWithBC() {
-        util = new SearchFilterUtil();
+        SearchFilterUtil util = new SearchFilterUtil();
 
         Mockito.when(searchTools.getAllSearchFilterFieldName(Mockito.any(AndFilter.class), Mockito.any(Set.class)))
                 .thenReturn(Sets.newHashSet("C", "D"));
@@ -159,7 +161,7 @@ public class SearchFilterToQueueTest {
 
     @Test
     public void shouldCreateQueueWithAD() {
-        util = new SearchFilterUtil();
+        SearchFilterUtil util = new SearchFilterUtil();
 
         Mockito.when(searchTools.getAllSearchFilterFieldName(Mockito.any(AndFilter.class), Mockito.any(Set.class)))
                 .thenReturn(Sets.newHashSet("A", "B", "C", "D"), Sets.newHashSet("C", "D"));
@@ -178,7 +180,7 @@ public class SearchFilterToQueueTest {
 
     @Test
     public void shouldCreateQueue() {
-        util = new SearchFilterUtil();
+        final SearchFilterUtil util = new SearchFilterUtil();
         Mockito.when(searchTools.containsFieldPathElements(Mockito.any(NotFilter.class), Mockito.any())).thenReturn(true);
         Mockito.when(searchTools.getAllSearchFilterFieldName(Mockito.any(AndFilter.class), Mockito.any(Set.class)))
             .thenReturn(Sets.newHashSet("A", "B", "C"));

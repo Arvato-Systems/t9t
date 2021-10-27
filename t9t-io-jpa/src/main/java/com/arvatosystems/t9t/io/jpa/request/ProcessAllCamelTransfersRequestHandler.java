@@ -40,10 +40,11 @@ public class ProcessAllCamelTransfersRequestHandler extends AbstractRequestHandl
     protected final IDataSinkEntityResolver dataSinkResolver = Jdp.getRequired(IDataSinkEntityResolver.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, ProcessAllCamelTransfersRequest rq) throws Exception {
+    public ServiceResponse execute(final RequestContext ctx, final ProcessAllCamelTransfersRequest rq) throws Exception {
         final String variablePart = rq.getOnlySinkId() == null
                 ? "WHERE"
-                : ", " + dataSinkResolver.getBaseJpaEntityClass().getSimpleName() + " ds WHERE ds.objectRef = s.dataSinkRef AND ds.dataSinkId = :dataSinkId AND";
+                : ", " + dataSinkResolver.getBaseJpaEntityClass().getSimpleName()
+                + " ds WHERE ds.objectRef = s.dataSinkRef AND ds.dataSinkId = :dataSinkId AND";
         final TypedQuery<Long> query = sinkResolver.getEntityManager().createQuery(
             "SELECT s.objectRef FROM " + sinkResolver.getBaseJpaEntityClass().getSimpleName() + " s "
            + variablePart + " s.tenantRef = :tenantRef AND s.cTimestamp < :until AND s.camelTransferStatus IS NOT NULL "
@@ -51,11 +52,11 @@ public class ProcessAllCamelTransfersRequestHandler extends AbstractRequestHandl
         query.setParameter("tenantRef", sinkResolver.getSharedTenantRef());
         if (rq.getOnlySinkId() != null)
             query.setParameter("dataSinkId", rq.getOnlySinkId());
-        int minusMinutes = rq.getMinimumAge() == null ? 60 : rq.getMinimumAge().intValue();
+        final int minusMinutes = rq.getMinimumAge() == null ? 60 : rq.getMinimumAge().intValue();
         query.setParameter("until", ctx.executionStart.minusSeconds(minusMinutes * 60L));
-        List<Long> sinkRefs = query.getResultList();
+        final List<Long> sinkRefs = query.getResultList();
 
-        int numRecords = sinkRefs.size();
+        final int numRecords = sinkRefs.size();
         ctx.statusText = "Obtained list of delivery order references: " + numRecords;
 
         LOGGER.debug("Running {} camel retransfers{}", numRecords, rq.getOnlySinkId());

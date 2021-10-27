@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.out.jpa.impl;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +23,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 
-import java.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +50,8 @@ public class AsyncMessageUpdater implements IAsyncMessageUpdater {
     protected final EntityManagerFactory emf = Jdp.getRequired(EntityManagerFactory.class);
 
     @Override
-    public void updateMessage(Long objectRef, ExportStatusEnum newStatus, Integer httpCode, Integer clientCode, String clientReference) {
+    public void updateMessage(final Long objectRef, final ExportStatusEnum newStatus, final Integer httpCode,
+      final Integer clientCode, String clientReference) {
         final EntityManager em = emf.createEntityManager();
         final int allowedLength = AsyncMessageDTO.meta$$reference.getLength();
         if (clientReference != null && clientReference.length() > allowedLength)
@@ -74,7 +75,7 @@ public class AsyncMessageUpdater implements IAsyncMessageUpdater {
     public List<AsyncQueueDTO> getActiveQueues() {
         final EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
-        TypedQuery<AsyncQueueEntity> query = em.createQuery("SELECT q FROM AsyncQueueEntity q WHERE q.isActive = :active", AsyncQueueEntity.class);
+        final TypedQuery<AsyncQueueEntity> query = em.createQuery("SELECT q FROM AsyncQueueEntity q WHERE q.isActive = :active", AsyncQueueEntity.class);
         query.setParameter("active", Boolean.TRUE);
         final List<AsyncQueueEntity> results = query.getResultList();
         em.getTransaction().commit();
@@ -83,19 +84,22 @@ public class AsyncMessageUpdater implements IAsyncMessageUpdater {
 
         LOGGER.info("Reading async queues: {} queues found", results.size());
         final List<AsyncQueueDTO> resultDTOs = new ArrayList<>(results.size());
-        for (AsyncQueueEntity q: results)
+        for (final AsyncQueueEntity q: results) {
             resultDTOs.add(q.ret$Data());
+        }
         return resultDTOs;
     }
 
     @Override
-    public AsyncChannelDTO readChannelConfig(String channelId, Long tenantRef) {
+    public AsyncChannelDTO readChannelConfig(final String channelId, final Long tenantRef) {
         LOGGER.debug("Reading async channel configuration for channelId {}, tenantRef {}", channelId, tenantRef);
         final EntityManager em = emf.createEntityManager();
         List<AsyncChannelEntity> results = null;
         try {
             em.getTransaction().begin();
-            TypedQuery<AsyncChannelEntity> query = em.createQuery("SELECT cfg FROM AsyncChannelEntity cfg WHERE cfg.asyncChannelId = :channelId and cfg.tenantRef = :tenantRef", AsyncChannelEntity.class);
+            final TypedQuery<AsyncChannelEntity> query
+              = em.createQuery("SELECT cfg FROM AsyncChannelEntity cfg WHERE cfg.asyncChannelId = :channelId and cfg.tenantRef = :tenantRef",
+                AsyncChannelEntity.class);
             query.setParameter("tenantRef", tenantRef);
             query.setParameter("channelId", channelId);
             results = query.getResultList();
@@ -106,7 +110,7 @@ public class AsyncMessageUpdater implements IAsyncMessageUpdater {
         }
         if (results.size() != 1)
             throw new T9tException(T9tException.RECORD_DOES_NOT_EXIST, "ChannelId " + channelId + " for tenant " + tenantRef);
-        AsyncChannelDTO dto = results.get(0).ret$Data();
+        final AsyncChannelDTO dto = results.get(0).ret$Data();
         dto.freeze();  // ensure it stays immutable in cache
         return dto;
     }

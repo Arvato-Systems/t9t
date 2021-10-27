@@ -36,8 +36,8 @@ import com.arvatosystems.t9t.io.CommunicationTargetChannelType;
 import com.arvatosystems.t9t.io.DataSinkCategoryType;
 import com.arvatosystems.t9t.io.DataSinkDTO;
 import com.arvatosystems.t9t.io.DataSinkRef;
-import com.arvatosystems.t9t.io.InputProcessingType;
 import com.arvatosystems.t9t.io.IOTools;
+import com.arvatosystems.t9t.io.InputProcessingType;
 import com.arvatosystems.t9t.io.T9tIOException;
 import com.arvatosystems.t9t.io.event.DataSinkChangedEvent;
 import com.arvatosystems.t9t.io.jpa.entities.DataSinkEntity;
@@ -55,7 +55,8 @@ import de.jpaw.bonaparte.pojos.api.media.MediaType;
 import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 import de.jpaw.dp.Jdp;
 
-public class DataSinkCrudRequestHandler extends AbstractCrudSurrogateKey42RequestHandler<DataSinkRef, DataSinkDTO, FullTrackingWithVersion, DataSinkCrudRequest, DataSinkEntity> {
+public class DataSinkCrudRequestHandler extends AbstractCrudSurrogateKey42RequestHandler<DataSinkRef, DataSinkDTO,
+  FullTrackingWithVersion, DataSinkCrudRequest, DataSinkEntity> {
     private static final Logger LOGGER = LoggerFactory.getLogger(DataSinkCrudRequestHandler.class);
 
     private static final String[] FORBIDDEN_FILE_PATH_ELEMENTS = { ":", "\\", "../" };
@@ -69,12 +70,12 @@ public class DataSinkCrudRequestHandler extends AbstractCrudSurrogateKey42Reques
     private final IExecutor executor = Jdp.getRequired(IExecutor.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, DataSinkCrudRequest crudRequest) throws Exception {
-        DataSinkDTO data = crudRequest.getData();
-        if (data != null) {
-            // normalize by tenantId
-            // not required ATM, since no object ref specified ... if (data.getTenantRef()...)
-        }
+    public ServiceResponse execute(final RequestContext ctx, final DataSinkCrudRequest crudRequest) throws Exception {
+        final DataSinkDTO data = crudRequest.getData();
+//        if (data != null) {
+//            // normalize by tenantId
+//            // not required ATM, since no object ref specified ... if (data.getTenantRef()...)
+//        }
 
         // Validation for operation CREATE, MERGE & UPDATE
         if (crudRequest.getCrud() == OperationType.CREATE
@@ -117,14 +118,15 @@ public class DataSinkCrudRequestHandler extends AbstractCrudSurrogateKey42Reques
 
     // do a plausibility check to prevent the creation of incorrect data
     // TODO this method is too complex. Refactor in a simplere on with less ifs..
-    protected void checkConfiguration(DataSinkDTO intended) {
+    protected void checkConfiguration(final DataSinkDTO intended) {
         final MediaTypeDescriptor desc = MediaTypeInfo.getFormatByType(intended.getCommFormatType());
-        final MediaType baseType = intended.getCommFormatType().getBaseEnum() instanceof MediaType ? (MediaType)intended.getCommFormatType().getBaseEnum() : null;
+        final MediaType baseType = intended.getCommFormatType().getBaseEnum() instanceof MediaType
+          ? (MediaType)intended.getCommFormatType().getBaseEnum() : null;
 
         // if category is "REPORT", then only CSV, XLS and PDF are allowed (or a delegation to the report config)
-        Enum<?> anyEnum = intended.getCategory().getBaseEnum();
+        final Enum<?> anyEnum = intended.getCategory().getBaseEnum();
         if (anyEnum instanceof DataSinkCategoryType) {
-            DataSinkCategoryType baseEnum = (DataSinkCategoryType)anyEnum;   // Why can't I just switch on any Enum? Java is sooo great! :-(
+            final DataSinkCategoryType baseEnum = (DataSinkCategoryType)anyEnum;   // Why can't I just switch on any Enum? Java is sooo great! :-(
             switch (baseEnum) {
             case REPORT:
                 switch (intended.getCommTargetChannelType()) {
@@ -152,9 +154,9 @@ public class DataSinkCrudRequestHandler extends AbstractCrudSurrogateKey42Reques
                 break;
             case USER_DATA:
             case DATA_EXPORT:
-                if ((desc != null && desc.getFormatCategory() == MediaCategory.RECORDS) ||
-                    MediaType.UNDEFINED.equals(baseType) ||
-                    MediaType.USER_DEFINED.equals(baseType)) {
+                if ((desc != null && desc.getFormatCategory() == MediaCategory.RECORDS)
+                  || MediaType.UNDEFINED == baseType
+                  || MediaType.USER_DEFINED == baseType) {
                     break;
                 }
                 throw new T9tException(T9tException.DATASINK_UNSUPPORTED_FORMAT, "data export output does not support "
@@ -201,9 +203,9 @@ public class DataSinkCrudRequestHandler extends AbstractCrudSurrogateKey42Reques
             }
         }
         if (intended.getPreTransformerName() != null) {
-            final IDataSinkDefaultConfigurationProvider configPresetProvider = isInput ?
-              Jdp.getRequired(IInputDataTransformer.class,     intended.getPreTransformerName()) :
-              Jdp.getRequired(IPreOutputDataTransformer.class, intended.getPreTransformerName());
+            final IDataSinkDefaultConfigurationProvider configPresetProvider = isInput
+              ? Jdp.getRequired(IInputDataTransformer.class,     intended.getPreTransformerName())
+              : Jdp.getRequired(IPreOutputDataTransformer.class, intended.getPreTransformerName());
             // if we use XML, but no root element has been specified, populate it by defaults
             if (intended.getCommFormatType().getBaseEnum() == MediaType.XML && intended.getXmlRootElementName() == null) {
                 LOGGER.info("Storing XML configuratiom without root element: auto-filling fields");
@@ -213,19 +215,19 @@ public class DataSinkCrudRequestHandler extends AbstractCrudSurrogateKey42Reques
     }
 
     @Override
-    protected final void validateUpdate(DataSinkEntity current, DataSinkDTO intended) {
+    protected final void validateUpdate(final DataSinkEntity current, final DataSinkDTO intended) {
         // test to avoid changing data of a different tenant, or changing the tenant at all
         checkConfiguration(intended);
         validateEncoding(intended);
 
-        boolean isInput = Boolean.TRUE.equals(intended.getIsInput());
+        final boolean isInput = Boolean.TRUE.equals(intended.getIsInput());
         if (intended.getCommTargetChannelType().equals(CommunicationTargetChannelType.FILE) && (!isInput)) {
             validateFilePathPattern(intended.getFileOrQueueNamePattern());
             validateCamelRoutingParams(intended);
         }
     }
 
-    private static void validateCamelRoutingParams(DataSinkDTO intended) {
+    private static void validateCamelRoutingParams(final DataSinkDTO intended) {
         if (intended.getCamelRoute() == null) {
             return;
         }
@@ -248,19 +250,19 @@ public class DataSinkCrudRequestHandler extends AbstractCrudSurrogateKey42Reques
     }
 
     @Override
-    protected final void validateCreate(DataSinkDTO intended) {
+    protected final void validateCreate(final DataSinkDTO intended) {
         checkConfiguration(intended);
         validateEncoding(intended);
 
-        boolean isInput = Boolean.TRUE.equals(intended.getIsInput());
+        final boolean isInput = Boolean.TRUE.equals(intended.getIsInput());
         if (intended.getCommTargetChannelType().equals(CommunicationTargetChannelType.FILE) && (!isInput)) {
             validateFilePathPattern(intended.getFileOrQueueNamePattern());
             validateCamelRoutingParams(intended);
         }
     }
 
-    private static void validateFilePathPattern(String pattern) {
-        for (String vorbiddenElement : FORBIDDEN_FILE_PATH_ELEMENTS) {
+    private static void validateFilePathPattern(final String pattern) {
+        for (final String vorbiddenElement : FORBIDDEN_FILE_PATH_ELEMENTS) {
             if (pattern.contains(vorbiddenElement)) {
                 throw new T9tException(T9tIOException.FORBIDDEN_FILE_PATH_ELEMENTS);
             }
@@ -272,7 +274,7 @@ public class DataSinkCrudRequestHandler extends AbstractCrudSurrogateKey42Reques
         }
     }
 
-    private void validateEncoding(DataSinkDTO intended) {
+    private void validateEncoding(final DataSinkDTO intended) {
         if (intended.getOutputEncoding() != null) {
             try {
                 Charset.forName(intended.getOutputEncoding());

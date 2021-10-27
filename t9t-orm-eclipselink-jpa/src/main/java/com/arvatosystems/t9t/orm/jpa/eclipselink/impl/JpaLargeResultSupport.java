@@ -44,10 +44,10 @@ public class JpaLargeResultSupport<E> implements IJpaLargeResultSupport<E> {
 
 
     @Override
-    public void start(EntityManager em, TypedQuery<E> query, int chunkSize) {
-        this.em = em;
-        this.chunkSize = chunkSize;
-        currentIndex = chunkSize;
+    public void start(final EntityManager withEM, final TypedQuery<E> query, final int withChunkSize) {
+        this.em = withEM;
+        this.chunkSize = withChunkSize;
+        currentIndex = withChunkSize;
         query.setHint("eclipselink.cursor.scrollable", true);
         scrollableCursor = (ScrollableCursor) query; // Is there a typed<E> ScrollableCursor? I did not find one.
     }
@@ -75,7 +75,7 @@ public class JpaLargeResultSupport<E> implements IJpaLargeResultSupport<E> {
     }
 
     @Override
-    public void end(TypedQuery<E> query) {
+    public void end(final TypedQuery<E> query) {
         scrollableCursor = null;
         currentSet = null;
         em = null;

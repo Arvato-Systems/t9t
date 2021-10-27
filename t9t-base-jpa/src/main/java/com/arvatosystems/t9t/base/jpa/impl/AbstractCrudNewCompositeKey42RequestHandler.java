@@ -42,16 +42,16 @@ public abstract class AbstractCrudNewCompositeKey42RequestHandler<
 
     // execute function of the interface description, but additional parameters
     // required in order to work around type erasure
-    public NewCrudCompositeKeyResponse<REF, KEY, DTO, TRACKING> execute(RequestContext ctx, IEntityMapper42<KEY, DTO, TRACKING, ENTITY> mapper,
-            IResolverNewCompositeKey42<REF, KEY, TRACKING, ENTITY> resolver, REQUEST crudRequest) {
+    public NewCrudCompositeKeyResponse<REF, KEY, DTO, TRACKING> execute(final RequestContext ctx, final IEntityMapper42<KEY, DTO, TRACKING, ENTITY> mapper,
+            final IResolverNewCompositeKey42<REF, KEY, TRACKING, ENTITY> resolver, final REQUEST crudRequest) {
 
         // fields are set as required
         validateParameters(crudRequest, crudRequest.getKey() == null);
 
-        NewCrudCompositeKeyResponse<REF, KEY, DTO, TRACKING> rs = new NewCrudCompositeKeyResponse<REF, KEY, DTO, TRACKING>();
+        final NewCrudCompositeKeyResponse<REF, KEY, DTO, TRACKING> rs = new NewCrudCompositeKeyResponse<>();
         ENTITY result;
 
-        EntityManager entityManager = jpaContextProvider.get().getEntityManager(); // copy it as we need it several times
+        final EntityManager entityManager = jpaContextProvider.get().getEntityManager(); // copy it as we need it several times
 
         try {
             switch (crudRequest.getCrud()) {
@@ -107,12 +107,12 @@ public abstract class AbstractCrudNewCompositeKey42RequestHandler<
             }
             rs.setReturnCode(0);
             return rs;
-        } catch (T9tException e) {
+        } catch (final T9tException e) {
             // careful! Catching only ApplicationException masks standard T9tExceptions such as RECORD_INACTIVE or RECORD_NOT_FOUND!
             // We must return the original exception if we got a T9tException already!
             // Therefore this catch is essential!
             throw e;
-        } catch (ApplicationException e) {
+        } catch (final ApplicationException e) {
             throw new T9tException(T9tException.ENTITY_DATA_MAPPING_EXCEPTION, "Tracking columns: "
                     + e.toString());
         }

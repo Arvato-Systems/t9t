@@ -28,11 +28,11 @@ import de.jpaw.dp.Jdp;
 public class GetDataSinkPresetRequestHandler extends AbstractReadOnlyRequestHandler<GetDataSinkPresetRequest> {
 
     @Override
-    public GetDataSinkPresetsResponse execute(RequestContext ctx, GetDataSinkPresetRequest rq) {
+    public GetDataSinkPresetsResponse execute(final RequestContext ctx, final GetDataSinkPresetRequest rq) {
         final boolean isInput = Boolean.TRUE.equals(rq.getIsInput());
-        final IDataSinkDefaultConfigurationProvider configPresetProvider = isInput ?
-                Jdp.getRequired(IInputDataTransformer.class,     rq.getQualifier()) :
-                Jdp.getRequired(IPreOutputDataTransformer.class, rq.getQualifier());
+        final IDataSinkDefaultConfigurationProvider configPresetProvider = isInput
+          ? Jdp.getRequired(IInputDataTransformer.class,     rq.getQualifier())
+          : Jdp.getRequired(IPreOutputDataTransformer.class, rq.getQualifier());
         final GetDataSinkPresetsResponse resp = new GetDataSinkPresetsResponse();
         resp.setPreset(configPresetProvider.getDefaultConfiguration(isInput));
         return resp;

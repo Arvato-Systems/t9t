@@ -32,7 +32,8 @@ import com.arvatosystems.t9t.out.services.IAsyncQueue;
 
 import de.jpaw.dp.Jdp;
 
-public class AsyncQueueCrudRequestHandler extends AbstractCrudSurrogateKey42RequestHandler<AsyncQueueRef, AsyncQueueDTO, FullTrackingWithVersion, AsyncQueueCrudRequest, AsyncQueueEntity> {
+public class AsyncQueueCrudRequestHandler extends AbstractCrudSurrogateKey42RequestHandler<AsyncQueueRef, AsyncQueueDTO,
+  FullTrackingWithVersion, AsyncQueueCrudRequest, AsyncQueueEntity> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AsyncQueueCrudRequestHandler.class);
     protected final IAsyncQueueEntityResolver resolver  = Jdp.getRequired(IAsyncQueueEntityResolver.class);
     protected final IAsyncQueueDTOMapper      mapper    = Jdp.getRequired(IAsyncQueueDTOMapper.class);

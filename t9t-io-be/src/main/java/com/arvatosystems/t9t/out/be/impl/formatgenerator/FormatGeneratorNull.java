@@ -23,6 +23,11 @@ import de.jpaw.dp.Named;
 @Named("NULL")
 public class FormatGeneratorNull extends AbstractFormatGenerator {
 
-    @Override protected void openHook() { }  // no exception if called with foldable parameters
-    @Override public void generateData(int recordNo, int mappedRecordNo, long recordId, String partitionKey, String recordKey, BonaPortable record) { }
+    @Override
+    protected void openHook() { }  // no exception if called with foldable parameters
+
+    @Override
+    public void generateData(final int recordNo, final int mappedRecordNo, final long recordId, final String partitionKey, final String recordKey,
+      final BonaPortable record) {
+    }
 }

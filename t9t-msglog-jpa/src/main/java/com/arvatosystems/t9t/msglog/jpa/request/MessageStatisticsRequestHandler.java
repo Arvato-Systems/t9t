@@ -29,7 +29,7 @@ public class MessageStatisticsRequestHandler extends AbstractSearchRequestHandle
     protected final IMessageStatisticsDTOMapper mapper = Jdp.getRequired(IMessageStatisticsDTOMapper.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, MessageStatisticsSearchRequest request) throws Exception {
+    public ServiceResponse execute(final RequestContext ctx, final MessageStatisticsSearchRequest request) throws Exception {
         return mapper.createReadAllResponse(resolver.search(request, null), request.getSearchOutputTarget());
     }
 }

@@ -40,7 +40,7 @@ public class DebugFlags implements IDebugFlags {
     protected final Cache<Long, ConcurrentMap<String, String>> settingsStore
         = CacheBuilder.newBuilder().expireAfterWrite(15L, TimeUnit.MINUTES).<Long, ConcurrentMap<String, String>>build();
 
-    protected Long getSession(RequestContext ctx) {
+    protected Long getSession(final RequestContext ctx) {
         return ctx.internalHeaderParameters.getJwtInfo().getSessionRef();
     }
 
@@ -50,17 +50,17 @@ public class DebugFlags implements IDebugFlags {
     }
 
     @Override
-    public ConcurrentMap<String, String> getAllFlags(RequestContext ctx) {
+    public ConcurrentMap<String, String> getAllFlags(final RequestContext ctx) {
         return settingsStore.getIfPresent(getSession(ctx));
     }
 
     @Override
-    public String getFlag(String flag) {
+    public String getFlag(final String flag) {
         return getFlag(ctxProvider.get(), flag);
     }
 
     @Override
-    public String getFlag(RequestContext ctx, String flag) {
+    public String getFlag(final RequestContext ctx, final String flag) {
         final ConcurrentMap<String, String> map = getAllFlags(ctx);
         if (map == null)
             return null;
@@ -75,8 +75,8 @@ public class DebugFlags implements IDebugFlags {
             settingsStore.invalidate(sessionRef);
         }
         // create a new store, if none exists
-        final ConcurrentMap<String, String> map = settingsStore.get(sessionRef, () -> new ConcurrentHashMap<String, String>(2 * newFlags.size()));
-        for (Map.Entry<String, String> entry: newFlags.entrySet()) {
+        final ConcurrentMap<String, String> map = settingsStore.get(sessionRef, () -> new ConcurrentHashMap<>(2 * newFlags.size()));
+        for (final Map.Entry<String, String> entry: newFlags.entrySet()) {
             if (entry.getValue() == null) {
                 LOGGER.debug("Clearing DebugFlag {}", entry.getKey());
                 map.remove(entry.getKey());

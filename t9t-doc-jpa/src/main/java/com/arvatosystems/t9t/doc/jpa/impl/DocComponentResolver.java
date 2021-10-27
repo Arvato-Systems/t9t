@@ -36,7 +36,7 @@ public class DocComponentResolver extends AbstractJpaResolver<DocComponentRef, D
     }
 
     @Override
-    public DocComponentRef createKey(Long ref) {
+    public DocComponentRef createKey(final Long ref) {
         return ref == null ? null : new DocComponentRef(ref);
     }
 }

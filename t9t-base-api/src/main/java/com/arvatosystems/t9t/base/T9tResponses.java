@@ -29,17 +29,17 @@ public final class T9tResponses {
     private T9tResponses() { }
 
     /** Create a ServiceResponse, using a provided error code (or OK). */
-    public static ServiceResponse createOk(int returnCode) {
-        ServiceResponse response = new ServiceResponse();
+    public static ServiceResponse createOk(final int returnCode) {
+        final ServiceResponse response = new ServiceResponse();
         response.setReturnCode(returnCode);
         return response;
     }
 
     /** Create a ServiceResponse, using a provided error code (or OK). */
-    public static ServiceResponse createServiceResponse(int errorCode, String errorDetails) {
-        ServiceResponse response = new ServiceResponse();
+    public static ServiceResponse createServiceResponse(final int errorCode, final String errorDetails) {
+        final ServiceResponse response = new ServiceResponse();
         if (errorCode > T9tConstants.MAX_OK_RETURN_CODE) {
-            String errorMessage = T9tException.codeToString(errorCode);
+            final String errorMessage = T9tException.codeToString(errorCode);
             LOGGER.error("returning error code " + errorCode + " with details " + errorDetails + " for reason " + errorMessage);
             response.setErrorMessage(MessagingUtil.truncErrorMessage(errorMessage));
         } else {
@@ -51,7 +51,7 @@ public final class T9tResponses {
     }
 
     /** Defines the error message contents based on some exception. */
-    public static String errorMessage(Exception e) {
+    public static String errorMessage(final Exception e) {
         if (e instanceof ApplicationException) {
             // application exception
             return MessagingUtil.truncErrorMessage(((ApplicationException)e).getLocalizedStandardDescription());

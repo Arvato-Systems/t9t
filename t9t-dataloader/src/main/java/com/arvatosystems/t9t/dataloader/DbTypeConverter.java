@@ -113,7 +113,7 @@ public class DbTypeConverter {
         case Types.REAL:
         case Types.FLOAT:
         case Types.DOUBLE:
-            result = new BigDecimal(0);
+            result = BigDecimal.ZERO;
             break;
 
         case Types.BIT:
@@ -122,11 +122,11 @@ public class DbTypeConverter {
 
         case Types.TINYINT:
         case Types.INTEGER:
-            result = new Integer(0);
+            result = Integer.valueOf(0);
             break;
 
         case Types.BIGINT:
-            result = new Long(0);
+            result = Long.valueOf(0);
             break;
 
         case Types.BINARY:
@@ -196,7 +196,7 @@ public class DbTypeConverter {
         Integer result = null;
         if (!Util.isBlank(inputValue)) {
             try {
-                return new Integer(inputValue);
+                return Integer.valueOf(inputValue);
             } catch (NumberFormatException ex) {
                 throw new ConvertException("Can't parse Integer value: " + inputValue);
             }
@@ -222,7 +222,7 @@ public class DbTypeConverter {
         Long result = null;
         if (!Util.isBlank(inputValue)) {
             try {
-                result = new Long(inputValue);
+                result = Long.valueOf(inputValue);
             } catch (NumberFormatException ex) {
                 throw new ConvertException("Can't parse Long value: " + inputValue);
             }

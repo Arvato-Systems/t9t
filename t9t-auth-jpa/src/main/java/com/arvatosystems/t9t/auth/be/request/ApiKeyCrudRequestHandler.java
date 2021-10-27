@@ -30,14 +30,15 @@ import com.arvatosystems.t9t.base.services.RequestContext;
 import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.dp.Jdp;
 
-public class ApiKeyCrudRequestHandler extends AbstractCrudSurrogateKey42RequestHandler  <ApiKeyRef, ApiKeyDTO, FullTrackingWithVersion, ApiKeyCrudRequest, ApiKeyEntity> {
+public class ApiKeyCrudRequestHandler extends
+  AbstractCrudSurrogateKey42RequestHandler<ApiKeyRef, ApiKeyDTO, FullTrackingWithVersion, ApiKeyCrudRequest, ApiKeyEntity> {
 
     private final IApiKeyDTOMapper mapper = Jdp.getRequired(IApiKeyDTOMapper.class);
     private final IApiKeyEntityResolver resolver = Jdp.getRequired(IApiKeyEntityResolver.class);
     protected final IAuthCacheInvalidation cacheInvalidator = Jdp.getRequired(IAuthCacheInvalidation.class);
 
     @Override
-    public CrudSurrogateKeyResponse<ApiKeyDTO, FullTrackingWithVersion> execute(RequestContext ctx, ApiKeyCrudRequest crudRequest) {
+    public CrudSurrogateKeyResponse<ApiKeyDTO, FullTrackingWithVersion> execute(final RequestContext ctx, final ApiKeyCrudRequest crudRequest) {
         final CrudSurrogateKeyResponse<ApiKeyDTO, FullTrackingWithVersion> result = execute(ctx, mapper, resolver, crudRequest);
         if (crudRequest.getCrud() != OperationType.READ) {
             final String apiKey = result.getData() != null ? result.getData().getApiKey().toString() : null;

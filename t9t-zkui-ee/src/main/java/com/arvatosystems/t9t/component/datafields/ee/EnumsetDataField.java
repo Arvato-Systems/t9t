@@ -44,10 +44,10 @@ public class EnumsetDataField<E extends Enum<E>, T extends GenericEnumSetMarker<
     protected final EnumDefinition ed;
     protected final EnumSetDefinition baseEnumset;
     protected final Class<T> enumsetClass;
-    protected final Map<E, ComboBoxItem2<E>> cbItems = new HashMap<E, ComboBoxItem2<E>>();
+    protected final Map<E, ComboBoxItem2<E>> cbItems = new HashMap<>();
     protected final Set<String> enumRestrictions;
 
-    public EnumsetDataField(DataFieldParameters params, String enumDtoRestrictions) {
+    public EnumsetDataField(final DataFieldParameters params, final String enumDtoRestrictions) {
         super(params);
         this.baseEnumset = (cfg instanceof AlphanumericEnumSetDataItem)
             ? ((AlphanumericEnumSetDataItem)cfg).getBaseEnumset()
@@ -60,13 +60,13 @@ public class EnumsetDataField<E extends Enum<E>, T extends GenericEnumSetMarker<
             LOGGER.debug("enumset {} for field {} restricted to {} instances", ed.getName(), getFieldName(), enumRestrictions.size());
 
         c.setHflex("1");
-        Map<String, String> translations = as.translateEnum(ed.getName());
-        Class<Enum> enumClass = ed.getClassRef();
-        List<E> instances = new ArrayList<E>(ed.getIds().size());
-        for (String s: ed.getIds()) {
+        final Map<String, String> translations = as.translateEnum(ed.getName());
+        final Class<Enum> enumClass = ed.getClassRef();
+        final List<E> instances = new ArrayList<>(ed.getIds().size());
+        for (final String s: ed.getIds()) {
             if (enumRestrictions == null || enumRestrictions.contains(s)) {
-                String xlation = translations.get(s);
-                E e = (E) Enum.valueOf(enumClass, s);
+                final String xlation = translations.get(s);
+                final E e = (E) Enum.valueOf(enumClass, s);
                 instances.add(e);
                 // newComboItem((T)e, xlation == null ? s : xlation);
             }
@@ -93,9 +93,9 @@ public class EnumsetDataField<E extends Enum<E>, T extends GenericEnumSetMarker<
 
     @Override
     public T getValue() {
-        Set<E> data = c.getSelectedObjects();
+        final Set<E> data = c.getSelectedObjects();
         try {
-            T instance = enumsetClass.newInstance();
+            final T instance = enumsetClass.newInstance();
             instance.assign(data);
             LOGGER.debug("{}.getData() returning {}", getFieldName(), instance);
             return instance;
@@ -106,7 +106,7 @@ public class EnumsetDataField<E extends Enum<E>, T extends GenericEnumSetMarker<
     }
 
     @Override
-    public void setValue(T data) {
+    public void setValue(final T data) {
         LOGGER.debug("{}.setData({})", getFieldName(), data);
         if (data == null) {
             clear();
@@ -124,7 +124,7 @@ public class EnumsetDataField<E extends Enum<E>, T extends GenericEnumSetMarker<
 //    }
 
     @Override
-    public void setDisabled(boolean disabled) {
+    public void setDisabled(final boolean disabled) {
         c.setDisabled(disabled);
     }
 }

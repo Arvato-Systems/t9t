@@ -28,11 +28,11 @@ import de.jpaw.dp.Singleton;
 public class QueryHintSetter implements IQueryHintSetter {
 
     @Override
-    public void setReadOnly(Query query) {
+    public void setReadOnly(final Query query) {
         query.setHint(QueryHints.READ_ONLY, HintValues.TRUE);
     }
 
     @Override
-    public void setComment(Query query, String text) {
+    public void setComment(final Query query, final String text) {
     }
 }

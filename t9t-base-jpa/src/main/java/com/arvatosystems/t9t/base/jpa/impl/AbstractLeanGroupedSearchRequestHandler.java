@@ -38,19 +38,19 @@ public class AbstractLeanGroupedSearchRequestHandler<S extends LeanGroupedSearch
     protected final Function<E, Description> mapper;
 
     protected AbstractLeanGroupedSearchRequestHandler(
-            IResolverSurrogateKey42<?, ?, E> resolver,
-            Function<E, Long> getGroup,
-            Function<E, Description> mapper) {
+            final IResolverSurrogateKey42<?, ?, E> resolver,
+            final Function<E, Long> getGroup,
+            final Function<E, Description> mapper) {
         this.resolver = resolver;
         this.getGroup = getGroup;
         this.mapper = mapper;
     }
 
     @Override
-    public LeanGroupedSearchResponse execute(RequestContext ctx, S rq) {
+    public LeanGroupedSearchResponse execute(final RequestContext ctx, final S rq) {
         final List<E> result = resolver.search(rq);
         final Map<Long, DescriptionList> results = new HashMap<>();
-        for (E e : result) {
+        for (final E e : result) {
             // get a first mapping (id, name)
             final Description d = mapper.apply(e);
             // set common fields...
@@ -64,7 +64,7 @@ public class AbstractLeanGroupedSearchRequestHandler<S extends LeanGroupedSearch
                 (x) -> new DescriptionList(new ArrayList<Description>())
             ).getDescriptions().add(d);
         }
-        LeanGroupedSearchResponse resp = new LeanGroupedSearchResponse();
+        final LeanGroupedSearchResponse resp = new LeanGroupedSearchResponse();
         resp.setResults(results);
         return resp;
     }

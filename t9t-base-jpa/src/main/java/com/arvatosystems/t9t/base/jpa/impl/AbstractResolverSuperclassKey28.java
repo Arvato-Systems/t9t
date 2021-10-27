@@ -45,21 +45,21 @@ public abstract class AbstractResolverSuperclassKey28<
      *
      * If no matching type is found, the method should always fall back and return super.resolverNestedRefs() to allow nested implementations.
      * */
-    protected REF resolveNestedRefs(REF arg) {
+    protected REF resolveNestedRefs(final REF arg) {
         return arg;
     }
 
     @Override
-    public ENTITY getEntityData(REF entityRef, boolean onlyActive) {
+    public ENTITY getEntityData(REF entityRef, final boolean onlyActive) {
         if (entityRef == null) {
             return null;        // play null-safe
         }
 
-        Class<KEY> keyClass = getKeyClass();
+        final Class<KEY> keyClass = getKeyClass();
         entityRef = resolveNestedRefs(entityRef);
         if (keyClass.isAssignableFrom(entityRef.getClass())) {
             // access via primary key or supertype of it
-            KEY key = (keyClass != entityRef.getClass()) ? entityRef.copyAs(keyClass) : (KEY) entityRef;  // if it's some supertype: copy it down!
+            final KEY key = (keyClass != entityRef.getClass()) ? entityRef.copyAs(keyClass) : (KEY) entityRef;  // if it's some supertype: copy it down!
             return getEntityDataForKey(key, onlyActive);
         }
         return getEntityDataByGenericKey(entityRef, onlyActive);

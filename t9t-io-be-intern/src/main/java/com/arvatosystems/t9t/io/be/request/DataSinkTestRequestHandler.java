@@ -16,7 +16,6 @@
 package com.arvatosystems.t9t.io.be.request;
 
 import java.math.BigDecimal;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -34,12 +33,12 @@ import de.jpaw.dp.Jdp;
 public class DataSinkTestRequestHandler extends AbstractRequestHandler<DataSinkTestRequest> {
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, DataSinkTestRequest request) throws Exception {
+    public ServiceResponse execute(final RequestContext ctx, final DataSinkTestRequest request) throws Exception {
         // Obtain a session first
-        OutputSessionParameters sessionParams = new OutputSessionParameters();
+        final OutputSessionParameters sessionParams = new OutputSessionParameters();
         sessionParams.setDataSinkId(request.getDataSinkId());
 
-        DemoRecord r = new DemoRecord(0, new BigDecimal("-3.14"), "Hello, world", LocalDate.now(), LocalDateTime.now(), null, true, false);
+        final DemoRecord r = new DemoRecord(0, new BigDecimal("-3.14"), "Hello, world", LocalDate.now(), LocalDateTime.now(), null, true, false);
         Long sinkRef = null;
 
         try (IOutputSession os = Jdp.getRequired(IOutputSession.class)) {
@@ -56,7 +55,7 @@ public class DataSinkTestRequestHandler extends AbstractRequestHandler<DataSinkT
 //        } finally {
 //            os.close();
         }
-        SinkCreatedResponse response = new SinkCreatedResponse();
+        final SinkCreatedResponse response = new SinkCreatedResponse();
         response.setReturnCode(0);
         response.setSinkRef(sinkRef);
         return response;

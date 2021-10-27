@@ -40,7 +40,7 @@ public interface IResolverAnyKey42<
      * @param e
      * @return the tenantRef
      */
-    public Long getTenantRef(ENTITY e);
+    Long getTenantRef(ENTITY e);
 
     /**
      * Returns the mapped tenantRef for this entity. This is by default identical to the current tenantRef, but may be overridden for specific tenants in
@@ -49,22 +49,22 @@ public interface IResolverAnyKey42<
      *
      * @return the tenantRef to use for the database
      */
-    public Long getSharedTenantRef();
+    Long getSharedTenantRef();
 
     /** Sets the entity's tenantRef without the use of reflection, or NOOP if the entity does not contain
      * a tenantRef field.
      * @param e - an instance of the Entity
      * @param tenantRef - the tenant to be set (if null, the current call's tenant ref wil be used)
      */
-    public void setTenantRef(ENTITY e, Long tenantRef);
+    void setTenantRef(ENTITY e, Long tenantRef);
 
     /**
      * Returns true if the current tenant is allowed to see a record of tenant (tenantRef). The tenant passed must be the final (possibly mapped) tenant.
      */
-    public boolean readAllowed(Long tenantRef);
+    boolean readAllowed(Long tenantRef);
 
     /**
      * Returns true if the current tenant is allowed to write a record of tenant (tenantRef). The tenant passed must be the final (possibly mapped) tenant.
      */
-    public boolean writeAllowed(Long tenantRef);
+    boolean writeAllowed(Long tenantRef);
 }

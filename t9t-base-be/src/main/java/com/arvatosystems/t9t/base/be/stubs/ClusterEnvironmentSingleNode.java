@@ -30,19 +30,19 @@ import de.jpaw.dp.Singleton;
 @Fallback
 public class ClusterEnvironmentSingleNode implements IClusterEnvironment {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClusterEnvironmentSingleNode.class);
-    private final Collection<Integer> SINGLE_NODE = Collections.singletonList(Integer.valueOf(0));
+    private static final Collection<Integer> SINGLE_NODE = Collections.singletonList(Integer.valueOf(0));
 
     public ClusterEnvironmentSingleNode() {
         LOGGER.info("Single node setup - execution is not clustered/distributed");
     }
 
     @Override
-    public Collection<Integer> getListOfShards(Long tenantRef) {
+    public Collection<Integer> getListOfShards(final Long tenantRef) {
         return SINGLE_NODE;
     }
 
     @Override
-    public boolean processOnThisNode(Long tenantRef, int hash) {
+    public boolean processOnThisNode(final Long tenantRef, final int hash) {
         // we process eveything
         return true;
     }

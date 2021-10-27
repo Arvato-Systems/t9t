@@ -38,28 +38,28 @@ public class SimpleBenchmarkRequestHandler extends AbstractRequestHandler<Simple
     protected final IAutonomousExecutor autoExecutor = Jdp.getRequired(IAutonomousExecutor.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, SimpleBenchmarkRequest request) {
+    public ServiceResponse execute(final RequestContext ctx, final SimpleBenchmarkRequest request) {
 
         long minDuration = -1L;
         long maxDuration = -1L;
         long avgDuration = -1L;
         int repeats = request.getNumberOfIterations();
-        RequestParameters rq = request.getRequest();
+        final RequestParameters rq = request.getRequest();
         rq.freeze();  // ensure that the benchmarked requests do not alter the
 
-        long initialTime = System.nanoTime();
+        final long initialTime = System.nanoTime();
         long timeStamp = initialTime;
         long endTime = initialTime;
         while (--repeats >= 0) {
-            RequestParameters rq2 = request.getMustCopyRequest() ? rq.ret$MutableClone(true, true) : rq;
-            ServiceResponse resp = request.getRunAutonomous() ? autoExecutor.execute(ctx, rq2) : messaging.executeSynchronous(ctx, rq2);
+            final RequestParameters rq2 = request.getMustCopyRequest() ? rq.ret$MutableClone(true, true) : rq;
+            final ServiceResponse resp = request.getRunAutonomous() ? autoExecutor.execute(ctx, rq2) : messaging.executeSynchronous(ctx, rq2);
             if (!request.getIgnoreErrors() && !ApplicationException.isOk(resp.getReturnCode())) {
                 LOGGER.error("Invalid return code {}: {} in {}th iteration", resp.getReturnCode(), resp.getErrorDetails(),
                         request.getNumberOfIterations() - repeats);
                 throw new T9tException(resp.getReturnCode(), resp.getErrorDetails());
             }
             endTime = System.nanoTime();
-            long thisTime = endTime - timeStamp;
+            final long thisTime = endTime - timeStamp;
             if (minDuration < 0L || thisTime < minDuration)
                 minDuration = thisTime;
             if (thisTime > maxDuration)
@@ -67,7 +67,7 @@ public class SimpleBenchmarkRequestHandler extends AbstractRequestHandler<Simple
             timeStamp = endTime;  // assign to new start point (avoid duplicate invocation of nanoTime())
         }
 
-        SimpleBenchmarkResponse resp = new SimpleBenchmarkResponse();
+        final SimpleBenchmarkResponse resp = new SimpleBenchmarkResponse();
         if (request.getNumberOfIterations() <= 0) {
             LOGGER.info("Count was 0 - no meaningful average possible");
         } else {

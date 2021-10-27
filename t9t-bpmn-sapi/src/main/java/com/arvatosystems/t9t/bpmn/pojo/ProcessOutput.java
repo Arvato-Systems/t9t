@@ -54,8 +54,8 @@ public final class ProcessOutput {
     }
 
     /**
-     * Get an unmodifiable copy of the internal map from this process output. Note, that only the key/value pairs are unmodifiable, the stored key- and value-objects can still be
-     * changed.
+     * Get an unmodifiable copy of the internal map from this process output.
+     * Note, that only the key/value pairs are unmodifiable, the stored key- and value-objects can still be changed.
      *
      * @return an unmodifiable map with all key/value pairs
      */

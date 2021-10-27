@@ -47,7 +47,7 @@ public class NoTextSearch implements ITextSearch {
     }
 
     @Override
-    public List<Long> search(RequestContext ctx, SearchCriteria sc, String documentName, String resultFieldName) {
+    public List<Long> search(final RequestContext ctx, final SearchCriteria sc, final String documentName, final String resultFieldName) {
         LOGGER.error("No full text search engine has been configured");
         throw new ApplicationException(T9tException.NOT_YET_IMPLEMENTED, documentName);
     }

@@ -33,7 +33,7 @@ public class Main implements Plugin {
     private static final String MAJOR = "1"; // MAJOR
     private static final String MINOR = "0"; // MINOR
 
-    private final IRequestHandlerPlugin INSTANCE = new DemoRequestHandler();
+    private final IRequestHandlerPlugin instance = new DemoRequestHandler();
 
     public static void main(String[] args) {
         System.out.println("t9t Demo plugin version 1.0");
@@ -53,7 +53,7 @@ public class Main implements Plugin {
     @Override
     public List<PluginMethod> getMethods() {
         LOGGER.debug("demoPlugin list of instances requested");
-        return Collections.singletonList(INSTANCE);
+        return Collections.singletonList(instance);
     }
 
     /** Performs a cleanup, before the plugin is unloaded. */

@@ -24,5 +24,5 @@ public interface IJWT {
     String sign(JwtInfo info, Long expiresInSeconds, String algorithmOverride);
 
     /** Decodes a base64 encoded JWT. */
-    JwtInfo decode(final String token);
+    JwtInfo decode(String token);
 }

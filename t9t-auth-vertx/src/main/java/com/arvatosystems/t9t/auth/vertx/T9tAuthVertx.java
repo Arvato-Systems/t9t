@@ -15,6 +15,10 @@
  */
 package com.arvatosystems.t9t.auth.vertx;
 
+import org.eclipse.xtend2.lib.StringConcatenation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.arvatosystems.t9t.authc.api.GetTenantLogoRequest;
 import com.arvatosystems.t9t.authc.api.GetTenantLogoResponse;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
@@ -40,17 +44,12 @@ import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Named;
 import de.jpaw.util.ApplicationException;
-
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
-
-import org.eclipse.xtend2.lib.StringConcatenation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Named("auth")
 @Dependent
@@ -75,7 +74,7 @@ public class T9tAuthVertx implements IServiceModule {
         setup sign-in and internal auth handlers
      */
     @Override
-    public void mountRouters(Router router, Vertx vertx, IMessageCoderFactory<BonaPortable, ServiceResponse, byte[]> coderFactory) {
+    public void mountRouters(final Router router, final Vertx vertx, final IMessageCoderFactory<BonaPortable, ServiceResponse, byte[]> coderFactory) {
         LOGGER.info("Registering module {}", getModuleName());
 
         // add an OPTIONS handler
@@ -87,7 +86,7 @@ public class T9tAuthVertx implements IServiceModule {
         router.get("/api/authc/tenantLogo").handler(getTenantLogoHandler(vertx));
     }
 
-    protected String stripCharset(String s) {
+    protected String stripCharset(final String s) {
         if (s == null) {
             return s;
         }
@@ -100,12 +99,12 @@ public class T9tAuthVertx implements IServiceModule {
         }
     }
 
-    private Handler<RoutingContext> getLoginHandler(Vertx vertx, IMessageCoderFactory<BonaPortable, ServiceResponse, byte[]> coderFactory) {
-        return (RoutingContext rc) -> {
-            String origin = rc.request().headers().get(HttpHeaders.ORIGIN);
-            String ct = stripCharset(rc.request().headers().get(HttpHeaders.CONTENT_TYPE));
+    private Handler<RoutingContext> getLoginHandler(final Vertx vertx, final IMessageCoderFactory<BonaPortable, ServiceResponse, byte[]> coderFactory) {
+        return (final RoutingContext rc) -> {
+            final String origin = rc.request().headers().get(HttpHeaders.ORIGIN);
+            final String ct = stripCharset(rc.request().headers().get(HttpHeaders.CONTENT_TYPE));
 
-            String tag = rc.preferredLanguage() != null ? rc.preferredLanguage().tag() : null;
+            final String tag = rc.preferredLanguage() != null ? rc.preferredLanguage().tag() : null;
             LOGGER.info("Logging in for locale {}, content type {}, origin {}", tag, ct, origin);
 
             if (ct == null) {
@@ -114,10 +113,10 @@ public class T9tAuthVertx implements IServiceModule {
             }
 
             // decode the payload
-            IMessageDecoder<BonaPortable, byte[]> decoder = coderFactory.getDecoderInstance(ct);
-            IMessageEncoder<ServiceResponse, byte[]> encoder = coderFactory.getEncoderInstance(ct);
+            final IMessageDecoder<BonaPortable, byte[]> decoder = coderFactory.getDecoderInstance(ct);
+            final IMessageEncoder<ServiceResponse, byte[]> encoder = coderFactory.getEncoderInstance(ct);
             if (decoder == null || encoder == null) {
-                StringConcatenation builder = new StringConcatenation();
+                final StringConcatenation builder = new StringConcatenation();
                 builder.append("Content-Type ");
                 builder.append(ct);
                 builder.append(" not supported for path /login");
@@ -125,7 +124,7 @@ public class T9tAuthVertx implements IServiceModule {
                 return;
             }
 
-            RoutingContext ctx = rc;
+            final RoutingContext ctx = rc;
 
             String locale = null;
             if (ctx.preferredLanguage() != null && ctx.preferredLanguage().tag() != null) {
@@ -135,9 +134,9 @@ public class T9tAuthVertx implements IServiceModule {
                 locale = "en";
             }
 
-            String dataUri = ctx.request().remoteAddress() != null ? ctx.request().remoteAddress().host() : null;
+            final String dataUri = ctx.request().remoteAddress() != null ? ctx.request().remoteAddress().host() : null;
 
-            SessionParameters session = new SessionParameters();
+            final SessionParameters session = new SessionParameters();
             session.setUserAgent(ctx.request().headers().get(HttpHeaders.USER_AGENT));
             session.setLocale(locale); // fix me: get BCP 47 string here
             session.setDataUri(dataUri);
@@ -147,15 +146,16 @@ public class T9tAuthVertx implements IServiceModule {
             vertx.<Void>executeBlocking(
                 promise -> {
                     try {
-                        long startTs = System.currentTimeMillis();
-                        AuthenticationRequest request = ((AuthenticationRequest) decoder.decode(ctx.getBody().getBytes(), AuthenticationRequest.meta$$this));
+                        final long startTs = System.currentTimeMillis();
+                        final AuthenticationRequest request
+                          = ((AuthenticationRequest) decoder.decode(ctx.getBody().getBytes(), AuthenticationRequest.meta$$this));
 
                         if (request.getSessionParameters() == null) {
                             // set them completely
                             request.setSessionParameters(session);
                         } else {
                             // just overwrite specific fields
-                            SessionParameters s = request.getSessionParameters();
+                            final SessionParameters s = request.getSessionParameters();
                             if (s.getUserAgent() == null) {
                                 s.setUserAgent(session.getUserAgent());
                             }
@@ -167,14 +167,15 @@ public class T9tAuthVertx implements IServiceModule {
                             }
                         }
 
-                        AuthenticationResponse response = this.authModule.login(request);
+                        final AuthenticationResponse response = this.authModule.login(request);
                         if (response.getReturnCode() == 0) {
                             response.setTenantId(response.getJwtInfo().getTenantId());
                         }
 
-                        byte[] respMsg = encoder.encode(response, AuthenticationResponse.meta$$this);
-                        long endTs = System.currentTimeMillis();
-                        LOGGER.info("Processed /login in {} ms with result code {}, response length is {}", (endTs - startTs), response.getReturnCode(), respMsg.length);
+                        final byte[] respMsg = encoder.encode(response, AuthenticationResponse.meta$$this);
+                        final long endTs = System.currentTimeMillis();
+                        LOGGER.info("Processed /login in {} ms with result code {}, response length is {}",
+                          (endTs - startTs), response.getReturnCode(), respMsg.length);
 
                         if (origin != null) {
                             ctx.response().putHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
@@ -182,37 +183,37 @@ public class T9tAuthVertx implements IServiceModule {
                         ctx.response().putHeader(HttpHeaders.CONTENT_TYPE, ct);
                         ctx.response().end(Buffer.buffer(respMsg));
 
-                    } catch (MessageParserException e) {
+                    } catch (final MessageParserException e) {
                         IServiceModule.error(ctx, 400, e.getMessage());
-                    } catch (Exception e) {
+                    } catch (final Exception e) {
                         IServiceModule.error(ctx, 500, e.getMessage());
                     }
                     promise.complete();
                 },
-                asyncResult -> {}
+                asyncResult -> { }
             );
         };
     }
 
-    private Handler<RoutingContext> getTenantLogoHandler(Vertx vertx) {
-        return (RoutingContext rc) -> {
+    private Handler<RoutingContext> getTenantLogoHandler(final Vertx vertx) {
+        return (final RoutingContext rc) -> {
             // request the tenant's logo from the DB
             LOGGER.debug("GET /api/authc/tenantLogo");
 
-            String authHeader = rc.request().headers().get(HttpHeaders.AUTHORIZATION);
+            final String authHeader = rc.request().headers().get(HttpHeaders.AUTHORIZATION);
             if (authHeader == null || authHeader.length() < 8) {
                 LOGGER.debug("Request without authorization header (length = {})", authHeader == null ? -1 : authHeader.length());
                 IServiceModule.error(rc, 401, "HTTP Authorization header missing or too short");
             }
 
-            String origin = rc.request().headers().get(HttpHeaders.ORIGIN);
-            RoutingContext ctx = rc;
+            final String origin = rc.request().headers().get(HttpHeaders.ORIGIN);
+            final RoutingContext ctx = rc;
 
             vertx.<ServiceResponse>executeBlocking(
                 promise -> {
                     try {
                         // get the authentication info
-                        AuthenticationInfo authInfo = this.authenticationProcessor.getCachedJwt(authHeader);
+                        final AuthenticationInfo authInfo = this.authenticationProcessor.getCachedJwt(authHeader);
                         if (authInfo.getEncodedJwt() == null) {
                             // handle error
                             IServiceModule.error(ctx, authInfo.getHttpStatusCode(), authInfo.getMessage());
@@ -220,10 +221,10 @@ public class T9tAuthVertx implements IServiceModule {
                         }
 
                         // Authentication is valid. Now populate the MDC and start processing the request.
-                        JwtInfo jwtInfo = authInfo.getJwtInfo();
+                        final JwtInfo jwtInfo = authInfo.getJwtInfo();
                         promise.complete(this.requestProcessor.execute(null, new GetTenantLogoRequest(), jwtInfo, authInfo.getEncodedJwt(), false));
 
-                    } catch (Exception e) {
+                    } catch (final Exception e) {
                         LOGGER.info("{} in request: {}", e.getClass().getSimpleName(), e.getMessage());
                         promise.fail(e);
                     }
@@ -251,7 +252,7 @@ public class T9tAuthVertx implements IServiceModule {
                         }
                     } else {
                         String msg = null;
-                        Throwable cause = asyncResult.cause();
+                        final Throwable cause = asyncResult.cause();
                         if (cause instanceof ApplicationException) {
                             msg = (cause.getMessage() + ((ApplicationException) cause).getStandardDescription());
                         } else {

@@ -13,7 +13,7 @@ public abstract class AbstractJsonFormatConverter extends AbstractInputFormatCon
     protected ObjectMapper objectMapper;
 
     @Override
-    public void open(IInputSession inputSession, Map<String, Object> params, BonaPortableClass<?> baseBClass) {
+    public void open(final IInputSession inputSession, final Map<String, Object> params, final BonaPortableClass<?> baseBClass) {
         super.open(inputSession, params, baseBClass);
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());

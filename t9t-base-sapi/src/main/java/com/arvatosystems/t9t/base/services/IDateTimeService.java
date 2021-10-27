@@ -31,7 +31,7 @@ public interface IDateTimeService {
      * @param when              the instant to be converted
      * @return                  the local date for the specified instant for an observer located in the tenant's time zone
      */
-    default LocalDate getCurrentDay(Long tenantRef) {
+    default LocalDate getCurrentDay(final Long tenantRef) {
         return toLocalDate(tenantRef, Instant.now());
     }
 

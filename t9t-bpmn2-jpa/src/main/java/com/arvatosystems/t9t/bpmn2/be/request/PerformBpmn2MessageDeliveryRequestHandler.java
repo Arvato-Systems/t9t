@@ -49,11 +49,11 @@ public class PerformBpmn2MessageDeliveryRequestHandler extends AbstractRequestHa
     private final IExecutor executor = Jdp.getRequired(IExecutor.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, PerformBpmn2MessageDeliveryRequest request) throws Exception {
+    public ServiceResponse execute(final RequestContext ctx, final PerformBpmn2MessageDeliveryRequest request) throws Exception {
 
         final List<Bpmn2MessageQueueEntity> messageQueue = getMessagesForRedelivery(request);
 
-        for (Bpmn2MessageQueueEntity messageEntry : messageQueue) {
+        for (final Bpmn2MessageQueueEntity messageEntry : messageQueue) {
             final DeliverMessageRequest messageDeliveryRequest = createDeliverMessageRequest(messageEntry);
             final ServiceResponse messageDeliveryResponse = executor.executeSynchronous(messageDeliveryRequest);
 
@@ -68,7 +68,7 @@ public class PerformBpmn2MessageDeliveryRequestHandler extends AbstractRequestHa
         return ok();
     }
 
-    private List<Bpmn2MessageQueueEntity> getMessagesForRedelivery(PerformBpmn2MessageDeliveryRequest request) {
+    private List<Bpmn2MessageQueueEntity> getMessagesForRedelivery(final PerformBpmn2MessageDeliveryRequest request) {
         final List<Bpmn2MessageQueueEntity> messageQueue;
 
         if (request.getMessageQueueRef() != null) {
@@ -83,7 +83,7 @@ public class PerformBpmn2MessageDeliveryRequestHandler extends AbstractRequestHa
         return messageQueue;
     }
 
-    private void markDeliveryAsFailed(Bpmn2MessageQueueEntity messageEntry, ServiceResponse messageDeliveryResponse) {
+    private void markDeliveryAsFailed(final Bpmn2MessageQueueEntity messageEntry, final ServiceResponse messageDeliveryResponse) {
         messageEntry.setReturnCode(messageDeliveryResponse.getReturnCode());
         messageEntry.setErrorDetails(messageDeliveryResponse.getErrorDetails());
 
@@ -103,7 +103,7 @@ public class PerformBpmn2MessageDeliveryRequestHandler extends AbstractRequestHa
         }
     }
 
-    private DeliverMessageRequest createDeliverMessageRequest(Bpmn2MessageQueueEntity messageEntry) {
+    private DeliverMessageRequest createDeliverMessageRequest(final Bpmn2MessageQueueEntity messageEntry) {
         final DeliverMessageRequest messageDeliveryRequest = new DeliverMessageRequest();
 
         messageDeliveryRequest.setMessageName(messageEntry.getMessageName());
@@ -121,7 +121,7 @@ public class PerformBpmn2MessageDeliveryRequestHandler extends AbstractRequestHa
         return messageDeliveryRequest;
     }
 
-    private List<Bpmn2MessageQueueEntity> getMessagesFromQueueTable(Integer chunkSize) {
+    private List<Bpmn2MessageQueueEntity> getMessagesFromQueueTable(final Integer chunkSize) {
         final EntityManager entityManager = resolver.getEntityManager();
 
         TypedQuery<Bpmn2MessageQueueEntity> query = entityManager.createQuery(join(" SELECT ", resolver.getEntityClass().getName(), " e",

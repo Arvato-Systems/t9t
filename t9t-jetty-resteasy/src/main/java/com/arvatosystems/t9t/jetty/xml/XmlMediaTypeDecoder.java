@@ -45,8 +45,7 @@ import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 
 /**
- *
- * @author LUEC034
+ * Decoder to parse requests in XML format (using JAXB / jakarta.xml.bind).
  */
 @Provider
 @Consumes("application/xml")
@@ -57,23 +56,23 @@ public class XmlMediaTypeDecoder implements MessageBodyReader<BonaPortable> {
     private final IStandardNamespaceWriter jaxbContextProvider = Jdp.getRequired(IStandardNamespaceWriter.class);
 
     @Override
-    public boolean isReadable(Class<?> type, Type type1, Annotation[] antns, MediaType mt) {
+    public boolean isReadable(final Class<?> type, final Type type1, final Annotation[] antns, final MediaType mt) {
         //LOGGER.info("XmlMediaType decoder called with type {} and class {}", mt.toString(), type.toGenericString());
         return (type.isAnnotationPresent(XmlRootElement.class)) && mt.equals(MediaType.APPLICATION_XML_TYPE);
 
     }
 
     @Override
-    public BonaPortable readFrom(Class<BonaPortable> type, Type type1, Annotation[] antns, MediaType mt, MultivaluedMap<String, String> mm, InputStream in) throws IOException, WebApplicationException {
+    public BonaPortable readFrom(final Class<BonaPortable> type, final Type type1, final Annotation[] antns, final MediaType mt,
+      final MultivaluedMap<String, String> mm, final InputStream in) throws IOException, WebApplicationException {
         //LOGGER.info("Trying to parse type {} and class {}", mt.toString(), type.toGenericString());
         try {
-            Unmarshaller unmarshaller = jaxbContextProvider.getStandardJAXBContext().createUnmarshaller();
-            BonaPortable bonaportable = (BonaPortable) unmarshaller.unmarshal(in);
+            final Unmarshaller unmarshaller = jaxbContextProvider.getStandardJAXBContext().createUnmarshaller();
+            final BonaPortable bonaportable = (BonaPortable) unmarshaller.unmarshal(in);
             return bonaportable;
         } catch (JAXBException | ClassCastException e) {
             LOGGER.error("There has been an error while unmarshalling object in XmlMediaTypeDecoder {}", e);
             return null;
         }
     }
-
 }

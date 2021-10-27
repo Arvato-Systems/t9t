@@ -38,7 +38,7 @@ public class MediaDataSourceFile implements IMediaDataSource {
     protected final IFileUtil fileUtil = Jdp.getRequired(IFileUtil.class);
 
     @Override
-    public InputStream open(String path) throws Exception {
+    public InputStream open(final String path) throws Exception {
         return new FileInputStream(path);
     }
 
@@ -52,15 +52,15 @@ public class MediaDataSourceFile implements IMediaDataSource {
      *             thrown when building absolute path failed
      */
     @Override
-    public String getAbsolutePath(String relativePath, RequestContext ctx) {
-        String absolutePath = fileUtil.getAbsolutePathForTenant(ctx.tenantId, relativePath);
-        Map<String, Object> patternReplacements = new HashMap<>();
+    public String getAbsolutePath(final String relativePath, final RequestContext ctx) {
+        final String absolutePath = fileUtil.getAbsolutePathForTenant(ctx.tenantId, relativePath);
+        final Map<String, Object> patternReplacements = new HashMap<>();
         patternReplacements.put("tenantId", ctx.tenantId);
         return SimplePatternEvaluator.evaluate(absolutePath, patternReplacements);
     }
 
     @Override
-    public boolean hasMore(InputStream is) throws IOException {
+    public boolean hasMore(final InputStream is) throws IOException {
         return is.available() > 0;
     }
 }

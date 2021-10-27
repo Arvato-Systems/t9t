@@ -33,32 +33,32 @@ import de.jpaw.bonaparte.pojos.api.OperationType;
 public abstract class AbstractRequestHandler<REQUEST extends RequestParameters> implements IRequestHandler<REQUEST> {
 
     @Override
-    public boolean isReadOnly(REQUEST params) {
+    public boolean isReadOnly(final REQUEST params) {
         return false;
     }
 
     /** Return true if the request parameters should not be stored (due to PW components or such). */
     @Override
-    public boolean forbidRequestParameterStoring(REQUEST request) {
+    public boolean forbidRequestParameterStoring(final REQUEST request) {
         return false;
     }
 
     /** Return true if the request result should not be stored (due to sensitive data or such). */
     @Override
-    public boolean forbidResultStoring(REQUEST request) {
+    public boolean forbidResultStoring(final REQUEST request) {
         return false;
     }
 
     @Override
-    public OperationType getAdditionalRequiredPermission(REQUEST request) {
+    public OperationType getAdditionalRequiredPermission(final REQUEST request) {
         return OperationType.EXECUTE;
     }
 
-    protected final ServiceResponse error(int code, String details) {
+    protected final ServiceResponse error(final int code, final String details) {
         return T9tResponses.createServiceResponse(code, details);
     }
 
-    protected final ServiceResponse ok(int code) {
+    protected final ServiceResponse ok(final int code) {
         return T9tResponses.createOk(code);
     }
 
@@ -80,7 +80,7 @@ public abstract class AbstractRequestHandler<REQUEST extends RequestParameters> 
      *             if the incoming request instance is not matching the expected request class
      */
     @SuppressWarnings("unchecked")
-    protected static <REQUEST> REQUEST staticCheckedCast(BonaPortable requestParameters, Class<? extends REQUEST> requestClass) {
+    protected static <REQUEST> REQUEST staticCheckedCast(final BonaPortable requestParameters, final Class<? extends REQUEST> requestClass) {
         checkType(requestParameters, (Class<? extends BonaPortable>) requestClass);
 
         // Cast and return the inner request instance
@@ -97,7 +97,7 @@ public abstract class AbstractRequestHandler<REQUEST extends RequestParameters> 
      * @throws T9tException
      *             if the given instance is not of given class
      */
-    protected static void checkType(BonaPortable actualInstance, Class<? extends BonaPortable> expectedClass) {
+    protected static void checkType(final BonaPortable actualInstance, final Class<? extends BonaPortable> expectedClass) {
         if (!(expectedClass.isInstance(actualInstance))) {
             throw new T9tException(T9tException.INVALID_REQUEST_PARAMETER_TYPE, "expected a " + expectedClass.getSimpleName() + " type, got "
                     + actualInstance.ret$PQON());

@@ -13,15 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.ssm.be.impl;
+package com.arvatosystems.t9t.annotations;
 
-import com.arvatosystems.t9t.base.be.impl.CrossModuleRefResolver;
-import com.arvatosystems.t9t.core.CannedRequestDTO;
-import com.arvatosystems.t9t.core.CannedRequestRef;
-import com.arvatosystems.t9t.core.request.CannedRequestCrudRequest;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public class Workarounds {
-    public static CannedRequestDTO getData(CrossModuleRefResolver refResolver, CannedRequestRef ref) {
-        return refResolver.getData(new CannedRequestCrudRequest(), ref);
-    }
+/**
+ * Annotation to be placed as a marker in classes to allow public field access.
+ * This avoids boilerplate getters and setters which have no real use, except to satisfy blind dogmatism.
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.FIELD })
+public @interface AllowPublicAccess {
 }

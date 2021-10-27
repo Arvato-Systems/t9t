@@ -28,5 +28,7 @@ public interface IDataSinkDefaultConfigurationProvider {
      * If null is returned, there is no default configuration (or it has not been implemented),
      * otherwise the fields of DataSinkPresets define configuration data for DataSinkDTO.
      */
-    default DataSinkPresets getDefaultConfiguration(boolean isInput) { return null; }
+    default DataSinkPresets getDefaultConfiguration(final boolean isInput) {
+        return null;
+    }
 }

@@ -62,16 +62,17 @@ public class ColumnConfigCreatorEE extends DefaultColumnConfigCreator {
     private Set<String> selections = null;
 
     @Override
-    public void createColumnConfigComponent(ApplicationSession session, Div parent, UIGridPreferences uiGridPreferences, Set<String> currentGrid) {
+    public void createColumnConfigComponent(final ApplicationSession session, final Div parent, final UIGridPreferences uiGridPreferences,
+      final Set<String> xcurrentGrid) {
 
-        List<FieldNameModel> firstLevelColumns = new ArrayList<>();
+        final List<FieldNameModel> firstLevelColumns = new ArrayList<>();
 
-        this.currentGrid = currentGrid;
-        selections = new HashSet<String>(currentGrid);
+        this.currentGrid = xcurrentGrid;
+        selections = new HashSet<>(currentGrid);
         viewModelId = uiGridPreferences.getViewModel();
 
         initUiGrids(uiGridPreferences, firstLevelColumns);
-        Grid grid = new Grid();
+        final Grid grid = new Grid();
         parent.setVflex("1");
         grid.setVflex("1");
         grid.setParent(parent);
@@ -87,11 +88,11 @@ public class ColumnConfigCreatorEE extends DefaultColumnConfigCreator {
             return null;
         }
 
-        List<String> addPair = new ArrayList<>();
-        List<String> removePair = new ArrayList<>();
+        final List<String> addPair = new ArrayList<>();
+        final List<String> removePair = new ArrayList<>();
         addIfAbsent(currentGrid, selections, removePair);
         addIfAbsent(selections, currentGrid, addPair);
-        return new Pair<List<String>, List<String>>(addPair, removePair);
+        return new Pair<>(addPair, removePair);
     }
 
     /**
@@ -99,39 +100,39 @@ public class ColumnConfigCreatorEE extends DefaultColumnConfigCreator {
      * by dot) then put into a map ready for lazy loading when expanding on the
      * grouped list.
      */
-    private void initUiGrids(UIGridPreferences uiGridPreferences, List<FieldNameModel> firstLevelColumns) {
+    private void initUiGrids(final UIGridPreferences uiGridPreferences, final List<FieldNameModel> firstLevelColumns) {
         uiGridPreferences.getColumns().stream().forEach(uiColumns -> {
-            String fullPath = uiColumns.getFieldName();
+            final String fullPath = uiColumns.getFieldName();
             if (fullPath.indexOf(".") != -1) {
-                String[] splitted = fullPath.split("\\.");
+                final String[] splitted = fullPath.split("\\.");
                 String fieldName = "";
 
                 for (int i = 0; i < splitted.length; i++) {
 
                     if (i == 0) {
                         fieldName = splitted[i];
-                        FieldNameModel fnm = new FieldNameModel();
+                        final FieldNameModel fnm = new FieldNameModel();
                         fnm.setFieldName(fieldName);
                         if (!firstLevelColumns.contains(fnm)) {
                             firstLevelColumns.add(fnm);
                         }
                     } else {
-                        String upperLevel = fieldName;
+                        final String upperLevel = fieldName;
                         fieldName += "." + splitted[i];
-                        FieldNameModel fnm = new FieldNameModel();
+                        final FieldNameModel fnm = new FieldNameModel();
                         fnm.setFieldName(fieldName);
                         if (i == splitted.length - 1) {
                             fnm.setFullPath(fullPath);
                             fnm.setSelected(selections.contains(fullPath));
                         }
-                        List<FieldNameModel> fnms = columnsByKey.computeIfAbsent(upperLevel, (k) -> new ArrayList<>());
+                        final List<FieldNameModel> fnms = columnsByKey.computeIfAbsent(upperLevel, (k) -> new ArrayList<>());
                         if (!fnms.contains(fnm)) {
                             fnms.add(fnm);
                         }
                     }
                 }
             } else {
-                FieldNameModel fnm = new FieldNameModel();
+                final FieldNameModel fnm = new FieldNameModel();
                 fnm.setFieldName(fullPath);
                 fnm.setFullPath(fullPath);
                 fnm.setSelected(selections.contains(fullPath));
@@ -146,9 +147,9 @@ public class ColumnConfigCreatorEE extends DefaultColumnConfigCreator {
      * A recursive method to dynamically construct grid on first level also applied
      * on grouping item being opened
      */
-    private void createGrid(ApplicationSession session, Grid grid, List<FieldNameModel> data) {
-        Columns columns = new Columns();
-        Column detail = new Column();
+    private void createGrid(final ApplicationSession session, final Grid grid, final List<FieldNameModel> data) {
+        final Columns columns = new Columns();
+        final Column detail = new Column();
         detail.setWidth("40px");
         columns.appendChild(detail);
         columns.appendChild(new Column(session.translate("editGrid", "fieldName")));
@@ -158,24 +159,24 @@ public class ColumnConfigCreatorEE extends DefaultColumnConfigCreator {
         grid.setRowRenderer(new RowRenderer<FieldNameModel>() {
 
             @Override
-            public void render(Row row, FieldNameModel data, int index) throws Exception {
-                String fieldName = data.getFieldName();
+            public void render(final Row row, final FieldNameModel data, final int index) throws Exception {
+                final String fieldName = data.getFieldName();
 
-                String translatedLabel = session.translate(viewModelId, fieldName);
+                final String translatedLabel = session.translate(viewModelId, fieldName);
                 if (columnsByKey.containsKey(data.getFieldName())) {
-                    Detail detail = new Detail();
+                    final Detail detail = new Detail();
                     detail.setAttribute("data", data);
                     detail.addEventListener(Events.ON_OPEN, (e) -> {
                         e.getTarget().getChildren().clear();
-                        FieldNameModel fnm = (FieldNameModel) e.getTarget().getAttribute("data");
-                        Grid grid = new Grid();
+                        final FieldNameModel fnm = (FieldNameModel) e.getTarget().getAttribute("data");
+                        final Grid grid = new Grid();
                         grid.setParent(e.getTarget());
                         createGrid(session, grid, columnsByKey.get(fnm.getFieldName()));
                         LOGGER.debug("EVENT: {} {}", fnm.getFieldName(), e.getTarget());
                     });
                     detail.setParent(row);
                 } else {
-                    Checkbox cb = new Checkbox();
+                    final Checkbox cb = new Checkbox();
                     cb.setChecked(data.isSelected);
                     cb.addEventListener(Events.ON_CHECK, (e) -> {
                         if (((Checkbox) e.getTarget()).isChecked()) {
@@ -188,22 +189,22 @@ public class ColumnConfigCreatorEE extends DefaultColumnConfigCreator {
                 }
 
                 // translate the label
-                Popup tooltip = new Popup();
-                Div labelWrapper = new Div();
-                Label label = new Label(translatedLabel);
-                Label toolTipLabel = new Label(data.fieldName);
+                final Popup tooltip = new Popup();
+                final Div labelWrapper = new Div();
+                final Label label = new Label(translatedLabel);
+                final Label toolTipLabel = new Label(data.fieldName);
                 toolTipLabel.setParent(tooltip);
                 label.setTooltip(tooltip);
                 tooltip.setParent(labelWrapper);
                 label.setParent(labelWrapper);
                 labelWrapper.setParent(row);
 
-                Label technicalName = new Label(data.fieldName);
+                final Label technicalName = new Label(data.fieldName);
                 technicalName.setParent(row);
 
             }
         });
-        grid.setModel(new ListModelList<FieldNameModel>(data));
+        grid.setModel(new ListModelList<>(data));
         grid.setVflex("1");
     }
 
@@ -211,8 +212,8 @@ public class ColumnConfigCreatorEE extends DefaultColumnConfigCreator {
      * Convenient method to check each of the items in the first list if they are
      * existed in second list, if not add into third list.
      */
-    private void addIfAbsent(Collection<String> c1, Collection<String> c2, Collection<String> c3) {
-        for (String s : c1) {
+    private void addIfAbsent(final Collection<String> c1, final Collection<String> c2, final Collection<String> c3) {
+        for (final String s : c1) {
             if (!c2.contains(s)) {
                 c3.add(s);
             }
@@ -237,15 +238,15 @@ public class ColumnConfigCreatorEE extends DefaultColumnConfigCreator {
             return isSelected;
         }
 
-        public void setSelected(boolean isSelected) {
-            this.isSelected = isSelected;
+        public void setSelected(final boolean xisSelected) {
+            this.isSelected = xisSelected;
         }
 
-        public void setFieldName(String fieldName) {
+        public void setFieldName(final String fieldName) {
             this.fieldName = fieldName;
         }
 
-        public void setFullPath(String fullPath) {
+        public void setFullPath(final String fullPath) {
             this.fullPath = fullPath;
         }
 
@@ -258,14 +259,14 @@ public class ColumnConfigCreatorEE extends DefaultColumnConfigCreator {
         }
 
         @Override
-        public boolean equals(Object obj) {
+        public boolean equals(final Object obj) {
             if (this == obj)
                 return true;
             if (obj == null)
                 return false;
             if (getClass() != obj.getClass())
                 return false;
-            FieldNameModel other = (FieldNameModel) obj;
+            final FieldNameModel other = (FieldNameModel) obj;
             if (fieldName == null) {
                 if (other.fieldName != null)
                     return false;

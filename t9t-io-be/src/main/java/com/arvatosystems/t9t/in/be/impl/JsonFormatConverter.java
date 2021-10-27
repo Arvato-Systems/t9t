@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.in.services.IInputSession;
-import com.arvatosystems.t9t.io.DataSinkDTO;
 import com.arvatosystems.t9t.io.T9tIOException;
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
@@ -61,7 +60,7 @@ public class JsonFormatConverter extends AbstractInputFormatConverter {
     protected boolean useTokens = true;
 
     @Override
-    public void open(IInputSession inputSession, Map<String, Object> params, BonaPortableClass<?> baseBClass) {
+    public void open(final IInputSession inputSession, final Map<String, Object> params, final BonaPortableClass<?> baseBClass) {
         metaDataForOuter = new ObjectReference(Visibility.PRIVATE, false, "",
                 Multiplicity.SCALAR, IndexType.NONE, 0, 0, DataCategory.OBJECT, "json", "Map", false, false, null, true, "Map",
                 baseBClass.getMetaData(), null, null);
@@ -72,7 +71,7 @@ public class JsonFormatConverter extends AbstractInputFormatConverter {
         super.open(inputSession, params, baseBClass);
     }
 
-    protected void processBonaPortable(Map<String, Object> map) {
+    protected void processBonaPortable(final Map<String, Object> map) {
         if (map == null || map.isEmpty()) {
             inputSession.process((BonaPortable)null);
         } else {
@@ -83,16 +82,17 @@ public class JsonFormatConverter extends AbstractInputFormatConverter {
     }
 
     @Override
-    public void process(InputStream is) {
-        final Charset encoding = inputSession.getDataSinkDTO().getOutputEncoding() == null ? Charsets.UTF_8 : Charset.forName(inputSession.getDataSinkDTO().getOutputEncoding());
+    public void process(final InputStream is) {
+        final Charset encoding = inputSession.getDataSinkDTO().getOutputEncoding() == null
+          ? Charsets.UTF_8 : Charset.forName(inputSession.getDataSinkDTO().getOutputEncoding());
         final String inputData;
         try {
             inputData = CharStreams.toString(new InputStreamReader(is, encoding));
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LOGGER.error("Input read error", e);
             throw new T9tException(T9tIOException.IO_EXCEPTION);
         }
-        JsonParser p = new JsonParser(inputData, true);
+        final JsonParser p = new JsonParser(inputData, true);
         p.parseObjectOrListOfObjects((m) -> processBonaPortable(m));
     }
 }

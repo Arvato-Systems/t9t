@@ -39,9 +39,9 @@ public class NoForeignRequests implements IForeignRequest {
     }
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, RequestParameters rp) {
+    public ServiceResponse execute(final RequestContext ctx, final RequestParameters rp) {
         LOGGER.error("Rejecting foreign call out");
-        ServiceResponse resp = new ServiceResponse();
+        final ServiceResponse resp = new ServiceResponse();
         resp.setReturnCode(T9tException.NOT_YET_IMPLEMENTED);
         resp.setErrorDetails("NOOP callout: " + rp.ret$PQON());
         return resp;

@@ -27,7 +27,7 @@ public class PerformGCRequestHandler extends AbstractRequestHandler<PerformGCReq
     private static final Logger LOGGER = LoggerFactory.getLogger(PerformGCRequestHandler.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, PerformGCRequest rq) {
+    public ServiceResponse execute(final RequestContext ctx, final PerformGCRequest rq) {
         LOGGER.info("Full GC requested - starting");
         System.gc();
         LOGGER.info("Full GC finished");

@@ -49,7 +49,7 @@ public class CamelService {
 
     private final IFileUtil fileUtil = Jdp.getRequired(IFileUtil.class);
 
-    public void addRoutes(DataSinkDTO dataSink) {
+    public void addRoutes(final DataSinkDTO dataSink) {
         final String serverEnvironment = firstNonNull(ConfigProvider.getConfiguration().getImportEnvironment(), DEFAULT_ENVIRONMENT);
         final String dataSinkEnvironment = dataSink.getEnvironment();
 
@@ -64,14 +64,14 @@ public class CamelService {
                 Jdp.getProvider(CamelContext.class)
                    .get()
                    .addRoutes(new GenericT9tRoute(dataSink, fileUtil));
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 LOGGER.error("Exception configuring camel route: {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
                 throw new RuntimeException(e);
             }
         }
     }
 
-    public void removeRoutes(DataSinkDTO dataSink) {
+    public void removeRoutes(final DataSinkDTO dataSink) {
         try {
             final CamelContext context = Jdp.getProvider(CamelContext.class).get();
 
@@ -79,7 +79,7 @@ public class CamelService {
             final List<String> routeIds = GenericT9tRoute.getPossibleRouteIds(dataSink);
             final RouteController routeController = context.getRouteController();
 
-            for (String routeId : routeIds) {
+            for (final String routeId : routeIds) {
                 if (context.getRoute(routeId) != null) {
                     if (routeController.getRouteStatus(routeId) == ServiceStatus.Started
                      || routeController.getRouteStatus(routeId) == ServiceStatus.Starting
@@ -91,7 +91,7 @@ public class CamelService {
                 }
             }
 
-            for (String routeId : routeIds) {
+            for (final String routeId : routeIds) {
                 if (context.getRoute(routeId) != null) {
                     LOGGER.debug("Remove route id {}", routeId);
                     if (!context.removeRoute(routeId)) {
@@ -101,14 +101,14 @@ public class CamelService {
             }
 
             final ModelCamelContext mcc = context.adapt(ModelCamelContext.class);
-            for (String routeId : routeIds) {
+            for (final String routeId : routeIds) {
                 final RouteDefinition routeDefinition = mcc.getRouteDefinition(routeId);
                 if (routeDefinition != null) {
                     LOGGER.debug("Remove route definition {}", routeId);
                     mcc.removeRouteDefinition(routeDefinition);
                 }
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.error("Exception removing camel route: {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
             throw new RuntimeException(e);
         }
@@ -120,7 +120,7 @@ public class CamelService {
      * @return True if the DataSink contains a camelRoute, commFormatName, preTransformerName and baseClassPqon. Otherwise false!
      *
      */
-    private boolean isCamelDataSink(DataSinkDTO dataSink) {
+    private boolean isCamelDataSink(final DataSinkDTO dataSink) {
         if (dataSink.getCamelRoute() == null || dataSink.getCamelRoute().isEmpty()) {
             LOGGER.debug("dataSink {} does not contain a camelRoute field - not setting up any route.", dataSink.getDataSinkId());
             return false;

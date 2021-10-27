@@ -72,7 +72,7 @@ public class RemoteConnection extends AbstractAsyncRemoteConnection implements I
         if (resp.getHttpReturnCode() / 100 != 2) {
             final BonaPortable response = resp.getResponseObject();
             if (response instanceof ServiceResponse) {
-                ServiceResponse sr = (ServiceResponse)response;
+                final ServiceResponse sr = (ServiceResponse)response;
                 if (!ApplicationException.isOk(sr.getReturnCode())) {
                     return MessagingUtil.createServiceResponse(
                         T9tException.HTTP_ERROR + resp.getHttpReturnCode(),

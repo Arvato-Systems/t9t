@@ -26,19 +26,19 @@ import org.slf4j.LoggerFactory;
 public class JndiConfigurationProvider extends DefaultsConfigurationProvider {
     private static final Logger LOGGER = LoggerFactory.getLogger(JndiConfigurationProvider.class);
 
-    private static final String lookup(Context context, String name) throws NamingException {
+    private static String lookup(final Context context, final String name) throws NamingException {
         try {
-            Object val = context.lookup(name);
+            final Object val = context.lookup(name);
             if (val != null) {
                 if (val instanceof String) {
-                    String vals = (String)val;
+                    final String vals = (String)val;
                     LOGGER.debug("Obtained {} via JNDI as {}", name, vals);
                     return vals;
                 }
                 LOGGER.error("Obtained {} via JNDI, but of type {}, want a String - using default value", name, val.getClass().getCanonicalName());
                 return null;
             }
-        } catch (NameNotFoundException e) {
+        } catch (final NameNotFoundException e) {
             // not severe - warn and use the default value
             // fall trough
         }
@@ -46,7 +46,7 @@ public class JndiConfigurationProvider extends DefaultsConfigurationProvider {
         return null;
     }
 
-    public JndiConfigurationProvider(Context ctx)  throws NamingException {
+    public JndiConfigurationProvider(final Context ctx)  throws NamingException {
         super(
           "JNDI",
           lookup(ctx, "t9t/port"),

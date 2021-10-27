@@ -38,7 +38,8 @@ import de.jpaw.bonaparte.pojos.apiw.Ref;
  * @param <TRACKING> tracking type
  * @param <ENTITY> entity type
  */
-public interface IResolverRestriction <T extends Ref, TRACKING extends TrackingBase, ENTITY extends BonaPersistableKey<Long> & BonaPersistableTracking<TRACKING>> {
+public interface IResolverRestriction<T extends Ref, TRACKING extends TrackingBase,
+  ENTITY extends BonaPersistableKey<Long> & BonaPersistableTracking<TRACKING>> {
 
     /**
      * Apply restriction. This should be mainly used before resolving the entity itself.

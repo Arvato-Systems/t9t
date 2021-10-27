@@ -27,6 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.annotations.AllowPublicAccess;
 import com.arvatosystems.t9t.base.JsonUtil;
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.T9tConstants;
@@ -66,23 +67,26 @@ public class RequestContext extends AbstractRequestContext {  // FIXME: this cla
     private List<IPostCommitHook> postCommitList = null;  // to be executed after successful requests / commits
     private List<IPostCommitHook> postFailureList = null; // to be executed after failures
     private final AtomicInteger progressCounter = new AtomicInteger(0);
-    private final Map<BucketWriteKey, Integer> bucketsToWrite = new ConcurrentHashMap<BucketWriteKey, Integer>();
-    private final Map<Long, Semaphore> OWNED_JVM_LOCKS = new ConcurrentHashMap<>();  // all locks held by this thread / request context (by ref)
+    private final Map<BucketWriteKey, Integer> bucketsToWrite = new ConcurrentHashMap<>();
+    private final Map<Long, Semaphore> ownedJvmLocks = new ConcurrentHashMap<>();  // all locks held by this thread / request context (by ref)
+
+    @AllowPublicAccess
     public volatile String statusText;
+
     private volatile boolean priorityRequest = false;   // can be set explicitly, or via ServiceRequestHeader
     // keeping track of call stack...
     private String currentPQON;                         // if a subrequest is called, this field keeps track of the innermost request type
     private int depth                   = -1;           // the current call stack depth. -1 = initialization, 0 = in main request, 1... in subrequest
     private int numberOfCallsThisLevel  = 0;            // the number of calls which have been started at this stack level
-    private List<StackLevel> callStack  = new ArrayList<StackLevel>();  // needs to be concurrent because the processStatus request will read it!
+    private final List<StackLevel> callStack  = new ArrayList<>();  // needs to be concurrent because the processStatus request will read it!
     private final Object lockForNesting = new Object();
 
-    public void pushCallStack(String newPQON) {
+    public void pushCallStack(final String newPQON) {
         synchronized (lockForNesting) {
             ++depth;
             if (depth > 0) {
                 ++numberOfCallsThisLevel;
-                StackLevel level = new StackLevel(numberOfCallsThisLevel, progressCounter.get(), currentPQON, statusText);
+                final StackLevel level = new StackLevel(numberOfCallsThisLevel, progressCounter.get(), currentPQON, statusText);
                 level.freeze();
                 callStack.add(level);
                 currentPQON = newPQON;
@@ -94,9 +98,9 @@ public class RequestContext extends AbstractRequestContext {  // FIXME: this cla
         synchronized (lockForNesting) {
             --depth;
             if (depth >= 0) {
-                int d = callStack.size();
+                final int d = callStack.size();
                 if (d > 0) {
-                    StackLevel prev = callStack.remove(d - 1);
+                    final StackLevel prev = callStack.remove(d - 1);
                     // restore status and PQON
                     currentPQON = prev.getPqon();
                     statusText  = prev.getStatusText();
@@ -117,7 +121,7 @@ public class RequestContext extends AbstractRequestContext {  // FIXME: this cla
         synchronized (lockForNesting) {
             final List<StackLevel> copy = new ArrayList<>(callStack.size() + 1);
             final int maxLen = StackLevel.meta$$statusText.getLength();
-            for (StackLevel sl: callStack) {
+            for (final StackLevel sl: callStack) {
                 final String status = sl.getStatusText();
                 if (status == null || status.length() <= maxLen) {
                     // status text fits into field - use 1:1
@@ -148,20 +152,20 @@ public class RequestContext extends AbstractRequestContext {  // FIXME: this cla
         return progressCounter.get();
     }
 
-    public void addPostCommitHook(IPostCommitHook newHook) {
+    public void addPostCommitHook(final IPostCommitHook newHook) {
         if (postCommitList == null)
-            postCommitList = new ArrayList<IPostCommitHook>(4);
+            postCommitList = new ArrayList<>(4);
         postCommitList.add(newHook);
     }
 
-    public void addPostFailureHook(IPostCommitHook newHook) {
+    public void addPostFailureHook(final IPostCommitHook newHook) {
         if (postFailureList == null)
-            postFailureList = new ArrayList<IPostCommitHook>(4);
+            postFailureList = new ArrayList<>(4);
         postFailureList.add(newHook);
     }
 
 
-    public RequestContext(InternalHeaderParameters internalHeaderParameters, ICustomization customizationProvider) {
+    public RequestContext(final InternalHeaderParameters internalHeaderParameters, final ICustomization customizationProvider) {
         super(internalHeaderParameters.getExecutionStartedAt(),
               internalHeaderParameters.getJwtInfo().getUserId(),
               internalHeaderParameters.getJwtInfo().getTenantId(),
@@ -174,8 +178,8 @@ public class RequestContext extends AbstractRequestContext {  // FIXME: this cla
         this.currentPQON = internalHeaderParameters.getRequestParameterPqon();
     }
 
-    public void fillResponseStandardFields(ServiceResponse response) {
-        ServiceRequestHeader h = internalHeaderParameters.getRequestHeader();
+    public void fillResponseStandardFields(final ServiceResponse response) {
+        final ServiceRequestHeader h = internalHeaderParameters.getRequestHeader();
         if (h != null)
             response.setMessageId(h.getMessageId());
         response.setTenantId(tenantId);
@@ -183,7 +187,7 @@ public class RequestContext extends AbstractRequestContext {  // FIXME: this cla
     }
 
     /** Returns a LongFilter condition on the current tenant and possibly the default tenant, if that one is different. */
-    public LongFilter tenantFilter(String name) {
+    public LongFilter tenantFilter(final String name) {
         final LongFilter filter = new LongFilter(name);
         if (T9tConstants.GLOBAL_TENANT_REF42.equals(tenantRef))
             filter.setEqualsValue(T9tConstants.GLOBAL_TENANT_REF42);
@@ -199,12 +203,12 @@ public class RequestContext extends AbstractRequestContext {  // FIXME: this cla
         }
     }
 
-    public void applyPostCommitActions(RequestParameters rq, ServiceResponse rs) {
+    public void applyPostCommitActions(final RequestParameters rq, final ServiceResponse rs) {
         // all persistence units have successfully committed...
         // now invoke possible postCommit hooks
         if (postCommitList != null) {
             LOGGER.debug("Performing {} stored post commit actions", postCommitList.size());
-            for (IPostCommitHook hook : postCommitList) {
+            for (final IPostCommitHook hook : postCommitList) {
                 hook.postCommit(this, rq, rs);
             }
             // avoid duplicate execution...
@@ -212,11 +216,11 @@ public class RequestContext extends AbstractRequestContext {  // FIXME: this cla
         }
     }
 
-    public void applyPostFailureActions(RequestParameters rq, ServiceResponse rs) {
+    public void applyPostFailureActions(final RequestParameters rq, final ServiceResponse rs) {
         // request returned an error. You can now notify someone...
         if (postFailureList != null) {
             LOGGER.debug("Performing {} stored post failure actions", postFailureList.size());
-            for (IPostCommitHook hook : postFailureList) {
+            for (final IPostCommitHook hook : postFailureList) {
                 hook.postCommit(this, rq, rs);
             }
             // avoid duplicate execution...
@@ -225,14 +229,14 @@ public class RequestContext extends AbstractRequestContext {  // FIXME: this cla
     }
 
     // queue a bucket writing command. All bucket writes will be kicked off asynchronously after a successful commit
-    public void writeBucket(String typeId, Long ref, Integer mode) {
+    public void writeBucket(final String typeId, final Long ref, final Integer mode) {
         final BucketWriteKey key = new BucketWriteKey(tenantRef, ref, typeId);
         // combine it with prior commands
         bucketsToWrite.merge(key, mode, (a, b) -> Integer.valueOf(a.intValue() | b.intValue()));
     }
 
     // the queue is handed in by the caller because we do not have injection facilities within this class
-    public void postBucketEntriesToQueue(IBucketWriter writer) {
+    public void postBucketEntriesToQueue(final IBucketWriter writer) {
         if (!bucketsToWrite.isEmpty()) {
             LOGGER.debug("{} bucket entries have been collected, queueing them...", bucketsToWrite.size());
             writer.writeToBuckets(bucketsToWrite);
@@ -243,17 +247,17 @@ public class RequestContext extends AbstractRequestContext {  // FIXME: this cla
 
     /** Releases all locks held by this context. */
     public void releaseAllLocks() {
-        if (!OWNED_JVM_LOCKS.isEmpty())
-            LOGGER.trace("Releasing locks on {} refs", OWNED_JVM_LOCKS.size());
-        for (Semaphore sem : OWNED_JVM_LOCKS.values()) {
+        if (!ownedJvmLocks.isEmpty())
+            LOGGER.trace("Releasing locks on {} refs", ownedJvmLocks.size());
+        for (final Semaphore sem : ownedJvmLocks.values()) {
             sem.release();
         }
-        OWNED_JVM_LOCKS.clear();
+        ownedJvmLocks.clear();
     }
 
     /** Acquires a new lock within a given timeout of n milliseconds. */
     public void lockRef(final Long ref, final long timeoutInMillis) {
-        OWNED_JVM_LOCKS.computeIfAbsent(ref, myRef -> {
+        ownedJvmLocks.computeIfAbsent(ref, myRef -> {
             // get a Semaphore from the global pool
             try {
                 final Semaphore globalSem = GLOBAL_JVM_LOCKS.get(ref, () -> new Semaphore(1, true));  // get a global Semaphore, or create one if non exists
@@ -264,11 +268,11 @@ public class RequestContext extends AbstractRequestContext {  // FIXME: this cla
                 }
                 LOGGER.trace("Acquired JVM lock on ref {}", ref);
                 return globalSem;
-            } catch (ExecutionException e) {
+            } catch (final ExecutionException e) {
                 final String msg = ref + " after " + timeoutInMillis + " milliseconds due to ExecutionException " + ExceptionUtil.causeChain(e);
                 LOGGER.warn("Could not acquire JVM lock on {}", msg);
                 throw new T9tException(T9tException.COULD_NOT_ACQUIRE_LOCK, msg);
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException e) {
                 final String msg = ref + " after " + timeoutInMillis + " milliseconds due to InterruptedException " + ExceptionUtil.causeChain(e);
                 LOGGER.warn("Could not acquire JVM lock on {}", msg);
                 throw new T9tException(T9tException.COULD_NOT_ACQUIRE_LOCK, msg);
@@ -286,29 +290,29 @@ public class RequestContext extends AbstractRequestContext {  // FIXME: this cla
     }
 
     /** The priority flag affects all subsequently triggered subrequests. (Preregisters priority settings) */
-    public void setPriorityRequest(boolean priorityRequest) {
+    public void setPriorityRequest(final boolean priorityRequest) {
         this.priorityRequest = priorityRequest;
     }
 
     /** Safe getter for z field values, also works if z itself is null. */
-    public Object getZEntry(String key) {
+    public Object getZEntry(final String key) {
         final Map<String, Object> z = internalHeaderParameters.getJwtInfo().getZ();
         return z == null ? null : z.get(key);
     }
 
     /** Safe getter for z field values, also works if z itself is null, returns a String typed result, if required, by conversion. */
-    public String getZString(String key) {
+    public String getZString(final String key) {
         final Object value = getZEntry(key);
         return value == null ? null : value.toString();
     }
 
     /** Safe getter for z field values, also works if z itself is null, returns a Long typed result, if required, by conversion. */
-    public Long getZLong(String key) {
+    public Long getZLong(final String key) {
         return JsonUtil.getZLong(internalHeaderParameters.getJwtInfo().getZ(), key, null);
     }
 
     /** Safe getter for z field values, also works if z itself is null, returns an Integer typed result, if required, by conversion. */
-    public Integer getZInteger(String key) {
+    public Integer getZInteger(final String key) {
         return JsonUtil.getZInteger(internalHeaderParameters.getJwtInfo().getZ(), key, null);
     }
 }

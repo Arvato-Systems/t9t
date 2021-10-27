@@ -24,7 +24,7 @@ public class ImageParameter {
     public final FlipMode  flipMode;
     public final Double    scale;
 
-    public ImageParameter(int width, int height, Integer rotation, FlipMode flipMode, Double scale) {
+    public ImageParameter(final int width, final int height, final Integer rotation, final FlipMode flipMode, final Double scale) {
         this.width    = width;
         this.height   = height;
         this.rotation = rotation;

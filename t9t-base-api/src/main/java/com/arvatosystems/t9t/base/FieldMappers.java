@@ -16,6 +16,8 @@
 package com.arvatosystems.t9t.base;
 
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -23,8 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import java.time.Instant;
-import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,28 +47,28 @@ public final class FieldMappers {
     private FieldMappers() {
     }
 
-    public static final List<String> TRACKING_COLUMN_NAMES = new ArrayList<String>(Arrays.asList(
+    public static final List<String> TRACKING_COLUMN_NAMES = new ArrayList<>(Arrays.asList(
             "cTimestamp", "cTechUserId", "cAppUserId", "cProcessRef",
             "mTimestamp", "mTechUserId", "mAppUserId", "mProcessRef",
             "version"));
 
-    public static boolean isTenantRef(String fieldName) {
+    public static boolean isTenantRef(final String fieldName) {
         return T9tConstants.TENANT_REF_FIELD_NAME42.equals(fieldName);
     }
 
-    public static boolean isTrackingColumn(String fieldName) {
+    public static boolean isTrackingColumn(final String fieldName) {
         return TRACKING_COLUMN_NAMES.contains(fieldName);
     }
 
     /** Converts field names based at the DTO object to field names starting at the DataWithTracking object. */
-    public static String addPrefix(String fieldName) {
+    public static String addPrefix(final String fieldName) {
         if (isTenantRef(fieldName))
             return fieldName;  // provided at root level
         return (isTrackingColumn(fieldName) ? "tracking." : "data.") + fieldName;
     }
 
     /** Converts field names based at DataWithTracking to fieldnames at deeper level (unsure if we need this except for testing). */
-    public static String removePrefix(String fieldName) {
+    public static String removePrefix(final String fieldName) {
         if (fieldName.startsWith("data.")) {
             return fieldName.substring(5);
         }
@@ -79,13 +79,13 @@ public final class FieldMappers {
     }
 
     /** Remove any index of form [nnn] from the input string. */
-    public static String stripIndexes(String fieldName) {
+    public static String stripIndexes(final String fieldName) {
         int dotPos = fieldName.indexOf('[');
         if (dotPos < 0)
             return fieldName;  // no change: shortcut!
         // has to replace at least one array index
         final int l = fieldName.length();
-        StringBuilder newName = new StringBuilder(l);
+        final StringBuilder newName = new StringBuilder(l);
         int currentSrc = 0;
         while (dotPos >= 0) {
             // copy all until the array index start
@@ -102,13 +102,13 @@ public final class FieldMappers {
         // all instances found, copy any remaining characters
         if (currentSrc < l)
             newName.append(fieldName.substring(currentSrc));
-        String result = newName.toString();  // temporary var to avoid duplicate construction of string when log level is debug
+        final String result = newName.toString();  // temporary var to avoid duplicate construction of string when log level is debug
         LOGGER.trace("unindexing field name {} to {}", fieldName, result);
         return result;
     }
 
     public static <DTO extends BonaPortable, TRACKING extends TrackingBase> FieldDefinition
-      getFieldDefinitionForPath(String fieldname, CrudViewModel<DTO, TRACKING> model) {
+      getFieldDefinitionForPath(final String fieldname, final CrudViewModel<DTO, TRACKING> model) {
         if (model.trackingClass == null) {
             //plain object
             return  FieldGetter.getFieldDefinitionForPathname(model.dtoClass.getMetaData(), fieldname);
@@ -122,12 +122,12 @@ public final class FieldMappers {
             return FieldGetter.getFieldDefinitionForPathname(model.dtoClass.getMetaData(), fieldname);
     }
 
-    public static <T extends Enum<T>> T mapEnum(Enum<?> src, Class<T> dstClass, String fieldName) {
+    public static <T extends Enum<T>> T mapEnum(final Enum<?> src, final Class<T> dstClass, final String fieldName) {
         if (src == null)
             return null;
         try {
             return Enum.valueOf(dstClass, src.name());
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             throw new T9tException(T9tException.ENUM_MAPPING,
                     src.getClass().getCanonicalName() + "." + src.name() + " => " + dstClass.getCanonicalName()
             );
@@ -135,7 +135,7 @@ public final class FieldMappers {
     }
 
     /** Returns the non-null field which is set in the variant. Cannot do enums currently. */
-    public static Object fromVariant(Variant v) {
+    public static Object fromVariant(final Variant v) {
         Object r;
         r = v.getIntValue();
         if (r != null)
@@ -162,8 +162,8 @@ public final class FieldMappers {
     }
 
     /** Creates a new Variant from an Object, examining the type at runtime. Use direct assignment instead if you know the type at compile time. */
-    public static Variant variantOf(Object o) {
-        Variant v = new Variant();
+    public static Variant variantOf(final Object o) {
+        final Variant v = new Variant();
         if (o == null)
             return v;
         if (o instanceof Integer)         v.setIntValue((Integer)o);
@@ -179,14 +179,14 @@ public final class FieldMappers {
 
     /** Indexes a DTO list into an existing map. */
     public static <D extends Ref> void index(final Map<Long, D> result, final Collection<D> data) {
-        for (D d : data) {
+        for (final D d : data) {
             result.put(d.getObjectRef(), d);
         }
     }
 
     /** Indexes a DTO list into a new map. */
     public static <D extends Ref> Map<Long, D> index(final Collection<D> data) {
-        final Map<Long, D> result = new HashMap<Long, D>(data.size() * 2);
+        final Map<Long, D> result = new HashMap<>(data.size() * 2);
         index(result, data);
         return result;
     }

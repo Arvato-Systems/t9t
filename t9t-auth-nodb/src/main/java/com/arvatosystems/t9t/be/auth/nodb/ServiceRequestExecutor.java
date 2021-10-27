@@ -29,16 +29,16 @@ public class ServiceRequestExecutor implements IUnauthenticatedServiceRequestExe
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceRequestExecutor.class);
 
     @Override
-    public ServiceResponse execute(ServiceRequest srq) {
+    public ServiceResponse execute(final ServiceRequest srq) {
         return execute(srq, false);
     }
 
     @Override
-    public ServiceResponse executeTrusted(ServiceRequest srq) {
+    public ServiceResponse executeTrusted(final ServiceRequest srq) {
         return execute(srq, true);
     }
 
-    protected ServiceResponse execute(ServiceRequest srq, boolean isTrusted) {
+    protected ServiceResponse execute(final ServiceRequest srq, final boolean isTrusted) {
         LOGGER.debug("Execute {} for {}", isTrusted ? "TRUSTED" : "untrusted", srq.getRequestParameters().ret$PQON());
         throw new RuntimeException("not implemented");
     }

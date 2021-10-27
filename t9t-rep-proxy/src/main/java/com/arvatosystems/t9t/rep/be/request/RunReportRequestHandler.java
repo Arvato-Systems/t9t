@@ -52,12 +52,12 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
 
     /** Constructor to initialize the callout executor. */
     public RunReportRequestHandler() {
-    	final UplinkConfiguration reportServerConfig = ConfigProvider.getConfiguration().getUplinkConfiguration();
-    	remoteCaller = new SimpleCallOutExecutor(reportServerConfig.getUrl());
+        final UplinkConfiguration reportServerConfig = ConfigProvider.getConfiguration().getUplinkConfiguration();
+        remoteCaller = new SimpleCallOutExecutor(reportServerConfig.getUrl());
     }
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, RunReportRequest request) throws Exception {
+    public ServiceResponse execute(final RequestContext ctx, final RunReportRequest request) throws Exception {
         LOGGER.debug("Calling remote runReportRequest");
         final ServiceResponse remoteResponse = remoteCaller.execute(ctx, request);
         LOGGER.debug("Remote runReportRequest returned code {}, and type {}", remoteResponse.getReturnCode(), remoteResponse.getClass().getSimpleName());
@@ -78,9 +78,9 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
                 if (!fileAlreadyExists) {
                     // transfer it
                     try (FileOutputStream os = new FileOutputStream(myFile)) {
-                        Long size = transferFile(ctx, os, sinkRef);
+                        final Long size = transferFile(ctx, os, sinkRef);
                         LOGGER.debug("Transferred report of length {} from remote to local FS", size);
-                    } catch (IOException ex) {
+                    } catch (final IOException ex) {
                         LOGGER.error(ex.getMessage() + ": " + absolutePath, ex);
                         throw new T9tException(T9tIOException.OUTPUT_FILE_OPEN_EXCEPTION, absolutePath);
                     }
@@ -91,18 +91,18 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
         return remoteResponse;
     }
 
-    protected Long transferFile(RequestContext ctx, FileOutputStream os, Long sinkRef) throws IOException {
+    protected Long transferFile(final RequestContext ctx, final FileOutputStream os, final Long sinkRef) throws IOException {
         long offset = 0;
         // set given chunkSizeInBytes as limit or default 8 MB
-        int limit = 8 * 1024 * 1024;
+        final int limit = 8 * 1024 * 1024;
         // is needed for the loop breakup
         boolean hasMore = true;
 
         while (hasMore) {
-            FileDownloadResponse fileDownloadResponse = execFileDownloadRequest(ctx, sinkRef, offset, limit);
+            final FileDownloadResponse fileDownloadResponse = execFileDownloadRequest(ctx, sinkRef, offset, limit);
 
             // Get the data
-            byte[] data = fileDownloadResponse.getData().getBytes();
+            final byte[] data = fileDownloadResponse.getData().getBytes();
             hasMore = fileDownloadResponse.getHasMore();
             LOGGER.debug("Download: Chunk/content-length:{}. Has-more-chunks:{} (offset:{}/limit:{})", data.length, hasMore, offset, limit);
 
@@ -115,12 +115,12 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
         return offset;
     }
 
-    private FileDownloadResponse execFileDownloadRequest(RequestContext ctx, Long sinkObjectRef, long offset, int limit) {
-        FileDownloadRequest fileDownloadRequest = new FileDownloadRequest();
+    private FileDownloadResponse execFileDownloadRequest(final RequestContext ctx, final Long sinkObjectRef, final long offset, final int limit) {
+        final FileDownloadRequest fileDownloadRequest = new FileDownloadRequest();
         fileDownloadRequest.setSinkRef(sinkObjectRef);
         fileDownloadRequest.setOffset(offset);
         fileDownloadRequest.setLimit(limit);
-        FileDownloadResponse fileDownloadResponse = (FileDownloadResponse)remoteCaller.execute(ctx, fileDownloadRequest);
+        final FileDownloadResponse fileDownloadResponse = (FileDownloadResponse)remoteCaller.execute(ctx, fileDownloadRequest);
         return fileDownloadResponse;
     }
 }

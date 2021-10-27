@@ -38,7 +38,7 @@ public abstract class AbstractResolverNewCompositeKey28<
     }
 
     @Override
-    public ENTITY getEntityData(KEY entityRef, boolean onlyActive) {
+    public ENTITY getEntityData(final KEY entityRef, final boolean onlyActive) {
         return getEntityDataByGenericKey(entityRef, onlyActive);
     }
 }

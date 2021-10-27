@@ -38,7 +38,7 @@ public class UserTenantRoleCrudRequestHandler extends AbstractCrudCompositeRefKe
     private final IUserTenantRoleEntityResolver resolver = Jdp.getRequired(IUserTenantRoleEntityResolver.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, UserTenantRoleCrudRequest params) {
+    public ServiceResponse execute(final RequestContext ctx, final UserTenantRoleCrudRequest params) {
         return execute(ctx, mapper, resolver, params);
     }
 }

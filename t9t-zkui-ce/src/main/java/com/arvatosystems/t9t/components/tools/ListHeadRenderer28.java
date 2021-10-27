@@ -75,11 +75,11 @@ public class ListHeadRenderer28 {
     private List<String> listHeaders;  // extra headers for Lists
     private boolean dynamicColumnSize;
 
-    public ListHeadRenderer28(ListItemRenderer28<?> defaultListItemRenderer,
-            ILeanGridConfigResolver gridConfigResolver,
-            Grid28 grid, Listbox lb, Permissionset permissions,
-            List<String> listHeaders,
-            BonaPortableClass<?> bclass, boolean dynamicColumnSize) {
+    public ListHeadRenderer28(final ListItemRenderer28<?> defaultListItemRenderer,
+            final ILeanGridConfigResolver gridConfigResolver,
+            final Grid28 grid, final Listbox lb, final Permissionset permissions,
+            final List<String> listHeaders,
+            final BonaPortableClass<?> bclass, final boolean dynamicColumnSize) {
         this.defaultListItemRenderer = defaultListItemRenderer;
         this.gridConfigResolver = gridConfigResolver;
         this.grid = grid;
@@ -91,14 +91,14 @@ public class ListHeadRenderer28 {
     }
 
     // single caller from AbstractListBox
-    public void createListhead(Listbox listbox) {
-        Listhead listhead = new Listhead();
+    public void createListhead(final Listbox listbox) {
+        final Listhead listhead = new Listhead();
         if (!grid.isHeaderConsistList())
             listhead.setMenupopup("auto");
         listhead.setColumnsgroup(false);
         listhead.setSizable(true);
         // listeners
-        listhead.addEventListener(ZulEvents.ON_COL_SIZE, (ColSizeEvent event) -> {
+        listhead.addEventListener(ZulEvents.ON_COL_SIZE, (final ColSizeEvent event) -> {
             LOGGER.debug(String.format("--> event:%s - col:%s - width:%s - id:%s", event.getName(), event.getColIndex(), event.getWidth(), event.getColumn().getId()));
             onColSizeListHeader(event);
         });
@@ -106,9 +106,9 @@ public class ListHeadRenderer28 {
         listhead.setParent(listbox);
     }
 
-    private void createAllListheaders(Listhead listhead) {
+    private void createAllListheaders(final Listhead listhead) {
         // loop over all configured columns in the gridConfig
-        UILeanGridPreferences gridPreferences = gridConfigResolver.getGridPreferences();
+        final UILeanGridPreferences gridPreferences = gridConfigResolver.getGridPreferences();
         defaultListItemRenderer.setGridPreferences(gridPreferences.getFields()); // TODO: move to the context menu object?
 
         final int nFields = gridPreferences.getFields().size();
@@ -117,17 +117,17 @@ public class ListHeadRenderer28 {
             boolean isUnsortable = gridPreferences.getUnsortableFields() != null && gridPreferences.getUnsortableFields().contains(fieldname);
             boolean isDynGridColumn = false;
             try {
-                FieldDefinition meta = FieldGetter.getFieldDefinitionForPathname(bclass.getMetaData(), fieldname);
+                final FieldDefinition meta = FieldGetter.getFieldDefinitionForPathname(bclass.getMetaData(), fieldname);
                 // check if this is a special dynamic width column
                 isDynGridColumn = defaultListItemRenderer.isDynField(meta);
-                String fieldNoDdl = fieldname.concat(".noDDL");
+                final String fieldNoDdl = fieldname.concat(".noDDL");
                 isUnsortable = (isUnsortable || bclass.getPropertyMap().containsKey(fieldNoDdl));
-            } catch (ApplicationException ue) {
+            } catch (final ApplicationException ue) {
                 LOGGER.warn("Could not determine field definition for {}", fieldname);
             }
             if (isDynGridColumn) {
                 LOGGER.debug("Determined that {} is a dynamic grid column {}", fieldname);
-                for (String header : listHeaders) {
+                for (final String header : listHeaders) {
                     createListheader(
                         listhead,
                         fieldname,
@@ -156,19 +156,19 @@ public class ListHeadRenderer28 {
 
 
     private void createListheader(
-            Listhead listhead,
-            String fieldName,
-            String columnTranslation,
-            Integer width,
-            FieldDefinition columnDescriptor,
-            String defaultSortFieldName, Boolean isDescending, boolean isUnsortable) {
+            final Listhead listhead,
+            final String fieldName,
+            final String columnTranslation,
+            final Integer width,
+            final FieldDefinition columnDescriptor,
+            final String defaultSortFieldName, final Boolean isDescending, final boolean isUnsortable) {
         // AUTO_SORT     <listheader label="columnTranslation" sort="auto(fieldName)"/>
         // BACKEND_SORT  <listheader label="columnTranslation" sort="auto" onSort="@command('sortBackend', col='fieldName')"  />
 
-        boolean isDotted = fieldName.indexOf('.') >= 0;
-        boolean isIndexed = fieldName.indexOf('[') >= 0;
+        final boolean isDotted = fieldName.indexOf('.') >= 0;
+        final boolean isIndexed = fieldName.indexOf('[') >= 0;
 
-        Listheader listheader = new Listheader();
+        final Listheader listheader = new Listheader();
         listheader.setVisible(width > 0);
         listheader.setValue(fieldName);
         listheader.setLabel(columnTranslation);
@@ -194,8 +194,8 @@ public class ListHeadRenderer28 {
         listheader.setParent(listhead);
 
         // listeners
-        listheader.addEventListener(Events.ON_DROP, (DropEvent event) -> onDropListheader(event));
-        listheader.addEventListener(Events.ON_SORT, (SortEvent event) -> onSortEvent(event));
+        listheader.addEventListener(Events.ON_DROP, (final DropEvent event) -> onDropListheader(event));
+        listheader.addEventListener(Events.ON_SORT, (final SortEvent event) -> onSortEvent(event));
         listheader.addEventListener("onColCheck", e -> {
             onColumnVisibilityChange(e);
         });
@@ -203,20 +203,20 @@ public class ListHeadRenderer28 {
         buildHeaderTooltip(listheader, fieldName, columnTranslation);
     }
 
-    private void buildHeaderTooltip(Listheader listheader, String fieldName, String columnTranslation) {
-        String toolTipId =  String.format("%s.%s.infoTooltip", grid.getGridId(), fieldName);
+    private void buildHeaderTooltip(final Listheader listheader, final String fieldName, final String columnTranslation) {
+        final String toolTipId = grid.getGridId() + "." + fieldName + ".infoTooltip";
 
         try {
-            Popup tooltip = new Popup();
+            final Popup tooltip = new Popup();
             tooltip.setParent(listheader);
             tooltip.setId(toolTipId);
 
-            Label label = new Label();
+            final Label label = new Label();
             label.setValue(columnTranslation);
             label.setParent(tooltip);
 
             listheader.setTooltipAttributes(tooltip, "before_start", null, null, null);
-        } catch (UiException uie) {
+        } catch (final UiException uie) {
             LOGGER.debug("Tooltip {} already existed in the IdSpaces, do not need to register again.");
         }
     }
@@ -225,11 +225,11 @@ public class ListHeadRenderer28 {
      * This event (onColCheck) is triggered when client modify the visibility of grid columns
      * @param event
      */
-    private void onColumnVisibilityChange(Event event) {
-        Listheader listHeader = ((Listheader)event.getTarget());
-        String colName = listHeader.getLabel();
-        Boolean isChecked = (Boolean) event.getData();
-        int colIndex = gridConfigResolver.getHeaders().indexOf(colName);
+    private void onColumnVisibilityChange(final Event event) {
+        final Listheader listHeader = ((Listheader)event.getTarget());
+        final String colName = listHeader.getLabel();
+        final Boolean isChecked = (Boolean) event.getData();
+        final int colIndex = gridConfigResolver.getHeaders().indexOf(colName);
 
         LOGGER.debug("--> event: {}, column name: {}, value: {}", event.getName(), colName, isChecked);
         gridConfigResolver.setVisibility(colIndex, isChecked);
@@ -240,14 +240,14 @@ public class ListHeadRenderer28 {
         }
     }
 
-    private void onColSizeListHeader(ColSizeEvent ev) {
+    private void onColSizeListHeader(final ColSizeEvent ev) {
         LOGGER.debug("Column resize of col {}: from {} to {}", ev.getColIndex(), ev.getPreviousWidth(), ev.getWidth());
         gridConfigResolver.changeWidth(ev.getColIndex(), parseWidth(ev.getWidth()), parseWidth(ev.getPreviousWidth()));
         gridHasChanged();
         //redrawListbox(); //remove it as it will caused the event 'onColCheck' not being fired and i dont see the need of redraw on size change.
     }
 
-    private int parseWidth(String width) {
+    private int parseWidth(final String width) {
         if (width == null) {
             return 0;
         }
@@ -260,7 +260,7 @@ public class ListHeadRenderer28 {
             }
 
             return intWidth;
-        } catch (NumberFormatException e) {
+        } catch (final NumberFormatException e) {
             LOGGER.warn("The number {} can't be parsed...", width);
             return 80;
         }
@@ -269,13 +269,13 @@ public class ListHeadRenderer28 {
     // ~~~~~~~~~~~~~~~~~~~~~~~~
     // LISTENER: ON_DROP
     // ~~~~~~~~~~~~~~~~~~~~~~~~
-    private void onDropListheader(DropEvent ev) {
+    private void onDropListheader(final DropEvent ev) {
         // get the dragged Listheader and the one it is dropped on.
-        Listheader dragged = (Listheader) ev.getDragged();
-        Listheader droppedOn = (Listheader) ev.getTarget();
+        final Listheader dragged = (Listheader) ev.getDragged();
+        final Listheader droppedOn = (Listheader) ev.getTarget();
         // then get their indexes.
-        int from = lb.getListhead().getChildren().indexOf(dragged);
-        int to = lb.getListhead().getChildren().indexOf(droppedOn);
+        final int from = lb.getListhead().getChildren().indexOf(dragged);
+        final int to = lb.getListhead().getChildren().indexOf(droppedOn);
         LOGGER.debug(" swap columns from {} to {}", from, to);
         gridConfigResolver.changeColumnOrder(from, to);
 
@@ -287,14 +287,14 @@ public class ListHeadRenderer28 {
     // ~~~~~~~~~~~~~~~~~~~~~~~~
     // LISTENER: ON_SORT
     // ~~~~~~~~~~~~~~~~~~~~~~~~
-    private void onSortEvent(SortEvent ev) {
-        String fieldname = ((Listheader) ev.getTarget()).getValue();
-        boolean isAscending = ev.isAscending();
+    private void onSortEvent(final SortEvent ev) {
+        final String fieldname = ((Listheader) ev.getTarget()).getValue();
+        final boolean isAscending = ev.isAscending();
         LOGGER.debug("Sort event for {}", fieldname);
 
         gridConfigResolver.newSort(fieldname, !isAscending);
         grid.search();
-        boolean markRedOnSort = ZulUtils.readBooleanConfig(T9TConfigConstants.GRID_MARK_RED_ON_SORT);
+        final boolean markRedOnSort = ZulUtils.readBooleanConfig(T9TConfigConstants.GRID_MARK_RED_ON_SORT);
         if (markRedOnSort) {
             gridHasChanged();
         }
@@ -309,10 +309,10 @@ public class ListHeadRenderer28 {
     final Menuitem menuitemB       = new Menuitem(session.translate(PREFIX_GRIDCONFIG28, "menuB"));
     final Menuitem menuitemC       = new Menuitem(session.translate(PREFIX_GRIDCONFIG28, "menuC"));
 
-    private void configMenuItem(final Menuitem item, Menupopup parent, final int variantToSet) {
+    private void configMenuItem(final Menuitem item, final Menupopup parent, final int variantToSet) {
         item.setAutocheck(true);
         item.setCheckmark(true);
-        item.addEventListener(Events.ON_CHECK, (CheckEvent event) -> {
+        item.addEventListener(Events.ON_CHECK, (final CheckEvent event) -> {
             checkedMenuItems(false);
             disableMenuItems(false);
             item.setChecked(true);
@@ -325,18 +325,18 @@ public class ListHeadRenderer28 {
         item.setParent(parent);
     }
 
-    private void createContextMenu(Listhead listhead) {
-        Menupopup menupopup = new Menupopup();
+    private void createContextMenu(final Listhead listhead) {
+        final Menupopup menupopup = new Menupopup();
         menupopup.setId(lb.getId() + "_popup");
         menupopup.setParent(lb.getParent());
         listhead.setContext(menupopup);
 
 
         //Switch configuration
-        Menu switchConfigurationMenu = new Menu(session.translate(PREFIX_GRIDCONFIG28, "switch"));
+        final Menu switchConfigurationMenu = new Menu(session.translate(PREFIX_GRIDCONFIG28, "switch"));
         switchConfigurationMenu.setParent(menupopup);
 
-        Menupopup switchConfigurationMenupopup = new Menupopup();
+        final Menupopup switchConfigurationMenupopup = new Menupopup();
         switchConfigurationMenupopup.setParent(switchConfigurationMenu);
         //switchConfigurationMenu.setContext(switchConfigurationMenupopup);
 
@@ -351,8 +351,8 @@ public class ListHeadRenderer28 {
 
         if (permissions.contains(OperationType.CONFIGURE)) {
             // SAVE ==> User specific
-            Menuitem menuitemSave = new Menuitem(session.translate(PREFIX_GRIDCONFIG28, "save"));
-            menuitemSave.addEventListener(Events.ON_CLICK, (Event ev) -> {
+            final Menuitem menuitemSave = new Menuitem(session.translate(PREFIX_GRIDCONFIG28, "save"));
+            menuitemSave.addEventListener(Events.ON_CLICK, (final Event ev) -> {
                 gridConfigResolver.save(false);
                 gridHasChangedDisable();
                 redrawListbox();
@@ -361,8 +361,8 @@ public class ListHeadRenderer28 {
 
             // SAVE TENANT (if allowed)
             if (permissions.contains(OperationType.ADMIN)) {
-                Menuitem menuitemSaveTenant = new Menuitem(session.translate(PREFIX_GRIDCONFIG28, "saveTenant"));
-                menuitemSaveTenant.addEventListener(Events.ON_CLICK, (Event ev) -> {
+                final Menuitem menuitemSaveTenant = new Menuitem(session.translate(PREFIX_GRIDCONFIG28, "saveTenant"));
+                menuitemSaveTenant.addEventListener(Events.ON_CLICK, (final Event ev) -> {
                     gridConfigResolver.save(true);
                     gridHasChangedDisable();
                     redrawListbox();
@@ -374,8 +374,8 @@ public class ListHeadRenderer28 {
         new Menuseparator().setParent(menupopup);
 
         //RELOAD
-        Menuitem menuitemReload = new Menuitem(session.translate(PREFIX_GRIDCONFIG28, "reload"));
-        menuitemReload.addEventListener(Events.ON_CLICK, (Event ev) -> {
+        final Menuitem menuitemReload = new Menuitem(session.translate(PREFIX_GRIDCONFIG28, "reload"));
+        menuitemReload.addEventListener(Events.ON_CLICK, (final Event ev) -> {
             gridHasChangedDisable();
             if (gridConfigResolver.reload())
                 grid.search();
@@ -388,9 +388,9 @@ public class ListHeadRenderer28 {
 
         if (permissions.contains(OperationType.CONFIGURE)) {
             // RESET USER configuration ==> delete user configuration
-            Menuitem menuitemResetUser = new Menuitem(session.translate(PREFIX_GRIDCONFIG28, "delete"));
+            final Menuitem menuitemResetUser = new Menuitem(session.translate(PREFIX_GRIDCONFIG28, "delete"));
             //menuitemResetUser.setId(menupopup.getId() + "_menuitemResetUser");
-            menuitemResetUser.addEventListener(Events.ON_CLICK, (Event ev) -> {
+            menuitemResetUser.addEventListener(Events.ON_CLICK, (final Event ev) -> {
                 gridConfigResolver.deleteConfig(false);
                 gridHasChangedDisable();
                 redrawListbox();
@@ -399,9 +399,9 @@ public class ListHeadRenderer28 {
 
             // RESET TENANT configuration ==> delete tenant configuration (if allowed)
             if (permissions.contains(OperationType.ADMIN)) {
-                Menuitem menuitemResetTenant = new Menuitem(session.translate(PREFIX_GRIDCONFIG28, "deleteTenant"));
+                final Menuitem menuitemResetTenant = new Menuitem(session.translate(PREFIX_GRIDCONFIG28, "deleteTenant"));
                 //menuitemResetTenant.setId(menupopup.getId() + "menuitemResetTenant");
-                menuitemResetTenant.addEventListener(Events.ON_CLICK, (Event ev) -> {
+                menuitemResetTenant.addEventListener(Events.ON_CLICK, (final Event ev) -> {
                     gridConfigResolver.deleteConfig(true);
                     gridHasChangedDisable();
                     redrawListbox();
@@ -409,23 +409,23 @@ public class ListHeadRenderer28 {
                 menuitemResetTenant.setParent(menupopup);
             }
 
-            Menuitem editGridMenu = new Menuitem(session.translate(PREFIX_GRIDCONFIG28, "editGrid"));
+            final Menuitem editGridMenu = new Menuitem(session.translate(PREFIX_GRIDCONFIG28, "editGrid"));
             editGridMenu.setParent(menupopup);
 
             editGridMenu.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(final Event event) throws Exception {
                     updateGridHeaders();
                 }
             });
             //only create the menu item, if search filters are available.
             if (gridConfigResolver.getFilters().size() > 0) {
-                Menuitem editSearchFiltersMenu = new Menuitem(session.translate(PREFIX_GRIDCONFIG28, "editSearchFilters"));
+                final Menuitem editSearchFiltersMenu = new Menuitem(session.translate(PREFIX_GRIDCONFIG28, "editSearchFilters"));
                 editSearchFiltersMenu.setParent(menupopup);
 
                 editSearchFiltersMenu.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(final Event event) throws Exception {
                         updateSearchFilters();
                     }
                 });
@@ -435,13 +435,13 @@ public class ListHeadRenderer28 {
     }
 
     private void updateSearchFilters() {
-        Map<String, Object> paramMap = new HashMap<>();
+        final Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("gridId", grid.getGridId());
 
-        Window win = (Window) Executions.createComponents("/screens/common/editSearchFilters.zul", null, paramMap);
+        final Window win = (Window) Executions.createComponents("/screens/common/editSearchFilters.zul", null, paramMap);
         win.addEventListener("onClose", new EventListener<Event>() {
             @Override
-            public void onEvent(Event closeEvent) throws Exception {
+            public void onEvent(final Event closeEvent) throws Exception {
                 if (closeEvent.getData() != null) {
                     findAndUpdateSearchFiltersComponent();
                     gridHasChanged();
@@ -453,7 +453,7 @@ public class ListHeadRenderer28 {
 
     private void findAndUpdateSearchFiltersComponent() {
         //Looking for filter28 and update
-          Filter28 filter28 = findFilter28Component(grid.getRoot());
+          final Filter28 filter28 = findFilter28Component(grid.getRoot());
           if (filter28 == null) {
               LOGGER.error("Unable to get Filter28 from windowComponent {} ", grid.getRoot().getId());
               return;
@@ -462,15 +462,15 @@ public class ListHeadRenderer28 {
           filter28.resetSearchFilters(gridConfigResolver.getVariant());
       }
 
-    private Filter28 findFilter28Component(Component parent) {
+    private Filter28 findFilter28Component(final Component parent) {
         Filter28 f = null;
 
-        for (Component c : parent.getChildren()) {
+        for (final Component c : parent.getChildren()) {
             if (c instanceof TwoSections28) {
                 f = ((TwoSections28) c).getFilters();
                 break;
             } else {
-                Filter28 nf = findFilter28Component(c);
+                final Filter28 nf = findFilter28Component(c);
                 if (nf != null) {
                     return nf;
                 }
@@ -481,22 +481,23 @@ public class ListHeadRenderer28 {
     }
 
     private void updateGridHeaders() {
-        Map<String, Object> paramMap = new HashMap<>();
+        final Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("gridId", grid.getGridId());
         paramMap.put("currentGridList", gridConfigResolver.getGridPreferences().getFields());
-        Window win = (Window) Executions.createComponents("/screens/common/editGrid.zul", null, paramMap);
+        final Window win = (Window) Executions.createComponents("/screens/common/editGrid.zul", null, paramMap);
         win.addEventListener("onClose", new EventListener<Event>() {
             @Override
-            public void onEvent(Event closeEvent) throws Exception {
+            public void onEvent(final Event closeEvent) throws Exception {
                 if (closeEvent.getData() != null && closeEvent.getData() instanceof Pair) {
                     @SuppressWarnings("unchecked")
+                    final
                     Pair<List<String>, List<String>> addRemovePair = (Pair<List<String>, List<String>>) closeEvent
                             .getData();
-                    for (String toRemove : addRemovePair.getY()) {
-                        int removeIndex = gridConfigResolver.getGridPreferences().getFields().indexOf(toRemove);
+                    for (final String toRemove : addRemovePair.getY()) {
+                        final int removeIndex = gridConfigResolver.getGridPreferences().getFields().indexOf(toRemove);
                         gridConfigResolver.deleteField(removeIndex);
                     }
-                    for (String toAdd : addRemovePair.getX()) {
+                    for (final String toAdd : addRemovePair.getX()) {
                         if (!gridConfigResolver.getGridPreferences().getFields().contains(toAdd)) {
                             gridConfigResolver.addField(toAdd);
                         }
@@ -515,26 +516,26 @@ public class ListHeadRenderer28 {
     }
 
     public void gridHasChanged() {
-        String style = StringUtils.trimToEmpty(lb.getStyle());
+        final String style = StringUtils.trimToEmpty(lb.getStyle());
         if (style.indexOf(GRID_CHANGE_STYLE) == -1) { //not found
             lb.setStyle(GRID_CHANGE_STYLE);
         }
     }
 
     void gridHasChangedDisable() {
-        String style = StringUtils.trimToEmpty(lb.getStyle());
+        final String style = StringUtils.trimToEmpty(lb.getStyle());
         if (style.indexOf(GRID_CHANGE_STYLE) > -1) { //found
             lb.setStyle(style.replace(GRID_CHANGE_STYLE, ""));
         }
     }
 
-    private void disableMenuItems(boolean disabled) {
+    private void disableMenuItems(final boolean disabled) {
         menuitemDefault.setDisabled(disabled);
         menuitemA.setDisabled(disabled);
         menuitemB.setDisabled(disabled);
         menuitemC.setDisabled(disabled);
     }
-    private void checkedMenuItems(boolean checked) {
+    private void checkedMenuItems(final boolean checked) {
         menuitemDefault.setChecked(checked);
         menuitemA.setChecked(checked);
         menuitemB.setChecked(checked);
@@ -545,12 +546,12 @@ public class ListHeadRenderer28 {
         return listHeaders;
     }
 
-    public void setListHeaders(List<String> listHeaders) {
+    public void setListHeaders(final List<String> listHeaders) {
         this.listHeaders = listHeaders;
         redrawListbox();
     }
 
-    public void setDynamicColumnSize(boolean dynamicColumnSize) {
+    public void setDynamicColumnSize(final boolean dynamicColumnSize) {
         this.dynamicColumnSize = dynamicColumnSize;
     }
 }

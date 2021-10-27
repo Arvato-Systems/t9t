@@ -40,7 +40,7 @@ public class SwitchCurrentBucketNoRequestHandler extends AbstractRequestHandler<
     protected final IAutonomousExecutor          autoExecutor    = Jdp.getRequired(IAutonomousExecutor.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, SwitchCurrentBucketNoRequest rp) {
+    public ServiceResponse execute(final RequestContext ctx, final SwitchCurrentBucketNoRequest rp) {
         final String qualifier = rp.getQualifier();
         final BucketCounterEntity counterEntity = counterResolver.findByQualifier(false, qualifier);
         final int oldBucketNo = counterEntity.getCurrentVal();
@@ -51,17 +51,17 @@ public class SwitchCurrentBucketNoRequestHandler extends AbstractRequestHandler<
         // first, delete the target bucket, unless disabled
         if (rp.getDeleteBeforeSwitch()) {
             ctx.statusText = "Deleting new bucket " + qualifier + ":" + newBucketNo;
-            DeleteBucketRequest dbrq = new DeleteBucketRequest();
+            final DeleteBucketRequest dbrq = new DeleteBucketRequest();
             dbrq.setQualifier(qualifier);
             dbrq.setBucketNo(newBucketNo);
-            ServiceResponse deleteResp = autoExecutor.execute(ctx, dbrq);
+            final ServiceResponse deleteResp = autoExecutor.execute(ctx, dbrq);
             if (!ApplicationException.isOk(deleteResp.getReturnCode()))
                 return deleteResp;
         }
 
         counterEntity.setCurrentVal(newBucketNo);
         LOGGER.debug("Switching bucket {} from {} to {}", qualifier, oldBucketNo, newBucketNo);
-        SwitchCurrentBucketNoResponse resp = new SwitchCurrentBucketNoResponse();
+        final SwitchCurrentBucketNoResponse resp = new SwitchCurrentBucketNoResponse();
         resp.setBeforeSwitchBucketNo(oldBucketNo);
         resp.setAfterSwitchBucketNo(newBucketNo);
         return resp;

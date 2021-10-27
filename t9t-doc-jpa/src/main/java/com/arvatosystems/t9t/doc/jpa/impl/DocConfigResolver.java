@@ -36,7 +36,7 @@ public class DocConfigResolver extends AbstractJpaResolver<DocConfigRef, DocConf
     }
 
     @Override
-    public DocConfigRef createKey(Long ref) {
+    public DocConfigRef createKey(final Long ref) {
         return ref == null ? null : new DocConfigRef(ref);
     }
 }

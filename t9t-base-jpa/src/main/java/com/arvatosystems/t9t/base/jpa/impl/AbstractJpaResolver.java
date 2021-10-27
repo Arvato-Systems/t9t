@@ -44,16 +44,16 @@ public abstract class AbstractJpaResolver<REF extends Ref, DTO extends REF, TRAC
     protected final IResolverSurrogateKey42<REF, TRACKING, ENTITY> resolver;
     protected final IEntityMapper42<Long, DTO, TRACKING, ENTITY> mapper;
 
-    protected AbstractJpaResolver(String name,
-            IResolverSurrogateKey42<REF, TRACKING, ENTITY> r,
-            IEntityMapper42<Long, DTO, TRACKING, ENTITY> m) {
+    protected AbstractJpaResolver(final String name,
+            final IResolverSurrogateKey42<REF, TRACKING, ENTITY> r,
+            final IEntityMapper42<Long, DTO, TRACKING, ENTITY> m) {
         entityName = name;
         resolver = r;
         mapper = m;
     }
 
-    protected ENTITY getEntityForKeyOrThrow(Long pk) {
-        ENTITY e = resolver.find(pk);
+    protected ENTITY getEntityForKeyOrThrow(final Long pk) {
+        final ENTITY e = resolver.find(pk);
         if (e == null)
             throw new PersistenceException(PersistenceException.RECORD_DOES_NOT_EXIST, pk.longValue(), entityName);
         return e;
@@ -65,7 +65,7 @@ public abstract class AbstractJpaResolver<REF extends Ref, DTO extends REF, TRAC
     }
 
     @Override
-    public void create(DTO dto) {
+    public void create(final DTO dto) {
         resolver.save(mapper.mapToEntity(dto, false));
     }
 
@@ -75,56 +75,56 @@ public abstract class AbstractJpaResolver<REF extends Ref, DTO extends REF, TRAC
     }
 
     @Override
-    public DTO getDTO(Long ref) {
+    public DTO getDTO(final Long ref) {
         return mapper.mapToDto(resolver.find(ref));
     }
 
     @Override
-    public DTO getDTO(REF ref) {
+    public DTO getDTO(final REF ref) {
         return mapper.mapToDto(resolver.getEntityData(ref, false));
     }
 
     @Override
-    public Long getRef(REF ref) {
+    public Long getRef(final REF ref) {
         return resolver.getRef(ref, false);
     }
 
     @Override
-    public TRACKING getTracking(Long pk) {
+    public TRACKING getTracking(final Long pk) {
         return getEntityForKeyOrThrow(pk).ret$Tracking();
     }
 
     @Override
-    public void remove(Long ref) {
+    public void remove(final Long ref) {
         resolver.remove(resolver.getEntityDataForKey(ref, false));
     }
 
     @Override
-    public void update(DTO dto) {
-        ENTITY eOld = getEntityForKeyOrThrow(dto.getObjectRef());
-        ENTITY eNew = mapper.mapToEntity(dto, false);
+    public void update(final DTO dto) {
+        final ENTITY eOld = getEntityForKeyOrThrow(dto.getObjectRef());
+        final ENTITY eNew = mapper.mapToEntity(dto, false);
         eOld.mergeFrom(eNew);
     }
 
-    protected TypedQuery<ENTITY> createQuery(EntityManager em) {
+    protected TypedQuery<ENTITY> createQuery(final EntityManager em) {
         return null;
     }
 
     public List<DTO> readAll() {
-        EntityManagerFactory emf = Jdp.getRequired(EntityManagerFactory.class);
-        EntityManager em = emf.createEntityManager();
-        TypedQuery<ENTITY> q = createQuery(em);
-        List<ENTITY> results = q.getResultList();
+        final EntityManagerFactory emf = Jdp.getRequired(EntityManagerFactory.class);
+        final EntityManager em = emf.createEntityManager();
+        final TypedQuery<ENTITY> q = createQuery(em);
+        final List<ENTITY> results = q.getResultList();
         return mapper.mapListToDto(results);
     }
 
     @Override
-    public REF createKey(long ref) {
+    public REF createKey(final long ref) {
         return ref <= 0L ? null : createKey(Long.valueOf(ref));
     }
 
     // backwards compat workaround
-    private SearchCriteria buildCriteria(int limit, int offset, SearchFilter filter, List<SortColumn> sortColumns) {
+    private SearchCriteria buildCriteria(final int limit, final int offset, final SearchFilter filter, final List<SortColumn> sortColumns) {
         final SearchCriteria dummyCriteria = new DummySearchCriteria();
         dummyCriteria.setLimit(limit);
         dummyCriteria.setOffset(offset);
@@ -134,13 +134,13 @@ public abstract class AbstractJpaResolver<REF extends Ref, DTO extends REF, TRAC
     }
 
     @Override
-    public List<DataWithTrackingW<DTO, TRACKING>> query(int limit, int offset, SearchFilter filter, List<SortColumn> sortColumns) {
+    public List<DataWithTrackingW<DTO, TRACKING>> query(final int limit, final int offset, final SearchFilter filter, final List<SortColumn> sortColumns) {
         mapper.processSearchPrefixForDB(filter, sortColumns);
         return mapper.mapListToDwt(resolver.search(buildCriteria(limit, offset, filter, sortColumns)));
     }
 
     @Override
-    public List<Long> queryKeys(int limit, int offset, SearchFilter filter, List<SortColumn> sortColumns) {
+    public List<Long> queryKeys(final int limit, final int offset, final SearchFilter filter, final List<SortColumn> sortColumns) {
         mapper.processSearchPrefixForDB(filter, sortColumns);
         return resolver.searchKey(buildCriteria(limit, offset, filter, sortColumns));
     }

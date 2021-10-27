@@ -24,7 +24,7 @@ import com.arvatosystems.t9t.base.services.RequestContext;
 public class ExceptionRequestHandler extends AbstractReadOnlyRequestHandler<ExceptionRequest> {
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, ExceptionRequest errorRequest) {
+    public ServiceResponse execute(final RequestContext ctx, final ExceptionRequest errorRequest) {
         final int code = errorRequest.getReturnCode();
         final String message = errorRequest.getErrorMessage();
         if (code > 0) {

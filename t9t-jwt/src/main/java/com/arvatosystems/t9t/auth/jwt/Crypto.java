@@ -50,12 +50,12 @@ final class CryptoMac implements Crypto {
     }
 
     @Override
-    public byte[] sign(byte[] payload) {
+    public byte[] sign(final byte[] payload) {
         return mac.doFinal(payload);
     }
 
     @Override
-    public boolean verify(byte[] signature, byte[] payload) {
+    public boolean verify(final byte[] signature, final byte[] payload) {
         return Arrays.equals(signature, mac.doFinal(payload));
     }
 }
@@ -77,14 +77,14 @@ final class CryptoSignature implements Crypto {
     }
 
     @Override
-    public byte[] sign(byte[] payload) throws SignatureException, InvalidKeyException {
+    public byte[] sign(final byte[] payload) throws SignatureException, InvalidKeyException {
         sig.initSign(privateKey);
         sig.update(payload);
         return sig.sign();
     }
 
     @Override
-    public boolean verify(byte[] signature, byte[] payload) throws InvalidKeyException, SignatureException {
+    public boolean verify(final byte[] signature, final byte[] payload) throws InvalidKeyException, SignatureException {
         sig.initVerify(certificate);
         sig.update(payload);
         return sig.verify(signature);

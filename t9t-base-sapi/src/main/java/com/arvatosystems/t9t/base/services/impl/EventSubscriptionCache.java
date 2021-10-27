@@ -26,18 +26,20 @@ import com.arvatosystems.t9t.base.BooleanUtil;
 /** Class stores map of active subscriptions in memory.
  * We often want to know if there is a subscription to tenant + qualifier.
  */
-public class EventSubscriptionCache {
-    private static final ConcurrentMap<String, Boolean> ACTIVE_SUBSCRIPTIONS = new ConcurrentHashMap<String, Boolean>();
+public final class EventSubscriptionCache {
+    private EventSubscriptionCache() { }
+
+    private static final ConcurrentMap<String, Boolean> ACTIVE_SUBSCRIPTIONS = new ConcurrentHashMap<>();
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EventSubscriptionCache.class);
 
-    public static void updateRegistration(String eventID, String qualifier, Long tenantRef, boolean active) {
+    public static void updateRegistration(final String eventID, final String qualifier, final Long tenantRef, final boolean active) {
         final String key = eventID + ":" + qualifier + ":" + tenantRef.toString();
         ACTIVE_SUBSCRIPTIONS.put(key, Boolean.valueOf(active));
         LOGGER.info("Updated EventSubscriptionCache with key:{}, active:{}", key, active);
     }
 
-    public static boolean isActive(String eventID, String qualifier, Long tenantRef) {
+    public static boolean isActive(final String eventID, final String qualifier, final Long tenantRef) {
         final String key = eventID + ":" + qualifier + ":" + tenantRef.toString();
         return BooleanUtil.isTrue(ACTIVE_SUBSCRIPTIONS.get(key));
     }

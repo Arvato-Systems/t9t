@@ -37,14 +37,14 @@ class PersistenceProviderJdbcProvider implements CustomScope<PersistenceProvider
     private final Provider<RequestContext> ctxProvider = Jdp.getProvider(RequestContext.class);
     private final HikariDataSource ds;
 
-    public PersistenceProviderJdbcProvider(HikariDataSource ds) {
+    PersistenceProviderJdbcProvider(final HikariDataSource ds) {
         super();
         this.ds = ds;
     }
 
     @Override
     public PersistenceProviderJdbc get() {
-        RequestContext ctx = ctxProvider.get();
+        final RequestContext ctx = ctxProvider.get();
         PersistenceProviderJdbc jdbcContext = (PersistenceProviderJdbc)ctx.getPersistenceProvider(PersistenceProviders.UNUSED.ordinal());
         if (jdbcContext == null) {
             // does not exist, create a new one!
@@ -57,7 +57,7 @@ class PersistenceProviderJdbcProvider implements CustomScope<PersistenceProvider
     }
 
     @Override
-    public void set(PersistenceProviderJdbc instance) {
+    public void set(final PersistenceProviderJdbc instance) {
         LOGGER.warn("Set operation is not supported");
         throw new UnsupportedOperationException();
     }

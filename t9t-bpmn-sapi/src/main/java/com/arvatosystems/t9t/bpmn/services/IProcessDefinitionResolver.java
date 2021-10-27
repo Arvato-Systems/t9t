@@ -21,4 +21,4 @@ import com.arvatosystems.t9t.bpmn.ProcessDefinitionRef;
 
 import de.jpaw.bonaparte.refsw.RefResolver;
 
-public interface IProcessDefinitionResolver extends RefResolver<ProcessDefinitionRef, ProcessDefinitionDTO, FullTrackingWithVersion> {}
+public interface IProcessDefinitionResolver extends RefResolver<ProcessDefinitionRef, ProcessDefinitionDTO, FullTrackingWithVersion> { }

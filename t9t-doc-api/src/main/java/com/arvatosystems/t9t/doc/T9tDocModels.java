@@ -33,32 +33,32 @@ import com.arvatosystems.t9t.doc.request.MailingGroupSearchRequest;
 
 public final class T9tDocModels implements IViewModelContainer {
 
-    private static final CrudViewModel<DocConfigDTO, FullTrackingWithVersion> DOC_CONFIG_VIEW_MODEL = new CrudViewModel<DocConfigDTO, FullTrackingWithVersion>(
+    private static final CrudViewModel<DocConfigDTO, FullTrackingWithVersion> DOC_CONFIG_VIEW_MODEL = new CrudViewModel<>(
         DocConfigDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         DocConfigSearchRequest.BClass.INSTANCE,
         DocConfigCrudRequest.BClass.INSTANCE);
-    private static final CrudViewModel<DocEmailCfgDTO, FullTrackingWithVersion> DOC_EMAIL_CFG_VIEW_MODEL = new CrudViewModel<DocEmailCfgDTO, FullTrackingWithVersion>(
+    private static final CrudViewModel<DocEmailCfgDTO, FullTrackingWithVersion> DOC_EMAIL_CFG_VIEW_MODEL = new CrudViewModel<>(
         DocEmailCfgDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         DocEmailCfgSearchRequest.BClass.INSTANCE,
         DocEmailCfgCrudRequest.BClass.INSTANCE);
-    private static final CrudViewModel<DocTemplateDTO, FullTrackingWithVersion> DOC_TEMPLATE_VIEW_MODEL = new CrudViewModel<DocTemplateDTO, FullTrackingWithVersion>(
+    private static final CrudViewModel<DocTemplateDTO, FullTrackingWithVersion> DOC_TEMPLATE_VIEW_MODEL = new CrudViewModel<>(
         DocTemplateDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         DocTemplateSearchRequest.BClass.INSTANCE,
         DocTemplateCrudRequest.BClass.INSTANCE);
-    private static final CrudViewModel<DocComponentDTO, FullTrackingWithVersion> DOC_COMPONENT_VIEW_MODEL = new CrudViewModel<DocComponentDTO, FullTrackingWithVersion>(
+    private static final CrudViewModel<DocComponentDTO, FullTrackingWithVersion> DOC_COMPONENT_VIEW_MODEL = new CrudViewModel<>(
         DocComponentDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         DocComponentSearchRequest.BClass.INSTANCE,
         DocComponentCrudRequest.BClass.INSTANCE);
-    private static final CrudViewModel<DocModuleCfgDTO, FullTrackingWithVersion> DOC_MODULE_CFG_VIEW_MODEL = new CrudViewModel<DocModuleCfgDTO, FullTrackingWithVersion>(
+    private static final CrudViewModel<DocModuleCfgDTO, FullTrackingWithVersion> DOC_MODULE_CFG_VIEW_MODEL = new CrudViewModel<>(
         DocModuleCfgDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         DocModuleCfgSearchRequest.BClass.INSTANCE,
         DocModuleCfgCrudRequest.BClass.INSTANCE);
-    private static final CrudViewModel<MailingGroupDTO, FullTrackingWithVersion> MAILING_GROUP_VIEW_MODEL = new CrudViewModel<MailingGroupDTO, FullTrackingWithVersion>(
+    private static final CrudViewModel<MailingGroupDTO, FullTrackingWithVersion> MAILING_GROUP_VIEW_MODEL = new CrudViewModel<>(
         MailingGroupDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         MailingGroupSearchRequest.BClass.INSTANCE,

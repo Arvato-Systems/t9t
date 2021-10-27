@@ -25,7 +25,7 @@ import de.jpaw.dp.Singleton;
 public class NoopTemplateConversion implements ITemplateConversion {
 
     @Override
-    public String convertTemplate(String documentId, String templateIn) {
+    public String convertTemplate(final String documentId, final String templateIn) {
         // no conversion done
         return templateIn;
     }

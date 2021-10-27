@@ -95,7 +95,7 @@
         <xtend-maven-plugin.version>2.26.0.M2</xtend-maven-plugin.version>
         <xtext-maven-plugin.version>2.26.0.M2</xtext-maven-plugin.version>
 
-        <bonaparte-plugin.version>4.80.0</bonaparte-plugin.version>
+        <bonaparte-plugin.version>4.80.1</bonaparte-plugin.version>
         <license-plugin.version>3.0</license-plugin.version>
 
         <checkstyle.version>9.0.1</checkstyle.version>
@@ -849,214 +849,218 @@
         </plugins>
     </reporting>
 
-    <modules>
-<!--        <module>global-angular-dm</module> FIXME currently does not work with license and site goals -->
-        <module>global-dm</module>
-        <module>global-zk-dm</module>
-        <module>global-sql-assembly</module>
-
-        <module>t9t-dm</module>
-
-        <module>t9t-settings</module>
-        <module>t9t-settings-api</module>
-        <module>t9t-settings-java</module>
-        <module>t9t-settings-xtend</module>
-        <module>t9t-settings-be</module>
-        <module>t9t-settings-jpa</module>
-
-        <module>t9t-dataloader</module>
-        <module>t9t-dataloader-maven</module>
-
-        <module>schema-loader-lib</module>
-        <module>schema-loader-cmdline</module>
-        <module>schema-loader-maven-plugin</module>
-
-        <module>t9t-annotations-api</module>
-        <module>t9t-base-api</module>
-        <module>t9t-init</module>
-        <module>t9t-jdp</module>
-        <module>t9t-jwt</module>
-        <module>t9t-client-config</module>
-        <module>t9t-client-jdk11</module>
-        <module>t9t-client-jdk11async</module>
-        <module>t9t-client-apache</module>
-        <module>t9t-httppool-be</module>
-
-        <module>t9t-server-sapi</module>
-        <module>t9t-base-sapi</module>
-        <module>t9t-rest-sapi</module>
-        <module>t9t-cfg-be</module>
-
-        <module>t9t-annotations-jpa</module>
-
-        <module>t9t-base-be</module>
-        <module>t9t-base-jdbc</module>
-        <module>t9t-base-jpa</module>
-        <module>t9t-base-jpa-rl</module>
-        <module>t9t-base-jpa-jta</module>
-        <module>t9t-base-jpa-st</module>
-        <module>t9t-aws-refgenerator</module>
-
-        <module>t9t-activeannotations-jpa</module>
-
-        <module>t9t-core-api</module>
-        <module>t9t-core-sapi</module>
-        <module>t9t-core-be</module>
-        <module>t9t-core-jpa</module>
-
-        <module>t9t-email-api</module>
-        <module>t9t-doc-api</module>
-
-        <module>t9t-auth-apiext</module>
-        <module>t9t-auth-api</module>
-        <module>t9t-auth-sapi</module>
-        <module>t9t-auth-be</module>
-        <module>t9t-auth-jpa</module>
-        <module>t9t-auth-mock</module>
-        <module>t9t-auth-nodb</module>
-
-        <module>t9t-base-vertx</module>
-        <module>t9t-auth-vertx</module>
-        <module>t9t-cluster-kafka</module>
-
-        <module>t9t-translation-api</module>
-        <module>t9t-translation-sapi</module>
-
-        <module>t9t-msglog-api</module>
-        <module>t9t-msglog-sapi</module>
-        <module>t9t-msglog-be</module>
-        <module>t9t-msglog-jpa</module>
-
-        <module>t9t-email-sapi</module>
-        <module>t9t-email-be</module>
-        <module>t9t-email-be-smtp</module>
-        <module>t9t-email-be-commons</module>
-        <module>t9t-email-be-vertx</module>
-        <module>t9t-email-jpa</module>
-
-        <module>t9t-fonts</module>
-        <module>t9t-doc-sapi</module>
-        <module>t9t-doc-be</module>
-        <module>t9t-doc-be-pdf</module>
-        <module>t9t-doc-jpa</module>
-
-        <module>t9t-voice-api</module>
-        <module>t9t-voice-sapi</module>
-        <module>t9t-voice-be</module>
-        <module>t9t-voice-jpa</module>
-
-        <module>t9t-translation-be</module>
-        <module>t9t-translation-be-intern</module>
-
-
-        <module>t9t-orm-eclipselink-jpa</module>
-        <module>t9t-orm-hibernate-jpa</module>
-
-        <module>t9t-genconf-api</module>
-        <module>t9t-genconf-sapi</module>
-        <module>t9t-genconf-be</module>
-        <module>t9t-genconf-jpa</module>
-
-        <module>t9t-io-api</module>
-        <module>t9t-io-sapi</module>
-        <module>t9t-io-be</module>
-        <module>t9t-io-be-intern</module>
-        <module>t9t-io-be-kafka</module>
-        <module>t9t-io-be-camel</module>
-        <module>t9t-io-be-jackson</module>
-        <module>t9t-io-be-poi</module>
-        <module>t9t-io-jpa</module>
-
-        <module>t9t-solr-apiext</module>
-        <module>t9t-solr-api</module>
-        <module>t9t-solr-sapi</module>
-        <module>t9t-solr-be</module>
-        <module>t9t-solr-jpa</module>
-
-        <module>t9t-ssm-api</module>
-        <module>t9t-ssm-sapi</module>
-        <module>t9t-ssm-be</module>
-        <module>t9t-ssm-jpa</module>
-
-        <module>t9t-rep</module>
-        <module>t9t-rep-api</module>
-        <module>t9t-rep-sapi</module>
-        <module>t9t-rep-proxy</module>
-        <module>t9t-rep-be</module>
-        <module>t9t-rep-jpa</module>
-
-        <module>t9t-pdf-api</module>
-        <module>t9t-pdf-be</module>
-
-        <module>t9t-xml-apiext</module>
-        <module>t9t-xml-restapi</module>
-        <module>t9t-xml-be</module>
-
-        <!-- state machine projects -->
-        <module>t9t-bpmn-api</module>
-        <module>t9t-bpmn-sapi</module>
-        <module>t9t-bpmn-be</module>
-        <module>t9t-bpmn-jpa</module>
-
-        <!-- BPMN2 integration projects -->
-        <module>t9t-bpmn2-api</module>
-        <module>t9t-bpmn2-sapi</module>
-        <module>t9t-bpmn2-camunda-be</module>
-        <module>t9t-bpmn2-jpa</module>
-        <module>t9t-bpmn2-mock</module>
-
-        <!-- AWS cloud integration -->
-        <module>t9t-base-be-aws</module>
-        <module>t9t-io-be-aws</module>
-        <module>t9t-email-be-aws</module>
-
-        <!-- modules which are optional addons -->
-        <module>t9t-demo-api</module>
-        <module>t9t-demo-be</module>
-        <module>t9t-demo-plugin</module>
-
-        <module>t9t-sql</module>
-        <module>t9t-sql-migration-executor</module>
-
-        <module>t9t-tests-arch</module>
-        <module>t9t-tests-arch-be</module>
-        <module>t9t-vertx-cluster</module>
-        <module>t9t-vertx-metrics</module>
-        <module>t9t-vertx-resteasy</module>
-        <module>t9t-jetty-resteasy</module>
-        <module>t9t-jetty-restgateway</module>
-        <module>t9t-proxy</module>
-        <module>t9t-all-api</module>
-        <module>t9t-all</module>  <!-- t9t-all is t9t-all-be + t9t-all-jpa -->
-        <module>t9t-all-vertx</module>
-
-        <!-- <module>t9t-server-build-vertx-eclipselink</module> not used right now, skip in build to save time -->
-        <module>t9t-server-build-vertx-hibernate</module>
-        <module>t9t-server-build-vertx-hibernate-st</module>
-        <module>t9t-tests-auth</module>
-        <module>t9t-tests-misc</module>
-        <module>t9t-tests-doc</module>
-        <module>t9t-tests-all</module>
-        <module>t9t-tests-remote</module>
-
-
-        <module>t9t-tests-embedded</module>
-        <module>t9t-tests-unit</module>
-
-        <module>t9t-test-dbsetup</module>
-        <module>t9t-test-server</module>
-
-        <module>t9t-alexa</module>
-        <module>t9t-manual</module>
-    </modules>
-
     <profiles>
+        <profile>
+            <id>build</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+        <!--        <module>global-angular-dm</module> FIXME currently does not work with license and site goals -->
+                <module>global-dm</module>
+                <module>global-zk-dm</module>
+                <module>global-sql-assembly</module>
+
+                <module>t9t-dm</module>
+
+                <module>t9t-settings</module>
+                <module>t9t-settings-api</module>
+                <module>t9t-settings-java</module>
+                <module>t9t-settings-xtend</module>
+                <module>t9t-settings-be</module>
+                <module>t9t-settings-jpa</module>
+
+                <module>t9t-dataloader</module>
+                <module>t9t-dataloader-maven</module>
+
+                <module>schema-loader-lib</module>
+                <module>schema-loader-cmdline</module>
+                <module>schema-loader-maven-plugin</module>
+
+                <module>t9t-annotations-api</module>
+                <module>t9t-base-api</module>
+                <module>t9t-init</module>
+                <module>t9t-jdp</module>
+                <module>t9t-jwt</module>
+                <module>t9t-client-config</module>
+                <module>t9t-client-jdk11</module>
+                <module>t9t-client-jdk11async</module>
+                <module>t9t-client-apache</module>
+                <module>t9t-httppool-be</module>
+
+                <module>t9t-server-sapi</module>
+                <module>t9t-base-sapi</module>
+                <module>t9t-rest-sapi</module>
+                <module>t9t-cfg-be</module>
+
+                <module>t9t-annotations-jpa</module>
+
+                <module>t9t-base-be</module>
+                <module>t9t-base-jdbc</module>
+                <module>t9t-base-jpa</module>
+                <module>t9t-base-jpa-rl</module>
+                <module>t9t-base-jpa-jta</module>
+                <module>t9t-base-jpa-st</module>
+                <module>t9t-aws-refgenerator</module>
+
+                <module>t9t-activeannotations-jpa</module>
+
+                <module>t9t-core-api</module>
+                <module>t9t-core-sapi</module>
+                <module>t9t-core-be</module>
+                <module>t9t-core-jpa</module>
+
+                <module>t9t-email-api</module>
+                <module>t9t-doc-api</module>
+
+                <module>t9t-auth-apiext</module>
+                <module>t9t-auth-api</module>
+                <module>t9t-auth-sapi</module>
+                <module>t9t-auth-be</module>
+                <module>t9t-auth-jpa</module>
+                <module>t9t-auth-mock</module>
+                <module>t9t-auth-nodb</module>
+
+                <module>t9t-base-vertx</module>
+                <module>t9t-auth-vertx</module>
+                <module>t9t-cluster-kafka</module>
+
+                <module>t9t-translation-api</module>
+                <module>t9t-translation-sapi</module>
+
+                <module>t9t-msglog-api</module>
+                <module>t9t-msglog-sapi</module>
+                <module>t9t-msglog-be</module>
+                <module>t9t-msglog-jpa</module>
+
+                <module>t9t-email-sapi</module>
+                <module>t9t-email-be</module>
+                <module>t9t-email-be-smtp</module>
+                <module>t9t-email-be-commons</module>
+                <module>t9t-email-be-vertx</module>
+                <module>t9t-email-jpa</module>
+
+                <module>t9t-fonts</module>
+                <module>t9t-doc-sapi</module>
+                <module>t9t-doc-be</module>
+                <module>t9t-doc-be-pdf</module>
+                <module>t9t-doc-jpa</module>
+
+                <module>t9t-voice-api</module>
+                <module>t9t-voice-sapi</module>
+                <module>t9t-voice-be</module>
+                <module>t9t-voice-jpa</module>
+
+                <module>t9t-translation-be</module>
+                <module>t9t-translation-be-intern</module>
+
+
+                <module>t9t-orm-eclipselink-jpa</module>
+                <module>t9t-orm-hibernate-jpa</module>
+
+                <module>t9t-genconf-api</module>
+                <module>t9t-genconf-sapi</module>
+                <module>t9t-genconf-be</module>
+                <module>t9t-genconf-jpa</module>
+
+                <module>t9t-io-api</module>
+                <module>t9t-io-sapi</module>
+                <module>t9t-io-be</module>
+                <module>t9t-io-be-intern</module>
+                <module>t9t-io-be-kafka</module>
+                <module>t9t-io-be-camel</module>
+                <module>t9t-io-be-jackson</module>
+                <module>t9t-io-be-poi</module>
+                <module>t9t-io-jpa</module>
+
+                <module>t9t-solr-apiext</module>
+                <module>t9t-solr-api</module>
+                <module>t9t-solr-sapi</module>
+                <module>t9t-solr-be</module>
+                <module>t9t-solr-jpa</module>
+
+                <module>t9t-ssm-api</module>
+                <module>t9t-ssm-sapi</module>
+                <module>t9t-ssm-be</module>
+                <module>t9t-ssm-jpa</module>
+
+                <module>t9t-rep</module>
+                <module>t9t-rep-api</module>
+                <module>t9t-rep-sapi</module>
+                <module>t9t-rep-proxy</module>
+                <module>t9t-rep-be</module>
+                <module>t9t-rep-jpa</module>
+
+                <module>t9t-pdf-api</module>
+                <module>t9t-pdf-be</module>
+
+                <module>t9t-xml-apiext</module>
+                <module>t9t-xml-restapi</module>
+                <module>t9t-xml-be</module>
+
+                <!-- state machine projects -->
+                <module>t9t-bpmn-api</module>
+                <module>t9t-bpmn-sapi</module>
+                <module>t9t-bpmn-be</module>
+                <module>t9t-bpmn-jpa</module>
+
+                <!-- BPMN2 integration projects -->
+                <module>t9t-bpmn2-api</module>
+                <module>t9t-bpmn2-sapi</module>
+                <module>t9t-bpmn2-camunda-be</module>
+                <module>t9t-bpmn2-jpa</module>
+                <module>t9t-bpmn2-mock</module>
+
+                <!-- AWS cloud integration -->
+                <module>t9t-base-be-aws</module>
+                <module>t9t-io-be-aws</module>
+                <module>t9t-email-be-aws</module>
+
+                <!-- modules which are optional addons -->
+                <module>t9t-demo-api</module>
+                <module>t9t-demo-be</module>
+                <module>t9t-demo-plugin</module>
+
+                <module>t9t-sql</module>
+                <module>t9t-sql-migration-executor</module>
+
+                <module>t9t-tests-arch</module>
+                <module>t9t-tests-arch-be</module>
+                <module>t9t-vertx-cluster</module>
+                <module>t9t-vertx-metrics</module>
+                <module>t9t-vertx-resteasy</module>
+                <module>t9t-jetty-resteasy</module>
+                <module>t9t-jetty-restgateway</module>
+                <module>t9t-proxy</module>
+                <module>t9t-all-api</module>
+                <module>t9t-all</module>  <!-- t9t-all is t9t-all-be + t9t-all-jpa -->
+                <module>t9t-all-vertx</module>
+
+                <!-- <module>t9t-server-build-vertx-eclipselink</module> not used right now, skip in build to save time -->
+                <module>t9t-server-build-vertx-hibernate</module>
+                <module>t9t-server-build-vertx-hibernate-st</module>
+                <module>t9t-tests-auth</module>
+                <module>t9t-tests-misc</module>
+                <module>t9t-tests-doc</module>
+                <module>t9t-tests-all</module>
+                <module>t9t-tests-remote</module>
+
+
+                <module>t9t-tests-embedded</module>
+                <module>t9t-tests-unit</module>
+
+                <module>t9t-test-dbsetup</module>
+                <module>t9t-test-server</module>
+
+                <module>t9t-alexa</module>
+                <module>t9t-manual</module>
+            </modules>
+        </profile>
+
         <profile>
             <id>ZKEE</id>
             <activation>
-              <property>
-                <name>!ZKCE</name>
-              </property>
+                <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
                 <module>t9t-settings-zkui</module>
@@ -1087,6 +1091,184 @@
                 <module>t9t-zkui-ce</module>
                 <module>t9t-zkui-screens</module>
                 <!-- <module>t9t-zkui-war</module>   not needed, just a sample -->
+            </modules>
+        </profile>
+
+        <profile>
+            <id>checkstyle</id>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-checkstyle-plugin</artifactId>
+                        <configuration>
+                            <configLocation>./checkstyle.xml</configLocation>
+                            <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                            <includes>**\/*.java</includes>
+                            <excludes>**\/generated\/,**\/xtend-gen\/,**\/target\/,**\/bin\/</excludes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+
+            <modules>
+                <module>t9t-annotations-api</module>
+                <module>t9t-base-api</module>
+                <module>t9t-init</module>
+                <module>t9t-jdp</module>
+                <module>t9t-jwt</module>
+                <module>t9t-client-config</module>
+                <module>t9t-client-jdk11</module>
+                <module>t9t-client-jdk11async</module>
+                <module>t9t-client-apache</module>
+                <module>t9t-httppool-be</module>
+
+                <module>t9t-server-sapi</module>
+                <module>t9t-base-sapi</module>
+                <module>t9t-rest-sapi</module>
+                <module>t9t-cfg-be</module>
+
+                <module>t9t-annotations-jpa</module>
+
+                <module>t9t-base-be</module>
+                <module>t9t-base-jdbc</module>
+                <!-- <module>t9t-base-jpa</module>   waiting for TBE-612 -->
+                <module>t9t-base-jpa-rl</module>
+                <module>t9t-base-jpa-jta</module>
+                <module>t9t-base-jpa-st</module>
+                <module>t9t-aws-refgenerator</module>
+
+                <module>t9t-activeannotations-jpa</module>
+
+                <module>t9t-core-api</module>
+                <module>t9t-core-sapi</module>
+                <module>t9t-core-be</module>
+                <module>t9t-core-jpa</module>
+
+                <module>t9t-email-api</module>
+                <module>t9t-doc-api</module>
+
+                <module>t9t-auth-apiext</module>
+                <module>t9t-auth-api</module>
+                <module>t9t-auth-sapi</module>
+                <module>t9t-auth-be</module>
+                <module>t9t-auth-jpa</module>
+                <module>t9t-auth-mock</module>
+                <module>t9t-auth-nodb</module>
+
+                <module>t9t-base-vertx</module>
+                <module>t9t-auth-vertx</module>
+                <module>t9t-cluster-kafka</module>
+
+                <module>t9t-translation-api</module>
+                <module>t9t-translation-sapi</module>
+
+                <module>t9t-msglog-api</module>
+                <module>t9t-msglog-sapi</module>
+                <module>t9t-msglog-be</module>
+                <module>t9t-msglog-jpa</module>
+
+                <module>t9t-email-sapi</module>
+                <module>t9t-email-be</module>
+                <module>t9t-email-be-smtp</module>
+                <module>t9t-email-be-commons</module>
+                <module>t9t-email-be-vertx</module>
+                <module>t9t-email-jpa</module>
+
+                <module>t9t-fonts</module>
+                <module>t9t-doc-sapi</module>
+                <module>t9t-doc-be</module>
+                <module>t9t-doc-be-pdf</module>
+                <module>t9t-doc-jpa</module>
+
+                <module>t9t-voice-api</module>
+                <module>t9t-voice-sapi</module>
+                <module>t9t-voice-be</module>
+                <module>t9t-voice-jpa</module>
+
+                <module>t9t-translation-be</module>
+                <module>t9t-translation-be-intern</module>
+
+
+                <module>t9t-orm-eclipselink-jpa</module>
+                <module>t9t-orm-hibernate-jpa</module>
+
+                <module>t9t-genconf-api</module>
+                <module>t9t-genconf-sapi</module>
+                <module>t9t-genconf-be</module>
+                <module>t9t-genconf-jpa</module>
+                <module>t9t-io-api</module>
+                <module>t9t-io-sapi</module>
+                <module>t9t-io-be</module>
+                <module>t9t-io-be-intern</module>
+                <module>t9t-io-be-kafka</module>
+                <module>t9t-io-be-camel</module>
+                <module>t9t-io-be-jackson</module>
+                <module>t9t-io-be-poi</module>
+                <module>t9t-io-jpa</module>
+
+                <module>t9t-solr-apiext</module>
+                <module>t9t-solr-api</module>
+                <module>t9t-solr-sapi</module>
+                <module>t9t-solr-be</module>
+                <module>t9t-solr-jpa</module>
+
+                <module>t9t-ssm-api</module>
+                <module>t9t-ssm-sapi</module>
+                <module>t9t-ssm-be</module>
+                <module>t9t-ssm-jpa</module>
+
+                <module>t9t-rep</module>
+                <module>t9t-rep-api</module>
+                <module>t9t-rep-sapi</module>
+                <module>t9t-rep-proxy</module>
+                <module>t9t-rep-be</module>
+                <module>t9t-rep-jpa</module>
+
+                <module>t9t-pdf-api</module>
+                <module>t9t-pdf-be</module>
+
+                <module>t9t-xml-apiext</module>
+                <module>t9t-xml-restapi</module>
+                <module>t9t-xml-be</module>
+
+                <module>t9t-bpmn-api</module>
+                <module>t9t-bpmn-sapi</module>
+                <module>t9t-bpmn-be</module>
+                <module>t9t-bpmn-jpa</module>
+
+                <module>t9t-bpmn2-api</module>
+                <module>t9t-bpmn2-sapi</module>
+<!-- TODO
+                <module>t9t-bpmn2-camunda-be</module>
+-->
+                <module>t9t-bpmn2-jpa</module>
+                <module>t9t-bpmn2-mock</module>
+
+                <module>t9t-base-be-aws</module>
+                <module>t9t-io-be-aws</module>
+                <module>t9t-email-be-aws</module>
+
+                <module>t9t-demo-api</module>
+                <module>t9t-demo-be</module>
+                <module>t9t-demo-plugin</module>
+
+                <module>t9t-sql</module>
+                <module>t9t-sql-migration-executor</module>
+
+                <module>t9t-vertx-cluster</module>
+                <module>t9t-vertx-metrics</module>
+                <module>t9t-vertx-resteasy</module>
+                <module>t9t-jetty-resteasy</module>
+                <module>t9t-jetty-restgateway</module>
+                <module>t9t-proxy</module>
+                <module>t9t-all-api</module>
+                <module>t9t-all</module>
+                <module>t9t-all-vertx</module>
+
+             <!--   <module>t9t-zkui-ce</module>   waits for TBE-613 -->
+                <module>t9t-zkui-ee</module>
             </modules>
         </profile>
     </profiles>

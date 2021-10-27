@@ -53,58 +53,63 @@ public class CustomLoggingFilter implements ContainerRequestFilter, ContainerRes
     }
 
     @Override
-    public void filter(ContainerRequestContext requestContext) throws IOException {
-        //execution time
-        MDC.put("start-time", String.valueOf(System.currentTimeMillis()));
-
-        LOGGER.debug("HTTP REQUEST   : {} {}{}", requestContext.getMethod(), requestContext.getUriInfo().getPath(), toStringQueryParams(requestContext.getUriInfo().getQueryParameters()));
-        LOGGER.debug("   Call        : {}#{} ", resourceInfo.getResourceClass().getSimpleName(), resourceInfo.getResourceMethod().getName());
-        if (!requestContext.getUriInfo().getPathParameters().isEmpty() && LOGGER.isDebugEnabled()) {
-            LOGGER.debug("   Path Parms  : {}", toString(requestContext.getUriInfo().getPathParameters()));
+    public void filter(final ContainerRequestContext requestContext) throws IOException {
+        if (LOGGER.isDebugEnabled()) {
+            //execution time
+            MDC.put("start-time", String.valueOf(System.currentTimeMillis()));
+            LOGGER.debug("HTTP REQUEST   : {} {}{}", requestContext.getMethod(), requestContext.getUriInfo().getPath(),
+              toStringQueryParams(requestContext.getUriInfo().getQueryParameters()));
+            LOGGER.debug("   Call        : {}#{} ", resourceInfo.getResourceClass().getSimpleName(), resourceInfo.getResourceMethod().getName());
+            if (!requestContext.getUriInfo().getPathParameters().isEmpty() && LOGGER.isDebugEnabled()) {
+                LOGGER.debug("   Path Parms  : {}", toString(requestContext.getUriInfo().getPathParameters()));
+            }
+            LOGGER.debug("   Header      : {}", requestContext.getHeaders());
+            final String entityStream = readEntityStream(requestContext);
+            LOGGER.debug("   Content Type: {}", requestContext.getMediaType());
+            LOGGER.debug("   Body        : {}", (entityStream.isEmpty() ? "#EMPTY#" : entityStream));
         }
-        LOGGER.debug("   Header      : {}", requestContext.getHeaders());
-        String entityStream = readEntityStream(requestContext);
-        LOGGER.debug("   Content Type: {}", requestContext.getMediaType());
-        LOGGER.debug("   Body        : {}", (entityStream.isEmpty() ? "#EMPTY#" : entityStream));
     }
 
     @Override
-    public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
-        LOGGER.debug("HTTP RESPONSE  : {} {} ", requestContext.getMethod(), requestContext.getUriInfo().getPath());
-        LOGGER.debug("   Header      : {}", responseContext.getHeaders());
-        LOGGER.debug("   Return Code : {} {} {}", responseContext.getStatus(), responseContext.getStatusInfo().getFamily().name(), responseContext.getStatusInfo().getReasonPhrase());
-        LOGGER.debug("   Content Type: {}", responseContext.getMediaType());
-        LOGGER.debug("   Content     : {}", responseContext.getEntity());
+    public void filter(final ContainerRequestContext requestContext, final ContainerResponseContext responseContext) throws IOException {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("HTTP RESPONSE  : {} {} ", requestContext.getMethod(), requestContext.getUriInfo().getPath());
+            LOGGER.debug("   Header      : {}", responseContext.getHeaders());
+            LOGGER.debug("   Return Code : {} {} {}", responseContext.getStatus(), responseContext.getStatusInfo().getFamily().name(),
+              responseContext.getStatusInfo().getReasonPhrase());
+            LOGGER.debug("   Content Type: {}", responseContext.getMediaType());
+            LOGGER.debug("   Content     : {}", responseContext.getEntity());
 
-        String stTime = MDC.get("start-time");
-        if (stTime != null && stTime.length() > 0) {
-            long startTime = Long.parseLong(stTime);
-            long executionTime = System.currentTimeMillis() - startTime;
-            LOGGER.debug("Total request execution time: {} milliseconds",executionTime);
-            //clear the context on exit
-            MDC.clear();
+            final String stTime = MDC.get("start-time");
+            if (stTime != null && stTime.length() > 0) {
+                final long startTime = Long.parseLong(stTime);
+                final long executionTime = System.currentTimeMillis() - startTime;
+                LOGGER.debug("Total request execution time: {} milliseconds", executionTime);
+                //clear the context on exit
+                MDC.clear();
+            }
         }
     }
 
 
-    private String readEntityStream(ContainerRequestContext requestContext) {
-        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+    private String readEntityStream(final ContainerRequestContext requestContext) {
+        final ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         final InputStream inputStream = requestContext.getEntityStream();
         final StringBuilder builder = new StringBuilder();
         try {
             writeTo(inputStream, outStream);
-            byte[] requestEntity = outStream.toByteArray();
+            final byte[] requestEntity = outStream.toByteArray();
             if (requestEntity.length > 0) {
                 builder.append(new String(requestEntity));
             }
             requestContext.setEntityStream(new ByteArrayInputStream(requestEntity));
-        } catch (IOException ex) {
-            LOGGER.debug("    ----Exception occurred while reading entity stream :{}",ex.getMessage());
+        } catch (final IOException ex) {
+            LOGGER.debug("    ----Exception occurred while reading entity stream :{}", ex.getMessage());
         }
         return builder.toString();
     }
 
-    protected static void writeTo(InputStream in, OutputStream out) throws IOException {
+    protected static void writeTo(final InputStream in, final OutputStream out) throws IOException {
         int read;
         final byte[] data = new byte[8192];
         while ((read = in.read(data)) != -1) {
@@ -112,31 +117,31 @@ public class CustomLoggingFilter implements ContainerRequestFilter, ContainerRes
         }
     }
 
-    private static String toString(MultivaluedMap<String,String> map) {
-        Iterator<Entry<String, List<String>>> i = map.entrySet().iterator();
-        if (! i.hasNext()) return "{}";
+    private static String toString(final MultivaluedMap<String, String> map) {
+        final Iterator<Entry<String, List<String>>> i = map.entrySet().iterator();
+        if (!i.hasNext()) return "{}";
 
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         builder.append("{");
         for (;;) {
-            Entry<String, List<String>> entry = i.next();
+            final Entry<String, List<String>> entry = i.next();
             builder.append(entry.getKey()).append("=").append(entry.getValue());
-          if (! i.hasNext())
+          if (!i.hasNext())
               return builder.append('}').toString();
           builder.append(',').append(' ');
         }
     }
 
-    private static String toStringQueryParams(MultivaluedMap<String,String> map) {
-        Iterator<Entry<String, List<String>>> i = map.entrySet().iterator();
-        if (! i.hasNext()) return "";
+    private static String toStringQueryParams(final MultivaluedMap<String, String> map) {
+        final Iterator<Entry<String, List<String>>> i = map.entrySet().iterator();
+        if (!i.hasNext()) return "";
 
-        StringBuilder builder = new StringBuilder("?");
+        final StringBuilder builder = new StringBuilder("?");
         for (;;) {
-            Entry<String, List<String>> entry = i.next();
+            final Entry<String, List<String>> entry = i.next();
             String value = "";
-            List<String> v = entry.getValue();
-            if (!v.isEmpty() && v.size()>0)
+            final List<String> v = entry.getValue();
+            if (!v.isEmpty())
                 value = v.get(0);
             builder.append(entry.getKey()).append("=").append(value);
             if (!i.hasNext())
@@ -144,5 +149,4 @@ public class CustomLoggingFilter implements ContainerRequestFilter, ContainerRes
             builder.append('&');
         }
     }
-
 }

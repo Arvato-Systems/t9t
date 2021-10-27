@@ -49,8 +49,8 @@ public class SubscriberConfigCrudRequestHandler extends AbstractCrudSurrogateKey
     private static final Logger LOGGER = LoggerFactory.getLogger(SubscriberConfigCrudRequestHandler.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, SubscriberConfigCrudRequest crudRequest) throws Exception {
-        SubscriberConfigDTO dto = crudRequest.getData();
+    public ServiceResponse execute(final RequestContext ctx, final SubscriberConfigCrudRequest crudRequest) throws Exception {
+        final SubscriberConfigDTO dto = crudRequest.getData();
         if (dto != null && dto.getHandlerClassName().indexOf(".") < 0) {
             // some CRUD request with data
             switch (crudRequest.getCrud()) {
@@ -59,7 +59,7 @@ public class SubscriberConfigCrudRequestHandler extends AbstractCrudSurrogateKey
             case UPDATE:
                 LOGGER.debug("Received {} CRUD request for SubscriberConfig.", crudRequest.getCrud());
                 ctx.addPostCommitHook((ctx2, rq, rs) -> {
-                    IEventHandler eventHandler = Jdp.getOptional(IEventHandler.class, dto.getHandlerClassName());
+                    final IEventHandler eventHandler = Jdp.getOptional(IEventHandler.class, dto.getHandlerClassName());
                     if (eventHandler != null) {
                         asyncProcessor.registerSubscriber(dto.getEventID(), ctx.tenantRef, eventHandler);
                         EventSubscriptionCache.updateRegistration(dto.getEventID(), dto.getHandlerClassName(), ctx.tenantRef, dto.getIsActive());

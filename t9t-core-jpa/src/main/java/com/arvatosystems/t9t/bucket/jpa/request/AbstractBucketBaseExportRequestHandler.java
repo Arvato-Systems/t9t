@@ -44,48 +44,48 @@ public abstract class AbstractBucketBaseExportRequestHandler<T extends AbstractB
     protected final Provider<IOutputSession> outputSessionprovider = Jdp.getProvider(IOutputSession.class);
     protected final ISplittingOutputSessionProvider splittingOutputSessionprovider = Jdp.getRequired(ISplittingOutputSessionProvider.class);
 
-    protected List<Long> getRefs(String qualifier, int bucketNoToSelect) {
-        EntityManager em = entryResolver.getEntityManager();
-        TypedQuery<Long> query = em.createQuery(
+    protected List<Long> getRefs(final String qualifier, final int bucketNoToSelect) {
+        final EntityManager em = entryResolver.getEntityManager();
+        final TypedQuery<Long> query = em.createQuery(
                 "SELECT be.ref FROM BucketEntryEntity be WHERE be.tenantRef = :tenantRef AND be.qualifier = :qualifier AND be.bucket = :bucketNo",
                 Long.class);
         query.setParameter("tenantRef", entryResolver.getSharedTenantRef());
         query.setParameter("qualifier", qualifier);
         query.setParameter("bucketNo",  bucketNoToSelect);
-        return new ArrayList<Long>(query.getResultList());
+        return new ArrayList<>(query.getResultList());
     }
 
     /** Method to retrieve the full entry records, only required by exports which have to distinguish cases when a record has been added. */
-    protected Map<Long, BucketEntryEntity> getEntries(String qualifier, int bucketNoToSelect, List<Long> refs) {
-        EntityManager em = entryResolver.getEntityManager();
-        TypedQuery<BucketEntryEntity> query = em.createQuery(
+    protected Map<Long, BucketEntryEntity> getEntries(final String qualifier, final int bucketNoToSelect, final List<Long> refs) {
+        final EntityManager em = entryResolver.getEntityManager();
+        final TypedQuery<BucketEntryEntity> query = em.createQuery(
           "SELECT be FROM BucketEntryEntity be WHERE be.tenantRef = :tenantRef AND be.qualifier = :qualifier AND be.bucket = :bucketNo AND be.ref IN :refs",
           BucketEntryEntity.class);
         query.setParameter("tenantRef", entryResolver.getSharedTenantRef());
         query.setParameter("qualifier", qualifier);
         query.setParameter("bucketNo",  bucketNoToSelect);
         query.setParameter("refs",      refs);
-        List<BucketEntryEntity> result = query.getResultList();
-        Map<Long, BucketEntryEntity> indexedResult = new HashMap<Long, BucketEntryEntity>(2 * result.size());
-        for (BucketEntryEntity e : result) {
+        final List<BucketEntryEntity> result = query.getResultList();
+        final Map<Long, BucketEntryEntity> indexedResult = new HashMap<>(2 * result.size());
+        for (final BucketEntryEntity e : result) {
             indexedResult.put(e.getRef(), e);
         }
         return indexedResult;
     }
 
     /** Method to retrieve the full entry records, only required by exports which have to distinguish cases when a record has been added. */
-    protected Map<Long, Integer> getModes(String qualifier, int bucketNoToSelect, List<Long> refs) {
-        EntityManager em = entryResolver.getEntityManager();
-        TypedQuery<BucketEntryEntity> query = em.createQuery(
+    protected Map<Long, Integer> getModes(final String qualifier, final int bucketNoToSelect, final List<Long> refs) {
+        final EntityManager em = entryResolver.getEntityManager();
+        final TypedQuery<BucketEntryEntity> query = em.createQuery(
           "SELECT be FROM BucketEntryEntity be WHERE be.tenantRef = :tenantRef AND be.qualifier = :qualifier AND be.bucket = :bucketNo AND be.ref IN :refs",
           BucketEntryEntity.class);
         query.setParameter("tenantRef", entryResolver.getSharedTenantRef());
         query.setParameter("qualifier", qualifier);
         query.setParameter("bucketNo",  bucketNoToSelect);
         query.setParameter("refs",      refs);
-        List<BucketEntryEntity> result = query.getResultList();
-        Map<Long, Integer> indexedResult = new HashMap<Long, Integer>(2 * result.size());
-        for (BucketEntryEntity e : result) {
+        final List<BucketEntryEntity> result = query.getResultList();
+        final Map<Long, Integer> indexedResult = new HashMap<>(2 * result.size());
+        for (final BucketEntryEntity e : result) {
             indexedResult.put(e.getRef(), e.getModes());
         }
         return indexedResult;

@@ -65,11 +65,12 @@ public class TranslationProvider implements ITranslationProvider {
     private static final String REGEXP_FOR_INDEX = "\\[[0-9]+\\]";
     private static final Pattern PATTERN_FOR_INDEX = Pattern.compile(REGEXP_FOR_INDEX);
 
-    final boolean useLocalTenantTranslation = true;  // right now, only check for translations in the global tenant (TODO: make t9t config property, or tenant property)
+    // right now, only check for translations in the global tenant (TODO: make t9t config property, or tenant property)
+    final boolean useLocalTenantTranslation = true;
 
     /** Returns an array of one to 4 languages which should be checked. */
     @Override
-    public String[] resolveLanguagesToCheck(String language, boolean tryFallbackLanguages) {
+    public String[] resolveLanguagesToCheck(final String language, final boolean tryFallbackLanguages) {
         if (!tryFallbackLanguages && language != null)
             return new String[] { language };
         return MessagingUtil.getLanguagesWithFallback(language);
@@ -89,13 +90,14 @@ public class TranslationProvider implements ITranslationProvider {
      * @return translation value
      */
     @Override
-    public String getReportTranslation(String tenantId, String language, boolean tryFallbackLanguages, String reportId, String fieldName) {
-        String[] langs = resolveLanguagesToCheck(language, tryFallbackLanguages);
+    public String getReportTranslation(final String tenantId, final String language, final boolean tryFallbackLanguages,
+      final String reportId, final String fieldName) {
+        final String[] langs = resolveLanguagesToCheck(language, tryFallbackLanguages);
         return getTranslation(tenantId, langs, reportId, fieldName);
     }
 
     @Override
-    public String getReportTranslation(String tenantId, Locale locale, String reportId, String fieldName) {
+    public String getReportTranslation(final String tenantId, final Locale locale, final String reportId, final String fieldName) {
         return getReportTranslation(tenantId, locale.getLanguage(), true, reportId, fieldName);
     }
 
@@ -113,8 +115,9 @@ public class TranslationProvider implements ITranslationProvider {
      * @return translation value
      */
     @Override
-    public String getHeaderTranslation(String tenantId, String language, boolean tryFallbackLanguages, String gridId, String fieldName) {
-        String[] langs = resolveLanguagesToCheck(language, tryFallbackLanguages);
+    public String getHeaderTranslation(final String tenantId, final String language, final boolean tryFallbackLanguages,
+      final String gridId, final String fieldName) {
+        final String[] langs = resolveLanguagesToCheck(language, tryFallbackLanguages);
         return getTranslation(tenantId, langs, gridId, fieldName);
     }
 
@@ -132,12 +135,13 @@ public class TranslationProvider implements ITranslationProvider {
      * @return field name to translation mapping
      */
     @Override
-    public List<String> getHeaderTranslations(String tenantId, String language, boolean tryFallbackLanguages, String gridId, List<String> fieldNames) {
-        String[] langs = resolveLanguagesToCheck(language, tryFallbackLanguages);
-        List<String> trList = new ArrayList<>(fieldNames.size());
+    public List<String> getHeaderTranslations(final String tenantId, final String language, final boolean tryFallbackLanguages,
+      final String gridId, final List<String> fieldNames) {
+        final String[] langs = resolveLanguagesToCheck(language, tryFallbackLanguages);
+        final List<String> trList = new ArrayList<>(fieldNames.size());
 
-        for (String fieldName : fieldNames) {
-            String tx = getTranslation(tenantId, langs, gridId, fieldName);
+        for (final String fieldName : fieldNames) {
+            final String tx = getTranslation(tenantId, langs, gridId, fieldName);
             // construct a technical text as fallback
             trList.add(tx != null ? tx : "${" + fieldName + "}");
         }
@@ -147,9 +151,10 @@ public class TranslationProvider implements ITranslationProvider {
 
 
     @Override
-    public String getEnumTranslation(String tenantId, String language, boolean tryFallbackLanguages, String enumPqon, String instanceName) {
-        String[] langs = resolveLanguagesToCheck(language, tryFallbackLanguages);
-        String translated = getTranslation(tenantId, langs, enumPqon, instanceName);
+    public String getEnumTranslation(final String tenantId, final String language, final boolean tryFallbackLanguages,
+      final String enumPqon, final String instanceName) {
+        final String[] langs = resolveLanguagesToCheck(language, tryFallbackLanguages);
+        final String translated = getTranslation(tenantId, langs, enumPqon, instanceName);
         return translated != null ? translated : instanceName;
     }
 
@@ -167,19 +172,21 @@ public class TranslationProvider implements ITranslationProvider {
      * @return field name to translation mapping
      */
     @Override
-    public List<String> getEnumTranslations(String tenantId, String language, boolean tryFallbackLanguages, String enumPqon, List<String> fieldNames) {
-        String[] langs = resolveLanguagesToCheck(language, tryFallbackLanguages);
-        List<String> trList = new ArrayList<>(fieldNames.size());
+    public List<String> getEnumTranslations(final String tenantId, final String language, final boolean tryFallbackLanguages,
+      final String enumPqon, final List<String> fieldNames) {
+        final String[] langs = resolveLanguagesToCheck(language, tryFallbackLanguages);
+        final List<String> trList = new ArrayList<>(fieldNames.size());
 
-        for (String fieldName : fieldNames) {
-            String tx = getTranslation(tenantId, langs, enumPqon, fieldName);
+        for (final String fieldName : fieldNames) {
+            final String tx = getTranslation(tenantId, langs, enumPqon, fieldName);
             // construct a technical text as fallback
             trList.add(tx != null ? tx : fieldName);  // no ${} here
         }
         return trList;
     }
 
-    protected String getTranslation(Map<String, String> translations, String tenantId, String lang, String path, String indexStr) {
+    protected String getTranslation(final Map<String, String> translations, final String tenantId, final String lang,
+      final String path, final String indexStr) {
         String translation = null;
         if (useLocalTenantTranslation) {
             // only check local if it is different from the global one
@@ -206,9 +213,9 @@ public class TranslationProvider implements ITranslationProvider {
             /// parse the old index, add 1, and use it as new index
             String replacement = " #?";
             try {
-                final int oldIndex = Integer.parseInt(indexStr.substring(1, indexStr.length()-1));
-                replacement = String.format(" #%d", oldIndex+1);
-            } catch (Exception e) {
+                final int oldIndex = Integer.parseInt(indexStr.substring(1, indexStr.length() - 1));
+                replacement = String.format(" #%d", oldIndex + 1);
+            } catch (final Exception e) {
                 LOGGER.error("Badly formatted index for {}[{}]: {}", path, indexStr, translation);
                 replacement = indexStr;
             }
@@ -219,7 +226,7 @@ public class TranslationProvider implements ITranslationProvider {
 
     /** Common evaluation method for all other external entry points. */
     @Override
-    public String getTranslation(String tenantId, String[] langs, String path, String fieldname) {
+    public String getTranslation(final String tenantId, final String[] langs, final String path, final String fieldname) {
         Map<String, String> translations = TranslationsStack.getTranslationsForField(fieldname);
         String indexStr = null;
 
@@ -238,10 +245,10 @@ public class TranslationProvider implements ITranslationProvider {
                 }
             } else {
                 // fallback 2: check for base ID
-                int lastDot = fieldname.lastIndexOf('.');
+                final int lastDot = fieldname.lastIndexOf('.');
                 if (lastDot > 0) {
                     // no dots, only last component
-                    final String basename = fieldname.substring(lastDot+1);
+                    final String basename = fieldname.substring(lastDot + 1);
                     translations = TranslationsStack.getTranslationsForField(basename);
                     if (translations == null && bracketPos1 > 0) {
                         // fallback 3: check for arrays in last component
@@ -266,7 +273,7 @@ public class TranslationProvider implements ITranslationProvider {
         }
 
         String translation = null;
-        for (String lang : langs) { // usually country specific and general language, ex.: en_US, en
+        for (final String lang : langs) { // usually country specific and general language, ex.: en_US, en
             translation = getTranslation(translations, tenantId, lang, path, indexStr);
             if (translation != null) {
                 break;
@@ -285,17 +292,17 @@ public class TranslationProvider implements ITranslationProvider {
      * @return the translation
      */
     @Override
-    public Map<String, String> getEnumTranslation(String tenantId, String enumPQON, String language, boolean tryFallbackLanguages) {
-        String[] langs = resolveLanguagesToCheck(language, tryFallbackLanguages);
+    public Map<String, String> getEnumTranslation(final String tenantId, final String enumPQON, final String language, final boolean tryFallbackLanguages) {
+        final String[] langs = resolveLanguagesToCheck(language, tryFallbackLanguages);
         // get all instance names of the enum
-        EnumDefinition ed = InitContainers.getEnumByPQON(enumPQON);
+        final EnumDefinition ed = InitContainers.getEnumByPQON(enumPQON);
         if (ed == null)
             throw new ApplicationException(T9tException.NOT_AN_ENUM, enumPQON);
 
-        Map<String, String> translations = new HashMap<>(ed.getIds().size() * 2);
+        final Map<String, String> translations = new HashMap<>(ed.getIds().size() * 2);
 
-        for (String instanceName : ed.getIds()) {
-            String instanceTranslated = getTranslation(tenantId, langs, enumPQON, instanceName);
+        for (final String instanceName : ed.getIds()) {
+            final String instanceTranslated = getTranslation(tenantId, langs, enumPQON, instanceName);
             translations.put(instanceName, instanceTranslated != null ? instanceTranslated : instanceName);
         }
         return translations;
@@ -313,11 +320,11 @@ public class TranslationProvider implements ITranslationProvider {
      * @return enum translation
      */
     @Override
-    public <T extends BonaTokenizableEnum> String getEnumTranslation(T enu, String tenantId, String language) {
-        String enumPQON = enu.ret$PQON();
-        String instanceName = enu.name();
-        String [] langs = new String [] { language };
-        String instanceTranslated = getTranslation(tenantId, langs, enumPQON, instanceName);
+    public <T extends BonaTokenizableEnum> String getEnumTranslation(final T enu, final String tenantId, final String language) {
+        final String enumPQON = enu.ret$PQON();
+        final String instanceName = enu.name();
+        final String[] langs = new String[] { language };
+        final String instanceTranslated = getTranslation(tenantId, langs, enumPQON, instanceName);
         if (instanceTranslated != null)
             return instanceTranslated;
 

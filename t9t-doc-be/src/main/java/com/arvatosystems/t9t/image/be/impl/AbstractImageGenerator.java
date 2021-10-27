@@ -41,7 +41,7 @@ public abstract class AbstractImageGenerator implements IImageGenerator {
         System.setProperty("java.awt.headless", "true");
     }
 
-    protected MediaData toImage(BitMatrix b, ImageParameter params) throws Exception {
+    protected MediaData toImage(final BitMatrix b, final ImageParameter params) throws Exception {
         final int width = b.getWidth();
         final int height = b.getHeight();
         final boolean rotated = params.rotation != null && params.rotation.intValue() == 90;
@@ -52,9 +52,9 @@ public abstract class AbstractImageGenerator implements IImageGenerator {
         final int white = 255 << 16 | 255 << 8 | 255;
         final int black = 0;
         for (int i = 0; i < width; i++) {
-            int sx = FlipMode.FLIP_HORIZONTALLY == params.flipMode ? width - 1 - i : i;
+            final int sx = FlipMode.FLIP_HORIZONTALLY == params.flipMode ? width - 1 - i : i;
             for (int j = 0; j < height; j++) {
-                int sy = FlipMode.FLIP_VERTICALLY == params.flipMode ? height - 1 - j : j;
+                final int sy = FlipMode.FLIP_VERTICALLY == params.flipMode ? height - 1 - j : j;
                 if (rotated)
                     image.setRGB(j, i, b.get(sx, sy) ? black : white); // set pixel one by one
                 else
@@ -68,26 +68,26 @@ public abstract class AbstractImageGenerator implements IImageGenerator {
 //            image = transform(image, params);
 //        }
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream(8000);
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream(8000);
         ImageIO.write(image, "png", baos);
-        MediaData m = new MediaData();
+        final MediaData m = new MediaData();
         m.setMediaType(MediaTypes.MEDIA_XTYPE_PNG);
         m.setRawData(ByteArray.fromByteArrayOutputStream(baos));
         LOGGER.debug("Generated barcode image has {} bytes in PNG format for dimensions {} x {}", m.getRawData().length(), width, height);
         return m;
     }
 
-    BufferedImage transform(BufferedImage src, ImageParameter params) {
+    BufferedImage transform(final BufferedImage src, final ImageParameter params) {
         // transform
-        BufferedImage dest = new BufferedImage(src.getWidth(), src.getHeight(), src.getType());
-        Graphics2D g2d = dest.createGraphics();
+        final BufferedImage dest = new BufferedImage(src.getWidth(), src.getHeight(), src.getType());
+        final Graphics2D g2d = dest.createGraphics();
 
-        AffineTransform origAT = g2d.getTransform();
-        AffineTransform transform = new AffineTransform();
+        final AffineTransform origAT = g2d.getTransform();
+        final AffineTransform transform = new AffineTransform();
         double scale = 1.0;
 
         if (params.rotation != null && params.rotation.intValue() != 0) {
-            transform.rotate(Math.toRadians(params.rotation), src.getWidth()/2, src.getHeight()/2);
+            transform.rotate(Math.toRadians(params.rotation), src.getWidth() / 2, src.getHeight() / 2);
         }
         if (params.scale    != null && params.scale.doubleValue() != 1.0) {
             scale = params.scale.doubleValue();

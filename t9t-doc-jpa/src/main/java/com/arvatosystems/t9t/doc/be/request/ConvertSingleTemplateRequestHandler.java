@@ -34,7 +34,7 @@ public class ConvertSingleTemplateRequestHandler extends AbstractRequestHandler<
     protected final ITemplateConversion conversionService = Jdp.getRequired(ITemplateConversion.class);
 
     @Override
-    public ConvertSingleTemplateResponse execute(RequestContext ctx, ConvertSingleTemplateRequest rq) throws Exception {
+    public ConvertSingleTemplateResponse execute(final RequestContext ctx, final ConvertSingleTemplateRequest rq) throws Exception {
         final String newTemplate = conversionService.convertTemplate(rq.getDocumentId(), rq.getTemplate());
         if (newTemplate.length() >= ConvertSingleTemplateResponse.meta$$template.getLength()) {
             LOGGER.error("Conversion of template {} would exceed the maximum allowed size", rq.getDocumentId());

@@ -40,7 +40,7 @@ public class JacksonObjectMapper implements ContextResolver<ObjectMapper> {
 
     public JacksonObjectMapper() {
         this.objectMapper = new ObjectMapper();
-        boolean useNulls = checkIfSet("t9t.restapi.jsonAlsoNulls", "T9T_RESTAPI_JSON_ALSO_NULLS");
+        final boolean useNulls = checkIfSet("t9t.restapi.jsonAlsoNulls", "T9T_RESTAPI_JSON_ALSO_NULLS");
         if (!useNulls) {
             objectMapper.setSerializationInclusion(Include.NON_NULL);
         }

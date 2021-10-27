@@ -30,6 +30,7 @@ import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.translation.be.TranslationsStack;
 
 import de.jpaw.dp.Startup;
+import de.jpaw.dp.StartupOnly;
 
 /**
  * Imports translations from property files located on the classpath. <br/>
@@ -41,12 +42,9 @@ import de.jpaw.dp.Startup;
  * </p>
  * subkeyGroup defines a group particular translation belongs to. it is "default" for defaults.<br/>
  * subkeyName is a most detailed part of a key. In most of the cases subkeyName represents field name.
- *
- * @author greg
- *
  */
 @Startup(888)
-public class DefaultTranslationsImporter {
+public class DefaultTranslationsImporter implements StartupOnly {
     public static final String COMMENT_SIGN = "#";
     public static final String PROPERTY_FILE_CHARSET = "UTF-8";
 
@@ -54,10 +52,11 @@ public class DefaultTranslationsImporter {
     /**
      * Holds language codes of languages for which translations are available.
      */
-    static private Set<String> supportedLanguages;
+    private static Set<String> supportedLanguages;
 
     /** Reads all property files for languages listed in the resource file supported_languages.properties. */
-    public static void onStartup() {
+    @Override
+    public void onStartup() {
         supportedLanguages = Collections.unmodifiableSet(new SupportedLanguagesImporter().readSupportedLanguages());
 
         TranslationsStack.reset();
@@ -78,22 +77,22 @@ public class DefaultTranslationsImporter {
      * @param supportedLanguages
      * @return
      */
-    static private void readTranslationFiles(final String fileTypeName) {
+    private static void readTranslationFiles(final String fileTypeName) {
         LOGGER.info("Reading property files with {} translations", fileTypeName);
         final boolean isDefaults = fileTypeName.equals("defaults");
 
         String fileName;
-        for (String language : supportedLanguages) {
+        for (final String language : supportedLanguages) {
             LOGGER.info("Reading translations for language {}", language);
             fileName = "translations/" + fileTypeName + "_" + language + ".properties";
 
-            ClassLoader cl = TranslationsStack.class.getClassLoader();
+            final ClassLoader cl = TranslationsStack.class.getClassLoader();
             try {
-                Enumeration<URL> urls = cl.getResources(fileName);
+                final Enumeration<URL> urls = cl.getResources(fileName);
 
                 while (urls.hasMoreElements()) {
                     int count = 0;
-                    URL nextUrl = urls.nextElement();
+                    final URL nextUrl = urls.nextElement();
                     try (BufferedReader br = new BufferedReader(new InputStreamReader(nextUrl.openStream(), PROPERTY_FILE_CHARSET))) {
                         String line;
                         while ((line = br.readLine()) != null) {
@@ -104,14 +103,14 @@ public class DefaultTranslationsImporter {
                             if (parseAndStoreLine(language, line, isDefaults))
                                 ++count;
                         }
-                    } catch (IOException e) {
+                    } catch (final IOException e) {
                         LOGGER.error("Reading property file with {} translations failed.", fileTypeName);
                         LOGGER.error("Exception", e);
                     }
                     LOGGER.debug("Property files with {} translations read: {} translations read for language {} from {}",
                             fileTypeName, count, language, nextUrl);
                 }
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 LOGGER.error("Reading property file with {} translations failed.", fileTypeName);
                 LOGGER.error("Exception", e);
             }
@@ -120,7 +119,7 @@ public class DefaultTranslationsImporter {
 
     // return true in case of success, else false
     private static boolean parseAndStoreLine(final String language, final String line, boolean isDefaults) {
-        String[] lineParts = line.split("=");
+        final String[] lineParts = line.split("=");
         if (lineParts.length != 2) {
             LOGGER.warn("Line with translation won't be parsed since it doesn't follow 'key=value' pattern. Line: {}", line);
             return false;
@@ -130,11 +129,11 @@ public class DefaultTranslationsImporter {
         String tenant = T9tConstants.GLOBAL_TENANT_ID;
         String fieldAndPathName = key;
 
-        int firstDot = key.indexOf('.');
+        final int firstDot = key.indexOf('.');
         if (firstDot >= 0) {
             // at least one dot: assume the line starts with a tenant ID
             tenant = key.substring(0, firstDot);
-            fieldAndPathName = key.substring(firstDot+1);
+            fieldAndPathName = key.substring(firstDot + 1);
             if (fieldAndPathName.startsWith("defaults.")) {
                 fieldAndPathName = fieldAndPathName.substring(9);
                 isDefaults = true;
@@ -147,8 +146,8 @@ public class DefaultTranslationsImporter {
             // do not split off a path, it's all the field name, either there is no prefix or it is put into defaults intentionally
             TranslationsStack.addTranslation(language, tenant, null, fieldAndPathName, lineParts[1].trim());
         } else {
-            String fieldName = fieldAndPathName.substring(lastDot+1);
-            String path = fieldAndPathName.substring(0, lastDot);
+            final String fieldName = fieldAndPathName.substring(lastDot + 1);
+            final String path = fieldAndPathName.substring(0, lastDot);
             TranslationsStack.addTranslation(language, tenant, path, fieldName, lineParts[1].trim());
         }
         return true;

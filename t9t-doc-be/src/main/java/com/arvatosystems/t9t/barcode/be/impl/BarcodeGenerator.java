@@ -38,8 +38,8 @@ import de.jpaw.dp.Singleton;
 public class BarcodeGenerator extends AbstractImageGenerator implements IBarcodeGenerator {
 
     @Override
-    public MediaData generateBarcode(BarcodeFormat fmt, String text, ImageParameter params) throws Exception {
-        com.google.zxing.BarcodeFormat zxingFormat = com.google.zxing.BarcodeFormat.valueOf(fmt.name());        // convert to ZXing format
+    public MediaData generateBarcode(final BarcodeFormat fmt, final String text, final ImageParameter params) throws Exception {
+        final com.google.zxing.BarcodeFormat zxingFormat = com.google.zxing.BarcodeFormat.valueOf(fmt.name());        // convert to ZXing format
 
         BitMatrix m = null;
         switch (zxingFormat) {
@@ -102,7 +102,7 @@ public class BarcodeGenerator extends AbstractImageGenerator implements IBarcode
     }
 
     @Override
-    public MediaData generateImage(String text, ImageParameter params) throws Exception {
+    public MediaData generateImage(final String text, final ImageParameter params) throws Exception {
         throw new UnsupportedOperationException();
     }
 }

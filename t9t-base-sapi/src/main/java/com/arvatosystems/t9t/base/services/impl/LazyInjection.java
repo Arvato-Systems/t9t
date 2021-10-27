@@ -27,7 +27,7 @@ public final class LazyInjection<V> {
     final AtomicReference<V> value;
 
     /** The Callable must provide idempotent values. */
-    public LazyInjection(Callable<V> initializer) {
+    public LazyInjection(final Callable<V> initializer) {
         this.initializer = initializer;
         this.value = new AtomicReference<>();
     }
@@ -37,7 +37,7 @@ public final class LazyInjection<V> {
         if (val == null) {
             // perform lazy initialization now (non-synchronized because we assume (& check) idempotency)
             val = initializer.call();
-            V oldVal = value.getAndSet(val);
+            final V oldVal = value.getAndSet(val);
             if (oldVal == null) {
                 LOGGER.debug("Lazy initialization of {} performed", val.getClass().getCanonicalName());
             } else if (oldVal == val) {

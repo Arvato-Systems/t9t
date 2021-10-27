@@ -39,7 +39,7 @@ public class FieldnameConverterTest {
                 throw new T9tException(T9tException.MALFORMATTED_FIELDNAME, fieldName);
             // insert the index + 1 as 2 digit number
             int num = Integer.parseInt(fieldName.substring(currentSrc, dotPos));
-            newName.append(String.format("%02d", num+1));
+            newName.append(String.format("%02d", num + 1));
             currentSrc = dotPos + 1;
             dotPos = fieldName.indexOf('[', currentSrc);
         }

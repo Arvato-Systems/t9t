@@ -66,12 +66,12 @@ public abstract class AbstractViewModel extends FormValidator {
     public Validator getNullValidator() {
         return new AbstractValidator() {
             @Override
-            public void validate(ValidationContext ctx) {
-                Boolean isValidationRequiered = (Boolean) ctx.getBindContext().getValidatorArg("isValidationRequiered");
-                //boolean isComponetVisible = ctx.getBindContext().getComponent().isVisible();  --> the simple visibility
-                boolean isComponetVisible = isComponentVisible(ctx.getBindContext().getComponent());
-                String logMessage = String.format("Component:%s - visible:%s - isValidationRequiered-argument-set:%s", ctx.getBindContext().getComponent(), isComponetVisible, isValidationRequiered);
-                if (((isValidationRequiered == null) || isValidationRequiered) && isComponetVisible) {
+            public void validate(final ValidationContext ctx) {
+                final Boolean isValidationRequired = (Boolean) ctx.getBindContext().getValidatorArg("isValidationRequired");
+                //boolean isComponentVisible = ctx.getBindContext().getComponent().isVisible();  --> the simple visibility
+                final boolean isComponentVisible = isComponentVisible(ctx.getBindContext().getComponent());
+                final String logMessage = String.format("Component:%s - visible:%s - isValidationRequired-argument-set:%s", ctx.getBindContext().getComponent(), isComponentVisible, isValidationRequired);
+                if (((isValidationRequired == null) || isValidationRequired) && isComponentVisible) {
                     if ((null == ctx.getProperty().getValue()) || "".equals(ctx.getProperty().getValue())) {
                         LOGGER.debug("FIELD isEMPTY: {}", logMessage);
                         addInvalidMessage(ctx, "EMPTY");
@@ -89,7 +89,7 @@ public abstract class AbstractViewModel extends FormValidator {
     private int              visibilityDepth      = 0;
     private static final int VISIBILITY_MAX_DEPTH = 5;
 
-    public boolean isComponentVisible(Component component) {
+    public boolean isComponentVisible(final Component component) {
         boolean isVisible = true;
         visibilityDepth++;
         if (visibilityDepth >= VISIBILITY_MAX_DEPTH)
@@ -138,7 +138,7 @@ public abstract class AbstractViewModel extends FormValidator {
     //        this.errorMessage = e.getReturnCodeMessage();
     //    }
 
-    public void setErrorMessage(ReturnCodeException message) {
+    public void setErrorMessage(final ReturnCodeException message) {
         this.errorMessage = message;
     }
 
@@ -147,7 +147,7 @@ public abstract class AbstractViewModel extends FormValidator {
      * errorMessage.
      * @param msg translated message String
      */
-    public void setErrorMessage(String msg) {
+    public void setErrorMessage(final String msg) {
         errorMessage = new ReturnCodeException(Constants.ErrorCodes.GENERAL_EXCEPTION, msg, null);
     }
     // //////////////////////////////////////////////////////////////////
@@ -169,7 +169,7 @@ public abstract class AbstractViewModel extends FormValidator {
     }
 
     @NotifyChange({ "confirmMessage" })
-    public final void setSuccessMessage(String message) {
+    public final void setSuccessMessage(final String message) {
         this.confirmMessage = message;
     }
 
@@ -189,7 +189,7 @@ public abstract class AbstractViewModel extends FormValidator {
      * @param confirmWithCancelMessage the confirmWithCancelMessage to set
      */
     @NotifyChange("confirmWithCancelMessage")
-    public void setConfirmWithCancelMessage(String confirmWithCancelMessage) {
+    public void setConfirmWithCancelMessage(final String confirmWithCancelMessage) {
         this.confirmWithCancelMessage = confirmWithCancelMessage;
     }
 

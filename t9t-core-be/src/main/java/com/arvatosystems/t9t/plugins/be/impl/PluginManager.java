@@ -56,23 +56,23 @@ public class PluginManager implements IPluginManager {
 
     private static class LoadedPlugin {
         public final Plugin         loadedClass;
-        final public URLClassLoader classloader;
+        public final URLClassLoader classloader;
 
-        LoadedPlugin(Plugin loadedClass, URLClassLoader classloader) {
+        LoadedPlugin(final Plugin loadedClass, final URLClassLoader classloader) {
             this.loadedClass = loadedClass;
             this.classloader = classloader;
         }
     }
 
-    private final Object LOCK = new Object();
+    private final Object lock = new Object();
 
     private final ConcurrentMap<StoredPluginKey,       LoadedPlugin> loadedPlugins = new ConcurrentHashMap<>();
     private final ConcurrentMap<StoredPluginMethodKey, PluginMethod> loadedPluginMethods = new ConcurrentHashMap<>();
 
-    protected String getMainClassFromManifest(JarFile jar) throws IOException {
+    protected String getMainClassFromManifest(final JarFile jar) throws IOException {
         final Manifest manifest = jar.getManifest();
         if (manifest != null) {
-            Attributes attrs = manifest.getMainAttributes();
+            final Attributes attrs = manifest.getMainAttributes();
             if (attrs != null) {
                 final Object mc = attrs.get("Main-Class");
                 if (mc != null) {
@@ -84,7 +84,7 @@ public class PluginManager implements IPluginManager {
         return null;
     }
 
-    protected String getMainClassByNamingConvention(JarFile jar) {
+    protected String getMainClassByNamingConvention(final JarFile jar) {
         final Enumeration<JarEntry> jes = jar.entries();
         while (jes.hasMoreElements()) {
             final JarEntry je = jes.nextElement();
@@ -101,8 +101,8 @@ public class PluginManager implements IPluginManager {
         return null;
     }
 
-    protected void registerPluginMethods(final Long tenantRef, final Plugin loadedPlugin, boolean unload) {
-        for (PluginMethod pm: loadedPlugin.getMethods()) {
+    protected void registerPluginMethods(final Long tenantRef, final Plugin loadedPlugin, final boolean unload) {
+        for (final PluginMethod pm: loadedPlugin.getMethods()) {
             final StoredPluginMethodKey key = new StoredPluginMethodKey(tenantRef, pm.implementsApi(), pm.getQualifier());
             final IPluginMethodLifecycle lifecycle = Jdp.getRequired(IPluginMethodLifecycle.class, pm.getQualifier());
             if (unload) {
@@ -118,7 +118,7 @@ public class PluginManager implements IPluginManager {
     }
 
     @Override
-    public PluginInfo loadPlugin(Long tenantRef, ByteArray pluginData) {
+    public PluginInfo loadPlugin(final Long tenantRef, final ByteArray pluginData) {
         final Class pluginClass;
         final URLClassLoader cl;
         try {
@@ -156,7 +156,7 @@ public class PluginManager implements IPluginManager {
             // now everything which could go wrong has succeeded!
             // if a previous plugin was registered, kick it out, replace it with the new one.
             final StoredPluginKey key = new StoredPluginKey(tenantRef, info.getPluginId());
-            synchronized (LOCK) {
+            synchronized (lock) {
                 final LoadedPlugin previousPlugin = loadedPlugins.get(key);
                 if (previousPlugin != null) {
                     // remove the method entries
@@ -165,7 +165,7 @@ public class PluginManager implements IPluginManager {
                     previousPlugin.loadedClass.shutdown();
                     try {
                         previousPlugin.classloader.close();
-                    } catch (IOException e) {
+                    } catch (final IOException e) {
                         LOGGER.warn("Problem closing classloader: {}", ExceptionUtil.causeChain(e));
                     }
                 }
@@ -173,18 +173,19 @@ public class PluginManager implements IPluginManager {
                 registerPluginMethods(tenantRef, loadedPlugin, false);
             }
             return info;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new T9tException(T9tException.PLUGIN_INSTANTIATION_ERROR, ExceptionUtil.causeChain(e));
         }
     }
 
     @Override
-    public <R extends PluginMethod> R getPluginMethod(String pluginApiId, String qualifier, Class<R> requiredType, boolean allowNulls) {
+    public <R extends PluginMethod> R getPluginMethod(final String pluginApiId, final String qualifier, final Class<R> requiredType, final boolean allowNulls) {
         return getPluginMethod(ctxProvider.get().tenantRef, pluginApiId, qualifier, requiredType, allowNulls);
     }
 
     @Override
-    public <R extends PluginMethod> R getPluginMethod(Long tenantRef, String pluginApiId, String qualifier, Class<R> requiredType, boolean allowNulls) {
+    public <R extends PluginMethod> R getPluginMethod(final Long tenantRef, final String pluginApiId, final String qualifier,
+      final Class<R> requiredType, final boolean allowNulls) {
         final StoredPluginMethodKey key = new StoredPluginMethodKey(tenantRef, pluginApiId, qualifier);
         PluginMethod method = loadedPluginMethods.get(key);
         if (method == null && !tenantRef.equals(T9tConstants.GLOBAL_TENANT_REF42)) {
@@ -209,9 +210,9 @@ public class PluginManager implements IPluginManager {
 
 
     @Override
-    public boolean removePlugin(Long tenantRef, String pluginId) {
+    public boolean removePlugin(final Long tenantRef, final String pluginId) {
         final StoredPluginKey key = new StoredPluginKey(tenantRef, pluginId);
-        synchronized (LOCK) {
+        synchronized (lock) {
             final LoadedPlugin previousPlugin = loadedPlugins.get(key);
             if (previousPlugin != null) {
                 // remove the method entries
@@ -221,7 +222,7 @@ public class PluginManager implements IPluginManager {
                 loadedPlugins.remove(key);
                 try {
                     previousPlugin.classloader.close();
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     LOGGER.warn("Problem closing classloader: {}", ExceptionUtil.causeChain(e));
                 }
                 return true;

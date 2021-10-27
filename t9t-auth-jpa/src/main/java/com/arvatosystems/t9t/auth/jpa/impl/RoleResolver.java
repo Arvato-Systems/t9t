@@ -35,7 +35,7 @@ public class RoleResolver extends AbstractJpaResolver<RoleRef, RoleDTO, FullTrac
     }
 
     @Override
-    public RoleRef createKey(Long ref) {
+    public RoleRef createKey(final Long ref) {
         return ref == null ? null : new RoleRef(ref);
     }
 }

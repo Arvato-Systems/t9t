@@ -41,7 +41,6 @@ import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import java.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,20 +98,21 @@ public class KafkaConsumerInitializer implements StartupShutdown {
 
 
     @IsLogicallyFinal
-    private boolean complicated = false;
+    private final boolean complicated = false;
 
     // simple storage class to avoid using a Pair<>
-    static private class FutureOffset {
+    private static final class FutureOffset {
         final Future<Boolean> f;
         final long offset;
-        private FutureOffset(Future<Boolean> f, long offset) {
+        private FutureOffset(final Future<Boolean> f, final long offset) {
             this.f = f;
             this.offset = offset;
         }
     }
 
     private class WriterThread implements Callable<Boolean> {
-        private final Map<TopicPartition, FutureOffset> pendingRequests = new HashMap<>(100); // map to ensure no 2 requests are executed for the same topic/partition
+        // map to ensure no 2 requests are executed for the same topic/partition
+        private final Map<TopicPartition, FutureOffset> pendingRequests = new HashMap<>(100);
         private final Map<TopicPartition, OffsetAndMetadata> finishedRequests = new HashMap<>(100);
         private final AtomicInteger workerThreadCounter = new AtomicInteger();
         private final ExecutorService executorKafkaWorker = Executors.newFixedThreadPool(workerPoolSize, (threadFactory) -> {
@@ -121,7 +121,7 @@ public class KafkaConsumerInitializer implements StartupShutdown {
             return new Thread(threadFactory, threadName);
         });
 
-        private Future<Boolean> processRecord(ConsumerRecord<String, byte []> record) {
+        private Future<Boolean> processRecord(final ConsumerRecord<String, byte[]> record) {
             final String topic = record.topic();
             final String key = record.key();
             final byte[] data = record.value();
@@ -140,11 +140,11 @@ public class KafkaConsumerInitializer implements StartupShutdown {
             });
             return executorKafkaWorker.submit(() -> {
                 try {
-                    LOGGER.debug("WORKER processing record {} in topic {} (message length is {})", key, topic, data.length); // , new String(data, StandardCharsets.UTF_8));  // FIXME: remove extensive log
+                    LOGGER.debug("WORKER processing record {} in topic {} (message length is {})", key, topic, data.length);
                     inputSession.process(data);
                     LOGGER.debug("WORKER done with record {} (topic/partion/offset {}/{}/{})", key, topic, record.partition(), record.offset());
                     return Boolean.TRUE;
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     LOGGER.error("WORKER FAILED for record {} (topic/partion/offset {}/{}/{}): {} ({})", key, topic, record.partition(), record.offset(),
                         e.getClass().getSimpleName(), ExceptionUtil.causeChain(e));
                     return Boolean.FALSE;
@@ -159,10 +159,11 @@ public class KafkaConsumerInitializer implements StartupShutdown {
                 finishedRequests.clear();
             }
         }
-        private void waitAndCommit(TopicPartition tp, FutureOffset fo, boolean commitIfEnoughPending) {
+        private void waitAndCommit(final TopicPartition tp, final FutureOffset fo, final boolean commitIfEnoughPending) {
             try {
-                Boolean result = fo.f.get(DEFAULT_TIMEOUT, TimeUnit.MILLISECONDS);
-                LOGGER.debug("record for topic/partition/offset {}/{}/{} considered DONE with result {}", tp.topic(), tp.partition(), fo.offset, Boolean.TRUE.equals(result) ? "OK" : "ERROR");
+                final Boolean result = fo.f.get(DEFAULT_TIMEOUT, TimeUnit.MILLISECONDS);
+                LOGGER.debug("record for topic/partition/offset {}/{}/{} considered DONE with result {}",
+                  tp.topic(), tp.partition(), fo.offset, Boolean.TRUE.equals(result) ? "OK" : "ERROR");
                 pendingRequests.remove(tp);
                 // great, this one has finished, perform an AsyncCommit for it
                 finishedRequests.put(tp, new OffsetAndMetadata(fo.offset + 1L));
@@ -176,7 +177,7 @@ public class KafkaConsumerInitializer implements StartupShutdown {
         }
 
         private void checkForFinishedRequests() {
-            for (Map.Entry<TopicPartition, FutureOffset> pendingRequest: pendingRequests.entrySet()) {
+            for (final Map.Entry<TopicPartition, FutureOffset> pendingRequest: pendingRequests.entrySet()) {
                 if (pendingRequest.getValue().f.isDone()) {
                     waitAndCommit(pendingRequest.getKey(), pendingRequest.getValue(), false);
                 }
@@ -208,18 +209,18 @@ public class KafkaConsumerInitializer implements StartupShutdown {
             while (!pleaseStop) {
                 finishedRequests.clear();
                 // LOGGER.debug("Start polling...");  // FIXME: remove extensive log
-                int currentNum = numberOfPolls.incrementAndGet();
-                long now2 = System.currentTimeMillis();
+                final int currentNum = numberOfPolls.incrementAndGet();
+                final long now2 = System.currentTimeMillis();
                 if (now2 - lastinfo >= 60_000) {
                     // 20 seconds have elapsed... Update info
                     LOGGER.info("Polling for the {}th time", currentNum);
                     lastinfo = now2;
                 }
 
-                final ConsumerRecords<String, byte []> records = consumer.poll(Duration.ofMillis(100));
+                final ConsumerRecords<String, byte[]> records = consumer.poll(Duration.ofMillis(100));
                 if (!records.isEmpty()) {
                     LOGGER.debug("Received {} data records via kafka", records.count());
-                    for (ConsumerRecord<String, byte []> record : records) {
+                    for (final ConsumerRecord<String, byte[]> record : records) {
                         if (complicated) {
                             // process the records, somewhat in parallel, but never submit a record of a given topic/partition while the prior
                             // of the same topic/partition is still processing (this is to ensure strict ordering).
@@ -235,7 +236,7 @@ public class KafkaConsumerInitializer implements StartupShutdown {
                                     // store it in the map
                                     pendingRequests.put(tp, new FutureOffset(f, record.offset()));
                                 }
-                            } catch (Exception e) {
+                            } catch (final Exception e) {
                                 LOGGER.error("Exception occurred:", e);
                                 LOGGER.error("Could not process request: caught {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
                             }
@@ -259,20 +260,20 @@ public class KafkaConsumerInitializer implements StartupShutdown {
                 LOGGER.info("Shutting down executor pool...");
                 executorKafkaWorker.shutdown();
                 LOGGER.info("All tasks terminated, committing SYNC before ending thread...");
-                consumer.commitSync(Duration.ofMillis(2000l));
-            } catch (InterruptedException e) {
+                consumer.commitSync(Duration.ofMillis(2000L));
+            } catch (final InterruptedException e) {
                 LOGGER.error("There is a problem, tasks not finished within shutdown timeout: {}", e.getClass().getSimpleName());
                 // only submit the ones which have been processed
                 checkForFinishedRequests();
                 LOGGER.debug("Sending sync commit for {} records (out of {})", finishedRequests.size(), pendingRequests.size());
                 consumer.commitSync(finishedRequests, null);
             }
-            consumer.close(Duration.ofMillis(2000l));
+            consumer.close(Duration.ofMillis(2000L));
             return Boolean.TRUE;
         }
     }
 
-    protected static Consumer<String, byte[]> createKafkaConsumer(final KafkaConfiguration defaults, final Map<String, ?> z, String dataSinkId) {
+    protected static Consumer<String, byte[]> createKafkaConsumer(final KafkaConfiguration defaults, final Map<String, ?> z, final String dataSinkId) {
         final Map<String, Object> props = new HashMap<>(10);
         final String defaultBootstrapServers = defaults == null ? null : defaults.getDefaultBootstrapServers();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, defaultBootstrapServers);
@@ -285,9 +286,9 @@ public class KafkaConsumerInitializer implements StartupShutdown {
         if (z != null) {
             final Object extraKafkaConfig = z.get("kafka");
             if (extraKafkaConfig instanceof Map) {
-                final Map<String,?> extraKafkaConfigMap = (Map<String,?>)extraKafkaConfig;
+                final Map<String, ?> extraKafkaConfigMap = (Map<String, ?>)extraKafkaConfig;
                 LOGGER.info("Found {} additional consumer configuration properties for kafka in data sink {}", extraKafkaConfigMap.size(), dataSinkId);
-                for (Map.Entry<String, ?> entry: extraKafkaConfigMap.entrySet()) {
+                for (final Map.Entry<String, ?> entry: extraKafkaConfigMap.entrySet()) {
                     props.put(entry.getKey(), entry.getValue());
                 }
             }
@@ -306,7 +307,8 @@ public class KafkaConsumerInitializer implements StartupShutdown {
         defaultApiKey = defaults.getDefaultImportApiKey();
         final String topicPattern = defaults.getTopicPattern();
         useTopicPattern = topicPattern != null && !topicPattern.isEmpty();
-        final List<DataSinkDTO> dataSinkDTOList = iOutPersistenceAccess.getDataSinkDTOsForEnvironmentAndChannel(serverConfig.getImportEnvironment(), CommunicationTargetChannelType.KAFKA);
+        final List<DataSinkDTO> dataSinkDTOList
+          = iOutPersistenceAccess.getDataSinkDTOsForEnvironmentAndChannel(serverConfig.getImportEnvironment(), CommunicationTargetChannelType.KAFKA);
         if (dataSinkDTOList.isEmpty() && (topicPattern == null || topicPattern.isEmpty())) {
             LOGGER.info("No Kafka input data sinks encountered and no default topic pattern configured in config.xml");
             return;
@@ -317,7 +319,7 @@ public class KafkaConsumerInitializer implements StartupShutdown {
             workerPoolSize = DEFAULT_WORKER_POOL_SIZE;
         }
         LOGGER.info("Setting up Kafka consumers for {} data sinks", dataSinkDTOList.size());
-        for (DataSinkDTO dataSinkDTO : dataSinkDTOList) {
+        for (final DataSinkDTO dataSinkDTO : dataSinkDTOList) {
             if (defaultApiKey == null && dataSinkDTO.getApiKey() == null) {
                 // no processing possible, because authentication information missing
                 LOGGER.error("skipping Kafka dataSink {}: no API-Key provided (no default and not in DataSinkDTO)", dataSinkDTO.getDataSinkId());
@@ -353,13 +355,13 @@ public class KafkaConsumerInitializer implements StartupShutdown {
             executorKafkaIO.shutdown();
         }
         // close any open input session
-        for (IInputSession imports: inputSessionByDataSinkByObjectRef.values()) {
+        for (final IInputSession imports: inputSessionByDataSinkByObjectRef.values()) {
             imports.close();
         }
     }
 
     // execute implements the task delegated by IEventHandler
-    public void execute(RequestContext context, DataSinkChangedEvent event) {
+    public void execute(final RequestContext context, final DataSinkChangedEvent event) {
         final DataSinkDTO dataSink = event.getDataSink();
         LOGGER.debug("Processing {} operation for data sink {}", event.getOperation(), dataSink.getDataSinkId());
         switch (event.getOperation()) {
@@ -372,13 +374,13 @@ public class KafkaConsumerInitializer implements StartupShutdown {
                 dataSinkByTopic.put(dataSink.getFileOrQueueNamePattern(), dataSink);
 //                consumer.unsubscribe();
 //                updateSubscriptions();
-            } else {
-                // for MERGE / update it could remove a subscription
-                if (dataSinkByTopic.remove(dataSink.getFileOrQueueNamePattern()) != null) {
-                    // entry existed before: must unsubscribe
-//                    consumer.unsubscribe();
-//                    updateSubscriptions();
-                }
+//            } else {
+//                // for MERGE / update it could remove a subscription
+//                if (dataSinkByTopic.remove(dataSink.getFileOrQueueNamePattern()) != null) {
+//                    // entry existed before: must unsubscribe
+////                    consumer.unsubscribe();
+////                    updateSubscriptions();
+//                }
             }
             break;
         case DELETE:
@@ -400,6 +402,8 @@ public class KafkaConsumerInitializer implements StartupShutdown {
 //    }
 
     private boolean isActiveKafkaInputDataSink(final DataSinkDTO dataSink) {
-        return dataSink.getIsActive() && dataSink.getCommTargetChannelType() == CommunicationTargetChannelType.KAFKA && Boolean.TRUE == dataSink.getIsInput();
+        return dataSink.getIsActive()
+          && dataSink.getCommTargetChannelType() == CommunicationTargetChannelType.KAFKA
+          && Boolean.TRUE.equals(dataSink.getIsInput());
     }
 }

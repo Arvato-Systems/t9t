@@ -51,11 +51,12 @@ public class AuthenticateNoDbBackend implements IAuthenticate {
         DEMO_JWT_INFO.setLocale("en");
         DEMO_JWT_INFO.setZoneinfo("UTC");
         DEMO_JWT_INFO.setPermissionsMin(Permissionset.ofTokens(OperationType.EXECUTE, OperationType.READ, OperationType.CREATE));
-        DEMO_JWT_INFO.setPermissionsMax(Permissionset.ofTokens(OperationType.EXECUTE, OperationType.READ, OperationType.CREATE, OperationType.DELETE, OperationType.UPDATE));
+        DEMO_JWT_INFO.setPermissionsMax(Permissionset.ofTokens(OperationType.EXECUTE, OperationType.READ, OperationType.CREATE,
+          OperationType.DELETE, OperationType.UPDATE));
         DEMO_JWT_INFO.freeze();
     }
 
-    private static final AtomicLong sessionCounter = new AtomicLong(77000L);
+    private static final AtomicLong SESSION_COUNTER = new AtomicLong(77000L);
 
     private final IJWT generator = Jdp.getRequired(IJWT.class); // JWT.createDefaultJwt();
     private final UUID apiKey;
@@ -70,7 +71,7 @@ public class AuthenticateNoDbBackend implements IAuthenticate {
     }
 
     @Override
-    public AuthenticationResponse login(AuthenticationRequest rq) {
+    public AuthenticationResponse login(final AuthenticationRequest rq) {
         final AuthenticationParameters ap = rq.getAuthenticationParameters();
         if (ap == null) {
             LOGGER.info("Authentication without parameters");
@@ -98,13 +99,13 @@ public class AuthenticateNoDbBackend implements IAuthenticate {
     }
 
 
-    protected JwtInfo auth(ApiKeyAuthentication ap) {
+    protected JwtInfo auth(final ApiKeyAuthentication ap) {
         if (!ap.getApiKey().equals(apiKey)) {
             return null;  // reject invalid request
         }
         final JwtInfo myInfo = DEMO_JWT_INFO.ret$MutableClone(false, false);
         myInfo.setSessionId(UUID.randomUUID());
-        myInfo.setSessionRef(sessionCounter.incrementAndGet());
+        myInfo.setSessionRef(SESSION_COUNTER.incrementAndGet());
         myInfo.setJsonTokenIdentifier(myInfo.getSessionRef().toString());
         return myInfo;
     }

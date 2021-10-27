@@ -45,14 +45,14 @@ public class NoTenantCustomization implements ITenantCustomization {
     private final boolean usesCustomRequestHandlers;
 
     // index is the pqon
-    protected static final Map<String, IRequestHandler<?>> defaultRequestHandlerCache = new ConcurrentHashMap<String, IRequestHandler<?>>(1000);
+    protected static final Map<String, IRequestHandler<?>> DEFAULT_REQUEST_HANDLER_CACHE = new ConcurrentHashMap<>(1000);
 
     // index is the pqon
     protected final Map<String, IRequestHandler<?>> tenantRequestHandlerCache;
 
     public NoTenantCustomization() {
         this.usesCustomRequestHandlers = false;
-        tenantRequestHandlerCache = usesCustomRequestHandlers ? new ConcurrentHashMap<String, IRequestHandler<?>>(1000) : defaultRequestHandlerCache;
+        tenantRequestHandlerCache = usesCustomRequestHandlers ? new ConcurrentHashMap<>(1000) : DEFAULT_REQUEST_HANDLER_CACHE;
     }
 
     @Override

@@ -54,14 +54,14 @@ public class SearchFilterConfigCreatorEE extends DefaultSearchFilterConfigCreato
     private final Map<String, List<SearchFilterUiModel>> columnsByKey = new HashMap<>();
 
     @Override
-    public void createComponent(Div parent, UIGridPreferences uiGridPreferences, List<UIFilter> selectedUiFilters) {
-        List<UIColumnConfiguration> uiColumns = uiGridPreferences.getColumns();
-        List<SearchFilterUiModel> firstLevelColumns = new ArrayList<>();
+    public void createComponent(final Div parent, final UIGridPreferences uiGridPreferences, final List<UIFilter> selectedUiFilters) {
+        final List<UIColumnConfiguration> uiColumns = uiGridPreferences.getColumns();
+        final List<SearchFilterUiModel> firstLevelColumns = new ArrayList<>();
         rows = new ArrayList<>(uiColumns.size());
         selectedFilters = new ArrayList<>(selectedUiFilters.size() * 2);
         viewModelId = uiGridPreferences.getViewModel();
         initUiFilters(uiColumns, selectedUiFilters, firstLevelColumns);
-        Grid grid = new Grid();
+        final Grid grid = new Grid();
         parent.setVflex("1");
         grid.setVflex("1");
         grid.setParent(parent);
@@ -69,39 +69,39 @@ public class SearchFilterConfigCreatorEE extends DefaultSearchFilterConfigCreato
         createGrid(grid, firstLevelColumns);
     }
 
-    public void initUiFilters(List<UIColumnConfiguration> uiColumns, List<UIFilter> selectedUiFilters,
-            List<SearchFilterUiModel> firstLevelColumns) {
-        Map<String, SearchFilterRowVM> activeUIFilterMap = new HashMap<>(uiColumns.size());
+    public void initUiFilters(final List<UIColumnConfiguration> uiColumns, final List<UIFilter> selectedUiFilters,
+            final List<SearchFilterUiModel> firstLevelColumns) {
+        final Map<String, SearchFilterRowVM> activeUIFilterMap = new HashMap<>(uiColumns.size());
 
-        for (UIFilter uiFilter : selectedUiFilters) {
-            SearchFilterRowVM row = new SearchFilterRowVM(uiFilter);
+        for (final UIFilter uiFilter : selectedUiFilters) {
+            final SearchFilterRowVM row = new SearchFilterRowVM(uiFilter);
             activeUIFilterMap.put(uiFilter.getFieldName(), row);
             selectedFilters.add(row);
         }
 
-        for (UIColumnConfiguration uiColumn : uiColumns) {
-            String fullPath = uiColumn.getFieldName();
+        for (final UIColumnConfiguration uiColumn : uiColumns) {
+            final String fullPath = uiColumn.getFieldName();
             if (fullPath.indexOf(".") != -1) {
-                String[] splitted = fullPath.split("\\.");
+                final String[] splitted = fullPath.split("\\.");
                 String fieldName = "";
 
                 for (int i = 0; i < splitted.length; i++) {
 
                     if (i == 0) {
                         fieldName = splitted[i];
-                        SearchFilterUiModel searchFilterModel = new SearchFilterUiModel();
+                        final SearchFilterUiModel searchFilterModel = new SearchFilterUiModel();
                         searchFilterModel.setFieldName(fieldName);
                         if (!firstLevelColumns.contains(searchFilterModel)) {
                             firstLevelColumns.add(searchFilterModel);
                         }
                     } else {
-                        String upperLevel = fieldName;
+                        final String upperLevel = fieldName;
                         fieldName += "." + splitted[i];
-                        SearchFilterUiModel fnm = new SearchFilterUiModel();
+                        final SearchFilterUiModel fnm = new SearchFilterUiModel();
                         fnm.setFieldName(fieldName);
                         if (i == splitted.length - 1) {
                             fnm.setFullPath(fullPath);
-                            SearchFilterRowVM selectedSearchFilter = activeUIFilterMap.get(fullPath);
+                            final SearchFilterRowVM selectedSearchFilter = activeUIFilterMap.get(fullPath);
                             if (selectedSearchFilter == null) {
                                 fnm.setSearchFilter(new SearchFilterRowVM(uiColumn.getFieldName()));
                             } else {
@@ -109,7 +109,7 @@ public class SearchFilterConfigCreatorEE extends DefaultSearchFilterConfigCreato
                             }
                             fnm.getSearchFilter().setFilterTypes(getAvailableFilterType(uiColumn));
                         }
-                        List<SearchFilterUiModel> fnms = columnsByKey.computeIfAbsent(upperLevel,
+                        final List<SearchFilterUiModel> fnms = columnsByKey.computeIfAbsent(upperLevel,
                                 (k) -> new ArrayList<>());
                         if (!fnms.contains(fnm)) {
                             fnms.add(fnm);
@@ -117,10 +117,10 @@ public class SearchFilterConfigCreatorEE extends DefaultSearchFilterConfigCreato
                     }
                 }
             } else {
-                SearchFilterUiModel fnm = new SearchFilterUiModel();
+                final SearchFilterUiModel fnm = new SearchFilterUiModel();
                 fnm.setFieldName(fullPath);
                 fnm.setFullPath(fullPath);
-                SearchFilterRowVM selectedSearchFilter = activeUIFilterMap.get(fullPath);
+                final SearchFilterRowVM selectedSearchFilter = activeUIFilterMap.get(fullPath);
                 if (selectedSearchFilter == null) {
                     fnm.setSearchFilter(new SearchFilterRowVM(uiColumn.getFieldName()));
                 } else {
@@ -134,9 +134,9 @@ public class SearchFilterConfigCreatorEE extends DefaultSearchFilterConfigCreato
         }
     }
 
-    private void createGrid(Grid grid, List<SearchFilterUiModel> data) {
-        Columns columns = new Columns();
-        Column detail = new Column();
+    private void createGrid(final Grid grid, final List<SearchFilterUiModel> data) {
+        final Columns columns = new Columns();
+        final Column detail = new Column();
         detail.setWidth("40px");
         columns.appendChild(detail);
         columns.appendChild(new Column(as.translate("editSearchFilters", "title")));
@@ -144,33 +144,33 @@ public class SearchFilterConfigCreatorEE extends DefaultSearchFilterConfigCreato
         columns.appendChild(new Column(as.translate("editSearchFilters", "filterNegate")));
 
         grid.appendChild(columns);
-        grid.setModel(new ListModelList<SearchFilterUiModel>(data));
+        grid.setModel(new ListModelList<>(data));
         grid.setVflex("1");
         grid.setRowRenderer(new RowRenderer<SearchFilterUiModel>() {
             @Override
-            public void render(Row row, SearchFilterUiModel data, int index) throws Exception {
-                Combobox combobox = new Combobox();
-                Checkbox negateCb = new Checkbox();
-                String translatedLabel = as.translate(viewModelId, data.getFieldName());
-                SearchFilterRowVM searchFilter = data.searchFilter;
+            public void render(final Row row, final SearchFilterUiModel data, final int index) throws Exception {
+                final Combobox combobox = new Combobox();
+                final Checkbox negateCb = new Checkbox();
+                final String translatedLabel = as.translate(viewModelId, data.getFieldName());
+                final SearchFilterRowVM searchFilter = data.searchFilter;
                 if (columnsByKey.containsKey(data.getFieldName())) {
-                    Detail detail = new Detail();
+                    final Detail detail = new Detail();
                     detail.setAttribute("data", data);
                     detail.addEventListener(Events.ON_OPEN, (e) -> {
-                        SearchFilterUiModel searchFilterModel = (SearchFilterUiModel) e.getTarget()
+                        final SearchFilterUiModel searchFilterModel = (SearchFilterUiModel) e.getTarget()
                                 .getAttribute("data");
                         e.getTarget().getChildren().clear();
-                        Grid grid = new Grid();
+                        final Grid grid = new Grid();
                         grid.setParent(e.getTarget());
                         createGrid(grid, columnsByKey.get(searchFilterModel.getFieldName()));
                         LOGGER.debug("EVENT: {} {}", searchFilterModel.getFieldName(), e.getTarget());
                     });
                     detail.setParent(row);
                 } else {
-                    Checkbox cb = new Checkbox();
+                    final Checkbox cb = new Checkbox();
                     cb.setChecked(searchFilter.getSelected());
                     cb.addEventListener(Events.ON_CHECK, (e) -> {
-                        boolean selected = ((Checkbox) e.getTarget()).isChecked();
+                        final boolean selected = ((Checkbox) e.getTarget()).isChecked();
                         searchFilter.setSelected(selected);
                         if (selected) {
                             selectedFilters.add(searchFilter);
@@ -186,15 +186,15 @@ public class SearchFilterConfigCreatorEE extends DefaultSearchFilterConfigCreato
                 }
 
                 // translate the label
-                Div labelWrapper = new Div();
+                final Div labelWrapper = new Div();
                 labelWrapper.setParent(row);
-                Label label = new Label(translatedLabel);
+                final Label label = new Label(translatedLabel);
                 label.setParent(labelWrapper);
-                Popup tooltip = new Popup();
+                final Popup tooltip = new Popup();
                 tooltip.setParent(labelWrapper);
                 label.setTooltip(tooltip);
 
-                Label tooltipLabel = new Label(data.fieldName);
+                final Label tooltipLabel = new Label(data.fieldName);
                 tooltipLabel.setParent(tooltip);
 
                 combobox.addEventListener(Events.ON_SELECT, (e) -> {
@@ -202,7 +202,7 @@ public class SearchFilterConfigCreatorEE extends DefaultSearchFilterConfigCreato
                 });
                 combobox.setVflex("1");
                 combobox.setDisabled(!searchFilter.getSelected());
-                combobox.setModel(new SimpleListModelExt<String>(searchFilter.getFilterTypes()));
+                combobox.setModel(new SimpleListModelExt<>(searchFilter.getFilterTypes()));
                 combobox.setValue(searchFilter.getCurrentSelection());
                 combobox.setParent(row);
 
@@ -225,7 +225,7 @@ public class SearchFilterConfigCreatorEE extends DefaultSearchFilterConfigCreato
             return fieldName;
         }
 
-        public void setFieldName(String fieldName) {
+        public void setFieldName(final String fieldName) {
             this.fieldName = fieldName;
         }
 
@@ -233,7 +233,7 @@ public class SearchFilterConfigCreatorEE extends DefaultSearchFilterConfigCreato
             return fullPath;
         }
 
-        public void setFullPath(String fullPath) {
+        public void setFullPath(final String fullPath) {
             this.fullPath = fullPath;
         }
 
@@ -241,7 +241,7 @@ public class SearchFilterConfigCreatorEE extends DefaultSearchFilterConfigCreato
             return searchFilter;
         }
 
-        public void setSearchFilter(SearchFilterRowVM searchFilter) {
+        public void setSearchFilter(final SearchFilterRowVM searchFilter) {
             this.searchFilter = searchFilter;
         }
 
@@ -254,14 +254,14 @@ public class SearchFilterConfigCreatorEE extends DefaultSearchFilterConfigCreato
         }
 
         @Override
-        public boolean equals(Object obj) {
+        public boolean equals(final Object obj) {
             if (this == obj)
                 return true;
             if (obj == null)
                 return false;
             if (getClass() != obj.getClass())
                 return false;
-            SearchFilterUiModel other = (SearchFilterUiModel) obj;
+            final SearchFilterUiModel other = (SearchFilterUiModel) obj;
             if (fieldName == null) {
                 if (other.fieldName != null)
                     return false;

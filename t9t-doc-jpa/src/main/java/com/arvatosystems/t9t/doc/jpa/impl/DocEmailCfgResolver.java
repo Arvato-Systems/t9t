@@ -36,7 +36,7 @@ public class DocEmailCfgResolver extends AbstractJpaResolver<DocEmailCfgRef, Doc
     }
 
     @Override
-    public DocEmailCfgRef createKey(Long ref) {
+    public DocEmailCfgRef createKey(final Long ref) {
         return ref == null ? null : new DocEmailCfgRef(ref);
     }
 }

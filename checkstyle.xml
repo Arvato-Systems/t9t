@@ -211,10 +211,11 @@
 	-->
     <module name="FinalClass"/>
     <module name="HideUtilityClassConstructor"/>
-    <module name="InterfaceIsType"/>
+<!--    <module name="InterfaceIsType"/> we have interfaces which extend other interfaces (with methods), specifying generic parameters, and additional constants. -->
     <module name="VisibilityModifier">
       <property name="protectedAllowed" value="true"/> <!-- we want final protected only, but that option does not exist -->
       <property name="allowPublicFinalFields" value="true"/>
+      <property name="ignoreAnnotationCanonicalNames" value="com.arvatosystems.t9t.annotations.AllowPublicAccess"/>
     </module>
 
     <!-- Miscellaneous other checks.                   -->

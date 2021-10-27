@@ -36,7 +36,7 @@ public class SliceTrackingResolver extends AbstractJpaResolver<SliceTrackingRef,
     }
 
     @Override
-    public SliceTrackingRef createKey(Long ref) {
+    public SliceTrackingRef createKey(final Long ref) {
         return ref == null ? null : new SliceTrackingRef(ref);
     }
 }

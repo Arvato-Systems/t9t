@@ -15,6 +15,13 @@
  */
 package com.arvatosystems.t9t.msglog.jpa.request;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
@@ -22,24 +29,20 @@ import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.msglog.jpa.persistence.IMessageEntityResolver;
 import com.arvatosystems.t9t.msglog.request.RemoveOldMessageEntriesRequest;
+
 import de.jpaw.dp.Jdp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
 
 public class RemoveOldMessageEntriesRequestHandler extends AbstractRequestHandler<RemoveOldMessageEntriesRequest> {
     protected final IMessageEntityResolver resolver = Jdp.getRequired(IMessageEntityResolver.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, RemoveOldMessageEntriesRequest request) {
+    public ServiceResponse execute(final RequestContext ctx, final RemoveOldMessageEntriesRequest request) {
 
         if (ctx.getTenantRef().compareTo(T9tConstants.GLOBAL_TENANT_REF42) != 0) {
             throw new T9tException(T9tException.RESTRICTED_ACCESS, "Only accessible by global tenant");
         }
 
-        EntityManager em = resolver.getEntityManager();
+        final EntityManager em = resolver.getEntityManager();
         String query = "DELETE FROM MessageEntity msg WHERE executionStartedAt < :deleteUntil";
 
         //if TRUE, do not delete entries which have returnCode >= 200000000 (exception return codes)
@@ -47,9 +50,9 @@ public class RemoveOldMessageEntriesRequestHandler extends AbstractRequestHandle
             query += " AND returnCode < 200000000";
         }
 
-        Query q = em.createQuery(query);
+        final Query q = em.createQuery(query);
 
-        LocalDateTime thisMorning = LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0));
+        final LocalDateTime thisMorning = LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0));
         q.setParameter("deleteUntil", thisMorning.minusDays(request.getKeepMaxDaysAg()));
         q.executeUpdate();
 

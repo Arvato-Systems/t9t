@@ -48,11 +48,11 @@ public class PostSender<R> implements IAsyncSender {
     private final ConcurrentMap<Long, HttpPostClient> httpClientPerChannel = new ConcurrentHashMap<>();
 
     @Override
-    public void init(AsyncQueueDTO queue) {
-        LOGGER.info("Creating IAsyncSender POST for queue {}", queue.getAsyncQueueId());
-        this.queue = queue;
+    public void init(final AsyncQueueDTO myQueue) {
+        LOGGER.info("Creating IAsyncSender POST for queue {}", myQueue.getAsyncQueueId());
+        this.queue = myQueue;
         // create the default marshaller
-        final String marshallerQualifier = queue.getDefaultSerializerQualifier();
+        final String marshallerQualifier = myQueue.getDefaultSerializerQualifier();
         if (marshallerQualifier != null) {
             defaultMarshaller = Jdp.getRequired(IMarshallerExt.class, marshallerQualifier);
             defaultHttpClient = new HttpPostClient("http://localhost/", false, false, false, false, defaultMarshaller);
@@ -60,7 +60,7 @@ public class PostSender<R> implements IAsyncSender {
     }
 
     /** Returns a POST client with the correct URL. */
-    protected HttpPostClient getPostClient(AsyncChannelDTO channelDto) {
+    protected HttpPostClient getPostClient(final AsyncChannelDTO channelDto) {
         final String qualifier = channelDto.getSerializerQualifier();
         if (qualifier == null) {
             if (!channelDto.getUrl().equals(lastUrl)) {
@@ -77,7 +77,8 @@ public class PostSender<R> implements IAsyncSender {
     }
 
     @Override
-    public AsyncHttpResponse send(AsyncChannelDTO channelDto, BonaPortable payload, int timeout, Long messageObjectRef) throws Exception {
+    public AsyncHttpResponse send(final AsyncChannelDTO channelDto, final BonaPortable payload, final int timeout, final Long messageObjectRef)
+      throws Exception {
         // do external I/O
         final HttpPostClient httpClient = getPostClient(channelDto);
         httpClient.setTimeoutInMs(timeout);  // set the request specific timeout or fall back to the default
@@ -93,7 +94,7 @@ public class PostSender<R> implements IAsyncSender {
         myResponse.setHttpStatusMessage(resp.getHttpStatusMessage());
         myResponse.setResponseObject(resp.getResponseObject());
         if (resp.getResponseObject() != null && defaultMarshaller != null) {
-            R r = (R)resp.getResponseObject();
+            final R r = (R)resp.getResponseObject();
             myResponse.setClientReturnCode(defaultMarshaller.getClientReturnCode(r));
             myResponse.setClientReference(defaultMarshaller.getClientReference(r));
         }

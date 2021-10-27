@@ -34,17 +34,17 @@ public class NoHandlerPresentRequestHandler extends AbstractRequestHandler<Reque
     private static final Logger LOGGER = LoggerFactory.getLogger(NoHandlerPresentRequestHandler.class);
     private final String reason;
 
-    public NoHandlerPresentRequestHandler(String reason) {
+    public NoHandlerPresentRequestHandler(final String reason) {
         this.reason = reason;
     }
 
     @Override
-    public boolean isReadOnly(RequestParameters request) {
+    public boolean isReadOnly(final RequestParameters request) {
         return true;
     }
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, RequestParameters request) {
+    public ServiceResponse execute(final RequestContext ctx, final RequestParameters request) {
         LOGGER.error("No request handler found for request class {} and tenant {}, or instantiation failed", request.ret$PQON(), ctx.tenantId);
         return error(T9tException.REQUEST_HANDLER_NOT_FOUND, reason);
     }

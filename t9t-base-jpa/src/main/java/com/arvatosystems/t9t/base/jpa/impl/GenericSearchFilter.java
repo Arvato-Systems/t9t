@@ -47,9 +47,9 @@ public class GenericSearchFilter extends JpaFilterImpl {
 
     protected final IEnumResolver enumResolver = Jdp.getRequired(IEnumResolver.class);
 
-    protected void mustHaveExactlyOneOf(FieldFilter filter, Object ... arg) {
+    protected void mustHaveExactlyOneOf(final FieldFilter filter, final Object ... arg) {
         int countNonNull = 0;
-        for (Object o : arg)
+        for (final Object o : arg)
             if (o != null)
                 ++countNonNull;
         if (countNonNull == 0) {
@@ -62,7 +62,7 @@ public class GenericSearchFilter extends JpaFilterImpl {
         }
     }
 
-    protected Predicate equalsOrNull(CriteriaBuilder cb, Path<?> path, Object token) {
+    protected Predicate equalsOrNull(final CriteriaBuilder cb, final Path<?> path, final Object token) {
         if (token == null) {
             // use nullfilter
             return cb.isNull(path);
@@ -70,11 +70,11 @@ public class GenericSearchFilter extends JpaFilterImpl {
         return cb.equal(path, token);
     }
 
-    protected Predicate inCriteriaWithPossibleNull(CriteriaBuilder cb, Path<?> path, List<String> names, Function<String, Object> resolver) {
+    protected Predicate inCriteriaWithPossibleNull(final CriteriaBuilder cb, final Path<?> path, final List<String> names, final Function<String, Object> resolver) {
         boolean hasNull = false;
-        List<Object> tokens = new ArrayList<Object>(names.size());
-        for (String name : names) {
-            Object token = resolver.apply(name);
+        final List<Object> tokens = new ArrayList<>(names.size());
+        for (final String name : names) {
+            final Object token = resolver.apply(name);
             if (token == null)
                 hasNull = true;
             else
@@ -91,10 +91,10 @@ public class GenericSearchFilter extends JpaFilterImpl {
     }
 
     @Override
-    public Predicate applyFilter(CriteriaBuilder cb, Path<?> path, FieldFilter filter) {
+    public Predicate applyFilter(final CriteriaBuilder cb, final Path<?> path, final FieldFilter filter) {
 
         if (filter instanceof XenumFilter) {
-            XenumFilter f = (XenumFilter)filter;
+            final XenumFilter f = (XenumFilter)filter;
             mustHaveExactlyOneOf(filter, f.getEqualsName(), f.getNameList(), f.getEqualsToken(), f.getTokenList());
             LOGGER.trace("Xenum search filter {}", f);
             if (f.getEqualsName() != null) {
@@ -109,7 +109,7 @@ public class GenericSearchFilter extends JpaFilterImpl {
             // search for name list. Must resolve the list elements
             return inCriteriaWithPossibleNull(cb, path, f.getNameList(), s -> enumResolver.getTokenByXEnumPqonAndInstance(f.getXenumPqon(), s));
         } else if (filter instanceof EnumFilter) {
-            EnumFilter f = (EnumFilter)filter;
+            final EnumFilter f = (EnumFilter)filter;
             mustHaveExactlyOneOf(filter, f.getEqualsName(), f.getNameList(), f.getEqualsToken(), f.getTokenList(), f.getEqualsOrdinal(), f.getOrdinalList());
             LOGGER.trace("Enum search filter {}", f);
 
@@ -131,7 +131,7 @@ public class GenericSearchFilter extends JpaFilterImpl {
             // search for name list. Must resolve the list elements
             return inCriteriaWithPossibleNull(cb, path, f.getNameList(), s -> enumResolver.getTokenByPqonAndInstance(f.getEnumPqon(), s));
         } else if (filter instanceof XenumsetFilter) {
-            XenumsetFilter f = (XenumsetFilter)filter;
+            final XenumsetFilter f = (XenumsetFilter)filter;
             mustHaveExactlyOneOf(filter, f.getEqualsName(), f.getEqualsToken());
             LOGGER.trace("Enumset search filter {}", f);
             Object token = f.getEqualsToken();
@@ -143,7 +143,7 @@ public class GenericSearchFilter extends JpaFilterImpl {
             else
                 return cb.equal(path, token);
         } else if (filter instanceof EnumsetFilter) {
-            EnumsetFilter f = (EnumsetFilter)filter;
+            final EnumsetFilter f = (EnumsetFilter)filter;
             mustHaveExactlyOneOf(filter, f.getEqualsName(), f.getEqualsToken());
             LOGGER.trace("Enumset search filter {}", f);
             Object token = f.getEqualsToken();

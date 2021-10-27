@@ -188,7 +188,7 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
     @Override
     public SinkCreatedResponse execute(final RequestContext ctx, final RunReportRequest request) throws Exception {
         Long sinkRef; // holds the result
-        final Map<String, Object> outputSessionAdditionalParametersList = new HashMap<String, Object>(10);
+        final Map<String, Object> outputSessionAdditionalParametersList = new HashMap<>(10);
 
         final ReportParamsDTO reportParamsDTO = (request.getReportParamsRef() instanceof ReportParamsDTO)
           ? (ReportParamsDTO) request.getReportParamsRef() // nothing to do, all data has been provided (adhoc report request)
@@ -213,7 +213,7 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
             jasperReport = loadJasperReport(ctx, reportConfigDTO.getJasperReportTemplateName());
 
             final OutputSessionParameters outputSessionParameters = new OutputSessionParameters();
-            final Map<String, Object> parameters = new HashMap<String, Object>();
+            final Map<String, Object> parameters = new HashMap<>();
             addDefaultParameters(ctx, parameters);
             jasperParamEnricher.enrichParameter(parameters, reportParamsDTO, outputSessionAdditionalParametersList, outputSessionParameters);
 

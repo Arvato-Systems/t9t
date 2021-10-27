@@ -66,8 +66,8 @@ public interface IResolverSurrogateKey<
     Long createNewPrimaryKey();
 
     /** Reads a specific field. */
-    public <Z> Z getField(REF entityRef, boolean onlyActive, String fieldName, Class<Z> cls);
+    <Z> Z getField(REF entityRef, boolean onlyActive, String fieldName, Class<Z> cls);
 
     /** Reads 2 surrogate key fields. */
-    public TwoRefs getRefs(REF entityRef, boolean onlyActive, String fieldName);
+    TwoRefs getRefs(REF entityRef, boolean onlyActive, String fieldName);
 }

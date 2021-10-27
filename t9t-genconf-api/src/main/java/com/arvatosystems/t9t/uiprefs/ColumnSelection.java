@@ -28,22 +28,27 @@ import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.ui.UIColumn;
 import de.jpaw.bonaparte.pojos.ui.UIColumnConfiguration;
 
-public class ColumnSelection {
-    public static List<String> getListOfFieldNames(List<UIColumnConfiguration> columns, boolean doSmartPrefixes, boolean onlyVisible) {
+public final class ColumnSelection {
+
+    private ColumnSelection() { }
+
+    public static List<String> getListOfFieldNames(final List<UIColumnConfiguration> columns, final boolean doSmartPrefixes, final boolean onlyVisible) {
         int num = columns.size();
         if (onlyVisible) {
             // count again, to make the array only as big as required
             num = 0;
-            for (UIColumnConfiguration c : columns)
+            for (final UIColumnConfiguration c : columns) {
                 if (c.getVisible())
                     ++num;
+            }
         }
-        List<String> selectedFields = new ArrayList<String>(num);
+        final List<String> selectedFields = new ArrayList<>(num);
 
         // optionally prepend a field prefix
-        for (UIColumnConfiguration c : columns)
+        for (final UIColumnConfiguration c : columns) {
             if (!onlyVisible || c.getVisible())
                 selectedFields.add(doSmartPrefixes ? FieldMappers.addPrefix(c.getFieldName()) : c.getFieldName());
+        }
         return selectedFields;
     }
 //
@@ -58,12 +63,13 @@ public class ColumnSelection {
 
 
     /** Creates some initial grid preferences, which show all items contained in the dto and tracking. The tracking parameter is optional. */
-    public static UIGridPreferences guessInitialConfig(BonaPortableClass<? extends BonaPortable> dtoClass, BonaPortableClass<? extends TrackingBase> trackingClass) {
-        UIGridPreferences cfg = new UIGridPreferences();
+    public static UIGridPreferences guessInitialConfig(final BonaPortableClass<? extends BonaPortable> dtoClass,
+      final BonaPortableClass<? extends TrackingBase> trackingClass) {
+        final UIGridPreferences cfg = new UIGridPreferences();
         // int num = countFields(dtoClass) + countFields(trackingClass);           // this is just a first guess...
         // ArrayList<UIColumnConfiguration> columns = new ArrayList<UIColumnConfiguration>(num);
 
-        ColumnCollector cc = new ColumnCollector();
+        final ColumnCollector cc = new ColumnCollector();
 
         // first, add all the tracking columns, in case they exist
         if (trackingClass != null)
@@ -73,9 +79,11 @@ public class ColumnSelection {
             cc.addToColumns(dtoClass.getMetaData());
 
         // xfer the columns
-        List<UIColumnConfiguration> cols = new ArrayList<UIColumnConfiguration>(cc.columns.size());
-        for (UIColumn c : cc.columns)
-            cols.add(new UIColumnConfiguration(c.getFieldName(), c.getWidth(), c.getAlignment(), c.getLayoutHint(), true, false, false, null, null, null, null));
+        final List<UIColumnConfiguration> cols = new ArrayList<>(cc.columns.size());
+        for (final UIColumn c : cc.columns) {
+            cols.add(new UIColumnConfiguration(c.getFieldName(), c.getWidth(), c.getAlignment(), c.getLayoutHint(),
+              true, false, false, null, null, null, null));
+        }
         cfg.setColumns(cols);
 
         return cfg;

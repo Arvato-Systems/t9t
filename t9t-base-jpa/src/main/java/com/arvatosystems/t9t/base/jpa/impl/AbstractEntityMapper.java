@@ -74,7 +74,7 @@ public abstract class AbstractEntityMapper<KEY extends Serializable, DTO extends
 
 
     @Override
-    public List<DTO> mapListToDto(Collection<ENTITY> entityList, Map<String, String> graph, String prefix, Map<String, Map<Long, Ref>> cache) {
+    public List<DTO> mapListToDto(final Collection<ENTITY> entityList, final Map<String, String> graph, final String prefix, final Map<String, Map<Long, Ref>> cache) {
         if (entityList == null) {
             return null;
         }
@@ -85,7 +85,7 @@ public abstract class AbstractEntityMapper<KEY extends Serializable, DTO extends
 
 
     @Override
-    public final List<DTO> mapListToDto(Collection<ENTITY> entityList) {
+    public final List<DTO> mapListToDto(final Collection<ENTITY> entityList) {
         if (entityList == null) {
             return null;
         }
@@ -102,30 +102,30 @@ public abstract class AbstractEntityMapper<KEY extends Serializable, DTO extends
     /** The default implementation just invokes the single element mapper on every element.
      * @param hashMap
      * @param noGraph */
-    protected void batchMapToDto(final Collection<ENTITY> entityList, final List<DTO> resultList, Map<String, String> graph, String prefix, Map<String, Map<Long, Ref>> hashMap) {
-        for (ENTITY entity : entityList) {
+    protected void batchMapToDto(final Collection<ENTITY> entityList, final List<DTO> resultList, final Map<String, String> graph, final String prefix, final Map<String, Map<Long, Ref>> hashMap) {
+        for (final ENTITY entity : entityList) {
             resultList.add(mapToDto(entity));
         }
     }
 
     @Override
-    public final void mapCollectionToEntity(Collection<ENTITY> target, Collection<DTO> dtoList, boolean onlyActive) {
+    public final void mapCollectionToEntity(final Collection<ENTITY> target, final Collection<DTO> dtoList, final boolean onlyActive) {
         if (dtoList != null) {
-            for (DTO dto : dtoList) {
+            for (final DTO dto : dtoList) {
                 target.add(mapToEntity(dto, onlyActive));
             }
         }
     }
 
     @Override
-    public final void merge2Entity(ENTITY entity, DTO dto, boolean onlyActive) {
+    public final void merge2Entity(final ENTITY entity, final DTO dto, final boolean onlyActive) {
         dto2entity(entity, dto, onlyActive);
     }
 
     /** just a hook not defined in the public interface which allows to jump up to the specific implementation. */
     abstract protected void dto2entity(ENTITY entity, DTO dto, boolean onlyActive);
 
-    protected final DTO fromCache(ENTITY e, Class<DTO> clazz) {
+    protected final DTO fromCache(final ENTITY e, final Class<DTO> clazz) {
         // xtend: ServiceSessionContext.getDtoCache()?.get(e)?.get(clazz) as DTO
         // DTO CACHE GONE
 //        Map<BonaPersistableNoData<?, ?>, Map<Class<? extends BonaPortable>, BonaPortable>> cache = jpaContextProvider.get().dtoCache;
@@ -138,7 +138,7 @@ public abstract class AbstractEntityMapper<KEY extends Serializable, DTO extends
         return null;
     }
 
-    protected final void toCache(ENTITY e, Class<DTO> clazz, DTO dto) {
+    protected final void toCache(final ENTITY e, final Class<DTO> clazz, final DTO dto) {
         // xtend: ServiceSessionContext.getDtoCache()?.get(e)?.get(clazz) as DTO
         // DTO CACHE GONE
 //        Map<BonaPersistableNoData<?, ?>, Map<Class<? extends BonaPortable>, BonaPortable>> cache = jpaContextProvider.get().dtoCache;
@@ -160,7 +160,7 @@ public abstract class AbstractEntityMapper<KEY extends Serializable, DTO extends
      * @param intended
      */
     @Override
-    public void checkNoUpdateFields(ENTITY current, DTO intended) {
+    public void checkNoUpdateFields(final ENTITY current, final DTO intended) {
     }
 
     /**
@@ -171,7 +171,7 @@ public abstract class AbstractEntityMapper<KEY extends Serializable, DTO extends
      * See "SinkEntity" referencing "DataSinkDTO" for an example.
      */
     @Override
-    public final void processSearchPrefixForDB(SearchCriteria searchCriteria) {
+    public final void processSearchPrefixForDB(final SearchCriteria searchCriteria) {
         processSearchPrefixForDB(searchCriteria.getSearchFilter(), searchCriteria.getSortColumns());
     }
 
@@ -183,7 +183,7 @@ public abstract class AbstractEntityMapper<KEY extends Serializable, DTO extends
      * See "SinkEntity" referencing "DataSinkDTO" for an example.
      */
     @Override
-    public final void processSearchPrefixForDB(SearchFilter filter, List<SortColumn> sortColumns) {
+    public final void processSearchPrefixForDB(final SearchFilter filter, final List<SortColumn> sortColumns) {
         if (filter != null) {
             searchTools.mapNames(filter, this::processSearchPrefixForDBSub);
             searchTools.mapNames(filter, this::unrollIndexedFieldNames);
@@ -207,18 +207,18 @@ public abstract class AbstractEntityMapper<KEY extends Serializable, DTO extends
         int dotPos = fieldName.indexOf('.');
         if ((dotPos >= 0) && (fieldName.length() > dotPos)) {  // TODO: can the second condition ever be true? dotPos < length should always hold!
             // check if fieldName is nested (has third level)
-            int secondDotPos = fieldName.indexOf('.', dotPos + 1);
+            final int secondDotPos = fieldName.indexOf('.', dotPos + 1);
             if (secondDotPos >= 0) { // has third level
                 // try to find alternative prefix from searchprefix2
-                String targetField = fieldName.substring(0, dotPos);
-                String searchprefix2 = getProperty(targetField + "." + SEARCH_PREFIX_PROPERTY_TWO);
+                final String targetField = fieldName.substring(0, dotPos);
+                final String searchprefix2 = getProperty(targetField + "." + SEARCH_PREFIX_PROPERTY_TWO);
                 if (searchprefix2 != null) {
-                    String targetPrefixField = fieldName.substring(dotPos + 1, secondDotPos) + ":";
+                    final String targetPrefixField = fieldName.substring(dotPos + 1, secondDotPos) + ":";
                     final String[] level2Mappings = searchprefix2.split(",");
-                    for (String l2Mapping: level2Mappings) {
+                    for (final String l2Mapping: level2Mappings) {
                         if (l2Mapping.startsWith(targetPrefixField)) {
                             // this is the mapping of relevance
-                            String alternativePrefix = l2Mapping.substring(targetPrefixField.length());
+                            final String alternativePrefix = l2Mapping.substring(targetPrefixField.length());
                             // third level prefix found, replace only the middle part.
                             result = fieldName.substring(0, dotPos) + "." + alternativePrefix
                                     + fieldName.substring(secondDotPos);
@@ -229,7 +229,7 @@ public abstract class AbstractEntityMapper<KEY extends Serializable, DTO extends
             }
 
             // this is a candidate: if the initial portion has a property "searchprefix", then replace it
-            String alternatePrefix = getProperty(fieldName.substring(0, dotPos) + "." + SEARCH_PREFIX_PROPERTY);
+            final String alternatePrefix = getProperty(fieldName.substring(0, dotPos) + "." + SEARCH_PREFIX_PROPERTY);
             if (alternatePrefix != null) {
                 // special case: replace it by nothing... (skipping it, as required by some composite objects)
                 if (alternatePrefix.length() == 0)
@@ -253,7 +253,7 @@ public abstract class AbstractEntityMapper<KEY extends Serializable, DTO extends
             return fieldName;  // no change: shortcut!
         // has to replace at least one array index
         final int l = fieldName.length();
-        StringBuilder newName = new StringBuilder(l);
+        final StringBuilder newName = new StringBuilder(l);
         int currentSrc = 0;
         while (dotPos >= 0) {
             // copy all until the array index start
@@ -263,7 +263,7 @@ public abstract class AbstractEntityMapper<KEY extends Serializable, DTO extends
             if (dotPos <= currentSrc)
                 throw new T9tException(T9tException.MALFORMATTED_FIELDNAME, fieldName);
             // insert the index + 1 as 2 digit number
-            int num = Integer.parseInt(fieldName.substring(currentSrc, dotPos));
+            final int num = Integer.parseInt(fieldName.substring(currentSrc, dotPos));
             newName.append(String.format("%02d", num+1));
             currentSrc = dotPos + 1;
             dotPos = fieldName.indexOf('[', currentSrc);
@@ -271,7 +271,7 @@ public abstract class AbstractEntityMapper<KEY extends Serializable, DTO extends
         // all instances found, copy any remaining characters
         if (currentSrc < l)
             newName.append(fieldName.substring(currentSrc));
-        String result = newName.toString();  // temporary var to avoid duplicate construction of string when log level is debug
+        final String result = newName.toString();  // temporary var to avoid duplicate construction of string when log level is debug
         LOGGER.debug("{}: replacing column {} by {}", getClass().getCanonicalName(), fieldName, result);
         return result;
     }

@@ -44,25 +44,25 @@ public class IndependentJDBCConnectionProvider implements IJdbcConnectionProvide
     protected final AtomicInteger counter = new AtomicInteger();
 
     protected static class LazyPoolWrapper {
-        protected static final PooledDataSource pds = C3P0Registry.pooledDataSourceByName(POOLED_DATASOURCE_NAME);
+        protected static final PooledDataSource POOLED_DATA_SOURCE = C3P0Registry.pooledDataSourceByName(POOLED_DATASOURCE_NAME);
         protected LazyPoolWrapper() {
-            LOGGER.info("Obtaining pooled data source for JDBC connections {}", pds == null ? "FAILED" : " was successful");
+            LOGGER.info("Obtaining pooled data source for JDBC connections {}", POOLED_DATA_SOURCE == null ? "FAILED" : " was successful");
         }
     }
 
     @Override
     public Connection getJDBCConnection() {
-        if (LazyPoolWrapper.pds == null) {
+        if (LazyPoolWrapper.POOLED_DATA_SOURCE == null) {
             LOGGER.error("Could not find C3P0 pooled data source {}, cannot serve JDBC connections", POOLED_DATASOURCE_NAME);
-            Set<?> x = C3P0Registry.getPooledDataSources();
+            final Set<?> x = C3P0Registry.getPooledDataSources();
             LOGGER.info("PoolSet size is {} (using a different name?)", x.size());
             LOGGER.info("Second attempt would be {}", C3P0Registry.pooledDataSourceByName(POOLED_DATASOURCE_NAME) != null);
             return null;
         }
-        int count = counter.incrementAndGet();
+        final int count = counter.incrementAndGet();
         try {
-            return LazyPoolWrapper.pds.getConnection();
-        } catch (SQLException e) {
+            return LazyPoolWrapper.POOLED_DATA_SOURCE.getConnection();
+        } catch (final SQLException e) {
             LOGGER.error("Cannot create Jdbc connection (request {}) - SQLException {}: {}", count, e.getClass().getSimpleName(), e.getMessage());
             return null;
         }
@@ -70,27 +70,27 @@ public class IndependentJDBCConnectionProvider implements IJdbcConnectionProvide
 
     @Override
     public List<Integer> checkHealth() {
-        PooledDataSource pds = LazyPoolWrapper.pds;
-        Integer count = counter.get();
+        final PooledDataSource pds = LazyPoolWrapper.POOLED_DATA_SOURCE;
+        final Integer count = counter.get();
         if (pds == null) {
             LOGGER.error("Could not find C3P0 pooled data source {}, cannot serve JDBC connections", POOLED_DATASOURCE_NAME);
             return Collections.singletonList(count);
         }
         try {
-            Integer cnt_all      = pds.getNumConnectionsAllUsers();
-            Integer cnt_busy     = pds.getNumBusyConnectionsAllUsers();
-            Integer cnt_idle     = pds.getNumIdleConnectionsAllUsers();
-            Integer cnt_orphaned = pds.getNumUnclosedOrphanedConnectionsAllUsers();
+            final Integer cntAll      = pds.getNumConnectionsAllUsers();
+            final Integer cntBusy     = pds.getNumBusyConnectionsAllUsers();
+            final Integer cntIdle     = pds.getNumIdleConnectionsAllUsers();
+            final Integer cntOrphaned = pds.getNumUnclosedOrphanedConnectionsAllUsers();
             LOGGER.debug("JDBC connection request count is {}, connection pool status: {} connections, {} busy, {} idle, {} unclosed orphans",
-                count, cnt_all, cnt_busy, cnt_idle, cnt_orphaned);
-            List<Integer> result = new ArrayList<Integer>(5);
+                count, cntAll, cntBusy, cntIdle, cntOrphaned);
+            final List<Integer> result = new ArrayList<>(5);
             result.add(count);
-            result.add(cnt_all);
-            result.add(cnt_busy);
-            result.add(cnt_idle);
-            result.add(cnt_orphaned);
+            result.add(cntAll);
+            result.add(cntBusy);
+            result.add(cntIdle);
+            result.add(cntOrphaned);
             return result;
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             LOGGER.warn("Cannot provide status after {} requests - SQLException {}: {}", count, e.getClass().getSimpleName(), e.getMessage());
             return Collections.singletonList(count);  // return the count at least
         }

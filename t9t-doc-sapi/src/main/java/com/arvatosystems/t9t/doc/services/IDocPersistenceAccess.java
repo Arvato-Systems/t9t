@@ -30,5 +30,5 @@ public interface IDocPersistenceAccess {
     DocConfigDTO                    getDocConfigDTO     (String templateId);
     DocEmailCfgDTO                  getDocEmailCfgDTO   (DocModuleCfgDTO cfg, String templateId, DocumentSelector selector);
     DocTemplateDTO                  getDocTemplateDTO   (DocModuleCfgDTO cfg, String templateId, DocumentSelector selector);
-    Map<String,MediaData>           getDocComponents    (DocModuleCfgDTO cfg, DocumentSelector selector);
+    Map<String, MediaData>          getDocComponents    (DocModuleCfgDTO cfg, DocumentSelector selector);
 }

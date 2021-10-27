@@ -51,7 +51,7 @@ import de.jpaw.util.ExceptionUtil;
 public class OutputResourceKafka implements IOutputResource {
     private static final Logger LOGGER = LoggerFactory.getLogger(OutputResourceKafka.class);
 
-    protected static Producer<String, byte[]> createKafkaProducer(DataSinkDTO config, Long sinkRef) {
+    protected static Producer<String, byte[]> createKafkaProducer(final DataSinkDTO config, final Long sinkRef) {
         final Properties props = new Properties();
         final KafkaConfiguration defaults = ConfigProvider.getConfiguration().getKafkaConfiguration();
         if (defaults == null) {
@@ -74,9 +74,10 @@ public class OutputResourceKafka implements IOutputResource {
         if (config.getZ() != null) {
             final Object extraKafkaConfig = config.getZ().get("kafka");
             if (extraKafkaConfig instanceof Map) {
-                final Map<?,?> extraKafkaConfigMap = (Map<?,?>)extraKafkaConfig;
-                LOGGER.info("Found {} additional Producer configuration properties for kafka in data sink {}", extraKafkaConfigMap.size(), config.getDataSinkId());
-                for (Map.Entry<?, ?> entry: extraKafkaConfigMap.entrySet()) {
+                final Map<?, ?> extraKafkaConfigMap = (Map<?, ?>)extraKafkaConfig;
+                LOGGER.info("Found {} additional Producer configuration properties for kafka in data sink {}",
+                  extraKafkaConfigMap.size(), config.getDataSinkId());
+                for (final Map.Entry<?, ?> entry: extraKafkaConfigMap.entrySet()) {
                     props.put(entry.getKey(), entry.getValue());
                 }
             }
@@ -90,7 +91,8 @@ public class OutputResourceKafka implements IOutputResource {
     protected DataSinkDTO cfg;
 
     @Override
-    public void open(DataSinkDTO config, OutputSessionParameters params, Long sinkRef, String targetName, MediaTypeDescriptor mediaType, Charset encoding) {
+    public void open(final DataSinkDTO config, final OutputSessionParameters params, final Long sinkRef, final String targetName,
+      final MediaTypeDescriptor mediaType, final Charset encoding) {
         cfg = config;
         topic = cfg.getFileOrQueueNamePattern();
         producer = createKafkaProducer(config, sinkRef);
@@ -105,10 +107,11 @@ public class OutputResourceKafka implements IOutputResource {
     }
 
     @Override
-    public void write(final String partitionKey, final String recordKey, byte[] buffer, int offset, int len, boolean isDataRecord) {
-        final byte [] data = (offset == 0 && (len < 0 || len == buffer.length)) ? buffer : Arrays.copyOfRange(buffer, offset, offset+len);
+    public void write(final String partitionKey, final String recordKey, final byte[] buffer, final int offset, final int len, final boolean isDataRecord) {
+        final byte[] data = (offset == 0 && (len < 0 || len == buffer.length))
+          ? buffer : Arrays.copyOfRange(buffer, offset, offset + len);
         final int partition = (partitionKey.hashCode() & 0x7fffffff) % numberOfPartitions;
-        producer.send(new ProducerRecord<String, byte[]>(topic, Integer.valueOf(partition), recordKey, data), (meta, e) -> {
+        producer.send(new ProducerRecord<>(topic, Integer.valueOf(partition), recordKey, data), (meta, e) -> {
             if (e != null) {
                 LOGGER.error("Could not send record {} for partition {} in topic {}: {}: {}", recordKey, partitionKey, topic,
                         e.getClass().getSimpleName(), ExceptionUtil.causeChain(e));
@@ -120,7 +123,7 @@ public class OutputResourceKafka implements IOutputResource {
     }
 
     @Override
-    public void write(String partitionKey, String recordKey, String data) {
+    public void write(final String partitionKey, final String recordKey, final String data) {
         final byte[] bytes = data.getBytes(StandardCharsets.UTF_8);
         write(partitionKey, recordKey, bytes, 0, bytes.length, true);
     }

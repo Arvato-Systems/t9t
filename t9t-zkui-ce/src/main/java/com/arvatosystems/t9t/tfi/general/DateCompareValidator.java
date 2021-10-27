@@ -34,19 +34,19 @@ public class DateCompareValidator extends AbstractValidator {
     private static final Logger LOGGER = LoggerFactory.getLogger(DateCompareValidator.class);
     public static final Object CHECK_TYPE_MIN = "MIN"; // Occures an error if date1 is lower than Date2
     public static final Object CHECK_TYPE_MAX = "MAX"; // Occures an error if date1 is greater than Date2
-    //TODO is not optimized may some addons are requiered
+    //TODO is not optimized may some addons are required
     @Override
     public void validate(ValidationContext ctx) {
         FormValidator formValidator = new FormValidator();
 
-        if (!formValidator.isValidationRequiered(ctx)) {
+        if (!formValidator.isValidationRequired(ctx)) {
             return;
         }
 
         Clients.clearWrongValue(ctx.getBindContext().getComponent());
 
-        Boolean isValidationRequiered = formValidator.isValidationRequiered(ctx);
-        if (!isValidationRequiered) {
+        Boolean isValidationRequired = formValidator.isValidationRequired(ctx);
+        if (!isValidationRequired) {
             return;
         }
 

@@ -27,16 +27,16 @@ import de.jpaw.bonaparte.pojos.meta.ObjectReference;
  */
 public class VariantComposerFilter<E extends Exception> extends DelegatingBaseComposer<E> {
 
-    public VariantComposerFilter(MessageComposer<E> delegateComposer) {
+    public VariantComposerFilter(final MessageComposer<E> delegateComposer) {
         super(delegateComposer);
     }
 
     @Override
-    public void addField(ObjectReference di, BonaCustom obj) throws E {
+    public void addField(final ObjectReference di, final BonaCustom obj) throws E {
         if (!(obj instanceof Variant)) {
             super.addField(di, obj);
         } else {
-            Variant v = (Variant)obj;
+            final Variant v = (Variant)obj;
             if (v.getTextValue() != null) {
                 addField(Variant.meta$$textValue, v.getTextValue());
             } else if (v.getBoolValue() != null) {

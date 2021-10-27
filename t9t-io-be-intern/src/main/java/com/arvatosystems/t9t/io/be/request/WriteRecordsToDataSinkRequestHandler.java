@@ -36,12 +36,12 @@ public class WriteRecordsToDataSinkRequestHandler extends AbstractRequestHandler
     private static final Logger LOGGER = LoggerFactory.getLogger(WriteRecordsToDataSinkRequestHandler.class);
 
     @Override
-    public SinkCreatedResponse execute(RequestContext ctx, WriteRecordsToDataSinkRequest rq) throws Exception {
+    public SinkCreatedResponse execute(final RequestContext ctx, final WriteRecordsToDataSinkRequest rq) throws Exception {
         Long sinkRef;
         long count = 0L;
 
         // create outputSessionParameters
-        OutputSessionParameters osp = new OutputSessionParameters();
+        final OutputSessionParameters osp = new OutputSessionParameters();
         osp.setDataSinkId(rq.getDataSinkId());
 
         try (IOutputSession os = Jdp.getRequired(IOutputSession.class)) {
@@ -49,20 +49,22 @@ public class WriteRecordsToDataSinkRequestHandler extends AbstractRequestHandler
             sinkRef = os.open(osp);
             if (rq.getRecords1() != null) {
                 count += rq.getRecords1().size();
-                for (BonaPortable o: rq.getRecords1())
+                for (final BonaPortable o: rq.getRecords1()) {
                     os.store(o);
+                }
             }
             if (rq.getRecords2() != null) {
                 count += rq.getRecords2().size();
-                for (BonaPortable o: rq.getRecords2())
+                for (final BonaPortable o: rq.getRecords2()) {
                     os.store(o);
+                }
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             // In case of any error returnCode <> 0.
             LOGGER.error("Exception occured during file storage (OutputSession) - Error Message {} ", e);
             throw new T9tException(T9tException.GENERAL_EXCEPTION, e.getMessage());
         }
-        SinkCreatedResponse response = new SinkCreatedResponse();
+        final SinkCreatedResponse response = new SinkCreatedResponse();
         response.setReturnCode(0);
         response.setSinkRef(sinkRef);
         response.setNumResults(count);

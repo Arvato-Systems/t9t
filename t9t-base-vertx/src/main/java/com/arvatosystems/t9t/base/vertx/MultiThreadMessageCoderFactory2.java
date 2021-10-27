@@ -28,16 +28,16 @@ import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.MimeTypes;
 
 // the factory becomes multithreaded by just avoiding the caching.
-public class MultiThreadMessageCoderFactory2<D extends BonaPortable, E extends BonaPortable> implements IMessageCoderFactory<D, E, byte []> {
+public class MultiThreadMessageCoderFactory2<D extends BonaPortable, E extends BonaPortable> implements IMessageCoderFactory<D, E, byte[]> {
 
     private final Class<D> decoderClass;
 
-    public MultiThreadMessageCoderFactory2(Class<D> decoderClass, Class<E> encoderClass) {
+    public MultiThreadMessageCoderFactory2(final Class<D> decoderClass, final Class<E> encoderClass) {
         this.decoderClass = decoderClass;
     }
 
     // override to add additional methods
-    protected IMessageEncoder<E, byte []> createNewEncoderInstance(String mimeType) {
+    protected IMessageEncoder<E, byte[]> createNewEncoderInstance(final String mimeType) {
         if (mimeType.equals(MimeTypes.MIME_TYPE_BONAPARTE))
             return new BonaparteRecordEncoder<E>();
         if (mimeType.equals(MimeTypes.MIME_TYPE_COMPACT_BONAPARTE))
@@ -48,7 +48,7 @@ public class MultiThreadMessageCoderFactory2<D extends BonaPortable, E extends B
     }
 
     // override to add additional methods
-    protected IMessageDecoder<D, byte []> createNewDecoderInstance(String mimeType) {
+    protected IMessageDecoder<D, byte[]> createNewDecoderInstance(final String mimeType) {
         if (mimeType.equals(MimeTypes.MIME_TYPE_BONAPARTE))
             return new BonaparteRecordDecoder<D>();
         if (mimeType.equals(MimeTypes.MIME_TYPE_COMPACT_BONAPARTE))
@@ -59,12 +59,12 @@ public class MultiThreadMessageCoderFactory2<D extends BonaPortable, E extends B
     }
 
     @Override
-    public final IMessageEncoder<E, byte []> getEncoderInstance(String mimeType) {
+    public final IMessageEncoder<E, byte[]> getEncoderInstance(final String mimeType) {
         return createNewEncoderInstance(mimeType);
     }
 
     @Override
-    public IMessageDecoder<D, byte []> getDecoderInstance(String mimeType) {
+    public IMessageDecoder<D, byte[]> getDecoderInstance(final String mimeType) {
         return createNewDecoderInstance(mimeType);
     }
 }

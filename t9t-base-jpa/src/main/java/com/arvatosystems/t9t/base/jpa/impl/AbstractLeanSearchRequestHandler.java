@@ -41,15 +41,15 @@ public class AbstractLeanSearchRequestHandler<S extends LeanSearchRequest, E ext
     protected final Function<E, Description> mapper;
 
     protected AbstractLeanSearchRequestHandler(
-            IResolverSurrogateKey42<?, ?, E> resolver,
-            Function<E, Description> mapper) {
+            final IResolverSurrogateKey42<?, ?, E> resolver,
+            final Function<E, Description> mapper) {
         this.resolver = resolver;
         this.mapper = mapper;
         // dangerous: use self-reference in constructor!
         searchRegistry.registerLeanSearchRequest(this::search, resolver.getRtti(), resolver.getBaseJpaEntityClass().getSimpleName());
     }
 
-    private final List<Description> search(RequestContext ctx, Long ref) {
+    private final List<Description> search(final RequestContext ctx, final Long ref) {
         final DummySearchCriteria srq = new DummySearchCriteria();
         final LongFilter objectRefFilter = new LongFilter(T9tConstants.OBJECT_REF_FIELD_NAME);
         objectRefFilter.setEqualsValue(ref);
@@ -57,10 +57,10 @@ public class AbstractLeanSearchRequestHandler<S extends LeanSearchRequest, E ext
         return search(ctx, srq);
     }
 
-    private final List<Description> search(RequestContext ctx, SearchCriteria srq) {
+    private final List<Description> search(final RequestContext ctx, final SearchCriteria srq) {
         final List<E> result = resolver.search(srq);
-        final List<Description> desc = new ArrayList<Description>(result.size());
-        for (E e : result) {
+        final List<Description> desc = new ArrayList<>(result.size());
+        for (final E e : result) {
             // get a first mapping (id, name)
             final Description d = mapper.apply(e);
             // set common fields...
@@ -76,7 +76,7 @@ public class AbstractLeanSearchRequestHandler<S extends LeanSearchRequest, E ext
     }
 
     @Override
-    public LeanSearchResponse execute(RequestContext ctx, S rq) {
+    public LeanSearchResponse execute(final RequestContext ctx, final S rq) {
         final LeanSearchResponse resp = new LeanSearchResponse();
         resp.setDescriptions(search(ctx, rq));
         return resp;

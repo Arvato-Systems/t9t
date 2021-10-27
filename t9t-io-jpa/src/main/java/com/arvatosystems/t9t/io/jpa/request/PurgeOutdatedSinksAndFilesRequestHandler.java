@@ -32,6 +32,7 @@ import com.arvatosystems.t9t.base.services.IFileUtil;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.io.T9tIOException;
 import com.arvatosystems.t9t.io.jpa.entities.DataSinkEntity;
+import com.arvatosystems.t9t.io.jpa.entities.SinkEntity;
 import com.arvatosystems.t9t.io.jpa.persistence.IDataSinkEntityResolver;
 import com.arvatosystems.t9t.io.jpa.persistence.ISinkEntityResolver;
 import com.arvatosystems.t9t.io.request.PurgeOutdatedSinksAndFilesRequest;
@@ -45,11 +46,11 @@ public class PurgeOutdatedSinksAndFilesRequestHandler extends AbstractRequestHan
     private final ISinkEntityResolver sinkResolver = Jdp.getRequired(ISinkEntityResolver.class);
     private final IFileUtil fileUtil = Jdp.getRequired(IFileUtil.class);
 
-    private final String SELECT_DATA_SINKS_SQL = "SELECT ds FROM " + dataSinkResolver.getBaseJpaEntityClass().getSimpleName()
+    private static final String SELECT_DATA_SINKS_SQL = "SELECT ds FROM " + DataSinkEntity.class.getSimpleName()
         + " ds WHERE ds.tenantRef IN :tenantRefs AND (ds.retentionPeriodFiles IS NOT NULL OR ds.retentionPeriodSinks IS NOT NULL)";
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, PurgeOutdatedSinksAndFilesRequest request) throws Exception {
+    public ServiceResponse execute(final RequestContext ctx, final PurgeOutdatedSinksAndFilesRequest request) throws Exception {
         final List<DataSinkEntity> dataSinks;
         if (request.getOnlyDataSinkId() != null) {
             // retrieve the specific data sink
@@ -60,7 +61,7 @@ public class PurgeOutdatedSinksAndFilesRequestHandler extends AbstractRequestHan
         } else {
             // loop all data sinks which are relevant for deletion
             final TypedQuery<DataSinkEntity> q = dataSinkResolver.getEntityManager().createQuery(SELECT_DATA_SINKS_SQL, DataSinkEntity.class);
-            HashSet<Long> tenantRefs = new HashSet<>();
+            final HashSet<Long> tenantRefs = new HashSet<>();
             tenantRefs.add(T9tConstants.GLOBAL_TENANT_REF42);
             tenantRefs.add(dataSinkResolver.getSharedTenantRef());
             q.setParameter("tenantRefs", tenantRefs);
@@ -69,7 +70,7 @@ public class PurgeOutdatedSinksAndFilesRequestHandler extends AbstractRequestHan
                 LOGGER.warn("No data sinks relevant for purging");
             }
         }
-        for (DataSinkEntity ds: dataSinks) {
+        for (final DataSinkEntity ds: dataSinks) {
             purgeFiles(ctx, ds);
             purgeSinkEntries(ctx, ds);
         }
@@ -77,11 +78,11 @@ public class PurgeOutdatedSinksAndFilesRequestHandler extends AbstractRequestHan
         return ok();
     }
 
-    private final String SELECT_SINKS_SQL = "SELECT s.fileOrQueueName FROM " + sinkResolver.getBaseJpaEntityClass().getSimpleName()
+    private static final String SELECT_SINKS_SQL = "SELECT s.fileOrQueueName FROM " + SinkEntity.class.getSimpleName()
         + " s WHERE s.tenantRef = :tenantRef AND s.cTimestamp < :cutoff AND s.dataSinkRef = :dataSinkRef";
 
     /** Method to delete all files which are referenced by sink entries older than x days. */
-    private void purgeFiles(RequestContext ctx, DataSinkEntity dataSink) {
+    private void purgeFiles(final RequestContext ctx, final DataSinkEntity dataSink) {
         if (dataSink.getRetentionPeriodFiles() == null) {
             // nothing to do
             return;
@@ -91,17 +92,18 @@ public class PurgeOutdatedSinksAndFilesRequestHandler extends AbstractRequestHan
         q.setParameter("dataSinkRef", dataSink.getObjectRef());
         q.setParameter("cutoff", ctx.executionStart.minusSeconds(T9tConstants.ONE_DAY_IN_S * (long)dataSink.getRetentionPeriodFiles()));
         final List<String> filesToDelete = q.getResultList();
-        LOGGER.info("Data sink {}: Attempting to delete {} files older than {} days", dataSink.getDataSinkId(), filesToDelete.size(), dataSink.getRetentionPeriodFiles());
-        for (String filename: filesToDelete) {
+        LOGGER.info("Data sink {}: Attempting to delete {} files older than {} days", dataSink.getDataSinkId(), filesToDelete.size(),
+          dataSink.getRetentionPeriodFiles());
+        for (final String filename: filesToDelete) {
             (new File(fileUtil.getAbsolutePathForTenant(ctx.tenantId, filename))).delete();  // attempt to delete the file, ignore the result
         }
     }
 
-    private final String DELETE_SINKS_SQL = "DELETE FROM " + sinkResolver.getBaseJpaEntityClass().getSimpleName()
+    private static final String DELETE_SINKS_SQL = "DELETE FROM " + SinkEntity.class.getSimpleName()
         + " s WHERE s.tenantRef = :tenantRef AND s.cTimestamp < :cutoff AND s.dataSinkRef = :dataSinkRef";
 
     /** Method to delete all sink entries older than x days. */
-    private void purgeSinkEntries(RequestContext ctx, DataSinkEntity dataSink) {
+    private void purgeSinkEntries(final RequestContext ctx, final DataSinkEntity dataSink) {
         if (dataSink.getRetentionPeriodSinks() == null) {
             // nothing to do
             return;

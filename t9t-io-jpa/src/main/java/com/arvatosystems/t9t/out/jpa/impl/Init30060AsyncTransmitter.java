@@ -40,7 +40,7 @@ public class Init30060AsyncTransmitter implements StartupShutdown {
         LOGGER.info("Selected async transmitter of qualifier {} by configuration", transmitterQualifier);
         try {
             Jdp.bindByQualifierWithFallback(IAsyncQueue.class, transmitterQualifier);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.error("Cannot bind: {}", ExceptionUtil.causeChain(e));
             // invalid qualifier: fall back to "noop"
             Jdp.bindByQualifierWithFallback(IAsyncQueue.class, "noop");

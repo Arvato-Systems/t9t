@@ -39,7 +39,7 @@ public class LeanGridConfigRequestHandler extends AbstractRequestHandler<LeanGri
     private final ITranslationProvider translationProvider = Jdp.getRequired(ITranslationProvider.class);
 
     @Override
-    public LeanGridConfigResponse execute(RequestContext ctx, LeanGridConfigRequest request) throws Exception {
+    public LeanGridConfigResponse execute(final RequestContext ctx, final LeanGridConfigRequest request) throws Exception {
         //@Inject
         final ILeanGridConfigRead gridConfigReader = Jdp.getRequired(ILeanGridConfigRead.class);
         final String gridId = request.getGridId();
@@ -66,7 +66,7 @@ public class LeanGridConfigRequestHandler extends AbstractRequestHandler<LeanGri
             throw new T9tException(T9tException.RECORD_DOES_NOT_EXIST, "No configuration stored for lean grid ID: " + gridId);
         }
 
-        LeanGridConfigResponse response = new LeanGridConfigResponse();
+        final LeanGridConfigResponse response = new LeanGridConfigResponse();
         response.setLeanGridConfig(prefs);
         response.setHeaders(translationProvider.getHeaderTranslations(
                 ctx.tenantId,
@@ -78,18 +78,18 @@ public class LeanGridConfigRequestHandler extends AbstractRequestHandler<LeanGri
         LOGGER.debug("Headers length check for {} fields ({} xlated)", prefs.getFields().size(), response.getHeaders().size());
         int index = 0;
         int maxlength = 0;
-        for (String s: response.getHeaders()) {
+        for (final String s: response.getHeaders()) {
             if (s != null) {
                 if (s.length() > maxlength)
                     maxlength = s.length();
                 if (s.startsWith("${")) {
-                    String pqon = s.substring(2, s.length()-1);
+                    final String pqon = s.substring(2, s.length() - 1);
                     GridConfigRequestHandler.UNTRANSLATED_HEADERS.putIfAbsent(pqon, "x");
-                    int i = pqon.lastIndexOf('.');
+                    final int i = pqon.lastIndexOf('.');
                     if (i < 0)
                         GridConfigRequestHandler.UNTRANSLATED_DEFAULTS.putIfAbsent(pqon, "x");
                     else
-                        GridConfigRequestHandler.UNTRANSLATED_DEFAULTS.putIfAbsent(pqon.substring(i+1), "x");
+                        GridConfigRequestHandler.UNTRANSLATED_DEFAULTS.putIfAbsent(pqon.substring(i + 1), "x");
                 }
                 if (s.length() > 160) {
                     LOGGER.error("Translation for header {}: {} is too long: {} characters: {}",

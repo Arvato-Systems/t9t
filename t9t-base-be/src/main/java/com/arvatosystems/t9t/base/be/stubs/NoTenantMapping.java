@@ -22,18 +22,18 @@ public class NoTenantMapping implements ITenantMapping {
     final Long sharedTenantRef;
     final String sharedTenantId;
 
-    public NoTenantMapping(Long sharedTenantRef, String sharedTenantId) {
+    public NoTenantMapping(final Long sharedTenantRef, final String sharedTenantId) {
         this.sharedTenantRef = sharedTenantRef;
         this.sharedTenantId = sharedTenantId;
     }
 
     @Override
-    public Long getSharedTenantRef(int rtti) {
+    public Long getSharedTenantRef(final int rtti) {
         return sharedTenantRef;
     }
 
     @Override
-    public String getSharedTenantId(int rtti) {
+    public String getSharedTenantId(final int rtti) {
         return sharedTenantId;
     }
 }

@@ -33,7 +33,7 @@ public class TenantLogoCrudRequestHandler extends AbstractCrudModuleCfg42Request
     private final ITenantLogoEntityResolver resolver = Jdp.getRequired(ITenantLogoEntityResolver.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, TenantLogoCrudRequest params) {
+    public ServiceResponse execute(final RequestContext ctx, final TenantLogoCrudRequest params) {
         return execute(ctx, mapper, resolver, params);
     }
 }

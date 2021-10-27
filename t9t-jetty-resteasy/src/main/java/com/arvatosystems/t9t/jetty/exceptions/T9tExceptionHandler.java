@@ -31,8 +31,6 @@ import com.arvatosystems.t9t.xml.GenericResult;
 
 /**
  * Handles T9tExceptions and transforms them into a GenericResult.
- *
- * @author luec034
  */
 @Provider
 public class T9tExceptionHandler implements ExceptionMapper<T9tException> {
@@ -46,9 +44,10 @@ public class T9tExceptionHandler implements ExceptionMapper<T9tException> {
     private HttpHeaders httpHeaders;
 
     @Override
-    public Response toResponse(T9tException exception) {
-        LOGGER.error("There has been an error calling {} with method {}. Exception {}", authContext.getUri().getAbsolutePath(), authContext.getHttpMethod(), exception);
-        GenericResult genericResult = new GenericResult();
+    public Response toResponse(final T9tException exception) {
+        LOGGER.error("There has been an error calling {} with method {}. Exception {}",
+          authContext.getUri().getAbsolutePath(), authContext.getHttpMethod(), exception);
+        final GenericResult genericResult = new GenericResult();
         genericResult.setErrorDetails(exception.getMessage());
         genericResult.setErrorMessage(exception.getStandardDescription());
         genericResult.setReturnCode(exception.getErrorCode());

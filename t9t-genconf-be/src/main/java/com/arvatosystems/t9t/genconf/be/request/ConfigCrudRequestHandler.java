@@ -31,7 +31,7 @@ public class ConfigCrudRequestHandler extends AbstractCrudSurrogateKeyBERequestH
     // @Inject
     protected final IConfigResolver resolver = Jdp.getRequired(IConfigResolver.class);
 
-    private void resetComponentValues(ConfigDTO data) {
+    private void resetComponentValues(final ConfigDTO data) {
         if (data == null || data.getConfigTypeEnum() == null) {
             return;
         }
@@ -71,7 +71,7 @@ public class ConfigCrudRequestHandler extends AbstractCrudSurrogateKeyBERequestH
     }
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, ConfigCrudRequest request) throws Exception {
+    public ServiceResponse execute(final RequestContext ctx, final ConfigCrudRequest request) throws Exception {
         resetComponentValues(request.getData());  // normalize data fields, if too many have been provided
         return execute(ctx, request, resolver);
     }

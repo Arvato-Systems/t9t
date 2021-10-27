@@ -34,37 +34,37 @@ import com.arvatosystems.t9t.io.request.SinkSearchRequest;
 public final class T9tIOModels implements IViewModelContainer {
 
     private static final CrudViewModel<DataSinkDTO, FullTrackingWithVersion> DATA_SINK_VIEW_MODEL
-      = new CrudViewModel<DataSinkDTO, FullTrackingWithVersion>(
+      = new CrudViewModel<>(
         DataSinkDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         DataSinkSearchRequest.BClass.INSTANCE,
         DataSinkCrudRequest.BClass.INSTANCE);
     private static final CrudViewModel<CsvConfigurationDTO, FullTrackingWithVersion> CSV_CONFIGURATION_VIEW_MODEL
-      = new CrudViewModel<CsvConfigurationDTO, FullTrackingWithVersion>(
+      = new CrudViewModel<>(
         CsvConfigurationDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         CsvConfigurationSearchRequest.BClass.INSTANCE,
         CsvConfigurationCrudRequest.BClass.INSTANCE);
     private static final CrudViewModel<SinkDTO, FullTrackingWithVersion> SINK_VIEW_MODEL
-      = new CrudViewModel<SinkDTO, FullTrackingWithVersion>(
+      = new CrudViewModel<>(
         SinkDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         SinkSearchRequest.BClass.INSTANCE,
         SinkCrudRequest.BClass.INSTANCE);
     private static final CrudViewModel<AsyncQueueDTO, FullTrackingWithVersion> ASYNC_QUEUE_VIEW_MODEL
-      = new CrudViewModel<AsyncQueueDTO, FullTrackingWithVersion>(
+      = new CrudViewModel<>(
         AsyncQueueDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         AsyncQueueSearchRequest.BClass.INSTANCE,
         AsyncQueueCrudRequest.BClass.INSTANCE);
     private static final CrudViewModel<AsyncChannelDTO, FullTrackingWithVersion> ASYNC_CHANNEL_VIEW_MODEL
-      = new CrudViewModel<AsyncChannelDTO, FullTrackingWithVersion>(
+      = new CrudViewModel<>(
         AsyncChannelDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         AsyncChannelSearchRequest.BClass.INSTANCE,
         AsyncChannelCrudRequest.BClass.INSTANCE);
     private static final CrudViewModel<AsyncMessageDTO, WriteTracking> ASYNC_MESSAGE_VIEW_MODEL
-      = new CrudViewModel<AsyncMessageDTO, WriteTracking>(
+      = new CrudViewModel<>(
         AsyncMessageDTO.BClass.INSTANCE,
         WriteTracking.BClass.INSTANCE,
         AsyncMessageSearchRequest.BClass.INSTANCE,

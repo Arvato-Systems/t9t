@@ -31,9 +31,9 @@ public class BatchRequestHandler extends AbstractRequestHandler<BatchRequest> {
     protected final IExecutor messaging = Jdp.getRequired(IExecutor.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, BatchRequest request) {
-        for (RequestParameters r : request.getCommands()) {
-            ServiceResponse resp = messaging.executeSynchronous(ctx, r);
+    public ServiceResponse execute(final RequestContext ctx, final BatchRequest request) {
+        for (final RequestParameters r : request.getCommands()) {
+            final ServiceResponse resp = messaging.executeSynchronous(ctx, r);
             switch (resp.getReturnCode() / ApplicationException.CLASSIFICATION_FACTOR) {
             case ApplicationException.SUCCESS:
                 break; // continue processing

@@ -45,9 +45,9 @@ public class GeneralExceptionHandler implements ExceptionMapper<Exception> {
     }
 
     @Override
-    public Response toResponse(Exception e) {
+    public Response toResponse(final Exception e) {
         LOGGER.error("Exception occurred in application calling {}: {}", authContext.getUri().getAbsolutePath(), e.getMessage(), e);
-        GenericResult genericResult = new GenericResult();
+        final GenericResult genericResult = new GenericResult();
         genericResult.setErrorDetails(String.format("   %s -> %s", authContext.getUri().getPath(), (e.getMessage() != null ? e.getMessage() : e.toString())));
         genericResult.setErrorMessage(T9tException.codeToString(T9tException.GENERAL_EXCEPTION));
         genericResult.setReturnCode(T9tException.GENERAL_EXCEPTION);

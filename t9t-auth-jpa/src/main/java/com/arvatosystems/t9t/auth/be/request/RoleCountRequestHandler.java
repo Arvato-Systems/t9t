@@ -28,7 +28,7 @@ public class RoleCountRequestHandler extends AbstractReadOnlyRequestHandler<Role
     private final IRoleEntityResolver resolver = Jdp.getRequired(IRoleEntityResolver.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, RoleCountRequest rq) {
+    public ServiceResponse execute(final RequestContext ctx, final RoleCountRequest rq) {
         return resolver.count(rq);
     }
 }

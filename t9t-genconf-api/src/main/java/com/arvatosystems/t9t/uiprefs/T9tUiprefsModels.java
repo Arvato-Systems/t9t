@@ -25,7 +25,7 @@ import com.arvatosystems.t9t.uiprefsv3.request.LeanGridConfigSearchRequest;
 public final class T9tUiprefsModels implements IViewModelContainer {
 
     private static final CrudViewModel<LeanGridConfigDTO, FullTrackingWithVersion> LEAN_GRID_CONFIG_VIEW_MODEL
-      = new CrudViewModel<LeanGridConfigDTO, FullTrackingWithVersion>(
+      = new CrudViewModel<>(
         LeanGridConfigDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         LeanGridConfigSearchRequest.BClass.INSTANCE,

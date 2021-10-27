@@ -53,61 +53,61 @@ import de.jpaw.bonaparte.pojos.api.NoTracking;
 public final class T9tCoreModels implements IViewModelContainer {
 
     private static final CrudViewModel<StatisticsDTO, WriteTracking> STATISTICS_VIEW_MODEL
-      = new CrudViewModel<StatisticsDTO, WriteTracking>(
+      = new CrudViewModel<>(
         StatisticsDTO.BClass.INSTANCE,
         WriteTracking.BClass.INSTANCE,
         StatisticsSearchRequest.BClass.INSTANCE,
         StatisticsCrudRequest.BClass.INSTANCE);
     private static final CrudViewModel<CannedRequestDTO, FullTrackingWithVersion> CANNED_REQUEST_VIEW_MODEL
-      = new CrudViewModel<CannedRequestDTO, FullTrackingWithVersion>(
+      = new CrudViewModel<>(
         CannedRequestDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         CannedRequestSearchRequest.BClass.INSTANCE,
         CannedRequestCrudRequest.BClass.INSTANCE);
     private static final CrudViewModel<SliceTrackingDTO, FullTrackingWithVersion> SLICE_TRACKING_VIEW_MODEL
-      = new CrudViewModel<SliceTrackingDTO, FullTrackingWithVersion>(
+      = new CrudViewModel<>(
         SliceTrackingDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         SliceTrackingSearchRequest.BClass.INSTANCE,
         SliceTrackingCrudRequest.BClass.INSTANCE);
     private static final CrudViewModel<SubscriberConfigDTO, FullTrackingWithVersion> SUBSCRIBER_CONFIG_VIEW_MODEL
-      = new CrudViewModel<SubscriberConfigDTO, FullTrackingWithVersion>(
+      = new CrudViewModel<>(
         SubscriberConfigDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         SubscriberConfigSearchRequest.BClass.INSTANCE,
         SubscriberConfigCrudRequest.BClass.INSTANCE);
     private static final CrudViewModel<ListenerConfigDTO, FullTrackingWithVersion> LISTENER_CONFIG_VIEW_MODEL
-      = new CrudViewModel<ListenerConfigDTO, FullTrackingWithVersion>(
+      = new CrudViewModel<>(
         ListenerConfigDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         ListenerConfigSearchRequest.BClass.INSTANCE,
         ListenerConfigCrudRequest.BClass.INSTANCE);
     private static final CrudViewModel<BucketCounterDTO, FullTrackingWithVersion> BUCKET_COUNTER_VIEW_MODEL
-      = new CrudViewModel<BucketCounterDTO, FullTrackingWithVersion>(
+      = new CrudViewModel<>(
         BucketCounterDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         BucketCounterSearchRequest.BClass.INSTANCE,
         BucketCounterCrudRequest.BClass.INSTANCE);
     private static final CrudViewModel<BucketEntryDTO, BucketTracking> BUCKET_ENTRY_VIEW_MODEL
-      = new CrudViewModel<BucketEntryDTO, BucketTracking>(
+      = new CrudViewModel<>(
         BucketEntryDTO.BClass.INSTANCE,
         BucketTracking.BClass.INSTANCE,
         BucketEntrySearchRequest.BClass.INSTANCE,
         BucketEntryCrudRequest.BClass.INSTANCE);
     private static final CrudViewModel<ProcessStatusDTO, NoTracking> PROCESS_STATUS_VIEW_MODEL
-      = new CrudViewModel<ProcessStatusDTO, NoTracking>(
+      = new CrudViewModel<>(
         ProcessStatusDTO.BClass.INSTANCE,
         NoTracking.BClass.INSTANCE,
         ProcessStatusSearchRequest.BClass.INSTANCE,
         null);
     private static final CrudViewModel<ComponentInfoDTO, NoTracking> COMPONENT_INFO_VIEW_MODEL
-      = new CrudViewModel<ComponentInfoDTO, NoTracking>(
+      = new CrudViewModel<>(
         ComponentInfoDTO.BClass.INSTANCE,
         NoTracking.BClass.INSTANCE,
         ComponentInfoSearchRequest.BClass.INSTANCE,
         null);
     private static final CrudViewModel<LoadedPluginDTO, FullTrackingWithVersion> PLUGINS_VIEW_MODEL
-      = new CrudViewModel<LoadedPluginDTO, FullTrackingWithVersion>(
+      = new CrudViewModel<>(
         LoadedPluginDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         LoadedPluginSearchRequest.BClass.INSTANCE,

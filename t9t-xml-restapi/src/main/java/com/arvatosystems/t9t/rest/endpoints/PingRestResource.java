@@ -60,7 +60,10 @@ public class PingRestResource implements IT9tRestEndpoint {
         summary = "Health check (quick)",
         description = "A successful GET confirms that the server is listening on the specified port.",
         responses = {
-            @ApiResponse(description = "Request passed.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = GenericResult.class))),
+            @ApiResponse(
+              description = "Request passed.",
+              content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = GenericResult.class))),
             @ApiResponse(responseCode = "400", description = "Bad request.")}
     )
     @GET
@@ -108,7 +111,7 @@ public class PingRestResource implements IT9tRestEndpoint {
     @POST
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public void testPingPostAsync(@Context final HttpHeaders httpHeaders, @Suspended final AsyncResponse resp, Ping ping) {
+    public void testPingPostAsync(@Context final HttpHeaders httpHeaders, @Suspended final AsyncResponse resp, final Ping ping) {
         restProcessor.performAsyncBackendRequest(httpHeaders, resp, new PingRequest(), "POST /ping");
     }
 }

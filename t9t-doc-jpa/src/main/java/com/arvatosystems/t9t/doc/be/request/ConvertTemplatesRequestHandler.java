@@ -58,24 +58,24 @@ public class ConvertTemplatesRequestHandler extends AbstractRequestHandler<Conve
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final ConvertTemplatesRequest request) throws Exception {
-        final LongFilter TENANT_FILTER = new LongFilter(T9tConstants.TENANT_REF_FIELD_NAME);
-        final SearchCriteria TENANT_CRITERIA = new DummySearchCriteria();
-        TENANT_FILTER.setEqualsValue(ctx.tenantRef);
-        TENANT_FILTER.freeze();
-        TENANT_CRITERIA.setSearchFilter(TENANT_FILTER);
-        TENANT_CRITERIA.freeze();
+        final LongFilter tenantFilter = new LongFilter(T9tConstants.TENANT_REF_FIELD_NAME);
+        final SearchCriteria tenantCriteria = new DummySearchCriteria();
+        tenantFilter.setEqualsValue(ctx.tenantRef);
+        tenantFilter.freeze();
+        tenantCriteria.setSearchFilter(tenantFilter);
+        tenantCriteria.freeze();
 
         String offendingDocumentId = null;
         final SearchCriteria criteriaToApply;
         if (request.getDocumentId() == null) {
             // a filter for tenantRef is always required, because we could get the fallback templates stored under @ tenant in the read operation
             // and writing these back would fail.
-            criteriaToApply = TENANT_CRITERIA;
+            criteriaToApply = tenantCriteria;
         } else {
             final UnicodeFilter templateFilter = new UnicodeFilter("documentId");
             templateFilter.setEqualsValue(request.getDocumentId());
             criteriaToApply = new DummySearchCriteria();
-            criteriaToApply.setSearchFilter(SearchFilters.and(TENANT_FILTER, templateFilter));
+            criteriaToApply.setSearchFilter(SearchFilters.and(tenantFilter, templateFilter));
             criteriaToApply.freeze(); // freeze to be secure, as it's used 3 times
         }
 
@@ -86,7 +86,7 @@ public class ConvertTemplatesRequestHandler extends AbstractRequestHandler<Conve
         // first, convert all templates
         final EntityManager em = templateResolver.getEntityManager();
         final List<DocTemplateEntity> templates = templateResolver.search(criteriaToApply);
-        for (DocTemplateEntity t: templates) {
+        for (final DocTemplateEntity t: templates) {
             final String newTemplate = conversionToApply.convertTemplate(t.getDocumentId(), t.getTemplate());
             if (newTemplate.length() >= DocTemplateDTO.meta$$template.getLength()) {
                 LOGGER.error("Conversion of template {} would exceed the maximum allowed size", t.getDocumentId());
@@ -105,7 +105,7 @@ public class ConvertTemplatesRequestHandler extends AbstractRequestHandler<Conve
 
         // run through all doc configs, for possible inline subjects
         final List<DocConfigEntity> configs = configResolver.search(criteriaToApply);
-        for (DocConfigEntity t: configs) {
+        for (final DocConfigEntity t: configs) {
             final DocEmailReceiverDTO emailCfg = t.getEmailSettings();
             if (emailCfg != null && emailCfg.getSubjectType() == TemplateType.INLINE) {
                 final String newTemplate = conversionToApply.convertTemplate(emailCfg.getEmailSubject(), t.getDocumentId());
@@ -128,7 +128,7 @@ public class ConvertTemplatesRequestHandler extends AbstractRequestHandler<Conve
 
         // run through all email configs, for possible inline subjects
         final List<DocEmailCfgEntity> emailConfigs = emailCfgResolver.search(criteriaToApply);
-        for (DocEmailCfgEntity t: emailConfigs) {
+        for (final DocEmailCfgEntity t: emailConfigs) {
             final DocEmailReceiverDTO emailCfg = t.getEmailSettings();
             if (emailCfg != null && emailCfg.getSubjectType() == TemplateType.INLINE) {
                 final String newTemplate = conversionToApply.convertTemplate(emailCfg.getEmailSubject(), t.getDocumentId());

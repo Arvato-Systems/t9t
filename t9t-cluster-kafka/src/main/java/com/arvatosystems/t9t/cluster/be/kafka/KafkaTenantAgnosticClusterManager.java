@@ -34,17 +34,17 @@ public class KafkaTenantAgnosticClusterManager implements IClusterEnvironment {
     }
 
     @Override
-    public Collection<Integer> getListOfShards(Long tenantRef) {
-        return KafkaClusterManagerInitializer.MY_INDEXES;
+    public Collection<Integer> getListOfShards(final Long tenantRef) {
+        return KafkaClusterManagerInitializer.myIndexes;
     }
 
     @Override
-    public boolean processOnThisNode(Long tenantRef, int hash) {
+    public boolean processOnThisNode(final Long tenantRef, final int hash) {
         if (KafkaClusterManagerInitializer.totalNumberOfPartitons <= 0) {
             return true;  // no kafka available?
         }
         final Integer partition = Integer.valueOf((hash & 0x7fffffff) % KafkaClusterManagerInitializer.totalNumberOfPartitons);
-        return KafkaClusterManagerInitializer.MY_INDEXES.contains(partition);
+        return KafkaClusterManagerInitializer.myIndexes.contains(partition);
     }
 
     @Override

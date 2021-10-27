@@ -69,10 +69,12 @@ public class PerformScheduledJob implements Job {
     private final IClusterEnvironment clusterEnvironment = Jdp.getRequired(IClusterEnvironment.class);
 
     /**
-     * In this method the reference to the scheduler setup entry is extracted from the job data map part of the job detail object accessed through the passed context object.
+     * In this method the reference to the scheduler setup entry is extracted from the job data map part
+     * of the job detail object accessed through the passed context object.
      * The information is extracted using the enumeration values of {@link JobDataMap}.
-     * @param context The context object passed to the quartz scheduler.
-     * @throws JobExecutionException If the job cannot be executed by Quartz properly, an exception is thrown. The {@link JobExecutionException} always contains the real cause which is of type {@link T9tException}
+     * @param  context               The context object passed to the quartz scheduler.
+     * @throws JobExecutionException If the job cannot be executed by Quartz properly, an exception is thrown.
+     *         The {@link JobExecutionException} always contains the real cause which is of type {@link T9tException}.
      */
     @Override
     public final void execute(final JobExecutionContext context) throws JobExecutionException {
@@ -85,7 +87,7 @@ public class PerformScheduledJob implements Job {
                     return; // not suitable for this node
                 }
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             // some of the variables are missing - old scheduler setup for single node environment
         }
 
@@ -94,7 +96,8 @@ public class PerformScheduledJob implements Job {
         final String serializedRequest = dataMap.getString(QuartzSchedulerService.DM_REQUEST);
         final long setupRef            = dataMap.getLong  (QuartzSchedulerService.DM_SETUP_REF);
 
-        final RequestParameters requestParameters = StringBuilderParser.<RequestParameters>unmarshal(serializedRequest, ServiceRequest.meta$$requestParameters, RequestParameters.class);
+        final RequestParameters requestParameters
+          = StringBuilderParser.<RequestParameters>unmarshal(serializedRequest, ServiceRequest.meta$$requestParameters, RequestParameters.class);
         final ServiceRequestHeader header = new ServiceRequestHeader();
         header.setLanguageCode(language);
         header.setInvokingProcessRef(Long.valueOf(setupRef));
@@ -123,14 +126,16 @@ public class PerformScheduledJob implements Job {
         } else {
             try {
                 // check for previous instance
-                // we are outside of any RequestContext, and would need to invoke separate request handlers to perform any actions - therefore do first tests directly
+                // we are outside of any RequestContext, and would need to invoke separate request handlers to perform any actions
+                // therefore do first tests directly
                 final boolean mayStartNewInstance = this.checkPriorInstances(dataMap, Long.valueOf(setupRef), header, auth);
                 if (mayStartNewInstance) {
                     final ServiceResponse resp = this.inProcessExecutor.execute(srq);
                     // perform a check if the event was successful
                     if (!ApplicationException.isOk(resp.getReturnCode())) {
                         LOGGER.error("Quartz task NOT completed successfully: {} at {} terminated with code {}: {}",
-                            requestParameters.ret$PQON(), srq.getRequestHeader().getPlannedRunDate(), Integer.valueOf(resp.getReturnCode()), resp.getErrorDetails());
+                            requestParameters.ret$PQON(), srq.getRequestHeader().getPlannedRunDate(),
+                            Integer.valueOf(resp.getReturnCode()), resp.getErrorDetails());
                     }
                 } else {
                     LOGGER.info("Skipping scheduled start of request {} for {}", requestParameters.ret$PQON(), srq.getRequestHeader().getPlannedRunDate());
