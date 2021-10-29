@@ -41,7 +41,7 @@ public class Togglefilter28 extends Tabbox {
     @Wire("#resetButton2")  protected Button28 resetButton2;
     @Wire("#solrText")      protected Textbox  solrText;
 
-    Filter28 stdFilters;
+    private Filter28 stdFilters;
 
     public Togglefilter28() {
         super();

@@ -25,7 +25,9 @@ public interface IItemConverter<T> {
 //    }
 
     /** Return the alignment of this converter. Used for numeric fields. */
-    public default boolean isRightAligned() { return false; }
+    default boolean isRightAligned() {
+        return false;
+    }
 
 
     /**
@@ -47,7 +49,7 @@ public interface IItemConverter<T> {
      * @param fieldName the property name of the object
      * @return your formatted label as String
      */
-    public String getFormattedLabel(T value, BonaPortable wholeDataObject, String fieldName, FieldDefinition d);
+    String getFormattedLabel(T value, BonaPortable wholeDataObject, String fieldName, FieldDefinition d);
 
     /**
      * This method is responsible to give back the correct object that the listbox can deal with it in a proper way like sorting, etc.<br>
@@ -68,6 +70,6 @@ public interface IItemConverter<T> {
      * @param fieldName the property name of the object
      * @return your formatted label as String
      */
-    public Object getConvertedValue(T value, BonaPortable wholeDataObject, String fieldName, FieldDefinition d);
+    Object getConvertedValue(T value, BonaPortable wholeDataObject, String fieldName, FieldDefinition d);
 
 }

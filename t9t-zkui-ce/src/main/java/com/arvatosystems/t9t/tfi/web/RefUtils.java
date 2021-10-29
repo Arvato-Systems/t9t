@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.tfi.web;
 
-public class RefUtils {
+public final class RefUtils {
     /**
      * Factor to multiply the value obtained from sequences with.
      */
@@ -30,6 +30,8 @@ public class RefUtils {
     public static final int OFFSET_UNSCALED_T9T           = 5000;
     public static final int OFFSET_UNSCALED_APPLICATION   = 6000;
     public static final int OFFSET_UNSCALED_CUSTOMIZATION = 7000;
+
+    private RefUtils() { }
 
     /**
      * Retrieves the run time type information from a generated key.

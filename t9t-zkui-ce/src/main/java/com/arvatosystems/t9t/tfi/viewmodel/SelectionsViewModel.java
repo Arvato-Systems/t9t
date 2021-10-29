@@ -49,7 +49,7 @@ public class SelectionsViewModel {
     private String title;
 
     @Wire("#div")
-    Div div;
+    private Div div;
 
     @AfterCompose
     public void afterCompose(@ContextParam(ContextType.VIEW) final Component view,

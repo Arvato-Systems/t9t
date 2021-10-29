@@ -198,7 +198,7 @@ public class CkEditor28 extends Row {
                 ByteArray byteArray = new ByteArray(mediaDataByteArray);
                 md.setRawData(byteArray);
             } else {
-                md.setRawData(new ByteArray(new byte [0]));
+                md.setRawData(new ByteArray(new byte[0]));
             }
         }
 
@@ -355,7 +355,7 @@ public class CkEditor28 extends Row {
         }
     }
 
-    private Component createGroupBoxForMediaData(Component mediaTypeComponent, Component textBox, Component ckEditor, Component dropuploadHbox) {
+    private Component createGroupBoxForMediaData(Component mediaTypeComponent, Component textBox, Component xckEditor, Component xdropuploadHbox) {
 
         Groupbox groupBox = new Groupbox();
         groupBox.setHflex("1");
@@ -365,8 +365,8 @@ public class CkEditor28 extends Row {
 
         mediaTypeComponent.setParent(vbox);
         textBox.setParent(vbox);
-        ckEditor.setParent(vbox);
-        dropuploadHbox.setParent(vbox);
+        xckEditor.setParent(vbox);
+        xdropuploadHbox.setParent(vbox);
 
         vbox.setParent(groupBox);
 

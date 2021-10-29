@@ -22,8 +22,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Component;
 
-public class ComponentTools28 {
+public final class ComponentTools28 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ComponentTools28.class);
+
+    private ComponentTools28() { }
 
     /** Move all childs of a given component which are after a marker component as child
      * to a new parent. Returns the first such child.
@@ -58,8 +60,9 @@ public class ComponentTools28 {
             return null;
         if (newParent != null) {
             // actual move, not just compute...
-            for (Component c : componentsToBeMoved)
+            for (Component c : componentsToBeMoved) {
                 c.setParent(newParent);
+            }
         }
         return componentsToBeMoved;
     }

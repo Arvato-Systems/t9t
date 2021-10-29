@@ -856,7 +856,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-        <!--        <module>global-angular-dm</module> FIXME currently does not work with license and site goals -->
+                <module>global-angular-dm</module>
                 <module>global-dm</module>
                 <module>global-zk-dm</module>
                 <module>global-sql-assembly</module>
@@ -1104,8 +1104,9 @@
                         <artifactId>maven-checkstyle-plugin</artifactId>
                         <configuration>
                             <configLocation>./checkstyle.xml</configLocation>
+                            <sourceDirectories>src/main/java,src/main/bon,src/main/xtend,src/main/sql,src/main/resources</sourceDirectories>
                             <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                            <includes>**\/*.java</includes>
+                            <includes>**\/*.java,**\/*.xtend,**\/*.bon,**\/*.bddl,**\/*.sql,**\/*.xml,**\/*.properties</includes>
                             <excludes>**\/generated\/,**\/xtend-gen\/,**\/target\/,**\/bin\/</excludes>
                         </configuration>
                     </plugin>
@@ -1133,7 +1134,7 @@
 
                 <module>t9t-base-be</module>
                 <module>t9t-base-jdbc</module>
-                <!-- <module>t9t-base-jpa</module>   waiting for TBE-612 -->
+                <module>t9t-base-jpa</module>
                 <module>t9t-base-jpa-rl</module>
                 <module>t9t-base-jpa-jta</module>
                 <module>t9t-base-jpa-st</module>
@@ -1267,7 +1268,7 @@
                 <module>t9t-all</module>
                 <module>t9t-all-vertx</module>
 
-             <!--   <module>t9t-zkui-ce</module>   waits for TBE-613 -->
+                <module>t9t-zkui-ce</module>
                 <module>t9t-zkui-ee</module>
             </modules>
         </profile>

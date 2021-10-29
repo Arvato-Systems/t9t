@@ -24,8 +24,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.util.Locales;
 
-public class ComponentUtil {
+public final class ComponentUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(ComponentUtil.class);
+
+    private ComponentUtil() { }
 
     // will look like:
     // data.addressLines[0]  --> data.addressLines01

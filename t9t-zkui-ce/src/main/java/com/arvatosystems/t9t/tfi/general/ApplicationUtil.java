@@ -39,18 +39,20 @@ import com.arvatosystems.t9t.tfi.web.ApplicationSession;
 import de.jpaw.dp.Jdp;
 
 
-public class ApplicationUtil {
+public final class ApplicationUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationUtil.class);
     private static String version = null;
     private static Properties configuration = null;
     private static final int THIRTY_DAYS                           = 2592000;
 
-    public static final String getVersion() {
+    private ApplicationUtil() { }
+
+    public static String getVersion() {
         return version;
     }
 
-    public static final String getVersionWithoutSnapshot() {
+    public static String getVersionWithoutSnapshot() {
         if (version == null) {
             return version;
         } else {
@@ -58,15 +60,15 @@ public class ApplicationUtil {
         }
     }
 
-    public static final void setVersion(String version) {
+    public static void setVersion(String version) {
         ApplicationUtil.version = version;
     }
 
-    public static final Properties getConfiguration() {
+    public static Properties getConfiguration() {
         return configuration;
     }
 
-    public static final void setConfiguration(Properties configuration) {
+    public static void setConfiguration(Properties configuration) {
         ApplicationUtil.configuration = configuration;
     }
 
@@ -75,11 +77,8 @@ public class ApplicationUtil {
         boolean isCtrlKey = keyEvent.isCtrlKey();
         boolean isAltKey = keyEvent.isAltKey();
         boolean isShiftlKey = keyEvent.isShiftKey();
-        String keyCodeString = ""+(isCtrlKey ? Constants.KeyStrokes.CTRL_KEY : "")
-                +(isAltKey ? Constants.KeyStrokes.ALT_KEY : "")
-                +(isShiftlKey ? Constants.KeyStrokes.SHIFT_KEY : "")
-                + "+" + keyCodeChar;
-
+        String keyCodeString = "" + (isCtrlKey ? Constants.KeyStrokes.CTRL_KEY : "") + (isAltKey ? Constants.KeyStrokes.ALT_KEY : "")
+                + (isShiftlKey ? Constants.KeyStrokes.SHIFT_KEY : "") + "+" + keyCodeChar;
 
         LOGGER.trace("keyCodeString: " + keyCodeString);
         LOGGER.trace("ctekKeyCode: " + keyEvent);
@@ -151,7 +150,7 @@ public class ApplicationUtil {
      * @param naviLink
      */
     public static void navBackToScreen(String naviLink) {
-        navBackToScreen(naviLink,new HashMap<String, Object>());
+        navBackToScreen(naviLink, new HashMap<String, Object>());
         //navCreateLinkComponents(naviLink, CachingType.GET_CACHED, new HashMap<String, Object>());
     }
 
@@ -172,7 +171,7 @@ public class ApplicationUtil {
      * @param naviLink
      * @param onCklickRefreshComoponent
      */
-    public static void navBackToScreen(String naviLink,Component onCklickRefreshComoponent) {
+    public static void navBackToScreen(String naviLink, Component onCklickRefreshComoponent) {
         navBackToScreen(naviLink, new HashMap<String, Object>(), onCklickRefreshComoponent);
     }
 
@@ -235,7 +234,7 @@ public class ApplicationUtil {
     }
 
     public static String getCookie(String name) {
-        final Cookie [] cookies = ((HttpServletRequest)Executions.getCurrent().getNativeRequest()).getCookies();
+        final Cookie[] cookies = ((HttpServletRequest)Executions.getCurrent().getNativeRequest()).getCookies();
         if (null != cookies) {
             for (Cookie cooky:cookies) {
                 if (name.equals(cooky.getName())) {
@@ -248,7 +247,7 @@ public class ApplicationUtil {
 
     public static void setCookie(String name, String value) {
         HttpServletResponse resp = (HttpServletResponse)Executions.getCurrent().getNativeResponse();
-        Cookie cookie=new Cookie(name, value);
+        Cookie cookie = new Cookie(name, value);
         cookie.setMaxAge(THIRTY_DAYS);
         cookie.setSecure(true);
         resp.addCookie(cookie);

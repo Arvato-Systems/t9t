@@ -34,6 +34,7 @@ import com.arvatosystems.t9t.jetty.exceptions.RestExceptionHandler;
 import com.arvatosystems.t9t.jetty.exceptions.T9tExceptionHandler;
 import com.arvatosystems.t9t.jetty.impl.RestUtils;
 import com.arvatosystems.t9t.jetty.oas.DateTimeConverters;
+import com.arvatosystems.t9t.jetty.oas.JsonSchemaOpenApiUtil;
 import com.arvatosystems.t9t.jetty.rest.endpoints.StaticResourcesResource;
 import com.arvatosystems.t9t.jetty.xml.XmlMediaTypeDecoder;
 import com.arvatosystems.t9t.jetty.xml.XmlMediaTypeEncoder;
@@ -129,6 +130,8 @@ public class ApplicationConfig extends Application {
           .resourcePackages(allPackages);
         LOGGER.info("Adding custom swagger converter for Java 8 LocalDate/Time types will be displayed as string, Instant as integer in swaggerUI");
         ModelConverters.getInstance().addConverter(new DateTimeConverters());
+        LOGGER.info("Adding custom swagger converter for display z field as Json schema.");
+        ModelConverters.getInstance().addConverter(JsonSchemaOpenApiUtil.getJsonModelConverter());
         try {
             new JaxrsOpenApiContextBuilder()
               .servletConfig(servletConfig)
@@ -157,6 +160,7 @@ public class ApplicationConfig extends Application {
         variable.setDefault(basePath);
         variables.addServerVariable(basePathKey, variable);
         oas.addServersItem(new Server().url("{" + basePathKey + "}").description("Base Path").variables(variables));
+        JsonSchemaOpenApiUtil.addJsonSchema(oas);
         return oas;
     }
 

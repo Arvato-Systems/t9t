@@ -29,8 +29,10 @@ import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 
-public class GridIdTools {
+public final class GridIdTools {
     private static final Logger LOGGER = LoggerFactory.getLogger(GridIdTools.class);
+
+    private GridIdTools() { }
 
     public static <T extends Component> T getAnchestorOfType(Component p, Class<T> cls) {
         do {

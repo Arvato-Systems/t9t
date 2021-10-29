@@ -29,11 +29,11 @@ import de.jpaw.dp.Alternative;
 /** Base implementation of the IEntityResolver interface, suitable for tables with a natural key. */
 @Alternative
 public abstract class AbstractResolverCompositeKey42<
-    REF extends CompositeKeyRef,  //REQKEY
-    KEY extends Serializable,   // can be removed! //REQKEY
-    TRACKING extends TrackingBase,
-    ENTITY extends BonaPersistableKey<KEY> & BonaPersistableTracking<TRACKING>
-    > extends AbstractResolverAnyKey42<KEY, TRACKING, ENTITY> implements IResolverCompositeKey42<REF, KEY, TRACKING, ENTITY> {
+  REF extends CompositeKeyRef,  //REQKEY
+  KEY extends Serializable,   // can be removed! //REQKEY
+  TRACKING extends TrackingBase,
+  ENTITY extends BonaPersistableKey<KEY> & BonaPersistableTracking<TRACKING>
+> extends AbstractResolverAnyKey42<KEY, TRACKING, ENTITY> implements IResolverCompositeKey42<REF, KEY, TRACKING, ENTITY> {
 
     @Override
     public final boolean hasArtificialPrimaryKey() {
@@ -65,6 +65,7 @@ public abstract class AbstractResolverCompositeKey42<
         final REF potentialKey = resolveNestedRefs(arg);
         if (getKeyClass().isAssignableFrom(potentialKey.getClass()))
             return (KEY)potentialKey;
-        throw new T9tException(T9tException.INVALID_REQUEST_PARAMETER_TYPE, potentialKey.getClass().getCanonicalName() + " is not a key for " + getEntityClass().getCanonicalName());
+        throw new T9tException(T9tException.INVALID_REQUEST_PARAMETER_TYPE,
+          potentialKey.getClass().getCanonicalName() + " is not a key for " + getEntityClass().getCanonicalName());
     }
 }

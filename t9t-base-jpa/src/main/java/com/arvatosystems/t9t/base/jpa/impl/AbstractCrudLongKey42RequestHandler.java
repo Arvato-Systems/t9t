@@ -32,10 +32,10 @@ import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.util.ApplicationException;
 
 public abstract class AbstractCrudLongKey42RequestHandler<
-    DTO extends BonaPortable,
-    TRACKING extends TrackingBase,
-    REQUEST extends CrudLongKeyRequest<DTO, TRACKING>,
-    ENTITY extends BonaPersistableKey<Long> & BonaPersistableTracking<TRACKING>
+  DTO extends BonaPortable,
+  TRACKING extends TrackingBase,
+  REQUEST extends CrudLongKeyRequest<DTO, TRACKING>,
+  ENTITY extends BonaPersistableKey<Long> & BonaPersistableTracking<TRACKING>
 > extends AbstractCrudAnyKey42RequestHandler<Long, DTO, TRACKING, REQUEST, ENTITY> {
 
     // execute function of the interface description, but additional parameters

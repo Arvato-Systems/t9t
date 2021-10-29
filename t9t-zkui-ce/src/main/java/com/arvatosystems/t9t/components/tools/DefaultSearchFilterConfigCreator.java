@@ -88,14 +88,14 @@ public class DefaultSearchFilterConfigCreator implements ISearchFilterConfigCrea
         createListbox(parent, rows);
     }
 
-    private void createListbox(Div parent, List<SearchFilterRowVM> rows) {
+    private void createListbox(Div parent, List<SearchFilterRowVM> xrows) {
         Listbox listbox = new Listbox();
         listbox.setVflex("1");
         listbox.setParent(parent);
         Listhead head = new Listhead();
         head.setParent(listbox);
         createHeader(head);
-        listbox.setModel(new SimpleListModelExt<SearchFilterRowVM>(rows));
+        listbox.setModel(new SimpleListModelExt<SearchFilterRowVM>(xrows));
         listbox.setItemRenderer(new ListitemRenderer<SearchFilterRowVM>() {
             @Override
             public void render(Listitem item, SearchFilterRowVM data, int index) throws Exception {

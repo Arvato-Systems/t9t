@@ -35,7 +35,10 @@ import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
 import de.jpaw.bonaparte.pojos.api.LongFilter;
 import de.jpaw.dp.Jdp;
 
-public class AbstractLeanSearchRequestHandler<S extends LeanSearchRequest, E extends BonaPersistableKey<Long> & BonaPersistableTracking<?>> extends AbstractReadOnlyRequestHandler<S> {
+public abstract class AbstractLeanSearchRequestHandler<
+  S extends LeanSearchRequest,
+  E extends BonaPersistableKey<Long> & BonaPersistableTracking<?>
+> extends AbstractReadOnlyRequestHandler<S> {
     protected final IAnyKeySearchRegistry searchRegistry = Jdp.getRequired(IAnyKeySearchRegistry.class);
     protected final IResolverSurrogateKey42<?, ?, E> resolver;
     protected final Function<E, Description> mapper;
@@ -49,7 +52,7 @@ public class AbstractLeanSearchRequestHandler<S extends LeanSearchRequest, E ext
         searchRegistry.registerLeanSearchRequest(this::search, resolver.getRtti(), resolver.getBaseJpaEntityClass().getSimpleName());
     }
 
-    private final List<Description> search(final RequestContext ctx, final Long ref) {
+    private List<Description> search(final RequestContext ctx, final Long ref) {
         final DummySearchCriteria srq = new DummySearchCriteria();
         final LongFilter objectRefFilter = new LongFilter(T9tConstants.OBJECT_REF_FIELD_NAME);
         objectRefFilter.setEqualsValue(ref);
@@ -57,7 +60,7 @@ public class AbstractLeanSearchRequestHandler<S extends LeanSearchRequest, E ext
         return search(ctx, srq);
     }
 
-    private final List<Description> search(final RequestContext ctx, final SearchCriteria srq) {
+    private List<Description> search(final RequestContext ctx, final SearchCriteria srq) {
         final List<E> result = resolver.search(srq);
         final List<Description> desc = new ArrayList<>(result.size());
         for (final E e : result) {

@@ -92,7 +92,8 @@ public class TimeField extends AbstractField<Timebox> {
 
     @Override
     public void clear() {
-        for (Timebox e : components)
+        for (Timebox e : components) {
             e.setValue(null);
+        }
     }
 }

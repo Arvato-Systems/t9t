@@ -38,7 +38,7 @@ public class DbRealm extends AuthorizingRealm implements ICacheableAuthorization
     private static final Logger LOGGER               = LoggerFactory.getLogger(AuthorizingRealm.class);
 
     //@Inject
-    CommonRealm commonRealm;
+    private CommonRealm commonRealm;
 
     public DbRealm() {
         super(new MemoryConstrainedCacheManager());

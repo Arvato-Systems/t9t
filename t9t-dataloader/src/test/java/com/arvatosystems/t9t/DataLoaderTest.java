@@ -189,7 +189,7 @@ public class DataLoaderTest {
     protected String matchValue(Pattern pattern, String stringToMatch) {
         StringBuffer result = new StringBuffer();
         Matcher formMatcher = pattern.matcher(stringToMatch);
-        while ( formMatcher.find() ){
+        while (formMatcher.find()) {
             // this is needed for better testing
             for (int i = 1 ; i <= formMatcher.groupCount(); i++) {
                 System.out.println("formMatcher.group("+i+") = " + formMatcher.group(i));

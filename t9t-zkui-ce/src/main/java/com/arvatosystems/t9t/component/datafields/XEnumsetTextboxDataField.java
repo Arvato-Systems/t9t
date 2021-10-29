@@ -51,8 +51,9 @@ public class XEnumsetTextboxDataField<E extends AbstractXEnumBase<E>, S extends 
         StringBuilder sb = new StringBuilder();
         sb.append("/[");
         List<AbstractXEnumBase<E>> instances = factory.valuesAsList();
-        for (AbstractXEnumBase<E> e: instances)
+        for (AbstractXEnumBase<E> e: instances) {
             sb.append(e.getToken());
+        }
         sb.append("]*/");
         setConstraints(c, sb.toString());
         c.setMaxlength(instances.size());

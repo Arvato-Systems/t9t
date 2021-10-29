@@ -75,7 +75,7 @@ public class LeanGridConfigResolver implements ILeanGridConfigResolver {
     private boolean gridPrefsModified = false;
     private int variant = 0;
 
-    private final void loadFromRemote() {
+    private void loadFromRemote() {
         LeanGridConfigRequest readCmd = new LeanGridConfigRequest();
         readCmd.setGridId(myGridId);
         readCmd.setSelection(variant);
@@ -87,7 +87,7 @@ public class LeanGridConfigResolver implements ILeanGridConfigResolver {
 //        gridPrefs = n.getGridPrefs();
     }
 
-    private final void loadConfig() {
+    private void loadConfig() {
         LOGGER.debug("Loading grid config for {}:{}, ZulUtils locale = {}, session = {}",
                 myGridId, variant, ZulUtils.getDefaultLanguageCode(), as.getJwtInfo().getLocale());
         gridPrefs = ILeanGridConfigContainer.LEAN_GRID_CONFIG_REGISTRY.get(myGridId);
@@ -104,27 +104,32 @@ public class LeanGridConfigResolver implements ILeanGridConfigResolver {
             try {
                 FieldDefinition fd = FieldMappers.getFieldDefinitionForPath(fieldname, myCrudViewModel);
                 if (fd == null)
-                    LOGGER.error("Unresolvable field name in {}: {} for DTO {}", myGridId, fieldname, myCrudViewModel.dtoClass.getBonaPortableClass().getSimpleName());
+                    LOGGER.error("Unresolvable field name in {}: {} for DTO {}", myGridId, fieldname,
+                            myCrudViewModel.dtoClass.getBonaPortableClass().getSimpleName());
                 pathToFieldDef.put(fieldname, fd);
                 allFieldDefs.add(fd);
             } catch (Exception e) {
-                LOGGER.error("Unresolvable field name in {}: {} for DTO {}", myGridId, fieldname, myCrudViewModel.dtoClass.getBonaPortableClass().getSimpleName());
+                LOGGER.error("Unresolvable field name in {}: {} for DTO {}", myGridId, fieldname,
+                        myCrudViewModel.dtoClass.getBonaPortableClass().getSimpleName());
                 // more diagnostics...
                 LOGGER.error("Field name is {} of length {}", fieldname, fieldname.length());
                 ClassDefinition meta2 = myCrudViewModel.dtoClass.getMetaData();
                 int num = meta2.getFields().size() > 10 ? 10 : meta2.getFields().size();
-                for (int i = 0; i < num; ++i)
+                for (int i = 0; i < num; ++i) {
                     LOGGER.debug("Field {} is {}", i, meta2.getFields().get(i).getName());
+                }
             }
         }
         widths = gridPrefs.getFieldWidths() == null ? new ArrayList<Integer>(gridPrefs.getFields().size()) : gridPrefs.getFieldWidths();
         if (gridPrefs.getFieldWidths() == null) {
-            for (FieldDefinition fd: allFieldDefs)
+            for (FieldDefinition fd : allFieldDefs) {
                 widths.add(defaultWidth(fd));
+            }
         }
         translations = new ArrayList<String>(gridPrefs.getFields().size());
-        for (String fieldname : gridPrefs.getFields())
+        for (String fieldname : gridPrefs.getFields()) {
             translations.add(as.translate(myGridId, fieldname));
+        }
         gridPrefsModified = false;
     }
 
@@ -296,7 +301,7 @@ public class LeanGridConfigResolver implements ILeanGridConfigResolver {
         sanityCheck(columnIndex);
 
         // if the new width is 0 then load with the default width
-        if (  (newWidth == 0 || newWidth == -1) && oldWidth == -1) {
+        if ((newWidth == 0 || newWidth == -1) && oldWidth == -1) {
             newWidth = defaultWidth(allFieldDefs.get(columnIndex));
             LOGGER.debug("width is set to 0 or -1. Overwriting with default width {}", newWidth);
         }

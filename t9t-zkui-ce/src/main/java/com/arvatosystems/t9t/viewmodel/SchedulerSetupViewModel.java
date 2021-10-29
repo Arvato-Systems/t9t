@@ -34,7 +34,7 @@ import de.jpaw.dp.Jdp;
 
 // viewModel only required for the button command. This could be done via context menu as well!
 
-@Init(superclass=true)
+@Init(superclass = true)
 public class SchedulerSetupViewModel extends CrudSurrogateKeyVM<SchedulerSetupRef, SchedulerSetupDTO, FullTrackingWithVersion> {
     private static final Logger LOGGER = LoggerFactory.getLogger(SchedulerSetupViewModel.class);
 
@@ -78,9 +78,9 @@ public class SchedulerSetupViewModel extends CrudSurrogateKeyVM<SchedulerSetupRe
                 this.data.setSetOfWeekdays(new SchedulerWeekDaysEnumSet());
             }
 
-            if (!this.data.getRecurrencyType().equals(SchedulerSetupRecurrenceType.DAILY) &&
-                    !this.data.getRecurrencyType().equals(SchedulerSetupRecurrenceType.MONTHLY) &&
-                    !this.data.getRecurrencyType().equals(SchedulerSetupRecurrenceType.YEARLY)) {
+            if (!this.data.getRecurrencyType().equals(SchedulerSetupRecurrenceType.DAILY)
+                    && !this.data.getRecurrencyType().equals(SchedulerSetupRecurrenceType.MONTHLY)
+                    && !this.data.getRecurrencyType().equals(SchedulerSetupRecurrenceType.YEARLY)) {
                 this.data.setExecutionTime(null);
             }
 

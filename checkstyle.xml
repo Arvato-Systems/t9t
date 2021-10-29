@@ -29,7 +29,7 @@
   -->
   <property name="severity" value="error"/>
 
-  <property name="fileExtensions" value="java, sql, xtend, properties, xml"/>
+  <property name="fileExtensions" value="java, sql, xtend, properties, xml, bon, bddl"/>
 
   <!-- Excludes all 'module-info.java' files              -->
   <!-- See https://checkstyle.org/config_filefilters.html -->
@@ -204,11 +204,11 @@
 
     <!-- Checks for class design                         -->
     <!-- See https://checkstyle.org/config_design.html -->
-	<!-- deactivated because it depends on Javadoc, which we will do later
+    <!-- deactivated because it depends on Javadoc, which we will do later
     <module name="DesignForExtension">
       <property name="ignoredAnnotations" value="Override, Test"/>
     </module>
-	-->
+    -->
     <module name="FinalClass"/>
     <module name="HideUtilityClassConstructor"/>
 <!--    <module name="InterfaceIsType"/> we have interfaces which extend other interfaces (with methods), specifying generic parameters, and additional constants. -->
@@ -221,7 +221,7 @@
     <!-- Miscellaneous other checks.                   -->
     <!-- See https://checkstyle.org/config_misc.html -->
     <module name="ArrayTypeStyle"/>
-    <!--  FIXME: We want this!
+    <!-- We want a slightly different check: require final where the field is assigned only once. But that is not offered by checkstyle.
     <module name="FinalParameters"/>
     -->
     <module name="TodoComment">

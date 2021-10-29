@@ -79,7 +79,8 @@ public class NumberField extends AbstractField<Longbox> {
 
     @Override
     public void clear() {
-        for (Longbox e : components)
+        for (Longbox e : components) {
             e.setValue(null);
+        }
     }
 }

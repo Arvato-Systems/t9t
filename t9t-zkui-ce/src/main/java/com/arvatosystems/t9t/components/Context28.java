@@ -49,7 +49,7 @@ public class Context28 extends Menupopup {
     /** Creates the options which are provided as a comma separate list of strings. */
     public void setContextOptions(String options) {
         String myPrefix = getId() + ".";
-        String [] optionsList = options.split(",");
+        String[] optionsList = options.split(",");
         for (String option : optionsList) {
             if (option.length() == 0) {
                 // empty option is a separator

@@ -23,28 +23,30 @@ import java.util.Date;
 
 import com.arvatosystems.t9t.tfi.web.ZulUtils;
 
-public class DateUtils {
+public final class DateUtils {
     private static DateTimeFormatter dateFormat;
     private static DateTimeFormatter dateTimeFormat;
 
-    public static final String getDate(LocalDate date) {
+    private DateUtils() { }
+
+    public static String getDate(LocalDate date) {
         return date.format(getDateFormat());
     }
 
-    public static final String getDateTime(LocalDateTime dateTime) {
+    public static String getDateTime(LocalDateTime dateTime) {
         return dateTime.format(getDateTimeFormat());
     }
 
     private static DateTimeFormatter getDateFormat() {
         if (dateFormat == null) {
-            dateFormat = DateTimeFormatter.ofPattern(ZulUtils.translate("com","dateFormat"));
+            dateFormat = DateTimeFormatter.ofPattern(ZulUtils.translate("com", "dateFormat"));
         }
         return dateFormat;
     }
 
     private static DateTimeFormatter getDateTimeFormat() {
         if (dateTimeFormat == null) {
-            dateTimeFormat = DateTimeFormatter.ofPattern(ZulUtils.translate("com","datetimeFormat"));
+            dateTimeFormat = DateTimeFormatter.ofPattern(ZulUtils.translate("com", "datetimeFormat"));
         }
         return dateTimeFormat;
     }
@@ -52,7 +54,7 @@ public class DateUtils {
     /**
      * Convenient method to convert LocalDateTime to Date
      */
-    public static final Date toDate(LocalDateTime localDateTime) {
+    public static Date toDate(LocalDateTime localDateTime) {
         if (localDateTime == null)
             return null;
 

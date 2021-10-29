@@ -26,7 +26,10 @@ import com.arvatosystems.t9t.base.services.RequestContext;
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
 
-public class AbstractMassResolverRequestHandler<S extends MassResolverRequest, E extends BonaPersistableKey<Long> & BonaPersistableTracking<?>> extends AbstractReadOnlyRequestHandler<S> {
+public abstract class AbstractMassResolverRequestHandler<
+  S extends MassResolverRequest,
+  E extends BonaPersistableKey<Long> & BonaPersistableTracking<?>
+> extends AbstractReadOnlyRequestHandler<S> {
     protected final IResolverSurrogateKey<?, ?, E> resolver;
 
     protected AbstractMassResolverRequestHandler(final IResolverSurrogateKey<?, ?, E> resolver) {

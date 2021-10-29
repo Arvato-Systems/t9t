@@ -23,10 +23,10 @@ public class Dropdown28TimeZoneId extends Dropdown28Ext {
 
     private static final long serialVersionUID = 7804881425211020005L;
 
-    private static final List<String> myModelData = new ArrayList<>(ZoneId.getAvailableZoneIds());
+    private static final List<String> MY_MODEL_DATA = new ArrayList<>(ZoneId.getAvailableZoneIds());
 
     public Dropdown28TimeZoneId() {
-        super(myModelData);
+        super(MY_MODEL_DATA);
         this.setMaxlength(64);
     }
 }

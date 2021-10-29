@@ -30,7 +30,7 @@ import de.jpaw.bonaparte.pojos.ui.UIFilter;
 public interface ILeanGridConfigResolver {
     List<UIFilter>  getFilters();
     FieldDefinition getFieldDefinitionForPath(String fieldname);
-    List <FieldDefinition> getVisibleColumns();
+    List<FieldDefinition> getVisibleColumns();
     List<String> getHeaders();
     List<Integer> getWidths();
     UILeanGridPreferences getGridPreferences();

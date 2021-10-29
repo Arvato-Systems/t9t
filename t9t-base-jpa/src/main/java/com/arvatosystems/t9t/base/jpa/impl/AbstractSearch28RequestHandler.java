@@ -31,12 +31,12 @@ import de.jpaw.bonaparte.pojos.api.TrackingBase;
 
 /** An implementation of a search request handler which also provides count capabilities. */
 public abstract class AbstractSearch28RequestHandler<
-    KEY extends Serializable,
-    DATA extends BonaPortable,
-    TRACKING extends TrackingBase,
-    RQ extends SearchRequest<DATA, TRACKING>,
-    ENTITY extends BonaPersistableKey<KEY> & BonaPersistableTracking<TRACKING>
-  > extends AbstractSearchRequestHandler<RQ> {
+  KEY extends Serializable,
+  DATA extends BonaPortable,
+  TRACKING extends TrackingBase,
+  RQ extends SearchRequest<DATA, TRACKING>,
+  ENTITY extends BonaPersistableKey<KEY> & BonaPersistableTracking<TRACKING>
+> extends AbstractSearchRequestHandler<RQ> {
 
     protected ReadAll28Response<DATA, TRACKING> execute(
         final RequestContext ctx,
@@ -54,10 +54,10 @@ public abstract class AbstractSearch28RequestHandler<
                 }
             } else {
                 final int actualResults = result.getDataList().size();
-                if (request.getOffset() > 0 && actualResults == 0) {
-                    // offset could have been exceeded number of results, must search!
-                     // fall through, have to query again
-                }
+//                if (request.getOffset() > 0 && actualResults == 0) {
+//                    // offset could have been exceeded number of results, must search!
+//                     // fall through, have to query again
+//                }
                 if (request.getLimit() == 0 || actualResults < request.getLimit()) {
                     // all results are known due to query with untruncated result set
                     result.setNumResults(Long.valueOf(actualResults + request.getOffset()));

@@ -68,8 +68,8 @@ public class CommonRealm {
         try {
             authResponse = userDAO.getAuthenticationResponse(username, pwd);
         } catch (ReturnCodeException e) {
-//            if ((authResponse == null) ||
-//                    ((authResponse.getReturnCode() != Constants.ErrorCodes.RETURN_CODE_SUCCESS) && (authResponse.getReturnCode() != T9tException.PASSWORD_EXPIRED))) {
+//            if ((authResponse == null) || ((authResponse.getReturnCode() != Constants.ErrorCodes.RETURN_CODE_SUCCESS)
+//                    && (authResponse.getReturnCode() != T9tException.PASSWORD_EXPIRED))) {
             LOGGER.warn("May Missing object data for AllowedTenants/UserHistory/UserInformation");
             throw new UnknownAccountException("Login failed");
         }
@@ -98,7 +98,7 @@ public class CommonRealm {
     }
 
     private Set<String> convertToSet(Collection<PermissionEntry> elements) {
-        HashSet<String> returnHashSet=new HashSet<String>();
+        HashSet<String> returnHashSet = new HashSet<String>();
         if (elements == null) {
             return returnHashSet;
         }

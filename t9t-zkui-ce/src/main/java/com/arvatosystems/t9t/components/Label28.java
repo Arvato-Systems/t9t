@@ -39,9 +39,9 @@ public class Label28 extends Cell {
     protected String myId = null;
 
     @Override
-    public void setId(String myId) {
+    public void setId(String xmyId) {
         // do NOT forward to super.setId() because the ID is reserved. Only use it to define the name
-        this.myId = myId;
+        this.myId = xmyId;
     }
 
     @Listen("onCreate")

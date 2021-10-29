@@ -30,9 +30,9 @@ public interface IUserDAO {
      * @param authenticationType like LDAP,SSO,Database...
      * @return AuthenticationResponse User and User details.
      */
-    public AuthenticationResponse getAuthenticationResponse( String username, String pwd) throws ReturnCodeException;
+    AuthenticationResponse getAuthenticationResponse(String username, String pwd) throws ReturnCodeException;
 
-    public List<PermissionEntry> getPermissions() throws ReturnCodeException;
+    List<PermissionEntry> getPermissions() throws ReturnCodeException;
 
     /**
      * change password.
@@ -43,7 +43,7 @@ public interface IUserDAO {
      *     }
      * </pre>
      */
-    public void changePassword(String oldPassword, String newPassword) throws ReturnCodeException;
+    void changePassword(String oldPassword, String newPassword) throws ReturnCodeException;
 
     /**
      * reset password.
@@ -57,14 +57,14 @@ public interface IUserDAO {
      *     }
      * </pre>
      */
-    public void resetPassword(String userId, String emailAddress) throws ReturnCodeException;
+    void resetPassword(String userId, String emailAddress) throws ReturnCodeException;
 
     /** Once a tenant has been selected in the second screen, an additional backend call is now required to update the JWT
      * @param tenantId
      * @return AuthenticationResponse response
      * @throws ReturnCodeException
      */
-    public AuthenticationResponse switchTenant(String tenantId) throws ReturnCodeException;
+    AuthenticationResponse switchTenant(String tenantId) throws ReturnCodeException;
 
     /** Once a language is changed, an additional backend call is now required to update the JWT.
      * This call can also be used to refresh the JWT.
@@ -72,6 +72,6 @@ public interface IUserDAO {
      * @return AuthenticationResponse response
      * @throws ReturnCodeException
      */
-    public AuthenticationResponse switchLanguage(String language) throws ReturnCodeException;
+    AuthenticationResponse switchLanguage(String language) throws ReturnCodeException;
 
 }

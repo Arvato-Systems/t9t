@@ -36,8 +36,8 @@ public class MultilineJSon extends Textbox implements IdSpace, AfterCompose  {
         return isNullAllowed;
     }
 
-    public void setNullAllowed(boolean isNullAllowed) {
-        this.isNullAllowed = isNullAllowed;
+    public void setNullAllowed(boolean xisNullAllowed) {
+        this.isNullAllowed = xisNullAllowed;
     }
 
     public MultilineJSon() {
@@ -47,7 +47,7 @@ public class MultilineJSon extends Textbox implements IdSpace, AfterCompose  {
         this.setHflex("1");
     }
 
-    class JSonConstraint implements Constraint{
+    class JSonConstraint implements Constraint {
         @Override
         public void validate(Component comp, Object value) throws WrongValueException {
             if (value != null) {
@@ -59,7 +59,7 @@ public class MultilineJSon extends Textbox implements IdSpace, AfterCompose  {
                     try {
                         new JsonParser(componentValue, false).parseObject();
                     } catch (JsonException ex) {
-                        throw new WrongValueException(comp, ZulUtils.translate("err","invalidJsonFormat"));
+                        throw new WrongValueException(comp, ZulUtils.translate("err", "invalidJsonFormat"));
                     }
                 }
             }

@@ -22,8 +22,9 @@ import java.text.NumberFormat;
 import java.util.Currency;
 import java.util.Locale;
 
-public class DecimalFormatTest {
+public final class DecimalFormatTest {
 
+    private DecimalFormatTest() { }
 
     public static void main(String[] args) {
 

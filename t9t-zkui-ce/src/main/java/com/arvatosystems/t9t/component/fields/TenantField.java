@@ -100,8 +100,9 @@ public class TenantField extends AbstractField<Combobox> {
 
     @Override
     public void clear() {
-        for (Combobox e : components)
+        for (Combobox e : components) {
             e.setValue(null);
+        }
     }
 
 

@@ -97,9 +97,15 @@ public class Filter28 extends Grid implements IGridIdOwner {
     private void populateFilters(int gridPrefVariant) {
         leanGridConfigResolver = new LeanGridConfigResolver(gridId, session, gridPrefVariant);
         addRows();
-        resetButton.addEventListener (Events.ON_CLICK, (MouseEvent ev) -> { performReset(); });
-        searchButton.addEventListener(Events.ON_CLICK, (MouseEvent ev) -> { performSearch("onClick"); });
-        this.addEventListener(Events.ON_OK, (KeyEvent ev) -> { performSearch("onOk"); });
+        resetButton.addEventListener(Events.ON_CLICK, (MouseEvent ev) -> {
+            performReset();
+        });
+        searchButton.addEventListener(Events.ON_CLICK, (MouseEvent ev) -> {
+            performSearch("onClick");
+        });
+        this.addEventListener(Events.ON_OK, (KeyEvent ev) -> {
+            performSearch("onOk");
+        });
         if (toggleButton != null) {
             toggleButton.setSclass("toggleButton");
             toggleButton.setLabel(session.translate(Button28.PREFIX_BUTTON28, toggleButton.getId()));

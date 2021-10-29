@@ -76,7 +76,8 @@ public class DecimalField extends AbstractField<Decimalbox> {
 
     @Override
     public void clear() {
-        for (Decimalbox e : components)
+        for (Decimalbox e : components) {
             e.setValue((String)null);
+        }
     }
 }

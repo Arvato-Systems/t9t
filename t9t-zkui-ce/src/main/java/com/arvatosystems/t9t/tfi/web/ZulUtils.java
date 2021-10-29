@@ -73,8 +73,10 @@ import de.jpaw.util.ExceptionUtil;
  *
  * @author INCI02
  */
-public class ZulUtils {
+public final class ZulUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(ZulUtils.class);
+
+    private ZulUtils() { }
 
     public static void findErrorMessages(final Component component) {
         if (component instanceof InputElement) {
@@ -89,7 +91,7 @@ public class ZulUtils {
     }
 
     public static void debugOutput(final Component component, int level) {
-        LOGGER.debug("{}:{}", StringUtils.leftPad(String.valueOf(level), level*4), component);
+        LOGGER.debug("{}:{}", StringUtils.leftPad(String.valueOf(level), level * 4), component);
         level++;
         for (final Component childComponent : component.getChildren()) {
             debugOutput(childComponent, level);
@@ -192,8 +194,9 @@ public class ZulUtils {
 
     public static final ConcurrentMap<String, Object> MISSING_TRANSLATIONS = new ConcurrentHashMap<String, Object>(100);
     public static void dumpMissingTranslations() {
-        for (final String s: MISSING_TRANSLATIONS.keySet())
+        for (final String s: MISSING_TRANSLATIONS.keySet()) {
             System.out.println(s);
+        }
     }
 
     /**
@@ -210,10 +213,10 @@ public class ZulUtils {
      * @param key
      * @return
      */
-    private static final Map<String, Boolean> booleanConfigCache = new ConcurrentHashMap<>(20);
+    private static final Map<String, Boolean> BOOLEAN_CONFIG_CACHE = new ConcurrentHashMap<>(20);
 
     public static boolean readBooleanConfig(final String key) {
-        return booleanConfigCache.computeIfAbsent(key, k -> {
+        return BOOLEAN_CONFIG_CACHE.computeIfAbsent(key, k -> {
             Boolean result = Boolean.FALSE;
             final String configInString = ZulUtils.readConfig(k);
             if (configInString != null) {
@@ -255,7 +258,8 @@ public class ZulUtils {
             if (td.getTenantRef().equals(tenantRef))
                 return td.getTenantId();
         }
-        LOGGER.warn("Mapping to ref {} to undisclosed tenant", tenantRef); // should not happen, it means the user has selected data to which no permissions exist
+        // should not happen, it means the user has selected data to which no permissions exist
+        LOGGER.warn("Mapping to ref {} to undisclosed tenant", tenantRef);
         return "?";  // undisclosed...
     }
 
@@ -276,10 +280,10 @@ public class ZulUtils {
                 // the enum instead
                 final Field idsField = enumClazz.getDeclaredField("_ids");
                 idsField.setAccessible(true);
-                final Object _ids = idsField.get(enumClazz);
-                LOGGER.debug("_ids retrieved. ");
-                for (final String s : (ImmutableList<String>) _ids) {
-                    LOGGER.debug("_ids loop {}", s);
+                final Object ids = idsField.get(enumClazz);
+                LOGGER.debug("ids retrieved. ");
+                for (final String s : (ImmutableList<String>) ids) {
+                    LOGGER.debug("ids loop {}", s);
                     filteredEnumSet.add(s);
                 }
             }
@@ -390,18 +394,19 @@ public class ZulUtils {
 
 
     // old method, still used as of 3.2.0
-    public static void resizeComponent(final Component componentToBeResized, final String vflexMin, final String vflexMax, final Component fireResizeNotificationToComponent, final boolean setToMaxVflex) throws Exception {
+    public static void resizeComponent(final Component componentToBeResized, final String vflexMin, final String vflexMax,
+            final Component fireResizeNotificationToComponent, final boolean setToMaxVflex) throws Exception {
        //Clients.alert("onOpen: self.isOpen(): "+ self.isOpen());
        final HtmlBasedComponent componentToBeResizedHtml = (HtmlBasedComponent) componentToBeResized;
         if (setToMaxVflex) { // set to max
             componentToBeResizedHtml.setVflex(vflexMax);
             Clients.resize(fireResizeNotificationToComponent);
-            Thread.sleep(200l);
+            Thread.sleep(200L);
         } else { // set to min
             componentToBeResizedHtml.setVflex(vflexMin);
-            Thread.sleep(200l);
+            Thread.sleep(200L);
             Clients.resize(fireResizeNotificationToComponent);
-            Thread.sleep(100l);
+            Thread.sleep(100L);
         }
         Clients.resize(fireResizeNotificationToComponent);
     }
@@ -438,7 +443,7 @@ public class ZulUtils {
         }
     }
 
-    public static HashMap<?,?> asMap(final Object arg) {
+    public static HashMap<?, ?> asMap(final Object arg) {
         if ((arg == null) || !(arg instanceof HashMap)) {
             throw new IllegalArgumentException("Error getting argument HashMap<>. Passed arg is not instanceof java.util.HashMap. It is " + arg);
         }
@@ -519,7 +524,7 @@ public class ZulUtils {
             returnValue = readErrorPopupConfiguration(returnCodePrefix, inScreenId);
 
             if (returnValue == null) {
-                LOGGER.error("ERROR: "+returnCodeException.getReturnMessage());
+                LOGGER.error("ERROR: " + returnCodeException.getReturnMessage());
                 returnValue = new ErrorPopupEntity();
                 returnValue.setPopupTitle(ZulUtils.translate("err", "title"));
                 returnValue.setPopupImg("~./zul/img/msgbox/stop-btn.png");
@@ -538,7 +543,7 @@ public class ZulUtils {
                     ExceptionUtil.causeChain(returnCodeException),
                     ExceptionUtil.causeChain(e));
             returnValue = new ErrorPopupEntity();
-            returnValue.setPopupTitle(ZulUtils.translate("err","title"));
+            returnValue.setPopupTitle(ZulUtils.translate("err", "title"));
             returnValue.setPopupImg("~./zul/img/msgbox/stop-btn.png");
             returnValue.setReturnCode(String.valueOf(Constants.ErrorCodes.GENERAL_EXCEPTION));
             returnValue.setReturnMessage("general error");

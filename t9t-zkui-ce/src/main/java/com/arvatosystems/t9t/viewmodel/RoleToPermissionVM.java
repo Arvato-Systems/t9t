@@ -31,8 +31,9 @@ import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 
 @Init(superclass = true)
-public class RoleToPermissionVM extends
-        AbstractCrudVM<RoleToPermissionInternalKey, RoleToPermissionDTO, FullTrackingWithVersion, CrudCompositeKeyRequest<RoleToPermissionRef, RoleToPermissionDTO, FullTrackingWithVersion>, CrudCompositeKeyResponse<RoleToPermissionInternalKey, RoleToPermissionDTO, FullTrackingWithVersion>> {
+public class RoleToPermissionVM extends AbstractCrudVM<RoleToPermissionInternalKey, RoleToPermissionDTO, FullTrackingWithVersion,
+    CrudCompositeKeyRequest<RoleToPermissionRef, RoleToPermissionDTO, FullTrackingWithVersion>, CrudCompositeKeyResponse<RoleToPermissionInternalKey,
+    RoleToPermissionDTO, FullTrackingWithVersion>> {
 
     @Override
     protected void clearKey() {

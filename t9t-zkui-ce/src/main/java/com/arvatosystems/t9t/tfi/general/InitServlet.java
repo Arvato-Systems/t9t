@@ -50,7 +50,7 @@ public class InitServlet extends HttpServlet {
 
     @Override
     public void init(ServletConfig config) throws ServletException {
-        LOGGER.info("+++ "+ InitServlet.class.getSimpleName() +" is initializing application");
+        LOGGER.info("+++ " + InitServlet.class.getSimpleName() + " is initializing application");
 
         // Int field can handle NULL inputs
         // if COERCE_TO_ZERO = true (default) all NULL int fields will be converted to 0
@@ -82,11 +82,11 @@ public class InitServlet extends HttpServlet {
         LOGGER.info("** Version: ");
         LOGGER.info("**      " + ApplicationUtil.getVersion());
         LOGGER.info("** Configuration: ");
-        LOGGER.info("**      system  parameter: "+ sysenv + (sysenv != null ? " <- USED" : ""));
-        LOGGER.info("**      context parameter: "+ contextenv +((contextenv != null) && (sysenv == null) ? " <- USED" : ""));
+        LOGGER.info("**      system  parameter: " + sysenv + (sysenv != null ? " <- USED" : ""));
+        LOGGER.info("**      context parameter: " + contextenv + ((contextenv != null) && (sysenv == null) ? " <- USED" : ""));
         setConfiguration(sysenv != null ? sysenv : contextenv);
         LOGGER.info("** Settings: ");
-        LOGGER.info("**      file.encoding    : "+ System.getProperty("file.encoding"));
+        LOGGER.info("**      file.encoding    : " + System.getProperty("file.encoding"));
         setSystemProperties();
         setConfigProperties();
         LOGGER.info("*******************************************************");
@@ -146,10 +146,10 @@ public class InitServlet extends HttpServlet {
         Properties config = new Properties();
         File configFile = null;
         if (checkFile(path)) {
-            configFile =new File(path);
-        } else if (checkFile(getServletRealPath() +"/"+ path)) {
-            LOGGER.info("**      corrected path   : "+ (getServletRealPath() +"/"+ path));
-            configFile =new File(getServletRealPath() +"/"+ path);
+            configFile = new File(path);
+        } else if (checkFile(getServletRealPath() + "/" + path)) {
+            LOGGER.info("**      corrected path   : " + (getServletRealPath() + "/" + path));
+            configFile = new File(getServletRealPath() + "/" + path);
         } else {
             LOGGER.warn("**      NO CONFIGURATION FOUND");
             //configFile =new File(path);

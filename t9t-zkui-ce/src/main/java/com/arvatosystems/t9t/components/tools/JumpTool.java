@@ -28,7 +28,9 @@ import de.jpaw.bonaparte.pojos.api.LongFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
 
-public class JumpTool {
+public final class JumpTool {
+    private JumpTool() { }
+
     public static void jump(String targetZul, String fieldName, String id, String backNaviLink) {
         UnicodeFilter f = new UnicodeFilter(fieldName);
         f.setEqualsValue(id);
@@ -43,7 +45,7 @@ public class JumpTool {
 
     public static void jump(String targetZul, SearchFilter f, String backNaviLink) {
         ApplicationSession.get().setFilterForPresetSearch(f);
-        jump(targetZul,backNaviLink);
+        jump(targetZul, backNaviLink);
     }
 
     public static void jump(String targetZul, String backNaviLink) {

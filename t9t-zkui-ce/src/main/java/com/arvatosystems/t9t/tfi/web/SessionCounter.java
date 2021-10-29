@@ -33,7 +33,7 @@ import de.jpaw.dp.Singleton;
 @Singleton
 public class SessionCounter implements HttpSessionListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(SessionListener.class);
-    private static final AtomicInteger sessionCounter = new AtomicInteger(0);
+    private static final AtomicInteger SESSION_COUNTER = new AtomicInteger(0);
 
     public SessionCounter() {
         LOGGER.debug("SessionCounter CONSTRUCTOR (web.xml)");
@@ -45,7 +45,7 @@ public class SessionCounter implements HttpSessionListener {
      */
     @Override
     public void sessionCreated(HttpSessionEvent event) {
-        sessionCounter.incrementAndGet();
+        SESSION_COUNTER.incrementAndGet();
     }
 
     /**
@@ -53,11 +53,11 @@ public class SessionCounter implements HttpSessionListener {
      */
     @Override
     public void sessionDestroyed(HttpSessionEvent event) {
-        sessionCounter.decrementAndGet();
+        SESSION_COUNTER.decrementAndGet();
     }
 
     public static int getActiveSessionNumber() {
-        return sessionCounter.get();
+        return SESSION_COUNTER.get();
     }
 
 }

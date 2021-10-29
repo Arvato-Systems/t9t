@@ -42,7 +42,7 @@ import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ApplicationException;
 
-@Init(superclass=true)
+@Init(superclass = true)
 public class CreateDeploymentVM extends ViewOnlyVM<CreateDeploymentRequest, FullTrackingWithVersion> {
     private static final Logger LOGGER = LoggerFactory.getLogger(CreateDeploymentVM.class);
 
@@ -90,8 +90,8 @@ public class CreateDeploymentVM extends ViewOnlyVM<CreateDeploymentRequest, Full
 
     private boolean validation() {
         if (this.data.getResources() == null || this.data.getResources().isEmpty()) {
-            Messagebox.show(session.translate("CreateDeploymentVM","err.resourcenotfound"), session.translate("CreateDeploymentVM","com.badinput"), Messagebox.OK,
-                    Messagebox.ERROR);
+            Messagebox.show(session.translate("CreateDeploymentVM", "err.resourcenotfound"), session.translate("CreateDeploymentVM", "com.badinput"),
+                    Messagebox.OK, Messagebox.ERROR);
             return false;
         }
         return true;

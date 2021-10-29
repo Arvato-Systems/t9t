@@ -24,6 +24,7 @@ import com.arvatosystems.t9t.base.jpa.IEntityMapper28;
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.base.search.ReadAll28Response;
 import com.arvatosystems.t9t.base.services.IOutputSession;
+import com.google.common.collect.ImmutableList;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
@@ -33,9 +34,13 @@ import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.dp.Jdp;
 
 /** base implementation of the IEntityMapper28 interface, only suitable for simple configuration data tables */
-public abstract class AbstractEntityMapper28<KEY extends Serializable, DTO extends BonaPortable, TRACKING extends TrackingBase, ENTITY extends BonaPersistableKey<KEY> & BonaPersistableTracking<TRACKING>>
-  extends AbstractEntityMapper<KEY, DTO, TRACKING, ENTITY> implements IEntityMapper28<KEY, DTO, TRACKING, ENTITY> {
-    private final List<DataWithTrackingS<DTO, TRACKING>> EMPTY_RESULT_LIST = new ArrayList<>(0);
+public abstract class AbstractEntityMapper28<
+  KEY extends Serializable,
+  DTO extends BonaPortable,
+  TRACKING extends TrackingBase,
+  ENTITY extends BonaPersistableKey<KEY> & BonaPersistableTracking<TRACKING>
+> extends AbstractEntityMapper<KEY, DTO, TRACKING, ENTITY> implements IEntityMapper28<KEY, DTO, TRACKING, ENTITY> {
+    private static final List EMPTY_RESULT_LIST = ImmutableList.of();
 
     @Override
     public final DataWithTrackingS<DTO, TRACKING> mapToDwt(final ENTITY entity) {
@@ -83,7 +88,7 @@ public abstract class AbstractEntityMapper28<KEY extends Serializable, DTO exten
                     for (final ENTITY entity : data) {
                         entry.setTracking(entity.ret$Tracking());
                         entry.setData(mapToDto(entity));
-                        entry.setTenantId(getTenantId(entity));  // either tenantId or tenantRef has been defined in the data (category D) or it is of no interest to the caller
+                        entry.setTenantId(getTenantId(entity)); // tenantId has been defined in the data (category D) or it is of no interest to the caller
                         outputSession.store(entry);
                     }
                 }

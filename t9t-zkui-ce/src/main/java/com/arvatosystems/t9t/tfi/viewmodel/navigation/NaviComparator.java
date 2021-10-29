@@ -40,8 +40,7 @@ public class NaviComparator implements Comparator<Navi>, GroupComparator<Navi>,
     public final int compareGroup(Navi o1, Navi o2) {
         if (o1.getPrefixCategoryId().equals(o2.getPrefixCategoryId())) {
             return 0;
-        }
-        else{
+        } else {
             return 1;
         }
     }

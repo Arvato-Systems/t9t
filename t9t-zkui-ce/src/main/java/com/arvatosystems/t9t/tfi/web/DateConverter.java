@@ -85,10 +85,12 @@ public class DateConverter implements Converter<Object, Object, Component> {
                 LOGGER.trace("#coerceToUi: Component: {}/{} Date:raw:{} conv:{}", new Object[]{comp.getWidgetClass(), comp.getId(), val, dateString});
                 return dateString;
             } else {
-                throw new UnsupportedOperationException("Retrun object "+ returnObject +" is not supported (Component: "+comp.getWidgetClass()+"/"+comp.getId()+"/"+val+")");
+                throw new UnsupportedOperationException(
+                        "Retrun object " + returnObject + " is not supported (Component: " + comp.getWidgetClass() + "/" + comp.getId() + "/" + val + ")");
             }
         } else {
-            throw new UnsupportedOperationException("Instance "+ val.getClass().getName() +" is not supported (Component: "+comp.getWidgetClass()+"/"+comp.getId()+"/"+val+")");
+            throw new UnsupportedOperationException(
+                    "Instance " + val.getClass().getName() + " is not supported (Component: " + comp.getWidgetClass() + "/" + comp.getId() + "/" + val + ")");
         }
     }
 
@@ -101,8 +103,7 @@ public class DateConverter implements Converter<Object, Object, Component> {
      */
     @Override
     public final Object coerceToBean(Object val, Component comp, BindContext ctx) {
-        if (val==null)
-        {
+        if (val == null) {
             return null; // do nothing
         }
 
@@ -116,31 +117,30 @@ public class DateConverter implements Converter<Object, Object, Component> {
         // convert Date to LocalDateTime
         if (val instanceof Date) {
             if (returnObject.equalsIgnoreCase("LocalDateTime")) {
-                Date date= (Date)val;
+                Date date = (Date) val;
                 final LocalDateTime localDateTime = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
                 LOGGER.trace("#coerceToBean: Component: {}/{} Date:raw:{} conv:{}", new Object[]{comp.getWidgetClass(), comp.getId(), val, localDateTime});
                 return localDateTime;
             } else if (returnObject.equalsIgnoreCase("LocalDate")) {
-                Date date= (Date)val;
+                Date date = (Date) val;
                 final LocalDate localDate = LocalDate.ofInstant(date.toInstant(), ZoneId.systemDefault());
                 LOGGER.trace("#coerceToBean: Component: {}/{} Date:raw:{} conv:{}", new Object[]{comp.getWidgetClass(), comp.getId(), val, localDate});
                 return localDate;
             }  else if (returnObject.equalsIgnoreCase("LocalTime")) {
-                Date date=(Date)val;
-                final LocalTime localTime=LocalTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+                Date date = (Date) val;
+                final LocalTime localTime = LocalTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
                 LOGGER.trace("#coerceToBean: Component: {}/{} Date:raw:{} conv:{}", new Object[]{comp.getWidgetClass(), comp.getId(), val, localTime});
                 return localTime;
-            }
-            else if (returnObject.equalsIgnoreCase("Instant")) {
+            } else if (returnObject.equalsIgnoreCase("Instant")) {
                 Date date = (Date) val;
                 final Instant localDate = date.toInstant();
                 LOGGER.trace("#coerceToBean: Component: {}/{} Date:raw:{} conv:{}", new Object[] { comp.getWidgetClass(), comp.getId(), val, localDate });
                 return localDate;
             } else {
-                throw new UnsupportedOperationException("Retrun object "+ returnObject +" is not supported");
+                throw new UnsupportedOperationException("Retrun object " + returnObject + " is not supported");
             }
         } else {
-            throw new UnsupportedOperationException("Instance "+ val.getClass().getName() +" is not supported");
+            throw new UnsupportedOperationException("Instance " + val.getClass().getName() + " is not supported");
         }
 
     }

@@ -21,7 +21,7 @@ import de.jpaw.bonaparte.pojos.api.DataWithTracking;
  * Can be processed by child grids to update detail views.
  */
 public class RowSelectedEventData {
-    String contextMenuId;             // if a context menu has been clicked, the ID of the menu entry
-    Long key;                         // the key to the row, if the data has a surrogate key
-    DataWithTracking<?,?> dwt;
+    private String contextMenuId;             // if a context menu has been clicked, the ID of the menu entry
+    private Long key;                         // the key to the row, if the data has a surrogate key
+    private DataWithTracking<?, ?> dwt;
 }

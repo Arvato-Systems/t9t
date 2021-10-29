@@ -27,7 +27,7 @@ import de.jpaw.dp.Singleton;
 public class NewYear2000Filter implements IFixedFilter {
     private static final DayFilter FILTER = new DayFilter("day");
     static {
-        FILTER.setEqualsValue(LocalDate.of(2000,1,1));
+        FILTER.setEqualsValue(LocalDate.of(2000, 1, 1));
         FILTER.freeze();
     }
 

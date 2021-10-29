@@ -26,12 +26,12 @@ public class Navi {
     private String  name;
     private String  link;
     private String  permission;
-    private boolean menuItemVisible=true;
+    private boolean menuItemVisible = true;
     private String  img;
     private String  subcategory;
     private String  categoryId;
 
-    public Navi(String naviId, String category, String subcategory, String name, String link, String permission, boolean menuItemVisible,String img) {
+    public Navi(String naviId, String category, String subcategory, String name, String link, String permission, boolean menuItemVisible, String img) {
         super();
         this.naviId = naviId;
         this.category = category;
@@ -172,7 +172,7 @@ public class Navi {
 
     public static String getCategoryIdBeforeLastDot(String categoryId) {
         int i = categoryId.lastIndexOf(".");
-        if (i > -1 ) {
+        if (i > -1) {
             return categoryId.substring(0, i);
         }
         return categoryId;
@@ -180,7 +180,7 @@ public class Navi {
 
     public static String getCategoryIdAfterLastDot(String categoryId) {
         int i = categoryId.lastIndexOf(".");
-        if (i > -1 ) {
+        if (i > -1) {
             return categoryId.substring(i + 1);
         }
         return categoryId;

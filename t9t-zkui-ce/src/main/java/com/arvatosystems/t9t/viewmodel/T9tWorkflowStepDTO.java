@@ -23,8 +23,8 @@ public class T9tWorkflowStepDTO extends T9tAbstractWorkflowStep {
      *
      */
     private static final long serialVersionUID = -981224794305006193L;
-    String                stepName;
-    Map<String, Object>   parameters;
+    private String                stepName;
+    private Map<String, Object>   parameters;
 
 
     public String getStepName() {

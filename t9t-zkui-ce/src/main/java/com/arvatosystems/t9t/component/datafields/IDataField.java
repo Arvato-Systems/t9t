@@ -36,7 +36,7 @@ public interface IDataField<E extends Component, T> {
     String getConverter();
 
     /** Returns the ZK converter args, or null if none are required. */
-    Map<String,Object> getConverterArgs();
+    Map<String, Object> getConverterArgs();
 
     /** Clears the component's current value. */
     void clear();

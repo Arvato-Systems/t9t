@@ -41,8 +41,9 @@ public class ShowCallTreeContextHandler implements IGridContextMenu<ProcessStatu
             StringBuilder tree = new StringBuilder();
             for (StackLevel sl : stack) {
                 if (depth >= 0) {
-                    for (int i = 0; i < depth; ++i)
+                    for (int i = 0; i < depth; ++i) {
                         tree.append("    ");
+                    }
                     tree.append("  +-");
                 }
                 tree.append(sl.getPqon());

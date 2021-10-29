@@ -33,11 +33,11 @@ import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.util.ApplicationException;
 
 public abstract class AbstractCrudCompositeKey28RequestHandler<
-    KEY extends CompositeKeyRef,
-    DTO extends CompositeKeyBase,
-    TRACKING extends TrackingBase,
-    REQUEST extends CrudCompositeKeyRequest<KEY, DTO, TRACKING>,
-    ENTITY extends BonaPersistableKey<KEY> & BonaPersistableTracking<TRACKING>
+  KEY extends CompositeKeyRef,
+  DTO extends CompositeKeyBase,
+  TRACKING extends TrackingBase,
+  REQUEST extends CrudCompositeKeyRequest<KEY, DTO, TRACKING>,
+  ENTITY extends BonaPersistableKey<KEY> & BonaPersistableTracking<TRACKING>
 > extends AbstractCrudAnyKey28RequestHandler<KEY, DTO, TRACKING, REQUEST, ENTITY> {
 
     // execute function of the interface description, but additional parameters

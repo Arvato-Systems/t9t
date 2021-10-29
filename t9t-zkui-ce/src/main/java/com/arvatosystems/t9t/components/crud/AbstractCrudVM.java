@@ -40,7 +40,7 @@ import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.bonaparte.util.ToStringHelper;
 
-@Init(superclass=true)
+@Init(superclass = true)
 public abstract class AbstractCrudVM<
     KEY,
     DTO extends BonaPortable,
@@ -64,12 +64,13 @@ public abstract class AbstractCrudVM<
         CURRENT_RO,      // showing some existing record, no edit allowed (no permissions),
         CURRENT_PROTECTED_VIEW    // this is a protected view mode to avoid unintentional modification
     }
-    protected CrudMode currentMode                            = CrudMode.NONE;
-    protected final static String COMMON                      = "com";
-    protected final static String ENTITY                      = "entity";
-    protected final static String DELETE_CONFIRMATION         = "deleteConfirmation";
-    protected final static String DELETE_CONFIRMATION_MESSAGE = "deleteConfirmationMessage";
-    protected final static String DELETE_CONFIRMATION_DETAIL  = "deleteConfirmationDetail";
+
+    protected CrudMode currentMode = CrudMode.NONE;
+    protected static final String COMMON = "com";
+    protected static final String ENTITY = "entity";
+    protected static final String DELETE_CONFIRMATION = "deleteConfirmation";
+    protected static final String DELETE_CONFIRMATION_MESSAGE = "deleteConfirmationMessage";
+    protected static final String DELETE_CONFIRMATION_DETAIL = "deleteConfirmationDetail";
 
     public void setHardLink(final ICrudNotifier notifier) {
         // link to the crud component to avoid boilerplate caused by @Notifier
@@ -211,24 +212,24 @@ public abstract class AbstractCrudVM<
 
     private CrudMode tenantAccessCheck() {
 
-        final CrudMode currentMode = useProtectedView ? CrudMode.CURRENT_PROTECTED_VIEW : CrudMode.CURRENT;
+        final CrudMode currentCrudMode = useProtectedView ? CrudMode.CURRENT_PROTECTED_VIEW : CrudMode.CURRENT;
 
         if (tenantId != null) {
             /*
              *  Check tenantId first because tenantId is not initialized, if it is not null
              *  means it is from data with DataWithTrackingW
              */
-            return tenantId.equals(this.session.getTenantId())? currentMode : CrudMode.CURRENT_RO;
+            return tenantId.equals(this.session.getTenantId()) ? currentCrudMode : CrudMode.CURRENT_RO;
         } else if (tenantRef != null) {
             /*
              * TenantRef has being initialized as session.getTenantId during class initial,
              * so if the data is not null and it is DataWithTrackingS, use this to validate
              */
-            return tenantRef.equals(this.session.getTenantRef())? currentMode : CrudMode.CURRENT_RO;
+            return tenantRef.equals(this.session.getTenantRef()) ? currentCrudMode : CrudMode.CURRENT_RO;
         }
 
         //No tenant restriction
-        return currentMode;
+        return currentCrudMode;
     }
 
     protected void showDeleteConfirmationDialog(final EventListener<Event> eventListener) {

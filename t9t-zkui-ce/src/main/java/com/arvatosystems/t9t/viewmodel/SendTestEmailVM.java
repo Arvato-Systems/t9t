@@ -42,7 +42,7 @@ public class SendTestEmailVM extends GenericVM {
 
 
     private String toEmail = null;
-    protected String VM_ID = "SendTestEmailVM";
+    protected static final String VM_ID = "SendTestEmailVM";
 
     @AfterCompose
     public void afterCompose() {
@@ -64,9 +64,7 @@ public class SendTestEmailVM extends GenericVM {
             LOGGER.debug("Sending Email");
             SendTestEmailResponse res = t9tremoteUtils.executeExpectOk(request, SendTestEmailResponse.class);
             if (res.getReturnCode() == ApplicationException.SUCCESS) {
-                Messagebox.show(session.translate(VM_ID,"sentsuccessfully"), session.translate(VM_ID,"emailsent"), Messagebox.OK,
-                        Messagebox.INFORMATION);
-
+                Messagebox.show(session.translate(VM_ID, "sentsuccessfully"), session.translate(VM_ID, "emailsent"), Messagebox.OK, Messagebox.INFORMATION);
             }
         }
 
@@ -80,8 +78,7 @@ public class SendTestEmailVM extends GenericVM {
 
     protected boolean validateBeforeSend() {
         if (toEmail == null || !validateEmail(toEmail)) {
-            Messagebox.show(session.translate(VM_ID,"err.invalidemail"), session.translate(VM_ID,"com.badinput"), Messagebox.OK,
-                    Messagebox.INFORMATION);
+            Messagebox.show(session.translate(VM_ID, "err.invalidemail"), session.translate(VM_ID, "com.badinput"), Messagebox.OK, Messagebox.INFORMATION);
             return false;
         }
         return true;

@@ -16,7 +16,6 @@
 package com.arvatosystems.t9t.tfi.component.dropdown;
 
 import com.arvatosystems.t9t.base.search.LeanGroupedSearchRequest;
-import com.arvatosystems.t9t.base.search.LeanSearchRequest;
 
 import de.jpaw.bonaparte.pojos.apiw.Ref;
 

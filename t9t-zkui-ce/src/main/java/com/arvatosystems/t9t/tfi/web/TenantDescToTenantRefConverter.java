@@ -26,14 +26,14 @@ import org.zkoss.zul.Comboitem;
 import com.arvatosystems.t9t.auth.TenantRef;
 import com.arvatosystems.t9t.authc.api.TenantDescription;
 
-public class TenantDescToTenantRefConverter implements Converter<Object, Object, Component>{
+public class TenantDescToTenantRefConverter implements Converter<Object, Object, Component> {
 
     @Override
     public Object coerceToUi(Object beanProp, Component component, BindContext ctx) {
         Combobox box = (Combobox) component;
         Long  beanPropRef = null;
         if (beanProp instanceof TenantDescription) {
-            beanPropRef=((TenantDescription)beanProp).getTenantRef();
+            beanPropRef = ((TenantDescription) beanProp).getTenantRef();
         }
 
         List<Comboitem> listitems = box.getItems();
@@ -42,7 +42,7 @@ public class TenantDescToTenantRefConverter implements Converter<Object, Object,
             TenantDescription tenantDescription = (TenantDescription)listItem.getValue();
             //if (/*listItem.getValue()*/dataWithTrackingW.getData().equals(beanProp)) {
             //if (null!=listItem.getValue() && listItem.getValue().equals(beanProp)) {
-            if (null!=tenantDescription && tenantDescription.getTenantRef().equals(beanPropRef)) {
+            if (null != tenantDescription && tenantDescription.getTenantRef().equals(beanPropRef)) {
                 return listItem;
             }
         }
@@ -59,7 +59,7 @@ public class TenantDescToTenantRefConverter implements Converter<Object, Object,
             return compAttr;
         } else {
             TenantDescription tenantDescription = (TenantDescription)box.getSelectedItem().getValue();
-            TenantRef tenantRef= new TenantRef(tenantDescription.getTenantRef());
+            TenantRef tenantRef = new TenantRef(tenantDescription.getTenantRef());
             return tenantRef;
         }
     }

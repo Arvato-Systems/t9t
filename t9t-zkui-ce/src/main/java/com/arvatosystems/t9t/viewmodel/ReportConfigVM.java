@@ -61,7 +61,7 @@ public class ReportConfigVM extends CrudSurrogateKeyVM<ReportConfigRef, ReportCo
         String filename = md.getZ().get("fileName").toString();
         data.setJasperReportTemplateName(filename);
 
-        Map<String,Object> additionalParameters = new HashMap<String,Object>();
+        Map<String, Object> additionalParameters = new HashMap<String, Object>();
         additionalParameters.put("localFilename", filename);
 
         OutputSessionParameters outputSessionParameters = new OutputSessionParameters();

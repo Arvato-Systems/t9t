@@ -17,10 +17,8 @@ package com.arvatosystems.t9t.viewmodel;
 
 import com.arvatosystems.t9t.bpmn2.ProcessDefinitionDTO;
 import com.arvatosystems.t9t.component.ext.IFilterGenerator;
-import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.AsciiFilter;
-import de.jpaw.bonaparte.pojos.api.LongFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;

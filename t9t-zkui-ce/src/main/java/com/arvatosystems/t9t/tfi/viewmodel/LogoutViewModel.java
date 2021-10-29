@@ -47,7 +47,7 @@ public class LogoutViewModel extends GenericForwardComposer<Component> {
      * On link clicked Shiro logoff.
      */
     @GlobalCommand("logoff")
-    public final void onClick$logoff() {
+    public final void onClickLogoff() {
         Executions.sendRedirect(Constants.ZulFiles.LOGOUT);
     }
 }

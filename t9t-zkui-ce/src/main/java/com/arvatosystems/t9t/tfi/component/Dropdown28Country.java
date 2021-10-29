@@ -24,11 +24,11 @@ import java.util.stream.Stream;
 
 public class Dropdown28Country extends Dropdown28Ext {
 
-    private static final List<String> countryModelData = new ArrayList<>();
+    private static final List<String> COUNTRY_MODEL_DATA = new ArrayList<>();
     static {
         Stream<String> s = Arrays.stream(Locale.getISOCountries());
-        countryModelData.add("XX");
-        countryModelData.addAll(s.sorted().collect(Collectors.toList()));
+        COUNTRY_MODEL_DATA.add("XX");
+        COUNTRY_MODEL_DATA.addAll(s.sorted().collect(Collectors.toList()));
     }
 
     /**
@@ -37,7 +37,7 @@ public class Dropdown28Country extends Dropdown28Ext {
     private static final long serialVersionUID = 3911446278727438869L;
 
     public Dropdown28Country() {
-        super(countryModelData);
+        super(COUNTRY_MODEL_DATA);
         this.setMaxlength(2);
     }
 }

@@ -52,7 +52,7 @@ public class ApplicationConfigurationInitializer {
         return forgetPasswordApiKey;
     }
 
-    private final String getForgetPasswordApiKeyFromFile() {
+    private String getForgetPasswordApiKeyFromFile() {
         final Properties baseProperties = BaseConfigurationProvider.getBaseProperties();
         return baseProperties.getProperty("forget.password.api.key");  // this can be null!
     }

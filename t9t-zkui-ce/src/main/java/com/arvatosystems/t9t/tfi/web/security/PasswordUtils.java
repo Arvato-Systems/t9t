@@ -27,28 +27,28 @@ import java.util.Arrays;
  */
 public class PasswordUtils {
 
-    int defLength = 0;
-    int defLower = 0;
-    int defUpper = 0;
-    int defDigit = 0;
-    int defSpecial = 0;
-    boolean defCheckIsoControl=false;
+    private int defLength = 0;
+    private int defLower = 0;
+    private int defUpper = 0;
+    private int defDigit = 0;
+    private int defSpecial = 0;
+    private boolean defCheckIsoControl = false;
 
-    int length = 0;
-    int lower = 0;
-    int upper = 0;
-    int digit = 0;
-    int special = 0;
-    int isoControl = 0;
+    private int length = 0;
+    private int lower = 0;
+    private int upper = 0;
+    private int digit = 0;
+    private int special = 0;
+    private int isoControl = 0;
 
-    boolean passedLength = false;
-    boolean passedLower = false;
-    boolean passedUpper = false;
-    boolean passedDigit = false;
-    boolean passedSpecial = false;
-    boolean passedIsoControl = false;
+    private boolean passedLength = false;
+    private boolean passedLower = false;
+    private boolean passedUpper = false;
+    private boolean passedDigit = false;
+    private boolean passedSpecial = false;
+    private boolean passedIsoControl = false;
 
-    StringBuffer verficationMessage = new StringBuffer("... not yet verified ...");
+    private StringBuffer verficationMessage = new StringBuffer("... not yet verified ...");
 
     public PasswordUtils() { }
 
@@ -65,7 +65,7 @@ public class PasswordUtils {
         this.defUpper = upper;
         this.defDigit = digit;
         this.defSpecial = special;
-        this.defCheckIsoControl =checkIsoControl;
+        this.defCheckIsoControl = checkIsoControl;
     }
 
     /**
@@ -104,8 +104,7 @@ public class PasswordUtils {
 
         // can't change to a password that contains any 3 character substring of old password
         if (oldPassword != null) {
-            int length = oldPassword.length();
-            for (int i = 0; i < length - 2; i++) {
+            for (int i = 0; i < oldPassword.length() - 2; i++) {
                 String sub = oldPassword.substring(i, i + 3);
                 if (newPassword.indexOf(sub) > -1) {
                     // throw new
@@ -117,19 +116,21 @@ public class PasswordUtils {
 
         // new password must have enough character sets and length
         length = newPassword.length();
-        for (int i = 0; i < newPassword.length(); i++)
+        for (int i = 0; i < newPassword.length(); i++) {
             if (search(CHAR_LOWERS, newPassword.charAt(i))) {
                 lower++;
             }
+        }
         for (int i = 0; i < newPassword.length(); i++) {
             if (search(CHAR_UPPERS, newPassword.charAt(i))) {
                 upper++;
             }
         }
-        for (int i = 0; i < newPassword.length(); i++)
+        for (int i = 0; i < newPassword.length(); i++) {
             if (search(CHAR_DIGITS, newPassword.charAt(i))) {
                 digit++;
             }
+        }
         for (int i = 0; i < newPassword.length(); i++) {
             if (search(CHAR_SPECIALS, newPassword.charAt(i))) {
                 special++;
@@ -257,7 +258,7 @@ public class PasswordUtils {
     private static final char[] CHAR_UPPERS = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
             'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
     private static final char[] CHAR_DIGITS = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
-    private static final char[] CHAR_SPECIALS = { '.', '-', '_', '!', '@', '$', '^', '*', '=', '~', '|', '+', '?','#' };
+    private static final char[] CHAR_SPECIALS = { '.', '-', '_', '!', '@', '$', '^', '*', '=', '~', '|', '+', '?', '#' };
 
  // The example displays the following output to the console:
 //  \U0000    \U0001    \U0002    \U0003    \U0004    \U0005
@@ -358,9 +359,9 @@ public class PasswordUtils {
         /**
          * {@inheritDoc}
          */
-        public String getRandomString(int length, char[] characterSet) {
+        public String getRandomString(int xlength, char[] characterSet) {
             StringBuffer sb = new StringBuffer();
-            for (int loop = 0; loop < length; loop++) {
+            for (int loop = 0; loop < xlength; loop++) {
                 int index = secureRandom.nextInt(characterSet.length);
                 sb.append(characterSet[index]);
             }

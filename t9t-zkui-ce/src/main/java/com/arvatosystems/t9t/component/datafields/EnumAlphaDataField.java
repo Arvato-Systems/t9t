@@ -24,7 +24,7 @@ import de.jpaw.bonaparte.pojos.meta.EnumDefinition;
 
 public class EnumAlphaDataField extends AbstractEnumDataField<Enum> {
     protected final Class<? extends Enum<?>> enumClass;
-    protected final Map<String,Object> converterArg;
+    protected final Map<String, Object> converterArg;
     protected final EnumDefinition ed;
 
     public EnumAlphaDataField(DataFieldParameters params, String enumDtoRestriction) {
@@ -42,7 +42,7 @@ public class EnumAlphaDataField extends AbstractEnumDataField<Enum> {
     }
 
     @Override
-    public Map<String,Object> getConverterArgs() {
+    public Map<String, Object> getConverterArgs() {
         return null;
     }
 }

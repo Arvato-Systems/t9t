@@ -81,7 +81,7 @@ public class Crud28 extends Vlayout implements IViewModelOwner, IDataSelectRecei
     protected final ApplicationSession session = ApplicationSession.get();
     protected final List<Form28> childForms = new ArrayList<Form28>(8);
     protected String cachesDropdown = null;  // if set to non null, a DELETE or SAVE will invalidate the cache for this ID
-    protected final Map<String, Object> NO_ARGS = ImmutableMap.<String, Object>of();
+    protected static final Map<String, Object> NO_ARGS = ImmutableMap.<String, Object>of();
 
     public Crud28() {
         super();
@@ -125,8 +125,9 @@ public class Crud28 extends Vlayout implements IViewModelOwner, IDataSelectRecei
             break;
         }
         // update child forms
-        for (Form28 form : childForms)
+        for (Form28 form : childForms) {
             form.updateState(currentMode);
+        }
     }
 
     @Listen("onCreate")
@@ -184,10 +185,16 @@ public class Crud28 extends Vlayout implements IViewModelOwner, IDataSelectRecei
         }
 
         // wire events to commands
-        saveButton      .addEventListener(Events.ON_CLICK, ev -> { binder.sendCommand("commandSave", NO_ARGS); invalidateCache(); });
+        saveButton.addEventListener(Events.ON_CLICK, ev -> {
+            binder.sendCommand("commandSave", NO_ARGS);
+            invalidateCache();
+        });
         newButton       .addEventListener(Events.ON_CLICK, ev -> binder.sendCommand("commandNew", NO_ARGS));
         copyButton      .addEventListener(Events.ON_CLICK, ev -> binder.sendCommand("commandCopy", NO_ARGS));
-        deleteButton    .addEventListener(Events.ON_CLICK, ev -> { binder.sendCommand("commandDelete", NO_ARGS); invalidateCache(); });
+        deleteButton.addEventListener(Events.ON_CLICK, ev -> {
+            binder.sendCommand("commandDelete", NO_ARGS);
+            invalidateCache();
+        });
         activateButton  .addEventListener(Events.ON_CLICK, ev -> binder.sendCommand("commandActivate", NO_ARGS));
         deactivateButton.addEventListener(Events.ON_CLICK, ev -> binder.sendCommand("commandDeactivate", NO_ARGS));
         editButton      .addEventListener(Events.ON_CLICK, ev -> binder.sendCommand("commandEdit", NO_ARGS));
@@ -226,9 +233,10 @@ public class Crud28 extends Vlayout implements IViewModelOwner, IDataSelectRecei
         boolean parentHasColumn = parent != null && hasColumn(parent, fieldname);
         if (parentHasColumn)
             return true;
-        for (FieldDefinition f: cls.getMetaData().getFields())
+        for (FieldDefinition f: cls.getMetaData().getFields()) {
             if (f.getName().equals(fieldname))
                 return true;
+        }
         return false;
     }
 
@@ -280,7 +288,7 @@ public class Crud28 extends Vlayout implements IViewModelOwner, IDataSelectRecei
 
     public void setHide(String buttonNames) {
         if (buttonNames != null) {
-            String [] buttonsToHide = buttonNames.split(",");
+            String[] buttonsToHide = buttonNames.split(",");
             if (buttonsToHide != null) {
                 for (String buttonToHide : buttonsToHide) {
                     String normalizedName = buttonToHide.trim().toUpperCase();

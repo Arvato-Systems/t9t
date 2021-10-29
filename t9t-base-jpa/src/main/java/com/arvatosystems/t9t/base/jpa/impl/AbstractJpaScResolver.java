@@ -38,8 +38,12 @@ import de.jpaw.bonaparte.refs.PersistenceException;
 import de.jpaw.bonaparte.refsc.RefResolver;
 import de.jpaw.dp.Jdp;
 
-public abstract class AbstractJpaScResolver<REF extends AbstractRef, KEY extends REF, DTO extends KEY, TRACKING extends TrackingBase, ENTITY extends BonaPersistableKey<KEY> & BonaPersistableTracking<TRACKING>>
-   implements RefResolver<REF, KEY, DTO, TRACKING> {
+public abstract class AbstractJpaScResolver<
+  REF extends AbstractRef,
+  KEY extends REF, DTO extends KEY,
+  TRACKING extends TrackingBase,
+  ENTITY extends BonaPersistableKey<KEY> & BonaPersistableTracking<TRACKING>
+> implements RefResolver<REF, KEY, DTO, TRACKING> {
 
     protected final String entityName;
     protected final IResolverSuperclassKey42<REF, KEY, TRACKING, ENTITY> resolver;
@@ -150,8 +154,9 @@ public abstract class AbstractJpaScResolver<REF extends AbstractRef, KEY extends
     public List<Long> queryKeys(final int limit, final int offset, final SearchFilter filter, final List<SortColumn> sortColumns) {
         final List<KEY> result1 = resolver.searchKey(buildCriteria(limit, offset, filter, sortColumns));
         final List<Long> result2 = new ArrayList<>(result1.size());
-        for (final KEY k: result1)
+        for (final KEY k: result1) {
             result2.add(k.ret$RefW());
+        }
         return result2;
     }
 }

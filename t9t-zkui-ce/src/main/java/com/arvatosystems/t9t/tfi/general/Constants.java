@@ -15,12 +15,12 @@
  */
 package com.arvatosystems.t9t.tfi.general;
 
-public class Constants {
+public final class Constants {
     private Constants() {
     }
 
     /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-    public class ZulFiles {
+    public final class ZulFiles {
         private ZulFiles() {
         }
         public static final String LOGOUT                 = "/logout";
@@ -31,7 +31,7 @@ public class Constants {
     }
 
     /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-    public class ErrorCodes {
+    public final class ErrorCodes {
         private ErrorCodes() {
         }
 
@@ -43,10 +43,10 @@ public class Constants {
     }
 
     /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-    public static class Application {
+    public static final class Application {
         private Application() {
         }
-        public static enum CachingType {
+        public enum CachingType {
             CREATE_AND_CACH,
             CREATE_WITHOUT_CACHING,
             GET_CACHED
@@ -55,7 +55,7 @@ public class Constants {
     }
 
     /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-    public static class NaviConfig {
+    public static final class NaviConfig {
         private NaviConfig() {
         }
 
@@ -65,7 +65,7 @@ public class Constants {
     }
 
     /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-    public class KeyStrokes {
+    public final class KeyStrokes {
         private KeyStrokes() {
         }
 

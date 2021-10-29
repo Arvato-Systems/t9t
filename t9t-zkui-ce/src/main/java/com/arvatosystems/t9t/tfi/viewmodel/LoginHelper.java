@@ -28,12 +28,14 @@ import org.apache.shiro.web.util.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LoginHelper {
+public final class LoginHelper {
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginHelper.class);
     private static final String SSL_CLIENT_VERIFY = "ssl_client_verify";
     private static final String SSL_CLIENT_S_DN = "ssl_client_s_dn";
     public static final String ADDITIONAL_PARAM = "additionalParam";
     public static final String TOKEN_BUTTON = "btnLoginToken";
+
+    private LoginHelper() { }
 
     public static String getSubjectDNHeader(ServletRequest request) {
         String userName = null;

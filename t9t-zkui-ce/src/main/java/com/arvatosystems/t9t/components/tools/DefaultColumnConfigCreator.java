@@ -54,21 +54,21 @@ public class DefaultColumnConfigCreator implements IColumnConfigCreator {
     protected String          viewModelId = null;
 
     @Override
-    public void createColumnConfigComponent(ApplicationSession session, Div parent, UIGridPreferences uiGridPreferences, Set<String> currentGrid) {
+    public void createColumnConfigComponent(ApplicationSession session, Div parent, UIGridPreferences xuiGridPreferences, Set<String> xcurrentGrid) {
         parent.setVflex("1");
-        this.currentGrid = currentGrid;
-        this.uiGridPreferences = uiGridPreferences;
-        viewModelId = uiGridPreferences.getViewModel();
+        this.currentGrid = xcurrentGrid;
+        this.uiGridPreferences = xuiGridPreferences;
+        viewModelId = xuiGridPreferences.getViewModel();
         listbox = new Listbox();
         List<String> allAvailableFieldNames = new LinkedList<>();
-        uiGridPreferences.getColumns().stream().forEach(uiColumns -> {
+        xuiGridPreferences.getColumns().stream().forEach(uiColumns -> {
             allAvailableFieldNames.add(uiColumns.getFieldName());
         });
         Listhead head = new Listhead();
         Listheader checkboxHeader = new Listheader();
         checkboxHeader.setWidth("40px");
         checkboxHeader.setParent(head);
-        Listheader fieldHeader= new Listheader();
+        Listheader fieldHeader = new Listheader();
         fieldHeader.setParent(head);
         head.setParent(listbox);
         listbox.setItemRenderer(new ListitemRenderer<String>() {
@@ -104,7 +104,7 @@ public class DefaultColumnConfigCreator implements IColumnConfigCreator {
         listbox.setEmptyMessage(session.translate("com", "noDataFound"));
 
         listbox.getItems().stream().forEach(item -> {
-            if (currentGrid.contains(item.getValue())) {
+            if (xcurrentGrid.contains(item.getValue())) {
                 item.setSelected(true);
             }
         });

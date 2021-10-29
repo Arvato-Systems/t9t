@@ -179,12 +179,8 @@ public class DefaultNavBarCreator implements INavBarCreator {
     protected boolean subtitleShouldDisplay(final NaviGroupingViewModel naviGroups, final int index, final int childIndex) {
 
         if (childIndex != 0) {
-            if (naviGroups.getChild(index, childIndex).getSubcategory() != null &&
-                naviGroups.getChild(index, childIndex).getSubcategory() != naviGroups.getChild(index, childIndex - 1).getSubcategory()) {
-                return true;
-            } else {
-                return false;
-            }
+            return naviGroups.getChild(index, childIndex).getSubcategory() != null
+                    && naviGroups.getChild(index, childIndex).getSubcategory() != naviGroups.getChild(index, childIndex - 1).getSubcategory();
         } else {
             return naviGroups.getChild(index, childIndex).getSubcategory() != null;
         }
@@ -265,7 +261,7 @@ public class DefaultNavBarCreator implements INavBarCreator {
         }
     }
 
-    private final void createContextMenuOnEachMenu(final Menupopup menu) {
+    private void createContextMenuOnEachMenu(final Menupopup menu) {
         menu.addEventListener(Events.ON_OPEN, ev -> {
             for (final Component comp2 : ev.getTarget().getChildren()) {
                 if (comp2 instanceof Menuitem) {

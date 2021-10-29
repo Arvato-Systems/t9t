@@ -28,7 +28,6 @@ import org.zkoss.zul.Combobox;
 import com.arvatosystems.t9t.base.search.Description;
 import com.arvatosystems.t9t.base.search.DescriptionList;
 import com.arvatosystems.t9t.base.search.LeanGroupedSearchRequest;
-import com.arvatosystems.t9t.base.search.LeanSearchRequest;
 import com.arvatosystems.t9t.component.fields.fixedfilters.IDescriptionFilter;
 import com.arvatosystems.t9t.component.fields.fixedfilters.IFixedFilter;
 import com.arvatosystems.t9t.tfi.component.SimpleListModelExt;
@@ -81,7 +80,7 @@ public class GroupedDropdown28Db<REF extends Ref> extends Combobox {
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public GroupedDropdown28Db(String dropdownId) {
-        this( (IGroupedDropdown28DbFactory) Dropdown28Registry.requireFactoryById(dropdownId));
+        this((IGroupedDropdown28DbFactory) Dropdown28Registry.requireFactoryById(dropdownId));
     }
 
     public Description lookupById(String id) {
@@ -118,8 +117,9 @@ public class GroupedDropdown28Db<REF extends Ref> extends Combobox {
         getDropDownData();
     }
 
-    // reloads the data based on updated filter requirements - common subroutine for constructor and reloadDropDownData() (must be final because called by constructor)
-    private final void getDropDownData() {
+    // reloads the data based on updated filter requirements - common subroutine for
+    // constructor and reloadDropDownData() (must be final because called by constructor)
+    private void getDropDownData() {
         lookupById.clear();
         lookupByRef.clear();
         allIds.clear();

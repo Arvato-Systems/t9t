@@ -34,7 +34,7 @@ import de.jpaw.json.JsonParser;
  */
 public class JsonConverter implements Converter<String, Map<String, Object>, Component> {
 
-    private final static String EMPTY_BRACKET = "{}";
+    private static final String EMPTY_BRACKET = "{}";
 
     @Override
     public String coerceToUi(Map<String, Object> jsonMap, Component component, BindContext bindContext) {

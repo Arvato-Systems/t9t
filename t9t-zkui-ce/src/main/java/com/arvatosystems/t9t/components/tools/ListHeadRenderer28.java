@@ -99,7 +99,8 @@ public class ListHeadRenderer28 {
         listhead.setSizable(true);
         // listeners
         listhead.addEventListener(ZulEvents.ON_COL_SIZE, (final ColSizeEvent event) -> {
-            LOGGER.debug(String.format("--> event:%s - col:%s - width:%s - id:%s", event.getName(), event.getColIndex(), event.getWidth(), event.getColumn().getId()));
+            LOGGER.debug(String.format("--> event:%s - col:%s - width:%s - id:%s", event.getName(), event.getColIndex(), event.getWidth(),
+                    event.getColumn().getId()));
             onColSizeListHeader(event);
         });
         createContextMenu(listhead);  // single entry into separate subclass
@@ -176,7 +177,8 @@ public class ListHeadRenderer28 {
         if (dynamicColumnSize) {
             listheader.setHflex("min");
         } else {
-            listheader.setWidth(String.format("%spx", width)); // setting width does not allow automatic distribution of non used space in list header after upgrade to ZK8
+            // setting width does not allow automatic distribution of non used space in list header after upgrade to ZK8
+            listheader.setWidth(String.format("%spx", width));
         }
         // this criteria is a bit too pessimistic, but want to be on the safe side initially.
         if (!isDotted && !isIndexed && !isUnsortable && Multiplicity.LIST != columnDescriptor.getMultiplicity())

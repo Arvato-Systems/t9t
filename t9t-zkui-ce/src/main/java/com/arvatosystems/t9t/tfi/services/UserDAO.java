@@ -66,7 +66,7 @@ public class UserDAO implements IUserDAO {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserDAO.class);
 
     protected final T9TRemoteUtils t9tRemoteUtils = Jdp.getRequired(T9TRemoteUtils.class);
-    protected final String UI_VERSION = IUserDAO.class.getPackage().getImplementationVersion();
+    protected static final String UI_VERSION = IUserDAO.class.getPackage().getImplementationVersion();
 
     protected SessionParameters makeSessionParameters(String userName) {
         // currently the session is a new one, the attributes as set in login form are lost
@@ -93,7 +93,7 @@ public class UserDAO implements IUserDAO {
         return sp;
     }
     @Override
-    public final AuthenticationResponse getAuthenticationResponse( String username, String pwd) throws ReturnCodeException{
+    public final AuthenticationResponse getAuthenticationResponse(String username, String pwd) throws ReturnCodeException {
         try {
 
             AuthenticationRequest authenticationRequest = new AuthenticationRequest();
@@ -157,7 +157,7 @@ public class UserDAO implements IUserDAO {
     }
 
     @Override
-    public final void changePassword(String oldPassword, String newPassword) throws ReturnCodeException{
+    public final void changePassword(String oldPassword, String newPassword) throws ReturnCodeException {
         try {
             // Check the new pwd is in valid format
             PasswordUtils passwordUtils = new PasswordUtils(Integer.valueOf(Labels.getLabel("pwd.length")),
@@ -165,7 +165,9 @@ public class UserDAO implements IUserDAO {
                     Integer.valueOf(Labels.getLabel("pwd.digit")), Integer.valueOf(Labels.getLabel("pwd.special")),
                     Boolean.valueOf(Labels.getLabel("pwd.checkIsoControl")));
             if (!passwordUtils.verifyPasswordStrength(null, newPassword)) {
-                LOGGER.warn("Error while changing password. Remember that the password should contain upper and lower case characters as well as digits and special characters. "+ passwordUtils.toString());
+                LOGGER.warn(
+                        "Error while changing password. Remember that the password should contain upper and lower case characters "
+                        + "as well as digits and special characters. " + passwordUtils.toString());
                 throw new ReturnCodeException(Constants.ErrorCodes.AUTHENTICATION_EXCEPTION, Labels.getLabel("err.pwd.requirements"), null);
             }
             String userId = ApplicationSession.get().getUserId();

@@ -172,9 +172,10 @@ public class FieldFactory {
                 break;
 
             }
-            LOGGER.error("No matches found for {} in {} (dataCategory={}, bonType={}, javaType={}, dropdown={}. Possibly something misconfigured in the grid configuration?",
-                    fieldName, viewModel.dtoClass.getBonaPortableClass().getCanonicalName(),
-                    dataCategory, bonaparteType, javaType, dropdownType);
+            LOGGER.error(
+                    "No matches found for {} in {} (dataCategory={}, bonType={}, javaType={}, dropdown={}. Possibly something misconfigured in "
+                    + "the grid configuration?",
+                    fieldName, viewModel.dtoClass.getBonaPortableClass().getCanonicalName(), dataCategory, bonaparteType, javaType, dropdownType);
 
         } catch (Exception e) {
             LOGGER.error("Problems in the grid configuration for field {}? {}", fieldname, e);

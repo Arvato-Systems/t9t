@@ -27,10 +27,14 @@ import de.jpaw.bonaparte.pojos.api.DataWithTracking;
  */
 public interface IGridContextMenu<DTO extends BonaPortable> {
     /** Invoked on onOpen() of the context menu, determines if the option is available for this row or not (greying out the option). */
-    default boolean isEnabled(DataWithTracking<DTO, TrackingBase> dwt) { return true; }
+    default boolean isEnabled(DataWithTracking<DTO, TrackingBase> dwt) {
+        return true;
+    }
 
     /** Invoked on onOpen() of the context menu, determines if the option is available for this row or not (greying out the option). */
-    default boolean isEnabled(DataWithTracking<DTO, TrackingBase> dwt, Permissionset perms) { return isEnabled(dwt); }
+    default boolean isEnabled(DataWithTracking<DTO, TrackingBase> dwt, Permissionset perms) {
+        return isEnabled(dwt);
+    }
 
     /** Invoked when the user selects the listbox entry. The method should return true if
      * the list item needs a refresh after the operation (modifying DB operation).
@@ -39,7 +43,11 @@ public interface IGridContextMenu<DTO extends BonaPortable> {
      * @param li
      * @param dwt
      */
-    default void selected(Grid28 lb, DataWithTracking<DTO, TrackingBase> dwt, Permissionset perms) { selected(lb, dwt); }
+    default void selected(Grid28 lb, DataWithTracking<DTO, TrackingBase> dwt, Permissionset perms) {
+        selected(lb, dwt);
+    }
 
-    default void selected(Grid28 lb, DataWithTracking<DTO, TrackingBase> dwt) { throw new UnsupportedOperationException(); }
+    default void selected(Grid28 lb, DataWithTracking<DTO, TrackingBase> dwt) {
+        throw new UnsupportedOperationException();
+    }
 }

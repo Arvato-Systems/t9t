@@ -37,8 +37,12 @@ import de.jpaw.bonaparte.refs.PersistenceException;
 import de.jpaw.bonaparte.refsw.RefResolver;
 import de.jpaw.dp.Jdp;
 
-public abstract class AbstractJpaResolver<REF extends Ref, DTO extends REF, TRACKING extends TrackingBase, ENTITY extends BonaPersistableKey<Long> & BonaPersistableTracking<TRACKING>>
-   implements RefResolver<REF, DTO, TRACKING> {
+public abstract class AbstractJpaResolver<
+  REF extends Ref,
+  DTO extends REF,
+  TRACKING extends TrackingBase,
+  ENTITY extends BonaPersistableKey<Long> & BonaPersistableTracking<TRACKING>
+> implements RefResolver<REF, DTO, TRACKING> {
 
     protected final String entityName;
     protected final IResolverSurrogateKey42<REF, TRACKING, ENTITY> resolver;

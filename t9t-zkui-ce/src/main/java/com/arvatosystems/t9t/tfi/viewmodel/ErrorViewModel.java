@@ -26,7 +26,7 @@ import com.arvatosystems.t9t.tfi.web.ZulUtils;
 
 public class ErrorViewModel {
 
-    ErrorPopupEntity paramGeneralErrorMessage = null;
+    private ErrorPopupEntity paramGeneralErrorMessage = null;
 
     public ErrorViewModel() {
         Exception exception = (Exception) Executions.getCurrent().getAttribute("javax.servlet.error.exception");

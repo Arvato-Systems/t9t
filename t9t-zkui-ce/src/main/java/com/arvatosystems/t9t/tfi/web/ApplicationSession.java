@@ -114,7 +114,7 @@ public final class ApplicationSession {
     private String                           entityId;
     private Map<String, Object>              sessionValues; // session based values cache
 
-    public final List<Navi> getAllNavigations() {
+    public List<Navi> getAllNavigations() {
         return navis;
     }
 
@@ -179,11 +179,13 @@ public final class ApplicationSession {
     /**
      * getRequestParamsRequired
      * @return the requestParams
-     * @throws IllegalArgumentException if requestParams is null --> The 'requestParams' are NULL. Please check the caller (invocation point) why NULL was passed.
+     * @throws IllegalArgumentException if requestParams is null --> The 'requestParams' are NULL. Please check the caller (invocation point)
+     *         why NULL was passed.
      */
     public Map<String, Object> getRequestParamsRequired() {
         if (requestParams == null) {
-            throw new IllegalArgumentException("The 'requestParams' are NULL. Please check the caller (invocation point) why NULL was passed. createLinkComponents(params->null)");
+            throw new IllegalArgumentException(
+                    "The 'requestParams' are NULL. Please check the caller (invocation point) why NULL was passed. createLinkComponents(params->null)");
         }
         return requestParams;
     }
@@ -208,8 +210,8 @@ public final class ApplicationSession {
         return gridTranslations.get(tenantId + "_" + language + "_" + gridId);
     }
 
-    public void setGridTranslations(String tenantId, String language, String gridId, Map<String, String> gridTranslations) {
-        this.gridTranslations.put(tenantId + "_" + language + "_" + gridId, gridTranslations);
+    public void setGridTranslations(String tenantId, String language, String gridId, Map<String, String> xgridTranslations) {
+        this.gridTranslations.put(tenantId + "_" + language + "_" + gridId, xgridTranslations);
     }
 
 
@@ -313,8 +315,8 @@ public final class ApplicationSession {
 
 
     // enum restrictions - stored for language "en" only
-    private final String [] STD_LANGS = new String [] { "en" };
-    private final String ENUM_RESTRICTIONS_FIELD_NAME = "$enums";
+    private static final String[] STD_LANGS = new String[] { "en" };
+    private static final String ENUM_RESTRICTIONS_FIELD_NAME = "$enums";
 
     // converts a comma separated value list to a set. If the input starts with a hash, it is used as a key.
     private Set<String> csv2Set(String csv) {
@@ -358,7 +360,7 @@ public final class ApplicationSession {
     }
 
     private String userLanguage = "en";  // never null
-    private String [] userLanguages = new String [] { "en" };  // languages with fallbacks
+    private String[] userLanguages = new String[] { "en" };  // languages with fallbacks
     private Locale userLocale = Locale.ENGLISH;
     private TimeZone userTimeZone;
     private ZoneId userZoneId;
@@ -467,8 +469,7 @@ public final class ApplicationSession {
 
         userLanguage = rawLanguage == null ? "en" : rawLanguage;
         userLanguages = translationProvider.resolveLanguagesToCheck(userLanguage, true);
-        userLocale = userLanguage.length() == 2 ? new Locale(userLanguage) :
-            new Locale(userLanguage.substring(0, 2), userLanguage.substring(3, 5));
+        userLocale = userLanguage.length() == 2 ? new Locale(userLanguage) : new Locale(userLanguage.substring(0, 2), userLanguage.substring(3, 5));
         LOGGER.debug("default language set to {}, language list with fallsbacks has {} entries", userLanguage, userLanguages.length);
 
         dayFormat = doDateTimeFormatter("day", "M-");
@@ -480,7 +481,8 @@ public final class ApplicationSession {
         if (current != null) {
             current.setAttribute(org.zkoss.web.Attributes.PREFERRED_LOCALE, userLocale);
             current.setAttribute(org.zkoss.web.Attributes.PREFERRED_TIME_ZONE, userTimeZone);
-            //current.setAttribute(org.zkoss.web.Attributes.PREFERRED_DATE_FORMAT_INFO, ... // see https://www.zkoss.org/javadoc/7.0.2/zk/org/zkoss/text/DateFormatInfo.html
+            //current.setAttribute(org.zkoss.web.Attributes.PREFERRED_DATE_FORMAT_INFO, ...
+            // see https://www.zkoss.org/javadoc/7.0.2/zk/org/zkoss/text/DateFormatInfo.html
         }
     }
 
@@ -551,7 +553,7 @@ public final class ApplicationSession {
         } else {
             LOGGER.debug("Storing new Jwt in ApplicationSession");
             try {
-                String [] parts = jwt.split("\\.");
+                String[] parts = jwt.split("\\.");
                 if (parts.length != 3) {
                     LOGGER.error("Received JWT does not have 3 parts: {}", jwt);
                     setJwt(null);
@@ -605,8 +607,9 @@ public final class ApplicationSession {
     public void setAllowedTenants(List<TenantDescription> allowedTenants) {
         this.allowedTenants = allowedTenants;
         tenantsByRef = new ConcurrentHashMap<Long, TenantDescription>(2 * allowedTenants.size());
-        for (TenantDescription e: allowedTenants)
+        for (TenantDescription e: allowedTenants) {
             tenantsByRef.put(e.getTenantRef(), e);
+        }
     }
 
     public Instant getLastLoggedIn() {
@@ -660,7 +663,7 @@ public final class ApplicationSession {
             int lastDot = resourceId.lastIndexOf('.', length);
             if (lastDot < 0)
                 break;
-            resourceId = resourceId.substring(0, lastDot+1);  // include the dot - wildcard permissions are stored with trailing dot
+            resourceId = resourceId.substring(0, lastDot + 1); // include the dot - wildcard permissions are stored with trailing dot
         }
         return NO_PERMISSIONS;
     }
@@ -760,10 +763,10 @@ public final class ApplicationSession {
      * This method check if the logged in user is consistent with the user in token (to avoid security issue)
      * @param jwtInfo
      */
-    private void invalidateInconsistentAuth(JwtInfo jwtInfo) {
+    private void invalidateInconsistentAuth(JwtInfo xjwtInfo) {
         if (SecurityUtils.getSubject() != null && SecurityUtils.getSubject().getPrincipal() != null) {
             String shiroAuthUser = SecurityUtils.getSubject().getPrincipal().toString();
-            if (jwtInfo.getUserId() == null ||  !shiroAuthUser.equals(jwtInfo.getUserId())) {
+            if (xjwtInfo.getUserId() == null ||  !shiroAuthUser.equals(xjwtInfo.getUserId())) {
                 invalidateSession();
             }
         }

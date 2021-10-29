@@ -38,8 +38,13 @@ import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.dp.Jdp;
 
-public abstract class AbstractTextSearchRequestHandler<REF extends Ref, DTO extends REF, TRACKING extends TrackingBase, REQ extends SearchRequest<DTO, TRACKING>, ENTITY extends BonaPersistableKey<Long> & BonaPersistableTracking<TRACKING>>
-        extends AbstractSearchRequestHandler<REQ> {
+public abstract class AbstractTextSearchRequestHandler<
+  REF extends Ref,
+  DTO extends REF,
+  TRACKING extends TrackingBase,
+  REQ extends SearchRequest<DTO, TRACKING>,
+  ENTITY extends BonaPersistableKey<Long> & BonaPersistableTracking<TRACKING>
+> extends AbstractSearchRequestHandler<REQ> {
     protected final IExecutor executor = Jdp.<IExecutor>getRequired(IExecutor.class);
     protected final ISearchTools searchTools = Jdp.<ISearchTools>getRequired(ISearchTools.class);
     protected final ITextSearch textSearch = Jdp.<ITextSearch>getRequired(ITextSearch.class);

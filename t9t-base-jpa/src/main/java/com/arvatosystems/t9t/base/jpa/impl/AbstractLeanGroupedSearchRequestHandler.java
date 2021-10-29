@@ -32,7 +32,10 @@ import com.arvatosystems.t9t.base.services.RequestContext;
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
 
-public class AbstractLeanGroupedSearchRequestHandler<S extends LeanGroupedSearchRequest, E extends BonaPersistableKey<Long> & BonaPersistableTracking<?>> extends AbstractReadOnlyRequestHandler<S> {
+public abstract class AbstractLeanGroupedSearchRequestHandler<
+  S extends LeanGroupedSearchRequest,
+  E extends BonaPersistableKey<Long> & BonaPersistableTracking<?>
+> extends AbstractReadOnlyRequestHandler<S> {
     protected final IResolverSurrogateKey42<?, ?, E> resolver;
     protected final Function<E, Long> getGroup;
     protected final Function<E, Description> mapper;

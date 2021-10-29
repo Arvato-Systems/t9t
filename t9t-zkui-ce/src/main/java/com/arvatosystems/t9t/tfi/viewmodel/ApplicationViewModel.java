@@ -96,7 +96,7 @@ public class ApplicationViewModel {
     private NaviGroupingViewModel naviGroupingViewModel = null;
     private Object selected;
     private Map<String, Panelchildren> naviContentMap = new HashMap<String, Panelchildren>();
-    private boolean  previouslyCachingTypeWasCreateWithoutCaching=false;
+    private boolean previouslyCachingTypeWasCreateWithoutCaching = false;
     private String previousNaviKey;
 
     private String whenLastLoggedIn;
@@ -111,16 +111,16 @@ public class ApplicationViewModel {
     private String userName;
     private String userId;
     @SuppressWarnings("rawtypes")
-    List<IField> filters;
-    List<HtmlBasedComponent> htmlBasedFieldComponents;
-    private final int MAX_NUMBER_SUBMENU_ITEMS_PER_COLUMN = 13;
-    private final long MILLISECONDS_PER_DAY = 24L * 60L * 60L * 1000L;
+    private List<IField> filters;
+    private List<HtmlBasedComponent> htmlBasedFieldComponents;
+    private static final int MAX_NUMBER_SUBMENU_ITEMS_PER_COLUMN = 13;
+    private static final long MILLISECONDS_PER_DAY = 24L * 60L * 60L * 1000L;
 
     @Wire("#navbarContainer") private Component navbar;
     @Wire("#mainHome") private Window mainHome;
     @Wire("#reverse")  private Style  reverse;
     @Wire("#panel")    private Panel  panel;
-    public static String CTRL_KEYS;
+    private static String ctrlKeys;
 
     public ApplicationViewModel() {
 
@@ -161,13 +161,13 @@ public class ApplicationViewModel {
             //Reset all screens in hash for each new reloading the menus
             /*FT-808*/  naviContentMap = new HashMap<String, Panelchildren>();
             //          paramMap = new HashMap<String, Object>();
-            CTRL_KEYS = ZulUtils.readConfig("keys.ctrlKeys.ctrlKeys");
+            ctrlKeys = ZulUtils.readConfig("keys.ctrlKeys.ctrlKeys");
         }
     }
 
     @Command
     public void changeTenant() {
-        List<TenantDescription> allowedTenants= as.getAllowedTenants();
+        List<TenantDescription> allowedTenants = as.getAllowedTenants();
 
         if (allowedTenants.size() > 1) {
             Map<String, Object> args = new HashMap<>();
@@ -186,7 +186,7 @@ public class ApplicationViewModel {
         Selectors.wireComponents(view, this, false);
 
         boolean isDefaultOrder = ZulUtils.readBooleanConfig("isDefaultOrder");
-        mainHome.setSclass(isDefaultOrder ? "": "reverse");
+        mainHome.setSclass(isDefaultOrder ? "" : "reverse");
         reverse.setSrc(!isDefaultOrder ? "/css/reverse.css" : "");
         if (!isDefaultOrder) {
             Clients.evalJavaScript("enableRTL();");
@@ -289,7 +289,7 @@ public class ApplicationViewModel {
      * @param naviGroupingViewModel
      *            the naviGroupingViewModel to set
      */
-    public final void setNaviGroupingViewModel( NaviGroupingViewModel naviGroupingViewModel) {
+    public final void setNaviGroupingViewModel(NaviGroupingViewModel naviGroupingViewModel) {
         this.naviGroupingViewModel = naviGroupingViewModel;
     }
 
@@ -317,18 +317,19 @@ public class ApplicationViewModel {
 
     @GlobalCommand("setSelectedFromJump")
     //@NotifyChange({ "selected" })
-    public final void setSelectedFromJump(@BindingParam("selected") Object selected,
+    public final void setSelectedFromJump(@BindingParam("selected") Object xselected,
             @BindingParam("backNaviLink") String backNaviLink
 
     ) {
-        if (selected instanceof String) {
-            setNaviGroup(String.valueOf(selected), true);
+        if (xselected instanceof String) {
+            setNaviGroup(String.valueOf(xselected), true);
         } else {
-            Navi navi = (Navi) selected;
+            Navi navi = (Navi) xselected;
             if (!naviContentMap.containsKey(navi.getNaviId())) {
                 //createComponents(navi);
-                createComponents(navi,  backNaviLink == null ? NO_PARAMS : Collections.singletonMap("paramBackNaviLink", backNaviLink), Constants.Application.CachingType.GET_CACHED);
-                this.selected = selected;
+                createComponents(navi, backNaviLink == null ? NO_PARAMS : Collections.singletonMap("paramBackNaviLink", backNaviLink),
+                        Constants.Application.CachingType.GET_CACHED);
+                this.selected = xselected;
                 setNaviGroup((navi).getCategory(), false);
             } else {
                 String targetZul = navi.getLink();
@@ -392,12 +393,11 @@ public class ApplicationViewModel {
 
         if (previouslyCachingTypeWasCreateWithoutCaching) {
             panel.getChildren().clear();
-            previouslyCachingTypeWasCreateWithoutCaching=false;
+            previouslyCachingTypeWasCreateWithoutCaching = false;
         }
 
-        if (!naviContentMap.containsKey(key) ||
-            (cachingType==Constants.Application.CachingType.CREATE_AND_CACH) ||
-            (cachingType==Constants.Application.CachingType.CREATE_WITHOUT_CACHING)) {
+        if (!naviContentMap.containsKey(key) || (cachingType == Constants.Application.CachingType.CREATE_AND_CACH)
+                || (cachingType == Constants.Application.CachingType.CREATE_WITHOUT_CACHING)) {
 
             if (cachingType == Constants.Application.CachingType.CREATE_WITHOUT_CACHING) {
                 naviContentMap.remove(key); // clear the content map
@@ -405,8 +405,8 @@ public class ApplicationViewModel {
 
             Component content = Executions.createComponents(navi.getLink(), null,  map);
             Panelchildren panelChildren = new Panelchildren();
-            if ( cachingType==Constants.Application.CachingType.CREATE_WITHOUT_CACHING) {
-                content.setId(key+"_"+Constants.Application.CachingType.CREATE_WITHOUT_CACHING);
+            if (cachingType == Constants.Application.CachingType.CREATE_WITHOUT_CACHING) {
+                content.setId(key + "_" + Constants.Application.CachingType.CREATE_WITHOUT_CACHING);
                 panelChildren.setId(key + "_" + Constants.Application.CachingType.CREATE_WITHOUT_CACHING);
             } else {
                 content.setId(key);
@@ -417,7 +417,7 @@ public class ApplicationViewModel {
             panel.appendChild(panelChildren);
 
             if (cachingType == Constants.Application.CachingType.CREATE_WITHOUT_CACHING) {
-                previouslyCachingTypeWasCreateWithoutCaching= true;
+                previouslyCachingTypeWasCreateWithoutCaching = true;
             } else {
                 naviContentMap.put(key, panelChildren);
             }
@@ -462,23 +462,23 @@ public class ApplicationViewModel {
     public final void createLinkComponents(
             @BindingParam("naviLink") String naviLink,
  @BindingParam("params") Map<String, Object> params,
-            @BindingParam("CachingType") Constants.Application.CachingType CachingType) {
+            @BindingParam("CachingType") Constants.Application.CachingType cachingType) {
 
         Navi navi = applicationDAO.getNavigationByLink(as, naviLink);
 
         if (navi == null) {
-            throw new IllegalArgumentException(String.format("The navigation link %s is not configured in the resource properties. " +
-                    "Please check section:\n " +
-                    "\tmenu.base= {\n"+
-                    "\t\t...\n"+
-                    "\t\tnavi_id, position, category,  name,  %s,  hierarchy,  permission,  closeGroup,  AuthenticationType availability (*=all), menuItemVisible,item-image\n"+
-                    "\t\t...\n"+
-                    "\t}",naviLink, naviLink));
+            throw new IllegalArgumentException(String.format("The navigation link %s is not configured in the resource properties. "
+                    + "Please check section:\n "
+                    + "\tmenu.base= {\n"
+                    + "\t\t...\n"
+                    + "\t\tnavi_id, position, category, name, %s, hierarchy, permission, "
+                    + "closeGroup, AuthenticationType availability (*=all), menuItemVisible,item-image\n"
+                    + "\t\t...\n" + "\t}", naviLink, naviLink));
         }
         // Map<String,String> map= new HashMap<String,String>();
         // map.put("permission", navi.getPermission());
         // map.put("params", params);
-        if (CachingType == null) {
+        if (cachingType == null) {
             throw new IllegalArgumentException("Wrong CachingType (null)");
         }
 
@@ -490,14 +490,14 @@ public class ApplicationViewModel {
         } else {
             paramsToDisplay = params != null ? String.valueOf(params) : null;
         }
-        LOGGER.debug("Jump->to:{}:{} with:params={}", naviLink, CachingType, paramsToDisplay);
+        LOGGER.debug("Jump->to:{}:{} with:params={}", naviLink, cachingType, paramsToDisplay);
 
         // menu focus
         if (navi.isMenuItemVisible()) {
             setNaviSelection(navi);
         }
 
-        createComponents(navi, params, CachingType);
+        createComponents(navi, params, cachingType);
 
         /*
          * Integer groupIndex=applicationDAO.getGroupIndex(naviLink,
@@ -524,26 +524,26 @@ public class ApplicationViewModel {
      * @throws NoSuchMethodException
      */
     @Command
-    public void ctrlKeyClick(  @org.zkoss.bind.annotation.BindingParam("item") KeyEvent keyEvent) {
-        CtrlKeyHandler ctrlKeyHandler= new CtrlKeyHandler();
+    public void ctrlKeyClick(@org.zkoss.bind.annotation.BindingParam("item") KeyEvent keyEvent) {
+        CtrlKeyHandler ctrlKeyHandler = new CtrlKeyHandler();
         //ctrlKeyHandler.ctrlKeyClick(keyEvent,  applicationDAO);
         ctrlKeyHandler.ctrlKeyClick(keyEvent,  this.htmlBasedFieldComponents);
     }
     @SuppressWarnings("rawtypes")
     @GlobalCommand
     @NotifyChange({ "filters"})
-    public void registerFields(@BindingParam("filters") List<IField> filters) {
-        this.filters = filters;
+    public void registerFields(@BindingParam("filters") List<IField> xfilters) {
+        this.filters = xfilters;
         registerFieldComponents(this.filters);
     }
 
     @SuppressWarnings("rawtypes")
-    public void registerFieldComponents(List<IField> filters) {
-        if (filters.isEmpty()) {
+    public void registerFieldComponents(List<IField> xfilters) {
+        if (xfilters.isEmpty()) {
             this.htmlBasedFieldComponents = null;
         } else {
             htmlBasedFieldComponents = new ArrayList<HtmlBasedComponent>();
-            for (IField filter:filters) {
+            for (IField filter : xfilters) {
                 for (Object component:filter.getComponents()) {
                     htmlBasedFieldComponents.add((HtmlBasedComponent) component);
                 }
@@ -635,13 +635,8 @@ public class ApplicationViewModel {
     public boolean subtitleShouldDisplay(int index, int childIndex) {
 
         if (childIndex != 0) {
-            if (naviGroupingViewModel.getChild(index, childIndex).getSubcategory() != null &&
-                    naviGroupingViewModel.getChild(index, childIndex).getSubcategory() !=
-                    naviGroupingViewModel.getChild(index, childIndex - 1).getSubcategory()) {
-                return true;
-            } else {
-                return false;
-            }
+            return naviGroupingViewModel.getChild(index, childIndex).getSubcategory() != null && naviGroupingViewModel.getChild(index, childIndex)
+                    .getSubcategory() != naviGroupingViewModel.getChild(index, childIndex - 1).getSubcategory();
         } else {
             return naviGroupingViewModel.getChild(index, childIndex).getSubcategory() != null;
         }
@@ -701,7 +696,8 @@ public class ApplicationViewModel {
 
                 sb.append("((");
                 BonaPortable bonaPortable = Generics.cast(value);
-                List<FieldDefinition> fieldDefinitions = bonaPortable != null ? bonaPortable.ret$MetaData().getFields() : Collections.<FieldDefinition>emptyList();
+                List<FieldDefinition> fieldDefinitions = bonaPortable != null ? bonaPortable.ret$MetaData().getFields()
+                        : Collections.<FieldDefinition>emptyList();
                 for (FieldDefinition fieldDefinition : fieldDefinitions) {
                     if (fieldDefinition instanceof ObjectReference) {
                         try {

@@ -103,7 +103,8 @@ public class Cells28 extends Row {
         dataFieldId = id;
     }
 
-    protected IDataField setIdAndValueAndCreateField(Label l, FieldDefinition f, Boolean override, String fieldId, String enumZulRestrictions, String decimals) {
+    protected IDataField setIdAndValueAndCreateField(Label l, FieldDefinition f, Boolean override, String fieldId, String enumZulRestrictions,
+            String decimals) {
         IDataField df = ff.createField(new DataFieldParameters(f, fieldId, override, as, enumZulRestrictions, decimals), crudViewModel);
         if (df == null) {
             LOGGER.error("****  FATAL: cannot create data field {} inside viewModel {}", fieldId, viewModelId);
@@ -183,7 +184,8 @@ public class Cells28 extends Row {
             dataField.addEventListener(Events.ON_CHANGE, (ev) -> {
                 if (LOGGER.isTraceEnabled()) {
                     // mask value as ***** if type1 equals "password", for everything else log the value
-                    LOGGER.trace("onChange caught for {}, current value is {}", getId(), (getType1() != null && getType1().equals("password")) ? "*****" : getValue());
+                    LOGGER.trace("onChange caught for {}, current value is {}", getId(),
+                            (getType1() != null && getType1().equals("password")) ? "*****" : getValue());
                 }
                 Events.postEvent(new Event(Events.ON_CHANGE, this, null));
             });

@@ -62,10 +62,10 @@ public class Field28 extends Cell {
     private boolean readonly1 = false;
     private Boolean required1 = null;
     private String enums1 = null;
-    private boolean disabled1= false;
+    private boolean disabled1 = false;
     private String decimals1 = null;
     protected Form28 form = null;
-    protected boolean _visible = true; // added due to a bug on zk cell. setting visible dynamically on specific custom list will crash
+    protected boolean visible = true; // added due to a bug on zk cell. setting visible dynamically on specific custom list will crash
 
     public void setValue(Object t) {
         LOGGER.debug("{}.setValue({}) called", getId(), t);
@@ -97,7 +97,7 @@ public class Field28 extends Cell {
         Component dataField = idf != null ? idf.getComponent() : null;
         if (dataField != null) {
             dataField.setParent(this);
-            dataField.setVisible(_visible);
+            dataField.setVisible(visible);
             // also forward the onChange event to allow saving of changed data
             dataField.addEventListener(Events.ON_CHANGE, (ev) -> {
                 LOGGER.debug("onChange caught for {}, current value is {}", getId(), getValue());
@@ -110,7 +110,7 @@ public class Field28 extends Cell {
                 tb.setMultiline(true);
             }
 
-            if (dataField != null ) {
+            if (dataField != null) {
                 if (dataField instanceof InputElement) {
                     ((InputElement) dataField).setDisabled(disabled1);
                 }
@@ -193,9 +193,9 @@ public class Field28 extends Cell {
     }
 
     @Override
-    public boolean setVisible(boolean visible) {
+    public boolean setVisible(boolean xvisible) {
         boolean oldValue = this.isVisible();
-        _visible = visible;
+        visible = xvisible;
 
         if (isVisibleAllowToSet())
             oldValue = super.setVisible(visible); // apply to its cell

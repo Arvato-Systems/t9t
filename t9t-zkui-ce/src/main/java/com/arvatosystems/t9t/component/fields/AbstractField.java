@@ -76,12 +76,12 @@ public abstract class AbstractField<E extends InputElement> implements IField {
         E c = createComponent(suffix);
         c.setId(cfg.getFieldName() + suffix);
         c.setHflex("1");
-        c.setPlaceholder(suffix.length() == 0 ? label : translateFromOrTo(gridId, fieldname, suffix, label));
+        c.setPlaceholder(suffix.length() == 0 ? label : translateFromOrTo(suffix, label));
         components.add(c);
     }
 
     /** Translate a label for "From" or "To". */
-    private String translateFromOrTo(String gridId, String fieldname, String suffix, String labelWithoutSuffix) {
+    private String translateFromOrTo(String suffix, String labelWithoutSuffix) {
         // return session.translate(gridId, fieldname + suffix);
         final String pattern = session.translate(null, suffix);
         if (pattern.indexOf('#') < 0) {
@@ -116,9 +116,10 @@ public abstract class AbstractField<E extends InputElement> implements IField {
 
     @Override
     public boolean empty() {
-        for (E e : components)
+        for (E e : components) {
             if (!componentEmpty(e))
                 return false;
+        }
         return true;
     }
 

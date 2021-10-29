@@ -134,17 +134,16 @@ public class T9TRemoteUtils {
                 throw new ServiceResponseException(response.getReturnCode(),  response.getErrorMessage(), response.getErrorDetails());
             }
             return (T)response;
-        }
-        catch (ServiceResponseException e) {
+        } catch (ServiceResponseException e) {
             throw e;
         } catch (ApplicationException e) {
             String causeChain = ExceptionUtil.causeChain(e);
             LOGGER.error("Execution application exception {}, caused by {}",
                     e.getErrorCode(), causeChain);
-            throw new ServiceResponseException(e.getErrorCode(),  causeChain,null);
+            throw new ServiceResponseException(e.getErrorCode(), causeChain, null);
         } catch (Exception e) {
                 String causeChain = ExceptionUtil.causeChain(e);
-                throw new ServiceResponseException(Constants.ErrorCodes.GENERAL_EXCEPTION,  causeChain,null);
+                throw new ServiceResponseException(Constants.ErrorCodes.GENERAL_EXCEPTION, causeChain, null);
         }
     }
 

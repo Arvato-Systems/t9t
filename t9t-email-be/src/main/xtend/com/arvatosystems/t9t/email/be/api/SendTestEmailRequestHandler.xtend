@@ -50,7 +50,7 @@ class SendTestEmailRequestHandler extends AbstractRequestHandler<SendTestEmailRe
     @Inject
     protected IEmailPersistenceAccess emailPersistenceAccess
 
-     override SendTestEmailResponse execute(RequestContext ctx, SendTestEmailRequest rq){
+     override SendTestEmailResponse execute(RequestContext ctx, SendTestEmailRequest rq) {
 
      // create a UUID for this message
         val messageId       = UUID.randomUUID

@@ -79,7 +79,8 @@ public class TextField extends AbstractField<Textbox> {
 
     @Override
     public void clear() {
-        for (Textbox e : components)
+        for (Textbox e : components) {
             e.setValue(null);
+        }
     }
 }

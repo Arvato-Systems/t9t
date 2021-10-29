@@ -49,7 +49,7 @@ import de.jpaw.dp.Jdp;
 public class Tabbox28 extends Tabbox implements IViewModelOwner, IDataSelectReceiver {
     private static final long serialVersionUID = -7088578448192569162L;
     private static final Logger LOGGER = LoggerFactory.getLogger(Tabbox28.class);
-    private static final AtomicInteger UNDEF_IDs = new AtomicInteger();
+    private static final AtomicInteger UNDEF_IDS = new AtomicInteger();
 
     private Tabs tabs;
     private EventDataSelect28 lastSelected;
@@ -84,7 +84,7 @@ public class Tabbox28 extends Tabbox implements IViewModelOwner, IDataSelectRece
             firstTab = panel;
         if (panel.getId() == null) {
             LOGGER.error("Missing id for tabpanel28!");
-            panel.setId("TP_UNDEF" + UNDEF_IDs.incrementAndGet());
+            panel.setId("TP_UNDEF" + UNDEF_IDS.incrementAndGet());
         }
         final String tabId = panel.getId();
         Tab tab = new Tab();

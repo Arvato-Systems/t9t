@@ -44,8 +44,12 @@ import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 
 /** base implementation of the IEntityMapper42 interface, only suitable for simple configuration data tables */
-public abstract class AbstractEntityMapper<KEY extends Serializable, DTO extends BonaPortable, TRACKING extends TrackingBase, ENTITY extends BonaPersistableKey<KEY> & BonaPersistableTracking<TRACKING>>
-  implements IEntityMapper<KEY, DTO, TRACKING, ENTITY> {
+public abstract class AbstractEntityMapper<
+  KEY extends Serializable,
+  DTO extends BonaPortable,
+  TRACKING extends TrackingBase,
+  ENTITY extends BonaPersistableKey<KEY> & BonaPersistableTracking<TRACKING>
+> implements IEntityMapper<KEY, DTO, TRACKING, ENTITY> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractEntityMapper.class);
     protected static final String SEARCH_PREFIX_PROPERTY = "searchprefix";
     protected static final String SEARCH_PREFIX_PROPERTY_TWO = "searchprefix2"; // for third level
@@ -74,7 +78,8 @@ public abstract class AbstractEntityMapper<KEY extends Serializable, DTO extends
 
 
     @Override
-    public List<DTO> mapListToDto(final Collection<ENTITY> entityList, final Map<String, String> graph, final String prefix, final Map<String, Map<Long, Ref>> cache) {
+    public List<DTO> mapListToDto(final Collection<ENTITY> entityList, final Map<String, String> graph, final String prefix,
+      final Map<String, Map<Long, Ref>> cache) {
         if (entityList == null) {
             return null;
         }
@@ -102,7 +107,8 @@ public abstract class AbstractEntityMapper<KEY extends Serializable, DTO extends
     /** The default implementation just invokes the single element mapper on every element.
      * @param hashMap
      * @param noGraph */
-    protected void batchMapToDto(final Collection<ENTITY> entityList, final List<DTO> resultList, final Map<String, String> graph, final String prefix, final Map<String, Map<Long, Ref>> hashMap) {
+    protected void batchMapToDto(final Collection<ENTITY> entityList, final List<DTO> resultList,
+      final Map<String, String> graph, final String prefix, final Map<String, Map<Long, Ref>> hashMap) {
         for (final ENTITY entity : entityList) {
             resultList.add(mapToDto(entity));
         }
@@ -123,7 +129,7 @@ public abstract class AbstractEntityMapper<KEY extends Serializable, DTO extends
     }
 
     /** just a hook not defined in the public interface which allows to jump up to the specific implementation. */
-    abstract protected void dto2entity(ENTITY entity, DTO dto, boolean onlyActive);
+    protected abstract void dto2entity(ENTITY entity, DTO dto, boolean onlyActive);
 
     protected final DTO fromCache(final ENTITY e, final Class<DTO> clazz) {
         // xtend: ServiceSessionContext.getDtoCache()?.get(e)?.get(clazz) as DTO
@@ -264,7 +270,7 @@ public abstract class AbstractEntityMapper<KEY extends Serializable, DTO extends
                 throw new T9tException(T9tException.MALFORMATTED_FIELDNAME, fieldName);
             // insert the index + 1 as 2 digit number
             final int num = Integer.parseInt(fieldName.substring(currentSrc, dotPos));
-            newName.append(String.format("%02d", num+1));
+            newName.append(String.format("%02d", num + 1));
             currentSrc = dotPos + 1;
             dotPos = fieldName.indexOf('[', currentSrc);
         }

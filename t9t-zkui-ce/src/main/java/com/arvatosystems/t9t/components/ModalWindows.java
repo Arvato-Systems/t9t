@@ -28,8 +28,10 @@ import org.zkoss.zk.ui.event.Events;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 
-public class ModalWindows {
+public final class ModalWindows {
     private static final Logger LOGGER = LoggerFactory.getLogger(ModalWindows.class);
+
+    private ModalWindows() { }
 
     public static <T extends BonaPortable> Component runModal(
             final String zulFile,

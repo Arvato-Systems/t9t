@@ -28,7 +28,7 @@ import de.jpaw.enums.XEnumFactory;
 public class XenumDataField extends AbstractEnumDataField<AbstractXEnumBase<?>> {
     protected final XEnumDefinition xed;
 
-    private final void createModel() {
+    private void createModel() {
         XEnumFactory<?> factory = XEnumFactory.getFactoryByPQON(xed.getName());
         cbItems.clear();
         @SuppressWarnings("unchecked")

@@ -19,7 +19,9 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.apache.commons.beanutils.BeanUtils;
 
-public class DataUtils {
+public final class DataUtils {
+
+    private DataUtils() { }
 
     /**
      * Modify the request by field name and the params value.
@@ -30,7 +32,7 @@ public class DataUtils {
      * @throws IllegalAccessException
      * @throws InvocationTargetException
      */
-    public static final <REQUEST> void modifyData(REQUEST request, String field, Object value) throws IllegalAccessException, InvocationTargetException {
+    public static <REQUEST> void modifyData(REQUEST request, String field, Object value) throws IllegalAccessException, InvocationTargetException {
         BeanUtils.copyProperty(request, field, value);
     }
 

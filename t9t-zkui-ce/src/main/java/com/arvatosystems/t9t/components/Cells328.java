@@ -93,7 +93,8 @@ public class Cells328 extends Cells228 {
     public void setValue3(Object t) {
         if (LOGGER.isTraceEnabled()) {
             // mask value as ***** if type1 equals "password", for everything else log the value
-            LOGGER.trace("{}.setValue3({}) called (class {})", dataFieldId3, (getType3() != null && getType3().equals("password")) ? "*****" : t, t == null ? "N/A" : t.getClass().getSimpleName());
+            LOGGER.trace("{}.setValue3({}) called (class {})", dataFieldId3, (getType3() != null && getType3().equals("password")) ? "*****" : t,
+                    t == null ? "N/A" : t.getClass().getSimpleName());
         }
         deferredValue3 = t;
         if (idf3 != null) {
@@ -120,9 +121,8 @@ public class Cells328 extends Cells228 {
         // LOGGER.debug("cells 328 onCreate");
         super.myOnCreate();
         String strippedFieldname3 = FieldMappers.stripIndexes(dataFieldId3);
-        FieldDefinition f = dataFieldId3.endsWith(T9tConstants.TENANT_REF_FIELD_NAME42) ?
-                InternalTenantRef42.meta$$tenantRef :
-                FieldGetter.getFieldDefinitionForPathname(crudViewModel.dtoClass.getMetaData(), strippedFieldname3);
+        FieldDefinition f = dataFieldId3.endsWith(T9tConstants.TENANT_REF_FIELD_NAME42) ? InternalTenantRef42.meta$$tenantRef
+                : FieldGetter.getFieldDefinitionForPathname(crudViewModel.dtoClass.getMetaData(), strippedFieldname3);
 
         // provide the label text and create the data field
         idf3 = setIdAndValueAndCreateField(label3, f, required3, dataFieldId3, enums3, decimals3);
@@ -144,7 +144,8 @@ public class Cells328 extends Cells228 {
             dataField3.addEventListener(Events.ON_CHANGE, (ev) -> {
                 if (LOGGER.isTraceEnabled()) {
                     // mask value as ***** if type1 equals "password", for everything else log the value
-                    LOGGER.trace("onChange caught for {}, current value is {}", dataFieldId3, (getType3() != null && getType3().equals("password")) ? "*****" : getValue());
+                    LOGGER.trace("onChange caught for {}, current value is {}", dataFieldId3,
+                            (getType3() != null && getType3().equals("password")) ? "*****" : getValue());
                 }
                 Events.postEvent(new Event(Events.ON_CHANGE, this, null));
             });

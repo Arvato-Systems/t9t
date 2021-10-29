@@ -44,10 +44,13 @@ import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 import de.jpaw.util.ExceptionUtil;
 
-public abstract class AbstractConfigCache42<DTO extends Ref, TRACKING extends TrackingBase, ENTITY extends BonaPersistableKey<Long> & BonaPersistableTracking<TRACKING>> {
+public abstract class AbstractConfigCache42<
+  DTO extends Ref,
+  TRACKING extends TrackingBase,
+  ENTITY extends BonaPersistableKey<Long> & BonaPersistableTracking<TRACKING>> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractConfigCache42.class);
     /** The cache is a 2 level map. The index of the first level is the tenantRef. A cache always contains all entries for a given tenant or none. */
-    protected final Cache<Long,Map<Ref, DTO>> configCache = CacheBuilder.newBuilder().expireAfterWrite(15L, TimeUnit.MINUTES).build();
+    protected final Cache<Long, Map<Ref, DTO>> configCache = CacheBuilder.newBuilder().expireAfterWrite(15L, TimeUnit.MINUTES).build();
     protected final IResolverAnyKey42<Long, TRACKING, ENTITY> resolver;
     protected final Class<DTO> dtoClass;
     protected final boolean fallbackDefaultTenant;
@@ -57,7 +60,7 @@ public abstract class AbstractConfigCache42<DTO extends Ref, TRACKING extends Tr
     protected final IQueryHintSetter           queryHintSetter = Jdp.getOptional(IQueryHintSetter.class);
 
     protected AbstractConfigCache42(final IResolverAnyKey42<Long, TRACKING, ENTITY> resolver, final Class<DTO> dtoClass, final boolean fallbackDefaultTenant) {
-        LOGGER.info("Creating a new Cache for {}" , dtoClass.getSimpleName());
+        LOGGER.info("Creating a new Cache for {}", dtoClass.getSimpleName());
         this.resolver = resolver;
         this.dtoClass = dtoClass;
         this.fallbackDefaultTenant = fallbackDefaultTenant;
@@ -93,7 +96,7 @@ public abstract class AbstractConfigCache42<DTO extends Ref, TRACKING extends Tr
         return tenantCache.get(key);
     }
 
-    abstract protected void populateCache(Map<Ref, DTO> cache, ENTITY e);
+    protected abstract void populateCache(Map<Ref, DTO> cache, ENTITY e);
 
     protected Map<Ref, DTO> readWholeTenant(final Long tenantRef) {
         final TypedQuery<ENTITY> query = resolver.getEntityManager().createQuery(

@@ -26,11 +26,11 @@ import de.jpaw.dp.Alternative;
 /** Base implementation of the IEntityResolver interface, suitable for tables with a natural key. */
 @Alternative
 public abstract class AbstractResolverSuperclassKey28<
-    REF extends BonaPortable,
-    KEY extends REF,
-    TRACKING extends TrackingBase,
-    ENTITY extends BonaPersistableKey<KEY> & BonaPersistableTracking<TRACKING>
-    > extends AbstractResolverAnyKey28<KEY, TRACKING, ENTITY> implements IResolverSuperclassKey28<REF, KEY, TRACKING, ENTITY> {
+  REF extends BonaPortable,
+  KEY extends REF,
+  TRACKING extends TrackingBase,
+  ENTITY extends BonaPersistableKey<KEY> & BonaPersistableTracking<TRACKING>
+> extends AbstractResolverAnyKey28<KEY, TRACKING, ENTITY> implements IResolverSuperclassKey28<REF, KEY, TRACKING, ENTITY> {
 
     @Override
     public final boolean hasArtificialPrimaryKey() {

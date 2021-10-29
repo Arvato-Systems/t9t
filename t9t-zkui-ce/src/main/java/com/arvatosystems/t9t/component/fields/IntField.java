@@ -74,7 +74,8 @@ public class IntField extends AbstractField<Intbox> {
 
     @Override
     public void clear() {
-        for (Intbox e : components)
+        for (Intbox e : components) {
             e.setValue(null);
+        }
     }
 }

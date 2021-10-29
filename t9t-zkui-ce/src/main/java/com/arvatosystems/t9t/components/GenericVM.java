@@ -43,7 +43,7 @@ public class GenericVM {
 
     @Init
     public void setInitial() {  // @BindingParam("inst") HashMap<String, Object> inst
-        Map<?,?> arg = Executions.getCurrent().getArg();  // the 3rd parameter to Executions.createObjects() is available via getArg()
+        Map<?, ?> arg = Executions.getCurrent().getArg(); // the 3rd parameter to Executions.createObjects() is available via getArg()
         Object pojo = arg == null ? null : arg.get("inst");
         LOGGER.debug("Setting initial VM as {}", arg == null ? "NULL" : pojo);
         if (pojo instanceof DataWithTracking) {

@@ -25,7 +25,7 @@ import com.arvatosystems.t9t.tfi.web.ApplicationSession;
 
 public class ExpiredCredentialsViewModel28 extends ChangePwdViewModel28 {
 
-    boolean pwdExpired = true;
+    private boolean pwdExpired = true;
 
     @Init
     @Override

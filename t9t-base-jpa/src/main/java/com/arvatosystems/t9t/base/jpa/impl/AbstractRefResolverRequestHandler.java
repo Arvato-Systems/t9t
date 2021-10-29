@@ -27,8 +27,12 @@ import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
 
-public abstract class AbstractRefResolverRequestHandler<REF extends Ref, TRACKING extends TrackingBase, ENTITY extends BonaPersistableKey<Long> & BonaPersistableTracking<TRACKING>, REQUEST extends RefResolverRequest<REF>>
-        extends AbstractRequestHandler<REQUEST> {
+public abstract class AbstractRefResolverRequestHandler<
+  REF extends Ref,
+  TRACKING extends TrackingBase,
+  ENTITY extends BonaPersistableKey<Long> & BonaPersistableTracking<TRACKING>,
+  REQUEST extends RefResolverRequest<REF>
+> extends AbstractRequestHandler<REQUEST> {
 
     protected abstract IResolverSurrogateKey<REF, TRACKING, ENTITY> getResolver();
 

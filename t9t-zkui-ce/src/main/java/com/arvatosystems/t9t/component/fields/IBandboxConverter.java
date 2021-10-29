@@ -22,5 +22,7 @@ public interface IBandboxConverter {
     String describe(Ref dto);
 
     /** Converts the PQON into the bandbox grid name, null means not required because the qualifier was the grid name already. */
-    default String getBandboxgridId() { return null; }
+    default String getBandboxgridId() {
+        return null;
+    }
 }

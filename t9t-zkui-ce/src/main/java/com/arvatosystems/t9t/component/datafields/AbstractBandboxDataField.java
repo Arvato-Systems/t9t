@@ -42,10 +42,10 @@ public abstract class AbstractBandboxDataField<T> extends AbstractDataField<Band
         popup = new Bandpopup28();
 
         c.setSclass("bandboxField28");
-        c.setWidgetOverride("slideDown_", "function(pp) {" +
-                "jq(this.getPopupNode_()).css({'left': '0','top': '0', 'right':'0', 'bottom':'0', 'width':'80%','height':'85%','margin':'auto','display':''});" +
-                "this.$supers('slideDown_',arguments);" +
-                "}");
+        c.setWidgetOverride("slideDown_", "function(pp) {"
+            + "jq(this.getPopupNode_()).css({'left': '0','top': '0', 'right':'0', 'bottom':'0', 'width':'80%','height':'85%','margin':'auto','display':''});"
+            + "this.$supers('slideDown_',arguments);"
+            + "}");
 
 
         popup.setParent(c);

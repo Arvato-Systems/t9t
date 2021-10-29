@@ -123,7 +123,8 @@ public class ProcessDefinitionVM
     @Command
     public void commandSave() {
         if (uiOnlyWorkflowSteps.isEmpty()) {
-            Messagebox.show(session.translate("processDefinition", "missingSteps"), session.translate("com", "badinput"), Messagebox.OK, Messagebox.INFORMATION);
+            Messagebox.show(session.translate("processDefinition", "missingSteps"), session.translate("com", "badinput"), Messagebox.OK,
+                    Messagebox.INFORMATION);
         }  else {
             super.commandSave();
             if (bpmnByte != null) {
@@ -131,7 +132,7 @@ public class ProcessDefinitionVM
                     DeployNewProcessRequest request = new DeployNewProcessRequest(bpmnByte);
                     remoteUtil.executeExpectOk(request);
                 } else {
-                    DeployProcessRequest request = new DeployProcessRequest(new ProcessDefinitionRef(data.getObjectRef()),bpmnByte);
+                    DeployProcessRequest request = new DeployProcessRequest(new ProcessDefinitionRef(data.getObjectRef()), bpmnByte);
                     remoteUtil.executeExpectOk(request);
                 }
             }
@@ -189,14 +190,14 @@ public class ProcessDefinitionVM
     @Command
     @NotifyChange("uiOnlyWorkflowSteps")
     public void removeSteps(@BindingParam("step") UiOnlyWorkflowStep step) {
-        if (step != null && CrudMode.NONE!=this.getCurrentMode())
+        if (step != null && CrudMode.NONE != this.getCurrentMode())
             uiOnlyWorkflowSteps.remove(step);
     }
 
     @Command
     @NotifyChange("uiOnlyWorkflowSteps")
     public void upSteps(@BindingParam("step") UiOnlyWorkflowStep step) {
-        if (step != null && CrudMode.NONE!=this.getCurrentMode()) {
+        if (step != null && CrudMode.NONE != this.getCurrentMode()) {
             int i = uiOnlyWorkflowSteps.indexOf(step);
             if (i != 0) {
                 uiOnlyWorkflowSteps.remove(step);
@@ -208,9 +209,9 @@ public class ProcessDefinitionVM
     @Command
     @NotifyChange("uiOnlyWorkflowSteps")
     public void downSteps(@BindingParam("step") UiOnlyWorkflowStep step) {
-        if (step != null && CrudMode.NONE!=this.getCurrentMode()) {
+        if (step != null && CrudMode.NONE != this.getCurrentMode()) {
             int i = uiOnlyWorkflowSteps.indexOf(step);
-            if (i != uiOnlyWorkflowSteps.size()-1) {
+            if (i != uiOnlyWorkflowSteps.size() - 1) {
                 uiOnlyWorkflowSteps.remove(step);
                 uiOnlyWorkflowSteps.add(i + 1, step);
             }

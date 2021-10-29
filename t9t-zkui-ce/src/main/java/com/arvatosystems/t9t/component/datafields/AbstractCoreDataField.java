@@ -34,7 +34,8 @@ public abstract class AbstractCoreDataField<E extends Component, T> implements I
         this.cfg = params.cfg;
         this.path = params.path;
         this.as = params.as;
-        isRequired = params.overrideRequired != null ? params.overrideRequired.booleanValue() : cfg.getIsRequired() && cfg.getMultiplicity() == Multiplicity.SCALAR;
+        isRequired = params.overrideRequired != null ? params.overrideRequired.booleanValue()
+                : cfg.getIsRequired() && cfg.getMultiplicity() == Multiplicity.SCALAR;
     }
 
     @Override
@@ -53,7 +54,7 @@ public abstract class AbstractCoreDataField<E extends Component, T> implements I
     }
 
     @Override
-    public Map<String,Object> getConverterArgs() {
+    public Map<String, Object> getConverterArgs() {
         return null;
     }
 

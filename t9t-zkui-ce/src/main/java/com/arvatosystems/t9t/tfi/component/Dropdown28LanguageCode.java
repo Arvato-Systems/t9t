@@ -24,10 +24,10 @@ public class Dropdown28LanguageCode extends Dropdown28Ext {
 
     private static final long serialVersionUID = 7804881425211020007L;
 
-    private static final List<String> myModelData = new ArrayList<>(new SupportedLanguagesImporter().readSupportedLanguages());
+    private static final List<String> MY_MODEL_DATA = new ArrayList<>(new SupportedLanguagesImporter().readSupportedLanguages());
 
     public Dropdown28LanguageCode() {
-        super(myModelData);
+        super(MY_MODEL_DATA);
         this.setMaxlength(8);
     }
 }

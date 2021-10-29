@@ -15,9 +15,7 @@
  */
 package com.arvatosystems.t9t.tfi.services;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import com.arvatosystems.t9t.tfi.model.bean.Navi;
 import com.arvatosystems.t9t.tfi.viewmodel.navigation.NaviGroupingViewModel;
@@ -44,7 +42,7 @@ public class ApplicationDAO implements IApplicationDAO {
         for (Iterator<Navi> i = as.getAllNavigations().iterator(); i.hasNext();) {
             Navi tmp = i.next();
             if (tmp.getLink().equals(link)) {
-                somenavis=tmp;
+                somenavis = tmp;
                 return somenavis;
             }
         }
@@ -54,12 +52,12 @@ public class ApplicationDAO implements IApplicationDAO {
     @Override
     public final Integer getGroupIndex(String link, NaviGroupingViewModel naviGroupingViewModel) {
         Integer  groupIndex = null;
-        for (int groupIndexFlag=0; groupIndexFlag<naviGroupingViewModel.getGroupCount(); groupIndexFlag++) {
-            int childCount=naviGroupingViewModel.getChildCount(groupIndexFlag);
-            for (int childIndexFlag=0; childIndexFlag<childCount; childIndexFlag++) {
-                Navi navi =naviGroupingViewModel.getChild(groupIndexFlag, childIndexFlag);
+        for (int groupIndexFlag = 0; groupIndexFlag < naviGroupingViewModel.getGroupCount(); groupIndexFlag++) {
+            int childCount = naviGroupingViewModel.getChildCount(groupIndexFlag);
+            for (int childIndexFlag = 0; childIndexFlag < childCount; childIndexFlag++) {
+                Navi navi = naviGroupingViewModel.getChild(groupIndexFlag, childIndexFlag);
                 if (navi.getLink().equals(link)) {
-                    groupIndex=groupIndexFlag;
+                    groupIndex = groupIndexFlag;
                     return groupIndex;
                 }
             }
@@ -71,12 +69,12 @@ public class ApplicationDAO implements IApplicationDAO {
     @Override
     public final Integer getGroupIndexByCategory(String category, NaviGroupingViewModel naviGroupingViewModel) {
         Integer  groupIndex = null;
-        for (int groupIndexFlag=0; groupIndexFlag<naviGroupingViewModel.getGroupCount(); groupIndexFlag++) {
-            int childCount=naviGroupingViewModel.getChildCount(groupIndexFlag);
-            for (int childIndexFlag=0; childIndexFlag<childCount; childIndexFlag++) {
-                Navi navi =naviGroupingViewModel.getChild(groupIndexFlag, childIndexFlag);
+        for (int groupIndexFlag = 0; groupIndexFlag < naviGroupingViewModel.getGroupCount(); groupIndexFlag++) {
+            int childCount = naviGroupingViewModel.getChildCount(groupIndexFlag);
+            for (int childIndexFlag = 0; childIndexFlag < childCount; childIndexFlag++) {
+                Navi navi = naviGroupingViewModel.getChild(groupIndexFlag, childIndexFlag);
                 if (navi.getCategory().equals(category)) {
-                    groupIndex=groupIndexFlag;
+                    groupIndex = groupIndexFlag;
                     return groupIndex;
                 }
             }

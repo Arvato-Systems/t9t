@@ -34,8 +34,8 @@ import de.jpaw.dp.Singleton;
 public class AnyKeySearchRegistry implements IAnyKeySearchRegistry {
     private static final Logger LOGGER = LoggerFactory.getLogger(AnyKeySearchRegistry.class);
 
-    private static final Map<Integer, String> classnameByRtti = new ConcurrentHashMap<>(50);
-    private static final Map<Integer, BiFunction<RequestContext, Long, List<Description>>> resolverByRtti = new ConcurrentHashMap<>(50);
+    private static final Map<Integer, String> CLASSNAME_BY_RTTI = new ConcurrentHashMap<>(50);
+    private static final Map<Integer, BiFunction<RequestContext, Long, List<Description>>> RESOLVER_BY_RTTI = new ConcurrentHashMap<>(50);
 
     @Override
     public void registerLeanSearchRequest(final BiFunction<RequestContext, Long, List<Description>> resolver, final int rtti, final String classname) {
@@ -45,20 +45,20 @@ public class AnyKeySearchRegistry implements IAnyKeySearchRegistry {
         }
         final String theClassname = classname.endsWith("Entity") ? classname.substring(0, classname.length() - 6) : classname;
         final Integer rttiObject = Integer.valueOf(rtti);  // ensure a single instance is used for both maps, do not autobox twice
-        final String previousClassname = classnameByRtti.put(rttiObject, theClassname);
+        final String previousClassname = CLASSNAME_BY_RTTI.put(rttiObject, theClassname);
         if (previousClassname != null) {
             LOGGER.error("RTTI used twice: {} for {} and {}", rttiObject, theClassname, previousClassname);
         }
-        resolverByRtti.put(rttiObject, resolver);
+        RESOLVER_BY_RTTI.put(rttiObject, resolver);
         LOGGER.debug("Registered resolver for {} by RTTI {}", theClassname, rttiObject);
     }
 
     @Override
     public ResolveAnyRefResponse performLookup(final RequestContext ctx, final Long ref) {
         final Integer rtti = (int)(ref % 10000L);
-        final BiFunction<RequestContext, Long, List<Description>> resolver = resolverByRtti.get(rtti);
+        final BiFunction<RequestContext, Long, List<Description>> resolver = RESOLVER_BY_RTTI.get(rtti);
         final ResolveAnyRefResponse resp = new ResolveAnyRefResponse();
-        resp.setEntityClass(classnameByRtti.get(rtti));
+        resp.setEntityClass(CLASSNAME_BY_RTTI.get(rtti));
         if (resolver != null) {
             // it is possible to find a description
             final List<Description> descs = resolver.apply(ctx, ref);
@@ -73,5 +73,4 @@ public class AnyKeySearchRegistry implements IAnyKeySearchRegistry {
         }
         return resp;
     }
-
 }

@@ -63,9 +63,9 @@ import de.jpaw.enums.TokenizableEnum;
 /** base implementation of the IEntityResolver interface, only suitable for simple configuration data tables */
 @Alternative
 public abstract class AbstractResolverAnyKey28<
-    KEY extends Serializable,
-    TRACKING extends TrackingBase,
-    ENTITY extends BonaPersistableKey<KEY> & BonaPersistableTracking<TRACKING>
+  KEY extends Serializable,
+  TRACKING extends TrackingBase,
+  ENTITY extends BonaPersistableKey<KEY> & BonaPersistableTracking<TRACKING>
 > implements IResolverAnyKey28<KEY, TRACKING, ENTITY> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractResolverAnyKey28.class);
@@ -197,16 +197,21 @@ public abstract class AbstractResolverAnyKey28<
             return true; // always access to own tenant allowed
         }
         if (isTenantIsolated()) {
-            // write access to different tenant is never allowed
-            return false; // regular tenant can never modify the global tenant's data
+            // access to different tenant to be clarified by additional parameters
+            if (myTenant.equals(T9tConstants.GLOBAL_TENANT_ID)) {
+                return globalTenantCanAccessAll();
+                // return false; // regular tenant can never modify the global tenant's data, globalTenantCanAccessAll defines read access only
+            } else {
+                return false; // regular tenant can never modify the global tenant's data
+            }
         } else {
             // write access only for the global tenant!
-            return true; // QUICKFIX!  myTenant.equals(T9tConstants.GLOBAL_TENANT_ID);
+            return true; // TODO: or myTenant.equals(T9tConstants.GLOBAL_TENANT_REF42);
         }
     }
 
-    static private final SearchCriteria SEARCH_CRITERIA_ONLY_ACTIVE = new DummySearchCriteria();
-    static private final SearchCriteria SEARCH_CRITERIA_ANY = new DummySearchCriteria();
+    private static final SearchCriteria SEARCH_CRITERIA_ONLY_ACTIVE = new DummySearchCriteria();
+    private static final SearchCriteria SEARCH_CRITERIA_ANY = new DummySearchCriteria();
     static {
         SEARCH_CRITERIA_ONLY_ACTIVE.setSearchFilter(new BooleanFilter("isActive", true));
         SEARCH_CRITERIA_ONLY_ACTIVE.freeze();
@@ -220,7 +225,8 @@ public abstract class AbstractResolverAnyKey28<
 
     @Override
     public String entityNameAndKey(final Object key) {
-        return getBaseJpaEntityClass().getSimpleName() + ": " + (key instanceof BonaPortable ? key.toString() : "(" + key.getClass().getSimpleName() + ")" + key.toString());
+        return getBaseJpaEntityClass().getSimpleName() + ": "
+          + (key instanceof BonaPortable ? key.toString() : "(" + key.getClass().getSimpleName() + ")" + key.toString());
     }
 
     // plausi check for find operations. Done because hibernate's exception is not really self explanatory
@@ -333,7 +339,7 @@ public abstract class AbstractResolverAnyKey28<
         final Class<ENTITY> derivedEntityClass = getEntityClass();
         CriteriaQuery<KEY> criteriaQuery = criteriaBuilder.createQuery(getKeyClass());
         final Root<ENTITY> from = criteriaQuery.from(derivedEntityClass);
-        criteriaQuery = criteriaQuery.select(from.<KEY> get(hasArtificialPrimaryKey() ? "objectRef" : "key"));
+        criteriaQuery = criteriaQuery.select(from.<KEY>get(hasArtificialPrimaryKey() ? "objectRef" : "key"));
         if (Boolean.TRUE.equals(searchCriteria.getApplyDistinct()))
             criteriaQuery = criteriaQuery.distinct(true);
 
@@ -431,13 +437,13 @@ public abstract class AbstractResolverAnyKey28<
                     final Expression<String> exp = from.get(T9tConstants.TENANT_ID_FIELD_NAME);
                     tenantPredicate = exp.in(tenants);
                 } else {
-                    tenantPredicate = criteriaBuilder.equal(from.<String> get(T9tConstants.TENANT_ID_FIELD_NAME), tenantId);
+                    tenantPredicate = criteriaBuilder.equal(from.<String>get(T9tConstants.TENANT_ID_FIELD_NAME), tenantId);
                 }
                 whereList = whereList == null ? tenantPredicate : criteriaBuilder.and(whereList, tenantPredicate);
             } else {
                 // global tenant
                 if (!globalTenantCanAccessAll()) {
-                    final Predicate tenantPredicate = criteriaBuilder.equal(from.<String> get(T9tConstants.TENANT_ID_FIELD_NAME), tenantId);
+                    final Predicate tenantPredicate = criteriaBuilder.equal(from.<String>get(T9tConstants.TENANT_ID_FIELD_NAME), tenantId);
                     whereList = whereList == null ? tenantPredicate : criteriaBuilder.and(whereList, tenantPredicate);
                 }
             }
@@ -448,7 +454,8 @@ public abstract class AbstractResolverAnyKey28<
         }
     }
 
-    private <R> List<R> runSearch(final SearchCriteria searchCriteria, final CriteriaBuilder criteriaBuilder, final Root<ENTITY> from, final CriteriaQuery<R> select) {
+    private <R> List<R> runSearch(final SearchCriteria searchCriteria, final CriteriaBuilder criteriaBuilder,
+      final Root<ENTITY> from, final CriteriaQuery<R> select) {
 
         createWhereList(searchCriteria.getSearchFilter(), criteriaBuilder, from, select);
 
@@ -595,11 +602,11 @@ public abstract class AbstractResolverAnyKey28<
                     if (f.getType() == int.class) {
                         final Integer ref = Integer.valueOf(f.getInt(entityRef));
                         entRef = ref;
-                        whereList.add(criteriaBuilder.equal(from.<Integer> get(f.getName()), ref));
+                        whereList.add(criteriaBuilder.equal(from.<Integer>get(f.getName()), ref));
                     } else if (f.getType() == long.class) {
                         final Long ref = Long.valueOf(f.getLong(entityRef));
                         entRef = ref;
-                        whereList.add(criteriaBuilder.equal(from.<Long> get(f.getName()), ref));
+                        whereList.add(criteriaBuilder.equal(from.<Long>get(f.getName()), ref));
                     } else {
                         // any Object (includes wrapper classes such as Long)
                         entRef = getFieldValue(f, entityRef);
@@ -625,12 +632,12 @@ public abstract class AbstractResolverAnyKey28<
                         whereList.add(exp.in(tenants));
                         select.orderBy(criteriaBuilder.desc(from.get(T9tConstants.TENANT_ID_FIELD_NAME)));   // desc to ensure current tenant entry is first
                     } else {
-                        whereList.add(criteriaBuilder.equal(from.<String> get(T9tConstants.TENANT_ID_FIELD_NAME), tenantId));
+                        whereList.add(criteriaBuilder.equal(from.<String>get(T9tConstants.TENANT_ID_FIELD_NAME), tenantId));
                     }
                 } else {
                     // global tenant
                     if (!globalTenantCanAccessAll()) {
-                        whereList.add(criteriaBuilder.equal(from.<String> get(T9tConstants.TENANT_ID_FIELD_NAME), tenantId));
+                        whereList.add(criteriaBuilder.equal(from.<String>get(T9tConstants.TENANT_ID_FIELD_NAME), tenantId));
                     } else {
                         select.orderBy(criteriaBuilder.asc(from.get(T9tConstants.TENANT_ID_FIELD_NAME)));     // asc to ensure current tenant entry is first
                     }
@@ -645,7 +652,7 @@ public abstract class AbstractResolverAnyKey28<
         }
         // add criteria to isActive, if desired
         if (addActiveWhereClause) {
-            whereList.add(criteriaBuilder.equal(from.<Boolean> get("isActive"), true));
+            whereList.add(criteriaBuilder.equal(from.<Boolean>get("isActive"), true));
         }
         // Append restrictions to overall query if any available
         if (whereList.size() > 0) {
@@ -668,7 +675,8 @@ public abstract class AbstractResolverAnyKey28<
         }
         if (resultList.size() > 2) {
             // not plausible - e really do not expect this
-            LOGGER.debug("Expected unique key - Too many results for fetching entity data for tenantId {}, entityClass {}, objectRef {}", tenantId, entityClass, entRef);
+            LOGGER.debug("Expected unique key - Too many results for fetching entity data for tenantId {}, entityClass {}, objectRef {}",
+              tenantId, entityClass, entRef);
             throw new T9tException(T9tException.TOO_MANY_RECORDS, entityNameAndKey(entRef));
         }
         // one or two results...

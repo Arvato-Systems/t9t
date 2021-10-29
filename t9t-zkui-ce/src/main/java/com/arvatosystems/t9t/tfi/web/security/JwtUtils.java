@@ -22,9 +22,11 @@ import java.util.Base64;
 import de.jpaw.bonaparte.api.auth.JwtConverter;
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 
-public class JwtUtils {
+public final class JwtUtils {
 
     private static final Charset UTF8 = StandardCharsets.UTF_8;
+
+    private JwtUtils() { }
 
     public static JwtInfo getJwtPayload(String decodedJwt) {
         if (decodedJwt != null) {

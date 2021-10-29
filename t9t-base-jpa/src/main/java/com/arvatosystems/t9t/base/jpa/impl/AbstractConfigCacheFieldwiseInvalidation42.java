@@ -36,7 +36,10 @@ import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ExceptionUtil;
 
-public abstract class AbstractConfigCacheFieldwiseInvalidation42<DTO extends Ref, TRACKING extends TrackingBase, ENTITY extends BonaPersistableKey<Long> & BonaPersistableTracking<TRACKING>> {
+public abstract class AbstractConfigCacheFieldwiseInvalidation42<
+  DTO extends Ref,
+  TRACKING extends TrackingBase,
+  ENTITY extends BonaPersistableKey<Long> & BonaPersistableTracking<TRACKING>> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractConfigCacheFieldwiseInvalidation42.class);
     /** The cache consists of 2 single level map caches, one by objectRef, one by tenantRef / id. */
     protected final Cache<Long, DTO> cacheByObjectRef = CacheBuilder.newBuilder().expireAfterWrite(15L, TimeUnit.MINUTES).build();
@@ -47,7 +50,7 @@ public abstract class AbstractConfigCacheFieldwiseInvalidation42<DTO extends Ref
     protected final IQueryHintSetter           queryHintSetter = Jdp.getOptional(IQueryHintSetter.class);
 
     protected AbstractConfigCacheFieldwiseInvalidation42(final IResolverAnyKey42<Long, TRACKING, ENTITY> resolver, final Class<DTO> dtoClass) {
-        LOGGER.info("Creating a new Cache for {}" , dtoClass.getSimpleName());
+        LOGGER.info("Creating a new Cache for {}", dtoClass.getSimpleName());
         this.resolver = resolver;
         this.dtoClass = dtoClass;
         if (cacheInvalidationRegistry != null) {
@@ -66,7 +69,8 @@ public abstract class AbstractConfigCacheFieldwiseInvalidation42<DTO extends Ref
                     LOGGER.debug("Cache invalidation for {} for {}", dtoClass.getSimpleName(), x);
                     cacheById.invalidate(x);
                 } else {
-                    LOGGER.error("Received cache invalidation on {} with key type {} - cannot handle, ignoring", dtoClass.getSimpleName(), x.getClass().getCanonicalName());
+                    LOGGER.error("Received cache invalidation on {} with key type {} - cannot handle, ignoring",
+                      dtoClass.getSimpleName(), x.getClass().getCanonicalName());
                 }
             });
         }
@@ -95,7 +99,8 @@ public abstract class AbstractConfigCacheFieldwiseInvalidation42<DTO extends Ref
         try {
             return cacheById.get(key, () -> {
                 final Long ref = read(id);
-                LOGGER.debug("Filling resolver cache {} for tenantRef {}, id {} to resolve to {}", dtoClass.getSimpleName(), key.getTenantRef(), key.getId(), ref);
+                LOGGER.debug("Filling resolver cache {} for tenantRef {}, id {} to resolve to {}",
+                  dtoClass.getSimpleName(), key.getTenantRef(), key.getId(), ref);
                 return ref;
             });
         } catch (final ExecutionException e) {

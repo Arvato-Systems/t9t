@@ -94,7 +94,7 @@ public class Tabpanel28 extends Tabpanel implements IdSpace, IGridIdOwner, IData
             extension.beforeOnCreate(this);
 
         // find the tab box
-        myBox = (Tabbox28)getTabbox();// GridIdTools.findTabbox28(this);
+        myBox = (Tabbox28) getTabbox(); // GridIdTools.findTabbox28(this);
         myBox.register(this);
 
         // set the filter generator from default, if no specific one has been defined

@@ -23,10 +23,10 @@ public class Dropdown28CharsetEncoding extends Dropdown28Ext {
 
     private static final long serialVersionUID = 7804881425211020006L;
 
-    private static final List<String> myModelData = new ArrayList<>(Charset.availableCharsets().keySet());
+    private static final List<String> MY_MODEL_DATA = new ArrayList<>(Charset.availableCharsets().keySet());
 
     public Dropdown28CharsetEncoding() {
-        super(myModelData);
+        super(MY_MODEL_DATA);
         this.setMaxlength(24);
     }
 }

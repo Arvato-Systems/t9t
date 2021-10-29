@@ -74,7 +74,8 @@ public class DoubleField extends AbstractField<Doublebox> {
 
     @Override
     public void clear() {
-        for (Doublebox e : components)
+        for (Doublebox e : components) {
             e.setValue(null);
+        }
     }
 }

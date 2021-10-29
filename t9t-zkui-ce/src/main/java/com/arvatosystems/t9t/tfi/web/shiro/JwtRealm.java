@@ -33,7 +33,7 @@ import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 
 public class JwtRealm extends AuthorizingRealm implements ICacheableAuthorizationRealm {
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtRealm.class);
-    CommonRealm commonRealm;
+    private CommonRealm commonRealm;
 
     public JwtRealm() {
         super(new MemoryConstrainedCacheManager());

@@ -31,7 +31,7 @@ import de.jpaw.dp.Jdp;
 
 // viewModel only required for the button command. This could be done via context menu as well!
 
-@Init(superclass=true)
+@Init(superclass = true)
 public class CannedViewModel extends CrudSurrogateKeyVM<CannedRequestRef, CannedRequestDTO, FullTrackingWithVersion> {
     private static final Logger LOGGER = LoggerFactory.getLogger(CannedViewModel.class);
 

@@ -69,7 +69,7 @@ public class WorkbenchInit implements Initiator {
      * @param page .
      * @throws Exception .
      */
-    public void doAfterCompose(Page page) throws Exception {}
+    public void doAfterCompose(Page page) throws Exception { }
 
     /**
      *

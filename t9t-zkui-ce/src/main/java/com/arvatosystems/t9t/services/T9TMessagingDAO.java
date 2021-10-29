@@ -119,7 +119,7 @@ public class T9TMessagingDAO implements IT9TMessagingDAO {
             // the offset starts always with 0
             long offset = 0;
             // set given chunkSizeInBytes as limit or default 1 MB
-            int limit = 1024*1024;
+            int limit = 1024 * 1024;
             // is needed for the loop breakup
             boolean hasMore = true;
 
@@ -218,7 +218,8 @@ public class T9TMessagingDAO implements IT9TMessagingDAO {
             LOGGER.debug("Response is instanceof {} - returning sinkObjectRef={}", ReadAllResponse.class.getSimpleName(), sinkRef);
             return sinkRef;
         }
-        LOGGER.debug("Response is NOT instanceof SinkCreatedResponse or ReadAllResponse. It is {} - returning NULL", serviceResponse.getClass().getSimpleName());
+        LOGGER.debug("Response is NOT instanceof SinkCreatedResponse or ReadAllResponse. It is {} - returning NULL",
+                serviceResponse.getClass().getSimpleName());
         return null;
     }
 
@@ -282,7 +283,7 @@ public class T9TMessagingDAO implements IT9TMessagingDAO {
         LOGGER.debug("executeCannedRequest with ref {}", cannedRequestRef);
 
         try {
-            ExecuteCannedRequest executeCannedRequest = new ExecuteCannedRequest();;
+            ExecuteCannedRequest executeCannedRequest = new ExecuteCannedRequest();
             executeCannedRequest.setRequestRef(cannedRequestRef);
             t9tRemoteUtils.executeAndHandle(executeCannedRequest, ServiceResponse.class);
         } catch (Exception e) {

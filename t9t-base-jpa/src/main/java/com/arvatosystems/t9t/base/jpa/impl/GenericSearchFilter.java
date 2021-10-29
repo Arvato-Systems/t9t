@@ -47,11 +47,12 @@ public class GenericSearchFilter extends JpaFilterImpl {
 
     protected final IEnumResolver enumResolver = Jdp.getRequired(IEnumResolver.class);
 
-    protected void mustHaveExactlyOneOf(final FieldFilter filter, final Object ... arg) {
+    protected void mustHaveExactlyOneOf(final FieldFilter filter, final Object... arg) {
         int countNonNull = 0;
-        for (final Object o : arg)
+        for (final Object o : arg) {
             if (o != null)
                 ++countNonNull;
+        }
         if (countNonNull == 0) {
             LOGGER.error("Underspecified filter: {}", filter);
             throw new T9tException(T9tException.UNDERSPECIFIED_FILTER_PARAMETERS, filter.getClass().getSimpleName() + ": " + filter.getFieldName());
@@ -70,7 +71,8 @@ public class GenericSearchFilter extends JpaFilterImpl {
         return cb.equal(path, token);
     }
 
-    protected Predicate inCriteriaWithPossibleNull(final CriteriaBuilder cb, final Path<?> path, final List<String> names, final Function<String, Object> resolver) {
+    protected Predicate inCriteriaWithPossibleNull(final CriteriaBuilder cb, final Path<?> path, final List<String> names,
+      final Function<String, Object> resolver) {
         boolean hasNull = false;
         final List<Object> tokens = new ArrayList<>(names.size());
         for (final String name : names) {

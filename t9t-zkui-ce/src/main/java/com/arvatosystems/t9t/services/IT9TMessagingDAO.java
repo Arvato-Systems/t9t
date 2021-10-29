@@ -47,7 +47,7 @@ public interface IT9TMessagingDAO {
      * @param numDataRecords
      * @throws ReturnCodeException
      */
-    public Long dataSinkTestRequest(DataSinkDTO dataSink, int numDataRecords) throws ReturnCodeException;
+    Long dataSinkTestRequest(DataSinkDTO dataSink, int numDataRecords) throws ReturnCodeException;
 
     /**
      * Prepare a ZK Media object that is needed for download content. This media object can be used with {@link Filedownload#save(Media)}.<br>
@@ -59,11 +59,11 @@ public interface IT9TMessagingDAO {
      * @return the filled Media object.
      * @throws ReturnCodeException
      */
-    public Media downloadFileRequest(Long sinkRef) throws ReturnCodeException;
+    Media downloadFileRequest(Long sinkRef) throws ReturnCodeException;
 
     /** entry used by the export button of grid28. */
-    public void downloadFileAndSave(Long sinkRef) throws ReturnCodeException;
-    public void downloadFileAndSave(RequestParameters rp);
+    void downloadFileAndSave(Long sinkRef) throws ReturnCodeException;
+    void downloadFileAndSave(RequestParameters rp);
 
     /**
      * Get from back-end the full Sink object by giving only the reference
@@ -71,7 +71,7 @@ public interface IT9TMessagingDAO {
      * @return Full Sink object
      * @throws ReturnCodeException
      */
-    public SinkDTO retrieveSink(Long sinkObjectRef) throws ReturnCodeException;
+    SinkDTO retrieveSink(Long sinkObjectRef) throws ReturnCodeException;
 
 
     /**
@@ -79,13 +79,13 @@ public interface IT9TMessagingDAO {
      * @param referencedRequestRef the cProcessRef of the request to be rerun.
      * @throws ReturnCodeException
      */
-    public void rerunRequest(Long referencedRequestRef) throws ReturnCodeException;
+    void rerunRequest(Long referencedRequestRef) throws ReturnCodeException;
 
 
     /**
      * The file upload request allows to create a sink entry for given upload data. It returns a sink reference in case of success.
      */
-    public SinkCreatedResponse fileUploadRequest(OutputSessionParameters parameters, ByteArray data) throws ReturnCodeException;
+    SinkCreatedResponse fileUploadRequest(OutputSessionParameters parameters, ByteArray data) throws ReturnCodeException;
 
     /**
      * Just run the RunReportRequest. The request will be filled with ReportParamsRef.<br>
@@ -94,9 +94,9 @@ public interface IT9TMessagingDAO {
      * @return sinkObjectRef
      * @throws ReturnCodeException
      */
-    public Long runReportRequest(ReportParamsRef paramsRef) throws ReturnCodeException;
+    Long runReportRequest(ReportParamsRef paramsRef) throws ReturnCodeException;
 
-    public MediaData getUploadedData(UploadEvent ev) throws IOException;
+    MediaData getUploadedData(UploadEvent ev) throws IOException;
 
-    public Long executeCannedRequest(CannedRequestRef ref) throws ReturnCodeException;
+    Long executeCannedRequest(CannedRequestRef ref) throws ReturnCodeException;
 }

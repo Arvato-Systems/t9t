@@ -103,7 +103,7 @@ final class WriteDDLs extends SimpleFileVisitor<Path> {
                 && (!aFile.toString().contains("src-gen"))
                 && (!aFile.getFileName().toString().endsWith("Tablespaces.sql"))
                 && (!skipFile)
-                && (fileIsInProjectFilter)){
+                && (fileIsInProjectFilter)) {
             logger.info("Processing file:" + aFile);
 
             try (BufferedReader reader = new BufferedReader(new FileReader(aFile.toString()))) {

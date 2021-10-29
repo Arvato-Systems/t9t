@@ -100,10 +100,10 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
     private final ApplicationSession session = ApplicationSession.get();
     protected Permissionset permissions = Permissionset.ofTokens();
 
-    long                     totalSize     = 0;
-    int                      activePage    = 0;
-    int                      maxActivePage = 0;
-    boolean initSearch = true;
+    private long                     totalSize     = 0;
+    private int                      activePage    = 0;
+    private int                      maxActivePage = 0;
+    private boolean initSearch = true;
 
     @Wire
     private Listbox lb;
@@ -154,10 +154,10 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
         Executions.createComponents("/component/grid28.zul", this, null);
         Selectors.wireComponents(this, this, false);
         lb.addEventListener(Events.ON_SELECT, (SelectEvent ev) -> {
-            final Set<DataWithTracking<BonaPortable,TrackingBase>> items = ev.getSelectedObjects();
+            final Set<DataWithTracking<BonaPortable, TrackingBase>> items = ev.getSelectedObjects();
             LOGGER.debug("SELECT event with {} entries", items.size());
-            DataWithTracking<BonaPortable,TrackingBase> oneItem = null;
-            for (DataWithTracking<BonaPortable,TrackingBase> p : items) {
+            DataWithTracking<BonaPortable, TrackingBase> oneItem = null;
+            for (DataWithTracking<BonaPortable, TrackingBase> p : items) {
                 oneItem = p;
                 // LOGGER.debug("    Item is {}", p);
             }
@@ -233,16 +233,19 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
      // create the grid config resolver
         leanGridConfigResolver = new LeanGridConfigResolver(gridId, session);
         defaultListItemRenderer = new ListItemRenderer28<>(crudViewModel.dtoClass, true);
-        defaultListHeadRenderer = new ListHeadRenderer28(defaultListItemRenderer, leanGridConfigResolver, this, lb, permissions, listHeaders, crudViewModel.dtoClass, dynamicColumnSize);
+        defaultListHeadRenderer = new ListHeadRenderer28(defaultListItemRenderer, leanGridConfigResolver, this, lb, permissions, listHeaders,
+                crudViewModel.dtoClass, dynamicColumnSize);
         lb.setItemRenderer(defaultListItemRenderer);
-        lb.setEmptyMessage(ZulUtils.translate("com","noDataFound"));
+        lb.setEmptyMessage(ZulUtils.translate("com", "noDataFound"));
 
         defaultListHeadRenderer.createListhead(lb);
         defaultListHeadRenderer.redrawListbox();
 
 
 
-        exportButton.addEventListener(Events.ON_CLICK, (MouseEvent ev) -> { exportData(); });
+        exportButton.addEventListener(Events.ON_CLICK, (MouseEvent ev) -> {
+            exportData();
+        });
         exportButton.setDisabled(true);  // disable until actual data has arrived
 
         if (isHeaderConsistList())
@@ -255,9 +258,9 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
                if (activePage > maxActivePage) {
                    maxActivePage = activePage;
                }
-               initSearch=false;
+                initSearch = false;
                search();
-               initSearch=true;
+                initSearch = true;
             }
         });
     }
@@ -366,7 +369,7 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
 
         resetPaging();
 
-        rq.setLimit(paging.getPageSize()+1);
+        rq.setLimit(paging.getPageSize() + 1);
         rq.setOffset(this.activePage * this.paging.getPageSize());
         LOGGER.debug("Reading data...");
 
@@ -592,7 +595,7 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
     }
 
     public boolean isHeaderConsistList() {
-       return getListHeaders()!=null && !getListHeaders().isEmpty();
+        return getListHeaders() != null && !getListHeaders().isEmpty();
     }
     public boolean isItemSelected() {
        if (lb.getModel() != null && lb.getModel().getSize() > 0) {

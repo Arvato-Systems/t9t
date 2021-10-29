@@ -17,11 +17,9 @@ package com.arvatosystems.t9t.components;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Window;
 
 import com.arvatosystems.t9t.tfi.general.Constants;
-import com.arvatosystems.t9t.tfi.web.ApplicationSession;
 
 /** A single page main application window.
  * It sets a title, which is looked up by id + ".title".

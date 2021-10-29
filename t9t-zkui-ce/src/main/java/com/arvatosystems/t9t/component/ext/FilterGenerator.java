@@ -20,7 +20,9 @@ import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.dp.Jdp;
 
-public class FilterGenerator {
+public final class FilterGenerator {
+    private FilterGenerator() { }
+
     private static SearchFilter createFilter(Ref data, String fieldName) {
         final LongFilter l = new LongFilter();
         l.setFieldName(fieldName);

@@ -216,9 +216,8 @@ public class JndiLdapRealm extends AuthorizingRealm implements ICacheableAuthori
         }
         int index = template.indexOf(USERDN_SUBSTITUTION_TOKEN);
         if (index < 0) {
-            String msg = "User DN template must contain the '" +
-                    USERDN_SUBSTITUTION_TOKEN + "' replacement token to understand where to " +
-                    "insert the runtime authentication principal.";
+            String msg = "User DN template must contain the '" + USERDN_SUBSTITUTION_TOKEN + "' replacement token to understand where to "
+                    + "insert the runtime authentication principal.";
             throw new IllegalArgumentException(msg);
         }
         String prefix = template.substring(0, index);
@@ -262,9 +261,8 @@ public class JndiLdapRealm extends AuthorizingRealm implements ICacheableAuthori
         String prefix = getUserDnPrefix();
         String suffix = getUserDnSuffix();
         if (prefix == null && suffix == null) {
-            LOGGER.debug("userDnTemplate property has not been configured, indicating the submitted " +
-                    "AuthenticationToken's principal is the same as the User DN.  Returning the method argument " +
-                    "as is.");
+            LOGGER.debug("userDnTemplate property has not been configured, indicating the submitted "
+                    + "AuthenticationToken's principal is the same as the User DN.  Returning the method argument " + "as is.");
             return principal;
         }
 
@@ -395,8 +393,8 @@ public class JndiLdapRealm extends AuthorizingRealm implements ICacheableAuthori
 //    public LdapContext getContext() {
 //        return this.ctx;
 //    }
-    Hashtable<?,?> environment=null;
-    public Hashtable<?,?> getEnvironment() {
+    private Hashtable<?, ?> environment = null;
+    public Hashtable<?, ?> getEnvironment() {
         return environment;
     }
     protected AuthenticationInfo queryForAuthenticationInfo(AuthenticationToken token,
@@ -413,7 +411,7 @@ public class JndiLdapRealm extends AuthorizingRealm implements ICacheableAuthori
         LdapContext ctx = null;
         try {
             ctx = ldapContextFactory.getLdapContext(principal, credentials);
-            environment= ctx.getEnvironment();
+            environment = ctx.getEnvironment();
             //context was opened successfully, which means their credentials were valid.  Return the AuthenticationInfo:
             return createAuthenticationInfo(token, principal, credentials, ctx);
         } finally {

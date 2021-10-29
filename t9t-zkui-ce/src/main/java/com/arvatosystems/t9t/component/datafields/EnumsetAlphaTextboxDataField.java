@@ -49,8 +49,9 @@ public class EnumsetAlphaTextboxDataField<E extends Enum<E>, T extends GenericEn
         // The current implementation does not support enums with a null / empty string token
         StringBuilder sb = new StringBuilder();
         sb.append("/[");
-        for (String token: ed.getTokens())
+        for (String token: ed.getTokens()) {
             sb.append(token);
+        }
         sb.append("]*/");
         c.setHflex("1");
         c.setConstraint(sb.toString());

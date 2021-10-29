@@ -26,7 +26,7 @@ import org.zkoss.zul.Window;
 
 import com.arvatosystems.t9t.tfi.web.ApplicationSession;
 
-public class Groupbox28 extends Groupbox{
+public class Groupbox28 extends Groupbox {
     private static final Logger LOGGER = LoggerFactory.getLogger(Groupbox28.class);
     private static final long serialVersionUID = -8089438052410249L;
     private String initialVFlex;
@@ -69,8 +69,8 @@ public class Groupbox28 extends Groupbox{
         section.filterGroup.setInitialVFlex(section.filterGroup.getVflex());
         section.resultsGroup.setInitialVFlex(section.resultsGroup.getVflex());
 
-        section.filterGroup.setVflex(section.filterGroup.isOpen()?section.filterGroup.getInitialVFlex():null);
-        section.resultsGroup.setVflex(section.resultsGroup.isOpen()?section.resultsGroup.getInitialVFlex():null);
+        section.filterGroup.setVflex(section.filterGroup.isOpen() ? section.filterGroup.getInitialVFlex() : null);
+        section.resultsGroup.setVflex(section.resultsGroup.isOpen() ? section.resultsGroup.getInitialVFlex() : null);
     }
 
 
@@ -79,9 +79,9 @@ public class Groupbox28 extends Groupbox{
         section.resultsGroup.setInitialVFlex(section.resultsGroup.getVflex());
         section.detailsGroup.setInitialVFlex(section.detailsGroup.getVflex());
 
-        section.filterGroup.setVflex(section.filterGroup.isOpen()?section.filterGroup.getInitialVFlex():null);
-        section.resultsGroup.setVflex(section.resultsGroup.isOpen()?section.resultsGroup.getInitialVFlex():null);
-        section.detailsGroup.setVflex(section.detailsGroup.isOpen()?section.detailsGroup.getInitialVFlex():null);
+        section.filterGroup.setVflex(section.filterGroup.isOpen() ? section.filterGroup.getInitialVFlex() : null);
+        section.resultsGroup.setVflex(section.resultsGroup.isOpen() ? section.resultsGroup.getInitialVFlex() : null);
+        section.detailsGroup.setVflex(section.detailsGroup.isOpen() ? section.detailsGroup.getInitialVFlex() : null);
     }
 
     @Override

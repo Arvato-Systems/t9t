@@ -23,7 +23,7 @@ import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.moduleCfg.ModuleConfigDTO;
 import com.arvatosystems.t9t.base.moduleCfg.ModuleConfigKey;
 
-@Init(superclass=true)
+@Init(superclass = true)
 public class ModuleConfigVM<DTO extends ModuleConfigDTO>
 extends AbstractCrudVM<ModuleConfigKey, DTO, FullTrackingWithVersion, CrudModuleCfgRequest<DTO>, CrudAnyKeyResponse<DTO, FullTrackingWithVersion>> {
     private static final ModuleConfigKey KEY = new ModuleConfigKey();

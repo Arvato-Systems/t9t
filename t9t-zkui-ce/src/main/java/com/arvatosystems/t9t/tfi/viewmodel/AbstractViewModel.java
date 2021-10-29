@@ -70,7 +70,8 @@ public abstract class AbstractViewModel extends FormValidator {
                 final Boolean isValidationRequired = (Boolean) ctx.getBindContext().getValidatorArg("isValidationRequired");
                 //boolean isComponentVisible = ctx.getBindContext().getComponent().isVisible();  --> the simple visibility
                 final boolean isComponentVisible = isComponentVisible(ctx.getBindContext().getComponent());
-                final String logMessage = String.format("Component:%s - visible:%s - isValidationRequired-argument-set:%s", ctx.getBindContext().getComponent(), isComponentVisible, isValidationRequired);
+                final String logMessage = String.format("Component:%s - visible:%s - isValidationRequired-argument-set:%s", ctx.getBindContext().getComponent(),
+                        isComponentVisible, isValidationRequired);
                 if (((isValidationRequired == null) || isValidationRequired) && isComponentVisible) {
                     if ((null == ctx.getProperty().getValue()) || "".equals(ctx.getProperty().getValue())) {
                         LOGGER.debug("FIELD isEMPTY: {}", logMessage);
@@ -92,8 +93,7 @@ public abstract class AbstractViewModel extends FormValidator {
     public boolean isComponentVisible(final Component component) {
         boolean isVisible = true;
         visibilityDepth++;
-        if (visibilityDepth >= VISIBILITY_MAX_DEPTH)
-        {
+        if (visibilityDepth >= VISIBILITY_MAX_DEPTH) {
             return true;  // we reach the max depth, so we assume the component is visible
         }
         if ((component != null) && component.isVisible()) {

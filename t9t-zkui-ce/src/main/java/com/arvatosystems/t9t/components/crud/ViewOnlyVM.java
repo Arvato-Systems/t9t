@@ -26,7 +26,7 @@ import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.api.DataWithTracking;
 
-@Init(superclass=true)
+@Init(superclass = true)
 public class ViewOnlyVM<DTO extends BonaPortable, TRACKING extends TrackingBase> extends AbstractViewOnlyVM<DTO, TRACKING> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ViewOnlyVM.class);
 

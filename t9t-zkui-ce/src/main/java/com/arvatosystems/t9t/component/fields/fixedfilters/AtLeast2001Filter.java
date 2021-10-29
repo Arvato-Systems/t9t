@@ -27,7 +27,7 @@ import de.jpaw.dp.Singleton;
 public class AtLeast2001Filter implements IFixedFilter {
     private static final DayFilter FILTER = new DayFilter("day");
     static {
-        FILTER.setLowerBound(LocalDate.of(2001,1,1));
+        FILTER.setLowerBound(LocalDate.of(2001, 1, 1));
         FILTER.freeze();
     }
 

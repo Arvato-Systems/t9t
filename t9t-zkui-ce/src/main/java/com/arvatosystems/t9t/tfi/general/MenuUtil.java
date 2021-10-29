@@ -30,7 +30,7 @@ import com.arvatosystems.t9t.tfi.web.ZulUtils;
 import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 
-public class MenuUtil {
+public final class MenuUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(MenuUtil.class);
 
     /** MENU RELATED  **/
@@ -43,6 +43,8 @@ public class MenuUtil {
     private static final String MENU_GROUP = "menu.group";
     private static final String DEFAULT = "defaults";
 
+    private MenuUtil() { }
+
     public static void readMenuConfiguration(ApplicationSession as, final List<Navi> navis) {
         navis.clear();
 
@@ -51,7 +53,7 @@ public class MenuUtil {
         Map<String, String> categories = new HashMap<String, String>(40); // caches the CATEGORY translations because they are likely to occur multiple times
         String[] menuConfigurations = ZulUtils.readConfig("menu.config").split("\\s*,\\s*"); // trim and split each element
         for (String menuConfigKey : menuConfigurations) {
-            String menuConfig = ZulUtils.readConfig("menu."+menuConfigKey);
+            String menuConfig = ZulUtils.readConfig("menu." + menuConfigKey);
             //if (key.equals("$")) continue; // this is in case of switching languages there is an additional (default) set of entries. we need to skip it
             LOGGER.debug("Menu Config-key: {} - Config-value: \n{}", menuConfigKey, menuConfig);
 

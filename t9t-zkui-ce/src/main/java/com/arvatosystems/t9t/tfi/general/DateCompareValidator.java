@@ -75,13 +75,13 @@ public class DateCompareValidator extends AbstractValidator {
         if ((checkType == CHECK_TYPE_MIN) && (dateOneInmilliseconds <= dateTwoInmilliseconds)) {
             addInvalidMessage(ctx, "COMPARE_DATE");
             arguments[0] = dateTwoValue;
-            Clients.wrongValue(ctx.getBindContext().getComponent(), ZulUtils.translate("err","dateComapareMin", arguments));
+            Clients.wrongValue(ctx.getBindContext().getComponent(), ZulUtils.translate("err", "dateComapareMin", arguments));
             return;
         }
         if ((checkType == CHECK_TYPE_MAX) && (dateOneInmilliseconds >= dateTwoInmilliseconds)) {
             addInvalidMessage(ctx, "COMPARE_DATE");
             arguments[0] = dateOneValue;
-            Clients.wrongValue(ctx.getBindContext().getComponent(), ZulUtils.translate("err","dateComapareMax", arguments));
+            Clients.wrongValue(ctx.getBindContext().getComponent(), ZulUtils.translate("err", "dateComapareMax", arguments));
             return;
         }
 

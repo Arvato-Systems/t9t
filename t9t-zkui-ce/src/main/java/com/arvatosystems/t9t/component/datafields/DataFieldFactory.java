@@ -212,9 +212,10 @@ public class DataFieldFactory implements IDataFieldFactory {
             default:
                 break;
             }
-            LOGGER.error("No matches found for {} in {}. Possibly something misconfigured in the grid configuration? (category = {}, java type = {}, bonaparte type = {})",
-                    path, crudViewModel.dtoClass.getBonaPortableClass().getCanonicalName(),
-                    columnDescriptor.getDataCategory(), javaType, bonaparteType);
+            LOGGER.error(
+                    "No matches found for {} in {}. Possibly something misconfigured in the grid configuration? (category = {}, java type = {}, "
+                    + "bonaparte type = {})",
+                    path, crudViewModel.dtoClass.getBonaPortableClass().getCanonicalName(), columnDescriptor.getDataCategory(), javaType, bonaparteType);
         } catch (Exception e) {
             LOGGER.error("Problems in the grid configuration for field {}? {}", params.path, e);
         }

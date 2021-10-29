@@ -50,7 +50,7 @@ public class EditGridViewModel {
     private final IColumnConfigCreator columnConfigCreator = Jdp.getRequired(IColumnConfigCreator.class);
 
     @Wire("#component")
-    Div div;
+    private Div div;
 
     @SuppressWarnings("unchecked")
     @Init(superclass = true)

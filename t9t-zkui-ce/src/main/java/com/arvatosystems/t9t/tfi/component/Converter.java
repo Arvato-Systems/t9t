@@ -36,7 +36,7 @@ public interface Converter {
      * @param fieldName the property name of the object
      * @return your formatted label as String
      */
-    public String getFormattedLabel(Object value, Object wholeDataObject, String fieldName);
+    String getFormattedLabel(Object value, Object wholeDataObject, String fieldName);
 
     /**
      * This method is responsible to give back the correct object that the listbox can deal with it in a proper way like sorting, etc.<br>
@@ -57,6 +57,6 @@ public interface Converter {
      * @param fieldName the property name of the object
      * @return your formatted label as String
      */
-    public Object getConvertedValue(Object value, Object wholeDataObject, String fieldName);
+    Object getConvertedValue(Object value, Object wholeDataObject, String fieldName);
 
 }

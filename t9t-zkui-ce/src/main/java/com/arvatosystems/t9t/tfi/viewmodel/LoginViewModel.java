@@ -126,7 +126,7 @@ public class LoginViewModel {
         if (Executions.getCurrent() != null) {
             String ua = Executions.getCurrent().getUserAgent();
             LOGGER.debug("ZK user agent is {}", ua);
-            lastScreen = lastScreen + ", agent: " +ua;
+            lastScreen = lastScreen + ", agent: " + ua;
         }
     }
 
@@ -160,7 +160,7 @@ public class LoginViewModel {
         setLanguageFromCooky(isInitialLogin);
         setListbox();
         //FT-1127        UI login does not work if already logged in
-        if ((SecurityUtils.getSubject() != null) && (SecurityUtils.getSubject().isAuthenticated() == true) && (isInitialLogin == null)) {
+        if ((SecurityUtils.getSubject() != null) && (SecurityUtils.getSubject().isAuthenticated()) && (isInitialLogin == null)) {
 
             if ((ApplicationSession.get().getTenantId() != null)) {
                 Executions.sendRedirect(Constants.ZulFiles.HOME);
@@ -173,13 +173,13 @@ public class LoginViewModel {
     @Command("onLanguageChanged")
     public void onLanguageChanged(@BindingParam("localeValue") String localeValue) {
         // String localeValue = ((com.arvatosystems.t9t.tfi.model.bean.ComboBoxItem) self.getSelectedItem().getValue()).getValue();
-        Locale prefer_locale = null;
+        Locale preferLocale = null;
         if (localeValue != null && localeValue.length() == 5) {
-            prefer_locale = new Locale(localeValue.substring(0,2),localeValue.substring(3,5));
+            preferLocale = new Locale(localeValue.substring(0, 2), localeValue.substring(3, 5));
         } else {
-            prefer_locale = new Locale(localeValue);
+            preferLocale = new Locale(localeValue);
         }
-        Sessions.getCurrent().setAttribute(org.zkoss.web.Attributes.PREFERRED_LOCALE, prefer_locale);
+        Sessions.getCurrent().setAttribute(org.zkoss.web.Attributes.PREFERRED_LOCALE, preferLocale);
         this.switchLanguage();
         Executions.sendRedirect("");
     }
@@ -188,7 +188,7 @@ public class LoginViewModel {
     public void switchLanguage() {
         setListbox();
 
-        if ((SecurityUtils.getSubject() != null) && (SecurityUtils.getSubject().isAuthenticated() == true)) {
+        if ((SecurityUtils.getSubject() != null) && (SecurityUtils.getSubject().isAuthenticated())) {
             try {
                 // This code is also called after logged in.  This causes an extra JWT to be generated.
                 // It should be improved to avoid that, unless required, in order to reduce the number of session log entries.
@@ -205,13 +205,13 @@ public class LoginViewModel {
     @Command("switchLanguageOnLogin")
     public void onLanguageChange() {
         String localeValue = selected.getValue();
-        Locale prefer_locale = null;
-        if (localeValue!=null && localeValue.length() == 5) {
-            prefer_locale = new Locale(localeValue.substring(0,2),localeValue.substring(3,5));
+        Locale preferLocale = null;
+        if (localeValue != null && localeValue.length() == 5) {
+            preferLocale = new Locale(localeValue.substring(0, 2), localeValue.substring(3, 5));
         } else {
-            prefer_locale = new Locale(localeValue);
+            preferLocale = new Locale(localeValue);
         }
-        Sessions.getCurrent().setAttribute(org.zkoss.web.Attributes.PREFERRED_LOCALE, prefer_locale);
+        Sessions.getCurrent().setAttribute(org.zkoss.web.Attributes.PREFERRED_LOCALE, preferLocale);
     }
 
     private Locale getLocale() {
@@ -270,8 +270,8 @@ public class LoginViewModel {
         if (null == isInitialLogin || isInitialLogin) {
             String cookieLanguage  =       ApplicationUtil.getCookie(LANGUAGE_COOKIE);
             if (null != cookieLanguage) {
-                Locale  userLocale = cookieLanguage.length() == 2 ? new Locale(cookieLanguage) :
-                    new Locale(cookieLanguage.substring(0, 2), cookieLanguage.substring(3, 5));
+                Locale userLocale = cookieLanguage.length() == 2 ? new Locale(cookieLanguage)
+                        : new Locale(cookieLanguage.substring(0, 2), cookieLanguage.substring(3, 5));
                 Sessions.getCurrent().setAttribute(org.zkoss.web.Attributes.PREFERRED_LOCALE, userLocale);
             }
         }

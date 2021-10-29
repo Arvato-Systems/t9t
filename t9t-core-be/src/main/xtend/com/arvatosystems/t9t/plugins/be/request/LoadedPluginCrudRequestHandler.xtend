@@ -113,7 +113,7 @@ class LoadedPluginCrudRequestHandler  extends AbstractCrudSurrogateKeyBERequestH
         return executor.executeSynchronous(loadedPluginSearchRequest) as ReadAllResponse<LoadedPluginDTO, FullTrackingWithVersion>
     }
 
-    def getLoadedPluginByObjectRef(Long objectRef){
+    def getLoadedPluginByObjectRef(Long objectRef) {
         val objectRefFilter = new LongFilter("objectRef", objectRef, null, null, null)
 
         val loadedPluginSearchRequest = new LoadedPluginSearchRequest()

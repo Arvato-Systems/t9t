@@ -28,8 +28,8 @@ import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.components.crud.AbstractCrudVM;
 
 @Init(superclass = true)
-public class UserTenantRoleVM extends
-        AbstractCrudVM<UserTenantRoleRef, UserTenantRoleDTO, FullTrackingWithVersion, CrudCompositeKeyRequest<UserTenantRoleRef, UserTenantRoleDTO, FullTrackingWithVersion>, CrudCompositeKeyResponse<UserTenantRoleInternalKey, UserTenantRoleDTO, FullTrackingWithVersion>> {
+public class UserTenantRoleVM extends AbstractCrudVM<UserTenantRoleRef, UserTenantRoleDTO, FullTrackingWithVersion, CrudCompositeKeyRequest<UserTenantRoleRef,
+    UserTenantRoleDTO, FullTrackingWithVersion>, CrudCompositeKeyResponse<UserTenantRoleInternalKey, UserTenantRoleDTO, FullTrackingWithVersion>> {
 
     @Override
     protected void clearKey() {

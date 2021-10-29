@@ -34,11 +34,11 @@ import de.jpaw.dp.Jdp;
 import de.jpaw.util.ApplicationException;
 
 public abstract class AbstractCrudSurrogateKey42RequestHandler<
-    REF extends Ref,
-    DTO extends REF,
-    TRACKING extends TrackingBase,
-    REQUEST extends CrudSurrogateKeyRequest<REF, DTO, TRACKING>,
-    ENTITY extends BonaPersistableKey<Long> & BonaPersistableTracking<TRACKING>
+  REF extends Ref,
+  DTO extends REF,
+  TRACKING extends TrackingBase,
+  REQUEST extends CrudSurrogateKeyRequest<REF, DTO, TRACKING>,
+  ENTITY extends BonaPersistableKey<Long> & BonaPersistableTracking<TRACKING>
 > extends AbstractCrudAnyKey42RequestHandler<Long, DTO, TRACKING, REQUEST, ENTITY> {
     // private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCrudAnyKey42RequestHandler.class);
 
@@ -71,7 +71,8 @@ public abstract class AbstractCrudSurrogateKey42RequestHandler<
         if (crudRequest.getNaturalKey() != null) {
             try {
                 final ENTITY entityFoundByNaturalKeyQuery = resolver.getEntityData(crudRequest.getNaturalKey(), false);
-                final boolean entityFoundByNaturalKeyQueryIsOfOtherTenant = resolver.isTenantIsolated() && !resolver.getSharedTenantRef().equals(resolver.getTenantRef(entityFoundByNaturalKeyQuery));
+                final boolean entityFoundByNaturalKeyQueryIsOfOtherTenant = resolver.isTenantIsolated()
+                  && !resolver.getSharedTenantRef().equals(resolver.getTenantRef(entityFoundByNaturalKeyQuery));
                 final Long refFromCompositeKey = entityFoundByNaturalKeyQuery.ret$Key();
                 // provide it into the response
                 rs.setKey(refFromCompositeKey);
@@ -86,7 +87,8 @@ public abstract class AbstractCrudSurrogateKey42RequestHandler<
                     }
                 }
                 if (crudRequest.getCrud() == OperationType.MERGE && entityFoundByNaturalKeyQueryIsOfOtherTenant) {
-                    // FT-2875: cannot use this one! It would create an access violation. By ordering of result set, we know there is no entry for the current tenant.
+                    // FT-2875: cannot use this one! It would create an access violation.
+                    // By ordering of result set, we know there is no entry for the current tenant.
                     rs.setKey(null);
                     crudRequest.setKey(null);
                     crudRequest.setCrud(OperationType.CREATE);
@@ -160,7 +162,8 @@ public abstract class AbstractCrudSurrogateKey42RequestHandler<
 //                // validate that no write access is done to other tenant's data (TODO: for release 2.6.0, the writeAllowed() test should do that)
 //                ENTITY current = resolver.find(crudRequest.getKey());
 //                if (current == null) {
-//                    throw new T9tException(T9tException.RECORD_DOES_NOT_EXIST, "key is (Long)" + crudRequest.getKey() + " entity " + resolver.getBaseJpaEntityClass().getSimpleName());
+//                    throw new T9tException(T9tException.RECORD_DOES_NOT_EXIST, "key is (Long)" + crudRequest.getKey()
+//                    + " entity " + resolver.getBaseJpaEntityClass().getSimpleName());
 //                }
 //                if (!resolver.isOfMatchingTenant(current)) {
 //                    LOGGER.error("WRITE operation on {} for key {} rejected because other tenant", current.getClass().getSimpleName(), crudRequest.getKey());

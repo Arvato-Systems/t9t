@@ -25,15 +25,15 @@ public class Dropdown28Currency extends Dropdown28Ext {
 
     private static final long serialVersionUID = 7804881425211020003L;
 
-    private static final List<String> currencyModelData = new ArrayList<>();
+    private static final List<String> CURRENCY_MODEL_DATA = new ArrayList<>();
     static {
-        currencyModelData.addAll(
+        CURRENCY_MODEL_DATA.addAll(
                 Currency.getAvailableCurrencies().stream().sorted(Comparator.comparing(Currency::getCurrencyCode))
                 .map(Currency::getCurrencyCode).collect(Collectors.toList()));
     }
 
     public Dropdown28Currency() {
-        super(currencyModelData);
+        super(CURRENCY_MODEL_DATA);
         this.setMaxlength(3);
     }
 }

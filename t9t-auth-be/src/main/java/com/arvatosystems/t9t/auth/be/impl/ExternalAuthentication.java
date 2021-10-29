@@ -68,7 +68,7 @@ public class ExternalAuthentication implements IExternalAuthentication {
         Properties props = new Properties();
         props.put(Context.INITIAL_CONTEXT_FACTORY, ldapConfiguration.getContextFactory()); // "com.sun.jndi.ldap.LdapCtxFactory"
         props.put(Context.PROVIDER_URL,            ldapConfiguration.getProviderUrl());
-        props.put(Context.SECURITY_PRINCIPAL,      ldapConfiguration.getSecurityPrincipal()); // "uid=adminuser,ou=special users,o=xx.com");//adminuser - User with special priviledge, dn user
+        props.put(Context.SECURITY_PRINCIPAL,      ldapConfiguration.getSecurityPrincipal()); // "uid=adminuser,ou=special users,o=xx.com");
         props.put(Context.SECURITY_CREDENTIALS,    ldapConfiguration.getSecurityCredentials());
 
         InitialDirContext context = new InitialDirContext(props);
@@ -90,6 +90,7 @@ public class ExternalAuthentication implements IExternalAuthentication {
             props.put(Context.SECURITY_CREDENTIALS,    password);
 
             context = new InitialDirContext(props);
+            // FIXME: context is not used?
         } catch (Exception e) {
             return false;
         }

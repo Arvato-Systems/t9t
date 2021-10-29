@@ -30,7 +30,7 @@ public class MvDrivenEvent {
         this.mvEventLocalization = mvEventLocalization;
     }
 
-    public MvDrivenEvent(String eventName, String eventComponentId,String mvEventLocalization) {
+    public MvDrivenEvent(String eventName, String eventComponentId, String mvEventLocalization) {
         this(eventName, eventComponentId, null,  mvEventLocalization);
     }
 

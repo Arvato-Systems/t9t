@@ -91,7 +91,8 @@ public class DayField extends AbstractField<Datebox> {
 
     @Override
     public void clear() {
-        for (Datebox e : components)
+        for (Datebox e : components) {
             e.setValue(null);
+        }
     }
 }

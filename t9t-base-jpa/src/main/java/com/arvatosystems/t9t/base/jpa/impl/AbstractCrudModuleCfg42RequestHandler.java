@@ -36,9 +36,9 @@ import de.jpaw.util.ApplicationException;
 
 // the request handler assumes a resolver which works with a Long key for historical reasons
 public abstract class AbstractCrudModuleCfg42RequestHandler<
-    DTO extends ModuleConfigDTO,
-    REQUEST extends CrudModuleCfgRequest<DTO>,
-    ENTITY extends BonaPersistableKey<Long> & BonaPersistableTracking<FullTrackingWithVersion>
+  DTO extends ModuleConfigDTO,
+  REQUEST extends CrudModuleCfgRequest<DTO>,
+  ENTITY extends BonaPersistableKey<Long> & BonaPersistableTracking<FullTrackingWithVersion>
 > extends AbstractCrudAnyKey42RequestHandler<Long, DTO, FullTrackingWithVersion, REQUEST, ENTITY> {
     private static final ModuleConfigKey FIXED_KEY = new ModuleConfigKey();
     static {

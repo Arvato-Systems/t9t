@@ -36,7 +36,6 @@ import com.arvatosystems.t9t.tfi.web.ApplicationSession;
 import com.arvatosystems.t9t.tfi.web.ZulUtils;
 import com.arvatosystems.t9t.tfi.web.security.JwtUtils;
 
-import de.jpaw.bonaparte.api.auth.JwtConverter;
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 import de.jpaw.dp.Jdp;
 
@@ -54,7 +53,8 @@ public class RedirectViewModel {
 
             if (inconsistenceUserLoggedIn(token)) {
                 showLogoutButton = true;
-                Messagebox.show(ZulUtils.translate("redirect", "inconsistenceUserLoggedIn"), ZulUtils.translate("err", "title"), Messagebox.OK, Messagebox.ERROR);
+                Messagebox.show(ZulUtils.translate("redirect", "inconsistenceUserLoggedIn"), ZulUtils.translate("err", "title"), Messagebox.OK,
+                        Messagebox.ERROR);
                 return;
             }
 
@@ -62,14 +62,14 @@ public class RedirectViewModel {
             userDAO.switchTenant(tenantId);
 
             if (lang != null) {
-                Locale prefer_locale = null;
-                if (lang != null && lang.length()==5) {
-                    prefer_locale = new Locale(lang.substring(0,2),lang.substring(3,5));
+                Locale preferLocale = null;
+                if (lang != null && lang.length() == 5) {
+                    preferLocale = new Locale(lang.substring(0, 2), lang.substring(3, 5));
                 } else {
-                    prefer_locale = new Locale(lang);
+                    preferLocale = new Locale(lang);
                 }
                 userDAO.switchLanguage(lang);
-                Sessions.getCurrent().setAttribute(Attributes.PREFERRED_LOCALE, prefer_locale);
+                Sessions.getCurrent().setAttribute(Attributes.PREFERRED_LOCALE, preferLocale);
             }
 
             List<PermissionEntry> userPermissionForThisTenant = userDAO.getPermissions();
@@ -83,7 +83,8 @@ public class RedirectViewModel {
 
         } catch (ReturnCodeException e) {
             LOGGER.error("Unable to switch tenant or to get permissions " + e);
-            Messagebox.show("Unable to switch tenant or to get permissions - " + e.getReturnCodeMessage() + ZulUtils.translate("err", "unableToSwitchTenant"), ZulUtils.translate("err", "title"), Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show("Unable to switch tenant or to get permissions - " + e.getReturnCodeMessage() + ZulUtils.translate("err", "unableToSwitchTenant"),
+                    ZulUtils.translate("err", "title"), Messagebox.OK, Messagebox.ERROR);
             return;
         }
     }

@@ -32,13 +32,13 @@ import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.util.ApplicationException;
 
-public abstract class AbstractCrudCompositeKey42RequestHandler <
-        KEY extends CompositeKeyRef,
-        DTO extends CompositeKeyBase,
-        TRACKING extends TrackingBase,
-        REQUEST extends CrudCompositeKeyRequest<KEY, DTO, TRACKING>,
-        ENTITY extends BonaPersistableKey<KEY> & BonaPersistableTracking<TRACKING>
-        > extends AbstractCrudAnyKey42RequestHandler<KEY, DTO, TRACKING, REQUEST, ENTITY>{
+public abstract class AbstractCrudCompositeKey42RequestHandler<
+  KEY extends CompositeKeyRef,
+  DTO extends CompositeKeyBase,
+  TRACKING extends TrackingBase,
+  REQUEST extends CrudCompositeKeyRequest<KEY, DTO, TRACKING>,
+  ENTITY extends BonaPersistableKey<KEY> & BonaPersistableTracking<TRACKING>
+> extends AbstractCrudAnyKey42RequestHandler<KEY, DTO, TRACKING, REQUEST, ENTITY> {
 
     // execute function of the interface description, but additional parameters
     // required in order to work around type erasure

@@ -40,11 +40,13 @@ public class EnumsetConverter implements IItemConverter<EnumSetMarker> {
         // create a comma separated list of names
         StringJoiner sj = new StringJoiner(",");
         if (value instanceof AbstractStringXEnumSet) {
-            for (AbstractXEnumBase<?> xe : (Set<AbstractXEnumBase<?>>)value)
-                sj.add(as.translateEnum((BonaEnum)xe.getBaseEnum()));
+            for (AbstractXEnumBase<?> xe : (Set<AbstractXEnumBase<?>>) value) {
+                sj.add(as.translateEnum((BonaEnum) xe.getBaseEnum()));
+            }
         } else {
-            for (BonaEnum be : (Set<BonaEnum>)value)
+            for (BonaEnum be : (Set<BonaEnum>) value) {
                 sj.add(as.translateEnum(be));
+            }
         }
         return sj.toString();
     }

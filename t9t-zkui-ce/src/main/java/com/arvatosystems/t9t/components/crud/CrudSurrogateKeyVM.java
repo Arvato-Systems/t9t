@@ -25,9 +25,9 @@ import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyRequest;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
 
-@Init(superclass=true)
+@Init(superclass = true)
 public class CrudSurrogateKeyVM<REF extends Ref, DTO extends REF, TRACKING extends TrackingBase>
-extends AbstractCrudVM<Long, DTO, TRACKING, CrudSurrogateKeyRequest<REF, DTO, TRACKING>, CrudAnyKeyResponse<DTO,TRACKING>> {
+        extends AbstractCrudVM<Long, DTO, TRACKING, CrudSurrogateKeyRequest<REF, DTO, TRACKING>, CrudAnyKeyResponse<DTO, TRACKING>> {
     private static final Logger LOGGER = LoggerFactory.getLogger(CrudSurrogateKeyVM.class);
 
     @Override

@@ -26,7 +26,7 @@ import com.arvatosystems.t9t.tfi.component.dropdown.IGroupedDropdown28DbFactory;
 import de.jpaw.bonaparte.enums.BonaEnum;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
 
-public class GroupedDropdownDataField extends AbstractDataField<GroupedDropdown28Db<Ref>, Ref>{
+public class GroupedDropdownDataField extends AbstractDataField<GroupedDropdown28Db<Ref>, Ref> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GroupedDropdownDataField.class);
 
@@ -97,7 +97,7 @@ public class GroupedDropdownDataField extends AbstractDataField<GroupedDropdown2
     }
 
     public void setGroup(boolean data) {
-        Long value = data ? 1l : 0l;
+        Long value = data ? 1L : 0L;
         setGroupValue(value);
     }
 

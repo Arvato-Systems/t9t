@@ -78,7 +78,7 @@ public class Dropdown28Db<REF extends BonaPortable> extends Combobox {
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public Dropdown28Db(String dropdownId) {
-        this( (IDropdown28DbFactory) Dropdown28Registry.requireFactoryById(dropdownId));
+        this((IDropdown28DbFactory) Dropdown28Registry.requireFactoryById(dropdownId));
     }
 
     public Description lookupById(String id) {
@@ -115,8 +115,9 @@ public class Dropdown28Db<REF extends BonaPortable> extends Combobox {
         getDropDownData();
     }
 
-    // reloads the data based on updated filter requirements - common subroutine for constructor and reloadDropDownData() (must be final because called by constructor)
-    private final void getDropDownData() {
+    // reloads the data based on updated filter requirements - common subroutine for
+    // constructor and reloadDropDownData() (must be final because called by constructor)
+    private void getDropDownData() {
         lookupById.clear();
         lookupByRef.clear();
         allIds.clear();

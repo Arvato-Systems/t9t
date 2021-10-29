@@ -140,7 +140,8 @@ public class TenantSelectionViewModel {
             ApplicationSession.get().storePermissions(userPermissionForThisTenant);
         } catch (final ReturnCodeException e) {
            LOGGER.error("Unable to switch tenant or to get permissions " + e);
-           Messagebox.show("Unable to switch tenant or to get permissions - " + e.getReturnCodeMessage() + ZulUtils.translate("err", "unableToSwitchTenant"), ZulUtils.translate("err", "title"), Messagebox.OK, Messagebox.ERROR);
+           Messagebox.show("Unable to switch tenant or to get permissions - " + e.getReturnCodeMessage() + ZulUtils.translate("err", "unableToSwitchTenant"),
+                   ZulUtils.translate("err", "title"), Messagebox.OK, Messagebox.ERROR);
            return;
         }
 

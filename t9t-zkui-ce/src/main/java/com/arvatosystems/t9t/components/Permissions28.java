@@ -46,7 +46,7 @@ public class Permissions28 extends Groupbox {
 
     protected ApplicationSession as = ApplicationSession.get();
     protected final Grid grid;
-    protected static final OperationType [] OP_TYPES = {
+    protected static final OperationType[] OP_TYPES = {
         OperationType.EXECUTE, OperationType.CREATE,  OperationType.READ,       OperationType.UPDATE,   OperationType.DELETE,
         OperationType.SEARCH,  OperationType.LOOKUP,  OperationType.INACTIVATE, OperationType.ACTIVATE, OperationType.VERIFY,
         OperationType.MERGE,   OperationType.PATCH,   OperationType.EXPORT,     OperationType.IMPORT,   OperationType.CONFIGURE,

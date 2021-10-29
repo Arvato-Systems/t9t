@@ -97,7 +97,7 @@ public class ListItemRenderer28<T extends BonaPortable> implements ListitemRende
         if (numDescriptions != row.size())
             LOGGER.error("column description count {} differs from element count {}", numDescriptions, row.size());
         for (DataAndMeta field : row) {
-            if (column < numDescriptions) {// sanity check!
+            if (column < numDescriptions) { // sanity check!
                 addListcell(listitem, data, visibleFieldnames.get(column), bclass.getBonaPortableClass(), field.data, field.meta);
                 ++column;
                 if (isDynField(field.meta) && field.meta.getMultiplicity() == Multiplicity.LIST && column != row.size()) {
