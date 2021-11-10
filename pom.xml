@@ -78,7 +78,7 @@
         <eclipse-lifecycle-mapping.version>1.0.0</eclipse-lifecycle-mapping.version>
         <bundle.plugin.version>5.1.2</bundle.plugin.version> <!-- felix, for pricing RCP -->
         <exec.plugin.version>3.0.0</exec.plugin.version>
-        <jetty-maven-plugin.version>10.0.6</jetty-maven-plugin.version>
+        <jetty-maven-plugin.version>10.0.7</jetty-maven-plugin.version>
         <maven-antrun-plugin.version>3.0.0</maven-antrun-plugin.version>
         <cxf-codegen-plugin.version>3.3.11</cxf-codegen-plugin.version>      <!-- 3.4.4 ? -->
         <cxf-wadl2java-plugin.version>3.3.11</cxf-wadl2java-plugin.version>  <!-- 3.4.4 ? -->
@@ -1106,7 +1106,7 @@
                             <configLocation>./checkstyle.xml</configLocation>
                             <sourceDirectories>src/main/java,src/main/bon,src/main/xtend,src/main/sql,src/main/resources</sourceDirectories>
                             <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                            <includes>**\/*.java,**\/*.xtend,**\/*.bon,**\/*.bddl,**\/*.sql,**\/*.xml,**\/*.properties</includes>
+                            <includes>**\/*.java,**\/*.xtend,**\/*.bon,**\/*.bddl,**\/*.sql,**\/*.xml,**\/*.json,**\/*.properties</includes>
                             <excludes>**\/generated\/,**\/xtend-gen\/,**\/target\/,**\/bin\/</excludes>
                         </configuration>
                     </plugin>

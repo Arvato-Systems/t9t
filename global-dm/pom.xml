@@ -39,7 +39,7 @@
 
         <!-- jpaw / bonaparte: versions for import of BOM. The plugin version is defined separately in SE/EE -->
         <!-- Note that the version of the bonapart-dsl plugin is set in "global-settings" -->
-        <jpaw-bom.version>2.8.8</jpaw-bom.version>
+        <jpaw-bom.version>2.9.1</jpaw-bom.version>
         <bonaparte-bom.version>4.80.4</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
         <persistence-bom.version>4.80.4</persistence-bom.version>
         <jdp-bom.version>1.5.0</jdp-bom.version>
@@ -58,7 +58,7 @@
 
         <!-- OR mappers -->
         <eclipselink.version>2.7.8</eclipselink.version>
-        <hibernate.version>5.6.0.Final</hibernate.version>
+        <hibernate.version>5.6.1.Final</hibernate.version>
         <hibernate-validator.version>6.2.0.Final</hibernate-validator.version>
         <ehcache.version>2.10.4</ehcache.version>
         <ehcache3.version>3.5.3</ehcache3.version>
@@ -97,7 +97,7 @@
         <microprofile-smallrye-impl.version>2.4.1</microprofile-smallrye-impl.version>
 
         <!-- Jetty -->
-        <jetty.version>10.0.6</jetty.version>
+        <jetty.version>10.0.7</jetty.version>
 
         <!-- Commons -->
         <commons-logging.version>1.1</commons-logging.version>            <!-- should not use at all! -->
@@ -130,7 +130,7 @@
         <hamcrest.version>1.3</hamcrest.version>   <!-- upgrade to 2.2 with next release -->
         <byte-buddy.version>1.11.21</byte-buddy.version>
         <org.mockito-core.version>2.23.4</org.mockito-core.version>
-        <archunit.version>0.19.0</archunit.version>
+        <archunit.version>0.22.0</archunit.version>
         <hdrhistogram.version>2.1.12</hdrhistogram.version>
 
         <!-- Others -->
@@ -159,21 +159,21 @@
         <openpdf.version>1.3.26</openpdf.version>
 
         <javassist.version>3.28.0-GA</javassist.version>
-        <guava.version>30.1.1-jre</guava.version>
+        <guava.version>31.0.1-jre</guava.version>
         <antlr.version>3.2</antlr.version>
-        <resteasy-jaxrs.version>4.7.1.Final</resteasy-jaxrs.version>
+        <resteasy-jaxrs.version>5.0.0.Final</resteasy-jaxrs.version>
         <googlemaps.services.version>0.2.5</googlemaps.services.version>
         <uuid-generator.version>3.1.2</uuid-generator.version>
-        <apache-poi.version>5.0.0</apache-poi.version>
-        <xmlbeans.version>5.0.1</xmlbeans.version>  <!-- 3.x is required for POI 4 (xlsx), 4.x or 5.x for POI 5.0 -->
+        <apache-poi.version>5.1.0</apache-poi.version>
+        <xmlbeans.version>5.0.2</xmlbeans.version>  <!-- 3.x is required for POI 4 (xlsx), 4.x or 5.x for POI 5.0 -->
         <gson.version>2.8.8</gson.version>
 
         <spring-bom.version>5.2.17.RELEASE</spring-bom.version>
         <spring-data-jpa.version>2.5.5</spring-data-jpa.version>
         <spring-boot.version>2.5.5</spring-boot.version>
 
-        <netty.version>4.1.68.Final</netty.version>
-        <vertx4.version>4.1.5</vertx4.version>
+        <netty.version>4.1.70.Final</netty.version>
+        <vertx4.version>4.2.1</vertx4.version>
 
         <snakeyaml.version>1.28</snakeyaml.version>
         <classgraph.version>4.8.116</classgraph.version>
@@ -909,11 +909,11 @@
                 <artifactId>google-maps-services</artifactId>
                 <version>${googlemaps.services.version}</version>
             </dependency>
-			<dependency>
-				<groupId>com.google.code.gson</groupId>
-				<artifactId>gson</artifactId>
-				<version>${gson.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>${gson.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>com.fasterxml.jackson.jaxrs</groupId>
@@ -1302,6 +1302,17 @@
                 <groupId>com.fasterxml.jackson.dataformat</groupId>
                 <artifactId>jackson-dataformat-cbor</artifactId>
                 <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.dataformat</groupId>
+                <artifactId>jackson-dataformat-yaml</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.dataformat</groupId>
+                <artifactId>jackson-dataformat-yaml</artifactId>
+                <version>${jackson.version}</version>
+                <type>bundle</type>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.uuid</groupId>

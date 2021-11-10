@@ -86,7 +86,7 @@ public class DateConverter implements Converter<Object, Object, Component> {
                 return dateString;
             } else {
                 throw new UnsupportedOperationException(
-                        "Retrun object " + returnObject + " is not supported (Component: " + comp.getWidgetClass() + "/" + comp.getId() + "/" + val + ")");
+                        "Return object " + returnObject + " is not supported (Component: " + comp.getWidgetClass() + "/" + comp.getId() + "/" + val + ")");
             }
         } else {
             throw new UnsupportedOperationException(

@@ -44,6 +44,7 @@ import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Menuitem;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Paging;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.event.PagingEvent;
@@ -278,7 +279,7 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
         exportParameters.setLimit(100);
         exportParameters.setOffset(0);
 
-        Component modalExportWindow = ModalWindows.runModal(
+        ModalWindows.runModal(
             "/component/export28p.zul", this,
             exportParameters, false,
             out -> {
@@ -304,6 +305,7 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
                     messagingDAO.downloadFileAndSave(resp.getSinkRef());
                 } catch (ReturnCodeException e) {
                     LOGGER.error("Return code exception", e);
+                    Messagebox.show(ZulUtils.translate("err", "unableToExport"), ZulUtils.translate("err", "title"), Messagebox.OK, Messagebox.ERROR);
                 }
             }
             // close the window
@@ -601,9 +603,8 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
        if (lb.getModel() != null && lb.getModel().getSize() > 0) {
            // Index is -1 if no item is selected
            return lb.getSelectedIndex() != -1;
-       } else {
-           return false;
        }
+       return false;
     }
     public void selectNextItem() {
         // check, if operation is applicable

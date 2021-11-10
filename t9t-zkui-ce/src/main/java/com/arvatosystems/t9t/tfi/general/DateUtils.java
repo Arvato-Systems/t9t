@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.tfi.general;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -54,10 +55,30 @@ public final class DateUtils {
     /**
      * Convenient method to convert LocalDateTime to Date
      */
-    public static Date toDate(LocalDateTime localDateTime) {
+    public static Date toDate(final LocalDateTime localDateTime) {
         if (localDateTime == null)
             return null;
 
-        return Date.from((localDateTime).atZone(ZoneId.systemDefault()).toInstant());
+        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+    }
+
+    /**
+     * Convenient method to convert LocalDate to Date
+     */
+    public static Date toDate(final LocalDate localDate) {
+        if (localDate == null)
+            return null;
+
+        return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+    }
+
+    /**
+     * Convenient method to convert Instant to Date
+     */
+    public static Date toDate(final Instant instant) {
+        if (instant == null)
+            return null;
+
+        return Date.from(instant);
     }
 }
