@@ -39,7 +39,7 @@
         <org-jfree-jfreechart.version>1.0.19</org-jfree-jfreechart.version>
         <org-jfree-jcommon.version>1.0.23</org-jfree-jcommon.version>
 
-        <shiro.version>1.7.1</shiro.version>
+        <shiro.version>1.8.0</shiro.version>
     </properties>
 
 
