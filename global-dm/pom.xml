@@ -150,7 +150,7 @@
         <httpcore5.version>5.0.4</httpcore5.version>
         <httpclient5.version>5.0.4</httpclient5.version>
         <httpmime.version>4.5.13</httpmime.version>
-        <pdfbox.version>2.0.22</pdfbox.version>
+        <pdfbox.version>2.0.24</pdfbox.version>
         <xmlunit.version>1.5</xmlunit.version>
         <freemarker.version>2.3.31</freemarker.version>
         <jasperreports.version>6.18.1</jasperreports.version>
