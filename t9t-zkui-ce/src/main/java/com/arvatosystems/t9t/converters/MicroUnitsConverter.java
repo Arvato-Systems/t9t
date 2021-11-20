@@ -34,7 +34,6 @@ public class MicroUnitsConverter implements Converter<BigDecimal, MicroUnits, De
 
     @Override
     public MicroUnits coerceToBean(BigDecimal value, Decimalbox component, BindContext ctx) {
-        return value == null ? null :  MicroUnits.of(value);
+        return value == null ? null :  MicroUnits.valueOf(value);
     }
-
 }

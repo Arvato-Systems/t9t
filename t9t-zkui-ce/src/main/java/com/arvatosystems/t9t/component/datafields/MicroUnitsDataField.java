@@ -54,7 +54,7 @@ public class MicroUnitsDataField extends  AbstractDataField<Decimalbox, MicroUni
         BigDecimal num = c.getValue();
         if (num == null)
             return null;
-        return MicroUnits.of(num);
+        return MicroUnits.valueOf(num);
     }
 
     @Override

@@ -26,7 +26,7 @@ public class MicroUnitsConverter implements Converter {
         }
 
         if (value instanceof MicroUnits) {
-            return value.toString();
+            return ((MicroUnits)value).toString(2);
         } else {
             throw new UnsupportedOperationException("Instance " + value.getClass().getName() + " is not supported. Field:" + fieldName + "->" + value);
         }
@@ -36,5 +36,4 @@ public class MicroUnitsConverter implements Converter {
     public Object getConvertedValue(Object value, Object wholeDataObject, String fieldName) {
         return value;
     }
-
 }

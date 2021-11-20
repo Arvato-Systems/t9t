@@ -36,7 +36,7 @@ public class MicroUnitsConverter implements IItemConverter<MicroUnits> {
         }
 
         if (value instanceof MicroUnits) {
-            return value.toString();
+            return value.toString(2);
         } else {
             throw new UnsupportedOperationException("Instance " + value.getClass().getName() + " is not supported. Field:" + fieldName + "->" + value);
         }

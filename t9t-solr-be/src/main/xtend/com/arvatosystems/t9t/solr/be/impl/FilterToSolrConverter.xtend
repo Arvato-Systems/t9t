@@ -64,7 +64,7 @@ class FilterToSolrConverter implements IFilterToSolrConverter {
 
     def private static forSolr(LocalDate t) {
         if (t !== null)
-            isoDay.format(t)
+            isoDay.format(t) + "T00\\:00\\:00Z"
         else
             "*"
     }
