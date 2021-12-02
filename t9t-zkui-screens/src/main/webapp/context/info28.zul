@@ -1,4 +1,4 @@
-<modal28 id="infoWin" viewModel="@id('vm') @init('com.arvatosystems.t9t.components.GenericVM', inst=inst)">
+<modal28 id="infoWin" viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.GenericVM', inst=inst)">
     <form28 id="infoData" viewModelId="info" aspect="1">
         <rows>
             <row>

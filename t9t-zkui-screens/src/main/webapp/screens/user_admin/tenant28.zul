@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="tenant28"?>
+<?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="tenant28"?>
 
 <window28 id="tenantWin">
     <threesections28 gridId="tenant">
         <crud28 cachesDropdown="tenantId"
-            viewModel="@id('vm') @init('com.arvatosystems.t9t.viewmodel.TenantVM', vmId='tenant')"
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.framework.TenantVM', vmId='tenant')"
             currentMode="@load(vm.currentMode)">
             <form28 id="tenantCrud" aspect="2" numColumns="2">
                 <rows>

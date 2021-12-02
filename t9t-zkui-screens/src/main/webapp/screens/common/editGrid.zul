@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="requests28"?>
-<?xel-method prefix="l"  name="translate"  class="com.arvatosystems.t9t.tfi.web.ZulUtils" signature="String translate(String, String)"?>
+<?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="requests28"?>
+<?xel-method prefix="l"  name="translate"  class="com.arvatosystems.t9t.zkui.util.ZulUtils" signature="String translate(String, String)"?>
 <zk xmlns:c="client">
     <window apply="org.zkoss.bind.BindComposer"
         sizable="true" maximizable="true" mode="modal" width="50%"
         height="80%" title="${l:translate('editGrid','addRemoveGridColumn')}"
-        viewModel="@id('vm') @init('com.arvatosystems.t9t.components.tools.EditGridViewModel',initParams=arg)">
+        viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.support.EditGridViewModel',initParams=arg)">
         <div class="form" vflex="1">
             <groupbox vflex="1" contentStyle="padding: 15px;">
                 <vlayout vflex="1">

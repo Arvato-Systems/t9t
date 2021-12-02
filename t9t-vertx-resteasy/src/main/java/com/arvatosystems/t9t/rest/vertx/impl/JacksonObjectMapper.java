@@ -28,6 +28,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import de.jpaw.api.ConfigurationReader;
+import de.jpaw.util.ConfigurationReaderFactory;
+
 /**
  * Encode / decoder to parse requests and send responses in JSON format (using jackson, plus addon modules).
  */
@@ -36,11 +39,24 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 public class JacksonObjectMapper implements ContextResolver<ObjectMapper> {
     private static final Logger LOGGER = LoggerFactory.getLogger(JacksonObjectMapper.class);
 
+    public static final ConfigurationReader CONFIG_READER = ConfigurationReaderFactory.getConfigReaderForName("t9t.restapi", null);
+
+    public static boolean checkIfSet(final String configurationNameName, Boolean defaultValue) {
+        final Boolean configuredValue = CONFIG_READER.getBooleanProperty(configurationNameName);
+        if (configuredValue == null) {
+            LOGGER.info("No value configured for {}, using default {}", configurationNameName, defaultValue);
+            return defaultValue;
+        } else {
+            LOGGER.info("Configuration of {} is {}", configurationNameName, configuredValue);
+            return configuredValue;
+        }
+    }
+
     private final ObjectMapper objectMapper;
 
     public JacksonObjectMapper() {
         this.objectMapper = new ObjectMapper();
-        final boolean useNulls = checkIfSet("t9t.restapi.jsonAlsoNulls", "T9T_RESTAPI_JSON_ALSO_NULLS");
+        final boolean useNulls = checkIfSet("t9t.restapi.jsonAlsoNulls", Boolean.FALSE);
         if (!useNulls) {
             objectMapper.setSerializationInclusion(Include.NON_NULL);
         }
@@ -53,21 +69,4 @@ public class JacksonObjectMapper implements ContextResolver<ObjectMapper> {
     public ObjectMapper getContext(final Class<?> type) {
         return objectMapper;
     }
-
-    private static boolean representsFalse(final char x) {
-        return x == '0' || x == 'n' || x == 'N';
-    }
-
-    private static boolean isSet(final String value, final String byWhat) {
-        if (value == null || value.length() == 0 || representsFalse(value.charAt(0))) {
-            return false;
-        }
-        LOGGER.info("Property {} set (value {})", byWhat, value);
-        return true;
-    }
-
-    public static boolean checkIfSet(final String systemPropertyName, final String envVariableName) {
-        return isSet(System.getProperty(systemPropertyName), systemPropertyName) || isSet(System.getenv(envVariableName), envVariableName);
-    }
-
 }

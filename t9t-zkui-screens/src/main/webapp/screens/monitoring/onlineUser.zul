@@ -3,7 +3,7 @@
      <zscript><![CDATA[
     import org.zkoss.zul.DialModel;
     import org.zkoss.zul.DialModelScale;
-    import com.arvatosystems.t9t.tfi.web.SessionCounter;
+    import com.arvatosystems.t9t.zkui.init.SessionCounter;
 
     DialModel dialmodel = new DialModel();
     dialmodel.setFrameFgColor("#808080");

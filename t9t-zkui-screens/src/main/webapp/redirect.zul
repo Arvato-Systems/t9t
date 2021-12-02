@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xel-method prefix="l" name="translate" class="com.arvatosystems.t9t.tfi.web.ZulUtils" signature="String translate(String, String)"?>
+<?xel-method prefix="l" name="translate" class="com.arvatosystems.t9t.zkui.util.ZulUtils" signature="String translate(String, String)"?>
 <?link rel="icon" type="image/x-icon" href="/favicon.ico"?>
 <zk xmlns:h="http://www.w3.org/1999/xhtml" xmlns:zk="http://www.zkoss.org/2005/zk">
-<window  title="${l:translate('redirect','title')}" border="normal" viewModel="@id('vm') @init('com.arvatosystems.t9t.tfi.viewmodel.RedirectViewModel')"
+<window  title="${l:translate('redirect','title')}" border="normal" viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.support.RedirectViewModel')"
     width="450px" position="center,center"  mode="overlapped">
         <style src="/css/screen.css" />
         <style src="/css/body.css" />
@@ -12,7 +12,7 @@
                     <h:br /><h:br />
         </div>
 
-         <div visible="${vm.showLogoutButton}" sclass="modalButtons"><button label=" ${l:translate('logout','title')}" sclass="submit" apply="com.arvatosystems.t9t.tfi.viewmodel.LogoutViewModel" id="logoff"></button></div>
+         <div visible="${vm.showLogoutButton}" sclass="modalButtons"><button label=" ${l:translate('logout','title')}" sclass="submit" apply="com.arvatosystems.t9t.zkui.viewmodel.support.LogoutViewModel" id="logoff"></button></div>
     </vbox>
 </window>
 </zk>

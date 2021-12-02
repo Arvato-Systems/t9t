@@ -127,4 +127,23 @@ public class CamelService {
         }
         return true;
     }
+
+    public void startRoute(final DataSinkDTO dataSink) {
+        final CamelContext context = Jdp.getProvider(CamelContext.class).get();
+        final List<String> routeIds = GenericT9tRoute.getPossibleRouteIds(dataSink);
+        final RouteController routeController = context.getRouteController();
+
+        for (final String routeId : routeIds) {
+            if (context.getRoute(routeId) != null) {
+                if (routeController.getRouteStatus(routeId) == ServiceStatus.Stopped) {
+                    LOGGER.debug("Start route id {}", routeId);
+                    try {
+                        routeController.startRoute(routeId);
+                    } catch (Exception e) {
+                        LOGGER.error("Exception on starting route {}: {}: {}", routeId, e.getMessage(), ExceptionUtil.causeChain(e));
+                    }
+                }
+            }
+        }
+    }
 }

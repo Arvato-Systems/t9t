@@ -15,8 +15,6 @@
  */
 package com.arvatosystems.t9t.jetty.init;
 
-import java.util.Map;
-
 import org.eclipse.jetty.http2.server.HTTP2CServerConnectionFactory;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
@@ -26,20 +24,19 @@ import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
-import org.eclipse.microprofile.config.Config;
-import org.eclipse.microprofile.config.ConfigProvider;
-import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.jetty.impl.RestUtils;
+
 public class JettyServer {
     private static final Logger LOGGER = LoggerFactory.getLogger(JettyServer.class);
 
-    static final Integer DEFAULT_PORT = 8090;
-    static final Integer DEFAULT_MIN_THREADS = 4;
-    static final Integer DEFAULT_MAX_THREADS = 20;
-    static final Integer DEFAULT_IDLE_TIMEOUT = 5000;
+    static final int DEFAULT_PORT = 8090;
+    static final int DEFAULT_MIN_THREADS = 4;
+    static final int DEFAULT_MAX_THREADS = 20;
+    static final int DEFAULT_IDLE_TIMEOUT = 5000;
     static final String DEFAULT_CONTEXT_ROOT = "/rest";
     static final String DEFAULT_APPLICATION_PATH = "";
 
@@ -57,27 +54,21 @@ public class JettyServer {
     }
 
     public static String getContextPath() {
-        return ConfigProvider.getConfig().getOptionalValue("jetty.contextRoot", String.class).orElse(DEFAULT_CONTEXT_ROOT);
+        return RestUtils.CONFIG_READER.getProperty("jetty.contextRoot", DEFAULT_CONTEXT_ROOT);
     }
 
     public static String getApplicationPath() {
-        return ConfigProvider.getConfig().getOptionalValue("jetty.applicationPath", String.class).orElse(DEFAULT_APPLICATION_PATH);
+        return RestUtils.CONFIG_READER.getProperty("jetty.applicationPath", DEFAULT_APPLICATION_PATH);
     }
 
     public void run() throws Exception {
 
-        final Config config = ConfigProvider.getConfig();
-        for (final ConfigSource cfgSrc: config.getConfigSources()) {
-            final Map<String, String> values = cfgSrc.getProperties();
-            LOGGER.info("Have config source of prio {}: {} with {} values", cfgSrc.getOrdinal(), cfgSrc.getName(), values.size());
-        }
-
-        final int port = config.getOptionalValue("jetty.http.port", Integer.class).orElse(DEFAULT_PORT);
-        final int minThreads = config.getOptionalValue("jetty.threadPool.minThreads", Integer.class).orElse(DEFAULT_MIN_THREADS);
-        final int maxThreads = config.getOptionalValue("jetty.threadPool.maxThreads", Integer.class).orElse(DEFAULT_MAX_THREADS);
-        final int idleTimeout = config.getOptionalValue("jetty.threadPool.idleTimeout", Integer.class).orElse(DEFAULT_IDLE_TIMEOUT);  // in millis
-        final String contextRoot = getContextPath();
-        final String applicationPath = getApplicationPath();
+        final int port        = RestUtils.CONFIG_READER.getIntProperty("jetty.http.port",              DEFAULT_PORT);
+        final int minThreads  = RestUtils.CONFIG_READER.getIntProperty("jetty.threadPool.minThreads",  DEFAULT_MIN_THREADS);
+        final int maxThreads  = RestUtils.CONFIG_READER.getIntProperty("jetty.threadPool.maxThreads",  DEFAULT_MAX_THREADS);
+        final int idleTimeout = RestUtils.CONFIG_READER.getIntProperty("jetty.threadPool.idleTimeout", DEFAULT_IDLE_TIMEOUT);  // in millis
+        final String contextRoot     = RestUtils.CONFIG_READER.getProperty("jetty.contextRoot",     DEFAULT_CONTEXT_ROOT);
+        final String applicationPath = RestUtils.CONFIG_READER.getProperty("jetty.applicationPath", DEFAULT_APPLICATION_PATH);
 
         LOGGER.info("Using the following configuration values: port {}, min/max threads = {}/{}", port, minThreads, maxThreads);
         LOGGER.info("  idle timeout = {}, context = {}, application path = {}", idleTimeout, contextRoot, applicationPath);

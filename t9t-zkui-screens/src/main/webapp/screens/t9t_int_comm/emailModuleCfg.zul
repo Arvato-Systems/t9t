@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="emailModuleCfg"?>
+<?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="emailModuleCfg"?>
 
 <window28 id="emailModuleCfgWin">
     <threesections28 gridId="emailModuleCfg" vflex3="2">
         <crud28
-            viewModel="@id('vm') @init('com.arvatosystems.t9t.viewmodel.SendTestEmail', vmId='emailModuleCfg')"
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.framework.SendTestEmail', vmId='emailModuleCfg')"
             currentMode="@load(vm.currentMode)">
             <form28 id="emailModuleCfgCrud" aspect="2" numColumns="2">
                 <rows>

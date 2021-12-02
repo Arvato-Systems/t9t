@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="tenantLogo"?>
+<?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="tenantLogo"?>
 
 <window28 id="tenantLogoWin">
     <threesections28 gridId="tenantLogo" vflex3="2">
         <crud28
-            viewModel="@id('vm') @init('com.arvatosystems.t9t.components.crud.ModuleConfigVM', vmId='tenantLogo')"
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.ModuleConfigVM', vmId='tenantLogo')"
             currentMode="@load(vm.currentMode)">
             <form28 id="authModuleCfgCrud" aspect="2" numColumns="2">
                 <rows>

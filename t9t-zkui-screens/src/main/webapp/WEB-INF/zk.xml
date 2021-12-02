@@ -50,6 +50,21 @@
         <value>false</value>
     </library-property>
 
+	<library-property>
+	    <name>org.zkoss.bind.appConverters</name>
+	    <value>
+	        nanos=de.jpaw.fixedpoint.types.NanoUnitsConverter,
+	        millis=de.jpaw.fixedpoint.types.MilliUnitsConverter,
+	        micros=de.jpaw.fixedpoint.types.MicroUnitsConverter,
+	        day=de.jpaw.fixedpoint.types.LocalDateConverter,
+	        time=de.jpaw.fixedpoint.types.LocalTimeConverter,
+	        timestamp=de.jpaw.fixedpoint.types.LocalDateTimeConverter,
+	        instant=de.jpaw.fixedpoint.types.InstantConverter,
+	        uuid=de.jpaw.fixedpoint.types.UUIDConverter,
+	        json=de.jpaw.fixedpoint.types.JsonConverter
+	    </value>
+	</library-property>
+
     <!-- Turn on if you want to use language addons.-->
     <language-config>
         <addon-uri>/WEB-INF/t9t-lang-addon.xml</addon-uri>
@@ -98,16 +113,14 @@
     </error-page>
 
     <listener>
-        <listener-class>com.arvatosystems.t9t.tfi.web.SessionListener</listener-class>
+        <listener-class>com.arvatosystems.t9t.zkui.init.SessionListener</listener-class>
     </listener>
+    <!--  not required
     <listener>
-        <listener-class>com.arvatosystems.t9t.tfi.web.ApplicationListener</listener-class>
+        <listener-class>com.arvatosystems.t9t.zkui.init.ApplicationListener</listener-class>
     </listener>
+     -->
 
-    <system-property>
-        <name>SEARCH_PATH_FOR_XENUMS_INIT</name>
-        <value>com.arvatosystems.t9t.tfi</value>
-    </system-property>
     <library-property>
         <name>org.zkoss.zul.borderlayout.animation.disabled</name>
         <value>true</value>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="emailLog"?>
+<?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="emailLog"?>
 
 <window28 id="emailLogWin">
     <threesections28 gridId="emailLog">
-        <crud28 viewModel="@id('vm') @init('com.arvatosystems.t9t.components.crud.CrudSurrogateKeyVM', vmId='emailLog')"
+        <crud28 viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.CrudSurrogateKeyVM', vmId='emailLog')"
                 currentMode="@load(vm.currentMode)">
             <form28 id="emailLogCrud" aspect="2" numColumns="2">
                 <rows>

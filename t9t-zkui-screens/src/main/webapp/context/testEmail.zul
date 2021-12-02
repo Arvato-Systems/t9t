@@ -1,7 +1,7 @@
-<?xel-method prefix="l"  name="newI18nLabel"  class="com.arvatosystems.t9t.tfi.web.ZulUtils" signature="String newI18nLabel(String)"?>
+<?xel-method prefix="l"  name="newI18nLabel"  class="com.arvatosystems.t9t.zkui.util.ZulUtils" signature="String newI18nLabel(String)"?>
 
 <window id="sendTestEmailWin" width="50%" height="30%" title="${l:newI18nLabel('sendTestEmailTitle')}"
-                viewModel="@id('vm') @init('com.arvatosystems.t9t.viewmodel.SendTestEmailVM', inst=inst)">
+                viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.framework.SendTestEmailVM', inst=inst)">
     <groupbox28>
          <form28 id="sendTestEmail" viewModelId="sendTestEmailVM" aspect="2" numColumns="2">
             <rows>

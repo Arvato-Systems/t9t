@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="user28"?>
+<?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="user28"?>
 
 <window28 id="userWin">
     <threesections28 gridId="user">
         <crud28 cachesDropdown="userId"
-            viewModel="@id('vm') @init('com.arvatosystems.t9t.viewmodel.UserVM', vmId='user')"
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.framework.UserVM', vmId='user')"
             currentMode="@load(vm.currentMode)">
             <tabbox id="taboxDetail" vflex="1">
                 <tabs>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xel-method prefix="l" name="i18nLabel" class="com.arvatosystems.t9t.tfi.web.ZulUtils" signature="String i18nLabel(String)"?>
+<?xel-method prefix="l" name="i18nLabel" class="com.arvatosystems.t9t.zkui.util.ZulUtils" signature="String i18nLabel(String)"?>
 <?link rel="icon" type="image/x-icon" href="/favicon.ico"?>
 <window  title="Session Timeout" border="normal"
     width="450px" position="center,center"  mode="overlapped">

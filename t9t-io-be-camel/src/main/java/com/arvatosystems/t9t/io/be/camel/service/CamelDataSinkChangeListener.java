@@ -85,6 +85,7 @@ public class CamelDataSinkChangeListener implements IEventHandler {
 
         if (Boolean.TRUE.equals(dataSink.getIsInput())) {
             camelService.addRoutes(dataSink);
+            camelService.startRoute(dataSink); // start manually
         }
     }
 

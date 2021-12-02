@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="userLocation28"?>
+<?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="userLocation28"?>
 
 <window28 id="voiceUserWin">
     <threesections28 gridId="voiceUser">
         <crud28
-            viewModel="@id('vm') @init('com.arvatosystems.t9t.components.crud.CrudSurrogateKeyVM', vmId='voiceUser')"
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.CrudSurrogateKeyVM', vmId='voiceUser')"
             currentMode="@load(vm.currentMode)">
             <form28 id="voiceUserCrud" aspect="2"
                 numColumns="2">

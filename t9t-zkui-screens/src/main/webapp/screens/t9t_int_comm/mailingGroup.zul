@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="mailingGroup"?>
+<?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="mailingGroup"?>
 
 <window28 id="mailingGroupWin">
     <threesections28 gridId="mailingGroup">
-        <crud28 viewModel="@id('vm') @init('com.arvatosystems.t9t.components.crud.CrudSurrogateKeyVM', vmId='mailingGroup')"
+        <crud28 viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.CrudSurrogateKeyVM', vmId='mailingGroup')"
                 currentMode="@load(vm.currentMode)">
             <form28 id="mailingGroupCrud" aspect="2" numColumns="2">
                 <rows>

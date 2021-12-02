@@ -15,13 +15,6 @@
  */
 package com.arvatosystems.t9t.io.be.camel.init;
 
-import java.util.List;
-
-import org.apache.camel.CamelContext;
-import org.apache.camel.impl.DefaultCamelContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.arvatosystems.t9t.annotations.IsLogicallyFinal;
 import com.arvatosystems.t9t.base.services.IAsyncRequestProcessor;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
@@ -32,13 +25,18 @@ import com.arvatosystems.t9t.io.be.camel.service.CamelService;
 import com.arvatosystems.t9t.io.event.DataSinkChangedEvent;
 import com.arvatosystems.t9t.out.be.impl.output.camel.AbstractExtensionCamelRouteBuilder;
 import com.arvatosystems.t9t.out.services.IOutPersistenceAccess;
-
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 import de.jpaw.dp.Singleton;
 import de.jpaw.dp.Startup;
 import de.jpaw.dp.StartupShutdown;
 import de.jpaw.util.ExceptionUtil;
+import java.util.List;
+import org.apache.camel.CamelContext;
+import org.apache.camel.Route;
+import org.apache.camel.impl.DefaultCamelContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Create routes for all camel routes.
@@ -59,26 +57,31 @@ public class CamelContextProvider implements StartupShutdown, Provider<CamelCont
     public void onStartup() {
         camelContext = new DefaultCamelContext();
         Jdp.registerWithCustomProvider(CamelContext.class, this);
-        // first Initialize routes that derive from
-        // AbstractExtensionCamelRouteBuilder
-        // these should be static routes that are not configurable (like
-        // FileRoute)
-        final List<AbstractExtensionCamelRouteBuilder> classList = Jdp.getAll(AbstractExtensionCamelRouteBuilder.class);
-        if (classList != null) {
-            for (final AbstractExtensionCamelRouteBuilder clazz : classList) {
-                try {
-                    LOGGER.info("Adding route: {}", clazz.getClass());
-                    camelContext.addRoutes(clazz);
-                } catch (final Exception e) {
-                    // in case of problems rather skip a single route instead of not initializing the context at all!
-                    LOGGER.debug("There was a problem initializing route: {} due to ", clazz.getClass(), e);
-                }
-            }
-        } else {
-            LOGGER.info("No AbstractExtensionCamelRouteBuilders found.");
-        }
-        // After initializing these static routes there are additional routes
+
+        camelContext.setAutoStartup(false); // to allow manually start
+        camelContext.start();
+
         try {
+            // first Initialize routes that derive from
+            // AbstractExtensionCamelRouteBuilder
+            // these should be static routes that are not configurable (like
+            // FileRoute)
+            final List<AbstractExtensionCamelRouteBuilder> classList = Jdp.getAll(AbstractExtensionCamelRouteBuilder.class);
+            if (classList != null) {
+                for (final AbstractExtensionCamelRouteBuilder clazz : classList) {
+                    try {
+                        LOGGER.info("Adding route: {}", clazz.getClass());
+                        camelContext.addRoutes(clazz);
+                    } catch (final Exception e) {
+                        // in case of problems rather skip a single route instead of not initializing the context at all!
+                        LOGGER.debug("There was a problem initializing route: {} due to ", clazz.getClass(), e);
+                    }
+                }
+            } else {
+                LOGGER.info("No AbstractExtensionCamelRouteBuilders found.");
+            }
+            // After initializing these static routes there are additional routes
+
             String environment = ConfigProvider.getConfiguration().getImportEnvironment();
             if (environment == null) {
                 environment = CamelService.DEFAULT_ENVIRONMENT;
@@ -98,8 +101,16 @@ public class CamelContextProvider implements StartupShutdown, Provider<CamelCont
                     LOGGER.info("Not starting inactive Camel route {}", dataSinkDTO.getDataSinkId());
                 }
             }
-            camelContext.start();
 
+            // start the routes manually to omit invalid routes
+            for (Route route : camelContext.getRoutes()) {
+                try {
+                    camelContext.getRouteController().startRoute(route.getRouteId());
+                    LOGGER.debug("started route {} successfully.", route.getRouteId());
+                } catch (Exception ex) {
+                    LOGGER.error("Unable to start route {}: ", route.getRouteId(), ex);
+                }
+            }
         } catch (final Exception e) {
             LOGGER.error("CamelContext could not be started... ", e);
         }

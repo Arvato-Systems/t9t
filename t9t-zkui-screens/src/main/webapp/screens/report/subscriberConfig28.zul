@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="subscriberConfig28"?>
+<?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="subscriberConfig28"?>
 
 <window28 id="subscriberConfigWin">
     <threesections28 gridId="subscriberConfig">
-        <crud28 viewModel="@id('vm') @init('com.arvatosystems.t9t.components.crud.CrudSurrogateKeyVM', vmId='subscriberConfig')"
+        <crud28 viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.CrudSurrogateKeyVM', vmId='subscriberConfig')"
                 currentMode="@load(vm.currentMode)">
             <form28 id="subscriberConfigCrud" aspect="2" >
                 <rows>

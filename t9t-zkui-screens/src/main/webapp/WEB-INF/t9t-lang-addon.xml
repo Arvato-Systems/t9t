@@ -21,37 +21,37 @@
 
     <component>
         <component-name>permissions28</component-name>
-        <component-class>com.arvatosystems.t9t.components.Permissions28</component-class>
+        <component-class>com.arvatosystems.t9t.zkui.components.basic.Permissions28</component-class>
         <extends>groupbox</extends>
     </component>
     <component>
         <component-name>bandpopup28</component-name>
-        <component-class>com.arvatosystems.t9t.components.Bandpopup28</component-class>
+        <component-class>com.arvatosystems.t9t.zkui.components.basic.Bandpopup28</component-class>
         <extends>bandpopup</extends>
     </component>
     <component>
         <component-name>view28</component-name>
-        <component-class>com.arvatosystems.t9t.components.View28</component-class>
+        <component-class>com.arvatosystems.t9t.zkui.components.basic.View28</component-class>
         <extends>div</extends>
     </component>
     <component>
         <component-name>direct28</component-name>
-        <component-class>com.arvatosystems.t9t.components.Direct28</component-class>
+        <component-class>com.arvatosystems.t9t.zkui.components.basic.Direct28</component-class>
         <extends>div</extends>
     </component>
     <component>
         <component-name>cells328</component-name>
-        <component-class>com.arvatosystems.t9t.components.Cells328</component-class>
+        <component-class>com.arvatosystems.t9t.zkui.components.basic.Cells328</component-class>
         <extends>row</extends>
     </component>
     <component>
         <component-name>cells228</component-name>
-        <component-class>com.arvatosystems.t9t.components.Cells228</component-class>
+        <component-class>com.arvatosystems.t9t.zkui.components.basic.Cells228</component-class>
         <extends>row</extends>
     </component>
     <component>
         <component-name>cells28</component-name>
-        <component-class>com.arvatosystems.t9t.components.Cells28</component-class>
+        <component-class>com.arvatosystems.t9t.zkui.components.basic.Cells28</component-class>
         <extends>row</extends>
         <!--
         <annotation>
@@ -70,154 +70,170 @@
     </component>
     <component>
         <component-name>ckeditor28</component-name>
-        <component-class>com.arvatosystems.t9t.components.CkEditor28</component-class>
+        <component-class>com.arvatosystems.t9t.zkui.components.basic.CkEditor28</component-class>
         <extends>row</extends>
     </component>
     <component>
         <component-name>cells8</component-name>
-        <component-class>com.arvatosystems.t9t.components.Cells8</component-class>
+        <component-class>com.arvatosystems.t9t.zkui.components.basic.Cells8</component-class>
         <extends>row</extends>
     </component>
     <component>
         <component-name>crud28</component-name>
-        <component-class>com.arvatosystems.t9t.components.Crud28</component-class>
+        <component-class>com.arvatosystems.t9t.zkui.components.basic.Crud28</component-class>
         <extends>vlayout</extends>
     </component>
     <component>
         <component-name>field28</component-name>
-        <component-class>com.arvatosystems.t9t.components.Field28</component-class>
+        <component-class>com.arvatosystems.t9t.zkui.components.basic.Field28</component-class>
         <extends>cell</extends>
     </component>
     <component>
         <component-name>label28</component-name>
-        <component-class>com.arvatosystems.t9t.components.Label28</component-class>
+        <component-class>com.arvatosystems.t9t.zkui.components.basic.Label28</component-class>
         <extends>cell</extends>
     </component>
     <component>
         <component-name>tab28</component-name>
-        <component-class>com.arvatosystems.t9t.components.Tab28</component-class>
+        <component-class>com.arvatosystems.t9t.zkui.components.basic.Tab28</component-class>
         <extends>tab</extends>
     </component>
     <component>
         <component-name>tabbox28</component-name>
-        <component-class>com.arvatosystems.t9t.components.Tabbox28</component-class>
+        <component-class>com.arvatosystems.t9t.zkui.components.basic.Tabbox28</component-class>
         <extends>tabbox</extends>
     </component>
     <component>
         <component-name>tabpanel28</component-name>
-        <component-class>com.arvatosystems.t9t.components.Tabpanel28</component-class>
+        <component-class>com.arvatosystems.t9t.zkui.components.basic.Tabpanel28</component-class>
         <extends>tabpanel</extends>
     </component>
     <component>
         <component-name>threesections28</component-name>
-        <component-class>com.arvatosystems.t9t.components.ThreeSections28</component-class>
+        <component-class>com.arvatosystems.t9t.zkui.components.basic.ThreeSections28</component-class>
         <extends>vlayout</extends>
     </component>
     <component>
         <component-name>twosections28</component-name>
-        <component-class>com.arvatosystems.t9t.components.TwoSections28</component-class>
+        <component-class>com.arvatosystems.t9t.zkui.components.basic.TwoSections28</component-class>
         <extends>vlayout</extends>
     </component>
     <component>
         <component-name>form28</component-name>
-        <component-class>com.arvatosystems.t9t.components.Form28</component-class>
+        <component-class>com.arvatosystems.t9t.zkui.components.basic.Form28</component-class>
         <extends>grid</extends>
     </component>
     <component>
         <component-name>viewModel28</component-name>
-        <component-class>com.arvatosystems.t9t.components.ViewModel28</component-class>
+        <component-class>com.arvatosystems.t9t.zkui.components.basic.ViewModel28</component-class>
         <extends>div</extends>
     </component>
     <component>
         <component-name>modal28</component-name>
-        <component-class>com.arvatosystems.t9t.components.Modal28</component-class>
+        <component-class>com.arvatosystems.t9t.zkui.components.basic.Modal28</component-class>
         <extends>window</extends>
     </component>
     <component>
         <component-name>window28</component-name>
-        <component-class>com.arvatosystems.t9t.components.Window28</component-class>
+        <component-class>com.arvatosystems.t9t.zkui.components.basic.Window28</component-class>
         <extends>window</extends>
     </component>
     <component>
         <component-name>filter28</component-name>
-        <component-class>com.arvatosystems.t9t.components.Filter28</component-class>
+        <component-class>com.arvatosystems.t9t.zkui.components.basic.Filter28</component-class>
         <extends>grid</extends>
     </component>
     <component>
         <component-name>togglefilter28</component-name>
-        <component-class>com.arvatosystems.t9t.components.Togglefilter28</component-class>
+        <component-class>com.arvatosystems.t9t.zkui.components.basic.Togglefilter28</component-class>
         <extends>tabbox</extends>
     </component>
     <component>
         <component-name>groupbox28</component-name>
-        <component-class>com.arvatosystems.t9t.components.Groupbox28</component-class>
+        <component-class>com.arvatosystems.t9t.zkui.components.basic.Groupbox28</component-class>
         <extends>groupbox</extends>
     </component>
      <component>
         <component-name>div28</component-name>
-        <component-class>com.arvatosystems.t9t.components.Div28</component-class>
+        <component-class>com.arvatosystems.t9t.zkui.components.basic.Div28</component-class>
         <extends>div</extends>
     </component>
     <component>
         <component-name>context28</component-name>
-        <component-class>com.arvatosystems.t9t.components.Context28</component-class>
+        <component-class>com.arvatosystems.t9t.zkui.components.basic.Context28</component-class>
         <extends>menupopup</extends>
     </component>
     <component>
         <component-name>grid28</component-name>
-        <component-class>com.arvatosystems.t9t.components.Grid28</component-class>
+        <component-class>com.arvatosystems.t9t.zkui.components.basic.Grid28</component-class>
         <extends>div</extends>
     </component>
     <component>
         <component-name>button28</component-name>
-        <component-class>com.arvatosystems.t9t.components.Button28</component-class>
+        <component-class>com.arvatosystems.t9t.zkui.components.basic.Button28</component-class>
         <extends>button</extends>
     </component>
 
     <component>
         <component-name>dropdown28Currency</component-name>
-        <component-class>com.arvatosystems.t9t.tfi.component.Dropdown28Currency</component-class>
+        <component-class>com.arvatosystems.t9t.zkui.components.dropdown28.nodb.Dropdown28Currency</component-class>
         <extends>combobox</extends>
     </component>
     <component>
         <component-name>dropdown28Country</component-name>
-        <component-class>com.arvatosystems.t9t.tfi.component.Dropdown28Country</component-class>
+        <component-class>com.arvatosystems.t9t.zkui.components.dropdown28.nodb.Dropdown28Country</component-class>
         <extends>combobox</extends>
     </component>
     <component>
         <component-name>dropdown28CannedRequest</component-name>
-        <component-class>com.arvatosystems.t9t.tfi.component.dropdown.impl.Dropdown28CannedRequest</component-class>
+        <component-class>com.arvatosystems.t9t.zkui.components.dropdown28.db.Dropdown28CannedRequest</component-class>
         <extends>combobox</extends>
     </component>
     <component>
         <component-name>dropdown28User</component-name>
-        <component-class>com.arvatosystems.t9t.tfi.component.dropdown.impl.Dropdown28User</component-class>
+        <component-class>com.arvatosystems.t9t.zkui.components.dropdown28.db.Dropdown28User</component-class>
         <extends>combobox</extends>
     </component>
     <component>
         <component-name>dropdown28CsvConfiguration</component-name>
-        <component-class>com.arvatosystems.t9t.tfi.component.dropdown.impl.Dropdown28CsvConfiguration</component-class>
+        <component-class>com.arvatosystems.t9t.zkui.components.dropdown28.db.Dropdown28CsvConfiguration</component-class>
         <extends>combobox</extends>
     </component>
     <component>
         <component-name>dropdown28SchedulerSetup</component-name>
-        <component-class>com.arvatosystems.t9t.tfi.component.dropdown.impl.Dropdown28SchedulerSetup</component-class>
+        <component-class>com.arvatosystems.t9t.zkui.components.dropdown28.db.Dropdown28SchedulerSetup</component-class>
         <extends>combobox</extends>
     </component>
     <component>
         <component-name>dropdown28DataSink</component-name>
-        <component-class>com.arvatosystems.t9t.tfi.component.dropdown.impl.Dropdown28DataSink</component-class>
+        <component-class>com.arvatosystems.t9t.zkui.components.dropdown28.db.Dropdown28DataSink</component-class>
         <extends>combobox</extends>
     </component>
     <component>
         <component-name>dropdown28DocConfig</component-name>
-        <component-class>com.arvatosystems.t9t.tfi.component.dropdown.impl.Dropdown28DocConfig</component-class>
+        <component-class>com.arvatosystems.t9t.zkui.components.dropdown28.db.Dropdown28DocConfig</component-class>
         <extends>combobox</extends>
     </component>
     <component>
         <component-name>dropdown28ReportConfig</component-name>
-        <component-class>com.arvatosystems.t9t.tfi.component.dropdown.impl.Dropdown28ReportConfig</component-class>
+        <component-class>com.arvatosystems.t9t.zkui.components.dropdown28.db.Dropdown28ReportConfig</component-class>
         <extends>combobox</extends>
+    </component>
+
+    <component>
+        <component-name>milliUnitsBox</component-name>
+        <component-class>com.arvatosystems.t9t.zkui.inputelements.MilliUnitsBox</component-class>
+        <extends>decimalbox</extends>
+    </component>
+    <component>
+        <component-name>microUnitsBox</component-name>
+        <component-class>com.arvatosystems.t9t.zkui.inputelements.MicroUnitsBox</component-class>
+        <extends>decimalbox</extends>
+    </component>
+    <component>
+        <component-name>nanoUnitsBox</component-name>
+        <component-class>com.arvatosystems.t9t.zkui.inputelements.NanoUnitsBox</component-class>
+        <extends>decimalbox</extends>
     </component>
 
     <component>
@@ -248,6 +264,6 @@
     <component>
         <component-name>multilineJson42</component-name>
         <extends>textbox</extends>
-        <component-class>com.arvatosystems.t9t.tfi.component.MultilineJSon</component-class>
+        <component-class>com.arvatosystems.t9t.zkui.components.basic.MultilineJson</component-class>
     </component>
 </language-addon>

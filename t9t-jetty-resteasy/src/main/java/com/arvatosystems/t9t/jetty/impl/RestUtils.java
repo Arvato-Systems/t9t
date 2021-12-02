@@ -21,6 +21,9 @@ import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.api.ConfigurationReader;
+import de.jpaw.util.ConfigurationReaderFactory;
+
 
 /**
  * Creates a HTTP Response with status and Payload
@@ -30,20 +33,17 @@ public final class RestUtils {
 
     private RestUtils() { }
 
-    private static boolean representsFalse(final char x) {
-        return x == '0' || x == 'n' || x == 'N';
-    }
+    public static final ConfigurationReader CONFIG_READER = ConfigurationReaderFactory.getConfigReaderForName("t9t.restapi", null);
 
-    private static boolean isSet(final String value, final String byWhat) {
-        if (value == null || value.length() == 0 || representsFalse(value.charAt(0))) {
-            return false;
+    public static boolean checkIfSet(final String configurationNameName, Boolean defaultValue) {
+        final Boolean configuredValue = CONFIG_READER.getBooleanProperty(configurationNameName);
+        if (configuredValue == null) {
+            LOGGER.info("No value configured for {}, using default {}", configurationNameName, defaultValue);
+            return defaultValue;
+        } else {
+            LOGGER.info("Configuration of {} is {}", configurationNameName, configuredValue);
+            return configuredValue;
         }
-        LOGGER.info("Property {} set (value {})", byWhat, value);
-        return true;
-    }
-
-    public static boolean checkIfSet(final String systemPropertyName, final String envVariableName) {
-        return isSet(System.getProperty(systemPropertyName), systemPropertyName) || isSet(System.getenv(envVariableName), envVariableName);
     }
 
     public static Response create(final Response.Status status, final Object payload, final String acceptHeader) {

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="userToRole28"?>
+<?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="userToRole28"?>
 
 <window28 id="userTenantRoleWin">
     <threesections28 gridId="userTenantRole">
         <crud28
-            viewModel="@id('vm') @init('com.arvatosystems.t9t.viewmodel.UserTenantRoleVM', vmId='userTenantRole')"
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.framework.UserTenantRoleVM', vmId='userTenantRole')"
             currentMode="@load(vm.currentMode)">
             <form28 id="userTenantRoleCrud" aspect="2" numColumns="2">
                 <rows>

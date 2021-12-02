@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="permission28"?>
+<?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="permission28"?>
 
 <window28 id="roleToPermissionWin">
     <threesections28 gridId="roleToPermission">
         <crud28
-            viewModel="@id('vm') @init('com.arvatosystems.t9t.viewmodel.RoleToPermissionVM', vmId='roleToPermission')"
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.framework.RoleToPermissionVM', vmId='roleToPermission')"
             currentMode="@load(vm.currentMode)">
             <form28 id="roleToPermissionCrud" aspect="2" numColumns="2">
                 <rows>

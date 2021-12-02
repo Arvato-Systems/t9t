@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xel-method prefix="l" name="translateDefault" class="com.arvatosystems.t9t.tfi.web.ZulUtils" signature="String translate(String)"?>
-<?xel-method prefix="l" name="translate" class="com.arvatosystems.t9t.tfi.web.ZulUtils" signature="String translate(String, String)"?>
+<?xel-method prefix="l" name="translateDefault" class="com.arvatosystems.t9t.zkui.util.ZulUtils" signature="String translate(String)"?>
+<?xel-method prefix="l" name="translate" class="com.arvatosystems.t9t.zkui.util.ZulUtils" signature="String translate(String, String)"?>
 <?link rel="icon" type="image/x-icon" href="/favicon.ico"?>
 <div class="container">
     <window id="main"
     width="100%" height="100%" apply="org.zkoss.bind.BindComposer"
-    viewModel="@id('vm') @init('com.arvatosystems.t9t.tfi.viewmodel.LoginViewModel')"
+    viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.support.LoginViewModel')"
     border="normal" mode="overlapped" position="center,center"
     onClientInfo="@command('onClientInfo', eventData=event)"
     xmlns:h="native" sclass="white-window"
@@ -61,7 +61,7 @@
                                     </template>
 
                                     <attribute name="onChange"><![CDATA[
-                                        String localeValue = ((com.arvatosystems.t9t.tfi.model.bean.ComboBoxItem) self.getSelectedItem().getValue()).getValue();
+                                        String localeValue = ((com.arvatosystems.t9t.zkui.viewmodel.beans.ComboBoxItem) self.getSelectedItem().getValue()).getValue();
                                         Locale prefer_locale = null;
                                         if (localeValue != null && localeValue.length() == 5){
                                             prefer_locale = new Locale(localeValue.substring(0,2),localeValue.substring(3,5));

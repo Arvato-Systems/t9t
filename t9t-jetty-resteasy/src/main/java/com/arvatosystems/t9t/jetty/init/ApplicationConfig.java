@@ -107,11 +107,12 @@ public class ApplicationConfig extends Application {
         // Expose openapi.json via GET request
         allClasses.add(OpenApiResource.class);
 
-        if (RestUtils.checkIfSet("t9t.restapi.servletLoggingFilter", "T9T_RESTAPI_SERVLET_LOGGING_FILTER")) {
+        final boolean servletLogging = RestUtils.checkIfSet("t9t.restapi.servletLoggingFilter", Boolean.FALSE);
+        if (servletLogging) {
             // add a custom logging filter to protocol all requests and responses
             allClasses.add(CustomLoggingFilter.class);
         }
-        final boolean enableSwagger = RestUtils.checkIfSet("t9t.restapi.swagger", "T9T_RESTAPI_SWAGGER");
+        final boolean enableSwagger = RestUtils.checkIfSet("t9t.restapi.swagger", Boolean.FALSE);
         if (enableSwagger) {
             LOGGER.info("Enabling Swagger REST API documentation endpoints");
             StaticResourcesResource.setEnableSwagger(true);

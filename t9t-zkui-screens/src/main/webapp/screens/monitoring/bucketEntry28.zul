@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="bucketEntry28"?>
+<?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="bucketEntry28"?>
 
 <window28 id="bucketEntryWin">
     <threesections28 gridId="bucketEntry">
         <crud28 cachesDropdown="bucketId"
-            viewModel="@id('vm') @init('com.arvatosystems.t9t.components.crud.CrudSurrogateKeyVM', vmId='bucketEntry')"
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.CrudSurrogateKeyVM', vmId='bucketEntry')"
             currentMode="@load(vm.currentMode)">
             <form28 id="bucketEntryCrud" aspect="2" numColumns="2">
                 <rows>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="plugins28"?>
+<?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="plugins28"?>
 
 <window28 id="pluginsWin">
     <threesections28 gridId="plugins">
         <crud28 cachesDropdown="pluginId"
-            viewModel="@id('vm') @init('com.arvatosystems.t9t.viewmodel.PluginsVM', vmId='plugins')"
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.framework.PluginsVM', vmId='plugins')"
             currentMode="@load(vm.currentMode)">
             <form28 id="pluginsCrud" aspect="2" numColumns="2">
                 <rows>

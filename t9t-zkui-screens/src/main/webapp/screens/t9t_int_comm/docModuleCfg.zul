@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="docModuleCfg"?>
+<?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="docModuleCfg"?>
 
 <window28 id="docModuleCfgWin">
     <threesections28 gridId="docModuleCfg" vflex3="2">
         <crud28
-            viewModel="@id('vm') @init('com.arvatosystems.t9t.components.crud.ModuleConfigVM', vmId='docModuleCfg')"
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.ModuleConfigVM', vmId='docModuleCfg')"
             currentMode="@load(vm.currentMode)">
             <form28 id="docModuleCfgCrud" aspect="2" numColumns="2">
                 <rows>

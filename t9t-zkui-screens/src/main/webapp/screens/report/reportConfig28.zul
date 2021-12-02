@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="reportConfig28"?>
+<?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="reportConfig28"?>
 
 <window28 id="reportConfigWin">
     <threesections28 gridId="reportConfig" gridContext="showReportParams">
         <crud28 cachesDropdown="reportConfigId"
-            viewModel="@id('vm') @init('com.arvatosystems.t9t.viewmodel.ReportConfigVM', vmId='reportConfig')"
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.framework.ReportConfigVM', vmId='reportConfig')"
             currentMode="@load(vm.currentMode)">
             <form28 id="reportConfigCrud" aspect="2" numColumns="2">
                 <rows>

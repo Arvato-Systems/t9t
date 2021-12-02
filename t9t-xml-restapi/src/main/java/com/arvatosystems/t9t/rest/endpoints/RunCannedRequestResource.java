@@ -63,6 +63,6 @@ public class RunCannedRequestResource implements IT9tRestEndpoint {
             @Parameter(required = true, description = "Request ID.") @PathParam("id") final String id) {
         final ExecutePreparedRequest requestParameters = new ExecutePreparedRequest();
         requestParameters.setRequestId(id);
-        restProcessor.performAsyncBackendRequest(httpHeaders, resp, requestParameters, "POST /runAsync");
+        restProcessor.performAsyncBackendRequest(httpHeaders, resp, requestParameters, "POST /run/" + id);
     }
 }

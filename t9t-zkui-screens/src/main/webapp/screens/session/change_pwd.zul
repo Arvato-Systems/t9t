@@ -1,5 +1,5 @@
 <window28 id="changepwd" vflex="min"
-    viewModel="@id('vm') @init('com.arvatosystems.t9t.tfi.viewmodel.ChangePwdViewModel28')">
+    viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.support.ChangePwdViewModel28')">
     <groupbox28>
         <form28 id="changePwdForm" viewModelId="changePwd"
             numColumns="2">

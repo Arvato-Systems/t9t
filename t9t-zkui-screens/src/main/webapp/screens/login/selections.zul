@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="IGNORE"?>
-<?xel-method prefix="l" name="translateDefault" class="com.arvatosystems.t9t.tfi.web.ZulUtils" signature="String translate(String)"?>
-<?xel-method prefix="l" name="translate" class="com.arvatosystems.t9t.tfi.web.ZulUtils" signature="String translate(String, String)"?>
+<?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="IGNORE"?>
+<?xel-method prefix="l" name="translateDefault" class="com.arvatosystems.t9t.zkui.util.ZulUtils" signature="String translate(String)"?>
+<?xel-method prefix="l" name="translate" class="com.arvatosystems.t9t.zkui.util.ZulUtils" signature="String translate(String, String)"?>
 <?link rel="icon" type="image/x-icon" href="/favicon.ico"?>
 
 
 <zk xmlns:c="client">
     <window id="main" height="100%"
         width="100%" apply="org.zkoss.bind.BindComposer"
-        viewModel="@id('vm') @init('com.arvatosystems.t9t.tfi.viewmodel.SelectionsViewModel')"
+        viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.support.SelectionsViewModel')"
         border="normal" mode="overlapped" position="center,center"
         xmlns:h="native" sclass="white-window">
 
@@ -46,7 +46,7 @@
 
                             <div sclass="col block-field">
                                 <button28 id="logoff" sclass="square-btn btn-secondary"
-                                            apply="com.arvatosystems.t9t.tfi.viewmodel.LogoutViewModel"
+                                            apply="com.arvatosystems.t9t.zkui.viewmodel.support.LogoutViewModel"
                                             autodisable="selectButton,logoff"
                                             visible="@load(not isCancelClose)" />
 

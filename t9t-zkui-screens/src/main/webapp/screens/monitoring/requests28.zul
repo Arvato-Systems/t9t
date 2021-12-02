@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="requests28"?>
+<?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="requests28"?>
 
 <window28 id="requestWin">
     <twosections28 pageSize="50" gridId="requests"

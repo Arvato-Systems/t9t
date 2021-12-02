@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="docConfig"?>
+<?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="docConfig"?>
 
 <window28 id="docConfigWin">
     <threesections28 gridId="docConfig">
-        <crud28 viewModel="@id('vm') @init('com.arvatosystems.t9t.viewmodel.DocConfigViewModel', vmId='docConfig')"
+        <crud28 viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.framework.DocConfigViewModel', vmId='docConfig')"
                 currentMode="@load(vm.currentMode)">
             <tabbox id="taboxDetail" vflex="1">
                 <tabs>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="processDefinition"?>
+<?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="processDefinition"?>
 
 <window28 id="processInstanceBPMN2">
     <threesections28 gridId="processInstanceBpmn2">

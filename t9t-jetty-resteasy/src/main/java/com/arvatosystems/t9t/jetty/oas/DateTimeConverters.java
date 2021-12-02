@@ -54,11 +54,16 @@ public class DateTimeConverters implements ModelConverter {
                     return createSchema("550e8400-e29b-11d4-a716-446655440000",
                       "36 character string, representing a UUID", "hhhhhhhh-hhh-hhhh-hhhh-hhhhhhhhhhhh");
                 }
-                if (cls.getCanonicalName().equals("de.jpaw.fixedpoint.MicroUnits")) {
-                    final NumberSchema ns = new NumberSchema();
-                    ns.setExample("3.14");
-                    ns.setDescription("Numeric value with at most 6 fractional digits");
-                    return ns;
+                if (cls.getCanonicalName().startsWith("de.jpaw.fixedpoint")) { // MicroUnits eta are not a required dependency
+                    if (cls.getCanonicalName().endsWith("MicroUnits")) {
+                        return createFixedPointSchema(6);
+                    }
+                    if (cls.getCanonicalName().endsWith("MilliUnits")) {
+                        return createFixedPointSchema(3);
+                    }
+                    if (cls.getCanonicalName().endsWith("NanoUnits")) {
+                        return createFixedPointSchema(9);
+                    }
                 }
                 if (Instant.class.isAssignableFrom(cls)) {
                     final IntegerSchema is = new IntegerSchema();
@@ -73,6 +78,14 @@ public class DateTimeConverters implements ModelConverter {
         } else {
             return null;
         }
+    }
+
+    /** Creates a schema for a fixed point type. */
+    private NumberSchema createFixedPointSchema(int decimals) {
+        final NumberSchema ns = new NumberSchema();
+        ns.setExample("3.14");
+        ns.setDescription("Numeric value with at most " + decimals + " fractional digits");
+        return ns;
     }
 
     private StringSchema createSchema(final String example, final String description, final String format) {

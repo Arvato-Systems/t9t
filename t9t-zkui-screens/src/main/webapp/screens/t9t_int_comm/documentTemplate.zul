@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="docTemplate"?>
+<?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="docTemplate"?>
 
 <window28 id="docTemplateWin">
     <threesections28 gridId="docTemplate">
         <crud28
-            viewModel="@id('vm') @init('com.arvatosystems.t9t.components.crud.CrudSurrogateKeyVM', vmId='docTemplate')"
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.CrudSurrogateKeyVM', vmId='docTemplate')"
             currentMode="@load(vm.currentMode)">
             <form28 id="docEmailCfgCrud" aspect="2" numColumns="2">
                 <rows>

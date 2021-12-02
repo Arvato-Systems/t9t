@@ -37,10 +37,10 @@ it does not start any more, see https://forum.zkoss.org/question/95682/jetty-9-a
 
     <!-- ZK -->
     <listener>
-        <listener-class>com.arvatosystems.t9t.init.T9tInitializer</listener-class>
+        <listener-class>com.arvatosystems.t9t.zkui.init.T9tInitializer</listener-class>
     </listener>
     <listener>
-        <listener-class>com.arvatosystems.t9t.tfi.web.SessionCounter</listener-class>
+        <listener-class>com.arvatosystems.t9t.zkui.init.SessionCounter</listener-class>
     </listener>
     <listener>
         <description>ZK listener for session cleanup</description>
@@ -48,7 +48,7 @@ it does not start any more, see https://forum.zkoss.org/question/95682/jetty-9-a
     </listener>
     <listener>
         <!-- for shiro... -->
-        <listener-class>com.arvatosystems.t9t.tfi.web.CdiWebEnvironmentLoaderListener</listener-class>
+        <listener-class>com.arvatosystems.t9t.zkui.init.ShiroEnvironmentLoaderListener</listener-class>
     </listener>
 
     <!-- The following servlet entry is needed to disable the possibility to browser through the code folders via the UI -->
@@ -76,7 +76,7 @@ it does not start any more, see https://forum.zkoss.org/question/95682/jetty-9-a
     </servlet>
     <servlet>
         <servlet-name>INIT</servlet-name>
-        <servlet-class>com.arvatosystems.t9t.tfi.general.InitServlet</servlet-class>
+        <servlet-class>com.arvatosystems.t9t.zkui.init.InitServlet</servlet-class>
         <load-on-startup>1</load-on-startup><!-- Must -->
     </servlet>
     <servlet>

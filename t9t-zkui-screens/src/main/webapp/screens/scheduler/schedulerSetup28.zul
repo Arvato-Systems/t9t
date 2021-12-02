@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="schedulerSetup"?>
+<?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="schedulerSetup"?>
 
 <window28 id="schedulerSetupWin">
     <threesections28 gridId="schedulerSetup">
-        <crud28 viewModel="@id('vm') @init('com.arvatosystems.t9t.viewmodel.SchedulerSetupViewModel', vmId='schedulerSetup')"
+        <crud28 viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.framework.SchedulerSetupViewModel', vmId='schedulerSetup')"
                 currentMode="@load(vm.currentMode)">
             <form28 id="schedulerSetupCrud" aspect="2" numColumns="2">
                 <rows>

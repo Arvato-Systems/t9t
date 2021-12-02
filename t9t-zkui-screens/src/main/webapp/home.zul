@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="IGNORE"?>
-<?xel-method prefix="l" name="translate" class="com.arvatosystems.t9t.tfi.web.ZulUtils" signature="String translate(String, String)"?>
-<?xel-method prefix="l" name="translateArgs" class="com.arvatosystems.t9t.tfi.web.ZulUtils" signature="String translate(String, String, String)"?>
+<?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="IGNORE"?>
+<?xel-method prefix="l" name="translate" class="com.arvatosystems.t9t.zkui.util.ZulUtils" signature="String translate(String, String)"?>
+<?xel-method prefix="l" name="translateArgs" class="com.arvatosystems.t9t.zkui.util.ZulUtils" signature="String translate(String, String, String)"?>
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <?link rel="icon" type="image/x-icon" href="/favicon.ico"?>
 
@@ -31,8 +31,8 @@
         <!--Temporary solution to the default screen not properly rendered. TODO: fixme -->
     zk.afterMount(function() { setTimeout(function () {$(window).resize();}, 500) });
     </script>
-    <window id="mainHome" height="100%" apply="org.zkoss.bind.BindComposer" ctrlKeys="@load(com.arvatosystems.t9t.tfi.viewmodel.ApplicationViewModel.CTRL_KEYS)" onCtrlKey="@command('ctrlKeyClick',item=event)"
-        viewModel="@id('vm') @init('com.arvatosystems.t9t.tfi.viewmodel.ApplicationViewModel')" contentSclass="no-padding"  onSessionExpirationAlert="@command('showSessionExpirationWarning')" onLogout="@command('logout')">
+    <window id="mainHome" height="100%" apply="org.zkoss.bind.BindComposer" ctrlKeys="@load(com.arvatosystems.t9t.zkui.viewmodel.support.ApplicationViewModel.CTRL_KEYS)" onCtrlKey="@command('ctrlKeyClick',item=event)"
+        viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.support.ApplicationViewModel')" contentSclass="no-padding"  onSessionExpirationAlert="@command('showSessionExpirationWarning')" onLogout="@command('logout')">
      <style src="@load(vm.getTenantResource('/css/screen.css'))" />
         <style id="reverse" />
             <div sclass="container">
@@ -75,7 +75,7 @@
                                                  <combobox
                                                      id="languageSelectionCombo"
                                                      apply="org.zkoss.bind.BindComposer"
-                                                     viewModel="@id('vm') @init('com.arvatosystems.t9t.tfi.viewmodel.LoginViewModel' , isInitialLogin=false)"
+                                                     viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.support.LoginViewModel' , isInitialLogin=false)"
                                                      class="languageCombobox"
                                                      model="@bind(vm.languageListModel)"
                                                      selectedItem="@bind(vm.selected)"
@@ -93,7 +93,7 @@
                                                              label="@bind(language.name)" />
                                                      </template>
                                                      <attribute name="onChange"><![CDATA[
-                                              String localeValue = ((com.arvatosystems.t9t.tfi.model.bean.ComboBoxItem) self.getSelectedItem().getValue()).getValue();
+                                              String localeValue = ((com.arvatosystems.t9t.zkui.viewmodel.beans.ComboBoxItem) self.getSelectedItem().getValue()).getValue();
                                               Locale prefer_locale = null;
                                               if(localeValue!=null && localeValue.length()==5){
                                                   prefer_locale = new Locale(localeValue.substring(0,2),localeValue.substring(3,5));
@@ -108,7 +108,7 @@
                                     </combobox>
                                     </div>
                                     <a onClick="@command('changePwd')">Change Password</a>
-                                         <a apply="com.arvatosystems.t9t.tfi.viewmodel.LogoutViewModel" id="logoff" ca:title="@load(vm.getUserId())"><label value="${l:translate('logout','title')}"
+                                         <a apply="com.arvatosystems.t9t.zkui.viewmodel.support.LogoutViewModel" id="logoff" ca:title="@load(vm.getUserId())"><label value="${l:translate('logout','title')}"
                                            style="cursor:hand;cursor:pointer;font-style: italic;" /></a>
                                      </div>
                                  </div>

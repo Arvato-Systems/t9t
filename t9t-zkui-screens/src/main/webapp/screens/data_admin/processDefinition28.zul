@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?init class="com.arvatosystems.t9t.tfi.web.WorkbenchInit" pagename="processDefinition28"?>
-<?xel-method prefix="l"  name="translate"  class="com.arvatosystems.t9t.tfi.web.ZulUtils" signature="String translate(String, String)"?>
+<?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="processDefinition28"?>
+<?xel-method prefix="l"  name="translate"  class="com.arvatosystems.t9t.zkui.util.ZulUtils" signature="String translate(String, String)"?>
 <window28 id="processDefinitionWin">
     <threesections28 gridId="processDefinition" vflex2="2" vflex3="5">
         <crud28
-            viewModel="@id('vm') @init('com.arvatosystems.t9t.viewmodel.ProcessDefinitionVM', vmId='processDefinition')"
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.framework.ProcessDefinitionVM', vmId='processDefinition')"
             currentMode="@load(vm.currentMode)">
             <tabbox id="taboxDetail" vflex="1">
                 <tabs>
