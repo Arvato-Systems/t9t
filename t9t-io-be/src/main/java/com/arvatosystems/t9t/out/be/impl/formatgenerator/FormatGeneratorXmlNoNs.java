@@ -32,11 +32,15 @@ public class FormatGeneratorXmlNoNs extends AbstractFormatGeneratorXml {
         factory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.FALSE);
 
         writer = factory.createXMLStreamWriter(outputResource.getOutputStream());
-        writer.setDefaultNamespace("");
     }
 
     @Override
     protected void writeNamespaces() throws XMLStreamException {
         // do not write namespace information
     }
+
+    @Override
+    protected void setDefaultNamespace() throws XMLStreamException {
+    }
+
 }

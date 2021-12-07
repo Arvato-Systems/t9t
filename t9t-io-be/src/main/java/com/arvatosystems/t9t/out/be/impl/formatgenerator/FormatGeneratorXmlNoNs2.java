@@ -39,7 +39,6 @@ public class FormatGeneratorXmlNoNs2 extends AbstractFormatGeneratorXml {
 
     @Override
     protected void setDefaultNamespace() throws XMLStreamException {
-        writer.setDefaultNamespace("");
     }
 
     @Override
