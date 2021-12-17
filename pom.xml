@@ -21,7 +21,7 @@
 
     <groupId>com.arvato-systems.t9t</groupId>
     <artifactId>global-build</artifactId>
-    <version>5.8-SNAPSHOT</version>
+    <version>5.7-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>Global root POM for the t9t framework</description>
 
@@ -38,7 +38,7 @@
         <min-maven.version>3.8.1</min-maven.version>  <!-- up to 3.8.1 ASAP -->
 
         <!-- to be used by dependent projects (same as project.version, but must be provided explicitly so that imports work) -->
-        <t9t.version>5.8-SNAPSHOT</t9t.version>
+        <t9t.version>5.7-SNAPSHOT</t9t.version>
 
         <!-- Build specific properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
