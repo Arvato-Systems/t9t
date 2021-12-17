@@ -59,9 +59,4 @@ public class NumericEnumsetConverter implements IItemConverter<Number> {
         }
         return sj.toString();
     }
-
-    @Override
-    public Object getConvertedValue(Number value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
-        return value;
-    }
 }

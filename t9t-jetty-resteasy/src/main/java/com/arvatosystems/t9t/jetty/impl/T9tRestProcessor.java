@@ -40,19 +40,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.IRemoteConnection;
+import com.arvatosystems.t9t.base.RandomNumberGenerators;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
 import com.arvatosystems.t9t.base.auth.AuthenticationResponse;
+import com.arvatosystems.t9t.rest.services.IGatewayStringSanitizerFactory;
 import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
 import com.arvatosystems.t9t.xml.GenericResult;
 import com.arvatosystems.t9t.xml.auth.AuthenticationResult;
 
 import de.jpaw.bonaparte.api.media.MediaTypeInfo;
 import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.core.DataConverter;
 import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
+import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ApplicationException;
@@ -62,7 +66,10 @@ import de.jpaw.util.ExceptionUtil;
 public class T9tRestProcessor implements IT9tRestProcessor {
     private static final Logger LOGGER = LoggerFactory.getLogger(T9tRestProcessor.class);
     private static final AtomicInteger COUNTER = new AtomicInteger();
-    private static IRemoteConnection connection = Jdp.getRequired(IRemoteConnection.class);
+
+    protected IRemoteConnection connection = Jdp.getRequired(IRemoteConnection.class);
+    protected IGatewayStringSanitizerFactory gatewayStringSanitizerFactory = Jdp.getRequired(IGatewayStringSanitizerFactory.class);
+    protected final DataConverter<String, AlphanumericElementaryDataItem> stringSanitizer = gatewayStringSanitizerFactory.createStringSanitizerForGateway();
 
     @Override
     public void performAsyncBackendRequest(final HttpHeaders httpHeaders, final AsyncResponse resp, final RequestParameters requestParameters,
@@ -209,7 +216,19 @@ public class T9tRestProcessor implements IT9tRestProcessor {
         final int invocationNo = COUNTER.incrementAndGet();
         final String authorizationHeader = httpHeaders.getHeaderString(HttpHeaders.AUTHORIZATION);
         final String acceptHeader = httpHeaders.getHeaderString(HttpHeaders.ACCEPT);
-        LOGGER.debug("Starting {}: {}", invocationNo, infoMsg);
+        // assign a message ID unless there is one already provided
+        if (requestParameters.getMessageId() == null) {
+            requestParameters.setMessageId(RandomNumberGenerators.randomFastUUID());
+        }
+        if (stringSanitizer != null) {
+            try {
+                requestParameters.treeWalkString(stringSanitizer, true);
+            } catch (ApplicationException e) {
+                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, createErrorResult(T9tException.ILLEGAL_CHARACTER, e.getMessage()));
+                return;
+            }
+        }
+        LOGGER.debug("Starting {}: {} with assigned messageId {}", invocationNo, infoMsg, requestParameters.getMessageId());
 
         final CompletableFuture<ServiceResponse> readResponse = connection.executeAsync(authorizationHeader, requestParameters);
         readResponse.thenAccept(sr -> {

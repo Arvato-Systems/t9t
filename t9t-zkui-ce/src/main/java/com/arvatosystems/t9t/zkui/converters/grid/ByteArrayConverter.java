@@ -43,9 +43,4 @@ public class ByteArrayConverter implements IItemConverter<ByteArray> {
         else
             return "'" + new String(value.getBytes()) + "'";  // full string
     }
-
-    @Override
-    public Object getConvertedValue(ByteArray value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
-        return value;
-    }
 }

@@ -64,19 +64,6 @@ public abstract class AbstractEntityMapper<
     //@Inject
     protected final ISearchTools searchTools = Jdp.getRequired(ISearchTools.class);
 
-    // overridden for final classes (to have a shortcut)
-    @Override
-    public DTO newDtoInstance() {
-        return contextProvider.get().customization.newDtoInstance(getRtti(), getBaseDtoClass());
-    }
-
-    // overridden for final classes (to have a shortcut)
-    @Override
-    public Class<? extends DTO> getDtoClass() {
-        return contextProvider.get().customization.getDtoClass(getRtti(), getBaseDtoClass());
-    }
-
-
     @Override
     public List<DTO> mapListToDto(final Collection<ENTITY> entityList, final Map<String, String> graph, final String prefix,
       final Map<String, Map<Long, Ref>> cache) {

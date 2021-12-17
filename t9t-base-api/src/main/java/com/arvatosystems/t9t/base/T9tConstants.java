@@ -121,10 +121,14 @@ public final class T9tConstants {
 
     public static final long DEFAULT_JVM_LOCK_TIMEOUT   = 5000L;  //JVM Lock in milliseconds
 
+    public static final String CFG_FILE_KEY_ENVIRONMENT_TEXT = "environment";      // the description of the environment (PRODUCTION / INTEGRATION / UAT / DEV)
+    public static final String CFG_FILE_KEY_ENVIRONMENT_CSS  = "environment_css";  // the CSS class to use for the display (in case of non default)
+
     // System property which triggers flyway SQL migration
     public static final String START_MIGRATION_PROPERTY = "t9t.run.flyway.migration";
 
     // MDC keys
+    public static final String MDC_MESSAGE_ID = "messageId";
     public static final String MDC_SESSION_REF = "sessionRef";
     public static final String MDC_PROCESS_REF = "processRef";
     public static final String MDC_REQUEST_PQON = "requestPqon";

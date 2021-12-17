@@ -303,16 +303,6 @@ class AutoMap42Processor extends AbstractClassProcessor {
                         ''']
                     ]
                 }
-                addMethod("getRtti") [
-                    visibility = Visibility::PUBLIC
-                    returnType = primitiveInt
-                    final = true
-                    addAnnotation(overrideAnno)
-                    docComment = "{@inheritDoc}"
-                    body = [ '''
-                        return «toJavaCode(dto)».class$rtti();
-                    ''']
-                ]
                 addMethod("getProperty") [
                     visibility = Visibility::PUBLIC
                     returnType = stringType
@@ -322,16 +312,6 @@ class AutoMap42Processor extends AbstractClassProcessor {
                     docComment = "{@inheritDoc}"
                     body = [ '''
                         return «toJavaCode(dto)».BClass.getInstance().getProperty(_propname);
-                    ''']
-                ]
-                addMethod("getBaseDtoClass") [
-                    visibility = Visibility::PUBLIC
-                    returnType = Class.newTypeReference(dto)
-                    final = true
-                    addAnnotation(overrideAnno)
-                    docComment = "{@inheritDoc}"
-                    body = [ '''
-                        return «toJavaCode(dto)».class;
                     ''']
                 ]
                 // now the specific mapping methods
@@ -348,12 +328,7 @@ class AutoMap42Processor extends AbstractClassProcessor {
                         «toJavaCode(dto)» dto = fromCache(entity, «toJavaCode(dto)».class);
                         if (dto != null)
                             return dto;
-                        «IF dtoClass.final»
-                            dto = new «toJavaCode(dto)»();
-                        «ELSE»
-                            // dto = contextProvider.get().customization.newDtoInstance(getRtti(), getBaseDtoClass());
-                            dto = newDtoInstance();
-                        «ENDIF»
+                        dto = new «toJavaCode(dto)»();
                         entity2dto(entity, dto);
                         toCache(entity, «toJavaCode(dto)».class, dto);
                         return dto;
@@ -382,28 +357,6 @@ class AutoMap42Processor extends AbstractClassProcessor {
                         xferParameters(collMapper)     // use the names provided in the xtend source
                         docComment = collMapper.docComment
                         body = collMapper.body
-                    ]
-                }
-                if (dtoClass.final) {
-                    addMethod("newDtoInstance") [
-                        visibility = Visibility::PUBLIC
-                        returnType = dto
-                        final = true
-                        addAnnotation(overrideAnno)
-                        docComment = "{@inheritDoc}"
-                        body = [ '''
-                            return new «toJavaCode(dto)»();
-                        ''']
-                    ]
-                    addMethod("getDtoClass") [
-                        visibility = Visibility::PUBLIC
-                        returnType = Class.newTypeReference(dto)
-                        final = true
-                        addAnnotation(overrideAnno)
-                        docComment = "{@inheritDoc}"
-                        body = [ '''
-                            return «toJavaCode(dto)».class;
-                        ''']
                     ]
                 }
                 addMethod("mapToDto") [

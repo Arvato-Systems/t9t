@@ -30,9 +30,4 @@ public class BooleanTranslationConverter implements IItemConverter<Boolean> {
     public String getFormattedLabel(final Boolean value, final BonaPortable wholeDataObject, final String fieldName, final FieldDefinition meta) {
         return ZulUtils.readConfig("com.boolean." + value + ".format");
     }
-
-    @Override
-    public Object getConvertedValue(final Boolean value, final BonaPortable wholeDataObject, final String fieldName, final FieldDefinition meta) {
-        return value;
-    }
 }

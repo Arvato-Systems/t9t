@@ -80,6 +80,7 @@ public class T9tException extends ApplicationException {
     public static final int T9T_ACCESS_DENIED = OFFSET_DENIED + 40;
     public static final int WRITE_ACCESS_NOT_FOUND_PROBABLY_OTHER_TENANT = OFFSET + 41;
     public static final int COULD_NOT_ACQUIRE_LOCK = OFFSET_TIMEOUT + 42;
+    public static final int ILLEGAL_CHARACTER = OFFSET + 43;
 
     public static final int STALLED_LOG_WRITER = OFFSET_TIMEOUT + 50;
     public static final int REQUEST_HANDLER_RETURNED_NULL = OFFSET_LOGIC_ERROR + 51;
@@ -352,6 +353,7 @@ public class T9tException extends ApplicationException {
             codeToDescription.put(WRITE_ACCESS_NOT_FOUND_PROBABLY_OTHER_TENANT,
               "Record for update not found, probably due to existing one in different tenant");
             codeToDescription.put(COULD_NOT_ACQUIRE_LOCK, "Could not acquire lock (Semaphore) on object within allowed time");
+            codeToDescription.put(ILLEGAL_CHARACTER, "An illegal character has been identified in a string field of the request");
 
             codeToDescription.put(JWT_EXPIRED, MSG_JWT_EXPIRED);
             codeToDescription.put(JWT_TIMING,  "The JWT has unplausible time information");

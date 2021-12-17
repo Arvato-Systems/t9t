@@ -17,7 +17,6 @@ package com.arvatosystems.t9t.base.be.execution
 
 import com.arvatosystems.t9t.base.T9tConstants
 import com.arvatosystems.t9t.base.T9tException
-import com.arvatosystems.t9t.base.T9tResponses
 import com.arvatosystems.t9t.base.api.RequestParameters
 import com.arvatosystems.t9t.base.api.ServiceRequest
 import com.arvatosystems.t9t.base.api.ServiceRequestHeader
@@ -41,6 +40,7 @@ import de.jpaw.util.ApplicationException
 import de.jpaw.util.ExceptionUtil
 import java.util.Set
 import org.slf4j.MDC
+import com.arvatosystems.t9t.base.MessagingUtil
 
 /**
  * Class serving as key entry point for intra-module communication.
@@ -68,7 +68,7 @@ class Executor implements IExecutor {
             // more info
             LOGGER.error("Synchronous request validation problem for tenantId {} and parameter object type {}", ctx.tenantId, params.ret$PQON())
             LOGGER.error("Full request parameters are {}", params)
-            return T9tResponses.createServiceResponse(T9tException.REQUEST_VALIDATION_ERROR, '''«params.ret$PQON()»(«ctx.internalHeaderParameters.processRef»): «e.message»''')
+            return MessagingUtil.createServiceResponse(T9tException.REQUEST_VALIDATION_ERROR, '''«params.ret$PQON()»(«ctx.internalHeaderParameters.processRef»): «e.message»''')
         }
         var ServiceResponse response = null
         var BonaPortableClass<?> bp = params.ret$BonaPortableClass()
@@ -108,12 +108,12 @@ class Executor implements IExecutor {
                 // provide full stack trace to the log
                 LOGGER.error("Execution problem: internal logic (8xxx) or general error (9xxx): Cause is: ", e) // create a service response that reports about the problem
             }
-            return T9tResponses.createServiceResponse(e.errorCode, e.message)
+            return MessagingUtil.createServiceResponse(e.errorCode, e.message)
         } catch (Exception e) {
             // provide full stack trace to the log
             val causeChain = ExceptionUtil.causeChain(e)
             LOGGER.error("Execution problem: General error cause is: ", e) // create a service response that reports about the problem
-            return T9tResponses.createServiceResponse(T9tException.GENERAL_EXCEPTION, causeChain)
+            return MessagingUtil.createServiceResponse(T9tException.GENERAL_EXCEPTION, causeChain)
         } finally {
             ctx.popCallStack
             MDC.put(T9tConstants.MDC_REQUEST_PQON, oldMdcRequestPqon)

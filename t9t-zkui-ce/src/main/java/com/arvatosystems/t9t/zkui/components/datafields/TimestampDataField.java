@@ -16,7 +16,7 @@
 package com.arvatosystems.t9t.zkui.components.datafields;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Date;
 
 import org.zkoss.zul.Datebox;
@@ -52,7 +52,7 @@ public class TimestampDataField extends AbstractDataField<Datebox, LocalDateTime
         Date d = c.getValue();
         if (d == null)
             return null;
-        return LocalDateTime.ofInstant(d.toInstant(), ZoneId.systemDefault());
+        return LocalDateTime.ofInstant(d.toInstant(), ZoneOffset.UTC);
     }
 
     @Override

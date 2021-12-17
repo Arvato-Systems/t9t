@@ -84,12 +84,6 @@ public class DecimalConverter implements IItemConverter<BigDecimal> {
         return df;
     }
 
-
-    @Override
-    public Object getConvertedValue(BigDecimal value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
-        return value;
-    }
-
     private String getPathWithoutDataOrTracking(String fullPath) {
         // check if fullPath starts with "data.", this means we use DataWithTracking
         // -> remove the data.
@@ -112,5 +106,4 @@ public class DecimalConverter implements IItemConverter<BigDecimal> {
         }
         return tmp;
     }
-
 }

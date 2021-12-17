@@ -50,7 +50,11 @@
                                      placeholder="${l:translate('main','search')}" />
                              </div>
                          </div>
-
+                         <div sclass="header-middle-item">
+                             <div id="environmentIdentifier" sclass="env-identifier">
+                                 <label />
+                             </div>
+                         </div>
                          <div sclass="header-right-item">
                              <div>
                                  <a sclass="header-logo" href="https://it.arvato.com/de.html">

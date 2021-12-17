@@ -190,7 +190,7 @@ class OutputSession implements IOutputSession {
 
 
         // get expanded file or queue name from pattern
-        thisSink = ctx.customization.newDtoInstance(SinkDTO.class$rtti(), SinkDTO);
+        thisSink = new SinkDTO;
         thisSinkRef = dpl.getNewSinkKey();
         val gridId = params.gridId ?: sinkCfg.gridId;
 
@@ -272,7 +272,7 @@ class OutputSession implements IOutputSession {
 
     def protected void writeOutboundMessage(Long recordRef, BonaPortable record) {
         // persist the data in the DB interface table
-        val it              = ctx.customization.newDtoInstance(OutboundMessageDTO.class$rtti(), OutboundMessageDTO);
+        val it              = new OutboundMessageDTO();
         objectRef           = dpl.getNewOutboundMessageKey()
         sinkRef             = thisSinkRef
         sourceRecordNo      = Integer.valueOf(sourceRecordCounter)

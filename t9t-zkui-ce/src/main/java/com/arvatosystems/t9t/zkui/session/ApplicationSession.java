@@ -136,7 +136,7 @@ public final class ApplicationSession {
      * @return
      */
     public static Instant toInstantSystemZone(LocalDateTime ldt) {
-        return ldt.atZone(ZoneId.systemDefault()).toInstant();
+        return ldt.atZone(ZoneOffset.UTC).toInstant();
     }
 
     /**
@@ -149,7 +149,7 @@ public final class ApplicationSession {
      * @See toDate()
      */
     public static Date toDateSystemZone(LocalDateTime ldt) {
-        return Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
+        return Date.from(ldt.atZone(ZoneOffset.UTC).toInstant());
     }
 
     /**
@@ -488,7 +488,7 @@ public final class ApplicationSession {
             userTimeZone = TimeZone.getTimeZone(userZoneId);
         } catch (Exception e) {
             LOGGER.error("Timezone conversion error - falling back, using UTC: {}", ExceptionUtil.causeChain(e));
-            userZoneId = ZoneId.systemDefault();
+            userZoneId = ZoneOffset.UTC;
             userTimeZone = TimeZone.getDefault();
         }
 
@@ -515,7 +515,7 @@ public final class ApplicationSession {
         return d.format(dayFormat);
     }
     public String format(LocalDateTime dt) {
-        return dt.format(timestampFormat);
+        return dt.atZone(ZoneOffset.UTC).format(timestampFormat);
     }
     public String format(LocalTime t) {
         return t.format(timeFormat);

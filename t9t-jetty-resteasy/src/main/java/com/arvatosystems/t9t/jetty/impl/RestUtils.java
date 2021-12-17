@@ -46,6 +46,10 @@ public final class RestUtils {
         }
     }
 
+    public static String getConfigValue(final String configurationNameName) {
+        return CONFIG_READER.getProperty(configurationNameName);
+    }
+
     public static Response create(final Response.Status status, final Object payload, final String acceptHeader) {
         final Response.ResponseBuilder response = Response.status(status);
         response.entity(payload);

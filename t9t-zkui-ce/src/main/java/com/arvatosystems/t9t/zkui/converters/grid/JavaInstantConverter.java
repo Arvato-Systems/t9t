@@ -35,12 +35,4 @@ public class JavaInstantConverter implements IItemConverter<Instant> {
     public String getFormattedLabel(Instant value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
         return ApplicationSession.get().format(value);
     }
-
-    /**
-     * Converts to java.util.Date object.
-     */
-    @Override
-    public Object getConvertedValue(Instant value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
-        return ApplicationSession.get().toDate(value);
-    }
 }

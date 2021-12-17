@@ -67,6 +67,16 @@ package (com.arvatosystems) t9t.base.request {
         required Instant(0)                         whenFinished;
     }
 
+    /** A request to query values stored in the backend config XML file. These are typically environment specific values such as DEV/INT/PROD classifiers. */
+    class QueryConfigRequest extends RequestParameters return QueryConfigResponse {
+        required defaultExternalId required List<>  variables;                  // the list of fields to query
+    }
+
+    /** The response for configuration value queries. Only entries with a configured non-null value are returned. */
+    class QueryConfigResponse extends ServiceResponse {
+        required shortText required Map<String>     keyValuePairs;              // the mappings from variable to configuration value
+    }
+
     /** Execute a request which is provided in String notation.
      * (Useful for interpreted commands / uplink targeted commands).
      */

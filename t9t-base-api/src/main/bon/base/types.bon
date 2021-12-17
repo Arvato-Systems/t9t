@@ -55,7 +55,7 @@ package (com.arvatosystems) t9t.base.types {
 
     type customizationQualifier is Unicode(32);         // a qualifier used to load a class via dependency injection
     type encodedJwt             is Ascii(2048);         // a base64 (url) encoded JSON Web Token
-    type multipleEmailAddresses is Unicode(2048);       // multiple email addresses, separated by ";"
+    type multipleEmailAddresses is Unicode(32767);      // multiple email addresses, separated by ";"
 
     /** UI relevant category of underlying entity. The token of this enum should be available from DTO classes via class$Property("tenantCategory"). */
     enum TenantIsolationCategoryType {

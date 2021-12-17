@@ -61,11 +61,6 @@ public class FormatConverter implements IItemConverter {
         }
     }
 
-    @Override
-    public Object getConvertedValue(Object value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
-        return value;
-    }
-
     private static DecimalFormat getLocalizedDecimalFormat(String pattern) {
         final DecimalFormat df = (DecimalFormat) NumberFormat.getInstance(Locales.getCurrent());
         df.applyPattern(pattern);

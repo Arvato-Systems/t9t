@@ -29,7 +29,6 @@ import com.arvatosystems.t9t.base.services.IRequestHandler;
 import com.arvatosystems.t9t.base.services.IRequestHandlerResolver;
 import com.arvatosystems.t9t.base.services.ITenantCustomization;
 
-import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ExceptionUtil;
 
@@ -53,24 +52,6 @@ public class NoTenantCustomization implements ITenantCustomization {
     public NoTenantCustomization() {
         this.usesCustomRequestHandlers = false;
         tenantRequestHandlerCache = usesCustomRequestHandlers ? new ConcurrentHashMap<>(1000) : DEFAULT_REQUEST_HANDLER_CACHE;
-    }
-
-    @Override
-    public <DTO extends BonaPortable> DTO newDtoInstance(final int rtti, final Class<DTO> baseClass) {
-        try {
-            return baseClass.getDeclaredConstructor().newInstance();
-        } catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | InstantiationException e) {
-            LOGGER.error("This should not happen: {}: {}: {}", e.getClass().getCanonicalName(), e.getMessage(), ExceptionUtil.causeChain(e));
-            throw new T9tException(T9tException.METHOD_INSTANTIATION_EXCEPTION, baseClass.getCanonicalName());
-        } catch (final IllegalAccessException e) {
-            LOGGER.error("This should not happen: {}: {}: {}", e.getClass().getCanonicalName(), e.getMessage(), ExceptionUtil.causeChain(e));
-            throw new T9tException(T9tException.CONSTRUCTOR_ILLEGAL_ACCESS_EXCEPTION, baseClass.getCanonicalName());
-        }
-    }
-
-    @Override
-    public <DTO extends BonaPortable> Class<? extends DTO> getDtoClass(final int rtti, final Class<DTO> baseClass) {
-        return baseClass;
     }
 
     @Override

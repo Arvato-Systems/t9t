@@ -33,9 +33,4 @@ public class IntConverter implements IItemConverter<Integer> {
     public String getFormattedLabel(Integer value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
         return value.toString();
     }
-
-    @Override
-    public Object getConvertedValue(Integer value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
-        return value;
-    }
 }

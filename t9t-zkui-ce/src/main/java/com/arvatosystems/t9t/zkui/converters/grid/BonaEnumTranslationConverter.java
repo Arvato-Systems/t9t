@@ -31,9 +31,4 @@ public class BonaEnumTranslationConverter implements IItemConverter<BonaEnum> {
     public String getFormattedLabel(BonaEnum value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
         return ApplicationSession.get().translateEnum(value);
     }
-
-    @Override
-    public Object getConvertedValue(BonaEnum value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
-        return value;
-    }
 }

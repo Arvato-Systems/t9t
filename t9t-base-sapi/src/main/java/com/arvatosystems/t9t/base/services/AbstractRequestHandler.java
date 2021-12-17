@@ -15,8 +15,8 @@
  */
 package com.arvatosystems.t9t.base.services;
 
+import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.base.T9tResponses;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 
@@ -55,15 +55,15 @@ public abstract class AbstractRequestHandler<REQUEST extends RequestParameters> 
     }
 
     protected final ServiceResponse error(final int code, final String details) {
-        return T9tResponses.createServiceResponse(code, details);
+        return MessagingUtil.createServiceResponse(code, details);
     }
 
     protected final ServiceResponse ok(final int code) {
-        return T9tResponses.createOk(code);
+        return MessagingUtil.createOk(code);
     }
 
     protected final ServiceResponse ok() {
-        return T9tResponses.createOk(0);
+        return MessagingUtil.createOk(0);
     }
 
     /**

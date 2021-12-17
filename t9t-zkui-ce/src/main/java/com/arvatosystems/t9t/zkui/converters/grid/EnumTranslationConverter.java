@@ -30,9 +30,4 @@ public class EnumTranslationConverter implements IItemConverter<Enum<?>> {
     public String getFormattedLabel(Enum<?> value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
         return ZulUtils.getLabelByKey(value.getClass().getName(), value.name());
     }
-
-    @Override
-    public Object getConvertedValue(Enum<?> value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
-        return value;
-    }
 }

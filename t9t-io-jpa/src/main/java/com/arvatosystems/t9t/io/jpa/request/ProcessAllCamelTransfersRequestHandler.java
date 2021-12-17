@@ -25,6 +25,8 @@ import org.slf4j.LoggerFactory;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.io.jpa.entities.DataSinkEntity;
+import com.arvatosystems.t9t.io.jpa.entities.SinkEntity;
 import com.arvatosystems.t9t.io.jpa.persistence.IDataSinkEntityResolver;
 import com.arvatosystems.t9t.io.jpa.persistence.ISinkEntityResolver;
 import com.arvatosystems.t9t.io.request.ProcessAllCamelTransfersRequest;
@@ -43,10 +45,10 @@ public class ProcessAllCamelTransfersRequestHandler extends AbstractRequestHandl
     public ServiceResponse execute(final RequestContext ctx, final ProcessAllCamelTransfersRequest rq) throws Exception {
         final String variablePart = rq.getOnlySinkId() == null
                 ? "WHERE"
-                : ", " + dataSinkResolver.getBaseJpaEntityClass().getSimpleName()
+                : ", " + DataSinkEntity.class.getSimpleName()
                 + " ds WHERE ds.objectRef = s.dataSinkRef AND ds.dataSinkId = :dataSinkId AND";
         final TypedQuery<Long> query = sinkResolver.getEntityManager().createQuery(
-            "SELECT s.objectRef FROM " + sinkResolver.getBaseJpaEntityClass().getSimpleName() + " s "
+            "SELECT s.objectRef FROM " + SinkEntity.class.getSimpleName() + " s "
            + variablePart + " s.tenantRef = :tenantRef AND s.cTimestamp < :until AND s.camelTransferStatus IS NOT NULL "
            + "ORDER BY s.cTimestamp", Long.class);
         query.setParameter("tenantRef", sinkResolver.getSharedTenantRef());

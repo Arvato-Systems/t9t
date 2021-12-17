@@ -93,8 +93,7 @@ public class RemoteConnection implements IRemoteConnection {
             LOGGER.warn("response is HTTP {} ({})", returnCode, null);
             return MessagingUtil.createServiceResponse(
                     T9tException.HTTP_ERROR + returnCode,
-                    httpStatusMessage,
-                    null, null);
+                    httpStatusMessage);
         }
         final byte[] receivedBuffer = response.body();
         final BonaPortable obj = new CompactByteArrayParser(receivedBuffer, 0, -1).readRecord();
@@ -103,14 +102,12 @@ public class RemoteConnection implements IRemoteConnection {
                 LOGGER.info("Response object is null for AUTHENTICATION: http code {}, status {}", returnCode, httpStatusMessage);
                 return MessagingUtil.createServiceResponse(
                         T9tException.GENERAL_AUTH_PROBLEM,
-                        AuthenticationResponse.class.getCanonicalName(),
-                        null, null);
+                        AuthenticationResponse.class.getCanonicalName());
             } else {
                 LOGGER.info("Response object is null for GENERAL request: http code {}, status {}", returnCode, httpStatusMessage);
                 return MessagingUtil.createServiceResponse(
                         T9tException.BAD_REMOTE_RESPONSE,
-                        Integer.toString(returnCode),
-                        null, null);
+                        Integer.toString(returnCode));
             }
         }
         if (obj instanceof ServiceResponse) {
@@ -126,9 +123,7 @@ public class RemoteConnection implements IRemoteConnection {
         LOGGER.error("Response is of wrong type: {}", response.getClass().getCanonicalName());
         return MessagingUtil.createServiceResponse(
                 T9tException.GENERAL_EXCEPTION,
-                response.getClass().getCanonicalName(),
-                null, null);
-
+                response.getClass().getCanonicalName());
     }
 
     protected ServiceResponse execSub(final URI uri, final String authentication, final RequestParameters rp) {
@@ -142,7 +137,7 @@ public class RemoteConnection implements IRemoteConnection {
         } catch (final Exception e) {
             final String causeChain = ExceptionUtil.causeChain(e);
             LOGGER.error("I/O error for PQON {}: {}", rp.ret$PQON(), causeChain);
-            return MessagingUtil.createServiceResponse(T9tException.GENERAL_EXCEPTION, causeChain, null, null);
+            return MessagingUtil.createServiceResponse(T9tException.GENERAL_EXCEPTION, causeChain);
         }
     }
 
@@ -158,7 +153,7 @@ public class RemoteConnection implements IRemoteConnection {
         } catch (final Exception e) {
             final String causeChain = ExceptionUtil.causeChain(e);
             LOGGER.error("I/O error for PQON {}: {}", rp.ret$PQON(), causeChain);
-            return CompletableFuture.supplyAsync(() -> MessagingUtil.createServiceResponse(T9tException.GENERAL_EXCEPTION, causeChain, null, null));
+            return CompletableFuture.supplyAsync(() -> MessagingUtil.createServiceResponse(T9tException.GENERAL_EXCEPTION, causeChain));
         }
     }
 
@@ -169,7 +164,7 @@ public class RemoteConnection implements IRemoteConnection {
         } catch (final Exception e) {
             final String causeChain = ExceptionUtil.causeChain(e);
             LOGGER.error("I/O error for PQON {}: {}", rp.ret$PQON(), causeChain);
-            return CompletableFuture.supplyAsync(() -> MessagingUtil.createServiceResponse(T9tException.GENERAL_EXCEPTION, causeChain, null, null));
+            return CompletableFuture.supplyAsync(() -> MessagingUtil.createServiceResponse(T9tException.GENERAL_EXCEPTION, causeChain));
         }
     }
     private HttpRequest buildRequest(final URI uri, final String authentication, final BonaPortable request) throws Exception {

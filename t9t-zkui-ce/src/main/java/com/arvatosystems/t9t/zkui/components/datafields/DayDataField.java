@@ -15,11 +15,10 @@
  */
 package com.arvatosystems.t9t.zkui.components.datafields;
 
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.TimeZone;
-
-import java.time.LocalDate;
-import java.time.ZoneId;
 
 import org.zkoss.zul.Datebox;
 
@@ -55,7 +54,7 @@ public class DayDataField extends AbstractDataField<Datebox, LocalDate> {
         Date d = c.getValue();
         if (d == null)
             return null;
-        return LocalDate.ofInstant(d.toInstant(), ZoneId.systemDefault());
+        return LocalDate.ofInstant(d.toInstant(), ZoneOffset.UTC);
     }
 
     @Override

@@ -35,12 +35,4 @@ public class JavaLocalDateConverter implements IItemConverter<LocalDate> {
     public String getFormattedLabel(LocalDate value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
         return ApplicationSession.get().format(value);
     }
-
-    /**
-     * it will return a java.util.Date object
-     */
-    @Override
-    public Object getConvertedValue(LocalDate value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
-        return ApplicationSession.get().toDate(value);
-    }
 }

@@ -499,6 +499,15 @@
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:element>
+                    <xs:element name="forbiddenCharacters" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="64"/>
+                                <xs:pattern value="\p{IsBasicLatin}*"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="replacementCharacter" minOccurs="0" nillable="true" type="bon:CHAR"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>

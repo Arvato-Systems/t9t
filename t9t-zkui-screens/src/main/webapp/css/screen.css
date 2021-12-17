@@ -1389,3 +1389,10 @@ body {
 .z-textbox[disabled], .z-decimalbox[disabled], .z-intbox[disabled], .z-longbox[disabled], .z-doublebox[disabled], .z-combobox-input[disabled], .z-datebox-input[disabled], .z-bandbox-input[disabled] {
     color: #333 !important;
 }
+
+.env-identifier span {
+    font-size: 18px;
+    font-weight: bold;
+    color: #fff;
+    padding: 20px;
+}

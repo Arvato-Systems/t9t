@@ -15,10 +15,9 @@
  */
 package com.arvatosystems.t9t.zkui.components.fields;
 
-import java.util.Date;
-
 import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.util.Date;
 
 import org.zkoss.zul.Datebox;
 
@@ -48,7 +47,7 @@ public class TimestampField extends AbstractField<Datebox> {
 
     protected LocalDateTime getVal(Datebox d) {
         Date vv = d.getValue();
-        return vv == null ? null : LocalDateTime.ofInstant(vv.toInstant(), ZoneId.systemDefault());
+        return vv == null ? null : LocalDateTime.ofInstant(vv.toInstant(), ZoneOffset.UTC);
     }
 
     @Override

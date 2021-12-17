@@ -92,21 +92,4 @@ public class AllItemConverters  implements IItemConverter<Object> {
         }
         return value.toString();
     }
-
-    @Override
-    public Object getConvertedValue(Object value, BonaPortable wholeDataObject, String fieldName, FieldDefinition d) {
-        if (value == null)
-            return null;
-        IItemConverter classConverter = getConverter(value, wholeDataObject, fieldName, d);
-        if (classConverter != null) {
-            try {
-                return classConverter.getConvertedValue(value, wholeDataObject, fieldName, d);
-            } catch (Exception e) {
-                LOGGER.error("apply VALUE item converter {} for {} threw an exception: {}",
-                        classConverter.getClass().getSimpleName(), value, ExceptionUtil.causeChain(e));
-                return null;
-            }
-        }
-        return value.toString();
-    }
 }

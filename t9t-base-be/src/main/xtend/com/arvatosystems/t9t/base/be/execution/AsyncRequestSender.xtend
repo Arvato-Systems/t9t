@@ -35,6 +35,7 @@ import de.jpaw.bonaparte.pojos.api.media.MediaXType
 import de.jpaw.dp.Inject
 import de.jpaw.dp.Provider
 import de.jpaw.dp.Singleton
+import com.arvatosystems.t9t.base.api.ServiceRequestHeader
 
 // send a request to an external arbitrary address (not the vert.x eventBus)
 @AddLogger
@@ -79,7 +80,13 @@ class AsyncRequestSender implements IAsyncRequestSender {
         LOGGER.debug("AsyncServiceRequestSender called for channel {}, address {}, request type {}, format {}, user {}, tenant {}",
             channel.token, address, rq.ret$PQON, serializationFormat ?: "(default)", currentContext.userId, currentContext.tenantId
         )
-        val srq = new ServiceRequest(null, rq, new AuthenticationJwt(currentContext.internalHeaderParameters.encodedJwt));
+        var ServiceRequestHeader srh = null;
+        if (currentContext.internalHeaderParameters.messageId !== null) {
+            srh = new ServiceRequestHeader();
+            srh.messageId = currentContext.internalHeaderParameters.messageId
+            srh.idempotencyBehaviour = currentContext.internalHeaderParameters.idempotencyBehaviour
+        }
+        val srq = new ServiceRequest(srh, rq, new AuthenticationJwt(currentContext.internalHeaderParameters.encodedJwt));
         asyncRequest(channel, address, srq, serializationFormat)
     }
 }

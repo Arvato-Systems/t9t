@@ -22,12 +22,10 @@ import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceRequest;
-import com.arvatosystems.t9t.base.api.ServiceRequestHeader;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.auth.PermissionType;
 
 import de.jpaw.bonaparte.core.BonaPortableFactory;
-import de.jpaw.util.ApplicationException;
 
 /**
  * Utility class in charge of providing common utility functionality to be used in the scope of the overall message processing.
@@ -131,42 +129,34 @@ public final class MessagingUtil {
      * @param errorCode
      *            The error code to include in the response
      */
-    public static ServiceResponse createServiceResponse(final int errorCode, final String errorDetails, final UUID messageId, final Long processRef) {
+    public static ServiceResponse createServiceResponse(final int errorCode, final String errorDetails, final UUID messageId, final String tenantId,
+      final Long processRef) {
+        final ServiceResponse response = createServiceResponse(errorCode, errorDetails);
+        response.setMessageId(messageId);
+        response.setTenantId(tenantId);
+        response.setProcessRef(processRef);
+        return response;
+    }
+
+    /** Create a ServiceResponse, using a provided error code (or OK). */
+    public static ServiceResponse createServiceResponse(final int errorCode, final String errorDetails) {
         final ServiceResponse response = new ServiceResponse();
-        if (errorCode > 99999999) {
+        if (errorCode > T9tConstants.MAX_OK_RETURN_CODE) {
             final String errorMessage = T9tException.codeToString(errorCode);
             LOGGER.error("returning error code " + errorCode + " with details " + errorDetails + " for reason " + errorMessage);
-            response.setErrorMessage(truncField(errorMessage, ServiceResponse.meta$$errorMessage.getLength()));
+            response.setErrorMessage(truncErrorMessage(errorMessage));
         } else {
             LOGGER.info("returning OK response of code " + errorCode + ((errorDetails != null) ? " with details " + errorDetails : ""));
         }
         response.setErrorDetails(truncErrorDetails(errorDetails));
         response.setReturnCode(errorCode);
-        response.setMessageId(messageId);
-        response.setProcessRef(processRef);
         return response;
     }
 
-    public static ServiceResponse createServiceResponse(final int errorCode, final String errorDetails, final ServiceRequestHeader hdr) {
-        return createServiceResponse(errorCode, errorDetails, hdr == null ? null : hdr.getMessageId(), null);
-    }
-
-    public static ServiceResponse createError(final int errorCode, final ServiceRequestHeader hdr, final Long processRef) {
-        final ServiceResponse resp = new ServiceResponse();
-        resp.setReturnCode(errorCode);
-        resp.setProcessRef(processRef);
-        resp.setMessageId(hdr.getMessageId());
-        return resp;
-    }
-
-    public static ServiceResponse createError(final ApplicationException e, final String tenantId, final UUID messageId, final Long processRef) {
-        final ServiceResponse resp = new ServiceResponse();
-        resp.setReturnCode(e.getErrorCode());
-        resp.setErrorMessage(truncField(e.getMessage(), ServiceResponse.meta$$errorMessage.getLength()));
-        resp.setTenantId(tenantId);
-        resp.setProcessRef(processRef);
-        if (messageId != null)
-            resp.setMessageId(messageId);
-        return resp;
+    /** Create a ServiceResponse, using a provided error code (or OK). */
+    public static ServiceResponse createOk(final int returnCode) {
+        final ServiceResponse response = new ServiceResponse();
+        response.setReturnCode(returnCode);
+        return response;
     }
 }

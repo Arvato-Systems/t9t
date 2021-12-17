@@ -51,12 +51,15 @@ class AutonomousExecutor implements IAutonomousExecutor {
     }
 
     override execute(RequestContext ctx, RequestParameters rp) {
+        val ihdr = ctx.internalHeaderParameters
         val requestHeader = new ServiceRequestHeader
         requestHeader.invokingProcessRef = ctx.requestRef  // transfer the invoker
+        requestHeader.messageId = ihdr.messageId
+        requestHeader.idempotencyBehaviour = ihdr.idempotencyBehaviour
         val mdcContext = MDC.copyOfContextMap
         val f = executorService.submit [
             MDC.setContextMap(mdcContext) // Inherit MDC context and ensure old MDC of this worker is reset
-            requestProcessor.execute(requestHeader, rp, ctx.internalHeaderParameters.jwtInfo, ctx.internalHeaderParameters.encodedJwt, true)
+            requestProcessor.execute(requestHeader, rp, ihdr.jwtInfo, ihdr.encodedJwt, true)
         ]
         return f.get
     }

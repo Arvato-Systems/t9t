@@ -32,9 +32,4 @@ public class XenumTranslationConverter implements IItemConverter<XEnum<?>> {
     public String getFormattedLabel(XEnum<?> value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
         return ApplicationSession.get().translateEnum((BonaEnum)value.getBaseEnum());
     }
-
-    @Override
-    public Object getConvertedValue(XEnum<?> value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
-        return value;
-    }
 }

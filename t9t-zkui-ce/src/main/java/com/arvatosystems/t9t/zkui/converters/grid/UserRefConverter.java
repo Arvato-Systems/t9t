@@ -57,9 +57,4 @@ public class UserRefConverter implements IItemConverter<Long>, ILongItemConverte
     public String getFormattedLabel(Long value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
         return getUserIdByUserRef((Long) value);
     }
-
-    @Override
-    public Object getConvertedValue(Long value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
-        return getUserIdByUserRef((Long) value);
-    }
 }

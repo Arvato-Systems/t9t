@@ -16,7 +16,7 @@
 package com.arvatosystems.t9t.zkui.converters;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Date;
 
 import org.zkoss.bind.BindContext;
@@ -41,7 +41,7 @@ public class LocalDateConverter implements Converter<Date, LocalDate, Component>
         if (val == null) {
             return null; // do nothing
         }
-        return Date.from(val.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        return Date.from(val.atStartOfDay(ZoneOffset.UTC).toInstant());
     }
 
     /**
@@ -56,6 +56,6 @@ public class LocalDateConverter implements Converter<Date, LocalDate, Component>
         if (val == null) {
             return null; // do nothing
         }
-        return LocalDate.ofInstant(val.toInstant(), ZoneId.systemDefault());
+        return LocalDate.ofInstant(val.toInstant(), ZoneOffset.UTC);
     }
 }

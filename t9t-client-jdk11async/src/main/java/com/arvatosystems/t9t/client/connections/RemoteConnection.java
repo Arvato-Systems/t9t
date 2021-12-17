@@ -72,7 +72,7 @@ public class RemoteConnection extends AbstractAsyncRemoteConnection implements I
         } catch (final Exception e) {
             final String causeChain = ExceptionUtil.causeChain(e);
             LOGGER.error("I/O error for PQON {}: {}", rp.ret$PQON(), causeChain);
-            return CompletableFuture.supplyAsync(() -> MessagingUtil.createServiceResponse(T9tException.GENERAL_EXCEPTION, causeChain, null, null));
+            return CompletableFuture.supplyAsync(() -> MessagingUtil.createServiceResponse(T9tException.GENERAL_EXCEPTION, causeChain));
         }
     }
 
@@ -83,7 +83,7 @@ public class RemoteConnection extends AbstractAsyncRemoteConnection implements I
         } catch (final Exception e) {
             final String causeChain = ExceptionUtil.causeChain(e);
             LOGGER.error("I/O error for PQON {}: {}", rp.ret$PQON(), causeChain);
-            return CompletableFuture.supplyAsync(() -> MessagingUtil.createServiceResponse(T9tException.GENERAL_EXCEPTION, causeChain, null, null));
+            return CompletableFuture.supplyAsync(() -> MessagingUtil.createServiceResponse(T9tException.GENERAL_EXCEPTION, causeChain));
         }
     }
 }

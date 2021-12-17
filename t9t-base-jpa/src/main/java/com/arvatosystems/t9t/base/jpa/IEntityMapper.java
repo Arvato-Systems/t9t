@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.search.SearchCriteria;
 
 import de.jpaw.bonaparte.core.BonaPortable;
@@ -47,25 +46,6 @@ import de.jpaw.bonaparte.pojos.apiw.Ref;
  */
 public interface IEntityMapper<KEY extends Serializable, DTO extends BonaPortable, TRACKING extends TrackingBase,
   ENTITY extends BonaPersistableKey<KEY> & BonaPersistableTracking<TRACKING>> {
-
-    /** Returns a new instance of the customized class of the DTO.
-     *
-     * @return a new instance of the customization of the DTO class object.
-     * @throws T9tException if the class could not be resolved or not instantiated.
-     */
-    DTO newDtoInstance(); // create a new (customized extension) of the DTO
-
-    int getRtti(); // get the DTO's RTTI value
-
-    Class<DTO> getBaseDtoClass(); // get the DTO's base class
-
-    /** Returns the customized class of the DTO.
-     *
-     * @return the class object of the DTO which is valid for the given customization.
-     * @throws T9tException if the class could not be resolved.
-     */
-    Class<? extends DTO> getDtoClass();
-
     /**
      * Converts a JPA entity into a DTO. The caller does not need to worry about allocating a new object. If the entity has been converted to a DTO before and
      * no update statement was performed in the meantime, the identical instance is returned (identity preservation: mapToDto(e1) == mapToDto(e2) if and only if

@@ -144,6 +144,8 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional Unicode(255)                       keyStorePath;                   // if set (recommended for production use!), overrides the standard keystore file (specifies file system path)
         optional Unicode(63)                        keyStorePassword;               // if set (recommended for production use!), overrides the standard keystore password
         optional Unicode(64)                        timeZone;                       // a time zone identifier such as "Europe/Berlin", to define the default time zone of the application
+        optional Ascii(64)                          forbiddenCharacters;            // characters to reject when encountered in Strings
+        optional Char                               replacementCharacter;           // character to use as a replacement (requests are rejected if none has been defined)
     }
 
     class ApplicationConfiguration {

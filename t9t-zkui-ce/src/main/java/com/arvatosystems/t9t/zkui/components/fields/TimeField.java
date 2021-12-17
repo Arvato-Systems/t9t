@@ -15,11 +15,10 @@
  */
 package com.arvatosystems.t9t.zkui.components.fields;
 
+import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.TimeZone;
-
-import java.time.LocalTime;
-import java.time.ZoneId;
 
 import org.zkoss.zul.Timebox;
 
@@ -50,7 +49,7 @@ public class TimeField extends AbstractField<Timebox> {
 
     protected LocalTime getVal(Timebox d) {
         Date vv = d.getValue();
-        return vv == null ? null : LocalTime.ofInstant(vv.toInstant(), ZoneId.systemDefault());
+        return vv == null ? null : LocalTime.ofInstant(vv.toInstant(), ZoneOffset.UTC);
     }
 
     @Override

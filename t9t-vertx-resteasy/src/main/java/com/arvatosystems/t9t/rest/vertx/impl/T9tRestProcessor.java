@@ -40,6 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
+import com.arvatosystems.t9t.base.RandomNumberGenerators;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
@@ -88,6 +89,13 @@ public class T9tRestProcessor implements IT9tRestProcessor {
             returnAsyncResult(acceptHeader, resp, Status.UNAUTHORIZED, "Missing or too short Authorization header");  // missing auth header
             return;
         }
+
+        // assign a message ID unless there is one already provided
+        if (requestParameters.getMessageId() == null) {
+            requestParameters.setMessageId(RandomNumberGenerators.randomFastUUID());
+        }
+        LOGGER.debug("Starting {} with assigned messageId {}", infoMsg, requestParameters.getMessageId());
+
         vertx.<ServiceResponse>executeBlocking(
             promise -> {
                 try {

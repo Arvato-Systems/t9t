@@ -18,6 +18,7 @@ package com.arvatosystems.t9t.zkui.viewmodel.support;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -26,14 +27,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
-import java.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.AfterCompose;
@@ -54,7 +54,9 @@ import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.GroupComparator;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Messagebox.ClickEvent;
 import org.zkoss.zul.Panel;
@@ -65,16 +67,19 @@ import org.zkoss.zul.Window;
 import com.arvatosystems.t9t.auth.request.GetDefaultScreenRequest;
 import com.arvatosystems.t9t.auth.request.GetDefaultScreenResponse;
 import com.arvatosystems.t9t.authc.api.TenantDescription;
-import com.arvatosystems.t9t.zkui.services.ITitleBarSearch;
-import com.arvatosystems.t9t.zkui.session.ApplicationSession;
+import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.request.QueryConfigRequest;
+import com.arvatosystems.t9t.base.request.QueryConfigResponse;
 import com.arvatosystems.t9t.zkui.components.fields.IField;
 import com.arvatosystems.t9t.zkui.services.IApplicationDAO;
 import com.arvatosystems.t9t.zkui.services.INavBarCreator;
 import com.arvatosystems.t9t.zkui.services.IT9tRemoteUtils;
+import com.arvatosystems.t9t.zkui.services.ITitleBarSearch;
+import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 import com.arvatosystems.t9t.zkui.util.ApplicationUtil;
 import com.arvatosystems.t9t.zkui.util.Constants;
-import com.arvatosystems.t9t.zkui.util.ZulUtils;
 import com.arvatosystems.t9t.zkui.util.Constants.NaviConfig;
+import com.arvatosystems.t9t.zkui.util.ZulUtils;
 import com.arvatosystems.t9t.zkui.viewmodel.beans.Navi;
 import com.google.common.collect.ImmutableMap;
 
@@ -107,6 +112,7 @@ public class ApplicationViewModel {
     private final IApplicationDAO applicationDAO = Jdp.getRequired(IApplicationDAO.class);
     private final INavBarCreator navbarCreator = Jdp.getRequired(INavBarCreator.class);
     private final ITitleBarSearch titleSearch = Jdp.getRequired(ITitleBarSearch.class);
+    private final IT9tRemoteUtils t9tRemoteUtils = Jdp.getRequired(IT9tRemoteUtils.class);
 
     private String userName;
     private String userId;
@@ -120,6 +126,7 @@ public class ApplicationViewModel {
     @Wire("#mainHome") private Window mainHome;
     @Wire("#reverse")  private Style  reverse;
     @Wire("#panel")    private Panel  panel;
+    @Wire("#environmentIdentifier") private Div environmentIdentifier;
     private static String ctrlKeys;
 
     private static class NaviComparator implements Comparator<Navi>, GroupComparator<Navi>, Serializable {
@@ -251,7 +258,7 @@ public class ApplicationViewModel {
                 setSelectedFromJump(navi, null);
             }
         } else {
-            GetDefaultScreenResponse response = Jdp.getRequired(IT9tRemoteUtils.class)
+            GetDefaultScreenResponse response = t9tRemoteUtils
                     .executeExpectOk(new GetDefaultScreenRequest(), GetDefaultScreenResponse.class);
             if (response.getDefaultScreenId() != null) {
                 Optional<Navi> navi = as.getAllNavigations().stream().filter(i -> i.getNaviId().equals(response.getDefaultScreenId())).findFirst();
@@ -264,6 +271,25 @@ public class ApplicationViewModel {
                     LOGGER.error("Configured default screen {} does not exist", response.getDefaultScreenId());
                 }
             }
+        }
+
+        final List<String> queryConfigs = new ArrayList<>();
+        queryConfigs.add(T9tConstants.CFG_FILE_KEY_ENVIRONMENT_TEXT);
+        queryConfigs.add(T9tConstants.CFG_FILE_KEY_ENVIRONMENT_CSS);
+        final QueryConfigRequest queryConfigRequest = new QueryConfigRequest(queryConfigs);
+        final QueryConfigResponse queryConfigResponse = t9tRemoteUtils.executeExpectOk(queryConfigRequest, QueryConfigResponse.class);
+        final Map<String, String> configs = queryConfigResponse.getKeyValuePairs();
+        if (configs != null && !configs.isEmpty()) {
+           String envText = configs.get(T9tConstants.CFG_FILE_KEY_ENVIRONMENT_TEXT);
+           if (envText != null) {
+               Label label = (Label) environmentIdentifier.getFirstChild();
+               label.setValue(envText);
+
+               String envCssClass = configs.get(T9tConstants.CFG_FILE_KEY_ENVIRONMENT_CSS);
+               if (envCssClass != null) {
+                   environmentIdentifier.addSclass(envCssClass);
+               }
+           }
         }
     }
 
@@ -770,5 +796,4 @@ public class ApplicationViewModel {
             }
         }
     }
-
 }

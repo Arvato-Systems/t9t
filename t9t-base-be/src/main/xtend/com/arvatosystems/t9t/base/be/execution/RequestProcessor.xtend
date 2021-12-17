@@ -16,9 +16,9 @@
 package com.arvatosystems.t9t.base.be.execution
 
 import com.arvatosystems.t9t.base.MessagingUtil
+import com.arvatosystems.t9t.base.RandomNumberGenerators
 import com.arvatosystems.t9t.base.T9tConstants
 import com.arvatosystems.t9t.base.T9tException
-import com.arvatosystems.t9t.base.T9tResponses
 import com.arvatosystems.t9t.base.api.ContextlessRequestParameters
 import com.arvatosystems.t9t.base.api.RequestParameters
 import com.arvatosystems.t9t.base.api.RetryAdviceType
@@ -26,9 +26,11 @@ import com.arvatosystems.t9t.base.api.ServiceRequestHeader
 import com.arvatosystems.t9t.base.api.ServiceResponse
 import com.arvatosystems.t9t.base.auth.PermissionType
 import com.arvatosystems.t9t.base.be.impl.DefaultRequestHandlerResolver
+import com.arvatosystems.t9t.base.services.IBackendStringSanitizerFactory
 import com.arvatosystems.t9t.base.services.IBucketWriter
 import com.arvatosystems.t9t.base.services.ICustomization
 import com.arvatosystems.t9t.base.services.IExecutor
+import com.arvatosystems.t9t.base.services.IIdempotencyChecker
 import com.arvatosystems.t9t.base.services.IRefGenerator
 import com.arvatosystems.t9t.base.services.IRequestHandler
 import com.arvatosystems.t9t.base.services.IRequestHandlerResolver
@@ -40,18 +42,19 @@ import com.arvatosystems.t9t.server.services.IAuthorize
 import com.arvatosystems.t9t.server.services.IRequestLogger
 import com.arvatosystems.t9t.server.services.IRequestProcessor
 import de.jpaw.annotations.AddLogger
+import de.jpaw.bonaparte.core.DataConverter
 import de.jpaw.bonaparte.core.ObjectValidationException
 import de.jpaw.bonaparte.pojos.api.OperationType
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo
 import de.jpaw.bonaparte.pojos.api.auth.UserLogLevelType
+import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem
 import de.jpaw.dp.Inject
 import de.jpaw.dp.Singleton
 import de.jpaw.util.ApplicationException
 import de.jpaw.util.ExceptionUtil
-import java.util.Objects
 import java.time.Instant
+import java.util.Objects
 import org.slf4j.MDC
-import com.arvatosystems.t9t.base.services.IIdempotencyChecker
 
 // process requests once the user has been authenticated
 @Singleton
@@ -66,8 +69,10 @@ class RequestProcessor implements IRequestProcessor {
     @Inject protected IBucketWriter             bucketWriter
     @Inject protected IAuthorize                authorizator
     @Inject protected ICustomization            customizationProvider
+    @Inject protected IBackendStringSanitizerFactory backendStringSanitizerFactory
     @Inject protected RequestContextScope       ctxScope    // should be the same as the previous
     protected final IRequestHandlerResolver defaultRequestHandlerResolver = new DefaultRequestHandlerResolver();  // an implementation which is independent of customization
+    protected final DataConverter<String, AlphanumericElementaryDataItem> stringSanitizer = backendStringSanitizerFactory.createStringSanitizerForBackend
 
     /** Common entry point for all executions - web service calls as well as scheduled tasks (via IUnauthenticatedServiceRequestExecutor). */
     override ServiceResponse execute(ServiceRequestHeader optHdr, RequestParameters rp, JwtInfo jwtInfo, String encodedJwt, boolean skipAuthorization) {
@@ -76,18 +81,31 @@ class RequestProcessor implements IRequestProcessor {
         val pqon                    = rp.ret$PQON
         val now                     = Instant.now
         val millis                  = now.toEpochMilli
+        val idempotencyBehaviour    = rp.idempotencyBehaviour ?: optHdr?.idempotencyBehaviour
+        val messageId               = rp.messageId ?: optHdr?.messageId
+        val effectiveMessageId      = messageId ?: RandomNumberGenerators.randomFastUUID
 
         // validate the request header, if it exists
         if (optHdr !== null) {
             try {
                 optHdr.validate
             } catch (ObjectValidationException e) {
-                return MessagingUtil.createError(e, jwtInfo.tenantId, optHdr.messageId, null)
+                return MessagingUtil.createServiceResponse(e.errorCode, e.message, messageId, jwtInfo.tenantId, null)
+            }
+        }
+
+        // first thing to do is to validate (and sanitize) the business part of the request
+        if (stringSanitizer !== null) {
+            try {
+                rp.treeWalkString(stringSanitizer, true)
+            } catch (ApplicationException e) {
+                return MessagingUtil.createServiceResponse(e.errorCode, e.message, messageId, jwtInfo.tenantId, null)
             }
         }
 
         val oldMdcRequestPqon = MDC.get(T9tConstants.MDC_REQUEST_PQON)
         try {
+            MDC.put(T9tConstants.MDC_MESSAGE_ID, effectiveMessageId.toString)
             MDC.put(T9tConstants.MDC_REQUEST_PQON, pqon)
             MDC.put(T9tConstants.MDC_TENANT_ID, jwtInfo.tenantId)
             MDC.put(T9tConstants.MDC_USER_ID, jwtInfo.userId)
@@ -98,6 +116,7 @@ class RequestProcessor implements IRequestProcessor {
             if (!skipAuthorization && StatusProvider.isShutdownInProgress) {
                 LOGGER.info("Denying processing of {}@{}:{}, shutdown is in progress", jwtInfo.userId, jwtInfo.tenantId, pqon)
                 return new ServiceResponse() => [
+                    it.messageId        = messageId
                     tenantId            = jwtInfo.tenantId
                     returnCode          = T9tException.SHUTDOWN_IN_PROGRESS
                     errorMessage        = T9tException.MSG_SHUTDOWN_IN_PROGRESS
@@ -111,6 +130,7 @@ class RequestProcessor implements IRequestProcessor {
                     LOGGER.info("Denying processing of {}@{}:{}, JWT has expired {} ms ago",
                     jwtInfo.userId, jwtInfo.tenantId, pqon, expiredBy)
                     return new ServiceResponse() => [
+                    it.messageId        = messageId
                         tenantId            = jwtInfo.tenantId
                         returnCode          = T9tException.JWT_EXPIRED
                         errorMessage        = T9tException.MSG_JWT_EXPIRED
@@ -121,6 +141,7 @@ class RequestProcessor implements IRequestProcessor {
             if (jwtInfo.userId === null || jwtInfo.userRef === null || jwtInfo.tenantId === null || jwtInfo.tenantRef === null || jwtInfo.sessionId === null || jwtInfo.sessionRef === null) {
                 LOGGER.info("Denying processing of {}@{}:{}, JWT is missing some fields", jwtInfo.userId, jwtInfo.tenantId, pqon)
                 return new ServiceResponse() => [
+                    it.messageId        = messageId
                     tenantId            = jwtInfo.tenantId
                     returnCode          = T9tException.JWT_INCOMPLETE
                     errorMessage        = T9tException.MSG_JWT_INCOMPLETE
@@ -128,10 +149,9 @@ class RequestProcessor implements IRequestProcessor {
             }
 
             // 0. check for resend of the request
-            val messageId               = rp.messageId ?: optHdr?.messageId
-            val idempotencyBehaviour    = rp.idempotencyBehaviour ?: optHdr?.idempotencyBehaviour
             var boolean storeResult     = false
             if (messageId !== null && (idempotencyBehaviour === RetryAdviceType.NEVER_RETRY || idempotencyBehaviour === RetryAdviceType.RETRY_ON_ERROR)) {
+                // a message ID has been set, and also a retry behaviour, asking to not repeat the request in all cases
                 // must do a check for a prior execution of this request
                 val idempotenceResponse = idempotencyChecker.runIdempotencyCheck(jwtInfo.tenantId, messageId, idempotencyBehaviour, rp)
                 if (idempotenceResponse !== null) {
@@ -150,22 +170,25 @@ class RequestProcessor implements IRequestProcessor {
             ihdr.requestParameterPqon   = pqon
             ihdr.requestHeader          = optHdr
             ihdr.priorityRequest        = optHdr?.priorityRequest
-            if (optHdr?.languageCode !== null)
+            if (optHdr?.languageCode !== null) {
                 ihdr.languageCode   = optHdr.languageCode
+            }
+            ihdr.messageId              = effectiveMessageId
+            ihdr.idempotencyBehaviour   = idempotencyBehaviour
             ihdr.freeze
 
             MDC.put(T9tConstants.MDC_PROCESS_REF, Objects.toString(ihdr.processRef, null))
 
             val prioText = if (Boolean.TRUE == ihdr.priorityRequest) "priority" else "regular"
-            LOGGER.debug("Starting {} request {}@{}:{}, S/R = {}/{}, need authorization={}",
-            prioText, jwtInfo.userId, jwtInfo.tenantId, pqon, jwtInfo.sessionRef, ihdr.processRef, !skipAuthorization)
+            LOGGER.debug("Starting {} request {}@{}:{}, S/R = {}/{}, need authorization={}, messageId={}",
+            prioText, jwtInfo.userId, jwtInfo.tenantId, pqon, jwtInfo.sessionRef, ihdr.processRef, !skipAuthorization, effectiveMessageId)
 
             val resp                    = executeSynchronousWithRetries(rp, ihdr, skipAuthorization)
             val endOfProcessing         = Instant.now
             val processingDuration      = endOfProcessing.toEpochMilli - ihdr.executionStartedAt.toEpochMilli
             resp.tenantId               = jwtInfo.tenantId
             resp.processRef             = ihdr.processRef
-            resp.messageId              = optHdr?.messageId
+            resp.messageId              = messageId
 
             val logLevel = if (ApplicationException.isOk(resp.returnCode))
                 jwtInfo.logLevel ?: UserLogLevelType.MESSAGE_ENTRY
@@ -175,11 +198,11 @@ class RequestProcessor implements IRequestProcessor {
             val logged = logLevel.ordinal >= UserLogLevelType.MESSAGE_ENTRY.ordinal
             val returnCodeAsString = if (ApplicationException.isOk(resp.returnCode)) "OK" else ApplicationException.codeToString(resp.returnCode)
 
-            LOGGER.debug("Finished {} request {}@{}:{} with return code {} ({}) in {} ms {}, S/R = {}/{} ({})",
+            LOGGER.debug("Finished {} request {}@{}:{} with return code {} ({}) in {} ms {}, S/R = {}/{} ({}), messageId={}",
                 prioText, jwtInfo.userId, jwtInfo.tenantId, pqon, resp.returnCode,
                 resp.errorDetails ?: "",
                 processingDuration, if (logged) "(LOGGED)" else "(unlogged)",
-                jwtInfo.sessionRef, ihdr.processRef, returnCodeAsString
+                jwtInfo.sessionRef, ihdr.processRef, returnCodeAsString, effectiveMessageId
             )
             if (storeResult) {
                 idempotencyChecker.storeIdempotencyResult(jwtInfo.tenantId, messageId, idempotencyBehaviour, rp, resp)
@@ -241,6 +264,7 @@ class RequestProcessor implements IRequestProcessor {
                                 errorDetails        = OperationType.EXECUTE.name + " on " + rq.ret$PQON
                                 tenantId            = ihdr.jwtInfo.tenantId
                                 processRef          = ihdr.processRef
+                                messageId           = ihdr.messageId
                             ]
                         }
                         val handler                 = ctx.customization.getRequestHandler(rq)
@@ -253,6 +277,7 @@ class RequestProcessor implements IRequestProcessor {
                                     errorDetails        = requiredPermission.name + " for " + rq.ret$PQON
                                     tenantId            = ihdr.jwtInfo.tenantId
                                     processRef          = ihdr.processRef
+                                    messageId           = ihdr.messageId
                                 ]
                             } else {
                                 LOGGER.trace("Also obtained additional permission {}", requiredPermission)
@@ -266,6 +291,7 @@ class RequestProcessor implements IRequestProcessor {
                             errorDetails        = e.message
                             tenantId            = ihdr.jwtInfo.tenantId
                             processRef          = ihdr.processRef
+                            messageId           = ihdr.messageId
                         ]
                     }
                 }
@@ -280,7 +306,7 @@ class RequestProcessor implements IRequestProcessor {
                     // more info
                     LOGGER.error("Response validation problem for tenantId {} and response object {}: {}", ctx.tenantId, resp.ret$PQON(), e.message)
                     LOGGER.error('''Full response is «resp»''')
-                    resp = T9tResponses.createServiceResponse(T9tException.RESPONSE_VALIDATION_ERROR,
+                    resp = MessagingUtil.createServiceResponse(T9tException.RESPONSE_VALIDATION_ERROR,
                         '''«rq.ret$PQON()»(«ctx.internalHeaderParameters.processRef»): «e.message»''')
                 }
                 // close the context and clean up resources
@@ -294,7 +320,7 @@ class RequestProcessor implements IRequestProcessor {
                     } catch (Exception e) {
                         // commit exception: some constraint will be violated, we urgently need the cause in the log for analysis. Descend exception list...
                         val causeChain = ExceptionUtil.causeChain(e)
-                        resp = MessagingUtil.createServiceResponse(T9tException.JTA_EXCEPTION, causeChain, null, null)
+                        resp = MessagingUtil.createServiceResponse(T9tException.JTA_EXCEPTION, causeChain, ihdr.messageId, ctx.tenantId, null)
                         if (e instanceof NullPointerException) {
                             LOGGER.error("NullPointerException: Stack trace is ", e)
                         } else if (e.getClass().getCanonicalName() == "javax.persistence.RollbackException") {
@@ -319,7 +345,7 @@ class RequestProcessor implements IRequestProcessor {
                     LOGGER.error("NPE Stack trace is ", e)
                 ctx.rollback
                 ctx.discardPostCommitActions
-                val resp = MessagingUtil.createServiceResponse(T9tException.GENERAL_EXCEPTION, causeChain, null, null)
+                val resp = MessagingUtil.createServiceResponse(T9tException.GENERAL_EXCEPTION, causeChain, ihdr.messageId, ctx.tenantId, null)
                 ctx.applyPostFailureActions(rq, resp)
                 return resp
             } finally {
@@ -336,7 +362,7 @@ class RequestProcessor implements IRequestProcessor {
             LOGGER.error("Unhandled exception (outer scope): {}", causeChain)
             if (ee instanceof NullPointerException)
                 LOGGER.error("NPE Stack trace is ", ee)
-            return MessagingUtil.createServiceResponse(T9tException.GENERAL_EXCEPTION, causeChain, null, null)
+            return MessagingUtil.createServiceResponse(T9tException.GENERAL_EXCEPTION, causeChain, ihdr.messageId, null, null)
         }
     }
 

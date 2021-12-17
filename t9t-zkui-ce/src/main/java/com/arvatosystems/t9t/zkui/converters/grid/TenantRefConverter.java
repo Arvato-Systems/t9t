@@ -30,9 +30,4 @@ public class TenantRefConverter implements IItemConverter<Long>, ILongItemConver
     public String getFormattedLabel(Long value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
         return ZulUtils.getTenantIdByRef((Long) value);
     }
-
-    @Override
-    public Object getConvertedValue(Long value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
-        return ZulUtils.getTenantIdByRef((Long) value);
-    }
 }

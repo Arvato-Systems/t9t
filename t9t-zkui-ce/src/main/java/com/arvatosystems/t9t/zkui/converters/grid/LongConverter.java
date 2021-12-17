@@ -33,9 +33,4 @@ public class LongConverter implements IItemConverter<Long> {
     public String getFormattedLabel(Long value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
         return value.toString();
     }
-
-    @Override
-    public Object getConvertedValue(Long value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
-        return value;
-    }
 }

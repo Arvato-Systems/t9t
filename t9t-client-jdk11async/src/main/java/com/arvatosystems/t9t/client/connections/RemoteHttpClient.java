@@ -155,16 +155,15 @@ class RemoteHttpClient {
             if (response instanceof ServiceResponse) {
                 final ServiceResponse sr = (ServiceResponse)response;
                 if (!ApplicationException.isOk(sr.getReturnCode())) {
+                    // TODO: check if we should just pass back sr
                     return MessagingUtil.createServiceResponse(
                         T9tException.HTTP_ERROR + resp.getHttpReturnCode(),
-                        Integer.toString(sr.getReturnCode()) + ": " + (sr.getErrorDetails() != null ? sr.getErrorDetails() + " " : "") + sr.getErrorMessage(),
-                        null, null);
+                        Integer.toString(sr.getReturnCode()) + ": " + (sr.getErrorDetails() != null ? sr.getErrorDetails() + " " : "") + sr.getErrorMessage());
                 }
             }
             return MessagingUtil.createServiceResponse(
                     T9tException.HTTP_ERROR + resp.getHttpReturnCode(),
-                    resp.getHttpStatusMessage(),
-                    null, null);
+                    resp.getHttpStatusMessage());
         }
         final BonaPortable response = resp.getResponseObject();
         if (response == null) {
@@ -172,14 +171,12 @@ class RemoteHttpClient {
                 LOGGER.info("Response object is null for AUTHENTICATION: http code {}, status {}", resp.getHttpReturnCode(), resp.getHttpStatusMessage());
                 return MessagingUtil.createServiceResponse(
                         T9tException.GENERAL_AUTH_PROBLEM,
-                        AuthenticationResponse.class.getCanonicalName(),
-                        null, null);
+                        AuthenticationResponse.class.getCanonicalName());
             } else {
                 LOGGER.info("Response object is null for GENERAL request: http code {}, status {}", resp.getHttpReturnCode(), resp.getHttpStatusMessage());
                 return MessagingUtil.createServiceResponse(
                         T9tException.BAD_REMOTE_RESPONSE,
-                        Integer.toString(resp.getHttpReturnCode()),
-                        null, null);
+                        Integer.toString(resp.getHttpReturnCode()));
             }
         }
         if (response instanceof ServiceResponse) {
@@ -195,8 +192,6 @@ class RemoteHttpClient {
         LOGGER.error("Response is of wrong type: {}", response.getClass().getCanonicalName());
         return MessagingUtil.createServiceResponse(
                 T9tException.GENERAL_EXCEPTION,
-                response.getClass().getCanonicalName(),
-                null, null);
-
+                response.getClass().getCanonicalName());
     }
 }

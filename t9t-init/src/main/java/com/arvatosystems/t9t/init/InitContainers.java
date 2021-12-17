@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import com.arvatosystems.t9t.base.ILeanGridConfigContainer;
 import com.arvatosystems.t9t.base.IViewModelContainer;
 import com.arvatosystems.t9t.base.MessagingUtil;
+import com.arvatosystems.t9t.base.RandomNumberGenerators;
 
 import de.jpaw.bonaparte.enums.BonaEnum;
 import de.jpaw.bonaparte.enums.BonaNonTokenizableEnum;
@@ -97,6 +98,7 @@ public final class InitContainers {
         final String javaVersion = System.getProperty("java.version");
         final String javaVendor  = System.getProperty("java.vendor");
         LOGGER.info("Running Java version {} (vendor {})", javaVersion != null ? javaVersion : "(UNDEFINED)", javaVendor != null ? javaVendor : "(UNDEFINED)");
+        LOGGER.info("Instance signature is {}", RandomNumberGenerators.getInstanceSignatue());
 
         checkUTC();
         MessagingUtil.initializeBonaparteParsers();

@@ -44,9 +44,4 @@ public class FixedPointConverter implements IItemConverter<MicroUnits> {
             throw new UnsupportedOperationException("Instance " + value.getClass().getName() + " is not supported. Field:" + fieldName + "->" + value);
         }
     }
-
-    @Override
-    public Object getConvertedValue(MicroUnits value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
-        return value;
-    }
 }

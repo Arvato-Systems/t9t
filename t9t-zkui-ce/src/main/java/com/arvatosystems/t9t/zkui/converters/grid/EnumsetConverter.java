@@ -50,9 +50,4 @@ public class EnumsetConverter implements IItemConverter<EnumSetMarker> {
         }
         return sj.toString();
     }
-
-    @Override
-    public Object getConvertedValue(EnumSetMarker value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
-        return value;
-    }
 }
