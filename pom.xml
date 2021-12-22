@@ -95,11 +95,11 @@
         <xtend-maven-plugin.version>2.26.0.M2</xtend-maven-plugin.version>
         <xtext-maven-plugin.version>2.26.0.M2</xtext-maven-plugin.version>
 
-        <bonaparte-plugin.version>4.80.1</bonaparte-plugin.version>
+        <bonaparte-plugin.version>4.80.2</bonaparte-plugin.version>
         <license-plugin.version>3.0</license-plugin.version>
 
         <checkstyle.version>9.1</checkstyle.version>
-        <spotbugs.version>4.4.2</spotbugs.version>
+        <spotbugs.version>4.5.2</spotbugs.version>
         <logback.version>1.2.6</logback.version>
 
         <!-- Swagger -->
