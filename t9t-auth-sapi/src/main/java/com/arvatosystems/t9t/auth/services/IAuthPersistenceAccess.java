@@ -15,21 +15,21 @@
  */
 package com.arvatosystems.t9t.auth.services;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import org.eclipse.xtext.xbase.lib.Pair;
-import java.time.Instant;
 
 import com.arvatosystems.t9t.auth.AuthModuleCfgDTO;
 import com.arvatosystems.t9t.auth.SessionDTO;
 import com.arvatosystems.t9t.auth.UserDTO;
 import com.arvatosystems.t9t.authc.api.TenantDescription;
 import com.arvatosystems.t9t.base.auth.PermissionEntry;
+import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW;
 
 public interface IAuthPersistenceAccess {
 
@@ -52,7 +52,7 @@ public interface IAuthPersistenceAccess {
     List<PermissionEntry> getAllDBPermissions(JwtInfo jwtInfo);
 
     /** Returns the Pair of <tenantRef, UserDTO> of the user specified by userId, or null if there is no such user. */
-    Pair<Long, UserDTO> getUserById(String userId);
+    DataWithTrackingW<UserDTO, FullTrackingWithVersion> getUserById(String userId);
 
     AuthIntermediateResult getByApiKey(Instant now, UUID key);
     AuthIntermediateResult getByUserIdAndPassword(Instant now, String userId, String password, String newPassword);

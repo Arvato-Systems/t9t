@@ -86,7 +86,7 @@ class AuthenticationRequestHandler extends AbstractRequestHandler<Authentication
                 LOGGER.debug("No master data record for userId {} - declining access", pw.userId)
                 return null  // throw new T9tException(T9tException.USER_NOT_FOUND);
             }
-            if (Boolean.TRUE != ldapConfiguration.onlySelectedUsers || Boolean.TRUE == user.value.externalAuth) {
+            if (Boolean.TRUE != ldapConfiguration.onlySelectedUsers || Boolean.TRUE == user.data.externalAuth) {
                 // all users authenticated by external auth, or external auth configured for this user
                 externalAuthentication.externalAuth(ctx, pw, user)
             } else {

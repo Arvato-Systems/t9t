@@ -52,6 +52,9 @@ import java.time.Instant
 import com.arvatosystems.t9t.auth.jpa.IPasswordSettingService
 import de.jpaw.bonaparte.pojos.api.auth.UserLogLevelType
 import com.arvatosystems.t9t.auth.jpa.IPasswordChangeService
+import com.arvatosystems.t9t.auth.UserDTO
+import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW
+import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion
 
 @AddLogger
 @Singleton
@@ -217,7 +220,7 @@ class AuthPersistenceAccess implements IAuthPersistenceAccess {
         if (userEntity === null) {
             return null;
         }
-        return Pair.of(userEntity.tenantRef, userEntity.ret$Data)
+        return new DataWithTrackingW<UserDTO, FullTrackingWithVersion>(userEntity.ret$Data, userEntity.ret$Tracking, userEntity.tenantRef)
     }
 
     override getByUserIdAndPassword(Instant now, String userId, String password, String newPassword) {

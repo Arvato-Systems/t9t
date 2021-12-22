@@ -22,7 +22,6 @@ import javax.naming.NamingEnumeration;
 import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 
-import org.eclipse.xtext.xbase.lib.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,10 +31,12 @@ import com.arvatosystems.t9t.auth.services.IAuthPersistenceAccess;
 import com.arvatosystems.t9t.auth.services.IExternalAuthentication;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.auth.PasswordAuthentication;
+import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.cfg.be.LdapConfiguration;
 
+import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 
@@ -47,11 +48,11 @@ public class ExternalAuthentication implements IExternalAuthentication {
     protected final IAuthPersistenceAccess persistenceAccess = Jdp.getRequired(IAuthPersistenceAccess.class);
 
     @Override
-    public AuthIntermediateResult externalAuth(RequestContext ctx, PasswordAuthentication pw, Pair<Long, UserDTO> user) {
+    public AuthIntermediateResult externalAuth(RequestContext ctx, PasswordAuthentication pw, DataWithTrackingW<UserDTO, FullTrackingWithVersion> user) {
         // the default provider required the user to exist in our local DB (for permissions)
         final AuthIntermediateResult resp = new AuthIntermediateResult();
-        resp.setTenantRef(user.getKey());
-        resp.setUser(user.getValue());
+        resp.setTenantRef(user.getTenantRef());
+        resp.setUser(user.getData());
 
         try {
             final boolean success = authenticateJndi(pw.getUserId(), pw.getPassword());
