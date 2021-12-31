@@ -534,7 +534,7 @@ public abstract class AbstractCombinedTextDatabaseSearch28RequestHandler<
         }
         // determine type of sort as well
         SearchFilterTypeEnum sortType = null;
-        if (rq.getSortColumns() != null || !rq.getSortColumns().isEmpty())
+        if (rq.getSortColumns() != null && !rq.getSortColumns().isEmpty())
             sortType = filterTypeForField(rq.getSortColumns().get(0).getFieldName());
         LOGGER.debug("Filters indicate search types {} and sort type {} for expression {}", filterTypes, sortType, rq.getSearchFilter());
 
@@ -741,8 +741,8 @@ public abstract class AbstractCombinedTextDatabaseSearch28RequestHandler<
         LOGGER.debug("DB driven combined search performed");
         dbRequest.setSortColumns(rq.getSortColumns()); // ask (only) DB to sort
         solrRequest.setLimit(rq.getLimit());
-        final SearchFilter solrRequestFilter = dbRequest.getSearchFilter(); // save for later use
         searchTools.mapNames(solrRequest, textSearchFieldMappings);
+        final SearchFilter solrRequestFilter = solrRequest.getSearchFilter(); // save for later use
         processPrefixes(dbRequest);
 
         int resultsToSkip = rq.getOffset();
@@ -850,17 +850,20 @@ public abstract class AbstractCombinedTextDatabaseSearch28RequestHandler<
      * Method splits the searchFilters in the original request into two requests
      * that are solr only and dbOnly
      */
-    protected void splitSearches(final SearchFilter originalFilter, final Search28Request<DTO, TRACKING> solrRequest,
-      final Search28Request<DTO, TRACKING> dbRequest) {
+    protected void splitSearches(final SearchFilter originalFilter,
+      final Search28Request<DTO, TRACKING> solrRequest, final Search28Request<DTO, TRACKING> dbRequest) {
         if (originalFilter instanceof FieldFilter) {
             switch (filterTypeForField(((FieldFilter) originalFilter).getFieldName())) {
             case DB_ONLY:
                 dbRequest.setSearchFilter(SearchFilters.and(dbRequest.getSearchFilter(), originalFilter));
+                break;
             case SOLR_ONLY:
                 solrRequest.setSearchFilter(SearchFilters.and(solrRequest.getSearchFilter(), originalFilter));
+                break;
             default: { // merge the filter into BOTH searches!
                 dbRequest.setSearchFilter(SearchFilters.and(dbRequest.getSearchFilter(), originalFilter));
-                solrRequest.setSearchFilter(SearchFilters.and(solrRequest.getSearchFilter(), originalFilter));
+                // the originalFilter is used twice, because the name mapper could change the name, perform a defensive copy
+                solrRequest.setSearchFilter(SearchFilters.and(solrRequest.getSearchFilter(), originalFilter.ret$MutableClone(false, false)));
             }
             }
         } else if (originalFilter instanceof AndFilter) {
@@ -894,24 +897,26 @@ public abstract class AbstractCombinedTextDatabaseSearch28RequestHandler<
      * default of DBONLY is assumed. Never returns null.
      */
     protected SearchFilterTypeEnum filterTypeForField(final String path) {
-        final SearchTypeMappingEntry entry = textSearchPathElements.stream().filter(e -> thatMatches(e, path)).findFirst().orElse(null);
-        if (entry == null)
-            return SearchFilterTypeEnum.DB_ONLY;
-        return entry.searchType;
+        for (final SearchTypeMappingEntry stme: textSearchPathElements) {
+            if (thatMatches(stme, path)) {
+                return stme.getSearchType();
+            }
+        }
+        return SearchFilterTypeEnum.DB_ONLY;  // default
     }
 
     /**
      * Returns true if path matches the mapping entry, depending on type of match,
      * otherwise false.
      */
-    private boolean thatMatches(final SearchTypeMappingEntry it, final String path) {
-        switch (it.matchType) {
+    private boolean thatMatches(final SearchTypeMappingEntry stme, final String path) {
+        switch (stme.matchType) {
         case EXACT:
-            return path == it.name;
+            return path.equals(stme.name);
         case START:
-            return path.startsWith(it.name);
+            return path.startsWith(stme.name);
         case SUBSTRING:
-            return path.contains(it.name);
+            return path.contains(stme.name);
         }
         return false;
     }

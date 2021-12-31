@@ -56,6 +56,7 @@ import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.SortColumn;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
+import de.jpaw.bonaparte.util.ToStringHelper;
 import de.jpaw.dp.Jdp;
 
 /**
@@ -328,14 +329,25 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<
         }
     }
 
+    protected void xtensiveLog(final SearchRequest<DTO, TRACKING> searchRequest, final String what) {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("   *** Search for {} is {}", what, ToStringHelper.toStringML(searchRequest));
+        }
+    }
+
     protected void executeBOTHSearchDrivenByDb(final RequestContext ctx, final REQ rq, final SearchRequest<DTO, TRACKING> solrRequest,
       final SearchRequest<DTO, TRACKING> dbRequest, final ArrayList<ENTITY> finalResultList) {
         LOGGER.debug("DB driven combined search performed");
+        xtensiveLog(solrRequest, "SOLR");
+        xtensiveLog(dbRequest, "DB");
         dbRequest.setSortColumns(rq.getSortColumns()); // ask (only) DB to sort
         solrRequest.setLimit(rq.getLimit());
-        final SearchFilter solrRequestFilter = dbRequest.getSearchFilter(); // save for later use
         searchTools.mapNames(solrRequest, textSearchFieldMappings);
+        final SearchFilter solrRequestFilter = solrRequest.getSearchFilter(); // save for later use
         processPrefixes(dbRequest);
+        LOGGER.debug("Prefixes and Names mapped");
+        xtensiveLog(solrRequest, "SOLR");
+        xtensiveLog(dbRequest, "DB");
 
         int resultsToSkip = rq.getOffset();
         // use a higher limit because we expect to lose some when intersecting with the
@@ -366,6 +378,10 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<
             // This will ensure we always get enough because a certain amount has to be
             // skipped
             solrRequest.setLimit(rq.getLimit() - foundResults + resultsToSkip);
+
+            LOGGER.debug("Within ITER");
+            xtensiveLog(solrRequest, "SOLR");
+            xtensiveLog(dbRequest, "DB");
 
             // execute search and save result
             final List<Long> tempResult = textSearch.search(ctx, solrRequest, documentName, keyFieldName);
@@ -442,17 +458,20 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<
      * Method splits the searchFilters in the original request into two requests
      * that are solr only and dbOnly
      */
-    protected void splitSearches(final SearchFilter originalFilter, final SearchRequest<DTO, TRACKING> solrRequest,
-      final SearchRequest<DTO, TRACKING> dbRequest) {
+    protected void splitSearches(final SearchFilter originalFilter,
+      final SearchRequest<DTO, TRACKING> solrRequest, final SearchRequest<DTO, TRACKING> dbRequest) {
         if (originalFilter instanceof FieldFilter) {
             switch (filterTypeForField(((FieldFilter) originalFilter).getFieldName())) {
             case DB_ONLY:
                 dbRequest.setSearchFilter(SearchFilters.and(dbRequest.getSearchFilter(), originalFilter));
+                break;
             case SOLR_ONLY:
                 solrRequest.setSearchFilter(SearchFilters.and(solrRequest.getSearchFilter(), originalFilter));
+                break;
             default: { // merge the filter into BOTH searches!
                 dbRequest.setSearchFilter(SearchFilters.and(dbRequest.getSearchFilter(), originalFilter));
-                solrRequest.setSearchFilter(SearchFilters.and(solrRequest.getSearchFilter(), originalFilter));
+                // the originalFilter is used twice, because the name mapper could change the name, perform a defensive copy
+                solrRequest.setSearchFilter(SearchFilters.and(solrRequest.getSearchFilter(), originalFilter.ret$MutableClone(false, false)));
             }
             }
         } else if (originalFilter instanceof AndFilter) {
@@ -486,24 +505,26 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<
      * default of DBONLY is assumed. Never returns null.
      */
     protected SearchFilterTypeEnum filterTypeForField(final String path) {
-        final SearchTypeMappingEntry entry = textSearchPathElements.stream().filter(e -> thatMatches(e, path)).findFirst().orElse(null);
-        if (entry == null)
-            return SearchFilterTypeEnum.DB_ONLY;
-        return entry.searchType;
+        for (final SearchTypeMappingEntry stme: textSearchPathElements) {
+            if (thatMatches(stme, path)) {
+                return stme.getSearchType();
+            }
+        }
+        return SearchFilterTypeEnum.DB_ONLY;  // default
     }
 
     /**
      * Returns true if path matches the mapping entry, depending on type of match,
      * otherwise false.
      */
-    private boolean thatMatches(final SearchTypeMappingEntry it, final String path) {
-        switch (it.matchType) {
+    private boolean thatMatches(final SearchTypeMappingEntry stme, final String path) {
+        switch (stme.matchType) {
         case EXACT:
-            return path == it.name;
+            return path.equals(stme.name);
         case START:
-            return path.startsWith(it.name);
+            return path.startsWith(stme.name);
         case SUBSTRING:
-            return path.contains(it.name);
+            return path.contains(stme.name);
         }
         return false;
     }
