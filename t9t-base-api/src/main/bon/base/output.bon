@@ -74,5 +74,7 @@ package (com.arvatosystems) t9t.base.output {
         optional Enum EnumOutputType                enumOutputType;                 // if not null and not DEFAULT, specifies how to output enums (only works for xls* and csv format types)
         optional Integer                            offset;                         // how many to skip
         optional Integer                            limit;                          // how many to export
+        optional Boolean                            asynchronousByEmail;            // export asynchronously and send result by email
+        optional emailAddress                       targetEmailAddress;             // only for asynchronous exports: target email (if null, user's email will be used)
     }
 }

@@ -32,11 +32,15 @@ public class DayDataField extends AbstractDataField<Datebox, LocalDate> {
         return c.getValue() == null;
     }
 
-    public DayDataField(DataFieldParameters params) {
+    public DayDataField(DataFieldParameters params, boolean withToday) {
         super(params);
         setConstraints(c, null);
         c.setFormat("medium");
         c.setTimeZone(TimeZone.getDefault());  // do not convert between user's time zone and UTC here
+        if (withToday) {
+            c.setShowTodayLink(withToday);
+            c.setTodayLinkLabel(ApplicationSession.get().translate("datePicker", "todayLabel"));
+        }
     }
 
     @Override

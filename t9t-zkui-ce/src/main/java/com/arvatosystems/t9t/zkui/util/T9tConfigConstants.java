@@ -15,6 +15,9 @@
  */
 package com.arvatosystems.t9t.zkui.util;
 
+/**
+ * This class defines constants for global configuration settings.
+ */
 public final class T9tConfigConstants {
     private T9tConfigConstants() { }
 
@@ -24,5 +27,9 @@ public final class T9tConfigConstants {
     public static final String GRID_MARK_RED_ON_SORT  = "grid.markRedOnSort";
     public static final String GRID_LINE_WRAP         = "grid.lineWrap";
     public static final String GRID_DYNAMIC_COL_SIZE  = "grid.dynamicColumnSize";
-    public static final String MENU_USE_ICONS         = "menu.use_menu_icons";
+    public static final String MENU_USE_ICONS         = "menu.useMenuIcons";
+    public static final String EXPORT_DEFAULT_LIMIT   = "export.defaultLimit";
+
+    /** A boolean property to have the "today" button appear for date selection boxes globally. */
+    public static final String DATE_PICKER_SHOW_TODAY = "datePicker.showToday";
 }

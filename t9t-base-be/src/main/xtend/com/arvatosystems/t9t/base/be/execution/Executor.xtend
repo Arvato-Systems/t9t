@@ -66,7 +66,9 @@ class Executor implements IExecutor {
         } catch (ObjectValidationException e) {
             // log the offending request, plus the process ref (for better DB research later), and the validation error message
             // more info
-            LOGGER.error("Synchronous request validation problem for tenantId {} and parameter object type {}", ctx.tenantId, params.ret$PQON())
+            LOGGER.error("Synchronous request validation problem for tenantId {} and parameter object type {}: error {}: {}",
+              ctx.tenantId, params.ret$PQON(), e.errorCode, e.message
+            )
             LOGGER.error("Full request parameters are {}", params)
             return MessagingUtil.createServiceResponse(T9tException.REQUEST_VALIDATION_ERROR, '''«params.ret$PQON()»(«ctx.internalHeaderParameters.processRef»): «e.message»''')
         }
@@ -165,7 +167,8 @@ class Executor implements IExecutor {
         try {
             params.validate()
         } catch (ObjectValidationException e) {
-            LOGGER.error("Asynchronous request validation problem for tenantId {} and parameter object type {}", ctx.tenantId, params.ret$PQON())
+            LOGGER.error("Asynchronous request validation problem for tenantId {} and parameter object type {}: error {}: {}",
+              ctx.tenantId, params.ret$PQON(), e.errorCode, e.message)
             LOGGER.error("Full request parameters are {}", params)
             throw new T9tException(T9tException.REQUEST_VALIDATION_ERROR,
                 '''«params.ret$PQON()»(«ctx.internalHeaderParameters.processRef»): «e.message»'''.toString)

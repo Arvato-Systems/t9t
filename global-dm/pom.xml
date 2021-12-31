@@ -166,7 +166,8 @@
         <uuid-generator.version>3.1.2</uuid-generator.version>
         <apache-poi.version>5.1.0</apache-poi.version>
         <xmlbeans.version>5.0.2</xmlbeans.version>  <!-- 3.x is required for POI 4 (xlsx), 4.x or 5.x for POI 5.0 -->
-        <gson.version>2.8.8</gson.version>
+        <gson.version>2.8.9</gson.version>
+        <log4j2.version>2.17.0</log4j2.version>     <!-- see comment below -->
 
         <spring-bom.version>5.2.17.RELEASE</spring-bom.version>
         <spring-data-jpa.version>2.5.5</spring-data-jpa.version>
@@ -385,6 +386,18 @@
                 <version>${jakarta.servlet-api.version}</version>
             </dependency>
 
+            <!-- Log4j2: We do not need / use it, but in case some other artifact pulls it, make sure it is a new release without log4shell vulnerability -->
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-api</artifactId>
+                <version>${log4j2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
+                <version>${log4j2.version}</version>
+            </dependency>
+
             <!-- slf4j -->
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -592,6 +605,11 @@
             <dependency>
                 <groupId>org.hamcrest</groupId>
                 <artifactId>hamcrest-library</artifactId>
+                <version>${hamcrest.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest</artifactId>
                 <version>${hamcrest.version}</version>
             </dependency>
 

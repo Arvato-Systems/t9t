@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.zkui.components.basic;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -52,11 +53,14 @@ import org.zkoss.zul.Popup;
 import org.zkoss.zul.event.PagingEvent;
 import org.zkoss.zul.event.ZulEvents;
 
+import com.arvatosystems.t9t.all.request.ExportAndEmailResultRequest;
 import com.arvatosystems.t9t.base.BooleanUtil;
 import com.arvatosystems.t9t.base.CrudViewModel;
+import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.output.ExportParameters;
 import com.arvatosystems.t9t.base.output.FoldableMediaType;
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
+import com.arvatosystems.t9t.base.request.ExecuteAsyncRequest;
 import com.arvatosystems.t9t.base.search.SearchCriteria;
 import com.arvatosystems.t9t.base.search.SearchResponse;
 import com.arvatosystems.t9t.base.search.SinkCreatedResponse;
@@ -279,6 +283,12 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
         exportParameters.setEnumOutputType(EnumOutputType.NAME);
         exportParameters.setLimit(100);
         exportParameters.setOffset(0);
+        exportParameters.setAsynchronousByEmail(Boolean.FALSE);
+        final String configInString = ZulUtils.readConfig(T9tConfigConstants.EXPORT_DEFAULT_LIMIT);
+        if (configInString != null) {
+            exportParameters.setLimit(Integer.parseInt(configInString));
+        }
+
 
         ModalWindows.runModal(
             "/component/export28p.zul", this,
@@ -289,11 +299,12 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
                 SearchCriteria clonedSearchRequest = lastSearchRequest.ret$MutableClone(false, false);
                 OutputSessionParameters osp = new OutputSessionParameters();
 
-                osp.setDataSinkId("UIExport");
+                osp.setDataSinkId(T9tConstants.DATA_SINK_ID_UI_EXPORT);
                 osp.setGridId(gridId);
                 osp.setSmartMappingForDataWithTracking(Boolean.TRUE);
                 osp.setCommunicationFormatType(MediaXType.forName(out.getCommunicationFormatType().name()));
                 osp.setEnumOutputType(out.getEnumOutputType());
+                osp.setAsOf(Instant.now());  // required in case of asynchronous requests
                 clonedSearchRequest.setSearchOutputTarget(osp);
                 clonedSearchRequest.setLimit(out.getLimit());
                 clonedSearchRequest.setOffset(out.getOffset());
@@ -301,12 +312,25 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
                 clonedSearchRequest.setSortColumns(createSortDirective());
                 clonedSearchRequest.validate();
                 LOGGER.debug("Sending search request {}", clonedSearchRequest);
-                try {
-                    SinkCreatedResponse resp = remoteUtil.executeAndHandle(clonedSearchRequest, SinkCreatedResponse.class);
-                    messagingDAO.downloadFileAndSave(resp.getSinkRef());
-                } catch (ReturnCodeException e) {
-                    LOGGER.error("Return code exception", e);
-                    Messagebox.show(ZulUtils.translate("err", "unableToExport"), ZulUtils.translate("err", "title"), Messagebox.OK, Messagebox.ERROR);
+                if (Boolean.TRUE.equals(exportParameters.getAsynchronousByEmail())) {
+                    // just trigger the async export / do not expect any result, assume OK
+                    final ExportAndEmailResultRequest emailRq = new ExportAndEmailResultRequest();
+                    emailRq.setTargetEmailAddress(exportParameters.getTargetEmailAddress());
+                    emailRq.setDocumentTemplateId(T9tConstants.DOCUMENT_ID_UI_EXPORT);
+                    emailRq.setSearchRequest(clonedSearchRequest);
+                    // wrap it into some async
+                    final ExecuteAsyncRequest asyncRq = new ExecuteAsyncRequest();
+                    asyncRq.setAsyncRequest(emailRq);
+                    remoteUtil.executeExpectOk(asyncRq);
+                } else {
+                    // synchronous request, as before
+                    try {
+                        SinkCreatedResponse resp = remoteUtil.executeAndHandle(clonedSearchRequest, SinkCreatedResponse.class);
+                        messagingDAO.downloadFileAndSave(resp.getSinkRef());
+                    } catch (ReturnCodeException e) {
+                        LOGGER.error("Return code exception", e);
+                        Messagebox.show(ZulUtils.translate("err", "unableToExport"), ZulUtils.translate("err", "title"), Messagebox.OK, Messagebox.ERROR);
+                    }
                 }
             }
             // close the window

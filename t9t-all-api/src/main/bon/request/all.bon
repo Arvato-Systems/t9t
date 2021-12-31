@@ -17,6 +17,8 @@ import api.*
 import t9t.base.api.*
 import t9t.base.search.*
 import t9t.base.output.*
+import t9t.base.types.*
+import t9t.doc.api.*
 import t9t.all.*
 
 package (com.arvatosystems) t9t.all.request {
@@ -42,5 +44,12 @@ package (com.arvatosystems) t9t.all.request {
     /** Export User master data. Result set can be limited by searchFilter, a condition on current tenant does always apply (added internally). */
     class UserExportRequest extends SearchCriteria return SinkCreatedResponse {
         optional Integer                        maxRecords;  // split the output into files, containing this number max. each
+    }
+
+    /** Export data and send it by email. Used from the UI export grids. */
+    class ExportAndEmailResultRequest extends RequestParameters {
+        optional emailAddress                   targetEmailAddress;  // split the output into files, containing this number max. each
+        required documentId                     documentTemplateId;  // temaplate for the email body
+        required (SearchCriteria...)            searchRequest;       // the export request to perform
     }
 }

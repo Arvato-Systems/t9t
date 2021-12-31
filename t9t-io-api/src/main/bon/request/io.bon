@@ -100,6 +100,8 @@ package (com.arvatosystems) t9t.io.request {
      * </ul>
      *
      * Actual file data will be returned (or an error message, if the sink does not represent a file but went to a queue or JMS topic instead).
+     *
+     * @see RetrieveMediaDataRequest for a size limited, but more flexible request (handling text as well as binary, plus media type)
      */
     class FileDownloadRequest extends RequestParameters return FileDownloadResponse {
         required f42Ref                             sinkRef;                        // references some existing Sink

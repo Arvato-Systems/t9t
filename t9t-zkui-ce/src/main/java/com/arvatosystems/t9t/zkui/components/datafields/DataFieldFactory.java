@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.zkui.components.datafields;
 
+import java.util.Collections;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -27,6 +28,8 @@ import com.arvatosystems.t9t.zkui.components.dropdown28.factories.IDropdown28DbF
 import com.arvatosystems.t9t.zkui.components.dropdown28.factories.IGroupedDropdown28DbFactory;
 import com.arvatosystems.t9t.zkui.components.dropdown28.nodb.Dropdown28Ext;
 import com.arvatosystems.t9t.zkui.components.dropdown28.nodb.Dropdown28Registry;
+import com.arvatosystems.t9t.zkui.util.T9tConfigConstants;
+import com.arvatosystems.t9t.zkui.util.ZulUtils;
 import com.arvatosystems.t9t.base.CrudViewModel;
 
 import de.jpaw.bonaparte.core.BonaPortable;
@@ -61,13 +64,9 @@ public class DataFieldFactory implements IDataFieldFactory {
             final String path = params.path;
             LOGGER.debug("creating dynamic field for field name {}", path);
             final FieldDefinition columnDescriptor = params.cfg;
-            final Map<String, String> fieldProperties = columnDescriptor.getProperties();
-            String dropdownType = null;
-            String enumDtoRestrictions = null;
-            if (fieldProperties != null) {
-                dropdownType = fieldProperties.get("dropdown");
-                enumDtoRestrictions = fieldProperties.get("enums");
-            }
+            final Map<String, String> fieldProperties = columnDescriptor.getProperties() != null ? columnDescriptor.getProperties() : Collections.emptyMap();
+            final String dropdownType = fieldProperties.get("dropdown");
+            final String enumDtoRestrictions = fieldProperties.get("enums");
             final String javaType = columnDescriptor.getDataType().toLowerCase();
             final String bonaparteType = columnDescriptor.getBonaparteType().toLowerCase();
             // Boolean isSerialized= null != fieldProperties ? fieldProperties.containsKey("serialized") : false;
@@ -87,12 +86,10 @@ public class DataFieldFactory implements IDataFieldFactory {
                     // String based (Currency, Country etc...)
                     return new DropdownBasicDataField(params, dropdownType, factory);
                 }
-                if (fieldProperties != null) {
-                    String qualifierFor = fieldProperties.get("qualifierFor");
-                    if (qualifierFor != null) {
-                        LOGGER.debug("Creating dropdown for qualifier {} for {}", qualifierFor, path);
-                        return new DropdownBasicDataField(params, qualifierFor);
-                    }
+                final String qualifierFor = fieldProperties.get("qualifierFor");
+                if (qualifierFor != null) {
+                    LOGGER.debug("Creating dropdown for qualifier {} for {}", qualifierFor, path);
+                    return new DropdownBasicDataField(params, qualifierFor);
                 }
                 return new TextDataField(params);
             case BASICNUMERIC:
@@ -115,7 +112,7 @@ public class DataFieldFactory implements IDataFieldFactory {
                         return new DropdownDbAsLongDataField(params, dropdownType, dbFactory);
                     }
                     // check for bandboxes
-                    String bandbox = null != fieldProperties ? fieldProperties.get("bandbox") : null;
+                    final String bandbox = fieldProperties.get("bandbox");
                     if (bandbox != null) {
                         // create bandbox object via specific class
                         ILongBandboxFactory bbFactory = Jdp.getOptional(ILongBandboxFactory.class, bandbox);
@@ -153,7 +150,7 @@ public class DataFieldFactory implements IDataFieldFactory {
             case MISC:
                 switch (javaType) {
                 case "boolean":
-                    boolean tristate = fieldProperties != null && fieldProperties.get("tristate") != null;
+                    final boolean tristate = fieldProperties.get("tristate") != null;
                     return tristate ? new BooleanTristateDataField(params) : new BooleanDataField(params);
                 case "uuid":
                     return new UUIDDataField(params);
@@ -177,7 +174,7 @@ public class DataFieldFactory implements IDataFieldFactory {
                     }
                 }
                 // check for bandboxes
-                String bandbox = null != fieldProperties ? fieldProperties.get("bandbox") : null;
+                String bandbox = fieldProperties.get("bandbox");
                 ObjectReference objRef = (ObjectReference)columnDescriptor;
                 if (bandbox == null && objRef.getLowerBound() != null)
                     bandbox = objRef.getLowerBound().getName();  // use the ref's PQON
@@ -200,7 +197,9 @@ public class DataFieldFactory implements IDataFieldFactory {
             case TEMPORAL:
                 switch (bonaparteType) {
                 case "day":
-                    return new DayDataField(params);
+                    final boolean withToday = ZulUtils.readBooleanConfig(T9tConfigConstants.DATE_PICKER_SHOW_TODAY)
+                      || (fieldProperties.get("showToday") != null);
+                    return new DayDataField(params, withToday);
                 case "time":
                     return new TimeDataField(params);
                 case "timestamp":

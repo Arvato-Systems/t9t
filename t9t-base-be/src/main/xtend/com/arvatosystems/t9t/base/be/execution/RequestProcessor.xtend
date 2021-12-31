@@ -304,7 +304,7 @@ class RequestProcessor implements IRequestProcessor {
                 } catch (ObjectValidationException e) {
                     // log the offending request, plus the process ref (for better DB research later), and the validation error message
                     // more info
-                    LOGGER.error("Response validation problem for tenantId {} and response object {}: {}", ctx.tenantId, resp.ret$PQON(), e.message)
+                    LOGGER.error("Response validation problem for tenantId {} and response object {}: error {}: {}", ctx.tenantId, resp.ret$PQON(), e.errorCode, e.message)
                     LOGGER.error('''Full response is «resp»''')
                     resp = MessagingUtil.createServiceResponse(T9tException.RESPONSE_VALIDATION_ERROR,
                         '''«rq.ret$PQON()»(«ctx.internalHeaderParameters.processRef»): «e.message»''')

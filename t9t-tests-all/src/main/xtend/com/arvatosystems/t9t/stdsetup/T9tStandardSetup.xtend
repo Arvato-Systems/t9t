@@ -36,6 +36,14 @@ import org.eclipse.xtend.lib.annotations.Data
 import static extension com.arvatosystems.t9t.auth.extensions.AuthExtensions.*
 import static extension com.arvatosystems.t9t.misc.extensions.MiscExtensions.*
 import static extension com.arvatosystems.t9t.misc.extensions.VoiceExtensions.*
+import static extension com.arvatosystems.t9t.doc.extensions.DocExtensions.*
+import com.arvatosystems.t9t.base.T9tConstants
+import com.arvatosystems.t9t.doc.DocConfigDTO
+import com.arvatosystems.t9t.doc.DocEmailReceiverDTO
+import com.arvatosystems.t9t.doc.api.TemplateType
+import com.arvatosystems.t9t.doc.DocTemplateDTO
+import com.arvatosystems.t9t.doc.DocConstants
+import de.jpaw.bonaparte.pojos.api.media.MediaXType
 
 @AddLogger
 @Data
@@ -45,13 +53,41 @@ class T9tStandardSetup {
 
     def void setupUIDownloadDataSink() {
         new DataSinkDTO => [
-            dataSinkId              = "UIExport"
+            dataSinkId              = T9tConstants.DATA_SINK_ID_UI_EXPORT
             isActive                = true
             description             = "Data sink for UI triggered user downloads"
             commFormatType          = MediaType.UNDEFINED
             commTargetChannelType   = CommunicationTargetChannelType.FILE
             fileOrQueueNamePattern  = "UIExports/${gridId}-${userId}-${asOf}.${fileExt}"
             category                = DataSinkCategoryType.USER_DATA
+            merge(dlg)
+        ]
+
+        new DocConfigDTO => [
+            documentId              = T9tConstants.DOCUMENT_ID_UI_EXPORT
+            mappedId                = T9tConstants.DOCUMENT_ID_UI_EXPORT
+            emailSettings           = new DocEmailReceiverDTO => [
+                emailSubject        = "Your data export"
+                subjectType         = TemplateType.INLINE;
+                defaultFrom         = "ZK admin UI"
+            ]
+            description             = "Document ID for emailed data exports"
+            merge(dlg)
+        ]
+
+        new DocTemplateDTO => [
+            name                    = "Document template for emailed data exports"
+            documentId              = T9tConstants.DOCUMENT_ID_UI_EXPORT
+            entityId                = DocConstants.DEFAULT_ENTITY_ID
+            languageCode            = DocConstants.DEFAULT_LANGUAGE_CODE
+            countryCode             = DocConstants.DEFAULT_COUNTRY_CODE
+            currencyCode            = DocConstants.DEFAULT_CURRENCY_CODE
+            prio                    = 100
+            mediaType               = MediaXType.of(MediaType.TEXT)
+            template                = '''
+                  Dear ${d.u.name},
+                  please find attached your data export.
+            '''
             merge(dlg)
         ]
     }

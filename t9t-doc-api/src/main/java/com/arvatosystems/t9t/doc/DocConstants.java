@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.doc;
 
+import com.arvatosystems.t9t.doc.api.DocumentSelector;
+
 public final class DocConstants {
     private DocConstants() { }
 
@@ -22,4 +24,13 @@ public final class DocConstants {
     public static final String DEFAULT_COUNTRY_CODE  = "XX";
     public static final String DEFAULT_CURRENCY_CODE = "XXX";
     public static final String DEFAULT_ENTITY_ID     = "-";
+
+    public static final DocumentSelector GENERIC_DOCUMENT_SELECTOR = new DocumentSelector();
+    static {
+        GENERIC_DOCUMENT_SELECTOR.setCountryCode(DEFAULT_COUNTRY_CODE);
+        GENERIC_DOCUMENT_SELECTOR.setCurrencyCode(DEFAULT_CURRENCY_CODE);
+        GENERIC_DOCUMENT_SELECTOR.setLanguageCode(DEFAULT_LANGUAGE_CODE);
+        GENERIC_DOCUMENT_SELECTOR.setEntityId(DEFAULT_ENTITY_ID);
+        GENERIC_DOCUMENT_SELECTOR.freeze();
+    }
 }
