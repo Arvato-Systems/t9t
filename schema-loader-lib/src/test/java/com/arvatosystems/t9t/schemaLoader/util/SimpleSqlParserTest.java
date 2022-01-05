@@ -15,11 +15,10 @@
  */
 package com.arvatosystems.t9t.schemaLoader.util;
 
-import org.junit.jupiter.api.Test;
-
 import static java.util.Arrays.asList;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * @author TWEL006
@@ -28,34 +27,24 @@ public class SimpleSqlParserTest {
 
     @Test
     public void testLiterals() {
-        assertThat(SimpleSqlParser.getStatements(";';';"),
-                   is(asList(";", "';';")));
-        assertThat(SimpleSqlParser.getStatements(";\";\";"),
-                   is(asList(";", "\";\";")));
-        assertThat(SimpleSqlParser.getStatements(";'\\';';"),
-                   is(asList(";", "'\\';';")));
-        assertThat(SimpleSqlParser.getStatements(";\"\\';\";"),
-                   is(asList(";", "\"\\';\";")));
-        assertThat(SimpleSqlParser.getStatements(";'\\\";';"),
-                   is(asList(";", "'\\\";';")));
-        assertThat(SimpleSqlParser.getStatements(";\"\\\";\";"),
-                   is(asList(";", "\"\\\";\";")));
+        assertEquals(asList(";", "';';"), SimpleSqlParser.getStatements(";';';"));
+        assertEquals(asList(";", "\";\";"), SimpleSqlParser.getStatements(";\";\";"));
+        assertEquals(asList(";", "'\\';';"), SimpleSqlParser.getStatements(";'\\';';"));
+        assertEquals(asList(";", "\"\\';\";"), SimpleSqlParser.getStatements(";\"\\';\";"));
+        assertEquals(asList(";", "'\\\";';"), SimpleSqlParser.getStatements(";'\\\";';"));
+        assertEquals(asList(";", "\"\\\";\";"), SimpleSqlParser.getStatements(";\"\\\";\";"));
     }
 
 
     @Test
     public void testComments() {
-        assertThat(SimpleSqlParser.getStatements(";--;\n;"),
-                   is(asList(";", "\n;")));
-        assertThat(SimpleSqlParser.getStatements(";/*;\n;*/;"),
-                   is(asList(";", ";")));
+        assertEquals(asList(";", "\n;"), SimpleSqlParser.getStatements(";--;\n;"));
+        assertEquals(asList(";", ";"), SimpleSqlParser.getStatements(";/*;\n;*/;"));
     }
 
     @Test
     public void testSplit() {
-        assertThat(SimpleSqlParser.getStatements("A;B;C"),
-                   is(asList("A;", "B;", "C")));
-        assertThat(SimpleSqlParser.getStatements("A;B;C;"),
-                   is(asList("A;", "B;", "C;")));
+        assertEquals(asList("A;", "B;", "C"), SimpleSqlParser.getStatements("A;B;C"));
+        assertEquals(asList("A;", "B;", "C;"), SimpleSqlParser.getStatements("A;B;C;"));
     }
 }
