@@ -26,6 +26,7 @@ public class SearchFilterRowVM {
     private String filterName;
     private String currentSelection;
     private Boolean negate;
+    private String qualifier;
     private List<String> filterTypes;
 
     public SearchFilterRowVM(String name) {
@@ -42,6 +43,7 @@ public class SearchFilterRowVM {
             currentSelection = filter.getFilterType().name();
         }
         negate = filter.getNegate();
+        setQualifier(filter.getQualifier());
         selected = true;
     }
 
@@ -83,6 +85,14 @@ public class SearchFilterRowVM {
 
     public void setFilterTypes(List<String> filterTypes) {
         this.filterTypes = filterTypes;
+    }
+
+    public String getQualifier() {
+        return qualifier;
+    }
+
+    public void setQualifier(String qualifier) {
+        this.qualifier = qualifier;
     }
 
     @Override

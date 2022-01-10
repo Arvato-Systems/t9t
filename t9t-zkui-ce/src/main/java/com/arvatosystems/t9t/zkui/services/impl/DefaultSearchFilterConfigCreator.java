@@ -82,6 +82,7 @@ public class DefaultSearchFilterConfigCreator implements ISearchFilterConfigCrea
 
             if (row == null) {
                 row = new SearchFilterRowVM(column.getFieldName());
+                row.setQualifier(column.getFilterQualifier());
                 rows.add(row);
             }
             row.setFilterTypes(getAvailableFilterType(column));

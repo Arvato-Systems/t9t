@@ -50,20 +50,20 @@
         <value>false</value>
     </library-property>
 
-	<library-property>
-	    <name>org.zkoss.bind.appConverters</name>
-	    <value>
-	        nanos=de.jpaw.fixedpoint.types.NanoUnitsConverter,
-	        millis=de.jpaw.fixedpoint.types.MilliUnitsConverter,
-	        micros=de.jpaw.fixedpoint.types.MicroUnitsConverter,
-	        day=de.jpaw.fixedpoint.types.LocalDateConverter,
-	        time=de.jpaw.fixedpoint.types.LocalTimeConverter,
-	        timestamp=de.jpaw.fixedpoint.types.LocalDateTimeConverter,
-	        instant=de.jpaw.fixedpoint.types.InstantConverter,
-	        uuid=de.jpaw.fixedpoint.types.UUIDConverter,
-	        json=de.jpaw.fixedpoint.types.JsonConverter
-	    </value>
-	</library-property>
+    <library-property>
+        <name>org.zkoss.bind.appConverters</name>
+        <value>
+            nanos=de.jpaw.fixedpoint.types.NanoUnitsConverter,
+            millis=de.jpaw.fixedpoint.types.MilliUnitsConverter,
+            micros=de.jpaw.fixedpoint.types.MicroUnitsConverter,
+            day=de.jpaw.fixedpoint.types.LocalDateConverter,
+            time=de.jpaw.fixedpoint.types.LocalTimeConverter,
+            timestamp=de.jpaw.fixedpoint.types.LocalDateTimeConverter,
+            instant=de.jpaw.fixedpoint.types.InstantConverter,
+            uuid=de.jpaw.fixedpoint.types.UUIDConverter,
+            json=de.jpaw.fixedpoint.types.JsonConverter
+        </value>
+    </library-property>
 
     <!-- Turn on if you want to use language addons.-->
     <language-config>

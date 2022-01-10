@@ -26,10 +26,7 @@ import de.jpaw.dp.Singleton;
 
 
 /**
- * Maps broken unique constraint technical exception to com.arvatosystems.fortytwo.base.exceptions.T9tException.UNIQUE_CONSTRAINT_VIOLATION.
- *
- * @author dzie003
- *
+ * Maps broken unique constraint technical exception to <code>T9tException.UNIQUE_CONSTRAINT_VIOLATION</code>.
  */
 @Singleton
 public class UniqueConstraintExceptionMapper implements IJpaCrudTechnicalExceptionMapper {
@@ -43,5 +40,4 @@ public class UniqueConstraintExceptionMapper implements IJpaCrudTechnicalExcepti
     public T9tException mapException(PersistenceException e) {
         return new T9tException(T9tException.UNIQUE_CONSTRAINT_VIOLATION);
     }
-
 }

@@ -174,7 +174,7 @@
         <spring-boot.version>2.5.5</spring-boot.version>
 
         <netty.version>4.1.72.Final</netty.version>
-        <vertx4.version>4.2.2</vertx4.version>
+        <vertx4.version>4.2.3</vertx4.version>
 
         <snakeyaml.version>1.28</snakeyaml.version>
         <classgraph.version>4.8.116</classgraph.version>
@@ -1288,7 +1288,7 @@
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
-                <artifactId> mockito-junit-jupiter</artifactId>
+                <artifactId>mockito-junit-jupiter</artifactId>
                 <version>${org.mockito-core.version}</version>
             </dependency>
             <dependency>

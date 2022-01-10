@@ -52,6 +52,15 @@ package (com.arvatosystems) t9t.doc.api {
         required currencyCode                       currencyCode         properties notupdatable;           // ISO 4217 currency code or "XXX" if default
     }
 
+    /** Allows to mix MediaData attachments with dynamically generated attachments. */
+    class GeneralizedAttachment {
+        required t9tShortId                         id;                 // ID of this attachment - required in order to map results
+        optional (MediaData)                        providedAttachment; // attachment which has been provided directly by the caller
+        optional documentId                         documentId;         // document ID to use to generate the attachment dynamically
+        optional dataSinkId                         dataSinkId;         // data sink ID to store the generated attachment
+        optional Element                            data;               // alternative data for the child document (usually null)
+    }
+
     /** Request message which will schedule creation of a document and delivery to the recipients as specified. Multiple recipients are possible for a single document. */
     class FormatDocumentRequest extends RequestParameters return FormatDocumentResponse {
         required documentId                         documentId;         // determines the template for this document
@@ -74,13 +83,15 @@ package (com.arvatosystems) t9t.doc.api {
         required Element                            data;               // document data, which can be a Map, a List or a BonaPortable
         required (Recipient...) required List<>     recipientList;      // lists all recipients
         required (MediaData...) List<>              attachments;        // Additional documents, to be added as attachments (e.g. to emails)
-        optional timeZoneId                         timeZone             properties dropdown="timeZoneId";  // a time zone identifier such as "Europe/Berlin"
+        optional timeZoneId                         timeZone            properties dropdown="timeZoneId";  // a time zone identifier such as "Europe/Berlin"
+        required (GeneralizedAttachment...) List<>  generalAttachments; // Additional documents, to be added as attachments (e.g. to emails)
     }
 
     /** Response for NewDocumentRequests. */
     class NewDocumentResponse extends ServiceResponse {
         required f42Ref List<>                      archiveSinkRefs;    // for every recipient of type Archive, the sinkRef is returned here, or null if no archive destinations have been found
         required (MediaData...) List<>              data;               // directly returned data
+        required f42Ref Map<String>                 generalizedAttachmentSinkRefs;  // the refs of attachments which have been stored, indexed by id
     }
 
     /** Send a document to a list of users. */

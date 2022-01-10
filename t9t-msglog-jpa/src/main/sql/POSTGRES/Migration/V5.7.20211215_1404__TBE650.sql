@@ -60,4 +60,3 @@ COMMENT ON COLUMN p28_int_message.response IS 'SLA relevant fields';
 COMMENT ON COLUMN p28_int_message.processing_time_in_millisecs IS 'responseHeader fields:';
 COMMENT ON COLUMN p28_int_message.error_details IS 'further information about the error location';
 COMMENT ON COLUMN p28_int_message.rerun_by_process_ref IS 'reference from the original request to the rerun - references this entity';
-

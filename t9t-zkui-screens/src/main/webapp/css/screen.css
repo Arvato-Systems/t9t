@@ -1396,3 +1396,11 @@ body {
     color: #fff;
     padding: 20px;
 }
+
+/** Preset environment text styles **/
+.env-red  {
+    line-height: normal;
+}
+.env-red span {
+    color: #ed4b82;
+}

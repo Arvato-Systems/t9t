@@ -21,7 +21,7 @@ import com.arvatosystems.t9t.base.T9tException;
 
 /**
  * Defines interface for mappers mapping technical exceptions which can occur during crud operation on entity into business exceptions defined in
- * com.arvatosystems.t9t.core.T9tException class.
+ * the <code>T9tException</code> class.
  *
  * @author dzie003
  *
