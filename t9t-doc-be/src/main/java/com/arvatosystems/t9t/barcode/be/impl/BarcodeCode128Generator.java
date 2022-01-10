@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.arvatosystems.t9t.barcode.be.impl;
+
 import com.arvatosystems.t9t.doc.services.ImageParameter;
 import com.arvatosystems.t9t.image.be.impl.AbstractImageGenerator;
 import com.google.zxing.BarcodeFormat;
