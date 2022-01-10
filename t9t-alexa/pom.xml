@@ -20,9 +20,9 @@
 
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
-        <artifactId>t9t-settings-be</artifactId>
+        <artifactId>t9t-settings-java</artifactId>
         <version>5.8-SNAPSHOT</version>
-        <relativePath>../t9t-settings-be</relativePath>
+        <relativePath>../t9t-settings-java</relativePath>
     </parent>
 
     <artifactId>t9t-alexa</artifactId>
@@ -62,8 +62,8 @@
             <artifactId>t9t-server-sapi</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.martiansoftware</groupId>
-            <artifactId>jsap</artifactId>
+            <groupId>info.picocli</groupId>
+            <artifactId>picocli</artifactId>
         </dependency>
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>

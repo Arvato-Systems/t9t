@@ -23,13 +23,13 @@
 
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
-        <artifactId>t9t-settings-xtend</artifactId>
+        <artifactId>t9t-settings-java</artifactId>
         <version>5.8-SNAPSHOT</version>
-        <relativePath>../t9t-settings-xtend</relativePath>
+        <relativePath>../t9t-settings-java</relativePath>
     </parent>
 
     <artifactId>t9t-tests-unit</artifactId>
-    <description>tests library for isolated unit tests using junit and mockito</description>
+    <description>tests library for isolated unit tests using junit and mockito (currently unused)</description>
 
     <dependencies>
         <dependency>

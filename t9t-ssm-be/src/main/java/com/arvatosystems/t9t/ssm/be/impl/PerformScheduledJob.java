@@ -59,7 +59,7 @@ import de.jpaw.util.ExceptionUtil;
  * @see PerformScheduledJob#execute(JobExecutionContext)
  */
 public class PerformScheduledJob implements Job {
-    private static final Logger LOGGER = LoggerFactory.getLogger(com.arvatosystems.t9t.ssm.be.impl.PerformScheduledJob.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PerformScheduledJob.class);
 
     public static final boolean FIRE_ASYNCHRONOUSLY = false;
 

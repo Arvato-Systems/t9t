@@ -26,10 +26,8 @@ import com.arvatosystems.t9t.base.services.IForeignRequest;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.client.jdk11.RemoteConnection;
 
-import de.jpaw.annotations.AddLogger;
 import de.jpaw.dp.Singleton;
 
-@AddLogger
 @Singleton
 public class SimpleCallOutExecutor implements IForeignRequest {
     private static final Logger LOGGER = LoggerFactory.getLogger(SimpleCallOutExecutor.class);

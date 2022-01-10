@@ -34,10 +34,10 @@ import de.jpaw.bonaparte.pojos.api.AsciiFilter
 
 class OtherTenantCreateTest {
 
-    static private ITestConnection dlg
+    static ITestConnection dlg
 
     @BeforeAll
-    def public static void createConnection() {
+    def static void createConnection() {
         // use a single connection for all tests (faster)
         dlg = new InMemoryConnection
     }
@@ -56,8 +56,8 @@ class OtherTenantCreateTest {
     }
 
     @Test
-    def public void create2TenantsTest() {
-    val myDataSinkId = "blaCreate"
+    def void create2TenantsTest() {
+        val myDataSinkId = "blaCreate"
         // create an entry for the global tenant
         createDataSink(myDataSinkId)
 
@@ -67,11 +67,11 @@ class OtherTenantCreateTest {
         createDataSink(myDataSinkId)
 
         val dataSinks = dlg.typeIO((new DataSinkSearchRequest => [
-        searchFilter = new AsciiFilter => [
-        fieldName    = "dataSinkId"
-        equalsValue  = myDataSinkId
-        ]
-        ] ), ReadAllResponse)
+                searchFilter = new AsciiFilter => [
+                fieldName    = "dataSinkId"
+                equalsValue  = myDataSinkId
+            ]
+        ]), ReadAllResponse)
         Assertions.assertEquals(2, dataSinks.dataList.size)
     }
 }

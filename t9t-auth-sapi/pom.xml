@@ -37,10 +37,6 @@
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-base-sapi</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.eclipse.xtend</groupId>
-            <artifactId>org.eclipse.xtend.lib</artifactId>
-        </dependency>
     </dependencies>
 
 </project>

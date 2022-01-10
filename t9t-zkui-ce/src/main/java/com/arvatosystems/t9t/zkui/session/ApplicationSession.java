@@ -512,7 +512,7 @@ public final class ApplicationSession {
     }
 
     public String format(LocalDate d) {
-        return d.format(dayFormat);
+        return d.atStartOfDay(ZoneOffset.UTC).format(dayFormat);
     }
     public String format(LocalDateTime dt) {
         return dt.atZone(ZoneOffset.UTC).format(timestampFormat);

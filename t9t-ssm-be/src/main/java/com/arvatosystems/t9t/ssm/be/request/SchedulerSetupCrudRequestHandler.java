@@ -50,7 +50,7 @@ import de.jpaw.dp.Provider;
 
 public class SchedulerSetupCrudRequestHandler extends
   AbstractCrudSurrogateKeyBERequestHandler<SchedulerSetupRef, SchedulerSetupDTO, FullTrackingWithVersion, SchedulerSetupCrudRequest> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(com.arvatosystems.t9t.ssm.be.request.SchedulerSetupCrudRequestHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SchedulerSetupCrudRequestHandler.class);
 
     private final IExecutor executor = Jdp.getRequired(IExecutor.class);
     private final ISchedulerSetupResolver resolver = Jdp.getRequired(ISchedulerSetupResolver.class);

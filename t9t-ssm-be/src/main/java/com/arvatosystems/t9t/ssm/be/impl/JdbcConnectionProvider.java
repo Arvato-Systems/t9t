@@ -27,7 +27,7 @@ import com.arvatosystems.t9t.base.services.IJdbcConnectionProvider;
 import de.jpaw.dp.Jdp;
 
 public class JdbcConnectionProvider implements ConnectionProvider {
-    private static final Logger LOGGER = LoggerFactory.getLogger(com.arvatosystems.t9t.ssm.be.impl.JdbcConnectionProvider.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JdbcConnectionProvider.class);
     private final IJdbcConnectionProvider provider = Jdp.getRequired(IJdbcConnectionProvider.class, "independent");
 
     @Override

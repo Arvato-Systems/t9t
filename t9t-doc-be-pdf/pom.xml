@@ -20,9 +20,9 @@
 
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
-        <artifactId>t9t-settings-be</artifactId>
+        <artifactId>t9t-settings-java</artifactId>
         <version>5.8-SNAPSHOT</version>
-        <relativePath>../t9t-settings-be</relativePath>
+        <relativePath>../t9t-settings-java</relativePath>
     </parent>
 
     <artifactId>t9t-doc-be-pdf</artifactId>
@@ -52,6 +52,10 @@
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-fonts</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.jpaw</groupId>
+            <artifactId>jdp-core</artifactId>
         </dependency>
 
         <!--  consider using org.xhtmlrenderer:flying-saucer-pdf-openpdf, but as of 9.1.22, both still have the split package problem -->
