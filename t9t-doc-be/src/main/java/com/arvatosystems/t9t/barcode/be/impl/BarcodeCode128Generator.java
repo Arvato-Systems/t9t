@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 - 2020 Arvato Systems GmbH
+ * Copyright (c) 2012 - 2022 Arvato Systems GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,8 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */package com.arvatosystems.t9t.barcode.be.impl;
-
+ */
 import com.arvatosystems.t9t.doc.services.ImageParameter;
 import com.arvatosystems.t9t.image.be.impl.AbstractImageGenerator;
 import com.google.zxing.BarcodeFormat;
