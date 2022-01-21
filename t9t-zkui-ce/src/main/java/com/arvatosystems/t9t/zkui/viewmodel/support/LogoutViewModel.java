@@ -15,12 +15,11 @@
  */
 package com.arvatosystems.t9t.zkui.viewmodel.support;
 
+import com.arvatosystems.t9t.zkui.services.IAuthenticationService;
+import de.jpaw.dp.Jdp;
 import org.zkoss.bind.annotation.GlobalCommand;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
-
-import com.arvatosystems.t9t.zkui.util.Constants;
 
 /**
  * Logout ViewModel.
@@ -30,6 +29,7 @@ import com.arvatosystems.t9t.zkui.util.Constants;
  */
 public class LogoutViewModel extends GenericForwardComposer<Component> {
     private static final long serialVersionUID = -3398694299050788517L;
+    private final IAuthenticationService authenticationService = Jdp.getRequired(IAuthenticationService.class);
 
     public LogoutViewModel() { }
 
@@ -44,10 +44,10 @@ public class LogoutViewModel extends GenericForwardComposer<Component> {
     }
 
     /**
-     * On link clicked Shiro logoff.
+     * On link clicked logoff.
      */
     @GlobalCommand("logoff")
     public final void onClick$logoff() {
-        Executions.sendRedirect(Constants.ZulFiles.LOGOUT);
+        authenticationService.logout();
     }
 }

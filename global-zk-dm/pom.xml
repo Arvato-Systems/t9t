@@ -34,7 +34,6 @@
         <!-- ZK libraries, COMMERCIAL !!! -->
         <zk.version>9.6.1</zk.version>
         <zk-ckez.version>4.16.2.0</zk-ckez.version>  <!-- https://github.com/zkoss/zkckeditor -->
-        <shiro.version>1.8.0</shiro.version>
     </properties>
 
 
@@ -117,16 +116,6 @@
                 <version>${zk-ckez.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>org.apache.shiro</groupId>
-                <artifactId>shiro-core</artifactId>
-                <version>${shiro.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.shiro</groupId>
-                <artifactId>shiro-web</artifactId>
-                <version>${shiro.version}</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 

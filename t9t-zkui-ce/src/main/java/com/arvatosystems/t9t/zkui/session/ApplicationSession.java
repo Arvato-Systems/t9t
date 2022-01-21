@@ -38,20 +38,12 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.UnavailableSecurityManagerException;
-import org.apache.shiro.session.Session;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.zkoss.image.AImage;
-import org.zkoss.zk.ui.Sessions;
 
 import com.arvatosystems.t9t.authc.api.GetTenantLogoRequest;
 import com.arvatosystems.t9t.authc.api.GetTenantLogoResponse;
@@ -83,6 +75,14 @@ import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ApplicationException;
 import de.jpaw.util.ExceptionUtil;
+
+import javax.servlet.http.HttpSession;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.zkoss.image.AImage;
+import org.zkoss.zk.ui.Session;
+import org.zkoss.zk.ui.Sessions;
 
 /**
  * The overall Session handler.
@@ -156,13 +156,14 @@ public final class ApplicationSession {
      * @return ApplicationSession
      */
     public static ApplicationSession get() {
-        Session session = SecurityUtils.getSubject().getSession();
+        Session session = Sessions.getCurrent();
         ApplicationSession applicationSession = (ApplicationSession) session.getAttribute(SESSION_ATTRIBUTE_APPLICATIOM);
         if (applicationSession == null) {
             synchronized (lock) {
                 applicationSession = (ApplicationSession) session.getAttribute(SESSION_ATTRIBUTE_APPLICATIOM);
                 if (applicationSession == null) {
-                    LOGGER.debug("Creating new ApplicationSession for Shiro session with id: {}", session.getId());
+                    HttpSession httpSession = (HttpSession) session.getNativeSession();
+                    LOGGER.debug("Creating new ApplicationSession for session with id: {}", httpSession.getId());
                     session.setAttribute(SESSION_ATTRIBUTE_APPLICATIOM, new ApplicationSession());
                     applicationSession = (ApplicationSession) session.getAttribute(SESSION_ATTRIBUTE_APPLICATIOM);
                 }
@@ -180,12 +181,8 @@ public final class ApplicationSession {
      * @return is the session is valid - this means if a Security manager can be retrieved
      */
     public static boolean isSessionValid() {
-        try {
-            SecurityUtils.getSecurityManager();
-        } catch (UnavailableSecurityManagerException e) {
-            return false;
-        }
-        return true;
+        Session session = Sessions.getCurrent(false);
+        return session != null;
     }
 
     /**
@@ -567,10 +564,7 @@ public final class ApplicationSession {
         navis.clear();
         if (jwt == null) {
             // used to disable a session.
-            this.jwtInfo = null;
-            this.jwt = null;
-            this.authorizationHeader = null;
-            invalidateSession();
+            invalidateUser();
             LOGGER.debug("removed authentication information from current session");
         } else {
             LOGGER.debug("Storing new Jwt in ApplicationSession");
@@ -587,7 +581,6 @@ public final class ApplicationSession {
                 this.authorizationHeader = "Bearer " + jwt;
                 LOGGER.debug("received JWT with contents {} (json was {})", jwtInfo, json);
                 setDateFormatters(jwtInfo.getLocale(), jwtInfo.getZoneinfo());
-                invalidateInconsistentAuth(jwtInfo);
             } catch (Exception e) {
                 setJwt(null);
                 LOGGER.error("JWT parsing exception: {}", ExceptionUtil.causeChain(e));
@@ -767,31 +760,26 @@ public final class ApplicationSession {
     }
 
 
-    /**
-     * Logout the current (shiro) authenticated user
-     */
-    private void invalidateSession() {
-        try {
-            if (SecurityUtils.getSubject() != null && SecurityUtils.getSubject().isAuthenticated()) {
-                SecurityUtils.getSubject().logout();
-            }
-        } catch (Exception e) {
-            LOGGER.error("Unable to logout the user due to: " + e.getMessage());
-            e.printStackTrace();
-        }
+    public boolean isAuthenticated() {
+        return this.jwt != null && this.jwtInfo != null && this.authorizationHeader != null;
     }
 
     /**
-     * This method check if the logged in user is consistent with the user in token (to avoid security issue)
-     * @param jwtInfo
+     * Invalidate the current authenticated user
      */
-    private void invalidateInconsistentAuth(JwtInfo xjwtInfo) {
-        if (SecurityUtils.getSubject() != null && SecurityUtils.getSubject().getPrincipal() != null) {
-            String shiroAuthUser = SecurityUtils.getSubject().getPrincipal().toString();
-            if (xjwtInfo.getUserId() == null ||  !shiroAuthUser.equals(xjwtInfo.getUserId())) {
-                invalidateSession();
-            }
-        }
+    private void invalidateUser() {
+        this.jwt = null;
+        this.jwtInfo = null;
+        this.authorizationHeader = null;
+    }
+
+    /**
+     * Invalidate the current authenticated user & session
+     */
+    public void invalidateSession() {
+        invalidateUser();
+        Session session = Sessions.getCurrent();
+        session.invalidate();
     }
 
     public String getEntityId() {

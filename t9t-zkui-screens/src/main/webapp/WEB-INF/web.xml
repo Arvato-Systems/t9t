@@ -30,22 +30,16 @@ it does not start any more, see https://forum.zkoss.org/question/95682/jetty-9-a
     <description><![CDATA[ZK t9t Application]]></description>
     <display-name>t9t-zkui</display-name>
 
-    <context-param>
-        <param-name>shiroConfigLocations</param-name>
-        <param-value>WEB-INF/shiro.ini</param-value>
-    </context-param>
-
     <!-- ZK -->
     <listener>
         <listener-class>com.arvatosystems.t9t.zkui.init.T9tInitializer</listener-class>
     </listener>
     <listener>
-        <description>ZK listener for session cleanup</description>
-        <listener-class>org.zkoss.zk.ui.http.HttpSessionListener</listener-class>
+        <listener-class>com.arvatosystems.t9t.zkui.init.SessionCounter</listener-class>
     </listener>
     <listener>
-        <!-- for shiro... -->
-        <listener-class>com.arvatosystems.t9t.zkui.init.ShiroEnvironmentLoaderListener</listener-class>
+        <description>ZK listener for session cleanup</description>
+        <listener-class>org.zkoss.zk.ui.http.HttpSessionListener</listener-class>
     </listener>
 
     <!-- The following servlet entry is needed to disable the possibility to browser through the code folders via the UI -->
@@ -95,19 +89,6 @@ it does not start any more, see https://forum.zkoss.org/question/95682/jetty-9-a
         <url-pattern>/zkau/*</url-pattern>
     </servlet-mapping>
 
-    <filter>
-        <filter-name>ShiroFilter</filter-name>
-        <filter-class>org.apache.shiro.web.servlet.ShiroFilter</filter-class>
-    </filter>
-
-    <filter-mapping>
-        <filter-name>ShiroFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-        <dispatcher>REQUEST</dispatcher>
-        <dispatcher>FORWARD</dispatcher>
-        <dispatcher>INCLUDE</dispatcher>
-        <dispatcher>ERROR</dispatcher>
-    </filter-mapping>
     <!-- //// -->
 
     <!-- /////////// -->

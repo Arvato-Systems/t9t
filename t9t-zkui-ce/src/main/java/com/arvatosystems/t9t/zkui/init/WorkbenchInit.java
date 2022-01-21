@@ -17,15 +17,14 @@ package com.arvatosystems.t9t.zkui.init;
 
 import java.util.Map;
 
-import org.apache.shiro.SecurityUtils;
+import com.arvatosystems.t9t.zkui.session.ApplicationSession;
+import com.arvatosystems.t9t.zkui.util.Constants;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.util.Initiator;
-
-import com.arvatosystems.t9t.zkui.util.Constants;
-
 
 /**
  * This is a class which catches the initialization of a ZK page and
@@ -33,7 +32,6 @@ import com.arvatosystems.t9t.zkui.util.Constants;
  */
 public class WorkbenchInit implements Initiator {
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkbenchInit.class);
-
 
     /**
      * Invoked when the ZK Parser starts.
@@ -44,7 +42,8 @@ public class WorkbenchInit implements Initiator {
     @Override
     public final void doInit(Page page, @SuppressWarnings("rawtypes") Map arg) throws Exception {
         String pagename = (String)arg.get("pagename");
-        if (!SecurityUtils.getSubject().isAuthenticated()) {
+
+        if (!ApplicationSession.get().isAuthenticated()) {
             LOGGER.info("User is not authenticated, redirecting to login...");
             Executions.getCurrent().sendRedirect(Constants.ZulFiles.LOGIN);
         }

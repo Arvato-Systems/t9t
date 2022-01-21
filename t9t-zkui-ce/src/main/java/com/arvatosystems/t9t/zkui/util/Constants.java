@@ -26,6 +26,7 @@ public final class Constants {
         public static final String LOGOUT                 = "/logout";
         public static final String HOME                   = "/home.zul";
         public static final String LOGIN                  = "/login.zul";
+        public static final String LOGIN_SUCCESS_REDIRECT = "/screens/login/expired_credentials.zul";
         public static final String LOGIN_TENANT_SELECTION = "/screens/login/tenantSelection.zul";
         public static final String ADDITIONAL_SELECTIONS  = "/screens/login/selections.zul";
     }

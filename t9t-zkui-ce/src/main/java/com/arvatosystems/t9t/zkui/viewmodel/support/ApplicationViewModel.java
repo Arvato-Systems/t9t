@@ -31,9 +31,8 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 
+import com.arvatosystems.t9t.zkui.services.IAuthenticationService;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.AfterCompose;
@@ -113,6 +112,7 @@ public class ApplicationViewModel {
     private final INavBarCreator navbarCreator = Jdp.getRequired(INavBarCreator.class);
     private final ITitleBarSearch titleSearch = Jdp.getRequired(ITitleBarSearch.class);
     private final IT9tRemoteUtils t9tRemoteUtils = Jdp.getRequired(IT9tRemoteUtils.class);
+    private final IAuthenticationService authenticationService = Jdp.getRequired(IAuthenticationService.class);
 
     private String userName;
     private String userId;
@@ -183,13 +183,14 @@ public class ApplicationViewModel {
             Executions.sendRedirect(Constants.ZulFiles.LOGOUT);
         } else {
             selectedTenantId = as.getTenantId();
-            Subject currentUser = SecurityUtils.getSubject();
+            final ApplicationSession applicationSession = ApplicationSession.get();
 
-            if (!currentUser.isAuthenticated()) {
+            if (!applicationSession.isAuthenticated()) {
                 Executions.getCurrent().sendRedirect(Constants.ZulFiles.LOGIN);
             }
 
-            setUserInfo(currentUser.getPrincipal().toString());
+            final String currentUserId = applicationSession.getJwtInfo().getUserId();
+            setUserInfo(currentUserId);
 
             userId = as.getUserId();
             userName = as.getJwtInfo().getName();
@@ -741,7 +742,7 @@ public class ApplicationViewModel {
      */
     @Command
     public void logout() {
-        Executions.sendRedirect(Constants.ZulFiles.LOGOUT);
+        authenticationService.logout();
     }
 
     private static String mapToString(Map<Object, Object> map) {

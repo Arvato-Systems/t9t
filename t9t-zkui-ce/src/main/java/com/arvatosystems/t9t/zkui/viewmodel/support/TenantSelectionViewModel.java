@@ -19,13 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.mgt.RealmSecurityManager;
-import org.apache.shiro.realm.Realm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
+import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zhtml.Messagebox;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
@@ -33,7 +31,6 @@ import org.zkoss.zk.ui.WrongValueException;
 import com.arvatosystems.t9t.authc.api.TenantDescription;
 import com.arvatosystems.t9t.base.auth.PermissionEntry;
 import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;
-import com.arvatosystems.t9t.zkui.security.realms.ICacheableAuthorizationRealm;
 import com.arvatosystems.t9t.zkui.services.IUserDAO;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 import com.arvatosystems.t9t.zkui.util.ApplicationUtil;
@@ -46,14 +43,17 @@ import de.jpaw.dp.Jdp;
  * TenantDescription selection ViewModel.
  */
 public class TenantSelectionViewModel {
-    private List<TenantDescription> tenantListModel = new ArrayList<TenantDescription>();
-    private TenantDescription       selected;
-    private boolean      visible          = true;
-    private List<TenantDescription> allowedTenants;
     private static final Logger LOGGER = LoggerFactory.getLogger(TenantSelectionViewModel.class);
-    private static final String TENANT_COOKIE                     = "TENANT_COOKIE";
-    private final IUserDAO     userDAO = Jdp.getRequired(IUserDAO.class);
-    private Boolean isCancelClose = true;
+    private static final String TENANT_COOKIE = "TENANT_COOKIE";
+
+    private final IUserDAO userDAO = Jdp.getRequired(IUserDAO.class);
+
+    private List<TenantDescription> tenantListModel = new ArrayList<>();
+    private TenantDescription       selected;
+    private boolean                 visible         = true;
+    private List<TenantDescription> allowedTenants;
+    private Boolean                 isCancelClose   = true;
+    private boolean                 showLoginErrorMessage = false;
 
     @Init
     public void init() {
@@ -69,7 +69,7 @@ public class TenantSelectionViewModel {
         setListbox();
         setTenantFromCookie();
 
-        if ((tenantListModel != null) && (tenantListModel.size() == 1)) {
+        if (tenantListModel != null && tenantListModel.size() == 1) {
             setVisible(false);
             selected = tenantListModel.get(0);
             redirect();
@@ -123,8 +123,11 @@ public class TenantSelectionViewModel {
     /**
      * If no Tenant is selected logoff.
      */
+    @NotifyChange("showLoginErrorMessage")
     @Command
     public final void redirect() {
+        setShowLoginErrorMessage(false); // Reset error message flag on every attempt
+
         if (getSelected() == null) {
             throw new WrongValueException(ZulUtils.translate("tenant", "choose"));
         }
@@ -132,17 +135,17 @@ public class TenantSelectionViewModel {
         ApplicationUtil.setCookie(TENANT_COOKIE, selected.getTenantId());
 
         try {
-            if ((tenantListModel != null) && (tenantListModel.size() > 1)) {
+            if (tenantListModel != null && tenantListModel.size() > 1) {
                 userDAO.switchTenant(selected.getTenantId());
             }
-            setTenantInfo();
             final List<PermissionEntry> userPermissionForThisTenant = userDAO.getPermissions();
             ApplicationSession.get().storePermissions(userPermissionForThisTenant);
         } catch (final ReturnCodeException e) {
-           LOGGER.error("Unable to switch tenant or to get permissions " + e);
-           Messagebox.show("Unable to switch tenant or to get permissions - " + e.getReturnCodeMessage() + ZulUtils.translate("err", "unableToSwitchTenant"),
+            LOGGER.error("Unable to switch tenant or to get permissions " + e);
+            Messagebox.show("Unable to switch tenant or to get permissions - " + e.getReturnCodeMessage() + ZulUtils.translate("err", "unableToSwitchTenant"),
                    ZulUtils.translate("err", "title"), Messagebox.OK, Messagebox.ERROR);
-           return;
+            setShowLoginErrorMessage(true);
+            return;
         }
 
         final String additionalScreenConfig = ZulUtils.readConfig("login.additional.selections.qualifier");
@@ -152,18 +155,6 @@ public class TenantSelectionViewModel {
             final String url = Constants.ZulFiles.ADDITIONAL_SELECTIONS + "?qualifier=" + additionalScreenConfig;
             LOGGER.info("redirecting to selections page with {} qualifier, complete url as {}", additionalScreenConfig, url);
             Executions.getCurrent().sendRedirect(url);
-        }
-    }
-
-    private void setTenantInfo() throws ReturnCodeException {
-        LOGGER.info("setTenantInfo(): Not sure why we have to set data in ApplicationSession here ... probably not required, commenting out");
-
-        // clear authorization realms
-        final RealmSecurityManager securityManager = (RealmSecurityManager) SecurityUtils.getSecurityManager();
-        for (final Realm realm : securityManager.getRealms()) {
-            if (realm instanceof ICacheableAuthorizationRealm) {
-                ((ICacheableAuthorizationRealm) realm).clearAuthorizationCache();
-            }
         }
     }
 
@@ -188,5 +179,13 @@ public class TenantSelectionViewModel {
 
     public void setIsCancelClose(final Boolean isCancelClose) {
         this.isCancelClose = isCancelClose;
+    }
+
+    public boolean isShowLoginErrorMessage() {
+        return showLoginErrorMessage;
+    }
+
+    public void setShowLoginErrorMessage(final boolean showLoginErrorMessage) {
+        this.showLoginErrorMessage = showLoginErrorMessage;
     }
 }

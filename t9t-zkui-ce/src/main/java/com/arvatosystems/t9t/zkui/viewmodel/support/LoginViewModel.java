@@ -26,8 +26,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.UnknownAccountException;
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.zkui.services.IAuthenticationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.BindingParam;
@@ -40,7 +40,6 @@ import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.ClientInfoEvent;
-import org.zkoss.zk.ui.util.Clients;
 
 import com.arvatosystems.t9t.base.auth.PermissionEntry;
 import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;
@@ -70,6 +69,7 @@ public class LoginViewModel {
     private static final String USERNAME_COOKIE                     = "USERNAME_COOKIE";
     private static final Logger LOGGER                     = LoggerFactory.getLogger(LoginViewModel.class);
     protected final IUserDAO userDAO = Jdp.getRequired(IUserDAO.class);
+    protected final IAuthenticationService authenticationService = Jdp.getRequired(IAuthenticationService.class);
 //    private static final ConcurrentMap<String, String>   screen = new ConcurrentHashMap<String, String>(100);
 //    private static final ConcurrentMap<String, TimeZone> zones = new ConcurrentHashMap<String, TimeZone>(100);
 //    private static final ConcurrentMap<String, Locale> locales = new ConcurrentHashMap<String, Locale>(100);
@@ -107,6 +107,8 @@ public class LoginViewModel {
     private TimeZone lastZone;
     private String lastRealTz;
 
+    private boolean showLoginErrorMessage = false;
+
     @Command("realTimezone")
     public void realTimezone(@BindingParam("tzid") String zoneId) {
         LOGGER.debug("received time zone ID {}", zoneId);
@@ -130,8 +132,11 @@ public class LoginViewModel {
         }
     }
 
+    @NotifyChange("showLoginErrorMessage")
     @Command("login")
-    public void onLogin(@BindingParam("username") String username, @BindingParam("rememberMe") boolean rememberMe) {
+    public void onLogin(@BindingParam("username") String username, @BindingParam("password") String password, @BindingParam("rememberMe") boolean rememberMe) {
+        setShowLoginErrorMessage(false); // Reset error message flag on every login attempt
+
         LOGGER.debug("submit login for user name {}, last screen is {}, lang is {}", username, lastScreen,
                 Sessions.getCurrent().getAttribute(org.zkoss.web.Attributes.PREFERRED_LOCALE));
         if (username != null) {
@@ -147,7 +152,13 @@ public class LoginViewModel {
                     (Locale)(Sessions.getCurrent().getAttribute(org.zkoss.web.Attributes.PREFERRED_LOCALE)),
                     lastZone));
         }
-        Clients.submitForm("f");
+
+        // Attempt to login
+        try {
+            authenticationService.login(username, password);
+        } catch (final T9tException e) {
+            setShowLoginErrorMessage(true);
+        }
     }
 
     public static UserInfo getUserInfo(String username) {
@@ -160,9 +171,10 @@ public class LoginViewModel {
         setLanguageFromCooky(isInitialLogin);
         setListbox();
         //FT-1127        UI login does not work if already logged in
-        if ((SecurityUtils.getSubject() != null) && (SecurityUtils.getSubject().isAuthenticated()) && (isInitialLogin == null)) {
+        final ApplicationSession applicationSession = ApplicationSession.get();
+        if (applicationSession.isAuthenticated() && isInitialLogin == null) {
 
-            if ((ApplicationSession.get().getTenantId() != null)) {
+            if (applicationSession.getTenantId() != null) {
                 Executions.sendRedirect(Constants.ZulFiles.HOME);
             } else {
                 Executions.sendRedirect(Constants.ZulFiles.LOGIN_TENANT_SELECTION);
@@ -187,16 +199,17 @@ public class LoginViewModel {
     public void switchLanguage() {
         setListbox();
 
-        if ((SecurityUtils.getSubject() != null) && (SecurityUtils.getSubject().isAuthenticated())) {
+        final ApplicationSession applicationSession = ApplicationSession.get();
+        if (applicationSession.isAuthenticated()) {
             try {
                 // This code is also called after logged in.  This causes an extra JWT to be generated.
                 // It should be improved to avoid that, unless required, in order to reduce the number of session log entries.
                 userDAO.switchLanguage(selected.getValue());
                 // needs to reload permissions as well
                 List<PermissionEntry> userPermissionForThisTenant = userDAO.getPermissions();
-                ApplicationSession.get().storePermissions(userPermissionForThisTenant);
+                applicationSession.storePermissions(userPermissionForThisTenant);
             } catch (ReturnCodeException e) {
-                throw new UnknownAccountException("Login failed");
+                throw new T9tException(T9tException.USER_NOT_FOUND, "Login failed");
             }
         }
     }
@@ -293,5 +306,13 @@ public class LoginViewModel {
 
     public String getUsername() {
         return ApplicationUtil.getCookie(USERNAME_COOKIE);
+    }
+
+    public boolean isShowLoginErrorMessage() {
+        return showLoginErrorMessage;
+    }
+
+    public void setShowLoginErrorMessage(final boolean showLoginErrorMessage) {
+        this.showLoginErrorMessage = showLoginErrorMessage;
     }
 }

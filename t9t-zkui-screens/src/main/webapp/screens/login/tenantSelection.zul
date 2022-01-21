@@ -73,7 +73,7 @@
                             </div>
 
                             <div sclass="col login-error">
-                                <label value="${l:translate('err','loginFailed')}" visible="${not empty requestScope.loginFailure}"/>
+                                <label value="${l:translate('err','loginFailed')}" visible="@load(vm.showLoginErrorMessage)"/>
                             </div>
 
                        </div>

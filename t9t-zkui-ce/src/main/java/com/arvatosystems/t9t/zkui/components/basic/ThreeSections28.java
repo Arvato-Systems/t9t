@@ -28,30 +28,36 @@ import org.zkoss.zul.West;
 
 import com.arvatosystems.t9t.zkui.components.EventDataSelect28;
 import com.arvatosystems.t9t.zkui.components.IDataSelectReceiver;
+import com.arvatosystems.t9t.zkui.util.T9tConfigConstants;
+import com.arvatosystems.t9t.zkui.util.ZulUtils;
 
 public class ThreeSections28 extends TwoSections28 {
     private static final long serialVersionUID = -2739908309693945324L;
     private static final Logger LOGGER = LoggerFactory.getLogger(ThreeSections28.class);
+    protected static final String DEFAULT_OVERVIEW_HEIGHT = "50%";
     protected Groupbox28 detailsGroup;
+    protected String overviewHeight;
 
-    public ThreeSections28() {
-        super();
+    @Override
+    @Listen("onCreate")
+    public void onCreate() {
+        super.onCreate();
+        // initialize detail group
         LOGGER.debug("new ThreeSections28() created");
         detailsGroup = new Groupbox28();
         detailsGroup.setVflex("1");
         detailsGroup.setId("detailsGroup");
         detailsGroup.setSclass("detailsSection");
         Borderlayout bl = (Borderlayout) resultsGroup.getParent().getParent().getParent();
-        ((North) bl.getFirstChild()).setHeight("50%"); //override the height to 50% for three sections
+        if (overviewHeight == null) {
+            String configuredDefaultHeight = ZulUtils.readConfig(T9tConfigConstants.THREE_SECTION_DEFAULT_OVERVIEW_HEIGHT);
+            overviewHeight = configuredDefaultHeight == null ? DEFAULT_OVERVIEW_HEIGHT : configuredDefaultHeight;
+        }
+        ((North) bl.getFirstChild()).setHeight(overviewHeight); //override the height to 50% for three sections
         Center center = new Center();
         center.setParent(bl);
         detailsGroup.setParent(center); //To attached to the bottom of result panel
-    }
 
-    @Override
-    @Listen("onCreate")
-    public void onCreate() {
-        super.onCreate();
         // move all childs of this after the last groupbox into the last groupbox
         List<Component> children = ComponentTools28.moveChilds(this, this.getFirstChild(), detailsGroup);
         if (children != null && !children.isEmpty()) {
@@ -94,5 +100,9 @@ public class ThreeSections28 extends TwoSections28 {
         detailsGroup.setSclass("no-padding-top"); //To reduce the space being taken by the title.
         ((North) resultsGroup.getParent().getParent()).setVisible(false);
         ((West)  filterGroup.getParent()).setVisible(false);
+    }
+
+    public void setOverviewHeight(String overviewHeight) {
+        this.overviewHeight = overviewHeight;
     }
 }

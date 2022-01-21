@@ -19,93 +19,91 @@
         });
     </h:script>
 
-    <h:form id="f" class="form" name="loginform" action="" method="POST">
-        <div sclass="flex">
-            <div sclass="container">
+    <div sclass="flex">
+        <div sclass="container">
 
-                <div sclass="row">
+            <div sclass="row">
 
-                    <div sclass="col logo">
-                        <div sclass="row">
-                            <div sclass="col logo-img">
-                                <image src="/img/logo/company_logo.png"></image>
-                            </div>
+                <div sclass="col logo">
+                    <div sclass="row">
+                        <div sclass="col logo-img">
+                            <image src="/img/logo/company_logo.png"></image>
+                        </div>
 
-                            <div sclass="col logo-label">
-                                ${l:translate('app','name')}
-                            </div>
+                        <div sclass="col logo-label">
+                            ${l:translate('app','name')}
                         </div>
                     </div>
-
-                    <div class="col login">
-                        <div sclass="row">
-                            <div sclass="col block-field">
-                                <div sclass="h6">${l:translate('login', 'user')}</div>
-                                <textbox id="userName" focus="@init(userName.value eq '')" name="user" maxlength="16" onOK="@command('login', username=userName.value, rememberMe=rememberMe.checked)" value="@init(vm.username)"></textbox>
-                            </div>
-
-                            <div sclass="col block-field">
-                                <div sclass="h6">${l:translate('login', 'password')}</div>
-                                <textbox id="passwordTxb" focus="@init(userName.value ne '')" type="password" name="pass" maxlength="64" onOK="@command('login', username=userName.value, rememberMe=rememberMe.checked)"></textbox>
-                            </div>
-
-                            <div sclass="col block-field">
-                                <div sclass="h6">Language</div>
-
-                                <combobox hflex="1" model="@bind(vm.languageListModel)"
-                                    selectedItem="@bind(vm.selected)" rows="1" mold="default">
-
-                                    <template name="model" var="language">
-                                        <comboitem value="@bind(language)"
-                                            label="@bind(language.name)" />
-                                    </template>
-
-                                    <attribute name="onChange"><![CDATA[
-                                        String localeValue = ((com.arvatosystems.t9t.zkui.viewmodel.beans.ComboBoxItem) self.getSelectedItem().getValue()).getValue();
-                                        Locale prefer_locale = null;
-                                        if (localeValue != null && localeValue.length() == 5){
-                                            prefer_locale = new Locale(localeValue.substring(0,2),localeValue.substring(3,5));
-                                        } else {
-                                            prefer_locale = new Locale(localeValue);
-                                        }
-                                        session.setAttribute(org.zkoss.web.Attributes.PREFERRED_LOCALE, prefer_locale);
-                                        // execution.sendRedirect("");  // redirect would clear username / password. if reload is wanted, the user can press reload in the browser.
-                                    ]]></attribute>
-                                </combobox>
-                            </div>
-
-                            <div class="col remember-me block-field">
-                                <checkbox id="rememberMe" label="${l:translate('login','rememberMe')}" name="rememberMe" checked="@init(userName.value ne '')"/>
-                            </div>
-
-                            <div class="col block-field actions">
-                                <button id="btnLogin" label="${l:translate('login','title')}" sclass="square-btn login-btn"
-                                       onClick="@command('login', username=userName.value, rememberMe=rememberMe.checked)"/>
-                            </div>
-
-                            <div sclass="col login-error" visible="${not empty requestScope.loginFailure}">
-                                <label value="${l:translate('err','loginFailed')}" ></label>
-                            </div>
-
-                            <div class="col forgot-password block-field">
-                                <a href="/screens/login/forgotPassword.zul" sclass="forgot-password-link" label="${l:translate('forgotpw','title')}" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col footer">
-                        <div sclass="row">
-                            <div sclass="col version h6">
-                                t9t ${l:translate('t9tframework', 'version')}, ZK ${desktop.webApp.version}
-                            </div>
-                            <div sclass="col vendor h6">${l:translateDefault('app.ourCompanyName')}</div>
-                        </div>
-                    </div>
-
                 </div>
+
+                <div class="col login">
+                    <div sclass="row">
+                        <div sclass="col block-field">
+                            <div sclass="h6">${l:translate('login', 'user')}</div>
+                            <textbox id="userName" focus="@init(userName.value eq '')" name="user" maxlength="16" onOK="@command('login', username=userName.value, password=passwordTxb.value, rememberMe=rememberMe.checked)" value="@init(vm.username)"></textbox>
+                        </div>
+
+                        <div sclass="col block-field">
+                            <div sclass="h6">${l:translate('login', 'password')}</div>
+                            <textbox id="passwordTxb" focus="@init(userName.value ne '')" type="password" name="pass" maxlength="64" onOK="@command('login', username=userName.value, password=passwordTxb.value, rememberMe=rememberMe.checked)"></textbox>
+                        </div>
+
+                        <div sclass="col block-field">
+                            <div sclass="h6">Language</div>
+
+                            <combobox hflex="1" model="@bind(vm.languageListModel)"
+                                selectedItem="@bind(vm.selected)" rows="1" mold="default">
+
+                                <template name="model" var="language">
+                                    <comboitem value="@bind(language)"
+                                        label="@bind(language.name)" />
+                                </template>
+
+                                <attribute name="onChange"><![CDATA[
+                                    String localeValue = ((com.arvatosystems.t9t.zkui.viewmodel.beans.ComboBoxItem) self.getSelectedItem().getValue()).getValue();
+                                    Locale prefer_locale = null;
+                                    if (localeValue != null && localeValue.length() == 5){
+                                        prefer_locale = new Locale(localeValue.substring(0,2),localeValue.substring(3,5));
+                                    } else {
+                                        prefer_locale = new Locale(localeValue);
+                                    }
+                                    session.setAttribute(org.zkoss.web.Attributes.PREFERRED_LOCALE, prefer_locale);
+                                    // execution.sendRedirect("");  // redirect would clear username / password. if reload is wanted, the user can press reload in the browser.
+                                ]]></attribute>
+                            </combobox>
+                        </div>
+
+                        <div class="col remember-me block-field">
+                            <checkbox id="rememberMe" label="${l:translate('login','rememberMe')}" name="rememberMe" checked="@init(userName.value ne '')"/>
+                        </div>
+
+                        <div class="col block-field actions">
+                            <button id="btnLogin" label="${l:translate('login','title')}" sclass="square-btn login-btn"
+                                   onClick="@command('login', username=userName.value, password=passwordTxb.value, rememberMe=rememberMe.checked)"/>
+                        </div>
+
+                        <div sclass="col login-error" visible="@load(vm.showLoginErrorMessage)">
+                            <label value="${l:translate('err','loginFailed')}" ></label>
+                        </div>
+
+                        <div class="col forgot-password block-field">
+                            <a href="/screens/login/forgotPassword.zul" sclass="forgot-password-link" label="${l:translate('forgotpw','title')}" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col footer">
+                    <div sclass="row">
+                        <div sclass="col version h6">
+                            t9t ${l:translate('t9tframework', 'version')}, ZK ${desktop.webApp.version}
+                        </div>
+                        <div sclass="col vendor h6">${l:translateDefault('app.ourCompanyName')}</div>
+                    </div>
+                </div>
+
             </div>
         </div>
-    </h:form>
+    </div>
 
 </window>
 </div>

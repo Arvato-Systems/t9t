@@ -11,8 +11,6 @@
             <span>${l:translate('redirect','loading')}</span>
                     <h:br /><h:br />
         </div>
-
-         <div visible="${vm.showLogoutButton}" sclass="modalButtons"><button label=" ${l:translate('logout','title')}" sclass="submit" apply="com.arvatosystems.t9t.zkui.viewmodel.support.LogoutViewModel" id="logoff"></button></div>
     </vbox>
 </window>
 </zk>

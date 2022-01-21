@@ -32,4 +32,7 @@ public final class T9tConfigConstants {
 
     /** A boolean property to have the "today" button appear for date selection boxes globally. */
     public static final String DATE_PICKER_SHOW_TODAY = "datePicker.showToday";
+
+    /** A string property to set a default height for three section's result overview area, default is 50%, eg, 30% or 200px */
+    public static final String THREE_SECTION_DEFAULT_OVERVIEW_HEIGHT = "threeSections.overview.height";
 }

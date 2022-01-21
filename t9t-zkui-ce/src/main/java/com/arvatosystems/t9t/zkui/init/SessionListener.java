@@ -40,7 +40,7 @@ public class SessionListener implements SessionInit, SessionCleanup {
         if (ApplicationSession.isSessionValid()) {
             ApplicationSession.get().setJwt(null);
         } else {
-            LOGGER.debug("Shiro session is not longer valid. Skip cleanup");
+            LOGGER.debug("Session is not longer valid. Skip cleanup");
         }
     }
 

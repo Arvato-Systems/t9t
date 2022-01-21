@@ -18,7 +18,6 @@ package com.arvatosystems.t9t.zkui.viewmodel.support;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.Init;
@@ -33,30 +32,20 @@ import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;
 import com.arvatosystems.t9t.zkui.services.IUserDAO;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 import com.arvatosystems.t9t.zkui.util.Constants;
-import com.arvatosystems.t9t.zkui.util.JwtUtils;
 import com.arvatosystems.t9t.zkui.util.ZulUtils;
 
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 import de.jpaw.dp.Jdp;
 
 public class RedirectViewModel {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RedirectViewModel.class);
     private final IUserDAO userDAO = Jdp.getRequired(IUserDAO.class);
-    private boolean showLogoutButton;
 
     @Init
     public void init(@QueryParam("token") String token, @QueryParam("link") String link,
             @QueryParam("tenantId") String tenantId, @QueryParam("lang") String lang) {
 
         try {
-
-            if (inconsistenceUserLoggedIn(token)) {
-                showLogoutButton = true;
-                Messagebox.show(ZulUtils.translate("redirect", "inconsistenceUserLoggedIn"), ZulUtils.translate("err", "title"), Messagebox.OK,
-                        Messagebox.ERROR);
-                return;
-            }
 
             ApplicationSession.get().setJwt(token);
             userDAO.switchTenant(tenantId);
@@ -87,22 +76,5 @@ public class RedirectViewModel {
                     ZulUtils.translate("err", "title"), Messagebox.OK, Messagebox.ERROR);
             return;
         }
-    }
-
-    private boolean inconsistenceUserLoggedIn(String token) {
-        JwtInfo jwtInfo = JwtUtils.getJwtPayload(token);
-        if (SecurityUtils.getSubject() != null && SecurityUtils.getSubject().isAuthenticated()
-                && !jwtInfo.getUserId().equals(SecurityUtils.getSubject().getPrincipal())) {
-            return true;
-        }
-        return false;
-    }
-
-    public boolean isShowLogoutButton() {
-        return showLogoutButton;
-    }
-
-    public void setShowLogoutButton(boolean showLogoutButton) {
-        this.showLogoutButton = showLogoutButton;
     }
 }
