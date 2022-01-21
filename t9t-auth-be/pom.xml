@@ -37,11 +37,6 @@
             <artifactId>t9t-auth-sapi</artifactId>
         </dependency>
         <dependency>
-            <groupId>de.jpaw</groupId>
-            <artifactId>bonaparte-annotations</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-doc-api</artifactId>
         </dependency>

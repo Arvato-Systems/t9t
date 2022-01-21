@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.init.InitContainers;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
+import com.arvatosystems.t9t.zkui.util.Constants;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericEnumSetDataItem;
 import de.jpaw.bonaparte.pojos.meta.DataCategory;
@@ -62,7 +63,7 @@ public class FieldFactory {
             String dataType = desc.getDataType().toLowerCase();  // the java type
             String bonaparteType = desc.getBonaparteType().toLowerCase();  // the type as described in the bon file
             Map<String, String> fieldProperties = desc.getProperties();
-            String dropdownType = fieldProperties != null ? fieldProperties.get("dropdown") : null;
+            String dropdownType = fieldProperties != null ? fieldProperties.get(Constants.UiFieldProperties.DROPDOWN) : null;
             String javaType = dataType.toLowerCase();
 
             if (filter.getQualifier() != null) {
@@ -82,7 +83,7 @@ public class FieldFactory {
                     if (dropdownType != null)
                         return new DropdownField(fieldname, filter, desc, gridId, session, dropdownType);
 //                    // check for bandboxes
-                    String bandbox = null != fieldProperties ? fieldProperties.get("bandbox") : null;
+                    String bandbox = null != fieldProperties ? fieldProperties.get(Constants.UiFieldProperties.BANDBOX) : null;
                     if (bandbox != null) {
                         return new BandboxField(fieldname, filter, desc, gridId, session, bandbox);
                     }
@@ -119,7 +120,7 @@ public class FieldFactory {
                 if (dropdownType != null)
                     return new DropdownField(fieldname, filter, desc, gridId, session, dropdownType);
                 // check for bandboxes
-                String bandbox = null != fieldProperties ? fieldProperties.get("bandbox") : null;
+                String bandbox = null != fieldProperties ? fieldProperties.get(Constants.UiFieldProperties.BANDBOX) : null;
                 ObjectReference objRef = (ObjectReference)desc;
                 if (bandbox == null && objRef.getLowerBound() != null)
                     bandbox = objRef.getLowerBound().getName();  // use the ref's PQON
@@ -134,12 +135,12 @@ public class FieldFactory {
                     // in case of equality, dropdowns are possible
                     if (dropdownType != null)
                         return new DropdownField(fieldname, filter, desc, gridId, session, dropdownType);
-                    String qualifierFor = fieldProperties.get("qualifierFor");
+                    String qualifierFor = fieldProperties.get(Constants.UiFieldProperties.QUALIFIER_FOR);
                     if (qualifierFor != null)
                         return new QualifierSelectionField(fieldname, filter, desc, gridId, session, qualifierFor);
                 }
                 // check for special enumset properties
-                String enumSet = fieldProperties.get("enumset");
+                String enumSet = fieldProperties.get(Constants.UiFieldProperties.ENUMSET);
                 if (enumSet != null) {
                     EnumSetDefinition esd = InitContainers.getEnumsetByPQON(enumSet);
                     if (esd == null)
@@ -147,7 +148,7 @@ public class FieldFactory {
                     else
                         return new EnumsetField(fieldname, filter, desc, gridId, session, esd);
                 }
-                String xenumSet = fieldProperties.get("xenumset");
+                String xenumSet = fieldProperties.get(Constants.UiFieldProperties.XENUMSET);
                 if (xenumSet != null) {
                     XEnumSetDefinition xesd = InitContainers.getXEnumsetByPQON(xenumSet);
                     if (xesd == null)

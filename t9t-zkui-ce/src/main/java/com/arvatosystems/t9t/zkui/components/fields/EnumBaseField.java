@@ -24,6 +24,7 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
+import com.arvatosystems.t9t.zkui.util.Constants;
 
 import de.jpaw.bonaparte.pojos.meta.EnumDefinition;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
@@ -57,7 +58,7 @@ public abstract class EnumBaseField extends AbstractField<Combobox> {
         } else {
             String enumDtoRestriction = null;
             if (desc.getProperties() != null)
-                enumDtoRestriction = desc.getProperties().get("enums");
+                enumDtoRestriction = desc.getProperties().get(Constants.UiFieldProperties.ENUMS);
             this.enumRestrictions = session.enumRestrictions(pqon, enumDtoRestriction, null);
             if (enumRestrictions != null) {
                 LOGGER.debug("enum {} for filter field {} restricted to {} instances", pqon, getFieldName(), enumRestrictions.size());

@@ -32,13 +32,8 @@
 
     <properties>
         <!-- ZK libraries, COMMERCIAL !!! -->
-        <zk.version>9.6.0.1</zk.version>
+        <zk.version>9.6.1</zk.version>
         <zk-ckez.version>4.16.2.0</zk-ckez.version>  <!-- https://github.com/zkoss/zkckeditor -->
-
-        <!-- older versions of jfree pulled by zkex, DM asks for newer -->
-        <org-jfree-jfreechart.version>1.0.19</org-jfree-jfreechart.version>
-        <org-jfree-jcommon.version>1.0.23</org-jfree-jcommon.version>
-
         <shiro.version>1.8.0</shiro.version>
     </properties>
 
@@ -131,16 +126,6 @@
                 <groupId>org.apache.shiro</groupId>
                 <artifactId>shiro-web</artifactId>
                 <version>${shiro.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jfree</groupId>
-                <artifactId>jfreechart</artifactId>
-                <version>${org-jfree-jfreechart.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jfree</groupId>
-                <artifactId>jcommon</artifactId>
-                <version>${org-jfree-jcommon.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

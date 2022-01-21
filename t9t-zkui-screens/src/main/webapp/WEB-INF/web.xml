@@ -40,9 +40,6 @@ it does not start any more, see https://forum.zkoss.org/question/95682/jetty-9-a
         <listener-class>com.arvatosystems.t9t.zkui.init.T9tInitializer</listener-class>
     </listener>
     <listener>
-        <listener-class>com.arvatosystems.t9t.zkui.init.SessionCounter</listener-class>
-    </listener>
-    <listener>
         <description>ZK listener for session cleanup</description>
         <listener-class>org.zkoss.zk.ui.http.HttpSessionListener</listener-class>
     </listener>

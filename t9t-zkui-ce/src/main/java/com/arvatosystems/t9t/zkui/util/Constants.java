@@ -69,12 +69,27 @@ public final class Constants {
         private KeyStrokes() {
         }
 
-        public static final String FUNCTION_BASIC = "basic";
-        public static final String FUNCTION_FOCUS = "focus";
-        public static final String FUNCTION_HINTS = "hints";
         public static final char   CTRL_KEY       = 'C';
         public static final char   ALT_KEY        = 'A';
         public static final char   SHIFT_KEY      = 'S';
 
+    }
+
+    /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+    /* Properties in the bon file which are used by the ZK UI.   */
+    /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+    public final class UiFieldProperties {
+        private UiFieldProperties() {
+        }
+
+        public static final String FILTER_QUALIFIER = "filterQualifier";        // the default search qualifier
+        public static final String QUALIFIER_FOR    = "qualifierFor";           // only accept valid qualifiers for the referenced interface
+        public static final String DROPDOWN         = "dropdown";               // use a dropdown instead of (alpha)numeric entry field
+        public static final String BANDBOX          = "bandbox";                // use a bandbox (search popup for bigger data sets) instead of entry field
+        public static final String TRISTATE         = "tristate";               // use a dropdown with TRUE / FALSE / NULL instead of checkbox for this boolean
+        public static final String ENUMS            = "enums";                  // use a restricted set of enums
+        public static final String ENUMSET          = "enumset";                // display as list of enum instances in the result overview grid
+        public static final String XENUMSET         = "xenumset";               // display as list of xenum instances in the result overview grid
+        public static final String SHOW_TODAY       = "showToday";              // show an additional "today" button in the date picker
     }
 }
