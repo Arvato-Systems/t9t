@@ -39,6 +39,7 @@ import org.zkoss.zul.RowRenderer;
 import com.arvatosystems.t9t.base.uiprefs.UIGridPreferences;
 import com.arvatosystems.t9t.zkui.components.dropdown28.SimpleListModelExt;
 import com.arvatosystems.t9t.zkui.services.impl.DefaultSearchFilterConfigCreator;
+import com.arvatosystems.t9t.zkui.util.Constants;
 import com.arvatosystems.t9t.zkui.viewmodel.support.SearchFilterRowVM;
 
 import de.jpaw.bonaparte.pojos.ui.UIColumnConfiguration;
@@ -103,7 +104,9 @@ public class SearchFilterConfigCreatorEE extends DefaultSearchFilterConfigCreato
                             fnm.setFullPath(fullPath);
                             final SearchFilterRowVM selectedSearchFilter = activeUIFilterMap.get(fullPath);
                             if (selectedSearchFilter == null) {
-                                fnm.setSearchFilter(new SearchFilterRowVM(uiColumn.getFieldName()));
+                                final SearchFilterRowVM row = new SearchFilterRowVM(uiColumn.getFieldName());
+                                addIfQualifierExists(row, uiColumn);
+                                fnm.setSearchFilter(row);
                             } else {
                                 fnm.setSearchFilter(selectedSearchFilter);
                             }
@@ -122,7 +125,9 @@ public class SearchFilterConfigCreatorEE extends DefaultSearchFilterConfigCreato
                 fnm.setFullPath(fullPath);
                 final SearchFilterRowVM selectedSearchFilter = activeUIFilterMap.get(fullPath);
                 if (selectedSearchFilter == null) {
-                    fnm.setSearchFilter(new SearchFilterRowVM(uiColumn.getFieldName()));
+                    final SearchFilterRowVM row = new SearchFilterRowVM(uiColumn.getFieldName());
+                    addIfQualifierExists(row, uiColumn);
+                    fnm.setSearchFilter(row);
                 } else {
                     fnm.setSearchFilter(selectedSearchFilter);
                 }
@@ -131,6 +136,13 @@ public class SearchFilterConfigCreatorEE extends DefaultSearchFilterConfigCreato
                     firstLevelColumns.add(fnm);
                 }
             }
+        }
+    }
+
+    private void addIfQualifierExists(final SearchFilterRowVM row, final UIColumnConfiguration uiColumn) {
+        if (uiColumn.getMeta() != null && uiColumn.getMeta().getFieldProperties() != null) {
+            String filterQualifier = uiColumn.getMeta().getFieldProperties().get(Constants.UiFieldProperties.FILTER_QUALIFIER);
+            row.setQualifier(filterQualifier);
         }
     }
 

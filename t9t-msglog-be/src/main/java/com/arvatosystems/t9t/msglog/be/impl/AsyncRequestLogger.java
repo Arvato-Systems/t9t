@@ -166,10 +166,10 @@ public class AsyncRequestLogger implements IRequestLogger {
         m.setExecutionStartedAt     (hdr.getExecutionStartedAt());
         m.setLanguageCode           (hdr.getLanguageCode());
         m.setRequestParameterPqon   (hdr.getRequestParameterPqon());
+        m.setMessageId              (hdr.getMessageId());
 
         final ServiceRequestHeader h = hdr.getRequestHeader();
         if (h != null) {
-            m.setMessageId           (h.getMessageId());
             m.setRecordNo            (h.getRecordNo());
             m.setIdempotencyBehaviour(h.getIdempotencyBehaviour());
             m.setPlannedRunDate      (h.getPlannedRunDate());

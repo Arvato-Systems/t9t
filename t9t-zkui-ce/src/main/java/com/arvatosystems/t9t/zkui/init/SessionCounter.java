@@ -17,41 +17,37 @@ package com.arvatosystems.t9t.zkui.init;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.servlet.http.HttpSessionEvent;
-import javax.servlet.http.HttpSessionListener;
-
+import org.apache.shiro.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Counting the Session/user.
  */
-public class SessionCounter implements HttpSessionListener {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SessionListener.class);
+public class SessionCounter implements org.apache.shiro.session.SessionListener {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SessionCounter.class);
     private static final AtomicInteger SESSION_COUNTER = new AtomicInteger(0);
 
     public SessionCounter() {
         LOGGER.debug("SessionCounter CONSTRUCTOR (web.xml)");
     }
 
-    /**
-     * session Created.
-     * @param event HttpSessionEvent
-     */
+    public static int getActiveSessionNumber() {
+        return SESSION_COUNTER.get();
+    }
+
     @Override
-    public void sessionCreated(HttpSessionEvent event) {
+    public void onStart(Session session) {
         SESSION_COUNTER.incrementAndGet();
     }
 
-    /**
-     * @param event HttpSessionEvent
-     */
     @Override
-    public void sessionDestroyed(HttpSessionEvent event) {
+    public void onStop(Session session) {
         SESSION_COUNTER.decrementAndGet();
     }
 
-    public static int getActiveSessionNumber() {
-        return SESSION_COUNTER.get();
+    @Override
+    public void onExpiration(Session session) {
+        SESSION_COUNTER.decrementAndGet();
     }
 }

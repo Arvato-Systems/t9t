@@ -37,6 +37,7 @@ import com.arvatosystems.t9t.base.uiprefs.UIGridPreferences;
 import com.arvatosystems.t9t.zkui.components.dropdown28.SimpleListModelExt;
 import com.arvatosystems.t9t.zkui.services.ISearchFilterConfigCreator;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
+import com.arvatosystems.t9t.zkui.util.Constants;
 import com.arvatosystems.t9t.zkui.viewmodel.support.SearchFilterRowVM;
 
 import de.jpaw.bonaparte.pojos.ui.UIColumnConfiguration;
@@ -82,7 +83,10 @@ public class DefaultSearchFilterConfigCreator implements ISearchFilterConfigCrea
 
             if (row == null) {
                 row = new SearchFilterRowVM(column.getFieldName());
-                row.setQualifier(column.getFilterQualifier());
+                if (column.getMeta() != null && column.getMeta().getFieldProperties() != null) {
+                    String filterQualifier = column.getMeta().getFieldProperties().get(Constants.UiFieldProperties.FILTER_QUALIFIER);
+                    row.setQualifier(filterQualifier);
+                }
                 rows.add(row);
             }
             row.setFilterTypes(getAvailableFilterType(column));
@@ -214,8 +218,8 @@ public class DefaultSearchFilterConfigCreator implements ISearchFilterConfigCrea
     protected boolean isEqualityDataTypes(UIColumnConfiguration column) {
         final String dataType = column.getMeta().getDataType();
 
-        return dataType.equals("boolean") || dataType.equals("enum") || dataType.equals("xenum")
-                || dataType.equals("uuid") || hasProperty(column, "dropdown") || hasProperty(column, "bandbox")
+        return dataType.equals("boolean") || dataType.equals("enum") || dataType.equals("xenum") || dataType.equals("uuid")
+                || hasProperty(column, Constants.UiFieldProperties.DROPDOWN) || hasProperty(column, Constants.UiFieldProperties.BANDBOX)
                 || column.getFieldName().equals("tenantRef");
     }
 
@@ -277,7 +281,7 @@ public class DefaultSearchFilterConfigCreator implements ISearchFilterConfigCrea
      * @return
      */
     private boolean isDropdownOrBandbox(UIColumnConfiguration column) {
-        return hasProperty(column, "dropdown") || hasProperty(column, "bandbox");
+        return hasProperty(column, Constants.UiFieldProperties.DROPDOWN) || hasProperty(column, Constants.UiFieldProperties.BANDBOX);
     }
 
     @Override

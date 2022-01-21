@@ -203,7 +203,7 @@ public class T9tServer extends AbstractVerticle {
 
             // no matching path or method
             router.route().handler((final RoutingContext it) -> {
-                final String errorMsg = "Request method «request.method» for path «request.path» not supported";
+                final String errorMsg = "Request method " + it.request().method().toString() + " for path " + it.request().path() + " not supported";
                 LOGGER.info(errorMsg);
                 it.response().setStatusMessage(errorMsg);
                 it.response().setStatusCode(404);
