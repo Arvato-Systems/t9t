@@ -80,8 +80,8 @@
         <exec.plugin.version>3.0.0</exec.plugin.version>
         <jetty-maven-plugin.version>10.0.7</jetty-maven-plugin.version>
         <maven-antrun-plugin.version>3.0.0</maven-antrun-plugin.version>
-        <cxf-codegen-plugin.version>3.3.11</cxf-codegen-plugin.version>      <!-- 3.4.4 ? -->
-        <cxf-wadl2java-plugin.version>3.3.11</cxf-wadl2java-plugin.version>  <!-- 3.4.4 ? -->
+        <cxf-codegen-plugin.version>3.5.0</cxf-codegen-plugin.version>
+        <cxf-wadl2java-plugin.version>3.5.0</cxf-wadl2java-plugin.version>
         <cxf-xjc-plugin.version>3.3.1</cxf-xjc-plugin.version>   <!-- older than the other CXF plugins, but no newer release available -->
         <echo-maven-plugin.version>1.0.0</echo-maven-plugin.version>
 

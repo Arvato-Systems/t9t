@@ -35,7 +35,7 @@
     -->
     <properties>
         <jodatime.version>2.10.10</jodatime.version>
-        <org.slf4j-api.version>1.7.32</org.slf4j-api.version>
+        <org.slf4j-api.version>1.7.33</org.slf4j-api.version>
 
         <!-- jpaw / bonaparte: versions for import of BOM. The plugin version is defined separately in SE/EE -->
         <!-- Note that the version of the bonapart-dsl plugin is set in "global-settings" -->
@@ -58,7 +58,7 @@
 
         <!-- OR mappers -->
         <eclipselink.version>2.7.8</eclipselink.version>
-        <hibernate.version>5.6.3.Final</hibernate.version>
+        <hibernate.version>5.6.4.Final</hibernate.version>
         <hibernate-validator.version>6.2.1.Final</hibernate-validator.version>
         <ehcache.version>2.10.4</ehcache.version>
         <ehcache3.version>3.5.3</ehcache3.version>
@@ -128,15 +128,15 @@
         <junit.version>4.13.2</junit.version>      <!-- groupId is junit -->
         <junit5.version>5.8.2</junit5.version>     <!-- groupId is org.junit, therefore is can coexist with junit4 in dependency management -->
         <hamcrest.version>2.2</hamcrest.version>   <!-- avoid unless required -->
-        <byte-buddy.version>1.12.6</byte-buddy.version>   <!-- 1.12.x requested by mockito 4.2.0, and reuired for Java 17 -->
+        <byte-buddy.version>1.12.7</byte-buddy.version>   <!-- 1.12.x requested by mockito 4.2.0, and reuired for Java 17 -->
         <org.mockito-core.version>4.2.0</org.mockito-core.version>
         <archunit.version>0.22.0</archunit.version>
         <hdrhistogram.version>2.1.12</hdrhistogram.version>
 
         <!-- Others -->
-        <bouncycastle.version>1.69</bouncycastle.version>
+        <bouncycastle.version>1.70</bouncycastle.version>
         <bouncycastle-tsp.version>1.46</bouncycastle-tsp.version>     <!--  is older than the others! Is it still required? -->
-        <woodstox.version>6.2.6</woodstox.version>
+        <woodstox.version>6.2.8</woodstox.version>
         <stax2-api.version>4.2.1</stax2-api.version>
         <icu4j.version>69.1</icu4j.version>
         <zxing.version>3.4.1</zxing.version>
@@ -150,7 +150,7 @@
         <httpcore5.version>5.0.4</httpcore5.version>
         <httpclient5.version>5.0.4</httpclient5.version>
         <httpmime.version>4.5.13</httpmime.version>
-        <pdfbox.version>2.0.24</pdfbox.version>
+        <pdfbox.version>2.0.25</pdfbox.version>
         <xmlunit.version>1.5</xmlunit.version>
         <freemarker.version>2.3.31</freemarker.version>
         <jasperreports.version>6.18.1</jasperreports.version>
@@ -164,8 +164,8 @@
         <resteasy-jaxrs.version>5.0.2.Final</resteasy-jaxrs.version>
         <googlemaps.services.version>0.2.5</googlemaps.services.version>
         <uuid-generator.version>3.1.2</uuid-generator.version>
-        <apache-poi.version>5.1.0</apache-poi.version>
-        <xmlbeans.version>5.0.2</xmlbeans.version>  <!-- 3.x is required for POI 4 (xlsx), 4.x or 5.x for POI 5.0 -->
+        <apache-poi.version>5.2.0</apache-poi.version>
+        <xmlbeans.version>5.0.3</xmlbeans.version>  <!-- 3.x is required for POI 4 (xlsx), 4.x or 5.x for POI 5.0 -->
         <gson.version>2.8.9</gson.version>
         <log4j2.version>2.17.1</log4j2.version>     <!-- see comment below -->
 
@@ -173,7 +173,7 @@
         <spring-data-jpa.version>2.5.5</spring-data-jpa.version>
         <spring-boot.version>2.5.5</spring-boot.version>
 
-        <netty.version>4.1.72.Final</netty.version>
+        <netty.version>4.1.73.Final</netty.version>
         <vertx4.version>4.2.3</vertx4.version>
 
         <snakeyaml.version>1.28</snakeyaml.version>
@@ -186,7 +186,7 @@
         <maven-plugin-api.version>3.8.1</maven-plugin-api.version>
         <jackson.version>2.13.1</jackson.version>
         <solr.version>8.11.1</solr.version>
-        <camel.version>3.11.4</camel.version>
+        <camel.version>3.14.0</camel.version>
         <kafka.version>2.8.1</kafka.version>
         <error-prone.version>2.7.1</error-prone.version>
 
