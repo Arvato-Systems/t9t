@@ -15,8 +15,9 @@
  */
 package com.arvatosystems.t9t.in.be.impl;
 
+import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.io.DataSinkDTO;
-
+import com.arvatosystems.t9t.io.T9tIOException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,6 +51,7 @@ public abstract class AbstractTextFormatConverter extends AbstractInputFormatCon
             }
         } catch (IOException e) {
             LOGGER.error("Error when reading line from input stream.", e);
+            throw new T9tException(T9tIOException.IO_EXCEPTION);
         } finally {
             try {
                 streamReader.close();

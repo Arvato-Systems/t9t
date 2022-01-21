@@ -45,6 +45,7 @@ public class RerunUnconditionallyRequestHandler extends AbstractRequestHandler<R
         final RequestParameters recordedRequest = loggedRequest.getRequestParameters();
         if (recordedRequest == null)
             throw new T9tException(T9tException.RERUN_NOT_POSSIBLE_NO_RECORDED_REQUEST, rq.getProcessRef());
+        recordedRequest.setMessageId(loggedRequest.getMessageId());
 
         return executor.executeSynchronous(ctx, recordedRequest);
     }

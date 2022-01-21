@@ -15,21 +15,19 @@
  */
 package com.arvatosystems.t9t.in.be.impl;
 
+import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.io.DataSinkDTO;
-
+import com.arvatosystems.t9t.io.T9tIOException;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Named;
 import de.jpaw.util.ExceptionUtil;
-
 import java.io.InputStream;
-
 import javax.xml.bind.JAXBElement;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -114,8 +112,10 @@ public class XmlStreamFormatConverter extends AbstractXmlFormatConverter {
             reader.close();
         } catch (final XMLStreamException e) {
             LOGGER.error("XMLStreamException: " + e.getMessage(), e);
+            throw new T9tException(T9tIOException.XML_MARSHALLING_ERROR);
         } catch (final Exception e) {
             LOGGER.error("Exception: " + e.getMessage(), e);
+            throw new T9tException(T9tIOException.IO_EXCEPTION);
         }
     }
 

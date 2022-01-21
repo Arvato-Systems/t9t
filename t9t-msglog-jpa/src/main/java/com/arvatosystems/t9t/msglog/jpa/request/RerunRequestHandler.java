@@ -45,6 +45,7 @@ public class RerunRequestHandler extends AbstractRequestHandler<RerunRequest> {
         if (recordedRequest == null)
             throw new T9tException(T9tException.RERUN_NOT_POSSIBLE_NO_RECORDED_REQUEST, rq.getProcessRef());
         // all checks OK: perform the rerun
+        recordedRequest.setMessageId(loggedRequest.getMessageId());
         loggedRequest.setRerunByProcessRef(ctx.getRequestRef());
         executor.executeAsynchronous(ctx, recordedRequest);
         return ok();

@@ -114,7 +114,8 @@ public class AuthStartup implements StartupOnly {
         final PermissionsDTO permissions = new PermissionsDTO();
         permissions.setLogLevel(UserLogLevelType.REQUESTS);
         permissions.setLogLevelErrors(UserLogLevelType.REQUESTS);
-        permissions.setResourceRestriction("-");
+        permissions.setResourceIsWildcard(Boolean.TRUE);
+        permissions.setResourceRestriction(""); // all web services
         permissions.setMinPermissions(IAuthorize.ALL_PERMISSIONS);
         permissions.setMaxPermissions(IAuthorize.ALL_PERMISSIONS);
         user.setPermissions(permissions);
