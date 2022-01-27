@@ -45,6 +45,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Singleton
 public class FilterToSolrConverter implements IFilterToSolrConverter {
@@ -74,16 +76,29 @@ public class FilterToSolrConverter implements IFilterToSolrConverter {
         return t == null ? "*" : ISO_FMT.format(t).replace(":", "\\:") + "Z";
     }
 
-    protected Object toSolrByUuidFilter(final UuidFilter filter) {
-        return filter.getEqualsValue().toString().replace("-", "\\-");
+    protected Object toSolrByUuidFilter(final UuidFilter it) {
+        if (it.getValueList() != null) {
+            return buildOr(it.getValueList().stream()
+                    .map(v -> v.toString().replace("-", "\\-")));
+        }
+
+        return it.getEqualsValue().toString().replace("-", "\\-");
     }
 
     protected Object toSolrByUnicodeFilter(final UnicodeFilter it) {
+        if (it.getValueList() != null) {
+            return buildOrForSolr(it.getValueList().stream());
+        }
+
         String forSolr = forSolr(it.getEqualsValue());
         return forSolr == null ? forSolr(it.getLikeValue()) : forSolr;
     }
 
     protected Object toSolrByAsciiFilter(final AsciiFilter it) {
+        if (it.getValueList() != null) {
+            return buildOrForSolr(it.getValueList().stream());
+        }
+
         String forSolr = forSolr(it.getEqualsValue());
         return forSolr == null ? forSolr(it.getLikeValue()) : forSolr;
     }
@@ -92,6 +107,10 @@ public class FilterToSolrConverter implements IFilterToSolrConverter {
         if (it.getEqualsValue() != null) {
             return it.getEqualsValue();
         }
+
+        if (it.getValueList() != null) {
+            return buildOr(it.getValueList().stream());
+        }
         return buildExpression(it.getLowerBound(), it.getUpperBound());
     }
 
@@ -99,6 +118,11 @@ public class FilterToSolrConverter implements IFilterToSolrConverter {
         if (it.getEqualsValue() != null) {
             return it.getEqualsValue();
         }
+
+        if (it.getValueList() != null) {
+            return buildOr(it.getValueList().stream());
+        }
+
         return buildExpression(it.getLowerBound(), it.getUpperBound());
     }
 
@@ -106,12 +130,21 @@ public class FilterToSolrConverter implements IFilterToSolrConverter {
         if (it.getEqualsValue() != null) {
             return it.getEqualsValue();
         }
+
+        if (it.getValueList() != null) {
+            return buildOr(it.getValueList().stream());
+        }
+
         return buildExpression(it.getLowerBound(), it.getUpperBound());
     }
 
     protected Object toSolrByTimeFilter(final TimeFilter it) {
         if (it.getEqualsValue() != null) {
             return forSolr(it.getEqualsValue());
+        }
+
+        if (it.getValueList() != null) {
+            return buildOrForSolr(it.getValueList().stream());
         }
         return buildExpressionForSolr(it.getLowerBound(), it.getUpperBound());
     }
@@ -120,12 +153,20 @@ public class FilterToSolrConverter implements IFilterToSolrConverter {
         if (it.getEqualsValue() != null) {
             return forSolr(it.getEqualsValue());
         }
+
+        if (it.getValueList() != null) {
+            return buildOrForSolr(it.getValueList().stream());
+        }
         return buildExpressionForSolr(it.getLowerBound(), it.getUpperBound());
     }
 
     protected Object toSolrByTimestampFilter(final TimestampFilter it) {
         if (it.getEqualsValue() != null) {
             return forSolr(it.getEqualsValue());
+        }
+
+        if (it.getValueList() != null) {
+            return buildOrForSolr(it.getValueList().stream());
         }
         return buildExpressionForSolr(it.getLowerBound(), it.getUpperBound());
     }
@@ -134,6 +175,10 @@ public class FilterToSolrConverter implements IFilterToSolrConverter {
         if (it.getEqualsValue() != null) {
             return forSolr(it.getEqualsValue());
         }
+
+        if (it.getValueList() != null) {
+            return buildOrForSolr(it.getValueList().stream());
+        }
         return buildExpressionForSolr(it.getLowerBound(), it.getUpperBound());
     }
 
@@ -141,12 +186,20 @@ public class FilterToSolrConverter implements IFilterToSolrConverter {
         if (it.getEqualsValue() != null) {
             return it.getEqualsValue();
         }
+
+        if (it.getValueList() != null) {
+            return buildOr(it.getValueList().stream());
+        }
         return buildExpression(it.getLowerBound(), it.getUpperBound());
     }
 
     protected Object toSolrByFloatFilter(final FloatFilter it) {
         if (it.getEqualsValue() != null) {
             return it.getEqualsValue();
+        }
+
+        if (it.getValueList() != null) {
+            return buildOr(it.getValueList().stream());
         }
         return buildExpression(it.getLowerBound(), it.getUpperBound());
     }
@@ -186,11 +239,25 @@ public class FilterToSolrConverter implements IFilterToSolrConverter {
     }
 
     protected Object buildExpression(Object from, Object to) {
-        return "[" + from == null ? "*" : from + " TO " + to == null ? "*" : to + "]";
+        return "[" + (from == null ? "*" : from) + " TO " + (to == null ? "*" : to) + "]";
     }
 
     protected Object buildExpressionForSolr(Object from, Object to) {
-        return "[" + from == null ? "*" : forSolrByObject(from) + " TO " + to == null ? "*" : forSolrByObject(to) + "]";
+        return "[" + (from == null ? "*" : forSolrByObject(from)) + " TO " + (to == null ? "*" : forSolrByObject(to)) + "]";
+    }
+
+    protected <C> String buildOr(Stream<C> valueList) {
+        String joined = valueList
+        .map(v -> v.toString())
+        .collect(Collectors.joining(" OR "));
+        return "(" + joined + ")";
+    }
+
+    protected <C> String buildOrForSolr(Stream<C> valueList) {
+        String joined = valueList
+        .map(v -> forSolrByObject(v))
+        .collect(Collectors.joining(" OR "));
+        return "(" + joined + ")";
     }
 
     protected String forSolrByObject(Object obj) {
@@ -218,19 +285,37 @@ public class FilterToSolrConverter implements IFilterToSolrConverter {
         return Boolean.toString(it.getBooleanValue()); // '''«if (booleanValue) { 'true' } else { 'false' }»'''
     }
 
-    protected Object toSolrByEnumFilter(EnumFilter filter) {
-        final String what = filter.getEqualsToken() == null ? (String) enumResolver.getTokenByPqonAndInstance(filter.getEnumPqon(), filter.getEqualsName())
-                : filter.getEqualsToken();
+    protected Object toSolrByEnumFilter(EnumFilter it) {
+        if (it.getTokenList() != null) {
+            return buildOr(it.getTokenList().stream());
+        }
+
+        if (it.getNameList() != null) {
+            return buildOr(it.getNameList().stream()
+                    .map(v -> enumResolver.getTokenByPqonAndInstance(it.getEnumPqon(), v).toString()));
+        }
+
+        final String what = it.getEqualsToken() == null ? (String) enumResolver.getTokenByPqonAndInstance(it.getEnumPqon(), it.getEqualsName())
+                : it.getEqualsToken();
         if (what == null) {
             return "null";
         }
         return forSolr(what.toString());
     }
 
-    protected Object toSolrByXenumFilter(XenumFilter filter) {
-        final String what = filter.getEqualsToken() == null
-                ? (String) enumResolver.getTokenByXEnumPqonAndInstance(filter.getXenumPqon(), filter.getEqualsName())
-                : filter.getEqualsToken();
+    protected Object toSolrByXenumFilter(XenumFilter it) {
+        if (it.getTokenList() != null) {
+            return buildOr(it.getTokenList().stream());
+        }
+
+        if (it.getNameList() != null) {
+            return buildOr(it.getNameList().stream()
+                    .map(v -> enumResolver.getTokenByXEnumPqonAndInstance(it.getXenumPqon(), v).toString()));
+        }
+
+        final String what = it.getEqualsToken() == null
+                ? (String) enumResolver.getTokenByXEnumPqonAndInstance(it.getXenumPqon(), it.getEqualsName())
+                : it.getEqualsToken();
         if (what == null) {
             return "null";
         }
@@ -259,15 +344,11 @@ public class FilterToSolrConverter implements IFilterToSolrConverter {
     }
 
     protected String toSolrConditionInternalByOrFilter(OrFilter it) {
-        return "(" + toSolrConditionInternal(it.getFilter1()) + " AND " + toSolrConditionInternal(it.getFilter2()) + ")";
+        return "(" + toSolrConditionInternal(it.getFilter1()) + " OR " + toSolrConditionInternal(it.getFilter2()) + ")";
     }
 
     protected String toSolrConditionInternalByNullFilter(NullFilter it) {
         return "-" + it.getFieldName() + ":[* TO *]";
-    }
-
-    protected String toSolrConditionInternalByFieldFilter(FieldFilter it) {
-        throw new Error("Unresolved compilation problems:" + "\nType mismatch: cannot convert implicit first argument from FieldFilter to UuidFilter");
     }
 
     protected CharSequence toSolrConditionInternal(final SearchFilter it) {
@@ -275,12 +356,12 @@ public class FilterToSolrConverter implements IFilterToSolrConverter {
             return toSolrConditionInternalByNullFilter((NullFilter) it);
         } else if (it instanceof AndFilter) {
             return toSolrConditionInternalByAndFilter((AndFilter) it);
-        } else if (it instanceof FieldFilter) {
-            return toSolrConditionInternalByFieldFilter((FieldFilter) it);
         } else if (it instanceof NotFilter) {
             return toSolrConditionInternalByNotFilter((NotFilter) it);
         } else if (it instanceof OrFilter) {
             return toSolrConditionInternalByOrFilter((OrFilter) it);
+        } else if (it instanceof FieldFilter) {
+            return toSolr((FieldFilter) it).toString();
         } else {
             throw new IllegalArgumentException("Unhandled parameter types: " + it.getClass().getSimpleName());
         }
