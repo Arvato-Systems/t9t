@@ -51,7 +51,7 @@
 
         <!-- Database driver versions -->
         <driver.ojdbc8.version>21.1.0.0</driver.ojdbc8.version>  <!-- The 8 in ojdbc8 is for the min Java version required. There are also drivers which required Java 11 -->
-        <driver.postgresql.version>42.2.24</driver.postgresql.version>  <!-- starting with 4.2.15, the driver adds a dependency to checker-qual 3.5.0 which conflicts with 2.5.2 pulled by guava -->
+        <driver.postgresql.version>42.2.25</driver.postgresql.version>  <!-- starting with 4.2.15, the driver adds a dependency to checker-qual 3.5.0 which conflicts with 2.5.2 pulled by guava -->
         <driver.sqlserver.version>9.2.0.jre8</driver.sqlserver.version>
         <driver.hana.version>2.7.13</driver.hana.version>
         <h2.version>1.4.197</h2.version>
