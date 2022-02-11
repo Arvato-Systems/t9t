@@ -46,8 +46,8 @@
 
         <!-- Versions of Xtext & Xtend -->
         <!-- Note that the versions of the xtext/xtend plugins are ALSO set in "global-settings" -->
-        <xtend.version>2.26.0.M2</xtend.version>
-        <xtext.version>2.26.0.M2</xtext.version>
+        <xtend.version>2.26.0.M3</xtend.version>
+        <xtext.version>2.26.0.M3</xtext.version>
 
         <!-- Database driver versions -->
         <driver.ojdbc8.version>21.1.0.0</driver.ojdbc8.version>  <!-- The 8 in ojdbc8 is for the min Java version required. There are also drivers which required Java 11 -->
