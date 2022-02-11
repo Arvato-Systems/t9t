@@ -35,7 +35,7 @@
     -->
     <properties>
         <jodatime.version>2.10.10</jodatime.version>
-        <org.slf4j-api.version>1.7.33</org.slf4j-api.version>
+        <org.slf4j-api.version>1.7.36</org.slf4j-api.version>
 
         <!-- jpaw / bonaparte: versions for import of BOM. The plugin version is defined separately in SE/EE -->
         <!-- Note that the version of the bonapart-dsl plugin is set in "global-settings" -->
@@ -50,15 +50,15 @@
         <xtext.version>2.26.0.M3</xtext.version>
 
         <!-- Database driver versions -->
-        <driver.ojdbc8.version>21.1.0.0</driver.ojdbc8.version>  <!-- The 8 in ojdbc8 is for the min Java version required. There are also drivers which required Java 11 -->
-        <driver.postgresql.version>42.2.24</driver.postgresql.version>  <!-- starting with 4.2.15, the driver adds a dependency to checker-qual 3.5.0 which conflicts with 2.5.2 pulled by guava -->
+        <driver.oracle.version>21.5.0.0</driver.oracle.version>
+        <driver.postgresql.version>42.2.25</driver.postgresql.version>  <!-- starting with 4.2.15, the driver adds a dependency to checker-qual 3.5.0 which conflicts with 2.5.2 pulled by guava -->
         <driver.sqlserver.version>9.2.0.jre8</driver.sqlserver.version>
         <driver.hana.version>2.7.13</driver.hana.version>
-        <h2.version>1.4.197</h2.version>
+        <h2.version>2.1.210</h2.version>
 
         <!-- OR mappers -->
         <eclipselink.version>2.7.8</eclipselink.version>
-        <hibernate.version>5.6.4.Final</hibernate.version>
+        <hibernate.version>5.6.5.Final</hibernate.version>
         <hibernate-validator.version>6.2.1.Final</hibernate-validator.version>
         <ehcache.version>2.10.4</ehcache.version>
         <ehcache3.version>3.5.3</ehcache3.version>
@@ -174,7 +174,7 @@
         <spring-boot.version>2.5.5</spring-boot.version>
 
         <netty.version>4.1.73.Final</netty.version>
-        <vertx4.version>4.2.3</vertx4.version>
+        <vertx4.version>4.2.4</vertx4.version>
 
         <snakeyaml.version>1.28</snakeyaml.version>
         <classgraph.version>4.8.116</classgraph.version>
@@ -643,10 +643,16 @@
                 <version>${driver.hana.version}</version>
             </dependency>
             <dependency>
-                <!-- ORACLE 12.2 database driver -->
+                <!-- ORACLE database driver for Java 8 and up -->
                 <groupId>com.oracle.database.jdbc</groupId>
                 <artifactId>ojdbc8</artifactId>
-                <version>${driver.ojdbc8.version}</version>
+                <version>${driver.oracle.version}</version>
+            </dependency>
+            <dependency>
+                <!-- ORACLE database driver optimized for Java 11 -->
+                <groupId>com.oracle.database.jdbc</groupId>
+                <artifactId>ojdbc11</artifactId>
+                <version>${driver.oracle.version}</version>
             </dependency>
             <dependency>
                 <!-- MS SQL server database driver -->

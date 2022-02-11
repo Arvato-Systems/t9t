@@ -76,7 +76,7 @@ public class EMFCustomizer implements IEMFCustomizer {
                 myProps.put(DIALECT_KEY, "org.hibernate.dialect.PostgreSQL94Dialect");
                 break;
             case H2:
-                myProps.put(DIALECT_KEY, "org.hibernate.dialect.H2Dialect");
+                myProps.put(DIALECT_KEY, "com.arvatosystems.t9t.orm.jpa.hibernate.impl.T9TH2Dialect");
                 break;
             default:
                 break;

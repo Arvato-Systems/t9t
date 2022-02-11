@@ -72,7 +72,7 @@ class InMemoryConnection extends AbstractConnection {
                 password                = ""
                 databaseBrand           = DatabaseBrandType.H2
                 jdbcDriverClass         = "org.h2.Driver"
-                jdbcConnectString       = "jdbc:h2:mem:fortytwo;SELECT_FOR_UPDATE_MVCC=FALSE"
+                jdbcConnectString       = "jdbc:h2:mem:fortytwo;NON_KEYWORDS=KEY,DAY,INTERVAL"
             ]
             keyPrefetchConfiguration = new KeyPrefetchConfiguration => [
                 strategy                = ""    // Use fallback NoopRefGenerator
