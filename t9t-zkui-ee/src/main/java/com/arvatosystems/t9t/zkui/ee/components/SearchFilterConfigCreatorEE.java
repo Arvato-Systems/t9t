@@ -81,6 +81,11 @@ public class SearchFilterConfigCreatorEE extends DefaultSearchFilterConfigCreato
         }
 
         for (final UIColumnConfiguration uiColumn : uiColumns) {
+
+            if (hasExcludedProperties(uiColumn)) {
+                continue;
+            }
+
             final String fullPath = uiColumn.getFieldName();
             if (fullPath.indexOf(".") != -1) {
                 final String[] splitted = fullPath.split("\\.");

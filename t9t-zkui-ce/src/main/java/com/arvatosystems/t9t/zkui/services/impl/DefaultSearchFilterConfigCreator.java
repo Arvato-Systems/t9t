@@ -75,7 +75,8 @@ public class DefaultSearchFilterConfigCreator implements ISearchFilterConfigCrea
             // only allow root level fields of main dto && binary: not allowed at all
             if ((!isFieldWithinLevelOfMainDTO(column, 0) && activeUIFilterMap.get(column.getFieldName()) == null)
                     || column.getMeta() == null || column.getMeta().getDataType().equals("binary")
-                    || column.getMeta().getDataCategory().equals("OBJECT") && !isDropdownOrBandbox(column)) {
+                    || column.getMeta().getDataCategory().equals("OBJECT") && !isDropdownOrBandbox(column)
+                    || hasExcludedProperties(column)) {
                 continue;
             }
 
@@ -207,6 +208,15 @@ public class DefaultSearchFilterConfigCreator implements ISearchFilterConfigCrea
         }
 
         return allowedTypes;
+    }
+
+    /**
+     * Define a list of properties to be excluded in the search filter configuration.
+     */
+    protected boolean hasExcludedProperties(UIColumnConfiguration column) {
+        return hasProperty(column, Constants.UiFieldProperties.NO_JAVA)
+                || hasProperty(column, Constants.UiFieldProperties.NO_DDL)
+                || hasProperty(column, Constants.UiFieldProperties.NO_AUTO_MAP);
     }
 
     /**

@@ -38,7 +38,6 @@ import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
-import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
@@ -116,7 +115,7 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
     @Wire
     private Paging paging;
     @Wire
-    private Button exportButton;
+    private Button28 exportButton;
     @Wire("#info")
     private Image infoImage;
 
@@ -675,4 +674,11 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
         this.dynamicColumnSize = dynamicColumnSize;
     }
 
+    /**
+     * setting autoblur on all buttons in Filter28, setting false to disable the feature,
+     * this is only required if this components are embedded in the popup based components
+     **/
+    public void setAutoblurOnButtons(final boolean autoblur) {
+        exportButton.setAutoblur(autoblur);
+    }
 }

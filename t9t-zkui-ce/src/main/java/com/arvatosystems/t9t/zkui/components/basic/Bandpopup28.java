@@ -79,6 +79,13 @@ public class Bandpopup28 extends Bandpopup implements IdSpace, IGridIdOwner {
             });
         }
 
+        // TBE-702: previous autoblur onclick does not work on popup-based components
+        // as it will dismiss the whole pop up unintentionally.
+        selectButton.setAutoblur(false);
+        cancelButton.setAutoblur(false);
+        filters.setAutoblurOnButtons(false);
+        main.setAutoblurOnButtons(false);
+
         cancelButton.addEventListener(Events.ON_CLICK, ev -> {
             ((Bandbox) this.getParent()).setOpen(false);
         });

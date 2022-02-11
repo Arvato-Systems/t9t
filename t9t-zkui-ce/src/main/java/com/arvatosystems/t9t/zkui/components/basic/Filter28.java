@@ -72,6 +72,7 @@ public class Filter28 extends Grid implements IGridIdOwner {
     private String viewModelId;
     private ILeanGridConfigResolver leanGridConfigResolver;
     private CrudViewModel<BonaPortable, TrackingBase> crudViewModel;  // set when gridId is defined
+    private boolean autoblurOnButtons = true;
 
     public Filter28() {
         super();
@@ -87,6 +88,8 @@ public class Filter28 extends Grid implements IGridIdOwner {
         setViewModelId(GridIdTools.getViewModelIdByGridId(gridId));
         addColumns();
         populateFilters(0); //use default during init
+        resetButton.setAutoblur(autoblurOnButtons);
+        searchButton.setAutoblur(autoblurOnButtons);
     }
 
     public void resetSearchFilters(int gridPrefVariant) {
@@ -259,5 +262,13 @@ public class Filter28 extends Grid implements IGridIdOwner {
     @Override
     public ApplicationSession getSession() {
         return session;
+    }
+
+    /**
+     * setting autoblur on all buttons in Filter28, setting false to disable the feature,
+     * this is only required if this components are embedded in the popup based components
+     **/
+    public void setAutoblurOnButtons(final boolean autoblur) {
+        autoblurOnButtons = autoblur;
     }
 }

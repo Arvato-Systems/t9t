@@ -92,5 +92,8 @@ public final class Constants {
         public static final String ENUMSET          = "enumset";                // display as list of enum instances in the result overview grid
         public static final String XENUMSET         = "xenumset";               // display as list of xenum instances in the result overview grid
         public static final String SHOW_TODAY       = "showToday";              // show an additional "today" button in the date picker
+        public static final String NO_JAVA          = "noJava";
+        public static final String NO_DDL           = "noDDL";
+        public static final String NO_AUTO_MAP      = "noAutoMap";
     }
 }

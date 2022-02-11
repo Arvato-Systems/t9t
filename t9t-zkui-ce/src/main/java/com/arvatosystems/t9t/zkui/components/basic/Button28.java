@@ -29,6 +29,7 @@ public class Button28 extends Button {
 
     private final ApplicationSession session = ApplicationSession.get();
     protected boolean autoLabel = true;
+    protected boolean autoblur = true;
     protected String resourceId;
 
     public Button28() {
@@ -40,7 +41,9 @@ public class Button28 extends Button {
      * This is to fix button stays in focus after every clicks
      */
     public void onClick() {
-        Clients.evalJavaScript("$(':button').trigger('blur');");
+        if (autoblur) {
+            Clients.evalJavaScript("$(':button').trigger('blur');");
+        }
     }
 
     /** The Button28 setImage() method disables the automatic label translation, if used before setId(). */
@@ -78,5 +81,14 @@ public class Button28 extends Button {
         String style = this.getStyle() == null ? "" : this.getStyle();
         this.setStyle(style + " min-width: " + width + ";");
         super.setWidth(width);
+    }
+
+    /**
+     * Setting autoblur on button which will blur all buttons on the onClick event,
+     * setting false to disable the feature, this is only required if this
+     * components are embedded in the popup based components
+     **/
+    public void setAutoblur(final boolean autoblur) {
+        this.autoblur = autoblur;
     }
 }
