@@ -213,15 +213,6 @@ public class TwoSections28 extends Vlayout implements IGridIdOwner, IPermissionO
         return main.getPageSize();
     }
 
-    // allow to use a nonstandard distribution of space
-    public String getVflex2() {
-        return resultsGroup.getVflex();
-    }
-
-    public void setVflex2(String vflex) {
-        resultsGroup.setVflex(vflex);
-    }
-
     /** Sets the fixed filter by qualifier. */
     public void setFixedFilter(String filterName) {
         fixedFilter = Jdp.getRequired(IFixedFilter.class, filterName).get();

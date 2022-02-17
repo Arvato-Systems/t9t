@@ -2,7 +2,7 @@
 <?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="authModuleCfg"?>
 
 <window28 id="authModuleCfgWin">
-    <threesections28 gridId="authModuleCfg" vflex3="2">
+    <threesections28 gridId="authModuleCfg" overviewHeight="33%">
         <crud28
             viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.ModuleConfigVM', vmId='authModuleCfg')"
             currentMode="@load(vm.currentMode)">

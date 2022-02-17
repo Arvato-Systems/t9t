@@ -2,7 +2,7 @@
 <?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="bpmnStatus28"?>
 
 <window28 id="bpmnStatusWin">
-    <threesections28 gridId="bpmnStatus" vflex2="2" gridContext="toBpmnDef,stall,schedule,execNow,showMessage,toTargetScreen">
+    <threesections28 gridId="bpmnStatus" overviewHeight="67%" gridContext="toBpmnDef,stall,schedule,execNow,showMessage,toTargetScreen">
         <crud28 viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.CrudSurrogateKeyVM', vmId='bpmnStatus')"
                 currentMode="@load(vm.currentMode)">
             <form28 id="bpmnStatusCrud" aspect="2" numColumns="2">

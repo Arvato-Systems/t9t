@@ -38,16 +38,19 @@ public class ThreeSections28 extends TwoSections28 {
     protected Groupbox28 detailsGroup;
     protected String overviewHeight;
 
-    @Override
-    @Listen("onCreate")
-    public void onCreate() {
-        super.onCreate();
+    public ThreeSections28() {
         // initialize detail group
-        LOGGER.debug("new ThreeSections28() created");
         detailsGroup = new Groupbox28();
         detailsGroup.setVflex("1");
         detailsGroup.setId("detailsGroup");
         detailsGroup.setSclass("detailsSection");
+    }
+
+    @Override
+    @Listen("onCreate")
+    public void onCreate() {
+        super.onCreate();
+        LOGGER.debug("new ThreeSections28() created");
         Borderlayout bl = (Borderlayout) resultsGroup.getParent().getParent().getParent();
         if (overviewHeight == null) {
             String configuredDefaultHeight = ZulUtils.readConfig(T9tConfigConstants.THREE_SECTION_DEFAULT_OVERVIEW_HEIGHT);
@@ -82,15 +85,6 @@ public class ThreeSections28 extends TwoSections28 {
                 }
             }
         }
-    }
-
-    // allow to use a nonstandard distribution of space
-    public String getVflex3() {
-        return detailsGroup.getVflex();
-    }
-
-    public void setVflex3(String vflex) {
-        detailsGroup.setVflex(vflex);
     }
 
     @Override

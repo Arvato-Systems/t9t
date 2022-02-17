@@ -2,7 +2,7 @@
 <?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="tenantLogo"?>
 
 <window28 id="tenantLogoWin">
-    <threesections28 gridId="tenantLogo" vflex3="2">
+    <threesections28 gridId="tenantLogo" overviewHeight="33%">
         <crud28
             viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.ModuleConfigVM', vmId='tenantLogo')"
             currentMode="@load(vm.currentMode)">

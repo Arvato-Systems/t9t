@@ -2,7 +2,7 @@
 <?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="processDefinition28"?>
 <?xel-method prefix="l"  name="translate"  class="com.arvatosystems.t9t.zkui.util.ZulUtils" signature="String translate(String, String)"?>
 <window28 id="processDefinitionWin">
-    <threesections28 gridId="processDefinition" vflex2="2" vflex3="5">
+    <threesections28 gridId="processDefinition" overviewHeight="40%">
         <crud28
             viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.framework.ProcessDefinitionVM', vmId='processDefinition')"
             currentMode="@load(vm.currentMode)">

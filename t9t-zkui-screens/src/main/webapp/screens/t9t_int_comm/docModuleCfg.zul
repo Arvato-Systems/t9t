@@ -2,7 +2,7 @@
 <?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="docModuleCfg"?>
 
 <window28 id="docModuleCfgWin">
-    <threesections28 gridId="docModuleCfg" vflex3="2">
+    <threesections28 gridId="docModuleCfg" overviewHeight="33%">
         <crud28
             viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.ModuleConfigVM', vmId='docModuleCfg')"
             currentMode="@load(vm.currentMode)">
