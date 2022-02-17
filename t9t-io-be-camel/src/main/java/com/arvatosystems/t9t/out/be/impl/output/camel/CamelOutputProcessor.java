@@ -21,8 +21,6 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.Endpoint;
 import org.apache.camel.Exchange;
 import org.apache.camel.Producer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Jdp;
@@ -38,12 +36,7 @@ import de.jpaw.dp.Provider;
 @Named("outputCamelProcessor")
 public class CamelOutputProcessor extends AbstractCamelProcessor {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CamelOutputProcessor.class);
-
-
     private final Provider<CamelContext> camelContext = Jdp.getProvider(CamelContext.class);
-
-//    @Inject
     private final List<ICamelOutMessageTransformer> transformers = Jdp.getAll(ICamelOutMessageTransformer.class);
 
     public void process(Exchange exchange) throws Exception {

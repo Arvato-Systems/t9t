@@ -35,7 +35,7 @@ public class CamelDataSinkChangeListener implements IEventHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CamelDataSinkChangeListener.class);
 
-    private final CamelService camelService = Jdp.getRequired(CamelService.class);
+    private final ICamelService camelService = Jdp.getRequired(ICamelService.class);
 
     @SuppressWarnings("incomplete-switch")
     @Override
@@ -88,5 +88,4 @@ public class CamelDataSinkChangeListener implements IEventHandler {
             camelService.startRoute(dataSink); // start manually
         }
     }
-
 }

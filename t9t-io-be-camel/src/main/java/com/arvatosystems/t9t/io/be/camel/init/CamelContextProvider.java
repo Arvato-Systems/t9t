@@ -15,28 +15,32 @@
  */
 package com.arvatosystems.t9t.io.be.camel.init;
 
+import java.util.List;
+
+import org.apache.camel.CamelContext;
+import org.apache.camel.Route;
+import org.apache.camel.impl.DefaultCamelContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.arvatosystems.t9t.annotations.IsLogicallyFinal;
 import com.arvatosystems.t9t.base.services.IAsyncRequestProcessor;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.io.CommunicationTargetChannelType;
 import com.arvatosystems.t9t.io.DataSinkDTO;
 import com.arvatosystems.t9t.io.be.camel.service.CamelDataSinkChangeListener;
-import com.arvatosystems.t9t.io.be.camel.service.CamelService;
+import com.arvatosystems.t9t.io.be.camel.service.ICamelService;
+import com.arvatosystems.t9t.io.be.camel.service.impl.CamelService;
 import com.arvatosystems.t9t.io.event.DataSinkChangedEvent;
 import com.arvatosystems.t9t.out.be.impl.output.camel.AbstractExtensionCamelRouteBuilder;
 import com.arvatosystems.t9t.out.services.IOutPersistenceAccess;
+
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 import de.jpaw.dp.Singleton;
 import de.jpaw.dp.Startup;
 import de.jpaw.dp.StartupShutdown;
 import de.jpaw.util.ExceptionUtil;
-import java.util.List;
-import org.apache.camel.CamelContext;
-import org.apache.camel.Route;
-import org.apache.camel.impl.DefaultCamelContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Create routes for all camel routes.
@@ -50,7 +54,7 @@ public class CamelContextProvider implements StartupShutdown, Provider<CamelCont
     private CamelContext camelContext = null;
 
     protected final IOutPersistenceAccess iOutPersistenceAccess = Jdp.getRequired(IOutPersistenceAccess.class);
-    protected final CamelService camelService = Jdp.getRequired(CamelService.class);
+    protected final ICamelService camelService = Jdp.getRequired(ICamelService.class);
     protected final IAsyncRequestProcessor asyncProcessor = Jdp.getRequired(IAsyncRequestProcessor.class);
 
     @Override
