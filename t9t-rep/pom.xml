@@ -21,7 +21,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-build</artifactId>
-        <version>5.9-SNAPSHOT</version>
+        <version>5.9.1</version>
     </parent>
 
     <artifactId>t9t-rep</artifactId>
