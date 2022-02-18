@@ -20,7 +20,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.arvato-systems.t9t</groupId>
-    <artifactId>global-build</artifactId>
+    <artifactId>t9t-build</artifactId>
     <version>5.9-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>Global root POM for the t9t framework</description>
