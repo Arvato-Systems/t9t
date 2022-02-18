@@ -74,7 +74,7 @@ public class ExportAndEmailResultRequestHandler extends AbstractRequestHandler<E
         ndReq.setDocumentId(request.getDocumentTemplateId());
         ndReq.setDocumentSelector(DocConstants.GENERIC_DOCUMENT_SELECTOR);
         ndReq.setData(ImmutableMap.of("u", userData.getUserData()));
-        ndReq.setRecipientList(List.of(new RecipientEmail(ImmutableList.of(request.getTargetEmailAddress()))));
+        ndReq.setRecipientList(List.of(new RecipientEmail(ImmutableList.of(emailTo))));
         ndReq.setAttachments(ImmutableList.of(rmdResp.getMediaData()));
         final NewDocumentResponse ndResp = executor.executeSynchronousAndCheckResult(ctx, ndReq, NewDocumentResponse.class);
         return ndResp;
