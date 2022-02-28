@@ -31,6 +31,8 @@ import de.jpaw.bonaparte.pojos.ui.UIFilter;
 
 
 public class DayField extends AbstractField<Datebox> {
+    private final boolean withToday;
+
     @Override
     protected Datebox createComponent(String suffix) {
         Datebox d = new Datebox();
@@ -39,6 +41,10 @@ public class DayField extends AbstractField<Datebox> {
         d.setFormat("medium");
         d.setPlaceholder(label);
         d.setTimeZone("UTC"); // no conversion between user time zone and UTC for dates
+        if (withToday) {
+            d.setShowTodayLink(withToday);
+            d.setTodayLinkLabel(session.translate("datePicker", "todayLabel"));
+        }
         return d;
     }
 
@@ -84,8 +90,9 @@ public class DayField extends AbstractField<Datebox> {
         return f;
     }
 
-    public DayField(String fieldname, UIFilter cfg, FieldDefinition desc, String gridId, ApplicationSession session) {
+    public DayField(String fieldname, UIFilter cfg, FieldDefinition desc, String gridId, ApplicationSession session, boolean withToday) {
         super(fieldname, cfg, desc, gridId, session);
+        this.withToday = withToday;
         createComponents();
     }
 

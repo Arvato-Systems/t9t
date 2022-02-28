@@ -24,6 +24,8 @@ import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.init.InitContainers;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 import com.arvatosystems.t9t.zkui.util.Constants;
+import com.arvatosystems.t9t.zkui.util.T9tConfigConstants;
+import com.arvatosystems.t9t.zkui.util.ZulUtils;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericEnumSetDataItem;
 import de.jpaw.bonaparte.pojos.meta.DataCategory;
@@ -162,7 +164,9 @@ public class FieldFactory {
                 case "instant":
                     return new InstantField(fieldname, filter, desc, gridId, session);
                 case "day":
-                    return new DayField(fieldname, filter, desc, gridId, session);
+                    final boolean withToday = ZulUtils.readBooleanConfig(T9tConfigConstants.DATE_PICKER_SHOW_TODAY)
+                      || (fieldProperties.get(Constants.UiFieldProperties.SHOW_TODAY) != null);
+                    return new DayField(fieldname, filter, desc, gridId, session, withToday);
                 case "time":
                     return new TimeField(fieldname, filter, desc, gridId, session);
                 case "timestamp":

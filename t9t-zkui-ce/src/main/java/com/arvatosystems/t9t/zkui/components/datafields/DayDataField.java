@@ -39,7 +39,7 @@ public class DayDataField extends AbstractDataField<Datebox, LocalDate> {
         c.setTimeZone(TimeZone.getDefault());  // do not convert between user's time zone and UTC here
         if (withToday) {
             c.setShowTodayLink(withToday);
-            c.setTodayLinkLabel(ApplicationSession.get().translate("datePicker", "todayLabel"));
+            c.setTodayLinkLabel(as.translate("datePicker", "todayLabel"));
         }
     }
 
