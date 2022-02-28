@@ -92,10 +92,10 @@
         <maven-javadoc-plugin.version>3.3.1</maven-javadoc-plugin.version>
 
         <!-- Versions of Xtext & Xtend plugins -->
-        <xtend-maven-plugin.version>2.26.0.M3</xtend-maven-plugin.version>
-        <xtext-maven-plugin.version>2.26.0.M3</xtext-maven-plugin.version>
+        <xtend-maven-plugin.version>2.26.0</xtend-maven-plugin.version>
+        <xtext-maven-plugin.version>2.26.0</xtext-maven-plugin.version>
 
-        <bonaparte-plugin.version>4.81.0</bonaparte-plugin.version>
+        <bonaparte-plugin.version>4.81.1</bonaparte-plugin.version>
         <license-plugin.version>3.0</license-plugin.version>
 
         <checkstyle.version>9.1</checkstyle.version>

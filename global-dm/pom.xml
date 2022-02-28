@@ -46,8 +46,8 @@
 
         <!-- Versions of Xtext & Xtend -->
         <!-- Note that the versions of the xtext/xtend plugins are ALSO set in "global-settings" -->
-        <xtend.version>2.26.0.M3</xtend.version>
-        <xtext.version>2.26.0.M3</xtext.version>
+        <xtend.version>2.26.0</xtend.version>
+        <xtext.version>2.26.0</xtext.version>
 
         <!-- Database driver versions -->
         <driver.oracle.version>21.5.0.0</driver.oracle.version>
@@ -174,7 +174,7 @@
         <spring-boot.version>2.5.5</spring-boot.version>
 
         <netty.version>4.1.74.Final</netty.version>
-        <vertx4.version>4.2.4</vertx4.version>
+        <vertx4.version>4.2.5</vertx4.version>
 
         <snakeyaml.version>1.28</snakeyaml.version>
         <classgraph.version>4.8.116</classgraph.version>
