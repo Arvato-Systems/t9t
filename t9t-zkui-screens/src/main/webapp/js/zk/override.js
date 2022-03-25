@@ -165,3 +165,10 @@ function setNavi(menuId, subMenuId) {
 function enableRTL() {
   document.body.classList+=" rtl ";
 }
+
+/**
+* Open URL at new tab to prevent CORS error
+*/
+zAu.cmd0.openExtUrl = function (url) {
+    window.open(url, '_blank');
+}

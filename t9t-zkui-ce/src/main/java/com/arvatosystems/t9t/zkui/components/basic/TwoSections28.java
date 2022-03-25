@@ -263,4 +263,7 @@ public class TwoSections28 extends Vlayout implements IGridIdOwner, IPermissionO
         main.setDynamicColumnSize(dynamicColumnSize);
     }
 
+    public void setCountTotal(boolean countTotal) {
+        main.setCountTotal(countTotal);
+    }
 }

@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zul.Combobox;
 
+import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.zkui.components.IDataFieldFactory;
 import com.arvatosystems.t9t.zkui.components.dropdown28.factories.IDropdown28BasicFactory;
 import com.arvatosystems.t9t.zkui.components.dropdown28.factories.IDropdown28DbFactory;
@@ -31,7 +32,6 @@ import com.arvatosystems.t9t.zkui.components.dropdown28.nodb.Dropdown28Registry;
 import com.arvatosystems.t9t.zkui.util.Constants;
 import com.arvatosystems.t9t.zkui.util.T9tConfigConstants;
 import com.arvatosystems.t9t.zkui.util.ZulUtils;
-import com.arvatosystems.t9t.base.CrudViewModel;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
@@ -90,7 +90,7 @@ public class DataFieldFactory implements IDataFieldFactory {
                 final String qualifierFor = fieldProperties.get(Constants.UiFieldProperties.QUALIFIER_FOR);
                 if (qualifierFor != null) {
                     LOGGER.debug("Creating dropdown for qualifier {} for {}", qualifierFor, path);
-                    return new DropdownBasicDataField(params, qualifierFor);
+                    return new DropdownComboBoxItemDataField(params, qualifierFor);
                 }
                 return new TextDataField(params);
             case BASICNUMERIC:

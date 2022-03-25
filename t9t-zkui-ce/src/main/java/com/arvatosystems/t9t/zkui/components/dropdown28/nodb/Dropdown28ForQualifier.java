@@ -17,11 +17,13 @@ package com.arvatosystems.t9t.zkui.components.dropdown28.nodb;
 
 import java.util.List;
 
-public class Dropdown28ForQualifier extends Dropdown28Ext {
-    private static final long serialVersionUID = 391144627872732669L;
+import com.arvatosystems.t9t.zkui.viewmodel.beans.ComboBoxItem;
 
-    public Dropdown28ForQualifier(List<String> allowed) {
+public class Dropdown28ForQualifier extends Dropdown28ComboBoxItem {
+
+    private static final long serialVersionUID = -4450165970507167482L;
+
+    public Dropdown28ForQualifier(final List<ComboBoxItem> allowed) {
         super(allowed);
-        this.setMaxlength(36);
     }
 }

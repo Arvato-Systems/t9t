@@ -108,7 +108,7 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
     private long                     totalSize     = 0;
     private int                      activePage    = 0;
     private int                      maxActivePage = 0;
-    private boolean initSearch = true;
+    private boolean                  initSearch    = true;
 
     @Wire
     private Listbox lb;
@@ -140,6 +140,7 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
     protected IKeyFromDataProvider keyFromDataProvider;
     protected boolean dynamicColumnSize;
     protected boolean searchAfterInit;
+    protected boolean countTotal;
 
 /*
     public void setNumRows(int numRows) {
@@ -263,9 +264,9 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
                if (activePage > maxActivePage) {
                    maxActivePage = activePage;
                }
-                initSearch = false;
+               initSearch = false;
                search();
-                initSearch = true;
+               initSearch = true;  // TODO: why is this done?
             }
         });
     }
@@ -359,6 +360,7 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
 
     private List<DataWithTracking<BonaPortable, TrackingBase>> readData(SearchCriteria rq) {
         SearchResponse<BonaPortable, TrackingBase, DataWithTracking<BonaPortable, TrackingBase>> resp = remoteUtil.executeExpectOk(rq, SearchResponse.class);
+        calculateTotalSize(resp.getDataList().size(), resp.getNumResults());
         return resp.getDataList();
     }
 
@@ -408,6 +410,10 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
         rq.setSearchFilter(SearchFilters.and(filter1, filter2));
         rq.setExpression(solrFilter);
 
+        if (initSearch && countTotal) {
+            rq.setCountTotals(true);
+        }
+
         // sort stuff
         rq.setSortColumns(createSortDirective());
 
@@ -438,8 +444,6 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
             lb.setSelectedIndex(0);
         }
 
-
-        calculateTotalSize(dataListFromServer.size());
         setPagingValues();
 
 
@@ -456,22 +460,42 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
         paging.setTotalSize((int)this.totalSize);
         paging.setActivePage(this.activePage);
     }
-    private void calculateTotalSize(int serverResultCount) {
-        int resultSize = serverResultCount;
-        if (resultSize > 0) {
-            // always retrieve pageSize + 1 to find if next paging is required to fetch
-            if (resultSize < paging.getPageSize() + 1) {
-                if (maxActivePage == 0) {
-                    this.totalSize = resultSize; // first page
-                } else {
-                    this.totalSize = (paging.getPageSize() * maxActivePage) + resultSize;  // last page
-                }
-            } else { // if pageSize == resultSize
-                if ((activePage == maxActivePage) && (activePage > 0 || maxActivePage == 0)) { // if activePage == 0 jump back to first (0) page
-                    this.totalSize = (paging.getPageSize() * maxActivePage) + resultSize;  // in between
+    private void calculateTotalSize(int pageResultSize, Long numResultsFromBE) {
+
+        if (countTotal) {
+            if (numResultsFromBE != null) {
+                // no calculation required on init search
+                totalSize = numResultsFromBE;
+                return;
+            }
+
+            if (paging.getActivePage() == paging.getPageCount() - 1 && pageResultSize > paging.getPageSize()) {
+                // last page and a new page required
+                totalSize = totalSize + paging.getPageSize(); // + 1 more page
+            } else if (paging.getActivePage() > 0) {
+                if (pageResultSize < paging.getPageSize() + 1) {
+                    // if no next page detected
+                    totalSize = (paging.getPageSize() * paging.getActivePage() + 1);
                 }
             }
-            //            [ 231 - 240 / 241 ]
+
+        } else {
+            int resultSize = pageResultSize;
+            if (resultSize > 0) {
+                // always retrieve pageSize + 1 to find if next paging is required to fetch
+                if (resultSize < paging.getPageSize() + 1) {
+                    if (maxActivePage == 0) {
+                        this.totalSize = resultSize; // first page
+                    } else {
+                        this.totalSize = (paging.getPageSize() * maxActivePage) + resultSize;  // last page
+                    }
+                } else { // if pageSize == resultSize
+                    if ((activePage == maxActivePage) && (activePage > 0 || maxActivePage == 0)) { // if activePage == 0 jump back to first (0) page
+                        this.totalSize = (paging.getPageSize() * maxActivePage) + resultSize;  // in between
+                    }
+                }
+                //            [ 231 - 240 / 241 ]
+            }
         }
     }
 
@@ -680,5 +704,9 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
      **/
     public void setAutoblurOnButtons(final boolean autoblur) {
         exportButton.setAutoblur(autoblur);
+    }
+
+    public void setCountTotal(boolean countTotal) {
+        this.countTotal = countTotal;
     }
 }
