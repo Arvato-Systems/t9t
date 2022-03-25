@@ -64,7 +64,7 @@ public class FilterToSolrConverterTest {
 
     @Test
     public void toSolrByAsciiFilterTest() throws Exception {
-        AsciiFilter filter = new AsciiFilter();
+        AsciiFilter filter = new AsciiFilter("textField");
 
         List<String> valueList = new ArrayList<String>();
         valueList.add("A");
@@ -72,12 +72,12 @@ public class FilterToSolrConverterTest {
         valueList.add("C");
         filter.setValueList(valueList);
 
-        Assertions.assertEquals("(A OR B OR C)", converter.toSolr(filter).toString());
+        Assertions.assertEquals("(A OR B OR C)", converter.toSolr(filter));
     }
 
     @Test
     public void toSolrDecimalFilterTest() throws Exception {
-        DecimalFilter filter = new DecimalFilter();
+        DecimalFilter filter = new DecimalFilter("decField");
 
         List<BigDecimal> valueList = new ArrayList<BigDecimal>();
         valueList.add(new BigDecimal(5.0).setScale(2, RoundingMode.HALF_EVEN));
@@ -85,22 +85,21 @@ public class FilterToSolrConverterTest {
         valueList.add(new BigDecimal(2.2002).setScale(6, RoundingMode.HALF_EVEN));
         filter.setValueList(valueList);
 
-        Assertions.assertEquals("(5.00 OR 15.001 OR 2.200200)", converter.toSolr(filter).toString());
+        Assertions.assertEquals("(5.00 OR 15.001 OR 2.200200)", converter.toSolr(filter));
     }
 
     @Test
     public void toSolrDecimalFilterRangeTest() throws Exception {
-        DecimalFilter filter = new DecimalFilter();
+        DecimalFilter filter = new DecimalFilter("decField");
         filter.setLowerBound(new BigDecimal(5.0).setScale(2, RoundingMode.HALF_EVEN));
         filter.setUpperBound(new BigDecimal(2.2002).setScale(6, RoundingMode.HALF_EVEN));
 
-        Assertions.assertEquals("[5.00 TO 2.200200]", converter.toSolr(filter).toString());
+        Assertions.assertEquals("[5.00 TO 2.200200]", converter.toSolr(filter));
     }
 
     @Test
     public void toSolrConditionTest() throws Exception {
-        AsciiFilter filter = new AsciiFilter();
-        filter.setFieldName("FIELDNAME");
+        AsciiFilter filter = new AsciiFilter("asciiField");
 
         List<String> valueList = new ArrayList<String>();
         valueList.add("A");
@@ -109,20 +108,24 @@ public class FilterToSolrConverterTest {
         filter.setValueList(valueList);
 
         AndFilter andFilter = new AndFilter(filter, filter);
-        Assertions.assertEquals("((A OR B OR C) AND (A OR B OR C))", converter.toSolrCondition(andFilter).toString());
+        Assertions.assertEquals("(+asciiField:(A OR B OR C) AND +asciiField:(A OR B OR C))", converter.toSolrCondition(andFilter));
 
         OrFilter orFilter = new OrFilter(andFilter, filter);
-        Assertions.assertEquals("(((A OR B OR C) AND (A OR B OR C)) OR (A OR B OR C))", converter.toSolrCondition(orFilter).toString());
+        Assertions.assertEquals("((+asciiField:(A OR B OR C) AND +asciiField:(A OR B OR C)) OR +asciiField:(A OR B OR C))",
+          converter.toSolrCondition(orFilter));
 
-        NotFilter notFilter = new NotFilter(orFilter);
-        Assertions.assertEquals("NOT ((((A OR B OR C) AND (A OR B OR C)) OR (A OR B OR C)))", converter.toSolrCondition(notFilter).toString());
+        NotFilter notFilter = new NotFilter(filter);
+        Assertions.assertEquals("NOT (+asciiField:(A OR B OR C))", converter.toSolrCondition(notFilter));
 
-        NullFilter nullFilter = new NullFilter();
-        nullFilter.setFieldName("NOTFIELDNAME");
+        NullFilter nullFilter = new NullFilter("nullField");
+        Assertions.assertEquals("-nullField:[* TO *]", converter.toSolrCondition(nullFilter));
+
         NotFilter notNullFilter = new NotFilter(nullFilter);
-        AndFilter andNotNullFilter = new AndFilter(notFilter, notNullFilter);
-        Assertions.assertEquals("(NOT ((((A OR B OR C) AND (A OR B OR C)) OR (A OR B OR C))) AND NOTFIELDNAME:[* TO *])",
-                converter.toSolrCondition(andNotNullFilter).toString());
+        Assertions.assertEquals("nullField:[* TO *]", converter.toSolrCondition(notNullFilter));
+
+        NotFilter notNotFilter = new NotFilter(new NotFilter((filter)));
+        Assertions.assertEquals("+asciiField:(A OR B OR C)", converter.toSolrCondition(notNotFilter), "Double NOT should be eaten");
+
     }
 
     @Test
@@ -136,7 +139,7 @@ public class FilterToSolrConverterTest {
         filter.setValueList(valueList);
 
         Assertions.assertEquals("(1985-10-19T00\\\\:00\\\\:00Z OR 1988-07-20T00\\\\:00\\\\:00Z OR 2003-03-22T00\\\\:00\\\\:00Z)",
-                converter.toSolr(filter).toString());
+                converter.toSolr(filter));
     }
 
     @Test
@@ -149,7 +152,7 @@ public class FilterToSolrConverterTest {
         filter.setUpperBound(LocalDate.of(1988, 7, 20));
 
         Assertions.assertEquals("[1985-10-19T00\\\\:00\\\\:00Z TO 1988-07-20T00\\\\:00\\\\:00Z]",
-                converter.toSolr(filter).toString());
+                converter.toSolr(filter));
     }
 
     @Test
@@ -164,7 +167,7 @@ public class FilterToSolrConverterTest {
         valueList.add("C");
         filter.setNameList(valueList);
 
-        Assertions.assertEquals("(ANANAS OR BANANA OR CITRON)", converter.toSolr(filter).toString());
+        Assertions.assertEquals("(ANANAS OR BANANA OR CITRON)", converter.toSolr(filter));
     }
 
     @Test
@@ -179,7 +182,7 @@ public class FilterToSolrConverterTest {
         valueList.add("C");
         filter.setTokenList(valueList);
 
-        Assertions.assertEquals("(A OR B OR C)", converter.toSolr(filter).toString());
+        Assertions.assertEquals("(A OR B OR C)", converter.toSolr(filter));
     }
 
     @Test
@@ -194,6 +197,6 @@ public class FilterToSolrConverterTest {
         valueList.add("D");
         filter.setNameList(valueList);
 
-        Assertions.assertEquals("(FIG OR EGGPLANT OR DURIAN)", converter.toSolr(filter).toString());
+        Assertions.assertEquals("(FIG OR EGGPLANT OR DURIAN)", converter.toSolr(filter));
     }
 }

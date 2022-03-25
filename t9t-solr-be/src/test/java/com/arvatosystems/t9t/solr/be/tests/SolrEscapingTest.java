@@ -16,6 +16,7 @@
 package com.arvatosystems.t9t.solr.be.tests;
 
 import org.apache.solr.client.solrj.util.ClientUtils;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class SolrEscapingTest {
@@ -26,6 +27,7 @@ public class SolrEscapingTest {
 
         String escapedChars = ClientUtils.escapeQueryChars(specialChars);
 
-        System.out.println("Result is " + escapedChars);
+        Assertions.assertEquals(
+          "\\+\\ \\-\\ \\&\\&\\ \\|\\|\\ \\!\\ \\(\\ \\)\\ \\{\\ \\}\\ \\[\\ \\]\\ \\^\\ \\\"\\ \\~\\ \\*\\ \\?\\ \\:\\ \\\\", escapedChars);
     }
 }
