@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.email.be.commons.impl;
 
+import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.email.EmailModuleCfgDTO;
@@ -49,7 +50,6 @@ import org.slf4j.LoggerFactory;
 @Named("COMMONS")
 public class CommonsEmailService implements IEmailSender {
     private static final Logger LOGGER = LoggerFactory.getLogger(CommonsEmailService.class);
-    private static final String KEY_ATTACHMENT_NAME = "attachmentName";
 
     protected static final String STANDARD_ENCODING     = "UTF-8";
     protected static final String DEFAULT_SMTP_SERVER   = "cmail.servicemail24.de"; // "smtp.gmail.com"
@@ -157,8 +157,8 @@ public class CommonsEmailService implements IEmailSender {
         for (final MediaData attachment: attachments) {
             final MediaDataSource mds = new MediaDataSource(attachment);
             final String fileName;
-            if (attachment.getZ() != null && attachment.getZ().containsKey(KEY_ATTACHMENT_NAME)) {
-                fileName = attachment.getZ().get(KEY_ATTACHMENT_NAME).toString();
+            if (attachment.getZ() != null && attachment.getZ().containsKey(T9tConstants.DOC_MEDIA_ATTACHMENT_NAME)) {
+                fileName = attachment.getZ().get(T9tConstants.DOC_MEDIA_ATTACHMENT_NAME).toString();
             } else {
                 fileName = null;
             }

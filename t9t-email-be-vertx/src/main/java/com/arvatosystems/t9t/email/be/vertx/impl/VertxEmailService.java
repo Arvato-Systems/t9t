@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.email.be.vertx.impl;
 
+import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.email.EmailModuleCfgDTO;
 import com.arvatosystems.t9t.email.api.EmailMessage;
@@ -142,7 +143,7 @@ public class VertxEmailService implements IEmailSender {
         final List<MailAttachment> result = new ArrayList<>(attachments.size());
         for (MediaData attachment : attachments) {
             final MediaDataSource mds = new MediaDataSource(attachment);
-            final String fileName = attachment.getZ() == null ? null : (String) attachment.getZ().get("attachmentName");
+            final String fileName = attachment.getZ() == null ? null : (String) attachment.getZ().get(T9tConstants.DOC_MEDIA_ATTACHMENT_NAME);
             final MailAttachmentImpl mailAttachmentImpl = new MailAttachmentImpl();
             mailAttachmentImpl.setContentType(mds.getContentType());
             mailAttachmentImpl.setData(mds.asBuffer());

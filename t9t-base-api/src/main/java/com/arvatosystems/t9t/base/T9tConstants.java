@@ -147,4 +147,9 @@ public final class T9tConstants {
 
     public static final String DATA_SINK_ID_UI_EXPORT = "UIExport";
     public static final String DOCUMENT_ID_UI_EXPORT = "UIExportEmail";
+
+    /**
+     * Key for the zMap of a MediaData to put/get the assigned attachment name.
+     */
+    public static final String DOC_MEDIA_ATTACHMENT_NAME = "attachmentName";
 }

@@ -182,6 +182,7 @@ public class T9tException extends ApplicationException {
     public static final int UPSTREAM_NULL_RESPONSE      = OFFSET_TIMEOUT + 310;
     public static final int UPSTREAM_BAD_RESPONSE       = OFFSET_TIMEOUT + 311;
     public static final int UPSTREAM_BAD_MEDIA_TYPE     = OFFSET_TIMEOUT + 312;
+    public static final int INVALID_WRAPPED_JSON        = OFFSET_TIMEOUT + 313;
 
     public static final int REQUEST_STILL_PROCESSING    = OFFSET_TIMEOUT + 333;
 
@@ -366,6 +367,7 @@ public class T9tException extends ApplicationException {
             codeToDescription.put(UPSTREAM_NULL_RESPONSE, "Received no response from upstream");
             codeToDescription.put(UPSTREAM_BAD_RESPONSE, "Received a response of bad type, expected ServiceResponse");
             codeToDescription.put(UPSTREAM_BAD_MEDIA_TYPE, "Bad media type for uplink configured, only Bonaparte or ConmpactBonaparte are possible");
+            codeToDescription.put(INVALID_WRAPPED_JSON, "JSON wrapped into XML kvp structure not valid");
 
             codeToDescription.put(SESSION_NOT_OPENED, "Attempted to execute a request on a session which was not opened (or closed already)");
             codeToDescription.put(SESSION_OPEN_ERROR, "Attempted to execute a request on a session which was not opened successfully");

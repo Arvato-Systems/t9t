@@ -15,12 +15,16 @@
  */
 package com.arvatosystems.t9t.base;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.api.ConfigurationReader;
 import de.jpaw.json.JsonException;
+import de.jpaw.util.ConfigurationReaderFactory;
 
 public final class JsonUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonUtil.class);
@@ -145,5 +149,95 @@ public final class JsonUtil {
         LOGGER.error("Required Number for z entry {}, but got {}", key, value.getClass().getCanonicalName());
         throw new T9tException(T9tException.INVALID_REQUEST_PARAMETER_TYPE, "Required a Number for z entry " + key
                 + ", but got " + value.getClass().getCanonicalName());
+    }
+
+    public static final ConfigurationReader CONFIG_READER = ConfigurationReaderFactory.getConfigReaderForName("t9t.json", null);
+    public static final boolean UNWRAP_JSON = Boolean.TRUE.equals(CONFIG_READER.getBooleanProperty("t9t.json.unwrapkvp"));
+
+    /** Unwraps the XML-workaround structure into plain JSON, if configured. */
+    public static Map<String, Object> unwrapKvpIfWanted(final Map<String, Object> z) {
+        return UNWRAP_JSON ? unwrapKvp(z) : z;
+    }
+
+    /** Unwraps the XML-workaround structure into plain JSON. */
+    public static Map<String, Object> unwrapKvp(final Map<String, Object> z) {
+        if (z == null || z.isEmpty()) {
+            return z;
+        }
+        final Object kvp = z.get("kvp");
+        if (kvp == null) {
+            // no kvp entry: return structure as it is
+            return z;
+        } else {
+            if (kvp instanceof List) {
+                final List<Object> kvpList = (List<Object>) kvp;
+
+                // convert kvp entries into regular z
+                final Map<String, Object> result = new HashMap<>();
+                // check for hybrid
+                if (z.size() > 1) {
+                    // more entries than just kvp
+                    result.putAll(z);
+                    result.remove("kvp");
+                }
+                // now transfer the list's entries
+                for (Object entry : kvpList) {
+                    if (entry instanceof Map) {
+                        final Map<String, Object> entryMap = (Map<String, Object>) entry;
+                        if (entryMap != null) {
+                            final String key = (String) entryMap.get("key");
+                            if (key == null) {
+                                LOGGER.error("kvp list entry has no key");
+                                throw new T9tException(T9tException.INVALID_WRAPPED_JSON, "kvp list entry has no key");
+                            }
+                            final Object oldVal = result.putIfAbsent(key, getValue(key, entryMap));
+                            if (oldVal != null) {
+                                LOGGER.info("key {} defined at least twice", key);
+                                throw new T9tException(T9tException.INVALID_WRAPPED_JSON, "key " + key + " defined at least twice");
+                            }
+                        }
+                    } else {
+                        final String what = entry == null ? "NULL" : entry.getClass().getCanonicalName();
+                        LOGGER.error("kvp list entry is not a Map but {}", what);
+                        throw new T9tException(T9tException.INVALID_WRAPPED_JSON, "kvp list entry not a Map but " + what);
+                    }
+                }
+                return result;
+            } else {
+                LOGGER.error("kvp entry found, but is not a List: {}", kvp.getClass().getCanonicalName());
+                throw new T9tException(T9tException.INVALID_WRAPPED_JSON, "kvp entry not a List but " + kvp.getClass().getCanonicalName());
+            }
+        }
+    }
+
+    /** Extracts a single kvp entry from a wrapped entry. Type "obj" is not supported. */
+    private static Object getValue(final String key, final Map<String, Object> entryMap) {
+        // first, check scalar values
+        final Object value = entryMap.get("value");
+        if (value != null) {
+            return value;
+        }
+        final Object bool = entryMap.get("bool");
+        if (bool != null) {
+            return bool;
+        }
+        final Object num = entryMap.get("num");
+        if (num != null) {
+            return num;
+        }
+        final Object values = entryMap.get("values");
+        if (values instanceof List && !((List) values).isEmpty()) {
+            return values;
+        }
+        final Object bools = entryMap.get("bools");
+        if (bools instanceof List && !((List) bools).isEmpty()) {
+            return bools;
+        }
+        final Object nums = entryMap.get("nums");
+        if (nums instanceof List && !((List) nums).isEmpty()) {
+            return nums;
+        }
+        LOGGER.error("kvp list entry for {} has no known value entry", key);
+        throw new T9tException(T9tException.INVALID_WRAPPED_JSON, "kvp list entry for " + key + " has no known value entry");
     }
 }

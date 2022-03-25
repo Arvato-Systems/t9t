@@ -86,7 +86,7 @@ public final class JsonSchemaOpenApiUtil {
 //        objProperty.set$ref(SCHEMA_NAME);
         additionalProperties.addProperties(PROPERTY_OBJ, objProperty);
 
-        final Schema objsProperty = new ArraySchema().items(new Schema<Object>().$ref(SCHEMA_NAME))
+        final Schema objsProperty = new ArraySchema().items(objProperty)
                 .xml(propertyXml).nullable(true).example(new String[] { "Array of Json object." })
                 .description("Array of Json object.");
         additionalProperties.addProperties(PROPERTY_OBJS, objsProperty);

@@ -178,7 +178,7 @@ package (com.arvatosystems) t9t.io {
         required boolean                                isActive    properties active;
         required enum CommunicationTargetChannelType    commTargetChannelType;      // defines the type of output for this output
         required xenum MediaXType                       commFormatType;             // defines the format for the output
-        required Unicode(255)                           fileOrQueueNamePattern;     // substitutions: DAY/TIME, TENANT,
+        required Ascii(255) regexp "\\p{Graph}*"        fileOrQueueNamePattern;     // substitutions: DAY/TIME, TENANT... needs regexp to disable ${} check
         required boolean                                compressed;                 // if true and the output type is a file, then it should be compressed (gzipped) on the fly
         optional Ascii(8)                               originatorModule;           // REP, COMM, AROMA etc...
         optional customizationQualifier                 preTransformerName properties qualifierFor="out.services.IPreOutputDataTransformer,in.services.IInputDataTransformer";     // custom pre-transform to transform output data before storing it

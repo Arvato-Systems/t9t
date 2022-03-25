@@ -21,6 +21,10 @@ import java.util.Map;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.hibernate.dialect.HANARowStoreDialect;
+import org.hibernate.dialect.Oracle12cDialect;
+import org.hibernate.dialect.PostgreSQL94Dialect;
+import org.hibernate.dialect.SQLServer2012Dialect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,19 +68,19 @@ public class EMFCustomizer implements IEMFCustomizer {
         if (dbName != null) {
             switch (dbName) {
             case HANA:
-                myProps.put(DIALECT_KEY, "org.hibernate.dialect.HANARowStoreDialect");
+                myProps.put(DIALECT_KEY, HANARowStoreDialect.class.getCanonicalName());
                 break;
             case MS_SQL_SERVER:
-                myProps.put(DIALECT_KEY, "org.hibernate.dialect.SQLServer2012Dialect");
+                myProps.put(DIALECT_KEY, SQLServer2012Dialect.class.getCanonicalName());
                 break;
             case ORACLE:
-                myProps.put(DIALECT_KEY, "org.hibernate.dialect.Oracle12cDialect");
+                myProps.put(DIALECT_KEY, Oracle12cDialect.class.getCanonicalName());
                 break;
             case POSTGRES:
-                myProps.put(DIALECT_KEY, "org.hibernate.dialect.PostgreSQL94Dialect");
+                myProps.put(DIALECT_KEY, PostgreSQL94Dialect.class.getCanonicalName());
                 break;
             case H2:
-                myProps.put(DIALECT_KEY, "com.arvatosystems.t9t.orm.jpa.hibernate.impl.T9TH2Dialect");
+                myProps.put(DIALECT_KEY, T9TH2Dialect.class.getCanonicalName());
                 break;
             default:
                 break;

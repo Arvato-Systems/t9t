@@ -24,6 +24,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.services.IAutonomousExecutor;
 import com.arvatosystems.t9t.base.services.ICrossModuleRefResolver;
@@ -64,7 +65,7 @@ public class ReportMailNotifierImpl implements IReportMailNotifier {
             final String absolutePath = fileUtil.getAbsolutePathForTenant(ctx.tenantId, sinkDTO.getFileOrQueueName());
 
             final Map<String, Object> zField = new HashMap<>();
-            zField.put("attachmentName", sinkDTO.getFileOrQueueName());
+            zField.put(T9tConstants.DOC_MEDIA_ATTACHMENT_NAME, sinkDTO.getFileOrQueueName());
             final MediaData mediaData = new MediaData();
             mediaData.setMediaType(sinkDTO.getCommFormatType());
             mediaData.setZ(zField);

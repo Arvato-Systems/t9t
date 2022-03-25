@@ -19,11 +19,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
@@ -74,11 +76,6 @@ public class NewDocumentRequestHandler extends AbstractRequestHandler<NewDocumen
     private final IDocArchiveDistributor docArchiveDistributor = Jdp.getRequired(IDocArchiveDistributor.class);
     private final IDocEmailDistributor docEmailDistributor = Jdp.getRequired(IDocEmailDistributor.class);
     private final IDocUnknownDistributor docUnknownDistributor = Jdp.getRequired(IDocUnknownDistributor.class);
-
-    private String basename(final String filename) {
-        final int i = filename.lastIndexOf("/");
-        return i < 0 ? filename : filename.substring(i + 1);
-    }
 
     private boolean emailSettingsExist(final DocEmailReceiverDTO it) {
         return it.getReplaceTo()  || it.getReplaceCc()  || it.getReplaceBcc() || it.getReplaceReplyTo()
@@ -237,14 +234,8 @@ public class NewDocumentRequestHandler extends AbstractRequestHandler<NewDocumen
         dataCache.put(formatted.getMediaType(), formatted);
 
         // step 5: convert into DVI / PDF / PS etc. if requested
-        MediaData target = formatted;
-        if (docConfigDto.getCommunicationFormat() != null && !docConfigDto.getCommunicationFormat().equals(formatted.getMediaType())) {
-            LOGGER.debug("Formatted document to {}, now converting to {}", formatted.getMediaType(), docConfigDto.getCommunicationFormat());
-            final IDocConverter myConverter = Jdp.getOptional(IDocConverter.class, docConfigDto.getCommunicationFormat().name());
-            if (myConverter == null) {
-                throw new T9tException(T9tException.FIELD_MAY_NOT_BE_CHANGED, "Cannot convert to " + docConfigDto.getCommunicationFormat().name());
-            }
-            target = myConverter.convert(formatted);
+        final MediaData target = this.convertDocument(docConfigDto, formatted);
+        if (!Objects.equals(target, formatted)) { // put to cache if it has been converted
             dataCache.put(target.getMediaType(), target);
         }
 
@@ -266,7 +257,11 @@ public class NewDocumentRequestHandler extends AbstractRequestHandler<NewDocumen
         if (request.getAttachments() != null) {
             attachmentList.addAll(request.getAttachments());
         }
-        final Map<String, Long> generalAttachmentSinkRefs = addGeneralAttachments(ctx, request, attachmentList, sharedTenantRef, effectiveTimeZone);
+
+        final RecipientArchive recipientArchive = request.getRecipientList().stream().filter(RecipientArchive.class::isInstance)
+                .map(RecipientArchive.class::cast).findFirst().orElse(null);
+        final Map<String, Long> generalAttachmentSinkRefs = this.addGeneralAttachments(ctx, request, recipientArchive, attachmentList, sharedTenantRef,
+                effectiveTimeZone);
 
         final MediaData emailSubject = containsEmailRecipient
           ? docFormatter.formatDocument(
@@ -287,6 +282,7 @@ public class NewDocumentRequestHandler extends AbstractRequestHandler<NewDocumen
         final Function<MediaXType, MediaData> toFormatConverter = (mediaType) -> {
             MediaData result = dataCache.get(mediaType);
             if (result == null) {
+                LOGGER.debug("Found no data for [{}] in dataCache", mediaType);
                 final IDocConverter converter = Jdp.getRequired(IDocConverter.class, mediaType.name());
                 result = converter.convert(formatted);
                 dataCache.put(mediaType, result);  // store the new intermediate result
@@ -308,13 +304,7 @@ public class NewDocumentRequestHandler extends AbstractRequestHandler<NewDocumen
                 final DocArchiveResult archiveResult = docArchiveDistributor.transmit(rcpta, toFormatConverter, target.getMediaType(),
                   request.getDocumentId(), request.getDocumentSelector());
                 sinkRefs.add(archiveResult.sinkRef);
-                if (whereToSetAttachmentFileName != null && archiveResult.fileOrQueueName != null) {
-                    final String fileBasename = basename(archiveResult.fileOrQueueName);
-                    LOGGER.debug("Setting name of attachment of media type {} to {}", whereToSetAttachmentFileName.getMediaType(), fileBasename);
-                    if (whereToSetAttachmentFileName.getZ() == null)
-                        whereToSetAttachmentFileName.setZ(new HashMap<String, Object>());
-                    whereToSetAttachmentFileName.getZ().put("attachmentName", fileBasename);
-                }
+                this.prepareAttachmentName(whereToSetAttachmentFileName, archiveResult);
             } else if (rcpt instanceof RecipientEmail) {
                 // nothing here, emails delayed and sent as last receivers
                 noOp();  // stupid code to keep checkstyle happy (don't want negative conditions)
@@ -360,8 +350,8 @@ public class NewDocumentRequestHandler extends AbstractRequestHandler<NewDocumen
         return response;
     }
 
-    private Map<String, Long> addGeneralAttachments(RequestContext ctx, NewDocumentRequest request, List<MediaData> attachmentList,
-      Long sharedTenantRef, String effectiveTimeZone) {
+    private Map<String, Long> addGeneralAttachments(RequestContext ctx, NewDocumentRequest request, RecipientArchive rcpta, List<MediaData> attachmentList,
+            Long sharedTenantRef, String effectiveTimeZone) {
         final List<GeneralizedAttachment> attachments = request.getGeneralAttachments();
         if (attachments == null) {
             return null;
@@ -380,6 +370,8 @@ public class NewDocumentRequestHandler extends AbstractRequestHandler<NewDocumen
                     // generate the attachment data based on the separate document config
                     data = docFormatter.formatDocument(ctx.tenantId, sharedTenantRef, TemplateType.DOCUMENT_ID, docConfigDto.getDocumentId(),
                       request.getDocumentSelector(), effectiveTimeZone, nvl(ga.getData(), request.getData()), null);
+                    // convert if required
+                    data = this.convertDocument(docConfigDto, data);
                 }
             }
 
@@ -387,17 +379,52 @@ public class NewDocumentRequestHandler extends AbstractRequestHandler<NewDocumen
                 // check if we should store it
                 if (ga.getDataSinkId() != null) {
                     // store it (recipient archive)
-                    final RecipientArchive rcpta = new RecipientArchive();
-                    rcpta.setDataSinkId(ga.getDataSinkId());
+                    RecipientArchive gaRcpta = rcpta.ret$MutableClone(true, false);
+                    gaRcpta.setDataSinkId(ga.getDataSinkId()); // overwrite dataSinkId to use from GA
                     final MediaData finalData = data;
-                    final DocArchiveResult archiveResult = docArchiveDistributor.transmit(rcpta, x -> finalData, data.getMediaType(),
-                      request.getDocumentId(), request.getDocumentSelector());
+                    final DocArchiveResult archiveResult = docArchiveDistributor.transmit(gaRcpta, x -> finalData, data.getMediaType(), ga.getDocumentId(),
+                            request.getDocumentSelector());
                     generalAttachmentSinkRefs.put(ga.getId(), archiveResult.sinkRef);
+                    this.prepareAttachmentName(finalData, archiveResult);
                 }
                 // now add it as attachment
                 attachmentList.add(data);
             }
         }
         return generalAttachmentSinkRefs;
+    }
+
+    /**
+     * Prepare the name for the file/attachment and add it to the zMap. This will be read by {@link IDocEmailDistributor} later.
+     *
+     * @param mediaData the attachment object
+     * @param archiveResult the result of distributor transmit
+     */
+    private void prepareAttachmentName(final MediaData mediaData, final DocArchiveResult archiveResult) {
+        if (mediaData != null && archiveResult.fileOrQueueName != null) {
+            final String attachmentFileName = this.getBasename(archiveResult.fileOrQueueName);
+            LOGGER.debug("Setting name of attachment of media type {} to {}", mediaData.getMediaType(), attachmentFileName);
+            if (mediaData.getZ() == null) {
+                mediaData.setZ(new HashMap<String, Object>());
+            }
+            mediaData.getZ().put(T9tConstants.DOC_MEDIA_ATTACHMENT_NAME, attachmentFileName);
+        }
+    }
+
+    private String getBasename(final String filename) {
+        final int i = filename.lastIndexOf("/");
+        return i < 0 ? filename : filename.substring(i + 1);
+    }
+
+    private MediaData convertDocument(final DocConfigDTO docConfigDto, final MediaData data) {
+        if (docConfigDto.getCommunicationFormat() != null && !docConfigDto.getCommunicationFormat().equals(data.getMediaType())) {
+            LOGGER.debug("Formatted document to {}, now converting to {}", data.getMediaType(), docConfigDto.getCommunicationFormat());
+            final IDocConverter myConverter = Jdp.getOptional(IDocConverter.class, docConfigDto.getCommunicationFormat().name());
+            if (myConverter == null) {
+                throw new T9tException(T9tException.FIELD_MAY_NOT_BE_CHANGED, "Cannot convert to " + docConfigDto.getCommunicationFormat().name());
+            }
+            return myConverter.convert(data);
+        }
+        return data;
     }
 }

@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.email.be.smtp.impl;
 
+import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.email.EmailModuleCfgDTO;
@@ -173,8 +174,8 @@ public class SmtpEmailService implements IEmailSender {
             MediaDataSource mds = new MediaDataSource(thisAttachment);
             final MimeBodyPart bodyPart = new MimeBodyPart();
             bodyPart.setDataHandler(new DataHandler(mds));
-            if (thisAttachment.getZ() != null && thisAttachment.getZ().get("attachmentName") != null) {
-                bodyPart.setFileName(thisAttachment.getZ().get("attachmentName").toString());
+            if (thisAttachment.getZ() != null && thisAttachment.getZ().get(T9tConstants.DOC_MEDIA_ATTACHMENT_NAME) != null) {
+                bodyPart.setFileName(thisAttachment.getZ().get(T9tConstants.DOC_MEDIA_ATTACHMENT_NAME).toString());
                 bodyPart.setDisposition(Part.ATTACHMENT);
             }
             multipart.addBodyPart(bodyPart);

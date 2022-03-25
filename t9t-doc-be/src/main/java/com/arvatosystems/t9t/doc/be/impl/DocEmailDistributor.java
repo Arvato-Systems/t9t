@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.doc.be.impl;
 
+import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.doc.api.DocumentSelector;
@@ -90,7 +91,8 @@ public class DocEmailDistributor implements IDocEmailDistributor {
 
     protected void list(final Collection<MediaData> data, final String what) {
         for (final MediaData a : data) {
-            LOGGER.debug("    {} has type {} and CID {} and file name {}", what, a.getMediaType().name(), field(a, "cid"), field(a, "attachmentName"));
+            LOGGER.debug("    {} has type {} and CID {} and file name {}", what, a.getMediaType().name(), field(a, "cid"),
+                    field(a, T9tConstants.DOC_MEDIA_ATTACHMENT_NAME));
         }
     }
 

@@ -23,6 +23,8 @@ import t9t.base.output.*
 package (com.arvatosystems) t9t.base.uiprefs {
     default private unsigned trim noControlChars;
 
+    type identifier is Ascii(255) regexp "\\p{Graph}*";  // allow [] because arrays can be indexed
+
     /** Configuration for the UI grid configuration. It will be stored in the generic configuration
      * table using the group UI-GRID (old model) or a specific table (new model).
      */
