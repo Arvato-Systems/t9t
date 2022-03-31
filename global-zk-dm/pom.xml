@@ -33,7 +33,7 @@
     <properties>
         <!-- ZK libraries, COMMERCIAL !!! -->
         <zk.version>9.6.1</zk.version>
-        <zk-ckez.version>4.17.1.0</zk-ckez.version>  <!-- https://github.com/zkoss/zkckeditor -->
+        <zk-ckez.version>4.18.0.0</zk-ckez.version>  <!-- https://github.com/zkoss/zkckeditor -->
     </properties>
 
 
