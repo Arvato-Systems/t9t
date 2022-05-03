@@ -71,12 +71,17 @@ public class DefaultSearchFilterConfigCreator implements ISearchFilterConfigCrea
             rows.add(row);
         }
 
+        List<String> excludedUiColumns = new ArrayList<>();
         for (UIColumnConfiguration column : uiColumns) {
             // only allow root level fields of main dto && binary: not allowed at all
             if ((!isFieldWithinLevelOfMainDTO(column, 0) && activeUIFilterMap.get(column.getFieldName()) == null)
                     || column.getMeta() == null || column.getMeta().getDataType().equals("binary")
-                    || column.getMeta().getDataCategory().equals("OBJECT") && !isDropdownOrBandbox(column)
-                    || hasExcludedProperties(column)) {
+                    || column.getMeta().getDataCategory().equals("OBJECT") && !isDropdownOrBandbox(column)) {
+                continue;
+            }
+
+            if (hasExcludedProperties(column) || excludedUiColumns.contains(getParentPath(column.getFieldName()))) {
+                excludedUiColumns.add(column.getFieldName());
                 continue;
             }
 
@@ -217,6 +222,21 @@ public class DefaultSearchFilterConfigCreator implements ISearchFilterConfigCrea
         return hasProperty(column, Constants.UiFieldProperties.NO_JAVA)
                 || hasProperty(column, Constants.UiFieldProperties.NO_DDL)
                 || hasProperty(column, Constants.UiFieldProperties.NO_AUTO_MAP);
+    }
+
+    /**
+     * Get parent of the given path delimited by '.'
+     *
+     * @param fullPath
+     * @return parent path
+     */
+    protected String getParentPath(String fullPath) {
+        int pos = fullPath.lastIndexOf(".");
+        if (pos == -1) {
+            return "";
+        } else {
+            return fullPath.substring(0, pos);
+        }
     }
 
     /**

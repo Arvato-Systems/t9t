@@ -61,6 +61,12 @@ public class AllItemConverters  implements IItemConverter<Object> {
         IItemConverter classConverter = REGISTRY.get(className);
         if (classConverter != null)
             return classConverter;
+        if (value instanceof Map) {
+            IItemConverter mapFieldConverter = REGISTRY.get("java.util.Map");
+            if (mapFieldConverter != null) {
+                return mapFieldConverter;
+            }
+        }
         // subtypes
         if (value instanceof BonaEnum)
             return REGISTRY.get("bonaenum");
