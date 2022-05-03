@@ -172,3 +172,17 @@ function enableRTL() {
 zAu.cmd0.openExtUrl = function (url) {
     window.open(url, '_blank');
 }
+
+/**
+* Override today button behaviour on calendar.
+* Default behaviour: When click on today button, selection in calendar jumps to today date but not select it.
+* Override behaviour: When click on today button, today date is selected and calendar widget is closed.
+ */
+zk.afterLoad('zul.db', function () {
+    zul.db.CalendarPop.prototype._clickToday = function (evt) {
+        var cal = evt.target.parent._pop;
+        var today = new Date();
+        cal._setTime(today.getFullYear(), today.getMonth(), today.getDate(), true);
+    }
+});
+

@@ -59,6 +59,7 @@ import com.arvatosystems.t9t.base.search.LeanSearchResponse;
 import com.arvatosystems.t9t.translation.services.ITranslationProvider;
 import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;
 import com.arvatosystems.t9t.zkui.services.IT9tRemoteUtils;
+import com.arvatosystems.t9t.zkui.util.Constants.DateTime;
 import com.arvatosystems.t9t.zkui.util.MenuUtil;
 import com.arvatosystems.t9t.zkui.util.ZulUtils;
 import com.arvatosystems.t9t.zkui.viewmodel.beans.Navi;
@@ -501,6 +502,8 @@ public final class ApplicationSession {
         // set the session environment
         org.zkoss.zk.ui.Session current = Sessions.getCurrent();
         if (current != null) {
+            current.setAttribute(org.zkoss.web.Attributes.PREFERRED_FIRST_DAY_OF_WEEK,
+                DateTime.FIRST_DAY_OF_WEEK.getOrDefault(rawLanguage, java.util.Calendar.SUNDAY));
             current.setAttribute(org.zkoss.web.Attributes.PREFERRED_LOCALE, userLocale);
             current.setAttribute(org.zkoss.web.Attributes.PREFERRED_TIME_ZONE, userTimeZone);
             //current.setAttribute(org.zkoss.web.Attributes.PREFERRED_DATE_FORMAT_INFO, ...
