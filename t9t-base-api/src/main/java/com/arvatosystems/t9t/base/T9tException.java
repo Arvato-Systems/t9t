@@ -197,6 +197,7 @@ public class T9tException extends ApplicationException {
     public static final int MAIN_IS_NOT_PLUGIN          = OFFSET + 363;
     public static final int PLUGIN_INSTANTIATION_ERROR  = OFFSET + 364;
     public static final int PLUGIN_METHOD_WRONG_TYPE    = OFFSET + 365;
+    public static final int PLUGINS_NOT_ENABLED         = OFFSET + 366;
 
     public static final int NOT_AUTHENTICATED           = OFFSET + 401;
     public static final int NOT_AUTHORIZED              = OFFSET + 403;

@@ -18,9 +18,12 @@ package com.arvatosystems.t9t.plugins.be.request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.cfg.be.ConfigProvider;
+import com.arvatosystems.t9t.cfg.be.ServerConfiguration;
 import com.arvatosystems.t9t.plugins.request.UnloadPluginRequest;
 import com.arvatosystems.t9t.plugins.services.IPluginManager;
 
@@ -33,6 +36,11 @@ public class UnloadPluginRequestHandler extends AbstractRequestHandler<UnloadPlu
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final UnloadPluginRequest rq) throws Exception {
+        final ServerConfiguration serverConfig = ConfigProvider.getConfiguration().getServerConfiguration();
+        if (serverConfig == null || !Boolean.TRUE.equals(serverConfig.getEnablePlugins())) {
+            LOGGER.info("Plugin upload not enabled via configuration");
+            throw new T9tException(T9tException.PLUGINS_NOT_ENABLED);
+        }
         final boolean removed = pluginManager.removePlugin(ctx.tenantRef, rq.getPluginId());
         LOGGER.info("The plugin {} {}", rq.getPluginId(), removed ? "has been removed" : "was not found");
         return ok();

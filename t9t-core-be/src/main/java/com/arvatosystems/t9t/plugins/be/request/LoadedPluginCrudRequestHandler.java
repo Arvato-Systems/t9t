@@ -22,6 +22,8 @@ import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.cfg.be.ConfigProvider;
+import com.arvatosystems.t9t.cfg.be.ServerConfiguration;
 import com.arvatosystems.t9t.plugins.LoadedPluginDTO;
 import com.arvatosystems.t9t.plugins.LoadedPluginRef;
 import com.arvatosystems.t9t.plugins.PluginLogDTO;
@@ -42,11 +44,15 @@ import de.jpaw.dp.Jdp;
 import java.time.Instant;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 //FIXME: There is a severe issue, in that for CREATE / UPDATE / MERGE, the pluginId of the data record is independent of the ID within the plugin itself.
 //We should either remove the ID within the plugin (solely trusting the user to assign IDs) or peek into the JAR before loading it, comparing the IDs,
 //or (preferred) use a completely different method to install JARs.
 public class LoadedPluginCrudRequestHandler
         extends AbstractCrudSurrogateKeyBERequestHandler<LoadedPluginRef, LoadedPluginDTO, FullTrackingWithVersion, LoadedPluginCrudRequest> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(LoadedPluginCrudRequestHandler.class);
 
     protected final ILoadedPluginResolver resolver = Jdp.getRequired(ILoadedPluginResolver.class);
     protected final IExecutor executor = Jdp.getRequired(IExecutor.class);
@@ -54,6 +60,11 @@ public class LoadedPluginCrudRequestHandler
 
     @Override
     public CrudSurrogateKeyResponse<LoadedPluginDTO, FullTrackingWithVersion> execute(final RequestContext ctx, final LoadedPluginCrudRequest crudRequest) {
+        final ServerConfiguration serverConfig = ConfigProvider.getConfiguration().getServerConfiguration();
+        if (serverConfig == null || !Boolean.TRUE.equals(serverConfig.getEnablePlugins())) {
+            LOGGER.info("Plugin upload not enabled via configuration");
+            throw new T9tException(T9tException.PLUGINS_NOT_ENABLED);
+        }
         LoadedPluginDTO loadedPlugin = new LoadedPluginDTO();
         LoadedPluginDTO oldEntry = new LoadedPluginDTO();
         boolean entryExists = false;

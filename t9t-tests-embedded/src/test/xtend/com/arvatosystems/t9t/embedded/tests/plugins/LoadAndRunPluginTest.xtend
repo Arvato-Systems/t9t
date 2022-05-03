@@ -17,18 +17,15 @@ package com.arvatosystems.t9t.embedded.tests.plugins
 
 import com.arvatosystems.t9t.base.ITestConnection
 import com.arvatosystems.t9t.embedded.connect.InMemoryConnection
-import com.arvatosystems.t9t.plugins.LoadedPluginDTO
 import com.arvatosystems.t9t.plugins.request.ExecutePluginV1Request
-import com.arvatosystems.t9t.plugins.request.LoadedPluginCrudRequest
+import com.arvatosystems.t9t.plugins.request.UnloadPluginRequest
 import com.arvatosystems.t9t.plugins.request.UploadPluginRequest
 import com.arvatosystems.t9t.plugins.request.UploadPluginResponse
 import de.jpaw.annotations.AddLogger
 import de.jpaw.bonaparte.api.media.MediaDataUtil
-import de.jpaw.bonaparte.pojos.api.OperationType
-import java.time.Instant
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
-import com.arvatosystems.t9t.plugins.request.UnloadPluginRequest
+import org.junit.jupiter.api.Disabled
 
 @AddLogger
 class LoadAndRunPluginTest {
@@ -40,6 +37,7 @@ class LoadAndRunPluginTest {
         dlg = new InMemoryConnection
     }
 
+    @Disabled  // needs enabled plugins in special Config.XML
     @Test
     def void loadPluginTest() {
         val rq = new UploadPluginRequest => [

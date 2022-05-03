@@ -18,8 +18,11 @@ package com.arvatosystems.t9t.plugins.be.request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.cfg.be.ConfigProvider;
+import com.arvatosystems.t9t.cfg.be.ServerConfiguration;
 import com.arvatosystems.t9t.plugins.PluginInfo;
 import com.arvatosystems.t9t.plugins.request.UploadPluginRequest;
 import com.arvatosystems.t9t.plugins.request.UploadPluginResponse;
@@ -34,6 +37,11 @@ public class UploadPluginRequestHandler extends AbstractRequestHandler<UploadPlu
 
     @Override
     public UploadPluginResponse execute(final RequestContext ctx, final UploadPluginRequest rq) throws Exception {
+        final ServerConfiguration serverConfig = ConfigProvider.getConfiguration().getServerConfiguration();
+        if (serverConfig == null || !Boolean.TRUE.equals(serverConfig.getEnablePlugins())) {
+            LOGGER.info("Plugin upload not enabled via configuration");
+            throw new T9tException(T9tException.PLUGINS_NOT_ENABLED);
+        }
         final PluginInfo info = pluginManager.loadPlugin(ctx.tenantRef, rq.getJarFile());
         final UploadPluginResponse resp = new UploadPluginResponse();
         LOGGER.info("Temporarily loaded plugin {} of version {}", info.getPluginId(), info.getVersion());

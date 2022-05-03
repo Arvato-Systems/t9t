@@ -508,6 +508,7 @@
                         </xs:simpleType>
                     </xs:element>
                     <xs:element name="replacementCharacter" minOccurs="0" nillable="true" type="bon:CHAR"/>
+                    <xs:element name="enablePlugins" minOccurs="0" nillable="true" type="xs:boolean"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
