@@ -28,11 +28,12 @@ import de.jpaw.dp.Jdp;
 
 public class AutonomousTransactionRequestHandler extends AbstractRequestHandler<AutonomousTransactionRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AutonomousTransactionRequestHandler.class);
+
     protected final IAutonomousExecutor autoExecutor = Jdp.getRequired(IAutonomousExecutor.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final AutonomousTransactionRequest rq) {
         LOGGER.debug("Launching request {} in a different thread", rq.getRequest().ret$PQON());
-        return autoExecutor.execute(ctx, rq.getRequest());
+        return autoExecutor.execute(ctx, rq.getRequest(), false);
     }
 }

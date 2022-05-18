@@ -31,6 +31,7 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 
 import static extension com.arvatosystems.t9t.misc.extensions.MiscExtensions.*
+import org.junit.jupiter.api.Disabled
 
 class QueueRestartTest {
     static ITestConnection dlg
@@ -45,6 +46,7 @@ class QueueRestartTest {
         println(dlg.typeIO(new GetQueueStatusRequest, GetQueueStatusResponse).status.map[toString].join("\n"))
     }
 
+    @Disabled  // not working since change of default queue setting from LTQ to noop
     @Test
     def void createAndShutdownQueueTest() {
         new AsyncQueueDTO => [

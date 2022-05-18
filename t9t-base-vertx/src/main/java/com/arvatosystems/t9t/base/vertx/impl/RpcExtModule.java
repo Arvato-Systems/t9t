@@ -26,6 +26,6 @@ import de.jpaw.dp.Named;
 public class RpcExtModule extends AbstractRpcModule {
     @Override
     public String getModuleName() {
-      return "rpcExt";
+        return "rpcExt";
     }
 }

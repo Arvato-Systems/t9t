@@ -17,7 +17,6 @@ import t9t.setups.*
 import t9t.bpmn.*
 import t9t.base.entities.*
 
-@Generator(noMapper)
 package (com.arvatosystems) t9t.bpmn.jpa.entities owner fortytwo prefix p28 {
 
     entity ProcessDefinitionEntity category cfg is ProcessDefinitionDTO {

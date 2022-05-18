@@ -50,9 +50,14 @@ import de.jpaw.bonaparte.pojos.ui.UIMeta;
 import de.jpaw.json.JsonParser;
 import de.jpaw.util.ExceptionUtil;
 
-public final class UiGridConfigPrefs {
+/**
+ * Class which implements subroutines for initialization.
+ * Default visibility (package) by intention, all accesses are done via <code>InitContainers</code>.
+ */
+final class UiGridConfigPrefs {
     private static final Logger LOGGER = LoggerFactory.getLogger(UiGridConfigPrefs.class);
     private static final AtomicInteger ERROR_COUNTER = new AtomicInteger(0);
+
     public static final UIDefaults MY_DEFAULTS = new UIDefaults(
         50,     // renderMaxArrayColumns: we have up to 7 address lines (and 6 tax levels) (but 50 in other applications)
         160,    // widthObject
@@ -66,9 +71,8 @@ public final class UiGridConfigPrefs {
 
     private UiGridConfigPrefs() { }
 
-    private static void addUiMeta(final CrudViewModel<?, ?> vm, final String viewModelId, final UIGridPreferences ui, final String gridId) {
-        if (IViewModelContainer.VIEW_MODEL_BY_GRID_ID_REGISTRY.putIfAbsent(gridId, viewModelId) != null)
-            LOGGER.error("view model by grid config {} defined multiple times", gridId);
+    private static void addUiMeta(final CrudViewModel<?, ?> vm, final String viewModelId, final UIGridPreferences ui, final String gridId,
+      final Map<String, UIGridPreferences> gridOverrides) {
         final ColumnCollector cc = new ColumnCollector(MY_DEFAULTS);
         final List<UIColumnConfiguration> cols = ui.getColumns();
         for (final UIColumnConfiguration col : cols) {
@@ -93,56 +97,32 @@ public final class UiGridConfigPrefs {
         }
         ui.validate();
         ui.freeze();
-        if (IGridConfigContainer.GRID_CONFIG_REGISTRY.putIfAbsent(gridId, ui) != null) {
-            ERROR_COUNTER.incrementAndGet();
-            LOGGER.error("grid config {} defined multiple times", gridId);
+        final String overridesId = ui.getOverridesGridConfig();
+        if (overridesId == null) {
+            // store it in regular entry - 1st pass
+            if (IGridConfigContainer.GRID_CONFIG_REGISTRY.putIfAbsent(gridId, ui) != null) {
+                ERROR_COUNTER.incrementAndGet();
+                LOGGER.error("grid config {} defined multiple times", gridId);
+            }
+            if (IViewModelContainer.VIEW_MODEL_BY_GRID_ID_REGISTRY.putIfAbsent(gridId, viewModelId) != null) {
+                LOGGER.error("view model by grid config {} defined multiple times", gridId);
+            }
+        } else {
+            // postpone this - 2nd pass (but check there is no duplicate override)
+            if (gridOverrides.putIfAbsent(overridesId, ui) != null) {
+                ERROR_COUNTER.incrementAndGet();
+                LOGGER.error("grid config {} overridden multiple times", overridesId);
+            }
+            if (IViewModelContainer.VIEW_MODEL_BY_GRID_ID_REGISTRY.putIfAbsent(overridesId, viewModelId) != null) {
+                LOGGER.error("view model by overrides grid config {} defined multiple times", overridesId);
+            }
         }
     }
 
-    public static void getGridConfigAsObject(final String resourceId) {
-        final String gridId = resourceId.replace('$', '/');
-        try {
-            final URL url = Resources.getResource("gridconfig/" + resourceId + ".json");
-            final String json = Resources.toString(url, Charsets.UTF_8);
-
-            final Map<String, Object> config = new JsonParser(json, false).parseObject();
-
-            // add the "allowSorting" data, by default false
-            final List<Map<String, Object>> columns = (List<Map<String, Object>>) config.get("columns");
-            for (final Map<String, Object> column: columns) {
-                column.put("allowSorting", true);
-                column.put("negateFilter", false);
-            }
-            config.put("sortDescending", false);
-            config.put("@PQON", "t9t.base.uiprefs.UIGridPreferences");      // avoid a warning
-            final UIGridPreferences ui = (UIGridPreferences) MapParser.asBonaPortable(config, UIGridPreferences.meta$$this);
-            // enrich the UI meta data of the columns, if a viewModel is referenced
-            final String viewModelId = ui.getViewModel();
-            if (viewModelId == null) {
-                ERROR_COUNTER.incrementAndGet();
-                LOGGER.error("No view model reference defined for grid config {} - screens won't work", gridId);
-                return;
-            }
-            final CrudViewModel<?, ?> vm = IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.get(viewModelId);
-            if (vm == null) {
-                ERROR_COUNTER.incrementAndGet();
-                LOGGER.error("No view model definition found for {}, as specified in grid config {}", viewModelId, gridId);
-            } else {
-                LOGGER.debug("Grid config {} maps to view model {} ({})", gridId, viewModelId, vm.dtoClass.getPqon());
-
-                addUiMeta(vm, viewModelId, ui, gridId);
-                // set root level class properties - remove "" entry!
-                // ui.setClassProperties(vm.dtoClass.getMetaData().getProperties());
-            }
-        } catch (final Exception e) {
-            ERROR_COUNTER.incrementAndGet();
-            LOGGER.error("Parsing error for grid config {}: {}", gridId, ExceptionUtil.causeChain(e));
-        }
-    }
-
-    static Map<String, String> empty2minus(final Map<String, String> map) {
-        if (map == null || map.isEmpty())
+    private static Map<String, String> empty2minus(final Map<String, String> map) {
+        if (map == null || map.isEmpty()) {
             return map;
+        }
         // the input is an ImmutableMap, we have to copy it to support changes to the (expected) empty components
         final Map<String, String> r = new HashMap<>(2 * map.size());
         for (final Map.Entry<String, String> e : map.entrySet()) {
@@ -152,7 +132,8 @@ public final class UiGridConfigPrefs {
         return r;
     }
 
-    public static void getLeanGridConfigAsObject(final String resourceId) {
+    static void getLeanGridConfigAsObject(final String resourceId,
+      final Map<String, UILeanGridPreferences> leanGridOverrides, final Map<String, UIGridPreferences> gridOverrides) {
         final String gridId = resourceId.replace('$', '/');
         try {
             final URL url = Resources.getResource("gridconfig/" + gridId + ".json");
@@ -161,9 +142,20 @@ public final class UiGridConfigPrefs {
             final Map<String, Object> config = new JsonParser(json, false).parseObject();
             final UILeanGridPreferences prefs = new UILeanGridPreferences();
             MapParser.populateFrom(prefs, config);
-            if (ILeanGridConfigContainer.LEAN_GRID_CONFIG_REGISTRY.putIfAbsent(gridId, prefs) != null) {
-                ERROR_COUNTER.incrementAndGet();
-                LOGGER.error("lean grid config {} defined multiple times", gridId);
+
+            final String overridesId = prefs.getOverridesGridConfig();
+            if (overridesId == null) {
+                // original configuration
+                if (ILeanGridConfigContainer.LEAN_GRID_CONFIG_REGISTRY.putIfAbsent(gridId, prefs) != null) {
+                    ERROR_COUNTER.incrementAndGet();
+                    LOGGER.error("lean grid config {} defined multiple times", gridId);
+                }
+            } else {
+                // overriding configuration
+                if (leanGridOverrides.putIfAbsent(overridesId, prefs) != null) {
+                    ERROR_COUNTER.incrementAndGet();
+                    LOGGER.error("lean grid config {} overridden multiple times", overridesId);
+                }
             }
 
             // obtain the viewModel
@@ -209,6 +201,7 @@ public final class UiGridConfigPrefs {
             ui.setViewModel(viewModelId);
             ui.setWasLean(Boolean.TRUE);
             ui.setIsSolrSearch(vm.dtoClass.getProperty("isSolr") != null);
+            ui.setOverridesGridConfig(overridesId);
 
             // now set any filters
             if (prefs.getFilters() != null) {
@@ -251,8 +244,12 @@ public final class UiGridConfigPrefs {
                 }
             }
 
+            if (prefs.getMapColumns() != null) {
+                ui.setMapColumns(prefs.getMapColumns());
+            }
+
             // enrich UI meta, validate and store it
-            addUiMeta(vm, viewModelId, ui, gridId);
+            addUiMeta(vm, viewModelId, ui, gridId, gridOverrides);
         } catch (final Exception e) {
             ERROR_COUNTER.incrementAndGet();
             LOGGER.error("Parsing error for lean grid config {}: {}", gridId, ExceptionUtil.causeChain(e));
@@ -271,7 +268,7 @@ public final class UiGridConfigPrefs {
         return dst;
     }
 
-    public static int getErrorCount() {
+    static int getErrorCount() {
         return ERROR_COUNTER.get();
     }
 

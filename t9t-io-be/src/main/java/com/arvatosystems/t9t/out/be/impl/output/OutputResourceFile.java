@@ -72,8 +72,8 @@ public class OutputResourceFile implements IOutputResource {
         }
         // in case of a file export with an additional camel route set, the file is transfered over this route,
         // but only if this should be done within the transaction
-        if ((sinkCfg.getCamelRoute() != null
-         && (sinkCfg.getCamelExecution() == null || Objects.equal(sinkCfg.getCamelExecution(), CamelExecutionScheduleType.IN_TRANSACTION)))) {
+        if ((sinkCfg.getCamelRoute() != null && (sinkCfg.getCamelExecution() == null
+            || Objects.equal(sinkCfg.getCamelExecution(), CamelExecutionScheduleType.IN_TRANSACTION)))) {
             final IFileToCamelProducer fileToCamelProducer = Jdp.<IFileToCamelProducer>getRequired(IFileToCamelProducer.class);
             fileToCamelProducer.sendFileOverCamel(absolutePath, mediaType, sinkCfg);
         }

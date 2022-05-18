@@ -17,6 +17,7 @@ package com.arvatosystems.t9t.zkui.services;
 
 import java.util.List;
 
+import com.arvatosystems.t9t.auth.request.GetPasswordChangeRequirementsResponse;
 import com.arvatosystems.t9t.base.auth.AuthenticationResponse;
 import com.arvatosystems.t9t.base.auth.PermissionEntry;
 import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;
@@ -74,5 +75,10 @@ public interface IUserDAO {
      * @throws ReturnCodeException
      */
     AuthenticationResponse switchLanguage(String language) throws ReturnCodeException;
+
+    /**
+     * Retrieve the password change requirements from backend
+     */
+    GetPasswordChangeRequirementsResponse getPasswordChangeRequirements() throws ReturnCodeException;
 
 }

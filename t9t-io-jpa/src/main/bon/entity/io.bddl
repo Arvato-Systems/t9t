@@ -19,7 +19,6 @@ import t9t.io.*
 
 // entries are sorted such that references only go to entities listed before.
 
-@Generator(noMapper)
 package (com.arvatosystems) t9t.io.jpa.entities owner fortytwo prefix p28 {
     fields private;
 
@@ -56,7 +55,6 @@ package (com.arvatosystems) t9t.io.jpa.entities owner fortytwo prefix p28 {
 //        @ManyToOne SinkEntity sink LAZY for (sinkRef)
     }
 
-    @Generator(doMapper)
     entity AsyncQueueEntity category cfg is AsyncQueueDTO {
         cacheable
         tenantClass InternalTenantRef42
@@ -64,7 +62,6 @@ package (com.arvatosystems) t9t.io.jpa.entities owner fortytwo prefix p28 {
         index unique (tenantRef, asyncQueueId)
     }
 
-    @Generator(doMapper)
     entity AsyncChannelEntity category cfg is AsyncChannelDTO {
         cacheable
         tenantClass InternalTenantRef42
@@ -73,7 +70,6 @@ package (com.arvatosystems) t9t.io.jpa.entities owner fortytwo prefix p28 {
         @ManyToOne AsyncQueueEntity asyncQueue LAZY for (asyncQueueRef)
     }
 
-    @Generator(doMapper)
     entity AsyncMessageEntity category ^int is AsyncMessageDTO tablename p42_int_async_messages {
         tenantClass InternalTenantRef42
         pk (objectRef)

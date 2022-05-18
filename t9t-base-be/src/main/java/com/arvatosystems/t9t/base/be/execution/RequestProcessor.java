@@ -15,6 +15,14 @@
  */
 package com.arvatosystems.t9t.base.be.execution;
 
+import java.time.Instant;
+import java.util.Objects;
+import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
+
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.RandomNumberGenerators;
 import com.arvatosystems.t9t.base.T9tConstants;
@@ -24,7 +32,6 @@ import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.RetryAdviceType;
 import com.arvatosystems.t9t.base.api.ServiceRequestHeader;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
-import com.arvatosystems.t9t.base.auth.PermissionType;
 import com.arvatosystems.t9t.base.be.impl.DefaultRequestHandlerResolver;
 import com.arvatosystems.t9t.base.services.IBackendStringSanitizerFactory;
 import com.arvatosystems.t9t.base.services.IBucketWriter;
@@ -38,29 +45,18 @@ import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.cfg.be.StatusProvider;
 import com.arvatosystems.t9t.server.ExecutionSummary;
 import com.arvatosystems.t9t.server.InternalHeaderParameters;
-import com.arvatosystems.t9t.server.services.IAuthorize;
 import com.arvatosystems.t9t.server.services.IRequestLogger;
 import com.arvatosystems.t9t.server.services.IRequestProcessor;
 
 import de.jpaw.bonaparte.core.DataConverter;
 import de.jpaw.bonaparte.core.ObjectValidationException;
-import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 import de.jpaw.bonaparte.pojos.api.auth.UserLogLevelType;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ApplicationException;
 import de.jpaw.util.ExceptionUtil;
-
-import java.time.Instant;
-import java.util.Objects;
-import java.util.UUID;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 
 //process requests once the user has been authenticated
 @Singleton
@@ -74,7 +70,6 @@ public class RequestProcessor implements IRequestProcessor {
     protected final IRequestLogger messageLogger = Jdp.getRequired(IRequestLogger.class);
     protected final IIdempotencyChecker idempotencyChecker = Jdp.getRequired(IIdempotencyChecker.class);
     protected final IBucketWriter bucketWriter = Jdp.getRequired(IBucketWriter.class);
-    protected final IAuthorize authorizator = Jdp.getRequired(IAuthorize.class);
     protected final ICustomization customizationProvider = Jdp.getRequired(ICustomization.class);
     protected final IBackendStringSanitizerFactory backendStringSanitizerFactory = Jdp.getRequired(IBackendStringSanitizerFactory.class);
     protected final RequestContextScope ctxScope = Jdp.getRequired(RequestContextScope.class); // should be the same as the previous
@@ -301,31 +296,7 @@ public class RequestProcessor implements IRequestProcessor {
             // set the thread local to the context
             ctxScope.set(ctx);
             try {
-                if (!skipAuthorization) {
-                    try {
-                        // request authorization - we are now within request context and can query the DB!
-                        final Permissionset permissions = authorizator.getPermissions(ihdr.getJwtInfo(), PermissionType.BACKEND, rq.ret$PQON());
-                        LOGGER.trace("Backend execution permissions checked for request {}, got {}", rq.ret$PQON(), permissions);
-                        if (!permissions.contains(OperationType.EXECUTE)) {
-                            return errorResponse(ihdr, T9tException.NOT_AUTHORIZED, OperationType.EXECUTE.name() + " on " + rq.ret$PQON());
-                        }
-                        final IRequestHandler<RequestParameters> handler = ctx.customization.getRequestHandler(rq);
-                        final OperationType requiredPermission = handler.getAdditionalRequiredPermission(rq);
-                        if (requiredPermission != null) {
-                            if (!permissions.contains(requiredPermission)) {
-                                LOGGER.debug("Failed to obtain additional permission {}", requiredPermission);
-                                return errorResponse(ihdr, T9tException.NOT_AUTHORIZED, requiredPermission.name() + " for " + rq.ret$PQON());
-                            } else {
-                                LOGGER.trace("Also obtained additional permission {}", requiredPermission);
-                            }
-                        }
-                    } catch (Exception e) {
-                        // any exception during permission check must lead to rejection for security reasons. We also want a full stack trace here
-                        LOGGER.error("Exception during permission check: {}", e);
-                        return errorResponse(ihdr, T9tException.NOT_AUTHORIZED, e.getMessage());
-                    }
-                }
-                ServiceResponse resp = executor.executeSynchronous(ctx, rq);
+                ServiceResponse resp = skipAuthorization ? executor.executeSynchronous(ctx, rq) : executor.executeSynchronousWithPermissionCheck(ctx, rq);
                 if (resp == null) {
                     resp = new ServiceResponse(T9tException.REQUEST_HANDLER_RETURNED_NULL);
                 }
@@ -404,17 +375,6 @@ public class RequestProcessor implements IRequestProcessor {
             }
             return MessagingUtil.createServiceResponse(T9tException.GENERAL_EXCEPTION, causeChain, ihdr.getMessageId(), null, null);
         }
-    }
-
-    /** Generates a populated ServiceResponse from <code>InternalHeaderParameters</code>. */
-    protected ServiceResponse errorResponse(final InternalHeaderParameters ihdr, final int errorCode, final String details) {
-        final ServiceResponse resp = new ServiceResponse();
-        resp.setReturnCode(errorCode);
-        resp.setErrorDetails(details);
-        resp.setTenantId(ihdr.getJwtInfo().getTenantId());
-        resp.setProcessRef(ihdr.getProcessRef());
-        resp.setMessageId(ihdr.getMessageId());
-        return resp;
     }
 
     /** Performs the retry logic in case of optimistic locking exceptions. */

@@ -33,10 +33,10 @@ public final class T9tDocTools {
 
     public static FormatStyle styleFor(final char x) {
         switch (x) {
-            case 'F': return FormatStyle.FULL;
-            case 'S': return FormatStyle.SHORT;
-            case 'M': return FormatStyle.MEDIUM;
-            case 'L': return FormatStyle.LONG;
+        case 'F': return FormatStyle.FULL;
+        case 'S': return FormatStyle.SHORT;
+        case 'M': return FormatStyle.MEDIUM;
+        case 'L': return FormatStyle.LONG;
         }
         LOGGER.error("Bad style character given: {}, returning default formatter", x);
         return FormatStyle.MEDIUM;

@@ -22,8 +22,13 @@ import com.arvatosystems.t9t.base.api.ServiceResponse;
 
 /** Implementations are used to launch requests as autonomous transactions. */
 public interface IAutonomousExecutor {
+    /** Launch a request in an autonomous transaction - backwards compatible version. */
+    default ServiceResponse execute(RequestContext ctx, RequestParameters rp) {
+        return execute(ctx, rp, true);
+    }
+
     /** Launch a request in an autonomous transaction. */
-    ServiceResponse execute(RequestContext ctx, RequestParameters rp);
+    ServiceResponse execute(RequestContext ctx, RequestParameters rp, boolean skipPermissionCheck);
 
     /** Obtain the executor pool (only to be used for metering). */
     ExecutorService getExecutorServiceForMetering();

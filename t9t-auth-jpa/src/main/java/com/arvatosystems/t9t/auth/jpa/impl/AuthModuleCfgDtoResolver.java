@@ -36,7 +36,8 @@ public class AuthModuleCfgDtoResolver extends AbstractModuleConfigResolver<AuthM
             60,         // passwordThrottlingDuration: for how many seconds does the account not accept any login attempt after throttling?
             0,          // passwordBlockingPeriod:     Period in days saying how long an old password will be blocked before it can be used again.
                         // 0 disables this feature
-            0           // initialPasswordExpiration:  Period in days a password change is required on a newly created user
+            0,          // initialPasswordExpiration:  Period in days a password change is required on a newly created user
+            1, 2, 1, 1, 1, 0 // additional min requirements for password changes
         );
 
     public AuthModuleCfgDtoResolver() {

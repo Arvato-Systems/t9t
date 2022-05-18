@@ -27,34 +27,34 @@ public class SystemConfigurationProvider extends DefaultsConfigurationProvider {
     private static String lookup(final String name1, final String name2) {
         String val = System.getProperty(name1);
         if (val != null) {
-            LOGGER.debug("Obtained {} via JVM System property as {}", name1, val);
+            LOGGER.info("Obtained {} via JVM System property as {}", name1, val);
             return val;
         }
         val = System.getenv(name1);
         if (val != null) {
-            LOGGER.debug("Obtained {} via environment variable as {}", name1, val);
+            LOGGER.info("Obtained {} via environment variable as {}", name1, val);
             return val;
         }
         val = System.getProperty(name2);
         if (val != null) {
-            LOGGER.debug("Obtained {} via JVM System property as {}", name2, val);
+            LOGGER.info("Obtained {} via JVM System property as {}", name2, val);
             return val;
         }
         val = System.getenv(name2);
         if (val != null) {
-            LOGGER.debug("Obtained {} via environment variable as {}", name2, val);
+            LOGGER.info("Obtained {} via environment variable as {}", name2, val);
             return val;
         }
-        LOGGER.debug("Unable to find {} or {} via System property or environment variable - using default value", name1, name2);
+        LOGGER.info("Unable to find {} or {} via System property or environment variable - using default value", name1, name2);
         return null;
     }
 
     public SystemConfigurationProvider() {
         super(
-          "SYSTEM",
-          lookup("t9t.port", "PORT"),
-          lookup("t9t.host", "HOST"),
-          lookup("t9t.rpcpath", "RPCPATH")
+            "SYSTEM",
+            lookup("t9t.port", "PORT"),
+            lookup("t9t.host", "HOST"),
+            lookup("t9t.rpcpath", "RPCPATH")
         );
     }
 }

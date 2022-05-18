@@ -50,7 +50,7 @@ import org.slf4j.MDC;
 public abstract class AbstractRpcModule implements IServiceModule {
     private static class WrappedResponse { // wrapper class, required to pass out data from lambdas
         private ServiceResponse response = AbstractRpcModule.RESPONSE;
-      }
+    }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractRpcModule.class);
 
@@ -67,15 +67,15 @@ public abstract class AbstractRpcModule implements IServiceModule {
 
     @Override
     public int getExceptionOffset() {
-      return 10_000;
+        return 10_000;
     }
 
     protected boolean withServiceRequest() {
-      return false;
+        return false;
     }
 
     protected boolean skipAuthorization() {
-      return false;
+        return false;
     }
 
     @Override

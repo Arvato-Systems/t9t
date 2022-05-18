@@ -48,10 +48,10 @@ public class JndiConfigurationProvider extends DefaultsConfigurationProvider {
 
     public JndiConfigurationProvider(final Context ctx)  throws NamingException {
         super(
-          "JNDI",
-          lookup(ctx, "t9t/port"),
-          lookup(ctx, "t9t/host"),
-          lookup(ctx, "t9t/rpcpath")
+            "JNDI",
+            lookup(ctx, "t9t/port"),
+            lookup(ctx, "t9t/host"),
+            lookup(ctx, "t9t/rpcpath")
         );
     }
     public JndiConfigurationProvider() throws NamingException {

@@ -52,7 +52,9 @@ public class SimpleBenchmarkRequestHandler extends AbstractRequestHandler<Simple
         long endTime = initialTime;
         while (--repeats >= 0) {
             final RequestParameters rq2 = request.getMustCopyRequest() ? rq.ret$MutableClone(true, true) : rq;
-            final ServiceResponse resp = request.getRunAutonomous() ? autoExecutor.execute(ctx, rq2) : messaging.executeSynchronous(ctx, rq2);
+            final ServiceResponse resp = request.getRunAutonomous()
+              ? autoExecutor.execute(ctx, rq2, false)
+              : messaging.executeSynchronousWithPermissionCheck(ctx, rq2);
             if (!request.getIgnoreErrors() && !ApplicationException.isOk(resp.getReturnCode())) {
                 LOGGER.error("Invalid return code {}: {} in {}th iteration", resp.getReturnCode(), resp.getErrorDetails(),
                         request.getNumberOfIterations() - repeats);

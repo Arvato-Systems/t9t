@@ -24,17 +24,9 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.util.TimeZones;
-import org.zkoss.util.resource.Labels;
 
-import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;
-import com.arvatosystems.t9t.zkui.services.IT9tRemoteUtils;
-import com.arvatosystems.t9t.zkui.services.IUserDAO;
-import com.arvatosystems.t9t.zkui.session.ApplicationSession;
-import com.arvatosystems.t9t.zkui.util.Constants;
-import com.arvatosystems.t9t.zkui.util.PasswordUtils;
-import com.arvatosystems.t9t.zkui.util.ZulUtils;
-import com.arvatosystems.t9t.zkui.viewmodel.support.LoginViewModel;
-import com.arvatosystems.t9t.zkui.viewmodel.support.LoginViewModel.UserInfo;
+import com.arvatosystems.t9t.auth.request.GetPasswordChangeRequirementsRequest;
+import com.arvatosystems.t9t.auth.request.GetPasswordChangeRequirementsResponse;
 import com.arvatosystems.t9t.authc.api.GetTenantsRequest;
 import com.arvatosystems.t9t.authc.api.GetTenantsResponse;
 import com.arvatosystems.t9t.authc.api.ResetPasswordRequest;
@@ -52,6 +44,13 @@ import com.arvatosystems.t9t.base.auth.AuthenticationResponse;
 import com.arvatosystems.t9t.base.auth.PasswordAuthentication;
 import com.arvatosystems.t9t.base.auth.PermissionEntry;
 import com.arvatosystems.t9t.base.types.SessionParameters;
+import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;
+import com.arvatosystems.t9t.zkui.services.IT9tRemoteUtils;
+import com.arvatosystems.t9t.zkui.services.IUserDAO;
+import com.arvatosystems.t9t.zkui.session.ApplicationSession;
+import com.arvatosystems.t9t.zkui.util.ZulUtils;
+import com.arvatosystems.t9t.zkui.viewmodel.support.LoginViewModel;
+import com.arvatosystems.t9t.zkui.viewmodel.support.LoginViewModel.UserInfo;
 
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
@@ -94,6 +93,7 @@ public class UserDAO implements IUserDAO {
         sp.setUserAgent(mainAgent);
         return sp;
     }
+
     @Override
     public final AuthenticationResponse getAuthenticationResponse(String username, String pwd) throws ReturnCodeException {
         try {
@@ -161,18 +161,8 @@ public class UserDAO implements IUserDAO {
     @Override
     public final void changePassword(String oldPassword, String newPassword) throws ReturnCodeException {
         try {
-            // Check the new pwd is in valid format
-            PasswordUtils passwordUtils = new PasswordUtils(Integer.valueOf(Labels.getLabel("pwd.length")),
-                    Integer.valueOf(Labels.getLabel("pwd.lower")), Integer.valueOf(Labels.getLabel("pwd.upper")),
-                    Integer.valueOf(Labels.getLabel("pwd.digit")), Integer.valueOf(Labels.getLabel("pwd.special")),
-                    Boolean.valueOf(Labels.getLabel("pwd.checkIsoControl")));
-            if (!passwordUtils.verifyPasswordStrength(null, newPassword)) {
-                LOGGER.warn(
-                        "Error while changing password. Remember that the password should contain upper and lower case characters "
-                        + "as well as digits and special characters. " + passwordUtils.toString());
-                throw new ReturnCodeException(Constants.ErrorCodes.AUTHENTICATION_EXCEPTION, Labels.getLabel("err.pwd.requirements"), null);
-            }
-            String userId = ApplicationSession.get().getUserId();
+            final ApplicationSession as = ApplicationSession.get();
+            String userId = as.getUserId();
             AuthenticationRequest changePasswordRequest = new AuthenticationRequest();
 
             PasswordAuthentication authenticationParameters = new PasswordAuthentication();
@@ -227,6 +217,18 @@ public class UserDAO implements IUserDAO {
             SwitchLanguageRequest switchTenantRequest =  new SwitchLanguageRequest();
             switchTenantRequest.setLanguage(language);
             response = t9tRemoteUtils.executeAndHandle(switchTenantRequest, AuthenticationResponse.class);
+        } catch (Exception e) {
+            t9tRemoteUtils.returnCodeExceptionHandler("api-key.bon#SwitchLanguageRequest", e);
+        }
+        return response;
+    }
+
+    @Override
+    public GetPasswordChangeRequirementsResponse getPasswordChangeRequirements() throws ReturnCodeException {
+        GetPasswordChangeRequirementsResponse response = null;
+        try {
+            final GetPasswordChangeRequirementsRequest request = new GetPasswordChangeRequirementsRequest();
+            response = t9tRemoteUtils.executeAndHandle(request, GetPasswordChangeRequirementsResponse.class);
         } catch (Exception e) {
             t9tRemoteUtils.returnCodeExceptionHandler("api-key.bon#SwitchLanguageRequest", e);
         }

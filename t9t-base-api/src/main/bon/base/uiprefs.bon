@@ -24,6 +24,7 @@ package (com.arvatosystems) t9t.base.uiprefs {
     default private unsigned trim noControlChars;
 
     type identifier is Ascii(255) regexp "\\p{Graph}*";  // allow [] because arrays can be indexed
+    type gridConfigKey is Unicode(40);                   // specific key for the data, possibly concatenated fields with custom separators.
 
     /** Configuration for the UI grid configuration. It will be stored in the generic configuration
      * table using the group UI-GRID (old model) or a specific table (new model).
@@ -37,6 +38,8 @@ package (com.arvatosystems) t9t.base.uiprefs {
         optional identifier                         viewModel;              // key to the IViewModel - required to enrich the UI meta data
         required Unicode(255) Map<String>           classProperties;        // if viewModel is given, this field will store the class level properties of the bon file
         optional Boolean                            wasLean;                // determines if it was an v2 source or v3. null means v2
+        required identifier List<>                  mapColumns;             // a list of predefined map columns to be used in edit columns
+        optional gridConfigKey                      overridesGridConfig;    // grid Id to be overridden
     }
 
     /** Reduced set of properties for a simple configuration.
@@ -50,5 +53,7 @@ package (com.arvatosystems) t9t.base.uiprefs {
         optional identifier                         sortColumn;
         optional Boolean                            sortDescending;
         required identifier List<>                  unsortableFields;       // a list of identifiers specifying columns which cannot be sorted
+        required identifier List<>                  mapColumns;             // a list of predefined map columns to be used in edit columns
+        optional gridConfigKey                      overridesGridConfig;    // grid Id to be overridden
     }
 }

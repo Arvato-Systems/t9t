@@ -22,6 +22,7 @@ import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceRequest;
 import com.arvatosystems.t9t.base.api.ServiceRequestHeader;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
+import com.arvatosystems.t9t.base.auth.PermissionType;
 import com.arvatosystems.t9t.base.event.EventData;
 import com.arvatosystems.t9t.base.event.EventHeader;
 import com.arvatosystems.t9t.base.event.EventParameters;
@@ -31,10 +32,14 @@ import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.IRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.base.types.AuthenticationJwt;
+import com.arvatosystems.t9t.server.InternalHeaderParameters;
+import com.arvatosystems.t9t.server.services.IAuthorize;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.BonaPortableClass;
 import de.jpaw.bonaparte.core.ObjectValidationException;
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 import de.jpaw.dp.Singleton;
@@ -58,11 +63,61 @@ public class Executor implements IExecutor {
 
     protected final IAsyncRequestProcessor asyncProcessor = Jdp.getRequired(IAsyncRequestProcessor.class);
     protected final Provider<RequestContext> contextProvider = Jdp.getProvider(RequestContext.class);
+    protected final IAuthorize authorizer = Jdp.getRequired(IAuthorize.class);
 
     // execute a sub-request within the same existing context
     @Override
     public ServiceResponse executeSynchronous(final RequestParameters params) {
         return executeSynchronous(contextProvider.get(), params);
+    }
+
+    // execute a sub-request within the same existing (and known) context, if sufficient permissions available
+    @Override
+    public ServiceResponse executeSynchronousWithPermissionCheck(final RequestContext ctx, final RequestParameters params) {
+        final ServiceResponse errorResp = permissionCheck(ctx, params);
+        if (errorResp != null) {
+            return errorResp;
+        }
+        return executeSynchronous(ctx, params);
+    }
+
+    @Override
+    public ServiceResponse permissionCheck(final RequestContext ctx, final RequestParameters params) {
+        try {
+            // request authorization - we are now within request context and can query the DB!
+            final Permissionset permissions = authorizer.getPermissions(ctx.internalHeaderParameters.getJwtInfo(), PermissionType.BACKEND, params.ret$PQON());
+            LOGGER.trace("Backend execution permissions checked for request {}, got {}", params.ret$PQON(), permissions);
+            if (!permissions.contains(OperationType.EXECUTE)) {
+                return errorResponse(ctx, T9tException.NOT_AUTHORIZED, OperationType.EXECUTE.name() + " on " + params.ret$PQON());
+            }
+            final IRequestHandler<RequestParameters> handler = ctx.customization.getRequestHandler(params);
+            final OperationType requiredPermission = handler.getAdditionalRequiredPermission(params);
+            if (requiredPermission != null) {
+                if (!permissions.contains(requiredPermission)) {
+                    LOGGER.debug("Failed to obtain additional permission {}", requiredPermission);
+                    return errorResponse(ctx, T9tException.NOT_AUTHORIZED, requiredPermission.name() + " for " + params.ret$PQON());
+                } else {
+                    LOGGER.trace("Also obtained additional permission {}", requiredPermission);
+                }
+            }
+        } catch (Exception e) {
+            // any exception during permission check must lead to rejection for security reasons. We also want a full stack trace here
+            LOGGER.error("Exception during permission check: {}", e);
+            return errorResponse(ctx, T9tException.NOT_AUTHORIZED, e.getMessage());
+        }
+        return null;
+    }
+
+    /** Generates a populated ServiceResponse from <code>InternalHeaderParameters</code>. Used from <code>executeSynchronousWithPermissionCheck</code>. */
+    protected ServiceResponse errorResponse(final RequestContext ctx, final int errorCode, final String details) {
+        final ServiceResponse resp = new ServiceResponse();
+        resp.setReturnCode(errorCode);
+        resp.setErrorDetails(details);
+        final InternalHeaderParameters ihdr = ctx.internalHeaderParameters;
+        resp.setTenantId(ihdr.getJwtInfo().getTenantId());
+        resp.setProcessRef(ihdr.getProcessRef());
+        resp.setMessageId(ihdr.getMessageId());
+        return resp;
     }
 
     // execute a sub-request within the same existing (and known) context

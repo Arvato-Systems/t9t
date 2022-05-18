@@ -19,7 +19,6 @@ import t9t.setups.*
 import t9t.base.entities.*
 import t9t.base.moduleCfg.*
 
-@Generator(noMapper)
 package (com.arvatosystems) t9t.core.jpa.entities owner fortytwo prefix p42 {
     fields private;
 

@@ -176,14 +176,14 @@ class MessageStatisticsDTOWrapper {
     private final MessageStatisticsDTO dto;
 
     MessageStatisticsDTOWrapper(final Long tenantRef,
-     final String userId,
-     final String day,
-     final String requestParameterPqon,
-     final Long countOk,
-     final Long countError,
-     final Long processingTimeMin,
-     final Long processingTimeMax,
-     final Long processingTimeTotal) {
+      final String userId,
+      final String day,
+      final String requestParameterPqon,
+      final Long countOk,
+      final Long countError,
+      final Long processingTimeMin,
+      final Long processingTimeMax,
+      final Long processingTimeTotal) {
         dto = new MessageStatisticsDTO(
             tenantRef,
             userId,

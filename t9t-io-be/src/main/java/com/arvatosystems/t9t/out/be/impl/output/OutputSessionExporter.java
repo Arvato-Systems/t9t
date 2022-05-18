@@ -50,7 +50,7 @@ public class OutputSessionExporter implements IOutputSessionExporter {
         final BiFunction<Long, Integer, List<D>> chunkReader,
         final BiFunction<List<D>, IOutputSession, Long> chunkWriter,  // alternative to writer
         final BiFunction<D, IOutputSession, Long> writer
-      ) {
+    ) {
         final IOutputSession outputSession = osp.get();
         final OutputSessionParameters sessionParams = new OutputSessionParameters();
         sessionParams.setDataSinkId(request.getDataSinkId() == null ? defaultDataSinkId : request.getDataSinkId());

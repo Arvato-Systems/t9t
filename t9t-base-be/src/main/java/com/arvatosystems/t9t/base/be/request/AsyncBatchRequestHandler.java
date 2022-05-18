@@ -31,10 +31,16 @@ public class AsyncBatchRequestHandler extends AbstractRequestHandler<AsyncBatchR
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final AsyncBatchRequest request) {
-        final ServiceResponse resp = messaging.executeSynchronous(request.getPrimaryRequest());
+        // validate permission of async request first
+        final ServiceResponse errorResp = messaging.permissionCheck(ctx, request.getAsyncRequest());
+        if (errorResp != null) {
+            return errorResp;
+        }
+
+        final ServiceResponse resp = messaging.executeSynchronousWithPermissionCheck(ctx, request.getPrimaryRequest());
         if (resp.getReturnCode() <= (request.getAllowNo() ? T9tConstants.MAX_DECLINE_RETURN_CODE : T9tConstants.MAX_OK_RETURN_CODE)) {
             // fine (preliminary check), secondary will be done after commit, to capture late exceptions
-            messaging.executeAsynchronous(request.getAsyncRequest());
+            messaging.executeAsynchronous(ctx, request.getAsyncRequest());
         }
         return resp;
     }

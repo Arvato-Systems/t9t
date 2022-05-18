@@ -21,7 +21,6 @@ import api.media.*
 
 // entries are sorted such that references only go to entities listed before.
 
-@Generator(noMapper)
 package (com.arvatosystems) t9t.core.jpa.entities owner fortytwo prefix p28 {
     fields private;
 

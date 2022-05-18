@@ -39,6 +39,6 @@ public class NoTenantCustomizationTest {
         final List<String> actualNames = new NoTenantCustomization().getRequestHandlerClassnameCandidates(new PauseRequest());
         Assertions.assertEquals(2, actualNames.size(), "expect 2 possible handler names");
         Assertions.assertEquals(MessagingUtil.TWENTYEIGHT_PACKAGE_PREFIX + ".base.be.request.PauseRequestHandler", actualNames.get(0),
-          "first name should be in the be package");
+            "first name should be in the be package");
     }
 }

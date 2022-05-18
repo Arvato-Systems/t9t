@@ -38,20 +38,32 @@ public class SupportedLanguagesImporter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SupportedLanguagesImporter.class);
 
-    private static final String SUPPORTED_LANGUAGES_FILE_NAME = "translations/supported_languages.properties";
+    private static final String LANGUAGES_FILE_DIRECTORY = "translations/";
+    private static final String DEFAULT_LANGUAGES_FILE_NAME = "supported_languages.properties";
+    private static final String CLIENT_LANGUAGES_FILE_NAME = "client_languages.properties";
     public static final String COMMENT_SIGN = "#";
+
     /**
      * Returns collection of supported languages by system.
      *
      * @return
      */
     public Set<? extends String> readSupportedLanguages() {
+        Set<String> languages = readLanguages(CLIENT_LANGUAGES_FILE_NAME);
+        if (languages.isEmpty()) {
+            LOGGER.info("Client languages are empty, proceed with default supported languages.");
+            languages = readLanguages(DEFAULT_LANGUAGES_FILE_NAME);
+        }
+        return languages;
+    }
+
+    private Set<String> readLanguages(final String fileName) {
         final Set<String> su = new HashSet<>();
-        LOGGER.info("Reading property file with languages supported in translations of headers and enums");
+        LOGGER.info("Reading property file with languages supported in translations of headers and enums, file {}", fileName);
 
         final ClassLoader cl = this.getClass().getClassLoader();
         try {
-            final Enumeration<URL> urls = cl.getResources(SUPPORTED_LANGUAGES_FILE_NAME);
+            final Enumeration<URL> urls = cl.getResources(LANGUAGES_FILE_DIRECTORY + fileName);
 
             while (urls.hasMoreElements()) {
                 try (BufferedReader br = new BufferedReader(new InputStreamReader(urls.nextElement().openStream()))) {
@@ -64,14 +76,14 @@ public class SupportedLanguagesImporter {
                         su.add(line.trim());
                     }
                 } catch (final IOException e) {
-                    LOGGER.error("Reading property file with supported languages failed.", e);
+                    LOGGER.error("Reading property file with supported languages failed, file " + fileName + ".", e);
                 }
             }
         } catch (final IOException e) {
-            LOGGER.error("Reading property file with supported languages failed.", e);
+            LOGGER.error("Reading property file with supported languages failed, file " + fileName + ".", e);
         }
 
-        LOGGER.info("Languages supported in translations read successfully. Found {} languages.", su.size());
+        LOGGER.info("Languages supported in translations read successfully. Found {} languages in file {}", su.size(), fileName);
         return su;
     }
 }

@@ -176,13 +176,13 @@ public class AuthenticationRequestHandler extends AbstractRequestHandler<Authent
 
     protected AuthenticationResponse auth(final RequestContext ctx, final AuthenticationParameters ap, final String locale, final String zoneinfo) {
         if (ap instanceof ApiKeyAuthentication) {
-          return authApiKeyAuthentication(ctx, (ApiKeyAuthentication)ap, locale, zoneinfo);
+            return authApiKeyAuthentication(ctx, (ApiKeyAuthentication)ap, locale, zoneinfo);
         } else if (ap instanceof PasswordAuthentication) {
-          return authPasswordAuthentication(ctx, (PasswordAuthentication)ap, locale, zoneinfo);
+            return authPasswordAuthentication(ctx, (PasswordAuthentication)ap, locale, zoneinfo);
         } else if (ap != null) {
-          return authDefault(ctx, ap, locale, zoneinfo);
+            return authDefault(ctx, ap, locale, zoneinfo);
         } else {
-          throw new IllegalArgumentException("Unhandled parameter types: " + Arrays.<Object>asList(ctx, ap, locale, zoneinfo).toString());
+            throw new IllegalArgumentException("Unhandled parameter types: " + Arrays.<Object>asList(ctx, ap, locale, zoneinfo).toString());
         }
     }
 }

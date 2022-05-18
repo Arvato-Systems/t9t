@@ -29,13 +29,14 @@ import com.arvatosystems.t9t.doc.request.DocConfigCrudRequest;
 import de.jpaw.dp.Jdp;
 
 public class DocModuleCfgCrudRequestHandler
-        extends AbstractCrudSurrogateKey42RequestHandler<DocConfigRef, DocConfigDTO, FullTrackingWithVersion, DocConfigCrudRequest, DocConfigEntity> {
+  extends AbstractCrudSurrogateKey42RequestHandler<DocConfigRef, DocConfigDTO, FullTrackingWithVersion, DocConfigCrudRequest, DocConfigEntity> {
     protected final IDocConfigEntityResolver resolver = Jdp.getRequired(IDocConfigEntityResolver.class);
     protected final IDocConfigDTOMapper mapper = Jdp.getRequired(IDocConfigDTOMapper.class);
 
     @Override
     public CrudSurrogateKeyResponse<DocConfigDTO, FullTrackingWithVersion> execute(final RequestContext ctx, final DocConfigCrudRequest request)
-            throws Exception {
-      return execute(ctx, mapper, resolver, request);
+        throws Exception {
+
+        return execute(ctx, mapper, resolver, request);
     }
 }

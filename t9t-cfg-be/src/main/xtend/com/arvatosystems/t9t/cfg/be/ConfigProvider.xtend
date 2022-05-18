@@ -71,7 +71,7 @@ class ConfigProvider {
             defaultUrl              = "http://localhost:8880/solr6"
         ]
         asyncMsgConfiguration       = new AsyncTransmitterConfiguration => [
-            strategy                = "LTQ"
+            strategy                = "noop"  // "LTQ" (LinkedTransferQueue) is default implementation for local queues
             maxMessageAtStartup     =   100
             timeoutIdleGreen        =   500
             timeoutIdleRed          =  5000

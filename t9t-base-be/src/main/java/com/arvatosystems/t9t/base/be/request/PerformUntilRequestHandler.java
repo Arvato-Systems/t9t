@@ -59,7 +59,7 @@ public class PerformUntilRequestHandler extends AbstractRequestHandler<PerformUn
             }
             ++count;
 
-            final ServiceResponse resp = executor.execute(ctx, rp);
+            final ServiceResponse resp = executor.execute(ctx, rp, false);  // check permissions
             switch (resp.getReturnCode() / ApplicationException.CLASSIFICATION_FACTOR) {
             case ApplicationException.SUCCESS:
                 break; // continue processing

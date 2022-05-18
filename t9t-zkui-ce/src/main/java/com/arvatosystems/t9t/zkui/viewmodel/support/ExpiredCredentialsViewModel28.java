@@ -20,6 +20,7 @@ import java.time.Instant;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.Executions;
 
+import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 import com.arvatosystems.t9t.zkui.util.Constants;
 
@@ -29,7 +30,7 @@ public class ExpiredCredentialsViewModel28 extends ChangePwdViewModel28 {
 
     @Init
     @Override
-    void init() {
+    void init() throws ReturnCodeException {
         super.init();
         final ApplicationSession as = ApplicationSession.get();
         if (as != null && as.getPasswordExpires() != null && as.getPasswordExpires().isAfter(Instant.now())) {

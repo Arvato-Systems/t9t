@@ -44,7 +44,9 @@ public interface IAuthPersistenceAccess {
         0,
         0,
         0,
-        1);
+        1,
+        1, 2, 1, 1, 1, 0 // additional min requirements for password changes
+        );
 
     // returns permission entries from the database which are relevant for the user / tenant as specified by the jwtInfo record, and which are relevant for the
     // specified resource. These are all resourceIds which are a substring of resource

@@ -65,7 +65,7 @@ public class SearchFilterUtil implements ISearchFilterUtil {
     }
 
     private boolean hasMoreThanOneWantedFieldNames(final SearchFilter searchFilter, final Set<String> wantedFieldNames) {
-         final Set<String> fieldNames = searchTools.getAllSearchFilterFieldName(searchFilter, new HashSet<>());
+        final Set<String> fieldNames = searchTools.getAllSearchFilterFieldName(searchFilter, new HashSet<>());
 
         return fieldNames.stream().filter(fieldName -> {
             return wantedFieldNames.contains(fieldName);

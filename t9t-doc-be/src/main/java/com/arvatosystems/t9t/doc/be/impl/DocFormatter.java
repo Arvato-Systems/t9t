@@ -564,7 +564,7 @@ public class DocFormatter implements IDocFormatter {
 
         @Override
         public boolean isEmpty() throws TemplateModelException {
-          return this.components.isEmpty();
+            return this.components.isEmpty();
         }
 
         public ComponentAccessor(Map<String, MediaData> components, MediaXType desiredFormat, IDocComponentConverter converter, Long tenantRef) {

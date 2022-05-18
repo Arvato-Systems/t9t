@@ -77,4 +77,22 @@ package (com.arvatosystems) t9t.auth.request {
     class GetDefaultScreenResponse              extends ServiceResponse {
         optional Unicode(64)                                defaultScreenId;
     }
+
+    /**
+     * Retrieves the requirements for a new password for this user.
+     * The current implementation will return settings which are configured at tenant level in AuthModuleCfgDTO,
+     * but the service could be overridden to return stricter requirements for users with admin permissions.
+     */
+    class GetPasswordChangeRequirementsRequest            extends RequestParameters return GetPasswordChangeRequirementsResponse {}
+
+    class GetPasswordChangeRequirementsResponse          extends ServiceResponse {
+        required int                                passwordDifferPreviousN;    // from how many previous passwords must this one be different? (default 3)
+        required int                                passwordMinimumLength;      // minimum length for a password in characters (default 10)
+        required int                                passwordMinDigits;          // how many digits must be part of the password?
+        required int                                passwordMinLetters;         // how many letters (upper + lower case) must be part of the password?
+        required int                                passwordMinOtherChars;      // how many special characters must be part of the password?
+        required int                                passwordMinUppercase;       // how many uppercase letters must be part of the password?
+        required int                                passwordMinLowercase;       // how many lowercase letters must be part of the password?
+        required int                                passwordMaxCommonSubstring; // how many identical substring characters found in the password are allowed?
+    }
 }

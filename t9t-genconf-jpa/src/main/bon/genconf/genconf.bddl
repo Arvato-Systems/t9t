@@ -19,7 +19,6 @@ import t9t.setups.*
 import t9t.genconf.*
 // entries are sorted such that references only go to entities listed before.
 
-@Generator(noMapper)
 package (com.arvatosystems) t9t.genconf.jpa.entities owner fortytwo prefix p28 {
     fields private;
 

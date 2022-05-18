@@ -369,3 +369,10 @@ body *:not([class*="z-icon-"]) {
 .actions {
     margin-top:2em;
 }
+
+/** Password Requirements **/
+.pwdRequirements {
+    margin-top: 20px;
+    border: 1px solid #368AC0;
+    padding: 5px;
+}

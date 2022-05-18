@@ -107,7 +107,7 @@
     <module name="LocalVariableName"/>
     <module name="MemberName"/>
     <module name="MethodName">
-      <property name="format" value="^(operator_)?(onClick\$)?[a-z][a-zA-Z0-9$]*$"/>  <!-- support operator overloading for xtend as long as we still use it, and special ZK method names -->
+      <property name="format" value="^(onClick\$)?[a-z][a-zA-Z0-9$]*$"/>  <!-- support special ZK method names -->
     </module>
     <module name="PackageName"/>
     <module name="ParameterName"/>

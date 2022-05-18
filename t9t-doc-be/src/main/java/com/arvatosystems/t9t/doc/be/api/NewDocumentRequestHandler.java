@@ -78,10 +78,10 @@ public class NewDocumentRequestHandler extends AbstractRequestHandler<NewDocumen
     private final IDocUnknownDistributor docUnknownDistributor = Jdp.getRequired(IDocUnknownDistributor.class);
 
     private boolean emailSettingsExist(final DocEmailReceiverDTO it) {
-        return it.getReplaceTo()  || it.getReplaceCc()  || it.getReplaceBcc() || it.getReplaceReplyTo()
-          || it.getReplaceFrom()  || it.getStoreEmail() || it.getSendSpooled()
-          || it.getEmailSubject() != null || it.getDefaultFrom() != null || it.getDefaultReplyTo() != null
-          || it.getExtraTo()      != null || it.getExtraCc()     != null || it.getExtraBcc()       != null;
+        return it.getReplaceTo()    || it.getReplaceCc()  || it.getReplaceBcc() || it.getReplaceReplyTo()
+            || it.getReplaceFrom()  || it.getStoreEmail() || it.getSendSpooled()
+            || it.getEmailSubject() != null || it.getDefaultFrom() != null || it.getDefaultReplyTo() != null
+            || it.getExtraTo()      != null || it.getExtraCc()     != null || it.getExtraBcc()       != null;
     }
 
     private static List<String> merge(final List<String> org, String add, final boolean replace) {

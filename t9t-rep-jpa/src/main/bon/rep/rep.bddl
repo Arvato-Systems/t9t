@@ -17,7 +17,6 @@ import t9t.setups.*
 import t9t.base.entities.*
 import t9t.rep.*
 
-@Generator(noMapper)
 package (com.arvatosystems) t9t.rep.jpa.entities owner fortytwo prefix p28 {
 
     entity ReportConfigEntity category cfg is ReportConfigDTO

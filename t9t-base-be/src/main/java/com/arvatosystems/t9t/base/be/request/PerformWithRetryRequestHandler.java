@@ -51,7 +51,7 @@ public class PerformWithRetryRequestHandler extends AbstractRequestHandler<Perfo
         for (;;) {
             ++count;
 
-            resp = executor.execute(ctx, rp);
+            resp = executor.execute(ctx, rp, false);
             switch (resp.getReturnCode() / ApplicationException.CLASSIFICATION_FACTOR) {
             case ApplicationException.SUCCESS:
                 return ok();

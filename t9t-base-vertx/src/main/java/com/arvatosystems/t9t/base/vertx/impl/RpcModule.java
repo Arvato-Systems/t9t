@@ -26,11 +26,6 @@ import de.jpaw.dp.Named;
 public class RpcModule extends AbstractRpcModule {
     @Override
     public String getModuleName() {
-      return "rpc";
-    }
-
-    @Override
-    public boolean skipAuthorization() {
-      return true;
+        return "rpc";
     }
 }

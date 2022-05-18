@@ -65,6 +65,11 @@ public class DefaultColumnConfigCreator implements IColumnConfigCreator {
         xuiGridPreferences.getColumns().stream().forEach(uiColumns -> {
             allAvailableFieldNames.add(uiColumns.getFieldName());
         });
+        if (uiGridPreferences.getMapColumns() != null) {
+            for (final String mapColumn : uiGridPreferences.getMapColumns()) {
+                allAvailableFieldNames.add(mapColumn);
+            }
+        }
         Listhead head = new Listhead();
         Listheader checkboxHeader = new Listheader();
         checkboxHeader.setWidth("40px");

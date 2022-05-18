@@ -152,7 +152,7 @@ public abstract class AbstractCrudSurrogateKeyBERequestHandler<REF extends Ref, 
                 crudRequest.getCrud().name(),
                 crudRequest.getKey() == null ? "null" : crudRequest.getKey(),
                 crudRequest.getNaturalKey() == null ? "null" : crudRequest.getNaturalKey()
-                );
+        );
         // check natural key.
         switch (crudRequest.getCrud()) {
         case MERGE:

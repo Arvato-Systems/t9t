@@ -29,6 +29,10 @@ public class ExecuteAsyncRequestHandler extends AbstractRequestHandler<ExecuteAs
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final ExecuteAsyncRequest request) throws Exception {
+        final ServiceResponse errorResp = executor.permissionCheck(ctx, request.getAsyncRequest());
+        if (errorResp != null) {
+            return errorResp;
+        }
         executor.executeAsynchronous(ctx, request.getAsyncRequest());
         return ok();
     }

@@ -30,8 +30,7 @@ import de.jpaw.dp.Singleton;
 public class QueryHintSetter implements IQueryHintSetter {
 
     @Override
-    public
-    void setManualFlushMode(final EntityManager em) {
+    public void setManualFlushMode(final EntityManager em) {
         final Session session = em.unwrap(Session.class);
         session.setHibernateFlushMode(FlushMode.MANUAL);
     }

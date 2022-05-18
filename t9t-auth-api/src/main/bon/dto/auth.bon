@@ -67,6 +67,12 @@ package (com.arvatosystems) t9t.auth {
         optional Integer                            passwordThrottlingDuration          default "60";       // for how many seconds does the account not accept any login attempt after throttling? (60)
         optional Integer                            passwordBlockingPeriod              default "0";        // Period in days saying how long an old password will be blocked before it can be used again. "0" Disables this feature
         optional Integer                            initialPasswordExpiration           default "0";        // Period in days a password change is required on a newly created user
+        optional Integer                            passwordMinDigits                   default "1";        // how many digits must be part of the password?
+        optional Integer                            passwordMinLetters                  default "2";        // how many letters (upper + lower case) must be part of the password?
+        optional Integer                            passwordMinOtherChars               default "1";        // how many special characters must be part of the password?
+        optional Integer                            passwordMinUppercase                default "1";        // how many uppercase letters must be part of the password?
+        optional Integer                            passwordMinLowercase                default "1";        // how many lowercase letters must be part of the password?
+        optional Integer                            passwordMaxCommonSubstring          default "0";        // how many identical substring characters found in the password are allowed?
     }
 
     class TenantLogoDTO RTTI 98 extends ModuleConfigDTO {

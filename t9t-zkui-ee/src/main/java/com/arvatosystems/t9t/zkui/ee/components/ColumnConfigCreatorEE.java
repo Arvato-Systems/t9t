@@ -141,6 +141,18 @@ public class ColumnConfigCreatorEE extends DefaultColumnConfigCreator {
                 }
             }
         });
+
+        if (uiGridPreferences.getMapColumns() != null) {
+            for (final String mapColumn : uiGridPreferences.getMapColumns()) {
+                final FieldNameModel fnm = new FieldNameModel();
+                fnm.setFieldName(mapColumn);
+                fnm.setFullPath(mapColumn);
+                fnm.setSelected(selections.contains(mapColumn));
+                if (!firstLevelColumns.contains(fnm)) {
+                    firstLevelColumns.add(fnm);
+                }
+            }
+        }
     }
 
     /**

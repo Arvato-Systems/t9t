@@ -97,7 +97,7 @@ public class AsyncBucketWriter implements IBucketWriter {
                                 if (e1.size() > MAX_ELEMENTS_TOTAL) {
                                     LOGGER.warn(
                                         "Single Transaction too big to write buckets - fallback: "
-                                      + "Buckets of single source TX may be written by multiple writer TX");
+                                        + "Buckets of single source TX may be written by multiple writer TX");
                                     for (final Map.Entry<BucketWriteKey, Integer> bi: e1.entrySet()) {
                                         sortedPool.merge(bi.getKey(), bi.getValue(), (a, b) -> Integer.valueOf(a.intValue() | b.intValue()));
                                         // flush once max. number of tx has been reached

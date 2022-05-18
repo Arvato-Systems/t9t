@@ -31,7 +31,7 @@ public class ConverterToHtmlUsingCids implements IDocComponentConverter {
     protected final Map<String, MediaData> attachments;
 
     public ConverterToHtmlUsingCids(final Map<String, MediaData> attachments) {
-      this.attachments = attachments;
+        this.attachments = attachments;
     }
 
     @Override

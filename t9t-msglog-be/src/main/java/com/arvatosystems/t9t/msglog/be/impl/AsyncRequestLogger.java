@@ -145,7 +145,7 @@ public class AsyncRequestLogger implements IRequestLogger {
             logWriterConfiguration = new LogWriterConfiguration();  // create a default one, to avoid double null checks
         }
         alertOnQueueSize = logWriterConfiguration.getAlertOnQueueSize() == null
-          ? DEFAULT_ALERT_ON_QUEUE_SIZE : logWriterConfiguration.getAlertOnQueueSize().intValue();
+            ? DEFAULT_ALERT_ON_QUEUE_SIZE : logWriterConfiguration.getAlertOnQueueSize().intValue();
     }
 
     @Override

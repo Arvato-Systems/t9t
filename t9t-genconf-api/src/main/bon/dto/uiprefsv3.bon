@@ -32,8 +32,6 @@ package (com.arvatosystems) t9t.uiprefsv3 {
         notupdatable is com.arvatosystems.t9t.annotations.NotUpdatable,
         ref is com.arvatosystems.t9t.annotations.IsObjectRef;
 
-    type gridConfigKey                      is Unicode(40);     // specific key for the data, possibly concatenated fields with custom separators.
-
     /** Grid configuration in a separate table, not using the generic one. */
     class LeanGridConfigRef extends Ref {}
 

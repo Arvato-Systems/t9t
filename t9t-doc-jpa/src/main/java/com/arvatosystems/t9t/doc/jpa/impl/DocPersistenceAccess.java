@@ -239,16 +239,17 @@ public class DocPersistenceAccess implements IDocPersistenceAccess {
     }
 
     private String getQueryStringForTextOrBinaryComponents(final String entityName, final String mainVariable, final boolean mainVarEquality) {
-        String sql = "SELECT r FROM " + entityName + " r"
-        + "           WHERE r.tenantRef    in (:tenantRef,:globalTenantRef)"
-        + "             AND r.entityId     in (:entityId,'-')"
-        + "             AND r.languageCode in (:languages)"
-        + "             AND r.currencyCode in (:currencyCode,'XXX')"
-        + "             AND r.countryCode  in (:countryCode,'XX')";
+        String sql =
+            "SELECT r FROM " + entityName + " r"
+            + " WHERE r.tenantRef  IN (:tenantRef,:globalTenantRef)"
+            + " AND r.entityId     IN (:entityId,'-')"
+            + " AND r.languageCode IN (:languages)"
+            + " AND r.currencyCode IN (:currencyCode,'XXX')"
+            + " AND r.countryCode  IN (:countryCode,'XX')";
         if (mainVarEquality) {
-            sql += "    AND r." + mainVariable  + " =:" + mainVariable;
+            sql += " AND r." + mainVariable  + " =:" + mainVariable;
         } else {
-            sql += "    ORDER BY r." + mainVariable;
+            sql += " ORDER BY r." + mainVariable;
         }
         return sql;
     }

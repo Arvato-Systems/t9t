@@ -29,17 +29,43 @@ import de.jpaw.bonaparte.core.BonaPortable;
 public interface IExecutor {
 
     /**
-     * Method handles incoming synchronous service request. Does this locally if the service sits in the same JVM, otherwise, serializes the request, transmits
-     * it and deserializes the response. The remote location is obtained via ????? (tbd). (Future expansion: Takes care, if the service executor is in a bundle
-     * which is not active.)
+     * Handles incoming synchronous service request.
+     * The request context is obtained automatically.
      *
-     * @param params
-     *            The received request parameters
+     * @param params The received request parameters
      * @return The response object related to the given service request
      */
     ServiceResponse executeSynchronous(RequestParameters params);
-    // preferred entry! context passed, but has been established already
+
+    /**
+     * Handles incoming synchronous service request.
+     * The request context is passed via parameter.
+     *
+     * @param params The received request parameters
+     * @param ctx The request context
+     * @return The response object related to the given service request
+     */
     ServiceResponse executeSynchronous(RequestContext ctx, RequestParameters params);
+
+    /**
+     * Handles incoming synchronous service request after checking permissions.
+     * The request context is passed via parameter.
+     *
+     * @param params The received request parameters
+     * @param ctx The request context
+     * @return The response object related to the given service request
+     */
+    ServiceResponse executeSynchronousWithPermissionCheck(RequestContext ctx, RequestParameters params);
+
+    /**
+     * Checks permissions, if it is OK to perform the request.
+     * The request context is passed via parameter.
+     *
+     * @param params The received request parameters
+     * @param ctx The request context
+     * @return An error response, or null in case of allowed
+     */
+    ServiceResponse permissionCheck(RequestContext ctx, RequestParameters params);
 
     /**
      * Invokes executeSynchronous() and checks the result for correctness and the response type.
@@ -48,7 +74,8 @@ public interface IExecutor {
     <T extends ServiceResponse> T executeSynchronousAndCheckResult(RequestParameters params, Class<T> requiredType);
     <T extends ServiceResponse> T executeSynchronousAndCheckResult(RequestContext ctx, RequestParameters params, Class<T> requiredType);
 
-    /** Schedules the provided request asynchronously. It will be executed with the same userId / tenant as the current request, and only if the current
+    /**
+     * Schedules the provided request asynchronously. It will be executed with the same userId / tenant as the current request, and only if the current
      * request is technically successful (i.e. does no rollback, i.e. a returncode is 0 <= r <= 199999999).
      *
      * The response of this request is the response of the primary request.
@@ -57,7 +84,7 @@ public interface IExecutor {
     void executeAsynchronous(RequestContext ctx, RequestParameters params);
     void executeAsynchronous(RequestContext ctx, RequestParameters params, boolean priority);
 
-    /** Send an event. */
+    /** Sends an event. */
     void sendEvent(EventParameters data);
     void sendEvent(RequestContext ctx, EventParameters data);
 

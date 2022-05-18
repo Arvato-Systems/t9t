@@ -17,24 +17,24 @@ package com.arvatosystems.t9t.embedded.tests.translation
 
 import com.arvatosystems.t9t.base.ITestConnection
 import com.arvatosystems.t9t.embedded.connect.InMemoryConnection
-import com.arvatosystems.t9t.init.UiGridConfigPrefs
+import com.arvatosystems.t9t.init.InitContainers
 import de.jpaw.annotations.AddLogger
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 
 @AddLogger
 class GridConfigValidationTest {
-    static private ITestConnection dlg
+    static ITestConnection dlg
 
     @BeforeAll
-    def public static void createConnection() {
+    def static void createConnection() {
         // use a single connection for all tests (faster)
         dlg = new InMemoryConnection
     }
 
     @Test
-    def public void gridConfigTest() {
-        val errors = UiGridConfigPrefs.errorCount
+    def void gridConfigTest() {
+        val errors = InitContainers.errorCount
         if (errors !== 0) {
             LOGGER.error("There are {} grid config errors", errors)
             throw new RuntimeException("Grid config is not correct")

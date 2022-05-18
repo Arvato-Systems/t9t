@@ -146,7 +146,8 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional Unicode(64)                        timeZone;                       // a time zone identifier such as "Europe/Berlin", to define the default time zone of the application
         optional Ascii(64)                          forbiddenCharacters;            // characters to reject when encountered in Strings
         optional Char                               replacementCharacter;           // character to use as a replacement (requests are rejected if none has been defined)
-        optional Boolean                            enablePlugins;                  // allow plugins to be uploaded
+        optional Boolean                            enablePlugins;                  // allow plugins to be uploaded (must be true in order to allow LoadPluginRequest)
+        optional Boolean                            enableGenericCallouts;          // allow callouts to other instances for arbitrary requests (must be true in order to allow ExecuteRemoteRequest)
     }
 
     class ApplicationConfiguration {

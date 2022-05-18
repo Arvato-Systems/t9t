@@ -27,6 +27,8 @@ import com.arvatosystems.t9t.base.request.ExecuteRemoteRequest;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.cfg.be.ConfigProvider;
+import com.arvatosystems.t9t.cfg.be.ServerConfiguration;
 import com.arvatosystems.t9t.server.services.IAuthorize;
 
 import de.jpaw.bonaparte.pojos.api.OperationType;
@@ -41,6 +43,11 @@ public class ExecuteRemoteRequestHandler extends AbstractRequestHandler<ExecuteR
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final ExecuteRemoteRequest request) throws Exception {
+        final ServerConfiguration serverConfig = ConfigProvider.getConfiguration().getServerConfiguration();
+        if (serverConfig == null || !Boolean.TRUE.equals(serverConfig.getEnableGenericCallouts())) {
+            LOGGER.info("Generic callouts not enabled via configuration");
+            throw new T9tException(T9tException.CALLOUTS_NOT_ENABLED);
+        }
         final RequestParameters remoteRequest = request.getRemoteRequest();
         final Permissionset permissions = authorizator.getPermissions(
           ctx.internalHeaderParameters.getJwtInfo(), PermissionType.EXTERNAL, remoteRequest.ret$PQON());

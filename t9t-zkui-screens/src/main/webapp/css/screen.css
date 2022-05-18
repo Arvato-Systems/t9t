@@ -1404,3 +1404,14 @@ body {
 .env-red span {
     color: #ed4b82;
 }
+
+/** Password Requirements **/
+.pwdRequirements {
+    margin-top: 20px;
+    border: 1px solid #368AC0;
+    padding: 5px;
+}
+
+.pwdRequirements span {
+    display: block;
+}

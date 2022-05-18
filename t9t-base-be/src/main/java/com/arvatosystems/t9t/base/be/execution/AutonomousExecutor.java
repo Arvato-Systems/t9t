@@ -63,7 +63,7 @@ public class AutonomousExecutor implements IAutonomousExecutor {
     }
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, RequestParameters rp) {
+    public ServiceResponse execute(final RequestContext ctx, final RequestParameters rp, final boolean skipPermissionCheck) {
         final InternalHeaderParameters ihdr = ctx.internalHeaderParameters;
         final ServiceRequestHeader requestHeader = new ServiceRequestHeader();
         requestHeader.setInvokingProcessRef(ctx.getRequestRef()); // transfer the invoker
@@ -73,7 +73,7 @@ public class AutonomousExecutor implements IAutonomousExecutor {
 
         final Future<ServiceResponse> f = executorService.submit(() -> {
             MDC.setContextMap(mdcContext); // Inherit MDC context and ensure old MDC of this worker is reset
-            return requestProcessor.execute(requestHeader, rp, ihdr.getJwtInfo(), ihdr.getEncodedJwt(), true);
+            return requestProcessor.execute(requestHeader, rp, ihdr.getJwtInfo(), ihdr.getEncodedJwt(), skipPermissionCheck);
         });
         try {
             return f.get();

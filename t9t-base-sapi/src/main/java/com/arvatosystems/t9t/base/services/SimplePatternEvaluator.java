@@ -79,7 +79,7 @@ public final class SimplePatternEvaluator {
                     }
 
                     result = result.replaceAll(Pattern.quote(toBeReplaced), formattedDate);
-                  }
+                }
             } else {
                 final String key = Pattern.quote(String.format(PATTERN_FORMAT, replacementEntry.getKey()));
                 final String value = replacementEntry.getValue() == null ? null : replacementEntry.getValue().toString();

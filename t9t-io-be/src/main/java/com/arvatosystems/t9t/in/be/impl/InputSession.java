@@ -169,7 +169,7 @@ public class InputSession implements IInputSession {
         // flush any buffered data in the transformer
         final RequestParameters rp = inputTransformer.getPending();
         if (rp != null) {
-          process(rp);
+            process(rp);
         }
         // terminate the transformer. Flush it first
         inputTransformer.close();
