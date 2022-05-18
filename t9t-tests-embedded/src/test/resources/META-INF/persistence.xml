@@ -16,11 +16,10 @@
     limitations under the License.
 
 -->
-<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
-             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
-             http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd"
-             version="2.2">
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
+        version="3.0">
     <persistence-unit name="t9t-DS" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <!-- JPA 2.1 AttributeConverter classes -->
@@ -94,10 +93,10 @@
         <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
         <properties>
             <!-- Common properties (most likely to be overwritten by values from the configuration file t9t-config.xml or its hardcoded fallback in project t9t-cfg-be) -->
-            <property name="javax.persistence.jdbc.driver"              value="org.postgresql.Driver" />
-            <property name="javax.persistence.jdbc.url"                 value="jdbc:postgresql://127.0.0.1:5432/fortytwo" />
-            <property name="javax.persistence.jdbc.user"                value="fortytwo" />
-            <property name="javax.persistence.jdbc.password"            value="secret/changeMe" />
+            <property name="jakarta.persistence.jdbc.driver"            value="org.postgresql.Driver" />
+            <property name="jakarta.persistence.jdbc.url"               value="jdbc:postgresql://127.0.0.1:5432/fortytwo" />
+            <property name="jakarta.persistence.jdbc.user"              value="fortytwo" />
+            <property name="jakarta.persistence.jdbc.password"          value="secret/changeMe" />
 
             <!-- Properties for Hibernate -->
             <!-- C3P0 settings -->
