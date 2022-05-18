@@ -76,6 +76,7 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
                 final boolean fileAlreadyExists = myFile.exists();
                 LOGGER.debug("File path is {} ({})", absolutePath, fileAlreadyExists ? "already exists on local FS" : "does not exist in local FS");
                 if (!fileAlreadyExists) {
+                    fileUtil.createFileLocation(absolutePath);
                     // transfer it
                     try (FileOutputStream os = new FileOutputStream(myFile)) {
                         final Long size = transferFile(ctx, os, sinkRef);
