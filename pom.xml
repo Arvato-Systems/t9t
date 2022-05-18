@@ -73,12 +73,11 @@
         <spring-boot-maven-plugin.version>2.6.6</spring-boot-maven-plugin.version>
         <tycho.version>2.7.0</tycho.version>
         <git-commit-id-plugin.version>2.1.7</git-commit-id-plugin.version>
-        <jaxb2-maven-plugin.version>1.5</jaxb2-maven-plugin.version>
-        <jaxws-maven-plugin.version>2.3.3</jaxws-maven-plugin.version>
+        <jaxws-maven-plugin.version>3.0.2</jaxws-maven-plugin.version>
         <eclipse-lifecycle-mapping.version>1.0.0</eclipse-lifecycle-mapping.version>
         <bundle.plugin.version>5.1.2</bundle.plugin.version> <!-- felix, for pricing RCP -->
         <exec.plugin.version>3.0.0</exec.plugin.version>
-        <jetty-maven-plugin.version>10.0.9</jetty-maven-plugin.version>
+        <jetty-maven-plugin.version>11.0.9</jetty-maven-plugin.version>
         <maven-antrun-plugin.version>3.0.0</maven-antrun-plugin.version>
         <cxf-codegen-plugin.version>3.5.2</cxf-codegen-plugin.version>
         <cxf-wadl2java-plugin.version>3.5.2</cxf-wadl2java-plugin.version>
@@ -95,8 +94,9 @@
         <xtend-maven-plugin.version>2.26.0</xtend-maven-plugin.version>
         <xtext-maven-plugin.version>2.26.0</xtext-maven-plugin.version>
 
-        <bonaparte-plugin.version>4.81.2</bonaparte-plugin.version>
+        <bonaparte-plugin.version>5.0.0</bonaparte-plugin.version>
         <license-plugin.version>3.0</license-plugin.version>
+        <replacer-plugin.version>1.4.1</replacer-plugin.version>   <!-- required for workaround for Apache CXF 3.5.x -->
 
         <checkstyle.version>10.1</checkstyle.version>
         <spotbugs.version>4.6.0.0</spotbugs.version>
@@ -104,7 +104,7 @@
 
         <!-- Swagger -->
         <swagger-maven-plugin.version>2.1.13</swagger-maven-plugin.version>
-        <swagger-ui-webjars.version>3.52.1</swagger-ui-webjars.version>
+        <swagger-ui-webjars.version>3.52.5</swagger-ui-webjars.version>   <!-- 4.x is available as well! -->
 
         <!-- ASCIIDoctor -->
         <asciidoctor-maven-plugin.version>2.2.2</asciidoctor-maven-plugin.version>
@@ -600,7 +600,7 @@
                 </plugin>
                 <plugin>
                     <groupId>io.swagger.core.v3</groupId>
-                    <artifactId>swagger-maven-plugin</artifactId>
+                    <artifactId>swagger-maven-plugin-jakarta</artifactId>
                     <version>${swagger-maven-plugin.version}</version>
                     <configuration>
                         <outputFileName>openapi</outputFileName>
@@ -658,11 +658,6 @@
                     <version>${build-helper-maven-plugin.version}</version>
                 </plugin>
                 <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>jaxb2-maven-plugin</artifactId>
-                    <version>${jaxb2-maven-plugin.version}</version>
-                </plugin>
-                <plugin>
                     <groupId>org.sonatype.plugins</groupId>
                     <artifactId>jarjar-maven-plugin</artifactId>
                     <version>${maven-jarjar-plugin.version}</version>
@@ -696,6 +691,41 @@
                     <groupId>com.mycila</groupId>
                     <artifactId>license-maven-plugin</artifactId>
                     <version>${license-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <!-- Apache CXF 3.5.x does not yet support jakarta namespaces and needs postprocessing -->
+                    <groupId>com.google.code.maven-replacer-plugin</groupId>
+                    <artifactId>maven-replacer-plugin</artifactId>
+                    <version>${replacer-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>replace-for-jakarta</id>
+                            <phase>process-sources</phase>
+                            <goals>
+                                <goal>replace</goal>
+                            </goals>
+                            <configuration>
+                                <includes>
+                                    <include>target/generated/cxf/**/*.java</include>
+                                </includes>
+                                <preserveDir>true</preserveDir>
+                                <replacements>
+                                    <replacement>
+                                        <token>javax.xml.bind</token>
+                                        <value>jakarta.xml.bind</value>
+                                    </replacement>
+                                    <replacement>
+                                        <token>javax.xml.ws</token>
+                                        <value>jakarta.xml.ws</value>
+                                    </replacement>
+                                    <replacement>
+                                        <token>javax.jws</token>
+                                        <value>jakarta.jws</value>
+                                    </replacement>
+                                </replacements>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -900,7 +930,7 @@
                 <module>t9t-base-jpa</module>
                 <module>t9t-base-jpa-rl</module>
                 <module>t9t-base-jpa-jta</module>
-                <module>t9t-base-jpa-st</module>
+                <!-- <module>t9t-base-jpa-st</module> have to exclude, spring does not yet support jakarta -->
                 <module>t9t-aws-refgenerator</module>
 
                 <module>t9t-activeannotations-jpa</module>
@@ -936,7 +966,7 @@
                 <module>t9t-email-sapi</module>
                 <module>t9t-email-be</module>
                 <module>t9t-email-be-smtp</module>
-                <module>t9t-email-be-commons</module>
+                <!-- <module>t9t-email-be-commons</module>  have to exclude, Apache does not yet support jakarta -->
                 <module>t9t-email-be-vertx</module>
                 <module>t9t-email-jpa</module>
 
@@ -1007,7 +1037,7 @@
                 <!-- BPMN2 integration projects -->
                 <module>t9t-bpmn2-api</module>
                 <module>t9t-bpmn2-sapi</module>
-                <module>t9t-bpmn2-camunda-be</module>
+                <!-- <module>t9t-bpmn2-camunda-be</module>  have to exclude, spring does not yet support jakarta -->
                 <module>t9t-bpmn2-jpa</module>
                 <module>t9t-bpmn2-mock</module>
 
@@ -1038,7 +1068,7 @@
 
                 <!-- <module>t9t-server-build-vertx-eclipselink</module> not used right now, skip in build to save time -->
                 <module>t9t-server-build-vertx-hibernate</module>
-                <module>t9t-server-build-vertx-hibernate-st</module>
+                <!-- <module>t9t-server-build-vertx-hibernate-st</module> have to exclude because spring does not yet support jakarta -->
                 <module>t9t-tests-auth</module>
                 <module>t9t-tests-misc</module>
                 <module>t9t-tests-doc</module>
@@ -1137,7 +1167,7 @@
                 <module>t9t-base-jpa</module>
                 <module>t9t-base-jpa-rl</module>
                 <module>t9t-base-jpa-jta</module>
-                <module>t9t-base-jpa-st</module>
+                <!-- <module>t9t-base-jpa-st</module> have to exclude, spring does not yet support jakarta -->
                 <module>t9t-aws-refgenerator</module>
 
                 <module>t9t-activeannotations-jpa</module>
@@ -1241,9 +1271,7 @@
 
                 <module>t9t-bpmn2-api</module>
                 <module>t9t-bpmn2-sapi</module>
-<!-- TODO
-                <module>t9t-bpmn2-camunda-be</module>
--->
+                <!-- <module>t9t-bpmn2-camunda-be</module> have to exclude, spring does not yet support jakarta -->
                 <module>t9t-bpmn2-jpa</module>
                 <module>t9t-bpmn2-mock</module>
 

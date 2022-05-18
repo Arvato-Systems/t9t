@@ -253,11 +253,13 @@
                 <artifactId>t9t-base-jpa-rl</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <!-- excluded, spring does not yet support jakarta
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-base-jpa-st</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            -->
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-base-sapi</artifactId>
@@ -438,11 +440,13 @@
                 <artifactId>t9t-email-be-smtp</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <!-- Apache does not yet support jakarta
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-email-be-commons</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            -->
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-email-be-vertx</artifactId>
@@ -755,11 +759,13 @@
                 <artifactId>t9t-bpmn2-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <!-- excluded, spring does not yet support jakarta
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-bpmn2-camunda-be</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            -->
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-bpmn2-sapi</artifactId>

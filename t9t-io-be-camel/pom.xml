@@ -57,6 +57,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!-- not yet jakarta compatible
         <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-mail</artifactId>
@@ -67,6 +68,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        -->
         <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-jsch</artifactId>
