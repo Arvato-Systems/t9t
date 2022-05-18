@@ -24,7 +24,7 @@ import java.util.StringTokenizer;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.zkui.services.IAuthenticationService;

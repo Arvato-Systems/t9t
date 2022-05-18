@@ -17,7 +17,7 @@ package com.arvatosystems.t9t.base.jpa.st.impl;
 
 import java.util.Properties;
 
-import javax.persistence.SharedCacheMode;
+import jakarta.persistence.SharedCacheMode;
 import javax.sql.DataSource;
 
 import org.slf4j.Logger;

@@ -17,7 +17,7 @@ package com.arvatosystems.t9t.doc.be.request;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

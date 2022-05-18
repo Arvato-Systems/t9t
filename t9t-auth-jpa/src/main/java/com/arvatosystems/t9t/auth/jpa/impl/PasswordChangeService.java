@@ -32,7 +32,7 @@ import de.jpaw.dp.Singleton;
 import de.jpaw.util.ByteArray;
 import java.time.Instant;
 import java.util.List;
-import javax.persistence.TypedQuery;
+import jakarta.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

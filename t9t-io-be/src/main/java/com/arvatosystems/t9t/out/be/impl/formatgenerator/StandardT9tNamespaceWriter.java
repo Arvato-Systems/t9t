@@ -17,8 +17,8 @@ package com.arvatosystems.t9t.out.be.impl.formatgenerator;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 

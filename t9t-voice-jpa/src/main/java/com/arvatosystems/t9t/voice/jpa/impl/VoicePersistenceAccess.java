@@ -23,7 +23,7 @@ import com.arvatosystems.t9t.voice.services.IVoicePersistenceAccess;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 import java.util.List;
-import javax.persistence.TypedQuery;
+import jakarta.persistence.TypedQuery;
 
 @Singleton
 public class VoicePersistenceAccess implements IVoicePersistenceAccess {

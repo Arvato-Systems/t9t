@@ -18,8 +18,8 @@ package com.arvatosystems.t9t.base.jpa.impl;
 import java.io.IOException;
 import java.sql.Connection;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 
 import com.arvatosystems.t9t.base.jpa.ormspecific.IJpaJdbcConnectionProvider;
 import com.arvatosystems.t9t.base.services.IIndependentJdbcConnectionProvider;

@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.mail.Authenticator;
+import jakarta.mail.Authenticator;
 
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.Email;
@@ -45,7 +45,7 @@ import org.apache.commons.mail.SimpleEmail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** Implementation of IEmailSender using the Apache Commons-Email library (which is a wrapper around javax.mail). */
+/** Implementation of IEmailSender using the Apache Commons-Email library (which is a wrapper around jakarta.mail). */
 @Singleton
 @Named("COMMONS")
 public class CommonsEmailService implements IEmailSender {

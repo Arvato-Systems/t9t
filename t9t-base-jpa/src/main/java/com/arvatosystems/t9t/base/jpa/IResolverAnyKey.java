@@ -18,9 +18,9 @@ package com.arvatosystems.t9t.base.jpa;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.LockModeType;
-import javax.persistence.TypedQuery;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.TypedQuery;
 
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.search.CountCriteria;

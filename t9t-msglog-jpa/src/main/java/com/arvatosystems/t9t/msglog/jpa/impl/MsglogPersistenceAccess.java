@@ -21,8 +21,8 @@ import com.arvatosystems.t9t.msglog.services.IMsglogPersistenceAccess;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 
 /**
  * Class which writes message log entities.

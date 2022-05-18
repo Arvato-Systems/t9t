@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.base.jpa.ormspecific;
 
-import javax.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityManagerFactory;
 
 import com.arvatosystems.t9t.cfg.be.RelationalDatabaseConfiguration;
 

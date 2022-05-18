@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
-import javax.persistence.EntityGraph;
-import javax.persistence.TypedQuery;
+import jakarta.persistence.EntityGraph;
+import jakarta.persistence.TypedQuery;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -136,7 +136,7 @@ public class DataGetter42 implements IDataGetter42 {
         if (entityGraphName != null) {
             queryHintSetter.setComment(q, "NQ:selectDataWithEG_" + entityGraphName);
             final EntityGraph entityGraph = resolver.getEntityManager().getEntityGraph(entityGraphName);
-            q.setHint("javax.persistence.loadgraph", entityGraph);
+            q.setHint("jakarta.persistence.loadgraph", entityGraph);
         } else {
             queryHintSetter.setComment(q, "NQ:selectData");
         }

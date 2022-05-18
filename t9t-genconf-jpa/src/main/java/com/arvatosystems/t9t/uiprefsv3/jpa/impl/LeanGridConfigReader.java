@@ -27,7 +27,7 @@ import de.jpaw.dp.Singleton;
 
 import java.util.List;
 
-import javax.persistence.TypedQuery;
+import jakarta.persistence.TypedQuery;
 
 @Singleton
 public class LeanGridConfigReader implements ILeanGridConfigRead {

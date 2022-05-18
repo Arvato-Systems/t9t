@@ -18,8 +18,8 @@ package com.arvatosystems.t9t.orm.jpa.eclipselink.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,10 +44,10 @@ public class EMFCustomizer implements IEMFCustomizer {
     public EntityManagerFactory getCustomizedEmf(final String puName, final RelationalDatabaseConfiguration settings) throws Exception {
         final Map<String, Object> myProps = new HashMap<>();
 
-        putOpt(myProps, "javax.persistence.jdbc.driver",   settings.getJdbcDriverClass());
-        putOpt(myProps, "javax.persistence.jdbc.url",      settings.getJdbcConnectString());
-        putOpt(myProps, "javax.persistence.jdbc.user",     settings.getUsername());
-        putOpt(myProps, "javax.persistence.jdbc.password", settings.getPassword());
+        putOpt(myProps, "jakarta.persistence.jdbc.driver",   settings.getJdbcDriverClass());
+        putOpt(myProps, "jakarta.persistence.jdbc.url",      settings.getJdbcConnectString());
+        putOpt(myProps, "jakarta.persistence.jdbc.user",     settings.getUsername());
+        putOpt(myProps, "jakarta.persistence.jdbc.password", settings.getPassword());
 
         final DatabaseBrandType dbName = settings.getDatabaseBrand();
         if (dbName != null) {

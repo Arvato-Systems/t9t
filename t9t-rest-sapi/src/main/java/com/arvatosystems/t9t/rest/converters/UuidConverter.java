@@ -17,7 +17,7 @@ package com.arvatosystems.t9t.rest.converters;
 
 import java.util.UUID;
 
-import javax.ws.rs.ext.ParamConverter;
+import jakarta.ws.rs.ext.ParamConverter;
 
 /**
  * JAX-RS parameter converter for UUID. This is unfortunately still required.

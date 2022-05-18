@@ -18,9 +18,10 @@ package com.arvatosystems.t9t.orm.jpa.hibernate.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 
+import org.hibernate.dialect.H2Dialect;
 import org.hibernate.dialect.HANARowStoreDialect;
 import org.hibernate.dialect.Oracle12cDialect;
 import org.hibernate.dialect.PostgreSQL94Dialect;
@@ -58,10 +59,10 @@ public class EMFCustomizer implements IEMFCustomizer {
 
         configureProperties(myProps);
 
-        putOpt(myProps, "javax.persistence.jdbc.driver",   settings.getJdbcDriverClass());
-        putOpt(myProps, "javax.persistence.jdbc.url",      settings.getJdbcConnectString());
-        putOpt(myProps, "javax.persistence.jdbc.user",     settings.getUsername());
-        putOpt(myProps, "javax.persistence.jdbc.password", settings.getPassword());
+        putOpt(myProps, "jakarta.persistence.jdbc.driver",   settings.getJdbcDriverClass());
+        putOpt(myProps, "jakarta.persistence.jdbc.url",      settings.getJdbcConnectString());
+        putOpt(myProps, "jakarta.persistence.jdbc.user",     settings.getUsername());
+        putOpt(myProps, "jakarta.persistence.jdbc.password", settings.getPassword());
 
         // see http://docs.jboss.org/hibernate/orm/4.3/javadocs/org/hibernate/dialect/package-summary.html
         final DatabaseBrandType dbName = settings.getDatabaseBrand();
@@ -80,7 +81,7 @@ public class EMFCustomizer implements IEMFCustomizer {
                 myProps.put(DIALECT_KEY, PostgreSQL94Dialect.class.getCanonicalName());
                 break;
             case H2:
-                myProps.put(DIALECT_KEY, T9TH2Dialect.class.getCanonicalName());
+                myProps.put(DIALECT_KEY, H2Dialect.class.getCanonicalName());
                 break;
             default:
                 break;

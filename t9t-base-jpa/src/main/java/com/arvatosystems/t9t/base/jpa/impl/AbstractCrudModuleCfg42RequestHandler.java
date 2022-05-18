@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.base.jpa.impl;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.crud.CrudModuleCfgRequest;

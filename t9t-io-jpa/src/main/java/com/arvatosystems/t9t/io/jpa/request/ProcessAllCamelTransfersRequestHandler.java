@@ -17,7 +17,7 @@ package com.arvatosystems.t9t.io.jpa.request;
 
 import java.util.List;
 
-import javax.persistence.TypedQuery;
+import jakarta.persistence.TypedQuery;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

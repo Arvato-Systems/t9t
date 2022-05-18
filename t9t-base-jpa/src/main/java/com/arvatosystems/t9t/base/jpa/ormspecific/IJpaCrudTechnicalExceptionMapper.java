@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.base.jpa.ormspecific;
 
-import javax.persistence.PersistenceException;
+import jakarta.persistence.PersistenceException;
 
 import com.arvatosystems.t9t.base.T9tException;
 

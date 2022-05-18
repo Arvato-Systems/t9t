@@ -375,8 +375,9 @@ public class T9tServer extends AbstractVerticle {
         System.setProperty("org.jboss.logging.provider", "slf4j");
         System.setProperty("org.terracotta.quartz.skipUpdateCheck", "true");
         System.setProperty("vertx.disableFileCaching", "true");
-        System.setProperty("com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize", "true");
-        System.setProperty("javax.xml.bind.JAXBContextFactory", "com.sun.xml.bind.v2.ContextFactory");
+        // do not access the "internal" ContextFactory (essential for Jakarta 8, fatal for Jakarta 9.1ff)
+        // System.setProperty("jakarta.xml.bind.JAXBContextFactory", "com.sun.xml.bind.v2.ContextFactory"); // FATAL for jakarta namespace
+        // System.setProperty("com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize", "true"); // very likely also no longer good for Jakarta
     }
 
     /**

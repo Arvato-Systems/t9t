@@ -29,7 +29,7 @@ public class ErrorViewModel {
     private ErrorPopupEntity paramGeneralErrorMessage = null;
 
     public ErrorViewModel() {
-        Exception exception = (Exception) Executions.getCurrent().getAttribute("javax.servlet.error.exception");
+        Exception exception = (Exception) Executions.getCurrent().getAttribute("jakarta.servlet.error.exception");
 
         if (exception instanceof UiException) {
             UiException e = (UiException) exception;

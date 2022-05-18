@@ -21,7 +21,7 @@ import static com.arvatosystems.t9t.bpmn2.be.camunda.utils.BPMNExtensionHelper.g
 import java.util.Map;
 import java.util.Optional;
 
-import javax.persistence.OptimisticLockException;
+import jakarta.persistence.OptimisticLockException;
 
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.delegate.DelegateExecution;

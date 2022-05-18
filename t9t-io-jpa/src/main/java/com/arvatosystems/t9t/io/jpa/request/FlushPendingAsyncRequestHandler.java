@@ -35,7 +35,7 @@ import de.jpaw.dp.Provider;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.TypedQuery;
+import jakarta.persistence.TypedQuery;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

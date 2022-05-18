@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.io.jpa.request;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;

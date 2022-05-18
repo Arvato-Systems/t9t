@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.base.jpa.rl.impl;
 
-import javax.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityManagerFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

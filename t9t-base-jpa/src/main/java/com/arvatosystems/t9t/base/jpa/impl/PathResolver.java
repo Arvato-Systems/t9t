@@ -19,9 +19,9 @@ import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Map;
 
-import javax.persistence.criteria.From;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Path;
+import jakarta.persistence.criteria.From;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Path;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

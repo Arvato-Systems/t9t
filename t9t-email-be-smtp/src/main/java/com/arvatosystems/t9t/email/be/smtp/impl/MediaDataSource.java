@@ -23,7 +23,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
-import javax.activation.DataSource;
+import jakarta.activation.DataSource;
 
 public class MediaDataSource implements DataSource {
     private final MediaData data;

@@ -17,7 +17,7 @@ package com.arvatosystems.t9t.base.jpa.ormspecific;
 
 import java.sql.Connection;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 public interface IJpaJdbcConnectionProvider {
 

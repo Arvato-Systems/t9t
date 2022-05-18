@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.rest.converters;
 
-import javax.ws.rs.ext.ParamConverter;
+import jakarta.ws.rs.ext.ParamConverter;
 
 import de.jpaw.fixedpoint.types.MicroUnits;
 

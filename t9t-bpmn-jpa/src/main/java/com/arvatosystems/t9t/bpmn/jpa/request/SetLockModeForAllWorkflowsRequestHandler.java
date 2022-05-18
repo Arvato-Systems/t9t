@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.bpmn.jpa.request;
 
-import javax.persistence.Query;
+import jakarta.persistence.Query;
 
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;

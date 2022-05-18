@@ -17,7 +17,7 @@ package com.arvatosystems.t9t.bpmn2.be.camunda.utils;
 
 import static org.apache.commons.lang3.StringUtils.join;
 
-import javax.persistence.OptimisticLockException;
+import jakarta.persistence.OptimisticLockException;
 
 import org.camunda.bpm.engine.delegate.VariableScope;
 import org.slf4j.Logger;

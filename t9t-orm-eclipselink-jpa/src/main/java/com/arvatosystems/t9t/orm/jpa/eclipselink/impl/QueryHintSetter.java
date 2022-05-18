@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.orm.jpa.eclipselink.impl;
 
-import javax.persistence.Query;
+import jakarta.persistence.Query;
 
 import org.eclipse.persistence.config.HintValues;
 import org.eclipse.persistence.config.QueryHints;

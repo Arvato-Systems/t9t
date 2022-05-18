@@ -19,8 +19,14 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -38,12 +44,11 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.zkoss.image.AImage;
+import org.zkoss.zk.ui.Session;
+import org.zkoss.zk.ui.Sessions;
 
 import com.arvatosystems.t9t.authc.api.GetTenantLogoRequest;
 import com.arvatosystems.t9t.authc.api.GetTenantLogoResponse;
@@ -76,14 +81,7 @@ import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ApplicationException;
 import de.jpaw.util.ExceptionUtil;
-
-import javax.servlet.http.HttpSession;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.zkoss.image.AImage;
-import org.zkoss.zk.ui.Session;
-import org.zkoss.zk.ui.Sessions;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * The overall Session handler.

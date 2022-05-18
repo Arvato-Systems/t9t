@@ -18,7 +18,7 @@ package com.arvatosystems.t9t.bpmn2.be.camunda.delegate;
 import static com.arvatosystems.t9t.bpmn2.be.camunda.utils.ExpressionUtils.getValueAsBonaPortable;
 import static java.util.Objects.requireNonNull;
 
-import javax.persistence.OptimisticLockException;
+import jakarta.persistence.OptimisticLockException;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;

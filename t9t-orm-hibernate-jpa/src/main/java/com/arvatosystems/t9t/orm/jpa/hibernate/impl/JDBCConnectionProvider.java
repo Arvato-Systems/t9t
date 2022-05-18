@@ -16,21 +16,23 @@
 package com.arvatosystems.t9t.orm.jpa.hibernate.impl;
 
 import java.sql.Connection;
-
-import javax.persistence.EntityManager;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.hibernate.Session;
-import org.hibernate.internal.SessionImpl;
 
 import com.arvatosystems.t9t.base.jpa.ormspecific.IJpaJdbcConnectionProvider;
 
 import de.jpaw.dp.Singleton;
+import jakarta.persistence.EntityManager;
 
 @Singleton
 public class JDBCConnectionProvider implements IJpaJdbcConnectionProvider {
 
     @Override
     public Connection get(final EntityManager em) {
-        return ((SessionImpl)em.unwrap(Session.class)).connection();
+        final AtomicReference<Connection> myConnection = null;
+        // this is an ugly hack! There is a reason why the connection is no longer made available. FIXME
+        ((Session)em.unwrap(Session.class)).doWork(c -> myConnection.set(c));
+        return myConnection.get();
     }
 }

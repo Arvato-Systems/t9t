@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.out.be;
 
-import javax.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBContext;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 

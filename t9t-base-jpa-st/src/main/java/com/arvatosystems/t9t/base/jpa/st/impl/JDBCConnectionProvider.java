@@ -20,7 +20,7 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 import javax.sql.DataSource;
 
 import org.slf4j.Logger;

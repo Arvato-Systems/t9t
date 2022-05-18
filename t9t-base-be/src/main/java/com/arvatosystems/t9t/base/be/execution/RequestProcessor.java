@@ -331,8 +331,8 @@ public class RequestProcessor implements IRequestProcessor {
                         resp = MessagingUtil.createServiceResponse(T9tException.JTA_EXCEPTION, causeChain, ihdr.getMessageId(), ctx.tenantId, null);
                         if (e instanceof NullPointerException) {
                             LOGGER.error("NullPointerException: Stack trace is ", e);
-                        } else if (e.getClass().getCanonicalName().equals("javax.persistence.RollbackException")) {
-                            if (e.getCause() != null && e.getCause().getClass().getCanonicalName().equals("javax.persistence.OptimisticLockException")) {
+                        } else if (e.getClass().getCanonicalName().equals("jakarta.persistence.RollbackException")) {
+                            if (e.getCause() != null && e.getCause().getClass().getCanonicalName().equals("jakarta.persistence.OptimisticLockException")) {
                                 resp.setReturnCode(T9tException.OPTIMISTIC_LOCKING_EXCEPTION);
                             }
                         }

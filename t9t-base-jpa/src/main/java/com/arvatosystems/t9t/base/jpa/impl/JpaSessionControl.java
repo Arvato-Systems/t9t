@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.base.jpa.impl;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 import com.arvatosystems.t9t.base.jpa.ormspecific.IQueryHintSetter;
 import com.arvatosystems.t9t.base.services.IJpaSessionControl;

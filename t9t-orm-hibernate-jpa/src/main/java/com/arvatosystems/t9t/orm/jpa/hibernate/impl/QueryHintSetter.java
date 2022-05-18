@@ -15,8 +15,8 @@
  */
 package com.arvatosystems.t9t.orm.jpa.hibernate.impl;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 import org.hibernate.FlushMode;
 import org.hibernate.Session;

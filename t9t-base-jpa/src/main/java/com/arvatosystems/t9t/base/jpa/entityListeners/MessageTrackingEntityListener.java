@@ -17,7 +17,7 @@ package com.arvatosystems.t9t.base.jpa.entityListeners;
 
 import java.time.Instant;
 
-import javax.persistence.PrePersist;
+import jakarta.persistence.PrePersist;
 
 import com.arvatosystems.t9t.base.entities.MessageTracking;
 

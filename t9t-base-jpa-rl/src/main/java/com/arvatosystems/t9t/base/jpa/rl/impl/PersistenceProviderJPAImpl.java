@@ -18,7 +18,7 @@ package com.arvatosystems.t9t.base.jpa.rl.impl;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import javax.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityManagerFactory;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.jpa.BonaPersistableNoData;

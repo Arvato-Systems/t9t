@@ -17,8 +17,8 @@ package com.arvatosystems.t9t.orm.jpa.eclipselink.impl;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 
-import javax.persistence.PersistenceException;
-import javax.persistence.RollbackException;
+import jakarta.persistence.PersistenceException;
+import jakarta.persistence.RollbackException;
 
 import org.eclipse.persistence.exceptions.DatabaseException;
 import org.slf4j.Logger;

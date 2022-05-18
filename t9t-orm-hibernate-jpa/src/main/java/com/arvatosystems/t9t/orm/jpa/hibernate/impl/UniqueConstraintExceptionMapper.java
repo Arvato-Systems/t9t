@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.orm.jpa.hibernate.impl;
 
-import javax.persistence.PersistenceException;
+import jakarta.persistence.PersistenceException;
 
 import org.hibernate.exception.ConstraintViolationException;
 

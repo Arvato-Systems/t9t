@@ -32,8 +32,8 @@ import de.jpaw.dp.Singleton
 import java.util.ArrayList
 import java.util.Collection
 import java.util.List
-import javax.persistence.NoResultException
-import javax.persistence.TypedQuery
+import jakarta.persistence.NoResultException
+import jakarta.persistence.TypedQuery
 import org.eclipse.xtend.lib.macro.AbstractClassProcessor
 import org.eclipse.xtend.lib.macro.Active
 import org.eclipse.xtend.lib.macro.RegisterGlobalsContext

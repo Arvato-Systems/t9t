@@ -15,21 +15,24 @@
  */
 package com.arvatosystems.t9t.in.be.impl;
 
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.io.DataSinkDTO;
-import com.arvatosystems.t9t.io.T9tIOException;
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.dp.Dependent;
-import de.jpaw.dp.Named;
-import de.jpaw.util.ExceptionUtil;
 import java.io.InputStream;
-import javax.xml.bind.JAXBElement;
+
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.io.DataSinkDTO;
+import com.arvatosystems.t9t.io.T9tIOException;
+
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.dp.Dependent;
+import de.jpaw.dp.Named;
+import de.jpaw.util.ExceptionUtil;
+import jakarta.xml.bind.JAXBElement;
 
 @Dependent
 @Named("XML") // generic XML reader
@@ -94,7 +97,7 @@ public class XmlStreamFormatConverter extends AbstractXmlFormatConverter {
                             LOGGER.error("JAXB START tag parsing failed with {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
                             throw e;
                         }
-                        // see https://docs.oracle.com/javase/8/docs/api/javax/xml/bind/Unmarshaller.html#unmarshal-javax.xml.stream.XMLStreamReader-
+                        // see https://docs.oracle.com/javase/8/docs/api/jakarta.xml.bind/Unmarshaller.html#unmarshal-javax.xml.stream.XMLStreamReader-
                         // see https://docs.oracle.com/javase/8/docs/api/javax/xml/stream/XMLStreamReader.html#getEventType--
                         event = reader.getEventType();  // cursor is already pointing at next event after unmarshal()
                     } else {

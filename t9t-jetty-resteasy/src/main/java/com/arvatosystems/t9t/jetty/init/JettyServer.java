@@ -43,8 +43,8 @@ public class JettyServer {
     public static void main(final String[] args) throws Exception {
 //        System.setProperty("java.util.concurrent.ForkJoinPool.common.threadFactory", DirtyHackForkJoinPool.class.getCanonicalName());
 
-        // do not access the "internal" ContextFactory // TODO: UPDATE FOR JAKARTA!
-        System.setProperty("javax.xml.bind.JAXBContextFactory", "com.sun.xml.bind.v2.ContextFactory");
+        // do not access the "internal" ContextFactory (essential for Jakarta 8, fatal for Jakarta 9.1ff)
+        // System.setProperty("jakarta.xml.bind.JAXBContextFactory", "com.sun.xml.bind.v2.ContextFactory");
 
         try {
             new JettyServer().run();
@@ -101,7 +101,7 @@ public class JettyServer {
         // Setup RESTEasy's HttpServletDispatcher at "/{applicationPath}/*".
         final ServletHolder restEasyServlet = new ServletHolder(new HttpServletDispatcher());
         restEasyServlet.setInitParameter("resteasy.servlet.mapping.prefix", applicationPath);
-        restEasyServlet.setInitParameter("javax.ws.rs.Application", ApplicationConfig.class.getCanonicalName());
+        restEasyServlet.setInitParameter("jakarta.ws.rs.Application", ApplicationConfig.class.getCanonicalName());
         context.addServlet(restEasyServlet, applicationPath + "/*");
 
         // Setup the DefaultServlet at "/".

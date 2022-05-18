@@ -17,10 +17,10 @@ package com.arvatosystems.t9t.base.jpa.rl.impl;
 
 import java.util.Set;
 
-import javax.persistence.Entity;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Persistence;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.Persistence;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -18,7 +18,7 @@ package com.arvatosystems.t9t.rest.vertx.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ws.rs.Path;
+import jakarta.ws.rs.Path;
 
 import org.jboss.resteasy.plugins.server.vertx.VertxRegistry;
 import org.jboss.resteasy.plugins.server.vertx.VertxRequestHandler;

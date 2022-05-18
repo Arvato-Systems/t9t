@@ -20,7 +20,7 @@ import java.util.Map;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.jpa.BonaPersistableNoData;
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 public class PersistenceProviderJPAImpl extends PersistenceProviderJPAJtaImpl {
 

@@ -28,7 +28,7 @@ import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

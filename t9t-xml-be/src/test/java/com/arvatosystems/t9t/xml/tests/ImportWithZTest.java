@@ -18,8 +18,8 @@ package com.arvatosystems.t9t.xml.tests;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.Unmarshaller;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

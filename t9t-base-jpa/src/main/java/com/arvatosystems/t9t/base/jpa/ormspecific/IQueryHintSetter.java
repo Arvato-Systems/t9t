@@ -15,9 +15,9 @@
  */
 package com.arvatosystems.t9t.base.jpa.ormspecific;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
+import jakarta.persistence.criteria.CriteriaQuery;
 
 /**
  * API to set OR mapper specific query hints or session modes.

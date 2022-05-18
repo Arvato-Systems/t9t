@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.base.jpa.st.impl;
 
-import javax.persistence.Query;
+import jakarta.persistence.Query;
 
 import com.arvatosystems.t9t.base.jpa.ormspecific.IQueryHintSetter;
 

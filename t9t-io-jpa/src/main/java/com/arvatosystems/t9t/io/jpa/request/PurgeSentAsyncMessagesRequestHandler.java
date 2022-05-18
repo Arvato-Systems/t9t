@@ -29,7 +29,7 @@ import de.jpaw.dp.Jdp;
 
 import java.time.Instant;
 
-import javax.persistence.Query;
+import jakarta.persistence.Query;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.camunda.bpm.engine.ProcessEngineConfiguration;
@@ -85,7 +85,7 @@ public class DefaultProcessEngineConfigurationFactory implements IProcessEngineC
             engineConfiguration.setJpaHandleTransaction(true);
             engineConfiguration.setJpaCloseEntityManager(true);
         } else {
-            LOGGER.error("No javax.persistence.EntityManagerFactory found by JDP.");
+            LOGGER.error("No jakarta.persistence.EntityManagerFactory found by JDP.");
 
             final T9tServerConfiguration cfg = Jdp.getRequired(T9tServerConfiguration.class);
 

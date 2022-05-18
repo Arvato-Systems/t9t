@@ -36,7 +36,7 @@ import de.jpaw.dp.Provider;
 import de.jpaw.dp.Startup;
 import de.jpaw.dp.StartupOnly;
 import java.time.Instant;
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

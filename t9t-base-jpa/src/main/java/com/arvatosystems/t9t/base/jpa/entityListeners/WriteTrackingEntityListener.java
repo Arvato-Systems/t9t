@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.base.jpa.entityListeners;
 
-import javax.persistence.PrePersist;
+import jakarta.persistence.PrePersist;
 
 import com.arvatosystems.t9t.base.entities.FullTracking;
 import com.arvatosystems.t9t.base.entities.WriteTracking;

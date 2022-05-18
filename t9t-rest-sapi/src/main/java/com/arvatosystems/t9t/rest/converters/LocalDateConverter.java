@@ -17,7 +17,7 @@ package com.arvatosystems.t9t.rest.converters;
 
 import java.time.LocalDate;
 
-import javax.ws.rs.ext.ParamConverter;
+import jakarta.ws.rs.ext.ParamConverter;
 
 /**
  * JAX-RS parameter converter for LocalDate. This is unfortunately still required, JAX-RS seems to still live in the Java 1.6 world.

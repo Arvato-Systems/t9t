@@ -17,11 +17,11 @@ package com.arvatosystems.t9t.zkui.init;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.servlet.http.HttpSessionEvent;
-import javax.servlet.http.HttpSessionListener;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.servlet.http.HttpSessionEvent;
+import jakarta.servlet.http.HttpSessionListener;
 
 /**
  * Counting the Session/user.
