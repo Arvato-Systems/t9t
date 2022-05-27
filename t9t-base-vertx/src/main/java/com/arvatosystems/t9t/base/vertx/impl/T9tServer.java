@@ -82,8 +82,11 @@ public class T9tServer extends AbstractVerticle {
     @Option(names = { "--tcpport", "-P" }, description = "listener port for plain socket (0 to disable)")
     private int tcpPort;
 
-    @Option(names = { "--restport", "-R" }, description = "listener port for REST (JAX-RS) (0 to disable)")
+    @Option(names = { "--restport", "-R" }, description = "listener port for REST (Jakarta-RS) (0 to disable)")
     private int restPort;
+
+    @Option(names = { "--native", "-N" }, description = "prefer Netty's native transort (epoll / unix common)")
+    private boolean preferNative;
 
     @Option(names = { "--corsParm", "-C" }, defaultValue = "*", description = "parameter to the CORS handler")
     private String corsParm;
@@ -210,7 +213,7 @@ public class T9tServer extends AbstractVerticle {
                 it.response().end();
             });
 
-            LOGGER.info("Listening on HTTP PORT {}", port);
+            LOGGER.info("Listening on http port {}", port);
             final HttpServer httpServer = vertx.createHttpServer();
             httpServer.requestHandler((final HttpServerRequest it) -> router.handle(it));
             httpServer.listen(port);
@@ -218,7 +221,7 @@ public class T9tServer extends AbstractVerticle {
 
         if (tcpPort > 0) {
             // compact format (requires ServiceRequest wrapper)
-            LOGGER.info("Listening on TCP PORT {} (low level socket I/O)", tcpPort);
+            LOGGER.info("Listening on TCP port {} (low level socket I/O)", tcpPort);
             final NetServer netServer = vertx.createNetServer();
             netServer.connectHandler((final NetSocket it) -> new TcpSocketHandler(it));
             netServer.listen(tcpPort);
@@ -346,6 +349,9 @@ public class T9tServer extends AbstractVerticle {
 
     public void checkForMetricsAndInitialize(final VertxOptions options) {
         mergePoolSizes(options);
+        if (preferNative) {
+            options.setPreferNativeTransport(true);
+        }
         if (metrics) {
             metricsProvider = Jdp.getOptional(IVertxMetricsProvider.class);
             if (metricsProvider != null) {

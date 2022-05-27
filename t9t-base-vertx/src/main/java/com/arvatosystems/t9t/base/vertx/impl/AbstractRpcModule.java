@@ -16,6 +16,7 @@
 package com.arvatosystems.t9t.base.vertx.impl;
 
 import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceRequest;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
@@ -34,6 +35,7 @@ import de.jpaw.dp.Jdp;
 import de.jpaw.util.ApplicationException;
 import de.jpaw.util.ByteUtil;
 import io.vertx.core.AsyncResult;
+import io.vertx.core.MultiMap;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
@@ -48,14 +50,9 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 public abstract class AbstractRpcModule implements IServiceModule {
-    private static class WrappedResponse { // wrapper class, required to pass out data from lambdas
-        private ServiceResponse response = AbstractRpcModule.RESPONSE;
-    }
-
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractRpcModule.class);
 
     protected static final PingRequest PING_REQUEST = new PingRequest();
-    protected static final ServiceRequest PING_SRQ = new ServiceRequest(AbstractRpcModule.PING_REQUEST);
     protected static final ServiceResponse RESPONSE = new ServiceResponse();
 
     static {
@@ -82,17 +79,18 @@ public abstract class AbstractRpcModule implements IServiceModule {
     public void mountRouters(final Router router, final Vertx vertx, final IMessageCoderFactory<BonaPortable, ServiceResponse, byte[]> coderFactory) {
         LOGGER.info("Registering module {}", getModuleName());
         router.post("/" + getModuleName()).handler((final RoutingContext ctx) -> {
-            final long start = System.currentTimeMillis();
+            final long startInIoThread = System.nanoTime();
 
             final String origin = ctx.request().headers().get(HttpHeaders.ORIGIN);
-            final String ct = ctx.request().headers().get(HttpHeaders.CONTENT_TYPE) == null ? null
-                    : HttpUtils.stripCharset(ctx.request().headers().get(HttpHeaders.CONTENT_TYPE));
-            if (ct == null) {
+            final MultiMap headers = ctx.request().headers();
+            final String contentType = headers.get(HttpHeaders.CONTENT_TYPE);
+            if (contentType == null) {
                 LOGGER.debug("Request without Content-Type");
                 IServiceModule.error(ctx, 415, "Content-Type not specified");
                 return;
             }
-            final String authHeader = ctx.request().headers().get(HttpHeaders.AUTHORIZATION);
+            final String ct = HttpUtils.stripCharset(contentType);
+            final String authHeader = headers.get(HttpHeaders.AUTHORIZATION);
             if (authHeader == null || authHeader.length() < 8) {
                 LOGGER.debug("Request without authorization header (length = {})", authHeader == null ? -1 : authHeader.length());
                 IServiceModule.error(ctx, 401, "HTTP Authorization header missing or too short");
@@ -107,65 +105,76 @@ public abstract class AbstractRpcModule implements IServiceModule {
                 IServiceModule.error(ctx, 415, "Content-Type «ct» not supported for path /" + getModuleName());
                 return;
             }
-            final WrappedResponse srq = new WrappedResponse(); // space to store the response for this request, defaulting to a "fast ping" response
 
             vertx.<byte[]>executeBlocking((final Promise<byte[]> promise) -> {
                 try {
-                    // Clear all old MDC data, since a completely new request is now processed
-                    MDC.clear();
+                    final long startInWorkerThread = System.nanoTime();
                     // get the authentication info
                     final AuthenticationInfo authInfo = authenticationProcessor.getCachedJwt(authHeader);
                     if (authInfo.getEncodedJwt() == null) {
                         // handle error
-                        IServiceModule.error(ctx, authInfo.getHttpStatusCode(), authInfo.getMessage());
+                        promise.fail(new T9tException(T9tException.HTTP_ERROR + authInfo.getHttpStatusCode(), authInfo.getMessage()));
                         return;
                     }
                     // Authentication is valid. Now populate the MDC and start processing the request.
                     final JwtInfo jwtInfo = authInfo.getJwtInfo();
+                    // Clear all old MDC data, since a completely new request is now processed
+                    MDC.clear();
                     MDC.put(T9tConstants.MDC_USER_ID, jwtInfo.getUserId());
                     MDC.put(T9tConstants.MDC_TENANT_ID, jwtInfo.getTenantId());
                     MDC.put(T9tConstants.MDC_SESSION_REF, Objects.toString(jwtInfo.getSessionRef(), null));
-
-                    final byte[] body = ctx.getBody() == null ? null : ctx.getBody().getBytes();
-                    if (LOGGER.isTraceEnabled()) {
-                        LOGGER.trace("Request is:\n" + ByteUtil.dump(body, 1024)); // dump up to 1 KB of data
-                    }
+                    final Buffer buffer = ctx.body().buffer();
                     final RequestParameters request;
-                    if (body == null) {
+                    final ServiceResponse response;
+                    final long startProcessing = System.nanoTime();
+                    if (buffer == null) {
                         request = PING_REQUEST;
+                        response = RESPONSE;
                     } else {
+                        final byte[] body = buffer.getBytes();
+                        if (LOGGER.isTraceEnabled()) {
+                            LOGGER.trace("Request is:\n" + ByteUtil.dump(body, 1024)); // dump up to 1 KB of data
+                        }
                         if (withServiceRequest()) {
                             final ServiceRequest rq = (ServiceRequest) decoder.decode(body, ServiceRequest.meta$$this);
                             LOGGER.debug("Received request {}, request length is {}", rq.ret$PQON(), body.length);
                             MDC.put(T9tConstants.MDC_REQUEST_PQON, rq.ret$PQON());
-                            srq.response = requestProcessor.execute(rq.getRequestHeader(), rq.getRequestParameters(), jwtInfo, authInfo.getEncodedJwt(),
+                            response = requestProcessor.execute(rq.getRequestHeader(), rq.getRequestParameters(), jwtInfo, authInfo.getEncodedJwt(),
                                     skipAuthorization());
                             request = rq.getRequestParameters();
                         } else {
                             final RequestParameters rq = (RequestParameters) decoder.decode(body, ServiceRequest.meta$$requestParameters);
                             MDC.put(T9tConstants.MDC_REQUEST_PQON, rq.ret$PQON());
-                            srq.response = requestProcessor.execute(null, rq, jwtInfo, authInfo.getEncodedJwt(), skipAuthorization());
+                            response = requestProcessor.execute(null, rq, jwtInfo, authInfo.getEncodedJwt(), skipAuthorization());
                             request = rq;
                         }
                     }
-                    final ServiceResponse response = srq.response;
                     final byte[] respMsg = encoder.encode(response, ServiceResponse.meta$$this);
                     if (LOGGER.isTraceEnabled()) {
                         LOGGER.trace("Response is:\n" + ByteUtil.dump(respMsg, 1024)); // dump up to 1 KB of data
                     }
-                    final long end = System.currentTimeMillis();
+                    final long endProcessing = System.nanoTime();
                     if (ApplicationException.isOk(response.getReturnCode())) {
-                        LOGGER.info("Processed request {} for tenant {} in {} ms with result code {}, response length is {}", request.ret$PQON(),
-                                jwtInfo.getTenantId(), end - start, response.getReturnCode(), respMsg.length);
+                        LOGGER.info("Processed request {} for tenant {} in {}+{}+{} us with result code {}, response length is {}", request.ret$PQON(),
+                                jwtInfo.getTenantId(),
+                                (startInWorkerThread - startInIoThread) / 1000L,  // time to switch to worker thread
+                                (startProcessing - startInWorkerThread) / 1000L,  // time for auth and MDC creation
+                                (endProcessing - startProcessing) / 1000L,        // decoding request, executing it, encoding result
+                                response.getReturnCode(),
+                                respMsg.length);
                     } else {
-                        LOGGER.info("Processed request {} for tenant {} in {} ms with result code {}, error details {}, ({})", request.ret$PQON(),
-                                jwtInfo.getTenantId(), end - start, response.getReturnCode(),
+                        LOGGER.debug("Processed request {} for tenant {} in {}+{}+{} us with result code {}, error details {}, ({})", request.ret$PQON(),
+                                jwtInfo.getTenantId(),
+                                (startInWorkerThread - startInIoThread) / 1000L,  // time to switch to worker thread
+                                (startProcessing - startInWorkerThread) / 1000L,  // time for auth and MDC creation
+                                (endProcessing - startProcessing) / 1000L,        // decoding request, executing it, encoding result
+                                response.getReturnCode(),
                                 response.getErrorDetails() == null ? "(null)" : response.getErrorDetails(),
                                 ApplicationException.codeToString(response.getReturnCode()));
                     }
                     promise.complete(respMsg);
                 } catch (Exception e) {
-                    LOGGER.error(e.getClass().getSimpleName() + " in requeste: " + e.getMessage(), e);
+                    LOGGER.error(e.getClass().getSimpleName() + " in request: " + e.getMessage(), e);
                     promise.fail(e);
                 }
             }, false, (final AsyncResult<byte[]> asyncResult) -> {
@@ -176,18 +185,16 @@ public abstract class AbstractRpcModule implements IServiceModule {
                     ctx.response().putHeader(HttpHeaders.CONTENT_TYPE, ct);
                     ctx.response().end(Buffer.buffer(asyncResult.result()));
                 } else {
-                    final String msg;
                     final Throwable cause = asyncResult.cause();
                     if (cause instanceof ApplicationException) {
-                        msg = cause.getMessage() + " " + ((ApplicationException) cause).getStandardDescription();
+                        final int exceptionCode = ((ApplicationException) cause).getErrorCode();
+                        final int httpCode = (exceptionCode >= T9tException.HTTP_ERROR && exceptionCode <= T9tException.HTTP_ERROR + 999)
+                            ? exceptionCode - T9tException.HTTP_ERROR
+                            : 400;
+                        final String msg = cause.getMessage() + " " + ((ApplicationException) cause).getStandardDescription();
+                        IServiceModule.error(ctx, httpCode, msg);
                     } else {
-                        msg = cause.getMessage();
-                    }
-
-                    if (cause instanceof ApplicationException) {
-                        IServiceModule.error(ctx, 400, msg);
-                    } else {
-                        IServiceModule.error(ctx, 500, msg);
+                        IServiceModule.error(ctx, 500, cause.getMessage());
                     }
                 }
             });
