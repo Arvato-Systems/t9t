@@ -1,0 +1,28 @@
+import api.*
+import apiw.*
+import t9t.base.types.*
+
+/** Data types for eager caching. */
+package (com.arvatosystems) t9t.base.cache {
+    default private unsigned trim noControlChars;
+    properties noJava, simpleref, unroll, noupdate, qualifierFor,
+        tenantCategory is com.arvatosystems.t9t.annotations.TenantCategory(),
+        searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
+        serialized is com.arvatosystems.t9t.annotations.StoreSerialized,
+        noAutoMap is com.arvatosystems.t9t.annotations.NoAutoMap,
+        notupdatable is com.arvatosystems.t9t.annotations.NotUpdatable,
+        dropdown is com.arvatosystems.t9t.annotations.UseDropDownInUI(),
+        ref is com.arvatosystems.t9t.annotations.IsObjectRef;
+
+    /**
+     * Structure of the data maps for a specific object type.
+     * If a DTO does not have a related description object, the description will be the key.
+     */
+    final class DataMap<REF extends Ref, DTO extends !REF, KEY extends !REF, DESC extends !REF> {
+        required f42Ref                             objectRef;              // the technical ID for faster lookups of ref by ID.
+        required defaultExternalId                  id;                     // the ID
+        required (!KEY)                             key;                    // KEY data structure
+        required (!DTO)                             dto;                    // DTO data structure
+        optional (!DESC)                            description;            // descriptions if exists
+    }
+}
