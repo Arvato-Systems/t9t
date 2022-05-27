@@ -63,8 +63,8 @@ public class GroupedDropdown28Db<REF extends Ref> extends Combobox {
 
         factory = myFactory;
         entries = session.getGroupedDropdownData(factory.getDropdownId(), factory.getGroup(), factory.getSearchRequest(), false);
-        lookupById        = new ConcurrentHashMap<String, Description>(entries.getDescriptions().size() * 2);
-        lookupByRef       = new ConcurrentHashMap<Long, Description>(entries.getDescriptions().size() * 2);
+        lookupById        = new ConcurrentHashMap<String, Description>(entries.getDescriptions().size());
+        lookupByRef       = new ConcurrentHashMap<Long, Description>(entries.getDescriptions().size());
         allIds            = new ArrayList<String>(entries.getDescriptions().size());
         LOGGER.debug("Dropdown DB {} instantiated, got {} entries", factory.getDropdownId(), entries.getDescriptions().size());
         getDropDownData();

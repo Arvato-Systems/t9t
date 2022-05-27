@@ -186,7 +186,7 @@ public final class FieldMappers {
 
     /** Indexes a DTO list into a new map. */
     public static <D extends Ref> Map<Long, D> index(final Collection<D> data) {
-        final Map<Long, D> result = new HashMap<>(data.size() * 2);
+        final Map<Long, D> result = new HashMap<>(data.size());
         index(result, data);
         return result;
     }

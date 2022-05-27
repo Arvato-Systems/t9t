@@ -420,7 +420,7 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<
     // done without sort, in order of the input refs
     protected void xfer(final List<Long> orderForNoSort, final ArrayList<ENTITY> finalResultList, final List<Long> temp) {
         // build a set from the list entries
-        final Set<Long> indexMap = new HashSet<>(2 * temp.size());
+        final Set<Long> indexMap = new HashSet<>(temp.size());
         indexMap.addAll(temp);
         final EntityManager em = resolver.getEntityManager();
         for (final Long r : orderForNoSort) {
@@ -442,7 +442,7 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<
             finalResultList.addAll(temp);
         else {
             // build a map
-            final Map<Long, ENTITY> indexMap = new HashMap<>(2 * temp.size());
+            final Map<Long, ENTITY> indexMap = new HashMap<>(temp.size());
             for (final ENTITY e : temp) {
                 indexMap.put(e.ret$Key(), e);
             }

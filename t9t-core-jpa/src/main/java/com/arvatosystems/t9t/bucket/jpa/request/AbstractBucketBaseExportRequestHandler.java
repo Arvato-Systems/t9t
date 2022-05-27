@@ -66,7 +66,7 @@ public abstract class AbstractBucketBaseExportRequestHandler<T extends AbstractB
         query.setParameter("bucketNo",  bucketNoToSelect);
         query.setParameter("refs",      refs);
         final List<BucketEntryEntity> result = query.getResultList();
-        final Map<Long, BucketEntryEntity> indexedResult = new HashMap<>(2 * result.size());
+        final Map<Long, BucketEntryEntity> indexedResult = new HashMap<>(result.size());
         for (final BucketEntryEntity e : result) {
             indexedResult.put(e.getRef(), e);
         }
@@ -84,7 +84,7 @@ public abstract class AbstractBucketBaseExportRequestHandler<T extends AbstractB
         query.setParameter("bucketNo",  bucketNoToSelect);
         query.setParameter("refs",      refs);
         final List<BucketEntryEntity> result = query.getResultList();
-        final Map<Long, Integer> indexedResult = new HashMap<>(2 * result.size());
+        final Map<Long, Integer> indexedResult = new HashMap<>(result.size());
         for (final BucketEntryEntity e : result) {
             indexedResult.put(e.getRef(), e.getModes());
         }

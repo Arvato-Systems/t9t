@@ -61,8 +61,8 @@ public class Dropdown28Db<REF extends BonaPortable> extends Combobox {
 
         factory           = myFactory;
         entries           = session.getDropDownData(factory.getDropdownId(), factory.getSearchRequest());
-        lookupById        = new ConcurrentHashMap<String, Description>(entries.size() * 2);
-        lookupByRef       = new ConcurrentHashMap<Long, Description>(entries.size() * 2);
+        lookupById        = new ConcurrentHashMap<String, Description>(entries.size());
+        lookupByRef       = new ConcurrentHashMap<Long, Description>(entries.size());
         allIds            = new ArrayList<String>(entries.size());
         LOGGER.debug("Dropdown DB {} instantiated, got {} entries", factory.getDropdownId(), entries.size());
         getDropDownData();

@@ -356,7 +356,7 @@ public class NewDocumentRequestHandler extends AbstractRequestHandler<NewDocumen
         if (attachments == null) {
             return null;
         }
-        final Map<String, Long> generalAttachmentSinkRefs = new HashMap<>(2 * attachments.size());
+        final Map<String, Long> generalAttachmentSinkRefs = new HashMap<>(attachments.size());
         for (GeneralizedAttachment ga: attachments) {
             MediaData data = ga.getProvidedAttachment();
             if (data == null && ga.getDocumentId() != null) {

@@ -299,7 +299,7 @@ public class TranslationProvider implements ITranslationProvider {
         if (ed == null)
             throw new ApplicationException(T9tException.NOT_AN_ENUM, enumPQON);
 
-        final Map<String, String> translations = new HashMap<>(ed.getIds().size() * 2);
+        final Map<String, String> translations = new HashMap<>(ed.getIds().size());
 
         for (final String instanceName : ed.getIds()) {
             final String instanceTranslated = getTranslation(tenantId, langs, enumPQON, instanceName);

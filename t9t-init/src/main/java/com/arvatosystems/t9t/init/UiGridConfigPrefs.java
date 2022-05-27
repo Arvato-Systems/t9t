@@ -124,7 +124,7 @@ final class UiGridConfigPrefs {
             return map;
         }
         // the input is an ImmutableMap, we have to copy it to support changes to the (expected) empty components
-        final Map<String, String> r = new HashMap<>(2 * map.size());
+        final Map<String, String> r = new HashMap<>(map.size());
         for (final Map.Entry<String, String> e : map.entrySet()) {
             final String v = e.getValue();
             r.put(e.getKey(), v == null || v.length() == 0 ? T9tConstants.UI_META_NO_ASSIGNED_VALUE : v);
@@ -183,7 +183,7 @@ final class UiGridConfigPrefs {
 
             // convert into new format, build a fast access map
             final UIGridPreferences ui = new UIGridPreferences();
-            final Map<String, UIColumnConfiguration> colMap = new HashMap<>(2 * cc.columns.size());
+            final Map<String, UIColumnConfiguration> colMap = new HashMap<>(cc.columns.size());
             final List<UIColumnConfiguration> cols = new ArrayList<>(cc.columns.size());
             for (final UIColumn c : cc.columns) {
                 final UIColumnConfiguration d = convertColumn(c);

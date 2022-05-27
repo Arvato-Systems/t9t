@@ -36,7 +36,7 @@ public class SingleBucketWriteRequestHandler extends AbstractRequestHandler<Sing
     @Override
     public ServiceResponse execute(final RequestContext ctx, final SingleBucketWriteRequest rq) {
         if (!rq.getAsync()) {
-            final Map<BucketWriteKey, Integer> cmds = new HashMap<>(2 * rq.getValues().size());
+            final Map<BucketWriteKey, Integer> cmds = new HashMap<>(rq.getValues().size());
             for (final Map.Entry<String, Integer> me: rq.getValues().entrySet()) {
                 cmds.put(new BucketWriteKey(ctx.tenantRef, rq.getObjectRef(), me.getKey()), me.getValue());
             }

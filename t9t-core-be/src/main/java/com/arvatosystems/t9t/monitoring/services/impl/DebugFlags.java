@@ -75,7 +75,7 @@ public class DebugFlags implements IDebugFlags {
             settingsStore.invalidate(sessionRef);
         }
         // create a new store, if none exists
-        final ConcurrentMap<String, String> map = settingsStore.get(sessionRef, () -> new ConcurrentHashMap<>(2 * newFlags.size()));
+        final ConcurrentMap<String, String> map = settingsStore.get(sessionRef, () -> new ConcurrentHashMap<>(newFlags.size()));
         for (final Map.Entry<String, String> entry: newFlags.entrySet()) {
             if (entry.getValue() == null) {
                 LOGGER.debug("Clearing DebugFlag {}", entry.getKey());

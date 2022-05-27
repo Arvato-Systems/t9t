@@ -32,7 +32,7 @@ public class QueryConfigRequestHandler extends AbstractReadOnlyRequestHandler<Qu
 
     @Override
     public QueryConfigResponse execute(final RequestContext ctx, final QueryConfigRequest rq) {
-        final Map<String, String> mappings = new HashMap<>(2 * rq.getVariables().size());
+        final Map<String, String> mappings = new HashMap<>(rq.getVariables().size());
         final QueryConfigResponse resp = new QueryConfigResponse();
         resp.setKeyValuePairs(mappings);
         for (String variable: rq.getVariables()) {

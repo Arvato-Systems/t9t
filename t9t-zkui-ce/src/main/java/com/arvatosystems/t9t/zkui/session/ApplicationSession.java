@@ -622,7 +622,7 @@ public final class ApplicationSession {
 
     public void setAllowedTenants(List<TenantDescription> allowedTenants) {
         this.allowedTenants = allowedTenants;
-        tenantsByRef = new ConcurrentHashMap<Long, TenantDescription>(2 * allowedTenants.size());
+        tenantsByRef = new ConcurrentHashMap<Long, TenantDescription>(allowedTenants.size());
         for (TenantDescription e: allowedTenants) {
             tenantsByRef.put(e.getTenantRef(), e);
         }
