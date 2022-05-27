@@ -94,7 +94,7 @@
         <xtend-maven-plugin.version>2.26.0</xtend-maven-plugin.version>
         <xtext-maven-plugin.version>2.26.0</xtext-maven-plugin.version>
 
-        <bonaparte-plugin.version>5.0.0</bonaparte-plugin.version>
+        <bonaparte-plugin.version>5.0.2</bonaparte-plugin.version>
         <license-plugin.version>3.0</license-plugin.version>
         <replacer-plugin.version>1.4.1</replacer-plugin.version>   <!-- required for workaround for Apache CXF 3.5.x -->
 
@@ -721,6 +721,10 @@
                                     <replacement>
                                         <token>javax.jws</token>
                                         <value>jakarta.jws</value>
+                                    </replacement>
+                                    <replacement>
+                                        <token>javax.ws.rs</token>
+                                        <value>jakarta.ws.rs</value>
                                     </replacement>
                                 </replacements>
                             </configuration>

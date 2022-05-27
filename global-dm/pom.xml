@@ -39,10 +39,10 @@
 
         <!-- jpaw / bonaparte: versions for import of BOM. The plugin version is defined separately in SE/EE -->
         <!-- Note that the version of the bonapart-dsl plugin is set in "global-settings" -->
-        <jpaw-bom.version>3.0.0</jpaw-bom.version>
-        <bonaparte-bom.version>5.0.0</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
-        <persistence-bom.version>5.0.0</persistence-bom.version>
-        <jdp-bom.version>1.6.0</jdp-bom.version>
+        <jpaw-bom.version>3.0.2</jpaw-bom.version>
+        <bonaparte-bom.version>5.0.2</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
+        <persistence-bom.version>5.0.4</persistence-bom.version>
+        <jdp-bom.version>1.6.1</jdp-bom.version>
 
         <!-- Versions of Xtext & Xtend -->
         <!-- Note that the versions of the xtext/xtend plugins are ALSO set in "global-settings" -->
@@ -58,8 +58,8 @@
 
         <!-- OR mappers -->
         <eclipselink.version>3.0.2</eclipselink.version>
-        <hibernate.version>6.0.1.Final</hibernate.version>
-        <hibernate-validator.version>7.0.2.Final</hibernate-validator.version>
+        <hibernate.version>6.0.2.Final</hibernate.version>
+        <hibernate-validator.version>7.0.4.Final</hibernate-validator.version>
         <ehcache.version>2.10.4</ehcache.version>
         <ehcache3.version>3.5.3</ehcache3.version>
 
@@ -174,7 +174,7 @@
         <spring-boot.version>2.6.6</spring-boot.version>
 
         <netty.version>4.1.77.Final</netty.version>
-        <vertx4.version>4.2.7</vertx4.version>
+        <vertx4.version>4.3.0</vertx4.version>
 
         <snakeyaml.version>1.28</snakeyaml.version>
         <classgraph.version>4.8.116</classgraph.version>
@@ -187,12 +187,12 @@
         <jackson.version>2.13.3</jackson.version>
         <solr.version>8.11.1</solr.version>
         <camel.version>3.16.0</camel.version>
-        <kafka.version>3.1.0</kafka.version>
-        <error-prone.version>2.7.1</error-prone.version>
+        <kafka.version>3.2.0</kafka.version>
+        <error-prone.version>2.13.1</error-prone.version>
 
         <!-- Monitoring -->
-        <micrometer.version>1.6.7</micrometer.version>
-        <prometheus.version>0.10.0</prometheus.version>
+        <micrometer.version>1.8.6</micrometer.version>
+        <prometheus.version>0.15.0</prometheus.version>
 
         <!-- Swagger -->
         <swagger.version>${swagger-maven-plugin.version}</swagger.version>
@@ -674,22 +674,22 @@
                 <version>${ehcache.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.hibernate</groupId>
+                <groupId>org.hibernate.orm</groupId>  <!-- does not exist after alpha7. Deprecated? -->
                 <artifactId>hibernate-ehcache</artifactId>
                 <version>${hibernate.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.hibernate</groupId>
+                <groupId>org.hibernate.orm</groupId>
                 <artifactId>hibernate-jcache</artifactId>
                 <version>${hibernate.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.hibernate</groupId>
+                <groupId>org.hibernate.orm</groupId>
                 <artifactId>hibernate-core</artifactId>
                 <version>${hibernate.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.hibernate</groupId>
+                <groupId>org.hibernate.orm</groupId>  <!-- does not exist after alpha7. Deprecated? -->
                 <artifactId>hibernate-entitymanager</artifactId>
                 <version>${hibernate.version}</version>
             </dependency>
@@ -705,7 +705,7 @@
                 </exclusions>
             </dependency>
             <dependency>
-                <groupId>org.hibernate</groupId>
+                <groupId>org.hibernate.validator</groupId>
                 <artifactId>hibernate-validator-annotation-processor</artifactId>
                 <version>${hibernate-validator.version}</version>
             </dependency>
@@ -1150,12 +1150,12 @@
                 <version>${hikaricp.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.hibernate</groupId>
+                <groupId>org.hibernate.orm</groupId>
                 <artifactId>hibernate-c3p0</artifactId>
                 <version>${hibernate.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.hibernate</groupId>
+                <groupId>org.hibernate.orm</groupId>
                 <artifactId>hibernate-hikaricp</artifactId>
                 <version>${hibernate.version}</version>
             </dependency>
