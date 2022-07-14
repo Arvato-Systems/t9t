@@ -4,14 +4,10 @@
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:bon="http://www.jpaw.de/schema/bonaparte.xsd"
   xmlns:t9t_xml="http://arvatosystems.com/schema/t9t_xml.xsd"
-  xmlns:t9t_auth="http://arvatosystems.com/schema/t9t_auth.xsd"
-  xmlns:t9t_base_types="http://arvatosystems.com/schema/t9t_base_types.xsd"
   elementFormDefault="qualified"
   >
 
     <xs:import namespace="http://www.jpaw.de/schema/bonaparte.xsd" schemaLocation="bonaparte.xsd"/>
-    <xs:import namespace="http://arvatosystems.com/schema/t9t_auth.xsd" schemaLocation="t9t_auth.xsd"/>
-    <xs:import namespace="http://arvatosystems.com/schema/t9t_base_types.xsd" schemaLocation="t9t_base_types.xsd"/>
     <xs:simpleType name="countryCode">
         <xs:restriction base="xs:normalizedString">
             <xs:minLength value="2"/>
@@ -52,6 +48,22 @@
     <xs:simpleType name="shortText">
         <xs:restriction base="xs:normalizedString">
             <xs:maxLength value="80"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="userId">
+        <xs:restriction base="t9t_xml:shortId"/>
+    </xs:simpleType>
+    <xs:simpleType name="roleId">
+        <xs:restriction base="t9t_xml:shortId"/>
+    </xs:simpleType>
+    <xs:simpleType name="emailAddress">
+        <xs:restriction base="xs:normalizedString">
+            <xs:maxLength value="255"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="timeZoneId">
+        <xs:restriction base="xs:normalizedString">
+            <xs:maxLength value="64"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:complexType name="Ping" block="#all" final="#all">
@@ -126,11 +138,11 @@
         <xs:complexContent>
             <xs:extension base="bon:BONAPORTABLE">
                 <xs:sequence>
-                    <xs:element name="userId" type="t9t_base_types:userId"/>
+                    <xs:element name="userId" type="t9t_xml:userId"/>
                     <xs:element name="name" type="t9t_xml:shortText"/>
-                    <xs:element name="emailAddress" minOccurs="0" nillable="true" type="t9t_base_types:emailAddress"/>
+                    <xs:element name="emailAddress" minOccurs="0" nillable="true" type="t9t_xml:emailAddress"/>
                     <xs:element name="isActive" minOccurs="0" nillable="true" type="xs:boolean"/>
-                    <xs:element name="roleId" minOccurs="0" nillable="true" type="t9t_auth:roleId"/>
+                    <xs:element name="roleId" minOccurs="0" nillable="true" type="t9t_xml:roleId"/>
                     <xs:element name="isTechnical" minOccurs="0" nillable="true" type="xs:boolean"/>
                     <xs:element name="office" minOccurs="0" nillable="true" type="t9t_xml:shortText"/>
                     <xs:element name="department" minOccurs="0" nillable="true" type="t9t_xml:shortText"/>
@@ -138,7 +150,7 @@
                     <xs:element name="phoneNo" minOccurs="0" nillable="true" type="t9t_xml:shortText"/>
                     <xs:element name="mobilePhoneNo" minOccurs="0" nillable="true" type="t9t_xml:shortText"/>
                     <xs:element name="externalAuth" minOccurs="0" nillable="true" type="xs:boolean"/>
-                    <xs:element name="supervisorId" minOccurs="0" nillable="true" type="t9t_base_types:userId"/>
+                    <xs:element name="supervisorId" minOccurs="0" nillable="true" type="t9t_xml:userId"/>
                     <xs:element name="z" minOccurs="0" nillable="true" type="bon:JSON"/>
                 </xs:sequence>
             </xs:extension>
