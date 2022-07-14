@@ -42,12 +42,20 @@
     <dependencies>
         <!-- compile dependencies -->
         <dependency>
-            <groupId>com.arvato-systems.t9t</groupId>
-            <artifactId>t9t-base-api</artifactId>
+            <groupId>de.jpaw</groupId>
+            <artifactId>bonaparte-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.arvato-systems.t9t</groupId>
-            <artifactId>t9t-auth-api</artifactId>
+            <groupId>de.jpaw</groupId>
+            <artifactId>bonaparte-xml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.jpaw</groupId>
+            <artifactId>jpaw-xml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
         </dependency>
 
         <dependency>

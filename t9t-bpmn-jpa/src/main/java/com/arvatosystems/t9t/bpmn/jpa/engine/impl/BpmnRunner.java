@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.bpmn.jpa.engine.impl;
 
+import com.arvatosystems.t9t.base.JsonUtil;
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
@@ -295,14 +296,9 @@ public class BpmnRunner implements IBpmnRunner {
 
     protected WorkflowReturnCode dealWithDelay(final ProcessExecStatusEntity statusEntity, final Map<String, Object> parameters,
             final WorkflowReturnCode code) {
-        final Object tilWhen = parameters.get(IWorkflowStep.PROCESS_VARIABLE_YIELD_UNTIL);
-        if (tilWhen != null && tilWhen instanceof Instant) {
-            statusEntity.setYieldUntil((Instant) tilWhen);
-        }
-        if (tilWhen != null && Number.class.isAssignableFrom(tilWhen.getClass())) {
-            // an Instant which has been serialized as JSON and later deserialized will appear as a numeric value,
-            // representing the number of seconds since the Epoch
-            statusEntity.setYieldUntil(Instant.ofEpochMilli(((Number) tilWhen).longValue()));
+        final Instant tilWhen = JsonUtil.getZInstant(parameters, IWorkflowStep.PROCESS_VARIABLE_YIELD_UNTIL, null);
+        if (tilWhen != null) {
+            statusEntity.setYieldUntil(tilWhen);
         }
         return code;
     }

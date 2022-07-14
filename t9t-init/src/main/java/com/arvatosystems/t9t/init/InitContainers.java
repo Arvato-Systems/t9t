@@ -28,13 +28,10 @@ import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.IGridConfigContainer;
 import com.arvatosystems.t9t.base.ILeanGridConfigContainer;
 import com.arvatosystems.t9t.base.IViewModelContainer;
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.RandomNumberGenerators;
-import com.arvatosystems.t9t.base.uiprefs.UIGridPreferences;
-import com.arvatosystems.t9t.base.uiprefs.UILeanGridPreferences;
 
 import de.jpaw.bonaparte.enums.BonaEnum;
 import de.jpaw.bonaparte.enums.BonaNonTokenizableEnum;
@@ -219,24 +216,22 @@ public final class InitContainers {
     }
 
     private static void collectLeanGridConfigurations(final Reflections... packages) {
-        final Map<String, UILeanGridPreferences> leanGridOverrides = new HashMap<>();
-        final Map<String, UIGridPreferences> gridOverrides = new HashMap<>();
         for (final Reflections pkg: packages) {
             for (final Class<? extends ILeanGridConfigContainer> cls : pkg.getSubTypesOf(ILeanGridConfigContainer.class)) {
                 try {
                     final List<String> configs = cls.getDeclaredConstructor().newInstance().getResourceNames();
                     LOGGER.debug("Grid config container {} holds {} lean grid configurations", cls.getCanonicalName(), configs.size());
                     for (final String resourceId : configs) {
-                        UiGridConfigPrefs.getLeanGridConfigAsObject(resourceId, leanGridOverrides, gridOverrides);
+                        UiGridConfigPrefs.getLeanGridConfigAsObject(resourceId);
                     }
                 } catch (final Exception e) {
                     LOGGER.warn("Cannot initialize leanGridConfigContainer {}: {}", cls.getCanonicalName(), ExceptionUtil.causeChain(e));
                 }
             }
         }
-        // apply the overrides
-        ILeanGridConfigContainer.LEAN_GRID_CONFIG_REGISTRY.putAll(leanGridOverrides);
-        IGridConfigContainer.GRID_CONFIG_REGISTRY.putAll(gridOverrides);
+
+        // apply the overrides & extends
+        UiGridConfigPrefs.postProcess();
     }
 
     public static int getErrorCount() {

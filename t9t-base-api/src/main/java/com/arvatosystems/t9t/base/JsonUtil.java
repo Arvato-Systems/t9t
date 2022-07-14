@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.base;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -149,6 +150,23 @@ public final class JsonUtil {
         LOGGER.error("Required Number for z entry {}, but got {}", key, value.getClass().getCanonicalName());
         throw new T9tException(T9tException.INVALID_REQUEST_PARAMETER_TYPE, "Required a Number for z entry " + key
                 + ", but got " + value.getClass().getCanonicalName());
+    }
+
+    /** Safe getter for a z field value, also works if z itself is null, returns an Instant typed result, if required, by conversion. */
+    public static Instant getZInstant(final Map<String, Object> z, final String key, final Instant defaultValue) {
+        final Object value = getZEntry(z, key);
+        if (value == null) {
+            return defaultValue;
+        }
+        if (value instanceof Instant) {
+            return (Instant)value;
+        }
+        // in JSON, an instant could have been persisted as a numeric value, in seconds since the epoch
+        if (value instanceof Number) {
+            return Instant.ofEpochSecond(((Number)value).longValue());
+        }
+        // last resort: parse from string
+        return Instant.parse(value.toString());
     }
 
     public static final ConfigurationReader CONFIG_READER = ConfigurationReaderFactory.getConfigReaderForName("t9t.json", null);

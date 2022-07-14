@@ -53,9 +53,9 @@ import org.zkoss.zul.event.PagingEvent;
 import org.zkoss.zul.event.ZulEvents;
 
 import com.arvatosystems.t9t.all.request.ExportAndEmailResultRequest;
-import com.arvatosystems.t9t.base.BooleanUtil;
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.output.ExportParameters;
 import com.arvatosystems.t9t.base.output.FoldableMediaType;
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
@@ -378,7 +378,7 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
         try {
             UILeanGridPreferences gridPreferences = leanGridConfigResolver.getGridPreferences();
             String sortColumnName = computeFieldForUnrolledListSorting(gridPreferences.getSortColumn());
-            boolean isDescending = BooleanUtil.isTrue(gridPreferences.getSortDescending());
+            boolean isDescending = T9tUtil.isTrue(gridPreferences.getSortDescending());
             if (sortColumnName != null)
                 return Collections.singletonList(new SortColumn(sortColumnName, isDescending));
         } catch (IllegalArgumentException e) {

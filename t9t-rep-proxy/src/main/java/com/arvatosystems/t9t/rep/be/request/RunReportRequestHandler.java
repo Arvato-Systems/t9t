@@ -52,7 +52,11 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
 
     /** Constructor to initialize the callout executor. */
     public RunReportRequestHandler() {
-        final UplinkConfiguration reportServerConfig = ConfigProvider.getConfiguration().getUplinkConfiguration();
+        final UplinkConfiguration reportServerConfig = ConfigProvider.getUplink("JASPER");
+        if (reportServerConfig == null) {
+            LOGGER.error("Missing uplink configuration for JASPER");
+            throw new T9tException(T9tException.MISSING_CONFIGURATION, "uplink for JASPER in server config.xml");
+        }
         remoteCaller = new SimpleCallOutExecutor(reportServerConfig.getUrl());
     }
 

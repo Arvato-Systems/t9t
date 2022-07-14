@@ -25,11 +25,11 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.BooleanUtil;
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.base.FieldMappers;
 import com.arvatosystems.t9t.base.ILeanGridConfigContainer;
 import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.uiprefs.UILeanGridPreferences;
 import com.arvatosystems.t9t.uiprefsv3.LeanGridConfigDTO;
@@ -271,10 +271,10 @@ public class LeanGridConfigResolver implements ILeanGridConfigResolver {
 
     @Override
     public boolean reload() {
-        boolean wasDescending = BooleanUtil.isTrue(gridPrefs.getSortDescending());
+        boolean wasDescending = T9tUtil.isTrue(gridPrefs.getSortDescending());
         String oldSortColumn = gridPrefs.getSortColumn();
         loadConfig();
-        boolean isNowDescending = BooleanUtil.isTrue(gridPrefs.getSortDescending());
+        boolean isNowDescending = T9tUtil.isTrue(gridPrefs.getSortDescending());
         return isNowDescending != wasDescending || !Objects.equal(oldSortColumn, gridPrefs.getSortColumn());
     }
 

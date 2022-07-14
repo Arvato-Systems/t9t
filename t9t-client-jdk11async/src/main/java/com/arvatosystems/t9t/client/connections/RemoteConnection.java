@@ -62,6 +62,7 @@ public class RemoteConnection extends AbstractAsyncRemoteConnection implements I
             LOGGER.error("FATAL: Cannot construct remote request URI: {}", ExceptionUtil.causeChain(e));
             throw new RuntimeException(e);
         }
+        LOGGER.debug("created a RemoteConnection pool for rpc URI {} and auth URI {}", rpcUri, authUri);
     }
 
 

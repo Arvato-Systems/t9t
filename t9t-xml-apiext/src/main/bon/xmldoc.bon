@@ -1,0 +1,40 @@
+/*
+ * Copyright (c) 2012 - 2022 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import api.media.*
+import t9t.base.types.emailAddress
+import t9t.base.types.timeZoneId
+import t9t.xml.*
+
+/**
+ * Package which contains the definitions of t9t XML interfaces.
+ */
+package (com.arvatosystems) t9t.xml.doc XML PROPERTY bundle t9t.config swagger {
+    default private unsigned trim noControlChars;
+    properties path;
+
+    /** RPC API: Create a document. */
+    final class CreateAndEmailDocument xmlRoot {
+        properties path = "createAndEmailDocument";
+        required externalId                         documentId;         // determines the template for this document
+        optional shortId                            entityId;           // subtenant or "-" if used for any
+        optional Ascii(5)                           languageCode;       // language code or "xx" for default
+        optional countryCode                        countryCode;        // ISO 3166 country code or "XX" if default
+        optional currencyCode                       currencyCode;       // ISO 4217 currency code or "XXX" if default
+        optional timeZoneId                         timeZone;           // a time zone identifier such as "Europe/Berlin"
+        required emailAddress required List<>       emailRecipients;    // the list of target email addresses
+        required Json                               data;               // document data, which can be a Map, a List or a BonaPortable
+    }
+}

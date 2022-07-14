@@ -175,6 +175,7 @@ public class T9tException extends ApplicationException {
     public static final int ACCESS_DENIED = OFFSET_DENIED + 217;
     public static final int NO_SUITABLE_AUTHENTICATION_PROVIDER_FOUND = OFFSET_LOGIC_ERROR + 218;
     public static final int GENERAL_AUTH_PROBLEM = OFFSET + 219;
+    public static final int INVALID_EMAIL_FORMAT = OFFSET + 220;
 
 
     // IO errors
@@ -443,7 +444,7 @@ public class T9tException extends ApplicationException {
             "Can't reset password, the provided password does not match the stored one.");
         codeToDescription.put(GENERAL_AUTH_PROBLEM,
             "Password should be correct and the new one should differ from the old one and fit password requirements.");
-
+        codeToDescription.put(INVALID_EMAIL_FORMAT, "Email format seems to be corrupt");
 
         codeToDescription.put(METHOD_ILLEGAL_ACCESS_EXCEPTION, "Could not access class or method");
         codeToDescription.put(METHOD_INVOCATION_TARGET_EXCEPTION, "Could not invoke method (by reflection)");

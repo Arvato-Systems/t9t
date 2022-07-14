@@ -47,7 +47,7 @@
                     <xs:element name="bpm2Configuration" minOccurs="0" nillable="true" type="t9t_cfg_be:Bpm2Configuration"/>
                     <xs:element name="awsConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:AWSConfiguration"/>
                     <xs:element name="azureConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:AzureConfiguration"/>
-                    <xs:element name="uplinkConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:UplinkConfiguration"/>
+                    <xs:element name="uplinkConfiguration" minOccurs="0" maxOccurs="unbounded" type="t9t_cfg_be:UplinkConfiguration"/>
                     <xs:element name="searchConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:SearchConfiguration"/>
                     <xs:element name="kafkaConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:KafkaConfiguration"/>
                     <xs:element name="asyncMsgConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:AsyncTransmitterConfiguration"/>
@@ -589,6 +589,13 @@
         <xs:complexContent>
             <xs:extension base="bon:BONAPORTABLE">
                 <xs:sequence>
+                    <xs:element name="key">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="36"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
                     <xs:element name="url">
                         <xs:simpleType>
                             <xs:restriction base="xs:normalizedString">
@@ -597,6 +604,7 @@
                         </xs:simpleType>
                     </xs:element>
                     <xs:element name="mediaType" minOccurs="0" nillable="true" type="api_media:MediaType"/>
+                    <xs:element name="apiKey" minOccurs="0" nillable="true" type="bon:UUID"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>

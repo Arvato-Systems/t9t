@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.doc.be.api;
 
+import static com.arvatosystems.t9t.base.T9tUtil.nvl;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -111,10 +113,6 @@ public class NewDocumentRequestHandler extends AbstractRequestHandler<NewDocumen
         combined.addAll(org);
         combined.addAll(addressesToAdd);
         return combined;
-    }
-
-    private static <T> T nvl(T in, T fallback) {
-        return in != null ? in : fallback;
     }
 
     private static void noOp() {

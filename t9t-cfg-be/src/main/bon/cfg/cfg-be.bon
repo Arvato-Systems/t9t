@@ -47,7 +47,7 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional (Bpm2Configuration...)             bpm2Configuration;
         optional (AWSConfiguration...)              awsConfiguration;
         optional (AzureConfiguration...)            azureConfiguration;
-        optional (UplinkConfiguration...)           uplinkConfiguration;
+        required (UplinkConfiguration...) List<>    uplinkConfiguration;
         optional (SearchConfiguration...)           searchConfiguration;
         optional (KafkaConfiguration...)            kafkaConfiguration;
         optional (AsyncTransmitterConfiguration...) asyncMsgConfiguration;
@@ -164,8 +164,10 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
 
     /** The uplink configuration has been reassigned to provide the link to the report server. */
     class UplinkConfiguration {
+        required Unicode(36)                        key;                            // the key to use for this configuration
         required Unicode(255)                       url;                            // URL for uplink. If not provided, uplink calls will throw an Exception
         optional Enum MediaType                     mediaType;                      // which format to use (JSON, compact, bonaparte, default is compact bonaparte, entry currently ignored)
+        optional Uuid                               apiKey;                         // the API key to use
     }
 
     class SearchConfiguration {

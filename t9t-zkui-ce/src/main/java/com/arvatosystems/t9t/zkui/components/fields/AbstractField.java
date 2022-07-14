@@ -22,7 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zul.impl.InputElement;
 
-import com.arvatosystems.t9t.base.BooleanUtil;
+import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
@@ -47,7 +47,7 @@ public abstract class AbstractField<E extends InputElement> implements IField {
         this.label = session.translate(gridId, fieldname);
         this.gridId = gridId;
         this.session = session;
-        this.isNegated = BooleanUtil.isTrue(cfg.getNegate());
+        this.isNegated = T9tUtil.isTrue(cfg.getNegate());
     }
 
     @Override

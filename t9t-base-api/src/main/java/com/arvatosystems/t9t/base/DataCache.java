@@ -31,26 +31,46 @@ public class DataCache<REF extends Ref, DTO extends REF, KEY extends REF, DESC e
         }
     }
 
-    public DataMap<REF, DTO, KEY, DESC> getByRef(Long ref) {
+    public DataMap<REF, DTO, KEY, DESC> getByRef(final Long ref) {
         return dataByRef.get(ref);
     }
 
-    public DTO getDtoByRef(Long ref) {
+    public DataMap<REF, DTO, KEY, DESC> getByRefOrFail(final Long ref) {
+        final DataMap<REF, DTO, KEY, DESC> data = dataByRef.get(ref);
+        if (data == null) {
+            throw new T9tException(T9tException.RECORD_DOES_NOT_EXIST, getClass().getSimpleName());
+        }
+        return data;
+    }
+
+    public DataMap<REF, DTO, KEY, DESC> getById(final String id) {
+        return dataById.get(id);
+    }
+
+    public DataMap<REF, DTO, KEY, DESC> getByIdOrFail(final String id) {
+        final DataMap<REF, DTO, KEY, DESC> data = dataById.get(id);
+        if (data == null) {
+            throw new T9tException(T9tException.RECORD_DOES_NOT_EXIST, getClass().getSimpleName());
+        }
+        return data;
+    }
+
+    public DTO getDtoByRef(final Long ref) {
         final DataMap<REF, DTO, KEY, DESC> element = dataByRef.get(ref);
         return element == null ? null : element.getDto();
     }
 
-    public DESC getDescriptionByRef(Long ref) {
+    public DESC getDescriptionByRef(final Long ref) {
         final DataMap<REF, DTO, KEY, DESC> element = dataByRef.get(ref);
         return element == null ? null : element.getDescription();
     }
 
-    public DTO getDtoById(String id) {
+    public DTO getDtoById(final String id) {
         final DataMap<REF, DTO, KEY, DESC> element = dataById.get(id);
         return element == null ? null : element.getDto();
     }
 
-    public DESC getDescriptionById(String id) {
+    public DESC getDescriptionById(final String id) {
         final DataMap<REF, DTO, KEY, DESC> element = dataById.get(id);
         return element == null ? null : element.getDescription();
     }

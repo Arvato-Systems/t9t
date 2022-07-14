@@ -16,19 +16,21 @@
 package com.arvatosystems.t9t.cfg.be
 
 import de.jpaw.annotations.AddLogger
+import jakarta.xml.bind.JAXBContext
+import jakarta.xml.bind.Marshaller
 import java.io.File
 import java.io.PrintWriter
 import java.io.StringReader
+import java.util.Map
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
-import jakarta.xml.bind.JAXBContext
-import jakarta.xml.bind.Marshaller
 
 @AddLogger
 class ConfigProvider {
     static final String DEFAULT_CFG_FILENAME = System.getProperty("user.home") + "/.t9tconfig.xml"
     static final ConcurrentMap<String, String> customParameters = new ConcurrentHashMap<String, String>(16);
     static final char EQUALS_SIGN = '=';
+    static final Map<String, UplinkConfiguration> uplinks = new ConcurrentHashMap
 
     static val postgresConfig = new T9tServerConfiguration => [
         persistenceUnitName         = "t9t-DS"    // hibernate / resourceLocal / postgres
@@ -62,9 +64,6 @@ class ConfigProvider {
         awsConfiguration            = new AWSConfiguration => [
             snsEndpoint             = "https://sns.eu-central-1.amazonaws.com"
             sqsEndpoint             = "https://sqs.eu-central-1.amazonaws.com"
-        ]
-        uplinkConfiguration         = new UplinkConfiguration => [
-            url                     = "http://localhost:8880/dev/rest/fortytwobonsl"
         ]
         searchConfiguration         = new SearchConfiguration => [
             strategy                = "SOLR"
@@ -161,11 +160,22 @@ class ConfigProvider {
             ]
             LOGGER.info("Read {} custom parameters from config file", customParameters.size)
         }
+        // index the uplink entries
+        uplinks.clear();
+        if (myConfiguration.uplinkConfiguration !== null) {
+            for (uplink: myConfiguration.uplinkConfiguration) {
+                uplinks.put(uplink.key, uplink)
+            }
+        }
         myConfiguration.freeze  // it won't be changed afterwards
     }
 
     def static String getCustomParameter(String key) {
         return customParameters.get(key)
+    }
+
+    def static UplinkConfiguration getUplink(String key) {
+        return uplinks.get(key)
     }
 
     // read the configuration from the provided file, or fallback to the home cfg file if none has been specified

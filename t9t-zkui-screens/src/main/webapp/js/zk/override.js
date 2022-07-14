@@ -186,3 +186,19 @@ zk.afterLoad('zul.db', function () {
     }
 });
 
+/**
+ * Override the default behaviour of listbox which blocks CTRL/META/ALT + c keys
+ */
+ zk.afterLoad('zul.sel', function() {
+   var xListbox = {};
+   zk.override(zul.sel.Listbox.prototype, xListbox, {
+      doKeyDown_ : function(event) {
+          if(event.domEvent.key === 'Control' || event.domEvent.key === 'Meta' || event.domEvent.key === 'Alt' || 
+             ((event.domEvent.ctrlKey || event.domEvent.metaKey) && event.domEvent.key === 'c')) {
+              return;
+          }
+         return xListbox.doKeyDown_.apply(this, arguments);
+      }
+   });
+});
+

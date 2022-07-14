@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.BooleanUtil;
+import com.arvatosystems.t9t.base.T9tUtil;
 
 /** Class stores map of active subscriptions in memory.
  * We often want to know if there is a subscription to tenant + qualifier.
@@ -41,6 +41,6 @@ public final class EventSubscriptionCache {
 
     public static boolean isActive(final String eventID, final String qualifier, final Long tenantRef) {
         final String key = eventID + ":" + qualifier + ":" + tenantRef.toString();
-        return BooleanUtil.isTrue(ACTIVE_SUBSCRIPTIONS.get(key));
+        return T9tUtil.isTrue(ACTIVE_SUBSCRIPTIONS.get(key));
     }
 }

@@ -17,21 +17,24 @@ package com.arvatosystems.t9t.init;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.BooleanUtil;
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.base.FieldMappers;
 import com.arvatosystems.t9t.base.IGridConfigContainer;
 import com.arvatosystems.t9t.base.ILeanGridConfigContainer;
 import com.arvatosystems.t9t.base.IViewModelContainer;
 import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.entities.InternalTenantRef42;
 import com.arvatosystems.t9t.base.types.TenantIsolationCategoryType;
@@ -58,6 +61,11 @@ final class UiGridConfigPrefs {
     private static final Logger LOGGER = LoggerFactory.getLogger(UiGridConfigPrefs.class);
     private static final AtomicInteger ERROR_COUNTER = new AtomicInteger(0);
 
+    private static final Map<String, UIGridPreferences> GRID_OVERRIDES_MAP = new HashMap<>();
+    private static final Map<String, UILeanGridPreferences> LEAN_GRID_OVERRIDES_MAP = new HashMap<>();
+    private static final Map<String, UIGridPreferences> GRID_EXTENDS_MAP = new HashMap<>();
+    private static final Map<String, UILeanGridPreferences> LEAN_GRID_EXTENDS_MAP = new HashMap<>();
+
     public static final UIDefaults MY_DEFAULTS = new UIDefaults(
         50,     // renderMaxArrayColumns: we have up to 7 address lines (and 6 tax levels) (but 50 in other applications)
         160,    // widthObject
@@ -71,8 +79,10 @@ final class UiGridConfigPrefs {
 
     private UiGridConfigPrefs() { }
 
-    private static void addUiMeta(final CrudViewModel<?, ?> vm, final String viewModelId, final UIGridPreferences ui, final String gridId,
-      final Map<String, UIGridPreferences> gridOverrides) {
+    private static void addUiMeta(final CrudViewModel<?, ?> vm, final String viewModelId, final UIGridPreferences ui, final String gridId) {
+        final Map<String, UIGridPreferences> gridOverrides = GRID_OVERRIDES_MAP;
+        final Map<String, UIGridPreferences> gridExtends = GRID_EXTENDS_MAP;
+
         final ColumnCollector cc = new ColumnCollector(MY_DEFAULTS);
         final List<UIColumnConfiguration> cols = ui.getColumns();
         for (final UIColumnConfiguration col : cols) {
@@ -95,26 +105,40 @@ final class UiGridConfigPrefs {
                         gridId, col.getFieldName(), e1.getClass().getSimpleName(), e1.getMessage());
             }
         }
-        ui.validate();
-        ui.freeze();
+
         final String overridesId = ui.getOverridesGridConfig();
-        if (overridesId == null) {
-            // store it in regular entry - 1st pass
-            if (IGridConfigContainer.GRID_CONFIG_REGISTRY.putIfAbsent(gridId, ui) != null) {
-                ERROR_COUNTER.incrementAndGet();
-                LOGGER.error("grid config {} defined multiple times", gridId);
-            }
-            if (IViewModelContainer.VIEW_MODEL_BY_GRID_ID_REGISTRY.putIfAbsent(gridId, viewModelId) != null) {
-                LOGGER.error("view model by grid config {} defined multiple times", gridId);
-            }
-        } else {
-            // postpone this - 2nd pass (but check there is no duplicate override)
+        final String extendsId = ui.getExtendsGridConfig();
+        if (overridesId != null && extendsId != null) {
+            ERROR_COUNTER.incrementAndGet();
+            LOGGER.error("grid config {} overrides and extends at the same time", gridId);
+        }
+
+        if (overridesId != null) {
+            // postpone this (but check there is no duplicate override)
             if (gridOverrides.putIfAbsent(overridesId, ui) != null) {
                 ERROR_COUNTER.incrementAndGet();
                 LOGGER.error("grid config {} overridden multiple times", overridesId);
             }
             if (IViewModelContainer.VIEW_MODEL_BY_GRID_ID_REGISTRY.putIfAbsent(overridesId, viewModelId) != null) {
                 LOGGER.error("view model by overrides grid config {} defined multiple times", overridesId);
+            }
+        } else if (extendsId != null) {
+            // postpone this (but check there is no duplicate override)
+            if (gridExtends.putIfAbsent(extendsId, ui) != null) {
+                ERROR_COUNTER.incrementAndGet();
+                LOGGER.error("grid config {} extended multiple times", extendsId);
+            }
+            if (IViewModelContainer.VIEW_MODEL_BY_GRID_ID_REGISTRY.putIfAbsent(extendsId, viewModelId) != null) {
+                LOGGER.error("view model by extends grid config {} defined multiple times", extendsId);
+            }
+        } else {
+            // store it in regular entry
+            if (IGridConfigContainer.GRID_CONFIG_REGISTRY.putIfAbsent(gridId, ui) != null) {
+                ERROR_COUNTER.incrementAndGet();
+                LOGGER.error("grid config {} defined multiple times", gridId);
+            }
+            if (IViewModelContainer.VIEW_MODEL_BY_GRID_ID_REGISTRY.putIfAbsent(gridId, viewModelId) != null) {
+                LOGGER.error("view model by grid config {} defined multiple times", gridId);
             }
         }
     }
@@ -132,8 +156,10 @@ final class UiGridConfigPrefs {
         return r;
     }
 
-    static void getLeanGridConfigAsObject(final String resourceId,
-      final Map<String, UILeanGridPreferences> leanGridOverrides, final Map<String, UIGridPreferences> gridOverrides) {
+    static void getLeanGridConfigAsObject(final String resourceId) {
+        final Map<String, UILeanGridPreferences> leanGridOverrides = LEAN_GRID_OVERRIDES_MAP;
+        final Map<String, UILeanGridPreferences> leanGridExtends = LEAN_GRID_EXTENDS_MAP;
+
         final String gridId = resourceId.replace('$', '/');
         try {
             final URL url = Resources.getResource("gridconfig/" + gridId + ".json");
@@ -144,17 +170,29 @@ final class UiGridConfigPrefs {
             MapParser.populateFrom(prefs, config);
 
             final String overridesId = prefs.getOverridesGridConfig();
-            if (overridesId == null) {
-                // original configuration
-                if (ILeanGridConfigContainer.LEAN_GRID_CONFIG_REGISTRY.putIfAbsent(gridId, prefs) != null) {
-                    ERROR_COUNTER.incrementAndGet();
-                    LOGGER.error("lean grid config {} defined multiple times", gridId);
-                }
-            } else {
+            final String extendsId = prefs.getExtendsGridConfig();
+            if (overridesId != null && extendsId != null) {
+                ERROR_COUNTER.incrementAndGet();
+                LOGGER.error("lean grid config {} overrides and extends at the same time", gridId);
+            }
+
+            if (overridesId != null) {
                 // overriding configuration
                 if (leanGridOverrides.putIfAbsent(overridesId, prefs) != null) {
                     ERROR_COUNTER.incrementAndGet();
                     LOGGER.error("lean grid config {} overridden multiple times", overridesId);
+                }
+            } else if (extendsId != null) {
+                // extending configuration
+                if (leanGridExtends.putIfAbsent(extendsId, prefs) != null) {
+                    ERROR_COUNTER.incrementAndGet();
+                    LOGGER.error("lean grid config {} extended multiple times", extendsId);
+                }
+            } else {
+                // original configuration
+                if (ILeanGridConfigContainer.LEAN_GRID_CONFIG_REGISTRY.putIfAbsent(gridId, prefs) != null) {
+                    ERROR_COUNTER.incrementAndGet();
+                    LOGGER.error("lean grid config {} defined multiple times", gridId);
                 }
             }
 
@@ -197,11 +235,12 @@ final class UiGridConfigPrefs {
             ui.setColumns(cols);
             ui.setDynamicWidths(false);
             ui.setSortColumn(prefs.getSortColumn());
-            ui.setSortDescending(BooleanUtil.isTrue(prefs.getSortDescending()));
+            ui.setSortDescending(T9tUtil.isTrue(prefs.getSortDescending()));
             ui.setViewModel(viewModelId);
             ui.setWasLean(Boolean.TRUE);
             ui.setIsSolrSearch(vm.dtoClass.getProperty("isSolr") != null);
             ui.setOverridesGridConfig(overridesId);
+            ui.setExtendsGridConfig(extendsId);
 
             // now set any filters
             if (prefs.getFilters() != null) {
@@ -249,7 +288,7 @@ final class UiGridConfigPrefs {
             }
 
             // enrich UI meta, validate and store it
-            addUiMeta(vm, viewModelId, ui, gridId, gridOverrides);
+            addUiMeta(vm, viewModelId, ui, gridId);
         } catch (final Exception e) {
             ERROR_COUNTER.incrementAndGet();
             LOGGER.error("Parsing error for lean grid config {}: {}", gridId, ExceptionUtil.causeChain(e));
@@ -278,5 +317,87 @@ final class UiGridConfigPrefs {
         IViewModelContainer.VIEW_MODEL_BY_GRID_ID_REGISTRY.clear();
         IGridConfigContainer.GRID_CONFIG_REGISTRY.clear();
         ILeanGridConfigContainer.LEAN_GRID_CONFIG_REGISTRY.clear();
+    }
+
+    static void postProcess() {
+        processGridOverrides();
+        processGridExtends();
+        freezeAllGrids();
+    }
+
+    private static void processGridOverrides() {
+        ILeanGridConfigContainer.LEAN_GRID_CONFIG_REGISTRY.putAll(LEAN_GRID_OVERRIDES_MAP);
+        IGridConfigContainer.GRID_CONFIG_REGISTRY.putAll(GRID_OVERRIDES_MAP);
+        LEAN_GRID_OVERRIDES_MAP.forEach((leanGridId, leanGrid) -> {
+            LOGGER.debug("lean grid config {} has been overridden.", leanGridId);
+        });
+        GRID_OVERRIDES_MAP.forEach((gridId, grid) -> {
+            LOGGER.debug("grid config {} has been overridden.", gridId);
+        });
+    }
+
+    private static void processGridExtends() {
+        // Extends Lean Grid Config
+        final Set<String> overriddenLeanGridIds = LEAN_GRID_OVERRIDES_MAP.keySet();
+        final Map<String, UILeanGridPreferences> leanGridExtends = LEAN_GRID_EXTENDS_MAP;
+        for (final String leanGridId: overriddenLeanGridIds) {
+            final UILeanGridPreferences removedLeanGrid = leanGridExtends.remove(leanGridId);
+            if (removedLeanGrid != null) {
+                LOGGER.debug("lean grid config {} has been overridden, skip extending.", removedLeanGrid);
+            }
+        }
+        leanGridExtends.forEach((key, extendedLeanGrid) -> {
+            final UILeanGridPreferences leanGrid = ILeanGridConfigContainer.LEAN_GRID_CONFIG_REGISTRY.get(key);
+            setOrAddAllCollection(leanGrid.getMapColumns(), extendedLeanGrid.getMapColumns(), c -> leanGrid.setMapColumns(c));
+            setOrAddAllCollection(leanGrid.getFilters(), extendedLeanGrid.getFilters(), c -> leanGrid.setFilters(c));
+            setOrAddAllCollection(leanGrid.getUnsortableFields(), extendedLeanGrid.getUnsortableFields(), c -> leanGrid.setUnsortableFields(c));
+            setOrAddAllCollection(leanGrid.getFields(), extendedLeanGrid.getFields(), c -> leanGrid.setFields(c));
+            setOrAddAllCollection(leanGrid.getFieldWidths(), extendedLeanGrid.getFieldWidths(), c -> leanGrid.setFieldWidths(c));
+            LOGGER.debug("lean grid config {} has been extended.", key);
+        });
+
+        // Extends Grid Config
+        final Set<String> overriddenGridIds = GRID_OVERRIDES_MAP.keySet();
+        final Map<String, UIGridPreferences> gridExtends = GRID_EXTENDS_MAP;
+        for (final String gridId: overriddenGridIds) {
+            final UIGridPreferences removedGrid = gridExtends.remove(gridId);
+            if (removedGrid != null) {
+                LOGGER.debug("grid config {} has been overridden, skip extending.", gridId);
+            }
+        }
+        gridExtends.forEach((key, extendedGrid) -> {
+            final UIGridPreferences grid = IGridConfigContainer.GRID_CONFIG_REGISTRY.get(key);
+            setOrAddAllCollection(grid.getMapColumns(), extendedGrid.getMapColumns(), c -> grid.setMapColumns(c));
+            setOrPutAllMap(grid.getClassProperties(), extendedGrid.getClassProperties(), m -> grid.setClassProperties(m));
+            LOGGER.debug("grid config {} has been extended.", key);
+        });
+    }
+
+    private static <C extends Collection> void setOrAddAllCollection(C oldValue, C newValue, Consumer<C> consumer) {
+        if (newValue == null) {
+            return;
+        }
+        if (oldValue == null) {
+            consumer.accept(newValue);
+        } else {
+            oldValue.addAll(newValue);
+        }
+    }
+
+    private static <M extends Map> void setOrPutAllMap(M oldValue, M newValue, Consumer<M> consumer) {
+        if (newValue == null) {
+            return;
+        }
+        if (oldValue == null) {
+            consumer.accept(newValue);
+        } else {
+            oldValue.putAll(newValue);
+        }
+    }
+
+    private static void freezeAllGrids() {
+        ILeanGridConfigContainer.LEAN_GRID_CONFIG_REGISTRY.values().forEach(pref -> pref.freeze());
+        IGridConfigContainer.GRID_CONFIG_REGISTRY.values().forEach(pref -> pref.freeze());
+        LOGGER.debug("All grid & lean grid configs are frozen.");
     }
 }

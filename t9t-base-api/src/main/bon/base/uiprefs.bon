@@ -40,6 +40,7 @@ package (com.arvatosystems) t9t.base.uiprefs {
         optional Boolean                            wasLean;                // determines if it was an v2 source or v3. null means v2
         required identifier List<>                  mapColumns;             // a list of predefined map columns to be used in edit columns
         optional gridConfigKey                      overridesGridConfig;    // grid Id to be overridden
+        optional gridConfigKey                      extendsGridConfig;      // grid Id to be extended
     }
 
     /** Reduced set of properties for a simple configuration.
@@ -55,5 +56,6 @@ package (com.arvatosystems) t9t.base.uiprefs {
         required identifier List<>                  unsortableFields;       // a list of identifiers specifying columns which cannot be sorted
         required identifier List<>                  mapColumns;             // a list of predefined map columns to be used in edit columns
         optional gridConfigKey                      overridesGridConfig;    // grid Id to be overridden
+        optional gridConfigKey                      extendsGridConfig;      // grid Id to be extended
     }
 }

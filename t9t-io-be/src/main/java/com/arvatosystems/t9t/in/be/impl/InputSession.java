@@ -23,6 +23,7 @@ import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.output.ExportStatusEnum;
 import com.arvatosystems.t9t.base.request.ErrorRequest;
+import com.arvatosystems.t9t.base.services.IInputQueuePartitioner;
 import com.arvatosystems.t9t.base.types.SessionParameters;
 import com.arvatosystems.t9t.in.services.IInputDataTransformer;
 import com.arvatosystems.t9t.in.services.IInputFormatConverter;
@@ -55,6 +56,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
@@ -65,6 +70,7 @@ import org.slf4j.LoggerFactory;
 public class InputSession implements IInputSession {
     private static final Logger LOGGER = LoggerFactory.getLogger(InputSession.class);
     private static final int MAX_RESPONSES = 1000; // maximum number of responses which are buffered
+    private static final String WORKER_THREAD_NAME_PREFIX = "t9t-InputSessionWorker-";
 
     private final IStatefulServiceSession session = Jdp.getRequired(IStatefulServiceSession.class); // holds the backend connection
     protected final AtomicInteger numSource = new AtomicInteger(); // unmapped records
@@ -81,6 +87,11 @@ public class InputSession implements IInputSession {
     protected boolean isDuplicateImport = false;
     protected boolean isProcessingError = false;
     protected List<BonaPortable> responseBuffer = null;
+    protected IInputQueuePartitioner inputProcessingSplitter;
+    protected boolean isPooledProcessing = false;
+    protected Integer inputProcessingParallel;
+    protected List<ExecutorService> workerThreadExecutors;
+    protected List<Future<ServiceResponse>> pooledProcessingFutures = new ArrayList<>();
 
     @SuppressWarnings("unchecked")
     @Override
@@ -154,6 +165,17 @@ public class InputSession implements IInputSession {
             sinkDTO.setCamelTransferStatus(ExportStatusEnum.UNDEFINED);
         }
 
+        inputProcessingParallel = dataSinkCfg.getInputProcessingParallel();
+        isPooledProcessing = inputProcessingParallel != null && inputProcessingParallel >= 2;
+        if (isPooledProcessing) {
+            if (dataSinkCfg.getInputProcessingSplitter() == null) {
+                throw new T9tException(T9tException.INVALID_CONFIGURATION,
+                        "Input processing splitter has not been defined for data sink {}" + dataSinkCfg.getDataSinkId());
+            }
+            inputProcessingSplitter = Jdp.getRequired(IInputQueuePartitioner.class, dataSinkCfg.getInputProcessingSplitter());
+            initWorkerThreadExecutors();
+        }
+
         sinkDTO.setPlannedRunDate(start);
         sinkDTO.setCommTargetChannelType(dataSinkCfg.getCommTargetChannelType());
         sinkDTO.setCommFormatType(dataSinkCfg.getCommFormatType());
@@ -171,6 +193,12 @@ public class InputSession implements IInputSession {
         if (rp != null) {
             process(rp);
         }
+
+        // waiting for pooledProcessingFutures to be processed
+        processAndPurgePooledProcessingFutures();
+        // shutdown and purge the worker threads if any
+        shutdownAndPurgeWorkerThreadExecutors();
+
         // terminate the transformer. Flush it first
         inputTransformer.close();
         inputFormatConverter.close();
@@ -265,17 +293,17 @@ public class InputSession implements IInputSession {
         }
 
         numProcessed.incrementAndGet();
-        final ServiceResponse result = session.execute(rp);
-        if (!ApplicationException.isOk(result.getReturnCode())) {
-            numError.incrementAndGet();
+        if (isPooledProcessing) {
+            final int threadNum = Math.abs(inputProcessingSplitter.determinePartitionKey(rp) % inputProcessingParallel);
+            final ExecutorService executor = workerThreadExecutors.get(threadNum);
+            pooledProcessingFutures.add(executor.submit(() -> {
+                return session.execute(rp);
+            }));
+            return new ServiceResponse();
+        } else {
+            // default execution
+            return processServiceResponse(session.execute(rp));
         }
-        if (result instanceof ImportStatusResponse) {
-            final List<BonaPortable> responses = ((ImportStatusResponse) result).getResponses();
-            if (responses != null && !responses.isEmpty()) {
-                addOrFlushResponses(responses);
-            }
-        }
-        return result;
     }
 
     @Override
@@ -340,5 +368,54 @@ public class InputSession implements IInputSession {
         writeResponsesRequest.setRecords2(newResponses);
         session.execute(writeResponsesRequest);
         responseBuffer.clear();
+    }
+
+    protected void initWorkerThreadExecutors() {
+        workerThreadExecutors = new ArrayList<>(inputProcessingParallel);
+        for (int i = 0; i < inputProcessingParallel; i++) {
+            final String threadName = WORKER_THREAD_NAME_PREFIX + i;
+            workerThreadExecutors.add(Executors.newSingleThreadExecutor(call -> new Thread(call, threadName)));
+            LOGGER.debug("New thread has been created: {}", threadName);
+        }
+    }
+
+    protected void shutdownAndPurgeWorkerThreadExecutors() {
+        if (workerThreadExecutors != null) {
+            for (int i = 0; i < workerThreadExecutors.size(); i++) {
+                final String threadName = WORKER_THREAD_NAME_PREFIX + i;
+                final ExecutorService executor = workerThreadExecutors.get(0);
+                LOGGER.debug("Shutting down thread: {}", threadName);
+                executor.shutdown();
+            }
+            workerThreadExecutors.clear();
+        }
+    }
+
+    protected ServiceResponse processServiceResponse(final ServiceResponse response) {
+        if (!ApplicationException.isOk(response.getReturnCode())) {
+            numError.incrementAndGet();
+        }
+        if (response instanceof ImportStatusResponse) {
+            final List<BonaPortable> responses = ((ImportStatusResponse) response).getResponses();
+            if (responses != null && !responses.isEmpty()) {
+                addOrFlushResponses(responses);
+            }
+        }
+        return response;
+    }
+
+    protected void processAndPurgePooledProcessingFutures() {
+        for (final Future<ServiceResponse> future: pooledProcessingFutures) {
+            try {
+                processServiceResponse(future.get());
+            } catch (ExecutionException e) {
+                numError.incrementAndGet();
+                LOGGER.error("One of the pooledProcessingFutures throws an exception!", e);
+            } catch (InterruptedException e) {
+                numError.incrementAndGet();
+                LOGGER.error("Worker thread got interrupted!", e);
+            }
+        }
+        pooledProcessingFutures.clear();
     }
 }

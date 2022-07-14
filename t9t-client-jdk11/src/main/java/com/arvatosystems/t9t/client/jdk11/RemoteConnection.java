@@ -51,7 +51,6 @@ import de.jpaw.util.ExceptionUtil;
 public class RemoteConnection implements IRemoteConnection {
     private static final Logger LOGGER = LoggerFactory.getLogger(RemoteConnection.class);
 
-    protected final IRemoteDefaultUrlRetriever cfgRetriever = Jdp.getRequired(IRemoteDefaultUrlRetriever.class);
     protected final HttpClient httpClient = HttpClient.newBuilder()
             .version(Version.HTTP_2)
             .connectTimeout(Duration.ofSeconds(20))
@@ -61,7 +60,15 @@ public class RemoteConnection implements IRemoteConnection {
     protected final URI rpcUri;
 
     public RemoteConnection(final String regular) {
-        final String regularPath = regular == null ? cfgRetriever.getDefaultRemoteUrl() : regular;
+        final String regularPath;
+        if (regular != null) {
+            // a specific URL has been provided
+            regularPath = regular;
+        } else {
+            // obtain a configuration retriever
+            final IRemoteDefaultUrlRetriever cfgRetriever = Jdp.getRequired(IRemoteDefaultUrlRetriever.class);
+            regularPath = cfgRetriever.getDefaultRemoteUrl();
+        }
         try {
             rpcUri = new URI(regularPath);
         } catch (final URISyntaxException e) {
@@ -74,6 +81,7 @@ public class RemoteConnection implements IRemoteConnection {
             LOGGER.error("FATAL: Cannot construct remote authentication URI: {}", ExceptionUtil.causeChain(e));
             throw new RuntimeException(e);
         }
+        LOGGER.debug("created a RemoteConnection for rpc URI {} and auth URI {}", rpcUri, authUri);
     }
 
     public RemoteConnection() {
