@@ -96,6 +96,7 @@ public abstract class AbstractRpcModule implements IServiceModule {
             if (authHeader == null || authHeader.length() < 8) {
                 LOGGER.debug("Request without authorization header (length = {})", authHeader == null ? -1 : authHeader.length());
                 IServiceModule.error(ctx, 401, "HTTP Authorization header missing or too short");
+                return;
             }
 
             LOGGER.debug("POST /{} received for Content-Type {}", getModuleName(), ct);
