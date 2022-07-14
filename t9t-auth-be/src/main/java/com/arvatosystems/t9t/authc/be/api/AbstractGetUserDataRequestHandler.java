@@ -39,6 +39,7 @@ public abstract class AbstractGetUserDataRequestHandler<T extends RequestParamet
         data.setSalutation(dto.getSalutation());
         data.setOrgUnit(dto.getOrgUnit());
         data.setUserIdExt(dto.getUserIdExt());
+        data.setIsTechnical(dto.getIsTechnical());
     }
 
     protected UserData responseFromDto(final UserDTO dto) {
