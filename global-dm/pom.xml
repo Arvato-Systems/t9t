@@ -39,15 +39,15 @@
 
         <!-- jpaw / bonaparte: versions for import of BOM. The plugin version is defined separately in SE/EE -->
         <!-- Note that the version of the bonapart-dsl plugin is set in "global-settings" -->
-        <jpaw-bom.version>3.0.2</jpaw-bom.version>
-        <bonaparte-bom.version>5.0.2</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
-        <persistence-bom.version>5.0.4</persistence-bom.version>
-        <jdp-bom.version>1.6.1</jdp-bom.version>
+        <jpaw-bom.version>3.0.4</jpaw-bom.version>
+        <bonaparte-bom.version>5.0.5</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
+        <persistence-bom.version>5.0.5</persistence-bom.version>
+        <jdp-bom.version>1.6.2</jdp-bom.version>
 
         <!-- Versions of Xtext & Xtend -->
         <!-- Note that the versions of the xtext/xtend plugins are ALSO set in "global-settings" -->
-        <xtend.version>2.26.0</xtend.version>
-        <xtext.version>2.26.0</xtext.version>
+        <xtend.version>2.27.0</xtend.version>
+        <xtext.version>2.27.0</xtext.version>
 
         <!-- Database driver versions -->
         <driver.oracle.version>21.5.0.0</driver.oracle.version>
@@ -173,8 +173,8 @@
         <spring-data-jpa.version>2.6.3</spring-data-jpa.version>
         <spring-boot.version>2.6.6</spring-boot.version>
 
-        <netty.version>4.1.77.Final</netty.version>
-        <vertx4.version>4.3.0</vertx4.version>
+        <netty.version>4.1.78.Final</netty.version>
+        <vertx4.version>4.3.2</vertx4.version>
 
         <snakeyaml.version>1.28</snakeyaml.version>
         <classgraph.version>4.8.116</classgraph.version>
@@ -186,7 +186,7 @@
         <maven-plugin-api.version>3.8.1</maven-plugin-api.version>
         <jackson.version>2.13.3</jackson.version>
         <solr.version>8.11.1</solr.version>
-        <camel.version>3.16.0</camel.version>
+        <camel.version>3.18.0</camel.version>
         <kafka.version>3.2.0</kafka.version>
         <error-prone.version>2.13.1</error-prone.version>
 
