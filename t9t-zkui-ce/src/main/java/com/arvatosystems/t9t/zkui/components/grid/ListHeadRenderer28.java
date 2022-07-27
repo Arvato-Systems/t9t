@@ -439,6 +439,7 @@ public class ListHeadRenderer28 {
     private void updateSearchFilters() {
         final Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("gridId", grid.getGridId());
+        paramMap.put("gridConfigResolver", gridConfigResolver);
 
         final Window win = (Window) Executions.createComponents("/screens/common/editSearchFilters.zul", null, paramMap);
         win.addEventListener("onClose", new EventListener<Event>() {

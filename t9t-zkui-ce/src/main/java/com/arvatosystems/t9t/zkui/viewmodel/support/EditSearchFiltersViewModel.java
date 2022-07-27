@@ -66,7 +66,11 @@ public class EditSearchFiltersViewModel {
 
         if (initParams != null && initParams.get("gridId") != null) {
             uiGridPreferences = IGridConfigContainer.GRID_CONFIG_REGISTRY.get(initParams.get("gridId"));
-            gridConfigResolver = new LeanGridConfigResolver(initParams.get("gridId").toString(), session);
+            if (initParams.get("gridConfigResolver") != null) {
+                gridConfigResolver = (ILeanGridConfigResolver) initParams.get("gridConfigResolver");
+            } else {
+                gridConfigResolver = new LeanGridConfigResolver(initParams.get("gridId").toString(), session);
+            }
         }
     }
 
