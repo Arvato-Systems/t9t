@@ -56,7 +56,7 @@ public class CustomLoggingFilter implements ContainerRequestFilter, ContainerRes
     public void filter(final ContainerRequestContext requestContext) throws IOException {
         if (LOGGER.isDebugEnabled()) {
             //execution time
-            MDC.put("start-time", String.valueOf(System.currentTimeMillis()));
+            MDC.put("start-time", String.valueOf(System.nanoTime() / 1000L));
             LOGGER.debug("HTTP REQUEST   : {} {}{}", requestContext.getMethod(), requestContext.getUriInfo().getPath(),
               toStringQueryParams(requestContext.getUriInfo().getQueryParameters()));
             LOGGER.debug("   Call        : {}#{} ", resourceInfo.getResourceClass().getSimpleName(), resourceInfo.getResourceMethod().getName());
@@ -83,8 +83,8 @@ public class CustomLoggingFilter implements ContainerRequestFilter, ContainerRes
             final String stTime = MDC.get("start-time");
             if (stTime != null && stTime.length() > 0) {
                 final long startTime = Long.parseLong(stTime);
-                final long executionTime = System.currentTimeMillis() - startTime;
-                LOGGER.debug("Total request execution time: {} milliseconds", executionTime);
+                final long executionTime = System.nanoTime() / 1000L - startTime;
+                LOGGER.debug("Total request execution time: {} microseconds", executionTime);
                 //clear the context on exit
                 MDC.clear();
             }

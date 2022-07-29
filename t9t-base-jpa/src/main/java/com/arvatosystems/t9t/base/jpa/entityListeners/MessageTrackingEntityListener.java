@@ -30,7 +30,6 @@ public class MessageTrackingEntityListener extends AbstractEntityListener<Messag
     public void prePersist(final BonaPersistableTracking<MessageTracking> entity) {
         final MessageTracking tr = new MessageTracking();
         tr.setCTimestamp(Instant.now());
-        tr.setCTechUserId(getCutUserId());
         entity.put$Tracking(tr);
     }
 

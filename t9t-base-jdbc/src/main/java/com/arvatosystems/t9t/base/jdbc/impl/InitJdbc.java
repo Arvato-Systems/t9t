@@ -43,7 +43,9 @@ public class InitJdbc implements StartupOnly {
         } else {
             LOGGER.info("Setting up JDBC secondary data source");
             final HikariConfig hcfg = new HikariConfig();
-            hcfg.setDriverClassName(db2cfg.getJdbcDriverClass());
+            if (db2cfg.getJdbcDriverClass() != null) {
+                hcfg.setDriverClassName(db2cfg.getJdbcDriverClass());
+            }
             hcfg.setUsername(db2cfg.getUsername());
             hcfg.setPassword(db2cfg.getPassword());
             hcfg.setJdbcUrl(db2cfg.getJdbcConnectString());

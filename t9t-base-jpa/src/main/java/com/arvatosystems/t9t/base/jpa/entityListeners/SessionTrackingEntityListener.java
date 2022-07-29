@@ -31,7 +31,6 @@ public class SessionTrackingEntityListener extends AbstractEntityListener<Sessio
     public void preUpdate(final BonaPersistableTracking<SessionTracking> entity) {
         final SessionTracking tr = entity.ret$Tracking();
         tr.setMTimestamp(Instant.now());
-        tr.setMTechUserId(getCutUserId());
         entity.put$Tracking(tr);
     }
 
@@ -40,9 +39,7 @@ public class SessionTrackingEntityListener extends AbstractEntityListener<Sessio
     public void prePersist(final BonaPersistableTracking<SessionTracking> entity) {
         final SessionTracking tr = entity.ret$Tracking();
         tr.setCTimestamp(Instant.now());
-        tr.setCTechUserId(getCutUserId());
         tr.setMTimestamp(tr.getCTimestamp());
-        tr.setMTechUserId(tr.getCTechUserId());
         entity.put$Tracking(tr);
     }
 }

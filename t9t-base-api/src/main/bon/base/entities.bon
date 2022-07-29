@@ -47,9 +47,7 @@ package (com.arvatosystems) t9t.base.entities {
      * An entity listener for this won't need the current execution context.
      */
     class SessionTracking extends TrackingBase {
-        required userId                     cTechUserId     properties noupdate, currentUser;       // noinsert removed, causes problems with H2 unit tests
         required instant                    cTimestamp      properties noupdate, currentTimestamp;  // noinsert removed, causes problems with H2 unit tests
-        required userId                     mTechUserId     properties currentUser;                 // noupdate, noinsert removed, causes problems with H2 unit tests
         required instant                    mTimestamp      properties currentTimestamp;
     }
 
@@ -74,13 +72,11 @@ package (com.arvatosystems) t9t.base.entities {
      * An entity listener for this won't need the current execution context.
      */
     class MessageTracking extends TrackingBase {
-        required userId                     cTechUserId     properties noupdate, currentUser;       // noinsert removed, causes problems with H2 unit tests
         required instant                    cTimestamp      properties noupdate, currentTimestamp;  // noinsert removed, causes problems with H2 unit tests
     }
 
     /** Tracking data for write-only tables. */
     class WriteTracking extends TrackingBase {
-        required userId                     cTechUserId     properties noupdate, currentUser;       // noinsert removed, causes problems with H2 unit tests
         required userId                     cAppUserId      properties noupdate;
         required instant                    cTimestamp      properties noupdate, currentTimestamp;  // noinsert removed, causes problems with H2 unit tests
         required t9tRef                     cProcessRef     properties noupdate;
@@ -88,7 +84,6 @@ package (com.arvatosystems) t9t.base.entities {
 
     /** Tracking data for read/write tables, using pessimistic locking. */
     class FullTracking extends WriteTracking {
-        required userId                     mTechUserId     properties currentUser;
         required userId                     mAppUserId;
         required Instant                    mTimestamp      properties currentTimestamp;
         required t9tRef                     mProcessRef;

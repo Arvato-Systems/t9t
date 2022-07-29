@@ -48,8 +48,8 @@ public final class FieldMappers {
     }
 
     public static final List<String> TRACKING_COLUMN_NAMES = new ArrayList<>(Arrays.asList(
-            "cTimestamp", "cTechUserId", "cAppUserId", "cProcessRef",
-            "mTimestamp", "mTechUserId", "mAppUserId", "mProcessRef",
+            "cTimestamp", "cAppUserId", "cProcessRef",
+            "mTimestamp", "mAppUserId", "mProcessRef",
             "version"));
 
     public static boolean isTenantRef(final String fieldName) {

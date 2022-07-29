@@ -27,7 +27,6 @@ public class UpdaterFullTracking42 implements TrackingUpdater<FullTracking> {
 
     @Override
     public void preCreate(final RequestContext ctx, final FullTracking tr) {
-        tr.setCTechUserId("-");
         if (ctx != null) {
             tr.setCTimestamp(ctx.getExecutionStart());
             tr.setCAppUserId(ctx.getUserRef().toString());  // HACK
@@ -42,7 +41,6 @@ public class UpdaterFullTracking42 implements TrackingUpdater<FullTracking> {
 
     @Override
     public void preUpdate(final RequestContext ctx, final FullTracking tr) {
-        tr.setMTechUserId("-");
         if (ctx != null) {
             tr.setMTimestamp(ctx.getExecutionStart());
             tr.setMAppUserId(ctx.getUserRef().toString());  // HACK (we do not have the t9t Request context here)

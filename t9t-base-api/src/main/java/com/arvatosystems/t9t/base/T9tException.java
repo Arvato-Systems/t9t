@@ -128,6 +128,7 @@ public class T9tException extends ApplicationException {
     public static final int RESOLVE_PARAMETER = OFFSET + 121;
     public static final int RESOLVE_BAD_CLASS = OFFSET + 122;
     public static final int ERROR_FILLING_RESTRICTION_CACHE = OFFSET + 123;
+    public static final int ILE_UNREACHABLE_CODE = OFFSET_LOGIC_ERROR + 124;
 
     public static final int NO_DATA_CACHED = OFFSET_LOGIC_ERROR + 129;
 
@@ -416,6 +417,7 @@ public class T9tException extends ApplicationException {
         codeToDescription.put(RESOLVE_PARAMETER, "illegal parameter in key resolver");
         codeToDescription.put(RESOLVE_BAD_CLASS, "Bad class passed to key resolver (candidates must be final and not an interface)");
         codeToDescription.put(ERROR_FILLING_RESTRICTION_CACHE, "Exception while filling the restriction cache");
+        codeToDescription.put(ILE_UNREACHABLE_CODE, "Executing unreachable code (should not happen!)");
 
         codeToDescription.put(NO_DATA_CACHED, "No cached data found for tenant");
 

@@ -164,7 +164,7 @@ public class AsyncBucketWriter implements IBucketWriter {
     public void close() {
         LOGGER.info("Async bucket writer: Normal shutdown.");
         // drain queue
-        final long start = System.currentTimeMillis();
+        final long start = System.nanoTime();
         queue.put(SHUTDOWN_RQ);
         try {
             writerResult.get();
@@ -173,8 +173,8 @@ public class AsyncBucketWriter implements IBucketWriter {
         } catch (final ExecutionException e) {
             LOGGER.error("ExecutionException:", e);
         }
-        final long end = System.currentTimeMillis();
-        LOGGER.info("Queue drained after {} ms.", end - start);
+        final long end = System.nanoTime();
+        LOGGER.info("Queue drained after {} us.", (end - start) / 1000L);
         executor.shutdown();
         persistenceAccess.close();   // close disk channel
     }

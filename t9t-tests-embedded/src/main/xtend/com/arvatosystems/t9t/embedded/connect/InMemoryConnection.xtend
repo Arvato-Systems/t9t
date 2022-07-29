@@ -74,6 +74,7 @@ class InMemoryConnection extends AbstractConnection {
                 jdbcDriverClass         = "org.h2.Driver"
                 jdbcConnectString       = "jdbc:h2:mem:fortytwo;NON_KEYWORDS=KEY,DAY,INTERVAL"
             ]
+            secondaryDatabaseConfig = databaseConfiguration
             keyPrefetchConfiguration = new KeyPrefetchConfiguration => [
                 strategy                = ""    // Use fallback NoopRefGenerator
             ]

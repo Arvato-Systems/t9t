@@ -73,7 +73,6 @@ public abstract class AbstractEntityListener<T extends TrackingBase> implements 
         final LazyReferences ref = getRef();
         final Instant now = Instant.now();
         final RequestContext ctx = ref.contextProvider.get();
-        rw.setMTechUserId(ref.cutUser);
         rw.setMTimestamp(now);
         if (ctx != null) {
             rw.setMAppUserId(ctx.userId);
@@ -92,7 +91,6 @@ public abstract class AbstractEntityListener<T extends TrackingBase> implements 
 
     protected final void createTracking(final FullTracking rw) {
         updateTracking(rw, false);
-        rw.setCTechUserId(rw.getMTechUserId());
         rw.setCTimestamp(rw.getMTimestamp());
         rw.setCAppUserId(rw.getMAppUserId());
         rw.setCProcessRef(rw.getMProcessRef());

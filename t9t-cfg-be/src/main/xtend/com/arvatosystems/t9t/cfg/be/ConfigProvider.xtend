@@ -43,9 +43,10 @@ class ConfigProvider {
             migrations              = #[ "classpath:t9t-sql-migration/POSTGRES/Migration=fw_t9t" ]
         ]
         noSqlConfiguration          = new NoSqlDatabaseConfiguration => [
-            hostname                = "localhost"
-            port                    = 3000
-            schemaName              = "test"
+            strategy                = "JDBC"  // fall back to JDBC instead some specific noSQL db
+//            hostname                = "localhost"
+//            port                    = 3000
+//            schemaName              = "test"
         ]
         keyPrefetchConfiguration    = new KeyPrefetchConfiguration => [
             strategy                = "lazySequenceJDBC"
@@ -122,7 +123,7 @@ class ConfigProvider {
         myConfiguration = new T9tServerConfiguration => [
             persistenceUnitName     = a.persistenceUnitName     ?: b.persistenceUnitName
             databaseConfiguration   = a.databaseConfiguration   ?: b.databaseConfiguration
-            secondaryDatabaseConfig = a.secondaryDatabaseConfig ?: b.secondaryDatabaseConfig
+            secondaryDatabaseConfig = a.secondaryDatabaseConfig ?: b.secondaryDatabaseConfig ?: databaseConfiguration
             noSqlConfiguration      = a.noSqlConfiguration      ?: b.noSqlConfiguration
             keyPrefetchConfiguration= a.keyPrefetchConfiguration?: b.keyPrefetchConfiguration
             logWriterConfiguration  = a.logWriterConfiguration  ?: b.logWriterConfiguration

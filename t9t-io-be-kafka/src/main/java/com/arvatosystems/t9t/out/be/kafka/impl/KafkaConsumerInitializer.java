@@ -187,7 +187,7 @@ public class KafkaConsumerInitializer implements StartupShutdown {
         @Override
         public Boolean call() {
             final AtomicInteger numberOfPolls = new AtomicInteger(0);
-            long lastinfo = System.currentTimeMillis();
+            long lastinfo = System.nanoTime();
             DataSinkDTO anyCfg = null;
             if (!dataSinkByTopic.isEmpty()) {
                 anyCfg = dataSinkByTopic.values().iterator().next();
@@ -210,9 +210,9 @@ public class KafkaConsumerInitializer implements StartupShutdown {
                 finishedRequests.clear();
                 // LOGGER.debug("Start polling...");  // FIXME: remove extensive log
                 final int currentNum = numberOfPolls.incrementAndGet();
-                final long now2 = System.currentTimeMillis();
-                if (now2 - lastinfo >= 60_000) {
-                    // 20 seconds have elapsed... Update info
+                final long now2 = System.nanoTime();
+                if (now2 - lastinfo >= 60_000_000_000L) {
+                    // 60 seconds have elapsed... Update info
                     LOGGER.info("Polling for the {}th time", currentNum);
                     lastinfo = now2;
                 }

@@ -146,9 +146,9 @@ public class T9tAuthVertx implements IServiceModule {
             vertx.<Void>executeBlocking(
                 promise -> {
                     try {
-                        final long startTs = System.currentTimeMillis();
+                        final long startTs = System.nanoTime();
                         final AuthenticationRequest request
-                          = ((AuthenticationRequest) decoder.decode(ctx.getBody().getBytes(), AuthenticationRequest.meta$$this));
+                          = ((AuthenticationRequest) decoder.decode(ctx.body().buffer().getBytes(), AuthenticationRequest.meta$$this));
 
                         if (request.getSessionParameters() == null) {
                             // set them completely
@@ -173,9 +173,9 @@ public class T9tAuthVertx implements IServiceModule {
                         }
 
                         final byte[] respMsg = encoder.encode(response, AuthenticationResponse.meta$$this);
-                        final long endTs = System.currentTimeMillis();
-                        LOGGER.info("Processed /login in {} ms with result code {}, response length is {}",
-                          (endTs - startTs), response.getReturnCode(), respMsg.length);
+                        final long endTs = System.nanoTime();
+                        LOGGER.info("Processed /login in {} us with result code {}, response length is {}",
+                          (endTs - startTs) / 1000L, response.getReturnCode(), respMsg.length);
 
                         if (origin != null) {
                             ctx.response().putHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);

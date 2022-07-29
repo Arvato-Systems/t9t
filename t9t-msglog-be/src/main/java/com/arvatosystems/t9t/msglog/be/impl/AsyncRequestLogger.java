@@ -104,14 +104,14 @@ public class AsyncRequestLogger implements IRequestLogger {
                         if (num > 0) {
                             count += num;
                             LOGGER.info("Logging {} messages to disk", num);
-                            final long beforeWrite = System.currentTimeMillis();
+                            final long beforeWrite = System.nanoTime();
                             persistenceAccess.write(workPool);
                             if (logWriterConfiguration.getMaxWriteTimeInMillis() != null) {
-                                final long writingTime = System.currentTimeMillis() - beforeWrite;
-                                if (writingTime < logWriterConfiguration.getMaxWriteTimeInMillis().longValue()) {
-                                    LOGGER.debug("Writing {} entries took {} ms - GREEN", num, writingTime);
+                                final long writingTime = (System.nanoTime() - beforeWrite) / 1000L;
+                                if (writingTime < 1000L * logWriterConfiguration.getMaxWriteTimeInMillis().longValue()) {
+                                    LOGGER.debug("Writing {} entries took {} us - GREEN", num, writingTime);
                                 } else {
-                                    LOGGER.warn("Writing {} entries took {} ms", num, writingTime);
+                                    LOGGER.warn("Writing {} entries took {} us", num, writingTime);
                                 }
                             }
                             if (num < MIN_ELEMENTS_FOR_RERUN) {
@@ -206,7 +206,7 @@ public class AsyncRequestLogger implements IRequestLogger {
         LOGGER.info("Async message log: Normal shutdown after {} successful and {} error requests. Total processing time was {} ms.",
                 countGood.get(), countErrors.get(), totalTime.get());
         // drain queue
-        final long start = System.currentTimeMillis();
+        final long start = System.nanoTime();
         queue.put(SHUTDOWN_RQ);
         try {
             writerResult.get();
@@ -215,8 +215,8 @@ public class AsyncRequestLogger implements IRequestLogger {
         } catch (final ExecutionException e) {
             LOGGER.error("ExecutionException:", e);
         }
-        final long end = System.currentTimeMillis();
-        LOGGER.info("Queue drained after {} ms.", end - start);
+        final long end = System.nanoTime();
+        LOGGER.info("Queue drained after {} us.", (end - start) / 1000L);
         executor.shutdown();
         persistenceAccess.close();   // close disk channel
     }

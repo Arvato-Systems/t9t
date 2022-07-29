@@ -100,7 +100,7 @@ public class OutputSession implements IOutputSession {
         validateState(State.CLOSED);
 
         LOGGER.debug("OutputSession.open({})", osParams.toString());
-        exportStarted = System.currentTimeMillis();
+        exportStarted = System.nanoTime();
 
         // use a default asOf date, if non supplied
         if (osParams.getAsOf() == null) {
@@ -326,7 +326,7 @@ public class OutputSession implements IOutputSession {
             // update sink number of records
             thisSink.setNumberOfSourceRecords(sourceRecordCounter);  // do not record the footer records
             thisSink.setNumberOfMappedRecords(mappedRecordCounter);
-            thisSink.setProcessingTime((int) (System.currentTimeMillis() - exportStarted));  // compute number of seconds
+            thisSink.setProcessingTime((int) ((System.nanoTime() - exportStarted) / 1000_000L));  // compute number of milliseconds
             dpl.storeNewSink(thisSink);
         } // else NO OP: do not store the sink Ref
 
