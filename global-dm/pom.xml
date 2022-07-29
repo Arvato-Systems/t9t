@@ -22,7 +22,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-build</artifactId>
-        <version>6.0-SNAPSHOT</version>
+        <version>6.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>global-dm</artifactId>
@@ -39,10 +39,8 @@
 
         <!-- jpaw / bonaparte: versions for import of BOM. The plugin version is defined separately in SE/EE -->
         <!-- Note that the version of the bonapart-dsl plugin is set in "global-settings" -->
-        <jpaw-bom.version>3.0.4</jpaw-bom.version>
-        <bonaparte-bom.version>5.0.5</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
-        <persistence-bom.version>5.0.5</persistence-bom.version>
-        <jdp-bom.version>1.6.2</jdp-bom.version>
+        <jpaw-bom.version>3.1.0</jpaw-bom.version>
+        <bonaparte-bom.version>5.1.0</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
 
         <!-- Versions of Xtext & Xtend -->
         <!-- Note that the versions of the xtext/xtend plugins are ALSO set in "global-settings" -->
@@ -140,7 +138,7 @@
         <stax2-api.version>4.2.1</stax2-api.version>
         <icu4j.version>69.1</icu4j.version>
         <zxing.version>3.5.0</zxing.version>
-        <quartz.version>2.3.2</quartz.version>
+        <quartz.version>2.4.0.pre1</quartz.version>
         <quartz-oracle.version>2.1.7</quartz-oracle.version>           <!-- no update since 2013! -->
         <jdtcore.version>3.1.1</jdtcore.version>
         <jsap.version>2.1</jsap.version>
@@ -510,7 +508,7 @@
             <dependency>
                 <groupId>de.jpaw</groupId>
                 <artifactId>jdp-bom</artifactId>
-                <version>${jdp-bom.version}</version>
+                <version>${jpaw-bom.version}</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
@@ -524,7 +522,7 @@
             <dependency>
                 <groupId>de.jpaw</groupId>
                 <artifactId>persistence-bom</artifactId>
-                <version>${persistence-bom.version}</version>
+                <version>${bonaparte-bom.version}</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
