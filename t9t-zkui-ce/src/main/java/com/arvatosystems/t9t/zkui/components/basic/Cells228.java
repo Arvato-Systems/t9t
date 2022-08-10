@@ -31,6 +31,7 @@ import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.entities.InternalTenantRef42;
 import com.arvatosystems.t9t.zkui.components.datafields.DecimalDataField;
 import com.arvatosystems.t9t.zkui.components.datafields.IDataField;
+import com.arvatosystems.t9t.zkui.components.dropdown28.nodb.Dropdown28ComboBoxItem;
 
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.util.FieldGetter;
@@ -95,6 +96,12 @@ public class Cells228 extends Cells28 {
         deferredValue2 = t;
         if (idf2 != null) {
             if (t == null && idf2.getComponent() instanceof InputElement) {
+                if (idf2.getComponent() instanceof Dropdown28ComboBoxItem) {
+                    // Update selected item to null
+                    idf2.setValue(null);
+                }
+
+                // Update value to null
                 InputElement tb = (InputElement) idf2.getComponent();
                 tb.setRawValue(null);
             } else {

@@ -165,7 +165,7 @@ public class FieldFactory {
                     return new InstantField(fieldname, filter, desc, gridId, session);
                 case "day":
                     final boolean withToday = ZulUtils.readBooleanConfig(T9tConfigConstants.DATE_PICKER_SHOW_TODAY)
-                      || (fieldProperties.get(Constants.UiFieldProperties.SHOW_TODAY) != null);
+                      || (fieldProperties != null && fieldProperties.get(Constants.UiFieldProperties.SHOW_TODAY) != null);
                     return new DayField(fieldname, filter, desc, gridId, session, withToday);
                 case "time":
                     return new TimeField(fieldname, filter, desc, gridId, session);

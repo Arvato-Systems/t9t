@@ -19,7 +19,7 @@ public class DropdownComboBoxItemDataField extends AbstractDataField<Dropdown28C
 
     @Override
     public void clear() {
-        c.setValue(null);
+        c.setSelectedItem(null);
     }
 
     @Override
@@ -34,6 +34,10 @@ public class DropdownComboBoxItemDataField extends AbstractDataField<Dropdown28C
 
     @Override
     public void setValue(String value) {
-        c.setSelectedItem(c.getComboItemByValue(value));
+        if (value == null) {
+            clear();
+        } else {
+            c.setSelectedItem(c.getComboItemByValue(value));
+        }
     }
 }

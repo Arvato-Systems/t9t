@@ -37,6 +37,7 @@ import com.arvatosystems.t9t.zkui.components.datafields.DataFieldParameters;
 import com.arvatosystems.t9t.zkui.components.datafields.DecimalDataField;
 import com.arvatosystems.t9t.zkui.components.datafields.GroupedDropdownDataField;
 import com.arvatosystems.t9t.zkui.components.datafields.IDataField;
+import com.arvatosystems.t9t.zkui.components.dropdown28.nodb.Dropdown28ComboBoxItem;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 
 import de.jpaw.bonaparte.core.BonaPortable;
@@ -127,6 +128,12 @@ public class Cells28 extends Row {
         deferredValue = t;
         if (idf != null) {
             if (t == null && idf.getComponent() instanceof InputElement) {
+                if (idf.getComponent() instanceof Dropdown28ComboBoxItem) {
+                    // Update selected item to null
+                    idf.setValue(null);
+                }
+
+                // Update value to null
                 InputElement tb = (InputElement) idf.getComponent();
                 tb.setRawValue(null);
             } else {
