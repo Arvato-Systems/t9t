@@ -95,7 +95,7 @@
         <microprofile-smallrye-impl.version>2.4.1</microprofile-smallrye-impl.version>
 
         <!-- Jetty -->
-        <jetty.version>11.0.10</jetty.version>
+        <jetty.version>11.0.11</jetty.version>
 
         <!-- Commons -->
         <commons-logging.version>1.1</commons-logging.version>            <!-- should not use at all! -->
@@ -151,8 +151,8 @@
         <pdfbox.version>2.0.25</pdfbox.version>
         <xmlunit.version>1.5</xmlunit.version>
         <freemarker.version>2.3.31</freemarker.version>
-        <jasperreports.version>6.19.1</jasperreports.version>
-        <itext.version>2.1.7.js8</itext.version>   <!-- FIXME this must be js9 -->
+        <jasperreports.version>6.20.0</jasperreports.version>
+        <itext.version>2.1.7.js8</itext.version>   <!-- FIXME this must be js10 -->
         <flyingsaucer.version>9.1.22</flyingsaucer.version>
         <openpdf.version>1.3.26</openpdf.version>
 
