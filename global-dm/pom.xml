@@ -97,7 +97,7 @@
         <microprofile-smallrye-impl.version>2.4.1</microprofile-smallrye-impl.version>
 
         <!-- Jetty -->
-        <jetty.version>10.0.10</jetty.version>
+        <jetty.version>10.0.11</jetty.version>
 
         <!-- Commons -->
         <commons-logging.version>1.1</commons-logging.version>            <!-- should not use at all! -->

@@ -78,7 +78,7 @@
         <eclipse-lifecycle-mapping.version>1.0.0</eclipse-lifecycle-mapping.version>
         <bundle.plugin.version>5.1.2</bundle.plugin.version> <!-- felix, for pricing RCP -->
         <exec.plugin.version>3.0.0</exec.plugin.version>
-        <jetty-maven-plugin.version>10.0.10</jetty-maven-plugin.version>
+        <jetty-maven-plugin.version>10.0.11</jetty-maven-plugin.version>
         <maven-antrun-plugin.version>3.0.0</maven-antrun-plugin.version>
         <cxf-codegen-plugin.version>3.5.2</cxf-codegen-plugin.version>
         <cxf-wadl2java-plugin.version>3.5.2</cxf-wadl2java-plugin.version>
