@@ -15,8 +15,6 @@
  */
 package com.arvatosystems.t9t.bpmn2.be.request;
 
-import static com.arvatosystems.t9t.bpmn2.be.camunda.utils.IdentifierConverter.t9tTenantRefToBPMNTenantId;
-
 import java.io.ByteArrayInputStream;
 
 import org.camunda.bpm.engine.RepositoryService;
@@ -38,7 +36,7 @@ public class CreateDeploymentRequestHandler extends AbstractBPMNRequestHandler<C
     protected CreateDeploymentResponse executeInWorkflowContext(RequestContext requestContext, CreateDeploymentRequest request) throws Exception {
 
         DeploymentBuilder builder = repositoryService.createDeployment()
-                                                     .tenantId(t9tTenantRefToBPMNTenantId(requestContext.getTenantRef()));
+                                                     .tenantId(requestContext.tenantId);
 
         if (request.getDeploymentName() != null) {
             builder = builder.name(request.getDeploymentName());
@@ -56,5 +54,4 @@ public class CreateDeploymentRequestHandler extends AbstractBPMNRequestHandler<C
         response.setDeploymentId(deployment.getId());
         return response;
     }
-
 }

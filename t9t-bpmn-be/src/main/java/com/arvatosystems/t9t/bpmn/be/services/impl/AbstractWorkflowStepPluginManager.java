@@ -53,7 +53,7 @@ public abstract class AbstractWorkflowStepPluginManager<T, S extends IWorkflowSt
     protected abstract M createWrapper(String qualifier, S existingInstance);
 
     @Override
-    public void registerPluginMethod(final Long tenantRef, final Plugin loadedPlugin, final PluginMethod method, final boolean before) {
+    public void registerPluginMethod(final String tenantId, final Plugin loadedPlugin, final PluginMethod method, final boolean before) {
         if (before) {
             return;
         }

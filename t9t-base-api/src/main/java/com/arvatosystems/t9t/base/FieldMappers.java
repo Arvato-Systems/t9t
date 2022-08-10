@@ -28,7 +28,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.entities.InternalTenantRef42;
+import com.arvatosystems.t9t.base.entities.InternalTenantId;
 import com.arvatosystems.t9t.base.misc.Variant;
 
 import de.jpaw.bonaparte.core.BonaPortable;
@@ -52,8 +52,8 @@ public final class FieldMappers {
             "mTimestamp", "mAppUserId", "mProcessRef",
             "version"));
 
-    public static boolean isTenantRef(final String fieldName) {
-        return T9tConstants.TENANT_REF_FIELD_NAME42.equals(fieldName);
+    public static boolean isTenantId(final String fieldName) {
+        return T9tConstants.TENANT_ID_FIELD_NAME.equals(fieldName);
     }
 
     public static boolean isTrackingColumn(final String fieldName) {
@@ -62,7 +62,7 @@ public final class FieldMappers {
 
     /** Converts field names based at the DTO object to field names starting at the DataWithTracking object. */
     public static String addPrefix(final String fieldName) {
-        if (isTenantRef(fieldName))
+        if (isTenantId(fieldName))
             return fieldName;  // provided at root level
         return (isTrackingColumn(fieldName) ? "tracking." : "data.") + fieldName;
     }
@@ -114,8 +114,8 @@ public final class FieldMappers {
             return  FieldGetter.getFieldDefinitionForPathname(model.dtoClass.getMetaData(), fieldname);
         }
         // determine where it is based on field name
-        if (isTenantRef(fieldname))
-            return FieldGetter.getFieldDefinitionForPathname(InternalTenantRef42.class$MetaData(), fieldname);
+        if (isTenantId(fieldname))
+            return FieldGetter.getFieldDefinitionForPathname(InternalTenantId.class$MetaData(), fieldname);
         else if (isTrackingColumn(fieldname))
             return FieldGetter.getFieldDefinitionForPathname(model.trackingClass.getMetaData(), fieldname);
         else

@@ -47,9 +47,9 @@ public abstract class AbstractBucketBaseExportRequestHandler<T extends AbstractB
     protected List<Long> getRefs(final String qualifier, final int bucketNoToSelect) {
         final EntityManager em = entryResolver.getEntityManager();
         final TypedQuery<Long> query = em.createQuery(
-                "SELECT be.ref FROM BucketEntryEntity be WHERE be.tenantRef = :tenantRef AND be.qualifier = :qualifier AND be.bucket = :bucketNo",
+                "SELECT be.ref FROM BucketEntryEntity be WHERE be.tenantId = :tenantId AND be.qualifier = :qualifier AND be.bucket = :bucketNo",
                 Long.class);
-        query.setParameter("tenantRef", entryResolver.getSharedTenantRef());
+        query.setParameter("tenantId", entryResolver.getSharedTenantId());
         query.setParameter("qualifier", qualifier);
         query.setParameter("bucketNo",  bucketNoToSelect);
         return new ArrayList<>(query.getResultList());
@@ -59,9 +59,9 @@ public abstract class AbstractBucketBaseExportRequestHandler<T extends AbstractB
     protected Map<Long, BucketEntryEntity> getEntries(final String qualifier, final int bucketNoToSelect, final List<Long> refs) {
         final EntityManager em = entryResolver.getEntityManager();
         final TypedQuery<BucketEntryEntity> query = em.createQuery(
-          "SELECT be FROM BucketEntryEntity be WHERE be.tenantRef = :tenantRef AND be.qualifier = :qualifier AND be.bucket = :bucketNo AND be.ref IN :refs",
+          "SELECT be FROM BucketEntryEntity be WHERE be.tenantId = :tenantId AND be.qualifier = :qualifier AND be.bucket = :bucketNo AND be.ref IN :refs",
           BucketEntryEntity.class);
-        query.setParameter("tenantRef", entryResolver.getSharedTenantRef());
+        query.setParameter("tenantId", entryResolver.getSharedTenantId());
         query.setParameter("qualifier", qualifier);
         query.setParameter("bucketNo",  bucketNoToSelect);
         query.setParameter("refs",      refs);
@@ -77,9 +77,9 @@ public abstract class AbstractBucketBaseExportRequestHandler<T extends AbstractB
     protected Map<Long, Integer> getModes(final String qualifier, final int bucketNoToSelect, final List<Long> refs) {
         final EntityManager em = entryResolver.getEntityManager();
         final TypedQuery<BucketEntryEntity> query = em.createQuery(
-          "SELECT be FROM BucketEntryEntity be WHERE be.tenantRef = :tenantRef AND be.qualifier = :qualifier AND be.bucket = :bucketNo AND be.ref IN :refs",
+          "SELECT be FROM BucketEntryEntity be WHERE be.tenantId = :tenantId AND be.qualifier = :qualifier AND be.bucket = :bucketNo AND be.ref IN :refs",
           BucketEntryEntity.class);
-        query.setParameter("tenantRef", entryResolver.getSharedTenantRef());
+        query.setParameter("tenantId", entryResolver.getSharedTenantId());
         query.setParameter("qualifier", qualifier);
         query.setParameter("bucketNo",  bucketNoToSelect);
         query.setParameter("refs",      refs);

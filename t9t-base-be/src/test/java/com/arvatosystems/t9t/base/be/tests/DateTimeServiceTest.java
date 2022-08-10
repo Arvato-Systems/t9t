@@ -35,13 +35,13 @@ public class DateTimeServiceTest {
     public void testDefaultHandlerName() {
 
         // prep:
-        Jdp.bindInstanceTo(tenantRef -> ZoneId.of("Europe/Berlin"), ITimeZoneProvider.class);
+        Jdp.bindInstanceTo(tenantId -> ZoneId.of("Europe/Berlin"), ITimeZoneProvider.class);
 
         final IDateTimeService dateTimeService = new DateTimeService();
 
         final LocalDate when = LocalDate.of(2021, 10, 17);
         // get the timestamp in UTC
-        LocalDateTime timestampUTC = dateTimeService.toLocalDateTimeAtStartOfDay(T9tConstants.GLOBAL_TENANT_REF42, when);
+        LocalDateTime timestampUTC = dateTimeService.toLocalDateTimeAtStartOfDay(T9tConstants.GLOBAL_TENANT_ID, when);
         Assertions.assertEquals(when.getDayOfMonth() - 1, timestampUTC.getDayOfMonth(), "expect UTC date to be one day before");
         Assertions.assertEquals(22, timestampUTC.getHour(), "expect UTC time to be 2 hours back");
 
@@ -50,11 +50,11 @@ public class DateTimeServiceTest {
         LocalDateTime after = timestampUTC.plusHours(3L);
 
         // test the other conversion direction
-        Assertions.assertEquals(when, dateTimeService.toLocalDate(T9tConstants.GLOBAL_TENANT_REF42, timestampUTC),
+        Assertions.assertEquals(when, dateTimeService.toLocalDate(T9tConstants.GLOBAL_TENANT_ID, timestampUTC),
                 "expect to get back original date");
-        Assertions.assertEquals(when, dateTimeService.toLocalDate(T9tConstants.GLOBAL_TENANT_REF42, after),
+        Assertions.assertEquals(when, dateTimeService.toLocalDate(T9tConstants.GLOBAL_TENANT_ID, after),
                 "expect to get back original date some hours later");
-        Assertions.assertEquals(when.minusDays(1L), dateTimeService.toLocalDate(T9tConstants.GLOBAL_TENANT_REF42, before),
+        Assertions.assertEquals(when.minusDays(1L), dateTimeService.toLocalDate(T9tConstants.GLOBAL_TENANT_ID, before),
                 "expect to get previous date some hours before");
     }
 }

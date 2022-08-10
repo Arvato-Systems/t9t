@@ -111,11 +111,11 @@ public class RequestContextScope extends JdpThreadLocalStrict<RequestContext> {
         return result;
     }
 
-    public int numberOfProcesses(final Long onlySessionRef, final Long onlyTenantRef) {
+    public int numberOfProcesses(final Long onlySessionRef, final String onlyTenantId) {
         int count = 0;
         for (final RequestContext inst : instances.values()) {
             if ((onlySessionRef == null || onlySessionRef.equals(inst.internalHeaderParameters.getJwtInfo().getSessionRef()))
-             && (onlyTenantRef  == null || onlyTenantRef.equals(inst.getTenantRef()))) {
+             && (onlyTenantId  == null || onlyTenantId.equals(inst.tenantId))) {
                 count += 1;
             }
         }

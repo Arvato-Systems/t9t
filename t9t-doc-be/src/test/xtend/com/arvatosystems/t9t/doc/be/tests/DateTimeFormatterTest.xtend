@@ -169,7 +169,7 @@ class DateTimeFormatterTest {
 
     @Test
     def void testDateTimeDocFormatterDE() {
-        val actual = new DocFormatter().formatDocument("TEST", 136138L, TemplateType.DOCUMENT_ID, 'testId', new DocumentSelector => [
+        val actual = new DocFormatter().formatDocument("TEST", "TEST", TemplateType.DOCUMENT_ID, 'testId', new DocumentSelector => [
             languageCode = "de"
             countryCode  = "DE"
             currencyCode = "EUR"
@@ -189,7 +189,7 @@ class DateTimeFormatterTest {
 
     @Test
     def void testDateTimeDocFormatterUTC() {
-        val actual = new DocFormatter().formatDocument("TEST", 136138L, TemplateType.DOCUMENT_ID, 'testId', new DocumentSelector => [
+        val actual = new DocFormatter().formatDocument("TEST", "TEST", TemplateType.DOCUMENT_ID, 'testId', new DocumentSelector => [
             languageCode = "de"
             countryCode  = "DE"
             currencyCode = "EUR"
@@ -209,7 +209,7 @@ class DateTimeFormatterTest {
 
     @Test
     def void testDateTimeDocFormatterGB() {
-        val actual = new DocFormatter().formatDocument("TEST", 136138L, TemplateType.DOCUMENT_ID, 'testId', new DocumentSelector => [
+        val actual = new DocFormatter().formatDocument("TEST", "TEST", TemplateType.DOCUMENT_ID, 'testId', new DocumentSelector => [
             languageCode = "en"
             countryCode  = "GB"
             currencyCode = "GBP"
@@ -229,7 +229,7 @@ class DateTimeFormatterTest {
 
     @Test
     def void testDateTimeDocFormatterUS() {
-        val actual = new DocFormatter().formatDocument("TEST", 136138L, TemplateType.DOCUMENT_ID, 'testId', new DocumentSelector => [
+        val actual = new DocFormatter().formatDocument("TEST", "TEST", TemplateType.DOCUMENT_ID, 'testId', new DocumentSelector => [
             languageCode = "en"
             countryCode  = "US"
             currencyCode = "USD"

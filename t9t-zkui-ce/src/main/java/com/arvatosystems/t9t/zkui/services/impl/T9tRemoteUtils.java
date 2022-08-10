@@ -21,11 +21,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;
-import com.arvatosystems.t9t.zkui.exceptions.ServiceResponseException;
-import com.arvatosystems.t9t.zkui.services.IT9tRemoteUtils;
-import com.arvatosystems.t9t.zkui.session.ApplicationSession;
-import com.arvatosystems.t9t.zkui.util.Constants;
+import com.arvatosystems.t9t.base.IRemoteConnection;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
@@ -33,11 +29,13 @@ import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
 import com.arvatosystems.t9t.base.auth.AuthenticationResponse;
 import com.arvatosystems.t9t.base.search.LeanGroupedSearchRequest;
 import com.arvatosystems.t9t.base.search.LeanSearchRequest;
-import com.arvatosystems.t9t.base.search.ReadAll28Response;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.base.search.SearchCriteria;
-import com.arvatosystems.t9t.base.search.SearchRequest;
-import com.arvatosystems.t9t.base.IRemoteConnection;
+import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;
+import com.arvatosystems.t9t.zkui.exceptions.ServiceResponseException;
+import com.arvatosystems.t9t.zkui.services.IT9tRemoteUtils;
+import com.arvatosystems.t9t.zkui.session.ApplicationSession;
+import com.arvatosystems.t9t.zkui.util.Constants;
 
 import de.jpaw.bonaparte.converter.StringConverterEmptyToNull;
 import de.jpaw.bonaparte.core.BonaPortable;
@@ -173,15 +171,9 @@ public class T9tRemoteUtils implements IT9tRemoteUtils {
                 if (sc.getSearchFilter() != null && sc.getSearchFilter() instanceof FalseFilter) {
                     // no results desired
                     LOGGER.debug("Search on FalseFilter for {} - shortcut to empty result set", requestParameters.ret$PQON());
-                    if (requestParameters instanceof SearchRequest) {
-                        ReadAllResponse<BonaPortable, TrackingBase> emptyResp = new ReadAllResponse<>();
-                        emptyResp.setDataList(Collections.emptyList());
-                        return emptyResp;
-                    } else {
-                        ReadAll28Response<BonaPortable, TrackingBase> emptyResp = new ReadAll28Response<>();
-                        emptyResp.setDataList(Collections.emptyList());
-                        return emptyResp;
-                    }
+                    ReadAllResponse<BonaPortable, TrackingBase> emptyResp = new ReadAllResponse<>();
+                    emptyResp.setDataList(Collections.emptyList());
+                    return emptyResp;
                 }
                 int maxAllowed = sc.getSearchOutputTarget() != null ? SANITY_MAX_RECORDS_EXPORT
                     : (requestParameters instanceof LeanSearchRequest || requestParameters instanceof LeanGroupedSearchRequest)

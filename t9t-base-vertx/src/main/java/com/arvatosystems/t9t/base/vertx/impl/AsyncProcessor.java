@@ -67,7 +67,7 @@ import org.slf4j.LoggerFactory;
 @Default
 public class AsyncProcessor implements IAsyncRequestProcessor {
     private static class EventMessageHandler implements Handler<Message<Object>> {
-        private final Map<Long, String> qualifierByTenantRef = new HashMap<>();
+        private final Map<String, String> qualifierByTenantId = new HashMap<>();
         private String eventID;
 
         @Override
@@ -88,25 +88,25 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
                     if (tentativeEventData instanceof EventData) {
                         final EventData eventData = (EventData) tentativeEventData;
                         final String theEventId = eventData.getData().ret$PQON();
-                        final long eventTenantRef = eventData.getHeader().getTenantRef();
+                        final String eventTenantId = eventData.getHeader().getTenantId();
 
-                        LOGGER.debug("Event {} for tenant {} will now trigger a ProcessEventRequest(s)", theEventId, eventTenantRef);
-                        executeAllEvents(eventTenantRef, theEventId, new AuthenticationJwt(eventData.getHeader().getEncodedJwt()), eventData.getData(),
+                        LOGGER.debug("Event {} for tenant {} will now trigger a ProcessEventRequest(s)", theEventId, eventTenantId);
+                        executeAllEvents(eventTenantId, theEventId, new AuthenticationJwt(eventData.getHeader().getEncodedJwt()), eventData.getData(),
                                 eventData.getHeader().getInvokingProcessRef());
                     }
                 } else { // otherwise deal with a raw json event without PQON
                     final String theEventID = msgBody.getString("eventID");
                     final JsonObject header = msgBody.getJsonObject("header");
-                    final Long tenantRef = header == null ? null : header.getLong("tenantRef");
+                    final String tenantId = header == null ? null : header.getString("tenantId");
                     final JsonObject z = msgBody.getJsonObject("z");
-                    final String qualifier = getQualifierForTenant(tenantRef);
-                    if (theEventID == null || header == null || tenantRef == null) {
+                    final String qualifier = getQualifierForTenant(tenantId);
+                    if (theEventID == null || header == null || tenantId == null) {
                         LOGGER.error("eventID or header or tenantId missing in event42 object at address {}", eventID);
                     } else if (!theEventID.equals(eventID)) {
                         LOGGER.error("eventID of received message differs: {} != {}", theEventID, eventID);
                     } else {
-                        if (!EventSubscriptionCache.isActive(eventID, qualifier, tenantRef)) {
-                            LOGGER.debug("Skipping event {} for tenant {} (not configured)", eventID, tenantRef);
+                        if (!EventSubscriptionCache.isActive(eventID, qualifier, tenantId)) {
+                            LOGGER.debug("Skipping event {} for tenant {} (not configured)", eventID, tenantId);
                         } else {
                             LOGGER.debug("Processing an async42 event request {}", theEventID);
                             // pre checks good. construct a request for it
@@ -122,11 +122,11 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
             }
         }
 
-        private String getQualifierForTenant(final Long tenantRef) {
-            String qualifier = qualifierByTenantRef.get(tenantRef);
-            if (qualifier == null && !tenantRef.equals(T9tConstants.GLOBAL_TENANT_REF42)) {
-                qualifier = qualifierByTenantRef.get(T9tConstants.GLOBAL_TENANT_REF42);
-                LOGGER.debug("No qualifier configured within tenant {}, fallback to qualifier {} available from @ tenant", tenantRef, qualifier);
+        private String getQualifierForTenant(final String tenantId) {
+            String qualifier = qualifierByTenantId.get(tenantId);
+            if (qualifier == null && !tenantId.equals(T9tConstants.GLOBAL_TENANT_ID)) {
+                qualifier = qualifierByTenantId.get(T9tConstants.GLOBAL_TENANT_ID);
+                LOGGER.debug("No qualifier configured within tenant {}, fallback to qualifier {} available from @ tenant", tenantId, qualifier);
             }
             return qualifier;
         }
@@ -136,7 +136,7 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
 
     private static final String ASYNC_EVENTBUS_ADDRESS = "t9tasync";
     private static final String EVENTBUS_BASE_42 = "event42.";
-    private static final ConcurrentMap<Pair<String, Long>, Set<IEventHandler>> SUBSCRIBERS = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<Pair<String, String>, Set<IEventHandler>> SUBSCRIBERS = new ConcurrentHashMap<>();
     private static final ConcurrentMap<String, EventMessageHandler> REGISTERED_HANDLER = new ConcurrentHashMap<>();
 
     // set a long enough timeout (30 minutes) to allow for concurrent batches
@@ -225,17 +225,17 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
     /** Registers an implementation of an event handler for a given ID. */
     @Override
     public void registerSubscriber(final String eventID, final IEventHandler subscriber) {
-        registerSubscriber(eventID, T9tConstants.GLOBAL_TENANT_REF42, subscriber);
+        registerSubscriber(eventID, T9tConstants.GLOBAL_TENANT_ID, subscriber);
     }
 
     /** Register an IEventHandler as subscriber for an eventID. */
     @Override
-    public void registerSubscriber(final String eventID, final Long tenantRef, final IEventHandler subscriber) {
-        LOGGER.debug("Registering subscriber {} for event {} in tenant {} ...", subscriber, eventID, tenantRef);
+    public void registerSubscriber(final String eventID, final String tenantId, final IEventHandler subscriber) {
+        LOGGER.debug("Registering subscriber {} for event {} in tenant {} ...", subscriber, eventID, tenantId);
 
         boolean isNewSubscriber = true;
 
-        final Pair<String, Long> key = new Pair<>(eventID, tenantRef);
+        final Pair<String, String> key = new Pair<>(eventID, tenantId);
         final Set<IEventHandler> currentEventHandlers = SUBSCRIBERS.get(key);
 
         if (currentEventHandlers == null) {
@@ -249,16 +249,16 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
             LOGGER.debug("  (this event now has {} registered handlers)", SUBSCRIBERS.size());
         } else {
             isNewSubscriber = false;
-            LOGGER.info("Subscriber {} already registered for event {} in tenant {}. Skip this one.", subscriber, eventID, tenantRef);
+            LOGGER.info("Subscriber {} already registered for event {} in tenant {}. Skip this one.", subscriber, eventID, tenantId);
         }
 
         if (isNewSubscriber && bus != null) {
-            addConsumer(eventID, tenantRef, subscriber);
+            addConsumer(eventID, tenantId, subscriber);
         }
     }
 
     /** Called only if the bus has been set up before, to register a newly provided subscriber */
-    private static void addConsumer(final String eventID, final Long tenantRef, final IEventHandler subscriber) {
+    private static void addConsumer(final String eventID, final String tenantId, final IEventHandler subscriber) {
         // get the qualifier of the subscriber
         final Named annotationNamed = subscriber.getClass().getAnnotation(Named.class);
         final String qualifier = annotationNamed == null ? null : annotationNamed.value();
@@ -280,8 +280,8 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
         });
 
         // add tenant to qualifier mapping to handler for but address
-        LOGGER.info("vertx async event42 handler {} added with qualifier {} for tenant {}", subscriber.getClass().getSimpleName(), qualifier, tenantRef);
-        handler.qualifierByTenantRef.put(tenantRef, qualifier);
+        LOGGER.info("vertx async event42 handler {} added with qualifier {} for tenant {}", subscriber.getClass().getSimpleName(), qualifier, tenantId);
+        handler.qualifierByTenantId.put(tenantId, qualifier);
     }
 
     private static void executeEvent(final String qualifier, final AuthenticationJwt authenticationJwt, final EventParameters eventParams,
@@ -302,12 +302,12 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
         runInWorkerThread(myVertx, srq);
     }
 
-    private static void executeAllEvents(final Long tenantRef, final String eventId, final AuthenticationJwt authenticationJwt,
+    private static void executeAllEvents(final String tenantId, final String eventId, final AuthenticationJwt authenticationJwt,
             final EventParameters eventParams, final Long invokingProcessRef) {
-        final Pair<String, Long> key = new Pair<>(eventId, tenantRef);
+        final Pair<String, String> key = new Pair<>(eventId, tenantId);
         Set<IEventHandler> subscribers = SUBSCRIBERS.get(key);
-        if ((subscribers == null || subscribers.isEmpty()) && !T9tConstants.GLOBAL_TENANT_REF42.equals(tenantRef)) {
-            subscribers = SUBSCRIBERS.get(new Pair<>(eventId, T9tConstants.GLOBAL_TENANT_REF42));
+        if ((subscribers == null || subscribers.isEmpty()) && !T9tConstants.GLOBAL_TENANT_ID.equals(tenantId)) {
+            subscribers = SUBSCRIBERS.get(new Pair<>(eventId, T9tConstants.GLOBAL_TENANT_ID));
         }
         if (subscribers == null) {
             LOGGER.debug("No subscribers registered for event ID {} - nothing to do", eventId);
@@ -395,7 +395,7 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
         });
 
         // now also register any preregistered event handlers
-        for (final Map.Entry<Pair<String, Long>, Set<IEventHandler>> q : SUBSCRIBERS.entrySet()) {
+        for (final Map.Entry<Pair<String, String>, Set<IEventHandler>> q : SUBSCRIBERS.entrySet()) {
             final Set<IEventHandler> value = q.getValue();
             for (final IEventHandler eh : value) {
                 addConsumer(q.getKey().getKey(), q.getKey().getValue(), eh);

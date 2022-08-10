@@ -15,24 +15,18 @@
  */
 package com.arvatosystems.t9t.base.jpa.rl.impl;
 
-import java.util.Set;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.Persistence;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.jpa.ormspecific.IEMFCustomizer;
 import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration;
-import com.arvatosystems.t9t.init.InitContainers;
 
 import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Startup;
 import de.jpaw.dp.StartupOnly;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 
 @Startup(12000)
 public class InitJpa implements StartupOnly {
@@ -59,16 +53,5 @@ public class InitJpa implements StartupOnly {
         }
         Jdp.bindInstanceTo(emf, EntityManagerFactory.class);
         Jdp.registerWithCustomProvider(PersistenceProviderJPA.class, new PersistenceProviderJPAProvider(emf));
-
-        // next lines are just for user info
-        final Set<Class<?>> mcl = InitContainers.getClassesAnnotatedWith(MappedSuperclass.class);
-        for (final Class<?> e : mcl) {
-            LOGGER.info("Found mapped Superclass class {}", e.getCanonicalName());
-        }
-
-        final Set<Class<?>> entities = InitContainers.getClassesAnnotatedWith(Entity.class);
-        for (final Class<?> e : entities) {
-            LOGGER.info("Found entity class {}", e.getCanonicalName());
-        }
     }
 }

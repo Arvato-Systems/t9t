@@ -29,7 +29,7 @@ import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
-import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW;
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 
 public interface IAuthPersistenceAccess {
 
@@ -53,8 +53,8 @@ public interface IAuthPersistenceAccess {
 
     List<PermissionEntry> getAllDBPermissions(JwtInfo jwtInfo);
 
-    /** Returns the Pair of <tenantRef, UserDTO> of the user specified by userId, or null if there is no such user. */
-    DataWithTrackingW<UserDTO, FullTrackingWithVersion> getUserById(String userId);
+    /** Returns the Pair of <tenantId, UserDTO> of the user specified by userId, or null if there is no such user. */
+    DataWithTrackingS<UserDTO, FullTrackingWithVersion> getUserById(String userId);
 
     AuthIntermediateResult getByApiKey(Instant now, UUID key);
     AuthIntermediateResult getByUserIdAndPassword(Instant now, String userId, String password, String newPassword);
@@ -63,7 +63,7 @@ public interface IAuthPersistenceAccess {
     List<TenantDescription> getAllTenantsForUser(RequestContext ctx, Long userRef);
 
     Map<String, Object> getUserZ(Long userRef);
-    Map<String, Object> getTenantZ(Long tenantRef);
+    Map<String, Object> getTenantZ(String tenantId);
 
     String assignNewPasswordIfEmailMatches(RequestContext ctx, String userId, String emailAddress);
 }

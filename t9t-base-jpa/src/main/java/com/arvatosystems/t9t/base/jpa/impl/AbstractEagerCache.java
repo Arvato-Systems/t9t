@@ -14,7 +14,7 @@ import com.arvatosystems.t9t.base.services.RequestContext;
 public abstract class AbstractEagerCache<T> implements IEagerCache<T> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractEagerCache.class);
 
-    protected final Map<Long, T> cacheByTenantRef = new ConcurrentHashMap<>();
+    protected final Map<String, T> cacheByTenantId = new ConcurrentHashMap<>();
     protected final Function<RequestContext, T> constructor;
 
     protected AbstractEagerCache(Function<RequestContext, T> constructor) {
@@ -23,24 +23,24 @@ public abstract class AbstractEagerCache<T> implements IEagerCache<T> {
 
     @Override
     public void refreshCache(RequestContext ctx) {
-        cacheByTenantRef.put(ctx.tenantRef, constructor.apply(ctx));
+        cacheByTenantId.put(ctx.tenantId, constructor.apply(ctx));
     }
 
     @Override
     public T getCache(RequestContext ctx) {
-        return cacheByTenantRef.computeIfAbsent(ctx.tenantRef, (x) -> {
+        return cacheByTenantId.computeIfAbsent(ctx.tenantId, (x) -> {
             LOGGER.warn("No data present for {} for tenant {}", getClass().getSimpleName(), ctx.tenantId);
             return constructor.apply(ctx);
         });
     }
 
     @Override
-    public T getCache(Long tenantRef) {
-        final T cache = cacheByTenantRef.get(tenantRef);
+    public T getCache(String tenantId) {
+        final T cache = cacheByTenantId.get(tenantId);
         if (cache == null) {
             final String cacheType = getClass().getSimpleName();
-            LOGGER.error("No data present for {} for tenant {}", cacheType, tenantRef);
-            throw new T9tException(T9tException.NO_DATA_CACHED, cacheType, tenantRef);
+            LOGGER.error("No data present for {} for tenant {}", cacheType, tenantId);
+            throw new T9tException(T9tException.NO_DATA_CACHED, cacheType, tenantId);
         }
         return cache;
     }

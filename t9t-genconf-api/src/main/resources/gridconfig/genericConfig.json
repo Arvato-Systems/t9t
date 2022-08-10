@@ -1,7 +1,7 @@
 {
     "viewModel": "genericConfig",
     "filters": [
-        { "filterType": "E", "fieldName": "tenantRef" },
+        { "filterType": "E", "fieldName": "tenantId" },
         { "filterType": "W", "fieldName": "configGroup" },
         { "filterType": "W", "fieldName": "configKey" },
         { "filterType": "E", "fieldName": "configTypeEnum" },
@@ -10,7 +10,7 @@
         { "filterType": "E", "fieldName": "isActive" }
     ],
     "fields": [
-        "tenantRef", "configGroup", "configKey", "genericRef1", "genericRef2", "isActive",
+        "tenantId", "configGroup", "configKey", "genericRef1", "genericRef2", "isActive",
         "configTypeEnum", "booleanProperty", "integerProperty", "decimalProperty", "stringProperty"
     ]
 }

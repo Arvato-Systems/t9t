@@ -23,15 +23,15 @@ import com.arvatosystems.t9t.base.search.ReadAllResponse;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW;
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 
 /** An extended version of the exporter tool, which can convert DTOs. */
 public interface IExporterTool2<DTO extends BonaPortable, EXTDTO extends DTO, TRACKING extends TrackingBase> {
     /** Opens an output session, pushes all data into it, and returns the generated sinkRef.
      * @throws Exception */
-    Long storeAll(OutputSessionParameters op, List<DataWithTrackingW<DTO, TRACKING>> dataList, Integer maxRecords, Function<DTO, EXTDTO> converter)
+    Long storeAll(OutputSessionParameters op, List<DataWithTrackingS<DTO, TRACKING>> dataList, Integer maxRecords, Function<DTO, EXTDTO> converter)
         throws Exception;
 
-    ReadAllResponse<EXTDTO, TRACKING> returnOrExport(List<DataWithTrackingW<DTO, TRACKING>> dataList, OutputSessionParameters op,
+    ReadAllResponse<EXTDTO, TRACKING> returnOrExport(List<DataWithTrackingS<DTO, TRACKING>> dataList, OutputSessionParameters op,
         Function<DTO, EXTDTO> converter) throws Exception;
 }

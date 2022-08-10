@@ -8,7 +8,7 @@
             currentMode="@load(vm.currentMode)">
             <form28 id="docModuleCfgCrud" aspect="2" numColumns="2">
                 <rows>
-                    <cells228 id ="tenantRef"                       value ="@load(vm.tenantRef)                            @save(vm.tenantRef,before='commandSave')"
+                    <cells228 id ="tenantId"                        value ="@load(vm.tenantId)                             @save(vm.tenantId,before='commandSave')"
                               id2="considerGlobalTemplates"         value2="@load(vm.data.considerGlobalTemplates)         @save(vm.data.considerGlobalTemplates,before='commandSave')"/>
                     <cells228 id ="considerGlobalTexts"             value ="@load(vm.data.considerGlobalTexts)             @save(vm.data.considerGlobalTexts,before='commandSave')"
                               id2="considerGlobalBinaries"          value2="@load(vm.data.considerGlobalBinaries)          @save(vm.data.considerGlobalBinaries,before='commandSave')"/>

@@ -36,7 +36,7 @@ import com.arvatosystems.t9t.base.IViewModelContainer;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
-import com.arvatosystems.t9t.base.entities.InternalTenantRef42;
+import com.arvatosystems.t9t.base.entities.InternalTenantId;
 import com.arvatosystems.t9t.base.types.TenantIsolationCategoryType;
 import com.arvatosystems.t9t.base.uiprefs.UIGridPreferences;
 import com.arvatosystems.t9t.base.uiprefs.UILeanGridPreferences;
@@ -87,8 +87,8 @@ final class UiGridConfigPrefs {
         final List<UIColumnConfiguration> cols = ui.getColumns();
         for (final UIColumnConfiguration col : cols) {
             try {
-                if (FieldMappers.isTenantRef(col.getFieldName()))
-                    cc.createUIMeta(col, InternalTenantRef42.class$MetaData());
+                if (FieldMappers.isTenantId(col.getFieldName()))
+                    cc.createUIMeta(col, InternalTenantId.class$MetaData());
                 else if (FieldMappers.isTrackingColumn(col.getFieldName()))
                     cc.createUIMeta(col, FullTrackingWithVersion.class$MetaData());
                 else
@@ -215,7 +215,7 @@ final class UiGridConfigPrefs {
 
             final String tenantCategory = vm.dtoClass.getProperty("tenantCategory");
             if (!TenantIsolationCategoryType.GLOBAL.getToken().equals(tenantCategory))
-                cc.addToColumns(InternalTenantRef42.class$MetaData());
+                cc.addToColumns(InternalTenantId.class$MetaData());
 
             cc.addToColumns(vm.dtoClass.getMetaData());
 

@@ -19,15 +19,18 @@ import org.zkoss.bind.annotation.Init;
 
 import com.arvatosystems.t9t.auth.PermissionsDTO;
 import com.arvatosystems.t9t.auth.TenantDTO;
-import com.arvatosystems.t9t.auth.TenantRef;
+import com.arvatosystems.t9t.auth.request.TenantCrudRequest;
+import com.arvatosystems.t9t.base.crud.CrudAnyKeyRequest;
+import com.arvatosystems.t9t.base.crud.CrudStringKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
-import com.arvatosystems.t9t.zkui.viewmodel.CrudSurrogateKeyVM;
+import com.arvatosystems.t9t.zkui.viewmodel.AbstractCrudVM;
 
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 import de.jpaw.bonaparte.pojos.api.DataWithTracking;
+import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 
 @Init(superclass = true)
-public class TenantVM extends CrudSurrogateKeyVM<TenantRef, TenantDTO, FullTrackingWithVersion> {
+public class TenantVM extends AbstractCrudVM<String, TenantDTO, FullTrackingWithVersion, TenantCrudRequest,
+  CrudStringKeyResponse<TenantDTO, FullTrackingWithVersion>> {
 
     protected PermissionsDTO defaultTenantPermissions() {
         PermissionsDTO p = new PermissionsDTO();
@@ -47,5 +50,17 @@ public class TenantVM extends CrudSurrogateKeyVM<TenantRef, TenantDTO, FullTrack
         super.loadData(dwt);
         if (data.getPermissions() == null)
             data.setPermissions(defaultTenantPermissions());
+    }
+
+    @Override
+    protected CrudAnyKeyRequest<TenantDTO, FullTrackingWithVersion> createCrudWithKey() {
+        final TenantCrudRequest crudRq = new TenantCrudRequest();
+        crudRq.setKey(data.getTenantId());
+        return crudRq;
+    }
+
+    @Override
+    protected void clearKey() {
+        data.setTenantId(null);
     }
 }

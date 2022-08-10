@@ -38,7 +38,7 @@ import com.arvatosystems.t9t.base.types.AuthenticationParameters;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.cfg.be.LdapConfiguration;
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
-import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW;
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ApplicationException;
 import java.time.Instant;
@@ -95,7 +95,7 @@ public class AuthenticationRequestHandler extends AbstractRequestHandler<Authent
             authResult = persistenceAccess.getByUserIdAndPassword(ctx.executionStart, pw.getUserId(), pw.getPassword(), pw.getNewPassword());
         } else {
             // always external authentication (pass UserDTO as null)
-            final DataWithTrackingW<UserDTO, FullTrackingWithVersion> user = persistenceAccess.getUserById(pw.getUserId());
+            final DataWithTrackingS<UserDTO, FullTrackingWithVersion> user = persistenceAccess.getUserById(pw.getUserId());
             if (user == null) {
                 LOGGER.debug("No master data record for userId {} - declining access", pw.getUserId());
                 return null; // throw new T9tException(T9tException.USER_NOT_FOUND);
@@ -116,7 +116,7 @@ public class AuthenticationRequestHandler extends AbstractRequestHandler<Authent
         if (!authResponseUtil.isUserAllowedToLogOn(ctx, userDto))
             return null;
 
-        final TenantDTO tenantDto = tenantResolver.getDTO(authResult.getTenantRef());
+        final TenantDTO tenantDto = tenantResolver.getDTO(authResult.getTenantId());
         final AuthenticationResponse resp = new AuthenticationResponse();
         resp.setJwtInfo(authResponseUtil.createJwt(userDto, tenantDto));
         resp.getJwtInfo().setLocale(locale);
@@ -143,7 +143,7 @@ public class AuthenticationRequestHandler extends AbstractRequestHandler<Authent
             LOGGER.debug("Incorrect authentication for API key {}", ap.getApiKey());
             return null;
         }
-        final TenantDTO tenantDto   = tenantResolver.getDTO(authResult.getTenantRef());
+        final TenantDTO tenantDto   = tenantResolver.getDTO(authResult.getTenantId());
         if (tenantDto == null)
             return null;
 

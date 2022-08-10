@@ -11,7 +11,7 @@ ALTER TABLE p28_dat_email ALTER COLUMN email_bcc TYPE varchar(32767);
 
 -- Step 3: Recreate views
 CREATE OR REPLACE VIEW p28_dat_email_nt AS SELECT
-    -- columns of java class InternalTenantRef42
+    -- columns of java class InternalTenantId
     t0.tenant_ref AS tenant_ref
     -- columns of java class AbstractRef
     -- columns of java class Ref
@@ -45,7 +45,7 @@ CREATE OR REPLACE VIEW p28_dat_email_v AS SELECT
     , t0.m_process_ref AS m_process_ref
     -- columns of java class FullTrackingWithVersion
     , t0.version AS version
-    -- columns of java class InternalTenantRef42
+    -- columns of java class InternalTenantId
     , t0.tenant_ref AS tenant_ref
     -- columns of java class AbstractRef
     -- columns of java class Ref

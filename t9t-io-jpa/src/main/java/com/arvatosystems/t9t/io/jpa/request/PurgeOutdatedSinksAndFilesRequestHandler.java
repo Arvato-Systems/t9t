@@ -47,7 +47,7 @@ public class PurgeOutdatedSinksAndFilesRequestHandler extends AbstractRequestHan
     private final IFileUtil fileUtil = Jdp.getRequired(IFileUtil.class);
 
     private static final String SELECT_DATA_SINKS_SQL = "SELECT ds FROM " + DataSinkEntity.class.getSimpleName()
-        + " ds WHERE ds.tenantRef IN :tenantRefs AND (ds.retentionPeriodFiles IS NOT NULL OR ds.retentionPeriodSinks IS NOT NULL)";
+        + " ds WHERE ds.tenantId IN :tenantIds AND (ds.retentionPeriodFiles IS NOT NULL OR ds.retentionPeriodSinks IS NOT NULL)";
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final PurgeOutdatedSinksAndFilesRequest request) throws Exception {
@@ -61,10 +61,10 @@ public class PurgeOutdatedSinksAndFilesRequestHandler extends AbstractRequestHan
         } else {
             // loop all data sinks which are relevant for deletion
             final TypedQuery<DataSinkEntity> q = dataSinkResolver.getEntityManager().createQuery(SELECT_DATA_SINKS_SQL, DataSinkEntity.class);
-            final HashSet<Long> tenantRefs = new HashSet<>();
-            tenantRefs.add(T9tConstants.GLOBAL_TENANT_REF42);
-            tenantRefs.add(dataSinkResolver.getSharedTenantRef());
-            q.setParameter("tenantRefs", tenantRefs);
+            final HashSet<String> tenantIds = new HashSet<>();
+            tenantIds.add(T9tConstants.GLOBAL_TENANT_ID);
+            tenantIds.add(dataSinkResolver.getSharedTenantId());
+            q.setParameter("tenantIds", tenantIds);
             dataSinks = q.getResultList();
             if (dataSinks.isEmpty()) {
                 LOGGER.warn("No data sinks relevant for purging");
@@ -79,7 +79,7 @@ public class PurgeOutdatedSinksAndFilesRequestHandler extends AbstractRequestHan
     }
 
     private static final String SELECT_SINKS_SQL = "SELECT s.fileOrQueueName FROM " + SinkEntity.class.getSimpleName()
-        + " s WHERE s.tenantRef = :tenantRef AND s.cTimestamp < :cutoff AND s.dataSinkRef = :dataSinkRef";
+        + " s WHERE s.tenantId = :tenantId AND s.cTimestamp < :cutoff AND s.dataSinkRef = :dataSinkRef";
 
     /** Method to delete all files which are referenced by sink entries older than x days. */
     private void purgeFiles(final RequestContext ctx, final DataSinkEntity dataSink) {
@@ -88,7 +88,7 @@ public class PurgeOutdatedSinksAndFilesRequestHandler extends AbstractRequestHan
             return;
         }
         final TypedQuery<String> q = sinkResolver.getEntityManager().createQuery(SELECT_SINKS_SQL, String.class);
-        q.setParameter("tenantRef", sinkResolver.getSharedTenantRef());
+        q.setParameter("tenantId", sinkResolver.getSharedTenantId());
         q.setParameter("dataSinkRef", dataSink.getObjectRef());
         q.setParameter("cutoff", ctx.executionStart.minusSeconds(T9tConstants.ONE_DAY_IN_S * (long)dataSink.getRetentionPeriodFiles()));
         final List<String> filesToDelete = q.getResultList();
@@ -100,7 +100,7 @@ public class PurgeOutdatedSinksAndFilesRequestHandler extends AbstractRequestHan
     }
 
     private static final String DELETE_SINKS_SQL = "DELETE FROM " + SinkEntity.class.getSimpleName()
-        + " s WHERE s.tenantRef = :tenantRef AND s.cTimestamp < :cutoff AND s.dataSinkRef = :dataSinkRef";
+        + " s WHERE s.tenantId = :tenantId AND s.cTimestamp < :cutoff AND s.dataSinkRef = :dataSinkRef";
 
     /** Method to delete all sink entries older than x days. */
     private void purgeSinkEntries(final RequestContext ctx, final DataSinkEntity dataSink) {
@@ -109,7 +109,7 @@ public class PurgeOutdatedSinksAndFilesRequestHandler extends AbstractRequestHan
             return;
         }
         final TypedQuery<String> q = sinkResolver.getEntityManager().createQuery(DELETE_SINKS_SQL, String.class);
-        q.setParameter("tenantRef", sinkResolver.getSharedTenantRef());
+        q.setParameter("tenantId", sinkResolver.getSharedTenantId());
         q.setParameter("dataSinkRef", dataSink.getObjectRef());
         q.setParameter("cutoff", ctx.executionStart.minusSeconds(T9tConstants.ONE_DAY_IN_S * (long)dataSink.getRetentionPeriodSinks()));
         final int recordsDeleted = q.executeUpdate();

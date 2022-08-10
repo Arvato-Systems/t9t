@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.auth.jpa.mapping.impl
 
+import com.arvatosystems.t9t.annotations.jpa.AutoHandler
 import com.arvatosystems.t9t.annotations.jpa.active.AutoMap42
 import com.arvatosystems.t9t.auth.TenantDTO
 import com.arvatosystems.t9t.auth.jpa.entities.TenantEntity
@@ -23,5 +24,7 @@ import com.arvatosystems.t9t.auth.jpa.persistence.ITenantEntityResolver
 @AutoMap42
 class TenantMappers {
     ITenantEntityResolver resolver
+
+    @AutoHandler("S42")
     def void e2dTenantDTO(TenantEntity entity, TenantDTO dto) {}
 }

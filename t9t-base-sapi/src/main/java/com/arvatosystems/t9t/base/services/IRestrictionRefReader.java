@@ -24,5 +24,5 @@ import java.util.List;
 @FunctionalInterface
 public interface IRestrictionRefReader {
     /** Returns the configured list of allowed objectRefs for a user, which may be empty, that means the user is not restricted. */
-    List<Long> objectRefsForUser(Long userRef, Long tenantRef);
+    List<Long> objectRefsForUser(Long userRef, String tenantId);
 }

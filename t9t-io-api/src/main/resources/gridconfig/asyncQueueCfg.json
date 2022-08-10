@@ -1,10 +1,10 @@
 {
     "viewModel": "asyncQueueCfg",
     "filters": [
-        { "filterType": "E", "fieldName": "tenantRef" }
+        { "filterType": "E", "fieldName": "tenantId" }
     ],
     "fields": [
-        "tenantRef", "asyncQueueId", "isActive", "defaultSerializerQualifier", "senderQualifier", "description"
+        "tenantId", "asyncQueueId", "isActive", "defaultSerializerQualifier", "senderQualifier", "description"
     ],
     "fieldWidths": [ 80, 120, 40, 120, 120, 200 ]
 }

@@ -81,7 +81,7 @@ public class DocPersistenceAccess implements IDocPersistenceAccess {
 
         final EntityManager em = docEmailCfgResolver.getEntityManager();
         final TypedQuery<? extends DocEmailCfgEntity> entityQuery = em.createQuery(query, entityClass);
-        setCommonQueryVariables(entityQuery, selector, docEmailCfgResolver.getSharedTenantRef(), moduleCfg.getConsiderGlobalTemplates());
+        setCommonQueryVariables(entityQuery, selector, docEmailCfgResolver.getSharedTenantId(), moduleCfg.getConsiderGlobalTemplates());
         entityQuery.setParameter(DOCUMENT_ID, templateId);
 
         final List<? extends DocEmailCfgEntity> docEmailCfgEntities = entityQuery.getResultList();
@@ -103,7 +103,7 @@ public class DocPersistenceAccess implements IDocPersistenceAccess {
 
         final EntityManager em = docTemplateResolver.getEntityManager();
         final TypedQuery<? extends DocTemplateEntity> entityQuery = em.createQuery(query, entityClass);
-        setCommonQueryVariables(entityQuery, selector, docTemplateResolver.getSharedTenantRef(), moduleCfg.getConsiderGlobalTemplates());
+        setCommonQueryVariables(entityQuery, selector, docTemplateResolver.getSharedTenantId(), moduleCfg.getConsiderGlobalTemplates());
         entityQuery.setParameter(DOCUMENT_ID, templateId);
 
         final List<? extends DocTemplateEntity> docTemplateEntities = entityQuery.getResultList();
@@ -125,7 +125,7 @@ public class DocPersistenceAccess implements IDocPersistenceAccess {
 
         final EntityManager em = docComponentResolver.getEntityManager();
         final TypedQuery<? extends DocComponentEntity> entityQuery = em.createQuery(query, entityClass);
-        setCommonQueryVariables(entityQuery, selector, docComponentResolver.getSharedTenantRef(), moduleCfg.getConsiderGlobalTexts());
+        setCommonQueryVariables(entityQuery, selector, docComponentResolver.getSharedTenantId(), moduleCfg.getConsiderGlobalTexts());
 
         final List<? extends DocComponentEntity> docComponentEntities = entityQuery.getResultList();
 
@@ -159,14 +159,14 @@ public class DocPersistenceAccess implements IDocPersistenceAccess {
         return map;
     }
 
-    protected void setCommonQueryVariables(final TypedQuery<?> entityQuery, final DocumentSelector selector, final Long tenantRef,
+    protected void setCommonQueryVariables(final TypedQuery<?> entityQuery, final DocumentSelector selector, final String tenantId,
             final boolean considerGlobalTenant) {
         entityQuery.setParameter("entityId", selector.getEntityId());
         entityQuery.setParameter("countryCode", selector.getCountryCode());
         entityQuery.setParameter("currencyCode", selector.getCurrencyCode());
         entityQuery.setParameter("languages", Arrays.asList(MessagingUtil.getLanguagesWithFallback(selector.getLanguageCode(), "xx")));
-        entityQuery.setParameter("tenantRef", tenantRef);
-        entityQuery.setParameter("globalTenantRef", considerGlobalTenant ? T9tConstants.GLOBAL_TENANT_REF42 : tenantRef);
+        entityQuery.setParameter("tenantId", tenantId);
+        entityQuery.setParameter("globalTenantId", considerGlobalTenant ? T9tConstants.GLOBAL_TENANT_ID : tenantId);
     }
 
     protected int getWeight(final DocEmailCfgEntity emailCfg, final DocModuleCfgDTO moduleCfg) {
@@ -174,7 +174,7 @@ public class DocPersistenceAccess implements IDocPersistenceAccess {
             return emailCfg.getPrio();
         }
         int weight = 0;
-        if (!T9tConstants.GLOBAL_TENANT_REF42.equals(emailCfg.getTenantRef())) {
+        if (!T9tConstants.GLOBAL_TENANT_ID.equals(emailCfg.getTenantId())) {
             weight += moduleCfg.getWeightTenantMatch();
         }
         if (!DocConstants.DEFAULT_COUNTRY_CODE.equals(emailCfg.getCountryCode())) {
@@ -197,7 +197,7 @@ public class DocPersistenceAccess implements IDocPersistenceAccess {
             return template.getPrio();
         }
         int weight = 0;
-        if (!T9tConstants.GLOBAL_TENANT_REF42.equals(template.getTenantRef())) {
+        if (!T9tConstants.GLOBAL_TENANT_ID.equals(template.getTenantId())) {
             weight += moduleCfg.getWeightTenantMatch();
         }
         if (!DocConstants.DEFAULT_COUNTRY_CODE.equals(template.getCountryCode())) {
@@ -220,7 +220,7 @@ public class DocPersistenceAccess implements IDocPersistenceAccess {
             return component.getPrio();
         }
         int weight = 0;
-        if (!T9tConstants.GLOBAL_TENANT_REF42.equals(component.getTenantRef())) {
+        if (!T9tConstants.GLOBAL_TENANT_ID.equals(component.getTenantId())) {
             weight += moduleCfg.getWeightTenantMatch();
         }
         if (!DocConstants.DEFAULT_COUNTRY_CODE.equals(component.getCountryCode())) {
@@ -241,7 +241,7 @@ public class DocPersistenceAccess implements IDocPersistenceAccess {
     private String getQueryStringForTextOrBinaryComponents(final String entityName, final String mainVariable, final boolean mainVarEquality) {
         String sql =
             "SELECT r FROM " + entityName + " r"
-            + " WHERE r.tenantRef  IN (:tenantRef,:globalTenantRef)"
+            + " WHERE r.tenantId  IN (:tenantId,:globalTenantId)"
             + " AND r.entityId     IN (:entityId,'-')"
             + " AND r.languageCode IN (:languages)"
             + " AND r.currencyCode IN (:currencyCode,'XXX')"

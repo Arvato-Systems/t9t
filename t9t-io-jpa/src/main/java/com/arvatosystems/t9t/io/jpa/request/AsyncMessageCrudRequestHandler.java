@@ -17,7 +17,7 @@ package com.arvatosystems.t9t.io.jpa.request;
 
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.entities.WriteTracking;
-import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKey42RequestHandler;
+import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKeyRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.io.AsyncMessageDTO;
 import com.arvatosystems.t9t.io.AsyncMessageRef;
@@ -29,7 +29,7 @@ import com.arvatosystems.t9t.io.request.AsyncMessageCrudRequest;
 import de.jpaw.dp.Jdp;
 
 public class AsyncMessageCrudRequestHandler extends
-        AbstractCrudSurrogateKey42RequestHandler<AsyncMessageRef, AsyncMessageDTO, WriteTracking, AsyncMessageCrudRequest, AsyncMessageEntity> {
+        AbstractCrudSurrogateKeyRequestHandler<AsyncMessageRef, AsyncMessageDTO, WriteTracking, AsyncMessageCrudRequest, AsyncMessageEntity> {
 
     protected final IAsyncMessageEntityResolver resolver = Jdp.getRequired(IAsyncMessageEntityResolver.class);
     protected final IAsyncMessageDTOMapper mapper = Jdp.getRequired(IAsyncMessageDTOMapper.class);

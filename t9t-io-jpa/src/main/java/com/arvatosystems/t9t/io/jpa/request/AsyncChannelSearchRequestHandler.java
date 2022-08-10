@@ -16,7 +16,7 @@
 package com.arvatosystems.t9t.io.jpa.request;
 
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
-import com.arvatosystems.t9t.base.jpa.impl.AbstractSearch42RequestHandler;
+import com.arvatosystems.t9t.base.jpa.impl.AbstractSearchWithTotalsRequestHandler;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.io.AsyncChannelDTO;
@@ -28,7 +28,7 @@ import com.arvatosystems.t9t.io.request.AsyncChannelSearchRequest;
 import de.jpaw.dp.Jdp;
 
 public class AsyncChannelSearchRequestHandler extends
-        AbstractSearch42RequestHandler<Long, AsyncChannelDTO, FullTrackingWithVersion, AsyncChannelSearchRequest, AsyncChannelEntity> {
+        AbstractSearchWithTotalsRequestHandler<Long, AsyncChannelDTO, FullTrackingWithVersion, AsyncChannelSearchRequest, AsyncChannelEntity> {
 
     protected final IAsyncChannelEntityResolver resolver = Jdp.getRequired(IAsyncChannelEntityResolver.class);
     protected final IAsyncChannelDTOMapper mapper = Jdp.getRequired(IAsyncChannelDTOMapper.class);

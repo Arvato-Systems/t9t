@@ -118,7 +118,7 @@ public abstract class AbstractCrudVM<
     public void commandCopy() {
         // we work on a detached object already, there should be no need to duplicate it again
         // data = (DTO) data.ret$MutableClone(true, true);
-        tenantRef = session.getTenantRef();
+        tenantId = session.getTenantId();
         // clearKey();  // disabled, clearKey() lead to confusion that some fields would be omitted.
         setCurrentMode(CrudMode.UNSAVED_NEW);
     }
@@ -218,15 +218,9 @@ public abstract class AbstractCrudVM<
         if (tenantId != null) {
             /*
              *  Check tenantId first because tenantId is not initialized, if it is not null
-             *  means it is from data with DataWithTrackingW
+             *  means it is from data with DataWithTrackingS
              */
             return tenantId.equals(this.session.getTenantId()) ? currentCrudMode : CrudMode.CURRENT_RO;
-        } else if (tenantRef != null) {
-            /*
-             * TenantRef has being initialized as session.getTenantId during class initial,
-             * so if the data is not null and it is DataWithTrackingS, use this to validate
-             */
-            return tenantRef.equals(this.session.getTenantRef()) ? currentCrudMode : CrudMode.CURRENT_RO;
         }
 
         //No tenant restriction

@@ -104,7 +104,7 @@ public abstract class AbstractSearchRestriction implements ISearchRestriction {
         if (ref != null) {
             return ImmutableList.<Long>of(ref);
         }
-        return reader.objectRefsForUser(ctx.userRef, ctx.tenantRef);
+        return reader.objectRefsForUser(ctx.userRef, ctx.tenantId);
     }
 
     /**

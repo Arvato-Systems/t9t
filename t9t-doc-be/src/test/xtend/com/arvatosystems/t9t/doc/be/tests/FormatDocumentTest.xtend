@@ -102,7 +102,7 @@ class FormatDocumentTest {
 
     @Test
     def public void testSimpleDocFormatterDE() {
-        val actual = new DocFormatter().formatDocument("TEST", 136138L, TemplateType.DOCUMENT_ID, 'testId', new DocumentSelector => [
+        val actual = new DocFormatter().formatDocument("TEST", "TEST", TemplateType.DOCUMENT_ID, 'testId', new DocumentSelector => [
             languageCode = "de"
             countryCode  = "DE"
             currencyCode = "EUR"
@@ -121,7 +121,7 @@ class FormatDocumentTest {
 
     @Test
     def public void testSimpleDocFormatterGB() {
-        val actual = new DocFormatter().formatDocument("TEST", 136138L, TemplateType.DOCUMENT_ID, 'testId', new DocumentSelector => [
+        val actual = new DocFormatter().formatDocument("TEST", "TEST", TemplateType.DOCUMENT_ID, 'testId', new DocumentSelector => [
             languageCode = "en"
             countryCode  = "GB"
             currencyCode = "GBP"

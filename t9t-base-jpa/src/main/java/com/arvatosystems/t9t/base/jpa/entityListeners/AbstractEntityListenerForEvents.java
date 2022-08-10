@@ -40,7 +40,7 @@ public abstract class AbstractEntityListenerForEvents<E extends BonaPersistableN
     protected final String typeId;
     protected final String typeId2;
     protected final String typeId3;
-    protected final ConcurrentMap<Long, ListenerConfig> settings;
+    protected final ConcurrentMap<String, ListenerConfig> settings;
 
     protected AbstractEntityListenerForEvents(final String typeId, final String typeId2, final String typeId3) {
         this.typeId  = typeId;
@@ -95,8 +95,8 @@ public abstract class AbstractEntityListenerForEvents<E extends BonaPersistableN
 
     // @PostPersist
     protected void postPersist(final E entity) {
-        final ListenerConfig cfg = settings.get(entity.getTenantRef());
-        LOGGER.trace("CREATE for {} on tenant {} / ref {}: cfg = {}", typeId, entity.getTenantRef(), entity.ret$Key(), cfg);
+        final ListenerConfig cfg = settings.get(entity.getTenantId());
+        LOGGER.trace("CREATE for {} on tenant {} / ref {}: cfg = {}", typeId, entity.getTenantId(), entity.ret$Key(), cfg);
         if (cfg == null)
             return;
         if (cfg.getIssueCreatedEvents())
@@ -107,8 +107,8 @@ public abstract class AbstractEntityListenerForEvents<E extends BonaPersistableN
 
     // @PostRemove
     protected void postRemove(final E entity) {
-        final ListenerConfig cfg = settings.get(entity.getTenantRef());
-        LOGGER.trace("REMOVE for {} on tenant {} / ref {}: cfg = {}", typeId, entity.getTenantRef(), entity.ret$Key(), cfg);
+        final ListenerConfig cfg = settings.get(entity.getTenantId());
+        LOGGER.trace("REMOVE for {} on tenant {} / ref {}: cfg = {}", typeId, entity.getTenantId(), entity.ret$Key(), cfg);
         if (cfg == null)
             return;
         if (cfg.getIssueDeletedEvents())
@@ -119,8 +119,8 @@ public abstract class AbstractEntityListenerForEvents<E extends BonaPersistableN
 
     // @PostUpdate
     protected void postUpdate(final E entity) {
-        final ListenerConfig cfg = settings.get(entity.getTenantRef());
-        LOGGER.trace("UPDATE for {} on tenant {} / ref {}: cfg = {}", typeId, entity.getTenantRef(), entity.ret$Key(), cfg);
+        final ListenerConfig cfg = settings.get(entity.getTenantId());
+        LOGGER.trace("UPDATE for {} on tenant {} / ref {}: cfg = {}", typeId, entity.getTenantId(), entity.ret$Key(), cfg);
         if (cfg == null)
             return;
         final MoreLazyReferences moreRefs = getMoreRefs();

@@ -19,8 +19,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import com.arvatosystems.t9t.base.jpa.IEntityMapper42;
-import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey42;
+import com.arvatosystems.t9t.base.jpa.IEntityMapper;
+import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.base.search.SearchRequest;
 import com.arvatosystems.t9t.base.services.AbstractSearchRequestHandler;
@@ -34,7 +34,7 @@ import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
 import de.jpaw.bonaparte.pojos.api.LongFilter;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW;
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.dp.Jdp;
 
@@ -48,16 +48,16 @@ public abstract class AbstractTextSearchRequestHandler<
     protected final IExecutor executor = Jdp.<IExecutor>getRequired(IExecutor.class);
     protected final ISearchTools searchTools = Jdp.<ISearchTools>getRequired(ISearchTools.class);
     protected final ITextSearch textSearch = Jdp.<ITextSearch>getRequired(ITextSearch.class);
-    protected final IResolverSurrogateKey42<REF, TRACKING, ENTITY> resolver;
-    protected final IEntityMapper42<Long, DTO, TRACKING, ENTITY> mapper;
+    protected final IResolverSurrogateKey<REF, TRACKING, ENTITY> resolver;
+    protected final IEntityMapper<Long, DTO, TRACKING, ENTITY> mapper;
     protected final List<String> textSearchOnlyPathElements;
     protected final Map<String, String> textSearchFieldMappings;
     protected final String documentName;
     protected final String keyFieldName;
     protected final BonaPortableClass<SearchRequest<DTO, TRACKING>> bclass;
 
-    public AbstractTextSearchRequestHandler(final IResolverSurrogateKey42<REF, TRACKING, ENTITY> resolver,
-            final IEntityMapper42<Long, DTO, TRACKING, ENTITY> mapper, final List<String> textSearchOnlyPathElements,
+    public AbstractTextSearchRequestHandler(final IResolverSurrogateKey<REF, TRACKING, ENTITY> resolver,
+            final IEntityMapper<Long, DTO, TRACKING, ENTITY> mapper, final List<String> textSearchOnlyPathElements,
             final Map<String, String> textSearchFieldMappings, final String documentName, final String keyFieldName,
             final BonaPortableClass<SearchRequest<DTO, TRACKING>> bclass) {
         super();
@@ -80,7 +80,7 @@ public abstract class AbstractTextSearchRequestHandler<
             // end here if there are no results - DB query would return an error
             if (refs.isEmpty()) {
                 final ReadAllResponse<DTO, TRACKING> resp = new ReadAllResponse<>();
-                resp.setDataList(Collections.<DataWithTrackingW<DTO, TRACKING>>emptyList());
+                resp.setDataList(Collections.<DataWithTrackingS<DTO, TRACKING>>emptyList());
                 return resp;
             }
             // obtain DTOs for the refs

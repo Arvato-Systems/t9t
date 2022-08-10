@@ -24,12 +24,12 @@ import com.arvatosystems.t9t.auth.jpa.persistence.IRoleToPermissionEntityResolve
 import com.arvatosystems.t9t.auth.request.RoleToPermissionCrudRequest;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
-import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudCompositeRefKey42RequestHandler;
+import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudCompositeRefKeyRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.dp.Jdp;
 
-public class RoleToPermissionCrudRequestHandler extends AbstractCrudCompositeRefKey42RequestHandler<
+public class RoleToPermissionCrudRequestHandler extends AbstractCrudCompositeRefKeyRequestHandler<
     RoleToPermissionRef, RoleToPermissionInternalKey, RoleToPermissionDTO, FullTrackingWithVersion,
     RoleToPermissionCrudRequest, RoleToPermissionEntity> {
 

@@ -34,9 +34,9 @@ public class SetLockModeForAllWorkflowsRequestHandler extends AbstractRequestHan
     @Override
     public ServiceResponse execute(final RequestContext ctx, final SetLockModeForAllWorkflowsRequest request) throws Exception {
         final Query q = resolver.getEntityManager().createQuery(
-                "UPDATE " + resolver.getBaseJpaEntityClass().getSimpleName() + " SET useExclusiveLock = :lockMode WHERE tenantRef = :tenantRef");
+                "UPDATE " + resolver.getBaseJpaEntityClass().getSimpleName() + " SET useExclusiveLock = :lockMode WHERE tenantId = :tenantId");
         q.setParameter("lockMode", request.getLockMode());
-        q.setParameter("tenantRef", resolver.getSharedTenantRef());
+        q.setParameter("tenantId", resolver.getSharedTenantId());
         q.executeUpdate();
         executor.clearCache(ProcessDefinitionDTO.class.getSimpleName(), null);
         return ok();

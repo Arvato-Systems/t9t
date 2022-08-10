@@ -21,12 +21,12 @@ import com.arvatosystems.t9t.auth.jpa.mapping.ITenantLogoDTOMapper;
 import com.arvatosystems.t9t.auth.jpa.persistence.ITenantLogoEntityResolver;
 import com.arvatosystems.t9t.auth.request.TenantLogoCrudRequest;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
-import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudModuleCfg42RequestHandler;
+import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudModuleCfgRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.dp.Jdp;
 
-public class TenantLogoCrudRequestHandler extends AbstractCrudModuleCfg42RequestHandler<TenantLogoDTO, TenantLogoCrudRequest, TenantLogoEntity> {
+public class TenantLogoCrudRequestHandler extends AbstractCrudModuleCfgRequestHandler<TenantLogoDTO, TenantLogoCrudRequest, TenantLogoEntity> {
 
     private final ITenantLogoDTOMapper mapper = Jdp.getRequired(ITenantLogoDTOMapper.class);
 

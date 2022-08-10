@@ -16,7 +16,7 @@
 package com.arvatosystems.t9t.io.jpa.request;
 
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
-import com.arvatosystems.t9t.base.jpa.impl.AbstractSearch42RequestHandler;
+import com.arvatosystems.t9t.base.jpa.impl.AbstractSearchWithTotalsRequestHandler;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.io.CsvConfigurationDTO;
@@ -28,7 +28,7 @@ import com.arvatosystems.t9t.io.request.CsvConfigurationSearchRequest;
 import de.jpaw.dp.Jdp;
 
 public class CsvConfigurationSearchRequestHandler extends
-        AbstractSearch42RequestHandler<Long, CsvConfigurationDTO, FullTrackingWithVersion, CsvConfigurationSearchRequest, CsvConfigurationEntity> {
+        AbstractSearchWithTotalsRequestHandler<Long, CsvConfigurationDTO, FullTrackingWithVersion, CsvConfigurationSearchRequest, CsvConfigurationEntity> {
 
     protected final ICsvConfigurationEntityResolver resolver = Jdp.getRequired(ICsvConfigurationEntityResolver.class);
     protected final ICsvConfigurationDTOMapper mapper = Jdp.getRequired(ICsvConfigurationDTOMapper.class);

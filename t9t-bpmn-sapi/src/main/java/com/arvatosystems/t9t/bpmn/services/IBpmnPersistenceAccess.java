@@ -25,7 +25,7 @@ import com.arvatosystems.t9t.bpmn.ProcessDefinitionRef;
 import com.arvatosystems.t9t.bpmn.ProcessExecutionStatusDTO;
 import com.arvatosystems.t9t.bpmn.request.ExecuteProcessWithRefRequest;
 
-import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW;
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 
 public interface IBpmnPersistenceAccess {
 
@@ -38,7 +38,7 @@ public interface IBpmnPersistenceAccess {
     ProcessDefinitionDTO getProcessDefinitionDTO(ProcessDefinitionRef ref);
 
     /** Reads all process definitions. */
-    List<DataWithTrackingW<ProcessDefinitionDTO, FullTrackingWithVersion>> getAllProcessDefinitionsForEngine(String engine);
+    List<DataWithTrackingS<ProcessDefinitionDTO, FullTrackingWithVersion>> getAllProcessDefinitionsForEngine(String engine);
 
     /** Stores an initial status when a new task is submitted. */
     Long persistNewStatus(ProcessExecutionStatusDTO dto);

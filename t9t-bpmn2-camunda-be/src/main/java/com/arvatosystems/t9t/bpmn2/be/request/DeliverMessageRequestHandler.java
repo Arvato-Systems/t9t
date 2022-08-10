@@ -15,8 +15,6 @@
  */
 package com.arvatosystems.t9t.bpmn2.be.request;
 
-import static com.arvatosystems.t9t.bpmn2.be.camunda.utils.IdentifierConverter.t9tTenantRefToBPMNTenantId;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,7 +65,7 @@ public class DeliverMessageRequestHandler extends AbstractBPMNRequestHandler<Del
 
     private MessageCorrelationBuilder createMessageCorrelation(RequestContext requestContext, DeliverMessageRequest request) {
         MessageCorrelationBuilder messageBuilder = runtimeService.createMessageCorrelation(request.getMessageName())
-                                                                 .tenantId(t9tTenantRefToBPMNTenantId(requestContext.getTenantRef()));
+                                                                 .tenantId(requestContext.tenantId);
 
         if (request.getBusinessKey() != null) {
             messageBuilder = messageBuilder.processInstanceBusinessKey(request.getBusinessKey());

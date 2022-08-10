@@ -37,18 +37,18 @@ public class ClusterEnvironmentSingleNode implements IClusterEnvironment {
     }
 
     @Override
-    public Collection<Integer> getListOfShards(final Long tenantRef) {
+    public Collection<Integer> getListOfShards(final String tenantId) {
         return SINGLE_NODE;
     }
 
     @Override
-    public boolean processOnThisNode(final Long tenantRef, final int hash) {
-        // we process eveything
+    public boolean processOnThisNode(final String tenantId, final int hash) {
+        // we process everything
         return true;
     }
 
     @Override
-    public Collection<Long> getListOfTenantRefs() {
+    public Collection<String> getListOfTenantIds() {
         return Collections.emptyList();
     }
 

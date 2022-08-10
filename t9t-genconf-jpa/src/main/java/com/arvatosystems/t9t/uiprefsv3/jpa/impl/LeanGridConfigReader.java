@@ -38,14 +38,14 @@ public class LeanGridConfigReader implements ILeanGridConfigRead {
     public LeanGridConfigDTO readLeanGridConfig(final String gridId, final Integer variant, final Long userRef) {
         final Class<LeanGridConfigEntity> entityClass = gridConfigResolver.getEntityClass();
         final String queryString = "SELECT r FROM " + entityClass.getSimpleName() + " r"
-                                + " WHERE r.tenantRef    in (:tenantRef,:globalTenantRef)"
-                                + "   AND r.variant      in (:variant,0)"
-                                + "   AND r.userRef      in (:userRef, 0)"
-                                + "   AND r.gridId       in (:gridId)"
-                                + "   ORDER BY r.tenantRef DESC, r.userRef DESC, r.variant DESC";
+                                + " WHERE r.tenantId IN (:tenantId,:globalTenantId)"
+                                + "   AND r.variant  IN (:variant,0)"
+                                + "   AND r.userRef  IN (:userRef, 0)"
+                                + "   AND r.gridId   IN (:gridId)"
+                                + "   ORDER BY r.tenantId DESC, r.userRef DESC, r.variant DESC";
         final TypedQuery<LeanGridConfigEntity> query = gridConfigResolver.getEntityManager().createQuery(queryString, entityClass);
-        query.setParameter("tenantRef", gridConfigResolver.getSharedTenantRef());
-        query.setParameter("globalTenantRef", T9tConstants.GLOBAL_TENANT_REF42);
+        query.setParameter("tenantId", gridConfigResolver.getSharedTenantId());
+        query.setParameter("globalTenantId", T9tConstants.GLOBAL_TENANT_ID);
         query.setParameter("variant", variant);
         query.setParameter("userRef", userRef);
         query.setParameter("gridId", gridId);

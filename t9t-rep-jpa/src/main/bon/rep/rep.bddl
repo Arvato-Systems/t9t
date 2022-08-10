@@ -22,17 +22,17 @@ package (com.arvatosystems) t9t.rep.jpa.entities owner fortytwo prefix p28 {
     entity ReportConfigEntity category cfg is ReportConfigDTO
       tablename p42_cfg_report_config historytablename p42_his_report_config
       inheritance join discriminator customization_ref int {
-        tenantClass InternalTenantRef42
+        tenantClass InternalTenantId
         pk (objectRef)
-        index unique (tenantRef, reportConfigId)
+        index unique (tenantId, reportConfigId)
     }
 
     entity ReportParamsEntity category cfg is ReportParamsDTO
       tablename p42_cfg_report_params historytablename p42_his_report_params
       inheritance tablePerClass {
-        tenantClass InternalTenantRef42
+        tenantClass InternalTenantId
         pk (objectRef)
-        index unique (tenantRef, reportParamsId)
+        index unique (tenantId, reportParamsId)
         @ManyToOne ReportConfigEntity reportConfigEntity EAGER for ( reportConfigRef )
     }
 }

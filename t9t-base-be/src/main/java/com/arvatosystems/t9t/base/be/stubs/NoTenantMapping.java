@@ -19,17 +19,10 @@ import com.arvatosystems.t9t.base.services.ITenantMapping;
 
 public class NoTenantMapping implements ITenantMapping {
 
-    final Long sharedTenantRef;
     final String sharedTenantId;
 
-    public NoTenantMapping(final Long sharedTenantRef, final String sharedTenantId) {
-        this.sharedTenantRef = sharedTenantRef;
+    public NoTenantMapping(final String sharedTenantId) {
         this.sharedTenantId = sharedTenantId;
-    }
-
-    @Override
-    public Long getSharedTenantRef(final int rtti) {
-        return sharedTenantRef;
     }
 
     @Override

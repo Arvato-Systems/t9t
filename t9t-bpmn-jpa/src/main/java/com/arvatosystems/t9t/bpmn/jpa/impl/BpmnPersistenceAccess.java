@@ -48,7 +48,7 @@ import com.arvatosystems.t9t.bpmn.request.WorkflowActionEnum;
 import com.arvatosystems.t9t.bpmn.services.IBpmnPersistenceAccess;
 import com.google.common.base.Objects;
 
-import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW;
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 
@@ -80,9 +80,9 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
 
     /** Reads all process definitions. */
     @Override
-    public List<DataWithTrackingW<ProcessDefinitionDTO, FullTrackingWithVersion>> getAllProcessDefinitionsForEngine(final String engine) {
+    public List<DataWithTrackingS<ProcessDefinitionDTO, FullTrackingWithVersion>> getAllProcessDefinitionsForEngine(final String engine) {
         final List<ProcessDefinitionEntity> defs = resolver.readAll(true);
-        final List<DataWithTrackingW<ProcessDefinitionDTO, FullTrackingWithVersion>> results = new ArrayList<>(defs.size());
+        final List<DataWithTrackingS<ProcessDefinitionDTO, FullTrackingWithVersion>> results = new ArrayList<>(defs.size());
         for (final ProcessDefinitionEntity e: defs) {
             if (Objects.equal(engine,  e.getEngine()))
                 results.add(mapper.mapToDwt(e));
@@ -127,10 +127,10 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
         String nodeCondition = "";
         int numPartitions = 1;
         Collection<Integer> shards = Collections.emptyList();
-        final Long tenantRef = statusResolver.getSharedTenantRef();
+        final String tenantId = statusResolver.getSharedTenantId();
         if (!allClusterNodes) {
             numPartitions = clusterEnvironment.getNumberOfNodes();
-            shards = clusterEnvironment.getListOfShards(tenantRef);
+            shards = clusterEnvironment.getListOfShards(tenantId);
             if (shards.isEmpty()) {
                 LOGGER.debug("getTasksDue(): No process partitions assigned to this node");
                 return Collections.emptyList();
@@ -144,11 +144,11 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
         final String errorCondition = includeErrorStatus ? "" : " AND s.returnCode IS NULL";
         final TypedQuery<E> query = statusResolver.getEntityManager().createQuery(
             "SELECT s" + field + " FROM " + statusResolver.getEntityClass().getSimpleName()
-            + " s WHERE s.tenantRef = :tenantRef AND s.yieldUntil <= :timeLimit"
+            + " s WHERE s.tenantId = :tenantId AND s.yieldUntil <= :timeLimit"
             + pdCondition + errorCondition + nodeCondition + " ORDER BY s.yieldUntil",
             type
         );
-        query.setParameter("tenantRef", tenantRef);
+        query.setParameter("tenantId", tenantId);
         query.setParameter("timeLimit", whenDue);
         if (onlyForProcessDefinitionId != null) {
             query.setParameter("pdId", onlyForProcessDefinitionId);

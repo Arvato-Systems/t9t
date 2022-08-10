@@ -15,7 +15,6 @@
  */
 package com.arvatosystems.t9t.bpmn2.be.request;
 
-import static com.arvatosystems.t9t.bpmn2.be.camunda.utils.IdentifierConverter.t9tTenantRefToBPMNTenantId;
 import static com.arvatosystems.t9t.bpmn2.be.camunda.utils.IdentifierConverter.t9tUserRefToBPMNUserId;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -41,9 +40,9 @@ public abstract class AbstractBPMNRequestHandler<R extends RequestParameters> ex
     @Override
     public final ServiceResponse execute(RequestContext requestContext, R request) throws Exception {
         final String userRef = t9tUserRefToBPMNUserId(requestContext.getUserRef());
-        final String tenantRef = t9tTenantRefToBPMNTenantId(requestContext.getTenantRef());
+        final String tenantId = requestContext.tenantId;
 
-        identityService.setAuthentication(userRef, emptyList(), asList(tenantRef));
+        identityService.setAuthentication(userRef, emptyList(), asList(tenantId));
 
         try {
             return executeInWorkflowContext(requestContext, request);

@@ -24,32 +24,32 @@ package (com.arvatosystems) t9t.io.jpa.entities owner fortytwo prefix p28 {
 
     entity CsvConfigurationEntity category cfg is CsvConfigurationDTO {
         cacheable
-        tenantClass InternalTenantRef42
+        tenantClass InternalTenantId
         pk (objectRef)
-        index unique (tenantRef, csvConfigurationId)
+        index unique (tenantId, csvConfigurationId)
     }
 
     entity DataSinkEntity category cfg is DataSinkDTO tablename p42_cfg_data_sinks historytablename p42_his_data_sinks {
         cacheable
-        tenantClass InternalTenantRef42
+        tenantClass InternalTenantId
         pk (objectRef)
-        index unique (tenantRef, dataSinkId)
+        index unique (tenantId, dataSinkId)
         @ManyToOne CsvConfigurationEntity csvConfiguration LAZY for (csvConfigurationRef)
         @ManyToOne DataSinkEntity         responseDataSink LAZY for (responseDataSinkRef)
         //@ManyToOne AsyncChannelEntity     asyncChannel     LAZY for (csvConfigurationRef)
     }
 
     entity SinkEntity category datv is SinkDTO tablename p42_dat_sinks {
-        tenantClass InternalTenantRef42
+        tenantClass InternalTenantId
         pk (objectRef)
-        index (dataSinkRef, tenantRef, cTimestamp)
+        index (dataSinkRef, tenantId, cTimestamp)
         index (camelTransferStatus)
-        index (fileOrQueueName, tenantRef)
+        index (fileOrQueueName, tenantId)
         @ManyToOne DataSinkEntity dataSink LAZY for (dataSinkRef)
     }
 
     entity OutboundMessageEntity category ^int is OutboundMessageDTO tablename p42_int_outbound_messages {
-        tenantClass InternalTenantRef42
+        tenantClass InternalTenantId
         pk (objectRef)
         index unique (sinkRef, mappedRecordNo)
 //        @ManyToOne SinkEntity sink LAZY for (sinkRef)
@@ -57,21 +57,21 @@ package (com.arvatosystems) t9t.io.jpa.entities owner fortytwo prefix p28 {
 
     entity AsyncQueueEntity category cfg is AsyncQueueDTO {
         cacheable
-        tenantClass InternalTenantRef42
+        tenantClass InternalTenantId
         pk (objectRef)
-        index unique (tenantRef, asyncQueueId)
+        index unique (tenantId, asyncQueueId)
     }
 
     entity AsyncChannelEntity category cfg is AsyncChannelDTO {
         cacheable
-        tenantClass InternalTenantRef42
+        tenantClass InternalTenantId
         pk (objectRef)
-        index unique (tenantRef, asyncChannelId)
+        index unique (tenantId, asyncChannelId)
         @ManyToOne AsyncQueueEntity asyncQueue LAZY for (asyncQueueRef)
     }
 
     entity AsyncMessageEntity category ^int is AsyncMessageDTO tablename p42_int_async_messages {
-        tenantClass InternalTenantRef42
+        tenantClass InternalTenantId
         pk (objectRef)
         index (status)
         @ManyToOne AsyncQueueEntity asyncQueue LAZY for (asyncQueueRef)

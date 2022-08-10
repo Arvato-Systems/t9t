@@ -8,7 +8,7 @@
             currentMode="@load(vm.currentMode)">
             <form28 id="reportParamsCrud" aspect="2" numColumns="2">
                 <rows>
-                    <cells228 id ="tenantRef"                       value ="@bind(vm.tenantRef)"
+                    <cells228 id ="tenantId"                        value ="@bind(vm.tenantId)"
                               id2="isActive"                        value2="@load(vm.data.isActive)                        @save(vm.data.isActive,                 before='commandSave')"/>
                     <cells228 id ="reportParamsId"                  value ="@load(vm.data.reportParamsId)                  @save(vm.data.reportParamsId,           before='commandSave')"
                               id2="reportConfigRef"                 value2="@load(vm.data.reportConfigRef)                 @save(vm.data.reportConfigRef,          before='commandSave')"/>

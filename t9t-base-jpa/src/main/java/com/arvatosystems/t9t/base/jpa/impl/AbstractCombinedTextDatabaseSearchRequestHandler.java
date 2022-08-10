@@ -30,8 +30,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.base.jpa.IEntityMapper42;
-import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey42;
+import com.arvatosystems.t9t.base.jpa.IEntityMapper;
+import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.base.search.SearchCriteria;
 import com.arvatosystems.t9t.base.search.SearchFilterMatchTypeEnum;
@@ -90,16 +90,16 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<
     protected final IExecutor executor = Jdp.getRequired(IExecutor.class);
     protected final ISearchTools searchTools = Jdp.getRequired(ISearchTools.class);
     protected final ITextSearch textSearch = Jdp.getRequired(ITextSearch.class);
-    protected final IResolverSurrogateKey42<REF, TRACKING, ENTITY> resolver;
-    protected final IEntityMapper42<Long, DTO, TRACKING, ENTITY> mapper;
+    protected final IResolverSurrogateKey<REF, TRACKING, ENTITY> resolver;
+    protected final IEntityMapper<Long, DTO, TRACKING, ENTITY> mapper;
     protected final List<SearchTypeMappingEntry> textSearchPathElements;
     protected final Map<String, String> textSearchFieldMappings;
     protected final String documentName;
     protected final String keyFieldName;
     protected final BonaPortableClass<SearchRequest<DTO, TRACKING>> bclass;
 
-    public AbstractCombinedTextDatabaseSearchRequestHandler(final IResolverSurrogateKey42<REF, TRACKING, ENTITY> resolver,
-            final IEntityMapper42<Long, DTO, TRACKING, ENTITY> mapper,
+    public AbstractCombinedTextDatabaseSearchRequestHandler(final IResolverSurrogateKey<REF, TRACKING, ENTITY> resolver,
+            final IEntityMapper<Long, DTO, TRACKING, ENTITY> mapper,
             final List<AbstractCombinedTextDatabaseSearchRequestHandler.SearchTypeMappingEntry> textSearchPathElements,
             final Map<String, String> textSearchFieldMappings, final String documentName, final String keyFieldName,
             final BonaPortableClass<SearchRequest<DTO, TRACKING>> bclass) {

@@ -30,8 +30,8 @@ public interface ITimeZoneProvider {
      * The improved implementation reads it from the tenant configuration.
      * Both implementations will return ZoneOffset.UTC  if no time zone hasd been configured.
      *
-     * @param tenantRef         specified the tenant
+     * @param tenantId          specifies the tenant
      * @return                  the ZoneId
      */
-    ZoneId getTimeZoneOfTenant(Long tenantRef);
+    ZoneId getTimeZoneOfTenant(String tenantId);
 }

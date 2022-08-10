@@ -102,9 +102,8 @@ public class Authentication implements IAuthenticate {
         final JwtInfo jwtInfo = new JwtInfo();
         jwtInfo.setIssuedAt(now);
         jwtInfo.setUserId(T9tConstants.ANONYMOUS_USER_ID);
-        jwtInfo.setUserRef(T9tConstants.ANONYMOUS_USER_REF42);
+        jwtInfo.setUserRef(T9tConstants.ANONYMOUS_USER_REF);
         jwtInfo.setTenantId(T9tConstants.GLOBAL_TENANT_ID);
-        jwtInfo.setTenantRef(T9tConstants.GLOBAL_TENANT_REF42);
         jwtInfo.setSessionRef(Long.valueOf(this.refGenerator.generateRef(SessionDTO.class$rtti())));
         jwtInfo.setSessionId(UUID.randomUUID());
         jwtInfo.setLogLevel(UserLogLevelType.MESSAGE_ENTRY);

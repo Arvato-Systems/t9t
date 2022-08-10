@@ -8,7 +8,7 @@
             currentMode="@load(vm.currentMode)">
             <form28 id="emailModuleCfgCrud" aspect="2" numColumns="2">
                 <rows>
-                    <cells228 id ="tenantRef"                       value ="@load(vm.tenantRef)                            @save(vm.tenantRef,before='commandSave')"
+                    <cells228 id ="tenantId"                        value ="@load(vm.tenantId)                             @save(vm.tenantId,before='commandSave')"
                               id2="implementation"                  value2="@load(vm.data.implementation)                  @save(vm.data.implementation,before='commandSave')"/>
                     <cells228 id ="smtpServerTransport"             value ="@load(vm.data.smtpServerTransport)             @save(vm.data.smtpServerTransport,before='commandSave')"
                               id2="smtpServerAddress"               value2="@load(vm.data.smtpServerAddress)               @save(vm.data.smtpServerAddress,before='commandSave')"/>

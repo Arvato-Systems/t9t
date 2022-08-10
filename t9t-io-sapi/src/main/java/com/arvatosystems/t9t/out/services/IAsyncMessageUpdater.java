@@ -31,5 +31,5 @@ public interface IAsyncMessageUpdater {
     List<AsyncQueueDTO> getActiveQueues();
 
     /** Reads a channel configuration from the database. Throws an exception if the specified channel does not exist. */
-    AsyncChannelDTO readChannelConfig(String channelId, Long tenantRef);
+    AsyncChannelDTO readChannelConfig(String channelId, String tenantId);
 }

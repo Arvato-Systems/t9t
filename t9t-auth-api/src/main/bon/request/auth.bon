@@ -43,7 +43,7 @@ package (com.arvatosystems) t9t.auth.request {
     class LeanUserSearchRequest                 extends LeanSearchRequest {}
     class UserCountRequest                      extends CountRequest {}
 
-    class TenantCrudRequest                     extends CrudSurrogateKeyRequest <TenantRef, TenantDTO, FullTrackingWithVersion> {}
+    class TenantCrudRequest                     extends CrudStringKeyRequest    <TenantDTO, FullTrackingWithVersion> {}
     class TenantSearchRequest                   extends SearchRequest           <TenantDTO, FullTrackingWithVersion> {}
 
 

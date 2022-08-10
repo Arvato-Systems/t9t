@@ -21,6 +21,8 @@ public final class Constants {
     private Constants() {
     }
 
+    public static final String VM_ID_TENANT = "tenant";
+
     public static final class DateTime {
         public static final Map<String, Integer> FIRST_DAY_OF_WEEK = Map.of("de", java.util.Calendar.MONDAY);
     }

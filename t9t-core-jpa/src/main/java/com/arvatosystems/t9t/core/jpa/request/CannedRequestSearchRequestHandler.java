@@ -16,7 +16,7 @@
 package com.arvatosystems.t9t.core.jpa.request;
 
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
-import com.arvatosystems.t9t.base.jpa.impl.AbstractSearch42RequestHandler;
+import com.arvatosystems.t9t.base.jpa.impl.AbstractSearchWithTotalsRequestHandler;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.core.CannedRequestDTO;
@@ -25,10 +25,10 @@ import com.arvatosystems.t9t.core.jpa.mapping.ICannedRequestDTOMapper;
 import com.arvatosystems.t9t.core.jpa.persistence.ICannedRequestEntityResolver;
 import com.arvatosystems.t9t.core.request.CannedRequestSearchRequest;
 
-import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW;
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.dp.Jdp;
 
-public class CannedRequestSearchRequestHandler extends AbstractSearch42RequestHandler<Long, CannedRequestDTO, FullTrackingWithVersion,
+public class CannedRequestSearchRequestHandler extends AbstractSearchWithTotalsRequestHandler<Long, CannedRequestDTO, FullTrackingWithVersion,
   CannedRequestSearchRequest, CannedRequestEntity> {
     protected final ICannedRequestEntityResolver resolver = Jdp.getRequired(ICannedRequestEntityResolver.class);
     protected final ICannedRequestDTOMapper mapper = Jdp.getRequired(ICannedRequestDTOMapper.class);
@@ -40,7 +40,7 @@ public class CannedRequestSearchRequestHandler extends AbstractSearch42RequestHa
 
         /** Clear request, if asked to do so. */
         if (Boolean.TRUE.equals(request.getSuppressResponseParameters())) {
-            for (final DataWithTrackingW<CannedRequestDTO, FullTrackingWithVersion> dwt : response.getDataList()) {
+            for (final DataWithTrackingS<CannedRequestDTO, FullTrackingWithVersion> dwt : response.getDataList()) {
                 dwt.getData().setRequest(null);
             }
         }

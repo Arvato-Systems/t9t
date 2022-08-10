@@ -26,7 +26,7 @@ package (com.arvatosystems) t9t.base.moduleCfg {
         ref is com.arvatosystems.t9t.annotations.IsObjectRef;
 
     /** Extended tenant configuration for data exceeding the generic tenant configuration of the application server.
-     * Records of this entity share the same artifical primary key tenantRef.
+     * Records of this entity share the same artifical primary key tenantId.
      */
     final class ModuleConfigKey extends CompositeKeyRef {}
 

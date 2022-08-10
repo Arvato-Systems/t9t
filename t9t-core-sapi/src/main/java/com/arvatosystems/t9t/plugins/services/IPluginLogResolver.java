@@ -16,9 +16,8 @@
 package com.arvatosystems.t9t.plugins.services;
 
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
+import com.arvatosystems.t9t.base.services.IRefResolver;
 import com.arvatosystems.t9t.plugins.PluginLogDTO;
 import com.arvatosystems.t9t.plugins.PluginLogRef;
 
-import de.jpaw.bonaparte.refsw.RefResolver;
-
-public interface IPluginLogResolver extends RefResolver<PluginLogRef, PluginLogDTO, FullTrackingWithVersion> { }
+public interface IPluginLogResolver extends IRefResolver<PluginLogRef, PluginLogDTO, FullTrackingWithVersion> { }

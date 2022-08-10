@@ -23,7 +23,6 @@ import com.arvatosystems.t9t.auth.PasswordKey
 import com.arvatosystems.t9t.auth.RoleRef
 import com.arvatosystems.t9t.auth.RoleToPermissionRef
 import com.arvatosystems.t9t.auth.SessionRef
-import com.arvatosystems.t9t.auth.TenantRef
 import com.arvatosystems.t9t.auth.UserRef
 import com.arvatosystems.t9t.auth.UserTenantRoleRef
 import com.arvatosystems.t9t.auth.jpa.entities.ApiKeyEntity
@@ -41,10 +40,10 @@ import java.util.List
 @AutoResolver42
 class AuthResolvers {
     @AllCanAccessGlobalTenant
-    def AuthModuleCfgEntity     getAuthModuleCfgEntity(Long ref, boolean onlyActive) { return null; }
+    def AuthModuleCfgEntity     getAuthModuleCfgEntity(String id, boolean onlyActive) { return null; }
 
     @AllCanAccessGlobalTenant
-    def TenantLogoEntity        getTenantLogoEntity   (Long ref, boolean onlyActive) { return null; }
+    def TenantLogoEntity        getTenantLogoEntity   (String id, boolean onlyActive) { return null; }
 
     @GlobalTenantCanAccessAll   // admin access to all tenant's data
     def SessionEntity           getSessionEntity(SessionRef entityRef, boolean onlyActive) { return null; }
@@ -57,7 +56,7 @@ class AuthResolvers {
 
     @GlobalTenantCanAccessAll   // for Tenants, the admin can manage all
     @AllCanAccessGlobalTenant
-    def TenantEntity            getTenantEntity(TenantRef ref, boolean onlyActive) { return null; }
+    def TenantEntity            getTenantEntity(String id, boolean onlyActive) { return null; }
 
     @GlobalTenantCanAccessAll
     @AllCanAccessGlobalTenant

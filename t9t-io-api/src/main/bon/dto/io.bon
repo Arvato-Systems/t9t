@@ -413,7 +413,7 @@ package (com.arvatosystems) t9t.io {
 
     /** Structure to be used for internal message propagation. */
     final class InMemoryMessage {
-        required Long                                   tenantRef;                               // the tenant of the message
+        required tenantId                               tenantId;                                // the tenant of the message
         required t9tShortId                             asyncChannelId;                          // used to retrieve the URL and authentication parameters
         optional Long                                   objectRef;                               // refers to a DB entry (to reset the status after a successful send)
         required Object                                 payload;                                 // the message to be sent

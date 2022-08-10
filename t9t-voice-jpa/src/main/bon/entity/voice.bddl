@@ -28,23 +28,23 @@ package (com.arvatosystems) t9t.voice.jpa.entities owner fortytwo prefix p28 {
 
     entity VoiceApplicationEntity category cfg is VoiceApplicationDTO inheritance tablePerClass {
         cacheable
-        tenantClass InternalTenantRef42
+        tenantClass InternalTenantId
         pk (objectRef)
-        index unique (tenantRef, applicationId)
+        index unique (tenantId, applicationId)
     }
 
     entity VoiceUserEntity category cfg is VoiceUserDTO inheritance tablePerClass {
-        tenantClass InternalTenantRef42
+        tenantClass InternalTenantId
         pk (objectRef)
         index (providerIdHash)
-        index unique (tenantRef, applicationRef, providerId)
+        index unique (tenantId, applicationRef, providerId)
         @ManyToOne VoiceApplicationEntity application EAGER for (applicationRef)
     }
 
     entity VoiceResponseEntity category cfg is VoiceResponseDTO inheritance tablePerClass {
-        tenantClass InternalTenantRef42
+        tenantClass InternalTenantId
         pk (objectRef)
-        index unique (tenantRef, applicationRef, languageCode, key)
+        index unique (tenantId, applicationRef, languageCode, key)
         @ManyToOne VoiceApplicationEntity application EAGER for (applicationRef)
     }
 }

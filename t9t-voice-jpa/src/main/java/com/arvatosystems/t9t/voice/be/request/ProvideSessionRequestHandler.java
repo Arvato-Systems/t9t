@@ -61,11 +61,11 @@ public class ProvideSessionRequestHandler extends AbstractRequestHandler<Provide
             throw new T9tException(T9tException.RECORD_INACTIVE);
         }
         final ProvideSessionResponse resp = new ProvideSessionResponse();
-        resp.setTenantRef(apps.get(0).getTenantRef());
+        resp.setTenantId(apps.get(0).getTenantId());
         resp.setApplication(applicationDTO);
         if (request.getUserId() != null) {
             // get internal user for userId
-            resp.setUser(persistenceAccess.getUserForExternalId(resp.getTenantRef(), applicationDTO.getObjectRef(), request.getUserId()));
+            resp.setUser(persistenceAccess.getUserForExternalId(resp.getTenantId(), applicationDTO.getObjectRef(), request.getUserId()));
         }
         return resp;
     }

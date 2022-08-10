@@ -34,19 +34,18 @@ public class CheckSinkFilenameUsedRequestHandler extends AbstractRequestHandler<
     public ServiceResponse execute(final RequestContext context, final CheckSinkFilenameUsedRequest request) throws Exception {
         final EntityManager em = sinkResolver.getEntityManager();
 
-        final Long sinkCount = em.createQuery(new StringBuilder()
-                                                                 .append("SELECT count(*) FROM ")
-                                                                 .append(sinkResolver.getEntityClass()
-                                                                                     .getName())
-                                                                 .append(" WHERE tenantRef = :tenantRef")
-                                                                 .append(" AND   fileOrQueueName = :fileOrQueueName")
-                                                                 .toString(),
-                                              Long.class)
-                                 .setParameter("tenantRef", context.getTenantRef())
-                                 .setParameter("fileOrQueueName", request.getFileOrQueueName())
-                                 .getSingleResult();
+        final Long sinkCount = em.createQuery(
+          new StringBuilder()
+                         .append("SELECT count(*) FROM ")
+                         .append(sinkResolver.getEntityClass().getName())
+                         .append(" WHERE tenantId = :tenantId")
+                         .append(" AND   fileOrQueueName = :fileOrQueueName")
+                         .toString(),
+                     Long.class)
+                 .setParameter("tenantId", context.tenantId)
+                 .setParameter("fileOrQueueName", request.getFileOrQueueName())
+                 .getSingleResult();
 
         return new CheckSinkFilenameUsedResponse(0, sinkCount > 0);
     }
-
 }

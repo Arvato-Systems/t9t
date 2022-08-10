@@ -1,10 +1,10 @@
 {
     "viewModel": "authModuleCfg",
     "filters": [
-        { "filterType": "E", "fieldName": "tenantRef" }
+        { "filterType": "E", "fieldName": "tenantId" }
     ],
     "fields": [
-        "tenantRef", "maxTokenValidityInMinutes", "passwordMinimumLength", "passwordDifferPreviousN", "passwordExpirationInDays",
+        "tenantId", "maxTokenValidityInMinutes", "passwordMinimumLength", "passwordDifferPreviousN", "passwordExpirationInDays",
         "passwordResetDurationInSec", "passwordThrottlingAfterX", "passwordThrottlingDuration", "passwordBlockingPeriod", "initialPasswordExpiration"
     ]
 }

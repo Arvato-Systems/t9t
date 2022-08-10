@@ -16,7 +16,7 @@
                     <tabpanel vflex="1" id="csvConfiguration.main.panel">
                         <form28 id="csvConfigurationConfigCrudMain" aspect="1" numColumns="2">
                             <rows>
-                                <cells228 id ="tenantRef"               value ="@load(vm.tenantRef) @save(vm.tenantRef,before='commandSave')"
+                                <cells228 id ="tenantId"                value ="@load(vm.tenantId) @save(vm.tenantId,before='commandSave')"
                                           id2="isActive"                value2="@bind(vm.data.isActive)"/>
                                 <cells228 id ="csvConfigurationId"      value ="@load(vm.data.csvConfigurationId) @save(vm.data.csvConfigurationId,before='commandSave')"
                                           id2="description"             value2="@bind(vm.data.description)"/>

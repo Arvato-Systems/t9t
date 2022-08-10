@@ -25,7 +25,7 @@ import org.zkoss.zul.Comboitem;
 import com.arvatosystems.t9t.authc.api.TenantDescription;
 import com.arvatosystems.t9t.base.T9tConstants;
 
-public class TenantDataField extends AbstractDataField<Combobox, Long> {
+public class TenantDataField extends AbstractDataField<Combobox, String> {
     private static final Logger LOGGER = LoggerFactory.getLogger(TenantDataField.class);
     private final Combobox c = new Combobox();
 
@@ -53,16 +53,16 @@ public class TenantDataField extends AbstractDataField<Combobox, Long> {
             // get all allowed tenants
             List<TenantDescription> allowedTenants = as.getAllowedTenants();
             for (TenantDescription td : allowedTenants) {
-                newTenantComboItem(c, td.getTenantRef(), td.getTenantId());
+                newTenantComboItem(c, td.getTenantId());
             }
             break;
         case "D":
-            newTenantComboItem(c, T9tConstants.GLOBAL_TENANT_REF42, T9tConstants.GLOBAL_TENANT_ID);
-            if (T9tConstants.GLOBAL_TENANT_REF42.equals(as.getTenantRef()))
+            newTenantComboItem(c, T9tConstants.GLOBAL_TENANT_ID);
+            if (T9tConstants.GLOBAL_TENANT_ID.equals(as.getTenantId()))
                 break;  // do not show the same twice
             // fall through
         default:
-            newTenantComboItem(c, as.getTenantRef(), as.getTenantId());
+            newTenantComboItem(c, as.getTenantId());
         }
         c.setReadonly(true);
     }
@@ -79,24 +79,24 @@ public class TenantDataField extends AbstractDataField<Combobox, Long> {
     }
 
     @Override
-    public Long getValue() {
+    public String getValue() {
         Comboitem ci = c.getSelectedItem();
         return ci == null ? null : ci.getValue();
     }
 
     @Override
-    public void setValue(Long data) {
-        TenantDescription d = as.getTenantByRef(data);
+    public void setValue(String data) {
+        TenantDescription d = as.getTenantById(data);
         if (d == null)
             clear();
         else
             c.setValue(d.getTenantId());
     }
 
-    private static void newTenantComboItem(Combobox cb, Long ref, String id) {
+    private static void newTenantComboItem(Combobox cb, String id) {
         Comboitem ci = new Comboitem();
         ci.setLabel(id);
-        ci.setValue(ref);
+        ci.setValue(id);
         ci.setParent(cb);
     }
 }

@@ -77,7 +77,7 @@ public class TranslatorService implements ITranslator {
     protected static final Map<String, ITranslationsCache> CACHE = new ConcurrentHashMap<String, ITranslationsCache>(20);
     protected static final Map<String, Object> MUTEXES = new ConcurrentHashMap<String, Object>(20);
 
-    protected ITranslationsCache getCache(Long tenantRef, String tenantId, String languageCode) {
+    protected ITranslationsCache getCache(String tenantId, String languageCode) {
         String key = tenantId + ":" + languageCode;
         ITranslationsCache cache = CACHE.get(key);
         if (cache != null)
@@ -94,7 +94,7 @@ public class TranslatorService implements ITranslator {
             if (cache != null)
                 return cache;       // race condition
             try {
-                List<TranslationsDTO> texts = persistenceAccess.readLanguage(tenantRef, languageCode);
+                List<TranslationsDTO> texts = persistenceAccess.readLanguage(tenantId, languageCode);
                 cache = texts.isEmpty() ? EMPTY_CACHE : new TranslationCache(texts);
             } catch (Exception e) {
                 LOGGER.error("Cannot read translations for " + e.getMessage(), e);
@@ -131,13 +131,13 @@ public class TranslatorService implements ITranslator {
         if (tenantCfg.getAttemptLocalTenant() && !T9tConstants.GLOBAL_TENANT_ID.equals(ctx.tenantId)) {
             // specific tenant
             if (tenantCfg.getAttemptDialects() && isLongLanguage)
-                caches.add(getCache(ctx.tenantRef, ctx.tenantId, languageCode));
-            caches.add(getCache(ctx.tenantRef, ctx.tenantId, shortLanguage));
+                caches.add(getCache(ctx.tenantId, languageCode));
+            caches.add(getCache(ctx.tenantId, shortLanguage));
         }
         // add default tenant fallback
         if (tenantCfg.getAttemptDialects() && isLongLanguage)
-            caches.add(getCache(T9tConstants.GLOBAL_TENANT_REF42, T9tConstants.GLOBAL_TENANT_ID, languageCode));
-        caches.add(getCache(T9tConstants.GLOBAL_TENANT_REF42, T9tConstants.GLOBAL_TENANT_ID, shortLanguage));
+            caches.add(getCache(T9tConstants.GLOBAL_TENANT_ID, languageCode));
+        caches.add(getCache(T9tConstants.GLOBAL_TENANT_ID, shortLanguage));
 
         // traverse the caches
         List<String> results = new ArrayList<String>(keys.size());

@@ -34,9 +34,9 @@ public class DeleteBucketRequestHandler extends AbstractRequestHandler<DeleteBuc
         final EntityManager em = resolver.getEntityManager();
 
         final Query q = em.createQuery(
-                "DELETE FROM BucketEntryEntity be WHERE be.tenantRef = :tenantRef AND be.qualifier = :qualifier AND be.bucket = :bucketNo"
+                "DELETE FROM BucketEntryEntity be WHERE be.tenantId = :tenantId AND be.qualifier = :qualifier AND be.bucket = :bucketNo"
         );
-        q.setParameter("tenantRef", resolver.getSharedTenantRef());
+        q.setParameter("tenantId", resolver.getSharedTenantId());
         q.setParameter("qualifier", rp.getQualifier());
         q.setParameter("bucketNo", rp.getBucketNo());
         q.executeUpdate();

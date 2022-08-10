@@ -60,7 +60,7 @@ public class QuartzSchedulerService implements ISchedulerService {
     private static final Logger LOGGER = LoggerFactory.getLogger(QuartzSchedulerService.class);
 
     public static final String DM_SETUP_REF  = "setupRef";      // the reference to the stored request setup, for auditing purposes
-    public static final String DM_TENANT_REF = "tenantRef";     // the reference to the tenant (implicitly defined via API-Key, but required upfront)
+    public static final String DM_TENANT_ID  = "tenantId";     // the reference to the tenant (implicitly defined via API-Key, but required upfront)
     public static final String DM_API_KEY    = "apiKey";        // the API key which defines the tenant and user ID to run the request under
     public static final String DM_LANGUAGE   = "language";      // the desired language
     public static final String DM_REQUEST    = "request";       // a reference to the serialized request stored centrally
@@ -105,7 +105,7 @@ public class QuartzSchedulerService implements ISchedulerService {
 
             final JobDetail jobDetail = JobBuilder.newJob(PerformScheduledJob.class).withIdentity(setup.getSchedulerId(), ctx.tenantId).build();
             final JobDataMap m = jobDetail.getJobDataMap();
-            m.put(DM_TENANT_REF, ctx.tenantRef);
+            m.put(DM_TENANT_ID,  ctx.tenantId);
             m.put(DM_SETUP_REF,  setup.getObjectRef());
             m.put(DM_API_KEY,    setup.getApiKey().toString());
             m.put(DM_LANGUAGE,   setup.getLanguageCode());

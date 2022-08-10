@@ -34,8 +34,8 @@ public class FormatDocumentRequestHandler extends AbstractRequestHandler<FormatD
     @Override
     public FormatDocumentResponse execute(final RequestContext ctx, final FormatDocumentRequest request) throws Exception {
         final HashMap<String, MediaData> attachments = request.getBinaryAsAttachments() ? new HashMap<String, MediaData>(16) : null;
-        final Long sharedTenantRef = ctx.tenantMapping.getSharedTenantRef(DocComponentDTO.class$rtti());
-        final MediaData result = docFormatter.formatDocument(ctx.tenantId, sharedTenantRef, TemplateType.DOCUMENT_ID, request.getDocumentId(),
+        final String sharedTenantId = ctx.tenantMapping.getSharedTenantId(DocComponentDTO.class$rtti());
+        final MediaData result = docFormatter.formatDocument(ctx.tenantId, sharedTenantId, TemplateType.DOCUMENT_ID, request.getDocumentId(),
           request.getDocumentSelector(), request.getTimeZone(), request.getData(), attachments);
 
         final FormatDocumentResponse resp = new FormatDocumentResponse();

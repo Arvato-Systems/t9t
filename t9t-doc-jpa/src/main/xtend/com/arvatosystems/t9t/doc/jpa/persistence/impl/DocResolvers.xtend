@@ -37,7 +37,7 @@ import java.util.List
 class DocResolvers {
 
     @AllCanAccessGlobalTenant
-    def DocModuleCfgEntity      getDocModuleCfgEntity       (Long key,       boolean onlyActive) {}
+    def DocModuleCfgEntity      getDocModuleCfgEntity       (String id,       boolean onlyActive) {}
     @AllCanAccessGlobalTenant
     def DocConfigEntity         getDocConfigEntity          (DocConfigRef ref,          boolean onlyActive) {}
     @AllCanAccessGlobalTenant

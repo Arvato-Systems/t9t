@@ -65,11 +65,11 @@ public class TenantSpecificTimeZoneProvider implements ITimeZoneProvider {
     }
 
     @Override
-    public ZoneId getTimeZoneOfTenant(Long tenantRef) {
-        if (tenantRef == null) {
+    public ZoneId getTimeZoneOfTenant(String tenantId) {
+        if (tenantId == null) {
             return serverTimeZone;
         }
-        final String zoneName = tenantResolver.getDTO(tenantRef).getTimeZone();
+        final String zoneName = tenantResolver.getDTO(tenantId).getTimeZone();
         if (zoneName == null) {
             return serverTimeZone;
         }

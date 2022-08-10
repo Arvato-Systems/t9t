@@ -25,9 +25,7 @@ import com.arvatosystems.t9t.auth.RoleToPermissionDTO
 import com.arvatosystems.t9t.auth.RoleToPermissionKey
 import com.arvatosystems.t9t.auth.RoleToPermissionRef
 import com.arvatosystems.t9t.auth.TenantDTO
-import com.arvatosystems.t9t.auth.TenantKey
 import com.arvatosystems.t9t.auth.TenantLogoDTO
-import com.arvatosystems.t9t.auth.TenantRef
 import com.arvatosystems.t9t.auth.UserDTO
 import com.arvatosystems.t9t.auth.UserKey
 import com.arvatosystems.t9t.auth.UserRef
@@ -48,6 +46,7 @@ import com.arvatosystems.t9t.base.crud.CrudModuleCfgResponse
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion
 import de.jpaw.bonaparte.pojos.api.OperationType
+import com.arvatosystems.t9t.base.crud.CrudStringKeyResponse
 
 class AuthExtensions {
     // extension methods for the types with surrogate keys
@@ -59,13 +58,13 @@ class AuthExtensions {
             naturalKey      = new UserKey(dto.userId)
         ], CrudSurrogateKeyResponse)
     }
-    def static CrudSurrogateKeyResponse<TenantDTO, FullTrackingWithVersion> merge(TenantDTO dto, ITestConnection dlg) {
+    def static CrudStringKeyResponse<TenantDTO, FullTrackingWithVersion> merge(TenantDTO dto, ITestConnection dlg) {
         dto.validate
         return dlg.typeIO(new TenantCrudRequest => [
             crud            = OperationType.MERGE
             data            = dto
-            naturalKey      = new TenantKey(dto.tenantId)
-        ], CrudSurrogateKeyResponse)
+            key             = dto.tenantId
+        ], CrudStringKeyResponse)
     }
     def static CrudSurrogateKeyResponse<RoleDTO, FullTrackingWithVersion> merge(RoleDTO dto, ITestConnection dlg) {
         dto.validate
@@ -145,11 +144,10 @@ class AuthExtensions {
             naturalKey      = if (ref instanceof RoleKey) ref
         ], CrudSurrogateKeyResponse)) as CrudSurrogateKeyResponse<RoleDTO, FullTrackingWithVersion>).data
     }
-    def static TenantDTO read(TenantRef ref, ITestConnection dlg) {
+    def static TenantDTO read(String id, ITestConnection dlg) {
         return ((dlg.typeIO(new TenantCrudRequest => [
             crud            = OperationType.READ
-            key             = ref.objectRef
-            naturalKey      = if (ref instanceof TenantKey) ref
-        ], CrudSurrogateKeyResponse)) as CrudSurrogateKeyResponse<TenantDTO, FullTrackingWithVersion>).data
+            key             = id
+        ], CrudStringKeyResponse)) as CrudStringKeyResponse<TenantDTO, FullTrackingWithVersion>).data
     }
 }

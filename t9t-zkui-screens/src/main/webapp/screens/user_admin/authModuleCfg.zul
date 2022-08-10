@@ -8,7 +8,7 @@
             currentMode="@load(vm.currentMode)">
             <form28 id="authModuleCfgCrud" aspect="2" numColumns="2">
                 <rows>
-                    <cells228 id ="tenantRef"                       value ="@load(vm.tenantRef)                            @save(vm.tenantRef,before='commandSave')"
+                    <cells228 id ="tenantId"                        value ="@load(vm.tenantId)                             @save(vm.tenantId,before='commandSave')"
                               id2="maxTokenValidityInMinutes"       value2="@load(vm.data.maxTokenValidityInMinutes)       @save(vm.data.maxTokenValidityInMinutes,  before='commandSave')"/>
                     <cells228 id ="passwordBlockingPeriod"          value ="@load(vm.data.passwordBlockingPeriod)          @save(vm.data.passwordBlockingPeriod,     before='commandSave')"
                               id2="initialPasswordExpiration"       value2="@load(vm.data.initialPasswordExpiration)       @save(vm.data.initialPasswordExpiration,  before='commandSave')"/>

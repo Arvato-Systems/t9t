@@ -15,8 +15,6 @@
  */
 package com.arvatosystems.t9t.bpmn2.be.request;
 
-import static com.arvatosystems.t9t.bpmn2.be.camunda.utils.IdentifierConverter.bpmnTenantIdToT9tTenantRef;
-import static com.arvatosystems.t9t.bpmn2.be.camunda.utils.IdentifierConverter.t9tTenantRefToBPMNTenantId;
 import static java.util.stream.Collectors.toList;
 
 import java.time.ZoneId;
@@ -35,7 +33,7 @@ import com.arvatosystems.t9t.bpmn2.request.EventSubscriptionSearchRequest;
 
 import de.jpaw.bonaparte.pojos.api.NoTracking;
 import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
-import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW;
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.dp.Jdp;
 
 public class EventSubscriptionSearchRequestHandler extends AbstractBPMNRequestHandler<EventSubscriptionSearchRequest> {
@@ -91,7 +89,7 @@ public class EventSubscriptionSearchRequestHandler extends AbstractBPMNRequestHa
     @Override
     protected ServiceResponse executeInWorkflowContext(RequestContext requestContext, EventSubscriptionSearchRequest request) throws Exception {
         final List<EventSubscription> eventSubscriptions = queryMapping.search(runtimeService.createEventSubscriptionQuery()
-                                                                                             .tenantIdIn(t9tTenantRefToBPMNTenantId(requestContext.getTenantRef())),
+                                                                                             .tenantIdIn(requestContext.tenantId),
                 request);
 
         final ReadAllResponse<EventSubscriptionDTO, NoTracking> response = new ReadAllResponse<>();
@@ -103,7 +101,7 @@ public class EventSubscriptionSearchRequestHandler extends AbstractBPMNRequestHa
         return response;
     }
 
-    private DataWithTrackingW<EventSubscriptionDTO, NoTracking> map(EventSubscription subscription) {
+    private DataWithTrackingS<EventSubscriptionDTO, NoTracking> map(EventSubscription subscription) {
 
         final EventSubscriptionDTO dto = new EventSubscriptionDTO();
 
@@ -114,8 +112,8 @@ public class EventSubscriptionSearchRequestHandler extends AbstractBPMNRequestHa
         dto.setEventType(subscription.getEventType());
         dto.setCreated(subscription.getCreated().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
 
-        final DataWithTrackingW<EventSubscriptionDTO, NoTracking> result = new DataWithTrackingW<>();
-        result.setTenantRef(bpmnTenantIdToT9tTenantRef(subscription.getTenantId()));
+        final DataWithTrackingS<EventSubscriptionDTO, NoTracking> result = new DataWithTrackingS<>();
+        result.setTenantId(subscription.getTenantId());
         result.setData(dto);
         result.setTracking(new NoTracking());
 

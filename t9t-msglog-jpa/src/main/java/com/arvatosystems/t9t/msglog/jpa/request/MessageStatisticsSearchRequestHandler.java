@@ -16,7 +16,7 @@
 package com.arvatosystems.t9t.msglog.jpa.request;
 
 import com.arvatosystems.t9t.base.entities.WriteTracking;
-import com.arvatosystems.t9t.base.jpa.impl.AbstractSearch42RequestHandler;
+import com.arvatosystems.t9t.base.jpa.impl.AbstractSearchWithTotalsRequestHandler;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.msglog.MessageStatisticsDTO;
@@ -27,7 +27,7 @@ import com.arvatosystems.t9t.msglog.request.MessageStatisticsSearchRequest;
 
 import de.jpaw.dp.Jdp;
 
-public class MessageStatisticsSearchRequestHandler extends AbstractSearch42RequestHandler<Long, MessageStatisticsDTO,
+public class MessageStatisticsSearchRequestHandler extends AbstractSearchWithTotalsRequestHandler<Long, MessageStatisticsDTO,
   WriteTracking, MessageStatisticsSearchRequest, MessageStatisticsEntity> {
 
     protected final IMessageStatisticsEntityResolver resolver = Jdp.getRequired(IMessageStatisticsEntityResolver.class);

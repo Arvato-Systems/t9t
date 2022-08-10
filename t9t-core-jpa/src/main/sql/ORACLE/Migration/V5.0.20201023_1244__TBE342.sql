@@ -18,7 +18,7 @@ CREATE TABLE p28_cfg_loaded_plugin (
     , m_process_ref number(20) NOT NULL
     -- table columns of java class FullTrackingWithVersion
     , version number(10) NOT NULL
-    -- table columns of java class InternalTenantRef42
+    -- table columns of java class InternalTenantId
     , tenant_ref number(20) NOT NULL
     -- table columns of java class AbstractRef
     -- table columns of java class Ref
@@ -47,7 +47,7 @@ COMMENT ON COLUMN p28_cfg_loaded_plugin.c_tech_user_id IS 'noinsert removed, cau
 COMMENT ON COLUMN p28_cfg_loaded_plugin.c_timestamp IS 'noinsert removed, causes problems with H2 unit tests';
 -- comments for columns of java class FullTracking
 -- comments for columns of java class FullTrackingWithVersion
--- comments for columns of java class InternalTenantRef42
+-- comments for columns of java class InternalTenantId
 COMMENT ON COLUMN p28_cfg_loaded_plugin.tenant_ref IS 'the multitenancy discriminator';
 -- comments for columns of java class AbstractRef
 -- comments for columns of java class Ref
@@ -75,7 +75,7 @@ CREATE TABLE p28_his_loaded_plugin (
     , m_process_ref number(20) NOT NULL
     -- table columns of java class FullTrackingWithVersion
     , version number(10) NOT NULL
-    -- table columns of java class InternalTenantRef42
+    -- table columns of java class InternalTenantId
     , tenant_ref number(20) NOT NULL
     , history_seq_ref   number(20) NOT NULL
     , history_change_type   varchar2(1 char) NOT NULL
@@ -103,7 +103,7 @@ COMMENT ON COLUMN p28_his_loaded_plugin.c_tech_user_id IS 'noinsert removed, cau
 COMMENT ON COLUMN p28_his_loaded_plugin.c_timestamp IS 'noinsert removed, causes problems with H2 unit tests';
 -- comments for columns of java class FullTracking
 -- comments for columns of java class FullTrackingWithVersion
--- comments for columns of java class InternalTenantRef42
+-- comments for columns of java class InternalTenantId
 COMMENT ON COLUMN p28_his_loaded_plugin.tenant_ref IS 'the multitenancy discriminator';
 COMMENT ON COLUMN p28_his_loaded_plugin.history_seq_ref IS 'current sequence number of history entry';
 COMMENT ON COLUMN p28_his_loaded_plugin.history_change_type IS 'type of change (C=create/insert, U=update, D=delete)';
@@ -126,7 +126,7 @@ CREATE TABLE p28_dat_plugin_log (
     , c_app_user_id varchar2(16 char) NOT NULL
     , c_timestamp date DEFAULT SYSDATE NOT NULL
     , c_process_ref number(20) NOT NULL
-    -- table columns of java class InternalTenantRef42
+    -- table columns of java class InternalTenantId
     , tenant_ref number(20) NOT NULL
     -- table columns of java class AbstractRef
     -- table columns of java class Ref
@@ -149,7 +149,7 @@ ALTER TABLE p28_dat_plugin_log ADD CONSTRAINT p28_dat_plugin_log_pk PRIMARY KEY 
 -- comments for columns of java class WriteTracking
 COMMENT ON COLUMN p28_dat_plugin_log.c_tech_user_id IS 'noinsert removed, causes problems with H2 unit tests';
 COMMENT ON COLUMN p28_dat_plugin_log.c_timestamp IS 'noinsert removed, causes problems with H2 unit tests';
--- comments for columns of java class InternalTenantRef42
+-- comments for columns of java class InternalTenantId
 COMMENT ON COLUMN p28_dat_plugin_log.tenant_ref IS 'the multitenancy discriminator';
 -- comments for columns of java class AbstractRef
 -- comments for columns of java class Ref

@@ -17,7 +17,7 @@ package com.arvatosystems.t9t.annotations.jpa.active
 
 import com.arvatosystems.t9t.annotations.NotUpdatable
 import com.arvatosystems.t9t.base.T9tException
-import com.arvatosystems.t9t.base.jpa.impl.AbstractEntityMapper42
+import com.arvatosystems.t9t.base.jpa.impl.AbstractEntityMapper
 import de.jpaw.bonaparte.pojos.apiw.Ref
 import de.jpaw.dp.Singleton
 import de.jpaw.dp.Specializes
@@ -78,7 +78,7 @@ class AutoExtendMapper42Processor extends AbstractClassProcessor {
         val extendedEntityClass = manualE2DCopyMethod.parameters.get(0).type
         val extendedDtoClass = manualE2DCopyMethod.parameters.get(1).type
 
-        if (baseMapperClass === null || !AbstractEntityMapper42.newTypeReference.isAssignableFrom(AbstractEntityMapper42.newTypeReference)) {
+        if (baseMapperClass === null || !AbstractEntityMapper.newTypeReference.isAssignableFrom(AbstractEntityMapper.newTypeReference)) {
             c.addError('''This class must extend another class which inherits (directly or indirectly) AbstractEntityMapper''')
             return
         }

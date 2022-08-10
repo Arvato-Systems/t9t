@@ -100,7 +100,7 @@ public final class ApplicationSession {
     private String                           authorizationHeader;  // the JWT of the current session, or null is the user has not successfully authenticated
     private JwtInfo                          jwtInfo;
     private List<TenantDescription>          allowedTenants;
-    private Map<Long, TenantDescription>     tenantsByRef;
+    private Map<String, TenantDescription>   tenantsById;
     private Instant                          lastLoggedIn;
     private Instant                          passwordExpires;
     private Integer                          numberOfIncorrectAttempts;
@@ -599,11 +599,6 @@ public final class ApplicationSession {
             return null;
         return jwtInfo.getUserId();
     }
-    public Long getTenantRef() {
-        if (jwtInfo == null)
-            return null;
-        return jwtInfo.getTenantRef();
-    }
     public String getTenantId() {
         if (jwtInfo == null)
             return null;
@@ -614,17 +609,17 @@ public final class ApplicationSession {
         return allowedTenants;
     }
 
-    public TenantDescription getTenantByRef(Long ref) {
-        if (ref == null)
+    public TenantDescription getTenantById(String tenantId) {
+        if (tenantId == null)
             return null;
-        return tenantsByRef.get(ref);
+        return tenantsById.get(tenantId);
     }
 
     public void setAllowedTenants(List<TenantDescription> allowedTenants) {
         this.allowedTenants = allowedTenants;
-        tenantsByRef = new ConcurrentHashMap<Long, TenantDescription>(allowedTenants.size());
+        tenantsById = new ConcurrentHashMap<String, TenantDescription>(allowedTenants.size());
         for (TenantDescription e: allowedTenants) {
-            tenantsByRef.put(e.getTenantRef(), e);
+            tenantsById.put(e.getTenantId(), e);
         }
     }
 

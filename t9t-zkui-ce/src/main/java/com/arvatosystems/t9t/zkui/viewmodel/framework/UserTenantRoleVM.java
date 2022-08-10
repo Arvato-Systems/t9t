@@ -50,6 +50,6 @@ public class UserTenantRoleVM extends AbstractCrudVM<UserTenantRoleRef, UserTena
         data = crudViewModel.dtoClass.newInstance();
         data.put$Active(true);  // if the DTO has an active field, create it as active by default
         tracking = null;
-        tenantRef = session.getTenantRef();
+        tenantId = session.getTenantId();
     }
 }

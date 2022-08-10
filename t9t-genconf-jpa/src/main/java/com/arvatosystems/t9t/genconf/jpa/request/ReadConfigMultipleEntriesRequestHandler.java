@@ -40,8 +40,8 @@ public class ReadConfigMultipleEntriesRequestHandler extends AbstractRequestHand
     @Override
     public ReadConfigMultipleEntriesResponse execute(final RequestContext ctx, final ReadConfigMultipleEntriesRequest request) throws Exception {
         final ReadConfigMultipleEntriesResponse resp = new ReadConfigMultipleEntriesResponse();
-        final Long tenantRef = request.getReadGlobalTenant() ? T9tConstants.GLOBAL_TENANT_REF42 : ctx.getTenantRef();
-        final List<ConfigEntity> configEntities = resolver.findByGroup(true, tenantRef, request.getConfigGroup());
+        final String tenantId = request.getReadGlobalTenant() ? T9tConstants.GLOBAL_TENANT_ID : ctx.tenantId;
+        final List<ConfigEntity> configEntities = resolver.findByGroup(true, tenantId, request.getConfigGroup());
         resp.setEntries(mapper.mapListToDto(configEntities));
         return resp;
     }

@@ -44,4 +44,9 @@ package (com.arvatosystems) t9t.uiprefsv3.request {
         required (UILeanGridPreferences...)     leanGridConfig;             // the grid config for this user / tenant / selection (/ language: for headers)
         required Unicode(160) required List<>   headers;                    // the list of translated headers
     }
+
+    class MigrateLeanGridConfigRequest extends RequestParameters {
+        required Unicode(80)                    from;
+        required Unicode(80)                    to;
+    }
 }

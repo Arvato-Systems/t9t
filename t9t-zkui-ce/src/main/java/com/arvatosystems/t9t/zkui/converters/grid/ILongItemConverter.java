@@ -15,6 +15,6 @@
  */
 package com.arvatosystems.t9t.zkui.converters.grid;
 
-/** Marker interface to register conversions from Long to an ID or name, such as tenantRef, userRef... */
+/** Marker interface to register conversions from Long to an ID or name, such as userRef... */
 public interface ILongItemConverter extends IItemConverter<Long> {
 }

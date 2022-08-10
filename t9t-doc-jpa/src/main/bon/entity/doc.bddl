@@ -29,35 +29,35 @@ package (com.arvatosystems) t9t.doc.jpa.entities owner fortytwo prefix p28 {
     }
 
     entity DocConfigEntity category cfg is DocConfigDTO inheritance tablePerClass {
-        tenantClass InternalTenantRef42
+        tenantClass InternalTenantId
         pk (objectRef)
-        index unique (tenantRef, documentId)
+        index unique (tenantId, documentId)
         @Embeddable DocEmailReceiverEmbeddable for emailSettings
     }
 
     entity DocEmailCfgEntity category cfg is DocEmailCfgDTO inheritance tablePerClass {
-        tenantClass InternalTenantRef42
+        tenantClass InternalTenantId
         pk (objectRef)
-        index unique (tenantRef, documentId, entityId, countryCode, currencyCode, languageCode)
+        index unique (tenantId, documentId, entityId, countryCode, currencyCode, languageCode)
         @Embeddable DocEmailReceiverEmbeddable for emailSettings
     }
 
     entity DocTemplateEntity category cfg is DocTemplateDTO inheritance tablePerClass {
-        tenantClass InternalTenantRef42
+        tenantClass InternalTenantId
         pk (objectRef)
-        index unique (tenantRef, documentId, entityId, countryCode, currencyCode, languageCode)
+        index unique (tenantId, documentId, entityId, countryCode, currencyCode, languageCode)
     }
 
     entity DocComponentEntity category cfg is DocComponentDTO inheritance tablePerClass {
-        tenantClass InternalTenantRef42
+        tenantClass InternalTenantId
         pk (objectRef)
-        index unique (tenantRef, documentId, entityId, countryCode, currencyCode, languageCode)
+        index unique (tenantId, documentId, entityId, countryCode, currencyCode, languageCode)
         @Embeddable MediaEmbeddable for data
     }
 
     entity MailingGroupEntity category cfg is MailingGroupDTO {
-        tenantClass InternalTenantRef42
+        tenantClass InternalTenantId
         pk (objectRef)
-        index unique (tenantRef, mailingGroupId)
+        index unique (tenantId, mailingGroupId)
     }
 }

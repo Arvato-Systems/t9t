@@ -93,10 +93,10 @@ public class FlushPendingAsyncRequestHandler extends AbstractRequestHandler<Flus
         }
         final String extraCondition = rq.getOnlyChannelId() != null ? " AND m.asyncChannelId = :channel" : "";
         final String extraCondition2 = channels != null ? " AND m.asyncChannelId IN :channels" : "";
-        final String queryString = "SELECT m FROM AsyncMessageEntity m WHERE m.status != null AND m.tenantRef = :tenantRef" + extraCondition + extraCondition2
+        final String queryString = "SELECT m FROM AsyncMessageEntity m WHERE m.status != null AND m.tenantId = :tenantId" + extraCondition + extraCondition2
                 + " ORDER BY m.objectRef";
         final TypedQuery<AsyncMessageEntity> query = messageResolver.getEntityManager().createQuery(queryString, AsyncMessageEntity.class);
-        query.setParameter("tenantRef", messageResolver.getSharedTenantRef());
+        query.setParameter("tenantId", messageResolver.getSharedTenantId());
         if (rq.getOnlyChannelId() != null) {
             query.setParameter("channel", rq.getOnlyChannelId());
         }
@@ -113,7 +113,7 @@ public class FlushPendingAsyncRequestHandler extends AbstractRequestHandler<Flus
             }
             if (rq.getReturnInResponse()) {
                 final InMemoryMessage inMemoryMessage = new InMemoryMessage();
-                inMemoryMessage.setTenantRef(m.getTenantRef());
+                inMemoryMessage.setTenantId(m.getTenantId());
                 inMemoryMessage.setObjectRef(m.getObjectRef());
                 inMemoryMessage.setAsyncChannelId(m.getAsyncChannelId());
                 inMemoryMessage.setPayload(m.getPayload());

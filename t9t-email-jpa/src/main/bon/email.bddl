@@ -30,14 +30,14 @@ package (com.arvatosystems) t9t.email.jpa.entities owner fortytwo prefix p28 {
     }
 
     entity EmailEntity category datv is EmailDTO {
-        tenantClass InternalTenantRef42
+        tenantClass InternalTenantId
         pk (objectRef)
         index unique (messageId)
         index (emailStatus)
     }
 
     entity EmailAttachmentsEntity category datv is EmailAttachmentsDTO {
-        tenantClass InternalTenantRef42
+        tenantClass InternalTenantId
         pk is EmailAttachmentsKey
         @Embeddable MediaEmbeddable for document
     }

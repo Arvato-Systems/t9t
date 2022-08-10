@@ -55,7 +55,6 @@ package (com.arvatosystems) t9t.voice.request {
         optional voiceExternalId                    userId;
     }
     class ProvideSessionResponse extends ServiceResponse {
-        required f42Ref                             tenantRef;
         required (VoiceApplicationDTO)              application;
         optional (VoiceUserDTO)                     user;    // the internal ID or null if not yet determined
     }

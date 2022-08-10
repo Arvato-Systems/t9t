@@ -15,24 +15,10 @@
  */
 package com.arvatosystems.t9t.init;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.time.ZoneId;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TimeZone;
-
-import org.reflections.Reflections;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.arvatosystems.t9t.base.ILeanGridConfigContainer;
 import com.arvatosystems.t9t.base.IViewModelContainer;
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.RandomNumberGenerators;
-
 import de.jpaw.bonaparte.enums.BonaEnum;
 import de.jpaw.bonaparte.enums.BonaNonTokenizableEnum;
 import de.jpaw.bonaparte.enums.BonaTokenizableEnum;
@@ -46,6 +32,19 @@ import de.jpaw.util.ExceptionUtil;
 import de.jpaw.xenums.init.ExceptionInitializer;
 import de.jpaw.xenums.init.ReflectionsPackageCache;
 import de.jpaw.xenums.init.XenumInitializer;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TimeZone;
+import org.reflections.Reflections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class InitContainers {
     private static final Logger LOGGER = LoggerFactory.getLogger(InitContainers.class);
@@ -216,20 +215,27 @@ public final class InitContainers {
     }
 
     private static void collectLeanGridConfigurations(final Reflections... packages) {
+        final List<ILeanGridConfigContainer> clses = new ArrayList<>(100);
         for (final Reflections pkg: packages) {
             for (final Class<? extends ILeanGridConfigContainer> cls : pkg.getSubTypesOf(ILeanGridConfigContainer.class)) {
                 try {
-                    final List<String> configs = cls.getDeclaredConstructor().newInstance().getResourceNames();
-                    LOGGER.debug("Grid config container {} holds {} lean grid configurations", cls.getCanonicalName(), configs.size());
-                    for (final String resourceId : configs) {
-                        UiGridConfigPrefs.getLeanGridConfigAsObject(resourceId);
-                    }
+                    clses.add(cls.getDeclaredConstructor().newInstance());
                 } catch (final Exception e) {
                     LOGGER.warn("Cannot initialize leanGridConfigContainer {}: {}", cls.getCanonicalName(), ExceptionUtil.causeChain(e));
                 }
             }
         }
 
+        // sort by the order
+        Collections.sort(clses, (c1, c2) -> c1.getOrder() - c2.getOrder());
+
+        for (final ILeanGridConfigContainer cls : clses) {
+            final List<String> configs = cls.getResourceNames();
+            LOGGER.debug("Grid config container {} holds {} lean grid configurations", cls.getClass().getCanonicalName(), configs.size());
+            for (final String resourceId : configs) {
+                UiGridConfigPrefs.getLeanGridConfigAsObject(resourceId);
+            }
+        }
         // apply the overrides & extends
         UiGridConfigPrefs.postProcess();
     }

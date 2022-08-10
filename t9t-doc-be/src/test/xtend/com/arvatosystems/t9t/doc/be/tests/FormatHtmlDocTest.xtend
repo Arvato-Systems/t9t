@@ -107,7 +107,7 @@ class FormatHtmlDocTest {
             </html>
         '''), IDocPersistenceAccess)
 
-        val actual = new DocFormatter().formatDocument("TEST", 136138L, TemplateType.DOCUMENT_ID, 'testId', new DocumentSelector => [
+        val actual = new DocFormatter().formatDocument("TEST", "TEST", TemplateType.DOCUMENT_ID, 'testId', new DocumentSelector => [
             languageCode = "de"
             countryCode  = "DE"
             currencyCode = "EUR"
@@ -143,7 +143,7 @@ class FormatHtmlDocTest {
             </html>
         '''), IDocPersistenceAccess)
 
-        val actual = new DocFormatter().formatDocument("TEST", 136138L, TemplateType.DOCUMENT_ID, 'testId', new DocumentSelector => [
+        val actual = new DocFormatter().formatDocument("TEST", "TEST", TemplateType.DOCUMENT_ID, 'testId', new DocumentSelector => [
             languageCode = "de"
             countryCode  = "DE"
             currencyCode = "EUR"
@@ -182,7 +182,7 @@ class FormatHtmlDocTest {
             </html>
         '''), IDocPersistenceAccess)
 
-        val actual = new DocFormatter().formatDocument("TEST", 136138L, TemplateType.DOCUMENT_ID, 'testId', new DocumentSelector => [
+        val actual = new DocFormatter().formatDocument("TEST", "TEST", TemplateType.DOCUMENT_ID, 'testId', new DocumentSelector => [
             languageCode = "de"
             countryCode  = "DE"
             currencyCode = "EUR"
@@ -217,7 +217,7 @@ class FormatHtmlDocTest {
             </html>
         '''), IDocPersistenceAccess)
 
-        val actual = new DocFormatter().formatDocument("TEST", 136138L, TemplateType.DOCUMENT_ID, 'testId', new DocumentSelector => [
+        val actual = new DocFormatter().formatDocument("TEST", "TEST", TemplateType.DOCUMENT_ID, 'testId', new DocumentSelector => [
             languageCode = "de"
             countryCode  = "DE"
             currencyCode = "EUR"

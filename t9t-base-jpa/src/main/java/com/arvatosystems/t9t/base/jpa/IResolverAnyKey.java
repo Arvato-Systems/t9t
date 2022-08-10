@@ -38,7 +38,7 @@ import de.jpaw.bonaparte.pojos.api.TrackingBase;
  * If the JPA entity is extended as part of customization, the base interface will stay untouched, but its implementation must point
  * to a customized resolver, inheriting the base resolver.
  *
- * Same as IResolverAnyKey, but using a tenantRef instead of tenantId.
+ * Same as IResolverAnyKey, but using a tenantId instead of tenantId.
  */
 public interface IResolverAnyKey<
     KEY extends Serializable,
@@ -62,7 +62,7 @@ public interface IResolverAnyKey<
      */
     boolean isOfMatchingTenant(ENTITY e);
 
-    /** Returns information if the entity has a field tenantRef and data is therefore isolated between tenants.
+    /** Returns information if the entity has a field tenantId and data is therefore isolated between tenants.
      * If set, appropriate additional criteria will be set for generic search.
      * The default implementation returns true. Only in case of shared tables, this should be overridden.
      *
@@ -117,7 +117,7 @@ public interface IResolverAnyKey<
     Class<ENTITY> getEntityClass();
 
     /** Returns a new instance of the customized class of the entity.
-     * If the entity has a tenantRef field, its contents will be initialized from the internalHeaderParameters.
+     * If the entity has a tenantId field, its contents will be initialized from the internalHeaderParameters.
      *
      * @return a new instance of the customization of the JPA class object (Entity)
      * @throws T9tException if the class could not be resolved or not instantiated.
@@ -256,4 +256,37 @@ public interface IResolverAnyKey<
 
     /** Creates a specification for the key object, mainly for logging purposes, also used by the AutoMappers. */
     String entityNameAndKey(Object key);
+
+    /** returns the entity's tenantId without the use of reflection, or null if the entity does not contain
+     * a tenantId field.
+     * @param e
+     * @return the tenantId
+     */
+    String getTenantId(ENTITY e);
+
+    /**
+     * Returns the mapped tenantId for this entity. This is by default identical to the current tenantId, but may be overridden for specific tenants in
+     * specific projects. This method will be used to set default values for the entity and also for queries, therefore overwriting it will cause a shared use
+     * of tenants. A future default implementation will use a database based mapping.
+     *
+     * @return the tenantId to use for the database
+     */
+    String getSharedTenantId();
+
+    /** Sets the entity's tenantId without the use of reflection, or NOOP if the entity does not contain
+     * a tenantId field.
+     * @param e - an instance of the Entity
+     * @param tenantId - the tenant to be set (if null, the current call's tenant ref wil be used)
+     */
+    void setTenantId(ENTITY e, String tenantId);
+
+    /**
+     * Returns true if the current tenant is allowed to see a record of tenant (tenantId). The tenant passed must be the final (possibly mapped) tenant.
+     */
+    boolean readAllowed(String tenantId);
+
+    /**
+     * Returns true if the current tenant is allowed to write a record of tenant (tenantId). The tenant passed must be the final (possibly mapped) tenant.
+     */
+    boolean writeAllowed(String tenantId);
 }

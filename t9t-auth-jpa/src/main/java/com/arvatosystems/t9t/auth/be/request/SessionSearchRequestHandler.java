@@ -21,13 +21,14 @@ import com.arvatosystems.t9t.auth.jpa.mapping.ISessionDTOMapper;
 import com.arvatosystems.t9t.auth.jpa.persistence.ISessionEntityResolver;
 import com.arvatosystems.t9t.auth.request.SessionSearchRequest;
 import com.arvatosystems.t9t.base.entities.SessionTracking;
-import com.arvatosystems.t9t.base.jpa.impl.AbstractSearch42RequestHandler;
+import com.arvatosystems.t9t.base.jpa.impl.AbstractSearchWithTotalsRequestHandler;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.dp.Jdp;
 
-public class SessionSearchRequestHandler extends AbstractSearch42RequestHandler<Long, SessionDTO, SessionTracking, SessionSearchRequest, SessionEntity> {
+public class SessionSearchRequestHandler extends AbstractSearchWithTotalsRequestHandler<Long, SessionDTO, SessionTracking, SessionSearchRequest,
+    SessionEntity> {
 
     protected final ISessionEntityResolver resolver = Jdp.getRequired(ISessionEntityResolver.class);
     protected final ISessionDTOMapper mapper = Jdp.getRequired(ISessionDTOMapper.class);

@@ -40,7 +40,7 @@ import de.jpaw.bonaparte.pojos.api.FieldFilter;
 import de.jpaw.bonaparte.pojos.api.LongFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.media.MediaType;
-import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW;
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
@@ -279,10 +279,10 @@ public class ReportSinkSearchFilterRestriction implements IReportSinkSearchFilte
 
         final ReadAllResponse<ReportConfigDTO, FullTrackingWithVersion> response =
                 messaging.executeSynchronousAndCheckResult(reportConfigSearchRequest, ReadAllResponse.class);
-        final List<DataWithTrackingW<ReportConfigDTO, FullTrackingWithVersion>> permittedReports = response.getDataList();
+        final List<DataWithTrackingS<ReportConfigDTO, FullTrackingWithVersion>> permittedReports = response.getDataList();
 
         final List<ReportConfigDTO> permittedReportConfigs = new ArrayList<>();
-        for (final DataWithTrackingW<ReportConfigDTO, FullTrackingWithVersion> permittedReport : permittedReports) {
+        for (final DataWithTrackingS<ReportConfigDTO, FullTrackingWithVersion> permittedReport : permittedReports) {
             permittedReportConfigs.add(permittedReport.getData());
         }
         return permittedReportConfigs;

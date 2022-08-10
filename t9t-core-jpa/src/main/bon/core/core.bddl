@@ -27,8 +27,8 @@ package (com.arvatosystems) t9t.core.jpa.entities owner fortytwo prefix p28 {
     embeddable MediaEmbeddable is MediaData {}
 
     entity CannedRequestEntity category cfg is CannedRequestDTO {
-        tenantClass InternalTenantRef42
+        tenantClass InternalTenantId
         pk (objectRef)
-        index unique (tenantRef, requestId)
+        index unique (tenantId, requestId)
     }
 }

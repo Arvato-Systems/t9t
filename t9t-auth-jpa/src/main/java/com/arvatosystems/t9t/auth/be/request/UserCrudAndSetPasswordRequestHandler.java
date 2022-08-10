@@ -25,13 +25,13 @@ import com.arvatosystems.t9t.auth.request.UserCrudAndSetPasswordRequest;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
-import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKey42RequestHandler;
+import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKeyRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ApplicationException;
 
-public class UserCrudAndSetPasswordRequestHandler extends AbstractCrudSurrogateKey42RequestHandler<UserRef, UserDTO,
+public class UserCrudAndSetPasswordRequestHandler extends AbstractCrudSurrogateKeyRequestHandler<UserRef, UserDTO,
   FullTrackingWithVersion, UserCrudAndSetPasswordRequest, UserEntity> {
     protected final IUserEntityResolver resolver = Jdp.getRequired(IUserEntityResolver.class);
     protected final IUserDTOMapper mapper = Jdp.getRequired(IUserDTOMapper.class);

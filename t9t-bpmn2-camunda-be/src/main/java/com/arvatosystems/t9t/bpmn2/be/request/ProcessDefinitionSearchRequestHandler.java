@@ -15,8 +15,6 @@
  */
 package com.arvatosystems.t9t.bpmn2.be.request;
 
-import static com.arvatosystems.t9t.bpmn2.be.camunda.utils.IdentifierConverter.bpmnTenantIdToT9tTenantRef;
-import static com.arvatosystems.t9t.bpmn2.be.camunda.utils.IdentifierConverter.t9tTenantRefToBPMNTenantId;
 import static com.arvatosystems.t9t.bpmn2.be.camunda.utils.SearchRequestUtils.initTrackingFields;
 import static java.util.stream.Collectors.toList;
 
@@ -36,7 +34,7 @@ import com.arvatosystems.t9t.bpmn2.request.ProcessDefinitionSearchRequest;
 
 import de.jpaw.bonaparte.pojos.api.BooleanFilter;
 import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
-import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW;
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.dp.Jdp;
 
 public class ProcessDefinitionSearchRequestHandler extends AbstractBPMNRequestHandler<ProcessDefinitionSearchRequest> {
@@ -91,7 +89,7 @@ public class ProcessDefinitionSearchRequestHandler extends AbstractBPMNRequestHa
     protected ServiceResponse executeInWorkflowContext(RequestContext requestContext, ProcessDefinitionSearchRequest request) throws Exception {
 
         final List<ProcessDefinition> processDefinitions = queryMapping.search(repositoryService.createProcessDefinitionQuery()
-                                                                                                .tenantIdIn(t9tTenantRefToBPMNTenantId(requestContext.getTenantRef())),
+                                                                                                .tenantIdIn(requestContext.tenantId),
                                                                                request);
 
         final ReadAllResponse<ProcessDefinitionDTO, FullTrackingWithVersion> response = new ReadAllResponse<>();
@@ -104,7 +102,7 @@ public class ProcessDefinitionSearchRequestHandler extends AbstractBPMNRequestHa
         return response;
     }
 
-    private DataWithTrackingW<ProcessDefinitionDTO, FullTrackingWithVersion> map(ProcessDefinition processDefinition) {
+    private DataWithTrackingS<ProcessDefinitionDTO, FullTrackingWithVersion> map(ProcessDefinition processDefinition) {
 
         final ProcessDefinitionDTO resultDefinition = new ProcessDefinitionDTO();
         resultDefinition.setProcessDefinitionId(processDefinition.getId());
@@ -116,8 +114,8 @@ public class ProcessDefinitionSearchRequestHandler extends AbstractBPMNRequestHa
         initTrackingFields(tracking);
         tracking.setVersion(processDefinition.getVersion());
 
-        final DataWithTrackingW<ProcessDefinitionDTO, FullTrackingWithVersion> result = new DataWithTrackingW<>();
-        result.setTenantRef(bpmnTenantIdToT9tTenantRef(processDefinition.getTenantId()));
+        final DataWithTrackingS<ProcessDefinitionDTO, FullTrackingWithVersion> result = new DataWithTrackingS<>();
+        result.setTenantId(processDefinition.getTenantId());
         result.setData(resultDefinition);
         result.setTracking(tracking);
 

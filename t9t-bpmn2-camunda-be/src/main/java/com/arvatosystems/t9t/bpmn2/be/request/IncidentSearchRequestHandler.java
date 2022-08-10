@@ -15,8 +15,6 @@
  */
 package com.arvatosystems.t9t.bpmn2.be.request;
 
-import static com.arvatosystems.t9t.bpmn2.be.camunda.utils.IdentifierConverter.bpmnTenantIdToT9tTenantRef;
-import static com.arvatosystems.t9t.bpmn2.be.camunda.utils.IdentifierConverter.t9tTenantRefToBPMNTenantId;
 import static java.util.stream.Collectors.toList;
 
 import java.time.ZoneId;
@@ -35,7 +33,7 @@ import com.arvatosystems.t9t.bpmn2.request.IncidentSearchRequest;
 
 import de.jpaw.bonaparte.pojos.api.NoTracking;
 import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
-import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW;
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.dp.Jdp;
 
 public class IncidentSearchRequestHandler extends AbstractBPMNRequestHandler<IncidentSearchRequest> {
@@ -95,7 +93,7 @@ public class IncidentSearchRequestHandler extends AbstractBPMNRequestHandler<Inc
     @Override
     protected ServiceResponse executeInWorkflowContext(RequestContext requestContext, IncidentSearchRequest request) throws Exception {
         final List<Incident> incidents = queryMapping.search(runtimeService.createIncidentQuery()
-                                                                           .tenantIdIn(t9tTenantRefToBPMNTenantId(requestContext.getTenantRef())),
+                                                                           .tenantIdIn(requestContext.tenantId),
                 request);
 
         final ReadAllResponse<IncidentDTO, NoTracking> response = new ReadAllResponse<>();
@@ -107,7 +105,7 @@ public class IncidentSearchRequestHandler extends AbstractBPMNRequestHandler<Inc
         return response;
     }
 
-    private DataWithTrackingW<IncidentDTO, NoTracking> map(Incident incident) {
+    private DataWithTrackingS<IncidentDTO, NoTracking> map(Incident incident) {
 
         final IncidentDTO dto = new IncidentDTO();
 
@@ -118,8 +116,8 @@ public class IncidentSearchRequestHandler extends AbstractBPMNRequestHandler<Inc
         dto.setMessage(incident.getIncidentMessage());
         dto.setCreated(incident.getIncidentTimestamp().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
 
-        final DataWithTrackingW<IncidentDTO, NoTracking> result = new DataWithTrackingW<>();
-        result.setTenantRef(bpmnTenantIdToT9tTenantRef(incident.getTenantId()));
+        final DataWithTrackingS<IncidentDTO, NoTracking> result = new DataWithTrackingS<>();
+        result.setTenantId(incident.getTenantId());
         result.setData(dto);
         result.setTracking(new NoTracking());
 

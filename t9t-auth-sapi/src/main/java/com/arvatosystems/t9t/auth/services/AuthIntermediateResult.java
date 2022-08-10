@@ -24,7 +24,7 @@ import com.arvatosystems.t9t.auth.UserStatusDTO;
 
 public final class AuthIntermediateResult {
     private int                   returnCode;        // 0 = success, anything else is an error
-    private Long                  tenantRef;
+    private String                tenantId;
     private ApiKeyDTO             apiKey;
     private UserDTO               user;
     private TenantDTO             tenant;
@@ -38,11 +38,11 @@ public final class AuthIntermediateResult {
     public void setReturnCode(int returnCode) {
         this.returnCode = returnCode;
     }
-    public Long getTenantRef() {
-        return tenantRef;
+    public String getTenantId() {
+        return tenantId;
     }
-    public void setTenantRef(Long tenantRef) {
-        this.tenantRef = tenantRef;
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
     public ApiKeyDTO getApiKey() {
         return apiKey;

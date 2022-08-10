@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
-import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKey42RequestHandler;
+import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKeyRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.io.AsyncQueueDTO;
 import com.arvatosystems.t9t.io.AsyncQueueRef;
@@ -32,7 +32,7 @@ import com.arvatosystems.t9t.out.services.IAsyncQueue;
 
 import de.jpaw.dp.Jdp;
 
-public class AsyncQueueCrudRequestHandler extends AbstractCrudSurrogateKey42RequestHandler<AsyncQueueRef, AsyncQueueDTO,
+public class AsyncQueueCrudRequestHandler extends AbstractCrudSurrogateKeyRequestHandler<AsyncQueueRef, AsyncQueueDTO,
   FullTrackingWithVersion, AsyncQueueCrudRequest, AsyncQueueEntity> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AsyncQueueCrudRequestHandler.class);
     protected final IAsyncQueueEntityResolver resolver  = Jdp.getRequired(IAsyncQueueEntityResolver.class);

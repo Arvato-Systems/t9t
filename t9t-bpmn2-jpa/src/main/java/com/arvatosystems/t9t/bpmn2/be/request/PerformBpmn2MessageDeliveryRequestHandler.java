@@ -125,10 +125,10 @@ public class PerformBpmn2MessageDeliveryRequestHandler extends AbstractRequestHa
         final EntityManager entityManager = resolver.getEntityManager();
 
         TypedQuery<Bpmn2MessageQueueEntity> query = entityManager.createQuery(join(" SELECT ", resolver.getEntityClass().getName(), " e",
-                                                                                   " WHERE e.tenantRef = :tenantRef",
+                                                                                   " WHERE e.tenantId = :tenantId",
                                                                                    " AND   e.retryCounter IS NOT NULL"),
                                                                               Bpmn2MessageQueueEntity.class)
-                                                                 .setParameter("tenantRef", resolver.getSharedTenantRef());
+                                                                 .setParameter("tenantId", resolver.getSharedTenantId());
 
         if (chunkSize != null) {
             query = query.setMaxResults(chunkSize);

@@ -32,13 +32,10 @@ public abstract class SearchRequestUtils {
     public static void initTrackingFields(FullTracking tracking) {
         tracking.setCAppUserId("BPMN ENGINE");
         tracking.setCProcessRef(-1L);
-        tracking.setCTechUserId("BPMN ENGINE");
         tracking.setCTimestamp(Instant.now());
 
         tracking.setMAppUserId("BPMN ENGINE");
         tracking.setMProcessRef(-1L);
-        tracking.setMTechUserId("BPMN ENGINE");
         tracking.setMTimestamp(Instant.now());
     }
-
 }

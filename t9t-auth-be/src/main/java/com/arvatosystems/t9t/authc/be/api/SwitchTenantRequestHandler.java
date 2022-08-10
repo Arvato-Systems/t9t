@@ -58,7 +58,6 @@ public class SwitchTenantRequestHandler extends AbstractRequestHandler<SwitchTen
             // not just a refresh but a real switch!
             // an inactive tenant still allows to log in, it just does not accept orders any more. Therefore no check done on that
             jwt.setTenantId(newTenant.getTenantId());
-            jwt.setTenantRef(newTenant.getTenantRef());
             // TODO: update of role and permission (tenant settings could have restricted the JWTs settings)
         }
         jwt.setLocale(ctx.internalHeaderParameters.getJwtInfo().getLocale()); // keep existing language
@@ -69,7 +68,7 @@ public class SwitchTenantRequestHandler extends AbstractRequestHandler<SwitchTen
         jwt.setNotBefore(null);
 
         // compute jwt.z field same way as in AuthenticationRequestHandler
-        Map<String, Object> z = jwtEnrichment.mergeZs(authPersistenceAccess.getUserZ(jwt.getUserRef()), authPersistenceAccess.getTenantZ(jwt.getTenantRef()));
+        Map<String, Object> z = jwtEnrichment.mergeZs(authPersistenceAccess.getUserZ(jwt.getUserRef()), authPersistenceAccess.getTenantZ(jwt.getTenantId()));
         jwt.setZ(z);
         jwtEnrichment.enrichJwt(jwt, ctx.internalHeaderParameters.getJwtInfo());
 

@@ -91,16 +91,16 @@ public class AsyncMessageUpdater implements IAsyncMessageUpdater {
     }
 
     @Override
-    public AsyncChannelDTO readChannelConfig(final String channelId, final Long tenantRef) {
-        LOGGER.debug("Reading async channel configuration for channelId {}, tenantRef {}", channelId, tenantRef);
+    public AsyncChannelDTO readChannelConfig(final String channelId, final String tenantId) {
+        LOGGER.debug("Reading async channel configuration for channelId {}, tenantId {}", channelId, tenantId);
         final EntityManager em = emf.createEntityManager();
         List<AsyncChannelEntity> results = null;
         try {
             em.getTransaction().begin();
             final TypedQuery<AsyncChannelEntity> query
-              = em.createQuery("SELECT cfg FROM AsyncChannelEntity cfg WHERE cfg.asyncChannelId = :channelId and cfg.tenantRef = :tenantRef",
+              = em.createQuery("SELECT cfg FROM AsyncChannelEntity cfg WHERE cfg.asyncChannelId = :channelId and cfg.tenantId = :tenantId",
                 AsyncChannelEntity.class);
-            query.setParameter("tenantRef", tenantRef);
+            query.setParameter("tenantId", tenantId);
             query.setParameter("channelId", channelId);
             results = query.getResultList();
             em.getTransaction().commit();
@@ -109,7 +109,7 @@ public class AsyncMessageUpdater implements IAsyncMessageUpdater {
             em.close();
         }
         if (results.size() != 1)
-            throw new T9tException(T9tException.RECORD_DOES_NOT_EXIST, "ChannelId " + channelId + " for tenant " + tenantRef);
+            throw new T9tException(T9tException.RECORD_DOES_NOT_EXIST, "ChannelId " + channelId + " for tenant " + tenantId);
         final AsyncChannelDTO dto = results.get(0).ret$Data();
         dto.freeze();  // ensure it stays immutable in cache
         return dto;

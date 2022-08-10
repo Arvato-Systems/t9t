@@ -44,17 +44,17 @@ public class T9tJwtEnrichment implements IJwtEnrichment {
     @Override
     public void enrichJwt(final JwtInfo jwt, final JwtInfo oldJwt) {
         // don't change any IDs, but look up new refs if the tenant has changed
-        if (jwt.getTenantRef().equals(oldJwt.getTenantRef())) {
+        if (jwt.getTenantId().equals(oldJwt.getTenantId())) {
             // nothing changes
-            LOGGER.debug("enrichJwt for identical tenant ID/ref = {}/{}, current tenant {})",
-                    jwt.getTenantId(), jwt.getTenantRef(), contextProvider.get().getTenantRef());
+            LOGGER.debug("enrichJwt for identical tenant ID = {}, current tenant {})",
+                    jwt.getTenantId(), contextProvider.get().tenantId);
             jwt.setZ(oldJwt.getZ());
             return;
         }
         // we know this does not come via API key, because for that, the tenant cannot be changed
         // any restrictions can be user specific only. Read user and tenant (which we probably do not need) and forward to pwd enrichment case
         final UserDTO user = userResolver.getDTO(jwt.getUserRef());
-        final TenantDTO tenant = tenantResolver.getDTO(jwt.getTenantRef());
+        final TenantDTO tenant = tenantResolver.getDTO(jwt.getTenantId());
         enrichJwt(jwt, tenant, user);
     }
 

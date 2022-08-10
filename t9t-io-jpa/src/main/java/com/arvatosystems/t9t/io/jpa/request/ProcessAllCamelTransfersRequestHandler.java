@@ -49,9 +49,9 @@ public class ProcessAllCamelTransfersRequestHandler extends AbstractRequestHandl
                 + " ds WHERE ds.objectRef = s.dataSinkRef AND ds.dataSinkId = :dataSinkId AND";
         final TypedQuery<Long> query = sinkResolver.getEntityManager().createQuery(
             "SELECT s.objectRef FROM " + SinkEntity.class.getSimpleName() + " s "
-           + variablePart + " s.tenantRef = :tenantRef AND s.cTimestamp < :until AND s.camelTransferStatus IS NOT NULL "
+           + variablePart + " s.tenantId = :tenantId AND s.cTimestamp < :until AND s.camelTransferStatus IS NOT NULL "
            + "ORDER BY s.cTimestamp", Long.class);
-        query.setParameter("tenantRef", sinkResolver.getSharedTenantRef());
+        query.setParameter("tenantId", sinkResolver.getSharedTenantId());
         if (rq.getOnlySinkId() != null)
             query.setParameter("dataSinkId", rq.getOnlySinkId());
         final int minusMinutes = rq.getMinimumAge() == null ? 60 : rq.getMinimumAge().intValue();

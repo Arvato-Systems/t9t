@@ -38,7 +38,7 @@ public class RemoveOldMessageEntriesRequestHandler extends AbstractRequestHandle
     @Override
     public ServiceResponse execute(final RequestContext ctx, final RemoveOldMessageEntriesRequest request) {
 
-        if (ctx.getTenantRef().compareTo(T9tConstants.GLOBAL_TENANT_REF42) != 0) {
+        if (!ctx.tenantId.equals(T9tConstants.GLOBAL_TENANT_ID)) {
             throw new T9tException(T9tException.RESTRICTED_ACCESS, "Only accessible by global tenant");
         }
 

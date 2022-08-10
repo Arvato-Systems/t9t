@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test
 import static extension com.arvatosystems.t9t.misc.extensions.BpmExtensions.*
 import de.jpaw.bonaparte.util.ToStringHelper
 import com.arvatosystems.t9t.bpmn.ProcessExecutionStatusDTO
-import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS
 import de.jpaw.bonaparte.pojos.api.NoTracking
 
 @AddLogger
@@ -53,7 +53,7 @@ class BpmRestartParamsTest {
         val resp = dlg.typeIO((new ProcessExecutionStatusSearchRequest), ReadAllResponse)
         LOGGER.info("currently we have {} exec status entries ({} expected)", resp.dataList.size, expected)
         if (!resp.dataList.empty) {
-            val d0 = resp.dataList.get(0) as DataWithTrackingW<ProcessExecutionStatusDTO, NoTracking>
+            val d0 = resp.dataList.get(0) as DataWithTrackingS<ProcessExecutionStatusDTO, NoTracking>
             val dto = d0.data
             LOGGER.info("    params are: {}", ToStringHelper.toStringSL(dto.currentParameters))
         }

@@ -101,24 +101,24 @@ public class PluginManager implements IPluginManager {
         return null;
     }
 
-    protected void registerPluginMethods(final Long tenantRef, final Plugin loadedPlugin, final boolean unload) {
+    protected void registerPluginMethods(final String tenantId, final Plugin loadedPlugin, final boolean unload) {
         for (final PluginMethod pm: loadedPlugin.getMethods()) {
-            final StoredPluginMethodKey key = new StoredPluginMethodKey(tenantRef, pm.implementsApi(), pm.getQualifier());
+            final StoredPluginMethodKey key = new StoredPluginMethodKey(tenantId, pm.implementsApi(), pm.getQualifier());
             final IPluginMethodLifecycle lifecycle = Jdp.getRequired(IPluginMethodLifecycle.class, pm.getQualifier());
             if (unload) {
-                lifecycle.unregisterPluginMethod(tenantRef, loadedPlugin, pm, true);
+                lifecycle.unregisterPluginMethod(tenantId, loadedPlugin, pm, true);
                 loadedPluginMethods.remove(key, pm);
-                lifecycle.unregisterPluginMethod(tenantRef, loadedPlugin, pm, false);
+                lifecycle.unregisterPluginMethod(tenantId, loadedPlugin, pm, false);
             } else {
-                lifecycle.registerPluginMethod(tenantRef, loadedPlugin, pm, true);
+                lifecycle.registerPluginMethod(tenantId, loadedPlugin, pm, true);
                 loadedPluginMethods.put(key, pm);
-                lifecycle.registerPluginMethod(tenantRef, loadedPlugin, pm, false);
+                lifecycle.registerPluginMethod(tenantId, loadedPlugin, pm, false);
             }
         }
     }
 
     @Override
-    public PluginInfo loadPlugin(final Long tenantRef, final ByteArray pluginData) {
+    public PluginInfo loadPlugin(final String tenantId, final ByteArray pluginData) {
         final Class pluginClass;
         final URLClassLoader cl;
         try {
@@ -155,12 +155,12 @@ public class PluginManager implements IPluginManager {
             final PluginInfo info = loadedPlugin.getInfo();
             // now everything which could go wrong has succeeded!
             // if a previous plugin was registered, kick it out, replace it with the new one.
-            final StoredPluginKey key = new StoredPluginKey(tenantRef, info.getPluginId());
+            final StoredPluginKey key = new StoredPluginKey(tenantId, info.getPluginId());
             synchronized (lock) {
                 final LoadedPlugin previousPlugin = loadedPlugins.get(key);
                 if (previousPlugin != null) {
                     // remove the method entries
-                    registerPluginMethods(tenantRef, previousPlugin.loadedClass, true);
+                    registerPluginMethods(tenantId, previousPlugin.loadedClass, true);
                     // now also unload the plugin
                     previousPlugin.loadedClass.shutdown();
                     try {
@@ -170,7 +170,7 @@ public class PluginManager implements IPluginManager {
                     }
                 }
                 loadedPlugins.put(key, new LoadedPlugin(loadedPlugin, cl));
-                registerPluginMethods(tenantRef, loadedPlugin, false);
+                registerPluginMethods(tenantId, loadedPlugin, false);
             }
             return info;
         } catch (final Exception e) {
@@ -180,17 +180,17 @@ public class PluginManager implements IPluginManager {
 
     @Override
     public <R extends PluginMethod> R getPluginMethod(final String pluginApiId, final String qualifier, final Class<R> requiredType, final boolean allowNulls) {
-        return getPluginMethod(ctxProvider.get().tenantRef, pluginApiId, qualifier, requiredType, allowNulls);
+        return getPluginMethod(ctxProvider.get().tenantId, pluginApiId, qualifier, requiredType, allowNulls);
     }
 
     @Override
-    public <R extends PluginMethod> R getPluginMethod(final Long tenantRef, final String pluginApiId, final String qualifier,
+    public <R extends PluginMethod> R getPluginMethod(final String tenantId, final String pluginApiId, final String qualifier,
       final Class<R> requiredType, final boolean allowNulls) {
-        final StoredPluginMethodKey key = new StoredPluginMethodKey(tenantRef, pluginApiId, qualifier);
+        final StoredPluginMethodKey key = new StoredPluginMethodKey(tenantId, pluginApiId, qualifier);
         PluginMethod method = loadedPluginMethods.get(key);
-        if (method == null && !tenantRef.equals(T9tConstants.GLOBAL_TENANT_REF42)) {
+        if (method == null && !tenantId.equals(T9tConstants.GLOBAL_TENANT_ID)) {
             // perform another attempt using the global tenant
-            final StoredPluginMethodKey key2 = new StoredPluginMethodKey(T9tConstants.GLOBAL_TENANT_REF42, pluginApiId, qualifier);
+            final StoredPluginMethodKey key2 = new StoredPluginMethodKey(T9tConstants.GLOBAL_TENANT_ID, pluginApiId, qualifier);
             method = loadedPluginMethods.get(key2);
         }
         if (method == null) {
@@ -210,13 +210,13 @@ public class PluginManager implements IPluginManager {
 
 
     @Override
-    public boolean removePlugin(final Long tenantRef, final String pluginId) {
-        final StoredPluginKey key = new StoredPluginKey(tenantRef, pluginId);
+    public boolean removePlugin(final String tenantId, final String pluginId) {
+        final StoredPluginKey key = new StoredPluginKey(tenantId, pluginId);
         synchronized (lock) {
             final LoadedPlugin previousPlugin = loadedPlugins.get(key);
             if (previousPlugin != null) {
                 // remove the method entries
-                registerPluginMethods(tenantRef, previousPlugin.loadedClass, true);
+                registerPluginMethods(tenantId, previousPlugin.loadedClass, true);
                 // now also unload the plugin
                 previousPlugin.loadedClass.shutdown();
                 loadedPlugins.remove(key);

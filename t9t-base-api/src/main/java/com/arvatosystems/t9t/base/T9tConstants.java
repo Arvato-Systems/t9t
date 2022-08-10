@@ -79,11 +79,6 @@ public final class T9tConstants {
     public static final String TENANT_ID_FIELD_NAME = "tenantId";
 
     /**
-     * The name of the SOLR index field that holds the tenant_ref value of the outermost document
-     */
-    public static final String TENANT_REF_FIELD_NAME = "tenantRef";
-
-    /**
      * The maximum return code which is considered as an "OK" response code.
      */
     public static final String UI_META_NO_ASSIGNED_VALUE = "-";
@@ -99,13 +94,12 @@ public final class T9tConstants {
     public static final int MAX_DECLINE_RETURN_CODE = 199999999;
 
     // some fortytwo compatibility data
-    public static final Long GLOBAL_TENANT_REF42        = 1001L;
-    public static final Long ADMIN_USER_REF42           = 1002L;
-    public static final Long ADMIN_ROLE_REF42           = 1004L;
-    public static final Long STARTUP_USER_REF42         = 1003L;
-    public static final Long TECHNICAL_USER_REF42       = 1009L;
-    public static final Long ANONYMOUS_USER_REF42       = 1011L;
-    public static final String TENANT_REF_FIELD_NAME42  = "tenantRef";
+    public static final Long ADMIN_USER_REF           = 1002L;
+    public static final Long ADMIN_ROLE_REF           = 1004L;
+    public static final Long STARTUP_USER_REF         = 1003L;
+    public static final Long TECHNICAL_USER_REF       = 1009L;
+    public static final Long ANONYMOUS_USER_REF       = 1011L;
+    public static final Long INITIAL_SUBSCRIBER_CONFIG_REF = 1090L;
 
     public static final int DEFAULT_MAXIUM_NUMBER_OF_DAYS_IN_BETWEEN_USER_ACTIVITIES = 3650;
     public static final long ONE_DAY_IN_S  = 24L * 3600L;

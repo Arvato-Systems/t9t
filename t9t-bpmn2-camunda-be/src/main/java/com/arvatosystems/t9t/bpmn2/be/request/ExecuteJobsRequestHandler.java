@@ -15,8 +15,6 @@
  */
 package com.arvatosystems.t9t.bpmn2.be.request;
 
-import static com.arvatosystems.t9t.bpmn2.be.camunda.utils.IdentifierConverter.t9tTenantRefToBPMNTenantId;
-
 import java.util.List;
 
 import org.camunda.bpm.engine.ManagementService;
@@ -46,7 +44,7 @@ public class ExecuteJobsRequestHandler extends AbstractBPMNRequestHandler<Execut
         requestContext.statusText = "Selecting jobs";
 
         JobQuery query = managementService.createJobQuery()
-                                          .tenantIdIn(t9tTenantRefToBPMNTenantId(requestContext.getTenantRef()));
+                                          .tenantIdIn(requestContext.tenantId);
 
         if (request.getProcessDefinitionKey() != null) {
             query = query.processDefinitionKey(request.getProcessDefinitionKey());

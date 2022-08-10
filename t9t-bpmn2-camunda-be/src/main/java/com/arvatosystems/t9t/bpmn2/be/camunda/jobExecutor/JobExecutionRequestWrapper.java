@@ -15,14 +15,14 @@
  */
 package com.arvatosystems.t9t.bpmn2.be.camunda.jobExecutor;
 
-import static java.util.Collections.synchronizedMap;
 import static org.apache.commons.lang3.StringUtils.join;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
-import java.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +57,7 @@ public class JobExecutionRequestWrapper {
     private final IRequestProcessor requestProcessor = Jdp.getRequired(IRequestProcessor.class);
     private final IAuthenticate auth = Jdp.getRequired(IAuthenticate.class);
 
-    private final Map<Long, UUID> apiKeyPerTenantRef = synchronizedMap(new HashMap<>());
+    private final Map<String, UUID> apiKeyPerTenantId = new ConcurrentHashMap<>();
     private UUID defaultApiKey;
 
     private Map<UUID, Authentication> authenticationPerApiKey = new HashMap<>();
@@ -73,28 +73,28 @@ public class JobExecutionRequestWrapper {
      *            BPMN execution the job belongs to
      * @param workflowTypeString
      *            Workflow type the job belongs to
-     * @param tenantRef
-     *            Tenant ref for request context
+     * @param tenantId
+     *            Tenant for request context
      * @param apiKey
      *            Optional API key to perform authentication
      *
      * @return TRUE, if the job execution request was successful.
      */
-    protected boolean executeJob(String jobId, String executionId, String workflowTypeString, Long tenantRef, UUID apiKey) {
-        LOGGER.debug("Prepare job execution request for job {} of tenant ref {}", jobId, tenantRef);
+    protected boolean executeJob(String jobId, String executionId, String workflowTypeString, String tenantId, UUID apiKey) {
+        LOGGER.debug("Prepare job execution request for job {} of tenant {}", jobId, tenantId);
 
-        Authentication authentication = getAuthenticationForTenantRef(tenantRef, apiKey);
+        Authentication authentication = getAuthenticationForTenant(tenantId, apiKey);
         ServiceResponse response = performJobExecutorRequest(jobId, executionId, workflowTypeString, authentication);
 
         if (response.getReturnCode() == T9tException.JWT_EXPIRED) {
-            LOGGER.debug("Cached JWT for tenant ref {} expired - renew authentication and retry", tenantRef);
+            LOGGER.debug("Cached JWT for tenant {} expired - renew authentication and retry", tenantId);
 
-            authentication = renewAuthenticationForTenantRef(tenantRef, apiKey);
+            authentication = getAuthenticationForTenant(tenantId, apiKey);
             response = performJobExecutorRequest(jobId, executionId, workflowTypeString, authentication);
         }
 
         if (response.getReturnCode() != 0) {
-            LOGGER.debug("Job execution for tenant ref {} failed: {} - {}", tenantRef, response.getReturnCode(), response.getErrorMessage());
+            LOGGER.debug("Job execution for tenant ref {} failed: {} - {}", tenantId, response.getReturnCode(), response.getErrorMessage());
             return false;
         }
 
@@ -104,48 +104,48 @@ public class JobExecutionRequestWrapper {
     /**
      * Renew cached authentication for given tenant ref.
      *
-     * @param tenantRef
-     *            Tenant ref to get authentication for
+     * @param tenantId
+     *            Tenant ID to get authentication for
      * @param apiKey
-     *            API key to use or NULL to determine by given tenant ref
+     *            API key to use or NULL to determine by given tenant
      */
-    private synchronized Authentication renewAuthenticationForTenantRef(Long tenantRef, UUID apiKey) {
+    private synchronized Authentication renewAuthenticationForTenant(String tenantId, UUID apiKey) {
         authenticationPerApiKey.remove(apiKey);
 
-        return getAuthenticationForTenantRef(tenantRef, apiKey);
+        return getAuthenticationForTenant(tenantId, apiKey);
     }
 
     /**
      * Get cached authentication for given tenant ref. If none is already available or it is definitively expired, a new
      * authentication will be performed.
      *
-     * @param tenantRef
-     *            Tenant ref to get authentication for
+     * @param tenantId
+     *            Tenant ID to get authentication for
      * @param apiKey
-     *            API key to use or NULL to determine by given tenant ref
+     *            API key to use or NULL to determine by given tenant
      * @return Authentication (never NULL)
      */
-    private synchronized Authentication getAuthenticationForTenantRef(Long tenantRef, UUID apiKey) {
+    private synchronized Authentication getAuthenticationForTenant(String tenantId, UUID apiKey) {
         if (apiKey == null) {
-            apiKey = apiKeyPerTenantRef.getOrDefault(tenantRef, defaultApiKey);
+            apiKey = apiKeyPerTenantId.getOrDefault(tenantId, defaultApiKey);
         }
 
         if (apiKey == null) {
-            throw new RuntimeException("No API key available for tenant ref " + tenantRef);
+            throw new RuntimeException("No API key available for tenant " + tenantId);
         }
 
         Authentication authentication = authenticationPerApiKey.get(apiKey);
 
         if (authentication == null || authentication.isExpired()) {
-            LOGGER.debug("No existing or invalid JWT for tenant ref {} found - try to reauthenticate using API key", tenantRef);
+            LOGGER.debug("No existing or invalid JWT for tenant {} found - try to reauthenticate using API key", tenantId);
 
             authentication = performAuthentication(apiKey);
             authenticationPerApiKey.put(apiKey, authentication);
         }
 
-        if (!tenantRef.equals(authentication.jwtInfo.getTenantRef())) {
-            throw new RuntimeException(join("Jobs are determined to be executed in tenant ref ", tenantRef,
-                                            " but actual tenant ref available with API key authentication was ", authentication.jwtInfo.getTenantRef()));
+        if (!tenantId.equals(authentication.jwtInfo.getTenantId())) {
+            throw new RuntimeException(join("Jobs are determined to be executed in tenant ", tenantId,
+                                            " but actual tenant ref available with API key authentication was ", authentication.jwtInfo.getTenantId()));
         }
 
         return authentication;
@@ -214,7 +214,7 @@ public class JobExecutionRequestWrapper {
         this.defaultApiKey = defaultApiKey;
     }
 
-    public Map<Long, UUID> getApiKeyPerTenantRef() {
-        return apiKeyPerTenantRef;
+    public Map<String, UUID> getapiKeyPerTenantId() {
+        return apiKeyPerTenantId;
     }
 }

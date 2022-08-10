@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
-import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKey42RequestHandler;
+import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKeyRequestHandler;
 import com.arvatosystems.t9t.base.services.IAsyncRequestProcessor;
 import com.arvatosystems.t9t.base.services.IEventHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
@@ -39,7 +39,7 @@ import de.jpaw.dp.Jdp;
  * @author BORUS01
  *
  */
-public class SubscriberConfigCrudRequestHandler extends AbstractCrudSurrogateKey42RequestHandler<SubscriberConfigRef, SubscriberConfigDTO,
+public class SubscriberConfigCrudRequestHandler extends AbstractCrudSurrogateKeyRequestHandler<SubscriberConfigRef, SubscriberConfigDTO,
   FullTrackingWithVersion, SubscriberConfigCrudRequest, SubscriberConfigEntity> {
 
     private final ISubscriberConfigEntityResolver entityResolver = Jdp.getRequired(ISubscriberConfigEntityResolver.class);
@@ -61,8 +61,8 @@ public class SubscriberConfigCrudRequestHandler extends AbstractCrudSurrogateKey
                 ctx.addPostCommitHook((ctx2, rq, rs) -> {
                     final IEventHandler eventHandler = Jdp.getOptional(IEventHandler.class, dto.getHandlerClassName());
                     if (eventHandler != null) {
-                        asyncProcessor.registerSubscriber(dto.getEventID(), ctx.tenantRef, eventHandler);
-                        EventSubscriptionCache.updateRegistration(dto.getEventID(), dto.getHandlerClassName(), ctx.tenantRef, dto.getIsActive());
+                        asyncProcessor.registerSubscriber(dto.getEventID(), ctx.tenantId, eventHandler);
+                        EventSubscriptionCache.updateRegistration(dto.getEventID(), dto.getHandlerClassName(), ctx.tenantId, dto.getIsActive());
                     } else {
                         LOGGER.error("Can't find eventHandler with name '{}' to register for event id={}. Skipping this SubscriberConfig entry.",
                           dto.getHandlerClassName(), dto.getEventID());

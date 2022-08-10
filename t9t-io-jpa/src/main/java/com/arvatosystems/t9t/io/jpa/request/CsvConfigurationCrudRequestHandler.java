@@ -17,7 +17,7 @@ package com.arvatosystems.t9t.io.jpa.request;
 
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
-import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKey42RequestHandler;
+import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKeyRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.io.CsvConfigurationDTO;
 import com.arvatosystems.t9t.io.CsvConfigurationRef;
@@ -28,7 +28,7 @@ import com.arvatosystems.t9t.io.request.CsvConfigurationCrudRequest;
 
 import de.jpaw.dp.Jdp;
 
-public class CsvConfigurationCrudRequestHandler extends AbstractCrudSurrogateKey42RequestHandler<CsvConfigurationRef, CsvConfigurationDTO,
+public class CsvConfigurationCrudRequestHandler extends AbstractCrudSurrogateKeyRequestHandler<CsvConfigurationRef, CsvConfigurationDTO,
   FullTrackingWithVersion, CsvConfigurationCrudRequest, CsvConfigurationEntity> {
 
     private final ICsvConfigurationEntityResolver sinksResolver = Jdp.getRequired(ICsvConfigurationEntityResolver.class);

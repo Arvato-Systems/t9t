@@ -22,15 +22,15 @@ package (com.arvatosystems) t9t.event.jpa.entities owner fortytwo prefix p28 {
 
     entity SubscriberConfigEntity category cfg is SubscriberConfigDTO tablename p42_cfg_subscriber_config historytablename p42_his_subscriber_config {
         cacheable
-        tenantClass InternalTenantRef42
+        tenantClass InternalTenantId
         pk (objectRef)
-        index unique (tenantRef,eventID,handlerClassName)
+        index unique (tenantId, eventID, handlerClassName)
     }
 
     entity ListenerConfigEntity category cfg is ListenerConfigDTO {
         cacheable
-        tenantClass InternalTenantRef42
+        tenantClass InternalTenantId
         pk (objectRef)
-        index unique (tenantRef,classification)
+        index unique (tenantId, classification)
     }
 }

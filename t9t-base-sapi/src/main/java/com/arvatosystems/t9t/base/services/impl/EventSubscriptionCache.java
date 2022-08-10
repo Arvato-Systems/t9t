@@ -33,14 +33,14 @@ public final class EventSubscriptionCache {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EventSubscriptionCache.class);
 
-    public static void updateRegistration(final String eventID, final String qualifier, final Long tenantRef, final boolean active) {
-        final String key = eventID + ":" + qualifier + ":" + tenantRef.toString();
+    public static void updateRegistration(final String eventID, final String qualifier, final String tenantId, final boolean active) {
+        final String key = eventID + ":" + qualifier + ":" + tenantId;
         ACTIVE_SUBSCRIPTIONS.put(key, Boolean.valueOf(active));
         LOGGER.info("Updated EventSubscriptionCache with key:{}, active:{}", key, active);
     }
 
-    public static boolean isActive(final String eventID, final String qualifier, final Long tenantRef) {
-        final String key = eventID + ":" + qualifier + ":" + tenantRef.toString();
+    public static boolean isActive(final String eventID, final String qualifier, final String tenantId) {
+        final String key = eventID + ":" + qualifier + ":" + tenantId;
         return T9tUtil.isTrue(ACTIVE_SUBSCRIPTIONS.get(key));
     }
 }

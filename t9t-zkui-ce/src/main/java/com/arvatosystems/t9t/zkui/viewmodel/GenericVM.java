@@ -27,10 +27,9 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW;
 import de.jpaw.bonaparte.pojos.api.DataWithTracking;
 import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
+import de.jpaw.bonaparte.pojos.api.TrackingBase;
 
 /** Generic viewModel for modal windows MVVM. */
 @SuppressWarnings("rawtypes")
@@ -38,7 +37,6 @@ public class GenericVM {
     private static final Logger LOGGER = LoggerFactory.getLogger(GenericVM.class);
     private BonaPortable data;
     private TrackingBase tracking;
-    private Long tenantRef;
     private String tenantId;
 
     @Init
@@ -50,23 +48,17 @@ public class GenericVM {
             DataWithTracking<BonaPortable, TrackingBase> dwt = (DataWithTracking)pojo;
             data = dwt.getData();
             tracking = dwt.getTracking();
-            if (dwt instanceof DataWithTrackingW)
-                tenantRef = ((DataWithTrackingW)dwt).getTenantRef();
-            else if (dwt instanceof DataWithTrackingS)
+            if (dwt instanceof DataWithTrackingS)
                 tenantId = ((DataWithTrackingS)dwt).getTenantId();
         } else {
             data = (BonaPortable)pojo;
             tracking = null;
-            tenantRef = null;
+            tenantId = null;
         }
     }
 
     public BonaPortable getData() {
         return data;
-    }
-
-    public Long getTenantRef() {
-        return tenantRef;
     }
 
     public TrackingBase getTracking() {

@@ -20,9 +20,8 @@ import t9t.base.entities.*
 package (com.arvatosystems) t9t.bpmn2.jpa.entities owner fortytwo prefix p28 {
 
     entity Bpmn2MessageQueueEntity category datv is Bpmn2MessageQueueDTO {
-        tenantClass InternalTenantRef42
+        tenantClass InternalTenantId
         pk (objectRef)
-        index (tenantRef, retryCounter)
+        index (tenantId, retryCounter)
     }
-
 }

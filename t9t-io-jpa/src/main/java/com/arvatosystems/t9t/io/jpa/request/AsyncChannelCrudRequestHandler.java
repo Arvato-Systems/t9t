@@ -17,7 +17,7 @@ package com.arvatosystems.t9t.io.jpa.request;
 
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
-import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKey42RequestHandler;
+import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKeyRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.io.AsyncChannelDTO;
 import com.arvatosystems.t9t.io.AsyncChannelRef;
@@ -29,7 +29,7 @@ import com.arvatosystems.t9t.io.request.AsyncChannelCrudRequest;
 import de.jpaw.dp.Jdp;
 
 public class AsyncChannelCrudRequestHandler extends
-        AbstractCrudSurrogateKey42RequestHandler<AsyncChannelRef, AsyncChannelDTO, FullTrackingWithVersion, AsyncChannelCrudRequest, AsyncChannelEntity> {
+        AbstractCrudSurrogateKeyRequestHandler<AsyncChannelRef, AsyncChannelDTO, FullTrackingWithVersion, AsyncChannelCrudRequest, AsyncChannelEntity> {
 
     protected final IAsyncChannelEntityResolver resolver = Jdp.getRequired(IAsyncChannelEntityResolver.class);
     protected final IAsyncChannelDTOMapper mapper = Jdp.getRequired(IAsyncChannelDTOMapper.class);

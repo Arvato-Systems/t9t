@@ -19,6 +19,6 @@ import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.doc.DocTemplateDTO;
 import com.arvatosystems.t9t.doc.DocTemplateRef;
 
-import de.jpaw.bonaparte.refsw.RefResolver;
+import com.arvatosystems.t9t.base.services.IRefResolver;
 
-public interface IDocTemplateResolver extends RefResolver<DocTemplateRef, DocTemplateDTO, FullTrackingWithVersion> { }
+public interface IDocTemplateResolver extends IRefResolver<DocTemplateRef, DocTemplateDTO, FullTrackingWithVersion> { }

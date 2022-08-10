@@ -40,7 +40,7 @@ import de.jpaw.bonaparte.pojos.api.NotFilter
 import de.jpaw.bonaparte.pojos.api.OperationType
 import de.jpaw.bonaparte.pojos.api.media.MediaType
 import de.jpaw.bonaparte.pojos.api.media.MediaXType
-import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS
 import de.jpaw.util.ByteArray
 import java.util.HashMap
 import java.util.List
@@ -49,6 +49,7 @@ import java.time.LocalDateTime
 
 import static extension com.arvatosystems.t9t.misc.extensions.MiscExtensions.*
 import org.apache.commons.io.IOUtils
+import de.jpaw.bonaparte.pojos.api.UnicodeFilter
 
 /** Class which offers methods to create configurations for all reports.
  *
@@ -139,7 +140,7 @@ class T9tRepSetup {
         val configSearchReq = new ReportConfigSearchRequest => [
             searchFilter = new AsciiFilter("reportConfigId", reportConfigId, null, null, null, null)
         ]
-        val reportConfigs = ((dlg.doIO(configSearchReq) as ReadAllResponse<ReportConfigDTO, FullTrackingWithVersion>).dataList as List<DataWithTrackingW<ReportConfigDTO, FullTrackingWithVersion>>).map[data]
+        val reportConfigs = ((dlg.doIO(configSearchReq) as ReadAllResponse<ReportConfigDTO, FullTrackingWithVersion>).dataList as List<DataWithTrackingS<ReportConfigDTO, FullTrackingWithVersion>>).map[data]
 
         reportConfigs.forEach[
             createReportParams(it)
@@ -190,16 +191,16 @@ class T9tRepSetup {
         if (setupForGeneralTenant) {
             dataSinkSearchReq.searchFilter = new AndFilter => [
                 filter1 = new AsciiFilter("dataSinkId", data.dataSinkId, null, null, null, null)
-                filter2 = new LongFilter("tenantRef", T9tConstants.GLOBAL_TENANT_REF42, null, null, null)
+                filter2 = new UnicodeFilter("tenantId", T9tConstants.GLOBAL_TENANT_ID, null, null, null, null)
             ]
         } else {
             dataSinkSearchReq.searchFilter = new AndFilter => [
                 filter1 = new AsciiFilter("dataSinkId", data.dataSinkId, null, null, null, null)
-                filter2 = new NotFilter(new LongFilter("tenantRef", T9tConstants.GLOBAL_TENANT_REF42, null, null, null))
+                filter2 = new UnicodeFilter("tenantId", T9tConstants.GLOBAL_TENANT_ID, null, null, null, null)
             ]
         }
 
-        val dataSinkGeneralTenantReqRes = ((dlg.doIO(dataSinkSearchReq) as ReadAllResponse<DataSinkDTO, FullTrackingWithVersion>).dataList as List<DataWithTrackingW<DataSinkDTO, FullTrackingWithVersion>>)
+        val dataSinkGeneralTenantReqRes = ((dlg.doIO(dataSinkSearchReq) as ReadAllResponse<DataSinkDTO, FullTrackingWithVersion>).dataList as List<DataWithTrackingS<DataSinkDTO, FullTrackingWithVersion>>)
 
         val crudReq = new DataSinkCrudRequest => [
             crud = OperationType.UPDATE

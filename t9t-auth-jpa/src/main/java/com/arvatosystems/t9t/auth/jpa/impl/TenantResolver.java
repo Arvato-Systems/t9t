@@ -15,35 +15,22 @@
  */
 package com.arvatosystems.t9t.auth.jpa.impl;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
-
 import com.arvatosystems.t9t.auth.TenantDTO;
-import com.arvatosystems.t9t.auth.TenantRef;
 import com.arvatosystems.t9t.auth.jpa.entities.TenantEntity;
-import com.arvatosystems.t9t.auth.jpa.mapping.ITenantDTOMapper;
-import com.arvatosystems.t9t.auth.jpa.persistence.ITenantEntityResolver;
+import com.arvatosystems.t9t.auth.jpa.persistence.impl.TenantEntityResolver;
 import com.arvatosystems.t9t.auth.services.ITenantResolver;
-import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
-import com.arvatosystems.t9t.base.jpa.impl.AbstractJpaResolver;
 
-import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
+import de.jpaw.dp.Specializes;
 
 @Singleton
-public class TenantResolver extends AbstractJpaResolver<TenantRef, TenantDTO, FullTrackingWithVersion, TenantEntity> implements ITenantResolver {
-
-    public TenantResolver() {
-        super("Tenant", Jdp.getRequired(ITenantEntityResolver.class), Jdp.getRequired(ITenantDTOMapper.class));
-    }
+@Specializes
+public class TenantResolver extends TenantEntityResolver implements ITenantResolver {
 
     @Override
-    protected TypedQuery<TenantEntity> createQuery(final EntityManager em) {
-        return em.createQuery("SELECT e FROM TenantEntity e", TenantEntity.class);
-    }
-
-    @Override
-    public TenantRef createKey(final Long ref) {
-        return ref == null ? null : new TenantRef(ref);
+    public TenantDTO getDTO(String tenantId) {
+        final TenantEntity tenant = findInternal(tenantId, false, true);
+        final TenantDTO dto = tenant.ret$Data();
+        return dto;
     }
 }

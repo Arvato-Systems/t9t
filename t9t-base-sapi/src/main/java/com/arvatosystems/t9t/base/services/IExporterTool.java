@@ -22,14 +22,14 @@ import com.arvatosystems.t9t.base.search.ReadAllResponse;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW;
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 
 public interface IExporterTool<DTO extends BonaPortable, TRACKING extends TrackingBase> {
     /** Opens an output session, pushes all data into it, and returns the generated sinkRef.
      * @throws Exception */
-    Long storeAll(OutputSessionParameters op, List<DataWithTrackingW<DTO, TRACKING>> dataList, Integer maxRecords) throws Exception;
+    Long storeAll(OutputSessionParameters op, List<DataWithTrackingS<DTO, TRACKING>> dataList, Integer maxRecords) throws Exception;
 
-    ReadAllResponse<DTO, TRACKING> returnOrExport(List<DataWithTrackingW<DTO, TRACKING>> dataList, OutputSessionParameters op) throws Exception;
+    ReadAllResponse<DTO, TRACKING> returnOrExport(List<DataWithTrackingS<DTO, TRACKING>> dataList, OutputSessionParameters op) throws Exception;
 
     /** Return a sublist which respects offset and limit. */
     <X> List<X> cut(List<X> dataList, int offset, int limit);

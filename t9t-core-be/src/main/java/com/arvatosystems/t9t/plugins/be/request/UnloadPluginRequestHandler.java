@@ -41,7 +41,7 @@ public class UnloadPluginRequestHandler extends AbstractRequestHandler<UnloadPlu
             LOGGER.info("Plugin upload not enabled via configuration");
             throw new T9tException(T9tException.PLUGINS_NOT_ENABLED);
         }
-        final boolean removed = pluginManager.removePlugin(ctx.tenantRef, rq.getPluginId());
+        final boolean removed = pluginManager.removePlugin(ctx.tenantId, rq.getPluginId());
         LOGGER.info("The plugin {} {}", rq.getPluginId(), removed ? "has been removed" : "was not found");
         return ok();
     }

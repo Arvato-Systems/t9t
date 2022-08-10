@@ -28,4 +28,11 @@ public interface ILeanGridConfigContainer {
      * @return List of configuration names.
      */
     List<String> getResourceNames();
+
+    /**
+     * Some value for ordering. Default value is 0
+     */
+    default int getOrder() {
+        return 0;
+    }
 }

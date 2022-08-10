@@ -63,7 +63,7 @@ package (com.arvatosystems) t9t.base.search {
     class SearchResponse<DATA, TRACKING extends TrackingBase, LIST_WITH_TENANT extends DataWithTracking<!DATA, !TRACKING>> extends SinkCreatedResponse {
         required (!LIST_WITH_TENANT...) required List<> dataList;                           // the list of results
     }
-    class ReadAllResponse<DATA, TRACKING extends TrackingBase> extends SearchResponse<!DATA, !TRACKING, DataWithTrackingW<!DATA, !TRACKING>> {
+    class ReadAllResponse<DATA, TRACKING extends TrackingBase> extends SearchResponse<!DATA, !TRACKING, DataWithTrackingS<!DATA, !TRACKING>> {
     }
 
     /** The type which defines filtering, sorting and data subsets for queries.
@@ -224,13 +224,6 @@ package (com.arvatosystems) t9t.base.search {
         required f42Ref                                 objectRef;
         optional f42Ref                                 otherRef;
     }
-
-    /** ReadAllResponse on tables with an alphanumeric tenant ID. */
-    class ReadAll28Response<DATA, TRACKING extends TrackingBase> extends SearchResponse<!DATA, !TRACKING, DataWithTrackingS<!DATA, !TRACKING>> {
-    }
-
-    /** SearchRequest on tables with an alphanumeric tenant ID. */
-    abstract class Search28Request<DATA, TRACKING extends TrackingBase> extends SearchCriteria return ReadAll28Response<!DATA, !TRACKING> {}
 
     abstract class AbstractExportRequest extends RequestParameters return SinkCreatedResponse {
         required dataSinkId                         dataSinkId;           // allows to override a preconfigured default data sink ID

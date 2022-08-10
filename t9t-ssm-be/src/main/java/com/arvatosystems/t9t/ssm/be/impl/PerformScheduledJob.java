@@ -82,8 +82,8 @@ public class PerformScheduledJob implements Job {
         try {
             final int runOnNode = dataMap.getInt(QuartzSchedulerService.DM_RUN_ON_NODE);
             if ((runOnNode != (QuartzSchedulerService.RUN_ON_ALL_NODES).intValue())) {
-                final long tenantRef = dataMap.getLong(QuartzSchedulerService.DM_TENANT_REF);
-                if (!clusterEnvironment.processOnThisNode(Long.valueOf(tenantRef), runOnNode)) {
+                final String tenantId = dataMap.getString(QuartzSchedulerService.DM_TENANT_ID);
+                if (!clusterEnvironment.processOnThisNode(tenantId, runOnNode)) {
                     return; // not suitable for this node
                 }
             }

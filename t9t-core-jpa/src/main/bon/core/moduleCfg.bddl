@@ -25,7 +25,7 @@ package (com.arvatosystems) t9t.core.jpa.entities owner fortytwo prefix p42 {
     /** Base entity (mapped superclass) for all module configurations. Use of this superclass allows a common caching. */
     abstract entity ModuleConfigEntity category cfg is ModuleConfigDTO inheritance tablePerClass {
         cacheable
-        tenantClass InternalTenantRef42
-        pk (tenantRef)
+        tenantClass InternalTenantId
+        pk (tenantId)
     }
 }

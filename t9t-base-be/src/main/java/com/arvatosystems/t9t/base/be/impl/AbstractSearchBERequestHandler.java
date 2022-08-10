@@ -29,8 +29,8 @@ import com.arvatosystems.t9t.base.services.IOutputSession;
 import com.google.common.collect.ImmutableList;
 
 import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ApplicationException;
 import de.jpaw.util.ExceptionUtil;
@@ -39,10 +39,10 @@ import de.jpaw.util.ExceptionUtil;
  * as well as applying extra user related restrictions. */
 public abstract class AbstractSearchBERequestHandler<DTO extends BonaPortable, TRACKING extends TrackingBase, REQUEST extends SearchRequest<DTO, TRACKING>>
   extends AbstractSearchRequestHandler<REQUEST> {
-    private final List<DataWithTrackingW<DTO, TRACKING>> emptyResultList = ImmutableList.<DataWithTrackingW<DTO, TRACKING>>of();
+    private final List<DataWithTrackingS<DTO, TRACKING>> emptyResultList = ImmutableList.<DataWithTrackingS<DTO, TRACKING>>of();
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractSearchBERequestHandler.class);
 
-    protected ReadAllResponse<DTO, TRACKING> execute(final List<DataWithTrackingW<DTO, TRACKING>> result, final OutputSessionParameters op) {
+    protected ReadAllResponse<DTO, TRACKING> execute(final List<DataWithTrackingS<DTO, TRACKING>> result, final OutputSessionParameters op) {
         final ReadAllResponse<DTO, TRACKING> rs = new ReadAllResponse<>();
         LOGGER.debug("{} result size has size {}", this.getClass().getSimpleName(), result.size());
 
@@ -54,7 +54,7 @@ public abstract class AbstractSearchBERequestHandler<DTO extends BonaPortable, T
             op.setSmartMappingForDataWithTracking(Boolean.TRUE);
             try (IOutputSession outputSession = Jdp.getRequired(IOutputSession.class)) {
                 final Long sinkRef = outputSession.open(op);
-                for (final DataWithTrackingW<DTO, TRACKING> e : result) {
+                for (final DataWithTrackingS<DTO, TRACKING> e : result) {
                     outputSession.store(e);
                 }
                 // successful close: store ref

@@ -24,8 +24,8 @@ package (com.arvatosystems) t9t.uiprefsv3.jpa.entities owner fortytwo prefix p28
     fields private;
 
     entity LeanGridConfigEntity category cfg is LeanGridConfigDTO {
-        tenantClass InternalTenantRef42
+        tenantClass InternalTenantId
         pk (objectRef)
-        index unique (tenantRef, gridId, variant, userRef)
+        index unique (tenantId, gridId, variant, userRef)
     }
 }

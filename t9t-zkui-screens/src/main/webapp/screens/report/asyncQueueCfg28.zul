@@ -8,7 +8,7 @@
             currentMode="@load(vm.currentMode)">
             <form28 id="asyncQueueCfgCrud" aspect="2" numColumns="2">
                 <rows>
-                     <cells228 id ="tenantRef"               value ="@load(vm.tenantRef) @save(vm.tenantRef,before='commandSave')"
+                     <cells228 id ="tenantId"                value ="@load(vm.tenantId)                 @save(vm.tenantId,before='commandSave')"
                                id2="isActive"                value2="@bind(vm.data.isActive)"/>
                      <cells228 id ="asyncQueueId"            value ="@load(vm.data.asyncQueueId)        @save(vm.data.asyncQueueId,before='commandSave')"
                                id2="description"             value2="@load(vm.data.description)         @save(vm.data.description,before='commandSave')"/>

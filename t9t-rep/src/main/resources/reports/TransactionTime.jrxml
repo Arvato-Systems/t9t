@@ -32,7 +32,7 @@ round(avg(msg.processing_time_in_millisecs),0) avg_time,
 max(msg.processing_time_in_millisecs) max_time,
 min(msg.processing_time_in_millisecs) min_time
 FROM p28_int_message msg
-LEFT OUTER JOIN p42_cfg_tenants tenant on (msg.tenant_ref = tenant.object_ref)
+LEFT OUTER JOIN p42_cfg_tenants tenant on (msg.tenant_id = tenant.tenant_id)
 WHERE
 msg.processing_time_in_millisecs IS NOT NULL
 AND msg.execution_started_at >= to_timestamp($P{dateFromStr},'YYYY-MM-DD HH24:MI:SS')

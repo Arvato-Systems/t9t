@@ -20,7 +20,7 @@ import java.util.List;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
-import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKey42RequestHandler;
+import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKeyRequestHandler;
 import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.bpmn.ProcessDefinitionDTO;
@@ -34,7 +34,7 @@ import com.arvatosystems.t9t.bpmn.request.ProcessDefinitionCrudRequest;
 
 import de.jpaw.dp.Jdp;
 
-public class ProcessDefinitionCrudRequestHandler extends AbstractCrudSurrogateKey42RequestHandler<ProcessDefinitionRef, ProcessDefinitionDTO,
+public class ProcessDefinitionCrudRequestHandler extends AbstractCrudSurrogateKeyRequestHandler<ProcessDefinitionRef, ProcessDefinitionDTO,
   FullTrackingWithVersion, ProcessDefinitionCrudRequest, ProcessDefinitionEntity> {
     protected final IProcessDefinitionEntityResolver resolver = Jdp.getRequired(IProcessDefinitionEntityResolver.class);
     protected final IProcessDefinitionDTOMapper mapper = Jdp.getRequired(IProcessDefinitionDTOMapper.class);

@@ -46,7 +46,6 @@ public class AuthenticateNoDbBackend implements IAuthenticate {
         DEMO_JWT_INFO.setUserId("techuser");
         DEMO_JWT_INFO.setUserRef(1L);
         DEMO_JWT_INFO.setTenantId(T9tConstants.GLOBAL_TENANT_ID);
-        DEMO_JWT_INFO.setTenantRef(T9tConstants.GLOBAL_TENANT_REF42);
         DEMO_JWT_INFO.setName("technical user");
         DEMO_JWT_INFO.setLocale("en");
         DEMO_JWT_INFO.setZoneinfo("UTC");

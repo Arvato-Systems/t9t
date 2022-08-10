@@ -53,7 +53,7 @@ public class AuthStartup implements StartupOnly {
         // need a context in case we write the the DB - entity listeners would access it
         final PersistenceProviderJPA ppJPA = jpaContextProvider.get();
         final EntityManager em = ppJPA.getEntityManager();
-        if (em.find(TenantEntity.class, T9tConstants.GLOBAL_TENANT_REF42) == null) {
+        if (em.find(TenantEntity.class, T9tConstants.GLOBAL_TENANT_ID) == null) {
             LOGGER.info("No global tenant exists - setting up basic configuration");
             createGlobalTenant(em);
             createStartupUser(em);
@@ -72,7 +72,6 @@ public class AuthStartup implements StartupOnly {
 
     protected void createGlobalTenant(final EntityManager em) {
         final TenantEntity tenant = new TenantEntity();
-        tenant.setObjectRef(T9tConstants.GLOBAL_TENANT_REF42);
         tenant.setTenantId(T9tConstants.GLOBAL_TENANT_ID);
         tenant.setName("Default tenant");
         tenant.setIsActive(true);
@@ -84,14 +83,14 @@ public class AuthStartup implements StartupOnly {
     }
 
     protected void createStartupUser(final EntityManager em) {
-        LOGGER.info("Creating initial user {} with ref {}", T9tConstants.STARTUP_USER_ID, T9tConstants.STARTUP_USER_REF42);
+        LOGGER.info("Creating initial user {} with ref {}", T9tConstants.STARTUP_USER_ID, T9tConstants.STARTUP_USER_REF);
 
         final UserEntity user = new UserEntity();
-        user.setObjectRef(T9tConstants.STARTUP_USER_REF42);
+        user.setObjectRef(T9tConstants.STARTUP_USER_REF);
         user.setUserId(T9tConstants.STARTUP_USER_ID);
         user.setName("System startup");
         user.setIsActive(true);
-        user.setTenantRef(T9tConstants.GLOBAL_TENANT_REF42);
+        user.setTenantId(T9tConstants.GLOBAL_TENANT_ID);
         final PermissionsDTO permissions = new PermissionsDTO();
         permissions.setLogLevel(UserLogLevelType.REQUESTS);
         permissions.setLogLevelErrors(UserLogLevelType.REQUESTS);
@@ -103,14 +102,14 @@ public class AuthStartup implements StartupOnly {
     }
 
     protected void createAdminUser(final EntityManager em) {
-        LOGGER.info("Creating initial user {} with ref {}", T9tConstants.ADMIN_USER_ID, T9tConstants.ADMIN_USER_REF42);
+        LOGGER.info("Creating initial user {} with ref {}", T9tConstants.ADMIN_USER_ID, T9tConstants.ADMIN_USER_REF);
 
         final UserEntity user = new UserEntity();
-        user.setObjectRef(T9tConstants.ADMIN_USER_REF42);
+        user.setObjectRef(T9tConstants.ADMIN_USER_REF);
         user.setUserId(T9tConstants.ADMIN_USER_ID);
         user.setName("Administrator");
         user.setIsActive(true);
-        user.setTenantRef(T9tConstants.GLOBAL_TENANT_REF42);
+        user.setTenantId(T9tConstants.GLOBAL_TENANT_ID);
         final PermissionsDTO permissions = new PermissionsDTO();
         permissions.setLogLevel(UserLogLevelType.REQUESTS);
         permissions.setLogLevelErrors(UserLogLevelType.REQUESTS);
@@ -123,13 +122,13 @@ public class AuthStartup implements StartupOnly {
 
         // set up an initial password
         final UserStatusEntity userStatus = new UserStatusEntity();
-        userStatus.setObjectRef(T9tConstants.ADMIN_USER_REF42);
+        userStatus.setObjectRef(T9tConstants.ADMIN_USER_REF);
         userStatus.setCurrentPasswordSerialNumber(1);
         em.persist(userStatus);
 
         final PasswordEntity password = new PasswordEntity();
-        password.put$Key(new PasswordKey(T9tConstants.ADMIN_USER_REF42, 1));
-        password.setPasswordSetByUser(T9tConstants.ADMIN_USER_REF42);
+        password.put$Key(new PasswordKey(T9tConstants.ADMIN_USER_REF, 1));
+        password.setPasswordSetByUser(T9tConstants.ADMIN_USER_REF);
         password.setPasswordCreation(Instant.now());
         password.setPasswordExpiry(password.getPasswordCreation().plusSeconds(30 * T9tConstants.ONE_DAY_IN_S));
         password.setUserExpiry(password.getPasswordCreation().plusSeconds(3650 * T9tConstants.ONE_DAY_IN_S));
@@ -140,11 +139,11 @@ public class AuthStartup implements StartupOnly {
 
     protected void createAdminRole(final EntityManager em) {
         LOGGER.info("Creating initial role {} with ref {} and granting it to {}", T9tConstants.ADMIN_ROLE_ID,
-                T9tConstants.ADMIN_ROLE_REF42, T9tConstants.ADMIN_USER_ID);
+                T9tConstants.ADMIN_ROLE_REF, T9tConstants.ADMIN_USER_ID);
 
         final RoleEntity role = new RoleEntity();
-        role.setTenantRef(T9tConstants.GLOBAL_TENANT_REF42);
-        role.setObjectRef(T9tConstants.ADMIN_ROLE_REF42);
+        role.setTenantId(T9tConstants.GLOBAL_TENANT_ID);
+        role.setObjectRef(T9tConstants.ADMIN_ROLE_REF);
         role.setRoleId(T9tConstants.ADMIN_ROLE_ID);
         role.setName("Administrator role");
         role.setIsActive(true);
@@ -152,9 +151,9 @@ public class AuthStartup implements StartupOnly {
         em.persist(role);
 
         final UserTenantRoleEntity tenantRole = new UserTenantRoleEntity();
-        tenantRole.setTenantRef(T9tConstants.GLOBAL_TENANT_REF42);
-        tenantRole.setUserRef(T9tConstants.ADMIN_USER_REF42);
-        tenantRole.setRoleRef(T9tConstants.ADMIN_ROLE_REF42);
+        tenantRole.setTenantId(T9tConstants.GLOBAL_TENANT_ID);
+        tenantRole.setUserRef(T9tConstants.ADMIN_USER_REF);
+        tenantRole.setRoleRef(T9tConstants.ADMIN_ROLE_REF);
 
         em.persist(tenantRole);
     }
@@ -163,8 +162,8 @@ public class AuthStartup implements StartupOnly {
         LOGGER.info("Creating event listener for cache invalidation");
 
         final SubscriberConfigEntity listener = new SubscriberConfigEntity();
-        listener.setTenantRef(T9tConstants.GLOBAL_TENANT_REF42);
-        listener.setObjectRef(T9tConstants.GLOBAL_TENANT_REF42 + 1);
+        listener.setTenantId(T9tConstants.GLOBAL_TENANT_ID);
+        listener.setObjectRef(T9tConstants.INITIAL_SUBSCRIBER_CONFIG_REF);
         listener.setEventID(InvalidateCacheEvent.BClass.INSTANCE.getPqon());
         listener.setHandlerClassName("cacheInvalidation");
         listener.setIsActive(true);

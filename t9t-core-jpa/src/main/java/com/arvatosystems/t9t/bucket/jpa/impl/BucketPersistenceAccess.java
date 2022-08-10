@@ -62,20 +62,20 @@ public class BucketPersistenceAccess implements IBucketPersistenceAccess {
 
                 // obtain counters
                 final Set<BucketWriteKey> keys = m.keySet();
-                final List<Long> tenants = new ArrayList<>(keys.size());
+                final List<String> tenants = new ArrayList<>(keys.size());
                 final List<String> buckets = new ArrayList<>(keys.size());
                 for (final BucketWriteKey key : keys) {
-                    tenants.add(key.getTenantRef());
+                    tenants.add(key.getTenantId());
                     buckets.add(key.getTypeId());
                 }
                 final TypedQuery<BucketCounterEntity> query1a = em.createQuery(
-                        "SELECT bc FROM BucketCounterEntity bc WHERE bc.tenantRef IN :tenants AND bc.qualifier IN :buckets", BucketCounterEntity.class);
+                        "SELECT bc FROM BucketCounterEntity bc WHERE bc.tenantId IN :tenants AND bc.qualifier IN :buckets", BucketCounterEntity.class);
                 query1a.setParameter("tenants", tenants);
                 query1a.setParameter("buckets", buckets);
                 final List<BucketCounterEntity> currentCounters = query1a.getResultList();
 
                 for (final Map.Entry<BucketWriteKey, Integer> kv : m.entrySet()) {
-                    final Integer bucketNo = getBucketNo(currentCounters, kv.getKey().getTenantRef(), kv.getKey().getTypeId());
+                    final Integer bucketNo = getBucketNo(currentCounters, kv.getKey().getTenantId(), kv.getKey().getTypeId());
                     // determine current bucket
                     final TypedQuery<BucketEntryEntity> query = em.createQuery(
                             "SELECT be FROM BucketEntryEntity be WHERE be.qualifier = :bucketId AND be.bucket = :bucket AND be.ref = :ref",
@@ -87,7 +87,7 @@ public class BucketPersistenceAccess implements IBucketPersistenceAccess {
                     if (existingEntries.isEmpty()) {
                         // create a new entry
                         final BucketEntryEntity e = new BucketEntryEntity();
-                        e.setTenantRef(kv.getKey().getTenantRef());
+                        e.setTenantId(kv.getKey().getTenantId());
                         e.setQualifier(kv.getKey().getTypeId());
                         e.setRef(kv.getKey().getObjectRef());
                         e.setBucket(bucketNo);
@@ -113,9 +113,9 @@ public class BucketPersistenceAccess implements IBucketPersistenceAccess {
         }
     }
 
-    protected Integer getBucketNo(final List<BucketCounterEntity> cel, final Long tenantRef, final String qualifier) {
+    protected Integer getBucketNo(final List<BucketCounterEntity> cel, final String tenantId, final String qualifier) {
         for (final BucketCounterEntity ce : cel) {
-            if (ce.getTenantRef().equals(tenantRef) && ce.getQualifier().equals(qualifier)) {
+            if (ce.getTenantId().equals(tenantId) && ce.getQualifier().equals(qualifier)) {
                 return ce.getCurrentVal();
             }
         }

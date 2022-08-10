@@ -75,7 +75,6 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
     public static final String DATE_FROM = "dateFrom";
     public static final String DATE_TO = "dateTo";
     public static final String TENANT_ID = "tenantId";
-    public static final String TENANT_REF = "tenantRef";        // obsolete
     public static final String USER_ID = "userId";
     public static final String USER_REF = "userRef";            // obsolete
     public static final String PROCESS_REF = "processRef";
@@ -164,7 +163,6 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
         parameters.put(PROCESS_REF, ctx.requestRef);
         parameters.put(TENANT_ID,   ctx.tenantId);
         parameters.put(USER_ID,     ctx.userId);
-        parameters.put(TENANT_REF,  ctx.tenantRef);
         parameters.put(USER_REF,    ctx.userRef);
 //        parameters.put(DIALECT, configuration.getDatabaseDialect().toString());
     }

@@ -48,7 +48,7 @@ package (com.arvatosystems) t9t.msglog {
         properties tenantCategory="A";
         // combines fields from the RequestHeader and ResponseHeader message types, plus more
         required f42Ref                             sessionRef;             // identifies file or queue or socket which accepted the record
-        required f42Ref                             tenantRef;              // identifies file or queue or socket which accepted the record
+        required tenantId                           tenantId;               // identifies the tenant
         optional Integer                            recordNo;               // record of the transmission
         optional messageId                          messageId;
         optional Enum RetryAdviceType               idempotencyBehaviour;
@@ -76,14 +76,14 @@ package (com.arvatosystems) t9t.msglog {
     class MessageStatisticsRef RTTI 19 extends Ref {}
 
     class MessageStatisticsKey extends MessageStatisticsRef {
-        required f42Ref                             tenantRef;              // identifies the tenant
+        required tenantId                           tenantId;               // identifies the tenant
         required userId                             userId;
         required Day                                ^day;
         required pqon                               requestParameterPqon;   // partially qualified name of the request
     }
     final class MessageStatisticsDTO extends MessageStatisticsRef {
         properties tenantCategory="A";
-        required f42Ref                             tenantRef;              // identifies the tenant
+        required tenantId                           tenantId;               // identifies the tenant
         required userId                             userId;
         required Day                                ^day;
         required pqon                               requestParameterPqon;   // partially qualified name of the request

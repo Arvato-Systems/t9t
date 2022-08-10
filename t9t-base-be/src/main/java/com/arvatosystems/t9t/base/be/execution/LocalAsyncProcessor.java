@@ -86,12 +86,12 @@ public class LocalAsyncProcessor implements IAsyncRequestProcessor {
 
     @Override
     public void registerSubscriber(final String eventID, final IEventHandler subscriber) {
-        registerSubscriber(eventID, T9tConstants.GLOBAL_TENANT_REF42, subscriber);
+        registerSubscriber(eventID, T9tConstants.GLOBAL_TENANT_ID, subscriber);
     }
 
     @Override
-    public void registerSubscriber(final String eventID, final Long tenantRef, final IEventHandler subscriber) {
-        LOGGER.debug("subscriber (not) registered: {} for {} of tenant {}", subscriber.getClass().getCanonicalName(), eventID, tenantRef);
+    public void registerSubscriber(final String eventID, final String tenantId, final IEventHandler subscriber) {
+        LOGGER.debug("subscriber (not) registered: {} for {} of tenant {}", subscriber.getClass().getCanonicalName(), eventID, tenantId);
     }
 
     protected IUnauthenticatedServiceRequestExecutor getServiceRequestExecutor() {

@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey42;
+import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey;
 import com.arvatosystems.t9t.base.search.Description;
 import com.arvatosystems.t9t.base.search.DescriptionList;
 import com.arvatosystems.t9t.base.search.LeanGroupedSearchRequest;
@@ -36,12 +36,12 @@ public abstract class AbstractLeanGroupedSearchRequestHandler<
   S extends LeanGroupedSearchRequest,
   E extends BonaPersistableKey<Long> & BonaPersistableTracking<?>
 > extends AbstractReadOnlyRequestHandler<S> {
-    protected final IResolverSurrogateKey42<?, ?, E> resolver;
+    protected final IResolverSurrogateKey<?, ?, E> resolver;
     protected final Function<E, Long> getGroup;
     protected final Function<E, Description> mapper;
 
     protected AbstractLeanGroupedSearchRequestHandler(
-            final IResolverSurrogateKey42<?, ?, E> resolver,
+            final IResolverSurrogateKey<?, ?, E> resolver,
             final Function<E, Long> getGroup,
             final Function<E, Description> mapper) {
         this.resolver = resolver;
@@ -59,7 +59,7 @@ public abstract class AbstractLeanGroupedSearchRequestHandler<
             // set common fields...
             d.setObjectRef(e.ret$Key());
             d.setIsActive(e.ret$Active());
-            d.setDifferentTenant(!ctx.tenantRef.equals(resolver.getTenantRef(e)));
+            d.setDifferentTenant(!ctx.tenantId.equals(resolver.getTenantId(e)));
             // guard for empty description
             if (d.getName() == null)
                 d.setName("?");

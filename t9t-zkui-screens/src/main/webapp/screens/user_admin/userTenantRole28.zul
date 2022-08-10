@@ -8,7 +8,7 @@
             currentMode="@load(vm.currentMode)">
             <form28 id="userTenantRoleCrud" aspect="2" numColumns="2">
                 <rows>
-                    <cells28  id ="tenantRef"               value ="@bind(vm.tenantRef)"/>
+                    <cells28  id ="tenantId"                value ="@bind(vm.tenantId)"/>
                     <cells228 id= "userRef"                 value ="@load(vm.data.userRef) @save(vm.data.userRef, before='commandSave')"
                               id2="roleRef"                 value2="@load(vm.data.roleRef) @save(vm.data.roleRef, before='commandSave')" />
                 </rows>

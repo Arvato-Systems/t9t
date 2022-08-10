@@ -17,6 +17,9 @@ package com.arvatosystems.t9t.all.be.request;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.arvatosystems.t9t.all.request.UserExportRequest;
 import com.arvatosystems.t9t.auth.UserDTO;
 import com.arvatosystems.t9t.auth.jpa.mapping.IUserDTOMapper;
@@ -32,13 +35,10 @@ import com.arvatosystems.t9t.base.services.IExporterTool;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.bonaparte.api.SearchFilters;
-import de.jpaw.bonaparte.pojos.api.LongFilter;
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW;
+import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
 import de.jpaw.dp.Jdp;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class UserExportRequestHandler extends AbstractRequestHandler<UserExportRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserExportRequestHandler.class);
@@ -52,8 +52,8 @@ public class UserExportRequestHandler extends AbstractRequestHandler<UserExportR
     @Override
     public ServiceResponse execute(final RequestContext ctx, final UserExportRequest request) throws Exception {
         // create a search filter which contains the tenant
-        final LongFilter tenantFilter = new LongFilter(T9tConstants.TENANT_REF_FIELD_NAME);
-        tenantFilter.setEqualsValue(ctx.getTenantRef());
+        final UnicodeFilter tenantFilter = new UnicodeFilter(T9tConstants.TENANT_ID_FIELD_NAME);
+        tenantFilter.setEqualsValue(ctx.tenantId);
         final SearchFilter myFilter = SearchFilters.and(tenantFilter, request.getSearchFilter());
 
         final UserSearchRequest queryParams = new UserSearchRequest();
@@ -63,7 +63,7 @@ public class UserExportRequestHandler extends AbstractRequestHandler<UserExportR
         queryParams.setSortColumns(request.getSortColumns());
 
         // retrieve the data
-        final List<DataWithTrackingW<UserDTO, FullTrackingWithVersion>> userDTOs = mapper.mapListToDwt(resolver.search(queryParams));
+        final List<DataWithTrackingS<UserDTO, FullTrackingWithVersion>> userDTOs = mapper.mapListToDwt(resolver.search(queryParams));
         final int count = userDTOs.size();
 
         // check if we got a sink, if not, use the default

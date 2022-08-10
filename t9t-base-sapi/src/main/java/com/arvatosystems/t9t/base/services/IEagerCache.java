@@ -26,8 +26,8 @@ public interface IEagerCache<T> {
      * Obtains the cache contents for the current tenant.
      * If no entry exists, an exception is thrown.
      *
-     * @param tenantRef the tenant reference for this operation
+     * @param tenantId the tenant reference for this operation
      * @return the cache data for the specified tenant.
      **/
-    T getCache(Long tenantRef);
+    T getCache(String tenantId);
 }

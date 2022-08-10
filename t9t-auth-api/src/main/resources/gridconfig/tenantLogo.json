@@ -1,9 +1,9 @@
 {
     "viewModel": "tenantLogo",
     "filters": [
-        { "filterType": "E", "fieldName": "tenantRef" }
+        { "filterType": "E", "fieldName": "tenantId" }
     ],
     "fields": [
-        "tenantRef", "logo"
+        "tenantId", "logo"
     ]
 }

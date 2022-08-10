@@ -55,7 +55,7 @@ class ITPing {
 
         val tenants = dlg.typeIO(new GetTenantsRequest, GetTenantsResponse)
         for (t: tenants.tenants) {
-            println('''Tenant «t.tenantId» has ref «t.tenantRef» and name «t.name»''')
+            println('''Tenant «t.tenantId» has name «t.name»''')
         }
 
         // switch tenant

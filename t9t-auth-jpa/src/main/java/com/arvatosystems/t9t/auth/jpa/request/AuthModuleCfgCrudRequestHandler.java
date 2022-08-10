@@ -21,11 +21,11 @@ import com.arvatosystems.t9t.auth.jpa.mapping.IAuthModuleCfgDTOMapper;
 import com.arvatosystems.t9t.auth.jpa.persistence.IAuthModuleCfgEntityResolver;
 import com.arvatosystems.t9t.auth.request.AuthModuleCfgCrudRequest;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
-import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudModuleCfg42RequestHandler;
+import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudModuleCfgRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import de.jpaw.dp.Jdp;
 
-public class AuthModuleCfgCrudRequestHandler extends AbstractCrudModuleCfg42RequestHandler<AuthModuleCfgDTO, AuthModuleCfgCrudRequest, AuthModuleCfgEntity> {
+public class AuthModuleCfgCrudRequestHandler extends AbstractCrudModuleCfgRequestHandler<AuthModuleCfgDTO, AuthModuleCfgCrudRequest, AuthModuleCfgEntity> {
 
     private final IAuthModuleCfgEntityResolver resolver = Jdp.getRequired(IAuthModuleCfgEntityResolver.class);
     private final IAuthModuleCfgDTOMapper mapper = Jdp.getRequired(IAuthModuleCfgDTOMapper.class);

@@ -28,7 +28,7 @@ class TestLanguageCode {
     def testLanguages() {
         val msglog = new MessageDTO => [  // create an object which contains a language code with pattern
             sessionRef              = 1L
-            tenantRef               = T9tConstants.GLOBAL_TENANT_REF42
+            tenantId                = T9tConstants.GLOBAL_TENANT_ID
             userId                  = "john"
             executionStartedAt      = Instant.now
             requestParameterPqon    = "dummy.PingRequest"

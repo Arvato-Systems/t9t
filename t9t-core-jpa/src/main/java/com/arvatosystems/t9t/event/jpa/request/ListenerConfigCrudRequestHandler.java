@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
-import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKey42RequestHandler;
+import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKeyRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.base.services.impl.ListenerConfigCache;
 import com.arvatosystems.t9t.event.ListenerConfigDTO;
@@ -34,7 +34,7 @@ import com.arvatosystems.t9t.event.services.ListenerConfigConverter;
 import de.jpaw.dp.Jdp;
 
 public class ListenerConfigCrudRequestHandler extends
-  AbstractCrudSurrogateKey42RequestHandler<ListenerConfigRef, ListenerConfigDTO, FullTrackingWithVersion, ListenerConfigCrudRequest, ListenerConfigEntity> {
+  AbstractCrudSurrogateKeyRequestHandler<ListenerConfigRef, ListenerConfigDTO, FullTrackingWithVersion, ListenerConfigCrudRequest, ListenerConfigEntity> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ListenerConfigCrudRequestHandler.class);
 
     private final IListenerConfigEntityResolver entityResolver = Jdp.getRequired(IListenerConfigEntityResolver.class);
@@ -55,7 +55,7 @@ public class ListenerConfigCrudRequestHandler extends
             case INACTIVATE:
                 ctx.addPostCommitHook((ctx2, rq, rs) -> {
                     LOGGER.debug("Updating JPA entity listener config cache to {}", dto);
-                    ListenerConfigCache.updateRegistration(dto.getClassification(), ctx.tenantRef, ListenerConfigConverter.convert(dto));
+                    ListenerConfigCache.updateRegistration(dto.getClassification(), ctx.tenantId, ListenerConfigConverter.convert(dto));
                 });
                 break;
             default:

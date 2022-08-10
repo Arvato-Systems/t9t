@@ -197,7 +197,7 @@ public class DefaultSearchFilterConfigCreator implements ISearchFilterConfigCrea
         List<String> allowedTypes = new ArrayList<>(UIFilterType.values().length);
 
         // if the field is marked as "dropdown" or "bandbox", or is an object (=
-        // implicit bandbox), or the field is "tenantRef":
+        // implicit bandbox), or the field is "tenantId":
         if (isEqualityDataTypes(column)) {
             allowedTypes.add(UIFilterType.EQUALITY.name());
             return allowedTypes;
@@ -250,7 +250,7 @@ public class DefaultSearchFilterConfigCreator implements ISearchFilterConfigCrea
 
         return dataType.equals("boolean") || dataType.equals("enum") || dataType.equals("xenum") || dataType.equals("uuid")
                 || hasProperty(column, Constants.UiFieldProperties.DROPDOWN) || hasProperty(column, Constants.UiFieldProperties.BANDBOX)
-                || column.getFieldName().equals("tenantRef");
+                || column.getFieldName().equals("tenantId");
     }
 
     /**

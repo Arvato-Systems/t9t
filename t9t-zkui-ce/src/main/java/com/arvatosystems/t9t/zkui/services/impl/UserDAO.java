@@ -131,7 +131,6 @@ public class UserDAO implements IUserDAO {
                     td.setIsActive(true);
                     td.setName(resp.getTenantName());
                     td.setTenantId(resp.getJwtInfo().getTenantId());
-                    td.setTenantRef(resp.getJwtInfo().getTenantRef());
                     as.setAllowedTenants(Collections.singletonList(td));
 
                     // obtain permissions

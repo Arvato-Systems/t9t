@@ -1,12 +1,12 @@
 {
     "viewModel": "user",
     "filters": [
-        { "filterType": "E", "fieldName": "tenantRef" },
+        { "filterType": "E", "fieldName": "tenantId" },
         { "filterType": "W", "fieldName": "userId" },
         { "filterType": "W", "fieldName": "name" }
     ],
     "fields": [
-        "tenantRef", "userId", "name", "emailAddress", "phoneNo", "mobilePhoneNo",
+        "tenantId", "userId", "name", "emailAddress", "phoneNo", "mobilePhoneNo",
         "office", "department", "jobTitle", "isTechnical",
         "isActive", "roleRef.roleId",
         "permissions.minPermissions", "permissions.maxPermissions",

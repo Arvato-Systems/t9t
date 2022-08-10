@@ -42,7 +42,7 @@ public class WaitUntilServerIdleRequestHandler extends AbstractReadOnlyRequestHa
     @Override
     public ServiceResponse execute(final RequestContext ctx, final WaitUntilServerIdleRequest rq) {
         final Long onlySessionRef = rq.getOnlyMySession() ? ctx.internalHeaderParameters.getJwtInfo().getSessionRef() : null;
-        final Long onlyTenantRef = T9tConstants.GLOBAL_TENANT_ID.equals(ctx.tenantId) ? null : ctx.tenantRef;
+        final String onlyTenantId = T9tConstants.GLOBAL_TENANT_ID.equals(ctx.tenantId) ? null : ctx.tenantId;
         final long delay   = rq.getDelayInMs()   == null ? DEFAULT_DELAY   : rq.getDelayInMs();
         final long timeout = rq.getTimeoutInMs() == null ? DEFAULT_TIMEOUT : rq.getTimeoutInMs();
         final long startAt = System.currentTimeMillis();
@@ -69,7 +69,7 @@ public class WaitUntilServerIdleRequestHandler extends AbstractReadOnlyRequestHa
         int retries = 0;
         try {
             do {
-                if (isNowIdle(onlySessionRef, onlyTenantRef, confirmCount, confirmDelay)) {
+                if (isNowIdle(onlySessionRef, onlyTenantId, confirmCount, confirmDelay)) {
                     LOGGER.debug("{} is idle after {} retries of {} ms", what, retries, delay);
                     return resp;  // ok
                 }
@@ -86,9 +86,9 @@ public class WaitUntilServerIdleRequestHandler extends AbstractReadOnlyRequestHa
         return resp;
     }
 
-    private boolean isNowIdle(final Long onlySessionRef, final Long onlyTenantRef, int confirmCount, final long confirmAfterMs) throws InterruptedException {
+    private boolean isNowIdle(final Long onlySessionRef, final String onlyTenantId, int confirmCount, final long confirmAfterMs) throws InterruptedException {
         for (;;) {
-            if (requestContextScope.numberOfProcesses(onlySessionRef, onlyTenantRef) > 1) {
+            if (requestContextScope.numberOfProcesses(onlySessionRef, onlyTenantId) > 1) {
                 // not idle
                 return false;
             }

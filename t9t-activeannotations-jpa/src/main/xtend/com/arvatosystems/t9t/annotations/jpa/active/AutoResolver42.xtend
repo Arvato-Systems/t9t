@@ -19,18 +19,12 @@ import com.arvatosystems.t9t.annotations.jpa.AllCanAccessGlobalTenant
 import com.arvatosystems.t9t.annotations.jpa.GlobalTenantCanAccessAll
 import com.arvatosystems.t9t.annotations.jpa.relations.OrderBy
 import com.arvatosystems.t9t.base.T9tConstants
-import com.arvatosystems.t9t.base.jpa.IResolverCompositeKey42
-import com.arvatosystems.t9t.base.jpa.IResolverLongKey42
-import com.arvatosystems.t9t.base.jpa.IResolverNewCompositeKey42
-import com.arvatosystems.t9t.base.jpa.IResolverStringKey42
-import com.arvatosystems.t9t.base.jpa.IResolverSuperclassKey42
-import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey42
-import com.arvatosystems.t9t.base.jpa.impl.AbstractResolverCompositeKey42
-import com.arvatosystems.t9t.base.jpa.impl.AbstractResolverLongKey42
-import com.arvatosystems.t9t.base.jpa.impl.AbstractResolverNewCompositeKey42
-import com.arvatosystems.t9t.base.jpa.impl.AbstractResolverStringKey42
-import com.arvatosystems.t9t.base.jpa.impl.AbstractResolverSuperclassKey42
-import com.arvatosystems.t9t.base.jpa.impl.AbstractResolverSurrogateKey42
+import com.arvatosystems.t9t.base.jpa.IResolverCompositeKey
+import com.arvatosystems.t9t.base.jpa.IResolverLongKey
+import com.arvatosystems.t9t.base.jpa.IResolverNewCompositeKey
+import com.arvatosystems.t9t.base.jpa.IResolverStringKey
+import com.arvatosystems.t9t.base.jpa.IResolverSuperclassKey
+import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey
 import com.google.common.collect.ImmutableList
 import de.jpaw.bonaparte.api.CompositeKey
 import de.jpaw.bonaparte.core.BonaPortable
@@ -43,11 +37,11 @@ import de.jpaw.bonaparte.pojos.api.SortColumn
 import de.jpaw.bonaparte.pojos.apiw.Ref
 import de.jpaw.dp.Named
 import de.jpaw.dp.Singleton
+import jakarta.persistence.NoResultException
+import jakarta.persistence.TypedQuery
 import java.util.ArrayList
 import java.util.Collection
 import java.util.List
-import jakarta.persistence.NoResultException
-import jakarta.persistence.TypedQuery
 import org.eclipse.xtend.lib.macro.AbstractClassProcessor
 import org.eclipse.xtend.lib.macro.Active
 import org.eclipse.xtend.lib.macro.RegisterGlobalsContext
@@ -60,12 +54,19 @@ import org.eclipse.xtend.lib.macro.declaration.TypeReference
 import org.eclipse.xtend.lib.macro.declaration.Visibility
 
 import static extension com.arvatosystems.t9t.annotations.jpa.active.Tools.*
+import java.util.Collections
+import com.arvatosystems.t9t.base.jpa.impl.AbstractResolverCompositeKey
+import com.arvatosystems.t9t.base.jpa.impl.AbstractResolverLongKey
+import com.arvatosystems.t9t.base.jpa.impl.AbstractResolverNewCompositeKey
+import com.arvatosystems.t9t.base.jpa.impl.AbstractResolverStringKey
+import com.arvatosystems.t9t.base.jpa.impl.AbstractResolverSuperclassKey
+import com.arvatosystems.t9t.base.jpa.impl.AbstractResolverSurrogateKey
 
 @Active(AutoResolver42Processor) annotation AutoResolver42 {}
 
 /** The automapper generates data copies for elements of same name and type. It can also apply lookups / resolvers. */
 class AutoResolver42Processor extends AbstractClassProcessor {
-    val resolverRevision = "2021-06-16 08:13 CEST (Xtend 2.25.0)"
+    val resolverRevision = "2022-07-30 22:26 CEST (Xtend 2.27.0)"
 
     def getResolverClassName(ClassDeclaration m, MethodDeclaration r) {
         return m.packageName + "impl." + r.simpleName.substring(3) + "Resolver"
@@ -120,6 +121,7 @@ class AutoResolver42Processor extends AbstractClassProcessor {
         val sortColumnType = SortColumn.newTypeReference
         val sortOrderType = List.newTypeReference(sortColumnType)
         val sortOrderInitType = ArrayList.newTypeReference(sortColumnType)
+        val collectionsType = Collections.newTypeReference
 
         // We don't want this annotation on the java class (unwanted dependency)
         m.removeAnnotation(m.annotations.findFirst[annotationTypeDeclaration == AutoResolver42.newTypeReference.type])
@@ -194,29 +196,29 @@ class AutoResolver42Processor extends AbstractClassProcessor {
 
                 // all good, I think
                 val extendedResolverInterface = if (surrogateKey)
-                        typeof(IResolverSurrogateKey42).newTypeReference(source.type, myTrackingType, rt)
+                        typeof(IResolverSurrogateKey).newTypeReference(source.type, myTrackingType, rt)
                     else if (stringKey)
-                        typeof(IResolverStringKey42).newTypeReference(myTrackingType, rt)
+                        typeof(IResolverStringKey).newTypeReference(myTrackingType, rt)
                     else if (longKey)
-                        typeof(IResolverLongKey42).newTypeReference(myTrackingType, rt)
+                        typeof(IResolverLongKey).newTypeReference(myTrackingType, rt)
                     else if (natKey)
-                        typeof(IResolverCompositeKey42).newTypeReference(source.type, myKeyType, myTrackingType, rt)
+                        typeof(IResolverCompositeKey).newTypeReference(source.type, myKeyType, myTrackingType, rt)
                     else if (newNatKey)
-                        typeof(IResolverNewCompositeKey42).newTypeReference(source.type, myKeyType, myTrackingType, rt)
+                        typeof(IResolverNewCompositeKey).newTypeReference(source.type, myKeyType, myTrackingType, rt)
                     else
-                        typeof(IResolverSuperclassKey42).newTypeReference(source.type, myKeyType, myTrackingType, rt)
+                        typeof(IResolverSuperclassKey).newTypeReference(source.type, myKeyType, myTrackingType, rt)
                 val extendedResolverClass = if (surrogateKey)
-                        typeof(AbstractResolverSurrogateKey42).newTypeReference(source.type, myTrackingType, rt)
+                        typeof(AbstractResolverSurrogateKey).newTypeReference(source.type, myTrackingType, rt)
                     else if (stringKey)
-                        typeof(AbstractResolverStringKey42).newTypeReference(myTrackingType, rt)
+                        typeof(AbstractResolverStringKey).newTypeReference(myTrackingType, rt)
                     else if (longKey)
-                        typeof(AbstractResolverLongKey42).newTypeReference(myTrackingType, rt)
+                        typeof(AbstractResolverLongKey).newTypeReference(myTrackingType, rt)
                     else if (natKey)
-                        typeof(AbstractResolverCompositeKey42).newTypeReference(source.type, myKeyType, myTrackingType, rt)
+                        typeof(AbstractResolverCompositeKey).newTypeReference(source.type, myKeyType, myTrackingType, rt)
                     else if (newNatKey)
-                        typeof(AbstractResolverNewCompositeKey42).newTypeReference(source.type, myKeyType, myTrackingType, rt)
+                        typeof(AbstractResolverNewCompositeKey).newTypeReference(source.type, myKeyType, myTrackingType, rt)
                     else
-                        typeof(AbstractResolverSuperclassKey42).newTypeReference(source.type, myKeyType, myTrackingType, rt)
+                        typeof(AbstractResolverSuperclassKey).newTypeReference(source.type, myKeyType, myTrackingType, rt)
                 val resolverInterface = findInterface(m.getResolverInterfaceName(r))
 
                 if (resolverInterface === null) {
@@ -273,7 +275,7 @@ class AutoResolver42Processor extends AbstractClassProcessor {
 //                    } else if (allBpm) {        // implicit @Named
 //                        addAnnotation(namedAnno).set("value", rtElement.simpleName.toFirstLower + "Resolver")
                     }
-                    if (entityClass.findFieldRecursively(T9tConstants.TENANT_REF_FIELD_NAME42) === null) {
+                    if (entityClass.findFieldRecursively(T9tConstants.TENANT_ID_FIELD_NAME) === null) {
                         addMethod("isTenantIsolated") [
                             visibility = Visibility::PUBLIC
                             returnType = primitiveBoolean
@@ -285,24 +287,24 @@ class AutoResolver42Processor extends AbstractClassProcessor {
                             ''']
                         ]
                     } else {
-                        // add methods to get and set a tenant ref
-                        addMethod("getTenantRef") [
+                        // add methods to get and set a tenant ID
+                        addMethod("getTenantId") [
                             visibility = Visibility::PUBLIC
-                            returnType = longType
+                            returnType = stringType
                             addAnnotation(overrideAnno)
                             addParameter("entity", rt)
                             body = [ '''
-                                return entity.getTenantRef();
+                                return entity.getTenantId();
                             ''']
                         ]
-                        addMethod("setTenantRef") [
+                        addMethod("setTenantId") [
                             visibility = Visibility::PUBLIC
                             returnType = primitiveVoid
                             addAnnotation(overrideAnno)
                             addParameter("entity", rt)
-                            addParameter(T9tConstants.TENANT_REF_FIELD_NAME42, longType)
+                            addParameter(T9tConstants.TENANT_ID_FIELD_NAME, stringType)
                             body = [ '''
-                                entity.setTenantRef(tenantRef);
+                                entity.setTenantId(tenantId);
                             ''']
                         ]
                     }
@@ -355,7 +357,7 @@ class AutoResolver42Processor extends AbstractClassProcessor {
                         docComment = "{@inheritDoc}"
                         body = [ '''
                             «toJavaCode(rt)» e = new «toJavaCode(rt)»();
-                            setTenantRef(e, ctx.customization.getSharedTenantRef(getRtti()));
+                            setTenantId(e, ctx.customization.getSharedTenantId(getRtti()));
                             return e;
                         ''']
                     ]
@@ -400,7 +402,11 @@ class AutoResolver42Processor extends AbstractClassProcessor {
                         static = true
                         final = true
                         type = sortOrderType
-                        initializer = [ '''new «toJavaCode(sortOrderInitType)»()«IF (!myKeyType.isWrapper)»{{«makeInitializer(myKeyType.type as ClassDeclaration, toJavaCode(sortColumnType))»}}«ENDIF»''']
+                        if (stringKey) {
+                            initializer = [ '''«toJavaCode(collectionsType)».singletonList(new «toJavaCode(sortColumnType)»("tenantId", false))''']  // this is only used for tenant and module configs
+                        } else {
+                            initializer = [ '''new «toJavaCode(sortOrderInitType)»()«IF (!myKeyType.isWrapper)»{{«makeInitializer(myKeyType.type as ClassDeclaration, toJavaCode(sortColumnType))»}}«ENDIF»''']
+                        }
                     ]
                     resolverClass.addMethod("getDefaultSortColumns") [
                         addAnnotation(overrideAnno)
@@ -438,12 +444,12 @@ class AutoResolver42Processor extends AbstractClassProcessor {
                 // extend the resolver class
                 val resolverClass = findClass(m.getResolverClassName(rtElement))
                 val queryClass = typeof(TypedQuery).newTypeReference(rtElement.newWildcardTypeReference)
-                val isExtraTenantRefRequired = r.parameters.filter[simpleName.equals(T9tConstants.TENANT_REF_FIELD_NAME42)].empty
-                    && !(rtElement.type as ClassDeclaration).declaredMethods.filter[simpleName.equals("setTenantRef")].empty
+                val isExtraTenantIdRequired = r.parameters.filter[simpleName.equals(T9tConstants.TENANT_ID_FIELD_NAME)].empty
+                    && !(rtElement.type as ClassDeclaration).declaredMethods.filter[simpleName.equals("setTenantId")].empty
                 val wantsAccessToDefault = r.simpleName.endsWith("WithDefault")
                 if (wantsAccessToDefault) {
-                    if (!isExtraTenantRefRequired) {
-                         r.addError("Methods with the reserved suffix WithDefault must have a tenantRef in the underlying entity, but may not specify it as parameter")
+                    if (!isExtraTenantIdRequired) {
+                         r.addError("Methods with the reserved suffix WithDefault must have a tenantId in the underlying entity, but may not specify it as parameter")
                          return;
                      }
                 }
@@ -480,7 +486,7 @@ class AutoResolver42Processor extends AbstractClassProcessor {
                         if (hasOrderByAnno !== null)
                             ''' ORDER BY e.«hasOrderByAnno.getValue("value") as String»'''
                         else if (wantsAccessToDefault)
-                            ''' ORDER BY e.tenantRef DESC'''       // have data of the global tenant last (it's the fallback)
+                            ''' ORDER BY e.tenantId DESC'''       // have data of the global tenant last (it's the fallback)
 
                     body = [ '''
                         logFindBy("«r.simpleName»"); // call superclass because a) we do not have our own LOGGER and b) it is easier to configure this way
@@ -493,16 +499,16 @@ class AutoResolver42Processor extends AbstractClassProcessor {
                         String activeCondition = «IF entityHasActiveField»«bool.simpleName» ? " AND e.isActive = :isActive" : «ENDIF»"";
                         Class <? extends «toJavaCode(rtElement)»> entityClass = getEntityClass();
                         «toJavaCode(queryClass)» query = constructQuery(String.format(
-                            "SELECT e FROM %s e WHERE «writeTenantCond(isExtraTenantRefRequired, wantsAccessToDefault, !params.empty)»«FOR p: params SEPARATOR ' AND '»«condition(p)»«ENDFOR»%s«orderByString»",
+                            "SELECT e FROM %s e WHERE «writeTenantCond(isExtraTenantIdRequired, wantsAccessToDefault, !params.empty)»«FOR p: params SEPARATOR ' AND '»«condition(p)»«ENDFOR»%s«orderByString»",
                             entityClass.getSimpleName(), activeCondition));
                         «IF entityHasActiveField»
                             if («bool.simpleName»)
                                 query.setParameter("isActive", true);  // must set it via parameter because Oracle does not understand a verbatim "true"
                         «ENDIF»
-                        «IF isExtraTenantRefRequired»
-                            query.setParameter(«toJavaCode(constantsType)».TENANT_REF_FIELD_NAME42, getSharedTenantRef());
+                        «IF isExtraTenantIdRequired»
+                            query.setParameter(«toJavaCode(constantsType)».TENANT_ID_FIELD_NAME, getSharedTenantId());
                             «IF wantsAccessToDefault»
-                                query.setParameter("globalTenantRef", «toJavaCode(constantsType)».GLOBAL_TENANT_REF42);
+                                query.setParameter("globalTenantId", «toJavaCode(constantsType)».GLOBAL_TENANT_ID);
                             «ENDIF»
                         «ENDIF»
                         «FOR p: params»
@@ -532,13 +538,13 @@ class AutoResolver42Processor extends AbstractClassProcessor {
         m.docComment = '''This is just a code generator utility class. Most likely you want to use the classes referenced in here, instead of this one.'''
     }
 
-    def static private writeTenantCond(boolean isExtraTenantRefRequired, boolean wantsAccessToDefault, boolean more) {
+    def static private writeTenantCond(boolean isExtraTenantIdRequired, boolean wantsAccessToDefault, boolean more) {
         val andStr = if (more) " AND " else "";
-        return if (isExtraTenantRefRequired) {
+        return if (isExtraTenantIdRequired) {
             if (wantsAccessToDefault)
-                "e.tenantRef IN (:tenantRef, :globalTenantRef)" + andStr
+                "e.tenantId IN (:tenantId, :globalTenantId)" + andStr
             else
-                "e.tenantRef=:tenantRef" + andStr
+                "e.tenantId=:tenantId" + andStr
         } else {
             ""
         }

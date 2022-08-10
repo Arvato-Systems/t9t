@@ -161,7 +161,7 @@ public class AsyncRequestLogger implements IRequestLogger {
         final MessageDTO m = new MessageDTO();
         m.setObjectRef              (hdr.getProcessRef());
         m.setSessionRef             (jwt.getSessionRef());
-        m.setTenantRef              (jwt.getTenantRef());
+        m.setTenantId               (jwt.getTenantId());
         m.setUserId                 (jwt.getUserId());
         m.setExecutionStartedAt     (hdr.getExecutionStartedAt());
         m.setLanguageCode           (hdr.getLanguageCode());

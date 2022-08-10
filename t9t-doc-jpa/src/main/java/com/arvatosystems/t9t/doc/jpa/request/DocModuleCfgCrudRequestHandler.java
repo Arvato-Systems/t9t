@@ -17,7 +17,7 @@ package com.arvatosystems.t9t.doc.jpa.request;
 
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
-import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKey42RequestHandler;
+import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKeyRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.doc.DocConfigDTO;
 import com.arvatosystems.t9t.doc.DocConfigRef;
@@ -29,7 +29,7 @@ import com.arvatosystems.t9t.doc.request.DocConfigCrudRequest;
 import de.jpaw.dp.Jdp;
 
 public class DocModuleCfgCrudRequestHandler
-  extends AbstractCrudSurrogateKey42RequestHandler<DocConfigRef, DocConfigDTO, FullTrackingWithVersion, DocConfigCrudRequest, DocConfigEntity> {
+  extends AbstractCrudSurrogateKeyRequestHandler<DocConfigRef, DocConfigDTO, FullTrackingWithVersion, DocConfigCrudRequest, DocConfigEntity> {
     protected final IDocConfigEntityResolver resolver = Jdp.getRequired(IDocConfigEntityResolver.class);
     protected final IDocConfigDTOMapper mapper = Jdp.getRequired(IDocConfigDTOMapper.class);
 

@@ -15,8 +15,6 @@
  */
 package com.arvatosystems.t9t.bpmn2.be.request;
 
-import static com.arvatosystems.t9t.bpmn2.be.camunda.utils.IdentifierConverter.bpmnTenantIdToT9tTenantRef;
-import static com.arvatosystems.t9t.bpmn2.be.camunda.utils.IdentifierConverter.t9tTenantRefToBPMNTenantId;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -42,7 +40,7 @@ import com.arvatosystems.t9t.bpmn2.request.ProcessInstanceSearchRequest;
 import de.jpaw.bonaparte.pojos.api.BooleanFilter;
 import de.jpaw.bonaparte.pojos.api.NoTracking;
 import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
-import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW;
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.dp.Jdp;
 
 public class ProcessInstanceSearchRequestHandler extends AbstractBPMNRequestHandler<ProcessInstanceSearchRequest> {
@@ -95,7 +93,7 @@ public class ProcessInstanceSearchRequestHandler extends AbstractBPMNRequestHand
     @Override
     protected ServiceResponse executeInWorkflowContext(RequestContext requestContext, ProcessInstanceSearchRequest request) throws Exception {
         final List<ProcessInstance> processInstances = queryMapping.search(runtimeService.createProcessInstanceQuery()
-                                                                                         .tenantIdIn(t9tTenantRefToBPMNTenantId(requestContext.getTenantRef())),
+                                                                                         .tenantIdIn(requestContext.tenantId),
                 request);
 
         final Set<String> processDefinitionIds = processInstances.stream()
@@ -120,7 +118,7 @@ public class ProcessInstanceSearchRequestHandler extends AbstractBPMNRequestHand
         return response;
     }
 
-    private DataWithTrackingW<ProcessInstanceDTO, NoTracking> map(ProcessInstance processInstance,
+    private DataWithTrackingS<ProcessInstanceDTO, NoTracking> map(ProcessInstance processInstance,
                                                                   Map<String, ProcessDefinition> processDefinitionsById) {
 
         final ProcessInstanceDTO resultExecutionStatus = new ProcessInstanceDTO();
@@ -132,8 +130,8 @@ public class ProcessInstanceSearchRequestHandler extends AbstractBPMNRequestHand
         resultExecutionStatus.setIsActive(!processInstance.isSuspended());
         resultExecutionStatus.setIsEnded(processInstance.isEnded());
 
-        final DataWithTrackingW<ProcessInstanceDTO, NoTracking> result = new DataWithTrackingW<>();
-        result.setTenantRef(bpmnTenantIdToT9tTenantRef(processInstance.getTenantId()));
+        final DataWithTrackingS<ProcessInstanceDTO, NoTracking> result = new DataWithTrackingS<>();
+        result.setTenantId(processInstance.getTenantId());
         result.setData(resultExecutionStatus);
         result.setTracking(new NoTracking());
 

@@ -16,7 +16,6 @@
 package com.arvatosystems.t9t.bpmn2.be.camunda.jobExecutor;
 
 import static com.arvatosystems.t9t.bpmn2.be.camunda.utils.BPMNExtensionHelper.getAllProperties;
-import static com.arvatosystems.t9t.bpmn2.be.camunda.utils.IdentifierConverter.bpmnTenantIdToT9tTenantRef;
 import static java.util.Collections.emptyMap;
 
 import java.util.List;
@@ -75,13 +74,13 @@ public class T9tExecuteJobsRunnable implements Runnable {
                                              .jobId(jobId)
                                              .singleResult();
 
-            final Long tenantRef = bpmnTenantIdToT9tTenantRef(job.getTenantId());
+            final String tenantId = job.getTenantId();
             final Map<String, String> processDefinitionProperties = getProcessDefinitionPropertiesOfJob(job);
             final UUID apiKey = getApiKey(processDefinitionProperties);
             final String workflowTypeString = processDefinitionProperties.get(PROPERTY_WORKFLOW_TYPE);
 
 
-            jobExecutionRequestWrapper.executeJob(jobId, job.getExecutionId(), workflowTypeString, tenantRef, apiKey);
+            jobExecutionRequestWrapper.executeJob(jobId, job.getExecutionId(), workflowTypeString, tenantId, apiKey);
         }
     }
 

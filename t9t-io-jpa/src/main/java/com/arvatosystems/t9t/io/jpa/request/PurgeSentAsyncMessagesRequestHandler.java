@@ -43,7 +43,7 @@ public class PurgeSentAsyncMessagesRequestHandler extends AbstractRequestHandler
     @Override
     public ServiceResponse execute(final RequestContext ctx, final PurgeSentAsyncMessagesRequest rq) {
         final AsyncQueueEntity queue = queueResolver.getEntityData(new AsyncQueueKey(rq.getAsyncQueueId()), false);
-        if (!queue.getTenantRef().equals(ctx.getTenantRef())) {
+        if (!queue.getTenantId().equals(ctx.tenantId)) {
             throw new T9tException(T9tException.WRITE_ACCESS_ONLY_CURRENT_TENANT);
         }
         final int maxAge;
@@ -57,9 +57,9 @@ public class PurgeSentAsyncMessagesRequestHandler extends AbstractRequestHandler
         final Instant purgeAfter = ctx.executionStart.minusSeconds(maxAge);
         LOGGER.info("Purging async sent message of age {} seconds for queue {}", maxAge, queue.getAsyncQueueId());
 
-        final String purge = "DELETE FROM AsyncMessageEntity m WHERE m.tenantRef = :tenantRef AND m.cTimestamp > :purgeAfter";
+        final String purge = "DELETE FROM AsyncMessageEntity m WHERE m.tenantId = :tenantId AND m.cTimestamp > :purgeAfter";
         final Query query = messageResolver.getEntityManager().createQuery(purge);
-        query.setParameter("tenantRef", ctx.tenantRef);
+        query.setParameter("tenantId",   ctx.tenantId);
         query.setParameter("purgeAfter", purgeAfter);
         query.executeUpdate();
         return ok();

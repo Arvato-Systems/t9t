@@ -26,13 +26,12 @@ import com.arvatosystems.t9t.embedded.connect.InMemoryConnection
 import de.jpaw.bonaparte.pojos.api.OperationType
 import de.jpaw.util.ExceptionUtil
 import java.util.UUID
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 
 import static extension com.arvatosystems.t9t.auth.extensions.AuthExtensions.*
 import static extension com.arvatosystems.t9t.doc.extensions.DocExtensions.*
-import com.arvatosystems.t9t.auth.TenantKey
-import org.junit.jupiter.api.Assertions
 
 class CustomZFieldTest {
     static ITestConnection dlg
@@ -75,11 +74,6 @@ class CustomZFieldTest {
                 validate
             ]
             dlg.okIO(rq)
-
-            val tenant = new TenantKey(TEST_USER_ID).read(dlg)
-            tenant.z = #{ "tenantField" -> "test2" }
-            tenant.merge(dlg)
-
         } catch (Exception e) {
             println("Exception during init: " + ExceptionUtil.causeChain(e))
         }
@@ -87,6 +81,10 @@ class CustomZFieldTest {
 
     @Test
     def void loginAndCheckZFieldsOfJWTTest() {
+        val tenant = TEST_USER_ID.read(dlg)
+        tenant.z = #{ "tenantField" -> "test2" }
+        tenant.merge(dlg)
+
         val dlgx = new InMemoryConnection(TEST_USER_ID, "secret12345")
         val info = dlgx.lastJwtInfo
         println('''The z field of the login is «info.z»''')

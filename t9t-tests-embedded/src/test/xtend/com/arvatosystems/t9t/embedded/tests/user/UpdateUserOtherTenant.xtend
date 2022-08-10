@@ -26,7 +26,7 @@ import com.arvatosystems.t9t.base.search.ReadAllResponse
 import com.arvatosystems.t9t.embedded.connect.InMemoryConnection
 import de.jpaw.bonaparte.pojos.api.AsciiFilter
 import de.jpaw.bonaparte.pojos.api.OperationType
-import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS
 import de.jpaw.util.ExceptionUtil
 import java.util.UUID
 import org.junit.jupiter.api.Assertions
@@ -69,14 +69,14 @@ class UpdateUserOtherTenant {
         ], ReadAllResponse).dataList
         Assertions.assertEquals(1, users.size)
 
-        val myUser = users.get(0) as DataWithTrackingW<UserDTO, FullTrackingWithVersion>
-        LOGGER.info("TenantRef is {}", myUser.tenantRef)
+        val myUser = users.get(0) as DataWithTrackingS<UserDTO, FullTrackingWithVersion>
+        LOGGER.info("TenantId is {}", myUser.tenantId)
     }
 
     @Test
     def void attemptToUpdateUserOtherTenantTest() {
         dlg.lastJwtInfo => [
-            LOGGER.info("I am tenant {} (ref {}), user ID {} (ref {})", tenantId, tenantRef, userId, userRef)
+            LOGGER.info("I am tenant {}, user ID {} (ref {})", tenantId, userId, userRef)
         ]
         readTenantOfUser
 

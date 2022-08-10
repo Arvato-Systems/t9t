@@ -104,7 +104,7 @@ public class AggregateMessageStatisticsRequestHandler extends AbstractRequestHan
     /**
      *
         SELECT
-                   tenant_ref,
+                   tenant_id,
                    user_id,
                    request_parameter_pqon,
                    COUNT(CASE WHEN return_code >= 0  AND return_code < 200000000 THEN 1 END) as count_ok,
@@ -117,7 +117,7 @@ public class AggregateMessageStatisticsRequestHandler extends AbstractRequestHan
         AND        processing_time_in_millisecs is not null
         AND        execution_started_at >= '2021-01-05'
         AND        execution_started_at < '2021-01-06'
-        GROUP BY   tenant_ref, user_id, request_parameter_pqon
+        GROUP BY   tenant_id, user_id, request_parameter_pqon
         ;
      *
      */
@@ -128,7 +128,7 @@ public class AggregateMessageStatisticsRequestHandler extends AbstractRequestHan
 
         final StringBuilder sb = new StringBuilder();
         sb.append(" SELECT    new com.arvatosystems.t9t.msglog.be.request.MessageStatisticsDTOWrapper(");
-        sb.append("               m.tenantRef,");
+        sb.append("               m.tenantId,");
         sb.append("               m.userId,");
         sb.append("               '" + dayStr + "',");
         sb.append("               m.requestParameterPqon,");
@@ -152,7 +152,7 @@ public class AggregateMessageStatisticsRequestHandler extends AbstractRequestHan
             sb.append(" AND   m.requestParameterPqon = :requestParameterPqon");
         }
 
-        sb.append(" GROUP BY  m.tenantRef, m.userId, m.requestParameterPqon");
+        sb.append(" GROUP BY  m.tenantId, m.userId, m.requestParameterPqon");
 
         final TypedQuery<MessageStatisticsDTOWrapper> query = resolver.getEntityManager().createQuery(sb.toString(), MessageStatisticsDTOWrapper.class);
         query.setParameter("fromDate", LocalDateTime.of(fromDate, LocalTime.of(0, 0)).toInstant(ZoneOffset.UTC));
@@ -175,7 +175,7 @@ public class AggregateMessageStatisticsRequestHandler extends AbstractRequestHan
 class MessageStatisticsDTOWrapper {
     private final MessageStatisticsDTO dto;
 
-    MessageStatisticsDTOWrapper(final Long tenantRef,
+    MessageStatisticsDTOWrapper(final String tenantId,
       final String userId,
       final String day,
       final String requestParameterPqon,
@@ -185,7 +185,7 @@ class MessageStatisticsDTOWrapper {
       final Long processingTimeMax,
       final Long processingTimeTotal) {
         dto = new MessageStatisticsDTO(
-            tenantRef,
+            tenantId,
             userId,
             LocalDate.parse(day, DateTimeFormatter.ofPattern("yyyy-MM-dd")),
             requestParameterPqon,

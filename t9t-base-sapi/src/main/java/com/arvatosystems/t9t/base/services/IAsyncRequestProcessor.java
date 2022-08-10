@@ -39,5 +39,5 @@ public interface IAsyncRequestProcessor {
     /** Register an IEventHandler as subscriber for an eventID. */
     void registerSubscriber(String eventID, IEventHandler subscriber);
     /** Register an IEventHandler as subscriber for an eventID within a defined tenant */
-    void registerSubscriber(String eventID, Long tenantRef, IEventHandler subscriber);
+    void registerSubscriber(String eventID, String tenantId, IEventHandler subscriber);
 }

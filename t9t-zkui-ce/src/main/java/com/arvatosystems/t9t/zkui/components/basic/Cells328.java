@@ -28,9 +28,10 @@ import org.zkoss.zul.impl.InputElement;
 
 import com.arvatosystems.t9t.base.FieldMappers;
 import com.arvatosystems.t9t.base.T9tConstants;
-import com.arvatosystems.t9t.base.entities.InternalTenantRef42;
+import com.arvatosystems.t9t.base.entities.InternalTenantId;
 import com.arvatosystems.t9t.zkui.components.datafields.DecimalDataField;
 import com.arvatosystems.t9t.zkui.components.datafields.IDataField;
+import com.arvatosystems.t9t.zkui.components.dropdown28.nodb.Dropdown28ComboBoxItem;
 
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.util.FieldGetter;
@@ -99,6 +100,12 @@ public class Cells328 extends Cells228 {
         deferredValue3 = t;
         if (idf3 != null) {
             if (t == null && idf3.getComponent() instanceof InputElement) {
+                if (idf3.getComponent() instanceof Dropdown28ComboBoxItem) {
+                    // Update selected item to null
+                    idf3.setValue(null);
+                }
+
+                // Update value to null
                 InputElement tb = (InputElement) idf3.getComponent();
                 tb.setRawValue(null);
             } else {
@@ -121,7 +128,7 @@ public class Cells328 extends Cells228 {
         // LOGGER.debug("cells 328 onCreate");
         super.myOnCreate();
         String strippedFieldname3 = FieldMappers.stripIndexes(dataFieldId3);
-        FieldDefinition f = dataFieldId3.endsWith(T9tConstants.TENANT_REF_FIELD_NAME42) ? InternalTenantRef42.meta$$tenantRef
+        FieldDefinition f = dataFieldId3.endsWith(T9tConstants.TENANT_ID_FIELD_NAME) ? InternalTenantId.meta$$tenantId
                 : FieldGetter.getFieldDefinitionForPathname(crudViewModel.dtoClass.getMetaData(), strippedFieldname3);
 
         // provide the label text and create the data field

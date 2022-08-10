@@ -30,7 +30,7 @@ import de.jpaw.bonaparte.pojos.api.NoTracking;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.SortColumn;
 import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
-import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW;
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.dp.Jdp;
 
 import java.util.ArrayList;
@@ -64,11 +64,11 @@ public class ComponentInfoSearchRequestHandler extends AbstractSearchRequestHand
                 : applySort(rq.getSortColumns().get(0), filteredList);
         final List<ComponentInfoDTO> limitedList = exporter.cut(sortedList, rq.getOffset(), rq.getLimit());
 
-        final List<DataWithTrackingW<ComponentInfoDTO, NoTracking>> dataList = new ArrayList<>(limitedList.size());
+        final List<DataWithTrackingS<ComponentInfoDTO, NoTracking>> dataList = new ArrayList<>(limitedList.size());
         for (ComponentInfoDTO componentInfoDTO: limitedList) {
-            final DataWithTrackingW<ComponentInfoDTO, NoTracking> dwt = new DataWithTrackingW<ComponentInfoDTO, NoTracking>();
+            final DataWithTrackingS<ComponentInfoDTO, NoTracking> dwt = new DataWithTrackingS<ComponentInfoDTO, NoTracking>();
             dwt.setData(componentInfoDTO);
-            dwt.setTenantRef(ctx.getTenantRef()); // avoid having null here
+            dwt.setTenantId(ctx.tenantId);
             dataList.add(dwt);
         }
         return exporter.returnOrExport(dataList, rq.getSearchOutputTarget());

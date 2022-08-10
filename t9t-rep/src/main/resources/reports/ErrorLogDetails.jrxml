@@ -38,7 +38,7 @@ msg.return_code,
 msg.error_details
 FROM p28_int_message msg
 LEFT OUTER JOIN p42_cfg_users usr ON (msg.user_id = usr.user_id)
-LEFT OUTER JOIN p42_cfg_tenants tenant ON (msg.tenant_ref = tenant.object_ref)
+LEFT OUTER JOIN p42_cfg_tenants tenant ON (msg.tenant_id = tenant.tenant_id)
 WHERE msg.return_code > 99999999
 AND msg.execution_started_at >= to_timestamp($P{dateFromStr},'YYYY-MM-DD HH24:MI:SS.FF9')
 AND msg.execution_started_at <= to_timestamp($P{dateToStr},'YYYY-MM-DD HH24:MI:SS.FF9')]]>

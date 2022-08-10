@@ -43,7 +43,6 @@ package (com.arvatosystems) t9t.authc.api {
     }
 
     class TenantDescription {
-        required f42Ref                             tenantRef;
         required tenantId                           tenantId;
         required Unicode(80)                        name;
         required boolean                            isActive;

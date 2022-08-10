@@ -38,7 +38,7 @@ import com.arvatosystems.t9t.io.request.SinkSearchRequest;
 import com.arvatosystems.t9t.pdf.request.ConcatenatePDFsRequest;
 
 import de.jpaw.bonaparte.pojos.api.LongFilter;
-import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW;
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.dp.Jdp;
 
 public class ConcatenatePDFsRequestHandler extends AbstractRequestHandler<ConcatenatePDFsRequest> {
@@ -95,7 +95,7 @@ public class ConcatenatePDFsRequestHandler extends AbstractRequestHandler<Concat
         return executor.executeSynchronousAndCheckResult(ctx, sinkSearchRequest, ReadAllResponse.class);
     }
 
-    private SinkDTO[] sortToMergeDataSinks(final List<DataWithTrackingW<SinkDTO, FullTrackingWithVersion>> dataList, final List<Long> sinkRefs) {
+    private SinkDTO[] sortToMergeDataSinks(final List<DataWithTrackingS<SinkDTO, FullTrackingWithVersion>> dataList, final List<Long> sinkRefs) {
 
         // ensure same amount of PDF files are merged as requested
         if (dataList.size() != sinkRefs.size()) {
@@ -104,7 +104,7 @@ public class ConcatenatePDFsRequestHandler extends AbstractRequestHandler<Concat
         }
 
         final SinkDTO[] sortedSinks = new SinkDTO[sinkRefs.size()];
-        for (final DataWithTrackingW<SinkDTO, FullTrackingWithVersion> item : dataList) {
+        for (final DataWithTrackingS<SinkDTO, FullTrackingWithVersion> item : dataList) {
             final int idx = sinkRefs.indexOf(item.getData().getObjectRef());
             sortedSinks[idx] = item.getData();
         }

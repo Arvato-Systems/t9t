@@ -62,7 +62,7 @@ public class NoTimeZoneProvider implements ITimeZoneProvider {
     }
 
     @Override
-    public ZoneId getTimeZoneOfTenant(final Long tenantRef) {
+    public ZoneId getTimeZoneOfTenant(final String tenantId) {
         return serverTimeZone;
     }
 }

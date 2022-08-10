@@ -16,9 +16,8 @@
 package com.arvatosystems.t9t.uiprefsv3.services;
 
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
+import com.arvatosystems.t9t.base.services.IRefResolver;
 import com.arvatosystems.t9t.uiprefsv3.LeanGridConfigDTO;
 import com.arvatosystems.t9t.uiprefsv3.LeanGridConfigRef;
 
-import de.jpaw.bonaparte.refsw.RefResolver;
-
-public interface ILeanGridConfigResolver extends RefResolver<LeanGridConfigRef, LeanGridConfigDTO, FullTrackingWithVersion> { }
+public interface ILeanGridConfigResolver extends IRefResolver<LeanGridConfigRef, LeanGridConfigDTO, FullTrackingWithVersion> { }

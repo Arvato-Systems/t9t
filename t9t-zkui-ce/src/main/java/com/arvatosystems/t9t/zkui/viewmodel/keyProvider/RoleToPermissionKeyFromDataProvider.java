@@ -25,7 +25,7 @@ import de.jpaw.bonaparte.pojos.api.LongFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
-import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW;
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 
@@ -35,8 +35,8 @@ public class RoleToPermissionKeyFromDataProvider implements IKeyFromDataProvider
 
     @Override
     public SearchFilter getFilterForKey(DataWithTracking<RoleToPermissionDTO, TrackingBase> dwt) {
-        final LongFilter tenantFilter = new LongFilter(T9tConstants.TENANT_REF_FIELD_NAME42);
-        tenantFilter.setEqualsValue(((DataWithTrackingW<RoleToPermissionDTO, TrackingBase>)dwt).getTenantRef());
+        final UnicodeFilter tenantFilter = new UnicodeFilter(T9tConstants.TENANT_ID_FIELD_NAME);
+        tenantFilter.setEqualsValue(((DataWithTrackingS<RoleToPermissionDTO, TrackingBase>)dwt).getTenantId());
 
         final LongFilter roleFilter = new LongFilter("roleRef");
         roleFilter.setEqualsValue(dwt.getData().getRoleRef().getObjectRef());

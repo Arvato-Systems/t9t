@@ -29,7 +29,7 @@ public class GetCurrentJwtRequestHandler extends AbstractReadOnlyRequestHandler<
 
     @Override
     public AuthenticationResponse execute(final RequestContext ctx, final GetCurrentJwtRequest request) throws Exception {
-        final TenantDTO tenantDTO = tenantResolver.getDTO(ctx.tenantRef);
+        final TenantDTO tenantDTO = tenantResolver.getDTO(ctx.tenantId);
         final AuthenticationResponse authResp = new AuthenticationResponse();
         authResp.setJwtInfo(ctx.internalHeaderParameters.getJwtInfo());
         authResp.setEncodedJwt(ctx.internalHeaderParameters.getEncodedJwt());

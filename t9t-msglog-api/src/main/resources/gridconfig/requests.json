@@ -1,7 +1,7 @@
 {
     "viewModel": "requests",
     "filters": [
-        { "filterType": "E", "fieldName": "tenantRef" },
+        { "filterType": "E", "fieldName": "tenantId" },
         { "filterType": "W", "fieldName": "userId" },
         { "filterType": "E", "fieldName": "sessionRef" },
         { "filterType": "E", "fieldName": "objectRef" },
@@ -11,7 +11,7 @@
         { "filterType": "L", "fieldName": "processingTimeInMillisecs" }
     ],
     "fields": [
-        "sessionRef", "objectRef", "executionStartedAt", "tenantRef", "userId", "recordNo", "messageId", "languageCode", "plannedRunDate", "requestParameterPqon",
+        "sessionRef", "objectRef", "executionStartedAt", "tenantId", "userId", "recordNo", "messageId", "languageCode", "plannedRunDate", "requestParameterPqon",
         "processingTimeInMillisecs", "returnCode", "errorDetails", "rerunByProcessRef"
     ],
     "fieldWidths": [ 96, 96, 150, 78, 109, 92, 103, 70, 150, 303, 129, 76, 220, 143 ]

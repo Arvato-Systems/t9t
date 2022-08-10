@@ -18,7 +18,6 @@ package com.arvatosystems.t9t.auth.services;
 import com.arvatosystems.t9t.auth.ApiKeyDTO;
 import com.arvatosystems.t9t.auth.ApiKeyRef;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
+import com.arvatosystems.t9t.base.services.IRefResolver;
 
-import de.jpaw.bonaparte.refsw.RefResolver;
-
-public interface IApiKeyResolver extends RefResolver<ApiKeyRef, ApiKeyDTO, FullTrackingWithVersion> { }
+public interface IApiKeyResolver extends IRefResolver<ApiKeyRef, ApiKeyDTO, FullTrackingWithVersion> { }

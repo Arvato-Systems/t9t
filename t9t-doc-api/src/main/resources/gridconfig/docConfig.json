@@ -1,11 +1,11 @@
 {
     "viewModel": "docConfig",
     "filters": [
-        { "filterType": "E", "fieldName": "tenantRef" },
+        { "filterType": "E", "fieldName": "tenantId" },
         { "filterType": "W", "fieldName": "documentId" }
     ],
     "fields": [
-        "tenantRef", "documentId",
+        "tenantId", "documentId",
         "mappedId", "communicationFormat", "description", "useCids", "emailBodyTemplateId",
         "emailConfigPerSelector", "forwardToChannel", "forwardToAddress"
     ]

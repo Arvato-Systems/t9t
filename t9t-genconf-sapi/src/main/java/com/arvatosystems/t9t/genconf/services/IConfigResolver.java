@@ -19,6 +19,6 @@ import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.genconf.ConfigDTO;
 import com.arvatosystems.t9t.genconf.ConfigRef;
 
-import de.jpaw.bonaparte.refsw.RefResolver;
+import com.arvatosystems.t9t.base.services.IRefResolver;
 
-public interface IConfigResolver extends RefResolver<ConfigRef, ConfigDTO, FullTrackingWithVersion> { }
+public interface IConfigResolver extends IRefResolver<ConfigRef, ConfigDTO, FullTrackingWithVersion> { }

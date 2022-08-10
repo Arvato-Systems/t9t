@@ -1,11 +1,11 @@
 {
     "viewModel": "plugins",
     "filters": [
-        { "filterType": "E", "fieldName": "tenantRef" },
+        { "filterType": "E", "fieldName": "tenantId" },
         { "filterType": "W", "fieldName": "pluginId" }
     ],
     "fields": [
-        "isActive", "tenantRef", "priority", "pluginId", "pluginVersion", "description", "whenLoaded"
+        "isActive", "tenantId", "priority", "pluginId", "pluginVersion", "description", "whenLoaded"
     ],
     "fieldWidths": [ 74, 72, 71, 200, 200, 200, 150 ]
 }

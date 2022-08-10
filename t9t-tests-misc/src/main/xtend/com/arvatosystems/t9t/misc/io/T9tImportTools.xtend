@@ -27,7 +27,7 @@ import de.jpaw.annotations.AddLogger
 import de.jpaw.bonaparte.api.media.MediaDataUtil
 import de.jpaw.bonaparte.pojos.api.SortColumn
 import de.jpaw.bonaparte.pojos.api.UnicodeFilter
-import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS
 import java.util.List
 import java.util.UUID
 import com.arvatosystems.t9t.io.T9tIOException
@@ -81,7 +81,7 @@ class T9tImportTools {
             searchFilter  = new UnicodeFilter("dataSink.dataSinkId") => [ equalsValue = dataSinkId ]
             sortColumns   = #[ new SortColumn("objectRef", true) ]
         ]
-        val resp = connection.typeIO(searchRq, ReadAllResponse).dataList as List<DataWithTrackingW<SinkDTO, FullTracking>>;
+        val resp = connection.typeIO(searchRq, ReadAllResponse).dataList as List<DataWithTrackingS<SinkDTO, FullTracking>>;
         if (resp.isEmpty)
             throw new T9tException(T9tException.RECORD_DOES_NOT_EXIST, "No SinkDTO found for the given data sink " + dataSinkId)
         val sink = resp.get(0).data

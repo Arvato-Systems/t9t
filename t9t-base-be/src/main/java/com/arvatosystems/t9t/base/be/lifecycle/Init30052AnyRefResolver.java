@@ -48,7 +48,7 @@ public class Init30052AnyRefResolver implements StartupOnly {
         LOGGER.info("Collecting any LeanSearchRequest handlers...");
         final ICustomization customizationProvider = Jdp.getRequired(ICustomization.class);
         final ITenantCustomization globalCustomization = customizationProvider.getTenantCustomization(
-          T9tConstants.GLOBAL_TENANT_REF42, T9tConstants.GLOBAL_TENANT_ID);
+          T9tConstants.GLOBAL_TENANT_ID);
         // reuse the results of some prior scan (or scan now)
         final Reflections reflections = ReflectionsPackageCache.get(MessagingUtil.TWENTYEIGHT_PACKAGE_PREFIX);
         int count = 0;

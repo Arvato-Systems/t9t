@@ -19,6 +19,6 @@ import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.doc.DocEmailCfgDTO;
 import com.arvatosystems.t9t.doc.DocEmailCfgRef;
 
-import de.jpaw.bonaparte.refsw.RefResolver;
+import com.arvatosystems.t9t.base.services.IRefResolver;
 
-public interface IDocEmailCfgResolver extends RefResolver<DocEmailCfgRef, DocEmailCfgDTO, FullTrackingWithVersion> { }
+public interface IDocEmailCfgResolver extends IRefResolver<DocEmailCfgRef, DocEmailCfgDTO, FullTrackingWithVersion> { }

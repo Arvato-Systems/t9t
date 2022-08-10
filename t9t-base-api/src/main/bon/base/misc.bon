@@ -39,9 +39,9 @@ package (com.arvatosystems) t9t.base.misc {
         optional Unicode(8000000) trim allowControlChars text;
     }
 
-    /** Key structire used by some special caches. */
-    final class SomeCacheKey42 {
-        required f42Ref                 tenantRef;
+    /** Key structure used by some special caches. */
+    final class SomeCacheKey {
+        required tenantId               tenantId;
         required t9tShortId             id;
     }
 }

@@ -31,7 +31,7 @@ import de.jpaw.bonaparte.pojos.api.NoTracking;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.SortColumn;
 import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
-import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW;
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.dp.Jdp;
 
 import java.time.Instant;
@@ -72,21 +72,21 @@ public class ProcessStatusSearchRequestHandler extends AbstractSearchRequestHand
             applyFilters(psCmd, rq.getSearchFilter());
         }
         final List<ProcessStatusDTO> processes = executor.executeSynchronousAndCheckResult(ctx, psCmd, ProcessStatusResponse.class).getProcesses();
-        final List<DataWithTrackingW<ProcessStatusDTO, NoTracking>> dataList = new ArrayList<>(processes.size());
+        final List<DataWithTrackingS<ProcessStatusDTO, NoTracking>> dataList = new ArrayList<>(processes.size());
         for (ProcessStatusDTO processStatus: processes) {
-            final DataWithTrackingW<ProcessStatusDTO, NoTracking> dwt = new DataWithTrackingW<>();
+            final DataWithTrackingS<ProcessStatusDTO, NoTracking> dwt = new DataWithTrackingS<>();
             dwt.setData(processStatus);
-            dwt.setTenantRef(ctx.getTenantRef()); // avoid having null here
+            dwt.setTenantId(ctx.tenantId); // avoid having null here
             dataList.add(dwt);
         }
 
-        final List<DataWithTrackingW<ProcessStatusDTO, NoTracking>> finalSort = rq.getSortColumns() == null || rq.getSortColumns().isEmpty() ? dataList
+        final List<DataWithTrackingS<ProcessStatusDTO, NoTracking>> finalSort = rq.getSortColumns() == null || rq.getSortColumns().isEmpty() ? dataList
                 : sortProcessStatusDwt(rq.getSortColumns(), dataList);
         return exporter.returnOrExport(exporter.cut(finalSort, rq.getOffset(), rq.getLimit()), rq.getSearchOutputTarget());
     }
 
-    private List<DataWithTrackingW<ProcessStatusDTO, NoTracking>> sortProcessStatusDwt(final List<SortColumn> sortColumns,
-            final List<DataWithTrackingW<ProcessStatusDTO, NoTracking>> dataList) {
+    private List<DataWithTrackingS<ProcessStatusDTO, NoTracking>> sortProcessStatusDwt(final List<SortColumn> sortColumns,
+            final List<DataWithTrackingS<ProcessStatusDTO, NoTracking>> dataList) {
         // sort by one column is supported
         final SortColumn sortColumn = sortColumns.get(0);
         LOGGER.debug("Result list of {} entries should be sorted by {} {}", Integer.valueOf(dataList.size()), sortColumn.getFieldName(),
@@ -128,7 +128,7 @@ public class ProcessStatusSearchRequestHandler extends AbstractSearchRequestHand
                 break;
             }
 
-            final List<DataWithTrackingW<ProcessStatusDTO, NoTracking>> sortedList = new ArrayList<>(dataList);
+            final List<DataWithTrackingS<ProcessStatusDTO, NoTracking>> sortedList = new ArrayList<>(dataList);
             if (sortColumn.getDescending()) {
                 Collections.reverse(sortedList);
             }
@@ -161,19 +161,19 @@ public class ProcessStatusSearchRequestHandler extends AbstractSearchRequestHand
         }
     }
 
-    private static Comparator<DataWithTrackingW<ProcessStatusDTO, NoTracking>> compareByStringField (final Function<ProcessStatusDTO, String> func) {
+    private static Comparator<DataWithTrackingS<ProcessStatusDTO, NoTracking>> compareByStringField (final Function<ProcessStatusDTO, String> func) {
         return (item1, item2) -> func.apply(item1.getData()).compareTo(func.apply(item2.getData()));
     }
 
-    private static Comparator<DataWithTrackingW<ProcessStatusDTO, NoTracking>> compareByLongField (final Function<ProcessStatusDTO, Long> func) {
+    private static Comparator<DataWithTrackingS<ProcessStatusDTO, NoTracking>> compareByLongField (final Function<ProcessStatusDTO, Long> func) {
         return (item1, item2) -> func.apply(item1.getData()).compareTo(func.apply(item2.getData()));
     }
 
-    private static Comparator<DataWithTrackingW<ProcessStatusDTO, NoTracking>> compareByIntField (final Function<ProcessStatusDTO, Integer> func) {
+    private static Comparator<DataWithTrackingS<ProcessStatusDTO, NoTracking>> compareByIntField (final Function<ProcessStatusDTO, Integer> func) {
         return (item1, item2) -> func.apply(item1.getData()).compareTo(func.apply(item2.getData()));
     }
 
-    private static Comparator<DataWithTrackingW<ProcessStatusDTO, NoTracking>> compareByInstantField (final Function<ProcessStatusDTO, Instant> func) {
+    private static Comparator<DataWithTrackingS<ProcessStatusDTO, NoTracking>> compareByInstantField (final Function<ProcessStatusDTO, Instant> func) {
         return (item1, item2) -> func.apply(item1.getData()).compareTo(func.apply(item2.getData()));
     }
 }

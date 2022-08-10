@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import com.arvatosystems.t9t.base.T9tConstants;
-import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey42;
+import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey;
 import com.arvatosystems.t9t.base.search.Description;
 import com.arvatosystems.t9t.base.search.DummySearchCriteria;
 import com.arvatosystems.t9t.base.search.LeanSearchRequest;
@@ -40,11 +40,11 @@ public abstract class AbstractLeanSearchRequestHandler<
   E extends BonaPersistableKey<Long> & BonaPersistableTracking<?>
 > extends AbstractReadOnlyRequestHandler<S> {
     protected final IAnyKeySearchRegistry searchRegistry = Jdp.getRequired(IAnyKeySearchRegistry.class);
-    protected final IResolverSurrogateKey42<?, ?, E> resolver;
+    protected final IResolverSurrogateKey<?, ?, E> resolver;
     protected final Function<E, Description> mapper;
 
     protected AbstractLeanSearchRequestHandler(
-            final IResolverSurrogateKey42<?, ?, E> resolver,
+            final IResolverSurrogateKey<?, ?, E> resolver,
             final Function<E, Description> mapper) {
         this.resolver = resolver;
         this.mapper = mapper;
@@ -69,7 +69,7 @@ public abstract class AbstractLeanSearchRequestHandler<
             // set common fields...
             d.setObjectRef(e.ret$Key());
             d.setIsActive(e.ret$Active());
-            d.setDifferentTenant(!ctx.tenantRef.equals(resolver.getTenantRef(e)));
+            d.setDifferentTenant(!ctx.tenantId.equals(resolver.getTenantId(e)));
             // guard for empty description
             if (d.getName() == null)
                 d.setName("?");

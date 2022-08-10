@@ -39,21 +39,20 @@ package (com.arvatosystems) t9t.auth.jpa.entities owner fortytwo prefix p28 {
     entity TenantEntity category cfg is TenantDTO tablename p42_cfg_tenants historytablename p42_his_tenants {
         //cache 100 objects for 5 minutes
         cacheable
-        pk (objectRef)
-        index unique (tenantId)
+        pk (tenantId)
         @Embeddable PermissionsEmbeddable  for permissions
     }
 
     entity RoleEntity category cfg is RoleDTO tablename p42_cfg_roles historytablename p42_his_roles {
         cacheable
-        tenantClass InternalTenantRef42
+        tenantClass InternalTenantId
         pk (objectRef)
-        index unique (tenantRef,roleId)
+        index unique (tenantId, roleId)
     }
 
     entity UserEntity category cfg is UserDTO tablename p42_cfg_users historytablename p42_his_users {
         cacheable
-        tenantClass InternalTenantRef42
+        tenantClass InternalTenantId
         pk (objectRef)
         index unique (userId)
         @ManyToOne  RoleEntity roleE       EAGER for (roleRef) // must be EAGER due to optional field
@@ -63,14 +62,14 @@ package (com.arvatosystems) t9t.auth.jpa.entities owner fortytwo prefix p28 {
 
     entity RoleToPermissionEntity category cfg is RoleToPermissionDTO tablename p42_cfg_role_to_permissions historytablename p42_his_role_to_permissions {
         cacheable
-        tenantClass InternalTenantRef42
+        tenantClass InternalTenantId
         pk is RoleToPermissionInternalKey
         @ManyToOne  RoleEntity role LAZY for (roleRef)
     }
 
     entity UserTenantRoleEntity category cfg is UserTenantRoleDTO tablename p42_cfg_user_tenant_roles historytablename p42_his_user_tenant_roles {
         cacheable
-        tenantClass InternalTenantRef42
+        tenantClass InternalTenantId
         pk is UserTenantRoleInternalKey
         @ManyToOne  UserEntity user LAZY for (userRef)
         @ManyToOne  RoleEntity role LAZY for (roleRef)
@@ -79,7 +78,7 @@ package (com.arvatosystems) t9t.auth.jpa.entities owner fortytwo prefix p28 {
 
     entity ApiKeyEntity category cfg is ApiKeyDTO tablename p42_cfg_api_key historytablename p42_his_api_key {
         cacheable
-        tenantClass InternalTenantRef42
+        tenantClass InternalTenantId
         pk (objectRef)
         index unique (apiKey)
         @ManyToOne  RoleEntity role EAGER for (roleRef)  // must be EAGER due to optional field
@@ -101,7 +100,7 @@ package (com.arvatosystems) t9t.auth.jpa.entities owner fortytwo prefix p28 {
     entity SessionEntity category datsource is SessionDTO {
         pk (objectRef)
         index (cTimestamp)
-        @ManyToOne TenantEntity ^tenant LAZY for (tenantRef)
+        @ManyToOne TenantEntity ^tenant LAZY for (tenantId)
         @ManyToOne UserEntity user LAZY for (userRef)
     }
 }

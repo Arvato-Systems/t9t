@@ -58,7 +58,6 @@ public class AuthenticationMock implements IAuthenticate {
         jwtInfo.setUserId("john");
         jwtInfo.setUserRef(Long.valueOf(93847593L));
         jwtInfo.setTenantId("ACME");
-        jwtInfo.setTenantRef(Long.valueOf(98347569L));
         jwtInfo.setName("John E. Smith");
         jwtInfo.setLocale("en");
         jwtInfo.setZoneinfo("UTC");

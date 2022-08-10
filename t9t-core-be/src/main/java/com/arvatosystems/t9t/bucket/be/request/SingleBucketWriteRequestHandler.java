@@ -38,7 +38,7 @@ public class SingleBucketWriteRequestHandler extends AbstractRequestHandler<Sing
         if (!rq.getAsync()) {
             final Map<BucketWriteKey, Integer> cmds = new HashMap<>(rq.getValues().size());
             for (final Map.Entry<String, Integer> me: rq.getValues().entrySet()) {
-                cmds.put(new BucketWriteKey(ctx.tenantRef, rq.getObjectRef(), me.getKey()), me.getValue());
+                cmds.put(new BucketWriteKey(ctx.tenantId, rq.getObjectRef(), me.getKey()), me.getValue());
             }
             bucketWriter.writeToBuckets(cmds);
         } else {

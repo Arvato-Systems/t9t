@@ -101,7 +101,7 @@ public class SolrEngine implements ITextSearch {
             }
 
             // always add a filter on the requesters tenant_ref
-            solrQuery.setFilterQueries(T9tConstants.TENANT_REF_FIELD_NAME + ":" + ctx.tenantRef);
+            solrQuery.setFilterQueries(T9tConstants.TENANT_ID_FIELD_NAME + ":" + ctx.tenantId);
 
             LOGGER.debug("SOLR expression is {}", solrQuery.toString());
 

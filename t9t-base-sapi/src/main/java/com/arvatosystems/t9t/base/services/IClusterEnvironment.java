@@ -25,12 +25,12 @@ public interface IClusterEnvironment {
     /** Returns the current number of active nodes in the cluster. */
     int getNumberOfNodes();
 
-    /** Returns a collection of tenantRefs which are processed by this node, or an empty list if this node processes data for all of them. */
-    Collection<Long> getListOfTenantRefs();
+    /** Returns a collection of tenantIds which are processed by this node, or an empty list if this node processes data for all of them. */
+    Collection<String> getListOfTenantIds();
 
     /** Returns a collection of shards [0...numberOfNodes-1] processed by this node. */
-    Collection<Integer> getListOfShards(Long tenantRef);
+    Collection<Integer> getListOfShards(String tenantId);
 
     /** Decides if a given index should be processed on this shard (preferred API). */
-    boolean processOnThisNode(Long tenantRef, int hash);
+    boolean processOnThisNode(String tenantId, int hash);
 }

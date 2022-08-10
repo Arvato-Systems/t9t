@@ -26,7 +26,7 @@ import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
-import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKey42RequestHandler;
+import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKeyRequestHandler;
 import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.in.services.IInputDataTransformer;
@@ -55,27 +55,18 @@ import de.jpaw.bonaparte.pojos.api.media.MediaType;
 import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 import de.jpaw.dp.Jdp;
 
-public class DataSinkCrudRequestHandler extends AbstractCrudSurrogateKey42RequestHandler<DataSinkRef, DataSinkDTO,
+public class DataSinkCrudRequestHandler extends AbstractCrudSurrogateKeyRequestHandler<DataSinkRef, DataSinkDTO,
   FullTrackingWithVersion, DataSinkCrudRequest, DataSinkEntity> {
     private static final Logger LOGGER = LoggerFactory.getLogger(DataSinkCrudRequestHandler.class);
 
     private static final String[] FORBIDDEN_FILE_PATH_ELEMENTS = { ":", "\\", "../" };
-
-//  @Inject
     private final IDataSinkEntityResolver sinksResolver = Jdp.getRequired(IDataSinkEntityResolver.class);
-
-//  @Inject
     private final IDataSinkDTOMapper sinksMapper = Jdp.getRequired(IDataSinkDTOMapper.class);
-
     private final IExecutor executor = Jdp.getRequired(IExecutor.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final DataSinkCrudRequest crudRequest) throws Exception {
         final DataSinkDTO data = crudRequest.getData();
-//        if (data != null) {
-//            // normalize by tenantId
-//            // not required ATM, since no object ref specified ... if (data.getTenantRef()...)
-//        }
 
         // Validation for operation CREATE, MERGE & UPDATE
         if (crudRequest.getCrud() == OperationType.CREATE

@@ -24,7 +24,6 @@ package (com.arvatosystems) t9t.base.event {
      */
     final class EventHeader {
         required tenantId                               tenantId;
-        required f42Ref                                 tenantRef;
         required f42Ref                                 invokingProcessRef;
         required encodedJwt                             encodedJwt;
     }
@@ -84,7 +83,7 @@ package (com.arvatosystems) t9t.base.event {
 
     /** Object written to the bucket queue. */
     final immutable class BucketWriteKey {
-        required f42Ref                                     tenantRef; // the tenant
+        required tenantId                                   tenantId; // the tenant
         required f42Ref                                     objectRef; // the surrogate key
         required typeId                                     typeId;    // the originator (usually the same as the bucket)
     }

@@ -16,7 +16,7 @@
 package com.arvatosystems.t9t.ssm.be.request;
 
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
-import com.arvatosystems.t9t.base.jpa.impl.AbstractSearch42RequestHandler;
+import com.arvatosystems.t9t.base.jpa.impl.AbstractSearchWithTotalsRequestHandler;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.core.CannedRequestDTO;
@@ -27,10 +27,10 @@ import com.arvatosystems.t9t.ssm.jpa.mapping.ISchedulerSetupDTOMapper;
 import com.arvatosystems.t9t.ssm.jpa.persistence.ISchedulerSetupEntityResolver;
 import com.arvatosystems.t9t.ssm.request.SchedulerSetupSearchRequest;
 
-import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW;
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.dp.Jdp;
 
-public class SchedulerSetupSearchRequestHandler extends AbstractSearch42RequestHandler<Long, SchedulerSetupDTO, FullTrackingWithVersion,
+public class SchedulerSetupSearchRequestHandler extends AbstractSearchWithTotalsRequestHandler<Long, SchedulerSetupDTO, FullTrackingWithVersion,
   SchedulerSetupSearchRequest, SchedulerSetupEntity> {
     protected final ISchedulerSetupEntityResolver resolver = Jdp.getRequired(ISchedulerSetupEntityResolver.class);
     protected final ISchedulerSetupDTOMapper mapper = Jdp.getRequired(ISchedulerSetupDTOMapper.class);
@@ -41,7 +41,7 @@ public class SchedulerSetupSearchRequestHandler extends AbstractSearch42RequestH
         final ReadAllResponse<SchedulerSetupDTO, FullTrackingWithVersion> response = this.execute(ctx, request, resolver, mapper);
 
         if (Boolean.TRUE.equals(request.getSuppressResponseParameters())) {
-            for (final DataWithTrackingW<SchedulerSetupDTO, FullTrackingWithVersion> dwt : response.getDataList()) {
+            for (final DataWithTrackingS<SchedulerSetupDTO, FullTrackingWithVersion> dwt : response.getDataList()) {
                 final CannedRequestRef rq = dwt.getData().getRequest();
                 if (rq != null) {
                     ((CannedRequestDTO) rq).setRequest(null);

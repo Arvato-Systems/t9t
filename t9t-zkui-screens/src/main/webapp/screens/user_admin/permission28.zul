@@ -8,7 +8,7 @@
             currentMode="@load(vm.currentMode)">
             <form28 id="roleToPermissionCrud" aspect="2" numColumns="2">
                 <rows>
-                    <cells28  id ="tenantRef"               value ="@load(vm.tenantRef)          @save(vm.tenantRef,before='commandSave')"/>
+                    <cells28  id ="tenantId"                value ="@load(vm.tenantId)           @save(vm.tenantId,before='commandSave')"/>
                     <cells228 id= "roleRef"                 value ="@load(vm.data.roleRef)       @save(vm.data.roleRef,before='commandSave')"
                               id2="permissionId"            value2="@load(vm.data.permissionId)  @save(vm.data.permissionId,before='commandSave')"/>
                     <cells28  id= "permissionSet"           value ="@load(vm.data.permissionSet) @save(vm.data.permissionSet,before='commandSave')" colspan1="3" />

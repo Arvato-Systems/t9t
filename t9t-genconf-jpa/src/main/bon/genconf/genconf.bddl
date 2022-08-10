@@ -23,8 +23,8 @@ package (com.arvatosystems) t9t.genconf.jpa.entities owner fortytwo prefix p28 {
     fields private;
 
     entity ConfigEntity category cfg is ConfigDTO tablename p42_cfg_config historytablename p42_his_config  {
-        tenantClass InternalTenantRef42
+        tenantClass InternalTenantId
         pk (objectRef)
-        index unique (tenantRef, configGroup, configKey, genericRef1, genericRef2)
+        index unique (tenantId, configGroup, configKey, genericRef1, genericRef2)
     }
 }

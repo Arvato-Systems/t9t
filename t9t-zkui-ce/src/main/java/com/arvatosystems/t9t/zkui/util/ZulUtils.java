@@ -48,8 +48,6 @@ import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.impl.InputElement;
 
-import com.arvatosystems.t9t.authc.api.TenantDescription;
-import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.init.InitContainers;
 import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
@@ -222,42 +220,6 @@ public final class ZulUtils {
             LOGGER.info("Evaluated boolean config property {} to be {}", key, result);
             return result;
         });
-    }
-
-    /**
-     * Read tenant config by key from configuration property file
-     * use current tenant as key, fallback to @ if not found
-     */
-    public static String readTenantConfig(final String key) {
-        final String currentTenantId = ApplicationSession.get().getTenantId();
-        String value = null;
-        if (currentTenantId != null) {
-            value = readConfig(currentTenantId + ":" + key);
-        }
-        // fallback to @
-        if (value == null) {
-            value = readConfig("@:" + key);
-        }
-        return value;
-    }
-
-    /**
-     * @param tenantRef
-     * @return
-     */
-    @Deprecated
-    public static String getTenantIdByRef(final Long tenantRef) {
-        if (T9tConstants.GLOBAL_TENANT_REF42.equals(tenantRef)) {
-            return T9tConstants.GLOBAL_TENANT_ID;
-        }
-        final List<TenantDescription> tenants = ApplicationSession.get().getAllowedTenants();
-        for (final TenantDescription td : tenants) {
-            if (td.getTenantRef().equals(tenantRef))
-                return td.getTenantId();
-        }
-        // should not happen, it means the user has selected data to which no permissions exist
-        LOGGER.warn("Mapping to ref {} to undisclosed tenant", tenantRef);
-        return "?";  // undisclosed...
     }
 
     @Deprecated // only used by some not yet updated pricing module screens

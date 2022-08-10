@@ -1,7 +1,7 @@
 {
     "viewModel": "docComponent",
     "filters": [
-        { "filterType": "E", "fieldName": "tenantRef" },
+        { "filterType": "E", "fieldName": "tenantId" },
         { "filterType": "W", "fieldName": "documentId" },
         { "filterType": "W", "fieldName": "entityId" },
         { "filterType": "E", "fieldName": "languageCode" },
@@ -9,6 +9,6 @@
         { "filterType": "E", "fieldName": "currencyCode" }
     ],
     "fields": [
-        "prio", "tenantRef", "documentId", "entityId", "languageCode", "countryCode", "currencyCode", "name", "data.mediaType", "data.text"
+        "prio", "tenantId", "documentId", "entityId", "languageCode", "countryCode", "currencyCode", "name", "data.mediaType", "data.text"
     ]
 }

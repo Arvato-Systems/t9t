@@ -61,7 +61,7 @@ public class EmailPersistenceAccess implements IEmailPersistenceAccess {
         } else {
             email.setEmailStatus(EmailStatus.SENT);
         }
-        emailEntityResolver.save(email);                      // sets shared tenantRef and persists
+        emailEntityResolver.save(email);                      // sets shared tenantId and persists
 
         if (sendSpooled || storeEmail) {
             // save any attachments if required (currently only body implemented)
@@ -69,7 +69,7 @@ public class EmailPersistenceAccess implements IEmailPersistenceAccess {
             emailBody.setEmailRef(myEmailRef);
             emailBody.setAttachmentNo(0);
             emailBody.setDocument(msg.getMailBody());
-            emailAttachmentsEntityResolver.save(emailBody);   // sets shared tenantRef and persists
+            emailAttachmentsEntityResolver.save(emailBody);   // sets shared tenantId and persists
         }
     }
 }

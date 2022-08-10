@@ -19,9 +19,9 @@ import com.arvatosystems.t9t.base.crud.RefResolverRequest;
 import com.arvatosystems.t9t.base.crud.RefResolverResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.base.services.IRefResolver;
 
 import de.jpaw.bonaparte.pojos.apiw.Ref;
-import de.jpaw.bonaparte.refsw.RefResolver;
 
 public abstract class AbstractRefResolverBERequestHandler<REF extends Ref, REQUEST extends RefResolverRequest<REF>> extends
         AbstractRequestHandler<REQUEST> {
@@ -31,7 +31,7 @@ public abstract class AbstractRefResolverBERequestHandler<REF extends Ref, REQUE
         return true;
     }
 
-    protected RefResolverResponse execute(final RequestContext ctx, final REQUEST request, final RefResolver<REF, ?, ?> resolver) {
+    protected RefResolverResponse execute(final RequestContext ctx, final REQUEST request, final IRefResolver<REF, ?, ?> resolver) {
         final RefResolverResponse rs = new RefResolverResponse();
         rs.setKey(resolver.getRef(request.getRef()));
         rs.setReturnCode(0);

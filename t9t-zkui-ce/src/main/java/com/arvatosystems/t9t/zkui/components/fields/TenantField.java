@@ -26,8 +26,8 @@ import com.arvatosystems.t9t.authc.api.TenantDescription;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 
-import de.jpaw.bonaparte.pojos.api.LongFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
+import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.ui.UIFilter;
 import de.jpaw.bonaparte.pojos.ui.UIFilterType;
@@ -53,7 +53,7 @@ public class TenantField extends AbstractField<Combobox> {
         Comboitem ci = cb.getSelectedItem();
         if (ci == null || empty())
             return null;
-        LongFilter f = new LongFilter();
+        final UnicodeFilter f = new UnicodeFilter();
         f.setFieldName(getFieldName());
         f.setEqualsValue(ci.getValue());
         return f;
@@ -81,20 +81,20 @@ public class TenantField extends AbstractField<Combobox> {
                 // get all allowed tenants
                 List<TenantDescription> allowedTenants = session.getAllowedTenants();
                 for (TenantDescription td : allowedTenants) {
-                    newTenantComboItem(cb, td.getTenantRef(), td.getTenantId());
+                    newTenantComboItem(cb, td.getTenantId());
                 }
             } else {
                 // only own tenant
-                newTenantComboItem(cb, session.getTenantRef(), session.getTenantId());
+                newTenantComboItem(cb, session.getTenantId());
             }
             break;
         case "D":
-            newTenantComboItem(cb, T9tConstants.GLOBAL_TENANT_REF42, T9tConstants.GLOBAL_TENANT_ID);
-            if (T9tConstants.GLOBAL_TENANT_REF42.equals(session.getTenantRef()))
+            newTenantComboItem(cb, T9tConstants.GLOBAL_TENANT_ID);
+            if (T9tConstants.GLOBAL_TENANT_ID.equals(session.getTenantId()))
                 break;  // do not show the same twice
             // fall through
         default:
-            newTenantComboItem(cb, session.getTenantRef(), session.getTenantId());
+            newTenantComboItem(cb, session.getTenantId());
         }
     }
 
@@ -106,10 +106,10 @@ public class TenantField extends AbstractField<Combobox> {
     }
 
 
-    private static void newTenantComboItem(Combobox cb, Long ref, String id) {
+    private static void newTenantComboItem(Combobox cb, String id) {
         Comboitem ci = new Comboitem();
         ci.setLabel(id);
-        ci.setValue(ref);
+        ci.setValue(id);
         ci.setParent(cb);
     }
 }

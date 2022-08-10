@@ -42,7 +42,7 @@ public class UploadPluginRequestHandler extends AbstractRequestHandler<UploadPlu
             LOGGER.info("Plugin upload not enabled via configuration");
             throw new T9tException(T9tException.PLUGINS_NOT_ENABLED);
         }
-        final PluginInfo info = pluginManager.loadPlugin(ctx.tenantRef, rq.getJarFile());
+        final PluginInfo info = pluginManager.loadPlugin(ctx.tenantId, rq.getJarFile());
         final UploadPluginResponse resp = new UploadPluginResponse();
         LOGGER.info("Temporarily loaded plugin {} of version {}", info.getPluginId(), info.getVersion());
         resp.setPluginInfo(info);

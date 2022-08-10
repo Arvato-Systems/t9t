@@ -1,7 +1,7 @@
 {
     "viewModel": "messageStatistics",
     "filters": [
-        { "filterType": "E", "fieldName": "tenantRef" },
+        { "filterType": "E", "fieldName": "tenantId" },
         { "filterType": "W", "fieldName": "userId" },
         { "filterType": "E", "fieldName": "day" },
         { "filterType": "E", "fieldName": "requestParameterPqon" },
@@ -12,7 +12,7 @@
         { "filterType": "L", "fieldName": "processingTimeTotal" }
     ],
     "fields": [
-        "tenantRef", "userId", "day", "requestParameterPqon", "countOk", "countError", "processingTimeMin", "processingTimeMax", "processingTimeTotal"
+        "tenantId", "userId", "day", "requestParameterPqon", "countOk", "countError", "processingTimeMin", "processingTimeMax", "processingTimeTotal"
     ],
     "fieldWidths": [ 96, 96, 96, 303, 160, 150, 160, 160, 185 ]
 }

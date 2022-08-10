@@ -92,6 +92,8 @@ public class DataFieldFactory implements IDataFieldFactory {
                     LOGGER.debug("Creating dropdown for qualifier {} for {}", qualifierFor, path);
                     return new DropdownComboBoxItemDataField(params, qualifierFor);
                 }
+                if (path.endsWith("tenantId") && !fieldProperties.containsKey("nodropdown"))
+                    return new TenantDataField(params, crudViewModel.dtoClass.getProperty("tenantCategory"));
                 return new TextDataField(params);
             case BASICNUMERIC:
                 switch (javaType) {
@@ -101,8 +103,6 @@ public class DataFieldFactory implements IDataFieldFactory {
                 case "integer":
                     return new IntDataField(params);
                 case "long":
-                    if (path.endsWith("tenantRef"))
-                        return new TenantDataField(params, crudViewModel.dtoClass.getProperty("tenantCategory"));
                     if (dropdownType != null) {
                         IDropdown28BasicFactory<Combobox> factory = Dropdown28Registry.getFactoryById(dropdownType);
                         if (factory == null) {

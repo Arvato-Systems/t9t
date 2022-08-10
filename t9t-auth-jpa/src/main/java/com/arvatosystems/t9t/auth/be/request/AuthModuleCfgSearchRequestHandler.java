@@ -21,14 +21,14 @@ import com.arvatosystems.t9t.auth.jpa.mapping.IAuthModuleCfgDTOMapper;
 import com.arvatosystems.t9t.auth.jpa.persistence.IAuthModuleCfgEntityResolver;
 import com.arvatosystems.t9t.auth.request.AuthModuleCfgSearchRequest;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
-import com.arvatosystems.t9t.base.jpa.impl.AbstractSearch42RequestHandler;
+import com.arvatosystems.t9t.base.jpa.impl.AbstractSearchWithTotalsRequestHandler;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.dp.Jdp;
 
 public class AuthModuleCfgSearchRequestHandler extends
-  AbstractSearch42RequestHandler<Long, AuthModuleCfgDTO, FullTrackingWithVersion, AuthModuleCfgSearchRequest, AuthModuleCfgEntity> {
+  AbstractSearchWithTotalsRequestHandler<String, AuthModuleCfgDTO, FullTrackingWithVersion, AuthModuleCfgSearchRequest, AuthModuleCfgEntity> {
 
     protected final IAuthModuleCfgEntityResolver resolver = Jdp.getRequired(IAuthModuleCfgEntityResolver.class);
     protected final IAuthModuleCfgDTOMapper mapper = Jdp.getRequired(IAuthModuleCfgDTOMapper.class);

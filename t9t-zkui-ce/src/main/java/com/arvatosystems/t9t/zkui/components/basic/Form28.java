@@ -34,6 +34,7 @@ import com.arvatosystems.t9t.zkui.components.IViewModelOwner;
 import com.arvatosystems.t9t.zkui.components.datafields.IDataField;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 import com.arvatosystems.t9t.zkui.viewmodel.AbstractCrudVM.CrudMode;
+import com.arvatosystems.t9t.zkui.util.Constants;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
@@ -112,7 +113,7 @@ public class Form28 extends Grid implements IDataFactoryOwner, IViewModelOwner {
         switch (mode) {
         case CURRENT:
             for (IDataField field: myFields) {
-                if (field.getFieldName().equals(T9tConstants.TENANT_REF_FIELD_NAME42)) {
+                if (field.getFieldName().equals(T9tConstants.TENANT_ID_FIELD_NAME)) {
                     field.setDisabled(true);
                 } else {
                     Map<String, String> props = field.getFieldDefintion().getProperties();
@@ -132,9 +133,10 @@ public class Form28 extends Grid implements IDataFactoryOwner, IViewModelOwner {
             }
             break;
         case UNSAVED_NEW:
-            // enable all except a possible tenantRef field, unless in tenantCategory A and current tenant @
+            // enable all except a possible tenantId field, unless in tenantCategory A and current tenant @
+            final boolean isTenantVM = Constants.VM_ID_TENANT.equals(viewModelId);
             for (IDataField field: myFields) {
-                field.setDisabled(field.getFieldName().equals(T9tConstants.TENANT_REF_FIELD_NAME42));
+                field.setDisabled(field.getFieldName().equals(T9tConstants.TENANT_ID_FIELD_NAME) && !isTenantVM);
             }
             break;
         }

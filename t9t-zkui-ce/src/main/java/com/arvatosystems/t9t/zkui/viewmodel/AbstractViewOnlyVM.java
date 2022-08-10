@@ -20,16 +20,15 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Init;
 
-import com.arvatosystems.t9t.zkui.services.IT9tRemoteUtils;
-import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.base.IViewModelContainer;
+import com.arvatosystems.t9t.zkui.services.IT9tRemoteUtils;
+import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.DataWithTracking;
 import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW;
 import de.jpaw.dp.Jdp;
 
 @SuppressWarnings("rawtypes")
@@ -43,14 +42,13 @@ public abstract class AbstractViewOnlyVM<DTO extends BonaPortable, TRACKING exte
     // the data
     protected DTO data;
     protected TRACKING tracking;
-    protected Long tenantRef;
     protected String tenantId;
 
     // to be overridden in case arrays need to be initialized
     protected void clearData() {   // TODO: init child objects if exist, do it via injected class, qualifier to be passed to @Init
         data = crudViewModel == null ? null : (DTO) crudViewModel.dtoClass.newInstance();
         tracking = null;
-        tenantRef = session.getTenantRef();
+        tenantId = session.getTenantId();
     }
 
     // to be overridden in case arrays need to be sanitized
@@ -60,8 +58,8 @@ public abstract class AbstractViewOnlyVM<DTO extends BonaPortable, TRACKING exte
         } else {
             data = (DTO) dwt.getData().ret$MutableClone(true, true);
             tracking = dwt.getTracking();
-            if (dwt instanceof DataWithTrackingW)
-                tenantRef = ((DataWithTrackingW)dwt).getTenantRef();
+            if (dwt instanceof DataWithTrackingS)
+                tenantId = ((DataWithTrackingS)dwt).getTenantId();
             else if (dwt instanceof DataWithTrackingS)
                 tenantId = ((DataWithTrackingS)dwt).getTenantId();
         }
@@ -84,14 +82,6 @@ public abstract class AbstractViewOnlyVM<DTO extends BonaPortable, TRACKING exte
 
     public DTO getData() {
         return data;
-    }
-
-    public Long getTenantRef() {
-        return tenantRef;
-    }
-
-    public void setTenantRef(Long tenantRef) {
-        this.tenantRef = tenantRef;
     }
 
     public TrackingBase getTracking() {

@@ -27,47 +27,47 @@ public interface IDateTimeService {
     /**
      * Returns the calendar day which is now, measured in the tenant's time zone.
      *
-     * @param tenantRef         the tenant which specifies the time zone
+     * @param tenantId          the tenant which specifies the time zone
      * @param when              the instant to be converted
      * @return                  the local date for the specified instant for an observer located in the tenant's time zone
      */
-    default LocalDate getCurrentDay(final Long tenantRef) {
-        return toLocalDate(tenantRef, Instant.now());
+    default LocalDate getCurrentDay(final String tenantId) {
+        return toLocalDate(tenantId, Instant.now());
     }
 
     /**
      * Converts a given Instant to a calendar day, measured in the tenant's time zone.
      *
-     * @param tenantRef         the tenant which specifies the time zone
+     * @param tenantId          the tenant which specifies the time zone
      * @param when              the instant to be converted
      * @return                  the local date for the specified instant for an observer located in the tenant's time zone
      */
-    LocalDate toLocalDate(Long tenantRef, Instant when);
+    LocalDate toLocalDate(String tenantId, Instant when);
 
     /**
      * Converts a given LocalDateTime (assumed in UTC) to a calendar day, measured in the tenant's time zone.
      *
-     * @param tenantRef         the tenant which specifies the time zone
+     * @param tenantId          the tenant which specifies the time zone
      * @param when              the local date time in UTC to be converted
      * @return                  the local date for the specified instant for an observer located in the tenant's time zone
      */
-    LocalDate toLocalDate(Long tenantRef, LocalDateTime when);
+    LocalDate toLocalDate(String tenantId, LocalDateTime when);
 
     /**
      * Provides the instant in time which corresponds to the beginning of a given calendar day in the tenant's time zone.
      *
-     * @param tenantRef         the tenant which specifies the time zone
+     * @param tenantId          the tenant which specifies the time zone
      * @param when              the day to be converted
      * @return                  the instant in time which corresponds to the beginning of a given calendar day in the tenant's time zone
      */
-    Instant toInstantAtStartOfDay(Long tenantRef, LocalDate when);
+    Instant toInstantAtStartOfDay(String tenantId, LocalDate when);
 
     /**
      * Provides the timestamp in UTC which corresponds to the beginning of a given calendar day in the tenant's time zone.
      *
-     * @param tenantRef         the tenant which specifies the time zone
+     * @param tenantId          the tenant which specifies the time zone
      * @param when              the day to be converted
      * @return                  the corresponding UTC timestamp
      */
-    LocalDateTime toLocalDateTimeAtStartOfDay(Long tenantRef, LocalDate when);
+    LocalDateTime toLocalDateTimeAtStartOfDay(String tenantId, LocalDate when);
 }

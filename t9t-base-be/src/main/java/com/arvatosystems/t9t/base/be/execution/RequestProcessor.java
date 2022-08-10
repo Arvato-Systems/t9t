@@ -144,7 +144,7 @@ public class RequestProcessor implements IRequestProcessor {
                     return resp;
                 }
             }
-            if (jwtInfo.getUserId() == null || jwtInfo.getUserRef() == null || jwtInfo.getTenantId() == null || jwtInfo.getTenantRef() == null
+            if (jwtInfo.getUserId() == null || jwtInfo.getUserRef() == null || jwtInfo.getTenantId() == null || jwtInfo.getTenantId() == null
                     || jwtInfo.getSessionId() == null || jwtInfo.getSessionRef() == null) {
                 LOGGER.info("Denying processing of {}@{}:{}, JWT is missing some fields", jwtInfo.getUserId(), jwtInfo.getTenantId(), pqon);
                 final ServiceResponse resp = new ServiceResponse();

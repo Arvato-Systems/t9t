@@ -16,7 +16,7 @@
 package com.arvatosystems.t9t.voice.be.request;
 
 import com.arvatosystems.t9t.base.api.ServiceResponse;
-import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudModuleCfg42RequestHandler;
+import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudModuleCfgRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.voice.VoiceModuleCfgDTO;
 import com.arvatosystems.t9t.voice.jpa.entities.VoiceModuleCfgEntity;
@@ -26,7 +26,7 @@ import com.arvatosystems.t9t.voice.request.VoiceModuleCfgCrudRequest;
 import de.jpaw.dp.Jdp;
 
 public class VoiceModuleCfgCrudRequestHandler
-        extends AbstractCrudModuleCfg42RequestHandler<VoiceModuleCfgDTO, VoiceModuleCfgCrudRequest, VoiceModuleCfgEntity> {
+        extends AbstractCrudModuleCfgRequestHandler<VoiceModuleCfgDTO, VoiceModuleCfgCrudRequest, VoiceModuleCfgEntity> {
     private final IVoiceModuleCfgEntityResolver resolver = Jdp.getRequired(IVoiceModuleCfgEntityResolver.class);
     private final IVoiceModuleCfgDTOMapper mapper = Jdp.getRequired(IVoiceModuleCfgDTOMapper.class);
 

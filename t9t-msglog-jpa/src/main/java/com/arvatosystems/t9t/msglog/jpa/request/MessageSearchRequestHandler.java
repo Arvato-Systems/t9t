@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.msglog.jpa.request;
 
-import com.arvatosystems.t9t.base.jpa.impl.AbstractSearch42RequestHandler;
+import com.arvatosystems.t9t.base.jpa.impl.AbstractSearchWithTotalsRequestHandler;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.msglog.MessageDTO;
@@ -27,7 +27,7 @@ import com.arvatosystems.t9t.msglog.request.MessageSearchRequest;
 import de.jpaw.bonaparte.pojos.api.NoTracking;
 import de.jpaw.dp.Jdp;
 
-public class MessageSearchRequestHandler extends AbstractSearch42RequestHandler<Long, MessageDTO, NoTracking, MessageSearchRequest, MessageEntity> {
+public class MessageSearchRequestHandler extends AbstractSearchWithTotalsRequestHandler<Long, MessageDTO, NoTracking, MessageSearchRequest, MessageEntity> {
 
     protected final IMessageEntityResolver resolver = Jdp.getRequired(IMessageEntityResolver.class);
     protected final IMessageDTOMapper mapper = Jdp.getRequired(IMessageDTOMapper.class);

@@ -40,13 +40,14 @@ import de.jpaw.bonaparte.pojos.api.auth.Permissionset
 import de.jpaw.bonaparte.pojos.api.auth.UserLogLevelType
 import java.util.UUID
 import com.arvatosystems.t9t.auth.UserTenantRoleKey
+import com.arvatosystems.t9t.base.crud.CrudStringKeyResponse
 
 // utility class to create a new tenant for a test suite. A user, a tenant and a role is created, all with the same ID
 // extend this class and override methods to change the behaviour
 @AddLogger
 class SetupUserTenantRole {
     public static val ALL_PERMISSIONS = new Permissionset(0xfffff)  // .fromStringMap("XSLCRUDIAVMP")
-    private final ITestConnection dlg
+    final ITestConnection dlg
 
     new(ITestConnection dlg) {
         this.dlg = dlg
@@ -68,7 +69,7 @@ class SetupUserTenantRole {
     }
 
     // this method is performed while operating under the "@" tenant
-    def Long createTenant(String id) {
+    def String createTenant(String id) {
         val tenantDTO       = new TenantDTO => [
             tenantId        = id
             isActive        = true
@@ -77,9 +78,9 @@ class SetupUserTenantRole {
         return dlg.typeIO(new TenantCrudRequest => [
             crud            = OperationType.MERGE
             data            = tenantDTO
-            naturalKey      = new TenantKey(id)
+            key             = id
             validate
-        ], CrudSurrogateKeyResponse).key
+        ], CrudStringKeyResponse).key
     }
 
     def Long createRole(String id) {
@@ -146,14 +147,14 @@ class SetupUserTenantRole {
 
     def void createUserTenantRole(String id, UUID apiKey, boolean switchTo) {
         // create the tenant using the global admin
-        val tenantRef = createTenant(id)
+        createTenant(id)
         dlg.switchTenant(id, 0)
         // create the new user and role
         val userRef = createUser(id)
         val roleRef = createRole(id)
         val apiKeyRef = createApiKey(id, apiKey)
 
-        LOGGER.info("Create user / tenant / role of ID, got refs {} / {} / {}, API-Key ref is {}", userRef, tenantRef, roleRef, apiKeyRef)
+        LOGGER.info("Create user / tenant / role of ID, got refs user {} / role {}, API-Key ref is {}", userRef, roleRef, apiKeyRef)
         createUserTenantRole(userRef, roleRef)
 
         if (switchTo) {

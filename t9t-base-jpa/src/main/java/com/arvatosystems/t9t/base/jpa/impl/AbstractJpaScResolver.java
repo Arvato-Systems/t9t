@@ -22,8 +22,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.TypedQuery;
 
-import com.arvatosystems.t9t.base.jpa.IEntityMapper42;
-import com.arvatosystems.t9t.base.jpa.IResolverSuperclassKey42;
+import com.arvatosystems.t9t.base.jpa.IEntityMapper;
+import com.arvatosystems.t9t.base.jpa.IResolverSuperclassKey;
 import com.arvatosystems.t9t.base.search.DummySearchCriteria;
 import com.arvatosystems.t9t.base.search.SearchCriteria;
 
@@ -46,12 +46,12 @@ public abstract class AbstractJpaScResolver<
 > implements RefResolver<REF, KEY, DTO, TRACKING> {
 
     protected final String entityName;
-    protected final IResolverSuperclassKey42<REF, KEY, TRACKING, ENTITY> resolver;
-    protected final IEntityMapper42<KEY, DTO, TRACKING, ENTITY> mapper;
+    protected final IResolverSuperclassKey<REF, KEY, TRACKING, ENTITY> resolver;
+    protected final IEntityMapper<KEY, DTO, TRACKING, ENTITY> mapper;
 
     protected AbstractJpaScResolver(final String name,
-            final IResolverSuperclassKey42<REF, KEY, TRACKING, ENTITY> r,
-            final IEntityMapper42<KEY, DTO, TRACKING, ENTITY> m) {
+            final IResolverSuperclassKey<REF, KEY, TRACKING, ENTITY> r,
+            final IEntityMapper<KEY, DTO, TRACKING, ENTITY> m) {
         entityName = name;
         resolver = r;
         mapper = m;

@@ -63,30 +63,30 @@ public class EventOrBucketCreator implements IEventOrBucketCreator {
 
     @Override
     public void createBucketOrEvent(final RequestContext ctx, final String typeId, final Long ref, final BucketDataMode mode) {
-        final ConcurrentMap<Long, ListenerConfig> settings = ListenerConfigCache.getRegistrationForClassification(typeId);
+        final ConcurrentMap<String, ListenerConfig> settings = ListenerConfigCache.getRegistrationForClassification(typeId);
         if (settings == null)
             return;  // nothing configured
-        final ListenerConfig cfg = settings.get(ctx.tenantRef);
+        final ListenerConfig cfg = settings.get(ctx.tenantId);
         if (cfg == null)
             return;  // nothing configured
 
         switch (mode) {
         case CREATE:
-            LOGGER.trace("CREATE for {} on tenant {} / ref {}: cfg = {}", typeId, ctx.tenantRef, ref, cfg);
+            LOGGER.trace("CREATE for {} on tenant {} / ref {}: cfg = {}", typeId, ctx.tenantId, ref, cfg);
             if (cfg.getIssueCreatedEvents())
                 createEvent(typeId, ref);
             if (cfg.getCreationBuckets() != null)
                 executor.writeToBuckets(cfg.getCreationBuckets(), ref, T9tConstants.BUCKET_CREATED);
             break;
         case DELETE:
-            LOGGER.trace("REMOVE for {} on tenant {} / ref {}: cfg = {}", typeId, ctx.tenantRef, ref, cfg);
+            LOGGER.trace("REMOVE for {} on tenant {} / ref {}: cfg = {}", typeId, ctx.tenantId, ref, cfg);
             if (cfg.getIssueDeletedEvents())
                 deleteEvent(typeId, ref);
             if (cfg.getDeletionBuckets() != null)
                 executor.writeToBuckets(cfg.getDeletionBuckets(), ref, T9tConstants.BUCKET_DELETED);
             break;
         case UPDATE:
-            LOGGER.trace("UPDATE for {} on tenant {} / ref {}: cfg = {}", typeId, ctx.tenantRef, ref, cfg);
+            LOGGER.trace("UPDATE for {} on tenant {} / ref {}: cfg = {}", typeId, ctx.tenantId, ref, cfg);
             if (cfg.getIssueUpdatedEvents())
                 updateEvent(typeId, ref);
             if (cfg.getUpdateBuckets() != null)

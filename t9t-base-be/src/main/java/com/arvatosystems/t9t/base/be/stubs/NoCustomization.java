@@ -38,12 +38,12 @@ public class NoCustomization implements ICustomization {
     }
 
     @Override
-    public ITenantCustomization getTenantCustomization(final Long tenantRef, final String tenantId) {
+    public ITenantCustomization getTenantCustomization(final String tenantId) {
         return myCustomization;
     }
 
     @Override
-    public ITenantMapping getTenantMapping(final Long tenantRef, final String tenantId) {
-        return new NoTenantMapping(tenantRef, tenantId);
+    public ITenantMapping getTenantMapping(final String tenantId) {
+        return new NoTenantMapping(tenantId);
     }
 }

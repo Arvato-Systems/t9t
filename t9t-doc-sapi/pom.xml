@@ -40,7 +40,7 @@
         <dependency>
             <!-- review: only for the module cfg interface -->
             <groupId>com.arvato-systems.t9t</groupId>
-            <artifactId>t9t-server-sapi</artifactId>
+            <artifactId>t9t-base-sapi</artifactId>
         </dependency>
     </dependencies>
 

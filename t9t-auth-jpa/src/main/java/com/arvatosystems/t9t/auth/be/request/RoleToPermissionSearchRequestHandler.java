@@ -22,13 +22,13 @@ import com.arvatosystems.t9t.auth.jpa.mapping.IRoleToPermissionDTOMapper;
 import com.arvatosystems.t9t.auth.jpa.persistence.IRoleToPermissionEntityResolver;
 import com.arvatosystems.t9t.auth.request.RoleToPermissionSearchRequest;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
-import com.arvatosystems.t9t.base.jpa.impl.AbstractSearch42RequestHandler;
+import com.arvatosystems.t9t.base.jpa.impl.AbstractSearchWithTotalsRequestHandler;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.dp.Jdp;
 
-public class RoleToPermissionSearchRequestHandler extends AbstractSearch42RequestHandler<RoleToPermissionInternalKey, RoleToPermissionDTO,
+public class RoleToPermissionSearchRequestHandler extends AbstractSearchWithTotalsRequestHandler<RoleToPermissionInternalKey, RoleToPermissionDTO,
   FullTrackingWithVersion, RoleToPermissionSearchRequest, RoleToPermissionEntity> {
 
     protected final IRoleToPermissionEntityResolver resolver = Jdp.getRequired(IRoleToPermissionEntityResolver.class);

@@ -19,12 +19,12 @@ import t9t.base.entities.*
 
 package (com.arvatosystems) t9t.bucket.jpa.entities owner fortytwo prefix p28 {
     entity BucketCounterEntity category datv is BucketCounterDTO inheritance tablePerClass {
-        tenantClass InternalTenantRef42
+        tenantClass InternalTenantId
         pk (objectRef)
     }
 
     entity BucketEntryEntity category datb is BucketEntryDTO inheritance tablePerClass {
-        tenantClass InternalTenantRef42
+        tenantClass InternalTenantId
         pk is BucketEntryKey
     }
 }

@@ -80,8 +80,6 @@ public class FieldFactory {
                 case "integer":
                     return new IntField(fieldname, filter, desc, gridId, session);
                 case "long":
-                    if (fieldName.endsWith("tenantRef"))
-                        return new TenantField(fieldname, filter, desc, gridId, session, viewModel.dtoClass.getProperty("tenantCategory"));
                     if (dropdownType != null)
                         return new DropdownField(fieldname, filter, desc, gridId, session, dropdownType);
 //                    // check for bandboxes
@@ -131,6 +129,8 @@ public class FieldFactory {
                 }
                 break;
             case STRING:
+                if (fieldName.endsWith("tenantId") && !fieldProperties.containsKey("nodropdown"))
+                    return new TenantField(fieldname, filter, desc, gridId, session, viewModel.dtoClass.getProperty("tenantCategory"));
                 if (fieldProperties == null || fieldProperties.isEmpty())  // shortcut: avoid further map lookups
                     return new TextField(fieldname, filter, desc, gridId, session);
                 if (filter.getFilterType() == UIFilterType.EQUALITY) {
@@ -165,7 +165,7 @@ public class FieldFactory {
                     return new InstantField(fieldname, filter, desc, gridId, session);
                 case "day":
                     final boolean withToday = ZulUtils.readBooleanConfig(T9tConfigConstants.DATE_PICKER_SHOW_TODAY)
-                      || (fieldProperties.get(Constants.UiFieldProperties.SHOW_TODAY) != null);
+                      || (fieldProperties != null && fieldProperties.get(Constants.UiFieldProperties.SHOW_TODAY) != null);
                     return new DayField(fieldname, filter, desc, gridId, session, withToday);
                 case "time":
                     return new TimeField(fieldname, filter, desc, gridId, session);

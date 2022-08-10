@@ -20,12 +20,12 @@ import com.arvatosystems.t9t.base.auth.PasswordAuthentication;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
-import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW;
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 
 /** Authentication via external providers (LDAP, Active Directory...). */
 public interface IExternalAuthentication {
     /**
      * Request external authentication for this user.
      */
-    AuthIntermediateResult externalAuth(RequestContext ctx, PasswordAuthentication pw, DataWithTrackingW<UserDTO, FullTrackingWithVersion> user);
+    AuthIntermediateResult externalAuth(RequestContext ctx, PasswordAuthentication pw, DataWithTrackingS<UserDTO, FullTrackingWithVersion> user);
 }

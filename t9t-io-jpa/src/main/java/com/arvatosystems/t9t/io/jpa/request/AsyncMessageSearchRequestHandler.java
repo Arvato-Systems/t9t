@@ -16,7 +16,7 @@
 package com.arvatosystems.t9t.io.jpa.request;
 
 import com.arvatosystems.t9t.base.entities.WriteTracking;
-import com.arvatosystems.t9t.base.jpa.impl.AbstractSearch42RequestHandler;
+import com.arvatosystems.t9t.base.jpa.impl.AbstractSearchWithTotalsRequestHandler;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.io.AsyncMessageDTO;
@@ -28,7 +28,7 @@ import com.arvatosystems.t9t.io.request.AsyncMessageSearchRequest;
 import de.jpaw.dp.Jdp;
 
 public class AsyncMessageSearchRequestHandler extends
-        AbstractSearch42RequestHandler<Long, AsyncMessageDTO, WriteTracking, AsyncMessageSearchRequest, AsyncMessageEntity> {
+        AbstractSearchWithTotalsRequestHandler<Long, AsyncMessageDTO, WriteTracking, AsyncMessageSearchRequest, AsyncMessageEntity> {
 
     protected final IAsyncMessageEntityResolver resolver = Jdp.getRequired(IAsyncMessageEntityResolver.class);
     protected final IAsyncMessageDTOMapper mapper = Jdp.getRequired(IAsyncMessageDTOMapper.class);

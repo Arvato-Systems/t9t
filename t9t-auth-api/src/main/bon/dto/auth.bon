@@ -36,7 +36,7 @@ import t9t.base.moduleCfg.*
  */
 package (com.arvatosystems) t9t.auth {
     default private unsigned trim noControlChars;
-    properties noJava, simpleref,
+    properties noJava, simpleref, nodropdown,
         tenantCategory is com.arvatosystems.t9t.annotations.TenantCategory(),
         searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
         serialized is com.arvatosystems.t9t.annotations.StoreSerialized,
@@ -52,7 +52,7 @@ package (com.arvatosystems) t9t.auth {
 
     /** Extended tenant configuration for data exceeding the generic tenant configuration of the application server.
      * Data in this class defaults to the entries for the global tenant if no record has been defined for this tenant.
-     * Records of this entity share the same artifical primary key tenantRef.
+     * Records of this entity share the same artifical primary key tenantId.
      */
     class AuthModuleCfgDTO RTTI 99 extends ModuleConfigDTO {
         properties                                  tenantCategory="D";             // if entry missing, get the global one
@@ -81,13 +81,12 @@ package (com.arvatosystems) t9t.auth {
     }
 
     /** The tenant. */
-    class TenantRef extends Ref {}
-    final class TenantKey extends TenantRef {
+    final class TenantKey {
         required tenantId                           tenantId      properties notupdatable;
     }
-    final class TenantDTO RTTI 4 extends TenantRef {
+    final class TenantDTO {
         properties tenantCategory="E";
-        required tenantId                           tenantId      properties notupdatable;
+        required tenantId                           tenantId      properties notupdatable, nodropdown;
         required boolean                            isActive      properties active;
         required shortText                          name;                                   // tenant name
         optional Json                               z;
@@ -171,7 +170,7 @@ package (com.arvatosystems) t9t.auth {
     final class RoleToPermissionInternalKey extends RoleToPermissionRef {
         required f42Ref                             roleRef         properties notupdatable, dropdown="roleId";
         required resourceId                         permissionId    properties notupdatable;
-        required f42Ref                             tenantRef       properties notupdatable;
+        required tenantId                           tenantId        properties notupdatable;
     }
     class RoleToPermissionDTO extends CompositeKeyBase pk RoleToPermissionInternalKey {
         properties tenantCategory="D";
@@ -192,7 +191,7 @@ package (com.arvatosystems) t9t.auth {
     final class UserTenantRoleInternalKey extends UserTenantRoleRef {
         required f42Ref                             userRef         properties notupdatable, dropdown="userId";
         required f42Ref                             roleRef         properties notupdatable, dropdown="roleId";
-        required f42Ref                             tenantRef       properties notupdatable;
+        required tenantId                           tenantId        properties notupdatable;
     }
     class UserTenantRoleDTO extends CompositeKeyBase pk UserTenantRoleInternalKey {
         properties tenantCategory="D";
@@ -272,7 +271,7 @@ package (com.arvatosystems) t9t.auth {
     final class SessionDTO extends SessionRef {
         properties tenantCategory="A";
         required (UserRef...,UserKey)               userRef         properties notupdatable, searchprefix="user", ref, simpleref="getObjectRef()", dropdown="userId";
-        required (TenantRef...,TenantKey)           tenantRef       properties notupdatable, searchprefix="tenant", ref, simpleref="getObjectRef()";
+        required tenantId                           tenantId        properties notupdatable;
         optional Uuid                               sessionId;          // persistent session ID which stays the same across tenant changes
         optional f42Ref                             continuesFromSession;   // for a tenant change: the session ref of the previous session entry
         // further client info

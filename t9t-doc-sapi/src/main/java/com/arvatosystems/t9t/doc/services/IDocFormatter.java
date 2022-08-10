@@ -25,7 +25,7 @@ import de.jpaw.bonaparte.pojos.api.media.MediaData;
 public interface IDocFormatter {
     MediaData formatDocument(
         String tenantId,
-        Long sharedTenantRef,
+        String sharedTenantId,
         TemplateType templateType,
         String template,
         DocumentSelector selector,

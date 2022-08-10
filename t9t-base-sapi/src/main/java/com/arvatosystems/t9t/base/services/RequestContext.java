@@ -42,7 +42,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
 
-import de.jpaw.bonaparte.pojos.api.LongFilter;
+import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
 import de.jpaw.bonaparte.refsw.impl.AbstractRequestContext;
 import de.jpaw.util.ExceptionUtil;
 
@@ -170,11 +170,11 @@ public class RequestContext extends AbstractRequestContext {  // FIXME: this cla
               internalHeaderParameters.getJwtInfo().getUserId(),
               internalHeaderParameters.getJwtInfo().getTenantId(),
               internalHeaderParameters.getJwtInfo().getUserRef(),
-              internalHeaderParameters.getJwtInfo().getTenantRef(),
+              null,  // no more tenantRef
               internalHeaderParameters.getProcessRef());
         this.internalHeaderParameters = internalHeaderParameters;
-        this.customization = customizationProvider.getTenantCustomization(tenantRef, tenantId);
-        this.tenantMapping = customizationProvider.getTenantMapping(tenantRef, tenantId);
+        this.customization = customizationProvider.getTenantCustomization(tenantId);
+        this.tenantMapping = customizationProvider.getTenantMapping(tenantId);
         this.currentPQON = internalHeaderParameters.getRequestParameterPqon();
     }
 
@@ -187,12 +187,12 @@ public class RequestContext extends AbstractRequestContext {  // FIXME: this cla
     }
 
     /** Returns a LongFilter condition on the current tenant and possibly the default tenant, if that one is different. */
-    public LongFilter tenantFilter(final String name) {
-        final LongFilter filter = new LongFilter(name);
-        if (T9tConstants.GLOBAL_TENANT_REF42.equals(tenantRef))
-            filter.setEqualsValue(T9tConstants.GLOBAL_TENANT_REF42);
+    public UnicodeFilter tenantFilter(final String name) {
+        final UnicodeFilter filter = new UnicodeFilter(name);
+        if (T9tConstants.GLOBAL_TENANT_ID.equals(tenantId))
+            filter.setEqualsValue(T9tConstants.GLOBAL_TENANT_ID);
         else
-            filter.setValueList(ImmutableList.of(T9tConstants.GLOBAL_TENANT_REF42, tenantRef));
+            filter.setValueList(ImmutableList.of(T9tConstants.GLOBAL_TENANT_ID, tenantId));
         return filter;
     }
 
@@ -230,7 +230,7 @@ public class RequestContext extends AbstractRequestContext {  // FIXME: this cla
 
     // queue a bucket writing command. All bucket writes will be kicked off asynchronously after a successful commit
     public void writeBucket(final String typeId, final Long ref, final Integer mode) {
-        final BucketWriteKey key = new BucketWriteKey(tenantRef, ref, typeId);
+        final BucketWriteKey key = new BucketWriteKey(tenantId, ref, typeId);
         // combine it with prior commands
         bucketsToWrite.merge(key, mode, (a, b) -> Integer.valueOf(a.intValue() | b.intValue()));
     }

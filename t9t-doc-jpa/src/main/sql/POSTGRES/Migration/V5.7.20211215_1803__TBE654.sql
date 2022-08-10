@@ -38,7 +38,7 @@ CREATE OR REPLACE VIEW p28_cfg_doc_config_v AS SELECT
     , t0.m_process_ref AS m_process_ref
     -- columns of java class FullTrackingWithVersion
     , t0.version AS version
-    -- columns of java class InternalTenantRef42
+    -- columns of java class InternalTenantId
     , t0.tenant_ref AS tenant_ref
     -- columns of java class AbstractRef
     -- columns of java class Ref
@@ -74,7 +74,7 @@ CREATE OR REPLACE VIEW p28_cfg_doc_config_v AS SELECT
 FROM p28_cfg_doc_config t0;
 
 CREATE OR REPLACE VIEW p28_cfg_doc_config_nt AS SELECT
-    -- columns of java class InternalTenantRef42
+    -- columns of java class InternalTenantId
     t0.tenant_ref AS tenant_ref
     -- columns of java class AbstractRef
     -- columns of java class Ref
@@ -123,7 +123,7 @@ CREATE OR REPLACE VIEW p28_cfg_doc_email_cfg_v AS SELECT
     , t0.m_process_ref AS m_process_ref
     -- columns of java class FullTrackingWithVersion
     , t0.version AS version
-    -- columns of java class InternalTenantRef42
+    -- columns of java class InternalTenantId
     , t0.tenant_ref AS tenant_ref
     -- columns of java class AbstractRef
     -- columns of java class Ref
@@ -153,7 +153,7 @@ CREATE OR REPLACE VIEW p28_cfg_doc_email_cfg_v AS SELECT
 FROM p28_cfg_doc_email_cfg t0;
 
 CREATE OR REPLACE VIEW p28_cfg_doc_email_cfg_nt AS SELECT
-    -- columns of java class InternalTenantRef42
+    -- columns of java class InternalTenantId
     t0.tenant_ref AS tenant_ref
     -- columns of java class AbstractRef
     -- columns of java class Ref

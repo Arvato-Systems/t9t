@@ -15,6 +15,12 @@
  */
 package com.arvatosystems.t9t.plugins.be.request;
 
+import java.time.Instant;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.be.impl.AbstractCrudSurrogateKeyBERequestHandler;
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
@@ -36,16 +42,11 @@ import com.arvatosystems.t9t.plugins.services.IPluginManager;
 import de.jpaw.bonaparte.pojos.api.AndFilter;
 import de.jpaw.bonaparte.pojos.api.AsciiFilter;
 import de.jpaw.bonaparte.pojos.api.BooleanFilter;
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.bonaparte.pojos.api.LongFilter;
 import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW;
+import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
 import de.jpaw.dp.Jdp;
-
-import java.time.Instant;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 //FIXME: There is a severe issue, in that for CREATE / UPDATE / MERGE, the pluginId of the data record is independent of the ID within the plugin itself.
 //We should either remove the ID within the plugin (solely trusting the user to assign IDs) or peek into the JAR before loading it, comparing the IDs,
@@ -75,7 +76,7 @@ public class LoadedPluginCrudRequestHandler
             entryExists = true;
         } else {
             loadedPlugin = crudRequest.getData();
-            List<DataWithTrackingW<LoadedPluginDTO, FullTrackingWithVersion>> datalist = getLoadedPlugin(ctx.tenantRef, loadedPlugin.getPluginId())
+            List<DataWithTrackingS<LoadedPluginDTO, FullTrackingWithVersion>> datalist = getLoadedPlugin(ctx.tenantId, loadedPlugin.getPluginId())
                     .getDataList();
             if (datalist.size() > 0) {
                 entryExists = true;
@@ -111,10 +112,10 @@ public class LoadedPluginCrudRequestHandler
         case CREATE:
         case MERGE:
         case UPDATE:
-            pluginManager.loadPlugin(ctx.getTenantRef(), response.getData().getJarFile());
+            pluginManager.loadPlugin(ctx.tenantId, response.getData().getJarFile());
             break;
         case DELETE:
-            pluginManager.removePlugin(ctx.getTenantRef(), response.getData().getPluginId());
+            pluginManager.removePlugin(ctx.tenantId, response.getData().getPluginId());
             break;
         default:
             break;
@@ -123,10 +124,12 @@ public class LoadedPluginCrudRequestHandler
     }
 
     @SuppressWarnings("unchecked")
-    ReadAllResponse<LoadedPluginDTO, FullTrackingWithVersion> getLoadedPlugin(final Long tenantRef, final String pluginId) {
+    ReadAllResponse<LoadedPluginDTO, FullTrackingWithVersion> getLoadedPlugin(final String tenantId, final String pluginId) {
         final BooleanFilter activeFilter = new BooleanFilter("isActive", true);
-        final LongFilter tenantFilter = new LongFilter("tenantRef", tenantRef, null, null, null);
-        final AsciiFilter pluginFilter = new AsciiFilter("pluginId", pluginId, null, null, null, null);
+        final UnicodeFilter tenantFilter = new UnicodeFilter("tenantId");
+        tenantFilter.setEqualsValue(tenantId);
+        final AsciiFilter pluginFilter = new AsciiFilter("pluginId");
+        pluginFilter.setEqualsValue(pluginId);
 
         final AndFilter andFilter2 = new AndFilter(pluginFilter, tenantFilter);
         final AndFilter andFilter = new AndFilter(activeFilter, andFilter2);
@@ -147,7 +150,7 @@ public class LoadedPluginCrudRequestHandler
         return (ReadAllResponse<LoadedPluginDTO, FullTrackingWithVersion>) executor.executeSynchronous(loadedPluginSearchRequest);
     }
 
-    boolean checkIfPluginExists(final Long tenantRef, final String pluginId) {
-        return !(getLoadedPlugin(tenantRef, pluginId).getDataList().size() == 0);
+    boolean checkIfPluginExists(final String tenantId, final String pluginId) {
+        return !(getLoadedPlugin(tenantId, pluginId).getDataList().size() == 0);
     }
 }

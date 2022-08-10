@@ -56,7 +56,7 @@ package (com.arvatosystems) t9t.bucket {
     }
 
     /** Data sent to DataSink / IOutputSession.store for bucket related exports. */
-    class DataWithTrackingAndMore<DTO extends Ref, TRACKING extends TrackingBase> extends DataWithTrackingW<!DTO, !TRACKING> {
+    class DataWithTrackingAndMore<DTO extends Ref, TRACKING extends TrackingBase> extends DataWithTrackingS<!DTO, !TRACKING> {
         required Integer                        modes;                  // bitmap of operations
         optional Json                           z;                      // possible extensions
     }

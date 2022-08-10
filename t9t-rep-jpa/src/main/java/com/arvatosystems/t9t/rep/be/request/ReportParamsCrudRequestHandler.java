@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
-import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKey42RequestHandler;
+import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKeyRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.rep.ReportParamsDTO;
 import com.arvatosystems.t9t.rep.ReportParamsRef;
@@ -34,7 +34,7 @@ import com.arvatosystems.t9t.rep.request.ReportParamsCrudRequest;
 import de.jpaw.dp.Jdp;
 
 public class ReportParamsCrudRequestHandler extends
-        AbstractCrudSurrogateKey42RequestHandler<ReportParamsRef, ReportParamsDTO, FullTrackingWithVersion, ReportParamsCrudRequest, ReportParamsEntity> {
+        AbstractCrudSurrogateKeyRequestHandler<ReportParamsRef, ReportParamsDTO, FullTrackingWithVersion, ReportParamsCrudRequest, ReportParamsEntity> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ReportParamsCrudRequestHandler.class);
     protected final IReportParamsEntityResolver resolver = Jdp.getRequired(IReportParamsEntityResolver.class);

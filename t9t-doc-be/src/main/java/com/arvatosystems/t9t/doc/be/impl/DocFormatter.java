@@ -91,18 +91,18 @@ public class DocFormatter implements IDocFormatter {
     // FIXME once we have Java 17! This was 4 lines in xtend, and will be readable again with Java 17 record types.
     /** Class serves as an internal key to the cached components. */
     protected static class ComponentCacheKey {
-        private final Long tenantRef;
+        private final String tenantId;
         private final DocumentSelector selector;
 
-        public ComponentCacheKey(Long tenantRef, DocumentSelector selector) {
+        public ComponentCacheKey(String tenantId, DocumentSelector selector) {
             super();
-            this.tenantRef = tenantRef;
+            this.tenantId = tenantId;
             this.selector = selector;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(selector, tenantRef);
+            return Objects.hash(selector, tenantId);
         }
 
         @Override
@@ -114,16 +114,16 @@ public class DocFormatter implements IDocFormatter {
             if (getClass() != obj.getClass())
                 return false;
             ComponentCacheKey other = (ComponentCacheKey) obj;
-            return Objects.equals(selector, other.selector) && Objects.equals(tenantRef, other.tenantRef);
+            return Objects.equals(selector, other.selector) && Objects.equals(tenantId, other.tenantId);
         }
 
         @Override
         public String toString() {
-            return "ComponentCacheKey [tenantRef=" + tenantRef + ", selector=" + selector + "]";
+            return "ComponentCacheKey [tenantId=" + tenantId + ", selector=" + selector + "]";
         }
 
-        public Long getTenantRef() {
-            return tenantRef;
+        public String getTenantId() {
+            return tenantId;
         }
 
         public DocumentSelector getSelector() {
@@ -537,7 +537,7 @@ public class DocFormatter implements IDocFormatter {
         private final Map<String, MediaData> components;
         private final MediaXType desiredFormat;
         private final IDocComponentConverter converter;
-        private final Long tenantRef; // just for logging
+        private final String tenantId; // just for logging
 
         @Override
         public TemplateModel get(final String key) throws TemplateModelException {
@@ -551,8 +551,8 @@ public class DocFormatter implements IDocFormatter {
 
             // different format: convert it, if a converter is available
             if (converter == null) {
-                LOGGER.warn("Missing converter from {} to {} for component {}, tenantRef {}", dataInCache.getMediaType().name(),
-                        desiredFormat.name(), key, tenantRef);
+                LOGGER.warn("Missing converter from {} to {} for component {}, tenantId {}", dataInCache.getMediaType().name(),
+                        desiredFormat.name(), key, tenantId);
                 return null;
             }
             final String converted = converter.convertFrom(dataInCache);
@@ -567,17 +567,17 @@ public class DocFormatter implements IDocFormatter {
             return this.components.isEmpty();
         }
 
-        public ComponentAccessor(Map<String, MediaData> components, MediaXType desiredFormat, IDocComponentConverter converter, Long tenantRef) {
+        public ComponentAccessor(Map<String, MediaData> components, MediaXType desiredFormat, IDocComponentConverter converter, String tenantId) {
             super();
             this.components = components;
             this.desiredFormat = desiredFormat;
             this.converter = converter;
-            this.tenantRef = tenantRef;
+            this.tenantId = tenantId;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(components, converter, desiredFormat, tenantRef);
+            return Objects.hash(components, converter, desiredFormat, tenantId);
         }
 
         @Override
@@ -590,12 +590,12 @@ public class DocFormatter implements IDocFormatter {
                 return false;
             ComponentAccessor other = (ComponentAccessor) obj;
             return Objects.equals(components, other.components) && Objects.equals(converter, other.converter)
-                    && Objects.equals(desiredFormat, other.desiredFormat) && Objects.equals(tenantRef, other.tenantRef);
+                    && Objects.equals(desiredFormat, other.desiredFormat) && Objects.equals(tenantId, other.tenantId);
         }
 
         @Override
         public String toString() {
-            return "ComponentAccessor [components=" + components + ", desiredFormat=" + desiredFormat + ", converter=" + converter + ", tenantRef=" + tenantRef
+            return "ComponentAccessor [components=" + components + ", desiredFormat=" + desiredFormat + ", converter=" + converter + ", tenantId=" + tenantId
                     + "]";
         }
 
@@ -611,8 +611,8 @@ public class DocFormatter implements IDocFormatter {
             return converter;
         }
 
-        public Long getTenantRef() {
-            return tenantRef;
+        public String getTenantId() {
+            return tenantId;
         }
     }
 
@@ -687,7 +687,7 @@ public class DocFormatter implements IDocFormatter {
             .expireAfterWrite(5, TimeUnit.MINUTES).<ComponentCacheKey, Map<String, MediaData>>build();
 
     @Override
-    public MediaData formatDocument(final String tenantId, final Long sharedTenantRef, final TemplateType templateType, final String template,
+    public MediaData formatDocument(final String tenantId, final String sharedTenantId, final TemplateType templateType, final String template,
             final DocumentSelector selector, final String timeZone, final Object data, final Map<String, MediaData> attachments) {
         try {
             LOGGER.debug("formatDocument for template {}, type {} with selector {}, time zone {}", template, templateType, selector, timeZone);
@@ -705,7 +705,7 @@ public class DocFormatter implements IDocFormatter {
             // cache images and texts
             // freeze the selector to allow caching the hash code
             selector.freeze();
-            final ComponentCacheKey cacheKey = new ComponentCacheKey(sharedTenantRef, selector);
+            final ComponentCacheKey cacheKey = new ComponentCacheKey(sharedTenantId, selector);
             final Map<String, MediaData> components = COMPONENT_CACHE.get(cacheKey, () -> {
                 return persistenceAccess.getDocComponents(moduleCfg, selector);
             });
@@ -772,7 +772,7 @@ public class DocFormatter implements IDocFormatter {
             final Map<String, Object> map = new HashMap<>(10);
             map.put("s", new BeanModel(selector, WRAPPER));
             map.put("d", new BeanModel(data, new EscapingWrapper(mediaType, converter, escapeToRaw)));
-            map.put("c", new ComponentAccessor(components, mediaType, converter, sharedTenantRef));
+            map.put("c", new ComponentAccessor(components, mediaType, converter, sharedTenantId));
             map.put("p", new PropertyTranslations(languageCode));
             map.put("q", new PropertyTranslationsFuncModel(languageCode));
             map.put("i", new ImageGeneratorModel(mediaType, converter));

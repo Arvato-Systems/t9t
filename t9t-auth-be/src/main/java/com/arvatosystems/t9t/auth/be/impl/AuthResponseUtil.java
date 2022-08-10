@@ -19,7 +19,6 @@ import com.arvatosystems.t9t.auth.ApiKeyDTO;
 import com.arvatosystems.t9t.auth.PermissionsDTO;
 import com.arvatosystems.t9t.auth.SessionDTO;
 import com.arvatosystems.t9t.auth.TenantDTO;
-import com.arvatosystems.t9t.auth.TenantRef;
 import com.arvatosystems.t9t.auth.UserDTO;
 import com.arvatosystems.t9t.auth.UserRef;
 import com.arvatosystems.t9t.auth.hooks.IJwtEnrichment;
@@ -79,7 +78,7 @@ public class AuthResponseUtil implements IAuthResponseUtil {
         session.setLocale(jwt.getLocale());
         session.setZoneinfo(jwt.getZoneinfo());
         session.setUserRef(new UserRef(jwt.getUserRef()));
-        session.setTenantRef(new TenantRef(jwt.getTenantRef()));
+        session.setTenantId(jwt.getTenantId());
         if (sp != null) {
             // memorize session parameters
             session.setLocale(sp.getLocale());
@@ -126,7 +125,6 @@ public class AuthResponseUtil implements IAuthResponseUtil {
         jwtInfo.setUserId(user.getUserId());
         jwtInfo.setName(user.getName());
         jwtInfo.setTenantId(tenantDTO.getTenantId());
-        jwtInfo.setTenantRef(tenantDTO.getObjectRef());
         jwtInfo.setRoleRef(user.getRoleRef() == null ? null : user.getRoleRef().getObjectRef());
         jwtInfo.setZ(jwtEnrichment.mergeZs(user.getZ(), tenantDTO.getZ()));
         if (p != null) {
@@ -154,7 +152,6 @@ public class AuthResponseUtil implements IAuthResponseUtil {
         jwtInfo.setUserId(user.getUserId());
         jwtInfo.setName(user.getName());
         jwtInfo.setTenantId(tenantDTO.getTenantId());
-        jwtInfo.setTenantRef(tenantDTO.getObjectRef());
         jwtInfo.setRoleRef(apiKey.getRoleRef() == null
           ? user.getRoleRef() == null ? null : user.getRoleRef().getObjectRef()
           : apiKey.getRoleRef().getObjectRef());

@@ -17,7 +17,7 @@
                             <rows>
                                 <cells228 id ="userId"                          value ="@load(vm.data.userId)      @save(vm.data.userId,   before='commandSave')"
                                           id2="name"                            value2="@load(vm.data.name)        @save(vm.data.name,     before='commandSave')"/>
-                                <cells228 id ="tenantRef"                       value ="@bind(vm.tenantRef)"
+                                <cells228 id ="tenantId"                        value ="@bind(vm.tenantId)"
                                           id2="isActive"                        value2="@load(vm.data.isActive)    @save(vm.data.isActive,before='commandSave')"/>
                                 <cells228 id= "roleRef"                         value ="@load(vm.data.roleRef)                         @save(vm.data.roleRef,                        before='commandSave')"
                                           id2="permissions.resourceIsWildcard"  value2="@load(vm.data.permissions.resourceIsWildcard)  @save(vm.data.permissions.resourceIsWildcard, before='commandSave')"/>

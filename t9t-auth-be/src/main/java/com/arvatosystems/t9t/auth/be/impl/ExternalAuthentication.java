@@ -36,7 +36,7 @@ import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.cfg.be.LdapConfiguration;
 
-import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW;
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 
@@ -48,10 +48,10 @@ public class ExternalAuthentication implements IExternalAuthentication {
     protected final IAuthPersistenceAccess persistenceAccess = Jdp.getRequired(IAuthPersistenceAccess.class);
 
     @Override
-    public AuthIntermediateResult externalAuth(RequestContext ctx, PasswordAuthentication pw, DataWithTrackingW<UserDTO, FullTrackingWithVersion> user) {
+    public AuthIntermediateResult externalAuth(RequestContext ctx, PasswordAuthentication pw, DataWithTrackingS<UserDTO, FullTrackingWithVersion> user) {
         // the default provider required the user to exist in our local DB (for permissions)
         final AuthIntermediateResult resp = new AuthIntermediateResult();
-        resp.setTenantRef(user.getTenantRef());
+        resp.setTenantId(user.getTenantId());
         resp.setUser(user.getData());
 
         try {

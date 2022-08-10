@@ -20,5 +20,5 @@ import java.util.List;
 import com.arvatosystems.t9t.trns.TranslationsDTO;
 
 public interface ITrnsPersistenceAccess {
-    List<TranslationsDTO> readLanguage(Long tenantRef, String languageCode);
+    List<TranslationsDTO> readLanguage(String tenantId, String languageCode);
 }

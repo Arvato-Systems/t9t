@@ -31,14 +31,14 @@ public class VoicePersistenceAccess implements IVoicePersistenceAccess {
     protected final IVoiceUserDTOMapper voiceUserMapper = Jdp.getRequired(IVoiceUserDTOMapper.class);
 
     @Override
-    public VoiceUserDTO getUserForExternalId(final Long tenantRef, final Long applicationRef, final String providerId) {
+    public VoiceUserDTO getUserForExternalId(final String tenantId, final Long applicationRef, final String providerId) {
         final TypedQuery<VoiceUserEntity> query = voiceUserResolver.getEntityManager().createQuery(
                 "SELECT u FROM VoiceUserEntity u"
-              + " WHERE u.tenantRef      = :tenantRef"
+              + " WHERE u.tenantId      = :tenantId"
               + "   AND u.providerId     = :providerId"
               + "   AND u.providerIdHash = :providerIdHash"
               + "   AND u.applicationRef = :applicationRef", VoiceUserEntity.class);
-        query.setParameter("tenantRef",      tenantRef);
+        query.setParameter("tenantId",      tenantId);
         query.setParameter("providerId",     providerId);
         query.setParameter("providerIdHash", providerId.hashCode());
         query.setParameter("applicationRef", applicationRef);

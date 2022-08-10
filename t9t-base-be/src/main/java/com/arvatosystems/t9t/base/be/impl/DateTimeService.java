@@ -36,24 +36,24 @@ public class DateTimeService implements IDateTimeService {
     protected final ITimeZoneProvider timeZoneProvider = Jdp.getRequired(ITimeZoneProvider.class);
 
     @Override
-    public LocalDate toLocalDate(final Long tenantRef, final Instant when) {
-        final ZoneId timeZone = timeZoneProvider.getTimeZoneOfTenant(tenantRef);
+    public LocalDate toLocalDate(final String tenantId, final Instant when) {
+        final ZoneId timeZone = timeZoneProvider.getTimeZoneOfTenant(tenantId);
         return LocalDate.ofInstant(when, timeZone);
     }
 
     @Override
-    public LocalDate toLocalDate(final Long tenantRef, final LocalDateTime when) {
-        return toLocalDate(tenantRef, when.toInstant(ZoneOffset.UTC));  // convert the timestamp to an instant and use the existing method for that
+    public LocalDate toLocalDate(final String tenantId, final LocalDateTime when) {
+        return toLocalDate(tenantId, when.toInstant(ZoneOffset.UTC));  // convert the timestamp to an instant and use the existing method for that
     }
 
     @Override
-    public Instant toInstantAtStartOfDay(final Long tenantRef, final LocalDate when) {
-        final ZoneId timeZone = timeZoneProvider.getTimeZoneOfTenant(tenantRef);
+    public Instant toInstantAtStartOfDay(final String tenantId, final LocalDate when) {
+        final ZoneId timeZone = timeZoneProvider.getTimeZoneOfTenant(tenantId);
         return LocalDateTime.of(when, LocalTime.MIDNIGHT).atZone(timeZone).toInstant();
     }
 
     @Override
-    public LocalDateTime toLocalDateTimeAtStartOfDay(final Long tenantRef, final LocalDate when) {
-        return LocalDateTime.ofInstant(toInstantAtStartOfDay(tenantRef, when), ZoneOffset.UTC);  // reduce it to the existing method for the instant
+    public LocalDateTime toLocalDateTimeAtStartOfDay(final String tenantId, final LocalDate when) {
+        return LocalDateTime.ofInstant(toInstantAtStartOfDay(tenantId, when), ZoneOffset.UTC);  // reduce it to the existing method for the instant
     }
 }

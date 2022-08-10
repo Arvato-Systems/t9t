@@ -34,13 +34,8 @@ package (com.arvatosystems) t9t.base.entities {
         ref is com.arvatosystems.t9t.annotations.IsObjectRef;
 
     // internal class to define an additional JPA column for multitenancy
-    class InternalTenantId nojava {
-        required tenantId                           tenantId;      // the multitenancy discriminator
-    }
-
-    // internal class to define an additional JPA column for multitenancy
-    class InternalTenantRef42 {
-        required f42Ref                     tenantRef       properties noupdate, notupdatable;      // the multitenancy discriminator
+    class InternalTenantId {
+        required tenantId                   tenantId        properties noupdate, notupdatable;      // the multitenancy discriminator
     }
 
     /** Special tracking class for the Source. Here we have no processRef, and the user is part of the DTO.

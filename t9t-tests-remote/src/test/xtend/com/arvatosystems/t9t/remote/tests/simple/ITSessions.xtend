@@ -19,7 +19,7 @@ import com.arvatosystems.t9t.auth.request.SessionSearchRequest
 import com.arvatosystems.t9t.base.search.ReadAllResponse
 import com.arvatosystems.t9t.remote.connect.Connection
 import de.jpaw.bonaparte.pojos.api.SortColumn
-import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS
 import org.junit.jupiter.api.Test
 
 class ITSessions {
@@ -37,6 +37,6 @@ class ITSessions {
             limit = 20
         ]), ReadAllResponse).dataList
         for (dwt: results)
-            println('''«(dwt as DataWithTrackingW).data»''')
+            println('''«(dwt as DataWithTrackingS).data»''')
     }
 }

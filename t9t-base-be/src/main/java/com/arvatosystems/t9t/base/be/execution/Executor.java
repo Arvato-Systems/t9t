@@ -325,7 +325,6 @@ public class Executor implements IExecutor {
     private EventHeader toHeader(final RequestContext ctx) {
         final EventHeader header = new EventHeader();
         header.setTenantId(ctx.tenantId);
-        header.setTenantRef(ctx.getTenantRef());
         header.setInvokingProcessRef(ctx.internalHeaderParameters.getProcessRef());
         header.setEncodedJwt(ctx.internalHeaderParameters.getEncodedJwt());
         return header;

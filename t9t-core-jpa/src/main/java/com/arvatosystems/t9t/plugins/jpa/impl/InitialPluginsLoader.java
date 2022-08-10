@@ -44,13 +44,13 @@ public class InitialPluginsLoader implements StartupOnly {
         try {
             final PersistenceProviderJPA cp = jpaContextProvider.get();
             final TypedQuery<LoadedPluginEntity> query = cp.getEntityManager().createQuery(
-                "SELECT p FROM " + LoadedPluginEntity.class.getSimpleName() + " p WHERE p.isActive = :isActive ORDER BY p.tenantRef, p.priority DESC",
+                "SELECT p FROM " + LoadedPluginEntity.class.getSimpleName() + " p WHERE p.isActive = :isActive ORDER BY p.tenantId, p.priority DESC",
                 LoadedPluginEntity.class);
             query.setParameter("isActive", true);
             final List<LoadedPluginEntity> plugins = query.getResultList();
             LOGGER.info("Preloading {} plugins", plugins.size());
             for (final LoadedPluginEntity pe: plugins) {
-                pluginManager.loadPlugin(pe.getTenantRef(), pe.getJarFile());
+                pluginManager.loadPlugin(pe.getTenantId(), pe.getJarFile());
             }
             cp.getEntityManager().clear();  // get rid of big copies of JAR images inside cached JPA entities
         } catch (final Exception e) {

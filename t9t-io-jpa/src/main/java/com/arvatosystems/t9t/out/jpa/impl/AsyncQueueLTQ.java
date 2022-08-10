@@ -72,10 +72,10 @@ public class AsyncQueueLTQ<R extends BonaPortable> implements IAsyncQueue {
     private final ConcurrentMap<Long, QueueData> queueData;
 
     public static class ChannelCacheKey {
-        public final Long   tenantRef;
+        public final String  tenantId;
         public final String channelId;
-        public ChannelCacheKey(final Long tenantRef, final String channelId) {
-            this.tenantRef = tenantRef;
+        public ChannelCacheKey(final String tenantId, final String channelId) {
+            this.tenantId = tenantId;
             this.channelId = channelId;
         }
     }
@@ -252,7 +252,7 @@ public class AsyncQueueLTQ<R extends BonaPortable> implements IAsyncQueue {
                 }
                 // add them to the queue
                 for (final AsyncMessageEntity m : results) {
-                    queue.put(new InMemoryMessage(m.getTenantRef(), m.getAsyncChannelId(), m.getObjectRef(), m.getPayload()));
+                    queue.put(new InMemoryMessage(m.getTenantId(), m.getAsyncChannelId(), m.getObjectRef(), m.getPayload()));
                 }
                 if (results.size() < serverConfig.getMaxMessageAtStartup()) {
                     LOGGER.debug("Flipping gate to GREEN (low watermark)");
@@ -290,12 +290,12 @@ public class AsyncQueueLTQ<R extends BonaPortable> implements IAsyncQueue {
         protected boolean tryToSend(final InMemoryMessage nextMsg) {
             ExportStatusEnum newStatus = ExportStatusEnum.RESPONSE_ERROR;  // OK when sent
             final String channelId = nextMsg.getAsyncChannelId();
-            final Long tenantRef = nextMsg.getTenantRef();
+            final String tenantId = nextMsg.getTenantId();
             try {
                 LOGGER.info("Sending message to channel {} of type {}", nextMsg.getAsyncChannelId(), nextMsg.getPayload().ret$PQON());
                 // obtain (cached) channel config
-                final AsyncChannelDTO channelDto = CHANNEL_CACHE.get(new ChannelCacheKey(tenantRef, channelId),
-                  () -> messageUpdater.readChannelConfig(channelId, tenantRef));
+                final AsyncChannelDTO channelDto = CHANNEL_CACHE.get(new ChannelCacheKey(tenantId, channelId),
+                  () -> messageUpdater.readChannelConfig(channelId, tenantId));
                 if (!channelDto.getIsActive()) {
                     LOGGER.debug("Discarding async message to inactive channel {}", channelId);
                     newStatus = ExportStatusEnum.RESPONSE_OK;
@@ -338,8 +338,8 @@ public class AsyncQueueLTQ<R extends BonaPortable> implements IAsyncQueue {
         final RequestContext ctx = ctxProvider.get();
         // redundant check to see if the channel exists (to get exception in sync thread already). Should not cost too much time due to caching
         try {
-            final AsyncChannelDTO cfg = CHANNEL_CACHE.get(new ChannelCacheKey(ctx.tenantRef, asyncChannelId),
-              () -> messageUpdater.readChannelConfig(asyncChannelId, ctx.tenantRef));
+            final AsyncChannelDTO cfg = CHANNEL_CACHE.get(new ChannelCacheKey(ctx.tenantId, asyncChannelId),
+              () -> messageUpdater.readChannelConfig(asyncChannelId, ctx.tenantId));
             if (!cfg.getIsActive() || cfg.getAsyncQueueRef() == null) {
                 LOGGER.debug("Discarding async message to inactive or unassociated channel {}", asyncChannelId);
                 return null;
@@ -350,7 +350,7 @@ public class AsyncQueueLTQ<R extends BonaPortable> implements IAsyncQueue {
             if (queue != null) {
                 // queue is currently active: build the in-memory message and transmit it
                 final InMemoryMessage m = new InMemoryMessage();
-                m.setTenantRef(ctx.tenantRef);       // obtain the tenantRef and store it
+                m.setTenantId(ctx.tenantId);       // obtain the tenantId and store it
                 m.setAsyncChannelId(asyncChannelId);
                 m.setObjectRef(objectRef);
                 m.setPayload(payload);

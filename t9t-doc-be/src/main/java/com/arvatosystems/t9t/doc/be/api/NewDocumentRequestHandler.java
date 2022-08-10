@@ -158,7 +158,7 @@ public class NewDocumentRequestHandler extends AbstractRequestHandler<NewDocumen
     public NewDocumentResponse execute(RequestContext ctx, NewDocumentRequest request) {
         // read the tenant configuration
         final DocModuleCfgDTO moduleCfg = moduleConfigResolver.getModuleConfiguration();
-        final Long sharedTenantRef = ctx.tenantMapping.getSharedTenantRef(DocComponentDTO.class$rtti());
+        final String sharedTenantId = ctx.tenantMapping.getSharedTenantId(DocComponentDTO.class$rtti());
         MediaData whereToSetAttachmentFileName = null;
 
         // step 1: determine the actual target templateId
@@ -223,7 +223,7 @@ public class NewDocumentRequestHandler extends AbstractRequestHandler<NewDocumen
         final Map<String, MediaData> generatedCidMap = new HashMap<String, MediaData>(32);
         final boolean useCidsInMainDocument = docConfigDto.getUseCids() && docConfigDto.getEmailBodyTemplateId() == null;
         // CIDs are either used in the main document (no separate email body) or in the email body
-        final MediaData formatted = docFormatter.formatDocument(ctx.tenantId, sharedTenantRef, TemplateType.DOCUMENT_ID, effectiveMainDocumentId,
+        final MediaData formatted = docFormatter.formatDocument(ctx.tenantId, sharedTenantId, TemplateType.DOCUMENT_ID, effectiveMainDocumentId,
             request.getDocumentSelector(), effectiveTimeZone, request.getData(), useCidsInMainDocument ? generatedCidMap : null
         );
         final List<MediaData> attachmentList = new ArrayList<MediaData>(16);
@@ -244,7 +244,7 @@ public class NewDocumentRequestHandler extends AbstractRequestHandler<NewDocumen
             // scenario where the main document is the attachment and the referenced document is the email body
             whereToSetAttachmentFileName = target;
             attachmentList.add(target);
-            emailBody = docFormatter.formatDocument(ctx.tenantId, sharedTenantRef, TemplateType.DOCUMENT_ID, docConfigDto.getEmailBodyTemplateId(),
+            emailBody = docFormatter.formatDocument(ctx.tenantId, sharedTenantId, TemplateType.DOCUMENT_ID, docConfigDto.getEmailBodyTemplateId(),
                 request.getDocumentSelector(), effectiveTimeZone, request.getData(), docConfigDto.getUseCids() ? generatedCidMap : null
             );
         } else {
@@ -258,13 +258,13 @@ public class NewDocumentRequestHandler extends AbstractRequestHandler<NewDocumen
 
         final RecipientArchive recipientArchive = request.getRecipientList().stream().filter(RecipientArchive.class::isInstance)
                 .map(RecipientArchive.class::cast).findFirst().orElse(null);
-        final Map<String, Long> generalAttachmentSinkRefs = this.addGeneralAttachments(ctx, request, recipientArchive, attachmentList, sharedTenantRef,
+        final Map<String, Long> generalAttachmentSinkRefs = this.addGeneralAttachments(ctx, request, recipientArchive, attachmentList, sharedTenantId,
                 effectiveTimeZone);
 
         final MediaData emailSubject = containsEmailRecipient
           ? docFormatter.formatDocument(
                 ctx.tenantId,
-                sharedTenantRef,
+                sharedTenantId,
                 nvl(docEmailReceiverDto.getSubjectType(), TemplateType.COMPONENT),
                 nvl(docEmailReceiverDto.getEmailSubject(), docConfigDto.getDocumentId() + "_subject"),  // default component of name (templateId)_subject
                 request.getDocumentSelector(),
@@ -316,7 +316,7 @@ public class NewDocumentRequestHandler extends AbstractRequestHandler<NewDocumen
             final MediaData alternateBody = docConfigDto.getAlternateTemplateId() != null
               ? docFormatter.formatDocument(
                     ctx.tenantId,
-                    sharedTenantRef,
+                    sharedTenantId,
                     TemplateType.DOCUMENT_ID, docConfigDto.getAlternateTemplateId(),
                     request.getDocumentSelector(),
                     effectiveTimeZone,
@@ -349,7 +349,7 @@ public class NewDocumentRequestHandler extends AbstractRequestHandler<NewDocumen
     }
 
     private Map<String, Long> addGeneralAttachments(RequestContext ctx, NewDocumentRequest request, RecipientArchive rcpta, List<MediaData> attachmentList,
-            Long sharedTenantRef, String effectiveTimeZone) {
+            String sharedTenantId, String effectiveTimeZone) {
         final List<GeneralizedAttachment> attachments = request.getGeneralAttachments();
         if (attachments == null) {
             return null;
@@ -366,7 +366,7 @@ public class NewDocumentRequestHandler extends AbstractRequestHandler<NewDocumen
                       ga.getDocumentId(), request.getDocumentId());
                 } else {
                     // generate the attachment data based on the separate document config
-                    data = docFormatter.formatDocument(ctx.tenantId, sharedTenantRef, TemplateType.DOCUMENT_ID, docConfigDto.getDocumentId(),
+                    data = docFormatter.formatDocument(ctx.tenantId, sharedTenantId, TemplateType.DOCUMENT_ID, docConfigDto.getDocumentId(),
                       request.getDocumentSelector(), effectiveTimeZone, nvl(ga.getData(), request.getData()), null);
                     // convert if required
                     data = this.convertDocument(docConfigDto, data);

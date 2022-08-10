@@ -51,7 +51,7 @@ public class ListenerConfigLoader implements StartupOnly {
                 final List<ListenerConfigEntity> results = query.getResultList();
                 LOGGER.debug("{} JPA entity listener configurations loaded for t9t", Integer.valueOf(results.size()));
                 for (final ListenerConfigEntity e : results) {
-                    ListenerConfigCache.updateRegistration(e.getClassification(), e.getTenantRef(), ListenerConfigConverter.convert(e.ret$Data()));
+                    ListenerConfigCache.updateRegistration(e.getClassification(), e.getTenantId(), ListenerConfigConverter.convert(e.ret$Data()));
                 }
             } catch (final NoResultException e) {
                 LOGGER.debug("No JPA entity listener configurations found for t9t");

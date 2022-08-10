@@ -24,12 +24,12 @@ import com.arvatosystems.t9t.auth.jpa.persistence.IUserTenantRoleEntityResolver;
 import com.arvatosystems.t9t.auth.request.UserTenantRoleCrudRequest;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
-import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudCompositeRefKey42RequestHandler;
+import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudCompositeRefKeyRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.dp.Jdp;
 
-public class UserTenantRoleCrudRequestHandler extends AbstractCrudCompositeRefKey42RequestHandler<
+public class UserTenantRoleCrudRequestHandler extends AbstractCrudCompositeRefKeyRequestHandler<
     UserTenantRoleRef, UserTenantRoleInternalKey, UserTenantRoleDTO, FullTrackingWithVersion,
     UserTenantRoleCrudRequest, UserTenantRoleEntity> {
 

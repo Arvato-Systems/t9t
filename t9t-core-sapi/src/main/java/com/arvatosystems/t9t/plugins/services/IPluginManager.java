@@ -26,23 +26,23 @@ public interface IPluginManager {
     /**
      * Loads all classes provided by the plugin and return its info structure.
      */
-    PluginInfo loadPlugin(Long tenantRef, ByteArray pluginData);
+    PluginInfo loadPlugin(String tenantId, ByteArray pluginData);
 
     /**
      * Removes all classes provided by the plugin and close its classloader.
      */
-    boolean removePlugin(Long tenantRef, String pluginId);
+    boolean removePlugin(String tenantId, String pluginId);
 
     /**
      * Retrieves a reference to a preloaded plugin method instance and checks its expected type.
      * May return null if no method has been registered for this tenant.
      */
-    <R extends PluginMethod> R getPluginMethod(Long tenantRef, String pluginId, String qualifier, Class<R> requiredType, boolean allowNulls);
+    <R extends PluginMethod> R getPluginMethod(String tenantId, String pluginId, String qualifier, Class<R> requiredType, boolean allowNulls);
 
     /**
      * Retrieves a reference to a preloaded plugin method instance and checks its expected type.
      * May return null if no method has been registered for this tenant.
-     * Convenience method without tenantRef. Retrieves the tenantRef from RequestContext and invokes the method above.
+     * Convenience method without tenantId. Retrieves the tenantId from RequestContext and invokes the method above.
      */
     <R extends PluginMethod> R getPluginMethod(String pluginId, String qualifier, Class<R> requiredType, boolean allowNulls);
 }

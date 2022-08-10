@@ -43,8 +43,8 @@ public class AllItemConverters  implements IItemConverter<Object> {
     public static IItemConverter<?> getConverter(Object value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
         if (value instanceof Long) {
 //            return Jdp.getOptional(ILongItemConverter.class, fieldName);
-//            if (T9tConstants.TENANT_REF_FIELD_NAME42.equals(fieldName))
-//                return REGISTRY.get(T9tConstants.TENANT_REF_FIELD_NAME42);
+//            if (T9tConstants.TENANT_ID_FIELD_NAME.equals(fieldName))
+//                return REGISTRY.get(T9tConstants.TENANT_ID_FIELD_NAME);
 //            if ("userRef".equals(fieldName))
 //                return REGISTRY.get("userRef");
             IItemConverter longFieldConverter = REGISTRY.get(fieldName);  // allow to plug in additional converters

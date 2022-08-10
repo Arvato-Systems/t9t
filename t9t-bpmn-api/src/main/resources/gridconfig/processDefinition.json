@@ -1,14 +1,14 @@
 {
     "viewModel": "processDefinition",
     "filters": [
-        { "filterType": "E", "fieldName": "tenantRef" },
+        { "filterType": "E", "fieldName": "tenantId" },
         { "filterType": "W", "fieldName": "processDefinitionId" },
         { "filterType": "W", "fieldName": "factoryName" },
         { "filterType": "E", "fieldName": "engine" },
         { "filterType": "W", "fieldName": "name" }
     ],
     "fields": [
-        "tenantRef", "processDefinitionId", "name", "isActive", "factoryName",
+        "tenantId", "processDefinitionId", "name", "isActive", "factoryName",
         "alwaysRestartAtStep1", "useExclusiveLock", "engine", "jvmLockTimeoutInMillis"
     ]
 }

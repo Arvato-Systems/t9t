@@ -19,5 +19,5 @@ import com.arvatosystems.t9t.voice.VoiceUserDTO;
 
 /** Defines the communication layer between the backend modules (business logic / persistence layer). */
 public interface IVoicePersistenceAccess {
-    VoiceUserDTO getUserForExternalId(Long tenantRef, Long applicationRef, String providerId);
+    VoiceUserDTO getUserForExternalId(String tenantId, Long applicationRef, String providerId);
 }

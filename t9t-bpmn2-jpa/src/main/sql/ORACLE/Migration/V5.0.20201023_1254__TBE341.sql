@@ -18,7 +18,7 @@ CREATE TABLE p28_dat_bpmn2_message_queue (
     , m_process_ref number(20) NOT NULL
     -- table columns of java class FullTrackingWithVersion
     , version number(10) NOT NULL
-    -- table columns of java class InternalTenantRef42
+    -- table columns of java class InternalTenantId
     , tenant_ref number(20) NOT NULL
     -- table columns of java class AbstractRef
     -- table columns of java class Ref
@@ -46,7 +46,7 @@ COMMENT ON COLUMN p28_dat_bpmn2_message_queue.c_tech_user_id IS 'noinsert remove
 COMMENT ON COLUMN p28_dat_bpmn2_message_queue.c_timestamp IS 'noinsert removed, causes problems with H2 unit tests';
 -- comments for columns of java class FullTracking
 -- comments for columns of java class FullTrackingWithVersion
--- comments for columns of java class InternalTenantRef42
+-- comments for columns of java class InternalTenantId
 COMMENT ON COLUMN p28_dat_bpmn2_message_queue.tenant_ref IS 'the multitenancy discriminator';
 -- comments for columns of java class AbstractRef
 -- comments for columns of java class Ref

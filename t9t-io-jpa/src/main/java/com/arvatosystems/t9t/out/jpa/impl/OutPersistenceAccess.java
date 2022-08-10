@@ -76,7 +76,7 @@ public class OutPersistenceAccess implements IOutPersistenceAccess {
             throw new T9tException(T9tException.ILE_RESULT_SET_WRONG_SIZE, "dataSinkId=" + dataSinkId);
         }
 
-        LOGGER.debug("Export for dataSinkId {} will use configuration record of tenantRef = {}", dataSinkId, sinks.get(0).getTenantRef());
+        LOGGER.debug("Export for dataSinkId {} will use configuration record of tenantId = {}", dataSinkId, sinks.get(0).getTenantId());
         return dataSinkMapper.mapToDto(sinks.get(0));
     }
 
@@ -110,7 +110,7 @@ public class OutPersistenceAccess implements IOutPersistenceAccess {
         final String sql = "SELECT i FROM DataSinkEntity i WHERE "
                 + (channel     == null ? "" : "i.commTargetChannelType = :commTargetChannelType AND ")
                 + (environment == null ? "" : "i.environment = :environment AND ")
-                + "i.isInput = true AND i.isActive = true ORDER BY i.tenantRef";
+                + "i.isInput = true AND i.isActive = true ORDER BY i.tenantId";
         LOGGER.info("Querying DataSinks for environment {} and channel {} with <{}>", environment, channel, sql);
         final TypedQuery<DataSinkEntity> typedQuery = dataSinkEntityResolver.constructQuery(sql);
         if (channel != null) {

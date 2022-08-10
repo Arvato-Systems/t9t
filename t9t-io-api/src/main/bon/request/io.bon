@@ -286,6 +286,6 @@ package (com.arvatosystems) t9t.io.request {
 
     class MergeDataSinkPresetResponse extends ServiceResponse {
         required boolean                            wasMerged;       // if false, no Preset was found
-        required (apiw.DataWithTrackingW<DataSinkDTO,FullTrackingWithVersion>) dwt;
+        required (api.DataWithTrackingS<DataSinkDTO,FullTrackingWithVersion>) dwt;
     }
 }

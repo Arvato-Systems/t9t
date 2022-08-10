@@ -61,7 +61,7 @@ import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 import de.jpaw.bonaparte.pojos.api.auth.UserLogLevelType;
-import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW;
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 import de.jpaw.dp.Singleton;
@@ -101,16 +101,16 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
               "SELECT NEW " + PermissionEntryInt.class.getCanonicalName() + "(rtp.permissionId, rtp.permissionSet)"
                  + " FROM RoleToPermissionEntity rtp, UserTenantRoleEntity utr"
                  + " WHERE rtp.roleRef = utr.roleRef"
-                 + " AND rtp.tenantRef IN :tenants"
-                 + " AND utr.tenantRef IN :tenants"
+                 + " AND rtp.tenantId IN :tenants"
+                 + " AND utr.tenantId IN :tenants"
                  + " AND utr.userRef = :userRef"
                  + " ORDER BY rtp.permissionId", PermissionEntryInt.class);
-            final List<Long> tenants;
+            final List<String> tenants;
 
-            if (T9tConstants.GLOBAL_TENANT_REF42.equals(jwtInfo.getTenantRef())) {
-                tenants = ImmutableList.of(T9tConstants.GLOBAL_TENANT_REF42);
+            if (T9tConstants.GLOBAL_TENANT_ID.equals(jwtInfo.getTenantId())) {
+                tenants = ImmutableList.of(T9tConstants.GLOBAL_TENANT_ID);
             } else {
-                tenants = ImmutableList.of(T9tConstants.GLOBAL_TENANT_REF42, jwtInfo.getTenantRef());
+                tenants = ImmutableList.of(T9tConstants.GLOBAL_TENANT_ID, jwtInfo.getTenantId());
             }
 
             query.setParameter("tenants", tenants);
@@ -174,14 +174,14 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
     }
 
     @Override
-    public DataWithTrackingW<UserDTO, FullTrackingWithVersion> getUserById(String userId) {
+    public DataWithTrackingS<UserDTO, FullTrackingWithVersion> getUserById(String userId) {
         final UserEntity userEntity = getUserIgnoringTenant(userId);
         if (userEntity == null) {
             return null;
         }
-        final DataWithTrackingW<UserDTO, FullTrackingWithVersion> dwt = new DataWithTrackingW<>();
+        final DataWithTrackingS<UserDTO, FullTrackingWithVersion> dwt = new DataWithTrackingS<>();
         dwt.setData(userEntity.ret$Data());
-        dwt.setTenantRef(userEntity.getTenantRef());
+        dwt.setTenantId(userEntity.getTenantId());
         dwt.setTracking(userEntity.ret$Tracking());
         return dwt;
     }
@@ -227,7 +227,7 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
         resp.setAuthExpires(apiKeyEntity.getPermissions() == null ? null : apiKeyEntity.getPermissions().getValidTo());
         resp.setApiKey(dto);
         resp.setUser(apiKeyEntity.getUser().ret$Data());
-        resp.setTenantRef(apiKeyEntity.getTenantRef());
+        resp.setTenantId(apiKeyEntity.getTenantId());
         resp.setUserStatus(userStatus.ret$Data());
         return resp;
     }
@@ -288,7 +288,7 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
         userStatus.setAccountThrottledUntil(null); // reset throttling
         final AuthIntermediateResult resp = new AuthIntermediateResult();
         resp.setUser(userEntity.ret$Data());
-        resp.setTenantRef(userEntity.getTenantRef());
+        resp.setTenantId(userEntity.getTenantId());
         if (userEntity.getRoleRef() != null)
             resp.getUser().setRoleRef(new RoleRef(userEntity.getRoleRef()));
 
@@ -342,7 +342,6 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
 
     private static TenantDescription mapToTenantDescription(TenantEntity t) {
         final TenantDescription it = new TenantDescription();
-        it.setTenantRef(t.getObjectRef());
         it.setTenantId(t.getTenantId());
         it.setName(t.getName());
         it.setIsActive(t.getIsActive());
@@ -355,11 +354,11 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
         final UserEntity userEntity = em.find(UserEntity.class, userRef);
         if (userEntity == null)
             return ImmutableList.of();
-        if (!userEntity.getTenantRef().equals(T9tConstants.GLOBAL_TENANT_REF42)) {
+        if (!userEntity.getTenantId().equals(T9tConstants.GLOBAL_TENANT_ID)) {
             // single tenant, defined by user
-            final TenantEntity tenantEntity = em.find(TenantEntity.class, userEntity.getTenantRef());
+            final TenantEntity tenantEntity = em.find(TenantEntity.class, userEntity.getTenantId());
             if (tenantEntity == null) {
-                LOGGER.error("User {} maps to non existent tenant of ref {}", userEntity.getUserId(), userEntity.getTenantRef());
+                LOGGER.error("User {} maps to non existent tenant of ref {}", userEntity.getUserId(), userEntity.getTenantId());
                 return NO_TENANTS;
             } else {
                 LOGGER.debug("Single possible tenant for userId {} is {} due to setting on UserEntity", userEntity.getUserId(), tenantEntity.getTenantId());
@@ -374,12 +373,12 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
                 LOGGER.error("User {} maps to non existent role of ref {}", userEntity.getUserId(), userEntity.getRoleRef());
                 return NO_TENANTS;
             }
-            if (!roleEntity.getTenantRef().equals(T9tConstants.GLOBAL_TENANT_REF42)) {
+            if (!roleEntity.getTenantId().equals(T9tConstants.GLOBAL_TENANT_ID)) {
                 // single tenant, defined by role
-                final TenantEntity tenantEntity = em.find(TenantEntity.class, roleEntity.getTenantRef());
+                final TenantEntity tenantEntity = em.find(TenantEntity.class, roleEntity.getTenantId());
                 if (tenantEntity == null) {
                     LOGGER.error("User {} maps to role {} maps to non existent tenant of ref {}", userEntity.getUserId(), roleEntity.getRoleId(),
-                            roleEntity.getTenantRef());
+                            roleEntity.getTenantId());
                     return NO_TENANTS;
                 } else {
                     LOGGER.debug("Single possible tenant for userId {} is {} due to assignment to role {} on UserEntity", userEntity.getUserId(),
@@ -393,21 +392,21 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
         }
         // approach using userTenantRole
         LOGGER.debug("Obtaining valid tenants for userId {} via UserTenantRole assignment", userEntity.getUserId());
-        final TypedQuery<TwoTenantRefs> query = em.createQuery(
-                "SELECT NEW " + TwoTenantRefs.class.getCanonicalName() + "(utr.tenantRef, r.tenantRef) FROM UserTenantRoleEntity utr, RoleEntity r "
+        final TypedQuery<TwoTenantIds> query = em.createQuery(
+                "SELECT NEW " + TwoTenantIds.class.getCanonicalName() + "(utr.tenantId, r.tenantId) FROM UserTenantRoleEntity utr, RoleEntity r "
                 + "WHERE utr.userRef = :userRef " + "AND utr.roleRef = r.objectRef",
-                TwoTenantRefs.class);
+                TwoTenantIds.class);
         query.setParameter("userRef", userRef);
 
         // build the set of allowed tenants.
         // the set consists of all tenants if at least one assignment is the global
         // tenant for both references
-        final List<TwoTenantRefs> results = query.getResultList();
+        final List<TwoTenantIds> results = query.getResultList();
 
         LOGGER.debug("Found {} user / tenant / role assignments", results.size());
 
-        final Set<Long> allValidTenantRefs = new HashSet<>(results.size());
-        for (TwoTenantRefs r : results) {
+        final Set<String> allValidTenantIds = new HashSet<>(results.size());
+        for (TwoTenantIds r : results) {
             LOGGER.trace("Found tenant pair {}", r);
 
             if (r.isDoubleGlobal()) {
@@ -415,15 +414,15 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
                 return listOfAllTenants(em);
             }
 
-            allValidTenantRefs.add(r.effectiveTenantRef());
+            allValidTenantIds.add(r.effectiveTenantId());
         }
 
         if (LOGGER.isDebugEnabled()) {
-            final String tenantList = String.join(", ", allValidTenantRefs.stream().map(i -> i.toString()).collect(Collectors.toList()));
+            final String tenantList = String.join(", ", allValidTenantIds.stream().map(i -> i.toString()).collect(Collectors.toList()));
             LOGGER.debug("UserId {} has selective access to tenants {} due to specific role assignments", userEntity.getUserId(), tenantList);
         }
 
-        if (allValidTenantRefs.isEmpty()) {
+        if (allValidTenantIds.isEmpty()) {
             // no tenant can be accessed via roles. The user is the global tenant. If
             // resources have been defined via "resourceIsWildcard", then also all tenants
             // apply (admin)
@@ -435,7 +434,7 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
             return NO_TENANTS;
         }
         final TypedQuery<TenantEntity> query2 = em.createQuery("SELECT t FROM TenantEntity t WHERE t.objectRef IN :tenants", TenantEntity.class);
-        query2.setParameter("tenants", allValidTenantRefs);
+        query2.setParameter("tenants", allValidTenantIds);
         final List<TenantEntity> result = query2.getResultList();
         final List<TenantDescription> tenantDescriptions = new ArrayList<>(result.size());
         for (TenantEntity t : result) {
@@ -462,9 +461,9 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
     }
 
     @Override
-    public Map<String, Object> getTenantZ(final Long tenantRef) {
+    public Map<String, Object> getTenantZ(final String tenantId) {
         final EntityManager em = jpaContextProvider.get().getEntityManager();
-        final TenantEntity tenantEntity = em.find(TenantEntity.class, tenantRef);
+        final TenantEntity tenantEntity = em.find(TenantEntity.class, tenantId);
         return tenantEntity == null ? null : tenantEntity.getZ();
     }
 

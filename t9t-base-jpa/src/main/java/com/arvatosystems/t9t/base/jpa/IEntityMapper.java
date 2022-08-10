@@ -20,11 +20,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import com.arvatosystems.t9t.base.output.OutputSessionParameters;
+import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.base.search.SearchCriteria;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.SortColumn;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
@@ -141,4 +144,37 @@ public interface IEntityMapper<KEY extends Serializable, DTO extends BonaPortabl
      * Two parameter version.
      */
     void processSearchPrefixForDB(SearchFilter filter, List<SortColumn> sortColumns);
+
+    /** Maps an entity to a DataWithTrackingS.
+     */
+    DataWithTrackingS<DTO, TRACKING> mapToDwt(ENTITY entity);
+
+    /** Maps a collection of entities to a list of special DTOs which include the tracking columns.
+     * Used by generic search and generic "ReadAll".
+     * @param entityList The input list. List entries may not be null.
+     * @return a list, which may be empty.
+     */
+    List<DataWithTrackingS<DTO, TRACKING>> mapListToDwt(Collection<ENTITY> entityList);
+
+    /** Postprocesses a search output, either mapping it to some ReadAllResponse, or exporting it via IOutputSession and
+     * returning the sinkRef (if op != null).
+     * @param data input data (list of entities)
+     * @param op  OutputSessionParameters - if not null, then the data will be exported instead of returned as a list
+     * @return the full web service response structure
+     */
+    ReadAllResponse<DTO, TRACKING> createReadAllResponse(List<ENTITY> data, OutputSessionParameters op) throws Exception;
+
+    /** returns the entity's tenantId without the use of reflection, or null if the entity does not contain
+     * a tenantId field.
+     * @param e
+     * @return the tenantId
+     */
+    String getTenantId(ENTITY e);
+
+    /** Sets the entity's tenantId without the use of reflection, or NOOP if the entity does not contain
+     * a tenantId field.
+     * @param e - an instance of the Entity
+     * @param tenantId - the tenant to be set (if null, the current call's tenant ref will be used)
+     */
+    void setTenantId(ENTITY e, String tenantId);
 }

@@ -25,11 +25,11 @@ import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.IRefGenerator;
 import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.base.services.IRefResolver;
 
 import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
-import de.jpaw.bonaparte.refsw.RefResolver;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ApplicationException;
 
@@ -142,7 +142,7 @@ public abstract class AbstractCrudSurrogateKeyBERequestHandler<REF extends Ref, 
     // execute function of the interface description, but additional parameters
     // required in order to work around type erasure
     protected CrudSurrogateKeyResponse<DTO, TRACKING> execute(final RequestContext ctx, final REQUEST crudRequest,
-      final RefResolver<REF, DTO, TRACKING> resolver) {
+      final IRefResolver<REF, DTO, TRACKING> resolver) {
 
         // fields are set as required
         final CrudSurrogateKeyResponse<DTO, TRACKING> rs = new CrudSurrogateKeyResponse<>();

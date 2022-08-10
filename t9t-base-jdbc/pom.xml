@@ -47,9 +47,5 @@
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
         </dependency>
-        <dependency>
-            <groupId>de.jpaw</groupId>
-            <artifactId>bonaparte-refs</artifactId>
-        </dependency>
     </dependencies>
 </project>

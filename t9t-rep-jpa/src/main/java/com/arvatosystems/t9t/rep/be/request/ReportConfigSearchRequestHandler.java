@@ -17,7 +17,7 @@ package com.arvatosystems.t9t.rep.be.request;
 
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
-import com.arvatosystems.t9t.base.jpa.impl.AbstractSearch42RequestHandler;
+import com.arvatosystems.t9t.base.jpa.impl.AbstractSearchWithTotalsRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.rep.ReportConfigDTO;
 import com.arvatosystems.t9t.rep.be.request.restriction.IReportConfigByUserPermissionRestriction;
@@ -28,7 +28,7 @@ import com.arvatosystems.t9t.rep.request.ReportConfigSearchRequest;
 
 import de.jpaw.dp.Jdp;
 
-public class ReportConfigSearchRequestHandler extends AbstractSearch42RequestHandler<Long, ReportConfigDTO, FullTrackingWithVersion,
+public class ReportConfigSearchRequestHandler extends AbstractSearchWithTotalsRequestHandler<Long, ReportConfigDTO, FullTrackingWithVersion,
   ReportConfigSearchRequest, ReportConfigEntity> {
     protected final IReportConfigEntityResolver resolver = Jdp.getRequired(IReportConfigEntityResolver.class);
     protected final IReportConfigDTOMapper mapper = Jdp.getRequired(IReportConfigDTOMapper.class);

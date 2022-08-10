@@ -17,8 +17,6 @@ package com.arvatosystems.t9t.doc.be.request;
 
 import java.util.List;
 
-import jakarta.persistence.EntityManager;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,9 +42,9 @@ import com.arvatosystems.t9t.doc.request.ConvertTemplatesRequest;
 import com.arvatosystems.t9t.doc.services.ITemplateConversion;
 
 import de.jpaw.bonaparte.api.SearchFilters;
-import de.jpaw.bonaparte.pojos.api.LongFilter;
 import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
 import de.jpaw.dp.Jdp;
+import jakarta.persistence.EntityManager;
 
 public class ConvertTemplatesRequestHandler extends AbstractRequestHandler<ConvertTemplatesRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConvertTemplatesRequestHandler.class);
@@ -58,9 +56,9 @@ public class ConvertTemplatesRequestHandler extends AbstractRequestHandler<Conve
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final ConvertTemplatesRequest request) throws Exception {
-        final LongFilter tenantFilter = new LongFilter(T9tConstants.TENANT_REF_FIELD_NAME);
+        final UnicodeFilter tenantFilter = new UnicodeFilter(T9tConstants.TENANT_ID_FIELD_NAME);
         final SearchCriteria tenantCriteria = new DummySearchCriteria();
-        tenantFilter.setEqualsValue(ctx.tenantRef);
+        tenantFilter.setEqualsValue(ctx.tenantId);
         tenantFilter.freeze();
         tenantCriteria.setSearchFilter(tenantFilter);
         tenantCriteria.freeze();
@@ -68,7 +66,7 @@ public class ConvertTemplatesRequestHandler extends AbstractRequestHandler<Conve
         String offendingDocumentId = null;
         final SearchCriteria criteriaToApply;
         if (request.getDocumentId() == null) {
-            // a filter for tenantRef is always required, because we could get the fallback templates stored under @ tenant in the read operation
+            // a filter for tenantId is always required, because we could get the fallback templates stored under @ tenant in the read operation
             // and writing these back would fail.
             criteriaToApply = tenantCriteria;
         } else {

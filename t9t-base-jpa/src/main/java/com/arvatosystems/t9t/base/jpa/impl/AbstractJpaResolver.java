@@ -21,20 +21,20 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.TypedQuery;
 
-import com.arvatosystems.t9t.base.jpa.IEntityMapper42;
-import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey42;
+import com.arvatosystems.t9t.base.jpa.IEntityMapper;
+import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey;
 import com.arvatosystems.t9t.base.search.DummySearchCriteria;
 import com.arvatosystems.t9t.base.search.SearchCriteria;
+import com.arvatosystems.t9t.base.services.IRefResolver;
 
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.SortColumn;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW;
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.bonaparte.refs.PersistenceException;
-import de.jpaw.bonaparte.refsw.RefResolver;
 import de.jpaw.dp.Jdp;
 
 public abstract class AbstractJpaResolver<
@@ -42,15 +42,15 @@ public abstract class AbstractJpaResolver<
   DTO extends REF,
   TRACKING extends TrackingBase,
   ENTITY extends BonaPersistableKey<Long> & BonaPersistableTracking<TRACKING>
-> implements RefResolver<REF, DTO, TRACKING> {
+> implements IRefResolver<REF, DTO, TRACKING> {
 
     protected final String entityName;
-    protected final IResolverSurrogateKey42<REF, TRACKING, ENTITY> resolver;
-    protected final IEntityMapper42<Long, DTO, TRACKING, ENTITY> mapper;
+    protected final IResolverSurrogateKey<REF, TRACKING, ENTITY> resolver;
+    protected final IEntityMapper<Long, DTO, TRACKING, ENTITY> mapper;
 
     protected AbstractJpaResolver(final String name,
-            final IResolverSurrogateKey42<REF, TRACKING, ENTITY> r,
-            final IEntityMapper42<Long, DTO, TRACKING, ENTITY> m) {
+            final IResolverSurrogateKey<REF, TRACKING, ENTITY> r,
+            final IEntityMapper<Long, DTO, TRACKING, ENTITY> m) {
         entityName = name;
         resolver = r;
         mapper = m;
@@ -138,7 +138,7 @@ public abstract class AbstractJpaResolver<
     }
 
     @Override
-    public List<DataWithTrackingW<DTO, TRACKING>> query(final int limit, final int offset, final SearchFilter filter, final List<SortColumn> sortColumns) {
+    public List<DataWithTrackingS<DTO, TRACKING>> query(final int limit, final int offset, final SearchFilter filter, final List<SortColumn> sortColumns) {
         mapper.processSearchPrefixForDB(filter, sortColumns);
         return mapper.mapListToDwt(resolver.search(buildCriteria(limit, offset, filter, sortColumns)));
     }

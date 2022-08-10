@@ -29,17 +29,17 @@ import de.jpaw.dp.Singleton;
 public class KafkaTenantAgnosticClusterManager implements IClusterEnvironment {
 
     @Override
-    public Collection<Long> getListOfTenantRefs() {
+    public Collection<String> getListOfTenantIds() {
         return Collections.emptyList();
     }
 
     @Override
-    public Collection<Integer> getListOfShards(final Long tenantRef) {
+    public Collection<Integer> getListOfShards(final String tenantId) {
         return KafkaClusterManagerInitializer.myIndexes;
     }
 
     @Override
-    public boolean processOnThisNode(final Long tenantRef, final int hash) {
+    public boolean processOnThisNode(final String tenantId, final int hash) {
         if (KafkaClusterManagerInitializer.totalNumberOfPartitons <= 0) {
             return true;  // no kafka available?
         }

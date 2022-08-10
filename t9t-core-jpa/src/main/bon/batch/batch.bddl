@@ -21,14 +21,14 @@ import t9t.base.entities.*
 package (com.arvatosystems) t9t.batch.jpa.entities owner fortytwo prefix p28 {
 
     entity StatisticsEntity category datwo is StatisticsDTO tablename p42_dat_statistics inheritance tablePerClass {
-        tenantClass InternalTenantRef42
+        tenantClass InternalTenantId
         pk (objectRef)
         index (processId, startTime)
     }
 
     entity SliceTrackingEntity category datv is SliceTrackingDTO inheritance tablePerClass {
-        tenantClass InternalTenantRef42
+        tenantClass InternalTenantId
         pk (objectRef)
-        index unique(tenantRef, dataSinkId, id)
+        index unique(tenantId, dataSinkId, id)
     }
 }

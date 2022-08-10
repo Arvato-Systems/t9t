@@ -42,7 +42,7 @@ public class GenericWorkflowStepWithPlugin<T> implements IWorkflowStep<T> {
         this.staticStep = staticStep;
     }
 
-    /** returns the relevant implementation of the plugin, or the static step (by tenantRef) or throw an exception, if there is none. */
+    /** returns the relevant implementation of the plugin, or the static step (by tenantId) or throw an exception, if there is none. */
     private IWorkflowStep<T> getImplementation() {
         final IWorkflowStepPlugin<T> plugin
           = pluginManager.getPluginMethod(T9tConstants.PLUGIN_API_ID_WORKFLOW_STEP, qualifier, IWorkflowStepPlugin.class, staticStep != null);

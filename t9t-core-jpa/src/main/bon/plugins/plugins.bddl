@@ -21,13 +21,13 @@ package (com.arvatosystems) t9t.plugins.jpa.entities owner fortytwo prefix p28 {
     fields private;
 
     entity LoadedPluginEntity category cfg is LoadedPluginDTO inheritance tablePerClass {
-        tenantClass InternalTenantRef42
+        tenantClass InternalTenantId
         pk (objectRef)
-        index unique (tenantRef, pluginId)
+        index unique (tenantId, pluginId)
     }
 
     entity PluginLogEntity category datwo is PluginLogDTO inheritance tablePerClass {
-        tenantClass InternalTenantRef42
+        tenantClass InternalTenantId
         pk (objectRef)
     }
 }

@@ -17,25 +17,7 @@ package com.arvatosystems.t9t.bpmn2.be.camunda.utils;
 
 import java.util.Objects;
 
-import com.arvatosystems.t9t.base.T9tConstants;
-
 public abstract class IdentifierConverter {
-
-    public static Long bpmnTenantIdToT9tTenantRef(String tenantId) {
-        if (tenantId == null) {
-            return T9tConstants.GLOBAL_TENANT_REF42;
-        }
-
-        return Long.valueOf(tenantId);
-    }
-
-    public static String t9tTenantRefToBPMNTenantId(Long tenantRef) {
-        if (T9tConstants.GLOBAL_TENANT_REF42.equals(tenantRef)) {
-            return null;
-        }
-
-        return Objects.toString(tenantRef, null);
-    }
 
     public static Long bpmnUserIdToT9tUserRef(String userId) {
         if (userId == null) {

@@ -28,7 +28,7 @@ import com.google.common.collect.ImmutableList;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW;
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 
@@ -39,11 +39,11 @@ public class ExporterTool2<DTO extends BonaPortable, EXTDTO extends DTO, TRACKIN
     protected final ISplittingOutputSessionProvider splittingOutputSessionProvider = Jdp.getRequired(ISplittingOutputSessionProvider.class);
 
     @Override
-    public Long storeAll(final OutputSessionParameters op, final List<DataWithTrackingW<DTO, TRACKING>> dataList, final Integer maxRecords,
+    public Long storeAll(final OutputSessionParameters op, final List<DataWithTrackingS<DTO, TRACKING>> dataList, final Integer maxRecords,
       final Function<DTO, EXTDTO> converter) throws Exception {
         try (IOutputSession outputSession = splittingOutputSessionProvider.get(maxRecords)) {
             final Long sinkRef = outputSession.open(op);
-            for (final DataWithTrackingW<DTO, TRACKING> data : dataList) {
+            for (final DataWithTrackingS<DTO, TRACKING> data : dataList) {
                 final EXTDTO extDto = converter.apply(data.getData());
                 if (extDto != null) {
                     data.setData(extDto);  // replace the data with the extended one
@@ -57,18 +57,18 @@ public class ExporterTool2<DTO extends BonaPortable, EXTDTO extends DTO, TRACKIN
 
     @Override
     public ReadAllResponse<EXTDTO, TRACKING> returnOrExport(
-      final List<DataWithTrackingW<DTO, TRACKING>> dataList, final OutputSessionParameters op, final Function<DTO, EXTDTO> converter) throws Exception {
+      final List<DataWithTrackingS<DTO, TRACKING>> dataList, final OutputSessionParameters op, final Function<DTO, EXTDTO> converter) throws Exception {
         final ReadAllResponse<EXTDTO, TRACKING> resp = new ReadAllResponse<>();
         // if a searchOutputTarget has been defined, push the data into it, otherwise return the ReadAllResponse
         if (op == null) {
             // conversion of the data list is required
-            final List<DataWithTrackingW<EXTDTO, TRACKING>> extDataList = new ArrayList<>(dataList.size());
-            for (final DataWithTrackingW<DTO, TRACKING> data : dataList) {
+            final List<DataWithTrackingS<EXTDTO, TRACKING>> extDataList = new ArrayList<>(dataList.size());
+            for (final DataWithTrackingS<DTO, TRACKING> data : dataList) {
                 final EXTDTO extDto = converter.apply(data.getData());
                 if (extDto != null) {
                     data.setData(extDto);  // replace the data with the extended one
-                    // do a cast instead of new allocation, because that supports extensions of DataWithTrackingW as well
-                    extDataList.add((DataWithTrackingW<EXTDTO, TRACKING>)data);
+                    // do a cast instead of new allocation, because that supports extensions of DataWithTrackingS as well
+                    extDataList.add((DataWithTrackingS<EXTDTO, TRACKING>)data);
                 }
             }
             resp.setDataList(extDataList);
@@ -76,7 +76,7 @@ public class ExporterTool2<DTO extends BonaPortable, EXTDTO extends DTO, TRACKIN
             // push output into an outputSession (export it)
             op.setSmartMappingForDataWithTracking(Boolean.TRUE);
             resp.setSinkRef(storeAll(op, dataList, null, converter));
-            resp.setDataList(ImmutableList.<DataWithTrackingW<EXTDTO, TRACKING>>of());
+            resp.setDataList(ImmutableList.<DataWithTrackingS<EXTDTO, TRACKING>>of());
         }
         return resp;
     }
