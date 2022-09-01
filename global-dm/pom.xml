@@ -62,33 +62,33 @@
         <ehcache3.version>3.5.3</ehcache3.version>
 
         <!-- Javax ws / rs implementation versions (com.sun.xml.*), for jakarta 8 -->
-        <jaxb-impl.version>3.0.2</jaxb-impl.version>                                    <!-- (com.sun.xml.bind:jaxb-impl -->
-        <jaxb-xjc.version>3.0.2</jaxb-xjc.version>                                      <!-- (com.sun.xml.bind:jaxb-xjc) -->
-        <jaxws-rt.version>3.0.2</jaxws-rt.version>
+        <jaxb-impl.version>4.0.0</jaxb-impl.version>                                    <!-- (com.sun.xml.bind:jaxb-impl -->
+        <jaxb-xjc.version>4.0.0</jaxb-xjc.version>                                      <!-- (com.sun.xml.bind:jaxb-xjc) -->
+        <jaxws-rt.version>4.0.0</jaxws-rt.version>
         <jaxws-api.version>2.3.1-do-not-use</jaxws-api.version>  <!-- use jakarta.xml.ws-api instead -->
 
         <!-- new Jakarta stuff (versions in comment denote jakarta namespace)-->
-        <jakarta.xml-bind-api.version>3.0.1</jakarta.xml-bind-api.version>              <!-- 3.0.1 for jakarta namespace -->
-        <jakarta.xml-bind.version>3.0.2</jakarta.xml-bind.version>                      <!-- 3.0.1 for jakarta namespace -->
-        <jakarta.xml-jaxb-core.version>3.0.2</jakarta.xml-jaxb-core.version>            <!-- 3.0.1 for jakarta namespace (skip for javax!) -->
-        <jakarta.annotation-api.version>2.0.0</jakarta.annotation-api.version>          <!-- 2.0.0 for jakarta namespace -->
+        <jakarta.xml-bind-api.version>4.0.0</jakarta.xml-bind-api.version>              <!-- 3.0.1 for jakarta namespace -->
+        <jakarta.xml-bind.version>4.0.0</jakarta.xml-bind.version>                      <!-- 3.0.1 for jakarta namespace -->
+        <jakarta.xml-jaxb-core.version>4.0.0</jakarta.xml-jaxb-core.version>            <!-- 3.0.1 for jakarta namespace (skip for javax!) -->
+        <jakarta.annotation-api.version>2.1.1</jakarta.annotation-api.version>          <!-- 2.0.0 for jakarta namespace -->
 
-        <jakarta.activation-api.version>2.0.1</jakarta.activation-api.version>          <!-- 2.0.1 for jakarta namespace -->
+        <jakarta.activation-api.version>2.1.0</jakarta.activation-api.version>          <!-- 2.0.1 for jakarta namespace -->
         <jakarta.activation.version>2.0.1</jakarta.activation.version>                  <!-- 2.0.1 for jakarta namespace -->
-        <jakarta.mail-api.version>2.0.1</jakarta.mail-api.version>                      <!-- 2.0.1 for jakarta namespace -->
+        <jakarta.mail-api.version>2.1.0</jakarta.mail-api.version>                      <!-- 2.0.1 for jakarta namespace -->
         <jakarta.mail.version>2.0.1</jakarta.mail.version>                              <!-- 2.0.1 for jakarta namespace -->
-        <jakarta.el-api.version>4.0.0</jakarta.el-api.version>
+        <jakarta.el-api.version>5.0.1</jakarta.el-api.version>
         <jakarta.el.version>4.0.2</jakarta.el.version>                                  <!-- (org.glassfish:jakarta.el) -->
-        <jakarta.xml.ws-api.version>3.0.1</jakarta.xml.ws-api.version>
-        <jakarta.xml.soap-api.version>2.0.1</jakarta.xml.soap-api.version>
-        <jakarta.xml.soap.version>2.0.1</jakarta.xml.soap.version>                      <!-- (com.sun.xml.messaging.saaj:saaj-impl) -->
+        <jakarta.xml.ws-api.version>4.0.0</jakarta.xml.ws-api.version>
+        <jakarta.xml.soap-api.version>3.0.0</jakarta.xml.soap-api.version>
+        <jakarta.xml.soap.version>3.0.0</jakarta.xml.soap.version>                      <!-- (com.sun.xml.messaging.saaj:saaj-impl) -->
         <jakarta.jws-api.version>3.0.0</jakarta.jws-api.version>                        <!-- 3.0.0 for jakarta namespace -->
         <jakarta.jws.version>2.1.0</jakarta.jws.version>                                <!-- 3.0.0 for jakarta namespace -->
-        <jakarta.ws.rs-api.version>3.0.0</jakarta.ws.rs-api.version>
+        <jakarta.ws.rs-api.version>3.1.0</jakarta.ws.rs-api.version>
         <jakarta.validation-api.version>3.0.2</jakarta.validation-api.version>          <!-- validation API, implemented by hibernate validator -->
         <jakarta.persistence-api.version>3.1.0</jakarta.persistence-api.version>        <!-- validation API, implemented by hibernate ORM -->
-        <jakarta.transaction-api.version>2.0.0</jakarta.transaction-api.version>
-        <jakarta.servlet-api.version>5.0.0</jakarta.servlet-api.version>
+        <jakarta.transaction-api.version>2.0.1</jakarta.transaction-api.version>
+        <jakarta.servlet-api.version>6.0.0</jakarta.servlet-api.version>
 
         <!-- Microprofile -->
         <microprofile-api.version>2.0</microprofile-api.version>
@@ -160,7 +160,7 @@
         <guava.version>31.1-jre</guava.version>
         <caffeine.version>3.1.1</caffeine.version>
         <antlr.version>3.2</antlr.version>
-        <resteasy.version>6.0.3.Final</resteasy.version>
+        <resteasy.version>6.1.0.Final</resteasy.version>
         <googlemaps.services.version>0.2.5</googlemaps.services.version>
         <uuid-generator.version>3.1.2</uuid-generator.version>
         <apache-poi.version>5.2.2</apache-poi.version>
