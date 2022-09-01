@@ -52,7 +52,10 @@ package (com.arvatosystems) t9t.io.request {
     class LeanAsyncQueueSearchRequest           extends LeanSearchRequest {}
     class AsyncMessageCrudRequest               extends CrudSurrogateKeyRequest     <AsyncMessageRef, AsyncMessageDTO, WriteTracking> {}
 
-    /** Stores a pre-filled sinkDTO. Technical support method, only required because input data processing is done from outside request scope. */
+    /**
+     * Stores a pre-filled sinkDTO. Technical support method, only required because input data processing is done from outside request scope.
+     * This is also used by alternate servers which do not have write access to the main database.
+     */
     class StoreSinkRequest                      extends RequestParameters return SinkCreatedResponse {
         required (SinkDTO...)                       dataSink;                   // only used internally to store the result of an import
     }

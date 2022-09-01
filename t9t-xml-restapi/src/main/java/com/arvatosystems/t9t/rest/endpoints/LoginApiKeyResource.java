@@ -18,6 +18,29 @@ package com.arvatosystems.t9t.rest.endpoints;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.auth.ApiKeyAuthentication;
+import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
+import com.arvatosystems.t9t.base.types.SessionParameters;
+import com.arvatosystems.t9t.rest.parsers.RestParameterParsers;
+import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
+import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
+import com.arvatosystems.t9t.xml.auth.AuthByApiKey;
+import com.arvatosystems.t9t.xml.auth.AuthenticationResult;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -45,30 +68,6 @@ import jakarta.ws.rs.core.MediaType;
  * limitations under the License.
  */
 import jakarta.ws.rs.core.Response;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.base.auth.ApiKeyAuthentication;
-import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
-import com.arvatosystems.t9t.base.types.SessionParameters;
-import com.arvatosystems.t9t.rest.parsers.RestParameterParsers;
-import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
-import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
-import com.arvatosystems.t9t.xml.auth.AuthByApiKey;
-import com.arvatosystems.t9t.xml.auth.AuthenticationResult;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Login via API key or username / password
@@ -134,7 +133,7 @@ public class LoginApiKeyResource implements IT9tRestEndpoint {
      * Caches the ApiKey and connects it to a JWT.
      * This cache must expire significantly faster than the JWT duration (max 1/2 of it).
      */
-    private static final Cache<UUID, String> API_KEY_TO_JWT_CACHE = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.HOURS).build();
+    private static final Cache<UUID, String> API_KEY_TO_JWT_CACHE = Caffeine.newBuilder().expireAfterWrite(1, TimeUnit.HOURS).build();
 
     public void loginSub(final HttpHeaders httpHeaders, final AsyncResponse resp, final UUID apiKey, final SessionParameters sp) {
         LOGGER.debug("Login attempted at /apikey ...");

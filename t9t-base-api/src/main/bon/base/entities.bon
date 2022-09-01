@@ -25,7 +25,7 @@ package (com.arvatosystems) t9t.base.entities {
     /*
      * The set of properties each class within this package shall have by default.
      */
-    properties inherited, version, active, noupdate, noinsert, ^default, currentUser, currentTimestamp,
+    properties inherited, version, active, noupdate, noinsert, ^default, currentUser, currentTimestamp, unify,
         tenantCategory is com.arvatosystems.t9t.annotations.TenantCategory(),
         searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
         serialized is com.arvatosystems.t9t.annotations.StoreSerialized,
@@ -35,7 +35,7 @@ package (com.arvatosystems) t9t.base.entities {
 
     // internal class to define an additional JPA column for multitenancy
     class InternalTenantId {
-        required tenantId                   tenantId        properties noupdate, notupdatable;      // the multitenancy discriminator
+        required tenantId                   tenantId        properties noupdate, notupdatable, unify;      // the multitenancy discriminator
     }
 
     /** Special tracking class for the Source. Here we have no processRef, and the user is part of the DTO.

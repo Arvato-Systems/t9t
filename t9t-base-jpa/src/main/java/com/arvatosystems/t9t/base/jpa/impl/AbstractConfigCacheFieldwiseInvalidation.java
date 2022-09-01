@@ -15,7 +15,6 @@
  */
 package com.arvatosystems.t9t.base.jpa.impl;
 
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -26,8 +25,8 @@ import com.arvatosystems.t9t.base.jpa.IResolverAnyKey;
 import com.arvatosystems.t9t.base.jpa.ormspecific.IQueryHintSetter;
 import com.arvatosystems.t9t.base.misc.SomeCacheKey;
 import com.arvatosystems.t9t.base.services.ICacheInvalidationRegistry;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
@@ -42,8 +41,8 @@ public abstract class AbstractConfigCacheFieldwiseInvalidation<
   ENTITY extends BonaPersistableKey<Long> & BonaPersistableTracking<TRACKING>> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractConfigCacheFieldwiseInvalidation.class);
     /** The cache consists of 2 single level map caches, one by objectRef, one by tenantId / id. */
-    protected final Cache<Long, DTO> cacheByObjectRef = CacheBuilder.newBuilder().expireAfterWrite(15L, TimeUnit.MINUTES).build();
-    protected final Cache<SomeCacheKey, Long> cacheById = CacheBuilder.newBuilder().expireAfterWrite(1L, TimeUnit.HOURS).build();
+    protected final Cache<Long, DTO> cacheByObjectRef = Caffeine.newBuilder().expireAfterWrite(15L, TimeUnit.MINUTES).build();
+    protected final Cache<SomeCacheKey, Long> cacheById = Caffeine.newBuilder().expireAfterWrite(1L, TimeUnit.HOURS).build();
     protected final IResolverAnyKey<Long, TRACKING, ENTITY> resolver;
     protected final Class<DTO> dtoClass;
     protected final ICacheInvalidationRegistry cacheInvalidationRegistry = Jdp.getOptional(ICacheInvalidationRegistry.class);
@@ -67,7 +66,7 @@ public abstract class AbstractConfigCacheFieldwiseInvalidation<
                     cacheByObjectRef.invalidate(ref);
                 } else if (x instanceof SomeCacheKey) {
                     LOGGER.debug("Cache invalidation for {} for {}", dtoClass.getSimpleName(), x);
-                    cacheById.invalidate(x);
+                    cacheById.invalidate((SomeCacheKey)x);
                 } else {
                     LOGGER.error("Received cache invalidation on {} with key type {} - cannot handle, ignoring",
                       dtoClass.getSimpleName(), x.getClass().getCanonicalName());
@@ -81,13 +80,13 @@ public abstract class AbstractConfigCacheFieldwiseInvalidation<
 
     protected DTO get(final Long key) {
         try {
-            return cacheByObjectRef.get(key, () -> {
+            return cacheByObjectRef.get(key, unused -> {
                 LOGGER.debug("Filling cache {} for objectRef {}", dtoClass.getSimpleName(), key);
                 final DTO dto = map(resolver.find(key));
                 dto.freeze();
                 return dto;
             });
-        } catch (final ExecutionException e) {
+        } catch (final Exception e) {
             LOGGER.error("Cannot read {} for objectRef {}: {}", dtoClass.getSimpleName(), key, e);
             throw new T9tException(T9tException.RECORD_DOES_NOT_EXIST, ExceptionUtil.causeChain(e));
         }
@@ -97,13 +96,13 @@ public abstract class AbstractConfigCacheFieldwiseInvalidation<
         final SomeCacheKey key = new SomeCacheKey(resolver.getSharedTenantId(), id);
         key.freeze();
         try {
-            return cacheById.get(key, () -> {
+            return cacheById.get(key, unused -> {
                 final Long ref = read(id);
                 LOGGER.debug("Filling resolver cache {} for tenantId {}, id {} to resolve to {}",
                   dtoClass.getSimpleName(), key.getTenantId(), key.getId(), ref);
                 return ref;
             });
-        } catch (final ExecutionException e) {
+        } catch (final Exception e) {
             LOGGER.error("Cannot read {} for tenantId {}, id {}: {}", dtoClass.getSimpleName(), key.getTenantId(), key.getId(), e);
             throw new T9tException(T9tException.RECORD_DOES_NOT_EXIST, ExceptionUtil.causeChain(e));
         }

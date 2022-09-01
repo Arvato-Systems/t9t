@@ -57,12 +57,7 @@
             <groupId>jakarta.persistence</groupId>
             <artifactId>jakarta.persistence-api</artifactId>
         </dependency>
-<!--
-        <dependency>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>javax.persistence</artifactId>
-        </dependency>
- -->
+
         <!-- JDBC drivers. Only open source drivers are added here, others (HANA, Oracle, MS SQL) only on demand due to redistribution legalese. -->
         <dependency>
             <!-- Postgres database driver -->

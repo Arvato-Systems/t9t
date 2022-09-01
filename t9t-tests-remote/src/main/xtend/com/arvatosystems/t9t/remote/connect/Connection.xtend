@@ -24,6 +24,7 @@ import de.jpaw.bonaparte.util.impl.RecordMarshallerBonaparte
 import de.jpaw.bonaparte.util.impl.RecordMarshallerCompactBonaparteIdentity
 import de.jpaw.bonaparte.util.impl.RecordMarshallerJson
 import java.util.UUID
+import com.arvatosystems.t9t.base.T9tConstants
 
 /** Remote connection via http. */
 @AddLogger
@@ -112,21 +113,21 @@ class Connection extends AbstractConnection {
             authResult = auth(initialUUID)
         }
 
-        dlg.authentication = "Bearer " + authResult.encodedJwt  // the encoded token
+        dlg.authentication = T9tConstants.HTTP_AUTH_PREFIX_JWT + authResult.encodedJwt  // the encoded token
         dlg.baseUrl = baseUrl + "/rpc"
     }
 
     override void switchUser(UUID newApiKey) {
         dlg.baseUrl = baseUrl + "/login"
         val authResult = if (newApiKey === null) auth(INITIAL_USER_ID, initialPassword) else auth(newApiKey)
-        dlg.authentication = "Bearer " + authResult.encodedJwt  // the encoded token
+        dlg.authentication = T9tConstants.HTTP_AUTH_PREFIX_JWT + authResult.encodedJwt  // the encoded token
         dlg.baseUrl = baseUrl + "/rpc"
     }
 
     override void switchUser(String userId, String password) {
         dlg.baseUrl = baseUrl + "/login"
         val authResult = auth(userId, password)
-        dlg.authentication = "Bearer " + authResult.encodedJwt
+        dlg.authentication = T9tConstants.HTTP_AUTH_PREFIX_JWT + authResult.encodedJwt
         dlg.baseUrl = baseUrl + "/rpc"
     }
 

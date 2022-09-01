@@ -32,6 +32,8 @@ import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.cfg.be.ConfigProvider;
+import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration;
 import com.arvatosystems.t9t.core.CannedRequestDTO;
 import com.arvatosystems.t9t.core.CannedRequestRef;
 import com.arvatosystems.t9t.core.request.CannedRequestCrudRequest;
@@ -58,6 +60,7 @@ public class SchedulerSetupCrudRequestHandler extends
     private final CrossModuleRefResolver refResolver = Jdp.getRequired(CrossModuleRefResolver.class);
     private final ICannedRequestResolver rqResolver = Jdp.getRequired(ICannedRequestResolver.class);
     private final Provider<RequestContext> ctxProvider = Jdp.getProvider(RequestContext.class);
+    private final T9tServerConfiguration serverConfiguration = ConfigProvider.getConfiguration();
 
     @Override
     public void validateUpdate(final SchedulerSetupDTO current, final SchedulerSetupDTO intended) {
@@ -95,8 +98,21 @@ public class SchedulerSetupCrudRequestHandler extends
             oldSetup = null;
         }
 
+        final CannedRequestRef dataRequestRef = crudRequest.getData().getRequest();
+        if (crudRequest.getCrud() == OperationType.UPDATE) {
+            if (oldSetup != null && dataRequestRef instanceof CannedRequestDTO) {
+                final CannedRequestDTO cannedRequestDTO = (CannedRequestDTO) dataRequestRef;
+                if (cannedRequestDTO.getRequestId().equals(((CannedRequestDTO) oldSetup.getRequest()).getRequestId())) {
+                    // In case the crudRequest.data.request is an instance of CannedRequestDTO with the same request Id,
+                    // update the oldSetup.request for field comparison.
+                    LOGGER.debug("dataRequest is an instance of CannedRequestDTO, update oldSetup's request for comparison");
+                    oldSetup.setRequest(dataRequestRef);
+                }
+            }
+        }
+
         if (crudRequest.getCrud() == OperationType.CREATE || crudRequest.getCrud() == OperationType.UPDATE) {
-            crudRequest.getData().setRequest(refResolver.getData(new CannedRequestCrudRequest(), crudRequest.getData().getRequest()));
+            crudRequest.getData().setRequest(refResolver.getData(new CannedRequestCrudRequest(), dataRequestRef));
         }
 
         // perform the regular CRUD
@@ -107,23 +123,37 @@ public class SchedulerSetupCrudRequestHandler extends
             if (crudRequest.getCrud() != null) {
                 switch (crudRequest.getCrud()) {
                 case ACTIVATE:
-                    this.schedulerService.createScheduledJob(setup);
+                    if (getEffectiveActive(setup)) {
+                        schedulerService.createScheduledJob(setup);
+                    }
                     break;
                 case CREATE:
-                    if (setup.getIsActive()) {
-                        this.schedulerService.createScheduledJob(setup);
+                    if (getEffectiveActive(setup)) {
+                        schedulerService.createScheduledJob(setup);
                     }
                     break;
                 case DELETE:
-                    if (oldSetup.getIsActive()) {
-                        this.schedulerService.removeScheduledJob(oldSetup.getSchedulerId());
+                    if (getEffectiveActive(oldSetup)) {
+                        schedulerService.removeScheduledJob(oldSetup.getSchedulerId());
                     }
                     break;
                 case INACTIVATE:
-                    this.schedulerService.removeScheduledJob(setup.getSchedulerId());
+                    if (getEffectiveActive(oldSetup)) {
+                        schedulerService.removeScheduledJob(setup.getSchedulerId());
+                    }
                     break;
                 case UPDATE:
-                    this.updateSchedulerEntry(oldSetup, setup);
+                    if (getEffectiveActive(setup)) {
+                        if (getEffectiveActive(oldSetup)) {
+                            schedulerService.updateScheduledJob(oldSetup, setup);
+                        } else {
+                            schedulerService.createScheduledJob(setup);
+                        }
+                    } else {
+                        if (getEffectiveActive(oldSetup)) {
+                            schedulerService.removeScheduledJob(oldSetup.getSchedulerId());
+                        } // else was inactive, stays inactive: nothing to do
+                    }
                     break;
                 default:
                     break;
@@ -141,8 +171,13 @@ public class SchedulerSetupCrudRequestHandler extends
         return response;
     }
 
+    private boolean getEffectiveActive(SchedulerSetupDTO setup) {
+        return setup.getIsActive() && (serverConfiguration.getSchedulerEnvironment() == null || setup.getSchedulerEnvironment() == null
+          || serverConfiguration.getSchedulerEnvironment().equals(setup.getSchedulerEnvironment()));
+    }
+
     private void createApiKey(final SchedulerSetupDTO dto) {
-        final RequestContext ctx = this.ctxProvider.get();
+        final RequestContext ctx = ctxProvider.get();
         final JwtInfo jwt = ctx.internalHeaderParameters.getJwtInfo();
 
         if (dto != null && dto.getApiKey() == null) {
@@ -173,25 +208,11 @@ public class SchedulerSetupCrudRequestHandler extends
             rq.setData(apiKeyDTO);
             dto.setApiKey(apiKeyDTO.getApiKey());
             try {
-                this.executor.executeSynchronousAndCheckResult(ctx, rq, CrudSurrogateKeyResponse.class);
+                executor.executeSynchronousAndCheckResult(ctx, rq, CrudSurrogateKeyResponse.class);
             } catch (final T9tException e) {
                 if (e.getErrorCode()  != T9tException.RECORD_ALREADY_EXISTS) {
                     throw e;
                 }
-            }
-        }
-    }
-
-    private void updateSchedulerEntry(final SchedulerSetupDTO oldSetup, final SchedulerSetupDTO setup) {
-        if (setup.getIsActive()) {
-            if (oldSetup.getIsActive()) {
-                this.schedulerService.updateScheduledJob(oldSetup, setup);
-            } else {
-                this.schedulerService.createScheduledJob(setup);
-            }
-        } else {
-            if (oldSetup.getIsActive()) {
-                this.schedulerService.removeScheduledJob(oldSetup.getSchedulerId());
             }
         }
     }

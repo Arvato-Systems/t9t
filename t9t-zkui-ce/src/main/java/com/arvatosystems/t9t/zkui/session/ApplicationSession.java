@@ -41,7 +41,6 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -53,6 +52,7 @@ import org.zkoss.zk.ui.Sessions;
 import com.arvatosystems.t9t.authc.api.GetTenantLogoRequest;
 import com.arvatosystems.t9t.authc.api.GetTenantLogoResponse;
 import com.arvatosystems.t9t.authc.api.TenantDescription;
+import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.auth.PermissionEntry;
 import com.arvatosystems.t9t.base.auth.PermissionType;
 import com.arvatosystems.t9t.base.search.Description;
@@ -68,8 +68,8 @@ import com.arvatosystems.t9t.zkui.util.Constants.DateTime;
 import com.arvatosystems.t9t.zkui.util.MenuUtil;
 import com.arvatosystems.t9t.zkui.util.ZulUtils;
 import com.arvatosystems.t9t.zkui.viewmodel.beans.Navi;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.collect.ImmutableMap;
 
 import de.jpaw.bonaparte.api.auth.JwtConverter;
@@ -104,11 +104,11 @@ public final class ApplicationSession {
     private Instant                          lastLoggedIn;
     private Instant                          passwordExpires;
     private Integer                          numberOfIncorrectAttempts;
-    private Cache<String, Map<String, String>> enumTranslationCache = CacheBuilder.newBuilder().build();
+    private Cache<String, Map<String, String>> enumTranslationCache = Caffeine.newBuilder().build();
     private Cache<String, List<Description>> dropdownDataCache =
-            CacheBuilder.newBuilder().expireAfterWrite(15L, TimeUnit.MINUTES).build();
+            Caffeine.newBuilder().expireAfterWrite(15L, TimeUnit.MINUTES).build();
     private Cache<String, Map<Long, DescriptionList>> groupedDropdownDataCache =
-            CacheBuilder.newBuilder().expireAfterWrite(15L, TimeUnit.MINUTES).build();
+            Caffeine.newBuilder().expireAfterWrite(15L, TimeUnit.MINUTES).build();
     private final ConcurrentMap<String, Permissionset> permissionCache = new ConcurrentHashMap<>(100);
     private final List<Navi>                 navis = new ArrayList<Navi>();
     private String                           entityId;
@@ -426,8 +426,8 @@ public final class ApplicationSession {
 
     public Map<String, String> translateEnum(final String pqon) {
         try {
-            return enumTranslationCache.get(pqon, () -> translationProvider.getEnumTranslation(getTenantId(), pqon, userLanguage, true));
-        } catch (ExecutionException e) {
+            return enumTranslationCache.get(pqon, unused -> translationProvider.getEnumTranslation(getTenantId(), pqon, userLanguage, true));
+        } catch (Exception e) {
             LOGGER.error("Problem during enum translation: {}", ExceptionUtil.causeChain(e));
             // return an empty map
             return NO_ENUM_TRANSLATIONS;
@@ -579,7 +579,7 @@ public final class ApplicationSession {
                 String json = new String(Base64.getDecoder().decode(parts[1]), StandardCharsets.UTF_8);
                 this.jwtInfo = JwtConverter.parseJwtInfo(json);
                 this.jwt = jwt;
-                this.authorizationHeader = "Bearer " + jwt;
+                this.authorizationHeader = T9tConstants.HTTP_AUTH_PREFIX_JWT + jwt;
                 LOGGER.debug("received JWT with contents {} (json was {})", jwtInfo, json);
                 setDateFormatters(jwtInfo.getLocale(), jwtInfo.getZoneinfo());
             } catch (Exception e) {

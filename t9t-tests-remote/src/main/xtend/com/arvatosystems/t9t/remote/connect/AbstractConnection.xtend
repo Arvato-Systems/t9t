@@ -29,6 +29,7 @@ import de.jpaw.annotations.AddLogger
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo
 import de.jpaw.util.ApplicationException
 import java.util.UUID
+import com.arvatosystems.t9t.base.T9tConstants
 
 @AddLogger
 abstract class AbstractConnection extends ConnectionDefaults implements ITestConnection {
@@ -122,7 +123,7 @@ abstract class AbstractConnection extends ConnectionDefaults implements ITestCon
             val authResult = typeIO(rq, AuthenticationResponse)
             lastJwtInfo    = authResult.jwtInfo
             lastJwt        = authResult.encodedJwt
-            setAuthentication("Bearer " + authResult.encodedJwt)  // the encoded token
+            setAuthentication(T9tConstants.HTTP_AUTH_PREFIX_JWT + authResult.encodedJwt)  // the encoded token
         } else {
             errIO(rq, expectedCode)
         }
@@ -133,7 +134,7 @@ abstract class AbstractConnection extends ConnectionDefaults implements ITestCon
         val authResult = typeIO(rq, AuthenticationResponse)
         lastJwtInfo    = authResult.jwtInfo
         lastJwt        = authResult.encodedJwt
-        setAuthentication("Bearer " + authResult.encodedJwt)  // the encoded token
+        setAuthentication(T9tConstants.HTTP_AUTH_PREFIX_JWT + authResult.encodedJwt)  // the encoded token
     }
 
     override getLastJwt() {

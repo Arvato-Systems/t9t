@@ -54,8 +54,8 @@ import com.arvatosystems.t9t.doc.services.IDocPersistenceAccess;
 import com.arvatosystems.t9t.doc.services.IImageGenerator;
 import com.arvatosystems.t9t.doc.services.ImageParameter;
 import com.arvatosystems.t9t.translation.services.ITranslationProvider;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 
 import de.jpaw.bonaparte.api.media.MediaTypes;
 import de.jpaw.bonaparte.core.BonaPortable;
@@ -683,7 +683,7 @@ public class DocFormatter implements IDocFormatter {
     private final IDocPersistenceAccess persistenceAccess = Jdp.getRequired(IDocPersistenceAccess.class);
     private final IDocModuleCfgDtoResolver moduleConfigResolver = Jdp.getRequired(IDocModuleCfgDtoResolver.class);
     private final ICacheInvalidationRegistry cacheInvalidationRegistry = Jdp.getOptional(ICacheInvalidationRegistry.class);
-    protected static final Cache<ComponentCacheKey, Map<String, MediaData>> COMPONENT_CACHE = CacheBuilder.newBuilder()
+    protected static final Cache<ComponentCacheKey, Map<String, MediaData>> COMPONENT_CACHE = Caffeine.newBuilder()
             .expireAfterWrite(5, TimeUnit.MINUTES).<ComponentCacheKey, Map<String, MediaData>>build();
 
     @Override
@@ -706,7 +706,7 @@ public class DocFormatter implements IDocFormatter {
             // freeze the selector to allow caching the hash code
             selector.freeze();
             final ComponentCacheKey cacheKey = new ComponentCacheKey(sharedTenantId, selector);
-            final Map<String, MediaData> components = COMPONENT_CACHE.get(cacheKey, () -> {
+            final Map<String, MediaData> components = COMPONENT_CACHE.get(cacheKey, unused -> {
                 return persistenceAccess.getDocComponents(moduleCfg, selector);
             });
 

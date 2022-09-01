@@ -141,5 +141,6 @@ package (com.arvatosystems) t9t.ssm {
         optional unsigned Integer                   timeLimit;              // time limit for a single execution (in seconds). Once exceeded, the stale concurrency is used, and an email is generated (if the mailingGroup has been defined). If null, there is no limit
         optional t9tShortId                         mailingGroupId     properties dropdown="mailGroupId";
         optional unsigned Integer                   runOnNode;              // node / shard to use in a clustered environment (leave blank to run it on all nodes)
+        optional Ascii(8)                           schedulerEnvironment;   // allows to select a subset of scheduled tasks - all will be used if null
     }
 }

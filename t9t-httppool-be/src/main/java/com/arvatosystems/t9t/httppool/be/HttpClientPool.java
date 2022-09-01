@@ -49,6 +49,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.IConnection;
+import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
@@ -124,7 +125,7 @@ public class HttpClientPool implements IConnection {
 
     @Override
     public ServiceResponse executeRequest(final RequestParameters rq, final String requestUri, final String encodedJwt) {
-        return executeRequest(rq, requestUri, (encodedJwt == null ? null : "Bearer " + encodedJwt), null);
+        return executeRequest(rq, requestUri, (encodedJwt == null ? null : T9tConstants.HTTP_AUTH_PREFIX_JWT + encodedJwt), null);
     }
 
     @Override

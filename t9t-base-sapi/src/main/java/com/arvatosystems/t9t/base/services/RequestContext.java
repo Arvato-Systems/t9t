@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -38,8 +37,8 @@ import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.event.BucketWriteKey;
 import com.arvatosystems.t9t.base.request.StackLevel;
 import com.arvatosystems.t9t.server.InternalHeaderParameters;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.collect.ImmutableList;
 
 import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
@@ -55,7 +54,7 @@ import de.jpaw.util.ExceptionUtil;
  */
 public class RequestContext extends AbstractRequestContext {  // FIXME: this class should be final, but some unit test in t9t-ssm-be relies on non-finalness
     private static final Logger LOGGER = LoggerFactory.getLogger(RequestContext.class);
-    private static final Cache<Long, Semaphore> GLOBAL_JVM_LOCKS = CacheBuilder.newBuilder()
+    private static final Cache<Long, Semaphore> GLOBAL_JVM_LOCKS = Caffeine.newBuilder()
         .expireAfterAccess(1, TimeUnit.MINUTES).initialCapacity(1000).build();
 
     public final InternalHeaderParameters internalHeaderParameters;
@@ -260,7 +259,7 @@ public class RequestContext extends AbstractRequestContext {  // FIXME: this cla
         ownedJvmLocks.computeIfAbsent(ref, myRef -> {
             // get a Semaphore from the global pool
             try {
-                final Semaphore globalSem = GLOBAL_JVM_LOCKS.get(ref, () -> new Semaphore(1, true));  // get a global Semaphore, or create one if non exists
+                final Semaphore globalSem = GLOBAL_JVM_LOCKS.get(ref, unused -> new Semaphore(1, true)); // get a global Semaphore, or create one if non exists
                 if (!globalSem.tryAcquire(timeoutInMillis, TimeUnit.MILLISECONDS)) {
                     final String msg = ref + " after " + timeoutInMillis + " milliseconds";
                     LOGGER.warn("Could not acquire JVM lock on {}", msg);
@@ -268,10 +267,10 @@ public class RequestContext extends AbstractRequestContext {  // FIXME: this cla
                 }
                 LOGGER.trace("Acquired JVM lock on ref {}", ref);
                 return globalSem;
-            } catch (final ExecutionException e) {
-                final String msg = ref + " after " + timeoutInMillis + " milliseconds due to ExecutionException " + ExceptionUtil.causeChain(e);
-                LOGGER.warn("Could not acquire JVM lock on {}", msg);
-                throw new T9tException(T9tException.COULD_NOT_ACQUIRE_LOCK, msg);
+//            } catch (final Exception e) {
+//                final String msg = ref + " after " + timeoutInMillis + " milliseconds due to ExecutionException " + ExceptionUtil.causeChain(e);
+//                LOGGER.warn("Could not acquire JVM lock on {}", msg);
+//                throw new T9tException(T9tException.COULD_NOT_ACQUIRE_LOCK, msg);
             } catch (final InterruptedException e) {
                 final String msg = ref + " after " + timeoutInMillis + " milliseconds due to InterruptedException " + ExceptionUtil.causeChain(e);
                 LOGGER.warn("Could not acquire JVM lock on {}", msg);

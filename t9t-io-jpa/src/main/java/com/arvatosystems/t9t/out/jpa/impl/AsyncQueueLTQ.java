@@ -19,7 +19,6 @@ import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedTransferQueue;
@@ -27,14 +26,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.TypedQuery;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.output.ExportStatusEnum;
@@ -50,8 +44,8 @@ import com.arvatosystems.t9t.io.request.QueueStatus;
 import com.arvatosystems.t9t.out.services.IAsyncMessageUpdater;
 import com.arvatosystems.t9t.out.services.IAsyncQueue;
 import com.arvatosystems.t9t.out.services.IAsyncSender;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.util.ToStringHelper;
@@ -60,12 +54,15 @@ import de.jpaw.dp.Named;
 import de.jpaw.dp.Provider;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ExceptionUtil;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.TypedQuery;
 
 @Singleton
 @Named("LTQ")
 public class AsyncQueueLTQ<R extends BonaPortable> implements IAsyncQueue {
     private static final Logger LOGGER = LoggerFactory.getLogger(AsyncQueueLTQ.class);
-    private static final Cache<ChannelCacheKey, AsyncChannelDTO> CHANNEL_CACHE = CacheBuilder.newBuilder().expireAfterWrite(60, TimeUnit.SECONDS).build();
+    private static final Cache<ChannelCacheKey, AsyncChannelDTO> CHANNEL_CACHE = Caffeine.newBuilder().expireAfterWrite(60, TimeUnit.SECONDS).build();
 
     private final Provider<RequestContext> ctxProvider = Jdp.getProvider(RequestContext.class);
     private final IAsyncMessageUpdater messageUpdater = Jdp.getRequired(IAsyncMessageUpdater.class);
@@ -291,41 +288,36 @@ public class AsyncQueueLTQ<R extends BonaPortable> implements IAsyncQueue {
             ExportStatusEnum newStatus = ExportStatusEnum.RESPONSE_ERROR;  // OK when sent
             final String channelId = nextMsg.getAsyncChannelId();
             final String tenantId = nextMsg.getTenantId();
-            try {
-                LOGGER.info("Sending message to channel {} of type {}", nextMsg.getAsyncChannelId(), nextMsg.getPayload().ret$PQON());
-                // obtain (cached) channel config
-                final AsyncChannelDTO channelDto = CHANNEL_CACHE.get(new ChannelCacheKey(tenantId, channelId),
-                  () -> messageUpdater.readChannelConfig(channelId, tenantId));
-                if (!channelDto.getIsActive()) {
-                    LOGGER.debug("Discarding async message to inactive channel {}", channelId);
-                    newStatus = ExportStatusEnum.RESPONSE_OK;
-                } else {
+            LOGGER.debug("Sending message to channel {} of type {}", nextMsg.getAsyncChannelId(), nextMsg.getPayload().ret$PQON());
+            // obtain (cached) channel config
+            final AsyncChannelDTO channelDto = CHANNEL_CACHE.get(new ChannelCacheKey(tenantId, channelId),
+              unused -> messageUpdater.readChannelConfig(channelId, tenantId));
+            if (!channelDto.getIsActive()) {
+                LOGGER.debug("Discarding async message to inactive channel {}", channelId);
+                newStatus = ExportStatusEnum.RESPONSE_OK;
+            } else {
 
-                    // log message if desired (expensive!)
-                    if (LOGGER.isTraceEnabled()) {
-                        LOGGER.trace("Sending payload {}, objectRef {}", ToStringHelper.toStringML(nextMsg.getPayload()), nextMsg.getObjectRef());
-                    }
-
-                    Integer newHttpCode = null;
-                    Integer newClientReturnCode = null;
-                    String newClientReference = null;
-                    try {
-                        final int timeout = channelDto.getTimeoutInMs() == null ? serverConfig.getTimeoutExternal() : channelDto.getTimeoutInMs().intValue();
-                        final AsyncHttpResponse resp =  sender.send(channelDto, nextMsg.getPayload(), timeout, nextMsg.getObjectRef());
-                        newHttpCode = resp.getHttpReturnCode();
-                        newStatus = (newHttpCode / 100) == 2 ? ExportStatusEnum.RESPONSE_OK : ExportStatusEnum.RESPONSE_ERROR;
-                        newClientReturnCode = resp.getClientReturnCode();
-                        newClientReference = resp.getClientReference();
-                    } catch (final Exception e) {
-                        LOGGER.error("Exception in external http: {}", ExceptionUtil.causeChain(e));
-                        newHttpCode = 999;
-                    }
-                    messageUpdater.updateMessage(nextMsg.getObjectRef(), newStatus, newHttpCode, newClientReturnCode, newClientReference);
-                    return newStatus == ExportStatusEnum.RESPONSE_OK;
+                // log message if desired (expensive!)
+                if (LOGGER.isTraceEnabled()) {
+                    LOGGER.trace("Sending payload {}, objectRef {}", ToStringHelper.toStringML(nextMsg.getPayload()), nextMsg.getObjectRef());
                 }
-            } catch (final ExecutionException e) {
-                LOGGER.error("Cannot get cache configuration for channelId {}: {}", channelId, ExceptionUtil.causeChain(e));
-                newStatus = ExportStatusEnum.PROCESSING_ERROR;
+
+                Integer newHttpCode = null;
+                Integer newClientReturnCode = null;
+                String newClientReference = null;
+                try {
+                    final int timeout = channelDto.getTimeoutInMs() == null ? serverConfig.getTimeoutExternal() : channelDto.getTimeoutInMs().intValue();
+                    final AsyncHttpResponse resp =  sender.send(channelDto, nextMsg.getPayload(), timeout, nextMsg.getObjectRef());
+                    newHttpCode = resp.getHttpReturnCode();
+                    newStatus = (newHttpCode / 100) == 2 ? ExportStatusEnum.RESPONSE_OK : ExportStatusEnum.RESPONSE_ERROR;
+                    newClientReturnCode = resp.getClientReturnCode();
+                    newClientReference = resp.getClientReference();
+                } catch (final Exception e) {
+                    LOGGER.error("Exception in external http: {}", ExceptionUtil.causeChain(e));
+                    newHttpCode = 999;
+                }
+                messageUpdater.updateMessage(nextMsg.getObjectRef(), newStatus, newHttpCode, newClientReturnCode, newClientReference);
+                return newStatus == ExportStatusEnum.RESPONSE_OK;
             }
 
             messageUpdater.updateMessage(nextMsg.getObjectRef(), newStatus, null, null, null);
@@ -337,30 +329,25 @@ public class AsyncQueueLTQ<R extends BonaPortable> implements IAsyncQueue {
     public Long sendAsync(final String asyncChannelId, final BonaPortable payload, final Long objectRef) {
         final RequestContext ctx = ctxProvider.get();
         // redundant check to see if the channel exists (to get exception in sync thread already). Should not cost too much time due to caching
-        try {
-            final AsyncChannelDTO cfg = CHANNEL_CACHE.get(new ChannelCacheKey(ctx.tenantId, asyncChannelId),
-              () -> messageUpdater.readChannelConfig(asyncChannelId, ctx.tenantId));
-            if (!cfg.getIsActive() || cfg.getAsyncQueueRef() == null) {
-                LOGGER.debug("Discarding async message to inactive or unassociated channel {}", asyncChannelId);
-                return null;
-            }
-            final Long asyncQueueRef = cfg.getAsyncQueueRef().getObjectRef();
-            final QueueData queue = queueData.get(asyncQueueRef);
-
-            if (queue != null) {
-                // queue is currently active: build the in-memory message and transmit it
-                final InMemoryMessage m = new InMemoryMessage();
-                m.setTenantId(ctx.tenantId);       // obtain the tenantId and store it
-                m.setAsyncChannelId(asyncChannelId);
-                m.setObjectRef(objectRef);
-                m.setPayload(payload);
-                queue.writerThread.send(ctx, m);
-            }
-            return asyncQueueRef;
-        } catch (final ExecutionException e) {
-            LOGGER.error("Cannot get cache configuration for channelId {}: {}", asyncChannelId, ExceptionUtil.causeChain(e));
-            throw new T9tException(T9tException.RECORD_DOES_NOT_EXIST, "ChannelId " + asyncChannelId);
+        final AsyncChannelDTO cfg = CHANNEL_CACHE.get(new ChannelCacheKey(ctx.tenantId, asyncChannelId),
+          unused -> messageUpdater.readChannelConfig(asyncChannelId, ctx.tenantId));
+        if (!cfg.getIsActive() || cfg.getAsyncQueueRef() == null) {
+            LOGGER.debug("Discarding async message to inactive or unassociated channel {}", asyncChannelId);
+            return null;
         }
+        final Long asyncQueueRef = cfg.getAsyncQueueRef().getObjectRef();
+        final QueueData queue = queueData.get(asyncQueueRef);
+
+        if (queue != null) {
+            // queue is currently active: build the in-memory message and transmit it
+            final InMemoryMessage m = new InMemoryMessage();
+            m.setTenantId(ctx.tenantId);       // obtain the tenantId and store it
+            m.setAsyncChannelId(asyncChannelId);
+            m.setObjectRef(objectRef);
+            m.setPayload(payload);
+            queue.writerThread.send(ctx, m);
+        }
+        return asyncQueueRef;
     }
 
     protected void shutdown(final QueueData w) {

@@ -70,13 +70,10 @@
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports</artifactId>
         </dependency>
-
-<!-- these fonts could cause issues - if needed they can be added in the server build project
-        <dependency>
+        <dependency> <!-- include DejaVu font family for wider character support -->
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports-fonts</artifactId>
         </dependency>
- -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>

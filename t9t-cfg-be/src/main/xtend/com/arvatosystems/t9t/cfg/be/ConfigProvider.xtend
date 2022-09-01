@@ -24,6 +24,7 @@ import java.io.StringReader
 import java.util.Map
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
+import com.arvatosystems.t9t.base.T9tException
 
 @AddLogger
 class ConfigProvider {
@@ -175,8 +176,19 @@ class ConfigProvider {
         return customParameters.get(key)
     }
 
+    /** Returns the uplink configuration configured for the specific key, or return null if none exists. */
     def static UplinkConfiguration getUplink(String key) {
         return uplinks.get(key)
+    }
+
+    /** Returns the uplink configuration configured for the specific key, or throws an exception if none exists. */
+    def static UplinkConfiguration getUplinkOrThrow(String key) {
+        val UplinkConfiguration uplinkCfg = uplinks.get(key)
+        if (uplinkCfg === null) {
+            LOGGER.error("Missing uplink configuration for {}", key);
+            throw new T9tException(T9tException.MISSING_UPLINK_CONFIGURATION, key);
+        }
+        return uplinkCfg
     }
 
     // read the configuration from the provided file, or fallback to the home cfg file if none has been specified

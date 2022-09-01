@@ -25,8 +25,8 @@ import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.monitoring.services.IDebugFlags;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
@@ -38,7 +38,7 @@ public class DebugFlags implements IDebugFlags {
     protected final Provider<RequestContext> ctxProvider = Jdp.getProvider(RequestContext.class);
 
     protected final Cache<Long, ConcurrentMap<String, String>> settingsStore
-        = CacheBuilder.newBuilder().expireAfterWrite(15L, TimeUnit.MINUTES).<Long, ConcurrentMap<String, String>>build();
+        = Caffeine.newBuilder().expireAfterWrite(15L, TimeUnit.MINUTES).<Long, ConcurrentMap<String, String>>build();
 
     protected Long getSession(final RequestContext ctx) {
         return ctx.internalHeaderParameters.getJwtInfo().getSessionRef();
@@ -68,14 +68,14 @@ public class DebugFlags implements IDebugFlags {
     }
 
     @Override
-    public void setFlags(final RequestContext ctx, final Map<String, String> newFlags) throws Exception {
+    public void setFlags(final RequestContext ctx, final Map<String, String> newFlags) {
         final Long sessionRef = getSession(ctx);
         if (newFlags.isEmpty()) {
             LOGGER.debug("Clearing all DebugFlags");
             settingsStore.invalidate(sessionRef);
         }
         // create a new store, if none exists
-        final ConcurrentMap<String, String> map = settingsStore.get(sessionRef, () -> new ConcurrentHashMap<>(newFlags.size()));
+        final ConcurrentMap<String, String> map = settingsStore.get(sessionRef, unused -> new ConcurrentHashMap<>(newFlags.size()));
         for (final Map.Entry<String, String> entry: newFlags.entrySet()) {
             if (entry.getValue() == null) {
                 LOGGER.debug("Clearing DebugFlag {}", entry.getKey());

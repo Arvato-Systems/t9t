@@ -17,8 +17,8 @@ package com.arvatosystems.t9t.voice.client;
 
 import com.arvatosystems.t9t.voice.VoiceProvider;
 import com.arvatosystems.t9t.voice.request.ProvideSessionResponse;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 
 import de.jpaw.dp.Jdp;
 
@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 
 public abstract class SessionCache<T extends VoiceSessionContext> {
     private static final Logger LOGGER = LoggerFactory.getLogger(SessionCache.class);
-    protected final Cache<String, T> cache = CacheBuilder.newBuilder().expireAfterWrite(1L, TimeUnit.HOURS).build();
+    protected final Cache<String, T> cache = Caffeine.newBuilder().expireAfterWrite(1L, TimeUnit.HOURS).build();
     protected final IBackendCaller backendCaller = Jdp.getRequired(IBackendCaller.class);
 
     public T get(final String providerSession) {

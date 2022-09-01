@@ -28,4 +28,5 @@ class LeanGridConfigResolvers {
     def LeanGridConfigEntity   getLeanGridConfigEntity (LeanGridConfigRef  entityRef, boolean onlyActive) { return null; }
     def LeanGridConfigEntity   findByKey(boolean onlyActive, String tenantId, String gridId, Integer variant, Long userRef) { return null; }
     def List<LeanGridConfigEntity> findByAll(boolean onlyActive) { return null; }
+    def List<LeanGridConfigEntity> findByGridId(boolean onlyActive, String gridId) { return null; }
 }

@@ -15,32 +15,28 @@
  */
 package com.arvatosystems.t9t.solr.be.impl;
 
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.solr.be.ISolrServerCache;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import de.jpaw.dp.Singleton;
-import java.util.concurrent.ExecutionException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.solr.be.ISolrServerCache;
+
+import de.jpaw.dp.Singleton;
+
 @Singleton
 public class SolrServerCache implements ISolrServerCache {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(SolrServerCache.class);
-    protected final Cache<String, SolrClient> serverCache = CacheBuilder.newBuilder().build();
+    protected final Map<String, SolrClient> serverCache = new ConcurrentHashMap<>();
 
     @Override
     public SolrClient get(final String solrCoreUrl) {
-        try {
-            return serverCache.get(solrCoreUrl, () -> {
-                LOGGER.info("Creating new SOLR client for URL " + solrCoreUrl);
-                return new HttpSolrClient.Builder(solrCoreUrl).build();
-            });
-        } catch (ExecutionException e) {
-            throw new T9tException(T9tException.SOLR_EXCEPTION, "Error while creating SOLR client for URL " + solrCoreUrl);
-        }
+        return serverCache.computeIfAbsent(solrCoreUrl, unused -> {
+            LOGGER.info("Creating new SOLR client for URL " + solrCoreUrl);
+            return new HttpSolrClient.Builder(solrCoreUrl).build();
+        });
     }
 }

@@ -19,8 +19,8 @@ import java.util.Map;
 
 import com.arvatosystems.t9t.in.be.impl.AbstractInputFormatConverter;
 import com.arvatosystems.t9t.in.services.IInputSession;
+import com.arvatosystems.t9t.jackson.JacksonTools;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import de.jpaw.bonaparte.core.BonaPortableClass;
 
@@ -30,7 +30,6 @@ public abstract class AbstractJsonFormatConverter extends AbstractInputFormatCon
     @Override
     public void open(final IInputSession inputSession, final Map<String, Object> params, final BonaPortableClass<?> baseBClass) {
         super.open(inputSession, params, baseBClass);
-        objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper = JacksonTools.createJacksonMapperForImports();
     }
 }

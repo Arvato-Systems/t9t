@@ -15,21 +15,18 @@
  */
 package com.arvatosystems.t9t.rest.vertx.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.arvatosystems.t9t.jackson.JacksonTools;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import de.jpaw.api.ConfigurationReader;
+import de.jpaw.util.ConfigurationReaderFactory;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.ext.ContextResolver;
 import jakarta.ws.rs.ext.Provider;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
-import de.jpaw.api.ConfigurationReader;
-import de.jpaw.util.ConfigurationReaderFactory;
 
 /**
  * Encode / decoder to parse requests and send responses in JSON format (using jackson, plus addon modules).
@@ -55,13 +52,8 @@ public class JacksonObjectMapper implements ContextResolver<ObjectMapper> {
     private final ObjectMapper objectMapper;
 
     public JacksonObjectMapper() {
-        this.objectMapper = new ObjectMapper();
         final boolean useNulls = checkIfSet("t9t.restapi.jsonAlsoNulls", Boolean.FALSE);
-        if (!useNulls) {
-            objectMapper.setSerializationInclusion(Include.NON_NULL);
-        }
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        objectMapper = JacksonTools.createJacksonMapperForExports(useNulls);
         LOGGER.info("Jackson objectMapper: added Java8 date/time support, useNulls={}", useNulls);
     }
 

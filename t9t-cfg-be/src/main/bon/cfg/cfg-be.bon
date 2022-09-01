@@ -62,6 +62,7 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional Boolean                            sessionLogSysout;               // session log to stdout / LOGGER: MUST be set in readonly environments
         optional Ascii(8)                           importEnvironment;              // allows to select a subset of Camel import routes - all will be used if null
         optional Ascii(8)                           eventEnvironment;               // allows to select a subset of event subscriptions - all will be used if null
+        optional Ascii(8)                           schedulerEnvironment;           // allows to select a subset of scheduled tasks - all will be used if null
         required Unicode(2000) List<>               z;                              // arbitrary extension parameters, of the form (identifier)=(value)
     }
 

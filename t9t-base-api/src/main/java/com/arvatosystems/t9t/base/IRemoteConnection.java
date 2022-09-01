@@ -24,8 +24,12 @@ import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
 /**
  * Defines an interface to a remote t9t based service.
  * Instances operate with a fixed endpoint, which is either passed by the constructor,
- * or, if instantiated as a @Singleton, if read from environment variables or system properties.
+ * or, if instantiated as a @Singleton, read from environment variables or system properties.
  * t9t.port, t9t.host, t9t.rpcpath, t9t.authpath
+ *
+ * An appropriate implementation of it is selected by adding the respective JAR.
+ * The currently preferred implementations both use the new JDK 11 client, either pooled or directly.
+ * Request serialization is always done via "compact bonaparte".
  */
 public interface IRemoteConnection {
     /** execute a single (regular) request for an authenticated context. */

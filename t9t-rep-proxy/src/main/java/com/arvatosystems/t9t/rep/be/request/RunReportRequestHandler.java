@@ -23,7 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.be.impl.SimpleCallOutExecutor;
 import com.arvatosystems.t9t.base.search.SinkCreatedResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
@@ -41,10 +40,10 @@ import com.arvatosystems.t9t.out.services.IOutPersistenceAccess;
 import com.arvatosystems.t9t.rep.request.RunReportRequest;
 
 import de.jpaw.dp.Jdp;
-import de.jpaw.util.ApplicationException;
 
 public class RunReportRequestHandler extends AbstractRequestHandler<RunReportRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(RunReportRequestHandler.class);
+    private static final String UPLINK_KEY_REP = "SERVER-REP";
 
     private final IForeignRequest remoteCaller;
     private final IOutPersistenceAccess outPersistenceAccess = Jdp.getRequired(IOutPersistenceAccess.class);
@@ -52,48 +51,41 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
 
     /** Constructor to initialize the callout executor. */
     public RunReportRequestHandler() {
-        final UplinkConfiguration reportServerConfig = ConfigProvider.getUplink("JASPER");
-        if (reportServerConfig == null) {
-            LOGGER.error("Missing uplink configuration for JASPER");
-            throw new T9tException(T9tException.MISSING_CONFIGURATION, "uplink for JASPER in server config.xml");
-        }
-        remoteCaller = new SimpleCallOutExecutor(reportServerConfig.getUrl());
+        final UplinkConfiguration reportServerConfig = ConfigProvider.getUplinkOrThrow(UPLINK_KEY_REP);
+        remoteCaller = SimpleCallOutExecutor.createCachedExecutor(UPLINK_KEY_REP, reportServerConfig.getUrl());
+        LOGGER.info("Installed a remote caller for {}", UPLINK_KEY_REP);
     }
 
     @Override
-    public ServiceResponse execute(final RequestContext ctx, final RunReportRequest request) throws Exception {
+    public SinkCreatedResponse execute(final RequestContext ctx, final RunReportRequest request) throws Exception {
         LOGGER.debug("Calling remote runReportRequest");
-        final ServiceResponse remoteResponse = remoteCaller.execute(ctx, request);
-        LOGGER.debug("Remote runReportRequest returned code {}, and type {}", remoteResponse.getReturnCode(), remoteResponse.getClass().getSimpleName());
-        if (ApplicationException.isOk(remoteResponse.getReturnCode()) && remoteResponse instanceof SinkCreatedResponse) {
-            // a report has been created. Now transfer it to this node
-            final SinkCreatedResponse sinkResponse = (SinkCreatedResponse)remoteResponse;
-            final Long sinkRef = sinkResponse.getSinkRef();
-            // first, get the full SinkDTO record, to retrieve the path
-            final SinkDTO sink = outPersistenceAccess.getSink(sinkRef);
-            final boolean isFile = sink.getCommTargetChannelType() == CommunicationTargetChannelType.FILE;
-            if (!isFile) {
-                LOGGER.debug("Report output was written to channel {} - no transfer triggered", sink.getCommTargetChannelType());
-            } else {
-                final String absolutePath = fileUtil.getAbsolutePathForTenant(ctx.tenantId, sink.getFileOrQueueName());
-                final File myFile = new File(absolutePath);
-                final boolean fileAlreadyExists = myFile.exists();
-                LOGGER.debug("File path is {} ({})", absolutePath, fileAlreadyExists ? "already exists on local FS" : "does not exist in local FS");
-                if (!fileAlreadyExists) {
-                    fileUtil.createFileLocation(absolutePath);
-                    // transfer it
-                    try (FileOutputStream os = new FileOutputStream(myFile)) {
-                        final Long size = transferFile(ctx, os, sinkRef);
-                        LOGGER.debug("Transferred report of length {} from remote to local FS", size);
-                    } catch (final IOException ex) {
-                        LOGGER.error(ex.getMessage() + ": " + absolutePath, ex);
-                        throw new T9tException(T9tIOException.OUTPUT_FILE_OPEN_EXCEPTION, absolutePath);
-                    }
+        final SinkCreatedResponse sinkResponse = remoteCaller.executeSynchronousAndCheckResult(ctx, request, SinkCreatedResponse.class);
+        // a report has been created. Now transfer it to this node
+        final Long sinkRef = sinkResponse.getSinkRef();
+        // first, get the full SinkDTO record, to retrieve the path
+        final SinkDTO sink = outPersistenceAccess.getSink(sinkRef);
+        final boolean isFile = sink.getCommTargetChannelType() == CommunicationTargetChannelType.FILE;
+        if (!isFile) {
+            LOGGER.debug("Report output was written to channel {} - no transfer triggered", sink.getCommTargetChannelType());
+        } else {
+            final String absolutePath = fileUtil.getAbsolutePathForTenant(ctx.tenantId, sink.getFileOrQueueName());
+            final File myFile = new File(absolutePath);
+            final boolean fileAlreadyExists = myFile.exists();
+            LOGGER.debug("File path is {} ({})", absolutePath, fileAlreadyExists ? "already exists on local FS" : "does not exist in local FS");
+            if (!fileAlreadyExists) {
+                fileUtil.createFileLocation(absolutePath);
+                // transfer it
+                try (FileOutputStream os = new FileOutputStream(myFile)) {
+                    final Long size = transferFile(ctx, os, sinkRef);
+                    LOGGER.debug("Transferred report of length {} from remote to local FS", size);
+                } catch (final IOException ex) {
+                    LOGGER.error(ex.getMessage() + ": " + absolutePath, ex);
+                    throw new T9tException(T9tIOException.OUTPUT_FILE_OPEN_EXCEPTION, absolutePath);
                 }
             }
         }
 
-        return remoteResponse;
+        return sinkResponse;
     }
 
     protected Long transferFile(final RequestContext ctx, final FileOutputStream os, final Long sinkRef) throws IOException {
@@ -125,7 +117,6 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
         fileDownloadRequest.setSinkRef(sinkObjectRef);
         fileDownloadRequest.setOffset(offset);
         fileDownloadRequest.setLimit(limit);
-        final FileDownloadResponse fileDownloadResponse = (FileDownloadResponse)remoteCaller.execute(ctx, fileDownloadRequest);
-        return fileDownloadResponse;
+        return remoteCaller.executeSynchronousAndCheckResult(ctx, fileDownloadRequest, FileDownloadResponse.class);
     }
 }

@@ -52,8 +52,8 @@ import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
 import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
 import com.arvatosystems.t9t.xml.auth.AuthByUserIdPassword;
 import com.arvatosystems.t9t.xml.auth.AuthenticationResult;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
@@ -78,7 +78,7 @@ public class LoginUserPwResource implements IT9tRestEndpoint {
      * Caches the basicAuth String in form of the Hash and connects it to a JWT.
      * This cache must expire significantly faster than the JWT duration (max 1/2 of it).
      */
-    private static final Cache<String, String> BASIC_AUTH_TO_JWT_CACHE = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.HOURS).build();
+    private static final Cache<String, String> BASIC_AUTH_TO_JWT_CACHE = Caffeine.newBuilder().expireAfterWrite(1, TimeUnit.HOURS).build();
 
     @Operation(
         summary = "Create a session / JWT token by user ID / password",

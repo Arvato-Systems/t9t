@@ -45,6 +45,10 @@
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-annotations-jpa</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+        </dependency>
 
         <!-- test dependencies (tests will need the BE layer for implementation of RequestContextProvider) -->
         <dependency>

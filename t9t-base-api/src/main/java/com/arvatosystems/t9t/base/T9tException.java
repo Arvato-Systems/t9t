@@ -177,6 +177,7 @@ public class T9tException extends ApplicationException {
     public static final int NO_SUITABLE_AUTHENTICATION_PROVIDER_FOUND = OFFSET_LOGIC_ERROR + 218;
     public static final int GENERAL_AUTH_PROBLEM = OFFSET + 219;
     public static final int INVALID_EMAIL_FORMAT = OFFSET + 220;
+    public static final int MISSING_UPLINK_CONFIGURATION = OFFSET + 107;
 
 
     // IO errors
@@ -212,6 +213,7 @@ public class T9tException extends ApplicationException {
     public static final int CALLOUTS_NOT_ENABLED        = OFFSET + 408;
 
     public static final int DYNAMODB_EXCEPTION          = OFFSET_DB_ERROR + 501;
+    public static final int MISSING_KAFKA_BOOTSTRAP     = OFFSET + 502;
 
     // Error codes specific to solr search
     public static final int SOLR_SERVER_NOT_AVAILABLE   = OFFSET + 701;
@@ -337,6 +339,7 @@ public class T9tException extends ApplicationException {
         codeToDescription.put(FIELD_MAY_NOT_BE_CHANGED, "A field may not be updated to a different value");
         codeToDescription.put(ONLY_ONE_ACTIVE_ALLOWED, "Inserting the record would create more than one active rows with the same value of a key column");
         codeToDescription.put(MISSING_CONFIGURATION, "No active configuration record found");
+        codeToDescription.put(MISSING_UPLINK_CONFIGURATION, "No configuration for uplink found in config.xml");
         codeToDescription.put(INVALID_CONFIGURATION, "Configuration was done incorrectly");
         codeToDescription.put(NOT_YET_IMPLEMENTED, "The requested functionality has not yet been implemented.");
         codeToDescription.put(NO_LONGER_SUPPORTED, "The requested functionality is no longer supported.");
@@ -537,6 +540,7 @@ public class T9tException extends ApplicationException {
         codeToDescription.put(UNSUPPORTED_OPERAND, "The provided operand or parameter is not supported");
 
         codeToDescription.put(DYNAMODB_EXCEPTION, "DynamoDB returned an Exception");
+        codeToDescription.put(MISSING_KAFKA_BOOTSTRAP, "Kafka bootstrap servers not specified");
 
         codeToDescription.put(HTTP_ERROR + 400, "Bad request");
         codeToDescription.put(HTTP_ERROR + 401, "Not authorized");

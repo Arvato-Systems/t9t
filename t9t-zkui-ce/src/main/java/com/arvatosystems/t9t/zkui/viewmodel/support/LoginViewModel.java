@@ -24,10 +24,6 @@ import java.util.StringTokenizer;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
-import jakarta.servlet.http.HttpServletRequest;
-
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.zkui.services.IAuthenticationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.BindingParam;
@@ -41,19 +37,22 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.ClientInfoEvent;
 
+import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.auth.PermissionEntry;
 import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;
+import com.arvatosystems.t9t.zkui.services.IAuthenticationService;
 import com.arvatosystems.t9t.zkui.services.IUserDAO;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 import com.arvatosystems.t9t.zkui.util.ApplicationUtil;
 import com.arvatosystems.t9t.zkui.util.Constants;
 import com.arvatosystems.t9t.zkui.util.ZulUtils;
 import com.arvatosystems.t9t.zkui.viewmodel.beans.ComboBoxItem;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.base.Strings;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 
 import de.jpaw.dp.Jdp;
+import jakarta.servlet.http.HttpServletRequest;
 
 
 
@@ -98,7 +97,7 @@ public class LoginViewModel {
         }
     }
 
-    private static final Cache<String, UserInfo> USER_INFO_CACHE = CacheBuilder.newBuilder()
+    private static final Cache<String, UserInfo> USER_INFO_CACHE = Caffeine.newBuilder()
             .expireAfterWrite(5, TimeUnit.MINUTES).build();
     private List<ComboBoxItem> languageListModel = new ArrayList<ComboBoxItem>();
     private ComboBoxItem selected;

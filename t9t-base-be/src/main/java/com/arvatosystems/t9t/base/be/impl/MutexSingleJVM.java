@@ -15,7 +15,6 @@
  */
 package com.arvatosystems.t9t.base.be.impl;
 
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
@@ -24,8 +23,8 @@ import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.services.IMutex;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ApplicationException;
@@ -34,20 +33,20 @@ import de.jpaw.util.ExceptionUtil;
 @Singleton
 public class MutexSingleJVM<T> implements IMutex<T> {
     private static final Logger LOGGER = LoggerFactory.getLogger(MutexSingleJVM.class);
-    private static final Cache<Long, Object> ACTIVE_MUTEXES = CacheBuilder.newBuilder().expireAfterAccess(1, TimeUnit.MINUTES).build();
+    private static final Cache<Long, Object> ACTIVE_MUTEXES = Caffeine.newBuilder().expireAfterAccess(1, TimeUnit.MINUTES).build();
 
     @Override
     public T runSynchronizedOn(final Long objectRef, final Supplier<T> code) {
 
         try {
             // acquire the lock. For every objectRef there is a separate lock
-            final Object lock = ACTIVE_MUTEXES.get(objectRef, () -> {
+            final Object lock = ACTIVE_MUTEXES.get(objectRef, unused -> {
                 return new Object();
             });
             synchronized (lock) {
                 return code.get();
             }
-        } catch (final ExecutionException e) {
+        } catch (final Exception e) {
             LOGGER.error("running synchronized exited with {}", ExceptionUtil.causeChain(e));
             if (e.getCause() instanceof ApplicationException)
                 throw (ApplicationException)e.getCause();

@@ -19,10 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-
-import jakarta.persistence.TypedQuery;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,8 +30,8 @@ import com.arvatosystems.t9t.base.jpa.IResolverAnyKey;
 import com.arvatosystems.t9t.base.jpa.ormspecific.IQueryHintSetter;
 import com.arvatosystems.t9t.base.services.ICacheInvalidationRegistry;
 import com.arvatosystems.t9t.base.services.RequestContext;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
@@ -43,6 +40,7 @@ import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 import de.jpaw.util.ExceptionUtil;
+import jakarta.persistence.TypedQuery;
 
 public abstract class AbstractConfigCache<
   DTO extends Ref,
@@ -50,7 +48,7 @@ public abstract class AbstractConfigCache<
   ENTITY extends BonaPersistableKey<Long> & BonaPersistableTracking<TRACKING>> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractConfigCache.class);
     /** The cache is a 2 level map. The index of the first level is the tenantId. A cache always contains all entries for a given tenant or none. */
-    protected final Cache<String, Map<Ref, DTO>> configCache = CacheBuilder.newBuilder().expireAfterWrite(15L, TimeUnit.MINUTES).build();
+    protected final Cache<String, Map<Ref, DTO>> configCache = Caffeine.newBuilder().expireAfterWrite(15L, TimeUnit.MINUTES).build();
     protected final IResolverAnyKey<Long, TRACKING, ENTITY> resolver;
     protected final Class<DTO> dtoClass;
     protected final boolean fallbackDefaultTenant;
@@ -86,10 +84,10 @@ public abstract class AbstractConfigCache<
     }
 
     protected DTO getConfigForTenant(final String tenantId, final Ref key) {
-        Map<Ref, DTO> tenantCache;
+        final Map<Ref, DTO> tenantCache;
         try {
-            tenantCache = configCache.get(tenantId, () -> readWholeTenant(tenantId));
-        } catch (final ExecutionException e) {
+            tenantCache = configCache.get(tenantId, unused -> readWholeTenant(tenantId));
+        } catch (final Exception e) {
             LOGGER.error("Cannot read {} for tenant {}: {}", dtoClass.getSimpleName(), tenantId, e);
             throw new T9tException(T9tException.RECORD_DOES_NOT_EXIST, ExceptionUtil.causeChain(e));
         }

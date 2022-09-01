@@ -28,18 +28,6 @@ public interface IOutPersistenceAccess {
     /** Retrieve the DataSinkDTO for a given ID, either from the current tenant, or for the global one. */
     DataSinkDTO getDataSinkDTO(String dataSinkId);
 
-    /** Retrieve all DataSinkDTO for a given environment, which are INPUT. */
-    @Deprecated
-    default List<DataSinkDTO> getDataSinkDTOsForEnvironment(final String environment) {
-        return getDataSinkDTOsForEnvironmentAndChannel(environment, null);
-    }
-
-    /** Retrieve all DataSinkDTO for a given channel, which are INPUT. */
-    @Deprecated
-    default List<DataSinkDTO> getDataSinkDTOsForChannel(final CommunicationTargetChannelType channel) {
-        return getDataSinkDTOsForEnvironmentAndChannel(null, channel);
-    }
-
     /** Retrieve all DataSinkDTO for a given channel and environment, which are INPUT. */
     List<DataSinkDTO> getDataSinkDTOsForEnvironmentAndChannel(String environment, CommunicationTargetChannelType channel);
 

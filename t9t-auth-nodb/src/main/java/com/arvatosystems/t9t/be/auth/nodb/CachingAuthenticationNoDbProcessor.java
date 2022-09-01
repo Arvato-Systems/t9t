@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.auth.jwt.IJWT;
+import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.auth.ApiKeyAuthentication;
 import com.arvatosystems.t9t.base.auth.AuthenticationInfo;
 import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
@@ -62,7 +63,7 @@ public class CachingAuthenticationNoDbProcessor implements ICachingAuthenticatio
 
     @Override
     public AuthenticationInfo getCachedJwt(final String authorizationHeader) {
-        if (!authorizationHeader.startsWith("API-Key ")) {
+        if (!authorizationHeader.startsWith(T9tConstants.HTTP_AUTH_PREFIX_API_KEY)) {
             return UNSUPPORTED_AUTH_METHOD;
         }
         try {

@@ -26,8 +26,8 @@ import com.arvatosystems.t9t.base.types.AuthenticationParameters;
 import com.arvatosystems.t9t.server.services.IAuthenticate;
 import com.arvatosystems.t9t.server.services.IRequestProcessor;
 import com.arvatosystems.t9t.server.services.IUnauthenticatedServiceRequestExecutor;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ApplicationException;
@@ -46,7 +46,7 @@ public class ServiceRequestExecutor implements IUnauthenticatedServiceRequestExe
     protected final IJWT jwt = Jdp.getRequired(IJWT.class);
 
     protected static final AuthData ACCESS_DENIED = new AuthData(null, null);
-    protected static final Cache<AuthenticationParameters, AuthData> AUTH_CACHE = CacheBuilder.newBuilder()
+    protected static final Cache<AuthenticationParameters, AuthData> AUTH_CACHE = Caffeine.newBuilder()
             .expireAfterWrite(50L, TimeUnit.MINUTES).maximumSize(500L).build();
 
     @Override

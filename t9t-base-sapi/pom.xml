@@ -37,6 +37,10 @@
             <artifactId>t9t-server-sapi</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+        </dependency>
+        <dependency>
             <groupId>de.jpaw</groupId>
             <artifactId>bonaparte-refs</artifactId>
         </dependency>

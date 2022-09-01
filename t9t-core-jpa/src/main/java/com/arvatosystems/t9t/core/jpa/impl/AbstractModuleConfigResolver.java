@@ -29,8 +29,8 @@ import com.arvatosystems.t9t.base.moduleCfg.ModuleConfigDTO;
 import com.arvatosystems.t9t.base.services.ICacheInvalidationRegistry;
 import com.arvatosystems.t9t.core.jpa.entities.ModuleConfigEntity;
 import com.arvatosystems.t9t.server.services.IModuleConfigResolver;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.jpa.BonaPersistableData;
@@ -52,7 +52,7 @@ public abstract class AbstractModuleConfigResolver<D extends ModuleConfigDTO, E 
 
     protected AbstractModuleConfigResolver(final Class<? extends IResolverStringKey<FullTrackingWithVersion, E>> resolverClass) {
         resolver = Jdp.getRequired(resolverClass);
-        dtoCache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.MINUTES).build();
+        dtoCache = Caffeine.newBuilder().expireAfterWrite(1, TimeUnit.MINUTES).build();
         cacheInvalidationRegistry.registerInvalidator(resolver.getBaseJpaEntityClass().getSimpleName(), (final BonaPortable it) -> {
             dtoCache.invalidateAll();
         });

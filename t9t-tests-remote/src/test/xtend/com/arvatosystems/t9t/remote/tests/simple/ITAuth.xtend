@@ -35,6 +35,7 @@ import com.arvatosystems.t9t.doc.DocEmailReceiverDTO
 import com.arvatosystems.t9t.doc.DocTemplateDTO
 import com.arvatosystems.t9t.base.ITestConnection
 import java.util.List
+import com.arvatosystems.t9t.base.T9tConstants
 
 class ITAuth {
     val String testUU1D = "896d22d1-a1b2-488e-b2f8-2a539c29b8ca"
@@ -43,7 +44,7 @@ class ITAuth {
     @Test
     def void pingTest() {
         val dlg = new Connection
-        dlg.authentication = "API-Key " + testUUID
+        dlg.authentication = T9tConstants.HTTP_AUTH_PREFIX_API_KEY + testUUID
         dlg.okIO(new PingRequest)
     }
     @Test

@@ -5,6 +5,9 @@
     <property name="ireport.x" value="0"/>
     <property name="ireport.y" value="0"/>
     <import value="java.time.LocalDateTime"/>
+    <import value="java.time.format.DateTimeFormatter"/>
+    <import value="java.time.format.FormatStyle"/>
+    <import value="java.sql.Timestamp"/>
     <parameter name="dateFrom" class="java.time.LocalDateTime" isForPrompting="false">
         <defaultValueExpression><![CDATA[LocalDateTime.of(2014,01,01,0,0)]]></defaultValueExpression>
     </parameter>
@@ -12,10 +15,10 @@
         <defaultValueExpression><![CDATA[LocalDateTime.now()]]></defaultValueExpression>
     </parameter>
     <parameter name="dateFromTimestamp" class="java.sql.Timestamp" isForPrompting="false">
-        <defaultValueExpression><![CDATA[new java.sql.Timestamp($P{dateFrom}.toDate().getTime())]]></defaultValueExpression>
+        <defaultValueExpression><![CDATA[Timestamp.valueOf($P{dateFrom})]]></defaultValueExpression>
     </parameter>
     <parameter name="dateToTimestamp" class="java.lang.String" isForPrompting="false">
-        <defaultValueExpression><![CDATA[new java.sql.Timestamp($P{dateTo}.toDate().getTime())]]></defaultValueExpression>
+        <defaultValueExpression><![CDATA[Timestamp.valueOf($P{dateTo})]]></defaultValueExpression>
     </parameter>
     <parameter name="tenantId" class="java.lang.String"/>
     <parameter name="translator" class="com.arvatosystems.t9t.translation.be.TranslationProvider"/>
@@ -84,8 +87,8 @@ AND msg.execution_started_at <= to_timestamp($P{dateToStr},'YYYY-MM-DD HH24:MI:S
                 <textElement>
                     <font size="14" isBold="true"/>
                 </textElement>
-                <textFieldExpression><![CDATA[$P{translator}.getReportTranslation($P{tenantId}, $P{REPORT_LOCALE}, "ReportHeader", "dateFrom")+DateFormat.getDateInstance(DateFormat.SHORT, $P{REPORT_LOCALE}).format($P{dateFrom}.toDate())
-+" "+$P{translator}.getReportTranslation($P{tenantId}, $P{REPORT_LOCALE}, "ReportHeader", "dateTo")+DateFormat.getDateInstance(DateFormat.SHORT, $P{REPORT_LOCALE}).format($P{dateTo}.toDate())]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$P{translator}.getReportTranslation($P{tenantId}, $P{REPORT_LOCALE}, "ReportHeader", "dateFrom")+$P{dateFrom}.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).withLocale($P{REPORT_LOCALE}))
++" "+$P{translator}.getReportTranslation($P{tenantId}, $P{REPORT_LOCALE}, "ReportHeader", "dateTo")+$P{dateTo}.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).withLocale($P{REPORT_LOCALE}))]]></textFieldExpression>
             </textField>
             <textField>
                 <reportElement x="0" y="40" width="628" height="20" uuid="2afceae9-308b-4a00-8708-44f7f3867229"/>
@@ -155,13 +158,6 @@ AND msg.execution_started_at <= to_timestamp($P{dateToStr},'YYYY-MM-DD HH24:MI:S
                 </textElement>
                 <textFieldExpression><![CDATA[$P{translator}.getReportTranslation($P{tenantId}, $P{REPORT_LOCALE}, "ErrorLogDetails", "errorDetails")]]></textFieldExpression>
             </textField>
-            <textField isBlankWhenNull="true">
-                <reportElement x="548" y="0" width="80" height="45" uuid="b6151a35-245d-461b-b5e5-7bc6cadce9af"/>
-                <textElement markup="none">
-                    <font isBold="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA[$P{translator}.getReportTranslation($P{tenantId}, $P{REPORT_LOCALE}, "ErrorLogDetails", "errorMessage")]]></textFieldExpression>
-            </textField>
         </band>
     </columnHeader>
     <detail>
@@ -172,7 +168,7 @@ AND msg.execution_started_at <= to_timestamp($P{dateToStr},'YYYY-MM-DD HH24:MI:S
             </textField>
             <textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
                 <reportElement stretchType="RelativeToBandHeight" x="61" y="0" width="74" height="50" uuid="eb44a93a-f988-41a2-a527-4b8e9d849f0e"/>
-                <textFieldExpression><![CDATA[DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT).format($F{c_timestamp})]]></textFieldExpression>
+                <textFieldExpression><![CDATA[DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT).format($F{execution_started_at})]]></textFieldExpression>
             </textField>
             <textField isBlankWhenNull="true">
                 <reportElement x="135" y="0" width="60" height="50" uuid="c1c05ec3-ba32-4cc4-9d9d-d69006ccd603"/>
@@ -203,13 +199,6 @@ AND msg.execution_started_at <= to_timestamp($P{dateToStr},'YYYY-MM-DD HH24:MI:S
             <textField isBlankWhenNull="true">
                 <reportElement x="468" y="0" width="80" height="50" uuid="4bda8638-ffd8-420f-92ab-70c9b5c8d35f"/>
                 <textFieldExpression><![CDATA[$F{error_details}]]></textFieldExpression>
-            </textField>
-            <textField isBlankWhenNull="true">
-                <reportElement x="548" y="0" width="80" height="50" uuid="6766a12c-3e42-40e2-a34b-b325a198fcf3"/>
-                <textElement>
-                    <paragraph leftIndent="5"/>
-                </textElement>
-                <textFieldExpression><![CDATA[$F{error_message}]]></textFieldExpression>
             </textField>
         </band>
     </detail>

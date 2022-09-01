@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.auth.jwt.IJWT;
+import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.auth.ApiKeyAuthentication;
 import com.arvatosystems.t9t.base.auth.AuthenticationInfo;
 import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
@@ -33,8 +34,8 @@ import com.arvatosystems.t9t.base.services.IAuthCacheInvalidation;
 import com.arvatosystems.t9t.base.services.ICacheInvalidationRegistry;
 import com.arvatosystems.t9t.server.services.IAuthenticate;
 import com.arvatosystems.t9t.server.services.ICachingAuthenticationProcessor;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.arvatosystems.t9t.base.auth.PasswordAuthentication;
 
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
@@ -44,7 +45,7 @@ import de.jpaw.dp.Singleton;
 @Singleton
 public class CachingAuthenticationProcessor implements ICachingAuthenticationProcessor {
     private static final Logger LOGGER = LoggerFactory.getLogger(CachingAuthenticationProcessor.class);
-    protected static final Cache<String, AuthenticationInfo> AUTH_CACHE = CacheBuilder.newBuilder()
+    protected static final Cache<String, AuthenticationInfo> AUTH_CACHE = Caffeine.newBuilder()
             .expireAfterWrite(50L, TimeUnit.MINUTES).maximumSize(200L).build();
     protected static final AuthenticationInfo ACCESS_DENIED_DUE_TO_EXCEPTION = new AuthenticationInfo();
     static {
@@ -176,13 +177,13 @@ public class CachingAuthenticationProcessor implements ICachingAuthenticationPro
         }
 
         LOGGER.debug("New authentication for {}", authorizationHeader.substring(0, 7));   // do not log the full credentials, just the type
-        if (authorizationHeader.startsWith("Bearer ")) {
+        if (authorizationHeader.startsWith(T9tConstants.HTTP_AUTH_PREFIX_JWT)) {
             return authByJwtAndStoreResult(authorizationHeader);
         }
-        if (authorizationHeader.startsWith("API-Key ")) {
+        if (authorizationHeader.startsWith(T9tConstants.HTTP_AUTH_PREFIX_API_KEY)) {
             return authByApiKeyAndStoreResult(authorizationHeader);
         }
-        if (authorizationHeader.startsWith("Basic ")) {
+        if (authorizationHeader.startsWith(T9tConstants.HTTP_AUTH_PREFIX_USER_PW)) {
             return authByUserPasswordAndStoreResult(authorizationHeader);
         }
 

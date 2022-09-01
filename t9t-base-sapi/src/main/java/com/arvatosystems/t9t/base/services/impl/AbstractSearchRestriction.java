@@ -16,16 +16,14 @@
 package com.arvatosystems.t9t.base.services.impl;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.search.SearchCriteria;
 import com.arvatosystems.t9t.base.services.IRestrictionRefReader;
 import com.arvatosystems.t9t.base.services.ISearchRestriction;
 import com.arvatosystems.t9t.base.services.RequestContext;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.collect.ImmutableList;
 
 import de.jpaw.bonaparte.api.SearchFilters;
@@ -33,7 +31,7 @@ import de.jpaw.bonaparte.pojos.api.LongFilter;
 import de.jpaw.bonaparte.pojos.api.NullFilter;
 
 public abstract class AbstractSearchRestriction implements ISearchRestriction {
-    private final Cache<Long, List<Long>> allowedRefsCache = CacheBuilder.newBuilder().expireAfterWrite(15L, TimeUnit.MINUTES).<Long, List<Long>>build();
+    private final Cache<Long, List<Long>> allowedRefsCache = Caffeine.newBuilder().expireAfterWrite(15L, TimeUnit.MINUTES).<Long, List<Long>>build();
 
     protected static final List<Long> NO_REFS = ImmutableList.<Long>of();
     protected static final List<String> NO_FIELDS = ImmutableList.<String>of();
@@ -112,14 +110,10 @@ public abstract class AbstractSearchRestriction implements ISearchRestriction {
      */
     @Override
     public List<Long> retrieveAllowedRefsCached(final RequestContext ctx) {
-        try {
-            final Long sessionRef = ctx.internalHeaderParameters.getJwtInfo().getSessionRef();
-            if (sessionRef == null) {
-                return this.retrieveAllowedRefsUncached(ctx);
-            }
-            return this.allowedRefsCache.get(sessionRef, () -> this.retrieveAllowedRefsUncached(ctx));
-        } catch (final ExecutionException e) {
-            throw new T9tException(T9tException.ERROR_FILLING_RESTRICTION_CACHE, this.getClass().getCanonicalName());
+        final Long sessionRef = ctx.internalHeaderParameters.getJwtInfo().getSessionRef();
+        if (sessionRef == null) {
+            return this.retrieveAllowedRefsUncached(ctx);
         }
+        return this.allowedRefsCache.get(sessionRef, unused -> this.retrieveAllowedRefsUncached(ctx));
     }
 }

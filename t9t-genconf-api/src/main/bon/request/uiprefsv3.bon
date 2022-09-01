@@ -49,4 +49,9 @@ package (com.arvatosystems) t9t.uiprefsv3.request {
         required Unicode(80)                    from;
         required Unicode(80)                    to;
     }
+
+    class DeleteLeanGridConfigFieldReferenceRequest extends RequestParameters {
+        required Unicode(80)                    grid;
+        required Unicode(80) required List<>    fieldsToDelete;
+    }
 }

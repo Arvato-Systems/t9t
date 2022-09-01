@@ -15,26 +15,28 @@
  */
 package com.arvatosystems.t9t.auth.be.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.arvatosystems.t9t.auth.services.IAuthPersistenceAccess;
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.auth.PermissionEntry;
 import com.arvatosystems.t9t.base.auth.PermissionType;
 import com.arvatosystems.t9t.server.services.IAuthorize;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.collect.ImmutableList;
+
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Central location to compute if a user may do a certain operation or not.
@@ -54,7 +56,7 @@ import org.slf4j.LoggerFactory;
 public class Authorization implements IAuthorize {
     private static final Logger LOGGER = LoggerFactory.getLogger(Authorization.class);
     private static final List<PermissionEntry> EMPTY_PERMISSION_LIST = ImmutableList.of();
-    private static final Cache<Long, List<PermissionEntry>> PERMISSION_CACHE = CacheBuilder.newBuilder().maximumSize(1000L)
+    private static final Cache<Long, List<PermissionEntry>> PERMISSION_CACHE = Caffeine.newBuilder().maximumSize(1000L)
             .expireAfterWrite(5L, TimeUnit.MINUTES).build();
     private final IAuthPersistenceAccess authPersistenceAccess = Jdp.getRequired(IAuthPersistenceAccess.class);
 
@@ -211,8 +213,8 @@ public class Authorization implements IAuthorize {
             entries = getAllFilteredPermissions(jwtInfo);
         } else {
             try {
-                entries = PERMISSION_CACHE.get(jwtInfo.getSessionRef(), () -> getAllFilteredPermissions(jwtInfo));
-            } catch (ExecutionException e) {
+                entries = PERMISSION_CACHE.get(jwtInfo.getSessionRef(), unused -> getAllFilteredPermissions(jwtInfo));
+            } catch (Exception e) {
                 LOGGER.error("Error while filtering permissions: {}", e.getMessage());
             }
         }

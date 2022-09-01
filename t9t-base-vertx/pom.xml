@@ -33,11 +33,6 @@
             <groupId>de.jpaw</groupId>
             <artifactId>bonaparte-core</artifactId>
         </dependency>
-<!--         <dependency>
-            <groupId>de.jpaw</groupId>
-            <artifactId>bonaparte8-vertx3</artifactId>
-        </dependency>
- -->
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-core</artifactId>

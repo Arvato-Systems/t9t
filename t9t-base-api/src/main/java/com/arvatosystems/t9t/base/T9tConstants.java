@@ -54,16 +54,6 @@ public final class T9tConstants {
     public static final String TECHNICAL_USER_ID = "#";
 
     /**
-     * An X500 authentication value if an unencrypted (and therefore always unauthenticated) connection is used.
-     */
-    public static final String X500_AUTH_UNENCRYPTED = "-";
-
-    /**
-     * An X500 authentication value if the peer connected using an encrypted channel, but the peer certificate did not exist or could not be verified.
-     */
-    public static final String X500_AUTH_UNVERIFIED = "?";
-
-    /**
      * The maximum length of a message in the system.
      */
     public static final int MAXIMUM_MESSAGE_LENGTH = 16 * 1024 * 1024;
@@ -136,8 +126,8 @@ public final class T9tConstants {
     public static final String MDC_BPMN_PROCESS_INSTANCE = "bpmnProcessInstance";
     public static final String MDC_BPMN_STEP = "bpmnStep";
 
-    public static final String PLUGIN_API_ID_REQUEST_HANDLER = "requestHandler";  // ID for plugins implementing IRequestHandlerPlugin
-    public static final String PLUGIN_API_ID_WORKFLOW_STEP   = "workflowStep";    // ID for plugins implementing IWorkflowStepPlugin
+    public static final String PLUGIN_API_ID_REQUEST_HANDLER = "requestHandler";    // ID for plugins implementing IRequestHandlerPlugin
+    public static final String PLUGIN_API_ID_WORKFLOW_STEP   = "workflowStep";      // ID for plugins implementing IWorkflowStepPlugin
 
     public static final String DATA_SINK_ID_UI_EXPORT = "UIExport";
     public static final String DOCUMENT_ID_UI_EXPORT = "UIExportEmail";
@@ -146,4 +136,8 @@ public final class T9tConstants {
      * Key for the zMap of a MediaData to put/get the assigned attachment name.
      */
     public static final String DOC_MEDIA_ATTACHMENT_NAME = "attachmentName";
+
+    public static final String HTTP_AUTH_PREFIX_JWT     = "Bearer ";                // prefix of the Authorization header to transmit a JWT
+    public static final String HTTP_AUTH_PREFIX_API_KEY = "API-Key ";               // prefix of the Authorization header to transmit an API key
+    public static final String HTTP_AUTH_PREFIX_USER_PW = "Basic ";                 // prefix of the Authorization header to transmit basic authentication
 }

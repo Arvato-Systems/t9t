@@ -18,12 +18,8 @@ package com.arvatosystems.t9t.base.be.impl;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
@@ -32,8 +28,8 @@ import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.IIdempotencyChecker;
 import com.arvatosystems.t9t.cfg.be.ApplicationConfiguration;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 
 import de.jpaw.dp.Fallback;
 import de.jpaw.dp.Singleton;
@@ -42,7 +38,7 @@ import de.jpaw.util.ApplicationException;
 @Singleton
 @Fallback
 public class IdempotencyCheckerSingleNode implements IIdempotencyChecker {
-    private static final Logger LOGGER = LoggerFactory.getLogger(IdempotencyCheckerSingleNode.class);
+    // private static final Logger LOGGER = LoggerFactory.getLogger(IdempotencyCheckerSingleNode.class);
 
     protected final Map<String, Cache<UUID, ServiceResponse>> requestCache;
     protected final Integer idempotencyCacheMaxEntries;
@@ -64,7 +60,7 @@ public class IdempotencyCheckerSingleNode implements IIdempotencyChecker {
     }
 
     protected Cache<UUID, ServiceResponse> buildNewCache() {
-        final CacheBuilder<Object, Object> builder = CacheBuilder.newBuilder().maximumSize(idempotencyCacheMaxEntries);
+        final Caffeine<Object, Object> builder = Caffeine.newBuilder().maximumSize(idempotencyCacheMaxEntries);
         if (idempotencyCacheExpiry != null) {
             builder.expireAfterWrite(idempotencyCacheExpiry, TimeUnit.SECONDS);
         }
@@ -79,26 +75,20 @@ public class IdempotencyCheckerSingleNode implements IIdempotencyChecker {
         }
         final Cache<UUID, ServiceResponse> tenantCache = requestCache.computeIfAbsent(tenantId, id -> buildNewCache());
         final AtomicBoolean justSetNow = new AtomicBoolean(false);
-        try {
-            final ServiceResponse r = tenantCache.get(messageId, () -> {
-                justSetNow.set(true);
-                final ServiceResponse newTimeout = new ServiceResponse();
-                newTimeout.setMessageId(messageId);
-                newTimeout.setTenantId(tenantId);
-                newTimeout.setReturnCode(T9tException.REQUEST_STILL_PROCESSING);
-                newTimeout.setErrorMessage(T9tException.MSG_REQUEST_STILL_PROCESSING);
-                newTimeout.freeze();
-                return newTimeout;
-            });
-            if (justSetNow.get()) {
-                return null;
-            }
-            return r;
-        } catch (final ExecutionException e) {
-            LOGGER.error("Unexpected exception", e);
-            // ignoring
+        final ServiceResponse r = tenantCache.get(messageId, unused -> {
+            justSetNow.set(true);
+            final ServiceResponse newTimeout = new ServiceResponse();
+            newTimeout.setMessageId(messageId);
+            newTimeout.setTenantId(tenantId);
+            newTimeout.setReturnCode(T9tException.REQUEST_STILL_PROCESSING);
+            newTimeout.setErrorMessage(T9tException.MSG_REQUEST_STILL_PROCESSING);
+            newTimeout.freeze();
+            return newTimeout;
+        });
+        if (justSetNow.get()) {
             return null;
         }
+        return r;
     }
 
     @Override

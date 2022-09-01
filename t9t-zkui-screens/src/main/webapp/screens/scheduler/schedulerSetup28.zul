@@ -41,8 +41,9 @@
                               id2="concurrencyTypeStale" value2="@bind(vm.data.concurrencyTypeStale)"/>
                     <cells228 id ="concurrencyHook"      value ="@bind(vm.data.concurrencyHook)"
                               id2="timeLimit"            value2="@bind(vm.data.timeLimit)"/>
-                    <cells228 id ="mailingGroupId"       value ="@bind(vm.data.mailingGroupId)"
+                    <cells228 id ="schedulerEnvironment" value ="@bind(vm.data.schedulerEnvironment)"
                               id2="runOnNode"            value2="@bind(vm.data.runOnNode)"/>
+                    <cells28  id ="mailingGroupId"       value ="@bind(vm.data.mailingGroupId)"/>
                     <row>
                         <cell>
                             <button28 id="executeCannedRequest" onClick="@command('executeCannedRequest')" />

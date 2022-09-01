@@ -26,6 +26,7 @@ import com.arvatosystems.t9t.base.be.impl.SimpleCallOutExecutor;
 import com.arvatosystems.t9t.base.request.ExecuteRemoteRequest;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.IExecutor;
+import com.arvatosystems.t9t.base.services.IForeignRequest;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.cfg.be.ServerConfiguration;
@@ -58,7 +59,7 @@ public class ExecuteRemoteRequestHandler extends AbstractRequestHandler<ExecuteR
         }
         ctx.statusText = remoteRequest.ret$PQON();
         // obtain an remoter for single use
-        final SimpleCallOutExecutor remoteClient = new SimpleCallOutExecutor(request.getUrl());
+        final IForeignRequest remoteClient = SimpleCallOutExecutor.createUncachedExecutor("(ExecuteRemoteRequest)", request.getUrl());
         return remoteClient.execute(ctx, request.getRemoteRequest());
     }
 }

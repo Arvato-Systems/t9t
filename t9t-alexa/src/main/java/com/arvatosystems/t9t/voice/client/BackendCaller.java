@@ -15,7 +15,14 @@
  */
 package com.arvatosystems.t9t.voice.client;
 
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.arvatosystems.t9t.base.IRemoteConnection;
+import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
@@ -26,25 +33,18 @@ import com.arvatosystems.t9t.base.types.SessionParameters;
 import com.arvatosystems.t9t.voice.VoiceProvider;
 import com.arvatosystems.t9t.voice.request.ProvideSessionRequest;
 import com.arvatosystems.t9t.voice.request.ProvideSessionResponse;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 
-import java.util.UUID;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 @Singleton
 public class BackendCaller implements IBackendCaller {
     private static final Logger LOGGER = LoggerFactory.getLogger(BackendCaller.class);
-    private static final Cache<UUID, String> REMOTE_BASE = CacheBuilder.newBuilder().expireAfterWrite(5, TimeUnit.MINUTES).build();
+    private static final Cache<UUID, String> REMOTE_BASE = Caffeine.newBuilder().expireAfterWrite(5, TimeUnit.MINUTES).build();
     private static final UUID ROOT_API_KEY = UUID.fromString("282fd9dd-233c-4ebe-8d91-727bebd83567");
-    private static final String USER_AGENT = "Alexa proxy 0.1";
+    private static final String USER_AGENT = "Alexa proxy 1.0";
 
     protected final IRemoteConnection statelessServiceSession = Jdp.getRequired(IRemoteConnection.class);
 
@@ -70,7 +70,7 @@ public class BackendCaller implements IBackendCaller {
 
     protected String getJwt(final UUID apiKey) {
         try {
-            return REMOTE_BASE.get(apiKey, () -> {
+            return REMOTE_BASE.get(apiKey, unused -> {
                 final SessionParameters sessionParameters = new SessionParameters();
                 sessionParameters.setUserAgent(USER_AGENT);
                 final AuthenticationRequest authRq = new AuthenticationRequest();
@@ -78,12 +78,12 @@ public class BackendCaller implements IBackendCaller {
                 authRq.setSessionParameters(sessionParameters);
                 final ServiceResponse sr = statelessServiceSession.executeAuthenticationRequest(authRq);
                 if (sr instanceof AuthenticationResponse) {
-                    return "Bearer " + ((AuthenticationResponse) sr).getEncodedJwt();
+                    return T9tConstants.HTTP_AUTH_PREFIX_JWT + ((AuthenticationResponse) sr).getEncodedJwt();
                 }
                 LOGGER.error("Could not get access for API Key {}", apiKey);
                 throw new T9tException(T9tException.NOT_AUTHENTICATED, "Received error code " + sr.getReturnCode());
             });
-        } catch (ExecutionException e) {
+        } catch (Exception e) {
             LOGGER.error("Execution exception thrown when getting access for API Key " + apiKey, e);
             throw new T9tException(T9tException.GENERAL_EXCEPTION, "Execution exception thrown when getting access for API Key " + apiKey, e);
         }

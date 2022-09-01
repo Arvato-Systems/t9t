@@ -71,7 +71,7 @@
         <maven-enforcer-plugin.version>3.0.0</maven-enforcer-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <owasp-maven-plugin.version>2.1.1</owasp-maven-plugin.version>
-        <spring-boot-maven-plugin.version>2.6.6</spring-boot-maven-plugin.version>
+        <spring-boot-maven-plugin.version>2.7.2</spring-boot-maven-plugin.version>
         <tycho.version>2.7.3</tycho.version>
         <git-commit-id-plugin.version>2.1.7</git-commit-id-plugin.version>
         <jaxws-maven-plugin.version>3.0.2</jaxws-maven-plugin.version>
@@ -80,8 +80,8 @@
         <exec.plugin.version>3.0.0</exec.plugin.version>
         <jetty-maven-plugin.version>11.0.11</jetty-maven-plugin.version>
         <maven-antrun-plugin.version>3.0.0</maven-antrun-plugin.version>
-        <cxf-codegen-plugin.version>3.5.2</cxf-codegen-plugin.version>
-        <cxf-wadl2java-plugin.version>3.5.2</cxf-wadl2java-plugin.version>
+        <cxf-codegen-plugin.version>3.5.3</cxf-codegen-plugin.version>
+        <cxf-wadl2java-plugin.version>3.5.3</cxf-wadl2java-plugin.version>
         <cxf-xjc-plugin.version>3.3.1</cxf-xjc-plugin.version>   <!-- older than the other CXF plugins, but no newer release available -->
         <echo-maven-plugin.version>1.0.0</echo-maven-plugin.version>
 
@@ -95,7 +95,7 @@
         <xtend-maven-plugin.version>2.27.0</xtend-maven-plugin.version>
         <xtext-maven-plugin.version>2.27.0</xtext-maven-plugin.version>
 
-        <bonaparte-plugin.version>5.1.0</bonaparte-plugin.version>
+        <bonaparte-plugin.version>5.1.1</bonaparte-plugin.version>
         <license-plugin.version>3.0</license-plugin.version>
         <replacer-plugin.version>1.4.1</replacer-plugin.version>   <!-- required for workaround for Apache CXF 3.5.x -->
 
@@ -922,6 +922,7 @@
                 <module>t9t-init</module>
                 <module>t9t-jdp</module>
                 <module>t9t-jwt</module>
+                <module>t9t-jackson</module>
                 <module>t9t-client-config</module>
                 <module>t9t-client-jdk11</module>
                 <module>t9t-client-jdk11async</module>
@@ -964,6 +965,7 @@
                 <module>t9t-base-vertx</module>
                 <module>t9t-auth-vertx</module>
                 <module>t9t-cluster-kafka</module>
+                <module>t9t-kafka-be</module>
 
                 <module>t9t-translation-api</module>
                 <module>t9t-translation-sapi</module>
@@ -1012,6 +1014,7 @@
                 <module>t9t-io-be-jackson</module>
                 <module>t9t-io-be-poi</module>
                 <module>t9t-io-jpa</module>
+                <module>t9t-io-jpa-proxy</module>
 
                 <module>t9t-solr-apiext</module>
                 <module>t9t-solr-api</module>
@@ -1159,6 +1162,7 @@
                 <module>t9t-init</module>
                 <module>t9t-jdp</module>
                 <module>t9t-jwt</module>
+                <module>t9t-jackson</module>
                 <module>t9t-client-config</module>
                 <module>t9t-client-jdk11</module>
                 <module>t9t-client-jdk11async</module>
@@ -1201,6 +1205,7 @@
                 <module>t9t-base-vertx</module>
                 <module>t9t-auth-vertx</module>
                 <module>t9t-cluster-kafka</module>
+                <module>t9t-kafka-be</module>
 
                 <module>t9t-translation-api</module>
                 <module>t9t-translation-sapi</module>
@@ -1248,6 +1253,7 @@
                 <module>t9t-io-be-jackson</module>
                 <module>t9t-io-be-poi</module>
                 <module>t9t-io-jpa</module>
+                <module>t9t-io-jpa-proxy</module>
 
                 <module>t9t-solr-apiext</module>
                 <module>t9t-solr-api</module>
