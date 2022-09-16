@@ -15,12 +15,19 @@
  */
 package com.arvatosystems.t9t.zkui.inputelements;
 
+import java.math.RoundingMode;
+
 import org.zkoss.zk.ui.WrongValueException;
 
+import com.arvatosystems.t9t.zkui.util.CurrencyUtil;
+
+import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.fixedpoint.types.MicroUnits;
 
 public class MicroUnitsBox extends Fixedpointbox<MicroUnits, MicroUnitsBox> {
     private static final long serialVersionUID = 437573760456243476L;
+    protected int decimals = 2; // default to 2 for fields that not generated from data field factory
 
     public MicroUnitsBox() {
         super(s -> MicroUnits.valueOf(s));
@@ -29,5 +36,39 @@ public class MicroUnitsBox extends Fixedpointbox<MicroUnits, MicroUnitsBox> {
     public MicroUnitsBox(MicroUnits value) throws WrongValueException {
         this();
         setValue(value);
+    }
+
+    @Override
+    public MicroUnits getValue() {
+        MicroUnits num = super.getValue();
+        if (num == null)
+            return null;
+        // we cannot set a scale, but we can implement a rounding which matches that
+        return num.round(decimals, RoundingMode.HALF_EVEN);
+    }
+
+    /**
+     * fallback for setting the decimal without field definition
+     */
+    public void setDecimals(String currency) {
+        setDecimals(currency, null);
+    }
+
+    /**
+     * Set the decimals
+     */
+    public void setDecimals(String currency, FieldDefinition cfg) {
+        String fieldName = this.getId();
+        if (cfg != null) {
+            decimals = ((BasicNumericElementaryDataItem)cfg).getDecimalDigits();
+            fieldName = cfg.getName();
+        }
+        final Integer digits = CurrencyUtil.getFractionalDigits(currency, fieldName);
+        if (digits != null) {
+            // specific number of digits defined for this field
+            decimals = digits;
+            // refresh the value with new decimals
+            setValue(getValue().toString());
+        }
     }
 }

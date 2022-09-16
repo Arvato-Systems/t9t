@@ -15,17 +15,13 @@
  */
 package com.arvatosystems.t9t.zkui.components.datafields;
 
-import java.math.RoundingMode;
-
 import com.arvatosystems.t9t.zkui.inputelements.MicroUnitsBox;
-import com.arvatosystems.t9t.zkui.util.CurrencyUtil;
 
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.fixedpoint.types.MicroUnits;
 
 public class MicroUnitsDataField extends AbstractDataField<MicroUnitsBox, MicroUnits> {
     protected final MicroUnitsBox c = new MicroUnitsBox();
-    protected int decimals;
 
     @Override
     public boolean empty() {
@@ -57,20 +53,10 @@ public class MicroUnitsDataField extends AbstractDataField<MicroUnitsBox, MicroU
 
     @Override
     public MicroUnits getValue() {
-        MicroUnits num = c.getValue();
-        if (num == null)
-            return null;
-        // we cannot set a scale, but we can implement a rounding which matches that
-        return num.round(decimals, RoundingMode.HALF_EVEN);
+        return c.getValue();
     }
 
     public void setDecimals(String currency) {
-        decimals = ((BasicNumericElementaryDataItem)cfg).getDecimalDigits();
-        final Integer digits = CurrencyUtil.getFractionalDigits(currency, cfg.getName());
-        if (digits != null && digits <= decimals) {
-            // specific number of digits defined for this field
-            decimals = digits;
-        }
-        // c.setScale(decimals);
+        c.setDecimals(currency, cfg);
     }
 }

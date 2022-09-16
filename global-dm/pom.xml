@@ -73,9 +73,9 @@
         <jakarta.xml-jaxb-core.version>4.0.0</jakarta.xml-jaxb-core.version>            <!-- 3.0.1 for jakarta namespace (skip for javax!) -->
         <jakarta.annotation-api.version>2.1.1</jakarta.annotation-api.version>          <!-- 2.0.0 for jakarta namespace -->
 
-        <jakarta.activation-api.version>2.1.0</jakarta.activation-api.version>          <!-- 2.0.1 for jakarta namespace -->
+        <jakarta.activation-api.version>2.0.1</jakarta.activation-api.version>          <!-- 2.0.1 for jakarta namespace -->
         <jakarta.activation.version>2.0.1</jakarta.activation.version>                  <!-- 2.0.1 for jakarta namespace -->
-        <jakarta.mail-api.version>2.1.0</jakarta.mail-api.version>                      <!-- 2.0.1 for jakarta namespace -->
+        <jakarta.mail-api.version>2.0.1</jakarta.mail-api.version>                      <!-- 2.0.1 for jakarta namespace -->
         <jakarta.mail.version>2.0.1</jakarta.mail.version>                              <!-- 2.0.1 for jakarta namespace -->
         <jakarta.el-api.version>5.0.1</jakarta.el-api.version>
         <jakarta.el.version>4.0.2</jakarta.el.version>                                  <!-- (org.glassfish:jakarta.el) -->
@@ -172,10 +172,10 @@
         <spring-data-jpa.version>2.7.2</spring-data-jpa.version>
         <spring-boot.version>2.7.2</spring-boot.version>
 
-        <netty.version>4.1.78.Final</netty.version>
+        <netty.version>4.1.82.Final</netty.version>
         <vertx4.version>4.3.3</vertx4.version>
 
-        <snakeyaml.version>1.28</snakeyaml.version>
+        <snakeyaml.version>1.32</snakeyaml.version>
         <classgraph.version>4.8.116</classgraph.version>
 
         <c3p0.version>0.9.5.5</c3p0.version>

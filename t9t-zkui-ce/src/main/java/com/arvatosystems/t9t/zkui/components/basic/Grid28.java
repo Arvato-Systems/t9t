@@ -19,9 +19,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -566,16 +564,11 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
         lb.setContext(ctxId);
 
         // load and register the handlers
-        final Map<String, IGridContextMenu> actions = new ConcurrentHashMap<String, IGridContextMenu>();
-        final Map<String, Component> menuItems = new ConcurrentHashMap<String, Component>();
-
         for (Component c : contextMenu.getChildren()) {
             if (c instanceof Menuitem) {
                 final String itemId = c.getId();
                 final Permissionset perms = session.getPermissions(itemId);
                 IGridContextMenu handler = Jdp.getRequired(IGridContextMenu.class, itemId);
-                actions.put(itemId, handler);
-                menuItems.put(itemId, c);
                 c.addEventListener(Events.ON_CLICK, ev -> {
                     // find the correct record
                     Listitem li = lb.getSelectedItem();
