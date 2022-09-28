@@ -98,20 +98,20 @@ public class SchedulerSetupCrudRequestHandler extends
             oldSetup = null;
         }
 
-        final CannedRequestRef dataRequestRef = crudRequest.getData().getRequest();
-        if (crudRequest.getCrud() == OperationType.UPDATE) {
-            if (oldSetup != null && dataRequestRef instanceof CannedRequestDTO) {
-                final CannedRequestDTO cannedRequestDTO = (CannedRequestDTO) dataRequestRef;
-                if (cannedRequestDTO.getRequestId().equals(((CannedRequestDTO) oldSetup.getRequest()).getRequestId())) {
-                    // In case the crudRequest.data.request is an instance of CannedRequestDTO with the same request Id,
-                    // update the oldSetup.request for field comparison.
-                    LOGGER.debug("dataRequest is an instance of CannedRequestDTO, update oldSetup's request for comparison");
-                    oldSetup.setRequest(dataRequestRef);
+        if (crudRequest.getCrud() == OperationType.CREATE || crudRequest.getCrud() == OperationType.UPDATE) {
+            final CannedRequestRef dataRequestRef = crudRequest.getData().getRequest();
+            if (crudRequest.getCrud() == OperationType.UPDATE) {
+                if (oldSetup != null && dataRequestRef instanceof CannedRequestDTO) {
+                    final CannedRequestDTO cannedRequestDTO = (CannedRequestDTO) dataRequestRef;
+                    if (cannedRequestDTO.getRequestId().equals(((CannedRequestDTO) oldSetup.getRequest()).getRequestId())) {
+                        // In case the crudRequest.data.request is an instance of CannedRequestDTO with the same request Id,
+                        // update the oldSetup.request for field comparison.
+                        LOGGER.debug("dataRequest is an instance of CannedRequestDTO, update oldSetup's request for comparison");
+                        oldSetup.setRequest(dataRequestRef);
+                    }
                 }
             }
-        }
 
-        if (crudRequest.getCrud() == OperationType.CREATE || crudRequest.getCrud() == OperationType.UPDATE) {
             crudRequest.getData().setRequest(refResolver.getData(new CannedRequestCrudRequest(), dataRequestRef));
         }
 
