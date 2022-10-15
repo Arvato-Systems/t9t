@@ -27,6 +27,11 @@ import de.jpaw.dp.StartupOnly;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Upon server start, there is a RequestContext created for the initial thread.
+ * This context is active after completion of step 50005 (this step) and is terminated by AuthShutdownStartupContext
+ * in step 99995.
+ */
 @Startup(50005)
 public class AuthCreateStartupContext implements StartupOnly {
 

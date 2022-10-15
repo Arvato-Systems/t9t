@@ -15,12 +15,15 @@
  */
 package com.arvatosystems.t9t.base.jdbc.impl;
 
-import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.jdbc.PersistenceProviderJdbc;
+import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.services.IJdbcDataSource;
+import com.arvatosystems.t9t.base.services.IPersistenceProviderJdbc;
 import com.arvatosystems.t9t.cfg.be.RelationalDatabaseConfiguration;
 import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration;
 import com.zaxxer.hikari.HikariConfig;
@@ -49,6 +52,8 @@ public class InitJdbc implements StartupOnly {
             hcfg.setUsername(db2cfg.getUsername());
             hcfg.setPassword(db2cfg.getPassword());
             hcfg.setJdbcUrl(db2cfg.getJdbcConnectString());
+            hcfg.setMaximumPoolSize(20);
+            hcfg.setMinimumIdle(5);
 
             if (db2cfg.getZ() != null && !db2cfg.getZ().isEmpty()) {
                 // construct some additional data source properties
@@ -65,9 +70,24 @@ public class InitJdbc implements StartupOnly {
 //            dataSource.cachePrepStmts=true
 //            dataSource.prepStmtCacheSize=250
 //            dataSource.prepStmtCacheSqlLimit=2048
-            final HikariDataSource ds = new HikariDataSource(hcfg);
-            Jdp.bindInstanceTo(ds, DataSource.class, "JDBC2");  // make it known to consumers such as BPMN2
-            Jdp.registerWithCustomProvider(PersistenceProviderJdbc.class, new PersistenceProviderJdbcProvider(ds));
+//            final HikariDataSource ds = new HikariDataSource(hcfg);
+            final IJdbcDataSource ds = new LoggingJdbcDataSource(new HikariDataSource(hcfg));
+            Jdp.bindInstanceTo(ds, IJdbcDataSource.class, T9tConstants.QUALIFIER_JDBC_SECONDARY);  // make it known to consumers such as BPMN2
+            Jdp.registerWithCustomProvider(IPersistenceProviderJdbc.class, new PersistenceProviderJdbcProvider(ds));
+        }
+    }
+
+    private static final class LoggingJdbcDataSource implements IJdbcDataSource {
+        final HikariDataSource ds;
+
+        private LoggingJdbcDataSource(HikariDataSource ds) {
+            this.ds = ds;
+        }
+
+        @Override
+        public Connection getConnection() throws SQLException {
+            LOGGER.trace("New JDBC connection requested");
+            return ds.getConnection();
         }
     }
 }

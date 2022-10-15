@@ -27,7 +27,6 @@ import static de.jpaw.util.ApplicationException.CL_TIMEOUT;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import jakarta.ws.rs.container.AsyncResponse;
@@ -210,9 +209,9 @@ public class T9tRestProcessor implements IT9tRestProcessor {
      * as well as a response generator.
      **/
     @Override
-    public <T extends ServiceResponse> void performAsyncBackendRequest(final HttpHeaders httpHeaders, final AsyncResponse resp,
-      final RequestParameters requestParameters, final String infoMsg,
-      final Class<T> backendResponseClass, final Function<T, BonaPortable> responseMapper) {
+    public <T extends ServiceResponse> void performAsyncBackendRequest(final HttpHeaders httpHeaders,
+            final AsyncResponse resp, final RequestParameters requestParameters, final String infoMsg,
+            final Class<T> backendResponseClass, final Function<T, BonaPortable> responseMapper) {
         final int invocationNo = COUNTER.incrementAndGet();
         final String authorizationHeader = httpHeaders.getHeaderString(HttpHeaders.AUTHORIZATION);
         final String acceptHeader = httpHeaders.getHeaderString(HttpHeaders.ACCEPT);
@@ -279,8 +278,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
     }
 
     @Override
-    public void performAsyncAuthBackendRequest(final HttpHeaders httpHeaders, final AsyncResponse resp, final AuthenticationRequest requestParameters,
-      final Consumer<String> cacheUpdater) {
+    public void performAsyncAuthBackendRequest(final HttpHeaders httpHeaders, final AsyncResponse resp, final AuthenticationRequest requestParameters) {
         // must evaluate httpHeaders now, because httpHeaders is a proxy and no longer valid in the other thread
         final String acceptHeader = determineResponseType(httpHeaders);
         final CompletableFuture<ServiceResponse> readResponse = connection.executeAuthenticationAsync(requestParameters);
@@ -292,11 +290,10 @@ public class T9tRestProcessor implements IT9tRestProcessor {
 
                     final AuthenticationResponse result = (AuthenticationResponse)sr;
                     if (result.getEncodedJwt() != null) {
-                        if (cacheUpdater != null) {
-                            cacheUpdater.accept(result.getEncodedJwt());
-                        }
                         final AuthenticationResult authResult = new AuthenticationResult();
                         authResult.setJwt(result.getEncodedJwt());
+                        authResult.setPasswordExpires(result.getPasswordExpires());
+                        authResult.setMustChangePassword(result.getMustChangePassword());
                         returnAsyncResult(acceptHeader, resp, Response.Status.OK, authResult);
                     }
                 } else {

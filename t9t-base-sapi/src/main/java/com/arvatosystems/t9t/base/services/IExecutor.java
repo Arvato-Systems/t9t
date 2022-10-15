@@ -84,6 +84,14 @@ public interface IExecutor {
     void executeAsynchronous(RequestContext ctx, RequestParameters params);
     void executeAsynchronous(RequestContext ctx, RequestParameters params, boolean priority);
 
+    /**
+     * Executes the request once on every node of the cluster.
+     * @param ctx
+     * @param params
+     */
+    void executeOnEveryNode(RequestContext ctx, RequestParameters params);
+
+
     /** Sends an event. */
     void sendEvent(EventParameters data);
     void sendEvent(RequestContext ctx, EventParameters data);

@@ -61,7 +61,7 @@ public class LocalAsyncProcessor implements IAsyncRequestProcessor {
     }
 
     @Override
-    public void submitTask(final ServiceRequest request) {
+    public void submitTask(final ServiceRequest request, final boolean localNodeOnly, final boolean publish) {
         LOGGER.debug("async request {} submitted via LOCAL queue", request.getRequestParameters().ret$PQON());
         request.freeze(); // async must freeze it to avoid subsequent modification
         final IUnauthenticatedServiceRequestExecutor sre = getServiceRequestExecutor(); // resolve lazy binding outside of lambda

@@ -39,7 +39,7 @@ public class NoAsyncProcessor implements IAsyncRequestProcessor {
     }
 
     @Override
-    public void submitTask(final ServiceRequest request) {
+    public void submitTask(final ServiceRequest request, final boolean localNodeOnly, final boolean publish) {
         LOGGER.debug("async request {} discarded", request.getRequestParameters().ret$PQON());
     }
 

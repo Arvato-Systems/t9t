@@ -45,7 +45,7 @@ public final class VertxCluster {
             T9tServer.configureSystemParameters();
 
             T9tServer.parseCommandLine(args, (final T9tServer server) -> {
-                LOGGER.info("t9t vert.x cluster based server starting...");
+                LOGGER.info(T9tServer.PRINTED_NAME + " (cluster based) starting...");
                 LOGGER.info("host address.." + hostAddress);
                 server.readConfig();
 
@@ -84,7 +84,7 @@ public final class VertxCluster {
                 });
             });
         } catch (final UnknownHostException e) {
-            LOGGER.error("t9t vert.x cluster based server failed to start, host not found.", e);
+            LOGGER.error(T9tServer.PRINTED_NAME + " (cluster based) failed to start, host not found.", e);
         }
     }
 }

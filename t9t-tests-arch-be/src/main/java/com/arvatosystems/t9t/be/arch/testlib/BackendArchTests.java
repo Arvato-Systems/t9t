@@ -16,6 +16,7 @@
 package com.arvatosystems.t9t.be.arch.testlib;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.fields;
 
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Entity;
@@ -26,6 +27,7 @@ import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchRule;
 
 import de.jpaw.dp.Dependent;
+import de.jpaw.dp.Inject;
 import de.jpaw.dp.Singleton;
 
 public class BackendArchTests extends StandardArchTests {
@@ -38,6 +40,12 @@ public class BackendArchTests extends StandardArchTests {
                 .andShould().notBeAnnotatedWith(Dependent.class)
                 .andShould().bePublic()
                 .because("Naming convention of RequestHandlers should not be violated, and they do not use dependency injection");
+
+    @ArchTest
+    protected final ArchRule injected_fields_should_be_final =
+        fields().that().areAnnotatedWith(Inject.class)
+            .should().beFinal()
+            .because("Injection is a one-time initialization");
 
     @ArchTest
     protected final ArchRule request_handler_naming_convention_reverse =

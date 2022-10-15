@@ -26,5 +26,10 @@ import de.jpaw.bonaparte.core.BonaPortable;
  * This is the first interface used in data flow, the one injected into the business logic methods.
  * */
 public interface IAsyncTransmitter {
-    Long transmitMessage(String asyncChannelId, BonaPortable payload, Long ref, String category, String identifier);
+//    @Deprecated // use version with partition index
+//    default Long transmitMessage(String asyncChannelId, BonaPortable payload, Long ref, String category, String identifier) {
+//        return transmitMessage(asyncChannelId, payload, ref, category, identifier, 0);
+//    }
+
+    Long transmitMessage(String asyncChannelId, BonaPortable payload, Long ref, String category, String identifier, int partition);
 }

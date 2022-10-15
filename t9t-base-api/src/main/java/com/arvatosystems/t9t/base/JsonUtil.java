@@ -169,6 +169,29 @@ public final class JsonUtil {
         return Instant.parse(value.toString());
     }
 
+    /** Safe getter for a z field value, also works if z itself is null, returns a boolean typed result, if required, by conversion. */
+    public static Boolean getZBoolean(final Map<String, Object> z, final String key, final Boolean defaultValue) {
+        final Object value = getZEntry(z, key);
+        if (value == null) {
+            return defaultValue;
+        }
+        if (value instanceof Boolean) {
+            return (Boolean)value;
+        }
+        if (value instanceof String) {
+            // accept "true" or "false"
+            final String sval = (String)value;
+            if (sval.equalsIgnoreCase("true")) {
+                return Boolean.TRUE;
+            }
+            if (sval.equalsIgnoreCase("false")) {
+                return Boolean.FALSE;
+            }
+        }
+        throw new T9tException(T9tException.INVALID_REQUEST_PARAMETER_TYPE, "Required a boolean for z entry " + key
+                + ", but got " + value.getClass().getCanonicalName());
+    }
+
     public static final ConfigurationReader CONFIG_READER = ConfigurationReaderFactory.getConfigReaderForName("t9t.json", null);
     public static final boolean UNWRAP_JSON = Boolean.TRUE.equals(CONFIG_READER.getBooleanProperty("t9t.json.unwrapkvp"));
 

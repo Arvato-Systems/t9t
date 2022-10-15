@@ -122,7 +122,7 @@ public class PerformScheduledJob implements Job {
         MDC.put(T9tConstants.MDC_SSM_JOB_ID, jobName);
 
         if (PerformScheduledJob.FIRE_ASYNCHRONOUSLY) {
-            this.sessionFactory.submitTask(srq);
+            this.sessionFactory.submitTask(srq, true, false);
         } else {
             try {
                 // check for previous instance

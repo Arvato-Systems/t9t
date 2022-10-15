@@ -140,9 +140,9 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
     private static final ConcurrentMap<String, EventMessageHandler> REGISTERED_HANDLER = new ConcurrentHashMap<>();
 
     // set a long enough timeout (30 minutes) to allow for concurrent batches
-    private static final DeliveryOptions ASYNC_EVENTBUS_DELIVERY_OPTIONS = new DeliveryOptions().addHeader("publish", "true")
+    private static final DeliveryOptions ASYNC_EVENTBUS_DELIVERY_OPTIONS = new DeliveryOptions()
             .setSendTimeout(((30 * 60) * 1000L)).setCodecName(CompactMessageCodec.COMPACT_MESSAGE_CODEC_ID);
-    private static final DeliveryOptions PUBLISH_EVENTBUS_DELIVERY_OPTIONS = new DeliveryOptions().addHeader("publish", "true")
+    private static final DeliveryOptions PUBLISH_EVENTBUS_DELIVERY_OPTIONS = new DeliveryOptions()
             .setSendTimeout(((30 * 60) * 1000L));
 
     @IsLogicallyFinal
@@ -166,11 +166,21 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
     }
 
     @Override
-    public void submitTask(final ServiceRequest request) {
-        LOGGER.debug("async request {} submitted via vert.x EventBus", request.getRequestParameters().ret$PQON());
+    public void submitTask(final ServiceRequest request, final boolean localNodeOnly, final boolean publish) {
+        LOGGER.debug("async request {} submitted via vert.x EventBus with setting local={}, allNodes={}. bus is {}",
+          request.getRequestParameters().ret$PQON(), localNodeOnly, publish, bus == null ? "NULL" : "OK");
         request.freeze(); // async must freeze it to avoid subsequent modification
         if (bus != null) {
+            // ignore settings, they seem to have issues currently
             bus.send(ASYNC_EVENTBUS_ADDRESS, request, ASYNC_EVENTBUS_DELIVERY_OPTIONS);
+//        if (publish) {
+//            bus.publish(ASYNC_EVENTBUS_ADDRESS, request, ASYNC_EVENTBUS_DELIVERY_OPTIONS);
+//        } else if (localNodeOnly) {
+//            // TODO: have to register local consumer, and send to that
+//            bus.send(ASYNC_EVENTBUS_ADDRESS, request, ASYNC_EVENTBUS_DELIVERY_OPTIONS);
+//        } else {
+//            bus.send(ASYNC_EVENTBUS_ADDRESS, request, ASYNC_EVENTBUS_DELIVERY_OPTIONS);
+//        }
         }
     }
 

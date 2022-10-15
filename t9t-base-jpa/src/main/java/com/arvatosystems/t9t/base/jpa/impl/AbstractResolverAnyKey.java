@@ -587,7 +587,9 @@ public abstract class AbstractResolverAnyKey<
             } else {
                 LOGGER.error("Bad class {} passed to key resolver", entityRef.getClass().getCanonicalName());
                 LOGGER.debug("Class contents is {}", entityRef);
-                throw new T9tException(T9tException.RESOLVE_BAD_CLASS, entityRef.getClass().getCanonicalName());
+                final T9tException e = new T9tException(T9tException.RESOLVE_BAD_CLASS, entityRef.getClass().getCanonicalName());
+                LOGGER.error("Stack trace is ", e);
+                throw e;
             }
         }
         // further checks here...

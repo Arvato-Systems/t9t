@@ -68,7 +68,7 @@
   <!-- Checks for whitespace                               -->
   <!-- See https://checkstyle.org/config_whitespace.html -->
   <module name="FileTabCharacter">
-    <property name="fileExtensions" value="java, xml, xtend, xtend, bon, bddl"/>
+    <property name="fileExtensions" value="java, xml, json, xtend, xtend, bon, bddl"/>
   </module>
 
   <!-- Miscellaneous other checks.                   -->
@@ -224,10 +224,12 @@
     <!-- We want a slightly different check: require final where the field is assigned only once. But that is not offered by checkstyle.
     <module name="FinalParameters"/>
     -->
+    <!--
     <module name="TodoComment">
       <property name="format" value="(TODO)|(FIXME)"/>
       <property name="severity" value="warning"/>
     </module>
+    -->
     <module name="UpperEll"/>
 
     <!-- https://checkstyle.org/config_filters.html#SuppressionXpathFilter -->

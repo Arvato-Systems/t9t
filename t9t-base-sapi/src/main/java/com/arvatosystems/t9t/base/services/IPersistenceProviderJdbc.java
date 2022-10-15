@@ -13,21 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.solr.be.tests;
+package com.arvatosystems.t9t.base.services;
 
-import org.apache.solr.client.solrj.util.ClientUtils;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import java.sql.Connection;
 
-public class SolrEscapingTest {
+import de.jpaw.bonaparte.refs.PersistenceProvider;
 
-    @Test
-    public void testEscaping() throws Exception {
-        String specialChars = "+ - && || ! ( ) { } [ ] ^ \" ~ * ? : \\";
-
-        String escapedChars = ClientUtils.escapeQueryChars(specialChars);
-
-        Assertions.assertEquals(
-          "\\+\\ \\-\\ \\&\\&\\ \\|\\|\\ \\!\\ \\(\\ \\)\\ \\{\\ \\}\\ \\[\\ \\]\\ \\^\\ \\\"\\ \\~\\ \\*\\ \\?\\ \\:\\ \\\\", escapedChars);
-    }
+/**
+ * The implementation of this class sits in t9t-base-jdbc.
+ */
+public interface IPersistenceProviderJdbc extends PersistenceProvider {
+    Connection getConnection();
 }

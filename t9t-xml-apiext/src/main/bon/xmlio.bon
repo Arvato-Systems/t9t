@@ -13,10 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import api.media.*
-import t9t.base.types.userId
-import t9t.base.types.emailAddress
-import t9t.auth.*
 
 /**
  * Package which contains the definitions of t9t XML interfaces.

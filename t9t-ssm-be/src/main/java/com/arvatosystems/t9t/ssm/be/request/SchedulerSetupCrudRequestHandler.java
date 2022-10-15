@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.ssm.be.request;
 
+import java.util.Objects;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -26,14 +27,17 @@ import com.arvatosystems.t9t.auth.UserKey;
 import com.arvatosystems.t9t.auth.request.ApiKeyCrudRequest;
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.be.impl.AbstractCrudSurrogateKeyBERequestHandler;
 import com.arvatosystems.t9t.base.be.impl.CrossModuleRefResolver;
+import com.arvatosystems.t9t.base.be.impl.SimpleCallOutExecutor;
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.services.IExecutor;
+import com.arvatosystems.t9t.base.services.IForeignRequest;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
-import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration;
+import com.arvatosystems.t9t.cfg.be.UplinkConfiguration;
 import com.arvatosystems.t9t.core.CannedRequestDTO;
 import com.arvatosystems.t9t.core.CannedRequestRef;
 import com.arvatosystems.t9t.core.request.CannedRequestCrudRequest;
@@ -41,7 +45,7 @@ import com.arvatosystems.t9t.core.services.ICannedRequestResolver;
 import com.arvatosystems.t9t.ssm.SchedulerSetupDTO;
 import com.arvatosystems.t9t.ssm.SchedulerSetupRef;
 import com.arvatosystems.t9t.ssm.request.SchedulerSetupCrudRequest;
-import com.arvatosystems.t9t.ssm.services.ISchedulerService;
+import com.arvatosystems.t9t.ssm.request.UpdateSchedulerDataRequest;
 import com.arvatosystems.t9t.ssm.services.ISchedulerSetupResolver;
 import com.google.common.base.Joiner;
 
@@ -56,11 +60,10 @@ public class SchedulerSetupCrudRequestHandler extends
 
     private final IExecutor executor = Jdp.getRequired(IExecutor.class);
     private final ISchedulerSetupResolver resolver = Jdp.getRequired(ISchedulerSetupResolver.class);
-    private final ISchedulerService schedulerService = Jdp.getRequired(ISchedulerService.class);
     private final CrossModuleRefResolver refResolver = Jdp.getRequired(CrossModuleRefResolver.class);
     private final ICannedRequestResolver rqResolver = Jdp.getRequired(ICannedRequestResolver.class);
     private final Provider<RequestContext> ctxProvider = Jdp.getProvider(RequestContext.class);
-    private final T9tServerConfiguration serverConfiguration = ConfigProvider.getConfiguration();
+    private final String myServerId = ConfigProvider.getConfiguration().getServerIdSelf();
 
     @Override
     public void validateUpdate(final SchedulerSetupDTO current, final SchedulerSetupDTO intended) {
@@ -86,7 +89,9 @@ public class SchedulerSetupCrudRequestHandler extends
     public CrudSurrogateKeyResponse<SchedulerSetupDTO, FullTrackingWithVersion>
       execute(final RequestContext ctx, final SchedulerSetupCrudRequest crudRequest) throws Exception {
         final SchedulerSetupDTO oldSetup;
-        if (crudRequest.getCrud() == OperationType.DELETE || crudRequest.getCrud() == OperationType.UPDATE) {
+        if (crudRequest.getCrud() == OperationType.DELETE || crudRequest.getCrud() == OperationType.UPDATE
+          || crudRequest.getCrud() == OperationType.INACTIVATE || crudRequest.getCrud() == OperationType.ACTIVATE) {
+            // any type with an old setup
             if (crudRequest.getKey() != null) {
                 oldSetup = this.resolver.getDTO(crudRequest.getKey());
             } else if (crudRequest.getNaturalKey() != null) {
@@ -100,6 +105,7 @@ public class SchedulerSetupCrudRequestHandler extends
 
         if (crudRequest.getCrud() == OperationType.CREATE || crudRequest.getCrud() == OperationType.UPDATE) {
             final CannedRequestRef dataRequestRef = crudRequest.getData().getRequest();
+
             if (crudRequest.getCrud() == OperationType.UPDATE) {
                 if (oldSetup != null && dataRequestRef instanceof CannedRequestDTO) {
                     final CannedRequestDTO cannedRequestDTO = (CannedRequestDTO) dataRequestRef;
@@ -123,36 +129,41 @@ public class SchedulerSetupCrudRequestHandler extends
             if (crudRequest.getCrud() != null) {
                 switch (crudRequest.getCrud()) {
                 case ACTIVATE:
-                    if (getEffectiveActive(setup)) {
-                        schedulerService.createScheduledJob(setup);
-                    }
+                    // send an activate request to the target machine
+                    sendToTargetServer(ctx, OperationType.CREATE, setup.getSchedulerId(), setup.getSchedulerEnvironment(), setup);
                     break;
                 case CREATE:
-                    if (getEffectiveActive(setup)) {
-                        schedulerService.createScheduledJob(setup);
+                    if (setup.getIsActive()) {
+                        sendToTargetServer(ctx, OperationType.CREATE, setup.getSchedulerId(), setup.getSchedulerEnvironment(), setup);
                     }
                     break;
                 case DELETE:
-                    if (getEffectiveActive(oldSetup)) {
-                        schedulerService.removeScheduledJob(oldSetup.getSchedulerId());
+                    if (oldSetup.getIsActive()) {
+                        sendToTargetServer(ctx, OperationType.DELETE, oldSetup.getSchedulerId(), oldSetup.getSchedulerEnvironment(), null);
                     }
                     break;
                 case INACTIVATE:
-                    if (getEffectiveActive(oldSetup)) {
-                        schedulerService.removeScheduledJob(setup.getSchedulerId());
-                    }
+                    sendToTargetServer(ctx, OperationType.DELETE, setup.getSchedulerId(), setup.getSchedulerEnvironment(), null);
                     break;
                 case UPDATE:
-                    if (getEffectiveActive(setup)) {
-                        if (getEffectiveActive(oldSetup)) {
-                            schedulerService.updateScheduledJob(oldSetup, setup);
-                        } else {
-                            schedulerService.createScheduledJob(setup);
-                        }
-                    } else {
-                        if (getEffectiveActive(oldSetup)) {
-                            schedulerService.removeScheduledJob(oldSetup.getSchedulerId());
-                        } // else was inactive, stays inactive: nothing to do
+                    // this case is more complex, because next to changes of active flags, we also have to consider migration of the job to another server type
+                    // also on the same server, there are 2 types of requests, some which change the job map, and some which do not.
+                    // This have to be transmitted via different operation type settings
+                    if (oldSetup.getIsActive()
+                      && (!setup.getIsActive() || !Objects.equals(oldSetup.getSchedulerEnvironment(), setup.getSchedulerEnvironment()))) {
+                        // removal of old server (and no job should run on that node in the future)
+                        sendToTargetServer(ctx, OperationType.DELETE, oldSetup.getSchedulerId(), oldSetup.getSchedulerEnvironment(), null);
+                    }
+                    if (setup.getIsActive()
+                      && (!oldSetup.getIsActive() || !Objects.equals(oldSetup.getSchedulerEnvironment(), setup.getSchedulerEnvironment()))) {
+                        // creation of a new server (and no job running on that node currently)
+                        sendToTargetServer(ctx, OperationType.CREATE, setup.getSchedulerId(), setup.getSchedulerEnvironment(), setup);
+                    }
+                    if (oldSetup.getIsActive() && setup.getIsActive() && Objects.equals(oldSetup.getSchedulerEnvironment(), setup.getSchedulerEnvironment())) {
+                        // recreation of the same job on the same node
+                        // find out if we need an UPDATE or a MERGE operation
+                        final OperationType updateOpType = needsNewJobMap(oldSetup, setup) ? OperationType.UPDATE : OperationType.MERGE;
+                        sendToTargetServer(ctx, updateOpType, setup.getSchedulerId(), setup.getSchedulerEnvironment(), setup);
                     }
                     break;
                 default:
@@ -171,9 +182,35 @@ public class SchedulerSetupCrudRequestHandler extends
         return response;
     }
 
-    private boolean getEffectiveActive(SchedulerSetupDTO setup) {
-        return setup.getIsActive() && (serverConfiguration.getSchedulerEnvironment() == null || setup.getSchedulerEnvironment() == null
-          || serverConfiguration.getSchedulerEnvironment().equals(setup.getSchedulerEnvironment()));
+    private boolean needsNewJobMap(final SchedulerSetupDTO oldSetup, final SchedulerSetupDTO setup) {
+        if (!oldSetup.getRequest().equals(setup.getRequest())) {
+            LOGGER.debug("Request has changed - replacing job");
+            return true;
+        }
+        if (!Objects.equals(oldSetup.getApiKey(), setup.getApiKey())) {
+            LOGGER.debug("API-Keys have changed - replacing job");
+            return true;
+        }
+        if (!Objects.equals(oldSetup.getLanguageCode(), setup.getLanguageCode())) {
+            LOGGER.debug("Language has changed - replacing job");
+            return true;
+        }
+        return false;
+    }
+
+    private void sendToTargetServer(final RequestContext ctx, final OperationType op, final String schedulerId, final String server,
+      final SchedulerSetupDTO dto) {
+        final UpdateSchedulerDataRequest usdr = new UpdateSchedulerDataRequest();
+        usdr.setOperationType(op);
+        usdr.setSchedulerId(schedulerId);
+        usdr.setSetup(dto);
+        if (server == null || server.equals(myServerId)) {
+            executor.executeSynchronousAndCheckResult(ctx, usdr, ServiceResponse.class);
+        } else {
+            final UplinkConfiguration uplink = ConfigProvider.getUplinkOrThrow(server);
+            final IForeignRequest remoteExecutor = SimpleCallOutExecutor.createCachedExecutor(server, uplink.getUrl());
+            remoteExecutor.executeSynchronousAndCheckResult(ctx, usdr, ServiceResponse.class);
+        }
     }
 
     private void createApiKey(final SchedulerSetupDTO dto) {

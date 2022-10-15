@@ -141,4 +141,9 @@ public class SplittingOutputSession implements IOutputSession {
     public Object getZ(final String key) {
         return os.getZ(key);
     }
+
+    @Override
+    public void storeCustomElement(String name, Object value) {
+        os.storeCustomElement(name, value);
+    }
 }

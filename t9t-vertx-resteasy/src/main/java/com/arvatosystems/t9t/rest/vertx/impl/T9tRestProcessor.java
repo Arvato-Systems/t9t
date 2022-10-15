@@ -26,7 +26,6 @@ import static de.jpaw.util.ApplicationException.CL_TIMEOUT;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import jakarta.ws.rs.container.AsyncResponse;
@@ -288,8 +287,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
     }
 
     @Override
-    public void performAsyncAuthBackendRequest(final HttpHeaders httpHeaders, final AsyncResponse resp, final AuthenticationRequest requestParameters,
-      final Consumer<String> cacheUpdater) {
+    public void performAsyncAuthBackendRequest(final HttpHeaders httpHeaders, final AsyncResponse resp, final AuthenticationRequest requestParameters) {
         // must evaluate httpHeaders now, because httpHeaders is a proxy and no longer valid in the other thread
         final String acceptHeader = determineResponseType(httpHeaders);
         returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, createErrorResult(T9tException.NOT_YET_IMPLEMENTED,

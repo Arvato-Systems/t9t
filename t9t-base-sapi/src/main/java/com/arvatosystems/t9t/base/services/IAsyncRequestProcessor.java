@@ -27,8 +27,13 @@ import com.arvatosystems.t9t.base.event.EventData;
  * The ServiceRequest has to include AuthenticationParameters (currently only JWT is supported).
  */
 public interface IAsyncRequestProcessor {
-    /** Executes a task asynchronously. To be called from externally of any request context. */
-    void submitTask(ServiceRequest request);
+    /**
+     * Executes a task asynchronously. To be called from externally of any request context.
+     * By default the task will be submitted to any node of this server.
+     * Setting localNodeOnly will keep it on the same node.
+     * Setting publish will use a publish instead of send (every node will receive and execute it).
+     */
+    void submitTask(ServiceRequest request, boolean localNodeOnly, boolean publish);
 
     /** Sends event data to a single subscriber (node). */
     void send(EventData data);

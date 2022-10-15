@@ -121,6 +121,7 @@ public class AsyncQueueLTQ<R extends BonaPortable> implements IAsyncQueue {
                     queueData.put(q.getObjectRef(), new QueueData(q));
                 } catch (final Exception e) {
                     LOGGER.error("Cannot launch async writer thread for queue {} due to {}", q.getAsyncQueueId(), ExceptionUtil.causeChain(e));
+                    LOGGER.error("Trace is", e);
                 }
             }
         }
@@ -228,6 +229,7 @@ public class AsyncQueueLTQ<R extends BonaPortable> implements IAsyncQueue {
                     em.clear();
                 } catch (final Exception e) {
                     LOGGER.error("Database query exception: {}", ExceptionUtil.causeChain(e));
+                    LOGGER.error("Trace is", e);
                     LOGGER.error("Wait for {}", serverConfig.getWaitAfterDbErrors());
                     try {
                         Thread.sleep(serverConfig.getWaitAfterDbErrors());
@@ -314,6 +316,7 @@ public class AsyncQueueLTQ<R extends BonaPortable> implements IAsyncQueue {
                     newClientReference = resp.getClientReference();
                 } catch (final Exception e) {
                     LOGGER.error("Exception in external http: {}", ExceptionUtil.causeChain(e));
+                    LOGGER.error("Trace is", e);
                     newHttpCode = 999;
                 }
                 messageUpdater.updateMessage(nextMsg.getObjectRef(), newStatus, newHttpCode, newClientReturnCode, newClientReference);

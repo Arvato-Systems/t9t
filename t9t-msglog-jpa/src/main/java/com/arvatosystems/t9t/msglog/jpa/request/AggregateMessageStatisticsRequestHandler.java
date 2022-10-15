@@ -74,16 +74,16 @@ public class AggregateMessageStatisticsRequestHandler extends AbstractRequestHan
         final LocalDate day = request.getDay() == null ? LocalDate.now().minusDays(1) : request.getDay();
 
         final StringBuilder sb = new StringBuilder();
-        sb.append("     DELETE");
-        sb.append("     FROM      MessageStatisticsEntity ms");
-        sb.append("     WHERE     ms.day = :day");
+        sb.append("DELETE");
+        sb.append("  FROM MessageStatisticsEntity ms");
+        sb.append(" WHERE ms.day = :day");
 
         if (request.getUserId() != null) {
-            sb.append(" AND       ms.userId = :userId");
+            sb.append(" AND ms.userId = :userId");
         }
 
         if (request.getRequestParameterPqon() != null) {
-            sb.append(" AND       ms.requestParameterPqon = :requestParameterPqon");
+            sb.append(" AND ms.requestParameterPqon = :requestParameterPqon");
         }
 
         final Query query = resolver.getEntityManager().createQuery(sb.toString());

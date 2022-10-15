@@ -20,7 +20,6 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
@@ -52,7 +51,6 @@ import com.arvatosystems.t9t.ssm.services.ISchedulerService;
 import de.jpaw.bonaparte.core.StaticMeta;
 import de.jpaw.bonaparte.core.StringBuilderComposer;
 import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Provider;
 import de.jpaw.dp.Singleton;
 
 @Singleton
@@ -73,7 +71,6 @@ public class QuartzSchedulerService implements ISchedulerService {
 
     protected final ICannedRequestResolver rqResolver = Jdp.getRequired(ICannedRequestResolver.class);
     protected final Scheduler scheduler = Jdp.getRequired(Scheduler.class);
-    protected final Provider<RequestContext> ctxProvider = Jdp.getProvider(RequestContext.class);
 
     private static final List<SchedulerSetupRecurrenceType> DAILY_OR_LESS_FREQ = Arrays.asList(SchedulerSetupRecurrenceType.DAILY,
             SchedulerSetupRecurrenceType.WEEKLY, SchedulerSetupRecurrenceType.MONTHLY, SchedulerSetupRecurrenceType.YEARLY);
@@ -92,7 +89,7 @@ public class QuartzSchedulerService implements ISchedulerService {
     }
 
     @Override
-    public void createScheduledJob(final SchedulerSetupDTO setup) {
+    public void createScheduledJob(final RequestContext ctx, final SchedulerSetupDTO setup) {
         final CannedRequestRef rqRef = setup.getRequest();
         final CannedRequestDTO requestDTO = rqRef instanceof CannedRequestDTO ? (CannedRequestDTO)rqRef : rqResolver.getDTO(rqRef);
 
@@ -100,7 +97,6 @@ public class QuartzSchedulerService implements ISchedulerService {
         final String serializedRequest = StringBuilderComposer.marshal(StaticMeta.OUTER_BONAPORTABLE, requestDTO.getRequest());
 
         try {
-            final RequestContext ctx = ctxProvider.get();
             LOGGER.info("Creating scheduled job {}.{}, triggerDescription={}.", ctx.tenantId, setup.getSchedulerId(), setup);
 
             final JobDetail jobDetail = JobBuilder.newJob(PerformScheduledJob.class).withIdentity(setup.getSchedulerId(), ctx.tenantId).build();
@@ -114,7 +110,7 @@ public class QuartzSchedulerService implements ISchedulerService {
             // m.put(DM_CONC_TYPE2, getToken(setup.getConcurrencyTypeStale())); // not needed, if old jobs exist, a request handler will be invoked.
             m.put(DM_TIME_LIMIT, setup.getTimeLimit() == null ? NO_TIME_LIMIT    : setup.getTimeLimit());
             m.put(DM_TIME_LIMIT, setup.getRunOnNode() == null ? RUN_ON_ALL_NODES : setup.getRunOnNode());
-            final Trigger trigger = getTrigger(setup);
+            final Trigger trigger = getTrigger(ctx, setup);
             scheduler.scheduleJob(jobDetail, trigger);
 
             LOGGER.info("Scheduled job {}.{}. Next execution will be at: {}", ctx.tenantId, setup.getSchedulerId(), trigger.getFireTimeAfter(null));
@@ -126,24 +122,24 @@ public class QuartzSchedulerService implements ISchedulerService {
     }
 
     @Override
-    public void updateScheduledJob(final SchedulerSetupDTO oldSetup, final SchedulerSetupDTO setup) {
+    public void recreateScheduledJob(final RequestContext ctx, final SchedulerSetupDTO setup) {
+        removeScheduledJob(ctx, setup.getSchedulerId());
+        createScheduledJob(ctx, setup);
+    }
+
+    @Override
+    public void updateScheduledJob(final RequestContext ctx, final SchedulerSetupDTO setup) {
         try {
-            final RequestContext ctx = ctxProvider.get();
             LOGGER.info("Updating scheduled job {}.{} to triggerDescription={}.", ctx.tenantId, setup.getSchedulerId(), setup);
 
-            if (needsNewJobMap(oldSetup, setup)) {
-                removeScheduledJob(setup.getSchedulerId());
-                createScheduledJob(setup);
+            final Trigger trigger = getTrigger(ctx, setup);
+            final Date date = scheduler.rescheduleJob(trigger.getKey(), trigger);
+            if (date == null) {
+                LOGGER.error("Tried to reschedule job {}.{}, but job was not found! Trying to create a new job instead.",
+                  ctx.tenantId, setup.getSchedulerId());
+                createScheduledJob(ctx, setup);
             } else {
-                final Trigger trigger = getTrigger(setup);
-                final Date date = scheduler.rescheduleJob(trigger.getKey(), trigger);
-                if (date == null) {
-                    LOGGER.error("Tried to reschedule job {}.{}, but job was not found! Trying to create a new job instead.",
-                      ctx.tenantId, setup.getSchedulerId());
-                    createScheduledJob(setup);
-                } else {
-                    LOGGER.info("Rescheduled job {}.{}. Next execution will be at: {}", ctx.tenantId, setup.getSchedulerId(), trigger.getFireTimeAfter(null));
-                }
+                LOGGER.info("Rescheduled job {}.{}. Next execution will be at: {}", ctx.tenantId, setup.getSchedulerId(), trigger.getFireTimeAfter(null));
             }
         } catch (SchedulerException | ParseException underlyingException) {
             final String message = "Failed to update scheduled job with description=" + setup.toString();
@@ -152,25 +148,9 @@ public class QuartzSchedulerService implements ISchedulerService {
         }
     }
 
-    protected boolean needsNewJobMap(final SchedulerSetupDTO oldSetup, final SchedulerSetupDTO setup) {
-        if (!oldSetup.getRequest().equals(setup.getRequest())) {
-            LOGGER.debug("Request has changed - replacing job");
-            return true;
-        }
-        if (!Objects.equals(oldSetup.getApiKey(), setup.getApiKey())) {
-            LOGGER.debug("API-Keys have changed - replacing job");
-            return true;
-        }
-        if (!Objects.equals(oldSetup.getLanguageCode(), setup.getLanguageCode())) {
-            LOGGER.debug("Language has changed - replacing job");
-            return true;
-        }
-        return false;
-    }
 
     @Override
-    public void removeScheduledJob(final String schedulerId) {
-        final RequestContext ctx = ctxProvider.get();
+    public void removeScheduledJob(final RequestContext ctx, final String schedulerId) {
         try {
             LOGGER.info("Removing scheduled job {}.{}.", ctx.tenantId, schedulerId);
             final JobKey jobKey = new JobKey(schedulerId, ctx.tenantId);
@@ -188,9 +168,7 @@ public class QuartzSchedulerService implements ISchedulerService {
     }
 
 
-    protected Trigger getTrigger(final SchedulerSetupDTO setup) throws ParseException {
-
-        final RequestContext ctx = ctxProvider.get();
+    protected Trigger getTrigger(final RequestContext ctx, final SchedulerSetupDTO setup) throws ParseException {
         // Do the common work here (identity + start + end)
         final TriggerBuilder<Trigger> builder = TriggerBuilder.newTrigger().withIdentity(setup.getSchedulerId(), ctx.tenantId);
         if (setup.getValidFrom() != null) {

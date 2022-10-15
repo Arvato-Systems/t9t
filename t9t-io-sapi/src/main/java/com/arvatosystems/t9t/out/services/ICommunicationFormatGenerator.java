@@ -18,12 +18,12 @@ package com.arvatosystems.t9t.out.services;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
+import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.io.DataSinkDTO;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.media.MediaXType;
-import de.jpaw.util.ApplicationException;
 
 /**
  * Communication format generators convert structured records into byte or character streams.
@@ -39,7 +39,7 @@ public interface ICommunicationFormatGenerator {
      * @throws IOException, ApplicationException if there is an issue generating header data
      */
     void open(DataSinkDTO sinkCfg, OutputSessionParameters outputSessionParameters, MediaXType effectiveType, FoldableParams fp, IOutputResource destination,
-      Charset encoding, String tenantId) throws IOException, ApplicationException;
+      Charset encoding, String tenantId) throws IOException;
 
     /**
      * Generate record data in a specific format.
@@ -55,5 +55,18 @@ public interface ICommunicationFormatGenerator {
      * Generate footer datas in a specific format. Does not close the underlying OutputStream.
      * @throws IOException, ApplicationException if there is an issue generating footer data
      */
-    void close() throws IOException, ApplicationException;
+    void close() throws IOException;
+
+    /**
+     * storeCustomElement() is supported for very few export formats only. It writes a special data object to the output stream.
+     * This is currently supported for XML exports only.
+     *
+     * @param name the tag of the object
+     * @param value the value
+     *
+     * @throws IOException
+     */
+    default <T> void storeCustomElement(String name, Class<T> valueClass, Object value) throws IOException {
+        throw new T9tException(T9tException.NOT_YET_IMPLEMENTED, "Custom element for format " + this.getClass().getCanonicalName());
+    }
 }

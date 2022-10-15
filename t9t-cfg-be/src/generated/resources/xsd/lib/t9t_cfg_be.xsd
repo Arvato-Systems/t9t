@@ -29,6 +29,13 @@
         <xs:complexContent>
             <xs:extension base="bon:BONAPORTABLE">
                 <xs:sequence>
+                    <xs:element name="serverIdSelf" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="36"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
                     <xs:element name="persistenceUnitName">
                         <xs:simpleType>
                             <xs:restriction base="xs:normalizedString">
@@ -613,6 +620,20 @@
                     </xs:element>
                     <xs:element name="mediaType" minOccurs="0" nillable="true" type="api_media:MediaType"/>
                     <xs:element name="apiKey" minOccurs="0" nillable="true" type="bon:UUID"/>
+                    <xs:element name="timeoutInMs" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:unsignedInt">
+                                <xs:maxInclusive value="2147483647"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="callbackUrl" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="255"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>

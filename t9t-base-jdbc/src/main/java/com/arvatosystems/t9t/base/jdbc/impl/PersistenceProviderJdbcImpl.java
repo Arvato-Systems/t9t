@@ -22,17 +22,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.base.jdbc.PersistenceProviderJdbc;
-import com.zaxxer.hikari.HikariDataSource;
+import com.arvatosystems.t9t.base.services.IJdbcDataSource;
+import com.arvatosystems.t9t.base.services.IPersistenceProviderJdbc;
 
 import de.jpaw.bonaparte.pojos.api.PersistenceProviders;
 
-class PersistenceProviderJdbcImpl implements PersistenceProviderJdbc {
+class PersistenceProviderJdbcImpl implements IPersistenceProviderJdbc {
     private static final Logger LOGGER = LoggerFactory.getLogger(PersistenceProviderJdbcImpl.class);
     private Connection connection;
 
     /** The constructor of the provider is usually invoked by some application specific producer. */
-    PersistenceProviderJdbcImpl(final HikariDataSource ds) {
+    PersistenceProviderJdbcImpl(final IJdbcDataSource ds) {
         LOGGER.trace("new(): creating Connection");
         try {
             connection = ds.getConnection();

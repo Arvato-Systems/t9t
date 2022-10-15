@@ -49,6 +49,16 @@ package (com.arvatosystems) t9t.ssm.request {
     class ClearAllRequest                       extends RequestParameters {}
 
     /**
+     * This request is a subrequest intended to be sent to instances running quartz.
+     * It will not update any t9t entities, but the scheduler's tables instead (for example Quartz).
+     */
+    class UpdateSchedulerDataRequest extends RequestParameters {
+        required enum api.OperationType         operationType;
+        required schedulerId                    schedulerId;
+        optional (SchedulerSetupDTO)            setup;
+    }
+
+    /**
      * This request is invoked if a preliminary check on running tasks finds prior instances of ta scheduled job running.
      * The request may kill older instances. It may not start the new instance, instead it returns if the scheduler is allowed to do so.
      */

@@ -193,7 +193,7 @@ zk.afterLoad('zul.db', function () {
    var xListbox = {};
    zk.override(zul.sel.Listbox.prototype, xListbox, {
       doKeyDown_ : function(event) {
-          if(event.domEvent.key === 'Control' || event.domEvent.key === 'Meta' || event.domEvent.key === 'Alt' || 
+          if (event.domEvent.key === 'Control' || event.domEvent.key === 'Meta' || event.domEvent.key === 'Alt' || 
              ((event.domEvent.ctrlKey || event.domEvent.metaKey) && event.domEvent.key === 'c')) {
               return;
           }

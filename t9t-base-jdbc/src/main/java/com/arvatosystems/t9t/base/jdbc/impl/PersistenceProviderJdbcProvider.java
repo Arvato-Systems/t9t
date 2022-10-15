@@ -18,9 +18,9 @@ package com.arvatosystems.t9t.base.jdbc.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.jdbc.PersistenceProviderJdbc;
+import com.arvatosystems.t9t.base.services.IJdbcDataSource;
+import com.arvatosystems.t9t.base.services.IPersistenceProviderJdbc;
 import com.arvatosystems.t9t.base.services.RequestContext;
-import com.zaxxer.hikari.HikariDataSource;
 
 import de.jpaw.bonaparte.pojos.api.PersistenceProviders;
 import de.jpaw.dp.CustomScope;
@@ -32,20 +32,20 @@ import de.jpaw.dp.Provider;
  * This implementation hooks into the RequestContext (which could be passed across threads) and checks for an existing JDBC provider.
  * If none exists, it creates a new one and registers it.
  */
-class PersistenceProviderJdbcProvider implements CustomScope<PersistenceProviderJdbc> {
+class PersistenceProviderJdbcProvider implements CustomScope<IPersistenceProviderJdbc> {
     private static final Logger LOGGER = LoggerFactory.getLogger(PersistenceProviderJdbcProvider.class);
     private final Provider<RequestContext> ctxProvider = Jdp.getProvider(RequestContext.class);
-    private final HikariDataSource ds;
+    private final IJdbcDataSource ds;
 
-    PersistenceProviderJdbcProvider(final HikariDataSource ds) {
+    PersistenceProviderJdbcProvider(final IJdbcDataSource ds) {
         super();
         this.ds = ds;
     }
 
     @Override
-    public PersistenceProviderJdbc get() {
+    public IPersistenceProviderJdbc get() {
         final RequestContext ctx = ctxProvider.get();
-        PersistenceProviderJdbc jdbcContext = (PersistenceProviderJdbc)ctx.getPersistenceProvider(PersistenceProviders.UNUSED.ordinal());
+        IPersistenceProviderJdbc jdbcContext = (IPersistenceProviderJdbc)ctx.getPersistenceProvider(PersistenceProviders.UNUSED.ordinal());
         if (jdbcContext == null) {
             // does not exist, create a new one!
             LOGGER.trace("Adding JDBC to request context");
@@ -57,7 +57,7 @@ class PersistenceProviderJdbcProvider implements CustomScope<PersistenceProvider
     }
 
     @Override
-    public void set(final PersistenceProviderJdbc instance) {
+    public void set(final IPersistenceProviderJdbc instance) {
         LOGGER.warn("Set operation is not supported");
         throw new UnsupportedOperationException();
     }

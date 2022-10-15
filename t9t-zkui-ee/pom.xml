@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-settings-zkui</artifactId>
-        <version>6.1-SNAPSHOT</version>
+        <version>6.2-SNAPSHOT</version>
         <relativePath>../t9t-settings-zkui</relativePath>
     </parent>
 
@@ -55,16 +55,10 @@
         </dependency>
 
         <!-- PE & EE requirements -->
-        <!-- zkex is a dependency of zkmax. It must be listed explicitly and before zkmax because jasper should be excluded -->
+        <!-- zkex is a dependency of zkmax. -->
         <dependency>
             <groupId>org.zkoss.zk</groupId>
             <artifactId>zkex</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>net.sf.jasperreports</groupId>
-                    <artifactId>jasperreports</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.zkoss.zk</groupId>

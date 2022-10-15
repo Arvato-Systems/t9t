@@ -16,7 +16,6 @@
 package com.arvatosystems.t9t.rest.endpoints;
 
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,8 +29,6 @@ import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
 import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
 import com.arvatosystems.t9t.xml.auth.AuthByApiKey;
 import com.arvatosystems.t9t.xml.auth.AuthenticationResult;
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
 
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
@@ -129,12 +126,6 @@ public class LoginApiKeyResource implements IT9tRestEndpoint {
         loginSub(httpHeaders, resp, RestParameterParsers.parseUUID(apiKey, "apikey", true), null);
     }
 
-    /**
-     * Caches the ApiKey and connects it to a JWT.
-     * This cache must expire significantly faster than the JWT duration (max 1/2 of it).
-     */
-    private static final Cache<UUID, String> API_KEY_TO_JWT_CACHE = Caffeine.newBuilder().expireAfterWrite(1, TimeUnit.HOURS).build();
-
     public void loginSub(final HttpHeaders httpHeaders, final AsyncResponse resp, final UUID apiKey, final SessionParameters sp) {
         LOGGER.debug("Login attempted at /apikey ...");
 
@@ -142,19 +133,11 @@ public class LoginApiKeyResource implements IT9tRestEndpoint {
             LOGGER.error("NULL apiKey - exception");
             throw new T9tException(T9tException.ACCESS_DENIED);  // can occur in case of malformatted API keys
         }
-        final String jwt = API_KEY_TO_JWT_CACHE.getIfPresent(apiKey);
-        if (jwt != null) {
-            final String acceptHeader = determineResponseType(httpHeaders);
-            LOGGER.debug("JWT already cached for ApiKey.");
-            final AuthenticationResult result = new AuthenticationResult();
-            result.setJwt(jwt);
-            restProcessor.returnAsyncResult(acceptHeader, resp, Response.Status.OK, result);
-            return;
-        }
+
         final AuthenticationRequest authenticationParamsRequest = new AuthenticationRequest();
         authenticationParamsRequest.setAuthenticationParameters(new ApiKeyAuthentication(apiKey));
         authenticationParamsRequest.setSessionParameters(sp);
         // execute ServiceRequest
-        restProcessor.performAsyncAuthBackendRequest(httpHeaders, resp, authenticationParamsRequest, s -> API_KEY_TO_JWT_CACHE.put(apiKey, s));
+        restProcessor.performAsyncAuthBackendRequest(httpHeaders, resp, authenticationParamsRequest);
     }
 }

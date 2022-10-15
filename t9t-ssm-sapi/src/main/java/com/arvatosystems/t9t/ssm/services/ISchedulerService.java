@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.ssm.services;
 
+import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.ssm.SchedulerSetupDTO;
 
 
@@ -25,21 +26,28 @@ public interface ISchedulerService {
      *
      * @param setup information about the job that shall be created
      */
-    void createScheduledJob(SchedulerSetupDTO setup);
+    void createScheduledJob(RequestContext ctx, SchedulerSetupDTO setup);
 
     /**
-     * This method updates a previously scheduled job using the underlying service implementation.
+     * This method removes an existing job and recreates it from scratch.
+     *
+     * @param setup information about the job that shall be created
+     */
+    void recreateScheduledJob(RequestContext ctx, SchedulerSetupDTO setup);
+
+    /**
+     * This method updates a previously scheduled job (just the schedule) using the underlying service implementation.
      *
      * @param setup information about the job that shall be updated
      */
-    void updateScheduledJob(SchedulerSetupDTO oldSetup, SchedulerSetupDTO setup);
+    void updateScheduledJob(RequestContext ctx, SchedulerSetupDTO setup);
 
     /**
      * This method removes a previously schedules job using the underlying service implementation.
      * If "preventive" is set, the job is not expected to exist, and is only deleted to make sure.
      * Any messages about non-existing jobs should be ignored then!
      */
-    void removeScheduledJob(String schedulerId);
+    void removeScheduledJob(RequestContext ctx, String schedulerId);
 
     /**
      * determine the CRON expression of a given setup

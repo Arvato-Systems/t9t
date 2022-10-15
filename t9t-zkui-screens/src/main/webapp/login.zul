@@ -62,8 +62,8 @@
                                 <attribute name="onChange"><![CDATA[
                                     String localeValue = ((com.arvatosystems.t9t.zkui.viewmodel.beans.ComboBoxItem) self.getSelectedItem().getValue()).getValue();
                                     Locale prefer_locale = null;
-                                    if (localeValue != null && localeValue.length() == 5){
-                                        prefer_locale = new Locale(localeValue.substring(0,2),localeValue.substring(3,5));
+                                    if (localeValue != null && localeValue.length() == 5) {
+                                        prefer_locale = new Locale(localeValue.substring(0,2), localeValue.substring(3,5));
                                     } else {
                                         prefer_locale = new Locale(localeValue);
                                     }

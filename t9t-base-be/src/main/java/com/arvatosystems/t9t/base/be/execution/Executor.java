@@ -221,16 +221,25 @@ public class Executor implements IExecutor {
      */
     @Override
     public void executeAsynchronous(final RequestParameters params) {
-        executeAsynchronous(contextProvider.get(), params, false);
+        executeAsynchronousSub(contextProvider.get(), params, false, false);
     }
 
     @Override
     public void executeAsynchronous(final RequestContext ctx, final RequestParameters params) {
-        executeAsynchronous(contextProvider.get(), params, false);
+        executeAsynchronousSub(contextProvider.get(), params, false, false);
     }
 
     @Override
     public void executeAsynchronous(final RequestContext ctx, final RequestParameters params, final boolean priority) {
+        executeAsynchronousSub(ctx, params, priority, false);
+    }
+
+    @Override
+    public void executeOnEveryNode(final RequestContext ctx, final RequestParameters params) {
+        executeAsynchronousSub(ctx, params, false, true);
+    }
+
+    protected void executeAsynchronousSub(final RequestContext ctx, final RequestParameters params, final boolean priority, final boolean allNodes) {
         try {
             params.validate();
         } catch (ObjectValidationException e) {
@@ -251,7 +260,7 @@ public class Executor implements IExecutor {
         srq.setRequestParameters(params);
         srq.setAuthentication(new AuthenticationJwt(ctx.internalHeaderParameters.getEncodedJwt()));
         ctx.addPostCommitHook((final RequestContext previousRequestContext, final RequestParameters rq, final ServiceResponse rs) -> {
-            asyncProcessor.submitTask(srq);
+            asyncProcessor.submitTask(srq, false, allNodes);
         });
     }
 

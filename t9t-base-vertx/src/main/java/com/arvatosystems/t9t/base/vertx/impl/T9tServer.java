@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.auth.jwt.JWT;
 import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.IFileUtil;
 import com.arvatosystems.t9t.base.vertx.IRestModule;
@@ -65,6 +66,7 @@ import picocli.CommandLine.UnmatchedArgumentException;
 public class T9tServer extends AbstractVerticle {
     private static final Logger LOGGER = LoggerFactory.getLogger(T9tServer.class);
     public static final long MORE_THAN_ONE_YEAR = 500L * 86400L * 1000L;     // JVM update due at least once per year (at least every 500 days)
+    public static final String PRINTED_NAME = "t9t vert.x server";
 
     private IVertxMetricsProvider metricsProvider = null;
     private final IMessageCoderFactory<BonaPortable, ServiceResponse, byte[]> coderFactory
@@ -143,7 +145,7 @@ public class T9tServer extends AbstractVerticle {
             }
         }
 
-        LOGGER.info("T9t Vert.x server started, modules found are: " + moduleNames);
+        LOGGER.info(PRINTED_NAME + " started, modules found are: " + moduleNames);
         final String uploadsFolder = Jdp.getRequired(IFileUtil.class).getAbsolutePath("file-uploads");
         LOGGER.info("Pathname for file uploads will be {}, CORS is {}, metrics is {}", uploadsFolder, cors, metrics);
 
@@ -289,7 +291,7 @@ public class T9tServer extends AbstractVerticle {
         Runtime.getRuntime().addShutdownHook(new Thread("t9t-shutdown-hook") {
             @Override
             public void run() {
-                LOGGER.info("Gracefully shutting down the t9t vert.x server");
+                LOGGER.info("Gracefully shutting down the " + PRINTED_NAME);
                 StatusProvider.setShutdownInProgress();
 
                 // obtaining the deployment IDs
@@ -312,7 +314,7 @@ public class T9tServer extends AbstractVerticle {
 
                 LOGGER.info("Initiating JDP shutdown sequence (service shutdown)");
                 Jdp.shutdown();
-                LOGGER.info("Normal end t9t vert.x server");
+                LOGGER.info("Normal end " + PRINTED_NAME);
             }
         });
     }
@@ -341,6 +343,8 @@ public class T9tServer extends AbstractVerticle {
                         }
                     }
                 }, "t9t-keepalive").start(); // wait in some other thread
+
+                T9tUtil.logWithLines(LOGGER, PRINTED_NAME + " (" + T9tServer.class.getSimpleName() + ") started");
             } else {
                 LOGGER.error("Could not deploy T9tServer verticle", it.cause());
             }
@@ -423,7 +427,7 @@ public class T9tServer extends AbstractVerticle {
         configureSystemParameters();
 
         parseCommandLine(args, (final T9tServer server) -> {
-            LOGGER.info("t9t vert.x single node based server starting...");
+            LOGGER.info(PRINTED_NAME + " (single node based) starting...");
 
             server.readConfig(); // update a possible new location of the config file before we run the startup process
 

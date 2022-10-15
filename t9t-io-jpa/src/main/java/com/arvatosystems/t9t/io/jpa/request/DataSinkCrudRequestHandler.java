@@ -28,6 +28,7 @@ import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKeyRequestHandler;
 import com.arvatosystems.t9t.base.services.IExecutor;
+import com.arvatosystems.t9t.base.services.IInputQueuePartitioner;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.in.services.IInputDataTransformer;
 import com.arvatosystems.t9t.in.services.IInputFormatConverter;
@@ -66,19 +67,6 @@ public class DataSinkCrudRequestHandler extends AbstractCrudSurrogateKeyRequestH
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final DataSinkCrudRequest crudRequest) throws Exception {
-        final DataSinkDTO data = crudRequest.getData();
-
-        // Validation for operation CREATE, MERGE & UPDATE
-        if (crudRequest.getCrud() == OperationType.CREATE
-            || crudRequest.getCrud() == OperationType.MERGE
-            || crudRequest.getCrud() == OperationType.UPDATE) {
-
-            // If inputProccessingType is not null & not LOCAL, inputProcessingTarget must not be empty
-            if (data.getInputProcessingType() != null && !InputProcessingType.LOCAL.equals(data.getInputProcessingType())
-                    && (data.getInputProcessingTarget() == null || data.getInputProcessingTarget().isEmpty())) {
-                throw new T9tException(T9tException.ILE_REQUIRED_PARAMETER_IS_NULL, "Input processing target must not be empty.");
-            }
-        }
 
         DataSinkDTO dataSinkDTO = null;
         if (crudRequest.getCrud() == OperationType.DELETE) {
@@ -107,9 +95,27 @@ public class DataSinkCrudRequestHandler extends AbstractCrudSurrogateKeyRequestH
         return response;
     }
 
-    // do a plausibility check to prevent the creation of incorrect data
-    // TODO this method is too complex. Refactor in a simplere on with less ifs..
+    // Do a plausibility check to prevent the creation of incorrect data.
+    // This is invoked for CREATE and for UPDATE (MERGE) statements
     protected void checkConfiguration(final DataSinkDTO intended) {
+        // If inputProcessingType is not null & not LOCAL, inputProcessingTarget must not be empty
+        if (intended.getInputProcessingType() != null && !InputProcessingType.LOCAL.equals(intended.getInputProcessingType())
+           && (intended.getInputProcessingTarget() == null || intended.getInputProcessingTarget().isEmpty())) {
+            throw new T9tException(T9tIOException.INVALID_DATA_SINK_ATTRIBUTES, "Input processing target must not be empty.");
+        }
+
+        final boolean isInput = Boolean.TRUE.equals(intended.getIsInput());
+        final boolean isPooledProcessing = intended.getInputProcessingParallel() != null && intended.getInputProcessingParallel() >= 2;
+        if (isInput && isPooledProcessing) {
+            if (intended.getInputProcessingSplitter() == null) {
+                throw new T9tException(T9tIOException.INVALID_DATA_SINK_ATTRIBUTES, "Input processing splitter required for parallel processing.");
+            }
+            if (Jdp.getOptional(IInputQueuePartitioner.class, intended.getInputProcessingSplitter()) == null) {
+                throw new T9tException(T9tIOException.INVALID_DATA_SINK_ATTRIBUTES, "No IInputQueuePartitioner implemented with qualifier "
+                  + intended.getInputProcessingSplitter());
+            }
+        }
+
         final MediaTypeDescriptor desc = MediaTypeInfo.getFormatByType(intended.getCommFormatType());
         final MediaType baseType = intended.getCommFormatType().getBaseEnum() instanceof MediaType
           ? (MediaType)intended.getCommFormatType().getBaseEnum() : null;
@@ -185,7 +191,6 @@ public class DataSinkCrudRequestHandler extends AbstractCrudSurrogateKeyRequestH
 
         // check that we got valid qualifiers
 
-        final boolean isInput = Boolean.TRUE.equals(intended.getIsInput());
         if (intended.getCommFormatName() != null) {
             if (isInput) {
                 Jdp.getRequired(IInputFormatConverter.class, intended.getCommFormatName());

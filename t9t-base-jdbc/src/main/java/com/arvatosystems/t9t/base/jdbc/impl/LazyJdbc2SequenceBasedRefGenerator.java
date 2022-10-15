@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.jdbc.PersistenceProviderJdbc;
+import com.arvatosystems.t9t.base.services.IPersistenceProviderJdbc;
 import com.arvatosystems.t9t.base.services.IRefGenerator;
 import com.arvatosystems.t9t.cfg.be.DatabaseBrandType;
 import com.arvatosystems.t9t.cfg.be.KeyPrefetchConfiguration;
@@ -49,7 +49,7 @@ import de.jpaw.dp.Singleton;
 public class LazyJdbc2SequenceBasedRefGenerator implements IRefGenerator {
     private static final Logger LOGGER = LoggerFactory.getLogger(LazyJdbc2SequenceBasedRefGenerator.class);
 
-    private final Provider<PersistenceProviderJdbc> jdbcProviderProvider = Jdp.getProvider(PersistenceProviderJdbc.class);
+    private final Provider<IPersistenceProviderJdbc> jdbcProviderProvider = Jdp.getProvider(IPersistenceProviderJdbc.class);
 
     private static final int DEFAULT_CACHE_SIZE          = 500; // how many sequences we generate per single DB-sequence fetch for scaled keys
     private static final int DEFAULT_CACHE_SIZE_UNSCALED =  10; // how many sequences we generate per single DB-sequence fetch for unscaled keys

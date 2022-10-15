@@ -63,6 +63,17 @@ public interface IOutputSession extends AutoCloseable {
     MediaXType getCommunicationFormatType();
 
     /**
+     * storeCustomElement() is supported for very few export formats only. It writes a special data object to the output stream.
+     * This is currently supported for XML exports only.
+     *
+     * @param name the tag of the object
+     * @param value the value
+     *
+     * @throws T9tException
+     */
+    void storeCustomElement(String name, Object value);
+
+    /**
      * store() is called for every record of structured data to be written. It creates a logging entry into table base_int_outbound_messages and then writes the
      * message either to the file or to the JMS queue.
      *

@@ -15,8 +15,6 @@
  */
 package com.arvatosystems.t9t.rest.endpoints;
 
-import java.util.concurrent.TimeUnit;
-
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -52,8 +50,6 @@ import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
 import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
 import com.arvatosystems.t9t.xml.auth.AuthByUserIdPassword;
 import com.arvatosystems.t9t.xml.auth.AuthenticationResult;
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
 
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
@@ -74,12 +70,6 @@ public class LoginUserPwResource implements IT9tRestEndpoint {
 
     protected final IT9tRestProcessor restProcessor = Jdp.getRequired(IT9tRestProcessor.class);
 
-    /**
-     * Caches the basicAuth String in form of the Hash and connects it to a JWT.
-     * This cache must expire significantly faster than the JWT duration (max 1/2 of it).
-     */
-    private static final Cache<String, String> BASIC_AUTH_TO_JWT_CACHE = Caffeine.newBuilder().expireAfterWrite(1, TimeUnit.HOURS).build();
-
     @Operation(
         summary = "Create a session / JWT token by user ID / password",
         description = "The request creates a session at the host and returns a JWT which can be used as authentication token for subsequent requests."
@@ -98,17 +88,6 @@ public class LoginUserPwResource implements IT9tRestEndpoint {
             restProcessor.returnAsyncResult(acceptHeader, resp, Response.Status.BAD_REQUEST, "Null parameter");
             return;
         }
-        final String cacheKey = authByUserPw.getUserId() + ":" + authByUserPw.getPassword();
-
-        LOGGER.debug("Attempting to retrieve JWT for basic authenticaton.");
-        final String jwt = BASIC_AUTH_TO_JWT_CACHE.getIfPresent(cacheKey);
-        if (jwt != null) {
-            LOGGER.debug("JWT already cached for user {}. Returning...", authByUserPw.getUserId());
-            final AuthenticationResult result = new AuthenticationResult();
-            result.setJwt(jwt);
-            restProcessor.returnAsyncResult(acceptHeader, resp, Response.Status.OK, result);
-            return;
-        }
 
         // create AuthenticationParamsRequest
         final AuthenticationRequest authenticationParamsRequest = new AuthenticationRequest();
@@ -120,6 +99,6 @@ public class LoginUserPwResource implements IT9tRestEndpoint {
         authenticationParamsRequest.setSessionParameters(LoginApiKeyResource.convertSessionParameters(authByUserPw.getSessionParameters()));
 
         // execute ServiceRequest
-        restProcessor.performAsyncAuthBackendRequest(httpHeaders, resp, authenticationParamsRequest, s -> BASIC_AUTH_TO_JWT_CACHE.put(cacheKey, s));
+        restProcessor.performAsyncAuthBackendRequest(httpHeaders, resp, authenticationParamsRequest);
     }
 }

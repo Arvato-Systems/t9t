@@ -22,7 +22,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-settings</artifactId>
-        <version>6.1-SNAPSHOT</version>
+        <version>6.2-SNAPSHOT</version>
         <relativePath>../t9t-settings</relativePath>
     </parent>
 
@@ -58,38 +58,6 @@
                                 <sources>
                                     <source>src/generated/java</source>
                                 </sources>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-eclipse-plugin</artifactId>
-                    <executions>
-                        <execution>
-                            <id>default-cli</id>
-                            <goals>
-                                <goal>eclipse</goal>
-                            </goals>
-                            <configuration>
-                                <downloadSources>true</downloadSources>
-                                <downloadJavadocs>true</downloadJavadocs>
-                                <additionalBuildcommands>
-                                    <buildCommand>
-                                        <name>org.eclipse.xtext.ui.shared.xtextBuilder</name>
-                                    </buildCommand>
-                                    <buildCommand>
-                                        <name>org.eclipse.m2e.core.maven2Builder</name>
-                                    </buildCommand>
-                                </additionalBuildcommands>
-                                <additionalProjectnatures>
-                                    <projectnature>org.eclipse.xtext.ui.shared.xtextNature</projectnature>
-                                    <projectnature>org.eclipse.m2e.core.maven2Nature</projectnature>
-                                </additionalProjectnatures>
-                                <sourceIncludes>
-                                    <sourceInclude>**/generated/java/*</sourceInclude>
-                                </sourceIncludes>
                             </configuration>
                         </execution>
                     </executions>

@@ -91,6 +91,8 @@
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:element>
+                    <xs:element name="mustChangePassword" minOccurs="0" nillable="true" type="xs:boolean"/>
+                    <xs:element name="passwordExpires" minOccurs="0" nillable="true" type="xs:long"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>

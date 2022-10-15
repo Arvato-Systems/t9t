@@ -36,6 +36,7 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
     }
 
     class T9tServerConfiguration xmlRoot {
+        optional Unicode(36)                        serverIdSelf;                    // the server ID of this cluster (see key in uplink configuration)
         required Ascii(16)                          persistenceUnitName properties cmdline=";datasource";// technical username
         optional (RelationalDatabaseConfiguration...) databaseConfiguration;
         optional (RelationalDatabaseConfiguration...) secondaryDatabaseConfig;
@@ -169,6 +170,8 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         required Unicode(255)                       url;                            // URL for uplink. If not provided, uplink calls will throw an Exception
         optional Enum MediaType                     mediaType;                      // which format to use (JSON, compact, bonaparte, default is compact bonaparte, entry currently ignored)
         optional Uuid                               apiKey;                         // the API key to use
+        optional Integer                            timeoutInMs;                    // if specified, use the timeout given here, otherwise some hardcoded default
+        optional Unicode(255)                       callbackUrl;                    // the configuration for callback, in case required
     }
 
     class SearchConfiguration {

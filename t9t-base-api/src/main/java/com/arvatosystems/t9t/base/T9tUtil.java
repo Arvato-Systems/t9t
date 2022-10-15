@@ -8,10 +8,16 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
+import org.slf4j.Logger;
 /**
  * Utility class for common checks and operations.
  */
 public final class T9tUtil {
+
+    /**
+     * Dividing line for console outputs
+     */
+    public static final String CON_MSG_LINE = "-------------------------------------------------------------------------";
 
     private T9tUtil() {
         // empty, private to avoid instantiation
@@ -98,5 +104,17 @@ public final class T9tUtil {
     /** Transforms any block of whitespace into single spaces, and also removed any leading and trailing spaces. */
     public static String spaceNormalize(final String s) {
         return s == null ? null : s.replaceAll("\\s{2,}", " ").trim();
+    }
+
+    /**
+     * Log given message with surrounding lines.
+     *
+     * @param logger the {@link Logger} to use for the logging.
+     * @param msg the message to log out
+     */
+    public static void logWithLines(final Logger logger, final String msg) {
+        logger.info(CON_MSG_LINE);
+        logger.info(msg);
+        logger.info(CON_MSG_LINE);
     }
 }

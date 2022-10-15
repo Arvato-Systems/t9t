@@ -7,6 +7,6 @@
     ],
     "fields": [
         "reportConfigRef.reportConfigId", "reportParamsId", "dataSinkId", "outputFileType", "isActive",
-        "intervalCategory","interval","factor","intervalDays","intervalSeconds","fromDate","toDate"
+        "intervalCategory", "interval", "factor", "intervalDays", "intervalSeconds", "fromDate", "toDate"
     ]
 }

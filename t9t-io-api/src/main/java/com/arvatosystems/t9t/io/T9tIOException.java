@@ -72,6 +72,7 @@ public class T9tIOException extends T9tException {
     public static final int UNDEFINED_CAMEL_SUCCESS_DEST_PATH_ERROR = OFFSET + 257;
     public static final int UNDEFINED_CAMEL_FAILURE_DEST_PATH_ERROR = OFFSET + 258;
     public static final int FILE_TOO_BIG = OFFSET + 259;
+    public static final int INVALID_DATA_SINK_ATTRIBUTES = OFFSET + 260;
 
     public static final int MISSING_KAFKA_CONFIGURAION = OFFSET + 270;
 
@@ -113,6 +114,7 @@ public class T9tIOException extends T9tException {
         codeToDescription.put(UNDEFINED_CAMEL_FAILURE_DEST_PATH_ERROR, "Unknown destination where to move a file after failed Camel routing.");
         codeToDescription.put(OUTPUT_COMM_CHANNEL_NO_SRC_HANDLER, "No data source handler available for type");
         codeToDescription.put(FILE_TOO_BIG, "The file size is too big to be handled.");
+        codeToDescription.put(INVALID_DATA_SINK_ATTRIBUTES, "Data sink specified with inconsistent parameters.");
 
         codeToDescription.put(MISSING_KAFKA_CONFIGURAION, "No / missing configuration for kafka");
     }

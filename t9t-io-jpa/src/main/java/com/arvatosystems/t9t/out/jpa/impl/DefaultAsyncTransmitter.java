@@ -59,7 +59,8 @@ public class DefaultAsyncTransmitter implements IAsyncTransmitter {
     }
 
     @Override
-    public Long transmitMessage(final String asyncChannelId, final BonaPortable payload, final Long ref, final String category, final String identifier) {
+    public Long transmitMessage(final String asyncChannelId, final BonaPortable payload, final Long ref, final String category, final String identifier,
+      final int partition) {
         // check if the message is valid (due to the asynchronous nature, invalid messages would cause hard to detect problems)
         payload.validate();
 

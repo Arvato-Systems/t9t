@@ -20,6 +20,7 @@ import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.output.ExportStatusEnum;
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.base.services.IExecutor;
+import com.arvatosystems.t9t.base.services.IInputQueuePartitioner;
 import com.arvatosystems.t9t.base.services.IOutputSession;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.base.uiprefs.UILeanGridPreferences;
@@ -53,6 +54,8 @@ import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 import de.jpaw.bonaparte.pojos.api.media.MediaXType;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Jdp;
+import de.jpaw.util.ExceptionUtil;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
@@ -77,20 +80,21 @@ public class OutputSession implements IOutputSession {
         OPENED, CLOSED, LAZY;
     }
 
-    protected State                     currentState    = State.CLOSED;
-    protected Charset                   encoding        = null;
-    protected DataSinkDTO               sinkCfg         = null;
-    protected OutputSessionParameters   params          = null;
-    protected IOutputResource           outputResource  = null;
-    protected ICommunicationFormatGenerator dataGenerator = null;
-    protected IPreOutputDataTransformer transformer     = null;
-    protected MediaTypeDescriptor       usedFormat      = null; // available after a successful open()
-    protected Long                      thisSinkRef     = null;
-    protected SinkDTO                   thisSink        = null;
-    protected FoldableParams            foldableParams  = null;
+    protected State                     currentState        = State.CLOSED;
+    protected Charset                   encoding            = null;
+    protected DataSinkDTO               sinkCfg             = null;
+    protected OutputSessionParameters   params              = null;
+    protected IOutputResource           outputResource      = null;
+    protected ICommunicationFormatGenerator dataGenerator   = null;
+    protected IPreOutputDataTransformer transformer         = null;
+    protected MediaTypeDescriptor       usedFormat          = null; // available after a successful open()
+    protected Long                      thisSinkRef         = null;
+    protected SinkDTO                   thisSink            = null;
+    protected FoldableParams            foldableParams      = null;
     protected int                       sourceRecordCounter = 0;
     protected int                       mappedRecordCounter = 0;
-    protected long                      exportStarted;
+    protected long                      exportStarted       = System.nanoTime();
+    protected IInputQueuePartitioner    processingSplitter  = null;  // only set if copyToAsyncChannel != null
 
     /**
      * {@inheritDoc}
@@ -100,7 +104,6 @@ public class OutputSession implements IOutputSession {
         validateState(State.CLOSED);
 
         LOGGER.debug("OutputSession.open({})", osParams.toString());
-        exportStarted = System.nanoTime();
 
         // use a default asOf date, if non supplied
         if (osParams.getAsOf() == null) {
@@ -111,6 +114,10 @@ public class OutputSession implements IOutputSession {
 
         // read the data sink configuration for this record
         sinkCfg = dpl.getDataSinkDTO(osParams.getDataSinkId());
+
+        if (sinkCfg.getCopyToAsyncChannel() != null) {
+            processingSplitter = Jdp.getRequired(IInputQueuePartitioner.class, sinkCfg.getInputProcessingSplitter());
+        }
 
         // get communication target type and format type
         final CommunicationTargetChannelType communicationTargetChannelType = sinkCfg.getCommTargetChannelType();
@@ -472,8 +479,10 @@ public class OutputSession implements IOutputSession {
                     writeOutboundMessage(recordRef, r);
                 }
                 // store as async message
-                if (sinkCfg.getCopyToAsyncChannel() != null)
-                    asyncTransmitter.transmitMessage(sinkCfg.getCopyToAsyncChannel(), r, recordRef, "SINK", sinkCfg.getDataSinkId());
+                if (sinkCfg.getCopyToAsyncChannel() != null) {
+                    final int partition = processingSplitter.getPreliminaryPartitionKey(partitionKey);
+                    asyncTransmitter.transmitMessage(sinkCfg.getCopyToAsyncChannel(), r, recordRef, "SINK", sinkCfg.getDataSinkId(), partition);
+                }
                 // and write it to file
                 dataGenerator.generateData(sourceRecordCounter, mappedRecordCounter, recRef, partitionKey, recordKey, r);
             }
@@ -490,5 +499,16 @@ public class OutputSession implements IOutputSession {
         om.setRecordRef(recordRef);
         om.setRequestParameters(record);
         dpl.storeOutboundMessage(om);
+    }
+
+    @Override
+    public void storeCustomElement(String name, Object value) {
+        if (value != null) {
+            try {
+                dataGenerator.storeCustomElement(name, value.getClass(), value);
+            } catch (Exception e) {
+                LOGGER.error("Error while storing custom element {}: {}", name, ExceptionUtil.causeChain(e));
+            }
+        }
     }
 }

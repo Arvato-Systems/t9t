@@ -246,6 +246,7 @@ package (com.arvatosystems) t9t.io.request {
         optional Ascii(4)                           refType;                 // for debugging / maintenance: the type of reference
         optional defaultExternalId                  refIdentifier;           // for debugging / maintenance: order ID, customer ID etc.
         optional f42Ref                             ref;                     // for debugging / maintenance: related objectRef
+        optional Integer                            partition;               // partition number (0 will be used as default)
     }
 
     /**

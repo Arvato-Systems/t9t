@@ -89,10 +89,24 @@ public class AbstractFormatGeneratorXml extends AbstractFormatGenerator {
         setDefaultNamespace();
     }
 
-    protected void doWriteTenantId() throws XMLStreamException, JAXBException {
-        final JAXBElement<String> element = new JAXBElement<>(getQname("tenantId"), String.class, tenantId);
-        m.marshal(element, writer);
-        nl();
+    protected void doWriteTenantId() {
+        storeCustomElement("tenantId", String.class, tenantId);
+        try {
+            nl();
+        } catch (XMLStreamException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new T9tException(T9tIOException.XML_MARSHALLING_ERROR, ExceptionUtil.causeChain(e));
+        }
+    }
+
+    @Override
+    public <T> void storeCustomElement(String name, Class<T> valueClass, Object value) {
+        try {
+            m.marshal(new JAXBElement<>(getQname(name), valueClass, (T)value), writer);
+        } catch (final JAXBException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new T9tException(T9tIOException.XML_MARSHALLING_ERROR, ExceptionUtil.causeChain(e));
+        }
     }
 
     protected void writeCustomElement(final String id) throws XMLStreamException, JAXBException {
@@ -100,8 +114,7 @@ public class AbstractFormatGeneratorXml extends AbstractFormatGenerator {
         if (map != null) {
             final Object value = map.get(id);
             if (value != null) {
-//                m.marshal(new JAXBElement(getQname(id), value.getClass(), value), writer);  // throws an Exception. LocalDateTime not a known type.
-                m.marshal(new JAXBElement<>(getQname(id), String.class, value.toString()), writer);
+                storeCustomElement(id, value.getClass(), value);
                 nl();
             }
         }

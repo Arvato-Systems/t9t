@@ -41,5 +41,7 @@ package (com.arvatosystems) t9t.xml.auth XML PROPERTY bundle t9t.config swagger 
 
     final class AuthenticationResult xmlRoot {
         required Ascii(1024)                        jwt;                        // encoded JSON web token
+        optional Boolean                            mustChangePassword;         // flag which indicates that the user must change the password now
+        optional Instant                            passwordExpires;            // if the password or token has limited validity: when does it expire?
     }
 }

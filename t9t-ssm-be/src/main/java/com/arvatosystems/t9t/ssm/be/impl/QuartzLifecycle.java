@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
+import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration;
 
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Startup;
@@ -40,12 +41,14 @@ public class QuartzLifecycle implements StartupShutdown {
 
     @Override
     public void onStartup() {
-        final Boolean disableScheduler = ConfigProvider.getConfiguration().getDisableScheduler();
+        final T9tServerConfiguration serverConfig = ConfigProvider.getConfiguration();
+        final Boolean disableScheduler = serverConfig.getDisableScheduler();
+        final String schedulerEnvironment = serverConfig.getSchedulerEnvironment();
         if (Boolean.TRUE.equals(disableScheduler)) {
             LOGGER.info("Configuration sets scheduler to disabled - not starting quartz");
             return;
         } else {
-            LOGGER.info("Starting quartz");
+            LOGGER.info("Starting quartz for environment {}", schedulerEnvironment == null ? "GLOBAL" : schedulerEnvironment);
         }
 
         final StdSchedulerFactory quartzSchedulerFactory = new StdSchedulerFactory();

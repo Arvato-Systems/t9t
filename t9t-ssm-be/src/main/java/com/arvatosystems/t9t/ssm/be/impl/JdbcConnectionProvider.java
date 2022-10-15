@@ -22,17 +22,19 @@ import org.quartz.utils.ConnectionProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.services.IJdbcConnectionProvider;
+import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.services.IJdbcDataSource;
 
 import de.jpaw.dp.Jdp;
 
 public class JdbcConnectionProvider implements ConnectionProvider {
     private static final Logger LOGGER = LoggerFactory.getLogger(JdbcConnectionProvider.class);
-    private final IJdbcConnectionProvider provider = Jdp.getRequired(IJdbcConnectionProvider.class, "independent");
+    private final IJdbcDataSource provider = Jdp.getRequired(IJdbcDataSource.class, T9tConstants.QUALIFIER_JDBC_SECONDARY);
 
     @Override
     public Connection getConnection() throws SQLException {
-        return this.provider.getJDBCConnection();
+        LOGGER.trace("Connection requested by Quartz");
+        return provider.getConnection();
     }
 
     @Override

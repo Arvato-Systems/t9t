@@ -27,7 +27,8 @@ public class Dropdown28Country extends Dropdown28Ext {
     private static final List<String> COUNTRY_MODEL_DATA = new ArrayList<>();
     static {
         Stream<String> s = Arrays.stream(Locale.getISOCountries());
-        COUNTRY_MODEL_DATA.add("XX");
+        COUNTRY_MODEL_DATA.add("XX");  // used for wildcards in t9t doc module
+        COUNTRY_MODEL_DATA.add("EU");  // sometimes used for European Union, will be mapped to specific code by the backend
         COUNTRY_MODEL_DATA.addAll(s.sorted().collect(Collectors.toList()));
     }
 

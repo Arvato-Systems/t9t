@@ -22,7 +22,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-build</artifactId>
-        <version>6.1-SNAPSHOT</version>
+        <version>6.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>global-dm</artifactId>
@@ -35,7 +35,7 @@
     -->
     <properties>
         <jodatime.version>2.10.13</jodatime.version>
-        <org.slf4j-api.version>1.7.36</org.slf4j-api.version>
+        <org.slf4j-api.version>2.0.3</org.slf4j-api.version>
 
         <!-- jpaw / bonaparte: versions for import of BOM. The plugin version is defined separately in SE/EE -->
         <!-- Note that the version of the bonapart-dsl plugin is set in "global-settings" -->
@@ -48,15 +48,15 @@
         <xtext.version>2.27.0</xtext.version>
 
         <!-- Database driver versions -->
-        <driver.oracle.version>21.5.0.0</driver.oracle.version>
-        <driver.postgresql.version>42.4.1</driver.postgresql.version>  <!-- starting with 4.2.15, the driver adds a dependency to checker-qual 3.5.0 which conflicts with 2.5.2 pulled by guava -->
+        <driver.oracle.version>21.7.0.0</driver.oracle.version>
+        <driver.postgresql.version>42.5.0</driver.postgresql.version>  <!-- starting with 4.2.15, the driver adds a dependency to checker-qual 3.5.0 which conflicts with 2.5.2 pulled by guava -->
         <driver.sqlserver.version>9.2.0.jre8</driver.sqlserver.version>
-        <driver.hana.version>2.7.13</driver.hana.version>
+        <driver.hana.version>2.14.7</driver.hana.version>
         <h2.version>2.1.214</h2.version>
 
         <!-- OR mappers -->
         <eclipselink.version>3.0.2</eclipselink.version>
-        <hibernate.version>6.1.2.Final</hibernate.version>
+        <hibernate.version>6.1.4.Final</hibernate.version>
         <hibernate-validator.version>7.0.5.Final</hibernate-validator.version>
         <ehcache.version>2.10.4</ehcache.version>
         <ehcache3.version>3.5.3</ehcache3.version>
@@ -95,7 +95,7 @@
         <microprofile-smallrye-impl.version>2.4.1</microprofile-smallrye-impl.version>
 
         <!-- Jetty -->
-        <jetty.version>11.0.11</jetty.version>
+        <jetty.version>11.0.12</jetty.version>
 
         <!-- Commons -->
         <commons-logging.version>1.1</commons-logging.version>            <!-- should not use at all! -->
@@ -117,18 +117,18 @@
         <azure-cosmos-sdk.version>4.16.0</azure-cosmos-sdk.version>
 
         <!-- Camunda BPMN: linked to spring version -->
-        <camunda-bom.version>7.15.0</camunda-bom.version>
+        <camunda-bom.version>7.18.0</camunda-bom.version>
 
         <!-- Java scripting engines -->
         <groovy.version>2.4.13</groovy.version>
 
         <!-- Test support -->
         <junit.version>4.13.2</junit.version>      <!-- groupId is junit -->
-        <junit5.version>5.8.2</junit5.version>     <!-- groupId is org.junit, therefore is can coexist with junit4 in dependency management -->
+        <junit5.version>5.9.1</junit5.version>     <!-- groupId is org.junit, therefore is can coexist with junit4 in dependency management -->
         <hamcrest.version>2.2</hamcrest.version>   <!-- avoid unless required -->
-        <byte-buddy.version>1.12.10</byte-buddy.version>   <!-- 1.12.x requested by mockito 4.2.0, and reuired for Java 17 -->
-        <org.mockito-core.version>4.5.1</org.mockito-core.version>
-        <archunit.version>0.22.0</archunit.version>
+        <byte-buddy.version>1.12.17</byte-buddy.version>   <!-- 1.12.x requested by mockito 4.2.0, and reuired for Java 17 -->
+        <org.mockito-core.version>4.8.0</org.mockito-core.version>
+        <archunit.version>1.0.0</archunit.version>
         <hdrhistogram.version>2.1.12</hdrhistogram.version>
 
         <!-- Others -->
@@ -148,7 +148,7 @@
         <httpcore5.version>5.1.3</httpcore5.version>
         <httpclient5.version>5.1.3</httpclient5.version>
         <httpmime.version>4.5.13</httpmime.version>
-        <pdfbox.version>2.0.25</pdfbox.version>
+        <pdfbox.version>2.0.26</pdfbox.version>
         <xmlunit.version>1.5</xmlunit.version>
         <freemarker.version>2.3.31</freemarker.version>
         <jasperreports.version>6.20.0</jasperreports.version>
@@ -160,38 +160,39 @@
         <guava.version>31.1-jre</guava.version>
         <caffeine.version>3.1.1</caffeine.version>
         <antlr.version>3.2</antlr.version>
-        <resteasy.version>6.1.0.Final</resteasy.version>
+        <resteasy.version>6.2.1.Final</resteasy.version>
         <googlemaps.services.version>0.2.5</googlemaps.services.version>
         <uuid-generator.version>3.1.2</uuid-generator.version>
-        <apache-poi.version>5.2.2</apache-poi.version>
-        <xmlbeans.version>5.0.3</xmlbeans.version>  <!-- 3.x is required for POI 4 (xlsx), 4.x or 5.x for POI 5.0 -->
-        <gson.version>2.8.9</gson.version>
+        <apache-poi.version>5.2.3</apache-poi.version>
+        <xmlbeans.version>5.1.1</xmlbeans.version>
+        <gson.version>2.9.1</gson.version>
         <log4j2.version>2.18.0</log4j2.version>     <!-- see comment below -->
 
-        <spring-bom.version>5.3.22</spring-bom.version>
-        <spring-data-jpa.version>2.7.2</spring-data-jpa.version>
+        <spring-bom.version>5.3.23</spring-bom.version>
+        <spring-data-jpa.version>2.7.3</spring-data-jpa.version>
         <spring-boot.version>2.7.2</spring-boot.version>
 
         <netty.version>4.1.82.Final</netty.version>
         <vertx4.version>4.3.3</vertx4.version>
+        <hazelcast-kubernetes.version>2.2.3</hazelcast-kubernetes.version>
 
-        <snakeyaml.version>1.32</snakeyaml.version>
+        <snakeyaml.version>1.33</snakeyaml.version>
         <classgraph.version>4.8.116</classgraph.version>
 
         <c3p0.version>0.9.5.5</c3p0.version>
         <hikaricp.version>4.0.3</hikaricp.version>
         <flyway.version>7.15.0</flyway.version>
         <reflections.version>0.9.10</reflections.version>
-        <maven-plugin-api.version>3.8.1</maven-plugin-api.version>
-        <jackson.version>2.13.3</jackson.version>
+        <maven-plugin-api.version>3.8.6</maven-plugin-api.version>
+        <jackson.version>2.13.4</jackson.version>
         <solr.version>8.11.1</solr.version>
-        <camel.version>3.18.1</camel.version>
-        <kafka.version>3.2.1</kafka.version>
+        <camel.version>3.18.2</camel.version>
+        <kafka.version>3.3.1</kafka.version>
         <error-prone.version>2.13.1</error-prone.version>
 
         <!-- Monitoring -->
-        <micrometer.version>1.8.6</micrometer.version>
-        <prometheus.version>0.15.0</prometheus.version>
+        <micrometer.version>1.8.9</micrometer.version>
+        <prometheus.version>0.16.0</prometheus.version>
 
         <!-- Swagger -->
         <swagger.version>${swagger-maven-plugin.version}</swagger.version>
@@ -1088,6 +1089,13 @@
                 <groupId>io.netty</groupId>
                 <artifactId>netty-transport-native-epoll</artifactId>
                 <version>${netty.version}</version>
+            </dependency>
+
+            <!-- Hazelcast -->
+            <dependency>
+                <groupId>com.hazelcast</groupId>
+                <artifactId>hazelcast-kubernetes</artifactId>
+                <version>${hazelcast-kubernetes.version}</version>
             </dependency>
 
             <!-- Vertx -->

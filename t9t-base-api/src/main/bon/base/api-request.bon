@@ -233,8 +233,19 @@ package (com.arvatosystems) t9t.base.request {
         required Unicode(255)                       url;                        // should end in /rpc or /rpcExt (not checked, it is the caller's responsibility to provide correct data)
     }
 
+    /** Executes a request on a different preconfigured server instance given by the server ID. */
+    class ExecuteOnOtherServerRequest extends RequestParameters {
+        required (RequestParameters...)             remoteRequest;              // the request to be run remotely
+        required Ascii(16)                          serverId;                   // the ID of the server as configured in server.xml
+    }
+
     /** Executes the second request asynchronously in a separate transaction, once the first one has successfully completed. */
     class ExecuteAsyncRequest extends RequestParameters {
+        required (RequestParameters...)             asyncRequest;               // the request to be run asynchronously
+    }
+
+    /** Executes the second request asynchronously once on every node of this cluster. */
+    class ExecuteOnAllNodesRequest extends RequestParameters {
         required (RequestParameters...)             asyncRequest;               // the request to be run asynchronously
     }
 

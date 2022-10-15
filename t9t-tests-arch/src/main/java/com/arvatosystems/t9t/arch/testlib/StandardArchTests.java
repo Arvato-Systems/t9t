@@ -26,7 +26,6 @@ import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchRule;
 
 import de.jpaw.dp.Dependent;
-import de.jpaw.dp.Inject;
 import de.jpaw.dp.Singleton;
 
 public class StandardArchTests {
@@ -42,12 +41,6 @@ public class StandardArchTests {
             .andShould().beFinal()
             .andShould().haveName("LOGGER")
             .because("Development guidelines, section 4.6, requires it");
-
-    @ArchTest
-    protected final ArchRule injected_fields_should_be_final =
-        fields().that().areAnnotatedWith(Inject.class)
-            .should().beFinal()
-            .because("Injection is a one-time initialization");
 
     // checks on Singletons
     @ArchTest

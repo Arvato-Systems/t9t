@@ -29,6 +29,7 @@ import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.IForeignRequest;
 import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.client.jdk11.RemoteConnection;
 
 import de.jpaw.dp.Jdp;
@@ -38,6 +39,7 @@ public final class SimpleCallOutExecutor implements IForeignRequest {
     private static final Logger LOGGER = LoggerFactory.getLogger(SimpleCallOutExecutor.class);
 
     private static final Map<String, IForeignRequest> HANDLER_CACHE = new ConcurrentHashMap<>();
+    private static final String MY_OWN_SERVER_ID = ConfigProvider.getConfiguration().getServerIdSelf();
     private final IRemoteConnection remoteConnection;
 
     private SimpleCallOutExecutor(final String key, final String url) {
@@ -76,7 +78,7 @@ public final class SimpleCallOutExecutor implements IForeignRequest {
      */
     public static IForeignRequest createCachedExecutor(final String key, final String url) {
         return HANDLER_CACHE.computeIfAbsent(key, unused -> {
-            if ("local".equals(url)) {
+            if ("local".equals(url) || key.equals(MY_OWN_SERVER_ID)) {
                 return new LocalJvmExecutor(key);
             } else {
                 return new SimpleCallOutExecutor(key, url);

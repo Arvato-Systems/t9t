@@ -111,6 +111,9 @@ public final class T9tConstants {
     // System property which triggers flyway SQL migration
     public static final String START_MIGRATION_PROPERTY = "t9t.run.flyway.migration";
 
+    // qualifier to use when getting alternate DB connection
+    public static final String QUALIFIER_JDBC_SECONDARY = "JDBC2";
+
     // MDC keys
     public static final String MDC_MESSAGE_ID = "messageId";
     public static final String MDC_SESSION_REF = "sessionRef";

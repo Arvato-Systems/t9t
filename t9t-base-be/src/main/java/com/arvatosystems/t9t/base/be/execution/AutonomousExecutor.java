@@ -81,7 +81,7 @@ public class AutonomousExecutor implements IAutonomousExecutor {
             LOGGER.error("Thread got interrupted", e);
             return new ServiceResponse(T9tException.THREAD_INTERRUPTED);
         } catch (ExecutionException e) {
-            LOGGER.error("Thread failed to excetute", e);
+            LOGGER.error("Thread failed to execute", e);
             return new ServiceResponse(T9tException.GENERAL_EXCEPTION);
         }
     }
