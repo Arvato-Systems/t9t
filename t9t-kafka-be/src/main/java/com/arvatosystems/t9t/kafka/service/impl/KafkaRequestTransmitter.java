@@ -1,26 +1,35 @@
+/*
+ * Copyright (c) 2012 - 2022 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.arvatosystems.t9t.kafka.service.impl;
 
-import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
-import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.PartitionInfo;
-import org.apache.kafka.common.serialization.ByteArraySerializer;
-import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.IKafkaRequestTransmitter;
-import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 
 import de.jpaw.api.ConfigurationReader;
-import de.jpaw.bonaparte.core.CompactByteArrayComposer;
 import de.jpaw.dp.Singleton;
+import de.jpaw.json.JsonParser;
 import de.jpaw.util.ConfigurationReaderFactory;
-import de.jpaw.util.ExceptionUtil;
 
 @Singleton
 public class KafkaRequestTransmitter implements IKafkaRequestTransmitter {
@@ -28,63 +37,58 @@ public class KafkaRequestTransmitter implements IKafkaRequestTransmitter {
 
     public static final ConfigurationReader CONFIG_READER = ConfigurationReaderFactory.getConfigReaderForName("t9t.kafka", null);
 
-    private static final String DEFAULT_KAFKA_REQUEST_TOPIC = "t9tRequestTopic";
-    private static final String KAFKA_DEFAULT_BOOTSTRAP_KEY = "t9t.kafka.bootstrap.servers";
-    private static final String KAFKA_DEFAULT_TOPIC_KEY     = "t9t.kafka.request.topic";
-    private final String kafkaBootstrapServers;   // determined via config
-    private final String kafkaTopic;       // determined via config
-    private final KafkaProducer<String, byte[]> producer;
-    private final List<PartitionInfo> partitions;
-    private final int numberOfPartitions;
+    private static final String KAFKA_DEFAULT_BOOTSTRAP_KEY  = "t9t.kafka.bootstrap.servers";
+    private static final String KAFKA_DEFAULT_TOPIC_KEY      = "t9t.kafka.request.topic";
+    private static final String KAFKA_DEFAULT_PROPERTIES_KEY = "t9t.kafka.request.properties";
+
+    private final KafkaTopicWriter topicWriter;
 
     public KafkaRequestTransmitter() {
-        kafkaBootstrapServers = CONFIG_READER.getProperty(KAFKA_DEFAULT_BOOTSTRAP_KEY, null);
-        kafkaTopic = CONFIG_READER.getProperty(KAFKA_DEFAULT_TOPIC_KEY, DEFAULT_KAFKA_REQUEST_TOPIC);
+        final String kafkaTopic = CONFIG_READER.getProperty(KAFKA_DEFAULT_TOPIC_KEY, T9tConstants.DEFAULT_KAFKA_TOPIC_SINGLE_TENANT_REQUESTS);
+        final String kafkaBootstrapServers = CONFIG_READER.getProperty(KAFKA_DEFAULT_BOOTSTRAP_KEY, null);
         if (kafkaBootstrapServers == null) {
-            throw new T9tException(T9tException.MISSING_KAFKA_BOOTSTRAP);
+            LOGGER.error("No configuration found for t9t.kafka.bootstrap.servers, refusing to initialize (set to /dev/null in order to discard messages)");
+            // throw new T9tException(T9tException.MISSING_KAFKA_BOOTSTRAP);  // later, currently just warn
+            topicWriter = null;
+        } else {
+            if (kafkaBootstrapServers.equals("/dev/null")) {
+                // create a dummy config
+                topicWriter = null;
+                LOGGER.info("kafka request queue set to /dev/null - discarding messages");
+            } else {
+                final Properties props = new Properties();
+                props.put(ProducerConfig.LINGER_MS_CONFIG, 100);
+                props.put(ProducerConfig.RETRIES_CONFIG, 2);
+                props.put(ProducerConfig.BATCH_SIZE_CONFIG, 8000);  // approx 5 orders
+                // props.put(ProducerConfig.CLIENT_ID_CONFIG, config.getDataSinkId());
+
+                // read extra properties from environment or system variable, and parse it as arbitrary JSON
+                final String additionalProperties = CONFIG_READER.getProperty(KAFKA_DEFAULT_PROPERTIES_KEY, null);
+                if (additionalProperties != null) {
+                    try {
+                        final JsonParser p = new JsonParser(additionalProperties, true);
+                        final Map<String, Object> extraProps = p.parseObject();
+                        LOGGER.info("Found {} additional Producer configuration properties for kafka in config {}",
+                                extraProps.size(), KAFKA_DEFAULT_PROPERTIES_KEY);
+                        for (Map.Entry<String, Object> entry: extraProps.entrySet()) {
+                            props.put(entry.getKey(), entry.getValue());
+                        }
+                    } catch (Exception e) {
+                        LOGGER.error("Could not parse extra properties {} (set to {}", KAFKA_DEFAULT_PROPERTIES_KEY, additionalProperties);
+                        LOGGER.error("Ignoring those:", e);
+                    }
+                }
+                topicWriter = new KafkaTopicWriter(kafkaBootstrapServers, kafkaTopic, props);
+            }
         }
-        final Properties props = new Properties();
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrapServers);
-        // props.put(ProducerConfig.CLIENT_ID_CONFIG, config.getDataSinkId());
-        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,   StringSerializer.class.getName());
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ByteArraySerializer.class.getName());
-        props.put(ProducerConfig.LINGER_MS_CONFIG, 100);
-        props.put(ProducerConfig.RETRIES_CONFIG, 2);
-        props.put(ProducerConfig.BATCH_SIZE_CONFIG, 8000);  // approx 5 orders
-//        //props.put(ProducerConfig.PARTITIONER_CLASS_CONFIG, CustomPartitioner.class.getName());
-//        if (config.getZ() != null) {
-//            final Object extraKafkaConfig = config.getZ().get("kafka");
-//            if (extraKafkaConfig instanceof Map) {
-//                final Map<?, ?> extraKafkaConfigMap = (Map<?, ?>)extraKafkaConfig;
-//                LOGGER.info("Found {} additional Producer configuration properties for kafka in data sink {}",
-//                  extraKafkaConfigMap.size(), config.getDataSinkId());
-//                for (Map.Entry<?, ?> entry: extraKafkaConfigMap.entrySet()) {
-//                    props.put(entry.getKey(), entry.getValue());
-//                }
-//            }
-//        }
-        producer = new KafkaProducer<>(props);
-        partitions = producer.partitionsFor(kafkaTopic);
-        numberOfPartitions = partitions.size();
     }
 
     @Override
     public void write(final RequestParameters request, final String partitionKey) {
-        final CompactByteArrayComposer cbac = new CompactByteArrayComposer(false);
-        cbac.reset();
-        cbac.writeRecord(request);
-        final byte[] dataToWrite = cbac.getBytes();
-        cbac.close();
-
-        final int partition = (partitionKey.hashCode() & 0x7fffffff) % numberOfPartitions;
-        producer.send(new ProducerRecord<String, byte[]>(kafkaTopic, Integer.valueOf(partition), partitionKey, dataToWrite), (meta, e) -> {
-            if (e != null) {
-                LOGGER.error("Could not send record for partition key {} in topic {}: {}: {}", partitionKey, kafkaTopic,
-                        e.getClass().getSimpleName(), ExceptionUtil.causeChain(e));
-            } else {
-                LOGGER.debug("Sent record for partition key {} in topic {} (made it into partition {} at offset {}, {} bytes)", partitionKey, kafkaTopic,
-                        meta.partition(), meta.offset(), dataToWrite.length);
-            }
-        });
+        if (topicWriter == null) {
+            // redirect to /dev/null
+            return;
+        }
+        topicWriter.write(request, partitionKey.hashCode(), partitionKey);
     }
 }

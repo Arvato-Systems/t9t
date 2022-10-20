@@ -13,6 +13,6 @@
     ],
     "fields": [
         "whenSent", "asyncChannelId", "asyncQueueRef.asyncQueueId", "status", "refType", "refIdentifier", "ref", "attempts", "lastAttempt", "latency",
-        "httpResponseCode", "returnCode", "reference"
+        "httpResponseCode", "returnCode", "reference", "errorDetails"
     ]
 }

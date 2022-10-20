@@ -267,6 +267,7 @@ package (com.arvatosystems) t9t.io.request {
         optional Instant                            lastMessageSent;        // if the queue is running: when was the last successful message sent?
     }
 
+    /** Updates the DB status entity for the referenced message. In case of new status READY_TO_EXPORT, the message is reinserted into the queue immediately. */
     class UpdateAsyncMessageStatusRequest extends RequestParameters {
         required f42Ref                             asyncMessageRef;        // the objectRef of the message
         required enum ExportStatusEnum              newStatus;

@@ -26,6 +26,7 @@ import jakarta.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.output.ExportStatusEnum;
 import com.arvatosystems.t9t.io.AsyncChannelDTO;
@@ -51,11 +52,8 @@ public class AsyncMessageUpdater implements IAsyncMessageUpdater {
 
     @Override
     public void updateMessage(final Long objectRef, final ExportStatusEnum newStatus, final Integer httpCode,
-      final Integer clientCode, String clientReference) {
+      final Integer clientCode, final String clientReference, final String errorDetails) {
         final EntityManager em = emf.createEntityManager();
-        final int allowedLength = AsyncMessageDTO.meta$$reference.getLength();
-        if (clientReference != null && clientReference.length() > allowedLength)
-            clientReference = clientReference.substring(0, allowedLength);
         em.getTransaction().begin();
         final AsyncMessageEntity m = em.find(AsyncMessageEntity.class, objectRef);
         if (m != null) {
@@ -64,7 +62,8 @@ public class AsyncMessageUpdater implements IAsyncMessageUpdater {
             m.setStatus(newStatus);
             m.setHttpResponseCode(httpCode);
             m.setReturnCode(clientCode);
-            m.setReference(clientReference);
+            m.setReference(MessagingUtil.truncField(clientReference, AsyncMessageDTO.meta$$reference.getLength()));
+            m.setErrorDetails(MessagingUtil.truncField(errorDetails, AsyncMessageDTO.meta$$errorDetails.getLength()));
         }
         em.getTransaction().commit();
         em.clear();

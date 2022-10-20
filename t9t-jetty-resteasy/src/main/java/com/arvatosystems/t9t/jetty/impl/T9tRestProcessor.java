@@ -66,8 +66,8 @@ public class T9tRestProcessor implements IT9tRestProcessor {
     private static final Logger LOGGER = LoggerFactory.getLogger(T9tRestProcessor.class);
     private static final AtomicInteger COUNTER = new AtomicInteger();
 
-    protected IRemoteConnection connection = Jdp.getRequired(IRemoteConnection.class);
-    protected IGatewayStringSanitizerFactory gatewayStringSanitizerFactory = Jdp.getRequired(IGatewayStringSanitizerFactory.class);
+    protected final IRemoteConnection connection = Jdp.getRequired(IRemoteConnection.class);
+    protected final IGatewayStringSanitizerFactory gatewayStringSanitizerFactory = Jdp.getRequired(IGatewayStringSanitizerFactory.class);
     protected final DataConverter<String, AlphanumericElementaryDataItem> stringSanitizer = gatewayStringSanitizerFactory.createStringSanitizerForGateway();
 
     @Override

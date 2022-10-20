@@ -114,6 +114,9 @@ public final class T9tConstants {
     // qualifier to use when getting alternate DB connection
     public static final String QUALIFIER_JDBC_SECONDARY = "JDBC2";
 
+    // default name of the kafka topic for single-tenant request transmissions
+    public static final String DEFAULT_KAFKA_TOPIC_SINGLE_TENANT_REQUESTS = "t9tRequestTopic";
+
     // MDC keys
     public static final String MDC_MESSAGE_ID = "messageId";
     public static final String MDC_SESSION_REF = "sessionRef";

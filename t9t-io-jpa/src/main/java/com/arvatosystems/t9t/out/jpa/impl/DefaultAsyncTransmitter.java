@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.output.ExportStatusEnum;
+import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.io.jpa.entities.AsyncMessageEntity;
 import com.arvatosystems.t9t.io.jpa.persistence.IAsyncMessageEntityResolver;
 import com.arvatosystems.t9t.out.services.IAsyncQueue;
@@ -28,6 +29,7 @@ import com.arvatosystems.t9t.out.services.IAsyncTransmitter;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Provider;
 import de.jpaw.dp.Singleton;
 
 /** Default implementation of the persisted asynchronous message bus. */
@@ -37,6 +39,7 @@ public class DefaultAsyncTransmitter implements IAsyncTransmitter {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultAsyncTransmitter.class);
     protected final IAsyncMessageEntityResolver asyncMessageResolver = Jdp.getRequired(IAsyncMessageEntityResolver.class);
     protected final IAsyncQueue asyncQueueSender = Jdp.getRequired(IAsyncQueue.class);
+    protected final Provider<RequestContext> ctxProvider = Jdp.getProvider(RequestContext.class);
 
     public DefaultAsyncTransmitter() {
         LOGGER.info("Created an asynchronous message sender");
@@ -65,8 +68,12 @@ public class DefaultAsyncTransmitter implements IAsyncTransmitter {
         payload.validate();
 
         final Long objectRef = asyncMessageResolver.createNewPrimaryKey();
-        final Long queueRef  = asyncQueueSender.sendAsync(asyncChannelId, payload, objectRef);
-        persistInDb(objectRef, queueRef, asyncChannelId, payload, ref, category, identifier);
+        final Long queueRef  = asyncQueueSender.sendAsync(ctxProvider.get(), asyncChannelId, payload, objectRef, partition, null, false);
+
+        if (asyncQueueSender.persistInDb()) {
+            // persisting the message should be done into the relational database
+            persistInDb(objectRef, queueRef, asyncChannelId, payload, ref, category, identifier);
+        }
         return objectRef;
     }
 }

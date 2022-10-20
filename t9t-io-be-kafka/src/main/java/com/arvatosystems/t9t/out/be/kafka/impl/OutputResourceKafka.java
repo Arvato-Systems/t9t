@@ -19,17 +19,10 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.PartitionInfo;
-import org.apache.kafka.common.serialization.ByteArraySerializer;
-import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,19 +32,19 @@ import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.cfg.be.KafkaConfiguration;
 import com.arvatosystems.t9t.io.DataSinkDTO;
 import com.arvatosystems.t9t.io.T9tIOException;
+import com.arvatosystems.t9t.kafka.service.impl.KafkaTopicWriter;
 import com.arvatosystems.t9t.out.services.IOutputResource;
 
 import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Named;
-import de.jpaw.util.ExceptionUtil;
 
 @Dependent
 @Named("KAFKA")
 public class OutputResourceKafka implements IOutputResource {
     private static final Logger LOGGER = LoggerFactory.getLogger(OutputResourceKafka.class);
 
-    protected static Producer<String, byte[]> createKafkaProducer(final DataSinkDTO config, final Long sinkRef) {
+    protected static KafkaTopicWriter createKafkaProducer(final DataSinkDTO config) {
         final Properties props = new Properties();
         final KafkaConfiguration defaults = ConfigProvider.getConfiguration().getKafkaConfiguration();
         if (defaults == null) {
@@ -63,10 +56,7 @@ public class OutputResourceKafka implements IOutputResource {
         if (bootstrapServers == null) {
             throw new T9tException(T9tIOException.MISSING_KAFKA_CONFIGURAION, "No bootstrap servers defined in DataSink nor config.xml");
         }
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
 //        props.put(ProducerConfig.CLIENT_ID_CONFIG, config.getDataSinkId() + ":" + sinkRef.toString());
-        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ByteArraySerializer.class.getName());
         props.put(ProducerConfig.LINGER_MS_CONFIG, 100);
         props.put(ProducerConfig.RETRIES_CONFIG, 2);
         props.put(ProducerConfig.BATCH_SIZE_CONFIG, 8000);  // approx 5 orders
@@ -82,23 +72,17 @@ public class OutputResourceKafka implements IOutputResource {
                 }
             }
         }
-        return new KafkaProducer<>(props);
+        return new KafkaTopicWriter(bootstrapServers, config.getFileOrQueueNamePattern(), props);
     }
 
-    protected String topic = "";
-    protected int numberOfPartitions = 1;
-    protected Producer<String, byte[]> producer;
+    protected KafkaTopicWriter writer;
     protected DataSinkDTO cfg;
 
     @Override
     public void open(final DataSinkDTO config, final OutputSessionParameters params, final Long sinkRef, final String targetName,
       final MediaTypeDescriptor mediaType, final Charset encoding) {
         cfg = config;
-        topic = cfg.getFileOrQueueNamePattern();
-        producer = createKafkaProducer(config, sinkRef);
-        final List<PartitionInfo> partitions = producer.partitionsFor(topic);
-        numberOfPartitions = partitions.size();
-        LOGGER.debug("Topic {} has {} partitions", topic, numberOfPartitions);
+        writer = createKafkaProducer(config);
     }
 
     @Override
@@ -110,16 +94,8 @@ public class OutputResourceKafka implements IOutputResource {
     public void write(final String partitionKey, final String recordKey, final byte[] buffer, final int offset, final int len, final boolean isDataRecord) {
         final byte[] data = (offset == 0 && (len < 0 || len == buffer.length))
           ? buffer : Arrays.copyOfRange(buffer, offset, offset + len);
-        final int partition = (partitionKey.hashCode() & 0x7fffffff) % numberOfPartitions;
-        producer.send(new ProducerRecord<>(topic, Integer.valueOf(partition), recordKey, data), (meta, e) -> {
-            if (e != null) {
-                LOGGER.error("Could not send record {} for partition {} in topic {}: {}: {}", recordKey, partitionKey, topic,
-                        e.getClass().getSimpleName(), ExceptionUtil.causeChain(e));
-            } else {
-                LOGGER.debug("Sent record {} for partition {} in topic {} (made it into partition {} at offset {})", recordKey, partitionKey, topic,
-                        meta.partition(), meta.offset());
-            }
-        });
+        final int partition = partitionKey.hashCode();
+        writer.write(data, partition, recordKey);
     }
 
     @Override
@@ -130,7 +106,6 @@ public class OutputResourceKafka implements IOutputResource {
 
     @Override
     public void close() {
-        producer.flush();
-        producer.close();
+        writer.close();
     }
 }

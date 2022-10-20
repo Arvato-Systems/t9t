@@ -24,8 +24,11 @@ import com.arvatosystems.t9t.io.AsyncQueueDTO;
 /** Interface to JPA layer which updates the async message.
  * This is a technical helper method. */
 public interface IAsyncMessageUpdater {
-    /** Updates a message entry to its latest status. */
-    void updateMessage(Long objectRef, ExportStatusEnum newStatus, Integer httpCode, Integer clientCode, String clientReference);
+    /**
+     * Updates a message entry to its latest status.
+     * The implementation truncates any passed contents for fields clientReference and errorDetails to the allowed length in the DB.
+     */
+    void updateMessage(Long objectRef, ExportStatusEnum newStatus, Integer httpCode, Integer clientCode, String clientReference, String errorDetails);
 
     /** Reads all active queues (all tenants) from the database. */
     List<AsyncQueueDTO> getActiveQueues();

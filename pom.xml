@@ -55,7 +55,7 @@
         <maven-install-plugin.version>3.0.1</maven-install-plugin.version>
         <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
         <maven-clean-plugin.version>3.2.0</maven-clean-plugin.version>
-        <maven-dependency-plugin.version>3.2.0</maven-dependency-plugin.version>
+        <maven-dependency-plugin.version>3.3.0</maven-dependency-plugin.version>
         <maven-plugin-annotations.version>3.6.4</maven-plugin-annotations.version>
         <maven-project.version>2.2.1</maven-project.version>
         <build-helper-maven-plugin.version>3.3.0</build-helper-maven-plugin.version>
@@ -79,7 +79,7 @@
         <exec.plugin.version>3.0.0</exec.plugin.version>
         <jetty-maven-plugin.version>11.0.12</jetty-maven-plugin.version>
         <maven-antrun-plugin.version>3.0.0</maven-antrun-plugin.version>
-        <cxf-codegen-plugin.version>3.5.3</cxf-codegen-plugin.version>
+        <cxf-codegen-plugin.version>3.5.4</cxf-codegen-plugin.version>
         <cxf-wadl2java-plugin.version>3.5.3</cxf-wadl2java-plugin.version>
         <cxf-xjc-plugin.version>3.3.1</cxf-xjc-plugin.version>   <!-- older than the other CXF plugins, but no newer release available -->
         <echo-maven-plugin.version>1.0.0</echo-maven-plugin.version>
@@ -1073,6 +1073,7 @@
                 <module>t9t-vertx-metrics</module>
                 <module>t9t-vertx-resteasy</module>
                 <module>t9t-jetty-resteasy</module>
+                <module>t9t-jetty-kafka-resteasy</module>
                 <module>t9t-jetty-restgateway</module>
                 <module>t9t-proxy</module>
                 <module>t9t-all-api</module>
@@ -1307,6 +1308,7 @@
                 <module>t9t-vertx-resteasy</module>
                 <module>t9t-jetty-resteasy</module>
                 <module>t9t-jetty-restgateway</module>
+                <module>t9t-jetty-kafka-resteasy</module>
                 <module>t9t-proxy</module>
                 <module>t9t-all-api</module>
                 <module>t9t-all</module>

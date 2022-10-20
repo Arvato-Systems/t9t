@@ -16,6 +16,7 @@
 package com.arvatosystems.t9t.out.services;
 
 import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.io.AsyncQueueDTO;
 import com.arvatosystems.t9t.io.request.QueueStatus;
 
@@ -29,7 +30,7 @@ import de.jpaw.bonaparte.core.BonaPortable;
  *  */
 public interface IAsyncQueue {
     /** Queues a messages. Returns null, or a QueueRef. */
-    Long sendAsync(String asyncChannelId, BonaPortable payload, Long objectRef);
+    Long sendAsync(RequestContext ctx, String asyncChannelId, BonaPortable payload, Long objectRef, int partition, String recordKey, boolean isResend);
 
     /** Initializes all queues. */
     default void open() { }
@@ -49,5 +50,10 @@ public interface IAsyncQueue {
     /** returns the queue status for one or all queues. Only for queues supporting it. */
     default QueueStatus getQueueStatus(final Long queueRef, final String queueId) {
         throw new T9tException(T9tException.NOT_YET_IMPLEMENTED);
+    }
+
+    /** Determines if the message should be persisted in the DB or if the implementation does it itself. */
+    default boolean persistInDb() {
+        return true;
     }
 }
