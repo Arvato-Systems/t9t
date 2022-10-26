@@ -4,7 +4,7 @@
         { "filterType": "E", "fieldName": "tenantId" }
     ],
     "fields": [
-        "tenantId", "asyncQueueId", "isActive", "defaultSerializerQualifier", "senderQualifier", "description"
+        "tenantId", "asyncQueueId", "isActive", "defaultSerializerQualifier", "senderQualifier", "description", "kafkaTopic", "kafkaBootstrapServers"
     ],
-    "fieldWidths": [ 80, 120, 40, 120, 120, 200 ]
+    "fieldWidths": [ 80, 120, 40, 120, 120, 200, 120, 200 ]
 }

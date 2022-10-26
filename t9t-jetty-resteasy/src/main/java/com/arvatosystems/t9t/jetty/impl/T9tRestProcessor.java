@@ -77,7 +77,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
     }
 
     @Override
-    public <T> void performAsyncBackendRequest(final HttpHeaders httpHeaders, final AsyncResponse resp, final String infoMsg,
+    public <T extends BonaPortable> void performAsyncBackendRequest(final HttpHeaders httpHeaders, final AsyncResponse resp, final String infoMsg,
             final List<T> inputData, final Function<T, RequestParameters> requestConverterSingle,
             final Function<List<T>, RequestParameters> requestConverterBatch) {
 
@@ -87,6 +87,21 @@ public class T9tRestProcessor implements IT9tRestProcessor {
             LOGGER.error("{}: No input data provided", infoMsg);
             returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, createErrorResult(T9tException.MISSING_PARAMETER, null));  // missing parameter
             return;
+        }
+        for (T elementToCheck: inputData) {
+            if (elementToCheck == null) {
+                LOGGER.error("Null as list element");
+                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST,
+                  createErrorResult(T9tException.MISSING_PARAMETER, "List element null not allowed"));
+                return;
+            }
+            try {
+                elementToCheck.validate();
+            } catch (final ApplicationException e) {
+                LOGGER.error("Exception during request validation: {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
+                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, createErrorResult(e.getErrorCode(), e.getMessage()));
+                return;
+            }
         }
         final RequestParameters rq;
         if (inputData.size() == 1) {
@@ -120,16 +135,6 @@ public class T9tRestProcessor implements IT9tRestProcessor {
             }
         }
         performAsyncBackendRequest(httpHeaders, resp, rq, infoMsg, ServiceResponse.class, sr -> createResultFromServiceResponse(sr));
-    }
-
-    @Override
-    public GenericResult createResultFromServiceResponse(final ServiceResponse response) {
-        final GenericResult result = new GenericResult();
-        result.setErrorDetails(response.getErrorDetails());
-        result.setErrorMessage(response.getErrorMessage());
-        result.setReturnCode(response.getReturnCode());
-        result.setProcessRef(response.getProcessRef());
-        return result;
     }
 
     @Override
@@ -212,9 +217,16 @@ public class T9tRestProcessor implements IT9tRestProcessor {
     public <T extends ServiceResponse> void performAsyncBackendRequest(final HttpHeaders httpHeaders,
             final AsyncResponse resp, final RequestParameters requestParameters, final String infoMsg,
             final Class<T> backendResponseClass, final Function<T, BonaPortable> responseMapper) {
+        final String acceptHeader = httpHeaders.getHeaderString(HttpHeaders.ACCEPT);
+        try {
+            requestParameters.validate();  // validate the request before we launch a worker thread!
+        } catch (final ApplicationException e) {
+            LOGGER.error("Exception during request validation: {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
+            returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, createErrorResult(e.getErrorCode(), e.getMessage()));  // missing parameter
+            return;
+        }
         final int invocationNo = COUNTER.incrementAndGet();
         final String authorizationHeader = httpHeaders.getHeaderString(HttpHeaders.AUTHORIZATION);
-        final String acceptHeader = httpHeaders.getHeaderString(HttpHeaders.ACCEPT);
         // assign a message ID unless there is one already provided
         if (requestParameters.getMessageId() == null) {
             requestParameters.setMessageId(RandomNumberGenerators.randomFastUUID());

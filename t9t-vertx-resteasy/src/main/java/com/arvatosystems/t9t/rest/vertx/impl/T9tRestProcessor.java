@@ -190,16 +190,6 @@ public class T9tRestProcessor implements IT9tRestProcessor {
         resp.resume(responseObj);
     }
 
-    @Override
-    public GenericResult createResultFromServiceResponse(final ServiceResponse response) {
-        final GenericResult result = new GenericResult();
-        result.setErrorDetails(response.getErrorDetails());
-        result.setErrorMessage(response.getErrorMessage());
-        result.setReturnCode(response.getReturnCode());
-        result.setProcessRef(response.getProcessRef());
-        return result;
-    }
-
     public static Response error(final Response.Status status, final String message) {
         final Response.ResponseBuilder response = Response.status(status);
         response.type(MediaType.TEXT_PLAIN_TYPE).entity(message);
@@ -242,7 +232,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
     }
 
     @Override
-    public <T> void performAsyncBackendRequest(final HttpHeaders httpHeaders, final AsyncResponse resp,
+    public <T extends BonaPortable> void performAsyncBackendRequest(final HttpHeaders httpHeaders, final AsyncResponse resp,
             final String infoMsg, final List<T> inputData,
             final Function<T, RequestParameters> requestConverterSingle, final Function<List<T>, RequestParameters> requestConverterBatch) {
         // must evaluate httpHeaders now, because httpHeaders is a proxy and no longer valid in the other thread
@@ -251,6 +241,21 @@ public class T9tRestProcessor implements IT9tRestProcessor {
             LOGGER.error("{}: No input data provided", infoMsg);
             returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, createErrorResult(T9tException.MISSING_PARAMETER, null));  // missing parameter
             return;
+        }
+        for (T elementToCheck: inputData) {
+            if (elementToCheck == null) {
+                LOGGER.error("Null as list element");
+                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST,
+                  createErrorResult(T9tException.MISSING_PARAMETER, "List element null not allowed"));
+                return;
+            }
+            try {
+                elementToCheck.validate();
+            } catch (final ApplicationException e) {
+                LOGGER.error("Exception during request validation: {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
+                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, createErrorResult(e.getErrorCode(), e.getMessage()));
+                return;
+            }
         }
         final RequestParameters rq;
         if (inputData.size() == 1) {

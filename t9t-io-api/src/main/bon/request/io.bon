@@ -293,4 +293,19 @@ package (com.arvatosystems) t9t.io.request {
         required boolean                            wasMerged;       // if false, no Preset was found
         required (api.DataWithTrackingS<DataSinkDTO,FullTrackingWithVersion>) dwt;
     }
+
+    /**
+     * Select certain message to retry, with the usual search criteria, plus extended special ones.
+     * Criteria like min / max retry count, or a certain refType or specific http error code are available bia regular search criteria.
+     */
+    class RetryAsyncMessagesRequest extends RequestParameters {
+        optional (AsyncQueueRef...)                 onlyAsyncQueueRef;    // only retry messages of this queue
+        optional t9tShortId                         onlyAsyncChannelId;   // select only tasks of this channel
+        optional Integer                            onlyHttpResponseCode; // select only tasks which returned this status
+        optional Integer                            minRetries;
+        optional Integer                            maxRetries;
+        optional Integer                            minAgeInMinutes;
+        optional Integer                            maxAgeInMinutes;
+        optional Integer                            maxCount;
+    }
 }

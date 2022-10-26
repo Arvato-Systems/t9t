@@ -32,7 +32,6 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.JsonUtil;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.cfg.be.AsyncTransmitterConfiguration;
@@ -78,17 +77,15 @@ public class AsyncQueueKafka<R extends BonaPortable> implements IAsyncQueue {
 
             // obtain the kafka configuration
             // FIXME: do not use z, this is prereliminary code
-            final String topic = JsonUtil.getZString(queueConfig.getZ(), "topic", null); // FIXME: do not use z, this is a prerel.
+            final String topic = queueConfig.getKafkaTopic();
             if (topic == null) {
-                throw new T9tException(T9tException.MISSING_CONFIGURATION,
-                  "need kafka key 'topic' in z field of AsyncQueueDTO " + queueConfig.getAsyncQueueId());
+                throw new T9tException(T9tException.MISSING_CONFIGURATION, "need 'kafkaTopic' in AsyncQueueDTO " + queueConfig.getAsyncQueueId());
             }
             final KafkaConfiguration kafkaConfig = ConfigProvider.getConfiguration().getKafkaConfiguration();
             final String defaultBootstrapServers = kafkaConfig == null ? null : kafkaConfig.getDefaultBootstrapServers();
-            final String bootstrapServers = JsonUtil.getZString(queueConfig.getZ(), "bootstrapServers", defaultBootstrapServers);
+            final String bootstrapServers = queueConfig.getKafkaBootstrapServers() == null ? defaultBootstrapServers : queueConfig.getKafkaBootstrapServers();
             if (bootstrapServers == null) {
-                throw new T9tException(T9tException.MISSING_CONFIGURATION,
-                  "need kafka key 'bootstrapServers' in z field of AsyncQueueDTO " + queueConfig.getAsyncQueueId());
+                throw new T9tException(T9tException.MISSING_CONFIGURATION, "need kafka 'bootstrapServers' in AsyncQueueDTO " + queueConfig.getAsyncQueueId());
             }
             kafkaWriter = new KafkaTopicWriter(bootstrapServers, topic, new Properties());
 

@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.rest.services;
 
+import static de.jpaw.util.ApplicationException.CL_INTERNAL_LOGIC_ERROR;
+
 import java.util.List;
 import java.util.function.Function;
 
@@ -22,11 +24,13 @@ import jakarta.ws.rs.container.AsyncResponse;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 
+import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
 import com.arvatosystems.t9t.xml.GenericResult;
 import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.util.ApplicationException;
 
 public interface IT9tRestProcessor {
     /** Performs the request asynchronously, using a generic response mapper. */
@@ -42,11 +46,26 @@ public interface IT9tRestProcessor {
      * otherwise the second (which may be null, in which case a BAD_REQUEST will be returned).
      * Both request converters are executed in the I/O thread.
      **/
-    <T> void performAsyncBackendRequest(HttpHeaders httpHeaders, AsyncResponse resp, String infoMsg,
+    <T extends BonaPortable> void performAsyncBackendRequest(HttpHeaders httpHeaders, AsyncResponse resp, String infoMsg,
         List<T> inputData, Function<T, RequestParameters> requestConverterSingle, Function<List<T>, RequestParameters> requestConverterBatch);
 
     /** Could be static, but declared in the interface to allow overriding. */
-    GenericResult createResultFromServiceResponse(ServiceResponse response);
+    default GenericResult createResultFromServiceResponse(final ServiceResponse response) {
+        final GenericResult result = new GenericResult();
+        final int classification = response.getReturnCode() / ApplicationException.CLASSIFICATION_FACTOR;
+        if (classification == ApplicationException.CL_DATABASE_ERROR || classification == CL_INTERNAL_LOGIC_ERROR) {
+            // for security reasons, do not transmit internal exception details to external callers
+            result.setErrorDetails(null);
+            result.setErrorMessage(ApplicationException.codeToString(T9tException.GENERAL_SERVER_ERROR));
+            result.setReturnCode(T9tException.GENERAL_SERVER_ERROR);
+        } else {
+            result.setErrorDetails(response.getErrorDetails());
+            result.setErrorMessage(response.getErrorMessage());
+            result.setReturnCode(response.getReturnCode());
+        }
+        result.setProcessRef(response.getProcessRef());
+        return result;
+    }
 
     /** Returns a response without using the worker thread. */
     void returnAsyncResult(String acceptHeader, AsyncResponse resp, Response.Status status, Object result);

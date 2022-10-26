@@ -361,6 +361,8 @@ package (com.arvatosystems) t9t.io {
         optional Integer                                maxAgeInSeconds;        // can be used by monitoring to raise an alert if the queue's pending messages are stalled for this amount of time
         optional Integer                                purgeAfterSeconds;      // a which age to delete sent messages
         optional Json                                   z;                      // additional custom attributes
+        optional Unicode(1024)                          kafkaBootstrapServers;  // comma-separated list of bootstrap servers (default in server config XML file)
+        optional Unicode(36)                            kafkaTopic;             // the topic to use (required for kafka based messaging)
     }
 
     // Configuration for asynchronous messages

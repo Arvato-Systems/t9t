@@ -280,6 +280,8 @@ public class T9tException extends ApplicationException {
     public static final int THREAD_INTERRUPTED = OFFSET_TIMEOUT + 991;
     public static final int UNSUPPORTED_OPERATION = OFFSET + 992;
     public static final int UNSUPPORTED_OPERAND = OFFSET + 993;
+    public static final int GENERAL_SERVER_ERROR = OFFSET_DB_ERROR + 994;  // masked backend error which we do not want to forward to client
+
 
     public static final int HTTP_ERROR = OFFSET_VALIDATION_ERROR + 8000;  // whole range 8000..8999 is used, where the offset is the http status code
 
@@ -541,6 +543,7 @@ public class T9tException extends ApplicationException {
 
         codeToDescription.put(DYNAMODB_EXCEPTION, "DynamoDB returned an Exception");
         codeToDescription.put(MISSING_KAFKA_BOOTSTRAP, "Kafka bootstrap servers not specified");
+        codeToDescription.put(GENERAL_SERVER_ERROR, "Server error");
 
         codeToDescription.put(HTTP_ERROR + 400, "Bad request");
         codeToDescription.put(HTTP_ERROR + 401, "Not authorized");
