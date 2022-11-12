@@ -56,7 +56,7 @@
 
         <!-- OR mappers -->
         <eclipselink.version>3.0.2</eclipselink.version>
-        <hibernate.version>6.1.4.Final</hibernate.version>
+        <hibernate.version>6.1.5.Final</hibernate.version>
         <hibernate-validator.version>7.0.5.Final</hibernate-validator.version>
         <ehcache.version>2.10.4</ehcache.version>
         <ehcache3.version>3.5.3</ehcache3.version>
@@ -135,7 +135,7 @@
         <!-- Others -->
         <bouncycastle.version>1.70</bouncycastle.version>
         <bouncycastle-tsp.version>1.46</bouncycastle-tsp.version>     <!--  is older than the others! Is it still required? -->
-        <woodstox.version>6.2.8</woodstox.version>
+        <woodstox.version>6.4.0</woodstox.version>
         <stax2-api.version>4.2.1</stax2-api.version>
         <icu4j.version>69.1</icu4j.version>
         <zxing.version>3.5.0</zxing.version>
@@ -995,6 +995,11 @@
             <dependency>
                <groupId>org.jboss.resteasy</groupId>
                <artifactId>resteasy-jaxb-provider</artifactId>
+               <version>${resteasy.version}</version>
+            </dependency>
+            <dependency>
+               <groupId>org.jboss.resteasy</groupId>
+               <artifactId>resteasy-validator-provider</artifactId>
                <version>${resteasy.version}</version>
             </dependency>
             <dependency>
