@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.msglog.jpa.request;
 
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.auth.PermissionType;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractSearchWithTotalsRequestHandler;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.base.services.RequestContext;
@@ -23,17 +25,31 @@ import com.arvatosystems.t9t.msglog.jpa.entities.MessageEntity;
 import com.arvatosystems.t9t.msglog.jpa.mapping.IMessageDTOMapper;
 import com.arvatosystems.t9t.msglog.jpa.persistence.IMessageEntityResolver;
 import com.arvatosystems.t9t.msglog.request.MessageSearchRequest;
+import com.arvatosystems.t9t.server.services.IAuthorize;
 
+import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.pojos.api.NoTracking;
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
+import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 import de.jpaw.dp.Jdp;
 
 public class MessageSearchRequestHandler extends AbstractSearchWithTotalsRequestHandler<Long, MessageDTO, NoTracking, MessageSearchRequest, MessageEntity> {
 
     protected final IMessageEntityResolver resolver = Jdp.getRequired(IMessageEntityResolver.class);
     protected final IMessageDTOMapper mapper = Jdp.getRequired(IMessageDTOMapper.class);
+    protected final IAuthorize authorizer = Jdp.getRequired(IAuthorize.class);
 
     @Override
     public ReadAllResponse<MessageDTO, NoTracking> execute(final RequestContext ctx, final MessageSearchRequest request) throws Exception {
+        final Permissionset permissions = authorizer.getPermissions(ctx.internalHeaderParameters.getJwtInfo(), PermissionType.BACKEND, request.ret$PQON());
+        if (!permissions.contains(OperationType.CUSTOM)) {
+            throw new T9tException(T9tException.NOT_AUTHORIZED, OperationType.CUSTOM.name() + " on " + request.ret$PQON());
+        }
+        if (!permissions.contains(OperationType.ADMIN)) {
+            final UnicodeFilter filterByUserId = SearchFilters.equalsFilter(MessageDTO.meta$$userId.getName(), ctx.userId);
+            request.setSearchFilter(SearchFilters.and(request.getSearchFilter(), filterByUserId));
+        }
         return execute(ctx, request, resolver, mapper);
     }
 }

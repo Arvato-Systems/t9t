@@ -257,6 +257,8 @@ package (com.arvatosystems) t9t.auth {
         required Instant                            userExpiry;                         // end of self service reset: when this date is reached, the user cannot log in any more (but every activity resets it)
         required Instant                            passwordCreation;                   // when this password was set
         required f42Ref                             passwordSetByUser;                  // reference of (technical) user who set this password
+        optional passwordHash                       resetPasswordHash;                  // salted hash
+        optional Instant                            whenLastPasswordReset;              // when "reset my password" has been used last time
     }
 
 

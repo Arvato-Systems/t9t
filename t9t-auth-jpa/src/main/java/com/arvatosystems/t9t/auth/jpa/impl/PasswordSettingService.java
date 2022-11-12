@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.auth.jpa.impl;
 
+import java.time.Instant;
 import com.arvatosystems.t9t.auth.AuthModuleCfgDTO;
 import com.arvatosystems.t9t.auth.PasswordUtil;
 import com.arvatosystems.t9t.auth.jpa.IPasswordSettingService;
@@ -41,7 +42,12 @@ public class PasswordSettingService implements IPasswordSettingService {
     protected final IPasswordEntityResolver passwordResolver = Jdp.getRequired(IPasswordEntityResolver.class);
 
     @Override
-    public void setPasswordForUser(RequestContext ctx, UserEntity userEntity, String newPassword) {
+    public void setPasswordForUser(final RequestContext ctx, final UserEntity userEntity, final String newPassword) {
+        setPasswordForUser(ctx.executionStart, userEntity, newPassword, ctx.userRef);
+    }
+
+    @Override
+    public PasswordEntity setPasswordForUser(final Instant now, final UserEntity userEntity, final String newPassword, final Long passwordSetByUserRef) {
         int nextPasswordNo = 1;
         final AuthModuleCfgDTO authModuleCfg = moduleConfigResolver.getModuleConfiguration();
         final EntityManager entityManager = userEntityResolver.getEntityManager();
@@ -61,14 +67,14 @@ public class PasswordSettingService implements IPasswordSettingService {
         // finally create and store the new password
         final PasswordEntity newPwdEntity = passwordResolver.newEntityInstance();
         newPwdEntity.setObjectRef(userEntity.getObjectRef());
-        newPwdEntity.setPasswordSetByUser(ctx.userRef);
+        newPwdEntity.setPasswordSetByUser(passwordSetByUserRef);
         newPwdEntity.setPasswordHash(PasswordUtil.createPasswordHash(userEntity.getUserId(), newPassword));
-        newPwdEntity.setPasswordCreation(ctx.executionStart);
-        newPwdEntity.setPasswordExpiry(ctx.executionStart.plusSeconds(T9tConstants.ONE_DAY_IN_S * authModuleCfg.getInitialPasswordExpiration()));
-        newPwdEntity.setUserExpiry(
-                ctx.executionStart.plusSeconds(T9tConstants.ONE_DAY_IN_S * T9tConstants.DEFAULT_MAXIUM_NUMBER_OF_DAYS_IN_BETWEEN_USER_ACTIVITIES));
+        newPwdEntity.setPasswordCreation(now);
+        newPwdEntity.setPasswordExpiry(now.plusSeconds(T9tConstants.ONE_DAY_IN_S * authModuleCfg.getInitialPasswordExpiration()));
+        newPwdEntity.setUserExpiry(now.plusSeconds(T9tConstants.ONE_DAY_IN_S * T9tConstants.DEFAULT_MAXIUM_NUMBER_OF_DAYS_IN_BETWEEN_USER_ACTIVITIES));
         newPwdEntity.setPasswordSerialNumber(nextPasswordNo);
         passwordResolver.save(newPwdEntity);
         LOGGER.info("Password for user {} has been successfully reset", userEntity.getUserId());
+        return newPwdEntity;
     }
 }

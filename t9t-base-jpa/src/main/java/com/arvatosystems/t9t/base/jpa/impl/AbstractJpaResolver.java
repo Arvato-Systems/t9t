@@ -17,9 +17,8 @@ package com.arvatosystems.t9t.base.jpa.impl;
 
 import java.util.List;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.TypedQuery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.jpa.IEntityMapper;
 import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey;
@@ -29,13 +28,17 @@ import com.arvatosystems.t9t.base.services.IRefResolver;
 
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.SortColumn;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.bonaparte.refs.PersistenceException;
 import de.jpaw.dp.Jdp;
+import de.jpaw.util.ApplicationException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.TypedQuery;
 
 public abstract class AbstractJpaResolver<
   REF extends Ref,
@@ -43,6 +46,7 @@ public abstract class AbstractJpaResolver<
   TRACKING extends TrackingBase,
   ENTITY extends BonaPersistableKey<Long> & BonaPersistableTracking<TRACKING>
 > implements IRefResolver<REF, DTO, TRACKING> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractJpaResolver.class);
 
     protected final String entityName;
     protected final IResolverSurrogateKey<REF, TRACKING, ENTITY> resolver;
@@ -106,6 +110,14 @@ public abstract class AbstractJpaResolver<
     @Override
     public void update(final DTO dto) {
         final ENTITY eOld = getEntityForKeyOrThrow(dto.getObjectRef());
+        final String oldTenant = resolver.getTenantId(eOld);
+        try {
+            resolver.writeAllowed(oldTenant);  // check if I am allowed to write to this entity
+        } catch (ApplicationException e) {
+            LOGGER.error("Denying WRITE access to tenant {} for user {} in entity resolver {}",
+              oldTenant, resolver.getSharedTenantId(), resolver.getClass().getCanonicalName());
+            throw e;
+        }
         final ENTITY eNew = mapper.mapToEntity(dto, false);
         eOld.mergeFrom(eNew);
     }

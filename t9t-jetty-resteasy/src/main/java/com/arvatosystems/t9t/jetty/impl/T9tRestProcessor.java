@@ -29,12 +29,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
-import jakarta.ws.rs.container.AsyncResponse;
-import jakarta.ws.rs.core.HttpHeaders;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +41,7 @@ import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
 import com.arvatosystems.t9t.base.auth.AuthenticationResponse;
 import com.arvatosystems.t9t.rest.services.IGatewayStringSanitizerFactory;
 import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
-import com.arvatosystems.t9t.xml.GenericResult;
+import com.arvatosystems.t9t.rest.utils.RestUtils;
 import com.arvatosystems.t9t.xml.auth.AuthenticationResult;
 
 import de.jpaw.bonaparte.api.media.MediaTypeInfo;
@@ -60,6 +54,11 @@ import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ApplicationException;
 import de.jpaw.util.ExceptionUtil;
+import jakarta.ws.rs.container.AsyncResponse;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 @Singleton
 public class T9tRestProcessor implements IT9tRestProcessor {
@@ -85,21 +84,20 @@ public class T9tRestProcessor implements IT9tRestProcessor {
         final String acceptHeader = determineResponseType(httpHeaders);
         if (inputData == null || inputData.isEmpty()) {
             LOGGER.error("{}: No input data provided", infoMsg);
-            returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, createErrorResult(T9tException.MISSING_PARAMETER, null));  // missing parameter
+            returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, T9tException.MISSING_PARAMETER, null);  // missing parameter
             return;
         }
         for (T elementToCheck: inputData) {
             if (elementToCheck == null) {
                 LOGGER.error("Null as list element");
-                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST,
-                  createErrorResult(T9tException.MISSING_PARAMETER, "List element null not allowed"));
+                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, T9tException.MISSING_PARAMETER, "List element null not allowed");
                 return;
             }
             try {
                 elementToCheck.validate();
             } catch (final ApplicationException e) {
                 LOGGER.error("Exception during request validation: {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
-                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, createErrorResult(e.getErrorCode(), e.getMessage()));
+                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, e.getErrorCode(), e.getMessage());
                 return;
             }
         }
@@ -109,50 +107,32 @@ public class T9tRestProcessor implements IT9tRestProcessor {
                 rq = requestConverterSingle.apply(inputData.get(0));
             } catch (final ApplicationException e) {
                 LOGGER.error("Exception during request conversion (single): {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
-                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, createErrorResult(e.getErrorCode(), e.getMessage()));  // missing parameter
+                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, e.getErrorCode(), e.getMessage());  // missing parameter
                 return;
             } catch (final Exception e) {
                 LOGGER.error("Exception during request conversion (single): {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
-                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, createErrorResult(T9tException.GENERAL_EXCEPTION, e.getMessage()));
+                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, T9tException.GENERAL_EXCEPTION, e.getMessage());
                 return;
             }
         } else {
             if (requestConverterBatch == null) {
                 LOGGER.error("{}: More than one record provided ({})", infoMsg, inputData.size());
-                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, createErrorResult(T9tException.TOO_MANY_RECORDS, null));
+                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, T9tException.TOO_MANY_RECORDS, null);
                 return;
             }
             try {
                 rq = requestConverterBatch.apply(inputData);
             } catch (final ApplicationException e) {
                 LOGGER.error("Exception during request conversion (multi): {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
-                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, createErrorResult(e.getErrorCode(), e.getMessage()));
+                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, e.getErrorCode(), e.getMessage());
                 return;
             } catch (final Exception e) {
                 LOGGER.error("Exception during request conversion (multi): {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
-                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, createErrorResult(T9tException.GENERAL_EXCEPTION, e.getMessage()));
+                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, T9tException.GENERAL_EXCEPTION, e.getMessage());
                 return;
             }
         }
         performAsyncBackendRequest(httpHeaders, resp, rq, infoMsg, ServiceResponse.class, sr -> createResultFromServiceResponse(sr));
-    }
-
-    @Override
-    public void returnAsyncResult(final String acceptHeader, final AsyncResponse resp, final Response.Status status, final Object result) {
-        final Response.ResponseBuilder response = Response.status(status);
-        response.type(acceptHeader == null || acceptHeader.length() == 0 ? "application/json" : acceptHeader);
-        response.entity(result);
-        final Response responseObj = response.build();
-        resp.resume(responseObj);
-    }
-
-    private static GenericResult createErrorResult(final int returnCode, final String errorDetails) {
-        final GenericResult result = new GenericResult();
-        result.setErrorDetails(errorDetails);
-        result.setErrorMessage(T9tException.codeToString(returnCode));
-        result.setReturnCode(returnCode);
-        result.setProcessRef(0L);
-        return result;
     }
 
     private static Response.ResponseBuilder createResponseBuilder(final int returncode) {
@@ -222,7 +202,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
             requestParameters.validate();  // validate the request before we launch a worker thread!
         } catch (final ApplicationException e) {
             LOGGER.error("Exception during request validation: {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
-            returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, createErrorResult(e.getErrorCode(), e.getMessage()));  // missing parameter
+            returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, e.getErrorCode(), e.getMessage());  // missing parameter
             return;
         }
         final int invocationNo = COUNTER.incrementAndGet();
@@ -235,7 +215,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
             try {
                 requestParameters.treeWalkString(stringSanitizer, true);
             } catch (ApplicationException e) {
-                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, createErrorResult(T9tException.ILLEGAL_CHARACTER, e.getMessage()));
+                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, T9tException.ILLEGAL_CHARACTER, e.getMessage());
                 return;
             }
         }
@@ -283,7 +263,8 @@ public class T9tRestProcessor implements IT9tRestProcessor {
             final Response responseObj = responseBuilder.build();
             resp.resume(responseObj);
         }).exceptionally(e -> {
-            resp.resume(RestUtils.error(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage()));
+            final int errorCode = (e instanceof ApplicationException ? ((ApplicationException)e).getErrorCode() : T9tException.GENERAL_EXCEPTION);
+            resp.resume(RestUtils.error(Response.Status.INTERNAL_SERVER_ERROR, errorCode, e.getMessage(), httpHeaders));
             e.printStackTrace();
             return null;
         });
@@ -321,7 +302,8 @@ public class T9tRestProcessor implements IT9tRestProcessor {
             final Response responseObj = responseBuilder.build();
             resp.resume(responseObj);
         }).exceptionally(e -> {
-            resp.resume(RestUtils.error(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage()));
+            final int errorCode = (e instanceof ApplicationException ? ((ApplicationException)e).getErrorCode() : T9tException.GENERAL_EXCEPTION);
+            resp.resume(RestUtils.error(Response.Status.INTERNAL_SERVER_ERROR, errorCode, e.getMessage(), httpHeaders));
             e.printStackTrace();
             return null;
         });

@@ -18,21 +18,12 @@ package com.arvatosystems.t9t.jetty.init;
 import java.util.HashSet;
 import java.util.Set;
 
-import jakarta.servlet.ServletConfig;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.core.Application;
-import jakarta.ws.rs.core.Context;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.jdp.Init;
-import com.arvatosystems.t9t.jetty.exceptions.ApplicationExceptionHandler;
 import com.arvatosystems.t9t.jetty.exceptions.GeneralExceptionHandler;
-import com.arvatosystems.t9t.jetty.exceptions.RestExceptionHandler;
-import com.arvatosystems.t9t.jetty.exceptions.T9tExceptionHandler;
-import com.arvatosystems.t9t.jetty.impl.RestUtils;
 import com.arvatosystems.t9t.jetty.oas.DateTimeConverters;
 import com.arvatosystems.t9t.jetty.oas.JsonSchemaOpenApiUtil;
 import com.arvatosystems.t9t.jetty.rest.endpoints.StaticResourcesResource;
@@ -40,6 +31,7 @@ import com.arvatosystems.t9t.jetty.xml.XmlMediaTypeDecoder;
 import com.arvatosystems.t9t.jetty.xml.XmlMediaTypeEncoder;
 import com.arvatosystems.t9t.rest.converters.JaxrsParamConverterProvider;
 import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
+import com.arvatosystems.t9t.rest.utils.RestUtils;
 
 import de.jpaw.bonaparte.core.BonaPortableFactory;
 import de.jpaw.dp.Jdp;
@@ -58,6 +50,10 @@ import io.swagger.v3.oas.models.security.SecurityScheme.Type;
 import io.swagger.v3.oas.models.servers.Server;
 import io.swagger.v3.oas.models.servers.ServerVariable;
 import io.swagger.v3.oas.models.servers.ServerVariables;
+import jakarta.servlet.ServletConfig;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.Context;
 
 public class ApplicationConfig extends Application {
     private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationConfig.class);
@@ -97,9 +93,6 @@ public class ApplicationConfig extends Application {
 
         // determine all ExceptionMapper
         allClasses = new HashSet<>(12);
-        allClasses.add(T9tExceptionHandler.class);
-        allClasses.add(ApplicationExceptionHandler.class);
-        allClasses.add(RestExceptionHandler.class);
         allClasses.add(GeneralExceptionHandler.class);
         allClasses.add(StandaloneObjectMapper.class);
         allClasses.add(JaxrsParamConverterProvider.class);

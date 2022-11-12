@@ -33,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.cfg.be.AsyncTransmitterConfiguration;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
@@ -76,14 +77,13 @@ public class AsyncQueueKafka<R extends BonaPortable> implements IAsyncQueue {
             queueConfig.freeze();
 
             // obtain the kafka configuration
-            // FIXME: do not use z, this is prereliminary code
             final String topic = queueConfig.getKafkaTopic();
             if (topic == null) {
                 throw new T9tException(T9tException.MISSING_CONFIGURATION, "need 'kafkaTopic' in AsyncQueueDTO " + queueConfig.getAsyncQueueId());
             }
             final KafkaConfiguration kafkaConfig = ConfigProvider.getConfiguration().getKafkaConfiguration();
             final String defaultBootstrapServers = kafkaConfig == null ? null : kafkaConfig.getDefaultBootstrapServers();
-            final String bootstrapServers = queueConfig.getKafkaBootstrapServers() == null ? defaultBootstrapServers : queueConfig.getKafkaBootstrapServers();
+            final String bootstrapServers = T9tUtil.nvl(queueConfig.getKafkaBootstrapServers(), defaultBootstrapServers);
             if (bootstrapServers == null) {
                 throw new T9tException(T9tException.MISSING_CONFIGURATION, "need kafka 'bootstrapServers' in AsyncQueueDTO " + queueConfig.getAsyncQueueId());
             }
@@ -177,7 +177,7 @@ public class AsyncQueueKafka<R extends BonaPortable> implements IAsyncQueue {
                     }
                 }
             }
-            kafkaReader = new KafkaTopicReader(bootstrapServers, topic, "async", props);
+            kafkaReader = new KafkaTopicReader(bootstrapServers, topic, "async", props, null);
 
             sender = Jdp.getRequired(IAsyncSender.class, myCfg.getSenderQualifier() == null ? "POST" : myCfg.getSenderQualifier());
             sender.init(myCfg);

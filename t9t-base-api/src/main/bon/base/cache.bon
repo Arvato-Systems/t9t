@@ -21,7 +21,6 @@ import t9t.base.types.*
 package (com.arvatosystems) t9t.base.cache {
     default private unsigned trim noControlChars;
     properties noJava, simpleref, unroll, noupdate, qualifierFor,
-        tenantCategory is com.arvatosystems.t9t.annotations.TenantCategory(),
         searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
         serialized is com.arvatosystems.t9t.annotations.StoreSerialized,
         noAutoMap is com.arvatosystems.t9t.annotations.NoAutoMap,

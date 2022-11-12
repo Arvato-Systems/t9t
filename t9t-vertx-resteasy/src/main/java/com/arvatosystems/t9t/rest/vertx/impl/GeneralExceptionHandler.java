@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.jetty.exceptions;
+package com.arvatosystems.t9t.rest.vertx.impl;
 
 import org.jboss.resteasy.spi.HttpRequest;
 import org.slf4j.Logger;

@@ -16,42 +16,50 @@
 package com.arvatosystems.t9t.msglog.jpa.request;
 
 import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.auth.PermissionType;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
+import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.msglog.jpa.entities.MessageEntity;
 import com.arvatosystems.t9t.msglog.jpa.persistence.IMessageEntityResolver;
-import com.arvatosystems.t9t.msglog.request.RetrieveParametersRequest;
-import com.arvatosystems.t9t.msglog.request.RetrieveParametersResponse;
 import com.arvatosystems.t9t.server.services.IAuthorize;
 
 import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 import de.jpaw.dp.Jdp;
 
-public class RetrieveParametersRequestHandler extends AbstractRequestHandler<RetrieveParametersRequest> {
+public abstract class AbstractRerunRequestHandler<T extends RequestParameters> extends AbstractRequestHandler<T> {
+    protected final IExecutor executor = Jdp.getRequired(IExecutor.class);
     protected final IMessageEntityResolver resolver = Jdp.getRequired(IMessageEntityResolver.class);
     protected final IAuthorize authorizer = Jdp.getRequired(IAuthorize.class);
 
-    @Override
-    public RetrieveParametersResponse execute(final RequestContext ctx, final RetrieveParametersRequest rq) {
+    protected void checkPermission(final RequestContext ctx, final RequestParameters rq) {
+        // additional permission check for CUSTOM and ADMIN
         final Permissionset permissions = authorizer.getPermissions(ctx.internalHeaderParameters.getJwtInfo(), PermissionType.BACKEND, rq.ret$PQON());
         if (!permissions.contains(OperationType.CUSTOM)) {
             throw new T9tException(T9tException.NOT_AUTHORIZED, OperationType.CUSTOM.name() + " on " + rq.ret$PQON());
         }
-        final MessageEntity loggedRequest = resolver.find(rq.getProcessRef());
-        if (loggedRequest == null)
-            throw new T9tException(T9tException.RECORD_DOES_NOT_EXIST, rq.getProcessRef());
-
-        // need extra permission (ADMIN) for this if the userId is not me
-        if (!ctx.userId.equals(loggedRequest.getUserId()) && !permissions.contains(OperationType.ADMIN)) {
+        if (!permissions.contains(OperationType.ADMIN)) {
             throw new T9tException(T9tException.NOT_AUTHORIZED, OperationType.ADMIN.name() + " on " + rq.ret$PQON());
         }
-        final RetrieveParametersResponse resp = new RetrieveParametersResponse();
-        if (rq.getRequestParameters())
-            resp.setRequestParameters(loggedRequest.getRequestParameters());
-        if (rq.getServiceResponse())
-            resp.setServiceResponse(loggedRequest.getResponse());
-        return resp;
+    }
+
+    protected MessageEntity getLoggedRequestByProcessRef(final RequestContext ctx, final Long processRef) {
+        final MessageEntity loggedRequest = resolver.find(processRef);
+        if (loggedRequest == null) {
+            throw new T9tException(T9tException.RECORD_DOES_NOT_EXIST, processRef);
+        }
+        final RequestParameters recordedRequest = loggedRequest.getRequestParameters();
+        if (recordedRequest == null) {
+            throw new T9tException(T9tException.RERUN_NOT_POSSIBLE_NO_RECORDED_REQUEST, processRef);
+        }
+        // also check permissions for this request
+        final Permissionset permissions = authorizer.getPermissions(ctx.internalHeaderParameters.getJwtInfo(), PermissionType.BACKEND,
+          recordedRequest.ret$PQON());
+        if (!permissions.contains(OperationType.EXECUTE)) {
+            throw new T9tException(T9tException.NOT_AUTHORIZED, OperationType.EXECUTE.name() + " on " + recordedRequest.ret$PQON());
+        }
+        return loggedRequest;
     }
 }

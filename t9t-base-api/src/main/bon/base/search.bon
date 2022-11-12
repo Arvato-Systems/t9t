@@ -23,7 +23,6 @@ import t9t.base.output.*
 package (com.arvatosystems) t9t.base.search {
     default private unsigned trim noControlChars;
     properties inherited, active, ^default,
-        tenantCategory is com.arvatosystems.t9t.annotations.TenantCategory(),
         searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
         serialized is com.arvatosystems.t9t.annotations.StoreSerialized,
         noAutoMap is com.arvatosystems.t9t.annotations.NoAutoMap,

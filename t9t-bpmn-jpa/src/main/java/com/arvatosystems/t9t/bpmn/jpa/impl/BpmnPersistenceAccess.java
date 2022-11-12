@@ -27,6 +27,7 @@ import jakarta.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.base.JsonUtil;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.services.IClusterEnvironment;
@@ -175,13 +176,14 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
     }
 
     @Override
-    public Long createOrUpdateNewStatus(final RequestContext ctx, final ProcessExecutionStatusDTO dto, final ExecuteProcessWithRefRequest rq) {
+    public Long createOrUpdateNewStatus(final RequestContext ctx, final ProcessExecutionStatusDTO dto, final ExecuteProcessWithRefRequest rq,
+      final boolean restart) {
         Long objectRef = null;
         final ProcessExecStatusEntity existingEntity
           = statusResolver.findByProcessDefinitionIdAndTargetObjectRef(true, dto.getProcessDefinitionId(), dto.getTargetObjectRef());
-        if (existingEntity != null && refresh(existingEntity) != null) { //refresh because it might be removed at another thread
+        if (existingEntity != null && refresh(existingEntity) != null) { // refresh because it might be removed at another thread
             ctx.lockRef(existingEntity.getObjectRef()); // lock the status ref
-            refresh(existingEntity); //refresh again after acquiring the lock to avoid outdated version
+            refresh(existingEntity); // refresh again after acquiring the lock to avoid outdated version
             // Existing status: check what to do
             if (rq.getIfEntryExists() == WorkflowActionEnum.ERROR) {
                 LOGGER.error("Attempted to recreate an existing business process entry: {}:{}", rq.getProcessDefinitionId(), rq.getTargetObjectRef());
@@ -194,13 +196,16 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
             if (rq.getWorkflowStep() != null) {
                 // PRIO 1: set next step explicitly if defined
                 existingEntity.setNextStep(rq.getWorkflowStep());
-            } else if (Boolean.TRUE.equals(rq.getRestartAtBeginningIfExists())) {
+            } else if (restart) {
                 // PRIO 2: else if RestartAtBeginning set next step to null
                 existingEntity.setNextStep(null);  // reset to beginning
             }
             // ELSE resume at current position (RUN: default action)
             if (rq.getInitialParameters() != null) {
-                existingEntity.setCurrentParameters(rq.getInitialParameters());
+                final boolean merge = Boolean.TRUE.equals(rq.getMergeParameters());
+                existingEntity.setCurrentParameters(merge
+                    ? JsonUtil.mergeZ(existingEntity.getCurrentParameters(), rq.getInitialParameters())
+                    : rq.getInitialParameters());
             }
             existingEntity.setYieldUntil(dto.getYieldUntil());
             objectRef = existingEntity.getObjectRef();
@@ -216,7 +221,7 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
             ctx.lockRef(objectRef);
         }
         if (rq.getInitialDelay() == null) {
-            // launch the process immediately
+            // launch the process immediately (TODO: need a special node!)
             final TriggerSingleProcessNowRequest trigger = new TriggerSingleProcessNowRequest(objectRef);
             executor.executeAsynchronous(ctx, trigger);
         }

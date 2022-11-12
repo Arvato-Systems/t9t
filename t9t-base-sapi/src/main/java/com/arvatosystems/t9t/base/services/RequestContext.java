@@ -45,7 +45,8 @@ import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
 import de.jpaw.bonaparte.refsw.impl.AbstractRequestContext;
 import de.jpaw.util.ExceptionUtil;
 
-/** Holds the current request's environment.
+/**
+ * Holds the current request's environment.
  *
  * For every request, one of these is created.
  * Additional ones may be created for the asynchronous log writers (using dummy or null internalHeaderParameters)
@@ -55,7 +56,9 @@ import de.jpaw.util.ExceptionUtil;
 public class RequestContext extends AbstractRequestContext {  // FIXME: this class should be final, but some unit test in t9t-ssm-be relies on non-finalness
     private static final Logger LOGGER = LoggerFactory.getLogger(RequestContext.class);
     private static final Cache<Long, Semaphore> GLOBAL_JVM_LOCKS = Caffeine.newBuilder()
-        .expireAfterAccess(1, TimeUnit.MINUTES).initialCapacity(1000).build();
+        .expireAfterAccess(10, TimeUnit.SECONDS).initialCapacity(10000).build();
+    private static final Cache<String, Semaphore> GLOBAL_JVM_LOCKS2 = Caffeine.newBuilder()
+            .expireAfterAccess(10, TimeUnit.SECONDS).initialCapacity(10000).build();
 
     public final InternalHeaderParameters internalHeaderParameters;
     public final Thread createdByThread = Thread.currentThread();
@@ -67,7 +70,8 @@ public class RequestContext extends AbstractRequestContext {  // FIXME: this cla
     private List<IPostCommitHook> postFailureList = null; // to be executed after failures
     private final AtomicInteger progressCounter = new AtomicInteger(0);
     private final Map<BucketWriteKey, Integer> bucketsToWrite = new ConcurrentHashMap<>();
-    private final Map<Long, Semaphore> ownedJvmLocks = new ConcurrentHashMap<>();  // all locks held by this thread / request context (by ref)
+    private final Map<Long, Semaphore> ownedJvmLocks = new ConcurrentHashMap<>();   // locks held by this thread / request context (by ref)
+    private final Map<String, Semaphore> moreJvmLocks = new ConcurrentHashMap<>();  // locks held by this thread / request context (by String key)
 
     @AllowPublicAccess
     public volatile String statusText;
@@ -113,7 +117,7 @@ public class RequestContext extends AbstractRequestContext {  // FIXME: this cla
     }
 
     /**
-     * Return a call stack for the process status call (called by another thread, which is the reason for the synchronization).
+     * Returns a call stack for the process status call (called by another thread, which is the reason for the synchronization).
      * The returned list has at least one element and the status text is truncated to the allowed size.
      */
     public List<StackLevel> getCallStack() {
@@ -137,7 +141,7 @@ public class RequestContext extends AbstractRequestContext {  // FIXME: this cla
     }
 
     /**
-     * Return true if the current request on the request context is the first request being invoked
+     * Returns true if the current request on the request context is the first request being invoked
      */
     public boolean isTopLevelRequest() {
         return depth == 0;
@@ -246,12 +250,22 @@ public class RequestContext extends AbstractRequestContext {  // FIXME: this cla
 
     /** Releases all locks held by this context. */
     public void releaseAllLocks() {
-        if (!ownedJvmLocks.isEmpty())
-            LOGGER.trace("Releasing locks on {} refs", ownedJvmLocks.size());
-        for (final Semaphore sem : ownedJvmLocks.values()) {
-            sem.release();
+        if (!ownedJvmLocks.isEmpty()) {
+            LOGGER.debug("SEM: Releasing locks on {} refs", ownedJvmLocks.size());
+            for (final Map.Entry<Long, Semaphore> sem : ownedJvmLocks.entrySet()) {
+                LOGGER.debug("SEM: Releasing lock on ref {}", sem.getKey());
+                sem.getValue().release();
+            }
+            ownedJvmLocks.clear();
         }
-        ownedJvmLocks.clear();
+        if (!moreJvmLocks.isEmpty()) {
+            LOGGER.debug("Releasing locks on {} IDs", moreJvmLocks.size());
+            for (final Map.Entry<String, Semaphore> sem : moreJvmLocks.entrySet()) {
+                LOGGER.debug("SEM: Releasing lock on ref {}", sem.getKey());
+                sem.getValue().release();
+            }
+            moreJvmLocks.clear();
+        }
     }
 
     /** Acquires a new lock within a given timeout of n milliseconds. */
@@ -260,20 +274,19 @@ public class RequestContext extends AbstractRequestContext {  // FIXME: this cla
             // get a Semaphore from the global pool
             try {
                 final Semaphore globalSem = GLOBAL_JVM_LOCKS.get(ref, unused -> new Semaphore(1, true)); // get a global Semaphore, or create one if non exists
+                LOGGER.debug("SEM: Acquiring JVM lock on ref {}", ref);
+                final long start = System.nanoTime();
                 if (!globalSem.tryAcquire(timeoutInMillis, TimeUnit.MILLISECONDS)) {
                     final String msg = ref + " after " + timeoutInMillis + " milliseconds";
-                    LOGGER.warn("Could not acquire JVM lock on {}", msg);
+                    LOGGER.warn("SEM: Could not acquire JVM lock on ref {}", msg);
                     throw new T9tException(T9tException.COULD_NOT_ACQUIRE_LOCK, msg);
                 }
-                LOGGER.trace("Acquired JVM lock on ref {}", ref);
+                final long end = System.nanoTime();
+                LOGGER.debug("SEM: Acquiring JVM lock on ref {} SUCCESS after {} ns", ref, end - start);
                 return globalSem;
-//            } catch (final Exception e) {
-//                final String msg = ref + " after " + timeoutInMillis + " milliseconds due to ExecutionException " + ExceptionUtil.causeChain(e);
-//                LOGGER.warn("Could not acquire JVM lock on {}", msg);
-//                throw new T9tException(T9tException.COULD_NOT_ACQUIRE_LOCK, msg);
             } catch (final InterruptedException e) {
                 final String msg = ref + " after " + timeoutInMillis + " milliseconds due to InterruptedException " + ExceptionUtil.causeChain(e);
-                LOGGER.warn("Could not acquire JVM lock on {}", msg);
+                LOGGER.warn("SEM: Could not acquire JVM lock on ref {}", msg);
                 throw new T9tException(T9tException.COULD_NOT_ACQUIRE_LOCK, msg);
             }
         });
@@ -282,6 +295,35 @@ public class RequestContext extends AbstractRequestContext {  // FIXME: this cla
     /** Acquires a new lock within the default timeout (of currently 5000 milliseconds). */
     public void lockRef(final Long ref) {
         lockRef(ref, 5000L);
+    }
+
+    /** Acquires a new lock within a given timeout of n milliseconds. */
+    public void lockString(final String key, final long timeoutInMillis) {
+        moreJvmLocks.computeIfAbsent(key, myRef -> {
+            // get a Semaphore from the global pool
+            try {
+                final Semaphore globalSem = GLOBAL_JVM_LOCKS2.get(key, unused -> new Semaphore(1, true)); // get a global Semaphore, or create one if non exists
+                LOGGER.debug("SEM: Acquiring JVM lock on ID {}", key);
+                final long start = System.nanoTime();
+                if (!globalSem.tryAcquire(timeoutInMillis, TimeUnit.MILLISECONDS)) {
+                    final String msg = key + " after " + timeoutInMillis + " milliseconds";
+                    LOGGER.warn("SEM: Could not acquire JVM lock on ID {}", msg);
+                    throw new T9tException(T9tException.COULD_NOT_ACQUIRE_LOCK, msg);
+                }
+                final long end = System.nanoTime();
+                LOGGER.debug("SEM: Acquiring JVM lock on ID {} SUCCESS after {} ns", key, end - start);
+                return globalSem;
+            } catch (final InterruptedException e) {
+                final String msg = key + " after " + timeoutInMillis + " milliseconds due to InterruptedException " + ExceptionUtil.causeChain(e);
+                LOGGER.warn("SEM: Could not acquire JVM lock on ID {}", msg);
+                throw new T9tException(T9tException.COULD_NOT_ACQUIRE_LOCK, msg);
+            }
+        });
+    }
+
+    /** Acquires a new lock within the default timeout (of currently 5000 milliseconds). */
+    public void lockString(final String key) {
+        lockString(key, 5000L);
     }
 
     public boolean isPriorityRequest() {

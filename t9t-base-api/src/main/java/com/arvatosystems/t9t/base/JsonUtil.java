@@ -192,6 +192,34 @@ public final class JsonUtil {
                 + ", but got " + value.getClass().getCanonicalName());
     }
 
+    /**
+     * Merge additional values into an existing Map. The destination map is considered to be modifiable if it exists.
+     * In case it is null, a new map will be returned if and only of the source map is not empty.
+     */
+    public static Map<String, Object> mergeZ(final Map<String, Object> dst, final Map<String, Object> src) {
+        if (T9tUtil.isEmpty(src)) {
+            return dst;
+        }
+        final Map<String, Object> result = T9tUtil.isEmpty(dst) ? new HashMap<>(src.size()) : dst;
+        result.putAll(src);
+        return result;
+    }
+
+    /**
+     * Add a key/value pair to an existing Map. The destination map is considered to be modifiable if it exists.
+     * In case it is null, a new map will be returned.
+     * in case value is null, the key will be removed from the map.
+     */
+    public static Map<String, Object> addZ(final Map<String, Object> dst, final String key, final Object value) {
+        final Map<String, Object> result = T9tUtil.isEmpty(dst) ? new HashMap<>(4) : dst;
+        if (value == null) {
+            result.remove(key);
+        } else {
+            result.put(key, value);
+        }
+        return result;
+    }
+
     public static final ConfigurationReader CONFIG_READER = ConfigurationReaderFactory.getConfigReaderForName("t9t.json", null);
     public static final boolean UNWRAP_JSON = Boolean.TRUE.equals(CONFIG_READER.getBooleanProperty("t9t.json.unwrapkvp"));
 

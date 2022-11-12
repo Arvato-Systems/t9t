@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -46,6 +47,16 @@ public final class T9tUtil {
      */
     public static boolean isEmpty(final Collection<?> collection) {
         return collection == null || collection.isEmpty();
+    }
+
+    /**
+     * Checks whether the given {@link Collection} parameter is null or empty.
+     *
+     * @param collection the {@link Collection} object to check
+     * @return true if param is null or empty
+     */
+    public static boolean isEmpty(final Map<?, ?> map) {
+        return map == null || map.isEmpty();
     }
 
     /**

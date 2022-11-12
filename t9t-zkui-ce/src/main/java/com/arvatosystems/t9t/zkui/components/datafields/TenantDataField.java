@@ -24,6 +24,7 @@ import org.zkoss.zul.Comboitem;
 
 import com.arvatosystems.t9t.authc.api.TenantDescription;
 import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.types.TenantIsolationCategoryType;
 
 public class TenantDataField extends AbstractDataField<Combobox, String> {
     private static final Logger LOGGER = LoggerFactory.getLogger(TenantDataField.class);
@@ -35,28 +36,30 @@ public class TenantDataField extends AbstractDataField<Combobox, String> {
     }
 
 
-    public TenantDataField(DataFieldParameters params, String tenantCategory) {
+    public TenantDataField(DataFieldParameters params, TenantIsolationCategoryType tenantCategory) {
         super(params);
         setConstraints(c, null);
-        if (tenantCategory == null || tenantCategory.equals("I")) {
-            tenantCategory = "I";
+        if (tenantCategory == null || tenantCategory == TenantIsolationCategoryType.ISOLATED) {
+            tenantCategory = TenantIsolationCategoryType.ISOLATED;
             LOGGER.error("Tenant selection for a tenant isolated DTO does not make sense!");
         }
 
-        if (tenantCategory == "E") {
+        if (tenantCategory == TenantIsolationCategoryType.ISOLATED_ADMIN_DEFAULT) {
             // E is A for @, D for any other tenant
-            tenantCategory = as.getTenantId().equals(T9tConstants.GLOBAL_TENANT_ID) ? "A" : "D";
+            tenantCategory = as.getTenantId().equals(T9tConstants.GLOBAL_TENANT_ID)
+              ? TenantIsolationCategoryType.ISOLATED_WITH_ADMIN
+              : TenantIsolationCategoryType.ISOLATED_WITH_DEFAULT;
         }
 
         switch (tenantCategory) {
-        case "A":
+        case ISOLATED_WITH_ADMIN:
             // get all allowed tenants
             List<TenantDescription> allowedTenants = as.getAllowedTenants();
             for (TenantDescription td : allowedTenants) {
                 newTenantComboItem(c, td.getTenantId());
             }
             break;
-        case "D":
+        case ISOLATED_WITH_DEFAULT:
             newTenantComboItem(c, T9tConstants.GLOBAL_TENANT_ID);
             if (T9tConstants.GLOBAL_TENANT_ID.equals(as.getTenantId()))
                 break;  // do not show the same twice

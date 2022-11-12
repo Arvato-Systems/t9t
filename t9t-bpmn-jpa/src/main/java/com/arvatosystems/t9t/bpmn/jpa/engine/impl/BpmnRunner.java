@@ -95,15 +95,17 @@ public class BpmnRunner implements IBpmnRunner {
             return false;
         }
 
-        final String id = "serial " + dbgCtr.incrementAndGet() + ": " + statusEntity.getObjectRef() + " of " + statusEntity.getProcessDefinitionId() + ":"
-                + statusEntity.getTargetObjectRef() + " step " + statusEntity.getNextStep();
-        LOGGER.debug("XYZZY START {}", id);
-        ctx.addPostCommitHook((final RequestContext previousRequestContext, final RequestParameters rq, final ServiceResponse rs) -> {
-            LOGGER.debug("XYZZY DONE {}", id);
-        });
-        ctx.addPostFailureHook((final RequestContext previousRequestContext, final RequestParameters rq, final ServiceResponse rs) -> {
-            LOGGER.error("XYZZY FAILED {}", id);
-        });
+        if (LOGGER.isTraceEnabled()) {
+            final String id = "serial " + dbgCtr.incrementAndGet() + ": " + statusEntity.getObjectRef() + " of " + statusEntity.getProcessDefinitionId() + ":"
+                    + statusEntity.getTargetObjectRef() + " step " + statusEntity.getNextStep();
+            LOGGER.debug("XYZZY START {}", id);
+            ctx.addPostCommitHook((final RequestContext previousRequestContext, final RequestParameters rq, final ServiceResponse rs) -> {
+                LOGGER.debug("XYZZY DONE {}", id);
+            });
+            ctx.addPostFailureHook((final RequestContext previousRequestContext, final RequestParameters rq, final ServiceResponse rs) -> {
+                LOGGER.error("XYZZY FAILED {}", id);
+            });
+        }
 
         // 2.) get process configuration
         final ProcessDefinitionDTO pd = pdCache.getCachedProcessDefinitionDTO(ctx.tenantId, statusEntity.getProcessDefinitionId());
@@ -112,17 +114,22 @@ public class BpmnRunner implements IBpmnRunner {
         // 3.) obtain a factory to initialize the object (or use a dummy)
         final IBPMObjectFactory<Object> factory = getFactory(pd);
 
-        // decide if the execution must set a lock
-        final Long refToLock = pd.getUseExclusiveLock() ? factory.getRefForLock(statusEntity.getTargetObjectRef()) : null;
-        if (refToLock != null) {
-            ctx.lockRef(refToLock, pd.getJvmLockTimeoutInMillis() == null ? T9tConstants.DEFAULT_JVM_LOCK_TIMEOUT : pd.getJvmLockTimeoutInMillis());
+        // decide if the execution must set one or multiple locks
+        final long timeout = pd.getJvmLockTimeoutInMillis() == null ? T9tConstants.DEFAULT_JVM_LOCK_TIMEOUT : pd.getJvmLockTimeoutInMillis();
+        if (statusEntity.getLockId() != null && pd.getUseExclusiveLock()) {
+            // lock the ID specified
+            ctx.lockString(statusEntity.getLockId(), timeout);
+        }
+        final Long refToLock = statusEntity.getLockRef() != null ? statusEntity.getLockRef() : factory.getRefForLock(statusEntity.getTargetObjectRef());
+        if (refToLock != null && pd.getUseExclusiveLock()) {
+            ctx.lockRef(refToLock, timeout);
         }
         if (pd.getEngine() != null) {
             // use some BPMN 2 engine
             final IBpmnEngineRunner engineRunner = Jdp.getRequired(IBpmnEngineRunner.class, pd.getEngine());
-            return engineRunner.run(ctx, statusRef, pd, factory, refToLock, refToLock != null);
+            return engineRunner.run(ctx, statusRef, pd, factory);
         }
-        return run(ctx, statusEntity, pd, factory, refToLock, refToLock != null);
+        return run(ctx, statusEntity, pd, factory, refToLock, statusEntity.getLockId());
     }
 
     @Override
@@ -134,12 +141,13 @@ public class BpmnRunner implements IBpmnRunner {
         final IBPMObjectFactory<Object> factory = getFactory(pd);
 
         // decide if the execution must set a lock
-        final Long refToLock = pd.getUseExclusiveLock() ? factory.getRefForLock(rq.getTargetObjectRef()) : null;
-        if (refToLock != null) {
-            ctx.lockRef(refToLock, pd.getJvmLockTimeoutInMillis() == null ? T9tConstants.DEFAULT_JVM_LOCK_TIMEOUT : pd.getJvmLockTimeoutInMillis());
+        final long timeout = pd.getJvmLockTimeoutInMillis() == null ? T9tConstants.DEFAULT_JVM_LOCK_TIMEOUT : pd.getJvmLockTimeoutInMillis();
+        final Long refToLock = factory.getRefForLock(rq.getTargetObjectRef());
+        if (refToLock != null && pd.getUseExclusiveLock()) {
+            ctx.lockRef(refToLock, timeout);
         }
         // execute with the default engine. Fake a status entity
-        final Object workflowObject = factory.read(rq.getTargetObjectRef(), refToLock, refToLock != null);
+        final Object workflowObject = factory.read(rq.getTargetObjectRef(), refToLock, null);
         final ProcessExecStatusEntity statusEntity = statusResolver.newEntityInstance();
         final PerformSingleStepResponse resp = new PerformSingleStepResponse();
         final Map<String, Object> parameters = rq.getParameters() != null ? new HashMap<>(rq.getParameters()) : new HashMap<>();
@@ -158,12 +166,12 @@ public class BpmnRunner implements IBpmnRunner {
     }
 
     protected boolean run(final RequestContext ctx, final ProcessExecStatusEntity statusEntity, final ProcessDefinitionDTO pd,
-            final IBPMObjectFactory<?> factory, final Long lockObjectRef, final boolean jvmLockAcquired) {
+            final IBPMObjectFactory<?> factory, final Long lockRef, final String lockId) {
         MDC.put(T9tConstants.MDC_BPMN_PROCESS, pd.getName() == null ? Objects.toString(pd.getObjectRef()) : pd.getName());
         MDC.put(T9tConstants.MDC_BPMN_PROCESS_INSTANCE, Objects.toString(statusEntity.getObjectRef()));
 
         try {
-            final Object workflowObject = factory.read(statusEntity.getTargetObjectRef(), lockObjectRef, jvmLockAcquired);
+            final Object workflowObject = factory.read(statusEntity.getTargetObjectRef(), lockRef, lockId);
             // only now the lock has been obtained
             if (refresh(statusEntity) == null) {
                 LOGGER.info("Process status entry {} has disappeared... which implies end of the workflow process");

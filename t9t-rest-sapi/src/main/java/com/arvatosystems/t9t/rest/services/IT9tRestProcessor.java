@@ -22,12 +22,14 @@ import java.util.function.Function;
 
 import jakarta.ws.rs.container.AsyncResponse;
 import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
+import com.arvatosystems.t9t.rest.utils.RestUtils;
 import com.arvatosystems.t9t.xml.GenericResult;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.util.ApplicationException;
@@ -68,7 +70,21 @@ public interface IT9tRestProcessor {
     }
 
     /** Returns a response without using the worker thread. */
-    void returnAsyncResult(String acceptHeader, AsyncResponse resp, Response.Status status, Object result);
+    default void returnAsyncResult(final String acceptHeader, final AsyncResponse resp, final Response.Status status, final Object result) {
+        final Response.ResponseBuilder response = Response.status(status);
+        response.type(acceptHeader == null || acceptHeader.length() == 0 ? MediaType.APPLICATION_JSON : acceptHeader);
+        if (result != null) {
+            response.entity(result);
+        }
+        final Response responseObj = response.build();
+        resp.resume(responseObj);
+    }
+
+    /** Returns a response without using the worker thread. */
+    default void returnAsyncResult(final String acceptHeader, final AsyncResponse resp, final Response.Status status,
+      final int errorCode, final String message) {
+        returnAsyncResult(acceptHeader, resp, status, RestUtils.createErrorResult(errorCode, message));
+    }
 
     /** Performs the authentication request asynchronously, using a generic response mapper. */
     void performAsyncAuthBackendRequest(HttpHeaders httpHeaders, AsyncResponse resp, AuthenticationRequest requestParameters);

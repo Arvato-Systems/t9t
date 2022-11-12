@@ -24,6 +24,7 @@ import de.jpaw.dp.Singleton;
 
 /**
  * Simple form of a cluster manager, which does not attempt to group partitions for the same tenant on the same node.
+ * A cluster manager for multiple smaller tenants would store a partition offset and modulus within the tenant.
  */
 @Singleton
 public class KafkaTenantAgnosticClusterManager implements IClusterEnvironment {
@@ -35,20 +36,16 @@ public class KafkaTenantAgnosticClusterManager implements IClusterEnvironment {
 
     @Override
     public Collection<Integer> getListOfShards(final String tenantId) {
-        return KafkaClusterManagerInitializer.myIndexes;
+        return KafkaRequestProcessorAndClusterManagerInitializer.getRebalancer().getCurrentPartitions();
     }
 
     @Override
     public boolean processOnThisNode(final String tenantId, final int hash) {
-        if (KafkaClusterManagerInitializer.totalNumberOfPartitons <= 0) {
-            return true;  // no kafka available?
-        }
-        final Integer partition = Integer.valueOf((hash & 0x7fffffff) % KafkaClusterManagerInitializer.totalNumberOfPartitons);
-        return KafkaClusterManagerInitializer.myIndexes.contains(partition);
+        return KafkaRequestProcessorAndClusterManagerInitializer.processOnThisNode(tenantId, hash);
     }
 
     @Override
     public int getNumberOfNodes() {
-        return KafkaClusterManagerInitializer.totalNumberOfPartitons;
+        return KafkaRequestProcessorAndClusterManagerInitializer.getNumberOfPartitons();
     }
 }

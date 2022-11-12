@@ -2,9 +2,11 @@
     "viewModel": "bpmnStatus",
     "filters": [
         { "filterType": "E", "fieldName": "processDefinitionId" },
-        { "filterType": "E", "fieldName": "targetObjectRef" }
+        { "filterType": "E", "fieldName": "targetObjectRef" },
+        { "filterType": "E", "fieldName": "lockRef" },
+        { "filterType": "E", "fieldName": "lockId" }
     ],
     "fields": [
-        "processDefinitionId", "targetObjectRef", "runOnNode", "yieldUntil", "nextStep", "returnCode", "errorDetails"
+        "processDefinitionId", "targetObjectRef", "lockRef", "lockId", "runOnNode", "yieldUntil", "nextStep", "returnCode", "errorDetails"
     ]
 }

@@ -68,7 +68,7 @@ public class RetryAsyncMessagesRequestHandler extends AbstractRequestHandler<Ret
         criteria.setLimit(request.getMaxCount() != null ? request.getMaxCount() : 100000);
 
         final List<Long> messageRefs = messageResolver.searchKey(criteria);
-        LOGGER.info("Async Retry: Found {} messages{}", messageRefs.size());
+        LOGGER.info("Async Retry: Found {} messages", messageRefs.size());
 
         // process the data
         int count = 0;

@@ -257,6 +257,7 @@ public class T9tException extends ApplicationException {
     public static final int IMPORT_GENERAL_ERROR = OFFSET + 963;
     public static final int LOAD_CAMEL_CONFIG_ERROR = OFFSET + 964;
     public static final int CANNOT_FIND_UI_COLUMN = OFFSET + 965;
+    public static final int REST_BAD_LIST_SIZE = OFFSET + 966;
 
     // IO failure notification
     public static final int IOF_UNKNOWN_TIME_WINDOW_ERROR = OFFSET + 970;
@@ -505,6 +506,7 @@ public class T9tException extends ApplicationException {
         codeToDescription.put(IMPORT_GENERAL_ERROR, "Error in the service during the programmatic import process");
         codeToDescription.put(LOAD_CAMEL_CONFIG_ERROR, "Camel configuration could not be loaded.");
         codeToDescription.put(CANNOT_FIND_UI_COLUMN, "No UI column configuration found for specified column.");
+        codeToDescription.put(REST_BAD_LIST_SIZE, "Main object list must have size 1 for REST calls.");
 
         codeToDescription.put(ILE_NO_BPM_ENGINE_DEPLOYED, "Execution of a BPMN 2.0 process has been requested, but no engine is deployed.");
 

@@ -67,6 +67,9 @@ package (com.arvatosystems) t9t.bpmn.request {
         optional Enum WorkflowActionEnum        ifEntryExists;              // activity to do if a current entry exists (if null: RUN)
         optional defaultExternalId              workflowStep;               // the workflow step to start at
         optional unsigned Integer               runOnNode;                  // specifies a parameter which determines the execution node
+        optional f42Ref                         lockRef;                    // if non null, this reference should be locked for execution
+        optional defaultExternalId              lockId;                     // if non null, this reference should be locked for execution
+        optional Boolean                        mergeParameters;            // if true: initialParameters do not replace but add to configured or current ones
     }
 
     class ExecuteProcessWithRefResponse extends ServiceResponse {

@@ -38,7 +38,7 @@ public final class UnspecifiedFactory {
         }
 
         @Override
-        public Object read(final Long objectRef, final Long lockObjectRef, final boolean jvmLockAcquired) {
+        public Object read(final Long objectRef, final Long lockRef, final String lockId) {
             return INSTANCE; // returns the same instance for any parameter
         }
 

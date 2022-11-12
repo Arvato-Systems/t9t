@@ -70,6 +70,7 @@ public class CreateAndEmailDocumentRestResource implements IT9tRestEndpoint {
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public void createAndEmailDocument(@Context final HttpHeaders httpHeaders, @Suspended final AsyncResponse resp, final CreateAndEmailDocument params) {
+        validatePayload(params);
         final NewDocumentRequest rq = new NewDocumentRequest();
         final DocumentSelector sel = new DocumentSelector();
         final RecipientEmail re = new RecipientEmail();

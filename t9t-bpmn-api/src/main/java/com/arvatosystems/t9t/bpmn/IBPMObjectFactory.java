@@ -16,13 +16,13 @@
 package com.arvatosystems.t9t.bpmn;
 
 public interface IBPMObjectFactory<T> {
-    /** Returns the object ref on which a lock should be performed while executing this workflow, or null if no locking is required. */
+    /** Returns the objectRef on which a lock should be performed while executing this workflow, or null if no locking is required. */
     Long getRefForLock(Long objectRef);
 
     /** Reads an object specified by its ref from disk.
      * instances are qualified by the object identifier, for example salesOrder, deliveryOrder etc.
      */
-    T read(Long objectRef, Long lockObjectRef, boolean jvmLockAcquired);
+    T read(Long objectRef, Long lockRef, String lockId);
 
     /** Returns the data object for a certain path. */
     Object getVariable(String path, T data);

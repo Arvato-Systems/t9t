@@ -24,6 +24,7 @@ import org.zkoss.zul.Comboitem;
 
 import com.arvatosystems.t9t.authc.api.TenantDescription;
 import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.types.TenantIsolationCategoryType;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
@@ -59,24 +60,27 @@ public class TenantField extends AbstractField<Combobox> {
         return f;
     }
 
-    public TenantField(String fieldname, UIFilter cfg, FieldDefinition desc, String gridId, ApplicationSession session, String tenantCategory) {
+    public TenantField(String fieldname, UIFilter cfg, FieldDefinition desc, String gridId, ApplicationSession session,
+      TenantIsolationCategoryType tenantCategory) {
         super(fieldname, cfg, desc, gridId, session);
         if (cfg.getFilterType() != UIFilterType.EQUALITY) {
             throw new RuntimeException("tenant combobox must have equality constraint");
         }
-        if (tenantCategory == null || tenantCategory.equals("I")) {
-            tenantCategory = "I";
+        if (tenantCategory == null || tenantCategory == TenantIsolationCategoryType.ISOLATED) {
+            tenantCategory = TenantIsolationCategoryType.ISOLATED;
             LOGGER.error("Tenant selection for a tenant isolated DTO does not make sense!");
         }
         createComponents();
 
-        if (tenantCategory == "E") {
+        if (tenantCategory == TenantIsolationCategoryType.ISOLATED_ADMIN_DEFAULT) {
             // E is A for @, D for any other tenant
-            tenantCategory = session.getTenantId().equals(T9tConstants.GLOBAL_TENANT_ID) ? "A" : "D";
+            tenantCategory = session.getTenantId().equals(T9tConstants.GLOBAL_TENANT_ID)
+                ? TenantIsolationCategoryType.ISOLATED_WITH_ADMIN
+                : TenantIsolationCategoryType.ISOLATED_WITH_DEFAULT;
         }
 
         switch (tenantCategory) {
-        case "A":
+        case ISOLATED_WITH_ADMIN:
             if (session.getTenantId().equals(T9tConstants.GLOBAL_TENANT_ID)) {
                 // get all allowed tenants
                 List<TenantDescription> allowedTenants = session.getAllowedTenants();
@@ -88,7 +92,7 @@ public class TenantField extends AbstractField<Combobox> {
                 newTenantComboItem(cb, session.getTenantId());
             }
             break;
-        case "D":
+        case ISOLATED_WITH_DEFAULT:
             newTenantComboItem(cb, T9tConstants.GLOBAL_TENANT_ID);
             if (T9tConstants.GLOBAL_TENANT_ID.equals(session.getTenantId()))
                 break;  // do not show the same twice

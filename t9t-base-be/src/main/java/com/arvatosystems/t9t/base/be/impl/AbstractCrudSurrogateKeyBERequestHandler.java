@@ -213,9 +213,9 @@ public abstract class AbstractCrudSurrogateKeyBERequestHandler<REF extends Ref, 
 
         switch (crudRequest.getCrud()) {
         case CREATE:
-            validateCreate(dto); // plausibility check
+            validateCreate(dto);    // plausibility check
             dto.setObjectRef(genericRefGenerator.generateRef(dto.ret$rtti()));
-            resolver.create(dto);
+            resolver.create(dto);   // permissions checked by resolver
             rs.setKey(dto.getObjectRef()); // just copy
             break;
         case READ:
@@ -226,11 +226,8 @@ public abstract class AbstractCrudSurrogateKeyBERequestHandler<REF extends Ref, 
         case DELETE:
             dto = resolver.getDTO(crudRequest.getKey());
             checkActive(dto, crudRequest.getOnlyActive());
-//            if (!resolver.writeAllowed(resolver.getTenantId(result))) {
-//                throw new T9tException(T9tException.WRITE_ACCESS_ONLY_CURRENT_TENANT);
-//            }
             validateDelete(dto);
-            resolver.remove(crudRequest.getKey());
+            resolver.remove(crudRequest.getKey());   // permissions checked by resolver
             rs.setKey(crudRequest.getKey());
             break;
         case INACTIVATE:
@@ -238,9 +235,6 @@ public abstract class AbstractCrudSurrogateKeyBERequestHandler<REF extends Ref, 
             final boolean newState = crudRequest.getCrud() == OperationType.ACTIVATE;
             dto = resolver.getDTO(crudRequest.getKey());
             checkActive(dto, crudRequest.getOnlyActive());
-//            if (!resolver.writeAllowed(resolver.getTenantId(result))) {
-//                throw new T9tException(T9tException.WRITE_ACCESS_ONLY_CURRENT_TENANT);
-//            }
             if (dto.ret$Active() != newState) {
                 // yes, this is a real state change
                 activationChange(dto, newState);
@@ -251,21 +245,13 @@ public abstract class AbstractCrudSurrogateKeyBERequestHandler<REF extends Ref, 
         case UPDATE:
             final DTO old = resolver.getDTO(crudRequest.getKey());
             checkActive(old, crudRequest.getOnlyActive());
-//          if (!resolver.writeAllowed(resolver.getTenantId(result))) {
-//              throw new T9tException(T9tException.WRITE_ACCESS_ONLY_CURRENT_TENANT);
-//          }
             validateUpdate(old, dto); // plausibility
-//          mapper.checkNoUpdateFields(result, intended);
-//          validateUpdate(result, intended, dto); // plausibility
-//          result.mergeFrom(intended);
-//            result = performUpdate(mapper, resolver, crudRequest, entityManager, crudRequest.getKey());
             resolver.update(dto);
             rs.setKey(crudRequest.getKey());
             break;
         case MERGE:
             // If the key is passed in and result already exist then perform update.
             if (crudRequest.getKey() != null) {
-//                result = performUpdate(mapper, resolver, crudRequest, entityManager, crudRequest.getKey());
                 dto.setObjectRef(crudRequest.getKey());         // required????
                 validateUpdate(resolver.getDTO(crudRequest.getKey()), dto); // plausibility
                 resolver.update(dto);

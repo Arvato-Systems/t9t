@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.bpmn.be.request;
 
+import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.bpmn.ProcessDefinitionDTO;
@@ -44,11 +45,11 @@ public class ExecuteProcessWithRefRequestHandler extends AbstractRequestHandler<
         newStatus.setYieldUntil(rq.getInitialDelay() != null ? ctx.executionStart.plusSeconds(rq.getInitialDelay()) : ctx.executionStart);
         newStatus.setNextStep(rq.getWorkflowStep());
         newStatus.setRunOnNode(rq.getRunOnNode());
+        newStatus.setLockRef(rq.getLockRef());
+        newStatus.setLockId(rq.getLockId());
         // handle restartAtBeginning; potential request parameter overrules process definition config
-        if (rq.getRestartAtBeginningIfExists() == null) {
-            rq.setRestartAtBeginningIfExists(pd.getAlwaysRestartAtStep1());
-        }
-        final Long ref = persistenceAccess.createOrUpdateNewStatus(ctx, newStatus, rq);
+        final boolean restart = T9tUtil.nvl(rq.getRestartAtBeginningIfExists() == null, pd.getAlwaysRestartAtStep1());
+        final Long ref = persistenceAccess.createOrUpdateNewStatus(ctx, newStatus, rq, restart);
 
         final ExecuteProcessWithRefResponse resp = new ExecuteProcessWithRefResponse();
         resp.setProcessCtrlRef(ref == null ? Long.valueOf(0L) : ref);  // special case: did not exist and "IGNORE IF NEW"

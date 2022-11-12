@@ -59,7 +59,7 @@ public class UpdateProcessRequestHandler extends AbstractRequestHandler<UpdatePr
             bpmRefRequest.setInitialDelay(null); // direct process trigger
         }
 
-        final Long ref = persistenceAccess.createOrUpdateNewStatus(ctx, dto, bpmRefRequest);
+        final Long ref = persistenceAccess.createOrUpdateNewStatus(ctx, dto, bpmRefRequest, false);
         final ExecuteProcessWithRefResponse response = new ExecuteProcessWithRefResponse();
         response.setProcessCtrlRef(ref);
 

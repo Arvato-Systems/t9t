@@ -19,7 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.jackson.JacksonTools;
-import com.arvatosystems.t9t.jetty.impl.RestUtils;
+import com.arvatosystems.t9t.rest.utils.RestUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.ws.rs.Produces;

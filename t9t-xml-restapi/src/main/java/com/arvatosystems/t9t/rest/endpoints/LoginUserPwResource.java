@@ -88,6 +88,7 @@ public class LoginUserPwResource implements IT9tRestEndpoint {
             restProcessor.returnAsyncResult(acceptHeader, resp, Response.Status.BAD_REQUEST, "Null parameter");
             return;
         }
+        validatePayload(authByUserPw);
 
         // create AuthenticationParamsRequest
         final AuthenticationRequest authenticationParamsRequest = new AuthenticationRequest();

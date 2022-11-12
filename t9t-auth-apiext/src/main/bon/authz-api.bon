@@ -25,7 +25,6 @@ import t9t.base.auth.*
 package (com.arvatosystems) t9t.authz.api {
     default private unsigned trim noControlChars;
     properties noJava, simpleref,
-        tenantCategory is com.arvatosystems.t9t.annotations.TenantCategory(),
         searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
         serialized is com.arvatosystems.t9t.annotations.StoreSerialized,
         noAutoMap is com.arvatosystems.t9t.annotations.NoAutoMap,

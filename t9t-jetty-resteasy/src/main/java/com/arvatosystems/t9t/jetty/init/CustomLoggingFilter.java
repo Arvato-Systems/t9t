@@ -59,14 +59,16 @@ public class CustomLoggingFilter implements ContainerRequestFilter, ContainerRes
             MDC.put("start-time", String.valueOf(System.nanoTime() / 1000L));
             LOGGER.debug("HTTP REQUEST   : {} {}{}", requestContext.getMethod(), requestContext.getUriInfo().getPath(),
               toStringQueryParams(requestContext.getUriInfo().getQueryParameters()));
-            LOGGER.debug("   Call        : {}#{} ", resourceInfo.getResourceClass().getSimpleName(), resourceInfo.getResourceMethod().getName());
-            if (!requestContext.getUriInfo().getPathParameters().isEmpty() && LOGGER.isDebugEnabled()) {
-                LOGGER.debug("   Path Parms  : {}", toString(requestContext.getUriInfo().getPathParameters()));
+            if (shouldLog(requestContext.getMethod(), requestContext.getUriInfo().getPath())) {
+                LOGGER.debug("   Call        : {}#{} ", resourceInfo.getResourceClass().getSimpleName(), resourceInfo.getResourceMethod().getName());
+                if (!requestContext.getUriInfo().getPathParameters().isEmpty() && LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("   Path Parms  : {}", toString(requestContext.getUriInfo().getPathParameters()));
+                }
+                LOGGER.debug("   Header      : {}", requestContext.getHeaders());
+                final String entityStream = readEntityStream(requestContext);
+                LOGGER.debug("   Content Type: {}", requestContext.getMediaType());
+                LOGGER.debug("   Body        : {}", (entityStream.isEmpty() ? "#EMPTY#" : entityStream));
             }
-            LOGGER.debug("   Header      : {}", requestContext.getHeaders());
-            final String entityStream = readEntityStream(requestContext);
-            LOGGER.debug("   Content Type: {}", requestContext.getMediaType());
-            LOGGER.debug("   Body        : {}", (entityStream.isEmpty() ? "#EMPTY#" : entityStream));
         }
     }
 
@@ -74,23 +76,37 @@ public class CustomLoggingFilter implements ContainerRequestFilter, ContainerRes
     public void filter(final ContainerRequestContext requestContext, final ContainerResponseContext responseContext) throws IOException {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("HTTP RESPONSE  : {} {} ", requestContext.getMethod(), requestContext.getUriInfo().getPath());
-            LOGGER.debug("   Header      : {}", responseContext.getHeaders());
             LOGGER.debug("   Return Code : {} {} {}", responseContext.getStatus(), responseContext.getStatusInfo().getFamily().name(),
               responseContext.getStatusInfo().getReasonPhrase());
-            LOGGER.debug("   Content Type: {}", responseContext.getMediaType());
-            LOGGER.debug("   Content     : {}", responseContext.getEntity());
+            if (shouldLog(requestContext.getMethod(), requestContext.getUriInfo().getPath())) {
+                LOGGER.debug("   Header      : {}", responseContext.getHeaders());
+                LOGGER.debug("   Content Type: {}", responseContext.getMediaType());
+                LOGGER.debug("   Content     : {}", responseContext.getEntity());
 
-            final String stTime = MDC.get("start-time");
-            if (stTime != null && stTime.length() > 0) {
-                final long startTime = Long.parseLong(stTime);
-                final long executionTime = System.nanoTime() / 1000L - startTime;
-                LOGGER.debug("Total request execution time: {} microseconds", executionTime);
-                //clear the context on exit
-                MDC.clear();
+                final String stTime = MDC.get("start-time");
+                if (stTime != null && stTime.length() > 0) {
+                    final long startTime = Long.parseLong(stTime);
+                    final long executionTime = System.nanoTime() / 1000L - startTime;
+                    LOGGER.debug("Total request execution time: {} microseconds", executionTime);
+                }
             }
+            //clear the context on exit
+            MDC.clear();
         }
     }
 
+    private boolean shouldLog(final String method, final String path) {
+        if (!"GET".equals(method)) {
+            return true;  // only omit certain GET requests
+        }
+        if ("/openapi.json".equals(path)) {
+            return false;
+        }
+        if (path != null && path.startsWith("/swagger-ui/")) {
+            return false;
+        }
+        return true;
+    }
 
     private String readEntityStream(final ContainerRequestContext requestContext) {
         final ByteArrayOutputStream outStream = new ByteArrayOutputStream();

@@ -38,11 +38,13 @@ import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.barcode.api.FlipMode;
 import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.services.ICacheInvalidationRegistry;
 import com.arvatosystems.t9t.doc.DocComponentDTO;
 import com.arvatosystems.t9t.doc.DocConstants;
 import com.arvatosystems.t9t.doc.DocModuleCfgDTO;
 import com.arvatosystems.t9t.doc.DocTemplateDTO;
+import com.arvatosystems.t9t.doc.T9tDocException;
 import com.arvatosystems.t9t.doc.T9tDocTools;
 import com.arvatosystems.t9t.doc.api.DocumentSelector;
 import com.arvatosystems.t9t.doc.api.TemplateType;
@@ -65,6 +67,7 @@ import de.jpaw.bonaparte.pojos.api.media.MediaXType;
 import de.jpaw.bonaparte.util.ToStringHelper;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
+import de.jpaw.util.ApplicationException;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ExceptionUtil;
 import freemarker.ext.beans.BeanModel;
@@ -797,9 +800,12 @@ public class DocFormatter implements IDocFormatter {
             m.setMediaType(mediaType);
             m.setText(out.toString());
             return m;
+        } catch (final ApplicationException e) {
+            LOGGER.error("Problem formatting the document: code {}: {} {}", e.getErrorCode(), e.getMessage(), ExceptionUtil.causeChain(e));
+            throw e;
         } catch (final Exception e) {
-            LOGGER.error("Fail to format document", e);
-            return null; // Fail to format document
+            LOGGER.error("Problem formatting the document", e);
+            throw new T9tException(T9tDocException.FORMATTING_ERROR);
         }
     }
 

@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import com.arvatosystems.t9t.base.request.PingRequest;
 import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
 import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
+import com.arvatosystems.t9t.rest.utils.RestUtils;
 import com.arvatosystems.t9t.xml.GenericResult;
 import com.arvatosystems.t9t.xml.Ping;
 
@@ -69,35 +70,7 @@ public class PingRestResource implements IT9tRestEndpoint {
     @GET
     public Response testPingGet(@Context final HttpHeaders httpHeaders) {
         LOGGER.debug("Ping GET request at /ping");
-        final GenericResult genericResponse = new GenericResult();
-        final String acceptHeader = httpHeaders.getHeaderString(HttpHeaders.ACCEPT);
-        genericResponse.setReturnCode(0);
-        return createResponse(Response.Status.OK, genericResponse, acceptHeader);
-    }
-
-//    @POST
-//    public Response testPingPost(@Context final HttpHeaders httpHeaders, Ping ping) {
-//        LOGGER.debug("Ping POST SYNC request at /ping for {}", ping);
-//        final GenericResult genericResponse = new GenericResult();
-//        final String acceptHeader = httpHeaders.getHeaderString(HttpHeaders.ACCEPT);
-//        genericResponse.setReturnCode(0);
-//        return createResponse(Response.Status.OK, genericResponse, acceptHeader);
-//    }
-
-    private static Response createResponse(final Response.Status status, final Object payload, final String acceptHeader) {
-        final Response.ResponseBuilder response = Response.status(status);
-        response.entity(payload);
-
-        if (payload instanceof String) {
-            response.type(MediaType.TEXT_PLAIN_TYPE);
-        } else {
-            if (acceptHeader != null) {
-                response.type(acceptHeader);
-            } else {
-                response.type(MediaType.APPLICATION_XML);
-            }
-        }
-        return response.build();
+        return RestUtils.error(Response.Status.OK, 0, null, httpHeaders);
     }
 
     @Operation(

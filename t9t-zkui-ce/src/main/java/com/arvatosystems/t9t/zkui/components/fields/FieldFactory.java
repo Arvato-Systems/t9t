@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.CrudViewModel;
+import com.arvatosystems.t9t.base.types.TenantIsolationCategoryType;
 import com.arvatosystems.t9t.init.InitContainers;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 import com.arvatosystems.t9t.zkui.util.Constants;
@@ -130,7 +131,8 @@ public class FieldFactory {
                 break;
             case STRING:
                 if (fieldName.endsWith("tenantId") && !fieldProperties.containsKey("nodropdown"))
-                    return new TenantField(fieldname, filter, desc, gridId, session, viewModel.dtoClass.getProperty("tenantCategory"));
+                    return new TenantField(fieldname, filter, desc, gridId, session,
+                        TenantIsolationCategoryType.factory(viewModel.dtoClass.getProperty("tenantCategory")));
                 if (fieldProperties == null || fieldProperties.isEmpty())  // shortcut: avoid further map lookups
                     return new TextField(fieldname, filter, desc, gridId, session);
                 if (filter.getFilterType() == UIFilterType.EQUALITY) {

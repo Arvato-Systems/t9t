@@ -27,7 +27,6 @@ import t9t.doc.recipients.*
 package (com.arvatosystems) t9t.doc.api {
     default private unsigned trim noControlChars;
     properties inherited,
-        tenantCategory is com.arvatosystems.t9t.annotations.TenantCategory(),
         searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
         serialized is com.arvatosystems.t9t.annotations.StoreSerialized,
         noAutoMap is com.arvatosystems.t9t.annotations.NoAutoMap,

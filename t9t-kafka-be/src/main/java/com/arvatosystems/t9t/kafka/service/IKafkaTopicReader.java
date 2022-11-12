@@ -16,15 +16,41 @@
 package com.arvatosystems.t9t.kafka.service;
 
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+
+import org.apache.kafka.clients.consumer.KafkaConsumer;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 
 public interface IKafkaTopicReader {
+
+    /**
+     * Returns the number of partitions for the topic.
+     */
+    int getNumberOfPartitions();
+
+    /**
+     * Returns the name of the topic.
+     */
+    String getKafkaTopic();
+
     /**
      * Polls data from topic, deserializes the data object using the compact bonaparte deserializer
      * and feeds it into the consumer.
+     *
+     * Returns the number of records processed.
      */
-    <T extends BonaPortable> void pollAndProcess(BiConsumer<String, T> processor, Class<T> expectedType);
+    <T extends BonaPortable> int pollAndProcess(BiConsumer<String, T> processor, Class<T> expectedType);
+
+    /**
+     * Polls data from topic, deserializes the data object using the compact bonaparte deserializer
+     * and feeds it into the consumer.
+     * Extended form with more control about poll interval and custom committer via lambda.
+     *
+     * Returns the number of records processed.
+     */
+    <T extends BonaPortable> int pollAndProcess(BiConsumer<String, T> processor, Class<T> expectedType, long pollIntervalInMs,
+      Consumer<KafkaConsumer<String, byte[]>> committer);
 
     /** Commits changes and closes the topic writer. */
     void close();

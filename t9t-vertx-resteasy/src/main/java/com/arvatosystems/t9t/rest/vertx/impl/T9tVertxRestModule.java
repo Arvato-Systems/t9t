@@ -70,7 +70,7 @@ public class T9tVertxRestModule implements IRestModule {
         providers.add(new JacksonObjectMapper());  // JSON
         providers.add(new XmlMediaTypeDecoder());  // XML decoder
         providers.add(new XmlMediaTypeEncoder());  // XML encoder
-        providers.add(new ApplicationExceptionHandler());  // exception / error handler
+        providers.add(new GeneralExceptionHandler());  // exception / error handler
         deployment.setProviders(providers);
 
         deployment.start();

@@ -20,7 +20,6 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.auth.ApiKeyAuthentication;
 import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
 import com.arvatosystems.t9t.base.types.SessionParameters;
@@ -107,6 +106,7 @@ public class LoginApiKeyResource implements IT9tRestEndpoint {
             restProcessor.returnAsyncResult(acceptHeader, resp, Response.Status.BAD_REQUEST, "Null parameter");
             return;
         }
+        authByApiKey.validate();
         loginSub(httpHeaders, resp, authByApiKey.getApiKey(), convertSessionParameters(authByApiKey.getSessionParameters()));
     }
 
@@ -123,16 +123,12 @@ public class LoginApiKeyResource implements IT9tRestEndpoint {
     @Path("/{apikey}")
     public void login(@Context final HttpHeaders httpHeaders, @Suspended final AsyncResponse resp,
             @Parameter(required = true, description = "Api key.") @PathParam("apikey") final String apiKey) {
+        checkNotNull(apiKey, "apiKey");
         loginSub(httpHeaders, resp, RestParameterParsers.parseUUID(apiKey, "apikey", true), null);
     }
 
     public void loginSub(final HttpHeaders httpHeaders, final AsyncResponse resp, final UUID apiKey, final SessionParameters sp) {
         LOGGER.debug("Login attempted at /apikey ...");
-
-        if (apiKey == null) {
-            LOGGER.error("NULL apiKey - exception");
-            throw new T9tException(T9tException.ACCESS_DENIED);  // can occur in case of malformatted API keys
-        }
 
         final AuthenticationRequest authenticationParamsRequest = new AuthenticationRequest();
         authenticationParamsRequest.setAuthenticationParameters(new ApiKeyAuthentication(apiKey));

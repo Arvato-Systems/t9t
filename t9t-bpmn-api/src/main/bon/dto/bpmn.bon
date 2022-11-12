@@ -182,5 +182,7 @@ package (com.arvatosystems) t9t.bpmn {
         optional Integer                                returnCode;         // execution return code (same as for requests)
         optional Unicode(2048) allowControlChars        errorDetails;       // description of the error
         optional unsigned Integer                       runOnNode;          // if not null: specifies a cluster node to execute this workflow
+        optional f42Ref                                 lockRef properties notupdatable; // if non null, this reference should be locked for execution
+        optional defaultExternalId                      lockId  properties notupdatable; // if non null, this reference should be locked for execution
     }
 }

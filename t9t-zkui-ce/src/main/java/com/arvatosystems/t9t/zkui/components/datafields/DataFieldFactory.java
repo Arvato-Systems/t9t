@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.zul.Combobox;
 
 import com.arvatosystems.t9t.base.CrudViewModel;
+import com.arvatosystems.t9t.base.types.TenantIsolationCategoryType;
 import com.arvatosystems.t9t.zkui.components.IDataFieldFactory;
 import com.arvatosystems.t9t.zkui.components.dropdown28.factories.IDropdown28BasicFactory;
 import com.arvatosystems.t9t.zkui.components.dropdown28.factories.IDropdown28DbFactory;
@@ -93,7 +94,7 @@ public class DataFieldFactory implements IDataFieldFactory {
                     return new DropdownComboBoxItemDataField(params, qualifierFor);
                 }
                 if (path.endsWith("tenantId") && !fieldProperties.containsKey("nodropdown"))
-                    return new TenantDataField(params, crudViewModel.dtoClass.getProperty("tenantCategory"));
+                    return new TenantDataField(params, TenantIsolationCategoryType.factory(crudViewModel.dtoClass.getProperty("tenantCategory")));
                 return new TextDataField(params);
             case BASICNUMERIC:
                 switch (javaType) {

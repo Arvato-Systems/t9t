@@ -116,6 +116,7 @@ public final class T9tConstants {
 
     // default name of the kafka topic for single-tenant request transmissions
     public static final String DEFAULT_KAFKA_TOPIC_SINGLE_TENANT_REQUESTS = "t9tRequestTopic";
+    public static final String DEFAULT_KAFKA_REQUESTS_GROUP_ID            = "t9tRequestGroup";
 
     // MDC keys
     public static final String MDC_MESSAGE_ID = "messageId";
@@ -146,4 +147,7 @@ public final class T9tConstants {
     public static final String HTTP_AUTH_PREFIX_JWT     = "Bearer ";                // prefix of the Authorization header to transmit a JWT
     public static final String HTTP_AUTH_PREFIX_API_KEY = "API-Key ";               // prefix of the Authorization header to transmit an API key
     public static final String HTTP_AUTH_PREFIX_USER_PW = "Basic ";                 // prefix of the Authorization header to transmit basic authentication
+
+    public static final int RESET_PASSWORD_VALIDITY = 2; // in hours
+    public static final int RESET_PASSWORD_REQUEST_LIMIT = 1; // in minutes
 }

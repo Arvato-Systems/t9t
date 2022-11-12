@@ -206,7 +206,7 @@ public abstract class AbstractResolverAnyKey<
             }
         } else {
             // write access only for the global tenant!
-            return true; // TODO: or myTenant.equals(T9tConstants.GLOBAL_TENANT_ID);
+            return myTenant.equals(T9tConstants.GLOBAL_TENANT_ID);
         }
     }
 

@@ -26,7 +26,6 @@ package (com.arvatosystems) t9t.base.entities {
      * The set of properties each class within this package shall have by default.
      */
     properties inherited, version, active, noupdate, noinsert, ^default, currentUser, currentTimestamp, unify,
-        tenantCategory is com.arvatosystems.t9t.annotations.TenantCategory(),
         searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
         serialized is com.arvatosystems.t9t.annotations.StoreSerialized,
         noAutoMap is com.arvatosystems.t9t.annotations.NoAutoMap,

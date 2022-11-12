@@ -18,33 +18,27 @@ package com.arvatosystems.t9t.msglog.jpa.request;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
-import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
-import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.msglog.jpa.entities.MessageEntity;
-import com.arvatosystems.t9t.msglog.jpa.persistence.IMessageEntityResolver;
 import com.arvatosystems.t9t.msglog.request.RerunRequest;
 
-import de.jpaw.dp.Jdp;
 import de.jpaw.util.ApplicationException;
 
-public class RerunRequestHandler extends AbstractRequestHandler<RerunRequest> {
-    protected final IExecutor executor = Jdp.getRequired(IExecutor.class);
-    protected final IMessageEntityResolver resolver = Jdp.getRequired(IMessageEntityResolver.class);
+public class RerunRequestHandler extends AbstractRerunRequestHandler<RerunRequest> {
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final RerunRequest rq) {
-        final MessageEntity loggedRequest = resolver.find(rq.getProcessRef());
-        if (loggedRequest == null)
-            throw new T9tException(T9tException.RECORD_DOES_NOT_EXIST, rq.getProcessRef());
-        if (loggedRequest.getRerunByProcessRef() != null)
+        checkPermission(ctx, rq);      // additional permission check for CUSTOM and ADMIN
+
+        final MessageEntity loggedRequest = getLoggedRequestByProcessRef(ctx, rq.getProcessRef());
+        if (loggedRequest.getRerunByProcessRef() != null) {
             throw new T9tException(T9tException.RERUN_NOT_APPLICABLE_DONE, rq.getProcessRef());
-        if (ApplicationException.isOk(loggedRequest.getReturnCode()))
+        }
+        if (ApplicationException.isOk(loggedRequest.getReturnCode())) {
             throw new T9tException(T9tException.RERUN_NOT_APPLICABLE_RET, rq.getProcessRef());
-        final RequestParameters recordedRequest = loggedRequest.getRequestParameters();
-        if (recordedRequest == null)
-            throw new T9tException(T9tException.RERUN_NOT_POSSIBLE_NO_RECORDED_REQUEST, rq.getProcessRef());
+        }
         // all checks OK: perform the rerun
+        final RequestParameters recordedRequest = loggedRequest.getRequestParameters();
         recordedRequest.setMessageId(loggedRequest.getMessageId());
         loggedRequest.setRerunByProcessRef(ctx.getRequestRef());
         executor.executeAsynchronous(ctx, recordedRequest);

@@ -16,9 +16,12 @@
 package com.arvatosystems.t9t.kafka.service.impl;
 
 import java.time.Duration;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -37,43 +40,71 @@ import de.jpaw.bonaparte.core.CompactByteArrayParser;
 
 public class KafkaTopicReader implements IKafkaTopicReader {
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaTopicReader.class);
+    public static final long DEFAULT_POLL_INTERVAL = 250L;  // poll 4 times a second
 
     private final String kafkaTopic;              // determined via config
     private final KafkaConsumer<String, byte[]> consumer;
     private final List<PartitionInfo> partitions;
     private final int numberOfPartitions;
 
-    public KafkaTopicReader(final String bootstrapServers, final String topic, final String groupId, final Map<String, Object> props) {
+    public KafkaTopicReader(final String bootstrapServers, final String topic, final String groupId, final Map<String, Object> propsIn,
+      final KafkaRebalancer rebalancer) {
+        final Map<String, Object> props = propsIn == null ? new HashMap<>() : propsIn;
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,        bootstrapServers);
         props.put(ConsumerConfig.GROUP_ID_CONFIG,                 groupId);
+        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG,       Boolean.FALSE);  // or "false" as found in examples?
+        props.put(ConsumerConfig.REQUEST_TIMEOUT_MS_CONFIG,       60_000);  // 1 minute
+        props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG,         32);      // max number of records returned by poll() (do not overload the system)
 //        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,   StringDeserializer.class.getName());    // pass the instance instead (no reflection)
 //        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ByteArrayDeserializer.class.getName()); // pass the instance instead (no reflection)
         kafkaTopic = topic;
         consumer = new KafkaConsumer<>(props, new StringDeserializer(), new ByteArrayDeserializer());
         partitions = consumer.partitionsFor(kafkaTopic);
         numberOfPartitions = partitions.size();
-
+        if (rebalancer == null) {
+            consumer.subscribe(Collections.singleton(topic));
+        } else {
+            rebalancer.init(partitions);
+            consumer.subscribe(Collections.singleton(topic), rebalancer);
+        }
         LOGGER.info("Created reader for kafka topic {}, which has {} partitions", topic, numberOfPartitions);
     }
 
+    @Override
     public String getKafkaTopic() {
         return kafkaTopic;
     }
 
+    @Override
     public int getNumberOfPartitions() {
         return numberOfPartitions;
     }
 
     @Override
     public void close() {
-        consumer.commitAsync();
+        consumer.wakeup();
+        consumer.unsubscribe();
     }
 
     @Override
-    public <T extends BonaPortable> void pollAndProcess(final BiConsumer<String, T> processor, Class<T> expectedType) {
-        final ConsumerRecords<String, byte[]> records = consumer.poll(Duration.ofMillis(100));
-        if (!records.isEmpty()) {
-            LOGGER.debug("Received {} data records via kafka", records.count());
+    public <T extends BonaPortable> int pollAndProcess(final BiConsumer<String, T> processor, final Class<T> expectedType) {
+        return pollAndProcess(processor, expectedType, DEFAULT_POLL_INTERVAL, x -> x.commitAsync());
+    }
+
+    @Override
+    public <T extends BonaPortable> int pollAndProcess(final BiConsumer<String, T> processor, final Class<T> expectedType,
+      final long pollIntervalInMs, final Consumer<KafkaConsumer<String, byte[]>> committer) {
+        final ConsumerRecords<String, byte[]> records;
+        try {
+            records = consumer.poll(Duration.ofMillis(pollIntervalInMs));
+        } catch (Exception e) {
+            // could have been caused by interupted poll via wakup due to consumer close - inform, but return 0
+            LOGGER.warn("polling failed: {}: {}", e.getClass().getSimpleName(), e.getMessage());
+            return -1;
+        }
+        final int count = records.count();
+        if (count > 0) {
+            LOGGER.debug("Received {} data records via kafka", count);
             for (final ConsumerRecord<String, byte[]> record : records) {
                 final BonaPortable obj;
                 try {
@@ -95,7 +126,11 @@ public class KafkaTopicReader implements IKafkaTopicReader {
                     continue;
                 }
             }
-            consumer.commitAsync();
+            // if committing should be done after processing the batch (instead of per record), invoke it now
+            if (committer != null) {
+                committer.accept(consumer);
+            }
         }
+        return count;
     }
 }

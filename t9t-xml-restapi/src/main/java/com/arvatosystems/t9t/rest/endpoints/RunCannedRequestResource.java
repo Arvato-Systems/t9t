@@ -15,16 +15,6 @@
  */
 package com.arvatosystems.t9t.rest.endpoints;
 
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.container.AsyncResponse;
-import jakarta.ws.rs.container.Suspended;
-import jakarta.ws.rs.core.Context;
-import jakarta.ws.rs.core.HttpHeaders;
-import jakarta.ws.rs.core.MediaType;
-
 import com.arvatosystems.t9t.core.request.ExecutePreparedRequest;
 import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
 import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
@@ -38,6 +28,15 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.container.AsyncResponse;
+import jakarta.ws.rs.container.Suspended;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MediaType;
 
 /**
  * Executes a canned request (needs additional P. permissions)
@@ -61,6 +60,7 @@ public class RunCannedRequestResource implements IT9tRestEndpoint {
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public void runCannedRequestWithId(@Context final HttpHeaders httpHeaders, @Suspended final AsyncResponse resp,
             @Parameter(required = true, description = "Request ID.") @PathParam("id") final String id) {
+        checkNotNull(id, "id");
         final ExecutePreparedRequest requestParameters = new ExecutePreparedRequest();
         requestParameters.setRequestId(id);
         restProcessor.performAsyncBackendRequest(httpHeaders, resp, requestParameters, "POST /run/" + id);

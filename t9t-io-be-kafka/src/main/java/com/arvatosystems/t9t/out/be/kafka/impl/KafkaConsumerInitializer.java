@@ -116,7 +116,7 @@ public class KafkaConsumerInitializer implements StartupShutdown {
         private final Map<TopicPartition, OffsetAndMetadata> finishedRequests = new HashMap<>(100);
         private final AtomicInteger workerThreadCounter = new AtomicInteger();
         private final ExecutorService executorKafkaWorker = Executors.newFixedThreadPool(workerPoolSize, (threadFactory) -> {
-            final String threadName = "t9t-KafkaWorker-" + workerThreadCounter.incrementAndGet();
+            final String threadName = "t9t-KafkaImportWorker-" + workerThreadCounter.incrementAndGet();
             LOGGER.info("Launching thread {} of {} for kafka worker", threadName, workerPoolSize);
             return new Thread(threadFactory, threadName);
         });

@@ -28,7 +28,7 @@ import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.jetty.impl.RestUtils;
+import com.arvatosystems.t9t.rest.utils.RestUtils;
 
 public class JettyServer {
     private static final Logger LOGGER = LoggerFactory.getLogger(JettyServer.class);
