@@ -63,7 +63,7 @@ public class AsyncQueueKafka<R extends BonaPortable> implements IAsyncQueue {
     private static final Logger LOGGER = LoggerFactory.getLogger(AsyncQueueKafka.class);
 
     private final IAsyncMessageUpdater messageUpdater = Jdp.getRequired(IAsyncMessageUpdater.class);
-    private final boolean writeAllToDatabase = ConfigProvider.getCustomParameter("AsyncPersist") != null;
+    private final boolean writeAllToDatabase = ConfigProvider.getCustomParameter("NoAsyncPersist") == null;
     private final ConcurrentMap<Long, QueueData> queueData;
     private final IAsyncTools asyncTools = Jdp.getRequired(IAsyncTools.class);
 
@@ -189,28 +189,6 @@ public class AsyncQueueKafka<R extends BonaPortable> implements IAsyncQueue {
             while (!shutdownInProgress.get()) {
                 try {
                     kafkaReader.pollAndProcess((k,  m) -> asyncTools.tryToSend(sender, m, serverConfig.getTimeoutExternal()), InMemoryMessage.class);
-//                    final InMemoryMessage nextMsg = queue.peek();
-//                    if (nextMsg != null) {
-//                        if (!tryToSend(nextMsg)) {
-//                            // switch to RED and wait
-//                            if (gate.getAndSet(false))
-//                                LOGGER.debug("Flipping gate to RED (transmission error)");
-//                            Thread.sleep(serverConfig.getWaitAfterExtError());
-//                        } else {
-//                            // eat message, it was sent successfully
-//                            lastMessageSent.set(Instant.now());
-//                        }
-//                    } else if (gate.get()) {
-//                        // gate is "GREEN", any message would be in memory, if it existed. No need to check the DB
-//                        Thread.sleep(serverConfig.getTimeoutIdleGreen());
-//                    } else {
-//                        // gate is "RED"
-//                        // no message in the queue now, refill queue from DB
-//                        if (!refillQueue()) {
-//                            // we are really idle and have switched to "GREEN" during the call to refillQueue(). Must wait the same time as above
-//                            Thread.sleep(serverConfig.getTimeoutIdleGreen());
-//                        }
-//                    }
                 } catch (final Exception e) {
                     LOGGER.error("Exception in Async transmitter thread: {}", ExceptionUtil.causeChain(e));
                     LOGGER.error("Trace is", e);
@@ -237,7 +215,6 @@ public class AsyncQueueKafka<R extends BonaPortable> implements IAsyncQueue {
             LOGGER.info("Shutting down async transmitter {} (in current state {})", threadName, gate.get());
             gate.set(false);
         }
-
     }
 
     @Override

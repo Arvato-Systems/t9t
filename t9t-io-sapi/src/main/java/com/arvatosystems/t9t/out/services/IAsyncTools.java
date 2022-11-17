@@ -18,6 +18,10 @@ package com.arvatosystems.t9t.out.services;
 import com.arvatosystems.t9t.io.AsyncChannelDTO;
 import com.arvatosystems.t9t.io.InMemoryMessage;
 
+/**
+ * This interface provides the link between the logical async queue implementation (for example LTQ or KAFKA)
+ * and the execution units such as senders and database APIs.
+ */
 public interface IAsyncTools {
     /** Retrieves a channel configuration from cache. */
     AsyncChannelDTO getCachedAsyncChannelDTO(String tenantId, String asyncChanneId);

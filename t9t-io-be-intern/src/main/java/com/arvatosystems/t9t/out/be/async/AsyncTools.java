@@ -68,7 +68,8 @@ public class AsyncTools implements IAsyncTools {
         final AsyncChannelDTO channelDto = getCachedAsyncChannelDTO(tenantId, channelId);
         if (!channelDto.getIsActive()) {
             LOGGER.debug("Discarding async message to inactive channel {}", channelId);
-            newStatus = ExportStatusEnum.RESPONSE_OK;
+            messageUpdater.updateMessage(nextMsg.getObjectRef(), ExportStatusEnum.RESPONSE_OK, null, null, null, null);
+            return true;
         } else {
             // log message if desired (expensive!)
             if (LOGGER.isTraceEnabled()) {
@@ -94,8 +95,5 @@ public class AsyncTools implements IAsyncTools {
             messageUpdater.updateMessage(nextMsg.getObjectRef(), newStatus, newHttpCode, newClientReturnCode, newClientReference, newClientErrorDetails);
             return newStatus == ExportStatusEnum.RESPONSE_OK;
         }
-
-        messageUpdater.updateMessage(nextMsg.getObjectRef(), newStatus, null, null, null, null);
-        return newStatus == ExportStatusEnum.RESPONSE_OK;
     }
 }

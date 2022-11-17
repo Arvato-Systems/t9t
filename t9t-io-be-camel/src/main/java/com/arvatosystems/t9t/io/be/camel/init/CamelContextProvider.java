@@ -34,6 +34,7 @@ import com.arvatosystems.t9t.io.be.camel.service.impl.CamelService;
 import com.arvatosystems.t9t.io.event.DataSinkChangedEvent;
 import com.arvatosystems.t9t.out.be.impl.output.camel.AbstractExtensionCamelRouteBuilder;
 import com.arvatosystems.t9t.out.services.IOutPersistenceAccess;
+import com.jcraft.jsch.JSch;
 
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
@@ -59,6 +60,17 @@ public class CamelContextProvider implements StartupShutdown, Provider<CamelCont
 
     @Override
     public void onStartup() {
+        try {
+            if (ConfigProvider.getCustomParameter("camelEnableInsecureSha1") != null) {
+                // may be needed in case of very old sftp servers
+                LOGGER.warn("Due to config camelEnableInsecureSha1 in config.xml, enable INSECURE SHA1");
+                JSch.setConfig("server_host_key",  JSch.getConfig("server_host_key") + ",ssh-rsa");
+                JSch.setConfig("PubkeyAcceptedAlgorithms", JSch.getConfig("PubkeyAcceptedAlgorithms") + ",ssh-rsa");
+                JSch.setConfig("kex", JSch.getConfig("kex") + ",diffie-hellman-group1-sha1,diffie-hellman-group14-sha1");
+            }
+        } catch (Exception e) {
+            LOGGER.error("Failed to set insecure sftp algorithms");
+        }
         camelContext = new DefaultCamelContext();
         Jdp.registerWithCustomProvider(CamelContext.class, this);
 

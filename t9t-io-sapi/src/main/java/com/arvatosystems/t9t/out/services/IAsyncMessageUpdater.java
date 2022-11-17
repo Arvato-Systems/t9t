@@ -27,6 +27,12 @@ public interface IAsyncMessageUpdater {
     /**
      * Updates a message entry to its latest status.
      * The implementation truncates any passed contents for fields clientReference and errorDetails to the allowed length in the DB.
+     * @param objectRef       the primary key of the status message in the database
+     * @param newStatus       the status of the most recent send attempt
+     * @param httpCode        the http status code received (useful to determine if and when to retry)
+     * @param clientCode      any parsed client status code from the response
+     * @param clientReference any reference provided by the client (client processing transaction ID etc)
+     * @param errorDetails    any additional information describing a problem, from the client's response payload
      */
     void updateMessage(Long objectRef, ExportStatusEnum newStatus, Integer httpCode, Integer clientCode, String clientReference, String errorDetails);
 

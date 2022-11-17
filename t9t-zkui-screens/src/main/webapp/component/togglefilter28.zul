@@ -1,8 +1,8 @@
 <!-- zul definition of a toggleable filter (inherits from tabbox). -->
 <zk>
-    <tabs>
-        <tab id="stdTab"  closable="false" visible="false" selected="true" />
-        <tab id="solrTab" closable="false" visible="false" />
+    <tabs style="display: none">
+        <tab id="stdTab"  closable="false" selected="true" />
+        <tab id="solrTab" closable="false" />
     </tabs>
     <tabpanels>
         <tabpanel id="stdPanel">

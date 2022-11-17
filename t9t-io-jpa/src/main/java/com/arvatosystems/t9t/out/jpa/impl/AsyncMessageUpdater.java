@@ -57,6 +57,7 @@ public class AsyncMessageUpdater implements IAsyncMessageUpdater {
         em.getTransaction().begin();
         final AsyncMessageEntity m = em.find(AsyncMessageEntity.class, objectRef);
         if (m != null) {
+            // message was persisted initially, or had an error before
             m.setAttempts(m.getAttempts() + 1);
             m.setLastAttempt(Instant.now());
             m.setStatus(newStatus);
@@ -64,6 +65,17 @@ public class AsyncMessageUpdater implements IAsyncMessageUpdater {
             m.setReturnCode(clientCode);
             m.setReference(MessagingUtil.truncField(clientReference, AsyncMessageDTO.meta$$reference.getLength()));
             m.setErrorDetails(MessagingUtil.truncField(errorDetails, AsyncMessageDTO.meta$$errorDetails.getLength()));
+        } else if (newStatus != ExportStatusEnum.RESPONSE_OK) {
+            // initially not persisted, but we encountered an error, and should do so now
+            // issue is that we do not have any valid tenant reference, nor request context to populate the creation tracking fields
+            final AsyncMessageEntity msg = new AsyncMessageEntity();
+            msg.setAttempts(1);
+            msg.setLastAttempt(Instant.now());
+            msg.setStatus(newStatus);
+            msg.setHttpResponseCode(httpCode);
+            msg.setReturnCode(clientCode);
+            msg.setReference(MessagingUtil.truncField(clientReference, AsyncMessageDTO.meta$$reference.getLength()));
+            msg.setErrorDetails(MessagingUtil.truncField(errorDetails, AsyncMessageDTO.meta$$errorDetails.getLength()));
         }
         em.getTransaction().commit();
         em.clear();
