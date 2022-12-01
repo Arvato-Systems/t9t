@@ -17,19 +17,25 @@ package com.arvatosystems.t9t.rest.utils;
 
 import java.util.List;
 
+import javax.xml.stream.XMLStreamException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.xml.GenericResult;
+import com.fasterxml.jackson.core.JacksonException;
 
 import de.jpaw.api.ConfigurationReader;
+import de.jpaw.bonaparte.core.MessageParserException;
 import de.jpaw.util.ApplicationException;
 import de.jpaw.util.ConfigurationReaderFactory;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.StatusType;
+import jakarta.xml.bind.JAXBException;
 import jakarta.ws.rs.core.UriInfo;
 
 
@@ -102,16 +108,32 @@ public final class RestUtils {
         if (e instanceof ApplicationException) {
             final ApplicationException ae = (ApplicationException)e;
             final int errorCode = ae.getErrorCode();
-            LOGGER.error("Application exception occurred calling {} {}: {} {} {}",
+            LOGGER.error("Application exception calling {} {}: {} {} {}",
                     method, uriInfo.getAbsolutePath(), e.getClass().getSimpleName(), errorCode, e.getMessage());
             return error(mapStatusFromErrorCode(errorCode), errorCode, ae.getMessage(), httpHeaders);
         }
-        LOGGER.error("General exception occurred calling {} {}: {} {} {}",
-          method, uriInfo.getAbsolutePath(), e.getClass().getSimpleName(), e.getMessage(), e);
-        if (e instanceof WebApplicationException) {
-            return ((WebApplicationException)e).getResponse();
+        if (e instanceof JacksonException) {
+            // a problem parsing the JSON should be communicated as such
+            LOGGER.error("JSON exception calling {} {}: {} {}",
+                    method, uriInfo.getAbsolutePath(), e.getClass().getSimpleName(), e.getMessage());
+            return error(Response.Status.BAD_REQUEST, MessageParserException.JSON_EXCEPTION, e.getMessage(), httpHeaders);
         }
-        return error(Response.Status.INTERNAL_SERVER_ERROR, T9tException.GENERAL_EXCEPTION, e.getMessage(), httpHeaders);
+        if (e instanceof JAXBException || e instanceof XMLStreamException) {
+            // a problem parsing the JSON should be communicated as such
+            LOGGER.error("XML exception calling {} {}: {} {}",
+                    method, uriInfo.getAbsolutePath(), e.getClass().getSimpleName(), e.getMessage());
+            return error(Response.Status.BAD_REQUEST, T9tException.XML_EXCEPTION, e.getMessage(), httpHeaders);
+        }
+        if (e instanceof WebApplicationException) {
+            final WebApplicationException we = (WebApplicationException)e;
+            final StatusType status = we.getResponse().getStatusInfo();
+            LOGGER.warn("WebApplicationException calling {} {}: {} {}",
+                    method, uriInfo.getAbsolutePath(), status.getStatusCode(), status.getReasonPhrase());
+            return we.getResponse();
+        }
+        LOGGER.error("General exception occurred calling {} {}: {} {} {}",
+                method, uriInfo.getAbsolutePath(), e.getClass().getSimpleName(), e.getMessage(), e);
+        return error(Response.Status.INTERNAL_SERVER_ERROR, T9tException.GENERAL_EXCEPTION, null, httpHeaders);  // do not disclose internal message
     }
 
     /** Creates a specific HTTP return code from t9t exception code / return code. */

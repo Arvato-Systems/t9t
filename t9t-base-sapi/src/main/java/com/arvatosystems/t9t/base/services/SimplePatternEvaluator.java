@@ -22,6 +22,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,7 +40,35 @@ public final class SimplePatternEvaluator {
         // prevent instantiation of util class
     }
 
+    /** Replaces characters which should not be inserted into a string because they might alter the folder by an upper case X. */
+    public static String sanitizer(final String input, final String forbiddenChars) {
+        // perform a check first, to avoid creating new objects
+        boolean needChange = false;
+        for (int i = 0; i < input.length(); ++i) {
+            final char c = input.charAt(i);
+            if (forbiddenChars.indexOf(c) >= 0) {
+                needChange = true;
+                break;
+            }
+        }
+        if (!needChange) {
+            return input;
+        }
+        final StringBuilder sb = new StringBuilder(input.length());
+        for (int i = 0; i < input.length(); ++i) {
+            final char c = input.charAt(i);
+            sb.append(forbiddenChars.indexOf(c) >= 0 ? 'X' : c);
+        }
+        return sb.toString();
+    }
+
+    /** Replaces any variable references in pattern by lookup from the replacements map, using a specific sanitizer suitable for file names. */
     public static String evaluate(final String pattern, final Map<String, Object> patternReplacements) {
+        return evaluate(pattern, patternReplacements, s -> sanitizer(s, ":/\\."));
+    }
+
+    /** Replaces any variable references in pattern by lookup from the replacements map, using a generic sanitizer. */
+    public static String evaluate(final String pattern, final Map<String, Object> patternReplacements, final Function<String, String> sanitizer) {
         String result = pattern;
         for (final Map.Entry<String, Object> replacementEntry : patternReplacements.entrySet()) {
             final Object replacementValue = replacementEntry.getValue();

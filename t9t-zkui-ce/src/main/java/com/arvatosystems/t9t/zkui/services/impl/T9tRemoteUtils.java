@@ -17,7 +17,6 @@ package com.arvatosystems.t9t.zkui.services.impl;
 
 import java.util.Collections;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,7 +79,7 @@ public class T9tRemoteUtils implements IT9tRemoteUtils {
         } catch (ApplicationException e) {
             String causeChain = ExceptionUtil.causeChain(e);
             LOGGER.error("Execution exception: {}", causeChain);
-            throw new ReturnCodeException(e.getErrorCode(), e.getMessage(), causeChain);
+            throw new ReturnCodeException(e.getErrorCode(), e.getMessage(), null);
         }
     }
 
@@ -130,19 +129,28 @@ public class T9tRemoteUtils implements IT9tRemoteUtils {
                         response.getReturnCode(),
                         requestParameters.ret$PQON(),
                         response.getErrorDetails(), response.getErrorMessage());
-                throw new ServiceResponseException(response.getReturnCode(),  response.getErrorMessage(), response.getErrorDetails());
+                final boolean exposeDetails;
+                switch (response.getReturnCode() / ApplicationException.CLASSIFICATION_FACTOR) {
+                case ApplicationException.CL_INTERNAL_LOGIC_ERROR:
+                case ApplicationException.CL_DATABASE_ERROR:
+                    exposeDetails = false;
+                    break;
+                default:
+                    exposeDetails = true;
+                }
+                throw new ServiceResponseException(response.getReturnCode(),  response.getErrorMessage(),
+                    exposeDetails ? response.getErrorDetails() : null);
             }
             return (T)response;
         } catch (ServiceResponseException e) {
             throw e;
         } catch (ApplicationException e) {
             String causeChain = ExceptionUtil.causeChain(e);
-            LOGGER.error("Execution application exception {}, caused by {}",
-                    e.getErrorCode(), causeChain);
-            throw new ServiceResponseException(e.getErrorCode(), causeChain, null);
+            LOGGER.error("Execution application exception {}, caused by {}", e.getErrorCode(), causeChain);
+            throw new ServiceResponseException(e.getErrorCode(), null, null);  // do not expose stack traces to the user!
         } catch (Exception e) {
-                String causeChain = ExceptionUtil.causeChain(e);
-                throw new ServiceResponseException(Constants.ErrorCodes.GENERAL_EXCEPTION, causeChain, null);
+            String causeChain = ExceptionUtil.causeChain(e);
+            throw new ServiceResponseException(Constants.ErrorCodes.GENERAL_EXCEPTION, null, null);  // do not expose stack traces to the user!
         }
     }
 
@@ -201,9 +209,6 @@ public class T9tRemoteUtils implements IT9tRemoteUtils {
         } else if (LOGGER.isDebugEnabled()) {
             // medium output
             LOGGER.debug(">>>Request  {}", requestParameters);
-        } else {
-            // short output
-            LOGGER.info(">>>Request  {}", requestParameters.ret$PQON());
         }
     }
     private void logResponse(ServiceResponse resp) {
@@ -213,39 +218,14 @@ public class T9tRemoteUtils implements IT9tRemoteUtils {
         } else if (LOGGER.isDebugEnabled()) {
             // medium output
             LOGGER.debug("<<<Response  {}, code {}", resp.ret$PQON(), resp.getReturnCode());
-        } else {
-            // short output
-            LOGGER.info("<<<Response  {}, code {}", resp.ret$PQON(), resp.getReturnCode());
         }
     }
 
+    @Override
     public void returnCodeExceptionHandler(String message, Exception e) throws ReturnCodeException {
-        if (e instanceof ReturnCodeException) {
-            StringBuilder stack = new StringBuilder();
-            try {
-                String[] stackFrames = ExceptionUtils.getStackFrames(e);
-                for (String stackFrame : stackFrames) {
-                    if (!stackFrame.trim().startsWith("at")) { // first line
-                        stack.append(stackFrame).append("\n");
-                    } else { // only the trace frames
-                     // add only the frames that starts  with: com.arvatosystems
-                        if (stackFrame.contains("com.arvatosystems") && !stackFrame.contains(T9tRemoteUtils.class.getName())) {
-                            stack.append(stackFrame).append("\n");
-                        }
-                    }
-                }
-            } catch (Exception internalException) {
-                LOGGER.error("Internal Exception - please check!!!", internalException);
-                stack.append(ExceptionUtils.getStackTrace(e));
-            }
-            LOGGER.error("{} {}", message, stack);
-            throw (ReturnCodeException) e;
-        }
         LOGGER.error(message, e);
         throw new ReturnCodeException(Constants.ErrorCodes.GENERAL_EXCEPTION, e.getMessage() != null ? e.getMessage() : e.toString(), null);
     }
-
-
 
     protected void handleServiceResponseErrorCode(ServiceResponse response) throws ReturnCodeException {
         if (response == null) {

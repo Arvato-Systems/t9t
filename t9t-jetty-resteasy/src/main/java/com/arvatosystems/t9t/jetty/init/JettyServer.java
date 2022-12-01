@@ -41,8 +41,6 @@ public class JettyServer {
     static final String DEFAULT_APPLICATION_PATH = "";
 
     public static void main(final String[] args) throws Exception {
-//        System.setProperty("java.util.concurrent.ForkJoinPool.common.threadFactory", DirtyHackForkJoinPool.class.getCanonicalName());
-
         // do not access the "internal" ContextFactory (essential for Jakarta 8, fatal for Jakarta 9.1ff)
         // System.setProperty("jakarta.xml.bind.JAXBContextFactory", "com.sun.xml.bind.v2.ContextFactory");
 
@@ -87,6 +85,8 @@ public class JettyServer {
 
         // code below is for adding http/2 (h2c). Works, but also throws sporadic exceptions
         final HttpConfiguration hconfig = new HttpConfiguration();
+        hconfig.setSendServerVersion(false); // remove the Jetty version from the error pages
+
         // ... configure
         final HttpConnectionFactory http1 = new HttpConnectionFactory(hconfig);
         final HTTP2CServerConnectionFactory http2c = new HTTP2CServerConnectionFactory(hconfig);

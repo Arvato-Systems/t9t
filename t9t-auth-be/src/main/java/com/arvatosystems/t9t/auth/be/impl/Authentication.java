@@ -57,10 +57,9 @@ public class Authentication implements IAuthenticate {
         rq.validate(); // among other things, checks that ap is not null
         // structure seems to be OK here
 
-        final InternalHeaderParameters ihdr = this.createInternalHeaderParametersForLogin(rq);
+        final InternalHeaderParameters ihdr = createInternalHeaderParametersForLogin(rq);
         // skip authorization since the IHDR is an artificial one anyway.
-        final AuthenticationResponse resp = this.requestProcessor.<AuthenticationResponse>executeSynchronousAndCheckResult(rq, ihdr,
-                AuthenticationResponse.class, true);
+        final AuthenticationResponse resp = requestProcessor.executeSynchronousAndCheckResult(rq, ihdr, AuthenticationResponse.class, true);
 
         final Instant endOfProcessing = Instant.now();
 

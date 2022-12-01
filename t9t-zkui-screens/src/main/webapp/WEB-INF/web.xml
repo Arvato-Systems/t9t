@@ -158,4 +158,8 @@ it does not start any more, see https://forum.zkoss.org/question/95682/jetty-9-a
     <welcome-file-list>
         <welcome-file>home.zul</welcome-file>
     </welcome-file-list>
+
+    <error-page>
+        <location>/error.zul</location>
+    </error-page>
 </web-app>

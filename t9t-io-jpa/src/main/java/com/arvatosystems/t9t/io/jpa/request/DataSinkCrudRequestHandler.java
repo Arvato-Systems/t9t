@@ -60,7 +60,7 @@ public class DataSinkCrudRequestHandler extends AbstractCrudSurrogateKeyRequestH
   FullTrackingWithVersion, DataSinkCrudRequest, DataSinkEntity> {
     private static final Logger LOGGER = LoggerFactory.getLogger(DataSinkCrudRequestHandler.class);
 
-    private static final String[] FORBIDDEN_FILE_PATH_ELEMENTS = { ":", "\\", "../" };
+    private static final String[] FORBIDDEN_FILE_PATH_ELEMENTS = { ":", "\\", "../", "//" };
     private final IDataSinkEntityResolver sinksResolver = Jdp.getRequired(IDataSinkEntityResolver.class);
     private final IDataSinkDTOMapper sinksMapper = Jdp.getRequired(IDataSinkDTOMapper.class);
     private final IExecutor executor = Jdp.getRequired(IExecutor.class);

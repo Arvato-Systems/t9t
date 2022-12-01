@@ -26,6 +26,7 @@
     </parent>
 
     <artifactId>t9t-rest-sapi</artifactId>
+    <description>This is not a typical sapi project (which would sit in the backend and have no dependency to jdp), but a common project for REST endpoints</description>
 
     <dependencies>
         <dependency>
@@ -35,6 +36,18 @@
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-xml-apiext</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-jdp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-jackson</artifactId>
         </dependency>
         <dependency>
             <groupId>jakarta.ws.rs</groupId>

@@ -99,13 +99,4 @@ package (com.arvatosystems) t9t.base.auth {
         required Unicode(32)                                newPassword;                // if set, then this is a change password request
         optional Unicode(32)                                retypePassword;                // if set, then this is a change password request
     }
-
-// currently not needed - implemented via internal interface IAuthorize
-//    class AuthorizationRequest extends RequestParameters return AuthorizationResponse {
-//        required auth.resourceId                            resourceId;                 // the web service which should be invoked
-//    }
-//
-//    class AuthorizationResponse extends ServiceResponse {
-//        required enumset Permissionset                      permissions;                // the permissions for that resource
-//    }
 }

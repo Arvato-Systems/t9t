@@ -18,7 +18,7 @@ package com.arvatosystems.t9t.in.be.impl;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.in.services.IInputSession;
 import com.arvatosystems.t9t.io.T9tIOException;
-import com.arvatosystems.t9t.out.be.IStandardNamespaceWriter;
+import com.arvatosystems.t9t.xml.namespaces.IStandardNamespaceWriter;
 
 import de.jpaw.bonaparte.core.BonaPortableClass;
 import de.jpaw.dp.Jdp;

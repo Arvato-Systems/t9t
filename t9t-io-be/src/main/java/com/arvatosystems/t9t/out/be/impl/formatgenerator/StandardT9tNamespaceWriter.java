@@ -25,7 +25,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.out.be.IStandardNamespaceWriter;
+import com.arvatosystems.t9t.xml.namespaces.IStandardNamespaceWriter;
 
 import de.jpaw.dp.Fallback;
 import de.jpaw.dp.Singleton;

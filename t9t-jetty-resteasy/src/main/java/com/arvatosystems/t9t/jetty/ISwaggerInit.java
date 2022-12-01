@@ -13,19 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.jetty.xml;
+package com.arvatosystems.t9t.jetty;
 
-import com.arvatosystems.t9t.out.be.IStandardNamespaceWriter;
+import java.util.Set;
 
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Startup;
-import de.jpaw.dp.StartupOnly;
+import jakarta.servlet.ServletConfig;
+import jakarta.ws.rs.core.Application;
 
-@Startup(90000)
-public class XmlContextEagerInitialization implements StartupOnly {
-
-    @Override
-    public void onStartup() {
-        Jdp.getRequired(IStandardNamespaceWriter.class).getStandardJAXBContext();
-    }
+public interface ISwaggerInit {
+    void configureOpenApi(Application application, ServletConfig servletConfig, Set<String> allPackages);
 }

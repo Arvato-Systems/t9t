@@ -57,10 +57,13 @@ public class ForgotPasswordViewModel28 extends AbstractViewOnlyVM<ResetPasswordR
         if (forgetPasswordApiKey == null) {
             throw new T9tException(T9tException.NOT_AUTHORIZED, "Configuration missing");
         } else {
-              userDAO.getAuthenticationResponse(forgetPasswordApiKey, null);
-              userDAO.resetPassword(data.getUserId(), data.getEmailAddress());
-              ApplicationSession.get().setJwt(null);
-              postProcessHook();
+            try {
+                userDAO.getAuthenticationResponse(forgetPasswordApiKey, null);
+                userDAO.resetPassword(data.getUserId(), data.getEmailAddress());
+            } finally {
+                ApplicationSession.get().setJwt(null);
+            }
+            postProcessHook();
         }
     }
 

@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.rest.vertx.xml;
+package com.arvatosystems.t9t.rest.xml;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.out.be.IStandardNamespaceWriter;
+import com.arvatosystems.t9t.xml.namespaces.IStandardNamespaceWriter;
 
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Startup;

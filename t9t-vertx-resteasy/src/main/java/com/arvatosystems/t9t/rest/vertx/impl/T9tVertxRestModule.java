@@ -29,9 +29,10 @@ import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.vertx.IRestModule;
 import com.arvatosystems.t9t.rest.converters.JaxrsParamConverterProvider;
+import com.arvatosystems.t9t.rest.filters.T9tRestAuthenticationFilter;
 import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
-import com.arvatosystems.t9t.rest.vertx.xml.XmlMediaTypeDecoder;
-import com.arvatosystems.t9t.rest.vertx.xml.XmlMediaTypeEncoder;
+import com.arvatosystems.t9t.rest.xml.XmlMediaTypeDecoder;
+import com.arvatosystems.t9t.rest.xml.XmlMediaTypeEncoder;
 
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
@@ -71,6 +72,7 @@ public class T9tVertxRestModule implements IRestModule {
         providers.add(new XmlMediaTypeDecoder());  // XML decoder
         providers.add(new XmlMediaTypeEncoder());  // XML encoder
         providers.add(new GeneralExceptionHandler());  // exception / error handler
+        providers.add(new T9tRestAuthenticationFilter());  // authentication filter
         deployment.setProviders(providers);
 
         deployment.start();

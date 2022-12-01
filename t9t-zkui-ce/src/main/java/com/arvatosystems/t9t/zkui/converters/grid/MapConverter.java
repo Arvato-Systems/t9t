@@ -32,7 +32,7 @@ public class MapConverter implements IItemConverter<Map> {
 
     @Override
     public boolean isRightAligned() {
-        return true;
+        return false; // The z field itself should be left aligned. For indexed entries, it could be either left or right, the majority is assumed to be left.
     }
 
     @Override

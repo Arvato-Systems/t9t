@@ -26,13 +26,9 @@
     </parent>
 
     <artifactId>t9t-jetty-resteasy</artifactId>
-    <description>JAX-RS API Gateway (with embedded jetty) for t9t</description>
+    <description>Jakarta-RS API Gateway (with embedded jetty) for t9t which builds on top of servlet</description>
 
     <dependencies>
-        <dependency>
-            <groupId>com.arvato-systems.t9t</groupId>
-            <artifactId>t9t-io-be</artifactId>
-        </dependency>
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-rest-sapi</artifactId>

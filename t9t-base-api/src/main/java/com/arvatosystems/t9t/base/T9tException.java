@@ -157,14 +157,14 @@ public class T9tException extends ApplicationException {
     public static final int USER_INACTIVE = OFFSET + 202;
     public static final int USER_NOT_ALLOWED_TO_ACCESS_WITH_PW = OFFSET + 203;
     public static final int USER_STATUS_NOT_FOUND = OFFSET + 204;
-    public static final int ACCOUNT_TEMPORARILY_FROZEN = OFFSET + 205;
+    public static final int ACCOUNT_TEMPORARILY_FROZEN = OFFSET_DENIED + 205;  // for consistency with WRONG_PASSWORD this should be a DENIED as well.
     public static final int PASSWORD_NOT_FOUND = OFFSET + 206;
     public static final int PASSWORD_EXPIRED_DUE_TO_USER_INACTIVITY = OFFSET + 207;
 
     /** This code is an OK code, because the login was correct and must be recorded. It is responsibility of the UI to request a new PW. */
     public static final int PASSWORD_EXPIRED = 208;
 
-    public static final int WRONG_PASSWORD = OFFSET + 209;
+    public static final int WRONG_PASSWORD = OFFSET_DENIED + 209;  // absolutely must be a "decline" code 1xxx in order to increment the failure counter!
     public static final int NEW_PASSWORD_MATCHES_ONE_OF_THE_LAST = OFFSET + 210;
     public static final int NEW_PASSWORD_MATCHES_ONE_AND_CANT_BE_REUSED_YET = OFFSET + 211;
     public static final int ROLE_NOT_FOUND = OFFSET + 212;
@@ -188,6 +188,7 @@ public class T9tException extends ApplicationException {
     public static final int UPSTREAM_BAD_RESPONSE       = OFFSET_TIMEOUT + 311;
     public static final int UPSTREAM_BAD_MEDIA_TYPE     = OFFSET_TIMEOUT + 312;
     public static final int INVALID_WRAPPED_JSON        = OFFSET_TIMEOUT + 313;
+    public static final int XML_EXCEPTION               = OFFSET_TIMEOUT + 314;
 
     public static final int REQUEST_STILL_PROCESSING    = OFFSET_TIMEOUT + 333;
 
@@ -380,6 +381,7 @@ public class T9tException extends ApplicationException {
         codeToDescription.put(UPSTREAM_BAD_RESPONSE, "Received a response of bad type, expected ServiceResponse");
         codeToDescription.put(UPSTREAM_BAD_MEDIA_TYPE, "Bad media type for uplink configured, only Bonaparte or ConmpactBonaparte are possible");
         codeToDescription.put(INVALID_WRAPPED_JSON, "JSON wrapped into XML kvp structure not valid");
+        codeToDescription.put(XML_EXCEPTION, "XML parsing problem");
 
         codeToDescription.put(SESSION_NOT_OPENED, "Attempted to execute a request on a session which was not opened (or closed already)");
         codeToDescription.put(SESSION_OPEN_ERROR, "Attempted to execute a request on a session which was not opened successfully");

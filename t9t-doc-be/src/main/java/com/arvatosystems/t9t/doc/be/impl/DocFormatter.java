@@ -70,6 +70,7 @@ import de.jpaw.dp.Singleton;
 import de.jpaw.util.ApplicationException;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ExceptionUtil;
+import freemarker.core.TemplateClassResolver;
 import freemarker.ext.beans.BeanModel;
 import freemarker.ext.beans.MapModel;
 import freemarker.ext.beans.StringModel;
@@ -789,6 +790,7 @@ public class DocFormatter implements IDocFormatter {
             cfg.setDefaultEncoding("UTF-8");
             cfg.setTemplateExceptionHandler(TemplateExceptionHandler.DEBUG_HANDLER);
             cfg.setLocale(myLocale);
+            cfg.setNewBuiltinClassResolver(TemplateClassResolver.ALLOWS_NOTHING_RESOLVER);
             Template fmTemplate = new Template(null, new StringReader(templateText), cfg);
 
             // create temporary storage for formatted address

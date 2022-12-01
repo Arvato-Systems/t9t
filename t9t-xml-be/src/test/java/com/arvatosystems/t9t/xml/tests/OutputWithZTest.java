@@ -29,11 +29,11 @@ import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.base.services.IOutputSession;
 import com.arvatosystems.t9t.io.DataSinkDTO;
-import com.arvatosystems.t9t.out.be.IStandardNamespaceWriter;
 import com.arvatosystems.t9t.out.be.impl.formatgenerator.FormatGeneratorXml;
 import com.arvatosystems.t9t.out.be.impl.formatgenerator.StandardT9tNamespaceWriter;
 import com.arvatosystems.t9t.out.be.impl.output.OutputResourceInMemory;
 import com.arvatosystems.t9t.xml.User001;
+import com.arvatosystems.t9t.xml.namespaces.IStandardNamespaceWriter;
 
 import de.jpaw.bonaparte.api.media.MediaTypeInfo;
 import de.jpaw.bonaparte.api.media.MediaTypes;

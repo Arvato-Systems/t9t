@@ -25,8 +25,8 @@ import jakarta.xml.bind.Unmarshaller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.out.be.IStandardNamespaceWriter;
 import com.arvatosystems.t9t.out.services.IMarshallerExt;
+import com.arvatosystems.t9t.xml.namespaces.IStandardNamespaceWriter;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.dp.Jdp;

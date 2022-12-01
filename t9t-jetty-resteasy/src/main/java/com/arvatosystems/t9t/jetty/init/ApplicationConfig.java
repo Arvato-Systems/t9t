@@ -23,33 +23,19 @@ import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.jdp.Init;
+import com.arvatosystems.t9t.jetty.ISwaggerInit;
 import com.arvatosystems.t9t.jetty.exceptions.GeneralExceptionHandler;
-import com.arvatosystems.t9t.jetty.oas.DateTimeConverters;
-import com.arvatosystems.t9t.jetty.oas.JsonSchemaOpenApiUtil;
 import com.arvatosystems.t9t.jetty.rest.endpoints.StaticResourcesResource;
-import com.arvatosystems.t9t.jetty.xml.XmlMediaTypeDecoder;
-import com.arvatosystems.t9t.jetty.xml.XmlMediaTypeEncoder;
 import com.arvatosystems.t9t.rest.converters.JaxrsParamConverterProvider;
+import com.arvatosystems.t9t.rest.filters.T9tRestAuthenticationFilter;
 import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
 import com.arvatosystems.t9t.rest.utils.RestUtils;
+import com.arvatosystems.t9t.rest.xml.XmlMediaTypeDecoder;
+import com.arvatosystems.t9t.rest.xml.XmlMediaTypeEncoder;
 
 import de.jpaw.bonaparte.core.BonaPortableFactory;
 import de.jpaw.dp.Jdp;
-import io.swagger.v3.core.converter.ModelConverters;
-import io.swagger.v3.jaxrs2.integration.JaxrsOpenApiContextBuilder;
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
-import io.swagger.v3.oas.integration.OpenApiConfigurationException;
-import io.swagger.v3.oas.integration.SwaggerConfiguration;
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.info.Contact;
-import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.security.SecurityRequirement;
-import io.swagger.v3.oas.models.security.SecurityScheme;
-import io.swagger.v3.oas.models.security.SecurityScheme.In;
-import io.swagger.v3.oas.models.security.SecurityScheme.Type;
-import io.swagger.v3.oas.models.servers.Server;
-import io.swagger.v3.oas.models.servers.ServerVariable;
-import io.swagger.v3.oas.models.servers.ServerVariables;
 import jakarta.servlet.ServletConfig;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Application;
@@ -96,6 +82,7 @@ public class ApplicationConfig extends Application {
         allClasses.add(GeneralExceptionHandler.class);
         allClasses.add(StandaloneObjectMapper.class);
         allClasses.add(JaxrsParamConverterProvider.class);
+        allClasses.add(T9tRestAuthenticationFilter.class);
 
         // Expose openapi.json via GET request
         allClasses.add(OpenApiResource.class);
@@ -109,65 +96,11 @@ public class ApplicationConfig extends Application {
         if (enableSwagger) {
             LOGGER.info("Enabling Swagger REST API documentation endpoints");
             StaticResourcesResource.setEnableSwagger(true);
-            configureOpenApi(servletConfig, allPackages);
+            Jdp.getRequired(ISwaggerInit.class).configureOpenApi(this, servletConfig, allPackages);
         } else {
             LOGGER.info("Swagger REST API documentation endpoints NOT enabled");
         }
     }
-
-    private void configureOpenApi(final ServletConfig servletConfig, final Set<String> allPackages) {
-        final Info info = createRestApiInfoForSwagger();
-        final OpenAPI oas = createConfiguredOpenApi(info);
-        final SwaggerConfiguration oasConfig = new SwaggerConfiguration()
-          .openAPI(oas)
-          .prettyPrint(true)
-          .resourcePackages(allPackages);
-        LOGGER.info("Adding custom swagger converter for Java 8 LocalDate/Time types will be displayed as string, Instant as integer in swaggerUI");
-        ModelConverters.getInstance().addConverter(new DateTimeConverters());
-        LOGGER.info("Adding custom swagger converter for display z field as Json schema.");
-        ModelConverters.getInstance().addConverter(JsonSchemaOpenApiUtil.getJsonModelConverter());
-        try {
-            new JaxrsOpenApiContextBuilder()
-              .servletConfig(servletConfig)
-              .application(this)
-              .openApiConfiguration(oasConfig)
-              .buildContext(true);
-        } catch (final OpenApiConfigurationException e) {
-             throw new RuntimeException(e.getMessage(), e);
-        }
-    }
-
-    private OpenAPI createConfiguredOpenApi(final Info info) {
-        final OpenAPI oas = new OpenAPI();
-        oas.info(info);
-        oas.addSecurityItem(new SecurityRequirement().addList("apiKey"));
-        oas.schemaRequirement("apiKey", new SecurityScheme()
-          .type(Type.APIKEY)
-          .in(In.HEADER)
-          .name("Authorization")
-          .description("Use API-Key to authorize access to application - most endpoints are secured"));
-
-        final String basePath = JettyServer.getContextPath() + JettyServer.getApplicationPath();
-        final String basePathKey = "basePath";
-        final ServerVariables variables = new ServerVariables();
-        final ServerVariable variable = new ServerVariable();
-        variable.setDefault(basePath);
-        variables.addServerVariable(basePathKey, variable);
-        oas.addServersItem(new Server().url("{" + basePathKey + "}").description("Base Path").variables(variables));
-        JsonSchemaOpenApiUtil.addJsonSchema(oas);
-        return oas;
-    }
-
-    private Info createRestApiInfoForSwagger() {
-        return new Info()
-             .title("REST API")
-             .version(this.getClass().getPackage().getSpecificationVersion() + "." + this.getClass().getPackage().getImplementationVersion())
-             .description("This is a REST API documentation for the API gateway.")
-             .contact(new Contact()
-                 .name("Sales Arvato Systems")
-                 .email("sales@arvato-systems.de"));
-    }
-
 
     @Override
     public Set<Object> getSingletons() {

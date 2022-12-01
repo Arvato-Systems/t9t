@@ -73,10 +73,6 @@
         </dependency>
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
-            <artifactId>t9t-io-be</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-xml-apiext</artifactId>
         </dependency>
     </dependencies>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="requests28"?>
-<?xel-method prefix="l"  name="translate"  class="com.arvatosystems.t9t.zkui.util.ZulUtils" signature="String translate(String, String)"?>
+<?xel-method prefix="l" name="translate" class="com.arvatosystems.t9t.zkui.util.ZulUtils" signature="String translate(String, String)"?>
 <zk xmlns:c="client">
     <window apply="org.zkoss.bind.BindComposer"
         sizable="true" maximizable="true" mode="modal" width="60%"
