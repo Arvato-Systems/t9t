@@ -36,6 +36,7 @@ import com.arvatosystems.t9t.solr.be.impl.response.QueryResponse;
 import com.arvatosystems.t9t.solr.services.ISolrModuleCfgDtoResolver;
 
 import de.jpaw.bonaparte.pojos.api.SortColumn;
+import de.jpaw.bonaparte.util.ToStringHelper;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
@@ -72,8 +73,11 @@ public class SolrEngine implements ITextSearch {
             }
 
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("SOLR search on {} (offset={}, limit={}) with filter criteria {}", documentName,
-                        sc.getOffset(), sc.getLimit(), sc.getSearchFilter() == null ? "NONE" : sc.getSearchFilter());
+                LOGGER.debug("SOLR search on {} (offset={}, limit={}) with filter criteria {} and sort {}", documentName,
+                        sc.getOffset(), sc.getLimit(),
+                        sc.getSearchFilter() == null ? "NONE" : sc.getSearchFilter(),
+                        sc.getSortColumns()  == null ? "NONE" : ToStringHelper.toStringSL(sc.getSortColumns())
+                );
             }
 
             final QueryResponse solrResponse = solrClient.query(solrBaseUrl + "/" + documentName + "/query", buildSolrQueryBody(ctx, sc));
@@ -118,6 +122,7 @@ public class SolrEngine implements ITextSearch {
                 // Sorting will ALWAYS be done on a field with the suffix "_sort" !!
                 sb.append(col.getFieldName()).append("_sort").append(col.getDescending() ? " desc" : " asc");
             }
+            solrQuery.setSort(sb.toString());  // use the real sort criteria
         }
 
         // always add a filter on the requesters tenant_ref

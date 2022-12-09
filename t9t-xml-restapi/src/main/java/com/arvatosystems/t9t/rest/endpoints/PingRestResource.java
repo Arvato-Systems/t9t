@@ -70,7 +70,7 @@ public class PingRestResource implements IT9tRestEndpoint {
     @GET
     public Response testPingGet(@Context final HttpHeaders httpHeaders) {
         LOGGER.debug("Ping GET request at /ping");
-        return RestUtils.error(Response.Status.OK, 0, null, httpHeaders);
+        return RestUtils.error(Response.Status.OK, 0, null, restProcessor.determineResponseType(httpHeaders));
     }
 
     @Operation(

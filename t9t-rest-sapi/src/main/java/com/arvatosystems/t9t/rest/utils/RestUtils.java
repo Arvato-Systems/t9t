@@ -81,6 +81,20 @@ public final class RestUtils {
     }
 
     /**
+     * Determines which format to use for the response.
+     * The type of the response is either the type requested by ACCEPT, or, in case that is null, matches the content type.
+     * This is the default implementation, called from exception handlers.
+     * The method within the request processors can be overridden.
+     *
+     * @param httpHeaders   the HTTP headers provided to the REST request
+     * @return              the type of response, or null
+     */
+    public static String determineResponseType(final HttpHeaders httpHeaders) {
+        final String accept = httpHeaders.getHeaderString(HttpHeaders.ACCEPT);
+        return accept != null ? accept : httpHeaders.getHeaderString(HttpHeaders.CONTENT_TYPE);
+    }
+
+    /**
      * Produces a result message for the specific reason of bad input data size.
      *
      * @param parameter   the parameter list
@@ -98,31 +112,30 @@ public final class RestUtils {
         return result;
     }
 
-    public static Response error(final Response.Status status, final int errorCode, final String message, final HttpHeaders httpHeaders) {
-        final String acceptHeader = httpHeaders == null ? null : httpHeaders.getHeaderString(HttpHeaders.ACCEPT);
+    public static Response error(final Response.Status status, final int errorCode, final String message, final String acceptHeader) {
         final GenericResult genericResult = createErrorResult(errorCode, message);
         return create(status, genericResult, acceptHeader);
     }
 
-    public static Response createExceptionResponse(final Exception e, final HttpHeaders httpHeaders, final UriInfo uriInfo, final String method) {
+    public static Response createExceptionResponse(final Exception e, final String acceptHeader, final UriInfo uriInfo, final String method) {
         if (e instanceof ApplicationException) {
             final ApplicationException ae = (ApplicationException)e;
             final int errorCode = ae.getErrorCode();
             LOGGER.error("Application exception calling {} {}: {} {} {}",
                     method, uriInfo.getAbsolutePath(), e.getClass().getSimpleName(), errorCode, e.getMessage());
-            return error(mapStatusFromErrorCode(errorCode), errorCode, ae.getMessage(), httpHeaders);
+            return error(mapStatusFromErrorCode(errorCode), errorCode, ae.getMessage(), acceptHeader);
         }
         if (e instanceof JacksonException) {
             // a problem parsing the JSON should be communicated as such
             LOGGER.error("JSON exception calling {} {}: {} {}",
                     method, uriInfo.getAbsolutePath(), e.getClass().getSimpleName(), e.getMessage());
-            return error(Response.Status.BAD_REQUEST, MessageParserException.JSON_EXCEPTION, e.getMessage(), httpHeaders);
+            return error(Response.Status.BAD_REQUEST, MessageParserException.JSON_EXCEPTION, e.getMessage(), acceptHeader);
         }
         if (e instanceof JAXBException || e instanceof XMLStreamException) {
             // a problem parsing the JSON should be communicated as such
             LOGGER.error("XML exception calling {} {}: {} {}",
                     method, uriInfo.getAbsolutePath(), e.getClass().getSimpleName(), e.getMessage());
-            return error(Response.Status.BAD_REQUEST, T9tException.XML_EXCEPTION, e.getMessage(), httpHeaders);
+            return error(Response.Status.BAD_REQUEST, T9tException.XML_EXCEPTION, e.getMessage(), acceptHeader);
         }
         if (e instanceof WebApplicationException) {
             final WebApplicationException we = (WebApplicationException)e;
@@ -133,7 +146,7 @@ public final class RestUtils {
         }
         LOGGER.error("General exception occurred calling {} {}: {} {} {}",
                 method, uriInfo.getAbsolutePath(), e.getClass().getSimpleName(), e.getMessage(), e);
-        return error(Response.Status.INTERNAL_SERVER_ERROR, T9tException.GENERAL_EXCEPTION, null, httpHeaders);  // do not disclose internal message
+        return error(Response.Status.INTERNAL_SERVER_ERROR, T9tException.GENERAL_EXCEPTION, null, acceptHeader);  // do not disclose internal message
     }
 
     /** Creates a specific HTTP return code from t9t exception code / return code. */

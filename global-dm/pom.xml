@@ -199,6 +199,11 @@
         <!-- Swagger -->
         <swagger.version>${swagger-maven-plugin.version}</swagger.version>
         <swagger-ui.version>${swagger-ui-webjars.version}</swagger-ui.version>
+
+        <!-- Google Services -->
+        <google-http-client.version>1.42.3</google-http-client.version>
+        <google-auth-library.version>1.13.0</google-auth-library.version>
+        <firebase-admin.version>9.1.1</firebase-admin.version>
     </properties>
 
 
@@ -1210,6 +1215,11 @@
                 <artifactId>http2-client</artifactId>
                 <version>${jetty.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-servlets</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
 
             <!-- Apache kafka related dependencies, should be specified before camel, in order to set the kafka version before camel-kafka is pulled in. -->
             <dependency>
@@ -1436,6 +1446,27 @@
                 <groupId>org.webjars</groupId>
                 <artifactId>swagger-ui</artifactId>
                 <version>${swagger-ui-webjars.version}</version>
+            </dependency>
+
+            <!-- google api (fcm, auth)-->
+            <dependency>
+                <groupId>com.google.http-client</groupId>
+                <artifactId>google-http-client-bom</artifactId>
+                <version>${google-http-client.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>com.google.auth</groupId>
+                <artifactId>google-auth-library-bom</artifactId>
+                <version>${google-auth-library.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>com.google.firebase</groupId>
+                <artifactId>firebase-admin</artifactId>
+                <version>${firebase-admin.version}</version>
             </dependency>
 
         </dependencies>

@@ -18,6 +18,7 @@ package com.arvatosystems.t9t.jetty.init;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.jboss.resteasy.plugins.interceptors.CorsFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +33,7 @@ import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
 import com.arvatosystems.t9t.rest.utils.RestUtils;
 import com.arvatosystems.t9t.rest.xml.XmlMediaTypeDecoder;
 import com.arvatosystems.t9t.rest.xml.XmlMediaTypeEncoder;
+import com.google.common.base.Splitter;
 
 import de.jpaw.bonaparte.core.BonaPortableFactory;
 import de.jpaw.dp.Jdp;
@@ -72,6 +74,18 @@ public class ApplicationConfig extends Application {
                 // add the package to the set of all packages
                 allPackages.add(cls.getPackageName());
             }
+        }
+
+        final String corsConfig = RestUtils.CONFIG_READER.getProperty("t9t.restapi.cors", null);
+        if (corsConfig != null) {
+            LOGGER.info("Enabling CORS for {}", corsConfig);
+            final Iterable<String> cors = Splitter.on(",").omitEmptyStrings().split(corsConfig);
+            final CorsFilter corsFilter = new CorsFilter();
+            for (final String url : cors) {
+                corsFilter.getAllowedOrigins().add(url);
+            }
+            corsFilter.setAllowedMethods("OPTIONS, GET, POST, DELETE, PUT, PATCH");
+            allSingletons.add(corsFilter);
         }
 
         allSingletons.add(Jdp.getRequired(XmlMediaTypeDecoder.class));  // new + register singleton

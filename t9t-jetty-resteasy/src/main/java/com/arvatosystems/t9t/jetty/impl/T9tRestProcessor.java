@@ -197,7 +197,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
     public <T extends ServiceResponse> void performAsyncBackendRequest(final HttpHeaders httpHeaders,
             final AsyncResponse resp, final RequestParameters requestParameters, final String infoMsg,
             final Class<T> backendResponseClass, final Function<T, BonaPortable> responseMapper) {
-        final String acceptHeader = httpHeaders.getHeaderString(HttpHeaders.ACCEPT);
+        final String acceptHeader = determineResponseType(httpHeaders);
         try {
             requestParameters.validate();  // validate the request before we launch a worker thread!
         } catch (final ApplicationException e) {
@@ -264,7 +264,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
             resp.resume(responseObj);
         }).exceptionally(e -> {
             final int errorCode = (e instanceof ApplicationException ? ((ApplicationException)e).getErrorCode() : T9tException.GENERAL_EXCEPTION);
-            resp.resume(RestUtils.error(Response.Status.INTERNAL_SERVER_ERROR, errorCode, e.getMessage(), httpHeaders));
+            resp.resume(RestUtils.error(Response.Status.INTERNAL_SERVER_ERROR, errorCode, e.getMessage(), acceptHeader));
             e.printStackTrace();
             return null;
         });
@@ -303,7 +303,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
             resp.resume(responseObj);
         }).exceptionally(e -> {
             final int errorCode = (e instanceof ApplicationException ? ((ApplicationException)e).getErrorCode() : T9tException.GENERAL_EXCEPTION);
-            resp.resume(RestUtils.error(Response.Status.INTERNAL_SERVER_ERROR, errorCode, e.getMessage(), httpHeaders));
+            resp.resume(RestUtils.error(Response.Status.INTERNAL_SERVER_ERROR, errorCode, e.getMessage(), acceptHeader));
             e.printStackTrace();
             return null;
         });

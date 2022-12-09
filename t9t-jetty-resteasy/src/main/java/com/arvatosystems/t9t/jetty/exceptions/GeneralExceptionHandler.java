@@ -44,6 +44,7 @@ public class GeneralExceptionHandler implements ExceptionMapper<Exception> {
 
     @Override
     public Response toResponse(final Exception e) {
-        return RestUtils.createExceptionResponse(e, httpHeaders, authContext.getUri(), authContext.getHttpMethod());
+        final String acceptHeader = RestUtils.determineResponseType(httpHeaders);
+        return RestUtils.createExceptionResponse(e, acceptHeader, authContext.getUri(), authContext.getHttpMethod());
     }
 }

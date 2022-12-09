@@ -97,7 +97,6 @@ public interface IT9tRestProcessor {
      * @return              the type of response, or null
      */
     default String determineResponseType(final HttpHeaders httpHeaders) {
-        final String accept = httpHeaders.getHeaderString(HttpHeaders.ACCEPT);
-        return accept != null ? accept : httpHeaders.getHeaderString(HttpHeaders.CONTENT_TYPE);
+        return RestUtils.determineResponseType(httpHeaders);
     }
 }
