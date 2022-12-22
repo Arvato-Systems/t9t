@@ -15,7 +15,6 @@
  */
 package com.arvatosystems.t9t.base.be.impl;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -38,30 +37,20 @@ import de.jpaw.dp.Singleton;
 public class SearchFilterUtil implements ISearchFilterUtil {
     private final ISearchTools searchTools = Jdp.getRequired(ISearchTools.class);
 
-    private boolean hasDirectWantedChild(final AndFilter andFilter, final Set<String> wantedFieldNames) {
-        final List<SearchFilter> childFilters = Arrays.asList(andFilter.getFilter1(), andFilter.getFilter2());
+    private boolean isFieldFilterOfName(final SearchFilter filter, final Set<String> wantedFieldNames) {
+        return filter instanceof FieldFilter ff && wantedFieldNames.contains(ff.getFieldName());
+    }
 
-        return childFilters.stream().anyMatch(childFilter -> {
-            if (childFilter instanceof FieldFilter) {
-                return wantedFieldNames.contains(((FieldFilter)childFilter).getFieldName());
-            }
-            return false;
-        });
+    private boolean hasDirectWantedChild(final AndFilter andFilter, final Set<String> wantedFieldNames) {
+        return isFieldFilterOfName(andFilter.getFilter1(), wantedFieldNames) || isFieldFilterOfName(andFilter.getFilter2(), wantedFieldNames); 
     }
 
     private boolean hasDirectWantedChild(final OrFilter orFilter, final Set<String> wantedFieldNames) {
-        final List<SearchFilter> childFilters = Arrays.asList(orFilter.getFilter1(), orFilter.getFilter2());
-
-        return childFilters.stream().anyMatch(childFilter -> {
-            if (childFilter instanceof FieldFilter) {
-                return wantedFieldNames.contains(((FieldFilter)childFilter).getFieldName());
-            }
-            return false;
-        });
+        return isFieldFilterOfName(orFilter.getFilter1(), wantedFieldNames) || isFieldFilterOfName(orFilter.getFilter2(), wantedFieldNames); 
     }
 
     private boolean hasWantedChild(final NotFilter notFilter, final Set<String> wantedFieldNames) {
-        return searchTools.containsFieldPathElements(notFilter, new ArrayList<>(wantedFieldNames));
+        return searchTools.containsFieldPathElements(notFilter, wantedFieldNames);
     }
 
     private boolean hasMoreThanOneWantedFieldNames(final SearchFilter searchFilter, final Set<String> wantedFieldNames) {
@@ -74,10 +63,10 @@ public class SearchFilterUtil implements ISearchFilterUtil {
 
     public void populateQueue(final SearchFilter searchFilter, final Set<String> wantedFieldNames, final Queue<SearchFilter> filterQueue) {
 
-        if (searchFilter instanceof NotFilter) {
-            if (hasWantedChild((NotFilter)searchFilter, wantedFieldNames)) {
+        if (searchFilter instanceof NotFilter nf) {
+            if (hasWantedChild(nf, wantedFieldNames)) {
                 filterQueue.add(new NotFilter());
-                populateQueue(((NotFilter)searchFilter).getFilter(), wantedFieldNames, filterQueue);
+                populateQueue(nf.getFilter(), wantedFieldNames, filterQueue);
             }
 
         } else if (searchFilter instanceof AndFilter) {
@@ -210,5 +199,4 @@ public class SearchFilterUtil implements ISearchFilterUtil {
         return generateSearchFilterFromQueue(filterQueue, null);
 
     }
-
 }

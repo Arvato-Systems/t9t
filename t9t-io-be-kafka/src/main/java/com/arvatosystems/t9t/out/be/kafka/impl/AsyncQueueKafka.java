@@ -168,12 +168,11 @@ public class AsyncQueueKafka<R extends BonaPortable> implements IAsyncQueue {
             props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 60);  // do not overload the system
             if (myCfg.getZ() != null) {
                 final Object extraKafkaConfig = myCfg.getZ().get("kafka");
-                if (extraKafkaConfig instanceof Map) {
-                    final Map<String, ?> extraKafkaConfigMap = (Map<String, ?>)extraKafkaConfig;
+                if (extraKafkaConfig instanceof Map<?, ?> extraKafkaConfigMap) {
                     LOGGER.info("Found {} additional consumer configuration properties for kafka in AsyncQueueDTO {}",
                       extraKafkaConfigMap.size(), myCfg.getAsyncQueueId());
-                    for (final Map.Entry<String, ?> entry: extraKafkaConfigMap.entrySet()) {
-                        props.put(entry.getKey(), entry.getValue());
+                    for (final Map.Entry<?, ?> entry: extraKafkaConfigMap.entrySet()) {
+                        props.put(entry.getKey().toString(), entry.getValue());
                     }
                 }
             }

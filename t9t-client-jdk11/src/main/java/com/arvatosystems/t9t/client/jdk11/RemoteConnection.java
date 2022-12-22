@@ -45,6 +45,7 @@ import de.jpaw.bonaparte.core.CompactByteArrayParser;
 import de.jpaw.bonaparte.core.MimeTypes;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
+import de.jpaw.util.ApplicationException;
 import de.jpaw.util.ExceptionUtil;
 
 @Singleton
@@ -118,13 +119,12 @@ public class RemoteConnection implements IRemoteConnection {
                         Integer.toString(returnCode));
             }
         }
-        if (obj instanceof ServiceResponse) {
-            final ServiceResponse r = (ServiceResponse)obj;
-            LOGGER.info("Received response type {} with return code {}", r.ret$PQON(), r.getReturnCode());
-            if (r.getReturnCode() != 0) {
-                LOGGER.info("Error details are {}, message is {}", r.getErrorDetails(), r.getErrorMessage());
+        if (obj instanceof ServiceResponse sr) {
+            LOGGER.info("Received response type {} with return code {}", sr.ret$PQON(), sr.getReturnCode());
+            if (!ApplicationException.isOk(sr.getReturnCode())) {
+                LOGGER.info("Error details are {}, message is {}", sr.getErrorDetails(), sr.getErrorMessage());
             }
-            return r;
+            return sr;
         }
 
 

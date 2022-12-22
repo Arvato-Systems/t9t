@@ -39,9 +39,8 @@ public class CacheInvalidationEventHandler implements IEventHandler {
 
     @Override
     public int execute(final RequestContext ctx, final EventParameters eventData) {
-        if (eventData instanceof InvalidateCacheEvent) {
+        if (eventData instanceof InvalidateCacheEvent ice) {
             // OK, query registry and invoke invalidator, if any exists
-            final InvalidateCacheEvent ice = (InvalidateCacheEvent)eventData;
             final Consumer<BonaPortable> invalidator = registry.getInvalidator(ice.getPqon());
             if (invalidator != null) {
                 LOGGER.debug("Performing cache invalidation for {} with key {}", ice.getPqon(), ice.getKey());

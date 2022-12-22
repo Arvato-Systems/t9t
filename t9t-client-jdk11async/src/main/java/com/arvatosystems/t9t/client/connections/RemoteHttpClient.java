@@ -152,8 +152,7 @@ class RemoteHttpClient {
     private ServiceResponse convertResponse(final HttpPostResponseObject resp, final boolean isAuthentication) {
         if (resp.getHttpReturnCode() / 100 != 2) {
             final BonaPortable response = resp.getResponseObject();
-            if (response instanceof ServiceResponse) {
-                final ServiceResponse sr = (ServiceResponse)response;
+            if (response instanceof ServiceResponse sr) {
                 if (!ApplicationException.isOk(sr.getReturnCode())) {
                     // TODO: check if we should just pass back sr
                     return MessagingUtil.createServiceResponse(
@@ -179,13 +178,12 @@ class RemoteHttpClient {
                         Integer.toString(resp.getHttpReturnCode()));
             }
         }
-        if (response instanceof ServiceResponse) {
-            final ServiceResponse r = (ServiceResponse)response;
-            LOGGER.info("Received response type {} with return code {}", r.ret$PQON(), r.getReturnCode());
-            if (r.getReturnCode() != 0) {
-                LOGGER.info("Error details are {}, message is {}", r.getErrorDetails(), r.getErrorMessage());
+        if (response instanceof ServiceResponse sr) {
+            LOGGER.info("Received response type {} with return code {}", sr.ret$PQON(), sr.getReturnCode());
+            if (!ApplicationException.isOk(sr.getReturnCode())) {
+                LOGGER.info("Error details are {}, message is {}", sr.getErrorDetails(), sr.getErrorMessage());
             }
-            return r;
+            return sr;
         }
 
 

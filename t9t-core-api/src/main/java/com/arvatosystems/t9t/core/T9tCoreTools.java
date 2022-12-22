@@ -26,11 +26,11 @@ public final class T9tCoreTools {
     public static String getRequestId(final CannedRequestRef ref) {
         if (ref == null)
             return null;
-        if (ref instanceof CannedRequestKey) {
-            return ((CannedRequestKey)ref).getRequestId();
+        if (ref instanceof CannedRequestKey key) {
+            return key.getRequestId();
         }
-        if (ref instanceof CannedRequestDTO) {
-            return ((CannedRequestDTO)ref).getRequestId();
+        if (ref instanceof CannedRequestDTO dto) {
+            return dto.getRequestId();
         }
         throw new T9tException(T9tException.NOT_YET_IMPLEMENTED, "CannedRequestRef of type " + ref.getClass().getCanonicalName());
     }
@@ -39,11 +39,11 @@ public final class T9tCoreTools {
     public static String getBucketId(final BucketCounterRef ref) {
         if (ref == null)
             return null;
-        if (ref instanceof BucketCounterKey) {
-            return ((BucketCounterKey)ref).getQualifier();
+        if (ref instanceof BucketCounterKey key) {
+            return key.getQualifier();
         }
-        if (ref instanceof BucketCounterDTO) {
-            return ((BucketCounterDTO)ref).getQualifier();
+        if (ref instanceof BucketCounterDTO dto) {
+            return dto.getQualifier();
         }
         throw new T9tException(T9tException.NOT_YET_IMPLEMENTED, "BucketCounterRef of type " + ref.getClass().getCanonicalName());
     }

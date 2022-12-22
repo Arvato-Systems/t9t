@@ -23,11 +23,11 @@ public final class IOTools {
     public static String getCsvConfigurationId(final CsvConfigurationRef ref) {
         if (ref == null)
             return null;
-        if (ref instanceof CsvConfigurationKey) {
-            return ((CsvConfigurationKey)ref).getCsvConfigurationId();
+        if (ref instanceof CsvConfigurationKey key) {
+            return key.getCsvConfigurationId();
         }
-        if (ref instanceof CsvConfigurationDTO) {
-            return ((CsvConfigurationDTO)ref).getCsvConfigurationId();
+        if (ref instanceof CsvConfigurationDTO dto) {
+            return dto.getCsvConfigurationId();
         }
         throw new T9tException(T9tException.NOT_YET_IMPLEMENTED, "CsvConfigurationRef of type " + ref.getClass().getCanonicalName());
     }
@@ -35,11 +35,11 @@ public final class IOTools {
     public static String getDataSinkId(final DataSinkRef ref) {
         if (ref == null)
             return null;
-        if (ref instanceof DataSinkKey) {
-            return ((DataSinkKey)ref).getDataSinkId();
+        if (ref instanceof DataSinkKey key) {
+            return key.getDataSinkId();
         }
-        if (ref instanceof DataSinkDTO) {
-            return ((DataSinkDTO)ref).getDataSinkId();
+        if (ref instanceof DataSinkDTO dto) {
+            return dto.getDataSinkId();
         }
         throw new T9tException(T9tException.NOT_YET_IMPLEMENTED, "DataSinkRef of type " + ref.getClass().getCanonicalName());
     }

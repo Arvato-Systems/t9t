@@ -166,13 +166,13 @@ public final class FieldMappers {
         final Variant v = new Variant();
         if (o == null)
             return v;
-        if (o instanceof Integer)         v.setIntValue((Integer)o);
-        else if (o instanceof Long)       v.setLongValue((Long)o);
-        else if (o instanceof Boolean)    v.setBoolValue((Boolean)o);
-        else if (o instanceof BigDecimal) v.setNumValue((BigDecimal)o);
-        else if (o instanceof String)     v.setTextValue((String)o);
-        else if (o instanceof LocalDate)  v.setDayValue((LocalDate)o);
-        else if (o instanceof Instant)    v.setInstantValue((Instant)o);
+        if (o instanceof Integer oInt)        v.setIntValue(oInt);
+        else if (o instanceof Long oLong)     v.setLongValue(oLong);
+        else if (o instanceof Boolean oBool)  v.setBoolValue(oBool);
+        else if (o instanceof BigDecimal oBd) v.setNumValue((BigDecimal)o);
+        else if (o instanceof String oString) v.setTextValue(oString);
+        else if (o instanceof LocalDate oLd)  v.setDayValue(oLd);
+        else if (o instanceof Instant oInst)  v.setInstantValue(oInst);
         else throw new IllegalArgumentException("Cannot wrap an object of type " + o.getClass().getCanonicalName() + " inside a Variant");
         return v;
     }

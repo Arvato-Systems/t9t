@@ -231,8 +231,7 @@ public class T9tAuthVertx implements IServiceModule {
                 },
                 asyncResult -> {
                     if (asyncResult.succeeded()) {
-                        if (asyncResult.result() instanceof GetTenantLogoResponse) {
-                            final GetTenantLogoResponse r = ((GetTenantLogoResponse) asyncResult.result());
+                        if (asyncResult.result() instanceof GetTenantLogoResponse r) {
                             final MediaTypeDescriptor mediaType = MediaTypeInfo.getFormatByType(r.getTenantLogo().getMediaType());
                             if (mediaType != null) {
                                 if (origin != null) {
@@ -253,8 +252,8 @@ public class T9tAuthVertx implements IServiceModule {
                     } else {
                         String msg = null;
                         final Throwable cause = asyncResult.cause();
-                        if (cause instanceof ApplicationException) {
-                            msg = (cause.getMessage() + ((ApplicationException) cause).getStandardDescription());
+                        if (cause instanceof ApplicationException apEx) {
+                            msg = cause.getMessage() + apEx.getStandardDescription();
                         } else {
                             msg = cause.getMessage();
                         }

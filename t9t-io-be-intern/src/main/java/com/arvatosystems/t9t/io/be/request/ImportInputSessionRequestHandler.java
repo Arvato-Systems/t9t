@@ -62,12 +62,12 @@ public class ImportInputSessionRequestHandler extends AbstractRequestHandler<Imp
     }
 
     public InputStream getInput(final AbstractImportData input) throws FileNotFoundException {
-        if (input instanceof ImportFromFile) {
-            return getInputByImportFromFile((ImportFromFile) input);
-        } else if (input instanceof ImportFromRaw) {
-            return getInputByImportFromRaw((ImportFromRaw) input);
-        } else if (input instanceof ImportFromString) {
-            return getInputByImportFromString((ImportFromString) input);
+        if (input instanceof ImportFromFile importFromFile) {
+            return getInputByImportFromFile(importFromFile);
+        } else if (input instanceof ImportFromRaw importFromRaw) {
+            return getInputByImportFromRaw(importFromRaw);
+        } else if (input instanceof ImportFromString importFromString) {
+            return getInputByImportFromString(importFromString);
         } else if (input != null) {
             return getInputByGeneric(input);
         } else {

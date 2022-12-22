@@ -26,6 +26,7 @@ import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.SortColumn;
 import de.jpaw.dp.Singleton;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -35,7 +36,7 @@ import java.util.function.Function;
 @Singleton
 public class SearchTools implements ISearchTools {
 
-    protected boolean containsFieldPathElements(final String fn, final List<String> pathElements) {
+    protected boolean containsFieldPathElements(final String fn, final Collection<String> pathElements) {
         for (final String pe : pathElements) {
             if (fn.contains(pe)) {
                 return true;
@@ -46,8 +47,8 @@ public class SearchTools implements ISearchTools {
 
     protected boolean searchForAndFieldname(final SearchFilter searchFilter, final String fieldname, final Function<SearchFilter, SearchFilter> converter,
             final Consumer<SearchFilter> assigner) {
-        if (searchFilter instanceof FieldFilter) {
-            if (((FieldFilter) searchFilter).getFieldName().equals(fieldname)) {
+        if (searchFilter instanceof FieldFilter ff) {
+            if (ff.getFieldName().equals(fieldname)) {
                 if (converter != null) {
                     assigner.accept(converter.apply(searchFilter));
                 }
@@ -55,8 +56,7 @@ public class SearchTools implements ISearchTools {
             }
             return false;
         }
-        if (searchFilter instanceof AndFilter) {
-            final AndFilter andFilter = (AndFilter) searchFilter;
+        if (searchFilter instanceof AndFilter andFilter) {
             boolean b1 = searchForAndFieldname(andFilter.getFilter1(), fieldname, converter, (final SearchFilter sf) -> andFilter.setFilter1(sf));
             boolean b2 = searchForAndFieldname(andFilter.getFilter2(), fieldname, converter, (final SearchFilter sf) -> andFilter.setFilter2(sf));
             return b1 || b2;
@@ -82,17 +82,14 @@ public class SearchTools implements ISearchTools {
         if (searchFilter == null) {
             return;
         }
-        if (searchFilter instanceof FieldFilter) {
-            final FieldFilter fieldFilter = (FieldFilter) searchFilter;
+        if (searchFilter instanceof FieldFilter fieldFilter) {
             fieldFilter.setFieldName(mapper.apply(fieldFilter.getFieldName()));
-        } else if (searchFilter instanceof NotFilter) {
-            mapNames(((NotFilter) searchFilter).getFilter(), mapper);
-        } else if (searchFilter instanceof AndFilter) {
-            final AndFilter andFilter = (AndFilter) searchFilter;
+        } else if (searchFilter instanceof NotFilter notFilter) {
+            mapNames(notFilter.getFilter(), mapper);
+        } else if (searchFilter instanceof AndFilter andFilter) {
             mapNames(andFilter.getFilter1(), mapper);
             mapNames(andFilter.getFilter2(), mapper);
-        } else if (searchFilter instanceof OrFilter) {
-            final OrFilter orFilter = (OrFilter) searchFilter;
+        } else if (searchFilter instanceof OrFilter orFilter) {
             mapNames(orFilter.getFilter1(), mapper);
             mapNames(orFilter.getFilter2(), mapper);
         } else {
@@ -126,25 +123,23 @@ public class SearchTools implements ISearchTools {
     }
 
     @Override
-    public boolean containsFieldPathElements(final SearchCriteria searchCriteria, final List<String> pathElements) {
+    public boolean containsFieldPathElements(final SearchCriteria searchCriteria, final Collection<String> pathElements) {
         return (containsFieldPathElements(searchCriteria.getSortColumns(), pathElements)
              || containsFieldPathElements(searchCriteria.getSearchFilter(), pathElements));
     }
 
     @Override
-    public boolean containsFieldPathElements(final SearchFilter searchFilter, final List<String> pathElements) {
+    public boolean containsFieldPathElements(final SearchFilter searchFilter, final Collection<String> pathElements) {
         if (searchFilter == null) {
             return false;
         }
-        if (searchFilter instanceof FieldFilter) {
-            return containsFieldPathElements(((FieldFilter) searchFilter).getFieldName(), pathElements);
-        } else if (searchFilter instanceof NotFilter) {
-            return containsFieldPathElements(((NotFilter) searchFilter).getFilter(), pathElements);
-        } else if (searchFilter instanceof AndFilter) {
-            final AndFilter andFilter = (AndFilter) searchFilter;
+        if (searchFilter instanceof FieldFilter fieldFilter) {
+            return containsFieldPathElements(fieldFilter.getFieldName(), pathElements);
+        } else if (searchFilter instanceof NotFilter notFilter) {
+            return containsFieldPathElements(notFilter.getFilter(), pathElements);
+        } else if (searchFilter instanceof AndFilter andFilter) {
             return containsFieldPathElements(andFilter.getFilter1(), pathElements) || containsFieldPathElements(andFilter.getFilter2(), pathElements);
-        } else if (searchFilter instanceof OrFilter) {
-            final OrFilter orFilter = (OrFilter) searchFilter;
+        } else if (searchFilter instanceof OrFilter orFilter) {
             return containsFieldPathElements(orFilter.getFilter1(), pathElements) || containsFieldPathElements(orFilter.getFilter2(), pathElements);
         } else {
             throw new RuntimeException("Unimplemented search extension " + searchFilter.getClass().getCanonicalName());
@@ -152,7 +147,7 @@ public class SearchTools implements ISearchTools {
     }
 
     @Override
-    public boolean containsFieldPathElements(final List<SortColumn> sortColumns, final List<String> pathElements) {
+    public boolean containsFieldPathElements(final List<SortColumn> sortColumns, final Collection<String> pathElements) {
         if (pathElements == null || pathElements.isEmpty()) {
             return false;
         }
@@ -183,17 +178,15 @@ public class SearchTools implements ISearchTools {
         if (searchFilter == null) {
             return null;
         }
-        if (searchFilter instanceof FieldFilter) {
-            fieldNames.add(((FieldFilter) searchFilter).getFieldName());
+        if (searchFilter instanceof FieldFilter fieldFilter) {
+            fieldNames.add(fieldFilter.getFieldName());
             return fieldNames;
-        } else if (searchFilter instanceof NotFilter) {
-            return getAllSearchFilterFieldName(((NotFilter) searchFilter).getFilter(), fieldNames);
-        } else if (searchFilter instanceof AndFilter) {
-            final AndFilter andFilter = (AndFilter) searchFilter;
+        } else if (searchFilter instanceof NotFilter notFilter) {
+            return getAllSearchFilterFieldName(notFilter.getFilter(), fieldNames);
+        } else if (searchFilter instanceof AndFilter andFilter) {
             final Set<String> names = getAllSearchFilterFieldName(andFilter.getFilter1(), fieldNames);
             return getAllSearchFilterFieldName(andFilter.getFilter2(), names);
-        } else if (searchFilter instanceof OrFilter) {
-            final OrFilter orFilter = (OrFilter) searchFilter;
+        } else if (searchFilter instanceof OrFilter orFilter) {
             final Set<String> names = getAllSearchFilterFieldName(orFilter.getFilter1(), fieldNames);
             return getAllSearchFilterFieldName(orFilter.getFilter2(), names);
         } else {
@@ -204,24 +197,20 @@ public class SearchTools implements ISearchTools {
     @Override
     public FieldFilter getFieldFilterByFieldName(final SearchFilter searchFilter, final String fieldName) {
         if (searchFilter != null) {
-            if (searchFilter instanceof FieldFilter) {
-                final FieldFilter fieldFilter = (FieldFilter) searchFilter;
+            if (searchFilter instanceof FieldFilter fieldFilter) {
                 if (fieldFilter.getFieldName().equals(fieldName)) {
                     return fieldFilter;
                 }
-            } else if (searchFilter instanceof NotFilter) {
-                final NotFilter notFilter = (NotFilter) searchFilter;
+            } else if (searchFilter instanceof NotFilter notFilter) {
                 return getFieldFilterByFieldName(notFilter.getFilter(), fieldName);
-            } else if (searchFilter instanceof AndFilter) {
-                final AndFilter andFilter = (AndFilter) searchFilter;
+            } else if (searchFilter instanceof AndFilter andFilter) {
                 final FieldFilter fieldFilter = getFieldFilterByFieldName(andFilter.getFilter1(), fieldName);
                 if (fieldFilter != null) {
                     return fieldFilter;
                 } else {
                     return getFieldFilterByFieldName(andFilter.getFilter2(), fieldName);
                 }
-            } else if (searchFilter instanceof OrFilter) {
-                final OrFilter orFilter = (OrFilter) searchFilter;
+            } else if (searchFilter instanceof OrFilter orFilter) {
                 final FieldFilter fieldFilter = getFieldFilterByFieldName(orFilter.getFilter1(), fieldName);
                 if (fieldFilter != null) {
                     return fieldFilter;

@@ -30,8 +30,7 @@ public class JndiConfigurationProvider extends DefaultsConfigurationProvider {
         try {
             final Object val = context.lookup(name);
             if (val != null) {
-                if (val instanceof String) {
-                    final String vals = (String)val;
+                if (val instanceof String vals) {
                     LOGGER.debug("Obtained {} via JNDI as {}", name, vals);
                     return vals;
                 }

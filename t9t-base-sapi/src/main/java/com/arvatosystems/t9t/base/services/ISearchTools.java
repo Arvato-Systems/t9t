@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.base.services;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -54,9 +55,9 @@ public interface ISearchTools {
     void mapNames(List<SortColumn> sortColumns,  Map<String, String> nameMappings);
 
     /* Checks is a certain path element is part of a field name. */
-    boolean containsFieldPathElements(SearchCriteria searchCriteria, List<String> pathElements);
-    boolean containsFieldPathElements(SearchFilter searchFilter,     List<String> pathElements);
-    boolean containsFieldPathElements(List<SortColumn> sortColumns,  List<String> pathElements);
+    boolean containsFieldPathElements(SearchCriteria searchCriteria, Collection<String> pathElements);
+    boolean containsFieldPathElements(SearchFilter searchFilter,     Collection<String> pathElements);
+    boolean containsFieldPathElements(List<SortColumn> sortColumns,  Collection<String> pathElements);
 
     /** Searches if the expression contains an AND condition with a FieldFilter for name fieldname.
      * Returns true if found, else false.

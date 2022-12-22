@@ -79,9 +79,9 @@ class LazyJdbc2SequenceBasedSingleRefGenerator {
                  ResultSet rs    = stmt.executeQuery(sqlCommandForNextValue)) {
                 if (rs.next()) {
                     final Object result = rs.getObject(1);
-                    if (result instanceof Number) {
+                    if (result instanceof Number rNumber) {
                         // approach to cover all numeric values...
-                        nextval = ((Number) result).longValue();
+                        nextval = rNumber.longValue();
                     } else {
                         LOGGER.error("sequence query returned type {} which cannot be processed (yet)", result.getClass().getCanonicalName());
                         throw new T9tException(T9tException.JDBC_BAD_TYPE_RETURNED, result.getClass().getCanonicalName());

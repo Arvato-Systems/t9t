@@ -91,7 +91,7 @@ public class QuartzSchedulerService implements ISchedulerService {
     @Override
     public void createScheduledJob(final RequestContext ctx, final SchedulerSetupDTO setup) {
         final CannedRequestRef rqRef = setup.getRequest();
-        final CannedRequestDTO requestDTO = rqRef instanceof CannedRequestDTO ? (CannedRequestDTO)rqRef : rqResolver.getDTO(rqRef);
+        final CannedRequestDTO requestDTO = rqRef instanceof CannedRequestDTO dto ? dto : rqResolver.getDTO(rqRef);
 
         // convert the request invocation into a String
         final String serializedRequest = StringBuilderComposer.marshal(StaticMeta.OUTER_BONAPORTABLE, requestDTO.getRequest());

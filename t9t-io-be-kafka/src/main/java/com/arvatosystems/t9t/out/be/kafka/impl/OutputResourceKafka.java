@@ -63,8 +63,7 @@ public class OutputResourceKafka implements IOutputResource {
         //props.put(ProducerConfig.PARTITIONER_CLASS_CONFIG, CustomPartitioner.class.getName());
         if (config.getZ() != null) {
             final Object extraKafkaConfig = config.getZ().get("kafka");
-            if (extraKafkaConfig instanceof Map) {
-                final Map<?, ?> extraKafkaConfigMap = (Map<?, ?>)extraKafkaConfig;
+            if (extraKafkaConfig instanceof Map<?, ?> extraKafkaConfigMap) {
                 LOGGER.info("Found {} additional Producer configuration properties for kafka in data sink {}",
                   extraKafkaConfigMap.size(), config.getDataSinkId());
                 for (final Map.Entry<?, ?> entry: extraKafkaConfigMap.entrySet()) {

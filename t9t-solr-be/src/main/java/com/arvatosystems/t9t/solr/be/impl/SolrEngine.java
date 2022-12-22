@@ -143,18 +143,16 @@ public class SolrEngine implements ITextSearch {
     }
 
     protected Long getRef(final String resultFieldName, Object solrDocument) {
-        if (solrDocument instanceof Map<?, ?>) {
-            @SuppressWarnings("unchecked")
-            Map<String, Object> map = (Map<String, Object>) solrDocument;
+        if (solrDocument instanceof Map<?, ?> map) {
             Object field = map.get(resultFieldName);
 
-            if (field instanceof Long) {
+            if (field instanceof Long fLong) {
                 // correct type, no conversion required
-                return ((Long) field);
+                return fLong;
             }
-            if (field instanceof Number) {
+            if (field instanceof Number fNumber) {
                 // requires unboxing / autoboxing
-                return ((Number) field).longValue();
+                return fNumber.longValue();
             }
         }
         return null;

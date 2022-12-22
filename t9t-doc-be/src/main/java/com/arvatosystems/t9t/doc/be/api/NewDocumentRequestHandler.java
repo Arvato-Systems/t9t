@@ -120,8 +120,7 @@ public class NewDocumentRequestHandler extends AbstractRequestHandler<NewDocumen
 
     private static Recipient mergeEmailSettings(final Recipient rcp, final DocEmailReceiverDTO add) {
         if (add != null) {
-            if (rcp instanceof RecipientEmail) {
-                final RecipientEmail rcpIn = (RecipientEmail)rcp;
+            if (rcp instanceof RecipientEmail rcpIn) {
                 final RecipientEmail rcpOut = new RecipientEmail();
                 rcpOut.setReplyTo(add.getReplaceReplyTo() ? add.getDefaultReplyTo() : nvl(rcpIn.getReplyTo(), add.getDefaultReplyTo()));
                 rcpOut.setFrom   (add.getReplaceFrom()    ? add.getDefaultFrom()    : nvl(rcpIn.getFrom(),    add.getDefaultFrom()));
@@ -175,8 +174,8 @@ public class NewDocumentRequestHandler extends AbstractRequestHandler<NewDocumen
         RecipientEmail emailRecipientOrNull = null;
         if (request.getRecipientList() != null) {
             for (final Recipient rcp: request.getRecipientList()) {
-                if (rcp instanceof RecipientEmail) {
-                    emailRecipientOrNull = (RecipientEmail)rcp;
+                if (rcp instanceof RecipientEmail rcpEmail) {
+                    emailRecipientOrNull = rcpEmail;
                     break;
                 }
             }
@@ -294,11 +293,9 @@ public class NewDocumentRequestHandler extends AbstractRequestHandler<NewDocumen
             // switch (rcpt) {  // need Java 17 for typed switch
             if (rcpt instanceof RecipientResponse) {
                 datas.add(toFormatConverter.apply(nvl(rcpt.getCommunicationFormat(), target.getMediaType())));
-            } else if (rcpt instanceof RecipientGenericTarget) {
-                final RecipientGenericTarget rcptt = (RecipientGenericTarget)rcpt;
+            } else if (rcpt instanceof RecipientGenericTarget rcptt) {
                 event.asyncEvent(rcptt.getChannel(), rcptt.getAddress(), toFormatConverter.apply(nvl(rcptt.getCommunicationFormat(), target.getMediaType())));
-            } else if (rcpt instanceof RecipientArchive) {
-                final RecipientArchive rcpta = (RecipientArchive)rcpt;
+            } else if (rcpt instanceof RecipientArchive rcpta) {
                 final DocArchiveResult archiveResult = docArchiveDistributor.transmit(rcpta, toFormatConverter, target.getMediaType(),
                   request.getDocumentId(), request.getDocumentSelector());
                 sinkRefs.add(archiveResult.sinkRef);
@@ -325,8 +322,7 @@ public class NewDocumentRequestHandler extends AbstractRequestHandler<NewDocumen
                     null)
                 : null;
             for (final Recipient rcpt : request.getRecipientList()) {
-                if (rcpt instanceof RecipientEmail) {
-                    final RecipientEmail rcpe = (RecipientEmail) rcpt;
+                if (rcpt instanceof RecipientEmail rcpe) {
                     emailRefs.add(docEmailDistributor.transmit((RecipientEmail)mergeEmailSettings(rcpe, docEmailReceiverDto),
                         toFormatConverter,
                         target.getMediaType(),

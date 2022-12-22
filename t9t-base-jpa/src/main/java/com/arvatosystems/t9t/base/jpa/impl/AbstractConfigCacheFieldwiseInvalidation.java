@@ -60,13 +60,13 @@ public abstract class AbstractConfigCacheFieldwiseInvalidation<
                     cacheById.invalidateAll();
                     return;
                 }
-                if (x instanceof Ref) {
-                    final Long ref = ((Ref)x).getObjectRef();
+                if (x instanceof Ref xRef) {
+                    final Long ref = xRef.getObjectRef();
                     LOGGER.debug("Cache invalidation for {} for objectRef {}", dtoClass.getSimpleName(), ref);
                     cacheByObjectRef.invalidate(ref);
-                } else if (x instanceof SomeCacheKey) {
+                } else if (x instanceof SomeCacheKey sck) {
                     LOGGER.debug("Cache invalidation for {} for {}", dtoClass.getSimpleName(), x);
-                    cacheById.invalidate((SomeCacheKey)x);
+                    cacheById.invalidate(sck);
                 } else {
                     LOGGER.error("Received cache invalidation on {} with key type {} - cannot handle, ignoring",
                       dtoClass.getSimpleName(), x.getClass().getCanonicalName());

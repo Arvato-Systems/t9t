@@ -75,11 +75,9 @@ public class ComponentInfoSearchRequestHandler extends AbstractSearchRequestHand
     }
 
     protected List<ComponentInfoDTO> applyFilters(final SearchFilter searchFilter, final List<ComponentInfoDTO> input) {
-        if (searchFilter instanceof AndFilter) {
-            final AndFilter andFilter = (AndFilter) searchFilter;
+        if (searchFilter instanceof AndFilter andFilter) {
             return applyFilters(andFilter.getFilter1(), applyFilters(andFilter.getFilter2(), input));
-        } else if (searchFilter instanceof UnicodeFilter) {
-            final UnicodeFilter unicodeFilter = (UnicodeFilter) searchFilter;
+        } else if (searchFilter instanceof UnicodeFilter unicodeFilter) {
             if (unicodeFilter.getEqualsValue() != null) {
                 if (FIELD_NAME_GROUP_ID.equals(unicodeFilter.getFieldName())) {
                     final List<ComponentInfoDTO> filteredList = new ArrayList<>(input.size());

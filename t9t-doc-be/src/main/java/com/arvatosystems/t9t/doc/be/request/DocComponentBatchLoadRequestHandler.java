@@ -15,6 +15,12 @@
  */
 package com.arvatosystems.t9t.doc.be.request;
 
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.arvatosystems.t9t.base.JsonUtil;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
@@ -37,18 +43,11 @@ import de.jpaw.dp.Jdp;
 import de.jpaw.json.JsonException;
 import de.jpaw.json.JsonParser;
 
-import java.util.List;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class DocComponentBatchLoadRequestHandler extends AbstractRequestHandler<DocComponentBatchLoadRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(DocComponentBatchLoadRequestHandler.class);
 
     private final IExecutor executor = Jdp.getRequired(IExecutor.class);
 
-    @SuppressWarnings("unchecked")
     @Override
     public ServiceResponse execute(final RequestContext ctx, final DocComponentBatchLoadRequest rq) {
         // create a writeable copy of the key
@@ -94,8 +93,8 @@ public class DocComponentBatchLoadRequestHandler extends AbstractRequestHandler<
             LOGGER.info("No JSON data provided");
         } else {
             LOGGER.info("Creating DocComponents from JSON data");
-            if (json instanceof List) {
-                load(ctx, (List<Object>) json, mutableKey, rq.getMultiLineJoin());
+            if (json instanceof List<?> jsonList) {
+                load(ctx, jsonList, mutableKey, rq.getMultiLineJoin());
             } else {
                 throw new JsonException(JsonException.JSON_SYNTAX, "Outer element must be an array");
             }
@@ -145,7 +144,7 @@ public class DocComponentBatchLoadRequestHandler extends AbstractRequestHandler<
         executor.executeSynchronousAndCheckResult(ctx, crudRequest, CrudSurrogateKeyResponse.class);
     }
 
-    protected Object needKey(final Map<?, Object> map, final String key) {
+    protected Object needKey(final Map<?, ?> map, final String key) {
         final Object value = map.get(key);
         if (value == null) {
             throw new JsonException(MessageParserException.EMPTY_BUT_REQUIRED_FIELD, key);
@@ -153,13 +152,11 @@ public class DocComponentBatchLoadRequestHandler extends AbstractRequestHandler<
         return value;
     }
 
-    @SuppressWarnings("unchecked")
-    protected void load(final RequestContext ctx, final List<Object> objects, final DocComponentKey baseKey, final String joiner) {
+    protected void load(final RequestContext ctx, final List<?> objects, final DocComponentKey baseKey, final String joiner) {
         LOGGER.info("{} JSON entries provided", objects.size());
 
         for (final Object obj : objects) {
-            if (obj instanceof Map) {
-                final Map<?, Object> objMap = (Map<?, Object>) obj;
+            if (obj instanceof Map<?, ?> objMap) {
                 if (objMap.size() != 3) {
                     LOGGER.warn("Field count not as expected: found {} entries, expected 3", objMap.size());
                 }
@@ -169,8 +166,7 @@ public class DocComponentBatchLoadRequestHandler extends AbstractRequestHandler<
                 final Object fields = needKey(objMap, "text");
                 if (fields == null) {
                     inData.setValue(null);
-                } else if (fields instanceof List) {
-                    final List<?> fieldList = (List<?>) fields;
+                } else if (fields instanceof List<?> fieldList) {
                     String value = null;
                     if (fieldList != null) {
                         value = "";

@@ -33,10 +33,9 @@ public class VariantComposerFilter<E extends Exception> extends DelegatingBaseCo
 
     @Override
     public void addField(final ObjectReference di, final BonaCustom obj) throws E {
-        if (!(obj instanceof Variant)) {
+        if (!(obj instanceof Variant v)) {
             super.addField(di, obj);
         } else {
-            final Variant v = (Variant)obj;
             if (v.getTextValue() != null) {
                 addField(Variant.meta$$textValue, v.getTextValue());
             } else if (v.getBoolValue() != null) {

@@ -38,18 +38,18 @@ public class BPMStepDelay extends AbstractAlwaysRunnableNoFactoryWorkflowStep {
                 yu = Instant.ofEpochMilli(((Number)yu).longValue());
                 parameters.put(PROCESS_VARIABLE_YIELD_UNTIL, yu);
             }
-            if (yu instanceof Instant) {
+            if (yu instanceof Instant yuInstant) {
                 // the target time has been defined
-                if (((Instant)yu).isBefore(Instant.now()))
+                if (yuInstant.isBefore(Instant.now()))
                     return WorkflowReturnCode.PROCEED_NEXT;  // limit has been reached
                 return WorkflowReturnCode.YIELD;
             }
         }
         // no end time defined yet - compute it now
         final Object ds = parameters.get("delayInSeconds");
-        if (ds != null && ds instanceof Integer) {
+        if (ds != null && ds instanceof Integer dsInteger) {
             // obtain a value rounded to full seconds
-            parameters.put(PROCESS_VARIABLE_YIELD_UNTIL, Instant.ofEpochMilli((System.currentTimeMillis() / 1000L + (Integer)ds) * 1000L));
+            parameters.put(PROCESS_VARIABLE_YIELD_UNTIL, Instant.ofEpochMilli((System.currentTimeMillis() / 1000L + dsInteger) * 1000L));
             return WorkflowReturnCode.YIELD;
         }
         // missing information!

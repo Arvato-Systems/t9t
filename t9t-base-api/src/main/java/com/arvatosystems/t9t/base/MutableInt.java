@@ -39,8 +39,8 @@ public class MutableInt {
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj instanceof MutableInt) {
-            return value == ((MutableInt) obj).value;
+        if (obj instanceof MutableInt mi) {
+            return value == mi.value;
         }
         return false;
     }

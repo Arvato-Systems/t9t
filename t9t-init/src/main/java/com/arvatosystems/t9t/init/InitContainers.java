@@ -134,9 +134,8 @@ public final class InitContainers {
                 try {
                     final Method method = cls.getMethod("enum$MetaData");
                     final Object o = method.invoke(null);
-                    if (o != null && o instanceof EnumDefinition) {
+                    if (o instanceof EnumDefinition def) {
                         ++counter;
-                        final EnumDefinition def = (EnumDefinition)o;
                         final EnumDefinition prev = ENUM_BY_PQON.put(def.getName(), def);
                         if (prev != null)
                             LOGGER.error("2 different enums of same PQON {}", def.getName());
@@ -158,9 +157,8 @@ public final class InitContainers {
                 try {
                     final Method method = cls.getMethod("enumset$MetaData");
                     final Object o = method.invoke(null);
-                    if (o != null && o instanceof EnumSetDefinition) {
+                    if (o instanceof EnumSetDefinition def) {
                         ++counter;
-                        final EnumSetDefinition def = (EnumSetDefinition)o;
                         final EnumSetDefinition prev = ENUMSET_BY_PQON.put(def.getName(), def);
                         if (prev != null)
                             LOGGER.error("2 different enumsets of same PQON {}", def.getName());
@@ -182,9 +180,8 @@ public final class InitContainers {
                 try {
                     final Method method = cls.getMethod("xenumset$MetaData");
                     final Object o = method.invoke(null);
-                    if (o != null && o instanceof XEnumSetDefinition) {
+                    if (o != null && o instanceof XEnumSetDefinition def) {
                         ++counter;
-                        final XEnumSetDefinition def = (XEnumSetDefinition)o;
                         final XEnumSetDefinition prev = XENUMSET_BY_PQON.put(def.getName(), def);
                         if (prev != null)
                             LOGGER.error("2 different xenumsets of same PQON {}", def.getName());

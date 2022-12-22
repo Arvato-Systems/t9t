@@ -280,11 +280,11 @@ public class RequestProcessor implements IRequestProcessor {
             final RequestContext ctx = new RequestContext(ihdr, customizationProvider);
 
             // for special requests (macros) the request context is not injected into the thread
-            if (rq instanceof ContextlessRequestParameters) {
+            if (rq instanceof ContextlessRequestParameters cRq) {
                 try {
                     final IRequestHandler<ContextlessRequestParameters> handler = (IRequestHandler<ContextlessRequestParameters>) defaultRequestHandlerResolver
                             .getHandlerInstance(rq.getClass());
-                    return handler.execute(ctx, (ContextlessRequestParameters) rq);
+                    return handler.execute(ctx, cRq);
                 } finally {
                     ctx.close();
                 }

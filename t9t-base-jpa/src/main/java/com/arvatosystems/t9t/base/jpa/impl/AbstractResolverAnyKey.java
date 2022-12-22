@@ -580,8 +580,8 @@ public abstract class AbstractResolverAnyKey<
         final int refClassModifiers = entityRef.getClass().getModifiers();
         if (!Modifier.isFinal(refClassModifiers) || Modifier.isInterface(refClassModifiers)) {
             // in some cases, a Ref might be passed... Work around and create a Ref which does not contain other fields
-            if (entityRef instanceof Ref && (((Ref)entityRef).getObjectRef() != null)) {
-                final Long pk = ((Ref)entityRef).getObjectRef();
+            if (entityRef instanceof Ref eRef && eRef.getObjectRef() != null) {
+                final Long pk = eRef.getObjectRef();
                 LOGGER.debug("getEntityDataByGenericKey called where primary key was available: {}({})", entityRef.ret$PQON(), pk);
                 entityRef = new Ref(pk);
             } else {

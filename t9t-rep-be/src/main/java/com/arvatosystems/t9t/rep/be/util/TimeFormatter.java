@@ -45,14 +45,12 @@ public final class TimeFormatter {
             return null;
         }
         String formattedDateTime = null;
-        if (dateTime instanceof LocalDate) {
-            final LocalDate d = (LocalDate)dateTime;
+        if (dateTime instanceof LocalDate d) {
             formattedDateTime = d.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(locale));
-        } else if (dateTime instanceof Instant) {
-            final LocalDateTime d = LocalDateTime.ofInstant((Instant)dateTime, ZoneId.of(timeZone));
+        } else if (dateTime instanceof Instant i) {
+            final LocalDateTime d = LocalDateTime.ofInstant(i, ZoneId.of(timeZone));
             formattedDateTime = d.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.MEDIUM).withLocale(locale));
-        } else if (dateTime instanceof LocalDateTime) {
-            LocalDateTime d = (LocalDateTime)dateTime;
+        } else if (dateTime instanceof LocalDateTime d) {
             if (timeZone != null && !timeZone.equals("UTC")) {
                 d = d.atZone(ZoneOffset.UTC).withZoneSameInstant(ZoneId.of(timeZone)).toLocalDateTime();  // timezone conversion
             }

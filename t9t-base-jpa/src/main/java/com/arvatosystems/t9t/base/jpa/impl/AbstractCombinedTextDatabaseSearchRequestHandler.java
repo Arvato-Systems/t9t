@@ -460,8 +460,8 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<
      */
     protected void splitSearches(final SearchFilter originalFilter,
       final SearchRequest<DTO, TRACKING> solrRequest, final SearchRequest<DTO, TRACKING> dbRequest) {
-        if (originalFilter instanceof FieldFilter) {
-            switch (filterTypeForField(((FieldFilter) originalFilter).getFieldName())) {
+        if (originalFilter instanceof FieldFilter fieldFilter) {
+            switch (filterTypeForField(fieldFilter.getFieldName())) {
             case DB_ONLY:
                 dbRequest.setSearchFilter(SearchFilters.and(dbRequest.getSearchFilter(), originalFilter));
                 break;
@@ -474,9 +474,9 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<
                 solrRequest.setSearchFilter(SearchFilters.and(solrRequest.getSearchFilter(), originalFilter.ret$MutableClone(false, false)));
             }
             }
-        } else if (originalFilter instanceof AndFilter) {
-            splitSearches(((AndFilter) originalFilter).getFilter1(), solrRequest, dbRequest);
-            splitSearches(((AndFilter) originalFilter).getFilter2(), solrRequest, dbRequest);
+        } else if (originalFilter instanceof AndFilter andFilter) {
+            splitSearches(andFilter.getFilter1(), solrRequest, dbRequest);
+            splitSearches(andFilter.getFilter2(), solrRequest, dbRequest);
         }
     }
 
@@ -487,13 +487,13 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<
      * The passed in parameters may not be null.
      */
     protected void decideFilterAssociation(final SearchFilter originalFilter, final SearchFilterTypes result) {
-        if (originalFilter instanceof FieldFilter) {
-            result.add(filterTypeForField(((FieldFilter) originalFilter).getFieldName()));
-        } else if (originalFilter instanceof NotFilter) {
-            decideFilterAssociation(((NotFilter) originalFilter).getFilter(), result);
-        } else if (originalFilter instanceof AndFilter) {
-            decideFilterAssociation(((AndFilter) originalFilter).getFilter1(), result);
-            decideFilterAssociation(((AndFilter) originalFilter).getFilter2(), result);
+        if (originalFilter instanceof FieldFilter fieldFilter) {
+            result.add(filterTypeForField(fieldFilter.getFieldName()));
+        } else if (originalFilter instanceof NotFilter notFilter) {
+            decideFilterAssociation(notFilter.getFilter(), result);
+        } else if (originalFilter instanceof AndFilter andFilter) {
+            decideFilterAssociation(andFilter.getFilter1(), result);
+            decideFilterAssociation(andFilter.getFilter2(), result);
         } else {
             throw new T9tException(T9tException.ILLEGAL_SOLR_DB_COMBINED_FILTER_EXPRESSION, originalFilter.ret$PQON());
         }

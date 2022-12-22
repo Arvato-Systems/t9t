@@ -90,8 +90,7 @@ public class T9tRestProcessorViaKafka extends T9tRestProcessor implements IT9tRe
                 permRq.setPermissionType(PermissionType.BACKEND);
                 permRq.setResourceId(request.ret$PQON());
                 final ServiceResponse resp = connection.execute(trimmedAuth, permRq);
-                if (ApplicationException.isOk(resp.getReturnCode()) && resp instanceof QuerySinglePermissionResponse) {
-                    final QuerySinglePermissionResponse qspr = (QuerySinglePermissionResponse)resp;
+                if (ApplicationException.isOk(resp.getReturnCode()) && resp instanceof QuerySinglePermissionResponse qspr) {
                     if (!qspr.getPermissions().contains(OperationType.EXECUTE)) {
                         // forbidden
                         authenticationCache.put(trimmedAuth, Boolean.FALSE);

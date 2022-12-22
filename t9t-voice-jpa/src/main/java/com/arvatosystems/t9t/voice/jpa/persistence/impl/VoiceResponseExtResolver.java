@@ -31,8 +31,7 @@ public class VoiceResponseExtResolver extends VoiceResponseEntityResolver {
 
     @Override
     protected VoiceResponseRef resolveNestedRefs(final VoiceResponseRef ref) {
-        if (ref instanceof VoiceResponseKey) {
-            final VoiceResponseKey key = (VoiceResponseKey) ref;
+        if (ref instanceof VoiceResponseKey key) {
             final VoiceResponseInternalKey inKey = new VoiceResponseInternalKey();
             inKey.setApplicationRef(applicationResolver.getRef(key.getApplicationRef(), false));
             inKey.setLanguageCode(key.getLanguageCode());

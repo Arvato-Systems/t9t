@@ -30,8 +30,7 @@ public class VoiceUserExtResolver extends VoiceUserEntityResolver {
 
     @Override
     protected VoiceUserRef resolveNestedRefs(final VoiceUserRef ref) {
-        if (ref instanceof VoiceUserKey) {
-            final VoiceUserKey key = (VoiceUserKey) ref;
+        if (ref instanceof VoiceUserKey key) {
             final VoiceUserInternalKey inKey = new VoiceUserInternalKey();
             inKey.setApplicationRef(applicationResolver.getRef(key.getApplicationRef(), false));
             inKey.setProviderId(key.getProviderId());

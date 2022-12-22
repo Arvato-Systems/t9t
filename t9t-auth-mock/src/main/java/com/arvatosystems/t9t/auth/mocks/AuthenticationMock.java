@@ -122,12 +122,12 @@ public class AuthenticationMock implements IAuthenticate {
     }
 
     protected JwtInfo auth(final AuthenticationParameters ap) {
-        if (ap instanceof ApiKeyAuthentication) {
-            return authWithApiKey((ApiKeyAuthentication) ap);
-        } else if (ap instanceof AuthX500DistinguishedName) {
-            return authWithAuthX500((AuthX500DistinguishedName) ap);
-        } else if (ap instanceof PasswordAuthentication) {
-            return authWithPassword((PasswordAuthentication) ap);
+        if (ap instanceof ApiKeyAuthentication apAp) {
+            return authWithApiKey(apAp);
+        } else if (ap instanceof AuthX500DistinguishedName a500Ap) {
+            return authWithAuthX500(a500Ap);
+        } else if (ap instanceof PasswordAuthentication pwAp) {
+            return authWithPassword(pwAp);
         } else if (ap != null) {
             return authWithUnknown(ap);
         } else {

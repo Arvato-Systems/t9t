@@ -107,8 +107,7 @@ public class SchedulerSetupCrudRequestHandler extends
             final CannedRequestRef dataRequestRef = crudRequest.getData().getRequest();
 
             if (crudRequest.getCrud() == OperationType.UPDATE) {
-                if (oldSetup != null && dataRequestRef instanceof CannedRequestDTO) {
-                    final CannedRequestDTO cannedRequestDTO = (CannedRequestDTO) dataRequestRef;
+                if (oldSetup != null && dataRequestRef instanceof CannedRequestDTO cannedRequestDTO) {
                     if (cannedRequestDTO.getRequestId().equals(((CannedRequestDTO) oldSetup.getRequest()).getRequestId())) {
                         // In case the crudRequest.data.request is an instance of CannedRequestDTO with the same request Id,
                         // update the oldSetup.request for field comparison.
@@ -220,7 +219,7 @@ public class SchedulerSetupCrudRequestHandler extends
         if (dto != null && dto.getApiKey() == null) {
             // merge default permission and additional permissions
             final CannedRequestRef rqRef = dto.getRequest();
-            final CannedRequestDTO requestDTO = rqRef instanceof CannedRequestDTO ? (CannedRequestDTO) rqRef : rqResolver.getDTO(rqRef);
+            final CannedRequestDTO requestDTO = rqRef instanceof CannedRequestDTO cannedRequestDTO ? cannedRequestDTO : rqResolver.getDTO(rqRef);
             String permissions = MessagingUtil.toPerm(requestDTO.getJobRequestObjectName());
             if (dto.getAdditionalPermissions() != null) {
                 permissions = Joiner.on(",").join(permissions, dto.getAdditionalPermissions());

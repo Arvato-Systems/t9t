@@ -33,8 +33,7 @@ public class UserTenantRoleExtendedResolver extends UserTenantRoleEntityResolver
 
     @Override
     protected UserTenantRoleRef resolveNestedRefs(final UserTenantRoleRef ref) {
-        if (ref instanceof UserTenantRoleKey) {
-            final UserTenantRoleKey key = (UserTenantRoleKey) ref;
+        if (ref instanceof UserTenantRoleKey key) {
             final UserTenantRoleInternalKey inkey = new UserTenantRoleInternalKey();
             inkey.setUserRef(userResolver.getRef(key.getUserRef(), false));
             inkey.setRoleRef(roleResolver.getRef(key.getRoleRef(), false));

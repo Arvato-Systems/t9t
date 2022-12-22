@@ -172,8 +172,8 @@ public class PerformScheduledJob implements Job {
         srq.setRequestParameters(new DealWithPriorJobInstancesRequest(setupRef));
         srq.setAuthentication(auth);
         final ServiceResponse resp = this.inProcessExecutor.executeTrusted(srq);
-        if ((resp instanceof DealWithPriorJobInstancesResponse)) {
-            return ((DealWithPriorJobInstancesResponse) resp).getInvokeNewInstance();
+        if (resp instanceof DealWithPriorJobInstancesResponse dwpjir) {
+            return dwpjir.getInvokeNewInstance();
         } else {
             LOGGER.error("Bad response from DealWithPriorJobInstancesRequest: {}", resp);
             return true;

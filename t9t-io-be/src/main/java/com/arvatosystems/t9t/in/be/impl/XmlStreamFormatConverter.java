@@ -80,18 +80,14 @@ public class XmlStreamFormatConverter extends AbstractXmlFormatConverter {
                     if (currentTag.equals(cfg.getXmlRecordName())) {
                         // use JAXB to unmarshal
                         try {
-                            final JAXBElement<? extends BonaPortable> element = this.m.unmarshal(reader, elementClass);
-                            if (element instanceof JAXBElement) {
+                            final JAXBElement<? extends BonaPortable> element = m.unmarshal(reader, elementClass);
+                            if (element != null) {
                                 final BonaPortable value = element.getValue();
                                 if (value != null) {
                                     inputSession.process(value);
                                 }
                             } else {
-                                String type = "NULL";
-                                if (element != null && element.getClass() != null && element.getClass().getCanonicalName() != null) {
-                                    type = element.getClass().getCanonicalName();
-                                }
-                                LOGGER.debug("Parsed element is of type {}, cannot use JAXB on it", type);
+                                LOGGER.warn("Parsed element is NULL, cannot use JAXB on it");
                             }
                         } catch (final Exception e) {
                             LOGGER.error("JAXB START tag parsing failed with {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));

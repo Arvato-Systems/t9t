@@ -71,11 +71,11 @@ public class CannedRequestParameterEvaluator {
 
                 final BonaPortable rq = BonaPortableFactory.createObject(dto.getJobRequestObjectName());
                 // create binary request from request parameters
-                if (rq instanceof RequestParameters) {
+                if (rq instanceof RequestParameters rp) {
                     if (dto.getJobParameters() != null && !dto.getJobParameters().isEmpty()) {
                         MapParser.populateFrom(rq, dto.getJobParameters());
                     }
-                    dto.setRequest((RequestParameters) rq);
+                    dto.setRequest(rp);
                 } else {
                     throw new T9tException(T9tException.NOT_REQUEST_PARAMETERS, rq.ret$PQON());
                 }
@@ -94,11 +94,11 @@ public class CannedRequestParameterEvaluator {
             } else {
                 final BonaPortable rq = BonaPortableFactory.createObject(dto.getJobRequestObjectName());
 
-                if (rq instanceof RequestParameters) {
+                if (rq instanceof RequestParameters rp) {
                     if (dto.getJobParameters() != null && !dto.getJobParameters().isEmpty()) {
                         MapParser.populateFrom(rq, dto.getJobParameters());
                     }
-                    dto.setRequest((RequestParameters) rq);
+                    dto.setRequest(rp);
                 } else {
                     throw new T9tException(T9tException.NOT_REQUEST_PARAMETERS, rq.ret$PQON());
                 }

@@ -45,8 +45,7 @@ public class ExecuteCannedRequestHandler extends AbstractRequestHandler<ExecuteC
     @Override
     public ServiceResponse execute(final RequestContext ctx, final ExecuteCannedRequest rq) throws Exception {
         final CannedRequestRef ref = rq.getRequestRef();
-        if (ref instanceof CannedRequestDTO) {
-            final CannedRequestDTO dto = (CannedRequestDTO) ref;
+        if (ref instanceof CannedRequestDTO dto) {
             // no read required, maybe a composition of the parameters from JSON
             evaluator.processDTO(dto);
             LOGGER.info("Executing provided canned request of ID {} for request {}", dto.getRequestId(), dto.getRequest().ret$PQON());

@@ -79,11 +79,11 @@ public abstract class AbstractSearchRestriction implements ISearchRestriction {
 //     * Due to encoding in JSON, the passed value could be returned as int or double, this is why we may need some conversion.
 //     */
 //    protected List<Long> asSingletonListOfLong(Object value) {
-//        if (value instanceof Long) {
-//            return ImmutableList.<Long>of(((Long) value));
-//        } else if (value instanceof Number) {
+//        if (value instanceof Long vLong) {
+//            return ImmutableList.<Long>of(vLong);
+//        } else if (value instanceof Number vNumber) {
 //            // we cannot use it as is, but we can convert it
-//            return ImmutableList.<Long>of((((Number) value).longValue()));
+//            return ImmutableList.<Long>of(vNumber.longValue());
 //        } else {
 //            throw new T9tException(T9tException.INVALID_REQUEST_PARAMETER_TYPE, "Required a Long or Number, but got " + value.getClass().getCanonicalName());
 //        }

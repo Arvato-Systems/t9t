@@ -222,34 +222,34 @@ public class FilterToSolrConverter implements IFilterToSolrConverter {
 //        case TimestampFilter timestampFilter -> toSolr(timestampFilter);
 //        default -> throw new IllegalArgumentException("Unhandled parameter types: " + filter.getClass().getSimpleName());
 //        };
-        if (filter instanceof EnumFilter) {
-            return toSolrByEnumFilter((EnumFilter) filter);
-        } else if (filter instanceof XenumFilter) {
-            return toSolr((XenumFilter) filter);
-        } else if (filter instanceof AsciiFilter) {
-            return toSolr((AsciiFilter) filter);
-        } else if (filter instanceof BooleanFilter) {
-            return toSolr((BooleanFilter) filter);
-        } else if (filter instanceof DayFilter) {
-            return toSolr((DayFilter) filter);
-        } else if (filter instanceof DecimalFilter) {
-            return toSolr((DecimalFilter) filter);
-        } else if (filter instanceof DoubleFilter) {
-            return toSolr((DoubleFilter) filter);
-        } else if (filter instanceof FloatFilter) {
-            return toSolr((FloatFilter) filter);
-        } else if (filter instanceof InstantFilter) {
-            return toSolr((InstantFilter) filter);
-        } else if (filter instanceof IntFilter) {
-            return toSolr((IntFilter) filter);
-        } else if (filter instanceof LongFilter) {
-            return toSolr((LongFilter) filter);
-        } else if (filter instanceof TimeFilter) {
-            return toSolr((TimeFilter) filter);
-        } else if (filter instanceof TimestampFilter) {
-            return toSolr((TimestampFilter) filter);
-        } else if (filter instanceof UnicodeFilter) {
-            return toSolr((UnicodeFilter) filter);
+        if (filter instanceof EnumFilter f) {
+            return toSolr(f);
+        } else if (filter instanceof XenumFilter f) {
+            return toSolr(f);
+        } else if (filter instanceof AsciiFilter f) {
+            return toSolr(f);
+        } else if (filter instanceof BooleanFilter f) {
+            return toSolr(f);
+        } else if (filter instanceof DayFilter f) {
+            return toSolr(f);
+        } else if (filter instanceof DecimalFilter f) {
+            return toSolr(f);
+        } else if (filter instanceof DoubleFilter f) {
+            return toSolr(f);
+        } else if (filter instanceof FloatFilter f) {
+            return toSolr(f);
+        } else if (filter instanceof InstantFilter f) {
+            return toSolr(f);
+        } else if (filter instanceof IntFilter f) {
+            return toSolr(f);
+        } else if (filter instanceof LongFilter f) {
+            return toSolr(f);
+        } else if (filter instanceof TimeFilter f) {
+            return toSolr(f);
+        } else if (filter instanceof TimestampFilter f) {
+            return toSolr(f);
+        } else if (filter instanceof UnicodeFilter f) {
+            return toSolr(f);
         } else {
             throw new IllegalArgumentException("Unhandled parameter types: " + filter.getClass().getSimpleName());
         }
@@ -273,11 +273,11 @@ public class FilterToSolrConverter implements IFilterToSolrConverter {
         return "(" + joined + ")";
     }
 
-    protected String toSolrByBooleanFilter(final BooleanFilter it) {
+    protected String toSolr(final BooleanFilter it) {
         return Boolean.toString(it.getBooleanValue());
     }
 
-    protected String toSolrByEnumFilter(EnumFilter it) {
+    protected String toSolr(EnumFilter it) {
         if (it.getTokenList() != null) {
             return buildOr(it.getTokenList().stream());
         }
@@ -319,18 +319,17 @@ public class FilterToSolrConverter implements IFilterToSolrConverter {
         if (sc == null) {
             return null;
         }
-        if (sc instanceof NullFilter) {
+        if (sc instanceof NullFilter nullFilter) {
             // NullFilter is subclass of FieldFilter and must go first before that
-            return toSolrCondition((NullFilter)sc);
-        } else if (sc instanceof FieldFilter) {
-            final FieldFilter fieldFilter = (FieldFilter)sc;
+            return toSolrCondition(nullFilter);
+        } else if (sc instanceof FieldFilter fieldFilter) {
             return ("+" + fieldFilter.getFieldName() + ":" + toSolr(fieldFilter));
-        } else if (sc instanceof NotFilter) {
-            return toSolrCondition((NotFilter)sc);
-        } else if (sc instanceof AndFilter) {
-            return toSolrCondition((AndFilter)sc);
-        } else if (sc instanceof OrFilter) {
-            return toSolrCondition((OrFilter) sc);
+        } else if (sc instanceof NotFilter notFilter) {
+            return toSolrCondition(notFilter);
+        } else if (sc instanceof AndFilter andFilter) {
+            return toSolrCondition(andFilter);
+        } else if (sc instanceof OrFilter orFilter) {
+            return toSolrCondition(orFilter);
         } else {
             throw new IllegalArgumentException("Unhandled parameter types: " + sc.getClass().getSimpleName());
         }
@@ -338,28 +337,26 @@ public class FilterToSolrConverter implements IFilterToSolrConverter {
 
     protected String toSolrCondition(final NotFilter it) {
         final SearchFilter subFilter = it.getFilter();
-        if (subFilter instanceof NullFilter) {
-            final NullFilter nullFilter = (NullFilter)subFilter;
+        if (subFilter instanceof NullFilter nullFilter) {
             // special case: use specific syntax
             return nullFilter.getFieldName() + ":[* TO *]";
         }
-        if (subFilter instanceof NotFilter) {
-            final NotFilter notFilter = (NotFilter)subFilter;
+        if (subFilter instanceof NotFilter notFilter) {
             // special case: just drop double NOT
             return toSolrCondition(notFilter.getFilter());
         }
         return "NOT (" + toSolrCondition(subFilter) + ")";
     }
 
-    protected String toSolrCondition(AndFilter it) {
+    protected String toSolrCondition(final AndFilter it) {
         return "(" + toSolrCondition(it.getFilter1()) + " AND " + toSolrCondition(it.getFilter2()) + ")";
     }
 
-    protected String toSolrCondition(OrFilter it) {
+    protected String toSolrCondition(final OrFilter it) {
         return "(" + toSolrCondition(it.getFilter1()) + " OR " + toSolrCondition(it.getFilter2()) + ")";
     }
 
-    protected String toSolrCondition(NullFilter it) {
+    protected String toSolrCondition(final NullFilter it) {
         return "-" + it.getFieldName() + ":[* TO *]";
     }
 }

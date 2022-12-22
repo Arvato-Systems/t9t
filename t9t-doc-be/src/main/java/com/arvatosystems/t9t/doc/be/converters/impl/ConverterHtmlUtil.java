@@ -25,7 +25,7 @@ public final class ConverterHtmlUtil {
 
     public static String getDimension(final Map<String, Object> z, final String key) {
         final Object o = z.get(key);
-        if (o != null && o instanceof Number) {
+        if (o instanceof Number) {
             return o.toString() + "px";
         }
         if (o != null) {
@@ -61,8 +61,7 @@ public final class ConverterHtmlUtil {
             return EMPTY_STRING;
         }
         final Object value = z.get(keyword);
-        if (value != null && value instanceof Boolean) {
-            final Boolean boolValue = (Boolean) value;
+        if (value instanceof Boolean boolValue) {
             if (boolValue) {
                 return " " + keyword;
             }

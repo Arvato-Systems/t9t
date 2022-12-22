@@ -80,11 +80,11 @@ public class UserExportDataTransformer implements IPreOutputDataTransformer {
         if (ref == null) {
             return null;
         }
-        if (ref instanceof RoleKey) {
-            return ((RoleKey) ref).getRoleId();
+        if (ref instanceof RoleKey key) {
+            return key.getRoleId();
         }
-        if (ref instanceof RoleDTO) {
-            return ((RoleDTO) ref).getRoleId();
+        if (ref instanceof RoleDTO dto) {
+            return dto.getRoleId();
         }
         return null;
     }
@@ -93,11 +93,11 @@ public class UserExportDataTransformer implements IPreOutputDataTransformer {
         if (ref == null) {
             return null;
         }
-        if (ref instanceof UserKey) {
-            return ((UserKey) ref).getUserId();
+        if (ref instanceof UserKey key) {
+            return key.getUserId();
         }
-        if (ref instanceof UserDTO) {
-            return ((UserDTO) ref).getUserId();
+        if (ref instanceof UserDTO dto) {
+            return dto.getUserId();
         }
         return null;
     }

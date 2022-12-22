@@ -32,8 +32,8 @@ public class IdentityTransformer extends AbstractInputDataTransformer<BonaPortab
             req.setErrorDetails(baseBClass.getClass().getSimpleName());
             return req;
         }
-        if (dto instanceof RequestParameters) {
-            return (RequestParameters) dto;
+        if (dto instanceof RequestParameters rp) {
+            return rp;
         }
         final ErrorRequest req = new ErrorRequest();
         req.setReturnCode(T9tIOException.WRONG_RECORD_TYPE);

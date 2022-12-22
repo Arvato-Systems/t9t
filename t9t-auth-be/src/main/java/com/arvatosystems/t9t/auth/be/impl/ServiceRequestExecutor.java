@@ -70,9 +70,9 @@ public class ServiceRequestExecutor implements IUnauthenticatedServiceRequestExe
         }
         if (adata == null) {
             // need to compute
-            if (ap instanceof AuthenticationJwt) {
+            if (ap instanceof AuthenticationJwt jwtAp) {
                 // fast track
-                String jwtToken = ((AuthenticationJwt) ap).getEncodedJwt();
+                String jwtToken = jwtAp.getEncodedJwt();
                 try {
                     adata = new AuthData(jwtToken, jwt.decode(jwtToken));
                 } catch (Exception e) {

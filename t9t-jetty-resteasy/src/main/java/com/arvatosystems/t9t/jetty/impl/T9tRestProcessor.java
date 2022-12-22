@@ -169,9 +169,8 @@ public class T9tRestProcessor implements IT9tRestProcessor {
                 if (backendResponseClass.isAssignableFrom(sr.getClass())) {
 
                     final BonaPortable resultForREST = responseMapper.apply((T)sr);
-                    if (resultForREST instanceof MediaData) {
+                    if (resultForREST instanceof MediaData md) {
                         // special handling for MediaData: return a String or byte array, depending on contents
-                        final MediaData md = (MediaData)resultForREST;
                         final MediaTypeDescriptor mtd = MediaTypeInfo.getFormatByType(md.getMediaType());
                         if (mtd != null) {
                             final String mimeType = mtd.getMimeType();
@@ -202,7 +201,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
             final Response responseObj = responseBuilder.build();
             resp.resume(responseObj);
         }).exceptionally(e -> {
-            final int errorCode = (e instanceof ApplicationException ? ((ApplicationException)e).getErrorCode() : T9tException.GENERAL_EXCEPTION);
+            final int errorCode = e instanceof ApplicationException ae ? ae.getErrorCode() : T9tException.GENERAL_EXCEPTION;
             resp.resume(RestUtils.error(Response.Status.INTERNAL_SERVER_ERROR, errorCode, e.getMessage(), acceptHeader));
             e.printStackTrace();
             return null;
@@ -241,7 +240,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
             final Response responseObj = responseBuilder.build();
             resp.resume(responseObj);
         }).exceptionally(e -> {
-            final int errorCode = (e instanceof ApplicationException ? ((ApplicationException)e).getErrorCode() : T9tException.GENERAL_EXCEPTION);
+            final int errorCode = e instanceof ApplicationException ae ? ae.getErrorCode() : T9tException.GENERAL_EXCEPTION;
             resp.resume(RestUtils.error(Response.Status.INTERNAL_SERVER_ERROR, errorCode, e.getMessage(), acceptHeader));
             e.printStackTrace();
             return null;

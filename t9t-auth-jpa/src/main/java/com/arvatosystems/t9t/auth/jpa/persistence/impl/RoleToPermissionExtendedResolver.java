@@ -31,8 +31,7 @@ public class RoleToPermissionExtendedResolver extends RoleToPermissionEntityReso
 
     @Override
     protected RoleToPermissionRef resolveNestedRefs(final RoleToPermissionRef ref) {
-        if (ref instanceof RoleToPermissionKey) {
-            final RoleToPermissionKey key = (RoleToPermissionKey) ref;
+        if (ref instanceof RoleToPermissionKey key) {
             final RoleToPermissionInternalKey inkey = new RoleToPermissionInternalKey();
             inkey.setRoleRef(roleResolver.getRef(key.getRoleRef(), false));
             inkey.setPermissionId(key.getPermissionId());

@@ -187,8 +187,8 @@ public abstract class AbstractRpcModule implements IServiceModule {
                     ctx.response().end(Buffer.buffer(asyncResult.result()));
                 } else {
                     final Throwable cause = asyncResult.cause();
-                    if (cause instanceof ApplicationException) {
-                        final int exceptionCode = ((ApplicationException) cause).getErrorCode();
+                    if (cause instanceof ApplicationException ae) {
+                        final int exceptionCode = ae.getErrorCode();
                         final int httpCode = (exceptionCode >= T9tException.HTTP_ERROR && exceptionCode <= T9tException.HTTP_ERROR + 999)
                             ? exceptionCode - T9tException.HTTP_ERROR
                             : 400;

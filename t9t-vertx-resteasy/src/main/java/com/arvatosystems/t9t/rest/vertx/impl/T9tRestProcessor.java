@@ -126,9 +126,9 @@ public class T9tRestProcessor implements IT9tRestProcessor {
                     }
                     if (backendResponseClass.isAssignableFrom(sr.getClass())) {
                         final BonaPortable resultForREST = responseMapper.apply((T)sr);
-                        if (resultForREST instanceof MediaData) {
+                        if (resultForREST instanceof MediaData md) {
                             // special handling for MediaData: return a String or byte array, depending on contents
-                            resumeMediaData(resp, (MediaData)resultForREST);
+                            resumeMediaData(resp, md);
                         } else {
                             resp.resume(resultForREST);
                         }

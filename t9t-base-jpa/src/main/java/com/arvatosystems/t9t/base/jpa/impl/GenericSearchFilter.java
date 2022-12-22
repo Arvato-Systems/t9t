@@ -95,8 +95,7 @@ public class GenericSearchFilter extends JpaFilterImpl {
     @Override
     public Predicate applyFilter(final CriteriaBuilder cb, final Path<?> path, final FieldFilter filter) {
 
-        if (filter instanceof XenumFilter) {
-            final XenumFilter f = (XenumFilter)filter;
+        if (filter instanceof XenumFilter f) {
             mustHaveExactlyOneOf(filter, f.getEqualsName(), f.getNameList(), f.getEqualsToken(), f.getTokenList());
             LOGGER.trace("Xenum search filter {}", f);
             if (f.getEqualsName() != null) {
@@ -110,8 +109,7 @@ public class GenericSearchFilter extends JpaFilterImpl {
             }
             // search for name list. Must resolve the list elements
             return inCriteriaWithPossibleNull(cb, path, f.getNameList(), s -> enumResolver.getTokenByXEnumPqonAndInstance(f.getXenumPqon(), s));
-        } else if (filter instanceof EnumFilter) {
-            final EnumFilter f = (EnumFilter)filter;
+        } else if (filter instanceof EnumFilter f) {
             mustHaveExactlyOneOf(filter, f.getEqualsName(), f.getNameList(), f.getEqualsToken(), f.getTokenList(), f.getEqualsOrdinal(), f.getOrdinalList());
             LOGGER.trace("Enum search filter {}", f);
 
@@ -132,8 +130,7 @@ public class GenericSearchFilter extends JpaFilterImpl {
             }
             // search for name list. Must resolve the list elements
             return inCriteriaWithPossibleNull(cb, path, f.getNameList(), s -> enumResolver.getTokenByPqonAndInstance(f.getEnumPqon(), s));
-        } else if (filter instanceof XenumsetFilter) {
-            final XenumsetFilter f = (XenumsetFilter)filter;
+        } else if (filter instanceof XenumsetFilter f) {
             mustHaveExactlyOneOf(filter, f.getEqualsName(), f.getEqualsToken());
             LOGGER.trace("Enumset search filter {}", f);
             Object token = f.getEqualsToken();
@@ -144,8 +141,7 @@ public class GenericSearchFilter extends JpaFilterImpl {
                 return cb.like((Expression<String>) path, "%" + token + "%");
             else
                 return cb.equal(path, token);
-        } else if (filter instanceof EnumsetFilter) {
-            final EnumsetFilter f = (EnumsetFilter)filter;
+        } else if (filter instanceof EnumsetFilter f) {
             mustHaveExactlyOneOf(filter, f.getEqualsName(), f.getEqualsToken());
             LOGGER.trace("Enumset search filter {}", f);
             Object token = f.getEqualsToken();
@@ -157,10 +153,11 @@ public class GenericSearchFilter extends JpaFilterImpl {
                 return cb.isNull(path);
             }
             // token or ordinal
-            if (f.getSubset() && token instanceof String)
-                return cb.like((Expression<String>) path, "%" + (String)token + "%");
-            else
+            if (f.getSubset() && token instanceof String tString) {
+                return cb.like((Expression<String>) path, "%" + tString + "%");
+            } else {
                 return cb.equal(path, token);  // numeric: not subset but exact value (token is really an ordinal)
+            }
         } else {
             return super.applyFilter(cb, path, filter);
         }

@@ -117,13 +117,11 @@ public class DataSinkCrudRequestHandler extends AbstractCrudSurrogateKeyRequestH
         }
 
         final MediaTypeDescriptor desc = MediaTypeInfo.getFormatByType(intended.getCommFormatType());
-        final MediaType baseType = intended.getCommFormatType().getBaseEnum() instanceof MediaType
-          ? (MediaType)intended.getCommFormatType().getBaseEnum() : null;
+        final MediaType baseType = intended.getCommFormatType().getBaseEnum() instanceof MediaType media ? media : null;
 
         // if category is "REPORT", then only CSV, XLS and PDF are allowed (or a delegation to the report config)
         final Enum<?> anyEnum = intended.getCategory().getBaseEnum();
-        if (anyEnum instanceof DataSinkCategoryType) {
-            final DataSinkCategoryType baseEnum = (DataSinkCategoryType)anyEnum;   // Why can't I just switch on any Enum? Java is sooo great! :-(
+        if (anyEnum instanceof DataSinkCategoryType baseEnum) {
             switch (baseEnum) {
             case REPORT:
                 switch (intended.getCommTargetChannelType()) {

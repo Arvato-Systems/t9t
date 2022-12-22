@@ -75,8 +75,8 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
             final JsonObject msgBody;
             // first make sure we have a jsonBody to work with. Otherwise any parsing or handling will likely fail
             final Object body = event.body();
-            if (body instanceof String) {
-                msgBody = new JsonObject((String) body);
+            if (body instanceof String bString) {
+                msgBody = new JsonObject(bString);
             } else {
                 msgBody = (JsonObject) body;
             }
@@ -85,8 +85,7 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
                 if (msgBody.containsKey("@PQON")) { // check if the event contains custom eventParameters by searching for a PQON
                     final Map<String, Object> map = new JsonParser(msgBody.encode(), false).parseObject();
                     final BonaPortable tentativeEventData = MapParser.asBonaPortable(map, MapParser.OUTER_BONAPORTABLE_FOR_JSON);
-                    if (tentativeEventData instanceof EventData) {
-                        final EventData eventData = (EventData) tentativeEventData;
+                    if (tentativeEventData instanceof EventData eventData) {
                         final String theEventId = eventData.getData().ret$PQON();
                         final String eventTenantId = eventData.getHeader().getTenantId();
 
@@ -190,9 +189,8 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
         LOGGER.debug("async event {} sent via vert.x EventBus", data.getData().ret$PQON());
         if (bus != null) {
             final EventParameters attribs = data.getData();
-            if (attribs instanceof GenericEvent) {
+            if (attribs instanceof GenericEvent genericEvent) {
                 final JsonObject payload = new JsonObject();
-                final GenericEvent genericEvent = (GenericEvent) attribs;
                 payload.put("eventID", genericEvent.getEventID());
                 payload.put("header", new JsonObject(MapComposer.marshal(data.getHeader())));
                 if (genericEvent.getZ() != null) {
@@ -214,9 +212,8 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
         LOGGER.debug("async event {} published via vert.x EventBus", data.getData().ret$PQON());
         if (bus != null) {
             final EventParameters attribs = data.getData();
-            if (attribs instanceof GenericEvent) {
+            if (attribs instanceof GenericEvent genericEvent) {
                 final JsonObject payload = new JsonObject();
-                final GenericEvent genericEvent = (GenericEvent) attribs;
                 payload.put("eventID", genericEvent.getEventID());
                 payload.put("header", new JsonObject(MapComposer.marshal(data.getHeader())));
                 if (genericEvent.getZ() != null) {
@@ -395,8 +392,7 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
         });
         consumer.handler((Message<Object> message) -> {
             final Object msgBody = message.body();
-            if (msgBody instanceof ServiceRequest) {
-                final ServiceRequest serviceRequest = (ServiceRequest) msgBody;
+            if (msgBody instanceof ServiceRequest serviceRequest) {
                 LOGGER.debug("Processing an async request {}", serviceRequest.ret$PQON());
                 runInWorkerThread(vertx, serviceRequest);
             } else {

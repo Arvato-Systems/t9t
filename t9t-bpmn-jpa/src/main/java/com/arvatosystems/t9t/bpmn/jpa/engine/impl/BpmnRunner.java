@@ -290,10 +290,10 @@ public class BpmnRunner implements IBpmnRunner {
 
     protected WorkflowReturnCode dealWithError(final ProcessExecStatusEntity statusEntity, final Map<String, Object> parameters) {
         final Object retCode = parameters.get(IWorkflowStep.PROCESS_VARIABLE_RETURN_CODE);
-        if (retCode == null || !(retCode instanceof Integer)) {
+        if (retCode == null || !(retCode instanceof Integer iRetCode)) {
             statusEntity.setReturnCode(T9tBPMException.BPM_NO_ERROR);
         } else {
-            statusEntity.setReturnCode((Integer) retCode);
+            statusEntity.setReturnCode(iRetCode);
         }
         statusEntity.setErrorDetails(MessagingUtil.truncField(parameters.get(IWorkflowStep.PROCESS_VARIABLE_ERROR_DETAILS),
                 ProcessExecutionStatusDTO.meta$$errorDetails.getLength()));
@@ -317,18 +317,18 @@ public class BpmnRunner implements IBpmnRunner {
 
     public WorkflowReturnCode execute(final T9tAbstractWorkflowStep step, final RequestContext ctx, final ProcessDefinitionDTO pd,
             final ProcessExecStatusEntity statusEntity, final Object workflowObject, final Map<String, Object> parameters) {
-        if (step instanceof T9tWorkflowStepAddParameters) {
-            return executeAddParameters((T9tWorkflowStepAddParameters) step, ctx, pd, statusEntity, workflowObject, parameters);
-        } else if (step instanceof T9tWorkflowStepCondition) {
-            return executeCondition((T9tWorkflowStepCondition) step, ctx, pd, statusEntity, workflowObject, parameters);
-        } else if (step instanceof T9tWorkflowStepGoto) {
-            return executeGoto((T9tWorkflowStepGoto) step, ctx, pd, statusEntity, workflowObject, parameters);
-        } else if (step instanceof T9tWorkflowStepJavaTask) {
-            return executeJavaTask((T9tWorkflowStepJavaTask) step, ctx, pd, statusEntity, workflowObject, parameters);
-        } else if (step instanceof T9tWorkflowStepRestart) {
-            return executeRestart((T9tWorkflowStepRestart) step, ctx, pd, statusEntity, workflowObject, parameters);
-        } else if (step instanceof T9tWorkflowStepYield) {
-            return executeYield((T9tWorkflowStepYield) step, ctx, pd, statusEntity, workflowObject, parameters);
+        if (step instanceof T9tWorkflowStepAddParameters wfStepParameters) {
+            return executeAddParameters(wfStepParameters, ctx, pd, statusEntity, workflowObject, parameters);
+        } else if (step instanceof T9tWorkflowStepCondition wfStepCondition) {
+            return executeCondition(wfStepCondition, ctx, pd, statusEntity, workflowObject, parameters);
+        } else if (step instanceof T9tWorkflowStepGoto wfStepGoto) {
+            return executeGoto(wfStepGoto, ctx, pd, statusEntity, workflowObject, parameters);
+        } else if (step instanceof T9tWorkflowStepJavaTask wfStepJavaTask) {
+            return executeJavaTask(wfStepJavaTask, ctx, pd, statusEntity, workflowObject, parameters);
+        } else if (step instanceof T9tWorkflowStepRestart wfStepRestart) {
+            return executeRestart(wfStepRestart, ctx, pd, statusEntity, workflowObject, parameters);
+        } else if (step instanceof T9tWorkflowStepYield wfStepYield) {
+            return executeYield(wfStepYield, ctx, pd, statusEntity, workflowObject, parameters);
         } else if (step != null) {
             return executeDefault(step, ctx, pd, statusEntity, workflowObject, parameters);
         } else {
@@ -461,22 +461,22 @@ public class BpmnRunner implements IBpmnRunner {
 
     protected boolean evaluateCondition(final T9tAbstractWorkflowCondition condition, final IBPMObjectFactory<Object> factory, final Object workflowObject,
             final Map<String, Object> parameters) {
-        if (condition instanceof T9tWorkflowConditionVariableEquals) {
-            return evaluateEquals((T9tWorkflowConditionVariableEquals) condition, factory, workflowObject, parameters);
-        } else if (condition instanceof T9tWorkflowConditionVariableIsIn) {
-            return evaluateIsIn((T9tWorkflowConditionVariableIsIn) condition, factory, workflowObject, parameters);
-        } else if (condition instanceof T9tWorkflowConditionVariableIsNull) {
-            return evaluateIsNull((T9tWorkflowConditionVariableIsNull) condition, factory, workflowObject, parameters);
-        } else if (condition instanceof T9tWorkflowConditionVariableIsTrue) {
-            return evaluateIsTrue((T9tWorkflowConditionVariableIsTrue) condition, factory, workflowObject, parameters);
-        } else if (condition instanceof T9tWorkflowConditionVariableStartsOrEndsWith) {
-            return evaluateStartsOrEndsWith((T9tWorkflowConditionVariableStartsOrEndsWith) condition, factory, workflowObject, parameters);
-        } else if (condition instanceof T9tWorkflowConditionAnd) {
-            return evaluateAnd((T9tWorkflowConditionAnd) condition, factory, workflowObject, parameters);
-        } else if (condition instanceof T9tWorkflowConditionNot) {
-            return evaluateNot((T9tWorkflowConditionNot) condition, factory, workflowObject, parameters);
-        } else if (condition instanceof T9tWorkflowConditionOr) {
-            return evaluateOr((T9tWorkflowConditionOr) condition, factory, workflowObject, parameters);
+        if (condition instanceof T9tWorkflowConditionVariableEquals wfCondVarEquals) {
+            return evaluateEquals(wfCondVarEquals, factory, workflowObject, parameters);
+        } else if (condition instanceof T9tWorkflowConditionVariableIsIn wfCondVarIsIn) {
+            return evaluateIsIn(wfCondVarIsIn, factory, workflowObject, parameters);
+        } else if (condition instanceof T9tWorkflowConditionVariableIsNull wfCondVarIsNull) {
+            return evaluateIsNull(wfCondVarIsNull, factory, workflowObject, parameters);
+        } else if (condition instanceof T9tWorkflowConditionVariableIsTrue wfCondVarIsTrue) {
+            return evaluateIsTrue(wfCondVarIsTrue, factory, workflowObject, parameters);
+        } else if (condition instanceof T9tWorkflowConditionVariableStartsOrEndsWith wfCondVarSoEW) {
+            return evaluateStartsOrEndsWith(wfCondVarSoEW, factory, workflowObject, parameters);
+        } else if (condition instanceof T9tWorkflowConditionAnd wfCondAnd) {
+            return evaluateAnd(wfCondAnd, factory, workflowObject, parameters);
+        } else if (condition instanceof T9tWorkflowConditionNot wfCondNot) {
+            return evaluateNot(wfCondNot, factory, workflowObject, parameters);
+        } else if (condition instanceof T9tWorkflowConditionOr wfCondOr) {
+            return evaluateOr(wfCondOr, factory, workflowObject, parameters);
         } else if (condition != null) {
             return evaluateDefault(condition, factory, workflowObject, parameters);
         } else {

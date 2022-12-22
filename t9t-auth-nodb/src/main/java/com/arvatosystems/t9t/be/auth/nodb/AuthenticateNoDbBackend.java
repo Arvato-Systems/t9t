@@ -77,24 +77,24 @@ public class AuthenticateNoDbBackend implements IAuthenticate {
             throw new ObjectValidationException(ObjectValidationException.MAY_NOT_BE_BLANK);
         }
         LOGGER.info("Authentication for method {}", ap.ret$PQON());
-        if (!(ap instanceof ApiKeyAuthentication)) {
-            throw new UnsupportedOperationException("Unsupported authentication parameters");
-        }
-        final JwtInfo jwt = auth((ApiKeyAuthentication)ap);
+        if (ap instanceof ApiKeyAuthentication akAp) {
+            final JwtInfo jwt = auth((ApiKeyAuthentication)ap);
 
-        if (jwt == null) {
-            throw new ApplicationException(ApplicationException.CL_DENIED * 100000000 + 1);
-        }
+            if (jwt == null) {
+                throw new ApplicationException(ApplicationException.CL_DENIED * 100000000 + 1);
+            }
 
-        final AuthenticationResponse authResp = new AuthenticationResponse();
-        authResp.setJwtInfo(jwt);
-        authResp.setEncodedJwt(generator.sign(jwt, 60 * 60L, null)); // 1 hour of validity
-        authResp.setTenantName("Arvato Systems GmbH");
-        authResp.setTenantId(T9tConstants.GLOBAL_TENANT_ID);
-        authResp.setProcessRef(0L);
-        authResp.setTenantNotUnique(false);
-        authResp.setMustChangePassword(false);
-        return authResp;
+            final AuthenticationResponse authResp = new AuthenticationResponse();
+            authResp.setJwtInfo(jwt);
+            authResp.setEncodedJwt(generator.sign(jwt, 60 * 60L, null)); // 1 hour of validity
+            authResp.setTenantName("Arvato Systems GmbH");
+            authResp.setTenantId(T9tConstants.GLOBAL_TENANT_ID);
+            authResp.setProcessRef(0L);
+            authResp.setTenantNotUnique(false);
+            authResp.setMustChangePassword(false);
+            return authResp;
+        }
+        throw new UnsupportedOperationException("Unsupported authentication parameters");
     }
 
 

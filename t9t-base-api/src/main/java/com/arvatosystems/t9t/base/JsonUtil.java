@@ -112,11 +112,11 @@ public final class JsonUtil {
         if (value == null) {
             return defaultValue;
         }
-        if (value instanceof Long) {
-            return (Long)value;
+        if (value instanceof Long vLong) {
+            return vLong;
         }
-        if (value instanceof Number) {
-            return ((Number)value).longValue();
+        if (value instanceof Number vNumber) {
+            return vNumber.longValue();
         }
         try {
             // attempt parsing a number
@@ -135,11 +135,11 @@ public final class JsonUtil {
         if (value == null) {
             return defaultValue;
         }
-        if (value instanceof Integer) {
-            return (Integer)value;
+        if (value instanceof Integer vInteger) {
+            return vInteger;
         }
-        if (value instanceof Number) {
-            return ((Number)value).intValue();
+        if (value instanceof Number vNumber) {
+            return vNumber.intValue();
         }
         try {
             // attempt parsing a number
@@ -158,12 +158,12 @@ public final class JsonUtil {
         if (value == null) {
             return defaultValue;
         }
-        if (value instanceof Instant) {
-            return (Instant)value;
+        if (value instanceof Instant vInstant) {
+            return vInstant;
         }
         // in JSON, an instant could have been persisted as a numeric value, in seconds since the epoch
-        if (value instanceof Number) {
-            return Instant.ofEpochSecond(((Number)value).longValue());
+        if (value instanceof Number vNumber) {
+            return Instant.ofEpochSecond(vNumber.longValue());
         }
         // last resort: parse from string
         return Instant.parse(value.toString());
@@ -175,16 +175,15 @@ public final class JsonUtil {
         if (value == null) {
             return defaultValue;
         }
-        if (value instanceof Boolean) {
-            return (Boolean)value;
+        if (value instanceof Boolean vBoolean) {
+            return vBoolean;
         }
-        if (value instanceof String) {
+        if (value instanceof String vString) {
             // accept "true" or "false"
-            final String sval = (String)value;
-            if (sval.equalsIgnoreCase("true")) {
+            if (vString.equalsIgnoreCase("true")) {
                 return Boolean.TRUE;
             }
-            if (sval.equalsIgnoreCase("false")) {
+            if (vString.equalsIgnoreCase("false")) {
                 return Boolean.FALSE;
             }
         }
@@ -238,9 +237,7 @@ public final class JsonUtil {
             // no kvp entry: return structure as it is
             return z;
         } else {
-            if (kvp instanceof List) {
-                final List<Object> kvpList = (List<Object>) kvp;
-
+            if (kvp instanceof List<?> kvpList) {
                 // convert kvp entries into regular z
                 final Map<String, Object> result = new HashMap<>();
                 // check for hybrid
@@ -251,8 +248,7 @@ public final class JsonUtil {
                 }
                 // now transfer the list's entries
                 for (Object entry : kvpList) {
-                    if (entry instanceof Map) {
-                        final Map<String, Object> entryMap = (Map<String, Object>) entry;
+                    if (entry instanceof Map<?, ?> entryMap) {
                         if (entryMap != null) {
                             final String key = (String) entryMap.get("key");
                             if (key == null) {
@@ -280,7 +276,7 @@ public final class JsonUtil {
     }
 
     /** Extracts a single kvp entry from a wrapped entry. Type "obj" is not supported. */
-    private static Object getValue(final String key, final Map<String, Object> entryMap) {
+    private static Object getValue(final String key, final Map<?, ?> entryMap) {
         // first, check scalar values
         final Object value = entryMap.get("value");
         if (value != null) {
@@ -295,15 +291,15 @@ public final class JsonUtil {
             return num;
         }
         final Object values = entryMap.get("values");
-        if (values instanceof List && !((List) values).isEmpty()) {
+        if (values instanceof List<?> vList && !vList.isEmpty()) {
             return values;
         }
         final Object bools = entryMap.get("bools");
-        if (bools instanceof List && !((List) bools).isEmpty()) {
+        if (bools instanceof List<?> vList && !vList.isEmpty()) {
             return bools;
         }
         final Object nums = entryMap.get("nums");
-        if (nums instanceof List && !((List) nums).isEmpty()) {
+        if (nums instanceof List<?> vList && !vList.isEmpty()) {
             return nums;
         }
         LOGGER.error("kvp list entry for {} has no known value entry", key);

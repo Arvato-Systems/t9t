@@ -45,11 +45,11 @@ public final class T9tDocTools {
     public static String getMailingGroupId(final MailingGroupRef ref) {
         if (ref == null)
             return null;
-        if (ref instanceof MailingGroupKey) {
-            return ((MailingGroupKey)ref).getMailingGroupId();
+        if (ref instanceof MailingGroupKey key) {
+            return key.getMailingGroupId();
         }
-        if (ref instanceof MailingGroupDTO) {
-            return ((MailingGroupDTO)ref).getMailingGroupId();
+        if (ref instanceof MailingGroupDTO dto) {
+            return dto.getMailingGroupId();
         }
         throw new T9tException(T9tException.NOT_YET_IMPLEMENTED, "MailingGroupRef of type " + ref.getClass().getCanonicalName());
     }

@@ -49,13 +49,13 @@ public class EnumsetDataField<E extends Enum<E>, T extends GenericEnumSetMarker<
 
     public EnumsetDataField(final DataFieldParameters params, final String enumDtoRestrictions) {
         super(params);
-        this.baseEnumset = (cfg instanceof AlphanumericEnumSetDataItem)
-            ? ((AlphanumericEnumSetDataItem)cfg).getBaseEnumset()
+        baseEnumset = cfg instanceof AlphanumericEnumSetDataItem alphaSetDataItem
+            ? alphaSetDataItem.getBaseEnumset()
             : ((NumericEnumSetDataItem)cfg).getBaseEnumset();
         enumsetClass = baseEnumset.getClassRef();
         ed = baseEnumset.getBaseEnum();
 
-        this.enumRestrictions = as.enumRestrictions(ed.getName(), enumDtoRestrictions, params.enumZulRestrictions);
+        enumRestrictions = as.enumRestrictions(ed.getName(), enumDtoRestrictions, params.enumZulRestrictions);
         if (enumRestrictions != null)
             LOGGER.debug("enumset {} for field {} restricted to {} instances", ed.getName(), getFieldName(), enumRestrictions.size());
 

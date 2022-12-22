@@ -175,10 +175,10 @@ public class AuthenticationRequestHandler extends AbstractRequestHandler<Authent
     }
 
     protected AuthenticationResponse auth(final RequestContext ctx, final AuthenticationParameters ap, final String locale, final String zoneinfo) {
-        if (ap instanceof ApiKeyAuthentication) {
-            return authApiKeyAuthentication(ctx, (ApiKeyAuthentication)ap, locale, zoneinfo);
-        } else if (ap instanceof PasswordAuthentication) {
-            return authPasswordAuthentication(ctx, (PasswordAuthentication)ap, locale, zoneinfo);
+        if (ap instanceof ApiKeyAuthentication akAp) {
+            return authApiKeyAuthentication(ctx, akAp, locale, zoneinfo);
+        } else if (ap instanceof PasswordAuthentication pwAp) {
+            return authPasswordAuthentication(ctx, pwAp, locale, zoneinfo);
         } else if (ap != null) {
             return authDefault(ctx, ap, locale, zoneinfo);
         } else {

@@ -139,17 +139,14 @@ public class ProcessStatusSearchRequestHandler extends AbstractSearchRequestHand
     }
 
     protected void applyFilters(final ProcessStatusRequest psCmd, final SearchFilter searchFilter) {
-        if (searchFilter instanceof AndFilter) {
-            final AndFilter andFilter = (AndFilter) searchFilter;
+        if (searchFilter instanceof AndFilter andFilter) {
             applyFilters(psCmd, andFilter.getFilter1());
             applyFilters(psCmd, andFilter.getFilter2());
-        } else if (searchFilter instanceof LongFilter) {
-            final LongFilter longFilter = (LongFilter) searchFilter;
+        } else if (searchFilter instanceof LongFilter longFilter) {
             if (FIELD_NAME_AGE_IN_MS.equals(longFilter.getFieldName()) && longFilter.getLowerBound() != null) {
                 psCmd.setMinAgeInMs(longFilter.getLowerBound());
             }
-        } else if (searchFilter instanceof UnicodeFilter) {
-            final UnicodeFilter unicodeFilter = (UnicodeFilter) searchFilter;
+        } else if (searchFilter instanceof UnicodeFilter unicodeFilter) {
             if (unicodeFilter.getEqualsValue() != null) {
                 String equalsValue = unicodeFilter.getEqualsValue();
                 if (FIELD_NAME_TENANT_ID.equals(unicodeFilter.getFieldName())) {

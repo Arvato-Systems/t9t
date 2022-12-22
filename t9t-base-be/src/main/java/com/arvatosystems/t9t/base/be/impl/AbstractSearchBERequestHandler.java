@@ -61,8 +61,9 @@ public abstract class AbstractSearchBERequestHandler<DTO extends BonaPortable, T
                 rs.setSinkRef(sinkRef);
                 rs.setDataList(emptyResultList);
             } catch (final Exception e) {
-                if (e instanceof ApplicationException)
-                    throw (ApplicationException)e;
+                if (e instanceof ApplicationException ae) {
+                    throw ae;
+                }
                 throw new ApplicationException(T9tException.GENERAL_EXCEPTION, ExceptionUtil.causeChain(e));
             }
         }

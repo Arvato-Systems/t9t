@@ -39,8 +39,8 @@ public class MutableLong {
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj instanceof MutableLong) {
-            return value == ((MutableLong) obj).value;
+        if (obj instanceof MutableLong ml) {
+            return value == ml.value;
         }
         return false;
     }

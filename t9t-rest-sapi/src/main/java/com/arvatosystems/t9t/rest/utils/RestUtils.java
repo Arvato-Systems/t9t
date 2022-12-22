@@ -129,8 +129,7 @@ public final class RestUtils {
     }
 
     public static Response createExceptionResponse(final Exception e, final String acceptHeader, final UriInfo uriInfo, final String method) {
-        if (e instanceof ApplicationException) {
-            final ApplicationException ae = (ApplicationException)e;
+        if (e instanceof ApplicationException ae) {
             final int errorCode = ae.getErrorCode();
             LOGGER.error("Application exception calling {} {}: {} {} {}",
                     method, uriInfo.getAbsolutePath(), e.getClass().getSimpleName(), errorCode, e.getMessage());
@@ -148,8 +147,7 @@ public final class RestUtils {
                     method, uriInfo.getAbsolutePath(), e.getClass().getSimpleName(), e.getMessage());
             return error(Response.Status.BAD_REQUEST, T9tException.XML_EXCEPTION, e.getMessage(), acceptHeader);
         }
-        if (e instanceof WebApplicationException) {
-            final WebApplicationException we = (WebApplicationException)e;
+        if (e instanceof WebApplicationException we) {
             final StatusType status = we.getResponse().getStatusInfo();
             LOGGER.warn("WebApplicationException calling {} {}: {} {}",
                     method, uriInfo.getAbsolutePath(), status.getStatusCode(), status.getReasonPhrase());

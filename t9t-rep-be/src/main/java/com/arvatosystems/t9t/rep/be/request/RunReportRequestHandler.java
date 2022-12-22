@@ -188,8 +188,8 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
         Long sinkRef; // holds the result
         final Map<String, Object> outputSessionAdditionalParametersList = new HashMap<>(10);
 
-        final ReportParamsDTO reportParamsDTO = (request.getReportParamsRef() instanceof ReportParamsDTO)
-          ? (ReportParamsDTO) request.getReportParamsRef() // nothing to do, all data has been provided (adhoc report request)
+        final ReportParamsDTO reportParamsDTO = request.getReportParamsRef() instanceof ReportParamsDTO dto
+          ? dto // nothing to do, all data has been provided (adhoc report request)
           : dpl.getParamsDTO(request.getReportParamsRef());
 
         if (reportParamsDTO == null) {

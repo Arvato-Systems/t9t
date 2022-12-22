@@ -88,11 +88,9 @@ public class StatefulServiceSession implements IStatefulServiceSession {
         // OK, authenticated!
         final ServiceResponse resp = processor.execute(null, request, info.getJwtInfo(), info.getEncodedJwt(), false);
         if (resp.getReturnCode() == 0) {
-            if (resp instanceof AuthenticationResponse) {
-                final AuthenticationResponse authResp = (AuthenticationResponse) resp;
+            if (resp instanceof AuthenticationResponse authResp) {
                 // update JWT
-                if (request instanceof AuthenticationRequest) {
-                    final AuthenticationRequest authRequest = (AuthenticationRequest) request;
+                if (request instanceof AuthenticationRequest authRequest) {
                     authInfo.set(new AuthInfo(authRequest.getSessionParameters(), authRequest.getAuthenticationParameters(), authResp.getJwtInfo(),
                             authResp.getEncodedJwt()));
                 } else {

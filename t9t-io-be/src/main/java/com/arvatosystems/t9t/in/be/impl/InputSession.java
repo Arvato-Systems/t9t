@@ -108,7 +108,7 @@ public class InputSession implements IInputSession {
         dataSinkReadRq.setCrud(OperationType.READ);
         dataSinkReadRq.setNaturalKey(new DataSinkKey(dataSourceId));
         final ServiceResponse resp = session.execute(dataSinkReadRq);
-        if (resp.getReturnCode() == 0 && resp instanceof CrudSurrogateKeyResponse) {
+        if (ApplicationException.isOk(resp.getReturnCode()) && resp instanceof CrudSurrogateKeyResponse) {
             dataSinkCfg = ((CrudSurrogateKeyResponse<DataSinkDTO, FullTrackingWithVersion>) resp).getData();
         } else {
             throw new T9tException(T9tException.RECORD_DOES_NOT_EXIST, "DataSink " + dataSourceId);
@@ -337,7 +337,7 @@ public class InputSession implements IInputSession {
     // log according to configured severity and return an error request
     // this is called if an exception occurs during construction of either the DTO or the request
     protected ErrorRequest conditionalLog(final String where, final int recordNo, final Exception e) {
-        final int errorCode = e instanceof ApplicationException ? ((ApplicationException) e).getErrorCode() : T9tException.GENERAL_EXCEPTION;
+        final int errorCode = e instanceof ApplicationException ae ? ae.getErrorCode() : T9tException.GENERAL_EXCEPTION;
         final String details = where + ": " + sourceReference + ", record " + recordNo + ": " + e.getClass().getSimpleName() + ": " + e.getMessage();
         LOGGER.error(details, e);
         final ErrorRequest errorRq = new ErrorRequest();
@@ -395,8 +395,8 @@ public class InputSession implements IInputSession {
         if (!ApplicationException.isOk(response.getReturnCode())) {
             numError.incrementAndGet();
         }
-        if (response instanceof ImportStatusResponse) {
-            final List<BonaPortable> responses = ((ImportStatusResponse) response).getResponses();
+        if (response instanceof ImportStatusResponse isResp) {
+            final List<BonaPortable> responses = isResp.getResponses();
             if (responses != null && !responses.isEmpty()) {
                 addOrFlushResponses(responses);
             }

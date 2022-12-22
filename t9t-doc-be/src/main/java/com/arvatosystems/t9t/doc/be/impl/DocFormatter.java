@@ -334,14 +334,14 @@ public class DocFormatter implements IDocFormatter {
             if (argumentsSize >= 4) {
                 final Object widthObj = arguments.get(2);
                 final Object heightObj = arguments.get(3);
-                if (widthObj instanceof SimpleNumber) {
-                    width = ((SimpleNumber) widthObj).getAsNumber().intValue();
+                if (widthObj instanceof SimpleNumber widthObjSimpleNumber) {
+                    width = widthObjSimpleNumber.getAsNumber().intValue();
                 } else {
                     LOGGER.warn("Bad parameter: argument 3 of i (width) should be an integer (SimpleNumber), but is {}",
                             widthObj.getClass().getCanonicalName());
                 }
-                if (heightObj instanceof SimpleNumber) {
-                    height = ((SimpleNumber) heightObj).getAsNumber().intValue();
+                if (heightObj instanceof SimpleNumber heightObjSimpleNumber) {
+                    height = heightObjSimpleNumber.getAsNumber().intValue();
                 } else {
                     LOGGER.warn("Bad parameter: argument 4 of i (height) should be an integer (SimpleNumber), but is {}",
                             heightObj.getClass().getCanonicalName());
@@ -350,8 +350,8 @@ public class DocFormatter implements IDocFormatter {
 
             if (argumentsSize >= 5) {
                 final Object rotObj = arguments.get(4);
-                if (rotObj instanceof SimpleNumber) {
-                    rotation = ((SimpleNumber) rotObj).getAsNumber().intValue();
+                if (rotObj instanceof SimpleNumber rotObjSimpleNumber) {
+                    rotation = rotObjSimpleNumber.getAsNumber().intValue();
                 } else {
                     LOGGER.warn("Bad parameter: argument 5 of i (rotation) should be an integer (SimpleNumber), but is {}",
                             rotObj.getClass().getCanonicalName());
@@ -630,10 +630,10 @@ public class DocFormatter implements IDocFormatter {
             if (obj == null) {
                 return super.wrap(null);
             }
-            if (obj instanceof String) {
+            if (obj instanceof String sObj) {
                 final Enum<?> format = desiredFormat != null ? desiredFormat.getBaseEnum() : null;
                 if (escapeToRaw && (MediaType.HTML.equals(format) || MediaType.XHTML.equals(format))) {
-                    return new SimpleScalar("<![CDATA[" + (String) obj + "]]>");
+                    return new SimpleScalar("<![CDATA[" + sObj + "]]>");
                 }
                 if (converter != null) {
                     return super.wrap(converter.convertFrom(new MediaData(MediaTypes.MEDIA_XTYPE_TEXT, ((String) obj), null, null)));
@@ -816,11 +816,11 @@ public class DocFormatter implements IDocFormatter {
         if (x == null) {
             return "";
         }
-        if (x instanceof SimpleScalar) {
-            return ((SimpleScalar) x).getAsString();
+        if (x instanceof SimpleScalar xSimpleScalar) {
+            return xSimpleScalar.getAsString();
         }
-        if (x instanceof StringModel) {
-            return ((StringModel) x).getAsString();
+        if (x instanceof StringModel xStringModel) {
+            return xStringModel.getAsString();
         }
         return "(? class " + x.getClass().getCanonicalName() + " ?)";
     }
