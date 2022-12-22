@@ -122,6 +122,7 @@ class ConfigProvider {
 
     def private static void mergeConfigurations(T9tServerConfiguration a, T9tServerConfiguration b) {
         myConfiguration = new T9tServerConfiguration => [
+            serverIdSelf            = a.serverIdSelf            ?: b.serverIdSelf
             persistenceUnitName     = a.persistenceUnitName     ?: b.persistenceUnitName
             databaseConfiguration   = a.databaseConfiguration   ?: b.databaseConfiguration
             secondaryDatabaseConfig = a.secondaryDatabaseConfig ?: b.secondaryDatabaseConfig ?: databaseConfiguration
@@ -138,13 +139,17 @@ class ConfigProvider {
             kafkaConfiguration      = a.kafkaConfiguration      ?: b.kafkaConfiguration
             asyncMsgConfiguration   = a.asyncMsgConfiguration   ?: b.asyncMsgConfiguration
             ldapConfiguration       = a.ldapConfiguration       ?: b.ldapConfiguration
-            mocks                   = a.mocks                   ?: b.mocks
             noDbBackendApiKey       = a.noDbBackendApiKey       ?: b.noDbBackendApiKey
             noDbBackendPermittedRequests = a.noDbBackendPermittedRequests ?: b.noDbBackendPermittedRequests
+            jwtValidityApiKey       = a.jwtValidityApiKey       ?: b.jwtValidityApiKey
+            jwtValidityUserPassword = a.jwtValidityUserPassword ?: b.jwtValidityUserPassword
+            mocks                   = a.mocks                   ?: b.mocks
             runInCluster            = a.runInCluster            ?: b.runInCluster
             disableScheduler        = a.disableScheduler        ?: b.disableScheduler
+            sessionLogSysout        = a.sessionLogSysout        ?: b.sessionLogSysout
             importEnvironment       = a.importEnvironment       ?: b.importEnvironment
             eventEnvironment        = a.eventEnvironment        ?: b.eventEnvironment
+            schedulerEnvironment    = a.schedulerEnvironment    ?: b.schedulerEnvironment
             z                       = a.z                       ?: b.z
         ]
 
