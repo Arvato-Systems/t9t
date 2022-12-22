@@ -15,6 +15,16 @@
  */
 package com.arvatosystems.t9t.rest.utils;
 
+import static de.jpaw.util.ApplicationException.CLASSIFICATION_FACTOR;
+import static de.jpaw.util.ApplicationException.CL_DATABASE_ERROR;
+import static de.jpaw.util.ApplicationException.CL_DENIED;
+import static de.jpaw.util.ApplicationException.CL_INTERNAL_LOGIC_ERROR;
+import static de.jpaw.util.ApplicationException.CL_PARAMETER_ERROR;
+import static de.jpaw.util.ApplicationException.CL_PARSER_ERROR;
+import static de.jpaw.util.ApplicationException.CL_SUCCESS;
+import static de.jpaw.util.ApplicationException.CL_TIMEOUT;
+import static de.jpaw.util.ApplicationException.CL_VALIDATION_ERROR;
+
 import java.util.List;
 
 import javax.xml.stream.XMLStreamException;
@@ -34,9 +44,10 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.core.Response.StatusType;
-import jakarta.xml.bind.JAXBException;
 import jakarta.ws.rs.core.UriInfo;
+import jakarta.xml.bind.JAXBException;
 
 
 /**
@@ -173,13 +184,45 @@ public final class RestUtils {
                 return Response.Status.NOT_ACCEPTABLE;
             case ApplicationException.CL_PARSER_ERROR:
                 return Response.Status.BAD_REQUEST;
+            case ApplicationException.CL_VALIDATION_ERROR:
+                return Response.Status.BAD_REQUEST;
             case ApplicationException.CL_PARAMETER_ERROR:
                 return Response.Status.BAD_REQUEST;
             case ApplicationException.CL_TIMEOUT:
                 return Response.Status.GATEWAY_TIMEOUT;
+            case ApplicationException.CL_DATABASE_ERROR:
+                return Response.Status.SERVICE_UNAVAILABLE;
             default:
                 return Response.Status.INTERNAL_SERVER_ERROR;
             }
+        }
+    }
+
+    public static Response.ResponseBuilder createResponseBuilder(final int returncode) {
+        // special case for already transformed http status codes:
+        if (returncode >= T9tException.HTTP_ERROR + 100 && returncode <= T9tException.HTTP_ERROR + 599) { // 100..599 is the allowed range for http status codes
+            return Response.status(returncode - T9tException.HTTP_ERROR);
+        }
+        // default: map via classification
+        switch (returncode / CLASSIFICATION_FACTOR) {
+        case CL_SUCCESS:
+            return Response.status(Status.OK.getStatusCode());
+        case CL_DENIED:
+            return Response.status(Status.NOT_ACCEPTABLE.getStatusCode());  // Request was not processed for business reasons.
+        case CL_PARSER_ERROR:
+            return Response.status(Status.BAD_REQUEST.getStatusCode());
+        case CL_VALIDATION_ERROR:
+            return Response.status(Status.BAD_REQUEST.getStatusCode());
+        case CL_PARAMETER_ERROR:
+            return Response.status(Status.BAD_REQUEST.getStatusCode());     // or 422... no resteasy constant for this one
+        case CL_TIMEOUT:
+            return Response.status(Status.GATEWAY_TIMEOUT.getStatusCode());
+        case CL_INTERNAL_LOGIC_ERROR:
+            return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode());
+        case CL_DATABASE_ERROR:
+            return Response.status(Status.SERVICE_UNAVAILABLE.getStatusCode());
+        default:
+            return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode());
         }
     }
 }

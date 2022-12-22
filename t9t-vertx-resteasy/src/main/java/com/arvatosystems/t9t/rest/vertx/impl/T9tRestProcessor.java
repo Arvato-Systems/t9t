@@ -15,15 +15,6 @@
  */
 package com.arvatosystems.t9t.rest.vertx.impl;
 
-import static de.jpaw.util.ApplicationException.CLASSIFICATION_FACTOR;
-import static de.jpaw.util.ApplicationException.CL_DATABASE_ERROR;
-import static de.jpaw.util.ApplicationException.CL_DENIED;
-import static de.jpaw.util.ApplicationException.CL_INTERNAL_LOGIC_ERROR;
-import static de.jpaw.util.ApplicationException.CL_PARAMETER_ERROR;
-import static de.jpaw.util.ApplicationException.CL_PARSER_ERROR;
-import static de.jpaw.util.ApplicationException.CL_SUCCESS;
-import static de.jpaw.util.ApplicationException.CL_TIMEOUT;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -40,6 +31,7 @@ import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.auth.AuthenticationInfo;
 import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
 import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
+import com.arvatosystems.t9t.rest.utils.RestUtils;
 import com.arvatosystems.t9t.server.services.ICachingAuthenticationProcessor;
 import com.arvatosystems.t9t.server.services.IRequestProcessor;
 
@@ -125,7 +117,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
                 if (ar.succeeded()) {
                     final ServiceResponse sr = ar.result();
                     if (!ApplicationException.isOk(sr.getReturnCode())) {
-                        final Response.ResponseBuilder responseBuilder = createResponseBuilder(sr.getReturnCode());
+                        final Response.ResponseBuilder responseBuilder = RestUtils.createResponseBuilder(sr.getReturnCode());
                         responseBuilder.type(acceptHeader == null || acceptHeader.length() == 0 ? MediaType.APPLICATION_JSON : acceptHeader);
                         responseBuilder.entity(createResultFromServiceResponse(sr));
                         final Response responseObj = responseBuilder.build();
@@ -183,36 +175,10 @@ public class T9tRestProcessor implements IT9tRestProcessor {
         return response.build();
     }
 
-    private static Response.ResponseBuilder createResponseBuilder(final int returncode) {
-        // special case for already transformed http status codes:
-        if (returncode >= T9tException.HTTP_ERROR + 100 && returncode <= T9tException.HTTP_ERROR + 599) { // 100..599 is the allowed range for http status codes
-            return Response.status(returncode - T9tException.HTTP_ERROR);
-        }
-        // default: map via classification
-        switch (returncode / CLASSIFICATION_FACTOR) {
-        case CL_SUCCESS:
-            return Response.status(Status.OK.getStatusCode());
-        case CL_DENIED:
-            return Response.status(Status.NOT_ACCEPTABLE.getStatusCode());  // Request was not processed for business reasons.
-        case CL_PARSER_ERROR:
-            return Response.status(Status.BAD_REQUEST.getStatusCode());
-        case CL_PARAMETER_ERROR:
-            return Response.status(Status.BAD_REQUEST.getStatusCode());     // or 422... no resteasy constant for this one
-        case CL_TIMEOUT:
-            return Response.status(Status.GATEWAY_TIMEOUT.getStatusCode());
-        case CL_INTERNAL_LOGIC_ERROR:
-            return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode());
-        case CL_DATABASE_ERROR:
-            return Response.status(Status.SERVICE_UNAVAILABLE.getStatusCode());
-        default:
-            return Response.status(Status.BAD_REQUEST.getStatusCode());
-        }
-    }
-
     @Override
-    public <T extends BonaPortable> void performAsyncBackendRequest(final HttpHeaders httpHeaders, final AsyncResponse resp,
+    public <T extends BonaPortable, R extends RequestParameters> void performAsyncBackendRequest(final HttpHeaders httpHeaders, final AsyncResponse resp,
             final String infoMsg, final List<T> inputData,
-            final Function<T, RequestParameters> requestConverterSingle, final Function<List<T>, RequestParameters> requestConverterBatch) {
+            final Function<T, R> requestConverterSingle, final Function<List<T>, RequestParameters> requestConverterBatch) {
         // must evaluate httpHeaders now, because httpHeaders is a proxy and no longer valid in the other thread
         final String acceptHeader = determineResponseType(httpHeaders);
         if (inputData == null || inputData.isEmpty()) {

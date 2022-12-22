@@ -26,7 +26,7 @@ import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import de.jpaw.bonaparte.pojos.api.media.MediaXType;
 
 public interface IDocEmailDistributor {
-    void transmit(
+    Long transmit(
         RecipientEmail      rcpt,
         Function<MediaXType, MediaData> toFormatConverter,
         MediaXType          primaryFormat,

@@ -20,7 +20,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-settings-java</artifactId>
-        <version>6.2-SNAPSHOT</version>
+        <version>6.3-SNAPSHOT</version>
         <relativePath>../t9t-settings-java</relativePath>
     </parent>
 
@@ -36,24 +36,9 @@
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-io-be</artifactId>
         </dependency>
-<!--         <dependency>
-            <groupId>com.amazonaws</groupId>
-            <artifactId>aws-java-sdk-s3</artifactId>
-        </dependency>
         <dependency>
-            <groupId>com.amazonaws</groupId>
-            <artifactId>aws-java-sdk-core</artifactId>
-            <exclusions>
-                 exclude legacy / buggy logging
-                 <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
- -->        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-aws2-s3</artifactId>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>s3</artifactId>
         </dependency>
         <!-- use preferred logging -->
         <dependency>

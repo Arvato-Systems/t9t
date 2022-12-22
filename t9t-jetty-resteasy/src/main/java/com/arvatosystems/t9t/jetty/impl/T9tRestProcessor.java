@@ -15,15 +15,6 @@
  */
 package com.arvatosystems.t9t.jetty.impl;
 
-import static de.jpaw.util.ApplicationException.CLASSIFICATION_FACTOR;
-import static de.jpaw.util.ApplicationException.CL_DATABASE_ERROR;
-import static de.jpaw.util.ApplicationException.CL_DENIED;
-import static de.jpaw.util.ApplicationException.CL_INTERNAL_LOGIC_ERROR;
-import static de.jpaw.util.ApplicationException.CL_PARAMETER_ERROR;
-import static de.jpaw.util.ApplicationException.CL_PARSER_ERROR;
-import static de.jpaw.util.ApplicationException.CL_SUCCESS;
-import static de.jpaw.util.ApplicationException.CL_TIMEOUT;
-
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -76,9 +67,9 @@ public class T9tRestProcessor implements IT9tRestProcessor {
     }
 
     @Override
-    public <T extends BonaPortable> void performAsyncBackendRequest(final HttpHeaders httpHeaders, final AsyncResponse resp, final String infoMsg,
-            final List<T> inputData, final Function<T, RequestParameters> requestConverterSingle,
-            final Function<List<T>, RequestParameters> requestConverterBatch) {
+    public <T extends BonaPortable, R extends RequestParameters> void performAsyncBackendRequest(final HttpHeaders httpHeaders, final AsyncResponse resp,
+        final String infoMsg, final List<T> inputData, final Function<T, R> requestConverterSingle,
+        final Function<List<T>, RequestParameters> requestConverterBatch) {
 
         // must evaluate httpHeaders now, because httpHeaders is a proxy and no longer valid in the other thread (when we process the response)
         final String acceptHeader = determineResponseType(httpHeaders);
@@ -135,58 +126,6 @@ public class T9tRestProcessor implements IT9tRestProcessor {
         performAsyncBackendRequest(httpHeaders, resp, rq, infoMsg, ServiceResponse.class, sr -> createResultFromServiceResponse(sr));
     }
 
-    private static Response.ResponseBuilder createResponseBuilder(final int returncode) {
-        // special case for already transformed http status codes:
-        if (returncode >= T9tException.HTTP_ERROR + 100 && returncode <= T9tException.HTTP_ERROR + 599) { // 100..599 is the allowed range for http status codes
-            return Response.status(returncode - T9tException.HTTP_ERROR);
-        }
-        // default: map via classification
-        switch (returncode / CLASSIFICATION_FACTOR) {
-        case CL_SUCCESS:
-            return Response.status(Status.OK.getStatusCode());
-        case CL_DENIED:
-            return Response.status(Status.NOT_ACCEPTABLE.getStatusCode());  // Request was not processed for business reasons.
-        case CL_PARSER_ERROR:
-            return Response.status(Status.BAD_REQUEST.getStatusCode());
-        case CL_PARAMETER_ERROR:
-            return Response.status(Status.BAD_REQUEST.getStatusCode());     // or 422... no resteasy constant for this one
-        case CL_TIMEOUT:
-            return Response.status(Status.GATEWAY_TIMEOUT.getStatusCode());
-        case CL_INTERNAL_LOGIC_ERROR:
-            return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode());
-        case CL_DATABASE_ERROR:
-            return Response.status(Status.SERVICE_UNAVAILABLE.getStatusCode());
-        default:
-            return Response.status(Status.BAD_REQUEST.getStatusCode());
-        }
-    }
-
-    public static Status getHttpReturnCodeOk(final int returncode) {
-        switch (returncode / CLASSIFICATION_FACTOR) {
-        case CL_SUCCESS:
-            return Status.OK;
-        case CL_DENIED:
-            return Status.NOT_ACCEPTABLE;   // Request was not processed for business reasons.
-        case CL_PARSER_ERROR:
-            return Status.BAD_REQUEST;
-        case CL_PARAMETER_ERROR:
-            return Status.BAD_REQUEST;   // TODO: modify to 422
-        case CL_TIMEOUT:
-            return Status.GATEWAY_TIMEOUT;
-        case CL_INTERNAL_LOGIC_ERROR:
-            return Status.INTERNAL_SERVER_ERROR;
-        case CL_DATABASE_ERROR:
-            return Status.SERVICE_UNAVAILABLE;
-        default:
-            return Status.BAD_REQUEST;
-        }
-    }
-
-    public static Status getHttpReturnCodeCreated(final int returncode) {
-        final Status temp = getHttpReturnCodeOk(returncode);
-        return (temp.equals(Status.OK)) ? Status.CREATED : temp;
-    }
-
     /**
      * Method to replace the former ImportResource.
      * It takes a list element of a specific type,
@@ -224,7 +163,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
         final CompletableFuture<ServiceResponse> readResponse = connection.executeAsync(authorizationHeader, requestParameters);
         readResponse.thenAccept(sr -> {
             LOGGER.debug("Response obtained {}: {}", invocationNo, infoMsg);
-            final Response.ResponseBuilder responseBuilder = createResponseBuilder(sr.getReturnCode());
+            final Response.ResponseBuilder responseBuilder = RestUtils.createResponseBuilder(sr.getReturnCode());
             responseBuilder.type(acceptHeader == null || acceptHeader.length() == 0 ? MediaType.APPLICATION_JSON : acceptHeader);
             if (ApplicationException.isOk(sr.getReturnCode())) {
                 if (backendResponseClass.isAssignableFrom(sr.getClass())) {
@@ -276,7 +215,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
         final String acceptHeader = determineResponseType(httpHeaders);
         final CompletableFuture<ServiceResponse> readResponse = connection.executeAuthenticationAsync(requestParameters);
         readResponse.thenAccept(sr -> {
-            final Response.ResponseBuilder responseBuilder = createResponseBuilder(sr.getReturnCode());
+            final Response.ResponseBuilder responseBuilder = RestUtils.createResponseBuilder(sr.getReturnCode());
             responseBuilder.type(acceptHeader == null || acceptHeader.length() == 0 ? "application/json" : acceptHeader);
             if (ApplicationException.isOk(sr.getReturnCode())) {
                 if (AuthenticationResponse.class.isAssignableFrom(sr.getClass())) {

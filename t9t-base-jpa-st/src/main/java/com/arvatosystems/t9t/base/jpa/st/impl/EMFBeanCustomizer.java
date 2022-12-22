@@ -83,8 +83,8 @@ public class EMFBeanCustomizer implements IEMFBeanCustomizer {
         jpaProperties.put("hibernate.temp.use_jdbc_metadata_defaults", "false"); // requires the dialect to be set explicitly!
 
         // caching, see http://stackoverflow.com/questions/3663979/how-to-use-jpa2s-cacheable-instead-of-hibernates-cache for details
-        jpaProperties.put("hibernate.cache.region.factory_class", "org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory");
-        jpaProperties.put("hibernate.cache.provider_class", "org.hibernate.cache.SingletonEhCacheProvider");
+        jpaProperties.put("hibernate.cache.region.factory_class", "org.hibernate.cache.jcache.JCacheRegionFactory");
+        jpaProperties.put("hibernate.javax.cache.provider", "org.ehcache.jsr107.EhcacheCachingProvider");
         jpaProperties.put("hibernate.cache.use_second_level_cache", "true");
         jpaProperties.put("hibernate.cache.use_query_cache", "false");
 

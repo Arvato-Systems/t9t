@@ -239,6 +239,7 @@ package (com.arvatosystems) t9t.io {
         optional Integer                                inputProcessingParallel;    // defines the number of parallel threads to use for processing
         optional customizationQualifier                 inputProcessingSplitter properties qualifierFor="base.services.IInputQueuePartitioner"; // method to determine partition to use (if blank and inputProcessingParallel > 1: use round robin)
         optional Unicode(255)                           inputProcessingTarget;      // required for KAFKA or REMOTE: the topic or the remote path to use for processing
+        optional Boolean                                computeFileSize;
     }
 
     /** Configuration defaults for DataSinks, provided by the implementation. (Primarily intended to support the complex XML APIs). */
@@ -325,6 +326,18 @@ package (com.arvatosystems) t9t.io {
     /** Simplest possible response data type, containing a single line of text only. */
     class Text {
         required Unicode(1000)                          text;
+    }
+
+    /**
+     * This class is a special payload type for asynchronous messages. which redirects the data source.
+     * The purpose is to avoid writing huge messages into kafka topics or the database.
+     */
+    class DataReference {
+        required enum CommunicationTargetChannelType    referenceType;     // currently supported are FILE (or S3 via extension)
+        required Unicode(255)                           fileOrQueueName;   // file name or S3 bucket name
+        required boolean                                isCompressed;      // if set, content-encoding will be specified
+        required Ascii(80)                              contentType;       // the content type to send
+        optional Ascii(80)                              accept;            // the value for an optional Accept header
     }
 
     // Configuration for asynchronous messages

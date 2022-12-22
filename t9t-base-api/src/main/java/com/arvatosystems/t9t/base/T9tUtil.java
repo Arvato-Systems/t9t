@@ -25,6 +25,8 @@ import java.util.Set;
 import java.util.function.Function;
 
 import org.slf4j.Logger;
+
+import de.jpaw.enums.TokenizableEnum;
 /**
  * Utility class for common checks and operations.
  */
@@ -130,6 +132,16 @@ public final class T9tUtil {
     /** Transforms any block of whitespace into single spaces, and also removed any leading and trailing spaces. */
     public static String spaceNormalize(final String s) {
         return s == null ? null : s.replaceAll("\\s{2,}", " ").trim();
+    }
+
+    /** Returns the token of an enum or null. */
+    public static String getTokenOrNull(final TokenizableEnum e) {
+        return e == null ? null : e.getToken();
+    }
+
+    /** Tests if the enum matches a given instance or null. */
+    public static <E extends Enum<E>> boolean matchOrNull(final Enum<E> e, final Enum<E> valueToTest) {
+        return e == null || e == valueToTest;
     }
 
     /**

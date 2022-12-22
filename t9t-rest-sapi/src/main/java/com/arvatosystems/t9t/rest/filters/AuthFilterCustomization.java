@@ -16,6 +16,7 @@
 package com.arvatosystems.t9t.rest.filters;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
@@ -40,14 +41,73 @@ public class AuthFilterCustomization implements IAuthFilterCustomization {
     private static final Logger LOGGER = LoggerFactory.getLogger(T9tRestAuthenticationFilter.class);
     private static final int MAX_AUTH_ENTRIES = 200;
     private static final int MAX_SIZE_AUTH_HEADER = 4096;
+    private static final int DEFAULT_MAX_BAD_IP_ADDRESSES                       = 1000;
+    private static final int DEFAULT_MAX_BAD_IP_ADDRESSES_INTERVAL_IN_MINUTES   = 10;
+    private static final int DEFAULT_MAX_BAD_IP_ADDRESSES_LOCKOUT_IN_MINUTES    = 10;
+    private static final int DEFAULT_BAD_AUTHS_PER_IP_ADDRESS_LIMIT             = 50;
+
+    private static final int MAX_BAD_IP_ADDRESSES
+      = RestUtils.CONFIG_READER.getIntProperty("t9t.restapi.maxBadIp",              DEFAULT_MAX_BAD_IP_ADDRESSES);
+    private static final int MAX_BAD_IP_ADDRESSES_INTERVAL_IN_MINUTES
+      = RestUtils.CONFIG_READER.getIntProperty("t9t.restapi.badAuthsPerIpDuration", DEFAULT_MAX_BAD_IP_ADDRESSES_INTERVAL_IN_MINUTES);
+    private static final int MAX_BAD_IP_ADDRESSES_LOCKOUT_IN_MINUTES
+      = RestUtils.CONFIG_READER.getIntProperty("t9t.restapi.badIpLockoutDuration",  DEFAULT_MAX_BAD_IP_ADDRESSES_LOCKOUT_IN_MINUTES);
+    private static final int BAD_AUTHS_PER_IP_ADDRESS_LIMIT
+      = RestUtils.CONFIG_READER.getIntProperty("t9t.restapi.badAuthsPerIpLimit",    DEFAULT_BAD_AUTHS_PER_IP_ADDRESS_LIMIT);
 
     protected static final Pattern UUID_PATTERN = Pattern.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
     protected static final Pattern BASE64_PATTERN = Pattern.compile("^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$");
     protected final boolean enableSwagger = RestUtils.checkIfSet("t9t.restapi.swagger", Boolean.FALSE);
     protected final boolean enablePing = enableSwagger || RestUtils.checkIfSet("t9t.restapi.unauthedPing", Boolean.FALSE); // swagger implies ping
 
-    protected static final Cache<String, Boolean> GOOD_AUTHS = Caffeine.newBuilder().maximumSize(MAX_AUTH_ENTRIES).expireAfterWrite(5L, TimeUnit.MINUTES)
+    protected final Cache<String, Boolean> goodAuths = Caffeine.newBuilder().maximumSize(MAX_AUTH_ENTRIES).expireAfterWrite(5L, TimeUnit.MINUTES)
       .<String, Boolean>build();
+    protected final Cache<String, AtomicInteger> badAuthsPerIp;
+    protected final Cache<String, Boolean> blockedIps;
+
+    public AuthFilterCustomization() {
+        if (MAX_BAD_IP_ADDRESSES <= 0) {
+            badAuthsPerIp = null;
+            blockedIps = null;
+            LOGGER.info("Bad IP address check DISABLED because t9t.restapi.maxBadIp <= 0");
+        } else {
+            LOGGER.info("Bad IP address check configuration: {} max IP addresses, {} bad attempts per {} minutes disable an IP address for {} minutes",
+                MAX_BAD_IP_ADDRESSES, BAD_AUTHS_PER_IP_ADDRESS_LIMIT, MAX_BAD_IP_ADDRESSES_INTERVAL_IN_MINUTES, MAX_BAD_IP_ADDRESSES_LOCKOUT_IN_MINUTES);
+            badAuthsPerIp = Caffeine.newBuilder()
+                .maximumSize(MAX_BAD_IP_ADDRESSES)
+                .expireAfterWrite(MAX_BAD_IP_ADDRESSES_INTERVAL_IN_MINUTES, TimeUnit.MINUTES)
+                .<String, AtomicInteger>build();
+            blockedIps = Caffeine.newBuilder()
+                .maximumSize(MAX_BAD_IP_ADDRESSES)
+                .expireAfterWrite(MAX_BAD_IP_ADDRESSES_LOCKOUT_IN_MINUTES, TimeUnit.MINUTES)
+                .<String, Boolean>build();
+        }
+    }
+
+    /** Checks if the request came from a blocked IP address. */
+    @Override
+    public boolean isBlockedIpAddress(final String remoteIp) {
+        if (blockedIps == null || remoteIp == null) {
+            return false;
+        }
+        return blockedIps.getIfPresent(remoteIp) != null;
+    }
+
+    /** Records a failed authentication event. */
+    @Override
+    public void registerBadAuthFromIp(final String remoteIp) {
+        if (badAuthsPerIp == null || remoteIp == null) {
+            return;
+        }
+        final AtomicInteger counter = badAuthsPerIp.get(remoteIp, unused -> new AtomicInteger());
+        final int newValue = counter.incrementAndGet();
+        if (newValue >= BAD_AUTHS_PER_IP_ADDRESS_LIMIT) {
+            // block this IP and reset the counter
+            blockedIps.put(remoteIp, Boolean.TRUE);
+            badAuthsPerIp.invalidate(remoteIp);
+            LOGGER.warn("Too many bad authentication attempts from {} - temporarily blocking IP", remoteIp);
+        }
+    }
 
     /** Constructs a new Response object for the current request and throw a WebApplicationException of code 401. */
     protected void throwUnauthorized() {
@@ -89,7 +149,7 @@ public class AuthFilterCustomization implements IAuthFilterCustomization {
     @Override
     public void filterAuthenticated(final String authHeader, final ContainerRequestContext requestContext) {
         // first, check if we know this authentication - use a fast track in that case
-        if (authHeader.length() <= MAX_SIZE_AUTH_HEADER && GOOD_AUTHS.getIfPresent(authHeader) != null) {
+        if (authHeader.length() <= MAX_SIZE_AUTH_HEADER && goodAuths.getIfPresent(authHeader) != null) {
             // fast track - we have successfully authenticated this one before
             return;
         }

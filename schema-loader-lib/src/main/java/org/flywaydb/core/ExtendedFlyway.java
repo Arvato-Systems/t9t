@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 public class ExtendedFlyway extends Flyway {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ExtendedFlyway.class);
+    private final FlywayExecutor flywayExecutor;
 
     /**
      * Creates a new instance of Flyway with this configuration. In general the Flyway.configure() factory method should
@@ -38,6 +39,7 @@ public class ExtendedFlyway extends Flyway {
      */
     public ExtendedFlyway(Configuration configuration) {
         super(configuration);
+        this.flywayExecutor = new FlywayExecutor(configuration);
     }
 
     /**
@@ -65,8 +67,8 @@ public class ExtendedFlyway extends Flyway {
             return 0;
         }
 
-        return execute(
-                (migrationResolver, schemaHistory, database, schemas, callbackExecutor, statementInterceptor) -> {
+        return flywayExecutor.execute(
+                (migrationResolver, schemaHistory, database, defaultSchema, schemas, callbackExecutor, statementInterceptor) -> {
                     try {
                         for (MigrationInfo migration : migrationsToSkip) {
                             LOGGER.debug("Skip migration script {} ({}) of version {}", migration.getScript(), migration.getType(), migration.getVersion());

@@ -17,6 +17,16 @@ package com.arvatosystems.t9t.base;
 
 import com.arvatosystems.t9t.base.api.RequestParameters;
 
+/**
+ * Interface to use for writing messages to t9t server nodes.
+ */
 public interface IKafkaRequestTransmitter {
-    void write(RequestParameters request, String partitionKey);
+    /**
+     * Should normally return true, provided for callers which have an alternative way to transmit messages
+     * in case kafka could not be initialized properly.
+     */
+    boolean initialized();
+
+    /** Writes a message with a given partition key and record key. */
+    void write(RequestParameters request, String partitionKey, Object recordKey);
 }

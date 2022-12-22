@@ -48,8 +48,21 @@ public interface IT9tRestProcessor {
      * otherwise the second (which may be null, in which case a BAD_REQUEST will be returned).
      * Both request converters are executed in the I/O thread.
      **/
-    <T extends BonaPortable> void performAsyncBackendRequest(HttpHeaders httpHeaders, AsyncResponse resp, String infoMsg,
-        List<T> inputData, Function<T, RequestParameters> requestConverterSingle, Function<List<T>, RequestParameters> requestConverterBatch);
+    <T extends BonaPortable, R extends RequestParameters> void performAsyncBackendRequest(HttpHeaders httpHeaders, AsyncResponse resp, String infoMsg,
+        List<T> inputData, Function<T, R> requestConverterSingle, Function<List<T>, RequestParameters> requestConverterBatch);
+
+    /**
+     * Performs the request via kafka, if available.
+     **/
+    default <T extends BonaPortable, R extends RequestParameters> void performAsyncBackendRequestViaKafka(final HttpHeaders httpHeaders,
+        final AsyncResponse resp, final String infoMsg, final List<T> inputData, final Function<T, R> requestConverterSingle,
+        final Function<R, String> partitionKeyExtractor) {
+        performAsyncBackendRequest(httpHeaders, resp, infoMsg, inputData, requestConverterSingle, (Function<List<T>, RequestParameters>)null);
+    }
+
+    default boolean kafkaAvailable() {
+        return false;
+    }
 
     /** Could be static, but declared in the interface to allow overriding. */
     default GenericResult createResultFromServiceResponse(final ServiceResponse response) {

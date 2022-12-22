@@ -22,6 +22,7 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.annotations.IsLogicallyFinal;
 import com.arvatosystems.t9t.base.IKafkaRequestTransmitter;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.api.RequestParameters;
@@ -41,7 +42,8 @@ public class KafkaRequestTransmitter implements IKafkaRequestTransmitter {
     private static final String KAFKA_DEFAULT_TOPIC_KEY      = "t9t.kafka.request.topic";
     private static final String KAFKA_DEFAULT_PROPERTIES_KEY = "t9t.kafka.request.properties";
 
-    private final KafkaTopicWriter topicWriter;
+    @IsLogicallyFinal
+    private KafkaTopicWriter topicWriter = null;
 
     public KafkaRequestTransmitter() {
         final String kafkaTopic = CONFIG_READER.getProperty(KAFKA_DEFAULT_TOPIC_KEY, T9tConstants.DEFAULT_KAFKA_TOPIC_SINGLE_TENANT_REQUESTS);
@@ -49,46 +51,54 @@ public class KafkaRequestTransmitter implements IKafkaRequestTransmitter {
         if (kafkaBootstrapServers == null) {
             LOGGER.error("No configuration found for t9t.kafka.bootstrap.servers, refusing to initialize (set to /dev/null in order to discard messages)");
             // throw new T9tException(T9tException.MISSING_KAFKA_BOOTSTRAP);  // later, currently just warn
-            topicWriter = null;
         } else {
             if (kafkaBootstrapServers.equals("/dev/null")) {
                 // create a dummy config
-                topicWriter = null;
                 LOGGER.info("kafka request queue set to /dev/null - discarding messages");
             } else {
-                final Properties props = new Properties();
-                props.put(ProducerConfig.LINGER_MS_CONFIG, 100);
-                props.put(ProducerConfig.RETRIES_CONFIG, 2);
-                props.put(ProducerConfig.BATCH_SIZE_CONFIG, 8000);  // approx 5 orders
-                // props.put(ProducerConfig.CLIENT_ID_CONFIG, config.getDataSinkId());
+                try {
+                    final Properties props = new Properties();
+                    props.put(ProducerConfig.LINGER_MS_CONFIG, 100);
+                    props.put(ProducerConfig.RETRIES_CONFIG, 2);
+                    props.put(ProducerConfig.BATCH_SIZE_CONFIG, 8000);  // approx 5 orders
+                    // props.put(ProducerConfig.CLIENT_ID_CONFIG, config.getDataSinkId());
 
-                // read extra properties from environment or system variable, and parse it as arbitrary JSON
-                final String additionalProperties = CONFIG_READER.getProperty(KAFKA_DEFAULT_PROPERTIES_KEY, null);
-                if (additionalProperties != null) {
-                    try {
-                        final JsonParser p = new JsonParser(additionalProperties, true);
-                        final Map<String, Object> extraProps = p.parseObject();
-                        LOGGER.info("Found {} additional Producer configuration properties for kafka in config {}",
-                                extraProps.size(), KAFKA_DEFAULT_PROPERTIES_KEY);
-                        for (Map.Entry<String, Object> entry: extraProps.entrySet()) {
-                            props.put(entry.getKey(), entry.getValue());
+                    // read extra properties from environment or system variable, and parse it as arbitrary JSON
+                    final String additionalProperties = CONFIG_READER.getProperty(KAFKA_DEFAULT_PROPERTIES_KEY, null);
+                    if (additionalProperties != null) {
+                        try {
+                            final JsonParser p = new JsonParser(additionalProperties, true);
+                            final Map<String, Object> extraProps = p.parseObject();
+                            LOGGER.info("Found {} additional Producer configuration properties for kafka in config {}",
+                                    extraProps.size(), KAFKA_DEFAULT_PROPERTIES_KEY);
+                            for (Map.Entry<String, Object> entry: extraProps.entrySet()) {
+                                props.put(entry.getKey(), entry.getValue());
+                            }
+                        } catch (Exception e) {
+                            LOGGER.error("Could not parse extra properties {} (set to {}", KAFKA_DEFAULT_PROPERTIES_KEY, additionalProperties);
+                            LOGGER.error("Ignoring those:", e);
                         }
-                    } catch (Exception e) {
-                        LOGGER.error("Could not parse extra properties {} (set to {}", KAFKA_DEFAULT_PROPERTIES_KEY, additionalProperties);
-                        LOGGER.error("Ignoring those:", e);
                     }
+                    topicWriter = new KafkaTopicWriter(kafkaBootstrapServers, kafkaTopic, props);
+                } catch (Exception e) {
+                    LOGGER.error("FATAL: Could not connect to kafka bootstrap servers - messages will be discarded", e);
+                    // decide about "throw e", respectively "not catching" in order to have servers fail at startup when no kafka is available
                 }
-                topicWriter = new KafkaTopicWriter(kafkaBootstrapServers, kafkaTopic, props);
             }
         }
     }
 
     @Override
-    public void write(final RequestParameters request, final String partitionKey) {
+    public void write(final RequestParameters request, final String partitionKey, final Object recordKey) {
         if (topicWriter == null) {
             // redirect to /dev/null
             return;
         }
-        topicWriter.write(request, partitionKey.hashCode(), partitionKey);
+        topicWriter.write(request, partitionKey.hashCode(), recordKey == null ? partitionKey : recordKey.toString());
+    }
+
+    @Override
+    public boolean initialized() {
+        return topicWriter != null;
     }
 }

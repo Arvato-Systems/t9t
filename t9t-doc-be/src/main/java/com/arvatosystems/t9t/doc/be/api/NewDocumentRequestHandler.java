@@ -311,6 +311,7 @@ public class NewDocumentRequestHandler extends AbstractRequestHandler<NewDocumen
             }
         }
 
+        final List<Long> emailRefs = new ArrayList<>(4);
         if (containsEmailRecipient) {
             // optionally generate alternate email body (usually as plain text)
             final MediaData alternateBody = docConfigDto.getAlternateTemplateId() != null
@@ -326,7 +327,9 @@ public class NewDocumentRequestHandler extends AbstractRequestHandler<NewDocumen
             for (final Recipient rcpt : request.getRecipientList()) {
                 if (rcpt instanceof RecipientEmail) {
                     final RecipientEmail rcpe = (RecipientEmail) rcpt;
-                    docEmailDistributor.transmit((RecipientEmail)mergeEmailSettings(rcpe, docEmailReceiverDto), toFormatConverter, target.getMediaType(),
+                    emailRefs.add(docEmailDistributor.transmit((RecipientEmail)mergeEmailSettings(rcpe, docEmailReceiverDto),
+                        toFormatConverter,
+                        target.getMediaType(),
                         request.getDocumentId(), request.getDocumentSelector(),
                         emailSubject,
                         emailBody,
@@ -334,17 +337,16 @@ public class NewDocumentRequestHandler extends AbstractRequestHandler<NewDocumen
                         alternateBody,
                         attachmentList,
                         docEmailReceiverDto.getStoreEmail(), docEmailReceiverDto.getSendSpooled()
-                    );
+                    ));
                 }
             }
         }
 
         final NewDocumentResponse response = new NewDocumentResponse();
         response.setGeneralizedAttachmentSinkRefs(generalAttachmentSinkRefs);
-        if (sinkRefs.size() > 0)
-            response.setArchiveSinkRefs(sinkRefs);
-        if (datas.size() > 0)
-            response.setData(datas);
+        response.setArchiveSinkRefs(sinkRefs);
+        response.setData(datas);
+        response.setEmailRefs(emailRefs);
         return response;
     }
 

@@ -15,8 +15,15 @@
  */
 package com.arvatosystems.t9t.doc.be.api;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.RequestContext;
@@ -36,19 +43,12 @@ import com.arvatosystems.t9t.doc.services.IDocPersistenceAccess;
 import com.arvatosystems.t9t.email.api.EmailMessage;
 import com.arvatosystems.t9t.email.api.RecipientEmail;
 import com.arvatosystems.t9t.email.api.SendEmailRequest;
+import com.arvatosystems.t9t.email.api.SendEmailResponse;
 
 import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import de.jpaw.bonaparte.pojos.api.media.MediaXType;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ApplicationException;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class SendEditedEmailRequestHandler extends AbstractRequestHandler<SendEditedEmailRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(SendEditedEmailRequestHandler.class);
@@ -118,10 +118,11 @@ public class SendEditedEmailRequestHandler extends AbstractRequestHandler<SendEd
         final DocArchiveResult archiveResult = docArchiveDistributor.transmit(recipientArchive, toFormatConverter, request.getMailMediaData().getMediaType(),
                 request.getDocumentId(), request.getDocumentSelector());
 
-        final ServiceResponse res = executor.executeSynchronousAndCheckResult(ctx, sendEmailRequest, ServiceResponse.class);
+        final SendEmailResponse res = executor.executeSynchronousAndCheckResult(ctx, sendEmailRequest, SendEmailResponse.class);
         final SendEditedEmailResponse rs = new SendEditedEmailResponse();
         rs.setReturnCode(res.getReturnCode());
         rs.setArchiveSinkRefs(archiveResult.sinkRef);
+        rs.setEmailRef(rs.getEmailRef());
 
         if (res.getReturnCode() != ApplicationException.SUCCESS) {
             rs.setErrorDetails(res.getErrorDetails());

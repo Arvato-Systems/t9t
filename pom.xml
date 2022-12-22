@@ -21,7 +21,7 @@
 
     <groupId>com.arvato-systems.t9t</groupId>
     <artifactId>t9t-build</artifactId>
-    <version>6.2-SNAPSHOT</version>
+    <version>6.3-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>Global root POM for the t9t framework</description>
 
@@ -38,7 +38,7 @@
         <min-maven.version>3.8.1</min-maven.version>  <!-- up to 3.8.1 ASAP -->
 
         <!-- to be used by dependent projects (same as project.version, but must be provided explicitly so that imports work) -->
-        <t9t.version>6.2-SNAPSHOT</t9t.version>
+        <t9t.version>6.3-SNAPSHOT</t9t.version>
 
         <!-- Build specific properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -60,7 +60,7 @@
         <maven-project.version>2.2.1</maven-project.version>
         <build-helper-maven-plugin.version>3.3.0</build-helper-maven-plugin.version>
         <maven-surefire-plugin.version>3.0.0-M7</maven-surefire-plugin.version>
-        <maven-plugin-plugin.version>3.6.4</maven-plugin-plugin.version>
+        <maven-plugin-plugin.version>3.7.0</maven-plugin-plugin.version>
         <maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
         <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
         <maven-shade-plugin.version>3.2.4</maven-shade-plugin.version>
@@ -70,7 +70,7 @@
         <maven-enforcer-plugin.version>3.1.0</maven-enforcer-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <owasp-maven-plugin.version>7.2.1</owasp-maven-plugin.version>
-        <spring-boot-maven-plugin.version>2.7.2</spring-boot-maven-plugin.version>
+        <spring-boot-maven-plugin.version>3.0.0</spring-boot-maven-plugin.version>
         <tycho.version>2.7.3</tycho.version>
         <git-commit-id-plugin.version>2.1.7</git-commit-id-plugin.version>
         <jaxws-maven-plugin.version>4.0.0</jaxws-maven-plugin.version>
@@ -78,9 +78,9 @@
         <bundle.plugin.version>5.1.2</bundle.plugin.version> <!-- felix, for pricing RCP -->
         <exec.plugin.version>3.0.0</exec.plugin.version>
         <jetty-maven-plugin.version>11.0.12</jetty-maven-plugin.version>
-        <maven-antrun-plugin.version>3.0.0</maven-antrun-plugin.version>
+        <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
         <cxf-codegen-plugin.version>3.5.4</cxf-codegen-plugin.version>
-        <cxf-wadl2java-plugin.version>3.5.3</cxf-wadl2java-plugin.version>
+        <cxf-wadl2java-plugin.version>3.5.5</cxf-wadl2java-plugin.version>
         <cxf-xjc-plugin.version>3.3.1</cxf-xjc-plugin.version>   <!-- older than the other CXF plugins, but no newer release available -->
         <echo-maven-plugin.version>1.0.0</echo-maven-plugin.version>
         <jaxb2-maven-plugin.version>3.1.0</jaxb2-maven-plugin.version>
@@ -92,19 +92,19 @@
         <maven-javadoc-plugin.version>3.4.1</maven-javadoc-plugin.version>
 
         <!-- Versions of Xtext & Xtend plugins -->
-        <xtend-maven-plugin.version>2.27.0</xtend-maven-plugin.version>
-        <xtext-maven-plugin.version>2.27.0</xtext-maven-plugin.version>
+        <xtend-maven-plugin.version>2.29.0</xtend-maven-plugin.version>
+        <xtext-maven-plugin.version>2.29.0</xtext-maven-plugin.version>
 
-        <bonaparte-plugin.version>5.1.1</bonaparte-plugin.version>
+        <bonaparte-plugin.version>5.1.4-SNAPSHOT</bonaparte-plugin.version>
         <license-plugin.version>3.0</license-plugin.version>
         <replacer-plugin.version>1.4.1</replacer-plugin.version>   <!-- required for workaround for Apache CXF 3.5.x -->
 
         <checkstyle.version>10.1</checkstyle.version>
         <spotbugs.version>4.7.2.0</spotbugs.version>
-        <logback.version>1.4.3</logback.version>
+        <logback.version>1.4.5</logback.version>
 
         <!-- Swagger -->
-        <swagger-maven-plugin.version>2.1.13</swagger-maven-plugin.version>
+        <swagger-maven-plugin.version>2.2.3</swagger-maven-plugin.version>
         <swagger-ui-webjars.version>3.52.5</swagger-ui-webjars.version>   <!-- 4.x is available as well! -->
 
         <!-- ASCIIDoctor -->
@@ -126,9 +126,9 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>${maven-compiler-plugin.version}</version>
                     <configuration>
-                        <source>11</source>
-                        <target>11</target>
-                        <release>11</release>
+                        <source>17</source>
+                        <target>17</target>
+                        <release>17</release>
                         <encoding>${project.build.sourceEncoding}</encoding>
                     </configuration>
                 </plugin>
@@ -204,9 +204,9 @@
                                 <goal>generate</goal>
                             </goals>
                             <configuration>
-                                <javaSourceVersion>11</javaSourceVersion>  <!-- could set to 11 now -->
-                                <compilerSourceLevel>11</compilerSourceLevel>
-                                <compilerTargetLevel>11</compilerTargetLevel>
+                                <javaSourceVersion>17</javaSourceVersion>  <!-- could set to 11 now -->
+                                <compilerSourceLevel>17</compilerSourceLevel>
+                                <compilerTargetLevel>17</compilerTargetLevel>
                                 <addOutputDirectoriesToCompileSourceRoots>false</addOutputDirectoriesToCompileSourceRoots>
                                 <sourceRoots>
                                     <sourceRoot>${project.basedir}/src/main/bon</sourceRoot>
@@ -399,7 +399,7 @@
                         <dependency>
                             <groupId>org.junit.jupiter</groupId>
                             <artifactId>junit-jupiter-engine</artifactId>
-                            <version>5.8.2</version>
+                            <version>5.9.1</version>
                         </dependency>
                     </dependencies>
                 </plugin>
@@ -941,7 +941,7 @@
                 <module>t9t-base-jpa</module>
                 <module>t9t-base-jpa-rl</module>
                 <module>t9t-base-jpa-jta</module>
-                <!-- <module>t9t-base-jpa-st</module> have to exclude, spring does not yet support jakarta -->
+                <module>t9t-base-jpa-st</module>
                 <module>t9t-aws-refgenerator</module>
 
                 <module>t9t-activeannotations-jpa</module>
@@ -1050,7 +1050,7 @@
                 <!-- BPMN2 integration projects -->
                 <module>t9t-bpmn2-api</module>
                 <module>t9t-bpmn2-sapi</module>
-                <!-- <module>t9t-bpmn2-camunda-be</module>  have to exclude, spring does not yet support jakarta -->
+                <module>t9t-bpmn2-camunda-be</module>
                 <module>t9t-bpmn2-jpa</module>
                 <module>t9t-bpmn2-mock</module>
 
@@ -1082,7 +1082,7 @@
 
                 <!-- <module>t9t-server-build-vertx-eclipselink</module> not used right now, skip in build to save time -->
                 <module>t9t-server-build-vertx-hibernate</module>
-                <!-- <module>t9t-server-build-vertx-hibernate-st</module> have to exclude because spring does not yet support jakarta -->
+                <module>t9t-server-build-vertx-hibernate-st</module>
                 <module>t9t-tests-auth</module>
                 <module>t9t-tests-misc</module>
                 <module>t9t-tests-doc</module>
@@ -1182,7 +1182,7 @@
                 <module>t9t-base-jpa</module>
                 <module>t9t-base-jpa-rl</module>
                 <module>t9t-base-jpa-jta</module>
-                <!-- <module>t9t-base-jpa-st</module> have to exclude, spring does not yet support jakarta -->
+                <module>t9t-base-jpa-st</module>
                 <module>t9t-aws-refgenerator</module>
 
                 <module>t9t-activeannotations-jpa</module>
@@ -1288,7 +1288,7 @@
 
                 <module>t9t-bpmn2-api</module>
                 <module>t9t-bpmn2-sapi</module>
-                <!-- <module>t9t-bpmn2-camunda-be</module> have to exclude, spring does not yet support jakarta -->
+                <!-- module>t9t-bpmn2-camunda-be</module> need to fix style issues -->
                 <module>t9t-bpmn2-jpa</module>
                 <module>t9t-bpmn2-mock</module>
 

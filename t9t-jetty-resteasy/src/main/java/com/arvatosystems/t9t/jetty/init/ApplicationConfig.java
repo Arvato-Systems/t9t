@@ -27,10 +27,12 @@ import com.arvatosystems.t9t.jdp.Init;
 import com.arvatosystems.t9t.jetty.ISwaggerInit;
 import com.arvatosystems.t9t.jetty.exceptions.GeneralExceptionHandler;
 import com.arvatosystems.t9t.jetty.rest.endpoints.StaticResourcesResource;
-import com.arvatosystems.t9t.rest.converters.JaxrsParamConverterProvider;
+import com.arvatosystems.t9t.rest.converters.JakartarsParamConverterProvider;
+import com.arvatosystems.t9t.rest.filters.CustomLoggingFilter;
 import com.arvatosystems.t9t.rest.filters.T9tRestAuthenticationFilter;
 import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
 import com.arvatosystems.t9t.rest.utils.RestUtils;
+import com.arvatosystems.t9t.rest.utils.JacksonObjectMapperProvider;
 import com.arvatosystems.t9t.rest.xml.XmlMediaTypeDecoder;
 import com.arvatosystems.t9t.rest.xml.XmlMediaTypeEncoder;
 import com.google.common.base.Splitter;
@@ -94,8 +96,8 @@ public class ApplicationConfig extends Application {
         // determine all ExceptionMapper
         allClasses = new HashSet<>(12);
         allClasses.add(GeneralExceptionHandler.class);
-        allClasses.add(StandaloneObjectMapper.class);
-        allClasses.add(JaxrsParamConverterProvider.class);
+        allClasses.add(JacksonObjectMapperProvider.class);
+        allClasses.add(JakartarsParamConverterProvider.class);
         allClasses.add(T9tRestAuthenticationFilter.class);
 
         // Expose openapi.json via GET request

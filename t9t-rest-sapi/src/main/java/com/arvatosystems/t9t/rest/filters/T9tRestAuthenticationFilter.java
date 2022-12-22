@@ -17,13 +17,17 @@ package com.arvatosystems.t9t.rest.filters;
 
 import java.io.IOException;
 
+import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.rest.services.IAuthFilterCustomization;
 
 import de.jpaw.dp.Jdp;
+import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.container.PreMatching;
 import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.ext.Provider;
 
 @Provider
@@ -34,6 +38,10 @@ public class T9tRestAuthenticationFilter implements ContainerRequestFilter {
 
     @Override
     public void filter(final ContainerRequestContext requestContext) throws IOException {
+        final String remoteIpHeader = requestContext.getHeaderString(T9tConstants.HTTP_HEADER_FORWARDED_FOR);
+        if (authFilterCustomization.isBlockedIpAddress(remoteIpHeader)) {
+            throw new WebApplicationException(Response.status(Status.FORBIDDEN).build());
+        }
         final String authHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
         if (authHeader == null) {
             authFilterCustomization.filterUnauthenticated(requestContext);

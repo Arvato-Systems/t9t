@@ -15,21 +15,6 @@
  */
 package com.arvatosystems.t9t.doc.be.impl;
 
-import com.arvatosystems.t9t.base.T9tConstants;
-import com.arvatosystems.t9t.base.services.IExecutor;
-import com.arvatosystems.t9t.base.services.RequestContext;
-import com.arvatosystems.t9t.doc.api.DocumentSelector;
-import com.arvatosystems.t9t.doc.services.IDocEmailDistributor;
-import com.arvatosystems.t9t.email.api.EmailMessage;
-import com.arvatosystems.t9t.email.api.RecipientEmail;
-import com.arvatosystems.t9t.email.api.SendEmailRequest;
-
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaXType;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Provider;
-import de.jpaw.dp.Singleton;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -38,16 +23,29 @@ import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.services.IExecutor;
+import com.arvatosystems.t9t.doc.api.DocumentSelector;
+import com.arvatosystems.t9t.doc.services.IDocEmailDistributor;
+import com.arvatosystems.t9t.email.api.EmailMessage;
+import com.arvatosystems.t9t.email.api.RecipientEmail;
+import com.arvatosystems.t9t.email.api.SendEmailRequest;
+import com.arvatosystems.t9t.email.api.SendEmailResponse;
+
+import de.jpaw.bonaparte.pojos.api.media.MediaData;
+import de.jpaw.bonaparte.pojos.api.media.MediaXType;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
 @Singleton
 public class DocEmailDistributor implements IDocEmailDistributor {
     private static final Logger LOGGER = LoggerFactory.getLogger(DocEmailDistributor.class);
 
     private final IExecutor executor = Jdp.getRequired(IExecutor.class);
-    private final Provider<RequestContext> ctxProvider = Jdp.getProvider(RequestContext.class);
 
     // documentTemplateId - the unmapped template ID
     @Override
-    public void transmit(final RecipientEmail rcpt, final Function<MediaXType, MediaData> toFormatConverter, final MediaXType primaryFormat,
+    public Long transmit(final RecipientEmail rcpt, final Function<MediaXType, MediaData> toFormatConverter, final MediaXType primaryFormat,
             final String documentTemplateId, final DocumentSelector documentSelector, final MediaData emailSubject, final MediaData emailBody,
             final Map<String, MediaData> cids, final MediaData alternateBody, final List<MediaData> attachments, final boolean storeEmail,
             final boolean sendSpooled) {
@@ -84,8 +82,10 @@ public class DocEmailDistributor implements IDocEmailDistributor {
         final List<String> to = rcpt.getTo();
         if (to == null || to.isEmpty()) {
             LOGGER.info("Email has no TO: recipients, skipping it...");
+            return null;
         } else {
-            executor.executeSynchronous(ctxProvider.get(), rq);
+            final SendEmailResponse resp = executor.executeSynchronousAndCheckResult(rq, SendEmailResponse.class);
+            return resp.getEmailRef();
         }
     }
 

@@ -21,7 +21,7 @@ import java.util.List;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
-import org.zkoss.zhtml.Messagebox;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zk.ui.WrongValueException;
 
 import com.arvatosystems.t9t.auth.request.GetPasswordChangeRequirementsResponse;

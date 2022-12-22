@@ -19,6 +19,13 @@ import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.core.MediaType;
 
 public interface IAuthFilterCustomization {
+
+    /** Checks if the request came from a blocked IP address. */
+    boolean isBlockedIpAddress(String remoteIp);
+
+    /** Records a failed authentication event. */
+    void registerBadAuthFromIp(String remoteIp);
+
     /** Returns setting if authentication via JWT is allowed (which should enable login). */
     boolean allowAuthJwt();
 

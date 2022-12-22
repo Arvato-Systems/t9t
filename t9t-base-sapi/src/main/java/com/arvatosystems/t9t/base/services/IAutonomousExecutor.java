@@ -30,6 +30,9 @@ public interface IAutonomousExecutor {
     /** Launch a request in an autonomous transaction. */
     ServiceResponse execute(RequestContext ctx, RequestParameters rp, boolean skipPermissionCheck);
 
+    /** Launch a request in an autonomous transaction and expect a specific response type. */
+    <T extends ServiceResponse> T executeAndCheckResult(RequestContext ctx, RequestParameters rp, Class<T> responseClass);
+
     /** Obtain the executor pool (only to be used for metering). */
     ExecutorService getExecutorServiceForMetering();
 }

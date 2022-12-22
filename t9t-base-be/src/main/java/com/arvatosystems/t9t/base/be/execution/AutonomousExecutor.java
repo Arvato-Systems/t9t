@@ -15,6 +15,17 @@
  */
 package com.arvatosystems.t9t.base.be.execution;
 
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceRequestHeader;
@@ -28,17 +39,7 @@ import com.arvatosystems.t9t.server.services.IRequestProcessor;
 
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
-
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
+import de.jpaw.util.ApplicationException;
 
 @Singleton
 public class AutonomousExecutor implements IAutonomousExecutor {
@@ -89,5 +90,22 @@ public class AutonomousExecutor implements IAutonomousExecutor {
     @Override
     public ExecutorService getExecutorServiceForMetering() {
         return executorService;
+    }
+
+    @Override
+    public <T extends ServiceResponse> T executeAndCheckResult(final RequestContext ctx, final RequestParameters rp, final Class<T> responseClass) {
+        final ServiceResponse response = execute(ctx, rp, true);
+        if (!ApplicationException.isOk(response.getReturnCode())) {
+            LOGGER.error("Error during request handler execution for {} (returnCode={}, errorMsg={}, errorDetails={})", rp.ret$PQON(),
+                    response.getReturnCode(), response.getErrorMessage(), response.getErrorDetails());
+            throw new T9tException(response.getReturnCode(), response.getErrorDetails());
+        }
+        // the response must be a subclass of the expected one
+        if (!responseClass.isAssignableFrom(response.getClass())) {
+            LOGGER.error("Error during request handler execution for {}, expected response class {} but got {}", rp.ret$PQON(),
+                    responseClass.getSimpleName(), response.ret$PQON());
+            throw new T9tException(T9tException.INCORRECT_RESPONSE_CLASS, responseClass.getSimpleName());
+        }
+        return responseClass.cast(response); // all OK
     }
 }

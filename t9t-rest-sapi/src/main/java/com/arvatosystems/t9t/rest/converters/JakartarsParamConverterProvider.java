@@ -32,8 +32,8 @@ import org.slf4j.LoggerFactory;
 import de.jpaw.fixedpoint.types.MicroUnits;
 
 @Provider
-public class JaxrsParamConverterProvider implements ParamConverterProvider {
-    private static final Logger LOGGER = LoggerFactory.getLogger(JaxrsParamConverterProvider.class);
+public class JakartarsParamConverterProvider implements ParamConverterProvider {
+    private static final Logger LOGGER = LoggerFactory.getLogger(JakartarsParamConverterProvider.class);
     // ensure we instantiate the converters only once
     private final ParamConverter<LocalDate>     localDateConverter     = new LocalDateConverter();
     private final ParamConverter<LocalDateTime> localDateTimeConverter = new LocalDateTimeConverter();

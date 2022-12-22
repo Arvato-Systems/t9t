@@ -20,6 +20,7 @@ import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.output.ExportStatusEnum;
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.base.services.IExecutor;
+import com.arvatosystems.t9t.base.services.IFileUtil;
 import com.arvatosystems.t9t.base.services.IInputQueuePartitioner;
 import com.arvatosystems.t9t.base.services.IOutputSession;
 import com.arvatosystems.t9t.base.services.RequestContext;
@@ -60,6 +61,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +79,7 @@ public class OutputSession implements IOutputSession {
     protected final IOutPersistenceAccess dpl              = Jdp.getRequired(IOutPersistenceAccess.class);
     protected final IExecutor             messaging        = Jdp.getRequired(IExecutor.class);
     protected final IAsyncTransmitter     asyncTransmitter = Jdp.getRequired(IAsyncTransmitter.class);
+    protected final IFileUtil             fileUtil         = Jdp.getRequired(IFileUtil.class);
 
     protected enum State {
         OPENED, CLOSED, LAZY;
@@ -306,6 +311,11 @@ public class OutputSession implements IOutputSession {
             // close the destination
             try {
                 outputResource.close();
+                if (CommunicationTargetChannelType.FILE == sinkCfg.getCommTargetChannelType() && Boolean.TRUE.equals(sinkCfg.getComputeFileSize())) {
+                    final String absolutePath = fileUtil.getAbsolutePathForTenant(ctx.tenantId, thisSink.getFileOrQueueName());
+                    final Path path = Paths.get(absolutePath);
+                    thisSink.setFileSize(Files.size(path));
+                }
                 thisSink.setCamelTransferStatus(ExportStatusEnum.RESPONSE_OK);
             } catch (Exception e) {
                 thisSink.setCamelTransferStatus(ExportStatusEnum.RESPONSE_ERROR);

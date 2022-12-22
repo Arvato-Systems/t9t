@@ -200,7 +200,7 @@ public class Executor implements IExecutor {
     public <T extends ServiceResponse> T executeSynchronousAndCheckResult(final RequestContext ctx, final RequestParameters params,
             final Class<T> requiredType) {
         final ServiceResponse response = executeSynchronous(ctx, params);
-        if ((response.getReturnCode() > T9tConstants.MAX_OK_RETURN_CODE)) {
+        if (!ApplicationException.isOk(response.getReturnCode())) {
             LOGGER.error("Error during request handler execution for {} (returnCode={}, errorMsg={}, errorDetails={})", params.ret$PQON(),
                     response.getReturnCode(), response.getErrorMessage(), response.getErrorDetails());
             throw new T9tException(response.getReturnCode(), response.getErrorDetails());

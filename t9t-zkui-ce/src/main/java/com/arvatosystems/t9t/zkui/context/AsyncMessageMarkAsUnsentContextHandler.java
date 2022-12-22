@@ -27,6 +27,7 @@ import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 
+// the "mark as unsent actiely performs a resend / requeue
 @Singleton
 @Named("asyncMessage.ctx.markAsUnsent")
 public class AsyncMessageMarkAsUnsentContextHandler implements IGridContextMenu<AsyncMessageDTO> {
@@ -34,7 +35,7 @@ public class AsyncMessageMarkAsUnsentContextHandler implements IGridContextMenu<
 
     @Override
     public boolean isEnabled(DataWithTracking<AsyncMessageDTO, TrackingBase> dwt) {
-        return dwt.getData().getStatus() == ExportStatusEnum.RESPONSE_OK;
+        return true; // dwt.getData().getStatus() == ExportStatusEnum.RESPONSE_OK; // for stuck messages, resend from any state should be possible
     }
 
     @Override

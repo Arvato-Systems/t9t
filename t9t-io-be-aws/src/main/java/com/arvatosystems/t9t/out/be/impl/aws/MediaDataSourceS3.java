@@ -28,6 +28,7 @@ import de.jpaw.dp.Singleton;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 
 // file download handler implementation for S3 buckets
 @Singleton
@@ -49,8 +50,8 @@ public class MediaDataSourceS3 implements IMediaDataSource {
         final String bucket = targetName.substring(0, ind).trim();
         final String path = targetName.substring(ind + 1).trim();
 
-        final GetObjectRequest getObjectRequest = GetObjectRequest.builder().bucket(bucket).key(bucket).build();
-        final ResponseInputStream o = s3Client.getObject(getObjectRequest);
+        final GetObjectRequest getObjectRequest = GetObjectRequest.builder().bucket(bucket).key(path).build();
+        final ResponseInputStream<GetObjectResponse> o = s3Client.getObject(getObjectRequest);
         return o;
     }
 }

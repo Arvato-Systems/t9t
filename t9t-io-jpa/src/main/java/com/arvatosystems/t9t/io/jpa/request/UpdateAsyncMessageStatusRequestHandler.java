@@ -36,7 +36,7 @@ public class UpdateAsyncMessageStatusRequestHandler extends AbstractRequestHandl
         final AsyncMessageEntity message = messageResolver.getEntityData(new AsyncMessageRef(rq.getAsyncMessageRef()), false);
         final boolean shouldResend = rq.getNewStatus() == ExportStatusEnum.READY_TO_EXPORT;
         message.setStatus(rq.getNewStatus());
-        message.setLastAttempt(ctx.executionStart);
+        // message.setLastAttempt(ctx.executionStart);  // do not update lastAttempt before it actually has been attempted
         message.setHttpResponseCode(rq.getNewStatus() == ExportStatusEnum.RESPONSE_ERROR ? Integer.valueOf(500) : Integer.valueOf(shouldResend ? 100 : 202));
         message.setReturnCode(null);
         message.setReference(null);

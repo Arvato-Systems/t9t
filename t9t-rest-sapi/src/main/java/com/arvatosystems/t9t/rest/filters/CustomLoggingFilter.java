@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.jetty.init;
+package com.arvatosystems.t9t.rest.filters;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -65,8 +65,8 @@ public class CustomLoggingFilter implements ContainerRequestFilter, ContainerRes
                     LOGGER.debug("   Path Parms  : {}", toString(requestContext.getUriInfo().getPathParameters()));
                 }
                 LOGGER.debug("   Header      : {}", requestContext.getHeaders());
-                final String entityStream = readEntityStream(requestContext);
                 LOGGER.debug("   Content Type: {}", requestContext.getMediaType());
+                final String entityStream = readEntityStream(requestContext);
                 LOGGER.debug("   Body        : {}", (entityStream.isEmpty() ? "#EMPTY#" : entityStream));
             }
         }

@@ -28,9 +28,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.vertx.IRestModule;
-import com.arvatosystems.t9t.rest.converters.JaxrsParamConverterProvider;
+import com.arvatosystems.t9t.rest.converters.JakartarsParamConverterProvider;
+import com.arvatosystems.t9t.rest.filters.CustomLoggingFilter;
 import com.arvatosystems.t9t.rest.filters.T9tRestAuthenticationFilter;
 import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
+import com.arvatosystems.t9t.rest.utils.JacksonObjectMapperProvider;
+import com.arvatosystems.t9t.rest.utils.RestUtils;
 import com.arvatosystems.t9t.rest.xml.XmlMediaTypeDecoder;
 import com.arvatosystems.t9t.rest.xml.XmlMediaTypeEncoder;
 
@@ -67,12 +70,17 @@ public class T9tVertxRestModule implements IRestModule {
         final VertxResteasyDeployment deployment = new VertxResteasyDeployment();
 
         final List<Object> providers = new ArrayList<>();
-        providers.add(new JaxrsParamConverterProvider());  // Java 8 date/time support for GET parameters
-        providers.add(new JacksonObjectMapper());  // JSON
+        providers.add(new JakartarsParamConverterProvider());  // Java 8 date/time support for GET parameters
+        providers.add(new JacksonObjectMapperProvider());  // JSON
         providers.add(new XmlMediaTypeDecoder());  // XML decoder
         providers.add(new XmlMediaTypeEncoder());  // XML encoder
         providers.add(new GeneralExceptionHandler());  // exception / error handler
         providers.add(new T9tRestAuthenticationFilter());  // authentication filter
+        final boolean servletLogging = RestUtils.checkIfSet("t9t.restapi.servletLoggingFilter", Boolean.FALSE);
+        if (servletLogging) {
+            // add a custom logging filter to protocol all requests and responses
+            providers.add(new CustomLoggingFilter());
+        }
         deployment.setProviders(providers);
 
         deployment.start();

@@ -91,6 +91,7 @@ package (com.arvatosystems) t9t.doc.api {
         required f42Ref List<>                      archiveSinkRefs;    // for every recipient of type Archive, the sinkRef is returned here, or null if no archive destinations have been found
         required (MediaData...) List<>              data;               // directly returned data
         required f42Ref Map<String>                 generalizedAttachmentSinkRefs;  // the refs of attachments which have been stored, indexed by id
+        required f42Ref List<>                      emailRefs;          // the references to emails sent
     }
 
     /** Send a document to a list of users. */
@@ -100,19 +101,20 @@ package (com.arvatosystems) t9t.doc.api {
         optional (DocumentSelector...)              documentSelector;   // specification of preferred language, country etc
         required Element                            data;               // document data, which can be a Map, a List or a BonaPortable
         required (MediaData...) List<>              attachments;        // Additional documents, to be added as attachments (e.g. to emails)
-        optional timeZoneId                         timeZone             properties dropdown="timeZoneId";  // a time zone identifier such as "Europe/Berlin"
+        optional timeZoneId                         timeZone            properties dropdown="timeZoneId";  // a time zone identifier such as "Europe/Berlin"
     }
 
      /** To used from application modules: for example Customer, SalesOrder, DeliveryOrder, Return in OMS. */
     class SendEditedEmailRequest extends RequestParameters return SendEditedEmailResponse {
         required (Ref...)                            ref;
-        required documentId                         documentId    properties dropdown="docConfigId";
+        required documentId                         documentId          properties dropdown="docConfigId";
         required (DocumentSelector...)              documentSelector;
         required emailAddress                       to;
         required (MediaData)                        mailMediaData;
     }
 
     class SendEditedEmailResponse extends ServiceResponse {
-        required f42Ref                             archiveSinkRefs;
+        required f42Ref                             archiveSinkRefs;    // the sink ref of an attachment
+        optional f42Ref                             emailRef;           // the reference of the stored email entity
     }
 }

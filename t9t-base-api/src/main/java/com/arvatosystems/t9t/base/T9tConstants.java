@@ -15,7 +15,6 @@
  */
 package com.arvatosystems.t9t.base;
 
-
 /**
  * Global constants to used all over the application.
  */
@@ -144,9 +143,19 @@ public final class T9tConstants {
      */
     public static final String DOC_MEDIA_ATTACHMENT_NAME = "attachmentName";
 
-    public static final String HTTP_AUTH_PREFIX_JWT     = "Bearer ";                // prefix of the Authorization header to transmit a JWT
-    public static final String HTTP_AUTH_PREFIX_API_KEY = "API-Key ";               // prefix of the Authorization header to transmit an API key
-    public static final String HTTP_AUTH_PREFIX_USER_PW = "Basic ";                 // prefix of the Authorization header to transmit basic authentication
+    public static final String HTTP_HEADER_FORWARDED_FOR    = "X-Forwarded-For";    // The header used to obtain the client's IP behind a reverse proxy
+    public static final String HTTP_HEADER_IDEMPOTENCY_KEY  = "Idempotency-Key";    // The header used to provide a unique request ID
+    public static final String HTTP_HEADER_CONTENT_TYPE     = "Content-Type";       // Just for code which does not have a jakarta-rs API dependency
+    public static final String HTTP_HEADER_ACCEPT           = "Accept";             // Just for code which does not have a jakarta-rs API dependency
+    public static final String HTTP_HEADER_CHARSET          = "Charset";            // Just for code which does not have a jakarta-rs API dependency
+    public static final String HTTP_HEADER_ACCEPT_CHARSET   = "Accept-Charset";     // Just for code which does not have a jakarta-rs API dependency
+    public static final String HTTP_HEADER_CONTENT_ENCODING = "Content-Encoding";   // Header needed to specify compressed data
+    public static final String HTTP_ENCODING_GZIPPED        = "gzip";               // The encoding used for compression
+    public static final String HTTP_CHARSET_UTF8            = "utf-8";              // The default charset we prefer
+
+    public static final String HTTP_AUTH_PREFIX_JWT         = "Bearer ";            // prefix of the Authorization header to transmit a JWT
+    public static final String HTTP_AUTH_PREFIX_API_KEY     = "API-Key ";           // prefix of the Authorization header to transmit an API key
+    public static final String HTTP_AUTH_PREFIX_USER_PW     = "Basic ";             // prefix of the Authorization header to transmit basic authentication
 
     public static final int RESET_PASSWORD_VALIDITY = 2; // in hours
     public static final int RESET_PASSWORD_REQUEST_LIMIT = 1; // in minutes

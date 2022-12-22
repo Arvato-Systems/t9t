@@ -54,7 +54,7 @@ public class SqlMigrationExecutor implements StartupOnly {
         config.encoding("UTF-8");
         config.table(migrationTable);
         config.installedBy("admin");
-        config.ignoreMissingMigrations(true);
+        config.ignoreMigrationPatterns("*:Missing");
         config.baselineOnMigrate(true);
         config.dataSource(dbConfiguration.getJdbcConnectString(), dbConfiguration.getUsername(), dbConfiguration.getPassword());
 

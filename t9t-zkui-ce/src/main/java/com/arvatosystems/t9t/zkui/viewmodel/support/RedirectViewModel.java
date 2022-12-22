@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.QueryParam;
 import org.zkoss.web.Attributes;
-import org.zkoss.zhtml.Messagebox;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 
