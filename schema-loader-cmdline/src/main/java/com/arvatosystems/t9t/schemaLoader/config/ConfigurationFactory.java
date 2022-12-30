@@ -23,7 +23,8 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
-import org.springframework.boot.bind.PropertiesConfigurationFactory;
+import org.springframework.boot.context.properties.bind.Binder;
+import org.springframework.boot.context.properties.source.ConfigurationPropertySources;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.core.env.PropertySource;
@@ -126,15 +127,8 @@ public class ConfigurationFactory {
             // attributes.
             // Normally spring boot would do this for us, but since we are not using springs DI container we will have
             // to do it manually.
-            final PropertiesConfigurationFactory<T> cfgFactory = new PropertiesConfigurationFactory<>(configClass);
-
-            cfgFactory.setPropertySources(propertySources);
-            cfgFactory.setExceptionIfInvalid(true);
-            cfgFactory.setIgnoreInvalidFields(false);
-            cfgFactory.setIgnoreNestedProperties(false);
-            cfgFactory.setIgnoreUnknownFields(true);
-
-            return cfgFactory.getObject();
+            final Binder binder = new Binder(ConfigurationPropertySources.from(propertySources));
+            return binder.bind("", configClass).get();
         } catch (Exception e) {
             throw new RuntimeException("Error creating configuration object", e);
         }

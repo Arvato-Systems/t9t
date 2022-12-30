@@ -31,9 +31,9 @@
         <npm.version>6.9.0</npm.version>
         <node.version>v12.0.0</node.version>
         <maven-dependency-plugin.version>3.3.0</maven-dependency-plugin.version>
-        <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
+        <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
         <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>  <!-- 3.0.0 -->
-        <maven-frontend-plugin.version>1.10.0</maven-frontend-plugin.version>
+        <maven-frontend-plugin.version>1.12.1</maven-frontend-plugin.version>
         <maven-enforcer-plugin.version>3.1.0</maven-enforcer-plugin.version>
         <maven-assembly-plugin.version>3.2.0</maven-assembly-plugin.version>
     </properties>

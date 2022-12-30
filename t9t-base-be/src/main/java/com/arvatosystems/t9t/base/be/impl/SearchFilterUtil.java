@@ -42,11 +42,11 @@ public class SearchFilterUtil implements ISearchFilterUtil {
     }
 
     private boolean hasDirectWantedChild(final AndFilter andFilter, final Set<String> wantedFieldNames) {
-        return isFieldFilterOfName(andFilter.getFilter1(), wantedFieldNames) || isFieldFilterOfName(andFilter.getFilter2(), wantedFieldNames); 
+        return isFieldFilterOfName(andFilter.getFilter1(), wantedFieldNames) || isFieldFilterOfName(andFilter.getFilter2(), wantedFieldNames);
     }
 
     private boolean hasDirectWantedChild(final OrFilter orFilter, final Set<String> wantedFieldNames) {
-        return isFieldFilterOfName(orFilter.getFilter1(), wantedFieldNames) || isFieldFilterOfName(orFilter.getFilter2(), wantedFieldNames); 
+        return isFieldFilterOfName(orFilter.getFilter1(), wantedFieldNames) || isFieldFilterOfName(orFilter.getFilter2(), wantedFieldNames);
     }
 
     private boolean hasWantedChild(final NotFilter notFilter, final Set<String> wantedFieldNames) {

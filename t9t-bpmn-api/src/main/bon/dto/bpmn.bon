@@ -71,6 +71,7 @@ package (com.arvatosystems) t9t.bpmn {
         required boolean                                useExclusiveLock;      // if true, a lock of the factory defined lock object will be obtained during execution
         optional Ascii(8)                               engine;                // uses the internal state machine if blank
         optional Long                                   jvmLockTimeoutInMillis; //JVM locks not set will use the default 5000 ms
+        optional Ascii(24)                              variant;
     }
 
     /** For UI only use. */

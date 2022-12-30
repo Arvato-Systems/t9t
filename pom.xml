@@ -63,25 +63,25 @@
         <maven-plugin-plugin.version>3.7.0</maven-plugin-plugin.version>
         <maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
         <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
-        <maven-shade-plugin.version>3.2.4</maven-shade-plugin.version>
+        <maven-shade-plugin.version>3.4.1</maven-shade-plugin.version>
         <maven-war-plugin.version>3.3.2</maven-war-plugin.version>
-        <maven-jar-plugin.version>3.2.2</maven-jar-plugin.version>
+        <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
         <maven-jarjar-plugin.version>1.9</maven-jarjar-plugin.version>
         <maven-enforcer-plugin.version>3.1.0</maven-enforcer-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <owasp-maven-plugin.version>7.2.1</owasp-maven-plugin.version>
-        <spring-boot-maven-plugin.version>3.0.0</spring-boot-maven-plugin.version>
+        <spring-boot-maven-plugin.version>3.0.1</spring-boot-maven-plugin.version>
         <tycho.version>2.7.3</tycho.version>
-        <git-commit-id-plugin.version>2.1.7</git-commit-id-plugin.version>
+        <git-commit-id-plugin.version>5.0.0</git-commit-id-plugin.version>
         <jaxws-maven-plugin.version>4.0.0</jaxws-maven-plugin.version>
         <eclipse-lifecycle-mapping.version>1.0.0</eclipse-lifecycle-mapping.version>
         <bundle.plugin.version>5.1.2</bundle.plugin.version> <!-- felix, for pricing RCP -->
         <exec.plugin.version>3.0.0</exec.plugin.version>
-        <jetty-maven-plugin.version>11.0.12</jetty-maven-plugin.version>
+        <jetty-maven-plugin.version>11.0.13</jetty-maven-plugin.version>
         <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
-        <cxf-codegen-plugin.version>3.5.4</cxf-codegen-plugin.version>
-        <cxf-wadl2java-plugin.version>3.5.5</cxf-wadl2java-plugin.version>
-        <cxf-xjc-plugin.version>3.3.1</cxf-xjc-plugin.version>   <!-- older than the other CXF plugins, but no newer release available -->
+        <cxf-codegen-plugin.version>4.0.0</cxf-codegen-plugin.version>
+        <cxf-wadl2java-plugin.version>4.0.0</cxf-wadl2java-plugin.version>
+        <cxf-xjc-plugin.version>4.0.0</cxf-xjc-plugin.version>
         <echo-maven-plugin.version>1.0.0</echo-maven-plugin.version>
         <jaxb2-maven-plugin.version>3.1.0</jaxb2-maven-plugin.version>
 
@@ -109,8 +109,8 @@
 
         <!-- ASCIIDoctor -->
         <asciidoctor-maven-plugin.version>2.2.2</asciidoctor-maven-plugin.version>
-        <asciidoctorj.version>2.4.1</asciidoctorj.version>
-        <jruby.version>9.2.13.0</jruby.version>
+        <asciidoctorj.version>2.5.7</asciidoctorj.version>
+        <jruby.version>9.3.8.0</jruby.version>
     </properties>
 
     <prerequisites>
@@ -464,7 +464,7 @@
                     <dependencies>
                         <dependency>
                             <groupId>org.jruby</groupId>
-                            <artifactId>jruby-complete</artifactId>
+                            <artifactId>jruby</artifactId>
                             <version>${jruby.version}</version>
                         </dependency>
                         <dependency>
@@ -659,8 +659,8 @@
                     <version>${maven-jarjar-plugin.version}</version>
                 </plugin>
                 <plugin>
-                    <groupId>pl.project13.maven</groupId>
-                    <artifactId>git-commit-id-plugin</artifactId>
+                    <groupId>io.github.git-commit-id</groupId>
+                    <artifactId>git-commit-id-maven-plugin</artifactId>
                     <version>${git-commit-id-plugin.version}</version>
                 </plugin>
                 <plugin>

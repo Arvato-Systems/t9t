@@ -21,6 +21,7 @@ import de.jpaw.util.ApplicationException;
 
 /** Defines the interface of an abstract base class used for all kinds of generation 2 workflows (workflows which do not persist the object as a first step). */
 public interface IWorkflowStep<T> {
+    String PROCESS_VARIABLE_VARIANT          = "variant";       // the name in the parameters map used to transfer additional numeric configuration
     String PROCESS_VARIABLE_YIELD_UNTIL      = "yieldUntil";    // the name in the parameters map used to denote a pause
     String PROCESS_VARIABLE_RETURN_CODE      = "returnCode";    // the name in the parameters map used to denote the return code
     String PROCESS_VARIABLE_ERROR_DETAILS    = "errorDetails";  // the name in the parameters map used to store error details

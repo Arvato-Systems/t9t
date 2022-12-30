@@ -324,7 +324,16 @@ public class BpmnRunner implements IBpmnRunner {
         } else if (step instanceof T9tWorkflowStepGoto wfStepGoto) {
             return executeGoto(wfStepGoto, ctx, pd, statusEntity, workflowObject, parameters);
         } else if (step instanceof T9tWorkflowStepJavaTask wfStepJavaTask) {
-            return executeJavaTask(wfStepJavaTask, ctx, pd, statusEntity, workflowObject, parameters);
+            final String variant = pd.getVariant();
+            if (variant == null) {
+                // regular execution
+                return executeJavaTask(wfStepJavaTask, ctx, pd, statusEntity, workflowObject, parameters);
+            } else {
+                parameters.put(IWorkflowStep.PROCESS_VARIABLE_VARIANT, variant);
+                final WorkflowReturnCode result = executeJavaTask(wfStepJavaTask, ctx, pd, statusEntity, workflowObject, parameters);
+                parameters.remove(IWorkflowStep.PROCESS_VARIABLE_VARIANT);
+                return result;
+            }
         } else if (step instanceof T9tWorkflowStepRestart wfStepRestart) {
             return executeRestart(wfStepRestart, ctx, pd, statusEntity, workflowObject, parameters);
         } else if (step instanceof T9tWorkflowStepYield wfStepYield) {

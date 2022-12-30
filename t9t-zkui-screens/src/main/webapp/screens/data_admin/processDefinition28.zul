@@ -18,11 +18,12 @@
                             numColumns="2">
                             <rows>
                                 <cells228 id ="processDefinitionId"          value ="@load(vm.data.processDefinitionId)    @save(vm.data.processDefinitionId, before='commandSave')"
-                                          id2="name"                         value2="@load(vm.data.name)                   @save(vm.data.name,                before='commandSave')" />
+                                          id2="name"                         value2="@load(vm.data.name)                   @save(vm.data.name,                before='commandSave')"/>
                                 <cells228 id="factoryName"                   value ="@load(vm.data.factoryName)            @save(vm.data.factoryName,         before='commandSave')"
-                                          id2="engine"                       value2="@load(vm.data.engine)                 @save(vm.data.engine,              before='commandSave')" />
+                                          id2="engine"                       value2="@load(vm.data.engine)                 @save(vm.data.engine,              before='commandSave')"/>
+                                <cells28  id ="variant"                      value ="@load(vm.data.initialPvariantarams)   @save(vm.data.variant,             before='commandSave')"/>
                                 <cells228 id="alwaysRestartAtStep1"          value ="@load(vm.data.alwaysRestartAtStep1)   @save(vm.data.alwaysRestartAtStep1,before='commandSave')"
-                                          id2="useExclusiveLock"             value2="@load(vm.data.useExclusiveLock)       @save(vm.data.useExclusiveLock,    before='commandSave')" />
+                                          id2="useExclusiveLock"             value2="@load(vm.data.useExclusiveLock)       @save(vm.data.useExclusiveLock,    before='commandSave')"/>
                                 <cells28  id ="initialParams" rows1="3"      value ="@load(vm.data.initialParams)          @save(vm.data.initialParams,       before='commandSave')"
                                     colspan1="3" />
                                 <cells228 id ="isActive"                    value="@bind(vm.data.isActive)"

@@ -48,10 +48,12 @@ import com.arvatosystems.t9t.zkui.components.datafields.TextDataField;
 import com.arvatosystems.t9t.zkui.components.datafields.XenumDataField;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 
+import de.jpaw.bonaparte.api.media.MediaTypeInfo;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import de.jpaw.bonaparte.pojos.api.media.MediaType;
+import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 import de.jpaw.bonaparte.pojos.api.media.MediaXType;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.Multiplicity;
@@ -71,6 +73,7 @@ import de.jpaw.util.ByteArray;
 public class CkEditor28 extends Row {
     private static final long serialVersionUID = -770193551161941L;
     private static final Logger LOGGER = LoggerFactory.getLogger(CkEditor28.class);
+    private static final String DEFAULT_FILE_NAME = "sample";
 
     protected ApplicationSession as;
     protected String viewModelId;
@@ -119,8 +122,7 @@ public class CkEditor28 extends Row {
 
     @Override
     public void setValue(Object t) {
-        LOGGER.debug("{}.setValue({}) called (class {})", dataFieldId, t,
-                t == null ? "N/A" : t.getClass().getSimpleName());
+        LOGGER.debug("{}.setValue() called (class {})", dataFieldId, t == null ? "N/A" : t.getClass().getSimpleName());
         deferredValue = t;
 
         MediaData mediaData = (MediaData) t;
@@ -141,10 +143,13 @@ public class CkEditor28 extends Row {
             if (mediaData.getRawData() != null) {
                 org.zkoss.image.Image image = null;
                 try {
-                    image = new AImage("sample", mediaData.getRawData().getBytes());
+                    final MediaTypeDescriptor mediaTypeDescriptor = MediaTypeInfo.getFormatByType(mediaData.getMediaType());
+                    if (mediaTypeDescriptor != null) {
+                        final String fileName = DEFAULT_FILE_NAME + "." + mediaTypeDescriptor.getDefaultFileExtension();
+                        image = new AImage(fileName, mediaData.getRawData().getBytes());
+                    }
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    LOGGER.debug("Failed to parse the image, proceed without displaying image.", e);
                 }
                 mediaDataByteArray = mediaData.getRawData().getBytes();
                 anchorToDisplayImage.setContent(image);
@@ -182,17 +187,27 @@ public class CkEditor28 extends Row {
     @Override
     public Object getValue() {
 
-        MediaData md = new MediaData();
+        final MediaData md = new MediaData();
 
         md.setMediaType((MediaXType) mediaTypeDataField.getValue());
+        final MediaTypeDescriptor mediaTypeDescriptor = MediaTypeInfo.getFormatByType(md.getMediaType());
+
+        if (mediaTypeDescriptor == null) {
+            md.setText(null);
+            md.setRawData(null);
+            return md;
+        }
 
         if (md.getMediaType().getBaseEnum() == MediaType.HTML) {
+            LOGGER.debug("{}.getValue() called, returns HTML", dataFieldId);
             md.setText(ckEditor.getValue());
             md.setRawData(null);
-        } else if (md.getMediaType().getBaseEnum() == MediaType.TEXT) {
+        } else if (mediaTypeDescriptor.getIsText()) {
+            LOGGER.debug("{}.getValue() called, returns Text", dataFieldId);
             md.setText(textDataField.getValue());
             md.setRawData(null);
         } else {
+            LOGGER.debug("{}.getValue() called, returns Binary", dataFieldId);
             md.setText(null);
             if (mediaDataByteArray != null) {
                 ByteArray byteArray = new ByteArray(mediaDataByteArray);
@@ -202,7 +217,6 @@ public class CkEditor28 extends Row {
             }
         }
 
-        LOGGER.debug("{}.getValue() called, returns {}", dataFieldId, md);
         return md;
     }
 
@@ -211,14 +225,15 @@ public class CkEditor28 extends Row {
         ckEditor.setVisible(false);
         setDropUploadVisibility(false);
 
-        MediaXType mdt =  ((MediaData) getValue()).getMediaType();
-        Enum<?> mediaType = mdt.getBaseEnum();
-        if (mediaType == MediaType.HTML) {
+        final MediaXType mdt =  ((MediaData) getValue()).getMediaType();
+        final MediaTypeDescriptor mediaTypeDescriptor = MediaTypeInfo.getFormatByType(mdt);
+
+        if (mdt.getBaseEnum() == MediaType.HTML) {
             ckEditor.setVisible(true);
-        } else if (mediaType == MediaType.GIF || mediaType == MediaType.JPG || mediaType == MediaType.PNG) {
-            setDropUploadVisibility(true);
-        } else {
+        } else if (mediaTypeDescriptor.getIsText()) {
             textDataField.getComponent().setVisible(true);
+        } else {
+            setDropUploadVisibility(true);
         }
     }
 
@@ -265,7 +280,7 @@ public class CkEditor28 extends Row {
 
             // also forward the onChange event to allow saving of changed data
             mediaTypeComponent.addEventListener(Events.ON_CHANGE, (ev) -> {
-                LOGGER.debug("onChange caught for {}, current value is {}", getId(), getValue());
+                LOGGER.debug("onChange caught for {}", getId());
                 Events.postEvent(new Event(Events.ON_CHANGE, this, null));
                 switchEditor();
             });
@@ -284,7 +299,7 @@ public class CkEditor28 extends Row {
 
             // also forward the onChange event to allow saving of changed data
             textFieldComponent.addEventListener(Events.ON_CHANGE, (ev) -> {
-                LOGGER.debug("onChange caught for {}, current value is {}", getId(), getValue());
+                LOGGER.debug("onChange caught for {}", getId());
                 Events.postEvent(new Event(Events.ON_CHANGE, this, null));
             });
         }
@@ -297,7 +312,7 @@ public class CkEditor28 extends Row {
 
         // also forward the onChange event to allow saving of changed data
         ckEditor.addEventListener(Events.ON_CHANGE, (ev) -> {
-            LOGGER.debug("onChange caught for {}, current value is {}", getId(), getValue());
+            LOGGER.debug("onChange caught for {}", getId());
             Events.postEvent(new Event(Events.ON_CHANGE, this, null));
         });
 
@@ -341,7 +356,7 @@ public class CkEditor28 extends Row {
                 if (event instanceof UploadEvent) {
                     UploadEvent uEvent = (UploadEvent) event;
                     Media image = uEvent.getMedia();
-                    org.zkoss.image.Image imageUploaded = new AImage("sample", image.getByteData());
+                    org.zkoss.image.Image imageUploaded = new AImage(DEFAULT_FILE_NAME + "." + image.getFormat(), image.getByteData());
                     mediaDataByteArray = uEvent.getMedia().getByteData();
                     anchorToDisplayImage.setContent(imageUploaded);
                 }
