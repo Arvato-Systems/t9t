@@ -246,4 +246,13 @@ public class AuthFilterCustomization implements IAuthFilterCustomization {
             }
         }
     }
+
+    @Override
+    public void filterCorrectIdempotencyPattern(final String idempotencyHeader, final ContainerRequestContext requestContext) {
+        final int idempotencyHeaderLength = idempotencyHeader.length();
+        if (idempotencyHeaderLength != 36 || !BASE64_PATTERN.matcher(idempotencyHeader).matches()) {
+            LOGGER.error("Invoked with bad HTTP header {} of length {}", T9tConstants.HTTP_HEADER_IDEMPOTENCY_KEY, idempotencyHeaderLength);
+            throw new WebApplicationException(Response.status(Status.BAD_GATEWAY).build());
+        }
+    }
 }

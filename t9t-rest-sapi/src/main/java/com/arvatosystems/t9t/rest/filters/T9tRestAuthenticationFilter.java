@@ -42,6 +42,10 @@ public class T9tRestAuthenticationFilter implements ContainerRequestFilter {
         if (authFilterCustomization.isBlockedIpAddress(remoteIpHeader)) {
             throw new WebApplicationException(Response.status(Status.FORBIDDEN).build());
         }
+        final String idempotencyHeader = requestContext.getHeaderString(T9tConstants.HTTP_HEADER_IDEMPOTENCY_KEY);
+        if (idempotencyHeader != null) {
+            authFilterCustomization.filterCorrectIdempotencyPattern(idempotencyHeader, requestContext);
+        }
         final String authHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
         if (authHeader == null) {
             authFilterCustomization.filterUnauthenticated(requestContext);

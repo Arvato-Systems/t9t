@@ -94,7 +94,11 @@ public class KafkaRequestTransmitter implements IKafkaRequestTransmitter {
             // redirect to /dev/null
             return;
         }
-        topicWriter.write(request, partitionKey.hashCode(), recordKey == null ? partitionKey : recordKey.toString());
+        topicWriter.write(request, partitionKey.hashCode(), createRecordKey(partitionKey, recordKey));
+    }
+
+    protected String createRecordKey(final String partitionKey, final Object recordKey) {
+        return recordKey == null ? null : recordKey.toString() + ":" + partitionKey;
     }
 
     @Override

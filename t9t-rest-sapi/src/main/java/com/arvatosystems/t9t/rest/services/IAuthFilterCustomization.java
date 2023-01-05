@@ -59,4 +59,7 @@ public interface IAuthFilterCustomization {
 
     /** Invoked for POST requests: Check for supported type of payload. */
     void filterSupportedMediaType(MediaType mediaType);
+
+    /** Check for correct UUID in case an idempotency header has been provided. */
+    void filterCorrectIdempotencyPattern(String idempotencyHeader, ContainerRequestContext requestContext);
 }

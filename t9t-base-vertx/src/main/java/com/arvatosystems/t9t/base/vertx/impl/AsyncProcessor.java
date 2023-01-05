@@ -15,6 +15,16 @@
  */
 package com.arvatosystems.t9t.base.vertx.impl;
 
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
+import org.eclipse.xtext.xbase.lib.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.arvatosystems.t9t.annotations.IsLogicallyFinal;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.api.ServiceRequest;
@@ -32,14 +42,10 @@ import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.server.services.IUnauthenticatedServiceRequestExecutor;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.core.JsonComposer;
-import de.jpaw.bonaparte.core.MapComposer;
-import de.jpaw.bonaparte.core.MapParser;
 import de.jpaw.dp.Default;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
-import de.jpaw.json.JsonParser;
 import de.jpaw.util.ApplicationException;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
@@ -50,74 +56,55 @@ import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.eventbus.MessageConsumer;
-import io.vertx.core.json.JsonObject;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
-import org.eclipse.xtext.xbase.lib.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Singleton
 @Default
 public class AsyncProcessor implements IAsyncRequestProcessor {
-    private static class EventMessageHandler implements Handler<Message<Object>> {
-        private final Map<String, String> qualifierByTenantId = new HashMap<>();
-        private String eventID;
+    private static final class EventMessageHandler implements Handler<Message<Object>> {
+        private final Map<String, String> qualifierByTenantId = new ConcurrentHashMap<>();
+        private final String eventID;
+
+        private EventMessageHandler(final String eventID) {
+            this.eventID = eventID;
+        }
+
+        private void addQualifierByTenantId(final String tenantId, final String qualifier) {
+            this.qualifierByTenantId.put(tenantId, qualifier);
+        }
 
         @Override
         public void handle(final Message<Object> event) {
-            final JsonObject msgBody;
-            // first make sure we have a jsonBody to work with. Otherwise any parsing or handling will likely fail
             final Object body = event.body();
-            if (body instanceof String bString) {
-                msgBody = new JsonObject(bString);
+            if (!(body instanceof BonaPortable bona)) {
+                LOGGER.error("Received an async message of type {}, cannot handle, ignoring!", body == null ? "NULL" : body.getClass().getCanonicalName());
             } else {
-                msgBody = (JsonObject) body;
-            }
-         // then continue evaluating the message
-            if (msgBody instanceof JsonObject) {
-                if (msgBody.containsKey("@PQON")) { // check if the event contains custom eventParameters by searching for a PQON
-                    final Map<String, Object> map = new JsonParser(msgBody.encode(), false).parseObject();
-                    final BonaPortable tentativeEventData = MapParser.asBonaPortable(map, MapParser.OUTER_BONAPORTABLE_FOR_JSON);
-                    if (tentativeEventData instanceof EventData eventData) {
-                        final String theEventId = eventData.getData().ret$PQON();
-                        final String eventTenantId = eventData.getHeader().getTenantId();
+                // we receive 2 types of messages: ServiceRequest (via method submitTask()), or EventData (via send() and publish() methods)
+                if (bona instanceof EventData eventData) {
+                    final String theEventId = eventData.getData().ret$PQON();
+                    final String eventTenantId = eventData.getHeader().getTenantId();
+                    final AuthenticationJwt authJwt = new AuthenticationJwt(eventData.getHeader().getEncodedJwt());
 
-                        LOGGER.debug("Event {} for tenant {} will now trigger a ProcessEventRequest(s)", theEventId, eventTenantId);
-                        executeAllEvents(eventTenantId, theEventId, new AuthenticationJwt(eventData.getHeader().getEncodedJwt()), eventData.getData(),
-                                eventData.getHeader().getInvokingProcessRef());
-                    }
-                } else { // otherwise deal with a raw json event without PQON
-                    final String theEventID = msgBody.getString("eventID");
-                    final JsonObject header = msgBody.getJsonObject("header");
-                    final String tenantId = header == null ? null : header.getString("tenantId");
-                    final JsonObject z = msgBody.getJsonObject("z");
-                    final String qualifier = getQualifierForTenant(tenantId);
-                    if (theEventID == null || header == null || tenantId == null) {
-                        LOGGER.error("eventID or header or tenantId missing in event42 object at address {}", eventID);
-                    } else if (!theEventID.equals(eventID)) {
-                        LOGGER.error("eventID of received message differs: {} != {}", theEventID, eventID);
-                    } else {
-                        if (!EventSubscriptionCache.isActive(eventID, qualifier, tenantId)) {
-                            LOGGER.debug("Skipping event {} for tenant {} (not configured)", eventID, tenantId);
+                    if (eventData.getData() instanceof GenericEvent genericEvent) {
+                        final String qualifier = getQualifierForTenant(eventTenantId);
+                        if (!theEventId.equals(eventID)) {
+                            LOGGER.error("eventID of received message differs: {} != {}", theEventId, eventID);
                         } else {
-                            LOGGER.debug("Processing an async42 event request {}", theEventID);
-                            // pre checks good. construct a request for it
-                            final GenericEvent genericEvent = new GenericEvent();
-                            genericEvent.setEventID(eventID);
-                            genericEvent.setZ(z == null ? null : z.getMap());
-                            executeEvent(qualifier, new AuthenticationJwt(header.getString("encodedJwt")), genericEvent, header.getLong("invokingProcessRef"));
+                            if (!EventSubscriptionCache.isActive(eventID, qualifier, theEventId)) {
+                                LOGGER.debug("Skipping event {} for tenant {} (not configured)", eventID, eventTenantId);
+                            } else {
+                                LOGGER.debug("Processing an async42 event request {}", theEventId);
+                                executeEvent(qualifier, authJwt, eventData.getData(), eventData.getHeader().getInvokingProcessRef());
+                            }
                         }
+                    } else {
+                        LOGGER.debug("Event {} for tenant {} will now trigger a ProcessEventRequest(s)", theEventId, eventTenantId);
+                        executeAllEvents(eventTenantId, theEventId, authJwt, eventData.getData(), eventData.getHeader().getInvokingProcessRef());
                     }
+                } else if (bona instanceof ServiceRequest srq) {
+                    runInWorkerThread(myVertx, srq);
+                } else {
+                    LOGGER.error("Unhandled async message payload type {}, ignoring", bona == null ? "NULL" : bona.ret$PQON());
                 }
-            } else {
-                LOGGER.error("Received an async message of type {}, cannot handle!", msgBody.getClass().getCanonicalName());
             }
         }
 
@@ -141,8 +128,8 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
     // set a long enough timeout (30 minutes) to allow for concurrent batches
     private static final DeliveryOptions ASYNC_EVENTBUS_DELIVERY_OPTIONS = new DeliveryOptions()
             .setSendTimeout(((30 * 60) * 1000L)).setCodecName(CompactMessageCodec.COMPACT_MESSAGE_CODEC_ID);
-    private static final DeliveryOptions PUBLISH_EVENTBUS_DELIVERY_OPTIONS = new DeliveryOptions()
-            .setSendTimeout(((30 * 60) * 1000L));
+//    private static final DeliveryOptions PUBLISH_EVENTBUS_DELIVERY_OPTIONS = new DeliveryOptions()
+//            .setSendTimeout(((30 * 60) * 1000L));
 
     @IsLogicallyFinal
     private static EventBus bus = null;
@@ -170,16 +157,16 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
           request.getRequestParameters().ret$PQON(), localNodeOnly, publish, bus == null ? "NULL" : "OK");
         request.freeze(); // async must freeze it to avoid subsequent modification
         if (bus != null) {
-            // ignore settings, they seem to have issues currently
-            bus.send(ASYNC_EVENTBUS_ADDRESS, request, ASYNC_EVENTBUS_DELIVERY_OPTIONS);
-//        if (publish) {
-//            bus.publish(ASYNC_EVENTBUS_ADDRESS, request, ASYNC_EVENTBUS_DELIVERY_OPTIONS);
-//        } else if (localNodeOnly) {
-//            // TODO: have to register local consumer, and send to that
+//            // ignore settings, they seem to have issues currently
 //            bus.send(ASYNC_EVENTBUS_ADDRESS, request, ASYNC_EVENTBUS_DELIVERY_OPTIONS);
-//        } else {
-//            bus.send(ASYNC_EVENTBUS_ADDRESS, request, ASYNC_EVENTBUS_DELIVERY_OPTIONS);
-//        }
+            if (publish) {
+                bus.publish(ASYNC_EVENTBUS_ADDRESS, request, ASYNC_EVENTBUS_DELIVERY_OPTIONS);
+            } else if (localNodeOnly) {
+                // TODO: have to register local consumer, and send to that
+                bus.send(ASYNC_EVENTBUS_ADDRESS, request, ASYNC_EVENTBUS_DELIVERY_OPTIONS);
+            } else {
+                bus.send(ASYNC_EVENTBUS_ADDRESS, request, ASYNC_EVENTBUS_DELIVERY_OPTIONS);
+            }
         }
     }
 
@@ -190,16 +177,9 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
         if (bus != null) {
             final EventParameters attribs = data.getData();
             if (attribs instanceof GenericEvent genericEvent) {
-                final JsonObject payload = new JsonObject();
-                payload.put("eventID", genericEvent.getEventID());
-                payload.put("header", new JsonObject(MapComposer.marshal(data.getHeader())));
-                if (genericEvent.getZ() != null) {
-                    payload.put("z", new JsonObject(genericEvent.getZ()));
-                }
-                bus.send(toBusAddress(genericEvent.getEventID()), payload.toString());
+                bus.send(toBusAddress(genericEvent.getEventID()), data, ASYNC_EVENTBUS_DELIVERY_OPTIONS);
             } else {
-                bus.send(toBusAddress(attribs.ret$PQON()), JsonComposer.toJsonString(data), PUBLISH_EVENTBUS_DELIVERY_OPTIONS); // using json for publishing
-                                                                                                                                // eventData
+                bus.send(toBusAddress(attribs.ret$PQON()), data, ASYNC_EVENTBUS_DELIVERY_OPTIONS);
             }
         } else {
             LOGGER.error("event bus is null - discarding event {}", data.getData().ret$PQON());
@@ -213,16 +193,9 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
         if (bus != null) {
             final EventParameters attribs = data.getData();
             if (attribs instanceof GenericEvent genericEvent) {
-                final JsonObject payload = new JsonObject();
-                payload.put("eventID", genericEvent.getEventID());
-                payload.put("header", new JsonObject(MapComposer.marshal(data.getHeader())));
-                if (genericEvent.getZ() != null) {
-                    payload.put("z", new JsonObject(genericEvent.getZ()));
-                }
-                bus.publish(toBusAddress(genericEvent.getEventID()), payload.toString());
+                bus.publish(toBusAddress(genericEvent.getEventID()), data, ASYNC_EVENTBUS_DELIVERY_OPTIONS);
             } else {
-                bus.publish(toBusAddress(attribs.ret$PQON()), JsonComposer.toJsonString(data), PUBLISH_EVENTBUS_DELIVERY_OPTIONS); // using json for publishing
-                                                                                                                                   // eventData
+                bus.publish(toBusAddress(attribs.ret$PQON()), data, ASYNC_EVENTBUS_DELIVERY_OPTIONS);
             }
         } else {
             LOGGER.error("event bus is null - discarding event {}", data.getData().ret$PQON());
@@ -272,8 +245,7 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
 
         // get handler instance
         final EventMessageHandler handler = REGISTERED_HANDLER.computeIfAbsent(toBusAddress(eventID), (final String busAddress) -> {
-            final EventMessageHandler eventMessageHandler = new EventMessageHandler();
-            eventMessageHandler.eventID = eventID;
+            final EventMessageHandler eventMessageHandler = new EventMessageHandler(eventID);
             final MessageConsumer<Object> consumer = bus.consumer(busAddress);
             consumer.completionHandler((final AsyncResult<Void> asyncResult) -> {
                 if (asyncResult.succeeded()) {
@@ -288,7 +260,7 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
 
         // add tenant to qualifier mapping to handler for but address
         LOGGER.info("vertx async event42 handler {} added with qualifier {} for tenant {}", subscriber.getClass().getSimpleName(), qualifier, tenantId);
-        handler.qualifierByTenantId.put(tenantId, qualifier);
+        handler.addQualifierByTenantId(tenantId, qualifier);
     }
 
     private static void executeEvent(final String qualifier, final AuthenticationJwt authenticationJwt, final EventParameters eventParams,

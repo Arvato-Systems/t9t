@@ -22,30 +22,42 @@ import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.CompactByteArrayComposer;
 import de.jpaw.bonaparte.core.CompactByteArrayParser;
 import de.jpaw.bonaparte.core.StaticMeta;
+import de.jpaw.util.ByteUtil;
+import de.jpaw.util.ExceptionUtil;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.MessageCodec;
 
 public class CompactMessageCodec implements MessageCodec<BonaPortable, BonaPortable> {
     private static final Logger LOGGER = LoggerFactory.getLogger(CompactMessageCodec.class);
+    private static final int BYTES_OF_INT = 4;  // C developers would cry for this hard coded 4, but it's from the official vert.x examples...
 
     public static final String COMPACT_MESSAGE_CODEC_ID = "cb";
 
     @Override
     public void encodeToWire(final Buffer buffer, final BonaPortable obj) {
-        LOGGER.debug("Serialization of {} for sending over wire", obj.ret$PQON());
         final CompactByteArrayComposer cbac = new CompactByteArrayComposer();
         cbac.writeObject(obj);
-        buffer.setBytes(0, cbac.getBuffer(), 0, cbac.getLength());
+        buffer.appendInt(cbac.getLength());
+        buffer.appendBytes(cbac.getBuffer(), 0, cbac.getLength());
+        LOGGER.debug("Serialization of {} for sending over wire in COMPACT encoding as {} bytes", obj.ret$PQON(), cbac.getLength());
         cbac.close();
     }
 
     @Override
     public BonaPortable decodeFromWire(final int pos, final Buffer buffer) {
-        final byte[] buff = buffer.getBytes();
-        final CompactByteArrayParser cbap = new CompactByteArrayParser(buff, pos, buff.length);
-        final BonaPortable obj = cbap.readObject(StaticMeta.OUTER_BONAPORTABLE, BonaPortable.class);
-        LOGGER.debug("Deserialization of {} received over wire", obj.ret$PQON());
-        return obj;
+        final int messageLength = buffer.getInt(pos);
+        LOGGER.debug("Received COMPACT message of {} bytes via eventBus with offset {}", messageLength, pos);
+        final byte[] buff = buffer.getBytes(pos + BYTES_OF_INT, pos + BYTES_OF_INT + messageLength);
+        try {
+            final CompactByteArrayParser cbap = new CompactByteArrayParser(buff, 0, messageLength);
+            final BonaPortable obj = cbap.readObject(StaticMeta.OUTER_BONAPORTABLE, BonaPortable.class);
+            LOGGER.debug("Deserialization of {} received over wire", obj.ret$PQON());
+            return obj;
+        } catch (Exception e) {
+            LOGGER.error("Failed to decode: {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
+            LOGGER.debug("Buffer contents is\n{}", ByteUtil.dump(buff, Math.min(messageLength, 256)));
+            throw e;
+        }
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.arvatosystems.t9t.jetty.kafka.impl;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
@@ -11,6 +12,7 @@ import com.arvatosystems.t9t.authz.api.QuerySinglePermissionRequest;
 import com.arvatosystems.t9t.authz.api.QuerySinglePermissionResponse;
 import com.arvatosystems.t9t.base.IKafkaRequestTransmitter;
 import com.arvatosystems.t9t.base.IRemoteConnection;
+import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.api.RequestParameters;
@@ -148,7 +150,16 @@ public class T9tRestProcessorViaKafka extends T9tRestProcessor implements IT9tRe
                     payload.setErrorMessage(ApplicationException.codeToString(payload.getReturnCode()));
                     payload.setErrorDetails("Partition key");
                 } else {
-                    LOGGER.debug("Sending object of key {} via path {}", partitionKey, pathInfo);
+                    // apply idempotency key, if provided
+                    final String idempotencyHeader = httpHeaders.getHeaderString(T9tConstants.HTTP_HEADER_IDEMPOTENCY_KEY);
+                    if (idempotencyHeader != null) {
+                        try {
+                            rq.setMessageId(UUID.fromString(idempotencyHeader));
+                        } catch (Exception e) {
+                            LOGGER.error("Cannot parse idempotency UUID despite prior pattern check: {}: {}", idempotencyHeader, e.getMessage());
+                        }
+                    }
+                    LOGGER.debug("Sending object of key {} via path {} with idempotency header {}", partitionKey, pathInfo, idempotencyHeader);
                     result = sendToServer(httpHeaders.getHeaderString(HttpHeaders.AUTHORIZATION), partitionKey, rq, payload);
                 }
             } catch (final ApplicationException e) {
