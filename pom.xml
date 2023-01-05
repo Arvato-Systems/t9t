@@ -55,8 +55,8 @@
         <maven-install-plugin.version>3.0.1</maven-install-plugin.version>
         <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
         <maven-clean-plugin.version>3.2.0</maven-clean-plugin.version>
-        <maven-dependency-plugin.version>3.3.0</maven-dependency-plugin.version>
-        <maven-plugin-annotations.version>3.6.4</maven-plugin-annotations.version>
+        <maven-dependency-plugin.version>3.4.0</maven-dependency-plugin.version>
+        <maven-plugin-annotations.version>3.7.0</maven-plugin-annotations.version>
         <maven-project.version>2.2.1</maven-project.version>
         <build-helper-maven-plugin.version>3.3.0</build-helper-maven-plugin.version>
         <maven-surefire-plugin.version>3.0.0-M7</maven-surefire-plugin.version>
@@ -95,22 +95,22 @@
         <xtend-maven-plugin.version>2.29.0</xtend-maven-plugin.version>
         <xtext-maven-plugin.version>2.29.0</xtext-maven-plugin.version>
 
-        <bonaparte-plugin.version>5.1.4-SNAPSHOT</bonaparte-plugin.version>
+        <bonaparte-plugin.version>5.1.4</bonaparte-plugin.version>
         <license-plugin.version>3.0</license-plugin.version>
         <replacer-plugin.version>1.4.1</replacer-plugin.version>   <!-- required for workaround for Apache CXF 3.5.x -->
 
         <checkstyle.version>10.1</checkstyle.version>
-        <spotbugs.version>4.7.2.0</spotbugs.version>
+        <spotbugs.version>4.7.3</spotbugs.version>
         <logback.version>1.4.5</logback.version>
 
         <!-- Swagger -->
-        <swagger-maven-plugin.version>2.2.3</swagger-maven-plugin.version>
-        <swagger-ui-webjars.version>3.52.5</swagger-ui-webjars.version>   <!-- 4.x is available as well! -->
+        <swagger-maven-plugin.version>2.2.7</swagger-maven-plugin.version>
+        <swagger-ui-webjars.version>4.15.5</swagger-ui-webjars.version>   <!-- 4.x is available as well! -->
 
         <!-- ASCIIDoctor -->
         <asciidoctor-maven-plugin.version>2.2.2</asciidoctor-maven-plugin.version>
         <asciidoctorj.version>2.5.7</asciidoctorj.version>
-        <jruby.version>9.3.8.0</jruby.version>
+        <jruby.version>9.4.0.0</jruby.version>
     </properties>
 
     <prerequisites>
@@ -1050,7 +1050,7 @@
                 <!-- BPMN2 integration projects -->
                 <module>t9t-bpmn2-api</module>
                 <module>t9t-bpmn2-sapi</module>
-                <module>t9t-bpmn2-camunda-be</module>
+                <!-- <module>t9t-bpmn2-camunda-be</module>  is still pre-jakarta -->
                 <module>t9t-bpmn2-jpa</module>
                 <module>t9t-bpmn2-mock</module>
 
@@ -1288,7 +1288,7 @@
 
                 <module>t9t-bpmn2-api</module>
                 <module>t9t-bpmn2-sapi</module>
-                <!-- module>t9t-bpmn2-camunda-be</module> need to fix style issues -->
+                <!-- module>t9t-bpmn2-camunda-be</module> need to fix style issues, and is also excluded from build -->
                 <module>t9t-bpmn2-jpa</module>
                 <module>t9t-bpmn2-mock</module>
 

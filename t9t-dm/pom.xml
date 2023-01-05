@@ -777,11 +777,12 @@
                 <artifactId>t9t-bpmn2-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <!-- disabled, is not yet jakarta-ready
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-bpmn2-camunda-be</artifactId>
                 <version>${project.version}</version>
-            </dependency>
+            </dependency> -->
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-bpmn2-sapi</artifactId>
