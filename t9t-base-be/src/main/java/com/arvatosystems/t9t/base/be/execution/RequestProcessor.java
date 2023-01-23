@@ -157,7 +157,7 @@ public class RequestProcessor implements IRequestProcessor {
 
             // 0. check for resend of the request
             boolean storeResult = false;
-            if (messageId == null && (idempotencyBehaviour == RetryAdviceType.NEVER_RETRY || idempotencyBehaviour == RetryAdviceType.RETRY_ON_ERROR)) {
+            if (messageId != null && (idempotencyBehaviour == RetryAdviceType.NEVER_RETRY || idempotencyBehaviour == RetryAdviceType.RETRY_ON_ERROR)) {
                 // a message ID has been set, and also a retry behaviour, asking to not repeat the request in all cases
                 // must do a check for a prior execution of this request
                 final ServiceResponse idempotenceResponse = idempotencyChecker.runIdempotencyCheck(jwtInfo.getTenantId(), messageId, idempotencyBehaviour, rp);

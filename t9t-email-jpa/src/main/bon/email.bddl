@@ -33,7 +33,7 @@ package (com.arvatosystems) t9t.email.jpa.entities owner fortytwo prefix p28 {
         tenantClass InternalTenantId
         pk (objectRef)
         index unique (messageId)
-        index (emailStatus)
+        index (emailStatus) where notNull
     }
 
     entity EmailAttachmentsEntity category datv is EmailAttachmentsDTO {

@@ -35,6 +35,7 @@ import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Vbox;
@@ -96,6 +97,7 @@ public class CkEditor28 extends Row {
     private Image anchorToDisplayImage;
     private byte[] mediaDataByteArray;
     private Hbox dropuploadHbox;
+    private String restrictMediaTypes = null; // Media Type restrictions
 
     public CkEditor28() {
         super();
@@ -271,7 +273,11 @@ public class CkEditor28 extends Row {
         FieldDefinition mediaTypeEnum = FieldGetter.getFieldDefinitionForPathname(crudViewModel.dtoClass.getMetaData(),
                 dataFieldId + ".mediaType");
 
-        mediaTypeDataField = new XenumDataField(new DataFieldParameters(mediaTypeEnum, dataFieldId + ".mediaType", null, as, null, null), null);
+        mediaTypeDataField = new XenumDataField(new DataFieldParameters(mediaTypeEnum, dataFieldId + ".mediaType", null, as, null, null), restrictMediaTypes);
+
+        if (restrictMediaTypes != null) {
+            LOGGER.error("restrictMediaTypes: {}", restrictMediaTypes);
+        }
 
         Component mediaTypeComponent = mediaTypeDataField.getComponent();
         if (mediaTypeComponent != null) {
@@ -356,12 +362,31 @@ public class CkEditor28 extends Row {
                 if (event instanceof UploadEvent) {
                     UploadEvent uEvent = (UploadEvent) event;
                     Media image = uEvent.getMedia();
-                    org.zkoss.image.Image imageUploaded = new AImage(DEFAULT_FILE_NAME + "." + image.getFormat(), image.getByteData());
-                    mediaDataByteArray = uEvent.getMedia().getByteData();
-                    anchorToDisplayImage.setContent(imageUploaded);
+                    if (isValidRestrictMediaType(image.getFormat())) {
+                        org.zkoss.image.Image imageUploaded = new AImage(DEFAULT_FILE_NAME + "." + image.getFormat(), image.getByteData());
+                        mediaDataByteArray = uEvent.getMedia().getByteData();
+                        anchorToDisplayImage.setContent(imageUploaded);
+                    } else {
+                        Messagebox.show(as.translate(viewModelId, "invalidFile"),
+                                as.translate(viewModelId, "com.badinput"), Messagebox.OK, Messagebox.ERROR);
+                    }
                 }
             }
         });
+    }
+
+    private boolean isValidRestrictMediaType(final String imageFormat) {
+        if (restrictMediaTypes == null) {
+            return true;
+        }
+        if (mediaTypeDataField != null && imageFormat != null) {
+            final MediaXType mediaType = (MediaXType) mediaTypeDataField.getValue();
+            final MediaTypeDescriptor mediaTypeDescriptor = MediaTypeInfo.getFormatByType(mediaType);
+            if (mediaTypeDescriptor != null && imageFormat.equalsIgnoreCase(mediaTypeDescriptor.getDefaultFileExtension())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void setDropUploadVisibility(boolean isVisible) {
@@ -403,5 +428,13 @@ public class CkEditor28 extends Row {
 
     public void setRows1(int rows1) {
         this.rows1 = rows1;
+    }
+
+    public String getRestrictMediaTypes() {
+        return restrictMediaTypes;
+    }
+
+    public void setRestrictMediaTypes(String restrictMediaTypes) {
+        this.restrictMediaTypes = restrictMediaTypes;
     }
 }

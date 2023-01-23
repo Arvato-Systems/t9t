@@ -103,6 +103,17 @@ public class FileUtil implements IFileUtil {
         filePrefix = prefix + SEP;
     }
 
+    @Override
+    public boolean needGzipExtension(String relativePath, boolean compressed) {
+        return compressed && !relativePath.toLowerCase().endsWith(GZIP_EXTENSION);
+    }
+
+    @Override
+    public String getAbsolutePathForTenant(final String tenantId, final String relativePath, final boolean compressed) {
+        final String absolutePath = getAbsolutePathForTenant(tenantId, relativePath);
+        return needGzipExtension(relativePath, compressed) ? absolutePath + GZIP_EXTENSION : absolutePath;
+    }
+
     /**
      * Builds absolute path from predefined path prefix, tenantId and given relative path.
      *

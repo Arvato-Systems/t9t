@@ -15,17 +15,32 @@
  */
 package com.arvatosystems.t9t.bpmn.jpa.engine.impl;
 
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
+
 import com.arvatosystems.t9t.base.JsonUtil;
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
+import com.arvatosystems.t9t.base.services.IAutonomousExecutor;
+import com.arvatosystems.t9t.base.services.IPostCommitHook;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.bpmn.IBPMObjectFactory;
 import com.arvatosystems.t9t.bpmn.IWorkflowStep;
 import com.arvatosystems.t9t.bpmn.ProcessDefinitionDTO;
 import com.arvatosystems.t9t.bpmn.ProcessExecutionStatusDTO;
+import com.arvatosystems.t9t.bpmn.ProcessExecutionStatusRef;
 import com.arvatosystems.t9t.bpmn.T9tAbstractWorkflowCondition;
 import com.arvatosystems.t9t.bpmn.T9tAbstractWorkflowStep;
 import com.arvatosystems.t9t.bpmn.T9tBPMException;
@@ -49,6 +64,7 @@ import com.arvatosystems.t9t.bpmn.jpa.entities.ProcessExecStatusEntity;
 import com.arvatosystems.t9t.bpmn.jpa.persistence.IProcessExecStatusEntityResolver;
 import com.arvatosystems.t9t.bpmn.request.PerformSingleStepRequest;
 import com.arvatosystems.t9t.bpmn.request.PerformSingleStepResponse;
+import com.arvatosystems.t9t.bpmn.request.UpdateErrorStatusRequest;
 import com.arvatosystems.t9t.bpmn.services.IBpmnEngineRunner;
 import com.arvatosystems.t9t.bpmn.services.IBpmnRunner;
 import com.arvatosystems.t9t.bpmn.services.IProcessDefinitionCache;
@@ -56,21 +72,9 @@ import com.arvatosystems.t9t.bpmn.services.IWorkflowStepCache;
 
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
+import de.jpaw.util.ApplicationException;
 import de.jpaw.util.ExceptionUtil;
-
-import java.time.Instant;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import jakarta.persistence.EntityNotFoundException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 
 @Singleton
 public class BpmnRunner implements IBpmnRunner {
@@ -79,6 +83,8 @@ public class BpmnRunner implements IBpmnRunner {
     private final IProcessExecStatusEntityResolver statusResolver = Jdp.getRequired(IProcessExecStatusEntityResolver.class);
     private final IWorkflowStepCache workflowStepCache = Jdp.getRequired(IWorkflowStepCache.class);
     private final IProcessDefinitionCache pdCache = Jdp.getRequired(IProcessDefinitionCache.class);
+    private final IAutonomousExecutor autonomousExecutor = Jdp.getRequired(IAutonomousExecutor.class);
+
     private final AtomicInteger dbgCtr = new AtomicInteger(886688000);
 
     @Override
@@ -248,6 +254,33 @@ public class BpmnRunner implements IBpmnRunner {
                         break;
                     }
                 } catch (final Exception e) {
+                    // in this case we cannot change the statusEntity (rollback of JPA transaction) -> we need a separate transaction to write error details
+                    ctx.addPostFailureHook(new IPostCommitHook() {
+                        @Override
+                        public void postCommit(final RequestContext previousRequestContext, final RequestParameters rq, final ServiceResponse rs) {
+                            if (rs.getReturnCode() == T9tException.OPTIMISTIC_LOCKING_EXCEPTION) { // the retry-mechanism will solve this (hopefully)
+                                return;
+                            }
+
+                            LOGGER.debug("Sending UpdateErrorStatusRequest to record error code and details in process status for {}/{}",
+                                    pd.getProcessDefinitionId(), pd.getObjectRef());
+
+                            // create request to update status entity
+                            final UpdateErrorStatusRequest updateErrorStatusRequest = new UpdateErrorStatusRequest();
+                            updateErrorStatusRequest.setProcessExecStatusRef(new ProcessExecutionStatusRef(statusEntity.getObjectRef()));
+                            updateErrorStatusRequest.setReturnCode(Integer.valueOf(T9tBPMException.BPM_EXECUTE_PROCESS_ERROR)); // default
+                            updateErrorStatusRequest.setErrorDetails(e.getMessage());
+
+                            // override error code if possible with specific code
+                            if (e instanceof ApplicationException ae) {
+                                updateErrorStatusRequest.setReturnCode(Integer.valueOf(ae.getErrorCode()));
+                            }
+
+                            // execute update error status request
+                            autonomousExecutor.execute(previousRequestContext, updateErrorStatusRequest);
+                        }
+                    });
+
                     // the JPA transaction is probably broken, so converting this into an Error return won't help much, but at least we can log the error
                     LOGGER.error("Unexpected exception in workflow step {}: {}", nextStep.ret$PQON(), ExceptionUtil.causeChain(e));
                     if (e instanceof NullPointerException) {

@@ -33,7 +33,7 @@ package (com.arvatosystems) t9t.msglog.jpa.entities owner fortytwo prefix p28 {
     // use the default mapper here for more flexibility (less requirements on injection) in the log writers
     entity MessageEntity category datmessage is MessageDTO {
         pk (objectRef)
-        index (messageId)
+        index (messageId) where notNull
     }
 
     entity MessageStatisticsEntity category datwo is MessageStatisticsDTO {

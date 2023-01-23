@@ -177,4 +177,14 @@ package (com.arvatosystems) t9t.bpmn.request {
     class DeployProcessResponse extends ServiceResponse {
         required Boolean                        wasDeployed;
     }
+
+    /**
+     * Set error information for workflow status entity
+     */
+    class UpdateErrorStatusRequest extends RequestParameters return ServiceResponse {
+        required (ProcessExecutionStatusRef...)     processExecStatusRef;   // related status object
+        optional Integer                            returnCode;             // execution return code
+        optional Unicode(2048) allowControlChars    errorDetails;           // description of the error
+    }
+
 }

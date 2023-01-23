@@ -25,7 +25,7 @@ public class ReturnCodeException extends Exception {
     private String errorDetails = null;
 
     public ReturnCodeException(int returnCode, String returnMessage, String errorDetails) {
-        super("Returncode: " + returnCode + " -- " + returnMessage + " -- " + errorDetails);
+        super("Returncode: " + returnCode + " -- " + returnMessage + (errorDetails != null ? " -- " + errorDetails : ""));
         this.returnCode = returnCode;
         this.returnMessage = returnMessage;
         this.errorDetails = errorDetails;

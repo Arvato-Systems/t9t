@@ -73,6 +73,8 @@ public class ProcessDefinitionVM
     private UiOnlyWorkflowStep uiOnlyWorkflowStep;
     private List<UiOnlyWorkflowStep> uiOnlyWorkflowSteps;
 
+    protected static final String VM_ID = "ProcessDefinitionVM";
+
     @Override
     protected void loadData(DataWithTracking<ProcessDefinitionDTO, FullTrackingWithVersion> dwt) {
         super.loadData(dwt);
@@ -123,7 +125,7 @@ public class ProcessDefinitionVM
     @Command
     public void commandSave() {
         if (uiOnlyWorkflowSteps.isEmpty()) {
-            Messagebox.show(session.translate("processDefinition", "missingSteps"), session.translate("com", "badinput"), Messagebox.OK,
+            Messagebox.show(session.translate("processDefinition", "missingSteps"), session.translate(VM_ID, "com.badinput"), Messagebox.OK,
                     Messagebox.INFORMATION);
         }  else {
             super.commandSave();
@@ -305,7 +307,7 @@ public class ProcessDefinitionVM
     }
 
     private void showMandatoryError(String fieldName) {
-        Messagebox.show(session.translate("processDefinition", fieldName), session.translate("com", "com.badinput"),
+        Messagebox.show(session.translate("processDefinition", fieldName), session.translate(VM_ID, "com.badinput"),
                 Messagebox.OK, Messagebox.ERROR);
     }
 

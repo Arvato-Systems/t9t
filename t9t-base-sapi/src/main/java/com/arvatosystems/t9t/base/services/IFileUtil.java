@@ -16,6 +16,10 @@
 package com.arvatosystems.t9t.base.services;
 
 public interface IFileUtil {
+    String GZIP_EXTENSION = ".gz";
+
+    boolean needGzipExtension(String relativePath, boolean compressed);
+    String getAbsolutePathForTenant(String tenantId, String relativePath, boolean compressed);
     String getAbsolutePathForTenant(String tenantId, String relativePath);
     String getAbsolutePath(String relativePath);
     String getFilePathPrefix();

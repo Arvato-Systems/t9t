@@ -17,6 +17,7 @@ package com.arvatosystems.t9t.bpmn.be.steps;
 
 import java.util.Map;
 
+import com.arvatosystems.t9t.base.JsonUtil;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.bpmn.WorkflowReturnCode;
 
@@ -30,10 +31,10 @@ public class BPMStepException extends AbstractAlwaysRunnableNoFactoryWorkflowSte
     @Override
     public WorkflowReturnCode execute(final Object data, final Map<String, Object> parameters) {
         // returnCode and errorDetails should be set in the parameter
-        final Object code = parameters.get(PROCESS_VARIABLE_RETURN_CODE);
-        final Object errorDetails = parameters.get(PROCESS_VARIABLE_RETURN_CODE);
+        final Integer code = JsonUtil.getZInteger(parameters, PROCESS_VARIABLE_RETURN_CODE, 0);
+        final Object errorDetails = parameters.get(PROCESS_VARIABLE_ERROR_DETAILS);
         final String details = errorDetails == null ? null : errorDetails.toString();
-        if (code == null || !(code instanceof Integer))
+        if (code == null)
             throw new T9tException(T9tException.UNSUPPORTED_OPERATION, details);
         throw new T9tException((Integer)code, details);
     }

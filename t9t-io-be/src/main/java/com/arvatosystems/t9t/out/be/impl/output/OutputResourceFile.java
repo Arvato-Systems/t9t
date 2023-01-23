@@ -48,8 +48,6 @@ import de.jpaw.util.ExceptionUtil;
 public class OutputResourceFile implements IOutputResource {
     private static final Logger LOGGER = LoggerFactory.getLogger(OutputResourceFile.class);
 
-    protected static final String GZIP_EXTENSION = ".gz";
-
     private final IFileUtil fileUtil = Jdp.getRequired(IFileUtil.class);
     private final Provider<RequestContext> ctxProvider = Jdp.getProvider(RequestContext.class);
 
@@ -97,12 +95,9 @@ public class OutputResourceFile implements IOutputResource {
         sinkCfg = config;  // save for later when camel routing may be done
         absolutePath = fileUtil.getAbsolutePathForTenant(ctxProvider.get().tenantId, targetName);
 
-        if (config.getCompressed()) {
-            // if it's compressed but the file name doesn't seem to have GZIP extension, append it
-            if (!absolutePath.toLowerCase().endsWith(GZIP_EXTENSION)) {
-                absolutePath += GZIP_EXTENSION;
-                effectiveFilename = targetName + GZIP_EXTENSION;
-            }
+        if (fileUtil.needGzipExtension(targetName, config.getCompressed())) {
+            absolutePath += IFileUtil.GZIP_EXTENSION;
+            effectiveFilename = targetName + IFileUtil.GZIP_EXTENSION;
         }
 
         final File myFile = new File(absolutePath);

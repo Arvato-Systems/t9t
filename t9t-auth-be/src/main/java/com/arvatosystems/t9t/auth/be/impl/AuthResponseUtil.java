@@ -101,7 +101,11 @@ public class AuthResponseUtil implements IAuthResponseUtil {
             }
         }
 
-        LOGGER.debug("About to sign the following Jwt: {}", ToStringHelper.toStringML(jwt));
+        if (LOGGER.isTraceEnabled()) {
+            LOGGER.trace("About to sign the following Jwt: {}", ToStringHelper.toStringML(jwt));
+        } else {
+            LOGGER.debug("About to sign a Jwt for user {}, tenant {}", jwt.getUserId(), jwt.getTenantId());
+        }
         Long duration = null;
         if (ISSUER_APIKEY.equals(jwt.getIssuer())) {
             duration = jwtValidityApiKey;

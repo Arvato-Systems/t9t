@@ -31,7 +31,7 @@ package (com.arvatosystems) t9t.bpmn.jpa.entities owner fortytwo prefix p28 {
         pk (objectRef)
         index (tenantId, yieldUntil, processDefinitionId)
         index unique (targetObjectRef, processDefinitionId)
-        index (lockRef)
-        index (lockId)
+        index (lockRef) where notNull
+        index (lockId) where notNull
     }
 }

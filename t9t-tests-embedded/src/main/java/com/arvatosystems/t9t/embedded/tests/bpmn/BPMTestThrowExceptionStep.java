@@ -13,27 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.bpmn.be.steps;
+package com.arvatosystems.t9t.embedded.tests.bpmn;
 
 import java.util.Map;
 
-import com.arvatosystems.t9t.base.JsonUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.bpmn.WorkflowReturnCode;
+import com.arvatosystems.t9t.bpmn.be.steps.AbstractAlwaysRunnableNoFactoryWorkflowStep;
 
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 
+/**
+ * Workflow step for testing purpose. It just throws an exception.
+ */
 @Singleton
-@Named("error")
-public class BPMStepError extends AbstractAlwaysRunnableNoFactoryWorkflowStep {
+@Named("throwException")
+public class BPMTestThrowExceptionStep extends AbstractAlwaysRunnableNoFactoryWorkflowStep {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(BPMTestThrowExceptionStep.class);
+
+    public static final String STEP_NAME = "throwException";
+    public static final String ERROR_DETAILS = "Some details";
+    public static final int ERROR_CODE = T9tException.GENERAL_EXCEPTION;
 
     @Override
     public WorkflowReturnCode execute(final Object data, final Map<String, Object> parameters) {
-        // returnCode and errorDetails should be set in the parameter
-        final Integer code = JsonUtil.getZInteger(parameters, PROCESS_VARIABLE_RETURN_CODE, null);
-        if (code == null)
-            parameters.put(PROCESS_VARIABLE_RETURN_CODE, T9tException.UNSUPPORTED_OPERATION);  // set a default error code
-        return WorkflowReturnCode.ERROR;
+        LOGGER.info("Executing throwException...");
+        throw new T9tException(ERROR_CODE, ERROR_DETAILS);
     }
 }

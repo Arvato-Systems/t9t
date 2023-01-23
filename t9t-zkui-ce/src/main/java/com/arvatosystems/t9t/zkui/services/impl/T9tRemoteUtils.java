@@ -129,15 +129,7 @@ public class T9tRemoteUtils implements IT9tRemoteUtils {
                         response.getReturnCode(),
                         requestParameters.ret$PQON(),
                         response.getErrorDetails(), response.getErrorMessage());
-                final boolean exposeDetails;
-                switch (response.getReturnCode() / ApplicationException.CLASSIFICATION_FACTOR) {
-                case ApplicationException.CL_INTERNAL_LOGIC_ERROR:
-                case ApplicationException.CL_DATABASE_ERROR:
-                    exposeDetails = false;
-                    break;
-                default:
-                    exposeDetails = true;
-                }
+                final boolean exposeDetails = isExposeDetailAllowed(response.getReturnCode());
                 throw new ServiceResponseException(response.getReturnCode(),  response.getErrorMessage(),
                     exposeDetails ? response.getErrorDetails() : null);
             }
@@ -235,7 +227,22 @@ public class T9tRemoteUtils implements IT9tRemoteUtils {
         }
         if (!ApplicationException.isOk(response.getReturnCode()) && (response.getReturnCode() != T9tException.PASSWORD_EXPIRED)) {
             LOGGER.error("Error: {} - Message: {} -- {}", response.getReturnCode(), response.getErrorMessage(), response.getErrorDetails());
-            throw new ReturnCodeException(response.getReturnCode(), response.getErrorMessage(), response.getErrorDetails());
+            final boolean exposeDetails = isExposeDetailAllowed(response.getReturnCode());
+            throw new ReturnCodeException(response.getReturnCode(), response.getErrorMessage(), exposeDetails ? response.getErrorDetails() : null);
+        }
+    }
+
+    private boolean isExposeDetailAllowed(final int returnCode) {
+        if (ApplicationException.isOk(returnCode)) {
+            return true;
+        }
+        final int classification = returnCode / ApplicationException.CLASSIFICATION_FACTOR;
+        switch (classification) {
+        case ApplicationException.CL_INTERNAL_LOGIC_ERROR:
+        case ApplicationException.CL_DATABASE_ERROR:
+            return false;
+        default:
+            return true;
         }
     }
 }

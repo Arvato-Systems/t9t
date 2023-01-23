@@ -9,7 +9,7 @@
             <form28 id="authModuleCfgCrud" aspect="2" numColumns="2">
                 <rows>
                     <cells28    id ="tenantId"                         value="@load(vm.tenantId)   @save(vm.tenantId,before='commandSave')" />
-                    <ckeditor28 id ="logo"     colspan1="3" rows1="10" value ="@load(vm.data.logo) @save(vm.data.logo,before='commandSave')"/>
+                    <ckeditor28 id ="logo"     colspan1="3" rows1="10" value ="@load(vm.data.logo) @save(vm.data.logo,before='commandSave')" restrictMediaTypes="PNG,JPG"/>
                     <cells28    id ="z"        colspan1="3" rows1="4"  value ="@load(vm.data.z)    @save(vm.data.z,before='commandSave')"/>
                 </rows>
             </form28>
