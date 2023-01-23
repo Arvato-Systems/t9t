@@ -223,7 +223,7 @@ public class FilterToSolrConverter implements IFilterToSolrConverter {
 //        default -> throw new IllegalArgumentException("Unhandled parameter types: " + filter.getClass().getSimpleName());
 //        };
         if (filter instanceof EnumFilter) {
-            return toSolrByEnumFilter((EnumFilter) filter);
+            return toSolr((EnumFilter) filter);
         } else if (filter instanceof XenumFilter) {
             return toSolr((XenumFilter) filter);
         } else if (filter instanceof AsciiFilter) {
@@ -273,11 +273,11 @@ public class FilterToSolrConverter implements IFilterToSolrConverter {
         return "(" + joined + ")";
     }
 
-    protected String toSolrByBooleanFilter(final BooleanFilter it) {
+    protected String toSolr(final BooleanFilter it) {
         return Boolean.toString(it.getBooleanValue());
     }
 
-    protected String toSolrByEnumFilter(EnumFilter it) {
+    protected String toSolr(EnumFilter it) {
         if (it.getTokenList() != null) {
             return buildOr(it.getTokenList().stream());
         }

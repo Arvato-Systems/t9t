@@ -29,6 +29,7 @@ import org.zkoss.bind.annotation.ContextType;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.event.UploadEvent;
+import org.zkoss.zul.Messagebox;
 
 import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;
 import com.arvatosystems.t9t.zkui.services.IT9tMessagingDAO;
@@ -48,23 +49,32 @@ import de.jpaw.util.ExceptionUtil;
 @Init(superclass = true)
 public class ReportConfigVM extends CrudSurrogateKeyVM<ReportConfigRef, ReportConfigDTO, FullTrackingWithVersion> {
     private static final Logger LOGGER       = LoggerFactory.getLogger(ReportConfigVM.class);
-    protected static final String DATA_SINK_ID = "reportSrc";
+    private static final String FILE_EXTENSION_JASPER_REPORT = ".jrxml";
+    private static final String DATA_SINK_ID = "reportSrc";
     protected final IT9tMessagingDAO messagingDAO = Jdp.getRequired(IT9tMessagingDAO.class);
 
     @NotifyChange("data.jasperReportTemplateName")
     @Command
-    public void uploadReport(@ContextParam(ContextType.BIND_CONTEXT) BindContext ctx) throws ReturnCodeException, IOException {
+    public void uploadReport(@ContextParam(ContextType.BIND_CONTEXT) final BindContext ctx) throws ReturnCodeException, IOException {
         LOGGER.debug("uploadReport");
-        MediaData md = messagingDAO.getUploadedData((UploadEvent)ctx.getTriggerEvent());
-        ByteArray r = md.getRawData();
+        final MediaData md = messagingDAO.getUploadedData((UploadEvent)ctx.getTriggerEvent());
+        final ByteArray r = md.getRawData();
         LOGGER.debug("uploadedReport of {} bytes of type {}", r == null ? md.getText().length() : r.length(), md.getMediaType());
-        String filename = md.getZ().get("fileName").toString();
+        final String filename = md.getZ().get("fileName").toString();
+
+        // File extension got from the upload is "bin", thus manually check the file extension from the file name.
+        if (filename == null || !filename.endsWith(FILE_EXTENSION_JASPER_REPORT)) {
+            Messagebox.show(session.translate("ReportConfigVM", "jasperReportOnly"),
+                    session.translate("ReportConfigVM", "com.badinput"), Messagebox.OK, Messagebox.ERROR);
+            LOGGER.error("ERROR: Invalid file name: {} ", filename);
+            return;
+        }
         data.setJasperReportTemplateName(filename);
 
-        Map<String, Object> additionalParameters = new HashMap<String, Object>();
+        final Map<String, Object> additionalParameters = new HashMap<String, Object>();
         additionalParameters.put("localFilename", filename);
 
-        OutputSessionParameters outputSessionParameters = new OutputSessionParameters();
+        final OutputSessionParameters outputSessionParameters = new OutputSessionParameters();
         outputSessionParameters.setDataSinkId(DATA_SINK_ID);
         outputSessionParameters.setCommunicationFormatType(md.getMediaType());
         outputSessionParameters.setCommunicationFormatType(MediaXType.of(MediaType.RAW));  // must be raw, nothing else accepted
