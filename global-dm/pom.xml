@@ -75,8 +75,8 @@
 
         <jakarta.activation-api.version>2.1.1</jakarta.activation-api.version>          <!-- 2.1.0 for jakarta EE 10 -->
         <jakarta.activation.version>2.0.0</jakarta.activation.version>                  <!-- this is now angus-activation -->
-        <jakarta.mail-api.version>2.1.0</jakarta.mail-api.version>                      <!-- 2.1.0 for jakarta EE 10 -->
-        <jakarta.mail.version>1.1.0</jakarta.mail.version>                              <!-- this is now angus-mail -->
+        <jakarta.mail-api.version>2.1.1</jakarta.mail-api.version>                      <!-- 2.1.0 for jakarta EE 10 -->
+        <jakarta.mail.version>2.0.0</jakarta.mail.version>                              <!-- this is now angus-mail -->
         <jakarta.el-api.version>5.0.1</jakarta.el-api.version>
         <jakarta.el.version>4.0.2</jakarta.el.version>                                  <!-- (org.glassfish:jakarta.el) -->
         <jakarta.xml.ws-api.version>4.0.0</jakarta.xml.ws-api.version>
