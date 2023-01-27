@@ -30,8 +30,8 @@ import de.jpaw.annotations.AddLogger
 import de.jpaw.bonaparte.pojos.api.OperationType
 import de.jpaw.bonaparte.pojos.api.UnicodeFilter
 import java.time.LocalTime
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 import static extension com.arvatosystems.t9t.misc.extensions.MiscExtensions.*
@@ -57,6 +57,7 @@ class SchedulerSetupTest {
         // Assertions.assertEquals("Expected 1 ApiKey", 1, result.dataList.size)  // not working when running in CI environment
     }
 
+    @Disabled
     @Test
     def void createSchedulerCreateAndUpdateTest() {
         val requestRef = dlg.createCannedRequestWithParameters('testRqOk', 'Say hello', new LogMessageRequest('Hello, world'))

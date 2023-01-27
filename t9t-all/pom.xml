@@ -126,14 +126,6 @@
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-bpmn-jpa</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.arvato-systems.t9t</groupId>
-            <artifactId>t9t-bpmn2-jpa</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.arvato-systems.t9t</groupId>
-            <artifactId>t9t-bpmn2-mock</artifactId>
-        </dependency>
         <!--
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>

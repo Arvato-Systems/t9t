@@ -9,6 +9,8 @@
                 <rows>
                     <cells228 id ="processDefinitionId"         value ="@load(vm.data.processDefinitionId)    @save(vm.data.processDefinitionId,before='commandSave')"
                               id2="targetObjectRef"             value2="@load(vm.data.targetObjectRef)        @save(vm.data.targetObjectRef,before='commandSave')"/>
+                    <cells228 id ="lockId"                      value ="@load(vm.data.lockId)                 @save(vm.data.lockId,before='commandSave')"
+                              id2="lockRef"                     value2="@load(vm.data.lockRef)                @save(vm.data.lockRef,before='commandSave')"/>
                     <cells228 id ="yieldUntil"                  value ="@load(vm.data.yieldUntil)             @save(vm.data.yieldUntil,before='commandSave')"
                               id2="nextStep"                    value2="@load(vm.data.nextStep)               @save(vm.data.nextStep,before='commandSave')"/>
                     <cells28  id ="currentParameters" rows1="3" value ="@load(vm.data.currentParameters)      @save(vm.data.currentParameters,before='commandSave')" colspan1="3"/>

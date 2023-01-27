@@ -103,4 +103,12 @@ public abstract class AbstractRequestHandler<REQUEST extends RequestParameters> 
                     + actualInstance.ret$PQON());
         }
     }
+
+    /**
+     * Returns completely modifiable request parameters. Modeled as a method to avoid duplicate deep copies as long as a deep copy is already
+     * done by <code>RequestProcessor</code>.
+     */
+    protected REQUEST getMutableRequestParameters(final REQUEST rp, final boolean deepCopy, final boolean includeCollections) {
+        return rp;  // rp.ret$MutableClone(deepCopy, includeCollections)
+    }
 }

@@ -267,6 +267,28 @@ public class RequestProcessor implements IRequestProcessor {
         }
     }
 
+    /** Performs the retry logic in case of optimistic locking exceptions. */
+    protected ServiceResponse executeSynchronousWithRetries(final RequestParameters rq, final InternalHeaderParameters ihdr, final boolean skipAuthorization) {
+        int attemptsToCommit = 3;  // number of attempts fighting optimistic locking
+        // we freeze all parameters to ensure that data is not modified and we retry with different parameters
+        rq.freeze();
+        for (;;) {
+            // temporarily create a new object with mutable main record
+            final RequestParameters mutableRequestParameters = rq.ret$MutableClone(true, true);  // omit deep copy of arrays: (search request sortColumns!)
+            final ServiceResponse response = executeSynchronous(mutableRequestParameters, ihdr, skipAuthorization);
+            if (response.getReturnCode() != T9tException.OPTIMISTIC_LOCKING_EXCEPTION) {
+                return response;
+            }
+            attemptsToCommit -= 1;
+            if (attemptsToCommit > 0) {
+                LOGGER.info("Optimistic locking exception detected - retrying ({} attempts left)", attemptsToCommit);
+            } else {
+                LOGGER.error("Optimistic locking exception detected -problem persists, giving up");
+                return response;
+            }
+        }
+    }
+
     /**
      * Executes a request in a new request context. This is the only method which creates a new context.
      * All external or asynchronous requests have to pass this method, subsequent synchronous executions use different entries.
@@ -374,24 +396,6 @@ public class RequestProcessor implements IRequestProcessor {
                 LOGGER.error("NPE Stack trace is ", ee);
             }
             return MessagingUtil.createServiceResponse(T9tException.GENERAL_EXCEPTION, causeChain, ihdr.getMessageId(), null, null);
-        }
-    }
-
-    /** Performs the retry logic in case of optimistic locking exceptions. */
-    protected ServiceResponse executeSynchronousWithRetries(final RequestParameters rq, final InternalHeaderParameters ihdr, final boolean skipAuthorization) {
-        int attemptsToCommit = 3;  // number of attempts fighting optimistic locking
-        for (;;) {
-            final ServiceResponse response = executeSynchronous(rq, ihdr, skipAuthorization);
-            if (response.getReturnCode() != T9tException.OPTIMISTIC_LOCKING_EXCEPTION) {
-                return response;
-            }
-            attemptsToCommit -= 1;
-            if (attemptsToCommit > 0) {
-                LOGGER.info("Optimistic locking exception detected - retrying ({} attempts left)", attemptsToCommit);
-            } else {
-                LOGGER.error("Optimistic locking exception detected -problem persists, giving up");
-                return response;
-            }
         }
     }
 }

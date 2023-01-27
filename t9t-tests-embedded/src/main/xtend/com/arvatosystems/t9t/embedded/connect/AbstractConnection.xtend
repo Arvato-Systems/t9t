@@ -93,7 +93,8 @@ abstract class AbstractConnection implements ITestConnection {
     }
 
     // just a proxy
-    def final ServiceResponse doIO(RequestParameters rp) {
+    def final ServiceResponse doIO(RequestParameters rpIn) {
+        val rp = rpIn.ret$MutableClone(true, true)
         if (userAuthenticatedCredentials) {
             return requestProcessor.execute(null, rp, jwtInfo, encodedJwt, skipAuthorization)
         } else {

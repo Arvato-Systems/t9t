@@ -10,7 +10,6 @@
                 <tabs>
                     <tab28 id="generalTab" />
                     <tab28 id="stepTab" />
-                    <tab28 id="bpmTab" />
                 </tabs>
                 <tabpanels vflex="1" id="tabpanelsDetail">
                     <tabpanel vflex="1" id="processPanel">
@@ -101,20 +100,6 @@
                             </listbox>
                         </hlayout>
                         </viewModel28>
-                    </tabpanel>
-                    <tabpanel vflex="1" id="bpmPanel">
-                        <form28 id="bpmnDiagram" aspect="2" numColumns="2">
-                            <rows>
-                                <row>
-                                    <cell>
-                                        <button28 upload="true" id="uploadBpmn" onUpload="@command('uploadBpmn')" resourceId="button.uploadBpmn" />
-                                    </cell>
-                                    <cell>
-                                        <button28 id="downloadBpmn" onClick="@command('downloadBpmn')" resourceId="button.downloadBpmn" />
-                                    </cell>
-                                </row>
-                            </rows>
-                        </form28>
                     </tabpanel>
                 </tabpanels>
             </tabbox>
