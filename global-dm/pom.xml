@@ -76,7 +76,7 @@
         <jakarta.activation-api.version>2.1.1</jakarta.activation-api.version>          <!-- 2.1.0 for jakarta EE 10 -->
         <jakarta.activation.version>2.0.0</jakarta.activation.version>                  <!-- this is now angus-activation -->
         <jakarta.mail-api.version>2.1.1</jakarta.mail-api.version>                      <!-- 2.1.0 for jakarta EE 10 -->
-        <jakarta.mail.version>2.0.0</jakarta.mail.version>                              <!-- this is now angus-mail -->
+        <jakarta.mail.version>2.0.1</jakarta.mail.version>                              <!-- this is now angus-mail -->
         <jakarta.el-api.version>5.0.1</jakarta.el-api.version>
         <jakarta.el.version>4.0.2</jakarta.el.version>                                  <!-- (org.glassfish:jakarta.el) -->
         <jakarta.xml.ws-api.version>4.0.0</jakarta.xml.ws-api.version>
@@ -109,9 +109,11 @@
         <commons-fileupload.version>1.4</commons-fileupload.version>      <!-- must be 1.3.3 at least due to CVE-2016-1000031 -->
         <commons-text.version>1.10.0</commons-text.version>               <!-- not used in t9t, but DM made to cover for transitive dependencies -->
 
-        <!-- AWS -->
-        <aws-bom.version>1.12.389</aws-bom.version>
-        <aws2-bom.version>2.19.21</aws2-bom.version>
+        <!-- AWS SDK v1 -->
+        <aws-bom.version>1.12.393</aws-bom.version>
+
+        <!-- AWS SDK v2 -->
+        <aws2-bom.version>2.19.24</aws2-bom.version>
 
         <!-- Azure -->
         <azure-cosmosdb.version>2.6.16</azure-cosmosdb.version>
@@ -141,7 +143,6 @@
         <zxing.version>3.5.1</zxing.version>
         <quartz.version>2.4.0.pre1</quartz.version>
         <quartz-oracle.version>2.1.7</quartz-oracle.version>           <!-- no update since 2013! -->
-        <jdtcore.version>3.1.1</jdtcore.version>
         <jsap.version>2.1</jsap.version>
         <picocli.version>4.7.0</picocli.version>
         <httpcore.version>4.4.16</httpcore.version>
@@ -165,7 +166,7 @@
         <uuid-generator.version>4.0.1</uuid-generator.version>
         <apache-poi.version>5.2.3</apache-poi.version>
         <xmlbeans.version>5.1.1</xmlbeans.version>
-        <gson.version>2.10</gson.version>
+        <gson.version>2.10.1</gson.version>
         <log4j2.version>2.19.0</log4j2.version>     <!-- see comment below -->
         <reload4j.version>1.2.24</reload4j.version>
 
@@ -909,11 +910,6 @@
                 <groupId>net.sf.jasperreports</groupId>
                 <artifactId>jasperreports-fonts</artifactId>
                 <version>${jasperreports.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.jdt</groupId>
-                <artifactId>core</artifactId>
-                <version>${jdtcore.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.martiansoftware</groupId>
