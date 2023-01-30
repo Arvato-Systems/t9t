@@ -51,7 +51,8 @@ public class Form28 extends Grid implements IDataFactoryOwner, IViewModelOwner {
     private CrudViewModel<BonaPortable, TrackingBase> crudViewModel;
     private String viewModelId;
     private int numColumns = 1;
-    private String aspect = "3";   // aspect ratio label to entryfields (1:1 / 1:2 / 1:3 as you like)
+    private String aspectText = "1"; // relative size of label column
+    private String aspect = "3";     // relative size of entry field column (1:1 / 1:2 / 1:3 as you like)
     private final Columns cols;
     private Crud28 inCrud = null;
     private final List<IDataField> myFields = new ArrayList<IDataField>(32);
@@ -67,7 +68,15 @@ public class Form28 extends Grid implements IDataFactoryOwner, IViewModelOwner {
     }
 
     public void setAspect(String aspect) {
-        this.aspect = aspect;
+        final int index = aspect.indexOf(':');
+        if (index >= 1 && aspect.length() > index) {
+            // delimited, and we have text before and after the colon
+            this.aspectText = aspect.substring(0, index);
+            this.aspect = aspect.substring(index + 1);
+        } else {
+            // just relative size of entryfields
+            this.aspect = aspect;
+        }
     }
 
     @Override
@@ -91,7 +100,7 @@ public class Form28 extends Grid implements IDataFactoryOwner, IViewModelOwner {
         LOGGER.debug("Form28 onCreate: doing columns...");
         for (int i = 0; i < numColumns; ++i) {
             Column labelColumn = new Column();
-            labelColumn.setHflex("1");
+            labelColumn.setHflex(aspectText);
             labelColumn.setParent(cols);
             Column dataColumn = new Column();
             dataColumn.setHflex(aspect);

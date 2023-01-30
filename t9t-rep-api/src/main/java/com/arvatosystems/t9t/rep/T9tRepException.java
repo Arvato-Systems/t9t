@@ -34,16 +34,16 @@ public class T9tRepException extends T9tException {
 
     // scheduler related exceptions
 
-    public static final int JASPER_REPORT_CREATION_SQL_EXCEPTION = OFFSET + 201;
-    public static final int JASPER_REPORT_CREATION_JR_EXCEPTION = OFFSET + 202;
-    public static final int JASPER_REPORT_CREATION_IO_EXCEPTION = OFFSET + 203;
-    public static final int JASPER_REPORT_PATH_CONFIG_EXCEPTION = OFFSET + 204;
-    public static final int BAD_INTERVAL                        = OFFSET + 205;
-    public static final int BAD_INTERVAL_CLASS                  = OFFSET + 206;
-    public static final int SCHEDULE_REPORT_FAILED              = OFFSET + 208;
-    public static final int UNABLE_TO_NOTIFY_REPORT_COMPLETION  = OFFSET + 209;
-
+    public static final int JASPER_REPORT_CREATION_SQL_EXCEPTION         = OFFSET + 201;
+    public static final int JASPER_REPORT_CREATION_JR_EXCEPTION          = OFFSET + 202;
+    public static final int JASPER_REPORT_CREATION_IO_EXCEPTION          = OFFSET + 203;
+    public static final int JASPER_REPORT_PATH_CONFIG_EXCEPTION          = OFFSET + 204;
+    public static final int BAD_INTERVAL                                 = OFFSET + 205;
+    public static final int BAD_INTERVAL_CLASS                           = OFFSET + 206;
+    public static final int SCHEDULE_REPORT_FAILED                       = OFFSET + 208;
+    public static final int UNABLE_TO_NOTIFY_REPORT_COMPLETION           = OFFSET + 209;
     public static final int JASPER_REPORT_NOT_SUPPORTED_OUTPUT_FILE_TYPE = OFFSET + 210;
+    public static final int JASPER_PARAMETER_ERROR                       = OFFSET + 211;
 
     static {
         initialize();
@@ -62,6 +62,6 @@ public class T9tRepException extends T9tException {
         codeToDescription.put(BAD_INTERVAL_CLASS, "Unknown interval type");
         codeToDescription.put(SCHEDULE_REPORT_FAILED, "Unable to schedule report");
         codeToDescription.put(UNABLE_TO_NOTIFY_REPORT_COMPLETION, "Unable to send out email for notification");
-
+        codeToDescription.put(JASPER_PARAMETER_ERROR, "Bad parameter for Jasper reports");
     }
 }

@@ -21,6 +21,8 @@ import static de.jpaw.util.ApplicationException.CL_DENIED;
 import static de.jpaw.util.ApplicationException.CL_INTERNAL_LOGIC_ERROR;
 import static de.jpaw.util.ApplicationException.CL_PARAMETER_ERROR;
 import static de.jpaw.util.ApplicationException.CL_PARSER_ERROR;
+import static de.jpaw.util.ApplicationException.CL_RESOURCE_EXHAUSTED;
+import static de.jpaw.util.ApplicationException.CL_SERVICE_UNAVAILABLE;
 import static de.jpaw.util.ApplicationException.CL_SUCCESS;
 import static de.jpaw.util.ApplicationException.CL_TIMEOUT;
 import static de.jpaw.util.ApplicationException.CL_VALIDATION_ERROR;
@@ -114,12 +116,47 @@ public final class RestUtils {
         return createErrorResult(T9tException.REST_BAD_LIST_SIZE, parameter == null ? "List was null" : "Size " + parameter.size());
     }
 
+    /**
+     * Creates a GenericResult, based on error code and error details.
+     * Error details will only be provided for certain return codes (parser errors or invalid references),
+     * in order to not leak internal implementation details (stack traces).
+     *
+     * @param returnCode  the t9t return code
+     * @param errorDetails  details describing the error
+     */
     public static GenericResult createErrorResult(final int returnCode, final String errorDetails) {
         final GenericResult result = new GenericResult();
-        result.setErrorDetails(errorDetails);
-        result.setErrorMessage(T9tException.codeToString(returnCode));
-        result.setReturnCode(returnCode);
         result.setProcessRef(0L);
+
+        final int classification = returnCode / ApplicationException.CLASSIFICATION_FACTOR;
+        switch (classification) {
+        case CL_SUCCESS:
+        case CL_DENIED:
+        case CL_PARSER_ERROR:
+        case CL_PARAMETER_ERROR:
+        case CL_VALIDATION_ERROR:
+            // in these cases, provide detail, it's a client error and tell the client which field was not ok
+            result.setErrorDetails(errorDetails);
+            result.setErrorMessage(ApplicationException.codeToString(returnCode));
+            result.setReturnCode(returnCode);
+            break;
+        case CL_TIMEOUT:
+        case CL_SERVICE_UNAVAILABLE:
+            result.setErrorDetails(null);
+            result.setErrorMessage("Timeout");
+            result.setReturnCode(returnCode);
+            break;
+            // for security reasons, do not transmit internal exception details to external callers
+        case CL_DATABASE_ERROR:
+        case CL_INTERNAL_LOGIC_ERROR:
+        case CL_RESOURCE_EXHAUSTED:
+        default:
+            // for security reasons, do not transmit internal exception details to external callers
+            result.setErrorDetails(null);
+            result.setErrorMessage(ApplicationException.codeToString(T9tException.GENERAL_SERVER_ERROR));
+            result.setReturnCode(T9tException.GENERAL_SERVER_ERROR);
+            break;
+        }
         return result;
     }
 

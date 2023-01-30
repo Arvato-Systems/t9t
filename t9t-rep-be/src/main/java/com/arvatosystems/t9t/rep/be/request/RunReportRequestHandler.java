@@ -194,7 +194,7 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
 
         if (reportParamsDTO == null) {
             LOGGER.error("Report parameter can not be loaded:", request.getReportParamsRef());
-            throw new T9tException(T9tRepException.CL_PARAMETER_ERROR, request);
+            throw new T9tException(T9tRepException.JASPER_PARAMETER_ERROR, "no params");
         }
 
         final ReportConfigDTO reportConfigDTO = dpl.getConfigDTO(reportParamsDTO.getReportConfigRef());

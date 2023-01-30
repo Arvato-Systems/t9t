@@ -164,7 +164,7 @@ public class Executor implements IExecutor {
             }
             // Finally we're done, return the response
             return response;
-        } catch (ApplicationException e) {
+        } catch (final ApplicationException e) {
             // log a stack trace in case of 8000 or 9000 type errors
             final int classification = e.getClassification();
             if (classification == ApplicationException.CL_INTERNAL_LOGIC_ERROR || classification == ApplicationException.CL_DATABASE_ERROR) {
@@ -174,10 +174,12 @@ public class Executor implements IExecutor {
                 LOGGER.error("Execution problem: internal logic (8xxx) or general error (9xxx): Cause is: ", e);
             }
             return MessagingUtil.createServiceResponse(e.getErrorCode(), e.getMessage());
-        } catch (Exception e) {
+        } catch (final Throwable e) {
             // provide full stack trace to the log
             final String causeChain = ExceptionUtil.causeChain(e);
-            LOGGER.error("Execution problem: General error cause is: ", e); // create a service response that reports about the problem
+            final boolean notThrowable = e instanceof Exception;
+            LOGGER.error("Execution problem{}: General error cause is: ", notThrowable ? "" : " (THROWABLE!)");
+            // create a service response that reports about the problem
             return MessagingUtil.createServiceResponse(T9tException.GENERAL_EXCEPTION, causeChain);
         } finally {
             ctx.popCallStack();

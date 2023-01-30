@@ -900,10 +900,6 @@
                         <groupId>commons-logging</groupId>
                         <artifactId>commons-logging</artifactId>
                     </exclusion>
-                    <exclusion>
-                        <groupId>eclipse</groupId>
-                        <artifactId>jdtcore</artifactId>
-                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
