@@ -129,6 +129,17 @@ public final class T9tUtil {
         return value == null ? useWhenNull : value;
     }
 
+    /** Computes the logical XOR of 2 parameters (exactly one of the arguments must be true). */
+    public static boolean xor(final boolean a, final boolean b) {
+        return a ? !b : b;
+    }
+
+
+    /** Returns the string with whitespace removed, or null if the string was null. */
+    public static String trim(final String s) {
+        return s == null ? s : s.trim();
+    }
+
     /** Transforms any block of whitespace into single spaces, and also removed any leading and trailing spaces. */
     public static String spaceNormalize(final String s) {
         return s == null ? null : s.replaceAll("\\s{2,}", " ").trim();

@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.IRemoteConnection;
+import com.arvatosystems.t9t.base.StringTrimmer;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
@@ -38,8 +39,10 @@ import com.arvatosystems.t9t.zkui.util.Constants;
 
 import de.jpaw.bonaparte.converter.StringConverterEmptyToNull;
 import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.core.DataConverter;
 import de.jpaw.bonaparte.pojos.api.FalseFilter;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
+import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.util.ToStringHelper;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
@@ -58,6 +61,8 @@ public class T9tRemoteUtils implements IT9tRemoteUtils {
     private static final int SANITY_MAX_RECORDS_EXPORT = 10000;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(T9tRemoteUtils.class);
+    private static final DataConverter<String, AlphanumericElementaryDataItem> STRING_TRIMMER = new StringTrimmer();
+
     static {
         // configure output level for UI
         ToStringHelper.maxList = 3;
@@ -121,7 +126,7 @@ public class T9tRemoteUtils implements IT9tRemoteUtils {
         RequestParameters requestParameters,
         Class<T> serviceResponseClass) throws ServiceResponseException {
         try {
-            requestParameters.treeWalkString(new StringConverterEmptyToNull(), true);  // convert empty data to nulls
+            requestParameters.treeWalkString(STRING_TRIMMER, true);  // trim fields, then convert empty data to nulls
             requestParameters.validate();
             ServiceResponse response = execute(requestParameters);
             if (!ApplicationException.isOk(response.getReturnCode())) {

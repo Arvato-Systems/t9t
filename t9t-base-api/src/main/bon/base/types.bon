@@ -33,7 +33,7 @@ package (com.arvatosystems) t9t.base.types {
     type bucketId               is typeId;              // using the same type for buckets
     type eventId                is Unicode(100);        // size of event names
 
-    type defaultExternalId      is Unicode(36);         // default size for any external ID - large enough to contain an ASCII UUID
+    type defaultExternalId      is Unicode(1..36);      // default size for any external ID - large enough to contain an ASCII UUID
     type shortText              is Unicode(80);         // type for all cfg item descriptions
 
     type pqon                   is Unicode(255);        // partially qualified object name
@@ -42,12 +42,12 @@ package (com.arvatosystems) t9t.base.types {
     type phoneNumber            is Ascii(32);           // telephone number
 
     // ISO codes
-    type countryCode            is Uppercase(2);        // ISO 3166
-    type countryCodeA3          is Uppercase(3);
+    type countryCode            is Uppercase(2..2);     // ISO 3166
+    type countryCodeA3          is Uppercase(3..3);
     type countryCodeN3          is Ascii(3)  regexp "[0-9][0-9][0-9]?";
-    type currencyCode           is Uppercase(3);        // ISO 4217
+    type currencyCode           is Uppercase(3..3);     // ISO 4217
     type currencyCodeN3         is Ascii(3)  regexp "[0-9][0-9][0-9]?";
-    type languageCodeA2         is Lowercase(2);        // ISO 639-1
+    type languageCodeA2         is Lowercase(2..2);     // ISO 639-1
     type languageCodeA5         is Ascii(5)  regexp "[a-z][a-z]([\\-_][A-Z][A-Z])?";        // ISO 639 with country, BCP47 with limited coverage
     type languageCode           is languageCodeA5;      // pick one for the default
 

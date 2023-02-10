@@ -131,6 +131,11 @@ public final class RestUtils {
         final int classification = returnCode / ApplicationException.CLASSIFICATION_FACTOR;
         switch (classification) {
         case CL_SUCCESS:
+            // in these cases, specifically do not return any of the error fields, it could cause confusion
+            result.setErrorDetails(null);
+            result.setErrorMessage(null);
+            result.setReturnCode(returnCode);  // this one is required because it could be different to 0
+            break;
         case CL_DENIED:
         case CL_PARSER_ERROR:
         case CL_PARAMETER_ERROR:

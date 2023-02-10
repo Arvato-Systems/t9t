@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.in.be.impl;
 
+import com.arvatosystems.t9t.base.StringTrimmer;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
@@ -43,8 +44,10 @@ import com.arvatosystems.t9t.server.services.IStatefulServiceSession;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.BonaPortableClass;
 import de.jpaw.bonaparte.core.BonaPortableFactory;
+import de.jpaw.bonaparte.core.DataConverter;
 import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.bonaparte.pojos.api.media.MediaType;
+import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ApplicationException;
@@ -69,6 +72,7 @@ import org.slf4j.LoggerFactory;
 @Dependent
 public class InputSession implements IInputSession {
     private static final Logger LOGGER = LoggerFactory.getLogger(InputSession.class);
+    private static final DataConverter<String, AlphanumericElementaryDataItem> STRING_TRIMMER = new StringTrimmer();
     private static final int MAX_RESPONSES = 1000; // maximum number of responses which are buffered
     private static final String WORKER_THREAD_NAME_PREFIX = "t9t-InputSessionWorker-";
 
@@ -267,6 +271,10 @@ public class InputSession implements IInputSession {
             // ok, DTO is good...
             try {
                 rp = inputTransformer.transform(dto);
+                if (rp != null) {
+                    rp.treeWalkString(STRING_TRIMMER, true);
+                    rp.validate();
+                }
             } catch (final Exception e) {
                 // in case of an exception during conversion, send an error request
                 rp = conditionalLog("Transform", recordNo, e);

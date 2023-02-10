@@ -15,14 +15,19 @@
  */
 package com.arvatosystems.t9t.rest.services;
 
+import com.arvatosystems.t9t.base.StringTrimmer;
 import com.arvatosystems.t9t.base.T9tException;
 
 import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.core.DataConverter;
 import de.jpaw.bonaparte.core.MessageParserException;
+import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import jakarta.ws.rs.core.HttpHeaders;
 
 /** Marker interface to allow collection of REST end points. */
 public interface IT9tRestEndpoint {
+    DataConverter<String, AlphanumericElementaryDataItem> STRING_TRIMMER = new StringTrimmer();
+
     /**
      * Determines which format to use for the response.
      * The type of the response is either the type requested by ACCEPT, or, in case that is null, matches the content type.
@@ -45,6 +50,7 @@ public interface IT9tRestEndpoint {
         if (payload == null) {
             throw new T9tException(MessageParserException.EMPTY_BUT_REQUIRED_FIELD, "Missing payload to REST request");
         }
+        payload.treeWalkString(STRING_TRIMMER, true);
         payload.validate();
     }
 

@@ -25,7 +25,10 @@ import com.arvatosystems.t9t.base.api.ServiceRequest;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.auth.PermissionType;
 
+import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.BonaPortableFactory;
+import de.jpaw.bonaparte.core.DataConverter;
+import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 
 /**
  * Utility class in charge of providing common utility functionality to be used in the scope of the overall message processing.
@@ -158,5 +161,12 @@ public final class MessagingUtil {
         final ServiceResponse response = new ServiceResponse();
         response.setReturnCode(returnCode);
         return response;
+    }
+
+    private static final DataConverter<String, AlphanumericElementaryDataItem> STRING_TRIMMER = new StringTrimmer();
+
+    /** Strips any leading or trailing spaces. */
+    public static void stringTrimmer(final BonaPortable data) {
+        data.treeWalkString(STRING_TRIMMER, true);
     }
 }
