@@ -22,4 +22,14 @@ import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 public interface IBackendStringSanitizerFactory {
     /** Creates an instance of the string sanitizer, based on configuration in config.xml. */
     DataConverter<String, AlphanumericElementaryDataItem> createStringSanitizerForBackend();
+
+    /**
+     * Creates an instance of the string sanitizer, based on given parameters.
+     *
+     * @param forbiddenCharacters the forbidden chars which will be replaced by {@code replacementCharacter}
+     * @param replacementCharacter the replacement char to be used (if passing 'null', it will fallback to '?')
+     *
+     * @return a {@ link DataConverter} to be used for sanitizing
+     */
+    DataConverter<String, AlphanumericElementaryDataItem> createCommonStringSanitizer(String forbiddenCharacters, String replacementCharacter);
 }

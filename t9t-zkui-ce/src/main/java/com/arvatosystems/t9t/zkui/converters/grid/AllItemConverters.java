@@ -47,6 +47,7 @@ public class AllItemConverters  implements IItemConverter<Object> {
 //                return REGISTRY.get(T9tConstants.TENANT_ID_FIELD_NAME);
 //            if ("userRef".equals(fieldName))
 //                return REGISTRY.get("userRef");
+            @SuppressWarnings("rawtypes")
             IItemConverter longFieldConverter = REGISTRY.get(fieldName);  // allow to plug in additional converters
             if (longFieldConverter != null) {
                 // LOGGER.debug("got Long converter for {}", fieldName);
@@ -58,10 +59,12 @@ public class AllItemConverters  implements IItemConverter<Object> {
         final String className = value.getClass().getName();
         if (meta.getClass() == NumericEnumSetDataItem.class)
             return REGISTRY.get("numericenumset");
+        @SuppressWarnings("rawtypes")
         IItemConverter classConverter = REGISTRY.get(className);
         if (classConverter != null)
             return classConverter;
         if (value instanceof Map) {
+            @SuppressWarnings("rawtypes")
             IItemConverter mapFieldConverter = REGISTRY.get("java.util.Map");
             if (mapFieldConverter != null) {
                 return mapFieldConverter;
@@ -78,14 +81,19 @@ public class AllItemConverters  implements IItemConverter<Object> {
         // would need to test the metadata object, which is currently not transferred to this method
 //        if (value instanceof EnumSetMarker)
 //            return REGISTRY.get("enumset");
+        if (meta.getProperties() != null && meta.getProperties().containsKey("dropdown")) {
+            return REGISTRY.get("dropdown");
+        }
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public String getFormattedLabel(Object value, BonaPortable wholeDataObject, String fieldName, FieldDefinition d) {
         // check for a fixed type
         if (value == null)
             return null;
+        @SuppressWarnings("rawtypes")
         IItemConverter classConverter = getConverter(value, wholeDataObject, fieldName, d);
         if (classConverter != null) {
             try {

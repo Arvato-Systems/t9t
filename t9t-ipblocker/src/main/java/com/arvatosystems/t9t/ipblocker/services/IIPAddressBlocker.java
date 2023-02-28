@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 - 2020 Arvato Systems GmbH
+ * Copyright (c) 2012 - 2022 Arvato Systems GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.trns.services;
+package com.arvatosystems.t9t.ipblocker.services;
 
-import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
-import com.arvatosystems.t9t.trns.TranslationsDTO;
-import com.arvatosystems.t9t.trns.TranslationsKey;
+public interface IIPAddressBlocker {
 
-import de.jpaw.bonaparte.refsw.RefResolver;
+    /**
+     * Records a failed authentication event (increments the "bad attempt" counter for the given IP address).
+     */
+    void registerBadAuthFromIp(String remoteIp);
 
-public interface ITranslationsResolver extends RefResolver<TranslationsKey, TranslationsDTO, FullTrackingWithVersion> {}
+    /**
+     * Checks if the request came from a blocked IP address.
+     *
+     * @return true if the IP address has been blocked, false if not, or no checking is active
+     */
+    boolean isIpAddressBlocked(String remoteIp);
+}

@@ -13,12 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-body *:not([class*="z-icon-"]) {
+ .z-comboitem-inner, .z-comboitem-content {
+    font-size:12px;
+    font-style:italic;
+    color: #777;
+}
+
+.z-comboitem-selected {
+  background: #D7EEF6;
+}
+
+.z-combobox-content li:nth-child(even):not([class*="z-comboitem-selected"]) {
+    background-color: #f5f5f5;
+}
+
+body *:not([class*="z-icon-"]):not([class*="z-comboitem-inner"]) {
     font-family: Calibri, Arial, sans-serif;
     font-size: 14px;
     -webkit-text-size-adjust: none;
 }
-
 
 .z-listgroup-inner {
     -moz-border-bottom-colors: none;
@@ -39,7 +52,7 @@ body *:not([class*="z-icon-"]) {
 }
 
 .z-listitem.z-listitem-selected.z-listitem-focus>.z-listcell {
-    background: #e3e3e3 repeat scroll 0 0;
+    background: rgba(200,233,244,0.7) repeat scroll 0 0;
     border-color: #cfcfcf;
     position: relative;
 }
@@ -61,7 +74,7 @@ body *:not([class*="z-icon-"]) {
 }
 
 .z-listitem.z-listitem-selected>.z-listcell {
-    background: #e3e3e3 repeat scroll 0 0 padding-box;
+    background: rgba(200,233,244,0.7) repeat scroll 0 0 padding-box;
     position: relative;
 }
 
@@ -102,7 +115,6 @@ body *:not([class*="z-icon-"]) {
     overflow: hidden;
     padding: 0;
 }
-
 
 .z-window {
     background: #fafafa none repeat scroll 0 0;
@@ -149,7 +161,7 @@ body *:not([class*="z-icon-"]) {
 }
 
 .z-listitem.z-listitem-selected.z-listitem-focus>.z-listcell {
-    background: #e3e3e3 repeat scroll 0 0 padding-box;
+    background: rgba(200,233,244,0.7) repeat scroll 0 0 padding-box;
     position: relative;
 }
 
@@ -749,11 +761,6 @@ body {
     width: 300px;
 }
 
-.header-nav-subtitle {
-    /* text-align:center; */
-    /* line-height: 50px; */
-}
-
 .header-nav-subtitle .header-nav-subtitle-content {
     text-decoration: underline;
     color: #ABAEB7;
@@ -950,10 +957,6 @@ body {
 
 .z-listbox-body .z-listcell {
     background: #f0f0f0;
-}
-
-.z-listitem-selected .z-listcell {
-    background: rgba(200,233,244,0.7) !important;
 }
 
 .z-paging span {
@@ -1232,7 +1235,7 @@ body {
     padding-right: 20px;
 }
 
-.z-messagebox-window .z-button:focus, , .modalButtons .z-button:hover {
+.z-messagebox-window .z-button:focus, .modalButtons .z-button:hover {
     box-shadow: none;
 }
 

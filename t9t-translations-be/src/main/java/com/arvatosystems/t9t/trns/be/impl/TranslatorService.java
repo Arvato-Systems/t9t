@@ -45,7 +45,7 @@ public class TranslatorService implements ITranslator {
     //@Inject
     protected final Provider<RequestContext> contextProvider = Jdp.getProvider(RequestContext.class);
 
-    protected static interface ITranslationsCache {
+    protected interface ITranslationsCache {
         String get(String key);         // returns the translation for a specified key.
     }
 
@@ -64,8 +64,9 @@ public class TranslatorService implements ITranslator {
 
         TranslationCache(List<TranslationsDTO> translations) {
             id2Translation = new ConcurrentHashMap<String, String>(translations.size());
-            for (TranslationsDTO e: translations)
+            for (TranslationsDTO e: translations) {
                 id2Translation.put(TranslationsUtil.getKey(e), e.getText());
+            }
         }
 
         @Override
@@ -88,7 +89,7 @@ public class TranslatorService implements ITranslator {
         Object mutex2 = MUTEXES.putIfAbsent(key, mutex);
         if (mutex2 == null)
             mutex2 = mutex;
-        synchronized(mutex2) {
+        synchronized (mutex2) {
             // retry the cache get to avoid a race condition
             cache = CACHE.get(key);
             if (cache != null)
@@ -112,7 +113,7 @@ public class TranslatorService implements ITranslator {
         return null;
     }
 
-    public TrnsModuleCfgDTO tenantCfg;  // TODO!
+    private TrnsModuleCfgDTO tenantCfg;  // TODO!
 
 
     protected String resolveText(ITranslationsCache cache, TranslationsPartialKey key) {

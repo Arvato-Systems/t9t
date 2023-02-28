@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -165,5 +166,17 @@ public final class T9tUtil {
         logger.info(CON_MSG_LINE);
         logger.info(msg);
         logger.info(CON_MSG_LINE);
+    }
+
+    /** Checks if param {@code object} equals any of the given {@code objects}. */
+    public static boolean equalsAny(final Object object, final Object... objects) {
+        if (objects != null) {
+            for (final Object obj : objects) {
+                if (Objects.equals(object, obj)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

@@ -266,4 +266,8 @@ public class TwoSections28 extends Vlayout implements IGridIdOwner, IPermissionO
     public void setCountTotal(boolean countTotal) {
         main.setCountTotal(countTotal);
     }
+
+    public void setGridRowCssQualifier(final String gridRowCssQualifier) {
+        main.setGridRowCssQualifier(gridRowCssQualifier);
+    }
 }

@@ -26,7 +26,7 @@ import de.jpaw.fixedpoint.jackson.FixedPointModule;
 
 /**
  * Utility class to provide Jackson ObjectMappers, preconfigured with the usual settings: date / time / timestamp fields as ISO 8601 strings instead of some
- * data structure Java 8 date/time support Jpaw fixed point support Optionally suppress output of nulls.
+ * data structure, Java 8 date/time support, Jpaw fixed point support, Jpaw ByteArray support. Optionally suppress output of nulls.
  */
 public final class JacksonTools {
 
@@ -49,7 +49,6 @@ public final class JacksonTools {
      * Common mapper configuration for imports and exports.
      */
     private static Builder getCommonMapper() {
-        return JsonMapper.builder().addModules(new JavaTimeModule(), new FixedPointModule());
+        return JsonMapper.builder().addModules(new JavaTimeModule(), new FixedPointModule(), new JpawModule());
     }
-
 }

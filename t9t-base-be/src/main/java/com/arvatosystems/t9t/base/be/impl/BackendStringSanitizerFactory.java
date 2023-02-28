@@ -18,7 +18,9 @@ package com.arvatosystems.t9t.base.be.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.base.CommonStringSanitizer;
 import com.arvatosystems.t9t.base.StringSanitizer;
+import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.services.IBackendStringSanitizerFactory;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.cfg.be.ServerConfiguration;
@@ -29,13 +31,15 @@ import de.jpaw.dp.Singleton;
 
 @Singleton
 public class BackendStringSanitizerFactory implements IBackendStringSanitizerFactory {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(BackendStringSanitizerFactory.class);
+
+    private static final String DEFAULT_REPLACEMENT_TOKEN = "?";
 
     @Override
     public DataConverter<String, AlphanumericElementaryDataItem> createStringSanitizerForBackend() {
         final ServerConfiguration serverConfig = ConfigProvider.getConfiguration().getServerConfiguration();
         if (serverConfig == null) {
-            LOGGER.info("No characters to be filtered configured for String sanitizer (no server configuration section)");
             return null;
         }
         final String forbiddenCharacters = serverConfig.getForbiddenCharacters();
@@ -47,5 +51,15 @@ public class BackendStringSanitizerFactory implements IBackendStringSanitizerFac
             LOGGER.info("No characters to be filtered configured for String sanitizer");
             return null;
         }
+    }
+
+    @Override
+    public DataConverter<String, AlphanumericElementaryDataItem> createCommonStringSanitizer(final String forbiddenCharacters,
+            final String replacementCharacter) {
+        if (!T9tUtil.isBlank(forbiddenCharacters)) {
+            // replacementCharacter might be an empty String!
+            return new CommonStringSanitizer(forbiddenCharacters.trim(), replacementCharacter != null ? replacementCharacter : DEFAULT_REPLACEMENT_TOKEN);
+        }
+        return null;
     }
 }

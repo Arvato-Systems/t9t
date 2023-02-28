@@ -121,6 +121,7 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
 
     private String gridId;
     private String viewModelId;
+    private String gridRowCssQualifier;
     private CrudViewModel<BonaPortable, TrackingBase> crudViewModel;  // set when gridId is defined
     private ILeanGridConfigResolver    leanGridConfigResolver;        // set when gridId is defined
     private ListHeadRenderer28         defaultListHeadRenderer;
@@ -236,7 +237,7 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
     private void initializeGrid() {
      // create the grid config resolver
         leanGridConfigResolver = new LeanGridConfigResolver(gridId, session);
-        defaultListItemRenderer = new ListItemRenderer28<>(crudViewModel.dtoClass, true);
+        defaultListItemRenderer = new ListItemRenderer28<>(crudViewModel.dtoClass, true, gridRowCssQualifier);
         defaultListHeadRenderer = new ListHeadRenderer28(defaultListItemRenderer, leanGridConfigResolver, this, lb, permissions, listHeaders,
                 crudViewModel.dtoClass, dynamicColumnSize);
         lb.setItemRenderer(defaultListItemRenderer);
@@ -701,5 +702,9 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
 
     public void setCountTotal(boolean countTotal) {
         this.countTotal = countTotal;
+    }
+
+    public void setGridRowCssQualifier(final String gridRowCssQualifier) {
+        this.gridRowCssQualifier = gridRowCssQualifier;
     }
 }

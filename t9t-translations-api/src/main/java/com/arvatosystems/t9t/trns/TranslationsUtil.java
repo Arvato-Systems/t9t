@@ -18,7 +18,7 @@ package com.arvatosystems.t9t.trns;
 import com.arvatosystems.t9t.base.trns.TextCategory;
 import com.arvatosystems.t9t.base.trns.TranslationsPartialKey;
 
-public class TranslationsUtil {
+public final class TranslationsUtil {
     private TranslationsUtil() { }
 
     public static String getKey(TranslationsDTO dto) {

@@ -51,13 +51,15 @@ public class ListItemRenderer28<T extends BonaPortable> implements ListitemRende
     protected final ListMetaComposer metaComposer = new ListMetaComposer(false, true, true);
     protected final BonaPortableClass<T> bclass;
     protected final boolean haveTracking;
+    protected final IGridRowCssSelector gridRowCssSelector;
 
     protected String context;
 
 
-    public ListItemRenderer28(BonaPortableClass<T> bclass, boolean haveTracking) {
+    public ListItemRenderer28(final BonaPortableClass<T> bclass, final boolean haveTracking, final String rowCssQualifier) {
         this.bclass = bclass;
         this.haveTracking = haveTracking;
+        this.gridRowCssSelector = Jdp.getOptional(IGridRowCssSelector.class, rowCssQualifier);
         LOGGER.debug("Creating a new DefaultListItemRenderer for class {}", bclass.getPqon());
     }
 
@@ -87,6 +89,10 @@ public class ListItemRenderer28<T extends BonaPortable> implements ListitemRende
         LOGGER.trace("Rendering row {} (data)", index);
         listitem.setValue(data);
         listitem.setContext(context);
+
+        if (gridRowCssSelector != null) {
+            listitem.addSclass(gridRowCssSelector.getRowCssSelector(data));
+        }
 
         metaComposer.reset();  // clear previous data
         foldingComposer.writeRecord(data);

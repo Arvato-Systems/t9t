@@ -25,11 +25,13 @@ import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.IRemoteConnection;
 import com.arvatosystems.t9t.base.RandomNumberGenerators;
+import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
 import com.arvatosystems.t9t.base.auth.AuthenticationResponse;
+import com.arvatosystems.t9t.ipblocker.services.impl.IPAddressBlocker;
 import com.arvatosystems.t9t.rest.services.IGatewayStringSanitizerFactory;
 import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
 import com.arvatosystems.t9t.rest.utils.RestUtils;
@@ -59,6 +61,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
     protected final IRemoteConnection connection = Jdp.getRequired(IRemoteConnection.class);
     protected final IGatewayStringSanitizerFactory gatewayStringSanitizerFactory = Jdp.getRequired(IGatewayStringSanitizerFactory.class);
     protected final DataConverter<String, AlphanumericElementaryDataItem> stringSanitizer = gatewayStringSanitizerFactory.createStringSanitizerForGateway();
+    protected final IPAddressBlocker ipBlockerService = Jdp.getRequired(IPAddressBlocker.class);
 
     @Override
     public void performAsyncBackendRequest(final HttpHeaders httpHeaders, final AsyncResponse resp, final RequestParameters requestParameters,
@@ -137,6 +140,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
             final AsyncResponse resp, final RequestParameters requestParameters, final String infoMsg,
             final Class<T> backendResponseClass, final Function<T, BonaPortable> responseMapper) {
         final String acceptHeader = determineResponseType(httpHeaders);
+        final String remoteIp = httpHeaders.getHeaderString(T9tConstants.HTTP_HEADER_FORWARDED_FOR);
         try {
             requestParameters.validate();  // validate the request before we launch a worker thread!
         } catch (final ApplicationException e) {
@@ -163,9 +167,9 @@ public class T9tRestProcessor implements IT9tRestProcessor {
         final CompletableFuture<ServiceResponse> readResponse = connection.executeAsync(authorizationHeader, requestParameters);
         readResponse.thenAccept(sr -> {
             LOGGER.debug("Response obtained {}: {}", invocationNo, infoMsg);
-            final Response.ResponseBuilder responseBuilder = RestUtils.createResponseBuilder(sr.getReturnCode());
-            responseBuilder.type(acceptHeader == null || acceptHeader.length() == 0 ? MediaType.APPLICATION_JSON : acceptHeader);
             if (ApplicationException.isOk(sr.getReturnCode())) {
+                final Response.ResponseBuilder responseBuilder = RestUtils.createResponseBuilder(sr.getReturnCode());
+                responseBuilder.type(acceptHeader == null || acceptHeader.length() == 0 ? MediaType.APPLICATION_JSON : acceptHeader);
                 if (backendResponseClass.isAssignableFrom(sr.getClass())) {
 
                     final BonaPortable resultForREST = responseMapper.apply((T)sr);
@@ -194,12 +198,12 @@ public class T9tRestProcessor implements IT9tRestProcessor {
                             requestParameters.getClass().getSimpleName(), sr.getClass().getSimpleName(), sr.getReturnCode());
                     responseBuilder.entity(createResultFromServiceResponse(sr));  // this is like the error result
                 }
+                final Response responseObj = responseBuilder.build();
+                resp.resume(responseObj);
             } else {
                 // map error report
-                responseBuilder.entity(createResultFromServiceResponse(sr));
+                createGenericResultEntity(sr, resp, acceptHeader, () -> ipBlockerService.registerBadAuthFromIp(remoteIp));
             }
-            final Response responseObj = responseBuilder.build();
-            resp.resume(responseObj);
         }).exceptionally(e -> {
             final int errorCode = e instanceof ApplicationException ae ? ae.getErrorCode() : T9tException.GENERAL_EXCEPTION;
             resp.resume(RestUtils.error(Response.Status.INTERNAL_SERVER_ERROR, errorCode, e.getMessage(), acceptHeader));
@@ -212,11 +216,12 @@ public class T9tRestProcessor implements IT9tRestProcessor {
     public void performAsyncAuthBackendRequest(final HttpHeaders httpHeaders, final AsyncResponse resp, final AuthenticationRequest requestParameters) {
         // must evaluate httpHeaders now, because httpHeaders is a proxy and no longer valid in the other thread
         final String acceptHeader = determineResponseType(httpHeaders);
+        final String remoteIp = httpHeaders.getHeaderString(T9tConstants.HTTP_HEADER_FORWARDED_FOR);
         final CompletableFuture<ServiceResponse> readResponse = connection.executeAuthenticationAsync(requestParameters);
         readResponse.thenAccept(sr -> {
-            final Response.ResponseBuilder responseBuilder = RestUtils.createResponseBuilder(sr.getReturnCode());
-            responseBuilder.type(acceptHeader == null || acceptHeader.length() == 0 ? "application/json" : acceptHeader);
             if (ApplicationException.isOk(sr.getReturnCode())) {
+                final Response.ResponseBuilder responseBuilder = RestUtils.createResponseBuilder(sr.getReturnCode());
+                responseBuilder.type(acceptHeader == null || acceptHeader.length() == 0 ? "application/json" : acceptHeader);
                 if (AuthenticationResponse.class.isAssignableFrom(sr.getClass())) {
 
                     final AuthenticationResponse result = (AuthenticationResponse)sr;
@@ -226,6 +231,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
                         authResult.setPasswordExpires(result.getPasswordExpires());
                         authResult.setMustChangePassword(result.getMustChangePassword());
                         returnAsyncResult(acceptHeader, resp, Response.Status.OK, authResult);
+                        return;
                     }
                 } else {
                     // this is a coding issue!
@@ -233,12 +239,12 @@ public class T9tRestProcessor implements IT9tRestProcessor {
                         sr.getClass().getSimpleName(), sr.getReturnCode());
                     responseBuilder.entity(createResultFromServiceResponse(sr));  // this is like the error result
                 }
+                final Response responseObj = responseBuilder.build();
+                resp.resume(responseObj);
             } else {
                 // map error report
-                responseBuilder.entity(createResultFromServiceResponse(sr));
+                createGenericResultEntity(sr, resp, acceptHeader, () -> ipBlockerService.registerBadAuthFromIp(remoteIp));
             }
-            final Response responseObj = responseBuilder.build();
-            resp.resume(responseObj);
         }).exceptionally(e -> {
             final int errorCode = e instanceof ApplicationException ae ? ae.getErrorCode() : T9tException.GENERAL_EXCEPTION;
             resp.resume(RestUtils.error(Response.Status.INTERNAL_SERVER_ERROR, errorCode, e.getMessage(), acceptHeader));

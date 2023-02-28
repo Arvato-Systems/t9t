@@ -16,21 +16,21 @@
 package com.arvatosystems.t9t.rest.filters;
 
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.ipblocker.services.impl.IPAddressBlocker;
 import com.arvatosystems.t9t.rest.services.IAuthFilterCustomization;
 import com.arvatosystems.t9t.rest.utils.RestUtils;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
+import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 import jakarta.ws.rs.HttpMethod;
-import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -41,19 +41,6 @@ public class AuthFilterCustomization implements IAuthFilterCustomization {
     private static final Logger LOGGER = LoggerFactory.getLogger(T9tRestAuthenticationFilter.class);
     private static final int MAX_AUTH_ENTRIES = 200;
     private static final int MAX_SIZE_AUTH_HEADER = 4096;
-    private static final int DEFAULT_MAX_BAD_IP_ADDRESSES                       = 1000;
-    private static final int DEFAULT_MAX_BAD_IP_ADDRESSES_INTERVAL_IN_MINUTES   = 10;
-    private static final int DEFAULT_MAX_BAD_IP_ADDRESSES_LOCKOUT_IN_MINUTES    = 10;
-    private static final int DEFAULT_BAD_AUTHS_PER_IP_ADDRESS_LIMIT             = 50;
-
-    private static final int MAX_BAD_IP_ADDRESSES
-      = RestUtils.CONFIG_READER.getIntProperty("t9t.restapi.maxBadIp",              DEFAULT_MAX_BAD_IP_ADDRESSES);
-    private static final int MAX_BAD_IP_ADDRESSES_INTERVAL_IN_MINUTES
-      = RestUtils.CONFIG_READER.getIntProperty("t9t.restapi.badAuthsPerIpDuration", DEFAULT_MAX_BAD_IP_ADDRESSES_INTERVAL_IN_MINUTES);
-    private static final int MAX_BAD_IP_ADDRESSES_LOCKOUT_IN_MINUTES
-      = RestUtils.CONFIG_READER.getIntProperty("t9t.restapi.badIpLockoutDuration",  DEFAULT_MAX_BAD_IP_ADDRESSES_LOCKOUT_IN_MINUTES);
-    private static final int BAD_AUTHS_PER_IP_ADDRESS_LIMIT
-      = RestUtils.CONFIG_READER.getIntProperty("t9t.restapi.badAuthsPerIpLimit",    DEFAULT_BAD_AUTHS_PER_IP_ADDRESS_LIMIT);
 
     protected static final Pattern UUID_PATTERN = Pattern.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
     protected static final Pattern BASE64_PATTERN = Pattern.compile("^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$");
@@ -62,102 +49,80 @@ public class AuthFilterCustomization implements IAuthFilterCustomization {
 
     protected final Cache<String, Boolean> goodAuths = Caffeine.newBuilder().maximumSize(MAX_AUTH_ENTRIES).expireAfterWrite(5L, TimeUnit.MINUTES)
       .<String, Boolean>build();
-    protected final Cache<String, AtomicInteger> badAuthsPerIp;
-    protected final Cache<String, Boolean> blockedIps;
 
-    public AuthFilterCustomization() {
-        if (MAX_BAD_IP_ADDRESSES <= 0) {
-            badAuthsPerIp = null;
-            blockedIps = null;
-            LOGGER.info("Bad IP address check DISABLED because t9t.restapi.maxBadIp <= 0");
-        } else {
-            LOGGER.info("Bad IP address check configuration: {} max IP addresses, {} bad attempts per {} minutes disable an IP address for {} minutes",
-                MAX_BAD_IP_ADDRESSES, BAD_AUTHS_PER_IP_ADDRESS_LIMIT, MAX_BAD_IP_ADDRESSES_INTERVAL_IN_MINUTES, MAX_BAD_IP_ADDRESSES_LOCKOUT_IN_MINUTES);
-            badAuthsPerIp = Caffeine.newBuilder()
-                .maximumSize(MAX_BAD_IP_ADDRESSES)
-                .expireAfterWrite(MAX_BAD_IP_ADDRESSES_INTERVAL_IN_MINUTES, TimeUnit.MINUTES)
-                .<String, AtomicInteger>build();
-            blockedIps = Caffeine.newBuilder()
-                .maximumSize(MAX_BAD_IP_ADDRESSES)
-                .expireAfterWrite(MAX_BAD_IP_ADDRESSES_LOCKOUT_IN_MINUTES, TimeUnit.MINUTES)
-                .<String, Boolean>build();
-        }
-    }
+    protected final IPAddressBlocker ipBlockerService = Jdp.getRequired(IPAddressBlocker.class);
+
 
     /** Checks if the request came from a blocked IP address. */
     @Override
-    public boolean isBlockedIpAddress(final String remoteIp) {
-        if (blockedIps == null || remoteIp == null) {
-            return false;
+    public boolean filterBlockedIpAddress(final ContainerRequestContext requestContext, final String remoteIp) {
+        if (ipBlockerService.isIpAddressBlocked(remoteIp)) {
+            throwForbidden(requestContext);
+            return true;
         }
-        return blockedIps.getIfPresent(remoteIp) != null;
+        return false;
     }
 
-    /** Records a failed authentication event. */
     @Override
-    public void registerBadAuthFromIp(final String remoteIp) {
-        if (badAuthsPerIp == null || remoteIp == null) {
-            return;
-        }
-        final AtomicInteger counter = badAuthsPerIp.get(remoteIp, unused -> new AtomicInteger());
-        final int newValue = counter.incrementAndGet();
-        if (newValue >= BAD_AUTHS_PER_IP_ADDRESS_LIMIT) {
-            // block this IP and reset the counter
-            blockedIps.put(remoteIp, Boolean.TRUE);
-            badAuthsPerIp.invalidate(remoteIp);
-            LOGGER.warn("Too many bad authentication attempts from {} - temporarily blocking IP", remoteIp);
-        }
+    public void abortFilter(final ContainerRequestContext requestContext, final Response errorStatus) {
+        // throw new WebApplicationException(errorStatus);
+        requestContext.abortWith(errorStatus);
+        return;
     }
 
     /** Constructs a new Response object for the current request and throw a WebApplicationException of code 401. */
-    protected void throwUnauthorized() {
-        throw new WebApplicationException(Response.status(Status.UNAUTHORIZED).build());
+    protected void throwUnauthorized(final ContainerRequestContext requestContext) {
+        abortFilter(requestContext, Response.status(Status.UNAUTHORIZED).build());
     }
 
     /** Constructs a new Response object for the current request and throw a WebApplicationException of code 403. */
-    protected void throwForbidden() {
-        throw new WebApplicationException(Response.status(Status.FORBIDDEN).build());
+    protected void throwForbidden(final ContainerRequestContext requestContext) {
+        abortFilter(requestContext, Response.status(Status.FORBIDDEN).build());
     }
 
     @Override
-    public void filterUnauthenticated(final ContainerRequestContext requestContext) {
+    public boolean filterUnauthenticated(final ContainerRequestContext requestContext) {
         final String path = requestContext.getUriInfo().getPath();
         LOGGER.debug("filterUnauthenticated for method {}, type {}, path {}", requestContext.getMethod(), requestContext.getMediaType(), path);
         switch (requestContext.getMethod()) {
         case HttpMethod.POST:
             // allow login, but only if JWT is enabled
             if (!isValidLogin(path, requestContext.getMethod())) {
-                throwUnauthorized();
+                throwUnauthorized(requestContext);
+                return true;  // filtered
             }
-            break;
+            return false; // OK
         case HttpMethod.GET:
             if (enableSwagger && isValidSwagger(path)) {
-                return; // OK
+                return false; // OK
             }
             if (enablePing && isValidPing(path)) {
-                return; // OK
+                return false; // OK
             }
             if (isValidLogin(path, requestContext.getMethod())) {
-                return; // GET type session
+                return false; // OK
             }
-            break;
+            throwUnauthorized(requestContext);
+            return true;  // filtered
         default:
-            throwUnauthorized();
+            throwUnauthorized(requestContext);
+            return true;  // filtered
         }
     }
 
     @Override
-    public void filterAuthenticated(final String authHeader, final ContainerRequestContext requestContext) {
+    public boolean filterAuthenticated(final ContainerRequestContext requestContext, final String authHeader) {
         // first, check if we know this authentication - use a fast track in that case
         if (authHeader.length() <= MAX_SIZE_AUTH_HEADER && goodAuths.getIfPresent(authHeader) != null) {
             // fast track - we have successfully authenticated this one before
-            return;
+            return false; // OK
         }
 
         // must have valid authentication - first, check allowed size (depending on method)
         final int firstSpace = authHeader.indexOf(' ');
         if (firstSpace <= 0) {
-            throwForbidden();
+            throwForbidden(requestContext);
+            return true; // filtered
         }
         final String typeOfAuth = authHeader.substring(0, firstSpace + 1);  // add 1 because the constant includes the space
         final String authParam = authHeader.substring(firstSpace + 1);
@@ -166,45 +131,57 @@ public class AuthFilterCustomization implements IAuthFilterCustomization {
         switch (typeOfAuth) {
         case T9tConstants.HTTP_AUTH_PREFIX_JWT:
             if (!allowAuthJwt()) {
-                throwForbidden();
+                throwForbidden(requestContext);
+                return true; // filtered
             }
             if (authLength < 10 || authLength > 4096) { // || !BASE64_PATTERN.matcher(authParam).matches()) {
                 LOGGER.debug("Invalid JWT - length {}", authLength);
-                throwForbidden();
+                throwForbidden(requestContext);
+                return true; // filtered
             }
-            filterJwt(authHeader, requestContext);
-            break;
+            return filterJwt(requestContext, authHeader, authParam);
         case T9tConstants.HTTP_AUTH_PREFIX_API_KEY:
             if (!allowAuthApiKey() || authLength != 36 || !UUID_PATTERN.matcher(authParam).matches()) {
                 LOGGER.debug("Invalid UUID - length {}", authLength);
-                throwForbidden();
+                throwForbidden(requestContext);
+                return true; // filtered
             }
-            filterApiKey(authHeader, requestContext);
-            break;
+            return filterApiKey(requestContext, authHeader, authParam);
         case T9tConstants.HTTP_AUTH_PREFIX_USER_PW:
             if (!allowAuthBasic() || authLength < 8 || authLength > 80 || !BASE64_PATTERN.matcher(authParam).matches()) {
-                throwForbidden();
+                throwForbidden(requestContext);
+                return true; // filtered
             }
-            filterBasic(authHeader, requestContext);
-            break;
-        default:
-            throwForbidden();
+            return filterBasic(requestContext, authHeader, authParam);
         }
+        throwForbidden(requestContext);
+        return true; // filtered
     }
 
-    @Override
-    public void filterBasic(final String authHeader, final ContainerRequestContext requestContext) {
+    /**
+     * Check for acceptable Basic authentication.
+     * The purpose of this method is to ensure "authentication before parameter validation".
+     */
+    protected boolean filterBasic(final ContainerRequestContext requestContext, final String authHeader, final String authParam) {
         // TODO further checks on basic auth
+        return false;
     }
 
-    @Override
-    public void filterApiKey(final String authHeader, final ContainerRequestContext requestContext) {
+    /**
+     * Check for acceptable API key authentication.
+     * The purpose of this method is to ensure "authentication before parameter validation".
+     */
+    protected boolean filterApiKey(final ContainerRequestContext requestContext, final String authHeader, final String authParam) {
         // TODO further checks on API key auth
+        return false;
     }
 
-    @Override
-    public void filterJwt(final String authHeader, final ContainerRequestContext requestContext) {
+    /** Check for acceptable JWT authentication. Should throw an exception if this type is not desired.
+     * The purpose of this method is to ensure "authentication before parameter validation".
+     */
+    protected boolean filterJwt(final ContainerRequestContext requestContext, final String authHeader, final String authParam) {
         // TODO further checks on JWT auth
+        return false;
     }
 
     @Override
@@ -238,21 +215,29 @@ public class AuthFilterCustomization implements IAuthFilterCustomization {
     }
 
     @Override
-    public void filterSupportedMediaType(final MediaType mediaType) {
+    public boolean filterSupportedMediaType(final ContainerRequestContext requestContext) {
+        final MediaType mediaType = requestContext.getMediaType();
         if (mediaType != null) {
             final String subType = mediaType.getSubtype();
             if (!"application".equals(mediaType.getType()) || !("xml".equals(subType) || "json".equals(subType))) {
-                throw new WebApplicationException(Response.status(Status.UNSUPPORTED_MEDIA_TYPE).build());
+                abortFilter(requestContext, Response.status(Status.UNSUPPORTED_MEDIA_TYPE).build());
+                return true;
             }
         }
+        return false;
     }
 
     @Override
-    public void filterCorrectIdempotencyPattern(final String idempotencyHeader, final ContainerRequestContext requestContext) {
+    public boolean filterCorrectIdempotencyPattern(final ContainerRequestContext requestContext, final String idempotencyHeader) {
+        if (idempotencyHeader == null) {
+            return false; // no filtering applies
+        }
         final int idempotencyHeaderLength = idempotencyHeader.length();
         if (idempotencyHeaderLength != 36 || !BASE64_PATTERN.matcher(idempotencyHeader).matches()) {
             LOGGER.error("Invoked with bad HTTP header {} of length {}", T9tConstants.HTTP_HEADER_IDEMPOTENCY_KEY, idempotencyHeaderLength);
-            throw new WebApplicationException(Response.status(Status.BAD_GATEWAY).build());
+            abortFilter(requestContext, Response.status(Status.BAD_GATEWAY).build());
+            return true;
         }
+        return false;
     }
 }

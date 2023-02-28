@@ -16,15 +16,9 @@
 package com.arvatosystems.t9t.rest.services;
 
 import jakarta.ws.rs.container.ContainerRequestContext;
-import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 public interface IAuthFilterCustomization {
-
-    /** Checks if the request came from a blocked IP address. */
-    boolean isBlockedIpAddress(String remoteIp);
-
-    /** Records a failed authentication event. */
-    void registerBadAuthFromIp(String remoteIp);
 
     /** Returns setting if authentication via JWT is allowed (which should enable login). */
     boolean allowAuthJwt();
@@ -36,30 +30,49 @@ public interface IAuthFilterCustomization {
     boolean allowAuthApiKey();
 
     /**
-     * Check for allowed requests which do not need authentication.
+     * Constructs a new Response object for the current request and
+     * either throws a WebApplicationException of the given errorStatus, or aborts the filter with that response.
+     */
+    void abortFilter(ContainerRequestContext requestContext, Response errorStatus);
+
+
+    /**
+     * Checks if the request came from a blocked IP address.
+     *
+     * @return false if processing can continue (no problem), true if the filter has aborted with an error code
+     */
+    boolean filterBlockedIpAddress(ContainerRequestContext requestContext, String remoteIp);
+
+    /**
+     * Checks for allowed requests which do not need authentication.
      * Implementations should at least examine the HttpMethod and the Path.
      * Possible cases to allow such requests are:
      * - login
      * - simple ping GET requests for monitoring
      * - Swagger information on test and development systems
-     * */
-    void filterUnauthenticated(ContainerRequestContext requestContext);
+     *
+     * @return false if processing can continue (no problem), true if the filter has aborted with an error code
+     */
+    boolean filterUnauthenticated(ContainerRequestContext requestContext);
 
-    /** Check for allowed requests which come with authentication header. */
-    void filterAuthenticated(String authHeader, ContainerRequestContext requestContext);
+    /**
+     * Checks for allowed requests which come with authentication header.
+     *
+     * @return false if processing can continue (no problem), true if the filter has aborted with an error code
+     */
+    boolean filterAuthenticated(ContainerRequestContext requestContext, String authHeader);
 
-    /** Check for acceptable Basic authentication. */
-    void filterBasic(String authHeader, ContainerRequestContext requestContext);
+    /**
+     * Invoked for POST requests: Checks for supported type of payload.
+     *
+     * @return false if processing can continue (no problem), true if the filter has aborted with an error code
+     */
+    boolean filterSupportedMediaType(ContainerRequestContext requestContext);
 
-    /** Check for acceptable API key authentication. */
-    void filterApiKey(String authHeader, ContainerRequestContext requestContext);
-
-    /** Check for acceptable JWT authentication. Should throw an exception if this type is not desired. */
-    void filterJwt(String authHeader, ContainerRequestContext requestContext);
-
-    /** Invoked for POST requests: Check for supported type of payload. */
-    void filterSupportedMediaType(MediaType mediaType);
-
-    /** Check for correct UUID in case an idempotency header has been provided. */
-    void filterCorrectIdempotencyPattern(String idempotencyHeader, ContainerRequestContext requestContext);
+    /**
+     * Checks for correct UUID in case an idempotency header has been provided.
+     *
+     * @return false if processing can continue (no problem), true if the filter has aborted with an error code
+     */
+    boolean filterCorrectIdempotencyPattern(ContainerRequestContext requestContext, String idempotencyHeader);
 }

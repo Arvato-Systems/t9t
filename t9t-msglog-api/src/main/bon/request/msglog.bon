@@ -47,6 +47,21 @@ package (com.arvatosystems) t9t.msglog.request {
     }
 
     /**
+     * Query result of an asynchronously started request (by idempotency ID).
+     */
+    class QueryRequestResultRequest extends RequestParameters return QueryRequestResultResponse {
+        required uuid                               messageIdToCheck;
+    }
+
+    /**
+     * Query result for result query.
+     */
+    class QueryRequestResultResponse extends ServiceResponse {
+        required int                                returnCodeOfCheckedRequest;
+        // required Long                               processRefOfCheckedRequest;
+    }
+
+    /**
      * Rerun a request.
      * Save variant: Rerun only if it has not been tried before, and if the previous return code was not OK.
      * Requires ADMIN and CUSTOM permission for this request.

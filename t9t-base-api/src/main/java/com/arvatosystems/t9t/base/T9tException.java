@@ -81,6 +81,7 @@ public class T9tException extends ApplicationException {
     public static final int WRITE_ACCESS_NOT_FOUND_PROBABLY_OTHER_TENANT = OFFSET + 41;
     public static final int COULD_NOT_ACQUIRE_LOCK = OFFSET_TIMEOUT + 42;
     public static final int ILLEGAL_CHARACTER = OFFSET + 43;
+    public static final int NO_SUCH_REQUEST = OFFSET_DENIED + 44;
 
     public static final int STALLED_LOG_WRITER = OFFSET_TIMEOUT + 50;
     public static final int REQUEST_HANDLER_RETURNED_NULL = OFFSET_LOGIC_ERROR + 51;
@@ -285,7 +286,10 @@ public class T9tException extends ApplicationException {
     public static final int GENERAL_SERVER_ERROR = OFFSET_DB_ERROR + 994;  // masked backend error which we do not want to forward to client
 
 
-    public static final int HTTP_ERROR = OFFSET_VALIDATION_ERROR + 8000;  // whole range 8000..8999 is used, where the offset is the http status code
+    public static final int HTTP_ERROR = OFFSET_VALIDATION_ERROR + 8000;        // whole range 8000..8999 is used, where the offset is the http status code
+    public static final int HTTP_ERROR_NOT_AUTHENTICATED = HTTP_ERROR + 401;    // alternate response code for 401
+    public static final int HTTP_ERROR_NOT_AUTHORIZED    = HTTP_ERROR + 403;    // alternate response code for 403
+    public static final int HTTP_ERROR_BAD_MEDIA_TYPE    = HTTP_ERROR + 415;    // alternate response code for 415
 
 
     // constants for messages which are accessed directly
@@ -368,6 +372,7 @@ public class T9tException extends ApplicationException {
             "Record for update not found, probably due to existing one in different tenant");
         codeToDescription.put(COULD_NOT_ACQUIRE_LOCK, "Could not acquire lock (Semaphore) on object within allowed time");
         codeToDescription.put(ILLEGAL_CHARACTER, "An illegal character has been identified in a string field of the request");
+        codeToDescription.put(NO_SUCH_REQUEST, "Request not received or not yet complete");
 
         codeToDescription.put(JWT_EXPIRED, MSG_JWT_EXPIRED);
         codeToDescription.put(JWT_TIMING,  "The JWT has unplausible time information");

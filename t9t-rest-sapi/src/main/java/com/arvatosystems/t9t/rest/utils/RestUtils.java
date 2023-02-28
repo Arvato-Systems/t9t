@@ -203,38 +203,42 @@ public final class RestUtils {
     /** Creates a specific HTTP return code from t9t exception code / return code. */
     public static Response.Status mapStatusFromErrorCode(final int errorCode) {
         // first, check for very specific codes
-        switch (errorCode) {
-        case T9tException.NOT_AUTHORIZED:
+        if (isUnauthorizedAccess(errorCode)) {
             return Response.Status.UNAUTHORIZED;
-        case T9tException.NOT_AUTHENTICATED:
-            return Response.Status.UNAUTHORIZED;
-        case T9tException.ACCESS_DENIED:
-            return Response.Status.UNAUTHORIZED;
-        case T9tException.USER_INACTIVE:
-            return Response.Status.UNAUTHORIZED;
-        case T9tException.USER_NOT_FOUND:
-            return Response.Status.UNAUTHORIZED;
-        case T9tException.NOT_YET_IMPLEMENTED:
+        }
+        if (errorCode == T9tException.NOT_YET_IMPLEMENTED) {
             return Response.Status.NOT_IMPLEMENTED;
+        }
+        switch (errorCode / ApplicationException.CLASSIFICATION_FACTOR) {
+        case ApplicationException.CL_SUCCESS:
+            return Response.Status.OK;
+        case ApplicationException.CL_DENIED:
+            return Response.Status.NOT_ACCEPTABLE;
+        case ApplicationException.CL_PARSER_ERROR:
+            return Response.Status.BAD_REQUEST;
+        case ApplicationException.CL_VALIDATION_ERROR:
+            return Response.Status.BAD_REQUEST;
+        case ApplicationException.CL_PARAMETER_ERROR:
+            return Response.Status.BAD_REQUEST;
+        case ApplicationException.CL_TIMEOUT:
+            return Response.Status.GATEWAY_TIMEOUT;
+        case ApplicationException.CL_DATABASE_ERROR:
+            return Response.Status.SERVICE_UNAVAILABLE;
         default:
-            switch (errorCode / ApplicationException.CLASSIFICATION_FACTOR) {
-            case ApplicationException.CL_SUCCESS:
-                return Response.Status.OK;
-            case ApplicationException.CL_DENIED:
-                return Response.Status.NOT_ACCEPTABLE;
-            case ApplicationException.CL_PARSER_ERROR:
-                return Response.Status.BAD_REQUEST;
-            case ApplicationException.CL_VALIDATION_ERROR:
-                return Response.Status.BAD_REQUEST;
-            case ApplicationException.CL_PARAMETER_ERROR:
-                return Response.Status.BAD_REQUEST;
-            case ApplicationException.CL_TIMEOUT:
-                return Response.Status.GATEWAY_TIMEOUT;
-            case ApplicationException.CL_DATABASE_ERROR:
-                return Response.Status.SERVICE_UNAVAILABLE;
-            default:
-                return Response.Status.INTERNAL_SERVER_ERROR;
-            }
+            return Response.Status.INTERNAL_SERVER_ERROR;
+        }
+    }
+
+    public static boolean isUnauthorizedAccess(final int returncode) {
+        switch (returncode) {
+        case T9tException.NOT_AUTHORIZED:
+        case T9tException.NOT_AUTHENTICATED:
+        case T9tException.ACCESS_DENIED:
+        case T9tException.USER_INACTIVE:
+        case T9tException.USER_NOT_FOUND:
+            return true;
+        default:
+            return false;
         }
     }
 
@@ -242,6 +246,13 @@ public final class RestUtils {
         // special case for already transformed http status codes:
         if (returncode >= T9tException.HTTP_ERROR + 100 && returncode <= T9tException.HTTP_ERROR + 599) { // 100..599 is the allowed range for http status codes
             return Response.status(returncode - T9tException.HTTP_ERROR);
+        }
+        // check for the main responses of 401 / 403 errors
+        if (returncode == T9tException.NOT_AUTHORIZED) {
+            return Response.status(Status.FORBIDDEN.getStatusCode());
+        }
+        if (isUnauthorizedAccess(returncode)) {
+            return Response.status(Status.UNAUTHORIZED.getStatusCode());
         }
         // default: map via classification
         switch (returncode / CLASSIFICATION_FACTOR) {

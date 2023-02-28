@@ -15,7 +15,6 @@
  */
 package com.arvatosystems.t9t.zkui.components.dropdown28.db;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,15 +23,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.ComboitemRenderer;
+import org.zkoss.zul.ListModelList;
 
 import com.arvatosystems.t9t.base.search.Description;
 import com.arvatosystems.t9t.base.search.LeanSearchRequest;
+import com.arvatosystems.t9t.zkui.components.dropdown28.ComboBoxEntry;
+import com.arvatosystems.t9t.zkui.components.dropdown28.ComboBoxEntryComboitemRenderer;
 import com.arvatosystems.t9t.zkui.components.dropdown28.SimpleListModelExt;
 import com.arvatosystems.t9t.zkui.components.dropdown28.factories.IDropdown28DbFactory;
 import com.arvatosystems.t9t.zkui.components.dropdown28.nodb.Dropdown28Registry;
 import com.arvatosystems.t9t.zkui.fixedFilters.IFixedFilter;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
-
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.dp.Jdp;
 
@@ -45,7 +47,7 @@ public class Dropdown28Db<REF extends BonaPortable> extends Combobox {
     private final ApplicationSession                session = ApplicationSession.get();
     private final IDropdown28DbFactory<REF>         factory;
     private List<Description>                       entries;      // entries is not final because they can be reloaded
-    private final List<String>                      allIds;
+    private final ListModelList<ComboBoxEntry>      allIds;
     private final Map<String, Description>          lookupById;   // this is a case insensitive lookup
     private final Map<Long,   Description>          lookupByRef;
     protected IFixedFilter                          fixedFilter = null;        // a fixed search filter provider
@@ -63,23 +65,30 @@ public class Dropdown28Db<REF extends BonaPortable> extends Combobox {
         entries           = session.getDropDownData(factory.getDropdownId(), factory.getSearchRequest());
         lookupById        = new ConcurrentHashMap<String, Description>(entries.size());
         lookupByRef       = new ConcurrentHashMap<Long, Description>(entries.size());
-        allIds            = new ArrayList<String>(entries.size());
+        allIds            = new ListModelList<ComboBoxEntry>(entries.size());
         LOGGER.debug("Dropdown DB {} instantiated, got {} entries", factory.getDropdownId(), entries.size());
         getDropDownData();
 
-        this.addEventListener(Events.ON_CHANGE, (event) -> doChangeEvent());
+        addEventListener(Events.ON_CHANGE, (event) -> doChangeEvent());
+        setItemRenderer(new ComboBoxEntryComboitemRenderer());
     }
 
     protected void doChangeEvent() {
-        if (!allIds.contains(getValue())) {
+        String currentValue = getValue();
+        if (!allIds.stream().anyMatch(c -> c.getValue().equals(currentValue))) {
             setRawValue("");  // clearing raw data is not always what we want, it kills the ability to search with LIKE criteria...
-            setModel(new SimpleListModelExt<String>(allIds));
+            setModel(new SimpleListModelExt<ComboBoxEntry>(allIds));
         }
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public Dropdown28Db(String dropdownId) {
         this((IDropdown28DbFactory) Dropdown28Registry.requireFactoryById(dropdownId));
+    }
+
+    public Dropdown28Db(String dropdownId, ComboitemRenderer<?> renderer) {
+        this(dropdownId);
+        setItemRenderer(renderer);
     }
 
     public Description lookupById(String id) {
@@ -118,16 +127,21 @@ public class Dropdown28Db<REF extends BonaPortable> extends Combobox {
 
     // reloads the data based on updated filter requirements - common subroutine for
     // constructor and reloadDropDownData() (must be final because called by constructor)
-    private void getDropDownData() {
+    protected void getDropDownData() {
         lookupById.clear();
         lookupByRef.clear();
         allIds.clear();
         for (Description d : entries) {
+
+//            if (!d.getIsActive())
+//                continue;
+
             String keyInLowercase = d.getId().toLowerCase();
             lookupById.put(keyInLowercase, d);
             lookupByRef.put(d.getObjectRef(), d);
-            allIds.add(d.getId());
+            ComboBoxEntry comboBoxEntry = new ComboBoxEntry(d.getId(), d.getId(), d.getName(), null);
+            allIds.add(comboBoxEntry);
         }
-        setModel(new SimpleListModelExt<String>(allIds));
+        setModel(new SimpleListModelExt<ComboBoxEntry>(allIds));
     }
 }

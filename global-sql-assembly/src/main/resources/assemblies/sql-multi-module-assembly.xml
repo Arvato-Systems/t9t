@@ -13,7 +13,7 @@
             <useTransitiveDependencies>true</useTransitiveDependencies>
             <unpack>false</unpack>
             <includes>
-                <include>*:sql</include>
+                <include>*:*:sql</include>
             </includes>
         </dependencySet>
     </dependencySets>

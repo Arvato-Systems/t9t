@@ -56,6 +56,12 @@ package (com.arvatosystems) t9t.xml XML PROPERTY bundle t9t.config swagger {
         optional shortText                              description;            // description
     }
 
+    /** Common response header for all error messages, and some requests except authentication. */
+    final class PreviousResult xmlRoot {
+        required boolean                                completedCheckedRequest;
+        optional Integer                                returnCodeOfCheckedRequest;
+    }
+
     /** User I/O record. For security reasons, fields of the PermissionsDTO components cannot be imported. */
     final class User001 {
         required userId                             userId;              // User ID, to be used for login

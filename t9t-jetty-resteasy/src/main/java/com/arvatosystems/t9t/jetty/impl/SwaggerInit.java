@@ -59,6 +59,9 @@ public class SwaggerInit implements ISwaggerInit {
         ModelConverters.getInstance().addConverter(new DateTimeConverters());
         LOGGER.info("Adding custom swagger converter for display z field as Json schema.");
         ModelConverters.getInstance().addConverter(JsonSchemaOpenApiUtil.getJsonModelConverter());
+        LOGGER.info("Adding custom swagger converter for ByteArray fields.");
+        ModelConverters.getInstance().addConverter(JsonSchemaOpenApiUtil.getByteArrayModelConverter());
+
         try {
             new JaxrsOpenApiContextBuilder()
               .servletConfig(servletConfig)

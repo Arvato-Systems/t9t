@@ -30,8 +30,8 @@ import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.auth.AuthenticationInfo;
 import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
+import com.arvatosystems.t9t.ipblocker.services.impl.IPAddressBlocker;
 import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
-import com.arvatosystems.t9t.rest.utils.RestUtils;
 import com.arvatosystems.t9t.server.services.ICachingAuthenticationProcessor;
 import com.arvatosystems.t9t.server.services.IRequestProcessor;
 
@@ -59,6 +59,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
     protected final Vertx vertx = Jdp.getRequired(Vertx.class);
     protected final ICachingAuthenticationProcessor authenticationProcessor = Jdp.getRequired(ICachingAuthenticationProcessor.class);
     protected final IRequestProcessor requestProcessor = Jdp.getRequired(IRequestProcessor.class);
+    protected final IPAddressBlocker ipBlockerService = Jdp.getRequired(IPAddressBlocker.class);
 
     @Override
     public <T extends ServiceResponse> void performAsyncBackendRequest(final HttpHeaders httpHeaders, final AsyncResponse resp,
@@ -78,6 +79,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
             returnAsyncResult(acceptHeader, resp, Status.UNAUTHORIZED, "Missing or too short Authorization header");  // missing auth header
             return;
         }
+        final String remoteIp = httpHeaders.getHeaderString(T9tConstants.HTTP_HEADER_FORWARDED_FOR);
 
         // assign a message ID unless there is one already provided
         if (requestParameters.getMessageId() == null) {
@@ -117,11 +119,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
                 if (ar.succeeded()) {
                     final ServiceResponse sr = ar.result();
                     if (!ApplicationException.isOk(sr.getReturnCode())) {
-                        final Response.ResponseBuilder responseBuilder = RestUtils.createResponseBuilder(sr.getReturnCode());
-                        responseBuilder.type(acceptHeader == null || acceptHeader.length() == 0 ? MediaType.APPLICATION_JSON : acceptHeader);
-                        responseBuilder.entity(createResultFromServiceResponse(sr));
-                        final Response responseObj = responseBuilder.build();
-                        resp.resume(responseObj);
+                        createGenericResultEntity(sr, resp, acceptHeader,  () -> ipBlockerService.registerBadAuthFromIp(remoteIp));
                         return;
                     }
                     if (backendResponseClass.isAssignableFrom(sr.getClass())) {

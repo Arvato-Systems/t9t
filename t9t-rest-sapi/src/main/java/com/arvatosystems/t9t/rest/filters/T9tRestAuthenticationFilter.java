@@ -17,42 +17,61 @@ package com.arvatosystems.t9t.rest.filters;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.rest.services.IAuthFilterCustomization;
 
 import de.jpaw.dp.Jdp;
-import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.container.PreMatching;
 import jakarta.ws.rs.core.HttpHeaders;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.ext.Provider;
 
 @Provider
 @PreMatching
 public class T9tRestAuthenticationFilter implements ContainerRequestFilter {
+    private static final Logger LOGGER = LoggerFactory.getLogger(T9tRestAuthenticationFilter.class);
 
     private final IAuthFilterCustomization authFilterCustomization = Jdp.getRequired(IAuthFilterCustomization.class);
 
     @Override
     public void filter(final ContainerRequestContext requestContext) throws IOException {
+        LOGGER.debug("Starting filter");
         final String remoteIpHeader = requestContext.getHeaderString(T9tConstants.HTTP_HEADER_FORWARDED_FOR);
-        if (authFilterCustomization.isBlockedIpAddress(remoteIpHeader)) {
-            throw new WebApplicationException(Response.status(Status.FORBIDDEN).build());
+        if (authFilterCustomization.filterBlockedIpAddress(requestContext, remoteIpHeader)) {
+            LOGGER.debug("aborting due to blocked IP address");
+            return;  // aborted
         }
         final String idempotencyHeader = requestContext.getHeaderString(T9tConstants.HTTP_HEADER_IDEMPOTENCY_KEY);
-        if (idempotencyHeader != null) {
-            authFilterCustomization.filterCorrectIdempotencyPattern(idempotencyHeader, requestContext);
+        if (authFilterCustomization.filterCorrectIdempotencyPattern(requestContext, idempotencyHeader)) {
+            LOGGER.debug("aborting due to invalid format of idempotency header");
+            return;  // aborted
         }
         final String authHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
         if (authHeader == null) {
-            authFilterCustomization.filterUnauthenticated(requestContext);
-            authFilterCustomization.filterSupportedMediaType(requestContext.getMediaType());
+            LOGGER.debug("Starting filter - unauthed");
+            if (authFilterCustomization.filterUnauthenticated(requestContext)) {
+                LOGGER.debug("aborting due to forbidden unauthed access");
+                return;  // aborted
+            }
+            if (authFilterCustomization.filterSupportedMediaType(requestContext)) {
+                LOGGER.debug("aborting due to forbidden media type");
+                return;  // aborted
+            }
         } else {
-            authFilterCustomization.filterAuthenticated(authHeader, requestContext);
-            authFilterCustomization.filterSupportedMediaType(requestContext.getMediaType());
+            LOGGER.debug("Starting filter - authed");
+            if (authFilterCustomization.filterAuthenticated(requestContext, authHeader)) {
+                LOGGER.debug("aborting due failed authentication");
+                return;  // aborted
+            }
+            if (authFilterCustomization.filterSupportedMediaType(requestContext)) {
+                LOGGER.debug("aborting due to forbidden media type");
+                return;  // aborted
+            }
         }
+        LOGGER.debug("Filter fully passed");
     }
 }

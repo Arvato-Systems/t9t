@@ -15,7 +15,11 @@
  */
 package com.arvatosystems.t9t.jetty.oas;
 
+import com.fasterxml.jackson.databind.JavaType;
+
+import de.jpaw.util.ByteArray;
 import io.swagger.v3.core.converter.ModelConverter;
+import io.swagger.v3.core.util.Json;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.media.ArraySchema;
 import io.swagger.v3.oas.models.media.BooleanSchema;
@@ -106,8 +110,7 @@ public final class JsonSchemaOpenApiUtil {
     }
 
     /**
-     * Return an implementation ModelConverter which set $ref to Json schema if the property is z field.
-     * @return
+     * Returns an implementation of ModelConverter which sets $ref to Json schema if the property is z field.
      */
     public static ModelConverter getJsonModelConverter() {
         return (type, context, chain) -> {
@@ -116,6 +119,32 @@ public final class JsonSchemaOpenApiUtil {
                 os.set$ref(SCHEMA_REF);
                 os.setNullable(true);
                 return os;
+            }
+
+            if (chain.hasNext()) {
+                return chain.next().resolve(type, context, chain);
+            } else {
+                return null;
+            }
+        };
+    }
+
+    /**
+     * Returns an implementation of ModelConverter which describes binary data.
+     */
+    public static ModelConverter getByteArrayModelConverter() {
+        return (type, context, chain) -> {
+            if (type.isSchemaProperty()) {
+                final JavaType myType = Json.mapper().constructType(type.getType());
+                if (myType != null) {
+                    final Class<?> cls = myType.getRawClass();
+                    if (ByteArray.class.isAssignableFrom(cls)) {
+                        final StringSchema ss = new StringSchema();
+                        ss.setExample("SGVsbG8gd29ybGQh");
+                        ss.setDescription("Binary data, as base64 encoded string");
+                        return ss;
+                    }
+                }
             }
 
             if (chain.hasNext()) {

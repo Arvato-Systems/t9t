@@ -18,6 +18,7 @@ package com.arvatosystems.t9t.rest.services;
 import java.util.List;
 import java.util.function.Function;
 
+import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
@@ -65,6 +66,30 @@ public interface IT9tRestProcessor {
         final GenericResult result = RestUtils.createErrorResult(response.getReturnCode(), response.getErrorDetails());
         result.setProcessRef(response.getProcessRef());
         return result;
+    }
+
+    /**
+     * Adds a result entity of type GenericResult, but only if the return code is not an error which suggests unauthorized access.
+     * Could be static, but declared in the interface to allow overriding.
+     */
+    default void createGenericResultEntity(final ServiceResponse sr, final AsyncResponse resp, final String acceptHeader, final Runnable ipBlocker) {
+        final Response.ResponseBuilder responseBuilder = RestUtils.createResponseBuilder(sr.getReturnCode());
+        switch (sr.getReturnCode()) {
+        case T9tException.HTTP_ERROR_NOT_AUTHENTICATED:
+        case T9tException.HTTP_ERROR_NOT_AUTHORIZED:
+        case T9tException.HTTP_ERROR_BAD_MEDIA_TYPE:
+        case T9tException.NOT_AUTHENTICATED:
+        case T9tException.NOT_AUTHORIZED:
+            // record any client IP address as suspicious
+            ipBlocker.run();
+            break;
+        default:
+            // produce a proper response with additional information
+            responseBuilder.type(acceptHeader == null || acceptHeader.length() == 0 ? MediaType.APPLICATION_JSON : acceptHeader);
+            responseBuilder.entity(createResultFromServiceResponse(sr));
+        }
+        responseBuilder.build();
+        resp.resume(responseBuilder.build());
     }
 
     /** Returns a response without using the worker thread. */
