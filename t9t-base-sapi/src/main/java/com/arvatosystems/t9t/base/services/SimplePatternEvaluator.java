@@ -29,10 +29,11 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.base.T9tUtil;
+
 public final class SimplePatternEvaluator {
     private static final Logger LOGGER = LoggerFactory.getLogger(SimplePatternEvaluator.class);
 
-    private static final String PATTERN_FORMAT = "${%s}";
     private static final String FORMATTED_PATTERN_FORMAT = "\\$\\{%s(\\|([^\\}\\{]+))?\\}";
     private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS";
 
@@ -40,13 +41,16 @@ public final class SimplePatternEvaluator {
         // prevent instantiation of util class
     }
 
+    private static boolean isForbidden(final char c, final String forbiddenChars) {
+        return c < 0x20 || c >= 0x7f || forbiddenChars.indexOf(c) >= 0;
+    }
+
     /** Replaces characters which should not be inserted into a string because they might alter the folder by an upper case X. */
     public static String sanitizer(final String input, final String forbiddenChars) {
         // perform a check first, to avoid creating new objects
         boolean needChange = false;
         for (int i = 0; i < input.length(); ++i) {
-            final char c = input.charAt(i);
-            if (forbiddenChars.indexOf(c) >= 0) {
+            if (isForbidden(input.charAt(i), forbiddenChars)) {
                 needChange = true;
                 break;
             }
@@ -57,18 +61,19 @@ public final class SimplePatternEvaluator {
         final StringBuilder sb = new StringBuilder(input.length());
         for (int i = 0; i < input.length(); ++i) {
             final char c = input.charAt(i);
-            sb.append(forbiddenChars.indexOf(c) >= 0 ? 'X' : c);
+            sb.append(isForbidden(c, forbiddenChars) ? 'X' : c);
         }
         return sb.toString();
     }
 
     /** Replaces any variable references in pattern by lookup from the replacements map, using a specific sanitizer suitable for file names. */
     public static String evaluate(final String pattern, final Map<String, Object> patternReplacements) {
-        return evaluate(pattern, patternReplacements, s -> sanitizer(s, ":/\\."));
+        return evaluate(pattern, patternReplacements, s -> sanitizer(s, ":/\\. "), "NULL");
     }
 
     /** Replaces any variable references in pattern by lookup from the replacements map, using a generic sanitizer. */
-    public static String evaluate(final String pattern, final Map<String, Object> patternReplacements, final Function<String, String> sanitizer) {
+    public static String evaluate(final String pattern, final Map<String, Object> patternReplacements, final Function<String, String> sanitizer,
+      final String valueForNullOrEmpty) {
         String result = pattern;
         for (final Map.Entry<String, Object> replacementEntry : patternReplacements.entrySet()) {
             final Object replacementValue = replacementEntry.getValue();
@@ -110,9 +115,16 @@ public final class SimplePatternEvaluator {
                     result = result.replaceAll(Pattern.quote(toBeReplaced), formattedDate);
                 }
             } else {
-                final String key = Pattern.quote(String.format(PATTERN_FORMAT, replacementEntry.getKey()));
-                final String value = replacementEntry.getValue() == null ? null : replacementEntry.getValue().toString();
-                result = result.replaceAll(key, value);
+                final String key = Pattern.quote("${" + replacementEntry.getKey() + "}");
+                final Object tmp = replacementEntry.getValue();
+                final String value;
+                if (tmp == null) {
+                    value = valueForNullOrEmpty;
+                } else {
+                    final String tmp2 = tmp.toString();
+                    value = (tmp2 == null || tmp2.isEmpty()) ? valueForNullOrEmpty : sanitizer.apply(tmp2);
+                }
+                result = result.replaceAll(key, T9tUtil.nvl(value, ""));
             }
         }
         return result;

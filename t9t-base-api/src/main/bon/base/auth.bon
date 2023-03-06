@@ -51,11 +51,15 @@ package (com.arvatosystems) t9t.base.auth {
 
     // internal class - change into Java 17 record once available
     final class AuthenticationInfo {
-//        required int                                        returnCode;                 // result of the login call - or specific other codes if it hasn't been attempted
         optional Integer                                    httpStatusCode;             // the HTTP status to return - only set if not successful
         optional Unicode(200)                               message;                    // reason of the failure (only set if not successful)
         optional encodedJwt                                 encodedJwt;                 // JSON Web Token in encoded form, signature can be verified
         optional (JwtInfo...)                               jwtInfo;                    // JWT contents in clear form
+    }
+
+    /** Provides authentication information via pre-generated JWT. */
+    final class JwtAuthentication extends AuthenticationParameters {
+        required encodedJwt                                 encodedJwt;                 // JSON Web Token in encoded form, signature can be verified
     }
 
     /** Provides authentication information via password or serves as a "change password" request. */

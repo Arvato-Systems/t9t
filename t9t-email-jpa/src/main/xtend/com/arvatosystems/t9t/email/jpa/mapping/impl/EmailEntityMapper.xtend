@@ -18,6 +18,7 @@ package com.arvatosystems.t9t.email.jpa.mapping.impl
 import com.arvatosystems.t9t.annotations.jpa.AutoHandler
 import com.arvatosystems.t9t.annotations.jpa.active.AutoMap42
 import com.arvatosystems.t9t.email.EmailDTO
+import com.arvatosystems.t9t.email.EmailDescription
 import com.arvatosystems.t9t.email.jpa.entities.EmailEntity
 import com.arvatosystems.t9t.email.jpa.persistence.IEmailEntityResolver
 
@@ -28,4 +29,5 @@ class EmailEntityMapper {
     @AutoHandler("SC42")
     def void d2eEmailDTO(EmailEntity entity, EmailDTO dto, boolean onlyActive) {}
     def void e2dEmailDTO(EmailEntity entity, EmailDTO dto) {}
+    def void e2dEmailDescription(EmailEntity entity, EmailDescription dto) {}
 }

@@ -180,6 +180,14 @@
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-translation-be-intern</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-translations-be</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-translations-jpa</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>

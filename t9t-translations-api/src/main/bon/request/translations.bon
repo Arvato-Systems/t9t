@@ -33,7 +33,7 @@ package (com.arvatosystems) t9t.trns.request {
 
     // standard CRUD and search requests
     class TrnsModuleCfgCrudRequest                  extends CrudModuleCfgRequest<TrnsModuleCfgDTO> {}
-    class TranslationsCrudRequest                   extends CrudSuperclassKeyRequest<TranslationsKey, TranslationsKey, TranslationsDTO, FullTrackingWithVersion> {}
+    class TranslationsCrudRequest                   extends CrudSurrogateKeyRequest<TranslationsRef, TranslationsDTO, FullTrackingWithVersion> {}
 
     class TrnsModuleCfgSearchRequest                extends SearchRequest<TrnsModuleCfgDTO,  FullTrackingWithVersion> {}
     class TranslationsSearchRequest                 extends SearchRequest<TranslationsDTO, FullTrackingWithVersion> {}

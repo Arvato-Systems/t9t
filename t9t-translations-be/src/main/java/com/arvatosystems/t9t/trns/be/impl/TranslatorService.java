@@ -31,6 +31,7 @@ import com.arvatosystems.t9t.server.services.ITranslator;
 import com.arvatosystems.t9t.trns.TranslationsDTO;
 import com.arvatosystems.t9t.trns.TranslationsUtil;
 import com.arvatosystems.t9t.trns.TrnsModuleCfgDTO;
+import com.arvatosystems.t9t.trns.services.ITrnsModuleCfgDtoResolver;
 import com.arvatosystems.t9t.trns.services.ITrnsPersistenceAccess;
 
 import de.jpaw.dp.Jdp;
@@ -42,7 +43,7 @@ public class TranslatorService implements ITranslator {
     private static final Logger LOGGER = LoggerFactory.getLogger(TranslatorService.class);
 
     protected final ITrnsPersistenceAccess persistenceAccess = Jdp.getRequired(ITrnsPersistenceAccess.class);
-    //@Inject
+    protected final ITrnsModuleCfgDtoResolver moduleCfgResolver = Jdp.getRequired(ITrnsModuleCfgDtoResolver.class);
     protected final Provider<RequestContext> contextProvider = Jdp.getProvider(RequestContext.class);
 
     protected interface ITranslationsCache {
@@ -113,14 +114,10 @@ public class TranslatorService implements ITranslator {
         return null;
     }
 
-    private TrnsModuleCfgDTO tenantCfg;  // TODO!
-
-
     protected String resolveText(ITranslationsCache cache, TranslationsPartialKey key) {
         String text = cache.get(TranslationsUtil.getKey(key));
         return (text == null) ? cache.get(key.getId()) : text;
     }
-
 
     @Override
     public List<String> getTranslations(String languageCode, List<TranslationsPartialKey> keys) {
@@ -128,6 +125,7 @@ public class TranslatorService implements ITranslator {
         final boolean isLongLanguage = languageCode.length() > 2;
         final String shortLanguage = isLongLanguage ? languageCode.substring(0, 2) : languageCode;
         final List<ITranslationsCache> caches = new ArrayList<ITranslationsCache>(4);
+        final TrnsModuleCfgDTO tenantCfg = moduleCfgResolver.getModuleConfiguration();
 
         if (tenantCfg.getAttemptLocalTenant() && !T9tConstants.GLOBAL_TENANT_ID.equals(ctx.tenantId)) {
             // specific tenant

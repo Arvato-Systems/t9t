@@ -99,14 +99,11 @@ package (com.arvatosystems) t9t.base.types {
     }
     xenum XTargetChannelType is TargetChannelType:8;        // extend additional providers here
 
-    /** The AuthenticationParameters provide information about the authentication of a ServiceRequest.
+    /**
+     * The AuthenticationParameters provide information about the authentication of a ServiceRequest.
      * The parameters are either sent while opening a session, or with every request, or as a separate request.
      */
     abstract class AuthenticationParameters {}
-
-    final class AuthenticationJwt extends AuthenticationParameters {
-        required encodedJwt                                 encodedJwt;                 // JSON Web Token in encoded form, signature can be verified
-    }
 
     /** The SessionParameters are provided once per connection / file upload and provide information about the connecting client.
      * This is for debugging / auditing purposes only. */

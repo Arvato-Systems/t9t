@@ -75,6 +75,14 @@ package (com.arvatosystems) t9t.email {
         optional Unicode(1000) allowControlChars    bounceMessage;
     }
 
+    class EmailDescription extends EmailRef {
+        required uuid                               messageId;
+        optional Unicode(255)                       emailSubject;                                       // subject line which may contain macros as ${} (subjectIsComponent = false) or names a component which defines the subject
+        required multipleEmailAddresses             emailTo;
+        required int                                numberOfAttachments;
+        optional Enum EmailStatus                   emailStatus;
+        optional Boolean                            bounced;
+    }
 
     final class EmailAttachmentsKey extends CompositeKeyRef {
         required f42Ref                             emailRef;

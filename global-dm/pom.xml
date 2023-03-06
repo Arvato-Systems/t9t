@@ -95,7 +95,7 @@
         <microprofile-smallrye-impl.version>2.4.1</microprofile-smallrye-impl.version>
 
         <!-- Jetty -->
-        <jetty.version>11.0.13</jetty.version>
+        <jetty.version>11.0.14</jetty.version>
 
         <!-- Commons (use with care, only few are regularly updated) -->
         <commons-logging.version>1.1</commons-logging.version>            <!-- should not use at all! -->
@@ -110,10 +110,10 @@
         <commons-text.version>1.10.0</commons-text.version>               <!-- not used in t9t, but DM made to cover for transitive dependencies -->
 
         <!-- AWS SDK v1 -->
-        <aws-bom.version>1.12.415</aws-bom.version>
+        <aws-bom.version>1.12.420</aws-bom.version>
 
         <!-- AWS SDK v2 -->
-        <aws2-bom.version>2.20.12</aws2-bom.version>
+        <aws2-bom.version>2.20.17</aws2-bom.version>
 
         <!-- Azure -->
         <azure-cosmosdb.version>2.6.16</azure-cosmosdb.version>
@@ -160,7 +160,7 @@
         <guava.version>31.1-jre</guava.version>
         <caffeine.version>3.1.2</caffeine.version>
         <antlr.version>3.2</antlr.version>
-        <resteasy.version>6.2.2.Final</resteasy.version>
+        <resteasy.version>6.2.3.Final</resteasy.version>
         <googlemaps.services.version>2.1.2</googlemaps.services.version>
         <uuid-generator.version>4.0.1</uuid-generator.version>
         <apache-poi.version>5.2.3</apache-poi.version>
@@ -169,9 +169,9 @@
         <log4j2.version>2.20.0</log4j2.version>     <!-- see comment below -->
         <reload4j.version>1.2.24</reload4j.version>
 
-        <spring-bom.version>6.0.5</spring-bom.version>
-        <spring-data-jpa.version>3.0.2</spring-data-jpa.version>
-        <spring-boot.version>3.0.3</spring-boot.version>
+        <spring-bom.version>6.0.6</spring-bom.version>
+        <spring-data-jpa.version>3.0.3</spring-data-jpa.version>
+        <spring-boot.version>3.0.4</spring-boot.version>
 
         <netty.version>4.1.87.Final</netty.version>
         <vertx4.version>4.3.8</vertx4.version>
@@ -185,8 +185,8 @@
         <flyway.version>9.15.1</flyway.version>
         <reflections.version>0.9.10</reflections.version>
         <maven-plugin-api.version>3.9.0</maven-plugin-api.version>
-        <jackson.version>2.14.1</jackson.version>
-        <jackson-databind.version>2.14.1</jackson-databind.version> <!-- separate version due to frequent CVE updates which do not release the full set -->
+        <jackson.version>2.14.2</jackson.version>
+        <jackson-databind.version>2.14.2</jackson-databind.version> <!-- separate version due to frequent CVE updates which do not release the full set -->
         <solr.version>8.11.1</solr.version>
         <camel.version>3.20.2</camel.version>
         <kafka.version>3.4.0</kafka.version>

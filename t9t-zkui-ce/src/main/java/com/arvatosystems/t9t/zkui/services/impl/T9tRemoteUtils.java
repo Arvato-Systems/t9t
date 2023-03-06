@@ -19,9 +19,12 @@ import java.util.Collections;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.zk.ui.Execution;
+import org.zkoss.zk.ui.Executions;
 
 import com.arvatosystems.t9t.base.IRemoteConnection;
 import com.arvatosystems.t9t.base.StringTrimmer;
+import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
@@ -31,6 +34,7 @@ import com.arvatosystems.t9t.base.search.LeanGroupedSearchRequest;
 import com.arvatosystems.t9t.base.search.LeanSearchRequest;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.base.search.SearchCriteria;
+import com.arvatosystems.t9t.ipblocker.services.IIPAddressBlocker;
 import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;
 import com.arvatosystems.t9t.zkui.exceptions.ServiceResponseException;
 import com.arvatosystems.t9t.zkui.services.IT9tRemoteUtils;
@@ -62,6 +66,8 @@ public class T9tRemoteUtils implements IT9tRemoteUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(T9tRemoteUtils.class);
     private static final DataConverter<String, AlphanumericElementaryDataItem> STRING_TRIMMER = new StringTrimmer();
+
+    protected final IIPAddressBlocker ipAddressBlocker = Jdp.getRequired(IIPAddressBlocker.class);
 
     static {
         // configure output level for UI
@@ -153,8 +159,14 @@ public class T9tRemoteUtils implements IT9tRemoteUtils {
 
     /** Low level remote call.
      * @throws ApplicationException */
-    private ServiceResponse execute(RequestParameters requestParameters) throws ApplicationException {
-        ApplicationSession session = ApplicationSession.get();
+    private ServiceResponse execute(final RequestParameters requestParameters) throws ApplicationException {
+        final ApplicationSession session = ApplicationSession.get();
+
+        final String clientIp = getClientIpAddress();
+        final boolean isIpAddressBlocked = ipAddressBlocker.isIpAddressBlocked(clientIp);
+        if (isIpAddressBlocked) {
+            return handleBlockedIpAddress(session, clientIp);
+        }
 
         requestParameters.treeWalkString(new StringConverterEmptyToNull(), true);  // convert empty data to nulls
         requestParameters.validate();  // then check if it is a valid request
@@ -167,6 +179,9 @@ public class T9tRemoteUtils implements IT9tRemoteUtils {
             );
              // not disclosing....         logRequest(requestParameters);  // DELETE ME
             resp = statelessServiceSession.executeAuthenticationRequest(ar);
+            if (!ApplicationException.isOk(resp.getReturnCode())) {
+                ipAddressBlocker.registerBadAuthFromIp(clientIp);
+            }
         } else {
             // regular request - can log without disclosing details
             logRequest(requestParameters);
@@ -192,10 +207,31 @@ public class T9tRemoteUtils implements IT9tRemoteUtils {
         }
         // resp.treeWalkString(new StringConverterNullToEmpty(), true);   // ZK can deal with nulls now
         if (resp instanceof AuthenticationResponse) {
-            AuthenticationResponse ar = (AuthenticationResponse) resp;
+            final AuthenticationResponse ar = (AuthenticationResponse) resp;
             session.setJwt(ar.getEncodedJwt());
         }
         logResponse(resp);
+        return resp;
+    }
+
+    private String getClientIpAddress() {
+        final Execution currentExecution = Executions.getCurrent();
+        String clientIp = currentExecution.getHeader(T9tConstants.HTTP_HEADER_FORWARDED_FOR);
+        if (clientIp == null) {
+            clientIp = currentExecution.getRemoteAddr();
+        }
+        return clientIp;
+    }
+
+    protected ServiceResponse handleBlockedIpAddress(final ApplicationSession session, final String clientIp) {
+        LOGGER.debug("IP Address ({}) is blocked.", clientIp);
+        if (session.isAuthenticated()) {
+            session.invalidateSession();
+        }
+        // throw new ApplicationException(T9tException.T9T_ACCESS_DENIED, "IP Address is blocked.");
+        final ServiceResponse resp = new ServiceResponse();
+        resp.setReturnCode(T9tException.T9T_ACCESS_DENIED);
+        resp.setErrorMessage(T9tException.codeToString(T9tException.T9T_ACCESS_DENIED));
         return resp;
     }
 

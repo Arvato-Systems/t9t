@@ -879,6 +879,12 @@
             </dependency>
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
+                <artifactId>t9t-translations-jpa</artifactId>
+                <version>${project.version}</version>
+                <classifier>sql</classifier>
+            </dependency>
+            <dependency>
+                <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-voice-jpa</artifactId>
                 <version>${project.version}</version>
                 <classifier>sql</classifier>

@@ -148,7 +148,7 @@ public class CachingAuthenticationProcessor implements ICachingAuthenticationPro
                 }
             }
         } catch (Exception e) {
-            LOGGER.info("Bad Basic auth: {}: {}", e.getClass().getSimpleName(), e.getMessage());
+            LOGGER.warn("Bad Basic auth: {}: {}", e.getClass().getSimpleName(), e.getMessage());
         }
         AUTH_CACHE.put(header, ACCESS_DENIED_INVALID_BASIC);
         return ACCESS_DENIED_INVALID_BASIC;

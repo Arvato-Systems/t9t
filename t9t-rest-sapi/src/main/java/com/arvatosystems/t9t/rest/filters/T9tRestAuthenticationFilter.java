@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.ipblocker.services.impl.IPAddressBlocker;
 import com.arvatosystems.t9t.rest.services.IAuthFilterCustomization;
 
 import de.jpaw.dp.Jdp;
@@ -36,6 +37,7 @@ public class T9tRestAuthenticationFilter implements ContainerRequestFilter {
     private static final Logger LOGGER = LoggerFactory.getLogger(T9tRestAuthenticationFilter.class);
 
     private final IAuthFilterCustomization authFilterCustomization = Jdp.getRequired(IAuthFilterCustomization.class);
+    private final IPAddressBlocker ipBlockerService = Jdp.getRequired(IPAddressBlocker.class);
 
     @Override
     public void filter(final ContainerRequestContext requestContext) throws IOException {
@@ -64,6 +66,8 @@ public class T9tRestAuthenticationFilter implements ContainerRequestFilter {
         } else {
             LOGGER.debug("Starting filter - authed");
             if (authFilterCustomization.filterAuthenticated(requestContext, authHeader)) {
+                // any bad auth should record the IP address as "bad"
+                ipBlockerService.registerBadAuthFromIp(remoteIpHeader);
                 LOGGER.debug("aborting due failed authentication");
                 return;  // aborted
             }

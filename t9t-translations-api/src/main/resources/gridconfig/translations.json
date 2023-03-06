@@ -1,0 +1,12 @@
+{
+    "viewModel": "translations",
+    "filters": [
+        { "filterType": "E", "fieldName": "category" },
+        { "filterType": "E", "fieldName": "qualifier" },
+        { "filterType": "E", "fieldName": "id" },
+        { "filterType": "E", "fieldName": "languageCode" }
+    ],
+    "fields": [
+        "category", "qualifier", "id", "languageCode", "text"
+    ]
+}

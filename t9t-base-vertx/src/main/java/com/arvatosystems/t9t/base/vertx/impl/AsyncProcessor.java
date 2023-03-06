@@ -30,6 +30,7 @@ import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.api.ServiceRequest;
 import com.arvatosystems.t9t.base.api.ServiceRequestHeader;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
+import com.arvatosystems.t9t.base.auth.JwtAuthentication;
 import com.arvatosystems.t9t.base.event.EventData;
 import com.arvatosystems.t9t.base.event.EventParameters;
 import com.arvatosystems.t9t.base.event.GenericEvent;
@@ -37,7 +38,6 @@ import com.arvatosystems.t9t.base.request.ProcessEventRequest;
 import com.arvatosystems.t9t.base.services.IAsyncRequestProcessor;
 import com.arvatosystems.t9t.base.services.IEventHandler;
 import com.arvatosystems.t9t.base.services.impl.EventSubscriptionCache;
-import com.arvatosystems.t9t.base.types.AuthenticationJwt;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.server.services.IUnauthenticatedServiceRequestExecutor;
 
@@ -82,7 +82,7 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
                 if (bona instanceof EventData eventData) {
                     final String theEventId = eventData.getData().ret$PQON();
                     final String eventTenantId = eventData.getHeader().getTenantId();
-                    final AuthenticationJwt authJwt = new AuthenticationJwt(eventData.getHeader().getEncodedJwt());
+                    final JwtAuthentication authJwt = new JwtAuthentication(eventData.getHeader().getEncodedJwt());
 
                     if (eventData.getData() instanceof GenericEvent genericEvent) {
                         final String qualifier = getQualifierForTenant(eventTenantId);
@@ -263,7 +263,7 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
         handler.addQualifierByTenantId(tenantId, qualifier);
     }
 
-    private static void executeEvent(final String qualifier, final AuthenticationJwt authenticationJwt, final EventParameters eventParams,
+    private static void executeEvent(final String qualifier, final JwtAuthentication authenticationJwt, final EventParameters eventParams,
             final Long invokingProcessRef) {
         final ProcessEventRequest rq = new ProcessEventRequest();
         rq.setEventHandlerQualifier(qualifier);
@@ -281,7 +281,7 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
         runInWorkerThread(myVertx, srq);
     }
 
-    private static void executeAllEvents(final String tenantId, final String eventId, final AuthenticationJwt authenticationJwt,
+    private static void executeAllEvents(final String tenantId, final String eventId, final JwtAuthentication authenticationJwt,
             final EventParameters eventParams, final Long invokingProcessRef) {
         final Pair<String, String> key = new Pair<>(eventId, tenantId);
         Set<IEventHandler> subscribers = SUBSCRIBERS.get(key);

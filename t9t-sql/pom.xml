@@ -96,6 +96,11 @@
             <artifactId>t9t-solr-jpa</artifactId>
             <classifier>sql</classifier>
         </dependency>
+        <dependency>
+            <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-translations-jpa</artifactId>
+            <classifier>sql</classifier>
+        </dependency>
     </dependencies>
 
     <build>

@@ -15,26 +15,29 @@
  */
 package com.arvatosystems.t9t.auth.be.impl;
 
+import java.time.Instant;
+import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.arvatosystems.t9t.auth.jwt.IJWT;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceRequest;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
 import com.arvatosystems.t9t.base.auth.AuthenticationResponse;
-import com.arvatosystems.t9t.base.types.AuthenticationJwt;
+import com.arvatosystems.t9t.base.auth.JwtAuthentication;
 import com.arvatosystems.t9t.base.types.AuthenticationParameters;
 import com.arvatosystems.t9t.server.services.IAuthenticate;
 import com.arvatosystems.t9t.server.services.IRequestProcessor;
 import com.arvatosystems.t9t.server.services.IUnauthenticatedServiceRequestExecutor;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ApplicationException;
-import java.time.Instant;
-import java.util.concurrent.TimeUnit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 //process ServiceRequests from unauthenticated sources. Blocking operation
 @Singleton
@@ -65,12 +68,12 @@ public class ServiceRequestExecutor implements IUnauthenticatedServiceRequestExe
             throw new T9tException(T9tException.NOT_AUTHENTICATED);
         }
         AuthData adata = AUTH_CACHE.getIfPresent(ap);
-        if (adata != null && !(ap instanceof AuthenticationJwt) && adata.getJwtInfo().getExpiresAt().isAfter(Instant.now())) {
+        if (adata != null && !(ap instanceof JwtAuthentication) && adata.getJwtInfo().getExpiresAt().isAfter(Instant.now())) {
             adata = null; // force reauth due to expiry
         }
         if (adata == null) {
             // need to compute
-            if (ap instanceof AuthenticationJwt jwtAp) {
+            if (ap instanceof JwtAuthentication jwtAp) {
                 // fast track
                 String jwtToken = jwtAp.getEncodedJwt();
                 try {

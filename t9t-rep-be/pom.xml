@@ -90,6 +90,16 @@
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-auth-api</artifactId>
         </dependency>
+
+        <!-- Apache POI packages are needed in Jasper Report -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

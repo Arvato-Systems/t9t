@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="trnsModuleCfg"?>
+
+<window28 id="trnsModuleCfgWin">
+    <threesections28 gridId="trnsModuleCfg" countTotal="true">
+        <crud28
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.ModuleConfigVM', vmId='trnsModuleCfg')"
+            currentMode="@load(vm.currentMode)">
+            <form28 id="trnsModuleCfgCrud" aspect="2" numColumns="2">
+                <rows>
+                    <cells28  id ="tenantId"                   value ="@load(vm.tenantId)                        @save(vm.tenantId,                        before='commandSave')" />
+                    <cells228 id ="attemptLocalTenant"         value ="@load(vm.data.attemptLocalTenant)         @save(vm.data.attemptLocalTenant,         before='commandSave')"
+                              id2="attemptDialects"            value2="@load(vm.data.attemptDialects)            @save(vm.data.attemptDialects,            before='commandSave')" />
+                </rows>
+            </form28>
+        </crud28>
+    </threesections28>
+</window28>

@@ -18,6 +18,7 @@ package com.arvatosystems.t9t.embedded.connect
 import com.arvatosystems.t9t.authc.api.SwitchLanguageRequest
 import com.arvatosystems.t9t.authc.api.SwitchTenantRequest
 import com.arvatosystems.t9t.base.ITestConnection
+import com.arvatosystems.t9t.base.T9tConstants
 import com.arvatosystems.t9t.base.T9tException
 import com.arvatosystems.t9t.base.api.RequestParameters
 import com.arvatosystems.t9t.base.api.ServiceRequest
@@ -25,8 +26,8 @@ import com.arvatosystems.t9t.base.api.ServiceResponse
 import com.arvatosystems.t9t.base.auth.ApiKeyAuthentication
 import com.arvatosystems.t9t.base.auth.AuthenticationRequest
 import com.arvatosystems.t9t.base.auth.AuthenticationResponse
+import com.arvatosystems.t9t.base.auth.JwtAuthentication
 import com.arvatosystems.t9t.base.auth.PasswordAuthentication
-import com.arvatosystems.t9t.base.types.AuthenticationJwt
 import com.arvatosystems.t9t.base.types.AuthenticationParameters
 import com.arvatosystems.t9t.base.types.SessionParameters
 import com.arvatosystems.t9t.server.services.IAuthenticate
@@ -38,7 +39,6 @@ import de.jpaw.bonaparte.pojos.api.auth.JwtInfo
 import de.jpaw.dp.Inject
 import de.jpaw.util.ApplicationException
 import java.util.UUID
-import com.arvatosystems.t9t.base.T9tConstants
 
 @AddLogger
 abstract class AbstractConnection implements ITestConnection {
@@ -86,7 +86,7 @@ abstract class AbstractConnection implements ITestConnection {
             val authResult  = typeIO(rq, AuthenticationResponse)
             encodedJwt      = authResult.encodedJwt
             jwtInfo         = authResult.jwtInfo
-            authentication  = new AuthenticationJwt(authResult.encodedJwt)  // may expire, but we have no other choice here
+            authentication  = new JwtAuthentication(authResult.encodedJwt)  // may expire, but we have no other choice here
         } else {
             errIO(rq, expectedCode)
         }

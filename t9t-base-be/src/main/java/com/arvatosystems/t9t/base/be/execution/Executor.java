@@ -15,6 +15,12 @@
  */
 package com.arvatosystems.t9t.base.be.execution;
 
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
+
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
@@ -22,6 +28,7 @@ import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceRequest;
 import com.arvatosystems.t9t.base.api.ServiceRequestHeader;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
+import com.arvatosystems.t9t.base.auth.JwtAuthentication;
 import com.arvatosystems.t9t.base.auth.PermissionType;
 import com.arvatosystems.t9t.base.event.EventData;
 import com.arvatosystems.t9t.base.event.EventHeader;
@@ -31,7 +38,6 @@ import com.arvatosystems.t9t.base.services.IAsyncRequestProcessor;
 import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.IRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
-import com.arvatosystems.t9t.base.types.AuthenticationJwt;
 import com.arvatosystems.t9t.server.InternalHeaderParameters;
 import com.arvatosystems.t9t.server.services.IAuthorize;
 
@@ -45,12 +51,6 @@ import de.jpaw.dp.Provider;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ApplicationException;
 import de.jpaw.util.ExceptionUtil;
-
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 
 /**
  * Class serving as key entry point for intra-module communication.
@@ -260,7 +260,7 @@ public class Executor implements IExecutor {
         requestHeader.setPriorityRequest((priority || ctx.isPriorityRequest()) ? Boolean.TRUE : ctx.internalHeaderParameters.getPriorityRequest());
         srq.setRequestHeader(requestHeader);
         srq.setRequestParameters(params);
-        srq.setAuthentication(new AuthenticationJwt(ctx.internalHeaderParameters.getEncodedJwt()));
+        srq.setAuthentication(new JwtAuthentication(ctx.internalHeaderParameters.getEncodedJwt()));
         ctx.addPostCommitHook((final RequestContext previousRequestContext, final RequestParameters rq, final ServiceResponse rs) -> {
             asyncProcessor.submitTask(srq, false, allNodes);
         });

@@ -28,7 +28,7 @@ package (com.arvatosystems) t9t.trns.jpa.entities owner fortytwo prefix p28 {
     entity TranslationsEntity category cfg is TranslationsDTO inheritance tablePerClass {
         cacheable
         tenantClass InternalTenantId
-        pk is TranslationsKey
-//        index unique (tenantId, ^category, id, qualifier, languageCode)
+        pk (objectRef)
+        index unique (tenantId, ^category, id, qualifier, languageCode)
     }
 }

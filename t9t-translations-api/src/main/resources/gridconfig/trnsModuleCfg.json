@@ -1,0 +1,11 @@
+{
+  "viewModel": "trnsModuleCfg",
+  "filters": [
+    { "filterType": "E", "fieldName": "tenantId" }
+  ],
+  "fields": [
+    "tenantId",
+    "attemptLocalTenant",
+    "attemptDialects"
+  ]
+}
