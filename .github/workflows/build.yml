@@ -3,8 +3,8 @@ name: Build
 on:
   workflow_dispatch:
   push:
-#    branches:
-#      - master
+    branches:
+      - master
 
 env:
   JAVA_VERSION_TO_USE: '17'
