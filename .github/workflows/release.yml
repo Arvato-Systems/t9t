@@ -1,0 +1,60 @@
+name: Release
+
+run-name: Release ${{ (inputs.tag != '' && inputs.tag) || github.event.release.name }}
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Tag name like v6.4.0
+        type: string
+        required: true
+
+env:
+  JAVA_VERSION_TO_USE: '17'
+  JAVA_DISTRI_TO_USE: 'corretto'
+  GITHUB_TOKEN_READ_PACKAGES: ${{ secrets.GH_WORKFLOWS_PAT_READ_PACKAGES }}
+  GITHUB_TOKEN_DEPLOY_PACKAGES: ${{ github.token }}
+  DEPLOY_RETRY: 7
+  DEPLOY_REPO: 'github-distri::default::https://maven.pkg.github.com/${{ github.repository }}'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        ref: ${{ inputs.tag }} # if available, take tag from manual input
+
+    - name: Set up JDK ${{ env.JAVA_VERSION_TO_USE }} (${{ env.JAVA_DISTRI_TO_USE }})
+      uses: actions/setup-java@v3
+      with:
+        java-version: ${{ env.JAVA_VERSION_TO_USE }}
+        distribution: ${{ env.JAVA_DISTRI_TO_USE }}
+        cache: maven
+
+    - name: Configure maven settings.xml
+      uses: whelk-io/maven-settings-xml-action@v21
+      with:
+        repositories: '[{ "id": "github-pkgs", "url": "https://maven.pkg.github.com/arvato-systems-jacs/dummy", "snapshots": { "enabled": "true" } }]'
+        plugin_repositories: '[{ "id": "github-pkgs", "url": "https://maven.pkg.github.com/arvato-systems-jacs/dummy", "snapshots": { "enabled": "true" } }]'
+        servers: |
+          [
+            { "id": "github-pkgs", "username": "dummy", "password": "${env.GITHUB_TOKEN_READ_PACKAGES}" },
+            { "id": "github-distri", "username": "${env.GITHUB_ACTOR}", "password": "${env.GITHUB_TOKEN_DEPLOY_PACKAGES}" }
+          ]
+
+    - name: Build code
+      run: mvn -B -U -T 2C -P build -DskipTests clean install
+
+    - name: Publish release packages
+      run: >
+        mvn -B -T 1C -P build -DskipTests
+        -DretryFailedDeploymentCount=${{ env.DEPLOY_RETRY }}
+        -DaltDeploymentRepository=${{ env.DEPLOY_REPO }}
+        deploy
