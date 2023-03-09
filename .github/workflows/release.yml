@@ -3,7 +3,6 @@ name: Release
 run-name: Release ${{ (inputs.tag != '' && inputs.tag) || github.event.release.name }}
 
 on:
-  push:
   release:
     types: [published]
   workflow_dispatch:
@@ -53,9 +52,9 @@ jobs:
     - name: Build code
       run: mvn -B -U -T 2C -P build -DskipTests clean install
 
-#    - name: Publish release packages
-#      run: >
-#        mvn -B -T 1C -P build -DskipTests
-#        -DretryFailedDeploymentCount=${{ env.DEPLOY_RETRY }}
-#        -DaltDeploymentRepository=${{ env.DEPLOY_REPO }}
-#        deploy
+    - name: Publish release packages
+      run: >
+        mvn -B -T 1C -P build -DskipTests
+        -DretryFailedDeploymentCount=${{ env.DEPLOY_RETRY }}
+        -DaltDeploymentRepository=${{ env.DEPLOY_REPO }}
+        deploy
