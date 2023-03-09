@@ -56,7 +56,7 @@ public class DropdownConverter implements IItemConverter<String> {
             List<Description> data = ApplicationSession.get().getDropDownData(dropdown, dropDownFactory.getSearchRequest());
             for (Description d : data) {
                 if (value.equals(d.getId()) && d.getIsActive())
-                    return d.getId() + " " + d.getName(); // replace id by label (id name)
+                    return d.getId() + " - " + d.getName(); // replace id by label (id name)
             }
             // not found
             return "(" + value + ")";

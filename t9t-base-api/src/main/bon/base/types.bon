@@ -23,17 +23,18 @@ package (com.arvatosystems) t9t.base.types {
     type f42Ref                 is Long;                // platform-unique numeric ID
     type t9tRef                 is Long;                // platform-unique numeric ID
     type version                is Integer;             // separate field used for optimistic locking
-    type t9tShortId             is Unicode(1..16);      // a typical identifier
+    type t9tShortId             is Ascii(1..16);        // regexp "[-._A-Za-z0-9]+"; // a typical identifier
     type eventTarget            is Ascii(100);          // an asynchronous target (target:name), with target XAsyncTargetType.token()
 
-    type tenantId               is t9tShortId;          // specifies the tenant
-    type userId                 is t9tShortId;          // external user Id
+    type tenantId               is Ascii(1..16);        // specifies the tenant (allowed patterns checked in CRUD request)
+    type userId                 is Unicode(1..16);      // external user Id (allowed patterns checked in CRUD request)
     type cannedRequestId        is t9tShortId;          // ID which identifies some preconfigured request
     type typeId                 is Ascii(3);            // some alphanumeric (easier to remember) mapping of the numeric RTTI
     type bucketId               is typeId;              // using the same type for buckets
     type eventId                is Unicode(100);        // size of event names
 
-    type defaultExternalId      is Unicode(1..36);      // default size for any external ID - large enough to contain an ASCII UUID
+    type defaultExternalId      is Ascii(1..36);        // regexp "[-._A-Za-z0-9]+"; // default size for any external ID - large enough to contain an ASCII UUID
+    type uncheckedId            is Ascii(1..36);        // used for workflow step labels - due to historic reasons , these contains spaces & other funny chars
     type shortText              is Unicode(80);         // type for all cfg item descriptions
 
     type pqon                   is Unicode(255);        // partially qualified object name

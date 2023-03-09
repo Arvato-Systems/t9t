@@ -17,6 +17,7 @@ package com.arvatosystems.t9t.auth.be.request;
 
 import com.arvatosystems.t9t.auth.ApiKeyDTO;
 import com.arvatosystems.t9t.auth.ApiKeyRef;
+import com.arvatosystems.t9t.auth.T9tAuthTools;
 import com.arvatosystems.t9t.auth.jpa.entities.ApiKeyEntity;
 import com.arvatosystems.t9t.auth.jpa.mapping.IApiKeyDTOMapper;
 import com.arvatosystems.t9t.auth.jpa.persistence.IApiKeyEntityResolver;
@@ -28,6 +29,7 @@ import com.arvatosystems.t9t.base.services.IAuthCacheInvalidation;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 import de.jpaw.dp.Jdp;
 
 public class ApiKeyCrudRequestHandler extends
@@ -35,10 +37,17 @@ public class ApiKeyCrudRequestHandler extends
 
     private final IApiKeyDTOMapper mapper = Jdp.getRequired(IApiKeyDTOMapper.class);
     private final IApiKeyEntityResolver resolver = Jdp.getRequired(IApiKeyEntityResolver.class);
-    protected final IAuthCacheInvalidation cacheInvalidator = Jdp.getRequired(IAuthCacheInvalidation.class);
+    private final IAuthCacheInvalidation cacheInvalidator = Jdp.getRequired(IAuthCacheInvalidation.class);
 
     @Override
     public CrudSurrogateKeyResponse<ApiKeyDTO, FullTrackingWithVersion> execute(final RequestContext ctx, final ApiKeyCrudRequest crudRequest) {
+        final ApiKeyDTO apiKeyDto = crudRequest.getData();
+        if (apiKeyDto != null) {
+            // limit the min / max permissions
+            final JwtInfo jwt = ctx.internalHeaderParameters.getJwtInfo();
+            T9tAuthTools.maskPermissions(apiKeyDto.getPermissions(), jwt.getPermissionsMax());
+        }
+
         final CrudSurrogateKeyResponse<ApiKeyDTO, FullTrackingWithVersion> result = execute(ctx, mapper, resolver, crudRequest);
         if (crudRequest.getCrud() != OperationType.READ) {
             final String apiKey = result.getData() != null ? result.getData().getApiKey().toString() : null;

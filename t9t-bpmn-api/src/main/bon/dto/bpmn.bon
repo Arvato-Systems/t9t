@@ -40,6 +40,7 @@ package (com.arvatosystems) t9t.bpmn {
         ref is com.arvatosystems.t9t.annotations.IsObjectRef;
 
     type processDefinitionId is t9tShortId;
+    type workflowStepLabel   is uncheckedId;  // historic technical debt
 
     enum WorkflowReturnCode {
         PROCEED_NEXT,                   // execute next step in same transaction
@@ -82,11 +83,11 @@ package (com.arvatosystems) t9t.bpmn {
     /** For UI only use. Flat version of the workflow step. */
     final class UiOnlyWorkflowStep {
         required enum WorkflowStepType                  workflowStepType;
-        required defaultExternalId                      label;
+        required workflowStepLabel                      label;
         required shortText                              comment;
         optional defaultExternalId                      stepName properties qualifierFor="bpmn.IWorkflowStep";
         optional Json                                   parameters;
-        optional defaultExternalId                      toLabel;
+        optional workflowStepLabel                      toLabel;
         optional Integer                                waitSeconds;
         optional (T9tAbstractWorkflowCondition...)      condition;
         optional (T9tAbstractWorkflowStep...) List<>    thenDo;
@@ -95,12 +96,12 @@ package (com.arvatosystems) t9t.bpmn {
     }
 
     abstract class T9tAbstractWorkflowStep {
-        optional defaultExternalId                      label;
+        optional workflowStepLabel                      label;
         optional shortText                              comment;
     }
 
     final class T9tWorkflowStepJavaTask extends T9tAbstractWorkflowStep {
-        required defaultExternalId                      stepName properties qualifierFor="bpmn.IWorkflowStep";     // Jdp qualifier of the workflow step
+        required workflowStepLabel                      stepName properties qualifierFor="bpmn.IWorkflowStep";     // Jdp qualifier of the workflow step
     }
 
     final class T9tWorkflowStepAddParameters extends T9tAbstractWorkflowStep {
@@ -109,7 +110,7 @@ package (com.arvatosystems) t9t.bpmn {
 
     /** Go to the specified label. (Commit and restart at label). */
     final class T9tWorkflowStepGoto extends T9tAbstractWorkflowStep {
-        required defaultExternalId                      toLabel;
+        required workflowStepLabel                      toLabel;
     }
 
     /** Restart workflow at beginning. (commit and restart at beginning)*/
@@ -178,7 +179,7 @@ package (com.arvatosystems) t9t.bpmn {
         required processDefinitionId                    processDefinitionId properties notupdatable, dropdown="processDefinitionId";        // the process ID
         required f42Ref                                 targetObjectRef     properties notupdatable;// 1:1 long key of masterdata or transaction data
         optional Instant                                yieldUntil;         // if not null, then the task will not restart before this instant has been reached
-        optional defaultExternalId                      nextStep;           // if not null, then the task will not start at the beginning, but at this step
+        optional workflowStepLabel                      nextStep;           // if not null, then the task will not start at the beginning, but at this step
         optional Json                                   currentParameters;  // the current task parameters, assigned when execution begins
         optional Integer                                returnCode;         // execution return code (same as for requests)
         optional Unicode(2048) allowControlChars        errorDetails;       // description of the error

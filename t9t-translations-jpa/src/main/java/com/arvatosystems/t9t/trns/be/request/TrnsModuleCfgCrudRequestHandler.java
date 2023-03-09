@@ -17,7 +17,7 @@ public class TrnsModuleCfgCrudRequestHandler extends AbstractCrudModuleCfgReques
     private final ITrnsModuleCfgEntityResolver resolver = Jdp.getRequired(ITrnsModuleCfgEntityResolver.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, TrnsModuleCfgCrudRequest request) throws Exception {
+    public ServiceResponse execute(final RequestContext ctx, final TrnsModuleCfgCrudRequest request) throws Exception {
         return execute(ctx, mapper, resolver, request);
     }
 }

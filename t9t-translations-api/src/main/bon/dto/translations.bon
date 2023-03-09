@@ -46,14 +46,18 @@ package (com.arvatosystems) t9t.trns {
 
     // see also TranslationsPartialKey in t9t-base
     class TranslationsRef extends Ref {}
-    class TranslationsKey extends TranslationsRef {
+    final class TranslationsKey extends TranslationsRef {
+        required enum TextCategory                  category;
+        required identifier                         qualifier;
+        required Unicode(30)                        id;
+        required languageTag                        languageCode;
+    }
+    class TranslationsDTO extends TranslationsRef {
+        properties                                  tenantCategory="D";                                 // if entry missing, get the global one
+        required translation                        text;
         required enum TextCategory                  category;
         required identifier                         qualifier;                      // screen or grid ID or package name or enum PQON
         required Unicode(30)                        id;                             // restricted to 30 due to Oracle column name compatibility
         required languageTag                        languageCode;
-    }
-    class TranslationsDTO extends TranslationsKey {
-        properties                                  tenantCategory="D";                                 // if entry missing, get the global one
-        required translation                        text;
     }
 }
