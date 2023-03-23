@@ -20,6 +20,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.jpa.IEntityMapper;
 import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey;
 import com.arvatosystems.t9t.base.search.DummySearchCriteria;
@@ -35,7 +36,6 @@ import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.bonaparte.refs.PersistenceException;
 import de.jpaw.dp.Jdp;
-import de.jpaw.util.ApplicationException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.TypedQuery;
@@ -111,13 +111,13 @@ public abstract class AbstractJpaResolver<
     public void update(final DTO dto) {
         final ENTITY eOld = getEntityForKeyOrThrow(dto.getObjectRef());
         final String oldTenant = resolver.getTenantId(eOld);
-        try {
-            resolver.writeAllowed(oldTenant);  // check if I am allowed to write to this entity
-        } catch (ApplicationException e) {
+
+        if (!resolver.writeAllowed(oldTenant)) { // check if I am allowed to write to this entity
             LOGGER.error("Denying WRITE access to tenant {} for user {} in entity resolver {}",
-              oldTenant, resolver.getSharedTenantId(), resolver.getClass().getCanonicalName());
-            throw e;
+                    oldTenant, resolver.getSharedTenantId(), resolver.getClass().getCanonicalName());
+            throw new T9tException(T9tException.WRITE_ACCESS_ONLY_CURRENT_TENANT);
         }
+
         final ENTITY eNew = mapper.mapToEntity(dto, false);
         eOld.mergeFrom(eNew);
     }

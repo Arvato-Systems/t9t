@@ -266,13 +266,13 @@ public class InputSession implements IInputSession {
 
         // validate the first step's output
         try {
+            dto.treeWalkString(STRING_TRIMMER, true);
             dto.validate(); // validate that the parser created a valid DTO
 
             // ok, DTO is good...
             try {
                 rp = inputTransformer.transform(dto);
                 if (rp != null) {
-                    rp.treeWalkString(STRING_TRIMMER, true);
                     rp.validate();
                 }
             } catch (final Exception e) {

@@ -68,7 +68,7 @@ public final class SimplePatternEvaluator {
 
     /** Replaces any variable references in pattern by lookup from the replacements map, using a specific sanitizer suitable for file names. */
     public static String evaluate(final String pattern, final Map<String, Object> patternReplacements) {
-        return evaluate(pattern, patternReplacements, s -> sanitizer(s, ":/\\. "), "NULL");
+        return evaluate(pattern, patternReplacements, s -> sanitizer(s, ":/\\. (){}[]$^~?&%="), "NULL");
     }
 
     /** Replaces any variable references in pattern by lookup from the replacements map, using a generic sanitizer. */

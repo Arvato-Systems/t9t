@@ -90,6 +90,7 @@ public class SolrEngine implements ITextSearch {
             return mapResults(resultFieldName, results);
 
         } catch (Throwable _e) {
+            LOGGER.error("SOLR error", _e);
             throw new T9tException(T9tException.SOLR_EXCEPTION, "error while performing query on SOLR");
         }
     }
