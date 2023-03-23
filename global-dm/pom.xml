@@ -35,7 +35,7 @@
     -->
     <properties>
         <jodatime.version>2.12.2</jodatime.version>
-        <org.slf4j-api.version>2.0.6</org.slf4j-api.version>
+        <org.slf4j-api.version>2.0.7</org.slf4j-api.version>
 
         <!-- jpaw / bonaparte: versions for import of BOM. The plugin version is defined separately in SE/EE -->
         <!-- Note that the version of the bonapart-dsl plugin is set in "global-settings" -->
@@ -51,7 +51,7 @@
         <driver.oracle.version>21.9.0.0</driver.oracle.version>
         <driver.postgresql.version>42.5.1</driver.postgresql.version>  <!-- starting with 4.2.15, the driver adds a dependency to checker-qual 3.5.0 which conflicts with 2.5.2 pulled by guava -->
         <driver.sqlserver.version>11.2.3.jre17</driver.sqlserver.version>
-        <driver.hana.version>2.15.12</driver.hana.version>
+        <driver.hana.version>2.16.10</driver.hana.version>
         <h2.version>2.1.214</h2.version>
 
         <!-- OR mappers -->
@@ -110,14 +110,14 @@
         <commons-text.version>1.10.0</commons-text.version>               <!-- not used in t9t, but DM made to cover for transitive dependencies -->
 
         <!-- AWS SDK v1 -->
-        <aws-bom.version>1.12.420</aws-bom.version>
+        <aws-bom.version>1.12.430</aws-bom.version>
 
         <!-- AWS SDK v2 -->
-        <aws2-bom.version>2.20.17</aws2-bom.version>
+        <aws2-bom.version>2.20.27</aws2-bom.version>
 
         <!-- Azure -->
         <azure-cosmosdb.version>2.6.16</azure-cosmosdb.version>
-        <azure-cosmos-sdk.version>4.41.0</azure-cosmos-sdk.version>
+        <azure-cosmos-sdk.version>4.42.0</azure-cosmos-sdk.version>
 
         <!-- Camunda BPMN: still linked to pre-jakarta spring version, removing -->
         <!-- <camunda-bom.version>7.18.0</camunda-bom.version> -->
@@ -129,8 +129,8 @@
         <junit.version>4.13.2</junit.version>      <!-- groupId is junit -->
         <junit5.version>5.9.2</junit5.version>     <!-- groupId is org.junit, therefore is can coexist with junit4 in dependency management -->
         <hamcrest.version>2.2</hamcrest.version>   <!-- avoid unless required -->
-        <byte-buddy.version>1.14.0</byte-buddy.version>   <!-- 1.12.x requested by mockito 4.2.0, and reuired for Java 17 -->
-        <org.mockito-core.version>5.1.1</org.mockito-core.version>
+        <byte-buddy.version>1.14.2</byte-buddy.version>   <!-- 1.12.x requested by mockito 4.2.0, and reuired for Java 17 -->
+        <org.mockito-core.version>5.2.0</org.mockito-core.version>
         <archunit.version>1.0.1</archunit.version>
         <hdrhistogram.version>2.1.12</hdrhistogram.version>
 
@@ -173,7 +173,7 @@
         <spring-data-jpa.version>3.0.3</spring-data-jpa.version>
         <spring-boot.version>3.0.4</spring-boot.version>
 
-        <netty.version>4.1.87.Final</netty.version>
+        <netty.version>4.1.90.Final</netty.version>
         <vertx4.version>4.3.8</vertx4.version>
         <hazelcast-kubernetes.version>2.2.3</hazelcast-kubernetes.version>
 
@@ -182,9 +182,9 @@
 
         <c3p0.version>0.9.5.5</c3p0.version>
         <hikaricp.version>4.0.3</hikaricp.version>
-        <flyway.version>9.15.1</flyway.version>
+        <flyway.version>9.16.0</flyway.version>
         <reflections.version>0.9.10</reflections.version>
-        <maven-plugin-api.version>3.9.0</maven-plugin-api.version>
+        <maven-plugin-api.version>3.9.1</maven-plugin-api.version>
         <jackson.version>2.14.2</jackson.version>
         <jackson-databind.version>2.14.2</jackson-databind.version> <!-- separate version due to frequent CVE updates which do not release the full set -->
         <solr.version>8.11.1</solr.version>
@@ -193,7 +193,7 @@
         <error-prone.version>2.17.0</error-prone.version>
 
         <!-- Monitoring -->
-        <micrometer.version>1.10.4</micrometer.version>
+        <micrometer.version>1.10.5</micrometer.version>
         <prometheus.version>0.16.0</prometheus.version>
 
         <!-- Swagger -->
@@ -201,7 +201,7 @@
         <swagger-ui.version>${swagger-ui-webjars.version}</swagger-ui.version>
 
         <!-- Google Services -->
-        <google-http-client.version>1.43.0</google-http-client.version>
+        <google-http-client.version>1.43.1</google-http-client.version>
         <google-auth-library.version>1.13.0</google-auth-library.version>
         <firebase-admin.version>9.1.1</firebase-admin.version>
     </properties>

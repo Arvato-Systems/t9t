@@ -59,7 +59,7 @@
         <maven-plugin-annotations.version>3.8.1</maven-plugin-annotations.version>
         <maven-project.version>2.2.1</maven-project.version>
         <build-helper-maven-plugin.version>3.3.0</build-helper-maven-plugin.version>
-        <maven-surefire-plugin.version>3.0.0-M9</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>3.0.0</maven-surefire-plugin.version>
         <maven-plugin-plugin.version>3.8.1</maven-plugin-plugin.version>
         <maven-assembly-plugin.version>3.5.0</maven-assembly-plugin.version>
         <maven-resources-plugin.version>3.3.0</maven-resources-plugin.version>
@@ -95,20 +95,20 @@
         <xtend-maven-plugin.version>2.29.0</xtend-maven-plugin.version>
         <xtext-maven-plugin.version>2.29.0</xtext-maven-plugin.version>
 
-        <bonaparte-plugin.version>5.1.4</bonaparte-plugin.version>
+        <bonaparte-plugin.version>5.1.5</bonaparte-plugin.version>
         <license-plugin.version>3.0</license-plugin.version>
         <replacer-plugin.version>1.4.1</replacer-plugin.version>   <!-- required for workaround for Apache CXF 3.5.x -->
 
         <checkstyle.version>10.1</checkstyle.version>
         <spotbugs.version>4.7.3</spotbugs.version>
-        <logback.version>1.4.5</logback.version>
+        <logback.version>1.4.6</logback.version>
 
         <!-- Swagger -->
         <swagger-maven-plugin.version>2.2.8</swagger-maven-plugin.version>
         <swagger-ui-webjars.version>4.15.5</swagger-ui-webjars.version>   <!-- 4.x is available as well! -->
 
         <!-- ASCIIDoctor -->
-        <asciidoctor-maven-plugin.version>2.2.2</asciidoctor-maven-plugin.version>
+        <asciidoctor-maven-plugin.version>2.2.3</asciidoctor-maven-plugin.version>
         <asciidoctorj.version>2.5.7</asciidoctorj.version>
         <jruby.version>9.4.0.0</jruby.version>
     </properties>
