@@ -32,7 +32,7 @@ import de.jpaw.util.ByteBuilder;
 @Named("JSONJackson")
 public class JsonMarshallerExt implements IMarshallerExt<Object> {
 
-    protected final ObjectMapper objectMapper = JacksonTools.createJacksonMapperForExports(false);
+    protected final ObjectMapper objectMapper = JacksonTools.createObjectMapper();
 
     @Override
     public String getContentType() {

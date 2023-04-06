@@ -30,9 +30,9 @@ import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.doc.DocComponentDTO;
 import com.arvatosystems.t9t.doc.DocComponentKey;
-import com.arvatosystems.t9t.doc.request.DocComponentBatchLoadRequest;
+import com.arvatosystems.t9t.doc.request.DocComponentBatchLoad2Request;
 import com.arvatosystems.t9t.doc.request.DocComponentCrudRequest;
-import com.arvatosystems.t9t.doc.request.DocComponentResource;
+import com.arvatosystems.t9t.doc.request.DocComponentResource2;
 
 import de.jpaw.bonaparte.core.CSVConfiguration;
 import de.jpaw.bonaparte.core.MessageParserException;
@@ -44,15 +44,13 @@ import de.jpaw.dp.Jdp;
 import de.jpaw.json.JsonException;
 import de.jpaw.json.JsonParser;
 
-public class DocComponentBatchLoadRequestHandler extends AbstractRequestHandler<DocComponentBatchLoadRequest> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DocComponentBatchLoadRequestHandler.class);
+public class DocComponentBatchLoad2RequestHandler extends AbstractRequestHandler<DocComponentBatchLoad2Request> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DocComponentBatchLoad2RequestHandler.class);
 
     private final IExecutor executor = Jdp.getRequired(IExecutor.class);
 
     @Override
-    public ServiceResponse execute(final RequestContext ctx, final DocComponentBatchLoadRequest rq) {
-        // create a writeable copy of the key
-        final DocComponentKey mutableKey = rq.getKey().ret$MutableClone(false, false);
+    public ServiceResponse execute(final RequestContext ctx, final DocComponentBatchLoad2Request rq) {
         boolean somethingLoaded = false;    // keep track if some data was loaded, to catch errors
 
         // part 1: CSV data
@@ -67,22 +65,22 @@ public class DocComponentBatchLoadRequestHandler extends AbstractRequestHandler<
 
             for (final String line : csv) {
                 parser.setSource(line);
-                final DocComponentResource record = parser.readObject(DocComponentResource.meta$$this, DocComponentResource.class);
+                final DocComponentResource2 record = parser.readObject(DocComponentResource2.meta$$this, DocComponentResource2.class);
                 final String value = record.getValue();
                 if (value != null && value.trim().length() > 0) {
                     record.setValue(JsonUtil.unescapeJson(value));
                 }
-                load(ctx, record, mutableKey);
+                load(ctx, record);
             }
             somethingLoaded = true;  // it is enough that there was a file (despite it could be empty)
         }
 
         // part 2: structured (pre parsed) data
-        final List<DocComponentResource> data = rq.getData();
+        final List<DocComponentResource2> data = rq.getData();
         if (data != null && !data.isEmpty()) {
             LOGGER.info("Creating DocComponents from preparsed data: {} entries provided", data.size());
-            for (final DocComponentResource record : data) {
-                load(ctx, record, mutableKey);
+            for (final DocComponentResource2 record : data) {
+                load(ctx, record);
             }
             somethingLoaded = true;
         }
@@ -92,7 +90,7 @@ public class DocComponentBatchLoadRequestHandler extends AbstractRequestHandler<
         if (json != null) {
             LOGGER.info("Creating DocComponents from JSON data");
             if (json instanceof List<?> jsonList) {
-                load(ctx, jsonList, mutableKey, rq.getMultiLineJoin());
+                load(ctx, jsonList, rq.getMultiLineJoin());
             } else {
                 throw new JsonException(JsonException.JSON_SYNTAX, "Outer element must be an array");
             }
@@ -106,7 +104,7 @@ public class DocComponentBatchLoadRequestHandler extends AbstractRequestHandler<
 
             final JsonParser parser = new JsonParser(jsonString, true);
             final List<Object> objects = parser.parseArray();
-            this.load(ctx, objects, mutableKey, rq.getMultiLineJoin());
+            this.load(ctx, objects, rq.getMultiLineJoin());
             somethingLoaded = true;
         }
         // if nothing loaded at all, complain
@@ -119,9 +117,14 @@ public class DocComponentBatchLoadRequestHandler extends AbstractRequestHandler<
         return ok();
     }
 
-    protected void load(final RequestContext ctx, final DocComponentResource inData, final DocComponentKey baseKey) {
-        baseKey.setDocumentId(inData.getKey().trim());
-        LOGGER.debug("Loading doc component for {} in format {}", baseKey.getDocumentId(), inData.getType());
+    protected void load(final RequestContext ctx, final DocComponentResource2 inData) {
+        final DocComponentKey baseKey = new DocComponentKey();
+        baseKey.setDocumentId(inData.getDocumentId());
+        baseKey.setEntityId  (inData.getEntityId());
+        baseKey.setCountryCode (inData.getCountryCode());
+        baseKey.setCurrencyCode(inData.getCurrencyCode());
+        baseKey.setLanguageCode(inData.getLanguageCode());
+        LOGGER.debug("Loading doc component for {} in format {} for key {}", baseKey.getDocumentId(), inData.getType(), baseKey);
 
         // determine the mime type, either by name or by token
         final MediaType type = MediaType.valueOf(inData.getType().trim().toUpperCase());
@@ -132,8 +135,8 @@ public class DocComponentBatchLoadRequestHandler extends AbstractRequestHandler<
         data.setMediaType(type);
         data.setText(inData.getValue());
         dto.setDocumentId(baseKey.getDocumentId());
-        dto.setEntityId(baseKey.getEntityId());
-        dto.setCountryCode(baseKey.getCountryCode());
+        dto.setEntityId  (baseKey.getEntityId());
+        dto.setCountryCode (baseKey.getCountryCode());
         dto.setCurrencyCode(baseKey.getCurrencyCode());
         dto.setLanguageCode(baseKey.getLanguageCode());
         dto.setData(data);
@@ -154,17 +157,29 @@ public class DocComponentBatchLoadRequestHandler extends AbstractRequestHandler<
         return value;
     }
 
-    protected void load(final RequestContext ctx, final List<?> objects, final DocComponentKey baseKey, final String joiner) {
+    protected String needString(final Map<?, ?> map, final String key) {
+        final Object value = map.get(key);
+        if (value == null) {
+            throw new JsonException(MessageParserException.EMPTY_BUT_REQUIRED_FIELD, key);
+        }
+        return value.toString().trim();
+    }
+
+    protected void load(final RequestContext ctx, final List<?> objects, final String joiner) {
         LOGGER.info("{} JSON entries provided", objects.size());
 
         for (final Object obj : objects) {
             if (obj instanceof Map<?, ?> objMap) {
-                if (objMap.size() != 3) {
-                    LOGGER.warn("Field count not as expected: found {} entries, expected 3", objMap.size());
+                if (objMap.size() != 7) {
+                    LOGGER.warn("Field count not as expected: found {} entries, expected 7", objMap.size());
                 }
-                final DocComponentResource inData = new DocComponentResource();
-                inData.setKey(needKey(objMap, "key").toString().trim());
-                inData.setType(needKey(objMap, "type").toString().trim());
+                final DocComponentResource2 inData = new DocComponentResource2();
+                inData.setDocumentId  (needString(objMap, "documentId"));
+                inData.setEntityId    (needString(objMap, "entityId"));
+                inData.setCountryCode (needString(objMap, "countryCode"));
+                inData.setCurrencyCode(needString(objMap, "currencyCode"));
+                inData.setLanguageCode(needString(objMap, "languageCode"));
+                inData.setType        (needString(objMap, "type"));
                 final Object fields = needKey(objMap, "text");
                 if (fields instanceof List<?> fieldList) {
                     String value = null;
@@ -181,7 +196,7 @@ public class DocComponentBatchLoadRequestHandler extends AbstractRequestHandler<
                 } else {
                     inData.setValue(fields.toString());
                 }
-                load(ctx, inData, baseKey);
+                load(ctx, inData);
             }
         }
     }

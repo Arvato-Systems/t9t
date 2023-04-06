@@ -34,6 +34,7 @@ import io.micrometer.core.instrument.binder.jvm.JvmGcMetrics;
 import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics;
 import io.micrometer.core.instrument.binder.jvm.JvmThreadMetrics;
 import io.micrometer.core.instrument.binder.system.ProcessorMetrics;
+import io.micrometer.core.instrument.binder.system.UptimeMetrics;
 import io.micrometer.core.instrument.config.MeterFilter;
 import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
@@ -76,7 +77,7 @@ public class VertxPrometheusMetricsProvider implements IVertxMetricsProvider {
             @Override
             public DistributionStatisticConfig configure(final Meter.Id id, final DistributionStatisticConfig config) {
               return DistributionStatisticConfig.builder()
-                .percentilesHistogram(true)
+                .percentilesHistogram(Boolean.TRUE)
                 .build()
                 .merge(config);
             }
@@ -89,6 +90,7 @@ public class VertxPrometheusMetricsProvider implements IVertxMetricsProvider {
         new JvmGcMetrics().bindTo(registry);
         new ProcessorMetrics().bindTo(registry);
         new JvmThreadMetrics().bindTo(registry);
+        new UptimeMetrics().bindTo(registry);
         LOGGER.info("Added JVM meters.");
 
         LOGGER.info("Adding autonoumous pool meters...");

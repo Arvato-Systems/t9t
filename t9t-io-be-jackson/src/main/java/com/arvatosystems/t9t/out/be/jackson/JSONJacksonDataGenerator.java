@@ -49,7 +49,7 @@ public class JSONJacksonDataGenerator extends AbstractFormatGenerator {
         super.openHook();
         final boolean useNulls = "NULLs".equals(sinkCfg.getGenericParameter1());
         osw = new OutputStreamWriter(outputResource.getOutputStream(), encoding);
-        objectMapper = JacksonTools.createJacksonMapperForExports(useNulls);
+        objectMapper = JacksonTools.createObjectMapper(useNulls);
     }
 
     /**

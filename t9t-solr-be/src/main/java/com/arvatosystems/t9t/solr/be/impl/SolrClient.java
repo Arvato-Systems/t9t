@@ -48,7 +48,7 @@ public class SolrClient implements ISolrClient {
     protected final HttpClient httpClient = HttpClient.newBuilder().version(Version.HTTP_2)
             .connectTimeout(Duration.ofSeconds(20)).build();
 
-    protected final ObjectMapper objectMapper = JacksonTools.createJacksonMapperForExports(false);
+    protected final ObjectMapper objectMapper = JacksonTools.createObjectMapper();
     private final int processTimeout = 50;
 
     @Override

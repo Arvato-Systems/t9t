@@ -98,6 +98,14 @@ public abstract class AbstractResolverAnyKey<
      * {@inheritDoc}
      */
     @Override
+    public String getSharedTenantId(final RequestContext ctx) {
+        return ctx.tenantMapping.getSharedTenantId(getRtti());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void setTenantId(final ENTITY e, final String tenantId) {
     }
 

@@ -16,6 +16,7 @@
 package com.arvatosystems.t9t.jackson;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
@@ -30,25 +31,66 @@ import de.jpaw.fixedpoint.jackson.FixedPointModule;
  */
 public final class JacksonTools {
 
+    private static final boolean FAIL_ON_UNKNOWN_PROPERTIES_DEFAULT = false;
+    private static final boolean ALSO_NULLS_DEFAULT = false;
+
     private JacksonTools() {
     }
 
-    public static ObjectMapper createJacksonMapperForExports(final boolean writeNulls) {
-        Builder jsonMapperBuilder = getCommonMapper().disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    /**
+     * Create {@link ObjectMapper} with given parameters/configuration.
+     *
+     * @param writeNulls Pass {@code false} to include only properties with non-null values ( {@code Include.NON_NULL})
+     * @param failOnUnkownProperties Pass {@code false} to avoid failures when payload contains unknown fields
+     * @return the configured {@link ObjectMapper}
+     */
+    public static ObjectMapper createObjectMapper(final boolean writeNulls, final boolean failOnUnkownProperties) {
+        Builder builder = JsonMapper.builder();
+        builder.addModules(new JavaTimeModule(), new FixedPointModule(), new JpawModule());
+        builder.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        builder.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, failOnUnkownProperties);
         if (!writeNulls) {
-            jsonMapperBuilder.serializationInclusion(Include.NON_NULL);
+            builder.serializationInclusion(Include.NON_NULL);
         }
-        return jsonMapperBuilder.build();
-    }
-
-    public static ObjectMapper createJacksonMapperForImports() {
-        return getCommonMapper().build();
+        return builder.build();
     }
 
     /**
-     * Common mapper configuration for imports and exports.
+     * Create {@link ObjectMapper} with given parameters/configuration.
+     * Uses default configuration for {@code DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES}=FALSE
+     *
+     * @param writeNulls Pass {@code false} to include only properties with non-null values (Include.NON_NULL)
+     * @return the configured {@link ObjectMapper}
      */
-    private static Builder getCommonMapper() {
-        return JsonMapper.builder().addModules(new JavaTimeModule(), new FixedPointModule(), new JpawModule());
+    public static ObjectMapper createObjectMapper(final boolean writeNulls) {
+        return createObjectMapper(writeNulls, FAIL_ON_UNKNOWN_PROPERTIES_DEFAULT);
     }
+
+
+    /**
+     * Create {@link ObjectMapper} with given parameters/configuration.
+     * Uses default configuration for {@code DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES=FALSE}
+     * and {@code SerializationInclusion=Include.NON_NULL}
+     *
+     * @return the configured {@link ObjectMapper}
+     */
+    public static ObjectMapper createObjectMapper() {
+        return createObjectMapper(ALSO_NULLS_DEFAULT, FAIL_ON_UNKNOWN_PROPERTIES_DEFAULT);
+    }
+
+    @Deprecated(forRemoval = true, since = "6.4")
+    public static ObjectMapper createJacksonMapperForExports(final boolean writeNulls) {
+        return createObjectMapper(writeNulls, FAIL_ON_UNKNOWN_PROPERTIES_DEFAULT);
+    }
+
+    @Deprecated(forRemoval = true, since = "6.4")
+    public static ObjectMapper createJacksonMapperForExports(final boolean writeNulls, final boolean failOnUnkownProperties) {
+        return createObjectMapper(writeNulls, failOnUnkownProperties);
+    }
+
+    @Deprecated(forRemoval = true, since = "6.4")
+    public static ObjectMapper createJacksonMapperForImports() {
+        return createObjectMapper(ALSO_NULLS_DEFAULT, FAIL_ON_UNKNOWN_PROPERTIES_DEFAULT);
+    }
+
 }

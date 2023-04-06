@@ -20,6 +20,7 @@ import com.arvatosystems.t9t.auth.TenantDTO;
 import com.arvatosystems.t9t.auth.UserDTO;
 import com.arvatosystems.t9t.auth.hooks.IJwtEnrichment;
 import com.arvatosystems.t9t.auth.hooks.IOtherAuthentication;
+import com.arvatosystems.t9t.auth.jwt.IJWT;
 import com.arvatosystems.t9t.auth.services.AuthIntermediateResult;
 import com.arvatosystems.t9t.auth.services.IAuthPersistenceAccess;
 import com.arvatosystems.t9t.auth.services.IAuthResponseUtil;
@@ -30,6 +31,7 @@ import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.auth.ApiKeyAuthentication;
 import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
 import com.arvatosystems.t9t.base.auth.AuthenticationResponse;
+import com.arvatosystems.t9t.base.auth.JwtAuthentication;
 import com.arvatosystems.t9t.base.auth.PasswordAuthentication;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
@@ -55,6 +57,7 @@ public class AuthenticationRequestHandler extends AbstractRequestHandler<Authent
     private final IJwtEnrichment jwtEnrichment = Jdp.getRequired(IJwtEnrichment.class);
     private final IExternalAuthentication externalAuthentication = Jdp.getRequired(IExternalAuthentication.class);
     private final IOtherAuthentication otherAuthentication = Jdp.getRequired(IOtherAuthentication.class);
+    private final IJWT jwt = Jdp.getRequired(IJWT.class);
 
     @Override
     public AuthenticationResponse execute(final RequestContext ctx, final AuthenticationRequest rq) throws Exception {
@@ -69,14 +72,13 @@ public class AuthenticationRequestHandler extends AbstractRequestHandler<Authent
           || (!ApplicationException.isOk(resp.getReturnCode()) && resp.getReturnCode() != T9tException.PASSWORD_EXPIRED)
           || resp.getJwtInfo() == null)
             throw new ApplicationException(T9tException.T9T_ACCESS_DENIED);
-
-        final JwtInfo jwt = resp.getJwtInfo();
+        final JwtInfo jwtInfo = resp.getJwtInfo();
         if (rq.getSessionParameters() != null) {
-            jwt.setLocale(rq.getSessionParameters().getLocale());
-            jwt.setZoneinfo(rq.getSessionParameters().getZoneinfo());
+            jwtInfo.setLocale(rq.getSessionParameters().getLocale());
+            jwtInfo.setZoneinfo(rq.getSessionParameters().getZoneinfo());
         }
         resp.setMustChangePassword(resp.getPasswordExpires() != null && resp.getPasswordExpires().isBefore(Instant.now()));
-        resp.setEncodedJwt(authResponseUtil.authResponseFromJwt(jwt, rq.getSessionParameters(), null));
+        resp.setEncodedJwt(authResponseUtil.authResponseFromJwt(jwtInfo, rq.getSessionParameters(), null));
         resp.setNumberOfIncorrectAttempts(resp.getNumberOfIncorrectAttempts());
         resp.setTenantNotUnique(resp.getJwtInfo().getTenantId().equals(T9tConstants.GLOBAL_TENANT_ID)); // only then the user has access to additional ones
         LOGGER.debug("User {} successfully logged in for tenant {}", resp.getJwtInfo().getUserId(), resp.getJwtInfo().getTenantId());
@@ -170,6 +172,22 @@ public class AuthenticationRequestHandler extends AbstractRequestHandler<Authent
         return resp;
     }
 
+    private AuthenticationResponse authJwtAuthentication(RequestContext ctx, JwtAuthentication jwtAp, String locale, String zoneinfo) {
+        final AuthenticationResponse resp = new AuthenticationResponse();
+
+        String jwtToken = jwtAp.getEncodedJwt();
+        JwtInfo jwtInfo = jwt.decode(jwtToken);
+        final TenantDTO tenantDto = tenantResolver.getDTO(jwtInfo.getTenantId());
+
+        // jwtInfo is frozen - but setter are working on it in following methods
+        resp.setJwtInfo(jwtInfo.ret$MutableClone(true, true));
+        resp.setEncodedJwt(jwtToken);
+        resp.setTenantId(jwtInfo.getTenantId());
+        resp.setTenantName(tenantDto.getName());
+
+        return resp;
+    }
+
     protected AuthenticationResponse authDefault(final RequestContext ctx, final AuthenticationParameters unknown, final String locale, final String zoneinfo) {
         return otherAuthentication.auth(ctx, unknown, locale, zoneinfo);
     }
@@ -179,6 +197,8 @@ public class AuthenticationRequestHandler extends AbstractRequestHandler<Authent
             return authApiKeyAuthentication(ctx, akAp, locale, zoneinfo);
         } else if (ap instanceof PasswordAuthentication pwAp) {
             return authPasswordAuthentication(ctx, pwAp, locale, zoneinfo);
+        } else if (ap instanceof JwtAuthentication jwtAp) {
+            return authJwtAuthentication(ctx, jwtAp, locale, zoneinfo);
         } else if (ap != null) {
             return authDefault(ctx, ap, locale, zoneinfo);
         } else {

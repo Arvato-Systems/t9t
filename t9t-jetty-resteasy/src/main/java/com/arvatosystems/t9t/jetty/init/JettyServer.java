@@ -20,6 +20,7 @@ import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.StatisticsHandler;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -30,6 +31,11 @@ import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.rest.utils.RestUtils;
 
+import io.prometheus.client.CollectorRegistry;
+import io.prometheus.client.hotspot.DefaultExports;
+import io.prometheus.client.jetty.JettyStatisticsCollector;
+import io.prometheus.client.servlet.jakarta.exporter.MetricsServlet;
+
 public class JettyServer {
     private static final Logger LOGGER = LoggerFactory.getLogger(JettyServer.class);
 
@@ -38,6 +44,7 @@ public class JettyServer {
     static final int DEFAULT_MAX_THREADS = 20;
     static final int DEFAULT_IDLE_TIMEOUT = 5000;
     static final String DEFAULT_CONTEXT_ROOT = "/rest";
+    static final String DEFAULT_METRICS_PATH = "/metrics";
     static final String DEFAULT_APPLICATION_PATH = "";
 
     public static void main(final String[] args) throws Exception {
@@ -67,6 +74,7 @@ public class JettyServer {
         final int idleTimeout = RestUtils.CONFIG_READER.getIntProperty("jetty.threadPool.idleTimeout", DEFAULT_IDLE_TIMEOUT);  // in millis
         final String contextRoot     = RestUtils.CONFIG_READER.getProperty("jetty.contextRoot",     DEFAULT_CONTEXT_ROOT);
         final String applicationPath = RestUtils.CONFIG_READER.getProperty("jetty.applicationPath", DEFAULT_APPLICATION_PATH);
+        final String metricsPath = RestUtils.CONFIG_READER.getProperty("jetty.metricsPath", DEFAULT_METRICS_PATH);
 
         LOGGER.info("Using the following configuration values: port {}, min/max threads = {}/{}", port, minThreads, maxThreads);
         LOGGER.info("  idle timeout = {}, context = {}, application path = {}", idleTimeout, contextRoot, applicationPath);
@@ -107,6 +115,14 @@ public class JettyServer {
         // Setup the DefaultServlet at "/".
         final ServletHolder defaultServlet = new ServletHolder(new DefaultServlet());
         context.addServlet(defaultServlet, contextRoot);
+
+        // metrics for prometheus
+        final StatisticsHandler statisticsHandler = new StatisticsHandler();
+        statisticsHandler.setHandler(server.getHandler());
+        server.setHandler(statisticsHandler);
+        new JettyStatisticsCollector(statisticsHandler).register();
+        DefaultExports.register(CollectorRegistry.defaultRegistry);
+        context.addServlet(new ServletHolder(new MetricsServlet()), metricsPath);
 
         server.start();
         server.join();

@@ -62,7 +62,7 @@ public abstract class AbstractPostSenderJdk11 implements IAsyncSender {
             .version(Version.HTTP_2)
             .connectTimeout(Duration.ofSeconds(20))
             .build();
-        objectMapper = JacksonTools.createJacksonMapperForExports(false);
+        objectMapper = JacksonTools.createObjectMapper();
     }
 
     /**

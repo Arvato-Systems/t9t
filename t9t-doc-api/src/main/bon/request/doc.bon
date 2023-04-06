@@ -18,6 +18,7 @@ import t9t.base.entities.*
 import t9t.base.search.*
 import t9t.base.crud.*
 import t9t.base.api.*
+import t9t.base.types.*
 import t9t.doc.*
 import t9t.doc.api.*
 import api.*
@@ -52,9 +53,12 @@ package (com.arvatosystems) t9t.doc.request {
     class MailingGroupSearchRequest                 extends SearchRequest<MailingGroupDTO, FullTrackingWithVersion> {}
     class MailingGroupResolverRequest               extends RefResolverRequest<MailingGroupRef> {}
 
+    /**
+     * Child class for DocComponentBatchLoadRequest.
+     */
     final class DocComponentResource {
         required documentId                         key;            // variable name
-        required Ascii(10)                          ^type;          // mime type (field long enough for "POSTSCRIPT")
+        required Ascii(10)      trim                ^type;          // mime type (field long enough for "POSTSCRIPT")
         required Unicode(10000) allowControlChars   value;          // text
     }
 
@@ -68,7 +72,32 @@ package (com.arvatosystems) t9t.doc.request {
         optional (DocComponentResource) List<>      data;           // data in parsed format (mime type not yet converted to enum)
         optional Element                            ^json;          // data as JSON array
         optional Unicode(100000) allowControlChars  jsonString;     // data as JSON source
-        optional Unicode(8) allowControlChars       multiLineJoin;  // string to use for joining multi lines for JSON
+        optional Unicode(8)      allowControlChars  multiLineJoin;  // string to use for joining multi lines for JSON
+    }
+
+    /**
+     * Child class for DocComponentBatchLoad2Request.
+     */
+    final class DocComponentResource2 {
+        required documentId                         documentId;     // references the document
+        required t9tShortId                         entityId;       // subtenant or "-" if used for any
+        required languageTag                        languageCode;   // language code or "xx" for default
+        required countryCode                        countryCode;    // ISO 3166 country code or "XX" if default
+        required currencyCode                       currencyCode;   // ISO 4217 currency code or "XXX" if default
+        required Ascii(10)      trim                ^type;          // mime type (field long enough for "POSTSCRIPT")
+        required Unicode(10000) allowControlChars   value;          // text
+    }
+
+    /**
+     * Reads multiple text components in a batch, performs a CRUD merge for each entry.
+     * Input format can be pre-parsed, text lines in CSV format, or JSON
+     */
+    class DocComponentBatchLoad2Request extends RequestParameters {
+        optional Unicode(10000) List<>              csv;            // data in CSV format
+        optional (DocComponentResource2) List<>     data;           // data in parsed format (mime type not yet converted to enum)
+        optional Element                            ^json;          // data as JSON array
+        optional Unicode(100000) allowControlChars  jsonString;     // data as JSON source
+        optional Unicode(8)      allowControlChars  multiLineJoin;  // string to use for joining multi lines for JSON
     }
 
     /**

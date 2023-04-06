@@ -18,19 +18,19 @@ package com.arvatosystems.t9t.base.jpa;
 import java.io.Serializable;
 import java.util.List;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.LockModeType;
-import jakarta.persistence.TypedQuery;
-
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.search.CountCriteria;
 import com.arvatosystems.t9t.base.search.CountResponse;
 import com.arvatosystems.t9t.base.search.SearchCriteria;
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.TypedQuery;
 
 /** Defines methods to return either the artificial key (via any key) or the full JPA entity (via some key).
  *
@@ -272,6 +272,16 @@ public interface IResolverAnyKey<
      * @return the tenantId to use for the database
      */
     String getSharedTenantId();
+
+    /**
+     * Returns the mapped tenantId for this entity when the RequestContext is known.
+     * This is by default identical to the current tenantId, but may be overridden for specific tenants in
+     * specific projects. This method will be used to set default values for the entity and also for queries, therefore overwriting it will cause a shared use
+     * of tenants. A future default implementation will use a database based mapping.
+     *
+     * @return the tenantId to use for the database
+     */
+    String getSharedTenantId(RequestContext ctx);
 
     /** Sets the entity's tenantId without the use of reflection, or NOOP if the entity does not contain
      * a tenantId field.

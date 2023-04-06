@@ -38,8 +38,10 @@ public class JacksonObjectMapperProvider implements ContextResolver<ObjectMapper
 
     public JacksonObjectMapperProvider() {
         final boolean useNulls = RestUtils.checkIfSet("t9t.restapi.jsonAlsoNulls", Boolean.FALSE);
-        objectMapper = JacksonTools.createJacksonMapperForExports(useNulls);
-        LOGGER.info("Jackson objectMapper: added Java8 date/time support, useNulls={}", useNulls);
+        final boolean failOnUnknownProperties = RestUtils.checkIfSet("t9t.restapi.jsonFailOnUnknownProperties", Boolean.FALSE);
+        objectMapper = JacksonTools.createObjectMapper(useNulls, failOnUnknownProperties);
+        LOGGER.info("Jackson objectMapper: added Java8 date/time support, useNulls={}, failOnUnknownProperties={}", String.valueOf(useNulls),
+                String.valueOf(failOnUnknownProperties));
     }
 
     @Override

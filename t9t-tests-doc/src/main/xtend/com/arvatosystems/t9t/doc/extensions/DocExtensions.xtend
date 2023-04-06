@@ -26,11 +26,17 @@ import com.arvatosystems.t9t.doc.DocEmailCfgDTO
 import com.arvatosystems.t9t.doc.DocEmailCfgKey
 import com.arvatosystems.t9t.doc.DocTemplateDTO
 import com.arvatosystems.t9t.doc.DocTemplateKey
+import com.arvatosystems.t9t.doc.MailingGroupDTO
+import com.arvatosystems.t9t.doc.MailingGroupKey
 import com.arvatosystems.t9t.doc.request.DocComponentCrudRequest
 import com.arvatosystems.t9t.doc.request.DocConfigCrudRequest
 import com.arvatosystems.t9t.doc.request.DocEmailCfgCrudRequest
 import com.arvatosystems.t9t.doc.request.DocTemplateCrudRequest
+import com.arvatosystems.t9t.doc.request.MailingGroupCrudRequest
+import com.google.common.base.Charsets
+import com.google.common.base.MoreObjects
 import com.google.common.io.CharStreams
+import com.google.common.io.Resources
 import de.jpaw.bonaparte.api.media.MediaDataUtil
 import de.jpaw.bonaparte.api.media.MediaTypes
 import de.jpaw.bonaparte.pojos.api.OperationType
@@ -38,11 +44,11 @@ import de.jpaw.bonaparte.pojos.api.media.MediaData
 import de.jpaw.util.ByteArray
 import java.io.IOException
 import java.io.InputStreamReader
+import java.net.URL
 import java.nio.charset.StandardCharsets
 import java.util.List
-import com.arvatosystems.t9t.doc.MailingGroupDTO
-import com.arvatosystems.t9t.doc.request.MailingGroupCrudRequest
-import com.arvatosystems.t9t.doc.MailingGroupKey
+import com.arvatosystems.t9t.doc.request.DocComponentBatchLoadRequest
+import com.arvatosystems.t9t.doc.request.DocComponentBatchLoad2Request
 
 class DocExtensions {
     public static final String DEFAULT_LANGUAGE = "xx"
@@ -154,8 +160,30 @@ class DocExtensions {
         ]
     }
 
+    /**
+     * Returns the contents of the resource referenced by resourcePath.
+     * Throws an exception in case the resource cannot be found.
+     */
     def static List<String> resourceAsCSV(String resourcePath) {
         MediaDataUtil.getTextResource(resourcePath).split("\n").filter[length > 0].toList
+    }
+
+    /**
+     * Returns the contents of the resource referenced by resourcePath.
+     * Returns null in case the resource cannot be found.
+     */
+    def static String getOptionalTextResource(String resourcePath) {
+        val URL url = getOptionalResource(resourcePath)
+        return url === null ? null : Resources.toString(url, Charsets.UTF_8);
+    }
+
+    /**
+     * Returns the contents of the resource referenced by resourcePath.
+     * Returns null in case the resource cannot be found.
+     */
+    def static List<String> resourceAsOptionalCSV(String resourcePath) {
+        val String text = getOptionalTextResource(resourcePath)
+        return text === null ? null : text.split("\n").filter[length > 0].toList
     }
 
     /** Classloader aware version of resourceAsPNG */
@@ -203,7 +231,6 @@ class DocExtensions {
         getTextResource(resourcePath, contextClass).split("\n").filter[length > 0].toList
     }
 
-
     /** Classloader aware version of getBinaryResource */
     def static ByteArray getBinaryResource(String path, Class<?> contextClass) throws IOException {
         val fis = contextClass.getResourceAsStream(path);
@@ -220,5 +247,30 @@ class DocExtensions {
         } finally {
             is.close
         }
+    }
+
+    /** Returns the URL of the referenced resource, or null, in case the resource does not exist. */
+    def static URL getOptionalResource(String resourceName) {
+        val ClassLoader loader = MoreObjects.firstNonNull(Thread.currentThread().getContextClassLoader(), Resources.getClassLoader());
+        return loader.getResource(resourceName);
+    }
+
+    /** Creates a BatchLoadRequest for a fixed key, with data from either CSV or JSON. */
+    def static DocComponentBatchLoadRequest createBatchLoadRequest(String pathBase, DocComponentKey key) {
+        val batchLoadRq = new DocComponentBatchLoadRequest
+        batchLoadRq.key = key
+        batchLoadRq.csv = resourceAsOptionalCSV(pathBase + ".txt")
+        batchLoadRq.jsonString = getOptionalTextResource(pathBase + ".json")
+        batchLoadRq.multiLineJoin = "\n"
+        return batchLoadRq;
+    }
+
+    /** Creates a BatchLoad2Request (no fixed key), with data from either CSV or JSON. */
+    def static DocComponentBatchLoad2Request createBatchLoad2Request(String pathBase) {
+        val batchLoadRq = new DocComponentBatchLoad2Request
+        batchLoadRq.csv = resourceAsOptionalCSV(pathBase + ".txt")
+        batchLoadRq.jsonString = getOptionalTextResource(pathBase + ".json")
+        batchLoadRq.multiLineJoin = "\n"
+        return batchLoadRq;
     }
 }

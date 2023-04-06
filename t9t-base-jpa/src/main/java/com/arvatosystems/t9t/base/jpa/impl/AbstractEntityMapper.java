@@ -33,20 +33,17 @@ import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.base.search.SearchCriteria;
 import com.arvatosystems.t9t.base.services.IOutputSession;
 import com.arvatosystems.t9t.base.services.ISearchTools;
-import com.arvatosystems.t9t.base.services.RequestContext;
 import com.google.common.collect.ImmutableList;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
-import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
 import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.SortColumn;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Provider;
 
 /** base implementation of the IEntityMapper interface, only suitable for simple configuration data tables */
 public abstract class AbstractEntityMapper<
@@ -60,13 +57,6 @@ public abstract class AbstractEntityMapper<
     protected static final String SEARCH_PREFIX_PROPERTY_TWO = "searchprefix2"; // for third level
     protected static final Map<String, String> NO_GRAPH = Collections.emptyMap();
 
-    //@Inject
-    protected final Provider<PersistenceProviderJPA> jpaContextProvider = Jdp.getProvider(PersistenceProviderJPA.class);
-
-    //@Inject
-    protected final Provider<RequestContext> contextProvider = Jdp.getProvider(RequestContext.class);
-
-    //@Inject
     protected final ISearchTools searchTools = Jdp.getRequired(ISearchTools.class);
 
     @Override

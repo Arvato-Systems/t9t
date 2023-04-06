@@ -26,11 +26,17 @@ import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.services.IEagerCache;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
+import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Provider;
+import jakarta.persistence.EntityManager;
+
 public abstract class AbstractEagerCache<T> implements IEagerCache<T> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractEagerCache.class);
 
     protected final Map<String, T> cacheByTenantId = new ConcurrentHashMap<>();
     protected final Function<RequestContext, T> constructor;
+    protected final Provider<PersistenceProviderJPA> jpaContextProvider = Jdp.getProvider(PersistenceProviderJPA.class);
 
     protected AbstractEagerCache(Function<RequestContext, T> constructor) {
         this.constructor = constructor;
@@ -44,8 +50,13 @@ public abstract class AbstractEagerCache<T> implements IEagerCache<T> {
     @Override
     public T getCache(RequestContext ctx) {
         return cacheByTenantId.computeIfAbsent(ctx.tenantId, (x) -> {
-            LOGGER.warn("No data present for {} for tenant {}", getClass().getSimpleName(), ctx.tenantId);
-            return constructor.apply(ctx);
+            LOGGER.warn("No data present for {} for tenant {}, now doing em.flush() and load", getClass().getSimpleName(), ctx.tenantId);
+            final EntityManager em = jpaContextProvider.get().getEntityManager();
+            em.flush();  // save any pending changes, because we want to clear L1 after the load
+            T cache = constructor.apply(ctx);
+            em.clear();  // clear potentially huge L1 cache
+            LOGGER.info("Completed eager cache loading for {} for tenant {} - em.clear done", getClass().getSimpleName(), ctx.tenantId);
+            return cache;
         });
     }
 

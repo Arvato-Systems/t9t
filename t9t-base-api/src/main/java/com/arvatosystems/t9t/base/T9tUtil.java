@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.base;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -178,5 +179,16 @@ public final class T9tUtil {
             }
         }
         return false;
+    }
+
+    /** Returns the current time as integral Instant (no fractional seconds). Often needed because some APIs desire integral seconds. */
+    public static Instant currentInstantRoundedToSeconds() {
+        return Instant.ofEpochSecond(System.currentTimeMillis() / 1000L);
+    }
+
+    /** Returns the passed Instant as integral Instant (no fractional seconds). */
+    public static Instant roundedToSeconds(final Instant when) {
+        // do not construct a new object in case we already have an integral Instant
+        return when.getNano() == 0 ? when : Instant.ofEpochSecond(when.getEpochSecond());
     }
 }

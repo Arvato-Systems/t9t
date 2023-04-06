@@ -30,6 +30,6 @@ public abstract class AbstractJsonFormatConverter extends AbstractInputFormatCon
     @Override
     public void open(final IInputSession inputSession, final Map<String, Object> params, final BonaPortableClass<?> baseBClass) {
         super.open(inputSession, params, baseBClass);
-        objectMapper = JacksonTools.createJacksonMapperForImports();
+        objectMapper = JacksonTools.createObjectMapper();
     }
 }
