@@ -15,6 +15,9 @@
  */
 package com.arvatosystems.t9t.base;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.jpaw.util.ApplicationException;
 
 /**
@@ -23,6 +26,7 @@ import de.jpaw.util.ApplicationException;
  * which are specific to all applications based on the t9t platform.
  */
 public class T9tException extends ApplicationException {
+    private static final Logger LOGGER = LoggerFactory.getLogger(T9tException.class);
 
     private static final long serialVersionUID = 36513359567514148L;
 
@@ -91,8 +95,8 @@ public class T9tException extends ApplicationException {
     public static final int OPTIMISTIC_LOCKING_EXCEPTION = OFFSET_DB_ERROR + 94;
     public static final int REQUEST_PARAMETER_BAD_INHERITANCE = OFFSET + 95;
     public static final int TRANSACTION_RETRY_REQUEST = OFFSET_DB_ERROR + 96;
-    public static final int GENERAL_EXCEPTION_CENTRAL = OFFSET_LOGIC_ERROR + 97;
-    public static final int GENERAL_EXCEPTION = OFFSET_LOGIC_ERROR + 98;
+//    public static final int GENERAL_EXCEPTION_CENTRAL = OFFSET_LOGIC_ERROR + 97;
+    public static final int GENERAL_EXCEPTION = OFFSET_DB_ERROR + 98;
     public static final int SELECT_INSERT_SELECT_ERROR = OFFSET_LOGIC_ERROR + 99;
 
     // Codes specific to CrudRequests
@@ -149,6 +153,10 @@ public class T9tException extends ApplicationException {
     public static final int JDBC_NO_RESULT_RETURNED     = OFFSET_DB_ERROR + 151;
     public static final int JDBC_GENERAL_SQL            = OFFSET_DB_ERROR + 152;
     public static final int JDBC_UNKNOWN_DIALECT        = OFFSET_DB_ERROR + 153;
+
+    // Codes specific to parameter validation
+    public static final int INVALID_ENUM_VALUE = OFFSET + 160;
+    public static final int INVALID_PARAMETER  = OFFSET + 161;
 
     // Codes specific to security functions (authentication / authorization)
     public static final int USER_NOT_FOUND = OFFSET + 200;
@@ -284,6 +292,7 @@ public class T9tException extends ApplicationException {
     public static final int UNSUPPORTED_OPERATION = OFFSET + 992;
     public static final int UNSUPPORTED_OPERAND = OFFSET + 993;
     public static final int GENERAL_SERVER_ERROR = OFFSET_DB_ERROR + 994;  // masked backend error which we do not want to forward to client
+    public static final int INVALID_EXCEPTION_CODE = OFFSET_LOGIC_ERROR + 999;
 
 
     public static final int HTTP_ERROR = OFFSET_VALIDATION_ERROR + 8000;        // whole range 8000..8999 is used, where the offset is the http status code
@@ -304,8 +313,20 @@ public class T9tException extends ApplicationException {
         super(0);
     }
 
+    /**
+     * Checks that the exception has a meaningful code, because people keep throwing CL_* code.
+     */
+    private static int validateExceptionCode(final int errorCode) {
+        if (errorCode >= 1 * CLASSIFICATION_FACTOR && errorCode < 10 * CLASSIFICATION_FACTOR) {
+            return errorCode;
+        }
+        LOGGER.error("**** FIX THIS CODE, INVALID EXCEPTION CODE THROWN: {} ****", errorCode);
+        LOGGER.error("Stack trace", new Exception());
+        return INVALID_EXCEPTION_CODE;
+    }
+
     public T9tException(final int errorCode) {
-        super(errorCode);
+        super(validateExceptionCode(errorCode));
     }
 
     /**
@@ -318,7 +339,7 @@ public class T9tException extends ApplicationException {
      *                          In most cases this should be just the value causing the problem.
      */
     public T9tException(final int errorCode, final Object... detailParameters) {
-        super(errorCode, createParamsString(detailParameters));
+        super(validateExceptionCode(errorCode), createParamsString(detailParameters));
     }
 
     static {
@@ -329,7 +350,7 @@ public class T9tException extends ApplicationException {
         codeToDescription.put(MALFORMED_REQUEST_PARAMETER_NAME, "The class name of the request parameters did not end with ...Request");
         codeToDescription.put(SERVICE_CLASS_NOT_FOUND, "Could not load service class. Configuration or classpath problem?");
         codeToDescription.put(TRANSACTION_RETRY_REQUEST, "Additional attempt to run the operation is requierd.");
-        codeToDescription.put(GENERAL_EXCEPTION_CENTRAL, "unhandled general exception in central message processing execute method");
+        // codeToDescription.put(GENERAL_EXCEPTION_CENTRAL, "unhandled general exception in central message processing execute method");
         codeToDescription.put(GENERAL_EXCEPTION, "unhandled general exception");
         codeToDescription.put(INVALID_REQUEST_PARAMETER_TYPE, "The class of the request parameters did not have the expected inheritance");
         codeToDescription.put(TENANT_NOT_EXISTING, "Tenant is not existing");
@@ -554,6 +575,10 @@ public class T9tException extends ApplicationException {
         codeToDescription.put(MISSING_KAFKA_BOOTSTRAP, "Kafka bootstrap servers not specified");
         codeToDescription.put(GENERAL_SERVER_ERROR, "Server error");
 
+        codeToDescription.put(INVALID_ENUM_VALUE, "Invalid instance value");
+        codeToDescription.put(INVALID_PARAMETER, "Invalid parameter");
+        codeToDescription.put(INVALID_EXCEPTION_CODE, "Invalid exception code passed to T9tException");
+
         codeToDescription.put(HTTP_ERROR + 400, "Bad request");
         codeToDescription.put(HTTP_ERROR + 401, "Not authorized");
         codeToDescription.put(HTTP_ERROR + 403, "Forbidden");
@@ -598,10 +623,5 @@ public class T9tException extends ApplicationException {
         }
         // everything else should be rolled back
         return true;
-    }
-
-    /** Returns a text representation of an error code. */
-    public static String codeToString(final int errorCode) {
-        return new T9tException(errorCode).getStandardDescription();
     }
 }

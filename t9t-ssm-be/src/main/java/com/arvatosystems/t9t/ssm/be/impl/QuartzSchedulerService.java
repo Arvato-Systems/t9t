@@ -487,7 +487,7 @@ public class QuartzSchedulerService implements ISchedulerService {
                 DateBuilder.validateMonth(value);
                 break;
             default:
-                throw new T9tException(T9tException.GENERAL_EXCEPTION_CENTRAL);
+                throw new T9tException(T9tException.INVALID_ENUM_VALUE);
             }
         } catch (final IllegalArgumentException e) {
             throw new T9tException(T9tSsmException.SCHEDULE_SETUP_INTERVAL_VALIDATION_ERR, e.getMessage());

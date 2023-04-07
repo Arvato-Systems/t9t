@@ -29,6 +29,7 @@ import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.BonaPortableFactory;
 import de.jpaw.bonaparte.core.DataConverter;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.util.ApplicationException;
 
 /**
  * Utility class in charge of providing common utility functionality to be used in the scope of the overall message processing.
@@ -145,7 +146,7 @@ public final class MessagingUtil {
     public static ServiceResponse createServiceResponse(final int errorCode, final String errorDetails) {
         final ServiceResponse response = new ServiceResponse();
         if (errorCode > T9tConstants.MAX_OK_RETURN_CODE) {
-            final String errorMessage = T9tException.codeToString(errorCode);
+            final String errorMessage = ApplicationException.codeToString(errorCode);
             LOGGER.error("returning error code " + errorCode + " with details " + errorDetails + " for reason " + errorMessage);
             response.setErrorMessage(truncErrorMessage(errorMessage));
         } else {

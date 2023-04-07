@@ -324,7 +324,7 @@ public class RequestProcessor implements IRequestProcessor {
                 }
                 if (!ApplicationException.isOk(resp.getReturnCode()) && resp.getErrorMessage() == null) {
                     // Make sure to attach necessary reference information to the outgoing response
-                    resp.setErrorMessage(MessagingUtil.truncErrorMessage(T9tException.codeToString(resp.getReturnCode())));
+                    resp.setErrorMessage(MessagingUtil.truncErrorMessage(ApplicationException.codeToString(resp.getReturnCode())));
                 }
                 ctx.fillResponseStandardFields(resp); // validate the response
                 try {
