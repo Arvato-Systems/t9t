@@ -29,7 +29,7 @@ public class TenantResolver extends TenantEntityResolver implements ITenantResol
 
     @Override
     public TenantDTO getDTO(String tenantId) {
-        final TenantEntity tenant = findInternal(tenantId, false, true);
+        final TenantEntity tenant = findInternal(tenantId, false);
         final TenantDTO dto = tenant.ret$Data();
         return dto;
     }

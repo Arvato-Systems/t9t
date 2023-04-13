@@ -61,10 +61,10 @@ public class T9tJwtException extends ApplicationException {
      * duplicate initialization, because the access to the flag textsInitialized is not synchronized, but duplicate upload does not hurt (is idempotent).
      */
     static {
-        codeToDescription.put(NUMBER_SEGMENTS,          "Not enough or too many segments in base64 encoded token");
-        codeToDescription.put(MISSING_SIGNATURE,        "Unsigned JWT - Signature is required for this application");
-        codeToDescription.put(ALGORITHM_NOT_SUPPORTED,  "Algorithm not supported");
-        codeToDescription.put(VERIFICATION_FAILED,      "Signature verification failed");
+        registerCode(NUMBER_SEGMENTS,          "Not enough or too many segments in base64 encoded token");
+        registerCode(MISSING_SIGNATURE,        "Unsigned JWT - Signature is required for this application");
+        registerCode(ALGORITHM_NOT_SUPPORTED,  "Algorithm not supported");
+        registerCode(VERIFICATION_FAILED,      "Signature verification failed");
     }
 
 

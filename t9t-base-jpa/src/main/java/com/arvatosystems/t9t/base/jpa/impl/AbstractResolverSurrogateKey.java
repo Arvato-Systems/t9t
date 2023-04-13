@@ -95,7 +95,7 @@ public abstract class AbstractResolverSurrogateKey<
         }
         final Long r = entityRef.getObjectRef();
         if (r != null) {
-            return findInternal(r, onlyActive, true);
+            return findInternal(r, onlyActive);
         }
         // preprocess the reference
         return getEntityDataByGenericKey(resolveNestedRefs(entityRef), onlyActive);

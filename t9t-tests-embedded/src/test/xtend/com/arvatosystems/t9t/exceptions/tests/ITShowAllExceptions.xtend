@@ -36,7 +36,7 @@ class ITShowAllExceptions {
     def void listExceptions() {
         // first, actively load all exception classes (among others)
         LOGGER.info("Skipping Init")
-        // Init.initializeT9t // Init removed because it will be initialized with the inmemoryConnection instead
+        // Init.initializeT9t // Init removed because it will be initialized with the inMemoryConnection instead
 
         // then ask the map for all loaded codes and the corresponding texts
         JustATrickToAccessCodeToDescription.listAllExceptions

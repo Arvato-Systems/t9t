@@ -45,5 +45,10 @@
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-annotations-api</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+        </dependency>
     </dependencies>
 </project>

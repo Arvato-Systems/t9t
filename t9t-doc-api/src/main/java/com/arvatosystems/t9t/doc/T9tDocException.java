@@ -37,12 +37,12 @@ public class T9tDocException extends T9tException {
     public static final int FORMATTING_ERROR                     = OFFSET + 66;
 
     static {
-        codeToDescription.put(CONVERSION_EXCEEDS_MAX_TEMPLATE_SIZE, "The conversion would exceed the maximum size of a template.");
-        codeToDescription.put(CONVERSION_EXCEEDS_MAX_SUBJECT_SIZE,  "The conversion would exceed the maximum size of an inline email subject template.");
-        codeToDescription.put(CANNOT_ADD_FONT_IO,                   "Could not add font to document (I/O issue)");
-        codeToDescription.put(CANNOT_ADD_FONT_DOC,                  "Could not add font to document (Doc issue)");
-        codeToDescription.put(DOCUMENT_PDF_CONVERSION_ERROR_IO,     "Could not convert document to PDF (I/O issue)");
-        codeToDescription.put(DOCUMENT_PDF_CONVERSION_ERROR_DOC,    "Could not convert document to PDF (Doc issue)");
-        codeToDescription.put(FORMATTING_ERROR,                     "Problem formatting the document (malformed template?)");
+        registerCode(CONVERSION_EXCEEDS_MAX_TEMPLATE_SIZE, "The conversion would exceed the maximum size of a template.");
+        registerCode(CONVERSION_EXCEEDS_MAX_SUBJECT_SIZE,  "The conversion would exceed the maximum size of an inline email subject template.");
+        registerCode(CANNOT_ADD_FONT_IO,                   "Could not add font to document (I/O issue)");
+        registerCode(CANNOT_ADD_FONT_DOC,                  "Could not add font to document (Doc issue)");
+        registerCode(DOCUMENT_PDF_CONVERSION_ERROR_IO,     "Could not convert document to PDF (I/O issue)");
+        registerCode(DOCUMENT_PDF_CONVERSION_ERROR_DOC,    "Could not convert document to PDF (Doc issue)");
+        registerCode(FORMATTING_ERROR,                     "Problem formatting the document (malformed template?)");
     }
 }

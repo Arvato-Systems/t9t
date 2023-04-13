@@ -66,27 +66,27 @@ public class T9tSsmException extends T9tException {
      * static initialization of all error codes
      */
     static {
-        codeToDescription.put(SCHEDULER_JOB_NOT_FOUND_EXCEPTION, "The scheduler contains not job with passed parameters.");
-        codeToDescription.put(SCHEDULER_INIT_OR_START_EXCEPTION, "The scheduler could not be started correctly.");
-        codeToDescription.put(SCHEDULER_SHUTDOWN_EXCEPTION, "The scheduler could not be shut down correctly.");
-        codeToDescription.put(SCHEDULER_DELETE_JOB_EXCEPTION, "The scheduler was not able to delete a job.");
-        codeToDescription.put(SCHEDULER_UPDATE_JOB_EXCEPTION, "The scheduler was not able to update a job.");
-        codeToDescription.put(SCHEDULER_CREATE_JOB_EXCEPTION, "The scheduler was not able to create a job.");
-        codeToDescription.put(SCHEDULER_READ_EXCEPTION, "The scheduler was not able to read a job.");
-        codeToDescription.put(SERVICE_SESSION_OPEN_EXCEPTION, "The service session could not be opened.");
-        codeToDescription.put(VALIDATION_CREATION_NO_TENANT_REF, "Tenant Ref has to be either in InternalHeaderParameters or in ReportDTO");
-        codeToDescription.put(SERVICESESSION_IS_NULL, "The service session for the job execution is null");
-        codeToDescription.put(SCHEDULER_JOB_EXECUTION_FAILURE, "Failed to execute job");
-        codeToDescription.put(SCHEDULER_SETUP_FAILURE_INTERVAL,
+        registerCode(SCHEDULER_JOB_NOT_FOUND_EXCEPTION, "The scheduler contains not job with passed parameters.");
+        registerCode(SCHEDULER_INIT_OR_START_EXCEPTION, "The scheduler could not be started correctly.");
+        registerCode(SCHEDULER_SHUTDOWN_EXCEPTION, "The scheduler could not be shut down correctly.");
+        registerCode(SCHEDULER_DELETE_JOB_EXCEPTION, "The scheduler was not able to delete a job.");
+        registerCode(SCHEDULER_UPDATE_JOB_EXCEPTION, "The scheduler was not able to update a job.");
+        registerCode(SCHEDULER_CREATE_JOB_EXCEPTION, "The scheduler was not able to create a job.");
+        registerCode(SCHEDULER_READ_EXCEPTION, "The scheduler was not able to read a job.");
+        registerCode(SERVICE_SESSION_OPEN_EXCEPTION, "The service session could not be opened.");
+        registerCode(VALIDATION_CREATION_NO_TENANT_REF, "Tenant Ref has to be either in InternalHeaderParameters or in ReportDTO");
+        registerCode(SERVICESESSION_IS_NULL, "The service session for the job execution is null");
+        registerCode(SCHEDULER_JOB_EXECUTION_FAILURE, "Failed to execute job");
+        registerCode(SCHEDULER_SETUP_FAILURE_INTERVAL,
           "If a minute interval should be used the fields for start hour, end hour and minute interval have to be filled");
-        codeToDescription.put(SCHEDULE_VALID_FROM_NOT_PROVIDED, "Please provided Valid From Date.");
-        codeToDescription.put(SCHEDULE_EXECUTION_TIME_MISSING, "Execution Time is missing");
-        codeToDescription.put(SCHEDULE_CRON_EXPRESSION_MISSING, "Required cronExpression is missing");
-        codeToDescription.put(SCHEDULE_CRON_REGEX_PATTERN_MISMATCH, "CRON native doesn't comply with CRON expression pattern");
+        registerCode(SCHEDULE_VALID_FROM_NOT_PROVIDED, "Please provided Valid From Date.");
+        registerCode(SCHEDULE_EXECUTION_TIME_MISSING, "Execution Time is missing");
+        registerCode(SCHEDULE_CRON_EXPRESSION_MISSING, "Required cronExpression is missing");
+        registerCode(SCHEDULE_CRON_REGEX_PATTERN_MISMATCH, "CRON native doesn't comply with CRON expression pattern");
 
-        codeToDescription.put(SCHEDULE_SETUP_INTERVAL_VALIDATION_ERR, "Interval parameter validation failed for the scheduler");
-        codeToDescription.put(IRRELEVANT_SCHEDULER_PARAM_ERR, "Found irrelevant scheduler parameter");
-        codeToDescription.put(REQUIRED_SCHEDULER_PARAM_MISSING, "Missing relevant scheduler parameter.");
-        codeToDescription.put(SCHEDULE_SETUP_PARAM_VALIDATION_ERR, "Validation on required setup parameter failed");
+        registerCode(SCHEDULE_SETUP_INTERVAL_VALIDATION_ERR, "Interval parameter validation failed for the scheduler");
+        registerCode(IRRELEVANT_SCHEDULER_PARAM_ERR, "Found irrelevant scheduler parameter");
+        registerCode(REQUIRED_SCHEDULER_PARAM_MISSING, "Missing relevant scheduler parameter.");
+        registerCode(SCHEDULE_SETUP_PARAM_VALIDATION_ERR, "Validation on required setup parameter failed");
     }
 }

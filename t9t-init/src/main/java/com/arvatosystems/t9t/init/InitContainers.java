@@ -28,6 +28,7 @@ import de.jpaw.bonaparte.pojos.meta.XEnumSetDefinition;
 import de.jpaw.bonaparte.util.ToStringHelper;
 import de.jpaw.enums.AbstractStringEnumSet;
 import de.jpaw.enums.AbstractStringXEnumSet;
+import de.jpaw.util.ApplicationException;
 import de.jpaw.util.ExceptionUtil;
 import de.jpaw.xenums.init.ExceptionInitializer;
 import de.jpaw.xenums.init.ReflectionsPackageCache;
@@ -105,6 +106,12 @@ public final class InitContainers {
 
         ExceptionInitializer.initializeExceptionClasses(scannedPackages);       // init all 3 packages with one invocation
         XenumInitializer.initializeXenums(scannedPackages);
+
+        // stop in case we have duplicate exception codes
+        if (ApplicationException.checkForDuplicates()) {
+            LOGGER.error("Found duplicate exception codes - terminating");
+            throw new RuntimeException("Nonunique exception codes");
+        }
 
         collectEnums(scannedPackages);
         LOGGER.info("{} enums found", ENUM_BY_PQON.size());

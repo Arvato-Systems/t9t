@@ -35,7 +35,7 @@ public class T9tDocExtException extends T9tException {
     // comm related exceptions
     public static final int DOCUMENT_CREATION_ERROR         = OFFSET + 100;
     public static final int DOCUMENT_DOWNLOAD_ERROR         = OFFSET + 110;
-    public static final int UNDEFINED_MIMETYPE_ERROR        = OFFSET + 110;
+    public static final int UNDEFINED_MIMETYPE_ERROR        = OFFSET + 111;
 
 
     // barcode related exceptions
@@ -56,20 +56,20 @@ public class T9tDocExtException extends T9tException {
      * static initialization of all error codes
      */
     static {
-        codeToDescription.put(DOCUMENT_CREATION_ERROR,          "Error occured during document creation.");
-        codeToDescription.put(DOCUMENT_DOWNLOAD_ERROR,          "Error occured during file download");
-        codeToDescription.put(UNDEFINED_MIMETYPE_ERROR,         "Unrecognised file mime type was received.");
+        registerCode(DOCUMENT_CREATION_ERROR,          "Error occured during document creation.");
+        registerCode(DOCUMENT_DOWNLOAD_ERROR,          "Error occured during file download");
+        registerCode(UNDEFINED_MIMETYPE_ERROR,         "Unrecognised file mime type was received.");
 
-        codeToDescription.put(TEXT_TOO_LONG_FOR_BARCODE,        "Provided text is too long for selected barcode");
-        codeToDescription.put(UNSUPPORTED_CHARACTERS,           "Provided text contains characters not supported by selected barcode.");
+        registerCode(TEXT_TOO_LONG_FOR_BARCODE,        "Provided text is too long for selected barcode");
+        registerCode(UNSUPPORTED_CHARACTERS,           "Provided text contains characters not supported by selected barcode.");
 
-        codeToDescription.put(EMAIL_CONFIGURATION_ERROR,        "Error occured during loading configuration email.");
-        codeToDescription.put(EMAIL_SEND_ERROR,                 "Error occured during sending email.");
-        codeToDescription.put(EMAIL_RECIPIENT_ERROR,            "Recipient cannot be null or empty.");
-        codeToDescription.put(TEMPLATE_CREATION_ERROR,          "Template cannot be null.");
-        codeToDescription.put(RESOURCE_TYPE_NOT_FOUND_ERROR,    "Resource type not found.");
-        codeToDescription.put(IMAGE_NOT_FOUND_ERROR,            "Image file not found.");
-        codeToDescription.put(CONFIGURATION_NOT_FOUND_ERROR,    "Configuration data not found.");
-        codeToDescription.put(TEMPLATE_UNSUPPORTED_ENCODING,    "Unsupported encoding for template.");
+        registerCode(EMAIL_CONFIGURATION_ERROR,        "Error occured during loading configuration email.");
+        registerCode(EMAIL_SEND_ERROR,                 "Error occured during sending email.");
+        registerCode(EMAIL_RECIPIENT_ERROR,            "Recipient cannot be null or empty.");
+        registerCode(TEMPLATE_CREATION_ERROR,          "Template cannot be null.");
+        registerCode(RESOURCE_TYPE_NOT_FOUND_ERROR,    "Resource type not found.");
+        registerCode(IMAGE_NOT_FOUND_ERROR,            "Image file not found.");
+        registerCode(CONFIGURATION_NOT_FOUND_ERROR,    "Configuration data not found.");
+        registerCode(TEMPLATE_UNSUPPORTED_ENCODING,    "Unsupported encoding for template.");
     }
 }

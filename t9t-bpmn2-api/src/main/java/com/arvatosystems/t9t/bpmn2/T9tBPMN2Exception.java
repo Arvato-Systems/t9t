@@ -34,6 +34,6 @@ public class T9tBPMN2Exception extends T9tBPMException {
      * static initialization of all error codes
      */
     static {
-        codeToDescription.put(BPMN2_MESSAGE_DELIVERY_FAILED, "BPMN Message could not be delivered - no subcription available");
+        registerCode(BPMN2_MESSAGE_DELIVERY_FAILED, "BPMN Message could not be delivered - no subcription available");
     }
 }

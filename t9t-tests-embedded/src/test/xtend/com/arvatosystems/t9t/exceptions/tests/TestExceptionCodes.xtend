@@ -21,6 +21,7 @@ import de.jpaw.annotations.AddLogger
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import de.jpaw.util.ApplicationException
 
 @AddLogger
 class TestExceptionCodes {
@@ -41,6 +42,7 @@ class TestExceptionCodes {
         //Init.initializeT9t // Init removed because it will be initialized with the inmemoryConnection instead
 
         // check exception codes
-        Assertions.assertTrue(JustATrickToAccessCodeToDescription.validateAllExceptions)
+        Assertions.assertTrue(JustATrickToAccessCodeToDescription.validateAllExceptions, "Check for all exception codes in expected range");
+        Assertions.assertFalse(ApplicationException.checkForDuplicates(), "Check for duplicate exception codes");
     }
 }

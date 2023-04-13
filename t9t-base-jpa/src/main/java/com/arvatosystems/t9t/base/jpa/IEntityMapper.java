@@ -32,6 +32,8 @@ import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.SortColumn;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /** Defines a set of conversion methods between DTO and JPA entity classes.
  * The interface is parameterized and should be specialized for every DTO, using the name I(DTOname)Mapper (because the entity is implied by the DTO).
@@ -60,7 +62,8 @@ public interface IEntityMapper<KEY extends Serializable, DTO extends BonaPortabl
      *            - the JPA entity
      * @return - the entity mapped to a DTO
      */
-    DTO mapToDto(ENTITY entity);
+    @Nullable
+    DTO mapToDto(@Nullable ENTITY entity);
 
     /**
      * Converts a JPA entity into a DTO, when the entity itself is not available, only its primary key. This is just a shorthand for
@@ -70,7 +73,8 @@ public interface IEntityMapper<KEY extends Serializable, DTO extends BonaPortabl
      *            - the key
      * @return - the entity mapped to a DTO
      */
-    DTO mapToDto(KEY key);
+    @Nullable
+    DTO mapToDto(@Nullable KEY key);
 
     /**
      * Creates a new Entity class of the current customization and fills it from the entity provided as parameter. The call is null-safe, i.e. if the DTO is
@@ -80,7 +84,8 @@ public interface IEntityMapper<KEY extends Serializable, DTO extends BonaPortabl
      * @param onlyActive
      * @return the entity
      */
-    ENTITY mapToEntity(DTO dto, boolean onlyActive); // convert a DTO into an entity
+    @Nullable
+    ENTITY mapToEntity(@Nullable DTO dto, boolean onlyActive); // convert a DTO into an entity
 
     // protected void dto2Entity(ENTITY entity, DTO dto, boolean onlyActive);  // helper method which is overridden by extensions / customizations
     // protected void entity2Dto(ENTITY entity, DTO dto);  // helper method which is overridden by extensions / customizations
@@ -95,7 +100,8 @@ public interface IEntityMapper<KEY extends Serializable, DTO extends BonaPortabl
      *            - a DTO with data to be updated.
      * @param onlyActive
      */
-    void merge2Entity(ENTITY entity, DTO dto, boolean onlyActive); // synonym for protected dto2Entity
+    @Nonnull
+    void merge2Entity(@Nonnull ENTITY entity, @Nonnull DTO dto, boolean onlyActive); // synonym for protected dto2Entity
 
     /**
      * Maps a collection of entities to a list of standard DTOs.
@@ -104,17 +110,21 @@ public interface IEntityMapper<KEY extends Serializable, DTO extends BonaPortabl
      *            The input list. List entries may not be null.
      * @return a list, which may be empty.
      */
-    List<DTO> mapListToDto(Collection<ENTITY> entityList);
+    @Nonnull
+    List<DTO> mapListToDto(@Nonnull Collection<ENTITY> entityList);
 
-    List<DTO> mapListToDto(Collection<ENTITY> entityList, Map<String, String> graph, String prefix, Map<String, Map<Long, Ref>> cache);
+    @Nonnull
+    List<DTO> mapListToDto(@Nonnull Collection<ENTITY> entityList, @Nullable Map<String, String> graph,
+      @Nonnull String prefix, @Nullable Map<String, Map<Long, Ref>> cache);
 
     /**
      * Maps a collection of DTOs to entities and adds those to an existing collection.
      *
-     * @param dtoList
-     *            The input list. List entries may not be null.
+     * @param target the output list
+     * @param dtoList the input list
      */
-    void mapCollectionToEntity(Collection<ENTITY> target, Collection<DTO> dtoList, boolean onlyActive);
+    @Nonnull
+    void mapCollectionToEntity(@Nonnull Collection<ENTITY> target, @Nonnull Collection<DTO> dtoList, boolean onlyActive);
 
     /**
      * Verifies that no field with property "notupdatable" has a different value in the intended entity. Throws a T9tException.FIELD_MAY_NOT_BE_CHANGED if a
@@ -123,58 +133,66 @@ public interface IEntityMapper<KEY extends Serializable, DTO extends BonaPortabl
      * @param current
      * @param intended
      */
-    void checkNoUpdateFields(ENTITY current, DTO intended);
+    @Nonnull
+    void checkNoUpdateFields(@Nonnull ENTITY current, @Nonnull DTO intended);
 
     /**
      * Queries a property of the DTO class for its value. Returns the value or null if no property has been set.
      * Returns an empty string if no value was assigned.
      * Implementation currently works for properties of the base DTO only. Subclass mappers have to override it in order to provide properties of subclasses.
      */
-    String getProperty(String propertyname);
+    @Nullable
+    String getProperty(@Nonnull String propertyname);
 
     /**
      * Replaces field references in a generic search request which are path elements (indicated by property searchPrefix), for the critera builder.
      *
      * @param searchRequest the entity specific search request
      */
-    void processSearchPrefixForDB(SearchCriteria searchCriteria);
+    void processSearchPrefixForDB(@Nonnull SearchCriteria searchCriteria);
 
     /**
      * Replaces field references in a generic search request which are path elements (indicated by property searchPrefix), for the critera builder.
      * Two parameter version.
      */
-    void processSearchPrefixForDB(SearchFilter filter, List<SortColumn> sortColumns);
+    void processSearchPrefixForDB(@Nullable SearchFilter filter, @Nullable List<SortColumn> sortColumns);
 
-    /** Maps an entity to a DataWithTrackingS.
+    /**
+     * Maps an entity to a DataWithTrackingS.
      */
-    DataWithTrackingS<DTO, TRACKING> mapToDwt(ENTITY entity);
+    @Nullable
+    DataWithTrackingS<DTO, TRACKING> mapToDwt(@Nullable ENTITY entity);
 
     /** Maps a collection of entities to a list of special DTOs which include the tracking columns.
      * Used by generic search and generic "ReadAll".
      * @param entityList The input list. List entries may not be null.
      * @return a list, which may be empty.
      */
-    List<DataWithTrackingS<DTO, TRACKING>> mapListToDwt(Collection<ENTITY> entityList);
+    @Nonnull
+    List<DataWithTrackingS<DTO, TRACKING>> mapListToDwt(@Nonnull Collection<ENTITY> entityList);
 
-    /** Postprocesses a search output, either mapping it to some ReadAllResponse, or exporting it via IOutputSession and
+    /**
+     * Postprocesses a search output, either mapping it to some ReadAllResponse, or exporting it via IOutputSession and
      * returning the sinkRef (if op != null).
      * @param data input data (list of entities)
      * @param op  OutputSessionParameters - if not null, then the data will be exported instead of returned as a list
      * @return the full web service response structure
      */
-    ReadAllResponse<DTO, TRACKING> createReadAllResponse(List<ENTITY> data, OutputSessionParameters op) throws Exception;
+    @Nonnull
+    ReadAllResponse<DTO, TRACKING> createReadAllResponse(@Nonnull List<ENTITY> data, @Nullable OutputSessionParameters op) throws Exception;
 
     /** returns the entity's tenantId without the use of reflection, or null if the entity does not contain
      * a tenantId field.
      * @param e
      * @return the tenantId
      */
-    String getTenantId(ENTITY e);
+    @Nonnull
+    String getTenantId(@Nonnull ENTITY e);
 
     /** Sets the entity's tenantId without the use of reflection, or NOOP if the entity does not contain
      * a tenantId field.
      * @param e - an instance of the Entity
      * @param tenantId - the tenant to be set (if null, the current call's tenant ref will be used)
      */
-    void setTenantId(ENTITY e, String tenantId);
+    void setTenantId(@Nonnull ENTITY e, @Nonnull String tenantId);
 }

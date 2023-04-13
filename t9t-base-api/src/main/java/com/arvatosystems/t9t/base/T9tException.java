@@ -186,7 +186,7 @@ public class T9tException extends ApplicationException {
     public static final int NO_SUITABLE_AUTHENTICATION_PROVIDER_FOUND = OFFSET_LOGIC_ERROR + 218;
     public static final int GENERAL_AUTH_PROBLEM = OFFSET + 219;
     public static final int INVALID_EMAIL_FORMAT = OFFSET + 220;
-    public static final int MISSING_UPLINK_CONFIGURATION = OFFSET + 107;
+    public static final int MISSING_UPLINK_CONFIGURATION = OFFSET + 227;
 
 
     // IO errors
@@ -343,247 +343,247 @@ public class T9tException extends ApplicationException {
     }
 
     static {
-        codeToDescription.put(INVALID_CRUD_COMMAND, "Attempted to use an invalid or unimplemented CRUD command");
-        codeToDescription.put(RECORD_ALREADY_EXISTS, "Attempted to create a record which already exists");
-        codeToDescription.put(RECORD_DOES_NOT_EXIST, "Attempted to access a record which does not exist");
-        codeToDescription.put(RECORD_INACTIVE, "Attempted to run transactions on deactivated (logically deleted) masterdata");
-        codeToDescription.put(MALFORMED_REQUEST_PARAMETER_NAME, "The class name of the request parameters did not end with ...Request");
-        codeToDescription.put(SERVICE_CLASS_NOT_FOUND, "Could not load service class. Configuration or classpath problem?");
-        codeToDescription.put(TRANSACTION_RETRY_REQUEST, "Additional attempt to run the operation is requierd.");
-        // codeToDescription.put(GENERAL_EXCEPTION_CENTRAL, "unhandled general exception in central message processing execute method");
-        codeToDescription.put(GENERAL_EXCEPTION, "unhandled general exception");
-        codeToDescription.put(INVALID_REQUEST_PARAMETER_TYPE, "The class of the request parameters did not have the expected inheritance");
-        codeToDescription.put(TENANT_NOT_EXISTING, "Tenant is not existing");
-        codeToDescription.put(TENANT_INACTIVE, "Tenant is inactive");
-        codeToDescription.put(APP_USER_NOT_EXISTING, "App user is not existing");
-        codeToDescription.put(APP_USER_INACTIVE, "App user is inactive");
-        codeToDescription.put(APP_USER_TENANT_PERMISSION, "App user tenant has no permission for this tenant");
-        codeToDescription.put(TOO_MANY_RECORDS, "Too many records");
-        codeToDescription.put(MISSING_KEY_PARAMETER, "CRUD request did not supply required key parameter");
-        codeToDescription.put(MISSING_DATA_PARAMETER, "CRUD request did not supply required data parameter");
-        codeToDescription.put(EXTRA_KEY_PARAMETER, "CRUD request sent with superfluous key parameter");
-        codeToDescription.put(EXTRA_DATA_PARAMETER, "CRUD request sent with superfluous data parameter");
-        codeToDescription.put(MISSING_VERSION_PARAMETER, "CRUD request did not supply required version parameter");
-        codeToDescription.put(SELECT_INSERT_SELECT_ERROR, "subsequent failure of SELECT, INSERT, SELECT for the same key");
-        codeToDescription.put(FIELD_MAY_NOT_BE_CHANGED, "A field may not be updated to a different value");
-        codeToDescription.put(ONLY_ONE_ACTIVE_ALLOWED, "Inserting the record would create more than one active rows with the same value of a key column");
-        codeToDescription.put(MISSING_CONFIGURATION, "No active configuration record found");
-        codeToDescription.put(MISSING_UPLINK_CONFIGURATION, "No configuration for uplink found in config.xml");
-        codeToDescription.put(INVALID_CONFIGURATION, "Configuration was done incorrectly");
-        codeToDescription.put(NOT_YET_IMPLEMENTED, "The requested functionality has not yet been implemented.");
-        codeToDescription.put(NO_LONGER_SUPPORTED, "The requested functionality is no longer supported.");
-        codeToDescription.put(ILE_REQUIRED_PARAMETER_IS_NULL, "A required parameter has not been supplied");
-        codeToDescription.put(ILE_RESULT_SET_WRONG_SIZE,
+        registerCode(INVALID_CRUD_COMMAND, "Attempted to use an invalid or unimplemented CRUD command");
+        registerCode(RECORD_ALREADY_EXISTS, "Attempted to create a record which already exists");
+        registerCode(RECORD_DOES_NOT_EXIST, "Attempted to access a record which does not exist");
+        registerCode(RECORD_INACTIVE, "Attempted to run transactions on deactivated (logically deleted) masterdata");
+        registerCode(MALFORMED_REQUEST_PARAMETER_NAME, "The class name of the request parameters did not end with ...Request");
+        registerCode(SERVICE_CLASS_NOT_FOUND, "Could not load service class. Configuration or classpath problem?");
+        registerCode(TRANSACTION_RETRY_REQUEST, "Additional attempt to run the operation is requierd.");
+        // registerCode(GENERAL_EXCEPTION_CENTRAL, "unhandled general exception in central message processing execute method");
+        registerCode(GENERAL_EXCEPTION, "unhandled general exception");
+        registerCode(INVALID_REQUEST_PARAMETER_TYPE, "The class of the request parameters did not have the expected inheritance");
+        registerCode(TENANT_NOT_EXISTING, "Tenant is not existing");
+        registerCode(TENANT_INACTIVE, "Tenant is inactive");
+        registerCode(APP_USER_NOT_EXISTING, "App user is not existing");
+        registerCode(APP_USER_INACTIVE, "App user is inactive");
+        registerCode(APP_USER_TENANT_PERMISSION, "App user tenant has no permission for this tenant");
+        registerCode(TOO_MANY_RECORDS, "Too many records");
+        registerCode(MISSING_KEY_PARAMETER, "CRUD request did not supply required key parameter");
+        registerCode(MISSING_DATA_PARAMETER, "CRUD request did not supply required data parameter");
+        registerCode(EXTRA_KEY_PARAMETER, "CRUD request sent with superfluous key parameter");
+        registerCode(EXTRA_DATA_PARAMETER, "CRUD request sent with superfluous data parameter");
+        registerCode(MISSING_VERSION_PARAMETER, "CRUD request did not supply required version parameter");
+        registerCode(SELECT_INSERT_SELECT_ERROR, "subsequent failure of SELECT, INSERT, SELECT for the same key");
+        registerCode(FIELD_MAY_NOT_BE_CHANGED, "A field may not be updated to a different value");
+        registerCode(ONLY_ONE_ACTIVE_ALLOWED, "Inserting the record would create more than one active rows with the same value of a key column");
+        registerCode(MISSING_CONFIGURATION, "No active configuration record found");
+        registerCode(MISSING_UPLINK_CONFIGURATION, "No configuration for uplink found in config.xml");
+        registerCode(INVALID_CONFIGURATION, "Configuration was done incorrectly");
+        registerCode(NOT_YET_IMPLEMENTED, "The requested functionality has not yet been implemented.");
+        registerCode(NO_LONGER_SUPPORTED, "The requested functionality is no longer supported.");
+        registerCode(ILE_REQUIRED_PARAMETER_IS_NULL, "A required parameter has not been supplied");
+        registerCode(ILE_RESULT_SET_WRONG_SIZE,
             "More result records retrieved than should be possible through table constraints. DB setup problem?");
-        codeToDescription.put(ENTITY_KEY_EXCEPTION, "Could not extract the key of a JPA entity. Possibly incorrect enum token.");
-        codeToDescription.put(ENTITY_DATA_MAPPING_EXCEPTION, "Exception mapping from JPA entity data to DTO. Possibly invalid enum token.");
-        codeToDescription.put(RESPONSE_VALIDATION_ERROR, "Constructed a response which is invalid");
-        codeToDescription.put(REQUEST_VALIDATION_ERROR, "Received response parameters which don't satisfy the interface spec");
-        codeToDescription.put(WRITE_ACCESS_ONLY_CURRENT_TENANT, "Creation and update of records only allowed for current tenant");
-        codeToDescription.put(READ_ACCESS_ONLY_CURRENT_TENANT, "Access to other tenant's records is not allowed");
-        codeToDescription.put(NOT_CURRENT_RECORD_OPTIMISTIC_LOCKING,
+        registerCode(ENTITY_KEY_EXCEPTION, "Could not extract the key of a JPA entity. Possibly incorrect enum token.");
+        registerCode(ENTITY_DATA_MAPPING_EXCEPTION, "Exception mapping from JPA entity data to DTO. Possibly invalid enum token.");
+        registerCode(RESPONSE_VALIDATION_ERROR, "Constructed a response which is invalid");
+        registerCode(REQUEST_VALIDATION_ERROR, "Received response parameters which don't satisfy the interface spec");
+        registerCode(WRITE_ACCESS_ONLY_CURRENT_TENANT, "Creation and update of records only allowed for current tenant");
+        registerCode(READ_ACCESS_ONLY_CURRENT_TENANT, "Access to other tenant's records is not allowed");
+        registerCode(NOT_CURRENT_RECORD_OPTIMISTIC_LOCKING,
             "Not updating record because someone else has modified it already. Please reread and retry.");
-        codeToDescription.put(ILLEGAL_REQUEST_PARAMETER, "The supplied request parameter class cannot be instantiated.");
-        codeToDescription.put(OPTIMISTIC_LOCKING_EXCEPTION, "Optimistic locking exception");
-        codeToDescription.put(REQUEST_PARAMETER_BAD_INHERITANCE, "The supplied request parameter class does not inherited the expected superclass.");
-        codeToDescription.put(REQUEST_HANDLER_NOT_FOUND, "There is no request handler for the request parameter class");
-        codeToDescription.put(T9T_ACCESS_DENIED, "Access denied, reason undisclosed for security reasons, see server logs");
-        codeToDescription.put(REQUEST_HANDLER_RETURNED_NULL, "A request handler returned a null response");
-        codeToDescription.put(WRITE_ACCESS_NOT_FOUND_PROBABLY_OTHER_TENANT,
+        registerCode(ILLEGAL_REQUEST_PARAMETER, "The supplied request parameter class cannot be instantiated.");
+        registerCode(OPTIMISTIC_LOCKING_EXCEPTION, "Optimistic locking exception");
+        registerCode(REQUEST_PARAMETER_BAD_INHERITANCE, "The supplied request parameter class does not inherited the expected superclass.");
+        registerCode(REQUEST_HANDLER_NOT_FOUND, "There is no request handler for the request parameter class");
+        registerCode(T9T_ACCESS_DENIED, "Access denied, reason undisclosed for security reasons, see server logs");
+        registerCode(REQUEST_HANDLER_RETURNED_NULL, "A request handler returned a null response");
+        registerCode(WRITE_ACCESS_NOT_FOUND_PROBABLY_OTHER_TENANT,
             "Record for update not found, probably due to existing one in different tenant");
-        codeToDescription.put(COULD_NOT_ACQUIRE_LOCK, "Could not acquire lock (Semaphore) on object within allowed time");
-        codeToDescription.put(ILLEGAL_CHARACTER, "An illegal character has been identified in a string field of the request");
-        codeToDescription.put(NO_SUCH_REQUEST, "Request not received or not yet complete");
+        registerCode(COULD_NOT_ACQUIRE_LOCK, "Could not acquire lock (Semaphore) on object within allowed time");
+        registerCode(ILLEGAL_CHARACTER, "An illegal character has been identified in a string field of the request");
+        registerCode(NO_SUCH_REQUEST, "Request not received or not yet complete");
 
-        codeToDescription.put(JWT_EXPIRED, MSG_JWT_EXPIRED);
-        codeToDescription.put(JWT_TIMING,  "The JWT has unplausible time information");
-        codeToDescription.put(JWT_INCOMPLETE,  MSG_JWT_INCOMPLETE);
-        codeToDescription.put(BAD_TIME_SLICE, "The time slice should allow an integral number of runs per day, i.e. be a divisor of 86400.");
-        codeToDescription.put(FIND_ON_NULL_KEY, "Attempt to find a record with a null for ID");
-        codeToDescription.put(STALLED_LOG_WRITER, "Failed to write log, logwriter thread crashed?");
-        codeToDescription.put(SHUTDOWN_IN_PROGRESS, MSG_SHUTDOWN_IN_PROGRESS);
-        codeToDescription.put(CANNOT_CLOSE_SINK, "Exception while closing data sink");
-        codeToDescription.put(UPSTREAM_NULL_RESPONSE, "Received no response from upstream");
-        codeToDescription.put(UPSTREAM_BAD_RESPONSE, "Received a response of bad type, expected ServiceResponse");
-        codeToDescription.put(UPSTREAM_BAD_MEDIA_TYPE, "Bad media type for uplink configured, only Bonaparte or ConmpactBonaparte are possible");
-        codeToDescription.put(INVALID_WRAPPED_JSON, "JSON wrapped into XML kvp structure not valid");
-        codeToDescription.put(XML_EXCEPTION, "XML parsing problem");
+        registerCode(JWT_EXPIRED, MSG_JWT_EXPIRED);
+        registerCode(JWT_TIMING,  "The JWT has unplausible time information");
+        registerCode(JWT_INCOMPLETE,  MSG_JWT_INCOMPLETE);
+        registerCode(BAD_TIME_SLICE, "The time slice should allow an integral number of runs per day, i.e. be a divisor of 86400.");
+        registerCode(FIND_ON_NULL_KEY, "Attempt to find a record with a null for ID");
+        registerCode(STALLED_LOG_WRITER, "Failed to write log, logwriter thread crashed?");
+        registerCode(SHUTDOWN_IN_PROGRESS, MSG_SHUTDOWN_IN_PROGRESS);
+        registerCode(CANNOT_CLOSE_SINK, "Exception while closing data sink");
+        registerCode(UPSTREAM_NULL_RESPONSE, "Received no response from upstream");
+        registerCode(UPSTREAM_BAD_RESPONSE, "Received a response of bad type, expected ServiceResponse");
+        registerCode(UPSTREAM_BAD_MEDIA_TYPE, "Bad media type for uplink configured, only Bonaparte or ConmpactBonaparte are possible");
+        registerCode(INVALID_WRAPPED_JSON, "JSON wrapped into XML kvp structure not valid");
+        registerCode(XML_EXCEPTION, "XML parsing problem");
 
-        codeToDescription.put(SESSION_NOT_OPENED, "Attempted to execute a request on a session which was not opened (or closed already)");
-        codeToDescription.put(SESSION_OPEN_ERROR, "Attempted to execute a request on a session which was not opened successfully");
-        codeToDescription.put(REF_RESOLVER_REQUEST_PARAMETER,
+        registerCode(SESSION_NOT_OPENED, "Attempted to execute a request on a session which was not opened (or closed already)");
+        registerCode(SESSION_OPEN_ERROR, "Attempted to execute a request on a session which was not opened successfully");
+        registerCode(REF_RESOLVER_REQUEST_PARAMETER,
             "Cross module resolver was called with a missing parameter (first parameter may not be null)");
-        codeToDescription.put(NOT_REQUEST_PARAMETERS, "Object is not of type RequestParameters");
-        codeToDescription.put(ENUM_MAPPING,                 "Cannot map enum instance");
-        codeToDescription.put(NOT_AN_ENUM,                  "Not an enum");
-        codeToDescription.put(NOT_AN_XENUM,                 "Not an xenum");
-        codeToDescription.put(NOT_AN_ENUMSET,               "Not an enumset");
-        codeToDescription.put(NOT_AN_XENUMSET,              "Not an xenumset");
-        codeToDescription.put(MALFORMATTED_FIELDNAME,       "Badly formatted field name: array index not of form [ (digits) ]");
-        codeToDescription.put(NOT_ENUM_INSTANCE,            "enum(set) does not have requested instance name");
-        codeToDescription.put(TOO_HIGH_RESULT_SIZE_FOR_SORTING,  "Too high result size for sorting");
+        registerCode(NOT_REQUEST_PARAMETERS, "Object is not of type RequestParameters");
+        registerCode(ENUM_MAPPING,                 "Cannot map enum instance");
+        registerCode(NOT_AN_ENUM,                  "Not an enum");
+        registerCode(NOT_AN_XENUM,                 "Not an xenum");
+        registerCode(NOT_AN_ENUMSET,               "Not an enumset");
+        registerCode(NOT_AN_XENUMSET,              "Not an xenumset");
+        registerCode(MALFORMATTED_FIELDNAME,       "Badly formatted field name: array index not of form [ (digits) ]");
+        registerCode(NOT_ENUM_INSTANCE,            "enum(set) does not have requested instance name");
+        registerCode(TOO_HIGH_RESULT_SIZE_FOR_SORTING,  "Too high result size for sorting");
 
 
         // Codes specific to getting sequence numbers (artificial keys for JPA)
-        codeToDescription.put(JDBC_BAD_TYPE_RETURNED,       "Sequence query returned a type which cannot be processed (yet)");
-        codeToDescription.put(JDBC_NO_RESULT_RETURNED,      "No result returned from sequence query");
-        codeToDescription.put(JDBC_GENERAL_SQL,             "General SQL exception when trying to obtain next sequence value");
-        codeToDescription.put(JDBC_UNKNOWN_DIALECT,         "Database dialect not yet implemented");
+        registerCode(JDBC_BAD_TYPE_RETURNED,       "Sequence query returned a type which cannot be processed (yet)");
+        registerCode(JDBC_NO_RESULT_RETURNED,      "No result returned from sequence query");
+        registerCode(JDBC_GENERAL_SQL,             "General SQL exception when trying to obtain next sequence value");
+        registerCode(JDBC_UNKNOWN_DIALECT,         "Database dialect not yet implemented");
 
-        codeToDescription.put(UNRECOGNIZED_FILTER_CRITERIA, "Search supplied with a filter criteria which is not recognized");
-        codeToDescription.put(INVALID_FILTER_PARAMETERS, "A filter has been provided with some parameters problem");
-        codeToDescription.put(UNDERSPECIFIED_FILTER_PARAMETERS, "A filter has been provided with underspecified parameters (all null)");
-        codeToDescription.put(OVERSPECIFIED_FILTER_PARAMETERS, "A filter has been provided with overspecified parameters (contradicting conditions)");
-        codeToDescription.put(RERUN_NOT_APPLICABLE_RET, "Rerun of request not applicable due to successful return code");
-        codeToDescription.put(RERUN_NOT_APPLICABLE_DONE, "Rerun of request not applicable, because already done");
-        codeToDescription.put(RERUN_NOT_POSSIBLE_NO_RECORDED_REQUEST, "Rerun of request not possible, parameters have not been recorded.");
+        registerCode(UNRECOGNIZED_FILTER_CRITERIA, "Search supplied with a filter criteria which is not recognized");
+        registerCode(INVALID_FILTER_PARAMETERS, "A filter has been provided with some parameters problem");
+        registerCode(UNDERSPECIFIED_FILTER_PARAMETERS, "A filter has been provided with underspecified parameters (all null)");
+        registerCode(OVERSPECIFIED_FILTER_PARAMETERS, "A filter has been provided with overspecified parameters (contradicting conditions)");
+        registerCode(RERUN_NOT_APPLICABLE_RET, "Rerun of request not applicable due to successful return code");
+        registerCode(RERUN_NOT_APPLICABLE_DONE, "Rerun of request not applicable, because already done");
+        registerCode(RERUN_NOT_POSSIBLE_NO_RECORDED_REQUEST, "Rerun of request not possible, parameters have not been recorded.");
 
-        codeToDescription.put(CANT_OPEN_SESSION, "An attemped to open a service session failed with exception");
-        codeToDescription.put(CANT_CLOSE_SESSION, "An attemped to close a service session failed with exception");
-        codeToDescription.put(SESSION_OPEN_CLOSE_SEQUENCE_ERROR, "Attempt to reopen an already open ServiceSession or to close a closed one.");
-        codeToDescription.put(MISSING_PARAMETER, "A Request did not supply a required parameter");
-        codeToDescription.put(APP_USER_WRONG_AUTH_METHOD, "Authentication method not allowed for this user");
-        codeToDescription.put(APP_USER_X500_AUTH_FAILED, "X509 certificate's DN did not match");
-        codeToDescription.put(JTA_EXCEPTION, "Transaction handling error");
-        codeToDescription.put(ILLEGAL_CONFIG_ITEM, "A configuration item was corrupt or not usable");
+        registerCode(CANT_OPEN_SESSION, "An attemped to open a service session failed with exception");
+        registerCode(CANT_CLOSE_SESSION, "An attemped to close a service session failed with exception");
+        registerCode(SESSION_OPEN_CLOSE_SEQUENCE_ERROR, "Attempt to reopen an already open ServiceSession or to close a closed one.");
+        registerCode(MISSING_PARAMETER, "A Request did not supply a required parameter");
+        registerCode(APP_USER_WRONG_AUTH_METHOD, "Authentication method not allowed for this user");
+        registerCode(APP_USER_X500_AUTH_FAILED, "X509 certificate's DN did not match");
+        registerCode(JTA_EXCEPTION, "Transaction handling error");
+        registerCode(ILLEGAL_CONFIG_ITEM, "A configuration item was corrupt or not usable");
 
-        codeToDescription.put(RESOLVE_ACCESS, "key resolver access problem - key columns must be public");
-        codeToDescription.put(RESOLVE_PARAMETER, "illegal parameter in key resolver");
-        codeToDescription.put(RESOLVE_BAD_CLASS, "Bad class passed to key resolver (candidates must be final and not an interface)");
-        codeToDescription.put(ERROR_FILLING_RESTRICTION_CACHE, "Exception while filling the restriction cache");
-        codeToDescription.put(ILE_UNREACHABLE_CODE, "Executing unreachable code (should not happen!)");
+        registerCode(RESOLVE_ACCESS, "key resolver access problem - key columns must be public");
+        registerCode(RESOLVE_PARAMETER, "illegal parameter in key resolver");
+        registerCode(RESOLVE_BAD_CLASS, "Bad class passed to key resolver (candidates must be final and not an interface)");
+        registerCode(ERROR_FILLING_RESTRICTION_CACHE, "Exception while filling the restriction cache");
+        registerCode(ILE_UNREACHABLE_CODE, "Executing unreachable code (should not happen!)");
 
-        codeToDescription.put(NO_DATA_CACHED, "No cached data found for tenant");
+        registerCode(NO_DATA_CACHED, "No cached data found for tenant");
 
-        codeToDescription.put(UNRECOGNIZED_SORT_PARAMETER, "Passed sortring parameter is unknown.");
-        codeToDescription.put(INCORRECT_RESPONSE_CLASS, "The result class was not of the expected type");
+        registerCode(UNRECOGNIZED_SORT_PARAMETER, "Passed sortring parameter is unknown.");
+        registerCode(INCORRECT_RESPONSE_CLASS, "The result class was not of the expected type");
 
         // authorization / authentication specific codes
-        codeToDescription.put(NOT_AUTHENTICATED, "Not authenticated");
-        codeToDescription.put(NOT_AUTHORIZED, "Not authorized to perform this operation");
-        codeToDescription.put(NOT_AUTHORIZED_WRONG_METHOD, "Request not allowed for this authentication method");
-        codeToDescription.put(USER_NOT_FOUND, "User not found");
-        codeToDescription.put(TENANT_NOT_FOUND, "Tenant not found");
-        codeToDescription.put(PASSWORD_NOT_FOUND, "No password found for given user ID");
-        codeToDescription.put(USER_INACTIVE, "User is inactive");
-        codeToDescription.put(USER_NOT_ALLOWED_TO_ACCESS_WITH_PW, "External user should access with password");
-        codeToDescription.put(USER_STATUS_NOT_FOUND, "User status not found");
-        codeToDescription.put(ACCOUNT_TEMPORARILY_FROZEN, "Account temporarily frozen");
-        codeToDescription.put(WRONG_PASSWORD, "Wrong password");
-        codeToDescription.put(PASSWORD_EXPIRED_DUE_TO_USER_INACTIVITY, "Password has expired due to user inactivity");
-        codeToDescription.put(PASSWORD_EXPIRED, "Password has expired");
-        codeToDescription.put(NEW_PASSWORD_MATCHES_ONE_OF_THE_LAST, "New password matches one the last n passwords (see tenant configuration)");
-        codeToDescription.put(NEW_PASSWORD_MATCHES_ONE_AND_CANT_BE_REUSED_YET, "New password matches one and can't be reused yet");
-        codeToDescription.put(ROLE_NOT_FOUND, "Role not found");
-        codeToDescription.put(CANNOT_RESET_PASSWORD_NO_EMAIL_SET_FOR_USER, "Can't reset password, no email address has been set on the user account.");
-        codeToDescription.put(CANNOT_RESET_PASSWORD_PROVIDED_EMAIL_DOESNT_MATCH_STORED_ONE,
+        registerCode(NOT_AUTHENTICATED, "Not authenticated");
+        registerCode(NOT_AUTHORIZED, "Not authorized to perform this operation");
+        registerCode(NOT_AUTHORIZED_WRONG_METHOD, "Request not allowed for this authentication method");
+        registerCode(USER_NOT_FOUND, "User not found");
+        registerCode(TENANT_NOT_FOUND, "Tenant not found");
+        registerCode(PASSWORD_NOT_FOUND, "No password found for given user ID");
+        registerCode(USER_INACTIVE, "User is inactive");
+        registerCode(USER_NOT_ALLOWED_TO_ACCESS_WITH_PW, "External user should access with password");
+        registerCode(USER_STATUS_NOT_FOUND, "User status not found");
+        registerCode(ACCOUNT_TEMPORARILY_FROZEN, "Account temporarily frozen");
+        registerCode(WRONG_PASSWORD, "Wrong password");
+        registerCode(PASSWORD_EXPIRED_DUE_TO_USER_INACTIVITY, "Password has expired due to user inactivity");
+        registerCode(PASSWORD_EXPIRED, "Password has expired");
+        registerCode(NEW_PASSWORD_MATCHES_ONE_OF_THE_LAST, "New password matches one the last n passwords (see tenant configuration)");
+        registerCode(NEW_PASSWORD_MATCHES_ONE_AND_CANT_BE_REUSED_YET, "New password matches one and can't be reused yet");
+        registerCode(ROLE_NOT_FOUND, "Role not found");
+        registerCode(CANNOT_RESET_PASSWORD_NO_EMAIL_SET_FOR_USER, "Can't reset password, no email address has been set on the user account.");
+        registerCode(CANNOT_RESET_PASSWORD_PROVIDED_EMAIL_DOESNT_MATCH_STORED_ONE,
             "Can't reset password, the provided password does not match the stored one.");
-        codeToDescription.put(GENERAL_AUTH_PROBLEM,
+        registerCode(GENERAL_AUTH_PROBLEM,
             "Password should be correct and the new one should differ from the old one and fit password requirements.");
-        codeToDescription.put(INVALID_EMAIL_FORMAT, "Email format seems to be corrupt");
+        registerCode(INVALID_EMAIL_FORMAT, "Email format seems to be corrupt");
 
-        codeToDescription.put(METHOD_ILLEGAL_ACCESS_EXCEPTION, "Could not access class or method");
-        codeToDescription.put(METHOD_INVOCATION_TARGET_EXCEPTION, "Could not invoke method (by reflection)");
-        codeToDescription.put(CLASS_NOT_FOUND_EXCEPTION, "Could not find class to load");
-        codeToDescription.put(METHOD_INSTANTIATION_EXCEPTION, "Cannot instantiate method");
-        codeToDescription.put(CONSTRUCTOR_ILLEGAL_ACCESS_EXCEPTION, "Could not access instance to perform operation.");
-        codeToDescription.put(CONSTRUCTOR_INSTANTIATION_EXCEPTION, "Creating instance failed.");
+        registerCode(METHOD_ILLEGAL_ACCESS_EXCEPTION, "Could not access class or method");
+        registerCode(METHOD_INVOCATION_TARGET_EXCEPTION, "Could not invoke method (by reflection)");
+        registerCode(CLASS_NOT_FOUND_EXCEPTION, "Could not find class to load");
+        registerCode(METHOD_INSTANTIATION_EXCEPTION, "Cannot instantiate method");
+        registerCode(CONSTRUCTOR_ILLEGAL_ACCESS_EXCEPTION, "Could not access instance to perform operation.");
+        registerCode(CONSTRUCTOR_INSTANTIATION_EXCEPTION, "Creating instance failed.");
 
-        codeToDescription.put(CRUD_BOTH_KEYS_MISMATCH, "Both natural and artifical keys have been supplied, but mismatch.");
-        codeToDescription.put(CRUD_NATURAL_KEY_MISSING, "The CRUD operation requires a natural key.");
-
-        // IO errors
-        codeToDescription.put(FILE_NOT_FOUND_FOR_DOWNLOAD, "File was not found.");
-        codeToDescription.put(BAD_REMOTE_RESPONSE, "received HTTP OK return code, but empty remote response");
+        registerCode(CRUD_BOTH_KEYS_MISMATCH, "Both natural and artifical keys have been supplied, but mismatch.");
+        registerCode(CRUD_NATURAL_KEY_MISSING, "The CRUD operation requires a natural key.");
 
         // IO errors
-        codeToDescription.put(REF_RESOLVER_WRONG_RESPONSE_TYPE, "Unexpected service response type.");
-        codeToDescription.put(ILE_MISSING_DEPENDENCY, "A dependency is missing because the implementation for an interface cannot be found.");
+        registerCode(FILE_NOT_FOUND_FOR_DOWNLOAD, "File was not found.");
+        registerCode(BAD_REMOTE_RESPONSE, "received HTTP OK return code, but empty remote response");
+
+        // IO errors
+        registerCode(REF_RESOLVER_WRONG_RESPONSE_TYPE, "Unexpected service response type.");
+        registerCode(ILE_MISSING_DEPENDENCY, "A dependency is missing because the implementation for an interface cannot be found.");
 
         // Plugin errors
-        codeToDescription.put(NO_PLUGIN_METHOD_AVAILABLE, "Plugin method not available.");
-        codeToDescription.put(PLUGIN_LOADING_ERROR, "Plugin could not be loaded");
-        codeToDescription.put(NO_MAIN_IN_PLUGIN, "Plugin has no Main class");
-        codeToDescription.put(MAIN_IS_NOT_PLUGIN, "Main class in plugin does not implement interface Plugin");
-        codeToDescription.put(PLUGIN_INSTANTIATION_ERROR, "Problem instantiating the plugin");
-        codeToDescription.put(PLUGIN_METHOD_WRONG_TYPE, "The plugin provides an implemention of different type than expected");
-        codeToDescription.put(PLUGINS_NOT_ENABLED, "Loading plugins has not been enabled for this environment");
+        registerCode(NO_PLUGIN_METHOD_AVAILABLE, "Plugin method not available.");
+        registerCode(PLUGIN_LOADING_ERROR, "Plugin could not be loaded");
+        registerCode(NO_MAIN_IN_PLUGIN, "Plugin has no Main class");
+        registerCode(MAIN_IS_NOT_PLUGIN, "Main class in plugin does not implement interface Plugin");
+        registerCode(PLUGIN_INSTANTIATION_ERROR, "Problem instantiating the plugin");
+        registerCode(PLUGIN_METHOD_WRONG_TYPE, "The plugin provides an implemention of different type than expected");
+        registerCode(PLUGINS_NOT_ENABLED, "Loading plugins has not been enabled for this environment");
 
-        codeToDescription.put(CALLOUTS_NOT_ENABLED, "Callouts to other instances has not been enabled for this environment");
+        registerCode(CALLOUTS_NOT_ENABLED, "Callouts to other instances has not been enabled for this environment");
 
         // output session specific error descriptions
 
-        codeToDescription.put(TENANT_CREATE_NOT_ALLOWED, "Creating new tenant is not allowed.");
-        codeToDescription.put(OTHER_TENANT_UPDATE_NOT_ALLOWED, "Updating other tenant data is not allowed.");
-        codeToDescription.put(OTHER_TENANT_DELETE_NOT_ALLOWED, "Deleting other tenants is not allowed.");
-        codeToDescription.put(TENANT_SELFDELETE_NOT_ALLOWED, "Selfdelete is not allowed.");
+        registerCode(TENANT_CREATE_NOT_ALLOWED, "Creating new tenant is not allowed.");
+        registerCode(OTHER_TENANT_UPDATE_NOT_ALLOWED, "Updating other tenant data is not allowed.");
+        registerCode(OTHER_TENANT_DELETE_NOT_ALLOWED, "Deleting other tenants is not allowed.");
+        registerCode(TENANT_SELFDELETE_NOT_ALLOWED, "Selfdelete is not allowed.");
 
         // solr search specific error descriptions
-        codeToDescription.put(SOLR_SERVER_NOT_AVAILABLE, "The SOLR Server is not available.");
-        codeToDescription.put(ILLEGAL_SOLR_CORE_URL, "The passed value is not a valid SOLR core URL.");
-        codeToDescription.put(SOLR_EXCEPTION, "Solr based search currently unavailable, exception caught.");
-        codeToDescription.put(NO_CORE_DEFINITION_FOUND, "No Solr core (URL) was found on the database.");
-        codeToDescription.put(NO_DOCUMENT_NAME_DEFINED, "No documentName defined as property on SOLR search request class");
-        codeToDescription.put(ILLEGAL_SOLR_DB_COMBINED_FILTER_EXPRESSION, "Combined search only allows FieldFilters and AND conditions");
-        codeToDescription.put(ILE_SOLR_DB_COMBINED_FILTERS, "Logic error: missing search filter, which should be there");
-        codeToDescription.put(ILE_SOLR_DB_SORT, "Combined SOLR and DB search only allows a single sort column");
+        registerCode(SOLR_SERVER_NOT_AVAILABLE, "The SOLR Server is not available.");
+        registerCode(ILLEGAL_SOLR_CORE_URL, "The passed value is not a valid SOLR core URL.");
+        registerCode(SOLR_EXCEPTION, "Solr based search currently unavailable, exception caught.");
+        registerCode(NO_CORE_DEFINITION_FOUND, "No Solr core (URL) was found on the database.");
+        registerCode(NO_DOCUMENT_NAME_DEFINED, "No documentName defined as property on SOLR search request class");
+        registerCode(ILLEGAL_SOLR_DB_COMBINED_FILTER_EXPRESSION, "Combined search only allows FieldFilters and AND conditions");
+        registerCode(ILE_SOLR_DB_COMBINED_FILTERS, "Logic error: missing search filter, which should be there");
+        registerCode(ILE_SOLR_DB_SORT, "Combined SOLR and DB search only allows a single sort column");
 
-        codeToDescription.put(IMPORT_NO_VALID_CLASS_IN_IMPORT_ROUTE, "No valid class name in the configuration of a camel route");
-        codeToDescription.put(IMPORT_NO_IMPORT_TYPE_CLASS, "No class for input type in camel route header");
-        codeToDescription.put(IMPORT_FILE_NOT_FOUND, "File not found for import");
-        codeToDescription.put(IMPORT_GENERAL_ERROR, "Error in the service during the programmatic import process");
-        codeToDescription.put(LOAD_CAMEL_CONFIG_ERROR, "Camel configuration could not be loaded.");
-        codeToDescription.put(CANNOT_FIND_UI_COLUMN, "No UI column configuration found for specified column.");
-        codeToDescription.put(REST_BAD_LIST_SIZE, "Main object list must have size 1 for REST calls.");
+        registerCode(IMPORT_NO_VALID_CLASS_IN_IMPORT_ROUTE, "No valid class name in the configuration of a camel route");
+        registerCode(IMPORT_NO_IMPORT_TYPE_CLASS, "No class for input type in camel route header");
+        registerCode(IMPORT_FILE_NOT_FOUND, "File not found for import");
+        registerCode(IMPORT_GENERAL_ERROR, "Error in the service during the programmatic import process");
+        registerCode(LOAD_CAMEL_CONFIG_ERROR, "Camel configuration could not be loaded.");
+        registerCode(CANNOT_FIND_UI_COLUMN, "No UI column configuration found for specified column.");
+        registerCode(REST_BAD_LIST_SIZE, "Main object list must have size 1 for REST calls.");
 
-        codeToDescription.put(ILE_NO_BPM_ENGINE_DEPLOYED, "Execution of a BPMN 2.0 process has been requested, but no engine is deployed.");
+        registerCode(ILE_NO_BPM_ENGINE_DEPLOYED, "Execution of a BPMN 2.0 process has been requested, but no engine is deployed.");
 
         // crud exception causes
-        codeToDescription.put(UNIQUE_CONSTRAINT_VIOLATION, "Inserting or updating the record would cause a duplicate key on a unique index.");
-        codeToDescription.put(ROLE_REFERENCED_AS_PRIMARY_ROLE, "The role cannot be removed because it is still assigned to a user as primary role.");
+        registerCode(UNIQUE_CONSTRAINT_VIOLATION, "Inserting or updating the record would cause a duplicate key on a unique index.");
+        registerCode(ROLE_REFERENCED_AS_PRIMARY_ROLE, "The role cannot be removed because it is still assigned to a user as primary role.");
         // crud exception causes
-        codeToDescription.put(SEARCH_FILTER_VALIDATION_ERROR, "Search filter is not of the expected type");
+        registerCode(SEARCH_FILTER_VALIDATION_ERROR, "Search filter is not of the expected type");
 
-        codeToDescription.put(RESTRICTED_ACCESS, "Access to the following request is restricted for the user");
+        registerCode(RESTRICTED_ACCESS, "Access to the following request is restricted for the user");
 
         // IO failure notification
-        codeToDescription.put(IOF_UNKNOWN_TIME_WINDOW_ERROR, "Time window for checking IO failures could not be determined.");
-        codeToDescription.put(IOF_COUNT_IOFAILURES_ERROR, "Failed to count IO failures.");
-        codeToDescription.put(IOF_FIND_IOFAILURES_ERROR, "Failed to fetch IO failures information.");
-        codeToDescription.put(IOF_READ_RECIPIENTS_ERROR, "Failed to read IO failure recipients list.");
-        codeToDescription.put(IOF_CREATE_NOTIFICATION_EMAIL_ERROR, "Failed to create IO failure notification email.");
-        codeToDescription.put(IOF_TIME_WINDOW_UPDATE_ERROR, "Failed to update time window for checking IO failures.");
-        codeToDescription.put(IOF_DUPLICATE, "Duplicate import/export");
-        codeToDescription.put(PICKUP_DATE_VALIDATION_ERROR, "Failed to validate Pickup date notification");
-        codeToDescription.put(UNEXPECTED_FILTER_VALUE, "Unexpected filter value is found");
+        registerCode(IOF_UNKNOWN_TIME_WINDOW_ERROR, "Time window for checking IO failures could not be determined.");
+        registerCode(IOF_COUNT_IOFAILURES_ERROR, "Failed to count IO failures.");
+        registerCode(IOF_FIND_IOFAILURES_ERROR, "Failed to fetch IO failures information.");
+        registerCode(IOF_READ_RECIPIENTS_ERROR, "Failed to read IO failure recipients list.");
+        registerCode(IOF_CREATE_NOTIFICATION_EMAIL_ERROR, "Failed to create IO failure notification email.");
+        registerCode(IOF_TIME_WINDOW_UPDATE_ERROR, "Failed to update time window for checking IO failures.");
+        registerCode(IOF_DUPLICATE, "Duplicate import/export");
+        registerCode(PICKUP_DATE_VALIDATION_ERROR, "Failed to validate Pickup date notification");
+        registerCode(UNEXPECTED_FILTER_VALUE, "Unexpected filter value is found");
 
-        codeToDescription.put(FILE_PATH_PREFIX_NOT_AVAILABLE, "Default file path prefix is not defined.");
-        codeToDescription.put(UNKNOWN_SYSTEM_PROPERTY_USER_HOME, "user.home property is not set.");
-        codeToDescription.put(UNKNOWN_SYSTEM_PROPERTY_USER_NAME, "user.name property is not set.");
-        codeToDescription.put(BAD_S3_BUCKET_NAME, "Bad S3 Bucket name (must be bucket:path)");
-        codeToDescription.put(S3_WRITE_ERROR, "Exception writing to S3 bucket");
-        codeToDescription.put(SQS_WRITE_ERROR, "Exception writing to SQS bucket");
+        registerCode(FILE_PATH_PREFIX_NOT_AVAILABLE, "Default file path prefix is not defined.");
+        registerCode(UNKNOWN_SYSTEM_PROPERTY_USER_HOME, "user.home property is not set.");
+        registerCode(UNKNOWN_SYSTEM_PROPERTY_USER_NAME, "user.name property is not set.");
+        registerCode(BAD_S3_BUCKET_NAME, "Bad S3 Bucket name (must be bucket:path)");
+        registerCode(S3_WRITE_ERROR, "Exception writing to S3 bucket");
+        registerCode(SQS_WRITE_ERROR, "Exception writing to SQS bucket");
 
-        codeToDescription.put(REQUEST_STILL_PROCESSING, MSG_REQUEST_STILL_PROCESSING);
+        registerCode(REQUEST_STILL_PROCESSING, MSG_REQUEST_STILL_PROCESSING);
 
-        codeToDescription.put(INVALID_EVENT_TYPE, "Can't handle this type of event");
-        codeToDescription.put(THREAD_INTERRUPTED, "The thread was interrupted (got a termination signal)");
-        codeToDescription.put(UNSUPPORTED_OPERATION, "The requested operation is not supported");
-        codeToDescription.put(UNSUPPORTED_OPERAND, "The provided operand or parameter is not supported");
+        registerCode(INVALID_EVENT_TYPE, "Can't handle this type of event");
+        registerCode(THREAD_INTERRUPTED, "The thread was interrupted (got a termination signal)");
+        registerCode(UNSUPPORTED_OPERATION, "The requested operation is not supported");
+        registerCode(UNSUPPORTED_OPERAND, "The provided operand or parameter is not supported");
 
-        codeToDescription.put(DYNAMODB_EXCEPTION, "DynamoDB returned an Exception");
-        codeToDescription.put(MISSING_KAFKA_BOOTSTRAP, "Kafka bootstrap servers not specified");
-        codeToDescription.put(GENERAL_SERVER_ERROR, "Server error");
+        registerCode(DYNAMODB_EXCEPTION, "DynamoDB returned an Exception");
+        registerCode(MISSING_KAFKA_BOOTSTRAP, "Kafka bootstrap servers not specified");
+        registerCode(GENERAL_SERVER_ERROR, "Server error");
 
-        codeToDescription.put(INVALID_ENUM_VALUE, "Invalid instance value");
-        codeToDescription.put(INVALID_PARAMETER, "Invalid parameter");
-        codeToDescription.put(INVALID_EXCEPTION_CODE, "Invalid exception code passed to T9tException");
+        registerCode(INVALID_ENUM_VALUE, "Invalid instance value");
+        registerCode(INVALID_PARAMETER, "Invalid parameter");
+        registerCode(INVALID_EXCEPTION_CODE, "Invalid exception code passed to T9tException");
 
-        codeToDescription.put(HTTP_ERROR + 400, "Bad request");
-        codeToDescription.put(HTTP_ERROR + 401, "Not authorized");
-        codeToDescription.put(HTTP_ERROR + 403, "Forbidden");
-        codeToDescription.put(HTTP_ERROR + 415, "Mediatype not supported");
-        codeToDescription.put(HTTP_ERROR + 500, "Server error");
+        registerCode(HTTP_ERROR + 400, "Bad request");
+        registerCode(HTTP_ERROR + 401, "Not authorized");
+        registerCode(HTTP_ERROR + 403, "Forbidden");
+        registerCode(HTTP_ERROR + 415, "Mediatype not supported");
+        registerCode(HTTP_ERROR + 500, "Server error");
     }
 
     /**

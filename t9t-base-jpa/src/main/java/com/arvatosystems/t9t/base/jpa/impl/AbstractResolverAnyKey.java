@@ -248,30 +248,15 @@ public abstract class AbstractResolverAnyKey<
             LOGGER.trace("find({}); requested for resolver class {}", key, getClass().getSimpleName());
     }
 
-    /**
-     * Internal all-params base implementation
-     *
-     * @throws T9tException
-     */
-    protected ENTITY findInternal(final KEY key, final boolean onlyActive, final boolean nullCheck, final LockModeType lockMode) {
-        nullCheck(key);
-        final ENTITY e = getEntityManager().find(getEntityClass(), key, lockMode == null ? LockModeType.PESSIMISTIC_WRITE : lockMode);
-        return findInternalSub(e, key, onlyActive, nullCheck);
-    }
-
-    protected ENTITY findInternal(final KEY key, final boolean onlyActive, final boolean nullCheck) {
+    protected ENTITY findInternal(final KEY key, final boolean onlyActive) {
         nullCheck(key);
         final ENTITY e = getEntityManager().find(getEntityClass(), key);
-        return findInternalSub(e, key, onlyActive, nullCheck);
+        return findInternalSub(e, key, onlyActive);
     }
 
-    protected ENTITY findInternalSub(final ENTITY e, final KEY key, final boolean onlyActive, final boolean nullCheck) {
+    private ENTITY findInternalSub(final ENTITY e, final KEY key, final boolean onlyActive) {
         if (e == null) {
-            if (nullCheck) {
-                throw new T9tException(T9tException.RECORD_DOES_NOT_EXIST, entityNameAndKey(key));
-            } else {
-                return null;
-            }
+            throw new T9tException(T9tException.RECORD_DOES_NOT_EXIST, entityNameAndKey(key));
         }
         if (!readAllowed(getTenantId(e))) {
             LOGGER.error("Attempted access violation in {}.findInternal(): {}", this.getClass().getSimpleName(), entityNameAndKey(key));
@@ -306,7 +291,12 @@ public abstract class AbstractResolverAnyKey<
      */
     @Override
     public ENTITY find(final KEY key, final LockModeType lockMode) {
-        return findInternal(key, false, false, lockMode);
+        nullCheck(key);
+        final ENTITY e = getEntityManager().find(getEntityClass(), key, lockMode == null ? LockModeType.PESSIMISTIC_WRITE : lockMode);
+        if (e == null) {
+            return null;
+        }
+        return findInternalSub(e, key, false);
     }
 
     /**
@@ -316,7 +306,7 @@ public abstract class AbstractResolverAnyKey<
      */
     @Override
     public ENTITY findActive(final KEY key, final boolean onlyActive) {
-        return findInternal(key, onlyActive, true);
+        return findInternal(key, onlyActive);
     }
 
     /**
@@ -326,7 +316,9 @@ public abstract class AbstractResolverAnyKey<
      */
     @Override
     public ENTITY findActive(final KEY key, final boolean onlyActive, final LockModeType lockMode) {
-        return findInternal(key, onlyActive, true, lockMode);
+        nullCheck(key);
+        final ENTITY e = getEntityManager().find(getEntityClass(), key, lockMode == null ? LockModeType.PESSIMISTIC_WRITE : lockMode);
+        return findInternalSub(e, key, onlyActive);
     }
 
     private void logSearch(final Class<ENTITY> derivedEntityClass, final SearchCriteria searchCriteria, final String what) {

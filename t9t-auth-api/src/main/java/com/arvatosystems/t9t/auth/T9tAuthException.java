@@ -30,10 +30,10 @@ public class T9tAuthException extends T9tException {
     public static final int INVALID_USER_ID              = OFFSET_VALIDATION_ERROR + 32;
 
     static {
-        codeToDescription.put(PASSWORD_VALIDATION_FAILED,   "Validation for the given password failed");
-        codeToDescription.put(PERMISSION_VALIDATION_FAILED, "The user is not permitted to do the action");
-        codeToDescription.put(LOGIN_FAILED, "Login failed");
-        codeToDescription.put(INVALID_TENANT_ID, "The tenantId does not match the allowed pattern (only letters, digits and the underscore)");
-        codeToDescription.put(INVALID_USER_ID, "The userId does not match the allowed pattern (only letters, digits, the underscore and at most one dot)");
+        registerCode(PASSWORD_VALIDATION_FAILED,   "Validation for the given password failed");
+        registerCode(PERMISSION_VALIDATION_FAILED, "The user is not permitted to do the action");
+        registerCode(LOGIN_FAILED, "Login failed");
+        registerCode(INVALID_TENANT_ID, "The tenantId does not match the allowed pattern (only letters, digits and the underscore)");
+        registerCode(INVALID_USER_ID, "The userId does not match the allowed pattern (only letters, digits, the underscore and at most one dot)");
     }
 }

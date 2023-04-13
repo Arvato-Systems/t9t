@@ -62,36 +62,36 @@ public class T9tBPMException extends T9tException {
      * static initialization of all error codes
      */
     static {
-        codeToDescription.put(BPM_EXECUTE_PROCESS_ERROR, "An error occurred during process execution.");
-        codeToDescription.put(BPM_PROCESS_DEFINITION_NOT_EXIST, "Can't found process definition with the given process definition reference.");
-        codeToDescription.put(BPM_GET_DEPLOYMENT_RESOURCE_ERROR, "An error occurred during retrieval of BPMN deployment resources.");
-        codeToDescription.put(BPM_GET_PROCESS_CONTENT_ERROR, "An error occurred while trying to get BPMN process content.");
-        codeToDescription.put(BPM_GET_PROCESS_DIAGRAM_ERROR, "An error occurred while trying to get BPMN process diagram.");
-        codeToDescription.put(BPM_DEPLOYMENT_ERROR, "An error occured during BPMN deployment.");
-        codeToDescription.put(BPM_DEPLOYMENT_MULTI_PROCESS_DEFINITION, "Attempted to deploy more than 1 process definition in 1 single file.");
-        codeToDescription.put(BPM_DEPLOYMENT_DATA_NOT_IN_SYNC, "Deployment data doesn't seems to be in sync with Activiti tables data.");
-        codeToDescription.put(BPM_DEPLOYMENT_PROCESS_DEFINITION_ID_NOT_IN_SYNC,
+        registerCode(BPM_EXECUTE_PROCESS_ERROR, "An error occurred during process execution.");
+        registerCode(BPM_PROCESS_DEFINITION_NOT_EXIST, "Can't found process definition with the given process definition reference.");
+        registerCode(BPM_GET_DEPLOYMENT_RESOURCE_ERROR, "An error occurred during retrieval of BPMN deployment resources.");
+        registerCode(BPM_GET_PROCESS_CONTENT_ERROR, "An error occurred while trying to get BPMN process content.");
+        registerCode(BPM_GET_PROCESS_DIAGRAM_ERROR, "An error occurred while trying to get BPMN process diagram.");
+        registerCode(BPM_DEPLOYMENT_ERROR, "An error occured during BPMN deployment.");
+        registerCode(BPM_DEPLOYMENT_MULTI_PROCESS_DEFINITION, "Attempted to deploy more than 1 process definition in 1 single file.");
+        registerCode(BPM_DEPLOYMENT_DATA_NOT_IN_SYNC, "Deployment data doesn't seems to be in sync with Activiti tables data.");
+        registerCode(BPM_DEPLOYMENT_PROCESS_DEFINITION_ID_NOT_IN_SYNC,
           "Deployed process definition id data doesn't seems to be in sync with process definition entity configuration data.");
-        codeToDescription.put(BPM_DEPLOYMENT_PROCESS_DEFINITION_EXIST,
+        registerCode(BPM_DEPLOYMENT_PROCESS_DEFINITION_EXIST,
           "An error occured during BPMN deployment. Process definition with the same id already exist.");
-        codeToDescription.put(BPM_AUTO_DEPLOYMENT_ERROR,           "An error occured during auto deployment.");
-        codeToDescription.put(BPM_PROCESS_CONTENT_ERROR,
+        registerCode(BPM_AUTO_DEPLOYMENT_ERROR,           "An error occured during auto deployment.");
+        registerCode(BPM_PROCESS_CONTENT_ERROR,
           "An error occurred while trying to decorate/undecorate process definition XML with tenant id information.");
-        codeToDescription.put(BPM_DEPLOYMENT_TENANT_PERMISSION,    "Attempted deployment to a tenant to which we have no write permission.");
+        registerCode(BPM_DEPLOYMENT_TENANT_PERMISSION,    "Attempted deployment to a tenant to which we have no write permission.");
 
-        codeToDescription.put(BPM_EXECUTE_JAVA_TASK_RETURNED_NULL, "Java task returned null instead of a proper status");
-        codeToDescription.put(BPM_NO_CURRENT_PROCESS,              "Expected existing running process, but did not find any");
-        codeToDescription.put(BPM_CURRENT_PROCESS_EXISTS,          "Workflow already active");
+        registerCode(BPM_EXECUTE_JAVA_TASK_RETURNED_NULL, "Java task returned null instead of a proper status");
+        registerCode(BPM_NO_CURRENT_PROCESS,              "Expected existing running process, but did not find any");
+        registerCode(BPM_CURRENT_PROCESS_EXISTS,          "Workflow already active");
 
-        codeToDescription.put(BPM_PLUGIN_INCOMPATIBLE,             "Plugin defines incompatible subclass of IWorkflowStep");
-        codeToDescription.put(BPM_PLUGIN_FACTORY_INCOMPATIBLE,     "Plugin defines incompatible factory to hardcoded instance");
+        registerCode(BPM_PLUGIN_INCOMPATIBLE,             "Plugin defines incompatible subclass of IWorkflowStep");
+        registerCode(BPM_PLUGIN_FACTORY_INCOMPATIBLE,     "Plugin defines incompatible factory to hardcoded instance");
 
-        codeToDescription.put(BPM_STEP_NOT_FOUND,                  "No implementation found for BPM workflow step");
-        codeToDescription.put(BPM_OBJECT_FACTORY_NOT_FOUND,        "No implementation found for BPM object factory");
-        codeToDescription.put(BPM_LABEL_NOT_FOUND,                 "Referenced label not found in BPM workflow");
-        codeToDescription.put(BPM_NO_ERROR,                        "Workflow returned ERROR, but no (integral) returnCode was set");
-        codeToDescription.put(BPM_NO_BPMN_ENGINE,                  "No BPMN Engine found.");
-        codeToDescription.put(BPM_INVALID_VARIABLE_NAME,           "A variable of this pathname is not supported.");
-        codeToDescription.put(BPM_NO_LABEL,                        "No label provided for workflow step at top level");
+        registerCode(BPM_STEP_NOT_FOUND,                  "No implementation found for BPM workflow step");
+        registerCode(BPM_OBJECT_FACTORY_NOT_FOUND,        "No implementation found for BPM object factory");
+        registerCode(BPM_LABEL_NOT_FOUND,                 "Referenced label not found in BPM workflow");
+        registerCode(BPM_NO_ERROR,                        "Workflow returned ERROR, but no (integral) returnCode was set");
+        registerCode(BPM_NO_BPMN_ENGINE,                  "No BPMN Engine found.");
+        registerCode(BPM_INVALID_VARIABLE_NAME,           "A variable of this pathname is not supported.");
+        registerCode(BPM_NO_LABEL,                        "No label provided for workflow step at top level");
     }
 }

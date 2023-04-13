@@ -77,45 +77,45 @@ public class T9tIOException extends T9tException {
     public static final int MISSING_KAFKA_CONFIGURAION = OFFSET + 270;
 
     static {
-        codeToDescription.put(NOT_TRANSFERRED,              "Camel transfer not successful");
+        registerCode(NOT_TRANSFERRED,              "Camel transfer not successful");
 
-        codeToDescription.put(NO_RECORD_BASED_OUTPUT,       "Output format does not support record based output");
-        codeToDescription.put(NO_FOLDING_SUPPORT,           "Output format does not support selection of specific columns (folding)");
-        codeToDescription.put(IO_EXCEPTION,                 "Input/Output exception");
-        codeToDescription.put(WRONG_RECORD_TYPE,            "Received record of wrong data type");
-        codeToDescription.put(IMPORT_FINISHED_WITH_ERRORS,  "Data import finished - not all records successful");
+        registerCode(NO_RECORD_BASED_OUTPUT,       "Output format does not support record based output");
+        registerCode(NO_FOLDING_SUPPORT,           "Output format does not support selection of specific columns (folding)");
+        registerCode(IO_EXCEPTION,                 "Input/Output exception");
+        registerCode(WRONG_RECORD_TYPE,            "Received record of wrong data type");
+        registerCode(IMPORT_FINISHED_WITH_ERRORS,  "Data import finished - not all records successful");
 
-        codeToDescription.put(OUTPUT_FILE_IS_DIRECTORY,     "Specified output file name is a directory");
-        codeToDescription.put(OUTPUT_FILE_PATH_NOT_ABSOLUTE, "Output file path is not absolute (required for security reasons)");
-        codeToDescription.put(OUTPUT_FILE_OPEN_EXCEPTION,   "Exception during open file");
+        registerCode(OUTPUT_FILE_IS_DIRECTORY,     "Specified output file name is a directory");
+        registerCode(OUTPUT_FILE_PATH_NOT_ABSOLUTE, "Output file path is not absolute (required for security reasons)");
+        registerCode(OUTPUT_FILE_OPEN_EXCEPTION,   "Exception during open file");
 
-        codeToDescription.put(NO_JAXB_CONTEXT_PATH,         "XML output: No Jaxb context path has been configured for this data sink");
-        codeToDescription.put(XML_MARSHALLING_ERROR,        "JAXB XML Marshalling error");
-        codeToDescription.put(XML_SETUP_ERROR,              "Exception during JAXB context or marshaller creation");
-        codeToDescription.put(XML_SET_PROPERTY_ERROR,       "Exception during JAXB property setting");
+        registerCode(NO_JAXB_CONTEXT_PATH,         "XML output: No Jaxb context path has been configured for this data sink");
+        registerCode(XML_MARSHALLING_ERROR,        "JAXB XML Marshalling error");
+        registerCode(XML_SETUP_ERROR,              "Exception during JAXB context or marshaller creation");
+        registerCode(XML_SET_PROPERTY_ERROR,       "Exception during JAXB property setting");
 
         // old stuff
-        codeToDescription.put(OUTPUT_FILE_EXCEPTION, "Failed to output records to a file. Please make sure the file path is correct and it's writable");
-        codeToDescription.put(OUTPUT_JMS_EXCEPTION, "Failed to output records to a JMS destination. Please make sure the queue/topic is accessible");
-        codeToDescription.put(OUTPUT_XML_EXCEPTION, "Error while serializing output records to XML format");
-        codeToDescription.put(OUTPUT_JSON_EXCEPTION, "Error while serializing output records to JSON format");
-        codeToDescription.put(OUTPUT_PRE_TRANSFORMER_NOT_FOUND, "Unable to lookup output session pre-transformer");
-        codeToDescription.put(OUTPUT_COMM_FORMAT_GENERATOR_NOT_FOUND, "Unable to lookup communication format generator");
-        codeToDescription.put(DATASINK_UNSUPPORTED_FORMAT, "The requested format is not available for the category.");
-        codeToDescription.put(DATASINK_UNSUPPORTED_ENCODING, "Unsupported datasink encoding.");
-        codeToDescription.put(OUTPUT_COMM_CHANNEL_NOT_FILE, "Requested a download for a sink which does not correspond to a file");
-        codeToDescription.put(OUTPUT_COMM_CHANNEL_IO_ERROR, "I/O error during file read");
-        codeToDescription.put(OUTPUT_COMM_CHANNEL_REQUIRED, "explicit communication format channel required for uploads");
-        codeToDescription.put(FORBIDDEN_FILE_PATH_ELEMENTS, "Forbidden file path element.");
-        codeToDescription.put(FAILED_TO_BUILD_ABSOLUTE_PATH, "An error occurred on building absolute path.");
-        codeToDescription.put(FAILED_TO_PREPARE_OUTPUT_LOCATION, "Failed to prepare output file location.");
-        codeToDescription.put(TOO_MANY_COLUMNS_FOR_EXCEL_EXPORT, "Can't export report to excel (xls) because of too many columns (> 255).");
-        codeToDescription.put(UNDEFINED_CAMEL_SUCCESS_DEST_PATH_ERROR, "Unknown destination where to move a file after successful Camel routing.");
-        codeToDescription.put(UNDEFINED_CAMEL_FAILURE_DEST_PATH_ERROR, "Unknown destination where to move a file after failed Camel routing.");
-        codeToDescription.put(OUTPUT_COMM_CHANNEL_NO_SRC_HANDLER, "No data source handler available for type");
-        codeToDescription.put(FILE_TOO_BIG, "The file size is too big to be handled.");
-        codeToDescription.put(INVALID_DATA_SINK_ATTRIBUTES, "Data sink specified with inconsistent parameters.");
+        registerCode(OUTPUT_FILE_EXCEPTION, "Failed to output records to a file. Please make sure the file path is correct and it's writable");
+        registerCode(OUTPUT_JMS_EXCEPTION, "Failed to output records to a JMS destination. Please make sure the queue/topic is accessible");
+        registerCode(OUTPUT_XML_EXCEPTION, "Error while serializing output records to XML format");
+        registerCode(OUTPUT_JSON_EXCEPTION, "Error while serializing output records to JSON format");
+        registerCode(OUTPUT_PRE_TRANSFORMER_NOT_FOUND, "Unable to lookup output session pre-transformer");
+        registerCode(OUTPUT_COMM_FORMAT_GENERATOR_NOT_FOUND, "Unable to lookup communication format generator");
+        registerCode(DATASINK_UNSUPPORTED_FORMAT, "The requested format is not available for the category.");
+        registerCode(DATASINK_UNSUPPORTED_ENCODING, "Unsupported datasink encoding.");
+        registerCode(OUTPUT_COMM_CHANNEL_NOT_FILE, "Requested a download for a sink which does not correspond to a file");
+        registerCode(OUTPUT_COMM_CHANNEL_IO_ERROR, "I/O error during file read");
+        registerCode(OUTPUT_COMM_CHANNEL_REQUIRED, "explicit communication format channel required for uploads");
+        registerCode(FORBIDDEN_FILE_PATH_ELEMENTS, "Forbidden file path element.");
+        registerCode(FAILED_TO_BUILD_ABSOLUTE_PATH, "An error occurred on building absolute path.");
+        registerCode(FAILED_TO_PREPARE_OUTPUT_LOCATION, "Failed to prepare output file location.");
+        registerCode(TOO_MANY_COLUMNS_FOR_EXCEL_EXPORT, "Can't export report to excel (xls) because of too many columns (> 255).");
+        registerCode(UNDEFINED_CAMEL_SUCCESS_DEST_PATH_ERROR, "Unknown destination where to move a file after successful Camel routing.");
+        registerCode(UNDEFINED_CAMEL_FAILURE_DEST_PATH_ERROR, "Unknown destination where to move a file after failed Camel routing.");
+        registerCode(OUTPUT_COMM_CHANNEL_NO_SRC_HANDLER, "No data source handler available for type");
+        registerCode(FILE_TOO_BIG, "The file size is too big to be handled.");
+        registerCode(INVALID_DATA_SINK_ATTRIBUTES, "Data sink specified with inconsistent parameters.");
 
-        codeToDescription.put(MISSING_KAFKA_CONFIGURAION, "No / missing configuration for kafka");
+        registerCode(MISSING_KAFKA_CONFIGURAION, "No / missing configuration for kafka");
     }
 }

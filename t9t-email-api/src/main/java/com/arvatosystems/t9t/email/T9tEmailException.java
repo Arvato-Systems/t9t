@@ -38,9 +38,9 @@ public class T9tEmailException extends T9tException {
      * static initialization of all error codes
      */
     static {
-        codeToDescription.put(SMTP_IMPLEMENTATION_MISSING,      "Configured STMP backend implementation not available.");
-        codeToDescription.put(EMAIL_SEND_ERROR,                 "Error occured during sending email.");
-        codeToDescription.put(SMTP_ERROR,                       "Error occured during sending email. (SMTP layer)");
-        codeToDescription.put(MIME_MESSAGE_COMPOSITION_PROBLEM, "Problem composing MIME message.");
+        registerCode(SMTP_IMPLEMENTATION_MISSING,      "Configured STMP backend implementation not available.");
+        registerCode(EMAIL_SEND_ERROR,                 "Error occured during sending email.");
+        registerCode(SMTP_ERROR,                       "Error occured during sending email. (SMTP layer)");
+        registerCode(MIME_MESSAGE_COMPOSITION_PROBLEM, "Problem composing MIME message.");
     }
 }

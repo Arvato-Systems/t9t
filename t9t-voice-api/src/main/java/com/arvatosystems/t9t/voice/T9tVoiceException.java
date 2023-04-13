@@ -31,6 +31,6 @@ public class T9tVoiceException extends T9tException {
     public static final int UNKNOWN_SKU_KEY_IMPLEMENTATION = OFFSET + 59;
 
     static {
-        codeToDescription.put(UNKNOWN_SKU_KEY_IMPLEMENTATION, "unknown sku key implementation");
+        registerCode(UNKNOWN_SKU_KEY_IMPLEMENTATION, "unknown sku key implementation");
     }
 }

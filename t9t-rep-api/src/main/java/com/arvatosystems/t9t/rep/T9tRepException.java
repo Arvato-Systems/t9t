@@ -53,15 +53,15 @@ public class T9tRepException extends T9tException {
      * static initialization of all error codes
      */
     public static void initialize() {
-        codeToDescription.put(JASPER_REPORT_CREATION_SQL_EXCEPTION, "During jasper report generation an sql exception occurred.");
-        codeToDescription.put(JASPER_REPORT_CREATION_JR_EXCEPTION, "During jasper report generation an jr exception occurred.");
-        codeToDescription.put(JASPER_REPORT_CREATION_IO_EXCEPTION, "During jasper report generation an io exception occurred.");
-        codeToDescription.put(JASPER_REPORT_NOT_SUPPORTED_OUTPUT_FILE_TYPE, "A output file type was passed that is not supported");
-        codeToDescription.put(JASPER_REPORT_PATH_CONFIG_EXCEPTION, "No path configured to load reports from");
-        codeToDescription.put(BAD_INTERVAL, "Bad interval");
-        codeToDescription.put(BAD_INTERVAL_CLASS, "Unknown interval type");
-        codeToDescription.put(SCHEDULE_REPORT_FAILED, "Unable to schedule report");
-        codeToDescription.put(UNABLE_TO_NOTIFY_REPORT_COMPLETION, "Unable to send out email for notification");
-        codeToDescription.put(JASPER_PARAMETER_ERROR, "Bad parameter for Jasper reports");
+        registerCode(JASPER_REPORT_CREATION_SQL_EXCEPTION, "During jasper report generation an sql exception occurred.");
+        registerCode(JASPER_REPORT_CREATION_JR_EXCEPTION, "During jasper report generation an jr exception occurred.");
+        registerCode(JASPER_REPORT_CREATION_IO_EXCEPTION, "During jasper report generation an io exception occurred.");
+        registerCode(JASPER_REPORT_NOT_SUPPORTED_OUTPUT_FILE_TYPE, "A output file type was passed that is not supported");
+        registerCode(JASPER_REPORT_PATH_CONFIG_EXCEPTION, "No path configured to load reports from");
+        registerCode(BAD_INTERVAL, "Bad interval");
+        registerCode(BAD_INTERVAL_CLASS, "Unknown interval type");
+        registerCode(SCHEDULE_REPORT_FAILED, "Unable to schedule report");
+        registerCode(UNABLE_TO_NOTIFY_REPORT_COMPLETION, "Unable to send out email for notification");
+        registerCode(JASPER_PARAMETER_ERROR, "Bad parameter for Jasper reports");
     }
 }
