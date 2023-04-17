@@ -95,7 +95,7 @@
         <microprofile-smallrye-impl.version>2.4.1</microprofile-smallrye-impl.version>
 
         <!-- Jetty -->
-        <jetty.version>11.0.14</jetty.version>
+        <jetty.version>11.0.15</jetty.version>
 
         <!-- Commons (use with care, only few are regularly updated) -->
         <commons-logging.version>1.1</commons-logging.version>            <!-- should not use at all! -->
@@ -110,10 +110,10 @@
         <commons-text.version>1.10.0</commons-text.version>               <!-- not used in t9t, but DM made to cover for transitive dependencies -->
 
         <!-- AWS SDK v1 -->
-        <aws-bom.version>1.12.445</aws-bom.version>
+        <aws-bom.version>1.12.450</aws-bom.version>
 
         <!-- AWS SDK v2 -->
-        <aws2-bom.version>2.20.42</aws2-bom.version>
+        <aws2-bom.version>2.20.47</aws2-bom.version>
 
         <!-- Azure -->
         <azure-cosmosdb.version>2.6.16</azure-cosmosdb.version>
@@ -149,7 +149,7 @@
         <httpcore5.version>5.2.1</httpcore5.version>
         <httpclient5.version>5.2.1</httpclient5.version>
         <httpmime.version>4.5.14</httpmime.version>
-        <pdfbox.version>2.0.27</pdfbox.version>
+        <pdfbox.version>2.0.28</pdfbox.version>
         <freemarker.version>2.3.32</freemarker.version>
         <jasperreports.version>6.20.0</jasperreports.version>
         <itext.version>2.1.7.js8</itext.version>   <!-- FIXME this must be js10 -->
@@ -169,8 +169,8 @@
         <log4j2.version>2.20.0</log4j2.version>     <!-- see comment below -->
         <reload4j.version>1.2.25</reload4j.version>
 
-        <spring-bom.version>6.0.7</spring-bom.version>
-        <spring-data-jpa.version>3.0.4</spring-data-jpa.version>
+        <spring-bom.version>6.0.8</spring-bom.version>
+        <spring-data-jpa.version>3.0.5</spring-data-jpa.version>
         <spring-boot.version>3.0.5</spring-boot.version>
 
         <netty.version>4.1.90.Final</netty.version>
@@ -193,7 +193,7 @@
         <error-prone.version>2.17.0</error-prone.version>
 
         <!-- Monitoring -->
-        <micrometer.version>1.10.5</micrometer.version>
+        <micrometer.version>1.10.6</micrometer.version>
         <prometheus.version>0.16.0</prometheus.version>
 
         <!-- Swagger -->
