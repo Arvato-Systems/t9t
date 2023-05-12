@@ -46,7 +46,7 @@ package (com.arvatosystems) t9t.solr {
     /** Extended tenant configuration for data exceeding the generic tenant configuration of the application server.
      * Records of this entity share the same artifical primary key tenantId.
      */
-    class SolrModuleCfgDTO RTTI 2001 extends ModuleConfigDTO {
+    class SolrModuleCfgDTO extends ModuleConfigDTO {
         properties                                  tenantCategory="D";                       // if entry missing, get the global one
         optional Unicode(255)                       baseUrl;                                  // different from fortytwo: the base URL does not contain the document part
         optional Enum SolrAuthenticationType        authenticationType;                       // specify an authentication type

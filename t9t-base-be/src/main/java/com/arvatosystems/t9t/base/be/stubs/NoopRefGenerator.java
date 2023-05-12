@@ -29,6 +29,9 @@ import de.jpaw.dp.Fallback;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 
+/**
+ * This implementation serves as a stub in case no jpa module is available.
+ */
 @Fallback
 @Any
 @Singleton
@@ -57,7 +60,7 @@ public class NoopRefGenerator implements IRefGenerator {
     }
 
     @Override
-    public long generateRef(final int rttiOffset) {
+    public long generateRef(final String tablename, final int rttiOffset) {
         if ((rttiOffset < 0) || (rttiOffset >= OFFSET_BACKUP_LOCATION)) {
             throw new InvalidParameterException("Bad rtti offset: " + rttiOffset);
         }

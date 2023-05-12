@@ -30,6 +30,7 @@ import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.auth.AuthenticationInfo;
 import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
+import com.arvatosystems.t9t.base.services.T9tInternalConstants;
 import com.arvatosystems.t9t.ipblocker.services.impl.IPAddressBlocker;
 import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
 import com.arvatosystems.t9t.server.services.ICachingAuthenticationProcessor;
@@ -104,9 +105,9 @@ public class T9tRestProcessor implements IT9tRestProcessor {
                     }
                     // Authentication is valid. Now populate the MDC and start processing the request.
                     final JwtInfo jwtInfo = authInfo.getJwtInfo();
-                    MDC.put(T9tConstants.MDC_USER_ID, jwtInfo.getUserId());
-                    MDC.put(T9tConstants.MDC_TENANT_ID, jwtInfo.getTenantId());
-                    MDC.put(T9tConstants.MDC_SESSION_REF, Objects.toString(jwtInfo.getSessionRef(), null));
+                    MDC.put(T9tInternalConstants.MDC_USER_ID, jwtInfo.getUserId());
+                    MDC.put(T9tInternalConstants.MDC_TENANT_ID, jwtInfo.getTenantId());
+                    MDC.put(T9tInternalConstants.MDC_SESSION_REF, Objects.toString(jwtInfo.getSessionRef(), null));
 
                     LOGGER.debug("{}: processing start", infoMsg);
                     promise.complete(requestProcessor.execute(null, requestParameters, jwtInfo, authInfo.getEncodedJwt(), false));

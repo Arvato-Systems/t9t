@@ -15,12 +15,16 @@
  */
 package com.arvatosystems.t9t.email.be.api;
 
+import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.IRefGenerator;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
-import com.arvatosystems.t9t.email.EmailDTO;
 import com.arvatosystems.t9t.email.EmailModuleCfgDTO;
 import com.arvatosystems.t9t.email.T9tEmailException;
 import com.arvatosystems.t9t.email.api.SendEmailRequest;
@@ -30,11 +34,6 @@ import com.arvatosystems.t9t.email.services.IEmailPersistenceAccess;
 import com.arvatosystems.t9t.email.services.IEmailSender;
 
 import de.jpaw.dp.Jdp;
-
-import java.util.UUID;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class SendEmailRequestHandler extends AbstractRequestHandler<SendEmailRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(SendEmailRequestHandler.class);
@@ -50,16 +49,13 @@ public class SendEmailRequestHandler extends AbstractRequestHandler<SendEmailReq
         // create a UUID for this message
         final UUID messageId = UUID.randomUUID();
 
-        // persist the message (optional: body)
-        final long messageRef = refGenerator.generateRef(EmailDTO.class$rtti());
+        // persist the message, and possibly also attachments
+        final Long messageRef = emailPersistenceAccess.persistEmail(ctx, messageId, rq.getEmail(), rq.getSendSpooled(), rq.getStoreEmail());
 
         // generate an OK message
         final SendEmailResponse okResponse = new SendEmailResponse();
         okResponse.setEmailRef(messageRef);
         okResponse.setEmailMessageId(messageId);
-
-        // persist the message, and possibly also attachments
-        emailPersistenceAccess.persistEmail(messageRef, messageId, ctx, rq.getEmail(), rq.getSendSpooled(), rq.getStoreEmail());
 
         if (!rq.getSendSpooled()) {
             // TODO: refactor this code into a separate class which is used for spooled sending / resends as well

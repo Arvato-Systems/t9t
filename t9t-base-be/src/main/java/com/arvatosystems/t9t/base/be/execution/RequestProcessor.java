@@ -25,7 +25,6 @@ import org.slf4j.MDC;
 
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.RandomNumberGenerators;
-import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ContextlessRequestParameters;
 import com.arvatosystems.t9t.base.api.RequestParameters;
@@ -42,6 +41,7 @@ import com.arvatosystems.t9t.base.services.IRefGenerator;
 import com.arvatosystems.t9t.base.services.IRequestHandler;
 import com.arvatosystems.t9t.base.services.IRequestHandlerResolver;
 import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.base.services.T9tInternalConstants;
 import com.arvatosystems.t9t.cfg.be.StatusProvider;
 import com.arvatosystems.t9t.server.ExecutionSummary;
 import com.arvatosystems.t9t.server.InternalHeaderParameters;
@@ -62,8 +62,6 @@ import de.jpaw.util.ExceptionUtil;
 @Singleton
 public class RequestProcessor implements IRequestProcessor {
     private static final Logger LOGGER = LoggerFactory.getLogger(RequestProcessor.class);
-
-    public static final int RTTI_MESSAGE_LOG = 2; // defined separately because we cannot reference that class due to module isolation
 
     protected final IRefGenerator refGenerator = Jdp.getRequired(IRefGenerator.class);
     protected final IExecutor executor = Jdp.getRequired(IExecutor.class);
@@ -110,14 +108,14 @@ public class RequestProcessor implements IRequestProcessor {
             }
         }
 
-        final String oldMdcRequestPqon = MDC.get(T9tConstants.MDC_REQUEST_PQON);
+        final String oldMdcRequestPqon = MDC.get(T9tInternalConstants.MDC_REQUEST_PQON);
         try {
-            MDC.put(T9tConstants.MDC_MESSAGE_ID, effectiveMessageId.toString());
-            MDC.put(T9tConstants.MDC_REQUEST_PQON, pqon);
-            MDC.put(T9tConstants.MDC_TENANT_ID, jwtInfo.getTenantId());
-            MDC.put(T9tConstants.MDC_USER_ID, jwtInfo.getUserId());
-            MDC.put(T9tConstants.MDC_SESSION_REF, Objects.toString(jwtInfo.getSessionRef(), null));
-            MDC.put(T9tConstants.MDC_PROCESS_REF, null);
+            MDC.put(T9tInternalConstants.MDC_MESSAGE_ID, effectiveMessageId.toString());
+            MDC.put(T9tInternalConstants.MDC_REQUEST_PQON, pqon);
+            MDC.put(T9tInternalConstants.MDC_TENANT_ID, jwtInfo.getTenantId());
+            MDC.put(T9tInternalConstants.MDC_USER_ID, jwtInfo.getUserId());
+            MDC.put(T9tInternalConstants.MDC_SESSION_REF, Objects.toString(jwtInfo.getSessionRef(), null));
+            MDC.put(T9tInternalConstants.MDC_PROCESS_REF, null);
 
             // check if we are just shutting down - only for external requests
             if (!skipAuthorization && StatusProvider.isShutdownInProgress()) {
@@ -172,7 +170,7 @@ public class RequestProcessor implements IRequestProcessor {
             ihdr.setExecutionStartedAt(now);
             ihdr.setEncodedJwt(encodedJwt);
             ihdr.setJwtInfo(jwtInfo);
-            ihdr.setProcessRef(refGenerator.generateRef(RTTI_MESSAGE_LOG));
+            ihdr.setProcessRef(refGenerator.generateRef(T9tInternalConstants.TABLENAME_MESSAGE_LOG, T9tInternalConstants.RTTI_MESSAGE_LOG));
             ihdr.setLanguageCode(jwtInfo.getLocale());
             ihdr.setRequestParameterPqon(pqon);
             ihdr.setRequestHeader(optHdr);
@@ -228,7 +226,7 @@ public class RequestProcessor implements IRequestProcessor {
             }
             return resp;
         } finally {
-            MDC.put(T9tConstants.MDC_REQUEST_PQON, oldMdcRequestPqon);
+            MDC.put(T9tInternalConstants.MDC_REQUEST_PQON, oldMdcRequestPqon);
         }
     }
 
@@ -239,13 +237,13 @@ public class RequestProcessor implements IRequestProcessor {
     @Override
     public <T extends ServiceResponse> T executeSynchronousAndCheckResult(final RequestParameters params, final InternalHeaderParameters ihdr,
             final Class<T> requiredType, final boolean skipAuthorization) {
-        final String oldMdcRequestPqon = MDC.get(T9tConstants.MDC_REQUEST_PQON);
+        final String oldMdcRequestPqon = MDC.get(T9tInternalConstants.MDC_REQUEST_PQON);
         try {
-            MDC.put(T9tConstants.MDC_REQUEST_PQON, params.ret$PQON());
-            MDC.put(T9tConstants.MDC_TENANT_ID, ihdr.getJwtInfo().getTenantId());
-            MDC.put(T9tConstants.MDC_USER_ID, ihdr.getJwtInfo().getUserId());
-            MDC.put(T9tConstants.MDC_SESSION_REF, Objects.toString(ihdr.getJwtInfo().getSessionRef(), null));
-            MDC.put(T9tConstants.MDC_PROCESS_REF, Objects.toString(ihdr.getProcessRef(), null));
+            MDC.put(T9tInternalConstants.MDC_REQUEST_PQON, params.ret$PQON());
+            MDC.put(T9tInternalConstants.MDC_TENANT_ID, ihdr.getJwtInfo().getTenantId());
+            MDC.put(T9tInternalConstants.MDC_USER_ID, ihdr.getJwtInfo().getUserId());
+            MDC.put(T9tInternalConstants.MDC_SESSION_REF, Objects.toString(ihdr.getJwtInfo().getSessionRef(), null));
+            MDC.put(T9tInternalConstants.MDC_PROCESS_REF, Objects.toString(ihdr.getProcessRef(), null));
 
             final ServiceResponse response = executeSynchronousWithRetries(params, ihdr, skipAuthorization);
 
@@ -263,7 +261,7 @@ public class RequestProcessor implements IRequestProcessor {
             }
             return requiredType.cast(response); // all OK
         } finally {
-            MDC.put(T9tConstants.MDC_REQUEST_PQON, oldMdcRequestPqon);
+            MDC.put(T9tInternalConstants.MDC_REQUEST_PQON, oldMdcRequestPqon);
         }
     }
 

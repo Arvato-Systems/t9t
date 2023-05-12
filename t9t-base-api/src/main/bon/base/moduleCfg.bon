@@ -31,7 +31,7 @@ package (com.arvatosystems) t9t.base.moduleCfg {
     final class ModuleConfigKey extends CompositeKeyRef {}
 
     /** Base class for all module configuration DTOs. */
-    abstract class ModuleConfigDTO RTTI 2001 extends CompositeKeyBase {
+    abstract class ModuleConfigDTO extends CompositeKeyBase {
         properties                                  tenantCategory="D";             // if entry missing, get the global one
         optional Json                               z;                              // custom parameters: exist for all modules by default
     }

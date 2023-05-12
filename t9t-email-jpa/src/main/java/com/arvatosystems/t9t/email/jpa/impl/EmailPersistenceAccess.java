@@ -32,18 +32,18 @@ public class EmailPersistenceAccess implements IEmailPersistenceAccess {
 
     private static final String RECIPIENT_DELIMITER = ";";
 
-    private final IEmailEntityResolver            emailEntityResolver = Jdp.getRequired(IEmailEntityResolver.class);
+    private final IEmailEntityResolver            emailResolver = Jdp.getRequired(IEmailEntityResolver.class);
     private final IEmailAttachmentsEntityResolver emailAttachmentsEntityResolver = Jdp.getRequired(IEmailAttachmentsEntityResolver.class);
 
     @Override
-    public void persistEmail(final long myEmailRef, final UUID myMessageId, final RequestContext ctx,
-            final EmailMessage msg, final boolean sendSpooled, final boolean storeEmail) {
+    public Long persistEmail(final RequestContext ctx, final UUID myMessageId, final EmailMessage msg, final boolean sendSpooled, final boolean storeEmail) {
         int numAttachments = 0;
         if (msg.getAttachments() != null) {
             numAttachments = msg.getAttachments().size();
         }
+        final Long newKey = emailResolver.createNewPrimaryKey();
         final EmailEntity email = new EmailEntity();
-        email.setObjectRef(myEmailRef);
+        email.setObjectRef(newKey);
         email.setMessageId(myMessageId);
         email.setEmailSubject(msg.getMailSubject());
         email.setEmailFrom(msg.getRecipient().getFrom());
@@ -61,15 +61,21 @@ public class EmailPersistenceAccess implements IEmailPersistenceAccess {
         } else {
             email.setEmailStatus(EmailStatus.SENT);
         }
-        emailEntityResolver.save(email);                      // sets shared tenantId and persists
+        emailResolver.save(email);                      // sets shared tenantId and persists
 
         if (sendSpooled || storeEmail) {
             // save any attachments if required (currently only body implemented)
             final EmailAttachmentsEntity emailBody = new EmailAttachmentsEntity();
-            emailBody.setEmailRef(myEmailRef);
+            emailBody.setEmailRef(newKey);
             emailBody.setAttachmentNo(0);
             emailBody.setDocument(msg.getMailBody());
             emailAttachmentsEntityResolver.save(emailBody);   // sets shared tenantId and persists
         }
+        return newKey;
+    }
+
+    @Override
+    public Long createNewEmailPrimaryKey() {
+        return emailResolver.createNewPrimaryKey();
     }
 }

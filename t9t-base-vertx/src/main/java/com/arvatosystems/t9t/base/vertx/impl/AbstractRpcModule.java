@@ -15,13 +15,19 @@
  */
 package com.arvatosystems.t9t.base.vertx.impl;
 
-import com.arvatosystems.t9t.base.T9tConstants;
+import java.util.Objects;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceRequest;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.auth.AuthenticationInfo;
 import com.arvatosystems.t9t.base.request.PingRequest;
+import com.arvatosystems.t9t.base.services.T9tInternalConstants;
 import com.arvatosystems.t9t.base.vertx.IServiceModule;
 import com.arvatosystems.t9t.server.services.ICachingAuthenticationProcessor;
 import com.arvatosystems.t9t.server.services.IRequestProcessor;
@@ -42,12 +48,6 @@ import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
-
-import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 
 public abstract class AbstractRpcModule implements IServiceModule {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractRpcModule.class);
@@ -121,9 +121,9 @@ public abstract class AbstractRpcModule implements IServiceModule {
                     final JwtInfo jwtInfo = authInfo.getJwtInfo();
                     // Clear all old MDC data, since a completely new request is now processed
                     MDC.clear();
-                    MDC.put(T9tConstants.MDC_USER_ID, jwtInfo.getUserId());
-                    MDC.put(T9tConstants.MDC_TENANT_ID, jwtInfo.getTenantId());
-                    MDC.put(T9tConstants.MDC_SESSION_REF, Objects.toString(jwtInfo.getSessionRef(), null));
+                    MDC.put(T9tInternalConstants.MDC_USER_ID, jwtInfo.getUserId());
+                    MDC.put(T9tInternalConstants.MDC_TENANT_ID, jwtInfo.getTenantId());
+                    MDC.put(T9tInternalConstants.MDC_SESSION_REF, Objects.toString(jwtInfo.getSessionRef(), null));
                     final Buffer buffer = ctx.body().buffer();
                     final RequestParameters request;
                     final ServiceResponse response;
@@ -139,13 +139,13 @@ public abstract class AbstractRpcModule implements IServiceModule {
                         if (withServiceRequest()) {
                             final ServiceRequest rq = (ServiceRequest) decoder.decode(body, ServiceRequest.meta$$this);
                             LOGGER.debug("Received request {}, request length is {}", rq.ret$PQON(), body.length);
-                            MDC.put(T9tConstants.MDC_REQUEST_PQON, rq.ret$PQON());
+                            MDC.put(T9tInternalConstants.MDC_REQUEST_PQON, rq.ret$PQON());
                             response = requestProcessor.execute(rq.getRequestHeader(), rq.getRequestParameters(), jwtInfo, authInfo.getEncodedJwt(),
                                     skipAuthorization());
                             request = rq.getRequestParameters();
                         } else {
                             final RequestParameters rq = (RequestParameters) decoder.decode(body, ServiceRequest.meta$$requestParameters);
-                            MDC.put(T9tConstants.MDC_REQUEST_PQON, rq.ret$PQON());
+                            MDC.put(T9tInternalConstants.MDC_REQUEST_PQON, rq.ret$PQON());
                             response = requestProcessor.execute(null, rq, jwtInfo, authInfo.getEncodedJwt(), skipAuthorization());
                             request = rq;
                         }

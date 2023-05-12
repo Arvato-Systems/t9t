@@ -15,33 +15,34 @@
  */
 package com.arvatosystems.t9t.zkui.converters.grid;
 
+import java.text.DecimalFormat;
+
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 import de.jpaw.fixedpoint.FixedPointBase;
-import de.jpaw.fixedpoint.types.MicroUnits;
 
 @Singleton
 @Named("de.jpaw.fixedpoint.types.MicroUnits")
 @Named("de.jpaw.fixedpoint.types.MilliUnits")
 @Named("de.jpaw.fixedpoint.types.NanoUnits")
-public class FixedPointConverter implements IItemConverter<MicroUnits> {
+public class FixedPointConverter extends AbstractDecimalFormatConverter<FixedPointBase<?>> implements IItemConverter<FixedPointBase<?>> {
+
+    private static final String DEFAULT_PATTERN = "0.00";
+
     @Override
-    public boolean isRightAligned() {
-        return true;
+    protected String getPattern() {
+        return DEFAULT_PATTERN;
     }
 
     @Override
-    public String getFormattedLabel(MicroUnits value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
+    public String getFormattedLabel(FixedPointBase<?> value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
         if (value == null) {
             return null;
         }
 
-        if (value instanceof FixedPointBase) {
-            return value.toString(2);
-        } else {
-            throw new UnsupportedOperationException("Instance " + value.getClass().getName() + " is not supported. Field:" + fieldName + "->" + value);
-        }
+        final DecimalFormat df = getLocalizedDecimalFormat(this.format, value.scale());
+        return df.format(value.doubleValue());
     }
 }

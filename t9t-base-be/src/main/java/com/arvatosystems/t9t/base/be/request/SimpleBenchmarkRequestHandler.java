@@ -48,7 +48,7 @@ public class SimpleBenchmarkRequestHandler extends AbstractRequestHandler<Simple
         rq.freeze();  // ensure that the benchmarked requests do not alter the
 
         final long initialTime = System.nanoTime();
-        long timeStamp = initialTime;
+        long timestamp = initialTime;
         long endTime = initialTime;
         while (--repeats >= 0) {
             final RequestParameters rq2 = request.getMustCopyRequest() ? rq.ret$MutableClone(true, true) : rq;
@@ -61,12 +61,12 @@ public class SimpleBenchmarkRequestHandler extends AbstractRequestHandler<Simple
                 throw new T9tException(resp.getReturnCode(), resp.getErrorDetails());
             }
             endTime = System.nanoTime();
-            final long thisTime = endTime - timeStamp;
+            final long thisTime = endTime - timestamp;
             if (minDuration < 0L || thisTime < minDuration)
                 minDuration = thisTime;
             if (thisTime > maxDuration)
                 maxDuration = thisTime;
-            timeStamp = endTime;  // assign to new start point (avoid duplicate invocation of nanoTime())
+            timestamp = endTime;  // assign to new start point (avoid duplicate invocation of nanoTime())
         }
 
         final SimpleBenchmarkResponse resp = new SimpleBenchmarkResponse();

@@ -22,7 +22,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-build</artifactId>
-        <version>6.4-SNAPSHOT</version>
+        <version>6.5-SNAPSHOT</version>
     </parent>
 
     <artifactId>global-dm</artifactId>
@@ -49,17 +49,18 @@
 
         <!-- Database driver versions -->
         <driver.oracle.version>23.2.0.0</driver.oracle.version>
-        <driver.postgresql.version>42.5.1</driver.postgresql.version>  <!-- starting with 4.2.15, the driver adds a dependency to checker-qual 3.5.0 which conflicts with 2.5.2 pulled by guava -->
-        <driver.sqlserver.version>11.2.3.jre17</driver.sqlserver.version>
-        <driver.hana.version>2.16.11</driver.hana.version>
+        <driver.postgresql.version>42.6.0</driver.postgresql.version>  <!-- starting with 4.2.15, the driver adds a dependency to checker-qual 3.5.0 which conflicts with 2.5.2 pulled by guava -->
+        <driver.sqlserver.version>12.3.0.jre17-preview</driver.sqlserver.version>
+        <driver.hana.version>2.16.14</driver.hana.version>
         <h2.version>2.1.214</h2.version>
 
         <!-- OR mappers -->
         <eclipselink.version>3.0.3</eclipselink.version>
-        <hibernate.version>6.1.7.Final</hibernate.version>
+        <hibernate.version>6.2.2.Final</hibernate.version>
         <hibernate-validator.version>8.0.0.Final</hibernate-validator.version>
         <ehcache.version>2.10.9.2</ehcache.version>
         <ehcache3.version>3.10.8</ehcache3.version>
+        <jandex.version>3.1.1</jandex.version>
 
         <!-- Javax ws / rs implementation versions (com.sun.xml.*), for jakarta 8 -->
         <jaxb-impl.version>4.0.1</jaxb-impl.version>                                    <!-- (com.sun.xml.bind:jaxb-impl -->
@@ -73,8 +74,8 @@
         <jakarta.xml-jaxb-core.version>4.0.2</jakarta.xml-jaxb-core.version>            <!-- 3.0.1 for jakarta namespace (skip for javax!) -->
         <jakarta.annotation-api.version>2.1.1</jakarta.annotation-api.version>          <!-- 2.0.0 for jakarta namespace -->
 
-        <jakarta.activation-api.version>2.1.1</jakarta.activation-api.version>          <!-- 2.1.0 for jakarta EE 10 -->
-        <jakarta.activation.version>2.0.0</jakarta.activation.version>                  <!-- this is now angus-activation -->
+        <jakarta.activation-api.version>2.1.2</jakarta.activation-api.version>          <!-- 2.1.0 for jakarta EE 10 -->
+        <jakarta.activation.version>2.0.1</jakarta.activation.version>                  <!-- this is now angus-activation -->
         <jakarta.mail-api.version>2.1.1</jakarta.mail-api.version>                      <!-- 2.1.0 for jakarta EE 10 -->
         <jakarta.mail.version>2.0.1</jakarta.mail.version>                              <!-- this is now angus-mail -->
         <jakarta.el-api.version>5.0.1</jakarta.el-api.version>
@@ -110,14 +111,14 @@
         <commons-text.version>1.10.0</commons-text.version>               <!-- not used in t9t, but DM made to cover for transitive dependencies -->
 
         <!-- AWS SDK v1 -->
-        <aws-bom.version>1.12.450</aws-bom.version>
+        <aws-bom.version>1.12.464</aws-bom.version>
 
         <!-- AWS SDK v2 -->
-        <aws2-bom.version>2.20.47</aws2-bom.version>
+        <aws2-bom.version>2.20.61</aws2-bom.version>
 
         <!-- Azure -->
         <azure-cosmosdb.version>2.6.16</azure-cosmosdb.version>
-        <azure-cosmos-sdk.version>4.43.0</azure-cosmos-sdk.version>
+        <azure-cosmos-sdk.version>4.44.0</azure-cosmos-sdk.version>
 
         <!-- Camunda BPMN: still linked to pre-jakarta spring version, removing -->
         <!-- <camunda-bom.version>7.18.0</camunda-bom.version> -->
@@ -130,7 +131,7 @@
         <junit5.version>5.9.2</junit5.version>     <!-- groupId is org.junit, therefore is can coexist with junit4 in dependency management -->
         <hamcrest.version>2.2</hamcrest.version>   <!-- avoid unless required -->
         <byte-buddy.version>1.14.4</byte-buddy.version>   <!-- 1.12.x requested by mockito 4.2.0, and reuired for Java 17 -->
-        <org.mockito-core.version>5.2.0</org.mockito-core.version>
+        <org.mockito-core.version>5.3.1</org.mockito-core.version>
         <archunit.version>1.0.1</archunit.version>
         <hdrhistogram.version>2.1.12</hdrhistogram.version>
 
@@ -143,7 +144,7 @@
         <zxing.version>3.5.1</zxing.version>
         <quartz.version>2.4.0.pre1</quartz.version>
         <jsap.version>2.1</jsap.version>
-        <picocli.version>4.7.2</picocli.version>
+        <picocli.version>4.7.3</picocli.version>
         <httpcore.version>4.4.16</httpcore.version>
         <httpclient.version>4.5.14</httpclient.version>
         <httpcore5.version>5.2.1</httpcore5.version>
@@ -151,10 +152,10 @@
         <httpmime.version>4.5.14</httpmime.version>
         <pdfbox.version>2.0.28</pdfbox.version>
         <freemarker.version>2.3.32</freemarker.version>
-        <jasperreports.version>6.20.0</jasperreports.version>
-        <itext.version>2.1.7.js8</itext.version>   <!-- FIXME this must be js10 -->
+        <jasperreports.version>6.20.4</jasperreports.version>
+        <itext.version>2.1.7.fail</itext.version>   <!-- FIXME this must be js10 -->
+        <openpdf.version>1.3.30</openpdf.version>
         <flyingsaucer.version>9.1.22</flyingsaucer.version>
-        <openpdf.version>1.3.26</openpdf.version>
 
         <javassist.version>3.29.2-GA</javassist.version>
         <guava.version>31.1-jre</guava.version>
@@ -162,7 +163,7 @@
         <antlr.version>3.2</antlr.version>
         <resteasy.version>6.2.3.Final</resteasy.version>
         <googlemaps.services.version>2.2.0</googlemaps.services.version>
-        <uuid-generator.version>4.0.1</uuid-generator.version>
+        <uuid-generator.version>4.1.0</uuid-generator.version>
         <apache-poi.version>5.2.3</apache-poi.version>
         <xmlbeans.version>5.1.1</xmlbeans.version>
         <gson.version>2.10.1</gson.version>
@@ -171,7 +172,7 @@
 
         <spring-bom.version>6.0.8</spring-bom.version>
         <spring-data-jpa.version>3.0.5</spring-data-jpa.version>
-        <spring-boot.version>3.0.5</spring-boot.version>
+        <spring-boot.version>3.0.6</spring-boot.version>
 
         <netty.version>4.1.90.Final</netty.version>
         <vertx4.version>4.4.1</vertx4.version>
@@ -182,13 +183,13 @@
 
         <c3p0.version>0.9.5.5</c3p0.version>
         <hikaricp.version>4.0.3</hikaricp.version>
-        <flyway.version>9.16.3</flyway.version>
+        <flyway.version>9.17.0</flyway.version>
         <reflections.version>0.9.10</reflections.version>
         <maven-plugin-api.version>3.9.1</maven-plugin-api.version>
         <jackson.version>2.14.2</jackson.version>
         <jackson-databind.version>2.14.2</jackson-databind.version> <!-- separate version due to frequent CVE updates which do not release the full set -->
         <solr.version>8.11.1</solr.version>
-        <camel.version>3.20.3</camel.version>
+        <camel.version>4.0.0-M3</camel.version>
         <kafka.version>3.4.0</kafka.version>
         <error-prone.version>2.17.0</error-prone.version>
 
@@ -912,6 +913,16 @@
                 <version>${picocli.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.javassist</groupId>
+                <artifactId>javassist</artifactId>
+                <version>${javassist.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.ben-manes.caffeine</groupId>
+                <artifactId>caffeine</artifactId>
+                <version>${caffeine.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi</artifactId>
                 <version>${apache-poi.version}</version>
@@ -926,21 +937,19 @@
                 <artifactId>freemarker</artifactId>
                 <version>${freemarker.version}</version>
             </dependency>
+
+            <!-- flying-saucer with librepdf -->
+            <dependency>
+                <groupId>com.github.librepdf</groupId>
+                <artifactId>openpdf</artifactId>
+                <version>${openpdf.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.xhtmlrenderer</groupId>
-                <artifactId>flying-saucer-pdf</artifactId>
+                <artifactId>flying-saucer-pdf-openpdf</artifactId>
                 <version>${flyingsaucer.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.javassist</groupId>
-                <artifactId>javassist</artifactId>
-                <version>${javassist.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.ben-manes.caffeine</groupId>
-                <artifactId>caffeine</artifactId>
-                <version>${caffeine.version}</version>
-            </dependency>
+
             <dependency>
                 <groupId>com.google.maps</groupId>
                 <artifactId>google-maps-services</artifactId>
@@ -1162,6 +1171,12 @@
                 <groupId>io.vertx</groupId>
                 <artifactId>vertx-micrometer-metrics</artifactId>
                 <version>${vertx4.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.smallrye</groupId>
+                <artifactId>jandex</artifactId>
+                <version>${jandex.version}</version>
             </dependency>
 
             <dependency>
@@ -1402,18 +1417,6 @@
                 <groupId>org.apache.maven</groupId>
                 <artifactId>maven-project</artifactId>
                 <version>${maven-project.version}</version>
-            </dependency>
-
-            <!-- flying-saucer with librepdf -->
-            <dependency>
-                <groupId>com.github.librepdf</groupId>
-                <artifactId>openpdf</artifactId>
-                <version>${openpdf.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.xhtmlrenderer</groupId>
-                <artifactId>flying-saucer-pdf-openpdf</artifactId>
-                <version>${flyingsaucer.version}</version>
             </dependency>
 
             <!-- swagger -->

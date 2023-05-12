@@ -207,4 +207,13 @@ class Tools {
         if (myself !== null)
             t.removeAnnotation(myself)
     }
+
+    static final String objectFqon = Object.canonicalName
+
+    /** Returns the base class of the inheritance tree. */
+    def static TypeReference getRoot(TypeReference t) {
+        val cd = t.type as ClassDeclaration
+        val parent = cd.extendedClass
+        return parent === null || parent.name == objectFqon || (parent.type as ClassDeclaration).abstract ? t : getRoot(parent)
+    }
 }

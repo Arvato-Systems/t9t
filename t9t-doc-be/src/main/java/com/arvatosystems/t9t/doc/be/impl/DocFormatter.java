@@ -25,6 +25,7 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.Base64;
 import java.util.Currency;
 import java.util.HashMap;
 import java.util.List;
@@ -58,6 +59,7 @@ import com.arvatosystems.t9t.doc.services.ImageParameter;
 import com.arvatosystems.t9t.translation.services.ITranslationProvider;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.google.common.base.Charsets;
 
 import de.jpaw.bonaparte.api.media.MediaTypes;
 import de.jpaw.bonaparte.core.BonaPortable;
@@ -92,51 +94,16 @@ public class DocFormatter implements IDocFormatter {
     protected static final DefaultObjectWrapper WRAPPER = new DefaultObjectWrapper(Configuration.VERSION_2_3_23);
     protected static final char MINUS = '-';
 
-    // FIXME once we have Java 17! This was 4 lines in xtend, and will be readable again with Java 17 record types.
+    protected enum DocumentEncoderType {
+        BASE64, BASE64URL
+    }
+
     /** Class serves as an internal key to the cached components. */
-    protected static class ComponentCacheKey {
-        private final String tenantId;
-        private final DocumentSelector selector;
-
-        public ComponentCacheKey(String tenantId, DocumentSelector selector) {
-            super();
-            this.tenantId = tenantId;
-            this.selector = selector;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(selector, tenantId);
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj)
-                return true;
-            if (obj == null)
-                return false;
-            if (getClass() != obj.getClass())
-                return false;
-            ComponentCacheKey other = (ComponentCacheKey) obj;
-            return Objects.equals(selector, other.selector) && Objects.equals(tenantId, other.tenantId);
-        }
-
-        @Override
-        public String toString() {
-            return "ComponentCacheKey [tenantId=" + tenantId + ", selector=" + selector + "]";
-        }
-
-        public String getTenantId() {
-            return tenantId;
-        }
-
-        public DocumentSelector getSelector() {
-            return selector;
-        }
+    record ComponentCacheKey(String tenantId, DocumentSelector selector) {
     }
 
     /** Class serves as a debugging aid. */
-    protected static class DebugModel implements TemplateMethodModelEx {
+    record DebugModel() implements TemplateMethodModelEx {
         // parameters are of type freemarker.template.SimpleScalar / SimpleNumber etc.
         @SuppressWarnings("rawtypes")
         @Override
@@ -150,10 +117,7 @@ public class DocFormatter implements IDocFormatter {
     }
 
     /** Class serves as formatter for date and time. */
-    protected static class TimestampGeneratorModel implements TemplateMethodModelEx {
-        private final Locale locale;
-        private final ZoneId zone;
-
+    record TimestampGeneratorModel (Locale locale, ZoneId zone) implements TemplateMethodModelEx {
         // parameters are of type freemarker.template.SimpleScalar / SimpleNumber etc.
         // usage is 1st parameter: ISO string
         // 2nd parameter: style as in http://www.joda.java-time/apidocs/java/time/format/DateTimeFormat.html
@@ -196,8 +160,8 @@ public class DocFormatter implements IDocFormatter {
                             // do the same as for 'd'
                             LOGGER.warn("Date/time conversion mismatch: force=\'D\', style={}, format={}, input={}: You should use \'d\' in this case!", styleS,
                                     jodaFormat, isoStringS);
-                            final LocalDate timeStampDayT = LocalDate.parse(isoStringS);
-                            return localFormatter.format(timeStampDayT);
+                            final LocalDate timestampDayT = LocalDate.parse(isoStringS);
+                            return localFormatter.format(timestampDayT);
                         } else {
                             // another workaround for for extra Z suffix: drop it, it would cause a conversion error
                             final boolean gotTimezoneSuffix = isoStringS.endsWith("Z");
@@ -205,16 +169,16 @@ public class DocFormatter implements IDocFormatter {
                                 LOGGER.warn("Date/time conversion mismatch: force='D', style={}, format={}, input={}: Dropping time zone suffix."
                                         + " Bug in data provider?", styleS, jodaFormat, isoStringS);
                             }
-                            final LocalDateTime timeStampDayT = LocalDateTime.parse(gotTimezoneSuffix ? isoStringS.substring(0, l - 1) : isoStringS);
+                            final LocalDateTime timestampDayT = LocalDateTime.parse(gotTimezoneSuffix ? isoStringS.substring(0, l - 1) : isoStringS);
                             // timezone conversion
-                            final LocalDateTime timeStampDayTt = timeStampDayT.atZone(ZoneOffset.UTC).withZoneSameInstant(zone).toLocalDateTime();
-                            return localFormatter.format(timeStampDayTt.toLocalDate());
+                            final LocalDateTime timestampDayTt = timestampDayT.atZone(ZoneOffset.UTC).withZoneSameInstant(zone).toLocalDateTime();
+                            return localFormatter.format(timestampDayTt.toLocalDate());
                         }
                     case "T": // timestamp to date, interpreted as time
-                        final LocalDateTime timeStampTimeT = LocalDateTime.parse(isoStringS);
+                        final LocalDateTime timestampTimeT = LocalDateTime.parse(isoStringS);
                         // timezone conversion
-                        final LocalDateTime timeStampTimeTt = timeStampTimeT.atZone(ZoneOffset.UTC).withZoneSameInstant(zone).toLocalDateTime();
-                        return localFormatter.format(timeStampTimeTt.toLocalTime());
+                        final LocalDateTime timestampTimeTt = timestampTimeT.atZone(ZoneOffset.UTC).withZoneSameInstant(zone).toLocalDateTime();
+                        return localFormatter.format(timestampTimeTt.toLocalTime());
                     case "d": // day
                         final LocalDate dayT = LocalDate.parse(isoStringS);
                         return localFormatter.format(dayT);
@@ -271,49 +235,10 @@ public class DocFormatter implements IDocFormatter {
                 return DateTimeFormatter.ofLocalizedDateTime(T9tDocTools.styleFor(styleS.charAt(0)), T9tDocTools.styleFor(styleS.charAt(1)));
             }
         }
-
-        public TimestampGeneratorModel(Locale locale, ZoneId zone) {
-            super();
-            this.locale = locale;
-            this.zone = zone;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(locale, zone);
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj)
-                return true;
-            if (obj == null)
-                return false;
-            if (getClass() != obj.getClass())
-                return false;
-            TimestampGeneratorModel other = (TimestampGeneratorModel) obj;
-            return Objects.equals(locale, other.locale) && Objects.equals(zone, other.zone);
-        }
-
-        @Override
-        public String toString() {
-            return "TimestampGeneratorModel [locale=" + locale + ", zone=" + zone + "]";
-        }
-
-        public Locale getLocale() {
-            return locale;
-        }
-
-        public ZoneId getZone() {
-            return zone;
-        }
     }
 
     /** Class serves as a getter to dynamic barcode creation. */
-    protected static class ImageGeneratorModel implements TemplateMethodModelEx {
-        private final MediaXType desiredFormat;
-        private final IDocComponentConverter converter;
-
+    record ImageGeneratorModel(MediaXType desiredFormat, IDocComponentConverter converter) implements TemplateMethodModelEx {
         // parameters are of type freemarker.template.SimpleScalar / SimpleNumber etc.
         @SuppressWarnings("rawtypes")
         @Override
@@ -410,46 +335,29 @@ public class DocFormatter implements IDocFormatter {
             }
             return WRAPPER.wrap(converted);
         }
+    }
 
-        public ImageGeneratorModel(MediaXType desiredFormat, IDocComponentConverter converter) {
-            super();
-            this.desiredFormat = desiredFormat;
-            this.converter = converter;
-        }
+    record EncoderModel(DocumentEncoderType conversionType) implements TemplateMethodModelEx {
 
         @Override
-        public int hashCode() {
-            return Objects.hash(converter, desiredFormat);
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj)
-                return true;
-            if (obj == null)
-                return false;
-            if (getClass() != obj.getClass())
-                return false;
-            ImageGeneratorModel other = (ImageGeneratorModel) obj;
-            return Objects.equals(converter, other.converter) && Objects.equals(desiredFormat, other.desiredFormat);
-        }
-
-        @Override
-        public String toString() {
-            return "ImageGeneratorModel [desiredFormat=" + desiredFormat + ", converter=" + converter + "]";
-        }
-
-        public MediaXType getDesiredFormat() {
-            return desiredFormat;
-        }
-
-        public IDocComponentConverter getConverter() {
-            return converter;
+        public Object exec(final List args) throws TemplateModelException {
+            if (args.size() != 1 || args.get(0) == null) {
+                throw new TemplateModelException("EncoderModel must be called with exactly one non-null parameter");
+            }
+            final String parameterAsText = args.get(0).toString();
+            switch (conversionType) {
+            case BASE64:
+                return Base64.getEncoder().encodeToString(parameterAsText.getBytes(Charsets.UTF_8));
+            case BASE64URL:
+                return Base64.getUrlEncoder().encodeToString(parameterAsText.getBytes(Charsets.UTF_8));
+            default:
+                return "";  // not yet supported
+            }
         }
     }
 
     /** Class resolves URLs and creates base64 data from it. */
-    protected static class Base64FromUrlGeneratorModel implements TemplateMethodModelEx {
+    record Base64FromUrlGeneratorModel() implements TemplateMethodModelEx {
         // parameters are of type freemarker.template.SimpleScalar / SimpleNumber etc.
         @SuppressWarnings("rawtypes")
         @Override
@@ -478,16 +386,7 @@ public class DocFormatter implements IDocFormatter {
     }
 
     /** Class serves as a getter to language translations via property files. */
-    protected static class PropertyTranslationsFuncModel implements TemplateMethodModelEx {
-        private final String language;
-        private final String[] languages;
-
-        private final ITranslationProvider translationProvider = Jdp.getOptional(ITranslationProvider.class);
-
-        public PropertyTranslationsFuncModel(final String language) {
-            this.language = language;
-            this.languages = translationProvider != null ? translationProvider.resolveLanguagesToCheck(language, true) : null;
-        }
+    record PropertyTranslationsFuncModel(String language, String[] languages, ITranslationProvider translationProvider) implements TemplateMethodModelEx {
 
         @SuppressWarnings("rawtypes")
         @Override
@@ -506,16 +405,7 @@ public class DocFormatter implements IDocFormatter {
     }
 
     /** Class serves as a getter to language translations via property files. */
-    protected static class PropertyTranslations implements TemplateHashModel {
-        private final String language;
-        private final String[] languages;
-
-        private final ITranslationProvider translationProvider = Jdp.getOptional(ITranslationProvider.class);
-
-        public PropertyTranslations(final String language) {
-            this.language = language;
-            this.languages = translationProvider != null ? translationProvider.resolveLanguagesToCheck(language, true) : null;
-        }
+    record PropertyTranslations (String language, String[] languages, ITranslationProvider translationProvider) implements TemplateHashModel {
 
         @Override
         public TemplateModel get(final String key) throws TemplateModelException {
@@ -537,11 +427,8 @@ public class DocFormatter implements IDocFormatter {
     }
 
     /** Class serves as a getter to components, which performs media type conversion. */
-    protected static class ComponentAccessor implements TemplateHashModel {
-        private final Map<String, MediaData> components;
-        private final MediaXType desiredFormat;
-        private final IDocComponentConverter converter;
-        private final String tenantId; // just for logging
+    record ComponentAccessor(Map<String, MediaData> components, MediaXType desiredFormat,
+            IDocComponentConverter converter, String tenantId) implements TemplateHashModel {
 
         @Override
         public TemplateModel get(final String key) throws TemplateModelException {
@@ -569,54 +456,6 @@ public class DocFormatter implements IDocFormatter {
         @Override
         public boolean isEmpty() throws TemplateModelException {
             return this.components.isEmpty();
-        }
-
-        public ComponentAccessor(Map<String, MediaData> components, MediaXType desiredFormat, IDocComponentConverter converter, String tenantId) {
-            super();
-            this.components = components;
-            this.desiredFormat = desiredFormat;
-            this.converter = converter;
-            this.tenantId = tenantId;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(components, converter, desiredFormat, tenantId);
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj)
-                return true;
-            if (obj == null)
-                return false;
-            if (getClass() != obj.getClass())
-                return false;
-            ComponentAccessor other = (ComponentAccessor) obj;
-            return Objects.equals(components, other.components) && Objects.equals(converter, other.converter)
-                    && Objects.equals(desiredFormat, other.desiredFormat) && Objects.equals(tenantId, other.tenantId);
-        }
-
-        @Override
-        public String toString() {
-            return "ComponentAccessor [components=" + components + ", desiredFormat=" + desiredFormat + ", converter=" + converter + ", tenantId=" + tenantId
-                    + "]";
-        }
-
-        public Map<String, MediaData> getComponents() {
-            return components;
-        }
-
-        public MediaXType getDesiredFormat() {
-            return desiredFormat;
-        }
-
-        public IDocComponentConverter getConverter() {
-            return converter;
-        }
-
-        public String getTenantId() {
-            return tenantId;
         }
     }
 
@@ -773,14 +612,19 @@ public class DocFormatter implements IDocFormatter {
             eMap.put("timeZone", effectiveTimeZone.getId());
             final MapModel eRepo = new MapModel(eMap, WRAPPER);
 
-            final Map<String, Object> map = new HashMap<>(10);
+            final ITranslationProvider translationProvider = Jdp.getOptional(ITranslationProvider.class);
+            final String[] languages = translationProvider != null ? translationProvider.resolveLanguagesToCheck(languageCode, true) : null;
+
+            final Map<String, Object> map = new HashMap<>(16);
             map.put("s", new BeanModel(selector, WRAPPER));
             map.put("d", new BeanModel(data, new EscapingWrapper(mediaType, converter, escapeToRaw)));
             map.put("c", new ComponentAccessor(components, mediaType, converter, sharedTenantId));
-            map.put("p", new PropertyTranslations(languageCode));
-            map.put("q", new PropertyTranslationsFuncModel(languageCode));
+            map.put("p", new PropertyTranslations(languageCode, languages, translationProvider));
+            map.put("q", new PropertyTranslationsFuncModel(languageCode, languages, translationProvider));
             map.put("i", new ImageGeneratorModel(mediaType, converter));
             map.put("u", new Base64FromUrlGeneratorModel());
+            map.put("base64",    new EncoderModel(DocumentEncoderType.BASE64));
+            map.put("base64url", new EncoderModel(DocumentEncoderType.BASE64URL));
             map.put("t", new TimestampGeneratorModel(myLocale, effectiveTimeZone));
             map.put("e", eRepo);
             map.put("debug", new DebugModel());

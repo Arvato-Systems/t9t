@@ -25,79 +25,46 @@ import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.services.IJdbcConnectionProvider;
-import com.arvatosystems.t9t.cfg.be.DatabaseBrandType;
+import com.arvatosystems.t9t.base.services.ISingleRefGenerator;
 
 import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Named;
+import de.jpaw.dp.Singleton;
 import de.jpaw.util.ExceptionUtil;
+import jakarta.annotation.Nonnull;
 
-class LazyJdbcSequenceBasedSingleRefGenerator {
+@Singleton
+@Named("lazySequenceJDBC")  // only acquires an ID once the first request has been seen
+public class LazyJdbcSequenceBasedSingleRefGenerator implements ISingleRefGenerator {
     private static final Logger LOGGER = LoggerFactory.getLogger(LazyJdbcSequenceBasedSingleRefGenerator.class);
 
-    private volatile long lastProvidedValue;
-    private volatile int remainingCachedIds;
-    private final int cacheSize;
-    private final String sqlCommandForNextValue;
+    protected final IJdbcConnectionProvider jdbcProvider = Jdp.getRequired(IJdbcConnectionProvider.class, "independent");
 
-    private final IJdbcConnectionProvider jdbcProvider = Jdp.getRequired(IJdbcConnectionProvider.class, "independent");
-
-    LazyJdbcSequenceBasedSingleRefGenerator(final int index, final DatabaseBrandType dialect, final int cacheSize) {
-
-        lastProvidedValue = -1L;
-        remainingCachedIds = 0;
-        this.cacheSize = cacheSize; // intentionally not tunable via xml config due to the risk of overlapping IDs if someone decreases values between restarts.
-        switch (dialect) {
-        case POSTGRES:
-            sqlCommandForNextValue = String.format("SELECT nextval('cm_idgen_%04d_seq')", index);
-            break;
-        case ORACLE:
-            sqlCommandForNextValue = String.format("SELECT cm_idgen_%04d_seq.NEXTVAL FROM DUAL", index);
-            break;
-        case HANA:
-            sqlCommandForNextValue = String.format("SELECT cm_idgen_%04d_seq.NEXTVAL FROM DUMMY", index);
-            break;
-        case MS_SQL_SERVER: // requires MS SQL server 2012 or newer (sequences were introduces only then)
-            sqlCommandForNextValue = String.format("SELECT NEXT VALUE FOR [dbo].[cm_idgen_%04d_seq]", index);
-            break;
-        default: // does not happen!
-            LOGGER.error("undefined DatabaseDialect: {}", dialect.name());
-            throw new T9tException(T9tException.JDBC_UNKNOWN_DIALECT, dialect.name()); // this would be a fatal error
-        }
-    }
-
-    synchronized long getnextId() {
-        if (remainingCachedIds > 0) {
-            --remainingCachedIds;
-            ++lastProvidedValue;
-        } else {
-            long nextval = 0L;
-            // no data in cache, must obtain a new database sequence number
-            // use the current thread's EntityManager to request a new value
-            // from the database, because then we do not need to synchronize
-            // different threads requesting different values at the same time.
-            try (Connection conn = jdbcProvider.getJDBCConnection();
-                 Statement stmt  = conn.createStatement();
-                 ResultSet rs    = stmt.executeQuery(sqlCommandForNextValue)) {
-                if (rs.next()) {
-                    final Object result = rs.getObject(1);
-                    if (result instanceof Number rNumber) {
-                        // approach to cover all numeric values...
-                        nextval = rNumber.longValue();
-                    } else {
-                        LOGGER.error("sequence query returned type {} which cannot be processed (yet)", result.getClass().getCanonicalName());
-                        throw new T9tException(T9tException.JDBC_BAD_TYPE_RETURNED, result.getClass().getCanonicalName());
-                    }
+    @Override
+    public long getNextSequence(@Nonnull final String selectStatement) {
+        // no data in cache, must obtain a new database sequence number
+        // use the current thread's EntityManager to request a new value
+        // from the database, because then we do not need to synchronize
+        // different threads requesting different values at the same time.
+        try (Connection conn = jdbcProvider.getJDBCConnection();
+             Statement stmt  = conn.createStatement();
+             ResultSet rs    = stmt.executeQuery(selectStatement)) {
+            if (rs.next()) {
+                final Object result = rs.getObject(1);
+                if (result instanceof Number rNumber) {
+                    // approach to cover all numeric values...
+                    return rNumber.longValue();
                 } else {
-                    LOGGER.error("No result returned from sequence query {}", sqlCommandForNextValue);
-                    throw new T9tException(T9tException.JDBC_NO_RESULT_RETURNED, sqlCommandForNextValue);
+                    LOGGER.error("sequence query returned type {} which cannot be processed (yet)", result.getClass().getCanonicalName());
+                    throw new T9tException(T9tException.JDBC_BAD_TYPE_RETURNED, result.getClass().getCanonicalName());
                 }
-            } catch (final SQLException e) {
-                LOGGER.error("General SQL exception: Could not obtain next sequence value: {}", ExceptionUtil.causeChain(e));
-                throw new T9tException(T9tException.JDBC_GENERAL_SQL, ExceptionUtil.causeChain(e));
+            } else {
+                LOGGER.error("No result returned from sequence query {}", selectStatement);
+                throw new T9tException(T9tException.JDBC_NO_RESULT_RETURNED, selectStatement);
             }
-            // store data for the next bunch of results
-            lastProvidedValue = nextval * cacheSize;
-            remainingCachedIds = cacheSize - 1;
+        } catch (final SQLException e) {
+            LOGGER.error("General SQL exception: Could not obtain next sequence value: {}", ExceptionUtil.causeChain(e));
+            throw new T9tException(T9tException.JDBC_GENERAL_SQL, ExceptionUtil.causeChain(e));
         }
-        return lastProvidedValue;
     }
 }

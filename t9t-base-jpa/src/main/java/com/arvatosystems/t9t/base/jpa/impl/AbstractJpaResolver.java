@@ -160,4 +160,9 @@ public abstract class AbstractJpaResolver<
         mapper.processSearchPrefixForDB(filter, sortColumns);
         return resolver.searchKey(buildCriteria(limit, offset, filter, sortColumns));
     }
+
+    @Override
+    public Long createNewPrimaryKey() {
+        return resolver.createNewPrimaryKey();
+    }
 }

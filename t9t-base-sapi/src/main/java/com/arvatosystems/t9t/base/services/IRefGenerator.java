@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.base.services;
 
+import jakarta.annotation.Nonnull;
+
 public interface IRefGenerator {
     /**
      * Factor to multiply the value obtained from sequences with.
@@ -31,14 +33,26 @@ public interface IRefGenerator {
     int OFFSET_UNSCALED_APPLICATION   = 6000;
     int OFFSET_UNSCALED_CUSTOMIZATION = 7000;
 
+//    /**
+//     * Returns a valid technical Id which is guaranteed to be unique for all keys obtained through this method.
+//     * Deprecated. Use <code>generateRef(String tablename, int rttiOffset)</code> instead.
+//     *
+//     * @param rttiOffset an offset for run time type information
+//     *
+//     * @return The new generated key value
+//     */
+//    @Deprecated
+//    long generateRef(int rttiOffset);
+
     /**
      * Returns a valid technical Id which is guaranteed to be unique for all keys obtained through this method.
      *
-     * @param rttiOffset
-     *            An offset for run time type information
+     * @param tabename   the SQL name of the table for which the primary key should be used
+     * @param rttiOffset an offset for run time type information
+     *
      * @return The new generated key value
      */
-    long generateRef(int rttiOffset);
+    long generateRef(@Nonnull String tablename, int rttiOffset);
 
     /**
      * Retrieves the run time type information from a generated key.

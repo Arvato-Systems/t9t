@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.ICustomization;
-import com.arvatosystems.t9t.base.services.IRefGenerator;
 import com.arvatosystems.t9t.base.services.ITextSearch;
 import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration;
 import com.arvatosystems.t9t.server.services.IRequestLogger;
@@ -41,10 +40,6 @@ public class Init30000FrameworkAndPlausis implements StartupOnly {
         Jdp.forAllEntries(AbstractRequestHandler.class, cls -> {
             LOGGER.warn("RequestHandlers don't need a Jdp scope: {}", cls.actualType.getCanonicalName());
         });
-
-        // launch the key ref generator
-        Jdp.bindByQualifierWithFallback(IRefGenerator.class,
-            cfg.getKeyPrefetchConfiguration() == null ? UNSPECIFIED : cfg.getKeyPrefetchConfiguration().getStrategy());
 
         // select the message log microservice
         Jdp.bindByQualifierWithFallback(IRequestLogger.class,

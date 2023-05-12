@@ -27,6 +27,11 @@ import de.jpaw.bonaparte.refs.BaseRefResolver;
 /** API to noSQL backends (mini EntityManager) */
 public interface IRefResolver<REF extends AbstractRef, DTO extends REF, TRACKING extends TrackingBase> extends BaseRefResolver<REF, DTO, TRACKING> {
     /**
+     * Returns a new surrogate key value.
+     */
+    Long createNewPrimaryKey();
+
+    /**
      * Returns the key for the provided unique index. Null-safe, returns null for a null parameter. Throws an exception if the reference does not exist.
      */
     Long getRef(REF refObject);

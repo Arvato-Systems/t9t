@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import api.*
+import meta.*
 import t9t.base.api.*
 import t9t.base.trns.*
 import t9t.base.entities.*
@@ -46,5 +47,22 @@ package (com.arvatosystems) t9t.trns.request {
 
     class MultiTranslationsReadResponse extends ServiceResponse {
         required translation required Map<String>   translations;
+    }
+
+    /**
+     * Reads multiple translations in a batch, performs a CRUD merge for each entry.
+     * Input is in CSV format
+     */
+    class TranslationsBatchLoadRequest extends RequestParameters {
+        required enum TextCategory                  category;
+        optional Ascii(1)                           delimiter;
+        required Unicode(10000) required List<>     csv; // data in CSV format, one list entry per line
+    }
+
+    final class TranslationsResource {
+        required identifier                         qualifier;
+        required Unicode(30)                        id;
+        required languageTag                        languageCode;
+        required translation                        text;
     }
 }

@@ -109,7 +109,7 @@ public abstract class AbstractResolverSurrogateKey<
 
     @Override
     public Long createNewPrimaryKey() {
-        return Long.valueOf(genericRefGenerator.generateRef(getRtti()));
+        return Long.valueOf(genericRefGenerator.generateRef(getDatabaseTablename(), getRtti()));
     }
 
     @Override

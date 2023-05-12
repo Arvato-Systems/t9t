@@ -18,6 +18,7 @@ package com.arvatosystems.t9t.auth.be.impl;
 import com.arvatosystems.t9t.auth.TenantDTO;
 import com.arvatosystems.t9t.auth.UserDTO;
 import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.services.T9tInternalConstants;
 
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
@@ -35,7 +36,7 @@ public final class T9tDefaultContext {
     public static final JwtInfo DEFAULT_JWT = new JwtInfo();
     static {
         DEFAULT_JWT.setUserId(T9tConstants.TECHNICAL_USER_ID);
-        DEFAULT_JWT.setUserRef(T9tConstants.TECHNICAL_USER_REF);
+        DEFAULT_JWT.setUserRef(T9tInternalConstants.TECHNICAL_USER_REF);
         DEFAULT_JWT.setLogLevel(UserLogLevelType.STEALTH);
         DEFAULT_JWT.setLogLevelErrors(UserLogLevelType.MESSAGE_ENTRY);
         DEFAULT_JWT.setName("t9t system user");
@@ -53,7 +54,7 @@ public final class T9tDefaultContext {
 
     public static final UserDTO DEFAULT_USER_DTO = new UserDTO();
     static {
-        DEFAULT_USER_DTO.setObjectRef(T9tConstants.TECHNICAL_USER_REF);
+        DEFAULT_USER_DTO.setObjectRef(T9tInternalConstants.TECHNICAL_USER_REF);
         DEFAULT_USER_DTO.setUserId(T9tConstants.TECHNICAL_USER_ID);
         DEFAULT_USER_DTO.setIsActive(true);
         DEFAULT_USER_DTO.setName("t9t system user");
@@ -62,7 +63,7 @@ public final class T9tDefaultContext {
 
     public static final UserDTO STARTUP_USER_DTO = new UserDTO();
     static {
-        STARTUP_USER_DTO.setObjectRef(T9tConstants.STARTUP_USER_REF);
+        STARTUP_USER_DTO.setObjectRef(T9tInternalConstants.STARTUP_USER_REF);
         STARTUP_USER_DTO.setUserId(T9tConstants.STARTUP_USER_ID);
         STARTUP_USER_DTO.setIsActive(true);
         STARTUP_USER_DTO.setName("t9t system bootstrap user");
@@ -71,7 +72,7 @@ public final class T9tDefaultContext {
 
     public static final JwtInfo STARTUP_JWT = new JwtInfo();
     static {
-        STARTUP_JWT.setUserRef(T9tConstants.STARTUP_USER_REF);
+        STARTUP_JWT.setUserRef(T9tInternalConstants.STARTUP_USER_REF);
         STARTUP_JWT.setUserId(T9tConstants.STARTUP_USER_ID);
         STARTUP_JWT.setTenantId(T9tConstants.GLOBAL_TENANT_ID);
         STARTUP_JWT.setLogLevel(UserLogLevelType.STEALTH);

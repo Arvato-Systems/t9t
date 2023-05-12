@@ -57,6 +57,7 @@ public class SqlMigrationExecutor implements StartupOnly {
         config.ignoreMigrationPatterns("*:Missing");
         config.baselineOnMigrate(true);
         config.dataSource(dbConfiguration.getJdbcConnectString(), dbConfiguration.getUsername(), dbConfiguration.getPassword());
+        config.loggers("slf4j");
 
         final Flyway flyway = new Flyway(config);
         return flyway;
@@ -64,8 +65,22 @@ public class SqlMigrationExecutor implements StartupOnly {
 
     public static void migrate() throws IOException {
         final T9tServerConfiguration serverConfiguration = ConfigProvider.getConfiguration();
+
         final RelationalDatabaseConfiguration dbConfiguration = serverConfiguration.getDatabaseConfiguration();
+        migrateDatabase(dbConfiguration);
+
+        final RelationalDatabaseConfiguration secondaryDbConfiguration = serverConfiguration.getSecondaryDatabaseConfig();
+        if (secondaryDbConfiguration != null)
+            migrateDatabase(secondaryDbConfiguration);
+    }
+
+    private static void migrateDatabase(final RelationalDatabaseConfiguration dbConfiguration) {
         final List<String> migrations = dbConfiguration.getMigrations();
+
+        if (migrations == null) {
+            LOGGER.info("No migration files found for: " + dbConfiguration.getJdbcConnectString());
+            return;
+        }
 
         for (final String migration : migrations) {
             final String[] locationsAndMigrationTable = migration.split("=");
@@ -73,7 +88,7 @@ public class SqlMigrationExecutor implements StartupOnly {
             // migrate
             final Flyway flyway = configureFlywayForDatabase(locationsAndMigrationTable[0], locationsAndMigrationTable[1], dbConfiguration);
 
-            LOGGER.info("Trying to migrate database based on following information: " + migration);
+            LOGGER.info("Trying to migrate database " +  dbConfiguration.getJdbcConnectString() + " based on following information: " + migration);
             flyway.migrate();
         }
     }

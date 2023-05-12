@@ -54,10 +54,7 @@ class ConfigProvider {
             defaultKeyChunkSize     = 100
             prefetchedKeyChunkSize  = 20
             numKeyFetchThreads      = 1
-//            prefetchByRtti          = new HashMap<Integer,Integer>(50) => [
-//                put(1, 10)      // session
-//                put(2, 500)     // messages
-//            ]
+            useSequencePerTable     = Boolean.TRUE
         ]
         logWriterConfiguration      = new LogWriterConfiguration => [
             strategy                = "asynchronous"
@@ -152,6 +149,8 @@ class ConfigProvider {
             schedulerEnvironment    = a.schedulerEnvironment    ?: b.schedulerEnvironment
             z                       = a.z                       ?: b.z
         ]
+        val envVarResolver = new CfgFromEnvironmentProvider
+        myConfiguration.treeWalkString(envVarResolver, true)
 
         // preprocess any custom fields into map for later easier access
         if (myConfiguration.z !== null) {
@@ -160,7 +159,9 @@ class ConfigProvider {
                 val equalsPos = indexOf(EQUALS_SIGN)
                 if (equalsPos > 0) {
                     // store key/value pair
-                    customParameters.put(substring(0, equalsPos).trim, substring(equalsPos+1).trim)
+                    customParameters.put(substring(0, equalsPos).trim,
+                        envVarResolver.convert(substring(equalsPos+1).trim, null)
+                    )
                 } else {
                     LOGGER.warn("Custom (z field) entry {} has no '=' delimiter, ignoring entry", it)
                 }

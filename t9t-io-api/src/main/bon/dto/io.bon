@@ -412,7 +412,7 @@ package (com.arvatosystems) t9t.io {
     class AsyncMessageDTO extends AsyncMessageRef {
         required t9tShortId                             asyncChannelId properties dropdown="asyncChannelId";  // used to retrieve the URL and authentication parameters
         optional (AsyncQueueRef..., AsyncQueueDTO)      asyncQueueRef  properties ref, searchprefix="asyncQueue", simpleref="getObjectRef()", dropdown="asyncQueueId";
-        optional Enum ExportStatusEnum                  status;                                  // specifies if the message must still be sent or has been sent
+        optional Enum ExportStatusEnum                  status         properties nullWhenZero;               // specifies if the message must still be sent or has been sent
         optional Instant(3)                             whenSent;                                // defines when the message was initiated (which is before the commit of the sending transaction is done, and before the EventBus transmission)
         optional Instant(3)                             lastAttempt;                             // null if no initial send attempt done, date of transmission or last attempt otherwise
         required integer                                attempts;                                // number of send attempts so far (initially 0)

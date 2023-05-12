@@ -28,7 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceRequest;
@@ -39,6 +38,7 @@ import com.arvatosystems.t9t.base.be.execution.RequestContextScope;
 import com.arvatosystems.t9t.base.request.ProcessStatusDTO;
 import com.arvatosystems.t9t.base.services.IAsyncRequestProcessor;
 import com.arvatosystems.t9t.base.services.IClusterEnvironment;
+import com.arvatosystems.t9t.base.services.T9tInternalConstants;
 import com.arvatosystems.t9t.server.services.IUnauthenticatedServiceRequestExecutor;
 import com.arvatosystems.t9t.ssm.SchedulerConcurrencyType;
 import com.arvatosystems.t9t.ssm.request.DealWithPriorJobInstancesRequest;
@@ -119,7 +119,7 @@ public class PerformScheduledJob implements Job {
                 jobName = key.getName();
             }
         }
-        MDC.put(T9tConstants.MDC_SSM_JOB_ID, jobName);
+        MDC.put(T9tInternalConstants.MDC_SSM_JOB_ID, jobName);
 
         if (PerformScheduledJob.FIRE_ASYNCHRONOUSLY) {
             this.sessionFactory.submitTask(srq, true, false);

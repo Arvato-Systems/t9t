@@ -36,6 +36,7 @@ import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.IAutonomousExecutor;
 import com.arvatosystems.t9t.base.services.IPostCommitHook;
 import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.base.services.T9tInternalConstants;
 import com.arvatosystems.t9t.bpmn.IBPMObjectFactory;
 import com.arvatosystems.t9t.bpmn.IWorkflowStep;
 import com.arvatosystems.t9t.bpmn.ProcessDefinitionDTO;
@@ -173,8 +174,8 @@ public class BpmnRunner implements IBpmnRunner {
 
     protected boolean run(final RequestContext ctx, final ProcessExecStatusEntity statusEntity, final ProcessDefinitionDTO pd,
             final IBPMObjectFactory<?> factory, final Long lockRef, final String lockId) {
-        MDC.put(T9tConstants.MDC_BPMN_PROCESS, pd.getName() == null ? Objects.toString(pd.getObjectRef()) : pd.getName());
-        MDC.put(T9tConstants.MDC_BPMN_PROCESS_INSTANCE, Objects.toString(statusEntity.getObjectRef()));
+        MDC.put(T9tInternalConstants.MDC_BPMN_PROCESS, pd.getName() == null ? Objects.toString(pd.getObjectRef()) : pd.getName());
+        MDC.put(T9tInternalConstants.MDC_BPMN_PROCESS_INSTANCE, Objects.toString(statusEntity.getObjectRef()));
 
         try {
             final Object workflowObject = factory.read(statusEntity.getTargetObjectRef(), lockRef, lockId);
@@ -201,7 +202,7 @@ public class BpmnRunner implements IBpmnRunner {
             while (true) {
                 // execute a step (or skip it)
                 final T9tAbstractWorkflowStep nextStep = pd.getWorkflow().getSteps().get(nextStepToExecute);
-                MDC.put(T9tConstants.MDC_BPMN_STEP, nextStep.getLabel());
+                MDC.put(T9tInternalConstants.MDC_BPMN_STEP, nextStep.getLabel());
 
                 try {
                     LOGGER.debug("Starting workflow step {}: {} for ref {} at step {} ({})", ctx.tenantId, pd.getProcessDefinitionId(),
@@ -288,12 +289,12 @@ public class BpmnRunner implements IBpmnRunner {
                     }
                     throw e;
                 } finally {
-                    MDC.remove(T9tConstants.MDC_BPMN_STEP);
+                    MDC.remove(T9tInternalConstants.MDC_BPMN_STEP);
                 }
             }
         } finally {
-            MDC.remove(T9tConstants.MDC_BPMN_PROCESS);
-            MDC.remove(T9tConstants.MDC_BPMN_PROCESS_INSTANCE);
+            MDC.remove(T9tInternalConstants.MDC_BPMN_PROCESS);
+            MDC.remove(T9tInternalConstants.MDC_BPMN_PROCESS_INSTANCE);
         }
     }
 

@@ -37,7 +37,7 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
 
     class T9tServerConfiguration xmlRoot {
         optional Unicode(36)                        serverIdSelf;                    // the server ID of this cluster (see key in uplink configuration)
-        required Ascii(16)                          persistenceUnitName properties cmdline=";datasource";// technical username
+        required Ascii(16)                          persistenceUnitName;             // technical username
         optional (RelationalDatabaseConfiguration...) databaseConfiguration;
         optional (RelationalDatabaseConfiguration...) secondaryDatabaseConfig;
         optional (NoSqlDatabaseConfiguration...)    noSqlConfiguration;
@@ -79,8 +79,8 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
     }
 
     class RelationalDatabaseConfiguration {
-        optional Ascii(16)                          username            properties cmdline=";dbuser";   // technical username
-        optional Ascii(16)                          password            properties cmdline=";dbpw";     // password
+        optional Ascii(16)                          username;                       // technical username
+        optional Unicode(32)                        password;                       // password
         optional Enum DatabaseBrandType             databaseBrand;                  // which vendor of DB you are using
         optional Unicode(255)                       jdbcDriverClass;                // class name of JDBC driver
         optional Unicode(255)                       jdbcConnectString;              // connect string for the data source
@@ -99,13 +99,12 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
     class KeyPrefetchConfiguration {
         optional namedQualifier                     strategy;                       // select the implementation
         required int                                locationOffset;                 // offset for the location (0 / 5000)
-        required int                                defaultKeyChunkSize;            // how many PK values to fetch at a time? (i.e. sequence scaling)
-        required int                                prefetchedKeyChunkSize;         // how many PK values to fetch at a time for entities with prefetching?
-        required int                                numKeyFetchThreads;             // how many threads are actively fetching keys?
+        optional Integer                            defaultKeyChunkSize;            // (currently unused) how many PK values to fetch at a time? (i.e. sequence scaling)
+        optional Integer                            prefetchedKeyChunkSize;         // (currently unused) how many PK values to fetch at a time for entities with prefetching?
+        optional Integer                            numKeyFetchThreads;             // (currently unused) how many threads are actively fetching keys?
         optional Integer                            cacheSize;                      // common default cache size across all RTTIs for the scaled IDs (scaled = * 10000 + RTTI + locationOffset)
         optional Integer                            cacheSizeUnscaled;              // common default cache size for the unscaled sequence results
-        // maps not yet supported by XML
-        //required Int required Map<Integer>          prefetchByRtti;                 // how many key values to prefetch for a given RTTI?
+        optional Boolean                            useSequencePerTable;            // if null or false: use RTTI for sequences, if true: sequences per table
     }
 
     class Bpm2Configuration {
@@ -140,7 +139,7 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
     }
 
     class ServerConfiguration {
-        optional Integer                            port                        properties cmdline="p;port";    // on which port to listen
+        optional Integer                            port                        properties cmdline="p;port"; // on which port to listen
         optional Unicode(80)                        filesystemContext;              // the base of the file system under $HOME, only used if pathRoot is not set, defaults to "fortytwo"
         optional Unicode(255)                       filesystemPathRoot;             // the base of the file system (defaults to $HOME/fortytwo)
         optional Boolean                            jcaBridge;                      // defines if this instance should send events to a wildfly server
@@ -155,10 +154,10 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
     }
 
     class ApplicationConfiguration {
-        optional Integer                            workerPoolSize              properties cmdline=";workerPoolSize";                 // vert.x DEFAULT_WORKER_POOL_SIZE [vert.x-worker-thread-(n)]
-        optional Integer                            eventLoopPoolSize           properties cmdline=";eventLoopPoolSize";              // vert.x DEFAULT_EVENT_LOOP_POOL_SIZE  [vert.x-eventloop-thread-(n)]
-        optional Integer                            maxWorkerExecuteTime        properties cmdline=";maxWorkerExecuteTime";           // vert.x DEFAULT_MAX_WORKER_EXECUTE_TIME, in seconds
-        optional Integer                            maxEventLoopExecuteTime     properties cmdline=";maxEventLoopExecuteTime";        // vert.x DEFAULT_MAX_EVENT_LOOP_EXECUTE_TIME in seconds
+        optional Integer                            workerPoolSize              properties cmdline=";workerPoolSize";              // vert.x DEFAULT_WORKER_POOL_SIZE [vert.x-worker-thread-(n)]
+        optional Integer                            eventLoopPoolSize           properties cmdline=";eventLoopPoolSize";           // vert.x DEFAULT_EVENT_LOOP_POOL_SIZE  [vert.x-eventloop-thread-(n)]
+        optional Integer                            maxWorkerExecuteTime        properties cmdline=";maxWorkerExecuteTime";        // vert.x DEFAULT_MAX_WORKER_EXECUTE_TIME, in seconds
+        optional Integer                            maxEventLoopExecuteTime     properties cmdline=";maxEventLoopExecuteTime";     // vert.x DEFAULT_MAX_EVENT_LOOP_EXECUTE_TIME in seconds
         optional Integer                            blockedThreadCheckInterval  properties cmdline=";blockedThreadCheckInterval";  // vert.x DEFAULT_BLOCKED_THREAD_CHECK_INTERVAL in seconds
         optional Integer                            autonomousPoolSize;             // Executor pool size for autonomous transactions. Defaults to 4 [t9t-autonomous-(n)]
         optional Integer                            localAsyncPoolSize;             // Executor pool size for async requests - for local servers (non vert.x based) it defaults to 4, for vert.x based servers if not configured, the standard worker pool will be used

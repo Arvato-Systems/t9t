@@ -15,47 +15,64 @@
  */
 package com.arvatosystems.t9t.msglog.jpa.request;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.Instant;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tConstants;
-import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.batch.StatisticsDTO;
 import com.arvatosystems.t9t.msglog.jpa.persistence.IMessageEntityResolver;
 import com.arvatosystems.t9t.msglog.request.RemoveOldMessageEntriesRequest;
+import com.arvatosystems.t9t.statistics.services.IStatisticsService;
 
 import de.jpaw.dp.Jdp;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 public class RemoveOldMessageEntriesRequestHandler extends AbstractRequestHandler<RemoveOldMessageEntriesRequest> {
-    protected final IMessageEntityResolver resolver = Jdp.getRequired(IMessageEntityResolver.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RemoveOldMessageEntriesRequestHandler.class);
+
+    private final IMessageEntityResolver resolver          = Jdp.getRequired(IMessageEntityResolver.class);
+    private final IStatisticsService     statisticsService = Jdp.getRequired(IStatisticsService.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final RemoveOldMessageEntriesRequest request) {
-
-        if (!ctx.tenantId.equals(T9tConstants.GLOBAL_TENANT_ID)) {
-            throw new T9tException(T9tException.RESTRICTED_ACCESS, "Only accessible by global tenant");
-        }
+        final boolean isTenantSpecific = !ctx.tenantId.equals(T9tConstants.GLOBAL_TENANT_ID);
+        final boolean keepErrorRecords = Boolean.TRUE.equals(request.getKeepErrorRequests());
 
         final EntityManager em = resolver.getEntityManager();
         String query = "DELETE FROM MessageEntity msg WHERE executionStartedAt < :deleteUntil";
 
         //if TRUE, do not delete entries which have returnCode >= 200000000 (exception return codes)
-        if (request.getKeepErrorRequests() != null && request.getKeepErrorRequests()) {
+        if (keepErrorRecords) {
             query += " AND returnCode < 200000000";
+        }
+        if (isTenantSpecific) {
+            query += " AND tenantId = :tenantId";
         }
 
         final Query q = em.createQuery(query);
 
-        final LocalDateTime thisMorning = LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0));
-        q.setParameter("deleteUntil", thisMorning.minusDays(request.getKeepMaxDaysAg()));
-        q.executeUpdate();
+        q.setParameter("deleteUntil", ctx.executionStart.minusSeconds(request.getKeepMaxDaysAge() * 86400L));
+        if (isTenantSpecific) {
+            q.setParameter("tenantId", ctx.tenantId);
+        }
 
+        final int recordsDeleted = q.executeUpdate();
+        LOGGER.debug("Deleted {} log_messages records{}", recordsDeleted, keepErrorRecords ? " (but keep error records)" : " (including error records)");
+
+        final Instant exportFinished = Instant.now();
+        final StatisticsDTO stat = new StatisticsDTO();
+        stat.setRecordsProcessed(recordsDeleted);
+        stat.setStartTime(ctx.executionStart);
+        stat.setEndTime(exportFinished);
+        stat.setJobRef(ctx.internalHeaderParameters.getProcessRef());
+        stat.setProcessId(keepErrorRecords ? "delMsgLogOk" : "delMsgLogErr");
+        statisticsService.saveStatisticsData(stat);
         return ok();
     }
 }

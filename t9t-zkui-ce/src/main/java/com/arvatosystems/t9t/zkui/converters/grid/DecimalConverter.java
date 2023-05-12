@@ -16,15 +16,11 @@
 package com.arvatosystems.t9t.zkui.converters.grid;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.lang.Generics;
-import org.zkoss.util.Locales;
-import org.zkoss.util.resource.Labels;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.DataWithTracking;
@@ -35,25 +31,13 @@ import de.jpaw.dp.Singleton;
 
 @Singleton
 @Named("java.math.BigDecimal")
-public class DecimalConverter implements IItemConverter<BigDecimal> {
+public class DecimalConverter extends AbstractDecimalFormatConverter<BigDecimal> implements IItemConverter<BigDecimal> {
     private static final Logger LOGGER = LoggerFactory.getLogger(DecimalConverter.class);
-
-    private final String format;
-
-    private DecimalConverter(String format) {
-        if (format == null) {
-            throw new NullPointerException("format not set in constructor");
-        }
-        this.format = Labels.getLabel(format, "###,##0.00");
-    }
-
-    public DecimalConverter() {
-        this("com.decimal.format");
-    }
+    private static final String DEFAULT_PATTERN = "###,##0.00";
 
     @Override
-    public boolean isRightAligned() {
-        return true;
+    protected String getPattern() {
+        return DEFAULT_PATTERN;
     }
 
     @Override
@@ -75,13 +59,6 @@ public class DecimalConverter implements IItemConverter<BigDecimal> {
             throw new UnsupportedOperationException("Instance " + value.getClass().getName() + " is not supported. Field:" + fieldName + "->" + value);
         }
 
-    }
-
-    private static DecimalFormat getLocalizedDecimalFormat(String pattern, int minimumFractionDigits) {
-        final DecimalFormat df = (DecimalFormat) NumberFormat.getInstance(Locales.getCurrent());
-        df.applyPattern(pattern);
-        df.setMinimumFractionDigits(minimumFractionDigits);
-        return df;
     }
 
     private String getPathWithoutDataOrTracking(String fullPath) {

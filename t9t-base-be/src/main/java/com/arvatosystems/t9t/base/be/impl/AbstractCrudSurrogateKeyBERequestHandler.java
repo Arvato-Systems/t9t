@@ -23,14 +23,12 @@ import com.arvatosystems.t9t.base.crud.CrudAnyKeyRequest;
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyRequest;
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
-import com.arvatosystems.t9t.base.services.IRefGenerator;
-import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.base.services.IRefResolver;
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
-import de.jpaw.dp.Jdp;
 import de.jpaw.util.ApplicationException;
 
 /**
@@ -53,8 +51,6 @@ public abstract class AbstractCrudSurrogateKeyBERequestHandler<REF extends Ref, 
     public OperationType getAdditionalRequiredPermission(final REQUEST request) {
         return request.getCrud();       // must have permission for the crud operation
     }
-
-    protected final IRefGenerator genericRefGenerator = Jdp.getRequired(IRefGenerator.class);
 
     protected void checkActive(final DTO result, final boolean onlyActive) {
         if (onlyActive && !result.ret$Active())
@@ -214,7 +210,7 @@ public abstract class AbstractCrudSurrogateKeyBERequestHandler<REF extends Ref, 
         switch (crudRequest.getCrud()) {
         case CREATE:
             validateCreate(dto);    // plausibility check
-            dto.setObjectRef(genericRefGenerator.generateRef(dto.ret$rtti()));
+            dto.setObjectRef(resolver.createNewPrimaryKey());
             resolver.create(dto);   // permissions checked by resolver
             rs.setKey(dto.getObjectRef()); // just copy
             break;

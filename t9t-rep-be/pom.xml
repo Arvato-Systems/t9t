@@ -21,7 +21,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-settings-java</artifactId>
-        <version>6.4-SNAPSHOT</version>
+        <version>6.5-SNAPSHOT</version>
         <relativePath>../t9t-settings-java</relativePath>
     </parent>
 
@@ -29,21 +29,6 @@
 
     <description>backend business logic for reporting module</description>
 
-
-    <!-- Additional Repositories. Not included in global, because it slows down every other project. -->
-    <repositories>
-        <repository>
-            <!-- required to get patched version of itext (2.1.7.js*) -->
-            <!-- see http://community.jaspersoft.com/jasperreports-library/issues/2594-0 -->
-            <id>jaspersoft</id>
-            <name>Jasper Soft</name>
-            <url>https://jasperreports.sourceforge.net/maven2/</url>
-        </repository>
-        <repository>
-            <id>jaspersoft-third-party</id>
-            <url>https://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts/</url>
-        </repository>
-    </repositories>
 
     <dependencies>
         <dependency>

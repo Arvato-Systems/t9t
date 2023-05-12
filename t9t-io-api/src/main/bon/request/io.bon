@@ -304,8 +304,9 @@ package (com.arvatosystems) t9t.io.request {
         optional Integer                            onlyHttpResponseCode; // select only tasks which returned this status
         optional Integer                            minRetries;
         optional Integer                            maxRetries;
-        optional Integer                            minAgeInMinutes;
+        optional Integer                            minAgeInMinutes;      // for unsent mode: checks against creation timestamp, otherwise against lastAttempt
         optional Integer                            maxAgeInMinutes;
         optional Integer                            maxCount;
+        optional Boolean                            useUnsent;            // rather than an error retry, do any forgotten ones
     }
 }

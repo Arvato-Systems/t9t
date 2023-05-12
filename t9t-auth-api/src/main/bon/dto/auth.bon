@@ -31,7 +31,6 @@ import t9t.base.moduleCfg.*
  * <li> 1 - session
  * <li> 2 - message
  * <li> 3 - user
- * <li> 4 - tenant
  * <li> 5 - role
  */
 package (com.arvatosystems) t9t.auth {
@@ -54,7 +53,7 @@ package (com.arvatosystems) t9t.auth {
      * Data in this class defaults to the entries for the global tenant if no record has been defined for this tenant.
      * Records of this entity share the same artifical primary key tenantId.
      */
-    class AuthModuleCfgDTO RTTI 99 extends ModuleConfigDTO {
+    class AuthModuleCfgDTO extends ModuleConfigDTO {
         properties                                  tenantCategory="D";             // if entry missing, get the global one
 
         optional Integer                            maxTokenValidityInMinutes           default "720";      // how many minutes can a JWT token last max.? (default 12 hrs)
@@ -75,7 +74,7 @@ package (com.arvatosystems) t9t.auth {
         optional Integer                            passwordMaxCommonSubstring          default "0";        // how many identical substring characters found in the password are allowed?
     }
 
-    class TenantLogoDTO RTTI 98 extends ModuleConfigDTO {
+    class TenantLogoDTO extends ModuleConfigDTO {
         properties                                  tenantCategory="D";                     // if entry missing, get the global one
         required (MediaData)                        logo;                                   // the media data (or URL redirect if text)
     }

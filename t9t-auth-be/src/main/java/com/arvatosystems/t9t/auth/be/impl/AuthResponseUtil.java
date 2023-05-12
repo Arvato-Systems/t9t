@@ -27,6 +27,7 @@ import com.arvatosystems.t9t.auth.services.IAuthResponseUtil;
 import com.arvatosystems.t9t.auth.services.IAuthenticator;
 import com.arvatosystems.t9t.base.services.IRefGenerator;
 import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.base.services.T9tInternalConstants;
 import com.arvatosystems.t9t.base.types.SessionParameters;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration;
@@ -68,7 +69,7 @@ public class AuthResponseUtil implements IAuthResponseUtil {
     @Override
     public String authResponseFromJwt(final JwtInfo jwt, final SessionParameters sp, final JwtInfo continuesFromJwt) {
         jwt.setSessionId(UUID.randomUUID());
-        jwt.setSessionRef(refGenerator.generateRef(SessionDTO.class$rtti()));
+        jwt.setSessionRef(refGenerator.generateRef(T9tInternalConstants.TABLENAME_SESSION, SessionDTO.class$rtti()));
         jwt.setResource(normalize(jwt.getResource())); // strip any leading or trailing spaces, and convert to null in case those were
                                                        // the only content
         // create a session

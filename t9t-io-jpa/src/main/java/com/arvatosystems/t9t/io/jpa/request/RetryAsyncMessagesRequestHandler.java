@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.io.jpa.request;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,15 +29,18 @@ import com.arvatosystems.t9t.base.search.DummySearchCriteria;
 import com.arvatosystems.t9t.base.search.SearchCriteria;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.batch.StatisticsDTO;
 import com.arvatosystems.t9t.io.jpa.entities.AsyncMessageEntity;
 import com.arvatosystems.t9t.io.jpa.persistence.IAsyncMessageEntityResolver;
 import com.arvatosystems.t9t.io.jpa.persistence.IAsyncQueueEntityResolver;
 import com.arvatosystems.t9t.io.request.RetryAsyncMessagesRequest;
 import com.arvatosystems.t9t.out.services.IAsyncQueue;
+import com.arvatosystems.t9t.statistics.services.IStatisticsService;
 
 import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.pojos.api.InstantFilter;
 import de.jpaw.bonaparte.pojos.api.IntFilter;
+import de.jpaw.bonaparte.pojos.api.NullFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.SortColumn;
 import de.jpaw.bonaparte.pojos.api.TrueFilter;
@@ -48,12 +52,15 @@ public class RetryAsyncMessagesRequestHandler extends AbstractRequestHandler<Ret
     private final IAsyncQueueEntityResolver   queueResolver   = Jdp.getRequired(IAsyncQueueEntityResolver.class);
     private final IAsyncMessageEntityResolver messageResolver = Jdp.getRequired(IAsyncMessageEntityResolver.class);
     private final IAsyncQueue                 asyncQueue      = Jdp.getRequired(IAsyncQueue.class);
+    private final IStatisticsService        statisticsService = Jdp.getRequired(IStatisticsService.class);
 
     @Override
     public ServiceResponse execute(RequestContext ctx, RetryAsyncMessagesRequest request) throws Exception {
+        final boolean useUnsent = Boolean.TRUE.equals(request.getUseUnsent());
         final List<SearchFilter> searchFilters = new ArrayList<>();
-        searchFilters.add(rangeFilter("retries", request.getMinRetries(), request.getMaxRetries()));
-        searchFilters.add(SearchFilters.equalsFilter("status", ExportStatusEnum.RESPONSE_ERROR.getToken()));
+        searchFilters.add(rangeFilter("attempts", request.getMinRetries(), request.getMaxRetries()));
+        searchFilters.add(SearchFilters.equalsFilter("status",
+            useUnsent ? ExportStatusEnum.READY_TO_EXPORT.getToken() : ExportStatusEnum.RESPONSE_ERROR.getToken()));
         if (request.getOnlyAsyncQueueRef() != null) {
             final Long queueRef = queueResolver.getRef(request.getOnlyAsyncQueueRef(), false);
             searchFilters.add(SearchFilters.equalsFilter("asyncQueueRef", queueRef));
@@ -67,15 +74,20 @@ public class RetryAsyncMessagesRequestHandler extends AbstractRequestHandler<Ret
         if (request.getMinRetries() != null) {
             searchFilters.add(SearchFilters.equalsFilter("httpResponseCode", request.getOnlyHttpResponseCode()));
         }
-        if (request.getMinAgeInMinutes() != null) {
-            final InstantFilter f = new InstantFilter("lastAttempt");
-            f.setUpperBound(ctx.executionStart.minusSeconds(60 * request.getMinAgeInMinutes()));
+        if (request.getMinAgeInMinutes() != null || request.getMaxAgeInMinutes() != null) {
+            final InstantFilter f = new InstantFilter(useUnsent ? "cTimestamp" : "lastAttempt");
+            if (request.getMinAgeInMinutes() != null) {
+                f.setLowerBound(ctx.executionStart.minusSeconds(60 * request.getMinAgeInMinutes()));
+            }
+            if (request.getMaxAgeInMinutes() != null) {
+                f.setUpperBound(ctx.executionStart.minusSeconds(60 * request.getMaxAgeInMinutes()));
+                searchFilters.add(f);
+            }
             searchFilters.add(f);
-        }
-        if (request.getMaxAgeInMinutes() != null) {
-            final InstantFilter f = new InstantFilter("lastAttempt");
-            f.setUpperBound(ctx.executionStart.minusSeconds(60 * request.getMaxAgeInMinutes()));
-            searchFilters.add(f);
+        } else {
+            if (useUnsent) {
+                searchFilters.add(new NullFilter("lastAttempt"));
+            }
         }
         final SearchCriteria criteria = new DummySearchCriteria();
         criteria.setSearchFilter(SearchFilters.and(searchFilters));
@@ -97,6 +109,16 @@ public class RetryAsyncMessagesRequestHandler extends AbstractRequestHandler<Ret
             }
             asyncQueue.sendAsync(ctx, message.getAsyncChannelId(), message.getPayload(), message.getObjectRef(), 0, null, true);
         }
+
+        final Instant exportFinished = Instant.now();
+        final StatisticsDTO stat = new StatisticsDTO();
+        stat.setRecordsProcessed(messageRefs.size());
+        stat.setStartTime(ctx.executionStart);
+        stat.setEndTime(exportFinished);
+        stat.setJobRef(ctx.internalHeaderParameters.getProcessRef());
+        stat.setProcessId(useUnsent ? "asyncCatchup" : "asyncRetry");
+        statisticsService.saveStatisticsData(stat);
+
         return ok();
     }
 

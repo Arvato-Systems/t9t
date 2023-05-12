@@ -15,18 +15,17 @@
  */
 package com.arvatosystems.t9t.io.be.camel.service.impl;
 
-import static com.google.common.base.MoreObjects.firstNonNull;
-
 import java.util.List;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.ServiceStatus;
-import org.apache.camel.model.ModelCamelContext;
+import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.model.RouteDefinition;
 import org.apache.camel.spi.RouteController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.services.IFileUtil;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.io.DataSinkDTO;
@@ -54,7 +53,7 @@ public class CamelService implements ICamelService {
 
     @Override
     public void addRoutes(final DataSinkDTO dataSink) {
-        final String serverEnvironment = firstNonNull(ConfigProvider.getConfiguration().getImportEnvironment(), DEFAULT_ENVIRONMENT);
+        final String serverEnvironment = T9tUtil.nvl(ConfigProvider.getConfiguration().getImportEnvironment(), DEFAULT_ENVIRONMENT);
         final String dataSinkEnvironment = dataSink.getEnvironment();
 
         if (!serverEnvironment.equals(dataSinkEnvironment)) {
@@ -128,12 +127,12 @@ public class CamelService implements ICamelService {
                     }
                 }
 
-                final ModelCamelContext mcc = context.adapt(ModelCamelContext.class);
+                final DefaultCamelContext defaultContext = (DefaultCamelContext) context;
                 for (final String routeId : routeIds) {
-                    final RouteDefinition routeDefinition = mcc.getRouteDefinition(routeId);
+                    final RouteDefinition routeDefinition = defaultContext.getRouteDefinition(routeId);
                     if (routeDefinition != null) {
                         LOGGER.debug("Remove route definition {}", routeId);
-                        mcc.removeRouteDefinition(routeDefinition);
+                        defaultContext.removeRouteDefinition(routeDefinition);
                     }
                 }
                 break;

@@ -194,8 +194,7 @@
                     <xs:element name="password" minOccurs="0" nillable="true">
                         <xs:simpleType>
                             <xs:restriction base="xs:normalizedString">
-                                <xs:maxLength value="16"/>
-                                <xs:pattern value="\p{IsBasicLatin}*"/>
+                                <xs:maxLength value="32"/>
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:element>
@@ -277,21 +276,21 @@
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:element>
-                    <xs:element name="defaultKeyChunkSize">
+                    <xs:element name="defaultKeyChunkSize" minOccurs="0" nillable="true">
                         <xs:simpleType>
                             <xs:restriction base="xs:unsignedInt">
                                 <xs:maxInclusive value="2147483647"/>
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:element>
-                    <xs:element name="prefetchedKeyChunkSize">
+                    <xs:element name="prefetchedKeyChunkSize" minOccurs="0" nillable="true">
                         <xs:simpleType>
                             <xs:restriction base="xs:unsignedInt">
                                 <xs:maxInclusive value="2147483647"/>
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:element>
-                    <xs:element name="numKeyFetchThreads">
+                    <xs:element name="numKeyFetchThreads" minOccurs="0" nillable="true">
                         <xs:simpleType>
                             <xs:restriction base="xs:unsignedInt">
                                 <xs:maxInclusive value="2147483647"/>
@@ -312,6 +311,7 @@
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:element>
+                    <xs:element name="useSequencePerTable" minOccurs="0" nillable="true" type="xs:boolean"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>

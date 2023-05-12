@@ -15,12 +15,17 @@
  */
 package com.arvatosystems.t9t.email.be.api;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
-import com.arvatosystems.t9t.base.services.IRefGenerator;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
-import com.arvatosystems.t9t.email.EmailDTO;
 import com.arvatosystems.t9t.email.EmailModuleCfgDTO;
 import com.arvatosystems.t9t.email.T9tEmailException;
 import com.arvatosystems.t9t.email.api.EmailMessage;
@@ -34,20 +39,12 @@ import com.arvatosystems.t9t.email.services.IEmailSender;
 
 import de.jpaw.dp.Jdp;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.UUID;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class SendTestEmailRequestHandler extends AbstractRequestHandler<SendTestEmailRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(SendTestEmailRequestHandler.class);
 
     public static final String DEFAULT_IMPLEMENTATION = "SMTP";
 
     protected final IEmailModuleCfgDtoResolver moduleCfgResolver = Jdp.getRequired(IEmailModuleCfgDtoResolver.class);
-    protected final IRefGenerator refGenerator = Jdp.getRequired(IRefGenerator.class);
     protected final IEmailPersistenceAccess emailPersistenceAccess = Jdp.getRequired(IEmailPersistenceAccess.class);
 
     @Override
@@ -56,7 +53,7 @@ public class SendTestEmailRequestHandler extends AbstractRequestHandler<SendTest
         final UUID messageId = UUID.randomUUID();
 
         // persist the message (optional: body)
-        final long messageRef = refGenerator.generateRef(EmailDTO.class$rtti());
+        final long messageRef = emailPersistenceAccess.createNewEmailPrimaryKey();
 
         // generate an OK message
         final SendTestEmailResponse okResponse = new SendTestEmailResponse();

@@ -25,7 +25,7 @@ import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.dialect.H2Dialect;
 import org.hibernate.dialect.HANARowStoreDialect;
 import org.hibernate.dialect.OracleDialect;
-import org.hibernate.dialect.PostgreSQL94Dialect;
+import org.hibernate.dialect.PostgreSQLDialect;
 import org.hibernate.dialect.SQLServerDialect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,7 +85,7 @@ public class EMFCustomizer implements IEMFCustomizer {
                 myProps.put(AvailableSettings.JAKARTA_HBM2DDL_DB_MAJOR_VERSION, 12);  // Oracle12c
                 break;
             case POSTGRES:
-                myProps.put(AvailableSettings.DIALECT, PostgreSQL94Dialect.class.getCanonicalName());
+                myProps.put(AvailableSettings.DIALECT, PostgreSQLDialect.class.getCanonicalName());
                 // the code below is not deprecated but seems to require hibernate.temp.use_jdbc_metadata_defaults in persistence.xml, which is slow at startup
 //                myProps.put(AvailableSettings.DIALECT, PostgreSQLDialect.class.getCanonicalName());
 //                myProps.put(AvailableSettings.JAKARTA_HBM2DDL_DB_MAJOR_VERSION, 9);

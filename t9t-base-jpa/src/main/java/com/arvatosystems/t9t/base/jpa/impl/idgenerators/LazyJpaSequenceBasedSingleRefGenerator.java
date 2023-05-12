@@ -15,80 +15,50 @@
  */
 package com.arvatosystems.t9t.base.jpa.impl.idgenerators;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Query;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.cfg.be.DatabaseBrandType;
+import com.arvatosystems.t9t.base.services.ISingleRefGenerator;
 
 import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Named;
+import de.jpaw.dp.Singleton;
+import de.jpaw.util.ExceptionUtil;
+import jakarta.annotation.Nonnull;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Query;
 
-class LazyJpaSequenceBasedSingleRefGenerator {
+@Singleton
+@Named("lazySequenceJPA")  // only acquires an ID once the first request has been seen
+public class LazyJpaSequenceBasedSingleRefGenerator implements ISingleRefGenerator {
     private static final Logger LOGGER = LoggerFactory.getLogger(LazyJpaSequenceBasedSingleRefGenerator.class);
 
-    private volatile long lastProvidedValue;
-    private volatile int remainingCachedIds;
-    private final int cacheSize;
-    private final String sqlCommandForNextValue;
+    protected final EntityManagerFactory emf = Jdp.getRequired(EntityManagerFactory.class);
 
-    // @Inject
-    private final EntityManagerFactory emf = Jdp.getRequired(EntityManagerFactory.class);
-
-    LazyJpaSequenceBasedSingleRefGenerator(final int index, final DatabaseBrandType dialect, final int cacheSize) {
-
-        lastProvidedValue = -1L;
-        remainingCachedIds = 0;
-        this.cacheSize = cacheSize;
-        switch (dialect) {
-        case POSTGRES:
-            sqlCommandForNextValue = String.format("SELECT nextval('cm_idgen_%04d_seq')", index);
-            break;
-        case ORACLE:
-            sqlCommandForNextValue = String.format("SELECT cm_idgen_%04d_seq.NEXTVAL FROM DUAL", index);
-            break;
-        case HANA:
-            sqlCommandForNextValue = String.format("SELECT cm_idgen_%04d_seq.NEXTVAL FROM DUMMY", index);
-            break;
-        case MS_SQL_SERVER: // requires MS SQL server 2012 or newer (sequences were introduces only then)
-            sqlCommandForNextValue = String.format("SELECT NEXT VALUE FOR [dbo].[cm_idgen_%04d_seq]", index);
-            break;
-        default: // does not happen!
-            LOGGER.error("undefined DatabaseDialect: {}", dialect.name());
-            throw new T9tException(T9tException.JDBC_UNKNOWN_DIALECT, dialect.name()); // this would be a fatal error
-        }
-    }
-
-    synchronized long getnextId() {
-        if (remainingCachedIds > 0) {
-            --remainingCachedIds;
-            ++lastProvidedValue;
-        } else {
+    @Override
+    public long getNextSequence(@Nonnull final String selectStatement) {
+        try (EntityManager em = emf.createEntityManager()) {
             // no data in cache, must obtain a new database sequence number
             // use the current thread's EntityManager to request a new value
             // from the database, because then we do not need to synchronize
             // different threads requesting different values at the same time.
-            final EntityManager em = emf.createEntityManager();
+
             em.getTransaction().begin();
-            final Query q = em.createNativeQuery(sqlCommandForNextValue);
+            final Query q = em.createNativeQuery(selectStatement);
             final Object result = q.getSingleResult();
-            long nextval;
+            em.getTransaction().commit();
             if (result instanceof Number rNumber) {
                 // approach to cover all numeric values...
-                nextval = rNumber.longValue();
+                return rNumber.longValue();
             } else {
                 LOGGER.error("sequence query returned type {} which cannot be processed (yet)", result.getClass().getCanonicalName());
                 throw new T9tException(T9tException.JDBC_BAD_TYPE_RETURNED, result.getClass().getCanonicalName());
             }
-            em.getTransaction().commit();
-            em.close();
-            // store data for the next bunch of results
-            lastProvidedValue = nextval * cacheSize;
-            remainingCachedIds = cacheSize - 1;
+        } catch (final Exception e) {
+            LOGGER.error("General SQL exception: Could not obtain next sequence value: {}", ExceptionUtil.causeChain(e));
+            throw new T9tException(T9tException.JDBC_GENERAL_SQL, ExceptionUtil.causeChain(e));
         }
-        return lastProvidedValue;
     }
 }

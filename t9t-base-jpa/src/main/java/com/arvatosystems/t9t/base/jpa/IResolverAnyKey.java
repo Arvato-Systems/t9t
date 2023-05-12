@@ -336,4 +336,12 @@ public interface IResolverAnyKey<
      * Returns true if the current tenant is allowed to write a record of tenant (tenantId). The tenant passed must be the final (possibly mapped) tenant.
      */
     boolean writeAllowed(@Nonnull String tenantId);
+
+    /**
+     * Returns the SQL tablename of the database table used to store instances of the related entity.
+     *
+     * @return the tablenamewithin the database
+     */
+    @Nonnull
+    String getDatabaseTablename();
 }

@@ -22,8 +22,8 @@ import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
 import org.slf4j.MDC;
 
-import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.services.IFileUtil;
+import com.arvatosystems.t9t.base.services.T9tInternalConstants;
 import com.arvatosystems.t9t.io.DataSinkDTO;
 
 public class GenericT9tRoute extends RouteBuilder {
@@ -94,6 +94,6 @@ public class GenericT9tRoute extends RouteBuilder {
 
     private void initMDC(final Exchange exchange) {
         MDC.clear();
-        MDC.put(T9tConstants.MDC_IO_DATA_SINK_ID, dataSinkDTO.getDataSinkId());
+        MDC.put(T9tInternalConstants.MDC_IO_DATA_SINK_ID, dataSinkDTO.getDataSinkId());
     }
 }

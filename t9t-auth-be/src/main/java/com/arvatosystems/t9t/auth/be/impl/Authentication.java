@@ -20,6 +20,7 @@ import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
 import com.arvatosystems.t9t.base.auth.AuthenticationResponse;
 import com.arvatosystems.t9t.base.services.IRefGenerator;
+import com.arvatosystems.t9t.base.services.T9tInternalConstants;
 import com.arvatosystems.t9t.server.ExecutionSummary;
 import com.arvatosystems.t9t.server.InternalHeaderParameters;
 import com.arvatosystems.t9t.server.services.IAuthenticate;
@@ -41,7 +42,6 @@ import org.slf4j.LoggerFactory;
 public class Authentication implements IAuthenticate {
     private static final Logger LOGGER = LoggerFactory.getLogger(Authentication.class);
 
-    public static final int RTTI_MESSAGE_LOG = 2;
     private static final Permissionset EXEC_PERMISSIONS = Permissionset.ofTokens(OperationType.EXECUTE);
 
     private final IRefGenerator refGenerator = Jdp.getRequired(IRefGenerator.class);
@@ -101,9 +101,9 @@ public class Authentication implements IAuthenticate {
         final JwtInfo jwtInfo = new JwtInfo();
         jwtInfo.setIssuedAt(now);
         jwtInfo.setUserId(T9tConstants.ANONYMOUS_USER_ID);
-        jwtInfo.setUserRef(T9tConstants.ANONYMOUS_USER_REF);
+        jwtInfo.setUserRef(T9tInternalConstants.ANONYMOUS_USER_REF);
         jwtInfo.setTenantId(T9tConstants.GLOBAL_TENANT_ID);
-        jwtInfo.setSessionRef(Long.valueOf(this.refGenerator.generateRef(SessionDTO.class$rtti())));
+        jwtInfo.setSessionRef(Long.valueOf(refGenerator.generateRef(T9tInternalConstants.TABLENAME_SESSION, SessionDTO.class$rtti())));
         jwtInfo.setSessionId(UUID.randomUUID());
         jwtInfo.setLogLevel(UserLogLevelType.MESSAGE_ENTRY);
         jwtInfo.setLogLevelErrors(UserLogLevelType.MESSAGE_ENTRY);
@@ -115,7 +115,8 @@ public class Authentication implements IAuthenticate {
         internalHeaderParameters.setExecutionStartedAt(now);
         internalHeaderParameters.setEncodedJwt("N/A");
         internalHeaderParameters.setJwtInfo(jwtInfo);
-        internalHeaderParameters.setProcessRef(Long.valueOf(this.refGenerator.generateRef(Authentication.RTTI_MESSAGE_LOG)));
+        internalHeaderParameters.setProcessRef(
+          Long.valueOf(refGenerator.generateRef(T9tInternalConstants.TABLENAME_MESSAGE_LOG, T9tInternalConstants.RTTI_MESSAGE_LOG)));
         internalHeaderParameters.setLanguageCode(internalHeaderParameters.getJwtInfo().getLocale());
         internalHeaderParameters.setRequestParameterPqon(rq.ret$PQON());
         internalHeaderParameters.freeze();

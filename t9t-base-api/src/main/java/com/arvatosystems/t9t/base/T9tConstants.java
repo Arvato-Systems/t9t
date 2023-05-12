@@ -82,14 +82,6 @@ public final class T9tConstants {
      */
     public static final int MAX_DECLINE_RETURN_CODE = 199999999;
 
-    // some fortytwo compatibility data
-    public static final Long ADMIN_USER_REF           = 1002L;
-    public static final Long ADMIN_ROLE_REF           = 1004L;
-    public static final Long STARTUP_USER_REF         = 1003L;
-    public static final Long TECHNICAL_USER_REF       = 1009L;
-    public static final Long ANONYMOUS_USER_REF       = 1011L;
-    public static final Long INITIAL_SUBSCRIBER_CONFIG_REF = 1090L;
-
     public static final int DEFAULT_MAXIUM_NUMBER_OF_DAYS_IN_BETWEEN_USER_ACTIVITIES = 3650;
     public static final long ONE_DAY_IN_S  = 24L * 3600L;
     public static final long ONE_DAY_IN_MS = 1000L * 24L * 3600L;
@@ -116,21 +108,6 @@ public final class T9tConstants {
     // default name of the kafka topic for single-tenant request transmissions
     public static final String DEFAULT_KAFKA_TOPIC_SINGLE_TENANT_REQUESTS = "t9tRequestTopic";
     public static final String DEFAULT_KAFKA_REQUESTS_GROUP_ID            = "t9tRequestGroup";
-
-    // MDC keys
-    public static final String MDC_MESSAGE_ID = "messageId";
-    public static final String MDC_SESSION_REF = "sessionRef";
-    public static final String MDC_PROCESS_REF = "processRef";
-    public static final String MDC_REQUEST_PQON = "requestPqon";
-    public static final String MDC_USER_ID = "userId";
-    public static final String MDC_TENANT_ID = "tenantId";
-
-    public static final String MDC_SSM_JOB_ID = "ssmJobId";
-    public static final String MDC_IO_DATA_SINK_ID = "ioDataSinkId";
-
-    public static final String MDC_BPMN_PROCESS = "bpmnProcess";
-    public static final String MDC_BPMN_PROCESS_INSTANCE = "bpmnProcessInstance";
-    public static final String MDC_BPMN_STEP = "bpmnStep";
 
     public static final String PLUGIN_API_ID_REQUEST_HANDLER = "requestHandler";    // ID for plugins implementing IRequestHandlerPlugin
     public static final String PLUGIN_API_ID_WORKFLOW_STEP   = "workflowStep";      // ID for plugins implementing IWorkflowStepPlugin

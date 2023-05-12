@@ -22,7 +22,6 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import com.arvatosystems.t9t.base.MessagingUtil;
-import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceRequest;
@@ -38,6 +37,7 @@ import com.arvatosystems.t9t.base.services.IAsyncRequestProcessor;
 import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.IRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.base.services.T9tInternalConstants;
 import com.arvatosystems.t9t.server.InternalHeaderParameters;
 import com.arvatosystems.t9t.server.services.IAuthorize;
 
@@ -139,9 +139,9 @@ public class Executor implements IExecutor {
         ServiceResponse response = null;
         BonaPortableClass<?> bp = params.ret$BonaPortableClass();
 
-        final String oldMdcRequestPqon = MDC.get(T9tConstants.MDC_REQUEST_PQON);
+        final String oldMdcRequestPqon = MDC.get(T9tInternalConstants.MDC_REQUEST_PQON);
         try {
-            MDC.put(T9tConstants.MDC_REQUEST_PQON, bp.getPqon());
+            MDC.put(T9tInternalConstants.MDC_REQUEST_PQON, bp.getPqon());
             ctx.pushCallStack(params.ret$PQON());
 
             final IRequestHandler<RequestParameters> handler = ctx.customization.<RequestParameters>getRequestHandler(params);
@@ -183,7 +183,7 @@ public class Executor implements IExecutor {
             return MessagingUtil.createServiceResponse(T9tException.GENERAL_EXCEPTION, causeChain);
         } finally {
             ctx.popCallStack();
-            MDC.put(T9tConstants.MDC_REQUEST_PQON, oldMdcRequestPqon);
+            MDC.put(T9tInternalConstants.MDC_REQUEST_PQON, oldMdcRequestPqon);
         }
     }
 

@@ -100,7 +100,7 @@ package (com.arvatosystems) t9t.msglog.request {
      * keeping the error ones for further analysis.
      */
     class RemoveOldMessageEntriesRequest extends RequestParameters {
-        required Integer                            keepMaxDaysAg;          // delete requests older than this age
+        required Integer                            keepMaxDaysAge;         // delete requests older than this age
         optional Boolean                            keepErrorRequests;      // if set to TRUE, do not delete entries which have a returnCode >= 200000000 (exception return codes)
     }
 }
