@@ -101,6 +101,7 @@ package (com.arvatosystems) t9t.auth.jpa.entities owner fortytwo prefix p28 {
         pk (objectRef)
         index (cTimestamp)
         @ManyToOne TenantEntity ^tenant LAZY for (tenantId)
-        @ManyToOne UserEntity user LAZY for (userRef)
+        @ManyToOne UserEntity   user    LAZY for (userRef)
+        @ManyToOne ApiKeyEntity apiKey  LAZY for (apiKeyRef)
     }
 }

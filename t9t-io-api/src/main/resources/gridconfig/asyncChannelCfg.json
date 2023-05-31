@@ -6,7 +6,8 @@
         { "filterType": "E", "fieldName": "payloadFormat" }
     ],
     "fields": [
-        "tenantId", "asyncQueueRef.asyncQueueId", "asyncChannelId", "isActive", "description", "url", "timeoutInMs", "authType", "authParam", "maxRetries", "payloadFormat", "serializerQualifier"
+        "tenantId", "asyncQueueRef.asyncQueueId", "asyncChannelId", "isActive", "description", "url", "timeoutInMs", "authType", "authParam",
+        "maxRetries", "payloadFormat", "serializerQualifier", "parallel"
     ],
-    "fieldWidths": [ 80, 120, 120, 40, 200, 260, 120, 120, 120, 120, 120, 120 ]
+    "fieldWidths": [ 80, 120, 120, 40, 200, 260, 120, 120, 120, 120, 120, 120, 40 ]
 }

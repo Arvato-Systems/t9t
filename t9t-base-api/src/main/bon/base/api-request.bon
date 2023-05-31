@@ -314,6 +314,30 @@ package (com.arvatosystems) t9t.base.request {
     }
 
     /**
+     * Defines the type of environment (distinguishes between PRODUCTION, DEVELOPMENT and various types of TEST).
+     * In case of doubt which test environment specifier to use: use any, this is just for documentation purposes.
+     */
+    enum StagingType {
+        DEVELOPMENT          = "D",  // local development environments
+        PRODUCTION           = "P",  // production, the live environment
+        REGRESSION_TEST      = "R",  // any environment running only automated tests
+        INTERNAL_TEST        = "T",  // test environment for development teams
+        INTEGRATION_TEST     = "I",  // test environment with client and other 3rd parties
+        USER_ACCEPTANCE_TEST = "U",  // final test before go-live
+        LOAD_TEST            = "L",  // performance test environments
+        MIGRATION_TEST       = "M"   // environments to test migration (usually a future prod)
+    }
+
+    /** Returns selected fields of the server xml configuration file. */
+    class GetServerInformationRequest extends RequestParameters return GetServerInformationResponse {
+    }
+
+    class GetServerInformationResponse extends ServiceResponse {
+        optional Unicode(36)                        serverIdSelf;                    // the server ID of this cluster (see key in uplink configuration)
+        optional Enum StagingType                   stagingType;                     // distinguishes between dev, prod and various test environments
+    }
+
+    /**
      * Returns all qualifiers for which implementations exist, for a given interface.
      * Intended to support dropdowns.
      */

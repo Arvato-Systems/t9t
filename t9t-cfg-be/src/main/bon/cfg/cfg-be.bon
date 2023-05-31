@@ -37,6 +37,7 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
 
     class T9tServerConfiguration xmlRoot {
         optional Unicode(36)                        serverIdSelf;                    // the server ID of this cluster (see key in uplink configuration)
+        optional Ascii(20)                          stagingType;                     // distinguishes between dev, prod and various test environments. See enum StagingType for allowed strings
         required Ascii(16)                          persistenceUnitName;             // technical username
         optional (RelationalDatabaseConfiguration...) databaseConfiguration;
         optional (RelationalDatabaseConfiguration...) secondaryDatabaseConfig;

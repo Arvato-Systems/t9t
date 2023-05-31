@@ -28,9 +28,11 @@ import com.arvatosystems.t9t.base.vertx.IVertxMetricsProvider;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 import io.micrometer.core.instrument.Meter;
+import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.jvm.ClassLoaderMetrics;
 import io.micrometer.core.instrument.binder.jvm.ExecutorServiceMetrics;
 import io.micrometer.core.instrument.binder.jvm.JvmGcMetrics;
+import io.micrometer.core.instrument.binder.jvm.JvmInfoMetrics;
 import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics;
 import io.micrometer.core.instrument.binder.jvm.JvmThreadMetrics;
 import io.micrometer.core.instrument.binder.system.ProcessorMetrics;
@@ -91,11 +93,26 @@ public class VertxPrometheusMetricsProvider implements IVertxMetricsProvider {
         new ProcessorMetrics().bindTo(registry);
         new JvmThreadMetrics().bindTo(registry);
         new UptimeMetrics().bindTo(registry);
+        new JvmInfoMetrics().bindTo(registry);
         LOGGER.info("Added JVM meters.");
+
+        LOGGER.info("Adding t9t and custom meters...");
+        new T9tVersionMetrics().bindTo(registry);
+        this.addCustomMeters(registry);
+        LOGGER.info("Added t9t and custom meters.");
 
         LOGGER.info("Adding autonoumous pool meters...");
         final ExecutorService autonomousPool = Jdp.getRequired(IAutonomousExecutor.class).getExecutorServiceForMetering();
         new ExecutorServiceMetrics(autonomousPool, "t9t-autonomous", Collections.emptySet()).bindTo(registry);
         LOGGER.info("Added autonoumous pool meters...");
+    }
+
+    /**
+     * Use this hook to add additional meters in subsequent projects.
+     *
+     * @param registry the used {@link PrometheusMeterRegistry}
+     */
+    protected void addCustomMeters(final MeterRegistry registry) {
+        // nothing by default
     }
 }

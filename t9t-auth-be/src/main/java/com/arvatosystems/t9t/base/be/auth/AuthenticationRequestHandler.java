@@ -15,6 +15,12 @@
  */
 package com.arvatosystems.t9t.base.be.auth;
 
+import java.time.Instant;
+import java.util.Arrays;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.arvatosystems.t9t.auth.ApiKeyDTO;
 import com.arvatosystems.t9t.auth.TenantDTO;
 import com.arvatosystems.t9t.auth.UserDTO;
@@ -39,14 +45,11 @@ import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.base.types.AuthenticationParameters;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.cfg.be.LdapConfiguration;
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+
 import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
+import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ApplicationException;
-import java.time.Instant;
-import java.util.Arrays;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class AuthenticationRequestHandler extends AbstractRequestHandler<AuthenticationRequest> {
 
@@ -70,18 +73,20 @@ public class AuthenticationRequestHandler extends AbstractRequestHandler<Authent
         final AuthenticationResponse resp = auth(ctx, ap, locale, zoneinfo); // dispatch and perform authentication
         if (resp == null
           || (!ApplicationException.isOk(resp.getReturnCode()) && resp.getReturnCode() != T9tException.PASSWORD_EXPIRED)
-          || resp.getJwtInfo() == null)
+          || resp.getJwtInfo() == null) {
             throw new ApplicationException(T9tException.T9T_ACCESS_DENIED);
+        }
         final JwtInfo jwtInfo = resp.getJwtInfo();
         if (rq.getSessionParameters() != null) {
             jwtInfo.setLocale(rq.getSessionParameters().getLocale());
             jwtInfo.setZoneinfo(rq.getSessionParameters().getZoneinfo());
         }
         resp.setMustChangePassword(resp.getPasswordExpires() != null && resp.getPasswordExpires().isBefore(Instant.now()));
-        resp.setEncodedJwt(authResponseUtil.authResponseFromJwt(jwtInfo, rq.getSessionParameters(), null));
+        resp.setEncodedJwt(authResponseUtil.authResponseFromJwt(jwtInfo, rq.getSessionParameters(), null, resp.getApiKeyRef()));
         resp.setNumberOfIncorrectAttempts(resp.getNumberOfIncorrectAttempts());
         resp.setTenantNotUnique(resp.getJwtInfo().getTenantId().equals(T9tConstants.GLOBAL_TENANT_ID)); // only then the user has access to additional ones
-        LOGGER.debug("User {} successfully logged in for tenant {}", resp.getJwtInfo().getUserId(), resp.getJwtInfo().getTenantId());
+        LOGGER.debug("User {} successfully logged in for tenant {} via {}", resp.getJwtInfo().getUserId(), resp.getJwtInfo().getTenantId(),
+          resp.getApiKeyRef() != null ? "API key" : "user/PW");
         return resp;
     }
 
@@ -150,17 +155,20 @@ public class AuthenticationRequestHandler extends AbstractRequestHandler<Authent
             return null;
 
         final ApiKeyDTO apiKeyDto               = authResult.getApiKey();
-        if (!authResponseUtil.isApiKeyAllowed(ctx, apiKeyDto))
+        if (!authResponseUtil.isApiKeyAllowed(ctx, apiKeyDto)) {
             return null;
+        }
 
         final UserDTO userDto                 = (UserDTO) apiKeyDto.getUserRef();
-        if (!authResponseUtil.isUserAllowedToLogOn(ctx, userDto))
+        if (!authResponseUtil.isUserAllowedToLogOn(ctx, userDto)) {
             return null;
+        }
 
         final AuthenticationResponse resp = new AuthenticationResponse();
         resp.setJwtInfo(authResponseUtil.createJwt(apiKeyDto, tenantDto, userDto));
         resp.getJwtInfo().setLocale(locale);
         resp.getJwtInfo().setZoneinfo(zoneinfo);
+        resp.setApiKeyRef(apiKeyDto.getObjectRef());
         jwtEnrichment.enrichJwt(resp.getJwtInfo(), tenantDto, userDto, apiKeyDto);
 
         resp.setTenantName(tenantDto.getName());

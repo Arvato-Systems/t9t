@@ -16,6 +16,8 @@
 package com.arvatosystems.t9t.out.services;
 
 import de.jpaw.bonaparte.core.BonaPortable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * Interface to send a message asynchronously.
@@ -24,12 +26,30 @@ import de.jpaw.bonaparte.core.BonaPortable;
  * The transmitted payload usually is the final external object (for example as defined in API EXT projects, and only needs to be serialized into JSON or XML).
  *
  * This is the first interface used in data flow, the one injected into the business logic methods.
- * */
+ */
 public interface IAsyncTransmitter {
-//    @Deprecated // use version with partition index
-//    default Long transmitMessage(String asyncChannelId, BonaPortable payload, Long ref, String category, String identifier) {
-//        return transmitMessage(asyncChannelId, payload, ref, category, identifier, 0);
-//    }
 
-    Long transmitMessage(String asyncChannelId, BonaPortable payload, Long ref, String category, String identifier, int partition);
+    /**
+     * Transmits a message via some asynchronous channel.
+     * The method returns a reference which can be used to attempt cancelling message transmission
+     * (which will only work if the implementation supports it AND the initial attempt resulted in an error / timeout).
+     *
+     * @param asyncChannelId the channel to which to send the message to
+     * @param payload the payload
+     * @param ref and optional source reference
+     * @param category an optional category
+     * @param identifier an optional alphanumeric identifier of the source
+     * @param partition the partition in clustered environments
+     * @return a unique message reference
+     */
+    @Nonnull
+    Long transmitMessage(@Nonnull String asyncChannelId, @Nonnull BonaPortable payload,
+      @Nullable Long ref, @Nullable String category, @Nullable String identifier, int partition);
+
+    /**
+     * Cancels further retry attempts of the specified message (if supported by the implementation).
+     *
+     * @param messageRef the reference returned by <code>transmitMessage</code>.
+     */
+    void stopRetries(@Nonnull Long messageRef);
 }

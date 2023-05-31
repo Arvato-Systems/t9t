@@ -16,6 +16,7 @@
 package com.arvatosystems.t9t.out.be.async;
 
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,10 +66,10 @@ public class AsyncTools implements IAsyncTools {
         final String tenantId = nextMsg.getTenantId();
         LOGGER.debug("Sending message to channel {} of type {}", nextMsg.getAsyncChannelId(), nextMsg.getPayload().ret$PQON());
         // obtain (cached) channel config
-        final AsyncChannelDTO channelDto = getCachedAsyncChannelDTO(tenantId, channelId);
-        if (!channelDto.getIsActive()) {
+        final AsyncChannelDTO channel = getCachedAsyncChannelDTO(tenantId, channelId);
+        if (!channel.getIsActive()) {
             LOGGER.debug("Discarding async message to inactive channel {}", channelId);
-            messageUpdater.updateMessage(nextMsg.getObjectRef(), ExportStatusEnum.RESPONSE_OK, null, null, null, null);
+            messageUpdater.updateMessage(nextMsg.getObjectRef(), ExportStatusEnum.RESPONSE_OK, null, null);
             return true;
         } else {
             // log message if desired (expensive!)
@@ -76,23 +77,32 @@ public class AsyncTools implements IAsyncTools {
                 LOGGER.trace("Sending payload {}, objectRef {}", ToStringHelper.toStringML(nextMsg.getPayload()), nextMsg.getObjectRef());
             }
 
-            Integer newHttpCode = null;
-            Integer newClientReturnCode = null;
-            String newClientReference = null;
-            String newClientErrorDetails = null;
             try {
-                final int timeout = channelDto.getTimeoutInMs() == null ? defaultTimeout : channelDto.getTimeoutInMs().intValue();
-                final AsyncHttpResponse resp =  sender.send(channelDto, nextMsg.getPayload(), timeout, nextMsg.getObjectRef());
-                newHttpCode = resp.getHttpReturnCode();
-                newStatus = (newHttpCode / 100) == 2 ? ExportStatusEnum.RESPONSE_OK : ExportStatusEnum.RESPONSE_ERROR;
-                newClientReturnCode = resp.getClientReturnCode();
-                newClientReference = resp.getClientReference();
-                newClientErrorDetails = resp.getErrorDetails();
+                final int timeout = channel.getTimeoutInMs() == null ? defaultTimeout : channel.getTimeoutInMs().intValue();
+                final Long messageObjectRef = nextMsg.getObjectRef();
+                LOGGER.debug("Sending message for channel {} ref {}", channel.getAsyncChannelId(), messageObjectRef);
+                final long whenStarted = System.currentTimeMillis();
+
+                final Consumer<AsyncHttpResponse> resultProcessor = asyncResponse -> {
+                    final long whenDone = System.currentTimeMillis();
+                    final Integer responseTime = Integer.valueOf((int)(whenDone - whenStarted));
+                    LOGGER.debug("Received response for channel {} ref {}: Status {}",
+                            channel.getAsyncChannelId(), messageObjectRef, asyncResponse.getHttpReturnCode());
+                    asyncResponse.setResponseTime(responseTime);
+                    final ExportStatusEnum newStatus2
+                      = (asyncResponse.getHttpReturnCode() / 100) == 2 ? ExportStatusEnum.RESPONSE_OK : ExportStatusEnum.RESPONSE_ERROR;
+                    messageUpdater.updateMessage(messageObjectRef, newStatus2, asyncResponse.getHttpReturnCode(), asyncResponse);
+                };
+                final boolean result = sender.send(channel, timeout, nextMsg, resultProcessor);
+                if (channel.getDelayAfterSend() != null && channel.getDelayAfterSend().intValue() > 0) {
+                    // be nice to slow 3rd party receivers...
+                    Thread.sleep(channel.getDelayAfterSend());
+                }
+                return result;
             } catch (final Exception e) {
                 LOGGER.error("Exception in external http: {}", ExceptionUtil.causeChain(e));
-                newHttpCode = 999;
+                messageUpdater.updateMessage(nextMsg.getObjectRef(), newStatus, 999, null);
             }
-            messageUpdater.updateMessage(nextMsg.getObjectRef(), newStatus, newHttpCode, newClientReturnCode, newClientReference, newClientErrorDetails);
             return newStatus == ExportStatusEnum.RESPONSE_OK;
         }
     }

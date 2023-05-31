@@ -61,6 +61,7 @@ package (com.arvatosystems) t9t.base.search {
 
     class SearchResponse<DATA, TRACKING extends TrackingBase, LIST_WITH_TENANT extends DataWithTracking<!DATA, !TRACKING>> extends SinkCreatedResponse {
         required (!LIST_WITH_TENANT...) required List<> dataList;                           // the list of results
+        optional Enum SearchFilterTypeEnum strategy; // the strategy used by the backend for SOLR or combined searches (null for DB only searches)
     }
     class ReadAllResponse<DATA, TRACKING extends TrackingBase> extends SearchResponse<!DATA, !TRACKING, DataWithTrackingS<!DATA, !TRACKING>> {
     }

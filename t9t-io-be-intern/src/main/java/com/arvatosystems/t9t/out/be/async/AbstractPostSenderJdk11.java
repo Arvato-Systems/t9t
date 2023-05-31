@@ -25,17 +25,20 @@ import java.net.http.HttpResponse.BodyHandler;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.io.AsyncChannelDTO;
 import com.arvatosystems.t9t.io.AsyncHttpResponse;
 import com.arvatosystems.t9t.io.AsyncQueueDTO;
 import com.arvatosystems.t9t.io.CommunicationTargetChannelType;
 import com.arvatosystems.t9t.io.DataReference;
+import com.arvatosystems.t9t.io.InMemoryMessage;
 import com.arvatosystems.t9t.jackson.JacksonTools;
 import com.arvatosystems.t9t.out.services.IAsyncSender;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,6 +46,7 @@ import com.google.common.base.Charsets;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.MimeTypes;
+import de.jpaw.util.ExceptionUtil;
 
 /**
  * The PostSender implements a simple client invocation via http POST of the JDK 11 HttpClient.
@@ -104,37 +108,74 @@ public abstract class AbstractPostSenderJdk11 implements IAsyncSender {
         addDefaultPublisherForPayload(httpRequestBuilder, payload);
     }
 
-    private HttpRequest buildRequest(final URI uri, final String authentication, final BonaPortable payload, int timeout) throws Exception {
-
-        final HttpRequest.Builder httpRequestBuilder = HttpRequest.newBuilder(uri)
-                .version(Version.HTTP_2)
-                .timeout(Duration.ofMillis(timeout));
+    protected HttpRequest buildRequest(final AsyncChannelDTO channel, final BonaPortable payload, int timeout) throws Exception {
+        final HttpRequest.Builder httpRequestBuilder = HttpRequest.newBuilder(new URI(channel.getUrl()))
+            .version(Version.HTTP_2)
+            .timeout(Duration.ofMillis(timeout));
         addPublisherForPayload(httpRequestBuilder, payload);
-
-        if (authentication != null && authentication.trim().length() > 0) {
-            httpRequestBuilder.header("Authorization", authentication);
-        }
+        addAuthentication(httpRequestBuilder, channel);
 
         return httpRequestBuilder.build();
     }
 
-    @Override
-    public AsyncHttpResponse send(final AsyncChannelDTO channelDto, final BonaPortable payload, final int timeout, final Long messageObjectRef)
-      throws Exception {
-        // do external I/O
-        final HttpRequest httpRq = buildRequest(new URI(channelDto.getUrl()), channelDto.getAuthParam(), payload, timeout);
-        final BodyHandler<String> serializedRequest = HttpResponse.BodyHandlers.ofString();
-        final CompletableFuture<HttpResponse<String>> responseF = defaultHttpClient.sendAsync(httpRq, serializedRequest);
-        return parseResponse(responseF.get());
+    /**
+     * Adds an authentication header to the http request.
+     *
+     * @param httpRequestBuilder
+     * @param channel
+     */
+    protected void addAuthentication(final HttpRequest.Builder httpRequestBuilder, final AsyncChannelDTO channel) {
+        final String authentication = channel.getAuthParam();
+        if (authentication != null && authentication.length() > 0) {
+            final String httpHeaderVariable = T9tUtil.nvl(channel.getAuthType(), "Authorization");
+            httpRequestBuilder.header(httpHeaderVariable, authentication);
+        }
     }
 
-    protected AsyncHttpResponse parseResponse(final HttpResponse<String> resp) {
-        final AsyncHttpResponse myResponse = new AsyncHttpResponse();
-        LOGGER.debug("Received HTTP status {}", resp.statusCode());
-        myResponse.setHttpReturnCode(resp.statusCode());
+    @Override
+    public boolean send(final AsyncChannelDTO channel, final int timeout, final InMemoryMessage msg, final Consumer<AsyncHttpResponse> resultProcessor)
+      throws Exception {
+        // do external I/O
+        final HttpRequest httpRq = buildRequest(channel, msg.getPayload(), timeout);
+        final BodyHandler<String> serializedRequest = HttpResponse.BodyHandlers.ofString();
+        final CompletableFuture<HttpResponse<String>> futureResponse = defaultHttpClient.sendAsync(httpRq, serializedRequest);
+        final Consumer<HttpResponse<String>> completeResultProcessor = httpResponse -> {
+            final AsyncHttpResponse asyncResponse = new AsyncHttpResponse();
+            asyncResponse.setHttpReturnCode(httpResponse.statusCode());
+            parseResponse(asyncResponse, httpResponse);
+            resultProcessor.accept(asyncResponse);
+        };
+        // depending on the configuration, wait for the response, or proceed
+        if (Boolean.TRUE.equals(channel.getParallel())) {
+            // true async processing
+            futureResponse.whenComplete((r, ex) -> {
+                if (ex != null) {
+                    // deal with exception
+                    final String cause = ExceptionUtil.causeChain(ex);
+                    LOGGER.error("Could not complete async callout for channel {} ref {} due to {}",
+                            channel.getAsyncChannelId(), msg.getObjectRef(), cause);
+                    // construct a synthetic error response to allow storing of result
+                    final AsyncHttpResponse asyncResponse = new AsyncHttpResponse();
+                    asyncResponse.setHttpReturnCode(998);
+                    asyncResponse.setErrorDetails(cause);
+                    asyncResponse.setHttpStatusMessage(cause);
+                    resultProcessor.accept(asyncResponse);
+                } else {
+                    completeResultProcessor.accept(r);
+                }
+            });
+            return true;
+        } else {
+            // blocking I/O
+            final HttpResponse<String> resp = futureResponse.get();  // this is not asynchronous!
+            completeResultProcessor.accept(resp);
+            return (resp.statusCode() / 100) == 2;
+        }
+    }
+
+    protected void parseResponse(final AsyncHttpResponse myResponse, final HttpResponse<String> resp) {
         myResponse.setHttpStatusMessage(null);
         myResponse.setClientReference(MessagingUtil.truncField(resp.body(), AsyncHttpResponse.meta$$clientReference.getLength()));
-        return myResponse;
     }
 
     @Override

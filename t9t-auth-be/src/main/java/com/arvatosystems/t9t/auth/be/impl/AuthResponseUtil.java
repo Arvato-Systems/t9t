@@ -16,6 +16,7 @@
 package com.arvatosystems.t9t.auth.be.impl;
 
 import com.arvatosystems.t9t.auth.ApiKeyDTO;
+import com.arvatosystems.t9t.auth.ApiKeyRef;
 import com.arvatosystems.t9t.auth.PermissionsDTO;
 import com.arvatosystems.t9t.auth.SessionDTO;
 import com.arvatosystems.t9t.auth.TenantDTO;
@@ -67,7 +68,7 @@ public class AuthResponseUtil implements IAuthResponseUtil {
 
     // common part of code for SwitchTenantRequest and AuthenticationRequest
     @Override
-    public String authResponseFromJwt(final JwtInfo jwt, final SessionParameters sp, final JwtInfo continuesFromJwt) {
+    public String authResponseFromJwt(final JwtInfo jwt, final SessionParameters sp, final JwtInfo continuesFromJwt, final Long apiKeyRef) {
         jwt.setSessionId(UUID.randomUUID());
         jwt.setSessionRef(refGenerator.generateRef(T9tInternalConstants.TABLENAME_SESSION, SessionDTO.class$rtti()));
         jwt.setResource(normalize(jwt.getResource())); // strip any leading or trailing spaces, and convert to null in case those were
@@ -80,6 +81,7 @@ public class AuthResponseUtil implements IAuthResponseUtil {
         session.setZoneinfo(jwt.getZoneinfo());
         session.setUserRef(new UserRef(jwt.getUserRef()));
         session.setTenantId(jwt.getTenantId());
+        session.setApiKeyRef(new ApiKeyRef(apiKeyRef));
         if (sp != null) {
             // memorize session parameters
             session.setLocale(sp.getLocale());

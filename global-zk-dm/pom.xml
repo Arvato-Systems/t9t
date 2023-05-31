@@ -32,14 +32,21 @@
 
     <properties>
         <!-- ZK libraries, COMMERCIAL !!! -->
-        <zk.version>9.6.3-jakarta</zk.version>
-        <zk-themes.version>9.6.3</zk-themes.version>
-        <zk-ckez.version>4.20.1.0-jakarta</zk-ckez.version>  <!-- https://github.com/zkoss/zkckeditor -->
+        <zk.version>9.6.4-jakarta</zk.version>
+        <zk-themes.version>9.6.4</zk-themes.version>
+        <zk-ckez.version>4.21.0.0-jakarta</zk-ckez.version>  <!-- https://github.com/zkoss/zkckeditor -->
+		<closure-compiler.version>v20230502</closure-compiler.version>
     </properties>
 
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.google.javascript</groupId>
+                <artifactId>closure-compiler-unshaded</artifactId>
+                <version>${closure-compiler.version}</version>
+            </dependency>
+
             <!-- ZK libraries, COMMERCIAL !!! -->
             <dependency>
                 <groupId>org.zkoss.zk</groupId>

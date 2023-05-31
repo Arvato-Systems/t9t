@@ -17,6 +17,7 @@ package com.arvatosystems.t9t.out.be.async;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,10 +25,10 @@ import org.slf4j.LoggerFactory;
 import com.arvatosystems.t9t.io.AsyncChannelDTO;
 import com.arvatosystems.t9t.io.AsyncHttpResponse;
 import com.arvatosystems.t9t.io.AsyncQueueDTO;
+import com.arvatosystems.t9t.io.InMemoryMessage;
 import com.arvatosystems.t9t.out.services.IAsyncSender;
 import com.arvatosystems.t9t.out.services.IMarshallerExt;
 
-import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.HttpPostResponseObject;
 import de.jpaw.bonaparte.sock.HttpPostClient;
 import de.jpaw.dp.Dependent;
@@ -77,8 +78,8 @@ public class PostSender<R> implements IAsyncSender {
     }
 
     @Override
-    public AsyncHttpResponse send(final AsyncChannelDTO channelDto, final BonaPortable payload, final int timeout, final Long messageObjectRef)
-      throws Exception {
+    public boolean send(final AsyncChannelDTO channelDto, final int timeout, final InMemoryMessage msg,
+      final Consumer<AsyncHttpResponse> resultProcessor) throws Exception {
         // do external I/O
         final HttpPostClient httpClient = getPostClient(channelDto);
         httpClient.setTimeoutInMs(timeout);  // set the request specific timeout or fall back to the default
@@ -88,7 +89,7 @@ public class PostSender<R> implements IAsyncSender {
             httpClient.setAuthentication(channelDto.getAuthParam());
         }
 
-        final HttpPostResponseObject resp =  httpClient.doIO2(payload);
+        final HttpPostResponseObject resp =  httpClient.doIO2(msg.getPayload());
         final AsyncHttpResponse myResponse = new AsyncHttpResponse();
         myResponse.setHttpReturnCode(resp.getHttpReturnCode());
         myResponse.setHttpStatusMessage(resp.getHttpStatusMessage());
@@ -98,7 +99,8 @@ public class PostSender<R> implements IAsyncSender {
             myResponse.setClientReturnCode(defaultMarshaller.getClientReturnCode(r));
             myResponse.setClientReference(defaultMarshaller.getClientReference(r));
         }
-        return myResponse;
+        resultProcessor.accept(myResponse);
+        return (resp.getHttpReturnCode() / 100) == 2;
     }
 
     @Override

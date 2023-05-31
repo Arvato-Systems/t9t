@@ -6,10 +6,11 @@
         { "filterType": "W", "fieldName": "dataUri" },
         { "filterType": "E", "fieldName": "locale" },
         { "filterType": "E", "fieldName": "zoneinfo" },
-        { "filterType": "W", "fieldName": "userAgent" }
+        { "filterType": "W", "fieldName": "userAgent" },
+        { "filterType": "W", "fieldName": "apiKeyRef.apiKey" }
     ],
     "fields": [
-        "cTimestamp", "tenantId", "userRef.userId", "continuesFromSession", "objectRef", "sessionId", "dataUri", "locale", "zoneinfo", "userAgent"
+        "cTimestamp", "tenantId", "userRef.userId", "apiKeyRef.apiKey", "continuesFromSession", "objectRef", "sessionId", "dataUri", "locale", "zoneinfo", "userAgent"
     ],
-    "fieldWidths": [ 150, 118, 122, 123, 109, 279, 249, 87, 169, 400 ]
+    "fieldWidths": [ 150, 118, 122, 123, 123, 109, 279, 249, 87, 169, 400 ]
 }

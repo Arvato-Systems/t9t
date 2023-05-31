@@ -46,4 +46,21 @@
             <artifactId>t9t-base-vertx</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <!-- write implementation information (for prometheus) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

@@ -92,6 +92,7 @@ package (com.arvatosystems) t9t.doc.api {
         required (MediaData...) List<>              data;               // directly returned data
         required f42Ref Map<String>                 generalizedAttachmentSinkRefs;  // the refs of attachments which have been stored, indexed by id
         required f42Ref List<>                      emailRefs;          // the references to emails sent
+        optional f42Ref                             customerCommRef;    // unused in t9t, but may be populated by callers of derived applications
     }
 
     /** Send a document to a list of users. */

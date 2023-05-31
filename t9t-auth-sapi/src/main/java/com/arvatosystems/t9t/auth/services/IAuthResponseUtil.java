@@ -22,14 +22,16 @@ import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.base.types.SessionParameters;
 
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * Various utility methods for authentication request handlers.
  */
 public interface IAuthResponseUtil {
-    boolean isUserAllowedToLogOn(RequestContext ctx, UserDTO userDto);
-    boolean isApiKeyAllowed(RequestContext ctx, ApiKeyDTO apiKey);
-    String authResponseFromJwt(JwtInfo jwt, SessionParameters sp, JwtInfo continuesFromJwt);
-    JwtInfo createJwt(UserDTO user, TenantDTO tenantDTO);
-    JwtInfo createJwt(ApiKeyDTO apiKey, TenantDTO tenantDTO, UserDTO userDTO);
+    boolean isUserAllowedToLogOn(@Nonnull RequestContext ctx, @Nonnull UserDTO userDto);
+    boolean isApiKeyAllowed(@Nonnull RequestContext ctx, @Nonnull ApiKeyDTO apiKey);
+    String authResponseFromJwt(@Nonnull JwtInfo jwt, @Nullable SessionParameters sp, @Nullable JwtInfo continuesFromJwt, @Nullable Long apiKeyRef);
+    JwtInfo createJwt(@Nonnull UserDTO user, @Nonnull TenantDTO tenantDTO);
+    JwtInfo createJwt(@Nonnull ApiKeyDTO apiKey, @Nonnull TenantDTO tenantDTO, @Nonnull UserDTO userDTO);
 }

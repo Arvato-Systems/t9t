@@ -15,15 +15,17 @@
  */
 package com.arvatosystems.t9t.out.be.async;
 
+import java.util.function.Consumer;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.io.AsyncChannelDTO;
 import com.arvatosystems.t9t.io.AsyncHttpResponse;
 import com.arvatosystems.t9t.io.AsyncQueueDTO;
+import com.arvatosystems.t9t.io.InMemoryMessage;
 import com.arvatosystems.t9t.out.services.IAsyncSender;
 
-import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Named;
 
@@ -41,11 +43,13 @@ public class ErrorSender implements IAsyncSender {
     }
 
     @Override
-    public AsyncHttpResponse send(final AsyncChannelDTO channel, final BonaPortable payload, final int timeout, final Long messageObjectRef) {
-        LOGGER.debug("Returning error for channel {}, object {}", channel.getAsyncChannelId(), payload.ret$PQON());
+    public boolean send(final AsyncChannelDTO channel, final int timeout, final InMemoryMessage msg,
+      final Consumer<AsyncHttpResponse> resultProcessor) {
+        LOGGER.debug("Returning error for channel {}, object {}", channel.getAsyncChannelId(), msg.getPayload().ret$PQON());
         final AsyncHttpResponse resp = new AsyncHttpResponse();
         resp.setHttpReturnCode(500);
         resp.setHttpStatusMessage("Error");
-        return resp;
+        resultProcessor.accept(resp);
+        return false;
     }
 }

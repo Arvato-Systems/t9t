@@ -30,6 +30,7 @@ import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.output.ExportStatusEnum;
 import com.arvatosystems.t9t.io.AsyncChannelDTO;
+import com.arvatosystems.t9t.io.AsyncHttpResponse;
 import com.arvatosystems.t9t.io.AsyncMessageDTO;
 import com.arvatosystems.t9t.io.AsyncQueueDTO;
 import com.arvatosystems.t9t.io.jpa.entities.AsyncChannelEntity;
@@ -39,6 +40,7 @@ import com.arvatosystems.t9t.out.services.IAsyncMessageUpdater;
 
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
+import de.jpaw.util.ExceptionUtil;
 
 /**
  * Class which updates a single message entity.
@@ -52,34 +54,43 @@ public class AsyncMessageUpdater implements IAsyncMessageUpdater {
 
     @Override
     public void updateMessage(final Long objectRef, final ExportStatusEnum newStatus, final Integer httpCode,
-      final Integer clientCode, final String clientReference, final String errorDetails) {
-        final EntityManager em = emf.createEntityManager();
-        em.getTransaction().begin();
-        final AsyncMessageEntity m = em.find(AsyncMessageEntity.class, objectRef);
-        if (m != null) {
-            // message was persisted initially, or had an error before
-            m.setAttempts(m.getAttempts() + 1);
-            m.setLastAttempt(Instant.now());
-            m.setStatus(newStatus);
-            m.setHttpResponseCode(httpCode);
-            m.setReturnCode(clientCode);
-            m.setReference(MessagingUtil.truncField(clientReference, AsyncMessageDTO.meta$$reference.getLength()));
-            m.setErrorDetails(MessagingUtil.truncField(errorDetails, AsyncMessageDTO.meta$$errorDetails.getLength()));
-        } else if (newStatus != ExportStatusEnum.RESPONSE_OK) {
-            // initially not persisted, but we encountered an error, and should do so now
-            // issue is that we do not have any valid tenant reference, nor request context to populate the creation tracking fields
-            final AsyncMessageEntity msg = new AsyncMessageEntity();
-            msg.setAttempts(1);
-            msg.setLastAttempt(Instant.now());
-            msg.setStatus(newStatus);
-            msg.setHttpResponseCode(httpCode);
-            msg.setReturnCode(clientCode);
-            msg.setReference(MessagingUtil.truncField(clientReference, AsyncMessageDTO.meta$$reference.getLength()));
-            msg.setErrorDetails(MessagingUtil.truncField(errorDetails, AsyncMessageDTO.meta$$errorDetails.getLength()));
+      final AsyncHttpResponse resp) {
+        try (EntityManager em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+            final AsyncMessageEntity m = em.find(AsyncMessageEntity.class, objectRef);
+            LOGGER.debug("Updating asyncMessageRef {} to new Status {} (http {}): {}", objectRef, newStatus, httpCode, m == null ? "NOT FOUND" : "OK");
+            if (m != null) {
+                // message was persisted initially, or had an error before
+                m.setAttempts(m.getAttempts() + 1);
+                m.setLastAttempt(Instant.now());
+                m.setStatus(newStatus);
+                m.setHttpResponseCode(httpCode);
+                updateByResponse(m, resp);
+            } else if (newStatus != ExportStatusEnum.RESPONSE_OK) {
+                // initially not persisted, but we encountered an error, and should do so now
+                // issue is that we do not have any valid tenant reference, nor request context to populate the creation tracking fields
+                final AsyncMessageEntity msg = new AsyncMessageEntity();
+                msg.setAttempts(1);
+                msg.setLastAttempt(Instant.now());
+                msg.setStatus(newStatus);
+                msg.setHttpResponseCode(httpCode);
+                updateByResponse(msg, resp);
+                // not creating due to missing context
+            }
+            em.getTransaction().commit();
+            em.clear();
+        } catch (final Throwable e) {
+            LOGGER.error("Msg update problem: {}", ExceptionUtil.causeChain(e));
         }
-        em.getTransaction().commit();
-        em.clear();
-        em.close();
+    }
+
+    protected void updateByResponse(final AsyncMessageEntity m, final AsyncHttpResponse resp) {
+        if (resp != null) {
+            m.setReturnCode(resp.getClientReturnCode());
+            m.setReference(MessagingUtil.truncField(resp.getClientReference(), AsyncMessageDTO.meta$$reference.getLength()));
+            m.setErrorDetails(MessagingUtil.truncField(resp.getErrorDetails(), AsyncMessageDTO.meta$$errorDetails.getLength()));
+            m.setLastResponseTime(resp.getResponseTime());
+        }
     }
 
     @Override

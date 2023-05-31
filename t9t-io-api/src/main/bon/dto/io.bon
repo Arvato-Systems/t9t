@@ -398,13 +398,16 @@ package (com.arvatosystems) t9t.io {
         required shortText                              description;                             // some descriptive text
         optional (AsyncQueueRef..., AsyncQueueDTO)      asyncQueueRef  properties ref, searchprefix="asyncQueue", simpleref="getObjectRef()", dropdown="asyncQueueId";
         required Unicode(300)                           url;                                     // remote URL
-        optional t9tShortId                             authType;                                // basic, apikey etc... (for information / documentation in core, can be used by customizations)
+        optional t9tShortId                             authType;                                // basic, apikey etc... (for information / documentation in core, can be used by customizations) or just the http header name
         optional Unicode(255)                           authParam;                               // userID / password or API-Key
         optional Integer                                maxRetries;                              // can be used by monitoring to raise an alert after this number of attempts
         required XEnum MediaXType                       payloadFormat;                           // XML, JSON etc. (for information / documentation in core, can be used by customizations supporting multiple formats)
         optional customizationQualifier                 serializerQualifier properties qualifierFor="out.services.IMarshallerExt";  // specific serialization code (for dependency injection)
-        optional Integer                                timeoutInMs;                             // if not null, overrides the default timeout sprecified in the XML
-        optional Json                                   z;                      // additional custom attributes
+        optional Integer                                timeoutInMs;                             // if not null, overrides the default timeout
+        optional Integer                                delayAfterSend;                          // if not null, causes the sender to pause this duration in ms after every send (mainly for parallel mode to avoid overruns)
+        optional Boolean                                parallel;                                // process asynchronously - more than 1 at a time
+        optional Unicode(512)                           callbackUrl;                             // any URL for a callback
+        optional Json                                   z;                                       // additional custom attributes
     }
 
     class AsyncMessageRef RTTI 101 extends Ref {}
@@ -412,7 +415,7 @@ package (com.arvatosystems) t9t.io {
     class AsyncMessageDTO extends AsyncMessageRef {
         required t9tShortId                             asyncChannelId properties dropdown="asyncChannelId";  // used to retrieve the URL and authentication parameters
         optional (AsyncQueueRef..., AsyncQueueDTO)      asyncQueueRef  properties ref, searchprefix="asyncQueue", simpleref="getObjectRef()", dropdown="asyncQueueId";
-        optional Enum ExportStatusEnum                  status         properties nullWhenZero;               // specifies if the message must still be sent or has been sent
+        optional Enum ExportStatusEnum                  status         properties nullWhenZero;  // specifies if the message must still be sent or has been sent
         optional Instant(3)                             whenSent;                                // defines when the message was initiated (which is before the commit of the sending transaction is done, and before the EventBus transmission)
         optional Instant(3)                             lastAttempt;                             // null if no initial send attempt done, date of transmission or last attempt otherwise
         required integer                                attempts;                                // number of send attempts so far (initially 0)
@@ -425,23 +428,25 @@ package (com.arvatosystems) t9t.io {
         optional Unicode(80)                            reference;                               // a reference to the client object, or text response or additional error code
         optional Long                                   latency properties noJava, noDDL, noAutoMap;  // the time from creation until recent delivery attempt
         optional Unicode(1024) allowControlChars        errorDetails;                            // additional description of the problem
+        optional Integer                                lastResponseTime;                        // response time in milliseconds of last attempt (until response received or timeout)
     }
 
     /** Structure to be used for internal message propagation. */
     final class InMemoryMessage {
-        required tenantId                               tenantId;                                // the tenant of the message
-        required t9tShortId                             asyncChannelId;                          // used to retrieve the URL and authentication parameters
-        optional Long                                   objectRef;                               // refers to a DB entry (to reset the status after a successful send)
-        required Object                                 payload;                                 // the message to be sent
+        required tenantId                               tenantId;                                 // the tenant of the message
+        required t9tShortId                             asyncChannelId;                           // used to retrieve the URL and authentication parameters
+        optional Long                                   objectRef;                                // refers to a DB entry (to reset the status after a successful send)
+        required Object                                 payload;                                  // the message to be sent
     }
 
     final class AsyncHttpResponse {
         required int                                    httpReturnCode;
         optional shortText                              httpStatusMessage;
-        optional Element                                responseObject;                         // full response as received by web service
-        optional Integer                                clientReturnCode;                       // parsed business return code from the above (or null)
-        optional shortText                              clientReference;                        // parsed business reference / invocation reference
+        optional Element                                responseObject;                          // full response as received by web service
+        optional Integer                                clientReturnCode;                        // parsed business return code from the above (or null)
+        optional shortText                              clientReference;                         // parsed business reference / invocation reference
         optional Unicode(1024) allowControlChars        errorDetails;                            // additional description of the problem
+        optional Integer                                responseTime;                            // the time it took (in ms) to obtain the response
     }
 
     /** Used internally to write field headers into output file */

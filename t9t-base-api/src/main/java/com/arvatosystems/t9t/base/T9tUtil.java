@@ -83,6 +83,25 @@ public final class T9tUtil {
         return bool == null ? false : bool.booleanValue();
     }
 
+    /** Left-pads the input string to the given number of characters. */
+    public static String lpad(final String srcIn, final int length, final char padCharacter) {
+        if (srcIn.length() >= length) {
+            return srcIn;
+        }
+        final StringBuilder b = new StringBuilder(length);
+        int toFill = length - srcIn.length();
+        do {
+            b.append(padCharacter);
+        } while (--toFill > 0);
+        b.append(srcIn);
+        return b.toString();
+    }
+
+    /** Formats an integer to the given length. */
+    public static String toString(final int num, final int length) {
+        return lpad(Integer.toString(num), length, '0');
+    }
+
     /**
      * Convenience which creates a new list of transformed items of some input collection.
      *

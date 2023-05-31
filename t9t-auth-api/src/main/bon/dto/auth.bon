@@ -266,12 +266,13 @@ package (com.arvatosystems) t9t.auth {
     class SessionRef RTTI 1 extends Ref {
     }
 
-    /** Records incoming communication. For every remote connection or file processed, there is one entry of this type,
+    /**
+     * Records incoming communication. For every remote connection or file processed, there is one entry of this type,
      * but only persisted after a user has successfully authenticated.
      */
     final class SessionDTO extends SessionRef {
         properties tenantCategory="A";
-        required (UserRef...,UserKey)               userRef         properties notupdatable, searchprefix="user", ref, simpleref="getObjectRef()", dropdown="userId";
+        required (UserRef..., UserKey)              userRef         properties notupdatable, searchprefix="user", ref, simpleref="getObjectRef()", dropdown="userId";
         required tenantId                           tenantId        properties notupdatable;
         optional Uuid                               sessionId;          // persistent session ID which stays the same across tenant changes
         optional f42Ref                             continuesFromSession;   // for a tenant change: the session ref of the previous session entry
@@ -288,5 +289,6 @@ package (com.arvatosystems) t9t.auth {
         Integer                                     numberDuplicate;    // requests which have been identified as duplicate by either sourceNo/recordNo or messageId
         Instant                                     firstRecordProcessedAt;
         Instant                                     lastRecordProcessedAt;
+        optional (ApiKeyRef..., ApiKeyKey)          apiKeyRef       properties searchprefix="apiKey", ref, simpleref="getObjectRef()"; // references the API key used to log in, in case the authentication was by API key
     }
 }

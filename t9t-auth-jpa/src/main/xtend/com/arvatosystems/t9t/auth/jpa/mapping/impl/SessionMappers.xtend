@@ -17,6 +17,7 @@ package com.arvatosystems.t9t.auth.jpa.mapping.impl
 
 import com.arvatosystems.t9t.annotations.jpa.NeedMapping
 import com.arvatosystems.t9t.annotations.jpa.active.AutoMap42
+import com.arvatosystems.t9t.auth.ApiKeyKey
 import com.arvatosystems.t9t.auth.SessionDTO
 import com.arvatosystems.t9t.auth.UserKey
 import com.arvatosystems.t9t.auth.jpa.entities.SessionEntity
@@ -33,5 +34,8 @@ class SessionMappers {
         val user      = userResolver.find(userRef)
         dto.userRef   = new UserKey(userRef, user?.userId ?: '?')
         dto.tenantId  = tenant?.tenantId ?: '?'
+        if (apiKey !== null) {
+            dto.apiKeyRef = new ApiKeyKey(apiKey.apiKey)
+        }
     }
 }

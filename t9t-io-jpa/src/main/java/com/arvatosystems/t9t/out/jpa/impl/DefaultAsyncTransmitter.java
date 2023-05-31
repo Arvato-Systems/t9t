@@ -31,6 +31,7 @@ import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 import de.jpaw.dp.Singleton;
+import jakarta.persistence.Query;
 
 /** Default implementation of the persisted asynchronous message bus. */
 
@@ -75,5 +76,14 @@ public class DefaultAsyncTransmitter implements IAsyncTransmitter {
             persistInDb(objectRef, queueRef, asyncChannelId, payload, ref, category, identifier);
         }
         return objectRef;
+    }
+
+    @Override
+    public void stopRetries(final Long messageRef) {
+        final Query q = asyncMessageResolver.getEntityManager().createQuery(
+            "UPDATE " + AsyncMessageEntity.class.getSimpleName() + " a "
+            + "SET a.status = null, a.whenSent = null WHERE a.objectRef = :messageRef AND a.status IS NOT NULL");
+        q.setParameter("messageRef", messageRef);
+        q.executeUpdate();
     }
 }

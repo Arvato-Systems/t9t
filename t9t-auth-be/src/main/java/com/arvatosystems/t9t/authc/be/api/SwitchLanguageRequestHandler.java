@@ -62,7 +62,7 @@ public class SwitchLanguageRequestHandler extends AbstractRequestHandler<SwitchL
 
         final AuthenticationResponse authResp = new AuthenticationResponse();
         authResp.setJwtInfo(jwt);
-        authResp.setEncodedJwt(authResponseUtil.authResponseFromJwt(jwt, null, ctx.internalHeaderParameters.getJwtInfo()));
+        authResp.setEncodedJwt(authResponseUtil.authResponseFromJwt(jwt, null, ctx.internalHeaderParameters.getJwtInfo(), null));
         authResp.setTenantName(newTenant.getName());
         authResp.setTenantNotUnique(tenants.size() > 1);
         return authResp;

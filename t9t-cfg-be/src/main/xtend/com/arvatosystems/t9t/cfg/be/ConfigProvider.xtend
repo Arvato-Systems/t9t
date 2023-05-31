@@ -120,6 +120,7 @@ class ConfigProvider {
     def private static void mergeConfigurations(T9tServerConfiguration a, T9tServerConfiguration b) {
         myConfiguration = new T9tServerConfiguration => [
             serverIdSelf            = a.serverIdSelf            ?: b.serverIdSelf
+            stagingType             = a.stagingType             ?: b.stagingType
             persistenceUnitName     = a.persistenceUnitName     ?: b.persistenceUnitName
             databaseConfiguration   = a.databaseConfiguration   ?: b.databaseConfiguration
             secondaryDatabaseConfig = a.secondaryDatabaseConfig ?: b.secondaryDatabaseConfig ?: databaseConfiguration

@@ -164,7 +164,9 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<
             // default: Solr driven combined query
             executeBOTHSearchDrivenBySolr(ctx, rq, solrRequest, dbRequest, finalResultList);
         }
-        return mapper.createReadAllResponse(finalResultList, rq.getSearchOutputTarget());
+        final ReadAllResponse<DTO, TRACKING> resp = mapper.createReadAllResponse(finalResultList, rq.getSearchOutputTarget());
+        resp.setStrategy(SearchFilterTypeEnum.BOTH);
+        return resp;
     }
 
     // optional additional mappings not replaced by processSearchPrefixForDB (due to
@@ -230,7 +232,9 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<
         newSearchRq.setSearchOutputTarget(rq.getSearchOutputTarget());
         LOGGER.debug("solr only new searchReq: {}", newSearchRq);
         processPrefixes(newSearchRq); // convert the field with searchPrefix
-        return mapper.createReadAllResponse(resolver.search(newSearchRq, null), newSearchRq.getSearchOutputTarget());
+        final ReadAllResponse<DTO, TRACKING> resp = mapper.createReadAllResponse(resolver.search(newSearchRq, null), newSearchRq.getSearchOutputTarget());
+        resp.setStrategy(SearchFilterTypeEnum.SOLR_ONLY);
+        return resp;
     }
 
     protected ReadAllResponse<DTO, TRACKING> executeSOLRSearchWithDbSort(final RequestContext ctx, final REQ rq) throws Exception {
@@ -254,7 +258,9 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<
 
         LOGGER.debug("solr only with DB sort new searchReq for DB: {}", newSearchRq);
         processPrefixes(newSearchRq); // convert the field with searchPrefix
-        return mapper.createReadAllResponse(resolver.search(newSearchRq, null), newSearchRq.getSearchOutputTarget());
+        final ReadAllResponse<DTO, TRACKING> resp = mapper.createReadAllResponse(resolver.search(newSearchRq, null), newSearchRq.getSearchOutputTarget());
+        resp.setStrategy(SearchFilterTypeEnum.BOTH);
+        return resp;
     }
 
     // when this method is called, there are filter criteria which are SOLR only as

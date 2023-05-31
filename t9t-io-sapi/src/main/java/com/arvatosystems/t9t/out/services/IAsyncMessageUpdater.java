@@ -19,10 +19,16 @@ import java.util.List;
 
 import com.arvatosystems.t9t.base.output.ExportStatusEnum;
 import com.arvatosystems.t9t.io.AsyncChannelDTO;
+import com.arvatosystems.t9t.io.AsyncHttpResponse;
 import com.arvatosystems.t9t.io.AsyncQueueDTO;
 
-/** Interface to JPA layer which updates the async message.
- * This is a technical helper method. */
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
+/**
+ * Interface to JPA layer which updates the async message.
+ * This is a technical helper method.
+ */
 public interface IAsyncMessageUpdater {
     /**
      * Updates a message entry to its latest status.
@@ -30,15 +36,15 @@ public interface IAsyncMessageUpdater {
      * @param objectRef       the primary key of the status message in the database
      * @param newStatus       the status of the most recent send attempt
      * @param httpCode        the http status code received (useful to determine if and when to retry)
-     * @param clientCode      any parsed client status code from the response
-     * @param clientReference any reference provided by the client (client processing transaction ID etc)
-     * @param errorDetails    any additional information describing a problem, from the client's response payload
+     * @param resp            optional AsyncHttpResponse object
      */
-    void updateMessage(Long objectRef, ExportStatusEnum newStatus, Integer httpCode, Integer clientCode, String clientReference, String errorDetails);
+    void updateMessage(@Nonnull Long objectRef, @Nonnull ExportStatusEnum newStatus, @Nullable Integer httpCode, @Nullable AsyncHttpResponse resp);
 
     /** Reads all active queues (all tenants) from the database. */
+    @Nonnull
     List<AsyncQueueDTO> getActiveQueues();
 
     /** Reads a channel configuration from the database. Throws an exception if the specified channel does not exist. */
-    AsyncChannelDTO readChannelConfig(String channelId, String tenantId);
+    @Nonnull
+    AsyncChannelDTO readChannelConfig(@Nonnull String channelId, @Nonnull String tenantId);
 }

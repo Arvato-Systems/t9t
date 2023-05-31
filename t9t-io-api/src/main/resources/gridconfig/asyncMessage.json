@@ -6,6 +6,7 @@
         { "filterType": "E", "fieldName": "httpResponseCode" },
         { "filterType": "W", "fieldName": "reference" },
         { "filterType": "R", "fieldName": "lastAttempt" },
+        { "filterType": "R", "fieldName": "lastResponseTime" },
         { "filterType": "R", "fieldName": "whenSent" },
         { "filterType": "E", "fieldName": "asyncQueueRef" },
         { "filterType": "E", "fieldName": "refIdentifier" },
@@ -13,6 +14,6 @@
     ],
     "fields": [
         "whenSent", "asyncChannelId", "asyncQueueRef.asyncQueueId", "status", "refType", "refIdentifier", "ref", "attempts", "lastAttempt", "latency",
-        "httpResponseCode", "returnCode", "reference", "errorDetails"
+        "lastResponseTime", "httpResponseCode", "returnCode", "reference", "errorDetails"
     ]
 }
