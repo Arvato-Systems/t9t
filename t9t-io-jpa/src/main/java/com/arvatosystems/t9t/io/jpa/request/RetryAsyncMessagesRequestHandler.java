@@ -77,10 +77,10 @@ public class RetryAsyncMessagesRequestHandler extends AbstractRequestHandler<Ret
         if (request.getMinAgeInMinutes() != null || request.getMaxAgeInMinutes() != null) {
             final InstantFilter f = new InstantFilter(useUnsent ? "cTimestamp" : "lastAttempt");
             if (request.getMinAgeInMinutes() != null) {
-                f.setLowerBound(ctx.executionStart.minusSeconds(60 * request.getMinAgeInMinutes()));
+                f.setUpperBound(ctx.executionStart.minusSeconds(60 * request.getMinAgeInMinutes()));
             }
             if (request.getMaxAgeInMinutes() != null) {
-                f.setUpperBound(ctx.executionStart.minusSeconds(60 * request.getMaxAgeInMinutes()));
+                f.setLowerBound(ctx.executionStart.minusSeconds(60 * request.getMaxAgeInMinutes()));
                 searchFilters.add(f);
             }
             searchFilters.add(f);

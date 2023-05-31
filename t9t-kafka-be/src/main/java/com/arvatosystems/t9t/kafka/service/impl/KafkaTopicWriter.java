@@ -76,10 +76,10 @@ public class KafkaTopicWriter implements IKafkaTopicWriter {
         final int partition = (partitionIn & 0x7fffffff) % numberOfPartitions;
         producer.send(new ProducerRecord<String, byte[]>(kafkaTopic, Integer.valueOf(partition), recordKey, dataToWrite), (meta, e) -> {
             if (e != null) {
-                LOGGER.error("Could not send record for partition key {} in topic {}: {}: {}", recordKey, kafkaTopic,
+                LOGGER.error("Could not send record for key {} in topic {} / partition {}: {}: {}", recordKey, kafkaTopic, partition,
                         e.getClass().getSimpleName(), ExceptionUtil.causeChain(e));
             } else {
-                LOGGER.debug("Sent record for partition key {} in topic {} (made it into partition {} at offset {}, {} bytes)", recordKey, kafkaTopic,
+                LOGGER.debug("Sent record for key {} in topic {} (made it into partition {} at offset {}, {} bytes)", recordKey, kafkaTopic,
                         meta.partition(), meta.offset(), dataToWrite.length);
             }
         });

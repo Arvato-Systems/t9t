@@ -84,6 +84,7 @@ final class KafkaRequestProcessor implements Callable<Boolean> {
         // first, wait for requests to have fully processed
         int iteration = 0;
         final int baselineBefore = baseline.get();
+        final long processingStart = System.currentTimeMillis();
         for (;;) {
             int pending = pendingRequestsCounter.get();
             if (pending < 0) {
@@ -100,7 +101,12 @@ final class KafkaRequestProcessor implements Callable<Boolean> {
                 // wait some time to allow requests to finish
                 ++iteration;
                 if (iteration > 5) {
-                    LOGGER.warn("SLOW request processing! {} pending requests after delays", pending);
+                    final long now = System.currentTimeMillis();
+                    LOGGER.warn("SLOW request processing! {} pending requests after delay of {} ms", pending, now - processingStart);
+                    if (now - processingStart >= 15_000L) {
+                        // do not stall for more than 15 seconds
+                        break;
+                    }
                 } else {
                     try {
                         Thread.sleep(pending > 5 ? 1000L : 200L);
@@ -114,7 +120,7 @@ final class KafkaRequestProcessor implements Callable<Boolean> {
         if (pending == 0) {
             LOGGER.debug("Will commit - all requests done");
         } else {
-            LOGGER.debug("Will commit - {} requests still pending", pending);
+            LOGGER.warn("Will commit - but {} requests still pending", pending);
         }
         if (pending != baselineBefore) {
             baseline.set(pending >= 0 ? pending : 0);
