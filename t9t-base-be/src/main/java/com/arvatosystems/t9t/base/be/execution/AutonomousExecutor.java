@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.base.be.execution;
 
+import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -30,6 +31,7 @@ import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceRequestHeader;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
+import com.arvatosystems.t9t.base.api.TransactionOriginType;
 import com.arvatosystems.t9t.base.services.IAutonomousExecutor;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.cfg.be.ApplicationConfiguration;
@@ -70,6 +72,11 @@ public class AutonomousExecutor implements IAutonomousExecutor {
         requestHeader.setInvokingProcessRef(ctx.getRequestRef()); // transfer the invoker
         requestHeader.setMessageId(ihdr.getMessageId());
         requestHeader.setIdempotencyBehaviour(ihdr.getIdempotencyBehaviour());
+        requestHeader.setPlannedRunDate(Instant.now());
+        if (!rp.was$Frozen()) {
+            rp.setWhenSent(requestHeader.getPlannedRunDate().toEpochMilli());
+            rp.setTransactionOriginType(TransactionOriginType.AUTONOMOUS);
+        }
         final Map<String, String> mdcContext = MDC.getCopyOfContextMap();
 
         final Future<ServiceResponse> f = executorService.submit(() -> {

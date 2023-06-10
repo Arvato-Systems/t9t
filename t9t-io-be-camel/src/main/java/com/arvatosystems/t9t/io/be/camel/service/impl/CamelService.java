@@ -18,6 +18,7 @@ package com.arvatosystems.t9t.io.be.camel.service.impl;
 import java.util.List;
 
 import org.apache.camel.CamelContext;
+import org.apache.camel.Route;
 import org.apache.camel.ServiceStatus;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.model.RouteDefinition;
@@ -28,9 +29,13 @@ import org.slf4j.LoggerFactory;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.services.IFileUtil;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
+import com.arvatosystems.t9t.io.CommunicationTargetChannelType;
 import com.arvatosystems.t9t.io.DataSinkDTO;
 import com.arvatosystems.t9t.io.be.camel.service.ICamelService;
+import com.arvatosystems.t9t.out.be.impl.output.camel.AbstractExtensionCamelRouteBuilder;
 import com.arvatosystems.t9t.out.be.impl.output.camel.GenericT9tRoute;
+import com.arvatosystems.t9t.out.services.IOutPersistenceAccess;
+import com.jcraft.jsch.JSch;
 
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
@@ -45,7 +50,8 @@ public class CamelService implements ICamelService {
 
     public static final String DEFAULT_ENVIRONMENT = "t9t";
 
-    private final IFileUtil fileUtil = Jdp.getRequired(IFileUtil.class);
+    protected final IFileUtil fileUtil = Jdp.getRequired(IFileUtil.class);
+    protected final IOutPersistenceAccess outPersistenceAccess = Jdp.getRequired(IOutPersistenceAccess.class);
 
     private enum ActionType {
         ADD_ROUTES, REMOVE_ROUTES, START_ROUTE
@@ -154,6 +160,81 @@ public class CamelService implements ICamelService {
         } catch (final Exception e) {
             LOGGER.error("Exception removing camel route: {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
             throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void initBeforeContextCreation() {
+        try {
+            if (ConfigProvider.getCustomParameter("camelEnableInsecureSha1") != null) {
+                // may be needed in case of very old sftp servers
+                LOGGER.warn("Due to config camelEnableInsecureSha1 in config.xml, enable INSECURE SHA1");
+                JSch.setConfig("server_host_key",  JSch.getConfig("server_host_key") + ",ssh-rsa");
+                JSch.setConfig("PubkeyAcceptedAlgorithms", JSch.getConfig("PubkeyAcceptedAlgorithms") + ",ssh-rsa");
+                JSch.setConfig("kex", JSch.getConfig("kex") + ",diffie-hellman-group1-sha1,diffie-hellman-group14-sha1");
+            }
+        } catch (Exception e) {
+            LOGGER.error("Failed to set insecure sftp algorithms");
+        }
+    }
+
+    @Override
+    public void initializeClusterService(final CamelContext camelContext) {
+        // empty by default
+    }
+
+    @Override
+    public void initializeRoutes(final CamelContext camelContext) {
+        try {
+            // first Initialize routes that derive from AbstractExtensionCamelRouteBuilder
+            // these should be static routes that are not configurable (like FileRoute)
+            final List<AbstractExtensionCamelRouteBuilder> classList = Jdp.getAll(AbstractExtensionCamelRouteBuilder.class);
+            if (classList != null) {
+                for (final AbstractExtensionCamelRouteBuilder clazz : classList) {
+                    try {
+                        LOGGER.info("Adding route: {}", clazz.getClass());
+                        camelContext.addRoutes(clazz);
+                    } catch (final Exception e) {
+                        // in case of problems rather skip a single route instead of not initializing the context at all!
+                        LOGGER.debug("There was a problem initializing route: {} due to ", clazz.getClass(), e);
+                    }
+                }
+            } else {
+                LOGGER.info("No AbstractExtensionCamelRouteBuilders found.");
+            }
+            // After initializing these static routes there are additional routes
+
+            String environment = ConfigProvider.getConfiguration().getImportEnvironment();
+            if (environment == null) {
+                environment = CamelService.DEFAULT_ENVIRONMENT;
+            }
+            final List<DataSinkDTO> dataSinkDTOList
+              = outPersistenceAccess.getDataSinkDTOsForEnvironmentAndChannel(environment, CommunicationTargetChannelType.FILE);
+            LOGGER.info("Looking for Camel import routes for environment {}: {} routes found", environment, dataSinkDTOList.size());
+            for (final DataSinkDTO dataSinkDTO : dataSinkDTOList) {
+                if (dataSinkDTO.getIsActive()) {
+                    LOGGER.info("Starting Camel route {}", dataSinkDTO.getDataSinkId());
+                    try {
+                        addRoutes(dataSinkDTO);
+                    } catch (final Exception e) {
+                        LOGGER.error("Could not add Camel route for {} due to {}", dataSinkDTO.getDataSinkId(), ExceptionUtil.causeChain(e));
+                    }
+                } else {
+                    LOGGER.info("Not starting inactive Camel route {}", dataSinkDTO.getDataSinkId());
+                }
+            }
+
+            // start the routes manually to omit invalid routes
+            for (Route route : camelContext.getRoutes()) {
+                try {
+                    camelContext.getRouteController().startRoute(route.getRouteId());
+                    LOGGER.debug("started route {} successfully.", route.getRouteId());
+                } catch (Exception ex) {
+                    LOGGER.error("Unable to start route {}: ", route.getRouteId(), ex);
+                }
+            }
+        } catch (final Exception e) {
+            LOGGER.error("CamelContext could not be started... ", e);
         }
     }
 }

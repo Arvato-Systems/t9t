@@ -88,6 +88,20 @@ package (com.arvatosystems) t9t.base.entities {
         required int                        version         properties version;
     }
 
+    /** Tracking data for write-only tables, at milliseconds precision. */
+    class WriteTrackingMs extends TrackingBase {
+        required userId                     cAppUserId      properties noupdate;
+        required instant(3)                 cTimestamp      properties noupdate, currentTimestamp;  // noinsert removed, causes problems with H2 unit tests
+        required t9tRef                     cProcessRef     properties noupdate;
+    }
+
+    /** Tracking data for read/write tables, using pessimistic locking. */
+    class FullTrackingMs extends WriteTrackingMs {
+        required userId                     mAppUserId;
+        required Instant(3)                 mTimestamp      properties currentTimestamp;
+        required t9tRef                     mProcessRef;
+    }
+
     class AdditionalHistoryTableColumns {
         required enum OperationType         crud;
         required long                       historyNo;   // maybe we do not need this, because we have the version now

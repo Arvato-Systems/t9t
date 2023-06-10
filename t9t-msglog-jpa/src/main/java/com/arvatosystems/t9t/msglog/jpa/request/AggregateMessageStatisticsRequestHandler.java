@@ -15,68 +15,119 @@
  */
 package com.arvatosystems.t9t.msglog.jpa.request;
 
-import java.time.LocalDate;
+import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import jakarta.persistence.Query;
-import jakarta.persistence.TypedQuery;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.api.ServiceResponse;
+import com.arvatosystems.t9t.base.T9tUtil;
+import com.arvatosystems.t9t.base.api.TransactionOriginType;
+import com.arvatosystems.t9t.base.request.AggregationGranularityType;
+import com.arvatosystems.t9t.base.request.AggregationResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
-import com.arvatosystems.t9t.msglog.MessageStatisticsDTO;
+import com.arvatosystems.t9t.batch.StatisticsDTO;
+import com.arvatosystems.t9t.msglog.jpa.entities.MessageEntity;
 import com.arvatosystems.t9t.msglog.jpa.entities.MessageStatisticsEntity;
-import com.arvatosystems.t9t.msglog.jpa.mapping.IMessageStatisticsDTOMapper;
 import com.arvatosystems.t9t.msglog.jpa.persistence.IMessageStatisticsEntityResolver;
 import com.arvatosystems.t9t.msglog.request.AggregateMessageStatisticsRequest;
+import com.arvatosystems.t9t.statistics.services.IStatisticsService;
 
 import de.jpaw.dp.Jdp;
+import jakarta.persistence.Query;
 
 public class AggregateMessageStatisticsRequestHandler extends AbstractRequestHandler<AggregateMessageStatisticsRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AggregateMessageStatisticsRequestHandler.class);
-    protected final IMessageStatisticsEntityResolver resolver = Jdp.getRequired(IMessageStatisticsEntityResolver.class);
-    protected final IMessageStatisticsDTOMapper mapper = Jdp.getRequired(IMessageStatisticsDTOMapper.class);
+
+    private final IMessageStatisticsEntityResolver resolver = Jdp.getRequired(IMessageStatisticsEntityResolver.class);
+    private final IStatisticsService statisticsService      = Jdp.getRequired(IStatisticsService.class);
 
     @Override
-    public ServiceResponse execute(final RequestContext ctx, final AggregateMessageStatisticsRequest request) throws Exception {
+    public AggregationResponse execute(final RequestContext ctx, final AggregateMessageStatisticsRequest request) throws Exception {
+        // determine effective time range
+        final AggregationGranularityType precision = T9tUtil.nvl(request.getAggregationGranularity(), AggregationGranularityType.HOUR);
+        final LocalDateTime effectiveIntervalEnd = T9tUtil.truncate(T9tUtil.nvl(request.getEndExcluding(), LocalDateTime.now()), precision);
+        final LocalDateTime effectiveIntervalStart = request.getStartIncluding() != null
+                ? T9tUtil.truncate(request.getStartIncluding(), precision)
+                : T9tUtil.minusDuration(effectiveIntervalEnd, precision, 1L);
+        final Instant effectiveStart = effectiveIntervalStart.toInstant(ZoneOffset.UTC);
+        final Instant effectiveEnd   = effectiveIntervalEnd.toInstant(ZoneOffset.UTC);
+        final AggregationResponse response = new AggregationResponse();
+
         // Delete existing MessageStatistics
-        deleteMessageStatistics(request);
+        final long start = System.currentTimeMillis();
+        response.setRecordsDeleted(deleteMessageStatistics(request, effectiveStart, effectiveEnd));
+        final long mid = System.currentTimeMillis();
+        response.setMillisecondsUsedForDeletion(mid - start);
 
-        final List<MessageStatisticsDTO> results = queryMessageStatistics(request);
-
-        // Save MessageStatistics
-        for (final MessageStatisticsDTO result : results) {
-            final MessageStatisticsEntity entity = mapper.mapToEntity(result, false);
-            resolver.save(entity);
+        if (!Boolean.TRUE.equals(request.getOnlyDelete())) {
+            // create new MessageStatistics
+            response.setRecordsCreated(createMessageStatistics(request, effectiveStart, effectiveEnd, precision));
+            final long end = System.currentTimeMillis();
+            response.setMillisecondsUsedForDeletion(end - mid);
         }
-
-        return ok();
+        writeStatistics(response.getRecordsDeleted(), response.getRecordsCreated(), ctx, precision, effectiveStart, effectiveEnd);
+        return response;
     }
 
-    /**
-     *
-        DELETE
-        FROM       p28_dat_message_statistics
-        WHERE      day = '2021-01-05'
-        ;
-     *
-     */
-    private void deleteMessageStatistics(final AggregateMessageStatisticsRequest request) {
-        final LocalDate day = request.getDay() == null ? LocalDate.now().minusDays(1) : request.getDay();
-
+    private int createMessageStatistics(final AggregateMessageStatisticsRequest request, final Instant start, final Instant end,
+            final AggregationGranularityType precision) {
         final StringBuilder sb = new StringBuilder();
-        sb.append("DELETE");
-        sb.append("  FROM MessageStatisticsEntity ms");
-        sb.append(" WHERE ms.day = :day");
+        sb.append("INSERT INTO " + MessageStatisticsEntity.TABLE_NAME + " ("
+            + "object_ref, slot_start, tenant_id, hostname, server_type, partition, transaction_origin_type, user_id, request_parameter_pqon, "
+            + "count_ok, count_error, processing_time_max, processing_time_total, processing_delay_max, processing_delay_total"
+            + ") SELECT "
+            + "MAX(m.object_ref), "
+            + "DATE_TRUNC('" + precision.getToken() + "', m.execution_started_at), "
+            + "m.tenant_id, "
+            + "COALESCE(m.hostname,    '-'), "
+            + "COALESCE(m.server_type, '-'), "
+            + "COALESCE(m.partition,    99), "
+            + "COALESCE(m.transaction_origin_type, '" + TransactionOriginType.OTHER.getToken() + "'), "
+            + "m.user_id, "
+            + "m.request_parameter_pqon, "
+            + "SUM(CASE WHEN m.return_code < 200000000 THEN 1 ELSE 0 END), "
+            + "SUM(CASE WHEN m.return_code >= 200000000 THEN 1 ELSE 0 END), "
+            + "MAX(COALESCE(m.processing_time_in_millisecs, 0)), "
+            + "SUM(COALESCE(m.processing_time_in_millisecs, 0)), "
+            + "MAX(COALESCE(m.processing_delay_in_millisecs, 0)), "
+            + "SUM(COALESCE(m.processing_delay_in_millisecs, 0)) "
+            + "FROM " + MessageEntity.TABLE_NAME + " m "
+            + "WHERE m.return_code IS NOT NULL AND  m.execution_started_at >= :fromDate AND m.execution_started_at < :toDate");
+
+        if (request.getUserId() != null) {
+            sb.append(" AND m.user_id = :userId");
+        }
+
+        if (request.getRequestParameterPqon() != null) {
+            sb.append(" AND m.request_parameter_pqon = :requestParameterPqon");
+        }
+
+        sb.append(" GROUP BY DATE_TRUNC('" + precision.getToken() + "', m.execution_started_at), "
+            + "m.tenant_id, m.hostname, m.server_type, m.partition, m.transaction_origin_type, m.user_id, m.request_parameter_pqon");
+
+        final Query query = resolver.getEntityManager().createNativeQuery(sb.toString());
+        query.setParameter("fromDate", start);
+        query.setParameter("toDate", end);
+
+        if (request.getUserId() != null) {
+            query.setParameter("userId", request.getUserId());
+        }
+
+        if (request.getRequestParameterPqon() != null) {
+            query.setParameter("requestParameterPqon", request.getRequestParameterPqon());
+        }
+
+        final int noOfInsertedRows = query.executeUpdate();
+        LOGGER.info("{} of rows inserted in MessageStatistics.", noOfInsertedRows);
+        return noOfInsertedRows;
+    }
+
+    private int deleteMessageStatistics(final AggregateMessageStatisticsRequest request, final Instant start, final Instant end) {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("DELETE FROM MessageStatisticsEntity ms WHERE ms.slotStart >= :whenStart AND ms.slotStart < :whenEnd");
 
         if (request.getUserId() != null) {
             sb.append(" AND ms.userId = :userId");
@@ -87,7 +138,8 @@ public class AggregateMessageStatisticsRequestHandler extends AbstractRequestHan
         }
 
         final Query query = resolver.getEntityManager().createQuery(sb.toString());
-        query.setParameter("day", day);
+        query.setParameter("whenStart", start);
+        query.setParameter("whenEnd", end);
 
         if (request.getUserId() != null) {
             query.setParameter("userId", request.getUserId());
@@ -97,107 +149,23 @@ public class AggregateMessageStatisticsRequestHandler extends AbstractRequestHan
             query.setParameter("requestParameterPqon", request.getRequestParameterPqon());
         }
 
-        final int noOfDeletedRow = query.executeUpdate();
-        LOGGER.debug("{} of rows deleted in MessageStatistics.", noOfDeletedRow);
+        final int noOfDeletedRows = query.executeUpdate();
+        LOGGER.info("{} of rows deleted in MessageStatistics.", noOfDeletedRows);
+        return noOfDeletedRows;
     }
 
-    /**
-     *
-        SELECT
-                   tenant_id,
-                   user_id,
-                   request_parameter_pqon,
-                   COUNT(CASE WHEN return_code >= 0  AND return_code < 200000000 THEN 1 END) as count_ok,
-                   COUNT(CASE WHEN return_code >= 200000000  AND return_code < 1000000000 THEN 1 END) as count_error,
-                   MIN(processing_time_in_millisecs) as processing_time_min,
-                   MAX(processing_time_in_millisecs) as processing_time_max,
-                   SUM(processing_time_in_millisecs) as processing_time_total
-        FROM       p28_int_message
-        WHERE      return_code is not null
-        AND        processing_time_in_millisecs is not null
-        AND        execution_started_at >= '2021-01-05'
-        AND        execution_started_at < '2021-01-06'
-        GROUP BY   tenant_id, user_id, request_parameter_pqon
-        ;
-     *
-     */
-    private List<MessageStatisticsDTO> queryMessageStatistics(final AggregateMessageStatisticsRequest request) {
-        final LocalDate fromDate = request.getDay() == null ? LocalDate.now().minusDays(1) : request.getDay();
-        final LocalDate toDate = fromDate.plusDays(1);
-        final String dayStr =  fromDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-
-        final StringBuilder sb = new StringBuilder();
-        sb.append(" SELECT    new com.arvatosystems.t9t.msglog.be.request.MessageStatisticsDTOWrapper(");
-        sb.append("               m.tenantId,");
-        sb.append("               m.userId,");
-        sb.append("               '" + dayStr + "',");
-        sb.append("               m.requestParameterPqon,");
-        sb.append("               COUNT(CASE WHEN m.returnCode >= 0  AND m.returnCode < 200000000 THEN 1 END),");
-        sb.append("               COUNT(CASE WHEN m.returnCode >= 200000000  AND m.returnCode < 1000000000 THEN 1 END),");
-        sb.append("               MIN(m.processingTimeInMillisecs),");
-        sb.append("               MAX(m.processingTimeInMillisecs),");
-        sb.append("               SUM(m.processingTimeInMillisecs)");
-        sb.append("           )");
-        sb.append(" FROM      MessageEntity m");
-        sb.append(" WHERE     m.returnCode IS NOT NULL");
-        sb.append(" AND       m.processingTimeInMillisecs IS NOT NULL");
-        sb.append(" AND       m.executionStartedAt >= :fromDate");
-        sb.append(" AND       m.executionStartedAt < :toDate");
-
-        if (request.getUserId() != null) {
-            sb.append(" AND   m.userId = :userId");
-        }
-
-        if (request.getRequestParameterPqon() != null) {
-            sb.append(" AND   m.requestParameterPqon = :requestParameterPqon");
-        }
-
-        sb.append(" GROUP BY  m.tenantId, m.userId, m.requestParameterPqon");
-
-        final TypedQuery<MessageStatisticsDTOWrapper> query = resolver.getEntityManager().createQuery(sb.toString(), MessageStatisticsDTOWrapper.class);
-        query.setParameter("fromDate", LocalDateTime.of(fromDate, LocalTime.of(0, 0)).toInstant(ZoneOffset.UTC));
-        query.setParameter("toDate", LocalDateTime.of(toDate, LocalTime.of(0, 0)).toInstant(ZoneOffset.UTC));
-
-        if (request.getUserId() != null) {
-            query.setParameter("userId", request.getUserId());
-        }
-
-        if (request.getRequestParameterPqon() != null) {
-            query.setParameter("requestParameterPqon", request.getRequestParameterPqon());
-        }
-
-        final List<MessageStatisticsDTOWrapper> dtoWrappers = query.getResultList();
-
-        return dtoWrappers.isEmpty() ? new ArrayList<>() : query.getResultList().stream().map(wrapper -> wrapper.getDto()).collect(Collectors.toList());
-    }
-}
-
-class MessageStatisticsDTOWrapper {
-    private final MessageStatisticsDTO dto;
-
-    MessageStatisticsDTOWrapper(final String tenantId,
-      final String userId,
-      final String day,
-      final String requestParameterPqon,
-      final Long countOk,
-      final Long countError,
-      final Long processingTimeMin,
-      final Long processingTimeMax,
-      final Long processingTimeTotal) {
-        dto = new MessageStatisticsDTO(
-            tenantId,
-            userId,
-            LocalDate.parse(day, DateTimeFormatter.ofPattern("yyyy-MM-dd")),
-            requestParameterPqon,
-            countOk.intValue(),
-            countError.intValue(),
-            processingTimeMin,
-            processingTimeMax,
-            processingTimeTotal
-        );
-    }
-
-    public MessageStatisticsDTO getDto() {
-        return dto;
+    private void writeStatistics(final int deleted, final int inserted, final RequestContext ctx, final AggregationGranularityType precision,
+      final Instant effectiveStart, final Instant effectiveEnd) {
+        final StatisticsDTO stat = new StatisticsDTO();
+        stat.setCount1(inserted);
+        stat.setCount2(deleted);
+        stat.setInfo1(precision.getToken());
+        stat.setInfo2(effectiveStart.toString() + " - " + effectiveEnd.toString());
+        stat.setRecordsProcessed(null);
+        stat.setStartTime(ctx.executionStart);
+        stat.setEndTime(Instant.now());
+        stat.setJobRef(ctx.internalHeaderParameters.getProcessRef());
+        stat.setProcessId("MessageAggregation");
+        statisticsService.saveStatisticsData(stat);
     }
 }

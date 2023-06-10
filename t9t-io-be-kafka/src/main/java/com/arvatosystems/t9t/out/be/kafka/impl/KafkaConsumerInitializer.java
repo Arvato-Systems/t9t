@@ -128,7 +128,7 @@ public class KafkaConsumerInitializer implements StartupShutdown {
             LOGGER.debug("Processing record {} in topic/partion/offset {}/{}/{} of length {}", key, topic, record.partition(), record.offset(), data.length);
             final DataSinkDTO cfg = dataSinkByTopic.get(topic);
             if (cfg == null) {
-                LOGGER.error("No data sink registered for topic!");  // have unsubscribed?
+                LOGGER.error("No data sink registered for topic {}", topic);  // have unsubscribed?
                 return null;
             }
             final UUID apiKey = cfg.getApiKey() == null ? defaultApiKey : cfg.getApiKey();

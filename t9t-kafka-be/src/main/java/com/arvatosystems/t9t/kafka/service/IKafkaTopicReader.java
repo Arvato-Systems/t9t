@@ -15,7 +15,6 @@
  */
 package com.arvatosystems.t9t.kafka.service;
 
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -40,7 +39,7 @@ public interface IKafkaTopicReader {
      *
      * Returns the number of records processed.
      */
-    <T extends BonaPortable> int pollAndProcess(BiConsumer<String, T> processor, Class<T> expectedType);
+    <T extends BonaPortable> int pollAndProcess(IKafkaConsumer<T> processor, Class<T> expectedType);
 
     /**
      * Polls data from topic, deserializes the data object using the compact bonaparte deserializer
@@ -49,7 +48,7 @@ public interface IKafkaTopicReader {
      *
      * Returns the number of records processed.
      */
-    <T extends BonaPortable> int pollAndProcess(BiConsumer<String, T> processor, Class<T> expectedType, long pollIntervalInMs,
+    <T extends BonaPortable> int pollAndProcess(IKafkaConsumer<T> processor, Class<T> expectedType, long pollIntervalInMs,
       Consumer<KafkaConsumer<String, byte[]>> committer);
 
     /** Commits changes and closes the topic writer. */

@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.io.jpa.request;
 
+import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
@@ -47,8 +48,7 @@ public class PerformAsyncRequestHandler extends AbstractRequestHandler<PerformAs
         final Long ref = rq.getRef() == null ? ctx.getRequestRef() : rq.getRef();
         final String category = rq.getRefType() == null ? "REQ" : rq.getRefType();
         final String identifier = rq.getRefIdentifier() == null ? ctx.userId : rq.getRefIdentifier();
-        asyncTransmitter.transmitMessage(rq.getAsyncChannelId(), rq.getPayload(), ref, category, identifier,
-            rq.getPartition() == 0 ? 0 : rq.getPartition());
+        asyncTransmitter.transmitMessage(rq.getAsyncChannelId(), rq.getPayload(), ref, category, identifier, T9tUtil.nvl(rq.getTargetPartition(), 0));
         return ok();
     }
 }

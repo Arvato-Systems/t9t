@@ -17,6 +17,7 @@ import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
+import com.arvatosystems.t9t.base.api.TransactionOriginType;
 import com.arvatosystems.t9t.base.auth.PermissionType;
 import com.arvatosystems.t9t.jetty.impl.T9tRestProcessor;
 import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
@@ -111,6 +112,8 @@ public class T9tRestProcessorViaKafka extends T9tRestProcessor implements IT9tRe
             }
         }
         // at this point, we know it is authenticated
+        request.setWhenSent(System.currentTimeMillis());  // assumes all server clocks are sufficiently synchronized
+        request.setTransactionOriginType(TransactionOriginType.GATEWAY_EXTERNAL_ASNC);
         kafkaTransmitter.write(request, partitionKey, request.getMessageId());
         // everything is fine!
         payload.setReturnCode(0);

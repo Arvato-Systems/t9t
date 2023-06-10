@@ -49,6 +49,7 @@ package (com.arvatosystems) t9t.server {
         // responseHeader fields:
         required int                                returnCode;
         optional Unicode(512)                       errorDetails;               // further information about the error location
+        optional Unicode(16)                        hostname;                   // the (possibly abbreviated) hostname or K8s pod name which executed this request
     }
 
     /** Internal request to force closing asynchronous (for example scheduler initiated) sessions. Will never be sent through, caught before. */

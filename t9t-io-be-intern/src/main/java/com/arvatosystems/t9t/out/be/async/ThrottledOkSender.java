@@ -44,7 +44,7 @@ public class ThrottledOkSender implements IAsyncSender {
 
     @Override
     public boolean send(final AsyncChannelDTO channel, final int timeout, final InMemoryMessage msg,
-      final Consumer<AsyncHttpResponse> resultProcessor) throws InterruptedException {
+      final Consumer<AsyncHttpResponse> resultProcessor, final long whenStarted) throws InterruptedException {
         if (timeout > 0) {
             Thread.sleep(timeout);
         }

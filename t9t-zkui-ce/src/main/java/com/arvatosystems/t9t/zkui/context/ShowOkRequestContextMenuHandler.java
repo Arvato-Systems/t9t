@@ -16,7 +16,6 @@
 package com.arvatosystems.t9t.zkui.context;
 
 import java.time.Instant;
-import java.time.ZoneOffset;
 
 import com.arvatosystems.t9t.msglog.MessageDTO;
 import com.arvatosystems.t9t.msglog.MessageStatisticsDTO;
@@ -53,8 +52,8 @@ public class ShowOkRequestContextMenuHandler implements IGridContextMenu<Message
         pQONFilter.setEqualsValue(dto.getRequestParameterPqon());
 
         InstantFilter executionStartedAtFilter  = new InstantFilter(MessageDTO.meta$$executionStartedAt.getName());
-        final Instant fromInstant = dto.getDay().atStartOfDay().atZone(ZoneOffset.UTC).toInstant();
-        final Instant toInstant = dto.getDay().plusDays(1).atStartOfDay().atZone(ZoneOffset.UTC).toInstant();
+        final Instant fromInstant = dto.getSlotStart();
+        final Instant toInstant = dto.getSlotStart().plusSeconds(3600L);
         executionStartedAtFilter.setLowerBound(fromInstant);
         executionStartedAtFilter.setUpperBound(toInstant);
 

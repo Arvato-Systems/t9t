@@ -21,6 +21,7 @@ import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
+import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 
@@ -32,7 +33,10 @@ public class JavaLocalDateTimeConverter implements IItemConverter<LocalDateTime>
      * Returns a formatted string for a given timestamp.
      */
     @Override
-    public String getFormattedLabel(LocalDateTime value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
+    public String getFormattedLabel(final LocalDateTime value, final BonaPortable wholeDataObject, final String fieldName, final FieldDefinition meta) {
+        if (meta instanceof TemporalElementaryDataItem temporalElementaryDataItem) {
+            return ApplicationSession.get().format(value, temporalElementaryDataItem.getFractionalSeconds());
+        }
         return ApplicationSession.get().format(value);
     }
 }

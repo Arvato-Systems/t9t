@@ -34,7 +34,7 @@ import com.arvatosystems.t9t.io.jpa.entities.AsyncMessageEntity;
 import com.arvatosystems.t9t.io.jpa.persistence.IAsyncMessageEntityResolver;
 import com.arvatosystems.t9t.io.jpa.persistence.IAsyncQueueEntityResolver;
 import com.arvatosystems.t9t.io.request.RetryAsyncMessagesRequest;
-import com.arvatosystems.t9t.out.services.IAsyncQueue;
+import com.arvatosystems.t9t.out.services.IAsyncTransmitter;
 import com.arvatosystems.t9t.statistics.services.IStatisticsService;
 
 import de.jpaw.bonaparte.api.SearchFilters;
@@ -49,10 +49,10 @@ import de.jpaw.dp.Jdp;
 public class RetryAsyncMessagesRequestHandler extends AbstractRequestHandler<RetryAsyncMessagesRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(RetryAsyncMessagesRequestHandler.class);
 
-    private final IAsyncQueueEntityResolver   queueResolver   = Jdp.getRequired(IAsyncQueueEntityResolver.class);
-    private final IAsyncMessageEntityResolver messageResolver = Jdp.getRequired(IAsyncMessageEntityResolver.class);
-    private final IAsyncQueue                 asyncQueue      = Jdp.getRequired(IAsyncQueue.class);
-    private final IStatisticsService        statisticsService = Jdp.getRequired(IStatisticsService.class);
+    private final IAsyncQueueEntityResolver   queueResolver     = Jdp.getRequired(IAsyncQueueEntityResolver.class);
+    private final IAsyncMessageEntityResolver messageResolver   = Jdp.getRequired(IAsyncMessageEntityResolver.class);
+    private final IAsyncTransmitter           asyncTransmitter  = Jdp.getRequired(IAsyncTransmitter.class);
+    private final IStatisticsService          statisticsService = Jdp.getRequired(IStatisticsService.class);
 
     @Override
     public ServiceResponse execute(RequestContext ctx, RetryAsyncMessagesRequest request) throws Exception {
@@ -107,7 +107,7 @@ public class RetryAsyncMessagesRequestHandler extends AbstractRequestHandler<Ret
                 // every 16th we flush to ensure that fast transmissions do not cause race conditions
                 messageResolver.getEntityManager().flush();
             }
-            asyncQueue.sendAsync(ctx, message.getAsyncChannelId(), message.getPayload(), message.getObjectRef(), 0, null, true);
+            asyncTransmitter.retransmitMessage(ctx, message.getAsyncChannelId(), message.getPayload(), message.getObjectRef(), 0, null);
         }
 
         final Instant exportFinished = Instant.now();

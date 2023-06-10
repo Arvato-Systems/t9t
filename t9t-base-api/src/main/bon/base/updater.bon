@@ -1,0 +1,52 @@
+/*
+ * Copyright (c) 2012 - 2022 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import api.*
+import t9t.base.types.*
+import t9t.base.api.*
+import t9t.base.search.*
+import t9t.base.crud.*
+
+/** External API - Authentication requests for initial login - requests declared in this package do not require a valid JWT. */
+package (com.arvatosystems) t9t.base.updater {
+    default private unsigned trim noControlChars;
+    properties noJava;
+
+    /** Request used to retrieve a DTO for modification. Requires ADMIN permission. */
+    class ReadDataRequest extends RequestParameters return CrudAnyKeyResponse<Object, TrackingBase> {
+        required Unicode(255)                               dtoClassCanonicalName;      // specifies the desired class
+        required Object                                     key;                        // specifies any unique key for the class
+    }
+
+    /** Request used to retrieve a DTO for modification. Requires ADMIN permission. */
+    class SearchDataRequest extends RequestParameters return ReadAllResponse<Object, NoTracking> {
+        required Unicode(255)                               dtoClassCanonicalName;      // specifies the desired class
+        optional (SearchFilter...)                          filter;                     // specifies any unique key for the class
+    }
+
+    /** Request used to update a DTO for modification. Requires ADMIN permission. */
+    class UpdateDataRequest extends RequestParameters return CrudAnyKeyResponse<Object, TrackingBase> {
+        required Unicode(255)                               dtoClassCanonicalName;      // specifies the desired class
+        required Object                                     key;                        // specifies any unique key for the class
+        required Object                                     data;                       // the DTO
+    }
+
+    /** Request used to activate, deactivate or delete a DTO. Requires ADMIN permission. */
+    class AidDataRequest extends RequestParameters return CrudAnyKeyResponse<Object, TrackingBase> {
+        required Unicode(255)                               dtoClassCanonicalName;      // specifies the desired class
+        required Object                                     key;                        // specifies any unique key for the class
+        required enum OperationType                         operation;                  // must be either DELETE, ACTIVATE or INACTIVATE
+    }
+}

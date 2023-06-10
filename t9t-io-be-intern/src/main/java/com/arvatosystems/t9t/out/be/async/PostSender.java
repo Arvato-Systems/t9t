@@ -79,7 +79,7 @@ public class PostSender<R> implements IAsyncSender {
 
     @Override
     public boolean send(final AsyncChannelDTO channelDto, final int timeout, final InMemoryMessage msg,
-      final Consumer<AsyncHttpResponse> resultProcessor) throws Exception {
+      final Consumer<AsyncHttpResponse> resultProcessor, final long whenStarted) throws Exception {
         // do external I/O
         final HttpPostClient httpClient = getPostClient(channelDto);
         httpClient.setTimeoutInMs(timeout);  // set the request specific timeout or fall back to the default

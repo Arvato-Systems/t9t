@@ -26,6 +26,7 @@ import com.arvatosystems.t9t.rest.utils.RestUtils;
 import com.arvatosystems.t9t.xml.GenericResult;
 
 import de.jpaw.bonaparte.core.BonaPortable;
+import jakarta.annotation.Nonnull;
 import jakarta.ws.rs.container.AsyncResponse;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
@@ -50,9 +51,18 @@ public interface IT9tRestProcessor {
 
     /**
      * Performs the request via kafka, if available.
-     **/
-    default <T extends BonaPortable, R extends RequestParameters> void performAsyncBackendRequestViaKafka(final HttpHeaders httpHeaders,
-        final AsyncResponse resp, final String infoMsg, final List<T> inputData, final Function<T, R> requestConverterSingle,
+     *
+     * @param <T> the type of the public data structure
+     * @param <R> the type of the related aroma request
+     * @param httpHeaders
+     * @param resp
+     * @param infoMsg a message for logging
+     * @param inputData the list of input data
+     * @param requestConverterSinglen a function which maps the public data structure (single instance) to an internal request
+     * @param partitionKeyExtractor a function to extract the partition key (the hashcode of the result string will be used as partition)
+     */
+    default <T extends BonaPortable, R extends RequestParameters> void performAsyncBackendRequestViaKafka(@Nonnull final HttpHeaders httpHeaders,
+        @Nonnull final AsyncResponse resp, @Nonnull final String infoMsg, final List<T> inputData, final Function<T, R> requestConverterSingle,
         final Function<R, String> partitionKeyExtractor) {
         performAsyncBackendRequest(httpHeaders, resp, infoMsg, inputData, requestConverterSingle, (Function<List<T>, RequestParameters>)null);
     }
@@ -62,7 +72,7 @@ public interface IT9tRestProcessor {
     }
 
     /** Could be static, but declared in the interface to allow overriding. */
-    default GenericResult createResultFromServiceResponse(final ServiceResponse response) {
+    default GenericResult createResultFromServiceResponse(@Nonnull final ServiceResponse response) {
         final GenericResult result = RestUtils.createErrorResult(response.getReturnCode(), response.getErrorDetails());
         result.setProcessRef(response.getProcessRef());
         return result;
@@ -119,7 +129,7 @@ public interface IT9tRestProcessor {
      * @param httpHeaders   the HTTP headers provided to the REST request
      * @return              the type of response, or null
      */
-    default String determineResponseType(final HttpHeaders httpHeaders) {
+    default String determineResponseType(@Nonnull final HttpHeaders httpHeaders) {
         return RestUtils.determineResponseType(httpHeaders);
     }
 }

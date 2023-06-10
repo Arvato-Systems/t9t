@@ -293,24 +293,16 @@ package (com.arvatosystems) t9t.base.request {
      */
     class RetrieveComponentInfoRequest extends RequestParameters return RetrieveComponentInfoResponse {
     }
-    class RetrieveComponentInfoResponse extends ServiceResponse {
 
-        /** Component information */
-        required (ComponentInfoDTO...) required List<> components;
+    class RetrieveComponentInfoResponse extends ServiceResponse {
+        required (ComponentInfoDTO...) required List<> components;  // Component information
     }
 
     class ComponentInfoDTO {
-        /** group id */
-        required Unicode(64) groupId;
-
-        /** artifact id */
-        required Unicode(64) artifactId;
-
-        /** version string */
-        required Unicode(64) versionString;
-
-        /** source level, if available */
-        optional Ascii(40) commitId;
+        required Unicode(64)                        groupId;
+        required Unicode(64)                        artifactId;
+        required Unicode(64)                        versionString;
+        optional Ascii(40)                          commitId;
     }
 
     /**
@@ -333,8 +325,36 @@ package (com.arvatosystems) t9t.base.request {
     }
 
     class GetServerInformationResponse extends ServiceResponse {
-        optional Unicode(36)                        serverIdSelf;                    // the server ID of this cluster (see key in uplink configuration)
-        optional Enum StagingType                   stagingType;                     // distinguishes between dev, prod and various test environments
+        optional Unicode(36)                        serverIdSelf;                   // the server ID of this cluster (see key in uplink configuration)
+        optional Enum StagingType                   stagingType;                    // distinguishes between dev, prod and various test environments
+    }
+
+    /**
+     * Defines the bucket size of aggregation tables.
+     */
+    enum AggregationGranularityType {
+        DAY                  = "day",
+        HOUR                 = "hour",
+        MINUTE               = "minute",
+        SECOND               = "second"
+    }
+
+    /**
+     * Parent of a request which is supposed to aggregate high volume data for statistical purposes.
+     * In case no time range has been provided, the most recent elapsed instant before now, truncated according to the granularity, will be used.
+     */
+    abstract class AbstractAggregationRequest extends RequestParameters {
+        optional Enum AggregationGranularityType    aggregationGranularity;         // defaults to hour
+        optional Boolean                            onlyDelete;                     // if true, no aggregation will be done
+        optional Timestamp(0)                       startIncluding;                 // lower bound of the aggregation window
+        optional Timestamp(0)                       endExcluding;                   // upper bound of the aggregation window
+    }
+
+    class AggregationResponse extends ServiceResponse {
+        required int                                recordsDeleted;                 // how many previous records in the given slot have been deleted
+        required int                                recordsCreated;                 // how many records in the given slot have been created
+        required long                               millisecondsUsedForDeletion;    // duration of the delete
+        required long                               millisecondsUsedForCreation;    // duration of the aggregation
     }
 
     /**

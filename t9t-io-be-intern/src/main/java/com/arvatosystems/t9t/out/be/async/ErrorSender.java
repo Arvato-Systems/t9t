@@ -44,7 +44,7 @@ public class ErrorSender implements IAsyncSender {
 
     @Override
     public boolean send(final AsyncChannelDTO channel, final int timeout, final InMemoryMessage msg,
-      final Consumer<AsyncHttpResponse> resultProcessor) {
+      final Consumer<AsyncHttpResponse> resultProcessor, final long whenStarted) {
         LOGGER.debug("Returning error for channel {}, object {}", channel.getAsyncChannelId(), msg.getPayload().ret$PQON());
         final AsyncHttpResponse resp = new AsyncHttpResponse();
         resp.setHttpReturnCode(500);

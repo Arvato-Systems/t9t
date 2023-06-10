@@ -16,6 +16,8 @@
 package com.arvatosystems.t9t.base;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -28,7 +30,10 @@ import java.util.function.Function;
 
 import org.slf4j.Logger;
 
+import com.arvatosystems.t9t.base.request.AggregationGranularityType;
+
 import de.jpaw.enums.TokenizableEnum;
+import jakarta.annotation.Nonnull;
 /**
  * Utility class for common checks and operations.
  */
@@ -209,5 +214,38 @@ public final class T9tUtil {
     public static Instant roundedToSeconds(final Instant when) {
         // do not construct a new object in case we already have an integral Instant
         return when.getNano() == 0 ? when : Instant.ofEpochSecond(when.getEpochSecond());
+    }
+
+    /** Truncates the provided timestamp to the specified precision. */
+    public static LocalDateTime truncate(@Nonnull final LocalDateTime when, @Nonnull final AggregationGranularityType precision) {
+        return switch (precision) {
+        case DAY    -> when.truncatedTo(ChronoUnit.DAYS);
+        case HOUR   -> when.truncatedTo(ChronoUnit.HOURS);
+        case MINUTE -> when.truncatedTo(ChronoUnit.MINUTES);
+        case SECOND -> when.truncatedTo(ChronoUnit.SECONDS);
+        default     -> throw new T9tException(T9tException.NOT_YET_IMPLEMENTED, "truncate LocalDateTime to " + precision);
+        };
+    }
+
+    /** Subtracts the provided duration from the timestamp. */
+    public static LocalDateTime minusDuration(@Nonnull final LocalDateTime when, @Nonnull final AggregationGranularityType precision, final long units) {
+        return switch (precision) {
+        case DAY    -> when.minusDays(units);
+        case HOUR   -> when.minusHours(units);
+        case MINUTE -> when.minusMinutes(units);
+        case SECOND -> when.minusSeconds(units);
+        default     -> throw new T9tException(T9tException.NOT_YET_IMPLEMENTED, "minusDuration LocalDateTime with " + precision);
+        };
+    }
+
+    /** Adds the provided duration from the timestamp. */
+    public static LocalDateTime plusDuration(@Nonnull final LocalDateTime when, @Nonnull final AggregationGranularityType precision, final long units) {
+        return switch (precision) {
+        case DAY    -> when.plusDays(units);
+        case HOUR   -> when.plusHours(units);
+        case MINUTE -> when.plusMinutes(units);
+        case SECOND -> when.plusSeconds(units);
+        default     -> throw new T9tException(T9tException.NOT_YET_IMPLEMENTED, "minusDuration LocalDateTime with " + precision);
+        };
     }
 }

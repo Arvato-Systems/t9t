@@ -24,6 +24,10 @@ import com.arvatosystems.t9t.msglog.jpa.persistence.IMessageStatisticsEntityReso
 class MessageStatisticsMappers {
     IMessageStatisticsEntityResolver resolver
 
-    def void e2dMessageStatisticsDTO(MessageStatisticsEntity it, MessageStatisticsDTO dto) {}
+    def void e2dMessageStatisticsDTO(MessageStatisticsEntity it, MessageStatisticsDTO dto) {
+        dto.processingTimeAvg  = processingTimeTotal  as double / (countError + countOk)
+        dto.processingDelayAvg = processingDelayTotal as double / (countError + countOk)
+    }
+
     def void d2eMessageStatisticsDTO(MessageStatisticsEntity it, MessageStatisticsDTO dto, boolean onlyActive) {}
 }

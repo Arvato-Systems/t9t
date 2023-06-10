@@ -15,12 +15,14 @@
  */
 package com.arvatosystems.t9t.out.services;
 
+import com.arvatosystems.t9t.base.services.RequestContext;
+
 import de.jpaw.bonaparte.core.BonaPortable;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
 /**
- * Interface to send a message asynchronously.
+ * This is the application API Interface to send a message asynchronously.
  * The message will be sent after a successful commit. It will be persisted (survives a downtime).
  * The call returns a key into the async message table (or null if the implementation uses a queue).
  * The transmitted payload usually is the final external object (for example as defined in API EXT projects, and only needs to be serialized into JSON or XML).
@@ -40,11 +42,23 @@ public interface IAsyncTransmitter {
      * @param category an optional category
      * @param identifier an optional alphanumeric identifier of the source
      * @param partition the partition in clustered environments
-     * @return a unique message reference
+     * @return a unique message reference, or null in case the message was discarded because the channel was set to inactive
      */
-    @Nonnull
+    @Nullable
     Long transmitMessage(@Nonnull String asyncChannelId, @Nonnull BonaPortable payload,
       @Nullable Long ref, @Nullable String category, @Nullable String identifier, int partition);
+
+    /**
+     * Retransmits a message (unless its channel has been deactivated).
+     *
+     * @param ctx the request context
+     * @param asyncChannelId the channel to which to send the message to
+     * @param payload the payload
+     * @param objectRef
+     * @param partition the partition in clustered environments
+     * @param recordKey
+     */
+    void retransmitMessage(RequestContext ctx, String asyncChannelId, BonaPortable payload, Long objectRef, int partition, String recordKey);
 
     /**
      * Cancels further retry attempts of the specified message (if supported by the implementation).

@@ -29,6 +29,7 @@ import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
+import com.arvatosystems.t9t.base.api.TransactionOriginType;
 import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
 import com.arvatosystems.t9t.base.auth.AuthenticationResponse;
 import com.arvatosystems.t9t.ipblocker.services.impl.IPAddressBlocker;
@@ -163,6 +164,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
             }
         }
         LOGGER.debug("Starting {}: {} with assigned messageId {}", invocationNo, infoMsg, requestParameters.getMessageId());
+        requestParameters.setTransactionOriginType(TransactionOriginType.GATEWAY_EXTERNAL);
 
         final CompletableFuture<ServiceResponse> readResponse = connection.executeAsync(authorizationHeader, requestParameters);
         readResponse.thenAccept(sr -> {
@@ -217,6 +219,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
         // must evaluate httpHeaders now, because httpHeaders is a proxy and no longer valid in the other thread
         final String acceptHeader = determineResponseType(httpHeaders);
         final String remoteIp = httpHeaders.getHeaderString(T9tConstants.HTTP_HEADER_FORWARDED_FOR);
+        requestParameters.setTransactionOriginType(TransactionOriginType.GATEWAY_EXTERNAL);
         final CompletableFuture<ServiceResponse> readResponse = connection.executeAuthenticationAsync(requestParameters);
         readResponse.thenAccept(sr -> {
             if (ApplicationException.isOk(sr.getReturnCode())) {

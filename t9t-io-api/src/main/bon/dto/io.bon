@@ -193,7 +193,7 @@ package (com.arvatosystems) t9t.io {
         optional Unicode(255)                           genericParameter2;
 
         // camel routing stuff
-        optional Unicode(255)                           camelRoute;                 // camel route for output processing. Can be a valid camel route format (in this case parameter camelRouteFormatIsCamelRoute has to be true). Or can be an ID pointing to a camel route defined in /camel/camelEndpoints.properties.
+        optional Unicode(511)                           camelRoute;                 // camel route for output processing. Can be a valid camel route format (in this case parameter camelRouteFormatIsCamelRoute has to be true). Or can be an ID pointing to a camel route defined in /camel/camelEndpoints.properties.
         optional Enum CamelPostProcStrategy             successRoutingStrategy;     // says what should happen with produced file after successful camel processing
         optional Unicode(255)                           successDestPattern;         // pattern applied when camel processing was successful (usually used when successRoutingStrategy=MOVE)
         optional Enum CamelPostProcStrategy             failedRoutingStrategy;      // says what should happen with produced file after failed camel processing
@@ -342,6 +342,13 @@ package (com.arvatosystems) t9t.io {
 
     // Configuration for asynchronous messages
 
+    enum IdempotencyHeaderType {
+        ^NONE                           = "N",
+        MESSAGE_REFERENCE               = "R",
+        UUID                            = "U",
+        CUSTOM                          = "C"
+    }
+
     class AsyncQueueRef RTTI 17 extends Ref {}
 
     final class AsyncQueueKey extends AsyncQueueRef {
@@ -398,8 +405,10 @@ package (com.arvatosystems) t9t.io {
         required shortText                              description;                             // some descriptive text
         optional (AsyncQueueRef..., AsyncQueueDTO)      asyncQueueRef  properties ref, searchprefix="asyncQueue", simpleref="getObjectRef()", dropdown="asyncQueueId";
         required Unicode(300)                           url;                                     // remote URL
-        optional t9tShortId                             authType;                                // basic, apikey etc... (for information / documentation in core, can be used by customizations) or just the http header name
+        optional t9tShortId                             authType;                                // http header name or implementation specific type (Basic, apiKey etc... (for information / documentation in core, can be used by customizations))
         optional Unicode(255)                           authParam;                               // userID / password or API-Key
+        optional t9tShortId                             idempotencyHeader;                       // the http header variable to use for idempotency
+        optional Enum IdempotencyHeaderType             idempotencyHeaderType;                   // which type of header to generate
         optional Integer                                maxRetries;                              // can be used by monitoring to raise an alert after this number of attempts
         required XEnum MediaXType                       payloadFormat;                           // XML, JSON etc. (for information / documentation in core, can be used by customizations supporting multiple formats)
         optional customizationQualifier                 serializerQualifier properties qualifierFor="out.services.IMarshallerExt";  // specific serialization code (for dependency injection)
@@ -429,6 +438,30 @@ package (com.arvatosystems) t9t.io {
         optional Long                                   latency properties noJava, noDDL, noAutoMap;  // the time from creation until recent delivery attempt
         optional Unicode(1024) allowControlChars        errorDetails;                            // additional description of the problem
         optional Integer                                lastResponseTime;                        // response time in milliseconds of last attempt (until response received or timeout)
+    }
+
+    class AsyncMessageStatisticsRef RTTI 102 extends Ref {}
+
+    final class AsyncMessageStatisticsKey extends AsyncMessageStatisticsRef {
+        required Instant(0)                             slotStart;                               // beginning of time slot
+        required t9tShortId                             asyncChannelId properties dropdown="asyncChannelId";  // used to retrieve the URL and authentication parameters
+        required Ascii(4)                               refType;                                 // for debugging / maintenance: the type of reference
+        required Enum ExportStatusEnum                  status;                                  // specifies if the message must still be sent or has been sent
+        required Integer                                httpResponseCode;                        // if the remote returned some http response code, or 0 for none
+    }
+
+    /** Aggregation of asynchronous messages. */
+    class AsyncMessageStatisticsDTO extends AsyncMessageStatisticsRef {
+        required Instant(0)                             slotStart;                               // beginning of time slot
+        required t9tShortId                             asyncChannelId properties dropdown="asyncChannelId";  // used to retrieve the URL and authentication parameters
+        required Ascii(4)                               refType;                                 // for debugging / maintenance: the type of reference
+        required Enum ExportStatusEnum                  status;                                  // specifies if the message must still be sent or has been sent
+        required Integer                                httpResponseCode;                        // if the remote returned some http response code, or 0 for none
+        required integer                                count;                                   // the number of messages
+        required integer                                attempts;                                // number of send attempts so far (initially 0)
+        required long                                   responseTime;                            // aggregated figures of lastResponseTime
+        optional Integer                                numberOfRetries     properties noJava, noDDL, noAutoMap;  // is the difference of attempts - count
+        optional Double                                 averageResponseTime properties noJava, noDDL, noAutoMap;  // responseTime / count (only the last time per request is stored)
     }
 
     /** Structure to be used for internal message propagation. */

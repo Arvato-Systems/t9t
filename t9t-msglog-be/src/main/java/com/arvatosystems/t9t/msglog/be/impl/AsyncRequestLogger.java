@@ -53,6 +53,7 @@ import de.jpaw.util.ExceptionUtil;
 public class AsyncRequestLogger implements IRequestLogger {
     private static final Logger LOGGER = LoggerFactory.getLogger(AsyncRequestLogger.class);
     private static final MessageDTO SHUTDOWN_RQ = new MessageDTO();
+    private static final Integer INT_ZERO = 0;
 
     // tunable parameters
     private static final int DEFAULT_ALERT_ON_QUEUE_SIZE            = 1000; // max num of entries in queue before alert is triggered
@@ -180,6 +181,15 @@ public class AsyncRequestLogger implements IRequestLogger {
         m.setProcessingTimeInMillisecs  (summary.getProcessingTimeInMillisecs());
         m.setReturnCode                 (summary.getReturnCode());
         m.setErrorDetails               (summary.getErrorDetails());
+        m.setHostname                   (summary.getHostname());
+        if (params != null) {
+            m.setTransactionOriginType(params.getTransactionOriginType());
+            if (params.getWhenSent() != null) {
+                // when sent via kafka, or triggered by scheduler, or issued as executeAsynchronously: calculate latency from time of initiation
+                long d = hdr.getExecutionStartedAt().toEpochMilli() - params.getWhenSent();
+                m.setProcessingDelayInMillisecs(d > 0 ? Integer.valueOf((int)d) : INT_ZERO);
+            }
+        }
 
         queue.put(m);
         if (logWriterConfiguration.getAlertInterval() != null) {

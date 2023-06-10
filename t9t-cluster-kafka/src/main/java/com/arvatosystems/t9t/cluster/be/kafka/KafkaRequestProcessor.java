@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceRequest;
+import com.arvatosystems.t9t.base.api.TransactionOriginType;
 import com.arvatosystems.t9t.base.auth.ApiKeyAuthentication;
 import com.arvatosystems.t9t.base.types.AuthenticationParameters;
 import com.arvatosystems.t9t.cfg.be.KafkaConfiguration;
@@ -40,7 +41,8 @@ import de.jpaw.dp.Jdp;
 
 final class KafkaRequestProcessor implements Callable<Boolean> {
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaRequestProcessor.class);
-    public static final int DEFAULT_WORKER_POOL_SIZE = 4;
+    public static final int DEFAULT_WORKER_POOL_SIZE = 6;        // tunable: at 2 nodes and 12 partitions, this seems a reasonable default
+    public static final long SLOW_PROCESSING_TIMEOUT = 15_000L;  // after how many ms to give up processing
 
     private final IUnauthenticatedServiceRequestExecutor requestProcessor = Jdp.getRequired(IUnauthenticatedServiceRequestExecutor.class);
 
@@ -50,6 +52,7 @@ final class KafkaRequestProcessor implements Callable<Boolean> {
     private final AtomicBoolean pleaseStop;
     private final AuthenticationParameters authHeader;
     private final AtomicInteger pendingRequestsCounter = new AtomicInteger(0);
+    private final AtomicInteger uniqueRequestsCounter = new AtomicInteger(0);
 
     protected KafkaRequestProcessor(final KafkaConfiguration config, final IKafkaTopicReader consumer, final AtomicBoolean pleaseStop) {
         this.consumer = consumer;
@@ -65,18 +68,26 @@ final class KafkaRequestProcessor implements Callable<Boolean> {
         });
     }
 
-    private void processRequest(final String key, final RequestParameters rp) {
+    private void processRequest(final RequestParameters rp, final int partition, final String key) {
         executorKafkaWorker.submit(() -> {
-            pendingRequestsCounter.incrementAndGet();
+            final int uniqueId = uniqueRequestsCounter.incrementAndGet();
+            final int before = pendingRequestsCounter.incrementAndGet();
+            if (rp.getTransactionOriginType() == null) {
+                rp.setTransactionOriginType(TransactionOriginType.KAFKA); // some other kafka based source
+            }
+            rp.setPartitionUsed(partition);
+            LOGGER.debug("Starting execute of task {}, PQON {}, key {}, partition {}, pending = {}", uniqueId, rp.ret$PQON(),
+              key, rp.getPartitionUsed(), before);
             final ServiceRequest srq = new ServiceRequest();
             srq.setRequestParameters(rp);
             srq.setAuthentication(authHeader);
             try {
                 requestProcessor.execute(srq);
             } catch (Exception e) {
-                LOGGER.error("Request {} failed due to {}:{}", rp.ret$PQON(), e.getClass().getSimpleName(), e.getMessage());
+                LOGGER.error("Task {}, PQON {} failed due to {}:{}", uniqueId, rp.ret$PQON(), e.getClass().getSimpleName(), e.getMessage());
             }
-            pendingRequestsCounter.decrementAndGet();
+            final int after = pendingRequestsCounter.decrementAndGet();
+            LOGGER.debug("Completed execute of task {}, PQON {}, pending = {}", uniqueId, rp.ret$PQON(), after);
         });
     }
 
@@ -103,16 +114,15 @@ final class KafkaRequestProcessor implements Callable<Boolean> {
                 if (iteration > 5) {
                     final long now = System.currentTimeMillis();
                     LOGGER.warn("SLOW request processing! {} pending requests after delay of {} ms", pending, now - processingStart);
-                    if (now - processingStart >= 15_000L) {
+                    if (now - processingStart >= SLOW_PROCESSING_TIMEOUT) {
                         // do not stall for more than 15 seconds
                         break;
                     }
-                } else {
-                    try {
-                        Thread.sleep(pending > 5 ? 1000L : 200L);
-                    } catch (InterruptedException e) {
-                        LOGGER.warn("SLOW request processing / sleep interrupted");
-                    }
+                }
+                try {
+                    Thread.sleep(pending > 5 ? 1000L : 200L);
+                } catch (InterruptedException e) {
+                    LOGGER.warn("SLOW request processing / sleep interrupted");
                 }
             }
         }

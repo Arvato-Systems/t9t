@@ -17,6 +17,7 @@ package com.arvatosystems.t9t.out.services;
 
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.io.AsyncChannelDTO;
 import com.arvatosystems.t9t.io.AsyncQueueDTO;
 import com.arvatosystems.t9t.io.request.QueueStatus;
 
@@ -24,13 +25,13 @@ import de.jpaw.bonaparte.core.BonaPortable;
 
 /**
  * Defines methods for an async queue implementation.
- * This interface is an intermediate step in the data flow, it directs to a selected implementation of the internal queuing (JMS, LTQ or noop).
+ * This interface is an intermediate step in the data flow, it directs to a selected implementation of the internal queuing (JMS, KAFKA, LTQ or noop).
  *
  * Business logic usually does not see this interface.
  *  */
 public interface IAsyncQueue {
-    /** Queues a messages. Returns null, or a QueueRef. */
-    Long sendAsync(RequestContext ctx, String asyncChannelId, BonaPortable payload, Long objectRef, int partition, String recordKey, boolean isResend);
+    /** Queues a message (initial send). */
+    void sendAsync(RequestContext ctx, AsyncChannelDTO asyncChannel, BonaPortable payload, Long objectRef, int partition, String recordKey);
 
     /** Initializes all queues. */
     default void open() { }

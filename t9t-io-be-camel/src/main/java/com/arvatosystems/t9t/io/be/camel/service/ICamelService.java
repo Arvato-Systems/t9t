@@ -15,10 +15,21 @@
  */
 package com.arvatosystems.t9t.io.be.camel.service;
 
+import org.apache.camel.CamelContext;
+
 import com.arvatosystems.t9t.io.DataSinkDTO;
 
 public interface ICamelService {
     void addRoutes(DataSinkDTO dataSink);
     void removeRoutes(DataSinkDTO dataSink);
     void startRoute(DataSinkDTO dataSink);
+
+    /** Invoked before the Camel context is created. This can be used to set backwards compatibility flags. */
+    void initBeforeContextCreation();
+
+    /** Invoked to initialize cluster specific services, for example k8s. */
+    void initializeClusterService(CamelContext camelContext);
+
+    /** Invoked to initialize the configured routes. */
+    void initializeRoutes(CamelContext camelContext);
 }

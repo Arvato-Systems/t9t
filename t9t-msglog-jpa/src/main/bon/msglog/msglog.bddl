@@ -34,10 +34,11 @@ package (com.arvatosystems) t9t.msglog.jpa.entities owner fortytwo prefix p28 {
     entity MessageEntity category datmessage is MessageDTO {
         pk (objectRef)
         index (messageId) where notNull
+        index (executionStartedAt)
     }
 
-    entity MessageStatisticsEntity category datwo is MessageStatisticsDTO {
+    entity MessageStatisticsEntity category datnt is MessageStatisticsDTO {
         pk (objectRef)
-        index (^day, tenantId, requestParameterPqon, userId)
+        index (slotStart, tenantId, hostname, serverType, partition, transactionOriginType, userId, requestParameterPqon)
     }
 }

@@ -108,21 +108,21 @@ public class RemoteConnection implements IRemoteConnection {
         final BonaPortable obj = new CompactByteArrayParser(receivedBuffer, 0, -1).readRecord();
         if (obj == null) {
             if (isAuthentication) {
-                LOGGER.info("Response object is null for AUTHENTICATION: http code {}, status {}", returnCode, httpStatusMessage);
+                LOGGER.warn("Response object is null for AUTHENTICATION: http code {}, status {}", returnCode, httpStatusMessage);
                 return MessagingUtil.createServiceResponse(
                         T9tException.GENERAL_AUTH_PROBLEM,
                         AuthenticationResponse.class.getCanonicalName());
             } else {
-                LOGGER.info("Response object is null for GENERAL request: http code {}, status {}", returnCode, httpStatusMessage);
+                LOGGER.warn("Response object is null for GENERAL request: http code {}, status {}", returnCode, httpStatusMessage);
                 return MessagingUtil.createServiceResponse(
                         T9tException.BAD_REMOTE_RESPONSE,
                         Integer.toString(returnCode));
             }
         }
         if (obj instanceof ServiceResponse sr) {
-            LOGGER.info("Received response type {} with return code {}", sr.ret$PQON(), sr.getReturnCode());
+            LOGGER.debug("Received response type {} with return code {}", sr.ret$PQON(), sr.getReturnCode());
             if (!ApplicationException.isOk(sr.getReturnCode())) {
-                LOGGER.info("Error details are {}, message is {}", sr.getErrorDetails(), sr.getErrorMessage());
+                LOGGER.debug("Error details are {}, message is {}", sr.getErrorDetails(), sr.getErrorMessage());
             }
             return sr;
         }

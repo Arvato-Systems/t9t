@@ -1,0 +1,13 @@
+{
+    "viewModel": "asyncMessageStatistics",
+    "filters": [
+        { "filterType": "E", "fieldName": "asyncChannelId" },
+        { "filterType": "E", "fieldName": "refType" },
+        { "filterType": "E", "fieldName": "status" },
+        { "filterType": "E", "fieldName": "httpResponseCode" },
+        { "filterType": "R", "fieldName": "slotStart" }
+    ],
+    "fields": [
+        "slotStart", "asyncChannelId", "refType", "status", "httpResponseCode", "count", "attempts", "numberOfRetries", "responseTime", "averageResponseTime"
+    ]
+}

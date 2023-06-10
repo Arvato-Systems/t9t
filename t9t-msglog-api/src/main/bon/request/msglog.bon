@@ -18,6 +18,7 @@ import t9t.base.types.*
 import t9t.base.api.*
 import t9t.base.entities.*
 import t9t.base.crud.*
+import t9t.base.request.*
 import t9t.base.search.*
 import t9t.msglog.*
 
@@ -29,7 +30,7 @@ package (com.arvatosystems) t9t.msglog.request {
      * In addition, due to the sensitive nature of this request, the CUSTOM permission is required.
      */
     class MessageSearchRequest           extends SearchRequest<MessageDTO, NoTracking> {}
-    class MessageStatisticsSearchRequest extends SearchRequest<MessageStatisticsDTO, t9t.base.entities.WriteTracking> {}
+    class MessageStatisticsSearchRequest extends SearchRequest<MessageStatisticsDTO, NoTracking> {}
 
     /**
      * Retrieves request parameters.
@@ -86,9 +87,8 @@ package (com.arvatosystems) t9t.msglog.request {
      * Aggregate data of MessageDTO into MessageStatisticsDTO.
      * Should be run by sessions of the global tenant only, aggregates data for all tenants.
      */
-    class AggregateMessageStatisticsRequest extends RequestParameters {
+    class AggregateMessageStatisticsRequest extends AbstractAggregationRequest {
         optional userId                             userId;                 // if null, aggregate for all users, else for the specified user
-        optional Day                                ^day;                   // if null, aggregate data of yesterday, else for the specified day
         optional pqon                               requestParameterPqon;   // if null, aggregate data for this PQON only, else for all
     }
 

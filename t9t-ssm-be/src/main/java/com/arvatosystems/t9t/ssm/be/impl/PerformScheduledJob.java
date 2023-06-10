@@ -33,6 +33,7 @@ import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceRequest;
 import com.arvatosystems.t9t.base.api.ServiceRequestHeader;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
+import com.arvatosystems.t9t.base.api.TransactionOriginType;
 import com.arvatosystems.t9t.base.auth.ApiKeyAuthentication;
 import com.arvatosystems.t9t.base.be.execution.RequestContextScope;
 import com.arvatosystems.t9t.base.request.ProcessStatusDTO;
@@ -103,6 +104,8 @@ public class PerformScheduledJob implements Job {
         header.setInvokingProcessRef(Long.valueOf(setupRef));
         header.setPlannedRunDate(context.getScheduledFireTime().toInstant());
         header.freeze();
+        requestParameters.setWhenSent(header.getPlannedRunDate().toEpochMilli());
+        requestParameters.setTransactionOriginType(TransactionOriginType.SCHEDULER);
 
         final ApiKeyAuthentication auth = new ApiKeyAuthentication(UUID.fromString(apiKey));
         auth.freeze();

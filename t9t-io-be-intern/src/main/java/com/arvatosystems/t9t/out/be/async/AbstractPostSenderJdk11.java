@@ -25,6 +25,7 @@ import java.net.http.HttpResponse.BodyHandler;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 
 import org.slf4j.Logger;
@@ -40,12 +41,14 @@ import com.arvatosystems.t9t.io.CommunicationTargetChannelType;
 import com.arvatosystems.t9t.io.DataReference;
 import com.arvatosystems.t9t.io.InMemoryMessage;
 import com.arvatosystems.t9t.jackson.JacksonTools;
+import com.arvatosystems.t9t.out.services.IAsyncIdempotencyHeader;
 import com.arvatosystems.t9t.out.services.IAsyncSender;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.MimeTypes;
+import de.jpaw.dp.Jdp;
 import de.jpaw.util.ExceptionUtil;
 
 /**
@@ -53,6 +56,9 @@ import de.jpaw.util.ExceptionUtil;
  */
 public abstract class AbstractPostSenderJdk11 implements IAsyncSender {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractPostSenderJdk11.class);
+
+    protected final IAsyncIdempotencyHeader idempotencyHeaderGenerator = Jdp.getRequired(IAsyncIdempotencyHeader.class);
+    protected final AtomicLong previousSend = new AtomicLong(0);
     protected AsyncQueueDTO queue;
     protected String lastUrl = "";
     protected HttpClient defaultHttpClient = null;
@@ -98,7 +104,7 @@ public abstract class AbstractPostSenderJdk11 implements IAsyncSender {
     protected void addPublisherForPayload(final HttpRequest.Builder httpRequestBuilder, final BonaPortable payload) throws Exception {
         if (payload instanceof DataReference dr) {
             if (dr.getReferenceType() == CommunicationTargetChannelType.FILE) {
-                LOGGER.debug("Reading contents of FILE {} as POST payload", dr.getFileOrQueueName());
+                LOGGER.debug("ASYNC: Reading contents of FILE {} as POST payload", dr.getFileOrQueueName());
                 final Path path = Path.of(dr.getFileOrQueueName());
                 httpRequestBuilder.POST(BodyPublishers.ofFile(path));
                 setHeaders(httpRequestBuilder, dr);
@@ -108,12 +114,13 @@ public abstract class AbstractPostSenderJdk11 implements IAsyncSender {
         addDefaultPublisherForPayload(httpRequestBuilder, payload);
     }
 
-    protected HttpRequest buildRequest(final AsyncChannelDTO channel, final BonaPortable payload, int timeout) throws Exception {
+    protected HttpRequest buildRequest(final AsyncChannelDTO channel, final Long messageRef, final BonaPortable payload, int timeout) throws Exception {
         final HttpRequest.Builder httpRequestBuilder = HttpRequest.newBuilder(new URI(channel.getUrl()))
             .version(Version.HTTP_2)
             .timeout(Duration.ofMillis(timeout));
         addPublisherForPayload(httpRequestBuilder, payload);
         addAuthentication(httpRequestBuilder, channel);
+        addIdempotency(httpRequestBuilder, channel, messageRef, payload);
 
         return httpRequestBuilder.build();
     }
@@ -132,11 +139,40 @@ public abstract class AbstractPostSenderJdk11 implements IAsyncSender {
         }
     }
 
+    /**
+     * Adds an authentication header to the http request.
+     *
+     * @param httpRequestBuilder
+     * @param channel
+     */
+    protected void addIdempotency(final HttpRequest.Builder httpRequestBuilder, final AsyncChannelDTO channel,
+            final Long messageRef, final BonaPortable payload) {
+        final String value = idempotencyHeaderGenerator.getIdempotencyHeaderVariable(channel, messageRef, payload);
+        if (value != null) {
+            httpRequestBuilder.header(idempotencyHeaderGenerator.getIdempotencyHeader(channel), value);
+        }
+    }
+
     @Override
-    public boolean send(final AsyncChannelDTO channel, final int timeout, final InMemoryMessage msg, final Consumer<AsyncHttpResponse> resultProcessor)
-      throws Exception {
+    public boolean send(final AsyncChannelDTO channel, final int timeout, final InMemoryMessage msg,
+            final Consumer<AsyncHttpResponse> resultProcessor, final long whenStarted) throws Exception {
+        // smart throttling, if required
+        if (channel.getDelayAfterSend() != null) {
+            final long actualDelay = whenStarted - previousSend.get(); // duration from previous to current invocation in ms (huge for initial call)
+            final long desiredDelay = channel.getDelayAfterSend().longValue();
+            previousSend.set(whenStarted); // update for next invocation
+            if (desiredDelay > actualDelay) {
+                if (desiredDelay - actualDelay >= 1000L) {
+                    // we do a significant delay: inform (should occur on test environments only)
+                    LOGGER.debug("Sleeping for {} ms on channel {} to achieve required delay", desiredDelay - actualDelay, channel.getAsyncChannelId());
+                }
+                // be nice to slow 3rd party receivers...
+                Thread.sleep(desiredDelay - actualDelay);
+            }
+        }
+
         // do external I/O
-        final HttpRequest httpRq = buildRequest(channel, msg.getPayload(), timeout);
+        final HttpRequest httpRq = buildRequest(channel, msg.getObjectRef(), msg.getPayload(), timeout);
         final BodyHandler<String> serializedRequest = HttpResponse.BodyHandlers.ofString();
         final CompletableFuture<HttpResponse<String>> futureResponse = defaultHttpClient.sendAsync(httpRq, serializedRequest);
         final Consumer<HttpResponse<String>> completeResultProcessor = httpResponse -> {
@@ -152,7 +188,7 @@ public abstract class AbstractPostSenderJdk11 implements IAsyncSender {
                 if (ex != null) {
                     // deal with exception
                     final String cause = ExceptionUtil.causeChain(ex);
-                    LOGGER.error("Could not complete async callout for channel {} ref {} due to {}",
+                    LOGGER.error("ASYNC: Could not complete async callout for channel {} ref {} due to {}",
                             channel.getAsyncChannelId(), msg.getObjectRef(), cause);
                     // construct a synthetic error response to allow storing of result
                     final AsyncHttpResponse asyncResponse = new AsyncHttpResponse();

@@ -15,33 +15,22 @@
  */
 package com.arvatosystems.t9t.io.be.camel.init;
 
-import java.util.List;
-
 import org.apache.camel.CamelContext;
-import org.apache.camel.Route;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.annotations.IsLogicallyFinal;
 import com.arvatosystems.t9t.base.services.IAsyncRequestProcessor;
-import com.arvatosystems.t9t.cfg.be.ConfigProvider;
-import com.arvatosystems.t9t.io.CommunicationTargetChannelType;
-import com.arvatosystems.t9t.io.DataSinkDTO;
 import com.arvatosystems.t9t.io.be.camel.service.CamelDataSinkChangeListener;
 import com.arvatosystems.t9t.io.be.camel.service.ICamelService;
-import com.arvatosystems.t9t.io.be.camel.service.impl.CamelService;
 import com.arvatosystems.t9t.io.event.DataSinkChangedEvent;
-import com.arvatosystems.t9t.out.be.impl.output.camel.AbstractExtensionCamelRouteBuilder;
-import com.arvatosystems.t9t.out.services.IOutPersistenceAccess;
-import com.jcraft.jsch.JSch;
 
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 import de.jpaw.dp.Singleton;
 import de.jpaw.dp.Startup;
 import de.jpaw.dp.StartupShutdown;
-import de.jpaw.util.ExceptionUtil;
 
 /**
  * Create routes for all camel routes.
@@ -54,82 +43,21 @@ public class CamelContextProvider implements StartupShutdown, Provider<CamelCont
     @IsLogicallyFinal  // set by startup
     private CamelContext camelContext = null;
 
-    protected final IOutPersistenceAccess iOutPersistenceAccess = Jdp.getRequired(IOutPersistenceAccess.class);
     protected final ICamelService camelService = Jdp.getRequired(ICamelService.class);
     protected final IAsyncRequestProcessor asyncProcessor = Jdp.getRequired(IAsyncRequestProcessor.class);
 
     @Override
     public void onStartup() {
-        try {
-            if (ConfigProvider.getCustomParameter("camelEnableInsecureSha1") != null) {
-                // may be needed in case of very old sftp servers
-                LOGGER.warn("Due to config camelEnableInsecureSha1 in config.xml, enable INSECURE SHA1");
-                JSch.setConfig("server_host_key",  JSch.getConfig("server_host_key") + ",ssh-rsa");
-                JSch.setConfig("PubkeyAcceptedAlgorithms", JSch.getConfig("PubkeyAcceptedAlgorithms") + ",ssh-rsa");
-                JSch.setConfig("kex", JSch.getConfig("kex") + ",diffie-hellman-group1-sha1,diffie-hellman-group14-sha1");
-            }
-        } catch (Exception e) {
-            LOGGER.error("Failed to set insecure sftp algorithms");
-        }
+        camelService.initBeforeContextCreation();
         camelContext = new DefaultCamelContext();
         Jdp.registerWithCustomProvider(CamelContext.class, this);
 
         camelContext.setAutoStartup(false); // to allow manually start
         camelContext.start();
 
-        try {
-            // first Initialize routes that derive from
-            // AbstractExtensionCamelRouteBuilder
-            // these should be static routes that are not configurable (like
-            // FileRoute)
-            final List<AbstractExtensionCamelRouteBuilder> classList = Jdp.getAll(AbstractExtensionCamelRouteBuilder.class);
-            if (classList != null) {
-                for (final AbstractExtensionCamelRouteBuilder clazz : classList) {
-                    try {
-                        LOGGER.info("Adding route: {}", clazz.getClass());
-                        camelContext.addRoutes(clazz);
-                    } catch (final Exception e) {
-                        // in case of problems rather skip a single route instead of not initializing the context at all!
-                        LOGGER.debug("There was a problem initializing route: {} due to ", clazz.getClass(), e);
-                    }
-                }
-            } else {
-                LOGGER.info("No AbstractExtensionCamelRouteBuilders found.");
-            }
-            // After initializing these static routes there are additional routes
+        camelService.initializeClusterService(camelContext);
+        camelService.initializeRoutes(camelContext);
 
-            String environment = ConfigProvider.getConfiguration().getImportEnvironment();
-            if (environment == null) {
-                environment = CamelService.DEFAULT_ENVIRONMENT;
-            }
-            final List<DataSinkDTO> dataSinkDTOList
-              = iOutPersistenceAccess.getDataSinkDTOsForEnvironmentAndChannel(environment, CommunicationTargetChannelType.FILE);
-            LOGGER.info("Looking for Camel import routes for environment {}: {} routes found", environment, dataSinkDTOList.size());
-            for (final DataSinkDTO dataSinkDTO : dataSinkDTOList) {
-                if (dataSinkDTO.getIsActive()) {
-                    LOGGER.info("Starting Camel route {}", dataSinkDTO.getDataSinkId());
-                    try {
-                        camelService.addRoutes(dataSinkDTO);
-                    } catch (final Exception e) {
-                        LOGGER.error("Could not add Camel route for {} due to {}", dataSinkDTO.getDataSinkId(), ExceptionUtil.causeChain(e));
-                    }
-                } else {
-                    LOGGER.info("Not starting inactive Camel route {}", dataSinkDTO.getDataSinkId());
-                }
-            }
-
-            // start the routes manually to omit invalid routes
-            for (Route route : camelContext.getRoutes()) {
-                try {
-                    camelContext.getRouteController().startRoute(route.getRouteId());
-                    LOGGER.debug("started route {} successfully.", route.getRouteId());
-                } catch (Exception ex) {
-                    LOGGER.error("Unable to start route {}: ", route.getRouteId(), ex);
-                }
-            }
-        } catch (final Exception e) {
-            LOGGER.error("CamelContext could not be started... ", e);
-        }
         // Register listener to receive data sink changes
         asyncProcessor.registerSubscriber(DataSinkChangedEvent.BClass.INSTANCE.getPqon(),
           Jdp.getRequired(CamelDataSinkChangeListener.class, "IOCamelDataSinkChange"));

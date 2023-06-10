@@ -43,6 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.image.AImage;
@@ -388,6 +389,8 @@ public final class ApplicationSession {
     protected DateTimeFormatter dayFormat;            // day without time (LocalDate)
     protected DateTimeFormatter timeFormat;           // time on second precision (LocalTime)
     protected DateTimeFormatter timestampFormat;      // day and time on second precision (LocalDateTime)
+    protected final Map<Integer, DateTimeFormatter> timestampFormatMap = new HashMap<>(7); //
+
     protected static final Map<String, String> NO_ENUM_TRANSLATIONS = ImmutableMap.<String, String>of();
 
     public Locale getUserLocale() {
@@ -434,11 +437,28 @@ public final class ApplicationSession {
         }
     }
 
-    protected DateTimeFormatter doDateTimeFormatter(String resource, String fallback) {
-        String localizedPattern = translate("system.format", resource);
-        DateTimeFormatter input =
-           (localizedPattern != null && localizedPattern.charAt(0) != '$' && localizedPattern.charAt(0) != '{')
-           ? DateTimeFormatter.ofPattern(localizedPattern) : getDateTimeFormatterWithStyle(fallback);
+    protected DateTimeFormatter doDateTimeFormatter(final String resource, final String fallback) {
+        return doDateTimeFormatter(resource, fallback, 0);
+    }
+
+    protected DateTimeFormatter doDateTimeFormatter(final String resource, final String fallback, final int fractionalSeconds) {
+        final String localizedPattern = translate("system.format", resource);
+        final DateTimeFormatter input;
+        if (localizedPattern != null && localizedPattern.charAt(0) != '$' && localizedPattern.charAt(0) != '{') {
+            if (fractionalSeconds > 0) {
+                final int count = StringUtils.countMatches(localizedPattern, 'S');
+                final String postFix = "S".repeat(fractionalSeconds);
+                if (count > 0) {
+                    input = DateTimeFormatter.ofPattern(localizedPattern.replace("S".repeat(count), postFix));
+                } else {
+                    input = DateTimeFormatter.ofPattern(localizedPattern + "." + postFix);
+                }
+            } else {
+                input = DateTimeFormatter.ofPattern(localizedPattern);
+            }
+        } else {
+            input = getDateTimeFormatterWithStyle(fallback);
+        }
         return userZoneId == null ? input.withLocale(userLocale).withZone(ZoneOffset.UTC) : input.withLocale(userLocale).withZone(userZoneId);
     }
 
@@ -496,6 +516,7 @@ public final class ApplicationSession {
         dayFormat = doDateTimeFormatter("day", "M-");
         timeFormat = doDateTimeFormatter("time", "-M");
         timestampFormat = doDateTimeFormatter("datetime", "MM");
+        timestampFormatMap.put(0, timestampFormat);
 
         // set the session environment
         org.zkoss.zk.ui.Session current = Sessions.getCurrent();
@@ -509,17 +530,27 @@ public final class ApplicationSession {
         }
     }
 
-    public String format(LocalDate d) {
+    public String format(final LocalDate d) {
         return d.atStartOfDay(ZoneOffset.UTC).format(dayFormat);
     }
-    public String format(LocalDateTime dt) {
+    public String format(final LocalDateTime dt) {
         return dt.atZone(ZoneOffset.UTC).format(timestampFormat);
     }
-    public String format(LocalTime t) {
+    public String format(final LocalDateTime dt, final int fractionalSeconds) {
+        final DateTimeFormatter dateTimeFormatter = timestampFormatMap.computeIfAbsent(fractionalSeconds,
+                k -> doDateTimeFormatter("datetime", "MM", fractionalSeconds));
+        return dt.atZone(ZoneOffset.UTC).format(dateTimeFormatter);
+    }
+    public String format(final LocalTime t) {
         return t.format(timeFormat);
     }
-    public String format(Instant t) {
+    public String format(final Instant t) {
         return timestampFormat.format(t);
+    }
+    public String format(final Instant t, final int fractionalSeconds) {
+        final DateTimeFormatter dateTimeFormatter = timestampFormatMap.computeIfAbsent(fractionalSeconds,
+                k -> doDateTimeFormatter("datetime", "MM", fractionalSeconds));
+        return dateTimeFormatter.format(t);
     }
 
     // ZK operates with java.util.date, provide converters which respect the time zone...

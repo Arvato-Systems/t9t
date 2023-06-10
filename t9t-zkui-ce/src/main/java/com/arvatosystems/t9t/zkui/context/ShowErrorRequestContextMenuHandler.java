@@ -20,7 +20,6 @@ import java.time.Instant;
 import com.arvatosystems.t9t.msglog.MessageDTO;
 import com.arvatosystems.t9t.msglog.MessageStatisticsDTO;
 import com.arvatosystems.t9t.zkui.components.basic.Grid28;
-import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 import com.arvatosystems.t9t.zkui.util.JumpTool;
 
 import de.jpaw.bonaparte.api.SearchFilters;
@@ -53,8 +52,8 @@ public class ShowErrorRequestContextMenuHandler implements IGridContextMenu<Mess
         pQONFilter.setEqualsValue(dto.getRequestParameterPqon());
 
         InstantFilter executionStartedAtFilter  = new InstantFilter(MessageDTO.meta$$executionStartedAt.getName());
-        final Instant fromInstant = ApplicationSession.toInstantSystemZone(dto.getDay().atStartOfDay());
-        final Instant toInstant = ApplicationSession.toInstantSystemZone(dto.getDay().plusDays(1).atStartOfDay());
+        final Instant fromInstant = dto.getSlotStart();
+        final Instant toInstant = dto.getSlotStart().plusSeconds(3600L);
         executionStartedAtFilter.setLowerBound(fromInstant);
         executionStartedAtFilter.setUpperBound(toInstant);
 

@@ -22,6 +22,7 @@ import com.arvatosystems.t9t.base.entities.WriteTracking;
 import com.arvatosystems.t9t.io.request.AsyncChannelCrudRequest;
 import com.arvatosystems.t9t.io.request.AsyncChannelSearchRequest;
 import com.arvatosystems.t9t.io.request.AsyncMessageSearchRequest;
+import com.arvatosystems.t9t.io.request.AsyncMessageStatisticsSearchRequest;
 import com.arvatosystems.t9t.io.request.AsyncQueueCrudRequest;
 import com.arvatosystems.t9t.io.request.AsyncQueueSearchRequest;
 import com.arvatosystems.t9t.io.request.CsvConfigurationCrudRequest;
@@ -30,6 +31,8 @@ import com.arvatosystems.t9t.io.request.DataSinkCrudRequest;
 import com.arvatosystems.t9t.io.request.DataSinkSearchRequest;
 import com.arvatosystems.t9t.io.request.SinkCrudRequest;
 import com.arvatosystems.t9t.io.request.SinkSearchRequest;
+
+import de.jpaw.bonaparte.pojos.api.NoTracking;
 
 public final class T9tIOModels implements IViewModelContainer {
 
@@ -69,6 +72,12 @@ public final class T9tIOModels implements IViewModelContainer {
         WriteTracking.BClass.INSTANCE,
         AsyncMessageSearchRequest.BClass.INSTANCE,
         null);
+    private static final CrudViewModel<AsyncMessageStatisticsDTO, NoTracking> ASYNC_MESSAGE_STATISTICS_VIEW_MODEL
+      = new CrudViewModel<>(
+        AsyncMessageStatisticsDTO.BClass.INSTANCE,
+        NoTracking.BClass.INSTANCE,
+        AsyncMessageStatisticsSearchRequest.BClass.INSTANCE,
+        null);
 
     @Override
     public void register() {
@@ -78,5 +87,6 @@ public final class T9tIOModels implements IViewModelContainer {
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("asyncQueueCfg",     ASYNC_QUEUE_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("asyncChannelCfg",   ASYNC_CHANNEL_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("asyncMessage",      ASYNC_MESSAGE_VIEW_MODEL);
+        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("asyncMessageStatistics", ASYNC_MESSAGE_STATISTICS_VIEW_MODEL);
     }
 }

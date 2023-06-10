@@ -155,12 +155,19 @@ public class T9tException extends ApplicationException {
     public static final int JDBC_UNKNOWN_DIALECT        = OFFSET_DB_ERROR + 153;
 
     // Codes specific to parameter validation
-    public static final int INVALID_ENUM_VALUE = OFFSET + 160;
-    public static final int INVALID_PARAMETER  = OFFSET + 161;
+    public static final int INVALID_ENUM_VALUE                 = OFFSET + 160;
+    public static final int INVALID_PARAMETER                  = OFFSET + 161;
+
+    // Codes specific to config updater services
+    public static final int UPDATER_NO_CRUDVIEWMODEL_FOR_CLASS = OFFSET + 170;
+    public static final int UPDATER_UNSUPPORTED_CRUD_TYPE      = OFFSET + 171;
+    public static final int UPDATER_KEY_CLASS_MISMATCH         = OFFSET + 172;
+    public static final int UPDATER_AID_INVALID_OPERATION      = OFFSET + 173;
+    public static final int UPDATER_NO_SEARCH_REQUEST          = OFFSET + 174;
 
     // Codes specific to security functions (authentication / authorization)
-    public static final int USER_NOT_FOUND = OFFSET + 200;
-    public static final int TENANT_NOT_FOUND = OFFSET + 201;
+    public static final int USER_NOT_FOUND                     = OFFSET + 200;
+    public static final int TENANT_NOT_FOUND                   = OFFSET + 201;
 
     // Authentication request handler specific
     public static final int USER_INACTIVE = OFFSET + 202;
@@ -578,6 +585,12 @@ public class T9tException extends ApplicationException {
         registerCode(INVALID_ENUM_VALUE, "Invalid instance value");
         registerCode(INVALID_PARAMETER, "Invalid parameter");
         registerCode(INVALID_EXCEPTION_CODE, "Invalid exception code passed to T9tException");
+
+        registerCode(UPDATER_NO_CRUDVIEWMODEL_FOR_CLASS, "No CrudViewModel has been registered for the provided DTO class");
+        registerCode(UPDATER_UNSUPPORTED_CRUD_TYPE, "The CRUD request implementation of the given type is not supported");
+        registerCode(UPDATER_KEY_CLASS_MISMATCH, "Surrogate key CRUD request does not work for provided key type");
+        registerCode(UPDATER_AID_INVALID_OPERATION, "Invalid operation for AidDataRequest, only ACTIVATE, INACTIVATE and DELETE are supported");
+        registerCode(UPDATER_NO_SEARCH_REQUEST, "No SEARCH request has been defined for CrudViewModel of the given DTO class");
 
         registerCode(HTTP_ERROR + 400, "Bad request");
         registerCode(HTTP_ERROR + 401, "Not authorized");

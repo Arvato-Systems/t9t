@@ -16,6 +16,7 @@
 package com.arvatosystems.t9t.auth.be.impl;
 
 import com.arvatosystems.t9t.auth.SessionDTO;
+import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
 import com.arvatosystems.t9t.base.auth.AuthenticationResponse;
@@ -86,10 +87,11 @@ public class Authentication implements IAuthenticate {
 
         if (logged) {
             // prepare the message for transition
-            ExecutionSummary summary = new ExecutionSummary();
+            final ExecutionSummary summary = new ExecutionSummary();
             summary.setProcessingTimeInMillisecs(processingDuration);
             summary.setReturnCode(resp.getReturnCode());
             summary.setErrorDetails(resp.getErrorDetails());
+            summary.setHostname(MessagingUtil.HOSTNAME);
             messageLogger.logRequest(ihdr, summary, null, null); // always null content, do not log keys or passwords!
         }
         return resp;

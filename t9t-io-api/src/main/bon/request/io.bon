@@ -20,6 +20,7 @@ import t9t.base.entities.*
 import t9t.base.output.*
 import t9t.base.search.*
 import t9t.base.crud.*
+import t9t.base.request.*
 import t9t.io.*
 
 package (com.arvatosystems) t9t.io.request {
@@ -43,14 +44,19 @@ package (com.arvatosystems) t9t.io.request {
     class DataSinkSearchRequest                 extends SearchRequest               <DataSinkDTO, FullTrackingWithVersion> {}
     class LeanDataSinkSearchRequest             extends LeanSearchRequest {}
 
-    class AsyncMessageSearchRequest             extends SearchRequest               <AsyncMessageDTO, WriteTracking> {}
+    class AsyncMessageSearchRequest             extends SearchRequest               <AsyncMessageDTO, WriteTrackingMs> {}
+    class AsyncMessageCrudRequest               extends CrudSurrogateKeyRequest     <AsyncMessageRef, AsyncMessageDTO, WriteTrackingMs> {}
+
     class AsyncChannelSearchRequest             extends SearchRequest               <AsyncChannelDTO, FullTrackingWithVersion> {}
     class AsyncChannelCrudRequest               extends CrudSurrogateKeyRequest     <AsyncChannelRef, AsyncChannelDTO, FullTrackingWithVersion> {}
     class LeanAsyncChannelSearchRequest         extends LeanSearchRequest {}
+
     class AsyncQueueSearchRequest               extends SearchRequest               <AsyncQueueDTO, FullTrackingWithVersion> {}
     class AsyncQueueCrudRequest                 extends CrudSurrogateKeyRequest     <AsyncQueueRef, AsyncQueueDTO, FullTrackingWithVersion> {}
     class LeanAsyncQueueSearchRequest           extends LeanSearchRequest {}
-    class AsyncMessageCrudRequest               extends CrudSurrogateKeyRequest     <AsyncMessageRef, AsyncMessageDTO, WriteTracking> {}
+
+    class AsyncMessageStatisticsCrudRequest     extends CrudSurrogateKeyRequest     <AsyncMessageStatisticsRef, AsyncMessageStatisticsDTO, api.NoTracking> {}
+    class AsyncMessageStatisticsSearchRequest   extends SearchRequest               <AsyncMessageStatisticsDTO, api.NoTracking> {}
 
     /**
      * Stores a pre-filled sinkDTO. Technical support method, only required because input data processing is done from outside request scope.
@@ -237,7 +243,8 @@ package (com.arvatosystems) t9t.io.request {
         optional Integer                            overrideAge;             // if set, overrides the age configured in the queue config. If neither is set, 8 days is assumed.
     }
 
-    /** Generates an async message. Primarily for testing purposes.
+    /**
+     * Generates an async message. Primarily for testing purposes.
      * asyncChannelId must refer to an active channel or an error will be thrown.
      */
     class PerformAsyncRequest extends RequestParameters {
@@ -246,7 +253,7 @@ package (com.arvatosystems) t9t.io.request {
         optional Ascii(4)                           refType;                 // for debugging / maintenance: the type of reference
         optional defaultExternalId                  refIdentifier;           // for debugging / maintenance: order ID, customer ID etc.
         optional f42Ref                             ref;                     // for debugging / maintenance: related objectRef
-        optional Integer                            partition;               // partition number (0 will be used as default)
+        optional Integer                            targetPartition;         // partition number (0 will be used as default)
     }
 
     /**
@@ -293,6 +300,9 @@ package (com.arvatosystems) t9t.io.request {
         required boolean                            wasMerged;       // if false, no Preset was found
         required (api.DataWithTrackingS<DataSinkDTO,FullTrackingWithVersion>) dwt;
     }
+
+    /** Request to perform aggregation of outbound message status. */
+    class AsyncMessageAggregationRequest extends AbstractAggregationRequest {}
 
     /**
      * Select certain message to retry, with the usual search criteria, plus extended special ones.

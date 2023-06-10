@@ -28,6 +28,7 @@ import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
+import com.arvatosystems.t9t.base.api.TransactionOriginType;
 import com.arvatosystems.t9t.base.auth.AuthenticationInfo;
 import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
 import com.arvatosystems.t9t.base.services.T9tInternalConstants;
@@ -86,6 +87,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
         if (requestParameters.getMessageId() == null) {
             requestParameters.setMessageId(RandomNumberGenerators.randomFastUUID());
         }
+        requestParameters.setTransactionOriginType(TransactionOriginType.GATEWAY_INTERNAL);
         LOGGER.debug("Starting {} with assigned messageId {}", infoMsg, requestParameters.getMessageId());
 
         vertx.<ServiceResponse>executeBlocking(

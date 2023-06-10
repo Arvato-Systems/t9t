@@ -37,7 +37,8 @@ public interface IAsyncSender {
      * Sends the provided payload of the message, synchronously or asynchronously.
      * Returns false if the process has encountered a transmission error (for synchronous messaging).
      */
-    boolean send(@Nonnull AsyncChannelDTO channel, int timeout, @Nonnull InMemoryMessage msg, Consumer<AsyncHttpResponse> resultProcessor) throws Exception;
+    boolean send(@Nonnull AsyncChannelDTO channel, int timeout, @Nonnull InMemoryMessage msg, Consumer<AsyncHttpResponse> resultProcessor,
+      long whenStarted) throws Exception;
 
     /** Called when the corresponding writer thread is shut down. */
     default void close() { }

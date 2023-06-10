@@ -23,13 +23,13 @@ import com.arvatosystems.t9t.io.AsyncMessageRef;
 import com.arvatosystems.t9t.io.jpa.entities.AsyncMessageEntity;
 import com.arvatosystems.t9t.io.jpa.persistence.IAsyncMessageEntityResolver;
 import com.arvatosystems.t9t.io.request.UpdateAsyncMessageStatusRequest;
-import com.arvatosystems.t9t.out.services.IAsyncQueue;
+import com.arvatosystems.t9t.out.services.IAsyncTransmitter;
 
 import de.jpaw.dp.Jdp;
 
 public class UpdateAsyncMessageStatusRequestHandler extends AbstractRequestHandler<UpdateAsyncMessageStatusRequest> {
-    private final IAsyncMessageEntityResolver messageResolver = Jdp.getRequired(IAsyncMessageEntityResolver.class);
-    private final IAsyncQueue asyncQueueSender = Jdp.getRequired(IAsyncQueue.class);
+    private final IAsyncMessageEntityResolver messageResolver   = Jdp.getRequired(IAsyncMessageEntityResolver.class);
+    private final IAsyncTransmitter           asyncTransmitter  = Jdp.getRequired(IAsyncTransmitter.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final UpdateAsyncMessageStatusRequest rq) {
@@ -42,8 +42,7 @@ public class UpdateAsyncMessageStatusRequestHandler extends AbstractRequestHandl
         message.setReference(null);
         if (shouldResend) {
             // initiate a resend, if this implementation requires it (unfortunately we do not know the partition any more)
-            final Long queueRef  = asyncQueueSender.sendAsync(ctx, message.getAsyncChannelId(), message.getPayload(),
-                    message.getObjectRef(), 0, null, true);
+            asyncTransmitter.retransmitMessage(ctx, message.getAsyncChannelId(), message.getPayload(), message.getObjectRef(), 0, null);
         }
         return ok();
     }

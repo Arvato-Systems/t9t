@@ -167,21 +167,21 @@ class RemoteHttpClient {
         final BonaPortable response = resp.getResponseObject();
         if (response == null) {
             if (isAuthentication) {
-                LOGGER.info("Response object is null for AUTHENTICATION: http code {}, status {}", resp.getHttpReturnCode(), resp.getHttpStatusMessage());
+                LOGGER.warn("Response object is null for AUTHENTICATION: http code {}, status {}", resp.getHttpReturnCode(), resp.getHttpStatusMessage());
                 return MessagingUtil.createServiceResponse(
                         T9tException.GENERAL_AUTH_PROBLEM,
                         AuthenticationResponse.class.getCanonicalName());
             } else {
-                LOGGER.info("Response object is null for GENERAL request: http code {}, status {}", resp.getHttpReturnCode(), resp.getHttpStatusMessage());
+                LOGGER.warn("Response object is null for GENERAL request: http code {}, status {}", resp.getHttpReturnCode(), resp.getHttpStatusMessage());
                 return MessagingUtil.createServiceResponse(
                         T9tException.BAD_REMOTE_RESPONSE,
                         Integer.toString(resp.getHttpReturnCode()));
             }
         }
         if (response instanceof ServiceResponse sr) {
-            LOGGER.info("Received response type {} with return code {}", sr.ret$PQON(), sr.getReturnCode());
+            LOGGER.debug("Received response type {} with return code {}", sr.ret$PQON(), sr.getReturnCode());
             if (!ApplicationException.isOk(sr.getReturnCode())) {
-                LOGGER.info("Error details are {}, message is {}", sr.getErrorDetails(), sr.getErrorMessage());
+                LOGGER.debug("Error details are {}, message is {}", sr.getErrorDetails(), sr.getErrorMessage());
             }
             return sr;
         }

@@ -27,6 +27,7 @@ public class T9tIOLeanGridConfig implements ILeanGridConfigContainer {
         "dataSinkConfig",
         "sinkSearch",
         "asyncMessage",
+        "asyncMessageStatistics",
         "asyncQueueCfg",
         "asyncChannelCfg"
     };

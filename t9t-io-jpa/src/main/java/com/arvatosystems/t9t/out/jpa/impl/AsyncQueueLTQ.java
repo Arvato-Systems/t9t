@@ -270,31 +270,19 @@ public class AsyncQueueLTQ<R extends BonaPortable> implements IAsyncQueue {
     }
 
     @Override
-    public Long sendAsync(final RequestContext ctx, final String asyncChannelId, final BonaPortable payload, final Long objectRef,
-      final int partition, final String recordKey, final boolean isResend) {
-        // redundant check to see if the channel exists (to get exception in sync thread already). Should not cost too much time due to caching
-        final AsyncChannelDTO cfg = asyncTools.getCachedAsyncChannelDTO(ctx.tenantId, asyncChannelId);
-        if (!cfg.getIsActive() || cfg.getAsyncQueueRef() == null) {
-            LOGGER.debug("Discarding async message to inactive or unassociated channel {}", asyncChannelId);
-            return null;
-        }
-        final Long asyncQueueRef = cfg.getAsyncQueueRef().getObjectRef();
-        if (isResend) {
-            // this implementation is purely based on the DB entries, no resending required
-            return asyncQueueRef;
-        }
-        final QueueData queue = queueData.get(asyncQueueRef);
+    public void sendAsync(final RequestContext ctx, final AsyncChannelDTO channel, final BonaPortable payload, final Long objectRef,
+      final int partition, final String recordKey) {
+        final QueueData queue = queueData.get(channel.getAsyncQueueRef().getObjectRef());
 
         if (queue != null) {
             // queue is currently active: build the in-memory message and transmit it
             final InMemoryMessage m = new InMemoryMessage();
             m.setTenantId(ctx.tenantId);       // obtain the tenantId and store it
-            m.setAsyncChannelId(asyncChannelId);
+            m.setAsyncChannelId(channel.getAsyncChannelId());
             m.setObjectRef(objectRef);
             m.setPayload(payload);
             queue.writerThread.send(ctx, m);
         }
-        return asyncQueueRef;
     }
 
     protected void shutdown(final QueueData w) {

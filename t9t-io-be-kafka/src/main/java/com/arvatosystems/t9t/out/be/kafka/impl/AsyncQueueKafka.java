@@ -34,6 +34,8 @@ import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.T9tUtil;
+import com.arvatosystems.t9t.base.api.RequestParameters;
+import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.cfg.be.AsyncTransmitterConfiguration;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
@@ -187,7 +189,7 @@ public class AsyncQueueKafka<R extends BonaPortable> implements IAsyncQueue {
             LOGGER.info("Starting async thread {} for queue {}", threadName, myQueueCfg.getAsyncQueueId());
             while (!shutdownInProgress.get()) {
                 try {
-                    kafkaReader.pollAndProcess((k,  m) -> asyncTools.tryToSend(sender, m, serverConfig.getTimeoutExternal()), InMemoryMessage.class);
+                    kafkaReader.pollAndProcess((m, p, k) -> asyncTools.tryToSend(sender, m, serverConfig.getTimeoutExternal()), InMemoryMessage.class);
                 } catch (final Exception e) {
                     LOGGER.error("Exception in Async transmitter thread: {}", ExceptionUtil.causeChain(e));
                     LOGGER.error("Trace is", e);
@@ -217,27 +219,24 @@ public class AsyncQueueKafka<R extends BonaPortable> implements IAsyncQueue {
     }
 
     @Override
-    public Long sendAsync(final RequestContext ctx, final String asyncChannelId, final BonaPortable payload, final Long objectRef,
-              final int partition, final String recordKey, final boolean isResend) {
-        // redundant check to see if the channel exists (to get exception in sync thread already). Should not cost too much time due to caching
-        final AsyncChannelDTO cfg = asyncTools.getCachedAsyncChannelDTO(ctx.tenantId, asyncChannelId);
-        if (!cfg.getIsActive() || cfg.getAsyncQueueRef() == null) {
-            LOGGER.debug("Discarding async message to inactive or unassociated channel {}", asyncChannelId);
-            return null;
-        }
-        final Long asyncQueueRef = cfg.getAsyncQueueRef().getObjectRef();
-        final QueueData queue = queueData.get(asyncQueueRef);
+    public void sendAsync(final RequestContext ctx, final AsyncChannelDTO channel, final BonaPortable payload, final Long objectRef,
+      final int partition, final String recordKey) {
+        final QueueData queue = queueData.get(channel.getAsyncQueueRef().getObjectRef());
 
         if (queue != null) {
             // queue is currently active: build the in-memory message and transmit it
             final InMemoryMessage m = new InMemoryMessage();
             m.setTenantId(ctx.tenantId);       // obtain the tenantId and store it
-            m.setAsyncChannelId(asyncChannelId);
+            m.setAsyncChannelId(channel.getAsyncChannelId());
             m.setObjectRef(objectRef);
             m.setPayload(payload);
-            queue.kafkaWriter.write(m, partition, recordKey);
+            m.freeze();
+            LOGGER.debug("ASYNC: KAFKA write to topic: channel {}, partition {}, key {}, objectRef {}",
+                    channel.getAsyncChannelId(), partition, recordKey, objectRef);
+            ctx.addPostCommitHook((final RequestContext oldCtx, final RequestParameters rq, final ServiceResponse rs) -> {
+                queue.kafkaWriter.write(m, partition, recordKey);
+            });
         }
-        return asyncQueueRef;
     }
 
     protected void shutdown(final QueueData w) {

@@ -82,6 +82,15 @@ package t9t.setups owner app42base prefix p28 {
         grants apprw
     }
 
+    // data write-only., at millisecond precision (logs for example), therefore very little columns required
+    category datwoms {
+        trackinggroup WriteTrackingMs entityListener WriteTrackingMsEntityListener
+        tablenamepattern "(prefix)_dat_(entity)" dropSuffix "_entity" tablespacepattern "rts42dat0(DI)"
+        requiresPK
+        beanVal
+        grants apprw
+    }
+
     // special for the session table
     category datsource {
         trackinggroup SessionTracking entityListener SessionTrackingEntityListener
@@ -128,7 +137,7 @@ package t9t.setups owner app42base prefix p28 {
     }
 
     category ^int {
-         trackinggroup WriteTracking entityListener WriteTrackingEntityListener
+         trackinggroup WriteTrackingMs entityListener WriteTrackingMsEntityListener
          tablenamepattern "(prefix)_int_(entity)" dropSuffix "_entity" tablespacepattern "rts42dat0(DI)"
          grants apprw  // share tablespaces with dat tables
     }

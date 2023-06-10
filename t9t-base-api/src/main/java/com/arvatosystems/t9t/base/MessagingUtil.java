@@ -30,12 +30,16 @@ import de.jpaw.bonaparte.core.BonaPortableFactory;
 import de.jpaw.bonaparte.core.DataConverter;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.util.ApplicationException;
+import jakarta.annotation.Nullable;
 
 /**
  * Utility class in charge of providing common utility functionality to be used in the scope of the overall message processing.
  */
 public final class MessagingUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(MessagingUtil.class);
+
+    public static final boolean IS_MS_WINDOWS             = System.getProperty("os.name").toLowerCase().indexOf("win") >= 0;
+    public static final String HOSTNAME                   = stripHostname(System.getenv(IS_MS_WINDOWS ? "COMPUTERNAME" : "HOSTNAME"));
     public static final String JPAW_PACKAGE_PREFIX        = "de.jpaw";                          // all jpaw classes (some are needed for JSOn)
     public static final String BONAPARTE_PACKAGE_PREFIX   = "de.jpaw.bonaparte";                // just the bonaparte libraries
     public static final String TWENTYEIGHT_PACKAGE_PREFIX = "com.arvatosystems.t9t";            // prefix for t9t and a28
@@ -169,5 +173,21 @@ public final class MessagingUtil {
     /** Strips any leading or trailing spaces. */
     public static void stringTrimmer(final BonaPortable data) {
         data.treeWalkString(STRING_TRIMMER, true);
+    }
+
+    /** Truncates a hostname (or K8s pod name) to at most 16 characters. */
+    @Nullable
+    public static String stripHostname(@Nullable final String hostnameIn) {
+        if (hostnameIn == null || hostnameIn.length() <= 16) {
+            return hostnameIn;
+        }
+        // must truncate: If this is a FQDN, strip the domain
+        final int dotPosition = hostnameIn.indexOf('.');
+        if (dotPosition > 0) {
+            // return the unqualified hostname, or, in case that is also too long, the trailing chars of it (assumed to be more interesting than a fixed prefix)
+            return dotPosition <= 16 ? hostnameIn.substring(0, dotPosition) : hostnameIn.substring(dotPosition - 16, dotPosition);
+        } else {
+            return hostnameIn.substring(hostnameIn.length() - 16, hostnameIn.length());
+        }
     }
 }

@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.entities.FullTracking;
+import com.arvatosystems.t9t.base.entities.FullTrackingMs;
 import com.arvatosystems.t9t.base.jpa.IEntityListener;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration;
@@ -91,6 +92,23 @@ public abstract class AbstractEntityListener<T extends TrackingBase> implements 
 
     protected final void createTracking(final FullTracking rw) {
         updateTracking(rw, false);
+        rw.setCTimestamp(rw.getMTimestamp());
+        rw.setCAppUserId(rw.getMAppUserId());
+        rw.setCProcessRef(rw.getMProcessRef());
+    }
+
+    protected final void createTracking(final FullTrackingMs rw) {
+        final LazyReferences ref = getRef();
+        final Instant now = Instant.now();
+        final RequestContext ctx = ref.contextProvider.get();
+        rw.setMTimestamp(now);
+        if (ctx != null) {
+            rw.setMAppUserId(ctx.userId);
+            rw.setMProcessRef(ctx.requestRef);
+        } else {
+            rw.setMAppUserId(T9tConstants.ANONYMOUS_USER_ID);
+            rw.setMProcessRef(ZERO);
+        }
         rw.setCTimestamp(rw.getMTimestamp());
         rw.setCAppUserId(rw.getMAppUserId());
         rw.setCProcessRef(rw.getMProcessRef());

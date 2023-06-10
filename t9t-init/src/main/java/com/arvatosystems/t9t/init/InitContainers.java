@@ -99,6 +99,7 @@ public final class InitContainers {
         final String javaVendor  = System.getProperty("java.vendor");
         LOGGER.info("Running Java version {} (vendor {})", javaVersion != null ? javaVersion : "(UNDEFINED)", javaVendor != null ? javaVendor : "(UNDEFINED)");
         LOGGER.info("Instance signature is {}", RandomNumberGenerators.getInstanceSignatue());
+        LOGGER.info("OS type assumed to be {}, hostname {}", MessagingUtil.IS_MS_WINDOWS ? "MS Windows" : "*nix or MacOS", MessagingUtil.HOSTNAME);
 
         checkUTC();
         MessagingUtil.initializeBonaparteParsers();

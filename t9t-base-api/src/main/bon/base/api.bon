@@ -24,14 +24,31 @@ package (com.arvatosystems) t9t.base.api {
     default private unsigned trim noControlChars;
 
     type messageId              is Uuid;
-    type jmsAddress             is Ascii(64);           // a name that can be used took lookup a jms ressource on jndi
 
     /** Defines the behaviour how to deal with resent (duplicate sent) messages */
     enum RetryAdviceType {
-        RETRY_ON_ERROR="E", NEVER_RETRY="N", ALWAYS_RETRY="A"
+        RETRY_ON_ERROR                  = "E",
+        NEVER_RETRY                     = "N",
+        ALWAYS_RETRY                    = "A"
     }
 
-    /** The ServiceRequestHeader is the definition of all common properties of a request. It is sent for any synchronous or asynchronous request.
+    /** Defines the type of request initiation. */
+    enum TransactionOriginType {
+        GATEWAY_EXTERNAL_ASNC           = "A",           // request was received by the external REST gateway and transmitted via kafka
+        GATEWAY_EXTERNAL                = "X",           // request was received by the REST or a SOAP gateway
+        GATEWAY_INTERNAL                = "I",           // request was received by an internal REST endpoint
+        ASYNC                           = "Y",           // request was initiated by internal async transmission
+        AUTONOMOUS                      = "T",           // request is an autonomous transaction
+        KAFKA                           = "K",           // request transmitted from other server type (not gateway) via kafka
+        SCHEDULER                       = "S",           // request was fired by the scheduler
+        CUSTOM_1                        = "1",           // some other source (application specific - 1)
+        CUSTOM_2                        = "2",           // some other source (application specific - 2)
+        CUSTOM_3                        = "3",           // some other source (application specific - 3)
+        OTHER                           = "O"            // some other source
+    }
+
+    /**
+     * The ServiceRequestHeader is the definition of all common properties of a request. It is sent for any synchronous or asynchronous request.
      */
     class ServiceRequestHeader {
         optional Integer                            recordNo;                   // serial number within logical processing (file line #, request within user session...)
@@ -43,15 +60,13 @@ package (com.arvatosystems) t9t.base.api {
         optional Boolean                            priorityRequest;            // if set, all sub requests will use the main thread pool
     }
 
-    /** The JmsServiceRequestHeader is the definition of all common properties of a request sent with JMS. */
-    class JmsServiceRequestHeader extends ServiceRequestHeader {
-        optional jmsAddress                         responseAddress;            // queue or topic target name for the service response
-    }
-
     /** The RequestParameters provide an artifical common base class, only required because JAXB cannot deal with interfaces (BonaPortable as common request parameter class). */
     abstract class RequestParameters return ServiceResponse {
         optional messageId                          messageId;                  // a unique ID assigned by the sender or JMS transport, to allow detection of resent messages
         optional Enum RetryAdviceType               idempotencyBehaviour;       // defaults to RETRY_ON_ERROR
+        optional Enum TransactionOriginType         transactionOriginType;      // type of the initiator
+        optional Long                               whenSent;                   // time since the epoch in ms
+        optional Integer                            partitionUsed;              // which partition was used (in case of kafka transmissions)
     }
 
     /** The ContextlessRequestParameters provide an artifical common base class for handlers operating outside of a request scope (scripts, macros, outer loops). */

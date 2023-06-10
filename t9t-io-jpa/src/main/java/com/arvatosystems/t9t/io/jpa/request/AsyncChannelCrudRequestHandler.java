@@ -15,6 +15,13 @@
  */
 package com.arvatosystems.t9t.io.jpa.request;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKeyRequestHandler;
@@ -30,6 +37,7 @@ import de.jpaw.dp.Jdp;
 
 public class AsyncChannelCrudRequestHandler extends
         AbstractCrudSurrogateKeyRequestHandler<AsyncChannelRef, AsyncChannelDTO, FullTrackingWithVersion, AsyncChannelCrudRequest, AsyncChannelEntity> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AsyncChannelCrudRequestHandler.class);
 
     protected final IAsyncChannelEntityResolver resolver = Jdp.getRequired(IAsyncChannelEntityResolver.class);
     protected final IAsyncChannelDTOMapper mapper = Jdp.getRequired(IAsyncChannelDTOMapper.class);
@@ -37,6 +45,16 @@ public class AsyncChannelCrudRequestHandler extends
     @Override
     public CrudSurrogateKeyResponse<AsyncChannelDTO, FullTrackingWithVersion> execute(final RequestContext ctx,
             final AsyncChannelCrudRequest request) throws Exception {
+        if (request.getData() != null) {
+            final String authParam = request.getData().getAuthParam();
+            if (authParam != null && authParam.startsWith(T9tConstants.HTTP_AUTH_PREFIX_USER_PW) && authParam.indexOf(':') > 0) {
+                LOGGER.debug("auto-replacing http Basic auth with base64 encoded form");
+                // auto-base64-encode
+                final String encoded = Base64.getEncoder().encodeToString(
+                    authParam.substring(T9tConstants.HTTP_AUTH_PREFIX_USER_PW.length()).getBytes(StandardCharsets.UTF_8));
+                request.getData().setAuthParam(T9tConstants.HTTP_AUTH_PREFIX_USER_PW + encoded);
+            }
+        }
         return execute(ctx, mapper, resolver, request);
     }
 }

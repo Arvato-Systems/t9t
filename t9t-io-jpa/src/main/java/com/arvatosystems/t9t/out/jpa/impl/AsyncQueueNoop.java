@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.io.AsyncChannelDTO;
 import com.arvatosystems.t9t.out.services.IAsyncQueue;
 
 import de.jpaw.bonaparte.core.BonaPortable;
@@ -38,12 +39,11 @@ public class AsyncQueueNoop implements IAsyncQueue {
     }
 
     @Override
-    public Long sendAsync(final RequestContext ctx, final String asyncChannelId, final BonaPortable payload, final Long objectRef,
-            final int partition, final String recordKey, final boolean isResend) {
+    public void sendAsync(final RequestContext ctx, final AsyncChannelDTO channel, final BonaPortable payload, final Long objectRef,
+            final int partition, final String recordKey) {
         final int num = counter.incrementAndGet();
         LOGGER.debug("async message {} of type {} sent to channel {} and partition {}, record key {}",
-          num, payload.getClass().getCanonicalName(), asyncChannelId, partition, recordKey);
-        return null;
+          num, payload.getClass().getCanonicalName(), channel.getAsyncChannelId(), partition, recordKey);
     }
 
     @Override

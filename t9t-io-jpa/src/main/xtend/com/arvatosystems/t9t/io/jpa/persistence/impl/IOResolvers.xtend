@@ -33,6 +33,8 @@ import com.arvatosystems.t9t.io.jpa.entities.SinkEntity
 import java.util.List
 import com.arvatosystems.t9t.io.jpa.entities.AsyncQueueEntity
 import com.arvatosystems.t9t.io.AsyncQueueRef
+import com.arvatosystems.t9t.io.jpa.entities.AsyncMessageStatisticsEntity
+import com.arvatosystems.t9t.io.AsyncMessageStatisticsRef
 
 @AutoResolver42
 class IOResolvers {
@@ -50,6 +52,7 @@ class IOResolvers {
 
     def OutboundMessageEntity   getOutboundMessageEntity    (OutboundMessageRef entityRef, boolean onlyActive) { return null; }
     def AsyncMessageEntity      getAsyncMessageEntity       (AsyncMessageRef entityRef, boolean onlyActive) { return null; }
+    def AsyncMessageStatisticsEntity getAsyncMessageStatisticsEntity (AsyncMessageStatisticsRef entityRef, boolean onlyActive) { return null; }
     @GlobalTenantCanAccessAll   // required for Camel startup
     @AllCanAccessGlobalTenant   // for DataSinkEntity, everyone can see the global tenant's defaults
     def AsyncChannelEntity      getAsyncChannelEntity       (AsyncChannelRef entityRef, boolean onlyActive) { return null; }

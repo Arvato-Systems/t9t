@@ -74,6 +74,13 @@ package (com.arvatosystems) t9t.io.jpa.entities owner fortytwo prefix p28 {
         tenantClass InternalTenantId
         pk (objectRef)
         index (status) where notNull
+        index (cTimestamp)
         @ManyToOne AsyncQueueEntity asyncQueue LAZY for (asyncQueueRef)
+    }
+
+    entity AsyncMessageStatisticsEntity category datnt is AsyncMessageStatisticsDTO {
+        tenantClass InternalTenantId
+        pk (objectRef)
+        index unique (tenantId, slotStart, asyncChannelId, refType, status, httpResponseCode)
     }
 }

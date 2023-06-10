@@ -33,7 +33,7 @@ import t9t.base.entities.*
  */
 package (com.arvatosystems) t9t.msglog {
     default private unsigned trim noControlChars;
-    properties noJava, simpleref, lob, lazy, length, serialized,
+    properties noJava, noDDL, simpleref, lob, lazy, length, serialized,
         tenantCategory is com.arvatosystems.t9t.annotations.TenantCategory(),
         searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
         // serialized is com.arvatosystems.t9t.annotations.StoreSerialized,
@@ -53,20 +53,22 @@ package (com.arvatosystems) t9t.msglog {
         optional messageId                          messageId;
         optional Enum RetryAdviceType               idempotencyBehaviour;
         required userId                             userId;
-        required instant                            executionStartedAt;     // separate field as the record may be persisted late in the DB
+        required instant(3)                         executionStartedAt;     // separate field as the record may be persisted late in the DB
         optional languageCode                       languageCode;
         optional Instant                            plannedRunDate;         // optional scheduled run date of the call (only for messages from the scheduler)
         optional f42Ref                             invokingProcessRef;     // for asynchronous requests, the request which initiated this one
         required pqon                               requestParameterPqon;   // partially qualified name of the request
         optional (RequestParameters...)             requestParameters properties serialized="16777215", noAutoMap, length="16777215"; // 16 MB - 1 Byte is max. allowed message length
-        // fields filled after processing
         optional (ServiceResponse...)               response properties serialized="16777215", noAutoMap, length="16777215";
-        // SLA relevant fields
-        optional Long                               processingTimeInMillisecs;
-        // responseHeader fields:
-        optional Integer                            returnCode;
-        optional Unicode(512) allowControlChars     errorDetails;           // further information about the error location
-        optional f42Ref                             rerunByProcessRef;      // reference from the original request to the rerun - references this entity
+        optional Long                               processingTimeInMillisecs;  // how long after executionStartedAt was the request complete
+        optional Integer                            returnCode;                 // return code of request processing
+        optional Unicode(512) allowControlChars     errorDetails;               // further information about the error location
+        optional f42Ref                             rerunByProcessRef;          // reference from the original request to the rerun - references this entity
+        optional Unicode(16)                        hostname;                   // the (possibly abbreviated) hostname or K8s pod name
+        optional Ascii(4)                           serverType;                 // the functional type of server / service (null for main)
+        optional Integer                            partition;                  // in case called by a kafka topic consumer: which partition was used?
+        optional Integer                            processingDelayInMillisecs; // how long after executionStartedAt was the received (for async messages)
+        optional Enum TransactionOriginType         transactionOriginType;      // type of the initiator
     }
 
 
@@ -76,21 +78,33 @@ package (com.arvatosystems) t9t.msglog {
     class MessageStatisticsRef RTTI 19 extends Ref {}
 
     class MessageStatisticsKey extends MessageStatisticsRef {
+        required Instant(0)                         slotStart;              // beginning of time slot
         required tenantId                           tenantId;               // identifies the tenant
+        required Unicode(16)                        hostname;               // the (possibly abbreviated) hostname or K8s pod name
+        required Ascii(4)                           serverType;             // the functional type of server / service (null for main)
+        required Integer                            partition;              // in case called by a kafka topic consumer: which partition was used?
+        required Enum TransactionOriginType         transactionOriginType;  // type of the initiator
         required userId                             userId;
-        required Day                                ^day;
         required pqon                               requestParameterPqon;   // partially qualified name of the request
     }
     final class MessageStatisticsDTO extends MessageStatisticsRef {
         properties tenantCategory="A";
+        required Instant(0)                         slotStart;              // beginning of time slot
         required tenantId                           tenantId;               // identifies the tenant
+        required Unicode(16)                        hostname;               // the (possibly abbreviated) hostname or K8s pod name
+        required Ascii(4)                           serverType;             // the functional type of server / service (null for main)
+        required Integer                            partition;              // in case called by a kafka topic consumer: which partition was used?
+        required Enum TransactionOriginType         transactionOriginType;  // type of the initiator
         required userId                             userId;
-        required Day                                ^day;
         required pqon                               requestParameterPqon;   // partially qualified name of the request
+
         required int                                countOk;                // requests with return code 0..199999999
         required int                                countError;             // requests with return code 200000000..999999999
-        required Long                               processingTimeMin;      // minimum processing time in ms
-        required Long                               processingTimeMax;      // maximum processing time in ms
-        required Long                               processingTimeTotal;    // sum of processing times in ms
+        required long                               processingTimeMax;      // maximum processing time in ms
+        required long                               processingTimeTotal;    // sum of processing times in ms
+        required long                               processingDelayMax;     // how long after executionStartedAt was the received (for async messages)
+        required long                               processingDelayTotal;   // how long after executionStartedAt was the received (for async messages)
+        optional Double                             processingTimeAvg  properties noJava, noDDL, noAutoMap; // average processing time
+        optional Double                             processingDelayAvg properties noJava, noDDL, noAutoMap; // average processing delay
     }
 }

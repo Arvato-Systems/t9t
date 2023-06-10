@@ -39,13 +39,13 @@
 
         <!-- jpaw / bonaparte: versions for import of BOM. The plugin version is defined separately in SE/EE -->
         <!-- Note that the version of the bonapart-dsl plugin is set in "global-settings" -->
-        <jpaw-bom.version>3.1.5</jpaw-bom.version>
-        <bonaparte-bom.version>5.1.5</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
+        <jpaw-bom.version>3.2.0</jpaw-bom.version>
+        <bonaparte-bom.version>5.2.0</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
 
         <!-- Versions of Xtext & Xtend -->
         <!-- Note that the versions of the xtext/xtend plugins are ALSO set in "global-settings" -->
-        <xtend.version>2.29.0</xtend.version>
-        <xtext.version>2.29.0</xtext.version>
+        <xtend.version>2.31.0</xtend.version>
+        <xtext.version>2.31.0</xtext.version>
 
         <!-- Database driver versions -->
         <driver.oracle.version>23.2.0.0</driver.oracle.version>
@@ -56,7 +56,7 @@
 
         <!-- OR mappers -->
         <eclipselink.version>3.0.3</eclipselink.version>
-        <hibernate.version>6.2.3.Final</hibernate.version>
+        <hibernate.version>6.2.4.Final</hibernate.version>
         <hibernate-validator.version>8.0.0.Final</hibernate-validator.version>
         <ehcache.version>2.10.9.2</ehcache.version>
         <ehcache3.version>3.10.8</ehcache3.version>
@@ -111,10 +111,10 @@
         <commons-text.version>1.10.0</commons-text.version>               <!-- not used in t9t, but DM made to cover for transitive dependencies -->
 
         <!-- AWS SDK v1 -->
-        <aws-bom.version>1.12.477</aws-bom.version>
+        <aws-bom.version>1.12.481</aws-bom.version>
 
         <!-- AWS SDK v2 -->
-        <aws2-bom.version>2.20.74</aws2-bom.version>
+        <aws2-bom.version>2.20.78</aws2-bom.version>
 
         <!-- Azure -->
         <azure-cosmosdb.version>2.6.16</azure-cosmosdb.version>
@@ -128,9 +128,8 @@
 
         <!-- Test support -->
         <junit.version>4.13.2</junit.version>      <!-- groupId is junit -->
-        <junit5.version>5.9.3</junit5.version>     <!-- groupId is org.junit, therefore is can coexist with junit4 in dependency management -->
         <hamcrest.version>2.2</hamcrest.version>   <!-- avoid unless required -->
-        <byte-buddy.version>1.14.4</byte-buddy.version>   <!-- 1.12.x requested by mockito 4.2.0, and reuired for Java 17 -->
+        <byte-buddy.version>1.14.5</byte-buddy.version>   <!-- 1.12.x requested by mockito 4.2.0, and reuired for Java 17 -->
         <org.mockito-core.version>5.3.1</org.mockito-core.version>
         <archunit.version>1.0.1</archunit.version>
         <hdrhistogram.version>2.1.12</hdrhistogram.version>
@@ -138,13 +137,13 @@
         <!-- Others -->
         <bouncycastle.version>1.70</bouncycastle.version>
         <bouncycastle-tsp.version>1.46</bouncycastle-tsp.version>     <!--  is older than the others! Is it still required? -->
-        <woodstox.version>6.4.0</woodstox.version>
+        <woodstox.version>6.5.1</woodstox.version>
         <stax2-api.version>4.2.1</stax2-api.version>
         <icu4j.version>73.1</icu4j.version>
         <zxing.version>3.5.1</zxing.version>
         <quartz.version>2.5.0-rc1</quartz.version>
         <jsap.version>2.1</jsap.version>
-        <picocli.version>4.7.3</picocli.version>
+        <picocli.version>4.7.4</picocli.version>
         <httpcore.version>4.4.16</httpcore.version>
         <httpclient.version>4.5.14</httpclient.version>
         <httpcore5.version>5.2.1</httpcore5.version>
@@ -158,7 +157,7 @@
         <flyingsaucer.version>9.1.22</flyingsaucer.version>
 
         <javassist.version>3.29.2-GA</javassist.version>
-        <guava.version>31.1-jre</guava.version>
+        <guava.version>32.0.0-jre</guava.version>
         <caffeine.version>3.1.6</caffeine.version>
         <antlr.version>3.2</antlr.version>
         <resteasy.version>6.2.4.Final</resteasy.version>
@@ -296,9 +295,9 @@
                 <version>${jakarta.xml-bind-api.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.sun.xml.bind</groupId>
-                <artifactId>jaxb-impl</artifactId>
-                <version>${jakarta.xml-bind.version}</version>
+                <groupId>org.glassfish.jaxb</groupId>
+                <artifactId>jaxb-core</artifactId>
+                <version>${jakarta.xml-jaxb-core.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.glassfish.jaxb</groupId>
@@ -307,15 +306,15 @@
             </dependency>
             <dependency>
                 <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-impl</artifactId>
+                <version>4.0.0-old</version>  <!-- do not use, prefer org.glassfish.jaxb:jaxb-runtime -->
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
                 <artifactId>jaxb-core</artifactId>
-                <version>${jakarta.xml-jaxb-core.version}</version>
+                <version>4.0.0-old</version>  <!-- do not use, prefer org.glassfish.jaxb:jaxb-runtime -->
             </dependency>
             <!-- previous artifact is exactly like the next, just with different groupId -->
-            <dependency>
-                <groupId>org.glassfish.jaxb</groupId>
-                <artifactId>jaxb-core</artifactId>
-                <version>${jakarta.xml-jaxb-core.version}</version>
-            </dependency>
             <dependency>
                 <groupId>com.sun.xml.bind</groupId>
                 <artifactId>jaxb-xjc</artifactId>
@@ -1338,6 +1337,11 @@
             <dependency>
                 <groupId>org.apache.camel</groupId>
                 <artifactId>camel-kafka</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-kubernetes</artifactId>
                 <version>${camel.version}</version>
             </dependency>
 
