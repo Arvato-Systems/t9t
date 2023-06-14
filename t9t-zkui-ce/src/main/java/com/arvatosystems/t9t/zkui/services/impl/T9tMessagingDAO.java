@@ -269,17 +269,16 @@ public class T9tMessagingDAO implements IT9tMessagingDAO {
     }
 
     @Override
-    public Long executeCannedRequest(CannedRequestRef cannedRequestRef) throws ReturnCodeException {
+    public ServiceResponse executeCannedRequest(final CannedRequestRef cannedRequestRef) throws ReturnCodeException {
         LOGGER.debug("executeCannedRequest with ref {}", cannedRequestRef);
 
         try {
             ExecuteCannedRequest executeCannedRequest = new ExecuteCannedRequest();
             executeCannedRequest.setRequestRef(cannedRequestRef);
-            t9tRemoteUtils.executeAndHandle(executeCannedRequest, ServiceResponse.class);
+            return t9tRemoteUtils.executeAndHandle(executeCannedRequest, ServiceResponse.class);
         } catch (Exception e) {
             t9tRemoteUtils.returnCodeExceptionHandler("executeCannedRequest", e);
             return null; // just for the compiler
         }
-        return null;
     }
 }

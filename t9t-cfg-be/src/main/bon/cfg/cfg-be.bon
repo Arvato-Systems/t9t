@@ -86,6 +86,7 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional Unicode(255)                       jdbcDriverClass;                // class name of JDBC driver
         optional Unicode(255)                       jdbcConnectString;              // connect string for the data source
         optional Boolean                            readonly;                       // set to true, if the provided URL is readonly
+        optional Boolean                            readonlyOptimization;           // set session to readonly if request handler indicates that
         required Unicode(255) List<>                migrations;                     // flyway migrations to check, if started with -m option
         required Unicode(2000) List<>               z;                              // arbitrary extension parameters, of the form (identifier)=(value)
     }

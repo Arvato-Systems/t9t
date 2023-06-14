@@ -83,6 +83,7 @@ public class RequestContext extends AbstractRequestContext {  // FIXME: this cla
     private int numberOfCallsThisLevel  = 0;            // the number of calls which have been started at this stack level
     private final List<StackLevel> callStack  = new ArrayList<>();  // needs to be concurrent because the processStatus request will read it!
     private final Object lockForNesting = new Object();
+    private Boolean readOnlyDatabaseSession = null;
 
     public void pushCallStack(final String newPQON) {
         synchronized (lockForNesting) {
@@ -138,6 +139,18 @@ public class RequestContext extends AbstractRequestContext {  // FIXME: this cla
             copy.add(new StackLevel(numberOfCallsThisLevel, progressCounter.get(), currentPQON, MessagingUtil.truncField(statusText, maxLen)));
             return copy;
         }
+    }
+
+    public void setReadOnlyMode(final boolean readOnly) {
+        if (isTopLevelRequest() && readOnlyDatabaseSession == null) {
+            readOnlyDatabaseSession = readOnly;
+        } else {
+            LOGGER.warn("Attempt to set readOnly session flag for level {} and previously set mode {}", depth, readOnlyDatabaseSession);
+        }
+    }
+
+    public boolean getReadOnlyMode() {
+        return Boolean.TRUE.equals(readOnlyDatabaseSession);
     }
 
     /**

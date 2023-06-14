@@ -16,27 +16,14 @@
 package com.arvatosystems.t9t.base;
 
 import java.util.UUID;
-import java.util.function.Consumer;
-import java.util.function.Function;
-
-import org.checkerframework.checker.units.qual.K;
 
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.auth.AuthenticationResponse;
-import com.arvatosystems.t9t.base.crud.CrudAnyKeyResponse;
-import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.base.types.AuthenticationParameters;
-import com.arvatosystems.t9t.base.updater.ReadDataRequest;
-import com.arvatosystems.t9t.base.updater.SearchDataRequest;
-import com.arvatosystems.t9t.base.updater.UpdateDataRequest;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 
 /** Common methods for embedded and remote tests. */
 public interface ITestConnection {
@@ -168,55 +155,4 @@ public interface ITestConnection {
      * @return                  the JWT parsed into an instance of class <code>JwtInfo</code>
      */
     JwtInfo getLastJwtInfo();
-
-    /**
-     * Patches a DTO (specified by key).
-     *
-     * @param <T>        the class of the DTO
-     * @param dtoClass   the class of the DTO
-     * @param key        any unique key for the DTO
-     * @param updater    a lambda consumer of the DTO, which applies the desired changes
-     */
-    default <T extends BonaPortable> void patch(@Nonnull final Class<T> dtoClass, @Nonnull final BonaPortable key, @Nonnull final Consumer<T> updater) {
-        // first, read the DTO from the backend
-        final ReadDataRequest readRq = new ReadDataRequest();
-        readRq.setDtoClassCanonicalName(dtoClass.getCanonicalName());
-        readRq.setKey(key);
-        final CrudAnyKeyResponse resp = typeIO(readRq, CrudAnyKeyResponse.class);
-
-        // now, apply the patch
-        final T dto = dtoClass.cast(resp.getData());
-        updater.accept(dto);
-
-        // finally, write back the change
-        final UpdateDataRequest updateRq = new UpdateDataRequest();
-        updateRq.setDtoClassCanonicalName(dtoClass.getCanonicalName());
-        updateRq.setKey(key);
-        updateRq.setData(dto);
-        okIO(updateRq);
-    }
-
-    default <T extends BonaPortable, K extends BonaPortable> int patch(
-            @Nonnull final Class<T> dtoClass, @Nullable final SearchFilter filter, @Nonnull final Function<T, K> updater) {
-        // first, read the DTOs from the backend
-        final SearchDataRequest readRq = new SearchDataRequest();
-        readRq.setDtoClassCanonicalName(dtoClass.getCanonicalName());
-        readRq.setFilter(filter);
-        final ReadAllResponse resp = typeIO(readRq, ReadAllResponse.class);
-
-        // now, apply the patch
-        for (final Object data: resp.getDataList()) {
-            final T dto = dtoClass.cast(((DataWithTracking)data).getData());
-            final BonaPortable key = updater.apply(dto);
-            if (key != null) {
-                // desired change: write it back!
-                final UpdateDataRequest updateRq = new UpdateDataRequest();
-                updateRq.setDtoClassCanonicalName(dtoClass.getCanonicalName());
-                updateRq.setKey(key);
-                updateRq.setData(dto);
-                okIO(updateRq);
-            }
-        }
-        return resp.getDataList().size();
-    }
 }

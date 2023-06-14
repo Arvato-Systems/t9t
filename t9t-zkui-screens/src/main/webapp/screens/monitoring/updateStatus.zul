@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="updateStatus"?>
+
+<window28 id="updateStatusViewWin">
+    <threesections28 gridId="updateStatus">
+        <tabbox28 filterFieldname="ticketRef">
+            <tabpanels>
+                <tabpanel28 id="updateStatusLogTab">
+                    <grid28 gridId="updateStatusLog" />
+                </tabpanel28>
+            </tabpanels>
+        </tabbox28>
+    </threesections28>
+</window28>

@@ -35,7 +35,7 @@ public interface IRequestProcessor {
      * Implementations have to catch all exceptions and populate a return code and error details in case anything fails.
      * skipAuthorization can be set to true, if the caller is known to originate from an internal context and has been pre-authorized (i.e. for sub services).
      */
-    ServiceResponse execute(ServiceRequestHeader hdr, RequestParameters rq, JwtInfo jwtInfo, String encodedJwt, boolean skipAuthorization);
+    ServiceResponse execute(ServiceRequestHeader hdr, RequestParameters rq, JwtInfo jwtInfo, String encodedJwt, boolean skipAuthorization, Integer partition);
 
     /**
      * Execute a request and in case of a non-exceptional result (0xxx or 1xxx), also checks the type of the response.

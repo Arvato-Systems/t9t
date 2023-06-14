@@ -32,10 +32,14 @@
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-io-be-camel</artifactId>
         </dependency>
-		<dependency>
-			<groupId>org.apache.camel</groupId>
-			<artifactId>camel-kubernetes</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-kubernetes</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-master</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

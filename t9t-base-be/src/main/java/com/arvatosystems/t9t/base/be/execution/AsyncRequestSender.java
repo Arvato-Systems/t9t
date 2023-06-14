@@ -86,7 +86,10 @@ public class AsyncRequestSender implements IAsyncRequestSender {
             srh.setMessageId(currentContext.internalHeaderParameters.getMessageId());
             srh.setIdempotencyBehaviour(currentContext.internalHeaderParameters.getIdempotencyBehaviour());
         }
-        final ServiceRequest srq = new ServiceRequest(srh, rq, new JwtAuthentication(currentContext.internalHeaderParameters.getEncodedJwt()));
+        final ServiceRequest srq = new ServiceRequest();
+        srq.setRequestHeader(srh);
+        srq.setRequestParameters(rq);
+        srq.setAuthentication(new JwtAuthentication(currentContext.internalHeaderParameters.getEncodedJwt()));
         asyncRequest(channel, address, srq, serializationFormat);
     }
 }

@@ -182,6 +182,7 @@ public class AsyncRequestLogger implements IRequestLogger {
         m.setReturnCode                 (summary.getReturnCode());
         m.setErrorDetails               (summary.getErrorDetails());
         m.setHostname                   (summary.getHostname());
+        m.setPartition                  (summary.getPartitionUsed());
         if (params != null) {
             m.setTransactionOriginType(params.getTransactionOriginType());
             if (params.getWhenSent() != null) {

@@ -1,0 +1,6 @@
+{
+  "viewModel": "updateStatusLog",
+  "fields": [
+    "cTimestamp", "newStatus"
+  ]
+}

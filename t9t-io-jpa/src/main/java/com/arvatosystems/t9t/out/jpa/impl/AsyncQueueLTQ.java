@@ -236,7 +236,12 @@ public class AsyncQueueLTQ<R extends BonaPortable> implements IAsyncQueue {
                 }
                 // add them to the queue
                 for (final AsyncMessageEntity m : results) {
-                    queue.put(new InMemoryMessage(m.getTenantId(), m.getAsyncChannelId(), m.getObjectRef(), m.getPayload()));
+                    final InMemoryMessage msg = new InMemoryMessage();
+                    msg.setTenantId(m.getTenantId());
+                    msg.setAsyncChannelId(m.getAsyncChannelId());
+                    msg.setObjectRef(m.getObjectRef());
+                    msg.setPayload(m.getPayload());
+                    queue.put(msg);
                 }
                 if (results.size() < serverConfig.getMaxMessageAtStartup()) {
                     LOGGER.debug("Flipping gate to GREEN (low watermark)");

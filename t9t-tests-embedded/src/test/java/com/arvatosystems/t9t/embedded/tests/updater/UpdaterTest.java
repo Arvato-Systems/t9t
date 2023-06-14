@@ -1,6 +1,7 @@
 package com.arvatosystems.t9t.embedded.tests.updater;
 
 import static com.arvatosystems.t9t.misc.extensions.MiscExtensions.createCannedRequestWithParameters;
+import static com.arvatosystems.t9t.misc.extensions.UpdaterExtensions.patch;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.AfterAll;
@@ -50,14 +51,14 @@ public class UpdaterTest {
     public void testBadDtoClass() throws Exception {
         serverLog("testBadDtoClass");
         assertThrows(Exception.class, () -> {
-            dlg.patch(CannedRequestCrudRequest.class, KEY1, dto -> { });
+            patch(dlg, CannedRequestCrudRequest.class, KEY1, dto -> { });
         });
     }
 
     @Test
     public void testPatchUpdateName() throws Exception {
         serverLog("testPatchUpdateName");
-        dlg.patch(CannedRequestDTO.class, KEY1, dto -> {
+        patch(dlg, CannedRequestDTO.class, KEY1, dto -> {
             dto.setName("Patched ping!");
         });
     }
@@ -67,7 +68,7 @@ public class UpdaterTest {
         serverLog("testPatchMultiple");
         final UnicodeFilter filter = new UnicodeFilter("requestId");
         filter.setLikeValue("ping1%");
-        final int numCandidates = dlg.patch(CannedRequestDTO.class, filter, dto -> {
+        final int numCandidates = patch(dlg, CannedRequestDTO.class, filter, dto -> {
             if (dto.getRequestId().equals(KEY2.getRequestId())) {
                 dto.setName("Super pong!");
                 return KEY2;  // update!

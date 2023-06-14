@@ -15,16 +15,15 @@
  */
 package com.arvatosystems.t9t.orm.jpa.hibernate.impl;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.Query;
-
 import org.hibernate.FlushMode;
 import org.hibernate.Session;
-import org.hibernate.jpa.QueryHints;
+import org.hibernate.jpa.HibernateHints;
 
 import com.arvatosystems.t9t.base.jpa.ormspecific.IQueryHintSetter;
 
 import de.jpaw.dp.Singleton;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 @Singleton
 public class QueryHintSetter implements IQueryHintSetter {
@@ -49,11 +48,11 @@ public class QueryHintSetter implements IQueryHintSetter {
 
     @Override
     public void setReadOnly(final Query query) {
-        query.setHint(QueryHints.HINT_READONLY, true);
+        query.setHint(HibernateHints.HINT_READ_ONLY, true);
     }
 
     @Override
     public void setComment(final Query query, final String text) {
-        query.setHint(QueryHints.HINT_COMMENT, text);
+        query.setHint(HibernateHints.HINT_COMMENT, text);
     }
 }

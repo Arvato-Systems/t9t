@@ -15,11 +15,10 @@
  */
 package com.arvatosystems.t9t.base.jpa.rl.impl;
 
-import jakarta.persistence.EntityManagerFactory;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.base.jpa.ormspecific.IQueryHintSetter;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
@@ -28,6 +27,7 @@ import de.jpaw.bonaparte.pojos.api.PersistenceProviders;
 import de.jpaw.dp.CustomScope;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
+import jakarta.persistence.EntityManagerFactory;
 
 /**
  * The provider for the JPA persistence context.
@@ -37,6 +37,7 @@ import de.jpaw.dp.Provider;
 public class PersistenceProviderJPAProvider implements CustomScope<PersistenceProviderJPA> {
     private static final Logger LOGGER = LoggerFactory.getLogger(PersistenceProviderJPAProvider.class);
     private final Provider<RequestContext> ctxProvider = Jdp.getProvider(RequestContext.class);
+    private final IQueryHintSetter queryHintSetter = Jdp.getRequired(IQueryHintSetter.class);
     private final EntityManagerFactory emf;
 
     public PersistenceProviderJPAProvider(EntityManagerFactory emf) {
@@ -50,9 +51,13 @@ public class PersistenceProviderJPAProvider implements CustomScope<PersistencePr
         PersistenceProviderJPA jpaContext = (PersistenceProviderJPA)ctx.getPersistenceProvider(PersistenceProviders.JPA.ordinal());
         if (jpaContext == null) {
             // does not exist, create a new one!
-            LOGGER.trace("Adding JPA to request context");
+            final boolean readOnly = ctx.getReadOnlyMode();
+            LOGGER.debug("Creating new JPA session (EntityManager) in {} mode and adding to RequestContext", readOnly ? "ReadOnly" : "R/W");
             jpaContext = new PersistenceProviderJPARLImpl(emf);
             ctx.addPersistenceContext(jpaContext);
+            if (readOnly) {
+                queryHintSetter.setReadOnlySession(jpaContext.getEntityManager());
+            }
         }
 
         return jpaContext;

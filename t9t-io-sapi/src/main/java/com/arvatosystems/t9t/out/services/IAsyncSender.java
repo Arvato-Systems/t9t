@@ -17,6 +17,8 @@ package com.arvatosystems.t9t.out.services;
 
 import java.util.function.Consumer;
 
+import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.output.ExportStatusEnum;
 import com.arvatosystems.t9t.io.AsyncChannelDTO;
 import com.arvatosystems.t9t.io.AsyncHttpResponse;
 import com.arvatosystems.t9t.io.AsyncQueueDTO;
@@ -39,6 +41,39 @@ public interface IAsyncSender {
      */
     boolean send(@Nonnull AsyncChannelDTO channel, int timeout, @Nonnull InMemoryMessage msg, Consumer<AsyncHttpResponse> resultProcessor,
       long whenStarted) throws Exception;
+
+    /**
+     * Determines if a http response code is considered to be "OK".
+     * The default implementation maps http codes 200 to 299 to "OK".
+     */
+    default boolean httpStatusIsOk(final int httpCode) {
+        return httpCode / 100 == 2;
+    }
+
+    /**
+     * Converts a http status code to a message status.
+     * The default implementation only relies on the httpCode, customizations may want to use channel configuration in addition.
+     *
+     * @param httpCode   the HTTP status code
+     * @param channel    the channel configuration
+     *
+     * @return a classification of the status
+     */
+    default ExportStatusEnum httpCodeToStatus(final int httpCode, final AsyncChannelDTO channel) {
+        if (httpCode == 408 || httpCode == T9tConstants.HTTP_STATUS_INTERNAL_TIMEOUT) {
+            return ExportStatusEnum.RESPONSE_TIMEOUT;  // timeout, please retry
+        }
+        switch (httpCode / 100) {
+        case 2:
+            return ExportStatusEnum.RESPONSE_OK;     // OK
+        case 4:
+            return ExportStatusEnum.RESPONSE_ABORT;  // error, please fix
+        case 5:
+            return ExportStatusEnum.RESPONSE_ERROR;  // error, please retry
+        default:
+            return ExportStatusEnum.RESPONSE_UNKNOWN;
+        }
+    }
 
     /** Called when the corresponding writer thread is shut down. */
     default void close() { }

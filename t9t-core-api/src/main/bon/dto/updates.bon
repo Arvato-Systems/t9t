@@ -1,0 +1,62 @@
+/*
+ * Copyright (c) 2012 - 2022 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import api.*
+import apiw.*
+import t9t.base.types.*
+import t9t.base.api.*
+
+
+package (com.arvatosystems) t9t.updates {
+    default private unsigned trim noControlChars;
+    properties notupdatable, ref,
+        tenantCategory is com.arvatosystems.t9t.annotations.TenantCategory(),
+        searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
+        dropdown is com.arvatosystems.t9t.annotations.UseDropDownInUI();
+
+    type ticketId                       is Ascii(20);  // usually of format (projectId)-(number) (JIRA ID)
+    type applySequenceId                is Ascii(32);  // usually of format V(n).(n).YYYYMMDD_HHmm
+
+    enum UpdateApplyStatusType {
+        NOT_YET_STARTED                 = "0",         // also used after a rollback
+        IN_PROGRESS                     = "I",
+        COMPLETE                        = "C"
+    }
+
+    class UpdateStatusRef RTTI 55 extends Ref {}
+
+    final class UpdateStatusTicketKey extends UpdateStatusRef {
+        required ticketId                           ticketId            properties notupdatable;
+    }
+    final class UpdateStatusSequenceKey extends UpdateStatusRef {
+        required applySequenceId                    applySequenceId      properties notupdatable;
+    }
+    /** Update status per ticket. For every activity / status change, a log entry is written. */
+    class UpdateStatusDTO extends UpdateStatusRef {
+        required applySequenceId                    applySequenceId      properties notupdatable;
+        required ticketId                           ticketId             properties notupdatable, dropdown="ticketId";
+        required shortText                          description;
+        required enum UpdateApplyStatusType         updateApplyStatus;
+    }
+
+
+    class UpdateStatusLogRef RTTI 56 extends Ref {}
+
+    /** Activity log per ticket. For every activity / status change, a log entry is written. */
+    class UpdateStatusLogDTO extends UpdateStatusLogRef {
+        required (UpdateStatusRef..., UpdateStatusTicketKey) ticketRef properties ref, searchprefix="ticket";
+        required enum UpdateApplyStatusType         newStatus;
+    }
+}

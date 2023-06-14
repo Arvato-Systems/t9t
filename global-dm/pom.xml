@@ -60,7 +60,7 @@
         <hibernate-validator.version>8.0.0.Final</hibernate-validator.version>
         <ehcache.version>2.10.9.2</ehcache.version>
         <ehcache3.version>3.10.8</ehcache3.version>
-        <jandex.version>3.1.1</jandex.version>
+        <jandex.version>3.1.2</jandex.version>
 
         <!-- Javax ws / rs implementation versions (com.sun.xml.*), for jakarta 8 -->
         <jaxb-impl.version>4.0.1</jaxb-impl.version>                                    <!-- (com.sun.xml.bind:jaxb-impl -->
@@ -71,7 +71,7 @@
         <!-- new Jakarta stuff (versions in comment denote jakarta namespace)-->
         <jakarta.xml-bind-api.version>4.0.0</jakarta.xml-bind-api.version>              <!-- 3.0.1 for jakarta namespace -->
         <jakarta.xml-bind.version>4.0.2</jakarta.xml-bind.version>                      <!-- 3.0.1 for jakarta namespace -->
-        <jakarta.xml-jaxb-core.version>4.0.2</jakarta.xml-jaxb-core.version>            <!-- 3.0.1 for jakarta namespace (skip for javax!) -->
+        <jakarta.xml-jaxb-core.version>4.0.3</jakarta.xml-jaxb-core.version>            <!-- 3.0.1 for jakarta namespace (skip for javax!) -->
         <jakarta.annotation-api.version>2.1.1</jakarta.annotation-api.version>          <!-- 2.0.0 for jakarta namespace -->
 
         <jakarta.activation-api.version>2.1.2</jakarta.activation-api.version>          <!-- 2.1.0 for jakarta EE 10 -->
@@ -103,7 +103,7 @@
         <commons-email.version>1.5</commons-email.version>                <!-- no longer used in t9t, because seems to be unmaintained -->
         <commons-cli.version>1.5.0</commons-cli.version>
         <commons-codec.version>1.15</commons-codec.version>
-        <commons-io.version>2.12.0</commons-io.version>                   <!-- regularly updated again -->
+        <commons-io.version>2.13.0</commons-io.version>                   <!-- regularly updated again -->
         <commons-lang3.version>3.12.0</commons-lang3.version>             <!-- regularly updated again -->
         <commons-beanutils.version>1.9.4</commons-beanutils.version>      <!-- must be 1.9.2 at least due to CVE-2014-0114 -->
         <commons-collections4.version>4.4</commons-collections4.version>
@@ -111,14 +111,14 @@
         <commons-text.version>1.10.0</commons-text.version>               <!-- not used in t9t, but DM made to cover for transitive dependencies -->
 
         <!-- AWS SDK v1 -->
-        <aws-bom.version>1.12.481</aws-bom.version>
+        <aws-bom.version>1.12.486</aws-bom.version>
 
         <!-- AWS SDK v2 -->
-        <aws2-bom.version>2.20.78</aws2-bom.version>
+        <aws2-bom.version>2.20.83</aws2-bom.version>
 
         <!-- Azure -->
         <azure-cosmosdb.version>2.6.16</azure-cosmosdb.version>
-        <azure-cosmos-sdk.version>4.45.1</azure-cosmos-sdk.version>
+        <azure-cosmos-sdk.version>4.46.0</azure-cosmos-sdk.version>
 
         <!-- Camunda BPMN: still linked to pre-jakarta spring version, removing -->
         <!-- <camunda-bom.version>7.18.0</camunda-bom.version> -->
@@ -183,15 +183,15 @@
 
         <c3p0.version>0.9.5.5</c3p0.version>
         <hikaricp.version>4.0.3</hikaricp.version>
-        <flyway.version>9.19.1</flyway.version>
+        <flyway.version>9.19.4</flyway.version>
         <reflections.version>0.9.10</reflections.version>
         <maven-plugin-api.version>3.9.2</maven-plugin-api.version>
         <jackson.version>2.14.3</jackson.version>
         <jackson-databind.version>2.14.3</jackson-databind.version> <!-- separate version due to frequent CVE updates which do not release the full set -->
         <solr.version>8.11.1</solr.version>
         <camel.version>4.0.0-M3</camel.version>
-		<jsch.version>0.2.9</jsch.version>
-        <kafka.version>3.4.0</kafka.version>
+        <jsch.version>0.2.9</jsch.version>
+        <kafka.version>3.4.1</kafka.version>
         <error-prone.version>2.17.0</error-prone.version>
 
         <!-- Monitoring -->
@@ -582,7 +582,7 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-			<!-- Camunda BPMN: still linked to pre-jakarta spring version, removing
+            <!-- Camunda BPMN: still linked to pre-jakarta spring version, removing
             <dependency>
                 <groupId>org.camunda.bpm</groupId>
                 <artifactId>camunda-bom</artifactId>
@@ -1342,6 +1342,11 @@
             <dependency>
                 <groupId>org.apache.camel</groupId>
                 <artifactId>camel-kubernetes</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-master</artifactId>
                 <version>${camel.version}</version>
             </dependency>
 

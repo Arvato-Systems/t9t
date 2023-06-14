@@ -79,7 +79,7 @@ public class RequestProcessor implements IRequestProcessor {
     /** Common entry point for all executions - web service calls as well as scheduled tasks (via IUnauthenticatedServiceRequestExecutor). */
     @Override
     public ServiceResponse execute(final ServiceRequestHeader optHdr, final RequestParameters rp, final JwtInfo jwtInfo, final String encodedJwt,
-            final boolean skipAuthorization) {
+            final boolean skipAuthorization, final Integer partition) {
         // check permissions - first step
         final String pqon = rp.ret$PQON();
         final Instant now = Instant.now();
@@ -222,6 +222,7 @@ public class RequestProcessor implements IRequestProcessor {
                 summary.setReturnCode(resp.getReturnCode());
                 summary.setErrorDetails(resp.getErrorDetails());
                 summary.setHostname(MessagingUtil.HOSTNAME);
+                summary.setPartitionUsed(partition);
                 messageLogger.logRequest(ihdr, summary, logLevel.ordinal() >= UserLogLevelType.REQUESTS.ordinal() ? rp : null,
                         logLevel.ordinal() >= UserLogLevelType.FULL.ordinal() ? resp : null);
             }

@@ -222,6 +222,7 @@
                         </xs:simpleType>
                     </xs:element>
                     <xs:element name="readonly" minOccurs="0" nillable="true" type="xs:boolean"/>
+                    <xs:element name="readonlyOptimization" minOccurs="0" nillable="true" type="xs:boolean"/>
                     <xs:element name="migrations" minOccurs="0" maxOccurs="unbounded">
                         <xs:simpleType>
                             <xs:restriction base="xs:normalizedString">

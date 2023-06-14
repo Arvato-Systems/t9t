@@ -32,7 +32,9 @@ public final class T9tCoreLeanGridConfig implements ILeanGridConfigContainer {
         "cannedRequest",
         "bucketCounter",
         "bucketEntry",
-        "plugins"
+        "plugins",
+        "updateStatus",
+        "updateStatusLog"
     };
 
     @Override

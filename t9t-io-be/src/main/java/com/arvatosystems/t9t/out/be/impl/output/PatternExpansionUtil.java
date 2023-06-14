@@ -62,6 +62,8 @@ public final class PatternExpansionUtil {
         patternReplacements.put("year",     formatDate(now, YEAR_PATTERN));
         patternReplacements.put("month",    formatDate(now, MONTH_PATTERN));
         patternReplacements.put("day",      formatDate(now, DAY_PATTERN));
+        patternReplacements.put("tomorrow",  formatDate(now.plusDays(1), DATE_PATTERN));
+        patternReplacements.put("yesterday", formatDate(now.minusDays(1), DATE_PATTERN));
 
         if (communicationFormatType != null) {
             patternReplacements.put("fileExt", communicationFormatType.getDefaultFileExtension());

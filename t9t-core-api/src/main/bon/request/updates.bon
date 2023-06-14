@@ -1,0 +1,58 @@
+/*
+ * Copyright (c) 2012 - 2022 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import api.*
+import apiw.*
+import t9t.base.types.*
+import t9t.base.api.*
+import t9t.base.entities.*
+import t9t.base.crud.*
+import t9t.base.search.*
+import t9t.base.request.*
+import t9t.updates.*
+
+
+package (com.arvatosystems) t9t.updates.request {
+    default private unsigned trim noControlChars;
+    properties notupdatable, ref,
+        tenantCategory is com.arvatosystems.t9t.annotations.TenantCategory(),
+        searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix();
+
+    class UpdateStatusLogSearchRequest      extends SearchRequest<UpdateStatusLogDTO, WriteTrackingMs> {}
+    class UpdateStatusSearchRequest         extends SearchRequest<UpdateStatusDTO, FullTracking> {}
+    class LeanUpdateStatusSearchRequest     extends LeanSearchRequest {}
+
+    /** Creates a new status, unless it already exists, and checks prerequisites. */
+    class StartUpdateRequest extends RequestParameters {
+        required ticketId                   ticketId;
+        required applySequenceId            applySequenceId;
+        required shortText                  description;
+        required boolean                    allowRestartOfPending;  // if true, a status "IN_PROGRESS" is accepted
+        required ticketId List<>            prerequisites;          // if provided, all of these must be marked as DONE
+    }
+
+    /** Sets the status of the related ticket to DONE. */
+    class FinishUpdateRequest extends RequestParameters {
+        required ticketId                   ticketId;
+    }
+
+    /** Retrieves the status of the related ticket. */
+    class GetUpdateStatusRequest extends RequestParameters return GetUpdateStatusResponse {
+        required ticketId                   ticketId;
+    }
+    class GetUpdateStatusResponse extends ServiceResponse {
+        required (UpdateStatusDTO)          updateStatus;
+    }
+}

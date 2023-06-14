@@ -117,7 +117,7 @@ public class TcpSocketHandler {
                 }
                 return NOT_AUTHENTICATED;
             }
-            final ServiceResponse resp = requestProcessor.execute(null, rq, jwtInfo, encodedJwt, false);
+            final ServiceResponse resp = requestProcessor.execute(null, rq, jwtInfo, encodedJwt, false, null);
             // check for switch tenant etc.
             if (resp instanceof AuthenticationResponse) {
                 final AuthenticationResponse authResp = (AuthenticationResponse) resp;

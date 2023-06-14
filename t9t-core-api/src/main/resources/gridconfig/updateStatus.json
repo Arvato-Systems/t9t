@@ -1,0 +1,11 @@
+{
+  "viewModel": "updateStatus",
+  "filters": [
+    { "filterType": "W", "fieldName": "applySequenceId" },
+    { "filterType": "E", "fieldName": "ticketId" },
+    { "filterType": "E", "fieldName": "updateApplyStatus" }
+  ],
+  "fields": [
+    "applySequenceId", "ticketId", "description", "updateApplyStatus"
+  ]
+}

@@ -59,7 +59,7 @@
         <maven-plugin-annotations.version>3.9.0</maven-plugin-annotations.version>
         <maven-project.version>2.2.1</maven-project.version>
         <build-helper-maven-plugin.version>3.3.0</build-helper-maven-plugin.version>
-        <maven-surefire-plugin.version>3.1.0</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
         <maven-plugin-plugin.version>3.9.0</maven-plugin-plugin.version>
         <maven-assembly-plugin.version>3.6.0</maven-assembly-plugin.version>
         <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
@@ -79,8 +79,8 @@
         <exec.plugin.version>3.0.0</exec.plugin.version>
         <jetty-maven-plugin.version>11.0.15</jetty-maven-plugin.version>
         <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
-        <cxf-codegen-plugin.version>4.0.1</cxf-codegen-plugin.version>
-        <cxf-wadl2java-plugin.version>4.0.1</cxf-wadl2java-plugin.version>
+        <cxf-codegen-plugin.version>4.0.2</cxf-codegen-plugin.version>
+        <cxf-wadl2java-plugin.version>4.0.2</cxf-wadl2java-plugin.version>
         <cxf-xjc-plugin.version>4.0.0</cxf-xjc-plugin.version>
         <echo-maven-plugin.version>1.0.0</echo-maven-plugin.version>
         <jaxb2-maven-plugin.version>3.1.0</jaxb2-maven-plugin.version>
@@ -88,7 +88,7 @@
         <!-- reporting-->
         <maven-checkstyle-plugin.version>3.3.0</maven-checkstyle-plugin.version>
         <maven-site-plugin.version>3.12.1</maven-site-plugin.version>
-        <maven-project-info-reports-plugin.version>3.4.4</maven-project-info-reports-plugin.version>
+        <maven-project-info-reports-plugin.version>3.4.5</maven-project-info-reports-plugin.version>
         <maven-javadoc-plugin.version>3.5.0</maven-javadoc-plugin.version>
 
         <!-- Versions of Xtext & Xtend plugins -->

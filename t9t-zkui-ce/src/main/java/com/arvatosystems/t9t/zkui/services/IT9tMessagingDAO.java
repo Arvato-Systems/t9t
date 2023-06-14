@@ -22,6 +22,7 @@ import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.Filedownload;
 
 import com.arvatosystems.t9t.base.api.RequestParameters;
+import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.base.search.SinkCreatedResponse;
 import com.arvatosystems.t9t.core.CannedRequestRef;
@@ -98,5 +99,5 @@ public interface IT9tMessagingDAO {
 
     MediaData getUploadedData(UploadEvent ev) throws IOException;
 
-    Long executeCannedRequest(CannedRequestRef ref) throws ReturnCodeException;
+    ServiceResponse executeCannedRequest(CannedRequestRef ref) throws ReturnCodeException;
 }

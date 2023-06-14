@@ -125,7 +125,9 @@ public final class MessagingUtil {
      */
     public static ServiceRequest createServiceRequest(final RequestParameters requestParameters) {
         // Create and fill the service request
-        return new ServiceRequest(null, requestParameters, null);
+        final ServiceRequest srq = new ServiceRequest();
+        srq.setRequestParameters(requestParameters);
+        return srq;
     }
 
     /**

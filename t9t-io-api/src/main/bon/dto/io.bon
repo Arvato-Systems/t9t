@@ -470,6 +470,9 @@ package (com.arvatosystems) t9t.io {
         required t9tShortId                             asyncChannelId;                           // used to retrieve the URL and authentication parameters
         optional Long                                   objectRef;                                // refers to a DB entry (to reset the status after a successful send)
         required Object                                 payload;                                  // the message to be sent
+        optional Int                                    attempts;                                 // used to retry a certain times
+        optional Instant(3)                             lastAttempt;                              // used to retry after a defined timeout
+        optional Instant(3)                             nextAttempt;                              // used to retry after a defined timeout
     }
 
     final class AsyncHttpResponse {

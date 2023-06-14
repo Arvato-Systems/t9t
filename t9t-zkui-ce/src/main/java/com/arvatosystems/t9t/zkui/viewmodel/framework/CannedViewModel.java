@@ -19,14 +19,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
-
+import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
+import com.arvatosystems.t9t.base.misc.Info;
 import com.arvatosystems.t9t.core.CannedRequestDTO;
 import com.arvatosystems.t9t.core.CannedRequestRef;
+import com.arvatosystems.t9t.zkui.components.basic.ModalWindows;
 import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;
 import com.arvatosystems.t9t.zkui.services.IT9tMessagingDAO;
 import com.arvatosystems.t9t.zkui.viewmodel.CrudSurrogateKeyVM;
 
+import de.jpaw.bonaparte.core.JsonComposerPrettyPrint;
 import de.jpaw.dp.Jdp;
 
 // viewModel only required for the button command. This could be done via context menu as well!
@@ -42,6 +45,11 @@ public class CannedViewModel extends CrudSurrogateKeyVM<CannedRequestRef, Canned
         if (data == null || data.getObjectRef() == null)
             return;
         LOGGER.debug("executeCannedRequest with objectRef {}", data.getObjectRef());
-        t9tRequestDAO.executeCannedRequest(new CannedRequestRef(data.getObjectRef()));
+        final ServiceResponse response = t9tRequestDAO.executeCannedRequest(new CannedRequestRef(data.getObjectRef()));
+        final Info info = new Info();
+        if (response != null) {
+            info.setText(JsonComposerPrettyPrint.toJsonString(response));
+        }
+        ModalWindows.runModal("/screens/scheduler/cannedResponse28.zul", null, info, false, d -> { });
     }
 }

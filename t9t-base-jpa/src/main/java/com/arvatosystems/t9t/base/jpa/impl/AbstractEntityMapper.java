@@ -113,33 +113,6 @@ public abstract class AbstractEntityMapper<
     /** just a hook not defined in the public interface which allows to jump up to the specific implementation. */
     protected abstract void dto2entity(ENTITY entity, DTO dto, boolean onlyActive);
 
-    protected final DTO fromCache(final ENTITY e, final Class<DTO> clazz) {
-        // xtend: ServiceSessionContext.getDtoCache()?.get(e)?.get(clazz) as DTO
-        // DTO CACHE GONE
-//        Map<BonaPersistableNoData<?, ?>, Map<Class<? extends BonaPortable>, BonaPortable>> cache = jpaContextProvider.get().dtoCache;
-//        if (cache != null) {
-//            Map<Class<? extends BonaPortable>, BonaPortable> map = cache.get(e);
-//            if (map != null) {
-//                return (DTO) map.get(clazz);
-//            }
-//        }
-        return null;
-    }
-
-    protected final void toCache(final ENTITY e, final Class<DTO> clazz, final DTO dto) {
-        // xtend: ServiceSessionContext.getDtoCache()?.get(e)?.get(clazz) as DTO
-        // DTO CACHE GONE
-//        Map<BonaPersistableNoData<?, ?>, Map<Class<? extends BonaPortable>, BonaPortable>> cache = jpaContextProvider.get().dtoCache;
-//        if (cache != null) {
-//            Map<Class<? extends BonaPortable>, BonaPortable> map = cache.get(e);
-//            if (map == null) {
-//                map = new HashMap<Class<? extends BonaPortable>, BonaPortable>(4);
-//                cache.put((BonaPersistableNoData<?, ?>) e, map);
-//            }
-//            map.put(clazz, dto);
-//        }
-    }
-
     /**
      * Verifies that no field with property "notupdatable" has a different value in the intended entity. Throws a T9tException.FIELD_MAY_NOT_BE_CHANGED if a
      * field with different value has been found. Base implementation - no field to check.

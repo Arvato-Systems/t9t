@@ -134,6 +134,9 @@ public final class T9tConstants {
     public static final String HTTP_AUTH_PREFIX_API_KEY     = "API-Key ";           // prefix of the Authorization header to transmit an API key
     public static final String HTTP_AUTH_PREFIX_USER_PW     = "Basic ";             // prefix of the Authorization header to transmit basic authentication
 
-    public static final int RESET_PASSWORD_VALIDITY = 2; // in hours
-    public static final int RESET_PASSWORD_REQUEST_LIMIT = 1; // in minutes
+    public static final int HTTP_STATUS_INTERNAL_TIMEOUT    = 908;                  // we use this internal code to indicate we aborted a send attempt
+    public static final int HTTP_STATUS_INTERNAL_EXCEPTION  = 998;                  // we use this internal code to indicate an uncaught exception while sending
+
+    public static final int RESET_PASSWORD_VALIDITY         = 2; // in hours
+    public static final int RESET_PASSWORD_REQUEST_LIMIT    = 1; // in minutes
 }

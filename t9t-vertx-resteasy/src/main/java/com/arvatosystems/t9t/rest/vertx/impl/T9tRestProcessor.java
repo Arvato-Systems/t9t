@@ -112,7 +112,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
                     MDC.put(T9tInternalConstants.MDC_SESSION_REF, Objects.toString(jwtInfo.getSessionRef(), null));
 
                     LOGGER.debug("{}: processing start", infoMsg);
-                    promise.complete(requestProcessor.execute(null, requestParameters, jwtInfo, authInfo.getEncodedJwt(), false));
+                    promise.complete(requestProcessor.execute(null, requestParameters, jwtInfo, authInfo.getEncodedJwt(), false, null));
                     LOGGER.debug("{}: processing end", infoMsg);
                 } catch (final Exception e) {
                     LOGGER.debug("{}: processing exception", infoMsg);

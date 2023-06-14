@@ -78,12 +78,6 @@ public abstract class AbstractEntityListener<T extends TrackingBase> implements 
         if (ctx != null) {
             rw.setMAppUserId(ctx.userId);
             rw.setMProcessRef(ctx.requestRef);
-            // DTO CACHE GONE
-//            if (clear) {
-//                PersistenceProviderJPA jpactx = ref.jpaContextProvider.get();
-//                if (jpactx != null)
-//                    jpactx.dtoCache.clear();
-//            }
         } else {
             rw.setMAppUserId(T9tConstants.ANONYMOUS_USER_ID);
             rw.setMProcessRef(ZERO);

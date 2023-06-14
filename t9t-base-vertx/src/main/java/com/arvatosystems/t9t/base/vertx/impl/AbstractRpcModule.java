@@ -141,12 +141,12 @@ public abstract class AbstractRpcModule implements IServiceModule {
                             LOGGER.debug("Received request {}, request length is {}", rq.ret$PQON(), body.length);
                             MDC.put(T9tInternalConstants.MDC_REQUEST_PQON, rq.ret$PQON());
                             response = requestProcessor.execute(rq.getRequestHeader(), rq.getRequestParameters(), jwtInfo, authInfo.getEncodedJwt(),
-                                    skipAuthorization());
+                                    skipAuthorization(), null);
                             request = rq.getRequestParameters();
                         } else {
                             final RequestParameters rq = (RequestParameters) decoder.decode(body, ServiceRequest.meta$$requestParameters);
                             MDC.put(T9tInternalConstants.MDC_REQUEST_PQON, rq.ret$PQON());
-                            response = requestProcessor.execute(null, rq, jwtInfo, authInfo.getEncodedJwt(), skipAuthorization());
+                            response = requestProcessor.execute(null, rq, jwtInfo, authInfo.getEncodedJwt(), skipAuthorization(), null);
                             request = rq;
                         }
                     }

@@ -18,8 +18,10 @@ package com.arvatosystems.t9t.core;
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.base.IViewModelContainer;
 import com.arvatosystems.t9t.base.entities.BucketTracking;
+import com.arvatosystems.t9t.base.entities.FullTracking;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.entities.WriteTracking;
+import com.arvatosystems.t9t.base.entities.WriteTrackingMs;
 import com.arvatosystems.t9t.base.request.ComponentInfoDTO;
 import com.arvatosystems.t9t.base.request.ProcessStatusDTO;
 import com.arvatosystems.t9t.batch.SliceTrackingDTO;
@@ -48,6 +50,10 @@ import com.arvatosystems.t9t.plugins.LoadedPluginDTO;
 import com.arvatosystems.t9t.plugins.request.LoadedPluginCrudRequest;
 import com.arvatosystems.t9t.plugins.request.LoadedPluginSearchRequest;
 
+import com.arvatosystems.t9t.updates.UpdateStatusDTO;
+import com.arvatosystems.t9t.updates.UpdateStatusLogDTO;
+import com.arvatosystems.t9t.updates.request.UpdateStatusLogSearchRequest;
+import com.arvatosystems.t9t.updates.request.UpdateStatusSearchRequest;
 import de.jpaw.bonaparte.pojos.api.NoTracking;
 
 public final class T9tCoreModels implements IViewModelContainer {
@@ -112,6 +118,18 @@ public final class T9tCoreModels implements IViewModelContainer {
         FullTrackingWithVersion.BClass.INSTANCE,
         LoadedPluginSearchRequest.BClass.INSTANCE,
         LoadedPluginCrudRequest.BClass.INSTANCE);
+    private static final CrudViewModel<UpdateStatusDTO, FullTracking> UPDATE_STATUS_VIEW_MODEL
+        = new CrudViewModel<>(
+        UpdateStatusDTO.BClass.INSTANCE,
+        FullTracking.BClass.INSTANCE,
+        UpdateStatusSearchRequest.BClass.INSTANCE,
+        null);
+    private static final CrudViewModel<UpdateStatusLogDTO, WriteTrackingMs> UPDATE_STATUS_LOG_VIEW_MODEL
+        = new CrudViewModel<>(
+        UpdateStatusLogDTO.BClass.INSTANCE,
+        WriteTrackingMs.BClass.INSTANCE,
+        UpdateStatusLogSearchRequest.BClass.INSTANCE,
+        null);
 
     @Override
     public void register() {
@@ -125,5 +143,7 @@ public final class T9tCoreModels implements IViewModelContainer {
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("bucketCounter",    BUCKET_COUNTER_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("bucketEntry",      BUCKET_ENTRY_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("plugins",          PLUGINS_VIEW_MODEL);
+        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("updateStatus",     UPDATE_STATUS_VIEW_MODEL);
+        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("updateStatusLog",  UPDATE_STATUS_LOG_VIEW_MODEL);
     }
 }

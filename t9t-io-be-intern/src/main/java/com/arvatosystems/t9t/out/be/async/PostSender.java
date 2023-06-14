@@ -100,7 +100,7 @@ public class PostSender<R> implements IAsyncSender {
             myResponse.setClientReference(defaultMarshaller.getClientReference(r));
         }
         resultProcessor.accept(myResponse);
-        return (resp.getHttpReturnCode() / 100) == 2;
+        return httpStatusIsOk(resp.getHttpReturnCode());
     }
 
     @Override

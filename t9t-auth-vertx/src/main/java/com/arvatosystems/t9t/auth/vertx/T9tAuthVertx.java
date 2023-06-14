@@ -222,7 +222,7 @@ public class T9tAuthVertx implements IServiceModule {
 
                         // Authentication is valid. Now populate the MDC and start processing the request.
                         final JwtInfo jwtInfo = authInfo.getJwtInfo();
-                        promise.complete(this.requestProcessor.execute(null, new GetTenantLogoRequest(), jwtInfo, authInfo.getEncodedJwt(), false));
+                        promise.complete(this.requestProcessor.execute(null, new GetTenantLogoRequest(), jwtInfo, authInfo.getEncodedJwt(), false, null));
 
                     } catch (final Exception e) {
                         LOGGER.info("{} in request: {}", e.getClass().getSimpleName(), e.getMessage());

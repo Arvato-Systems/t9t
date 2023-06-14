@@ -324,12 +324,8 @@ class AutoMap42Processor extends AbstractClassProcessor {
                     body = [ '''
                         if (entity == null)
                             return null;
-                        «toJavaCode(dto)» dto = fromCache(entity, «toJavaCode(dto)».class);
-                        if (dto != null)
-                            return dto;
-                        dto = new «toJavaCode(dto)»();
+                        «toJavaCode(dto)» dto = new «toJavaCode(dto)»();
                         entity2dto(entity, dto);
-                        toCache(entity, «toJavaCode(dto)».class, dto);
                         return dto;
                     ''']
                 ]

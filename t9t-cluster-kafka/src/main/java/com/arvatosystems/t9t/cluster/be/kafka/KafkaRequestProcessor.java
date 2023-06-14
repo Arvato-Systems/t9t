@@ -75,12 +75,12 @@ final class KafkaRequestProcessor implements Callable<Boolean> {
             if (rp.getTransactionOriginType() == null) {
                 rp.setTransactionOriginType(TransactionOriginType.KAFKA); // some other kafka based source
             }
-            rp.setPartitionUsed(partition);
             LOGGER.debug("Starting execute of task {}, PQON {}, key {}, partition {}, pending = {}", uniqueId, rp.ret$PQON(),
-              key, rp.getPartitionUsed(), before);
+              key, partition, before);
             final ServiceRequest srq = new ServiceRequest();
             srq.setRequestParameters(rp);
             srq.setAuthentication(authHeader);
+            srq.setPartitionUsed(partition);
             try {
                 requestProcessor.execute(srq);
             } catch (Exception e) {

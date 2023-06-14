@@ -85,8 +85,7 @@ public class AsyncTools implements IAsyncTools {
                     LOGGER.debug("ASYNC: Received response for channel {} ref {}: Status {}",
                       channel.getAsyncChannelId(), messageObjectRef, asyncResponse.getHttpReturnCode());
                     asyncResponse.setResponseTime(responseTime);
-                    final ExportStatusEnum newStatus2
-                      = (asyncResponse.getHttpReturnCode() / 100) == 2 ? ExportStatusEnum.RESPONSE_OK : ExportStatusEnum.RESPONSE_ERROR;
+                    final ExportStatusEnum newStatus2 = sender.httpCodeToStatus(asyncResponse.getHttpReturnCode(), channel);
                     messageUpdater.updateMessage(messageObjectRef, newStatus2, asyncResponse.getHttpReturnCode(), asyncResponse);
                 };
                 return sender.send(channel, timeout, nextMsg, resultProcessor, whenStarted);

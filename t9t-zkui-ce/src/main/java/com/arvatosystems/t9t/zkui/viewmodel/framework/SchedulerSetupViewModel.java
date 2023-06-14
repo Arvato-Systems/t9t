@@ -21,15 +21,19 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 
+import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
+import com.arvatosystems.t9t.base.misc.Info;
 import com.arvatosystems.t9t.ssm.SchedulerSetupDTO;
 import com.arvatosystems.t9t.ssm.SchedulerSetupRecurrenceType;
 import com.arvatosystems.t9t.ssm.SchedulerSetupRef;
 import com.arvatosystems.t9t.ssm.SchedulerWeekDaysEnumSet;
+import com.arvatosystems.t9t.zkui.components.basic.ModalWindows;
 import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;
 import com.arvatosystems.t9t.zkui.services.IT9tMessagingDAO;
 import com.arvatosystems.t9t.zkui.viewmodel.CrudSurrogateKeyVM;
 
+import de.jpaw.bonaparte.core.JsonComposerPrettyPrint;
 import de.jpaw.dp.Jdp;
 
 // viewModel only required for the button command. This could be done via context menu as well!
@@ -45,7 +49,12 @@ public class SchedulerSetupViewModel extends CrudSurrogateKeyVM<SchedulerSetupRe
         if (data == null || data.getRequest() == null)
             return;
         LOGGER.debug("executeCannedRequest with Ref {}", data.getRequest());
-        t9tRequestDAO.executeCannedRequest(data.getRequest());
+        final ServiceResponse response = t9tRequestDAO.executeCannedRequest(data.getRequest());
+        final Info info = new Info();
+        if (response != null) {
+            info.setText(JsonComposerPrettyPrint.toJsonString(response));
+        }
+        ModalWindows.runModal("/screens/scheduler/cannedResponse28.zul", null, info, false, d -> { });
     }
 
     @Override

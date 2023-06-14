@@ -61,10 +61,13 @@ package (com.arvatosystems) t9t.base.output {
     /** The status of a record with respect to some anticipated export. */
     enum ExportStatusEnum {
         UNDEFINED               = "U",      // default value
-        PROCESSING_ERROR        = "E",      // problem occurred before reaching a "READY_TO_EXPORT" status, mist likely due to missing or inconsistent configuration
+        PROCESSING_ERROR        = "E",      // problem occurred before getting to "READY_TO_EXPORT" status, most likely due to missing or inconsistent configuration
         READY_TO_EXPORT         = "0",      // this row can be exported now (waits to be picked up by some export batch)
         EXPORTED                = "2",      // (after technical format conversion and export), waiting for feedback
-        RESPONSE_ERROR          = "e",      // (response received, but error indicated)
+        RESPONSE_ERROR          = "e",      // Response received, but error indicated. For some transmission types, this will cause a retry. (problem in the remote, http 5xx)
+        RESPONSE_ABORT          = "a",      // Response received, but error indicated. The remote has signalled that a retry will result in the same error => no retry before fixing the issue, http 4xx.
+        RESPONSE_TIMEOUT        = "t",      // Timeout (either by specific response, or us aborting)
+        RESPONSE_UNKNOWN        = "u",      // Response we cannot categorize
         RESPONSE_OK             = ""        // maps to NULL on the database to allow an efficient index
     }
 

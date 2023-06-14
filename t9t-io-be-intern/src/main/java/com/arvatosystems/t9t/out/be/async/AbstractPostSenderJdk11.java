@@ -22,9 +22,11 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandler;
+import java.net.http.HttpTimeoutException;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 
@@ -192,9 +194,14 @@ public abstract class AbstractPostSenderJdk11 implements IAsyncSender {
                             channel.getAsyncChannelId(), msg.getObjectRef(), cause);
                     // construct a synthetic error response to allow storing of result
                     final AsyncHttpResponse asyncResponse = new AsyncHttpResponse();
-                    asyncResponse.setHttpReturnCode(998);
-                    asyncResponse.setErrorDetails(cause);
-                    asyncResponse.setHttpStatusMessage(cause);
+                    if (ex instanceof CompletionException && ex.getCause() instanceof HttpTimeoutException) {
+                        // remote did not respond
+                        asyncResponse.setHttpReturnCode(T9tConstants.HTTP_STATUS_INTERNAL_TIMEOUT);  // 408 is request timeout
+                    } else {
+                        asyncResponse.setHttpReturnCode(T9tConstants.HTTP_STATUS_INTERNAL_EXCEPTION);
+                        asyncResponse.setErrorDetails(cause);
+                        asyncResponse.setHttpStatusMessage(cause);
+                    }
                     resultProcessor.accept(asyncResponse);
                 } else {
                     completeResultProcessor.accept(r);
@@ -205,7 +212,7 @@ public abstract class AbstractPostSenderJdk11 implements IAsyncSender {
             // blocking I/O
             final HttpResponse<String> resp = futureResponse.get();  // this is not asynchronous!
             completeResultProcessor.accept(resp);
-            return (resp.statusCode() / 100) == 2;
+            return httpStatusIsOk(resp.statusCode());
         }
     }
 

@@ -81,7 +81,7 @@ public class AutonomousExecutor implements IAutonomousExecutor {
 
         final Future<ServiceResponse> f = executorService.submit(() -> {
             MDC.setContextMap(mdcContext); // Inherit MDC context and ensure old MDC of this worker is reset
-            return requestProcessor.execute(requestHeader, rp, ihdr.getJwtInfo(), ihdr.getEncodedJwt(), skipPermissionCheck);
+            return requestProcessor.execute(requestHeader, rp, ihdr.getJwtInfo(), ihdr.getEncodedJwt(), skipPermissionCheck, null);
         });
         try {
             return f.get();

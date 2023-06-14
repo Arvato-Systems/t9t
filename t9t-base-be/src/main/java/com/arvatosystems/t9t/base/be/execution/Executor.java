@@ -38,6 +38,8 @@ import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.IRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.base.services.T9tInternalConstants;
+import com.arvatosystems.t9t.cfg.be.ConfigProvider;
+import com.arvatosystems.t9t.cfg.be.RelationalDatabaseConfiguration;
 import com.arvatosystems.t9t.server.InternalHeaderParameters;
 import com.arvatosystems.t9t.server.services.IAuthorize;
 
@@ -64,6 +66,12 @@ public class Executor implements IExecutor {
     protected final IAsyncRequestProcessor asyncProcessor = Jdp.getRequired(IAsyncRequestProcessor.class);
     protected final Provider<RequestContext> contextProvider = Jdp.getProvider(RequestContext.class);
     protected final IAuthorize authorizer = Jdp.getRequired(IAuthorize.class);
+    protected final boolean readonlyOptimization; // if set, the JPA session will be set to readonly in case the top level request handler says that's possible.
+
+    public Executor() {
+        final RelationalDatabaseConfiguration dbCfg = ConfigProvider.getConfiguration().getDatabaseConfiguration();
+        readonlyOptimization = dbCfg != null && !Boolean.FALSE.equals(dbCfg.getReadonlyOptimization());
+    }
 
     // execute a sub-request within the same existing context
     @Override
@@ -145,6 +153,10 @@ public class Executor implements IExecutor {
             ctx.pushCallStack(params.ret$PQON());
 
             final IRequestHandler<RequestParameters> handler = ctx.customization.<RequestParameters>getRequestHandler(params);
+            if (ctx.isTopLevelRequest()) {
+                // top level request: check for read-only session
+                ctx.setReadOnlyMode(handler.isReadOnly(params));
+            }
             response = handler.execute(ctx, params); // execute the new method, possibly redirected temporarily by AbstractRequestHandler
             // verify the promise concerning the return type has been kept. As all BonaPortableClass'es are singletons, == should be fine
             if (!ServiceResponse.BClass.INSTANCE.equals(bp.getReturns())) {
