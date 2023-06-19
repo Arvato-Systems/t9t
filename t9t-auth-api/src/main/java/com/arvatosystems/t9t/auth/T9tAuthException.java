@@ -15,12 +15,13 @@
  */
 package com.arvatosystems.t9t.auth;
 
+import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 
 public class T9tAuthException extends T9tException {
     private static final long serialVersionUID = -3356256622929031419L;
 
-    private static final int CORE_OFFSET = 21000;
+    private static final int CORE_OFFSET = T9tConstants.EXCEPTION_OFFSET_AUTH;
     private static final int OFFSET_VALIDATION_ERROR     = CORE_OFFSET + CLASSIFICATION_FACTOR * CL_VALIDATION_ERROR;
 
     public static final int PASSWORD_VALIDATION_FAILED   = OFFSET_VALIDATION_ERROR + 1;

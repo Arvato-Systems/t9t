@@ -66,7 +66,7 @@ public class AggregateMessageStatisticsRequestHandler extends AbstractRequestHan
             // create new MessageStatistics
             response.setRecordsCreated(createMessageStatistics(request, effectiveStart, effectiveEnd, precision));
             final long end = System.currentTimeMillis();
-            response.setMillisecondsUsedForDeletion(end - mid);
+            response.setMillisecondsUsedForCreation(end - mid);
         }
         writeStatistics(response.getRecordsDeleted(), response.getRecordsCreated(), ctx, precision, effectiveStart, effectiveEnd);
         return response;

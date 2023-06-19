@@ -221,7 +221,6 @@ public class RequestProcessor implements IRequestProcessor {
                 summary.setProcessingTimeInMillisecs(processingDuration);
                 summary.setReturnCode(resp.getReturnCode());
                 summary.setErrorDetails(resp.getErrorDetails());
-                summary.setHostname(MessagingUtil.HOSTNAME);
                 summary.setPartitionUsed(partition);
                 messageLogger.logRequest(ihdr, summary, logLevel.ordinal() >= UserLogLevelType.REQUESTS.ordinal() ? rp : null,
                         logLevel.ordinal() >= UserLogLevelType.FULL.ordinal() ? resp : null);

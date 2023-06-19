@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.ssm;
 
+import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 
 /**
@@ -26,7 +27,7 @@ public class T9tSsmException extends T9tException {
     /*
      * Offset for all codes in this class.
      */
-    private static final int CORE_OFFSET = 22000;
+    private static final int CORE_OFFSET = T9tConstants.EXCEPTION_OFFSET_SSM;
     private static final int OFFSET = (CL_PARAMETER_ERROR * CLASSIFICATION_FACTOR) + CORE_OFFSET;
     @SuppressWarnings("unused")
     private static final int OFFSET_LOGIC_ERROR = (CL_INTERNAL_LOGIC_ERROR * CLASSIFICATION_FACTOR) + CORE_OFFSET;

@@ -21,6 +21,7 @@ import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.output.ExportStatusEnum;
 import com.arvatosystems.t9t.io.AsyncChannelDTO;
 import com.arvatosystems.t9t.io.AsyncHttpResponse;
@@ -57,7 +58,6 @@ public class AsyncTools implements IAsyncTools {
     @Override
     public boolean tryToSend(final IAsyncSender sender, final InMemoryMessage nextMsg, final int defaultTimeout) {
         // Returns true is the message was sent successfully, else false
-        ExportStatusEnum newStatus = ExportStatusEnum.RESPONSE_ERROR;  // OK when sent
         final String channelId = nextMsg.getAsyncChannelId();
         final String tenantId = nextMsg.getTenantId();
         LOGGER.debug("ASYNC: Send message from channel {} of type {}, objectRef {}",
@@ -82,19 +82,19 @@ public class AsyncTools implements IAsyncTools {
                 final Consumer<AsyncHttpResponse> resultProcessor = asyncResponse -> {
                     final long whenDone = System.currentTimeMillis();
                     final Integer responseTime = Integer.valueOf((int)(whenDone - whenStarted));
-                    LOGGER.debug("ASYNC: Received response for channel {} ref {}: Status {}",
-                      channel.getAsyncChannelId(), messageObjectRef, asyncResponse.getHttpReturnCode());
                     asyncResponse.setResponseTime(responseTime);
                     final ExportStatusEnum newStatus2 = sender.httpCodeToStatus(asyncResponse.getHttpReturnCode(), channel);
+                    LOGGER.debug("ASYNC: Received response for channel {} ref {}: HTTP code {} mapped to new status {}",
+                        channel.getAsyncChannelId(), messageObjectRef, newStatus2, asyncResponse.getHttpReturnCode());
                     messageUpdater.updateMessage(messageObjectRef, newStatus2, asyncResponse.getHttpReturnCode(), asyncResponse);
                 };
                 return sender.send(channel, timeout, nextMsg, resultProcessor, whenStarted);
             } catch (final Exception e) {
                 LOGGER.error("ASYNC: Exception in external http for channel, ref {}: {}",
                   channel.getAsyncChannelId(), nextMsg.getObjectRef(), ExceptionUtil.causeChain(e));
-                messageUpdater.updateMessage(nextMsg.getObjectRef(), newStatus, 999, null);
+                messageUpdater.updateMessage(nextMsg.getObjectRef(), ExportStatusEnum.RESPONSE_ABORT, T9tConstants.HTTP_STATUS_ILE_OTHER_EXCEPTION, null);
+                return false;   // error
             }
-            return newStatus == ExportStatusEnum.RESPONSE_OK;
         }
     }
 }

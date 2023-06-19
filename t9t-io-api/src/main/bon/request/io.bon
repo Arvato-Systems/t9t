@@ -308,7 +308,7 @@ package (com.arvatosystems) t9t.io.request {
      * Select certain message to retry, with the usual search criteria, plus extended special ones.
      * Criteria like min / max retry count, or a certain refType or specific http error code are available bia regular search criteria.
      */
-    class RetryAsyncMessagesRequest extends RequestParameters {
+    class RetryAsyncMessagesRequest extends RequestParameters return RetryAsyncMessagesResponse {
         optional (AsyncQueueRef...)                 onlyAsyncQueueRef;    // only retry messages of this queue
         optional t9tShortId                         onlyAsyncChannelId;   // select only tasks of this channel
         optional Integer                            onlyHttpResponseCode; // select only tasks which returned this status
@@ -316,7 +316,10 @@ package (com.arvatosystems) t9t.io.request {
         optional Integer                            maxRetries;
         optional Integer                            minAgeInMinutes;      // for unsent mode: checks against creation timestamp, otherwise against lastAttempt
         optional Integer                            maxAgeInMinutes;
-        optional Integer                            maxCount;
-        optional Boolean                            useUnsent;            // rather than an error retry, do any forgotten ones
+        optional Integer                            maxCount;             // maximum number of records to resend
+        optional Ascii(16)                          onlyStatus;           // provide the name of the export status
+    }
+    class RetryAsyncMessagesResponse extends ServiceResponse {
+        required int                                numResent;            // how many records have been resent
     }
 }

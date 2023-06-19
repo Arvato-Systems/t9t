@@ -1,5 +1,7 @@
 package com.arvatosystems.t9t.jetty.kafka.impl;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -16,9 +18,14 @@ import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.api.RequestParameters;
+import com.arvatosystems.t9t.base.api.ServiceRequest;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.api.TransactionOriginType;
+import com.arvatosystems.t9t.base.auth.ApiKeyAuthentication;
+import com.arvatosystems.t9t.base.auth.JwtAuthentication;
+import com.arvatosystems.t9t.base.auth.PasswordAuthentication;
 import com.arvatosystems.t9t.base.auth.PermissionType;
+import com.arvatosystems.t9t.base.types.AuthenticationParameters;
 import com.arvatosystems.t9t.jetty.impl.T9tRestProcessor;
 import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
 import com.arvatosystems.t9t.rest.utils.RestUtils;
@@ -113,12 +120,57 @@ public class T9tRestProcessorViaKafka extends T9tRestProcessor implements IT9tRe
         }
         // at this point, we know it is authenticated
         request.setWhenSent(System.currentTimeMillis());  // assumes all server clocks are sufficiently synchronized
-        request.setTransactionOriginType(TransactionOriginType.GATEWAY_EXTERNAL_ASNC);
-        kafkaTransmitter.write(request, partitionKey, request.getMessageId());
+        request.setTransactionOriginType(TransactionOriginType.GATEWAY_EXTERNAL_ASYNC);
+
+        // build the service request object
+        final ServiceRequest srq = new ServiceRequest();
+        srq.setRequestParameters(request);
+        srq.setAuthentication(createAuthentication(authentication, request.ret$PQON()));
+
+        // transmit to backend
+        kafkaTransmitter.write(srq, partitionKey, request.getMessageId());
         // everything is fine!
         payload.setReturnCode(0);
         payload.setErrorMessage("OK");
         return Status.OK;
+    }
+
+    protected AuthenticationParameters createAuthentication(final String header, final String forWhich) {
+        if (header != null && header.length() > 8) {
+            // check for the 3 types of authentication we know
+            if (header.startsWith(T9tConstants.HTTP_AUTH_PREFIX_API_KEY) && header.length() == T9tConstants.HTTP_AUTH_PREFIX_API_KEY.length() + 36) {
+                try {
+                    return new ApiKeyAuthentication(UUID.fromString(header.substring(T9tConstants.HTTP_AUTH_PREFIX_API_KEY.length())));
+                } catch (Exception e) {
+                    LOGGER.error("Incorrect API key format for request {}", forWhich);
+                    return null;
+                }
+            }
+            if (header.startsWith(T9tConstants.HTTP_AUTH_PREFIX_JWT)) {
+                return new JwtAuthentication(header.substring(T9tConstants.HTTP_AUTH_PREFIX_JWT.length()));
+            }
+            if (header.startsWith(T9tConstants.HTTP_AUTH_PREFIX_USER_PW)) {
+                try {
+                    final String userPwDecoded = new String(
+                            Base64.getDecoder().decode(header.substring(T9tConstants.HTTP_AUTH_PREFIX_USER_PW.length())),
+                            StandardCharsets.UTF_8);
+                    final int delimiter = userPwDecoded.indexOf(':');
+                    if (delimiter > 0 && delimiter < userPwDecoded.length() - 1) {
+                        // can be split into user and password
+                        final PasswordAuthentication userPwAuth = new PasswordAuthentication();
+                        userPwAuth.setUserId(userPwDecoded.substring(0, delimiter));
+                        userPwAuth.setPassword(userPwDecoded.substring(delimiter + 1, userPwDecoded.length()));
+                        return userPwAuth;
+                    }
+                } catch (Exception e) {
+                    // ignore
+                }
+                LOGGER.error("Incorrect basic auth format for request {}", forWhich);
+                return null;
+            }
+        }
+        LOGGER.warn("Request without appropriate Authorization header: {}", forWhich);
+        return null;
     }
 
     @Override

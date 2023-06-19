@@ -1120,7 +1120,8 @@ body {
 .grid:not(.no-padding) .z-grid-body>table .z-decimalbox,
 .grid:not(.no-padding) .z-grid-body>table .z-longbox,
 .grid:not(.no-padding) .z-grid-body>table .z-doublebox,
-.grid:not(.no-padding) .z-grid-body>table .z-chosenbox
+.grid:not(.no-padding) .z-grid-body>table .z-chosenbox,
+.grid:not(.no-padding) .z-grid-body>table .z-timebox
 {
     width: 100% !important;
 }

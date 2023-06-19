@@ -34,7 +34,7 @@ package (com.arvatosystems) t9t.base.api {
 
     /** Defines the type of request initiation. */
     enum TransactionOriginType {
-        GATEWAY_EXTERNAL_ASNC           = "A",           // request was received by the external REST gateway and transmitted via kafka
+        GATEWAY_EXTERNAL_ASYNC          = "A",           // request was received by the external REST gateway and transmitted via kafka
         GATEWAY_EXTERNAL                = "X",           // request was received by the REST or a SOAP gateway
         GATEWAY_INTERNAL                = "I",           // request was received by an internal REST endpoint
         ASYNC                           = "Y",           // request was initiated by internal async transmission

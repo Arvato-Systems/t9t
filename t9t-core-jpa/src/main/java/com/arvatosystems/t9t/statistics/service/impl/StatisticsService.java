@@ -26,9 +26,6 @@ import de.jpaw.dp.Singleton;
 
 /**
  * Default implementation of {@linkplain IStatisticsService}.
- *
- * @author greg
- *
  */
 @Singleton
 public class StatisticsService implements IStatisticsService {

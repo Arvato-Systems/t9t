@@ -15,8 +15,13 @@
  */
 package com.arvatosystems.t9t.auth.be.impl;
 
+import java.time.Instant;
+import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.arvatosystems.t9t.auth.SessionDTO;
-import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
 import com.arvatosystems.t9t.base.auth.AuthenticationResponse;
@@ -27,6 +32,7 @@ import com.arvatosystems.t9t.server.InternalHeaderParameters;
 import com.arvatosystems.t9t.server.services.IAuthenticate;
 import com.arvatosystems.t9t.server.services.IRequestLogger;
 import com.arvatosystems.t9t.server.services.IRequestProcessor;
+
 import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
@@ -34,10 +40,6 @@ import de.jpaw.bonaparte.pojos.api.auth.UserLogLevelType;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ApplicationException;
-import java.time.Instant;
-import java.util.UUID;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Singleton
 public class Authentication implements IAuthenticate {
@@ -91,7 +93,6 @@ public class Authentication implements IAuthenticate {
             summary.setProcessingTimeInMillisecs(processingDuration);
             summary.setReturnCode(resp.getReturnCode());
             summary.setErrorDetails(resp.getErrorDetails());
-            summary.setHostname(MessagingUtil.HOSTNAME);
             messageLogger.logRequest(ihdr, summary, null, null); // always null content, do not log keys or passwords!
         }
         return resp;

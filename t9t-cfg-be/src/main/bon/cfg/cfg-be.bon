@@ -138,6 +138,8 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional Integer                            alertOnQueueSize;               // how many records should be in the queue to trigger an alert?
         optional Integer                            alertInterval;                  // since measuring queue size takes time, it is only done every n writes
         optional Long                               maxWriteTimeInMillis;           // how long may the DB take to write the records?
+        optional Ascii(64)                          kafkaTopic;                     // in case logs are written to a kafka topic: the topic name
+        optional Ascii(4)                           serverType;                     // the functional type of server / service (null for main) (written into the message log)
     }
 
     class ServerConfiguration {

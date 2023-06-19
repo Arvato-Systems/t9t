@@ -73,8 +73,10 @@ package (com.arvatosystems) t9t.io.jpa.entities owner fortytwo prefix p28 {
     entity AsyncMessageEntity category ^int is AsyncMessageDTO tablename p42_int_async_messages {
         tenantClass InternalTenantId
         pk (objectRef)
-        index (status) where notNull
+        index (status)        where notNull
         index (cTimestamp)
+        index (ref)           where notNull
+        index (refIdentifier) where notNull
         @ManyToOne AsyncQueueEntity asyncQueue LAZY for (asyncQueueRef)
     }
 

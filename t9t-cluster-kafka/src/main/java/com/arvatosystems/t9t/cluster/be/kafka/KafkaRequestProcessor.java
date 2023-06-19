@@ -50,15 +50,19 @@ final class KafkaRequestProcessor implements Callable<Boolean> {
     private final ExecutorService executorKafkaWorker;
     private final IKafkaTopicReader consumer;
     private final AtomicBoolean pleaseStop;
-    private final AuthenticationParameters authHeader;
+    private final AuthenticationParameters defaultAuthHeader;
     private final AtomicInteger pendingRequestsCounter = new AtomicInteger(0);
     private final AtomicInteger uniqueRequestsCounter = new AtomicInteger(0);
 
     protected KafkaRequestProcessor(final KafkaConfiguration config, final IKafkaTopicReader consumer, final AtomicBoolean pleaseStop) {
         this.consumer = consumer;
-        this.authHeader = new ApiKeyAuthentication(config.getClusterManagerApiKey());
-        this.authHeader.freeze();
         this.pleaseStop = pleaseStop;
+        if (config.getClusterManagerApiKey() != null)  {
+            this.defaultAuthHeader = new ApiKeyAuthentication(config.getClusterManagerApiKey());
+            this.defaultAuthHeader.freeze();
+        } else {
+            this.defaultAuthHeader = null;
+        }
 
         final int workerPoolSize = T9tUtil.nvl(config.getClusterManagerPoolSize(), DEFAULT_WORKER_POOL_SIZE);
         executorKafkaWorker = Executors.newFixedThreadPool(workerPoolSize, (threadFactory) -> {
@@ -68,19 +72,25 @@ final class KafkaRequestProcessor implements Callable<Boolean> {
         });
     }
 
-    private void processRequest(final RequestParameters rp, final int partition, final String key) {
-        executorKafkaWorker.submit(() -> {
-            final int uniqueId = uniqueRequestsCounter.incrementAndGet();
-            final int before = pendingRequestsCounter.incrementAndGet();
-            if (rp.getTransactionOriginType() == null) {
-                rp.setTransactionOriginType(TransactionOriginType.KAFKA); // some other kafka based source
+    private void processRequest(final ServiceRequest srq, final int partition, final String key) {
+        srq.setPartitionUsed(partition);
+        final RequestParameters rp = srq.getRequestParameters();
+        if (srq.getAuthentication() == null) {
+            // no specific user provided: use default (consider security!) or fail, if none configured (default)
+            if (defaultAuthHeader != null) {
+                srq.setAuthentication(defaultAuthHeader);
+            } else {
+                LOGGER.error("Received request {} without authentication header", rp.ret$PQON());
+                return;
             }
-            LOGGER.debug("Starting execute of task {}, PQON {}, key {}, partition {}, pending = {}", uniqueId, rp.ret$PQON(),
-              key, partition, before);
-            final ServiceRequest srq = new ServiceRequest();
-            srq.setRequestParameters(rp);
-            srq.setAuthentication(authHeader);
-            srq.setPartitionUsed(partition);
+        }
+        if (rp.getTransactionOriginType() == null) {
+            rp.setTransactionOriginType(TransactionOriginType.KAFKA); // some other kafka based source
+        }
+        final int uniqueId = uniqueRequestsCounter.incrementAndGet();
+        final int before = pendingRequestsCounter.incrementAndGet();
+        LOGGER.debug("Submitting task {}, PQON {}, key {}, partition {}, pending = {}", uniqueId, rp.ret$PQON(), key, partition, before);
+        executorKafkaWorker.submit(() -> {
             try {
                 requestProcessor.execute(srq);
             } catch (Exception e) {
@@ -152,7 +162,7 @@ final class KafkaRequestProcessor implements Callable<Boolean> {
                 LOGGER.debug("Polling for the {}th time", currentNum);
                 lastinfo = startChunk;
             }
-            final int recordsProcessed = consumer.pollAndProcess(this::processRequest, RequestParameters.class, KafkaTopicReader.DEFAULT_POLL_INTERVAL,
+            final int recordsProcessed = consumer.pollAndProcess(this::processRequest, ServiceRequest.class, KafkaTopicReader.DEFAULT_POLL_INTERVAL,
               kafkaConsumer -> commitAfterRequestsProcessed(baseline, kafkaConsumer));
             if (recordsProcessed < 0) {
                 // some exception (it is OK during shutdown)

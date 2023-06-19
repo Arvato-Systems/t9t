@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.io;
 
+import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 
 /**
@@ -23,7 +24,7 @@ import com.arvatosystems.t9t.base.T9tException;
 public class T9tIOException extends T9tException {
     private static final long serialVersionUID = -8665896096651910L;
 
-    private static final int CORE_OFFSET = 28000;
+    private static final int CORE_OFFSET = T9tConstants.EXCEPTION_OFFSET_IO;
     private static final int OFFSET                     = CORE_OFFSET + CLASSIFICATION_FACTOR * CL_PARAMETER_ERROR;
     private static final int OFFSET_DENIED              = CORE_OFFSET + CLASSIFICATION_FACTOR * CL_DENIED;
 

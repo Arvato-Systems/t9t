@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.doc;
 
+import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 
 /**
@@ -26,7 +27,7 @@ public class T9tDocExtException extends T9tException {
     /*
      * Offset for all codes in this class.
      */
-    private static final int CORE_OFFSET = 24000;
+    private static final int CORE_OFFSET = T9tConstants.EXCEPTION_OFFSET_DOC_EXT;
     private static final int OFFSET = (CL_PARAMETER_ERROR * CLASSIFICATION_FACTOR) + CORE_OFFSET;
 
     // CHECKSTYLE.OFF: JavadocVariable

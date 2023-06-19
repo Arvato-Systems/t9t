@@ -32,6 +32,7 @@ public class LogStatisticsRequestHandler extends AbstractRequestHandler<LogStati
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final LogStatisticsRequest rq) {
+        // see StatisticsService
         final StatisticsEntity entity = dtoMapper.mapToEntity(rq.getStatistics(), false);
         entity.setObjectRef(entityResolver.createNewPrimaryKey());
         this.entityResolver.save(entity);

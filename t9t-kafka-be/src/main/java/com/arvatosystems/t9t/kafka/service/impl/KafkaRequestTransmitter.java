@@ -25,7 +25,8 @@ import org.slf4j.LoggerFactory;
 import com.arvatosystems.t9t.annotations.IsLogicallyFinal;
 import com.arvatosystems.t9t.base.IKafkaRequestTransmitter;
 import com.arvatosystems.t9t.base.T9tConstants;
-import com.arvatosystems.t9t.base.api.RequestParameters;
+import com.arvatosystems.t9t.base.api.ServiceRequest;
+import com.arvatosystems.t9t.kafka.service.IKafkaTopicWriter;
 
 import de.jpaw.api.ConfigurationReader;
 import de.jpaw.dp.Singleton;
@@ -43,7 +44,7 @@ public class KafkaRequestTransmitter implements IKafkaRequestTransmitter {
     private static final String KAFKA_DEFAULT_PROPERTIES_KEY = "t9t.kafka.request.properties";
 
     @IsLogicallyFinal
-    private KafkaTopicWriter topicWriter = null;
+    private IKafkaTopicWriter topicWriter = null;
 
     public KafkaRequestTransmitter() {
         final String kafkaTopic = CONFIG_READER.getProperty(KAFKA_DEFAULT_TOPIC_KEY, T9tConstants.DEFAULT_KAFKA_TOPIC_SINGLE_TENANT_REQUESTS);
@@ -89,12 +90,12 @@ public class KafkaRequestTransmitter implements IKafkaRequestTransmitter {
     }
 
     @Override
-    public void write(final RequestParameters request, final String partitionKey, final Object recordKey) {
+    public void write(final ServiceRequest srq, final String partitionKey, final Object recordKey) {
         if (topicWriter == null) {
             // redirect to /dev/null
             return;
         }
-        topicWriter.write(request, partitionKey.hashCode(), createRecordKey(partitionKey, recordKey));
+        topicWriter.write(srq, partitionKey.hashCode(), createRecordKey(partitionKey, recordKey));
     }
 
     protected String createRecordKey(final String partitionKey, final Object recordKey) {

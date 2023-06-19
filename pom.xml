@@ -58,13 +58,13 @@
         <maven-dependency-plugin.version>3.6.0</maven-dependency-plugin.version>
         <maven-plugin-annotations.version>3.9.0</maven-plugin-annotations.version>
         <maven-project.version>2.2.1</maven-project.version>
-        <build-helper-maven-plugin.version>3.3.0</build-helper-maven-plugin.version>
+        <build-helper-maven-plugin.version>3.4.0</build-helper-maven-plugin.version>
         <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
         <maven-plugin-plugin.version>3.9.0</maven-plugin-plugin.version>
         <maven-assembly-plugin.version>3.6.0</maven-assembly-plugin.version>
         <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
-        <maven-shade-plugin.version>3.4.1</maven-shade-plugin.version>
-        <maven-war-plugin.version>3.3.2</maven-war-plugin.version>
+        <maven-shade-plugin.version>3.5.0</maven-shade-plugin.version>
+        <maven-war-plugin.version>3.4.0</maven-war-plugin.version>
         <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
         <maven-jarjar-plugin.version>1.9</maven-jarjar-plugin.version>
         <maven-enforcer-plugin.version>3.3.0</maven-enforcer-plugin.version>
@@ -73,7 +73,7 @@
         <spring-boot-maven-plugin.version>3.1.0</spring-boot-maven-plugin.version>
         <tycho.version>2.7.3</tycho.version>
         <git-commit-id-plugin.version>6.0.0</git-commit-id-plugin.version>
-        <jaxws-maven-plugin.version>4.0.0</jaxws-maven-plugin.version>
+        <jaxws-maven-plugin.version>4.0.1</jaxws-maven-plugin.version>
         <eclipse-lifecycle-mapping.version>1.0.0</eclipse-lifecycle-mapping.version>
         <bundle.plugin.version>5.1.2</bundle.plugin.version> <!-- felix, for pricing RCP -->
         <exec.plugin.version>3.0.0</exec.plugin.version>
@@ -102,17 +102,17 @@
         <checkstyle.version>10.1</checkstyle.version>
         <spotbugs.version>4.7.3</spotbugs.version>
         <spotbugs-plugin.version>4.7.3.4</spotbugs-plugin.version>
-        <logback.version>1.4.7</logback.version>
+        <logback.version>1.4.8</logback.version>
         <junit5.version>5.9.3</junit5.version>     <!-- groupId is org.junit, therefore is can coexist with junit4 in dependency management -->
 
         <!-- Swagger -->
-        <swagger-maven-plugin.version>2.2.8</swagger-maven-plugin.version>
+        <swagger-maven-plugin.version>2.2.12</swagger-maven-plugin.version>
         <swagger-ui-webjars.version>4.15.5</swagger-ui-webjars.version>   <!-- 4.x is available as well! -->
 
         <!-- ASCIIDoctor -->
         <asciidoctor-maven-plugin.version>2.2.4</asciidoctor-maven-plugin.version>
-        <asciidoctorj.version>2.5.8</asciidoctorj.version>
-        <jruby.version>9.4.2.0</jruby.version>
+        <asciidoctorj.version>2.5.10</asciidoctorj.version>
+        <jruby.version>9.4.3.0</jruby.version>
     </properties>
 
     <prerequisites>
@@ -981,6 +981,7 @@
                 <module>t9t-msglog-sapi</module>
                 <module>t9t-msglog-be</module>
                 <module>t9t-msglog-jpa</module>
+                <module>t9t-msglog-kafka-sender</module>
 
                 <module>t9t-email-sapi</module>
                 <module>t9t-email-be</module>
@@ -1228,6 +1229,7 @@
                 <module>t9t-msglog-sapi</module>
                 <module>t9t-msglog-be</module>
                 <module>t9t-msglog-jpa</module>
+                <module>t9t-msglog-kafka-sender</module>
 
                 <module>t9t-email-sapi</module>
                 <module>t9t-email-be</module>

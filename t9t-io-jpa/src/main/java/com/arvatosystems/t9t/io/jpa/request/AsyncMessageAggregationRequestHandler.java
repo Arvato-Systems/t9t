@@ -74,7 +74,7 @@ public class AsyncMessageAggregationRequestHandler extends AbstractRequestHandle
             // create new AsyncMessageStatistics
             response.setRecordsCreated(createAsyncMessageStatistics(effectiveStart, effectiveEnd, precision));
             final long end = System.currentTimeMillis();
-            response.setMillisecondsUsedForDeletion(end - mid);
+            response.setMillisecondsUsedForCreation(end - mid);
         }
 
         writeStatistics(response.getRecordsDeleted(), response.getRecordsCreated(), ctx, precision, effectiveStart, effectiveEnd);

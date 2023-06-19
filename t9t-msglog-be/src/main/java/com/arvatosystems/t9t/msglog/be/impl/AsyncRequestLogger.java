@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.annotations.IsLogicallyFinal;
+import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceRequestHeader;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
@@ -151,12 +152,6 @@ public class AsyncRequestLogger implements IRequestLogger {
 
     @Override
     public void logRequest(final InternalHeaderParameters hdr, final ExecutionSummary summary, final RequestParameters params, final ServiceResponse response) {
-        // silently discard them (but aggregate data)...
-        if (ApplicationException.isOk(summary.getReturnCode()))
-            countGood.incrementAndGet();
-        else
-            countErrors.incrementAndGet();
-        totalTime.addAndGet(summary.getProcessingTimeInMillisecs());
 
         final JwtInfo jwt = hdr.getJwtInfo();
         final MessageDTO m = new MessageDTO();
@@ -181,7 +176,7 @@ public class AsyncRequestLogger implements IRequestLogger {
         m.setProcessingTimeInMillisecs  (summary.getProcessingTimeInMillisecs());
         m.setReturnCode                 (summary.getReturnCode());
         m.setErrorDetails               (summary.getErrorDetails());
-        m.setHostname                   (summary.getHostname());
+        m.setHostname                   (MessagingUtil.HOSTNAME);
         m.setPartition                  (summary.getPartitionUsed());
         if (params != null) {
             m.setTransactionOriginType(params.getTransactionOriginType());
@@ -191,6 +186,12 @@ public class AsyncRequestLogger implements IRequestLogger {
                 m.setProcessingDelayInMillisecs(d > 0 ? Integer.valueOf((int)d) : INT_ZERO);
             }
         }
+        // silently discard them (but aggregate data)...
+        if (ApplicationException.isOk(summary.getReturnCode()))
+            countGood.incrementAndGet();
+        else
+            countErrors.incrementAndGet();
+        totalTime.addAndGet(summary.getProcessingTimeInMillisecs());
 
         queue.put(m);
         if (logWriterConfiguration.getAlertInterval() != null) {

@@ -50,27 +50,26 @@
         <!-- Database driver versions -->
         <driver.oracle.version>23.2.0.0</driver.oracle.version>
         <driver.postgresql.version>42.6.0</driver.postgresql.version>  <!-- starting with 4.2.15, the driver adds a dependency to checker-qual 3.5.0 which conflicts with 2.5.2 pulled by guava -->
-        <driver.sqlserver.version>12.3.0.jre17-preview</driver.sqlserver.version>
-        <driver.hana.version>2.16.14</driver.hana.version>
+        <driver.sqlserver.version>11.2.3.jre17</driver.sqlserver.version>
+        <driver.hana.version>2.17.7</driver.hana.version>
         <h2.version>2.1.214</h2.version>
 
         <!-- OR mappers -->
         <eclipselink.version>3.0.3</eclipselink.version>
-        <hibernate.version>6.2.4.Final</hibernate.version>
+        <hibernate.version>6.2.5.Final</hibernate.version>
         <hibernate-validator.version>8.0.0.Final</hibernate-validator.version>
         <ehcache.version>2.10.9.2</ehcache.version>
         <ehcache3.version>3.10.8</ehcache3.version>
         <jandex.version>3.1.2</jandex.version>
 
         <!-- Javax ws / rs implementation versions (com.sun.xml.*), for jakarta 8 -->
-        <jaxb-impl.version>4.0.1</jaxb-impl.version>                                    <!-- (com.sun.xml.bind:jaxb-impl -->
-        <jaxb-xjc.version>4.0.2</jaxb-xjc.version>                                      <!-- (com.sun.xml.bind:jaxb-xjc) -->
+        <jaxb-xjc.version>4.0.3</jaxb-xjc.version>                                      <!-- (com.sun.xml.bind:jaxb-xjc) -->
         <jaxws-rt.version>4.0.1</jaxws-rt.version>
         <jaxws-api.version>2.3.1-do-not-use</jaxws-api.version>  <!-- use jakarta.xml.ws-api instead -->
 
         <!-- new Jakarta stuff (versions in comment denote jakarta namespace)-->
         <jakarta.xml-bind-api.version>4.0.0</jakarta.xml-bind-api.version>              <!-- 3.0.1 for jakarta namespace -->
-        <jakarta.xml-bind.version>4.0.2</jakarta.xml-bind.version>                      <!-- 3.0.1 for jakarta namespace -->
+        <jakarta.xml-bind.version>4.0.3</jakarta.xml-bind.version>                      <!-- 3.0.1 for jakarta namespace -->
         <jakarta.xml-jaxb-core.version>4.0.3</jakarta.xml-jaxb-core.version>            <!-- 3.0.1 for jakarta namespace (skip for javax!) -->
         <jakarta.annotation-api.version>2.1.1</jakarta.annotation-api.version>          <!-- 2.0.0 for jakarta namespace -->
 
@@ -111,10 +110,10 @@
         <commons-text.version>1.10.0</commons-text.version>               <!-- not used in t9t, but DM made to cover for transitive dependencies -->
 
         <!-- AWS SDK v1 -->
-        <aws-bom.version>1.12.486</aws-bom.version>
+        <aws-bom.version>1.12.489</aws-bom.version>
 
         <!-- AWS SDK v2 -->
-        <aws2-bom.version>2.20.83</aws2-bom.version>
+        <aws2-bom.version>2.20.85</aws2-bom.version>
 
         <!-- Azure -->
         <azure-cosmosdb.version>2.6.16</azure-cosmosdb.version>
@@ -139,7 +138,7 @@
         <bouncycastle-tsp.version>1.46</bouncycastle-tsp.version>     <!--  is older than the others! Is it still required? -->
         <woodstox.version>6.5.1</woodstox.version>
         <stax2-api.version>4.2.1</stax2-api.version>
-        <icu4j.version>73.1</icu4j.version>
+        <icu4j.version>73.2</icu4j.version>
         <zxing.version>3.5.1</zxing.version>
         <quartz.version>2.5.0-rc1</quartz.version>
         <jsap.version>2.1</jsap.version>
@@ -157,12 +156,12 @@
         <flyingsaucer.version>9.1.22</flyingsaucer.version>
 
         <javassist.version>3.29.2-GA</javassist.version>
-        <guava.version>32.0.0-jre</guava.version>
+        <guava.version>32.0.1-jre</guava.version>
         <caffeine.version>3.1.6</caffeine.version>
         <antlr.version>3.2</antlr.version>
         <resteasy.version>6.2.4.Final</resteasy.version>
         <googlemaps.services.version>2.2.0</googlemaps.services.version>
-        <uuid-generator.version>4.1.0</uuid-generator.version>
+        <uuid-generator.version>4.2.0</uuid-generator.version>
         <apache-poi.version>5.2.3</apache-poi.version>
         <xmlbeans.version>5.1.1</xmlbeans.version>
         <gson.version>2.10.1</gson.version>
@@ -170,16 +169,16 @@
         <reload4j.version>1.2.25</reload4j.version>
 
         <!-- Spring -->
-        <spring-bom.version>6.0.9</spring-bom.version>
+        <spring-bom.version>6.0.10</spring-bom.version>
         <spring-data-jpa.version>3.1.0</spring-data-jpa.version>
         <spring-boot.version>3.1.0</spring-boot.version>
 
-        <netty.version>4.1.91.Final</netty.version>
-        <vertx4.version>4.4.2</vertx4.version>
+        <netty.version>4.1.93.Final</netty.version>
+        <vertx4.version>4.4.3</vertx4.version>
         <hazelcast-kubernetes.version>2.2.3</hazelcast-kubernetes.version>
 
         <snakeyaml.version>2.0</snakeyaml.version>
-        <classgraph.version>4.8.116</classgraph.version>
+        <classgraph.version>4.8.160</classgraph.version>
 
         <c3p0.version>0.9.5.5</c3p0.version>
         <hikaricp.version>4.0.3</hikaricp.version>
@@ -192,19 +191,19 @@
         <camel.version>4.0.0-M3</camel.version>
         <jsch.version>0.2.9</jsch.version>
         <kafka.version>3.4.1</kafka.version>
-        <error-prone.version>2.17.0</error-prone.version>
+        <error-prone.version>2.19.1</error-prone.version>
 
         <!-- Monitoring -->
-        <micrometer.version>1.11.0</micrometer.version>
+        <micrometer.version>1.11.1</micrometer.version>
         <prometheus.version>0.16.0</prometheus.version>
 
         <!-- Swagger -->
-        <swagger.version>2.2.8</swagger.version>
+        <swagger.version>2.2.12</swagger.version>
         <swagger-ui.version>${swagger-ui-webjars.version}</swagger-ui.version>
 
         <!-- Google Services -->
         <google-http-client.version>1.43.2</google-http-client.version>
-        <google-auth-library.version>1.13.0</google-auth-library.version>
+        <google-auth-library.version>1.17.0</google-auth-library.version>
         <firebase-admin.version>9.1.1</firebase-admin.version>
     </properties>
 
@@ -307,12 +306,12 @@
             <dependency>
                 <groupId>com.sun.xml.bind</groupId>
                 <artifactId>jaxb-impl</artifactId>
-                <version>4.0.0-old</version>  <!-- do not use, prefer org.glassfish.jaxb:jaxb-runtime -->
+                <version>4.9.9-donotuse</version>  <!-- do not use, prefer org.glassfish.jaxb:jaxb-runtime -->
             </dependency>
             <dependency>
                 <groupId>com.sun.xml.bind</groupId>
                 <artifactId>jaxb-core</artifactId>
-                <version>4.0.0-old</version>  <!-- do not use, prefer org.glassfish.jaxb:jaxb-runtime -->
+                <version>4.9.9-donotuse</version>  <!-- do not use, prefer org.glassfish.jaxb:jaxb-runtime -->
             </dependency>
             <!-- previous artifact is exactly like the next, just with different groupId -->
             <dependency>

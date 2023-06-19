@@ -25,6 +25,7 @@
     </parent>
 
     <artifactId>t9t-msglog-jpa</artifactId>
+    <description>Backend required to store messages into a database (JPA persistence). Without any, messages will be discarded. See t9t-msglog-kafka for an alternative.</description>
 
     <dependencies>
         <!-- compile dependencies -->

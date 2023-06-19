@@ -430,8 +430,8 @@ package (com.arvatosystems) t9t.io {
         required integer                                attempts;                                // number of send attempts so far (initially 0)
         required Object                                 payload properties serialized, compact2; // the serialized message
         optional Ascii(4)                               refType;                                 // for debugging / maintenance: the type of reference
-        optional defaultExternalId                      refIdentifier;                           // for debugging / maintenance: order ID, customer ID etc.
-        optional f42Ref                                 ref;                                     // for debugging / maintenance: related objectRef
+        optional defaultExternalId                      refIdentifier;                           // for debugging / maintenance: refers to the ID of a specific cause: delivery order ID, customer ID, return ID etc.
+        optional f42Ref                                 ref;                                     // for debugging / maintenance: related objectRef for a group of messages (for example sales order reference)
         optional Integer                                httpResponseCode;                        // if the remote returned some http response code
         optional Integer                                returnCode;                              // last return code returned by receiver (in payload)
         optional Unicode(80)                            reference;                               // a reference to the client object, or text response or additional error code

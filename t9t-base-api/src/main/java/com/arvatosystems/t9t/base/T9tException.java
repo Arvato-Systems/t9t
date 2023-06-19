@@ -34,7 +34,7 @@ public class T9tException extends ApplicationException {
      * Offset for all codes in this class.
      */
     // @formatter:off
-    private static final int CORE_OFFSET = 20000;
+    private static final int CORE_OFFSET = T9tConstants.EXCEPTION_OFFSET_BASE;
     private static final int OFFSET                     = CORE_OFFSET + CLASSIFICATION_FACTOR * CL_PARAMETER_ERROR;
     private static final int OFFSET_DENIED              = CORE_OFFSET + CLASSIFICATION_FACTOR * CL_DENIED;
     private static final int OFFSET_TIMEOUT             = CORE_OFFSET + CLASSIFICATION_FACTOR * CL_TIMEOUT;

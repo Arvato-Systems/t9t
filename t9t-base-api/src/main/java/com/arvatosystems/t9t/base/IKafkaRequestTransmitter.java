@@ -15,10 +15,14 @@
  */
 package com.arvatosystems.t9t.base;
 
-import com.arvatosystems.t9t.base.api.RequestParameters;
+import com.arvatosystems.t9t.base.api.ServiceRequest;
+
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
- * Interface to use for writing messages to t9t server nodes.
+ * Interface to use for writing request messages to t9t server nodes. (The payloads are of type <code>ServiceRequest</code>.)
+ * For a low level API to transfer any BonaPortable, see <code>IKafkaTopicWriter</code>.
  */
 public interface IKafkaRequestTransmitter {
     /**
@@ -28,5 +32,5 @@ public interface IKafkaRequestTransmitter {
     boolean initialized();
 
     /** Writes a message with a given partition key and record key. */
-    void write(RequestParameters request, String partitionKey, Object recordKey);
+    void write(@Nonnull ServiceRequest srq, @Nonnull String partitionKey, @Nullable Object recordKey);
 }

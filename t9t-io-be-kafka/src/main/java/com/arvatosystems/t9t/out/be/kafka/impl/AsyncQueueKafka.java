@@ -67,7 +67,6 @@ public class AsyncQueueKafka<R extends BonaPortable> implements IAsyncQueue {
     private final IAsyncMessageUpdater messageUpdater = Jdp.getRequired(IAsyncMessageUpdater.class);
     private final boolean writeAllToDatabase = ConfigProvider.getCustomParameter("NoAsyncPersist") == null;
     private final ConcurrentMap<Long, QueueData> queueData;
-    private final IAsyncTools asyncTools = Jdp.getRequired(IAsyncTools.class);
 
     /** Keeps the queue configuration and the references to their threads. */
     private static final class QueueData {

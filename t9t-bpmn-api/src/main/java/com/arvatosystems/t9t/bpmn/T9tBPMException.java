@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.bpmn;
 
+import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 
 /**
@@ -25,7 +26,7 @@ public class T9tBPMException extends T9tException {
 
     private static final long serialVersionUID = 22377754899440151L;
 
-    private static final int CORE_OFFSET = 26000;
+    private static final int CORE_OFFSET = T9tConstants.EXCEPTION_OFFSET_BPMN;
     private static final int OFFSET = (CL_INTERNAL_LOGIC_ERROR * CLASSIFICATION_FACTOR) + CORE_OFFSET;
 
     public static final int BPM_EXECUTE_PROCESS_ERROR = OFFSET + 1;

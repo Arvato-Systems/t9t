@@ -72,6 +72,20 @@ public final class T9tConstants {
      */
     public static final String UI_META_NO_ASSIGNED_VALUE = "-";
 
+    // offsets / ranges for t9t related exception codes: There are 1 k numbers reserved per module
+    public static final int EXCEPTION_OFFSET_BASE           = 20_000;   // The range for t9t-base exception codes starts here
+    public static final int EXCEPTION_OFFSET_AUTH           = 21_000;   // The range for t9t-auth exception codes starts here
+    public static final int EXCEPTION_OFFSET_SSM            = 22_000;   // The range for t9t-ssm exception codes starts here
+    public static final int EXCEPTION_OFFSET_REP            = 23_000;   // The range for t9t-rep exception codes starts here
+    public static final int EXCEPTION_OFFSET_DOC_EXT        = 24_000;   // The range for t9t-doc exception codes starts here - external API
+    public static final int EXCEPTION_OFFSET_BPMN           = 26_000;   // The range for t9t-bpmn exception codes starts here
+    public static final int EXCEPTION_OFFSET_BPMN2          = 27_000;   // The range for t9t-bpmn2 exception codes starts here
+    public static final int EXCEPTION_OFFSET_IO             = 28_000;   // The range for t9t-io exception codes starts here
+    public static final int EXCEPTION_OFFSET_EMAIL          = 29_000;   // The range for t9t-email exception codes starts here
+    public static final int EXCEPTION_OFFSET_CORE           = 30_000;   // The range for t9t-core exception codes starts here
+    public static final int EXCEPTION_OFFSET_DOC            = 34_000;   // The range for t9t-doc exception codes starts here - internal (admin) API
+    public static final int EXCEPTION_OFFSET_VOICE          = 41_000;   // The range for t9t-voice exception codes starts here
+
     /**
      * The maximum return code which is considered as an "OK" response code.
      */
@@ -136,6 +150,7 @@ public final class T9tConstants {
 
     public static final int HTTP_STATUS_INTERNAL_TIMEOUT    = 908;                  // we use this internal code to indicate we aborted a send attempt
     public static final int HTTP_STATUS_INTERNAL_EXCEPTION  = 998;                  // we use this internal code to indicate an uncaught exception while sending
+    public static final int HTTP_STATUS_ILE_OTHER_EXCEPTION = 999;                  // uncaught exception (outer catch - should never happen, try catch missing)
 
     public static final int RESET_PASSWORD_VALIDITY         = 2; // in hours
     public static final int RESET_PASSWORD_REQUEST_LIMIT    = 1; // in minutes

@@ -17,6 +17,11 @@ package com.arvatosystems.t9t.kafka.service;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 
+/**
+ * Low level API to transfer any BonaPortable object via kafka.
+ * For a specific one for writing request messages to t9t server nodes (payloads of type <code>ServiceRequest</code>),
+ * see <code>IKafkaRequestTransmitter</code>.
+ */
 public interface IKafkaTopicWriter {
     /** Serializes the data object using the compact bonaparte serializer and writes it to the topic. */
     void write(BonaPortable data, int partition, String partitionKey);

@@ -2,5 +2,5 @@
 <?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="asyncMessage28"?>
 
 <window28 id="requestWin">
-    <twosections28 pageSize="50" gridId="asyncMessage" gridContext="showAsyncRqAsJson,markAsDone,markAsUnsent,,editMessage"/>
+    <twosections28 pageSize="50" gridId="asyncMessage" gridContext="showAsyncRqAsJson,showAsyncRqAsXml,markAsDone,markAsUnsent,,editMessage"/>
 </window28>

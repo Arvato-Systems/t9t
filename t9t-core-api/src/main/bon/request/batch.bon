@@ -27,9 +27,9 @@ package (com.arvatosystems) t9t.batch.request {
 
     /**
      * Request for creating statistics for batch process.
-     * Only Create operation is allowed.  Implemented as a wrapper to the CRUD request.
-     * Does not return any record, just a return code.
-     * */
+     * Inserts the passed statistics record into the database.
+     * Usually called from other clusters, to have their stats recorded into the main DB.
+     */
     class LogStatisticsRequest extends RequestParameters {
         required (StatisticsDTO...)    statistics;
     }
@@ -50,7 +50,8 @@ package (com.arvatosystems) t9t.batch.request {
         required Instant(0)             endInstant;
     }
 
-    /** Moves the tracking forward to the provided "asOf" instant and returns the previous one.
+    /**
+     * Moves the tracking forward to the provided "asOf" instant and returns the previous one.
      * This determines the interval to be processed as oldAsOf <= t < asOf
      *  */
     class GetNextTimeSliceRequest extends RequestParameters return GetNextTimeSliceResponse {
