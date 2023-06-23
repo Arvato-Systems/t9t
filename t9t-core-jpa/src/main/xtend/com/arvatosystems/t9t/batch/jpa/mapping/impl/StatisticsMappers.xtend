@@ -25,5 +25,10 @@ import com.arvatosystems.t9t.batch.jpa.persistence.IStatisticsEntityResolver
 class StatisticsMappers {
     IStatisticsEntityResolver entityResolver
     @AutoHandler("S42")
-    def void e2dStatisticsDTO(StatisticsEntity entity, StatisticsDTO dto) {}
+    def void e2dStatisticsDTO(StatisticsEntity entity, StatisticsDTO dto) {
+        dto.durationInMs = entity.endTime.toEpochMilli - entity.startTime.toEpochMilli
+        if (entity.recordsProcessed !== null && entity.recordsProcessed > 0) {
+            dto.timePerRecordInMicros = 1000.0 * (dto.durationInMs as double) / entity.recordsProcessed
+        }
+    }
 }

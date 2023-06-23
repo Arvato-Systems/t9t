@@ -20,7 +20,7 @@ import t9t.base.types.*
 /** Data types for eager caching. */
 package (com.arvatosystems) t9t.base.cache {
     default private unsigned trim noControlChars;
-    properties noJava, simpleref, unroll, noupdate, qualifierFor,
+    properties simpleref, unroll, noupdate, qualifierFor,
         searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
         serialized is com.arvatosystems.t9t.annotations.StoreSerialized,
         noAutoMap is com.arvatosystems.t9t.annotations.NoAutoMap,

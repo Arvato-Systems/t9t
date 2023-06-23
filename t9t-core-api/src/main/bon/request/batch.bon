@@ -19,6 +19,7 @@ import t9t.base.entities.*
 import t9t.base.output.*
 import t9t.base.search.*
 import t9t.base.crud.*
+import t9t.base.request.*
 import t9t.batch.*
 
 package (com.arvatosystems) t9t.batch.request {
@@ -40,6 +41,7 @@ package (com.arvatosystems) t9t.batch.request {
      * */
     class StatisticsCrudRequest         extends CrudSurrogateKeyRequest<StatisticsRef, StatisticsDTO, WriteTracking> {}
     class StatisticsSearchRequest       extends SearchRequest<StatisticsDTO, WriteTracking> {}
+    class StatisticsAggregationSearchRequest  extends SearchRequest<StatisticsAggregationDTO, WriteTracking> {}
 
 
     class SliceTrackingCrudRequest      extends CrudSurrogateKeyRequest<SliceTrackingRef, SliceTrackingDTO, FullTrackingWithVersion> {}
@@ -58,5 +60,11 @@ package (com.arvatosystems) t9t.batch.request {
         required (SliceTrackingKey)     sliceTrackingKey;       // the key of the record
         optional Instant(3)             overrideEndInstant;     // end of the interval, will be stored as the new date in the table. If null, the context's executionStart will be used
         optional f42Ref                 sinkRef;                // sinkRef to be written to, if known, for maintenance and documentation purposes
+    }
+
+    /**
+     * Aggregate data of StatisticsDTO into StatisticsAggregationDTO.
+     */
+    class AggregateMessageStatisticsRequest extends AbstractAggregationRequest {
     }
 }

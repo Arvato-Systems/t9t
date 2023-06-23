@@ -24,7 +24,7 @@ import t9t.base.api.*
 /** External API - Authentication requests for initial login - requests declared in this package do not require a valid JWT. */
 package (com.arvatosystems) t9t.base.auth {
     default private unsigned trim noControlChars;
-    properties noJava, simpleref,
+    properties simpleref,
         searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
         serialized is com.arvatosystems.t9t.annotations.StoreSerialized,
         noAutoMap is com.arvatosystems.t9t.annotations.NoAutoMap,

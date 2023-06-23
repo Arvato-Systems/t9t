@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.annotations.IsLogicallyFinal;
+import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.api.ServiceRequest;
 import com.arvatosystems.t9t.base.api.ServiceRequestHeader;
@@ -120,8 +121,9 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AsyncProcessor.class);
 
-    private static final String ASYNC_EVENTBUS_ADDRESS = "t9tasync";
-    private static final String EVENTBUS_BASE_42 = "event42.";
+    private static final String ASYNC_EVENTBUS_ADDRESS       = "t9tasync";
+    private static final String ASYNC_EVENTBUS_ADDRESS_LOCAL = "t9tasync-" + MessagingUtil.HOSTNAME;
+    private static final String EVENTBUS_BASE_42             = "event42.";
     private static final ConcurrentMap<Pair<String, String>, Set<IEventHandler>> SUBSCRIBERS = new ConcurrentHashMap<>();
     private static final ConcurrentMap<String, EventMessageHandler> REGISTERED_HANDLER = new ConcurrentHashMap<>();
 
@@ -162,8 +164,7 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
             if (publish) {
                 bus.publish(ASYNC_EVENTBUS_ADDRESS, request, ASYNC_EVENTBUS_DELIVERY_OPTIONS);
             } else if (localNodeOnly) {
-                // TODO: have to register local consumer, and send to that
-                bus.send(ASYNC_EVENTBUS_ADDRESS, request, ASYNC_EVENTBUS_DELIVERY_OPTIONS);
+                bus.send(ASYNC_EVENTBUS_ADDRESS_LOCAL, request, ASYNC_EVENTBUS_DELIVERY_OPTIONS);
             } else {
                 bus.send(ASYNC_EVENTBUS_ADDRESS, request, ASYNC_EVENTBUS_DELIVERY_OPTIONS);
             }
@@ -353,24 +354,8 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
             asyncExecutorPool = vertx.createSharedWorkerExecutor("t9t-async-worker", asyncPoolSize);
         }
 
-        final MessageConsumer<Object> consumer = bus.consumer(ASYNC_EVENTBUS_ADDRESS);
-        consumer.completionHandler((final AsyncResult<Void> asyncResult) -> {
-            if (asyncResult.succeeded()) {
-                LOGGER.info("vertx async request processor successfully registered on eventbus address {}",
-                        ASYNC_EVENTBUS_ADDRESS);
-            } else {
-                LOGGER.error("vertx async request processor FAILED");
-            }
-        });
-        consumer.handler((Message<Object> message) -> {
-            final Object msgBody = message.body();
-            if (msgBody instanceof ServiceRequest serviceRequest) {
-                LOGGER.debug("Processing an async request {}", serviceRequest.ret$PQON());
-                runInWorkerThread(vertx, serviceRequest);
-            } else {
-                LOGGER.error("Received an async message of type {}, cannot handle!", msgBody.getClass().getCanonicalName());
-            }
-        });
+        registerOnBus(ASYNC_EVENTBUS_ADDRESS, "all nodes");
+        registerOnBus(ASYNC_EVENTBUS_ADDRESS_LOCAL, "LOCAL");
 
         // now also register any preregistered event handlers
         for (final Map.Entry<Pair<String, String>, Set<IEventHandler>> q : SUBSCRIBERS.entrySet()) {
@@ -379,5 +364,25 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
                 addConsumer(q.getKey().getKey(), q.getKey().getValue(), eh);
             }
         }
+    }
+
+    private static void registerOnBus(final String address, final String what) {
+        final MessageConsumer<Object> consumer = bus.consumer(address);
+        consumer.completionHandler((final AsyncResult<Void> asyncResult) -> {
+            if (asyncResult.succeeded()) {
+                LOGGER.info("vertx async request processor successfully registered on {} eventbus address {}", what, address);
+            } else {
+                LOGGER.error("vertx async request processor FAILED");
+            }
+        });
+        consumer.handler((Message<Object> message) -> {
+            final Object msgBody = message.body();
+            if (msgBody instanceof ServiceRequest serviceRequest) {
+                LOGGER.debug("Processing an async request {} from {}", serviceRequest.ret$PQON(), what);
+                runInWorkerThread(myVertx, serviceRequest);
+            } else {
+                LOGGER.error("Received an async message of type {} on {}, cannot handle!", msgBody.getClass().getCanonicalName(), what);
+            }
+        });
     }
 }

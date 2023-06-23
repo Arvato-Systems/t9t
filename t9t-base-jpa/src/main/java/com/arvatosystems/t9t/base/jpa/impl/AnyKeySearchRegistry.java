@@ -47,7 +47,13 @@ public class AnyKeySearchRegistry implements IAnyKeySearchRegistry {
         final Integer rttiObject = Integer.valueOf(rtti);  // ensure a single instance is used for both maps, do not autobox twice
         final String previousClassname = CLASSNAME_BY_RTTI.put(rttiObject, theClassname);
         if (previousClassname != null) {
-            LOGGER.error("RTTI used twice: {} for {} and {}", rttiObject, theClassname, previousClassname);
+            // this could occur in case of inherited entities, in which case it does not matter.
+            // we have no class hierarchy here, but as an approximation, suppress the error if one class name is a substring of the other
+            final boolean isSubstring = previousClassname.length() < theClassname.length()
+                    ? theClassname.contains(previousClassname) : previousClassname.contains(theClassname);
+            if (!isSubstring) {
+                LOGGER.error("RTTI used twice: {} for {} and {}", rttiObject, theClassname, previousClassname);
+            }
         }
         RESOLVER_BY_RTTI.put(rttiObject, resolver);
         LOGGER.debug("Registered resolver for {} by RTTI {}", theClassname, rttiObject);

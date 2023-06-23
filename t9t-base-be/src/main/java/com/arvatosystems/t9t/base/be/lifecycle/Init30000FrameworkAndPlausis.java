@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
-import com.arvatosystems.t9t.base.services.ICustomization;
 import com.arvatosystems.t9t.base.services.ITextSearch;
 import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration;
 import com.arvatosystems.t9t.server.services.IRequestLogger;
@@ -49,6 +48,6 @@ public class Init30000FrameworkAndPlausis implements StartupOnly {
         Jdp.bindByQualifierWithFallback(ITextSearch.class,
             cfg.getSearchConfiguration() == null ? UNSPECIFIED : cfg.getSearchConfiguration().getStrategy());
 
-        Jdp.bindByQualifierWithFallback(ICustomization.class, "hammanish");
+        // Jdp.bindByQualifierWithFallback(ICustomization.class, "hammanish");  // use the default
     }
 }

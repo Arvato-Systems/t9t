@@ -20,7 +20,7 @@ import t9t.base.output.*
 
 package (com.arvatosystems) t9t.batch {
     default private unsigned trim noControlChars;
-    properties inherited, serialized, ref,
+    properties inherited, serialized, ref, noJava, noDDL, noAutoMap,
         dropdown is com.arvatosystems.t9t.annotations.UseDropDownInUI(),
         notupdatable is com.arvatosystems.t9t.annotations.NotUpdatable;
 
@@ -41,6 +41,29 @@ package (com.arvatosystems) t9t.batch {
         optional Integer                    count4;
         optional Unicode(255)               info1;
         optional Unicode(255)               info2;
+        optional Long                       durationInMs          properties noJava, noDDL, noAutoMap;  // the total running time spent on this task
+        optional Double                     timePerRecordInMicros properties noJava, noDDL, noAutoMap;  // time spent per record in microseconds
+    }
+
+    class StatisticsAggregationRef extends Ref {
+    }
+
+    class StatisticsAggregationKey extends StatisticsAggregationRef {
+        required Unicode(30)                processId;
+        required Instant(0)                 slotStart;              // beginning of time slot
+    }
+
+    /** Aggregates multiple StatisticsDTO records. */
+    class StatisticsAggregationDTO extends StatisticsAggregationRef {
+        required Unicode(30)                processId;
+        required Instant(0)                 slotStart;              // beginning of time slot
+        required int                        numberOfRuns;           // how many records of StatisticsDTO have been aggregated
+        required int                        recordsProcessed;       // number of processed records
+        required int                        recordsError;           // number of records for which processing failed
+        required int                        count1;                 // process specific informations
+        required int                        count2;
+        required int                        count3;
+        required int                        count4;
     }
 
 

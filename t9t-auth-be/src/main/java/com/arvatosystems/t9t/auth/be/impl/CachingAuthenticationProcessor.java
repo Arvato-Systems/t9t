@@ -46,7 +46,7 @@ import de.jpaw.dp.Singleton;
 public class CachingAuthenticationProcessor implements ICachingAuthenticationProcessor {
     private static final Logger LOGGER = LoggerFactory.getLogger(CachingAuthenticationProcessor.class);
     protected static final Cache<String, AuthenticationInfo> AUTH_CACHE = Caffeine.newBuilder()
-            .expireAfterWrite(50L, TimeUnit.MINUTES).maximumSize(200L).build();
+            .expireAfterWrite(12L, TimeUnit.MINUTES).maximumSize(200L).build();
     protected static final AuthenticationInfo ACCESS_DENIED_DUE_TO_EXCEPTION = new AuthenticationInfo();
     static {
         ACCESS_DENIED_DUE_TO_EXCEPTION.setHttpStatusCode(403);

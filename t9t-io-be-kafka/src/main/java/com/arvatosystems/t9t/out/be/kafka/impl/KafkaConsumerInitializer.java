@@ -45,6 +45,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.annotations.IsLogicallyFinal;
+import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.services.IAsyncRequestProcessor;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
@@ -128,7 +130,12 @@ public class KafkaConsumerInitializer implements StartupShutdown {
             LOGGER.debug("Processing record {} in topic/partion/offset {}/{}/{} of length {}", key, topic, record.partition(), record.offset(), data.length);
             final DataSinkDTO cfg = dataSinkByTopic.get(topic);
             if (cfg == null) {
-                LOGGER.error("No data sink registered for topic {}", topic);  // have unsubscribed?
+                LOGGER.error("No data sink registered for topic {} - data will be lost!", topic);  // have unsubscribed?
+                try {
+                    // avoid high-freq loops in case of incorrect configuration
+                    Thread.sleep(30_000L);
+                } catch (InterruptedException e) {
+                }
                 return null;
             }
             final UUID apiKey = cfg.getApiKey() == null ? defaultApiKey : cfg.getApiKey();
@@ -310,6 +317,11 @@ public class KafkaConsumerInitializer implements StartupShutdown {
           = iOutPersistenceAccess.getDataSinkDTOsForEnvironmentAndChannel(serverConfig.getImportEnvironment(), CommunicationTargetChannelType.KAFKA);
         if (dataSinkDTOList.isEmpty() && (topicPattern == null || topicPattern.isEmpty())) {
             LOGGER.info("No Kafka input data sinks encountered and no default topic pattern configured in config.xml");
+            return;
+        }
+        if (useTopicPattern
+            && topicPattern.equals(T9tUtil.nvl(defaults.getClusterManagerTopicName(), T9tConstants.DEFAULT_KAFKA_TOPIC_SINGLE_TENANT_REQUESTS))) {
+            LOGGER.error("Misconfiguration: topicPattern should not equal clusterManagerTopicName or its default - refusing to launch I/O listener");
             return;
         }
         if (defaults.getSeparateWorkerPoolSize() != null && defaults.getSeparateWorkerPoolSize().intValue() > 0) {

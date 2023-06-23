@@ -274,7 +274,7 @@ public class Executor implements IExecutor {
         srq.setRequestParameters(params);
         srq.setAuthentication(new JwtAuthentication(ctx.internalHeaderParameters.getEncodedJwt()));
         ctx.addPostCommitHook((final RequestContext previousRequestContext, final RequestParameters rq, final ServiceResponse rs) -> {
-            asyncProcessor.submitTask(srq, false, allNodes);
+            asyncProcessor.submitTask(srq, true, allNodes);
         });
     }
 

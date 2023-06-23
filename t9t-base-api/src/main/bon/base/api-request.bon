@@ -355,6 +355,8 @@ package (com.arvatosystems) t9t.base.request {
         required int                                recordsCreated;                 // how many records in the given slot have been created
         required long                               millisecondsUsedForDeletion;    // duration of the delete
         required long                               millisecondsUsedForCreation;    // duration of the aggregation
+        optional Timestamp(0)                       startIncluding;                 // the actual (effective) timestamp used as start of interval
+        optional Timestamp(0)                       endExcluding;                   // the actual (effective) upper bound of the aggregation window
     }
 
     /**

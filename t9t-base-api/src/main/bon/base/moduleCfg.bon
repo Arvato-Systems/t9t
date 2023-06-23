@@ -17,7 +17,7 @@ import api.*
 
 package (com.arvatosystems) t9t.base.moduleCfg {
     default private unsigned trim noControlChars;
-    properties noJava, simpleref,
+    properties simpleref,
         tenantCategory is com.arvatosystems.t9t.annotations.TenantCategory(),
         searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
         serialized is com.arvatosystems.t9t.annotations.StoreSerialized,

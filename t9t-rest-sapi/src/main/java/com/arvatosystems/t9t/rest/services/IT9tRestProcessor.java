@@ -98,19 +98,17 @@ public interface IT9tRestProcessor {
             responseBuilder.type(acceptHeader == null || acceptHeader.length() == 0 ? MediaType.APPLICATION_JSON : acceptHeader);
             responseBuilder.entity(createResultFromServiceResponse(sr));
         }
-        responseBuilder.build();
         resp.resume(responseBuilder.build());
     }
 
     /** Returns a response without using the worker thread. */
     default void returnAsyncResult(final String acceptHeader, final AsyncResponse resp, final Response.Status status, final Object result) {
-        final Response.ResponseBuilder response = Response.status(status);
-        response.type(acceptHeader == null || acceptHeader.length() == 0 ? MediaType.APPLICATION_JSON : acceptHeader);
+        final Response.ResponseBuilder responseBuilder = Response.status(status);
+        responseBuilder.type(acceptHeader == null || acceptHeader.length() == 0 ? MediaType.APPLICATION_JSON : acceptHeader);
         if (result != null) {
-            response.entity(result);
+            responseBuilder.entity(result);
         }
-        final Response responseObj = response.build();
-        resp.resume(responseObj);
+        resp.resume(responseBuilder.build());
     }
 
     /** Returns a response without using the worker thread. */

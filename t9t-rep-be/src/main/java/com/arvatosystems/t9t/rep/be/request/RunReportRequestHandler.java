@@ -19,6 +19,7 @@ import java.io.File;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
@@ -144,6 +145,23 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
             case YEARLY:
                 fromDate = toDate.minusYears(factor);
                 break;
+            case MONTH_BEGIN:
+                // following statement seems to be unsupported: java.time.temporal.UnsupportedTemporalTypeException: Unit is too large to be used for truncation
+                // fromDate = toDate.truncatedTo(ChronoUnit.MONTHS);
+                fromDate = LocalDateTime.of(toDate.toLocalDate().withDayOfMonth(1), LocalTime.MIDNIGHT);
+                if (factor > 0) {
+                    fromDate = fromDate.minusMonths(factor);
+                }
+                break;
+            case WEEK_BEGIN:
+                // unsupported
+                // fromDate = toDate.truncatedTo(ChronoUnit.WEEKS);
+                LocalDate day = toDate.toLocalDate();
+                fromDate = LocalDateTime.of(day.minusDays(day.getDayOfWeek().ordinal()), LocalTime.MIDNIGHT);
+                if (factor > 0) {
+                    fromDate = fromDate.minusDays(factor * 7);
+                }
+                break;
             default:
                 throw new T9tException(T9tRepException.BAD_INTERVAL, interval.getInterval().toString());
             }
@@ -151,7 +169,7 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
         default:
             throw new T9tException(T9tRepException.BAD_INTERVAL_CLASS, interval.getIntervalCategory().toString());
         }
-        LOGGER.info("Report run for period from {} to {}", fromDate.toString(), toDate.toString());
+        LOGGER.debug("Report run for period from {} to {}", fromDate.toString(), toDate.toString());
         parameters.put(DATE_FROM, fromDate);
         parameters.put(DATE_TO, toDate);
         outputSessionAdditionalParametersList.put("reportDateFrom", fromDate.format(DAY_FORMATTER));
@@ -245,6 +263,7 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
             // fill additional parameters
             if (reportParamsDTO.getZ() != null && !reportParamsDTO.getZ().isEmpty()) {
                 parameters.putAll(reportParamsDTO.getZ());
+                outputSessionAdditionalParametersList.putAll(reportParamsDTO.getZ());
             }
 
             jasperPrint = jasperReportFiller.fillReport(jasperReport, reportParamsDTO, parameters);

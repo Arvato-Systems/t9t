@@ -63,6 +63,8 @@ public class AsyncMessageAggregationRequestHandler extends AbstractRequestHandle
         final Instant effectiveStart = effectiveIntervalStart.toInstant(ZoneOffset.UTC);
         final Instant effectiveEnd = effectiveIntervalEnd.toInstant(ZoneOffset.UTC);
         final AggregationResponse response = new AggregationResponse();
+        response.setStartIncluding(effectiveIntervalStart);
+        response.setEndExcluding(effectiveIntervalEnd);
 
         // Delete existing AsyncMessageStatistics
         final long start = System.currentTimeMillis();

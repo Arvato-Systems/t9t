@@ -15,7 +15,6 @@
  */
 package com.arvatosystems.t9t.core.jpa.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -42,18 +41,16 @@ import jakarta.persistence.TypedQuery;
 public abstract class AbstractModuleConfigResolver<D extends ModuleConfigDTO, E extends ModuleConfigEntity & BonaPersistableData<D>>
         implements IModuleConfigResolver<D> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractModuleConfigResolver.class);
+
     private final IResolverStringKey<FullTrackingWithVersion, E> resolver;
-
-    private String query;
-
     private final Cache<String, D> dtoCache;
-
     private final ICacheInvalidationRegistry cacheInvalidationRegistry = Jdp.getRequired(ICacheInvalidationRegistry.class);
 
     protected AbstractModuleConfigResolver(final Class<? extends IResolverStringKey<FullTrackingWithVersion, E>> resolverClass) {
         resolver = Jdp.getRequired(resolverClass);
         dtoCache = Caffeine.newBuilder().expireAfterWrite(1, TimeUnit.MINUTES).build();
         cacheInvalidationRegistry.registerInvalidator(resolver.getBaseJpaEntityClass().getSimpleName(), (final BonaPortable it) -> {
+            LOGGER.info("Invalidating ModuleCfg cache for {}", this.getClass().getSimpleName());  // will expand to the specific class name
             dtoCache.invalidateAll();
         });
         LOGGER.info("Created ModuleConfigResolver for {}", resolver.getBaseJpaEntityClass().getSimpleName());
@@ -67,54 +64,74 @@ public abstract class AbstractModuleConfigResolver<D extends ModuleConfigDTO, E 
         final String tenantId = resolver.getSharedTenantId();
         final D cacheHit = dtoCache.getIfPresent(tenantId);
         if (cacheHit != null) {
-          return cacheHit;
+            return cacheHit;
         }
         // not in cache: read database
         final EntityManager em = resolver.getEntityManager();
         final List<String> tenants;
         if (T9tConstants.GLOBAL_TENANT_ID.equals(tenantId)) {
-            tenants = new ArrayList<>(1);
-            tenants.add(T9tConstants.GLOBAL_TENANT_ID);
+            tenants = List.of(T9tConstants.GLOBAL_TENANT_ID);
         } else {
-            tenants = new ArrayList<>(2);
-            tenants.add(T9tConstants.GLOBAL_TENANT_ID);
-            tenants.add(tenantId);
+            tenants = List.of(T9tConstants.GLOBAL_TENANT_ID, tenantId);
         }
-        query = "SELECT e FROM " + resolver.getEntityClass().getSimpleName() + " e WHERE e.tenantId IN :tenants ORDER BY e.tenantId DESC";
 
-        D result = getDefaultModuleConfiguration();
-        final TypedQuery<E> quer = em.createQuery(query, resolver.getEntityClass());
-        quer.setParameter("tenants", tenants);
+        final String sql = "SELECT e FROM " + resolver.getEntityClass().getSimpleName() + " e WHERE e.tenantId IN :tenants ORDER BY e.tenantId DESC";
+        final TypedQuery<E> query = em.createQuery(sql, resolver.getEntityClass());
+        query.setParameter("tenants", tenants);
         try {
-            final List<E> results = quer.getResultList();
+            final D result;
+            final List<E> results = query.getResultList();
             if (results != null && !results.isEmpty()) {
-                LOGGER.debug("Found entry for ModuleConfigResolver cache {} for tenantId {}", resolver.getBaseJpaEntityClass().getSimpleName(), tenantId);
-                result = results.get(0).ret$Data();
+                LOGGER.debug("Found entry for ModuleConfigResolver cache {} for tenantId {} - updating cache with it",
+                    resolver.getBaseJpaEntityClass().getSimpleName(), tenantId);
+                result = e2d(results.get(0));
             } else {
-                LOGGER.debug("No entry for ModuleConfigResolver cache {} for tenantId {}, using defaults!", resolver.getBaseJpaEntityClass().getSimpleName(),
-                        tenantId);
+                LOGGER.debug("No entry for ModuleConfigResolver cache {} for tenantId {}, - updating cache with defaults",
+                    resolver.getBaseJpaEntityClass().getSimpleName(), tenantId);
+                result = getDefaultModuleConfiguration();
             }
+            result.freeze(); // make immutable
+            dtoCache.put(tenantId, result);
+            return result;
         } catch (final Exception e) {
             LOGGER.error("JPA exception {} while reading module configuration for {} for tenantId {}: {}", e.getClass().getSimpleName(),
                     resolver.getEntityClass().getSimpleName(), tenantId, e.getMessage());
             LOGGER.error("Stack trace is ", e);
             throw e;
         }
-        result.freeze(); // make immutable
-        dtoCache.put(tenantId, result);
-        LOGGER.debug("Updating ModuleConfigResolver cache {} for tenantId {}", resolver.getBaseJpaEntityClass().getSimpleName(), tenantId);
-        return result;
     }
 
     @Override
     public void updateModuleConfiguration(final D cfg) {
         final E newEntity = resolver.newEntityInstance();
         final String tenantId = resolver.getSharedTenantId();
-        newEntity.put$Data(cfg);
+        d2e(newEntity, cfg);
         newEntity.put$Key(tenantId);
         newEntity.setTenantId(tenantId);
         resolver.getEntityManager().<E>merge(newEntity); // resolver.save(newEntity) would do this and some of the previous assignments...
         cfg.freeze();
         dtoCache.put(tenantId, cfg); // update the cache
+    }
+
+    /**
+     * Overridable method to provide entity to DTO mapping.
+     * Most module configurations do not need a full blown mapper, therefore a default implementation is provided.
+     *
+     * @param entity the entity to convert
+     * @return the mapped DTO
+     */
+    protected D e2d(final E entity) {
+        return entity.ret$Data();
+    }
+
+    /**
+     * Overridable method to provide DTO to entity mapping.
+     * Most module configurations do not need a full blown mapper, therefore a default implementation is provided.
+     *
+     * @param dst a preallocated entity object to map into
+     * @param src the source DTO
+     */
+    protected void d2e(final E dst, final D src) {
+        dst.put$Data(src);
     }
 }

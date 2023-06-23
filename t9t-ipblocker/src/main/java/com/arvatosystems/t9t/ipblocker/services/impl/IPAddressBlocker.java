@@ -48,8 +48,8 @@ public class IPAddressBlocker implements IIPAddressBlocker {
 
     private static final int MAX_AUTH_ENTRIES = 200;
     private static final int DEFAULT_MAX_BAD_IP_ADDRESSES                       = 1000;
-    private static final int DEFAULT_MAX_BAD_IP_ADDRESSES_INTERVAL_IN_MINUTES   = 10;
-    private static final int DEFAULT_MAX_BAD_IP_ADDRESSES_LOCKOUT_IN_MINUTES    = 10;
+    private static final int DEFAULT_MAX_BAD_IP_ADDRESSES_INTERVAL_IN_MINUTES   = 15;
+    private static final int DEFAULT_MAX_BAD_IP_ADDRESSES_LOCKOUT_IN_MINUTES    = 15;
     private static final int DEFAULT_BAD_AUTHS_PER_IP_ADDRESS_LIMIT             = 50;
 
     private static final int MAX_BAD_IP_ADDRESSES

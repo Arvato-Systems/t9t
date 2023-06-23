@@ -55,6 +55,8 @@ public class AggregateMessageStatisticsRequestHandler extends AbstractRequestHan
         final Instant effectiveStart = effectiveIntervalStart.toInstant(ZoneOffset.UTC);
         final Instant effectiveEnd   = effectiveIntervalEnd.toInstant(ZoneOffset.UTC);
         final AggregationResponse response = new AggregationResponse();
+        response.setStartIncluding(effectiveIntervalStart);
+        response.setEndExcluding(effectiveIntervalEnd);
 
         // Delete existing MessageStatistics
         final long start = System.currentTimeMillis();

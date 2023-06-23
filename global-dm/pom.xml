@@ -173,7 +173,7 @@
         <spring-data-jpa.version>3.1.0</spring-data-jpa.version>
         <spring-boot.version>3.1.0</spring-boot.version>
 
-        <netty.version>4.1.93.Final</netty.version>
+        <netty.version>4.1.94.Final</netty.version>
         <vertx4.version>4.4.3</vertx4.version>
         <hazelcast-kubernetes.version>2.2.3</hazelcast-kubernetes.version>
 

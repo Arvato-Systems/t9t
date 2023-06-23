@@ -19,7 +19,7 @@ import t9t.base.types.*
 
 package (com.arvatosystems) t9t.bucket {
     default private unsigned trim noControlChars;
-    properties noJava, simpleref,
+    properties simpleref,
         tenantCategory is com.arvatosystems.t9t.annotations.TenantCategory(),
         searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
         serialized is com.arvatosystems.t9t.annotations.StoreSerialized,
