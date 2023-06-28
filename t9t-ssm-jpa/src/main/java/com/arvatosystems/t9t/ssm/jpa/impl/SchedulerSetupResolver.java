@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 - 2022 Arvato Systems GmbH
+ * Copyright (c) 2012 - 2023 Arvato Systems GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,16 +42,22 @@ public class SchedulerSetupResolver extends AbstractJpaResolver<SchedulerSetupRe
 
     @Override
     public void update(final SchedulerSetupDTO dto) {
-        if (dto.getRecurrencyType() != SchedulerSetupRecurrenceType.FAST)
+        if (dto.getRecurrencyType() == SchedulerSetupRecurrenceType.FAST) {
+            dto.setCronExpression(null);
+        } else {
             dto.setCronExpression(schedulerService.determineCronExpression(dto));
+        }
         super.update(dto);
     }
 
 
     @Override
     public void create(final SchedulerSetupDTO dto) {
-        if (dto.getRecurrencyType() != SchedulerSetupRecurrenceType.FAST)
+        if (dto.getRecurrencyType() == SchedulerSetupRecurrenceType.FAST) {
+            dto.setCronExpression(null);
+        } else {
             dto.setCronExpression(schedulerService.determineCronExpression(dto));
+        }
         super.create(dto);
     }
 

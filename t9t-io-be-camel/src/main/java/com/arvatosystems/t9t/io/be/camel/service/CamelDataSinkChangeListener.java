@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 - 2022 Arvato Systems GmbH
+ * Copyright (c) 2012 - 2023 Arvato Systems GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,10 +29,12 @@ import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 
+/**
+ * Event to be executed on other nodes if a data sink change has been performed.
+ */
 @Singleton
 @Named("IOCamelDataSinkChange")
 public class CamelDataSinkChangeListener implements IEventHandler {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(CamelDataSinkChangeListener.class);
 
     private final ICamelService camelService = Jdp.getRequired(ICamelService.class);
@@ -40,34 +42,36 @@ public class CamelDataSinkChangeListener implements IEventHandler {
     @SuppressWarnings("incomplete-switch")
     @Override
     public int execute(final RequestContext context, final EventParameters untypedEvent) {
-        final DataSinkChangedEvent event = (DataSinkChangedEvent) untypedEvent;
-        final DataSinkDTO dataSink = event.getDataSink();
+        if (untypedEvent instanceof DataSinkChangedEvent event) {
+            final DataSinkDTO dataSink = event.getDataSink();
 
-        switch (event.getOperation()) {
-        case INACTIVATE:
-        case DELETE: {
-            LOGGER.debug("Config of data sink id {} changed ({}) - remove routes", dataSink.getDataSinkId(), event.getOperation());
-            remove(dataSink);
-            break;
-        }
+            switch (event.getOperation()) {
+            case INACTIVATE:
+            case DELETE: {
+                LOGGER.debug("Config of data sink id {} changed ({}) - remove routes", dataSink.getDataSinkId(), event.getOperation());
+                remove(dataSink);
+                break;
+            }
 
-        case ACTIVATE:
-        case CREATE: {
-            LOGGER.debug("Config of data sink id {} changed ({}) - add routes", dataSink.getDataSinkId(), event.getOperation());
-            add(dataSink);
-            break;
-        }
+            case ACTIVATE:
+            case CREATE: {
+                LOGGER.debug("Config of data sink id {} changed ({}) - add routes", dataSink.getDataSinkId(), event.getOperation());
+                add(dataSink);
+                break;
+            }
 
-        case MERGE:
-        case PATCH:
-        case UPDATE: {
-            LOGGER.debug("Config of data sink id {} changed ({}) - update routes", dataSink.getDataSinkId(), event.getOperation());
-            remove(dataSink);
-            add(dataSink);
-            break;
+            case MERGE:
+            case PATCH:
+            case UPDATE: {
+                LOGGER.debug("Config of data sink id {} changed ({}) - update routes", dataSink.getDataSinkId(), event.getOperation());
+                remove(dataSink);
+                add(dataSink);
+                break;
+            }
+            }
+        } else {
+            LOGGER.error("Discarding event of wrong type {}", untypedEvent == null ? "(NULL)" : untypedEvent.getClass().getCanonicalName());
         }
-        }
-
         return 0;
     }
 

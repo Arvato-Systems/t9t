@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 - 2022 Arvato Systems GmbH
+ * Copyright (c) 2012 - 2023 Arvato Systems GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,6 +50,7 @@ import com.arvatosystems.t9t.ssm.services.ISchedulerService;
 
 import de.jpaw.bonaparte.core.StaticMeta;
 import de.jpaw.bonaparte.core.StringBuilderComposer;
+import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 
@@ -491,6 +492,28 @@ public class QuartzSchedulerService implements ISchedulerService {
             }
         } catch (final IllegalArgumentException e) {
             throw new T9tException(T9tSsmException.SCHEDULE_SETUP_INTERVAL_VALIDATION_ERR, e.getMessage());
+        }
+    }
+
+    @Override
+    public void updateScheduler(final RequestContext ctx, final OperationType operationType, final String schedulerId, final SchedulerSetupDTO setup) {
+        switch (operationType) {
+        case CREATE:
+            createScheduledJob(ctx, setup);
+            break;
+        case DELETE:
+            removeScheduledJob(ctx, schedulerId);
+            break;
+        case UPDATE:
+            // update just the schedule
+            updateScheduledJob(ctx, setup);
+            break;
+        case MERGE:
+            // full update including job map (remove and recreate)
+            recreateScheduledJob(ctx, setup);
+            break;
+        default:
+            throw new T9tException(T9tException.UNSUPPORTED_OPERATION);
         }
     }
 }

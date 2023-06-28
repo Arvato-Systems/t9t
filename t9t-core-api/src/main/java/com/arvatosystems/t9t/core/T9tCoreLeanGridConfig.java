@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 - 2022 Arvato Systems GmbH
+ * Copyright (c) 2012 - 2023 Arvato Systems GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ public final class T9tCoreLeanGridConfig implements ILeanGridConfigContainer {
 
     private static final String[] GRID_CONFIGS = {
         "statistics",
+        "statisticsAggregation",
         "processStatus",
         "componentInfo",
         "subscriberConfig",

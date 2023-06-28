@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!--
 
-    Copyright (c) 2012 - 2022 Arvato Systems GmbH
+    Copyright (c) 2012 - 2023 Arvato Systems GmbH
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -70,7 +70,7 @@
         <maven-enforcer-plugin.version>3.3.0</maven-enforcer-plugin.version>
         <maven-source-plugin.version>3.3.0</maven-source-plugin.version>
         <owasp-maven-plugin.version>7.2.1</owasp-maven-plugin.version>
-        <spring-boot-maven-plugin.version>3.1.0</spring-boot-maven-plugin.version>
+        <spring-boot-maven-plugin.version>3.1.1</spring-boot-maven-plugin.version>
         <tycho.version>2.7.3</tycho.version>
         <git-commit-id-plugin.version>6.0.0</git-commit-id-plugin.version>
         <jaxws-maven-plugin.version>4.0.1</jaxws-maven-plugin.version>
@@ -97,7 +97,6 @@
 
         <bonaparte-plugin.version>5.2.0</bonaparte-plugin.version>
         <license-plugin.version>3.0</license-plugin.version>
-        <replacer-plugin.version>1.4.1</replacer-plugin.version>   <!-- required for workaround for Apache CXF 3.5.x -->
 
         <checkstyle.version>10.1</checkstyle.version>
         <spotbugs.version>4.7.3</spotbugs.version>
@@ -695,45 +694,6 @@
                     <version>${license-plugin.version}</version>
                 </plugin>
                 <plugin>
-                    <!-- Apache CXF 3.5.x does not yet support jakarta namespaces and needs postprocessing -->
-                    <groupId>com.google.code.maven-replacer-plugin</groupId>
-                    <artifactId>maven-replacer-plugin</artifactId>
-                    <version>${replacer-plugin.version}</version>
-                    <executions>
-                        <execution>
-                            <id>replace-for-jakarta</id>
-                            <phase>process-sources</phase>
-                            <goals>
-                                <goal>replace</goal>
-                            </goals>
-                            <configuration>
-                                <includes>
-                                    <include>target/generated/cxf/**/*.java</include>
-                                </includes>
-                                <preserveDir>true</preserveDir>
-                                <replacements>
-                                    <replacement>
-                                        <token>javax.xml.bind</token>
-                                        <value>jakarta.xml.bind</value>
-                                    </replacement>
-                                    <replacement>
-                                        <token>javax.xml.ws</token>
-                                        <value>jakarta.xml.ws</value>
-                                    </replacement>
-                                    <replacement>
-                                        <token>javax.jws</token>
-                                        <value>jakarta.jws</value>
-                                    </replacement>
-                                    <replacement>
-                                        <token>javax.ws.rs</token>
-                                        <value>jakarta.ws.rs</value>
-                                    </replacement>
-                                </replacements>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-deploy-plugin</artifactId>
                     <version>${maven-deploy-plugin.version}</version>
@@ -766,7 +726,7 @@
                      </mapping>
                      <properties>
                         <owner>Arvato Systems GmbH</owner>
-                        <project.inceptionYear>2012 - 2022</project.inceptionYear>
+                        <project.inceptionYear>2012 - 2023</project.inceptionYear>
                      </properties>
                      <excludes>
                         <exclude>src/main/resources/**</exclude>

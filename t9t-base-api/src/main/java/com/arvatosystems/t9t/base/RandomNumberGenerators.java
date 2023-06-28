@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 - 2022 Arvato Systems GmbH
+ * Copyright (c) 2012 - 2023 Arvato Systems GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,13 @@ public final class RandomNumberGenerators {
     private RandomNumberGenerators() {
     }
 
-    private static final long RANDOM_UUID_MSBS = UUID.randomUUID().getMostSignificantBits();
+    /**
+     * A unique identifier of this JVM instance.
+     * Used to detect if published messages have originated by self.
+     */
+    public static final UUID THIS_JVM_ID = UUID.randomUUID();
+
+    private static final long RANDOM_UUID_MSBS = THIS_JVM_ID.getMostSignificantBits();
 
     /**
      * Provides a secure (cryptographic) random UUID.

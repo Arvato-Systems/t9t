@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 - 2022 Arvato Systems GmbH
+ * Copyright (c) 2012 - 2023 Arvato Systems GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,10 @@ package com.arvatosystems.t9t.base.services;
 
 import com.arvatosystems.t9t.base.api.ServiceRequest;
 import com.arvatosystems.t9t.base.event.EventData;
+import com.arvatosystems.t9t.base.event.EventHeader;
+import com.arvatosystems.t9t.base.event.EventParameters;
+
+import jakarta.annotation.Nonnull;
 
 /** The IAsyncRequestProcessor allows the asynchronous (in a separate transaction) processing of requests.
  * It is guaranteed that requests will be started in the order of submission.
@@ -33,16 +37,32 @@ public interface IAsyncRequestProcessor {
      * Setting localNodeOnly will keep it on the same node.
      * Setting publish will use a publish instead of send (every node will receive and execute it).
      */
-    void submitTask(ServiceRequest request, boolean localNodeOnly, boolean publish);
+    void submitTask(@Nonnull ServiceRequest request, boolean localNodeOnly, boolean publish);
+
+    /**
+     * Wraps the event parameters into an event header, with data provided by the current request context.
+     *
+     * @param ctx    the current request context
+     * @param params the target parameters
+     * @return a wrapped EventData instance
+     */
+    default EventData toEventData(@Nonnull final RequestContext ctx, @Nonnull final EventParameters params) {
+        final EventHeader header = new EventHeader();
+        header.setTenantId(ctx.tenantId);
+        header.setInvokingProcessRef(ctx.requestRef);
+        header.setEncodedJwt(ctx.internalHeaderParameters.getEncodedJwt());
+        return new EventData(header, params);
+    }
 
     /** Sends event data to a single subscriber (node). */
-    void send(EventData data);
+    void send(@Nonnull EventData data);
 
     /** Publishes event data to all subscribers. */
-    void publish(EventData data);
+    void publish(@Nonnull EventData data);
 
     /** Register an IEventHandler as subscriber for an eventID. */
-    void registerSubscriber(String eventID, IEventHandler subscriber);
+    void registerSubscriber(@Nonnull String eventID, @Nonnull IEventHandler subscriber);
+
     /** Register an IEventHandler as subscriber for an eventID within a defined tenant */
-    void registerSubscriber(String eventID, String tenantId, IEventHandler subscriber);
+    void registerSubscriber(@Nonnull String eventID, @Nonnull String tenantId, @Nonnull IEventHandler subscriber);
 }

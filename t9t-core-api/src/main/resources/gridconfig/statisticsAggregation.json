@@ -1,0 +1,11 @@
+{
+    "viewModel": "statisticsAggregation",
+    "filters": [
+        { "filterType": "E", "fieldName": "processId" },
+        { "filterType": "R", "fieldName": "slotStart" }
+        
+    ],
+    "fields": [
+        "processId", "slotStart", "numberOfRuns", "recordsProcessed", "recordsError", "count1", "count2", "count3", "count4"
+    ]
+}

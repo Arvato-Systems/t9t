@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 - 2022 Arvato Systems GmbH
+ * Copyright (c) 2012 - 2023 Arvato Systems GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,9 +25,11 @@ import com.arvatosystems.t9t.base.entities.WriteTrackingMs;
 import com.arvatosystems.t9t.base.request.ComponentInfoDTO;
 import com.arvatosystems.t9t.base.request.ProcessStatusDTO;
 import com.arvatosystems.t9t.batch.SliceTrackingDTO;
+import com.arvatosystems.t9t.batch.StatisticsAggregationDTO;
 import com.arvatosystems.t9t.batch.StatisticsDTO;
 import com.arvatosystems.t9t.batch.request.SliceTrackingCrudRequest;
 import com.arvatosystems.t9t.batch.request.SliceTrackingSearchRequest;
+import com.arvatosystems.t9t.batch.request.StatisticsAggregationSearchRequest;
 import com.arvatosystems.t9t.batch.request.StatisticsCrudRequest;
 import com.arvatosystems.t9t.batch.request.StatisticsSearchRequest;
 import com.arvatosystems.t9t.bucket.BucketCounterDTO;
@@ -49,11 +51,11 @@ import com.arvatosystems.t9t.event.request.SubscriberConfigSearchRequest;
 import com.arvatosystems.t9t.plugins.LoadedPluginDTO;
 import com.arvatosystems.t9t.plugins.request.LoadedPluginCrudRequest;
 import com.arvatosystems.t9t.plugins.request.LoadedPluginSearchRequest;
-
 import com.arvatosystems.t9t.updates.UpdateStatusDTO;
 import com.arvatosystems.t9t.updates.UpdateStatusLogDTO;
 import com.arvatosystems.t9t.updates.request.UpdateStatusLogSearchRequest;
 import com.arvatosystems.t9t.updates.request.UpdateStatusSearchRequest;
+
 import de.jpaw.bonaparte.pojos.api.NoTracking;
 
 public final class T9tCoreModels implements IViewModelContainer {
@@ -64,6 +66,12 @@ public final class T9tCoreModels implements IViewModelContainer {
         WriteTracking.BClass.INSTANCE,
         StatisticsSearchRequest.BClass.INSTANCE,
         StatisticsCrudRequest.BClass.INSTANCE);
+    private static final CrudViewModel<StatisticsAggregationDTO, WriteTracking> STATISTICS_AGGREGATION_VIEW_MODEL
+      = new CrudViewModel<>(
+        StatisticsAggregationDTO.BClass.INSTANCE,
+        WriteTracking.BClass.INSTANCE,
+        StatisticsAggregationSearchRequest.BClass.INSTANCE,
+        null);
     private static final CrudViewModel<CannedRequestDTO, FullTrackingWithVersion> CANNED_REQUEST_VIEW_MODEL
       = new CrudViewModel<>(
         CannedRequestDTO.BClass.INSTANCE,
@@ -134,6 +142,7 @@ public final class T9tCoreModels implements IViewModelContainer {
     @Override
     public void register() {
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("statistics",       STATISTICS_VIEW_MODEL);
+        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("statisticsAggregation", STATISTICS_AGGREGATION_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("componentInfo",    COMPONENT_INFO_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("processStatus",    PROCESS_STATUS_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("cannedRequest",    CANNED_REQUEST_VIEW_MODEL);

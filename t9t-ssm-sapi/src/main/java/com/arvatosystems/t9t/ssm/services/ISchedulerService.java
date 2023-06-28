@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 - 2022 Arvato Systems GmbH
+ * Copyright (c) 2012 - 2023 Arvato Systems GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,10 @@ package com.arvatosystems.t9t.ssm.services;
 
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.ssm.SchedulerSetupDTO;
+
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 
 public interface ISchedulerService {
@@ -55,4 +59,14 @@ public interface ISchedulerService {
      * @return
      */
     String determineCronExpression(SchedulerSetupDTO setup);
+
+    /**
+     * Updates the Quartz scheduler from event data.
+     *
+     * @param ctx           the context of the calling request handler or event handler
+     * @param operationType the type of operation performed
+     * @param               the key of the scheduler
+     * @param setup         the description of the scheduler, for creation or update
+     */
+    void updateScheduler(@Nonnull RequestContext ctx, @Nonnull OperationType operationType, @Nonnull String schedulerId, @Nullable SchedulerSetupDTO setup);
 }

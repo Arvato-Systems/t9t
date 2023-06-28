@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 - 2022 Arvato Systems GmbH
+ * Copyright (c) 2012 - 2023 Arvato Systems GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,8 +29,6 @@ import com.arvatosystems.t9t.base.api.ServiceRequestHeader;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.auth.JwtAuthentication;
 import com.arvatosystems.t9t.base.auth.PermissionType;
-import com.arvatosystems.t9t.base.event.EventData;
-import com.arvatosystems.t9t.base.event.EventHeader;
 import com.arvatosystems.t9t.base.event.EventParameters;
 import com.arvatosystems.t9t.base.event.InvalidateCacheEvent;
 import com.arvatosystems.t9t.base.services.IAsyncRequestProcessor;
@@ -286,13 +284,8 @@ public class Executor implements IExecutor {
     @Override
     public void sendEvent(final RequestContext ctx, final EventParameters data) {
         data.validate();
-        // create an EventData structure
-        final EventData eventData = new EventData();
-        eventData.setHeader(toHeader(ctx));
-        eventData.setData(data);
-        eventData.getHeader().freeze();
         ctx.addPostCommitHook((final RequestContext previousRequestContext, final RequestParameters rq, final ServiceResponse rs) -> {
-            asyncProcessor.send(eventData);
+            asyncProcessor.send(asyncProcessor.toEventData(ctx, data));
         });
     }
 
@@ -304,13 +297,8 @@ public class Executor implements IExecutor {
     @Override
     public void publishEvent(final RequestContext ctx, final EventParameters data) {
         data.validate();
-        // create an EventData structure
-        final EventData eventData = new EventData();
-        eventData.setHeader(toHeader(ctx));
-        eventData.setData(data);
-        eventData.getHeader().freeze();
         ctx.addPostCommitHook((final RequestContext previousRequestContext, final RequestParameters rq, final ServiceResponse rs) -> {
-            asyncProcessor.send(eventData);
+            asyncProcessor.send(asyncProcessor.toEventData(ctx, data));
         });
     }
 
@@ -343,13 +331,5 @@ public class Executor implements IExecutor {
     @Override
     public void clearCache(final RequestContext ctx, final String cacheId, final BonaPortable key) {
         publishEvent(ctx, new InvalidateCacheEvent(cacheId, key));
-    }
-
-    private EventHeader toHeader(final RequestContext ctx) {
-        final EventHeader header = new EventHeader();
-        header.setTenantId(ctx.tenantId);
-        header.setInvokingProcessRef(ctx.internalHeaderParameters.getProcessRef());
-        header.setEncodedJwt(ctx.internalHeaderParameters.getEncodedJwt());
-        return header;
     }
 }

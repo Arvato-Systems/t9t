@@ -1,7 +1,7 @@
 <modal28 id="infoWin" viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.GenericVM', inst=inst)">
     <vlayout>
         <hlayout style="margin: 0 20px">
-            <textbox style="resize: none" multiline="true" rows="50" value="@bind(vm.data.text)" hflex="1" readonly="true"/>
+            <textbox style="resize: none" multiline="true" rows="50" value="@bind(vm.data.text)" hflex="1"/>
         </hlayout>
     </vlayout>
 </modal28>

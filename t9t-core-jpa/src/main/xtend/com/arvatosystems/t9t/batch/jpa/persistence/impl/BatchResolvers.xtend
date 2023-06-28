@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 - 2022 Arvato Systems GmbH
+ * Copyright (c) 2012 - 2023 Arvato Systems GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,13 @@ import com.arvatosystems.t9t.batch.SliceTrackingRef
 import com.arvatosystems.t9t.batch.StatisticsRef
 import com.arvatosystems.t9t.batch.jpa.entities.SliceTrackingEntity
 import com.arvatosystems.t9t.batch.jpa.entities.StatisticsEntity
+import com.arvatosystems.t9t.batch.jpa.entities.StatisticsAggregationEntity
+import com.arvatosystems.t9t.batch.StatisticsAggregationRef
 
 @AutoResolver42
 class BatchResolvers {
     def StatisticsEntity        getStatisticsEntity   (StatisticsRef    entityRef, boolean onlyActive) { return null; }
+    def StatisticsAggregationEntity getStatisticsAggregationEntity (StatisticsAggregationRef entityRef, boolean onlyActive) { return null; }
     def SliceTrackingEntity     getSliceTrackingEntity(SliceTrackingRef entityRef, boolean onlyActive) { return null; }
     def SliceTrackingEntity     findByDataSinkIdAndId(boolean onlyActive, String dataSinkId, String id) {null}
 }

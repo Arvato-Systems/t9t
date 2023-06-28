@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 - 2022 Arvato Systems GmbH
+ * Copyright (c) 2012 - 2023 Arvato Systems GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import com.arvatosystems.t9t.auth.PermissionsDTO;
 import com.arvatosystems.t9t.auth.UserKey;
 import com.arvatosystems.t9t.auth.request.ApiKeyCrudRequest;
 import com.arvatosystems.t9t.base.MessagingUtil;
+import com.arvatosystems.t9t.base.RandomNumberGenerators;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.be.impl.AbstractCrudSurrogateKeyBERequestHandler;
@@ -44,6 +45,7 @@ import com.arvatosystems.t9t.core.request.CannedRequestCrudRequest;
 import com.arvatosystems.t9t.core.services.ICannedRequestResolver;
 import com.arvatosystems.t9t.ssm.SchedulerSetupDTO;
 import com.arvatosystems.t9t.ssm.SchedulerSetupRef;
+import com.arvatosystems.t9t.ssm.event.SchedulerChangedEvent;
 import com.arvatosystems.t9t.ssm.request.SchedulerSetupCrudRequest;
 import com.arvatosystems.t9t.ssm.request.UpdateSchedulerDataRequest;
 import com.arvatosystems.t9t.ssm.services.ISchedulerSetupResolver;
@@ -204,7 +206,17 @@ public class SchedulerSetupCrudRequestHandler extends
         usdr.setSchedulerId(schedulerId);
         usdr.setSetup(dto);
         if (server == null || server.equals(myServerId)) {
+            // perform changes on local node
             executor.executeSynchronousAndCheckResult(ctx, usdr, ServiceResponse.class);
+            if (Boolean.TRUE.equals(ConfigProvider.getConfiguration().getRunInCluster())) {
+                // also inform the other nodes
+                final SchedulerChangedEvent event = new SchedulerChangedEvent();
+                event.setSenderJvmId(RandomNumberGenerators.THIS_JVM_ID);
+                event.setOperationType(op);
+                event.setSchedulerId(schedulerId);
+                event.setSetup(dto);
+                executor.publishEvent(ctx, event);
+            }
         } else {
             final UplinkConfiguration uplink = ConfigProvider.getUplinkOrThrow(server);
             final IForeignRequest remoteExecutor = SimpleCallOutExecutor.createCachedExecutor(server, uplink.getUrl());

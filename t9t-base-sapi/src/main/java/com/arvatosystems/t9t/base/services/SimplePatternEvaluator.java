@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 - 2022 Arvato Systems GmbH
+ * Copyright (c) 2012 - 2023 Arvato Systems GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,8 @@ import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tUtil;
 
+import de.jpaw.util.CharTestsASCII;
+
 public final class SimplePatternEvaluator {
     private static final Logger LOGGER = LoggerFactory.getLogger(SimplePatternEvaluator.class);
 
@@ -41,16 +43,21 @@ public final class SimplePatternEvaluator {
         // prevent instantiation of util class
     }
 
-    private static boolean isForbidden(final char c, final String forbiddenChars) {
-        return c < 0x20 || c >= 0x7f || forbiddenChars.indexOf(c) >= 0;
+    private static boolean isForbidden(final String s, final int i, final String forbiddenChars, final boolean checkForFilename) {
+        final char c = s.charAt(i);
+        if (checkForFilename && c == '.') {
+            return i == 0 || i >= s.length() - 1 || !CharTestsASCII.isAsciiAlnum(s.charAt(i + 1));
+        } else {
+            return c < 0x20 || c >= 0x7f || forbiddenChars.indexOf(c) >= 0;
+        }
     }
 
     /** Replaces characters which should not be inserted into a string because they might alter the folder by an upper case X. */
-    public static String sanitizer(final String input, final String forbiddenChars) {
+    private static String sanitizer(final String input, final String forbiddenChars, final boolean isFilenameCheck) {
         // perform a check first, to avoid creating new objects
         boolean needChange = false;
         for (int i = 0; i < input.length(); ++i) {
-            if (isForbidden(input.charAt(i), forbiddenChars)) {
+            if (isForbidden(input, i, forbiddenChars, isFilenameCheck)) {
                 needChange = true;
                 break;
             }
@@ -60,15 +67,14 @@ public final class SimplePatternEvaluator {
         }
         final StringBuilder sb = new StringBuilder(input.length());
         for (int i = 0; i < input.length(); ++i) {
-            final char c = input.charAt(i);
-            sb.append(isForbidden(c, forbiddenChars) ? 'X' : c);
+            sb.append(isForbidden(input, i, forbiddenChars, isFilenameCheck) ? 'X' : input.charAt(i));
         }
         return sb.toString();
     }
 
     /** Replaces any variable references in pattern by lookup from the replacements map, using a specific sanitizer suitable for file names. */
     public static String evaluate(final String pattern, final Map<String, Object> patternReplacements) {
-        return evaluate(pattern, patternReplacements, s -> sanitizer(s, ":/\\. (){}[]$^~?&%="), "NULL");
+        return evaluate(pattern, patternReplacements, s -> sanitizer(s, ":/\\. (){}[]$^~?&%=", true), "NULL");
     }
 
     /** Replaces any variable references in pattern by lookup from the replacements map, using a generic sanitizer. */
