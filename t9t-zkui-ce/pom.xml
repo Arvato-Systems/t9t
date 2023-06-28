@@ -26,23 +26,23 @@
                     <header>APACHE-2.txt</header>
                     <mapping>
                         <java>PHP</java>
-                     </mapping>
-                     <properties>
-                         <owner>Arvato Systems GmbH</owner>
-                         <project.inceptionYear>2012 - 2020</project.inceptionYear>
-                      </properties>
-                     <excludes>
+                    </mapping>
+                    <properties>
+                        <owner>Arvato Systems GmbH</owner>
+                        <project.inceptionYear>2012 - 2023</project.inceptionYear>
+                    </properties>
+                    <excludes>
                         <exclude>src/main/resources/**</exclude>
                         <exclude>**/JndiLdapRealm.java</exclude>
                         <exclude>**/pom.xml</exclude>
-                     </excludes>
+                    </excludes>
                 </configuration>
                 <executions>
-                     <execution>
-                         <goals>
-                             <goal>format</goal>
-                         </goals>
-                     </execution>
+                    <execution>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>
