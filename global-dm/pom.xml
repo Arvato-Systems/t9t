@@ -52,7 +52,7 @@
         <driver.postgresql.version>42.6.0</driver.postgresql.version>  <!-- starting with 4.2.15, the driver adds a dependency to checker-qual 3.5.0 which conflicts with 2.5.2 pulled by guava -->
         <driver.sqlserver.version>11.2.3.jre17</driver.sqlserver.version>
         <driver.hana.version>2.17.7</driver.hana.version>
-        <h2.version>2.1.214</h2.version>
+        <h2.version>2.2.220</h2.version>
 
         <!-- OR mappers -->
         <eclipselink.version>3.0.3</eclipselink.version>
