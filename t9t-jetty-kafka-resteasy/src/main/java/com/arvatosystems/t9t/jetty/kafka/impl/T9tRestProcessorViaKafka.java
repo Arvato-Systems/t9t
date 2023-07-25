@@ -29,6 +29,7 @@ import com.arvatosystems.t9t.authz.api.QuerySinglePermissionRequest;
 import com.arvatosystems.t9t.authz.api.QuerySinglePermissionResponse;
 import com.arvatosystems.t9t.base.IKafkaRequestTransmitter;
 import com.arvatosystems.t9t.base.IRemoteConnection;
+import com.arvatosystems.t9t.base.RandomNumberGenerators;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.T9tUtil;
@@ -191,7 +192,7 @@ public class T9tRestProcessorViaKafka extends T9tRestProcessor implements IT9tRe
     @Override
     public <T extends BonaPortable, R extends RequestParameters> void performAsyncBackendRequestViaKafka(final HttpHeaders httpHeaders,
         final AsyncResponse resp, final String pathInfo, final List<T> inputData, final Function<T, R> requestParameterConverter,
-        final Function<R, String> partitionKeyExtractor) {
+            final Function<R, String> partitionKeyExtractor, final Function<R, String> businessIdExtractor) {
         if (!enableKafka || !kafkaTransmitter.initialized()) {
             // fall back to sync method
             super.performAsyncBackendRequest(httpHeaders, resp, pathInfo, inputData, requestParameterConverter, (Function<List<T>, RequestParameters>)null);
@@ -221,15 +222,26 @@ public class T9tRestProcessorViaKafka extends T9tRestProcessor implements IT9tRe
                     payload.setErrorDetails("Partition key");
                 } else {
                     // apply idempotency key, if provided
-                    final String idempotencyHeader = httpHeaders.getHeaderString(T9tConstants.HTTP_HEADER_IDEMPOTENCY_KEY);
+                    String idempotencyHeader = httpHeaders.getHeaderString(T9tConstants.HTTP_HEADER_IDEMPOTENCY_KEY);
                     if (idempotencyHeader != null) {
                         try {
                             rq.setMessageId(UUID.fromString(idempotencyHeader));
                         } catch (Exception e) {
                             LOGGER.error("Cannot parse idempotency UUID despite prior pattern check: {}: {}", idempotencyHeader, e.getMessage());
+                            rq.setMessageId(RandomNumberGenerators.randomFastUUID());
                         }
+                    } else {
+                        // assign a random message ID
+                        rq.setMessageId(RandomNumberGenerators.randomFastUUID());
                     }
-                    LOGGER.debug("Sending object of key {} via path {} with idempotency header {}", partitionKey, pathInfo, idempotencyHeader);
+                    // provide suitable log output what's queued into kafka
+                    final String essentialKey = businessIdExtractor == null ? null : businessIdExtractor.apply(rq);
+                    if (essentialKey != null) {
+                        rq.setEssentialKey(essentialKey);
+                    }
+                    LOGGER.info("Sending object of key {} (partition key {}) via path {} with {} {}",
+                            T9tUtil.nvl(essentialKey, "(null)"), partitionKey, pathInfo,
+                            idempotencyHeader == null ? "random message ID" : "provided idempotency header", rq.getMessageId());
                     result = sendToServer(httpHeaders.getHeaderString(HttpHeaders.AUTHORIZATION), partitionKey, rq, payload);
                 }
             } catch (final ApplicationException e) {

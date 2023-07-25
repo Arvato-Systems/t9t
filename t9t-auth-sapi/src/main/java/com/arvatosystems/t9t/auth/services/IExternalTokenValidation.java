@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.out.be.async;
+package com.arvatosystems.t9t.auth.services;
 
-import com.arvatosystems.t9t.out.services.IAsyncSender;
+import com.arvatosystems.t9t.auth.OidClaims;
 
-import de.jpaw.dp.Dependent;
-import de.jpaw.dp.Named;
+import jakarta.annotation.Nonnull;
 
-/**
- * The PostSender implements a simple client invocation via http POST of the JDK 11 HttpClient.
- */
-@Dependent
-@Named("jdk11JSON")
-public class PostSenderJdk11 extends AbstractPostSenderJdk11 implements IAsyncSender {
+/** Validate external access tokens. */
+public interface IExternalTokenValidation {
+
+    /** Validates the access token, return null in case of any failure, or some extracted data fields otherwise. */
+    OidClaims validateToken(@Nonnull String accessToken);
 }

@@ -34,6 +34,7 @@ import com.arvatosystems.t9t.base.request.AggregationGranularityType;
 
 import de.jpaw.enums.TokenizableEnum;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 /**
  * Utility class for common checks and operations.
  */
@@ -203,6 +204,17 @@ public final class T9tUtil {
             }
         }
         return false;
+    }
+
+    /** Sleeps for the specified number of milliseconds, and complains if interrupted. A logger is passed to conserve the true origin of the message. */
+    public static void sleepAndWarnIfInterrupted(final long milliseconds, @Nullable final Logger logger, @Nullable final String complainString) {
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+            if (logger != null && complainString != null) {
+                logger.warn(complainString);
+            }
+        }
     }
 
     /** Returns the current time as integral Instant (no fractional seconds). Often needed because some APIs desire integral seconds. */

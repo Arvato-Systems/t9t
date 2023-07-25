@@ -33,7 +33,7 @@ public class ShowTxContextMenuHandler implements IGridContextMenu<SinkDTO> {
     protected final IT9tMessagingDAO messagingDAO = Jdp.getRequired(IT9tMessagingDAO.class);
 
     @Override
-    public void selected(Grid28 lb, DataWithTracking<SinkDTO, TrackingBase> dwt) {
+    public void selected(final Grid28 lb, final DataWithTracking<SinkDTO, TrackingBase> dwt) {
         JumpTool.jump("screens/monitoring/requests28.zul", "objectRef", ((FullTracking)(dwt.getTracking())).getcProcessRef(), "screens/report/sink28.zul");
     }
 }

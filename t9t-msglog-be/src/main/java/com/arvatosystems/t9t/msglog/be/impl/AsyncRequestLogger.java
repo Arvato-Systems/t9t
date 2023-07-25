@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.annotations.IsLogicallyFinal;
 import com.arvatosystems.t9t.base.MessagingUtil;
+import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceRequestHeader;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
@@ -92,7 +93,7 @@ public class AsyncRequestLogger implements IRequestLogger {
                 try {
                     int num = queue.drainTo(workPool, MAX_ELEMENTS_PER_BATCH);
                     if (num == 0) {
-                        Thread.sleep(LONG_SLEEP_DURATION_AFTER_IDLE);
+                        T9tUtil.sleepAndWarnIfInterrupted(LONG_SLEEP_DURATION_AFTER_IDLE, LOGGER, null);
                     } else {
                         // check for end marker
                         for (int i = 0; i < num; ++i) {
@@ -119,7 +120,7 @@ public class AsyncRequestLogger implements IRequestLogger {
                             if (num < MIN_ELEMENTS_FOR_RERUN) {
                                 // do not attempt to rerun now
                                 workPool.clear();
-                                Thread.sleep(SHORT_SLEEP_DURATION_AFTER_ACTIVITY);
+                                T9tUtil.sleepAndWarnIfInterrupted(SHORT_SLEEP_DURATION_AFTER_ACTIVITY, LOGGER, null);
                             }
                         }
                     }
@@ -163,6 +164,7 @@ public class AsyncRequestLogger implements IRequestLogger {
         m.setLanguageCode           (hdr.getLanguageCode());
         m.setRequestParameterPqon   (hdr.getRequestParameterPqon());
         m.setMessageId              (hdr.getMessageId());
+        m.setEssentialKey           (hdr.getEssentialKey());
 
         final ServiceRequestHeader h = hdr.getRequestHeader();
         if (h != null) {
@@ -184,6 +186,14 @@ public class AsyncRequestLogger implements IRequestLogger {
                 // when sent via kafka, or triggered by scheduler, or issued as executeAsynchronously: calculate latency from time of initiation
                 long d = hdr.getExecutionStartedAt().toEpochMilli() - params.getWhenSent();
                 m.setProcessingDelayInMillisecs(d > 0 ? Integer.valueOf((int)d) : INT_ZERO);
+            }
+            if (!params.was$Frozen()) {
+                // unless the params are frozen, clear duplicate data which is persisted at top level
+                params.setEssentialKey   (null);
+                params.setMessageId      (null);
+                params.setWhenSent       (null);
+                params.setTransactionOriginType(null);
+                params.setIdempotencyBehaviour (null);
             }
         }
         // silently discard them (but aggregate data)...

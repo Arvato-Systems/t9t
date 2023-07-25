@@ -32,8 +32,8 @@ public class DownloadContextMenuHandler implements IGridContextMenu<SinkDTO> {
     protected final IT9tMessagingDAO messagingDAO = Jdp.getRequired(IT9tMessagingDAO.class);
 
     @Override
-    public void selected(Grid28 lb, DataWithTracking<SinkDTO, TrackingBase> dwt) {
-        SinkDTO dto = dwt.getData();
+    public void selected(final Grid28 lb, final DataWithTracking<SinkDTO, TrackingBase> dwt) {
+        final SinkDTO dto = dwt.getData();
         try {
             messagingDAO.downloadFileAndSave(dto.getObjectRef());
         } catch (ReturnCodeException e) {

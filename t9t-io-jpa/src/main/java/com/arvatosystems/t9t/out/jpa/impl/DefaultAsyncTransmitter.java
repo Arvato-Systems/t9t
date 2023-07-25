@@ -72,6 +72,10 @@ public class DefaultAsyncTransmitter implements IAsyncTransmitter {
         final AsyncChannelDTO cfg = asyncTools.getCachedAsyncChannelDTO(ctx.tenantId, asyncChannelId);
         if (!cfg.getIsActive() || cfg.getAsyncQueueRef() == null) {
             LOGGER.debug("Discarding async message to inactive or unassociated channel {}", asyncChannelId);
+            if (objectRef != null) {
+                stopRetries(objectRef);
+            }
+            return;
         }
         asyncQueueSender.sendAsync(ctx, cfg, payload, objectRef, partition, recordKey);
     }

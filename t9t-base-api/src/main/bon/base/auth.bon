@@ -62,6 +62,11 @@ package (com.arvatosystems) t9t.base.auth {
         required encodedJwt                                 encodedJwt;                 // JSON Web Token in encoded form, signature can be verified
     }
 
+    /** Provides authentication information via external access token. */
+    final class ExternalTokenAuthenticationParam extends AuthenticationParameters {
+        required encodedJwt                                 accessToken;
+    }
+
     /** Provides authentication information via password or serves as a "change password" request. */
     final class PasswordAuthentication extends AuthenticationParameters {
         required userId                                     userId;                     // every request will belong to the same user ID

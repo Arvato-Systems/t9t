@@ -109,13 +109,26 @@ package (com.arvatosystems) t9t.bpmn.request {
         optional (ProcessExecutionStatusDTO)    processStatus;
     }
 
-    /** Starts execution of all current processes.
+    /**
+     * Starts execution of all current processes.
      * If minAgeInSeconds has been specified, only processes with this age are run.
      * If onlyThisProcessId is specified, only processes with this definitionId are run.
      */
     class RestartAllActiveProcessesRequest extends RequestParameters {
-        optional Integer                        minAgeInSeconds;            // target object ref to use in the process execution
+        optional Integer                        minAgeInSeconds;            // the minimum age of the task in seconds
         optional processDefinitionId            onlyThisProcessId;          // if not null, then only processes with this ID will be considered
+        optional Boolean                        includeErrorStatus;         // also rerun processes in error status
+        optional Boolean                        runProcessesOfAnyNode;      // if true, the execution will pick up processes for any node, otherwise just the ones assigned to the current partition
+    }
+
+    /**
+     * Starts execution of pending current processes for a specific process definition and a specific step.
+     * If minAgeInSeconds has been specified, only processes with this age are run.
+     */
+    class RestartSpecificActiveProcessesRequest extends RequestParameters {
+        optional Integer                        minAgeInSeconds;            // the minimum age of the task in seconds (default 30)
+        required processDefinitionId            processId;                  // specifies the workflow
+        required workflowStepLabel              nextStep;                   // specifies the step the workflow is waiting in
         optional Boolean                        includeErrorStatus;         // also rerun processes in error status
         optional Boolean                        runProcessesOfAnyNode;      // if true, the execution will pick up processes for any node, otherwise just the ones assigned to the current partition
     }

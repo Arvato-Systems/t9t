@@ -32,16 +32,16 @@ import de.jpaw.util.ApplicationException;
 public class ShowErrorMessageContextMenuHandler implements IGridContextMenu<ProcessExecutionStatusDTO> {
 
     @Override
-    public boolean isEnabled(DataWithTracking<ProcessExecutionStatusDTO, TrackingBase> dwt) {
+    public boolean isEnabled(final DataWithTracking<ProcessExecutionStatusDTO, TrackingBase> dwt) {
         return dwt.getData().getReturnCode() != null;
     }
 
     @Override
-    public void selected(Grid28 lb, DataWithTracking<ProcessExecutionStatusDTO, TrackingBase> dwt) {
-        ProcessExecutionStatusDTO m = dwt.getData();
+    public void selected(final Grid28 lb, final DataWithTracking<ProcessExecutionStatusDTO, TrackingBase> dwt) {
+        final ProcessExecutionStatusDTO m = dwt.getData();
         if (m != null && m.getReturnCode() != null) {
-            String text = ApplicationException.codeToString(m.getReturnCode());
-            String message = "Return code " + m.getReturnCode() + " means " + text;
+            final String text = ApplicationException.codeToString(m.getReturnCode());
+            final String message = "Return code " + m.getReturnCode() + " means " + text;
             Messagebox.show(message, "Information", Messagebox.OK, Messagebox.INFORMATION);
         }
     }

@@ -92,11 +92,11 @@ public class T9tException extends ApplicationException {
     public static final int SHUTDOWN_IN_PROGRESS = OFFSET_TIMEOUT + 52;
     public static final int CANNOT_CLOSE_SINK = OFFSET_DB_ERROR + 55;
 
-    public static final int OPTIMISTIC_LOCKING_EXCEPTION = OFFSET_DB_ERROR + 94;
+    public static final int OPTIMISTIC_LOCKING_EXCEPTION = OFFSET_DB_ERROR + 94;  // causes retry!
     public static final int REQUEST_PARAMETER_BAD_INHERITANCE = OFFSET + 95;
     public static final int TRANSACTION_RETRY_REQUEST = OFFSET_DB_ERROR + 96;
 //    public static final int GENERAL_EXCEPTION_CENTRAL = OFFSET_LOGIC_ERROR + 97;
-    public static final int GENERAL_EXCEPTION = OFFSET_DB_ERROR + 98;
+    public static final int GENERAL_EXCEPTION = OFFSET_DB_ERROR + 98;             // causes retry in some cases!
     public static final int SELECT_INSERT_SELECT_ERROR = OFFSET_LOGIC_ERROR + 99;
 
     // Codes specific to CrudRequests

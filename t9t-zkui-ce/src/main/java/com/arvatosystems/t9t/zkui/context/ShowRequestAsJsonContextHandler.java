@@ -30,9 +30,9 @@ import de.jpaw.dp.Singleton;
 public class ShowRequestAsJsonContextHandler extends AbstractShowParametersContextHandler {
 
     @Override
-    public void selected(Grid28 lb, DataWithTracking<MessageDTO, TrackingBase> dwt) {
-        MessageDTO dto = dwt.getData();
-        RequestParameters rp = super.getRequest(dto.getObjectRef());
+    public void selected(final Grid28 lb, final DataWithTracking<MessageDTO, TrackingBase> dwt) {
+        final MessageDTO dto = dwt.getData();
+        final RequestParameters rp = super.getRequest(dto.getObjectRef());
         if (rp != null) {
             super.showInModelWindow(lb, JsonComposerPrettyPrint.toJsonString(rp), false);
         }

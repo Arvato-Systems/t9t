@@ -47,9 +47,6 @@ import de.jpaw.json.JsonParser;
  * This implementation is intended for smaller input, because it converts the whole file in memory (JAXB like),
  * instead of the preferred Stax-like approach (one object at a time).
  * It is up to the configured IInputDataTransformer to create a valid request. (e.g. an file upload request.)
- *
- * The implementation expects enums encoded as ordinals and tokens by default.
- * enums are parsed using instance names if SinkCfgDTo.genericParameter2 = "1"
  */
 @Dependent
 @Named("JSON")
@@ -64,10 +61,8 @@ public class JsonFormatConverter extends AbstractInputFormatConverter {
         metaDataForOuter = new ObjectReference(Visibility.PRIVATE, false, "",
                 Multiplicity.SCALAR, IndexType.NONE, 0, 0, DataCategory.OBJECT, "json", "Map", false, false, null, true, "Map",
                 baseBClass.getMetaData(), null, null);
-        if ("1".equals(inputSession.getDataSinkDTO().getGenericParameter2())) {
-            useOrdinals = false;
-            useTokens = false;
-        }
+        useTokens = Boolean.TRUE.equals(inputSession.getDataSinkDTO().getJsonUseEnumTokens());
+        useOrdinals = useTokens;
         super.open(inputSession, params, baseBClass);
     }
 

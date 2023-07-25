@@ -46,6 +46,7 @@ public class FormatGeneratorCsv extends FoldableFormatGenerator<IOException> {
         osw = new OutputStreamWriter(outputResource.getOutputStream(), encoding);
         csvComposer = new CSVComposer3(osw, CSVTools.getCsvConfiguration(csvCfg));
         csvComposer.startTransmission();
+        writeTitles();
         super.openHook();
     }
 

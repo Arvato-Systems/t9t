@@ -17,6 +17,7 @@ package com.arvatosystems.t9t.zkui.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.zkoss.bind.BindUtils;
 
@@ -26,31 +27,37 @@ import com.arvatosystems.t9t.zkui.viewmodel.beans.Navi;
 import de.jpaw.bonaparte.pojos.api.LongFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
+import de.jpaw.bonaparte.pojos.api.UuidFilter;
 
 public final class JumpTool {
     private JumpTool() { }
 
-    public static void jump(String targetZul, String fieldName, String id, String backNaviLink) {
-        UnicodeFilter f = new UnicodeFilter(fieldName);
+    public static void jump(final String targetZul, final String fieldName, final String id, final String backNaviLink) {
+        final UnicodeFilter f = new UnicodeFilter(fieldName);
         f.setEqualsValue(id);
         jump (targetZul, f, backNaviLink);
     }
 
-    public static void jump(String targetZul, String fieldName, Long ref, String backNaviLink) {
-        LongFilter f = new LongFilter(fieldName);
+    public static void jump(final String targetZul, final String fieldName, final UUID ref, final String backNaviLink) {
+        final UuidFilter f = new UuidFilter(fieldName);
         f.setEqualsValue(ref);
         jump (targetZul, f, backNaviLink);
     }
 
-    public static void jump(String targetZul, SearchFilter f, String backNaviLink) {
+    public static void jump(final String targetZul, final String fieldName, final Long ref, final String backNaviLink) {
+        final LongFilter f = new LongFilter(fieldName);
+        f.setEqualsValue(ref);
+        jump (targetZul, f, backNaviLink);
+    }
+
+    public static void jump(final String targetZul, final SearchFilter f, final String backNaviLink) {
         ApplicationSession.get().setFilterForPresetSearch(f);
         jump(targetZul, backNaviLink);
     }
 
-    public static void jump(String targetZul, String backNaviLink) {
-        Navi navi = ApplicationUtil.getNavigationByLink(targetZul);
-
-        Map<String, Object> args = new HashMap<>();
+    public static void jump(final String targetZul, final String backNaviLink) {
+        final Navi navi = ApplicationUtil.getNavigationByLink(targetZul);
+        final Map<String, Object> args = new HashMap<>();
         args.put("selected", navi);
         args.put("backNaviLink", backNaviLink);
 

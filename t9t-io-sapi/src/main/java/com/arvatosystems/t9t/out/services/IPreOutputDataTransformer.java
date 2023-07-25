@@ -24,11 +24,10 @@ import com.arvatosystems.t9t.io.DataSinkDTO;
 import com.arvatosystems.t9t.io.services.IDataSinkDefaultConfigurationProvider;
 
 import de.jpaw.bonaparte.core.BonaPortable;
+import jakarta.annotation.Nonnull;
 
 /**
  * An {@linkplain IOutputSession} hook which allow transformation of output data before it gets stored.
- *
- * @author LIEE001
  */
 @FunctionalInterface
 public interface IPreOutputDataTransformer extends IDataSinkDefaultConfigurationProvider {
@@ -40,7 +39,7 @@ public interface IPreOutputDataTransformer extends IDataSinkDefaultConfiguration
      * @return header data
      * @throws T9tException if there is an issue creating header data
      */
-    default List<BonaPortable> headerData(final DataSinkDTO sinkCfg, final OutputSessionParameters outputSessionParameters) {
+    default List<BonaPortable> headerData(@Nonnull final DataSinkDTO sinkCfg, @Nonnull final OutputSessionParameters outputSessionParameters) {
         return null;
     }
 
@@ -49,10 +48,11 @@ public interface IPreOutputDataTransformer extends IDataSinkDefaultConfiguration
      * @param record the record
      * @param sinkCfg data sink configuration
      * @param outputSessionParameters output session parameters
-     * @return transformed records
+     * @return transformed records (can be an empty list, but never null)
      * @throws T9tException if there is an issue transforming record data
      */
-    List<BonaPortable> transformData(BonaPortable record, DataSinkDTO sinkCfg, OutputSessionParameters outputSessionParameters);
+    @Nonnull
+    List<BonaPortable> transformData(@Nonnull BonaPortable record, @Nonnull DataSinkDTO sinkCfg, @Nonnull OutputSessionParameters outputSessionParameters);
 
     /**
      * Returns fixed footer data.
@@ -61,7 +61,17 @@ public interface IPreOutputDataTransformer extends IDataSinkDefaultConfiguration
      * @return footer data
      * @throws T9tException if there is an issue creating footer data
      */
-    default List<BonaPortable> footerData(final DataSinkDTO sinkCfg, final OutputSessionParameters outputSessionParameters) {
+    default List<BonaPortable> footerData(@Nonnull final DataSinkDTO sinkCfg, @Nonnull final OutputSessionParameters outputSessionParameters) {
+        return null;
+    }
+
+    /**
+     * Returns selection criteria and/or header data.
+     *
+     * @param sinkCfg the data sink configuration
+     * @return a data structure with specific output directives
+     */
+    default FoldableParams getFoldableParams(@Nonnull final DataSinkDTO sinkCfg) {
         return null;
     }
 }

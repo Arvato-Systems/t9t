@@ -29,10 +29,8 @@ import de.jpaw.dp.Singleton;
 public class SinkToDataSinkContextMenuHandler implements IGridContextMenu<SinkDTO> {
 
     @Override
-    public void selected(Grid28 lb, DataWithTracking<SinkDTO, TrackingBase> dwt) {
-        SinkDTO dto = dwt.getData();
-        JumpTool.jump("screens/report/dataSink28.zul", "objectRef",
-            dto.getDataSinkRef().getObjectRef(), "screens/report/sink28.zul");
+    public void selected(final Grid28 lb, final DataWithTracking<SinkDTO, TrackingBase> dwt) {
+        final SinkDTO dto = dwt.getData();
+        JumpTool.jump("screens/report/dataSink28.zul", "objectRef", dto.getDataSinkRef().getObjectRef(), "screens/report/sink28.zul");
     }
-
 }

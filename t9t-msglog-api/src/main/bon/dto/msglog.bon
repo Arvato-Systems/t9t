@@ -59,7 +59,7 @@ package (com.arvatosystems) t9t.msglog {
         optional f42Ref                             invokingProcessRef;     // for asynchronous requests, the request which initiated this one
         required pqon                               requestParameterPqon;   // partially qualified name of the request
         optional (RequestParameters...)             requestParameters properties serialized="16777215", noAutoMap, length="16777215"; // 16 MB - 1 Byte is max. allowed message length
-        optional (ServiceResponse...)               response properties serialized="16777215", noAutoMap, length="16777215";
+        optional (ServiceResponse...)               response          properties serialized="16777215", noAutoMap, length="16777215";
         optional Long                               processingTimeInMillisecs;  // how long after executionStartedAt was the request complete
         optional Integer                            returnCode;                 // return code of request processing
         optional Unicode(512) allowControlChars     errorDetails;               // further information about the error location
@@ -69,6 +69,7 @@ package (com.arvatosystems) t9t.msglog {
         optional Integer                            partition;                  // in case called by a kafka topic consumer: which partition was used?
         optional Integer                            processingDelayInMillisecs; // how long after executionStartedAt was the received (for async messages)
         optional Enum TransactionOriginType         transactionOriginType;      // type of the initiator
+        optional defaultExternalId                  essentialKey;               // a request specific key field
     }
 
 

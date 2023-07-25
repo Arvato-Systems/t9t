@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.base;
+package com.arvatosystems.t9t.zkui.util;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -25,17 +25,19 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.base.T9tException;
+
 /**
  * Reads a property file (path to this file given by VM argument -DbasePropertyFile).
  */
 
-public final class BaseConfigurationProvider {
-    private static final Logger LOGGER = LoggerFactory.getLogger(BaseConfigurationProvider.class);
+public final class UiConfigurationProvider {
+    private static final Logger LOGGER = LoggerFactory.getLogger(UiConfigurationProvider.class);
 
-    private BaseConfigurationProvider() {
+    private UiConfigurationProvider() {
     }
 
-    public static Properties getBaseProperties() {
+    private static Properties getBaseProperties() {
         final Properties properties = new Properties();
 
         // if propertyFile parameter exists, use this file instead of the one from the project
@@ -69,10 +71,33 @@ public final class BaseConfigurationProvider {
                 }
             }
 
+            // now replace values starting with $env: with their environment
+            properties.forEach((key, value) -> {
+                if (value instanceof String str) {
+                    if (str.startsWith("$env:")) {
+                        final String envVal = System.getenv(str.substring(5));
+                        if (envVal == null) {
+                            LOGGER.warn("base property of key {} has value {}, but no environment variable found, or value is null", key, str);
+                        }
+                        properties.put(key, envVal);
+                    }
+                }
+            });
+
         } else {
             LOGGER.info("No VM argument for base property file name (-DbasePropertyFileName=...) (including resetPassword API Key) given!");
         }
 
         return properties;
+    }
+
+    private static final Properties BASE_PROPERTIES = getBaseProperties();
+
+    public static String getProperty(final String key) {
+        return BASE_PROPERTIES.getProperty(key);
+    }
+
+    public static String getProperty(final String key, final String defaultValue) {
+        return BASE_PROPERTIES.getProperty(key, defaultValue);
     }
 }

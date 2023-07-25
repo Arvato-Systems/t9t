@@ -15,9 +15,12 @@
  */
 package com.arvatosystems.t9t.kafka.service;
 
+import java.util.Map;
 import java.util.function.Consumer;
 
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.consumer.OffsetAndMetadata;
+import org.apache.kafka.common.TopicPartition;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 
@@ -50,6 +53,9 @@ public interface IKafkaTopicReader {
      */
     <T extends BonaPortable> int pollAndProcess(IKafkaConsumer<T> processor, Class<T> expectedType, long pollIntervalInMs,
       Consumer<KafkaConsumer<String, byte[]>> committer);
+
+    /** Initiates a commit for one or multiple partitions of a topic. */
+    void performPartialCommits(Map<TopicPartition, OffsetAndMetadata> partialCommits, boolean sync);
 
     /** Commits changes and closes the topic writer. */
     void close();

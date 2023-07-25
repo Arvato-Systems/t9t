@@ -33,12 +33,12 @@ import de.jpaw.dp.Singleton;
 public class ShowCallTreeContextHandler implements IGridContextMenu<ProcessStatusDTO> {
 
     @Override
-    public void selected(Grid28 lb, DataWithTracking<ProcessStatusDTO, TrackingBase> dwt) {
-        ProcessStatusDTO dto = dwt.getData();
-        List<StackLevel> stack = dto.getCallStack();
+    public void selected(final Grid28 lb, final DataWithTracking<ProcessStatusDTO, TrackingBase> dwt) {
+        final ProcessStatusDTO dto = dwt.getData();
+        final List<StackLevel> stack = dto.getCallStack();
         if (stack != null) {
             int depth = -1;
-            StringBuilder tree = new StringBuilder();
+            final StringBuilder tree = new StringBuilder();
             for (StackLevel sl : stack) {
                 if (depth >= 0) {
                     for (int i = 0; i < depth; ++i) {
@@ -54,7 +54,7 @@ public class ShowCallTreeContextHandler implements IGridContextMenu<ProcessStatu
                     ));
                 ++depth;
             }
-            Info info = new Info();
+            final Info info = new Info();
             info.setText(tree.toString());
             ModalWindows.runModal("/context/info28.zul", lb.getParent(), info, false, (d) -> { });
         }

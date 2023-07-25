@@ -40,7 +40,7 @@
         <!-- jpaw / bonaparte: versions for import of BOM. The plugin version is defined separately in SE/EE -->
         <!-- Note that the version of the bonapart-dsl plugin is set in "global-settings" -->
         <jpaw-bom.version>3.2.0</jpaw-bom.version>
-        <bonaparte-bom.version>5.2.0</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
+        <bonaparte-bom.version>5.2.1</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
 
         <!-- Versions of Xtext & Xtend -->
         <!-- Note that the versions of the xtext/xtend plugins are ALSO set in "global-settings" -->
@@ -52,11 +52,11 @@
         <driver.postgresql.version>42.6.0</driver.postgresql.version>  <!-- starting with 4.2.15, the driver adds a dependency to checker-qual 3.5.0 which conflicts with 2.5.2 pulled by guava -->
         <driver.sqlserver.version>11.2.3.jre17</driver.sqlserver.version>
         <driver.hana.version>2.17.7</driver.hana.version>
-        <h2.version>2.1.214</h2.version>
+        <h2.version>2.2.220</h2.version>
 
         <!-- OR mappers -->
         <eclipselink.version>3.0.3</eclipselink.version>
-        <hibernate.version>6.2.5.Final</hibernate.version>
+        <hibernate.version>6.2.6.Final</hibernate.version>
         <hibernate-validator.version>8.0.0.Final</hibernate-validator.version>
         <ehcache.version>2.10.9.2</ehcache.version>
         <ehcache3.version>3.10.8</ehcache3.version>
@@ -156,7 +156,7 @@
         <flyingsaucer.version>9.1.22</flyingsaucer.version>
 
         <javassist.version>3.29.2-GA</javassist.version>
-        <guava.version>32.0.1-jre</guava.version>
+        <guava.version>32.1.1-jre</guava.version>
         <caffeine.version>3.1.6</caffeine.version>
         <antlr.version>3.2</antlr.version>
         <resteasy.version>6.2.4.Final</resteasy.version>
@@ -169,8 +169,8 @@
         <reload4j.version>1.2.25</reload4j.version>
 
         <!-- Spring -->
-        <spring-bom.version>6.0.10</spring-bom.version>
-        <spring-data-jpa.version>3.1.1</spring-data-jpa.version>
+        <spring-bom.version>6.0.11</spring-bom.version>
+        <spring-data-jpa.version>3.1.2</spring-data-jpa.version>
         <spring-boot.version>3.1.1</spring-boot.version>
 
         <netty.version>4.1.94.Final</netty.version>
@@ -194,7 +194,7 @@
         <error-prone.version>2.19.1</error-prone.version>
 
         <!-- Monitoring -->
-        <micrometer.version>1.11.1</micrometer.version>
+        <micrometer.version>1.11.2</micrometer.version>
         <prometheus.version>0.16.0</prometheus.version>
 
         <!-- Swagger -->
@@ -205,6 +205,9 @@
         <google-http-client.version>1.43.3</google-http-client.version>
         <google-auth-library.version>1.17.0</google-auth-library.version>
         <firebase-admin.version>9.1.1</firebase-admin.version>
+
+        <msal4j.version>1.13.9</msal4j.version>
+        <nimbus.version>9.30.2</nimbus.version>
     </properties>
 
 
@@ -1476,6 +1479,16 @@
                 <groupId>com.google.firebase</groupId>
                 <artifactId>firebase-admin</artifactId>
                 <version>${firebase-admin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.microsoft.azure</groupId>
+                <artifactId>msal4j</artifactId>
+                <version>${msal4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nimbusds</groupId>
+                <artifactId>nimbus-jose-jwt</artifactId>
+                <version>${nimbus.version}</version>
             </dependency>
 
         </dependencies>

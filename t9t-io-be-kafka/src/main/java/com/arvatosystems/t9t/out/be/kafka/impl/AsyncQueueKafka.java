@@ -65,7 +65,8 @@ public class AsyncQueueKafka<R extends BonaPortable> implements IAsyncQueue {
     private static final Logger LOGGER = LoggerFactory.getLogger(AsyncQueueKafka.class);
 
     private final IAsyncMessageUpdater messageUpdater = Jdp.getRequired(IAsyncMessageUpdater.class);
-    private final boolean writeAllToDatabase = ConfigProvider.getCustomParameter("NoAsyncPersist") == null;
+    private final AsyncTransmitterConfiguration asyncConfig = ConfigProvider.getConfiguration().getAsyncMsgConfiguration();
+    private final boolean launchSenders = asyncConfig != null && Boolean.TRUE.equals(asyncConfig.getProcessQueues());
     private final ConcurrentMap<Long, QueueData> queueData;
 
     /** Keeps the queue configuration and the references to their threads. */
@@ -74,7 +75,7 @@ public class AsyncQueueKafka<R extends BonaPortable> implements IAsyncQueue {
         private final WriterThread    writerThread;
         private final ExecutorService executor;
 
-        private QueueData(final AsyncQueueDTO queueConfig) {
+        private QueueData(final AsyncQueueDTO queueConfig, final boolean launchSenders) {
             queueConfig.freeze();
 
             // obtain the kafka configuration
@@ -90,31 +91,39 @@ public class AsyncQueueKafka<R extends BonaPortable> implements IAsyncQueue {
             }
             kafkaWriter = new KafkaTopicWriter(bootstrapServers, topic, new Properties());
 
-            executor = Executors.newSingleThreadExecutor(t -> new Thread(t, "t9t-AsyncTx-" + queueConfig.getAsyncQueueId()));
-            this.writerThread = new WriterThread(queueConfig, bootstrapServers, topic);
-            executor.submit(writerThread);
+            if (launchSenders) {
+                // initiate process to drain the queue
+                executor = Executors.newSingleThreadExecutor(t -> new Thread(t, "t9t-AsyncTx-" + queueConfig.getAsyncQueueId()));
+                writerThread = new WriterThread(queueConfig, bootstrapServers, topic);
+                executor.submit(writerThread);
+            } else {
+                executor = null;
+                writerThread = null;
+            }
         }
 
         private void shutdown(int timeout) {
-            writerThread.close();
-            writerThread.shutdownInProgress.set(true);
-            executor.shutdown();
-            if (timeout < 1000)
-                timeout = 1000;
-            try {
-                if (executor.awaitTermination(timeout, TimeUnit.MILLISECONDS)) {
-                    LOGGER.info("Normal completion of shutting down async transmitter");
-                } else {
-                    LOGGER.warn("Timeout during shutdown of async transmitter");
+            if (writerThread != null) {
+                writerThread.close();
+                writerThread.shutdownInProgress.set(true);
+                executor.shutdown();
+                if (timeout < 1000)
+                    timeout = 1000;
+                try {
+                    if (executor.awaitTermination(timeout, TimeUnit.MILLISECONDS)) {
+                        LOGGER.info("Normal completion of shutting down async transmitter");
+                    } else {
+                        LOGGER.warn("Timeout during shutdown of async transmitter");
+                    }
+                } catch (final InterruptedException e) {
+                    LOGGER.warn("Shutdown of async transmitter was interrupted");
                 }
-            } catch (final InterruptedException e) {
-                LOGGER.warn("Shutdown of async transmitter was interrupted");
             }
         }
     }
 
     public AsyncQueueKafka() {
-        LOGGER.info("Async queue by KAFKA loaded");
+        LOGGER.info("Async queue by KAFKA loaded in {} mode", launchSenders ? "WRITE-AND-SEND" : "WRITE-ONLY");
 
         // read the configured queues and launch a thread for each of them...
         final List<AsyncQueueDTO> queueDTOs = messageUpdater.getActiveQueues();
@@ -124,7 +133,7 @@ public class AsyncQueueKafka<R extends BonaPortable> implements IAsyncQueue {
             // which means we do not yet have access to their name.
             for (final AsyncQueueDTO q: queueDTOs) {
                 try {
-                    queueData.put(q.getObjectRef(), new QueueData(q));
+                    queueData.put(q.getObjectRef(), new QueueData(q, launchSenders));
                 } catch (final Exception e) {
                     LOGGER.error("Cannot launch async writer thread for queue {} due to {}", q.getAsyncQueueId(), ExceptionUtil.causeChain(e));
                 }
@@ -188,7 +197,7 @@ public class AsyncQueueKafka<R extends BonaPortable> implements IAsyncQueue {
             LOGGER.info("Starting async thread {} for queue {}", threadName, myQueueCfg.getAsyncQueueId());
             while (!shutdownInProgress.get()) {
                 try {
-                    kafkaReader.pollAndProcess((m, p, k) -> asyncTools.tryToSend(sender, m, serverConfig.getTimeoutExternal()), InMemoryMessage.class);
+                    kafkaReader.pollAndProcess((m, p, o, k) -> asyncTools.tryToSend(sender, m, serverConfig.getTimeoutExternal()), InMemoryMessage.class);
                 } catch (final Exception e) {
                     LOGGER.error("Exception in Async transmitter thread: {}", ExceptionUtil.causeChain(e));
                     LOGGER.error("Trace is", e);
@@ -230,9 +239,9 @@ public class AsyncQueueKafka<R extends BonaPortable> implements IAsyncQueue {
             m.setObjectRef(objectRef);
             m.setPayload(payload);
             m.freeze();
-            LOGGER.debug("ASYNC: KAFKA write to topic: channel {}, partition {}, key {}, objectRef {}",
-                    channel.getAsyncChannelId(), partition, recordKey, objectRef);
             ctx.addPostCommitHook((final RequestContext oldCtx, final RequestParameters rq, final ServiceResponse rs) -> {
+                LOGGER.debug("ASYNC: KAFKA write to topic: channel {}, partition {}, key {}, objectRef {}",
+                  channel.getAsyncChannelId(), partition, recordKey, objectRef);
                 queue.kafkaWriter.write(m, partition, recordKey);
             });
         }
@@ -279,7 +288,7 @@ public class AsyncQueueKafka<R extends BonaPortable> implements IAsyncQueue {
 
     @Override
     public void open(final AsyncQueueDTO queue) {
-        queueData.computeIfAbsent(queue.getObjectRef(), (x) -> new QueueData(queue));
+        queueData.computeIfAbsent(queue.getObjectRef(), (x) -> new QueueData(queue, launchSenders));
     }
 
     @Override
@@ -302,6 +311,6 @@ public class AsyncQueueKafka<R extends BonaPortable> implements IAsyncQueue {
     /** For the kafka implementation, usually the messages are not persisted, but this is configurable. */
     @Override
     public boolean persistInDb() {
-        return writeAllToDatabase;
+        return asyncConfig == null || !Boolean.TRUE.equals(asyncConfig.getDoNotPersistMessages());
     }
 }

@@ -29,10 +29,8 @@ import de.jpaw.dp.Singleton;
 public class ReportParamsToReportConfigContextMenuHandler implements IGridContextMenu<ReportParamsDTO> {
 
     @Override
-    public void selected(Grid28 lb, DataWithTracking<ReportParamsDTO, TrackingBase> dwt) {
-        ReportParamsDTO dto = dwt.getData();
-        JumpTool.jump("screens/report/reportConfig28.zul", "objectRef",
-            dto.getReportConfigRef().getObjectRef(), "screens/report/reportParams28.zul");
+    public void selected(final Grid28 lb, final DataWithTracking<ReportParamsDTO, TrackingBase> dwt) {
+        final ReportParamsDTO dto = dwt.getData();
+        JumpTool.jump("screens/report/reportConfig28.zul", "objectRef", dto.getReportConfigRef().getObjectRef(), "screens/report/reportParams28.zul");
     }
-
 }

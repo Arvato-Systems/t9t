@@ -30,9 +30,9 @@ import de.jpaw.dp.Singleton;
 public class ShowResponseContextHandler extends AbstractShowParametersContextHandler {
 
     @Override
-    public void selected(Grid28 lb, DataWithTracking<MessageDTO, TrackingBase> dwt) {
-        MessageDTO dto = dwt.getData();
-        ServiceResponse rp = super.getResponse(dto.getObjectRef());
+    public void selected(final Grid28 lb, final DataWithTracking<MessageDTO, TrackingBase> dwt) {
+        final MessageDTO dto = dwt.getData();
+        final ServiceResponse rp = super.getResponse(dto.getObjectRef());
         if (rp != null) {
             super.showInModelWindow(lb, ToStringHelper.toStringML(rp), false);
         }

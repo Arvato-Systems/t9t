@@ -48,8 +48,14 @@ package (com.arvatosystems) t9t.auth {
     type roleId                 is Ascii(32);          // role Id
     type passwordHash           is Binary(64);
 
+    enum AuthenticationIssuerType {
+        ISSUER_APIKEY           = "AK",
+        ISSUER_USERID_PASSWORD  = "UP",
+        ISSUER_USERID_MS_OPENID = "MS"
+    }
 
-    /** Extended tenant configuration for data exceeding the generic tenant configuration of the application server.
+    /**
+     * Extended tenant configuration for data exceeding the generic tenant configuration of the application server.
      * Data in this class defaults to the entries for the global tenant if no record has been defined for this tenant.
      * Records of this entity share the same artifical primary key tenantId.
      */
@@ -148,14 +154,28 @@ package (com.arvatosystems) t9t.auth {
         optional shortText                          salutation;                             // salutation
         optional t9tShortId                         orgUnit;                                // org unit ID or provider ID
         optional Unicode(64)                        defaultScreenId;                        // default screen admin zk ui
-        optional defaultExternalId                  userIdExt;                              // external user ID - only required to be unique within tenant and orgUnit.
+        optional defaultExternalId                  userIdExt;                              // external user ID - only required to be unique within tenant and orgUnit
+        optional Ascii(80)                          identityProvider;                       // for MS OpenID Connect / Azure AD: if present, requires that the user belongs to this tenant
+        optional Boolean                            onlyExternalAuth;                       // set to true to disable internal authentication
     }
+
     final class UserDescription extends UserRef {
         required userId                             userId          properties notupdatable;    // User id to be used for login
         required boolean                            isActive        properties active;
         optional shortText                          name;                                   // christian name, surname
         optional t9tShortId                         orgUnit;                                // org unit ID or provider ID
         optional defaultExternalId                  userIdExt;                              // external user ID - only required to be unique within tenant and orgUnit.
+    }
+
+    /** Intermediate storage for claims obtained via OpenID connect authentication. */
+    final class OidClaims {
+        optional defaultExternalId                  oid;            // unique user ID
+        optional Ascii(80)                          idp;            // unique ID of the identity provider (tenant ID with path for Azure AD)
+        optional Long                               exp;            // expiry of the JWT (in seconds since the epoch)
+        optional Unicode(255)                       upn;            // user ID or email
+        optional Unicode(255)                       ipAddress;      // IP address of authentication
+        optional emailAddress                       emailAddress;   // email address data
+        optional t9tShortId                         name;           // name as sent by OIDC
     }
 
     /**

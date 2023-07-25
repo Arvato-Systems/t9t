@@ -34,12 +34,12 @@ public class AsyncMessageMarkAsUnsentContextHandler implements IGridContextMenu<
     protected final IT9tRemoteUtils remoteUtils = Jdp.getRequired(IT9tRemoteUtils.class);
 
     @Override
-    public boolean isEnabled(DataWithTracking<AsyncMessageDTO, TrackingBase> dwt) {
+    public boolean isEnabled(final DataWithTracking<AsyncMessageDTO, TrackingBase> dwt) {
         return true; // dwt.getData().getStatus() == ExportStatusEnum.RESPONSE_OK; // for stuck messages, resend from any state should be possible
     }
 
     @Override
-    public void selected(Grid28 lb, DataWithTracking<AsyncMessageDTO, TrackingBase> dwt) {
+    public void selected(final Grid28 lb, final DataWithTracking<AsyncMessageDTO, TrackingBase> dwt) {
         final AsyncMessageDTO dto = dwt.getData();
         final UpdateAsyncMessageStatusRequest rq = new UpdateAsyncMessageStatusRequest();
         rq.setAsyncMessageRef(dto.getObjectRef());

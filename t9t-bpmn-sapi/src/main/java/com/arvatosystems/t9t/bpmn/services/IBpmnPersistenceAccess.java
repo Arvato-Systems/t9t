@@ -43,11 +43,12 @@ public interface IBpmnPersistenceAccess {
     /** Stores an initial status when a new task is submitted. */
     Long persistNewStatus(ProcessExecutionStatusDTO dto);
 
-    /** Retrieves all processDefinitions of current tasks. */
-    List<ProcessExecutionStatusDTO> getTasksDue(String onlyForProcessDefinitionId, Instant whenDue, boolean includeErrorStatus, boolean allClusterNodes);
+    /** Retrieves all process status records of current tasks (unused). */
+    List<ProcessExecutionStatusDTO> getTasksDue(String onlyForProcessDefinitionId, Instant whenDue, boolean includeErrorStatus, boolean allClusterNodes,
+        String onlyForNextStep);
 
-    /** Retrieves all processDefinitions of current tasks. */
-    List<Long> getTaskRefsDue(String onlyForProcessDefinitionId, Instant whenDue, boolean includeErrorStatus, boolean allClusterNodes);
+    /** Retrieves all references to process status records of current tasks. */
+    List<Long> getTaskRefsDue(String onlyForProcessDefinitionId, Instant whenDue, boolean includeErrorStatus, boolean allClusterNodes, String onlyForNextStep);
 
     /** Update existing process execution status */
     Long createOrUpdateNewStatus(RequestContext ctx, ProcessExecutionStatusDTO dto, ExecuteProcessWithRefRequest rq, boolean restart);

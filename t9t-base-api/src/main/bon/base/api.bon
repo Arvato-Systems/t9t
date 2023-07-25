@@ -66,6 +66,7 @@ package (com.arvatosystems) t9t.base.api {
         optional Enum RetryAdviceType               idempotencyBehaviour;       // defaults to RETRY_ON_ERROR
         optional Enum TransactionOriginType         transactionOriginType;      // type of the initiator
         optional Long                               whenSent;                   // time since the epoch in ms
+        optional defaultExternalId                  essentialKey;               // a request specific key field
     }
 
     /** The ContextlessRequestParameters provide an artifical common base class for handlers operating outside of a request scope (scripts, macros, outer loops). */

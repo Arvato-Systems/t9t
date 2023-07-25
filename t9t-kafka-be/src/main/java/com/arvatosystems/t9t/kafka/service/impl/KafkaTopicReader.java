@@ -26,7 +26,9 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.PartitionInfo;
+import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.slf4j.Logger;
@@ -37,6 +39,7 @@ import com.arvatosystems.t9t.kafka.service.IKafkaTopicReader;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.CompactByteArrayParser;
+import de.jpaw.util.ExceptionUtil;
 
 public class KafkaTopicReader implements IKafkaTopicReader {
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaTopicReader.class);
@@ -112,7 +115,7 @@ public class KafkaTopicReader implements IKafkaTopicReader {
                 try {
                     obj = new CompactByteArrayParser(oneRecord.value(), 0, -1).readRecord();
                 } catch (Exception e) {
-                    LOGGER.error("Data in topic {} for key {} is not a parseable BonaPortable", kafkaTopic, oneRecord.key(), e.getMessage());
+                    LOGGER.error("Data in topic {} for key {} is not a parseable BonaPortable: {}", kafkaTopic, oneRecord.key(), e.getMessage());
                     continue;
                 }
                 if (obj == null || !expectedType.isAssignableFrom(obj.getClass())) {
@@ -122,9 +125,9 @@ public class KafkaTopicReader implements IKafkaTopicReader {
                 }
                 final T typedObj = (T)obj;
                 try {
-                    processor.accept(typedObj, oneRecord.partition(), oneRecord.key());
+                    processor.accept(typedObj, oneRecord.partition(), oneRecord.offset(), oneRecord.key());
                 } catch (Exception e) {
-                    LOGGER.error("Uncaught exception processing data iof topic {} for key {}: {}", kafkaTopic, oneRecord.key(), e.getMessage());
+                    LOGGER.error("Uncaught exception processing data of topic {} for key {}: {}", kafkaTopic, oneRecord.key(), e.getMessage());
                     continue;
                 }
             }
@@ -134,5 +137,18 @@ public class KafkaTopicReader implements IKafkaTopicReader {
             }
         }
         return count;
+    }
+
+    @Override
+    public void performPartialCommits(final Map<TopicPartition, OffsetAndMetadata> offsets, final boolean sync) {
+        if (sync) {
+            consumer.commitSync(offsets);
+        } else {
+            consumer.commitAsync(offsets, (o, e) -> {
+                if (e != null) {
+                    LOGGER.error("Partial commit failed: {}", ExceptionUtil.causeChain(e));
+                }
+            });
+        }
     }
 }

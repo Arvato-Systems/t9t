@@ -32,7 +32,7 @@ import de.jpaw.dp.Singleton;
 public class MissingContextMenuHandler implements IGridContextMenu<BonaPortable> {
 
     @Override
-    public void selected(Grid28 lb, DataWithTracking<BonaPortable, TrackingBase> dwt) {
+    public void selected(final Grid28 lb, final DataWithTracking<BonaPortable, TrackingBase> dwt) {
         Messagebox.show("Not available", "Error", Messagebox.CANCEL, Messagebox.EXCLAMATION);
     }
 }

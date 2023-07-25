@@ -32,15 +32,16 @@ public class ShowSinkForSliceContextMenuHandler implements IGridContextMenu<Slic
     protected final IT9tMessagingDAO messagingDAO = Jdp.getRequired(IT9tMessagingDAO.class);
 
     @Override
-    public boolean isEnabled(DataWithTracking<SliceTrackingDTO, TrackingBase> dwt) {
-        SliceTrackingDTO dto = dwt.getData();
+    public boolean isEnabled(final DataWithTracking<SliceTrackingDTO, TrackingBase> dwt) {
+        final SliceTrackingDTO dto = dwt.getData();
         return dto.getLastSinkRef() != null;
     }
 
     @Override
-    public void selected(Grid28 lb, DataWithTracking<SliceTrackingDTO, TrackingBase> dwt) {
-        SliceTrackingDTO dto = dwt.getData();
-        if (dto.getLastSinkRef() != null)
+    public void selected(final Grid28 lb, final DataWithTracking<SliceTrackingDTO, TrackingBase> dwt) {
+        final SliceTrackingDTO dto = dwt.getData();
+        if (dto.getLastSinkRef() != null) {
             JumpTool.jump("screens/report/sink28.zul", "objectRef", dto.getLastSinkRef(), "screens/report/sliceTracking28.zul");
+        }
     }
 }

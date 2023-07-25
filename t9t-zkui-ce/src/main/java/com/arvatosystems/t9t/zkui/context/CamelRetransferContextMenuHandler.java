@@ -33,13 +33,13 @@ public class CamelRetransferContextMenuHandler implements IGridContextMenu<SinkD
     protected final IT9tRemoteUtils messaging = Jdp.getRequired(IT9tRemoteUtils.class);
 
     @Override
-    public boolean isEnabled(DataWithTracking<SinkDTO, TrackingBase> dwt) {
-        ExportStatusEnum status = dwt.getData().getCamelTransferStatus();
+    public boolean isEnabled(final DataWithTracking<SinkDTO, TrackingBase> dwt) {
+        final ExportStatusEnum status = dwt.getData().getCamelTransferStatus();
         return status != null && status != ExportStatusEnum.RESPONSE_OK;
     }
 
     @Override
-    public void selected(Grid28 lb, DataWithTracking<SinkDTO, TrackingBase> dwt) {
+    public void selected(final Grid28 lb, final DataWithTracking<SinkDTO, TrackingBase> dwt) {
         messaging.executeExpectOk(new ProcessCamelRouteRequest(dwt.getData().getObjectRef()));
     }
 }

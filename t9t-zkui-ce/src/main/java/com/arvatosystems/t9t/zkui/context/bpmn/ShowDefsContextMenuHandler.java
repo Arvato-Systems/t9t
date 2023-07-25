@@ -30,8 +30,8 @@ import de.jpaw.dp.Singleton;
 public class ShowDefsContextMenuHandler implements IGridContextMenu<ProcessExecutionStatusDTO> {
 
     @Override
-    public void selected(Grid28 lb, DataWithTracking<ProcessExecutionStatusDTO, TrackingBase> dwt) {
-        ProcessExecutionStatusDTO dto = dwt.getData();
+    public void selected(final Grid28 lb, final DataWithTracking<ProcessExecutionStatusDTO, TrackingBase> dwt) {
+        final ProcessExecutionStatusDTO dto = dwt.getData();
         JumpTool.jump("screens/data_admin/processDefinition28.zul", "processDefinitionId", dto.getProcessDefinitionId(), "screens/data_admin/bpmnStatus28.zul");
     }
 }

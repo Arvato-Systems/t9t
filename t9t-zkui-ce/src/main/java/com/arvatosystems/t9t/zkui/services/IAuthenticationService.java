@@ -19,5 +19,6 @@ import com.arvatosystems.t9t.base.T9tException;
 
 public interface IAuthenticationService {
     void login(String username, String password) throws T9tException;
+    void loginWithExternalToken(String accessToken, String username) throws T9tException;
     void logout();
 }

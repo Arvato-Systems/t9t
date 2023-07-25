@@ -31,13 +31,13 @@ import de.jpaw.dp.Singleton;
 public class ToTargetScreenContextMenuHandler implements IGridContextMenu<ProcessExecutionStatusDTO> {
 
     @Override
-    public boolean isEnabled(DataWithTracking<ProcessExecutionStatusDTO, TrackingBase> dwt) {
+    public boolean isEnabled(final DataWithTracking<ProcessExecutionStatusDTO, TrackingBase> dwt) {
         // there is no target screen in t9t
         return false;
     }
 
     @Override
-    public void selected(Grid28 lb, DataWithTracking<ProcessExecutionStatusDTO, TrackingBase> dwt) {
+    public void selected(final Grid28 lb, final DataWithTracking<ProcessExecutionStatusDTO, TrackingBase> dwt) {
         // there is no target screen in t9t: do a NOOP
     }
 }

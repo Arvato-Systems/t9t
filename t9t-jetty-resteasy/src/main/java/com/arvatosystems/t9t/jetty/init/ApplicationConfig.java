@@ -31,13 +31,12 @@ import com.arvatosystems.t9t.rest.converters.JakartarsParamConverterProvider;
 import com.arvatosystems.t9t.rest.filters.CustomLoggingFilter;
 import com.arvatosystems.t9t.rest.filters.T9tRestAuthenticationFilter;
 import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
-import com.arvatosystems.t9t.rest.utils.RestUtils;
 import com.arvatosystems.t9t.rest.utils.JacksonObjectMapperProvider;
+import com.arvatosystems.t9t.rest.utils.RestUtils;
 import com.arvatosystems.t9t.rest.xml.XmlMediaTypeDecoder;
 import com.arvatosystems.t9t.rest.xml.XmlMediaTypeEncoder;
 import com.google.common.base.Splitter;
 
-import de.jpaw.bonaparte.core.BonaPortableFactory;
 import de.jpaw.dp.Jdp;
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import jakarta.servlet.ServletConfig;
@@ -54,7 +53,6 @@ public class ApplicationConfig extends Application {
     public ApplicationConfig(@Context final ServletConfig servletConfig) {
         LOGGER.info("t9t servlet context initialization START");
         MessagingUtil.initializeBonaparteParsers();
-        BonaPortableFactory.useFixedClassLoader(null);
         Init.initializeT9t();
         LOGGER.info("t9t servlet context initialization COMPLETE");
 

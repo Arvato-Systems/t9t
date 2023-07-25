@@ -15,7 +15,10 @@
  */
 package com.arvatosystems.t9t.authc.be.api;
 
-import com.arvatosystems.t9t.auth.be.impl.AuthResponseUtil;
+import java.util.List;
+import java.util.Map;
+
+import com.arvatosystems.t9t.auth.AuthenticationIssuerType;
 import com.arvatosystems.t9t.auth.hooks.IJwtEnrichment;
 import com.arvatosystems.t9t.auth.services.IAuthPersistenceAccess;
 import com.arvatosystems.t9t.auth.services.IAuthResponseUtil;
@@ -25,10 +28,9 @@ import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.auth.AuthenticationResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
+
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 import de.jpaw.dp.Jdp;
-import java.util.List;
-import java.util.Map;
 
 public class SwitchTenantRequestHandler extends AbstractRequestHandler<SwitchTenantRequest> {
 
@@ -38,8 +40,8 @@ public class SwitchTenantRequestHandler extends AbstractRequestHandler<SwitchTen
 
     @Override
     public AuthenticationResponse execute(final RequestContext ctx, final SwitchTenantRequest request) throws Exception {
-        if (!AuthResponseUtil.ISSUER_USERID_PASSWORD.equals(ctx.internalHeaderParameters.getJwtInfo().getIssuer())) {
-            // deny this request unless the token was created via userId / password authentication
+        if (AuthenticationIssuerType.ISSUER_APIKEY.getToken().equals(ctx.internalHeaderParameters.getJwtInfo().getIssuer())) {
+            // deny this request if authenticated via API key
             throw new T9tException(T9tException.NOT_AUTHORIZED_WRONG_METHOD, "issuer = " + ctx.internalHeaderParameters.getJwtInfo().getIssuer());
         }
         final JwtInfo jwt = ctx.internalHeaderParameters.getJwtInfo().ret$MutableClone(false, false);

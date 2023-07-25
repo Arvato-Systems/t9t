@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xel-method prefix="l" name="translate" class="com.arvatosystems.t9t.zkui.util.ZulUtils" signature="String translate(String, String)"?>
+<?link rel="icon" type="image/x-icon" href="/favicon.ico"?>
+
+<window  title="${l:translate('redirect','title')}" border="normal" viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.support.AadRedirectViewModel')"
+    width="450px" position="center,center"  mode="overlapped">
+        <style src="/css/screen.css" />
+        <style src="/css/body.css" />
+    <vbox width="450px">
+        <div sclass="contentText">
+            <span>${l:translate('redirect','loading')}</span>
+        </div>
+    </vbox>
+</window>

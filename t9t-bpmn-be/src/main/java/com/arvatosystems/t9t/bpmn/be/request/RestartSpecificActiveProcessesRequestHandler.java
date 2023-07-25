@@ -1,0 +1,58 @@
+/*
+ * Copyright (c) 2012 - 2023 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.arvatosystems.t9t.bpmn.be.request;
+
+import java.time.Instant;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.arvatosystems.t9t.base.T9tUtil;
+import com.arvatosystems.t9t.base.api.ServiceResponse;
+import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
+import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.bpmn.request.RestartSpecificActiveProcessesRequest;
+import com.arvatosystems.t9t.bpmn.request.TriggerSingleProcessNowRequest;
+import com.arvatosystems.t9t.bpmn.services.IBpmnPersistenceAccess;
+import com.arvatosystems.t9t.statistics.services.IAutonomousRunner;
+
+import de.jpaw.dp.Jdp;
+
+public class RestartSpecificActiveProcessesRequestHandler extends AbstractRequestHandler<RestartSpecificActiveProcessesRequest> {
+    private static final Logger LOGGER  = LoggerFactory.getLogger(RestartSpecificActiveProcessesRequestHandler.class);
+    protected final IAutonomousRunner runner = Jdp.getRequired(IAutonomousRunner.class);
+    protected final IBpmnPersistenceAccess persistenceAccess = Jdp.getRequired(IBpmnPersistenceAccess.class);
+
+    @Override
+    public ServiceResponse execute(final RequestContext ctx, final RestartSpecificActiveProcessesRequest rq) {
+        final String processId = rq.getProcessId();
+        final Instant dueWhen = ctx.executionStart.minusSeconds(T9tUtil.nvl(rq.getMinAgeInSeconds(), 30));
+        final List<Long> taskRefs = persistenceAccess.getTaskRefsDue(processId, dueWhen,
+            Boolean.TRUE.equals(rq.getIncludeErrorStatus()), Boolean.TRUE.equals(rq.getRunProcessesOfAnyNode()), rq.getNextStep());
+
+        final int numRecords = taskRefs.size();
+        if (numRecords > 0) {
+            LOGGER.debug("Found {} active tasks for workflow {} at step {} for restart", numRecords, processId, rq.getNextStep());
+
+            runner.runSingleAutonomousTx(ctx, numRecords, taskRefs,
+                    ref -> new TriggerSingleProcessNowRequest(ref),
+                    stat -> stat.setInfo1(processId),
+                    "t9t-bpm-s");
+        }
+        return ok();
+    }
+}

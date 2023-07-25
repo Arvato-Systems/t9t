@@ -239,7 +239,11 @@ package (com.arvatosystems) t9t.io {
         optional Integer                                inputProcessingParallel;    // defines the number of parallel threads to use for processing
         optional customizationQualifier                 inputProcessingSplitter properties qualifierFor="base.services.IInputQueuePartitioner"; // method to determine partition to use (if blank and inputProcessingParallel > 1: use round robin)
         optional Unicode(255)                           inputProcessingTarget;      // required for KAFKA or REMOTE: the topic or the remote path to use for processing
-        optional Boolean                                computeFileSize;
+        optional Boolean                                computeFileSize;            // compute and store file size after data export
+        optional Boolean                                jsonWritePqon;              // write PQON info for Bonaparte JSON serializers (JSON, JSON-Kafka)
+        optional Boolean                                jsonWriteNulls;             // explicitly export nulls (bonaparte and jackson)
+        optional Boolean                                jsonUseEnumTokens;          // read or write tokens or ordinals instead of name for Bonaparte JSON serializers (JSON, JSON-Kafka)
+        optional Boolean                                writeHeaderRow;             // write a header row if available for CSV, XLS, XLSX exporters
     }
 
     /** Configuration defaults for DataSinks, provided by the implementation. (Primarily intended to support the complex XML APIs). */

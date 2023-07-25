@@ -58,7 +58,7 @@ public class KafkaRequestProcessorAndClusterManagerInitializer implements Startu
     @IsLogicallyFinal  // set by open() method
     private IKafkaTopicReader consumer;
 
-    private final AtomicBoolean pleaseStop = new AtomicBoolean(false);
+    private final AtomicBoolean shuttingDown = new AtomicBoolean(false);
 
     private static KafkaRebalancer rebalancer = null;
     private static int numberOfPartitons = 1;
@@ -97,7 +97,10 @@ public class KafkaRequestProcessorAndClusterManagerInitializer implements Startu
         }
 
         executorKafkaIO = Executors.newSingleThreadExecutor(call -> new Thread(call, KAFKA_CLUSTER_MANAGER_THREAD_NAME));
-        writerResult = executorKafkaIO.submit(new KafkaRequestProcessor(defaults, consumer, pleaseStop));
+        writerResult = executorKafkaIO.submit(
+            Boolean.TRUE.equals(defaults.getClusterManagerOrdering())
+            ? new KafkaRequestProcessorWithOrdering(defaults, consumer, shuttingDown)
+            : new KafkaRequestProcessor(defaults, consumer, shuttingDown));
     }
 
     @Override
@@ -106,7 +109,7 @@ public class KafkaRequestProcessorAndClusterManagerInitializer implements Startu
             // there was no configuration - nothing has been initialized, not possible to shut down anything either
             return;
         }
-        pleaseStop.set(true);
+        shuttingDown.set(true);
         if (consumer != null) {
             consumer.close();   // tell kafka to abort any pending poll() and unsubscribe from topics
         }

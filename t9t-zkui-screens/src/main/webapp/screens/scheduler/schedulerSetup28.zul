@@ -2,7 +2,7 @@
 <?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="schedulerSetup"?>
 
 <window28 id="schedulerSetupWin">
-    <threesections28 gridId="schedulerSetup">
+    <threesections28 gridId="schedulerSetup" gridContext="showRequests,showCannedJob,showApiKey">
         <crud28 viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.framework.SchedulerSetupViewModel', vmId='schedulerSetup')"
                 currentMode="@load(vm.currentMode)">
             <form28 id="schedulerSetupCrud" aspect="2" numColumns="2">

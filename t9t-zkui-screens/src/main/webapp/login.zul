@@ -80,6 +80,7 @@
                         <div class="col block-field actions">
                             <button id="btnLogin" label="${l:translate('login','title')}" sclass="square-btn login-btn"
                                    onClick="@command('login', username=userName.value, password=passwordTxb.value, rememberMe=rememberMe.checked)"/>
+                            <button id="btnMsLogin" label="${l:translate('login','ms')}" sclass="square-btn login-btn" onClick="@command('msLogin')" visible="@load(vm.microsoftAuthEnabled)"/>
                         </div>
 
                         <div sclass="col login-error" visible="@load(vm.showLoginErrorMessage)">

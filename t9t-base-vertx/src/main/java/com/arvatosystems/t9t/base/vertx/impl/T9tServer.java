@@ -75,6 +75,9 @@ public class T9tServer extends AbstractVerticle {
     @Option(names = { "--filePath", "-f" }, description = "path to serve files for /fs from")
     private String filePath;
 
+    @Option(names = { "--uploadsPath", "-U" }, description = "path to store uploaded files in (for example file-uploads)")
+    private String uploadsPath;
+
     @Option(names = { "--cfg", "-c" }, description = "configuration filename")
     private String cfgFile;
 
@@ -92,6 +95,9 @@ public class T9tServer extends AbstractVerticle {
 
     @Option(names = { "--corsParm", "-C" }, defaultValue = "*", description = "parameter to the CORS handler")
     private String corsParm;
+
+    @Option(names = { "--static", "-W" }, description = "activate static handler of path /static")
+    private boolean allowStatic;
 
     @Option(names = { "--cors", "-X" }, description = "activate CORS handler")
     private boolean cors;
@@ -146,26 +152,32 @@ public class T9tServer extends AbstractVerticle {
         }
 
         LOGGER.info(PRINTED_NAME + " started, modules found are: " + moduleNames);
-        final String uploadsFolder = Jdp.getRequired(IFileUtil.class).getAbsolutePath("file-uploads");
-        LOGGER.info("Pathname for file uploads will be {}, CORS is {}, metrics is {}", uploadsFolder, cors, metrics);
+        final String uploadsFolder = uploadsPath == null ? null : Jdp.getRequired(IFileUtil.class).getAbsolutePath(uploadsPath);
+        LOGGER.info("Pathname for file uploads will be {}, CORS is {}, metrics is {}", T9tUtil.nvl(uploadsFolder, "(DISABLED)"), cors, metrics);
 
         if (port > 0) {
             final Router router = Router.router(vertx);
             // must be before any possible execBlocking, see https://github.com/vert-x3/vertx-web/issues/198
-            router.route().handler(BodyHandler.create(uploadsFolder).setBodyLimit(16777100));
+            final BodyHandler bodyHandler = uploadsFolder == null ? BodyHandler.create(false) : BodyHandler.create(uploadsFolder);
+            router.route().handler(bodyHandler.setBodyLimit(16777100));
 
             // register the web paths of the injected modules
             for (final IServiceModule module : modules) {
                 module.mountRouters(router, vertx, coderFactory);
             }
 
-            final StaticHandler staticHandler = StaticHandler.create();
-            staticHandler.setWebRoot("web");
-            staticHandler.setFilesReadOnly(true);
-            staticHandler.setMaxAgeSeconds(12 * 60 * 60); // 12 hours (1 working day)
-            router.route("/static/*").handler(staticHandler);
+            if (allowStatic) {
+                LOGGER.info("Activating static file handler from /static to path web");
+                final StaticHandler staticHandler = StaticHandler.create();
+                staticHandler.setWebRoot("web");
+                staticHandler.setFilesReadOnly(true);
+                staticHandler.setAllowRootFileSystemAccess(false);
+                staticHandler.setMaxAgeSeconds(12 * 60 * 60); // 12 hours (1 working day)
+                router.route("/static/*").handler(staticHandler);
+            }
 
             if (filePath != null) {
+                LOGGER.info("Also serving static files from {}", filePath);
                 final StaticHandler filePathHandler = StaticHandler.create();
                 filePathHandler.setWebRoot(filePath);
                 filePathHandler.setFilesReadOnly(false);
@@ -185,8 +197,7 @@ public class T9tServer extends AbstractVerticle {
                         .allowedMethod(HttpMethod.GET)
                         .allowedMethod(HttpMethod.POST)
                         .allowedMethod(HttpMethod.OPTIONS)
-                        .allowedHeader(HttpHeaders.CONTENT_TYPE.toString()
-                        )
+                        .allowedHeader(HttpHeaders.CONTENT_TYPE.toString())
                         .allowedHeader(HttpHeaders.ACCEPT.toString())
                         .allowedHeader("Charset")
                         .allowedHeader(HttpHeaders.ACCEPT_CHARSET.toString())

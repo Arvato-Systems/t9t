@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.statistics.service.impl;
 
+import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.batch.StatisticsDTO;
 import com.arvatosystems.t9t.batch.jpa.entities.StatisticsEntity;
 import com.arvatosystems.t9t.batch.jpa.mapping.IStatisticsDTOMapper;
@@ -22,6 +23,7 @@ import com.arvatosystems.t9t.batch.jpa.persistence.IStatisticsEntityResolver;
 import com.arvatosystems.t9t.statistics.services.IStatisticsService;
 
 import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Provider;
 import de.jpaw.dp.Singleton;
 
 /**
@@ -32,10 +34,14 @@ public class StatisticsService implements IStatisticsService {
 
     protected final IStatisticsEntityResolver statisticsEntityResolver = Jdp.getRequired(IStatisticsEntityResolver.class);
     protected final IStatisticsDTOMapper statisticsDataDTOMappers = Jdp.getRequired(IStatisticsDTOMapper.class);
+    protected final Provider<RequestContext> ctxProvider = Jdp.getProvider(RequestContext.class);
 
     @Override
     public void saveStatisticsData(final StatisticsDTO data) {
         final StatisticsEntity entity = statisticsDataDTOMappers.mapToEntity(data, true);
+        if (entity.getJobRef() == null) {
+            entity.setCProcessRef(ctxProvider.get().internalHeaderParameters.getProcessRef());
+        }
         entity.setObjectRef(statisticsEntityResolver.createNewPrimaryKey());
         statisticsEntityResolver.save(entity);
     }

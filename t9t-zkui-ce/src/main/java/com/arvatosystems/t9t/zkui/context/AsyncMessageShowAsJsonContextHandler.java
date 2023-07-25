@@ -32,11 +32,11 @@ import de.jpaw.dp.Singleton;
 public class AsyncMessageShowAsJsonContextHandler implements IGridContextMenu<AsyncMessageDTO> {
 
     @Override
-    public void selected(Grid28 lb, DataWithTracking<AsyncMessageDTO, TrackingBase> dwt) {
-        AsyncMessageDTO dto = dwt.getData();
-        BonaPortable rp = dto.getPayload();
+    public void selected(final Grid28 lb, DataWithTracking<AsyncMessageDTO, TrackingBase> dwt) {
+        final AsyncMessageDTO dto = dwt.getData();
+        final BonaPortable rp = dto.getPayload();
         if (rp != null) {
-            Info info = new Info();
+            final Info info = new Info();
             info.setText(JsonComposerPrettyPrint.toJsonString(rp));
             ModalWindows.runModal("/context/info28.zul", lb.getParent(), info, false, (d) -> { });
         }

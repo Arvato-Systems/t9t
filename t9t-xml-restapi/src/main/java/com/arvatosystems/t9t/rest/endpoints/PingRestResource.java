@@ -111,6 +111,6 @@ public class PingRestResource implements IT9tRestEndpoint {
         final String theId = T9tUtil.nvl(id, "0");
         final Ref dummy = new Ref();
         restProcessor.<Ref, PingRequest>performAsyncBackendRequestViaKafka(httpHeaders, resp, "GET /ping/{id}", List.of(dummy),
-                s -> new PingRequest(), rq -> theId);
+                s -> new PingRequest(), rq -> theId, rq -> theId);
     }
 }

@@ -68,14 +68,14 @@ public class ServiceRequestExecutor implements IUnauthenticatedServiceRequestExe
             throw new T9tException(T9tException.NOT_AUTHENTICATED);
         }
         AuthData adata = AUTH_CACHE.getIfPresent(ap);
-        if (adata != null && !(ap instanceof JwtAuthentication) && adata.getJwtInfo().getExpiresAt().isAfter(Instant.now())) {
-            adata = null; // force reauth due to expiry
+        if (adata != null && adata.getJwtInfo() != null && adata.getJwtInfo().getExpiresAt().isBefore(Instant.now())) {
+            adata = null; // force reauth due to expiry of previous JWT
         }
         if (adata == null) {
             // need to compute
             if (ap instanceof JwtAuthentication jwtAp) {
                 // fast track
-                String jwtToken = jwtAp.getEncodedJwt();
+                final String jwtToken = jwtAp.getEncodedJwt();
                 try {
                     adata = new AuthData(jwtToken, jwt.decode(jwtToken));
                 } catch (Exception e) {

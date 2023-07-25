@@ -32,8 +32,8 @@ public class TerminateRequestContextHandler implements IGridContextMenu<ProcessS
     protected final IT9tRemoteUtils remoteUtils = Jdp.getRequired(IT9tRemoteUtils.class);
 
     @Override
-    public void selected(Grid28 lb, DataWithTracking<ProcessStatusDTO, TrackingBase> dwt) {
-        ProcessStatusDTO dto = dwt.getData();
+    public void selected(final Grid28 lb, final DataWithTracking<ProcessStatusDTO, TrackingBase> dwt) {
+        final ProcessStatusDTO dto = dwt.getData();
         // create a termination request and send it to the backend
         final TerminateProcessRequest rq = new TerminateProcessRequest();
         rq.setProcessRef(dto.getProcessRef());

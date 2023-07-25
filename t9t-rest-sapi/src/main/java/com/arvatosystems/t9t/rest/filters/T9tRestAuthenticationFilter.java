@@ -41,10 +41,10 @@ public class T9tRestAuthenticationFilter implements ContainerRequestFilter {
 
     @Override
     public void filter(final ContainerRequestContext requestContext) throws IOException {
-        LOGGER.debug("Starting filter");
+        LOGGER.trace("Starting filter");
         final String remoteIpHeader = requestContext.getHeaderString(T9tConstants.HTTP_HEADER_FORWARDED_FOR);
         if (authFilterCustomization.filterBlockedIpAddress(requestContext, remoteIpHeader)) {
-            LOGGER.debug("aborting due to blocked IP address");
+            LOGGER.debug("aborting due to blocked IP address {}", remoteIpHeader);
             return;  // aborted
         }
         final String idempotencyHeader = requestContext.getHeaderString(T9tConstants.HTTP_HEADER_IDEMPOTENCY_KEY);
@@ -54,7 +54,7 @@ public class T9tRestAuthenticationFilter implements ContainerRequestFilter {
         }
         final String authHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
         if (authHeader == null) {
-            LOGGER.debug("Starting filter - unauthed");
+            LOGGER.trace("Starting filter - unauthed");
             if (authFilterCustomization.filterUnauthenticated(requestContext)) {
                 LOGGER.debug("aborting due to forbidden unauthed access");
                 return;  // aborted
@@ -64,11 +64,11 @@ public class T9tRestAuthenticationFilter implements ContainerRequestFilter {
                 return;  // aborted
             }
         } else {
-            LOGGER.debug("Starting filter - authed");
+            LOGGER.trace("Starting filter - authed");
             if (authFilterCustomization.filterAuthenticated(requestContext, authHeader)) {
                 // any bad auth should record the IP address as "bad"
                 ipBlockerService.registerBadAuthFromIp(remoteIpHeader);
-                LOGGER.debug("aborting due failed authentication");
+                LOGGER.debug("aborting due failed authentication from {}", remoteIpHeader);
                 return;  // aborted
             }
             if (authFilterCustomization.filterSupportedMediaType(requestContext)) {
@@ -76,6 +76,6 @@ public class T9tRestAuthenticationFilter implements ContainerRequestFilter {
                 return;  // aborted
             }
         }
-        LOGGER.debug("Filter fully passed");
+        LOGGER.trace("Filter fully passed");
     }
 }

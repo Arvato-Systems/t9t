@@ -32,8 +32,8 @@ public class AlwaysRerunRequestContextMenuHandler implements IGridContextMenu<Me
     protected final IT9tRemoteUtils remoteUtils = Jdp.getRequired(IT9tRemoteUtils.class);
 
     @Override
-    public void selected(Grid28 lb, DataWithTracking<MessageDTO, TrackingBase> dwt) {
-        MessageDTO dto = dwt.getData();
+    public void selected(final Grid28 lb, final DataWithTracking<MessageDTO, TrackingBase> dwt) {
+        final MessageDTO dto = dwt.getData();
         RerunUnconditionallyRequest rq = new RerunUnconditionallyRequest();
         rq.setProcessRef(dto.getObjectRef());
         remoteUtils.executeExpectOk(rq);

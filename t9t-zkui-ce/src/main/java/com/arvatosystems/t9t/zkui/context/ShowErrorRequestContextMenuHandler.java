@@ -16,6 +16,7 @@
 package com.arvatosystems.t9t.zkui.context;
 
 import java.time.Instant;
+import java.util.List;
 
 import com.arvatosystems.t9t.msglog.MessageDTO;
 import com.arvatosystems.t9t.msglog.MessageStatisticsDTO;
@@ -36,31 +37,31 @@ import de.jpaw.dp.Singleton;
 @Named("messageStatistics.ctx.showErrorRequest")
 public class ShowErrorRequestContextMenuHandler implements IGridContextMenu<MessageStatisticsDTO> {
     @Override
-    public boolean isEnabled(DataWithTracking<MessageStatisticsDTO, TrackingBase> dwt) {
+    public boolean isEnabled(final DataWithTracking<MessageStatisticsDTO, TrackingBase> dwt) {
         MessageStatisticsDTO dto = dwt.getData();
         return dto.getCountError() > 0;
     }
 
     @Override
-    public void selected(Grid28 lb, DataWithTracking<MessageStatisticsDTO, TrackingBase> dwt) {
-        MessageStatisticsDTO dto = dwt.getData();
+    public void selected(final Grid28 lb, final DataWithTracking<MessageStatisticsDTO, TrackingBase> dwt) {
+        final MessageStatisticsDTO dto = dwt.getData();
 
-        AsciiFilter userIdFilter = new AsciiFilter(MessageDTO.meta$$userId.getName());
+        final AsciiFilter userIdFilter = new AsciiFilter(MessageDTO.meta$$userId.getName());
         userIdFilter.setEqualsValue(dto.getUserId());
 
-        AsciiFilter pQONFilter = new AsciiFilter(MessageDTO.meta$$requestParameterPqon.getName());
+        final AsciiFilter pQONFilter = new AsciiFilter(MessageDTO.meta$$requestParameterPqon.getName());
         pQONFilter.setEqualsValue(dto.getRequestParameterPqon());
 
-        InstantFilter executionStartedAtFilter  = new InstantFilter(MessageDTO.meta$$executionStartedAt.getName());
+        final InstantFilter executionStartedAtFilter  = new InstantFilter(MessageDTO.meta$$executionStartedAt.getName());
         final Instant fromInstant = dto.getSlotStart();
         final Instant toInstant = dto.getSlotStart().plusSeconds(3600L);
         executionStartedAtFilter.setLowerBound(fromInstant);
         executionStartedAtFilter.setUpperBound(toInstant);
 
-        IntFilter returnCodeFilter = new IntFilter(MessageDTO.meta$$returnCode.getName());
+        final IntFilter returnCodeFilter = new IntFilter(MessageDTO.meta$$returnCode.getName());
         returnCodeFilter.setLowerBound(200000000);
 
-        SearchFilter filter = SearchFilters.and(userIdFilter, SearchFilters.and(pQONFilter, SearchFilters.and(executionStartedAtFilter, returnCodeFilter)));
+        final SearchFilter filter = SearchFilters.and(List.of(userIdFilter, pQONFilter, executionStartedAtFilter, returnCodeFilter));
 
         JumpTool.jump("screens/monitoring/requests28.zul", filter, "screens/monitoring/messageStatistics.zul");
     }

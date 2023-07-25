@@ -36,15 +36,15 @@ import de.jpaw.json.JsonParser;
 public abstract class AbstractShowParametersContextHandler implements IGridContextMenu<MessageDTO> {
     protected final IT9tRemoteUtils remoteUtils = Jdp.getRequired(IT9tRemoteUtils.class);
 
-    protected RequestParameters getRequest(Long processRef) {
+    protected RequestParameters getRequest(final Long processRef) {
         return getParameters(processRef, true, false).getRequestParameters();
     }
 
-    protected ServiceResponse getResponse(Long processRef) {
+    protected ServiceResponse getResponse(final Long processRef) {
         return getParameters(processRef, false, true).getServiceResponse();
     }
 
-    protected RetrieveParametersResponse getParameters(Long processRef, boolean rq, boolean rs) {
+    protected RetrieveParametersResponse getParameters(final Long processRef, final boolean rq, final boolean rs) {
         RetrieveParametersRequest req = new RetrieveParametersRequest();
         req.setProcessRef(processRef);
         req.setRequestParameters(rq);
@@ -52,7 +52,7 @@ public abstract class AbstractShowParametersContextHandler implements IGridConte
         return remoteUtils.executeExpectOk(req, RetrieveParametersResponse.class);
     }
 
-    protected void showInModelWindow(Grid28 lb, String text, final boolean rerunOnOK) {
+    protected void showInModelWindow(final Grid28 lb, final String text, final boolean rerunOnOK) {
         Info info = new Info();
         info.setText(text);
         ModalWindows.runModal("/context/info28.zul", lb.getParent(), info, false, (d) -> {

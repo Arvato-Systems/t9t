@@ -15,13 +15,16 @@
  */
 package com.arvatosystems.t9t.zkui.viewmodel.support;
 
+import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -39,6 +42,9 @@ import org.zkoss.zk.ui.event.ClientInfoEvent;
 
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.auth.PermissionEntry;
+import com.arvatosystems.t9t.zkui.azure.ad.AadAuthUtil;
+import com.arvatosystems.t9t.zkui.azure.ad.AadConstants;
+import com.arvatosystems.t9t.zkui.azure.ad.IdentityContextData;
 import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;
 import com.arvatosystems.t9t.zkui.services.IAuthenticationService;
 import com.arvatosystems.t9t.zkui.services.IUserDAO;
@@ -50,6 +56,10 @@ import com.arvatosystems.t9t.zkui.viewmodel.beans.ComboBoxItem;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.base.Strings;
+import com.microsoft.aad.msal4j.AuthorizationRequestUrlParameters;
+import com.microsoft.aad.msal4j.ConfidentialClientApplication;
+import com.microsoft.aad.msal4j.Prompt;
+import com.microsoft.aad.msal4j.ResponseMode;
 
 import de.jpaw.dp.Jdp;
 import jakarta.servlet.http.HttpServletRequest;
@@ -105,7 +115,7 @@ public class LoginViewModel {
     private String lastScreen;
     private TimeZone lastZone;
     private String lastRealTz;
-
+    private boolean microsoftAuthEnabled = false;
     private boolean showLoginErrorMessage = false;
 
     @Command("realTimezone")
@@ -160,13 +170,46 @@ public class LoginViewModel {
         }
     }
 
-    public static UserInfo getUserInfo(String username) {
+    @NotifyChange("showLoginErrorMessage")
+    @Command("msLogin")
+    public void onMsLogin() {
+        LOGGER.debug("submit login for microsoft");
+        try {
+            final ApplicationSession applicationSession = ApplicationSession.get();
+            IdentityContextData aadContextData = (IdentityContextData) applicationSession.getSessionValue(AadConstants.SESSION_PARAM);
+            if (aadContextData == null) {
+                aadContextData = new IdentityContextData();
+            }
+
+            final String state = UUID.randomUUID().toString();
+            final String nonce = UUID.randomUUID().toString();
+            aadContextData.setState(state);
+            aadContextData.setNonce(nonce);
+            applicationSession.setSessionValue(AadConstants.SESSION_PARAM, aadContextData);
+
+            final ConfidentialClientApplication client = AadAuthUtil.getConfidentialClientInstance();
+            final AuthorizationRequestUrlParameters parameters = AuthorizationRequestUrlParameters
+                .builder(AadConstants.REDIRECT_URI, Collections.singleton(AadConstants.SCOPES)).responseMode(ResponseMode.QUERY).prompt(Prompt.SELECT_ACCOUNT)
+                .state(state).nonce(nonce).build();
+
+            final String authorizeUrl = client.getAuthorizationRequestUrl(parameters).toString();
+            LOGGER.debug("redirecting user to microsoft login...");
+            Executions.sendRedirect(authorizeUrl);
+
+        } catch (final T9tException | MalformedURLException ex) {
+            LOGGER.error("Error occured while login with microsoft. {}", ex);
+            setShowLoginErrorMessage(true);
+        }
+    }
+
+    public static UserInfo getUserInfo(final String username) {
         return USER_INFO_CACHE.getIfPresent(username);
     }
 
     @Init
-    @NotifyChange({ "selected" })
+    @NotifyChange({ "selected", "showLoginErrorMessage", "microsoftAuth" })
     public void init(@BindingParam("isInitialLogin") Boolean isInitialLogin) {
+        microsoftAuthEnabled = AadConstants.MICROSOFT_AUTH_ENABLED;
         setLanguageFromCooky(isInitialLogin);
         setListbox();
         //FT-1127        UI login does not work if already logged in
@@ -179,6 +222,8 @@ public class LoginViewModel {
                 Executions.sendRedirect(Constants.ZulFiles.LOGIN_TENANT_SELECTION);
             }
         }
+        String isLoginFail = Executions.getCurrent().getParameter("loginFail");
+        showLoginErrorMessage = isLoginFail != null && isLoginFail.equalsIgnoreCase("true");
     }
 
     @Command("onLanguageChanged")
@@ -313,5 +358,9 @@ public class LoginViewModel {
 
     public void setShowLoginErrorMessage(final boolean showLoginErrorMessage) {
         this.showLoginErrorMessage = showLoginErrorMessage;
+    }
+
+    public boolean isMicrosoftAuthEnabled() {
+        return microsoftAuthEnabled;
     }
 }

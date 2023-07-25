@@ -26,22 +26,20 @@ import de.jpaw.dp.Named;
 import de.jpaw.util.ApplicationException;
 
 /**
- * Creates JSON output with @PQON information where required. (depending on parameter1)
- *
- * enums are output as ordinal and token by default.
- * enums are output using instance names if SinkCfgDTo.genericParameter2 = "1"
- *
+ * Creates JSON output with @PQON information where required.
  */
 @Dependent
 @Named("JSON-Kafka")
 public class FormatGeneratorJsonKafka extends AbstractFormatGenerator implements IThreadSafeFormatGenerator {
+    private boolean writeNulls = false;
     private boolean writePqonInfo = false;
-    private boolean writeEnumNames = false;
+    private boolean writeTokens = false;
 
     @Override
     protected void openHook() throws IOException, ApplicationException {
-        writePqonInfo  = "1".equals(sinkCfg.getGenericParameter1());
-        writeEnumNames = "1".equals(sinkCfg.getGenericParameter2());
+        writeNulls  = Boolean.TRUE.equals(sinkCfg.getJsonWriteNulls());
+        writePqonInfo  = Boolean.TRUE.equals(sinkCfg.getJsonWritePqon());
+        writeTokens = Boolean.TRUE.equals(sinkCfg.getJsonUseEnumTokens());
         super.openHook();
     }
 
@@ -50,11 +48,10 @@ public class FormatGeneratorJsonKafka extends AbstractFormatGenerator implements
       final BonaPortable record) throws IOException {
         final StringBuilder buff = new StringBuilder(4000);
         final JsonComposer jsonComposer = new JsonComposer(buff);
+        jsonComposer.setWriteNulls(writeNulls);
         jsonComposer.setWritePqonInfo(writePqonInfo);
-        if (writeEnumNames) {
-            jsonComposer.setWriteEnumOrdinals(false);
-            jsonComposer.setWriteEnumTokens(false);
-        }
+        jsonComposer.setWriteEnumOrdinals(writeTokens);
+        jsonComposer.setWriteEnumTokens(writeTokens);
         jsonComposer.writeObject(record);
         outputResource.write(partitionKey, recordKey, buff.toString());
         jsonComposer.close();

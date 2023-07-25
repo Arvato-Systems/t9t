@@ -317,7 +317,7 @@ package (com.arvatosystems) t9t.io.request {
         optional Integer                            minAgeInMinutes;      // for unsent mode: checks against creation timestamp, otherwise against lastAttempt
         optional Integer                            maxAgeInMinutes;
         optional Integer                            maxCount;             // maximum number of records to resend
-        optional Ascii(16)                          onlyStatus;           // provide the name of the export status
+        optional Ascii(16)                          onlyStatus;           // provide the name of the export status. If not specified, RESPONSE_ERROR is used.
     }
     class RetryAsyncMessagesResponse extends ServiceResponse {
         required int                                numResent;            // how many records have been resent

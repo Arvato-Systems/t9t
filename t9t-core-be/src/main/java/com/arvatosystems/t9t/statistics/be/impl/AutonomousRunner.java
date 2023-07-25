@@ -75,10 +75,13 @@ public class AutonomousRunner implements IAutonomousRunner {
         stat.setEndTime(now);
         stat.setCount1(numRecords);
         stat.setProcessId(processId);
-        if (logEnhancer != null)
+        stat.setJobRef(ctx.internalHeaderParameters.getProcessRef());
+        if (logEnhancer != null) {
             logEnhancer.accept(stat);
-        if (numProcessed < numRecords)
+        }
+        if (numProcessed < numRecords) {
             stat.setInfo2("Interrupted by shutdown");
+        }
         statisticsWriter.saveStatisticsData(stat);
     }
 }

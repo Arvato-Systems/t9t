@@ -32,8 +32,8 @@ public class ShowRequestsContextMenuHandler implements IGridContextMenu<SessionD
     protected final IT9tMessagingDAO messagingDAO = Jdp.getRequired(IT9tMessagingDAO.class);
 
     @Override
-    public void selected(Grid28 lb, DataWithTracking<SessionDTO, TrackingBase> dwt) {
-        SessionDTO dto = dwt.getData();
+    public void selected(final Grid28 lb, final DataWithTracking<SessionDTO, TrackingBase> dwt) {
+        final SessionDTO dto = dwt.getData();
         JumpTool.jump("screens/monitoring/requests28.zul", "sessionRef", dto.getObjectRef(), "screens/monitoring/sessions28.zul");
     }
 }

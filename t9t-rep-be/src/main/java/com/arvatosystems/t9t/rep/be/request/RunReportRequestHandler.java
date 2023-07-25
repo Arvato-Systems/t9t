@@ -24,6 +24,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +52,22 @@ import com.google.common.base.Strings;
 import de.jpaw.bonaparte.pojos.api.media.MediaType;
 import de.jpaw.bonaparte.pojos.api.media.MediaXType;
 import de.jpaw.dp.Jdp;
+import net.sf.jasperreports.crosstabs.JRCrosstab;
+import net.sf.jasperreports.engine.JRBreak;
+import net.sf.jasperreports.engine.JRChart;
+import net.sf.jasperreports.engine.JRComponentElement;
+import net.sf.jasperreports.engine.JRElementGroup;
+import net.sf.jasperreports.engine.JREllipse;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRFrame;
+import net.sf.jasperreports.engine.JRGenericElement;
+import net.sf.jasperreports.engine.JRImage;
+import net.sf.jasperreports.engine.JRLine;
+import net.sf.jasperreports.engine.JRRectangle;
+import net.sf.jasperreports.engine.JRStaticText;
+import net.sf.jasperreports.engine.JRSubreport;
+import net.sf.jasperreports.engine.JRTextField;
+import net.sf.jasperreports.engine.JRVisitor;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
@@ -60,6 +76,7 @@ import net.sf.jasperreports.engine.export.JRCsvExporter;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
+import net.sf.jasperreports.engine.util.JRElementsVisitor;
 import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.export.Exporter;
 import net.sf.jasperreports.export.ExporterInput;
@@ -77,13 +94,14 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
     public static final String DATE_TO = "dateTo";
     public static final String TENANT_ID = "tenantId";
     public static final String USER_ID = "userId";
-    public static final String USER_REF = "userRef";            // obsolete
+    public static final String USER_REF = "userRef"; // obsolete
     public static final String PROCESS_REF = "processRef";
+    private static final String COMPILED_JR_TEMPLATES_PATH = "jasperFilePath";
     private static final String JR_TEMPLATES_SUBFOLDER = "reports/src";
     private static final String COMPILED_JR_TEMPLATES_SUBFOLDER = "reports/bin";
     private static final String JR_TEMPLATE_EXT = ".jrxml";
     private static final String COMPILED_JR_TEMPLATE_EXT = ".jasper";
-    //protected static final DateTimeFormatter DAY_FORMATTER = DateTimeFormat.forStyle("M-").withZoneUTC();  // this gives a local format
+    // protected static final DateTimeFormatter DAY_FORMATTER = DateTimeFormat.forStyle("M-").withZoneUTC(); // this gives a local format
     protected static final DateTimeFormatter DAY_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
 
     private final IFileUtil fileUtil = Jdp.getRequired(IFileUtil.class);
@@ -91,6 +109,8 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
     private final IJasperReportFiller jasperReportFiller = Jdp.getRequired(IJasperReportFiller.class);
     private final IRepPersistenceAccess dpl = Jdp.getRequired(IRepPersistenceAccess.class);
     private final IReportMailNotifier reportNotifier = Jdp.getRequired(IReportMailNotifier.class);
+
+    private Throwable subReportException = null;
 
     @Override
     public boolean isReadOnly(final RunReportRequest request) {
@@ -120,7 +140,7 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
             break;
         case BY_RANGE:
             fromDate = interval.getFromDate();
-            toDate   = interval.getToDate();
+            toDate = interval.getToDate();
             break;
         case BY_TIME:
             final int factor = interval.getFactor() == null ? 1 : interval.getFactor().intValue();
@@ -176,25 +196,21 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
         outputSessionAdditionalParametersList.put("reportDateTo", toDate.minusSeconds(1).format(DAY_FORMATTER));
     }
 
-
     protected void addDefaultParameters(final RequestContext ctx, final Map<String, Object> parameters) {
         parameters.put(PROCESS_REF, ctx.requestRef);
-        parameters.put(TENANT_ID,   ctx.tenantId);
-        parameters.put(USER_ID,     ctx.userId);
-        parameters.put(USER_REF,    ctx.userRef);
+        parameters.put(TENANT_ID, ctx.tenantId);
+        parameters.put(USER_ID, ctx.userId);
+        parameters.put(USER_REF, ctx.userRef);
 //        parameters.put(DIALECT, configuration.getDatabaseDialect().toString());
     }
-
-
 
     // filter parameters suitable for slim debugging (do not output whole objects)
     private Map<String, Object> filterBasic(final Map<String, Object> parameters) {
         final Map<String, Object> mapForOutput = new HashMap<>(parameters.size());
         for (final String k : parameters.keySet()) {
             final Object val = parameters.get(k);
-            if ((val != null)
-                    && ((val instanceof String) || (val instanceof Integer) || (val instanceof Long) || (val instanceof LocalDate)
-                            || (val instanceof LocalDateTime) || (val instanceof Date) || (val instanceof Boolean))) {
+            if ((val != null) && ((val instanceof String) || (val instanceof Integer) || (val instanceof Long) || (val instanceof LocalDate)
+                    || (val instanceof LocalDateTime) || (val instanceof Date) || (val instanceof Boolean))) {
                 mapForOutput.put(k, val);
             }
         }
@@ -204,11 +220,12 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
     @Override
     public SinkCreatedResponse execute(final RequestContext ctx, final RunReportRequest request) throws Exception {
         Long sinkRef; // holds the result
+        subReportException = null;
         final Map<String, Object> outputSessionAdditionalParametersList = new HashMap<>(10);
 
-        final ReportParamsDTO reportParamsDTO = request.getReportParamsRef() instanceof ReportParamsDTO dto
-          ? dto // nothing to do, all data has been provided (adhoc report request)
-          : dpl.getParamsDTO(request.getReportParamsRef());
+        final ReportParamsDTO reportParamsDTO = request.getReportParamsRef() instanceof ReportParamsDTO dto ? dto // nothing to do, all data has been provided
+                                                                                                                  // (adhoc report request)
+                : dpl.getParamsDTO(request.getReportParamsRef());
 
         if (reportParamsDTO == null) {
             LOGGER.error("Report parameter can not be loaded:", request.getReportParamsRef());
@@ -226,16 +243,16 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
         JasperPrint jasperPrint = null;
 
         try (IOutputSession outputSession = Jdp.getRequired(IOutputSession.class)) {
-            jasperReport = loadJasperReport(ctx, reportConfigDTO.getJasperReportTemplateName());
-
-            final OutputSessionParameters outputSessionParameters = new OutputSessionParameters();
             final Map<String, Object> parameters = new HashMap<>();
             addDefaultParameters(ctx, parameters);
+
+            jasperReport = loadJasperReport(ctx, reportConfigDTO.getJasperReportTemplateName(), parameters);
+
+            final OutputSessionParameters outputSessionParameters = new OutputSessionParameters();
             jasperParamEnricher.enrichParameter(parameters, reportParamsDTO, outputSessionAdditionalParametersList, outputSessionParameters);
 
-            final Instant relevantDate = ctx.internalHeaderParameters.getPlannedRunDate() != null
-              ? ctx.internalHeaderParameters.getPlannedRunDate()
-              : Instant.now();
+            final Instant relevantDate = ctx.internalHeaderParameters.getPlannedRunDate() != null ? ctx.internalHeaderParameters.getPlannedRunDate()
+                    : Instant.now();
 
             // if timezone information still empty after enricher. set timezone
             if (ctx.internalHeaderParameters.getJwtInfo() != null && !Strings.isNullOrEmpty(ctx.internalHeaderParameters.getJwtInfo().getZoneinfo())) {
@@ -273,7 +290,7 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
             if (tmpType == null || !(tmpType.getBaseEnum() instanceof MediaType)) {
                 throw new T9tException(T9tRepException.JASPER_REPORT_CREATION_JR_EXCEPTION, "null or bad OFT");
             }
-            outputFileType = (MediaType)(tmpType.getBaseEnum());
+            outputFileType = (MediaType) (tmpType.getBaseEnum());
             switch (outputFileType) {
             case CSV:
                 final JRCsvExporter exporterCsv = new JRCsvExporter();
@@ -328,26 +345,27 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
         return response;
     }
 
-    private JasperReport loadJasperReport(final RequestContext ctx, final String pathToReport) throws JRException {
+    private JasperReport loadJasperReport(final RequestContext ctx, final String jrTemplateName, final Map<String, Object> jrParameters) throws JRException {
         final String currentTenantId = ctx.tenantId;
         final String filesRootLocation = fileUtil.getFilePathPrefix();
 
-        JasperReport report = getCompiledJrTemplate(filesRootLocation, currentTenantId, pathToReport);
+        JasperReport report = getCompiledJrTemplate(filesRootLocation, currentTenantId, jrTemplateName, jrParameters);
         if (report == null) {
-            report = getCompiledJrTemplate(filesRootLocation, T9tConstants.GLOBAL_TENANT_ID, pathToReport);
+            report = getCompiledJrTemplate(filesRootLocation, T9tConstants.GLOBAL_TENANT_ID, jrTemplateName, jrParameters);
         }
 
         if (report == null) {
             LOGGER.error("Report template was not found. Root location: '{}', tenant '{}', templates subfolder: '{}', template name: '{}'", filesRootLocation,
-                    currentTenantId, JR_TEMPLATES_SUBFOLDER, pathToReport);
+                    currentTenantId, JR_TEMPLATES_SUBFOLDER, jrTemplateName);
             throw new T9tException(T9tRepException.JASPER_REPORT_CREATION_JR_EXCEPTION);
         }
 
         return report;
     }
 
-    private JasperReport getCompiledJrTemplate(final String filesRootLocation, final String tenantId, final String jrTemplateRelativePath) throws JRException {
-        final String jrTemplatePath = fileUtil.buildPath(filesRootLocation, tenantId, JR_TEMPLATES_SUBFOLDER, jrTemplateRelativePath);
+    private JasperReport getCompiledJrTemplate(final String filesRootLocation, final String tenantId, final String jrTemplateName,
+            final Map<String, Object> jrParameters) throws JRException {
+        final String jrTemplatePath = fileUtil.buildPath(filesRootLocation, tenantId, JR_TEMPLATES_SUBFOLDER, jrTemplateName);
         LOGGER.debug("Report template path: '{}'", jrTemplatePath);
 
         final File jrTemplateFile = new File(jrTemplatePath);
@@ -356,7 +374,12 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
             return null;
         }
 
-        final String compiledTemplatePath = buildCompiledJrTemplatePath(filesRootLocation, tenantId, jrTemplateRelativePath);
+        final String compiledTemplatePathPrefix = fileUtil.buildPath(filesRootLocation, tenantId, COMPILED_JR_TEMPLATES_SUBFOLDER, "");
+        LOGGER.debug("Compiled report path: '{}'", compiledTemplatePathPrefix);
+        if (jrParameters != null) {
+            jrParameters.put(COMPILED_JR_TEMPLATES_PATH, compiledTemplatePathPrefix);
+        }
+        final String compiledTemplatePath = buildCompiledJrTemplatePath(compiledTemplatePathPrefix, jrTemplateName);
         LOGGER.debug("Compiled report template path: '{}'", compiledTemplatePath);
         final File compiledJrTemplateFile = new File(compiledTemplatePath);
 
@@ -366,19 +389,99 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
             compiledJrTemplateFile.setLastModified(System.currentTimeMillis());
         }
 
-        return (JasperReport) JRLoader.loadObject(compiledJrTemplateFile);
-    }
+        JasperReport result = (JasperReport) JRLoader.loadObject(compiledJrTemplateFile);
 
-    private String buildCompiledJrTemplatePath(final String filesRootLocation, final String tenantId, final String pathToReport) {
-        String compilerJrTemplatePath;
+        JRElementsVisitor.visitReport(result, new JRVisitor() {
+            @Override
+            public void visitBreak(JRBreak breakElement) {
+            }
 
-        if (pathToReport.endsWith(JR_TEMPLATE_EXT)) {
-            final int ind = pathToReport.lastIndexOf(JR_TEMPLATE_EXT);
-            compilerJrTemplatePath = pathToReport.substring(0, ind) + COMPILED_JR_TEMPLATE_EXT;
-        } else {
-            compilerJrTemplatePath = pathToReport + COMPILED_JR_TEMPLATE_EXT;
+            @Override
+            public void visitChart(JRChart chart) {
+            }
+
+            @Override
+            public void visitCrosstab(JRCrosstab crosstab) {
+            }
+
+            @Override
+            public void visitElementGroup(JRElementGroup elementGroup) {
+            }
+
+            @Override
+            public void visitEllipse(JREllipse ellipse) {
+            }
+
+            @Override
+            public void visitFrame(JRFrame frame) {
+            }
+
+            @Override
+            public void visitImage(JRImage image) {
+            }
+
+            @Override
+            public void visitLine(JRLine line) {
+            }
+
+            @Override
+            public void visitRectangle(JRRectangle rectangle) {
+            }
+
+            @Override
+            public void visitStaticText(JRStaticText staticText) {
+            }
+
+            @Override
+            public void visitSubreport(JRSubreport subreport) {
+                try {
+                    String expression = subreport.getExpression().getText().replace(COMPILED_JR_TEMPLATE_EXT, JR_TEMPLATE_EXT);
+                    StringTokenizer st = new StringTokenizer(expression, "\"/");
+                    String subReportName = null;
+                    while (st.hasMoreTokens()) {
+                        subReportName = st.nextToken();
+                        if (subReportName.endsWith(JR_TEMPLATE_EXT)) {
+                            LOGGER.debug("Subreport Name: '{}'", subReportName);
+                            getCompiledJrTemplate(filesRootLocation, tenantId, subReportName, null);
+                        }
+                    }
+
+                } catch (Throwable e) {
+                    subReportException = e;
+                }
+            }
+
+            @Override
+            public void visitTextField(JRTextField textField) {
+            }
+
+            @Override
+            public void visitComponentElement(JRComponentElement componentElement) {
+            }
+
+            @Override
+            public void visitGenericElement(JRGenericElement element) {
+            }
+        });
+
+        if (subReportException != null) {
+            throw new RuntimeException(subReportException);
         }
 
-        return fileUtil.buildPath(filesRootLocation, tenantId, COMPILED_JR_TEMPLATES_SUBFOLDER, compilerJrTemplatePath);
+        return result;
     }
+
+    private String buildCompiledJrTemplatePath(final String path, final String jrTemplateName) {
+        String compilerJrTemplateName;
+
+        if (jrTemplateName.endsWith(JR_TEMPLATE_EXT)) {
+            final int ind = jrTemplateName.lastIndexOf(JR_TEMPLATE_EXT);
+            compilerJrTemplateName = jrTemplateName.substring(0, ind) + COMPILED_JR_TEMPLATE_EXT;
+        } else {
+            compilerJrTemplateName = jrTemplateName + COMPILED_JR_TEMPLATE_EXT;
+        }
+
+        return fileUtil.buildPath(path, compilerJrTemplateName);
+    }
+
 }

@@ -62,22 +62,27 @@
                                           id2="preTransformerName"      value2="@bind(vm.data.preTransformerName)"/>
                                 <cells228 id ="linesToSkip"             value ="@bind(vm.data.linesToSkip)"
                                           id2="singleLineComment"       value2="@bind(vm.data.singleLineComment)"/>
-                                <cells228 id ="csvConfigurationRef"     value ="@bind(vm.data.csvConfigurationRef)"
-                                          id2="baseClassPqon"           value2="@bind(vm.data.baseClassPqon)"/>
-                                <cells228 id ="writeTenantId"           value ="@bind(vm.data.writeTenantId)"
+                                <cells28  id ="writeTenantId"           value ="@bind(vm.data.writeTenantId)"/>
+
+                                <cells228 id ="baseClassPqon"           value ="@bind(vm.data.baseClassPqon)"
                                           id2="jaxbContextPath"         value2="@bind(vm.data.jaxbContextPath)"/>
                                 <cells228 id ="xmlHeaderElements"       value ="@bind(vm.data.xmlHeaderElements)"
                                           id2="xmlFooterElements"       value2="@bind(vm.data.xmlFooterElements)"/>
-
                                 <cells228 id ="xmlNamespacePrefix"      value ="@bind(vm.data.xmlNamespacePrefix)"
                                           id2="xmlDefaultNamespace"     value2="@bind(vm.data.xmlDefaultNamespace)"/>
                                 <cells228 id ="xmlRecordName"           value ="@bind(vm.data.xmlRecordName)"
                                           id2="xmlRootElementName"      value2="@bind(vm.data.xmlRootElementName)"/>
                                 <cells28  id ="xmlNamespaceMappings"    value ="@bind(vm.data.xmlNamespaceMappings)" colspan1="3"/>
 
+                                <cells228 id ="jsonWritePqon"           value ="@bind(vm.data.jsonWritePqon)"
+                                          id2="jsonUseEnumTokens"       value2="@bind(vm.data.jsonUseEnumTokens)"/>
+                                <cells228 id ="jsonWriteNulls"          value ="@bind(vm.data.jsonWriteNulls)"
+                                          id2="writeHeaderRow"          value2="@bind(vm.data.writeHeaderRow)"/>
+                                <cells228 id ="csvConfigurationRef"     value ="@bind(vm.data.csvConfigurationRef)"
+                                          id2="nationalNumberFormat"    value2="@bind(vm.data.nationalNumberFormat)"/>
+
                                 <cells228 id ="genericParameter1"       value ="@bind(vm.data.genericParameter1)"
                                           id2="genericParameter2"       value2="@bind(vm.data.genericParameter2)"/>
-                                <cells28  id ="nationalNumberFormat"    value ="@bind(vm.data.nationalNumberFormat)"/>
                             </rows>
                         </form28>
                     </tabpanel>

@@ -31,8 +31,8 @@ import de.jpaw.util.ApplicationException;
 public class ShowErrorMessageContextMenuHandler implements IGridContextMenu<MessageDTO> {
 
     @Override
-    public void selected(Grid28 lb, DataWithTracking<MessageDTO, TrackingBase> dwt) {
-        MessageDTO m = dwt.getData();
+    public void selected(final Grid28 lb, final DataWithTracking<MessageDTO, TrackingBase> dwt) {
+        final MessageDTO m = dwt.getData();
         if (m != null && m.getReturnCode() != null) {
             String text = ApplicationException.codeToString(m.getReturnCode());
             String message = "Return code " + m.getReturnCode() + " means " + text;

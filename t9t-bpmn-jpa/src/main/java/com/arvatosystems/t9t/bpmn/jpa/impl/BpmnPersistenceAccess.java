@@ -124,7 +124,7 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
     }
 
     protected <E> List<E> getQueryForDueTasks(final Class<E> type, final String field, final String onlyForProcessDefinitionId, final Instant whenDue,
-      final boolean includeErrorStatus, final boolean allClusterNodes) {
+      final boolean includeErrorStatus, final boolean allClusterNodes, final String onlyForNextStep) {
         String nodeCondition = "";
         int numPartitions = 1;
         Collection<Integer> shards = Collections.emptyList();
@@ -143,16 +143,20 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
         }
         final String pdCondition = onlyForProcessDefinitionId == null ? "" : " AND s.processDefinitionId = :pdId";
         final String errorCondition = includeErrorStatus ? "" : " AND s.returnCode IS NULL";
+        final String stepCondition = onlyForNextStep == null ? "" : " AND s.nextStep = :step";
         final TypedQuery<E> query = statusResolver.getEntityManager().createQuery(
             "SELECT s" + field + " FROM " + statusResolver.getEntityClass().getSimpleName()
             + " s WHERE s.tenantId = :tenantId AND s.yieldUntil <= :timeLimit"
-            + pdCondition + errorCondition + nodeCondition + " ORDER BY s.yieldUntil",
+            + pdCondition + errorCondition + nodeCondition + stepCondition + " ORDER BY s.yieldUntil",
             type
         );
         query.setParameter("tenantId", tenantId);
         query.setParameter("timeLimit", whenDue);
         if (onlyForProcessDefinitionId != null) {
             query.setParameter("pdId", onlyForProcessDefinitionId);
+        }
+        if (onlyForNextStep != null) {
+            query.setParameter("step", onlyForNextStep);
         }
         if (nodeCondition.length() > 0) {
             query.setParameter("partitions", numPartitions);
@@ -161,18 +165,17 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
         return query.getResultList();
     }
 
-    // unused? At least not used in t9t
     @Override
     public List<ProcessExecutionStatusDTO> getTasksDue(final String onlyForProcessDefinitionId, final Instant whenDue,
-      final boolean includeErrorStatus, final boolean allClusterNodes) {
+      final boolean includeErrorStatus, final boolean allClusterNodes, final String onlyForNextStep) {
         return statusMapper.mapListToDto(getQueryForDueTasks(ProcessExecStatusEntity.class, "",
-          onlyForProcessDefinitionId, whenDue, includeErrorStatus, allClusterNodes));
+          onlyForProcessDefinitionId, whenDue, includeErrorStatus, allClusterNodes, onlyForNextStep));
     }
 
     @Override
     public List<Long> getTaskRefsDue(final String onlyForProcessDefinitionId, final Instant whenDue, final boolean includeErrorStatus,
-      final boolean allClusterNodes) {
-        return getQueryForDueTasks(Long.class, ".objectRef", onlyForProcessDefinitionId, whenDue, includeErrorStatus, allClusterNodes);
+      final boolean allClusterNodes, final String onlyForNextStep) {
+        return getQueryForDueTasks(Long.class, ".objectRef", onlyForProcessDefinitionId, whenDue, includeErrorStatus, allClusterNodes, onlyForNextStep);
     }
 
     @Override

@@ -49,21 +49,21 @@ public class AsyncMessageEditContextHandler implements IGridContextMenu<AsyncMes
     private static final Logger LOGGER = LoggerFactory.getLogger(AsyncMessageEditContextHandler.class);
 
     @Override
-    public boolean isEnabled(DataWithTracking<AsyncMessageDTO, TrackingBase> dwt) {
+    public boolean isEnabled(final DataWithTracking<AsyncMessageDTO, TrackingBase> dwt) {
         return dwt.getData().getStatus() != ExportStatusEnum.RESPONSE_OK;
     }
 
     @Override
-    public void selected(Grid28 lb, DataWithTracking<AsyncMessageDTO, TrackingBase> dwt) {
+    public void selected(final Grid28 lb, final DataWithTracking<AsyncMessageDTO, TrackingBase> dwt) {
         final AsyncMessageDTO dto = dwt.getData();
         final BonaPortable payload = dto.getPayload();
         LOGGER.debug("EDIT invoked on message ref {}, payload type {}", dto.getObjectRef(), payload.ret$PQON());
 
-        Info info = new Info();
+        final Info info = new Info();
         info.setText(JsonComposerPrettyPrint.toJsonString(payload));
         ModalWindows.runModal("/context/info28.zul", lb.getParent(), info, false, (d) -> {
-            Map<String, Object> jsonAsMap = (new JsonParser(d.getText(), false)).parseObject();
-            BonaPortable edited = MapParser.asBonaPortable(jsonAsMap, StaticMeta.OUTER_BONAPORTABLE_FOR_JSON);
+            final Map<String, Object> jsonAsMap = (new JsonParser(d.getText(), false)).parseObject();
+            final BonaPortable edited = MapParser.asBonaPortable(jsonAsMap, StaticMeta.OUTER_BONAPORTABLE_FOR_JSON);
             if (edited.getClass().equals(payload.getClass())) {
                 LOGGER.debug("UPDATING async message of ref {}, payload type {}", dto.getObjectRef(), payload.ret$PQON());
                 final AsyncMessageCrudRequest crud = new AsyncMessageCrudRequest();

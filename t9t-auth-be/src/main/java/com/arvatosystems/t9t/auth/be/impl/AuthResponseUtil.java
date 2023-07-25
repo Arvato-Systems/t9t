@@ -17,6 +17,7 @@ package com.arvatosystems.t9t.auth.be.impl;
 
 import com.arvatosystems.t9t.auth.ApiKeyDTO;
 import com.arvatosystems.t9t.auth.ApiKeyRef;
+import com.arvatosystems.t9t.auth.AuthenticationIssuerType;
 import com.arvatosystems.t9t.auth.PermissionsDTO;
 import com.arvatosystems.t9t.auth.SessionDTO;
 import com.arvatosystems.t9t.auth.TenantDTO;
@@ -46,9 +47,10 @@ public class AuthResponseUtil implements IAuthResponseUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthResponseUtil.class);
 
-    public static final String ISSUER_APIKEY          = "AK";
-    public static final String ISSUER_USERID_PASSWORD = "UP";
-    public static final Long   DEFAULT_JWT_VALIDITY   = 12L * 60 * 60;
+    public static final Long   DEFAULT_JWT_VALIDITY_AK = 12L * 60 * 60;
+    public static final Long   DEFAULT_JWT_VALIDITY_UP = 12L * 60 * 60;
+    public static final Long   DEFAULT_JWT_VALIDITY_MS =  6L * 60 * 60;
+    public static final Long   DEFAULT_JWT_VALIDITY    =  1L * 60 * 60;  // fallback / unknown
 
     private final IAuthenticator          authenticator     = Jdp.getRequired(IAuthenticator.class);
     private final IAuthPersistenceAccess  persistenceAccess = Jdp.getRequired(IAuthPersistenceAccess.class);
@@ -57,12 +59,14 @@ public class AuthResponseUtil implements IAuthResponseUtil {
 
     final Long jwtValidityApiKey;
     final Long jwtValidityUserPassword;
+    final Long jwtValidityOpenId;
     final boolean sessionLogSysout;
 
     public AuthResponseUtil() {
         final T9tServerConfiguration serverCfg = ConfigProvider.getConfiguration();
-        jwtValidityApiKey       = serverCfg.getJwtValidityApiKey() == null ? DEFAULT_JWT_VALIDITY : serverCfg.getJwtValidityApiKey();
-        jwtValidityUserPassword = serverCfg.getJwtValidityUserPassword() == null ? DEFAULT_JWT_VALIDITY : serverCfg.getJwtValidityUserPassword();
+        jwtValidityApiKey       = serverCfg.getJwtValidityApiKey()       == null ? DEFAULT_JWT_VALIDITY_AK : serverCfg.getJwtValidityApiKey();
+        jwtValidityUserPassword = serverCfg.getJwtValidityUserPassword() == null ? DEFAULT_JWT_VALIDITY_UP : serverCfg.getJwtValidityUserPassword();
+        jwtValidityOpenId       = serverCfg.getJwtValidityOpenId()       == null ? DEFAULT_JWT_VALIDITY_MS : serverCfg.getJwtValidityOpenId();
         sessionLogSysout        = Boolean.TRUE.equals(serverCfg.getSessionLogSysout());
     }
 
@@ -109,11 +113,16 @@ public class AuthResponseUtil implements IAuthResponseUtil {
         } else {
             LOGGER.debug("About to sign a Jwt for user {}, tenant {}", jwt.getUserId(), jwt.getTenantId());
         }
-        Long duration = null;
-        if (ISSUER_APIKEY.equals(jwt.getIssuer())) {
+
+        // determine the duration of validity
+        final String issuerType = jwt.getIssuer();
+        final Long duration;
+        if (AuthenticationIssuerType.ISSUER_APIKEY.getToken().equals(issuerType)) {
             duration = jwtValidityApiKey;
-        } else if (ISSUER_USERID_PASSWORD.equals(jwt.getIssuer())) {
+        } else if (AuthenticationIssuerType.ISSUER_USERID_PASSWORD.getToken().equals(issuerType)) {
             duration = jwtValidityUserPassword;
+        } else if (AuthenticationIssuerType.ISSUER_USERID_MS_OPENID.getToken().equals(issuerType)) {
+            duration = jwtValidityOpenId;
         } else {
             duration = DEFAULT_JWT_VALIDITY;
         }
@@ -122,10 +131,10 @@ public class AuthResponseUtil implements IAuthResponseUtil {
     }
 
     @Override
-    public JwtInfo createJwt(final UserDTO user, final TenantDTO tenantDTO) {
+    public JwtInfo createJwt(final UserDTO user, final TenantDTO tenantDTO, final AuthenticationIssuerType issuerType) {
         final PermissionsDTO p = user.getPermissions();
         final JwtInfo jwtInfo = new JwtInfo();
-        jwtInfo.setIssuer(ISSUER_USERID_PASSWORD);
+        jwtInfo.setIssuer(issuerType.getToken());
         jwtInfo.setRoleRef(user.getRoleRef() == null ? null : user.getRoleRef().getObjectRef());
         // same from here
         jwtInfo.setUserRef(user.getObjectRef());
@@ -152,7 +161,7 @@ public class AuthResponseUtil implements IAuthResponseUtil {
         final UserDTO user = (UserDTO) apiKey.getUserRef();
         final PermissionsDTO pu = user.getPermissions();
         final JwtInfo jwtInfo = new JwtInfo();
-        jwtInfo.setIssuer(ISSUER_APIKEY);
+        jwtInfo.setIssuer(AuthenticationIssuerType.ISSUER_APIKEY.getToken());
         jwtInfo.setRoleRef(apiKey.getRoleRef() == null ? null : apiKey.getRoleRef().getObjectRef());
         // same from here
         jwtInfo.setUserRef(user.getObjectRef());

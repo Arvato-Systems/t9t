@@ -18,9 +18,27 @@ package com.arvatosystems.t9t.server.services;
 import com.arvatosystems.t9t.base.api.ServiceRequest;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 
-// implementations process unauthenticated ServiceRequests,
-// first checking the authenticaton part of the request
+import jakarta.annotation.Nonnull;
+
+/**
+ * Implementations process unauthenticated ServiceRequests.
+ */
 public interface IUnauthenticatedServiceRequestExecutor {
-    ServiceResponse execute(ServiceRequest srq);         // checks authorization as well
-    ServiceResponse executeTrusted(ServiceRequest srq);  // checks authentication only - used for internal async messages
+    /**
+     * General (public) entry point - executes a request after validating correct authentication.
+     *
+     * @param srq the service request (with authorization parameters)
+     * @return result of the execution
+     */
+    @Nonnull
+    ServiceResponse execute(@Nonnull ServiceRequest srq);         // checks authorization as well
+
+    /**
+     * Internal entry point - executes a request from internal callers.
+     *
+     * @param srq the service request (with authorization parameters)
+     * @return result of the execution
+     */
+    @Nonnull
+    ServiceResponse executeTrusted(@Nonnull ServiceRequest srq);  // checks authentication only - used for internal async messages
 }

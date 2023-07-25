@@ -18,12 +18,6 @@
     <parameter name="tenantId" class="java.lang.String"/>
     <parameter name="translator" class="com.arvatosystems.t9t.translation.be.TranslationProvider"/>
     <parameter name="timeFormatter" class="com.arvatosystems.t9t.rep.be.util.TimeFormatter"/>
-    <parameter name="dateFromStr" class="java.lang.String">
-        <defaultValueExpression><![CDATA[$P{timeFormatter}.formatTimetoStr($P{dateFrom})]]></defaultValueExpression>
-    </parameter>
-    <parameter name="dateToStr" class="java.lang.String">
-        <defaultValueExpression><![CDATA[$P{timeFormatter}.formatTimetoStr($P{dateTo})]]></defaultValueExpression>
-    </parameter>
     <queryString>
         <![CDATA[SELECT
 tenant.tenant_id,
@@ -34,10 +28,8 @@ max(msg.processing_time_in_millisecs) max_time,
 round(avg(msg.processing_time_in_millisecs),2) avg_time
 FROM p28_int_message msg
 LEFT OUTER JOIN p42_cfg_tenants tenant on (msg.tenant_id = tenant.tenant_id)
-WHERE
-msg.execution_started_at >= to_timestamp($P{dateFromStr},'YYYY-MM-DD HH24:MI:SS')
-AND msg.execution_started_at < to_timestamp($P{dateToStr},'YYYY-MM-DD HH24:MI:SS')
-AND msg.return_code > 99999999
+WHERE msg.return_code > 99999999
+  AND msg.execution_started_at >= $P{dateFrom} AND msg.execution_started_at < $P{dateTo}
 GROUP BY tenant.tenant_id, tenant.name, msg.return_code
 ORDER BY  tenant_id, return_code, avg_time]]>
     </queryString>

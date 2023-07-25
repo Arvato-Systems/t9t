@@ -33,8 +33,8 @@ public class RerunRequestContextMenuHandler implements IGridContextMenu<MessageD
     protected final IT9tRemoteUtils remoteUtils = Jdp.getRequired(IT9tRemoteUtils.class);
 
     @Override
-    public boolean isEnabled(DataWithTracking<MessageDTO, TrackingBase> dwt) {
-        MessageDTO dto = dwt.getData();
+    public boolean isEnabled(final DataWithTracking<MessageDTO, TrackingBase> dwt) {
+        final MessageDTO dto = dwt.getData();
         if (ApplicationException.isOk(dto.getReturnCode()))
             return false;
         if (dto.getRerunByProcessRef() != null)
@@ -43,9 +43,9 @@ public class RerunRequestContextMenuHandler implements IGridContextMenu<MessageD
     }
 
     @Override
-    public void selected(Grid28 lb, DataWithTracking<MessageDTO, TrackingBase> dwt) {
-        MessageDTO dto = dwt.getData();
-        RerunRequest rq = new RerunRequest();
+    public void selected(final Grid28 lb, final DataWithTracking<MessageDTO, TrackingBase> dwt) {
+        final MessageDTO dto = dwt.getData();
+        final RerunRequest rq = new RerunRequest();
         rq.setProcessRef(dto.getObjectRef());
         remoteUtils.executeExpectOk(rq);
     }

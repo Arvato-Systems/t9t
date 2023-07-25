@@ -32,8 +32,8 @@ public class ShowSinksContextMenuHandler implements IGridContextMenu<DataSinkDTO
     protected final IT9tMessagingDAO messagingDAO = Jdp.getRequired(IT9tMessagingDAO.class);
 
     @Override
-    public void selected(Grid28 lb, DataWithTracking<DataSinkDTO, TrackingBase> dwt) {
-        DataSinkDTO dto = dwt.getData();
+    public void selected(final Grid28 lb, final DataWithTracking<DataSinkDTO, TrackingBase> dwt) {
+        final DataSinkDTO dto = dwt.getData();
         JumpTool.jump("screens/report/sink28.zul", "dataSinkRef", dto.getObjectRef(), "screens/report/dataSink28.zul");
     }
 }
