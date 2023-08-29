@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.rest.services;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.core.Response;
 
@@ -33,15 +35,30 @@ public interface IAuthFilterCustomization {
      * Constructs a new Response object for the current request and
      * either throws a WebApplicationException of the given errorStatus, or aborts the filter with that response.
      */
-    void abortFilter(ContainerRequestContext requestContext, Response errorStatus);
+    void abortFilter(@Nonnull ContainerRequestContext requestContext, @Nonnull Response errorStatus);
 
+    /**
+     * Checks if the provided userId is allowed to be used for authentication.
+     * The default implementation provides a pattern check and a list check.
+     *
+     * @return false if processing can continue (no problem), true if the filter decides the attempt should be rejected.
+     */
+    boolean filterByUserId(@Nullable String userId);
+
+    /**
+     * Checks if the provided API key is allowed to be used for authentication.
+     * The default implementation provides a pattern check.
+     *
+     * @return false if processing can continue (no problem), true if the filter decides the attempt should be rejected.
+     */
+    boolean filterByApiKey(@Nonnull String apiKey);
 
     /**
      * Checks if the request came from a blocked IP address.
      *
      * @return false if processing can continue (no problem), true if the filter has aborted with an error code
      */
-    boolean filterBlockedIpAddress(ContainerRequestContext requestContext, String remoteIp);
+    boolean filterBlockedIpAddress(@Nonnull ContainerRequestContext requestContext, @Nullable String remoteIp);
 
     /**
      * Checks for allowed requests which do not need authentication.
@@ -53,26 +70,26 @@ public interface IAuthFilterCustomization {
      *
      * @return false if processing can continue (no problem), true if the filter has aborted with an error code
      */
-    boolean filterUnauthenticated(ContainerRequestContext requestContext);
+    boolean filterUnauthenticated(@Nonnull ContainerRequestContext requestContext);
 
     /**
      * Checks for allowed requests which come with authentication header.
      *
      * @return false if processing can continue (no problem), true if the filter has aborted with an error code
      */
-    boolean filterAuthenticated(ContainerRequestContext requestContext, String authHeader);
+    boolean filterAuthenticated(@Nonnull ContainerRequestContext requestContext, @Nonnull String authHeader);
 
     /**
      * Invoked for POST requests: Checks for supported type of payload.
      *
      * @return false if processing can continue (no problem), true if the filter has aborted with an error code
      */
-    boolean filterSupportedMediaType(ContainerRequestContext requestContext);
+    boolean filterSupportedMediaType(@Nonnull ContainerRequestContext requestContext);
 
     /**
      * Checks for correct UUID in case an idempotency header has been provided.
      *
      * @return false if processing can continue (no problem), true if the filter has aborted with an error code
      */
-    boolean filterCorrectIdempotencyPattern(ContainerRequestContext requestContext, String idempotencyHeader);
+    boolean filterCorrectIdempotencyPattern(@Nonnull ContainerRequestContext requestContext, @Nullable String idempotencyHeader);
 }

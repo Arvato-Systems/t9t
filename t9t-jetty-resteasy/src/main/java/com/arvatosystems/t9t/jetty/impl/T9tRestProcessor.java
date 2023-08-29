@@ -200,6 +200,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
                             requestParameters.getClass().getSimpleName(), sr.getClass().getSimpleName(), sr.getReturnCode());
                     responseBuilder.entity(createResultFromServiceResponse(sr));  // this is like the error result
                 }
+                addSecurityHeader(responseBuilder);
                 final Response responseObj = responseBuilder.build();
                 resp.resume(responseObj);
             } else {
@@ -242,6 +243,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
                         sr.getClass().getSimpleName(), sr.getReturnCode());
                     responseBuilder.entity(createResultFromServiceResponse(sr));  // this is like the error result
                 }
+                addSecurityHeader(responseBuilder);
                 final Response responseObj = responseBuilder.build();
                 resp.resume(responseObj);
             } else {

@@ -37,6 +37,7 @@ public class ConnectionDefaults {
     public static final String INITIAL_USER_ID      = "admin";
     public static final String INITIAL_PASSWORD     = "changeMe";
     public static final String DEFAULT_REST_URL     = "http:8080//localhost";
+    public static final String DEFAULT_REST_VERIFY  = "Y";
 
     public static final SessionParameters SESSION_PARAMETERS = new SessionParameters(
         null, // tenantId
@@ -51,6 +52,7 @@ public class ConnectionDefaults {
     protected static final String PROPERTY_PORTTCP;
     protected static final String PROPERTY_PASSWORD;
     protected static final String PROPERTY_REST_URL;
+    protected static final String PROPERTY_REST_VERIFY;
 
     static {
         // static class initialization
@@ -65,11 +67,12 @@ public class ConnectionDefaults {
         } catch (Exception e) {
             LOGGER.error("Could not read properties file {}, using hardcoded defaults. Cause: {}:{}", propFileName, ExceptionUtil.causeChain(e));
         }
-        PROPERTY_HOST       = (String)props.get("t9t.host");
-        PROPERTY_PORT       = (String)props.get("t9t.port");
-        PROPERTY_PORTTCP    = (String)props.get("t9t.port.tcp");
-        PROPERTY_PASSWORD   = (String)props.get("t9t.password");
-        PROPERTY_REST_URL   = (String)props.get("rest.url");
+        PROPERTY_HOST        = (String)props.get("t9t.host");
+        PROPERTY_PORT        = (String)props.get("t9t.port");
+        PROPERTY_PORTTCP     = (String)props.get("t9t.port.tcp");
+        PROPERTY_PASSWORD    = (String)props.get("t9t.password");
+        PROPERTY_REST_URL    = (String)props.get("rest.url");
+        PROPERTY_REST_VERIFY = (String)props.get("t9t.restapi.verify");
     }
 
     /**
@@ -93,19 +96,24 @@ public class ConnectionDefaults {
     }
 
     protected static String getInitialPassword() {
-        return getConfigFromVariousSources("t9t.password", "PASSWORD", PROPERTY_PASSWORD, INITIAL_PASSWORD);
+        return getConfigFromVariousSources("t9t.password",          "PASSWORD",     PROPERTY_PASSWORD,    INITIAL_PASSWORD);
     }
     protected static String getInitialHost() {
-        return getConfigFromVariousSources("t9t.host",     "HOST",     PROPERTY_HOST,     DEFAULT_HOST);
+        return getConfigFromVariousSources("t9t.host",              "HOST",         PROPERTY_HOST,        DEFAULT_HOST);
     }
     protected static String getInitialPort() {
-        return getConfigFromVariousSources("t9t.port",     "PORT",     PROPERTY_PORT,     DEFAULT_PORT);
+        return getConfigFromVariousSources("t9t.port",              "PORT",         PROPERTY_PORT,        DEFAULT_PORT);
     }
     protected static String getInitialPortTcp() {
-        return getConfigFromVariousSources("t9t.port.tcp", "PORTTCP",  PROPERTY_PORTTCP,  DEFAULT_PORT_TCP);
+        return getConfigFromVariousSources("t9t.port.tcp",          "PORTTCP",      PROPERTY_PORTTCP,     DEFAULT_PORT_TCP);
     }
     protected static String getInitialRestUrl() {
-        return getConfigFromVariousSources("rest.url",     "RESTURL",  PROPERTY_REST_URL, DEFAULT_REST_URL);
+        return getConfigFromVariousSources("rest.url",              "RESTURL",      PROPERTY_REST_URL,    DEFAULT_REST_URL);
+    }
+    protected static boolean getSSLCertVerification() {
+        return "Y".equals(
+                getConfigFromVariousSources("t9t.restapi.verify",   "VERIFY",       PROPERTY_REST_VERIFY, DEFAULT_REST_VERIFY)
+        );
     }
 
     /** Checkstyle wants at least one instance method or complains about constructors. */

@@ -31,19 +31,22 @@ import com.arvatosystems.t9t.kafka.service.IKafkaRebalancer;
 
 public class KafkaRebalancer implements IKafkaRebalancer {
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaRebalancer.class);
-    private final Set<Integer> myIndexes = ConcurrentHashMap.newKeySet(96);  // concurrent set
-    private final String topic;
-    private final boolean verbose;
+
+    protected final Set<Integer> myIndexes = ConcurrentHashMap.newKeySet(96);  // concurrent set
+    protected final String topic;
+    protected final boolean verbose;
 
     public KafkaRebalancer(final String topic, final boolean verbose) {
         this.topic = topic;
         this.verbose = verbose;
     }
 
+    @Override
     public Collection<Integer> getCurrentPartitions() {
         return Collections.unmodifiableSet(myIndexes);
     }
 
+    @Override
     public void init(final List<PartitionInfo> partitions) {
         LOGGER.info("Initially {} partitions have been assigned", partitions.size());
         for (final PartitionInfo pi: partitions) {

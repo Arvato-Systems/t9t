@@ -35,7 +35,7 @@ class SessionMappers {
         dto.userRef   = new UserKey(userRef, user?.userId ?: '?')
         dto.tenantId  = tenant?.tenantId ?: '?'
         if (apiKey !== null) {
-            dto.apiKeyRef = new ApiKeyKey(apiKey.apiKey)
+            dto.apiKeyRef = new ApiKeyKey(apiKey.objectRef, apiKey.apiKey)
         }
     }
 }

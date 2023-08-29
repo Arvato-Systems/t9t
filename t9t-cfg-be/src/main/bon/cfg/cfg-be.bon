@@ -86,6 +86,10 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional Integer                            slowProcessingTimeout;          // after how much time are we polling more despite (in ms)? (default 15000)
         optional Integer                            waitInterval;                   // after how many ms to evaluate again (default 50)
         optional Boolean                            commitSync;                     // if true, perform synchronous commits (default async)
+        optional Integer                            commitInterval;                 // after how many ms to commit offsets (default is 3000)
+        optional Integer                            monitorInterval;                // after how many ms to print monitored partitions (default is 5000)
+        optional Integer                            shutdownThreadpoolInterval;     // timeout in ms for threadpool shutdown (default is 10000)
+        optional Integer                            maxPollRecords;                 // maximum number of records returned in a single call to poll() (max.poll.records)
     }
 
     class RelationalDatabaseConfiguration {
@@ -186,11 +190,13 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
     class UplinkConfiguration {
         required Unicode(36)                        key;                            // the key to use for this configuration
         required Unicode(255)                       url;                            // URL for uplink. If not provided, uplink calls will throw an Exception
+        optional Unicode(255)                       identityServiceUrl;             // URL for authentication. Request and refresh access tokens.
         optional Enum MediaType                     mediaType;                      // which format to use (JSON, compact, bonaparte, default is compact bonaparte, entry currently ignored)
         optional Uuid                               apiKey;                         // the API key to use
         optional Integer                            timeoutInMs;                    // if specified, use the timeout given here, otherwise some hardcoded default
         optional Unicode(255)                       callbackUrl;                    // the configuration for callback, in case required
         optional Unicode(255)                       basicAuth;                      // the http BASIC auth to use (in case API keys are not supported by the remote)
+        optional Unicode(255)                       clientId;                       // Id used to request access token
     }
 
     class SearchConfiguration {

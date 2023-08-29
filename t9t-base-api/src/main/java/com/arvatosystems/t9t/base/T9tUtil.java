@@ -60,6 +60,16 @@ public final class T9tUtil {
     }
 
     /**
+     * Checks whether the given {@link Collection} parameter is <b>NOT</b> null or empty.
+     *
+     * @param collection the {@link Collection} object to check
+     * @return true if param is <b>NOT</b> null or empty
+     */
+    public static boolean isNotEmpty(final Collection<?> collection) {
+        return !isEmpty(collection);
+    }
+
+    /**
      * Checks whether the given {@link Collection} parameter is null or empty.
      *
      * @param collection the {@link Collection} object to check
@@ -70,6 +80,16 @@ public final class T9tUtil {
     }
 
     /**
+     * Checks whether the given {@link Collection} parameter is <b>NOT</b> null or empty.
+     *
+     * @param collection the {@link Collection} object to check
+     * @return true if param is <b>NOT</b> null or empty
+     */
+    public static boolean isNotEmpty(final Map<?, ?> map) {
+        return !isEmpty(map);
+    }
+
+    /**
      * Checks whether the given {@link String} parameter is null or blank.
      *
      * @param string the {@link String} object to check
@@ -77,6 +97,16 @@ public final class T9tUtil {
      */
     public static boolean isBlank(final String string) {
         return string == null || string.isBlank();
+    }
+
+    /**
+     * Checks whether the given {@link String} parameter is <b>NOT</b> null or blank.
+     *
+     * @param string the {@link String} object to check
+     * @return true if param is <b>NOT</b> null or blank
+     */
+    public static boolean isNotBlank(final String string) {
+        return !isBlank(string);
     }
 
     /**

@@ -224,6 +224,34 @@
                         </xs:simpleType>
                     </xs:element>
                     <xs:element name="commitSync" minOccurs="0" nillable="true" type="xs:boolean"/>
+                    <xs:element name="commitInterval" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:unsignedInt">
+                                <xs:maxInclusive value="2147483647"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="monitorInterval" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:unsignedInt">
+                                <xs:maxInclusive value="2147483647"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="shutdownThreadpoolInterval" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:unsignedInt">
+                                <xs:maxInclusive value="2147483647"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="maxPollRecords" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:unsignedInt">
+                                <xs:maxInclusive value="2147483647"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
@@ -714,6 +742,13 @@
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:element>
+                    <xs:element name="identityServiceUrl" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="255"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
                     <xs:element name="mediaType" minOccurs="0" nillable="true" type="api_media:MediaType"/>
                     <xs:element name="apiKey" minOccurs="0" nillable="true" type="bon:UUID"/>
                     <xs:element name="timeoutInMs" minOccurs="0" nillable="true">
@@ -731,6 +766,13 @@
                         </xs:simpleType>
                     </xs:element>
                     <xs:element name="basicAuth" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="255"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="clientId" minOccurs="0" nillable="true">
                         <xs:simpleType>
                             <xs:restriction base="xs:normalizedString">
                                 <xs:maxLength value="255"/>

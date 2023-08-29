@@ -26,6 +26,6 @@ import io.swagger.v3.oas.models.info.Info;
 public class SwaggerInitT9tJetty extends SwaggerInit {
     @Override
     protected Info createRestApiInfoForSwagger() {
-        return super.createRestApiInfoForSwagger().version("t9t API 6.2.0");
+        return super.createRestApiInfoForSwagger().version("t9t API 6.2.0"); // this is the version of most recent change of API, not the application version
     }
 }

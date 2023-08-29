@@ -173,7 +173,7 @@ public class AsyncQueueKafka<R extends BonaPortable> implements IAsyncQueue {
                 serverConfig.setWaitAfterDbErrors(myCfg.getWaitAfterDbErrors());
 
             final Map<String, Object> props = new HashMap<>(16);
-            props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, Boolean.FALSE);  // or "false" as found in examples?
+            props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, Boolean.FALSE);
             props.put(ConsumerConfig.REQUEST_TIMEOUT_MS_CONFIG, 60_000);  // 1 minute
             props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 60);  // do not overload the system
             if (myCfg.getZ() != null) {

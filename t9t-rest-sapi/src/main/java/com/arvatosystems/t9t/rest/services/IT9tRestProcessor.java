@@ -98,6 +98,7 @@ public interface IT9tRestProcessor {
             responseBuilder.type(acceptHeader == null || acceptHeader.length() == 0 ? MediaType.APPLICATION_JSON : acceptHeader);
             responseBuilder.entity(createResultFromServiceResponse(sr));
         }
+        addSecurityHeader(responseBuilder);
         resp.resume(responseBuilder.build());
     }
 
@@ -108,7 +109,13 @@ public interface IT9tRestProcessor {
         if (result != null) {
             responseBuilder.entity(result);
         }
+        addSecurityHeader(responseBuilder);
         resp.resume(responseBuilder.build());
+    }
+
+    /** Adds default security headers. */
+    default void addSecurityHeader(final Response.ResponseBuilder responseBuilder) {
+        RestUtils.addDefaultSecurityHeader(responseBuilder);
     }
 
     /** Returns a response without using the worker thread. */

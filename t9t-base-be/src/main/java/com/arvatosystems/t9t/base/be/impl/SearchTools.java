@@ -15,23 +15,27 @@
  */
 package com.arvatosystems.t9t.base.be.impl;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.function.Function;
+
 import com.arvatosystems.t9t.base.search.SearchCriteria;
 import com.arvatosystems.t9t.base.services.ISearchTools;
 
 import de.jpaw.bonaparte.pojos.api.AndFilter;
+import de.jpaw.bonaparte.pojos.api.AsciiFilter;
 import de.jpaw.bonaparte.pojos.api.FieldFilter;
 import de.jpaw.bonaparte.pojos.api.NotFilter;
 import de.jpaw.bonaparte.pojos.api.OrFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.SortColumn;
+import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
+import de.jpaw.bonaparte.pojos.api.UuidFilter;
 import de.jpaw.dp.Singleton;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 @Singleton
 public class SearchTools implements ISearchTools {
@@ -222,5 +226,55 @@ public class SearchTools implements ISearchTools {
             }
         }
         return null;
+    }
+
+    protected <T> void descendAndReplace(final SearchFilter searchFilter, final Function<SearchFilter, T> checker,
+            final Function<T, SearchFilter> replacer, final Consumer<SearchFilter> updater) {
+        final T value = checker.apply(searchFilter);
+        if (value != null) {
+            updater.accept(replacer.apply(value));
+        } else if (searchFilter instanceof NotFilter nf) {
+            descendAndReplace(nf.getFilter(), checker, replacer, s -> nf.setFilter(s));
+        } else if (searchFilter instanceof AndFilter af) {
+            descendAndReplace(af.getFilter1(), checker, replacer, s -> af.setFilter1(s));
+            descendAndReplace(af.getFilter2(), checker, replacer, s -> af.setFilter2(s));
+        } else if (searchFilter instanceof OrFilter of) {
+            descendAndReplace(of.getFilter1(), checker, replacer, s -> of.setFilter1(s));
+            descendAndReplace(of.getFilter2(), checker, replacer, s -> of.setFilter2(s));
+        }
+    }
+
+    @Override
+    public void optimizeSearchFiltersString(final SearchCriteria searchCriteria, final String fieldName, final Function<String, SearchFilter> replacer) {
+        if (searchCriteria.getSearchFilter() != null) {
+            final Function<SearchFilter, String> checker = s -> {
+                if (s instanceof UnicodeFilter uf) {
+                    if (fieldName.equals(uf.getFieldName()) && uf.getEqualsValue() != null) {
+                        return uf.getEqualsValue();
+                    }
+                } else if (s instanceof AsciiFilter af) {
+                    if (fieldName.equals(af.getFieldName()) && af.getEqualsValue() != null) {
+                        return af.getEqualsValue();
+                    }
+                }
+                return null;
+            };
+            descendAndReplace(searchCriteria.getSearchFilter(), checker, replacer, s -> searchCriteria.setSearchFilter(s));
+        }
+    }
+
+    @Override
+    public void optimizeSearchFiltersUuid(final SearchCriteria searchCriteria, final String fieldName, final Function<UUID, SearchFilter> replacer) {
+        if (searchCriteria.getSearchFilter() != null) {
+            final Function<SearchFilter, UUID> checker = s -> {
+                if (s instanceof UuidFilter uf) {
+                    if (fieldName.equals(uf.getFieldName()) && uf.getEqualsValue() != null) {
+                        return uf.getEqualsValue();
+                    }
+                }
+                return null;
+            };
+            descendAndReplace(searchCriteria.getSearchFilter(), checker, replacer, s -> searchCriteria.setSearchFilter(s));
+        }
     }
 }

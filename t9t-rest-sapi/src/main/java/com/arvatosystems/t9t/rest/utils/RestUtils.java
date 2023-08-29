@@ -78,19 +78,21 @@ public final class RestUtils {
     }
 
     public static Response create(final Response.Status status, final Object payload, final String acceptHeader) {
-        final Response.ResponseBuilder response = Response.status(status);
-        response.entity(payload);
+        final Response.ResponseBuilder responseBuilder = Response.status(status);
+        responseBuilder.entity(payload);
 
         if (payload instanceof String) {
-            response.type(MediaType.TEXT_PLAIN_TYPE);
+            responseBuilder.type(MediaType.TEXT_PLAIN_TYPE);
         } else {
             if (acceptHeader != null) {
-                response.type(acceptHeader);
+                responseBuilder.type(acceptHeader);
             } else {
-                response.type(MediaType.APPLICATION_XML);
+                responseBuilder.type(MediaType.APPLICATION_XML);
             }
         }
-        return response.build();
+
+        addDefaultSecurityHeader(responseBuilder);
+        return responseBuilder.build();
     }
 
     /**
@@ -163,6 +165,14 @@ public final class RestUtils {
             break;
         }
         return result;
+    }
+
+    public static void addDefaultSecurityHeader(final Response.ResponseBuilder responseBuilder) {
+        responseBuilder.header("Strict-Transport-Security", "max-age=15768000; includeSubDomains");
+        responseBuilder.header("X-Content-Type-Options", "nosniff");
+        responseBuilder.header("X-Frame-Options", "DENY");
+        responseBuilder.header("Cache-Control", "private, no-cache, no-store, max-age=0, no-transform");
+        responseBuilder.header("Content-Security-Policy", "frame-ancestors 'none'");
     }
 
     public static Response error(final Response.Status status, final int errorCode, final String message, final String acceptHeader) {

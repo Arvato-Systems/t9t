@@ -35,11 +35,16 @@ public class T9tCoreException extends T9tException {
     // Update status - finish update (11-20)
     public static final int FINISH_UPDATE_MUST_BE_IN_PROGRESS   = OFFSET + 11;
 
+    // additional values for release update sequences
+    public static final int UPDATE_MISSING_IMPLEMENTATION       = OFFSET + 21;
+
     static {
         registerCode(UPDATE_STATUS_ALREADY_IN_PROGRESS, "Ticket update already in progress.");
         registerCode(UPDATE_STATUS_INVALID_STATE, "Ticket isn't in valid state.");
         registerCode(UPDATE_STATUS_PREREQUISITES, "Not all prerequisite tickets are completed.");
 
         registerCode(FINISH_UPDATE_MUST_BE_IN_PROGRESS, "Ticket update must be in progress.");
+
+        registerCode(UPDATE_MISSING_IMPLEMENTATION, "No updater implementation found for the specified ticketId.");
     }
 }

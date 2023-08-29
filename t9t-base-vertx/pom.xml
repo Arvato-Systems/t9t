@@ -21,7 +21,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-settings-java</artifactId>
-        <version>6.5-SNAPSHOT</version>
+        <version>6.6-SNAPSHOT</version>
         <relativePath>../t9t-settings-java</relativePath>
     </parent>
 
@@ -68,6 +68,10 @@
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-jdp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-metrics</artifactId>
         </dependency>
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>

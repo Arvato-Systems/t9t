@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
 
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.S3ClientBuilder;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 
@@ -46,7 +47,6 @@ public class OutputResourceS3 implements IOutputResource {
 
     protected static final String GZIP_EXTENSION = ".gz";
 
-    protected final S3Client s3Client = S3Client.builder().build();
     protected Charset encoding;
     protected ByteArrayOutputStream os;
     protected Charset cs;
@@ -69,6 +69,9 @@ public class OutputResourceS3 implements IOutputResource {
         // determine the target
         final String bucket = targetName.substring(0, ind).trim();
         final String path = targetName.substring(ind + 1).trim();
+
+        final S3ClientBuilder s3ClientBuilder = AwsClientBuilder.createCustomizedS3ClientBuilder();
+        final S3Client s3Client = s3ClientBuilder.build();
 
         try {
             final byte[] bytes   = os.toByteArray();

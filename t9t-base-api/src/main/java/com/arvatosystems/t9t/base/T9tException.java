@@ -231,6 +231,7 @@ public class T9tException extends ApplicationException {
 
     public static final int DYNAMODB_EXCEPTION          = OFFSET_DB_ERROR + 501;
     public static final int MISSING_KAFKA_BOOTSTRAP     = OFFSET + 502;
+    public static final int KAFKA_LISTENER_ERROR        = OFFSET + 503;
 
     // Error codes specific to solr search
     public static final int SOLR_SERVER_NOT_AVAILABLE   = OFFSET + 701;
@@ -580,6 +581,7 @@ public class T9tException extends ApplicationException {
 
         registerCode(DYNAMODB_EXCEPTION, "DynamoDB returned an Exception");
         registerCode(MISSING_KAFKA_BOOTSTRAP, "Kafka bootstrap servers not specified");
+        registerCode(KAFKA_LISTENER_ERROR, "Could not create kafka listener");
         registerCode(GENERAL_SERVER_ERROR, "Server error");
 
         registerCode(INVALID_ENUM_VALUE, "Invalid instance value");

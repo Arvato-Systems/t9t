@@ -35,6 +35,9 @@ import com.arvatosystems.t9t.kafka.service.IKafkaConsumer;
 import com.arvatosystems.t9t.kafka.service.IKafkaTopicReader;
 import com.arvatosystems.t9t.kafka.service.impl.KafkaTopicReader;
 
+/**
+ * @deprecated replaced by {@link KafkaSimplePartitionOrderedRequestProcessor}.
+ */
 final class KafkaRequestProcessorWithOrdering implements Callable<Boolean> {
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaRequestProcessorWithOrdering.class);
     private static final int NUMBER_OF_PARTITIONS       = 12;       // initial size of maps

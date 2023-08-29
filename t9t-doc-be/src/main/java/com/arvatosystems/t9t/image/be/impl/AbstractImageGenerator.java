@@ -26,12 +26,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.barcode.api.FlipMode;
+import com.arvatosystems.t9t.doc.services.IImageCustomizer;
 import com.arvatosystems.t9t.doc.services.IImageGenerator;
 import com.arvatosystems.t9t.doc.services.ImageParameter;
 import com.google.zxing.common.BitMatrix;
 
 import de.jpaw.bonaparte.api.media.MediaTypes;
 import de.jpaw.bonaparte.pojos.api.media.MediaData;
+import de.jpaw.dp.Jdp;
 import de.jpaw.util.ByteArray;
 
 public abstract class AbstractImageGenerator implements IImageGenerator {
@@ -41,26 +43,46 @@ public abstract class AbstractImageGenerator implements IImageGenerator {
         System.setProperty("java.awt.headless", "true");
     }
 
+    /** Creates an image with the default settings. */
     protected MediaData toImage(final BitMatrix b, final ImageParameter params) throws Exception {
+        return toGrayImage(b, params);  // prefer grayscale for barcodes, because they need less space
+    }
+
+    /** Creates an RGB image (24 or 32 bit per pixel) settings. */
+    protected MediaData toRGBImage(final BitMatrix b, final ImageParameter params) throws Exception {
+        return toImage(b, params, BufferedImage.TYPE_INT_RGB);
+    }
+
+    /** Creates a grayscale image (8 bit per pixel) settings. */
+    protected MediaData toGrayImage(final BitMatrix b, final ImageParameter params) throws Exception {
+        return toImage(b, params, BufferedImage.TYPE_BYTE_GRAY);
+    }
+
+    /** Creates an image using specifically provided settings. */
+    protected MediaData toImage(final BitMatrix b, final ImageParameter params, final int type) throws Exception {
         final int width = b.getWidth();
         final int height = b.getHeight();
         final boolean rotated = params.rotation != null && params.rotation.intValue() == 90;
         final BufferedImage image = new BufferedImage(
                 rotated ? height : width,
                 rotated ? width : height,
-                BufferedImage.TYPE_INT_RGB); // create an empty image
-        final int white = 255 << 16 | 255 << 8 | 255;
-        final int black = 0;
+                type); // create an empty image
         for (int i = 0; i < width; i++) {
             final int sx = FlipMode.FLIP_HORIZONTALLY == params.flipMode ? width - 1 - i : i;
             for (int j = 0; j < height; j++) {
                 final int sy = FlipMode.FLIP_VERTICALLY == params.flipMode ? height - 1 - j : j;
                 if (rotated)
-                    image.setRGB(j, i, b.get(sx, sy) ? black : white); // set pixel one by one
+                    image.setRGB(j, i, b.get(sx, sy) ? params.black : params.white); // set pixel one by one
                 else
-                    image.setRGB(i, j, b.get(sx, sy) ? black : white); // set pixel one by one
+                    image.setRGB(i, j, b.get(sx, sy) ? params.black : params.white); // set pixel one by one
             }
         }
+
+        if (params.qualifier != null) {
+            final IImageCustomizer customizer = Jdp.getRequired(IImageCustomizer.class, params.qualifier);
+            customizer.customizeImage(image, params.black, params.white);
+        }
+
 //        if ((params.rotation != null && params.rotation.intValue() != 0) ||
 //            (params.scale    != null && params.scale.doubleValue() != 1.0) ||
 //            (params.flipMode != null && params.flipMode != FlipMode.NO_FLIPPING)) {
@@ -77,7 +99,11 @@ public abstract class AbstractImageGenerator implements IImageGenerator {
         return m;
     }
 
-    BufferedImage transform(final BufferedImage src, final ImageParameter params) {
+    protected void postprocess(final BufferedImage image) {
+        // empty by default
+    }
+
+    protected BufferedImage transform(final BufferedImage src, final ImageParameter params) {
         // transform
         final BufferedImage dest = new BufferedImage(src.getWidth(), src.getHeight(), src.getType());
         final Graphics2D g2d = dest.createGraphics();
