@@ -256,11 +256,11 @@ package (com.arvatosystems) t9t.auth {
         optional Instant                            lastLogin;                          // for information to the user
         optional Instant                            lastLoginByPassword;                // for information to the user
         optional Instant                            lastLoginByApiKey;                  // for information to the user
-        optional Instant                            lastLoginByX509;                    // for information to the user
+        optional Instant                            lastLoginByX509;                    // for information to the user (currently used by OpenID connect)
         optional Instant                            prevLogin;                          // for information to the user
         optional Instant                            prevLoginByPassword;                // for information to the user
         optional Instant                            prevLoginByApiKey;                  // for information to the user
-        optional Instant                            prevLoginByX509;                    // for information to the user
+        optional Instant                            prevLoginByX509;                    // for information to the user (currently used by OpenID connect)
     }
 
     final class PasswordKey extends CompositeKeyRef {

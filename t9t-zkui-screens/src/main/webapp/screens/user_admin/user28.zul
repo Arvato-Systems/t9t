@@ -2,7 +2,7 @@
 <?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="user28"?>
 
 <window28 id="userWin">
-    <threesections28 gridId="user">
+    <threesections28 gridId="user" gridContext="showAssignedRoles,showAssociatedApiKeys">
         <crud28 cachesDropdown="userId"
             viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.framework.UserVM', vmId='user')"
             currentMode="@load(vm.currentMode)">

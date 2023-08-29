@@ -70,6 +70,7 @@ import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.request.QueryConfigRequest;
 import com.arvatosystems.t9t.base.request.QueryConfigResponse;
 import com.arvatosystems.t9t.zkui.components.fields.IField;
+import com.arvatosystems.t9t.zkui.exceptions.ServiceResponseException;
 import com.arvatosystems.t9t.zkui.services.IApplicationDAO;
 import com.arvatosystems.t9t.zkui.services.INavBarCreator;
 import com.arvatosystems.t9t.zkui.services.IT9tRemoteUtils;
@@ -78,6 +79,7 @@ import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 import com.arvatosystems.t9t.zkui.util.ApplicationUtil;
 import com.arvatosystems.t9t.zkui.util.Constants;
 import com.arvatosystems.t9t.zkui.util.Constants.NaviConfig;
+import com.arvatosystems.t9t.zkui.util.JumpTool;
 import com.arvatosystems.t9t.zkui.util.ZulUtils;
 import com.arvatosystems.t9t.zkui.viewmodel.beans.Navi;
 import com.google.common.collect.ImmutableMap;
@@ -119,6 +121,7 @@ public class ApplicationViewModel {
     @SuppressWarnings("rawtypes")
     private List<IField> filters;
     private List<HtmlBasedComponent> htmlBasedFieldComponents;
+    private boolean jumpBackVisible = false;
     private static final int MAX_NUMBER_SUBMENU_ITEMS_PER_COLUMN = 13;
     private static final long MILLISECONDS_PER_DAY = 24L * 60L * 60L * 1000L;
 
@@ -259,8 +262,15 @@ public class ApplicationViewModel {
                 setSelectedFromJump(navi, null);
             }
         } else {
-            GetDefaultScreenResponse response = t9tRemoteUtils
-                    .executeExpectOk(new GetDefaultScreenRequest(), GetDefaultScreenResponse.class);
+            final GetDefaultScreenResponse response;
+            try {
+                response = t9tRemoteUtils.executeExpectOk(new GetDefaultScreenRequest(), GetDefaultScreenResponse.class);
+            } catch (ServiceResponseException e) {
+                LOGGER.error("Unable to get default screen. " + e);
+                Messagebox.show(ZulUtils.translate("err", "unableToGetDefaultScreen") + " - " + e.getReturnCodeMessage(), ZulUtils.translate("err", "title"),
+                    Messagebox.OK, Messagebox.ERROR);
+                return;
+            }
             if (response.getDefaultScreenId() != null) {
                 Optional<Navi> navi = as.getAllNavigations().stream().filter(i -> i.getNaviId().equals(response.getDefaultScreenId())).findFirst();
                 if (navi.isPresent()) {
@@ -278,7 +288,15 @@ public class ApplicationViewModel {
         queryConfigs.add(T9tConstants.CFG_FILE_KEY_ENVIRONMENT_TEXT);
         queryConfigs.add(T9tConstants.CFG_FILE_KEY_ENVIRONMENT_CSS);
         final QueryConfigRequest queryConfigRequest = new QueryConfigRequest(queryConfigs);
-        final QueryConfigResponse queryConfigResponse = t9tRemoteUtils.executeExpectOk(queryConfigRequest, QueryConfigResponse.class);
+        final QueryConfigResponse queryConfigResponse;
+        try {
+            queryConfigResponse = t9tRemoteUtils.executeExpectOk(queryConfigRequest, QueryConfigResponse.class);
+        } catch (ServiceResponseException e) {
+            LOGGER.error("Unable to query config. " + e);
+            Messagebox.show(ZulUtils.translate("err", "unableToQueryConfig") + " - " + e.getReturnCodeMessage(), ZulUtils.translate("err", "title"),
+                Messagebox.OK, Messagebox.ERROR);
+            return;
+        }
         final Map<String, String> configs = queryConfigResponse.getKeyValuePairs();
         if (configs != null && !configs.isEmpty()) {
            String envText = configs.get(T9tConstants.CFG_FILE_KEY_ENVIRONMENT_TEXT);
@@ -390,27 +408,27 @@ public class ApplicationViewModel {
     }
     private static final Map<String, Object> NO_PARAMS = ImmutableMap.of();
 
-    @GlobalCommand("setSelectedFromJump")
-    //@NotifyChange({ "selected" })
-    public final void setSelectedFromJump(@BindingParam("selected") Object xselected,
-            @BindingParam("backNaviLink") String backNaviLink
-
+    @GlobalCommand(JumpTool.SELECTED_PARAM_2)
+    @NotifyChange("jumpBackVisible")
+    public final void setSelectedFromJump(
+      @BindingParam(JumpTool.SELECTED_PARAM_1) final Object xselected,
+      @BindingParam(JumpTool.BACK_LINK_1) final String backNaviLink
     ) {
-        if (xselected instanceof String) {
-            setNaviGroup(String.valueOf(xselected), true);
-        } else {
-            Navi navi = (Navi) xselected;
+        if (xselected instanceof String xstr) {
+            setNaviGroup(xstr, true);
+        } else if (xselected instanceof Navi navi) {
             if (!naviContentMap.containsKey(navi.getNaviId())) {
                 //createComponents(navi);
-                createComponents(navi, backNaviLink == null ? NO_PARAMS : Collections.singletonMap("paramBackNaviLink", backNaviLink),
+                createComponents(navi, backNaviLink == null ? NO_PARAMS : Collections.singletonMap(JumpTool.BACK_LINK_2, backNaviLink),
                         Constants.Application.CachingType.GET_CACHED);
                 this.selected = xselected;
                 setNaviGroup((navi).getCategory(), false);
             } else {
                 String targetZul = navi.getLink();
                 ApplicationUtil.navJumpToScreen(targetZul,
-                        backNaviLink == null ? NO_PARAMS : Collections.singletonMap("paramBackNaviLink", backNaviLink));
+                        backNaviLink == null ? NO_PARAMS : Collections.singletonMap(JumpTool.BACK_LINK_2, backNaviLink));
             }
+            jumpBackVisible = true;
         }
     }
     private void setNaviGroup(String category, boolean isClosePermitted) {
@@ -535,20 +553,20 @@ public class ApplicationViewModel {
     @GlobalCommand("createLinkComponents")
     @NotifyChange({"selected"})
     public final void createLinkComponents(
-            @BindingParam("naviLink") String naviLink,
- @BindingParam("params") Map<String, Object> params,
-            @BindingParam("CachingType") Constants.Application.CachingType cachingType) {
+        @BindingParam("naviLink") final String naviLink,
+        @BindingParam("params")   final Map<String, Object> params,
+        @BindingParam("CachingType") final Constants.Application.CachingType cachingType) {
 
-        Navi navi = applicationDAO.getNavigationByLink(as, naviLink);
+        final Navi navi = applicationDAO.getNavigationByLink(as, naviLink);
 
         if (navi == null) {
-            throw new IllegalArgumentException(String.format("The navigation link %s is not configured in the resource properties. "
+            throw new IllegalArgumentException("The navigation link " + naviLink + " is not configured in the resource properties. "
                     + "Please check section:\n "
                     + "\tmenu.base= {\n"
                     + "\t\t...\n"
-                    + "\t\tnavi_id, position, category, name, %s, hierarchy, permission, "
+                    + "\t\tnavi_id, position, category, name, " + naviLink + ", hierarchy, permission, "
                     + "closeGroup, AuthenticationType availability (*=all), menuItemVisible,item-image\n"
-                    + "\t\t...\n" + "\t}", naviLink, naviLink));
+                    + "\t\t...\n" + "\t}");
         }
         // Map<String,String> map= new HashMap<String,String>();
         // map.put("permission", navi.getPermission());
@@ -558,9 +576,9 @@ public class ApplicationViewModel {
         }
 
         // logging
-        String paramsToDisplay;
+        final String paramsToDisplay;
         if (params instanceof Map) {
-            Map<Object, Object> toStringMap = Generics.cast(params);
+            final Map<Object, Object> toStringMap = Generics.cast(params);
             paramsToDisplay = mapToString(toStringMap);
         } else {
             paramsToDisplay = params != null ? String.valueOf(params) : null;
@@ -694,9 +712,25 @@ public class ApplicationViewModel {
         return as.getTenantResource(resource);
     }
 
+    public boolean getJumpBackVisible() {
+        return jumpBackVisible;
+    }
+
     @Command("search")
     public void searchTitle(@BindingParam("self_value") String searchText) {
         titleSearch.search(searchText);
+    }
+
+    @Command("jumpBack")
+    @NotifyChange("jumpBackVisible")
+    public void jumpBack() {
+        Map<String, Object> params = as.getRequestParams();
+        Object backLink = params.get(JumpTool.BACK_LINK_2);
+        if (backLink != null && backLink instanceof String backNaviLink) {
+            final Navi navi = ApplicationUtil.getNavigationByLink(backNaviLink);
+            createComponents(navi);
+        }
+        jumpBackVisible = false;
     }
 
     /**

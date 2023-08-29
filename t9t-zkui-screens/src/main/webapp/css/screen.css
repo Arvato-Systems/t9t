@@ -514,7 +514,7 @@ body {
     color: #fff;
     padding: 20px;
     font-size: 18px;
-    min-width: 35%;
+    min-width: 30%;
     display: flex;
     align-items: center;
 }
@@ -551,7 +551,7 @@ body {
     color: rgba(255, 255, 255, 0.7);
     padding-right: 5px;
     line-height: 60px;
-    min-width: 35%;
+    min-width: 25%;
 }
 
 .header-right-item-tenant {
@@ -839,6 +839,16 @@ body {
 .nav-menupopup .z-menuitem-content:hover  span, .nav-menupopup .active span,
 .nav-submenu .z-menu-content:hover  span, .nav-submenu .active span {
    color: #fff !important;
+}
+
+.jump-back-button {
+    float: right;
+}
+
+.jump-back-button > button {
+    background: white;
+    color: black;
+    height: 32px;
 }
 
 .search-box {

@@ -386,7 +386,7 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
         userStatus.setPrevLogin(userStatus.getLastLogin());
         userStatus.setPrevLoginByApiKey(userStatus.getLastLoginByApiKey());
         userStatus.setLastLogin(now);
-        userStatus.setPrevLoginByApiKey(now);
+        userStatus.setLastLoginByApiKey(now);
         return userStatus;
     }
 
@@ -401,7 +401,9 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
             em.persist(userStatus);
         }
         userStatus.setPrevLogin(userStatus.getLastLogin());
+        userStatus.setPrevLoginByX509(userStatus.getLastLoginByX509());
         userStatus.setLastLogin(now);
+        userStatus.setLastLoginByX509(now);
         return userStatus;
     }
 

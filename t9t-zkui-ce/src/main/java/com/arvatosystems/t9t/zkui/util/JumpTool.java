@@ -32,6 +32,11 @@ import de.jpaw.bonaparte.pojos.api.UuidFilter;
 public final class JumpTool {
     private JumpTool() { }
 
+    public static final String BACK_LINK_1      = "backNaviLink";
+    public static final String BACK_LINK_2      = "paramBackNaviLink";
+    public static final String SELECTED_PARAM_1 = "selected";
+    public static final String SELECTED_PARAM_2 = "setSelectedFromJump";
+
     public static void jump(final String targetZul, final String fieldName, final String id, final String backNaviLink) {
         final UnicodeFilter f = new UnicodeFilter(fieldName);
         f.setEqualsValue(id);
@@ -58,9 +63,9 @@ public final class JumpTool {
     public static void jump(final String targetZul, final String backNaviLink) {
         final Navi navi = ApplicationUtil.getNavigationByLink(targetZul);
         final Map<String, Object> args = new HashMap<>();
-        args.put("selected", navi);
-        args.put("backNaviLink", backNaviLink);
+        args.put(SELECTED_PARAM_1, navi);
+        args.put(BACK_LINK_1, backNaviLink);
 
-        BindUtils.postGlobalCommand(null, null, "setSelectedFromJump", args);
+        BindUtils.postGlobalCommand(null, null, SELECTED_PARAM_2, args);
     }
 }

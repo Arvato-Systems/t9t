@@ -44,6 +44,12 @@
                          </div>
 
                          <div sclass="header-middle-item">
+                            <div sclass="jump-back-button">
+                                <button iconSclass="z-icon-reply" onClick="@command('jumpBack')" visible="@load(vm.jumpBackVisible)"/>
+                            </div>
+                         </div>
+
+                         <div sclass="header-middle-item">
                              <div sclass="search-box">
                                  <span sclass="icon z-icon-search"></span>
                                  <textbox id="search" onOK="@command('search', self_value=self.value)"
