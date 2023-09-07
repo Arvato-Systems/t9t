@@ -266,8 +266,8 @@ final class KafkaSimplePartitionOrderedRequestProcessor implements Callable<Bool
     }
 
     // called by rebalancer as well (also at shutdown)
-    protected void shutdownPartitions(final Collection<TopicPartition> partitions) {
-        LOGGER.info("Shutting down with {} active processor threads and {} uncommitted partitions", activeProcessors.size(), offsetsToCommit.keySet().size());
+    protected void revokePartitions(final Collection<TopicPartition> partitions) {
+        LOGGER.info("Revoke called with {} active processor threads and {} uncommitted partitions", activeProcessors.size(), offsetsToCommit.keySet().size());
 
         // stop processors of given partition
         final List<KafkaSimpleMultipleRecordsProcessor> stoppedProcessors = new ArrayList<>();
@@ -304,6 +304,8 @@ final class KafkaSimplePartitionOrderedRequestProcessor implements Callable<Bool
             } else {
                 LOGGER.info("NO uncommitted/pending offsets for partition {} due to rebalancing", partition);
             }
+            // remove from monitor
+            partitionStatusTable.remove(partition);
         });
 
         // commit finally

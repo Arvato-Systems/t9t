@@ -47,7 +47,9 @@ package (com.arvatosystems) t9t.io {
 
 
     enum CsvDateTimeStyleType {
-        LONG="L", MEDIUM="M", SHORT="S"
+        LONG   = "L",
+        MEDIUM = "M",
+        SHORT  = "S"
     }
 
     enum CamelExecutionScheduleType {
@@ -59,13 +61,13 @@ package (com.arvatosystems) t9t.io {
 
     /** Defines the target classification. Looked up from configuration table. */
     enum CommunicationTargetChannelType {
-        NULL = "N",         // discard the data (no output channel is opened at all)
-        FILE = "F",         // output the result to a file (and possibly transmit the file via Apache Camel route)
+        NULL  = "N",        // discard the data (no output channel is opened at all)
+        FILE  = "F",        // output the result to a file (and possibly transmit the file via Apache Camel route)
         KAFKA = "K",        // kafka topic
         QUEUE = "Q",        // output single message to a JMS queue
         TOPIC = "T",        // output single messages to a JMS topic
         CAMEL = "C",        // just produce internal temporary data which is sent via Apache Camel route
-        S3 = "3"            // directly write to an AWS S3 bucket
+        S3    = "3"         // directly write to an AWS S3 bucket
     }
 
     xenum CommunicationTargetChannelXType is CommunicationTargetChannelType;
