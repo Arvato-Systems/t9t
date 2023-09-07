@@ -36,6 +36,7 @@ import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.api.TransactionOriginType;
 import com.arvatosystems.t9t.base.auth.ApiKeyAuthentication;
 import com.arvatosystems.t9t.base.be.execution.RequestContextScope;
+import com.arvatosystems.t9t.base.request.ExecuteOnAllNodesRequest;
 import com.arvatosystems.t9t.base.request.ProcessStatusDTO;
 import com.arvatosystems.t9t.base.services.IAsyncRequestProcessor;
 import com.arvatosystems.t9t.base.services.IClusterEnvironment;
@@ -51,11 +52,9 @@ import de.jpaw.util.ApplicationException;
 import de.jpaw.util.ExceptionUtil;
 
 /**
- * This class implements the Quartz {@link Job} interface and therefore the
- * method {@link Job#execute(JobExecutionContext)}.
+ * This class implements the Quartz {@link Job} interface and therefore the method {@link Job#execute(JobExecutionContext)}.
  * <p/>
- * In the execute method the information of the {@link JobDetail} part of
- * {@link JobExecutionContext} is evaluated.
+ * In the execute method the information of the {@link JobDetail} part of {@link JobExecutionContext} is evaluated.
  *
  * @see PerformScheduledJob#execute(JobExecutionContext)
  */
@@ -80,12 +79,19 @@ public class PerformScheduledJob implements Job {
     @Override
     public final void execute(final JobExecutionContext context) throws JobExecutionException {
         final JobDataMap dataMap = context.getJobDetail().getJobDataMap();
+        boolean wrapForAllNodes = false;
         try {
             final int runOnNode = dataMap.getInt(QuartzSchedulerService.DM_RUN_ON_NODE);
-            if ((runOnNode != (QuartzSchedulerService.RUN_ON_ALL_NODES).intValue())) {
-                final String tenantId = dataMap.getString(QuartzSchedulerService.DM_TENANT_ID);
-                if (!clusterEnvironment.processOnThisNode(tenantId, runOnNode)) {
-                    return; // not suitable for this node
+            // runOnNode is -1 if the task can run on any node, 0...n for a specific node, and a big number (anything > 240) for all nodes
+            if ((runOnNode != (QuartzSchedulerService.RUN_ON_ANY_NODE).intValue())) {
+                if (runOnNode >= 400) {
+                    wrapForAllNodes = true;
+                } else {
+                    // check for specific node
+                    final String tenantId = dataMap.getString(QuartzSchedulerService.DM_TENANT_ID);
+                    if (!clusterEnvironment.processOnThisNode(tenantId, runOnNode)) {
+                        return; // not suitable for this node
+                    }
                 }
             }
         } catch (final Exception e) {
@@ -97,8 +103,9 @@ public class PerformScheduledJob implements Job {
         final String serializedRequest = dataMap.getString(QuartzSchedulerService.DM_REQUEST);
         final long setupRef            = dataMap.getLong  (QuartzSchedulerService.DM_SETUP_REF);
 
-        final RequestParameters requestParameters
+        final RequestParameters requestParameters0
           = StringBuilderParser.<RequestParameters>unmarshal(serializedRequest, ServiceRequest.meta$$requestParameters, RequestParameters.class);
+        final RequestParameters requestParameters = wrapForAllNodes ? new ExecuteOnAllNodesRequest(requestParameters0) : requestParameters0;
         final ServiceRequestHeader header = new ServiceRequestHeader();
         header.setLanguageCode(language);
         header.setInvokingProcessRef(Long.valueOf(setupRef));

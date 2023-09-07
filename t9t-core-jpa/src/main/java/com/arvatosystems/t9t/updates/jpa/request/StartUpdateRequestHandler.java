@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
@@ -48,10 +49,11 @@ public class StartUpdateRequestHandler extends AbstractRequestHandler<StartUpdat
 
         final UpdateStatusEntity updateStatus = resolver.findByTicketId(true, ticketId);
         if (updateStatus == null) {
+            final UpdateApplyStatusType initialStatus = T9tUtil.nvl(request.getInitialStatus(), UpdateApplyStatusType.NOT_YET_STARTED);
             LOGGER.debug("No ticket update status found, create a new entry for ticket {}", ticketId);
             final UpdateStatusEntity newUpdateStatus = resolver.newEntityInstance();
             newUpdateStatus.setTicketId(ticketId);
-            updateStatusService.updateUpdateStatus(newUpdateStatus, applySequenceId, description, UpdateApplyStatusType.NOT_YET_STARTED);
+            updateStatusService.updateUpdateStatus(newUpdateStatus, applySequenceId, description, initialStatus);
             resolver.save(newUpdateStatus);
 
             updateStatusService.logUpdateStatus(newUpdateStatus);
@@ -63,6 +65,7 @@ public class StartUpdateRequestHandler extends AbstractRequestHandler<StartUpdat
                 updateStatusService.updateUpdateStatus(updateStatus, applySequenceId, description, UpdateApplyStatusType.IN_PROGRESS);
                 updateStatusService.logUpdateStatus(updateStatus);
                 break;
+            case ERROR:
             case IN_PROGRESS: {
                 if (request.getAllowRestartOfPending()) {
                     LOGGER.debug("Ticket is in progress and allowRestartOfPending flag is true. Updating the ticket {}", ticketId);

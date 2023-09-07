@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.cfg.be
 
+import com.arvatosystems.t9t.base.T9tException
 import de.jpaw.annotations.AddLogger
 import jakarta.xml.bind.JAXBContext
 import jakarta.xml.bind.Marshaller
@@ -24,7 +25,8 @@ import java.io.StringReader
 import java.util.Map
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
-import com.arvatosystems.t9t.base.T9tException
+import java.util.function.Consumer
+import java.util.UUID
 
 @AddLogger
 class ConfigProvider {
@@ -137,10 +139,13 @@ class ConfigProvider {
             kafkaConfiguration      = a.kafkaConfiguration      ?: b.kafkaConfiguration
             asyncMsgConfiguration   = a.asyncMsgConfiguration   ?: b.asyncMsgConfiguration
             ldapConfiguration       = a.ldapConfiguration       ?: b.ldapConfiguration
+            oidConfiguration        = a.oidConfiguration        ?: b.oidConfiguration
+            passwordResetApiKey     = a.passwordResetApiKey     ?: b.passwordResetApiKey
             noDbBackendApiKey       = a.noDbBackendApiKey       ?: b.noDbBackendApiKey
             noDbBackendPermittedRequests = a.noDbBackendPermittedRequests ?: b.noDbBackendPermittedRequests
             jwtValidityApiKey       = a.jwtValidityApiKey       ?: b.jwtValidityApiKey
             jwtValidityUserPassword = a.jwtValidityUserPassword ?: b.jwtValidityUserPassword
+            jwtValidityOpenId       = a.jwtValidityOpenId       ?: b.jwtValidityOpenId
             mocks                   = a.mocks                   ?: b.mocks
             runInCluster            = a.runInCluster            ?: b.runInCluster
             disableScheduler        = a.disableScheduler        ?: b.disableScheduler
@@ -150,8 +155,22 @@ class ConfigProvider {
             schedulerEnvironment    = a.schedulerEnvironment    ?: b.schedulerEnvironment
             z                       = a.z                       ?: b.z
         ]
+        // replace string fields from environment (for containers)
         val envVarResolver = new CfgFromEnvironmentProvider
         myConfiguration.treeWalkString(envVarResolver, true)
+
+        // replace UUIDs from environment
+        getEnvUuid("SERVER_NODB_PW_RESET_API_KEY", [ myConfiguration.passwordResetApiKey = it ]);
+        getEnvUuid("SERVER_NODB_BACKEND_API_KEY",  [ myConfiguration.noDbBackendApiKey   = it ]);
+        if (myConfiguration.kafkaConfiguration !== null) {
+            getEnvUuid("SERVER_KAFKA_IMPORT_API_KEY", [ myConfiguration.kafkaConfiguration.defaultImportApiKey = it ]);
+            getEnvUuid("SERVER_KAFKA_CLUSTER_MANAGER_API_KEY", [ myConfiguration.kafkaConfiguration.clusterManagerApiKey = it ]);
+        }
+        if (myConfiguration.uplinkConfiguration !== null) {
+            for (uplink: myConfiguration.uplinkConfiguration) {
+                getEnvUuid("SERVER_UPLINK_API_KEY_" + uplink.key.toUpperCase, [ uplink.apiKey = it ]);
+            }
+        }
 
         // preprocess any custom fields into map for later easier access
         if (myConfiguration.z !== null) {
@@ -219,6 +238,17 @@ class ConfigProvider {
                 // fail on ignore issues because the cfg file was requested specifically
                 LOGGER.info("{}: Cannot read configuration due to {}", e.class.simpleName, e.message)
                 System.exit(1)
+            }
+        }
+    }
+
+    def private static void getEnvUuid(String envname, Consumer<UUID> setter) {
+        val value = System.getenv(envname);
+        if (value !== null && !value.isEmpty) {
+            try {
+                setter.accept(UUID.fromString(value));
+            } catch (Exception e) {
+                LOGGER.error("Misconfigured environment variable {}: {} is not a valid UUID", envname, value);
             }
         }
     }

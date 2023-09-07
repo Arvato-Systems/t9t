@@ -78,6 +78,7 @@ public class PerformWithRetryRequestHandler extends AbstractRequestHandler<Perfo
             try {
                 Thread.sleep(delay);
             } catch (final InterruptedException e) {
+                LOGGER.warn("Interrupted - stopping processing");
                 break;
             }
         }

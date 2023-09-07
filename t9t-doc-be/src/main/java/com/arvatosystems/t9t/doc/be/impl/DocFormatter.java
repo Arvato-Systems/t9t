@@ -131,22 +131,20 @@ public class DocFormatter implements IDocFormatter {
             if (arguments.size() < 2) {
                 throw new TemplateModelException("TimestampGenerator model called with less than 2 parameters");
             }
-            final Object isoString = arguments.get(0);
-            final Object style = arguments.get(1);
-            final String isoStringS = fmToString(isoString);
-            final String styleS = fmToString(style);
-            final String forceConversion = arguments.size() >= 3 ? fmToString(arguments.get(2)) : null;
-            final String jodaFormat = arguments.size() >= 4 ? fmToString(arguments.get(3)) : null;
+            final String isoString       = fmToString(arguments, 0);
+            final String style           = fmToString(arguments, 1);
+            final String forceConversion = fmToString(arguments, 2);
+            final String jodaFormat      = fmToString(arguments, 3);
 
-            if (styleS.length() != 2) {
-                LOGGER.warn("Bad parameter: argument 2 for TimestampGenerator must be a 2 character string, but is {}", styleS);
+            if (style.length() != 2) {
+                LOGGER.warn("Bad parameter: argument 2 for TimestampGenerator must be a 2 character string, but is {}", style);
             }
-            if (isoStringS == null || isoStringS.length() == 0) {
-                LOGGER.warn("null or empty string passed to date formatter with style {} - returning empty string", styleS);
+            if (isoString == null) {
+                LOGGER.warn("null or empty string passed to date formatter with style {} - returning empty string", style);
                 return "";
             }
 
-            final DateTimeFormatter formatter = jodaFormat == null ? getFormatterForStyle(styleS) : DateTimeFormatter.ofPattern(jodaFormat);
+            final DateTimeFormatter formatter = jodaFormat == null ? getFormatterForStyle(style) : DateTimeFormatter.ofPattern(jodaFormat);
             final DateTimeFormatter localFormatter = formatter.withLocale(locale);
 
             if (forceConversion != null) {
@@ -155,38 +153,38 @@ public class DocFormatter implements IDocFormatter {
                     switch (forceConversion) {
                     case "D": // timestamp to date, interpreted as day
                         // workaround for bad input: adapt to cases when just a date is given
-                        final int l = isoStringS.length();
+                        final int l = isoString.length();
                         if (l == 10) {
                             // do the same as for 'd'
-                            LOGGER.warn("Date/time conversion mismatch: force=\'D\', style={}, format={}, input={}: You should use \'d\' in this case!", styleS,
-                                    jodaFormat, isoStringS);
-                            final LocalDate timestampDayT = LocalDate.parse(isoStringS);
+                            LOGGER.warn("Date/time conversion mismatch: force=\'D\', style={}, format={}, input={}: You should use \'d\' in this case!", style,
+                                    jodaFormat, isoString);
+                            final LocalDate timestampDayT = LocalDate.parse(isoString);
                             return localFormatter.format(timestampDayT);
                         } else {
                             // another workaround for for extra Z suffix: drop it, it would cause a conversion error
-                            final boolean gotTimezoneSuffix = isoStringS.endsWith("Z");
+                            final boolean gotTimezoneSuffix = isoString.endsWith("Z");
                             if (gotTimezoneSuffix) {
                                 LOGGER.warn("Date/time conversion mismatch: force='D', style={}, format={}, input={}: Dropping time zone suffix."
-                                        + " Bug in data provider?", styleS, jodaFormat, isoStringS);
+                                        + " Bug in data provider?", style, jodaFormat, isoString);
                             }
-                            final LocalDateTime timestampDayT = LocalDateTime.parse(gotTimezoneSuffix ? isoStringS.substring(0, l - 1) : isoStringS);
+                            final LocalDateTime timestampDayT = LocalDateTime.parse(gotTimezoneSuffix ? isoString.substring(0, l - 1) : isoString);
                             // timezone conversion
                             final LocalDateTime timestampDayTt = timestampDayT.atZone(ZoneOffset.UTC).withZoneSameInstant(zone).toLocalDateTime();
                             return localFormatter.format(timestampDayTt.toLocalDate());
                         }
                     case "T": // timestamp to date, interpreted as time
-                        final LocalDateTime timestampTimeT = LocalDateTime.parse(isoStringS);
+                        final LocalDateTime timestampTimeT = LocalDateTime.parse(isoString);
                         // timezone conversion
                         final LocalDateTime timestampTimeTt = timestampTimeT.atZone(ZoneOffset.UTC).withZoneSameInstant(zone).toLocalDateTime();
                         return localFormatter.format(timestampTimeTt.toLocalTime());
                     case "d": // day
-                        final LocalDate dayT = LocalDate.parse(isoStringS);
+                        final LocalDate dayT = LocalDate.parse(isoString);
                         return localFormatter.format(dayT);
                     case "t": // time
-                        final LocalTime timeT = LocalTime.parse(isoStringS);
+                        final LocalTime timeT = LocalTime.parse(isoString);
                         return localFormatter.format(timeT);
                     case "i": // instant
-                        final LocalDateTime instantT = LocalDateTime.parse(isoStringS);
+                        final LocalDateTime instantT = LocalDateTime.parse(isoString);
                         final LocalDateTime instantTt = instantT.atZone(ZoneOffset.UTC).withZoneSameInstant(zone).toLocalDateTime();
                         return instantTt.format(localFormatter);
                     default:
@@ -194,45 +192,45 @@ public class DocFormatter implements IDocFormatter {
                         break;
                     }
                 } catch (final Exception e) {
-                    LOGGER.error("Date/time conversion error: force={}, style={}, format={}, input={}", forceConversion, styleS, jodaFormat, isoStringS);
+                    LOGGER.error("Date/time conversion error: force={}, style={}, format={}, input={}", forceConversion, style, jodaFormat, isoString);
                     return "***ERROR***";
                 }
             }
 
             try {
-                if (styleS.charAt(0) == MINUS) {
+                if (style.charAt(0) == MINUS) {
                     // time only
-                    final LocalTime t = LocalTime.parse(isoStringS);
+                    final LocalTime t = LocalTime.parse(isoString);
                     return localFormatter.format(t);
-                } else if (styleS.charAt(1) == MINUS) {
+                } else if (style.charAt(1) == MINUS) {
                     // day only
-                    final LocalDate t = LocalDate.parse(isoStringS);
+                    final LocalDate t = LocalDate.parse(isoString);
                     return localFormatter.format(t);
                 } else {
                     // day + time
-                    final LocalDateTime t = LocalDateTime.parse(isoStringS);
+                    final LocalDateTime t = LocalDateTime.parse(isoString);
                     final LocalDateTime tt = t.atZone(ZoneOffset.UTC).withZoneSameInstant(zone).toLocalDateTime(); // timezone conversion
                     return tt.format(localFormatter);
                 }
             } catch (Exception e) {
-                LOGGER.error("Date/time conversion error: style={}, format={}, input={}", forceConversion, styleS, jodaFormat, isoStringS);
+                LOGGER.error("Date/time conversion error: style={}, format={}, input={}", forceConversion, style, jodaFormat, isoString);
                 return "***ERROR***";
             }
         }
 
-        private DateTimeFormatter getFormatterForStyle(final String styleS) {
-            if (styleS == null || styleS.length() != 2) {
-                LOGGER.error("Bad style given: {}, returning default formatter", styleS);
+        private DateTimeFormatter getFormatterForStyle(final String style) {
+            if (style == null || style.length() != 2) {
+                LOGGER.error("Bad style given: {}, returning default formatter", style);
                 return DateTimeFormatter.ISO_INSTANT;
             }
-            if (styleS.charAt(0) == MINUS) {
+            if (style.charAt(0) == MINUS) {
                 // time only
-                return DateTimeFormatter.ofLocalizedTime(T9tDocTools.styleFor(styleS.charAt(1)));
-            } else if (styleS.charAt(1) == MINUS) {
+                return DateTimeFormatter.ofLocalizedTime(T9tDocTools.styleFor(style.charAt(1)));
+            } else if (style.charAt(1) == MINUS) {
                 // day only
-                return DateTimeFormatter.ofLocalizedDate(T9tDocTools.styleFor(styleS.charAt(0)));
+                return DateTimeFormatter.ofLocalizedDate(T9tDocTools.styleFor(style.charAt(0)));
             } else {
-                return DateTimeFormatter.ofLocalizedDateTime(T9tDocTools.styleFor(styleS.charAt(0)), T9tDocTools.styleFor(styleS.charAt(1)));
+                return DateTimeFormatter.ofLocalizedDateTime(T9tDocTools.styleFor(style.charAt(0)), T9tDocTools.styleFor(style.charAt(1)));
             }
         }
     }
@@ -247,10 +245,8 @@ public class DocFormatter implements IDocFormatter {
             if (argumentsSize < 2) {
                 throw new TemplateModelException("ImageGenerator model (i) called with less than 2 parameters");
             }
-            final Object formatObj = arguments.get(0);
-            final Object textObj = arguments.get(1);
-            final String format = fmToString(formatObj);
-            final String text = fmToString(textObj);
+            final String format = fmToString(arguments, 0);
+            final String text = fmToString(arguments, 1);
             int width = 0;
             int height = 0;
             int rotation = 0;
@@ -277,14 +273,15 @@ public class DocFormatter implements IDocFormatter {
                 final Object rotObj = arguments.get(4);
                 if (rotObj instanceof SimpleNumber rotObjSimpleNumber) {
                     rotation = rotObjSimpleNumber.getAsNumber().intValue();
-                } else {
+                } else if (rotObj != null) {
                     LOGGER.warn("Bad parameter: argument 5 of i (rotation) should be an integer (SimpleNumber), but is {}",
                             rotObj.getClass().getCanonicalName());
                 }
             }
 
-            if (argumentsSize >= 6) {
-                switch (fmToString(arguments.get(5))) {
+            final String flipModeS = fmToString(arguments, 5);
+            if (flipModeS != null) {
+                switch (flipModeS) {
                 case "H":
                     flipMode = FlipMode.FLIP_HORIZONTALLY;
                     break;
@@ -295,14 +292,16 @@ public class DocFormatter implements IDocFormatter {
                     flipMode = FlipMode.NO_FLIPPING;
                     break;
                 default:
-                    LOGGER.warn("Bad parameter: argument 6 of i (flip mode) should be either H or V or N");
+                    LOGGER.warn("Bad parameter: argument 6 of i (flip mode) should be either H or V or N, found {}", flipModeS);
                     break;
                 }
             }
 
             LOGGER.debug("ImageGenerator({}, {}, {}, {}) called", format, text, width, height);
             // barcode V2: generate a generic image
-            final ImageParameter parameters = new ImageParameter(width, height, Integer.valueOf(rotation), flipMode, null);
+            final String encoding = fmToString(arguments, 6);
+            final String qualifier = fmToString(arguments, 7);
+            final ImageParameter parameters = new ImageParameter(width, height, Integer.valueOf(rotation), flipMode, null, encoding, qualifier, 0, 0xffffff);
             final IImageGenerator generator = Jdp.getRequired(IImageGenerator.class, format);
             final MediaData data;
             try {
@@ -656,9 +655,13 @@ public class DocFormatter implements IDocFormatter {
     }
 
     // converts a freemarker Model to a Java String
-    protected static String fmToString(final Object x) {
+    protected static String fmToString(final List arguments, final int pos) {
+        if (arguments.size() <= pos) {
+            return null;
+        }
+        final Object x = arguments.get(pos);
         if (x == null) {
-            return "";
+            return null;
         }
         if (x instanceof SimpleScalar xSimpleScalar) {
             return xSimpleScalar.getAsString();

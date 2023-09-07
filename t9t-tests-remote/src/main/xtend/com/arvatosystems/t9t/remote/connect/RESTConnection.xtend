@@ -26,9 +26,20 @@ import de.jpaw.util.ByteArray
 import java.nio.charset.StandardCharsets
 import java.io.InputStream
 import java.io.OutputStream
+import javax.net.ssl.TrustManager
+import javax.net.ssl.SSLContext
+import javax.net.ssl.HostnameVerifier
+import javax.net.ssl.HttpsURLConnection
+import javax.net.ssl.SSLSession
+import javax.net.ssl.X509TrustManager
+import java.security.cert.X509Certificate
+import javax.net.ssl.SSLSocketFactory
 
 @AddLogger
 class RESTConnection extends ConnectionDefaults {
+    protected static SSLSocketFactory sf = socketFactory;
+    protected static HostnameVerifier hv = hostnameVerifier;
+
     protected IMarshaller marshaller = new RecordMarshallerJson();
     protected String authentication = null;
     protected final String baseRestUrl;
@@ -36,10 +47,16 @@ class RESTConnection extends ConnectionDefaults {
 
     new() {
         baseRestUrl = getInitialRestUrl
+
+        if(!getSSLCertVerification)
+            ignoreSSLCertificateVerification()
     }
 
     new(String baseRestUrl) {
         this.baseRestUrl = baseRestUrl
+
+        if(!getSSLCertVerification)
+            ignoreSSLCertificateVerification()
     }
 
     def void setMarshaller(IMarshaller marshaller) {
@@ -152,5 +169,42 @@ class RESTConnection extends ConnectionDefaults {
             return response.toString;
         }
         return null
+    }
+
+    /**
+     * Create a trust manager that does not validate certificate chains
+     */
+    def static ignoreSSLCertificateVerification() {
+        HttpsURLConnection.setDefaultSSLSocketFactory(sf)
+        HttpsURLConnection.setDefaultHostnameVerifier(hv)
+    }
+
+    def static getHostnameVerifier() {
+        new HostnameVerifier() {
+            override boolean verify(String hostname, SSLSession session) {
+                return true
+            }
+        };
+    }
+
+    def static getSocketFactory() {
+        val trustAllCerts = <TrustManager>newArrayList
+        val trustManager = new X509TrustManager() {
+            override java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                return null;
+            }
+
+            override checkClientTrusted(X509Certificate[] certs, String authType) {
+            }
+
+            override checkServerTrusted(X509Certificate[] certs, String authType) {
+            }
+        }
+
+        trustAllCerts.add(trustManager)
+
+        val sc = SSLContext.getInstance("SSL")
+        sc.init(null, trustAllCerts, new java.security.SecureRandom())
+        sc.getSocketFactory()
     }
 }

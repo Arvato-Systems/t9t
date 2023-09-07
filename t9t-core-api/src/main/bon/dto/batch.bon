@@ -29,18 +29,18 @@ package (com.arvatosystems) t9t.batch {
 
     /** Stores information about execution times for batch process */
     class StatisticsDTO extends StatisticsRef {
-        optional f42Ref                     jobRef;                 // scheduled job ref
-        required Unicode(30)                processId;
+        optional f42Ref                     jobRef;                 // scheduled job reference (usually same as cProcessRef)
+        required Unicode(30)                processId;              // some unique assigned ID of the task
         required Instant(3)                 startTime;              // process start time
         required Instant(3)                 endTime;                // process end time
         optional Integer                    recordsProcessed;       // number of processed records
         optional Integer                    recordsError;           // number of records for which processing failed
-        optional Integer                    count1;                 // process specific informations
-        optional Integer                    count2;
-        optional Integer                    count3;
-        optional Integer                    count4;
-        optional Unicode(255)               info1;
-        optional Unicode(255)               info2;
+        optional Integer                    count1;                 // numeric process specific information #1
+        optional Integer                    count2;                 // numeric process specific information #2
+        optional Integer                    count3;                 // numeric process specific information #3
+        optional Integer                    count4;                 // numeric process specific information #4
+        optional Unicode(255)               info1;                  // textual process specific information #1
+        optional Unicode(255)               info2;                  // textual process specific information #2
         optional Long                       durationInMs          properties noJava, noDDL, noAutoMap;  // the total running time spent on this task
         optional Double                     timePerRecordInMicros properties noJava, noDDL, noAutoMap;  // time spent per record in microseconds
     }

@@ -16,23 +16,39 @@
 package com.arvatosystems.t9t.zkui.services;
 
 import java.util.List;
+import java.util.UUID;
 
 import com.arvatosystems.t9t.auth.request.GetPasswordChangeRequirementsResponse;
 import com.arvatosystems.t9t.base.auth.AuthenticationResponse;
 import com.arvatosystems.t9t.base.auth.PermissionEntry;
 import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;
 
+import jakarta.annotation.Nonnull;
+
 public interface IUserDAO {
 
     /**
-     * Authenticates the user.  Clears permissions.
+     * Authenticates the user by username / password.  Clears permissions.
      * @param username Login name.
      * @param pwd password.
-     * @param newPassword if resetting the password , give the new password.
-     * @param authenticationType like LDAP,SSO,Database...
-     * @return AuthenticationResponse User and User details.
+     * @return AuthenticationResponse user and user details.
      */
-    AuthenticationResponse getAuthenticationResponse(String username, String pwd) throws ReturnCodeException;
+    AuthenticationResponse getUserPwAuthenticationResponse(@Nonnull String username, @Nonnull String pwd) throws ReturnCodeException;
+
+    /**
+     * Authenticates by API-key (password forgotten).  Clears permissions.
+     * @param apiKey the API key for the "password forgotten" request.
+     * @return AuthenticationResponse user and user details.
+     */
+    AuthenticationResponse getApiKeyAuthenticationResponse(@Nonnull UUID apiKey) throws ReturnCodeException;
+
+    /**
+     * Authenticates the user via external access token
+     * @param accessToken   token received from external identity provider.
+     * @param username preliminary guess of user identification
+     * @return AuthenticationResponse user and user details.
+     */
+    AuthenticationResponse getExternalTokenAuthenticationResponse(@Nonnull String accessToken, @Nonnull String username) throws ReturnCodeException;
 
     List<PermissionEntry> getPermissions() throws ReturnCodeException;
 
@@ -45,7 +61,7 @@ public interface IUserDAO {
      *     }
      * </pre>
      */
-    void changePassword(String oldPassword, String newPassword) throws ReturnCodeException;
+    void changePassword(@Nonnull String oldPassword, @Nonnull String newPassword) throws ReturnCodeException;
 
     /**
      * reset password.
@@ -59,14 +75,14 @@ public interface IUserDAO {
      *     }
      * </pre>
      */
-    void resetPassword(String userId, String emailAddress) throws ReturnCodeException;
+    void resetPassword(@Nonnull String userId, @Nonnull String emailAddress) throws ReturnCodeException;
 
     /** Once a tenant has been selected in the second screen, an additional backend call is now required to update the JWT
      * @param tenantId
      * @return AuthenticationResponse response
      * @throws ReturnCodeException
      */
-    AuthenticationResponse switchTenant(String tenantId) throws ReturnCodeException;
+    AuthenticationResponse switchTenant(@Nonnull String tenantId) throws ReturnCodeException;
 
     /** Once a language is changed, an additional backend call is now required to update the JWT.
      * This call can also be used to refresh the JWT.
@@ -74,7 +90,7 @@ public interface IUserDAO {
      * @return AuthenticationResponse response
      * @throws ReturnCodeException
      */
-    AuthenticationResponse switchLanguage(String language) throws ReturnCodeException;
+    AuthenticationResponse switchLanguage(@Nonnull String language) throws ReturnCodeException;
 
     /**
      * Retrieve the password change requirements from backend

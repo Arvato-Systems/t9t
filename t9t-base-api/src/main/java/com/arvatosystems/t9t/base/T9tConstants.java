@@ -127,7 +127,9 @@ public final class T9tConstants {
     public static final String PLUGIN_API_ID_WORKFLOW_STEP   = "workflowStep";      // ID for plugins implementing IWorkflowStepPlugin
 
     public static final String DATA_SINK_ID_UI_EXPORT = "UIExport";
-    public static final String DOCUMENT_ID_UI_EXPORT = "UIExportEmail";
+    public static final String DOCUMENT_ID_UI_EXPORT  = "UIExportEmail";
+
+    public static final Integer SCHEDULER_RUN_ON_ALL_NODES = Integer.valueOf(411);  // l33t for All
 
     /**
      * Key for the zMap of a MediaData to put/get the assigned attachment name.

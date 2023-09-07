@@ -31,8 +31,17 @@ import de.jpaw.bonaparte.core.StringCSVParser;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Named;
 
+/**
+ * Common implementation which works for delimiter separated text files and also for fixed width files.
+ *
+ * For fixed width data parsing, the CSVConfiguration must have the following properties:
+ * - usingSeparator("")
+ * - usingQuoteCharacter(null)
+ * - usingZeroPadding(true)
+ */
 @Dependent
 @Named("CSV")
+@Named("FIXED-WIDTH")
 public class FormatParserCsv extends AbstractTextFormatConverter {
     protected CSVConfiguration csvCfg;
     protected StringCSVParser parser;

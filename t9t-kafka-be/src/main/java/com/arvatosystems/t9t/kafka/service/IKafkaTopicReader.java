@@ -15,21 +15,28 @@
  */
 package com.arvatosystems.t9t.kafka.service;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
+import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.consumer.OffsetAndMetadata;
+import org.apache.kafka.common.PartitionInfo;
+import org.apache.kafka.common.TopicPartition;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 
 public interface IKafkaTopicReader {
 
     /**
-     * Returns the number of partitions for the topic.
+     * @return the number of partitions for the topic.
      */
     int getNumberOfPartitions();
 
     /**
-     * Returns the name of the topic.
+     * @return the name of the topic.
      */
     String getKafkaTopic();
 
@@ -37,7 +44,7 @@ public interface IKafkaTopicReader {
      * Polls data from topic, deserializes the data object using the compact bonaparte deserializer
      * and feeds it into the consumer.
      *
-     * Returns the number of records processed.
+     * @return the number of records processed.
      */
     <T extends BonaPortable> int pollAndProcess(IKafkaConsumer<T> processor, Class<T> expectedType);
 
@@ -46,11 +53,58 @@ public interface IKafkaTopicReader {
      * and feeds it into the consumer.
      * Extended form with more control about poll interval and custom committer via lambda.
      *
-     * Returns the number of records processed.
+     * @return the number of records processed.
      */
     <T extends BonaPortable> int pollAndProcess(IKafkaConsumer<T> processor, Class<T> expectedType, long pollIntervalInMs,
-      Consumer<KafkaConsumer<String, byte[]>> committer);
+            Consumer<KafkaConsumer<String, byte[]>> committer);
+
+    /**
+     * Polls data from topic with given {@code pollIntervalInMs}.
+     *
+     * @param pollIntervalInMs poll interval
+     *
+     * @return the list of {@link ConsumerRecords}
+     */
+    ConsumerRecords<String, byte[]> poll(long pollIntervalInMs);
+
+    /**
+     * Pause consumer for given {@code partitions}.
+     *
+     * @param partitions to pause
+     */
+    void pause(Collection<TopicPartition> partitions);
+
+    /**
+     * Resume consumer for given {@code partitions}.
+     *
+     * @param partitions to resume
+     */
+    void resume(Collection<TopicPartition> partitions);
+
+    /**
+     * Provide list of partions as {@link PartitionInfo} for this consumer.
+     *
+     * @return {@link List} of {@link PartitionInfo}s
+     */
+    List<PartitionInfo> getPartitionInfos();
+
+    /** Initiates a commit for one or multiple partitions of a topic. */
+    void performPartialCommits(Map<TopicPartition, OffsetAndMetadata> partialCommits, boolean sync);
 
     /** Commits changes and closes the topic writer. */
     void close();
+
+    /** Closes the consumer 'really' - see implementation. */
+    void closeReally();
+
+    /** Stop polling and signal closin */
+    void wakeUp();
+
+    /**
+     * Registers the underlying {@link KafkaConsumer} for metrics.
+     *
+     * @param metricsAdder the {@link Consumer} hook to create MeterBinder
+     */
+    @SuppressWarnings("rawtypes")
+    void registerMetrics(Consumer<KafkaConsumer> metricsAdder);
 }

@@ -20,7 +20,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-settings-java</artifactId>
-        <version>6.5-SNAPSHOT</version>
+        <version>6.6-SNAPSHOT</version>
         <relativePath>../t9t-settings-java</relativePath>
     </parent>
 
@@ -46,10 +46,16 @@
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-translation-sapi</artifactId>
         </dependency>
+
          <!-- JUnit Test -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
             <scope>test</scope>
         </dependency>
 

@@ -16,7 +16,6 @@
 package com.arvatosystems.t9t.out.be.impl.aws;
 
 import java.io.InputStream;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +26,7 @@ import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.S3ClientBuilder;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 
@@ -36,7 +36,6 @@ import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 public class MediaDataSourceS3 implements IMediaDataSource {
     private static final Logger LOGGER = LoggerFactory.getLogger(MediaDataSourceS3.class);
     private static final char DELIMITER = ':';
-    protected final S3Client s3Client = S3Client.builder().build();
 
     @Override
     public InputStream open(final String targetName) throws Exception {
@@ -45,6 +44,9 @@ public class MediaDataSourceS3 implements IMediaDataSource {
             LOGGER.error("file pattern not good, expected (something):(something else), got {}", targetName);
             throw new T9tException(T9tException.BAD_S3_BUCKET_NAME, targetName);
         }
+
+        final S3ClientBuilder s3ClientBuilder = AwsClientBuilder.createCustomizedS3ClientBuilder();
+        final S3Client s3Client = s3ClientBuilder.build();
 
         // determine the target
         final String bucket = targetName.substring(0, ind).trim();

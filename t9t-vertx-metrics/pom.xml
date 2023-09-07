@@ -21,7 +21,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-settings-java</artifactId>
-        <version>6.5-SNAPSHOT</version>
+        <version>6.6-SNAPSHOT</version>
         <relativePath>../t9t-settings-java</relativePath>
     </parent>
 
@@ -29,10 +29,6 @@
     <description>t9t vertx metrics module</description>
 
     <dependencies>
-        <dependency>
-            <groupId>io.vertx</groupId>
-            <artifactId>vertx-micrometer-metrics</artifactId>
-        </dependency>
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
@@ -44,6 +40,10 @@
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-base-vertx</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-metrics</artifactId>
         </dependency>
     </dependencies>
 

@@ -5,11 +5,13 @@
   xmlns:bon="http://www.jpaw.de/schema/bonaparte.xsd"
   xmlns:t9t_cfg_be="http://arvatosystems.com/schema/t9t_cfg_be.xsd"
   xmlns:api_media="http://www.jpaw.de/schema/api_media.xsd"
+  xmlns:t9t_base_types="http://arvatosystems.com/schema/t9t_base_types.xsd"
   elementFormDefault="qualified"
   >
 
     <xs:import namespace="http://www.jpaw.de/schema/bonaparte.xsd" schemaLocation="bonaparte.xsd"/>
     <xs:import namespace="http://www.jpaw.de/schema/api_media.xsd" schemaLocation="api_media.xsd"/>
+    <xs:import namespace="http://arvatosystems.com/schema/t9t_base_types.xsd" schemaLocation="t9t_base_types.xsd"/>
     <xs:simpleType name="DatabaseBrandType">
         <xs:restriction base="xs:string">
             <xs:enumeration value="H2"/>
@@ -67,6 +69,8 @@
                     <xs:element name="kafkaConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:KafkaConfiguration"/>
                     <xs:element name="asyncMsgConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:AsyncTransmitterConfiguration"/>
                     <xs:element name="ldapConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:LdapConfiguration"/>
+                    <xs:element name="oidConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:OidConfiguration"/>
+                    <xs:element name="passwordResetApiKey" minOccurs="0" nillable="true" type="bon:UUID"/>
                     <xs:element name="noDbBackendApiKey" minOccurs="0" nillable="true" type="bon:UUID"/>
                     <xs:element name="noDbBackendPermittedRequests" minOccurs="0" maxOccurs="unbounded">
                         <xs:simpleType>
@@ -83,6 +87,13 @@
                         </xs:simpleType>
                     </xs:element>
                     <xs:element name="jwtValidityUserPassword" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:unsignedLong">
+                                <xs:maxInclusive value="9223372036854775807"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="jwtValidityOpenId" minOccurs="0" nillable="true">
                         <xs:simpleType>
                             <xs:restriction base="xs:unsignedLong">
                                 <xs:maxInclusive value="9223372036854775807"/>
@@ -177,6 +188,64 @@
                     </xs:element>
                     <xs:element name="clusterManagerApiKey" minOccurs="0" nillable="true" type="bon:UUID"/>
                     <xs:element name="clusterManagerPoolSize" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:unsignedInt">
+                                <xs:maxInclusive value="2147483647"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="clusterManagerOrdering" minOccurs="0" nillable="true" type="xs:boolean"/>
+                    <xs:element name="maxPending" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:unsignedInt">
+                                <xs:maxInclusive value="2147483647"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="hardLimitPending" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:unsignedInt">
+                                <xs:maxInclusive value="2147483647"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="slowProcessingTimeout" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:unsignedInt">
+                                <xs:maxInclusive value="2147483647"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="waitInterval" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:unsignedInt">
+                                <xs:maxInclusive value="2147483647"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="commitSync" minOccurs="0" nillable="true" type="xs:boolean"/>
+                    <xs:element name="commitInterval" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:unsignedInt">
+                                <xs:maxInclusive value="2147483647"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="monitorInterval" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:unsignedInt">
+                                <xs:maxInclusive value="2147483647"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="shutdownThreadpoolInterval" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:unsignedInt">
+                                <xs:maxInclusive value="2147483647"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="maxPollRecords" minOccurs="0" nillable="true">
                         <xs:simpleType>
                             <xs:restriction base="xs:unsignedInt">
                                 <xs:maxInclusive value="2147483647"/>
@@ -629,6 +698,28 @@
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:element>
+                    <xs:element name="numberOfRetriesOptimisticLock" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:unsignedInt">
+                                <xs:maxInclusive value="2147483647"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="numberOfRetriesDatabaseConnect" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:unsignedInt">
+                                <xs:maxInclusive value="2147483647"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="pauseBeforeDatabaseConnectRetry" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:unsignedInt">
+                                <xs:maxInclusive value="2147483647"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="pauseIncreaseFactor" minOccurs="0" nillable="true" type="xs:double"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
@@ -645,6 +736,13 @@
                         </xs:simpleType>
                     </xs:element>
                     <xs:element name="url">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="255"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="identityServiceUrl" minOccurs="0" nillable="true">
                         <xs:simpleType>
                             <xs:restriction base="xs:normalizedString">
                                 <xs:maxLength value="255"/>
@@ -668,6 +766,13 @@
                         </xs:simpleType>
                     </xs:element>
                     <xs:element name="basicAuth" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="255"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="clientId" minOccurs="0" nillable="true">
                         <xs:simpleType>
                             <xs:restriction base="xs:normalizedString">
                                 <xs:maxLength value="255"/>
@@ -748,6 +853,8 @@
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:element>
+                    <xs:element name="doNotPersistMessages" minOccurs="0" nillable="true" type="xs:boolean"/>
+                    <xs:element name="processQueues" minOccurs="0" nillable="true" type="xs:boolean"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
@@ -792,6 +899,38 @@
                         </xs:simpleType>
                     </xs:element>
                     <xs:element name="onlySelectedUsers" minOccurs="0" nillable="true" type="xs:boolean"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="OidConfiguration">
+        <xs:complexContent>
+            <xs:extension base="bon:BONAPORTABLE">
+                <xs:sequence>
+                    <xs:element name="audience" type="t9t_base_types:defaultExternalId"/>
+                    <xs:element name="tenantId" type="t9t_base_types:defaultExternalId"/>
+                    <xs:element name="issuer" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="80"/>
+                                <xs:pattern value="\p{IsBasicLatin}*"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="jwksUri" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="80"/>
+                                <xs:pattern value="\p{IsBasicLatin}*"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="mustMatchOid" type="xs:boolean"/>
+                    <xs:element name="mustMatchIdp" type="xs:boolean"/>
+                    <xs:element name="updateOid" type="xs:boolean"/>
+                    <xs:element name="updateIdp" type="xs:boolean"/>
+                    <xs:element name="updateName" minOccurs="0" nillable="true" type="xs:boolean"/>
+                    <xs:element name="updateEmail" minOccurs="0" nillable="true" type="xs:boolean"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>

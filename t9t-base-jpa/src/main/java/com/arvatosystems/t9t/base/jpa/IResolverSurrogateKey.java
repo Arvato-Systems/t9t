@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.base.jpa;
 
+import java.util.function.Supplier;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.search.TwoRefs;
 
@@ -22,6 +24,8 @@ import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /** Defines methods to return either the artificial key (via any key) or the full JPA entity (via some key).
  *
@@ -35,7 +39,8 @@ public interface IResolverSurrogateKey<
     ENTITY extends BonaPersistableKey<Long> & BonaPersistableTracking<TRACKING>
   > extends IResolverAnyKey<Long, TRACKING, ENTITY> {
 
-    /** Return a Long reference from any key object, if the Entity has an artificial primary key of type Long.
+    /**
+     * Returns a Long reference from any key object, if the Entity has an artificial primary key of type Long.
      * Throws a runtime / internal logic error exception if the entity has not a suitable key.
      * Returns null if the parameter entityRef itself is null.
      * Throws an exception (T9tException.RECORD_DOES_NOT_EXIST) if no entity of given key exists.
@@ -48,9 +53,11 @@ public interface IResolverSurrogateKey<
      * @return Long The primary key of the entity.
      * @throws T9tException
      */
-    Long getRef(REF entityRef, boolean onlyActive);
+    @Nullable
+    Long getRef(@Nullable REF entityRef, boolean onlyActive);
 
-    /** Return the full JPA entity for any given relevant key.
+    /**
+     * Returns the full JPA entity for any given relevant key.
      * Returns null if the parameter entityRef is null.
      * Throws an exception (T9tException.RECORD_DOES_NOT_EXIST) if there is no data record for the specified entityRef.
      * Throws an exception (T9tException.RECORD_INACTIVE) if the record exists, but has been marked inactive and parameter onlyActive = true.
@@ -60,9 +67,21 @@ public interface IResolverSurrogateKey<
      * @return ENTITY
      * @throws T9tException
      */
-    ENTITY getEntityData(REF entityRef, boolean onlyActive);
+    @Nullable
+    ENTITY getEntityData(@Nullable REF entityRef, boolean onlyActive);
+
+    /**
+     * Returns the full entity, with a chance to use a preloaded child entity.
+     *
+     * @param entityRef  the objectRef of the desired entity (can be null)
+     * @param childProvider the provider of the child entity
+     * @return the actual entity data
+     */
+    @Nullable
+    ENTITY getEntityData(@Nullable Long entityRef, @Nonnull Supplier<ENTITY> childProvider);
 
     /** Allocates a new artificial primary key for this entity. */
+    @Nonnull
     Long createNewPrimaryKey();
 
     /** Reads a specific field. */

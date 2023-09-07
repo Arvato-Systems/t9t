@@ -56,6 +56,7 @@ import de.jpaw.dp.Singleton;
 @Singleton
 public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
     private static final Logger LOGGER = LoggerFactory.getLogger(BpmnPersistenceAccess.class);
+
     protected final IProcessDefinitionEntityResolver resolver = Jdp.getRequired(IProcessDefinitionEntityResolver.class);
     protected final IProcessDefinitionDTOMapper mapper = Jdp.getRequired(IProcessDefinitionDTOMapper.class);
     protected final IProcessExecStatusEntityResolver statusResolver = Jdp.getRequired(IProcessExecStatusEntityResolver.class);
@@ -124,7 +125,7 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
     }
 
     protected <E> List<E> getQueryForDueTasks(final Class<E> type, final String field, final String onlyForProcessDefinitionId, final Instant whenDue,
-      final boolean includeErrorStatus, final boolean allClusterNodes) {
+      final boolean includeErrorStatus, final boolean allClusterNodes, final String onlyForNextStep, final Collection<Integer> returnCodes) {
         String nodeCondition = "";
         int numPartitions = 1;
         Collection<Integer> shards = Collections.emptyList();
@@ -141,18 +142,32 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
                 nodeCondition = " AND MOD(s.runOnNode, :partitions) IN :listOfPartitions";
             }
         }
+        final String errorCondition;
+        if (returnCodes == null) {
+            errorCondition = includeErrorStatus ? "" : " AND s.returnCode IS NULL";
+        } else {
+            errorCondition = includeErrorStatus
+                ? " AND s.returnCode IS NOT NULL AND a.returnCode NOT IN :returnCodes"
+                : " AND s.returnCode IN :returnCodes";
+        }
         final String pdCondition = onlyForProcessDefinitionId == null ? "" : " AND s.processDefinitionId = :pdId";
-        final String errorCondition = includeErrorStatus ? "" : " AND s.returnCode IS NULL";
-        final TypedQuery<E> query = statusResolver.getEntityManager().createQuery(
-            "SELECT s" + field + " FROM " + statusResolver.getEntityClass().getSimpleName()
-            + " s WHERE s.tenantId = :tenantId AND s.yieldUntil <= :timeLimit"
-            + pdCondition + errorCondition + nodeCondition + " ORDER BY s.yieldUntil",
-            type
-        );
+        final String stepCondition = onlyForNextStep == null ? "" : " AND s.nextStep = :step";
+        final String queryString = "SELECT s" + field + " FROM " + statusResolver.getEntityClass().getSimpleName()
+                + " s WHERE s.tenantId = :tenantId AND s.yieldUntil <= :timeLimit"
+                + pdCondition + errorCondition + nodeCondition + stepCondition + " ORDER BY s.yieldUntil";
+        LOGGER.debug("Now performing query {}", queryString);
+
+        final TypedQuery<E> query = statusResolver.getEntityManager().createQuery(queryString, type);
         query.setParameter("tenantId", tenantId);
         query.setParameter("timeLimit", whenDue);
         if (onlyForProcessDefinitionId != null) {
             query.setParameter("pdId", onlyForProcessDefinitionId);
+        }
+        if (onlyForNextStep != null) {
+            query.setParameter("step", onlyForNextStep);
+        }
+        if (returnCodes != null) {
+            query.setParameter("returnCodes", returnCodes);
         }
         if (nodeCondition.length() > 0) {
             query.setParameter("partitions", numPartitions);
@@ -161,18 +176,20 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
         return query.getResultList();
     }
 
-    // unused? At least not used in t9t
     @Override
     public List<ProcessExecutionStatusDTO> getTasksDue(final String onlyForProcessDefinitionId, final Instant whenDue,
-      final boolean includeErrorStatus, final boolean allClusterNodes) {
+      final boolean includeErrorStatus, final boolean allClusterNodes, final String onlyForNextStep, final Collection<Integer> returnCodes) {
         return statusMapper.mapListToDto(getQueryForDueTasks(ProcessExecStatusEntity.class, "",
-          onlyForProcessDefinitionId, whenDue, includeErrorStatus, allClusterNodes));
+          onlyForProcessDefinitionId, whenDue, includeErrorStatus, allClusterNodes,
+          onlyForNextStep, returnCodes));
     }
 
     @Override
     public List<Long> getTaskRefsDue(final String onlyForProcessDefinitionId, final Instant whenDue, final boolean includeErrorStatus,
-      final boolean allClusterNodes) {
-        return getQueryForDueTasks(Long.class, ".objectRef", onlyForProcessDefinitionId, whenDue, includeErrorStatus, allClusterNodes);
+      final boolean allClusterNodes, final String onlyForNextStep, final Collection<Integer> returnCodes) {
+        return getQueryForDueTasks(Long.class, ".objectRef",
+          onlyForProcessDefinitionId, whenDue, includeErrorStatus, allClusterNodes,
+          onlyForNextStep, returnCodes);
     }
 
     @Override

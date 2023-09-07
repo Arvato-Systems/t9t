@@ -168,8 +168,9 @@ public class DataSinkCrudRequestHandler extends AbstractCrudSurrogateKeyRequestH
         }
 
         if ((intended.getCategory() != null) && (intended.getCategory().getBaseEnum() == DataSinkCategoryType.CUSTOMER_COMMUNICATION)) {
-            if (intended.getCommTargetChannelType() != CommunicationTargetChannelType.FILE) {
-                throw new T9tException(T9tException.INVALID_CONFIGURATION, "Customer communication data sinks must have channel type FILE");
+            final CommunicationTargetChannelType channelType = intended.getCommTargetChannelType();
+            if (channelType != CommunicationTargetChannelType.FILE && channelType != CommunicationTargetChannelType.S3) {
+                throw new T9tException(T9tException.INVALID_CONFIGURATION, "Customer communication data sinks must have channel type FILE or S3");
             }
         }
 

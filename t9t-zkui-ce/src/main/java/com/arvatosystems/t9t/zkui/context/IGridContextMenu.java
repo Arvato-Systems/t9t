@@ -27,12 +27,12 @@ import de.jpaw.bonaparte.pojos.api.DataWithTracking;
  */
 public interface IGridContextMenu<DTO extends BonaPortable> {
     /** Invoked on onOpen() of the context menu, determines if the option is available for this row or not (greying out the option). */
-    default boolean isEnabled(DataWithTracking<DTO, TrackingBase> dwt) {
+    default boolean isEnabled(final DataWithTracking<DTO, TrackingBase> dwt) {
         return true;
     }
 
     /** Invoked on onOpen() of the context menu, determines if the option is available for this row or not (greying out the option). */
-    default boolean isEnabled(DataWithTracking<DTO, TrackingBase> dwt, Permissionset perms) {
+    default boolean isEnabled(final DataWithTracking<DTO, TrackingBase> dwt, final Permissionset perms) {
         return isEnabled(dwt);
     }
 
@@ -43,11 +43,11 @@ public interface IGridContextMenu<DTO extends BonaPortable> {
      * @param li
      * @param dwt
      */
-    default void selected(Grid28 lb, DataWithTracking<DTO, TrackingBase> dwt, Permissionset perms) {
+    default void selected(final Grid28 lb, final DataWithTracking<DTO, TrackingBase> dwt, final Permissionset perms) {
         selected(lb, dwt);
     }
 
-    default void selected(Grid28 lb, DataWithTracking<DTO, TrackingBase> dwt) {
+    default void selected(final Grid28 lb, final DataWithTracking<DTO, TrackingBase> dwt) {
         throw new UnsupportedOperationException();
     }
 }

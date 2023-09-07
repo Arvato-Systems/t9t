@@ -212,7 +212,7 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
     /** Register an IEventHandler as subscriber for an eventID. */
     @Override
     public void registerSubscriber(final String eventID, final String tenantId, final IEventHandler subscriber) {
-        LOGGER.debug("Registering subscriber {} for event {} in tenant {} ...", subscriber, eventID, tenantId);
+        LOGGER.debug("Registering subscriber {} for event {} in tenant {} ...", subscriber.getClass().getCanonicalName(), eventID, tenantId);
 
         boolean isNewSubscriber = true;
 

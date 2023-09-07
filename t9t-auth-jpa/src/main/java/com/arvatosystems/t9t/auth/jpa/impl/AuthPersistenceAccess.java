@@ -25,14 +25,11 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.NoResultException;
-import jakarta.persistence.TypedQuery;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.auth.ApiKeyDTO;
+import com.arvatosystems.t9t.auth.OidClaims;
 import com.arvatosystems.t9t.auth.PasswordUtil;
 import com.arvatosystems.t9t.auth.RoleRef;
 import com.arvatosystems.t9t.auth.SessionDTO;
@@ -50,23 +47,32 @@ import com.arvatosystems.t9t.auth.jpa.entities.UserStatusEntity;
 import com.arvatosystems.t9t.auth.jpa.persistence.IUserEntityResolver;
 import com.arvatosystems.t9t.auth.services.AuthIntermediateResult;
 import com.arvatosystems.t9t.auth.services.IAuthPersistenceAccess;
+import com.arvatosystems.t9t.auth.services.IExternalTokenValidation;
 import com.arvatosystems.t9t.authc.api.TenantDescription;
+import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.auth.ExternalTokenAuthenticationParam;
 import com.arvatosystems.t9t.base.auth.PermissionEntry;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.cfg.be.ConfigProvider;
+import com.arvatosystems.t9t.cfg.be.OidConfiguration;
 import com.google.common.collect.ImmutableList;
 
 import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 import de.jpaw.bonaparte.pojos.api.auth.UserLogLevelType;
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ByteArray;
+import jakarta.annotation.Nonnull;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.TypedQuery;
 
 @Singleton
 public class AuthPersistenceAccess implements IAuthPersistenceAccess {
@@ -77,10 +83,13 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
         + PasswordEntity.class.getSimpleName() + " pwd ON us.objectRef = pwd.objectRef AND us.currentPasswordSerialNumber = pwd.passwordSerialNumber"
         + " WHERE us.objectRef = :userRef";
 
+    protected final OidConfiguration oidConfiguration = ConfigProvider.getConfiguration().getOidConfiguration();
+
     protected final Provider<PersistenceProviderJPA> jpaContextProvider = Jdp.getProvider(PersistenceProviderJPA.class);
     protected final IUserEntityResolver userEntityResolver = Jdp.getRequired(IUserEntityResolver.class);
     protected final IPasswordChangeService passwordChangeService = Jdp.getRequired(IPasswordChangeService.class);
     protected final IPasswordSettingService passwordSettingService = Jdp.getRequired(IPasswordSettingService.class);
+    protected final IExternalTokenValidation externalTokenAuthentication = Jdp.getRequired(IExternalTokenValidation.class);
 
     // return the unfiltered permissions from DB, unfiltered means:
     // - permission min/max is not yet applied
@@ -179,7 +188,7 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
 
     @Override
     public DataWithTrackingS<UserDTO, FullTrackingWithVersion> getUserById(String userId) {
-        final UserEntity userEntity = getUserIgnoringTenant(userId);
+        final UserEntity userEntity = getUserByUserIdIgnoringTenant(userId, false);
         if (userEntity == null) {
             return null;
         }
@@ -190,19 +199,144 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
         return dwt;
     }
 
-    protected UserEntity getUserIgnoringTenant(String userId) {
+    protected UserEntity getUserByUserIdIgnoringTenant(@Nonnull final String userId, final boolean useExtId) {
+        final String sql = useExtId
+            ? "SELECT e FROM UserEntity e WHERE e.userIdExt = :userId AND e.isActive = :isActive"
+            : "SELECT e FROM UserEntity e WHERE e.userId = :userId";
         final TypedQuery<UserEntity> query = userEntityResolver.getEntityManager()
-                .createQuery("SELECT e FROM UserEntity e WHERE e.userId = :userId", UserEntity.class);
-        query.setParameter(UserDTO.meta$$userId.getName(), userId);
+                .createQuery(sql, UserEntity.class);
+        query.setParameter("userId", userId);
+        if (useExtId) {
+            query.setParameter("isActive", Boolean.TRUE);
+        }
         final List<UserEntity> results = query.getResultList();
         if (results.isEmpty()) {
+            return null;
+        }
+        if (results.size() > 1) {
+            // can only occur for search by userIdExt
+            LOGGER.error("nonunique active external user ID {}", userId);
             return null;
         }
         return results.get(0);
     }
 
+    /** Perform unessential updates of claims such as name / phone / email. */
+    protected void updateUserEntity(final UserEntity userEntity, final OidClaims externalTokenData) {
+        final String nameClaim = externalTokenData.getName();
+        if (nameClaim != null && Boolean.TRUE.equals(oidConfiguration.getUpdateName() && !nameClaim.equals(userEntity.getName()))) {
+            LOGGER.info("Updating name of user {} to {}", userEntity.getUserId(), nameClaim);
+            userEntity.setName(MessagingUtil.truncField(nameClaim, 80));
+        }
+        final String emailClaim = externalTokenData.getEmailAddress();
+        if (emailClaim != null && Boolean.TRUE.equals(oidConfiguration.getUpdateEmail() && !emailClaim.equals(userEntity.getEmailAddress()))) {
+            LOGGER.info("Updating email of user {} to {}", userEntity.getUserId(), emailClaim);
+            userEntity.setEmailAddress(emailClaim);
+        }
+    }
+
     @Override
-    public AuthIntermediateResult getByApiKey(Instant now, UUID key) {
+    public AuthIntermediateResult getByExternalToken(final Instant now, final ExternalTokenAuthenticationParam authParam) {
+        final OidClaims externalTokenData = externalTokenAuthentication.validateToken(authParam.getAccessToken());
+        if (externalTokenData == null) {
+            LOGGER.debug("Authentication request by external token is denied, because token is invalid");
+            return null;
+        }
+
+        UserEntity userEntity = null;
+        // first, attempt to obtain user by OID
+        final String oidClaim = externalTokenData.getOid();
+        if (oidClaim != null) {
+            userEntity = getUserByUserIdIgnoringTenant(oidClaim, true);
+        }
+
+        // if no user found, or oid was not provided, attempt via userId / upn
+        final String upnClaim = externalTokenData.getUpn();
+        if (userEntity == null && upnClaim != null && upnClaim.indexOf('@') > 0) {
+            // attempt via primary user ID
+            final int atInUpnClaim = upnClaim.indexOf('@');
+            final String userIdInUpn = upnClaim.substring(0, atInUpnClaim);
+            userEntity = getUserByUserIdIgnoringTenant(userIdInUpn, false);
+            if (userEntity != null) {
+                // must match either email or idp!
+                if (userEntity.getIdentityProvider() != null) {
+                    // in this case ignore email!
+                    if (!userEntity.getIdentityProvider().equals(externalTokenData.getIdp())) {
+                        LOGGER.warn("Authentication rejected for userId {} because idp not matching: {} vs {}",
+                            userEntity.getUserId(), userEntity.getIdentityProvider(), externalTokenData.getIdp());
+                        return null;
+                    }
+                } else if (userEntity.getEmailAddress() != null) {
+                    // fallback: no idp configured, attempt match by email domain
+                    final int atInEmail = userEntity.getEmailAddress().indexOf('@');
+                    if (atInEmail > 0 && atInEmail < userEntity.getEmailAddress().length() - 3) {
+                        final String domainOfEmail = userEntity.getEmailAddress().substring(atInEmail + 1);
+                        final String domainOfUpn = upnClaim.substring(atInUpnClaim + 1);
+                        if (!domainOfUpn.equals(domainOfEmail)) {
+                            LOGGER.warn("Authentication rejected for userId {} because email domain mismatches", userEntity.getUserId());
+                            return null;
+                        }
+                    } else {
+                        LOGGER.warn("Authentication rejected for userId {} because email configured without domain", userEntity.getUserId());
+                        return null;
+                    }
+                } else {
+                    LOGGER.warn("Authentication rejected for userId {} because no idp or email configured for this user", userEntity.getUserId());
+                    return null;
+                }
+            }
+        }
+        if (userEntity == null) {
+            LOGGER.debug("No user found for oid {} / upn {}", oidClaim, upnClaim);
+            return null;
+        }
+        if (!Boolean.TRUE.equals(userEntity.getExternalAuth())) {
+            LOGGER.debug("Authentication request by external token for user {} is denied, because user is not allowed for external authentication",
+                userEntity.getUserId());
+            return null;
+        }
+        // further updated / checks
+        if (userEntity.getIdentityProvider() == null) {
+            if (oidConfiguration.getUpdateIdp()) {
+                userEntity.setIdentityProvider(externalTokenData.getIdp());
+            }
+        } else if (oidConfiguration.getMustMatchIdp()) {
+            // similar code before only covered the userId matching case
+            if (!userEntity.getIdentityProvider().equals(externalTokenData.getIdp())) {
+                LOGGER.warn("Authentication rejected for userId {} because idp not matching: {} vs {}",
+                    userEntity.getUserId(), userEntity.getIdentityProvider(), externalTokenData.getIdp());
+                return null;
+            }
+        }
+
+        if (oidConfiguration != null) {
+            if (userEntity.getUserIdExt() == null && oidClaim != null && oidConfiguration.getUpdateOid()) {
+                if (oidClaim.length() > 36) {
+                    LOGGER.warn("Cannot update userIdExt of user {} with OID {} (OID too long)", userEntity.getUserId(), oidClaim);
+                } else {
+                    LOGGER.info("Updating userIdExt of user {} with OID {}", userEntity.getUserId(), oidClaim);
+                    userEntity.setUserIdExt(oidClaim);
+                }
+            }
+            updateUserEntity(userEntity, externalTokenData);
+        }
+
+        final EntityManager em = jpaContextProvider.get().getEntityManager();
+        final UserStatusEntity userStatus = updateUserStatusEntityForExternalTokenLogin(em, userEntity.getObjectRef(), now);
+
+        final AuthIntermediateResult resp = new AuthIntermediateResult();
+        resp.setUser(userEntity.ret$Data());
+        resp.setTenantId(userEntity.getTenantId());
+        if (userEntity.getRoleRef() != null) {
+            resp.getUser().setRoleRef(new RoleRef(userEntity.getRoleRef()));
+        }
+        resp.setUserStatus(userStatus.ret$Data());
+
+        return resp;
+    }
+
+    @Override
+    public AuthIntermediateResult getByApiKey(final Instant now, final UUID key) {
         final EntityManager em = jpaContextProvider.get().getEntityManager();
 
         final TypedQuery<ApiKeyEntity> query = em.createQuery("SELECT e FROM ApiKeyEntity e WHERE e.apiKey = :apiKey", ApiKeyEntity.class);
@@ -252,14 +386,35 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
         userStatus.setPrevLogin(userStatus.getLastLogin());
         userStatus.setPrevLoginByApiKey(userStatus.getLastLoginByApiKey());
         userStatus.setLastLogin(now);
-        userStatus.setPrevLoginByApiKey(now);
+        userStatus.setLastLoginByApiKey(now);
+        return userStatus;
+    }
+
+    protected UserStatusEntity updateUserStatusEntityForExternalTokenLogin(final EntityManager em, final Long userRef, final Instant now) {
+        UserStatusEntity userStatus = em.find(UserStatusEntity.class, userRef);
+        if (userStatus == null) {
+            // create a new one
+            userStatus = new UserStatusEntity();
+            userStatus.setCurrentPasswordSerialNumber(0);
+            userStatus.setNumberOfIncorrectAttempts(0);
+            userStatus.setObjectRef(userRef);
+            em.persist(userStatus);
+        }
+        userStatus.setPrevLogin(userStatus.getLastLogin());
+        userStatus.setPrevLoginByX509(userStatus.getLastLoginByX509());
+        userStatus.setLastLogin(now);
+        userStatus.setLastLoginByX509(now);
         return userStatus;
     }
 
     @Override
-    public AuthIntermediateResult getByUserIdAndPassword(Instant now, String userId, String password, String newPassword) {
-        final UserEntity userEntity = getUserIgnoringTenant(userId); // first find the user
+    public AuthIntermediateResult getByUserIdAndPassword(final Instant now, final String userId, final String password, final String newPassword) {
+        final UserEntity userEntity = getUserByUserIdIgnoringTenant(userId, false); // first find the user
         if (userEntity == null) {
+            throw new T9tException(T9tException.USER_NOT_FOUND);
+        }
+        if (Boolean.TRUE.equals(userEntity.getOnlyExternalAuth())) {
+            LOGGER.warn("Authentication via internal password rejected for user {}, because only external auth allowed", userId);
             throw new T9tException(T9tException.USER_NOT_FOUND);
         }
 
@@ -482,7 +637,7 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
 
     @Override
     public String assignNewPasswordIfEmailMatches(final RequestContext ctx, final String userId, final String emailAddress) {
-        final UserEntity userEntity = getUserIgnoringTenant(userId);
+        final UserEntity userEntity = getUserByUserIdIgnoringTenant(userId, false);
         if (userEntity == null) {
             throw new T9tException(T9tException.NOT_AUTHENTICATED); // user does not exist
         }

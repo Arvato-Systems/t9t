@@ -23,6 +23,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.io.OutputHeading;
 import com.arvatosystems.t9t.out.be.impl.output.EnumTranslatorComposerFilter;
 import com.arvatosystems.t9t.out.be.impl.output.VariantComposerFilter;
@@ -34,19 +35,23 @@ import de.jpaw.bonaparte.core.FoldingComposer;
 import de.jpaw.bonaparte.core.MessageComposer;
 import de.jpaw.bonaparte.pojos.meta.FoldingStrategy;
 import de.jpaw.util.ApplicationException;
+import jakarta.annotation.Nonnull;
 
 public abstract class FoldableFormatGenerator<E extends Exception> extends AbstractFormatGenerator {
     private static final Logger LOGGER = LoggerFactory.getLogger(FoldableFormatGenerator.class);
+
     protected MessageComposer<E> foldingComposer;
     protected Map<Class<? extends BonaCustom>, List<String>> map = null;
 
+    /** Retrieves the base composer (not the folding one, and not an enum converting one). */
+    @Nonnull
     protected abstract MessageComposer<E> getMessageComposer();
 
 
     @Override
     protected void openHook() throws IOException, ApplicationException {
         MessageComposer<E> baseComposer = getMessageComposer();
-        if (foldableParams == null || foldableParams.getSelectedFields() == null ||  foldableParams.getSelectedFields().isEmpty()) {
+        if (foldableParams == null || T9tUtil.isEmpty(foldableParams.getSelectedFields())) {
             map = null;
         } else {
             map = new HashMap<>();
@@ -60,7 +65,7 @@ public abstract class FoldableFormatGenerator<E extends Exception> extends Abstr
                     baseComposer = new EnumTranslatorComposerFilter<>(baseComposer, foldableParams.getEnumTranslator());
                     break;
                 default:
-                      // intentionally no activity
+                    // intentionally no activity
                 }
             }
             if (foldableParams.isApplyVariantFilter()) {
@@ -71,9 +76,14 @@ public abstract class FoldableFormatGenerator<E extends Exception> extends Abstr
         foldingComposer = map == null ? baseComposer : new FoldingComposer<>(baseComposer, map, FoldingStrategy.TRY_SUPERCLASS);
     }
 
+    /** Write specific header data. Header data consists of a row of text fields, of the same number of fields / columns as the data rows. */
     protected void writeTitles() {
-        if (foldableParams == null || foldableParams.getHeaders() == null || foldableParams.getHeaders().isEmpty())
+        if (!Boolean.TRUE.equals(sinkCfg.getWriteHeaderRow())) {
+            return;  // no header row requested
+        }
+        if (foldableParams == null || T9tUtil.isEmpty(foldableParams.getHeaders())) {
             return;
+        }
         try {
             getMessageComposer().writeRecord(new OutputHeading(foldableParams.getHeaders()));
         } catch (final Exception e) {

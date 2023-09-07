@@ -53,11 +53,14 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional (SearchConfiguration...)           searchConfiguration;
         optional (KafkaConfiguration...)            kafkaConfiguration;
         optional (AsyncTransmitterConfiguration...) asyncMsgConfiguration;
-        optional (LdapConfiguration...)             ldapConfiguration;              // optional external authentication provider (null if none)
+        optional (LdapConfiguration...)             ldapConfiguration;              // optional external authentication provider (LDAP)
+        optional (OidConfiguration...)              oidConfiguration;               // optional external authentication provider (OpenID Connect, currently only MS-AAD supported)
+        optional Uuid                               passwordResetApiKey;            // API key for the mobile UI "password reset" functionality
         optional Uuid                               noDbBackendApiKey;              // API key for servers running without DB access
         required Unicode(255) List<>                noDbBackendPermittedRequests;   // entries for additional request PQONs to be permitted for the above API key
         optional Long                               jwtValidityApiKey;              // validity duration of a JWT when signed on by API key
         optional Long                               jwtValidityUserPassword;        // validity duration of a JWT when signed on by username / password
+        optional Long                               jwtValidityOpenId;              // validity duration of a JWT when signed on via MS OpenID Connect
         required Ascii(16) List<>                   mocks;                          // entries for mocked SMTP, defacto etc.
         optional Boolean                            runInCluster;                   // if true, activates sending of cache invalidation events via vert.x event bus
         optional Boolean                            disableScheduler;               // cluster server - if set, do not run jobs here
@@ -77,6 +80,16 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional Unicode(200)                       clusterManagerTopicName;        // leave null to use the default of "t9tRequestTopic"
         optional Uuid                               clusterManagerApiKey;           // API-Key for request processing on the main topic
         optional Integer                            clusterManagerPoolSize;         // specifies the number of workers for processing requests of the main topic
+        optional Boolean                            clusterManagerOrdering;         // use a processor of incoming requests which honors order of requests per partition
+        optional Integer                            maxPending;                     // continue polling more requests once at most this number of old requests are still pending (default 3)
+        optional Integer                            hardLimitPending;               // hard limit (no timeout) how many tasks can be pending (default 24)
+        optional Integer                            slowProcessingTimeout;          // after how much time are we polling more despite (in ms)? (default 15000)
+        optional Integer                            waitInterval;                   // after how many ms to evaluate again (default 50)
+        optional Boolean                            commitSync;                     // if true, perform synchronous commits (default async)
+        optional Integer                            commitInterval;                 // after how many ms to commit offsets (default is 3000)
+        optional Integer                            monitorInterval;                // after how many ms to print monitored partitions (default is 5000)
+        optional Integer                            shutdownThreadpoolInterval;     // timeout in ms for threadpool shutdown (default is 10000)
+        optional Integer                            maxPollRecords;                 // maximum number of records returned in a single call to poll() (max.poll.records)
     }
 
     class RelationalDatabaseConfiguration {
@@ -167,17 +180,23 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional Integer                            localAsyncPoolSize;             // Executor pool size for async requests - for local servers (non vert.x based) it defaults to 4, for vert.x based servers if not configured, the standard worker pool will be used
         optional Integer                            idempotencyCacheMaxEntries;     // How many entries to allow per tenant for the idempotency cache (null means deactivate cache)
         optional Integer                            idempotencyCacheExpiry;         // How many seconds before expiry in the idempotency cache (null means no expiry)
+        optional Integer                            numberOfRetriesOptimisticLock;  // how often to retry in case of an optimistic lock exception (default 2)
+        optional Integer                            numberOfRetriesDatabaseConnect; // how often to retry in case of database connection exceptions (default 3)
+        optional Integer                            pauseBeforeDatabaseConnectRetry; // how many ms to sleep before a retry is done
+        optional Double                             pauseIncreaseFactor;            // if set, provides the factor for subsequent sleeps (should be >= 1.0, default 1.5)
     }
 
     /** The uplink configuration has been reassigned to provide the link to the report server. */
     class UplinkConfiguration {
         required Unicode(36)                        key;                            // the key to use for this configuration
         required Unicode(255)                       url;                            // URL for uplink. If not provided, uplink calls will throw an Exception
+        optional Unicode(255)                       identityServiceUrl;             // URL for authentication. Request and refresh access tokens.
         optional Enum MediaType                     mediaType;                      // which format to use (JSON, compact, bonaparte, default is compact bonaparte, entry currently ignored)
         optional Uuid                               apiKey;                         // the API key to use
         optional Integer                            timeoutInMs;                    // if specified, use the timeout given here, otherwise some hardcoded default
         optional Unicode(255)                       callbackUrl;                    // the configuration for callback, in case required
         optional Unicode(255)                       basicAuth;                      // the http BASIC auth to use (in case API keys are not supported by the remote)
+        optional Unicode(255)                       clientId;                       // Id used to request access token
     }
 
     class SearchConfiguration {
@@ -186,7 +205,7 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
     }
 
     class AsyncTransmitterConfiguration {
-        required namedQualifier                     strategy;                       // select the implementation. Currently only "LTQ" is available
+        required namedQualifier                     strategy;                       // select the implementation. "LTQ", "KAFKA", "NOOP" are available in core
         required int                                maxMessageAtStartup;            // how many persisted messages to load initially at max [100]
         required int                                timeoutIdleGreen;               // sleep time in ms when queue is empty and last request was green [500 ms]
         required int                                timeoutIdleRed;                 // sleep time in ms after an error [5000 ms]
@@ -194,6 +213,8 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         required int                                timeoutExternal;                // max allowable duration of an external request [1000 ms]
         required int                                waitAfterExtError;              // sleep time in ms after an initial remote problem [10000 ms]
         required int                                waitAfterDbErrors;              // sleep time in ms after a database error [60000 ms]
+        optional Boolean                            doNotPersistMessages;           // for queue-based messages: no not persist message in DB (not recommended)
+        optional Boolean                            processQueues;                  // if not set, queues may be written do, but will not be sent out by this server type
     }
 
     /** Configuration for LDAP server or other external authentication service. */
@@ -204,5 +225,19 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         required Unicode(63)                        securityCredentials;// admin pw
         required Unicode(255)                       organization;       // o=xx.com
         optional Boolean                            onlySelectedUsers;  // if set to TRUE, then only selected users will use LDAP / external authentication (reads user master data before)
+    }
+
+    /** Configuration for OpenID Connect / OAuth2 (via MS AAD). */
+    class OidConfiguration {
+        required t9t.base.types.defaultExternalId   audience;           // UUID of the application (client ID, "aud" field)
+        required t9t.base.types.defaultExternalId   tenantId;           // UUID of MS AD tenant within which the application has been created (for "iss" field)
+        optional Ascii(80)                          issuer;             // full string for issuer (defaults to "https://sts.windows.net/${tenantId}/")
+        optional Ascii(80)                          jwksUri;            // URL to obtain key
+        required boolean                            mustMatchOid;       // if a user has a configured userIdExt, it must match the received "oid" field
+        required boolean                            mustMatchIdp;       // if a user has a configured identityProvider entry, it must match the received nvl("idp", "iss") field
+        required boolean                            updateOid;          // if a user authenticates via upn, and oid is made available in JWT, update UserDTO with it
+        required boolean                            updateIdp;          // if a user authenticates via upn, and idp/iss is made available in JWT, update UserDTO with it
+        optional Boolean                            updateName;         // if a user authenticates, update the name field from JWT into UserDTO
+        optional Boolean                            updateEmail;        // if a user authenticates, update the email field from JWT into UserDTO
     }
 }

@@ -41,6 +41,7 @@ import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.auth.ApiKeyAuthentication;
 import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
 import com.arvatosystems.t9t.base.auth.AuthenticationResponse;
+import com.arvatosystems.t9t.base.auth.ExternalTokenAuthenticationParam;
 import com.arvatosystems.t9t.base.auth.PasswordAuthentication;
 import com.arvatosystems.t9t.base.auth.PermissionEntry;
 import com.arvatosystems.t9t.base.types.SessionParameters;
@@ -73,12 +74,12 @@ public class UserDAO implements IUserDAO {
         // currently the session is a new one, the attributes as set in login form are lost
         String mainAgent = "t9t ZK UI" + (UI_VERSION != null ? ", " + UI_VERSION : "");
         //LOGGER.debug("ZK user agent is {}", Executions.getCurrent().getUserAgent());
-        SessionParameters sp = new SessionParameters();
+        final SessionParameters sp = new SessionParameters();
 
         Locale   l = null;
         TimeZone z = null;
         String   realZoneId = null;
-        UserInfo infos = LoginViewModel.getUserInfo(userName);
+        final UserInfo infos = LoginViewModel.getUserInfo(userName);
         if (infos != null) {
             l = infos.locale;
             z = infos.zkTz;
@@ -95,53 +96,27 @@ public class UserDAO implements IUserDAO {
     }
 
     @Override
-    public final AuthenticationResponse getAuthenticationResponse(String username, String pwd) throws ReturnCodeException {
-        try {
+    public AuthenticationResponse getApiKeyAuthenticationResponse(final UUID apiKey) throws ReturnCodeException {
+        final AuthenticationRequest authenticationRequest = new AuthenticationRequest(new ApiKeyAuthentication(apiKey));
+        return getAuthenticationResponse(authenticationRequest, T9tConstants.ANONYMOUS_USER_ID);
+    }
 
-            AuthenticationRequest authenticationRequest = new AuthenticationRequest();
-
-            if (username.length() >= 36 && pwd == null) {  // by API key (for password forgotten)
-                authenticationRequest.setAuthenticationParameters(new ApiKeyAuthentication(UUID.fromString(username)));
-                username = T9tConstants.ANONYMOUS_USER_ID;
-            } else {
-                if (pwd != null) { // in case of LDAP .... pwd is null
-                    PasswordAuthentication authenticationParameters = new PasswordAuthentication();
-                    authenticationParameters.setUserId(username);
-                    authenticationParameters.setPassword(pwd);
-                    authenticationRequest.setAuthenticationParameters(authenticationParameters);
-                }
-            }
-            authenticationRequest.setSessionParameters(makeSessionParameters(username));
-            AuthenticationResponse resp = t9tRemoteUtils.executeAndHandle(authenticationRequest, AuthenticationResponse.class);
-            if (ApplicationException.isOk(resp.getReturnCode()) || resp.getReturnCode() == T9tException.PASSWORD_EXPIRED) {
-                final ApplicationSession as = ApplicationSession.get();
-                as.setLastLoggedIn(resp.getLastLoginUser());
-                as.setPasswordExpires(resp.getPasswordExpires());
-                as.setNumberOfIncorrectAttempts(resp.getNumberOfIncorrectAttempts());
-                if (resp.getTenantNotUnique()) {
-                    // request all tenants via additional remote call...
-                    LOGGER.info("User {} has access to multiple tenants - retrieving list", username);
-                    GetTenantsResponse gtr = t9tRemoteUtils.executeAndHandle(new GetTenantsRequest(), GetTenantsResponse.class);
-                    as.setAllowedTenants(gtr.getTenants());
-                    LOGGER.info("User {} has access to {} tenants", username, gtr.getTenants().size());
-                } else {
-                    // this is the single tenant - no need to request more
-                    LOGGER.info("User {} has access to the single tenant {} only", username, resp.getJwtInfo().getTenantId());
-                    TenantDescription td = new TenantDescription();
-                    td.setIsActive(true);
-                    td.setName(resp.getTenantName());
-                    td.setTenantId(resp.getJwtInfo().getTenantId());
-                    as.setAllowedTenants(Collections.singletonList(td));
-
-                    // obtain permissions
-                }
-            }
-            return resp;
-
-        } catch (Exception e) {
-            t9tRemoteUtils.returnCodeExceptionHandler("security.bon#AuthenticationRequest", e);
-            return null; // just for the compiler
+    @Override
+    public AuthenticationResponse getUserPwAuthenticationResponse(final String username, final String pwd) throws ReturnCodeException {
+        final AuthenticationRequest authenticationRequest = new AuthenticationRequest();
+        if (pwd != null) { // in case of LDAP .... pwd is null
+            final PasswordAuthentication authenticationParameters = new PasswordAuthentication();
+            authenticationParameters.setUserId(username);
+            authenticationParameters.setPassword(pwd);
+            authenticationRequest.setAuthenticationParameters(authenticationParameters);
         }
+        return getAuthenticationResponse(authenticationRequest, username);
+    }
+
+    @Override
+    public final AuthenticationResponse getExternalTokenAuthenticationResponse(final String accessToken, final String username) throws ReturnCodeException {
+        final AuthenticationRequest authenticationRequest = new AuthenticationRequest(new ExternalTokenAuthenticationParam(accessToken));
+        return getAuthenticationResponse(authenticationRequest, username);
     }
 
     @Override
@@ -232,5 +207,38 @@ public class UserDAO implements IUserDAO {
             t9tRemoteUtils.returnCodeExceptionHandler("api-key.bon#SwitchLanguageRequest", e);
         }
         return response;
+    }
+
+    private AuthenticationResponse getAuthenticationResponse(final AuthenticationRequest authenticationRequest, final String username)
+        throws ReturnCodeException {
+        try {
+            authenticationRequest.setSessionParameters(makeSessionParameters(username));
+            final AuthenticationResponse resp = t9tRemoteUtils.executeAndHandle(authenticationRequest, AuthenticationResponse.class);
+            if (ApplicationException.isOk(resp.getReturnCode()) || resp.getReturnCode() == T9tException.PASSWORD_EXPIRED) {
+                final ApplicationSession as = ApplicationSession.get();
+                as.setLastLoggedIn(resp.getLastLoginUser());
+                as.setPasswordExpires(resp.getPasswordExpires());
+                as.setNumberOfIncorrectAttempts(resp.getNumberOfIncorrectAttempts());
+                if (resp.getTenantNotUnique()) {
+                    // request all tenants via additional remote call...
+                    LOGGER.info("User {} has access to multiple tenants - retrieving list", username);
+                    final GetTenantsResponse gtr = t9tRemoteUtils.executeAndHandle(new GetTenantsRequest(), GetTenantsResponse.class);
+                    as.setAllowedTenants(gtr.getTenants());
+                    LOGGER.info("User {} has access to {} tenants", username, gtr.getTenants().size());
+                } else {
+                    // this is the single tenant - no need to request more
+                    LOGGER.info("User {} has access to the single tenant {} only", username, resp.getJwtInfo().getTenantId());
+                    final TenantDescription td = new TenantDescription();
+                    td.setIsActive(true);
+                    td.setName(resp.getTenantName());
+                    td.setTenantId(resp.getJwtInfo().getTenantId());
+                    as.setAllowedTenants(Collections.singletonList(td));
+                }
+            }
+            return resp;
+        } catch (Exception e) {
+            t9tRemoteUtils.returnCodeExceptionHandler("security.bon#AuthenticationRequest", e);
+            return null; // just for the compiler
+        }
     }
 }

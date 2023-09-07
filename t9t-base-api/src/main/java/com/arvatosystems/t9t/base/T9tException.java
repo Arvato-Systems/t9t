@@ -92,11 +92,11 @@ public class T9tException extends ApplicationException {
     public static final int SHUTDOWN_IN_PROGRESS = OFFSET_TIMEOUT + 52;
     public static final int CANNOT_CLOSE_SINK = OFFSET_DB_ERROR + 55;
 
-    public static final int OPTIMISTIC_LOCKING_EXCEPTION = OFFSET_DB_ERROR + 94;
+    public static final int OPTIMISTIC_LOCKING_EXCEPTION = OFFSET_DB_ERROR + 94;  // causes retry!
     public static final int REQUEST_PARAMETER_BAD_INHERITANCE = OFFSET + 95;
     public static final int TRANSACTION_RETRY_REQUEST = OFFSET_DB_ERROR + 96;
 //    public static final int GENERAL_EXCEPTION_CENTRAL = OFFSET_LOGIC_ERROR + 97;
-    public static final int GENERAL_EXCEPTION = OFFSET_DB_ERROR + 98;
+    public static final int GENERAL_EXCEPTION = OFFSET_DB_ERROR + 98;             // causes retry in some cases!
     public static final int SELECT_INSERT_SELECT_ERROR = OFFSET_LOGIC_ERROR + 99;
 
     // Codes specific to CrudRequests
@@ -231,6 +231,7 @@ public class T9tException extends ApplicationException {
 
     public static final int DYNAMODB_EXCEPTION          = OFFSET_DB_ERROR + 501;
     public static final int MISSING_KAFKA_BOOTSTRAP     = OFFSET + 502;
+    public static final int KAFKA_LISTENER_ERROR        = OFFSET + 503;
 
     // Error codes specific to solr search
     public static final int SOLR_SERVER_NOT_AVAILABLE   = OFFSET + 701;
@@ -580,6 +581,7 @@ public class T9tException extends ApplicationException {
 
         registerCode(DYNAMODB_EXCEPTION, "DynamoDB returned an Exception");
         registerCode(MISSING_KAFKA_BOOTSTRAP, "Kafka bootstrap servers not specified");
+        registerCode(KAFKA_LISTENER_ERROR, "Could not create kafka listener");
         registerCode(GENERAL_SERVER_ERROR, "Server error");
 
         registerCode(INVALID_ENUM_VALUE, "Invalid instance value");

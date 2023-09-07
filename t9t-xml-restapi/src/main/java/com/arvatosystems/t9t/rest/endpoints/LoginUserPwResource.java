@@ -15,6 +15,24 @@
  */
 package com.arvatosystems.t9t.rest.endpoints;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
+import com.arvatosystems.t9t.base.auth.PasswordAuthentication;
+import com.arvatosystems.t9t.rest.services.IAuthFilterCustomization;
+import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
+import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
+import com.arvatosystems.t9t.xml.auth.AuthByUserIdPassword;
+import com.arvatosystems.t9t.xml.auth.AuthenticationResult;
+
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -41,24 +59,6 @@ import jakarta.ws.rs.core.MediaType;
  */
 import jakarta.ws.rs.core.Response;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
-import com.arvatosystems.t9t.base.auth.PasswordAuthentication;
-import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
-import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
-import com.arvatosystems.t9t.xml.auth.AuthByUserIdPassword;
-import com.arvatosystems.t9t.xml.auth.AuthenticationResult;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
-
 /**
  * Login via API key or username / password
  */
@@ -69,6 +69,7 @@ public class LoginUserPwResource implements IT9tRestEndpoint {
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginUserPwResource.class);
 
     protected final IT9tRestProcessor restProcessor = Jdp.getRequired(IT9tRestProcessor.class);
+    protected final IAuthFilterCustomization authFilter = Jdp.getRequired(IAuthFilterCustomization.class);
 
     @Operation(
         summary = "Create a session / JWT token by user ID / password",
@@ -86,6 +87,11 @@ public class LoginUserPwResource implements IT9tRestEndpoint {
         if (authByUserPw == null) {
             LOGGER.error("Login attempted at /userpw without any data...");
             restProcessor.returnAsyncResult(acceptHeader, resp, Response.Status.BAD_REQUEST, "Null parameter");
+            return;
+        }
+
+        if (authFilter.filterByUserId(authByUserPw.getUserId())) {
+            restProcessor.returnAsyncResult(acceptHeader, resp, Response.Status.FORBIDDEN, "Invalid user ID");
             return;
         }
         validatePayload(authByUserPw);

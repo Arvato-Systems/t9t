@@ -26,7 +26,7 @@ import t9t.updates.*
 
 package (com.arvatosystems) t9t.updates.request {
     default private unsigned trim noControlChars;
-    properties notupdatable, ref,
+    properties notupdatable, ref, qualifierFor,
         tenantCategory is com.arvatosystems.t9t.annotations.TenantCategory(),
         searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix();
 
@@ -41,11 +41,14 @@ package (com.arvatosystems) t9t.updates.request {
         required shortText                  description;
         required boolean                    allowRestartOfPending;  // if true, a status "IN_PROGRESS" is accepted
         required ticketId List<>            prerequisites;          // if provided, all of these must be marked as DONE
+        optional Enum UpdateApplyStatusType initialStatus;          // if the ticket entry does not yet exist, it is created as "NOT_YET_STARTED (why?) unless IN_PROGRESS is passed here
     }
 
     /** Sets the status of the related ticket to DONE. */
     class FinishUpdateRequest extends RequestParameters {
-        required ticketId                   ticketId;
+        required ticketId                   ticketId;               // specifies the ticket
+        optional Enum UpdateApplyStatusType newStatus;              // new ticket status, null is interpreted as COMPLETE
+        optional Integer                    errorCode;              // can be defined, if the new status is ERROR
     }
 
     /** Retrieves the status of the related ticket. */
@@ -54,5 +57,25 @@ package (com.arvatosystems) t9t.updates.request {
     }
     class GetUpdateStatusResponse extends ServiceResponse {
         required (UpdateStatusDTO)          updateStatus;
+    }
+
+    /**
+     * Performs the configured updates for the specified ticket.
+     *
+     * Possible return codes:
+     * - OK: Updates have been performed
+     * - NO: Updates have been performed already before (skipped a previously successfully completed update)
+     * - BAD: Update was started, failed (or failed before, and cannot be restarted)
+     * - NOT_YET_IMPLEMENTED: If no migration handler was found
+     */
+    class PerformSingleUpdateRequest extends RequestParameters {
+        required ticketId                   ticketId  properties qualifierFor="updates.services.IFeatureUpdate";
+    }
+
+    /**
+     * Performs the configured updates for the specified release / apply sequence prefix.
+     */
+    class PerformReleaseUpdateRequest extends RequestParameters {
+        required applySequenceId            prefix;
     }
 }

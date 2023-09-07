@@ -24,6 +24,7 @@ import com.arvatosystems.t9t.base.auth.ApiKeyAuthentication;
 import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
 import com.arvatosystems.t9t.base.types.SessionParameters;
 import com.arvatosystems.t9t.rest.parsers.RestParameterParsers;
+import com.arvatosystems.t9t.rest.services.IAuthFilterCustomization;
 import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
 import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
 import com.arvatosystems.t9t.xml.auth.AuthByApiKey;
@@ -75,6 +76,7 @@ public class LoginApiKeyResource implements IT9tRestEndpoint {
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginApiKeyResource.class);
 
     protected final IT9tRestProcessor restProcessor = Jdp.getRequired(IT9tRestProcessor.class);
+    protected final IAuthFilterCustomization authFilter = Jdp.getRequired(IAuthFilterCustomization.class);
 
     public static SessionParameters convertSessionParameters(final com.arvatosystems.t9t.xml.auth.SessionParameters spIn) {
         if (spIn == null) {
@@ -106,6 +108,11 @@ public class LoginApiKeyResource implements IT9tRestEndpoint {
             restProcessor.returnAsyncResult(acceptHeader, resp, Response.Status.BAD_REQUEST, "Null parameter");
             return;
         }
+        if (authFilter.filterByApiKey(authByApiKey.getApiKey().toString())) {
+            final String acceptHeader = determineResponseType(httpHeaders);
+            restProcessor.returnAsyncResult(acceptHeader, resp, Response.Status.FORBIDDEN, "Invalid API key");
+            return;
+        }
         authByApiKey.validate();
         loginSub(httpHeaders, resp, authByApiKey.getApiKey(), convertSessionParameters(authByApiKey.getSessionParameters()));
     }
@@ -113,7 +120,7 @@ public class LoginApiKeyResource implements IT9tRestEndpoint {
     @Operation(
         summary = "Create a session / JWT token by API key",
         description = "The request creates a session at the host and returns a JWT which can be used as authentication token for subsequent requests."
-          + " Authentication is by API key.",
+          + " Authentication is by API key. Deprecated, prefer using the repsective POST request.",
         responses = {
             @ApiResponse(description = "Authentication successful.", content = @Content(schema = @Schema(implementation = AuthenticationResult.class)))
         }
@@ -121,9 +128,15 @@ public class LoginApiKeyResource implements IT9tRestEndpoint {
     @GET
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Path("/{apikey}")
+    @Deprecated
     public void login(@Context final HttpHeaders httpHeaders, @Suspended final AsyncResponse resp,
             @Parameter(required = true, description = "Api key.") @PathParam("apikey") final String apiKey) {
         checkNotNull(apiKey, "apiKey");
+        if (authFilter.filterByApiKey(apiKey)) {
+            final String acceptHeader = determineResponseType(httpHeaders);
+            restProcessor.returnAsyncResult(acceptHeader, resp, Response.Status.FORBIDDEN, "Invalid API key");
+            return;
+        }
         loginSub(httpHeaders, resp, RestParameterParsers.parseUUID(apiKey, "apikey", true), null);
     }
 

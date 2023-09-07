@@ -24,12 +24,15 @@ import com.arvatosystems.t9t.auth.AuthModuleCfgDTO;
 import com.arvatosystems.t9t.auth.SessionDTO;
 import com.arvatosystems.t9t.auth.UserDTO;
 import com.arvatosystems.t9t.authc.api.TenantDescription;
+import com.arvatosystems.t9t.base.auth.ExternalTokenAuthenticationParam;
 import com.arvatosystems.t9t.base.auth.PermissionEntry;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
+import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 public interface IAuthPersistenceAccess {
 
@@ -51,13 +54,19 @@ public interface IAuthPersistenceAccess {
     // returns permission entries from the database which are relevant for the user / tenant as specified by the jwtInfo record, and which are relevant for the
     // specified resource. These are all resourceIds which are a substring of resource
 
-    List<PermissionEntry> getAllDBPermissions(JwtInfo jwtInfo);
+    List<PermissionEntry> getAllDBPermissions(@Nonnull JwtInfo jwtInfo);
 
     /** Returns the Pair of <tenantId, UserDTO> of the user specified by userId, or null if there is no such user. */
     DataWithTrackingS<UserDTO, FullTrackingWithVersion> getUserById(String userId);
 
-    AuthIntermediateResult getByApiKey(Instant now, UUID key);
-    AuthIntermediateResult getByUserIdAndPassword(Instant now, String userId, String password, String newPassword);
+    /** Checks authentication by API key. */
+    AuthIntermediateResult getByApiKey(@Nonnull Instant now, @Nonnull UUID key);
+
+    /** Checks authentication by userId / password. */
+    AuthIntermediateResult getByUserIdAndPassword(@Nonnull Instant now, @Nonnull String userId, @Nonnull String password, @Nullable String newPassword);
+
+    /** Checks authentication by OpenID Connect token. */
+    AuthIntermediateResult getByExternalToken(@Nonnull Instant now, @Nonnull ExternalTokenAuthenticationParam authParam);
 
     void storeSession(SessionDTO session);
     List<TenantDescription> getAllTenantsForUser(RequestContext ctx, Long userRef);

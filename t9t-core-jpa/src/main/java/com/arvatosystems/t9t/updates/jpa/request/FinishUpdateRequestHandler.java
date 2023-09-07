@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
@@ -41,14 +42,18 @@ public class FinishUpdateRequestHandler extends AbstractRequestHandler<FinishUpd
     public ServiceResponse execute(final RequestContext ctx, final FinishUpdateRequest request) {
         final String ticketId = request.getTicketId();
         final UpdateStatusEntity updateStatus = resolver.getEntityData(new UpdateStatusTicketKey(ticketId), true);
-        if (UpdateApplyStatusType.IN_PROGRESS != updateStatus.getUpdateApplyStatus()) {
-            LOGGER.error("UpdateApplyStatus of the ticket {} must be in progress.", ticketId);
-            throw new T9tException(T9tCoreException.FINISH_UPDATE_MUST_BE_IN_PROGRESS,
-                    "Ticket status is " + updateStatus.getUpdateApplyStatus() + " but not "
-                            + UpdateApplyStatusType.IN_PROGRESS + ".");
+
+        switch (updateStatus.getUpdateApplyStatus()) {
+        case IN_PROGRESS:
+        case ERROR:
+            // OK
+            updateStatus.setUpdateApplyStatus(T9tUtil.nvl(request.getNewStatus(), UpdateApplyStatusType.COMPLETE));
+            updateStatusService.logUpdateStatus(updateStatus);
+            break;
+        default:
+            LOGGER.error("UpdateApplyStatus of the ticket {} must be IN_PROGRESS or ERROR.", ticketId);
+            throw new T9tException(T9tCoreException.FINISH_UPDATE_MUST_BE_IN_PROGRESS, updateStatus.getUpdateApplyStatus());
         }
-        updateStatus.setUpdateApplyStatus(UpdateApplyStatusType.COMPLETE);
-        updateStatusService.logUpdateStatus(updateStatus);
         return ok();
     }
 }

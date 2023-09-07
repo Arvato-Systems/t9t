@@ -33,9 +33,9 @@ public class ProcessExecNowContextMenuHandler implements IGridContextMenu<Proces
     protected final IT9tRemoteUtils remoteUtils = Jdp.getRequired(IT9tRemoteUtils.class);
 
     @Override
-    public void selected(Grid28 lb, DataWithTracking<ProcessExecutionStatusDTO, TrackingBase> dwt) {
-        ProcessExecutionStatusDTO dto = dwt.getData();
-        TriggerSingleProcessNowRequest rq = new TriggerSingleProcessNowRequest();
+    public void selected(final Grid28 lb, final DataWithTracking<ProcessExecutionStatusDTO, TrackingBase> dwt) {
+        final ProcessExecutionStatusDTO dto = dwt.getData();
+        final TriggerSingleProcessNowRequest rq = new TriggerSingleProcessNowRequest();
         rq.setProcessStatusRef(dto.getObjectRef());
         remoteUtils.executeExpectOk(rq);
     }

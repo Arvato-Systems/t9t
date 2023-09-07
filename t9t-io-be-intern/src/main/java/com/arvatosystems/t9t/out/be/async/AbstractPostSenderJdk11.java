@@ -42,21 +42,17 @@ import com.arvatosystems.t9t.io.AsyncQueueDTO;
 import com.arvatosystems.t9t.io.CommunicationTargetChannelType;
 import com.arvatosystems.t9t.io.DataReference;
 import com.arvatosystems.t9t.io.InMemoryMessage;
-import com.arvatosystems.t9t.jackson.JacksonTools;
 import com.arvatosystems.t9t.out.services.IAsyncIdempotencyHeader;
 import com.arvatosystems.t9t.out.services.IAsyncSender;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Charsets;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.core.MimeTypes;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ExceptionUtil;
 
 /**
  * The PostSender implements a simple client invocation via http POST of the JDK 11 HttpClient.
  */
-public abstract class AbstractPostSenderJdk11 implements IAsyncSender {
+public abstract class AbstractPostSenderJdk11<T> implements IAsyncSender {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractPostSenderJdk11.class);
 
     protected final IAsyncIdempotencyHeader idempotencyHeaderGenerator = Jdp.getRequired(IAsyncIdempotencyHeader.class);
@@ -64,30 +60,20 @@ public abstract class AbstractPostSenderJdk11 implements IAsyncSender {
     protected AsyncQueueDTO queue;
     protected String lastUrl = "";
     protected HttpClient defaultHttpClient = null;
-    protected ObjectMapper objectMapper = null;
 
     @Override
     public void init(final AsyncQueueDTO myQueue) {
-        LOGGER.info("Creating IAsyncSender POST JSON with JDK 11 HttpClient for queue {}", myQueue.getAsyncQueueId());
         this.queue = myQueue;
         defaultHttpClient = HttpClient.newBuilder()
             .version(Version.HTTP_2)
             .connectTimeout(Duration.ofSeconds(20))
             .build();
-        objectMapper = JacksonTools.createObjectMapper();
     }
 
     /**
-     * Returns a publisher for the provided data. This default implementation converts the BonaPortable into JSON.
+     * Returns a publisher for the provided data and sets content-type / accept headers.
      */
-    protected void addDefaultPublisherForPayload(final HttpRequest.Builder httpRequestBuilder, final BonaPortable payload) throws Exception {
-        final String payloadAsString = objectMapper.writeValueAsString(payload);
-        httpRequestBuilder.POST(BodyPublishers.ofString(payloadAsString, Charsets.UTF_8));
-        httpRequestBuilder.header(T9tConstants.HTTP_HEADER_CONTENT_TYPE,   MimeTypes.MIME_TYPE_JSON);
-        httpRequestBuilder.header(T9tConstants.HTTP_HEADER_ACCEPT,         MimeTypes.MIME_TYPE_JSON);
-        httpRequestBuilder.header(T9tConstants.HTTP_HEADER_CHARSET,        T9tConstants.HTTP_CHARSET_UTF8);
-        httpRequestBuilder.header(T9tConstants.HTTP_HEADER_ACCEPT_CHARSET, T9tConstants.HTTP_CHARSET_UTF8);
-    }
+    protected abstract void addDefaultPublisherForPayload(HttpRequest.Builder httpRequestBuilder, BonaPortable payload) throws Exception;
 
     protected void setHeaders(final HttpRequest.Builder httpRequestBuilder, final DataReference dr) {
         httpRequestBuilder.header(T9tConstants.HTTP_HEADER_CONTENT_TYPE, dr.getContentType());
@@ -120,6 +106,8 @@ public abstract class AbstractPostSenderJdk11 implements IAsyncSender {
         final HttpRequest.Builder httpRequestBuilder = HttpRequest.newBuilder(new URI(channel.getUrl()))
             .version(Version.HTTP_2)
             .timeout(Duration.ofMillis(timeout));
+        httpRequestBuilder.header(T9tConstants.HTTP_HEADER_CHARSET,        T9tConstants.HTTP_CHARSET_UTF8);
+        httpRequestBuilder.header(T9tConstants.HTTP_HEADER_ACCEPT_CHARSET, T9tConstants.HTTP_CHARSET_UTF8);
         addPublisherForPayload(httpRequestBuilder, payload);
         addAuthentication(httpRequestBuilder, channel);
         addIdempotency(httpRequestBuilder, channel, messageRef, payload);
@@ -155,6 +143,9 @@ public abstract class AbstractPostSenderJdk11 implements IAsyncSender {
         }
     }
 
+    /** Returns a body handler of the required type. */
+    protected abstract BodyHandler<T> getBodyHandler();
+
     @Override
     public boolean send(final AsyncChannelDTO channel, final int timeout, final InMemoryMessage msg,
             final Consumer<AsyncHttpResponse> resultProcessor, final long whenStarted) throws Exception {
@@ -174,10 +165,11 @@ public abstract class AbstractPostSenderJdk11 implements IAsyncSender {
         }
 
         // do external I/O
+        LOGGER.debug("Now sending ref {} of type {} to channel {}", msg.getObjectRef(), msg.getPayload().ret$PQON(), channel.getAsyncChannelId());
         final HttpRequest httpRq = buildRequest(channel, msg.getObjectRef(), msg.getPayload(), timeout);
-        final BodyHandler<String> serializedRequest = HttpResponse.BodyHandlers.ofString();
-        final CompletableFuture<HttpResponse<String>> futureResponse = defaultHttpClient.sendAsync(httpRq, serializedRequest);
-        final Consumer<HttpResponse<String>> completeResultProcessor = httpResponse -> {
+        final BodyHandler<T> serializedResponse = getBodyHandler();
+        final CompletableFuture<HttpResponse<T>> futureResponse = defaultHttpClient.sendAsync(httpRq, serializedResponse);
+        final Consumer<HttpResponse<T>> completeResultProcessor = httpResponse -> {
             final AsyncHttpResponse asyncResponse = new AsyncHttpResponse();
             asyncResponse.setHttpReturnCode(httpResponse.statusCode());
             parseResponse(asyncResponse, httpResponse);
@@ -210,13 +202,13 @@ public abstract class AbstractPostSenderJdk11 implements IAsyncSender {
             return true;
         } else {
             // blocking I/O
-            final HttpResponse<String> resp = futureResponse.get();  // this is not asynchronous!
+            final HttpResponse<T> resp = futureResponse.get();  // this is not asynchronous!
             completeResultProcessor.accept(resp);
             return httpStatusIsOk(resp.statusCode());
         }
     }
 
-    protected void parseResponse(final AsyncHttpResponse myResponse, final HttpResponse<String> resp) {
+    protected void parseResponse(final AsyncHttpResponse myResponse, final HttpResponse<T> resp) {
         myResponse.setHttpStatusMessage(null);
         myResponse.setClientReference(MessagingUtil.truncField(resp.body(), AsyncHttpResponse.meta$$clientReference.getLength()));
     }
@@ -225,6 +217,5 @@ public abstract class AbstractPostSenderJdk11 implements IAsyncSender {
     public void close() {
         // the HttpPostClient does not offer a close method, but we can actively remove all references to instances of it
         defaultHttpClient = null;
-        objectMapper = null;
     }
 }

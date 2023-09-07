@@ -2,7 +2,7 @@
 <?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="cannedRequest"?>
 
 <window28 id="cannedRequestWin">
-    <threesections28 gridId="cannedRequest">
+    <threesections28 gridId="cannedRequest" gridContext="showSchedulers">
         <crud28 cachesDropdown="cannedRequestId"
             viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.framework.CannedViewModel', vmId='cannedRequest')"
             currentMode="@load(vm.currentMode)">

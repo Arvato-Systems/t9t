@@ -60,6 +60,7 @@ class T9tStandardSetup {
             commTargetChannelType   = CommunicationTargetChannelType.FILE
             fileOrQueueNamePattern  = "UIExports/${gridId}-${userId}-${asOf}.${fileExt}"
             category                = DataSinkCategoryType.USER_DATA
+            writeHeaderRow          = Boolean.TRUE
             merge(dlg)
         ]
 

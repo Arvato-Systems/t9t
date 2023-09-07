@@ -26,6 +26,7 @@ import org.slf4j.MDC;
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.RandomNumberGenerators;
 import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.api.ContextlessRequestParameters;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.RetryAdviceType;
@@ -42,6 +43,8 @@ import com.arvatosystems.t9t.base.services.IRequestHandler;
 import com.arvatosystems.t9t.base.services.IRequestHandlerResolver;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.base.services.T9tInternalConstants;
+import com.arvatosystems.t9t.cfg.be.ApplicationConfiguration;
+import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.cfg.be.StatusProvider;
 import com.arvatosystems.t9t.server.ExecutionSummary;
 import com.arvatosystems.t9t.server.InternalHeaderParameters;
@@ -75,6 +78,13 @@ public class RequestProcessor implements IRequestProcessor {
     // an implementation which is independent of customization
     protected final IRequestHandlerResolver defaultRequestHandlerResolver = new DefaultRequestHandlerResolver();
     protected final DataConverter<String, AlphanumericElementaryDataItem> stringSanitizer = backendStringSanitizerFactory.createStringSanitizerForBackend();
+
+    // settings from server.xml / application configuration
+    protected final ApplicationConfiguration applCfg = ConfigProvider.getConfiguration().getApplicationConfiguration();
+    protected final int    numberOfRetriesOptimisticLock   = T9tUtil.nvl(applCfg == null ? null : applCfg.getNumberOfRetriesOptimisticLock(),    2);
+    protected final int    numberOfRetriesDatabaseConnect  = T9tUtil.nvl(applCfg == null ? null : applCfg.getNumberOfRetriesDatabaseConnect(),   3);
+    protected final Long   pauseBeforeDatabaseConnectRetry = T9tUtil.nvl(applCfg == null ? null : applCfg.getPauseBeforeDatabaseConnectRetry(), 10).longValue();
+    protected final double pauseIncreaseFactor             = T9tUtil.nvl(applCfg == null ? null : applCfg.getPauseIncreaseFactor(),            1.5);
 
     /** Common entry point for all executions - web service calls as well as scheduled tasks (via IUnauthenticatedServiceRequestExecutor). */
     @Override
@@ -119,7 +129,7 @@ public class RequestProcessor implements IRequestProcessor {
 
             // check if we are just shutting down - only for external requests
             if (!skipAuthorization && StatusProvider.isShutdownInProgress()) {
-                LOGGER.info("Denying processing of {}@{}:{}, shutdown is in progress", jwtInfo.getUserId(), jwtInfo.getTenantId(), pqon);
+                LOGGER.info("Denying processing of {}@{}:{} (ID {}), shutdown is in progress", jwtInfo.getUserId(), jwtInfo.getTenantId(), pqon, messageId);
                 final ServiceResponse resp = new ServiceResponse();
                 resp.setMessageId(messageId);
                 resp.setTenantId(jwtInfo.getTenantId());
@@ -132,7 +142,8 @@ public class RequestProcessor implements IRequestProcessor {
             if (jwtInfo.getExpiresAt() != null) {
                 final long expiredBy = millis - jwtInfo.getExpiresAt().toEpochMilli();
                 if (expiredBy > 100L) {  // allow some millis to avoid race conditions
-                    LOGGER.info("Denying processing of {}@{}:{}, JWT has expired {} ms ago", jwtInfo.getUserId(), jwtInfo.getTenantId(), pqon, expiredBy);
+                    LOGGER.info("Denying processing of {}@{}:{} (ID {}), JWT has expired {} ms ago", jwtInfo.getUserId(), jwtInfo.getTenantId(), pqon,
+                            messageId, expiredBy);
                     final ServiceResponse resp = new ServiceResponse();
                     resp.setMessageId(messageId);
                     resp.setTenantId(jwtInfo.getTenantId());
@@ -144,7 +155,7 @@ public class RequestProcessor implements IRequestProcessor {
             }
             if (jwtInfo.getUserId() == null || jwtInfo.getUserRef() == null || jwtInfo.getTenantId() == null
                     || jwtInfo.getSessionId() == null || jwtInfo.getSessionRef() == null) {
-                LOGGER.info("Denying processing of {}@{}:{}, JWT is missing some fields", jwtInfo.getUserId(), jwtInfo.getTenantId(), pqon);
+                LOGGER.info("Denying processing of {}@{}:{} (ID {}), JWT is missing some fields", jwtInfo.getUserId(), jwtInfo.getTenantId(), pqon, messageId);
                 final ServiceResponse resp = new ServiceResponse();
                 resp.setMessageId(messageId);
                 resp.setTenantId(jwtInfo.getTenantId());
@@ -180,6 +191,7 @@ public class RequestProcessor implements IRequestProcessor {
             }
             ihdr.setMessageId(effectiveMessageId);
             ihdr.setIdempotencyBehaviour(idempotencyBehaviour);
+            ihdr.setEssentialKey(rp.getEssentialKey());
             ihdr.freeze();
 
             final String prioText = Boolean.TRUE == ihdr.getPriorityRequest() ? "priority" : "regular";
@@ -268,22 +280,68 @@ public class RequestProcessor implements IRequestProcessor {
 
     /** Performs the retry logic in case of optimistic locking exceptions. */
     protected ServiceResponse executeSynchronousWithRetries(final RequestParameters rq, final InternalHeaderParameters ihdr, final boolean skipAuthorization) {
-        int attemptsToCommit = 3;  // number of attempts fighting optimistic locking
         // we freeze all parameters to ensure that data is not modified and we retry with different parameters
         rq.freeze();
         for (;;) {
             // temporarily create a new object with mutable main record
             final RequestParameters mutableRequestParameters = rq.ret$MutableClone(true, true);  // omit deep copy of arrays: (search request sortColumns!)
             final ServiceResponse response = executeSynchronous(mutableRequestParameters, ihdr, skipAuthorization);
-            if (response.getReturnCode() != T9tException.OPTIMISTIC_LOCKING_EXCEPTION) {
+
+            int numberOfRetries = 0;
+            Long sleepTime = null;
+            String shouldRetryCause = null;
+            switch (response.getReturnCode()) {
+            case T9tException.OPTIMISTIC_LOCKING_EXCEPTION:
+                shouldRetryCause = "Optimistic locking";
+                numberOfRetries = numberOfRetriesOptimisticLock;
+                break;
+            case T9tException.GENERAL_EXCEPTION:
+                // this depends on the cause
+                final String errorDetails = response.getErrorDetails();
+                if (errorDetails != null) {
+                    if (errorDetails.startsWith("jakarta.persistence.")) {
+                        if (errorDetails.startsWith("jakarta.persistence.OptimisticLockException:")) {
+                            shouldRetryCause = "Optimistic locking";
+                            numberOfRetries = numberOfRetriesOptimisticLock;
+                        } else {
+                            // for example NoResultException: indicates programming error, log an error but do not retry
+                            LOGGER.error("jakarta exception for processRef {}, request {} (ID {}): {}",
+                                ihdr.getProcessRef(), rq.ret$PQON(), ihdr.getMessageId(), errorDetails);
+                        }
+                    } else if (errorDetails.startsWith("org.hibernate.exception")) {
+                        if (errorDetails.startsWith("org.hibernate.exception.JDBCConnectionException:")) {
+                            shouldRetryCause = "JDBC connection";
+                            numberOfRetries  = numberOfRetriesDatabaseConnect;
+                            sleepTime        = pauseBeforeDatabaseConnectRetry;
+                        } else {
+                            // for example DataException: too many parameters: indicates programming error, log an error but do not retry
+                            LOGGER.error("hibernate exception for processRef {}, request {} (ID {}): {}",
+                                ihdr.getProcessRef(), rq.ret$PQON(), ihdr.getMessageId(), errorDetails);
+                        }
+                    }
+                }
+                break;
+            default:
                 return response;
             }
-            attemptsToCommit -= 1;
-            if (attemptsToCommit > 0) {
-                LOGGER.info("Optimistic locking exception detected - retrying ({} attempts left)", attemptsToCommit);
-            } else {
-                LOGGER.error("Optimistic locking exception detected -problem persists, giving up");
+
+            if (shouldRetryCause == null) {
                 return response;
+            } else {
+                if (numberOfRetries > 0) {
+                    LOGGER.warn("{} exception detected for processRef {}, request {} (ID {}) - retrying ({} attempts left)",
+                        shouldRetryCause, ihdr.getProcessRef(), rq.ret$PQON(), ihdr.getMessageId(), numberOfRetries);
+                    // fall through / iterate again
+                    --numberOfRetries;
+                    if (sleepTime != null && sleepTime.longValue() > 0) {
+                        T9tUtil.sleepAndWarnIfInterrupted(sleepTime, LOGGER, "Pause before retry interrupted");
+                        sleepTime = (long)(sleepTime * pauseIncreaseFactor);
+                    }
+                } else {
+                    LOGGER.error("{} exception detected for processRef {}, request {} (ID {}) - problem persists after {} retries, giving up!",
+                        shouldRetryCause, ihdr.getProcessRef(), rq.ret$PQON(), ihdr.getMessageId(), numberOfRetries);
+                    return response;
+                }
             }
         }
     }

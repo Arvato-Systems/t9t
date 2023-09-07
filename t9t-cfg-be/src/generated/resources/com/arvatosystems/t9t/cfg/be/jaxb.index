@@ -13,3 +13,4 @@ UplinkConfiguration
 SearchConfiguration
 AsyncTransmitterConfiguration
 LdapConfiguration
+OidConfiguration

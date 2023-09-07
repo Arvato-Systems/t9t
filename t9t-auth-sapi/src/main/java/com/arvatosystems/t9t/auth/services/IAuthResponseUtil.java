@@ -16,6 +16,7 @@
 package com.arvatosystems.t9t.auth.services;
 
 import com.arvatosystems.t9t.auth.ApiKeyDTO;
+import com.arvatosystems.t9t.auth.AuthenticationIssuerType;
 import com.arvatosystems.t9t.auth.TenantDTO;
 import com.arvatosystems.t9t.auth.UserDTO;
 import com.arvatosystems.t9t.base.services.RequestContext;
@@ -32,6 +33,10 @@ public interface IAuthResponseUtil {
     boolean isUserAllowedToLogOn(@Nonnull RequestContext ctx, @Nonnull UserDTO userDto);
     boolean isApiKeyAllowed(@Nonnull RequestContext ctx, @Nonnull ApiKeyDTO apiKey);
     String authResponseFromJwt(@Nonnull JwtInfo jwt, @Nullable SessionParameters sp, @Nullable JwtInfo continuesFromJwt, @Nullable Long apiKeyRef);
-    JwtInfo createJwt(@Nonnull UserDTO user, @Nonnull TenantDTO tenantDTO);
+
+    /** Creates a JWT authenticated via OpenID Connect or userId / password. */
+    JwtInfo createJwt(@Nonnull UserDTO user, @Nonnull TenantDTO tenantDTO, @Nonnull AuthenticationIssuerType issuerType);
+
+    /** Creates a JWT authenticated via API key. */
     JwtInfo createJwt(@Nonnull ApiKeyDTO apiKey, @Nonnull TenantDTO tenantDTO, @Nonnull UserDTO userDTO);
 }

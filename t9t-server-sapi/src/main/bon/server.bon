@@ -40,6 +40,7 @@ package (com.arvatosystems) t9t.server {
         optional Boolean                            priorityRequest;            // use the sync thread pools for sub requests
         optional messageId                          messageId;                  // a unique ID assigned to the request, in case idempotency is desired
         optional Enum RetryAdviceType               idempotencyBehaviour;       // defaults to RETRY_ON_ERROR
+        optional defaultExternalId                  essentialKey;               // a request specific key field
     }
 
     /** Holds a summary of the service execution. */

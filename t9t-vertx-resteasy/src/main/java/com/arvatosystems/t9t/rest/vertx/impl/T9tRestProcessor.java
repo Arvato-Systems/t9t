@@ -34,6 +34,7 @@ import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
 import com.arvatosystems.t9t.base.services.T9tInternalConstants;
 import com.arvatosystems.t9t.ipblocker.services.impl.IPAddressBlocker;
 import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
+import com.arvatosystems.t9t.rest.utils.RestUtils;
 import com.arvatosystems.t9t.server.services.ICachingAuthenticationProcessor;
 import com.arvatosystems.t9t.server.services.IRequestProcessor;
 
@@ -131,7 +132,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
                             // special handling for MediaData: return a String or byte array, depending on contents
                             resumeMediaData(resp, md);
                         } else {
-                            resp.resume(resultForREST);
+                            resumeBonaPortable(resp, sr, resultForREST);
                         }
                     } else {
                         resp.resume(error(Status.INTERNAL_SERVER_ERROR, "Response type mismatch"));
@@ -143,6 +144,15 @@ public class T9tRestProcessor implements IT9tRestProcessor {
                 }
             }
         );
+    }
+
+    /** Add security header before output of BonaPortable. */
+    protected void resumeBonaPortable(final AsyncResponse resp, ServiceResponse sr, final BonaPortable bp) {
+        final Response.ResponseBuilder responseBuilder = RestUtils.createResponseBuilder(sr.getReturnCode());
+        responseBuilder.entity(bp);
+
+        addSecurityHeader(responseBuilder);
+        resp.resume(responseBuilder.build());
     }
 
     /** For the special case of a response of type MediaData, either return the byte[] or the text. */
@@ -161,6 +171,8 @@ public class T9tRestProcessor implements IT9tRestProcessor {
         } else {
             rb.entity(md.getText());
         }
+
+        addSecurityHeader(rb);
         resp.resume(rb.build());
     }
 
@@ -170,9 +182,11 @@ public class T9tRestProcessor implements IT9tRestProcessor {
         performAsyncBackendRequest(httpHeaders, resp, requestParameters, infoMsg, ServiceResponse.class, sr -> createResultFromServiceResponse(sr));
     }
 
-    public static Response error(final Response.Status status, final String message) {
+    public Response error(final Response.Status status, final String message) {
         final Response.ResponseBuilder response = Response.status(status);
         response.type(MediaType.TEXT_PLAIN_TYPE).entity(message);
+
+        addSecurityHeader(response);
         return response.build();
     }
 

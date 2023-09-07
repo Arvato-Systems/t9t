@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.auth.ApiKeyDTO;
+import com.arvatosystems.t9t.auth.AuthenticationIssuerType;
 import com.arvatosystems.t9t.auth.TenantDTO;
 import com.arvatosystems.t9t.auth.UserDTO;
 import com.arvatosystems.t9t.auth.hooks.IJwtEnrichment;
@@ -38,6 +39,7 @@ import com.arvatosystems.t9t.base.auth.ApiKeyAuthentication;
 import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
 import com.arvatosystems.t9t.base.auth.AuthenticationResponse;
 import com.arvatosystems.t9t.base.auth.JwtAuthentication;
+import com.arvatosystems.t9t.base.auth.ExternalTokenAuthenticationParam;
 import com.arvatosystems.t9t.base.auth.PasswordAuthentication;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
@@ -125,7 +127,7 @@ public class AuthenticationRequestHandler extends AbstractRequestHandler<Authent
 
         final TenantDTO tenantDto = tenantResolver.getDTO(authResult.getTenantId());
         final AuthenticationResponse resp = new AuthenticationResponse();
-        resp.setJwtInfo(authResponseUtil.createJwt(userDto, tenantDto));
+        resp.setJwtInfo(authResponseUtil.createJwt(userDto, tenantDto, AuthenticationIssuerType.ISSUER_USERID_PASSWORD));
         resp.getJwtInfo().setLocale(locale);
         resp.getJwtInfo().setZoneinfo(zoneinfo);
         jwtEnrichment.enrichJwt(resp.getJwtInfo(), tenantDto, userDto);
@@ -150,16 +152,16 @@ public class AuthenticationRequestHandler extends AbstractRequestHandler<Authent
             LOGGER.debug("Incorrect authentication for API key {}", ap.getApiKey());
             return null;
         }
-        final TenantDTO tenantDto   = tenantResolver.getDTO(authResult.getTenantId());
+        final TenantDTO tenantDto = tenantResolver.getDTO(authResult.getTenantId());
         if (tenantDto == null)
             return null;
 
-        final ApiKeyDTO apiKeyDto               = authResult.getApiKey();
+        final ApiKeyDTO apiKeyDto = authResult.getApiKey();
         if (!authResponseUtil.isApiKeyAllowed(ctx, apiKeyDto)) {
             return null;
         }
 
-        final UserDTO userDto                 = (UserDTO) apiKeyDto.getUserRef();
+        final UserDTO userDto = (UserDTO) apiKeyDto.getUserRef();
         if (!authResponseUtil.isUserAllowedToLogOn(ctx, userDto)) {
             return null;
         }
@@ -180,7 +182,37 @@ public class AuthenticationRequestHandler extends AbstractRequestHandler<Authent
         return resp;
     }
 
-    private AuthenticationResponse authJwtAuthentication(RequestContext ctx, JwtAuthentication jwtAp, String locale, String zoneinfo) {
+    /** Authenticates a user via external access token. Relevant information for the JWT is taken from the UserDTO, finally the TenantDTO. */
+    protected AuthenticationResponse authExternalTokenAuthentication(final RequestContext ctx, final ExternalTokenAuthenticationParam authParam,
+            final String locale, final String zoneinfo) {
+        final AuthIntermediateResult authResult = persistenceAccess.getByExternalToken(ctx.executionStart, authParam);
+        if (authResult == null || !ApplicationException.isOk(authResult.getReturnCode())) {
+            LOGGER.debug("Incorrect authentication with external token");
+            return null;
+        }
+        final UserDTO userDto = authResult.getUser();
+        if (!authResponseUtil.isUserAllowedToLogOn(ctx, userDto)) {
+            return null;
+        }
+        final String tenantId = authResult.getTenantId();
+        final TenantDTO tenantDto = tenantResolver.getDTO(tenantId);
+        if (tenantDto == null) {
+            LOGGER.debug("Tenant not found for tenantId {} and user {}", tenantId, userDto == null ? "(NULL)" : userDto.getUserId());
+        }
+        final AuthenticationResponse resp = new AuthenticationResponse();
+        resp.setJwtInfo(authResponseUtil.createJwt(userDto, tenantDto, AuthenticationIssuerType.ISSUER_USERID_MS_OPENID));
+        resp.getJwtInfo().setLocale(locale);
+        resp.getJwtInfo().setZoneinfo(zoneinfo);
+        jwtEnrichment.enrichJwt(resp.getJwtInfo(), tenantDto, userDto);
+        resp.setTenantId(tenantDto.getTenantId());
+        resp.setTenantName(tenantDto.getName());
+        if (authResult.getUserStatus() != null) {
+            resp.setLastLoginUser(authResult.getUserStatus().getPrevLogin());
+        }
+        return resp;
+    }
+
+    private AuthenticationResponse authJwtAuthentication(final RequestContext ctx, final JwtAuthentication jwtAp, final String locale, final String zoneinfo) {
         final AuthenticationResponse resp = new AuthenticationResponse();
 
         String jwtToken = jwtAp.getEncodedJwt();
@@ -207,6 +239,8 @@ public class AuthenticationRequestHandler extends AbstractRequestHandler<Authent
             return authPasswordAuthentication(ctx, pwAp, locale, zoneinfo);
         } else if (ap instanceof JwtAuthentication jwtAp) {
             return authJwtAuthentication(ctx, jwtAp, locale, zoneinfo);
+        } else if (ap instanceof ExternalTokenAuthenticationParam extTokenAp) {
+            return authExternalTokenAuthentication(ctx, extTokenAp, locale, zoneinfo);
         } else if (ap != null) {
             return authDefault(ctx, ap, locale, zoneinfo);
         } else {

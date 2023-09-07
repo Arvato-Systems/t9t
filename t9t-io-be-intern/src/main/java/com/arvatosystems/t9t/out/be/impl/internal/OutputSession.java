@@ -15,6 +15,21 @@
  */
 package com.arvatosystems.t9t.out.be.impl.internal;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.arvatosystems.t9t.base.FieldMappers;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.output.ExportStatusEnum;
@@ -47,6 +62,7 @@ import com.arvatosystems.t9t.out.services.IPreOutputDataTransformer;
 import com.arvatosystems.t9t.translation.services.ITranslationProvider;
 import com.arvatosystems.t9t.uiprefsv3.request.LeanGridConfigRequest;
 import com.arvatosystems.t9t.uiprefsv3.request.LeanGridConfigResponse;
+
 import de.jpaw.bonaparte.api.media.MediaTypeInfo;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.media.EnumOutputType;
@@ -56,20 +72,8 @@ import de.jpaw.bonaparte.pojos.api.media.MediaXType;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ExceptionUtil;
-
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 @Dependent
 public class OutputSession implements IOutputSession {
@@ -92,7 +96,8 @@ public class OutputSession implements IOutputSession {
     protected IOutputResource           outputResource      = null;
     protected ICommunicationFormatGenerator dataGenerator   = null;
     protected IPreOutputDataTransformer transformer         = null;
-    protected MediaTypeDescriptor       usedFormat          = null; // available after a successful open()
+    @Nullable
+    protected MediaTypeDescriptor       usedFormat          = null; // available after a successful open(), but only if known
     protected Long                      thisSinkRef         = null;
     protected SinkDTO                   thisSink            = null;
     protected FoldableParams            foldableParams      = null;
@@ -148,20 +153,25 @@ public class OutputSession implements IOutputSession {
             }
         }
 
-        // validate that if USER_DEFINED communication format type is used, the communication format name have to be NOT NULL
-        if (communicationFormatType != null && MediaType.USER_DEFINED == communicationFormatType.getBaseEnum() && sinkCfg.getCommFormatName() == null) {
-            LOGGER.error("Communication Format is USER_DEFINED but custom communication format name is not defined (NULL)");
-            throw new T9tException(T9tException.INVALID_CONFIGURATION,
-                    "Communication Format is USER_DEFINED but custom communication format name is not defined (NULL)");
-        } else if (communicationFormatType != null && !MediaType.USER_DEFINED.equals(communicationFormatType.getBaseEnum())
-                && sinkCfg.getCommFormatName() != null) {
-            // validate that if USER_DEFINED communication format type is NOT used, the communication format name have to be NULL
-            LOGGER.error("Communication Format is not USER_DEFINED but custom communication format name is defined (NOT NULL)");
-            throw new T9tException(T9tException.INVALID_CONFIGURATION,
-                    "Communication Format is not USER_DEFINED but custom communication format name is defined (NOT NULL)");
+        if (communicationFormatType != null) {
+            if (MediaType.USER_DEFINED == communicationFormatType.getBaseEnum()) {
+                // validate that if USER_DEFINED communication format type is used, the communication format name has to be NOT NULL
+                if (sinkCfg.getCommFormatName() == null) {
+                    LOGGER.error("Communication Format is USER_DEFINED but custom communication format name is not defined (NULL)");
+                    throw new T9tException(T9tException.INVALID_CONFIGURATION,
+                            "Communication Format is USER_DEFINED and custom communication format name is also not defined (NULL)");
+                }
+            } else {
+                // validate that if USER_DEFINED communication format type is NOT used, the communication format name must be NULL
+                if (sinkCfg.getCommFormatName() != null) {
+                    LOGGER.error("Communication Format is not USER_DEFINED but custom communication format name is defined (NOT NULL)");
+                    throw new T9tException(T9tException.INVALID_CONFIGURATION,
+                            "Communication Format is not USER_DEFINED but custom communication format name is also defined (NOT NULL)");
+                }
+            }
+            usedFormat = MediaTypeInfo.getFormatByType(communicationFormatType);  // lookup will still return null for USER_DEFFINED
         }
 
-        usedFormat = MediaTypeInfo.getFormatByType(communicationFormatType);
         if (sinkCfg.getOutputEncoding() != null) {
             encoding = Charset.forName(sinkCfg.getOutputEncoding());
         } else {
@@ -192,11 +202,16 @@ public class OutputSession implements IOutputSession {
             }
         }
 
+        transformer = getPreOutputDataTransformer();  // retrieve the pre-output transformer (never null, but can be the identity mapping)
+
         if (gridId != null) {
+            // foldable parameters provided by grid configuration
             foldableParams = getFoldableParams(gridId, osParams, communicationFormatType);
+        } else {
+            // maybe we get foldable parameters from the pre-output transformer (only if not a grid export)
+            foldableParams = transformer.getFoldableParams(sinkCfg);
         }
 
-        transformer = getPreOutputDataTransformer();
         outputResource = Jdp.getRequired(IOutputResource.class, sinkCfg.getCommTargetChannelType().name());
 
 
@@ -401,6 +416,7 @@ public class OutputSession implements IOutputSession {
         }
     }
 
+    @Nonnull
     protected IPreOutputDataTransformer getPreOutputDataTransformer() {
 
         if (sinkCfg.getPreTransformerName() == null || sinkCfg.getPreTransformerName().isEmpty()) {
@@ -415,8 +431,7 @@ public class OutputSession implements IOutputSession {
         return dataTransformer;
     }
 
-    protected FoldableParams getFoldableParams(final String gridId, final OutputSessionParameters osParams,
-            final MediaXType communicationFormatType) {
+    protected FoldableParams getFoldableParams(final String gridId, final OutputSessionParameters osParams, final MediaXType communicationFormatType) {
         final LeanGridConfigRequest req = new LeanGridConfigRequest();
         req.setGridId(gridId);
         req.setSelection(osParams.getSelection());
@@ -435,11 +450,13 @@ public class OutputSession implements IOutputSession {
         final List<String> selectedFields = gridConfig.getFields().stream().map(it -> FieldMappers.addPrefix(it)).collect(Collectors.toList());
 
         final EnumOutputType relevantEnumType = osParams.getEnumOutputType(); // TODO: use defaults from sinkCfg
-        SpecificTranslationProvider enumTranslator = null;
+        final SpecificTranslationProvider enumTranslator;
 
-        if (EnumOutputType.DESCRIPTION.equals(relevantEnumType)) {
+        if (EnumOutputType.DESCRIPTION == relevantEnumType) {
             final ITranslationProvider translationProvider = Jdp.getRequired(ITranslationProvider.class);
             enumTranslator = new SpecificTranslationProvider(translationProvider, ctx.tenantId, ctx.internalHeaderParameters.getLanguageCode());
+        } else {
+            enumTranslator = null;
         }
 
         final boolean applyVariantFilter = (osParams.getVariantFilter() != null) && (osParams.getVariantFilter().booleanValue());

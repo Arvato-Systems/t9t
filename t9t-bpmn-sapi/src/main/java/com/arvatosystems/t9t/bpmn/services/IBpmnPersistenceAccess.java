@@ -16,6 +16,7 @@
 package com.arvatosystems.t9t.bpmn.services;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
 
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
@@ -26,6 +27,8 @@ import com.arvatosystems.t9t.bpmn.ProcessExecutionStatusDTO;
 import com.arvatosystems.t9t.bpmn.request.ExecuteProcessWithRefRequest;
 
 import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 public interface IBpmnPersistenceAccess {
 
@@ -43,11 +46,15 @@ public interface IBpmnPersistenceAccess {
     /** Stores an initial status when a new task is submitted. */
     Long persistNewStatus(ProcessExecutionStatusDTO dto);
 
-    /** Retrieves all processDefinitions of current tasks. */
-    List<ProcessExecutionStatusDTO> getTasksDue(String onlyForProcessDefinitionId, Instant whenDue, boolean includeErrorStatus, boolean allClusterNodes);
+    /** Retrieves all process status records of current tasks (unused). */
+    List<ProcessExecutionStatusDTO> getTasksDue(@Nullable String onlyForProcessDefinitionId, @Nonnull Instant whenDue,
+        boolean includeErrorStatus, boolean allClusterNodes,
+        @Nullable String onlyForNextStep, @Nullable Collection<Integer> returnCodes);
 
-    /** Retrieves all processDefinitions of current tasks. */
-    List<Long> getTaskRefsDue(String onlyForProcessDefinitionId, Instant whenDue, boolean includeErrorStatus, boolean allClusterNodes);
+    /** Retrieves all references to process status records of current tasks. */
+    List<Long> getTaskRefsDue(@Nullable String onlyForProcessDefinitionId, @Nonnull Instant whenDue,
+        boolean includeErrorStatus, boolean allClusterNodes,
+        @Nullable String onlyForNextStep, @Nullable Collection<Integer> returnCodes);
 
     /** Update existing process execution status */
     Long createOrUpdateNewStatus(RequestContext ctx, ProcessExecutionStatusDTO dto, ExecuteProcessWithRefRequest rq, boolean restart);

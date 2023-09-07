@@ -57,8 +57,11 @@ public final class MessagingUtil {
     /**
      * Initialization method to install a suitable package prefix resolution for the Bonaparte parsers.
      *
+     * It is important to tell Bonaparte to use a fixed class loader, because ForkJoinPool uses different class loaders than the application itself.
+     * This would cause ClassNotFoundExceptions while parsing responses for JDK11 HttpClient asynchronously.
      */
     public static void initializeBonaparteParsers() {
+        BonaPortableFactory.useFixedClassLoader(null);
         BonaPortableFactory.addToPackagePrefixMap("t9t", TWENTYEIGHT_PACKAGE_PREFIX);               // and of course everything else starting with "t9t"
     }
 
@@ -87,6 +90,11 @@ public final class MessagingUtil {
                 ? new String[] { language, language.substring(0, 5), language.substring(0, 2) }
                 : new String[] { language, language.substring(0, 5), language.substring(0, 2), defaultLanguage };
         }
+    }
+
+    /** converts a request class PQON to the corresponding resource ID. */
+    public static String toPerm(final RequestParameters request) {
+        return toPerm(request.ret$PQON());
     }
 
     /** converts a request class PQON to the corresponding resource ID. */

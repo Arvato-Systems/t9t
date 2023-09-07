@@ -46,8 +46,13 @@ public class KafkaRequestTransmitter implements IKafkaRequestTransmitter {
     @IsLogicallyFinal
     private IKafkaTopicWriter topicWriter = null;
 
+    /** Default no-args constructor, for injection, used by API gateways. */
     public KafkaRequestTransmitter() {
-        final String kafkaTopic = CONFIG_READER.getProperty(KAFKA_DEFAULT_TOPIC_KEY, T9tConstants.DEFAULT_KAFKA_TOPIC_SINGLE_TENANT_REQUESTS);
+        this(CONFIG_READER.getProperty(KAFKA_DEFAULT_TOPIC_KEY, T9tConstants.DEFAULT_KAFKA_TOPIC_SINGLE_TENANT_REQUESTS));
+    }
+
+    /** Constructor for separate topics (requests to other server types), used for server-to-server communication. */
+    public KafkaRequestTransmitter(final String kafkaTopic) {
         final String kafkaBootstrapServers = CONFIG_READER.getProperty(KAFKA_DEFAULT_BOOTSTRAP_KEY, null);
         if (kafkaBootstrapServers == null) {
             LOGGER.error("No configuration found for t9t.kafka.bootstrap.servers, refusing to initialize (set to /dev/null in order to discard messages)");

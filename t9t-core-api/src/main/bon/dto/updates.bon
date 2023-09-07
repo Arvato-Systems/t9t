@@ -32,6 +32,7 @@ package (com.arvatosystems) t9t.updates {
     enum UpdateApplyStatusType {
         NOT_YET_STARTED                 = "0",         // also used after a rollback
         IN_PROGRESS                     = "I",
+        ERROR                           = "E",         // previous attempt to update failed
         COMPLETE                        = "C"
     }
 

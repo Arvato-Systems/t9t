@@ -26,7 +26,8 @@ public interface IKafkaConsumer<T> {
      *
      * @param payload   the main argument
      * @param partition the message partition
+     * @param offset    the offset within the partition, for per-partition partial commits
      * @param key       the message key
      */
-    void accept(T payload, int partition, String key);
+    void accept(T payload, int partition, long offset, String key);
 }

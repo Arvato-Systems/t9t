@@ -24,7 +24,8 @@ import t9t.all.*
 package (com.arvatosystems) t9t.all.request {
     default private unsigned trim noControlChars;
 
-    /** Special request to retrieve all current module configs.
+    /**
+     * Special request to retrieve all current module configs.
      * This is a cached retrieval.
      * All components will be provided. If no database configuration exists, the built-in default is returned.
      */
@@ -34,7 +35,8 @@ package (com.arvatosystems) t9t.all.request {
         required (T9tModuleConfigs...)          moduleConfigs;
     }
 
-    /** Special request to write all provided module configs at once.
+    /**
+     * Special request to write all provided module configs at once.
      * Only components which have been provided will be written.
      */
     class SetT9tModuleConfigsRequest            extends RequestParameters {
@@ -51,5 +53,12 @@ package (com.arvatosystems) t9t.all.request {
         optional emailAddress                   targetEmailAddress;  // split the output into files, containing this number max. each
         required documentId                     documentTemplateId;  // temaplate for the email body
         required (SearchCriteria...)            searchRequest;       // the export request to perform
+    }
+
+    /**
+     * Special request to update data sink configurations (converting generic parameters to the new specific flags).
+     * It must be executed once per tenant (including @).
+     */
+    class MigrationTBE1053Request extends RequestParameters {
     }
 }

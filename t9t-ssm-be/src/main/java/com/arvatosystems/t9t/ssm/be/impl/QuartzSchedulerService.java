@@ -28,6 +28,7 @@ import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
+import org.quartz.ObjectAlreadyExistsException;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SimpleScheduleBuilder;
@@ -37,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.core.CannedRequestDTO;
 import com.arvatosystems.t9t.core.CannedRequestRef;
@@ -67,7 +69,7 @@ public class QuartzSchedulerService implements ISchedulerService {
     public static final String DM_CONC_TYPE2 = "concTypeStale"; // the concurrency type for old instances
     public static final String DM_TIME_LIMIT = "timeLimit";     // after how many minutes a process is regarded as "old"
     public static final String DM_RUN_ON_NODE = "runOnNode";    // on which node to run this task, or null for any node
-    public static final Integer RUN_ON_ALL_NODES = Integer.valueOf(-1);
+    public static final Integer RUN_ON_ANY_NODE  = Integer.valueOf(-1);
     public static final Integer NO_TIME_LIMIT    = Integer.valueOf(0);
 
     protected final ICannedRequestResolver rqResolver = Jdp.getRequired(ICannedRequestResolver.class);
@@ -96,29 +98,43 @@ public class QuartzSchedulerService implements ISchedulerService {
 
         // convert the request invocation into a String
         final String serializedRequest = StringBuilderComposer.marshal(StaticMeta.OUTER_BONAPORTABLE, requestDTO.getRequest());
+        final String id = setup.getSchedulerId();
 
-        try {
-            LOGGER.info("Creating scheduled job {}.{}, triggerDescription={}.", ctx.tenantId, setup.getSchedulerId(), setup);
+        LOGGER.info("Creating scheduled job {}.{}, triggerDescription={}.", ctx.tenantId, id, setup);
 
-            final JobDetail jobDetail = JobBuilder.newJob(PerformScheduledJob.class).withIdentity(setup.getSchedulerId(), ctx.tenantId).build();
-            final JobDataMap m = jobDetail.getJobDataMap();
-            m.put(DM_TENANT_ID,  ctx.tenantId);
-            m.put(DM_SETUP_REF,  setup.getObjectRef());
-            m.put(DM_API_KEY,    setup.getApiKey().toString());
-            m.put(DM_LANGUAGE,   setup.getLanguageCode());
-            m.put(DM_REQUEST,    serializedRequest);
-            m.put(DM_CONC_TYPE,  getToken(setup.getConcurrencyType()));
-            // m.put(DM_CONC_TYPE2, getToken(setup.getConcurrencyTypeStale())); // not needed, if old jobs exist, a request handler will be invoked.
-            m.put(DM_TIME_LIMIT, setup.getTimeLimit() == null ? NO_TIME_LIMIT    : setup.getTimeLimit());
-            m.put(DM_TIME_LIMIT, setup.getRunOnNode() == null ? RUN_ON_ALL_NODES : setup.getRunOnNode());
-            final Trigger trigger = getTrigger(ctx, setup);
-            scheduler.scheduleJob(jobDetail, trigger);
+        boolean didAlreadyRetry = false;
 
-            LOGGER.info("Scheduled job {}.{}. Next execution will be at: {}", ctx.tenantId, setup.getSchedulerId(), trigger.getFireTimeAfter(null));
-        } catch (final Exception underlyingException) {
-            final String message = "Failed to create job with description=" + setup.toString();
-            LOGGER.error(message + " Caught exception: ", underlyingException);
-            throw new T9tException(T9tSsmException.SCHEDULER_CREATE_JOB_EXCEPTION, message, underlyingException);
+        for (;;) {
+            try {
+                final JobDetail jobDetail = JobBuilder.newJob(PerformScheduledJob.class).withIdentity(id, ctx.tenantId).build();
+                final JobDataMap m = jobDetail.getJobDataMap();
+                m.put(DM_TENANT_ID,  ctx.tenantId);
+                m.put(DM_SETUP_REF,  setup.getObjectRef());
+                m.put(DM_API_KEY,    setup.getApiKey().toString());
+                m.put(DM_LANGUAGE,   setup.getLanguageCode());
+                m.put(DM_REQUEST,    serializedRequest);
+                m.put(DM_CONC_TYPE,  getToken(setup.getConcurrencyType()));
+                // m.put(DM_CONC_TYPE2, getToken(setup.getConcurrencyTypeStale())); // not needed, if old jobs exist, a request handler will be invoked.
+                m.put(DM_TIME_LIMIT,  T9tUtil.nvl(setup.getTimeLimit(), NO_TIME_LIMIT));    // jobMap does not like nulls
+                m.put(DM_RUN_ON_NODE, T9tUtil.nvl(setup.getRunOnNode(), RUN_ON_ANY_NODE));  // jobMap does not like nulls
+                final Trigger trigger = getTrigger(ctx, setup);
+                scheduler.scheduleJob(jobDetail, trigger);
+
+                LOGGER.info("Created scheduled job {}.{}. Next execution will be at: {}", ctx.tenantId, id, trigger.getFireTimeAfter(null));
+                return;
+            } catch (final ObjectAlreadyExistsException exEx) {
+                if (didAlreadyRetry) {
+                    LOGGER.error("Failed to create Quartz job {}: It already exists (after retry!), Exception: ", id, exEx);
+                    throw new T9tException(T9tSsmException.SCHEDULER_CREATE_JOB_EXCEPTION, id, exEx);
+                }
+                LOGGER.error("Failed to create Quartz job {}: it already exists, removing, then retrying", id);
+                didAlreadyRetry = true;
+                removeScheduledJob(ctx, id);
+                // if that worked, fall through to retry via for loop
+            } catch (final Exception underlyingException) {
+                LOGGER.error("Failed to create Quartz job {}, exception: ", id, underlyingException);
+                throw new T9tException(T9tSsmException.SCHEDULER_CREATE_JOB_EXCEPTION, id, underlyingException);
+            }
         }
     }
 
@@ -130,14 +146,15 @@ public class QuartzSchedulerService implements ISchedulerService {
 
     @Override
     public void updateScheduledJob(final RequestContext ctx, final SchedulerSetupDTO setup) {
+        final String id = setup.getSchedulerId();
         try {
-            LOGGER.info("Updating scheduled job {}.{} to triggerDescription={}.", ctx.tenantId, setup.getSchedulerId(), setup);
+            LOGGER.info("Updating scheduled job {}.{} to triggerDescription={}.", ctx.tenantId, id, setup);
 
             final Trigger trigger = getTrigger(ctx, setup);
             final Date date = scheduler.rescheduleJob(trigger.getKey(), trigger);
             if (date == null) {
                 LOGGER.error("Tried to reschedule job {}.{}, but job was not found! Trying to create a new job instead.",
-                  ctx.tenantId, setup.getSchedulerId());
+                  ctx.tenantId, id);
                 createScheduledJob(ctx, setup);
             } else {
                 LOGGER.info("Rescheduled job {}.{}. Next execution will be at: {}", ctx.tenantId, setup.getSchedulerId(), trigger.getFireTimeAfter(null));
@@ -162,9 +179,8 @@ public class QuartzSchedulerService implements ISchedulerService {
                 LOGGER.info("Deleted job {}.{}.", ctx.tenantId, schedulerId);
             }
         } catch (final Exception underlyingException) {
-            final String message = ctx.tenantId + "." + schedulerId;
-            LOGGER.error("Failed to delete scheduled job {}", message, underlyingException);
-            throw new T9tException(T9tSsmException.SCHEDULER_UPDATE_JOB_EXCEPTION, message, underlyingException);
+            LOGGER.error("Failed to delete scheduled job {}", schedulerId, underlyingException);
+            throw new T9tException(T9tSsmException.SCHEDULER_DELETE_JOB_EXCEPTION, schedulerId, underlyingException);
         }
     }
 

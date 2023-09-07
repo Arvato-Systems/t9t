@@ -20,7 +20,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-settings-java</artifactId>
-        <version>6.5-SNAPSHOT</version>
+        <version>6.6-SNAPSHOT</version>
         <relativePath>../t9t-settings-java</relativePath>
     </parent>
 
@@ -52,6 +52,10 @@
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.nimbusds</groupId>
+            <artifactId>nimbus-jose-jwt</artifactId>
         </dependency>
 
         <!-- JUnit Test -->

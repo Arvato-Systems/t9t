@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.base.vertx;
 
+import com.arvatosystems.t9t.metrics.IMetricsProvider;
+
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
@@ -24,7 +26,7 @@ import io.vertx.ext.web.RoutingContext;
  * Metrics providers must implement this interface.
  *
  */
-public interface IVertxMetricsProvider {
+public interface IVertxMetricsProvider extends IMetricsProvider {
     /** Hook to install a handler for the /metrics route. */
     Handler<RoutingContext> getMetricsHandler();
 

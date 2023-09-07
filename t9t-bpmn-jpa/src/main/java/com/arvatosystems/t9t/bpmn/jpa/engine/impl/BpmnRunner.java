@@ -341,6 +341,7 @@ public class BpmnRunner implements IBpmnRunner {
         final Instant tilWhen = JsonUtil.getZInstant(parameters, IWorkflowStep.PROCESS_VARIABLE_YIELD_UNTIL, null);
         if (tilWhen != null) {
             statusEntity.setYieldUntil(tilWhen);
+            parameters.remove(IWorkflowStep.PROCESS_VARIABLE_YIELD_UNTIL);
         }
         return code;
     }

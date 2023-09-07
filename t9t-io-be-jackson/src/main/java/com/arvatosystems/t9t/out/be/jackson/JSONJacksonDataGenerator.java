@@ -47,9 +47,9 @@ public class JSONJacksonDataGenerator extends AbstractFormatGenerator {
     @Override
     protected void openHook() throws IOException, ApplicationException {
         super.openHook();
-        final boolean useNulls = "NULLs".equals(sinkCfg.getGenericParameter1());
+        final boolean useNulls = Boolean.TRUE.equals(sinkCfg.getJsonWriteNulls());
         osw = new OutputStreamWriter(outputResource.getOutputStream(), encoding);
-        objectMapper = JacksonTools.createObjectMapper(useNulls);
+        objectMapper = JacksonTools.createObjectMapper(useNulls, false);
     }
 
     /**

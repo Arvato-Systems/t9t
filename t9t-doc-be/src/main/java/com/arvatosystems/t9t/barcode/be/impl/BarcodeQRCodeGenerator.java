@@ -15,9 +15,12 @@
  */
 package com.arvatosystems.t9t.barcode.be.impl;
 
+import java.util.Hashtable;
+
 import com.arvatosystems.t9t.doc.services.ImageParameter;
 import com.arvatosystems.t9t.image.be.impl.AbstractImageGenerator;
 import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
@@ -30,7 +33,11 @@ import de.jpaw.dp.Singleton;
 public class BarcodeQRCodeGenerator extends AbstractImageGenerator {
     @Override
     public MediaData generateImage(final String text, final ImageParameter params) throws Exception {
-        final BitMatrix m = new QRCodeWriter().encode(text, BarcodeFormat.QR_CODE, params.width, params.height);
+        final Hashtable<EncodeHintType, String> hints = new Hashtable<>();
+        if (params.encoding != null) {
+            hints.put(EncodeHintType.CHARACTER_SET, params.encoding);
+        }
+        final BitMatrix m = new QRCodeWriter().encode(text, BarcodeFormat.QR_CODE, params.width, params.height, hints);
         return toImage(m, params);
     }
 }

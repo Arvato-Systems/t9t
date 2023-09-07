@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.cluster.be.kafka;
 
+import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -29,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceRequest;
+import com.arvatosystems.t9t.base.api.ServiceRequestHeader;
 import com.arvatosystems.t9t.base.api.TransactionOriginType;
 import com.arvatosystems.t9t.base.auth.ApiKeyAuthentication;
 import com.arvatosystems.t9t.base.types.AuthenticationParameters;
@@ -49,14 +51,14 @@ final class KafkaRequestProcessor implements Callable<Boolean> {
     private final AtomicInteger workerThreadCounter = new AtomicInteger();
     private final ExecutorService executorKafkaWorker;
     private final IKafkaTopicReader consumer;
-    private final AtomicBoolean pleaseStop;
+    private final AtomicBoolean shuttingDown;
     private final AuthenticationParameters defaultAuthHeader;
     private final AtomicInteger pendingRequestsCounter = new AtomicInteger(0);
     private final AtomicInteger uniqueRequestsCounter = new AtomicInteger(0);
 
-    protected KafkaRequestProcessor(final KafkaConfiguration config, final IKafkaTopicReader consumer, final AtomicBoolean pleaseStop) {
+    protected KafkaRequestProcessor(final KafkaConfiguration config, final IKafkaTopicReader consumer, final AtomicBoolean shuttingDown) {
         this.consumer = consumer;
-        this.pleaseStop = pleaseStop;
+        this.shuttingDown = shuttingDown;
         if (config.getClusterManagerApiKey() != null)  {
             this.defaultAuthHeader = new ApiKeyAuthentication(config.getClusterManagerApiKey());
             this.defaultAuthHeader.freeze();
@@ -72,15 +74,17 @@ final class KafkaRequestProcessor implements Callable<Boolean> {
         });
     }
 
-    private void processRequest(final ServiceRequest srq, final int partition, final String key) {
+    private void processRequest(final ServiceRequest srq, final int partition, final long offset, final String key) {
         srq.setPartitionUsed(partition);
         final RequestParameters rp = srq.getRequestParameters();
+        final ServiceRequestHeader optHdr = srq.getRequestHeader();
+        final UUID messageId = rp.getMessageId() == null ? optHdr != null ? optHdr.getMessageId() : null : rp.getMessageId();
         if (srq.getAuthentication() == null) {
             // no specific user provided: use default (consider security!) or fail, if none configured (default)
             if (defaultAuthHeader != null) {
                 srq.setAuthentication(defaultAuthHeader);
             } else {
-                LOGGER.error("Received request {} without authentication header", rp.ret$PQON());
+                LOGGER.error("Received request {} (ID {}) without authentication header", rp.ret$PQON(), messageId);
                 return;
             }
         }
@@ -89,15 +93,16 @@ final class KafkaRequestProcessor implements Callable<Boolean> {
         }
         final int uniqueId = uniqueRequestsCounter.incrementAndGet();
         final int before = pendingRequestsCounter.incrementAndGet();
-        LOGGER.debug("Submitting task {}, PQON {}, key {}, partition {}, pending = {}", uniqueId, rp.ret$PQON(), key, partition, before);
+
+        LOGGER.debug("Submitting task {} (ID {}), PQON {}, key {}, partition {}, pending = {}", uniqueId, messageId, rp.ret$PQON(), key, partition, before);
         executorKafkaWorker.submit(() -> {
             try {
                 requestProcessor.execute(srq);
             } catch (Exception e) {
-                LOGGER.error("Task {}, PQON {} failed due to {}:{}", uniqueId, rp.ret$PQON(), e.getClass().getSimpleName(), e.getMessage());
+                LOGGER.error("Task {} (ID {}), PQON {} failed due to {}:{}", uniqueId, messageId, rp.ret$PQON(), e.getClass().getSimpleName(), e.getMessage());
             }
             final int after = pendingRequestsCounter.decrementAndGet();
-            LOGGER.debug("Completed execute of task {}, PQON {}, pending = {}", uniqueId, rp.ret$PQON(), after);
+            LOGGER.debug("Completed execute of task {} (ID {}), PQON {}, pending = {}", uniqueId, messageId, rp.ret$PQON(), after);
         });
     }
 
@@ -129,11 +134,7 @@ final class KafkaRequestProcessor implements Callable<Boolean> {
                         break;
                     }
                 }
-                try {
-                    Thread.sleep(pending > 5 ? 1000L : 200L);
-                } catch (InterruptedException e) {
-                    LOGGER.warn("SLOW request processing / sleep interrupted");
-                }
+                T9tUtil.sleepAndWarnIfInterrupted(pending > 5 ? 1000L : 200L, LOGGER, "SLOW request processing / sleep interrupted");
             }
         }
         final int pending = pendingRequestsCounter.get();
@@ -154,7 +155,7 @@ final class KafkaRequestProcessor implements Callable<Boolean> {
         final AtomicInteger numberOfPolls = new AtomicInteger(0);
         final AtomicInteger baseline = new AtomicInteger(0);
         long lastinfo = System.nanoTime();
-        while (!pleaseStop.get()) {
+        while (!shuttingDown.get()) {
             final int currentNum = numberOfPolls.incrementAndGet();
             final long startChunk = System.nanoTime();
             if (startChunk - lastinfo >= 60_000_000_000L) {
@@ -166,14 +167,11 @@ final class KafkaRequestProcessor implements Callable<Boolean> {
               kafkaConsumer -> commitAfterRequestsProcessed(baseline, kafkaConsumer));
             if (recordsProcessed < 0) {
                 // some exception (it is OK during shutdown)
-                if (pleaseStop.get()) {
+                if (shuttingDown.get()) {
                     break;
                 }
                 LOGGER.error("Error polling kafka - sleeping a while, then retry");
-                try {
-                    Thread.sleep(1_000L);
-                } catch (InterruptedException e) {
-                }
+                T9tUtil.sleepAndWarnIfInterrupted(1_000L, LOGGER, null);
             }
         }
         LOGGER.info("End requested, waiting for all pending commands...");

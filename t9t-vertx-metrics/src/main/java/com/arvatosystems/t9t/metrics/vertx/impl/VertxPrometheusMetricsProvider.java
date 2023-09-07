@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.metrics.vertx.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -28,7 +30,7 @@ import com.arvatosystems.t9t.base.vertx.IVertxMetricsProvider;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 import io.micrometer.core.instrument.Meter;
-import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.binder.MeterBinder;
 import io.micrometer.core.instrument.binder.jvm.ClassLoaderMetrics;
 import io.micrometer.core.instrument.binder.jvm.ExecutorServiceMetrics;
 import io.micrometer.core.instrument.binder.jvm.JvmGcMetrics;
@@ -53,6 +55,7 @@ import io.vertx.micrometer.backends.BackendRegistries;
 public class VertxPrometheusMetricsProvider implements IVertxMetricsProvider {
     private static final Logger LOGGER = LoggerFactory.getLogger(VertxPrometheusMetricsProvider.class);
     private final AtomicBoolean metricsEnabled = new AtomicBoolean(false);
+    private final Collection<MeterBinder> additionalMeters = Collections.synchronizedCollection(new ArrayList<>());
 
     @Override
     public Handler<RoutingContext> getMetricsHandler() {
@@ -97,8 +100,11 @@ public class VertxPrometheusMetricsProvider implements IVertxMetricsProvider {
         LOGGER.info("Added JVM meters.");
 
         LOGGER.info("Adding t9t and custom meters...");
+        this.additionalMeters.forEach(meter -> {
+            LOGGER.info("Add {}", meter.getClass().getSimpleName());
+            meter.bindTo(registry);
+        });
         new T9tVersionMetrics().bindTo(registry);
-        this.addCustomMeters(registry);
         LOGGER.info("Added t9t and custom meters.");
 
         LOGGER.info("Adding autonoumous pool meters...");
@@ -107,12 +113,10 @@ public class VertxPrometheusMetricsProvider implements IVertxMetricsProvider {
         LOGGER.info("Added autonoumous pool meters...");
     }
 
-    /**
-     * Use this hook to add additional meters in subsequent projects.
-     *
-     * @param registry the used {@link PrometheusMeterRegistry}
-     */
-    protected void addCustomMeters(final MeterRegistry registry) {
-        // nothing by default
+    @Override
+    public void addMeter(final MeterBinder meterBinder) {
+        LOGGER.info("Adding {} to list of additional meters", meterBinder.getClass().getSimpleName());
+        this.additionalMeters.add(meterBinder);
     }
+
 }

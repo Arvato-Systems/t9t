@@ -55,6 +55,7 @@ package (com.arvatosystems) t9t.auth.jpa.entities owner fortytwo prefix p28 {
         tenantClass InternalTenantId
         pk (objectRef)
         index unique (userId)
+        index (userIdExt) where notNull
         @ManyToOne  RoleEntity roleE       EAGER for (roleRef) // must be EAGER due to optional field
         @ManyToOne  UserEntity supervisor  LAZY  for (supervisorRef)
         @Embeddable PermissionsEmbeddable        for permissions

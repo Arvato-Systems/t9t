@@ -2,7 +2,7 @@
 <?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="apikey28"?>
 
 <window28 id="apikeyWin">
-    <threesections28 gridId="apikey">
+    <threesections28 gridId="apikey" gridContext="showUserDefinition">
         <crud28
             viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.framework.ApiKeyVM', vmId='apikey')"
             currentMode="@load(vm.currentMode)">

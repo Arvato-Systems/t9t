@@ -17,6 +17,7 @@ package com.arvatosystems.t9t.rest.filters;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
@@ -25,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.auth.ApiKeyAuthentication;
 import com.arvatosystems.t9t.base.auth.JwtAuthentication;
 import com.arvatosystems.t9t.base.auth.PasswordAuthentication;
@@ -35,6 +37,7 @@ import com.arvatosystems.t9t.rest.services.IGatewayAuthChecker;
 import com.arvatosystems.t9t.rest.utils.RestUtils;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.google.common.collect.Sets;
 
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
@@ -53,8 +56,19 @@ public class AuthFilterCustomization implements IAuthFilterCustomization {
 
     protected static final Pattern UUID_PATTERN = Pattern.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
     protected static final Pattern BASE64_PATTERN = Pattern.compile("^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$");
+
     protected final boolean enableSwagger = RestUtils.checkIfSet("t9t.restapi.swagger", Boolean.FALSE);
     protected final boolean enablePing = enableSwagger || RestUtils.checkIfSet("t9t.restapi.unauthedPing", Boolean.FALSE); // swagger implies ping
+    protected final boolean allowApiKey = RestUtils.checkIfSet("t9t.restapi.apikey", Boolean.TRUE);
+    protected final boolean allowLogin  = RestUtils.checkIfSet("t9t.restapi.login",  Boolean.FALSE);
+    protected final String allowedUserList = RestUtils.getConfigValue("t9t.restapi.allowedUserList");
+    protected final String allowedUserRegexp = RestUtils.getConfigValue("t9t.restapi.allowedUserRegexp");
+    protected final Set<String> allowedUserIds = T9tUtil.isBlank(allowedUserList) ? null : Sets.newHashSet(allowedUserList.split(","));
+    protected final Pattern allowedUserPattern = T9tUtil.isBlank(allowedUserRegexp) ? null : Pattern.compile(allowedUserRegexp);
+    protected final Boolean allowUserPwDefault = Boolean.valueOf(allowedUserIds != null || allowedUserPattern != null);
+    protected final boolean allowUserPw = RestUtils.checkIfSet("t9t.restapi.userpw", allowUserPwDefault);
+    protected final String allowedApiKeyRegexp = RestUtils.getConfigValue("t9t.restapi.allowedApiKeyRegexp");
+    protected final Pattern allowedApiKeyPattern = T9tUtil.isBlank(allowedApiKeyRegexp) ? null : Pattern.compile(allowedApiKeyRegexp);
 
     protected final Cache<String, Boolean> goodAuths = Caffeine.newBuilder().maximumSize(MAX_AUTH_ENTRIES).expireAfterWrite(5L, TimeUnit.MINUTES)
       .<String, Boolean>build();
@@ -66,6 +80,10 @@ public class AuthFilterCustomization implements IAuthFilterCustomization {
     /** Checks if the request came from a blocked IP address. */
     @Override
     public boolean filterBlockedIpAddress(final ContainerRequestContext requestContext, final String remoteIp) {
+        if (T9tUtil.isBlank(remoteIp)) {
+            // no IP provided, cannot check
+            return false;
+        }
         if (ipBlockerService.isIpAddressBlocked(remoteIp)) {
             throwForbidden(requestContext);
             return true;
@@ -109,7 +127,7 @@ public class AuthFilterCustomization implements IAuthFilterCustomization {
             if (enablePing && isValidPing(path)) {
                 return false; // OK
             }
-            if (isValidLogin(path, requestContext.getMethod())) {
+            if (allowLogin && isValidLogin(path, requestContext.getMethod())) {  // deprecated, currently forbidden by default
                 return false; // OK
             }
             throwUnauthorized(requestContext);
@@ -152,7 +170,11 @@ public class AuthFilterCustomization implements IAuthFilterCustomization {
                 }
                 return filterJwt(requestContext, authHeader, authParam);
             case T9tConstants.HTTP_AUTH_PREFIX_API_KEY:
-                if (!allowAuthApiKey() || authLength != 36 || !UUID_PATTERN.matcher(authParam).matches()) {
+                if (!allowAuthApiKey()) {
+                    throwForbidden(requestContext);
+                    return true; // filtered
+                }
+                if (authLength != 36 || !UUID_PATTERN.matcher(authParam).matches()) {
                     LOGGER.debug("Invalid UUID - length {}", authLength);
                     throwForbidden(requestContext);
                     return true; // filtered
@@ -164,6 +186,9 @@ public class AuthFilterCustomization implements IAuthFilterCustomization {
                     return true; // filtered
                 }
                 return filterBasic(requestContext, authHeader, authParam);
+            default:
+                throwForbidden(requestContext);
+                return true; // filtered
             }
         } catch (final Throwable e) {
             LOGGER.warn("Caller caused exception: {}", ExceptionUtil.causeChain(e));
@@ -191,7 +216,13 @@ public class AuthFilterCustomization implements IAuthFilterCustomization {
         final String decoded = new String(Base64.getUrlDecoder().decode(authHeader), StandardCharsets.UTF_8);
         final int colonPos = decoded.indexOf(':');
         if (colonPos > 0 && colonPos < decoded.length()) {
-            final PasswordAuthentication passwordAuthentication = new PasswordAuthentication(decoded.substring(0, colonPos), decoded.substring(colonPos + 1));
+            final String userId = decoded.substring(0, colonPos);
+            final String password = decoded.substring(colonPos + 1);
+            if (filterByUserId(userId)) {
+                throwForbidden(requestContext);
+                return true;
+            }
+            final PasswordAuthentication passwordAuthentication = new PasswordAuthentication(userId, password);
             return filterAnyAuth(requestContext, authHeader, passwordAuthentication);
         } else {
             throwForbidden(requestContext);
@@ -200,16 +231,51 @@ public class AuthFilterCustomization implements IAuthFilterCustomization {
     }
 
     /**
+     * Checks if the specific userId is allowed.
+     * By default, either all users are allowed or all users are forbidden.
+     * If basic authentication is allowed, but only specific users should be permitted, this filter can be used.
+     * The method does not directly perform a request filter abort, because it is also used by the login endpoint /userpw.
+     *
+     * @param userId  the ID of the user trying to authenticate
+     * @return        true if the access is forbidden, else false
+     */
+    @Override
+    public boolean filterByUserId(final String userId) {
+        if (T9tUtil.isBlank(userId)) {
+            return true;
+        }
+        if (!allowUserPwDefault) {
+            // no specific filter has been defined, but since we are here, global userPw must have been enabled
+            return false;
+        }
+        if (allowedUserIds != null && allowedUserIds.contains(userId)) {
+            // userId allowed by specific list
+            return false;
+        }
+        if (allowedUserPattern != null && allowedUserPattern.matcher(userId).matches()) {
+            // userId allowed by pattern
+            return false;
+        }
+        LOGGER.warn("Rejecting authentication attempt by user of ID of {} characters because not matching pattern and not in allow-list", userId.length());
+        return true;
+    }
+
+    /**
      * Check for acceptable API key authentication.
      * The purpose of this method is to ensure "authentication before parameter validation".
      */
     protected boolean filterApiKey(final ContainerRequestContext requestContext, final String authHeader, final String authParam) {
+        if (filterByApiKey(authParam)) {
+            throwForbidden(requestContext);
+            return true;
+        }
         final ApiKeyAuthentication apiKeyAuthentication = new ApiKeyAuthentication();
         apiKeyAuthentication.setApiKey(UUID.fromString(authParam));
         return filterAnyAuth(requestContext, authHeader, apiKeyAuthentication);
     }
 
-    /** Check for acceptable JWT authentication. Should throw an exception if this type is not desired.
+    /**
+     * Checks for acceptable JWT authentication. Throws an exception if this type is not desired.
      * The purpose of this method is to ensure "authentication before parameter validation".
      */
     protected boolean filterJwt(final ContainerRequestContext requestContext, final String authHeader, final String authParam) {
@@ -220,12 +286,12 @@ public class AuthFilterCustomization implements IAuthFilterCustomization {
 
     @Override
     public boolean allowAuthJwt() {
-        return true;
+        return allowLogin;  // JWT authentication only makes sense if logins are allowed
     }
 
     @Override
     public boolean allowAuthBasic() {
-        return true;
+        return allowUserPw; // http basic authentication is not preferred usually (must be enabled via setting)
     }
 
     @Override
@@ -233,9 +299,13 @@ public class AuthFilterCustomization implements IAuthFilterCustomization {
         return true;
     }
 
-    /** Invoked for POST requests or GET: Check for correct login path. */
+    /** Invoked for POST requests or GET: Checks for correct login path. */
     protected boolean isValidLogin(final String path, final String method) {
-        return "/apikey".equals(path);
+        if (!HttpMethod.POST.equals(method)) {
+            return false;  // currently all login requests must be POST requests (can be overridden to allow the deprecated GET /apikey)
+        }
+        return (allowUserPw && "/userpw".equals(path))
+            || (allowApiKey && "/apikey".equals(path));
     }
 
     /** Invoked for GET requests: Check for valid swagger path. */
@@ -270,6 +340,15 @@ public class AuthFilterCustomization implements IAuthFilterCustomization {
         if (idempotencyHeaderLength != 36 || !BASE64_PATTERN.matcher(idempotencyHeader).matches()) {
             LOGGER.error("Invoked with bad HTTP header {} of length {}", T9tConstants.HTTP_HEADER_IDEMPOTENCY_KEY, idempotencyHeaderLength);
             abortFilter(requestContext, Response.status(Status.BAD_GATEWAY).build());
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean filterByApiKey(final String apiKey) {
+        if (allowedApiKeyPattern != null && !allowedApiKeyPattern.matcher(apiKey).matches()) {
+            LOGGER.warn("Rejecting authentication attempt by API key due to failed API key pattern check");
             return true;
         }
         return false;

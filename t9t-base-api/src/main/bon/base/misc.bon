@@ -39,6 +39,10 @@ package (com.arvatosystems) t9t.base.misc {
         optional Unicode(8000000) trim allowControlChars text;
     }
 
+    class InfoList {
+        required Unicode(8000000) trim allowControlChars required List<> items;
+    }
+
     /** Key structure used by some special caches. */
     final class SomeCacheKey {
         required tenantId               tenantId;

@@ -18,9 +18,12 @@ package com.arvatosystems.t9t.updates.service;
 import com.arvatosystems.t9t.updates.UpdateApplyStatusType;
 import com.arvatosystems.t9t.updates.jpa.entities.UpdateStatusEntity;
 
-public interface IUpdateStatusService {
-    void logUpdateStatus(UpdateStatusEntity updateStatus);
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
-    void updateUpdateStatus(UpdateStatusEntity updateStatus, String applySequenceId,
-            String description, UpdateApplyStatusType updateApplyStatusType);
+public interface IUpdateStatusService {
+    void logUpdateStatus(@Nonnull UpdateStatusEntity updateStatus);
+
+    void updateUpdateStatus(@Nonnull UpdateStatusEntity updateStatus, @Nonnull String applySequenceId,
+            @Nonnull String description, @Nullable UpdateApplyStatusType updateApplyStatusType);
 }

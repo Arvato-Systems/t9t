@@ -23,6 +23,10 @@ public class ImageParameter {
     public final Integer   rotation;   // rotation in degrees
     public final FlipMode  flipMode;
     public final Double    scale;
+    public final String    encoding;   // used for text to barcode conversions
+    public final String    qualifier;  // used to alter generated barcodes
+    public final int       black;
+    public final int       white;
 
     public ImageParameter(final int width, final int height, final Integer rotation, final FlipMode flipMode, final Double scale) {
         this.width    = width;
@@ -30,5 +34,22 @@ public class ImageParameter {
         this.rotation = rotation;
         this.flipMode = flipMode;
         this.scale    = scale;
+        this.encoding = null;
+        this.qualifier = null;
+        this.black    = 0;
+        this.white    = 0xffffff;
+    }
+
+    public ImageParameter(final int width, final int height, final Integer rotation, final FlipMode flipMode, final Double scale,
+            final String encoding, final String qualifier, final int black, final int white) {
+        this.width    = width;
+        this.height   = height;
+        this.rotation = rotation;
+        this.flipMode = flipMode;
+        this.scale    = scale;
+        this.encoding = encoding;
+        this.qualifier = qualifier;
+        this.black    = black;
+        this.white    = white;
     }
 }

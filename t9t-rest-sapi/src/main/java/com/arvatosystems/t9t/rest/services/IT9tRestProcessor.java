@@ -63,7 +63,7 @@ public interface IT9tRestProcessor {
      */
     default <T extends BonaPortable, R extends RequestParameters> void performAsyncBackendRequestViaKafka(@Nonnull final HttpHeaders httpHeaders,
         @Nonnull final AsyncResponse resp, @Nonnull final String infoMsg, final List<T> inputData, final Function<T, R> requestConverterSingle,
-        final Function<R, String> partitionKeyExtractor) {
+        final Function<R, String> partitionKeyExtractor, Function<R, String> businessIdExtractor) {
         performAsyncBackendRequest(httpHeaders, resp, infoMsg, inputData, requestConverterSingle, (Function<List<T>, RequestParameters>)null);
     }
 
@@ -98,6 +98,7 @@ public interface IT9tRestProcessor {
             responseBuilder.type(acceptHeader == null || acceptHeader.length() == 0 ? MediaType.APPLICATION_JSON : acceptHeader);
             responseBuilder.entity(createResultFromServiceResponse(sr));
         }
+        addSecurityHeader(responseBuilder);
         resp.resume(responseBuilder.build());
     }
 
@@ -108,7 +109,13 @@ public interface IT9tRestProcessor {
         if (result != null) {
             responseBuilder.entity(result);
         }
+        addSecurityHeader(responseBuilder);
         resp.resume(responseBuilder.build());
+    }
+
+    /** Adds default security headers. */
+    default void addSecurityHeader(final Response.ResponseBuilder responseBuilder) {
+        RestUtils.addDefaultSecurityHeader(responseBuilder);
     }
 
     /** Returns a response without using the worker thread. */

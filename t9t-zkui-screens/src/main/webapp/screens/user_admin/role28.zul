@@ -2,7 +2,7 @@
 <?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="role28"?>
 
 <window28 id="roleWin">
-    <threesections28 gridId="role">
+    <threesections28 gridId="role" gridContext="showPermissions,showUserAssignments">
         <crud28 cachesDropdown="roleId"
             viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.CrudSurrogateKeyVM', vmId='role')"
             currentMode="@load(vm.currentMode)">

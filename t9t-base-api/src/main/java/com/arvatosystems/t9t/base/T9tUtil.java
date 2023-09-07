@@ -34,6 +34,7 @@ import com.arvatosystems.t9t.base.request.AggregationGranularityType;
 
 import de.jpaw.enums.TokenizableEnum;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 /**
  * Utility class for common checks and operations.
  */
@@ -59,6 +60,16 @@ public final class T9tUtil {
     }
 
     /**
+     * Checks whether the given {@link Collection} parameter is <b>NOT</b> null or empty.
+     *
+     * @param collection the {@link Collection} object to check
+     * @return true if param is <b>NOT</b> null or empty
+     */
+    public static boolean isNotEmpty(final Collection<?> collection) {
+        return !isEmpty(collection);
+    }
+
+    /**
      * Checks whether the given {@link Collection} parameter is null or empty.
      *
      * @param collection the {@link Collection} object to check
@@ -69,6 +80,16 @@ public final class T9tUtil {
     }
 
     /**
+     * Checks whether the given {@link Collection} parameter is <b>NOT</b> null or empty.
+     *
+     * @param collection the {@link Collection} object to check
+     * @return true if param is <b>NOT</b> null or empty
+     */
+    public static boolean isNotEmpty(final Map<?, ?> map) {
+        return !isEmpty(map);
+    }
+
+    /**
      * Checks whether the given {@link String} parameter is null or blank.
      *
      * @param string the {@link String} object to check
@@ -76,6 +97,16 @@ public final class T9tUtil {
      */
     public static boolean isBlank(final String string) {
         return string == null || string.isBlank();
+    }
+
+    /**
+     * Checks whether the given {@link String} parameter is <b>NOT</b> null or blank.
+     *
+     * @param string the {@link String} object to check
+     * @return true if param is <b>NOT</b> null or blank
+     */
+    public static boolean isNotBlank(final String string) {
+        return !isBlank(string);
     }
 
     /**
@@ -203,6 +234,17 @@ public final class T9tUtil {
             }
         }
         return false;
+    }
+
+    /** Sleeps for the specified number of milliseconds, and complains if interrupted. A logger is passed to conserve the true origin of the message. */
+    public static void sleepAndWarnIfInterrupted(final long milliseconds, @Nullable final Logger logger, @Nullable final String complainString) {
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+            if (logger != null && complainString != null) {
+                logger.warn(complainString);
+            }
+        }
     }
 
     /** Returns the current time as integral Instant (no fractional seconds). Often needed because some APIs desire integral seconds. */

@@ -95,7 +95,7 @@ public class KafkaConsumerInitializer implements StartupShutdown {
     @IsLogicallyFinal
     private int workerPoolSize;
     @IsLogicallyFinal
-    private volatile boolean pleaseStop = false;
+    private volatile boolean shuttingDown = false;
 
 
 
@@ -213,7 +213,7 @@ public class KafkaConsumerInitializer implements StartupShutdown {
                     consumer.subscribe(dataSinkByTopic.keySet());
                 }
             }
-            while (!pleaseStop) {
+            while (!shuttingDown) {
                 finishedRequests.clear();
                 // LOGGER.debug("Start polling...");  // FIXME: remove extensive log
                 final int currentNum = numberOfPolls.incrementAndGet();
@@ -358,7 +358,7 @@ public class KafkaConsumerInitializer implements StartupShutdown {
             // there was no configuration - nothing has been initialized, not possible to shut down anything either
             return;
         }
-        pleaseStop = true;
+        shuttingDown = true;
         if (consumer != null) {
             consumer.wakeup();   // tell kafka to abort any pending poll()
         }

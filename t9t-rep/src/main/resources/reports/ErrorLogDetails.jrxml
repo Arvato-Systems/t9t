@@ -23,12 +23,6 @@
     <parameter name="tenantId" class="java.lang.String"/>
     <parameter name="translator" class="com.arvatosystems.t9t.translation.be.TranslationProvider"/>
     <parameter name="timeFormatter" class="com.arvatosystems.t9t.rep.be.util.TimeFormatter"/>
-    <parameter name="dateToStr" class="java.lang.String">
-        <defaultValueExpression><![CDATA[$P{timeFormatter}.formatTimetoStr($P{dateTo})]]></defaultValueExpression>
-    </parameter>
-    <parameter name="dateFromStr" class="java.lang.String">
-        <defaultValueExpression><![CDATA[$P{timeFormatter}.formatTimetoStr($P{dateFrom})]]></defaultValueExpression>
-    </parameter>
     <queryString>
         <![CDATA[SELECT
 usr.user_id,
@@ -43,8 +37,7 @@ FROM p28_int_message msg
 LEFT OUTER JOIN p42_cfg_users usr ON (msg.user_id = usr.user_id)
 LEFT OUTER JOIN p42_cfg_tenants tenant ON (msg.tenant_id = tenant.tenant_id)
 WHERE msg.return_code > 99999999
-AND msg.execution_started_at >= to_timestamp($P{dateFromStr},'YYYY-MM-DD HH24:MI:SS.FF9')
-AND msg.execution_started_at <= to_timestamp($P{dateToStr},'YYYY-MM-DD HH24:MI:SS.FF9')]]>
+  AND msg.execution_started_at >= $P{dateFrom} AND msg.execution_started_at < $P{dateTo}]]>
     </queryString>
     <field name="user_id" class="java.lang.String">
         <fieldDescription><![CDATA[User ID]]></fieldDescription>

@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Function;
 
 import com.arvatosystems.t9t.base.search.SearchCriteria;
@@ -26,6 +27,7 @@ import com.arvatosystems.t9t.base.search.SearchCriteria;
 import de.jpaw.bonaparte.pojos.api.FieldFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.SortColumn;
+import jakarta.annotation.Nonnull;
 
 public interface ISearchTools {
 
@@ -42,14 +44,18 @@ public interface ISearchTools {
         }
     }
 
-    /** Maps field names in search requests, for use by other search engines than the DB, for example SOLR.
-     * Injectable in order to allow extension by additional filter types. */
+    /**
+     * Maps field names in search requests, for use by other search engines than the DB, for example SOLR.
+     * Injectable in order to allow extension by additional filter types.
+     */
     void mapNames(SearchCriteria searchCriteria, Function<String, String> mapper);
     void mapNames(SearchFilter searchFilter,     Function<String, String> mapper);
     void mapNames(List<SortColumn> sortColumns,  Function<String, String> mapper);
 
-    /** Maps field names in search requests, for use by other search engines than the DB, for example SOLR.
-     * Injectable in order to allow extension by additional filter types. */
+    /**
+     * Maps field names in search requests, for use by other search engines than the DB, for example SOLR.
+     * Injectable in order to allow extension by additional filter types.
+     */
     void mapNames(SearchCriteria searchCriteria, Map<String, String> nameMappings);
     void mapNames(SearchFilter searchFilter,     Map<String, String> nameMappings);
     void mapNames(List<SortColumn> sortColumns,  Map<String, String> nameMappings);
@@ -59,7 +65,8 @@ public interface ISearchTools {
     boolean containsFieldPathElements(SearchFilter searchFilter,     Collection<String> pathElements);
     boolean containsFieldPathElements(List<SortColumn> sortColumns,  Collection<String> pathElements);
 
-    /** Searches if the expression contains an AND condition with a FieldFilter for name fieldname.
+    /**
+     * Searches if the expression contains an AND condition with a FieldFilter for name fieldname.
      * Returns true if found, else false.
      * Also, the first occurrence is processed via the optional provided lambda.
      *
@@ -71,7 +78,7 @@ public interface ISearchTools {
     boolean searchForAndFieldname(SearchCriteria searchCriteria, String fieldname, Function<SearchFilter, SearchFilter> converter);
 
     /**
-     * retrieve all FieldFilter fieldNames of the SearchFilter to the set of fieldNames
+     * Retrieves all FieldFilter fieldNames of the SearchFilter to the set of fieldNames
      * @param searchFilter
      * @param fieldNames
      * @return
@@ -79,4 +86,24 @@ public interface ISearchTools {
     Set<String> getAllSearchFilterFieldName(SearchFilter searchFilter, Set<String> fieldNames);
 
     FieldFilter getFieldFilterByFieldName(SearchFilter searchFilter, String fieldName);
+
+    /**
+     * Searches for AsciiFilters or UnicodeFilters which have an equals condition referencing the passed fieldName
+     * and replaces them with a more effective filter.
+     *
+     * @param searchCriteria
+     * @param fieldName
+     * @param replacer
+     */
+    void optimizeSearchFiltersString(@Nonnull SearchCriteria searchCriteria, @Nonnull String fieldName, Function<String, SearchFilter> replacer);
+
+    /**
+     * Searches for UuidFilters which have an equals condition referencing the passed fieldName
+     * and replaces them with a more effective filter.
+     *
+     * @param searchCriteria
+     * @param fieldName
+     * @param replacer
+     */
+    void optimizeSearchFiltersUuid(@Nonnull SearchCriteria searchCriteria, String fieldName, Function<UUID, SearchFilter> replacer);
 }

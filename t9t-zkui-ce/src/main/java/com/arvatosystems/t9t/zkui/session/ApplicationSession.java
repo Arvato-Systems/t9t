@@ -798,6 +798,7 @@ public final class ApplicationSession {
         this.jwt = null;
         this.jwtInfo = null;
         this.authorizationHeader = null;
+        this.sessionValues = null;
     }
 
     /**
