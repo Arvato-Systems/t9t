@@ -73,6 +73,7 @@ import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ExceptionUtil;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 @Dependent
 public class OutputSession implements IOutputSession {
@@ -95,7 +96,8 @@ public class OutputSession implements IOutputSession {
     protected IOutputResource           outputResource      = null;
     protected ICommunicationFormatGenerator dataGenerator   = null;
     protected IPreOutputDataTransformer transformer         = null;
-    protected MediaTypeDescriptor       usedFormat          = null; // available after a successful open()
+    @Nullable
+    protected MediaTypeDescriptor       usedFormat          = null; // available after a successful open(), but only if known
     protected Long                      thisSinkRef         = null;
     protected SinkDTO                   thisSink            = null;
     protected FoldableParams            foldableParams      = null;
@@ -151,20 +153,25 @@ public class OutputSession implements IOutputSession {
             }
         }
 
-        // validate that if USER_DEFINED communication format type is used, the communication format name have to be NOT NULL
-        if (communicationFormatType != null && MediaType.USER_DEFINED == communicationFormatType.getBaseEnum() && sinkCfg.getCommFormatName() == null) {
-            LOGGER.error("Communication Format is USER_DEFINED but custom communication format name is not defined (NULL)");
-            throw new T9tException(T9tException.INVALID_CONFIGURATION,
-                    "Communication Format is USER_DEFINED but custom communication format name is not defined (NULL)");
-        } else if (communicationFormatType != null && !MediaType.USER_DEFINED.equals(communicationFormatType.getBaseEnum())
-                && sinkCfg.getCommFormatName() != null) {
-            // validate that if USER_DEFINED communication format type is NOT used, the communication format name have to be NULL
-            LOGGER.error("Communication Format is not USER_DEFINED but custom communication format name is defined (NOT NULL)");
-            throw new T9tException(T9tException.INVALID_CONFIGURATION,
-                    "Communication Format is not USER_DEFINED but custom communication format name is defined (NOT NULL)");
+        if (communicationFormatType != null) {
+            if (MediaType.USER_DEFINED == communicationFormatType.getBaseEnum()) {
+                // validate that if USER_DEFINED communication format type is used, the communication format name has to be NOT NULL
+                if (sinkCfg.getCommFormatName() == null) {
+                    LOGGER.error("Communication Format is USER_DEFINED but custom communication format name is not defined (NULL)");
+                    throw new T9tException(T9tException.INVALID_CONFIGURATION,
+                            "Communication Format is USER_DEFINED and custom communication format name is also not defined (NULL)");
+                }
+            } else {
+                // validate that if USER_DEFINED communication format type is NOT used, the communication format name must be NULL
+                if (sinkCfg.getCommFormatName() != null) {
+                    LOGGER.error("Communication Format is not USER_DEFINED but custom communication format name is defined (NOT NULL)");
+                    throw new T9tException(T9tException.INVALID_CONFIGURATION,
+                            "Communication Format is not USER_DEFINED but custom communication format name is also defined (NOT NULL)");
+                }
+            }
+            usedFormat = MediaTypeInfo.getFormatByType(communicationFormatType);  // lookup will still return null for USER_DEFFINED
         }
 
-        usedFormat = MediaTypeInfo.getFormatByType(communicationFormatType);
         if (sinkCfg.getOutputEncoding() != null) {
             encoding = Charset.forName(sinkCfg.getOutputEncoding());
         } else {

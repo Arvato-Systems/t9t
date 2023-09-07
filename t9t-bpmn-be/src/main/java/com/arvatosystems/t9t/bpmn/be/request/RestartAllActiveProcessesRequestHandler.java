@@ -42,7 +42,7 @@ public class RestartAllActiveProcessesRequestHandler extends AbstractRequestHand
         ctx.statusText = "Querying refs to process for " + displayId;
         final Instant dueWhen = rq.getMinAgeInSeconds() == null ? ctx.executionStart : ctx.executionStart.minusSeconds(rq.getMinAgeInSeconds());
         final List<Long> taskRefs = persistenceAccess.getTaskRefsDue(rq.getOnlyThisProcessId(), dueWhen,
-            Boolean.TRUE.equals(rq.getIncludeErrorStatus()), Boolean.TRUE.equals(rq.getRunProcessesOfAnyNode()), null);
+            Boolean.TRUE.equals(rq.getIncludeErrorStatus()), Boolean.TRUE.equals(rq.getRunProcessesOfAnyNode()), null, rq.getReturnCodes());
 
         final int numRecords = taskRefs.size();
         LOGGER.debug("Found {} active tasks for workflow {} for restart", numRecords, displayId);

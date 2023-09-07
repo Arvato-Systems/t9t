@@ -62,7 +62,6 @@ final class KafkaSimplePartitionOrderedRequestProcessor implements Callable<Bool
     private static final int WAIT_INTERVAL_IDLE = 200; // period to sleep after a poll without any new requests
     private static final int DEFAULT_COMMIT_INTERVAL = 3000; // commit interval
     private static final int DEFAULT_MONITOR_INTERVAL = 5000; // monitor interval
-    private static final int DEFAULT_SLOW_PROCESSING_TIMEOUT = 15_000; // after how many ms to give up processing
     private static final int DEFAULT_TIMEOUT_THREADPOOL_SHUTDOWN_MS = 10_000;
     private static final int DEFAULT_WORKER_POOL_SIZE = 6;
 
@@ -78,7 +77,6 @@ final class KafkaSimplePartitionOrderedRequestProcessor implements Callable<Bool
     private long lastCommitTime;
     private long lastMonitorTime;
     private final Map<TopicPartition, PartitionMonitor> partitionStatusTable;
-    private final long slowTimeoutInMs;
     private final long commitIntervalInMs;
     private final long monitorIntervalInMs;
     private final long shutdownThreadpoolIntervalInMs;
@@ -107,7 +105,6 @@ final class KafkaSimplePartitionOrderedRequestProcessor implements Callable<Bool
         this.lastMonitorTime = System.currentTimeMillis();
 
         // parameters from config
-        this.slowTimeoutInMs = T9tUtil.nvl(config.getSlowProcessingTimeout(), DEFAULT_SLOW_PROCESSING_TIMEOUT).longValue();
         this.commitIntervalInMs = T9tUtil.nvl(config.getCommitInterval(), DEFAULT_COMMIT_INTERVAL).longValue();
         this.monitorIntervalInMs = T9tUtil.nvl(config.getMonitorInterval(), DEFAULT_MONITOR_INTERVAL).longValue();
         this.shutdownThreadpoolIntervalInMs = T9tUtil.nvl(config.getShutdownThreadpoolInterval(), DEFAULT_TIMEOUT_THREADPOOL_SHUTDOWN_MS).longValue();
@@ -145,12 +142,9 @@ final class KafkaSimplePartitionOrderedRequestProcessor implements Callable<Bool
                 T9tUtil.sleepAndWarnIfInterrupted(1_000L, LOGGER, null);
             } else if (consumerRecords.count() > 0) {
                 LOGGER.debug("Polling kafka returned {} new records", consumerRecords.count());
-                if (consumerRecords.count() == KafkaTopicReader.DEFAULT_MAX_MESSAGES_PER_POLL) {
-                    LOGGER.warn("Reached max amount of pollable records - value is too low maybe?");
-                }
                 // groups of records by partition
                 final Set<TopicPartition> partitions = consumerRecords.partitions();
-                for (final TopicPartition partition : consumerRecords.partitions()) {
+                for (final TopicPartition partition : partitions) {
                     final List<ConsumerRecord<String, byte[]>> recordsByPartition = consumerRecords.records(partition);
                     final KafkaSimpleMultipleRecordsProcessor kafkaMultipleRecordsProcessor = new KafkaSimpleMultipleRecordsProcessor(partition,
                             recordsByPartition, defaultAuthHeader);
@@ -264,7 +258,7 @@ final class KafkaSimplePartitionOrderedRequestProcessor implements Callable<Bool
         }
         int workerPoolSize = T9tUtil.nvl(config.getClusterManagerPoolSize(), availableProcessors);
         if (workerPoolSize > numberOfPartitions) {
-            LOGGER.warn("Configured more workers ({}) than available partitions ({}) - cutting to number of assigned partitions", workerPoolSize,
+            LOGGER.warn("Configured more workers ({}) than available partitions ({}) - cutting to number of overall partitions", workerPoolSize,
                     numberOfPartitions);
             workerPoolSize = numberOfPartitions;
         }
@@ -327,11 +321,6 @@ final class KafkaSimplePartitionOrderedRequestProcessor implements Callable<Bool
                 info.append("MONITOR: ");
                 for (final PartitionMonitor monitor : partitionStatusTable.values()) {
                     info.append(monitor.toString()).append(" ");
-                    // check for slow partitions
-                    if (monitor.getProcessingTime() > slowTimeoutInMs) {
-                        LOGGER.warn("SLOW: {}/{}/{}ms (PENDING/PART/SINCE) - after waiting {}ms", monitor.getNumPending(), monitor.getPartition(),
-                                monitor.getProcessingTime(), slowTimeoutInMs);
-                    }
                 }
                 LOGGER.debug(info.toString());
                 lastMonitorTime = thisMonitorTime;
@@ -377,7 +366,7 @@ final class KafkaSimplePartitionOrderedRequestProcessor implements Callable<Bool
             if (relatedProcessor != null) {
                 // - 1 because we added 1 for commit, and here we want to know which has been processed INDEED
                 long offset = relatedProcessor.getLastProcessedOffset() - 1;
-                info += ", Pending: " + relatedProcessor.getNumPending();
+                info += ", Pending: " + relatedProcessor.getNumPending() + "/" + relatedProcessor.getNumRecords();
                 info += ", LastOffset: " + (offset > 0 ? offset : "not-started");
             } else {
                 LOGGER.warn("Related processor of Monitor [{}] is null", getPartition());

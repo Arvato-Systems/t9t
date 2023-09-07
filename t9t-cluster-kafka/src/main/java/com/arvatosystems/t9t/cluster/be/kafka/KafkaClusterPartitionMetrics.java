@@ -30,6 +30,9 @@ public class KafkaClusterPartitionMetrics implements MeterBinder {
     private static final String METRIC_PROCESSING_TIME_TOTAL = PREFIX + ".processing.time.total";
     private static final String METRIC_PROCESSING_TIME_TOTAL_DESC = "Total processing time of all partitions";
 
+    private static final String METRIC_PROCESSING_TIME_AVG = PREFIX + ".processing.time.avg";
+    private static final String METRIC_PROCESSING_TIME_AVG_DESC = "Average processing time of all partitions";
+
     private static final String METRIC_TASKS_PENDING_TOTAL = PREFIX + ".tasks.pending.total";
     private static final String METRIC_TASKS_PENDING_TOTAL_DESC = "Total number of pending tasks";
 
@@ -58,6 +61,17 @@ public class KafkaClusterPartitionMetrics implements MeterBinder {
             }
             return total;
         }).description(METRIC_PROCESSING_TIME_TOTAL_DESC).tag(TAG_TOPIC, topicName).register(registry);
+
+        Gauge.builder(METRIC_PROCESSING_TIME_AVG, () -> {
+            long total = 0L;
+            for (final PartitionMonitor monitor : this.partitionStatusTable.values()) {
+                total += monitor.getProcessingTime();
+            }
+            if (total > 0 && this.partitionStatusTable.size() > 0) {
+                return total / this.partitionStatusTable.size();
+            }
+            return total;
+        }).description(METRIC_PROCESSING_TIME_AVG_DESC).tag(TAG_TOPIC, topicName).register(registry);
 
         Gauge.builder(METRIC_TASKS_PENDING_TOTAL, () -> {
             int total = 0;

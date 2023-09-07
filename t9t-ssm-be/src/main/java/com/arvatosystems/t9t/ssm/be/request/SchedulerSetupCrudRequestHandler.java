@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.ssm.be.request;
 
+import java.util.EnumSet;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -27,6 +28,7 @@ import com.arvatosystems.t9t.auth.UserKey;
 import com.arvatosystems.t9t.auth.request.ApiKeyCrudRequest;
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.RandomNumberGenerators;
+import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.be.impl.AbstractCrudSurrogateKeyBERequestHandler;
@@ -34,6 +36,7 @@ import com.arvatosystems.t9t.base.be.impl.CrossModuleRefResolver;
 import com.arvatosystems.t9t.base.be.impl.SimpleCallOutExecutor;
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
+import com.arvatosystems.t9t.base.request.ExecuteOnAllNodesRequest;
 import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.IForeignRequest;
 import com.arvatosystems.t9t.base.services.RequestContext;
@@ -59,6 +62,13 @@ import de.jpaw.dp.Provider;
 public class SchedulerSetupCrudRequestHandler extends
   AbstractCrudSurrogateKeyBERequestHandler<SchedulerSetupRef, SchedulerSetupDTO, FullTrackingWithVersion, SchedulerSetupCrudRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(SchedulerSetupCrudRequestHandler.class);
+    private static final EnumSet<OperationType> OPERATION_TYPES_WITH_OLD_DTO = EnumSet.of(
+        OperationType.DELETE, OperationType.UPDATE, OperationType.INACTIVATE, OperationType.ACTIVATE // OperationType.MERGE ???
+    );
+    private static final EnumSet<OperationType> OPERATION_TYPES_CRUPME = EnumSet.of(
+        OperationType.CREATE, OperationType.UPDATE, OperationType.MERGE
+    );
+    private static final String PERMISSION_FOR_ALL_NODES = MessagingUtil.toPerm(new ExecuteOnAllNodesRequest());
 
     private final IExecutor executor = Jdp.getRequired(IExecutor.class);
     private final ISchedulerSetupResolver resolver = Jdp.getRequired(ISchedulerSetupResolver.class);
@@ -90,14 +100,15 @@ public class SchedulerSetupCrudRequestHandler extends
     @Override
     public CrudSurrogateKeyResponse<SchedulerSetupDTO, FullTrackingWithVersion>
       execute(final RequestContext ctx, final SchedulerSetupCrudRequest crudRequest) throws Exception {
+
+        // preprocessing
         final SchedulerSetupDTO oldSetup;
-        if (crudRequest.getCrud() == OperationType.DELETE || crudRequest.getCrud() == OperationType.UPDATE
-          || crudRequest.getCrud() == OperationType.INACTIVATE || crudRequest.getCrud() == OperationType.ACTIVATE) {
+        if (OPERATION_TYPES_WITH_OLD_DTO.contains(crudRequest.getCrud())) {
             // any type with an old setup
             if (crudRequest.getKey() != null) {
-                oldSetup = this.resolver.getDTO(crudRequest.getKey());
+                oldSetup = resolver.getDTO(crudRequest.getKey());
             } else if (crudRequest.getNaturalKey() != null) {
-                oldSetup = this.resolver.getDTO(crudRequest.getNaturalKey());
+                oldSetup = resolver.getDTO(crudRequest.getNaturalKey());
             } else {
                 oldSetup = null;
             }
@@ -105,12 +116,25 @@ public class SchedulerSetupCrudRequestHandler extends
             oldSetup = null;
         }
 
-        if (crudRequest.getCrud() == OperationType.CREATE || crudRequest.getCrud() == OperationType.UPDATE) {
-            final CannedRequestRef dataRequestRef = crudRequest.getData().getRequest();
+        // check for "all nodes" and be so nice to add required permission, in case it is missing
+        final SchedulerSetupDTO dto = crudRequest.getData();
+        if (dto != null) {
+            if (T9tConstants.SCHEDULER_RUN_ON_ALL_NODES.equals(dto.getRunOnNode())) {
+                if (dto.getAdditionalPermissions() == null) {
+                    dto.setAdditionalPermissions(PERMISSION_FOR_ALL_NODES);
+                } else if (!dto.getAdditionalPermissions().contains(PERMISSION_FOR_ALL_NODES)) {
+                    dto.setAdditionalPermissions(dto.getAdditionalPermissions() + "," + PERMISSION_FOR_ALL_NODES);
+                }
+            }
+        }
+
+        if (OPERATION_TYPES_CRUPME.contains(crudRequest.getCrud())) {
+            final CannedRequestRef dataRequestRef = dto.getRequest();
 
             if (crudRequest.getCrud() == OperationType.UPDATE) {
-                if (oldSetup != null && dataRequestRef instanceof CannedRequestDTO cannedRequestDTO) {
-                    if (cannedRequestDTO.getRequestId().equals(((CannedRequestDTO) oldSetup.getRequest()).getRequestId())) {
+                if (oldSetup != null && dataRequestRef instanceof CannedRequestDTO cannedRequestDTO
+                  && oldSetup.getRequest() instanceof CannedRequestDTO oldDto) {
+                    if (cannedRequestDTO.getRequestId().equals(oldDto.getRequestId())) {
                         // In case the crudRequest.data.request is an instance of CannedRequestDTO with the same request Id,
                         // update the oldSetup.request for field comparison.
                         LOGGER.debug("dataRequest is an instance of CannedRequestDTO, update oldSetup's request for comparison");
@@ -119,11 +143,14 @@ public class SchedulerSetupCrudRequestHandler extends
                 }
             }
 
-            crudRequest.getData().setRequest(refResolver.getData(new CannedRequestCrudRequest(), dataRequestRef));
+            if (!(dataRequestRef instanceof CannedRequestDTO)) {
+                // replace any reference by full DTO of the canned request
+                dto.setRequest(refResolver.getData(new CannedRequestCrudRequest(), dataRequestRef));
+            }
         }
 
         // perform the regular CRUD
-        final CrudSurrogateKeyResponse<SchedulerSetupDTO, FullTrackingWithVersion> response = this.execute(ctx, crudRequest, this.resolver);
+        final CrudSurrogateKeyResponse<SchedulerSetupDTO, FullTrackingWithVersion> response = execute(ctx, crudRequest, resolver);
 
         if (response.getReturnCode() == 0) {
             final SchedulerSetupDTO setup = response.getData();
@@ -175,9 +202,8 @@ public class SchedulerSetupCrudRequestHandler extends
 
         // check for suppression of request object
         if (Boolean.TRUE.equals(crudRequest.getSuppressResponseParameters())) {
-            if (response.getData() != null) {
-                final CannedRequestRef req = response.getData().getRequest();
-                ((CannedRequestDTO) req).setRequest(null);
+            if (response.getData() != null && response.getData().getRequest() instanceof CannedRequestDTO cannedDto) {
+                cannedDto.setRequest(null);
             }
         }
         return response;

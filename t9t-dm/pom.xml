@@ -245,11 +245,6 @@
             </dependency>
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-base-be-aws</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-base-jpa</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -440,21 +435,9 @@
             </dependency>
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-email-be-aws</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-email-be-smtp</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <!-- Apache does not yet support jakarta
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-email-be-commons</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            -->
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-email-be-vertx</artifactId>

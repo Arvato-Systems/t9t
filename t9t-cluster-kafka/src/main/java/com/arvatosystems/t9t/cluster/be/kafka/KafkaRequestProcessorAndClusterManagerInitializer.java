@@ -130,8 +130,7 @@ public class KafkaRequestProcessorAndClusterManagerInitializer implements Startu
             LOGGER.info("Adding metrics provider for kafka consumer");
             consumer.registerMetrics((kafkaConsumer) -> this.metricsProvider.addMeter(new KafkaClientMetrics(kafkaConsumer)));
             if (processingStrategy instanceof KafkaSimplePartitionOrderedRequestProcessor proc) {
-                final KafkaClusterPartitionMetrics customMetrics = new KafkaClusterPartitionMetrics(
-                        ((KafkaSimplePartitionOrderedRequestProcessor) processingStrategy).getPartitionStatusTable(), consumer.getKafkaTopic());
+                final KafkaClusterPartitionMetrics customMetrics = new KafkaClusterPartitionMetrics(proc.getPartitionStatusTable(), consumer.getKafkaTopic());
                 this.metricsProvider.addMeter(customMetrics);
             }
         } else {

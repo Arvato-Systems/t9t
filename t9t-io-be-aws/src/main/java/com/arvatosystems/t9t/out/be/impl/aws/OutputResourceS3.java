@@ -15,16 +15,6 @@
  */
 package com.arvatosystems.t9t.out.be.impl.aws;
 
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.base.output.OutputSessionParameters;
-import com.arvatosystems.t9t.io.DataSinkDTO;
-import com.arvatosystems.t9t.io.T9tIOException;
-import com.arvatosystems.t9t.out.services.IOutputResource;
-import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
-import de.jpaw.dp.Dependent;
-import de.jpaw.dp.Named;
-import de.jpaw.util.ExceptionUtil;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -33,6 +23,17 @@ import java.nio.charset.Charset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.output.OutputSessionParameters;
+import com.arvatosystems.t9t.io.DataSinkDTO;
+import com.arvatosystems.t9t.io.T9tIOException;
+import com.arvatosystems.t9t.out.services.IOutputResource;
+
+import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
+import de.jpaw.dp.Dependent;
+import de.jpaw.dp.Named;
+import de.jpaw.util.ExceptionUtil;
+import jakarta.annotation.Nullable;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.S3ClientBuilder;
@@ -51,7 +52,9 @@ public class OutputResourceS3 implements IOutputResource {
     protected ByteArrayOutputStream os;
     protected Charset cs;
     protected DataSinkDTO sinkCfg;
+    @Nullable
     protected MediaTypeDescriptor mediaType;
+    protected String mediaTypeString = null;
     protected String effectiveFilename = null;
 
     @Override
@@ -84,9 +87,9 @@ public class OutputResourceS3 implements IOutputResource {
             final PutObjectRequest putRq = PutObjectRequest.builder().bucket(bucket).key(path).build();
             final PutObjectResponse result = s3Client.putObject(putRq, RequestBody.fromBytes(bytes));
             LOGGER.debug("Object uploaded, created Etag {}", result.eTag());
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             LOGGER.error("Could not store S3 data of type {} to {}: {}: {}",
-              mediaType.getMediaType().name(), targetName, e.getClass().getSimpleName(), e.getMessage());
+                mediaTypeString, targetName, e.getClass().getSimpleName(), e.getMessage());
             throw new T9tException(T9tException.S3_WRITE_ERROR, bucket + ":" + path);
         }
 
@@ -114,9 +117,10 @@ public class OutputResourceS3 implements IOutputResource {
     public void open(DataSinkDTO config, OutputSessionParameters params, Long sinkRef, String targetName, MediaTypeDescriptor xmediaType, Charset xencoding) {
         this.encoding = xencoding;
         this.mediaType = xmediaType;
+        this.mediaTypeString = mediaType != null ? mediaType.getMediaType().name() : "?";
         sinkCfg = config;  // save for later when camel routing may be done
 
-        LOGGER.debug("Storing media type {} into S3 bucket {}", xmediaType.getMediaType().name(), targetName);
+        LOGGER.debug("Storing into S3 bucket {} of type {}", targetName, mediaTypeString);
 
         effectiveFilename = targetName;
 

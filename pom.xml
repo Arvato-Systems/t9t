@@ -947,7 +947,6 @@
                 <module>t9t-email-sapi</module>
                 <module>t9t-email-be</module>
                 <module>t9t-email-be-smtp</module>
-                <!-- <module>t9t-email-be-commons</module>  have to exclude, Apache does not yet support jakarta -->
                 <module>t9t-email-be-vertx</module>
                 <module>t9t-email-jpa</module>
 
@@ -1024,9 +1023,7 @@
                 <module>t9t-bpmn2-mock</module>
 
                 <!-- AWS cloud integration -->
-                <module>t9t-base-be-aws</module>
                 <module>t9t-io-be-aws</module>
-                <module>t9t-email-be-aws</module>
 
                 <!-- modules which are optional addons -->
                 <module>t9t-demo-api</module>
@@ -1196,7 +1193,6 @@
                 <module>t9t-email-sapi</module>
                 <module>t9t-email-be</module>
                 <module>t9t-email-be-smtp</module>
-                <module>t9t-email-be-commons</module>
                 <module>t9t-email-be-vertx</module>
                 <module>t9t-email-jpa</module>
 
@@ -1270,9 +1266,7 @@
                 <module>t9t-bpmn2-jpa</module>
                 <module>t9t-bpmn2-mock</module>
 
-                <module>t9t-base-be-aws</module>
                 <module>t9t-io-be-aws</module>
-                <module>t9t-email-be-aws</module>
 
                 <module>t9t-demo-api</module>
                 <module>t9t-demo-be</module>

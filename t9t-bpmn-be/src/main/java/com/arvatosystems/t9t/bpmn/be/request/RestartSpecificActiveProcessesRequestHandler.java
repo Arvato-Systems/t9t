@@ -42,7 +42,7 @@ public class RestartSpecificActiveProcessesRequestHandler extends AbstractReques
         final String processId = rq.getProcessId();
         final Instant dueWhen = ctx.executionStart.minusSeconds(T9tUtil.nvl(rq.getMinAgeInSeconds(), 30));
         final List<Long> taskRefs = persistenceAccess.getTaskRefsDue(processId, dueWhen,
-            Boolean.TRUE.equals(rq.getIncludeErrorStatus()), Boolean.TRUE.equals(rq.getRunProcessesOfAnyNode()), rq.getNextStep());
+            Boolean.TRUE.equals(rq.getIncludeErrorStatus()), Boolean.TRUE.equals(rq.getRunProcessesOfAnyNode()), rq.getNextStep(), rq.getReturnCodes());
 
         final int numRecords = taskRefs.size();
         if (numRecords > 0) {

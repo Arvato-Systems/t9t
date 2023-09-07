@@ -17,6 +17,7 @@ package com.arvatosystems.t9t.base.jpa.impl;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
 
 import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey;
 import com.arvatosystems.t9t.base.search.TwoRefs;
@@ -99,6 +100,21 @@ public abstract class AbstractResolverSurrogateKey<
         }
         // preprocess the reference
         return getEntityDataByGenericKey(resolveNestedRefs(entityRef), onlyActive);
+    }
+
+    public ENTITY getEntityData(final Long entityRef, final Supplier<ENTITY> childProvider) {
+        if (entityRef == null) {
+            // there is no child
+            return null;
+        }
+        // there is a child, see if we can use a preloaded one
+        final ENTITY preloaded = childProvider.get();
+        if (preloaded != null && entityRef.equals(preloaded.ret$Key())) {
+            // this is the correct child entity
+            return preloaded;
+        }
+        // the correct one has not been found, must resolve it myself
+        return getEntityDataForKey(entityRef, false);
     }
 
     /** Sets the default sort order to sort by artificial key. */
