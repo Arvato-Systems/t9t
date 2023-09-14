@@ -95,7 +95,7 @@
         <microprofile-smallrye-impl.version>2.4.1</microprofile-smallrye-impl.version>
 
         <!-- Jetty -->
-        <jetty.version>11.0.15</jetty.version>
+        <jetty.version>11.0.16</jetty.version>
 
         <!-- Commons (use with care, only few are regularly updated) -->
         <commons-logging.version>1.1-donotuse</commons-logging.version>   <!-- should not use at all! -->
