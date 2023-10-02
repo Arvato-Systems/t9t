@@ -22,11 +22,45 @@ import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.server.ExecutionSummary;
 import com.arvatosystems.t9t.server.InternalHeaderParameters;
 
-// used by the central request dispatcher
+import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+import de.jpaw.bonaparte.pojos.api.auth.UserLogLevelType;
+import de.jpaw.util.ApplicationException;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
+/**
+ * API used by the central request dispatcher to log requests conditionally (based on settings of logLevel in the JWT).
+ */
 public interface IRequestLogger extends Closeable {
-    void open();        // first call in regular lifecycle
-    void logRequest(InternalHeaderParameters hdr, ExecutionSummary summary, RequestParameters params, ServiceResponse response);
-    void flush();       // flush unwritten buffers
+
+    /** Opens the request logger. First call in regular lifecycle. */
+    void open();
+
+    /** Computes the effective log level, based on the return code (error vs successful) and settings of the JWT. */
+    default UserLogLevelType calculateLogLevel(final JwtInfo jwtInfo, final int returnCode) {
+        if (ApplicationException.isOk(returnCode)) {
+            return jwtInfo.getLogLevel() == null ? UserLogLevelType.MESSAGE_ENTRY : jwtInfo.getLogLevel();
+        } else {
+            if (jwtInfo.getLogLevelErrors() != null) {
+                return jwtInfo.getLogLevelErrors();
+            } else if (jwtInfo.getLogLevel() != null) {
+                return jwtInfo.getLogLevel();
+            } else {
+                return UserLogLevelType.REQUESTS;
+            }
+        }
+    }
+
+    /**
+     * Logs a single request.
+     */
+    void logRequest(@Nonnull InternalHeaderParameters hdr, @Nonnull ExecutionSummary summary,
+      @Nullable RequestParameters params, @Nullable ServiceResponse response);
+
+    /** Flushes unwritten buffers. */
+    void flush();
+
+    /** Closes the logger. Shuts down the message writer; last call in regular lifecycle. */
     @Override
-    void close();       // shut down the message writer  last call in regular lifecycle
+    void close();
 }

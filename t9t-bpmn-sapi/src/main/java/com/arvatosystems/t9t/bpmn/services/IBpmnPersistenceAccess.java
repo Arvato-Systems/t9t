@@ -54,7 +54,7 @@ public interface IBpmnPersistenceAccess {
     /** Retrieves all references to process status records of current tasks. */
     List<Long> getTaskRefsDue(@Nullable String onlyForProcessDefinitionId, @Nonnull Instant whenDue,
         boolean includeErrorStatus, boolean allClusterNodes,
-        @Nullable String onlyForNextStep, @Nullable Collection<Integer> returnCodes);
+        @Nullable String onlyForNextStep, @Nullable Collection<Integer> returnCodes, @Nullable Integer maxTasks);
 
     /** Update existing process execution status */
     Long createOrUpdateNewStatus(RequestContext ctx, ProcessExecutionStatusDTO dto, ExecuteProcessWithRefRequest rq, boolean restart);

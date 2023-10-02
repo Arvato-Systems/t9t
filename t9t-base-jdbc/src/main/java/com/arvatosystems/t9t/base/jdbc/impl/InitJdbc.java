@@ -15,19 +15,15 @@
  */
 package com.arvatosystems.t9t.base.jdbc.impl;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.jdbc.IJdbcDataSourceBuilder;
 import com.arvatosystems.t9t.base.services.IJdbcDataSource;
 import com.arvatosystems.t9t.base.services.IPersistenceProviderJdbc;
 import com.arvatosystems.t9t.cfg.be.RelationalDatabaseConfiguration;
 import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration;
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Startup;
@@ -37,6 +33,8 @@ import de.jpaw.dp.StartupOnly;
 public class InitJdbc implements StartupOnly {
     private static final Logger LOGGER = LoggerFactory.getLogger(InitJdbc.class);
 
+    private final IJdbcDataSourceBuilder jdbcDataSourceBuilder = Jdp.getRequired(IJdbcDataSourceBuilder.class);
+
     @Override
     public void onStartup() {
         final T9tServerConfiguration cfg = Jdp.getRequired(T9tServerConfiguration.class);
@@ -45,49 +43,9 @@ public class InitJdbc implements StartupOnly {
             LOGGER.info("Not setting up JDBC - no secondary data source defined");
         } else {
             LOGGER.info("Setting up JDBC secondary data source");
-            final HikariConfig hcfg = new HikariConfig();
-            if (db2cfg.getJdbcDriverClass() != null) {
-                hcfg.setDriverClassName(db2cfg.getJdbcDriverClass());
-            }
-            hcfg.setUsername(db2cfg.getUsername());
-            hcfg.setPassword(db2cfg.getPassword());
-            hcfg.setJdbcUrl(db2cfg.getJdbcConnectString());
-            hcfg.setMaximumPoolSize(20);
-            hcfg.setMinimumIdle(5);
-
-            if (db2cfg.getZ() != null && !db2cfg.getZ().isEmpty()) {
-                // construct some additional data source properties
-                for (final String s: db2cfg.getZ()) {
-                    final String[] kvp = s.split("=");
-                    if (kvp.length == 2) {
-                        final String key = kvp[0].trim();
-                        final String value = kvp[1].trim();
-                        LOGGER.info("Setting additional datasource property {} = {}", key, value);
-                        hcfg.addDataSourceProperty(key, value);
-                    }
-                }
-            }
-//            dataSource.cachePrepStmts=true
-//            dataSource.prepStmtCacheSize=250
-//            dataSource.prepStmtCacheSqlLimit=2048
-//            final HikariDataSource ds = new HikariDataSource(hcfg);
-            final IJdbcDataSource ds = new LoggingJdbcDataSource(new HikariDataSource(hcfg));
+            final IJdbcDataSource ds = jdbcDataSourceBuilder.initSecondaryDataSource(db2cfg);
             Jdp.bindInstanceTo(ds, IJdbcDataSource.class, T9tConstants.QUALIFIER_JDBC_SECONDARY);  // make it known to consumers such as BPMN2
             Jdp.registerWithCustomProvider(IPersistenceProviderJdbc.class, new PersistenceProviderJdbcProvider(ds));
-        }
-    }
-
-    private static final class LoggingJdbcDataSource implements IJdbcDataSource {
-        final HikariDataSource ds;
-
-        private LoggingJdbcDataSource(HikariDataSource ds) {
-            this.ds = ds;
-        }
-
-        @Override
-        public Connection getConnection() throws SQLException {
-            LOGGER.trace("New JDBC connection requested");
-            return ds.getConnection();
         }
     }
 }

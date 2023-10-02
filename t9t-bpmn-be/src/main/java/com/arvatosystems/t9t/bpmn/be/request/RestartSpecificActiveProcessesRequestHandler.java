@@ -25,34 +25,60 @@ import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.batch.StatisticsDTO;
 import com.arvatosystems.t9t.bpmn.request.RestartSpecificActiveProcessesRequest;
 import com.arvatosystems.t9t.bpmn.request.TriggerSingleProcessNowRequest;
 import com.arvatosystems.t9t.bpmn.services.IBpmnPersistenceAccess;
 import com.arvatosystems.t9t.statistics.services.IAutonomousRunner;
+import com.arvatosystems.t9t.statistics.services.IStatisticsService;
 
 import de.jpaw.dp.Jdp;
 
 public class RestartSpecificActiveProcessesRequestHandler extends AbstractRequestHandler<RestartSpecificActiveProcessesRequest> {
     private static final Logger LOGGER  = LoggerFactory.getLogger(RestartSpecificActiveProcessesRequestHandler.class);
-    protected final IAutonomousRunner runner = Jdp.getRequired(IAutonomousRunner.class);
-    protected final IBpmnPersistenceAccess persistenceAccess = Jdp.getRequired(IBpmnPersistenceAccess.class);
+
+    private final IBpmnPersistenceAccess persistenceAccess = Jdp.getRequired(IBpmnPersistenceAccess.class);
+    private final IAutonomousRunner      runner            = Jdp.getRequired(IAutonomousRunner.class);
+    private final IStatisticsService     statisticsService = Jdp.getRequired(IStatisticsService.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final RestartSpecificActiveProcessesRequest rq) {
         final String processId = rq.getProcessId();
         final Instant dueWhen = ctx.executionStart.minusSeconds(T9tUtil.nvl(rq.getMinAgeInSeconds(), 30));
         final List<Long> taskRefs = persistenceAccess.getTaskRefsDue(processId, dueWhen,
-            Boolean.TRUE.equals(rq.getIncludeErrorStatus()), Boolean.TRUE.equals(rq.getRunProcessesOfAnyNode()), rq.getNextStep(), rq.getReturnCodes());
+            Boolean.TRUE.equals(rq.getIncludeErrorStatus()), Boolean.TRUE.equals(rq.getRunProcessesOfAnyNode()), rq.getNextStep(), rq.getReturnCodes(),
+            rq.getMaxTasks());
 
         final int numRecords = taskRefs.size();
+        LOGGER.debug("Found {} active tasks for workflow {} at step {} for restart", numRecords, processId, rq.getNextStep());
+
         if (numRecords > 0) {
-            LOGGER.debug("Found {} active tasks for workflow {} at step {} for restart", numRecords, processId, rq.getNextStep());
+            ctx.statusText = "Processing " + numRecords + " tasks for " + processId;
 
             runner.runSingleAutonomousTx(ctx, numRecords, taskRefs,
-                    ref -> new TriggerSingleProcessNowRequest(ref),
+                    ref -> createTriggerRequest(ref),
                     stat -> stat.setInfo1(processId),
                     "t9t-bpm-s");
+            writeStatistics(ctx, numRecords, processId, rq.getNextStep());
         }
         return ok();
+    }
+
+    private TriggerSingleProcessNowRequest createTriggerRequest(final Long ref) {
+        final TriggerSingleProcessNowRequest rq = new TriggerSingleProcessNowRequest(ref);
+        rq.setEssentialKey(Long.toString(ref));
+        return rq;
+    }
+
+    private void writeStatistics(final RequestContext ctx, final int numRecords, final String workflowId, final String stepToRestart) {
+        final StatisticsDTO stat = new StatisticsDTO();
+        stat.setInfo1(workflowId);
+        stat.setInfo2(stepToRestart);
+        stat.setRecordsProcessed(numRecords);
+        stat.setStartTime(ctx.executionStart);
+        stat.setEndTime(Instant.now());
+        stat.setJobRef(ctx.internalHeaderParameters.getProcessRef());
+        stat.setProcessId("restartSomeBpm");
+        statisticsService.saveStatisticsData(stat);
     }
 }

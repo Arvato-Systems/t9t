@@ -28,4 +28,6 @@ import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 public interface IColumnConfigCreator {
     void createColumnConfigComponent(ApplicationSession session, Div parent, UIGridPreferences uiGridPreferences, Set<String> currentGrid);
     Pair<List<String>, List<String>> getAddRemovePairs(ApplicationSession session);
+    void selectColumns(Set<String> columnNames);
+    void unselectColumns(Set<String> columnNames);
 }

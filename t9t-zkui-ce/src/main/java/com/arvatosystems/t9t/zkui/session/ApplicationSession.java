@@ -80,7 +80,6 @@ import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 import de.jpaw.dp.Jdp;
-import de.jpaw.util.ApplicationException;
 import de.jpaw.util.ExceptionUtil;
 import jakarta.servlet.http.HttpSession;
 
@@ -588,8 +587,8 @@ public final class ApplicationSession {
         return jwtInfo;
     }
 
-    /** methods sets all of (encodedJwt, jwtInfo, and the authorizationHeader. */
-    public void setJwt(String jwt) throws ApplicationException {
+    /** Sets all of (encodedJwt, jwtInfo, and the authorizationHeader. */
+    public void setJwt(String jwt) {
         dropdownDataCache.invalidateAll(); // entries relate to some tenant
         enumTranslationCache.invalidateAll();
         permissionCache.clear();

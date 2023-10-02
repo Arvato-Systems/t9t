@@ -15,11 +15,16 @@
  */
 package com.arvatosystems.t9t.zkui.viewmodel.support;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.reflections.Reflections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.AfterCompose;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
@@ -36,19 +41,31 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Window;
 
 import com.arvatosystems.t9t.base.IGridConfigContainer;
+import com.arvatosystems.t9t.base.MessagingUtil;
+import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.uiprefs.UIGridPreferences;
 import com.arvatosystems.t9t.zkui.services.IColumnConfigCreator;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 
+import de.jpaw.bonaparte.pojos.api.TrackingBase;
+import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
+import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.dp.Jdp;
+import de.jpaw.dp.ReflectionsPackageCache;
 
 public class EditGridViewModel {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(EditGridViewModel.class);
+    private static final Set<String> TRACKING_FIELDS = getTrackingFields();
 
     protected Listbox editGridListBox;
     private Window windowComponent = null;
     private UIGridPreferences uiGridPreferences = null;
     private Set<String> currentGrid = null;
     private final IColumnConfigCreator columnConfigCreator = Jdp.getRequired(IColumnConfigCreator.class);
+    private final Set<String> trackingColumns = new HashSet<>();
+    private final Set<String> topLevelDataColumns = new HashSet<>();
+    private final Set<String> childDataColumns = new HashSet<>();
 
     @Wire("#component")
     private Div div;
@@ -62,6 +79,15 @@ public class EditGridViewModel {
             uiGridPreferences = IGridConfigContainer.GRID_CONFIG_REGISTRY.get(initParams.get("gridId"));
             if (initParams.get("currentGridList") != null) {
                 currentGrid = ((List<String>) initParams.get("currentGridList")).stream().collect(Collectors.toSet());
+            }
+            for (final String fieldName: getAvailableFieldNames()) {
+                if (TRACKING_FIELDS.contains(fieldName)) {
+                    trackingColumns.add(fieldName);
+                } else if (fieldName.indexOf(".") == -1) {
+                    topLevelDataColumns.add(fieldName);
+                } else {
+                    childDataColumns.add(fieldName);
+                }
             }
         }
     }
@@ -86,5 +112,62 @@ public class EditGridViewModel {
             Events.sendEvent("onClose", windowComponent, pairs);
             windowComponent.onClose();
         }
+    }
+
+    @Command
+    public void addTrackingColumns() {
+        columnConfigCreator.selectColumns(trackingColumns);
+    }
+
+    @Command
+    public void addDataColumns() {
+        columnConfigCreator.selectColumns(topLevelDataColumns);
+    }
+
+    @Command
+    public void removeTrackingColumns() {
+        columnConfigCreator.unselectColumns(trackingColumns);
+    }
+
+    @Command
+    public void removeDataColumns() {
+        columnConfigCreator.unselectColumns(topLevelDataColumns);
+        columnConfigCreator.unselectColumns(childDataColumns);
+    }
+
+    private static Set<String> getTrackingFields() {
+        final Set<String> trackingFields = new HashSet<String>();
+        final Reflections[] reflections = ReflectionsPackageCache.getAll(MessagingUtil.BONAPARTE_PACKAGE_PREFIX, MessagingUtil.TWENTYEIGHT_PACKAGE_PREFIX);
+        for (final Reflections reflection : reflections) {
+            for (final Class<? extends TrackingBase> cls : reflection.getSubTypesOf(TrackingBase.class)) {
+                try {
+                    final Method method = cls.getDeclaredMethod("class$MetaData");
+                    final ClassDefinition classDefinition = (ClassDefinition) method.invoke(null);
+                    for (final FieldDefinition fieldDefinition : classDefinition.getFields()) {
+                        trackingFields.add(fieldDefinition.getName());
+                    }
+                } catch (Exception ex) {
+                    LOGGER.error("Error occured while getting tracking field", ex);
+                    throw new T9tException(T9tException.GENERAL_SERVER_ERROR, ex.getMessage());
+                }
+            }
+        }
+        return trackingFields;
+    }
+
+    private Set<String> getAvailableFieldNames() {
+        final Set<String> fieldNames = new HashSet<>();
+        uiGridPreferences.getColumns().stream().forEach(uiColumn -> {
+            if (uiColumn.getMeta() == null || uiColumn.getMeta().getDataType() == null || !uiColumn.getMeta().getDataType().equalsIgnoreCase("ref")) {
+                // skip refs
+                fieldNames.add(uiColumn.getFieldName());
+            }
+        });
+        if (uiGridPreferences.getMapColumns() != null) {
+            uiGridPreferences.getMapColumns().stream().forEach(mapColumn -> {
+                fieldNames.add(mapColumn);
+            });
+        }
+        return fieldNames;
     }
 }

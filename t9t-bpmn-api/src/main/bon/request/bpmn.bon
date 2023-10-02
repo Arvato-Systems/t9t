@@ -120,6 +120,7 @@ package (com.arvatosystems) t9t.bpmn.request {
         optional Boolean                        includeErrorStatus;         // also rerun processes in error status
         optional Boolean                        runProcessesOfAnyNode;      // if true, the execution will pick up processes for any node, otherwise just the ones assigned to the current partition
         required Integer List<>                 returnCodes;                // if includeErrorStatus true: do errors but exclude these return codes, if false but list present: include only these
+        optional Integer                        maxTasks;                   // the maximum number of tasks to start
     }
 
     /**
@@ -133,6 +134,7 @@ package (com.arvatosystems) t9t.bpmn.request {
         optional Boolean                        includeErrorStatus;         // also rerun processes in error status
         optional Boolean                        runProcessesOfAnyNode;      // if true, the execution will pick up processes for any node, otherwise just the ones assigned to the current partition
         required Integer List<>                 returnCodes;                // if includeErrorStatus true: do errors but exclude these return codes, if false but list present: include only these
+        optional Integer                        maxTasks;                   // the maximum number of tasks to start
     }
 
     /** This methods sets a consistent lock mode for all workflows defines for this tenant. */

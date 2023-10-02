@@ -252,6 +252,13 @@
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:element>
+                    <xs:element name="idleInterval" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:unsignedInt">
+                                <xs:maxInclusive value="2147483647"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
@@ -720,6 +727,13 @@
                         </xs:simpleType>
                     </xs:element>
                     <xs:element name="pauseIncreaseFactor" minOccurs="0" nillable="true" type="xs:double"/>
+                    <xs:element name="dnsTtl" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:unsignedInt">
+                                <xs:maxInclusive value="2147483647"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>

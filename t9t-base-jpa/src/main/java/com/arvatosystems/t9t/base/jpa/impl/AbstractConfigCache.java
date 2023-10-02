@@ -48,7 +48,7 @@ public abstract class AbstractConfigCache<
   ENTITY extends BonaPersistableKey<Long> & BonaPersistableTracking<TRACKING>> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractConfigCache.class);
     /** The cache is a 2 level map. The index of the first level is the tenantId. A cache always contains all entries for a given tenant or none. */
-    protected final Cache<String, Map<Ref, DTO>> configCache = Caffeine.newBuilder().expireAfterWrite(15L, TimeUnit.MINUTES).build();
+    protected final Cache<String, Map<Ref, DTO>> configCache = Caffeine.newBuilder().expireAfterWrite(5L, TimeUnit.MINUTES).build();
     protected final IResolverAnyKey<Long, TRACKING, ENTITY> resolver;
     protected final Class<DTO> dtoClass;
     protected final boolean fallbackDefaultTenant;

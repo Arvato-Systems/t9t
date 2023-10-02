@@ -23,15 +23,16 @@ import com.arvatosystems.t9t.base.output.ExportStatusEnum;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.IFileUtil;
 import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.io.DataSinkDTO;
+import com.arvatosystems.t9t.io.SinkDTO;
 import com.arvatosystems.t9t.io.T9tIOException;
 import com.arvatosystems.t9t.io.jpa.entities.SinkEntity;
 import com.arvatosystems.t9t.io.jpa.mapping.IDataSinkDTOMapper;
+import com.arvatosystems.t9t.io.jpa.mapping.ISinkDTOMapper;
 import com.arvatosystems.t9t.io.jpa.persistence.ISinkEntityResolver;
 import com.arvatosystems.t9t.io.request.ProcessCamelRouteRequest;
-import com.arvatosystems.t9t.out.services.IFileToCamelProducer;
+import com.arvatosystems.t9t.out.services.ISinkToCamelProducer;
 
-import de.jpaw.bonaparte.api.media.MediaTypeInfo;
-import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ExceptionUtil;
 
@@ -40,9 +41,10 @@ public class ProcessCamelRouteRequestHandler extends AbstractRequestHandler<Proc
     protected static final String GZIP_EXTENSION = ".gz";
 
     protected final IFileUtil fileUtil = Jdp.getRequired(IFileUtil.class);
-    protected final IFileToCamelProducer fileToCamelProducer = Jdp.getRequired(IFileToCamelProducer.class);
+    protected final ISinkToCamelProducer sinkToCamelProducer = Jdp.getRequired(ISinkToCamelProducer.class);
     protected final ISinkEntityResolver sinkResolver = Jdp.getRequired(ISinkEntityResolver.class);
     protected final IDataSinkDTOMapper dataSinkMapper = Jdp.getRequired(IDataSinkDTOMapper.class);
+    protected final ISinkDTOMapper sinkMapper = Jdp.getRequired(ISinkDTOMapper.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final ProcessCamelRouteRequest rq) throws Exception {
@@ -59,21 +61,23 @@ public class ProcessCamelRouteRequestHandler extends AbstractRequestHandler<Proc
                 absolutePath += GZIP_EXTENSION;
             }
         }
-        final MediaTypeDescriptor mediaType = MediaTypeInfo.getFormatByType(sink.getCommFormatType());
-        LOGGER.info("Transferring sink {} as {} for path {}", rq.getSinkRef(), mediaType, absolutePath);
+        LOGGER.info("Transferring sink {} for path {}", rq.getSinkRef(), absolutePath);
         try {
+            final DataSinkDTO dataSinkDto = dataSinkMapper.mapToDto(sink.getDataSink());
+            final SinkDTO sinkDto = sinkMapper.mapToDto(sink);
+
             if (rq.getTargetFileName() != null && rq.getTargetFileName().length() > 0
               && rq.getTargetCamelRoute() != null && rq.getTargetCamelRoute().length() > 0) {
-                fileToCamelProducer.sendFileOverCamelUsingTargetFileNameAndTargetCamelRoute(absolutePath, mediaType,
-                  dataSinkMapper.mapToDto(sink.getDataSink()), rq.getTargetFileName(), rq.getTargetCamelRoute());
+                sinkToCamelProducer.sendSinkOverCamelUsingTargetFileNameAndTargetCamelRoute(sinkDto, dataSinkDto, rq.getTargetFileName(),
+                        rq.getTargetCamelRoute());
             } else if (rq.getTargetFileName() != null && rq.getTargetFileName().length() > 0) {
-                fileToCamelProducer.sendFileOverCamelUsingTargetFileName(absolutePath, mediaType,
-                  dataSinkMapper.mapToDto(sink.getDataSink()), rq.getTargetFileName());
+                sinkToCamelProducer.sendSinkOverCamelUsingTargetFileName(sinkDto, dataSinkDto,
+                        rq.getTargetFileName());
             } else if (rq.getTargetCamelRoute() != null && rq.getTargetCamelRoute().length() > 0) {
-                fileToCamelProducer.sendFileOverCamelUsingTargetCamelRoute(absolutePath, mediaType,
-                  dataSinkMapper.mapToDto(sink.getDataSink()), rq.getTargetCamelRoute());
+                sinkToCamelProducer.sendSinkOverCamelUsingTargetCamelRoute(sinkDto, dataSinkDto,
+                        rq.getTargetCamelRoute());
             } else {
-                fileToCamelProducer.sendFileOverCamel(absolutePath, mediaType, dataSinkMapper.mapToDto(sink.getDataSink()));
+                sinkToCamelProducer.sendSinkOverCamel(sinkDto, dataSinkDto);
             }
             // assuming the transfer was successful if we did not get an exception here, mark the sink as transferred
             sink.setCamelTransferStatus(ExportStatusEnum.RESPONSE_OK);

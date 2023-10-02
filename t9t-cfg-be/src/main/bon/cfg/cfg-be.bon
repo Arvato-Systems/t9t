@@ -90,6 +90,7 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional Integer                            monitorInterval;                // after how many ms to print monitored partitions (default is 5000)
         optional Integer                            shutdownThreadpoolInterval;     // timeout in ms for threadpool shutdown (default is 10000)
         optional Integer                            maxPollRecords;                 // maximum number of records returned in a single call to poll() (max.poll.records)
+        optional Integer                            idleInterval;                   // interval in ms to sleep/idle when not busy
     }
 
     class RelationalDatabaseConfiguration {
@@ -184,6 +185,7 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional Integer                            numberOfRetriesDatabaseConnect; // how often to retry in case of database connection exceptions (default 3)
         optional Integer                            pauseBeforeDatabaseConnectRetry; // how many ms to sleep before a retry is done
         optional Double                             pauseIncreaseFactor;            // if set, provides the factor for subsequent sleeps (should be >= 1.0, default 1.5)
+        optional Integer                            dnsTtl;                         // time to live for DNS resolution (required for some AWS deployments for Aurora failovers)
     }
 
     /** The uplink configuration has been reassigned to provide the link to the report server. */

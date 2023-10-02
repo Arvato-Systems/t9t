@@ -30,7 +30,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Named;
-import de.jpaw.util.ApplicationException;
 
 /**
  * Implementation of {@linkplain ITextDataGenerator} which generates output data in JSON format.
@@ -45,7 +44,7 @@ public class JSONJacksonDataGenerator extends AbstractFormatGenerator {
     protected ObjectMapper objectMapper = null;
 
     @Override
-    protected void openHook() throws IOException, ApplicationException {
+    protected void openHook() throws IOException {
         super.openHook();
         final boolean useNulls = Boolean.TRUE.equals(sinkCfg.getJsonWriteNulls());
         osw = new OutputStreamWriter(outputResource.getOutputStream(), encoding);

@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.zkui.services;
+package com.arvatosystems.t9t.base.jdbc;
 
-public interface IAuthenticationService {
-    void login(String username, String password);
-    void loginWithExternalToken(String accessToken, String username);
-    void logout();
+import com.arvatosystems.t9t.base.services.IJdbcDataSource;
+import com.arvatosystems.t9t.cfg.be.RelationalDatabaseConfiguration;
+
+public interface IJdbcDataSourceBuilder {
+    IJdbcDataSource initSecondaryDataSource(RelationalDatabaseConfiguration db2cfg);
 }

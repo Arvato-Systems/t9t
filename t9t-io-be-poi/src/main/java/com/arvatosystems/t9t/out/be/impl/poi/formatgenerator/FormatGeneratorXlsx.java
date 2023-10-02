@@ -24,7 +24,6 @@ import de.jpaw.bonaparte.core.MessageComposer;
 import de.jpaw.bonaparte.poi.ExcelXComposer;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Named;
-import de.jpaw.util.ApplicationException;
 
 @Dependent
 @Named("XLSX")
@@ -33,7 +32,7 @@ public class FormatGeneratorXlsx extends FoldableFormatGenerator<RuntimeExceptio
     protected final ExcelXComposer xlsComposer = new ExcelXComposer();
 
     @Override
-    protected void openHook() throws IOException, ApplicationException {
+    protected void openHook() throws IOException {
         super.openHook();
         xlsComposer.newSheet("Sheet 1");
         writeTitles();

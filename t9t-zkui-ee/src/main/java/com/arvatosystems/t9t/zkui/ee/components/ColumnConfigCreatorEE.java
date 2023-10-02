@@ -57,6 +57,7 @@ public class ColumnConfigCreatorEE extends DefaultColumnConfigCreator {
     private static final Logger LOGGER = LoggerFactory.getLogger(ColumnConfigCreatorEE.class);
 
     protected final Map<String, List<FieldNameModel>> columnsByKey = new HashMap<>();
+    protected final Map<String, Checkbox> columnSelectionMap = new HashMap<>();
 
     private Set<String> currentGrid = null;
     private Set<String> selections = null;
@@ -95,6 +96,32 @@ public class ColumnConfigCreatorEE extends DefaultColumnConfigCreator {
         return new Pair<>(addPair, removePair);
     }
 
+    @Override
+    public void selectColumns(final Set<String> columnNames) {
+        setColumnSelected(columnNames, true);
+    }
+
+    @Override
+    public void unselectColumns(final Set<String> columnNames) {
+        setColumnSelected(columnNames, false);
+    }
+
+    private void setColumnSelected(final Set<String> columnNames, final boolean selected) {
+        for (final String columnName : columnNames) {
+            final Checkbox cb = columnSelectionMap.get(columnName);
+            if (cb != null) {
+                cb.setChecked(selected);
+            }
+            if (selections != null) {
+                if (selected) {
+                    selections.add(columnName);
+                } else {
+                    selections.remove(columnName);
+                }
+            }
+        }
+    }
+
     /**
      * The method group all the fields into hierarchy based on the path (separated
      * by dot) then put into a map ready for lazy loading when expanding on the
@@ -123,7 +150,6 @@ public class ColumnConfigCreatorEE extends DefaultColumnConfigCreator {
                         fnm.setFieldName(fieldName);
                         if (i == splitted.length - 1) {
                             fnm.setFullPath(fullPath);
-                            fnm.setSelected(selections.contains(fullPath));
                         }
                         final List<FieldNameModel> fnms = columnsByKey.computeIfAbsent(upperLevel, (k) -> new ArrayList<>());
                         if (!fnms.contains(fnm)) {
@@ -135,7 +161,6 @@ public class ColumnConfigCreatorEE extends DefaultColumnConfigCreator {
                 final FieldNameModel fnm = new FieldNameModel();
                 fnm.setFieldName(fullPath);
                 fnm.setFullPath(fullPath);
-                fnm.setSelected(selections.contains(fullPath));
                 if (!firstLevelColumns.contains(fnm)) {
                     firstLevelColumns.add(fnm);
                 }
@@ -147,7 +172,6 @@ public class ColumnConfigCreatorEE extends DefaultColumnConfigCreator {
                 final FieldNameModel fnm = new FieldNameModel();
                 fnm.setFieldName(mapColumn);
                 fnm.setFullPath(mapColumn);
-                fnm.setSelected(selections.contains(mapColumn));
                 if (!firstLevelColumns.contains(fnm)) {
                     firstLevelColumns.add(fnm);
                 }
@@ -189,7 +213,7 @@ public class ColumnConfigCreatorEE extends DefaultColumnConfigCreator {
                     detail.setParent(row);
                 } else {
                     final Checkbox cb = new Checkbox();
-                    cb.setChecked(data.isSelected);
+                    cb.setChecked(selections.contains(data.fullPath));
                     cb.addEventListener(Events.ON_CHECK, (e) -> {
                         if (((Checkbox) e.getTarget()).isChecked()) {
                             selections.add(data.fullPath);
@@ -197,6 +221,7 @@ public class ColumnConfigCreatorEE extends DefaultColumnConfigCreator {
                             selections.remove(data.fullPath);
                         }
                     });
+                    columnSelectionMap.put(data.fullPath, cb);
                     cb.setParent(row);
                 }
 
@@ -236,7 +261,6 @@ public class ColumnConfigCreatorEE extends DefaultColumnConfigCreator {
 
         private String fieldName;
         private String fullPath;
-        private boolean isSelected;
 
         public String getFieldName() {
             return fieldName;
@@ -244,14 +268,6 @@ public class ColumnConfigCreatorEE extends DefaultColumnConfigCreator {
 
         public String getFullPath() {
             return fullPath;
-        }
-
-        public boolean isSelected() {
-            return isSelected;
-        }
-
-        public void setSelected(final boolean xisSelected) {
-            this.isSelected = xisSelected;
         }
 
         public void setFieldName(final String fieldName) {

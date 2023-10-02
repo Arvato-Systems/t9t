@@ -26,7 +26,6 @@ import de.jpaw.bonaparte.core.CSVComposer3;
 import de.jpaw.bonaparte.core.MessageComposer;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Named;
-import de.jpaw.util.ApplicationException;
 
 @Dependent
 @Named("CSV")
@@ -41,7 +40,7 @@ public class FormatGeneratorCsv extends FoldableFormatGenerator<IOException> {
     }
 
     @Override
-    protected void openHook() throws IOException, ApplicationException {
+    protected void openHook() throws IOException {
         final CsvConfigurationDTO csvCfg = (CsvConfigurationDTO)sinkCfg.getCsvConfigurationRef();
         osw = new OutputStreamWriter(outputResource.getOutputStream(), encoding);
         csvComposer = new CSVComposer3(osw, CSVTools.getCsvConfiguration(csvCfg));
@@ -57,7 +56,7 @@ public class FormatGeneratorCsv extends FoldableFormatGenerator<IOException> {
     }
 
     @Override
-    public void close() throws IOException, ApplicationException {
+    public void close() throws IOException {
         csvComposer.terminateTransmission();
         osw.flush();
     }

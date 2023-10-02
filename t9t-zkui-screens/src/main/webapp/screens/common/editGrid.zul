@@ -9,12 +9,18 @@
         <div class="form" vflex="1">
             <groupbox vflex="1" contentStyle="padding: 15px;">
                 <vlayout vflex="1">
-                 <label class="label" value="${l:translate('editGrid', 'fieldName')}" />
+
                  <div id="component" />
                 </vlayout>
                 <vlayout vflex="min">
-                    <hlayout style="padding: 20px 10px;text-align:right;">
-                        <button28 id="updateGrid" autodisable="updateGrid,closeButton" onClick="@command('updateGrid')"/>
+                    <hlayout style="padding: 10px;">
+                        <button28 id="addTrackingColumns" autodisable="updateGrid,closeButton,removeTrackingColumns" onClick="@command('addTrackingColumns')"/>
+                        <button28 id="addDataColumns" autodisable="updateGrid,closeButton,removeDataColumns" onClick="@command('addDataColumns')"/>
+                        <button28 id="removeTrackingColumns" autodisable="updateGrid,closeButton,addTrackingColumns" onClick="@command('removeTrackingColumns')"/>
+                        <button28 id="removeDataColumns" autodisable="updateGrid,closeButton,addDataColumns" onClick="@command('removeDataColumns')"/>
+                    </hlayout>
+                    <hlayout style="padding: 10px;text-align:right;">
+                        <button28 id="updateGrid" autodisable="updateGrid,closeButton,addTrackingColumns,addDataColumns,removeTrackingColumns,removeDataColumns" onClick="@command('updateGrid')"/>
                         <button28 id="closeButton" autodisable="updateGrid,closeButton" onClick="@command('closeWindow')"/>
                     </hlayout>
                 </vlayout>

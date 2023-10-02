@@ -18,6 +18,7 @@ package com.arvatosystems.t9t.orm.jpa.hibernate.impl;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -58,19 +59,7 @@ public class EMFCustomizer implements IEMFCustomizer {
         // Extension point for customization
     }
 
-    @Override
-    public EntityManagerFactory getCustomizedEmf(final String puName, final RelationalDatabaseConfiguration settings) throws Exception {
-        final Map<String, Object> myProps = new HashMap<>();
-
-        configureProperties(myProps);
-
-        putOpt(myProps, "jakarta.persistence.jdbc.driver",   settings.getJdbcDriverClass());
-        putOpt(myProps, "jakarta.persistence.jdbc.url",      settings.getJdbcConnectString());
-        putOpt(myProps, "jakarta.persistence.jdbc.user",     settings.getUsername());
-        putOpt(myProps, "jakarta.persistence.jdbc.password", settings.getPassword());
-
-        // see http://docs.jboss.org/hibernate/orm/4.3/javadocs/org/hibernate/dialect/package-summary.html
-        final DatabaseBrandType dbName = settings.getDatabaseBrand();
+    protected void configureBrand(final Map<String, Object> myProps, final DatabaseBrandType dbName) {
         if (dbName != null) {
             switch (dbName) {
             case HANA:
@@ -98,10 +87,12 @@ public class EMFCustomizer implements IEMFCustomizer {
                 break;
             }
         }
+    }
 
-        // also transfer custom parameters, if provided
-        if (settings.getZ() != null) {
-            for (final String customSetting: settings.getZ()) {
+    /** Initialize z fields (if any), can also be used to install specific other settings (for example for AWS JDC wrapper). */
+    protected void additionalInitialization(final Map<String, Object> myProps, final List<String> z) {
+        if (z != null && !z.isEmpty()) {
+            for (final String customSetting: z) {
                 final int equalsPos = customSetting.indexOf('=');
                 if (equalsPos > 0) {
                     // store key/value pair
@@ -114,6 +105,24 @@ public class EMFCustomizer implements IEMFCustomizer {
                 }
             }
         }
+    }
+
+    @Override
+    public EntityManagerFactory getCustomizedEmf(final String puName, final RelationalDatabaseConfiguration settings) throws Exception {
+        final Map<String, Object> myProps = new HashMap<>();
+
+        configureProperties(myProps);
+
+        putOpt(myProps, "jakarta.persistence.jdbc.driver",   settings.getJdbcDriverClass());
+        putOpt(myProps, "jakarta.persistence.jdbc.url",      settings.getJdbcConnectString());
+        putOpt(myProps, "jakarta.persistence.jdbc.user",     settings.getUsername());
+        putOpt(myProps, "jakarta.persistence.jdbc.password", settings.getPassword());
+
+        // see http://docs.jboss.org/hibernate/orm/4.3/javadocs/org/hibernate/dialect/package-summary.html
+        configureBrand(myProps, settings.getDatabaseBrand());
+
+        // also transfer custom parameters, if provided
+        additionalInitialization(myProps, settings.getZ());
 
         final Set<Class<?>> mcl = InitContainers.getClassesAnnotatedWith(MappedSuperclass.class);
         final Set<Class<?>> entities = InitContainers.getClassesAnnotatedWith(Entity.class);

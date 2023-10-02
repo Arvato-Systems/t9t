@@ -125,7 +125,8 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
     }
 
     protected <E> List<E> getQueryForDueTasks(final Class<E> type, final String field, final String onlyForProcessDefinitionId, final Instant whenDue,
-      final boolean includeErrorStatus, final boolean allClusterNodes, final String onlyForNextStep, final Collection<Integer> returnCodes) {
+      final boolean includeErrorStatus, final boolean allClusterNodes, final String onlyForNextStep, final Collection<Integer> returnCodes,
+      final Integer maxTasks) {
         String nodeCondition = "";
         int numPartitions = 1;
         Collection<Integer> shards = Collections.emptyList();
@@ -173,6 +174,9 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
             query.setParameter("partitions", numPartitions);
             query.setParameter("listOfPartitions", shards);
         }
+        if (maxTasks != null) {
+            query.setMaxResults(maxTasks);
+        }
         return query.getResultList();
     }
 
@@ -181,15 +185,15 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
       final boolean includeErrorStatus, final boolean allClusterNodes, final String onlyForNextStep, final Collection<Integer> returnCodes) {
         return statusMapper.mapListToDto(getQueryForDueTasks(ProcessExecStatusEntity.class, "",
           onlyForProcessDefinitionId, whenDue, includeErrorStatus, allClusterNodes,
-          onlyForNextStep, returnCodes));
+          onlyForNextStep, returnCodes, null));
     }
 
     @Override
     public List<Long> getTaskRefsDue(final String onlyForProcessDefinitionId, final Instant whenDue, final boolean includeErrorStatus,
-      final boolean allClusterNodes, final String onlyForNextStep, final Collection<Integer> returnCodes) {
+      final boolean allClusterNodes, final String onlyForNextStep, final Collection<Integer> returnCodes, final Integer maxTasks) {
         return getQueryForDueTasks(Long.class, ".objectRef",
           onlyForProcessDefinitionId, whenDue, includeErrorStatus, allClusterNodes,
-          onlyForNextStep, returnCodes);
+          onlyForNextStep, returnCodes, maxTasks);
     }
 
     @Override

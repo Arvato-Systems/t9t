@@ -41,7 +41,7 @@ public abstract class AbstractConfigCacheFieldwiseInvalidation<
   ENTITY extends BonaPersistableKey<Long> & BonaPersistableTracking<TRACKING>> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractConfigCacheFieldwiseInvalidation.class);
     /** The cache consists of 2 single level map caches, one by objectRef, one by tenantId / id. */
-    protected final Cache<Long, DTO> cacheByObjectRef = Caffeine.newBuilder().expireAfterWrite(15L, TimeUnit.MINUTES).build();
+    protected final Cache<Long, DTO> cacheByObjectRef = Caffeine.newBuilder().expireAfterWrite(5L, TimeUnit.MINUTES).build();
     protected final Cache<SomeCacheKey, Long> cacheById = Caffeine.newBuilder().expireAfterWrite(1L, TimeUnit.HOURS).build();
     protected final IResolverAnyKey<Long, TRACKING, ENTITY> resolver;
     protected final Class<DTO> dtoClass;

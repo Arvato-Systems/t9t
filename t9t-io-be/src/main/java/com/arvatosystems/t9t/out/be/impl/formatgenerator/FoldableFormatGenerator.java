@@ -34,7 +34,6 @@ import de.jpaw.bonaparte.core.EnumAsTokenComposerFilter;
 import de.jpaw.bonaparte.core.FoldingComposer;
 import de.jpaw.bonaparte.core.MessageComposer;
 import de.jpaw.bonaparte.pojos.meta.FoldingStrategy;
-import de.jpaw.util.ApplicationException;
 import jakarta.annotation.Nonnull;
 
 public abstract class FoldableFormatGenerator<E extends Exception> extends AbstractFormatGenerator {
@@ -49,7 +48,7 @@ public abstract class FoldableFormatGenerator<E extends Exception> extends Abstr
 
 
     @Override
-    protected void openHook() throws IOException, ApplicationException {
+    protected void openHook() throws IOException {
         MessageComposer<E> baseComposer = getMessageComposer();
         if (foldableParams == null || T9tUtil.isEmpty(foldableParams.getSelectedFields())) {
             map = null;

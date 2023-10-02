@@ -104,7 +104,7 @@ public class RequestProcessor implements IRequestProcessor {
         if (optHdr != null) {
             try {
                 optHdr.validate();
-            } catch (ObjectValidationException e) {
+            } catch (final ObjectValidationException e) {
                 return MessagingUtil.createServiceResponse(e.getErrorCode(), e.getMessage(), messageId, jwtInfo.getTenantId(), null);
             }
         }
@@ -113,7 +113,7 @@ public class RequestProcessor implements IRequestProcessor {
         if (stringSanitizer != null) {
             try {
                 rp.treeWalkString(stringSanitizer, true);
-            } catch (ApplicationException e) {
+            } catch (final ApplicationException e) {
                 return MessagingUtil.createServiceResponse(e.getErrorCode(), e.getMessage(), messageId, jwtInfo.getTenantId(), null);
             }
         }
@@ -205,19 +205,7 @@ public class RequestProcessor implements IRequestProcessor {
             resp.setProcessRef(ihdr.getProcessRef());
             resp.setMessageId(messageId);
 
-            final UserLogLevelType logLevel;
-            if (ApplicationException.isOk(resp.getReturnCode())) {
-                logLevel = jwtInfo.getLogLevel() == null ? UserLogLevelType.MESSAGE_ENTRY : jwtInfo.getLogLevel();
-            } else {
-                if (jwtInfo.getLogLevelErrors() != null) {
-                    logLevel = jwtInfo.getLogLevelErrors();
-                } else if (jwtInfo.getLogLevel() != null) {
-                    logLevel = jwtInfo.getLogLevel();
-                } else {
-                    logLevel = UserLogLevelType.REQUESTS;
-                }
-            }
-
+            final UserLogLevelType logLevel = messageLogger.calculateLogLevel(jwtInfo, resp.getReturnCode());
             final boolean logged = logLevel.ordinal() >= UserLogLevelType.MESSAGE_ENTRY.ordinal();
             final String returnCodeAsString = ApplicationException.isOk(resp.getReturnCode()) ? "OK" : ApplicationException.codeToString(resp.getReturnCode());
             LOGGER.debug("Finished {} request {}@{}:{} with return code {} ({}) in {} ms {}, S/R = {}/{} ({}), messageId={}", prioText, jwtInfo.getUserId(),
@@ -234,8 +222,7 @@ public class RequestProcessor implements IRequestProcessor {
                 summary.setReturnCode(resp.getReturnCode());
                 summary.setErrorDetails(resp.getErrorDetails());
                 summary.setPartitionUsed(partition);
-                messageLogger.logRequest(ihdr, summary, logLevel.ordinal() >= UserLogLevelType.REQUESTS.ordinal() ? rp : null,
-                        logLevel.ordinal() >= UserLogLevelType.FULL.ordinal() ? resp : null);
+                messageLogger.logRequest(ihdr, summary, rp, resp);
             }
             return resp;
         } finally {
@@ -359,7 +346,7 @@ public class RequestProcessor implements IRequestProcessor {
             final RequestContext ctx = new RequestContext(ihdr, customizationProvider);
 
             // for special requests (macros) the request context is not injected into the thread
-            if (rq instanceof ContextlessRequestParameters cRq) {
+            if (rq instanceof final ContextlessRequestParameters cRq) {
                 try {
                     final IRequestHandler<ContextlessRequestParameters> handler = (IRequestHandler<ContextlessRequestParameters>) defaultRequestHandlerResolver
                             .getHandlerInstance(rq.getClass());
@@ -386,7 +373,7 @@ public class RequestProcessor implements IRequestProcessor {
                 ctx.fillResponseStandardFields(resp); // validate the response
                 try {
                     resp.validate();
-                } catch (ObjectValidationException e) {
+                } catch (final ObjectValidationException e) {
                     // log the offending request, plus the process ref (for better DB research later), and the validation error message more info
                     LOGGER.error("Response validation problem for tenantId {} and response object {}: error {}: {}", ctx.tenantId, resp.ret$PQON(),
                             e.getErrorCode(), e.getMessage());
@@ -404,7 +391,7 @@ public class RequestProcessor implements IRequestProcessor {
                         ctx.applyPostCommitActions(rq, resp);
                         // also apply any bucket writes...
                         ctx.postBucketEntriesToQueue(bucketWriter);
-                    } catch (Exception e) {
+                    } catch (final Exception e) {
                         // commit exception: some constraint will be violated, we urgently need the cause in the log for analysis. Descend exception list...
                         final String causeChain = ExceptionUtil.causeChain(e);
                         resp = MessagingUtil.createServiceResponse(T9tException.JTA_EXCEPTION, causeChain, ihdr.getMessageId(), ctx.tenantId, null);
@@ -425,7 +412,7 @@ public class RequestProcessor implements IRequestProcessor {
                     ctx.applyPostFailureActions(rq, resp);
                 }
                 return resp;
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 final String causeChain = ExceptionUtil.causeChain(e);
                 LOGGER.error("Unhandled exception: {}", causeChain);
                 if (e instanceof NullPointerException) {
@@ -446,7 +433,7 @@ public class RequestProcessor implements IRequestProcessor {
                 ctxScope.close();
                 ctx.close();
             }
-        } catch (Exception ee) {
+        } catch (final Exception ee) {
             final String causeChain = ExceptionUtil.causeChain(ee);
             LOGGER.error("Unhandled exception (outer scope): {}", causeChain);
             if (ee instanceof NullPointerException) {

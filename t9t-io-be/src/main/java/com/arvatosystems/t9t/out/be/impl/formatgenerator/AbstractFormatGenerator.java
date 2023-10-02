@@ -28,7 +28,6 @@ import com.arvatosystems.t9t.out.services.IOutputResource;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.media.MediaXType;
-import de.jpaw.util.ApplicationException;
 
 public abstract class AbstractFormatGenerator implements ICommunicationFormatGenerator {
 
@@ -40,7 +39,7 @@ public abstract class AbstractFormatGenerator implements ICommunicationFormatGen
     protected FoldableParams foldableParams;
     protected String tenantId;
 
-    protected void openHook() throws IOException, ApplicationException {
+    protected void openHook() throws IOException {
         if (foldableParams != null) {
             throw new T9tException(T9tIOException.NO_FOLDING_SUPPORT, effectiveType.name());
         }
@@ -66,7 +65,7 @@ public abstract class AbstractFormatGenerator implements ICommunicationFormatGen
     }
 
     @Override
-    public void close() throws IOException, ApplicationException {
+    public void close() throws IOException {
         outputResource = null;
     }
 }

@@ -25,7 +25,8 @@ package (com.arvatosystems) t9t.base.request {
     properties bpmId;
 
 
-    /** The BatchRequest allows to execute a series of commands in sequence within a single database transaction.
+    /**
+     * The BatchRequest allows to execute a series of commands in sequence within a single database transaction.
      * The execution is stopped, if one of them returns business return code "NO" (1xxx), unless "allowNo" is true.
      * If one of them returns a different return code than 0xxx or 1xxx, all operations will be rolled back.
      * This is a simple mini-workflow (logical AND operation). For more complex scenarios, an explicit BPMN 2.0 workflow
@@ -35,6 +36,14 @@ package (com.arvatosystems) t9t.base.request {
      */
     class BatchRequest extends RequestParameters {
         boolean                                     allowNo;                    // continue batch if technically correct, but business "no" returned (CLASS 1)?
+        required (RequestParameters...) required List<> commands;               // list of requests
+    }
+
+    /**
+     * The AutonomousCollectionRequest allows to execute a series of commands in sequence within a separate database transactions.
+     * The return code is the number of failed transactions.
+     */
+    class AutonomousCollectionRequest extends RequestParameters {
         required (RequestParameters...) required List<> commands;               // list of requests
     }
 

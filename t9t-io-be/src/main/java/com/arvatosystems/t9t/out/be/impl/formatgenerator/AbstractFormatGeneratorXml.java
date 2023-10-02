@@ -27,11 +27,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBElement;
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Marshaller;
-import jakarta.xml.bind.PropertyException;
 import javax.xml.namespace.QName;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLOutputFactory;
@@ -47,8 +42,12 @@ import com.arvatosystems.t9t.xml.namespaces.IStandardNamespaceWriter;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.dp.Jdp;
-import de.jpaw.util.ApplicationException;
 import de.jpaw.util.ExceptionUtil;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.PropertyException;
 
 public class AbstractFormatGeneratorXml extends AbstractFormatGenerator {
     private static final Logger LOGGER = LoggerFactory.getLogger(FormatGeneratorXml.class);
@@ -156,7 +155,7 @@ public class AbstractFormatGeneratorXml extends AbstractFormatGenerator {
     }
 
     @Override
-    protected void openHook() throws IOException, ApplicationException {
+    protected void openHook() throws IOException {
         super.openHook();
         // get the context
         final String path   = sinkCfg.getJaxbContextPath();
@@ -226,7 +225,7 @@ public class AbstractFormatGeneratorXml extends AbstractFormatGenerator {
     }
 
     @Override
-    public void close() throws IOException, ApplicationException {
+    public void close() throws IOException {
         try {
             writeCustomElements(sinkCfg.getXmlFooterElements());
             writer.writeEndDocument();

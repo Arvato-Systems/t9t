@@ -36,7 +36,7 @@ public interface ICommunicationFormatGenerator {
      * Generate header datas in a specific format.
      * @param sinkCfg data sink configuration
      * @param outputSessionParameters output session parameters
-     * @throws IOException, ApplicationException if there is an issue generating header data
+     * @throws IOException if there is an issue generating header data
      */
     void open(DataSinkDTO sinkCfg, OutputSessionParameters outputSessionParameters, MediaXType effectiveType, FoldableParams fp, IOutputResource destination,
       Charset encoding, String tenantId) throws IOException;
@@ -47,13 +47,13 @@ public interface ICommunicationFormatGenerator {
      * @param mappedRecordNo mapped record no (after preoutput transformer step)
      * @param recordId unique record id
      * @param record the record
-     * @throws IOException, ApplicationException if there is an issue generating record data
+     * @throws IOException if there is an issue generating record data
      */
     void generateData(int recordNo, int mappedRecordNo, long recordId, String partitionKey, String recordKey, BonaPortable record) throws IOException;
 
     /**
      * Generate footer datas in a specific format. Does not close the underlying OutputStream.
-     * @throws IOException, ApplicationException if there is an issue generating footer data
+     * @throws IOException if there is an issue generating footer data
      */
     void close() throws IOException;
 

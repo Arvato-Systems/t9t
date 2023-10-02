@@ -15,6 +15,10 @@
  */
 package com.arvatosystems.t9t.zkui.services.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.zkoss.zk.ui.Executions;
+
 import com.arvatosystems.t9t.auth.T9tAuthException;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.auth.AuthenticationResponse;
@@ -24,12 +28,9 @@ import com.arvatosystems.t9t.zkui.services.IAuthenticationService;
 import com.arvatosystems.t9t.zkui.services.IUserDAO;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 import com.arvatosystems.t9t.zkui.util.Constants;
+
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.zkoss.zk.ui.Executions;
 
 @Singleton
 public class AuthenticationService implements IAuthenticationService {
@@ -38,7 +39,7 @@ public class AuthenticationService implements IAuthenticationService {
     protected final IUserDAO userDAO = Jdp.getRequired(IUserDAO.class);
 
     @Override
-    public void login(final String username, final String password) throws T9tException {
+    public void login(final String username, final String password) {
         LOGGER.debug("Login user '{}'", username);
         try {
             final AuthenticationResponse authResponse = userDAO.getUserPwAuthenticationResponse(username, password);
@@ -54,7 +55,7 @@ public class AuthenticationService implements IAuthenticationService {
     }
 
     @Override
-    public void loginWithExternalToken(final String accessToken, final String username) throws T9tException {
+    public void loginWithExternalToken(final String accessToken, final String username) {
         LOGGER.debug("Login user with external token '{}'", username);
         try {
             userDAO.getExternalTokenAuthenticationResponse(accessToken, username);

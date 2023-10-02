@@ -25,9 +25,11 @@ import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
+import com.arvatosystems.t9t.io.CamelExecutionScheduleType;
 import com.arvatosystems.t9t.io.DataSinkDTO;
 import com.arvatosystems.t9t.io.T9tIOException;
 import com.arvatosystems.t9t.out.services.IOutputResource;
+import com.google.common.base.Objects;
 
 import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 import de.jpaw.dp.Dependent;
@@ -78,11 +80,6 @@ public class OutputResourceS3 implements IOutputResource {
 
         try {
             final byte[] bytes   = os.toByteArray();
-//            val stream  = new ByteArrayInputStream(bytes)
-//            val meta    = new ObjectMetadata => [
-//                contentType     = mediaType.mimeType
-//                contentLength   = bytes.length
-//            ]
             LOGGER.debug("Object upload start: bucket {}, path {}", bucket, path);
             final PutObjectRequest putRq = PutObjectRequest.builder().bucket(bucket).key(path).build();
             final PutObjectResponse result = s3Client.putObject(putRq, RequestBody.fromBytes(bytes));
@@ -98,9 +95,13 @@ public class OutputResourceS3 implements IOutputResource {
             os.close();
         } catch (final IOException ex) {
             LOGGER.error("Cannot close stream for {}: {}", sinkCfg.getDataSinkId(), ex.getMessage());
-//            throw new T9tException(T9tIOException.OUTPUT_FILE_OPEN_EXCEPTION);
         }
         os = null;
+
+        if ((sinkCfg.getCamelRoute() != null
+                && (sinkCfg.getCamelExecution() == null || Objects.equal(sinkCfg.getCamelExecution(), CamelExecutionScheduleType.IN_TRANSACTION)))) {
+            LOGGER.error("Cannot transfer resource in transaction for {}", sinkCfg.getDataSinkId());
+        }
     }
 
     @Override

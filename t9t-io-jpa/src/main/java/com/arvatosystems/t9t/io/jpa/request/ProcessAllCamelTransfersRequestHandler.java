@@ -46,7 +46,10 @@ public class ProcessAllCamelTransfersRequestHandler extends AbstractRequestHandl
         final String variablePart = rq.getOnlySinkId() == null
                 ? "WHERE"
                 : ", " + DataSinkEntity.class.getSimpleName()
-                + " ds WHERE ds.objectRef = s.dataSinkRef AND ds.dataSinkId = :dataSinkId AND";
+                + " ds WHERE ds.objectRef = s.dataSinkRef "
+                + "AND (ds.isInput = false OR ds.isInput IS NULL) "
+                + "AND ds.dataSinkId = :dataSinkId "
+                + "AND";
         final TypedQuery<Long> query = sinkResolver.getEntityManager().createQuery(
             "SELECT s.objectRef FROM " + SinkEntity.class.getSimpleName() + " s "
            + variablePart + " s.tenantId = :tenantId AND s.cTimestamp < :until AND s.camelTransferStatus IS NOT NULL "

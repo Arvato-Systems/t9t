@@ -59,7 +59,6 @@ final class KafkaSimplePartitionOrderedRequestProcessor implements Callable<Bool
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaSimplePartitionOrderedRequestProcessor.class);
 
-    private static final int WAIT_INTERVAL_IDLE = 200; // period to sleep after a poll without any new requests
     private static final int DEFAULT_COMMIT_INTERVAL = 3000; // commit interval
     private static final int DEFAULT_MONITOR_INTERVAL = 5000; // monitor interval
     private static final int DEFAULT_TIMEOUT_THREADPOOL_SHUTDOWN_MS = 10_000;
@@ -80,6 +79,7 @@ final class KafkaSimplePartitionOrderedRequestProcessor implements Callable<Bool
     private final long commitIntervalInMs;
     private final long monitorIntervalInMs;
     private final long shutdownThreadpoolIntervalInMs;
+    private final long idleIntervalInMs;
 
     protected KafkaSimplePartitionOrderedRequestProcessor(final KafkaConfiguration config, final IKafkaTopicReader consumer, final AtomicBoolean shuttingDown) {
         LOGGER.info("Starting " + this.getClass().getSimpleName());
@@ -108,6 +108,7 @@ final class KafkaSimplePartitionOrderedRequestProcessor implements Callable<Bool
         this.commitIntervalInMs = T9tUtil.nvl(config.getCommitInterval(), DEFAULT_COMMIT_INTERVAL).longValue();
         this.monitorIntervalInMs = T9tUtil.nvl(config.getMonitorInterval(), DEFAULT_MONITOR_INTERVAL).longValue();
         this.shutdownThreadpoolIntervalInMs = T9tUtil.nvl(config.getShutdownThreadpoolInterval(), DEFAULT_TIMEOUT_THREADPOOL_SHUTDOWN_MS).longValue();
+        this.idleIntervalInMs = T9tUtil.nvl(config.getIdleInterval(), Integer.valueOf(0)).longValue(); // disabled when no value provided
 
         final int workerPoolSize = this.getPoolSize(config, numberOfPartitions);
         LOGGER.info("Launching kafka processing thread pool with size: {}", workerPoolSize);
@@ -155,9 +156,9 @@ final class KafkaSimplePartitionOrderedRequestProcessor implements Callable<Bool
                 pause(partitions);
             }
 
-            if (activeProcessors.isEmpty() && offsetsToCommit.isEmpty()) {
-                // not busy after polling and nothing to commit, we can idle for a longer time
-                T9tUtil.sleepAndWarnIfInterrupted(WAIT_INTERVAL_IDLE, LOGGER, "Sleep after idle interrupted");
+            if (idleIntervalInMs > 0 && activeProcessors.isEmpty() && offsetsToCommit.isEmpty()) {
+                // not busy after polling and nothing to commit, we can idle
+                T9tUtil.sleepAndWarnIfInterrupted(idleIntervalInMs, LOGGER, "Interrupted at idle");
             }
 
             // collect offsets from finished processors

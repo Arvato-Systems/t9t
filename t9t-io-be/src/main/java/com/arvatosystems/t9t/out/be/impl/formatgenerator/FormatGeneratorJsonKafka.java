@@ -23,7 +23,6 @@ import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.JsonComposer;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Named;
-import de.jpaw.util.ApplicationException;
 
 /**
  * Creates JSON output with @PQON information where required.
@@ -36,7 +35,7 @@ public class FormatGeneratorJsonKafka extends AbstractFormatGenerator implements
     private boolean writeTokens = false;
 
     @Override
-    protected void openHook() throws IOException, ApplicationException {
+    protected void openHook() throws IOException {
         writeNulls  = Boolean.TRUE.equals(sinkCfg.getJsonWriteNulls());
         writePqonInfo  = Boolean.TRUE.equals(sinkCfg.getJsonWritePqon());
         writeTokens = Boolean.TRUE.equals(sinkCfg.getJsonUseEnumTokens());
@@ -58,6 +57,6 @@ public class FormatGeneratorJsonKafka extends AbstractFormatGenerator implements
     }
 
     @Override
-    public void close() throws IOException, ApplicationException {
+    public void close() throws IOException {
     }
 }

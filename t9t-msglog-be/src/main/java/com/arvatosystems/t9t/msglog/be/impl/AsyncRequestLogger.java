@@ -44,6 +44,7 @@ import com.arvatosystems.t9t.server.InternalHeaderParameters;
 import com.arvatosystems.t9t.server.services.IRequestLogger;
 
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+import de.jpaw.bonaparte.pojos.api.auth.UserLogLevelType;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
@@ -155,6 +156,8 @@ public class AsyncRequestLogger implements IRequestLogger {
     public void logRequest(final InternalHeaderParameters hdr, final ExecutionSummary summary, final RequestParameters params, final ServiceResponse response) {
 
         final JwtInfo jwt = hdr.getJwtInfo();
+        final UserLogLevelType logLevel = calculateLogLevel(jwt, summary.getReturnCode());
+
         final MessageDTO m = new MessageDTO();
         m.setObjectRef              (hdr.getProcessRef());
         m.setSessionRef             (jwt.getSessionRef());
@@ -173,8 +176,8 @@ public class AsyncRequestLogger implements IRequestLogger {
             m.setPlannedRunDate      (h.getPlannedRunDate());
             m.setInvokingProcessRef  (h.getInvokingProcessRef());
         }
-        m.setRequestParameters          (params);
-        m.setResponse                   (response);
+        m.setRequestParameters(logLevel.ordinal() >= UserLogLevelType.REQUESTS.ordinal() ? params : null);
+        m.setResponse(logLevel.ordinal() >= UserLogLevelType.FULL.ordinal() ? response : null);
         m.setProcessingTimeInMillisecs  (summary.getProcessingTimeInMillisecs());
         m.setReturnCode                 (summary.getReturnCode());
         m.setErrorDetails               (summary.getErrorDetails());
@@ -184,7 +187,7 @@ public class AsyncRequestLogger implements IRequestLogger {
             m.setTransactionOriginType(params.getTransactionOriginType());
             if (params.getWhenSent() != null) {
                 // when sent via kafka, or triggered by scheduler, or issued as executeAsynchronously: calculate latency from time of initiation
-                long d = hdr.getExecutionStartedAt().toEpochMilli() - params.getWhenSent();
+                final long d = hdr.getExecutionStartedAt().toEpochMilli() - params.getWhenSent();
                 m.setProcessingDelayInMillisecs(d > 0 ? Integer.valueOf((int)d) : INT_ZERO);
             }
             if (!params.was$Frozen()) {

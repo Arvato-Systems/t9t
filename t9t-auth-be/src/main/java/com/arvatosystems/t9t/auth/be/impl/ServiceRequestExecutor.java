@@ -50,7 +50,7 @@ public class ServiceRequestExecutor implements IUnauthenticatedServiceRequestExe
 
     protected static final AuthData ACCESS_DENIED = new AuthData(null, null);
     protected static final Cache<AuthenticationParameters, AuthData> AUTH_CACHE = Caffeine.newBuilder()
-            .expireAfterWrite(50L, TimeUnit.MINUTES).maximumSize(500L).build();
+            .expireAfterWrite(110L, TimeUnit.SECONDS).maximumSize(500L).build();
 
     @Override
     public ServiceResponse execute(final ServiceRequest srq) {

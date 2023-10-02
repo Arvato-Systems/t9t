@@ -16,8 +16,11 @@
 package com.arvatosystems.t9t.jetty.kafka.impl;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -57,6 +60,7 @@ import de.jpaw.dp.Singleton;
 import de.jpaw.dp.Specializes;
 import de.jpaw.util.ApplicationException;
 import de.jpaw.util.ExceptionUtil;
+import jakarta.annotation.Nullable;
 import jakarta.ws.rs.container.AsyncResponse;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
@@ -80,23 +84,20 @@ public class T9tRestProcessorViaKafka extends T9tRestProcessor implements IT9tRe
     }
 
     /**
-     * Sends a request to the correct backend server node via kafka.
+     * Checks for correct authentication.
      *
      * @param authentication
      *          the contents of REST request's http <code>Authorization</code> parameter.
      *          Will be used as authentication in the backend. The permission is checked upfront (cached)
      *          in order to be able to provide immediate feedback to the caller about correct permissions.
      *          Also required in order to avoid DoS (unauthenticated callers filling the kafka topic).
-     * @param partition
-     *          a numeric value which will be used to determine the correct partition to use (will be taken
-     *          modulus the actual number of partitions of the topic). Usually the hashCode of the customerId,
-     *          orderId, or a productId or skuId.
-     * @param request
-     *          the request which should be processed.
-     * @return the http response status code
+     * @param requestPQON
+     *          the PQON of the request which should be processed.
+     *
+     * @return the http response status code in case of a problem, or null if we are good to proceed
      */
-    protected Response.Status sendToServer(final String authentication, final String partitionKey, final RequestParameters request,
-      final GenericResult payload) {
+    @Nullable
+    protected Response.Status checkAuthentication(final String authentication, final String requestPQON) {
         // first, check if permissions exist
         if (authentication == null) {
             return Status.UNAUTHORIZED;
@@ -114,7 +115,7 @@ public class T9tRestProcessorViaKafka extends T9tRestProcessor implements IT9tRe
             try {
                 final QuerySinglePermissionRequest permRq = new QuerySinglePermissionRequest();
                 permRq.setPermissionType(PermissionType.BACKEND);
-                permRq.setResourceId(request.ret$PQON());
+                permRq.setResourceId(requestPQON);
                 final ServiceResponse resp = connection.execute(trimmedAuth, permRq);
                 if (ApplicationException.isOk(resp.getReturnCode()) && resp instanceof QuerySinglePermissionResponse qspr) {
                     if (!qspr.getPermissions().contains(OperationType.EXECUTE)) {
@@ -134,6 +135,27 @@ public class T9tRestProcessorViaKafka extends T9tRestProcessor implements IT9tRe
                 return Status.INTERNAL_SERVER_ERROR;
             }
         }
+        return null;  // authentication OK
+    }
+
+    /**
+     * Sends a request to the correct backend server node via kafka.
+     *
+     * @param authentication
+     *          the contents of REST request's http <code>Authorization</code> parameter.
+     *          Will be used as authentication in the backend. The permission is checked upfront (cached)
+     *          in order to be able to provide immediate feedback to the caller about correct permissions.
+     *          Also required in order to avoid DoS (unauthenticated callers filling the kafka topic).
+     * @param partition
+     *          a numeric value which will be used to determine the correct partition to use (will be taken
+     *          modulus the actual number of partitions of the topic). Usually the hashCode of the customerId,
+     *          orderId, or a productId or skuId.
+     * @param request
+     *          the request which should be processed.
+     * @return the http response status code
+     */
+    protected void sendToServer(final String authentication, final String partitionKey, final RequestParameters request,
+      final GenericResult payload) {
         // at this point, we know it is authenticated
         request.setWhenSent(System.currentTimeMillis());  // assumes all server clocks are sufficiently synchronized
         request.setTransactionOriginType(TransactionOriginType.GATEWAY_EXTERNAL_ASYNC);
@@ -145,10 +167,6 @@ public class T9tRestProcessorViaKafka extends T9tRestProcessor implements IT9tRe
 
         // transmit to backend
         kafkaTransmitter.write(srq, partitionKey, request.getMessageId());
-        // everything is fine!
-        payload.setReturnCode(0);
-        payload.setErrorMessage("OK");
-        return Status.OK;
     }
 
     protected AuthenticationParameters createAuthentication(final String header, final String forWhich) {
@@ -207,42 +225,73 @@ public class T9tRestProcessorViaKafka extends T9tRestProcessor implements IT9tRe
             payload.setReturnCode(MessageParserException.EMPTY_BUT_REQUIRED_FIELD);
             payload.setErrorMessage(ApplicationException.codeToString(payload.getReturnCode()));
             payload.setErrorDetails("Data records null or empty list");
-        } else if (inputData.size() != 1) {
-            LOGGER.error("Too many records posted: {} for {}", inputData.size(), pathInfo);
-            payload.setReturnCode(T9tException.TOO_MANY_RECORDS);
-            payload.setErrorMessage(ApplicationException.codeToString(payload.getReturnCode()));
         } else {
             try {
-                final R rq = requestParameterConverter.apply(inputData.get(0));
-                final String partitionKey = partitionKeyExtractor.apply(rq);
-                if (partitionKey == null) {
-                    LOGGER.error("No partition key available for object in path {}", pathInfo);
-                    payload.setReturnCode(MessageParserException.EMPTY_BUT_REQUIRED_FIELD);
-                    payload.setErrorMessage(ApplicationException.codeToString(payload.getReturnCode()));
-                    payload.setErrorDetails("Partition key");
-                } else {
+                final Set<String> authedPqons = new HashSet<>();
+                final String authHeader = httpHeaders.getHeaderString(HttpHeaders.AUTHORIZATION);
+                final List<R> convertedData = new ArrayList<>(inputData.size());
+                final List<String> partitionKeys = new ArrayList<>(inputData.size());
+                boolean failed = false;
+                for (final T in: inputData) {
+                    // convert request
+                    final R rq = requestParameterConverter.apply(in);
+                    convertedData.add(rq);
+                    // compute partition key
+                    final String partitionKey = partitionKeyExtractor.apply(rq);
+                    if (partitionKey == null) {
+                        LOGGER.error("No partition key available for object in path {}", pathInfo);
+                        payload.setReturnCode(MessageParserException.EMPTY_BUT_REQUIRED_FIELD);
+                        payload.setErrorMessage(ApplicationException.codeToString(payload.getReturnCode()));
+                        payload.setErrorDetails("Partition key");
+                        failed = true;
+                        break;
+                    }
+                    partitionKeys.add(partitionKey);
+                    // check authentication
+                    final String pqon = rq.ret$PQON();
+                    if (!authedPqons.contains(pqon)) {
+                        // this one is not yet authenticated
+                        final Response.Status authenticationStatus = checkAuthentication(authHeader, pqon);
+                        if (authenticationStatus != null) {
+                            // do not attempt to send the request, instead return information about failed authentication status
+                            result = authenticationStatus;
+                            failed = true;
+                            break;
+                        }
+                        authedPqons.add(pqon);  // is now fine
+                    }
+                }
+                // all conversions and auth checks done
+                if (!failed) {
+                    UUID defaultIdemPotencyHeader = null;
                     // apply idempotency key, if provided
                     String idempotencyHeader = httpHeaders.getHeaderString(T9tConstants.HTTP_HEADER_IDEMPOTENCY_KEY);
                     if (idempotencyHeader != null) {
                         try {
-                            rq.setMessageId(UUID.fromString(idempotencyHeader));
+                            defaultIdemPotencyHeader = UUID.fromString(idempotencyHeader);
                         } catch (Exception e) {
                             LOGGER.error("Cannot parse idempotency UUID despite prior pattern check: {}: {}", idempotencyHeader, e.getMessage());
-                            rq.setMessageId(RandomNumberGenerators.randomFastUUID());
                         }
-                    } else {
-                        // assign a random message ID
-                        rq.setMessageId(RandomNumberGenerators.randomFastUUID());
                     }
-                    // provide suitable log output what's queued into kafka
-                    final String essentialKey = businessIdExtractor == null ? null : businessIdExtractor.apply(rq);
-                    if (essentialKey != null) {
-                        rq.setEssentialKey(essentialKey);
+                    for (int i = 0; i < convertedData.size(); ++i) {
+                        final R rq = convertedData.get(i);
+                        final String partitionKey = partitionKeys.get(i);
+                        // assign a message ID
+                        rq.setMessageId(i == 0 && defaultIdemPotencyHeader != null ? defaultIdemPotencyHeader : RandomNumberGenerators.randomFastUUID());
+                        // provide suitable log output what's queued into kafka
+                        final String essentialKey = businessIdExtractor == null ? null : businessIdExtractor.apply(rq);
+                        if (essentialKey != null) {
+                            rq.setEssentialKey(essentialKey);
+                        }
+                        LOGGER.info("Sending object of key {} (partition key {}) via path {} with {} {}",
+                                T9tUtil.nvl(essentialKey, "(null)"), partitionKey, pathInfo,
+                                idempotencyHeader == null ? "random message ID" : "provided idempotency header", rq.getMessageId());
+                        sendToServer(authHeader, partitionKey, rq, payload);
                     }
-                    LOGGER.info("Sending object of key {} (partition key {}) via path {} with {} {}",
-                            T9tUtil.nvl(essentialKey, "(null)"), partitionKey, pathInfo,
-                            idempotencyHeader == null ? "random message ID" : "provided idempotency header", rq.getMessageId());
-                    result = sendToServer(httpHeaders.getHeaderString(HttpHeaders.AUTHORIZATION), partitionKey, rq, payload);
+                    // everything is fine!
+                    payload.setReturnCode(0);
+                    payload.setErrorMessage("OK");
+                    result = Status.OK;
                 }
             } catch (final ApplicationException e) {
                 LOGGER.error("Exception during request conversion for {}: {}: {}", pathInfo, e.getMessage(), ExceptionUtil.causeChain(e));

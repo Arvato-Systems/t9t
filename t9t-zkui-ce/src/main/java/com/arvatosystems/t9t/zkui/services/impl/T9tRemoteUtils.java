@@ -157,9 +157,10 @@ public class T9tRemoteUtils implements IT9tRemoteUtils {
         }
     }
 
-    /** Low level remote call.
-     * @throws ApplicationException */
-    private ServiceResponse execute(final RequestParameters requestParameters) throws ApplicationException {
+    /**
+     * Performs a remote call to the backend.
+     */
+    private ServiceResponse execute(final RequestParameters requestParameters) {
         final ApplicationSession session = ApplicationSession.get();
 
         final String clientIp = getClientIpAddress();

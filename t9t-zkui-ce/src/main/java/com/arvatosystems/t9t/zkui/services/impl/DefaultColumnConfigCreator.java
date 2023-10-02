@@ -109,11 +109,7 @@ public class DefaultColumnConfigCreator implements IColumnConfigCreator {
         listbox.setSpan(true);
         listbox.setEmptyMessage(session.translate("com", "noDataFound"));
 
-        listbox.getItems().stream().forEach(item -> {
-            if (xcurrentGrid.contains(item.getValue())) {
-                item.setSelected(true);
-            }
-        });
+        selectColumns(xcurrentGrid);
     }
 
     @Override
@@ -142,5 +138,25 @@ public class DefaultColumnConfigCreator implements IColumnConfigCreator {
         }
 
         return new Pair<List<String>, List<String>>(addPair, removePair);
+    }
+
+    @Override
+    public void selectColumns(final Set<String> columnNames) {
+        setColumnSelected(columnNames, true);
+    }
+
+    @Override
+    public void unselectColumns(final Set<String> columnNames) {
+        setColumnSelected(columnNames, false);
+    }
+
+    private void setColumnSelected(final Set<String> columnNames, final boolean selected) {
+        if (listbox != null) {
+            listbox.getItems().stream().forEach(item -> {
+                if (columnNames.contains(item.getValue())) {
+                    item.setSelected(selected);
+                }
+            });
+        }
     }
 }
