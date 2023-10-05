@@ -22,7 +22,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-build</artifactId>
-        <version>6.6-SNAPSHOT</version>
+        <version>6.7-SNAPSHOT</version>
     </parent>
 
     <artifactId>global-dm</artifactId>
@@ -39,13 +39,12 @@
 
         <!-- jpaw / bonaparte: versions for import of BOM. The plugin version is defined separately in SE/EE -->
         <!-- Note that the version of the bonapart-dsl plugin is set in "global-settings" -->
-        <jpaw-bom.version>3.2.0</jpaw-bom.version>
-        <bonaparte-bom.version>5.2.2</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
+        <jpaw-bom.version>3.3.0</jpaw-bom.version>
+        <bonaparte-bom.version>5.3.0</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
 
         <!-- Versions of Xtext & Xtend -->
-        <!-- Note that the versions of the xtext/xtend plugins are ALSO set in "global-settings" -->
-        <xtend.version>2.31.0</xtend.version>
-        <xtext.version>2.31.0</xtext.version>
+        <!-- Note that the versions of the xtext/xtend plugins are ALSO set in "global-settings", where the variable xtext.version is defined -->
+        <xtend.version>${xtext.version}</xtend.version>
 
         <!-- Database driver versions -->
         <driver.oracle.version>23.2.0.0</driver.oracle.version>
@@ -56,7 +55,7 @@
 
         <!-- OR mappers -->
         <eclipselink.version>3.0.3</eclipselink.version>
-        <hibernate.version>6.2.9.Final</hibernate.version>
+        <hibernate.version>6.3.1.Final</hibernate.version>
         <hibernate-validator.version>8.0.1.Final</hibernate-validator.version>
         <ehcache.version>2.10.9.2</ehcache.version>
         <ehcache3.version>3.10.8</ehcache3.version>
@@ -187,8 +186,8 @@
         <flyway.version>9.21.1</flyway.version>
         <reflections.version>0.9.10</reflections.version>
         <maven-plugin-api.version>3.9.4</maven-plugin-api.version>
-        <jackson.version>2.14.3</jackson.version>
-        <jackson-databind.version>2.14.3</jackson-databind.version> <!-- separate version due to frequent CVE updates which do not release the full set -->
+        <jackson.version>2.15.2</jackson.version>
+        <jackson-databind.version>2.15.2</jackson-databind.version> <!-- separate version due to frequent CVE updates which do not release the full set -->
         <solr.version>8.11.1</solr.version>
         <camel.version>4.0.1</camel.version>
         <jsch.version>0.2.11</jsch.version>
@@ -973,6 +972,11 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.jakarta.rs</groupId>
                 <artifactId>jackson-jakarta-rs-json-provider</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.jr</groupId>
+                <artifactId>jackson-jr-objects</artifactId>
                 <version>${jackson.version}</version>
             </dependency>
             <dependency>

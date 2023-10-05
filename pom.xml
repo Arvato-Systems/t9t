@@ -21,7 +21,7 @@
 
     <groupId>com.arvato-systems.t9t</groupId>
     <artifactId>t9t-build</artifactId>
-    <version>6.6-SNAPSHOT</version>
+    <version>6.7-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>Global root POM for the t9t framework</description>
 
@@ -35,10 +35,11 @@
          mvn versions:display-plugin-updates
     -->
     <properties>
-        <min-maven.version>3.8.1</min-maven.version>  <!-- up to 3.8.1 ASAP -->
+        <min-maven.version>3.8.7</min-maven.version>  <!-- up to 3.8.1 ASAP -->
 
         <!-- to be used by dependent projects (same as project.version, but must be provided explicitly so that imports work) -->
-        <t9t.version>6.6-SNAPSHOT</t9t.version>
+        <t9t.version>6.7-SNAPSHOT</t9t.version>
+		<xtext.version>2.32.0</xtext.version>
 
         <!-- Build specific properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -92,10 +93,10 @@
         <maven-javadoc-plugin.version>3.6.0</maven-javadoc-plugin.version>
 
         <!-- Versions of Xtext & Xtend plugins -->
-        <xtend-maven-plugin.version>2.31.0</xtend-maven-plugin.version>
-        <xtext-maven-plugin.version>2.31.0</xtext-maven-plugin.version>
+        <xtend-maven-plugin.version>${xtext.version}</xtend-maven-plugin.version>
+        <xtext-maven-plugin.version>${xtext.version}</xtext-maven-plugin.version>
 
-        <bonaparte-plugin.version>5.2.0</bonaparte-plugin.version>
+        <bonaparte-plugin.version>5.3.0</bonaparte-plugin.version>
         <license-plugin.version>3.0</license-plugin.version>
 
         <checkstyle.version>10.1</checkstyle.version>
