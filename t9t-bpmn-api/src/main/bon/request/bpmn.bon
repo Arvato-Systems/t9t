@@ -72,10 +72,25 @@ package (com.arvatosystems) t9t.bpmn.request {
         optional Boolean                        mergeParameters;            // if true: initialParameters do not replace but add to configured or current ones
     }
 
+    /** Runs a process, identified by primary key of the process status entity entry. */
     class ExecuteProcessWithRefResponse extends ServiceResponse {
         required f42Ref                         processCtrlRef;             // entry in the control table
     }
 
+    /**
+     * Resets the yieldUntil flag of a business process without restarting the workflow.
+     * Returns 0 if yield has been reset, 1 if no such process entry existed.
+     */
+    class ResetYieldUntilRequest extends RequestParameters {
+        required processDefinitionId            processDefinitionId;        // target process definition Id
+        required f42Ref                         targetObjectRef;            // target object ref to use in the process execution
+        optional Instant(0)                     newYieldUntil;              // the new value for yieldUntil (use now + 60 seconds if null).
+    }
+
+   /**
+    * Terminates a bpm process (deletes the status entity).
+    * Returns 0 if an existing process has been stopped, or 1 if no such process entry existed.
+    */
     class TerminateProcessRequest extends RequestParameters {
         required processDefinitionId            processDefinitionId;        // target process definition Id
         required f42Ref                         targetObjectRef;            // target object ref to use in the process execution

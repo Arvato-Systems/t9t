@@ -27,9 +27,10 @@ import java.util.List
 class BpmnResolvers {
 
     @AllCanAccessGlobalTenant
-    def ProcessDefinitionEntity       getProcessDefinitionEntity(ProcessDefinitionRef entityRef, boolean onlyActive) { return null; }
-    def List<ProcessDefinitionEntity> findByProcessIdWithDefault(boolean onlyActive, String processDefinitionId) { return null; }
-    def ProcessExecStatusEntity       getProcessExecStatusEntity(ProcessExecutionStatusRef ref, boolean onlyActive) { return null; }
-    def List<ProcessExecStatusEntity> findByProcessId(boolean onlyActive, String processDefinitionId) { return null; }
+    def ProcessDefinitionEntity       getProcessDefinitionEntity                 (ProcessDefinitionRef entityRef, boolean onlyActive)                   { return null; }
+    def List<ProcessDefinitionEntity> findByProcessIdWithDefault                 (boolean onlyActive, String processDefinitionId)                       { return null; }
+    def ProcessExecStatusEntity       getProcessExecStatusEntity                 (ProcessExecutionStatusRef ref, boolean onlyActive)                    { return null; }
+    def List<ProcessExecStatusEntity> findByProcessId                            (boolean onlyActive, String processDefinitionId)                       { return null; }
     def ProcessExecStatusEntity       findByProcessDefinitionIdAndTargetObjectRef(boolean onlyActive, String processDefinitionId, Long targetObjectRef) { return null; }
+    def List<ProcessExecStatusEntity> findByTargetObjectRefAndProcessDefinitionId(boolean onlyActive, Long targetObjectRef, String processDefinitionId) { return null; }
 }
