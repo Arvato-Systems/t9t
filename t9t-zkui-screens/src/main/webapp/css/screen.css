@@ -843,6 +843,7 @@ body {
 
 .jump-back-button {
     float: right;
+    padding-right: 5px;
 }
 
 .jump-back-button > button {

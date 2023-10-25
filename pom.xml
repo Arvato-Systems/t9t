@@ -35,10 +35,11 @@
          mvn versions:display-plugin-updates
     -->
     <properties>
-        <min-maven.version>3.8.1</min-maven.version>  <!-- up to 3.8.1 ASAP -->
+        <min-maven.version>3.8.7</min-maven.version>  <!-- up to 3.8.1 ASAP -->
 
         <!-- to be used by dependent projects (same as project.version, but must be provided explicitly so that imports work) -->
         <t9t.version>6.6-SNAPSHOT</t9t.version>
+		<xtext.version>2.32.0</xtext.version>
 
         <!-- Build specific properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -70,14 +71,14 @@
         <maven-enforcer-plugin.version>3.4.1</maven-enforcer-plugin.version>
         <maven-source-plugin.version>3.3.0</maven-source-plugin.version>
         <owasp-maven-plugin.version>7.2.1</owasp-maven-plugin.version>
-        <spring-boot-maven-plugin.version>3.1.4</spring-boot-maven-plugin.version>
+        <spring-boot-maven-plugin.version>3.1.5</spring-boot-maven-plugin.version>
         <tycho.version>2.7.3</tycho.version>
         <git-commit-id-plugin.version>6.0.0</git-commit-id-plugin.version>
         <jaxws-maven-plugin.version>4.0.1</jaxws-maven-plugin.version>
         <eclipse-lifecycle-mapping.version>1.0.0</eclipse-lifecycle-mapping.version>
         <bundle.plugin.version>5.1.2</bundle.plugin.version> <!-- felix, for pricing RCP -->
         <exec.plugin.version>3.0.0</exec.plugin.version>
-        <jetty-maven-plugin.version>11.0.16</jetty-maven-plugin.version>
+        <jetty-maven-plugin.version>11.0.17</jetty-maven-plugin.version>
         <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
         <cxf-codegen-plugin.version>4.0.3</cxf-codegen-plugin.version>
         <cxf-wadl2java-plugin.version>4.0.3</cxf-wadl2java-plugin.version>
@@ -92,10 +93,10 @@
         <maven-javadoc-plugin.version>3.6.0</maven-javadoc-plugin.version>
 
         <!-- Versions of Xtext & Xtend plugins -->
-        <xtend-maven-plugin.version>2.31.0</xtend-maven-plugin.version>
-        <xtext-maven-plugin.version>2.31.0</xtext-maven-plugin.version>
+        <xtend-maven-plugin.version>${xtext.version}</xtend-maven-plugin.version>
+        <xtext-maven-plugin.version>${xtext.version}</xtext-maven-plugin.version>
 
-        <bonaparte-plugin.version>5.2.0</bonaparte-plugin.version>
+        <bonaparte-plugin.version>5.3.0</bonaparte-plugin.version>
         <license-plugin.version>3.0</license-plugin.version>
 
         <checkstyle.version>10.1</checkstyle.version>
@@ -105,8 +106,8 @@
         <junit5.version>5.10.0</junit5.version>     <!-- groupId is org.junit, therefore is can coexist with junit4 in dependency management -->
 
         <!-- Swagger -->
-        <swagger-maven-plugin.version>2.2.15</swagger-maven-plugin.version>
-        <swagger-ui-webjars.version>4.15.5</swagger-ui-webjars.version>   <!-- 4.x is available as well! -->
+        <swagger-maven-plugin.version>2.2.17</swagger-maven-plugin.version>
+        <swagger-ui-webjars.version>4.19.1</swagger-ui-webjars.version>   <!-- 4.x is available as well! -->
 
         <!-- ASCIIDoctor -->
         <asciidoctor-maven-plugin.version>2.2.4</asciidoctor-maven-plugin.version>

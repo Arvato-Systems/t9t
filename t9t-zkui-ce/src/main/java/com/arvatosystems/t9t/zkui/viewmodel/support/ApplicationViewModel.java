@@ -80,6 +80,7 @@ import com.arvatosystems.t9t.zkui.util.ApplicationUtil;
 import com.arvatosystems.t9t.zkui.util.Constants;
 import com.arvatosystems.t9t.zkui.util.Constants.NaviConfig;
 import com.arvatosystems.t9t.zkui.util.JumpTool;
+import com.arvatosystems.t9t.zkui.util.T9tConfigConstants;
 import com.arvatosystems.t9t.zkui.util.ZulUtils;
 import com.arvatosystems.t9t.zkui.viewmodel.beans.Navi;
 import com.google.common.collect.ImmutableMap;
@@ -121,7 +122,8 @@ public class ApplicationViewModel {
     @SuppressWarnings("rawtypes")
     private List<IField> filters;
     private List<HtmlBasedComponent> htmlBasedFieldComponents;
-    private boolean jumpBackVisible = false;
+    private boolean showJumpBackButton = false;
+    private boolean searchBoxDisable = false;
     private static final int MAX_NUMBER_SUBMENU_ITEMS_PER_COLUMN = 13;
     private static final long MILLISECONDS_PER_DAY = 24L * 60L * 60L * 1000L;
 
@@ -222,6 +224,7 @@ public class ApplicationViewModel {
             //          paramMap = new HashMap<String, Object>();
             ctrlKeys = ZulUtils.readConfig("keys.ctrlKeys.ctrlKeys");
         }
+        searchBoxDisable = ZulUtils.readBooleanConfig(T9tConfigConstants.HEADER_SEARCH_BOX_DISABLE);
     }
 
     @Command
@@ -409,7 +412,7 @@ public class ApplicationViewModel {
     private static final Map<String, Object> NO_PARAMS = ImmutableMap.of();
 
     @GlobalCommand(JumpTool.SELECTED_PARAM_2)
-    @NotifyChange("jumpBackVisible")
+    @NotifyChange("showJumpBackButton")
     public final void setSelectedFromJump(
       @BindingParam(JumpTool.SELECTED_PARAM_1) final Object xselected,
       @BindingParam(JumpTool.BACK_LINK_1) final String backNaviLink
@@ -428,7 +431,7 @@ public class ApplicationViewModel {
                 ApplicationUtil.navJumpToScreen(targetZul,
                         backNaviLink == null ? NO_PARAMS : Collections.singletonMap(JumpTool.BACK_LINK_2, backNaviLink));
             }
-            jumpBackVisible = true;
+            showJumpBackButton = true;
         }
     }
     private void setNaviGroup(String category, boolean isClosePermitted) {
@@ -712,8 +715,13 @@ public class ApplicationViewModel {
         return as.getTenantResource(resource);
     }
 
-    public boolean getJumpBackVisible() {
-        return jumpBackVisible;
+    public boolean getShowJumpBackButton() {
+        boolean isDisable = ZulUtils.readBooleanConfig(T9tConfigConstants.HEADER_JUMP_BACK_BUTTON_DISABLE);
+        return showJumpBackButton && !isDisable;
+    }
+
+    public boolean getSearchBoxDisable() {
+        return searchBoxDisable;
     }
 
     @Command("search")
@@ -722,7 +730,7 @@ public class ApplicationViewModel {
     }
 
     @Command("jumpBack")
-    @NotifyChange("jumpBackVisible")
+    @NotifyChange("showJumpBackButton")
     public void jumpBack() {
         Map<String, Object> params = as.getRequestParams();
         Object backLink = params.get(JumpTool.BACK_LINK_2);
@@ -730,7 +738,7 @@ public class ApplicationViewModel {
             final Navi navi = ApplicationUtil.getNavigationByLink(backNaviLink);
             createComponents(navi);
         }
-        jumpBackVisible = false;
+        showJumpBackButton = false;
     }
 
     /**

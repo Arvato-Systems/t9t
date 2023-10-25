@@ -88,6 +88,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
         if (requestParameters.getMessageId() == null) {
             requestParameters.setMessageId(RandomNumberGenerators.randomFastUUID());
         }
+        requestParameters.setWhenSent(System.currentTimeMillis());  // assumes all server clocks are sufficiently synchronized
         requestParameters.setTransactionOriginType(TransactionOriginType.GATEWAY_INTERNAL);
         LOGGER.debug("Starting {} with assigned messageId {}", infoMsg, requestParameters.getMessageId());
 

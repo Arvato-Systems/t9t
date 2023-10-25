@@ -164,6 +164,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
             }
         }
         LOGGER.debug("Starting {}: {} with assigned messageId {}", invocationNo, infoMsg, requestParameters.getMessageId());
+        requestParameters.setWhenSent(System.currentTimeMillis());  // assumes all server clocks are sufficiently synchronized
         requestParameters.setTransactionOriginType(TransactionOriginType.GATEWAY_EXTERNAL);
 
         final CompletableFuture<ServiceResponse> readResponse = connection.executeAsync(authorizationHeader, requestParameters);
@@ -220,6 +221,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
         // must evaluate httpHeaders now, because httpHeaders is a proxy and no longer valid in the other thread
         final String acceptHeader = determineResponseType(httpHeaders);
         final String remoteIp = httpHeaders.getHeaderString(T9tConstants.HTTP_HEADER_FORWARDED_FOR);
+        requestParameters.setWhenSent(System.currentTimeMillis());  // assumes all server clocks are sufficiently synchronized
         requestParameters.setTransactionOriginType(TransactionOriginType.GATEWAY_EXTERNAL);
         final CompletableFuture<ServiceResponse> readResponse = connection.executeAuthenticationAsync(requestParameters);
         readResponse.thenAccept(sr -> {
