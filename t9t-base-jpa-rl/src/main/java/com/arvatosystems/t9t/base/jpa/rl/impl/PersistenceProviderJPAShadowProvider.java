@@ -18,11 +18,10 @@ package com.arvatosystems.t9t.base.jpa.rl.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.base.jpa.IPersistenceProviderJPAShadow;
 import com.arvatosystems.t9t.base.jpa.ormspecific.IQueryHintSetter;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
-import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
-import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPARLImpl;
 import de.jpaw.bonaparte.pojos.api.PersistenceProviders;
 import de.jpaw.dp.CustomScope;
 import de.jpaw.dp.Default;
@@ -31,52 +30,39 @@ import de.jpaw.dp.Provider;
 import jakarta.persistence.EntityManagerFactory;
 
 /**
- * The provider for the JPA persistence context.
+ * The provider for a secondary JPA persistence context in readonly mode, which could be the shadow database connection.
  * This implementation hooks into the RequestContext (which could be passed across threads) and checks for an existing JPA provider.
  * If none exists, it creates a new one and registers it.
- *
- * This provider returns an entity manager which connects to either the primary DB or the shadow, depending on the request and its parameters.
- */
+*/
 @Default
-public class PersistenceProviderJPAProvider implements CustomScope<PersistenceProviderJPA> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(PersistenceProviderJPAProvider.class);
+public class PersistenceProviderJPAShadowProvider implements CustomScope<IPersistenceProviderJPAShadow> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PersistenceProviderJPAShadowProvider.class);
     private final Provider<RequestContext> ctxProvider = Jdp.getProvider(RequestContext.class);
     private final IQueryHintSetter queryHintSetter = Jdp.getRequired(IQueryHintSetter.class);
     private final EntityManagerFactory emf;
-    private final EntityManagerFactory shadowEmf;
 
-    public PersistenceProviderJPAProvider(final EntityManagerFactory emf, final EntityManagerFactory shadowEmf) {
+    public PersistenceProviderJPAShadowProvider(final EntityManagerFactory emf) {
         super();
         this.emf = emf;
-        this.shadowEmf = shadowEmf;
     }
 
     @Override
-    public PersistenceProviderJPA get() {
+    public IPersistenceProviderJPAShadow get() {
         final RequestContext ctx = ctxProvider.get();
-        PersistenceProviderJPA jpaContext = (PersistenceProviderJPA) ctx.getPersistenceProvider(PersistenceProviders.JPA.ordinal());
+        IPersistenceProviderJPAShadow jpaContext = (IPersistenceProviderJPAShadow) ctx.getPersistenceProvider(PersistenceProviders.AEROSPIKE.ordinal());
         if (jpaContext == null) {
             // does not exist, create a new one!
-            final boolean readOnly = ctx.getReadOnlyMode();
-            final boolean useShadowDB = ctx.getUseShadowDatabase() && shadowEmf != null;
-            LOGGER.debug("Creating new {}JPA session (EntityManager) in {} mode and adding to RequestContext", useShadowDB ? "SHADOW-" : "",
-                    readOnly ? "ReadOnly" : "R/W");
-            if (useShadowDB) {
-                jpaContext = new PersistenceProviderJPARLImpl(shadowEmf);
-            } else {
-                jpaContext = new PersistenceProviderJPARLImpl(emf);
-            }
+            LOGGER.debug("Creating secondary JPA session (EntityManager) for shadow DB access");
+            jpaContext = new PersistenceProviderJPAShadowRLImpl(emf);
             ctx.addPersistenceContext(jpaContext);
-            if (readOnly) {
-                queryHintSetter.setReadOnlySession(jpaContext.getEntityManager());
-            }
+            queryHintSetter.setReadOnlySession(jpaContext.getEntityManager());
         }
 
         return jpaContext;
     }
 
     @Override
-    public void set(final PersistenceProviderJPA instance) {
+    public void set(final IPersistenceProviderJPAShadow instance) {
         LOGGER.warn("Set operation is not supported");
         throw new UnsupportedOperationException();
     }

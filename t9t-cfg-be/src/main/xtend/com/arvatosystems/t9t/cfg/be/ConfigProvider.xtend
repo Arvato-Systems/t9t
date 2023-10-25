@@ -114,9 +114,19 @@ class ConfigProvider {
     }
 
     def static boolean isMocked(String what) {
-        if (myConfiguration.mocks === null)
+        if (myConfiguration.mocks === null) {
            return false
+        }
         return myConfiguration.mocks.contains(what)
+    }
+
+    /** Returns true of the shadow database should be used for queries of a specific module, if possible. */
+    def static boolean useShadowDatabase(String moduleName) {
+        val applConfig = myConfiguration.applicationConfiguration;
+        if (applConfig === null || applConfig.useShadowDatabaseForModule === null) {
+            return false;
+        }
+        return applConfig.useShadowDatabaseForModule.contains(moduleName)
     }
 
     def private static void mergeConfigurations(T9tServerConfiguration a, T9tServerConfiguration b) {
@@ -126,6 +136,7 @@ class ConfigProvider {
             persistenceUnitName     = a.persistenceUnitName     ?: b.persistenceUnitName
             databaseConfiguration   = a.databaseConfiguration   ?: b.databaseConfiguration
             secondaryDatabaseConfig = a.secondaryDatabaseConfig ?: b.secondaryDatabaseConfig ?: databaseConfiguration
+            shadowDatabaseConfig    = a.shadowDatabaseConfig    ?: b.shadowDatabaseConfig
             noSqlConfiguration      = a.noSqlConfiguration      ?: b.noSqlConfiguration
             keyPrefetchConfiguration= a.keyPrefetchConfiguration?: b.keyPrefetchConfiguration
             logWriterConfiguration  = a.logWriterConfiguration  ?: b.logWriterConfiguration

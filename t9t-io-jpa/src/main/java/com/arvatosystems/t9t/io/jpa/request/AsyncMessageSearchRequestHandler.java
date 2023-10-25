@@ -16,19 +16,18 @@
 package com.arvatosystems.t9t.io.jpa.request;
 
 import com.arvatosystems.t9t.base.entities.WriteTrackingMs;
-import com.arvatosystems.t9t.base.jpa.impl.AbstractSearchWithTotalsRequestHandler;
+import com.arvatosystems.t9t.base.jpa.impl.AbstractMonitoringSearchRequestHandler;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.io.AsyncMessageDTO;
-import com.arvatosystems.t9t.io.jpa.entities.AsyncMessageEntity;
 import com.arvatosystems.t9t.io.jpa.mapping.IAsyncMessageDTOMapper;
 import com.arvatosystems.t9t.io.jpa.persistence.IAsyncMessageEntityResolver;
 import com.arvatosystems.t9t.io.request.AsyncMessageSearchRequest;
 
 import de.jpaw.dp.Jdp;
 
-public class AsyncMessageSearchRequestHandler extends
-        AbstractSearchWithTotalsRequestHandler<Long, AsyncMessageDTO, WriteTrackingMs, AsyncMessageSearchRequest, AsyncMessageEntity> {
+// do not use the searchWithTotals super class because the result is very likely HUGE. Instead, use the shadow DB if available
+public class AsyncMessageSearchRequestHandler extends AbstractMonitoringSearchRequestHandler<AsyncMessageSearchRequest> {
 
     protected final IAsyncMessageEntityResolver resolver = Jdp.getRequired(IAsyncMessageEntityResolver.class);
     protected final IAsyncMessageDTOMapper mapper = Jdp.getRequired(IAsyncMessageDTOMapper.class);
@@ -36,6 +35,7 @@ public class AsyncMessageSearchRequestHandler extends
     @Override
     public ReadAllResponse<AsyncMessageDTO, WriteTrackingMs> execute(final RequestContext ctx,
             final AsyncMessageSearchRequest request) throws Exception {
-        return execute(ctx, request, resolver, mapper);
+        mapper.processSearchPrefixForDB(request);
+        return mapper.createReadAllResponse(resolver.search(request), request.getSearchOutputTarget());
     }
 }

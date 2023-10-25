@@ -17,11 +17,10 @@ package com.arvatosystems.t9t.msglog.jpa.request;
 
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.auth.PermissionType;
-import com.arvatosystems.t9t.base.jpa.impl.AbstractSearchWithTotalsRequestHandler;
+import com.arvatosystems.t9t.base.jpa.impl.AbstractMonitoringSearchRequestHandler;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.msglog.MessageDTO;
-import com.arvatosystems.t9t.msglog.jpa.entities.MessageEntity;
 import com.arvatosystems.t9t.msglog.jpa.mapping.IMessageDTOMapper;
 import com.arvatosystems.t9t.msglog.jpa.persistence.IMessageEntityResolver;
 import com.arvatosystems.t9t.msglog.request.MessageSearchRequest;
@@ -34,7 +33,8 @@ import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
 import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 import de.jpaw.dp.Jdp;
 
-public class MessageSearchRequestHandler extends AbstractSearchWithTotalsRequestHandler<Long, MessageDTO, NoTracking, MessageSearchRequest, MessageEntity> {
+// do not use the searchWithTotals super class because the result is very likely HUGE. Instead, use the shadow DB if available
+public class MessageSearchRequestHandler extends AbstractMonitoringSearchRequestHandler<MessageSearchRequest> {
 
     protected final IMessageEntityResolver resolver = Jdp.getRequired(IMessageEntityResolver.class);
     protected final IMessageDTOMapper mapper = Jdp.getRequired(IMessageDTOMapper.class);
@@ -50,6 +50,7 @@ public class MessageSearchRequestHandler extends AbstractSearchWithTotalsRequest
             final UnicodeFilter filterByUserId = SearchFilters.equalsFilter(MessageDTO.meta$$userId.getName(), ctx.userId);
             request.setSearchFilter(SearchFilters.and(request.getSearchFilter(), filterByUserId));
         }
-        return execute(ctx, request, resolver, mapper);
+        mapper.processSearchPrefixForDB(request);
+        return mapper.createReadAllResponse(resolver.search(request), request.getSearchOutputTarget());
     }
 }

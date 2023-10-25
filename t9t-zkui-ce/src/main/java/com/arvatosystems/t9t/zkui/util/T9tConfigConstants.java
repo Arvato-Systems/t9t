@@ -29,6 +29,8 @@ public final class T9tConfigConstants {
     public static final String GRID_DYNAMIC_COL_SIZE  = "grid.dynamicColumnSize";
     public static final String MENU_USE_ICONS         = "menu.useMenuIcons";
     public static final String EXPORT_DEFAULT_LIMIT   = "export.defaultLimit";
+    public static final String HEADER_JUMP_BACK_BUTTON_DISABLE = "header.jumpBackButton.disable";
+    public static final String HEADER_SEARCH_BOX_DISABLE = "header.searchBox.disable";
 
     /** A boolean property to have the "today" button appear for date selection boxes globally. */
     public static final String DATE_PICKER_SHOW_TODAY = "datePicker.showToday";

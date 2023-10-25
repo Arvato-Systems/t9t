@@ -18,6 +18,8 @@ package com.arvatosystems.t9t.rep.services.impl;
 import java.util.Map;
 
 import com.arvatosystems.t9t.base.services.IJdbcConnectionProvider;
+import com.arvatosystems.t9t.cfg.be.ApplicationConfiguration;
+import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.rep.ReportParamsDTO;
 import com.arvatosystems.t9t.rep.be.IJasperReportFiller;
 
@@ -30,7 +32,11 @@ import net.sf.jasperreports.engine.JasperReport;
 
 @Singleton
 public class T9tJasperReportFiller implements IJasperReportFiller {
-    protected final IJdbcConnectionProvider jdbcProvider = Jdp.getRequired(IJdbcConnectionProvider.class);
+    protected final ApplicationConfiguration applConfig = ConfigProvider.getConfiguration().getApplicationConfiguration();
+    protected final boolean useShadowDatabase = applConfig != null && Boolean.TRUE.equals(applConfig.getUseShadowDatabaseForReports());
+    protected final IJdbcConnectionProvider jdbcProvider = useShadowDatabase
+            ? Jdp.getRequired(IJdbcConnectionProvider.class, "shadow")
+            : Jdp.getRequired(IJdbcConnectionProvider.class);
 
     @Override
     public JasperPrint fillReport(final JasperReport jasperReport, final ReportParamsDTO reportParamsDTO,

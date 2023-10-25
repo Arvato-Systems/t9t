@@ -84,6 +84,7 @@ public class RequestContext extends AbstractRequestContext {  // FIXME: this cla
     private final List<StackLevel> callStack  = new ArrayList<>();  // needs to be concurrent because the processStatus request will read it!
     private final Object lockForNesting = new Object();
     private Boolean readOnlyDatabaseSession = null;
+    private Boolean useShadowDatabaseSession = null;
 
     public void pushCallStack(final String newPQON) {
         synchronized (lockForNesting) {
@@ -141,9 +142,10 @@ public class RequestContext extends AbstractRequestContext {  // FIXME: this cla
         }
     }
 
-    public void setReadOnlyMode(final boolean readOnly) {
+    public void setReadOnlyMode(final boolean readOnly, final boolean useShadowDatabase) {
         if (isTopLevelRequest() && readOnlyDatabaseSession == null) {
             readOnlyDatabaseSession = readOnly;
+            useShadowDatabaseSession = useShadowDatabase;
         } else {
             LOGGER.warn("Attempt to set readOnly session flag for level {} and previously set mode {}", depth, readOnlyDatabaseSession);
         }
@@ -151,6 +153,10 @@ public class RequestContext extends AbstractRequestContext {  // FIXME: this cla
 
     public boolean getReadOnlyMode() {
         return Boolean.TRUE.equals(readOnlyDatabaseSession);
+    }
+
+    public boolean getUseShadowDatabase() {
+        return Boolean.TRUE.equals(useShadowDatabaseSession);
     }
 
     /**

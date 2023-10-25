@@ -16,21 +16,21 @@
 package com.arvatosystems.t9t.jetty.rest.endpoints;
 
 import java.io.InputStream;
-import java.util.Objects;
+import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.arvatosystems.t9t.base.LogSanitizer;
+import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
+
+import de.jpaw.dp.Singleton;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
-
-import de.jpaw.dp.Singleton;
-import io.swagger.v3.oas.annotations.Operation;
 
 @Path("")
 @Singleton
@@ -38,50 +38,10 @@ public class StaticResourcesResource implements IT9tRestEndpoint {
     private static final Logger LOGGER = LoggerFactory.getLogger(StaticResourcesResource.class);
 
     private static boolean enableSwagger = false;
+    private static final Pattern PATH_PATTERN = Pattern.compile("[_A-Za-z0-9-]+[.][A-Za-z0-9]+"); // only simple filenames allowed
 
     public static void setEnableSwagger(final boolean enableSwagger) {
         StaticResourcesResource.enableSwagger = enableSwagger;
-    }
-
-    /**
-     * Serving webjar dependencies
-     */
-    @GET
-    @Path("{path: ^webjars\\/.*}")
-    @Operation(hidden = true)
-    public Response webjars(@PathParam("path") final String path) {
-        if (!enableSwagger) {
-            return Response.status(Status.FORBIDDEN).entity("Swagger not enabled").build();
-        }
-        LOGGER.debug("handling webjars: {}", path);
-        final String absolutePath = "/META-INF/resources/" + path;
-        final InputStream resource = StaticResourcesResource.class.getResourceAsStream(absolutePath);
-        return Objects.isNull(resource)
-                ? Response.status(Response.Status.NOT_FOUND).build()
-                : Response.ok().entity(resource).build();
-    }
-
-    /**
-     * Serving static files from folders:
-     *
-     * /WEB-INF/resources
-     * /WEB-INF/static
-     * /WEB-INF/public
-     * /WEB-INF/assets
-     */
-    @GET
-    @Path("{path: ^(assets|public|static|resources)\\/.*}")
-    @Operation(hidden = true)
-    public Response staticResources(@PathParam("path") final String path) {
-        if (!enableSwagger) {
-            return Response.status(Status.FORBIDDEN).entity("Swagger not enabled").build();
-        }
-        LOGGER.debug("handling assets: {}", path);
-        final String absolutePath = "/WEB-INF/" + path;
-        final InputStream resource = StaticResourcesResource.class.getResourceAsStream(absolutePath);
-        return null == resource
-                ? Response.status(Response.Status.NOT_FOUND).build()
-                : Response.ok().entity(resource).build();
     }
 
     /**
@@ -94,9 +54,21 @@ public class StaticResourcesResource implements IT9tRestEndpoint {
         if (!enableSwagger) {
             return Response.status(Status.FORBIDDEN).entity("Swagger not enabled").build();
         }
+        if (!path.startsWith("swagger-ui/")) {
+            // additional check
+            return Response.status(Status.FORBIDDEN).entity("bad path").build();
+        }
+        if (!PATH_PATTERN.matcher(path.substring(11)).matches()) {
+            // complain
+            LOGGER.info("Refusing to serve {}", LogSanitizer.sanitize(path));
+            return Response.status(Status.FORBIDDEN).entity("bad path argument").build();
+        }
+
         final String absolutePath = "/" + path;
+        LOGGER.debug("handling swaggerUi, absolutePath={}", absolutePath);
+
         final InputStream resource = StaticResourcesResource.class.getResourceAsStream(absolutePath);
-        return null == resource
+        return resource == null
                 ? Response.status(Response.Status.NOT_FOUND).build()
                 : Response.ok().entity(resource).build();
     }

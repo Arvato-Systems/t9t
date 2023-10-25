@@ -57,11 +57,11 @@
         <maven-deploy-plugin.version>3.1.1</maven-deploy-plugin.version>
         <maven-clean-plugin.version>3.3.1</maven-clean-plugin.version>
         <maven-dependency-plugin.version>3.6.0</maven-dependency-plugin.version>
-        <maven-plugin-annotations.version>3.9.0</maven-plugin-annotations.version>
+        <maven-plugin-annotations.version>3.10.1</maven-plugin-annotations.version>
         <maven-project.version>2.2.1</maven-project.version>
         <build-helper-maven-plugin.version>3.4.0</build-helper-maven-plugin.version>
         <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
-        <maven-plugin-plugin.version>3.9.0</maven-plugin-plugin.version>
+        <maven-plugin-plugin.version>3.10.1</maven-plugin-plugin.version>
         <maven-assembly-plugin.version>3.6.0</maven-assembly-plugin.version>
         <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
         <maven-shade-plugin.version>3.5.1</maven-shade-plugin.version>
@@ -71,14 +71,14 @@
         <maven-enforcer-plugin.version>3.4.1</maven-enforcer-plugin.version>
         <maven-source-plugin.version>3.3.0</maven-source-plugin.version>
         <owasp-maven-plugin.version>7.2.1</owasp-maven-plugin.version>
-        <spring-boot-maven-plugin.version>3.1.4</spring-boot-maven-plugin.version>
+        <spring-boot-maven-plugin.version>3.1.5</spring-boot-maven-plugin.version>
         <tycho.version>2.7.3</tycho.version>
-        <git-commit-id-plugin.version>6.0.0</git-commit-id-plugin.version>
+        <git-commit-id-plugin.version>7.0.0</git-commit-id-plugin.version>
         <jaxws-maven-plugin.version>4.0.1</jaxws-maven-plugin.version>
         <eclipse-lifecycle-mapping.version>1.0.0</eclipse-lifecycle-mapping.version>
         <bundle.plugin.version>5.1.2</bundle.plugin.version> <!-- felix, for pricing RCP -->
         <exec.plugin.version>3.0.0</exec.plugin.version>
-        <jetty-maven-plugin.version>11.0.16</jetty-maven-plugin.version>
+        <jetty-maven-plugin.version>11.0.17</jetty-maven-plugin.version>
         <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
         <cxf-codegen-plugin.version>4.0.3</cxf-codegen-plugin.version>
         <cxf-wadl2java-plugin.version>4.0.3</cxf-wadl2java-plugin.version>
@@ -106,8 +106,8 @@
         <junit5.version>5.10.0</junit5.version>     <!-- groupId is org.junit, therefore is can coexist with junit4 in dependency management -->
 
         <!-- Swagger -->
-        <swagger-maven-plugin.version>2.2.15</swagger-maven-plugin.version>
-        <swagger-ui-webjars.version>4.15.5</swagger-ui-webjars.version>   <!-- 4.x is available as well! -->
+        <swagger-maven-plugin.version>2.2.17</swagger-maven-plugin.version>
+        <swagger-ui-webjars.version>4.19.1</swagger-ui-webjars.version>   <!-- 4.x is available as well! -->
 
         <!-- ASCIIDoctor -->
         <asciidoctor-maven-plugin.version>2.2.4</asciidoctor-maven-plugin.version>
@@ -880,6 +880,7 @@
                 <module>schema-loader-maven-plugin</module>
 
                 <module>t9t-annotations-api</module>
+                <module>t9t-cfg-api</module>
                 <module>t9t-base-api</module>
                 <module>t9t-init</module>
                 <module>t9t-jdp</module>
@@ -1126,6 +1127,7 @@
 
             <modules>
                 <module>t9t-annotations-api</module>
+                <module>t9t-cfg-api</module>
                 <module>t9t-base-api</module>
                 <module>t9t-init</module>
                 <module>t9t-jdp</module>

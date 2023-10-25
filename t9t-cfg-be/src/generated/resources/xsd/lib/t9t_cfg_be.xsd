@@ -56,6 +56,7 @@
                     </xs:element>
                     <xs:element name="databaseConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:RelationalDatabaseConfiguration"/>
                     <xs:element name="secondaryDatabaseConfig" minOccurs="0" nillable="true" type="t9t_cfg_be:RelationalDatabaseConfiguration"/>
+                    <xs:element name="shadowDatabaseConfig" minOccurs="0" nillable="true" type="t9t_cfg_be:RelationalDatabaseConfiguration"/>
                     <xs:element name="noSqlConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:NoSqlDatabaseConfiguration"/>
                     <xs:element name="keyPrefetchConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:KeyPrefetchConfiguration"/>
                     <xs:element name="logWriterConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:LogWriterConfiguration"/>
@@ -267,6 +268,14 @@
         <xs:complexContent>
             <xs:extension base="bon:BONAPORTABLE">
                 <xs:sequence>
+                    <xs:element name="persistenceUnitName" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="16"/>
+                                <xs:pattern value="\p{IsBasicLatin}*"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
                     <xs:element name="username" minOccurs="0" nillable="true">
                         <xs:simpleType>
                             <xs:restriction base="xs:normalizedString">
@@ -310,6 +319,34 @@
                         <xs:simpleType>
                             <xs:restriction base="xs:normalizedString">
                                 <xs:maxLength value="2000"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="hikariMaximumPoolSize" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:unsignedInt">
+                                <xs:maxInclusive value="2147483647"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="hikariMinimumIdle" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:unsignedInt">
+                                <xs:maxInclusive value="2147483647"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="hikariMaxLifetime" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:unsignedInt">
+                                <xs:maxInclusive value="2147483647"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="hikariExceptionOverrideClassName" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="255"/>
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:element>
@@ -731,6 +768,17 @@
                         <xs:simpleType>
                             <xs:restriction base="xs:unsignedInt">
                                 <xs:maxInclusive value="2147483647"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="useShadowDatabaseForReports" minOccurs="0" nillable="true" type="xs:boolean"/>
+                    <xs:element name="useShadowDatabaseForMonitoringQueries" minOccurs="0" nillable="true" type="xs:boolean"/>
+                    <xs:element name="useShadowDatabaseForCombinedTextSearch" minOccurs="0" nillable="true" type="xs:boolean"/>
+                    <xs:element name="useShadowDatabaseForModule" minOccurs="0" maxOccurs="unbounded">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="16"/>
+                                <xs:pattern value="\p{IsBasicLatin}*"/>
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:element>

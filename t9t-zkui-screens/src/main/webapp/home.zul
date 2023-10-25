@@ -45,18 +45,18 @@
 
                          <div sclass="header-middle-item">
                             <div sclass="jump-back-button">
-                                <button iconSclass="z-icon-reply" onClick="@command('jumpBack')" visible="@load(vm.jumpBackVisible)"/>
+                                <button iconSclass="z-icon-reply" onClick="@command('jumpBack')" visible="@load(vm.showJumpBackButton)"/>
                             </div>
                          </div>
 
-                         <div sclass="header-middle-item">
+                         <div sclass="header-middle-item" if="${!vm.searchBoxDisable}">
                              <div sclass="search-box">
                                  <span sclass="icon z-icon-search"></span>
                                  <textbox id="search" onOK="@command('search', self_value=self.value)"
                                      placeholder="${l:translate('main','search')}" />
                              </div>
                          </div>
-                         <div sclass="header-middle-item">
+                         <div sclass="header-middle-item" style="flex-grow: 2">
                              <div id="environmentIdentifier" sclass="env-identifier">
                                  <label />
                              </div>

@@ -39,8 +39,9 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional Unicode(36)                        serverIdSelf;                    // the server ID of this cluster (see key in uplink configuration)
         optional Ascii(20)                          stagingType;                     // distinguishes between dev, prod and various test environments. See enum StagingType for allowed strings
         required Ascii(16)                          persistenceUnitName;             // technical username
-        optional (RelationalDatabaseConfiguration...) databaseConfiguration;
-        optional (RelationalDatabaseConfiguration...) secondaryDatabaseConfig;
+        optional (RelationalDatabaseConfiguration...) databaseConfiguration;         // references access to the main database (which can be read/only). This is the link used by JPA
+        optional (RelationalDatabaseConfiguration...) secondaryDatabaseConfig;       // references access to a database for read/write operations by JDBC. If blank, the main database will be used.
+        optional (RelationalDatabaseConfiguration...) shadowDatabaseConfig;          // references a possible separate link to a readonly database, which possibly has some latency because it is a replica of the main
         optional (NoSqlDatabaseConfiguration...)    noSqlConfiguration;
         optional (KeyPrefetchConfiguration...)      keyPrefetchConfiguration;
         optional (LogWriterConfiguration...)        logWriterConfiguration;
@@ -94,15 +95,20 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
     }
 
     class RelationalDatabaseConfiguration {
-        optional Ascii(16)                          username;                       // technical username
-        optional Unicode(32)                        password;                       // password
-        optional Enum DatabaseBrandType             databaseBrand;                  // which vendor of DB you are using
-        optional Unicode(255)                       jdbcDriverClass;                // class name of JDBC driver
-        optional Unicode(255)                       jdbcConnectString;              // connect string for the data source
-        optional Boolean                            readonly;                       // set to true, if the provided URL is readonly
-        optional Boolean                            readonlyOptimization;           // set session to readonly if request handler indicates that
-        required Unicode(255) List<>                migrations;                     // flyway migrations to check, if started with -m option
-        required Unicode(2000) List<>               z;                              // arbitrary extension parameters, of the form (identifier)=(value)
+        optional Ascii(16)                          persistenceUnitName;              // override default persistenceUnitName from T9tServerConfiguration (e.g. for shadow DB)
+        optional Ascii(16)                          username;                         // technical username
+        optional Unicode(32)                        password;                         // password
+        optional Enum DatabaseBrandType             databaseBrand;                    // which vendor of DB you are using
+        optional Unicode(255)                       jdbcDriverClass;                  // class name of JDBC driver
+        optional Unicode(255)                       jdbcConnectString;                // connect string for the data source
+        optional Boolean                            readonly;                         // set to true, if the provided URL is readonly
+        optional Boolean                            readonlyOptimization;             // set session to readonly if request handler indicates that
+        required Unicode(255) List<>                migrations;                       // flyway migrations to check, if started with -m option
+        required Unicode(2000) List<>               z;                                // arbitrary extension parameters, of the form (identifier)=(value)
+        optional Integer                            hikariMaximumPoolSize;            // maximum size that the pool is allowed to reach
+        optional Integer                            hikariMinimumIdle;                // minimum number of idle connections
+        optional Integer                            hikariMaxLifetime;                // maximum lifetime of a connection
+        optional Unicode(255)                       hikariExceptionOverrideClassName; // SQLExceptionOverride class name
     }
 
     class NoSqlDatabaseConfiguration {
@@ -186,6 +192,10 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional Integer                            pauseBeforeDatabaseConnectRetry; // how many ms to sleep before a retry is done
         optional Double                             pauseIncreaseFactor;            // if set, provides the factor for subsequent sleeps (should be >= 1.0, default 1.5)
         optional Integer                            dnsTtl;                         // time to live for DNS resolution (required for some AWS deployments for Aurora failovers)
+        optional Boolean                            useShadowDatabaseForReports;            // use the shadow DB for queries issued from jasper reports
+        optional Boolean                            useShadowDatabaseForMonitoringQueries;  // use the shadow DB for queries on huge tables such as log transactions and async messages
+        optional Boolean                            useShadowDatabaseForCombinedTextSearch; // use the shadow DB for (possibly partially) SOLR based searches
+        required Ascii(16) List<>                   useShadowDatabaseForModule;             // list of modules of downstream projects which should use the shadow database
     }
 
     /** The uplink configuration has been reassigned to provide the link to the report server. */

@@ -15,10 +15,29 @@
  */
 package com.arvatosystems.t9t.init;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TimeZone;
+
+import org.reflections.Reflections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.arvatosystems.t9t.base.ILeanGridConfigContainer;
 import com.arvatosystems.t9t.base.IViewModelContainer;
 import com.arvatosystems.t9t.base.MessagingUtil;
+import com.arvatosystems.t9t.base.MutableInt;
 import com.arvatosystems.t9t.base.RandomNumberGenerators;
+import com.arvatosystems.t9t.cfg.Packages;
+
 import de.jpaw.bonaparte.enums.BonaEnum;
 import de.jpaw.bonaparte.enums.BonaNonTokenizableEnum;
 import de.jpaw.bonaparte.enums.BonaTokenizableEnum;
@@ -33,19 +52,6 @@ import de.jpaw.util.ExceptionUtil;
 import de.jpaw.xenums.init.ExceptionInitializer;
 import de.jpaw.xenums.init.ReflectionsPackageCache;
 import de.jpaw.xenums.init.XenumInitializer;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TimeZone;
-import org.reflections.Reflections;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public final class InitContainers {
     private static final Logger LOGGER = LoggerFactory.getLogger(InitContainers.class);
@@ -103,7 +109,7 @@ public final class InitContainers {
 
         checkUTC();
         MessagingUtil.initializeBonaparteParsers();
-        final Reflections[] scannedPackages = ReflectionsPackageCache.getAll(MessagingUtil.PACKAGES_TO_SCAN_FOR_XENUMS);
+        final Reflections[] scannedPackages = ReflectionsPackageCache.getAll(MessagingUtil.getPackagesToScanForXenums());
 
         ExceptionInitializer.initializeExceptionClasses(scannedPackages);       // init all 3 packages with one invocation
         XenumInitializer.initializeXenums(scannedPackages);
@@ -252,6 +258,26 @@ public final class InitContainers {
 
     public static Set<Class<?>> getClassesAnnotatedWith(final Class<? extends Annotation> annotation) {
         final Reflections t9t = ReflectionsPackageCache.get(MessagingUtil.TWENTYEIGHT_PACKAGE_PREFIX);
-        return t9t.getTypesAnnotatedWith(annotation);
+        final Set<Class<?>> classesInT9t = t9t.getTypesAnnotatedWith(annotation);
+        final int numExtraPackages = Packages.numberOfExtraPackages();
+        if (numExtraPackages == 0) {
+            // no union required, return as is
+            return classesInT9t;
+        }
+        final MutableInt totalNumberOfClasses = new MutableInt(classesInT9t.size());
+        final List<Set<Class<?>>> extraSets = new ArrayList<>(numExtraPackages);
+        Packages.walkExtraPackages((prefix, packageName) -> {
+            final Reflections extra = ReflectionsPackageCache.get(packageName);
+            final Set<Class<?>> extraClasses = extra.getTypesAnnotatedWith(annotation);
+            extraSets.add(extraClasses);
+            totalNumberOfClasses.add(extraClasses.size());
+        });
+        // merge them all
+        final Set<Class<?>> union = new HashSet<>(totalNumberOfClasses.getValue());
+        union.addAll(classesInT9t);
+        for (final Set<Class<?>> extraSet: extraSets) {
+            union.addAll(extraSet);
+        }
+        return union;
     }
 }

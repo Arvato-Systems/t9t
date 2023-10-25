@@ -25,29 +25,12 @@
         <relativePath>../t9t-settings-api</relativePath>
     </parent>
 
-    <artifactId>t9t-base-api</artifactId>
+    <artifactId>t9t-cfg-api</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>de.jpaw</groupId>
             <artifactId>bonaparte-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>de.jpaw</groupId>
-            <artifactId>bonaparte-api-auth</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>de.jpaw</groupId>
-            <artifactId>bonaparte-api-media</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.arvato-systems.t9t</groupId>
-            <artifactId>t9t-annotations-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.arvato-systems.t9t</groupId>
-            <artifactId>t9t-cfg-api</artifactId>
         </dependency>
 
         <dependency>

@@ -22,6 +22,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.jdbc.IJdbcDataSourceBuilder;
 import com.arvatosystems.t9t.base.services.IJdbcDataSource;
 import com.arvatosystems.t9t.cfg.be.RelationalDatabaseConfiguration;
@@ -34,6 +35,9 @@ import de.jpaw.dp.Singleton;
 public class JdbcDataSourceBuilder implements IJdbcDataSourceBuilder {
     private static final Logger LOGGER = LoggerFactory.getLogger(JdbcDataSourceBuilder.class);
 
+    private static final int DEFAULT_MAX_POOL_SIZE = 20;
+    private static final int DEFAULT_MIN_IDLE = 5;
+
     @Override
     public IJdbcDataSource initSecondaryDataSource(final RelationalDatabaseConfiguration db2cfg) {
         final HikariConfig hcfg = new HikariConfig();
@@ -43,8 +47,22 @@ public class JdbcDataSourceBuilder implements IJdbcDataSourceBuilder {
         hcfg.setUsername(db2cfg.getUsername());
         hcfg.setPassword(db2cfg.getPassword());
         hcfg.setJdbcUrl(db2cfg.getJdbcConnectString());
-        hcfg.setMaximumPoolSize(20);
-        hcfg.setMinimumIdle(5);
+        hcfg.setAutoCommit(false);
+
+        hcfg.setMaximumPoolSize(DEFAULT_MAX_POOL_SIZE);
+        if (db2cfg.getHikariMaximumPoolSize() != null) {
+            hcfg.setMaximumPoolSize(db2cfg.getHikariMaximumPoolSize().intValue());
+        }
+        hcfg.setMinimumIdle(DEFAULT_MIN_IDLE);
+        if (db2cfg.getHikariMinimumIdle() != null) {
+            hcfg.setMinimumIdle(db2cfg.getHikariMinimumIdle().intValue());
+        }
+        if (T9tUtil.isNotBlank(db2cfg.getHikariExceptionOverrideClassName())) {
+            hcfg.setExceptionOverrideClassName(db2cfg.getHikariExceptionOverrideClassName());
+        }
+        if (db2cfg.getHikariMaxLifetime() != null) {
+            hcfg.setMaxLifetime(db2cfg.getHikariMaxLifetime().longValue());
+        }
 
         additionalInitialization(hcfg, db2cfg.getZ());
 

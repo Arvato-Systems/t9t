@@ -15,6 +15,13 @@
  */
 package com.arvatosystems.t9t.doc.jpa.api;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.arvatosystems.t9t.authc.api.GetMultipleUserDataResponse;
 import com.arvatosystems.t9t.authc.api.GetUserDataByUserIdsRequest;
 import com.arvatosystems.t9t.authc.api.UserData;
@@ -32,14 +39,6 @@ import com.arvatosystems.t9t.doc.jpa.persistence.IMailingGroupEntityResolver;
 import com.arvatosystems.t9t.email.api.RecipientEmail;
 
 import de.jpaw.dp.Jdp;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class MailToUsersRequestHandler extends AbstractRequestHandler<MailToUsersRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(MailToUsersRequestHandler.class);
@@ -76,10 +75,12 @@ public class MailToUsersRequestHandler extends AbstractRequestHandler<MailToUser
         if (usersSeparatedByComma != null && !usersSeparatedByComma.isEmpty()) {
             final String[] userIds = usersSeparatedByComma.split(",");
             final GetUserDataByUserIdsRequest userSearchRequest = new GetUserDataByUserIdsRequest();
-            userSearchRequest.setUserIds(Arrays.asList(userIds));
+            final List<String> emailAddresses = new ArrayList<>(userIds.length);
+            final List<String> userIdsToBeMapped = new ArrayList<>(userIds.length);
+            splitEmailAddresses(emailAddresses, userIdsToBeMapped, userIds);
+            userSearchRequest.setUserIds(userIdsToBeMapped);
             final GetMultipleUserDataResponse userSearchResponse = this.executor.executeSynchronousAndCheckResult(ctx, userSearchRequest,
                     GetMultipleUserDataResponse.class);
-            final List<String> emailAddresses = new ArrayList<>(userSearchResponse.getUserData().size());
             for (final UserData userData : userSearchResponse.getUserData()) {
                 if (userData != null) {
                     emailAddresses.add(userData.getEmailAddress());
@@ -89,5 +90,20 @@ public class MailToUsersRequestHandler extends AbstractRequestHandler<MailToUser
         }
 
         return Collections.emptyList();
+    }
+
+    /**
+     * Preprocess the IDs, split between userIds and email addresses.
+     * An ID is considered to be an email address if it contains an at sign followed by a dot.
+     */
+    private void splitEmailAddresses(final List<String> emailAddresses, final List<String> userIdsToBeMapped, final String[] userIds) {
+        for (final String idOrEmailAddress: userIds) {
+            final int posOfAtSign = idOrEmailAddress.indexOf('@');
+            if (posOfAtSign > 0 && idOrEmailAddress.indexOf('.', posOfAtSign) > 0) {
+                emailAddresses.add(idOrEmailAddress);
+            } else {
+                userIdsToBeMapped.add(idOrEmailAddress);
+            }
+        }
     }
 }

@@ -15,11 +15,10 @@
  */
 package com.arvatosystems.t9t.msglog.jpa.request;
 
-import com.arvatosystems.t9t.base.jpa.impl.AbstractSearchWithTotalsRequestHandler;
+import com.arvatosystems.t9t.base.jpa.impl.AbstractMonitoringSearchRequestHandler;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.msglog.MessageStatisticsDTO;
-import com.arvatosystems.t9t.msglog.jpa.entities.MessageStatisticsEntity;
 import com.arvatosystems.t9t.msglog.jpa.mapping.IMessageStatisticsDTOMapper;
 import com.arvatosystems.t9t.msglog.jpa.persistence.IMessageStatisticsEntityResolver;
 import com.arvatosystems.t9t.msglog.request.MessageStatisticsSearchRequest;
@@ -27,8 +26,7 @@ import com.arvatosystems.t9t.msglog.request.MessageStatisticsSearchRequest;
 import de.jpaw.bonaparte.pojos.api.NoTracking;
 import de.jpaw.dp.Jdp;
 
-public class MessageStatisticsSearchRequestHandler extends AbstractSearchWithTotalsRequestHandler<Long, MessageStatisticsDTO,
-  NoTracking, MessageStatisticsSearchRequest, MessageStatisticsEntity> {
+public class MessageStatisticsSearchRequestHandler extends AbstractMonitoringSearchRequestHandler<MessageStatisticsSearchRequest> {
 
     protected final IMessageStatisticsEntityResolver resolver = Jdp.getRequired(IMessageStatisticsEntityResolver.class);
     protected final IMessageStatisticsDTOMapper mapper = Jdp.getRequired(IMessageStatisticsDTOMapper.class);
@@ -36,6 +34,7 @@ public class MessageStatisticsSearchRequestHandler extends AbstractSearchWithTot
     @Override
     public ReadAllResponse<MessageStatisticsDTO, NoTracking>
       execute(final RequestContext ctx, final MessageStatisticsSearchRequest request) throws Exception {
-        return execute(ctx, request, resolver, mapper);
+        mapper.processSearchPrefixForDB(request);
+        return mapper.createReadAllResponse(resolver.search(request), request.getSearchOutputTarget());
     }
 }

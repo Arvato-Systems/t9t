@@ -19,6 +19,7 @@ import java.util.function.Consumer;
 
 import org.reflections.Reflections;
 
+import com.arvatosystems.t9t.cfg.Packages;
 import com.arvatosystems.t9t.init.InitContainers;
 
 import de.jpaw.dp.Jdp;
@@ -38,11 +39,13 @@ public final class Init {
         // Jdp.excludePackagePrefix("java.");
         Jdp.includePackagePrefix("de.jpaw.");
         Jdp.includePackagePrefix("com.arvatosystems.");
+        Packages.walkExtraPackages((prefix, packageName) -> Jdp.includePackagePrefix(packageName + "."));
 
-        Reflections[] scannedPackages = InitContainers.initializeT9t();
+        final Reflections[] scannedPackages = InitContainers.initializeT9t();
         Jdp.scanClasses(scannedPackages);
-        if (callback != null)
+        if (callback != null) {
             callback.accept(scannedPackages);
+        }
         Jdp.runStartups(scannedPackages);
     }
 }

@@ -15,11 +15,10 @@
  */
 package com.arvatosystems.t9t.io.jpa.request;
 
-import com.arvatosystems.t9t.base.jpa.impl.AbstractSearchWithTotalsRequestHandler;
+import com.arvatosystems.t9t.base.jpa.impl.AbstractMonitoringSearchRequestHandler;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.io.AsyncMessageStatisticsDTO;
-import com.arvatosystems.t9t.io.jpa.entities.AsyncMessageStatisticsEntity;
 import com.arvatosystems.t9t.io.jpa.mapping.IAsyncMessageStatisticsDTOMapper;
 import com.arvatosystems.t9t.io.jpa.persistence.IAsyncMessageStatisticsEntityResolver;
 import com.arvatosystems.t9t.io.request.AsyncMessageStatisticsSearchRequest;
@@ -27,8 +26,7 @@ import com.arvatosystems.t9t.io.request.AsyncMessageStatisticsSearchRequest;
 import de.jpaw.bonaparte.pojos.api.NoTracking;
 import de.jpaw.dp.Jdp;
 
-public class AsyncMessageStatisticsSearchRequestHandler extends
-    AbstractSearchWithTotalsRequestHandler<Long, AsyncMessageStatisticsDTO, NoTracking, AsyncMessageStatisticsSearchRequest, AsyncMessageStatisticsEntity> {
+public class AsyncMessageStatisticsSearchRequestHandler extends AbstractMonitoringSearchRequestHandler<AsyncMessageStatisticsSearchRequest> {
 
     protected final IAsyncMessageStatisticsEntityResolver resolver = Jdp.getRequired(IAsyncMessageStatisticsEntityResolver.class);
     protected final IAsyncMessageStatisticsDTOMapper mapper = Jdp.getRequired(IAsyncMessageStatisticsDTOMapper.class);
@@ -36,7 +34,7 @@ public class AsyncMessageStatisticsSearchRequestHandler extends
     @Override
     public ReadAllResponse<AsyncMessageStatisticsDTO, NoTracking> execute(final RequestContext ctx, final AsyncMessageStatisticsSearchRequest request)
         throws Exception {
-        return execute(ctx, request, resolver, mapper);
+        mapper.processSearchPrefixForDB(request);
+        return mapper.createReadAllResponse(resolver.search(request), request.getSearchOutputTarget());
     }
-
 }

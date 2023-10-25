@@ -153,7 +153,7 @@ public class Executor implements IExecutor {
             final IRequestHandler<RequestParameters> handler = ctx.customization.<RequestParameters>getRequestHandler(params);
             if (ctx.isTopLevelRequest()) {
                 // top level request: check for read-only session
-                ctx.setReadOnlyMode(handler.isReadOnly(params));
+                ctx.setReadOnlyMode(handler.isReadOnly(params), handler.useShadowDatabase(params));
             }
             response = handler.execute(ctx, params); // execute the new method, possibly redirected temporarily by AbstractRequestHandler
             // verify the promise concerning the return type has been kept. As all BonaPortableClass'es are singletons, == should be fine

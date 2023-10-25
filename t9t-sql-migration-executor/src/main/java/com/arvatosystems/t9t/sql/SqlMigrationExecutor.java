@@ -43,6 +43,8 @@ import de.jpaw.dp.StartupOnly;
 public class SqlMigrationExecutor implements StartupOnly {
     private static final Logger LOGGER = LoggerFactory.getLogger(SqlMigrationExecutor.class);
 
+    private static final String AWS_WRAPPER_PROTO = ":aws-wrapper";
+
     public static Flyway configureFlywayForDatabase(final String locations, final String migrationTable,
       final RelationalDatabaseConfiguration dbConfiguration) {
 
@@ -56,7 +58,13 @@ public class SqlMigrationExecutor implements StartupOnly {
         config.installedBy("admin");
         config.ignoreMigrationPatterns("*:Missing");
         config.baselineOnMigrate(true);
-        config.dataSource(dbConfiguration.getJdbcConnectString(), dbConfiguration.getUsername(), dbConfiguration.getPassword());
+        // handle special aws jdbc wrapper protocol
+        String jdbcUrl = dbConfiguration.getJdbcConnectString();
+        if (jdbcUrl.contains(AWS_WRAPPER_PROTO)) {
+            jdbcUrl = jdbcUrl.replace(AWS_WRAPPER_PROTO, "");
+            LOGGER.info("Replaced jdbc url [{}] by [{}] without aws-wrapper - flyway does not understand it", dbConfiguration.getJdbcConnectString(), jdbcUrl);
+        }
+        config.dataSource(jdbcUrl, dbConfiguration.getUsername(), dbConfiguration.getPassword());
         config.loggers("slf4j");
 
         final Flyway flyway = new Flyway(config);
@@ -145,4 +153,5 @@ public class SqlMigrationExecutor implements StartupOnly {
 
         ConfigProvider.readConfiguration(cmd.getString("cfg"));
     }
+
 }

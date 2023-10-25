@@ -43,6 +43,8 @@ import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.ISearchTools;
 import com.arvatosystems.t9t.base.services.ITextSearch;
 import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.cfg.be.ApplicationConfiguration;
+import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 
 import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.core.BonaPortableClass;
@@ -97,6 +99,8 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<
     protected final String documentName;
     protected final String keyFieldName;
     protected final BonaPortableClass<SearchRequest<DTO, TRACKING>> bclass;
+    protected final ApplicationConfiguration applConfig = ConfigProvider.getConfiguration().getApplicationConfiguration();
+    protected final boolean useShadowDatabase = applConfig != null && Boolean.TRUE.equals(applConfig.getUseShadowDatabaseForCombinedTextSearch());
 
     public AbstractCombinedTextDatabaseSearchRequestHandler(final IResolverSurrogateKey<REF, TRACKING, ENTITY> resolver,
             final IEntityMapper<Long, DTO, TRACKING, ENTITY> mapper,
@@ -111,6 +115,16 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<
         this.documentName = documentName;
         this.keyFieldName = keyFieldName;
         this.bclass = bclass;
+    }
+
+    /**
+     * Returns the hint to use the shadow database (if present).
+     * By default, all combined searches use the shadow database unless they have to export data (which needs write access).
+     * Therefore the methods delegates to the test for a data export as used by the generic search request handler.
+     */
+    @Override
+    public boolean useShadowDatabase(final REQ rq) {
+        return useShadowDatabase && isReadOnly(rq);
     }
 
     @Override

@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.base;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -24,6 +26,7 @@ import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceRequest;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.auth.PermissionType;
+import com.arvatosystems.t9t.cfg.Packages;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.BonaPortableFactory;
@@ -46,10 +49,14 @@ public final class MessagingUtil {
 
     private static final String DEFAULT_LANGUAGE = "en";
 
-    public static final String[] PACKAGES_TO_SCAN_FOR_XENUMS = {
-        JPAW_PACKAGE_PREFIX,
-        TWENTYEIGHT_PACKAGE_PREFIX
-    };
+    public static String[] getPackagesToScanForXenums() {
+        final List<String> packages = new ArrayList<>(4);
+        packages.add(JPAW_PACKAGE_PREFIX);  // includes bonaparte
+        packages.add(TWENTYEIGHT_PACKAGE_PREFIX);
+        Packages.walkExtraPackages((prefix, packageName) -> packages.add(packageName));
+        // On next line: according to https://shipilev.net/blog/2016/arrays-wisdom-ancients/#_conclusion it is faster than providing a correctly sized list!
+        return packages.toArray(new String[0]);
+    }
 
     private MessagingUtil() {
     }
@@ -63,6 +70,7 @@ public final class MessagingUtil {
     public static void initializeBonaparteParsers() {
         BonaPortableFactory.useFixedClassLoader(null);
         BonaPortableFactory.addToPackagePrefixMap("t9t", TWENTYEIGHT_PACKAGE_PREFIX);               // and of course everything else starting with "t9t"
+        Packages.walkExtraPackages(BonaPortableFactory::addToPackagePrefixMap);
     }
 
     /** Get the list of languages to examine, with fallbacks. */
