@@ -93,7 +93,7 @@ public class FlushPendingAsyncRequestHandler extends AbstractRequestHandler<Flus
         }
         final String extraCondition = rq.getOnlyChannelId() != null ? " AND m.asyncChannelId = :channel" : "";
         final String extraCondition2 = channels != null ? " AND m.asyncChannelId IN :channels" : "";
-        final String queryString = "SELECT m FROM AsyncMessageEntity m WHERE m.status != null AND m.tenantId = :tenantId" + extraCondition + extraCondition2
+        final String queryString = "SELECT m FROM AsyncMessageEntity m WHERE m.status is not null AND m.tenantId = :tenantId" + extraCondition + extraCondition2
                 + " ORDER BY m.objectRef";
         final TypedQuery<AsyncMessageEntity> query = messageResolver.getEntityManager().createQuery(queryString, AsyncMessageEntity.class);
         query.setParameter("tenantId", messageResolver.getSharedTenantId());

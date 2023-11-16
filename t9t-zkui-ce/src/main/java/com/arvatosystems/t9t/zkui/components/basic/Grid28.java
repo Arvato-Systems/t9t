@@ -471,11 +471,9 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
             if (paging.getActivePage() == paging.getPageCount() - 1 && pageResultSize > paging.getPageSize()) {
                 // last page and a new page required
                 totalSize = totalSize + paging.getPageSize(); // + 1 more page
-            } else if (paging.getActivePage() > 0) {
-                if (pageResultSize < paging.getPageSize() + 1) {
-                    // if no next page detected
-                    totalSize = (paging.getPageSize() * paging.getActivePage() + 1);
-                }
+            } else if (paging.getActivePage() > 0 && pageResultSize > 0 && pageResultSize < paging.getPageSize() + 1) {
+                // if no next page detected
+                totalSize = paging.getPageSize() * paging.getActivePage() + pageResultSize;
             }
 
         } else {
