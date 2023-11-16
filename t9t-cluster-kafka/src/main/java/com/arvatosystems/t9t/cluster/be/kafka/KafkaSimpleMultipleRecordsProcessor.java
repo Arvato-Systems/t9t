@@ -30,9 +30,11 @@ import org.apache.kafka.common.TopicPartition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceRequest;
 import com.arvatosystems.t9t.base.api.ServiceRequestHeader;
+import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.api.TransactionOriginType;
 import com.arvatosystems.t9t.base.types.AuthenticationParameters;
 import com.arvatosystems.t9t.server.services.IUnauthenticatedServiceRequestExecutor;
@@ -89,9 +91,15 @@ final class KafkaSimpleMultipleRecordsProcessor implements Runnable {
             if (stoppedProcessing.get()) {
                 break;
             }
-            processRequest(consumerRecord);
-            lastProcessedOffset.set(consumerRecord.offset() + 1); // according to documentation: + 1
-            recordsProcessed.incrementAndGet();
+            if (processRequest(consumerRecord)) {
+                // true means: request has been processed (with or without exceptions)
+                lastProcessedOffset.set(consumerRecord.offset() + 1); // according to documentation: + 1
+                recordsProcessed.incrementAndGet();
+            } else {
+                // false means: SHUTDOWN IN PROGRESS, stop working and do not commit offset of this task
+                stopProcessing();
+                break;
+            }
         }
 
         finishedProcessing.set(true);
@@ -140,10 +148,10 @@ final class KafkaSimpleMultipleRecordsProcessor implements Runnable {
         return lastProcessedOffset.get();
     }
 
-    private void processRequest(final ConsumerRecord<String, byte[]> oneRecord) {
+    private boolean processRequest(final ConsumerRecord<String, byte[]> oneRecord) {
         final ServiceRequest serviceRequest = deserialize(oneRecord);
         if (serviceRequest == null) {
-            return;
+            return true;
         }
 
         serviceRequest.setPartitionUsed(oneRecord.partition());
@@ -156,7 +164,7 @@ final class KafkaSimpleMultipleRecordsProcessor implements Runnable {
             if (defaultAuthHeader == null) {
                 LOGGER.error("Received request {} (ID {}) for {} without authentication header", requestParameters.ret$PQON(), messageId,
                         requestParameters.getEssentialKey());
-                return;
+                return true;
             }
             serviceRequest.setAuthentication(defaultAuthHeader);
         }
@@ -168,14 +176,24 @@ final class KafkaSimpleMultipleRecordsProcessor implements Runnable {
         LOGGER.debug("EXECUTING task {}/{}/{} (ID/PART/OFFSET) (MSG-ID={}, PQON={}, essentialKey={}", uniqueId, oneRecord.partition(), oneRecord.offset(),
                 messageId, requestParameters.ret$PQON(), requestParameters.getEssentialKey());
         try {
-            requestProcessor.execute(serviceRequest);
-            LOGGER.trace("COMPLETED task {}/{}/{} (ID/PART/OFFSET) (MSG-ID={}, PQON={}, essentialKey={}", uniqueId, oneRecord.partition(), oneRecord.offset(),
+            final ServiceResponse response = requestProcessor.execute(serviceRequest);
+            if (response.getReturnCode() == T9tException.SHUTDOWN_IN_PROGRESS) {
+                // stop processing and do not add this task to offsets to commit
+                LOGGER.info("DENIED task {}/{}/{} (ID/PART/OFFSET) (MSG-ID={}, PQON={}, essentialKey={} due to return code {}", uniqueId,
+                        oneRecord.partition(), oneRecord.offset(), messageId, requestParameters.ret$PQON(), requestParameters.getEssentialKey(),
+                        response.getReturnCode());
+                return false;
+            }
+            LOGGER.debug("COMPLETED task {}/{}/{} (ID/PART/OFFSET) (MSG-ID={}, PQON={}, essentialKey={}", uniqueId, oneRecord.partition(), oneRecord.offset(),
                     messageId, requestParameters.ret$PQON(), requestParameters.getEssentialKey());
         } catch (final Exception exc) {
-            LOGGER.error("FAILED task {}/{}/{} (ID/PART/OFFSET) (MSG-ID={}, PQON={}, essentialKey={}  due to {}:{}", uniqueId, oneRecord.partition(),
+            // normal error -> we accept it and commit offset
+            LOGGER.error("FAILED task {}/{}/{} (ID/PART/OFFSET) (MSG-ID={}, PQON={}, essentialKey={} due to {}:{}", uniqueId, oneRecord.partition(),
                     oneRecord.offset(), messageId, requestParameters.ret$PQON(), requestParameters.getEssentialKey(), exc.getClass().getSimpleName(),
                     exc.getMessage());
         }
+
+        return true;
     }
 
     private ServiceRequest deserialize(final ConsumerRecord<String, byte[]> oneRecord) {

@@ -270,17 +270,17 @@ public class RequestContext extends AbstractRequestContext {  // FIXME: this cla
     /** Releases all locks held by this context. */
     public void releaseAllLocks() {
         if (!ownedJvmLocks.isEmpty()) {
-            LOGGER.debug("SEM: Releasing locks on {} refs", ownedJvmLocks.size());
+            LOGGER.trace("SEM: Releasing locks on {} refs", ownedJvmLocks.size());
             for (final Map.Entry<Long, Semaphore> sem : ownedJvmLocks.entrySet()) {
-                LOGGER.debug("SEM: Releasing lock on ref {}", sem.getKey());
+                LOGGER.trace("SEM: Releasing lock on ref {}", sem.getKey());
                 sem.getValue().release();
             }
             ownedJvmLocks.clear();
         }
         if (!moreJvmLocks.isEmpty()) {
-            LOGGER.debug("Releasing locks on {} IDs", moreJvmLocks.size());
+            LOGGER.trace("Releasing locks on {} IDs", moreJvmLocks.size());
             for (final Map.Entry<String, Semaphore> sem : moreJvmLocks.entrySet()) {
-                LOGGER.debug("SEM: Releasing lock on ref {}", sem.getKey());
+                LOGGER.trace("SEM: Releasing lock on ref {}", sem.getKey());
                 sem.getValue().release();
             }
             moreJvmLocks.clear();
@@ -293,7 +293,7 @@ public class RequestContext extends AbstractRequestContext {  // FIXME: this cla
             // get a Semaphore from the global pool
             try {
                 final Semaphore globalSem = GLOBAL_JVM_LOCKS.get(ref, unused -> new Semaphore(1, true)); // get a global Semaphore, or create one if non exists
-                LOGGER.debug("SEM: Acquiring JVM lock on ref {}", ref);
+                LOGGER.trace("SEM: Acquiring JVM lock on ref {}", ref);
                 final long start = System.nanoTime();
                 if (!globalSem.tryAcquire(timeoutInMillis, TimeUnit.MILLISECONDS)) {
                     final String msg = ref + " after " + timeoutInMillis + " milliseconds";
@@ -301,7 +301,7 @@ public class RequestContext extends AbstractRequestContext {  // FIXME: this cla
                     throw new T9tException(T9tException.COULD_NOT_ACQUIRE_LOCK, msg);
                 }
                 final long end = System.nanoTime();
-                LOGGER.debug("SEM: Acquiring JVM lock on ref {} SUCCESS after {} ns", ref, end - start);
+                LOGGER.trace("SEM: Acquiring JVM lock on ref {} SUCCESS after {} ns", ref, end - start);
                 return globalSem;
             } catch (final InterruptedException e) {
                 final String msg = ref + " after " + timeoutInMillis + " milliseconds due to InterruptedException " + ExceptionUtil.causeChain(e);
@@ -322,7 +322,7 @@ public class RequestContext extends AbstractRequestContext {  // FIXME: this cla
             // get a Semaphore from the global pool
             try {
                 final Semaphore globalSem = GLOBAL_JVM_LOCKS2.get(key, unused -> new Semaphore(1, true)); // get a global Semaphore, or create one if non exists
-                LOGGER.debug("SEM: Acquiring JVM lock on ID {}", key);
+                LOGGER.trace("SEM: Acquiring JVM lock on ID {}", key);
                 final long start = System.nanoTime();
                 if (!globalSem.tryAcquire(timeoutInMillis, TimeUnit.MILLISECONDS)) {
                     final String msg = key + " after " + timeoutInMillis + " milliseconds";
@@ -330,7 +330,7 @@ public class RequestContext extends AbstractRequestContext {  // FIXME: this cla
                     throw new T9tException(T9tException.COULD_NOT_ACQUIRE_LOCK, msg);
                 }
                 final long end = System.nanoTime();
-                LOGGER.debug("SEM: Acquiring JVM lock on ID {} SUCCESS after {} ns", key, end - start);
+                LOGGER.trace("SEM: Acquiring JVM lock on ID {} SUCCESS after {} ns", key, end - start);
                 return globalSem;
             } catch (final InterruptedException e) {
                 final String msg = key + " after " + timeoutInMillis + " milliseconds due to InterruptedException " + ExceptionUtil.causeChain(e);

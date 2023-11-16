@@ -47,7 +47,7 @@ public interface IT9tRestProcessor {
      * Both request converters are executed in the I/O thread.
      **/
     <T extends BonaPortable, R extends RequestParameters> void performAsyncBackendRequest(HttpHeaders httpHeaders, AsyncResponse resp, String infoMsg,
-        List<T> inputData, Function<T, R> requestConverterSingle, Function<List<T>, RequestParameters> requestConverterBatch);
+        List<T> inputData, Function<T, R> requestConverterSingle, Function<List<T>, R> requestConverterBatch);
 
     /**
      * Performs the request via kafka, if available.
@@ -64,7 +64,7 @@ public interface IT9tRestProcessor {
     default <T extends BonaPortable, R extends RequestParameters> void performAsyncBackendRequestViaKafka(@Nonnull final HttpHeaders httpHeaders,
         @Nonnull final AsyncResponse resp, @Nonnull final String infoMsg, final List<T> inputData, final Function<T, R> requestConverterSingle,
         final Function<R, String> partitionKeyExtractor, Function<R, String> businessIdExtractor) {
-        performAsyncBackendRequest(httpHeaders, resp, infoMsg, inputData, requestConverterSingle, (Function<List<T>, RequestParameters>)null);
+        performAsyncBackendRequest(httpHeaders, resp, infoMsg, inputData, requestConverterSingle, (Function<List<T>, R>)null);
     }
 
     default boolean kafkaAvailable() {

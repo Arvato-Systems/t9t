@@ -60,7 +60,6 @@ public class AsyncQueueLTQ<R extends BonaPortable> implements IAsyncQueue {
 
     private final IAsyncMessageUpdater messageUpdater = Jdp.getRequired(IAsyncMessageUpdater.class);
     private final ConcurrentMap<Long, QueueData> queueData;
-    private final IAsyncTools asyncTools = Jdp.getRequired(IAsyncTools.class);
 
     /** Keeps the queue configuration and the references to their threads. */
     private static final class QueueData {
@@ -149,6 +148,24 @@ public class AsyncQueueLTQ<R extends BonaPortable> implements IAsyncQueue {
             sender.init(myCfg);
         }
 
+        /**
+         * Split the thread sleep in order to react to config changes while in error state
+         * Wake up every 3 seconds at latest
+         *
+         * @param wait
+         * @throws InterruptedException
+         */
+        private void sleepShallow(int wait) throws InterruptedException {
+            int slept = 0;
+            int shallowSleep = wait < 3000 ? wait : 3000;
+            LOGGER.debug("Start shallow sleep on async thread {} for queue {}", threadName, myQueueCfg.getAsyncQueueId());
+            while (slept < wait && !shutdownInProgress.get()) {
+                Thread.sleep(shallowSleep);
+                slept += shallowSleep;
+            }
+            LOGGER.debug("Stop shallow sleep on async thread {} for queue {}", threadName, myQueueCfg.getAsyncQueueId());
+        }
+
         @Override
         public void run() {
             LOGGER.info("Starting async thread {} for queue {}", threadName, myQueueCfg.getAsyncQueueId());
@@ -160,7 +177,7 @@ public class AsyncQueueLTQ<R extends BonaPortable> implements IAsyncQueue {
                             // switch to RED and wait
                             if (gate.getAndSet(false))
                                 LOGGER.debug("Flipping gate to RED (transmission error)");
-                            Thread.sleep(serverConfig.getWaitAfterExtError());
+                            sleepShallow(serverConfig.getTimeoutIdleRed());
                         } else {
                             // eat message, it was sent successfully
                             lastMessageSent.set(Instant.now());
@@ -183,7 +200,7 @@ public class AsyncQueueLTQ<R extends BonaPortable> implements IAsyncQueue {
                     LOGGER.error("Exception in Async transmitter thread: {}", ExceptionUtil.causeChain(e));
                     LOGGER.error("Trace is", e);
                     try {
-                        Thread.sleep(serverConfig.getWaitAfterExtError());
+                        sleepShallow(serverConfig.getWaitAfterExtError());
                     } catch (final InterruptedException e1) {
                         LOGGER.error("Sleep disturbed, terminating!");
                         break;  // terminate thread!
@@ -205,7 +222,7 @@ public class AsyncQueueLTQ<R extends BonaPortable> implements IAsyncQueue {
                 try {
                     em.getTransaction().begin();
                     final TypedQuery<AsyncMessageEntity> query = em.createQuery(
-                            "SELECT m FROM AsyncMessageEntity m WHERE m.status != null AND m.asyncQueueRef = :queueRef ORDER BY m.objectRef",
+                            "SELECT m FROM AsyncMessageEntity m WHERE m.status is not null AND m.asyncQueueRef = :queueRef ORDER BY m.objectRef",
                             AsyncMessageEntity.class);
                     query.setParameter("queueRef", myQueueCfg.getObjectRef());
                     query.setMaxResults(serverConfig.getMaxMessageAtStartup());
@@ -217,7 +234,7 @@ public class AsyncQueueLTQ<R extends BonaPortable> implements IAsyncQueue {
                     LOGGER.error("Trace is", e);
                     LOGGER.error("Wait for {}", serverConfig.getWaitAfterDbErrors());
                     try {
-                        Thread.sleep(serverConfig.getWaitAfterDbErrors());
+                        sleepShallow(serverConfig.getWaitAfterDbErrors());
                     } catch (final InterruptedException e1) {
                         // continue with aborted sleep
                         return true;

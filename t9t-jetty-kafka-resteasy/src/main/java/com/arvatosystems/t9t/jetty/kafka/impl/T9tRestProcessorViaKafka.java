@@ -46,6 +46,7 @@ import com.arvatosystems.t9t.base.auth.PasswordAuthentication;
 import com.arvatosystems.t9t.base.auth.PermissionType;
 import com.arvatosystems.t9t.base.types.AuthenticationParameters;
 import com.arvatosystems.t9t.jetty.impl.T9tRestProcessor;
+import com.arvatosystems.t9t.rest.parsers.SimpleRequestConverterBatch;
 import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
 import com.arvatosystems.t9t.rest.utils.RestUtils;
 import com.arvatosystems.t9t.xml.GenericResult;
@@ -213,7 +214,11 @@ public class T9tRestProcessorViaKafka extends T9tRestProcessor implements IT9tRe
             final Function<R, String> partitionKeyExtractor, final Function<R, String> businessIdExtractor) {
         if (!enableKafka || !kafkaTransmitter.initialized()) {
             // fall back to sync method
-            super.performAsyncBackendRequest(httpHeaders, resp, pathInfo, inputData, requestParameterConverter, (Function<List<T>, RequestParameters>)null);
+            Function<List<T>, R> requestConverterBatch = null;
+            if (inputData != null && inputData.size() > 1) {
+                requestConverterBatch = new SimpleRequestConverterBatch<>(requestParameterConverter);
+            }
+            super.performAsyncBackendRequest(httpHeaders, resp, pathInfo, inputData, requestParameterConverter, requestConverterBatch);
             return;
         }
         Response.Status result = Status.BAD_REQUEST;  // default response

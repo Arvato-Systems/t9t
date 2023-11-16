@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
+import com.arvatosystems.t9t.base.LogSanitizer;
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.RandomNumberGenerators;
 import com.arvatosystems.t9t.base.T9tException;
@@ -105,6 +106,7 @@ public class RequestProcessor implements IRequestProcessor {
             try {
                 optHdr.validate();
             } catch (final ObjectValidationException e) {
+                LOGGER.error("Request {}({})) rejected due to header validation failure", rp.ret$PQON(), LogSanitizer.sanitize(rp.getEssentialKey()));
                 return MessagingUtil.createServiceResponse(e.getErrorCode(), e.getMessage(), messageId, jwtInfo.getTenantId(), null);
             }
         }
@@ -114,6 +116,7 @@ public class RequestProcessor implements IRequestProcessor {
             try {
                 rp.treeWalkString(stringSanitizer, true);
             } catch (final ApplicationException e) {
+                LOGGER.error("Request {}({})) rejected due to exception during sanitizing", rp.ret$PQON(), LogSanitizer.sanitize(rp.getEssentialKey()));
                 return MessagingUtil.createServiceResponse(e.getErrorCode(), e.getMessage(), messageId, jwtInfo.getTenantId(), null);
             }
         }
@@ -129,7 +132,8 @@ public class RequestProcessor implements IRequestProcessor {
 
             // check if we are just shutting down - only for external requests
             if (!skipAuthorization && StatusProvider.isShutdownInProgress()) {
-                LOGGER.info("Denying processing of {}@{}:{} (ID {}), shutdown is in progress", jwtInfo.getUserId(), jwtInfo.getTenantId(), pqon, messageId);
+                LOGGER.info("Denying processing of {}@{}:{} (ID {} / {}({})), shutdown is in progress",
+                  jwtInfo.getUserId(), jwtInfo.getTenantId(), pqon, messageId, rp.ret$PQON(), rp.getEssentialKey());
                 final ServiceResponse resp = new ServiceResponse();
                 resp.setMessageId(messageId);
                 resp.setTenantId(jwtInfo.getTenantId());
@@ -141,9 +145,9 @@ public class RequestProcessor implements IRequestProcessor {
             // check if JWT is still valid
             if (jwtInfo.getExpiresAt() != null) {
                 final long expiredBy = millis - jwtInfo.getExpiresAt().toEpochMilli();
-                if (expiredBy > 100L) {  // allow some millis to avoid race conditions
-                    LOGGER.info("Denying processing of {}@{}:{} (ID {}), JWT has expired {} ms ago", jwtInfo.getUserId(), jwtInfo.getTenantId(), pqon,
-                            messageId, expiredBy);
+                if (expiredBy > 30_000L) {  // allow some seconds to avoid race conditions
+                    LOGGER.info("Denying processing of {}@{}:{} (ID {} / {}({})), JWT has expired {} ms ago",
+                      jwtInfo.getUserId(), jwtInfo.getTenantId(), pqon, messageId, rp.ret$PQON(), rp.getEssentialKey(), expiredBy);
                     final ServiceResponse resp = new ServiceResponse();
                     resp.setMessageId(messageId);
                     resp.setTenantId(jwtInfo.getTenantId());
@@ -155,7 +159,8 @@ public class RequestProcessor implements IRequestProcessor {
             }
             if (jwtInfo.getUserId() == null || jwtInfo.getUserRef() == null || jwtInfo.getTenantId() == null
                     || jwtInfo.getSessionId() == null || jwtInfo.getSessionRef() == null) {
-                LOGGER.info("Denying processing of {}@{}:{} (ID {}), JWT is missing some fields", jwtInfo.getUserId(), jwtInfo.getTenantId(), pqon, messageId);
+                LOGGER.info("Denying processing of {}@{}:{} (ID {} / {}({})), JWT is missing some fields",
+                  jwtInfo.getUserId(), jwtInfo.getTenantId(), pqon, messageId, rp.ret$PQON(), rp.getEssentialKey());
                 final ServiceResponse resp = new ServiceResponse();
                 resp.setMessageId(messageId);
                 resp.setTenantId(jwtInfo.getTenantId());

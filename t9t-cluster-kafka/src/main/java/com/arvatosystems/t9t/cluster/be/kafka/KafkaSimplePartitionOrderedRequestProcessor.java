@@ -26,7 +26,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -40,6 +39,7 @@ import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.auth.ApiKeyAuthentication;
 import com.arvatosystems.t9t.base.types.AuthenticationParameters;
 import com.arvatosystems.t9t.cfg.be.KafkaConfiguration;
+import com.arvatosystems.t9t.cfg.be.StatusProvider;
 import com.arvatosystems.t9t.kafka.service.IKafkaTopicReader;
 import com.arvatosystems.t9t.kafka.service.impl.KafkaTopicReader;
 
@@ -49,7 +49,7 @@ import com.arvatosystems.t9t.kafka.service.impl.KafkaTopicReader;
  *   <li>Multithreaded with the help of a fixed thread pool (based on CPUs or {@code clusterManagerPoolSize} config.</li>
  *   <li>Grouping of records by partitions. Starting a processing thread for each batch of records (with same partition)</li>
  *   <li>Keeping order of records within one partition, i.e. sequential processing of each partition.</li>
- *   <li>Procossor pauses consumer for 'busy' partitions and resumse once the last batch has been finished.</li>
+ *   <li>Processor pauses consumer for 'busy' partitions and resume once the last batch has been finished.</li>
  *   <li>Processed offsets will be collected and committed after a configured time interval.</li>
  *   <li>Handling of revoked partitions via {@link KafkaClusterRebalancer}</li>
  * </ul>
@@ -65,7 +65,6 @@ final class KafkaSimplePartitionOrderedRequestProcessor implements Callable<Bool
     private static final int DEFAULT_WORKER_POOL_SIZE = 6;
 
     private final IKafkaTopicReader consumer;
-    private final AtomicBoolean shuttingDown;
     private final AuthenticationParameters defaultAuthHeader;
     private final boolean commitSync;
 
@@ -81,7 +80,7 @@ final class KafkaSimplePartitionOrderedRequestProcessor implements Callable<Bool
     private final long shutdownThreadpoolIntervalInMs;
     private final long idleIntervalInMs;
 
-    protected KafkaSimplePartitionOrderedRequestProcessor(final KafkaConfiguration config, final IKafkaTopicReader consumer, final AtomicBoolean shuttingDown) {
+    protected KafkaSimplePartitionOrderedRequestProcessor(final KafkaConfiguration config, final IKafkaTopicReader consumer) {
         LOGGER.info("Starting " + this.getClass().getSimpleName());
 
         // init constructor params
@@ -92,7 +91,6 @@ final class KafkaSimplePartitionOrderedRequestProcessor implements Callable<Bool
             this.defaultAuthHeader = null;
         }
         this.consumer = consumer;
-        this.shuttingDown = shuttingDown;
 
         // init others
         this.commitSync = T9tUtil.isTrue(config.getCommitSync());
@@ -123,7 +121,7 @@ final class KafkaSimplePartitionOrderedRequestProcessor implements Callable<Bool
     public Boolean call() {
         final AtomicInteger numberOfPolls = new AtomicInteger(0);
         long lastinfo = System.nanoTime();
-        while (!shuttingDown.get()) {
+        while (!StatusProvider.isShutdownInProgress()) {
             final int currentNum = numberOfPolls.incrementAndGet();
             final long startChunk = System.nanoTime();
             if (startChunk - lastinfo >= 60_000_000_000L) {
@@ -136,7 +134,7 @@ final class KafkaSimplePartitionOrderedRequestProcessor implements Callable<Bool
             final ConsumerRecords<String, byte[]> consumerRecords = consumer.poll(KafkaTopicReader.DEFAULT_POLL_INTERVAL);
             if (consumerRecords == null) {
                 // some exception (it is OK during shutdown)
-                if (shuttingDown.get()) {
+                if (StatusProvider.isShutdownInProgress()) {
                     break;
                 }
                 LOGGER.error("Error polling kafka - sleeping a while, then retry");

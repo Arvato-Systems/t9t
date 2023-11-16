@@ -73,7 +73,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
     @Override
     public <T extends BonaPortable, R extends RequestParameters> void performAsyncBackendRequest(final HttpHeaders httpHeaders, final AsyncResponse resp,
         final String infoMsg, final List<T> inputData, final Function<T, R> requestConverterSingle,
-        final Function<List<T>, RequestParameters> requestConverterBatch) {
+        final Function<List<T>, R> requestConverterBatch) {
 
         // must evaluate httpHeaders now, because httpHeaders is a proxy and no longer valid in the other thread (when we process the response)
         final String acceptHeader = determineResponseType(httpHeaders);

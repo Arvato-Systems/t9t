@@ -1,0 +1,18 @@
+TRUNCATE p28_dat_async_message_statistics;
+TRUNCATE p28_dat_bpmn2_message_queue;
+TRUNCATE p28_dat_bucket_entry;
+TRUNCATE p28_dat_email;
+TRUNCATE p28_dat_email_attachments;
+TRUNCATE p28_dat_message_statistics;
+TRUNCATE p28_dat_plugin_log;
+TRUNCATE p28_dat_process_exec_status;
+TRUNCATE p28_dat_session;
+TRUNCATE p28_dat_slice_tracking;
+TRUNCATE p28_dat_statistics_aggregation;
+TRUNCATE p28_int_message;
+TRUNCATE p42_dat_sinks;
+TRUNCATE p42_dat_statistics;
+TRUNCATE p42_int_async_messages:
+TRUNCATE p42_int_outbound_messages;
+
+UPDATE p28_dat_bucket_counter SET current_val = 0;

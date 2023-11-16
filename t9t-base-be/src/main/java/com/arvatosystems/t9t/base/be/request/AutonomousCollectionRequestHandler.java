@@ -42,8 +42,6 @@ public class AutonomousCollectionRequestHandler extends AbstractRequestHandler<A
             }
         }
         LOGGER.debug("Processed {} requests, {} with error", request.getCommands().size(), errorCount);
-        final ServiceResponse resp = new ServiceResponse();
-        resp.setReturnCode(errorCount);
-        return null;
+        return new ServiceResponse(errorCount);
     }
 }

@@ -24,8 +24,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,7 +67,6 @@ public class KafkaRequestProcessorAndClusterManagerInitializer implements Startu
 
     private final IMetricsProvider metricsProvider = Jdp.getOptional(IMetricsProvider.class);
 
-    private final AtomicBoolean shuttingDown = new AtomicBoolean(false);
     private long shutdownThreadpoolIntervalInMs;
 
     private static KafkaClusterRebalancer rebalancer = null;
@@ -120,9 +117,9 @@ public class KafkaRequestProcessorAndClusterManagerInitializer implements Startu
         // select strategy
         final Callable<Boolean> processingStrategy;
         if (T9tUtil.isTrue(defaults.getClusterManagerOrdering())) {
-            processingStrategy = new KafkaSimplePartitionOrderedRequestProcessor(defaults, consumer, shuttingDown);
+            processingStrategy = new KafkaSimplePartitionOrderedRequestProcessor(defaults, consumer);
         } else {
-            processingStrategy = new KafkaRequestProcessor(defaults, consumer, shuttingDown);
+            processingStrategy = new KafkaRequestProcessor(defaults, consumer);
         }
 
         // add metrics if enabled
@@ -148,9 +145,8 @@ public class KafkaRequestProcessorAndClusterManagerInitializer implements Startu
             // there was no configuration - nothing has been initialized, not possible to shut down anything either
             return;
         }
-        shuttingDown.set(true);
         if (consumer != null) {
-            // setting shuttingDown will als break polling loop, but if is currently WITHIN the poll methods, we need to call wakeUp()
+            // shuttingDown flag from StatusProvider will also break polling loop, but if it is currently WITHIN the poll methods, we need to call wakeUp()
             // close() is performed in processor
             consumer.wakeUp();
         }

@@ -20,7 +20,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -35,6 +34,7 @@ import com.arvatosystems.t9t.base.api.TransactionOriginType;
 import com.arvatosystems.t9t.base.auth.ApiKeyAuthentication;
 import com.arvatosystems.t9t.base.types.AuthenticationParameters;
 import com.arvatosystems.t9t.cfg.be.KafkaConfiguration;
+import com.arvatosystems.t9t.cfg.be.StatusProvider;
 import com.arvatosystems.t9t.kafka.service.IKafkaTopicReader;
 import com.arvatosystems.t9t.kafka.service.impl.KafkaTopicReader;
 import com.arvatosystems.t9t.server.services.IUnauthenticatedServiceRequestExecutor;
@@ -51,14 +51,13 @@ final class KafkaRequestProcessor implements Callable<Boolean> {
     private final AtomicInteger workerThreadCounter = new AtomicInteger();
     private final ExecutorService executorKafkaWorker;
     private final IKafkaTopicReader consumer;
-    private final AtomicBoolean shuttingDown;
     private final AuthenticationParameters defaultAuthHeader;
     private final AtomicInteger pendingRequestsCounter = new AtomicInteger(0);
     private final AtomicInteger uniqueRequestsCounter = new AtomicInteger(0);
 
-    protected KafkaRequestProcessor(final KafkaConfiguration config, final IKafkaTopicReader consumer, final AtomicBoolean shuttingDown) {
+    protected KafkaRequestProcessor(final KafkaConfiguration config, final IKafkaTopicReader consumer) {
         this.consumer = consumer;
-        this.shuttingDown = shuttingDown;
+
         if (config.getClusterManagerApiKey() != null)  {
             this.defaultAuthHeader = new ApiKeyAuthentication(config.getClusterManagerApiKey());
             this.defaultAuthHeader.freeze();
@@ -155,7 +154,7 @@ final class KafkaRequestProcessor implements Callable<Boolean> {
         final AtomicInteger numberOfPolls = new AtomicInteger(0);
         final AtomicInteger baseline = new AtomicInteger(0);
         long lastinfo = System.nanoTime();
-        while (!shuttingDown.get()) {
+        while (!StatusProvider.isShutdownInProgress()) {
             final int currentNum = numberOfPolls.incrementAndGet();
             final long startChunk = System.nanoTime();
             if (startChunk - lastinfo >= 60_000_000_000L) {
@@ -167,7 +166,7 @@ final class KafkaRequestProcessor implements Callable<Boolean> {
               kafkaConsumer -> commitAfterRequestsProcessed(baseline, kafkaConsumer));
             if (recordsProcessed < 0) {
                 // some exception (it is OK during shutdown)
-                if (shuttingDown.get()) {
+                if (StatusProvider.isShutdownInProgress()) {
                     break;
                 }
                 LOGGER.error("Error polling kafka - sleeping a while, then retry");
