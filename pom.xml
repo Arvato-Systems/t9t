@@ -102,7 +102,7 @@
         <checkstyle.version>10.1</checkstyle.version>
         <spotbugs.version>4.7.3</spotbugs.version>
         <spotbugs-plugin.version>4.7.3.5</spotbugs-plugin.version>
-        <logback.version>1.4.11</logback.version>
+        <logback.version>1.4.12</logback.version>
         <junit5.version>5.10.0</junit5.version>     <!-- groupId is org.junit, therefore is can coexist with junit4 in dependency management -->
 
         <!-- Swagger -->
