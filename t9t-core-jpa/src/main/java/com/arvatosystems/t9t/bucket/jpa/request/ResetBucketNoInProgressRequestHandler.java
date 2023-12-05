@@ -25,46 +25,23 @@ import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.bucket.jpa.entities.BucketCounterEntity;
 import com.arvatosystems.t9t.bucket.jpa.persistence.IBucketCounterEntityResolver;
 import com.arvatosystems.t9t.bucket.jpa.persistence.IBucketEntryEntityResolver;
-import com.arvatosystems.t9t.bucket.request.DeleteBucketRequest;
-import com.arvatosystems.t9t.bucket.request.SwitchCurrentBucketNoRequest;
-import com.arvatosystems.t9t.bucket.request.SwitchCurrentBucketNoResponse;
+import com.arvatosystems.t9t.bucket.request.ResetBucketNoInProgressRequest;
 
 import de.jpaw.dp.Jdp;
-import de.jpaw.util.ApplicationException;
 
-public class SwitchCurrentBucketNoRequestHandler extends AbstractRequestHandler<SwitchCurrentBucketNoRequest> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SwitchCurrentBucketNoRequestHandler.class);
+public class ResetBucketNoInProgressRequestHandler extends AbstractRequestHandler<ResetBucketNoInProgressRequest> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ResetBucketNoInProgressRequestHandler.class);
 
     protected final IBucketCounterEntityResolver counterResolver = Jdp.getRequired(IBucketCounterEntityResolver.class);
     protected final IBucketEntryEntityResolver   entryResolver   = Jdp.getRequired(IBucketEntryEntityResolver.class);
     protected final IAutonomousExecutor          autoExecutor    = Jdp.getRequired(IAutonomousExecutor.class);
 
     @Override
-    public ServiceResponse execute(final RequestContext ctx, final SwitchCurrentBucketNoRequest rp) {
+    public ServiceResponse execute(final RequestContext ctx, final ResetBucketNoInProgressRequest rp) {
         final String qualifier = rp.getQualifier();
         final BucketCounterEntity counterEntity = counterResolver.findByQualifier(false, qualifier);
-        final int oldBucketNo = counterEntity.getCurrentVal();
-        int newBucketNo = oldBucketNo + 1;
-        if (newBucketNo >= counterEntity.getMaxVal())
-            newBucketNo = 0;  // restart
-
-        // first, delete the target bucket, unless disabled
-        if (rp.getDeleteBeforeSwitch()) {
-            ctx.statusText = "Deleting new bucket " + qualifier + ":" + newBucketNo;
-            final DeleteBucketRequest dbrq = new DeleteBucketRequest();
-            dbrq.setQualifier(qualifier);
-            dbrq.setBucketNo(newBucketNo);
-            final ServiceResponse deleteResp = autoExecutor.execute(ctx, dbrq);
-            if (!ApplicationException.isOk(deleteResp.getReturnCode()))
-                return deleteResp;
-        }
-
-        counterEntity.setCurrentVal(newBucketNo);
-        counterEntity.setBucketNoInProgress(oldBucketNo);
-        LOGGER.debug("Switching bucket {} from {} to {}", qualifier, oldBucketNo, newBucketNo);
-        final SwitchCurrentBucketNoResponse resp = new SwitchCurrentBucketNoResponse();
-        resp.setBeforeSwitchBucketNo(oldBucketNo);
-        resp.setAfterSwitchBucketNo(newBucketNo);
-        return resp;
+        counterEntity.setBucketNoInProgress(null);
+        LOGGER.debug("Resetting bucket {} bucketNoInProgress", qualifier);
+        return ok();
     }
 }

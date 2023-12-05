@@ -40,7 +40,7 @@ public class KafkaClusterRebalancer extends KafkaRebalancer {
         super.onPartitionsRevoked(partitions);
 
         // handle strategy-specific
-        if (this.processingStrategy instanceof KafkaSimplePartitionOrderedRequestProcessor processor) {
+        if (this.processingStrategy instanceof KafkaPartitionOrderedRequestProcessor processor) {
             LOGGER.info("Revoke partitions {}", Arrays.toString(partitions.toArray()));
             // in case of shutdown: these will be all partitions
             processor.revokePartitions(partitions);

@@ -38,6 +38,7 @@ package (com.arvatosystems) t9t.bucket {
         required bucketId                       qualifier          properties notupdatable, dropdown="bucketId";
         required int                            currentVal;
         required int                            maxVal;
+        optional Integer                        bucketNoInProgress;    // bucket number which is currently in progress while request is running
     }
 
     final class BucketEntryKey extends CompositeKeyRef {

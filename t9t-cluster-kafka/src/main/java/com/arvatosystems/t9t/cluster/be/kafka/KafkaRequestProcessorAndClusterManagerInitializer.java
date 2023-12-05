@@ -117,7 +117,7 @@ public class KafkaRequestProcessorAndClusterManagerInitializer implements Startu
         // select strategy
         final Callable<Boolean> processingStrategy;
         if (T9tUtil.isTrue(defaults.getClusterManagerOrdering())) {
-            processingStrategy = new KafkaSimplePartitionOrderedRequestProcessor(defaults, consumer);
+            processingStrategy = new KafkaPartitionOrderedRequestProcessor(defaults, consumer);
         } else {
             processingStrategy = new KafkaRequestProcessor(defaults, consumer);
         }
@@ -126,7 +126,7 @@ public class KafkaRequestProcessorAndClusterManagerInitializer implements Startu
         if (this.metricsProvider != null) {
             LOGGER.info("Adding metrics provider for kafka consumer");
             consumer.registerMetrics((kafkaConsumer) -> this.metricsProvider.addMeter(new KafkaClientMetrics(kafkaConsumer)));
-            if (processingStrategy instanceof KafkaSimplePartitionOrderedRequestProcessor proc) {
+            if (processingStrategy instanceof KafkaPartitionOrderedRequestProcessor proc) {
                 final KafkaClusterPartitionMetrics customMetrics = new KafkaClusterPartitionMetrics(proc.getPartitionStatusTable(), consumer.getKafkaTopic());
                 this.metricsProvider.addMeter(customMetrics);
             }

@@ -4,20 +4,20 @@ import java.util.Map;
 
 import org.apache.kafka.common.TopicPartition;
 
-import com.arvatosystems.t9t.cluster.be.kafka.KafkaSimplePartitionOrderedRequestProcessor.PartitionMonitor;
+import com.arvatosystems.t9t.cluster.be.kafka.KafkaPartitionOrderedRequestProcessor.PartitionMonitor;
 
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
 
 /**
- * {@link MeterBinder} for exporting partition monitor information of {@link KafkaSimplePartitionOrderedRequestProcessor}.<br>
+ * {@link MeterBinder} for exporting partition monitor information of {@link KafkaPartitionOrderedRequestProcessor}.<br>
  * Sample output:
  * <pre>
- * t9t_kafka_partitions_processing_time_total{topic="candaRequestToMAIN",} 1763.0
- * t9t_kafka_partitions_paused_total{topic="candaRequestToMAIN",} 3.0
- * t9t_kafka_partitions_tasks_pending_total{topic="candaRequestToMAIN",} 8.0
- * t9t_kafka_partitions_tasks_total{topic="candaRequestToMAIN",} 15.0
+ * t9t_kafka_partitions_processing_time_total{topic="t9tRequestToMAIN",} 1763.0
+ * t9t_kafka_partitions_paused_total{topic="t9tRequestToMAIN",} 3.0
+ * t9t_kafka_partitions_tasks_pending_total{topic="t9tRequestToMAIN",} 8.0
+ * t9t_kafka_partitions_tasks_total{topic="t9tRequestToMAIN",} 15.0
  * </pre>
  */
 public class KafkaClusterPartitionMetrics implements MeterBinder {

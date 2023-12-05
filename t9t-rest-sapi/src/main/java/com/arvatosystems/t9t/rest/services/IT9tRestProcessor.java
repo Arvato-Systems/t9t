@@ -63,7 +63,7 @@ public interface IT9tRestProcessor {
      */
     default <T extends BonaPortable, R extends RequestParameters> void performAsyncBackendRequestViaKafka(@Nonnull final HttpHeaders httpHeaders,
         @Nonnull final AsyncResponse resp, @Nonnull final String infoMsg, final List<T> inputData, final Function<T, R> requestConverterSingle,
-        final Function<R, String> partitionKeyExtractor, Function<R, String> businessIdExtractor) {
+        final Function<R, String> partitionKeyExtractor) {
         performAsyncBackendRequest(httpHeaders, resp, infoMsg, inputData, requestConverterSingle, (Function<List<T>, R>)null);
     }
 

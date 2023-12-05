@@ -211,7 +211,7 @@ public class T9tRestProcessorViaKafka extends T9tRestProcessor implements IT9tRe
     @Override
     public <T extends BonaPortable, R extends RequestParameters> void performAsyncBackendRequestViaKafka(final HttpHeaders httpHeaders,
         final AsyncResponse resp, final String pathInfo, final List<T> inputData, final Function<T, R> requestParameterConverter,
-            final Function<R, String> partitionKeyExtractor, final Function<R, String> businessIdExtractor) {
+            final Function<R, String> partitionKeyExtractor) {
         if (!enableKafka || !kafkaTransmitter.initialized()) {
             // fall back to sync method
             Function<List<T>, R> requestConverterBatch = null;
@@ -283,13 +283,8 @@ public class T9tRestProcessorViaKafka extends T9tRestProcessor implements IT9tRe
                         final String partitionKey = partitionKeys.get(i);
                         // assign a message ID
                         rq.setMessageId(i == 0 && defaultIdemPotencyHeader != null ? defaultIdemPotencyHeader : RandomNumberGenerators.randomFastUUID());
-                        // provide suitable log output what's queued into kafka
-                        final String essentialKey = businessIdExtractor == null ? null : businessIdExtractor.apply(rq);
-                        if (essentialKey != null) {
-                            rq.setEssentialKey(essentialKey);
-                        }
                         LOGGER.info("Sending object of key {} (partition key {}) via path {} with {} {}",
-                                T9tUtil.nvl(essentialKey, "(null)"), partitionKey, pathInfo,
+                                T9tUtil.nvl(rq.getEssentialKey(), "(null)"), partitionKey, pathInfo,
                                 idempotencyHeader == null ? "random message ID" : "provided idempotency header", rq.getMessageId());
                         sendToServer(authHeader, partitionKey, rq, payload);
                     }

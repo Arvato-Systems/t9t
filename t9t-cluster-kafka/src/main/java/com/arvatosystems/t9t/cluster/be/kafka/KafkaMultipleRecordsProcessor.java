@@ -44,10 +44,10 @@ import de.jpaw.bonaparte.core.CompactByteArrayParser;
 import de.jpaw.dp.Jdp;
 
 /**
- * Utilized by {@link KafkaSimplePartitionOrderedRequestProcessor} to process a batch of records (which belong to same partition).
+ * Utilized by {@link KafkaPartitionOrderedRequestProcessor} to process a batch of records (which belong to same partition).
  */
-final class KafkaSimpleMultipleRecordsProcessor implements Runnable {
-    private static final Logger LOGGER = LoggerFactory.getLogger(KafkaSimpleMultipleRecordsProcessor.class);
+final class KafkaMultipleRecordsProcessor implements Runnable {
+    private static final Logger LOGGER = LoggerFactory.getLogger(KafkaMultipleRecordsProcessor.class);
 
     private final IUnauthenticatedServiceRequestExecutor requestProcessor = Jdp.getRequired(IUnauthenticatedServiceRequestExecutor.class);
 
@@ -65,7 +65,7 @@ final class KafkaSimpleMultipleRecordsProcessor implements Runnable {
     private final List<ConsumerRecord<String, byte[]>> records;
     private final TopicPartition topicPartition;
 
-    KafkaSimpleMultipleRecordsProcessor(final TopicPartition topicPartition, final List<ConsumerRecord<String, byte[]>> records,
+    KafkaMultipleRecordsProcessor(final TopicPartition topicPartition, final List<ConsumerRecord<String, byte[]>> records,
             final AuthenticationParameters defaultAuthHeader) {
         this.topicPartition = topicPartition;
         this.records = records;

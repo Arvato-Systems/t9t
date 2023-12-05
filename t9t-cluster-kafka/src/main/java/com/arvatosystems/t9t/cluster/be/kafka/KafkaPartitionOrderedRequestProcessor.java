@@ -55,9 +55,9 @@ import com.arvatosystems.t9t.kafka.service.impl.KafkaTopicReader;
  * </ul>
  * Processor will be shut down by {@link KafkaRequestProcessorAndClusterManagerInitializer#onShutdown()}
  */
-final class KafkaSimplePartitionOrderedRequestProcessor implements Callable<Boolean> {
+final class KafkaPartitionOrderedRequestProcessor implements Callable<Boolean> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(KafkaSimplePartitionOrderedRequestProcessor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(KafkaPartitionOrderedRequestProcessor.class);
 
     private static final int DEFAULT_COMMIT_INTERVAL = 3000; // commit interval
     private static final int DEFAULT_MONITOR_INTERVAL = 5000; // monitor interval
@@ -70,7 +70,7 @@ final class KafkaSimplePartitionOrderedRequestProcessor implements Callable<Bool
 
     private final AtomicInteger workerThreadCounter = new AtomicInteger();
     private final ExecutorService executorKafkaWorker;
-    private final Map<TopicPartition, KafkaSimpleMultipleRecordsProcessor> activeProcessors;
+    private final Map<TopicPartition, KafkaMultipleRecordsProcessor> activeProcessors;
     private final Map<TopicPartition, OffsetAndMetadata> offsetsToCommit;
     private long lastCommitTime;
     private long lastMonitorTime;
@@ -80,7 +80,7 @@ final class KafkaSimplePartitionOrderedRequestProcessor implements Callable<Bool
     private final long shutdownThreadpoolIntervalInMs;
     private final long idleIntervalInMs;
 
-    protected KafkaSimplePartitionOrderedRequestProcessor(final KafkaConfiguration config, final IKafkaTopicReader consumer) {
+    protected KafkaPartitionOrderedRequestProcessor(final KafkaConfiguration config, final IKafkaTopicReader consumer) {
         LOGGER.info("Starting " + this.getClass().getSimpleName());
 
         // init constructor params
@@ -145,7 +145,7 @@ final class KafkaSimplePartitionOrderedRequestProcessor implements Callable<Bool
                 final Set<TopicPartition> partitions = consumerRecords.partitions();
                 for (final TopicPartition partition : partitions) {
                     final List<ConsumerRecord<String, byte[]>> recordsByPartition = consumerRecords.records(partition);
-                    final KafkaSimpleMultipleRecordsProcessor kafkaMultipleRecordsProcessor = new KafkaSimpleMultipleRecordsProcessor(partition,
+                    final KafkaMultipleRecordsProcessor kafkaMultipleRecordsProcessor = new KafkaMultipleRecordsProcessor(partition,
                             recordsByPartition, defaultAuthHeader);
                     executorKafkaWorker.submit(kafkaMultipleRecordsProcessor);
                     activeProcessors.put(partition, kafkaMultipleRecordsProcessor);
@@ -269,9 +269,9 @@ final class KafkaSimplePartitionOrderedRequestProcessor implements Callable<Bool
         LOGGER.info("Revoke called with {} active processor threads and {} uncommitted partitions", activeProcessors.size(), offsetsToCommit.keySet().size());
 
         // stop processors of given partition
-        final List<KafkaSimpleMultipleRecordsProcessor> stoppedProcessors = new ArrayList<>();
+        final List<KafkaMultipleRecordsProcessor> stoppedProcessors = new ArrayList<>();
         for (final TopicPartition partition : partitions) {
-            final KafkaSimpleMultipleRecordsProcessor removedProcessor = activeProcessors.remove(partition);
+            final KafkaMultipleRecordsProcessor removedProcessor = activeProcessors.remove(partition);
             if (removedProcessor != null) {
                 removedProcessor.stopProcessing();
                 LOGGER.info("Stopped processor for partition {} with {} pending records", partition, removedProcessor.getNumPending());
@@ -336,9 +336,9 @@ final class KafkaSimplePartitionOrderedRequestProcessor implements Callable<Bool
     class PartitionMonitor {
         final int partition;
         final long pausedWhen;
-        final KafkaSimpleMultipleRecordsProcessor relatedProcessor;
+        final KafkaMultipleRecordsProcessor relatedProcessor;
 
-        PartitionMonitor(final int partition, final long pausedWhen, final KafkaSimpleMultipleRecordsProcessor relatedProcessor) {
+        PartitionMonitor(final int partition, final long pausedWhen, final KafkaMultipleRecordsProcessor relatedProcessor) {
             this.partition = partition;
             this.pausedWhen = pausedWhen;
             this.relatedProcessor = relatedProcessor;

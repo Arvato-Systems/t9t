@@ -47,6 +47,10 @@ package (com.arvatosystems) t9t.bucket.request {
         required int                    afterSwitchBucketNo; //  resulting bucket number after switch
     }
 
+    class ResetBucketNoInProgressRequest extends RequestParameters{
+        required bucketId               qualifier; // defines the qualifier
+    }
+
     /** Writes a single bucket - useful for testing. */
     class SingleBucketWriteRequest extends RequestParameters {
         required boolean                        async;      // if false, writes directly to the queue, else via executor
