@@ -21,7 +21,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-settings</artifactId>
-        <version>6.7-SNAPSHOT</version>
+        <version>6.7.5</version>
         <relativePath>../t9t-settings</relativePath>
     </parent>
 
