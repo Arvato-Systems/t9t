@@ -466,9 +466,35 @@ public abstract class AbstractResolverAnyKey<
         // determine the effective sort columns
         List<SortColumn> sortColumns = searchCriteria.getSortColumns();
         final int limit = searchCriteria.getLimit();
-        if ((sortColumns == null || sortColumns.isEmpty()) && (searchCriteria.getOffset() != 0 || limit != 0)) {
-            // There is no sorting provided, but pagination requested. Add a default sort order.
-            sortColumns = getDefaultSortColumns();
+        if (searchCriteria.getOffset() != 0 || limit != 0) {
+            // pagination requested
+            final List<SortColumn> defaultColumns = getDefaultSortColumns();
+            if (sortColumns == null || sortColumns.isEmpty()) {
+                // There is no sorting provided. Add a default sort order.
+                sortColumns = defaultColumns;
+            } else {
+                // merge provided sort columns and default sort columns
+                final List<SortColumn> sortColumnsToAdd = new ArrayList<>(defaultColumns.size());
+                for (final SortColumn defaultColumn : defaultColumns) {
+                    boolean found = false;
+                    for (final SortColumn sortColumn : sortColumns) {
+                        if (defaultColumn.getFieldName().equalsIgnoreCase(sortColumn.getFieldName())) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        sortColumnsToAdd.add(defaultColumn);
+                    }
+                }
+                if (!sortColumnsToAdd.isEmpty()) {
+                    // the provided sort columns can be immutable, we have to merge into a new Array
+                    final List<SortColumn> mergedSortColumns = new ArrayList<>(sortColumns.size() + sortColumnsToAdd.size());
+                    mergedSortColumns.addAll(sortColumns);
+                    mergedSortColumns.addAll(sortColumnsToAdd);
+                    sortColumns = mergedSortColumns;
+                }
+            }
         }
 
         // Sorting, if supplied

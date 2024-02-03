@@ -28,4 +28,11 @@
     <artifactId>t9t-translation-sapi</artifactId>
     <description></description>
 
+    <dependencies>
+        <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+        </dependency>
+    </dependencies>
+
 </project>

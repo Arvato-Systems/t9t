@@ -45,7 +45,8 @@ public class BackendArchTests extends StandardArchTests {
     protected final ArchRule injected_fields_should_be_final =
         fields().that().areAnnotatedWith(Inject.class)
             .should().beFinal()
-            .because("Injection is a one-time initialization");
+            .because("Injection is a one-time initialization")
+            .allowEmptyShould(true);
 
     @ArchTest
     protected final ArchRule request_handler_naming_convention_reverse =

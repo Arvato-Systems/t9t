@@ -106,12 +106,20 @@ public class ChangePwdViewModel28 extends AbstractViewOnlyVM<ChangePasswordUI, T
             postProcessHook();
             session.setPasswordExpires(null);
         } catch (ReturnCodeException rce) {
-            showRequirementNotMatchError();
+            showLoginFailError();
         }
     }
 
     private void showRequirementNotMatchError() {
         final String message = session.translate("changePwd", "requirementNotMatch");
+        showError(message);
+    }
+
+    private void showLoginFailError() {
+        showError(session.translate("changePwd", "loginFail"));
+    }
+
+    private void showError(final String message) {
         throw new WrongValueException(message);
     }
 

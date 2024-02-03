@@ -34,14 +34,14 @@ public abstract class AbstractRerunRequestHandler<T extends RequestParameters> e
     protected final IMessageEntityResolver resolver = Jdp.getRequired(IMessageEntityResolver.class);
     protected final IAuthorize authorizer = Jdp.getRequired(IAuthorize.class);
 
-    protected void checkPermission(final RequestContext ctx, final RequestParameters rq) {
+    protected void checkPermission(final RequestContext ctx, final String pqon) {
         // additional permission check for CUSTOM and ADMIN
-        final Permissionset permissions = authorizer.getPermissions(ctx.internalHeaderParameters.getJwtInfo(), PermissionType.BACKEND, rq.ret$PQON());
+        final Permissionset permissions = authorizer.getPermissions(ctx.internalHeaderParameters.getJwtInfo(), PermissionType.BACKEND, pqon);
         if (!permissions.contains(OperationType.CUSTOM)) {
-            throw new T9tException(T9tException.NOT_AUTHORIZED, OperationType.CUSTOM.name() + " on " + rq.ret$PQON());
+            throw new T9tException(T9tException.NOT_AUTHORIZED, OperationType.CUSTOM.name() + " on " + pqon);
         }
         if (!permissions.contains(OperationType.ADMIN)) {
-            throw new T9tException(T9tException.NOT_AUTHORIZED, OperationType.ADMIN.name() + " on " + rq.ret$PQON());
+            throw new T9tException(T9tException.NOT_AUTHORIZED, OperationType.ADMIN.name() + " on " + pqon);
         }
     }
 

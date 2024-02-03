@@ -48,7 +48,7 @@ public class ExecuteProcessWithRefRequestHandler extends AbstractRequestHandler<
         newStatus.setLockRef(rq.getLockRef());
         newStatus.setLockId(rq.getLockId());
         // handle restartAtBeginning; potential request parameter overrules process definition config
-        final boolean restart = T9tUtil.nvl(rq.getRestartAtBeginningIfExists() == null, pd.getAlwaysRestartAtStep1());
+        final boolean restart = T9tUtil.nvl(rq.getRestartAtBeginningIfExists(), pd.getAlwaysRestartAtStep1());
         final Long ref = persistenceAccess.createOrUpdateNewStatus(ctx, newStatus, rq, restart);
 
         final ExecuteProcessWithRefResponse resp = new ExecuteProcessWithRefResponse();

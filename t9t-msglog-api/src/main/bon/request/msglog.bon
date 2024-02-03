@@ -84,6 +84,22 @@ package (com.arvatosystems) t9t.msglog.request {
     }
 
     /**
+     * Rerun several requests which failed in their inital execution.
+     * Requires ADMIN and CUSTOM permission for this request.
+     */
+    class RerunFailedRequestsRequest extends RequestParameters {
+        required Unicode(64)                        pqon;                   // the PQON of the requests to retry
+        required boolean                            stopOnError;            // stop execution once a retry also returns an error, or continue?
+        optional Integer                            maxCount;               // if specified, gives the maximum number of requests to execute (to allow for chunks)
+        optional userId                             onlyUserId;             // if set, only requests initiated by this user ID
+        optional Integer                            onlyReturnCode;         // do not retry all failed messages, but only those with this return code (recommended to populate)
+        optional Integer                            minReturnCode;          // do not retry all failed messages, but only those with this minimum return code
+        optional Integer                            maxReturnCode;          // do not retry all failed messages, but only those with this maximum return code
+        optional Instant                            fromDate;               // restrict range to retry to time interval (lower bound)
+        optional Instant                            toDate;                 // restrict range to retry to time interval (upper bound)
+    }
+
+    /**
      * Aggregate data of MessageDTO into MessageStatisticsDTO.
      * Should be run by sessions of the global tenant only, aggregates data for all tenants.
      */

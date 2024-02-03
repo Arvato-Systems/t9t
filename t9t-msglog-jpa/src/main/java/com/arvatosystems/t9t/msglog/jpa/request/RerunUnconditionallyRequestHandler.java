@@ -25,7 +25,7 @@ public class RerunUnconditionallyRequestHandler extends AbstractRerunRequestHand
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final RerunUnconditionallyRequest rq) {
-        checkPermission(ctx, rq);      // additional permission check for CUSTOM and ADMIN
+        checkPermission(ctx, rq.ret$PQON());      // additional permission check for CUSTOM and ADMIN
 
         final MessageEntity loggedRequest = getLoggedRequestByProcessRef(ctx, rq.getProcessRef());
 

@@ -96,6 +96,9 @@ class FormatDocumentTranslateTest {
         override getHeaderTranslations(String tenantId, String language, boolean tryFallbackLanguages, String gridId, List<String> fieldNames) {
             throw new UnsupportedOperationException("TODO: auto-generated method stub")
         }
+        override getReportTranslation(String tenantId, Locale locale, String reportId, String fieldName, String fallbackText) {
+            throw new UnsupportedOperationException("TODO: auto-generated method stub")
+        }
         override getReportTranslation(String tenantId, Locale locale, String reportId, String fieldName) {
             throw new UnsupportedOperationException("TODO: auto-generated method stub")
         }

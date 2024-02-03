@@ -28,7 +28,7 @@ public class RerunRequestHandler extends AbstractRerunRequestHandler<RerunReques
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final RerunRequest rq) {
-        checkPermission(ctx, rq);      // additional permission check for CUSTOM and ADMIN
+        checkPermission(ctx, rq.ret$PQON());      // additional permission check for CUSTOM and ADMIN
 
         final MessageEntity loggedRequest = getLoggedRequestByProcessRef(ctx, rq.getProcessRef());
         if (loggedRequest.getRerunByProcessRef() != null) {

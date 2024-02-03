@@ -18,7 +18,10 @@ package com.arvatosystems.t9t.translation.services;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
 import de.jpaw.bonaparte.enums.BonaTokenizableEnum;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 public interface ITranslationProvider {
     /** Returns an array of primary and possible fallback language for translation lookup.
@@ -41,8 +44,47 @@ public interface ITranslationProvider {
      * (default translation). */
     String getTranslation(String tenantId, String[] langs, String path, String fieldname);
 
-    String getReportTranslation(String tenantId, String language, boolean tryFallbackLanguages, String reportId, String fieldName);
-    String getReportTranslation(String tenantId, Locale locale, String reportId, String fieldName);
+    /**
+     * Returns report translation. Translation values are taken from reports*.properties and defaults*.properties files.
+     *
+     * @param tenantId the tenant Id
+     * @param language the language to use
+     * @param tryFallbackLanguages true if a default language should be used if no translation is found for the current ones
+     * @param reportId the ID of the report
+     * @param fieldName the field within the report
+     *
+     * @return translated text
+     */
+    @Nullable String getReportTranslation(@Nonnull String tenantId, @Nullable String language, boolean tryFallbackLanguages, @Nonnull String reportId,
+        @Nonnull String fieldName);
+
+    /**
+     * Returns report translation. Translation values are taken from reports*.properties and defaults*.properties files.
+     * Invokes <code>getReportTranslation(tenantId, locale.getLanguage(), true, reportId, fieldName)</code>
+     *
+     * @param tenantId the tenant Id
+     * @param language the language to use
+     * @param reportId the ID of the report
+     * @param fieldName the field within the report
+     *
+     * @return translated text
+     */
+    @Nullable String getReportTranslation(@Nonnull String tenantId, @Nonnull Locale locale, @Nonnull String reportId, @Nonnull String fieldName);
+
+    /**
+     * Returns report translation. Translation values are taken from reports*.properties and defaults*.properties files.
+     * Invokes <code>getReportTranslation(tenantId, locale.getLanguage(), true, reportId, fieldName)</code>
+     *
+     * @param tenantId the tenant Id
+     * @param language the language to use
+     * @param reportId the ID of the report
+     * @param fieldName the field within the report
+     * @param fallbackText the default text to use if no translation has been found.
+     *
+     * @return translated text
+     */
+    @Nonnull String getReportTranslation(@Nonnull String tenantId, @Nonnull Locale locale, @Nonnull String reportId, @Nonnull String fieldName,
+        @Nonnull String fallbackText);
 
     String getHeaderTranslation(String tenantId, String language, boolean tryFallbackLanguages, String gridId, String fieldName);
     List<String> getHeaderTranslations(String tenantId, String language, boolean tryFallbackLanguages, String gridId, List<String> fieldNames);

@@ -76,19 +76,6 @@ public class TranslationProvider implements ITranslationProvider {
         return MessagingUtil.getLanguagesWithFallback(language);
     }
 
-    /**
-     * Returns report translation. Translation value is taken from reports*.properties and defaults*.properties files.
-     *
-     * @param tenantId
-     *            tenant Id
-     * @param language
-     *            language
-     * @param reportId
-     *            report Id
-     * @param fieldName
-     *            field name
-     * @return translation value
-     */
     @Override
     public String getReportTranslation(final String tenantId, final String language, final boolean tryFallbackLanguages,
       final String reportId, final String fieldName) {
@@ -99,6 +86,12 @@ public class TranslationProvider implements ITranslationProvider {
     @Override
     public String getReportTranslation(final String tenantId, final Locale locale, final String reportId, final String fieldName) {
         return getReportTranslation(tenantId, locale.getLanguage(), true, reportId, fieldName);
+    }
+
+    @Override
+    public String getReportTranslation(final String tenantId, final Locale locale, final String reportId, final String fieldName, final String fallbackText) {
+        final String foundTranslation = getReportTranslation(tenantId, locale.getLanguage(), true, reportId, fieldName);
+        return foundTranslation != null ? foundTranslation : fallbackText;
     }
 
     /**
