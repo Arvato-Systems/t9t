@@ -20,14 +20,17 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-settings-java</artifactId>
-        <version>6.7-SNAPSHOT</version>
+        <version>6.8-SNAPSHOT</version>
         <relativePath>../t9t-settings-java</relativePath>
     </parent>
 
     <artifactId>t9t-cluster-kafka</artifactId>
 
     <dependencies>
-        <!-- compile dependencies -->
+        <dependency>
+            <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-cluster-kafka-api</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-base-be</artifactId>

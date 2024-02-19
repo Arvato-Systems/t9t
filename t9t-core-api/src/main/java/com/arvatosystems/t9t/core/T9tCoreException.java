@@ -39,6 +39,8 @@ public class T9tCoreException extends T9tException {
     public static final int UPDATE_MISSING_IMPLEMENTATION       = OFFSET + 21;
 
     static {
+        registerRange(CORE_OFFSET, false, T9tCoreException.class, ApplicationLevelType.FRAMEWORK, "t9t core extension module");
+
         registerCode(UPDATE_STATUS_ALREADY_IN_PROGRESS, "Ticket update already in progress.");
         registerCode(UPDATE_STATUS_INVALID_STATE, "Ticket isn't in valid state.");
         registerCode(UPDATE_STATUS_PREREQUISITES, "Not all prerequisite tickets are completed.");

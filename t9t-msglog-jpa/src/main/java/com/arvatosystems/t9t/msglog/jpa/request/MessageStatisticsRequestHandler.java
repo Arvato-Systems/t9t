@@ -25,8 +25,8 @@ import com.arvatosystems.t9t.msglog.request.MessageStatisticsSearchRequest;
 import de.jpaw.dp.Jdp;
 
 public class MessageStatisticsRequestHandler extends AbstractSearchRequestHandler<MessageStatisticsSearchRequest> {
-    protected final IMessageStatisticsEntityResolver resolver = Jdp.getRequired(IMessageStatisticsEntityResolver.class);
-    protected final IMessageStatisticsDTOMapper mapper = Jdp.getRequired(IMessageStatisticsDTOMapper.class);
+    private final IMessageStatisticsEntityResolver resolver = Jdp.getRequired(IMessageStatisticsEntityResolver.class);
+    private final IMessageStatisticsDTOMapper mapper = Jdp.getRequired(IMessageStatisticsDTOMapper.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final MessageStatisticsSearchRequest request) throws Exception {

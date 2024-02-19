@@ -22,7 +22,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-build</artifactId>
-        <version>6.7-SNAPSHOT</version>
+        <version>6.8-SNAPSHOT</version>
     </parent>
 
     <artifactId>t9t-dm</artifactId>
@@ -576,6 +576,11 @@
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-io-be-intern</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.arvato-systems.t9t</groupId>
+                <artifactId>t9t-cluster-kafka-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

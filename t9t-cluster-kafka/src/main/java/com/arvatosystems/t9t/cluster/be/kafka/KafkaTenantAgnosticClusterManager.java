@@ -18,6 +18,9 @@ package com.arvatosystems.t9t.cluster.be.kafka;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.arvatosystems.t9t.base.services.IClusterEnvironment;
 
 import de.jpaw.dp.Singleton;
@@ -29,6 +32,8 @@ import de.jpaw.dp.Singleton;
 @Singleton
 public class KafkaTenantAgnosticClusterManager implements IClusterEnvironment {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(KafkaTenantAgnosticClusterManager.class);
+
     @Override
     public Collection<String> getListOfTenantIds() {
         return Collections.emptyList();
@@ -36,7 +41,8 @@ public class KafkaTenantAgnosticClusterManager implements IClusterEnvironment {
 
     @Override
     public Collection<Integer> getListOfShards(final String tenantId) {
-        return KafkaRequestProcessorAndClusterManagerInitializer.getRebalancer().getCurrentPartitions();
+        final KafkaClusterRebalancer rebalancer = KafkaRequestProcessorAndClusterManagerInitializer.getRebalancer();
+        return rebalancer != null ? rebalancer.getCurrentPartitions() : null;
     }
 
     @Override
@@ -48,4 +54,27 @@ public class KafkaTenantAgnosticClusterManager implements IClusterEnvironment {
     public int getNumberOfNodes() {
         return KafkaRequestProcessorAndClusterManagerInitializer.getNumberOfPartitons();
     }
+
+    @Override
+    public void pausePartitions() {
+        final KafkaClusterRebalancer rebalancer = KafkaRequestProcessorAndClusterManagerInitializer.getRebalancer();
+        if (rebalancer != null) {
+            LOGGER.info("Pausing partitions via cluster manager");
+            rebalancer.pause();
+        } else {
+            LOGGER.warn("Cannot execute pausing of partitions - no kafka balancer found!");
+        }
+    }
+
+    @Override
+    public void resumePartitions() {
+        final KafkaClusterRebalancer rebalancer = KafkaRequestProcessorAndClusterManagerInitializer.getRebalancer();
+        if (rebalancer != null) {
+            LOGGER.info("Resuming partitions via cluster manager");
+            rebalancer.resume();
+        } else {
+            LOGGER.warn("Cannot execute resuming of partitions - no kafka balancer found!");
+        }
+    }
+
 }

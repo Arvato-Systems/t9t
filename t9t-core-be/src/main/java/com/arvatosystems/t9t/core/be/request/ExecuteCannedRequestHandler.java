@@ -37,10 +37,10 @@ import org.slf4j.LoggerFactory;
 
 public class ExecuteCannedRequestHandler extends AbstractRequestHandler<ExecuteCannedRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExecuteCannedRequestHandler.class);
-    protected final CannedRequestParameterEvaluator evaluator = Jdp.getRequired(CannedRequestParameterEvaluator.class);
-    protected final ICannedRequestResolver resolver = Jdp.getRequired(ICannedRequestResolver.class);
-    protected final IExecutor executor = Jdp.getRequired(IExecutor.class);
-    protected final IAuthorize authorizator = Jdp.getRequired(IAuthorize.class);
+    private final CannedRequestParameterEvaluator evaluator = Jdp.getRequired(CannedRequestParameterEvaluator.class);
+    private final ICannedRequestResolver resolver = Jdp.getRequired(ICannedRequestResolver.class);
+    private final IExecutor executor = Jdp.getRequired(IExecutor.class);
+    private final IAuthorize authorizator = Jdp.getRequired(IAuthorize.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final ExecuteCannedRequest rq) throws Exception {

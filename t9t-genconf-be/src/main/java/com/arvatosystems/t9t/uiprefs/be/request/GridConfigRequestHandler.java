@@ -46,7 +46,7 @@ import de.jpaw.dp.Jdp;
 
 public class GridConfigRequestHandler extends AbstractRequestHandler<GridConfigRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(GridConfigRequestHandler.class);
-//  @Inject
+
     private final ITranslationProvider translationProvider = Jdp.getRequired(ITranslationProvider.class);
     private final IExecutor executor = Jdp.getRequired(IExecutor.class);
 

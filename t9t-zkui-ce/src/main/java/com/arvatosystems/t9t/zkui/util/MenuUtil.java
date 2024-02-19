@@ -76,7 +76,7 @@ public final class MenuUtil {
                     navi.setMenuItemVisible(Boolean.valueOf(String.valueOf(menuitems[MENU_ITEM_VISIBLE])));
 
                     if (showMenuItem) {
-                        navi.setImg(String.format("/img/menu/%s.png", menuitems[NAVI_ID]));
+                        navi.setImg("/img/menu/" + menuitems[NAVI_ID] + ".png");
                     } else {
                         navi.setImg("/img/transparent.png");
                     }
@@ -90,8 +90,8 @@ public final class MenuUtil {
     }
 
     private static String getMenuItemTranslation(ApplicationSession as, Navi navi, String menuItemName) {
-        String fieldname = String.format("%s.%s", navi.getCategoryId(), menuItemName);
-        String fallback = String.format("%s.%s", DEFAULT, menuItemName);
+        String fieldname = navi.getCategoryId() + "." + menuItemName;
+        String fallback = DEFAULT + "." + menuItemName;
 
         return as.translateWithFallback(MENU_GROUP, fieldname, fallback);
     }

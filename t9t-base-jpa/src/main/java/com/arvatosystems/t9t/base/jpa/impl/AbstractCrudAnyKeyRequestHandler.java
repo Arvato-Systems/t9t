@@ -26,6 +26,9 @@ import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.crud.CrudAnyKeyRequest;
+import com.arvatosystems.t9t.base.crud.CrudAnyKeyResponse;
+import com.arvatosystems.t9t.base.entities.BucketTracking;
+import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.IEntityMapper;
 import com.arvatosystems.t9t.base.jpa.IResolverAnyKey;
 import com.arvatosystems.t9t.base.jpa.ormspecific.IJpaCrudTechnicalExceptionMapper;
@@ -223,9 +226,8 @@ public abstract class AbstractCrudAnyKeyRequestHandler<
     }
 
     protected ENTITY performUpdate(final IEntityMapper<KEY, DTO, TRACKING, ENTITY> mapper, final IResolverAnyKey<KEY, TRACKING, ENTITY> resolver,
-            final REQUEST crudRequest, final EntityManager entityManager, final KEY key) {
+            final REQUEST crudRequest, final EntityManager entityManager, final KEY key, final ENTITY result) {
         final DTO dto = crudRequest.getData();
-        final ENTITY result = resolver.find(key);
         if (result == null) {
             throw new T9tException(T9tException.WRITE_ACCESS_NOT_FOUND_PROBABLY_OTHER_TENANT,
               "key is " + key.toString() + " of class " + key.getClass().getSimpleName());
@@ -251,5 +253,23 @@ public abstract class AbstractCrudAnyKeyRequestHandler<
         }
 
         return result;
+    }
+
+    protected ENTITY performUpdateWithVersion(final IEntityMapper<KEY, DTO, TRACKING, ENTITY> mapper, final IResolverAnyKey<KEY, TRACKING, ENTITY> resolver,
+        final EntityManager entityManager, final KEY key, final REQUEST crudRequest, final CrudAnyKeyResponse<DTO, TRACKING> crudResponse) {
+        final ENTITY entity = resolver.find(key);
+        if (!isVersionValid(crudRequest, entity)) {
+            crudResponse.setReturnCode(T9tException.UPDATE_DECLINED);
+            crudResponse.setErrorMessage(T9tException.codeToString(T9tException.UPDATE_DECLINED));
+            return entity;
+        } else {
+            return performUpdate(mapper, resolver, crudRequest, entityManager, key, entity);
+        }
+    }
+
+    private boolean isVersionValid(final REQUEST crudRequest, final ENTITY entity) {
+        return crudRequest.getVersion() == null // for force update
+            || (entity.ret$Tracking() instanceof FullTrackingWithVersion fullTracking && crudRequest.getVersion() == fullTracking.getVersion())
+            || (entity.ret$Tracking() instanceof BucketTracking bucketTracking && crudRequest.getVersion() == bucketTracking.getVersion());
     }
 }

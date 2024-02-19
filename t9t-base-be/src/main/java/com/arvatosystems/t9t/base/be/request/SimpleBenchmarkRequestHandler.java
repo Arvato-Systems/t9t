@@ -34,8 +34,8 @@ import de.jpaw.util.ApplicationException;
 public class SimpleBenchmarkRequestHandler extends AbstractRequestHandler<SimpleBenchmarkRequest>  {
     private static final Logger LOGGER = LoggerFactory.getLogger(SimpleBenchmarkRequestHandler.class);
 
-    protected final IExecutor messaging = Jdp.getRequired(IExecutor.class);
-    protected final IAutonomousExecutor autoExecutor = Jdp.getRequired(IAutonomousExecutor.class);
+    private final IExecutor messaging = Jdp.getRequired(IExecutor.class);
+    private final IAutonomousExecutor autoExecutor = Jdp.getRequired(IAutonomousExecutor.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final SimpleBenchmarkRequest request) {

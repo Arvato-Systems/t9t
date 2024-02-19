@@ -30,8 +30,8 @@ import de.jpaw.dp.Jdp;
 public class SessionSearchRequestHandler extends AbstractSearchWithTotalsRequestHandler<Long, SessionDTO, SessionTracking, SessionSearchRequest,
     SessionEntity> {
 
-    protected final ISessionEntityResolver resolver = Jdp.getRequired(ISessionEntityResolver.class);
-    protected final ISessionDTOMapper mapper = Jdp.getRequired(ISessionDTOMapper.class);
+    private final ISessionEntityResolver resolver = Jdp.getRequired(ISessionEntityResolver.class);
+    private final ISessionDTOMapper mapper = Jdp.getRequired(ISessionDTOMapper.class);
 
     @Override
     public ReadAllResponse<SessionDTO, SessionTracking> execute(final RequestContext ctx, final SessionSearchRequest request) throws Exception {

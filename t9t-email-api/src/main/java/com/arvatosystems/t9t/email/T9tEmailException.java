@@ -39,6 +39,8 @@ public class T9tEmailException extends T9tException {
      * static initialization of all error codes
      */
     static {
+        registerRange(CORE_OFFSET, false, T9tEmailException.class, ApplicationLevelType.FRAMEWORK, "t9t email distribution module");
+
         registerCode(SMTP_IMPLEMENTATION_MISSING,      "Configured STMP backend implementation not available.");
         registerCode(EMAIL_SEND_ERROR,                 "Error occured during sending email.");
         registerCode(SMTP_ERROR,                       "Error occured during sending email. (SMTP layer)");

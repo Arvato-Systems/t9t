@@ -17,7 +17,6 @@ package com.arvatosystems.t9t.cluster.be.kafka;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -115,7 +114,7 @@ public class KafkaRequestProcessorAndClusterManagerInitializer implements Startu
         }
 
         // select strategy
-        final Callable<Boolean> processingStrategy;
+        final KafkaProcessor processingStrategy;
         if (T9tUtil.isTrue(defaults.getClusterManagerOrdering())) {
             processingStrategy = new KafkaPartitionOrderedRequestProcessor(defaults, consumer);
         } else {

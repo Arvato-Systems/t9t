@@ -30,8 +30,8 @@ import de.jpaw.dp.Jdp;
 public class CannedRequestCrudRequestHandler
         extends AbstractCrudSurrogateKeyBERequestHandler<CannedRequestRef, CannedRequestDTO, FullTrackingWithVersion, CannedRequestCrudRequest> {
 
-    protected final CannedRequestParameterEvaluator evaluator = Jdp.getRequired(CannedRequestParameterEvaluator.class);
-    protected final ICannedRequestResolver resolver = Jdp.getRequired(ICannedRequestResolver.class);
+    private final CannedRequestParameterEvaluator evaluator = Jdp.getRequired(CannedRequestParameterEvaluator.class);
+    private final ICannedRequestResolver resolver = Jdp.getRequired(ICannedRequestResolver.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final CannedRequestCrudRequest crudRequest) throws Exception {

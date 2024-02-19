@@ -27,7 +27,7 @@ import com.arvatosystems.t9t.batch.services.IStatisticsResolver;
 import de.jpaw.dp.Jdp;
 
 public class StatisticsCrudRequestHandler extends AbstractCrudSurrogateKeyBERequestHandler<StatisticsRef, StatisticsDTO, WriteTracking, StatisticsCrudRequest> {
-    protected final IStatisticsResolver resolver = Jdp.getRequired(IStatisticsResolver.class);
+    private final IStatisticsResolver resolver = Jdp.getRequired(IStatisticsResolver.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final StatisticsCrudRequest crudRequest) throws Exception {

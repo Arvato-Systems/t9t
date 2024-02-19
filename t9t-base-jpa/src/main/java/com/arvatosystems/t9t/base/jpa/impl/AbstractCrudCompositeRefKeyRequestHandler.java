@@ -53,6 +53,7 @@ public abstract class AbstractCrudCompositeRefKeyRequestHandler<
         validateParameters(crudRequest, key == null);
 
         final CrudCompositeKeyResponse<KEY, DTO, TRACKING> rs = new CrudCompositeKeyResponse<>();
+        rs.setReturnCode(0);
         ENTITY result;
 
         final EntityManager entityManager = jpaContextProvider.get().getEntityManager(); // copy it as we need it several times
@@ -90,12 +91,12 @@ public abstract class AbstractCrudCompositeRefKeyRequestHandler<
                 result.put$Active(true);
                 break;
             case UPDATE:
-                result = performUpdate(mapper, resolver, crudRequest, entityManager, key);
+                result = performUpdateWithVersion(mapper, resolver, entityManager, key, crudRequest, rs);
                 break;
             case MERGE:
                 // If the key is passed in and result already exist then perform update.
                 if (recordExists(key, resolver)) {
-                    result = performUpdate(mapper, resolver, crudRequest, entityManager, key);
+                    result = performUpdateWithVersion(mapper, resolver, entityManager, key, crudRequest, rs);
                 } else {
                     result = performCreate(mapper, resolver, crudRequest, entityManager);
                     rs.setKey(result.ret$Key()); // just copy
@@ -109,7 +110,6 @@ public abstract class AbstractCrudCompositeRefKeyRequestHandler<
                 rs.setData(postRead(mapper.mapToDto(result), result)); // populate
                 // result
             }
-            rs.setReturnCode(0);
             return rs;
         } catch (final T9tException e) {
             // careful! Catching only ApplicationException masks standard T9tExceptions such as RECORD_INACTIVE or RECORD_NOT_FOUND!

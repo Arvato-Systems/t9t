@@ -48,8 +48,8 @@ import de.jpaw.util.ApplicationException;
 public class PerformReleaseUpdateRequestHandler extends AbstractRequestHandler<PerformReleaseUpdateRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(PerformReleaseUpdateRequestHandler.class);
 
-    protected final IExecutor executor = Jdp.getRequired(IExecutor.class);
-    protected final IAutonomousExecutor autonomousExecutor = Jdp.getRequired(IAutonomousExecutor.class);
+    private final IExecutor executor = Jdp.getRequired(IExecutor.class);
+    private final IAutonomousExecutor autonomousExecutor = Jdp.getRequired(IAutonomousExecutor.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final PerformReleaseUpdateRequest request) throws Exception {

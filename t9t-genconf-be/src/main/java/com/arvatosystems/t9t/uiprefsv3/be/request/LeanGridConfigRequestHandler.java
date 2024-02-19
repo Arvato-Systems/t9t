@@ -35,12 +35,12 @@ import de.jpaw.dp.Jdp;
 
 public class LeanGridConfigRequestHandler extends AbstractRequestHandler<LeanGridConfigRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(LeanGridConfigRequestHandler.class);
-//  @Inject
+
     private final ITranslationProvider translationProvider = Jdp.getRequired(ITranslationProvider.class);
 
     @Override
     public LeanGridConfigResponse execute(final RequestContext ctx, final LeanGridConfigRequest request) throws Exception {
-        //@Inject
+
         final ILeanGridConfigRead gridConfigReader = Jdp.getRequired(ILeanGridConfigRead.class);
         final String gridId = request.getGridId();
         final LeanGridConfigDTO myConfig = gridConfigReader.readLeanGridConfig(gridId, request.getSelection(), ctx.getUserRef());

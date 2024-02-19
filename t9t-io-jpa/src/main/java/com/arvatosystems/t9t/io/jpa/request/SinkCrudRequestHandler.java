@@ -44,14 +44,14 @@ public class SinkCrudRequestHandler extends AbstractCrudSurrogateKeyRequestHandl
     }
 
     @Override
-    protected final void validateUpdate(final SinkEntity current, final SinkDTO intended) {
+    protected void validateUpdate(final SinkEntity current, final SinkDTO intended) {
         if (intended.getCommTargetChannelType().equals(CommunicationTargetChannelType.FILE)) {
             validateFilePathPattern(intended.getFileOrQueueName());
         }
     }
 
     @Override
-    protected final void validateCreate(final SinkDTO intended) {
+    protected void validateCreate(final SinkDTO intended) {
         if (intended.getCommTargetChannelType().equals(CommunicationTargetChannelType.FILE)) {
             validateFilePathPattern(intended.getFileOrQueueName());
         }

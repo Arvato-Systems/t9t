@@ -39,8 +39,8 @@ import de.jpaw.dp.Jdp;
 public class ExecuteRemoteRequestHandler extends AbstractRequestHandler<ExecuteRemoteRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExecuteRemoteRequestHandler.class);
 
-    protected final IExecutor executor = Jdp.getRequired(IExecutor.class);
-    protected final IAuthorize authorizator = Jdp.getRequired(IAuthorize.class);
+    private final IExecutor executor = Jdp.getRequired(IExecutor.class);
+    private final IAuthorize authorizator = Jdp.getRequired(IAuthorize.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final ExecuteRemoteRequest request) throws Exception {

@@ -51,6 +51,7 @@ public abstract class AbstractCrudSurrogateKeyRequestHandler<
 
         // fields are set as required
         final CrudSurrogateKeyResponse<DTO, TRACKING> rs = new CrudSurrogateKeyResponse<>();
+        rs.setReturnCode(0);
         ENTITY result;
 
         // check natural key.
@@ -171,7 +172,7 @@ public abstract class AbstractCrudSurrogateKeyRequestHandler<
 //                }
 
                 crudRequest.getData().setObjectRef(crudRequest.getKey());
-                result = performUpdate(mapper, resolver, crudRequest, entityManager, crudRequest.getKey());
+                result = performUpdateWithVersion(mapper, resolver, entityManager, crudRequest.getKey(), crudRequest, rs);
                 rs.setKey(crudRequest.getKey());
                 break;
             case MERGE:
@@ -180,7 +181,7 @@ public abstract class AbstractCrudSurrogateKeyRequestHandler<
                     // HACK
                     crudRequest.getData().setObjectRef(crudRequest.getKey());
                     rs.setKey(crudRequest.getKey());
-                    result = performUpdate(mapper, resolver, crudRequest, entityManager, crudRequest.getKey());
+                    result = performUpdateWithVersion(mapper, resolver, entityManager, crudRequest.getKey(), crudRequest, rs);
                 } else {
                     final Long newKey1 = resolver.createNewPrimaryKey();
                     crudRequest.getData().setObjectRef(newKey1);
@@ -203,7 +204,6 @@ public abstract class AbstractCrudSurrogateKeyRequestHandler<
                 rs.setData(postRead(mapper.mapToDto(result), result)); // populate
                 // result
             }
-            rs.setReturnCode(0);
             return rs;
         } catch (final T9tException e) {
             // careful! Catching only ApplicationException masks standard T9tExceptions such as RECORD_INACTIVE or RECORD_NOT_FOUND!

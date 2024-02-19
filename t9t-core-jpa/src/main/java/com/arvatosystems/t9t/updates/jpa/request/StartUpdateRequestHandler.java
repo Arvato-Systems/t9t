@@ -35,8 +35,8 @@ import de.jpaw.dp.Jdp;
 public class StartUpdateRequestHandler extends AbstractRequestHandler<StartUpdateRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(StartUpdateRequestHandler.class);
 
-    protected final IUpdateStatusEntityResolver resolver = Jdp.getRequired(IUpdateStatusEntityResolver.class);
-    protected final IUpdateStatusService updateStatusService = Jdp.getRequired(IUpdateStatusService.class);
+    private final IUpdateStatusEntityResolver resolver = Jdp.getRequired(IUpdateStatusEntityResolver.class);
+    private final IUpdateStatusService updateStatusService = Jdp.getRequired(IUpdateStatusService.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final StartUpdateRequest request) {

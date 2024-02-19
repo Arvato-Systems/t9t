@@ -78,6 +78,8 @@ public class T9tIOException extends T9tException {
     public static final int MISSING_KAFKA_CONFIGURAION = OFFSET + 270;
 
     static {
+        registerRange(CORE_OFFSET, false, T9tIOException.class, ApplicationLevelType.FRAMEWORK, "t9t enterprise integration module");
+
         registerCode(NOT_TRANSFERRED,              "Camel transfer not successful");
 
         registerCode(NO_RECORD_BASED_OUTPUT,       "Output format does not support record based output");

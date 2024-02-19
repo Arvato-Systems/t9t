@@ -35,9 +35,9 @@ import de.jpaw.util.ApplicationException;
 public class SwitchCurrentBucketNoRequestHandler extends AbstractRequestHandler<SwitchCurrentBucketNoRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(SwitchCurrentBucketNoRequestHandler.class);
 
-    protected final IBucketCounterEntityResolver counterResolver = Jdp.getRequired(IBucketCounterEntityResolver.class);
-    protected final IBucketEntryEntityResolver   entryResolver   = Jdp.getRequired(IBucketEntryEntityResolver.class);
-    protected final IAutonomousExecutor          autoExecutor    = Jdp.getRequired(IAutonomousExecutor.class);
+    private final IBucketCounterEntityResolver counterResolver = Jdp.getRequired(IBucketCounterEntityResolver.class);
+    private final IBucketEntryEntityResolver   entryResolver   = Jdp.getRequired(IBucketEntryEntityResolver.class);
+    private final IAutonomousExecutor          autoExecutor    = Jdp.getRequired(IAutonomousExecutor.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final SwitchCurrentBucketNoRequest rp) {

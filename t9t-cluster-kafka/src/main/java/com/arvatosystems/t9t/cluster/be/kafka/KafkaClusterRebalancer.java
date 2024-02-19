@@ -15,23 +15,17 @@
  */
 package com.arvatosystems.t9t.cluster.be.kafka;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.concurrent.Callable;
 
 import org.apache.kafka.common.TopicPartition;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.kafka.service.impl.KafkaRebalancer;
 
 public class KafkaClusterRebalancer extends KafkaRebalancer {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(KafkaClusterRebalancer.class);
+    private KafkaProcessor processingStrategy;
 
-    private Callable<Boolean> processingStrategy;
-
-    public KafkaClusterRebalancer(String topic, boolean verbose) {
+    public KafkaClusterRebalancer(final String topic, final boolean verbose) {
         super(topic, verbose);
     }
 
@@ -39,21 +33,25 @@ public class KafkaClusterRebalancer extends KafkaRebalancer {
     public void onPartitionsRevoked(final Collection<TopicPartition> partitions) {
         super.onPartitionsRevoked(partitions);
 
-        // handle strategy-specific
-        if (this.processingStrategy instanceof KafkaPartitionOrderedRequestProcessor processor) {
-            LOGGER.info("Revoke partitions {}", Arrays.toString(partitions.toArray()));
-            // in case of shutdown: these will be all partitions
-            processor.revokePartitions(partitions);
-        }
+        // in case of shutdown: these will be all partitions
+        processingStrategy.revokePartitions(partitions);
     }
 
     /**
-     * Assign processor for handling partion revoking correctly.
+     * Assign processor for handling partition revoking correctly.
      *
-     * @param processingStrategy the used {@link Callable}
+     * @param processingStrategy the used {@link KafkaProcessor}.
      */
-    public void setProcessingStrategy(Callable<Boolean> processingStrategy) {
+    public void setProcessingStrategy(final KafkaProcessor processingStrategy) {
         this.processingStrategy = processingStrategy;
+    }
+
+    public void pause() {
+        this.processingStrategy.triggerPausing();
+    }
+
+    public void resume() {
+        this.processingStrategy.triggerResuming();
     }
 
 }

@@ -30,9 +30,9 @@ import de.jpaw.dp.Jdp;
 
 public class ReportConfigSearchRequestHandler extends AbstractSearchWithTotalsRequestHandler<Long, ReportConfigDTO, FullTrackingWithVersion,
   ReportConfigSearchRequest, ReportConfigEntity> {
-    protected final IReportConfigEntityResolver resolver = Jdp.getRequired(IReportConfigEntityResolver.class);
-    protected final IReportConfigDTOMapper mapper = Jdp.getRequired(IReportConfigDTOMapper.class);
-    protected final IReportConfigByUserPermissionRestriction reportConfigByUserPermissionRestriction
+    private final IReportConfigEntityResolver resolver = Jdp.getRequired(IReportConfigEntityResolver.class);
+    private final IReportConfigDTOMapper mapper = Jdp.getRequired(IReportConfigDTOMapper.class);
+    private final IReportConfigByUserPermissionRestriction reportConfigByUserPermissionRestriction
       = Jdp.getRequired(IReportConfigByUserPermissionRestriction.class);
 
     @Override

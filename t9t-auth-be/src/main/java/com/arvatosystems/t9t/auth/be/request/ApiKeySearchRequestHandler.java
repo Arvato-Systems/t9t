@@ -27,8 +27,7 @@ import de.jpaw.dp.Jdp;
 
 public class ApiKeySearchRequestHandler extends AbstractSearchBERequestHandler<ApiKeyDTO, FullTrackingWithVersion, ApiKeySearchRequest> {
 
-    // @Inject
-    protected final IApiKeyResolver resolver = Jdp.getRequired(IApiKeyResolver.class);
+    private final IApiKeyResolver resolver = Jdp.getRequired(IApiKeyResolver.class);
 
     @Override
     public ReadAllResponse<ApiKeyDTO, FullTrackingWithVersion> execute(RequestContext ctx, ApiKeySearchRequest request) {

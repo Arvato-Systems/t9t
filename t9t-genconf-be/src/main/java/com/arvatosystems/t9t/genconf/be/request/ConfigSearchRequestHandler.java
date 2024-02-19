@@ -27,8 +27,7 @@ import de.jpaw.dp.Jdp;
 
 public class ConfigSearchRequestHandler extends AbstractSearchBERequestHandler<ConfigDTO, FullTrackingWithVersion, ConfigSearchRequest> {
 
-    // @Inject
-    protected final IConfigResolver resolver = Jdp.getRequired(IConfigResolver.class);
+    private final IConfigResolver resolver = Jdp.getRequired(IConfigResolver.class);
 
     @Override
     public ReadAllResponse<ConfigDTO, FullTrackingWithVersion> execute(final RequestContext ctx, final ConfigSearchRequest request) throws Exception {

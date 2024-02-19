@@ -31,8 +31,8 @@ import de.jpaw.dp.Jdp;
 public class AsyncMessageCrudRequestHandler extends
         AbstractCrudSurrogateKeyRequestHandler<AsyncMessageRef, AsyncMessageDTO, WriteTrackingMs, AsyncMessageCrudRequest, AsyncMessageEntity> {
 
-    protected final IAsyncMessageEntityResolver resolver = Jdp.getRequired(IAsyncMessageEntityResolver.class);
-    protected final IAsyncMessageDTOMapper mapper = Jdp.getRequired(IAsyncMessageDTOMapper.class);
+    private final IAsyncMessageEntityResolver resolver = Jdp.getRequired(IAsyncMessageEntityResolver.class);
+    private final IAsyncMessageDTOMapper mapper = Jdp.getRequired(IAsyncMessageDTOMapper.class);
 
     @Override
     public CrudSurrogateKeyResponse<AsyncMessageDTO, WriteTrackingMs> execute(final RequestContext ctx,

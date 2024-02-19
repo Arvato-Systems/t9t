@@ -30,8 +30,8 @@ import de.jpaw.dp.Jdp;
 
 public class CannedRequestSearchRequestHandler extends AbstractSearchWithTotalsRequestHandler<Long, CannedRequestDTO, FullTrackingWithVersion,
   CannedRequestSearchRequest, CannedRequestEntity> {
-    protected final ICannedRequestEntityResolver resolver = Jdp.getRequired(ICannedRequestEntityResolver.class);
-    protected final ICannedRequestDTOMapper mapper = Jdp.getRequired(ICannedRequestDTOMapper.class);
+    private final ICannedRequestEntityResolver resolver = Jdp.getRequired(ICannedRequestEntityResolver.class);
+    private final ICannedRequestDTOMapper mapper = Jdp.getRequired(ICannedRequestDTOMapper.class);
 
     @Override
     public ReadAllResponse<CannedRequestDTO, FullTrackingWithVersion> execute(final RequestContext ctx, final CannedRequestSearchRequest request)

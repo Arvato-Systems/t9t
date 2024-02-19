@@ -67,6 +67,8 @@ public class T9tSsmException extends T9tException {
      * static initialization of all error codes
      */
     static {
+        registerRange(CORE_OFFSET, false, T9tSsmException.class, ApplicationLevelType.FRAMEWORK, "t9t scheduler module");
+
         registerCode(SCHEDULER_JOB_NOT_FOUND_EXCEPTION, "The scheduler contains not job with passed parameters.");
         registerCode(SCHEDULER_INIT_OR_START_EXCEPTION, "The scheduler could not be started correctly.");
         registerCode(SCHEDULER_SHUTDOWN_EXCEPTION, "The scheduler could not be shut down correctly.");

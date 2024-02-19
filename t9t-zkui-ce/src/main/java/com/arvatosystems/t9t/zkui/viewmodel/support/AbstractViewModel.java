@@ -51,11 +51,15 @@ public abstract class AbstractViewModel extends FormValidator {
         return new AbstractValidator() {
             @Override
             public void validate(final ValidationContext ctx) {
+                String logMessage = null;
                 final Boolean isValidationRequired = (Boolean) ctx.getBindContext().getValidatorArg("isValidationRequired");
                 //boolean isComponentVisible = ctx.getBindContext().getComponent().isVisible();  --> the simple visibility
                 final boolean isComponentVisible = isComponentVisible(ctx.getBindContext().getComponent());
-                final String logMessage = String.format("Component:%s - visible:%s - isValidationRequired-argument-set:%s", ctx.getBindContext().getComponent(),
-                        isComponentVisible, isValidationRequired);
+                if (LOGGER.isDebugEnabled()) {
+                    logMessage = new StringBuilder("Component:").append(ctx.getBindContext().getComponent()).append(" - visible:").append(isComponentVisible)
+                            .append(" - isValidationRequired-argument-set:").append(isValidationRequired).toString();
+                }
+
                 if (((isValidationRequired == null) || isValidationRequired) && isComponentVisible) {
                     if ((null == ctx.getProperty().getValue()) || "".equals(ctx.getProperty().getValue())) {
                         LOGGER.debug("FIELD isEMPTY: {}", logMessage);

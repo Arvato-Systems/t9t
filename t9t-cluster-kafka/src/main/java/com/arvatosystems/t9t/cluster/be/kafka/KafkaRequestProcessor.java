@@ -15,14 +15,17 @@
  */
 package com.arvatosystems.t9t.cluster.be.kafka;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.UUID;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.TopicPartition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +44,7 @@ import com.arvatosystems.t9t.server.services.IUnauthenticatedServiceRequestExecu
 
 import de.jpaw.dp.Jdp;
 
-final class KafkaRequestProcessor implements Callable<Boolean> {
+final class KafkaRequestProcessor implements KafkaProcessor {
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaRequestProcessor.class);
     public static final int DEFAULT_WORKER_POOL_SIZE = 6;        // tunable: at 2 nodes and 12 partitions, this seems a reasonable default
     public static final long SLOW_PROCESSING_TIMEOUT = 15_000L;  // after how many ms to give up processing
@@ -55,10 +58,15 @@ final class KafkaRequestProcessor implements Callable<Boolean> {
     private final AtomicInteger pendingRequestsCounter = new AtomicInteger(0);
     private final AtomicInteger uniqueRequestsCounter = new AtomicInteger(0);
 
+    // controls for pausing/resuming consumer - this has to be done from thread which is running the consumer loop (not thread-safe)
+    // set via KafkaClusterManagerRequestHandler
+    private final AtomicBoolean globalPauseTrigger = new AtomicBoolean();
+    private final AtomicBoolean globalResumeTrigger = new AtomicBoolean();
+
     protected KafkaRequestProcessor(final KafkaConfiguration config, final IKafkaTopicReader consumer) {
         this.consumer = consumer;
 
-        if (config.getClusterManagerApiKey() != null)  {
+        if (config.getClusterManagerApiKey() != null) {
             this.defaultAuthHeader = new ApiKeyAuthentication(config.getClusterManagerApiKey());
             this.defaultAuthHeader.freeze();
         } else {
@@ -155,6 +163,8 @@ final class KafkaRequestProcessor implements Callable<Boolean> {
         final AtomicInteger baseline = new AtomicInteger(0);
         long lastinfo = System.nanoTime();
         while (!StatusProvider.isShutdownInProgress()) {
+            checkGlobalTriggers();
+
             final int currentNum = numberOfPolls.incrementAndGet();
             final long startChunk = System.nanoTime();
             if (startChunk - lastinfo >= 60_000_000_000L) {
@@ -163,7 +173,7 @@ final class KafkaRequestProcessor implements Callable<Boolean> {
                 lastinfo = startChunk;
             }
             final int recordsProcessed = consumer.pollAndProcess(this::processRequest, ServiceRequest.class, KafkaTopicReader.DEFAULT_POLL_INTERVAL,
-              kafkaConsumer -> commitAfterRequestsProcessed(baseline, kafkaConsumer));
+                    kafkaConsumer -> commitAfterRequestsProcessed(baseline, kafkaConsumer));
             if (recordsProcessed < 0) {
                 // some exception (it is OK during shutdown)
                 if (StatusProvider.isShutdownInProgress()) {
@@ -188,5 +198,46 @@ final class KafkaRequestProcessor implements Callable<Boolean> {
 //            consumer.commitSync(finishedRequests, null);
         }
         return Boolean.TRUE;
+    }
+
+    private void checkGlobalTriggers() {
+        // global pause/resume flag
+        if (globalPauseTrigger.compareAndSet(true, false)) {
+            this.pause();
+        }
+        if (globalResumeTrigger.compareAndSet(true, false)) {
+            this.resume();
+        }
+    }
+
+    @Override
+    public void triggerPausing() {
+        this.globalPauseTrigger.set(true);
+    }
+
+    @Override
+    public void triggerResuming() {
+        this.globalResumeTrigger.set(true);
+    }
+
+    @Override
+    public void revokePartitions(Collection<TopicPartition> partitions) {
+        // no special handling required in this processor implementation
+    }
+
+    private void pause() {
+        final Collection<TopicPartition> partitions = KafkaUtils.transformToTopicPartition(this.consumer.getPartitionInfos());
+        if (T9tUtil.isNotEmpty(partitions)) {
+            LOGGER.debug("PAUSE partitions {}", Arrays.toString(partitions.toArray()));
+            this.consumer.pause(partitions);
+        }
+    }
+
+    private void resume() {
+        final Collection<TopicPartition> partitions = KafkaUtils.transformToTopicPartition(this.consumer.getPartitionInfos());
+        if (T9tUtil.isNotEmpty(partitions)) {
+            LOGGER.debug("RESUME partitions {}", Arrays.toString(partitions.toArray()));
+            this.consumer.resume(partitions);
+        }
     }
 }

@@ -298,6 +298,8 @@ public class T9tRestProcessorViaKafka extends T9tRestProcessor implements IT9tRe
                 LOGGER.error("Return code = {}, details = {}", e.getErrorCode(), e.getMessage());
                 payload.setReturnCode(e.getErrorCode());
                 payload.setErrorMessage(e.getMessage());
+                payload.setFieldName(e.getFieldName());
+                payload.setClassName(e.getClassName());
             } catch (final Exception e) {
                 LOGGER.error("Exception during request conversion for {}: {}: {}", pathInfo, e.getMessage(), ExceptionUtil.causeChain(e));
             }

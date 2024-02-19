@@ -24,7 +24,7 @@ import com.arvatosystems.t9t.bpmn.services.IBpmnPersistenceAccess;
 import de.jpaw.dp.Jdp;
 
 public class ReadProcessStatusRequestHandler extends AbstractRequestHandler<ReadProcessStatusRequest> {
-    protected final IBpmnPersistenceAccess persistenceAccess = Jdp.getRequired(IBpmnPersistenceAccess.class);
+    private final IBpmnPersistenceAccess persistenceAccess = Jdp.getRequired(IBpmnPersistenceAccess.class);
 
     @Override
     public ReadProcessStatusResponse execute(final RequestContext ctx, final ReadProcessStatusRequest rq) {

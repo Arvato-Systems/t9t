@@ -15,16 +15,19 @@
  */
 package com.arvatosystems.t9t.in.be.impl;
 
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.io.DataSinkDTO;
-import com.arvatosystems.t9t.io.T9tIOException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.io.DataSinkDTO;
+import com.arvatosystems.t9t.io.T9tIOException;
 
 public abstract class AbstractTextFormatConverter extends AbstractInputFormatConverter {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractTextFormatConverter.class);
@@ -38,7 +41,20 @@ public abstract class AbstractTextFormatConverter extends AbstractInputFormatCon
         // avoid the need for duplicate test to null or ""
         final Object singleLineComment = cfg.getSingleLineComment() == null || cfg.getSingleLineComment().isBlank() ? null : cfg.getSingleLineComment();
         int linesToSkip = cfg.getLinesToSkip() == null ? 0 : cfg.getLinesToSkip();
-        final BufferedReader streamReader = new BufferedReader(new InputStreamReader(is));
+        final InputStreamReader isr;
+        if (cfg.getOutputEncoding() == null) {
+            LOGGER.debug("Opening text input stream for data sink {} with default encoding UTF-8", cfg.getDataSinkId());
+            isr = new InputStreamReader(is, StandardCharsets.UTF_8);
+        } else {
+            try {
+                LOGGER.debug("Opening text input stream for data sink {} with encoding {}", cfg.getDataSinkId(), cfg.getOutputEncoding());
+                isr = new InputStreamReader(is, cfg.getOutputEncoding());
+            } catch (final UnsupportedEncodingException usee) {
+                LOGGER.error("Failed to use encoding {} for data sink {}: {}", cfg.getOutputEncoding(), cfg.getDataSinkId(), usee);
+                throw new T9tException(T9tIOException.IO_EXCEPTION, "Encoding " + cfg.getOutputEncoding());
+            }
+        }
+        final BufferedReader streamReader = new BufferedReader(isr);
         try {
             for (String line = streamReader.readLine(); line != null; line = streamReader.readLine()) {
                 if (singleLineComment == null || !line.startsWith(singleLineComment.toString())) {

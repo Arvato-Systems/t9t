@@ -48,10 +48,10 @@ public class ComponentInfoSearchRequestHandler extends AbstractSearchRequestHand
     private static final String WILDCARD = "%";
     private static final String DEFAULT_COMMIT_ID = "x";
 
-    protected final IExecutor executor = Jdp.getRequired(IExecutor.class);
+    private final IExecutor executor = Jdp.getRequired(IExecutor.class);
 
     @SuppressWarnings("unchecked")
-    protected final IExporterTool<ComponentInfoDTO, NoTracking> exporter = Jdp.getRequired(IExporterTool.class);
+    private final IExporterTool<ComponentInfoDTO, NoTracking> exporter = Jdp.getRequired(IExporterTool.class);
 
     @Override
     public ReadAllResponse<ComponentInfoDTO, NoTracking> execute(final RequestContext ctx, final ComponentInfoSearchRequest rq) throws Exception {

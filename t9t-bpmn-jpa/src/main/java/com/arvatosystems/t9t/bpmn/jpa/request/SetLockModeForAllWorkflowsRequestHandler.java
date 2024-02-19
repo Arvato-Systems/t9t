@@ -28,8 +28,8 @@ import com.arvatosystems.t9t.bpmn.request.SetLockModeForAllWorkflowsRequest;
 import de.jpaw.dp.Jdp;
 
 public class SetLockModeForAllWorkflowsRequestHandler extends AbstractRequestHandler<SetLockModeForAllWorkflowsRequest> {
-    protected final IProcessDefinitionEntityResolver resolver = Jdp.getRequired(IProcessDefinitionEntityResolver.class);
-    protected final IExecutor executor = Jdp.getRequired(IExecutor.class);
+    private final IProcessDefinitionEntityResolver resolver = Jdp.getRequired(IProcessDefinitionEntityResolver.class);
+    private final IExecutor executor = Jdp.getRequired(IExecutor.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final SetLockModeForAllWorkflowsRequest request) throws Exception {

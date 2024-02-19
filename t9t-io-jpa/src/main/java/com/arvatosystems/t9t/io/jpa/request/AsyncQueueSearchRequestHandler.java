@@ -30,8 +30,8 @@ import de.jpaw.dp.Jdp;
 public class AsyncQueueSearchRequestHandler extends
         AbstractSearchWithTotalsRequestHandler<Long, AsyncQueueDTO, FullTrackingWithVersion, AsyncQueueSearchRequest, AsyncQueueEntity> {
 
-    protected final IAsyncQueueEntityResolver resolver = Jdp.getRequired(IAsyncQueueEntityResolver.class);
-    protected final IAsyncQueueDTOMapper mapper = Jdp.getRequired(IAsyncQueueDTOMapper.class);
+    private final IAsyncQueueEntityResolver resolver = Jdp.getRequired(IAsyncQueueEntityResolver.class);
+    private final IAsyncQueueDTOMapper mapper = Jdp.getRequired(IAsyncQueueDTOMapper.class);
 
     @Override
     public ReadAllResponse<AsyncQueueDTO, FullTrackingWithVersion> execute(final RequestContext ctx,

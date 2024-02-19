@@ -130,6 +130,20 @@
                     </xs:element>
                     <xs:element name="id" minOccurs="0" nillable="true" type="bon:UUID"/>
                     <xs:element name="description" minOccurs="0" nillable="true" type="t9t_xml:shortText"/>
+                    <xs:element name="fieldName" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="255"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="className" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="255"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
@@ -177,6 +191,37 @@
             <xs:extension base="bon:BONAPORTABLE">
                 <xs:sequence>
                     <xs:element name="records" minOccurs="0" maxOccurs="unbounded" type="t9t_xml:User001"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="ErrorDescription001" block="#all" final="#all">
+        <xs:complexContent>
+            <xs:extension base="bon:BONAPORTABLE">
+                <xs:sequence>
+                    <xs:element name="returnCode">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:unsignedInt">
+                                <xs:maxInclusive value="2147483647"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="errorMessage">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="512"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="ErrorDescriptionList" block="#all" final="#all">
+        <xs:complexContent>
+            <xs:extension base="bon:BONAPORTABLE">
+                <xs:sequence>
+                    <xs:element name="records" minOccurs="0" maxOccurs="unbounded" type="t9t_xml:ErrorDescription001"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>

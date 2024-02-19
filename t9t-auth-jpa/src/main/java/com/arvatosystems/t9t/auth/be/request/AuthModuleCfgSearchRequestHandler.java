@@ -30,8 +30,8 @@ import de.jpaw.dp.Jdp;
 public class AuthModuleCfgSearchRequestHandler extends
   AbstractSearchWithTotalsRequestHandler<String, AuthModuleCfgDTO, FullTrackingWithVersion, AuthModuleCfgSearchRequest, AuthModuleCfgEntity> {
 
-    protected final IAuthModuleCfgEntityResolver resolver = Jdp.getRequired(IAuthModuleCfgEntityResolver.class);
-    protected final IAuthModuleCfgDTOMapper mapper = Jdp.getRequired(IAuthModuleCfgDTOMapper.class);
+    private final IAuthModuleCfgEntityResolver resolver = Jdp.getRequired(IAuthModuleCfgEntityResolver.class);
+    private final IAuthModuleCfgDTOMapper mapper = Jdp.getRequired(IAuthModuleCfgDTOMapper.class);
 
     @Override
     public ReadAllResponse<AuthModuleCfgDTO, FullTrackingWithVersion>

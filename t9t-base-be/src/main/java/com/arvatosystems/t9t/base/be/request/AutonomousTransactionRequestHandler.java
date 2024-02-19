@@ -29,7 +29,7 @@ import de.jpaw.dp.Jdp;
 public class AutonomousTransactionRequestHandler extends AbstractRequestHandler<AutonomousTransactionRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AutonomousTransactionRequestHandler.class);
 
-    protected final IAutonomousExecutor autoExecutor = Jdp.getRequired(IAutonomousExecutor.class);
+    private final IAutonomousExecutor autoExecutor = Jdp.getRequired(IAutonomousExecutor.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final AutonomousTransactionRequest rq) {

@@ -86,6 +86,7 @@ public class T9tException extends ApplicationException {
     public static final int COULD_NOT_ACQUIRE_LOCK = OFFSET_TIMEOUT + 42;
     public static final int ILLEGAL_CHARACTER = OFFSET + 43;
     public static final int NO_SUCH_REQUEST = OFFSET_DENIED + 44;
+    public static final int UPDATE_DECLINED = OFFSET_DENIED + 45;
 
     public static final int STALLED_LOG_WRITER = OFFSET_TIMEOUT + 50;
     public static final int REQUEST_HANDLER_RETURNED_NULL = OFFSET_LOGIC_ERROR + 51;
@@ -351,6 +352,8 @@ public class T9tException extends ApplicationException {
     }
 
     static {
+        registerRange(CORE_OFFSET, false, T9tException.class, ApplicationLevelType.FRAMEWORK, "t9t framework core");
+
         registerCode(INVALID_CRUD_COMMAND, "Attempted to use an invalid or unimplemented CRUD command");
         registerCode(RECORD_ALREADY_EXISTS, "Attempted to create a record which already exists");
         registerCode(RECORD_DOES_NOT_EXIST, "Attempted to access a record which does not exist");
@@ -402,6 +405,7 @@ public class T9tException extends ApplicationException {
         registerCode(COULD_NOT_ACQUIRE_LOCK, "Could not acquire lock (Semaphore) on object within allowed time");
         registerCode(ILLEGAL_CHARACTER, "An illegal character has been identified in a string field of the request");
         registerCode(NO_SUCH_REQUEST, "Request not received or not yet complete");
+        registerCode(UPDATE_DECLINED, "Data record is modified. Update is declined.");
 
         registerCode(JWT_EXPIRED, MSG_JWT_EXPIRED);
         registerCode(JWT_TIMING,  "The JWT has unplausible time information");

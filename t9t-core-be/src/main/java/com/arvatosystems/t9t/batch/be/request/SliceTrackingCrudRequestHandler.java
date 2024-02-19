@@ -28,7 +28,7 @@ import de.jpaw.dp.Jdp;
 
 public class SliceTrackingCrudRequestHandler
         extends AbstractCrudSurrogateKeyBERequestHandler<SliceTrackingRef, SliceTrackingDTO, FullTrackingWithVersion, SliceTrackingCrudRequest> {
-    protected final ISliceTrackingResolver resolver = Jdp.getRequired(ISliceTrackingResolver.class);
+    private final ISliceTrackingResolver resolver = Jdp.getRequired(ISliceTrackingResolver.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final SliceTrackingCrudRequest crudRequest) throws Exception {

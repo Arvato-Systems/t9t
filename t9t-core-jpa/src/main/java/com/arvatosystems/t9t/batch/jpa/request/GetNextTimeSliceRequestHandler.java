@@ -22,11 +22,10 @@ import com.arvatosystems.t9t.batch.request.GetNextTimeSliceRequest;
 import com.arvatosystems.t9t.batch.request.GetNextTimeSliceResponse;
 import com.arvatosystems.t9t.batch.services.IGetNextTimeSliceService;
 
-import de.jpaw.dp.Inject;
 import de.jpaw.dp.Jdp;
 
 public class GetNextTimeSliceRequestHandler extends AbstractRequestHandler<GetNextTimeSliceRequest> {
-    @Inject
+
     private final IGetNextTimeSliceService sliceService = Jdp.getRequired(IGetNextTimeSliceService.class);
 
     @Override

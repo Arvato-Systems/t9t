@@ -32,8 +32,8 @@ public class AsyncMessageStatisticsCrudRequestHandler extends
     AbstractCrudSurrogateKeyRequestHandler<AsyncMessageStatisticsRef, AsyncMessageStatisticsDTO, NoTracking, AsyncMessageStatisticsCrudRequest,
     AsyncMessageStatisticsEntity> {
 
-    protected final IAsyncMessageStatisticsEntityResolver resolver = Jdp.getRequired(IAsyncMessageStatisticsEntityResolver.class);
-    protected final IAsyncMessageStatisticsDTOMapper mapper = Jdp.getRequired(IAsyncMessageStatisticsDTOMapper.class);
+    private final IAsyncMessageStatisticsEntityResolver resolver = Jdp.getRequired(IAsyncMessageStatisticsEntityResolver.class);
+    private final IAsyncMessageStatisticsDTOMapper mapper = Jdp.getRequired(IAsyncMessageStatisticsDTOMapper.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final AsyncMessageStatisticsCrudRequest request) throws Exception {

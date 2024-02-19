@@ -206,7 +206,7 @@ public class DataSinkCrudRequestHandler extends AbstractCrudSurrogateKeyRequestH
     }
 
     @Override
-    protected final void validateUpdate(final DataSinkEntity current, final DataSinkDTO intended) {
+    protected void validateUpdate(final DataSinkEntity current, final DataSinkDTO intended) {
         // test to avoid changing data of a different tenant, or changing the tenant at all
         checkConfiguration(intended);
         validateEncoding(intended);
@@ -241,7 +241,7 @@ public class DataSinkCrudRequestHandler extends AbstractCrudSurrogateKeyRequestH
     }
 
     @Override
-    protected final void validateCreate(final DataSinkDTO intended) {
+    protected void validateCreate(final DataSinkDTO intended) {
         checkConfiguration(intended);
         validateEncoding(intended);
 

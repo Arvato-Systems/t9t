@@ -40,7 +40,6 @@ public abstract class AbstractCamelProcessor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCamelProcessor.class);
 
-//  @Inject
     private final IFileUtil fileUtil = Jdp.getRequired(IFileUtil.class);
 
     private static Properties camelProps = new Properties();

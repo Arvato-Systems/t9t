@@ -126,6 +126,21 @@ public final class RestUtils {
      * @param returnCode  the t9t return code
      * @param errorDetails  details describing the error
      */
+    public static GenericResult createErrorResult(final ApplicationException e) {
+        final GenericResult result = createErrorResult(e.getErrorCode(), e.getMessage());
+        result.setFieldName(e.getFieldName());
+        result.setClassName(e.getClassName());
+        return result;
+    }
+
+    /**
+     * Creates a GenericResult, based on error code and error details.
+     * Error details will only be provided for certain return codes (parser errors or invalid references),
+     * in order to not leak internal implementation details (stack traces).
+     *
+     * @param returnCode  the t9t return code
+     * @param errorDetails  details describing the error
+     */
     public static GenericResult createErrorResult(final int returnCode, final String errorDetails) {
         final GenericResult result = new GenericResult();
         result.setProcessRef(0L);
@@ -180,12 +195,17 @@ public final class RestUtils {
         return create(status, genericResult, acceptHeader);
     }
 
+    public static Response error(final Response.Status status, final String acceptHeader, final ApplicationException e) {
+        final GenericResult genericResult = createErrorResult(e);
+        return create(status, genericResult, acceptHeader);
+    }
+
     public static Response createExceptionResponse(final Exception e, final String acceptHeader, final UriInfo uriInfo, final String method) {
         if (e instanceof ApplicationException ae) {
             final int errorCode = ae.getErrorCode();
-            LOGGER.error("Application exception calling {} {}: {} {} {}",
-                    method, uriInfo.getAbsolutePath(), e.getClass().getSimpleName(), errorCode, e.getMessage());
-            return error(mapStatusFromErrorCode(errorCode), errorCode, ae.getMessage(), acceptHeader);
+            LOGGER.error("Application exception calling {} {}: {} {} field {}, class {}: {}",
+                    method, uriInfo.getAbsolutePath(), e.getClass().getSimpleName(), errorCode, ae.getFieldName(), ae.getClassName(), e.getMessage());
+            return error(mapStatusFromErrorCode(errorCode), acceptHeader, ae);
         }
         if (e instanceof JacksonException) {
             // a problem parsing the JSON should be communicated as such

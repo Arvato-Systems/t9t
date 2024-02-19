@@ -24,7 +24,7 @@ import com.arvatosystems.t9t.monitoring.services.IDebugFlags;
 import de.jpaw.dp.Jdp;
 
 public class SetJvmDebugFlagsRequestHandler extends AbstractReadOnlyRequestHandler<SetJvmDebugFlagsRequest> {
-    protected final IDebugFlags debugFlags = Jdp.getRequired(IDebugFlags.class);
+    private final IDebugFlags debugFlags = Jdp.getRequired(IDebugFlags.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final SetJvmDebugFlagsRequest rq) throws Exception {

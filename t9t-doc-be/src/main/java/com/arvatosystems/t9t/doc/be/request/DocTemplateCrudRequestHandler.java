@@ -29,7 +29,7 @@ import de.jpaw.dp.Jdp;
 public class DocTemplateCrudRequestHandler extends
   AbstractCrudSurrogateKeyBERequestHandler<DocTemplateRef, DocTemplateDTO, FullTrackingWithVersion, DocTemplateCrudRequest> {
 
-    protected final IDocTemplateResolver resolver = Jdp.getRequired(IDocTemplateResolver.class);
+    private final IDocTemplateResolver resolver = Jdp.getRequired(IDocTemplateResolver.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final DocTemplateCrudRequest crudRequest) throws Exception {

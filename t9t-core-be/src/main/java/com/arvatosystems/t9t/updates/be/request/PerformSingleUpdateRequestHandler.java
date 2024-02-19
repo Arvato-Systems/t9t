@@ -33,8 +33,8 @@ import de.jpaw.util.ApplicationException;
 
 public class PerformSingleUpdateRequestHandler extends AbstractRequestHandler<PerformSingleUpdateRequest> {
 
-    protected final IExecutor executor = Jdp.getRequired(IExecutor.class);
-    protected final IAutonomousExecutor autonomousExecutor = Jdp.getRequired(IAutonomousExecutor.class);
+    private final IExecutor executor = Jdp.getRequired(IExecutor.class);
+    private final IAutonomousExecutor autonomousExecutor = Jdp.getRequired(IAutonomousExecutor.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final PerformSingleUpdateRequest request) throws Exception {

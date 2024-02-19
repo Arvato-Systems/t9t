@@ -59,6 +59,7 @@ public abstract class AbstractCrudModuleCfgRequestHandler<
         validateParameters(crudRequest, crudRequest.getKey() == null);
 
         final CrudModuleCfgResponse<DTO> rs = new CrudModuleCfgResponse<>();
+        rs.setReturnCode(0);
         ENTITY result;
 
         final EntityManager entityManager = jpaContextProvider.get().getEntityManager(); // copy it as we need it several times
@@ -96,12 +97,12 @@ public abstract class AbstractCrudModuleCfgRequestHandler<
                 result.put$Active(true);
                 break;
             case UPDATE:
-                result = performUpdate(mapper, resolver,  crudRequest, entityManager, ctx.tenantId);
+                result = performUpdateWithVersion(mapper, resolver, entityManager, ctx.tenantId, crudRequest, rs);
                 break;
             case MERGE:
                 //If the key is passed in and result already exist then perform update.
                 if (isExists(ctx.tenantId, resolver)) {
-                    result = performUpdate(mapper, resolver, crudRequest, entityManager, ctx.tenantId);
+                    result = performUpdateWithVersion(mapper, resolver, entityManager, ctx.tenantId, crudRequest, rs);
                 } else {
                     result = performCreate(mapper, resolver, crudRequest, entityManager);
                     rs.setKey(FIXED_KEY);
@@ -118,7 +119,6 @@ public abstract class AbstractCrudModuleCfgRequestHandler<
 
             // if in cluster mode, send a cache invalidation event
             executor.clearCache(resolver.getBaseJpaEntityClass().getSimpleName(), null);
-            rs.setReturnCode(0);
             return rs;
         } catch (final T9tException e) {
             // careful! Catching only ApplicationException masks standard T9tExceptions such as RECORD_INACTIVE or RECORD_NOT_FOUND!

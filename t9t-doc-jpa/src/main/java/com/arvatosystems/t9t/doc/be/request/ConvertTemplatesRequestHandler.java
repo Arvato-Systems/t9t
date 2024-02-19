@@ -49,10 +49,10 @@ import jakarta.persistence.EntityManager;
 public class ConvertTemplatesRequestHandler extends AbstractRequestHandler<ConvertTemplatesRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConvertTemplatesRequestHandler.class);
 
-    protected final IDocConfigEntityResolver   configResolver    = Jdp.getRequired(IDocConfigEntityResolver.class);
-    protected final IDocEmailCfgEntityResolver emailCfgResolver  = Jdp.getRequired(IDocEmailCfgEntityResolver.class);
-    protected final IDocTemplateEntityResolver templateResolver  = Jdp.getRequired(IDocTemplateEntityResolver.class);
-    protected final ITemplateConversion defaultConversionService = Jdp.getRequired(ITemplateConversion.class);
+    private final IDocConfigEntityResolver   configResolver    = Jdp.getRequired(IDocConfigEntityResolver.class);
+    private final IDocEmailCfgEntityResolver emailCfgResolver  = Jdp.getRequired(IDocEmailCfgEntityResolver.class);
+    private final IDocTemplateEntityResolver templateResolver  = Jdp.getRequired(IDocTemplateEntityResolver.class);
+    private final ITemplateConversion defaultConversionService = Jdp.getRequired(ITemplateConversion.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final ConvertTemplatesRequest request) throws Exception {

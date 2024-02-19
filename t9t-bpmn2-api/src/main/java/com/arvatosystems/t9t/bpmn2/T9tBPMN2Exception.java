@@ -35,6 +35,8 @@ public class T9tBPMN2Exception extends T9tBPMException {
      * static initialization of all error codes
      */
     static {
+        registerRange(CORE_OFFSET, false, T9tBPMN2Exception.class, ApplicationLevelType.FRAMEWORK, "t9t BPMN-2 module");
+
         registerCode(BPMN2_MESSAGE_DELIVERY_FAILED, "BPMN Message could not be delivered - no subcription available");
     }
 }

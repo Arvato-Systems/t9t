@@ -28,10 +28,10 @@ import com.arvatosystems.t9t.solr.services.ISolrModuleCfgDtoResolver;
 import de.jpaw.dp.Jdp;
 
 public class SetT9tModuleConfigsRequestHandler extends AbstractReadOnlyRequestHandler<SetT9tModuleConfigsRequest> {
-    protected final IAuthModuleCfgDtoResolver authModuleCfgResolver = Jdp.getRequired(IAuthModuleCfgDtoResolver.class);
-    protected final IDocModuleCfgDtoResolver docModuleCfgResolver = Jdp.getRequired(IDocModuleCfgDtoResolver.class);
-    protected final IEmailModuleCfgDtoResolver emailModuleCfgResolver = Jdp.getRequired(IEmailModuleCfgDtoResolver.class);
-    protected final ISolrModuleCfgDtoResolver solrModuleCfgResolver = Jdp.getRequired(ISolrModuleCfgDtoResolver.class);
+    private final IAuthModuleCfgDtoResolver authModuleCfgResolver = Jdp.getRequired(IAuthModuleCfgDtoResolver.class);
+    private final IDocModuleCfgDtoResolver docModuleCfgResolver = Jdp.getRequired(IDocModuleCfgDtoResolver.class);
+    private final IEmailModuleCfgDtoResolver emailModuleCfgResolver = Jdp.getRequired(IEmailModuleCfgDtoResolver.class);
+    private final ISolrModuleCfgDtoResolver solrModuleCfgResolver = Jdp.getRequired(ISolrModuleCfgDtoResolver.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final SetT9tModuleConfigsRequest request) throws Exception {

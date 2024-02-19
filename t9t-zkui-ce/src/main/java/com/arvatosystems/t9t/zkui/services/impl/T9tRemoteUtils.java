@@ -135,7 +135,7 @@ public class T9tRemoteUtils implements IT9tRemoteUtils {
             requestParameters.treeWalkString(STRING_TRIMMER, true);  // trim fields, then convert empty data to nulls
             requestParameters.validate();
             ServiceResponse response = execute(requestParameters);
-            if (!ApplicationException.isOk(response.getReturnCode())) {
+            if (!ApplicationException.isOk(response.getReturnCode()) && response.getReturnCode() != T9tException.UPDATE_DECLINED) {
                 LOGGER.error("Bad return code {} for {}: {} {}",
                         response.getReturnCode(),
                         requestParameters.ret$PQON(),

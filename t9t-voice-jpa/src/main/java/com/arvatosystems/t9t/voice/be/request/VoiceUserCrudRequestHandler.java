@@ -29,9 +29,9 @@ import de.jpaw.dp.Jdp;
 
 public class VoiceUserCrudRequestHandler extends
         AbstractCrudSurrogateKeyRequestHandler<VoiceUserRef, VoiceUserDTO, FullTrackingWithVersion, VoiceUserCrudRequest, VoiceUserEntity> {
-    protected final IVoiceUserEntityResolver resolver = Jdp.getRequired(IVoiceUserEntityResolver.class);
+    private final IVoiceUserEntityResolver resolver = Jdp.getRequired(IVoiceUserEntityResolver.class);
 
-    protected final IVoiceUserDTOMapper mapper = Jdp.getRequired(IVoiceUserDTOMapper.class);
+    private final IVoiceUserDTOMapper mapper = Jdp.getRequired(IVoiceUserDTOMapper.class);
 
     @Override
     public CrudSurrogateKeyResponse<VoiceUserDTO, FullTrackingWithVersion> execute(final RequestContext ctx, final VoiceUserCrudRequest request)

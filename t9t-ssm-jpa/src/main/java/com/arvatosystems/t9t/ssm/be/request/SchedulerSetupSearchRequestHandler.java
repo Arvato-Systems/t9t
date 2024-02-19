@@ -32,8 +32,8 @@ import de.jpaw.dp.Jdp;
 
 public class SchedulerSetupSearchRequestHandler extends AbstractSearchWithTotalsRequestHandler<Long, SchedulerSetupDTO, FullTrackingWithVersion,
   SchedulerSetupSearchRequest, SchedulerSetupEntity> {
-    protected final ISchedulerSetupEntityResolver resolver = Jdp.getRequired(ISchedulerSetupEntityResolver.class);
-    protected final ISchedulerSetupDTOMapper mapper = Jdp.getRequired(ISchedulerSetupDTOMapper.class);
+    private final ISchedulerSetupEntityResolver resolver = Jdp.getRequired(ISchedulerSetupEntityResolver.class);
+    private final ISchedulerSetupDTOMapper mapper = Jdp.getRequired(ISchedulerSetupDTOMapper.class);
 
     @Override
     public ReadAllResponse<SchedulerSetupDTO, FullTrackingWithVersion> execute(final RequestContext ctx, final SchedulerSetupSearchRequest request)

@@ -40,11 +40,11 @@ public class ProcessCamelRouteRequestHandler extends AbstractRequestHandler<Proc
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessCamelRouteRequestHandler.class);
     protected static final String GZIP_EXTENSION = ".gz";
 
-    protected final IFileUtil fileUtil = Jdp.getRequired(IFileUtil.class);
-    protected final ISinkToCamelProducer sinkToCamelProducer = Jdp.getRequired(ISinkToCamelProducer.class);
-    protected final ISinkEntityResolver sinkResolver = Jdp.getRequired(ISinkEntityResolver.class);
-    protected final IDataSinkDTOMapper dataSinkMapper = Jdp.getRequired(IDataSinkDTOMapper.class);
-    protected final ISinkDTOMapper sinkMapper = Jdp.getRequired(ISinkDTOMapper.class);
+    private final IFileUtil fileUtil = Jdp.getRequired(IFileUtil.class);
+    private final ISinkToCamelProducer sinkToCamelProducer = Jdp.getRequired(ISinkToCamelProducer.class);
+    private final ISinkEntityResolver sinkResolver = Jdp.getRequired(ISinkEntityResolver.class);
+    private final IDataSinkDTOMapper dataSinkMapper = Jdp.getRequired(IDataSinkDTOMapper.class);
+    private final ISinkDTOMapper sinkMapper = Jdp.getRequired(ISinkDTOMapper.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final ProcessCamelRouteRequest rq) throws Exception {

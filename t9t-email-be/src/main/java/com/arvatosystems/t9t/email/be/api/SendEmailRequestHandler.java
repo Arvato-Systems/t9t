@@ -40,9 +40,9 @@ public class SendEmailRequestHandler extends AbstractRequestHandler<SendEmailReq
 
     public static final String DEFAULT_IMPLEMENTATION = "SMTP";
 
-    protected final IEmailModuleCfgDtoResolver moduleCfgResolver = Jdp.getRequired(IEmailModuleCfgDtoResolver.class);
-    protected final IRefGenerator refGenerator = Jdp.getRequired(IRefGenerator.class);
-    protected final IEmailPersistenceAccess emailPersistenceAccess = Jdp.getRequired(IEmailPersistenceAccess.class);
+    private final IEmailModuleCfgDtoResolver moduleCfgResolver = Jdp.getRequired(IEmailModuleCfgDtoResolver.class);
+    private final IRefGenerator refGenerator = Jdp.getRequired(IRefGenerator.class);
+    private final IEmailPersistenceAccess emailPersistenceAccess = Jdp.getRequired(IEmailPersistenceAccess.class);
 
     @Override
     public SendEmailResponse execute(final RequestContext ctx, final SendEmailRequest rq) throws Exception {

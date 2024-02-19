@@ -33,8 +33,8 @@ import de.jpaw.dp.Jdp;
  * none of the returned objects may refer to an entity of a different non-@ tenant.
  */
 public class UserTenantRoleSearchRequestHandler extends AbstractSearchRequestHandler<UserTenantRoleSearchRequest> {
-    protected final IUserTenantRoleEntityResolver resolver = Jdp.getRequired(IUserTenantRoleEntityResolver.class);
-    protected final IUserTenantRoleDTOMapper mapper = Jdp.getRequired(IUserTenantRoleDTOMapper.class);
+    private final IUserTenantRoleEntityResolver resolver = Jdp.getRequired(IUserTenantRoleEntityResolver.class);
+    private final IUserTenantRoleDTOMapper mapper = Jdp.getRequired(IUserTenantRoleDTOMapper.class);
 
     @Override
     public ReadAllResponse<UserTenantRoleDTO, FullTrackingWithVersion>

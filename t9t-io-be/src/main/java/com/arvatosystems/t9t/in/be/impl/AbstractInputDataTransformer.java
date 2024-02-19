@@ -21,16 +21,18 @@ import com.arvatosystems.t9t.in.services.IInputSession;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.BonaPortableClass;
 
+import java.util.Collections;
 import java.util.Map;
 
 public abstract class AbstractInputDataTransformer<T extends BonaPortable> implements IInputDataTransformer<T> {
     protected IInputSession inputSession;
-
+    protected Map<String, Object> params;
     protected BonaPortableClass<?> baseBClass;
 
     @Override
-    public void open(final IInputSession newInputSession, final Map<String, Object> params, final BonaPortableClass<?> newBaseBClass) {
+    public void open(final IInputSession newInputSession, final Map<String, Object> newParams, final BonaPortableClass<?> newBaseBClass) {
         this.inputSession = newInputSession;
+        this.params = newParams != null ? newParams : Collections.emptyMap();
         this.baseBClass = newBaseBClass;
     }
 }

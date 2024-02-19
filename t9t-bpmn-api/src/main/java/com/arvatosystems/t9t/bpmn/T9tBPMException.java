@@ -63,6 +63,8 @@ public class T9tBPMException extends T9tException {
      * static initialization of all error codes
      */
     static {
+        registerRange(CORE_OFFSET, false, T9tBPMException.class, ApplicationLevelType.FRAMEWORK, "t9t business process module");
+
         registerCode(BPM_EXECUTE_PROCESS_ERROR, "An error occurred during process execution.");
         registerCode(BPM_PROCESS_DEFINITION_NOT_EXIST, "Can't found process definition with the given process definition reference.");
         registerCode(BPM_GET_DEPLOYMENT_RESOURCE_ERROR, "An error occurred during retrieval of BPMN deployment resources.");

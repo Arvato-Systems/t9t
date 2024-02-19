@@ -20,7 +20,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-settings-java</artifactId>
-        <version>6.7-SNAPSHOT</version>
+        <version>6.8-SNAPSHOT</version>
         <relativePath>../t9t-settings-java</relativePath>
     </parent>
 
@@ -43,11 +43,6 @@
         <dependency>
             <groupId>de.jpaw</groupId>
             <artifactId>jdp-core</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
         </dependency>
 
         <dependency>

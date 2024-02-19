@@ -28,7 +28,7 @@ import de.jpaw.dp.Jdp;
 
 public class RoleCrudRequestHandler extends AbstractCrudSurrogateKeyBERequestHandler<RoleRef, RoleDTO, FullTrackingWithVersion, RoleCrudRequest> {
 
-    protected final IRoleResolver resolver = Jdp.getRequired(IRoleResolver.class);
+    private final IRoleResolver resolver = Jdp.getRequired(IRoleResolver.class);
 
     @Override
     public CrudSurrogateKeyResponse<RoleDTO, FullTrackingWithVersion> execute(RequestContext ctx, RoleCrudRequest crudRequest) {

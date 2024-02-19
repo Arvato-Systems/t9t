@@ -27,8 +27,7 @@ import de.jpaw.dp.Jdp;
 
 public class RoleSearchRequestHandler extends AbstractSearchBERequestHandler<RoleDTO, FullTrackingWithVersion, RoleSearchRequest> {
 
-    // @Inject
-    protected final IRoleResolver resolver = Jdp.getRequired(IRoleResolver.class);
+    private final IRoleResolver resolver = Jdp.getRequired(IRoleResolver.class);
 
     @Override
     public ReadAllResponse<RoleDTO, FullTrackingWithVersion> execute(RequestContext ctx, RoleSearchRequest request) {

@@ -30,8 +30,8 @@ import de.jpaw.dp.Jdp;
 public class StatisticsAggregationSearchRequestHandler extends
     AbstractSearchWithTotalsRequestHandler<Long, StatisticsAggregationDTO, NoTracking, StatisticsAggregationSearchRequest, StatisticsAggregationEntity> {
 
-    protected final IStatisticsAggregationEntityResolver resolver = Jdp.getRequired(IStatisticsAggregationEntityResolver.class);
-    protected final IStatisticsAggregationDTOMapper mapper = Jdp.getRequired(IStatisticsAggregationDTOMapper.class);
+    private final IStatisticsAggregationEntityResolver resolver = Jdp.getRequired(IStatisticsAggregationEntityResolver.class);
+    private final IStatisticsAggregationDTOMapper mapper = Jdp.getRequired(IStatisticsAggregationDTOMapper.class);
 
     @Override
     public ReadAllResponse<StatisticsAggregationDTO, NoTracking> execute(final RequestContext ctx, final StatisticsAggregationSearchRequest request)

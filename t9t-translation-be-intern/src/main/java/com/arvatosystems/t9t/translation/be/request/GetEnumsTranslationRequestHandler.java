@@ -31,7 +31,7 @@ import java.util.List;
 
 public class GetEnumsTranslationRequestHandler extends AbstractReadOnlyRequestHandler<GetEnumsTranslationRequest> {
 
-    protected final ITranslationProvider translationProvider = Jdp.getRequired(ITranslationProvider.class);
+    private final ITranslationProvider translationProvider = Jdp.getRequired(ITranslationProvider.class);
 
     @Override
     public GetEnumsTranslationResponse execute(final RequestContext ctx, final GetEnumsTranslationRequest request) throws Exception {

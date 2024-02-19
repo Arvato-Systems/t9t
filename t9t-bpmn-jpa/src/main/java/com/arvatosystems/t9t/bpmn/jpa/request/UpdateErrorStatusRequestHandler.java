@@ -37,7 +37,7 @@ public class UpdateErrorStatusRequestHandler extends AbstractRequestHandler<Upda
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UpdateErrorStatusRequestHandler.class);
 
-    protected final IProcessExecStatusEntityResolver processExecStatusEntityResolver = Jdp.getRequired(IProcessExecStatusEntityResolver.class);
+    private final IProcessExecStatusEntityResolver processExecStatusEntityResolver = Jdp.getRequired(IProcessExecStatusEntityResolver.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final UpdateErrorStatusRequest request) throws Exception {

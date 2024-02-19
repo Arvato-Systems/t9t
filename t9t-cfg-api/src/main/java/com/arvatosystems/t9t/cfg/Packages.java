@@ -15,16 +15,41 @@
  */
 package com.arvatosystems.t9t.cfg;
 
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import jakarta.annotation.Nonnull;
 
 public final class Packages {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Packages.class);
+    private static final String PROPERTIES_FILENAME = "/extraBonapartePrefixes.properties";
+    private static final Map<String, String> EXTRA_PACKAGES = new ConcurrentHashMap<>();
+    static {
+        // obtain extra packages from some resource file, or initialize it to the empty map if no such resource can be found
+        final Properties props = new Properties();
+        try {
+            props.load(Packages.class.getResourceAsStream(PROPERTIES_FILENAME));
+        } catch (final Exception e) {
+            // this is not an error
+        }
+        for (final Map.Entry<Object, Object> e: props.entrySet()) {
+            if (e.getKey() instanceof String key && e.getValue() instanceof String value) {
+                EXTRA_PACKAGES.put(key, value);
+            }
+        }
+        LOGGER.info("{} extra package prefixes found in properties resource {}", EXTRA_PACKAGES.size(), PROPERTIES_FILENAME);
+    }
+
     private Packages() {
     }
 
     public static int numberOfExtraPackages() {
-        return 0;   // no packages in the default implementation
+        return EXTRA_PACKAGES.size();
     }
     /**
      * Implementation emits any pair of prefix / package pair to the processor.
@@ -32,5 +57,8 @@ public final class Packages {
      * @param processor takes parameters prefix and package name
      */
     public static void walkExtraPackages(@Nonnull final BiConsumer<String, String> processor) {
+        for (final Map.Entry<String, String> e: EXTRA_PACKAGES.entrySet()) {
+            processor.accept(e.getKey(), e.getValue());
+        }
     }
 }

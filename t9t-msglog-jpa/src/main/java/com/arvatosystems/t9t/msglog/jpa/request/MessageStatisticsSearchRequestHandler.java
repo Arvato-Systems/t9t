@@ -28,8 +28,8 @@ import de.jpaw.dp.Jdp;
 
 public class MessageStatisticsSearchRequestHandler extends AbstractMonitoringSearchRequestHandler<MessageStatisticsSearchRequest> {
 
-    protected final IMessageStatisticsEntityResolver resolver = Jdp.getRequired(IMessageStatisticsEntityResolver.class);
-    protected final IMessageStatisticsDTOMapper mapper = Jdp.getRequired(IMessageStatisticsDTOMapper.class);
+    private final IMessageStatisticsEntityResolver resolver = Jdp.getRequired(IMessageStatisticsEntityResolver.class);
+    private final IMessageStatisticsDTOMapper mapper = Jdp.getRequired(IMessageStatisticsDTOMapper.class);
 
     @Override
     public ReadAllResponse<MessageStatisticsDTO, NoTracking>

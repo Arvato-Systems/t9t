@@ -30,8 +30,8 @@ import de.jpaw.dp.Jdp;
 public class CsvConfigurationSearchRequestHandler extends
         AbstractSearchWithTotalsRequestHandler<Long, CsvConfigurationDTO, FullTrackingWithVersion, CsvConfigurationSearchRequest, CsvConfigurationEntity> {
 
-    protected final ICsvConfigurationEntityResolver resolver = Jdp.getRequired(ICsvConfigurationEntityResolver.class);
-    protected final ICsvConfigurationDTOMapper mapper = Jdp.getRequired(ICsvConfigurationDTOMapper.class);
+    private final ICsvConfigurationEntityResolver resolver = Jdp.getRequired(ICsvConfigurationEntityResolver.class);
+    private final ICsvConfigurationDTOMapper mapper = Jdp.getRequired(ICsvConfigurationDTOMapper.class);
 
     @Override
     public ReadAllResponse<CsvConfigurationDTO, FullTrackingWithVersion> execute(final RequestContext ctx,

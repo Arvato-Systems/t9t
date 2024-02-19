@@ -36,9 +36,9 @@ import de.jpaw.dp.Jdp;
 
 public class ProcessDefinitionCrudRequestHandler extends AbstractCrudSurrogateKeyRequestHandler<ProcessDefinitionRef, ProcessDefinitionDTO,
   FullTrackingWithVersion, ProcessDefinitionCrudRequest, ProcessDefinitionEntity> {
-    protected final IProcessDefinitionEntityResolver resolver = Jdp.getRequired(IProcessDefinitionEntityResolver.class);
-    protected final IProcessDefinitionDTOMapper mapper = Jdp.getRequired(IProcessDefinitionDTOMapper.class);
-    protected final IExecutor executor = Jdp.getRequired(IExecutor.class);
+    private final IProcessDefinitionEntityResolver resolver = Jdp.getRequired(IProcessDefinitionEntityResolver.class);
+    private final IProcessDefinitionDTOMapper mapper = Jdp.getRequired(IProcessDefinitionDTOMapper.class);
+    private final IExecutor executor = Jdp.getRequired(IExecutor.class);
 
     @Override
     public CrudSurrogateKeyResponse<ProcessDefinitionDTO, FullTrackingWithVersion>

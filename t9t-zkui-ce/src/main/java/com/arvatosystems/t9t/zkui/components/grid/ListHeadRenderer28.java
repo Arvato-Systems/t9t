@@ -99,8 +99,9 @@ public class ListHeadRenderer28 {
         listhead.setSizable(true);
         // listeners
         listhead.addEventListener(ZulEvents.ON_COL_SIZE, (final ColSizeEvent event) -> {
-            LOGGER.debug(String.format("--> event:%s - col:%s - width:%s - id:%s", event.getName(), event.getColIndex(), event.getWidth(),
-                    event.getColumn().getId()));
+            LOGGER.atDebug().log("--> event:{} - col:{} - width:{} - id:{}", event.getName(), event.getColIndex(), event.getWidth(),
+                    event.getColumn().getId());
+
             onColSizeListHeader(event);
         });
         createContextMenu(listhead);  // single entry into separate subclass
@@ -178,7 +179,7 @@ public class ListHeadRenderer28 {
             listheader.setHflex("min");
         } else {
             // setting width does not allow automatic distribution of non used space in list header after upgrade to ZK8
-            listheader.setWidth(String.format("%spx", width));
+            listheader.setWidth(width + "px");
         }
         // this criteria is a bit too pessimistic, but want to be on the safe side initially.
         if (!isDotted && !isIndexed && !isUnsortable && Multiplicity.LIST != columnDescriptor.getMultiplicity())
@@ -238,7 +239,7 @@ public class ListHeadRenderer28 {
         if (isChecked) {
             //set the value to the listHeader as the component will not automatically does it
             //but the component will automatically hide the column if unchecked so uncheck does not require this
-            listHeader.setWidth(String.format("%spx", gridConfigResolver.getWidths().get(colIndex)));
+            listHeader.setWidth(gridConfigResolver.getWidths().get(colIndex) + "px");
         }
     }
 

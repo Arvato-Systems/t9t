@@ -30,8 +30,8 @@ import de.jpaw.dp.Jdp;
 public class TenantLogoSearchRequestHandler extends
   AbstractSearchWithTotalsRequestHandler<String, TenantLogoDTO, FullTrackingWithVersion, TenantLogoSearchRequest, TenantLogoEntity> {
 
-    protected final ITenantLogoEntityResolver resolver = Jdp.getRequired(ITenantLogoEntityResolver.class);
-    protected final ITenantLogoDTOMapper mapper = Jdp.getRequired(ITenantLogoDTOMapper.class);
+    private final ITenantLogoEntityResolver resolver = Jdp.getRequired(ITenantLogoEntityResolver.class);
+    private final ITenantLogoDTOMapper mapper = Jdp.getRequired(ITenantLogoDTOMapper.class);
 
     @Override
     public ReadAllResponse<TenantLogoDTO, FullTrackingWithVersion> execute(final RequestContext ctx, final TenantLogoSearchRequest request) throws Exception {

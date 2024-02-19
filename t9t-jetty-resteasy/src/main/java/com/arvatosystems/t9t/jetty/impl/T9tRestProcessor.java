@@ -92,7 +92,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
                 elementToCheck.validate();
             } catch (final ApplicationException e) {
                 LOGGER.error("Exception during request validation: {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
-                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, e.getErrorCode(), e.getMessage());
+                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, e);
                 return;
             }
         }
@@ -102,7 +102,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
                 rq = requestConverterSingle.apply(inputData.get(0));
             } catch (final ApplicationException e) {
                 LOGGER.error("Exception during request conversion (single): {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
-                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, e.getErrorCode(), e.getMessage());  // missing parameter
+                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, e);  // missing parameter
                 return;
             } catch (final Exception e) {
                 LOGGER.error("Exception during request conversion (single): {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
@@ -119,7 +119,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
                 rq = requestConverterBatch.apply(inputData);
             } catch (final ApplicationException e) {
                 LOGGER.error("Exception during request conversion (multi): {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
-                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, e.getErrorCode(), e.getMessage());
+                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, e);
                 return;
             } catch (final Exception e) {
                 LOGGER.error("Exception during request conversion (multi): {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
@@ -146,7 +146,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
             requestParameters.validate();  // validate the request before we launch a worker thread!
         } catch (final ApplicationException e) {
             LOGGER.error("Exception during request validation: {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
-            returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, e.getErrorCode(), e.getMessage());  // missing parameter
+            returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, e);  // missing parameter
             return;
         }
         final int invocationNo = COUNTER.incrementAndGet();
@@ -158,8 +158,8 @@ public class T9tRestProcessor implements IT9tRestProcessor {
         if (stringSanitizer != null) {
             try {
                 requestParameters.treeWalkString(stringSanitizer, true);
-            } catch (ApplicationException e) {
-                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, T9tException.ILLEGAL_CHARACTER, e.getMessage());
+            } catch (final ApplicationException e) {
+                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, e);
                 return;
             }
         }

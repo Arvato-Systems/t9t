@@ -28,8 +28,8 @@ import com.arvatosystems.t9t.bpmn.services.IBpmnPersistenceAccess;
 import de.jpaw.dp.Jdp;
 
 public class UpdateProcessRequestHandler extends AbstractRequestHandler<UpdateProcessRequest> {
-    protected final IBpmnPersistenceAccess persistenceAccess = Jdp.getRequired(IBpmnPersistenceAccess.class);
-    protected final IExecutor messaging = Jdp.getRequired(IExecutor.class);
+    private final IBpmnPersistenceAccess persistenceAccess = Jdp.getRequired(IBpmnPersistenceAccess.class);
+    private final IExecutor messaging = Jdp.getRequired(IExecutor.class);
 
     @Override
     public ExecuteProcessWithRefResponse execute(final RequestContext ctx, final UpdateProcessRequest rq) {

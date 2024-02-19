@@ -529,7 +529,7 @@ public class ApplicationViewModel {
         LOGGER.debug("Childs are {} {} {}", "x", panel.getLastChild().getId(), panel.getLastChild().hashCode());
 
         //set screen title
-        String command = String.format("setAppCurrentPageTitle('%s');", navi.getName());
+        String command = "setAppCurrentPageTitle('" + navi.getName() + "');";
         Clients.evalJavaScript(command);
     }
     /*

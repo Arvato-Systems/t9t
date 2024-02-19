@@ -26,6 +26,7 @@ import com.arvatosystems.t9t.rest.utils.RestUtils;
 import com.arvatosystems.t9t.xml.GenericResult;
 
 import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.util.ApplicationException;
 import jakarta.annotation.Nonnull;
 import jakarta.ws.rs.container.AsyncResponse;
 import jakarta.ws.rs.core.HttpHeaders;
@@ -118,10 +119,19 @@ public interface IT9tRestProcessor {
         RestUtils.addDefaultSecurityHeader(responseBuilder);
     }
 
-    /** Returns a response without using the worker thread. */
+    /**
+     * Returns a response without using the worker thread, based on errorCode and text.
+     */
     default void returnAsyncResult(final String acceptHeader, final AsyncResponse resp, final Response.Status status,
       final int errorCode, final String message) {
         returnAsyncResult(acceptHeader, resp, status, RestUtils.createErrorResult(errorCode, message));
+    }
+
+    /**
+     * Returns a response without using the worker thread, based on an <code>ApplicationException</code>.
+     */
+    default void returnAsyncResult(final String acceptHeader, final AsyncResponse resp, final Response.Status status, final ApplicationException e) {
+        returnAsyncResult(acceptHeader, resp, status, RestUtils.createErrorResult(e));
     }
 
     /** Performs the authentication request asynchronously, using a generic response mapper. */

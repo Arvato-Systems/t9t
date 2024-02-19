@@ -22,11 +22,10 @@ import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.ssm.request.ClearAllRequest;
 
-import de.jpaw.dp.Inject;
 import de.jpaw.dp.Jdp;
 
 public class ClearAllRequestHandler extends AbstractRequestHandler<ClearAllRequest> {
-    @Inject
+
     private final Scheduler scheduler = Jdp.getRequired(Scheduler.class);
 
     @Override

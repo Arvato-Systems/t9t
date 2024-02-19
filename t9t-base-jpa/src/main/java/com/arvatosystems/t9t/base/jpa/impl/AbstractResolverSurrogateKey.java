@@ -41,7 +41,6 @@ public abstract class AbstractResolverSurrogateKey<
 
     private static final List<SortColumn> DEFAULT_SORT_ORDER = Collections.singletonList(new SortColumn("objectRef", false)); // descending: newest first!
 
-    // @Inject
     private final IRefGenerator genericRefGenerator = Jdp.getRequired(IRefGenerator.class);
 
     @Override
@@ -102,6 +101,7 @@ public abstract class AbstractResolverSurrogateKey<
         return getEntityDataByGenericKey(resolveNestedRefs(entityRef), onlyActive);
     }
 
+    @Override
     public ENTITY getEntityData(final Long entityRef, final Supplier<ENTITY> childProvider) {
         if (entityRef == null) {
             // there is no child

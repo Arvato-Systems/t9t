@@ -26,7 +26,7 @@ import de.jpaw.dp.Jdp;
 
 public class GetDefaultScreenRequestHandler extends AbstractRequestHandler<GetDefaultScreenRequest> {
 
-    protected final IUserEntityResolver resolver = Jdp.getRequired(IUserEntityResolver.class);
+    private final IUserEntityResolver resolver = Jdp.getRequired(IUserEntityResolver.class);
 
     @Override
     public GetDefaultScreenResponse execute(final RequestContext ctx, final GetDefaultScreenRequest request) throws Exception {

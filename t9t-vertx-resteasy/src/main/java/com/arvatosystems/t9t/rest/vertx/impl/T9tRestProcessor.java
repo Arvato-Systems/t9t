@@ -74,7 +74,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
             requestParameters.validate();  // validate the request before we launch a worker thread!
         } catch (final ApplicationException e) {
             LOGGER.error("Exception during request validation: {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
-            returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, e.getErrorCode(), e.getMessage());  // missing parameter
+            returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, e);  // missing parameter
             return;
         }
         final String authHeader = httpHeaders.getHeaderString(HttpHeaders.AUTHORIZATION);
@@ -212,7 +212,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
                 elementToCheck.validate();
             } catch (final ApplicationException e) {
                 LOGGER.error("Exception during request validation: {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
-                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, e.getErrorCode(), e.getMessage());
+                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, e);
                 return;
             }
         }
@@ -222,7 +222,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
                 rq = requestConverterSingle.apply(inputData.get(0));
             } catch (final ApplicationException e) {
                 LOGGER.error("Exception during request conversion (single): {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
-                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, e.getErrorCode(), e.getMessage());
+                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, e);
                 return;
             } catch (final Exception e) {
                 LOGGER.error("Exception during request conversion (single): {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
@@ -239,7 +239,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
                 rq = requestConverterBatch.apply(inputData);
             } catch (final ApplicationException e) {
                 LOGGER.error("Exception during request conversion (multi): {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
-                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, e.getErrorCode(), e.getMessage());
+                returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, e);
                 return;
             } catch (final Exception e) {
                 LOGGER.error("Exception during request conversion (multi): {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));

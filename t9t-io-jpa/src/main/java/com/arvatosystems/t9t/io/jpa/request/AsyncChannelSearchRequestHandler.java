@@ -30,8 +30,8 @@ import de.jpaw.dp.Jdp;
 public class AsyncChannelSearchRequestHandler extends
         AbstractSearchWithTotalsRequestHandler<Long, AsyncChannelDTO, FullTrackingWithVersion, AsyncChannelSearchRequest, AsyncChannelEntity> {
 
-    protected final IAsyncChannelEntityResolver resolver = Jdp.getRequired(IAsyncChannelEntityResolver.class);
-    protected final IAsyncChannelDTOMapper mapper = Jdp.getRequired(IAsyncChannelDTOMapper.class);
+    private final IAsyncChannelEntityResolver resolver = Jdp.getRequired(IAsyncChannelEntityResolver.class);
+    private final IAsyncChannelDTOMapper mapper = Jdp.getRequired(IAsyncChannelDTOMapper.class);
 
     @Override
     public ReadAllResponse<AsyncChannelDTO, FullTrackingWithVersion> execute(final RequestContext ctx,

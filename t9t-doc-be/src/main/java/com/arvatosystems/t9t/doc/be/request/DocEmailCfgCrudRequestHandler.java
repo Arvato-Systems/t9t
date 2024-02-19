@@ -29,7 +29,7 @@ import de.jpaw.dp.Jdp;
 public class DocEmailCfgCrudRequestHandler extends
   AbstractCrudSurrogateKeyBERequestHandler<DocEmailCfgRef, DocEmailCfgDTO, FullTrackingWithVersion, DocEmailCfgCrudRequest> {
 
-    protected final IDocEmailCfgResolver resolver = Jdp.getRequired(IDocEmailCfgResolver.class);
+    private final IDocEmailCfgResolver resolver = Jdp.getRequired(IDocEmailCfgResolver.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final DocEmailCfgCrudRequest crudRequest) throws Exception {

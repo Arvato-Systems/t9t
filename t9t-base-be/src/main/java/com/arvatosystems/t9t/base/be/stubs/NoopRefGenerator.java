@@ -39,7 +39,6 @@ public class NoopRefGenerator implements IRefGenerator {
     private static final Logger LOGGER = LoggerFactory.getLogger(NoopRefGenerator.class);
     private static final int NUM_SEQUENCES_UNSCALED = 10; // how many sequences we use to obtain unscaled IDs
 
-    // @Inject
     private final T9tServerConfiguration configuration = Jdp.getRequired(T9tServerConfiguration.class);
     private final long scaledOffsetForLocation;
     private final AtomicLong[] generatorTab = new AtomicLong[OFFSET_BACKUP_LOCATION];

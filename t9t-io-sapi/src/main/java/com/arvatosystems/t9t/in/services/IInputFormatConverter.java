@@ -40,7 +40,7 @@ public interface IInputFormatConverter {
      * if the format converter also processes byte[].
      * */
     default void process(final byte[] data) {
-        new ByteArrayInputStream(data);
+        process(new ByteArrayInputStream(data));
     }
 
 

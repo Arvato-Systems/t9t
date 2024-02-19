@@ -46,6 +46,7 @@ public abstract class AbstractCrudStringKeyRequestHandler<
         validateParameters(crudRequest, crudRequest.getKey() == null);
 
         final CrudStringKeyResponse<DTO, TRACKING> rs = new CrudStringKeyResponse<>();
+        rs.setReturnCode(0);
         ENTITY result;
 
         final EntityManager entityManager = jpaContextProvider.get().getEntityManager(); // copy it as we need it several times
@@ -83,7 +84,7 @@ public abstract class AbstractCrudStringKeyRequestHandler<
                 result.put$Active(true);
                 break;
             case UPDATE:
-                result = performUpdate(mapper, resolver,  crudRequest, entityManager, crudRequest.getKey());
+                result = performUpdateWithVersion(mapper, resolver, entityManager, crudRequest.getKey(), crudRequest, rs);
                 break;
             case MERGE:
                 // If the key is passed in and result already exist then perform update.
@@ -91,7 +92,7 @@ public abstract class AbstractCrudStringKeyRequestHandler<
                     // at least attempt to read first
                     result = resolver.find(crudRequest.getKey());
                     if (result != null) {
-                        result = performUpdate(mapper, resolver, crudRequest, entityManager, crudRequest.getKey());
+                        result = performUpdateWithVersion(mapper, resolver, entityManager, crudRequest.getKey(), crudRequest, rs);
                         rs.setKey(result.ret$Key()); // just copy
                     } else {
                         // did not exist: perform create
@@ -111,7 +112,6 @@ public abstract class AbstractCrudStringKeyRequestHandler<
                 rs.setData(postRead(mapper.mapToDto(result), result)); // populate
                 // result
             }
-            rs.setReturnCode(0);
             return rs;
         } catch (final T9tException e) {
             // careful! Catching only ApplicationException masks standard T9tExceptions such as RECORD_INACTIVE or RECORD_NOT_FOUND!

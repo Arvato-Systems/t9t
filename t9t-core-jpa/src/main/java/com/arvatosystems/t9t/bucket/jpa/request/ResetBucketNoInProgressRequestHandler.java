@@ -32,9 +32,9 @@ import de.jpaw.dp.Jdp;
 public class ResetBucketNoInProgressRequestHandler extends AbstractRequestHandler<ResetBucketNoInProgressRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ResetBucketNoInProgressRequestHandler.class);
 
-    protected final IBucketCounterEntityResolver counterResolver = Jdp.getRequired(IBucketCounterEntityResolver.class);
-    protected final IBucketEntryEntityResolver   entryResolver   = Jdp.getRequired(IBucketEntryEntityResolver.class);
-    protected final IAutonomousExecutor          autoExecutor    = Jdp.getRequired(IAutonomousExecutor.class);
+    private final IBucketCounterEntityResolver counterResolver = Jdp.getRequired(IBucketCounterEntityResolver.class);
+    private final IBucketEntryEntityResolver   entryResolver   = Jdp.getRequired(IBucketEntryEntityResolver.class);
+    private final IAutonomousExecutor          autoExecutor    = Jdp.getRequired(IAutonomousExecutor.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final ResetBucketNoInProgressRequest rp) {

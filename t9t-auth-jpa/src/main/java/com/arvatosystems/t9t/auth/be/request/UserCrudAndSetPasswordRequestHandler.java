@@ -33,9 +33,9 @@ import de.jpaw.util.ApplicationException;
 
 public class UserCrudAndSetPasswordRequestHandler extends AbstractCrudSurrogateKeyRequestHandler<UserRef, UserDTO,
   FullTrackingWithVersion, UserCrudAndSetPasswordRequest, UserEntity> {
-    protected final IUserEntityResolver resolver = Jdp.getRequired(IUserEntityResolver.class);
-    protected final IUserDTOMapper mapper = Jdp.getRequired(IUserDTOMapper.class);
-    protected final IPasswordSettingService passwordSettingService = Jdp.getRequired(IPasswordSettingService.class);
+    private final IUserEntityResolver resolver = Jdp.getRequired(IUserEntityResolver.class);
+    private final IUserDTOMapper mapper = Jdp.getRequired(IUserDTOMapper.class);
+    private final IPasswordSettingService passwordSettingService = Jdp.getRequired(IPasswordSettingService.class);
 
     @Override
     public CrudSurrogateKeyResponse<UserDTO, FullTrackingWithVersion> execute(final RequestContext ctx, final UserCrudAndSetPasswordRequest request) {

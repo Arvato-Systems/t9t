@@ -57,6 +57,8 @@ public class T9tDocExtException extends T9tException {
      * static initialization of all error codes
      */
     static {
+        registerRange(CORE_OFFSET, false, T9tDocExtException.class, ApplicationLevelType.FRAMEWORK, "t9t document layout module (public API)");
+
         registerCode(DOCUMENT_CREATION_ERROR,          "Error occured during document creation.");
         registerCode(DOCUMENT_DOWNLOAD_ERROR,          "Error occured during file download");
         registerCode(UNDEFINED_MIMETYPE_ERROR,         "Unrecognised file mime type was received.");

@@ -30,8 +30,8 @@ import de.jpaw.dp.Jdp;
 public class DataSinkSearchRequestHandler extends
         AbstractSearchWithTotalsRequestHandler<Long, DataSinkDTO, FullTrackingWithVersion, DataSinkSearchRequest, DataSinkEntity> {
 
-    protected final IDataSinkEntityResolver resolver = Jdp.getRequired(IDataSinkEntityResolver.class);
-    protected final IDataSinkDTOMapper mapper = Jdp.getRequired(IDataSinkDTOMapper.class);
+    private final IDataSinkEntityResolver resolver = Jdp.getRequired(IDataSinkEntityResolver.class);
+    private final IDataSinkDTOMapper mapper = Jdp.getRequired(IDataSinkDTOMapper.class);
 
     @Override
     public ReadAllResponse<DataSinkDTO, FullTrackingWithVersion> execute(final RequestContext ctx,

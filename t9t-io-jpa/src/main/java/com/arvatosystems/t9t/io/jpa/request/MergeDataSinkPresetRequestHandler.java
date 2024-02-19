@@ -30,8 +30,8 @@ import com.arvatosystems.t9t.out.services.IPreOutputDataTransformer;
 import de.jpaw.dp.Jdp;
 
 public class MergeDataSinkPresetRequestHandler extends AbstractRequestHandler<MergeDataSinkPresetRequest> {
-    protected final IDataSinkEntityResolver resolver = Jdp.getRequired(IDataSinkEntityResolver.class);
-    protected final IDataSinkDTOMapper mapper = Jdp.getRequired(IDataSinkDTOMapper.class);
+    private final IDataSinkEntityResolver resolver = Jdp.getRequired(IDataSinkEntityResolver.class);
+    private final IDataSinkDTOMapper mapper = Jdp.getRequired(IDataSinkDTOMapper.class);
 
     @Override
     public MergeDataSinkPresetResponse execute(final RequestContext ctx, final MergeDataSinkPresetRequest rq) {

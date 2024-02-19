@@ -39,8 +39,8 @@ public class AsyncChannelCrudRequestHandler extends
         AbstractCrudSurrogateKeyRequestHandler<AsyncChannelRef, AsyncChannelDTO, FullTrackingWithVersion, AsyncChannelCrudRequest, AsyncChannelEntity> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AsyncChannelCrudRequestHandler.class);
 
-    protected final IAsyncChannelEntityResolver resolver = Jdp.getRequired(IAsyncChannelEntityResolver.class);
-    protected final IAsyncChannelDTOMapper mapper = Jdp.getRequired(IAsyncChannelDTOMapper.class);
+    private final IAsyncChannelEntityResolver resolver = Jdp.getRequired(IAsyncChannelEntityResolver.class);
+    private final IAsyncChannelDTOMapper mapper = Jdp.getRequired(IAsyncChannelDTOMapper.class);
 
     @Override
     public CrudSurrogateKeyResponse<AsyncChannelDTO, FullTrackingWithVersion> execute(final RequestContext ctx,

@@ -31,7 +31,7 @@ import de.jpaw.dp.Jdp;
 public class ConvertSingleTemplateRequestHandler extends AbstractRequestHandler<ConvertSingleTemplateRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConvertSingleTemplateRequestHandler.class);
 
-    protected final ITemplateConversion conversionService = Jdp.getRequired(ITemplateConversion.class);
+    private final ITemplateConversion conversionService = Jdp.getRequired(ITemplateConversion.class);
 
     @Override
     public ConvertSingleTemplateResponse execute(final RequestContext ctx, final ConvertSingleTemplateRequest rq) throws Exception {

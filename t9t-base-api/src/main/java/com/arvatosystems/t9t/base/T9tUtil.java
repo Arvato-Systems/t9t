@@ -197,6 +197,12 @@ public final class T9tUtil {
         return s == null ? s : s.trim();
     }
 
+    /** Returns the string with whitespace removed, or null if the string was null. */
+    public static String trimToNull(final String s) {
+        String trimmed = trim(s);
+        return trimmed == null || trimmed.isEmpty() ? null : trimmed;
+    }
+
     /** Transforms any block of whitespace into single spaces, and also removed any leading and trailing spaces. */
     public static String spaceNormalize(final String s) {
         return s == null ? null : s.replaceAll("\\s{2,}", " ").trim();

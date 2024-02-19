@@ -31,6 +31,8 @@ import de.jpaw.bonaparte.pojos.api.DataWithTrackingS
 import java.util.List
 import java.util.UUID
 import com.arvatosystems.t9t.io.T9tIOException
+import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
 
 @AddLogger
 class T9tImportTools {
@@ -43,11 +45,17 @@ class T9tImportTools {
         return checkLastImport(connection, myDataSinkId, path)
     }
 
-    /** Imports a resource as text file. The path must be relative (no leading /). */
+    /** Imports a resource as text file, using UTF-8. The path must be relative (no leading /). */
     def static void importTextResourceNoCheck(ITestConnection connection, UUID myApiKey, String myDataSinkId, String path) {
-        val inputData = MediaDataUtil.getTextResource(path)
-        if (inputData === null)
+        importTextResourceNoCheck(connection, myApiKey, myDataSinkId, path, StandardCharsets.UTF_8);
+    }
+
+    /** Imports a resource as text file, using a specified charset. The path must be relative (no leading /). */
+    def static void importTextResourceNoCheck(ITestConnection connection, UUID myApiKey, String myDataSinkId, String path, Charset charset) {
+        val inputData = MediaDataUtil.getTextResource(path, charset)
+        if (inputData === null) {
             throw new T9tException(T9tException.FILE_NOT_FOUND_FOR_DOWNLOAD, path)
+        }
         connection.okIO(new ImportInputSessionRequest => [
             dataSinkId = myDataSinkId
             apiKey     = myApiKey

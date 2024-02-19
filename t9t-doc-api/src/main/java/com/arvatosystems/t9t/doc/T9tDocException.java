@@ -38,6 +38,8 @@ public class T9tDocException extends T9tException {
     public static final int FORMATTING_ERROR                     = OFFSET + 66;
 
     static {
+        registerRange(CORE_OFFSET, false, T9tDocException.class, ApplicationLevelType.FRAMEWORK, "t9t document layout module");
+
         registerCode(CONVERSION_EXCEEDS_MAX_TEMPLATE_SIZE, "The conversion would exceed the maximum size of a template.");
         registerCode(CONVERSION_EXCEEDS_MAX_SUBJECT_SIZE,  "The conversion would exceed the maximum size of an inline email subject template.");
         registerCode(CANNOT_ADD_FONT_IO,                   "Could not add font to document (I/O issue)");

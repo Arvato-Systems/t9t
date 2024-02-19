@@ -28,8 +28,7 @@ import de.jpaw.dp.Jdp;
 
 public class ConfigCrudRequestHandler extends AbstractCrudSurrogateKeyBERequestHandler<ConfigRef, ConfigDTO, FullTrackingWithVersion, ConfigCrudRequest> {
 
-    // @Inject
-    protected final IConfigResolver resolver = Jdp.getRequired(IConfigResolver.class);
+    private final IConfigResolver resolver = Jdp.getRequired(IConfigResolver.class);
 
     private void resetComponentValues(final ConfigDTO data) {
         if (data == null || data.getConfigTypeEnum() == null) {

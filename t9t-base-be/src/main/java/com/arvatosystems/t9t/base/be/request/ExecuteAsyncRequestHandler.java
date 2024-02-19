@@ -25,7 +25,7 @@ import de.jpaw.dp.Jdp;
 
 public class ExecuteAsyncRequestHandler extends AbstractRequestHandler<ExecuteAsyncRequest> {
 
-    protected final IExecutor executor = Jdp.getRequired(IExecutor.class);
+    private final IExecutor executor = Jdp.getRequired(IExecutor.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final ExecuteAsyncRequest request) throws Exception {

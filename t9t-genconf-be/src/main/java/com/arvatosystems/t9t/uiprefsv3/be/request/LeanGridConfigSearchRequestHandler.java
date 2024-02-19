@@ -28,8 +28,7 @@ import de.jpaw.dp.Jdp;
 public class LeanGridConfigSearchRequestHandler extends
   AbstractSearchBERequestHandler<LeanGridConfigDTO, FullTrackingWithVersion, LeanGridConfigSearchRequest> {
 
-    // @Inject
-    protected final ILeanGridConfigResolver resolver = Jdp.getRequired(ILeanGridConfigResolver.class);
+    private final ILeanGridConfigResolver resolver = Jdp.getRequired(ILeanGridConfigResolver.class);
 
     @Override
     public ReadAllResponse<LeanGridConfigDTO, FullTrackingWithVersion> execute(final RequestContext ctx, final LeanGridConfigSearchRequest request) {

@@ -26,8 +26,8 @@ import com.arvatosystems.t9t.updates.request.GetUpdateStatusResponse;
 import de.jpaw.dp.Jdp;
 
 public class GetUpdateStatusRequestHandler extends AbstractRequestHandler<GetUpdateStatusRequest> {
-    protected final IUpdateStatusDTOMapper mapper = Jdp.getRequired(IUpdateStatusDTOMapper.class);
-    protected final IUpdateStatusEntityResolver resolver = Jdp.getRequired(IUpdateStatusEntityResolver.class);
+    private final IUpdateStatusDTOMapper mapper = Jdp.getRequired(IUpdateStatusDTOMapper.class);
+    private final IUpdateStatusEntityResolver resolver = Jdp.getRequired(IUpdateStatusEntityResolver.class);
 
     @Override
     public GetUpdateStatusResponse execute(final RequestContext ctx, final GetUpdateStatusRequest request) {

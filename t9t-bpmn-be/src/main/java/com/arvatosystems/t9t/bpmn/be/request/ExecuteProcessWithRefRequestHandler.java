@@ -28,8 +28,8 @@ import com.arvatosystems.t9t.bpmn.services.IProcessDefinitionCache;
 import de.jpaw.dp.Jdp;
 
 public class ExecuteProcessWithRefRequestHandler extends AbstractRequestHandler<ExecuteProcessWithRefRequest> {
-    protected final IBpmnPersistenceAccess persistenceAccess = Jdp.getRequired(IBpmnPersistenceAccess.class);
-    protected final IProcessDefinitionCache pdCache = Jdp.getRequired(IProcessDefinitionCache.class);
+    private final IBpmnPersistenceAccess persistenceAccess = Jdp.getRequired(IBpmnPersistenceAccess.class);
+    private final IProcessDefinitionCache pdCache = Jdp.getRequired(IProcessDefinitionCache.class);
 
     @Override
     public ExecuteProcessWithRefResponse execute(final RequestContext ctx, final ExecuteProcessWithRefRequest rq) {

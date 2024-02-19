@@ -30,8 +30,8 @@ import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 import de.jpaw.dp.Jdp;
 
 public class RetrieveParametersRequestHandler extends AbstractRequestHandler<RetrieveParametersRequest> {
-    protected final IMessageEntityResolver resolver = Jdp.getRequired(IMessageEntityResolver.class);
-    protected final IAuthorize authorizer = Jdp.getRequired(IAuthorize.class);
+    private final IMessageEntityResolver resolver = Jdp.getRequired(IMessageEntityResolver.class);
+    private final IAuthorize authorizer = Jdp.getRequired(IAuthorize.class);
 
     @Override
     public RetrieveParametersResponse execute(final RequestContext ctx, final RetrieveParametersRequest rq) {

@@ -25,7 +25,7 @@ import de.jpaw.dp.Jdp;
 
 public class SinkResolverRequestHandler extends AbstractRequestHandler<SinkResolverRequest> {
 
-    protected final ISinkEntityResolver resolver = Jdp.getRequired(ISinkEntityResolver.class);
+    private final ISinkEntityResolver resolver = Jdp.getRequired(ISinkEntityResolver.class);
 
     @Override
     public RefResolverResponse execute(final RequestContext ctx, final SinkResolverRequest request) throws Exception {

@@ -58,10 +58,10 @@ public class ProcessStatusSearchRequestHandler extends AbstractSearchRequestHand
     private static final String FIELD_NAME_PROGRESS_COUNTER = "progressCounter";
     private static final String FIELD_NAME_STATUS_TEXT = "statusText";
 
-    protected final IExecutor executor = Jdp.getRequired(IExecutor.class);
+    private final IExecutor executor = Jdp.getRequired(IExecutor.class);
 
     @SuppressWarnings("unchecked")
-    protected final IExporterTool<ProcessStatusDTO, NoTracking> exporter = Jdp.getRequired(IExporterTool.class);
+    private final IExporterTool<ProcessStatusDTO, NoTracking> exporter = Jdp.getRequired(IExporterTool.class);
 
     @Override
     public ReadAllResponse<ProcessStatusDTO, NoTracking> execute(final RequestContext ctx, final ProcessStatusSearchRequest rq) throws Exception {

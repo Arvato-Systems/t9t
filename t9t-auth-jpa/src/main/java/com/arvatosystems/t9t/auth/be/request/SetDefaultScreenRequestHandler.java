@@ -30,7 +30,7 @@ import de.jpaw.dp.Jdp;
 public class SetDefaultScreenRequestHandler extends AbstractRequestHandler<SetDefaultScreenRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(SetDefaultScreenRequestHandler.class);
 
-    protected final IUserEntityResolver resolver = Jdp.getRequired(IUserEntityResolver.class);
+    private final IUserEntityResolver resolver = Jdp.getRequired(IUserEntityResolver.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final SetDefaultScreenRequest request) throws Exception {

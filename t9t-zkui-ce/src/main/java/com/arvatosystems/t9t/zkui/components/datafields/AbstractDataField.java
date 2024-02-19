@@ -19,11 +19,11 @@ import org.zkoss.zul.impl.InputElement;
 
 public abstract class AbstractDataField<E extends InputElement, T> extends AbstractCoreDataField<E, T> {
 
-    protected AbstractDataField(DataFieldParameters params) {
+    protected AbstractDataField(final DataFieldParameters params) {
         super(params);
     }
 
-    protected String combineConstraints(String a, String b) {
+    protected String combineConstraints(final String a, final String b) {
         if (a == null)
             return b;
         if (b == null)
@@ -31,16 +31,16 @@ public abstract class AbstractDataField<E extends InputElement, T> extends Abstr
         return a + "," + b;
     }
 
-    protected void setConstraints(InputElement c, String moreConstraints) {
+    protected void setConstraints(final InputElement c, final String moreConstraints) {
         c.setHflex("1");
-        String noEmpty = isRequired ? "no empty" : null;
-        String allConstraints = combineConstraints(noEmpty, moreConstraints);
+        final String noEmpty = isRequired ? "no empty" : null;
+        final String allConstraints = combineConstraints(noEmpty, moreConstraints);
         if (allConstraints != null)
             c.setConstraint(allConstraints);
     }
 
     @Override
-    public void setDisabled(boolean disabled) {
+    public void setDisabled(final boolean disabled) {
         getComponent().setDisabled(disabled);
     }
 }

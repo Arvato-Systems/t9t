@@ -55,9 +55,9 @@ public class LoadedPluginCrudRequestHandler
         extends AbstractCrudSurrogateKeyBERequestHandler<LoadedPluginRef, LoadedPluginDTO, FullTrackingWithVersion, LoadedPluginCrudRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(LoadedPluginCrudRequestHandler.class);
 
-    protected final ILoadedPluginResolver resolver = Jdp.getRequired(ILoadedPluginResolver.class);
-    protected final IExecutor executor = Jdp.getRequired(IExecutor.class);
-    protected final IPluginManager pluginManager = Jdp.getRequired(IPluginManager.class);
+    private final ILoadedPluginResolver resolver = Jdp.getRequired(ILoadedPluginResolver.class);
+    private final IExecutor executor = Jdp.getRequired(IExecutor.class);
+    private final IPluginManager pluginManager = Jdp.getRequired(IPluginManager.class);
 
     @Override
     public CrudSurrogateKeyResponse<LoadedPluginDTO, FullTrackingWithVersion> execute(final RequestContext ctx, final LoadedPluginCrudRequest crudRequest) {

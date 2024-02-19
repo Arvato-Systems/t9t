@@ -167,12 +167,7 @@ public class Executor implements IExecutor {
                     }
                 }
             }
-            // central setting of errorMessage. Also warn if request handler is cooking some own soup here
-            if (response.getErrorMessage() != null) {
-                LOGGER.warn("Request {} / response {}: manually setting errorMessage is extremely discouraged: {}",
-                    params.ret$PQON(), response.ret$PQON(), response.getErrorMessage());
-            }
-            // Finally we're done, return the response
+            // finally we're done, return the response
             return response;
         } catch (final ApplicationException e) {
             // log a stack trace in case of 8000 or 9000 type errors

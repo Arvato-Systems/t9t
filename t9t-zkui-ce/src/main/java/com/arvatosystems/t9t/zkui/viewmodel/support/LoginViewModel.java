@@ -130,15 +130,16 @@ public class LoginViewModel {
                 evt.getTimeZone(), evt.getTimeZone().getDisplayName(),
                 evt.getDesktopWidth(), evt.getDesktopHeight(),
                 evt.getScreenWidth(), evt.getScreenHeight());
-        lastScreen = String.format("desktop: %d*%d, screen: %d*%d",
-                evt.getDesktopWidth(), evt.getDesktopHeight(),
-                evt.getScreenWidth(), evt.getScreenHeight());
+        final StringBuilder lastScreenBuilder = new StringBuilder("desktop: ").append(evt.getDesktopWidth()).append("*").append(evt.getDesktopHeight())
+                .append(", screen: ").append(evt.getScreenWidth()).append("*").append(evt.getScreenHeight());
+
         lastZone = evt.getTimeZone();
         if (Executions.getCurrent() != null) {
             String ua = Executions.getCurrent().getUserAgent();
             LOGGER.debug("ZK user agent is {}", ua);
-            lastScreen = lastScreen + ", agent: " + ua;
+            lastScreenBuilder.append(", agent: ").append(ua);
         }
+        lastScreen = lastScreenBuilder.toString();
     }
 
     @NotifyChange("showLoginErrorMessage")

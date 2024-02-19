@@ -30,8 +30,8 @@ import de.jpaw.dp.Jdp;
 
 public class DocModuleCfgCrudRequestHandler
   extends AbstractCrudSurrogateKeyRequestHandler<DocConfigRef, DocConfigDTO, FullTrackingWithVersion, DocConfigCrudRequest, DocConfigEntity> {
-    protected final IDocConfigEntityResolver resolver = Jdp.getRequired(IDocConfigEntityResolver.class);
-    protected final IDocConfigDTOMapper mapper = Jdp.getRequired(IDocConfigDTOMapper.class);
+    private final IDocConfigEntityResolver resolver = Jdp.getRequired(IDocConfigEntityResolver.class);
+    private final IDocConfigDTOMapper mapper = Jdp.getRequired(IDocConfigDTOMapper.class);
 
     @Override
     public CrudSurrogateKeyResponse<DocConfigDTO, FullTrackingWithVersion> execute(final RequestContext ctx, final DocConfigCrudRequest request)

@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.kafka.service.impl;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -32,7 +33,7 @@ import com.arvatosystems.t9t.kafka.service.IKafkaRebalancer;
 public class KafkaRebalancer implements IKafkaRebalancer {
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaRebalancer.class);
 
-    protected final Set<Integer> myIndexes = ConcurrentHashMap.newKeySet(96);  // concurrent set
+    protected final Set<Integer> myIndexes = ConcurrentHashMap.newKeySet(96); // concurrent set
     protected final String topic;
     protected final boolean verbose;
 
@@ -49,7 +50,7 @@ public class KafkaRebalancer implements IKafkaRebalancer {
     @Override
     public void init(final List<PartitionInfo> partitions) {
         LOGGER.info("Initially {} partitions have been assigned", partitions.size());
-        for (final PartitionInfo pi: partitions) {
+        for (final PartitionInfo pi : partitions) {
             myIndexes.add(pi.partition());
         }
         dumpPartitions("INITIAL");
@@ -64,9 +65,9 @@ public class KafkaRebalancer implements IKafkaRebalancer {
 
     @Override
     public void onPartitionsRevoked(final Collection<TopicPartition> partitions) {
-        LOGGER.info("Rebalance! {} partitions revoked on topic {}", partitions.size(), topic);
+        LOGGER.info("Rebalance! {} partitions ({}) revoked on topic {}", partitions.size(), Arrays.toString(partitions.toArray()), topic);
         dumpPartitions("BEFORE");
-        for (TopicPartition tp: partitions) {
+        for (final TopicPartition tp : partitions) {
             myIndexes.remove(tp.partition());
         }
         dumpPartitions("AFTER");
@@ -76,9 +77,10 @@ public class KafkaRebalancer implements IKafkaRebalancer {
     public void onPartitionsAssigned(final Collection<TopicPartition> partitions) {
         LOGGER.info("Rebalance! {} partitions assigned on topic {}", partitions.size(), topic);
         dumpPartitions("BEFORE");
-        for (TopicPartition tp: partitions) {
+        for (final TopicPartition tp : partitions) {
             myIndexes.add(tp.partition());
         }
         dumpPartitions("AFTER");
     }
+
 }

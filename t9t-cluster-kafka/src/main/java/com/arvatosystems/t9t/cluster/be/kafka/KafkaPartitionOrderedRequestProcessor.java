@@ -22,10 +22,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -55,7 +55,7 @@ import com.arvatosystems.t9t.kafka.service.impl.KafkaTopicReader;
  * </ul>
  * Processor will be shut down by {@link KafkaRequestProcessorAndClusterManagerInitializer#onShutdown()}
  */
-final class KafkaPartitionOrderedRequestProcessor implements Callable<Boolean> {
+final class KafkaPartitionOrderedRequestProcessor implements KafkaProcessor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaPartitionOrderedRequestProcessor.class);
 
@@ -79,6 +79,11 @@ final class KafkaPartitionOrderedRequestProcessor implements Callable<Boolean> {
     private final long monitorIntervalInMs;
     private final long shutdownThreadpoolIntervalInMs;
     private final long idleIntervalInMs;
+
+    // controls for pausing/resuming consumer - this has to be done from thread which is running the consumer loop (not thread-safe)
+    // set via KafkaClusterManagerRequestHandler
+    private final AtomicBoolean globalPauseTrigger = new AtomicBoolean();
+    private final AtomicBoolean globalResumeTrigger = new AtomicBoolean();
 
     protected KafkaPartitionOrderedRequestProcessor(final KafkaConfiguration config, final IKafkaTopicReader consumer) {
         LOGGER.info("Starting " + this.getClass().getSimpleName());
@@ -122,6 +127,8 @@ final class KafkaPartitionOrderedRequestProcessor implements Callable<Boolean> {
         final AtomicInteger numberOfPolls = new AtomicInteger(0);
         long lastinfo = System.nanoTime();
         while (!StatusProvider.isShutdownInProgress()) {
+            checkGlobalTriggers();
+
             final int currentNum = numberOfPolls.incrementAndGet();
             final long startChunk = System.nanoTime();
             if (startChunk - lastinfo >= 60_000_000_000L) {
@@ -151,7 +158,7 @@ final class KafkaPartitionOrderedRequestProcessor implements Callable<Boolean> {
                     activeProcessors.put(partition, kafkaMultipleRecordsProcessor);
                 }
 
-                pause(partitions);
+                pauseTopicPartitions(partitions);
             }
 
             if (idleIntervalInMs > 0 && activeProcessors.isEmpty() && offsetsToCommit.isEmpty()) {
@@ -175,7 +182,7 @@ final class KafkaPartitionOrderedRequestProcessor implements Callable<Boolean> {
             finishedPartitions.forEach(partition -> activeProcessors.remove(partition));
 
             // resume finished partitions (if not empty)
-            resume(finishedPartitions);
+            resumeTopicPartitions(finishedPartitions);
 
             // show what you are busy with (if interval reached)
             printMonitor();
@@ -202,11 +209,32 @@ final class KafkaPartitionOrderedRequestProcessor implements Callable<Boolean> {
         return Boolean.FALSE;
     }
 
-    /* CONTROL HELPER */
+    private void checkGlobalTriggers() {
+        // global pause/resume flag
+        if (globalPauseTrigger.compareAndSet(true, false)) {
+            this.pauseTopicPartitions(KafkaUtils.transformToTopicPartition(this.consumer.getPartitionInfos()));
+        }
+        if (globalResumeTrigger.compareAndSet(true, false)) {
+            this.resumeTopicPartitions(KafkaUtils.transformToTopicPartition(this.consumer.getPartitionInfos()));
+        }
+    }
 
-    private void pause(final Set<TopicPartition> partitions) {
-        final long pausedAtTime = System.currentTimeMillis();
+    @Override
+    public void triggerPausing() {
+        this.globalPauseTrigger.set(true);
+    }
+
+    @Override
+    public void triggerResuming() {
+        this.globalResumeTrigger.set(true);
+    }
+
+    private void pauseTopicPartitions(final Collection<TopicPartition> partitions) {
+        if (T9tUtil.isEmpty(partitions)) {
+            return;
+        }
         LOGGER.debug("PAUSE partitions {}", Arrays.toString(partitions.toArray()));
+        final long pausedAtTime = System.currentTimeMillis();
         consumer.pause(partitions);
         partitions.forEach(partition -> {
             // in theory: should always be 'absent'
@@ -216,8 +244,8 @@ final class KafkaPartitionOrderedRequestProcessor implements Callable<Boolean> {
         });
     }
 
-    private void resume(final Collection<TopicPartition> partitions) {
-        if (partitions.isEmpty()) {
+    private void resumeTopicPartitions(final Collection<TopicPartition> partitions) {
+        if (T9tUtil.isEmpty(partitions)) {
             return;
         }
         LOGGER.debug("RESUME partitions {}", Arrays.toString(partitions.toArray()));
@@ -265,7 +293,8 @@ final class KafkaPartitionOrderedRequestProcessor implements Callable<Boolean> {
     }
 
     // called by rebalancer as well (also at shutdown)
-    protected void revokePartitions(final Collection<TopicPartition> partitions) {
+    @Override
+    public void revokePartitions(final Collection<TopicPartition> partitions) {
         LOGGER.info("Revoke called with {} active processor threads and {} uncommitted partitions", activeProcessors.size(), offsetsToCommit.keySet().size());
 
         // stop processors of given partition

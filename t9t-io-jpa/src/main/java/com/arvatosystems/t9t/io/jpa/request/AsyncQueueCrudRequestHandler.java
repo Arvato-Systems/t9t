@@ -35,9 +35,9 @@ import de.jpaw.dp.Jdp;
 public class AsyncQueueCrudRequestHandler extends AbstractCrudSurrogateKeyRequestHandler<AsyncQueueRef, AsyncQueueDTO,
   FullTrackingWithVersion, AsyncQueueCrudRequest, AsyncQueueEntity> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AsyncQueueCrudRequestHandler.class);
-    protected final IAsyncQueueEntityResolver resolver  = Jdp.getRequired(IAsyncQueueEntityResolver.class);
-    protected final IAsyncQueueDTOMapper      mapper    = Jdp.getRequired(IAsyncQueueDTOMapper.class);
-    protected final IAsyncQueue               queueImpl = Jdp.getRequired(IAsyncQueue.class);
+    private final IAsyncQueueEntityResolver resolver  = Jdp.getRequired(IAsyncQueueEntityResolver.class);
+    private final IAsyncQueueDTOMapper      mapper    = Jdp.getRequired(IAsyncQueueDTOMapper.class);
+    private final IAsyncQueue               queueImpl = Jdp.getRequired(IAsyncQueue.class);
 
     @Override
     public CrudSurrogateKeyResponse<AsyncQueueDTO, FullTrackingWithVersion> execute(final RequestContext ctx, final AsyncQueueCrudRequest request) {

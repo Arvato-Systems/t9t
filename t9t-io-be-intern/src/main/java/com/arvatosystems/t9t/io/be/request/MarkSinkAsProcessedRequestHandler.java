@@ -24,8 +24,8 @@ import com.arvatosystems.t9t.out.services.IOutPersistenceAccess;
 import de.jpaw.dp.Jdp;
 
 public class MarkSinkAsProcessedRequestHandler extends AbstractRequestHandler<MarkSinkAsProcessedRequest> {
-    // @Inject
-    protected final IOutPersistenceAccess dpl = Jdp.getRequired(IOutPersistenceAccess.class);
+
+    private final IOutPersistenceAccess dpl = Jdp.getRequired(IOutPersistenceAccess.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final MarkSinkAsProcessedRequest rq) {

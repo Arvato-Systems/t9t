@@ -29,7 +29,7 @@ import de.jpaw.dp.Jdp;
 import jakarta.persistence.TypedQuery;
 
 public class QueryRequestResultRequestHandler extends AbstractReadOnlyRequestHandler<QueryRequestResultRequest> {
-    protected final IMessageEntityResolver resolver = Jdp.getRequired(IMessageEntityResolver.class);
+    private final IMessageEntityResolver resolver = Jdp.getRequired(IMessageEntityResolver.class);
 
     @Override
     public QueryRequestResultResponse execute(final RequestContext ctx, final QueryRequestResultRequest request) throws Exception {

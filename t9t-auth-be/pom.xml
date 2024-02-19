@@ -20,7 +20,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-settings-java</artifactId>
-        <version>6.7-SNAPSHOT</version>
+        <version>6.8-SNAPSHOT</version>
         <relativePath>../t9t-settings-java</relativePath>
     </parent>
 
@@ -35,14 +35,6 @@
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-auth-sapi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.arvato-systems.t9t</groupId>
-            <artifactId>t9t-doc-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.arvato-systems.t9t</groupId>
-            <artifactId>t9t-email-api</artifactId>
         </dependency>
         <dependency>
             <!-- for the caches -->

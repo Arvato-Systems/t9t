@@ -30,8 +30,8 @@ import de.jpaw.dp.Jdp;
 public class SinkSearchRequestHandler
         extends AbstractSearchWithTotalsRequestHandler<Long, SinkDTO, FullTrackingWithVersion, SinkSearchRequest, SinkEntity> {
 
-    protected final ISinkEntityResolver resolver = Jdp.getRequired(ISinkEntityResolver.class);
-    protected final ISinkDTOMapper mapper = Jdp.getRequired(ISinkDTOMapper.class);
+    private final ISinkEntityResolver resolver = Jdp.getRequired(ISinkEntityResolver.class);
+    private final ISinkDTOMapper mapper = Jdp.getRequired(ISinkDTOMapper.class);
 
     @Override
     public ReadAllResponse<SinkDTO, FullTrackingWithVersion> execute(final RequestContext ctx,

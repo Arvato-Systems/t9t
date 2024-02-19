@@ -29,8 +29,7 @@ import de.jpaw.dp.Jdp;
 public class LeanGridConfigCrudRequestHandler extends AbstractCrudSurrogateKeyBERequestHandler<LeanGridConfigRef, LeanGridConfigDTO,
   FullTrackingWithVersion, LeanGridConfigCrudRequest> {
 
-    // @Inject
-    protected final ILeanGridConfigResolver resolver = Jdp.getRequired(ILeanGridConfigResolver.class);
+    private final ILeanGridConfigResolver resolver = Jdp.getRequired(ILeanGridConfigResolver.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final LeanGridConfigCrudRequest request) throws Exception {

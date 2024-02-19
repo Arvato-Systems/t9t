@@ -37,9 +37,9 @@ import de.jpaw.dp.Jdp;
 
 public class ProcessAllCamelTransfersRequestHandler extends AbstractRequestHandler<ProcessAllCamelTransfersRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessAllCamelTransfersRequestHandler.class);
-    protected final IAutonomousRunner runner = Jdp.getRequired(IAutonomousRunner.class);
-    protected final ISinkEntityResolver sinkResolver = Jdp.getRequired(ISinkEntityResolver.class);
-    protected final IDataSinkEntityResolver dataSinkResolver = Jdp.getRequired(IDataSinkEntityResolver.class);
+    private final IAutonomousRunner runner = Jdp.getRequired(IAutonomousRunner.class);
+    private final ISinkEntityResolver sinkResolver = Jdp.getRequired(ISinkEntityResolver.class);
+    private final IDataSinkEntityResolver dataSinkResolver = Jdp.getRequired(IDataSinkEntityResolver.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final ProcessAllCamelTransfersRequest rq) throws Exception {

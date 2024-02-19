@@ -32,6 +32,8 @@ public class T9tVoiceException extends T9tException {
     public static final int UNKNOWN_SKU_KEY_IMPLEMENTATION = OFFSET + 59;
 
     static {
+        registerRange(CORE_OFFSET, false, T9tVoiceException.class, ApplicationLevelType.FRAMEWORK, "t9t speech control module");
+
         registerCode(UNKNOWN_SKU_KEY_IMPLEMENTATION, "unknown sku key implementation");
     }
 }

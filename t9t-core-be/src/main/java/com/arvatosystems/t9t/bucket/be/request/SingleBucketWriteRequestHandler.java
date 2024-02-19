@@ -30,8 +30,8 @@ import com.arvatosystems.t9t.bucket.request.SingleBucketWriteRequest;
 import de.jpaw.dp.Jdp;
 
 public class SingleBucketWriteRequestHandler extends AbstractRequestHandler<SingleBucketWriteRequest> {
-    protected final IBucketWriter bucketWriter = Jdp.getRequired(IBucketWriter.class);
-    protected final IExecutor executor = Jdp.getRequired(IExecutor.class);
+    private final IBucketWriter bucketWriter = Jdp.getRequired(IBucketWriter.class);
+    private final IExecutor executor = Jdp.getRequired(IExecutor.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final SingleBucketWriteRequest rq) {

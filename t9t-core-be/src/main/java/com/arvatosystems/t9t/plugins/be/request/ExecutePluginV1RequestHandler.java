@@ -37,7 +37,7 @@ import de.jpaw.dp.Jdp;
 public class ExecutePluginV1RequestHandler extends AbstractRequestHandler<ExecutePluginV1Request> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExecutePluginV1RequestHandler.class);
 
-    protected final IPluginManager pluginManager = Jdp.getRequired(IPluginManager.class);
+    private final IPluginManager pluginManager = Jdp.getRequired(IPluginManager.class);
 
     @Override
     public ExecutePluginV1Response execute(final RequestContext ctx, final ExecutePluginV1Request request) throws Exception {

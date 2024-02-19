@@ -31,7 +31,7 @@ import de.jpaw.util.ApplicationException;
 public class AutonomousCollectionRequestHandler extends AbstractRequestHandler<AutonomousCollectionRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AutonomousCollectionRequestHandler.class);
 
-    protected final IAutonomousExecutor autoExecutor = Jdp.getRequired(IAutonomousExecutor.class);
+    private final IAutonomousExecutor autoExecutor = Jdp.getRequired(IAutonomousExecutor.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final AutonomousCollectionRequest request) throws Exception {

@@ -29,8 +29,7 @@ import de.jpaw.dp.Jdp;
 
 public class ExecuteJsonMapRequestHandler extends AbstractRequestHandler<ExecuteJsonMapRequest> {
 
-    // @Inject
-    protected final IExecutor messaging = Jdp.getRequired(IExecutor.class);
+    private final IExecutor messaging = Jdp.getRequired(IExecutor.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final ExecuteJsonMapRequest request) {

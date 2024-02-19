@@ -27,7 +27,7 @@ import de.jpaw.dp.Jdp;
 
 public class GenerateBarcodeRequestHandler extends AbstractReadOnlyRequestHandler<GenerateBarcodeRequest> {
 
-    protected final IBarcodeGenerator generator = Jdp.getRequired(IBarcodeGenerator.class);
+    private final IBarcodeGenerator generator = Jdp.getRequired(IBarcodeGenerator.class);
 
     @Override
     public GenerateBarcodeResponse execute(final RequestContext ctx, final GenerateBarcodeRequest rq) throws Exception {

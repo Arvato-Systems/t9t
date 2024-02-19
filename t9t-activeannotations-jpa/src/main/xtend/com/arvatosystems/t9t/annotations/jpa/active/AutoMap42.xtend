@@ -617,20 +617,20 @@ class AutoMap42Processor extends AbstractClassProcessor {
 
             // add fields for resolver and mapper
             addField("resolver") [
-                visibility = Visibility::PROTECTED
+                visibility = Visibility::PRIVATE
                 injected(context)
                 type = c.declaredFields.head.type
             ]
             if (mapperType !== null) {
                 addField("mapper") [
-                    visibility = Visibility::PROTECTED
+                    visibility = Visibility::PRIVATE
                     injected(context)
                     type = mapperType
                 ]
             }
             if (invalidateCache) {
                 addField("executor") [
-                    visibility = Visibility::PROTECTED
+                    visibility = Visibility::PRIVATE
                     injected(context)
                     type = IExecutor.newTypeReference
                 ]

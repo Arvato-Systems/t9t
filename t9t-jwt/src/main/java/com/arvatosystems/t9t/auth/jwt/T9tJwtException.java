@@ -24,7 +24,7 @@ public class T9tJwtException extends ApplicationException {
     /*
      * Offset for all codes in this class.
      */
-    private static final int CORE_OFFSET            = 25000;
+    private static final int CORE_OFFSET            = 25000;  // cannot reference T9tConstants due to missing dependency (it is also not wanted to add it!)
     private static final int OFFSET_LOGIC_ERROR     = CORE_OFFSET + CLASSIFICATION_FACTOR * CL_INTERNAL_LOGIC_ERROR;
 
     // decoding issues
@@ -61,6 +61,8 @@ public class T9tJwtException extends ApplicationException {
      * duplicate initialization, because the access to the flag textsInitialized is not synchronized, but duplicate upload does not hurt (is idempotent).
      */
     static {
+        registerRange(CORE_OFFSET, false, T9tJwtException.class, ApplicationLevelType.FRAMEWORK, "t9t JWT module");
+
         registerCode(NUMBER_SEGMENTS,          "Not enough or too many segments in base64 encoded token");
         registerCode(MISSING_SIGNATURE,        "Unsigned JWT - Signature is required for this application");
         registerCode(ALGORITHM_NOT_SUPPORTED,  "Algorithm not supported");

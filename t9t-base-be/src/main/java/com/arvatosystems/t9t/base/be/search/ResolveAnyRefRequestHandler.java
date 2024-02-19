@@ -24,7 +24,7 @@ import com.arvatosystems.t9t.base.services.RequestContext;
 import de.jpaw.dp.Jdp;
 
 public class ResolveAnyRefRequestHandler extends AbstractReadOnlyRequestHandler<ResolveAnyRefRequest> {
-    protected final IAnyKeySearchRegistry searchRegistry = Jdp.getRequired(IAnyKeySearchRegistry.class);
+    private final IAnyKeySearchRegistry searchRegistry = Jdp.getRequired(IAnyKeySearchRegistry.class);
 
     @Override
     public ResolveAnyRefResponse execute(final RequestContext ctx, final ResolveAnyRefRequest request) throws Exception {

@@ -17,7 +17,7 @@ package com.arvatosystems.t9t.pdf.be.request;
 
 import java.util.List;
 
-import org.apache.pdfbox.io.MemoryUsageSetting;
+import org.apache.pdfbox.io.IOUtils;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,17 +67,8 @@ public class ConcatenatePDFsRequestHandler extends AbstractRequestHandler<Concat
 
         try (IOutputSession os = Jdp.getRequired(IOutputSession.class)) {
             outputSinkRef = os.open(sessionParams);
-        } catch (final Exception e) {
-            LOGGER.error("Exception create output file - Error Message {} ", e.getMessage());
-            throw new T9tException(T9tException.GENERAL_EXCEPTION, e.getMessage());
-        }
-
-        final ReadAllResponse<SinkDTO, FullTrackingWithVersion> outputSink = getDataSinks(ctx, null, outputSinkRef);
-        pdfMergerUtility.setDestinationFileName(
-          fileUtil.getAbsolutePathForTenant(ctx.tenantId, outputSink.getDataList().get(0).getData().getFileOrQueueName()));
-
-        try {
-            pdfMergerUtility.mergeDocuments(MemoryUsageSetting.setupMainMemoryOnly());
+            pdfMergerUtility.setDestinationStream(os.getOutputStream());
+            pdfMergerUtility.mergeDocuments(IOUtils.createMemoryOnlyStreamCache());
         } catch (final Exception e) {
             LOGGER.error("Exception during merging PDFs - Error Message {} ", e.getMessage());
             throw new T9tException(T9tException.GENERAL_EXCEPTION, e.getMessage());

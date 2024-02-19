@@ -26,7 +26,7 @@ import de.jpaw.dp.Jdp;
 
 public class GetPasswordChangeRequirementsRequestHandler extends AbstractReadOnlyRequestHandler<GetPasswordChangeRequirementsRequest> {
 
-    protected final IAuthModuleCfgDtoResolver authModuleCfgResolver = Jdp.getRequired(IAuthModuleCfgDtoResolver.class);
+    private final IAuthModuleCfgDtoResolver authModuleCfgResolver = Jdp.getRequired(IAuthModuleCfgDtoResolver.class);
 
     @Override
     public GetPasswordChangeRequirementsResponse execute(final RequestContext ctx, final GetPasswordChangeRequirementsRequest request) throws Exception {

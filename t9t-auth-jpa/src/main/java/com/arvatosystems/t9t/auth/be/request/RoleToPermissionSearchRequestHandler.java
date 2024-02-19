@@ -31,8 +31,8 @@ import de.jpaw.dp.Jdp;
 public class RoleToPermissionSearchRequestHandler extends AbstractSearchWithTotalsRequestHandler<RoleToPermissionInternalKey, RoleToPermissionDTO,
   FullTrackingWithVersion, RoleToPermissionSearchRequest, RoleToPermissionEntity> {
 
-    protected final IRoleToPermissionEntityResolver resolver = Jdp.getRequired(IRoleToPermissionEntityResolver.class);
-    protected final IRoleToPermissionDTOMapper mapper = Jdp.getRequired(IRoleToPermissionDTOMapper.class);
+    private final IRoleToPermissionEntityResolver resolver = Jdp.getRequired(IRoleToPermissionEntityResolver.class);
+    private final IRoleToPermissionDTOMapper mapper = Jdp.getRequired(IRoleToPermissionDTOMapper.class);
 
     @Override
     public ReadAllResponse<RoleToPermissionDTO, FullTrackingWithVersion>

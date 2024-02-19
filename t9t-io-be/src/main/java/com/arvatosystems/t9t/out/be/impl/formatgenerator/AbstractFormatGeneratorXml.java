@@ -16,10 +16,6 @@
 package com.arvatosystems.t9t.out.be.impl.formatgenerator;
 
 import static java.util.Collections.emptyMap;
-import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.StringUtils.split;
-import static org.apache.commons.lang3.StringUtils.substring;
-import static org.apache.commons.lang3.StringUtils.trimToNull;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -37,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.io.T9tIOException;
 import com.arvatosystems.t9t.xml.namespaces.IStandardNamespaceWriter;
 
@@ -50,7 +47,7 @@ import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.PropertyException;
 
 public class AbstractFormatGeneratorXml extends AbstractFormatGenerator {
-    private static final Logger LOGGER = LoggerFactory.getLogger(FormatGeneratorXml.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractFormatGeneratorXml.class);
     protected final IStandardNamespaceWriter namespaceWriter = Jdp.getRequired(IStandardNamespaceWriter.class);
     protected static ConcurrentHashMap<String, JAXBContext> jaxbContexts = new ConcurrentHashMap<>(16);
 
@@ -108,7 +105,7 @@ public class AbstractFormatGeneratorXml extends AbstractFormatGenerator {
         }
     }
 
-    protected void writeCustomElement(final String id) throws XMLStreamException, JAXBException {
+    protected void writeCustomElement(final String id) throws XMLStreamException {
         final Map<String, Object> map = outputSessionParameters.getAdditionalParameters();
         if (map != null) {
             final Object value = map.get(id);
@@ -142,7 +139,7 @@ public class AbstractFormatGeneratorXml extends AbstractFormatGenerator {
             return; // nothing to do
         }
         // split the tagList into separate tags
-        final String[] tags = split(tagList, ',');
+        final String[] tags = tagList.split(",");
         for (final String tag: tags) {
             if (tag != null && !tag.isEmpty()) {
                 writeCustomElement(tag);
@@ -241,8 +238,8 @@ public class AbstractFormatGeneratorXml extends AbstractFormatGenerator {
 
         if (mappingString != null) {
             int counter = 0;
-            for (final String namespaceEntry : split(mappingString, ";\n\r")) {
-                if (isBlank(namespaceEntry)) {
+            for (final String namespaceEntry : mappingString.split(";\n\r")) {
+                if (T9tUtil.isBlank(namespaceEntry)) {
                     continue;
                 }
 
@@ -251,14 +248,14 @@ public class AbstractFormatGeneratorXml extends AbstractFormatGenerator {
                 String value;
 
                 if (firstDelimiter > 0) {
-                    key = trimToNull(substring(namespaceEntry, 0, firstDelimiter));
-                    value = trimToNull(substring(namespaceEntry, firstDelimiter + 1));
+                    key = T9tUtil.trimToNull(namespaceEntry.substring(0, firstDelimiter));
+                    value = T9tUtil.trimToNull(namespaceEntry.substring(firstDelimiter + 1));
                 } else if (firstDelimiter == 0) {
                     key = "ns" + counter++;
-                    value = trimToNull(substring(namespaceEntry, firstDelimiter + 1));
+                    value = T9tUtil.trimToNull(namespaceEntry.substring(firstDelimiter + 1));
                 } else {
                     key = "ns" + counter++;
-                    value = trimToNull(namespaceEntry);
+                    value = T9tUtil.trimToNull(namespaceEntry);
                 }
 
                 result.put(key, value);

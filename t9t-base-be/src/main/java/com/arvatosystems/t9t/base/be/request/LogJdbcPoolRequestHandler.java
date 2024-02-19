@@ -24,7 +24,7 @@ import com.arvatosystems.t9t.base.services.RequestContext;
 import de.jpaw.dp.Jdp;
 
 public class LogJdbcPoolRequestHandler extends AbstractReadOnlyRequestHandler<LogJdbcPoolRequest> {
-    // @Inject
+
     private final IJdbcConnectionProvider jdbcProvider = Jdp.getRequired(IJdbcConnectionProvider.class, "independent");
 
     @Override

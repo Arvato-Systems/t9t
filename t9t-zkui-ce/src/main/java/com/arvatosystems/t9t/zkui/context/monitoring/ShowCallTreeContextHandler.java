@@ -48,11 +48,8 @@ public class ShowCallTreeContextHandler implements IGridContextMenu<ProcessStatu
                     tree.append("  +-");
                 }
                 tree.append(sl.getPqon());
-                tree.append(String.format(": %d calls, progress %d: %s\n",
-                        sl.getNumberOfCallsThisLevel(),
-                        sl.getProgressCounter(),
-                        sl.getStatusText() != null ? sl.getStatusText() : ""
-                    ));
+                tree.append(": ").append(sl.getNumberOfCallsThisLevel()).append(" calls, progress ").append(sl.getProgressCounter()).append(": ")
+                        .append(sl.getStatusText() != null ? sl.getStatusText() : "").append("\n");
                 ++depth;
             }
             final Info info = new Info();

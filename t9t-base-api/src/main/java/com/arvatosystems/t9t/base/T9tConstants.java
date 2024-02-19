@@ -78,6 +78,7 @@ public final class T9tConstants {
     public static final int EXCEPTION_OFFSET_SSM            = 22_000;   // The range for t9t-ssm exception codes starts here
     public static final int EXCEPTION_OFFSET_REP            = 23_000;   // The range for t9t-rep exception codes starts here
     public static final int EXCEPTION_OFFSET_DOC_EXT        = 24_000;   // The range for t9t-doc exception codes starts here - external API
+    public static final int EXCEPTION_OFFSET_JWT            = 25_000;   // The range for t9t-jwt exception codes starts here
     public static final int EXCEPTION_OFFSET_BPMN           = 26_000;   // The range for t9t-bpmn exception codes starts here
     public static final int EXCEPTION_OFFSET_BPMN2          = 27_000;   // The range for t9t-bpmn2 exception codes starts here
     public static final int EXCEPTION_OFFSET_IO             = 28_000;   // The range for t9t-io exception codes starts here

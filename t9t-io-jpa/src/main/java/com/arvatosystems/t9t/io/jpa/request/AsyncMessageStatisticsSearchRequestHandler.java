@@ -28,8 +28,8 @@ import de.jpaw.dp.Jdp;
 
 public class AsyncMessageStatisticsSearchRequestHandler extends AbstractMonitoringSearchRequestHandler<AsyncMessageStatisticsSearchRequest> {
 
-    protected final IAsyncMessageStatisticsEntityResolver resolver = Jdp.getRequired(IAsyncMessageStatisticsEntityResolver.class);
-    protected final IAsyncMessageStatisticsDTOMapper mapper = Jdp.getRequired(IAsyncMessageStatisticsDTOMapper.class);
+    private final IAsyncMessageStatisticsEntityResolver resolver = Jdp.getRequired(IAsyncMessageStatisticsEntityResolver.class);
+    private final IAsyncMessageStatisticsDTOMapper mapper = Jdp.getRequired(IAsyncMessageStatisticsDTOMapper.class);
 
     @Override
     public ReadAllResponse<AsyncMessageStatisticsDTO, NoTracking> execute(final RequestContext ctx, final AsyncMessageStatisticsSearchRequest request)

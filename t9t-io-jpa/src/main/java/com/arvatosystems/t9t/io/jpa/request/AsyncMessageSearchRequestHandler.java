@@ -29,8 +29,8 @@ import de.jpaw.dp.Jdp;
 // do not use the searchWithTotals super class because the result is very likely HUGE. Instead, use the shadow DB if available
 public class AsyncMessageSearchRequestHandler extends AbstractMonitoringSearchRequestHandler<AsyncMessageSearchRequest> {
 
-    protected final IAsyncMessageEntityResolver resolver = Jdp.getRequired(IAsyncMessageEntityResolver.class);
-    protected final IAsyncMessageDTOMapper mapper = Jdp.getRequired(IAsyncMessageDTOMapper.class);
+    private final IAsyncMessageEntityResolver resolver = Jdp.getRequired(IAsyncMessageEntityResolver.class);
+    private final IAsyncMessageDTOMapper mapper = Jdp.getRequired(IAsyncMessageDTOMapper.class);
 
     @Override
     public ReadAllResponse<AsyncMessageDTO, WriteTrackingMs> execute(final RequestContext ctx,

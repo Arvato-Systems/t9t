@@ -140,11 +140,7 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
     protected boolean dynamicColumnSize;
     protected boolean searchAfterInit;
     protected boolean countTotal;
-
-/*
-    public void setNumRows(int numRows) {
-        lb.setHeight(String.format("%dpx", LINE_HEIGHT * numRows + HEADER_HEIGHT));
-    }*/
+    protected boolean multiSelect;
 
     // a parent to this is only assigned after the constructor is finished, therefore we cannot get the gridId of the outer element now
     public Grid28() {
@@ -179,8 +175,9 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
         Label label = new Label();
         label.setPre(true);
         label.setMultiline(true);
-        label.setValue(String.format("Grid ID: %s\nCurrent permissions: %s\nContext menu entry IDs: %s",
-                gridId, permissions, contextEntries == null ? "NONE" : contextEntries));
+        label.setValue(new StringBuilder("Grid ID: ").append(gridId).append("\nCurrent permissions: ").append(permissions).append("\nContext menu entry IDs: ")
+                .append(contextEntries == null ? "NONE" : contextEntries).toString());
+
         label.setParent(tooltip);
     }
 
@@ -436,7 +433,9 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
         } else {
             dwt = readData(rq);
         }
-        lb.setModel(new ListModelList<DataWithTracking<BonaPortable, TrackingBase>>(dwt));
+        final ListModelList<DataWithTracking<BonaPortable, TrackingBase>> model = new ListModelList<DataWithTracking<BonaPortable, TrackingBase>>(dwt);
+        model.setMultiple(multiSelect);
+        lb.setModel(model);
 
 
         if (lb.getModel() != null && lb.getModel().getSize() > 0) {
@@ -632,6 +631,7 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
         postSelectedEvent(dwt2);
         // force refresh (again)
         lb.setModel(lb.getModel());
+        lb.setSelectedIndex(currentIndex);
     }
 
     @Override
@@ -700,6 +700,14 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
 
     public void setCountTotal(boolean countTotal) {
         this.countTotal = countTotal;
+    }
+
+    public void setMultiSelect(final boolean multiSelect) {
+        this.multiSelect = multiSelect;
+    }
+
+    public void setCheckmark(final boolean checkmark) {
+        lb.setCheckmark(checkmark);
     }
 
     public void setGridRowCssQualifier(final String gridRowCssQualifier) {

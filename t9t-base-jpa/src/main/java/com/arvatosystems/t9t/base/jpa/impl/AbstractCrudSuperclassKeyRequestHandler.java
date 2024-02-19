@@ -49,6 +49,7 @@ public abstract class AbstractCrudSuperclassKeyRequestHandler<
 
         // fields are set as required
         final CrudSuperclassKeyResponse<KEY, DTO, TRACKING> rs = new CrudSuperclassKeyResponse<>();
+        rs.setReturnCode(0);
         ENTITY result;
 
         // check natural key.
@@ -142,13 +143,13 @@ public abstract class AbstractCrudSuperclassKeyRequestHandler<
                 result.put$Active(true);
                 break;
             case UPDATE:
-                result = performUpdate(mapper, resolver, crudRequest, entityManager, crudRequest.getKey());
+                result = performUpdateWithVersion(mapper, resolver, entityManager, crudRequest.getKey(), crudRequest, rs);
                 rs.setKey(crudRequest.getKey());
                 break;
             case MERGE:
                 // If the key is passed in and result already exist then perform update.
                 if (crudRequest.getKey() != null) {
-                    result = performUpdate(mapper, resolver, crudRequest, entityManager, crudRequest.getKey());
+                    result = performUpdateWithVersion(mapper, resolver, entityManager, crudRequest.getKey(), crudRequest, rs);
                 } else {
                     result = performCreate(mapper, resolver, crudRequest, entityManager);
                     rs.setKey(result.ret$Key()); // just copy
@@ -170,7 +171,6 @@ public abstract class AbstractCrudSuperclassKeyRequestHandler<
                 rs.setData(postRead(mapper.mapToDto(result), result)); // populate
                 // result
             }
-            rs.setReturnCode(0);
             return rs;
         } catch (final T9tException e) {
             // careful! Catching only ApplicationException masks standard T9tExceptions such as RECORD_INACTIVE or RECORD_NOT_FOUND!

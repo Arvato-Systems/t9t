@@ -32,8 +32,7 @@ import de.jpaw.json.JsonParser;
 
 public class ExecuteJsonRequestHandler extends AbstractRequestHandler<ExecuteJsonRequest> {
 
-    // @Inject
-    protected final IExecutor messaging = Jdp.getRequired(IExecutor.class);
+    private final IExecutor messaging = Jdp.getRequired(IExecutor.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final ExecuteJsonRequest request) {

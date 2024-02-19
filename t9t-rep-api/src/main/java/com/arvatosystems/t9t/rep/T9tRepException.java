@@ -54,6 +54,8 @@ public class T9tRepException extends T9tException {
      * static initialization of all error codes
      */
     public static void initialize() {
+        registerRange(CORE_OFFSET, false, T9tRepException.class, ApplicationLevelType.FRAMEWORK, "t9t reporting engine module");
+
         registerCode(JASPER_REPORT_CREATION_SQL_EXCEPTION, "During jasper report generation an sql exception occurred.");
         registerCode(JASPER_REPORT_CREATION_JR_EXCEPTION, "During jasper report generation an jr exception occurred.");
         registerCode(JASPER_REPORT_CREATION_IO_EXCEPTION, "During jasper report generation an io exception occurred.");

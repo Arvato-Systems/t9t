@@ -25,8 +25,11 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Messagebox;
 
+import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.crud.CrudAnyKeyRequest;
 import com.arvatosystems.t9t.base.crud.CrudAnyKeyResponse;
+import com.arvatosystems.t9t.base.entities.BucketTracking;
+import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.search.Description;
 import com.arvatosystems.t9t.base.search.ResolveAnyRefRequest;
 import com.arvatosystems.t9t.base.search.ResolveAnyRefResponse;
@@ -99,6 +102,7 @@ public abstract class AbstractCrudVM<
             final CrudAnyKeyRequest<DTO, TRACKING> crudRq = createCrudWithKey();
             crudRq.setCrud(OperationType.UPDATE);
             crudRq.setData(data);
+            crudRq.setVersion(getVersionFromTracking(tracking));
             runCrud(crudRq, Boolean.TRUE);
         }
         final boolean showMessage = ZulUtils.readBooleanConfig(T9tConfigConstants.CRUD_SHOW_MESSAGE);
@@ -166,9 +170,19 @@ public abstract class AbstractCrudVM<
             LOGGER.trace("runCrud {} with key = {}, data = {}",
                 crudRq.getCrud(), crudRq.getData() == null ? "NULL" : ToStringHelper.toStringML(crudRq.getData()));
         }
-        final CrudAnyKeyResponse<BonaPortable, TrackingBase> crudRs = remoteUtil.executeExpectOk(crudRq, CrudAnyKeyResponse.class);
-        if (eventData != null) {
-            setRefresher(eventData);  // Component to issue an event
+        final CrudAnyKeyResponse<DTO, TRACKING> crudRs = remoteUtil.executeExpectOk(crudRq, CrudAnyKeyResponse.class);
+        if (crudRs.getReturnCode() == T9tException.UPDATE_DECLINED) {
+            Messagebox.show(session.translate(COMMON, "updateDecline"), session.translate(COMMON, "info"), Messagebox.NO | Messagebox.YES, Messagebox.QUESTION,
+                event -> {
+                    if (crudRq.getVersion() != null && Messagebox.ON_YES.equals(event.getName())) {
+                        crudRq.setVersion(null); // remove version to force update.
+                        runCrud(crudRq, eventData);
+                    } else {
+                        reloadData(Boolean.TRUE, crudRs);
+                    }
+                });
+        } else if (eventData != null) {
+            reloadData(eventData, crudRs);
         }
     }
 
@@ -211,6 +225,16 @@ public abstract class AbstractCrudVM<
 //          hardLink.setCurrentMode(currentMode);
     }
 
+    private void reloadData(final Object eventData, final CrudAnyKeyResponse<DTO, TRACKING> crudRs) {
+        setRefresher(eventData); // Component to issue an event
+        if (crudRs.getData() != null) {
+            data = (DTO) crudRs.getData().ret$MutableClone(true, true);
+        }
+        if (crudRs.getTracking() != null) {
+            tracking = (TRACKING) crudRs.getTracking();
+        }
+    }
+
     private CrudMode tenantAccessCheck() {
 
         final CrudMode currentCrudMode = useProtectedView ? CrudMode.CURRENT_PROTECTED_VIEW : CrudMode.CURRENT;
@@ -249,4 +273,12 @@ public abstract class AbstractCrudVM<
               Messagebox.EXCLAMATION, eventListener);
   }
 
+  private Integer getVersionFromTracking(final TRACKING tracking) {
+      if (tracking instanceof FullTrackingWithVersion fullTracking) {
+          return fullTracking.getVersion();
+      } else if (tracking instanceof BucketTracking bucketTracking) {
+          return bucketTracking.getVersion();
+      }
+      return null;
+  }
 }

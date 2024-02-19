@@ -642,6 +642,10 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
             throw new T9tException(T9tException.NOT_AUTHENTICATED); // user does not exist
         }
 
+        // validate that the user is allowed for internal auth
+        if (Boolean.TRUE.equals(userEntity.getOnlyExternalAuth())) {
+            throw new T9tException(T9tException.NOT_AUTHENTICATED); // user is allowed to log in via SSO only
+        }
         // validate that the user is active and that the email address matches
         if (!userEntity.getIsActive() || !emailAddress.equalsIgnoreCase(userEntity.getEmailAddress())) {
             throw new T9tException(T9tException.NOT_AUTHENTICATED); // wrong email address

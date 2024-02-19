@@ -31,8 +31,8 @@ import de.jpaw.dp.Jdp;
 public class DocComponentCrudRequestHandler extends
   AbstractCrudSurrogateKeyBERequestHandler<DocComponentRef, DocComponentDTO, FullTrackingWithVersion, DocComponentCrudRequest> {
 
-    protected final IDocComponentResolver resolver = Jdp.getRequired(IDocComponentResolver.class);
-    protected final IExecutor executor = Jdp.getRequired(IExecutor.class);
+    private final IDocComponentResolver resolver = Jdp.getRequired(IDocComponentResolver.class);
+    private final IExecutor executor = Jdp.getRequired(IExecutor.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final DocComponentCrudRequest crudRequest) throws Exception {

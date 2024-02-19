@@ -36,9 +36,9 @@ import org.slf4j.LoggerFactory;
 
 public class ExecutePreparedRequestHandler extends AbstractRequestHandler<ExecutePreparedRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExecutePreparedRequestHandler.class);
-    protected final ICannedRequestResolver resolver = Jdp.getRequired(ICannedRequestResolver.class);
-    protected final IExecutor executor = Jdp.getRequired(IExecutor.class);
-    protected final IAuthorize authorizator = Jdp.getRequired(IAuthorize.class);
+    private final ICannedRequestResolver resolver = Jdp.getRequired(ICannedRequestResolver.class);
+    private final IExecutor executor = Jdp.getRequired(IExecutor.class);
+    private final IAuthorize authorizator = Jdp.getRequired(IAuthorize.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final ExecutePreparedRequest rq) throws Exception {

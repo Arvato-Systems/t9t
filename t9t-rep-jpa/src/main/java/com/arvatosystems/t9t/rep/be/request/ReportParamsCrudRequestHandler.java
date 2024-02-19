@@ -37,8 +37,8 @@ public class ReportParamsCrudRequestHandler extends
         AbstractCrudSurrogateKeyRequestHandler<ReportParamsRef, ReportParamsDTO, FullTrackingWithVersion, ReportParamsCrudRequest, ReportParamsEntity> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ReportParamsCrudRequestHandler.class);
-    protected final IReportParamsEntityResolver resolver = Jdp.getRequired(IReportParamsEntityResolver.class);
-    protected final IReportParamsDTOMapper mapper = Jdp.getRequired(IReportParamsDTOMapper.class);
+    private final IReportParamsEntityResolver resolver = Jdp.getRequired(IReportParamsEntityResolver.class);
+    private final IReportParamsDTOMapper mapper = Jdp.getRequired(IReportParamsDTOMapper.class);
 
     @Override
     public CrudSurrogateKeyResponse<ReportParamsDTO, FullTrackingWithVersion>

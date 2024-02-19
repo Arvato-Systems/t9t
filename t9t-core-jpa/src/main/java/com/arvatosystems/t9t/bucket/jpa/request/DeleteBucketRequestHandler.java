@@ -27,7 +27,7 @@ import com.arvatosystems.t9t.bucket.request.DeleteBucketRequest;
 import de.jpaw.dp.Jdp;
 
 public class DeleteBucketRequestHandler extends AbstractRequestHandler<DeleteBucketRequest> {
-    protected final IBucketEntryEntityResolver resolver = Jdp.getRequired(IBucketEntryEntityResolver.class);
+    private final IBucketEntryEntityResolver resolver = Jdp.getRequired(IBucketEntryEntityResolver.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final DeleteBucketRequest rp) {

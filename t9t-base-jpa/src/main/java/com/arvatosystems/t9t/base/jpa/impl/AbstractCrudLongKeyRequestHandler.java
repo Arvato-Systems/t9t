@@ -47,6 +47,7 @@ public abstract class AbstractCrudLongKeyRequestHandler<
         validateParameters(crudRequest, crudRequest.getKey() == null);
 
         final CrudLongKeyResponse<DTO, TRACKING> rs = new CrudLongKeyResponse<>();
+        rs.setReturnCode(0);
         ENTITY result;
 
         final EntityManager entityManager = jpaContextProvider.get().getEntityManager(); // copy it as we need it several times
@@ -84,12 +85,12 @@ public abstract class AbstractCrudLongKeyRequestHandler<
                 result.put$Active(true);
                 break;
             case UPDATE:
-                result = performUpdate(mapper, resolver,  crudRequest, entityManager, crudRequest.getKey());
+                result = performUpdateWithVersion(mapper, resolver, entityManager, crudRequest.getKey(), crudRequest, rs);
                 break;
             case MERGE:
                 //If the key is passed in and result already exist then perform update.
                 if (crudRequest.getKey() != null) {
-                    result = performUpdate(mapper, resolver, crudRequest, entityManager, crudRequest.getKey());
+                    result = performUpdateWithVersion(mapper, resolver, entityManager, crudRequest.getKey(), crudRequest, rs);
                 } else {
                     result = performCreate(mapper, resolver, crudRequest, entityManager);
                     rs.setKey(result.ret$Key()); // just copy
@@ -103,7 +104,6 @@ public abstract class AbstractCrudLongKeyRequestHandler<
                 rs.setData(postRead(mapper.mapToDto(result), result)); // populate
                 // result
             }
-            rs.setReturnCode(0);
             return rs;
         } catch (final T9tException e) {
             // careful! Catching only ApplicationException masks standard T9tExceptions such as RECORD_INACTIVE or RECORD_NOT_FOUND!

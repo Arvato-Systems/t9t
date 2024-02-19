@@ -26,7 +26,7 @@ import de.jpaw.dp.Jdp;
 
 public class FilePathPrefixRequestHandler extends AbstractRequestHandler<FilePathPrefixRequest> {
 
-    protected final  IFileUtil fileUtil = Jdp.getRequired(IFileUtil.class);
+    private final  IFileUtil fileUtil = Jdp.getRequired(IFileUtil.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final FilePathPrefixRequest request) throws Exception {

@@ -26,8 +26,7 @@ import de.jpaw.dp.Jdp;
 
 public class AsyncBatchRequestHandler extends AbstractRequestHandler<AsyncBatchRequest>  {
 
-    // @Inject
-    protected final IExecutor messaging = Jdp.getRequired(IExecutor.class);
+    private final IExecutor messaging = Jdp.getRequired(IExecutor.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final AsyncBatchRequest request) {
