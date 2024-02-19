@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.out.be.impl.aws;
+package com.arvatosystems.t9t.aws;
 
 import java.net.URI;
 import org.slf4j.Logger;

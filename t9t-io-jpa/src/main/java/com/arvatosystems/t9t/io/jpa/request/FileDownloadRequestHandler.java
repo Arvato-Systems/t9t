@@ -33,7 +33,7 @@ import com.arvatosystems.t9t.io.jpa.mapping.ISinkDTOMapper;
 import com.arvatosystems.t9t.io.jpa.persistence.ISinkEntityResolver;
 import com.arvatosystems.t9t.io.request.FileDownloadRequest;
 import com.arvatosystems.t9t.io.request.FileDownloadResponse;
-import com.arvatosystems.t9t.io.services.IMediaDataSource;
+import com.arvatosystems.t9t.mediaresolver.IMediaDataSource;
 
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ApplicationException;
@@ -66,7 +66,7 @@ public class FileDownloadRequestHandler extends AbstractRequestHandler<FileDownl
             throw new T9tException(T9tIOException.OUTPUT_COMM_CHANNEL_NO_SRC_HANDLER, mySinkEntity.getCommTargetChannelType().name());
         }
 
-        final String filePath = srcHandler.getAbsolutePath(mySinkEntity.getFileOrQueueName(), ctx);
+        final String filePath = srcHandler.getAbsolutePathForTenant(mySinkEntity.getFileOrQueueName(), ctx.tenantId);
         response.setReturnCode(T9tIOException.OUTPUT_COMM_CHANNEL_IO_ERROR);
         try (InputStream fis = srcHandler.open(filePath)) {
             fis.skip(request.getOffset());

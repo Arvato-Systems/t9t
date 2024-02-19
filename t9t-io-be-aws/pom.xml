@@ -34,19 +34,7 @@
         </dependency>
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
-            <artifactId>t9t-io-be</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>software.amazon.awssdk</groupId>
-            <artifactId>s3</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>software.amazon.awssdk</groupId>
-            <artifactId>sts</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>software.amazon.awssdk</groupId>
-            <artifactId>iam</artifactId>
+            <artifactId>t9t-media-resolver-aws</artifactId>
         </dependency>
 
         <!-- use preferred logging -->

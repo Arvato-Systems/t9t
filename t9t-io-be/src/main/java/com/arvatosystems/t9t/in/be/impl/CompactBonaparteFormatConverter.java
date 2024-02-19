@@ -43,20 +43,19 @@ import de.jpaw.util.ExceptionUtil;
 public class CompactBonaparteFormatConverter extends AbstractInputFormatConverter {
     private static final Logger LOGGER = LoggerFactory.getLogger(CompactBonaparteFormatConverter.class);
 
-    protected int maxSize = 64000;
+    protected int maxSize = 65000;
 
     @Override
     public void open(final IInputSession inputSession, final Map<String, Object> params, final BonaPortableClass<?> baseBClass) {
         super.open(inputSession, params, baseBClass);
-        final String sizeParam = inputSession.getDataSinkDTO().getGenericParameter1();
-        if (sizeParam != null) {
-            maxSize = Integer.parseInt(sizeParam);
+        if (importDataSinkDTO.getRecordSize() != null && importDataSinkDTO.getRecordSize() > 10) {
+            maxSize = importDataSinkDTO.getRecordSize();
         }
     }
 
     @Override
     public void process(final InputStream is) {
-        // convert the inputStrem to byte array
+        // convert the inputStream to byte array
         try {
             final ByteArray ba = ByteArray.fromInputStream(is, maxSize);
             final BonaPortable obj = new CompactByteArrayParser(ba.getBytes(), 0, -1).readRecord();

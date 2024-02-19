@@ -31,10 +31,14 @@ public class TenantLogoDtoResolver extends AbstractModuleConfigResolver<TenantLo
     private static final byte[] TRANSPARENT_1X1 =
             "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=".getBytes(StandardCharsets.UTF_8);
 
-    private static final TenantLogoDTO DEFAULT_MODULE_CFG = new TenantLogoDTO(
-            null, // Json z
-            new MediaData(MediaTypes.MEDIA_XTYPE_PNG, null, ByteArray.fromBase64(TRANSPARENT_1X1, 0, TRANSPARENT_1X1.length),
-            null));
+    private static final MediaData TRANSPARENT_LOGO_1X1 = new MediaData(MediaTypes.MEDIA_XTYPE_PNG);
+    private static final TenantLogoDTO DEFAULT_MODULE_CFG = new TenantLogoDTO();
+    static {
+        TRANSPARENT_LOGO_1X1.setRawData(ByteArray.fromBase64(TRANSPARENT_1X1, 0, TRANSPARENT_1X1.length));
+        TRANSPARENT_LOGO_1X1.freeze();
+        DEFAULT_MODULE_CFG.setLogo(TRANSPARENT_LOGO_1X1);
+        DEFAULT_MODULE_CFG.freeze();
+    }
 
     public TenantLogoDtoResolver() {
         super(ITenantLogoEntityResolver.class);

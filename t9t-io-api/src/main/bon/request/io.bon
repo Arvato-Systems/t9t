@@ -192,9 +192,16 @@ package (com.arvatosystems) t9t.io.request {
         optional f42Ref                             genericRefs2;
     }
 
+    enum LazyType {
+        NEVER_LAZY          = "N",                  // same as if not set at all: always return images
+        LAZY_IF_SHARED_FS   = "F",                  // if FILE: only lazy if server config says ZK UI, gateways and servers share the same FS, anythign else always lazy
+        ALWAYS_LAZY         = "L"                   // always lazy, including when using FILE sources and FS are not shared
+    }
+
     /** Retrieves data from a data sink (assumes that the data fits into 16 MB size). */
     class RetrieveMediaDataRequest extends RequestParameters return RetrieveMediaDataResponse {
         required f42Ref                             sinkRef;                // the sink reference
+        optional Enum LazyType                      lazy;                   // controls lazy loading
     }
     class RetrieveMediaDataResponse extends ServiceResponse {
         required (MediaData...)                     mediaData;              // the data

@@ -18,7 +18,6 @@ package com.arvatosystems.t9t.in.be.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -27,7 +26,6 @@ import org.slf4j.LoggerFactory;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.in.services.IInputSession;
 import com.arvatosystems.t9t.io.T9tIOException;
-import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
 
 import de.jpaw.bonaparte.core.BonaPortable;
@@ -50,7 +48,7 @@ import de.jpaw.json.JsonParser;
  */
 @Dependent
 @Named("JSON")
-public class JsonFormatConverter extends AbstractInputFormatConverter {
+public class JsonFormatConverter extends AbstractBufferedFormatConverter {
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonFormatConverter.class);
     protected ObjectReference metaDataForOuter;
     protected boolean useOrdinals = true;
@@ -58,12 +56,12 @@ public class JsonFormatConverter extends AbstractInputFormatConverter {
 
     @Override
     public void open(final IInputSession inputSession, final Map<String, Object> params, final BonaPortableClass<?> baseBClass) {
+        super.open(inputSession, params, baseBClass);
         metaDataForOuter = new ObjectReference(Visibility.PRIVATE, false, "",
                 Multiplicity.SCALAR, IndexType.NONE, 0, 0, DataCategory.OBJECT, "json", "Map", false, false, null, true, "Map",
                 baseBClass.getMetaData(), null, null);
-        useTokens = Boolean.TRUE.equals(inputSession.getDataSinkDTO().getJsonUseEnumTokens());
+        useTokens = Boolean.TRUE.equals(importDataSinkDTO.getJsonUseEnumTokens());
         useOrdinals = useTokens;
-        super.open(inputSession, params, baseBClass);
     }
 
     protected void processBonaPortable(final Map<String, Object> map) {
@@ -77,12 +75,10 @@ public class JsonFormatConverter extends AbstractInputFormatConverter {
     }
 
     @Override
-    public void process(final InputStream is) {
-        final Charset encoding = inputSession.getDataSinkDTO().getOutputEncoding() == null
-          ? Charsets.UTF_8 : Charset.forName(inputSession.getDataSinkDTO().getOutputEncoding());
+    public void processBuffered(final InputStream is) {
         final String inputData;
         try {
-            inputData = CharStreams.toString(new InputStreamReader(is, encoding));
+            inputData = CharStreams.toString(new InputStreamReader(is, importCharset));
         } catch (final IOException e) {
             LOGGER.error("Input read error", e);
             throw new T9tException(T9tIOException.IO_EXCEPTION);

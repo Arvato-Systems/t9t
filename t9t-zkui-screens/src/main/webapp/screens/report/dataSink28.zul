@@ -10,22 +10,13 @@
                 <tabs>
                     <tab28 id="mainTab"/>
                     <tab28 id="xmlTab" />
+                    <tab28 id="csvTab" />
                     <tab28 id="camelTab" />
                 </tabs>
                 <tabpanels vflex="1" id="tabpanelsDetail">
                     <tabpanel vflex="1" id="dataSink.main.panel">
                         <form28 id="dataSinkConfigCrudMain" aspect="2" numColumns="2">
                             <rows>
-                                  <!-- verbose form
-                                <row>
-                                    <label28 id="dataSinkId"/>     <field28 id="dataSinkId"     value="@bind(vm.data.dataSinkId)"/>
-                                    <label28 id="outputEncoding"/> <field28 id="outputEncoding" value="@bind(vm.data.outputEncoding)"/>
-                                </row>
-                                <row>
-                                    <label28 id="environment"/>    <field28 id="environment"   value="@bind(vm.data.environment)"/>
-                                    <label28 id="isActive"/>       <field28 id="isActive"      value="@bind(vm.data.isActive)"/>
-                                </row>
-                                -->
                                 <cells228 id ="tenantId"                value ="@load(vm.tenantId) @save(vm.tenantId,before='commandSave')"
                                           id2="isActive"                value2="@bind(vm.data.isActive)"/>
                                 <cells228 id ="dataSinkId"              value ="@load(vm.data.dataSinkId) @save(vm.data.dataSinkId,before='commandSave')"
@@ -60,9 +51,6 @@
                                           id2="commFormatName"          value2="@bind(vm.data.commFormatName)"/>
                                 <cells228 id ="outputEncoding"          value ="@bind(vm.data.outputEncoding)"
                                           id2="preTransformerName"      value2="@bind(vm.data.preTransformerName)"/>
-                                <cells228 id ="linesToSkip"             value ="@bind(vm.data.linesToSkip)"
-                                          id2="singleLineComment"       value2="@bind(vm.data.singleLineComment)"/>
-                                <cells28  id ="writeTenantId"           value ="@bind(vm.data.writeTenantId)"/>
 
                                 <cells228 id ="baseClassPqon"           value ="@bind(vm.data.baseClassPqon)"
                                           id2="jaxbContextPath"         value2="@bind(vm.data.jaxbContextPath)"/>
@@ -77,10 +65,22 @@
                                 <cells228 id ="jsonWritePqon"           value ="@bind(vm.data.jsonWritePqon)"
                                           id2="jsonUseEnumTokens"       value2="@bind(vm.data.jsonUseEnumTokens)"/>
                                 <cells228 id ="jsonWriteNulls"          value ="@bind(vm.data.jsonWriteNulls)"
-                                          id2="writeHeaderRow"          value2="@bind(vm.data.writeHeaderRow)"/>
+                                          id2="writeTenantId"           value2="@bind(vm.data.writeTenantId)"/>
+                            </rows>
+                        </form28>
+                    </tabpanel>
+                    <tabpanel vflex="1" id="dataSink.csv.panel">
+                        <form28 id="dataSinkConfigCrudCsv" aspect="2" numColumns="2">
+                            <rows>
                                 <cells228 id ="csvConfigurationRef"     value ="@bind(vm.data.csvConfigurationRef)"
                                           id2="nationalNumberFormat"    value2="@bind(vm.data.nationalNumberFormat)"/>
+                                <cells228 id ="linesToSkip"             value ="@bind(vm.data.linesToSkip)"
+                                          id2="singleLineComment"       value2="@bind(vm.data.singleLineComment)"/>
+                                          
+                                <cells28  id ="writeHeaderRow"          value ="@bind(vm.data.writeHeaderRow)"/>
 
+                                <cells228 id ="bufferSize"              value ="@bind(vm.data.bufferSize)"
+                                          id2="recordSize"              value2="@bind(vm.data.recordSize)"/>
                                 <cells228 id ="genericParameter1"       value ="@bind(vm.data.genericParameter1)"
                                           id2="genericParameter2"       value2="@bind(vm.data.genericParameter2)"/>
                             </rows>

@@ -470,11 +470,13 @@ public class DocFormatter implements IDocFormatter {
             }
             if (obj instanceof String sObj) {
                 final Enum<?> format = desiredFormat != null ? desiredFormat.getBaseEnum() : null;
-                if (escapeToRaw && (MediaType.HTML.equals(format) || MediaType.XHTML.equals(format))) {
+                if (escapeToRaw && (format == MediaType.HTML || format == MediaType.XHTML)) {
                     return new SimpleScalar("<![CDATA[" + sObj + "]]>");
                 }
                 if (converter != null) {
-                    return super.wrap(converter.convertFrom(new MediaData(MediaTypes.MEDIA_XTYPE_TEXT, ((String) obj), null, null)));
+                    final MediaData md = new MediaData(MediaTypes.MEDIA_XTYPE_TEXT);
+                    md.setText(sObj);
+                    return super.wrap(converter.convertFrom(md));
                 }
             }
             return super.wrap(obj);

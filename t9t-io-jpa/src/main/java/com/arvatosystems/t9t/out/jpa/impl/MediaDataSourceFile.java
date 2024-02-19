@@ -23,9 +23,8 @@ import java.util.Map;
 
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.services.IFileUtil;
-import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.base.services.SimplePatternEvaluator;
-import com.arvatosystems.t9t.io.services.IMediaDataSource;
+import com.arvatosystems.t9t.mediaresolver.IMediaDataSource;
 
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Named;
@@ -52,10 +51,10 @@ public class MediaDataSourceFile implements IMediaDataSource {
      *             thrown when building absolute path failed
      */
     @Override
-    public String getAbsolutePath(final String relativePath, final RequestContext ctx) {
-        final String absolutePath = fileUtil.getAbsolutePathForTenant(ctx.tenantId, relativePath);
+    public String getAbsolutePathForTenant(final String relativePath, final String tenantId) {
+        final String absolutePath = fileUtil.getAbsolutePathForTenant(tenantId, relativePath);
         final Map<String, Object> patternReplacements = new HashMap<>();
-        patternReplacements.put("tenantId", ctx.tenantId);
+        patternReplacements.put("tenantId", tenantId);
         return SimplePatternEvaluator.evaluate(absolutePath, patternReplacements);
     }
 

@@ -37,7 +37,7 @@ public class BinaryStreamFormatConverter extends AbstractInputFormatConverter {
     public void process(final InputStream is) {
         try {
             final String sourceURI = inputSession.getSourceURI();
-            final MediaXType formatType = inputSession.getDataSinkDTO().getCommFormatType();
+            final MediaXType formatType = importDataSinkDTO.getCommFormatType();
 
             final ByteArray inputData = ByteArray.fromInputStream(is, 11500000);
 

@@ -21,11 +21,11 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.io.DataSinkDTO;
 import com.arvatosystems.t9t.io.T9tIOException;
 
 import de.jpaw.bonaparte.core.BonaPortable;
@@ -47,7 +47,6 @@ public class XmlStreamFormatConverter extends AbstractXmlFormatConverter {
             final Class<? extends BonaPortable> elementClass = this.baseBClass.getBonaPortableClass();
             final XMLInputFactory staxFactory = XMLInputFactory.newInstance();
             final XMLStreamReader reader = staxFactory.createXMLStreamReader(xml);
-            final DataSinkDTO cfg = inputSession.getDataSinkDTO();
             int event = reader.hasNext() ? reader.nextTag() : XMLStreamConstants.END_DOCUMENT;
 
             while (event != XMLStreamConstants.END_DOCUMENT) {
@@ -66,7 +65,7 @@ public class XmlStreamFormatConverter extends AbstractXmlFormatConverter {
                 case XMLStreamConstants.END_ELEMENT:
                     final String name = reader.getLocalName();
 
-                    if (!name.equals(cfg.getXmlRecordName())) {
+                    if (!name.equals(importDataSinkDTO.getXmlRecordName())) {
                         LOGGER.debug("XML END {}: {}", name, currentData);
                         assignTag(name, currentData);
                     }
@@ -76,8 +75,8 @@ public class XmlStreamFormatConverter extends AbstractXmlFormatConverter {
                 case XMLStreamConstants.START_ELEMENT:
                     currentData = null;
                     currentTag  = reader.getLocalName();
-                    LOGGER.trace("Parsing START for tag {}, wanting {}", currentTag, cfg.getXmlRecordName());
-                    if (currentTag.equals(cfg.getXmlRecordName())) {
+                    LOGGER.trace("Parsing START for tag {}, wanting {}", currentTag, importDataSinkDTO.getXmlRecordName());
+                    if (currentTag.equals(importDataSinkDTO.getXmlRecordName())) {
                         // use JAXB to unmarshal
                         try {
                             final JAXBElement<? extends BonaPortable> element = m.unmarshal(reader, elementClass);

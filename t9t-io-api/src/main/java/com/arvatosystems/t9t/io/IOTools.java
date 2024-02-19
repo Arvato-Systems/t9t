@@ -15,7 +15,12 @@
  */
 package com.arvatosystems.t9t.io;
 
+import java.util.EnumMap;
+import java.util.Map;
+
 import com.arvatosystems.t9t.base.T9tException;
+
+import de.jpaw.bonaparte.pojos.api.media.MediaStorageLocation;
 
 public final class IOTools {
     private IOTools() { }
@@ -56,5 +61,16 @@ public final class IOTools {
             dataSink.setXmlFooterElements(preset.getXmlFooterElements());
             dataSink.setWriteTenantId(preset.getWriteTenantId());
         }
+    }
+
+    /**
+     * A mapping from the t9t DataSink communication target channel to the bonaparte Media storage type (which is a logical subset of the former).
+     */
+    public static final Map<CommunicationTargetChannelType, MediaStorageLocation> MEDIA_MAPPING = new EnumMap<>(CommunicationTargetChannelType.class);
+    static {
+        MEDIA_MAPPING.put(CommunicationTargetChannelType.FILE,  MediaStorageLocation.FILE);
+        MEDIA_MAPPING.put(CommunicationTargetChannelType.S3,    MediaStorageLocation.S3);
+        MEDIA_MAPPING.put(CommunicationTargetChannelType.AZURE, MediaStorageLocation.AZURE);
+        MEDIA_MAPPING.put(CommunicationTargetChannelType.GCS,   MediaStorageLocation.GCS);
     }
 }

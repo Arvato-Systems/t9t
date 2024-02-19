@@ -23,31 +23,38 @@ import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.base.api.ServiceResponse;
+import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.cfg.be.ConfigProvider;
+import com.arvatosystems.t9t.cfg.be.ServerConfiguration;
+import com.arvatosystems.t9t.io.CommunicationTargetChannelType;
+import com.arvatosystems.t9t.io.IOTools;
 import com.arvatosystems.t9t.io.T9tIOException;
 import com.arvatosystems.t9t.io.jpa.entities.SinkEntity;
 import com.arvatosystems.t9t.io.jpa.persistence.ISinkEntityResolver;
+import com.arvatosystems.t9t.io.request.LazyType;
 import com.arvatosystems.t9t.io.request.RetrieveMediaDataRequest;
 import com.arvatosystems.t9t.io.request.RetrieveMediaDataResponse;
-import com.arvatosystems.t9t.io.services.IMediaDataSource;
+import com.arvatosystems.t9t.mediaresolver.IMediaDataSource;
 
 import de.jpaw.bonaparte.api.media.MediaTypeInfo;
 import de.jpaw.bonaparte.pojos.api.media.MediaData;
+import de.jpaw.bonaparte.pojos.api.media.MediaStorageLocation;
 import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
+import de.jpaw.bonaparte.pojos.api.media.MediaXStorageLocation;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ApplicationException;
 import de.jpaw.util.ByteArray;
 
 public class RetrieveMediaDataRequestHandler extends AbstractRequestHandler<RetrieveMediaDataRequest> {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(RetrieveMediaDataRequestHandler.class);
 
     private final ISinkEntityResolver sinkResolver = Jdp.getRequired(ISinkEntityResolver.class);
+    private final ServerConfiguration serverConfiguration = ConfigProvider.getConfiguration().getServerConfiguration();
 
     @Override
-    public ServiceResponse execute(final RequestContext ctx, final RetrieveMediaDataRequest request) throws Exception {
+    public RetrieveMediaDataResponse execute(final RequestContext ctx, final RetrieveMediaDataRequest request) throws Exception {
         final SinkEntity mySinkEntity = sinkResolver.find(request.getSinkRef());
         if (mySinkEntity == null) {
             throw new ApplicationException(T9tException.RECORD_DOES_NOT_EXIST, "no Sink for Ref " + request.getSinkRef());
@@ -61,9 +68,39 @@ public class RetrieveMediaDataRequestHandler extends AbstractRequestHandler<Retr
         if (srcHandler == null) {
             throw new T9tException(T9tIOException.OUTPUT_COMM_CHANNEL_NO_SRC_HANDLER, mySinkEntity.getCommTargetChannelType().name());
         }
+        final String filePath = srcHandler.getAbsolutePathForTenant(mySinkEntity.getFileOrQueueName(), ctx.tenantId);
 
-        final String filePath = srcHandler.getAbsolutePath(mySinkEntity.getFileOrQueueName(), ctx);
-        response.setReturnCode(T9tIOException.OUTPUT_COMM_CHANNEL_IO_ERROR);
+        final MediaData mediaData = new MediaData();
+        mediaData.setMediaType(mySinkEntity.getCommFormatType());
+
+        // possible shortcut for lazy MediaData
+        final boolean beLazy;
+        switch (T9tUtil.nvl(request.getLazy(), LazyType.NEVER_LAZY)) {
+        case ALWAYS_LAZY:
+            beLazy = true;
+            break;
+        case LAZY_IF_SHARED_FS:
+            beLazy = CommunicationTargetChannelType.FILE != mySinkEntity.getCommTargetChannelType()
+              || (serverConfiguration != null && Boolean.TRUE.equals(serverConfiguration.getSharedFilesystem()));
+            break;
+        case NEVER_LAZY:
+            beLazy = false;
+            break;
+        default:
+            beLazy = false;  // failsafe
+            break;
+        }
+        if (beLazy) {
+            final MediaStorageLocation msl = IOTools.MEDIA_MAPPING.get(mySinkEntity.getCommTargetChannelType());
+            if (msl != null) {
+                // mapping of lazy data is possible
+                mediaData.setText(filePath);
+                mediaData.setMediaStorageLocation(MediaXStorageLocation.of(msl));
+                response.setMediaData(mediaData);
+                return response;
+            }
+        }
+
         try (InputStream fis = srcHandler.open(filePath)) {
             // the file size is 16 MB max (i.e. can be returned in a single chunk: It should throw a new T9tIOException (FILE_TOO_BIG)
             if (fis.available() > T9tConstants.MAXIMUM_MESSAGE_LENGTH) {
@@ -82,8 +119,6 @@ public class RetrieveMediaDataRequestHandler extends AbstractRequestHandler<Retr
                 numRead += lastRead;
             }
             LOGGER.debug("received {} bytes in total for {}", numRead, filePath);
-            final MediaData mediaData = new MediaData();
-            mediaData.setMediaType(mySinkEntity.getCommFormatType());
             final MediaTypeDescriptor description = MediaTypeInfo.getFormatByType(mySinkEntity.getCommFormatType());
             if (description.getIsText()) {
                 mediaData.setText(new ByteArray(buffer, 0, numRead).asString());
@@ -91,12 +126,10 @@ public class RetrieveMediaDataRequestHandler extends AbstractRequestHandler<Retr
                 mediaData.setRawData(new ByteArray(buffer, 0, numRead));
             }
             response.setMediaData(mediaData);
-            response.setReturnCode(0);
+            return response;
         } catch (final FileNotFoundException e) {
             LOGGER.error("{} resource {} was not found", mySinkEntity.getCommTargetChannelType().name(), filePath);
             throw new T9tException(T9tException.FILE_NOT_FOUND_FOR_DOWNLOAD, filePath);
         }
-
-        return response;
     }
 }

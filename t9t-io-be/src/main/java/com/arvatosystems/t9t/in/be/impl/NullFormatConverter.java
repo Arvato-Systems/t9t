@@ -20,8 +20,6 @@ import java.io.InputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.io.DataSinkDTO;
-
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Named;
 
@@ -35,7 +33,6 @@ public class NullFormatConverter extends AbstractInputFormatConverter {
 
     @Override
     public void process(final InputStream is) {
-        final DataSinkDTO cfg = inputSession.getDataSinkDTO();
-        LOGGER.debug("Received a file via data sink {}", cfg.getDataSinkId());
+        LOGGER.debug("Received a file via data sink {}", importDataSinkDTO.getDataSinkId());
     }
 }

@@ -67,7 +67,9 @@ package (com.arvatosystems) t9t.io {
         QUEUE = "Q",        // output single message to a JMS queue
         TOPIC = "T",        // output single messages to a JMS topic
         CAMEL = "C",        // just produce internal temporary data which is sent via Apache Camel route
-        S3    = "3"         // directly write to an AWS S3 bucket
+        S3    = "3",        // directly write to an AWS S3 bucket
+        GCS   = "G",        // Google cloud storage
+        AZURE = "A"         // Azure BLOB
     }
 
     xenum CommunicationTargetChannelXType is CommunicationTargetChannelType;
@@ -174,6 +176,26 @@ package (com.arvatosystems) t9t.io {
         required xenum MediaXType                       commFormatType;             // defines the format for the output
         required xenum DataSinkCategoryXType            category;                   // the type of data sink
     }
+
+    /**
+     * The DataSinkDTO describes the parameters for imports and exports.
+     * Not all parameters are evaluated for all imports and exports.
+     *
+     * Transformation from (binary or textual) input data is performed in one or 2 steps:
+     * The first step is the pretransformer. This converts raw data into a <code>BonaPortable</code>.
+     * The relevant transformer is either selected implicitly (if a known input format such as CSV, JSON or XML is specified as <code>commFormatType</code>),
+     * or, in case of <code>USER_DEFINED</code>, specified as a qualifier in field <code>commFormatName</code>.
+     *
+     * If this first transformer already produces an object which is a <code>RequestParameter</code> (this can only ever happen in case of custom transformers),
+     * there is no need to specify a <code>preTransformerName</code>.
+     *
+     * For text type input, the used encoding to transform the input byte stream into characters is specified by <code>outputEncoding</code>
+     * (due to historic reasons, initially the encoding has been used for data exports only).
+     *
+     * There are 2 fields which can be used to control batching: <code>bufferSize</code> is used for some imports to perform physical reads in bigger chunks than
+     * a single record size (this is format converter related), and <code>chunkSize</code> is the number of transformed data records to group into a single upload request.
+     * Some import format converters support reading directly from compressed files: set <code>compressed</code> to activate that feature.
+     */
     class DataSinkDTO extends DataSinkRef {
         properties tenantCategory="E";    // E required, not just D, because Camel startup accesses all other tenants from @ tenant
         required dataSinkId                             dataSinkId  properties notupdatable;  // every data output is assigned a name
@@ -246,6 +268,8 @@ package (com.arvatosystems) t9t.io {
         optional Boolean                                jsonWriteNulls;             // explicitly export nulls (bonaparte and jackson)
         optional Boolean                                jsonUseEnumTokens;          // read or write tokens or ordinals instead of name for Bonaparte JSON serializers (JSON, JSON-Kafka)
         optional Boolean                                writeHeaderRow;             // write a header row if available for CSV, XLS, XLSX exporters
+        optional Integer                                bufferSize;                 // used for low level buffering (only if supported by the application, about 64 KB if unspecified)
+        optional Integer                                recordSize;                 // arbitrary field - format specific (size of a record for fixed formats, or upper bound to size in general)
     }
 
     /** Configuration defaults for DataSinks, provided by the implementation. (Primarily intended to support the complex XML APIs). */

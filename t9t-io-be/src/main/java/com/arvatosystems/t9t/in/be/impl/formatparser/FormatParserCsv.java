@@ -21,7 +21,6 @@ import com.arvatosystems.t9t.in.be.impl.AbstractTextFormatConverter;
 import com.arvatosystems.t9t.in.services.IInputSession;
 import com.arvatosystems.t9t.io.CSVTools;
 import com.arvatosystems.t9t.io.CsvConfigurationDTO;
-import com.arvatosystems.t9t.io.DataSinkDTO;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.BonaPortableClass;
@@ -47,14 +46,12 @@ public class FormatParserCsv extends AbstractTextFormatConverter {
     protected StringCSVParser parser;
 
     @Override
-    public void open(final IInputSession inputSession, final Map<String, Object> params,
-            final BonaPortableClass<?> baseBClass) {
+    public void open(final IInputSession inputSession, final Map<String, Object> params, final BonaPortableClass<?> baseBClass) {
         super.open(inputSession, params, baseBClass);
-        final DataSinkDTO cfg = inputSession.getDataSinkDTO();
 
-        csvCfg = CSVTools.getCsvConfiguration((CsvConfigurationDTO) cfg.getCsvConfigurationRef());
+        csvCfg = CSVTools.getCsvConfiguration((CsvConfigurationDTO) importDataSinkDTO.getCsvConfigurationRef());
         parser = new StringCSVParser(csvCfg, "");
-        if (Boolean.TRUE.equals(cfg.getNationalNumberFormat())) {
+        if (Boolean.TRUE.equals(importDataSinkDTO.getNationalNumberFormat())) {
             parser.setNationalBigDecimal();
         }
     }

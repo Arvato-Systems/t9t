@@ -13,20 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.io.services;
+package com.arvatosystems.t9t.mediaresolver;
 
-import java.io.InputStream;
+import de.jpaw.util.ByteArray;
+import jakarta.annotation.Nonnull;
 
-import com.arvatosystems.t9t.base.services.RequestContext;
+/**
+ * Interface for implementations which resolve a lazy MediaData object for a given source.
+ * Implementations of this interface are @Named by the instance name of the source.
+ */
+public interface IMediaResolverSub {
 
-public interface IMediaDataSource {
-    default String getAbsolutePath(final String relativePath, final RequestContext ctx) {
-        return relativePath;
-    }
-    InputStream open(String path) throws Exception;
-
-    /** Return true if the source was not yet read completely - optional, not supported by most sources. */
-    default boolean hasMore(final InputStream is) throws Exception {
-        return false;
-    }
+    /** Resolves the contents of a lazy MediaData structure. */
+    @Nonnull ByteArray resolveLazy(@Nonnull String source);
 }

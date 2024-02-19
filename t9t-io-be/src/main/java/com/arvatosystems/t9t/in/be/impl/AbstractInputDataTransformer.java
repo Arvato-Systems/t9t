@@ -15,24 +15,33 @@
  */
 package com.arvatosystems.t9t.in.be.impl;
 
+import java.util.Collections;
+import java.util.Map;
+
 import com.arvatosystems.t9t.in.services.IInputDataTransformer;
 import com.arvatosystems.t9t.in.services.IInputSession;
+import com.arvatosystems.t9t.io.DataSinkDTO;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.BonaPortableClass;
 
-import java.util.Collections;
-import java.util.Map;
-
+/**
+ * Superclass for IInputDataTransformers, which transform BonaPortables into import requests (second step of conversion).
+ * The main task of this class is to store the key parameters passed to the open() method.
+ *
+ * @param <T> The type of the intermediate object (the object passed into this transformer)
+ */
 public abstract class AbstractInputDataTransformer<T extends BonaPortable> implements IInputDataTransformer<T> {
     protected IInputSession inputSession;
     protected Map<String, Object> params;
     protected BonaPortableClass<?> baseBClass;
+    protected DataSinkDTO importDataSinkDTO;
 
     @Override
     public void open(final IInputSession newInputSession, final Map<String, Object> newParams, final BonaPortableClass<?> newBaseBClass) {
         this.inputSession = newInputSession;
         this.params = newParams != null ? newParams : Collections.emptyMap();
         this.baseBClass = newBaseBClass;
+        this.importDataSinkDTO = inputSession.getDataSinkDTO();
     }
 }

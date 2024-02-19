@@ -166,6 +166,10 @@ public class T9tException extends ApplicationException {
     public static final int UPDATER_AID_INVALID_OPERATION      = OFFSET + 173;
     public static final int UPDATER_NO_SEARCH_REQUEST          = OFFSET + 174;
 
+    // Codes specific to MediaData resolving
+    public static final int INVALID_LAZY_MEDIADATA_PARAMETERS  = OFFSET_LOGIC_ERROR + 180;
+    public static final int FAILED_TO_RESOLVE_MEDIADATA        = OFFSET_DB_ERROR + 181;
+
     // Codes specific to security functions (authentication / authorization)
     public static final int USER_NOT_FOUND                     = OFFSET + 200;
     public static final int TENANT_NOT_FOUND                   = OFFSET + 201;
@@ -597,6 +601,9 @@ public class T9tException extends ApplicationException {
         registerCode(UPDATER_KEY_CLASS_MISMATCH, "Surrogate key CRUD request does not work for provided key type");
         registerCode(UPDATER_AID_INVALID_OPERATION, "Invalid operation for AidDataRequest, only ACTIVATE, INACTIVATE and DELETE are supported");
         registerCode(UPDATER_NO_SEARCH_REQUEST, "No SEARCH request has been defined for CrudViewModel of the given DTO class");
+
+        registerCode(INVALID_LAZY_MEDIADATA_PARAMETERS, "Lazy MediaData without appropriate URL");
+        registerCode(FAILED_TO_RESOLVE_MEDIADATA, "Could not resolve lazy MediaData");
 
         registerCode(HTTP_ERROR + 400, "Bad request");
         registerCode(HTTP_ERROR + 401, "Not authorized");

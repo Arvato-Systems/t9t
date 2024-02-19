@@ -51,8 +51,8 @@ public abstract class AbstractXmlFormatConverter extends AbstractInputFormatConv
     @Override
     public void open(final IInputSession inputSession, final Map<String, Object> params, final BonaPortableClass<?> baseBClass) {
         super.open(inputSession, params, baseBClass);
-        final String path = inputSession.getDataSinkDTO().getJaxbContextPath();
-        defaultNamespace = inputSession.getDataSinkDTO().getXmlDefaultNamespace();
+        final String path = importDataSinkDTO.getJaxbContextPath();
+        defaultNamespace = importDataSinkDTO.getXmlDefaultNamespace();
 
         if (path == null) {
             // use the default path

@@ -32,7 +32,7 @@ import com.arvatosystems.t9t.io.CamelPostProcStrategy;
 import com.arvatosystems.t9t.io.DataSinkDTO;
 import com.arvatosystems.t9t.io.SinkDTO;
 import com.arvatosystems.t9t.io.T9tIOException;
-import com.arvatosystems.t9t.io.services.IMediaDataSource;
+import com.arvatosystems.t9t.mediaresolver.IMediaDataSource;
 import com.arvatosystems.t9t.out.services.ISinkToCamelProducer;
 import com.google.common.collect.ImmutableMap;
 
@@ -118,7 +118,7 @@ public class SinkToCamelProducer implements ISinkToCamelProducer {
         }
 
         try {
-            final String filePath = srcHandler.getAbsolutePath(sink.getFileOrQueueName(), requestContextProvider.get());
+            final String filePath = srcHandler.getAbsolutePathForTenant(sink.getFileOrQueueName(), requestContextProvider.get().tenantId);
             producerTemplate.sendBodyAndHeaders("direct:outputFile", srcHandler.open(filePath), headerMap);
 
             successfulRoutingPostProcessing(sink, fileType, sinkCfg);
