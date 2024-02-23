@@ -393,7 +393,7 @@ public class T9tException extends ApplicationException {
         registerCode(ENTITY_KEY_EXCEPTION, "Could not extract the key of a JPA entity. Possibly incorrect enum token.");
         registerCode(ENTITY_DATA_MAPPING_EXCEPTION, "Exception mapping from JPA entity data to DTO. Possibly invalid enum token.");
         registerCode(RESPONSE_VALIDATION_ERROR, "Constructed a response which is invalid");
-        registerCode(REQUEST_VALIDATION_ERROR, "Received response parameters which don't satisfy the interface spec");
+        registerCode(REQUEST_VALIDATION_ERROR, "Request or response fields don't satisfy the interface spec");
         registerCode(WRITE_ACCESS_ONLY_CURRENT_TENANT, "Creation and update of records only allowed for current tenant");
         registerCode(READ_ACCESS_ONLY_CURRENT_TENANT, "Access to other tenant's records is not allowed");
         registerCode(NOT_CURRENT_RECORD_OPTIMISTIC_LOCKING,
