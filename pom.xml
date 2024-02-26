@@ -71,7 +71,7 @@
         <maven-enforcer-plugin.version>3.4.1</maven-enforcer-plugin.version>
         <maven-source-plugin.version>3.3.0</maven-source-plugin.version>
         <owasp-maven-plugin.version>7.2.1</owasp-maven-plugin.version>
-        <spring-boot-maven-plugin.version>3.2.2</spring-boot-maven-plugin.version>
+        <spring-boot-maven-plugin.version>3.2.3</spring-boot-maven-plugin.version>
         <tycho.version>2.7.3</tycho.version>
         <git-commit-id-plugin.version>7.0.0</git-commit-id-plugin.version>
         <jaxws-maven-plugin.version>4.0.1</jaxws-maven-plugin.version>

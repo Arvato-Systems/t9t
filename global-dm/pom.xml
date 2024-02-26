@@ -172,7 +172,7 @@
         <!-- Spring data -->
         <spring-data-jpa.version>3.2.3</spring-data-jpa.version>
         <!-- Spring boot -->
-        <spring-boot.version>3.2.2</spring-boot.version>
+        <spring-boot.version>3.2.3</spring-boot.version>
 
         <netty.version>4.1.106.Final</netty.version>
         <vertx4.version>4.4.6</vertx4.version>
