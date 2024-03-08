@@ -272,6 +272,9 @@ public class RequestProcessor implements IRequestProcessor {
 
     /** Performs the retry logic in case of optimistic locking exceptions. */
     protected ServiceResponse executeSynchronousWithRetries(final RequestParameters rq, final InternalHeaderParameters ihdr, final boolean skipAuthorization) {
+        // initialize the total number of retries outside the loop
+        int numberOfRetriesLeftForLocks = numberOfRetriesOptimisticLock;
+        int numberOfRetriesLeftForDatabaseConnects = numberOfRetriesDatabaseConnect;
         // we freeze all parameters to ensure that data is not modified and we retry with different parameters
         rq.freeze();
         for (;;) {
@@ -285,7 +288,9 @@ public class RequestProcessor implements IRequestProcessor {
             switch (response.getReturnCode()) {
             case T9tException.OPTIMISTIC_LOCKING_EXCEPTION:
                 shouldRetryCause = "Optimistic locking";
-                numberOfRetries = numberOfRetriesOptimisticLock;
+                if (numberOfRetriesLeftForLocks > 0) {
+                    numberOfRetries = numberOfRetriesLeftForLocks--;
+                }
                 break;
             case T9tException.GENERAL_EXCEPTION:
                 // this depends on the cause
@@ -294,7 +299,9 @@ public class RequestProcessor implements IRequestProcessor {
                     if (errorDetails.startsWith("jakarta.persistence.")) {
                         if (errorDetails.startsWith("jakarta.persistence.OptimisticLockException:")) {
                             shouldRetryCause = "Optimistic locking";
-                            numberOfRetries = numberOfRetriesOptimisticLock;
+                            if (numberOfRetriesLeftForLocks > 0) {
+                                numberOfRetries = numberOfRetriesLeftForLocks--;
+                            }
                         } else {
                             // for example NoResultException: indicates programming error, log an error but do not retry
                             LOGGER.error("jakarta exception for processRef {}, request {} (ID {}): {}",
@@ -303,8 +310,10 @@ public class RequestProcessor implements IRequestProcessor {
                     } else if (errorDetails.startsWith("org.hibernate.exception")) {
                         if (errorDetails.startsWith("org.hibernate.exception.JDBCConnectionException:")) {
                             shouldRetryCause = "JDBC connection";
-                            numberOfRetries  = numberOfRetriesDatabaseConnect;
                             sleepTime        = pauseBeforeDatabaseConnectRetry;
+                            if (numberOfRetriesLeftForDatabaseConnects > 0) {
+                                numberOfRetries = numberOfRetriesLeftForDatabaseConnects--;
+                            }
                         } else {
                             // for example DataException: too many parameters: indicates programming error, log an error but do not retry
                             LOGGER.error("hibernate exception for processRef {}, request {} (ID {}): {}",
@@ -324,14 +333,13 @@ public class RequestProcessor implements IRequestProcessor {
                     LOGGER.warn("{} exception detected for processRef {}, request {} (ID {}) - retrying ({} attempts left)",
                         shouldRetryCause, ihdr.getProcessRef(), rq.ret$PQON(), ihdr.getMessageId(), numberOfRetries);
                     // fall through / iterate again
-                    --numberOfRetries;
                     if (sleepTime != null && sleepTime.longValue() > 0) {
                         T9tUtil.sleepAndWarnIfInterrupted(sleepTime, LOGGER, "Pause before retry interrupted");
                         sleepTime = (long)(sleepTime * pauseIncreaseFactor);
                     }
                 } else {
-                    LOGGER.error("{} exception detected for processRef {}, request {} (ID {}) - problem persists after {} retries, giving up!",
-                        shouldRetryCause, ihdr.getProcessRef(), rq.ret$PQON(), ihdr.getMessageId(), numberOfRetries);
+                    LOGGER.error("{} exception detected for processRef {}, request {} (ID {}) - problem persists after retries, giving up!",
+                        shouldRetryCause, ihdr.getProcessRef(), rq.ret$PQON(), ihdr.getMessageId());
                     return response;
                 }
             }
@@ -438,12 +446,12 @@ public class RequestProcessor implements IRequestProcessor {
                 ctxScope.close();
                 ctx.close();
             }
+        } catch (final NullPointerException npe) {
+            LOGGER.error("NullPointerException (outer scope): ", npe);  // lists stack trace!
+            return MessagingUtil.createServiceResponse(T9tException.NULL_POINTER, null);
         } catch (final Exception ee) {
             final String causeChain = ExceptionUtil.causeChain(ee);
             LOGGER.error("Unhandled exception (outer scope): {}", causeChain);
-            if (ee instanceof NullPointerException) {
-                LOGGER.error("NPE Stack trace is ", ee);
-            }
             return MessagingUtil.createServiceResponse(T9tException.GENERAL_EXCEPTION, causeChain, ihdr.getMessageId(), null, null);
         }
     }

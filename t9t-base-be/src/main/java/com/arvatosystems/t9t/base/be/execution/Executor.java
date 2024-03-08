@@ -179,6 +179,9 @@ public class Executor implements IExecutor {
                 LOGGER.error("Execution problem: internal logic (8xxx) or general error (9xxx): Cause is: ", e);
             }
             return MessagingUtil.createServiceResponse(e.getErrorCode(), e.getMessage());
+        } catch (final NullPointerException npe) {
+            LOGGER.error("NullPointerException: ", npe);  // lists stack trace!
+            return MessagingUtil.createServiceResponse(T9tException.NULL_POINTER, null);
         } catch (final Throwable e) {
             // provide full stack trace to the log
             final String causeChain = ExceptionUtil.causeChain(e);

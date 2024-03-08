@@ -90,4 +90,9 @@ public class KafkaTopicWriter implements IKafkaTopicWriter {
         producer.flush();
         producer.close();
     }
+
+    @Override
+    public void flush() {
+        producer.flush();
+    }
 }

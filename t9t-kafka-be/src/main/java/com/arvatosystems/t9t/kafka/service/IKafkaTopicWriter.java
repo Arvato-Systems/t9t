@@ -29,6 +29,9 @@ public interface IKafkaTopicWriter {
     /** Writes binary data to the topic. */
     void write(byte[] dataToWrite, int partitionIn, String recordKey);
 
+    /** Flushes any pending requests of the topic writer. */
+    void flush();
+
     /** Flushes and closes the topic writer. */
     void close();
 }

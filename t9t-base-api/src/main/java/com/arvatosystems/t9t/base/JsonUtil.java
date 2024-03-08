@@ -19,6 +19,8 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +28,8 @@ import org.slf4j.LoggerFactory;
 import de.jpaw.api.ConfigurationReader;
 import de.jpaw.json.JsonException;
 import de.jpaw.util.ConfigurationReaderFactory;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 public final class JsonUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonUtil.class);
@@ -195,7 +199,7 @@ public final class JsonUtil {
      * Merge additional values into an existing Map. The destination map is considered to be modifiable if it exists.
      * In case it is null, a new map will be returned if and only of the source map is not empty.
      */
-    public static Map<String, Object> mergeZ(final Map<String, Object> dst, final Map<String, Object> src) {
+    public static @Nullable Map<String, Object> mergeZ(@Nullable final Map<String, Object> dst, @Nullable final Map<String, Object> src) {
         if (T9tUtil.isEmpty(src)) {
             return dst;
         }
@@ -205,11 +209,44 @@ public final class JsonUtil {
     }
 
     /**
+     * Merge additional values into an existing Map (variant with lambda parameters for the destination).
+     * The destination map is considered to be modifiable if it exists.
+     * In case it is null, a new map will be returned if and only of the source map is not empty.
+     */
+    public static void mergeZ(@Nonnull final Consumer<Map<String, Object>> dstSetter, @Nonnull final Supplier<Map<String, Object>> dstGetter,
+      @Nullable final Map<String, Object> src) {
+        if (T9tUtil.isEmpty(src)) {
+            // nothing to do (no access at all to dst)
+            return;
+        }
+        final Map<String, Object> dst = dstGetter.get();
+        final Map<String, Object> result = T9tUtil.isEmpty(dst) ? new HashMap<>(src.size()) : dst;
+        result.putAll(src);
+        dstSetter.accept(result);
+    }
+
+    /**
+     * Merge additional values into an existing Map (variant for entities which implement <code>IHaveZField</code>).
+     * The destination map is considered to be modifiable if it exists.
+     * In case it is null, a new map will be returned if and only of the source map is not empty.
+     */
+    public static void mergeZ(@Nonnull IHaveZField destObj, @Nullable final Map<String, Object> src) {
+        if (T9tUtil.isEmpty(src)) {
+            // nothing to do (no access at all to dst)
+            return;
+        }
+        final Map<String, Object> dst = destObj.getZ();
+        final Map<String, Object> result = T9tUtil.isEmpty(dst) ? new HashMap<>(src.size()) : dst;
+        result.putAll(src);
+        destObj.setZ(result);
+    }
+
+    /**
      * Add a key/value pair to an existing Map. The destination map is considered to be modifiable if it exists.
      * In case it is null, a new map will be returned.
      * in case value is null, the key will be removed from the map.
      */
-    public static Map<String, Object> addZ(final Map<String, Object> dst, final String key, final Object value) {
+    public static @Nullable Map<String, Object> addZ(@Nullable final Map<String, Object> dst, @Nonnull final String key, @Nullable final Object value) {
         final Map<String, Object> result = T9tUtil.isEmpty(dst) ? new HashMap<>(4) : dst;
         if (value == null) {
             result.remove(key);

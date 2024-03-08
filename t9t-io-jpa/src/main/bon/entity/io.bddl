@@ -16,6 +16,7 @@
 import t9t.setups.*
 import t9t.base.entities.*
 import t9t.io.*
+import com.arvatosystems.t9t.base.IHaveZField
 
 // entries are sorted such that references only go to entities listed before.
 
@@ -29,7 +30,7 @@ package (com.arvatosystems) t9t.io.jpa.entities owner fortytwo prefix p28 {
         index unique (tenantId, csvConfigurationId)
     }
 
-    entity DataSinkEntity category cfg is DataSinkDTO tablename p42_cfg_data_sinks historytablename p42_his_data_sinks {
+    entity DataSinkEntity category cfg is DataSinkDTO tablename p42_cfg_data_sinks historytablename p42_his_data_sinks implements IHaveZField {
         cacheable
         tenantClass InternalTenantId
         pk (objectRef)
@@ -55,14 +56,14 @@ package (com.arvatosystems) t9t.io.jpa.entities owner fortytwo prefix p28 {
 //        @ManyToOne SinkEntity sink LAZY for (sinkRef)
     }
 
-    entity AsyncQueueEntity category cfg is AsyncQueueDTO {
+    entity AsyncQueueEntity category cfg is AsyncQueueDTO implements IHaveZField {
         cacheable
         tenantClass InternalTenantId
         pk (objectRef)
         index unique (tenantId, asyncQueueId)
     }
 
-    entity AsyncChannelEntity category cfg is AsyncChannelDTO {
+    entity AsyncChannelEntity category cfg is AsyncChannelDTO implements IHaveZField {
         cacheable
         tenantClass InternalTenantId
         pk (objectRef)

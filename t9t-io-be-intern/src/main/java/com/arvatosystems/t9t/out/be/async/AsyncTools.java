@@ -90,7 +90,7 @@ public class AsyncTools implements IAsyncTools {
                 };
                 return sender.send(channel, timeout, nextMsg, resultProcessor, whenStarted);
             } catch (final Exception e) {
-                LOGGER.error("ASYNC: Exception in external http for channel, ref {}: {}",
+                LOGGER.error("ASYNC: Exception in external http for channel {}, ref {}: {}",
                   channel.getAsyncChannelId(), nextMsg.getObjectRef(), ExceptionUtil.causeChain(e));
                 messageUpdater.updateMessage(nextMsg.getObjectRef(), ExportStatusEnum.RESPONSE_ABORT, T9tConstants.HTTP_STATUS_ILE_OTHER_EXCEPTION, null);
                 return false;   // error

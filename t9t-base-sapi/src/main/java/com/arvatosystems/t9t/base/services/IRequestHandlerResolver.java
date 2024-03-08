@@ -40,12 +40,27 @@ public interface IRequestHandlerResolver {
     // see also NoTenantCustomization
     default <RQ extends RequestParameters> List<String> getRequestHandlerClassnameCandidates(final Class<RQ> requestClass) {
         // default strategy: insert a ".be" after "com.arvato-systems.t9t.[a-z]*"
-        final String base = requestClass.getCanonicalName();
+        final String requestClassName = requestClass.getCanonicalName();
         final List<String> candidates = new ArrayList<>(4);
-        checkPrefix(candidates, base, PREFIX);
+        checkPrefix(candidates, requestClassName, PREFIX);
         if (candidates.isEmpty()) {
             // check extra packages (if any)
-            Packages.walkExtraPackages((prefix, packageName) -> checkPrefix(candidates, base, packageName));
+            Packages.walkExtraPackages((prefix, packageName) -> checkPrefix(candidates, requestClassName, packageName));
+        }
+        // Check for additional candidates: Find "request" package name component, construct from there
+        final int pos = requestClassName.indexOf(".request.");
+        if (pos > 0) {
+            // found some candidates
+            final String part1 = requestClassName.substring(0, pos);
+            final String part2 = requestClassName.substring(pos);
+            final String additionalCandidate1 = part1 + ".be" + part2 + "Handler";
+            final String additionalCandidate2 = part1 + ".jpa" + part2 + "Handler";
+            if (!candidates.contains(additionalCandidate1)) {
+                candidates.add(additionalCandidate1);
+            }
+            if (!candidates.contains(additionalCandidate2)) {
+                candidates.add(additionalCandidate2);
+            }
         }
         return candidates;
     }

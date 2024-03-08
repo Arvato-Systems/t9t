@@ -838,6 +838,11 @@
                 <artifactId>t9t-bpmn2-mock</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.arvato-systems.t9t</groupId>
+                <artifactId>t9t-microbenchmarks</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- SQL files -->
             <dependency>

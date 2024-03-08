@@ -96,7 +96,7 @@ public class T9tException extends ApplicationException {
     public static final int OPTIMISTIC_LOCKING_EXCEPTION = OFFSET_DB_ERROR + 94;  // causes retry!
     public static final int REQUEST_PARAMETER_BAD_INHERITANCE = OFFSET + 95;
     public static final int TRANSACTION_RETRY_REQUEST = OFFSET_DB_ERROR + 96;
-//    public static final int GENERAL_EXCEPTION_CENTRAL = OFFSET_LOGIC_ERROR + 97;
+    public static final int NULL_POINTER = OFFSET_LOGIC_ERROR + 97;
     public static final int GENERAL_EXCEPTION = OFFSET_DB_ERROR + 98;             // causes retry in some cases!
     public static final int SELECT_INSERT_SELECT_ERROR = OFFSET_LOGIC_ERROR + 99;
 
@@ -365,7 +365,7 @@ public class T9tException extends ApplicationException {
         registerCode(MALFORMED_REQUEST_PARAMETER_NAME, "The class name of the request parameters did not end with ...Request");
         registerCode(SERVICE_CLASS_NOT_FOUND, "Could not load service class. Configuration or classpath problem?");
         registerCode(TRANSACTION_RETRY_REQUEST, "Additional attempt to run the operation is requierd.");
-        // registerCode(GENERAL_EXCEPTION_CENTRAL, "unhandled general exception in central message processing execute method");
+        registerCode(NULL_POINTER, "Null pointer exception (see logs)");
         registerCode(GENERAL_EXCEPTION, "unhandled general exception");
         registerCode(INVALID_REQUEST_PARAMETER_TYPE, "The class of the request parameters did not have the expected inheritance");
         registerCode(TENANT_NOT_EXISTING, "Tenant is not existing");

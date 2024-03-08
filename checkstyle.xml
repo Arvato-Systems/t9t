@@ -87,6 +87,13 @@
   <!--   <property name="fileExtensions" value="java"/> -->
   <!-- </module> -->
 
+  <!-- Validate naming convention of SQL migration files for flyway -->
+  <module name="RegexpOnFilename">
+    <property name="folderPattern" value=".*[\\/]sql[\\/]POSTGRES[\\/]Migration[\\/]?"/>
+    <property name="fileNamePattern" value="V[\d]+\.[\d]+\.[\d]{8}\_[\d]{4}\_\_[A-Z1-9]+-?[\d]+.*\.sql$"/>
+    <property name="match" value="false"/>
+  </module>
+
   <module name="TreeWalker">
 
     <!-- Checks for Javadoc comments.                     -->

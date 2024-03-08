@@ -33,4 +33,10 @@ public interface IKafkaRequestTransmitter {
 
     /** Writes a message with a given partition key and record key. */
     void write(@Nonnull ServiceRequest srq, @Nonnull String partitionKey, @Nullable Object recordKey);
+
+    /** Initiates shutdown of the transmitter. Causes further writes to fail, and flushes the transmitter. */
+    void initiateShutdown();
+
+    /** Hard shutdown of the transmitter. */
+    void shutdown();
 }

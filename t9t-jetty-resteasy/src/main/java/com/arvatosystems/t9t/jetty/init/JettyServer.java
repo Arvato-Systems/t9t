@@ -29,8 +29,10 @@ import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.base.IKafkaRequestTransmitter;
 import com.arvatosystems.t9t.rest.utils.RestUtils;
 
+import de.jpaw.dp.Jdp;
 import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.hotspot.DefaultExports;
 import io.prometheus.client.jetty.JettyStatisticsCollector;
@@ -43,6 +45,7 @@ public class JettyServer {
     static final int DEFAULT_MIN_THREADS = 4;
     static final int DEFAULT_MAX_THREADS = 20;
     static final int DEFAULT_IDLE_TIMEOUT = 5000;
+    static final int DEFAULT_STOP_TIMEOUT = 5000;
     static final String DEFAULT_CONTEXT_ROOT = "/rest";
     static final String DEFAULT_METRICS_PATH = "/metrics";
     static final String DEFAULT_APPLICATION_PATH = "";
@@ -72,6 +75,7 @@ public class JettyServer {
         final int minThreads  = RestUtils.CONFIG_READER.getIntProperty("jetty.threadPool.minThreads",  DEFAULT_MIN_THREADS);
         final int maxThreads  = RestUtils.CONFIG_READER.getIntProperty("jetty.threadPool.maxThreads",  DEFAULT_MAX_THREADS);
         final int idleTimeout = RestUtils.CONFIG_READER.getIntProperty("jetty.threadPool.idleTimeout", DEFAULT_IDLE_TIMEOUT);  // in millis
+        final int stopTimeout = RestUtils.CONFIG_READER.getIntProperty("jetty.stopTimeout",            DEFAULT_STOP_TIMEOUT);  // in millis
         final String contextRoot     = RestUtils.CONFIG_READER.getProperty("jetty.contextRoot",     DEFAULT_CONTEXT_ROOT);
         final String applicationPath = RestUtils.CONFIG_READER.getProperty("jetty.applicationPath", DEFAULT_APPLICATION_PATH);
         final String metricsPath = RestUtils.CONFIG_READER.getProperty("jetty.metricsPath", DEFAULT_METRICS_PATH);
@@ -124,7 +128,40 @@ public class JettyServer {
         DefaultExports.register(CollectorRegistry.defaultRegistry);
         context.addServlet(new ServletHolder(new MetricsServlet()), metricsPath);
 
+        // Add graceful shutdown hook
+        server.setStopTimeout(stopTimeout);
+        server.setStopAtShutdown(true);
+
         server.start();
+
+        // A hook that initiates a graceful shutdown if the server has been stopped via SIGTERM / SIGINT
+        Runtime.getRuntime().addShutdownHook(new Thread("t9t-gateway-shutdown") {
+            @Override
+            public void run() {
+                LOGGER.info("Gracefully shutting down the gateway");
+                try {
+                    final IKafkaRequestTransmitter kafkaTransmitter = Jdp.getOptional(IKafkaRequestTransmitter.class);
+                    if (kafkaTransmitter != null && kafkaTransmitter.initialized()) {
+                        LOGGER.info("Shutting down kafka transmitter");
+                        // if we use kafka, flush any pending output after half a second (wait for jetty stop hook to be processed)
+                        Thread.sleep(500L);
+                        kafkaTransmitter.initiateShutdown();
+                        Thread.sleep(1000L);
+                        kafkaTransmitter.shutdown();
+                        Thread.sleep(1000L);
+                    } else {
+                        Thread.sleep(3000L); // wait for any pending request to have completed
+                    }
+                    // sync kafka....
+                } catch (final Exception e) {
+                    LOGGER.error("Exception stopping Jetty: ", e);
+                }
+                LOGGER.info("Initiating JDP shutdown sequence (service shutdown)");
+                Jdp.shutdown();
+                LOGGER.info("Normal end Jetty based t9t gateway");
+            }
+        });
+
         server.join();
     }
 }

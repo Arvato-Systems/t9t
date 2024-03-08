@@ -17,6 +17,7 @@ package com.arvatosystems.t9t.kafka.service.impl;
 
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.slf4j.Logger;
@@ -25,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import com.arvatosystems.t9t.annotations.IsLogicallyFinal;
 import com.arvatosystems.t9t.base.IKafkaRequestTransmitter;
 import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceRequest;
 import com.arvatosystems.t9t.kafka.service.IKafkaTopicWriter;
 
@@ -45,6 +47,7 @@ public class KafkaRequestTransmitter implements IKafkaRequestTransmitter {
 
     @IsLogicallyFinal
     private IKafkaTopicWriter topicWriter = null;
+    private final AtomicBoolean shutdownInProgress = new AtomicBoolean(false);
 
     /** Default no-args constructor, for injection, used by API gateways. */
     public KafkaRequestTransmitter() {
@@ -96,9 +99,15 @@ public class KafkaRequestTransmitter implements IKafkaRequestTransmitter {
 
     @Override
     public void write(final ServiceRequest srq, final String partitionKey, final Object recordKey) {
-        if (topicWriter == null) {
-            // redirect to /dev/null
+        if (!initialized()) {
+            // redirect to /dev/null (but complain)
+            LOGGER.warn("write called but no topic writer initialized");
             return;
+        }
+        if (shutdownInProgress.get()) {
+            LOGGER.error("Shutdown in progress! Rejecting message of partition key {}, recordKey {} for {}",
+                partitionKey, recordKey, srq.getRequestParameters().ret$PQON());
+            throw new T9tException(T9tException.SHUTDOWN_IN_PROGRESS);
         }
         topicWriter.write(srq, partitionKey.hashCode(), createRecordKey(partitionKey, recordKey));
     }
@@ -110,5 +119,20 @@ public class KafkaRequestTransmitter implements IKafkaRequestTransmitter {
     @Override
     public boolean initialized() {
         return topicWriter != null;
+    }
+
+    @Override
+    public void initiateShutdown() {
+        shutdownInProgress.set(true);  // reject any further request
+        if (initialized()) {
+            topicWriter.flush();       // flush previously written pending messages
+        }
+    }
+
+    @Override
+    public void shutdown() {
+        if (initialized()) {
+            topicWriter.close();
+        }
     }
 }
