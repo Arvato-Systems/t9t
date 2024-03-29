@@ -32,8 +32,8 @@
 
     <properties>
         <!-- ZK libraries, COMMERCIAL !!! -->
-        <zk.version>9.6.4-jakarta</zk.version>
-        <zk-themes.version>9.6.4</zk-themes.version>
+        <zk.version>9.6.5-jakarta</zk.version>
+        <zk-themes.version>9.6.5</zk-themes.version>
         <zk-ckez.version>4.21.0.0-jakarta</zk-ckez.version>  <!-- https://github.com/zkoss/zkckeditor -->
 		<closure-compiler.version>v20230502</closure-compiler.version>
     </properties>
