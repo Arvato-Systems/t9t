@@ -60,12 +60,12 @@ public class CreateAndEmailDocumentRestResource implements IT9tRestEndpoint {
         summary = "Create document and send by email",
         description = "Generates a document for the provided template, and sends it via email to the recipient list.",
         responses = {
-            @ApiResponse(
+            @ApiResponse(responseCode = "200",
               description = "Request passed.",
               content = @Content(mediaType = "application/json",
               schema = @Schema(implementation = GenericResult.class))),
-            @ApiResponse(responseCode = "400", description = "Bad request.")}
-    )
+            @ApiResponse(responseCode = "default", description = "In case of error, a generic response with the error code is returned.",
+              content = @Content(schema = @Schema(implementation = GenericResult.class))) })
     @POST
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })

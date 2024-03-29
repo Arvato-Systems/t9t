@@ -25,6 +25,7 @@ import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
 import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
 import com.arvatosystems.t9t.xml.ErrorDescription001;
 import com.arvatosystems.t9t.xml.ErrorDescriptionList;
+import com.arvatosystems.t9t.xml.GenericResult;
 
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
@@ -54,12 +55,12 @@ public class ErrorDescriptionsRestResource implements IT9tRestEndpoint {
         summary = "Retrieve error descriptions",
         description = "A successful GET provides the list of error return codes and their descriptions.",
         responses = {
-            @ApiResponse(
+            @ApiResponse(responseCode = "200",
               description = "Request passed.",
               content = @Content(mediaType = "application/json",
               schema = @Schema(implementation = ErrorDescriptionList.class))),
-            @ApiResponse(responseCode = "400", description = "Bad request.")}
-    )
+            @ApiResponse(responseCode = "default", description = "In case of error, a generic response with the error code is returned.",
+              content = @Content(schema = @Schema(implementation = GenericResult.class))) })
     @GET
     public void retrieveErrorCodes(@Context final HttpHeaders httpHeaders, @Suspended final AsyncResponse resp) {
         final RetrievePossibleErrorCodesRequest rq = new RetrievePossibleErrorCodesRequest();

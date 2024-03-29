@@ -21,6 +21,7 @@ import com.arvatosystems.t9t.msglog.request.QueryRequestResultRequest;
 import com.arvatosystems.t9t.msglog.request.QueryRequestResultResponse;
 import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
 import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
+import com.arvatosystems.t9t.xml.GenericResult;
 import com.arvatosystems.t9t.xml.PreviousResult;
 
 import de.jpaw.dp.Jdp;
@@ -54,10 +55,10 @@ public class QueryResultRestResource implements IT9tRestEndpoint {
         summary = "Query result of a previous request",
         description = "The operation checks for completion of a previously issued asynchronous request.",
         responses = {
-            @ApiResponse(description = "Request passed.", content = @Content(schema = @Schema(implementation = PreviousResult.class))),
-            @ApiResponse(responseCode = "400", description = "Bad request.")
-        }
-    )
+            @ApiResponse(responseCode = "200", description = "Request passed.",
+              content = @Content(schema = @Schema(implementation = PreviousResult.class))),
+            @ApiResponse(responseCode = "default", description = "In case of error, a generic response with the error code is returned.",
+            content = @Content(schema = @Schema(implementation = GenericResult.class))) })
     @GET
     @Path("queryResult/{messageId}")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })

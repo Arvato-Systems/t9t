@@ -27,6 +27,7 @@ import com.arvatosystems.t9t.rest.parsers.RestParameterParsers;
 import com.arvatosystems.t9t.rest.services.IAuthFilterCustomization;
 import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
 import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
+import com.arvatosystems.t9t.xml.GenericResult;
 import com.arvatosystems.t9t.xml.auth.AuthByApiKey;
 import com.arvatosystems.t9t.xml.auth.AuthenticationResult;
 
@@ -95,9 +96,10 @@ public class LoginApiKeyResource implements IT9tRestEndpoint {
         description = "The request creates a session at the host and returns a JWT which can be used as authentication token for subsequent requests."
           + " Authentication is by API key.",
         responses = {
-            @ApiResponse(description = "Authentication successful.", content = @Content(schema = @Schema(implementation = AuthenticationResult.class)))
-        }
-    )
+            @ApiResponse(responseCode = "200", description = "Authentication successful.",
+              content = @Content(schema = @Schema(implementation = AuthenticationResult.class))),
+            @ApiResponse(responseCode = "default", description = "In case of error, a generic response with the error code is returned.",
+              content = @Content(schema = @Schema(implementation = GenericResult.class))) })
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @POST
@@ -122,9 +124,10 @@ public class LoginApiKeyResource implements IT9tRestEndpoint {
         description = "The request creates a session at the host and returns a JWT which can be used as authentication token for subsequent requests."
           + " Authentication is by API key. Deprecated, prefer using the repsective POST request.",
         responses = {
-            @ApiResponse(description = "Authentication successful.", content = @Content(schema = @Schema(implementation = AuthenticationResult.class)))
-        }
-    )
+            @ApiResponse(responseCode = "200", description = "Authentication successful.",
+              content = @Content(schema = @Schema(implementation = AuthenticationResult.class))),
+            @ApiResponse(responseCode = "default", description = "In case of error, a generic response with the error code is returned.",
+              content = @Content(schema = @Schema(implementation = GenericResult.class))) })
     @GET
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Path("/{apikey}")

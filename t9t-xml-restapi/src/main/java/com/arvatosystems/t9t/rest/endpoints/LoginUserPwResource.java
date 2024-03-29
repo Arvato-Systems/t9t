@@ -23,6 +23,7 @@ import com.arvatosystems.t9t.base.auth.PasswordAuthentication;
 import com.arvatosystems.t9t.rest.services.IAuthFilterCustomization;
 import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
 import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
+import com.arvatosystems.t9t.xml.GenericResult;
 import com.arvatosystems.t9t.xml.auth.AuthByUserIdPassword;
 import com.arvatosystems.t9t.xml.auth.AuthenticationResult;
 
@@ -76,9 +77,10 @@ public class LoginUserPwResource implements IT9tRestEndpoint {
         description = "The request creates a session at the host and returns a JWT which can be used as authentication token for subsequent requests."
           + " Authentication is by user name / password.",
         responses = {
-            @ApiResponse(description = "Authentication successful.", content = @Content(schema = @Schema(implementation = AuthenticationResult.class)))
-        }
-    )
+            @ApiResponse(responseCode = "200", description = "Authentication successful.",
+              content = @Content(schema = @Schema(implementation = AuthenticationResult.class))),
+            @ApiResponse(responseCode = "default", description = "In case of error, a generic response with the error code is returned.",
+              content = @Content(schema = @Schema(implementation = GenericResult.class))) })
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @POST

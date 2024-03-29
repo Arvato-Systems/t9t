@@ -51,10 +51,10 @@ public class RunCannedRequestResource implements IT9tRestEndpoint {
         summary = "Run a preconfigured request",
         description = "The request runs a request which has been preconfigured with all parameters.",
         responses = {
-            @ApiResponse(description = "Request passed.",
+            @ApiResponse(responseCode = "200", description = "Request passed.",
               content = @Content(mediaType = "application/json", schema = @Schema(implementation = GenericResult.class))),
-            @ApiResponse(responseCode = "400", description = "Bad request.")}
-    )
+            @ApiResponse(responseCode = "default", description = "In case of error, a generic response with the error code is returned.",
+            content = @Content(schema = @Schema(implementation = GenericResult.class))) })
     @POST
     @Path("/{id}")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })

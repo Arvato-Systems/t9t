@@ -66,12 +66,12 @@ public class PingRestResource implements IT9tRestEndpoint {
         summary = "Health check (quick)",
         description = "A successful GET confirms that the server is listening on the specified port.",
         responses = {
-            @ApiResponse(
+            @ApiResponse(responseCode = "200",
               description = "Request passed.",
               content = @Content(mediaType = "application/json",
               schema = @Schema(implementation = GenericResult.class))),
-            @ApiResponse(responseCode = "400", description = "Bad request.")}
-    )
+            @ApiResponse(responseCode = "default", description = "In case of error, a generic response with the error code is returned.",
+              content = @Content(schema = @Schema(implementation = GenericResult.class))) })
     @GET
     public Response testPingGet(@Context final HttpHeaders httpHeaders) {
         LOGGER.debug("Ping GET request at /ping");
@@ -82,10 +82,10 @@ public class PingRestResource implements IT9tRestEndpoint {
         summary = "Health check (logged)",
         description = "A successful POST confirms that the server is listening on the specified port and the worker pool has available processing slots.",
         responses = {
-            @ApiResponse(description = "Request passed.", content = @Content(schema = @Schema(implementation = GenericResult.class))),
-            @ApiResponse(responseCode = "400", description = "Bad request.")
-        }
-    )
+            @ApiResponse(responseCode = "200", description = "Request passed.",
+              content = @Content(schema = @Schema(implementation = GenericResult.class))),
+            @ApiResponse(responseCode = "default", description = "In case of error, a generic response with the error code is returned.",
+            content = @Content(schema = @Schema(implementation = GenericResult.class))) })
     @POST
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -97,12 +97,12 @@ public class PingRestResource implements IT9tRestEndpoint {
         summary = "Health check (channeled)",
         description = "A successful GET sends a channeled ping to the server.",
         responses = {
-            @ApiResponse(
+            @ApiResponse(responseCode = "200",
               description = "Request passed.",
               content = @Content(mediaType = "application/json",
               schema = @Schema(implementation = GenericResult.class))),
-            @ApiResponse(responseCode = "400", description = "Bad request.")}
-    )
+            @ApiResponse(responseCode = "default", description = "In case of error, a generic response with the error code is returned.",
+              content = @Content(schema = @Schema(implementation = GenericResult.class))) })
     @GET
     @Path("/{id}")
     public void testPong(@Context final HttpHeaders httpHeaders, @Suspended final AsyncResponse resp,
