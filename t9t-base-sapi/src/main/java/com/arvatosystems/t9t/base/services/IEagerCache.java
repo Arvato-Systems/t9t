@@ -36,13 +36,4 @@ public interface IEagerCache<T> {
      * @return the cache data for the tenant stored within the context.
      **/
     T getCache(RequestContext ctx);
-
-    /**
-     * Obtains the cache contents for the current tenant.
-     * If no entry exists, an exception is thrown.
-     *
-     * @param tenantId the tenant reference for this operation
-     * @return the cache data for the specified tenant.
-     **/
-    T getCache(String tenantId);
 }
