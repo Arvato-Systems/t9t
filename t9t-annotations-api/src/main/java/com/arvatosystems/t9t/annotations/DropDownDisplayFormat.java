@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 - 2023 Arvato Systems GmbH
+ * Copyright (c) 2012 - 2024 Arvato Systems GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.zkui.components.dropdown28.factories;
+package com.arvatosystems.t9t.annotations;
 
-import org.zkoss.zul.Combobox;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public interface IDropdown28BasicFactory<T extends Combobox> {
-
-    /** Returns the ID of the Dropdown (the ID is also referenced in the "dropdown" property of the bon file). */
-    String getDropdownId();
-
-    /** Creates an instance of the dropdown control (ZK combobox instance). */
-    T createInstance();
-
-    default T createInstance(String dropdownDisplayFormat) {
-        return createInstance();
-    }
+/**
+ * Annotation to define specific format to display dropdown label based on underlying Description data structure.
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.FIELD })
+public @interface DropDownDisplayFormat {
+    String value();
 }

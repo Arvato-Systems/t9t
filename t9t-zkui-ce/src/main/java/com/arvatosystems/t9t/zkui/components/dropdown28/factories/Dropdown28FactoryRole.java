@@ -55,6 +55,11 @@ public class Dropdown28FactoryRole implements IDropdown28DbFactory<RoleRef> {
     }
 
     @Override
+    public Dropdown28Db<RoleRef> createInstance(String dropdownDisplayFormat) {
+        return new Dropdown28Db<RoleRef>(this, dropdownDisplayFormat);
+    }
+
+    @Override
     public String getIdFromKey(RoleRef key) {
         if (key instanceof RoleKey)
             return ((RoleKey)key).getRoleId();

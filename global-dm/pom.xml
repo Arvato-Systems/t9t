@@ -101,7 +101,7 @@
         <commons-email.version>99.0-donotuse</commons-email.version>      <!-- no longer used in t9t, because seems to be unmaintained -->
         <commons-cli.version>1.6.0</commons-cli.version>
         <commons-codec.version>1.16.1</commons-codec.version>
-        <commons-io.version>2.15.1</commons-io.version>                   <!-- regularly updated again -->
+        <commons-io.version>2.16.0</commons-io.version>                   <!-- regularly updated again -->
         <commons-lang3.version>3.14.0</commons-lang3.version>             <!-- regularly updated again -->
         <commons-beanutils.version>1.9.4</commons-beanutils.version>      <!-- must be 1.9.2 at least due to CVE-2014-0114, but still pulls in outdated collections3 -->
         <commons-collections4.version>4.4</commons-collections4.version>
@@ -116,7 +116,7 @@
 
         <!-- Azure -->
         <azure-cosmosdb.version>2.6.16</azure-cosmosdb.version>
-        <azure-cosmos-sdk.version>4.56.0</azure-cosmos-sdk.version>
+        <azure-cosmos-sdk.version>4.57.0</azure-cosmos-sdk.version>
 
         <!-- Camunda BPMN: still linked to pre-jakarta spring version, removing -->
         <!-- <camunda-bom.version>7.18.0</camunda-bom.version> -->
@@ -127,7 +127,7 @@
         <!-- Test support -->
         <junit.version>4.13.2</junit.version>      <!-- groupId is junit -->
         <hamcrest.version>2.2</hamcrest.version>   <!-- avoid unless required -->
-        <byte-buddy.version>1.14.12</byte-buddy.version>   <!-- 1.12.x requested by mockito 4.2.0, and reuired for Java 17 -->
+        <byte-buddy.version>1.14.13</byte-buddy.version>   <!-- 1.12.x requested by mockito 4.2.0, and reuired for Java 17 -->
         <org.mockito-core.version>5.11.0</org.mockito-core.version>
         <archunit.version>1.0.1</archunit.version>
         <hdrhistogram.version>2.1.12</hdrhistogram.version>
@@ -190,9 +190,9 @@
         <jackson.version>2.16.1</jackson.version>
         <jackson-databind.version>2.16.1</jackson-databind.version> <!-- separate version due to frequent CVE updates which do not release the full set -->
         <solr.version>8.11.1</solr.version>
-        <camel.version>4.4.1</camel.version>
+        <camel.version>4.5.0</camel.version>
         <jsch.version>0.2.11</jsch.version>
-        <kafka.version>3.6.1</kafka.version>
+        <kafka.version>3.7.0</kafka.version>
         <error-prone.version>2.21.1</error-prone.version>
 
         <!-- Monitoring -->
@@ -208,8 +208,8 @@
         <google-auth-library.version>1.17.0</google-auth-library.version>
         <firebase-admin.version>9.1.1</firebase-admin.version>
 
-        <msal4j.version>1.14.3</msal4j.version>
-        <nimbus.version>9.30.2</nimbus.version>
+        <msal4j.version>1.15.0</msal4j.version>
+        <nimbus.version>9.37.2</nimbus.version>
     </properties>
 
 
@@ -720,8 +720,8 @@
                 <version>${hibernate.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.hibernate.orm</groupId>  <!-- does not exist after alpha7. Deprecated? -->
-                <artifactId>hibernate-entitymanager</artifactId>
+                <groupId>org.hibernate.orm</groupId>
+                <artifactId>hibernate-vector</artifactId>
                 <version>${hibernate.version}</version>
             </dependency>
             <dependency>

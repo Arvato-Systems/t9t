@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.zkui.components.dropdown28.db;
 
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,12 +36,16 @@ import com.arvatosystems.t9t.zkui.components.dropdown28.factories.IDropdown28DbF
 import com.arvatosystems.t9t.zkui.components.dropdown28.nodb.Dropdown28Registry;
 import com.arvatosystems.t9t.zkui.fixedFilters.IFixedFilter;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
+import com.arvatosystems.t9t.zkui.util.T9tConfigConstants;
+import com.arvatosystems.t9t.zkui.util.ZulUtils;
+
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.dp.Jdp;
 
 public class Dropdown28Db<REF extends BonaPortable> extends Combobox {
     private static final Logger LOGGER = LoggerFactory.getLogger(Dropdown28Db.class);
     private static final long serialVersionUID = 3911446278727438869L;
+    private static final String DEFAULT_DISPLAY_FORMAT = "{0} - {1}";
 
     // instance fields and methods
 
@@ -52,14 +57,17 @@ public class Dropdown28Db<REF extends BonaPortable> extends Combobox {
     private final Map<Long,   Description>          lookupByRef;
     protected IFixedFilter                          fixedFilter = null;        // a fixed search filter provider
     protected IDescriptionFilter                    descriptionFilter = null;  // a filter on results
+    protected final String                          dropdownDisplayFormat;
+    protected final MessageFormat                   messageFormat;
 
-    public Dropdown28Db(IDropdown28DbFactory<REF> myFactory) {
+    public Dropdown28Db(IDropdown28DbFactory<REF> myFactory, String dropdownDisplayFormat) {
         super();
         this.setAutocomplete(true);
         this.setAutodrop(true);
         this.setHflex("1");
-        this.setMaxlength(36);  // role has 32 chars length, defaultExternalId 36 (= max)
+        this.setMaxlength(120);
         this.setSclass("dropdown");
+        this.dropdownDisplayFormat = dropdownDisplayFormat;
 
         factory           = myFactory;
         entries           = session.getDropDownData(factory.getDropdownId(), factory.getSearchRequest());
@@ -67,6 +75,7 @@ public class Dropdown28Db<REF extends BonaPortable> extends Combobox {
         lookupByRef       = new ConcurrentHashMap<Long, Description>(entries.size());
         allIds            = new ListModelList<ComboBoxEntry>(entries.size());
         LOGGER.debug("Dropdown DB {} instantiated, got {} entries", factory.getDropdownId(), entries.size());
+        messageFormat = new MessageFormat(getDisplayFormat());
         getDropDownData();
 
         addEventListener(Events.ON_CHANGE, (event) -> doChangeEvent());
@@ -79,6 +88,10 @@ public class Dropdown28Db<REF extends BonaPortable> extends Combobox {
             setRawValue("");  // clearing raw data is not always what we want, it kills the ability to search with LIKE criteria...
             setModel(new SimpleListModelExt<ComboBoxEntry>(allIds));
         }
+    }
+
+    public Dropdown28Db(IDropdown28DbFactory<REF> myFactory) {
+        this(myFactory, null);
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -94,9 +107,16 @@ public class Dropdown28Db<REF extends BonaPortable> extends Combobox {
     public Description lookupById(String id) {
         return lookupById.get(id.toLowerCase());
     }
+
     public Description lookupByRef(Long ref) {
         return lookupByRef.get(ref);
     }
+
+    public String getDisplayIdByRef(Long ref) {
+        Description desc = lookupByRef.get(ref);
+        return desc == null ? null : getDisplayId(desc);
+    }
+
     public IDropdown28DbFactory<REF> getFactory() {
         return factory;
     }
@@ -132,16 +152,30 @@ public class Dropdown28Db<REF extends BonaPortable> extends Combobox {
         lookupByRef.clear();
         allIds.clear();
         for (Description d : entries) {
-
-//            if (!d.getIsActive())
-//                continue;
-
-            String keyInLowercase = d.getId().toLowerCase();
+            final String id = getDisplayId(d);
+            final String keyInLowercase = id.toLowerCase();
             lookupById.put(keyInLowercase, d);
             lookupByRef.put(d.getObjectRef(), d);
-            ComboBoxEntry comboBoxEntry = new ComboBoxEntry(d.getId(), d.getId(), d.getName(), null);
+            final ComboBoxEntry comboBoxEntry = new ComboBoxEntry(id, id, "", null);
             allIds.add(comboBoxEntry);
         }
         setModel(new SimpleListModelExt<ComboBoxEntry>(allIds));
+    }
+
+    protected String getDisplayFormat() {
+        String format = ZulUtils.readConfig(T9tConfigConstants.DROPDOWN_DISPLAY_FORMAT + "." + factory.getDropdownId());
+        if (format != null) {
+            return format;
+        }
+        format = ZulUtils.readConfig(T9tConfigConstants.DROPDOWN_DISPLAY_FORMAT);
+        return format != null ? format : dropdownDisplayFormat != null ? dropdownDisplayFormat : DEFAULT_DISPLAY_FORMAT;
+    }
+
+    protected String getDisplayId(Description desc) {
+        if (desc.getName() == null || desc.getName().isBlank()) {
+            return desc.getId(); // shortcut
+        }
+        Object[] args = {desc.getId(), desc.getName()};
+        return messageFormat.format(args);
     }
 }

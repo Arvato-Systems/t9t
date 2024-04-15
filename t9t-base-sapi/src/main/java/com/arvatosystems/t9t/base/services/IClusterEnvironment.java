@@ -18,6 +18,7 @@ package com.arvatosystems.t9t.base.services;
 import java.util.Collection;
 
 import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.api.ServiceRequest;
 
 /**
  * Services to decide whether data of a given shard should be processed here.
@@ -35,6 +36,9 @@ public interface IClusterEnvironment {
 
     /** Decides if a given index should be processed on this shard (preferred API). */
     boolean processOnThisNode(String tenantId, int hash);
+
+    /** Ships a request to some other node for processing. */
+    void processOnOtherNode(ServiceRequest srq, int targetPartition, Object recordKey);
 
     /** Pause partitions for underlying queuing implementation like Kafka. */
     default void pausePartitions() {

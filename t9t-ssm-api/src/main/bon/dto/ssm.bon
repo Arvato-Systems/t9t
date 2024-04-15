@@ -116,7 +116,7 @@ package (com.arvatosystems) t9t.ssm {
         optional shortText                          name;                   // Some name or description of the setup
 
         required (CannedRequestRef...,CannedRequestDTO) request properties ref, dropdown="cannedRequestId", searchprefix="cannedRequest";              // the ID referencing the invocation, using ExecuteCannedRequest()
-        required userId                             userId      properties dropdown="userId";          // the user ID to run this request under
+        required userId                             userId;                 // the user ID to run this request under
         optional Uuid                               apiKey;                 // the API key to use for job execution (required, but will be created on the fly)
         optional languageTag                        languageCode;           // which language should the job use? (important for scheduled reports)
 
@@ -140,7 +140,7 @@ package (com.arvatosystems) t9t.ssm {
         optional customizationQualifier             concurrencyHook    properties qualifierFor = "ssm.services.ISchedulerHook";
         optional unsigned Integer                   timeLimit;              // time limit for a single execution (in seconds). Once exceeded, the stale concurrency is used, and an email is generated (if the mailingGroup has been defined). If null, there is no limit
         optional t9tShortId                         mailingGroupId     properties dropdown="mailGroupId";
-        optional unsigned Integer                   runOnNode;              // node / shard to use in a clustered environment (leave blank to run it on any node)
+        optional unsigned Integer                   runOnNode;              // node / shard to use in a clustered environment (leave blank to run it on any node) or set to >= 400 for all nodes
         optional Unicode(36)                        schedulerEnvironment;   // allows to select the server on which this should run
     }
 }

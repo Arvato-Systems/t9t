@@ -21,6 +21,7 @@ import org.zkoss.zul.Comboitem;
 
 import com.arvatosystems.t9t.zkui.components.dropdown28.db.Dropdown28Db;
 import com.arvatosystems.t9t.zkui.components.dropdown28.factories.IDropdown28DbFactory;
+import com.arvatosystems.t9t.zkui.util.Constants;
 import com.arvatosystems.t9t.base.search.Description;
 
 import de.jpaw.bonaparte.pojos.apiw.Ref;
@@ -39,7 +40,9 @@ public class DropdownDbAsStringDataField extends AbstractDataField<Dropdown28Db<
     public DropdownDbAsStringDataField(DataFieldParameters params, String dropdownType, IDropdown28DbFactory<Ref> dbFactory) {
         super(params);
         factory = dbFactory;
-        c = dbFactory.createInstance();
+        String format = params.cfg != null && params.cfg.getProperties() != null ? params.cfg.getProperties().get(Constants.UiFieldProperties.DROPDOWN_FORMAT)
+            : null;
+        c = dbFactory.createInstance(format);
         setConstraints(c, null);
     }
 

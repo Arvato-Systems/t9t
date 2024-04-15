@@ -66,7 +66,7 @@ public class QuartzSchedulerService implements ISchedulerService {
     public static final String DM_LANGUAGE   = "language";      // the desired language
     public static final String DM_REQUEST    = "request";       // a reference to the serialized request stored centrally
     public static final String DM_CONC_TYPE  = "concType";      // the concurrency type
-    public static final String DM_CONC_TYPE2 = "concTypeStale"; // the concurrency type for old instances
+    // public static final String DM_CONC_TYPE2 = "concTypeStale"; // the concurrency type for old instances (not persisted in Job map)
     public static final String DM_TIME_LIMIT = "timeLimit";     // after how many minutes a process is regarded as "old"
     public static final String DM_RUN_ON_NODE = "runOnNode";    // on which node to run this task, or null for any node
     public static final Integer RUN_ON_ANY_NODE  = Integer.valueOf(-1);

@@ -24,6 +24,7 @@ import com.arvatosystems.t9t.zkui.components.dropdown28.factories.IDropdown28Bas
 import com.arvatosystems.t9t.zkui.components.dropdown28.factories.IDropdown28DbFactory;
 import com.arvatosystems.t9t.zkui.components.dropdown28.nodb.Dropdown28Registry;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
+import com.arvatosystems.t9t.zkui.util.Constants;
 import com.arvatosystems.t9t.base.search.Description;
 
 import de.jpaw.bonaparte.pojos.api.LongFilter;
@@ -41,7 +42,8 @@ public class DropdownField extends AbstractField<Combobox> {
 
     @Override
     protected Combobox createComponent(String suffix) {
-        return factory.createInstance();
+        String format = desc.getProperties() != null ? desc.getProperties().get(Constants.UiFieldProperties.DROPDOWN_FORMAT) : null;
+        return factory.createInstance(format);
     }
 
     @Override

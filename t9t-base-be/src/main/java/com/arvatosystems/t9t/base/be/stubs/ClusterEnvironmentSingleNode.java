@@ -21,6 +21,8 @@ import java.util.Collections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.api.ServiceRequest;
 import com.arvatosystems.t9t.base.services.IClusterEnvironment;
 
 import de.jpaw.dp.Fallback;
@@ -55,5 +57,12 @@ public class ClusterEnvironmentSingleNode implements IClusterEnvironment {
     @Override
     public int getNumberOfNodes() {
         return 1;
+    }
+
+    @Override
+    public void processOnOtherNode(final ServiceRequest srq, final int targetPartition, final Object recordKey) {
+        LOGGER.error("Logic error: Cannot transfer request {} to different node {} in single node environment for key {}!",
+          srq.getRequestParameters().ret$PQON(), targetPartition, recordKey);
+        throw new T9tException(T9tException.INVALID_PROCESSING);
     }
 }

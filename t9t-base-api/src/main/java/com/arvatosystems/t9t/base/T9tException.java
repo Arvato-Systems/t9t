@@ -217,6 +217,9 @@ public class T9tException extends ApplicationException {
     public static final int REF_RESOLVER_WRONG_RESPONSE_TYPE = OFFSET + 350;
     public static final int ILE_MISSING_DEPENDENCY = OFFSET_LOGIC_ERROR + 351;
 
+    public static final int INVALID_PROCESSING = OFFSET_LOGIC_ERROR + 358;
+
+
     // plugin issues
     public static final int NO_PLUGIN_METHOD_AVAILABLE  = OFFSET + 360;
     public static final int PLUGIN_LOADING_ERROR        = OFFSET + 361;
@@ -579,6 +582,8 @@ public class T9tException extends ApplicationException {
         registerCode(BAD_S3_BUCKET_NAME, "Bad S3 Bucket name (must be bucket:path)");
         registerCode(S3_WRITE_ERROR, "Exception writing to S3 bucket");
         registerCode(SQS_WRITE_ERROR, "Exception writing to SQS bucket");
+
+        registerCode(INVALID_PROCESSING, "Logic error: cannot route to different server in single node environment");
 
         registerCode(REQUEST_STILL_PROCESSING, MSG_REQUEST_STILL_PROCESSING);
 

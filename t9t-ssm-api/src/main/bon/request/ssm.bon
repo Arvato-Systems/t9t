@@ -69,4 +69,13 @@ package (com.arvatosystems) t9t.ssm.request {
     class DealWithPriorJobInstancesResponse extends ServiceResponse {
         required boolean                        invokeNewInstance;
     }
+
+    /**
+     * Executes the request, unless there is no parallel job running on this instance.
+     */
+    class PerformScheduledJobWithCheckRequest extends RequestParameters {
+        required f42Ref                         schedulerSetupRef;
+        required enum SchedulerConcurrencyType  concurrencyType;
+        required (RequestParameters...)         request;
+    }
 }

@@ -55,6 +55,11 @@ public class Dropdown28FactoryUser implements IDropdown28DbFactory<UserRef> {
     }
 
     @Override
+    public Dropdown28Db<UserRef> createInstance(String dropdownDisplayFormat) {
+        return new Dropdown28Db<UserRef>(this, dropdownDisplayFormat);
+    }
+
+    @Override
     public String getIdFromKey(UserRef key) {
         if (key instanceof UserKey)
             return ((UserKey)key).getUserId();

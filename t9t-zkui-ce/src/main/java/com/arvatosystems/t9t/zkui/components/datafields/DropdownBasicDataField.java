@@ -17,6 +17,7 @@ package com.arvatosystems.t9t.zkui.components.datafields;
 
 import com.arvatosystems.t9t.zkui.components.dropdown28.factories.IDropdown28BasicFactory;
 import com.arvatosystems.t9t.zkui.components.dropdown28.nodb.Dropdown28Ext;
+import com.arvatosystems.t9t.zkui.util.Constants;
 
 /** Prebuilt dropdowns. */
 public class DropdownBasicDataField extends AbstractDataField<Dropdown28Ext, String> {
@@ -31,7 +32,9 @@ public class DropdownBasicDataField extends AbstractDataField<Dropdown28Ext, Str
 
     public DropdownBasicDataField(DataFieldParameters params, String dropdownType, IDropdown28BasicFactory<Dropdown28Ext> dbFactory) {
         super(params);
-        c = dbFactory.createInstance();
+        String format = params.cfg != null && params.cfg.getProperties() != null ? params.cfg.getProperties().get(Constants.UiFieldProperties.DROPDOWN_FORMAT)
+            : null;
+        c = dbFactory.createInstance(format);
         setConstraints(c, null);
     }
 

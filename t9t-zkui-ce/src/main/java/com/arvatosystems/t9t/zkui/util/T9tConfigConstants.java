@@ -31,6 +31,7 @@ public final class T9tConfigConstants {
     public static final String EXPORT_DEFAULT_LIMIT   = "export.defaultLimit";
     public static final String HEADER_JUMP_BACK_BUTTON_DISABLE = "header.jumpBackButton.disable";
     public static final String HEADER_SEARCH_BOX_DISABLE = "header.searchBox.disable";
+    public static final String DROPDOWN_DISPLAY_FORMAT = "dropdown.display.format";
 
     /** A boolean property to have the "today" button appear for date selection boxes globally. */
     public static final String DATE_PICKER_SHOW_TODAY = "datePicker.showToday";

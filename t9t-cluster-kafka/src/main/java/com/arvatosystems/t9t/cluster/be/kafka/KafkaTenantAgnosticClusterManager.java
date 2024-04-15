@@ -21,8 +21,11 @@ import java.util.Collections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.base.IKafkaRequestTransmitter;
+import com.arvatosystems.t9t.base.api.ServiceRequest;
 import com.arvatosystems.t9t.base.services.IClusterEnvironment;
 
+import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 
 /**
@@ -33,6 +36,8 @@ import de.jpaw.dp.Singleton;
 public class KafkaTenantAgnosticClusterManager implements IClusterEnvironment {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaTenantAgnosticClusterManager.class);
+
+    protected final IKafkaRequestTransmitter requestTransmitter = Jdp.getRequired(IKafkaRequestTransmitter.class);
 
     @Override
     public Collection<String> getListOfTenantIds() {
@@ -77,4 +82,9 @@ public class KafkaTenantAgnosticClusterManager implements IClusterEnvironment {
         }
     }
 
+    @Override
+    public void processOnOtherNode(final ServiceRequest srq, final int targetPartition, final Object recordKey) {
+        // just delegate
+        requestTransmitter.write(srq, targetPartition, recordKey);
+    }
 }

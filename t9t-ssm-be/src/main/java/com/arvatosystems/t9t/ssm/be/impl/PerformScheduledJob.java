@@ -45,6 +45,7 @@ import com.arvatosystems.t9t.server.services.IUnauthenticatedServiceRequestExecu
 import com.arvatosystems.t9t.ssm.SchedulerConcurrencyType;
 import com.arvatosystems.t9t.ssm.request.DealWithPriorJobInstancesRequest;
 import com.arvatosystems.t9t.ssm.request.DealWithPriorJobInstancesResponse;
+import com.arvatosystems.t9t.ssm.request.PerformScheduledJobWithCheckRequest;
 
 import de.jpaw.bonaparte.core.StringBuilderParser;
 import de.jpaw.dp.Jdp;
@@ -80,9 +81,10 @@ public class PerformScheduledJob implements Job {
     public final void execute(final JobExecutionContext context) throws JobExecutionException {
         final JobDataMap dataMap = context.getJobDetail().getJobDataMap();
         boolean wrapForAllNodes = false;
+        int redirectToNode = -1;
         try {
             final int runOnNode = dataMap.getInt(QuartzSchedulerService.DM_RUN_ON_NODE);
-            // runOnNode is -1 if the task can run on any node, 0...n for a specific node, and a big number (anything > 240) for all nodes
+            // runOnNode is -1 if the task can run on any node, 0...n for a specific node, and a big number (anything > 400) for all nodes
             if ((runOnNode != (QuartzSchedulerService.RUN_ON_ANY_NODE).intValue())) {
                 if (runOnNode >= 400) {
                     wrapForAllNodes = true;
@@ -90,7 +92,8 @@ public class PerformScheduledJob implements Job {
                     // check for specific node
                     final String tenantId = dataMap.getString(QuartzSchedulerService.DM_TENANT_ID);
                     if (!clusterEnvironment.processOnThisNode(tenantId, runOnNode)) {
-                        return; // not suitable for this node
+                        // must send the job to another node
+                        redirectToNode = runOnNode;
                     }
                 }
             }
@@ -98,28 +101,59 @@ public class PerformScheduledJob implements Job {
             // some of the variables are missing - old scheduler setup for single node environment
         }
 
+        // retrieve required parameters from job context
         final String apiKey            = dataMap.getString(QuartzSchedulerService.DM_API_KEY);
         final String language          = dataMap.getString(QuartzSchedulerService.DM_LANGUAGE);
         final String serializedRequest = dataMap.getString(QuartzSchedulerService.DM_REQUEST);
-        final long setupRef            = dataMap.getLong  (QuartzSchedulerService.DM_SETUP_REF);
+        final String concurrencyTypeS  = dataMap.getString(QuartzSchedulerService.DM_CONC_TYPE);
+        final Long setupRef            = Long.valueOf(dataMap.getLong(QuartzSchedulerService.DM_SETUP_REF));
+        final SchedulerConcurrencyType concurrencyType = concurrencyTypeS == null
+                ? SchedulerConcurrencyType.RUN_PARALLEL
+                : SchedulerConcurrencyType.factory(concurrencyTypeS);
 
-        final RequestParameters requestParameters0
-          = StringBuilderParser.<RequestParameters>unmarshal(serializedRequest, ServiceRequest.meta$$requestParameters, RequestParameters.class);
-        final RequestParameters requestParameters = wrapForAllNodes ? new ExecuteOnAllNodesRequest(requestParameters0) : requestParameters0;
         final ServiceRequestHeader header = new ServiceRequestHeader();
         header.setLanguageCode(language);
-        header.setInvokingProcessRef(Long.valueOf(setupRef));
+        header.setInvokingProcessRef(setupRef);
         header.setPlannedRunDate(context.getScheduledFireTime().toInstant());
         header.freeze();
-        requestParameters.setWhenSent(header.getPlannedRunDate().toEpochMilli());
-        requestParameters.setTransactionOriginType(TransactionOriginType.SCHEDULER);
 
         final ApiKeyAuthentication auth = new ApiKeyAuthentication(UUID.fromString(apiKey));
         auth.freeze();
+
+        RequestParameters requestParameters
+          = StringBuilderParser.<RequestParameters>unmarshal(serializedRequest, ServiceRequest.meta$$requestParameters, RequestParameters.class);
+        final String requestPQON = requestParameters.ret$PQON();
+
+        final boolean wrapInChecker = redirectToNode >= 0 && concurrencyType != SchedulerConcurrencyType.RUN_PARALLEL;
+        if (wrapInChecker) {
+            // wrap into a request which checks for still running instances of the same scheduler
+            final PerformScheduledJobWithCheckRequest wrapperRequest = new PerformScheduledJobWithCheckRequest();
+            wrapperRequest.setSchedulerSetupRef(setupRef);
+            wrapperRequest.setConcurrencyType(concurrencyType);
+            wrapperRequest.setRequest(requestParameters);
+            requestParameters = wrapperRequest;
+        }
+        if (wrapForAllNodes) {
+            requestParameters = new ExecuteOnAllNodesRequest(requestParameters);
+        }
+
+        // set some header values for the outmost parameters
+        requestParameters.setWhenSent(header.getPlannedRunDate().toEpochMilli());
+        requestParameters.setTransactionOriginType(TransactionOriginType.SCHEDULER);
+        requestParameters.setEssentialKey(setupRef.toString());
+
         final ServiceRequest srq = new ServiceRequest();
         srq.setRequestHeader(header);
         srq.setRequestParameters(requestParameters);
         srq.setAuthentication(auth);
+
+        // service request fully constructed
+        if (redirectToNode >= 0) {
+            // instead of running it locally, send it to a remote node via kafka
+            LOGGER.info("Sending scheduled request {} to node {} via kafka", requestPQON, redirectToNode);
+            clusterEnvironment.processOnOtherNode(srq, redirectToNode, setupRef);
+            return;
+        }
 
         MDC.clear();
         String jobName = null;
@@ -138,17 +172,17 @@ public class PerformScheduledJob implements Job {
                 // check for previous instance
                 // we are outside of any RequestContext, and would need to invoke separate request handlers to perform any actions
                 // therefore do first tests directly
-                final boolean mayStartNewInstance = this.checkPriorInstances(dataMap, Long.valueOf(setupRef), header, auth);
+                final boolean mayStartNewInstance = this.checkPriorInstances(dataMap, setupRef, header, auth);
                 if (mayStartNewInstance) {
                     final ServiceResponse resp = this.inProcessExecutor.execute(srq);
                     // perform a check if the event was successful
                     if (!ApplicationException.isOk(resp.getReturnCode())) {
                         LOGGER.error("Quartz task NOT completed successfully: {} at {} terminated with code {}: {}",
-                            requestParameters.ret$PQON(), srq.getRequestHeader().getPlannedRunDate(),
+                                requestPQON, srq.getRequestHeader().getPlannedRunDate(),
                             Integer.valueOf(resp.getReturnCode()), resp.getErrorDetails());
                     }
                 } else {
-                    LOGGER.info("Skipping scheduled start of request {} for {}", requestParameters.ret$PQON(), srq.getRequestHeader().getPlannedRunDate());
+                    LOGGER.info("Skipping scheduled start of request {} for {}", requestPQON, srq.getRequestHeader().getPlannedRunDate());
                 }
             } catch (final Exception e) {
                 LOGGER.error("Problem performing scheduler analysis: {}", ExceptionUtil.causeChain(e));

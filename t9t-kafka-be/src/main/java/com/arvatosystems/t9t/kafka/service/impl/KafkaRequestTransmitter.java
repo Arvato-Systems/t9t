@@ -98,22 +98,27 @@ public class KafkaRequestTransmitter implements IKafkaRequestTransmitter {
     }
 
     @Override
+    public void write(ServiceRequest srq, int partition, Object recordKey) {
+        write(srq, partition, recordKey == null ? null : recordKey.toString() + ":" + partition);
+    }
+
+    @Override
     public void write(final ServiceRequest srq, final String partitionKey, final Object recordKey) {
+        write(srq, partitionKey.hashCode(), recordKey == null ? null : recordKey.toString() + ":" + partitionKey);
+    }
+
+    protected void write(final ServiceRequest srq, final int partition, final String recordKey) {
         if (!initialized()) {
             // redirect to /dev/null (but complain)
             LOGGER.warn("write called but no topic writer initialized");
             return;
         }
         if (shutdownInProgress.get()) {
-            LOGGER.error("Shutdown in progress! Rejecting message of partition key {}, recordKey {} for {}",
-                partitionKey, recordKey, srq.getRequestParameters().ret$PQON());
+            LOGGER.error("Shutdown in progress! Rejecting message to partition {}, recordKey {} for {}",
+                partition, recordKey, srq.getRequestParameters().ret$PQON());
             throw new T9tException(T9tException.SHUTDOWN_IN_PROGRESS);
         }
-        topicWriter.write(srq, partitionKey.hashCode(), createRecordKey(partitionKey, recordKey));
-    }
-
-    protected String createRecordKey(final String partitionKey, final Object recordKey) {
-        return recordKey == null ? null : recordKey.toString() + ":" + partitionKey;
+        topicWriter.write(srq, partition, recordKey);
     }
 
     @Override
