@@ -133,7 +133,7 @@
         <hdrhistogram.version>2.1.12</hdrhistogram.version>
 
         <!-- Others -->
-        <bouncycastle.version>1.76</bouncycastle.version>
+        <bouncycastle.version>1.78</bouncycastle.version>
         <bouncycastle-tsp.version>1.46-donotuse</bouncycastle-tsp.version>     <!--  is older than the others! Is it still required? -->
         <woodstox.version>6.5.1</woodstox.version>
         <stax2-api.version>4.2.1</stax2-api.version>
