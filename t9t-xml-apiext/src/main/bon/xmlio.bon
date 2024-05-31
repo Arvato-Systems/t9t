@@ -90,6 +90,8 @@ package (com.arvatosystems) t9t.xml XML PROPERTY bundle t9t.config swagger {
     final class ErrorDescription001 {
         required int                                returnCode;                 // return code
         required Unicode(512)                       errorMessage;               // Explaining text (in English)
+        optional Unicode(255)                       applicationLevel;           // application level
+        optional Unicode(255)                       moduleDescription;          // module description
     }
 
     final class ErrorDescriptionList xmlRoot {

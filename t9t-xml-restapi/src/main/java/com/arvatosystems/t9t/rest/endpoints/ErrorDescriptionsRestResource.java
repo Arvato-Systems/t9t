@@ -67,8 +67,9 @@ public class ErrorDescriptionsRestResource implements IT9tRestEndpoint {
         restProcessor.performAsyncBackendRequest(httpHeaders, resp, rq, "GET /errordescriptions", RetrievePossibleErrorCodesResponse.class,
                 r -> {
                     final List<ErrorDescription001> results = new ArrayList<>(r.getErrorDescriptions().size());
-                    for (final ErrorDescription desc: r.getErrorDescriptions()) {
-                        results.add(new ErrorDescription001(desc.getReturnCode(), desc.getErrorMessage()));
+                    for (final ErrorDescription desc : r.getErrorDescriptions()) {
+                        results.add(
+                                new ErrorDescription001(desc.getReturnCode(), desc.getErrorMessage(), desc.getApplicationLevel(), desc.getModuleDescription()));
                     }
                     return new ErrorDescriptionList(results);
                 });

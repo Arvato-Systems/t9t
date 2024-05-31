@@ -87,6 +87,16 @@ public final class T9tConstants {
     public static final int EXCEPTION_OFFSET_DOC            = 34_000;   // The range for t9t-doc exception codes starts here - internal (admin) API
     public static final int EXCEPTION_OFFSET_VOICE          = 41_000;   // The range for t9t-voice exception codes starts here
 
+    public static final int EXCEPTION_OFFSET_VDB            = 50_000;   // The range for t9t-vdb exception codes starts here (vector DB exceptions)
+    public static final int EXCEPTION_OFFSET_VDB_PGVECTOR   = 51_000;   // The range for t9t-vdb exception codes related to Postgres pgvector ext. starts here
+    public static final int EXCEPTION_OFFSET_VDB_PINECONE   = 52_000;   // The range for t9t-vdb exception codes related to Pinecone starts here
+    public static final int EXCEPTION_OFFSET_VDB_QDRANT     = 53_000;   // The range for t9t-vdb exception codes related to Qdrant starts here
+
+    public static final int EXCEPTION_OFFSET_AI             = 60_000;   // The range for t9t-ai exception codes starts here (generic AI exceptions)
+    public static final int EXCEPTION_OFFSET_LANGCHAIN      = 61_000;   // The range for langchain related exception codes starts here
+    public static final int EXCEPTION_OFFSET_OPENAI         = 62_000;   // The range for t9t-openai exception codes starts here (OpenAI specific exceptions)
+    public static final int EXCEPTION_OFFSET_OLLAMA         = 63_000;   // The range for t9t-ollama exception codes starts here (Ollama specific exceptions)
+
     /**
      * The maximum return code which is considered as an "OK" response code.
      */
@@ -110,6 +120,8 @@ public final class T9tConstants {
     public static final Integer BUCKET_DELETED = Integer.valueOf(4);
 
     public static final long DEFAULT_JVM_LOCK_TIMEOUT   = 5000L;  //JVM Lock in milliseconds
+
+    public static final String MEDIA_DATA_Z_KEY_FILENAME = "filename";             // an optional z-field entry where a source file name is stored
 
     public static final String CFG_FILE_KEY_ENVIRONMENT_TEXT = "environment";      // the description of the environment (PRODUCTION / INTEGRATION / UAT / DEV)
     public static final String CFG_FILE_KEY_ENVIRONMENT_CSS  = "environment_css";  // the CSS class to use for the display (in case of non default)
@@ -144,8 +156,12 @@ public final class T9tConstants {
     public static final String HTTP_HEADER_CHARSET          = "Charset";            // Just for code which does not have a jakarta-rs API dependency
     public static final String HTTP_HEADER_ACCEPT_CHARSET   = "Accept-Charset";     // Just for code which does not have a jakarta-rs API dependency
     public static final String HTTP_HEADER_CONTENT_ENCODING = "Content-Encoding";   // Header needed to specify compressed data
+    public static final String HTTP_HEADER_AUTH             = "Authorization";      // Authentication header
     public static final String HTTP_ENCODING_GZIPPED        = "gzip";               // The encoding used for compression
     public static final String HTTP_CHARSET_UTF8            = "utf-8";              // The default charset we prefer
+    public static final String HTTP_MULTIPART_FD_PREFIX     = "multipart/form-data; boundary=";        // prefix for content type in case of multipart form-data
+    public static final String HTTP_MULTIPART_FD_DISPOSITION = "Content-Disposition: form-data; name="; // prefix for content disposition in case of multipart
+    public static final String HTTP_WWW_FORM_URLENCODED     = "application/x-www-form-urlencoded";      // MIME type for form encoded data
 
     public static final String HTTP_AUTH_PREFIX_JWT         = "Bearer ";            // prefix of the Authorization header to transmit a JWT
     public static final String HTTP_AUTH_PREFIX_API_KEY     = "API-Key ";           // prefix of the Authorization header to transmit an API key

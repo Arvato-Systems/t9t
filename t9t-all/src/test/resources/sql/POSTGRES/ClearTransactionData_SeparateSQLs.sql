@@ -12,7 +12,7 @@ TRUNCATE p28_dat_statistics_aggregation;
 TRUNCATE p28_int_message;
 TRUNCATE p42_dat_sinks;
 TRUNCATE p42_dat_statistics;
-TRUNCATE p42_int_async_messages:
+TRUNCATE p42_int_async_messages;
 TRUNCATE p42_int_outbound_messages;
 
 UPDATE p28_dat_bucket_counter SET current_val = 0;

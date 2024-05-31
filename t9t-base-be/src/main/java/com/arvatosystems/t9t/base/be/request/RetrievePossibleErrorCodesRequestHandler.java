@@ -11,6 +11,7 @@ import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.util.ApplicationException;
+import de.jpaw.util.ApplicationException.ExceptionRangeDescription;
 
 public class RetrievePossibleErrorCodesRequestHandler extends AbstractReadOnlyRequestHandler<RetrievePossibleErrorCodesRequest> {
 
@@ -25,6 +26,11 @@ public class RetrievePossibleErrorCodesRequestHandler extends AbstractReadOnlyRe
         final List<ErrorDescription> descriptions = new ArrayList<>(ApplicationException.getNumberOfErrorCodes());
         ApplicationException.forEachCode((returnCode, text) -> {
             final ErrorDescription description = new ErrorDescription(returnCode, text);
+            final ExceptionRangeDescription rangeDescription = ApplicationException.getRangeInfoForExceptionCode(returnCode);
+            if (rangeDescription != null) {
+                description.setApplicationLevel(rangeDescription.layer().name());
+                description.setModuleDescription(rangeDescription.description());
+            }
             descriptions.add(description);
         });
         final RetrievePossibleErrorCodesResponse resp = new RetrievePossibleErrorCodesResponse();

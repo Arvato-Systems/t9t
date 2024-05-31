@@ -40,8 +40,9 @@ public class DropdownDbAsLongDataField<T extends BonaPortable> extends AbstractD
     public DropdownDbAsLongDataField(DataFieldParameters params, String dropdownType, IDropdown28DbFactory<T> dbFactory) {
         super(params);
         factory = dbFactory;
-        String format = params.cfg != null && params.cfg.getProperties() != null ? params.cfg.getProperties().get(Constants.UiFieldProperties.DROPDOWN_FORMAT)
-            : null;
+        final String format = params.cfg != null && params.cfg.getProperties() != null
+                ? params.cfg.getProperties().get(Constants.UiFieldProperties.DROPDOWN_FORMAT)
+                        : null;
         c = dbFactory.createInstance(format);
         setConstraints(c, null);
     }
@@ -58,23 +59,20 @@ public class DropdownDbAsLongDataField<T extends BonaPortable> extends AbstractD
 
     @Override
     public Long getValue() {
-        String res1 = c.getValue();
-        Comboitem res = c.getSelectedItem();
+        final String res1 = c.getValue();
+        final Comboitem res = c.getSelectedItem();
 
-        LOGGER.debug("getValue({}) called, value is {}, item is {}: {}",
-            getFieldName(),
-            res1,
-            res == null ? "NULL" : res.getClass().getCanonicalName(), res);
+        LOGGER.debug("getValue({}) called, value is {}, item is {}: {}", getFieldName(), res1, res == null ? "NULL" : res.getClass().getCanonicalName(), res);
         if (res1 == null)
             return null;
-        Description desc = c.lookupById(res1);
+        final Description desc = c.lookupById(res1);
         return desc == null ? null : desc.getObjectRef();
     }
 
     @Override
     public void setValue(Long data) {
-        Description desc = data == null ? null : c.lookupByRef(data);
+        final Description desc = data == null ? null : c.lookupByRef(data);
         LOGGER.debug("{}.setValue(): setting {} results in {}", getFieldName(), data, desc);
-        c.setValue(desc == null ? null : desc.getId());
+        c.setValue(desc == null ? null : c.getFormattedLabel(desc));
     }
 }

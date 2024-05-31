@@ -18,6 +18,11 @@ package com.arvatosystems.t9t.jetty.init;
 import java.util.HashSet;
 import java.util.Set;
 
+import jakarta.servlet.ServletConfig;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.Context;
+
 import org.jboss.resteasy.plugins.interceptors.CorsFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,22 +38,19 @@ import com.arvatosystems.t9t.rest.filters.T9tRestAuthenticationFilter;
 import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
 import com.arvatosystems.t9t.rest.utils.JacksonObjectMapperProvider;
 import com.arvatosystems.t9t.rest.utils.RestUtils;
+import com.arvatosystems.t9t.rest.xml.FormUrlEncodedMessageBodyWriter;
 import com.arvatosystems.t9t.rest.xml.XmlMediaTypeDecoder;
 import com.arvatosystems.t9t.rest.xml.XmlMediaTypeEncoder;
 import com.google.common.base.Splitter;
 
 import de.jpaw.dp.Jdp;
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
-import jakarta.servlet.ServletConfig;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.core.Application;
-import jakarta.ws.rs.core.Context;
 
 public class ApplicationConfig extends Application {
     private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationConfig.class);
 
-    private final Set<Object> allSingletons;         // we use singletons for REST endpoints and the media en/decoder
-    private final Set<Class<?>> allClasses;          // anything else
+    private final Set<Object> allSingletons; // we use singletons for REST endpoints and the media en/decoder
+    private final Set<Class<?>> allClasses; // anything else
 
     public ApplicationConfig(@Context final ServletConfig servletConfig) {
         LOGGER.info("t9t servlet context initialization START");
@@ -70,7 +72,7 @@ public class ApplicationConfig extends Application {
             if (pathAnnotation == null) {
                 LOGGER.error("    NO PATH ANNOTATION SPECIFIED for endpoint {}", cls.getCanonicalName());
             } else {
-                LOGGER.info ("    Path {} implemented by {}", pathAnnotation.value(), cls.getCanonicalName());
+                LOGGER.info("    Path {} implemented by {}", pathAnnotation.value(), cls.getCanonicalName());
                 // add the package to the set of all packages
                 allPackages.add(cls.getPackageName());
             }
@@ -88,8 +90,9 @@ public class ApplicationConfig extends Application {
             allSingletons.add(corsFilter);
         }
 
-        allSingletons.add(Jdp.getRequired(XmlMediaTypeDecoder.class));  // new + register singleton
-        allSingletons.add(Jdp.getRequired(XmlMediaTypeEncoder.class));  // new + register singleton
+        allSingletons.add(Jdp.getRequired(XmlMediaTypeDecoder.class)); // new + register singleton
+        allSingletons.add(Jdp.getRequired(XmlMediaTypeEncoder.class)); // new + register singleton
+        allSingletons.add(Jdp.getRequired(FormUrlEncodedMessageBodyWriter.class)); // new + register singleton
 
         // determine all ExceptionMapper
         allClasses = new HashSet<>(12);

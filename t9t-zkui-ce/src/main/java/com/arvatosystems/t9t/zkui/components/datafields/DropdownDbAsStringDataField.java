@@ -19,10 +19,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zul.Comboitem;
 
+import com.arvatosystems.t9t.base.search.Description;
 import com.arvatosystems.t9t.zkui.components.dropdown28.db.Dropdown28Db;
 import com.arvatosystems.t9t.zkui.components.dropdown28.factories.IDropdown28DbFactory;
 import com.arvatosystems.t9t.zkui.util.Constants;
-import com.arvatosystems.t9t.base.search.Description;
 
 import de.jpaw.bonaparte.pojos.apiw.Ref;
 
@@ -40,8 +40,9 @@ public class DropdownDbAsStringDataField extends AbstractDataField<Dropdown28Db<
     public DropdownDbAsStringDataField(DataFieldParameters params, String dropdownType, IDropdown28DbFactory<Ref> dbFactory) {
         super(params);
         factory = dbFactory;
-        String format = params.cfg != null && params.cfg.getProperties() != null ? params.cfg.getProperties().get(Constants.UiFieldProperties.DROPDOWN_FORMAT)
-            : null;
+        final String format = params.cfg != null && params.cfg.getProperties() != null
+                ? params.cfg.getProperties().get(Constants.UiFieldProperties.DROPDOWN_FORMAT)
+                        : null;
         c = dbFactory.createInstance(format);
         setConstraints(c, null);
     }
@@ -58,23 +59,23 @@ public class DropdownDbAsStringDataField extends AbstractDataField<Dropdown28Db<
 
     @Override
     public String getValue() {
-        String res1 = c.getValue();
-        Comboitem res = c.getSelectedItem();
+        final String res1 = c.getValue(); // is label
+        final Comboitem res = c.getSelectedItem();
 
         LOGGER.debug("getValue({}) called, value is {}, item is {}: {}",
-            getFieldName(),
-            res1,
-            res == null ? "NULL" : res.getClass().getCanonicalName(), res);
+                getFieldName(),
+                res1,
+                res == null ? "NULL" : res.getClass().getCanonicalName(), res);
         if (res1 == null)
             return null;
-        Description desc = c.lookupById(res1);
+        final Description desc = c.lookupById(res1);
         return desc == null ? null : desc.getId();
     }
 
     @Override
     public void setValue(String data) {
-        Description desc = data == null ? null : c.lookupById(data);
+        final Description desc = data == null ? null : c.lookupByKey(data);
         LOGGER.debug("{}.setValue(): setting {} results in {}", getFieldName(), data, desc);
-        c.setValue(desc == null ? null : desc.getId());
+        c.setValue(desc == null ? null : c.getFormattedLabel(desc));
     }
 }

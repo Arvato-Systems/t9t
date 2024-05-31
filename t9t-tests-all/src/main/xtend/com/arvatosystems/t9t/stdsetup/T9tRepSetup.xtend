@@ -127,6 +127,16 @@ class T9tRepSetup {
             intervalRequired            = true
             merge(dlg)
         ]
+        new ReportConfigDTO => [
+            reportConfigId              = "FailedTransFlex"
+            name                        = "Failed Transactions (flex)"
+            isActive                    = true
+            jasperReportTemplateName    = "FailedTransactionsFlex.jrxml"
+            description                 = "Failed Transactions (with flexbile parameters)"
+            classificationType          = ReportClassificationType.OPERATION
+            intervalRequired            = true
+            merge(dlg)
+        ]
     }
 
 

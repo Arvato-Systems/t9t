@@ -116,7 +116,7 @@ package (com.arvatosystems) t9t.ssm {
         optional shortText                          name;                   // Some name or description of the setup
 
         required (CannedRequestRef...,CannedRequestDTO) request properties ref, dropdown="cannedRequestId", searchprefix="cannedRequest";              // the ID referencing the invocation, using ExecuteCannedRequest()
-        required userId                             userId;                 // the user ID to run this request under
+        required userId                             userId      properties dropdown="userId";          // the user ID to run this request under
         optional Uuid                               apiKey;                 // the API key to use for job execution (required, but will be created on the fly)
         optional languageTag                        languageCode;           // which language should the job use? (important for scheduled reports)
 

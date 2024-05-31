@@ -18,6 +18,9 @@ package com.arvatosystems.t9t.bpmn.be.steps;
 import java.time.Instant;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.bpmn.WorkflowReturnCode;
 
@@ -27,32 +30,19 @@ import de.jpaw.dp.Singleton;
 @Singleton
 @Named("delay")
 public class BPMStepDelay extends AbstractAlwaysRunnableNoFactoryWorkflowStep {
+    private static final Logger LOGGER = LoggerFactory.getLogger(BPMStepDelay.class);
 
     @Override
     public WorkflowReturnCode execute(final Object data, final Map<String, Object> parameters) {
-        Object yu = parameters.get(PROCESS_VARIABLE_YIELD_UNTIL);
-        if (yu != null) {
-            if (Number.class.isAssignableFrom(yu.getClass())) { // Long, Double, BigDecimal...
-                // an Instant which has been serialized as JSON and later deserialized will appear as a numeric value,
-                // representing the number of (milli)seconds since the Epoch
-                yu = Instant.ofEpochMilli(((Number)yu).longValue());
-                parameters.put(PROCESS_VARIABLE_YIELD_UNTIL, yu);
-            }
-            if (yu instanceof Instant yuInstant) {
-                // the target time has been defined
-                if (yuInstant.isBefore(Instant.now()))
-                    return WorkflowReturnCode.PROCEED_NEXT;  // limit has been reached
-                return WorkflowReturnCode.YIELD;
-            }
-        }
-        // no end time defined yet - compute it now
+        // compute end time
         final Object ds = parameters.get("delayInSeconds");
-        if (ds != null && ds instanceof Integer dsInteger) {
+        if (ds instanceof Number dsNumber) {
             // obtain a value rounded to full seconds
-            parameters.put(PROCESS_VARIABLE_YIELD_UNTIL, Instant.ofEpochMilli((System.currentTimeMillis() / 1000L + dsInteger) * 1000L));
-            return WorkflowReturnCode.YIELD;
+            parameters.put(PROCESS_VARIABLE_YIELD_UNTIL, Instant.ofEpochMilli((System.currentTimeMillis() / 1000L + dsNumber.longValue()) * 1000L));
+            return WorkflowReturnCode.YIELD_NEXT;
         }
         // missing information!
+        LOGGER.error("Process variable {} not defined or not a number: {}", "delayInSeconds", ds == null ? "null" : ds.getClass().getName());
         parameters.put(PROCESS_VARIABLE_RETURN_CODE, T9tException.ILLEGAL_REQUEST_PARAMETER);  // set a default error code
         return WorkflowReturnCode.ERROR;
     }

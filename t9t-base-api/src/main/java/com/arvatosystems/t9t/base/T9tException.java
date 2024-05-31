@@ -87,6 +87,7 @@ public class T9tException extends ApplicationException {
     public static final int ILLEGAL_CHARACTER = OFFSET + 43;
     public static final int NO_SUCH_REQUEST = OFFSET_DENIED + 44;
     public static final int UPDATE_DECLINED = OFFSET_DENIED + 45;
+    public static final int NO_IMPLEMENTATION_FOR_SPECIFIED_QUALIFIER = OFFSET + 46;
 
     public static final int STALLED_LOG_WRITER = OFFSET_TIMEOUT + 50;
     public static final int REQUEST_HANDLER_RETURNED_NULL = OFFSET_LOGIC_ERROR + 51;
@@ -200,6 +201,11 @@ public class T9tException extends ApplicationException {
     public static final int INVALID_EMAIL_FORMAT = OFFSET + 220;
     public static final int MISSING_UPLINK_CONFIGURATION = OFFSET + 227;
 
+    // http problems
+    public static final int HTTP_MULTI_PART_NO_PARTS    = OFFSET_LOGIC_ERROR + 290;
+    public static final int HTTP_MULTI_PART_EMPTY_KEY   = OFFSET_LOGIC_ERROR + 291;
+    public static final int HTTP_MULTI_PART_EMPTY_DATA  = OFFSET_LOGIC_ERROR + 292;
+    public static final int UNKNOWN_MEDIA_TYPE          = OFFSET_LOGIC_ERROR + 294;
 
     // IO errors
     public static final int FILE_NOT_FOUND_FOR_DOWNLOAD = OFFSET + 300;
@@ -387,6 +393,12 @@ public class T9tException extends ApplicationException {
         registerCode(ONLY_ONE_ACTIVE_ALLOWED, "Inserting the record would create more than one active rows with the same value of a key column");
         registerCode(MISSING_CONFIGURATION, "No active configuration record found");
         registerCode(MISSING_UPLINK_CONFIGURATION, "No configuration for uplink found in config.xml");
+
+        registerCode(HTTP_MULTI_PART_NO_PARTS, "http multipart publishers must see at least one part");
+        registerCode(HTTP_MULTI_PART_EMPTY_DATA, "A part of http multipart cannot be null or empty");
+        registerCode(HTTP_MULTI_PART_EMPTY_KEY, "A key of http multipart cannot be null or empty");
+        registerCode(UNKNOWN_MEDIA_TYPE, "Configuration inconsistency: MediaDataof type which has no descriptor in MediaTypeInfo");
+
         registerCode(INVALID_CONFIGURATION, "Configuration was done incorrectly");
         registerCode(NOT_YET_IMPLEMENTED, "The requested functionality has not yet been implemented.");
         registerCode(NO_LONGER_SUPPORTED, "The requested functionality is no longer supported.");
@@ -413,6 +425,7 @@ public class T9tException extends ApplicationException {
         registerCode(ILLEGAL_CHARACTER, "An illegal character has been identified in a string field of the request");
         registerCode(NO_SUCH_REQUEST, "Request not received or not yet complete");
         registerCode(UPDATE_DECLINED, "Data record is modified. Update is declined.");
+        registerCode(NO_IMPLEMENTATION_FOR_SPECIFIED_QUALIFIER, "There is no implementation for the specified qualifier");
 
         registerCode(JWT_EXPIRED, MSG_JWT_EXPIRED);
         registerCode(JWT_TIMING,  "The JWT has unplausible time information");

@@ -53,7 +53,8 @@ public class Dropdown28Db<REF extends BonaPortable> extends Combobox {
     private final IDropdown28DbFactory<REF>         factory;
     private List<Description>                       entries;      // entries is not final because they can be reloaded
     private final ListModelList<ComboBoxEntry>      allIds;
-    private final Map<String, Description>          lookupById;   // this is a case insensitive lookup
+    private final Map<String, Description>          lookupById;    // lookup with formatted id and description/name of DTO
+    private final Map<String, Description>          lookupByKey;   // lookup with DTO id only
     private final Map<Long,   Description>          lookupByRef;
     protected IFixedFilter                          fixedFilter = null;        // a fixed search filter provider
     protected IDescriptionFilter                    descriptionFilter = null;  // a filter on results
@@ -71,9 +72,10 @@ public class Dropdown28Db<REF extends BonaPortable> extends Combobox {
 
         factory           = myFactory;
         entries           = session.getDropDownData(factory.getDropdownId(), factory.getSearchRequest());
-        lookupById        = new ConcurrentHashMap<String, Description>(entries.size());
-        lookupByRef       = new ConcurrentHashMap<Long, Description>(entries.size());
-        allIds            = new ListModelList<ComboBoxEntry>(entries.size());
+        lookupByKey       = new ConcurrentHashMap<>(entries.size());
+        lookupById        = new ConcurrentHashMap<>(entries.size());
+        lookupByRef       = new ConcurrentHashMap<>(entries.size());
+        allIds            = new ListModelList<>(entries.size());
         LOGGER.debug("Dropdown DB {} instantiated, got {} entries", factory.getDropdownId(), entries.size());
         messageFormat = new MessageFormat(getDisplayFormat());
         getDropDownData();
@@ -83,10 +85,10 @@ public class Dropdown28Db<REF extends BonaPortable> extends Combobox {
     }
 
     protected void doChangeEvent() {
-        String currentValue = getValue();
-        if (!allIds.stream().anyMatch(c -> c.getValue().equals(currentValue))) {
+        final String currentValue = getValue();
+        if (!lookupById.containsKey(currentValue.toLowerCase())) {
             setRawValue("");  // clearing raw data is not always what we want, it kills the ability to search with LIKE criteria...
-            setModel(new SimpleListModelExt<ComboBoxEntry>(allIds));
+            setModel(new SimpleListModelExt<>(allIds));
         }
     }
 
@@ -104,6 +106,10 @@ public class Dropdown28Db<REF extends BonaPortable> extends Combobox {
         setItemRenderer(renderer);
     }
 
+    public Description lookupByKey(String id) {
+        return lookupByKey.get(id.toLowerCase());
+    }
+
     public Description lookupById(String id) {
         return lookupById.get(id.toLowerCase());
     }
@@ -112,9 +118,9 @@ public class Dropdown28Db<REF extends BonaPortable> extends Combobox {
         return lookupByRef.get(ref);
     }
 
-    public String getDisplayIdByRef(Long ref) {
-        Description desc = lookupByRef.get(ref);
-        return desc == null ? null : getDisplayId(desc);
+    public String getLabelByRef(Long ref) {
+        final Description desc = lookupByRef.get(ref);
+        return desc == null ? null : getFormattedLabel(desc);
     }
 
     public IDropdown28DbFactory<REF> getFactory() {
@@ -135,7 +141,7 @@ public class Dropdown28Db<REF extends BonaPortable> extends Combobox {
 
     // query the backend, no caching (reloads are done only if caching does not apply)
     public void reloadDropDownData() {
-        LeanSearchRequest srq = factory.getSearchRequest();
+        final LeanSearchRequest srq = factory.getSearchRequest();
         if (fixedFilter != null)
             srq.setSearchFilter(fixedFilter.get());
         entries = session.getDropDownData(srq);  // read uncached....
@@ -149,17 +155,19 @@ public class Dropdown28Db<REF extends BonaPortable> extends Combobox {
     // constructor and reloadDropDownData() (must be final because called by constructor)
     protected void getDropDownData() {
         lookupById.clear();
+        lookupByKey.clear();
         lookupByRef.clear();
         allIds.clear();
-        for (Description d : entries) {
-            final String id = getDisplayId(d);
-            final String keyInLowercase = id.toLowerCase();
-            lookupById.put(keyInLowercase, d);
+        for (final Description d : entries) {
+            final String id = d.getId();
+            final String label = getFormattedLabel(d);
+            lookupByKey.put(id.toLowerCase(), d);
+            lookupById.put(label.toLowerCase(), d);
             lookupByRef.put(d.getObjectRef(), d);
-            final ComboBoxEntry comboBoxEntry = new ComboBoxEntry(id, id, "", null);
+            final ComboBoxEntry comboBoxEntry = new ComboBoxEntry(id, label, "", null);
             allIds.add(comboBoxEntry);
         }
-        setModel(new SimpleListModelExt<ComboBoxEntry>(allIds));
+        setModel(new SimpleListModelExt<>(allIds));
     }
 
     protected String getDisplayFormat() {
@@ -171,11 +179,11 @@ public class Dropdown28Db<REF extends BonaPortable> extends Combobox {
         return format != null ? format : dropdownDisplayFormat != null ? dropdownDisplayFormat : DEFAULT_DISPLAY_FORMAT;
     }
 
-    protected String getDisplayId(Description desc) {
+    public String getFormattedLabel(Description desc) {
         if (desc.getName() == null || desc.getName().isBlank()) {
             return desc.getId(); // shortcut
         }
-        Object[] args = {desc.getId(), desc.getName()};
+        final Object[] args = {desc.getId(), desc.getName()};
         return messageFormat.format(args);
     }
 }

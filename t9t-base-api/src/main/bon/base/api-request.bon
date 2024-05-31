@@ -162,6 +162,8 @@ package (com.arvatosystems) t9t.base.request {
     final class ErrorDescription {
         required int                                returnCode;                 // return code
         required Unicode(512)                       errorMessage;               // Explaining text (in English)
+        optional Unicode(255)                       applicationLevel;           // application level
+        optional Unicode(255)                       moduleDescription;          // module description
     }
 
     /**

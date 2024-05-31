@@ -19,13 +19,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zul.Combobox;
 
+import com.arvatosystems.t9t.base.search.Description;
 import com.arvatosystems.t9t.zkui.components.dropdown28.db.Dropdown28Db;
 import com.arvatosystems.t9t.zkui.components.dropdown28.factories.IDropdown28BasicFactory;
 import com.arvatosystems.t9t.zkui.components.dropdown28.factories.IDropdown28DbFactory;
 import com.arvatosystems.t9t.zkui.components.dropdown28.nodb.Dropdown28Registry;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 import com.arvatosystems.t9t.zkui.util.Constants;
-import com.arvatosystems.t9t.base.search.Description;
 
 import de.jpaw.bonaparte.pojos.api.LongFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
@@ -42,7 +42,7 @@ public class DropdownField extends AbstractField<Combobox> {
 
     @Override
     protected Combobox createComponent(String suffix) {
-        String format = desc.getProperties() != null ? desc.getProperties().get(Constants.UiFieldProperties.DROPDOWN_FORMAT) : null;
+        final String format = desc.getProperties() != null ? desc.getProperties().get(Constants.UiFieldProperties.DROPDOWN_FORMAT) : null;
         return factory.createInstance(format);
     }
 
@@ -55,24 +55,31 @@ public class DropdownField extends AbstractField<Combobox> {
     public SearchFilter getSearchFilter() {
         if (empty())
             return null;
-        DataCategory dataCategory = desc.getDataCategory();
-        String dataType = desc.getBonaparteType();
-        Combobox cb = components.get(0);
-        String v = cb.getValue();
+        final DataCategory dataCategory = desc.getDataCategory();
+        final String dataType = desc.getBonaparteType();
+        final Combobox cb = components.get(0);
+        final String v = cb.getValue();
         if (isDb) {
-//          IDropdown28DbFactory dbFactory = (IDropdown28DbFactory)factory;
+            final Description rec = ((Dropdown28Db) cb).lookupById(v);
+            LOGGER.debug("Text {} gives description {}", v, rec);
+            //          IDropdown28DbFactory dbFactory = (IDropdown28DbFactory)factory;
             if (dataCategory == DataCategory.NUMERIC || dataCategory == DataCategory.OBJECT || dataCategory == DataCategory.BASICNUMERIC) {
                 // search by ref
-                LongFilter f = new LongFilter();
+                final LongFilter f = new LongFilter();
                 f.setFieldName(getFieldName());
-                Description rec = ((Dropdown28Db)cb).lookupById(v);
-                LOGGER.debug("Text {} gives description {}", v, rec);
                 f.setEqualsValue(rec == null ? null : rec.getObjectRef());
+                return f;
+            }
+            // text only, but use displayId
+            if (rec != null) {
+                final UnicodeFilter f = new UnicodeFilter();
+                f.setFieldName(getFieldName());
+                f.setEqualsValue(rec.getId());
                 return f;
             }
         }
         // text only
-        UnicodeFilter f = new UnicodeFilter();
+        final UnicodeFilter f = new UnicodeFilter();
         f.setFieldName(getFieldName());
         if (cfg.getFilterType() != UIFilterType.EQUALITY) {
             f.setLikeValue(v);
@@ -99,7 +106,7 @@ public class DropdownField extends AbstractField<Combobox> {
 
     @Override
     public void clear() {
-        for (Combobox e : components) {
+        for (final Combobox e : components) {
             e.setValue(null);
         }
     }

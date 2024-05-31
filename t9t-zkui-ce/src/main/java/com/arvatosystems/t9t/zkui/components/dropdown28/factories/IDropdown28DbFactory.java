@@ -57,7 +57,7 @@ public interface IDropdown28DbFactory<REF extends BonaPortable> extends IDropdow
     /** Returns the alphanumeric identifier of a data type reference. */
     default String getIdFromData(REF data, Dropdown28Db<REF> instance) {
         if (data instanceof Ref) {
-            return instance.getDisplayIdByRef(((Ref)data).getObjectRef());
+            return instance.getLabelByRef(((Ref)data).getObjectRef());
         } else {
             // in these cases, the method must be overwritten
             throw new IllegalArgumentException("Must implement getIdFromData for type " + data.getClass());
