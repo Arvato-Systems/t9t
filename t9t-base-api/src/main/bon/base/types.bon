@@ -138,4 +138,20 @@ package (com.arvatosystems) t9t.base.types {
         required bucketId Set<>     secondBuckets;            // set of bucket IDs to populate on create events
         required bucketId Set<>     thirdBuckets;             // set of bucket IDs to populate on create events
     }
+
+    /**
+     * Data type for vectors (AI embeddings & alike).
+     * To reduce memory overhead, vectors use arrays instead of lists because the standard Java library does not support lists with primitive elements,
+      * and the koloboke library seems to be abandoned.
+      * A vector therefore is a float array of fixed length (for example 1536).
+      * Currently, only floating point vectors are supported.
+      */
+    abstract class AbstractVector {
+        required Unicode(80)                                key;                        // the (context specific) key of this vector
+        optional Unicode(256000) allowControlChars          content;                    // optionally, the data represented by the vector
+        optional Float                                      distance;                   // the distance (only populated if used as a result vector)
+    }
+    final class FloatVector extends AbstractVector {
+        required float[]                                    data;                       // the vector's coordinates
+    }
 }

@@ -40,9 +40,8 @@ public class DoubleField extends AbstractField<Doublebox> {
         if (empty())
             return null;
         // depending on which values are set, create a lower, upper, equals or range filter
-        DoubleFilter f = new DoubleFilter();
-        f.setFieldName(getFieldName());
-        Double v = components.get(0).getValue();
+        final DoubleFilter f = new DoubleFilter(getFieldName());
+        final Double v = components.get(0).getValue();
         switch (cfg.getFilterType()) {
         case EQUALITY:
             f.setEqualsValue(v);

@@ -21,7 +21,7 @@
 <!-- =============================================================== -->
 <!-- Configure the fortytwo-ui webapp                                  -->
 <!-- =============================================================== -->
-<Configure id='wac' class="org.eclipse.jetty.webapp.WebAppContext">
+<Configure id='wac' class="org.eclipse.jetty.ee10.webapp.WebAppContext">
 
   <!-- =============================================================== -->
   <!-- Configure the webapp                                            -->

@@ -134,16 +134,16 @@ public class ApplicationViewModel {
     @Wire("#environmentIdentifier") private Div environmentIdentifier;
     private static String ctrlKeys;
 
-    private static class NaviComparator implements Comparator<Navi>, GroupComparator<Navi>, Serializable {
+    private static final class NaviComparator implements Comparator<Navi>, GroupComparator<Navi>, Serializable {
         private static final long serialVersionUID = -5442923541968897269L;
 
         @Override
-        public final int compare(Navi o1, Navi o2) {
+        public int compare(Navi o1, Navi o2) {
             return o1.getPrefixCategoryId().compareTo(o2.getPrefixCategoryId().toString());
         }
 
         @Override
-        public final int compareGroup(Navi o1, Navi o2) {
+        public int compareGroup(Navi o1, Navi o2) {
             if (o1.getPrefixCategoryId().equals(o2.getPrefixCategoryId())) {
                 return 0;
             } else {
@@ -152,7 +152,7 @@ public class ApplicationViewModel {
         }
     }
 
-    private static class CtrlKeyHandler {
+    private static final class CtrlKeyHandler {
         private static final Logger LOGGER = LoggerFactory.getLogger(CtrlKeyHandler.class);
 
         public void ctrlKeyClick(KeyEvent keyEvent, List<HtmlBasedComponent> htmlBasedComponents) {

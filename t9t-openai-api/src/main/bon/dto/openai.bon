@@ -1,0 +1,296 @@
+/*
+ * Copyright (c) 2012 - 2023 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import api.*
+import apiw.*
+import api.media.*
+import t9t.base.types.*
+import t9t.ai.*
+
+/**
+ * OpenAI related definitions.
+ */
+package (com.arvatosystems) t9t.ai.openai {
+    default private unsigned trim noControlChars;
+    properties path;
+
+    // some types which are used frequently in the OpenAI APIs
+
+    type openaiModel                                is modelId;
+    type openaiText                                 is textChunk;       // currently set to some arbitrary length
+    type openaiId                                   is Ascii(80);       // more than 36 required!
+
+    type openaiMetadataKey                          is Unicode(64);     // key of the metadata maps
+    type openaiMetadataValue                        is Unicode(512);    // value of the metadata maps
+
+    enum OpenAIBetaSpecifier {
+        ASST_V2                = "assistants=v2"
+    }
+
+    // enum definitions. In this context, enum tokens are not used as a short string to be persisted in a database, but rather for translation of OpenAI constants
+    // to Java instance names.
+
+    enum OpenAIRoleType {
+        SYSTEM                  = "system",
+        USER                    = "user",
+        TOOL                    = "tool",
+        ASSISTANT               = "assistant"
+    }
+
+    enum OpenAIResponseFormatType {
+        AUTO                    = "auto",
+        TEXT                    = "text",
+        JSON                    = "json_object",
+        IMAGE_FILE              = "image_file",                 // new for gpt4o
+        IMAGE_URL               = "image_url"                   // new for gpt4o
+    }
+
+    enum OpenAIToolType {
+        FUNCTION                = "function",
+        CODE_INTERPRETER        = "code_interpreter",
+        FILE_SEARCH             = "file_search"
+    }
+
+    enum OpenAIToolChoiceType {
+        ^NONE                   = "none",
+        AUTO                    = "auto"
+    }
+
+    // not much of a choice right now...
+    enum OpenAIFinishReasonType {
+        STOP                    = "stop",
+        LENGTH                  = "length",
+        CONTENT_FILTER          = "content_filter",
+        TOOL_CALL               = "tool_calls"
+    }
+
+    enum OpenAIEncodingType {
+        FLOAT                   = "float",
+        BASE64                  = "base64"
+    }
+
+    enum OpenAISortOrderType {
+        ASCENDING               = "asc",
+        DESCENDING              = "desc"
+    }
+
+    /** Specifies the type of a parameter / an argument to a tool function call. */
+    enum OpenAIParameterType {
+        OBJECT                  = "object",
+        STRING                  = "string",
+        INTEGER                 = "integer",
+        NUMBER                  = "number",
+        BOOLEAN                 = "boolean",
+        LIST                    = "list"
+    }
+
+    /** Specifies the type of a response object (determines the fields, corresponds to Bonaparte PQON). */
+    enum OpenAIObjectType {
+        OBJECT                  = "object",
+        LIST                    = "list",
+        FILE                    = "file",
+        CHAT_COMPLETION         = "chat.completion",
+        EMBEDDING               = "embedding",
+        ASSISTANT               = "assistant",
+        THREAD                  = "thread",
+        THREAD_MESSAGE          = "thread.message",
+        THREAD_RUN              = "thread.run",
+        VECTOR_STORE            = "vector_store",
+        VECTOR_FILE             = "vector_file"
+    }
+
+    enum OpenAIPurposeType {
+        FINE_TUNE               = "fine-tune",
+        FINE_TUNE_RESULTS       = "fine-tune-results",
+        ASSISTANTS              = "assistants",
+        ASSISTANTS_OUTPUT       = "assistants_output",
+        VISION                  = "vision"                      // new with gpt4o
+    }
+
+    // deprecated
+    enum OpenAIFileStatusType {
+        UPLOADED                = "uploaded",
+        PROCESSED               = "processed",
+        ERROR                   = "error"
+    }
+
+    enum OpenAIVectorStoreStatusType {
+        EXPIRED                 = "expired",
+        IN_PROGRESS             = "in_progress",
+        COMPLETED               = "completed"
+    }
+
+    enum OpenAIImageDetailType {                                // new with gpt4o
+        AUTO                    = "auto",
+        LOW                     = "low",
+        HIGH                    = "high"
+    }
+
+    final class OpenAIQueryParameters {
+        optional Integer                           limit;       // maximum number of results to retrieve
+        optional Enum OpenAISortOrderType          order;       // ascending or descending (default) by creation date
+        optional openaiId                          after;
+        optional openaiId                          before;
+        optional openaiId                          runId;       // ONLY ALLOWED for "list messages"
+    }
+
+    final class OpenAIMessage {
+        required enum OpenAIRoleType                role;
+        optional Unicode(16384) allowControlChars   content;    // either content or toolCalls will be given
+        required (OpenAIToolCall) List<>            toolCalls;  // ONLY when used as a response object!
+        optional openaiId                           toolCallId; // identifies the call request
+    }
+
+
+    /** Marker superclass to allow some validity checks. */
+    abstract class OpenAIReq { }
+
+    /** Common superclass of OpenAI result objects. */
+    abstract class AbstractOpenAIObject {
+        required enum OpenAIObjectType              ^object;
+    }
+
+    /** Common superclass of the newer OpenAI assistants v2 beta. Related objects always provide an ID and a creation timestamp. */
+    abstract class AbstractOpenAIObjectWithId extends AbstractOpenAIObject {
+        required openaiId                           id;
+        required Instant                            createdAt;
+    }
+
+    /** Result objects of list type have information for pagination. */
+    abstract class AbstractOpenAIListObject<T> extends AbstractOpenAIObject {
+        required (!T) List<>                        data;
+        optional openaiId                           firstId;
+        optional openaiId                           lastId;
+        required boolean                            hasMore;
+    }
+
+    class OpenAIObjectFile extends AbstractOpenAIObjectWithId {
+        required enum OpenAIPurposeType             purpose;
+        required long                               bytes;           // size of the file
+        optional Unicode(1024)                      filename;
+        @Deprecated
+        optional Enum OpenAIFileStatusType          status;          // doc says it's deprecated
+        @Deprecated
+        optional Unicode(4096)                      statusDetails;
+    }
+
+    // see https://platform.openai.com/docs/api-reference/chat/create
+    // omitted all deprecated fields
+    // OpenAi uses snake case, the Java CamelCase field names must be converted. This can be done centrally using a customized Jackson ObjectMapper
+    final class OpenAIChatCompletionReq extends OpenAIReq {
+        properties path="/v1/chat/completions";
+
+        required openaiModel                        model;
+        required (OpenAIMessage) required List<>    messages;
+        optional Float                              frequencyPenalty;   // allowed range is [-2.0, 2.0]
+        optional Json                               logitBias;
+        optional Boolean                            logprobs;
+        optional Integer                            topLogprobs;        // allowed range [0, 20]
+        optional Integer                            maxTokens;
+        optional Integer                            n;                  // number of results requested
+        optional Float                              presencePenalty;    // allowed range is [-2.0, 2.0]
+        optional (OpenAIResponseFormat)             responseFormat;
+        optional Integer                            seed;
+        required openaiText List<>                  stop;
+        optional Boolean                            stream;
+        optional Float                              temperature;
+        optional Float                              topP;
+        required (OpenAITool) List<>                tools;
+        optional Enum OpenAIToolChoiceType          toolChoice;         // currently specifying a function is not supported, but that should be achievable by providing a filtered function list
+        optional userId                             user;
+    }
+
+    abstract class AbstractOpenAITypedObject {
+        required enum OpenAIResponseFormatType      ^type;
+    }
+
+    final class OpenAIResponseFormat {
+        required enum OpenAIResponseFormatType      ^type;
+    }
+
+    final class OpenAIUsage {
+        optional Integer                            completionTokens;   // provided for chat completion, but not for embeddings
+        required int                                promptTokens;
+        required int                                totalTokens;
+    }
+
+    final class OpenAITool {
+        required enum OpenAIToolType                ^type;
+        optional (OpenAIFunction)                   function;           // required for type "function"
+    }
+
+    final class OpenAIFunction {
+        optional openaiText                         description;
+        required Ascii(64) regexp "[A-Za-z0-9_-]+"  name;
+        optional (OpenAIFunctionParameters)         parameters;         // if omitted, the function has no parameters
+    }
+
+    final class OpenAIFunctionParameters {
+        required enum OpenAIParameterType           ^type;              // "object" (except if single parameter?)
+        required (OpenAISingleParameter) Map<String> ^properties;       // index is the field name
+        required meta.identifier List<>             ^required;          // list of fields which are required
+    }
+
+    final class OpenAISingleParameter {
+        required enum OpenAIParameterType           ^type;
+        required openaiText                         description;
+    }
+
+    final class OpenAIObjectChatCompletion extends AbstractOpenAIObject {  // OpenAIObjectType.CHAT_COMPLETION
+        required openaiId                           id;
+        required Instant                            created;            // OpenAI inconsistency: should be createdAt!!!
+        required (OpenAIChatCompletionChoice) required List<> choices;
+        required openaiModel                        model;
+        required defaultExternalId                  systemFingerprint;
+        required (OpenAIUsage)                      usage;
+    }
+
+    final class OpenAIChatCompletionChoice {
+        required enum OpenAIFinishReasonType        finishReason;
+        required int                                index;
+        required (OpenAIMessage)                    message;
+        optional Json                               logprobs;           // TODO: should be detailed
+    }
+
+    final class OpenAIToolCall {
+        required enum OpenAIToolType                ^type;
+        required openaiId                           id;
+        required (OpenAIFunctionCall)               function;
+    }
+
+    final class OpenAIFunctionCall {
+        required Ascii(64) regexp "[A-Za-z0-9_-]+"  name;
+        optional openaiText                         arguments;          // function arguments, in JSON format if you're lucky
+    }
+
+    final class OpenAICreateEmbeddingsReq extends OpenAIReq {
+        properties path="/v1/embeddings";
+        required Element                            input;              // supported types: string, list of string, array of int, list of array of int
+        required openaiModel                        model;
+        optional Enum OpenAIEncodingType            encodingType;       // float or base64
+    }
+
+
+    final class OpenAIObjectCreateEmbeddings extends AbstractOpenAIObject {  // OpenAIObjectType.LIST
+        required (OpenAIObjectEmbedding) required List<>  data;
+        required openaiModel                        model;
+        required (OpenAIUsage)                      usage;
+    }
+
+    final class OpenAIObjectEmbedding extends AbstractOpenAIObject {    // OpenAIObjectType.EMBEDDING
+        required int                                index;              // 0..n
+        required float[]                            embedding;          // the embedding vector
+    }
+}

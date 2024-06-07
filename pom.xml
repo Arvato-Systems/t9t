@@ -21,7 +21,7 @@
 
     <groupId>com.arvato-systems.t9t</groupId>
     <artifactId>t9t-build</artifactId>
-    <version>6.8-SNAPSHOT</version>
+    <version>7.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>Global root POM for the t9t framework</description>
 
@@ -38,8 +38,8 @@
         <min-maven.version>3.8.7</min-maven.version>  <!-- up to 3.8.1 ASAP -->
 
         <!-- to be used by dependent projects (same as project.version, but must be provided explicitly so that imports work) -->
-        <t9t.version>6.8-SNAPSHOT</t9t.version>
-        <xtext.version>2.34.0</xtext.version>
+        <t9t.version>7.0-SNAPSHOT</t9t.version>
+        <xtext.version>2.35.0</xtext.version>
 
         <!-- Build specific properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -54,31 +54,31 @@
         <!-- Plugin versions -->
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
         <maven-install-plugin.version>3.0.1</maven-install-plugin.version>
-        <maven-deploy-plugin.version>3.1.1</maven-deploy-plugin.version>
+        <maven-deploy-plugin.version>3.1.2</maven-deploy-plugin.version>
         <maven-clean-plugin.version>3.3.2</maven-clean-plugin.version>
         <maven-dependency-plugin.version>3.6.1</maven-dependency-plugin.version>
-        <maven-plugin-annotations.version>3.10.1</maven-plugin-annotations.version>
+        <maven-plugin-annotations.version>3.13.1</maven-plugin-annotations.version>
         <maven-project.version>2.2.1</maven-project.version>
         <build-helper-maven-plugin.version>3.4.0</build-helper-maven-plugin.version>
         <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
         <maven-plugin-plugin.version>3.10.2</maven-plugin-plugin.version>
         <maven-assembly-plugin.version>3.6.0</maven-assembly-plugin.version>
         <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
-        <maven-shade-plugin.version>3.5.3</maven-shade-plugin.version>
+        <maven-shade-plugin.version>3.6.0</maven-shade-plugin.version>
         <maven-war-plugin.version>3.4.0</maven-war-plugin.version>
         <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
         <maven-jarjar-plugin.version>1.9</maven-jarjar-plugin.version>
-        <maven-enforcer-plugin.version>3.4.1</maven-enforcer-plugin.version>
+        <maven-enforcer-plugin.version>3.5.0</maven-enforcer-plugin.version>
         <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
         <owasp-maven-plugin.version>7.2.1</owasp-maven-plugin.version>
-        <spring-boot-maven-plugin.version>3.2.5</spring-boot-maven-plugin.version>
-        <tycho.version>2.7.3</tycho.version>
+        <spring-boot-maven-plugin.version>3.3.0</spring-boot-maven-plugin.version>
+        <tycho.version>3.0.5</tycho.version>
         <git-commit-id-plugin.version>8.0.2</git-commit-id-plugin.version>
         <jaxws-maven-plugin.version>4.0.1</jaxws-maven-plugin.version>
         <eclipse-lifecycle-mapping.version>1.0.0</eclipse-lifecycle-mapping.version>
         <bundle.plugin.version>5.1.2</bundle.plugin.version> <!-- felix, for pricing RCP -->
         <exec.plugin.version>3.0.0</exec.plugin.version>
-        <jetty-maven-plugin.version>11.0.21</jetty-maven-plugin.version>
+        <jetty-maven-plugin.version>12.0.9</jetty-maven-plugin.version>
         <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
         <cxf-codegen-plugin.version>4.0.4</cxf-codegen-plugin.version>
         <cxf-wadl2java-plugin.version>4.0.4</cxf-wadl2java-plugin.version>
@@ -90,27 +90,27 @@
         <maven-checkstyle-plugin.version>3.3.1</maven-checkstyle-plugin.version>
         <maven-site-plugin.version>3.12.1</maven-site-plugin.version>
         <maven-project-info-reports-plugin.version>3.5.0</maven-project-info-reports-plugin.version>
-        <maven-javadoc-plugin.version>3.6.3</maven-javadoc-plugin.version>
+        <maven-javadoc-plugin.version>3.7.0</maven-javadoc-plugin.version>
 
         <!-- Versions of Xtext & Xtend plugins -->
         <xtend-maven-plugin.version>${xtext.version}</xtend-maven-plugin.version>
         <xtext-maven-plugin.version>${xtext.version}</xtext-maven-plugin.version>
 
-        <bonaparte-plugin.version>5.3.3</bonaparte-plugin.version>
+        <bonaparte-plugin.version>6.0.2</bonaparte-plugin.version>
         <license-plugin.version>3.0</license-plugin.version>
 
-        <checkstyle.version>10.1</checkstyle.version>
-        <spotbugs.version>4.7.3</spotbugs.version>
-        <spotbugs-plugin.version>4.7.3.5</spotbugs-plugin.version>
+        <checkstyle.version>10.17.0</checkstyle.version>
+        <spotbugs.version>4.8.5</spotbugs.version>
+        <spotbugs-plugin.version>4.8.5.0</spotbugs-plugin.version>
         <logback.version>1.5.6</logback.version>
         <junit5.version>5.10.2</junit5.version>     <!-- groupId is org.junit, therefore is can coexist with junit4 in dependency management -->
 
         <!-- Swagger -->
-        <swagger-maven-plugin.version>2.2.17</swagger-maven-plugin.version>
-        <swagger-ui-webjars.version>4.19.1</swagger-ui-webjars.version>   <!-- 4.x is available as well! -->
+        <swagger-maven-plugin.version>2.2.21</swagger-maven-plugin.version>
+        <swagger-ui-webjars.version>4.19.1</swagger-ui-webjars.version>
 
         <!-- OpenApi -->
-        <openapi-generator.version>7.2.0</openapi-generator.version>
+        <openapi-generator.version>7.5.0</openapi-generator.version>
 
         <!-- ASCIIDoctor -->
         <asciidoctor-maven-plugin.version>2.2.6</asciidoctor-maven-plugin.version>
@@ -353,6 +353,7 @@
                                 <goal>copy-resources</goal>
                             </goals>
                             <configuration>
+                                <encoding>UTF-8</encoding>
                                 <outputDirectory>${project.build.outputDirectory}</outputDirectory>
                                 <resources>
                                     <resource>
@@ -441,8 +442,8 @@
 
                 <!-- jetty -->
                 <plugin>
-                    <groupId>org.eclipse.jetty</groupId>
-                    <artifactId>jetty-maven-plugin</artifactId>
+                    <groupId>org.eclipse.jetty.ee10</groupId>
+                    <artifactId>jetty-ee10-maven-plugin</artifactId>
                     <version>${jetty-maven-plugin.version}</version>
                     <dependencies>
                         <dependency>
@@ -1037,8 +1038,29 @@
                 <module>t9t-bpmn2-jpa</module>
                 <module>t9t-bpmn2-mock</module>
 
+                <!-- Vector DB connectivity -->
+                <module>t9t-vdb-api</module>
+                <module>t9t-vdb-sapi</module>
+                <module>t9t-vdb-be</module>
+                <module>t9t-vdb-be-pinecone</module>
+                <module>t9t-vdb-be-qdrant</module>
+                <module>t9t-vdb-jpa-pgvector</module>
+
                 <!-- AWS cloud integration -->
                 <module>t9t-io-be-aws</module>
+
+                <!-- AI connectivity -->
+                <module>t9t-ai-api</module>
+                <module>t9t-ai-sapi</module>
+                <module>t9t-ai-be</module>
+                <module>t9t-ai-be-langchain</module>
+                <module>t9t-ai-jpa</module>
+                <module>t9t-ollama-api</module>
+                <module>t9t-ollama-sapi</module>
+                <module>t9t-ollama-be</module>
+                <module>t9t-openai-api</module>
+                <module>t9t-openai-sapi</module>
+                <module>t9t-openai-be</module>
 
                 <!-- modules which are optional addons -->
                 <module>t9t-demo-api</module>
@@ -1287,7 +1309,26 @@
                 <module>t9t-bpmn2-jpa</module>
                 <module>t9t-bpmn2-mock</module>
 
+                <module>t9t-vdb-api</module>
+                <module>t9t-vdb-sapi</module>
+                <module>t9t-vdb-be</module>
+                <module>t9t-vdb-be-pinecone</module>
+                <module>t9t-vdb-be-qdrant</module>
+                <module>t9t-vdb-jpa-pgvector</module>
+
                 <module>t9t-io-be-aws</module>
+
+                <module>t9t-ai-api</module>
+                <module>t9t-ai-sapi</module>
+                <module>t9t-ai-be</module>
+                <module>t9t-ai-be-langchain</module>
+                <module>t9t-ai-jpa</module>
+                <module>t9t-ollama-api</module>
+                <module>t9t-ollama-sapi</module>
+                <module>t9t-ollama-be</module>
+                <module>t9t-openai-api</module>
+                <module>t9t-openai-sapi</module>
+                <module>t9t-openai-be</module>
 
                 <module>t9t-demo-api</module>
                 <module>t9t-demo-be</module>

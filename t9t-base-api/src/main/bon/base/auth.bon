@@ -40,7 +40,9 @@ package (com.arvatosystems) t9t.base.auth {
         PREPARED    = "P",          // permission on prepared (canned) requests (by ID). Evaluated by the ExecutePreparedRequest request.
         REPORTING   = "R",          // permission to run specific reports
         CHANNEL     = "C",          // permission to write to certain targets like queues or topics
-        EXTERNAL    = "X"           // permission to invoke requests on a remote server
+        EXTERNAL    = "X",          // permission to invoke requests on a remote server
+        ASSISTANT   = "A",          // permission on AI assistants
+        TOOL_CALL   = "T"           // access to specific tool calls
     }
 
     /** Class to store cached permissions. */

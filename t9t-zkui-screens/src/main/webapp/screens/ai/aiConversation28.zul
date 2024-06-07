@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="aiConversation28"?>
+
+<window28 id="aiConversationWin">
+    <threesections28 gridId="aiConversation">
+        <crud28
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.CrudSurrogateKeyVM', vmId='aiConversation')"
+            currentMode="@load(vm.currentMode)">
+            <form28 id="aiConversationCrudMain" aspect="1" numColumns="2">
+                <rows>
+                    <cells228 id ="userId"                                value ="@bind(vm.data.userId)"
+                              id2="aiAssistantRef"                        value2="@bind(vm.data.aiAssistantRef)"/>
+                    <cells228 id ="createdBySessionRef"                   value ="@bind(vm.data.createdBySessionRef)"
+                              id2="providerThreadId"                      value2="@bind(vm.data.providerThreadId)"/>
+                    <cells228 id ="numberOfMessages"                      value ="@bind(vm.data.numberOfMessages)"
+                              id2="numberOfFilesAdded"                    value2="@bind(vm.data.numberOfFilesAdded)"/>
+                    <cells228 id ="businessId"                            value ="@bind(vm.data.businessId)"
+                              id2="businessRef"                           value2="@bind(vm.data.businessRef)"/>
+                    <cells28  id ="fileReferences" colspan1="3" rows1="4" value ="@load(vm.data.fileReferences) @save(vm.data.fileReferences,before='commandSave')"/>
+                    <cells28  id ="z"              colspan1="3" rows1="4" value ="@load(vm.data.z) @save(vm.data.z,before='commandSave')"/>
+                </rows>
+            </form28>
+        </crud28>
+    </threesections28>
+</window28>

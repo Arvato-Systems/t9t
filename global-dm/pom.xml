@@ -22,7 +22,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-build</artifactId>
-        <version>6.8-SNAPSHOT</version>
+        <version>7.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>global-dm</artifactId>
@@ -39,27 +39,27 @@
 
         <!-- jpaw / bonaparte: versions for import of BOM. The plugin version is defined separately in SE/EE -->
         <!-- Note that the version of the bonapart-dsl plugin is set in "global-settings" -->
-        <jpaw-bom.version>3.3.2</jpaw-bom.version>
-        <bonaparte-bom.version>5.3.6</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
+        <jpaw-bom.version>3.4.0</jpaw-bom.version>
+        <bonaparte-bom.version>6.0.1</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
 
         <!-- Versions of Xtext & Xtend -->
         <!-- Note that the versions of the xtext/xtend plugins are ALSO set in "global-settings", where the variable xtext.version is defined -->
         <xtend.version>${xtext.version}</xtend.version>
 
         <!-- Database driver versions -->
-        <driver.oracle.version>23.3.0.23.09</driver.oracle.version>
-        <driver.postgresql.version>42.6.1</driver.postgresql.version>     <!-- starting with 4.2.15, the driver adds a dependency to checker-qual 3.5.0 which conflicts with 2.5.2 pulled by guava -->
+        <driver.oracle.version>23.4.0.24.05</driver.oracle.version>
+        <driver.postgresql.version>42.7.3</driver.postgresql.version>     <!-- starting with 4.2.15, the driver adds a dependency to checker-qual 3.5.0 which conflicts with 2.5.2 pulled by guava -->
         <driver.sqlserver.version>12.6.1.jre11</driver.sqlserver.version> <!-- not all releases are available on maven central as jre17 builds -->
         <driver.hana.version>2.20.17</driver.hana.version>
         <h2.version>2.2.224</h2.version>
 
         <!-- OR mappers -->
-        <eclipselink.version>4.0.2</eclipselink.version>
-        <hibernate.version>6.4.4.Final</hibernate.version>
+        <eclipselink.version>4.0.3</eclipselink.version>
+        <hibernate.version>6.5.2.Final</hibernate.version>
         <hibernate-validator.version>8.0.1.Final</hibernate-validator.version>
         <ehcache.version>2.10.9.2</ehcache.version>
         <ehcache3.version>3.10.8</ehcache3.version>
-        <jandex.version>3.1.8</jandex.version>
+        <jandex.version>3.2.0</jandex.version>
 
         <!-- Javax ws / rs implementation versions (com.sun.xml.*), for jakarta 8 -->
         <jaxb-xjc.version>4.0.3</jaxb-xjc.version>                                      <!-- (com.sun.xml.bind:jaxb-xjc) -->
@@ -70,7 +70,7 @@
         <jakarta.xml-bind-api.version>4.0.2</jakarta.xml-bind-api.version>              <!-- 3.0.1 for jakarta namespace -->
         <jakarta.xml-bind.version>4.0.5</jakarta.xml-bind.version>                      <!-- 3.0.1 for jakarta namespace -->
         <jakarta.xml-jaxb-core.version>4.0.5</jakarta.xml-jaxb-core.version>            <!-- 3.0.1 for jakarta namespace (skip for javax!) -->
-        <jakarta.annotation-api.version>2.1.1</jakarta.annotation-api.version>          <!-- 2.0.0 for jakarta namespace -->
+        <jakarta.annotation-api.version>3.0.0</jakarta.annotation-api.version>          <!-- 2.0.0 for jakarta namespace -->
 
         <jakarta.activation-api.version>2.1.3</jakarta.activation-api.version>          <!-- 2.1.0 for jakarta EE 10 -->
         <jakarta.activation.version>2.0.2</jakarta.activation.version>                  <!-- this is now angus-activation -->
@@ -85,7 +85,7 @@
         <jakarta.jws.version>2.1.0</jakarta.jws.version>                                <!-- 3.0.0 for jakarta namespace -->
         <jakarta.ws.rs-api.version>3.1.0</jakarta.ws.rs-api.version>
         <jakarta.validation-api.version>3.0.2</jakarta.validation-api.version>          <!-- validation API, implemented by hibernate validator -->
-        <jakarta.persistence-api.version>3.1.0</jakarta.persistence-api.version>        <!-- validation API, implemented by hibernate ORM -->
+        <jakarta.persistence-api.version>3.2.0</jakarta.persistence-api.version>        <!-- validation API, implemented by hibernate ORM -->
         <jakarta.transaction-api.version>2.0.1</jakarta.transaction-api.version>
         <jakarta.servlet-api.version>6.0.0</jakarta.servlet-api.version>
 
@@ -94,13 +94,13 @@
         <microprofile-smallrye-impl.version>2.4.1</microprofile-smallrye-impl.version>
 
         <!-- Jetty -->
-        <jetty.version>11.0.21</jetty.version>
+        <jetty.version>12.0.9</jetty.version>
 
         <!-- Commons (use with care, only few are regularly updated) -->
         <commons-logging.version>1.1-donotuse</commons-logging.version>   <!-- should not use at all! -->
         <commons-email.version>99.0-donotuse</commons-email.version>      <!-- no longer used in t9t, because seems to be unmaintained -->
-        <commons-cli.version>1.7.0</commons-cli.version>
-        <commons-codec.version>1.16.1</commons-codec.version>
+        <commons-cli.version>1.8.0</commons-cli.version>
+        <commons-codec.version>1.17.0</commons-codec.version>
         <commons-io.version>2.16.1</commons-io.version>                   <!-- regularly updated again -->
         <commons-lang3.version>3.14.0</commons-lang3.version>             <!-- regularly updated again -->
         <commons-beanutils.version>1.9.4</commons-beanutils.version>      <!-- must be 1.9.2 at least due to CVE-2014-0114, but still pulls in outdated collections3 -->
@@ -112,11 +112,23 @@
         <aws2-bom.version>2.20.162</aws2-bom.version>
 
         <!-- AWS JDBC wrapper for Aurora -->
-        <aws-jdbc-wrapper.version>2.3.5</aws-jdbc-wrapper.version>
+        <aws-jdbc-wrapper.version>2.3.6</aws-jdbc-wrapper.version>
 
         <!-- Azure -->
         <azure-cosmosdb.version>2.6.16</azure-cosmosdb.version>
-        <azure-cosmos-sdk.version>4.59.0</azure-cosmos-sdk.version>
+        <azure-cosmos-sdk.version>4.61.1</azure-cosmos-sdk.version>
+
+        <!-- Vector databases -->
+        <pinecone.version>1.0.0</pinecone.version>
+        <qdrant-client.version>1.8.1</qdrant-client.version>
+
+        <!-- More AI stuff & DM for its dependencies -->
+        <jsoup.version>1.17.2</jsoup.version>
+        <langchain4j.version>0.30.0</langchain4j.version>
+        <grpc.version>1.63.1</grpc.version>
+        <kotlin-stdlib.version>1.9.23</kotlin-stdlib.version>
+        <okio.version>3.9.0</okio.version>          <!-- used by pinecone -->
+        <okhttp.version>4.12.0</okhttp.version>     <!-- used by pinecone -->
 
         <!-- Camunda BPMN: still linked to pre-jakarta spring version, removing -->
         <!-- <camunda-bom.version>7.18.0</camunda-bom.version> -->
@@ -127,10 +139,10 @@
         <!-- Test support -->
         <junit.version>4.13.2</junit.version>      <!-- groupId is junit -->
         <hamcrest.version>2.2</hamcrest.version>   <!-- avoid unless required -->
-        <byte-buddy.version>1.14.15</byte-buddy.version>   <!-- 1.12.x requested by mockito 4.2.0, and reuired for Java 17 -->
+        <byte-buddy.version>1.14.17</byte-buddy.version>   <!-- 1.12.x requested by mockito 4.2.0, and reuired for Java 17 -->
         <org.mockito-core.version>5.12.0</org.mockito-core.version>
         <archunit.version>1.0.1</archunit.version>
-        <hdrhistogram.version>2.2.1</hdrhistogram.version>
+        <hdrhistogram.version>2.2.2</hdrhistogram.version>
 
         <!-- Others -->
         <bouncycastle.version>1.78.1</bouncycastle.version>
@@ -170,12 +182,12 @@
         <!-- Spring core -->
         <spring-bom.version>6.1.8</spring-bom.version>
         <!-- Spring data -->
-        <spring-data-jpa.version>3.2.5</spring-data-jpa.version>
+        <spring-data-jpa.version>3.3.0</spring-data-jpa.version>
         <!-- Spring boot -->
-        <spring-boot.version>3.2.5</spring-boot.version>
+        <spring-boot.version>3.3.0</spring-boot.version>
 
-        <netty.version>4.1.108.Final</netty.version>
-        <vertx4.version>4.4.9</vertx4.version>
+        <netty.version>4.1.110.Final</netty.version>
+        <vertx4.version>4.5.8</vertx4.version>
         <hazelcast-kubernetes.version>2.2.3</hazelcast-kubernetes.version>
 
         <snakeyaml.version>2.1</snakeyaml.version>
@@ -185,14 +197,14 @@
         <hikaricp.version>5.0.1</hikaricp.version>
         <flyway.version>9.21.1</flyway.version>
         <reflections.version>0.9.10</reflections.version>
-        <maven-plugin-api.version>3.9.6</maven-plugin-api.version>
-        <jackson.version>2.16.1</jackson.version>
-        <jackson-databind.version>2.16.1</jackson-databind.version> <!-- separate version due to frequent CVE updates which do not release the full set -->
+        <maven-plugin-api.version>3.9.7</maven-plugin-api.version>
+        <jackson.version>2.17.1</jackson.version>
+        <jackson-databind.version>2.17.1</jackson-databind.version> <!-- separate version due to frequent CVE updates which do not release the full set -->
         <solr.version>8.11.1</solr.version>
         <camel.version>4.6.0</camel.version>
         <jsch.version>0.2.11</jsch.version>
         <kafka.version>3.7.0</kafka.version>
-        <error-prone.version>2.21.1</error-prone.version>
+        <error-prone.version>2.28.0</error-prone.version>
 
         <!-- Monitoring -->
         <micrometer.version>1.12.5</micrometer.version>
@@ -208,7 +220,7 @@
         <firebase-admin.version>9.1.1</firebase-admin.version>
 
         <msal4j.version>1.15.0</msal4j.version>
-        <nimbus.version>9.37.2</nimbus.version>
+        <nimbus.version>9.39.3</nimbus.version>
     </properties>
 
 
@@ -745,6 +757,45 @@
                 <version>${flyway.version}</version>
             </dependency>
 
+            <!-- Dependencies for vector databases: Must be present before loading vector DBs -->
+            <!-- kotlin is required for okhttp -->
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-bom</artifactId>
+                <version>${kotlin-stdlib.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-bom</artifactId>
+                <version>${grpc.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+
+            <dependency>
+                <groupId>com.squareup.okio</groupId>
+                <artifactId>okio-jvm</artifactId>
+                <version>${okio.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.squareup.okio</groupId>
+                <artifactId>okio</artifactId>
+                <version>${okio.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>okhttp</artifactId>
+                <version>${okhttp.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.lowagie</groupId>
+                <artifactId>itext</artifactId>
+                <version>${itext.version}</version>
+            </dependency>
+
             <!-- Spring stuff -->
             <dependency>
                 <groupId>org.springframework.data</groupId>
@@ -1204,8 +1255,8 @@
 
             <!-- Jetty (embeddable) -->
             <dependency>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-servlet</artifactId>
+                <groupId>org.eclipse.jetty.ee10</groupId>
+                <artifactId>jetty-ee10-servlet</artifactId>
                 <version>${jetty.version}</version>
             </dependency>
             <dependency>
@@ -1215,7 +1266,7 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.jetty.http2</groupId>
-                <artifactId>http2-server</artifactId>
+                <artifactId>jetty-http2-server</artifactId>
                 <version>${jetty.version}</version>
             </dependency>
             <dependency>
@@ -1225,12 +1276,12 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.jetty.http2</groupId>
-                <artifactId>http2-client</artifactId>
+                <artifactId>jetty-http2-client</artifactId>
                 <version>${jetty.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-servlets</artifactId>
+                <groupId>org.eclipse.jetty.ee10</groupId>
+                <artifactId>jetty-ee10-servlets</artifactId>
                 <version>${jetty.version}</version>
             </dependency>
 
@@ -1509,6 +1560,34 @@
                 <groupId>software.amazon.jdbc</groupId>
                 <artifactId>aws-advanced-jdbc-wrapper</artifactId>
                 <version>${aws-jdbc-wrapper.version}</version>
+            </dependency>
+
+            <!-- an older version of jsoup is pulled by langchain4j -->
+            <dependency>
+                <groupId>org.jsoup</groupId>
+                <artifactId>jsoup</artifactId>
+                <version>${jsoup.version}</version>
+            </dependency>
+
+            <!-- Vector databases (should go before langchain4j BOm import) -->
+            <dependency>
+                <groupId>io.pinecone</groupId>
+                <artifactId>pinecone-client</artifactId>
+                <version>${pinecone.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.qdrant</groupId>
+                <artifactId>client</artifactId>
+                <version>${qdrant-client.version}</version>
+            </dependency>
+
+            <!-- langchain4j -->
+            <dependency>
+                <groupId>dev.langchain4j</groupId>
+                <artifactId>langchain4j-bom</artifactId>
+                <version>${langchain4j.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
             </dependency>
 
         </dependencies>

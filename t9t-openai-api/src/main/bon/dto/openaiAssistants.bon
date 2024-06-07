@@ -1,0 +1,260 @@
+/*
+ * Copyright (c) 2012 - 2023 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import api.*
+import apiw.*
+import api.media.*
+import t9t.base.types.*
+import t9t.ai.*
+import t9t.ai.openai.*
+
+/**
+ * OpenAI data structures for assistants.
+ */
+package (com.arvatosystems) t9t.ai.openai.assistants {
+    default private unsigned trim noControlChars;
+    properties path;
+
+    enum OpenAIRunStatusType {
+        QUEUED                  = "queued",
+        IN_PROGRESS             = "in_progress",
+        REQUIRES_ACTION         = "requires_action",
+        CANCELLING              = "cancelling",
+        CANCELLED               = "cancelled",
+        FAILED                  = "failed",
+        COMPLETED               = "completed",
+        INCOMPLETE              = "incomplete",
+        EXPIRED                 = "expired"
+    }
+
+    // see https://platform.openai.com/docs/api-reference/chat/create
+    // omitted all deprecated fields
+    // OpenAi uses snake case, the Java CamelCase field names must be converted. This can be done centrally using a customized Jackson ObjectMapper
+    final class OpenAICreateAssistantReq extends OpenAIReq {
+        properties path="/v1/assistants";
+        required openaiModel                        model;
+        required openaiId                           name;               // ID of the assistant
+        optional openaiText                         description;
+        required openaiText                         instructions;
+        optional Float                              temperature;
+        optional Float                              topP;
+        required (OpenAITool) List<>                tools;
+        optional Json                               toolResources;
+        optional Json                               metadata;
+        optional Enum OpenAIResponseFormatType      responseFormat;
+    }
+
+    final class OpenAIObjectAssistant extends AbstractOpenAIObjectWithId {  // OpenAIObjectType.ASSISTANT
+        required openaiModel                        model;
+        required openaiId                           name;               // ID of the assistant
+        optional openaiText                         description;
+        required openaiText                         instructions;
+        optional Float                              temperature;
+        optional Float                              topP;
+        required (OpenAITool) List<>                tools;
+        optional Json                               toolResources;
+        optional Json                               metadata;
+        optional Enum OpenAIResponseFormatType      responseFormat;
+    }
+
+    final class OpenAIObjectListAssistants extends AbstractOpenAIListObject<OpenAIObjectAssistant> {}
+
+    // ==================================================================================================================================
+
+    final class OpenAIThread extends AbstractOpenAIObjectWithId {  // OpenAIObjectType.THREAD
+        optional Json                               metadata;
+        optional Json                               toolResources;
+    }
+
+    // ==================================================================================================================================
+
+    final class OpenAIThreadMessageReq extends OpenAIReq {
+        required enum OpenAIRoleType                role;               // user or assistant
+        // required openaiText                         content;            // message content
+        required (AbstractOpenAIContent) required List<> content;       // flexible content
+        required (OpenAIAttachment) List<>          attachments;        // list of attachments
+        optional Json                               metadata;           // up to 16 key/value pairs
+    }
+
+    final class OpenAIObjectThreadMessage extends AbstractOpenAIObjectWithId {  // OpenAIObjectType.THREAD_MESSAGE
+        optional openaiId                           assistantId;
+        required openaiId                           threadId;
+        optional openaiId                           runId;
+        required enum OpenAIRoleType                role;               // user or assistant
+        required (OpenAIThreadOut) List<>           content;
+        required (OpenAIAttachment) List<>          attachments;        // list of attachments
+        optional Json                               metadata;           // up to 16 key/value pairs
+    }
+
+    final class OpenAIAttachment {
+        optional openaiId                           fileId;             // really optional?
+        required (OpenAITool) List<>                tools;              // list of tools to be used
+    }
+
+
+    abstract class AbstractOpenAIContent extends AbstractOpenAITypedObject {
+    }
+
+
+    final class OpenAIImageFile extends AbstractOpenAIContent {     // type is "image_file"
+        required (OpenAISubImageFile)               imageFile;
+    }
+    final class OpenAISubImageFile {
+        required openaiId                           fileId;
+        optional Enum OpenAIImageDetailType         detail;
+    }
+
+
+    final class OpenAIImageUrl extends AbstractOpenAIContent {      // type is "image_url"
+        required (OpenAISubImageUrl)                imageUrl;
+    }
+    final class OpenAISubImageUrl {
+        required openaiId                           fileId;
+        optional Enum OpenAIImageDetailType         detail;
+    }
+
+
+    final class OpenAIThreadText extends AbstractOpenAIContent {    // type is "text"
+        required openaiText                         text;           // inconsistent! Here just the text (compare with output data structure)
+    }
+
+    final class OpenAIThreadOut extends AbstractOpenAITypedObject { // type is "text", "image_file" or "image_url"
+        optional (OpenAISubThreadText)              text;
+        optional (OpenAISubImageFile)               imageFile;
+        optional (OpenAISubImageUrl)                imageUrl;
+    }
+    final class OpenAISubThreadText {
+        required openaiText                         value;
+        optional Array                              annotations;
+    }
+
+
+    final class OpenAIObjectListThreadMessages extends AbstractOpenAIListObject<OpenAIObjectThreadMessage> {}
+
+    // ==================================================================================================================================
+
+    final class OpenAIThreadRunReq extends OpenAIReq {  // threadId is part of path
+        required openaiId                           assistantId;        // which assistant to use
+        optional (OpenAIThreadMessages)             thread;             // ONLY IN THE CREATE THREAD AND RUN USE!
+        optional openaiModel                        model;
+        optional openaiText                         instructions;
+        optional openaiText                         additionalInstructions;  // ONLY IN THE RUN ONLY USE!
+        required (OpenAIThreadMessageReq) List<>    additionalMessages;      // ONLY IN THE RUN ONLY USE!
+        required (OpenAITool) List<>                tools;
+        optional Json                               toolResources;      // ONLY IN THE CREATE THREAD AND RUN USE!
+        optional Json                               metadata;
+        optional Float                              temperature;
+        optional Float                              topP;
+        optional Boolean                            stream;
+        optional Integer                            maxPromptTokens;
+        optional Integer                            maxCompletionTokens;
+        optional Json                               truncationStrategy; // FIXME
+        optional Element                            toolChoice;         // FIXME
+        optional Enum OpenAIResponseFormatType      responseFormat;
+    }
+
+    final class OpenAIThreadMessages {
+        required (OpenAIThreadMessageReq) List<>    messages;
+        optional Json                               toolResources;      // FIXME: to be detailed
+        optional Json                               metadata;
+    }
+
+    final class OpenAIObjectThreadRun extends AbstractOpenAIObjectWithId {  // OpenAIObjectType.THREAD_RUN
+        optional openaiId                           assistantId;
+        required openaiId                           threadId;
+        required enum OpenAIRunStatusType           status;
+        //optional openaiId                           runId;            // not in??????
+        optional Instant                            startedAt;
+        optional Instant                            expiresAt;
+        optional Instant                            cancelledAt;
+        optional Instant                            failedAt;
+        optional Instant                            completedAt;
+        optional Json                               lastError;
+        optional openaiModel                        model;
+        optional openaiText                         instructions;
+        required (OpenAITool) List<>                tools;
+        optional Json                               metadata;
+        optional Json                               incompleteDetails;
+        optional (OpenAIUsage)                      usage;
+        optional Float                              temperature;
+        optional Float                              topP;
+        optional Integer                            maxPromptTokens;
+        optional Integer                            maxCompletionTokens;
+        optional Json                               truncationStrategy; // FIXME
+        optional Enum OpenAIResponseFormatType      responseFormat;
+        optional Element                            toolChoice;         // FIXME
+        optional (OpenAIRequiredAction)             requiredAction;     // UNDOCUMENTED!
+        optional Json                               toolResources;      // UNDOCUMENTED!
+    }
+
+    final class OpenAIRequiredAction {
+        required openaiId                           ^type;              // submit_tool_outputs
+        optional (OpenAISubmitToolOutputs)          submitToolOutputs;  // required, but checked for non null by code for better error diagnostics
+    }
+    final class OpenAISubmitToolOutputs {
+        required (OpenAIToolCall) List<>            toolCalls;          // required, but checked for non null by code for better error diagnostics
+    }
+
+    final class OpenAIObjectListThreadRuns extends AbstractOpenAIListObject<OpenAIObjectThreadRun> {}
+
+    final class OpenAIToolOutputReq extends OpenAIReq {  // threadId and runId are part of path
+        required (OpenAIToolOutput) required List<> toolOutputs;
+        optional Boolean                            stream;
+    }
+
+    final class OpenAIToolOutput {
+        required openaiId                           toolCallId;
+        required openaiText                         output;
+    }
+
+
+
+    class OpenAICreateVectorStoreReq extends OpenAIReq {
+        properties path="/v1/vector_stores";
+        optional openaiText                         name;              // name or description of the store
+        required openaiId required List<>           fileIds;           // the files within the store
+        optional Json                               expiresAfter;      // TODO: to be detailed. is child object
+        optional Json                               metadata;
+    }
+
+    class OpenAIObjectVectorStore extends AbstractOpenAIObjectWithId {  // VECTOR_STORE
+        optional openaiText                         name;              // name or description of the store
+        required int                                usageBytes;
+        required Json                               fileCounts;        // TODO: to be detailed. is child object
+        required enum OpenAIVectorStoreStatusType   status;
+        optional Json                               expiresAfter;      // TODO: to be detailed. is child object
+        optional Instant                            expiresAt;
+        optional Instant                            lastActiveAt;
+        optional Json                               metadata;
+    }
+// DUP:
+//    final class OpenAICreateThreadAndRunReq extends OpenAIReq {         // no threadId required
+//        required openaiId                           assistantId;        // which assistant to use
+//        optional (OpenAIThreadMessages)             thread;             // TO CLARIFY: really optional?
+//        optional openaiModel                        model;
+//        optional openaiText                         instructions;
+//        required (OpenAITool) List<>                tools;
+//        optional Json                               toolResources;
+//        optional Json                               metadata;
+//        optional Float                              temperature;
+//        optional Float                              topP;
+//        optional Boolean                            stream;
+//        optional Integer                            maxPromptTokens;
+//        optional Integer                            maxCompletionTokens;
+//        optional Json                               truncationStrategy; // FIXME
+//        optional Element                            toolChoice;         // FIXME
+//        optional Enum OpenAIResponseFormatType      responseFormat;
+//    }
+}

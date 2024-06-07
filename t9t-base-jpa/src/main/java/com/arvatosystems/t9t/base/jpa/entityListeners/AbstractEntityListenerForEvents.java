@@ -54,14 +54,15 @@ public abstract class AbstractEntityListenerForEvents<E extends BonaPersistableN
     // a simpler logic would work in EclipseLink, but Hibernate creates all EntityListeners already when the EntityManagerFactory is set up,
     // and then the providers may not yet be known
 
-    private static class MoreLazyReferences {
+    private static final class MoreLazyReferences {
         private final IExecutor executor = Jdp.getRequired(IExecutor.class);
     }
 
     private static MoreLazyReferences getMoreRefs() {
         MoreLazyReferences myRef = MORE_REFS.get();
-        if (myRef != null)
+        if (myRef != null) {
             return myRef;
+        }
         // init it
         myRef = new MoreLazyReferences();
         MORE_REFS.compareAndSet(null, myRef);

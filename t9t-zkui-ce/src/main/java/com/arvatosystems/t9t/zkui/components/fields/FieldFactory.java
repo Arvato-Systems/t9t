@@ -93,6 +93,8 @@ public class FieldFactory {
                     return new NumberField(fieldname, filter, desc, gridId, session);
                 case "double":
                     return new DoubleField(fieldname, filter, desc, gridId, session);
+                case "float":
+                    return new FloatField(fieldname, filter, desc, gridId, session);
                 case "microunits":
                 case "milliunits":
                 case "nanounits":

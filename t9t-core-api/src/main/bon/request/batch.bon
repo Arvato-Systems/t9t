@@ -67,4 +67,17 @@ package (com.arvatosystems) t9t.batch.request {
      */
     class AggregateMessageStatisticsRequest extends AbstractAggregationRequest {
     }
+
+    class RecordEventsRequest extends RequestParameters {
+        required Ascii(8)             eventSource;     // unique identifier per source
+        required Enum EventSeverity   eventSeverity;   // event level
+        optional Uuid                 id1;             // event specific ID 1
+        optional defaultExternalId    id2;             // event specific ID 2
+        required Ascii(8)             status;          // status value
+        optional shortText            statusMessage;   // additional text
+    }
+
+    class RecordEventsCrudRequest      extends CrudSurrogateKeyRequest<RecordEventsRef, RecordEventsDTO, WriteTracking> {}
+    class RecordEventsSearchRequest    extends SearchRequest<RecordEventsDTO, WriteTracking> {}
+
 }

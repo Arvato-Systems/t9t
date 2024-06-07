@@ -1,0 +1,9 @@
+{
+    "viewModel": "aiConversation",
+    "filters": [
+        { "filterType": "E", "fieldName": "userId" }
+    ],
+    "fields": [
+        "userId"
+    ]
+}

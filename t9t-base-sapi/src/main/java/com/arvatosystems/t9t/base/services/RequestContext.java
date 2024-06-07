@@ -17,6 +17,7 @@ package com.arvatosystems.t9t.base.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
@@ -85,6 +86,7 @@ public class RequestContext extends AbstractRequestContext {  // FIXME: this cla
     private final Object lockForNesting = new Object();
     private Boolean readOnlyDatabaseSession = null;
     private Boolean useShadowDatabaseSession = null;
+    private Locale currentLocale = null;                // the current locale, computed on demand from the language code of internal header parameters
 
     public void pushCallStack(final String newPQON) {
         synchronized (lockForNesting) {
@@ -374,5 +376,30 @@ public class RequestContext extends AbstractRequestContext {  // FIXME: this cla
     /** Safe getter for z field values, also works if z itself is null, returns an Integer typed result, if required, by conversion. */
     public Integer getZInteger(final String key) {
         return JsonUtil.getZInteger(internalHeaderParameters.getJwtInfo().getZ(), key, null);
+    }
+
+    /** Retrieves the (cached) locale, constructed from the internal header parameters. */
+    public Locale getLocale() {
+        if (currentLocale == null) {
+            final String languageCode = internalHeaderParameters.getLanguageCode();
+            if (languageCode == null) {
+                currentLocale = Locale.getDefault();
+            } else {
+                final int len = languageCode.length();
+                if (len == 2) {
+                    currentLocale = new Locale(languageCode);
+                } else if (len >= 5 && (languageCode.charAt(2) == '-' || languageCode.charAt(2) == '_')) {
+                    if (len == 5) {
+                        currentLocale = new Locale(languageCode.substring(0, 2), languageCode.substring(3));
+                    } else if (len > 7) {
+                        currentLocale = new Locale(languageCode.substring(0, 2), languageCode.substring(3, 5), languageCode.substring(6));
+                    } else {
+                        LOGGER.warn("Invalid language code {} in internal header parameters", languageCode);
+                        currentLocale = Locale.getDefault();
+                    }
+                }
+            }
+        }
+        return currentLocale;
     }
 }

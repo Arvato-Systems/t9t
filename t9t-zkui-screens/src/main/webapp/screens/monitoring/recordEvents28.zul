@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="recordEvents28"?>
+
+<window28 id="recordEventsWin">
+    <twosections28 pageSize="50" gridId="recordEvents"/>
+</window28>

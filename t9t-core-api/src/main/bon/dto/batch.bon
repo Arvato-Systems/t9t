@@ -98,4 +98,23 @@ package (com.arvatosystems) t9t.batch {
         required Timestamp(0)               start;
         required Timestamp(0)               end;
     }
+
+    enum EventSeverity {
+        CRITICAL                          = "C",  // critical alert (should not happen)
+        ERROR                             = "E",  // error calling external service
+        TIMEOUT                           = "T",  // timeout problem (assumed to be temporarily)
+        INFO                              = "I"
+    }
+
+    class RecordEventsRef RTTI 53 extends Ref {
+    }
+
+    class RecordEventsDTO extends RecordEventsRef {
+        required Ascii(8)                   eventSource;            // unique identifier per source
+        required Enum EventSeverity         eventSeverity;          // event level
+        optional Uuid                       id1;                    // event specific ID 1
+        optional defaultExternalId          id2;                    // event specific ID 2
+        required Ascii(8)                   status;                 // status value
+        optional shortText                  statusMessage;          // additional text
+    }
 }

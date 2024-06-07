@@ -58,7 +58,7 @@ public class JsonFormatConverter extends AbstractBufferedFormatConverter {
     public void open(final IInputSession inputSession, final Map<String, Object> params, final BonaPortableClass<?> baseBClass) {
         super.open(inputSession, params, baseBClass);
         metaDataForOuter = new ObjectReference(Visibility.PRIVATE, false, "",
-                Multiplicity.SCALAR, IndexType.NONE, 0, 0, DataCategory.OBJECT, "json", "Map", false, false, null, true, "Map",
+                Multiplicity.SCALAR, IndexType.NONE, 0, 0, DataCategory.OBJECT, "json", "Map", false, false, null, null, null, null, true, "Map",
                 baseBClass.getMetaData(), null, null);
         useTokens = Boolean.TRUE.equals(importDataSinkDTO.getJsonUseEnumTokens());
         useOrdinals = useTokens;

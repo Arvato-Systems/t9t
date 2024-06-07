@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="aiAssistant28"?>
+
+<window28 id="aiAssistantWin">
+    <threesections28 gridId="aiAssistant">
+        <crud28 cachesDropdown="aiAssistantId"
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.CrudSurrogateKeyVM', vmId='aiAssistant')"
+            currentMode="@load(vm.currentMode)">
+            <tabbox id="taboxDetail" vflex="1">
+                <tabs>
+                    <tab28 id="mainTab"/>
+                    <tab28 id="ttsTab" />
+                </tabs>
+                <tabpanels vflex="1" id="tabpanelsDetail">
+                    <tabpanel vflex="1" id="aiAssistant.main.panel">
+                        <form28 id="aiAssistantCrudMain" aspect="1" numColumns="2">
+                            <rows>
+                                <cells228 id ="assistantId"             value ="@load(vm.data.assistantId)              @save(vm.data.assistantId,  before='commandSave')"
+                                          id2="description"             value2="@bind(vm.data.description)"/>
+                                <cells228 id ="languageCode"            value ="@bind(vm.data.languageCode)"
+                                          id2="isActive"                value2="@bind(vm.data.isActive)"/>
+                                <cells228 id ="aiName"                  value ="@bind(vm.data.aiName)"
+                                          id2="greeting"                value2="@bind(vm.data.greeting)"/>
+                                <cells228 id ="aiProvider"              value ="@bind(vm.data.aiProvider)"
+                                          id2="model"                   value2="@bind(vm.data.model)"/>
+                                <cells228 id ="temperature"             value ="@bind(vm.data.temperature)"
+                                          id2="topP"                    value2="@bind(vm.data.topP)"/>
+                                <cells228 id ="maxTokens"               value ="@bind(vm.data.maxTokens)"
+                                          id2="documentAccessPermitted" value2="@bind(vm.data.documentAccessPermitted)"/>
+                                <cells228 id ="toolsPermitted"          value ="@bind(vm.data.toolsPermitted)"
+                                          id2="executePermitted"        value2="@bind(vm.data.executePermitted)"/>								                                                                                                            
+                                <cells28  id ="instructions" colspan1="3" rows1="4" value ="@load(vm.data.instructions) @save(vm.data.instructions, before='commandSave')"/>
+                                <cells28  id ="metadata"     colspan1="3" rows1="2" value ="@load(vm.data.metadata)     @save(vm.data.metadata,     before='commandSave')"/>
+	                            <cells228 id ="syncStatus"              value ="@bind(vm.data.syncStatus)"
+                                          id2="aiAssistantId"                value2="@bind(vm.data.aiAssistantId)"/>
+                            </rows>
+                        </form28>
+                    </tabpanel>
+                    <tabpanel vflex="1" id="aiAssistant.tts.panel">
+                        <form28 id="aiAssistantCrudTTS" aspect="1" numColumns="2">
+                            <rows>
+                                <cells28  id ="vectorDbProvider"        value ="@bind(vm.data.vectorDbProvider)"/>
+
+                                <cells228 id ="ttsProvider"             value ="@bind(vm.data.ttsProvider)"
+                                          id2="ttsModel"                value2="@bind(vm.data.ttsModel)"/>
+                                <cells28  id ="ttsInstructions" colspan1="3" rows1="4" value ="@load(vm.data.ttsInstructions) @save(vm.data.ttsInstructions, before='commandSave')"/>
+
+                                <cells28  id ="z" colspan1="3" rows1="4"    value ="@load(vm.data.z) @save(vm.data.z,before='commandSave')"/>
+                            </rows>
+                        </form28>
+                    </tabpanel>
+                </tabpanels>
+            </tabbox>
+        </crud28>
+    </threesections28>
+</window28>

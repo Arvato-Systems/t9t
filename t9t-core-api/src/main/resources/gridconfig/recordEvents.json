@@ -1,0 +1,15 @@
+{
+    "viewModel": "recordEvents",
+    "filters": [
+        { "filterType": "W", "fieldName": "eventSource" },
+        { "filterType": "E", "fieldName": "eventSeverity" },
+        { "filterType": "W", "fieldName": "id1" },
+        { "filterType": "W", "fieldName": "id2" },
+        { "filterType": "W", "fieldName": "status" }
+        
+    ],
+    "fields": [
+        "eventSource", "eventSeverity", "id1", "id2", "status", "statusMessage"
+    ],
+    "fieldWidths": [ 100, 100, 100, 100, 80, 180 ]
+}

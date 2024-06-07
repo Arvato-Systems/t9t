@@ -350,6 +350,8 @@
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:element>
+                    <xs:element name="fwDropBeforeMigrate" minOccurs="0" nillable="true" type="xs:boolean"/>
+                    <xs:element name="fwSkipDefaultCallbacks" minOccurs="0" nillable="true" type="xs:boolean"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>

@@ -269,6 +269,7 @@ public class T9tException extends ApplicationException {
 
     public static final int CONSTRUCTOR_ILLEGAL_ACCESS_EXCEPTION = OFFSET + 915;
     public static final int CONSTRUCTOR_INSTANTIATION_EXCEPTION = OFFSET + 917;
+    public static final int INVALID_DATETIME_FORMAT = OFFSET + 918;
 
     // plausi checks
     public static final int DATASINK_UNSUPPORTED_FORMAT = OFFSET + 950;
@@ -520,6 +521,7 @@ public class T9tException extends ApplicationException {
         registerCode(METHOD_INSTANTIATION_EXCEPTION, "Cannot instantiate method");
         registerCode(CONSTRUCTOR_ILLEGAL_ACCESS_EXCEPTION, "Could not access instance to perform operation.");
         registerCode(CONSTRUCTOR_INSTANTIATION_EXCEPTION, "Creating instance failed.");
+        registerCode(INVALID_DATETIME_FORMAT, "Invalid date/time format");
 
         registerCode(CRUD_BOTH_KEYS_MISMATCH, "Both natural and artifical keys have been supplied, but mismatch.");
         registerCode(CRUD_NATURAL_KEY_MISSING, "The CRUD operation requires a natural key.");

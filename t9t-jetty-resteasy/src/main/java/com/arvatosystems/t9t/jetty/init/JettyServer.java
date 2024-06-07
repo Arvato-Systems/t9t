@@ -21,21 +21,21 @@ import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.StatisticsHandler;
-import org.eclipse.jetty.servlet.DefaultServlet;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.ee10.servlet.DefaultServlet;
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee10.servlet.ServletHolder;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.IKafkaRequestTransmitter;
+import com.arvatosystems.t9t.jetty.statistics.T9tJettyStatisticsCollector;
 import com.arvatosystems.t9t.rest.utils.RestUtils;
 
 import de.jpaw.dp.Jdp;
 import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.hotspot.DefaultExports;
-import io.prometheus.client.jetty.JettyStatisticsCollector;
 import io.prometheus.client.servlet.jakarta.exporter.MetricsServlet;
 
 public class JettyServer {
@@ -108,7 +108,7 @@ public class JettyServer {
 
         // Setup the basic Application "context" at "/".
         // This is also known as the handler tree (in Jetty speak).
-        final ServletContextHandler context = new ServletContextHandler(server, contextRoot);
+        final ServletContextHandler context = new ServletContextHandler(contextRoot);
 
         // Setup RESTEasy's HttpServletDispatcher at "/{applicationPath}/*".
         final ServletHolder restEasyServlet = new ServletHolder(new HttpServletDispatcher());
@@ -119,12 +119,13 @@ public class JettyServer {
         // Setup the DefaultServlet at "/".
         final ServletHolder defaultServlet = new ServletHolder(new DefaultServlet());
         context.addServlet(defaultServlet, contextRoot);
+        server.setHandler(context);
 
         // metrics for prometheus
         final StatisticsHandler statisticsHandler = new StatisticsHandler();
         statisticsHandler.setHandler(server.getHandler());
         server.setHandler(statisticsHandler);
-        new JettyStatisticsCollector(statisticsHandler).register();
+        new T9tJettyStatisticsCollector(statisticsHandler).register();
         DefaultExports.register(CollectorRegistry.defaultRegistry);
         context.addServlet(new ServletHolder(new MetricsServlet()), metricsPath);
 

@@ -109,6 +109,8 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional Integer                            hikariMinimumIdle;                // minimum number of idle connections
         optional Integer                            hikariMaxLifetime;                // maximum lifetime of a connection
         optional Unicode(255)                       hikariExceptionOverrideClassName; // SQLExceptionOverride class name
+        optional Boolean                            fwDropBeforeMigrate;              // Drop all views, triggers and functions as beforeMigrate callback
+        optional Boolean                            fwSkipDefaultCallbacks;           // Whether Flyway should skip the default callbacks. If true, only custom callbacks are used.
     }
 
     class NoSqlDatabaseConfiguration {

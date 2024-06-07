@@ -38,4 +38,11 @@ package (com.arvatosystems) t9t.batch.jpa.entities owner fortytwo prefix p28 {
         index unique (tenantId, processId, slotStart)
         index (slotStart)
     }
+
+    entity RecordEventsEntity category datwo is RecordEventsDTO {
+        tenantClass InternalTenantId
+        pk (objectRef)
+        index (id1)
+        index (id2)
+    }
 }

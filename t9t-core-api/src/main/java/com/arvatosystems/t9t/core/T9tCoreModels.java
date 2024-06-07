@@ -24,9 +24,12 @@ import com.arvatosystems.t9t.base.entities.WriteTracking;
 import com.arvatosystems.t9t.base.entities.WriteTrackingMs;
 import com.arvatosystems.t9t.base.request.ComponentInfoDTO;
 import com.arvatosystems.t9t.base.request.ProcessStatusDTO;
+import com.arvatosystems.t9t.batch.RecordEventsDTO;
 import com.arvatosystems.t9t.batch.SliceTrackingDTO;
 import com.arvatosystems.t9t.batch.StatisticsAggregationDTO;
 import com.arvatosystems.t9t.batch.StatisticsDTO;
+import com.arvatosystems.t9t.batch.request.RecordEventsCrudRequest;
+import com.arvatosystems.t9t.batch.request.RecordEventsSearchRequest;
 import com.arvatosystems.t9t.batch.request.SliceTrackingCrudRequest;
 import com.arvatosystems.t9t.batch.request.SliceTrackingSearchRequest;
 import com.arvatosystems.t9t.batch.request.StatisticsAggregationSearchRequest;
@@ -55,7 +58,6 @@ import com.arvatosystems.t9t.updates.UpdateStatusDTO;
 import com.arvatosystems.t9t.updates.UpdateStatusLogDTO;
 import com.arvatosystems.t9t.updates.request.UpdateStatusLogSearchRequest;
 import com.arvatosystems.t9t.updates.request.UpdateStatusSearchRequest;
-
 import de.jpaw.bonaparte.pojos.api.NoTracking;
 
 public final class T9tCoreModels implements IViewModelContainer {
@@ -138,6 +140,12 @@ public final class T9tCoreModels implements IViewModelContainer {
         WriteTrackingMs.BClass.INSTANCE,
         UpdateStatusLogSearchRequest.BClass.INSTANCE,
         null);
+    private static final CrudViewModel<RecordEventsDTO, WriteTracking> RECORD_EVENTS_VIEW_MODEL
+      = new CrudViewModel<>(
+        RecordEventsDTO.BClass.INSTANCE,
+        WriteTracking.BClass.INSTANCE,
+        RecordEventsSearchRequest.BClass.INSTANCE,
+        RecordEventsCrudRequest.BClass.INSTANCE);
 
     @Override
     public void register() {
@@ -154,5 +162,6 @@ public final class T9tCoreModels implements IViewModelContainer {
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("plugins",          PLUGINS_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("updateStatus",     UPDATE_STATUS_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("updateStatusLog",  UPDATE_STATUS_LOG_VIEW_MODEL);
+        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("recordEvents",     RECORD_EVENTS_VIEW_MODEL);
     }
 }

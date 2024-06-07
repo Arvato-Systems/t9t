@@ -1,0 +1,85 @@
+/*
+ * Copyright (c) 2012 - 2023 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import api.*
+import api.media.*
+import t9t.base.types.*
+import t9t.ai.*
+import t9t.ai.tools.*
+import t9t.auth.*
+
+/**
+ * Some sample tool APIs (temporary, just for testing)
+ */
+package (com.arvatosystems) t9t.ai.tools.coding {
+    default private unsigned trim noControlChars;
+
+    /**
+     * Retrieves the description of an error code and also its classification.
+     *
+     * The classification is the most significant digit (scale 10^8), with the following meaning:
+     *
+     * Classification, Meaning
+     * 0, successful return
+     * 1, operation rejected due to business reasons (credit limit exceed etc)
+     * 2, service parameter / XML parsing problem or alphanumeric data in numeric field or field size exceeded etc.
+     * 3, parameter error (for example currency or tenant referenced which does not exist or has been inactivated)
+     * 4, timeout (external 3rd party service did not respond within allowed time)
+     * 5, reserved
+     * 6, reserved
+     * 7, invalid parameter of an internal request or response (often a coding problem)
+     * 8, internal logic error generated when internal plausibility checks fail (this is always a coding problem)
+     * 9, an uncaught general exception or some resource exhausted (for example disk full)
+     */
+    final class AIToolExplainErrorCode extends AbstractAITool return AIToolExplainErrorCodeResult {
+        required Integer                            errorCode;                  // The error code.
+    }
+
+    final class AIToolExplainErrorCodeResult extends AbstractAIToolResult {
+        required textChunk                          description;
+        optional Integer                            classification;
+    }
+
+    /**
+     * Provides information about a class.
+     * For a given class name, the purpose is returned, as well as a list of its fields.
+     * If the class is a subclass of another class, the name of its parent is also provided.
+     * If the class is request class, the name of its response class is also provided.
+     * For every field, the name, type and meaning is provided in the response.
+     * For alphanumeric fields, also the length is given.
+     * For numeric fields, the total number of digits (precision) and also the number of fractional digits is provided.
+     */
+    final class AIToolExplainClass extends AbstractAITool return AIToolExplainClassResult {
+        required meta.identifier                    className;      // the simple name of the class
+    }
+
+    final class AIToolExplainClassResult extends AbstractAIToolResult {
+        required meta.identifier                    className;      // the simple name of the class
+        optional meta.identifier                    packageName;    // The java package name in which the class is located
+        optional meta.identifier                    parentClass;    // The name of the parent class, in case the class is a subclass
+        optional meta.identifier                    responseClass;  // The name of the response class, in case the class represents a request
+        required textChunk                          description;    // A high level description of the class
+        required (AIToolFieldDescription) List<>    fields;         // the fields in this class
+    }
+    final class AIToolFieldDescription {
+        required meta.identifier                    name;           // the name of the field
+        required Ascii(64)                          ^type;          // the type of the field
+        optional Integer                            length;         // the field length
+        optional Integer                            totalDigits;      // the number of total digits
+        optional Integer                            fractionalDigits; // the number of fractional digits
+        optional Boolean                            isSigned;         // if the number is a signed number
+        optional textChunk                          description;    // the field description
+    }
+}

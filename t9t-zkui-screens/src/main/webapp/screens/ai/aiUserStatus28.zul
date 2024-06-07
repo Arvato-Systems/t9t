@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="aiUserStatus28"?>
+
+<window28 id="aiUserStatusWin">
+    <threesections28 gridId="aiUserStatus">
+        <crud28
+            viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.CrudSurrogateKeyVM', vmId='aiUserStatus')"
+            currentMode="@load(vm.currentMode)">
+            <form28 id="aiUserStatusCrudMain" aspect="1" numColumns="2">
+                <rows>
+                    <cells28  id ="userId"                                value ="@bind(vm.data.userId)"/>
+                </rows>
+            </form28>
+        </crud28>
+    </threesections28>
+</window28>

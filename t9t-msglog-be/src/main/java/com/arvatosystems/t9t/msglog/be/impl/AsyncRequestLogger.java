@@ -83,7 +83,7 @@ public class AsyncRequestLogger implements IRequestLogger {
     @IsLogicallyFinal  // set by open() method
     private int alertOnQueueSize;
 
-    private class WriterThread implements Callable<Boolean> {
+    private final class WriterThread implements Callable<Boolean> {
         private int count = 0;
 
         @Override

@@ -7,18 +7,11 @@
     <import value="java.time.LocalDateTime"/>
     <import value="java.time.format.DateTimeFormatter"/>
     <import value="java.time.format.FormatStyle"/>
-    <import value="java.sql.Timestamp"/>
     <parameter name="dateFrom" class="java.time.LocalDateTime" isForPrompting="false">
         <defaultValueExpression><![CDATA[LocalDateTime.of(2014,01,01,0,0)]]></defaultValueExpression>
     </parameter>
     <parameter name="dateTo" class="java.time.LocalDateTime" isForPrompting="false">
         <defaultValueExpression><![CDATA[LocalDateTime.now()]]></defaultValueExpression>
-    </parameter>
-    <parameter name="dateFromTimestamp" class="java.sql.Timestamp" isForPrompting="false">
-        <defaultValueExpression><![CDATA[Timestamp.valueOf($P{dateFrom})]]></defaultValueExpression>
-    </parameter>
-    <parameter name="dateToTimestamp" class="java.lang.String" isForPrompting="false">
-        <defaultValueExpression><![CDATA[Timestamp.valueOf($P{dateTo})]]></defaultValueExpression>
     </parameter>
     <parameter name="tenantId" class="java.lang.String"/>
     <parameter name="translator" class="com.arvatosystems.t9t.translation.be.TranslationProvider"/>
@@ -42,7 +35,7 @@ WHERE msg.return_code > 99999999
     <field name="user_id" class="java.lang.String">
         <fieldDescription><![CDATA[User ID]]></fieldDescription>
     </field>
-    <field name="execution_started_at" class="java.sql.Timestamp">
+    <field name="execution_started_at" class="java.time.LocalDateTime">
         <fieldDescription><![CDATA[Created Time]]></fieldDescription>
     </field>
     <field name="tenant_id" class="java.lang.String">

@@ -20,7 +20,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-settings-java</artifactId>
-        <version>6.8-SNAPSHOT</version>
+        <version>7.0-SNAPSHOT</version>
         <relativePath>../t9t-settings-java</relativePath>
     </parent>
 

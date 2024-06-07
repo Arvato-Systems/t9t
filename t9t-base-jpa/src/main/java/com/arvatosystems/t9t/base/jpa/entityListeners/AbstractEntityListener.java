@@ -42,7 +42,7 @@ public abstract class AbstractEntityListener<T extends TrackingBase> implements 
     // a simpler logic would work in EclipseLink, but Hibernate creates all EntityListeners already when the EntityManagerFactory is set up,
     // and then the providers may not yet be known
 
-    private static class LazyReferences {
+    private static final class LazyReferences {
         private final T9tServerConfiguration configuration = Jdp.getRequired(T9tServerConfiguration.class);
         private final Provider<RequestContext> contextProvider = Jdp.getProvider(RequestContext.class);
         private final String cutUser = cutUser(configuration.getDatabaseConfiguration().getUsername());
@@ -50,8 +50,9 @@ public abstract class AbstractEntityListener<T extends TrackingBase> implements 
 
     private static LazyReferences getRef() {
         LazyReferences myRef = REFS.get();
-        if (myRef != null)
+        if (myRef != null) {
             return myRef;
+        }
         // init it
         myRef = new LazyReferences();
         REFS.compareAndSet(null, myRef);

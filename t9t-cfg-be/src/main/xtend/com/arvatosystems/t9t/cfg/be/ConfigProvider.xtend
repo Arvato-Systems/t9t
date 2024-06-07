@@ -129,7 +129,7 @@ class ConfigProvider {
         return applConfig.useShadowDatabaseForModule.contains(moduleName)
     }
 
-    def private static void mergeConfigurations(T9tServerConfiguration a, T9tServerConfiguration b) {
+    def private static void mergeConfigurations(T9tServerConfiguration a, T9tServerConfiguration b, Consumer<T9tServerConfiguration> customizer) {
         myConfiguration = new T9tServerConfiguration => [
             serverIdSelf            = a.serverIdSelf            ?: b.serverIdSelf
             stagingType             = a.stagingType             ?: b.stagingType
@@ -199,6 +199,18 @@ class ConfigProvider {
             ]
             LOGGER.info("Read {} custom parameters from config file", customParameters.size)
         }
+        if (customizer !== null) {
+            customizer.accept(myConfiguration)
+        }
+        // may need to set some defaults
+        if (myConfiguration.applicationConfiguration !== null) {
+            val it = myConfiguration.applicationConfiguration
+            if (autonomousPoolSize             === null) autonomousPoolSize = 4;
+            if (localAsyncPoolSize             === null) localAsyncPoolSize = 4;
+            if (numberOfRetriesOptimisticLock  === null) numberOfRetriesOptimisticLock = 2;
+            if (numberOfRetriesDatabaseConnect === null) numberOfRetriesDatabaseConnect = 3;
+            if (pauseIncreaseFactor            === null) pauseIncreaseFactor = 1.5;
+        }
         // index the uplink entries
         uplinks.clear();
         if (myConfiguration.uplinkConfiguration !== null) {
@@ -228,13 +240,17 @@ class ConfigProvider {
         return uplinkCfg
     }
 
-    // read the configuration from the provided file, or fallback to the home cfg file if none has been specified
     def static void readConfiguration(String filename) {
+        readConfiguration(filename, null)
+    }
+
+    // read the configuration from the provided file, or fallback to the home cfg file if none has been specified
+    def static void readConfiguration(String filename, Consumer<T9tServerConfiguration> customizer) {
         if (filename === null) {
             LOGGER.info("No configuration filename specified, using default {}", DEFAULT_CFG_FILENAME)
             try {
                 val cfgFromFile = configFromFile(DEFAULT_CFG_FILENAME)
-                mergeConfigurations(cfgFromFile, postgresConfig)
+                mergeConfigurations(cfgFromFile, postgresConfig, customizer)
             } catch (Exception e) {
                 // ignore issues because we are working on the default
                 LOGGER.info("Falling back to default configuration due to {}", e.message ?: e.class.simpleName)
@@ -244,7 +260,7 @@ class ConfigProvider {
             LOGGER.info("Using configuration file {}", filename)
             try {
                 val cfgFromFile = configFromFile(filename)
-                mergeConfigurations(cfgFromFile, postgresConfig)
+                mergeConfigurations(cfgFromFile, postgresConfig, customizer)
             } catch (Exception e) {
                 // fail on ignore issues because the cfg file was requested specifically
                 LOGGER.info("{}: Cannot read configuration due to {}", e.class.simpleName, e.message)

@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.cfg.be.RelationalDatabaseConfiguration;
 import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration;
@@ -44,20 +45,24 @@ public class SqlMigrationExecutor implements StartupOnly {
     private static final Logger LOGGER = LoggerFactory.getLogger(SqlMigrationExecutor.class);
 
     private static final String AWS_WRAPPER_PROTO = ":aws-wrapper";
+    private static final String ENCODING = "UTF-8";
+    private static final String IGNORE_PATTERN = "*:Missing";
+    private static final String PATH_DROP_BEFORE_MIGRATE_CALLBACKS = "db/dropBeforeMigrate";
 
-    public static Flyway configureFlywayForDatabase(final String locations, final String migrationTable,
-      final RelationalDatabaseConfiguration dbConfiguration) {
+    public static Flyway configureFlywayForDatabase(final String location, final String migrationTable, final RelationalDatabaseConfiguration dbConfiguration,
+            final boolean addDropBeforeMigrate) {
 
         final FluentConfiguration config = Flyway.configure();
-        config.locations(locations);
         config.cleanDisabled(true);
         config.cleanOnValidationError(false);
         config.outOfOrder(true);
-        config.encoding("UTF-8");
+        config.encoding(ENCODING);
         config.table(migrationTable);
-        config.installedBy("admin");
-        config.ignoreMigrationPatterns("*:Missing");
+        config.installedBy(T9tConstants.ADMIN_USER_ID);
+        config.ignoreMigrationPatterns(IGNORE_PATTERN);
         config.baselineOnMigrate(true);
+        config.skipDefaultCallbacks(T9tUtil.isTrue(dbConfiguration.getFwSkipDefaultCallbacks()));
+
         // handle special aws jdbc wrapper protocol
         String jdbcUrl = dbConfiguration.getJdbcConnectString();
         if (jdbcUrl.contains(AWS_WRAPPER_PROTO)) {
@@ -67,8 +72,14 @@ public class SqlMigrationExecutor implements StartupOnly {
         config.dataSource(jdbcUrl, dbConfiguration.getUsername(), dbConfiguration.getPassword());
         config.loggers("slf4j");
 
-        final Flyway flyway = new Flyway(config);
-        return flyway;
+        if (addDropBeforeMigrate) {
+            LOGGER.info("Adding callbacks to drop views, trigger and functions before migration ({})", PATH_DROP_BEFORE_MIGRATE_CALLBACKS);
+            config.locations(PATH_DROP_BEFORE_MIGRATE_CALLBACKS, location);
+        } else {
+            config.locations(location);
+        }
+
+        return new Flyway(config);
     }
 
     public static void migrate() throws IOException {
@@ -78,26 +89,41 @@ public class SqlMigrationExecutor implements StartupOnly {
         migrateDatabase(dbConfiguration);
 
         final RelationalDatabaseConfiguration secondaryDbConfiguration = serverConfiguration.getSecondaryDatabaseConfig();
-        if (secondaryDbConfiguration != null)
+        if (secondaryDbConfiguration != null) {
             migrateDatabase(secondaryDbConfiguration);
+        }
     }
 
     private static void migrateDatabase(final RelationalDatabaseConfiguration dbConfiguration) {
         final List<String> migrations = dbConfiguration.getMigrations();
 
         if (migrations == null) {
-            LOGGER.info("No migration files found for: " + dbConfiguration.getJdbcConnectString());
+            LOGGER.info("No migration files found for: {}", dbConfiguration.getJdbcConnectString());
             return;
         }
 
+        final List<Flyway> flyways = new ArrayList<Flyway>(migrations.size());
+        boolean execDropBeforeMigrate = T9tUtil.isTrue(dbConfiguration.getFwDropBeforeMigrate());
+        int pendingMigrations = 0;
+
         for (final String migration : migrations) {
+            LOGGER.info("Adding {} to list of migrations", migration);
             final String[] locationsAndMigrationTable = migration.split("=");
+            final Flyway flyway = configureFlywayForDatabase(locationsAndMigrationTable[0], locationsAndMigrationTable[1], dbConfiguration,
+                    execDropBeforeMigrate);
+            execDropBeforeMigrate = false; // exec only ONCE at first migration (if enabled)!
+            pendingMigrations += flyway.info().pending().length;
+            flyways.add(flyway);
+        }
 
-            // migrate
-            final Flyway flyway = configureFlywayForDatabase(locationsAndMigrationTable[0], locationsAndMigrationTable[1], dbConfiguration);
-
-            LOGGER.info("Trying to migrate database " +  dbConfiguration.getJdbcConnectString() + " based on following information: " + migration);
-            flyway.migrate();
+        // why check for pending migrations: beforeMigration callbacks are executed even if there are no pending files
+        if (pendingMigrations > 0) {
+            LOGGER.info("Trying to migrate {} migrations on database {}", String.valueOf(pendingMigrations), dbConfiguration.getJdbcConnectString());
+            for (final Flyway flyway : flyways) {
+                flyway.migrate();
+            }
+        } else {
+            LOGGER.info("No pending migrations found!");
         }
     }
 
@@ -105,7 +131,7 @@ public class SqlMigrationExecutor implements StartupOnly {
     @Override
     public void onStartup() {
         if (System.getProperty(T9tConstants.START_MIGRATION_PROPERTY) != null) {
-            LOGGER.info("Database migration requested - staring flyway");
+            LOGGER.info("Database migration requested - starting flyway");
             try {
                 migrate();
             } catch (final IOException e) {
@@ -139,7 +165,7 @@ public class SqlMigrationExecutor implements StartupOnly {
      */
     public static void getServerConfigurationFromCommandLine(final String[] args) throws JSAPException {
         final ArrayList<Parameter> options = new ArrayList<>();
-        options.add(new FlaggedOption("cfg",      JSAP.STRING_PARSER,  null,                     JSAP.NOT_REQUIRED, 'c', "cfg",      "configuration filename"));
+        options.add(new FlaggedOption("cfg", JSAP.STRING_PARSER, null, JSAP.NOT_REQUIRED, 'c', "cfg", "configuration filename"));
 
         final Parameter[] optionsArray = new Parameter[options.size()];
         System.arraycopy(options.toArray(), 0, optionsArray, 0, optionsArray.length);

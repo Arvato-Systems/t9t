@@ -22,13 +22,13 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-settings</artifactId>
-        <version>6.8-SNAPSHOT</version>
+        <version>7.0-SNAPSHOT</version>
         <relativePath>../t9t-settings</relativePath>
     </parent>
 
     <artifactId>t9t-settings-xtend</artifactId>
     <packaging>pom</packaging>
-    <description>Settings for projects which use only xtend (no xtext) and are not part of the API (i.e. Java 1.6 restricted)</description>
+    <description>Settings for projects which use only xtend (no xtext) and are not part of the API</description>
 
     <build>
         <resources>

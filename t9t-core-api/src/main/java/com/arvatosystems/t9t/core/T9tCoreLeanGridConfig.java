@@ -35,7 +35,8 @@ public final class T9tCoreLeanGridConfig implements ILeanGridConfigContainer {
         "bucketEntry",
         "plugins",
         "updateStatus",
-        "updateStatusLog"
+        "updateStatusLog",
+        "recordEvents"
     };
 
     @Override

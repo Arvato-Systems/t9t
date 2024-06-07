@@ -159,7 +159,7 @@ public class T9tServer extends AbstractVerticle {
             final Router router = Router.router(vertx);
             // must be before any possible execBlocking, see https://github.com/vert-x3/vertx-web/issues/198
             final BodyHandler bodyHandler = uploadsFolder == null ? BodyHandler.create(false) : BodyHandler.create(uploadsFolder);
-            router.route().handler(bodyHandler.setBodyLimit(16777100));
+            router.route().handler(bodyHandler.setBodyLimit(T9tConstants.MAXIMUM_MESSAGE_LENGTH - 116));  // keep some buffer below 16 MB
 
             // register the web paths of the injected modules
             for (final IServiceModule module : modules) {

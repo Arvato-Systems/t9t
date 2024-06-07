@@ -22,13 +22,13 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-settings</artifactId>
-        <version>6.8-SNAPSHOT</version>
+        <version>7.0-SNAPSHOT</version>
         <relativePath>../t9t-settings</relativePath>
     </parent>
 
     <artifactId>t9t-settings-jpa</artifactId>
     <packaging>pom</packaging>
-    <description>Settings for projects which use xtend as well as xtext, and BON and BDDL. These are backend projects using JPA. Java 1.8 compatibility.</description>
+    <description>Settings for projects which use xtend as well as xtext, and BON and BDDL. These are backend projects using JPA.</description>
 
     <build>
         <resources>

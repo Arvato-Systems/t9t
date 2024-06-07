@@ -60,7 +60,7 @@ public class AsyncBucketWriter implements IBucketWriter {
     @IsLogicallyFinal  // set within open()
     private Future<Boolean> writerResult;
 
-    private class WriterThread implements Callable<Boolean> {
+    private final class WriterThread implements Callable<Boolean> {
         private int count = 0;
 
         @Override

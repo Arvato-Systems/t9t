@@ -1,0 +1,113 @@
+/*
+ * Copyright (c) 2012 - 2023 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import api.*
+import apiw.*
+import api.media.*
+import t9t.base.types.*
+import t9t.base.api.*
+import t9t.ai.*
+import t9t.ai.openai.*
+import t9t.ai.openai.assistants.*
+
+/**
+ * OpenAI requests for assistants.
+ */
+package (com.arvatosystems) t9t.ai.openai.assistants.request {
+    default private unsigned trim noControlChars;
+
+    class OpenAICreateAssistantRequest extends RequestParameters return OpenAIAssistantResponse {
+        required (OpenAICreateAssistantReq)         assistant;
+        optional Boolean                            addFunctions;
+        optional Boolean                            addAllowCoding;
+        optional Boolean                            addAllowFileSearch;
+    }
+
+    class OpenAIGetAssistantByIdRequest extends RequestParameters return OpenAIAssistantResponse {
+        required openaiId                           id;
+    }
+
+    class OpenAIAssistantResponse extends ServiceResponse {
+        required (OpenAIObjectAssistant)            assistant;
+    }
+
+
+    class OpenAICreateThreadRequest extends RequestParameters return OpenAIThreadResponse {
+    }
+
+    class OpenAIGetThreadByIdRequest extends RequestParameters return OpenAIThreadResponse {
+        required openaiId                           id;
+    }
+
+    class OpenAIThreadResponse extends ServiceResponse {
+        required (OpenAIThread)                     thread;
+    }
+
+
+    class OpenAICreateVectorStoreRequest extends RequestParameters return OpenAIVectorStoreResponse {
+        required (OpenAICreateVectorStoreReq)       vectorStore;
+    }
+
+    class OpenAIGetVectorStoreByIdRequest extends RequestParameters return OpenAIVectorStoreResponse {
+        required openaiId                           id;
+    }
+
+    class OpenAIVectorStoreResponse extends ServiceResponse {
+        required (OpenAIObjectVectorStore)          vectorStore;
+    }
+
+
+    class OpenAIAddMessagesToThreadRequest extends RequestParameters return OpenAIThreadResponse {
+        required openaiId                           threadId;
+        required (OpenAIThreadMessageReq) List<>    messages;
+    }
+
+    class OpenAIRunThreadRequest extends RequestParameters return OpenAIObjectRunThreadResponse {
+        required openaiId                           threadId;
+        required (OpenAIThreadRunReq)               data;
+        optional Integer                            maxSeconds;
+        optional Integer                            pollMillis;
+    }
+
+    class OpenAIObjectRunThreadResponse extends ServiceResponse {
+        required (OpenAIObjectThreadRun)               response;
+    }
+
+    abstract class AbstractOpenAIListRequest<T extends AbstractOpenAIObjectWithId> extends RequestParameters return OpenAIListResponse<!T> {
+        optional (OpenAIQueryParameters)            queryParameters;
+    }
+
+    class OpenAIListResponse<T extends AbstractOpenAIObjectWithId> extends ServiceResponse {
+        optional openaiId                           firstId;
+        optional openaiId                           lastId;
+        required boolean                            hasMore;
+        required (!T...) required List<>            data;
+    }
+
+    class OpenAIListAssistantsRequest     extends AbstractOpenAIListRequest<OpenAIObjectAssistant> {}
+    class OpenAIListThreadRunsRequest     extends AbstractOpenAIListRequest<OpenAIObjectThreadRun> {
+        required openaiId                           threadId;
+    }
+    class OpenAIListThreadMessagesRequest extends AbstractOpenAIListRequest<OpenAIObjectThreadMessage> {
+        required openaiId                           threadId;
+    }
+
+    class OpenAICreateThreadAndRunRequest extends RequestParameters return OpenAIObjectRunThreadResponse {
+        required openaiId                           assistantId;
+        required (OpenAIThreadMessageReq) required List<> messages;
+        optional Integer                            maxSeconds;
+        optional Integer                            pollMillis;
+    }
+}

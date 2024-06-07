@@ -112,7 +112,7 @@ public class KafkaConsumerInitializer implements StartupShutdown {
         }
     }
 
-    private class WriterThread implements Callable<Boolean> {
+    private final class WriterThread implements Callable<Boolean> {
         // map to ensure no 2 requests are executed for the same topic/partition
         private final Map<TopicPartition, FutureOffset> pendingRequests = new HashMap<>(100);
         private final Map<TopicPartition, OffsetAndMetadata> finishedRequests = new HashMap<>(100);

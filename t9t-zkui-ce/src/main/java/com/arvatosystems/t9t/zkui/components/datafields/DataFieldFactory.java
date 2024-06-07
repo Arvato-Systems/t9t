@@ -100,6 +100,8 @@ public class DataFieldFactory implements IDataFieldFactory {
                 switch (javaType) {
                 case "double":
                     return new DoubleDataField(params);
+                case "float":
+                    return new FloatDataField(params);
                 case "int":
                 case "integer":
                     return new IntDataField(params);

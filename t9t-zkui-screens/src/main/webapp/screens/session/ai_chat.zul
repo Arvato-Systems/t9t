@@ -1,0 +1,34 @@
+<?xel-method prefix="l"  name="translate"  class="com.arvatosystems.t9t.zkui.util.ZulUtils" signature="String translate(String, String)"?>
+<window28 id="aiChat" vflex="1" viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.framework.AiChatViewModel')"
+    apply="org.zkoss.bind.BindComposer">
+    <vlayout vflex="1" style="padding: 10px;">
+        <listbox id="listboxMsg" model="@load(vm.messages)" vflex="4">
+            <attribute name="onAfterRender"><![CDATA[
+                listboxMsg.setSelectedIndex(listboxMsg.getItemCount() - 1);
+            ]]></attribute>
+            <template name="model" var="msg" status="eachStatus">
+                <listitem>
+                    <listcell>
+                        <label value="${msg.from}" style="font-weight: bold;" visible="${not empty msg.from}" />
+                        <label value=": " style="font-weight: bold;" visible="${not empty msg.from}" /> 
+                        <label value="${msg.text}" style="white-space: normal;" multiline="true" />
+                        <separator />
+                        <iframe content="${msg.media}" visible="${not empty msg.media}" width="50%" />
+                        <separator />
+                        <button label="${l:translate('com.button','downloadButton')}"
+                            onClick="@command('downloadFile', index=eachStatus.index)" visible="${not empty msg.media}"/>
+                    </listcell>
+                </listitem>
+            </template>
+        </listbox>
+        <textbox id="userInput" focus="true" rows="4" width="100%" placeholder="${l:translate('aiChat','input.placeholder')}"
+            value="@load(vm.userInput) @save(vm.userInput ,before='submit')" maxlength="@load(vm.userInputMaxlength)" />
+        <hlayout>
+            <button28 id="submitButton" onClick="@command('submit')" autodisable="self" />
+            <button28 id="resetButton" onClick="@command('reset')" autodisable="self" />
+            <button28 id="uploadButton" upload="true" onUpload="@command('uploadFile', eventData=event)"/>
+            <label style="font-weight: bold;" visible="@load(not empty vm.selectedMedia.name)">${l:translate('aiChat','filename')}: </label><label value="@load(vm.selectedMedia.name)" />
+            <label style="font-weight: bold;" visible="@load(not empty vm.selectedMedia.contentType)">${l:translate('aiChat','contentType')}: </label><label value="@load(vm.selectedMedia.contentType)" />
+        </hlayout>
+    </vlayout>
+</window28>

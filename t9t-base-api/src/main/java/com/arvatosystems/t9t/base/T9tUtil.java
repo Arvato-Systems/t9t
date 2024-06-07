@@ -16,6 +16,7 @@
 package com.arvatosystems.t9t.base;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -32,6 +33,8 @@ import org.slf4j.Logger;
 
 import com.arvatosystems.t9t.base.request.AggregationGranularityType;
 
+import de.jpaw.bonaparte.api.media.MediaTypeInfo;
+import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 import de.jpaw.enums.TokenizableEnum;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -186,6 +189,16 @@ public final class T9tUtil {
         return value == null ? useWhenNull : value;
     }
 
+    /** nvl with 3 parameters. */
+    public static <X> X nvl(final X v1, final X v2, final X v3) {
+        return v1 != null ? v1 : v2 != null ? v2 : v3;
+    }
+
+    /** nvl with 4 parameters. Still better than varargs, because it avoids an array allocation. */
+    public static <X> X nvl(final X v1, final X v2, final X v3, final X v4) {
+        return v1 != null ? v1 : v2 != null ? v2 : v3 != null ? v3 : v4;
+    }
+
     /** Computes the logical XOR of 2 parameters (exactly one of the arguments must be true). */
     public static boolean xor(final boolean a, final boolean b) {
         return a ? !b : b;
@@ -242,6 +255,39 @@ public final class T9tUtil {
         return false;
     }
 
+    /** Attempts to find a MediaTypeDescriptor by provided information. */
+    public static MediaTypeDescriptor getFormatByContentTypeOrFilename(@Nullable final String contentType, @Nullable final String filename) {
+        // first, attempt to resolve by MIME type
+        if (contentType != null) {
+            final MediaTypeDescriptor descriptor = MediaTypeInfo.getFormatByMimeType(contentType);
+            if (descriptor != null) {
+                return descriptor;
+            }
+        }
+        // next attempt by filename
+        if (filename != null) {
+            final int indexOfLastDot = filename.lastIndexOf('.');
+            if (indexOfLastDot >= 0) {
+                final String extension = filename.substring(indexOfLastDot + 1);
+                final MediaTypeDescriptor descriptor = MediaTypeInfo.getFormatByFileExtension(extension.toLowerCase());
+                if (descriptor != null) {
+                    return descriptor;
+                }
+            }
+        }
+        return null;
+    }
+
+    /** Converts a Float to a Double, or null if the float was null. */
+    public static Double asDouble(@Nullable final Float f) {
+        return f == null ? null : Double.valueOf(f);
+    }
+
+    /** Converts a Float to a Double, or null if the float was null. */
+    public static Float asFloat(@Nullable final Double d) {
+        return d == null ? null : Float.valueOf(d.floatValue());
+    }
+
     /** Sleeps for the specified number of milliseconds, and complains if interrupted. A logger is passed to conserve the true origin of the message. */
     public static void sleepAndWarnIfInterrupted(final long milliseconds, @Nullable final Logger logger, @Nullable final String complainString) {
         try {
@@ -295,5 +341,45 @@ public final class T9tUtil {
         case SECOND -> when.plusSeconds(units);
         default     -> throw new T9tException(T9tException.NOT_YET_IMPLEMENTED, "minusDuration LocalDateTime with " + precision);
         };
+    }
+
+    /** Parses a timestamp. Ignores an extra UTC time zone, implicitly assumes 00:00 when no time is given. */
+    public static LocalDateTime parseLocalDateTime(@Nonnull final String s) {
+        final int len = s.length();
+        if (len == 10) {
+            return LocalDate.parse(s).atStartOfDay();
+        } else if (len == 19) {
+            return LocalDateTime.parse(s);
+        } else if (len == 20 && s.charAt(19) == 'Z') {
+            return LocalDateTime.parse(s.substring(0, 19));
+        } else {
+            throw new T9tException(T9tException.INVALID_DATETIME_FORMAT);
+        }
+    }
+
+    /** Parses a date field. Ignores extra time details. */
+    public static LocalDate parseLocalDate(@Nonnull final String s) {
+        final int len = s.length();
+        if (len == 10) {
+            return LocalDate.parse(s);
+        } else if (len >= 11 && s.charAt(10) == 'T') {
+            return LocalDate.parse(s.substring(0, 10));
+        } else {
+            throw new T9tException(T9tException.INVALID_DATETIME_FORMAT);
+        }
+    }
+
+    /** Gets the simple name for a fully qualified or partially qualified name. */
+    @Nonnull
+    public static String getSimpleName(@Nonnull final String fullName) {
+        final int lastDot = fullName.lastIndexOf('.');
+        return lastDot < 0 ? fullName : fullName.substring(lastDot + 1);
+    }
+
+    /** Returns the package name for a fully qualified class name, or null if the class is in the root package. */
+    @Nullable
+    public static String getPackageName(@Nonnull final String fullName) {
+        final int lastDot = fullName.lastIndexOf('.');
+        return lastDot <= 0 ? null : fullName.substring(0, lastDot);
     }
 }
