@@ -197,6 +197,7 @@ package (com.arvatosystems) t9t.ai.openai.assistants {
         optional Element                            toolChoice;         // FIXME
         optional (OpenAIRequiredAction)             requiredAction;     // UNDOCUMENTED!
         optional Json                               toolResources;      // UNDOCUMENTED!
+        optional Boolean                            parallelToolCalls;
     }
 
     final class OpenAIRequiredAction {

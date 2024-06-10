@@ -94,7 +94,7 @@
         <microprofile-smallrye-impl.version>2.4.1</microprofile-smallrye-impl.version>
 
         <!-- Jetty -->
-        <jetty.version>12.0.9</jetty.version>
+        <jetty.version>12.0.10</jetty.version>
 
         <!-- Commons (use with care, only few are regularly updated) -->
         <commons-logging.version>1.1-donotuse</commons-logging.version>   <!-- should not use at all! -->
@@ -109,22 +109,22 @@
         <commons-text.version>1.12.0</commons-text.version>               <!-- not used in t9t, but DM made to cover for transitive dependencies -->
 
         <!-- AWS SDK v2 -->
-        <aws2-bom.version>2.20.162</aws2-bom.version>
+        <aws2-bom.version>2.25.69</aws2-bom.version>
 
         <!-- AWS JDBC wrapper for Aurora -->
-        <aws-jdbc-wrapper.version>2.3.6</aws-jdbc-wrapper.version>
+        <aws-jdbc-wrapper.version>2.3.7</aws-jdbc-wrapper.version>
 
         <!-- Azure -->
         <azure-cosmosdb.version>2.6.16</azure-cosmosdb.version>
         <azure-cosmos-sdk.version>4.61.1</azure-cosmos-sdk.version>
 
         <!-- Vector databases -->
-        <pinecone.version>1.0.0</pinecone.version>
-        <qdrant-client.version>1.8.1</qdrant-client.version>
+        <pinecone.version>1.2.1</pinecone.version>
+        <qdrant-client.version>1.9.1</qdrant-client.version>
 
         <!-- More AI stuff & DM for its dependencies -->
         <jsoup.version>1.17.2</jsoup.version>
-        <langchain4j.version>0.30.0</langchain4j.version>
+        <langchain4j.version>0.31.0</langchain4j.version>
         <grpc.version>1.63.1</grpc.version>
         <kotlin-stdlib.version>1.9.23</kotlin-stdlib.version>
         <okio.version>3.9.0</okio.version>          <!-- used by pinecone -->
@@ -157,7 +157,7 @@
         <httpcore.version>4.4.16</httpcore.version>
         <httpclient.version>4.5.14</httpclient.version>
         <httpcore5.version>5.2.4</httpcore5.version>
-        <httpclient5.version>5.2.1</httpclient5.version>
+        <httpclient5.version>5.3.1</httpclient5.version>
         <httpmime.version>4.5.14</httpmime.version>
         <pdfbox.version>3.0.2</pdfbox.version>
         <freemarker.version>2.3.32</freemarker.version>
@@ -207,7 +207,7 @@
         <error-prone.version>2.28.0</error-prone.version>
 
         <!-- Monitoring -->
-        <micrometer.version>1.12.5</micrometer.version>
+        <micrometer.version>1.13.0</micrometer.version>
         <prometheus.version>0.16.0</prometheus.version>
 
         <!-- Swagger -->
@@ -215,11 +215,11 @@
         <swagger-ui.version>${swagger-ui-webjars.version}</swagger-ui.version>
 
         <!-- Google Services -->
-        <google-http-client.version>1.43.3</google-http-client.version>
+        <google-http-client.version>1.44.2</google-http-client.version>
         <google-auth-library.version>1.17.0</google-auth-library.version>
         <firebase-admin.version>9.1.1</firebase-admin.version>
 
-        <msal4j.version>1.15.0</msal4j.version>
+        <msal4j.version>1.15.1</msal4j.version>
         <nimbus.version>9.39.3</nimbus.version>
     </properties>
 
@@ -1089,6 +1089,13 @@
             <dependency>
                 <groupId>io.micrometer</groupId>
                 <artifactId>micrometer-registry-prometheus</artifactId>
+                <version>${micrometer.version}</version>
+            </dependency>
+            <!-- micrometer-registry-prometheus-simpleclient (deprecated) is added as an interim solution
+            and should be removed once vertx-micrometer-metrics is upgraded to Micrometer 1.13.x (use vertx 5) -->
+            <dependency>
+                <groupId>io.micrometer</groupId>
+                <artifactId>micrometer-registry-prometheus-simpleclient</artifactId>
                 <version>${micrometer.version}</version>
             </dependency>
 

@@ -29,9 +29,10 @@
     <description>t9t vertx metrics module</description>
 
     <dependencies>
+        <!-- This depencency should be changed back to micrometer-registry-prometheus once vertx is upgraded to 5 -->
         <dependency>
             <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-registry-prometheus</artifactId>
+            <artifactId>micrometer-registry-prometheus-simpleclient</artifactId>
         </dependency>
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
