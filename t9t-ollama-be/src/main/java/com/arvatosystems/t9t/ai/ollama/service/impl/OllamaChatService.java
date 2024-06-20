@@ -20,7 +20,7 @@ import java.util.Map;
 
 import com.arvatosystems.t9t.ai.AiAssistantDTO;
 import com.arvatosystems.t9t.ai.AiConversationDTO;
-import com.arvatosystems.t9t.ai.service.IAIChatService;
+import com.arvatosystems.t9t.ai.service.IAiChatService;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
@@ -31,7 +31,7 @@ import de.jpaw.dp.Singleton;
 
 @Singleton
 @Named("Ollama")
-public class OllamaChatService implements IAIChatService {
+public class OllamaChatService implements IAiChatService {
 
     @Override
     public void validateMetadata(RequestContext ctx, Map<String, Object> metadata) {

@@ -38,6 +38,7 @@ public interface IDocEmailDistributor {
         MediaData           alternateBody,
         List<MediaData>     attachments,
         boolean             storeEmail,
-        boolean             sendSpooled
+        boolean             sendSpooled,
+        String              returnPath
     );
 }

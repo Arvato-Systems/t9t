@@ -1,0 +1,11 @@
+{
+    "viewModel": "aiChatLog",
+    "filters": [
+        { "filterType": "R", "fieldName": "cTimestamp" },
+        { "filterType": "E", "fieldName": "conversationRef.userId" }
+    ],
+    "fields": [
+        "cTimestamp", "conversationRef.userId", "roleType", "userInput", "functionPqon"
+    ],
+    "sortColumn": "cTimestamp","sortDescending": false
+}

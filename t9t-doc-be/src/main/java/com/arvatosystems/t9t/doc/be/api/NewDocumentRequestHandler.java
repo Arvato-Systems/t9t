@@ -332,7 +332,7 @@ public class NewDocumentRequestHandler extends AbstractRequestHandler<NewDocumen
                         generatedCidMap,
                         alternateBody,
                         attachmentList,
-                        docEmailReceiverDto.getStoreEmail(), docEmailReceiverDto.getSendSpooled()
+                        docEmailReceiverDto.getStoreEmail(), docEmailReceiverDto.getSendSpooled(), docEmailReceiverDto.getReturnPath()
                     ));
                 }
             }

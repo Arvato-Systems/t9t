@@ -2,7 +2,7 @@
 <?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="aiConversation28"?>
 
 <window28 id="aiConversationWin">
-    <threesections28 gridId="aiConversation">
+    <threesections28 gridId="aiConversation" gridContext="aiChatLog">
         <crud28
             viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.CrudSurrogateKeyVM', vmId='aiConversation')"
             currentMode="@load(vm.currentMode)">

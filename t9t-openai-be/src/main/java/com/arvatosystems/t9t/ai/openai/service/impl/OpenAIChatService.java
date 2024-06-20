@@ -46,7 +46,7 @@ import com.arvatosystems.t9t.ai.openai.assistants.OpenAIThreadOut;
 import com.arvatosystems.t9t.ai.openai.assistants.OpenAIThreadRunReq;
 import com.arvatosystems.t9t.ai.openai.assistants.OpenAIThreadText;
 import com.arvatosystems.t9t.ai.openai.service.IOpenAIClient;
-import com.arvatosystems.t9t.ai.service.IAIChatService;
+import com.arvatosystems.t9t.ai.service.IAiChatService;
 import com.arvatosystems.t9t.base.JsonUtil;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.services.RequestContext;
@@ -62,7 +62,7 @@ import de.jpaw.dp.Singleton;
 
 @Singleton
 @Named("OpenAI")
-public class OpenAIChatService implements IAIChatService {
+public class OpenAIChatService implements IAiChatService {
     private static final Logger LOGGER = LoggerFactory.getLogger(OpenAIChatService.class);
 
     protected final IOpenAIClient openAIClient = Jdp.getRequired(IOpenAIClient.class);

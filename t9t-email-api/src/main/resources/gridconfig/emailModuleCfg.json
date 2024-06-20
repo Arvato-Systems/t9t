@@ -5,7 +5,7 @@
     ],
     "fields": [
         "tenantId", "implementation", "smtpServerTransport", "smtpServerAddress", "smtpServerPort",
-        "smtpServerUserId", "smtpServerPassword", "smtpServerTls"
+        "smtpServerUserId", "smtpServerPassword", "smtpServerTls", "defaultReturnPath"
     ],
-    "fieldWidths": [ 160, 106, 164, 200, 146, 200, 200, 40 ]
+    "fieldWidths": [ 160, 106, 164, 200, 146, 200, 200, 40, 200 ]
 }

@@ -15,7 +15,8 @@
                               id2="emailBcc"            value2="@load(vm.data.emailBcc)     @save(vm.data.emailBcc,      before='commandSave')"/>
                     <cells228 id ="emailSubject"        value ="@load(vm.data.emailSubject) @save(vm.data.emailSubject,  before='commandSave')"
                               id2="emailStatus"         value2="@load(vm.data.emailStatus)  @save(vm.data.emailStatus,   before='commandSave')"/>
-                    <cells28 id ="numberOfAttachments"  value ="@load(vm.data.numberOfAttachments) @save(vm.data.numberOfAttachments,before='commandSave')"/>
+                    <cells228 id ="numberOfAttachments" value ="@load(vm.data.numberOfAttachments) @save(vm.data.numberOfAttachments,before='commandSave')"
+                              id2="returnPath"          value2="@load(vm.data.returnPath)   @save(vm.data.returnPath,    before='commandSave')"/>
                 </rows>
             </form28>
         </crud28>

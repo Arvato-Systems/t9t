@@ -23,7 +23,7 @@ import com.arvatosystems.t9t.ai.jpa.entities.AiAssistantEntity;
 import com.arvatosystems.t9t.ai.jpa.mapping.IAiAssistantDTOMapper;
 import com.arvatosystems.t9t.ai.jpa.persistence.IAiAssistantEntityResolver;
 import com.arvatosystems.t9t.ai.request.AiAssistantCrudRequest;
-import com.arvatosystems.t9t.ai.service.IAIChatService;
+import com.arvatosystems.t9t.ai.service.IAiChatService;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
@@ -46,10 +46,10 @@ public class AiAssistantCrudRequestHandler
     private void validate(@Nonnull final AiAssistantDTO dto) {
         // validate that we have implementations for the specified qualifiers
         if (dto.getAiProvider() != null) {
-            final IAIChatService aiImplementation = Jdp.getOptional(IAIChatService.class, dto.getAiProvider());
+            final IAiChatService aiImplementation = Jdp.getOptional(IAiChatService.class, dto.getAiProvider());
             if (aiImplementation == null) {
                 throw new T9tException(T9tException.NO_IMPLEMENTATION_FOR_SPECIFIED_QUALIFIER,
-                        IAIChatService.class.getSimpleName() + ": " + dto.getAiProvider());
+                        IAiChatService.class.getSimpleName() + ": " + dto.getAiProvider());
             }
         }
         if (dto.getVectorDbProvider() != null) {
@@ -82,7 +82,7 @@ public class AiAssistantCrudRequestHandler
         // TODO: update / create at provider...
 //        if (crud == OperationType.CREATE) {
 //            final AiAssistantDTO dto = resp.getData();
-//            final IAIChatService aiImplementation = Jdp.getRequired(IAIChatService.class, dto.getAiProvider());
+//            final IAiChatService aiImplementation = Jdp.getRequired(IAiChatService.class, dto.getAiProvider());
 //            aiImplementation.createAssistant(ctx, dto);
 //        }
         return resp;

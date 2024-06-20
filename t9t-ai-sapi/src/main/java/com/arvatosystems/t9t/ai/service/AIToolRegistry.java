@@ -19,29 +19,29 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
-import com.arvatosystems.t9t.ai.tools.AbstractAITool;
-import com.arvatosystems.t9t.ai.tools.AbstractAIToolResult;
+import com.arvatosystems.t9t.ai.tools.AbstractAiTool;
+import com.arvatosystems.t9t.ai.tools.AbstractAiToolResult;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.bonaparte.core.BonaPortableClass;
 import jakarta.annotation.Nonnull;
 
-public final class AIToolRegistry {
-    private static final Map<String, AIToolDescriptor<?, ?>> TOOLS = new ConcurrentHashMap<>();
+public final class AiToolRegistry {
+    private static final Map<String, AiToolDescriptor<?, ?>> TOOLS = new ConcurrentHashMap<>();
 
-    private AIToolRegistry() {
+    private AiToolRegistry() {
         // prevent instantiation
     }
 
     /** Registers a tool, currently needs to be fed with the request class. */
-    public static <R extends AbstractAITool, U extends AbstractAIToolResult> void register(final IAITool<R, U> tool, BonaPortableClass<R> requestClass) {
+    public static <R extends AbstractAiTool, U extends AbstractAiToolResult> void register(final IAiTool<R, U> tool, BonaPortableClass<R> requestClass) {
         // final String modifiedName = requestClass.getPqon().replace(".", "-");  // path names are garbled by sime LLMs
         final String modifiedName = T9tUtil.getSimpleName(requestClass.getPqon());
-        TOOLS.put(modifiedName, new AIToolDescriptor(modifiedName, tool, requestClass, requestClass.getReturns()));
+        TOOLS.put(modifiedName, new AiToolDescriptor(modifiedName, tool, requestClass, requestClass.getReturns()));
     }
 
-    public static AIToolDescriptor<?, ?> get(final String name) {
+    public static AiToolDescriptor<?, ?> get(final String name) {
         return TOOLS.get(name);
     }
 
@@ -49,16 +49,16 @@ public final class AIToolRegistry {
         return TOOLS.size();
     }
 
-    public static void forEach(@Nonnull final Consumer<AIToolDescriptor> consumer) {
-        for (final AIToolDescriptor<?, ?> tool : TOOLS.values()) {
+    public static void forEach(@Nonnull final Consumer<AiToolDescriptor> consumer) {
+        for (final AiToolDescriptor<?, ?> tool : TOOLS.values()) {
             consumer.accept(tool);
         }
     }
 
     /** Executes a tool by name. */
-    public static <R extends AbstractAITool, U extends AbstractAIToolResult> U executeTool(@Nonnull final RequestContext ctx,
+    public static <R extends AbstractAiTool, U extends AbstractAiToolResult> U executeTool(@Nonnull final RequestContext ctx,
       @Nonnull final String name, @Nonnull final R request) {
-        final AIToolDescriptor<R, U> tool = (AIToolDescriptor<R, U>) TOOLS.get(name);
+        final AiToolDescriptor<R, U> tool = (AiToolDescriptor<R, U>) TOOLS.get(name);
         if (tool == null) {
             throw new IllegalArgumentException("Tool " + name + " not found");
         }

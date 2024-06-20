@@ -7,10 +7,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.reflections.Reflections;
 
-import com.arvatosystems.t9t.ai.service.IAITool;
-import com.arvatosystems.t9t.ai.tools.coding.AIToolExplainClass;
-import com.arvatosystems.t9t.ai.tools.coding.AIToolExplainClassResult;
-import com.arvatosystems.t9t.ai.tools.coding.AIToolFieldDescription;
+import com.arvatosystems.t9t.ai.service.IAiTool;
+import com.arvatosystems.t9t.ai.tools.coding.AiToolExplainClass;
+import com.arvatosystems.t9t.ai.tools.coding.AiToolExplainClassResult;
+import com.arvatosystems.t9t.ai.tools.coding.AiToolFieldDescription;
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.services.RequestContext;
@@ -28,11 +28,11 @@ import de.jpaw.dp.Startup;
 import de.jpaw.dp.StartupOnly;
 import de.jpaw.xenums.init.ReflectionsPackageCache;
 
-@Named(AIToolExplainClass.my$PQON)
+@Named(AiToolExplainClass.my$PQON)
 @Singleton
 @Startup(54627)
-public class AIToolClassInformation implements IAITool<AIToolExplainClass, AIToolExplainClassResult>, StartupOnly {
-    // private static final Logger LOGGER = LoggerFactory.getLogger(AIToolClassInformation.class);
+public class AiToolClassInformation implements IAiTool<AiToolExplainClass, AiToolExplainClassResult>, StartupOnly {
+    // private static final Logger LOGGER = LoggerFactory.getLogger(AiToolClassInformation.class);
 
     private static final Map<String, Class<? extends BonaPortable>> ALL_BONAPORTABLES = new ConcurrentHashMap<>(10000);
 
@@ -46,8 +46,8 @@ public class AIToolClassInformation implements IAITool<AIToolExplainClass, AIToo
 
 
     @Override
-    public AIToolExplainClassResult performToolCall(final RequestContext ctx, final AIToolExplainClass request) {
-        final AIToolExplainClassResult result = new AIToolExplainClassResult();
+    public AiToolExplainClassResult performToolCall(final RequestContext ctx, final AiToolExplainClass request) {
+        final AiToolExplainClassResult result = new AiToolExplainClassResult();
         final String nameInLower = request.getClassName().toLowerCase();
         final Class<? extends BonaPortable> clazz = ALL_BONAPORTABLES.get(nameInLower);
         if (clazz == null) {
@@ -65,10 +65,10 @@ public class AIToolClassInformation implements IAITool<AIToolExplainClass, AIToo
             result.setResponseClass(T9tUtil.getSimpleName(bclass.getReturns().getPqon()));
         }
         result.setDescription(cd.getJavaDoc());
-        final List<AIToolFieldDescription> fields = new ArrayList<>(cd.getFields().size());
+        final List<AiToolFieldDescription> fields = new ArrayList<>(cd.getFields().size());
         result.setFields(fields);
         for (final FieldDefinition field: cd.getFields()) {
-            final AIToolFieldDescription fd = new AIToolFieldDescription();
+            final AiToolFieldDescription fd = new AiToolFieldDescription();
             fd.setName(field.getName());
             fd.setType(field.getDataType());
             fd.setDescription(T9tUtil.nvl(field.getJavaDoc(), field.getRegularComment(), field.getTrailingComment()));

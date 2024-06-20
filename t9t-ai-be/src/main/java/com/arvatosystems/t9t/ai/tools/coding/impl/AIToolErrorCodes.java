@@ -3,25 +3,25 @@ package com.arvatosystems.t9t.ai.tools.coding.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.ai.service.IAITool;
-import com.arvatosystems.t9t.ai.tools.coding.AIToolExplainErrorCode;
-import com.arvatosystems.t9t.ai.tools.coding.AIToolExplainErrorCodeResult;
+import com.arvatosystems.t9t.ai.service.IAiTool;
+import com.arvatosystems.t9t.ai.tools.coding.AiToolExplainErrorCode;
+import com.arvatosystems.t9t.ai.tools.coding.AiToolExplainErrorCodeResult;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ApplicationException;
 
-@Named(AIToolExplainErrorCode.my$PQON)
+@Named(AiToolExplainErrorCode.my$PQON)
 @Singleton
-public class AIToolErrorCodes implements IAITool<AIToolExplainErrorCode, AIToolExplainErrorCodeResult> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AIToolErrorCodes.class);
+public class AiToolErrorCodes implements IAiTool<AiToolExplainErrorCode, AiToolExplainErrorCodeResult> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AiToolErrorCodes.class);
 
     @Override
-    public AIToolExplainErrorCodeResult performToolCall(final RequestContext ctx, final AIToolExplainErrorCode request) {
-        final AIToolExplainErrorCodeResult result = new AIToolExplainErrorCodeResult();
+    public AiToolExplainErrorCodeResult performToolCall(final RequestContext ctx, final AiToolExplainErrorCode request) {
+        final AiToolExplainErrorCodeResult result = new AiToolExplainErrorCodeResult();
         final int errorCode = request.getErrorCode();
-        LOGGER.info("AIToolErrorCodes.performToolCall called with parameter: {}", errorCode);
+        LOGGER.info("AiToolErrorCodes.performToolCall called with parameter: {}", errorCode);
         if (errorCode < 0 || errorCode >= 10 * ApplicationException.CLASSIFICATION_FACTOR) {
             result.setDescription("Error code " + errorCode + " is not in the valid range of codes");
         } else {

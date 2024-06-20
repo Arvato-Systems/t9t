@@ -17,15 +17,19 @@ package com.arvatosystems.t9t.ai;
 
 import com.arvatosystems.t9t.ai.request.AiAssistantCrudRequest;
 import com.arvatosystems.t9t.ai.request.AiAssistantSearchRequest;
+import com.arvatosystems.t9t.ai.request.AiChatLogSearchRequest;
 import com.arvatosystems.t9t.ai.request.AiConversationCrudRequest;
 import com.arvatosystems.t9t.ai.request.AiConversationSearchRequest;
+import com.arvatosystems.t9t.ai.request.AiModuleCfgCrudRequest;
+import com.arvatosystems.t9t.ai.request.AiModuleCfgSearchRequest;
 import com.arvatosystems.t9t.ai.request.AiUserStatusCrudRequest;
 import com.arvatosystems.t9t.ai.request.AiUserStatusSearchRequest;
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.base.IViewModelContainer;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
+import com.arvatosystems.t9t.base.entities.WriteTracking;
 
-public final class T9tAIModels implements IViewModelContainer {
+public final class T9tAiModels implements IViewModelContainer {
 
     private static final CrudViewModel<AiAssistantDTO, FullTrackingWithVersion> AI_ASSISTANT_VIEW_MODEL = new CrudViewModel<>(
         AiAssistantDTO.BClass.INSTANCE,
@@ -42,11 +46,23 @@ public final class T9tAIModels implements IViewModelContainer {
         FullTrackingWithVersion.BClass.INSTANCE,
         AiUserStatusSearchRequest.BClass.INSTANCE,
         AiUserStatusCrudRequest.BClass.INSTANCE);
+    private static final CrudViewModel<AiChatLogDTO, WriteTracking> AI_CHAT_LOG_VIEW_MODEL = new CrudViewModel<>(
+        AiChatLogDTO.BClass.INSTANCE,
+        WriteTracking.BClass.INSTANCE,
+        AiChatLogSearchRequest.BClass.INSTANCE,
+        null);
+    private static final CrudViewModel<AiModuleCfgDTO, FullTrackingWithVersion> AI_MODULE_CFG_VIEW_MODEL = new CrudViewModel<>(
+        AiModuleCfgDTO.BClass.INSTANCE,
+        FullTrackingWithVersion.BClass.INSTANCE,
+        AiModuleCfgSearchRequest.BClass.INSTANCE,
+        AiModuleCfgCrudRequest.BClass.INSTANCE);
 
     @Override
     public void register() {
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("aiAssistant",       AI_ASSISTANT_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("aiConversation",    AI_CONVERSATION_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("aiUserStatus",      AI_USER_STATUS_VIEW_MODEL);
+        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("aiChatLog",         AI_CHAT_LOG_VIEW_MODEL);
+        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("aiModuleCfg",       AI_MODULE_CFG_VIEW_MODEL);
     }
 }

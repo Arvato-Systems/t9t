@@ -3,9 +3,9 @@ package com.arvatosystems.t9t.ai.tools.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.arvatosystems.t9t.ai.service.IAITool;
-import com.arvatosystems.t9t.ai.tools.AIToolUserList;
-import com.arvatosystems.t9t.ai.tools.AIToolUserListResult;
+import com.arvatosystems.t9t.ai.service.IAiTool;
+import com.arvatosystems.t9t.ai.tools.AiToolUserList;
+import com.arvatosystems.t9t.ai.tools.AiToolUserListResult;
 import com.arvatosystems.t9t.auth.UserDTO;
 import com.arvatosystems.t9t.auth.request.UserSearchRequest;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
@@ -19,14 +19,14 @@ import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 
-@Named(AIToolUserList.my$PQON)
+@Named(AiToolUserList.my$PQON)
 @Singleton
-public class AIToolUserSearch implements IAITool<AIToolUserList, AIToolUserListResult> {
+public class AiToolUserSearch implements IAiTool<AiToolUserList, AiToolUserListResult> {
 
     private final IExecutor executor = Jdp.getRequired(IExecutor.class);
 
     @Override
-    public AIToolUserListResult performToolCall(final RequestContext ctx, final AIToolUserList request) {
+    public AiToolUserListResult performToolCall(final RequestContext ctx, final AiToolUserList request) {
         final UserSearchRequest searchRq = new UserSearchRequest();
         if (request.getName() != null) {
             final UnicodeFilter filter = new UnicodeFilter("name");
@@ -40,7 +40,7 @@ public class AIToolUserSearch implements IAITool<AIToolUserList, AIToolUserListR
         for (final DataWithTrackingS<UserDTO, FullTrackingWithVersion> dwt: response.getDataList()) {
             resultList.add(dwt.getData());
         }
-        final AIToolUserListResult result = new AIToolUserListResult();
+        final AiToolUserListResult result = new AiToolUserListResult();
         result.setUsers(resultList);
         return result;
     }

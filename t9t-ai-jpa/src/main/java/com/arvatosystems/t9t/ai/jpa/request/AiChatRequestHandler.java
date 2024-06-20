@@ -24,8 +24,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.ai.AiAssistantDTO;
+import com.arvatosystems.t9t.ai.AiChatLogDTO;
 import com.arvatosystems.t9t.ai.AiConversationDTO;
-import com.arvatosystems.t9t.ai.T9tAIException;
+import com.arvatosystems.t9t.ai.AiRoleType;
+import com.arvatosystems.t9t.ai.T9tAiException;
 import com.arvatosystems.t9t.ai.jpa.entities.AiAssistantEntity;
 import com.arvatosystems.t9t.ai.jpa.entities.AiConversationEntity;
 import com.arvatosystems.t9t.ai.jpa.entities.AiUserStatusEntity;
@@ -37,8 +39,10 @@ import com.arvatosystems.t9t.ai.jpa.persistence.IAiConversationEntityResolver;
 import com.arvatosystems.t9t.ai.jpa.persistence.IAiUserStatusEntityResolver;
 import com.arvatosystems.t9t.ai.request.AiChatRequest;
 import com.arvatosystems.t9t.ai.request.AiChatResponse;
-import com.arvatosystems.t9t.ai.service.IAIChatService;
+import com.arvatosystems.t9t.ai.service.IAiChatService;
+import com.arvatosystems.t9t.ai.service.IAiChatLogService;
 import com.arvatosystems.t9t.base.JsonUtil;
+import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
@@ -58,6 +62,7 @@ public class AiChatRequestHandler extends AbstractRequestHandler<AiChatRequest> 
     private final IAiUserStatusEntityResolver userStatusResolver = Jdp.getRequired(IAiUserStatusEntityResolver.class);
     private final IAiConversationEntityResolver conversationResolver = Jdp.getRequired(IAiConversationEntityResolver.class);
     private final IAiConversationDTOMapper conversationMapper = Jdp.getRequired(IAiConversationDTOMapper.class);
+    private final IAiChatLogService aiChatLogService = Jdp.getRequired(IAiChatLogService.class);
 
     @Override
     public AiChatResponse execute(final RequestContext ctx, final AiChatRequest request) throws Exception {
@@ -69,7 +74,7 @@ public class AiChatRequestHandler extends AbstractRequestHandler<AiChatRequest> 
         if (conversation == null) {
             // no assistant available
             LOGGER.error("No assistant has been configured");
-            throw new T9tException(T9tAIException.NO_ASSISTANT);
+            throw new T9tException(T9tAiException.NO_ASSISTANT);
         }
         final AiAssistantEntity assistant = conversation.getAiAssistant();
         response.setAiAssistant(assistantDescMapper.mapToDto(assistant));
@@ -80,7 +85,7 @@ public class AiChatRequestHandler extends AbstractRequestHandler<AiChatRequest> 
         } else {
             final AiConversationDTO conversationDto = conversationMapper.mapToDto(conversation);
             final AiAssistantDTO assistantDto = assistantMapper.mapToDto(assistant);
-            final IAIChatService chatService = Jdp.getRequired(IAIChatService.class, assistantDto.getAiProvider());
+            final IAiChatService chatService = Jdp.getRequired(IAiChatService.class, assistantDto.getAiProvider());
             final List<String> responses = new ArrayList<>();
             Object uploadedDocumentRef = null;
             MediaTypeDescriptor mtd = null;
@@ -106,6 +111,15 @@ public class AiChatRequestHandler extends AbstractRequestHandler<AiChatRequest> 
                     responses.add("File " + filename + " uploaded as " + uploadedDocumentRef.toString());
                 }
             }
+
+            // log the input
+            final AiChatLogDTO chatLog = new AiChatLogDTO();
+            chatLog.setConversationRef(conversationDto);
+            chatLog.setRoleType(AiRoleType.USER);
+            chatLog.setUserInput(MessagingUtil.truncField(userInput, AiChatLogDTO.meta$$userInput.getLength()));
+            // chatLog.setUserUploadSinkRef(uploadedDocumentRef);
+            aiChatLogService.saveAiChatLog(chatLog);
+
             if (userInput != null) {
                 response.setMediaOutput(chatService.chat(ctx, assistantDto, conversationDto, userInput, uploadedDocumentRef, mtd, responses));
                 conversation.setNumberOfMessages(conversation.getNumberOfMessages() + 1);
@@ -168,7 +182,7 @@ public class AiChatRequestHandler extends AbstractRequestHandler<AiChatRequest> 
         newConversation.setAiAssistantRef(assistant.getObjectRef());
         newConversation.setAiAssistant(assistant);
         // obtain a provider thread ID
-        final IAIChatService chatService = Jdp.getRequired(IAIChatService.class, assistant.getAiProvider());
+        final IAiChatService chatService = Jdp.getRequired(IAiChatService.class, assistant.getAiProvider());
         final String threadId = chatService.startChat(ctx, assistantMapper.mapToDto(assistant));
         newConversation.setProviderThreadId(threadId);
         conversationResolver.save(newConversation);

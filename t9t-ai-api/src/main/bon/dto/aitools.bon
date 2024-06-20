@@ -29,47 +29,47 @@ package (com.arvatosystems) t9t.ai.tools {
      * Type definitions for functions / tools.
      * This serves as a marker to ensure that only enabled classes are fed into the tools structure.
      */
-    abstract class AbstractAITool return AbstractAIToolResult {
+    abstract class AbstractAiTool return AbstractAiToolResult {
     }
 
     /**
      * Type definitions for results of functions / tools.
      * This serves as a marker to ensure that only enabled classes are fed into the tools structure.
      */
-    abstract class AbstractAIToolResult {
+    abstract class AbstractAiToolResult {
     }
 
     /** Result which is used for single values, when a JSON structure is not required. */
-    final class AIToolStringResult extends AbstractAIToolResult {
+    final class AiToolStringResult extends AbstractAiToolResult {
         textChunk                                   text;
     }
 
     /** Retrieves the current date, giving the day in field today and the weekday in nameOfDayOfTheWeek. */
-    final class AIToolCurrentDate extends AbstractAITool return AIToolCurrentDateResult {
+    final class AiToolCurrentDate extends AbstractAiTool return AiToolCurrentDateResult {
     }
 
-    final class AIToolCurrentDateResult extends AbstractAIToolResult {
+    final class AiToolCurrentDateResult extends AbstractAiToolResult {
         required Day                                today;
         required Unicode(64)                        nameOfDayOfTheWeek;
     }
 
 
-    final class AIToolNoResult extends AbstractAIToolResult {
+    final class AiToolNoResult extends AbstractAiToolResult {
         required shortText                          message;  // usually "OK"
     }
 
     /** Retrieves user data, for a given name, or all users.. */
-    final class AIToolUserList extends AbstractAITool return AIToolUserListResult {
+    final class AiToolUserList extends AbstractAiTool return AiToolUserListResult {
         optional shortText                          name;  // The name of the user, or part of it.
     }
 
-    final class AIToolUserListResult extends AbstractAIToolResult {
+    final class AiToolUserListResult extends AbstractAiToolResult {
         required (UserDTO) required List<>          users;
     }
 
 
     /** Sends an email to user, optionally with attachments */
-    final class AIToolSendEmail extends AbstractAITool return AIToolNoResult {
+    final class AiToolSendEmail extends AbstractAiTool return AiToolNoResult {
         optional shortText                          subject;                    // The subject line of the email.
         optional textChunk                          emailText;                  // The message of the email.
         optional (MediaData)                        attachment;                 // An optional file attachment of the email.

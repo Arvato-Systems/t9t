@@ -26,6 +26,13 @@ package (com.arvatosystems) t9t.ai.jpa.entities owner fortytwo prefix p28 {
         cacheable
     }
 
+    entity AiChatLogEntity category datwo is AiChatLogDTO inheritance tablePerClass {
+        tenantClass InternalTenantId
+        pk (objectRef)
+        index (conversationRef)
+        @ManyToOne AiConversationEntity conversation LAZY for (conversationRef)
+    }
+
     entity AiAssistantEntity category cfg is AiAssistantDTO inheritance tablePerClass {
         cacheable
         tenantClass InternalTenantId

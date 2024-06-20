@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="aiUserStatus28"?>
+
+<window28 id="aiChatLogWin">
+    <twosections28 pageSize="50" gridId="aiChatLog" gridContext="showParam"/>
+</window28>

@@ -87,6 +87,9 @@ public class VertxEmailService implements IEmailSender {
             emailMessage.setBcc(recipient.getBcc());
         }
 
+        final String returnPath = msg.getReturnPath() != null ? msg.getReturnPath() : configuration.getDefaultReturnPath();
+        emailMessage.setBounceAddress(returnPath);
+
         // set mail body
         if (MediaTypes.MEDIA_XTYPE_TEXT.equals(msg.getMailBody().getMediaType())) {
             emailMessage.setText(msg.getMailBody().getText());

@@ -49,6 +49,7 @@ package (com.arvatosystems) t9t.email {
         optional Unicode(32)                        smtpServerUserId;
         optional Unicode(64)                        smtpServerPassword;
         optional Boolean                            smtpServerTls;
+        optional emailAddress                       defaultReturnPath;
     }
 
 
@@ -73,6 +74,7 @@ package (com.arvatosystems) t9t.email {
         optional Enum EmailStatus                   emailStatus;
         optional Boolean                            bounced;
         optional Unicode(1000) allowControlChars    bounceMessage;
+        optional emailAddress                       returnPath;                                         // Return-Path email address
     }
 
     class EmailDescription extends EmailRef {

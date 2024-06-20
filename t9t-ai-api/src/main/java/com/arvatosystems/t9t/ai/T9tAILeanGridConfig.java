@@ -20,12 +20,14 @@ import java.util.List;
 
 import com.arvatosystems.t9t.base.ILeanGridConfigContainer;
 
-public class T9tAILeanGridConfig implements ILeanGridConfigContainer {
+public class T9tAiLeanGridConfig implements ILeanGridConfigContainer {
 
     private static final String[] GRID_CONFIGS = {
         "aiAssistant",
         "aiConversation",
-        "aiUserStatus"
+        "aiUserStatus",
+        "aiChatLog",
+        "aiModuleCfg"
     };
 
     @Override

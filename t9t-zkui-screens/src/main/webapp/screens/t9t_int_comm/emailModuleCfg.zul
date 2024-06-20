@@ -16,6 +16,7 @@
                               id2="smtpServerTls"                   value2="@load(vm.data.smtpServerTls)                   @save(vm.data.smtpServerTls,before='commandSave')"/>
                     <cells228 id ="smtpServerUserId"                value ="@load(vm.data.smtpServerUserId)                @save(vm.data.smtpServerUserId,before='commandSave')"
                               id2="smtpServerPassword"              value2="@load(vm.data.smtpServerPassword)              @save(vm.data.smtpServerPassword,before='commandSave')"/>
+                    <cells28  id ="defaultReturnPath"               value ="@load(vm.data.defaultReturnPath)               @save(vm.data.defaultReturnPath,before='commandSave')"/>
                     <cells28  id ="z" colspan1="3" rows1="4"        value ="@load(vm.data.z)                               @save(vm.data.z,before='commandSave')"/>
                      <row>
                         <cell colspan="4">

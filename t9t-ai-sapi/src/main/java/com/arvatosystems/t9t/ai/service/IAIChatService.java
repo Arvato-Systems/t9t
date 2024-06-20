@@ -32,7 +32,7 @@ import jakarta.annotation.Nullable;
  * Implementations should use a qualifier for their implementation,
  * for example OpenAI, Ollama, huggingface, kaggle etc.
  */
-public interface IAIChatService {
+public interface IAiChatService {
     /** Validates generic metadata for specification limts. */
     void validateMetadata(@Nonnull RequestContext ctx, @Nullable Map<String, Object> metadata);
 

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import api.*
 import apiw.*
 import api.media.*
 import t9t.base.types.*
@@ -44,6 +43,8 @@ package (com.arvatosystems) t9t.ai.request {
 
     class AiConversationCrudRequest                 extends CrudSurrogateKeyRequest <AiConversationRef, AiConversationDTO, FullTrackingWithVersion> {}
     class AiConversationSearchRequest               extends SearchRequest           <AiConversationDTO, FullTrackingWithVersion> {}
+
+    class AiChatLogSearchRequest                    extends SearchRequest           <AiChatLogDTO, WriteTracking> {}
 
     /** API to submit user input (initial call without parameters to get the greeting). */
     class AiChatRequest extends RequestParameters return AiChatResponse {

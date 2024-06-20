@@ -22,7 +22,7 @@ import com.arvatosystems.t9t.base.T9tException;
  * exception class for all t9t OpenAI module specific exceptions.
  *
  */
-public class T9tAIException extends T9tException {
+public class T9tAiException extends T9tException {
     private static final long serialVersionUID = -866589612331210L;
 
     private static final int CORE_OFFSET            = T9tConstants.EXCEPTION_OFFSET_AI;
@@ -34,7 +34,7 @@ public class T9tAIException extends T9tException {
     public static final int NO_ASSISTANT               = OFFSET + 100;
 
     static {
-        registerRange(CORE_OFFSET, false, T9tAIException.class, ApplicationLevelType.FRAMEWORK, "t9t general AI integration layer");
+        registerRange(CORE_OFFSET, false, T9tAiException.class, ApplicationLevelType.FRAMEWORK, "t9t general AI integration layer");
 
         registerCode(NO_ASSISTANT, "No asistant configured");
     }

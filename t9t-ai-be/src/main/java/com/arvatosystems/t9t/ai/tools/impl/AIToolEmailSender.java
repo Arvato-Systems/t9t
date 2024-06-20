@@ -5,9 +5,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.ai.service.IAITool;
-import com.arvatosystems.t9t.ai.tools.AIToolNoResult;
-import com.arvatosystems.t9t.ai.tools.AIToolSendEmail;
+import com.arvatosystems.t9t.ai.service.IAiTool;
+import com.arvatosystems.t9t.ai.tools.AiToolNoResult;
+import com.arvatosystems.t9t.ai.tools.AiToolSendEmail;
 import com.arvatosystems.t9t.authc.api.GetUserDataByUserIdRequest;
 import com.arvatosystems.t9t.authc.api.GetUserDataResponse;
 import com.arvatosystems.t9t.authc.api.UserData;
@@ -24,15 +24,15 @@ import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 
-@Named(AIToolSendEmail.my$PQON)
+@Named(AiToolSendEmail.my$PQON)
 @Singleton
-public class AIToolEmailSender implements IAITool<AIToolSendEmail, AIToolNoResult> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AIToolEmailSender.class);
+public class AiToolEmailSender implements IAiTool<AiToolSendEmail, AiToolNoResult> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AiToolEmailSender.class);
 
     private final IExecutor executor = Jdp.getRequired(IExecutor.class);
 
     @Override
-    public AIToolNoResult performToolCall(final RequestContext ctx, final AIToolSendEmail request) {
+    public AiToolNoResult performToolCall(final RequestContext ctx, final AiToolSendEmail request) {
         LOGGER.debug("Email tool called with subject {}", T9tUtil.nvl(request.getSubject(), "(none)"));
 
         final UserData userData = getUserData(ctx);
@@ -48,7 +48,7 @@ public class AIToolEmailSender implements IAITool<AIToolSendEmail, AIToolNoResul
           "Hello " + userData.getName() + ",\nHere is the data you requested.\n\nBest regards,\n    Your AI assistant")));
         msg.setAttachments(List.of(request.getAttachment()));
 
-        final AIToolNoResult result = new AIToolNoResult();
+        final AiToolNoResult result = new AiToolNoResult();
         result.setMessage("Success");
         return result;
     }

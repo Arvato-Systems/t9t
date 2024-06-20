@@ -103,6 +103,7 @@ public final class ApplicationSession {
     private Map<String, TenantDescription>   tenantsById;
     private Instant                          lastLoggedIn;
     private Instant                          passwordExpires;
+    private boolean                          passwordExpired;
     private Integer                          numberOfIncorrectAttempts;
     private Cache<String, Map<String, String>> enumTranslationCache = Caffeine.newBuilder().build();
     private Cache<String, List<Description>> dropdownDataCache =
@@ -667,6 +668,14 @@ public final class ApplicationSession {
 
     public void setPasswordExpires(Instant passwordExpires) {
         this.passwordExpires = passwordExpires;
+    }
+
+    public boolean isPasswordExpired() {
+        return passwordExpired;
+    }
+
+    public void setPasswordExpired(final boolean passwordExpired) {
+        this.passwordExpired = passwordExpired;
     }
 
     public Integer getNumberOfIncorrectAttempts() {

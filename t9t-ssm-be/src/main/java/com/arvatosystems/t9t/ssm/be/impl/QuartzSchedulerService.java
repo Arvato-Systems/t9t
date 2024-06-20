@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.T9tUtil;
+import com.arvatosystems.t9t.base.services.ITimeZoneProvider;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.core.CannedRequestDTO;
 import com.arvatosystems.t9t.core.CannedRequestRef;
@@ -74,6 +75,7 @@ public class QuartzSchedulerService implements ISchedulerService {
 
     protected final ICannedRequestResolver rqResolver = Jdp.getRequired(ICannedRequestResolver.class);
     protected final Scheduler scheduler = Jdp.getRequired(Scheduler.class);
+    protected final ITimeZoneProvider timeZoneProvider = Jdp.getRequired(ITimeZoneProvider.class);
 
     private static final List<SchedulerSetupRecurrenceType> DAILY_OR_LESS_FREQ = Arrays.asList(SchedulerSetupRecurrenceType.DAILY,
             SchedulerSetupRecurrenceType.WEEKLY, SchedulerSetupRecurrenceType.MONTHLY, SchedulerSetupRecurrenceType.YEARLY);
@@ -189,7 +191,7 @@ public class QuartzSchedulerService implements ISchedulerService {
         // Do the common work here (identity + start + end)
         final TriggerBuilder<Trigger> builder = TriggerBuilder.newTrigger().withIdentity(setup.getSchedulerId(), ctx.tenantId);
         if (setup.getValidFrom() != null) {
-            final Date startAt = java.sql.Timestamp.valueOf(setup.getValidFrom());
+            final Date startAt = Date.from(setup.getValidFrom().atZone(timeZoneProvider.getTimeZoneOfTenant(ctx.tenantId)).toInstant());
             final Date now = new Date();
             if (startAt.compareTo(now) > 0) {
                 builder.startAt(startAt);
@@ -199,7 +201,7 @@ public class QuartzSchedulerService implements ISchedulerService {
         }
         addSchedule(builder, setup);
         if (setup.getValidTo() != null) {
-            builder.endAt(java.sql.Timestamp.valueOf(setup.getValidTo()));
+            builder.endAt(Date.from(setup.getValidTo().atZone(timeZoneProvider.getTimeZoneOfTenant(ctx.tenantId)).toInstant()));
         }
         return builder.build();
     }

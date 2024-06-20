@@ -246,6 +246,10 @@
       <property name="optional" value="true"/>
     </module>
 
+    <module name="IllegalType">
+        <property name="illegalClassNames" value="java.sql.Date, java.sql.Time, java.sql.Timestamp"/>
+    </module>
+
   </module>
 
 </module>

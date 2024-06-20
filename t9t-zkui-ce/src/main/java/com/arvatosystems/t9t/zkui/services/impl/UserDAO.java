@@ -216,6 +216,7 @@ public class UserDAO implements IUserDAO {
             final AuthenticationResponse resp = t9tRemoteUtils.executeAndHandle(authenticationRequest, AuthenticationResponse.class);
             if (ApplicationException.isOk(resp.getReturnCode()) || resp.getReturnCode() == T9tException.PASSWORD_EXPIRED) {
                 final ApplicationSession as = ApplicationSession.get();
+                as.setPasswordExpired(resp.getReturnCode() == T9tException.PASSWORD_EXPIRED);
                 as.setLastLoggedIn(resp.getLastLoginUser());
                 as.setPasswordExpires(resp.getPasswordExpires());
                 as.setNumberOfIncorrectAttempts(resp.getNumberOfIncorrectAttempts());

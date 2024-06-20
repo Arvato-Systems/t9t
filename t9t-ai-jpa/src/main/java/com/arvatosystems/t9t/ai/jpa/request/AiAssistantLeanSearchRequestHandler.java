@@ -26,7 +26,7 @@ import de.jpaw.dp.Jdp;
 public class AiAssistantLeanSearchRequestHandler extends AbstractLeanSearchRequestHandler<AiAssistantLeanSearchRequest, AiAssistantEntity> {
     public AiAssistantLeanSearchRequestHandler() {
         super(Jdp.<IAiAssistantEntityResolver>getRequired(IAiAssistantEntityResolver.class), it -> {
-            return new Description(it.getObjectRef(), it.getAiAssistantId(), it.getDescription(), it.getIsActive(), false);
+            return new Description(it.getObjectRef(), it.getAssistantId(), it.getDescription(), it.getIsActive(), false);
         });
     }
 }

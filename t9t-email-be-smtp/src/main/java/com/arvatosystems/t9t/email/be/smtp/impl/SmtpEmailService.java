@@ -64,7 +64,7 @@ public class SmtpEmailService implements IEmailSender {
             configuration.getSmtpServerAddress() == null ? DEFAULT_SMTP_SERVER : configuration.getSmtpServerAddress()
         );
         try {
-            final Session session = createSession(configuration);
+            final Session session = createSession(configuration, msg.getReturnPath());
             final MimeMessage message = composeMessage(session, msg);
             final Transport transport = session.getTransport(configuration.getSmtpServerTransport());
             try {
@@ -92,7 +92,7 @@ public class SmtpEmailService implements IEmailSender {
         return null;
     }
 
-    protected Session createSession(EmailModuleCfgDTO configuration) {
+    protected Session createSession(final EmailModuleCfgDTO configuration, final String returnPath) {
         final Integer port = configuration.getSmtpServerPort() == null ? (configuration.getSmtpServerTls() ? 587 : 25) : configuration.getSmtpServerPort();
         final Properties props = new Properties();
         if (Boolean.TRUE.equals(configuration.getSmtpServerTls())) {
@@ -101,6 +101,10 @@ public class SmtpEmailService implements IEmailSender {
         props.put("mail.smtp.host", configuration.getSmtpServerAddress() == null ? DEFAULT_SMTP_SERVER : configuration.getSmtpServerAddress());
         props.put("mail.smtp.port", port.toString());
         props.put("mail.mime.charset", STANDARD_ENCODING);
+        final String smtpFrom = returnPath != null ? returnPath : configuration.getDefaultReturnPath();
+        if (smtpFrom != null) {
+            props.put("mail.smtp.from", smtpFrom);
+        }
         if (configuration.getSmtpServerPassword() != null && configuration.getSmtpServerUserId() != null) {
             // authenticated access
             props.put("mail.smtp.auth", "true");

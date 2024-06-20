@@ -24,6 +24,7 @@ import org.mockito.Mockito;
 import org.quartz.Scheduler;
 
 import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.services.ITimeZoneProvider;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.core.services.ICannedRequestResolver;
 import com.arvatosystems.t9t.ssm.SchedulerSetupDTO;
@@ -41,6 +42,7 @@ public class QuartzSchedulerServiceTest {
     protected Provider<RequestContext> ctxProvider;
     protected RequestContext requestContext;
     protected ICannedRequestResolver rqResolver;
+    protected ITimeZoneProvider timeZoneProvider;
 
     @BeforeEach
     public void setup() {
@@ -48,11 +50,13 @@ public class QuartzSchedulerServiceTest {
         ctxProvider = Mockito.mock(Provider.class);
         requestContext = Mockito.mock(RequestContext.class);
         rqResolver = Mockito.mock(ICannedRequestResolver.class);
+        timeZoneProvider = Mockito.mock(ITimeZoneProvider.class);
 
         Jdp.bindInstanceTo(scheduler, Scheduler.class);
         Jdp.bindInstanceTo(ctxProvider, Provider.class);
         Jdp.bindInstanceTo(requestContext, RequestContext.class);
         Jdp.bindInstanceTo(rqResolver, ICannedRequestResolver.class);
+        Jdp.bindInstanceTo(timeZoneProvider, ITimeZoneProvider.class);
 
         service = new QuartzSchedulerService();
 

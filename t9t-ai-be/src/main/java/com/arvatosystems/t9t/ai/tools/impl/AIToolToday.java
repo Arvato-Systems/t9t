@@ -3,21 +3,21 @@ package com.arvatosystems.t9t.ai.tools.impl;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 
-import com.arvatosystems.t9t.ai.service.IAITool;
-import com.arvatosystems.t9t.ai.tools.AIToolCurrentDate;
-import com.arvatosystems.t9t.ai.tools.AIToolCurrentDateResult;
+import com.arvatosystems.t9t.ai.service.IAiTool;
+import com.arvatosystems.t9t.ai.tools.AiToolCurrentDate;
+import com.arvatosystems.t9t.ai.tools.AiToolCurrentDateResult;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 
-@Named(AIToolCurrentDate.my$PQON)
+@Named(AiToolCurrentDate.my$PQON)
 @Singleton
-public class AIToolToday implements IAITool<AIToolCurrentDate, AIToolCurrentDateResult> {
+public class AiToolToday implements IAiTool<AiToolCurrentDate, AiToolCurrentDateResult> {
 
     @Override
-    public AIToolCurrentDateResult performToolCall(final RequestContext ctx, final AIToolCurrentDate request) {
-        final AIToolCurrentDateResult result = new AIToolCurrentDateResult();
+    public AiToolCurrentDateResult performToolCall(final RequestContext ctx, final AiToolCurrentDate request) {
+        final AiToolCurrentDateResult result = new AiToolCurrentDateResult();
         final LocalDate today = LocalDate.now();
         result.setToday(today);
         result.setNameOfDayOfTheWeek(today.getDayOfWeek().getDisplayName(TextStyle.FULL, ctx.getLocale()));

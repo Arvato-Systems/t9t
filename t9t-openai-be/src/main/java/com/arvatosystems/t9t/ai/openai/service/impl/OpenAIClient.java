@@ -19,6 +19,9 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.ai.AiChatLogDTO;
+import com.arvatosystems.t9t.ai.AiConversationRef;
+import com.arvatosystems.t9t.ai.AiRoleType;
 import com.arvatosystems.t9t.ai.openai.AbstractOpenAIObject;
 import com.arvatosystems.t9t.ai.openai.OpenAIBetaSpecifier;
 import com.arvatosystems.t9t.ai.openai.OpenAIChatCompletionChoice;
@@ -58,12 +61,13 @@ import com.arvatosystems.t9t.ai.openai.assistants.OpenAIToolOutput;
 import com.arvatosystems.t9t.ai.openai.assistants.OpenAIToolOutputReq;
 import com.arvatosystems.t9t.ai.openai.jackson.OpenAIModule;
 import com.arvatosystems.t9t.ai.openai.service.IOpenAIClient;
-import com.arvatosystems.t9t.ai.service.AIToolDescriptor;
-import com.arvatosystems.t9t.ai.service.AIToolRegistry;
-import com.arvatosystems.t9t.ai.service.IAITool;
-import com.arvatosystems.t9t.ai.tools.AIToolStringResult;
-import com.arvatosystems.t9t.ai.tools.AbstractAITool;
-import com.arvatosystems.t9t.ai.tools.AbstractAIToolResult;
+import com.arvatosystems.t9t.ai.service.AiToolDescriptor;
+import com.arvatosystems.t9t.ai.service.AiToolRegistry;
+import com.arvatosystems.t9t.ai.service.IAiTool;
+import com.arvatosystems.t9t.ai.service.IAiChatLogService;
+import com.arvatosystems.t9t.ai.tools.AiToolStringResult;
+import com.arvatosystems.t9t.ai.tools.AbstractAiTool;
+import com.arvatosystems.t9t.ai.tools.AbstractAiToolResult;
 import com.arvatosystems.t9t.base.JsonUtil;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
@@ -92,6 +96,7 @@ import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.Multiplicity;
 import de.jpaw.bonaparte.util.ToStringHelper;
+import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ExceptionUtil;
 import jakarta.annotation.Nonnull;
@@ -107,6 +112,8 @@ public class OpenAIClient implements IOpenAIClient {
     private static final String MESSAGES_SUFFIX = "/messages";
     private static final String SUBMIT_SUFFIX = "/submit_tool_outputs";
     private static final String FILES_PATH = "/v1/files";
+
+    private final IAiChatLogService aiChatLogService = Jdp.getRequired(IAiChatLogService.class);
 
     private final boolean configured;
     private final ObjectMapper objectMapper;
@@ -358,7 +365,7 @@ public class OpenAIClient implements IOpenAIClient {
         toolResultMessage.setRole(OpenAIRoleType.TOOL);
         toolResultMessage.setToolCallId(toolCall.getId());
 
-        final AIToolDescriptor<?, ?> tool = AIToolRegistry.get(functionCall.getName());
+        final AiToolDescriptor<?, ?> tool = AiToolRegistry.get(functionCall.getName());
         if (tool == null) {
             LOGGER.error("Tool {} not found in registry - LLM fantasizing?", functionCall.getName());
             toolResultMessage.setContent("ERROR! Tool not found in registry");
@@ -366,15 +373,17 @@ public class OpenAIClient implements IOpenAIClient {
             LOGGER.debug("Calling {} with parameters {}", functionCall.getName(), functionCall.getArguments());
             // determine parameters as bonaparte object from JSOn representation
             try {
-                final AbstractAITool requestObject = tool.requestClass().newInstance();
+                final AbstractAiTool requestObject = tool.requestClass().newInstance();
                 objectMapperForToolCalls.readerForUpdating(requestObject).readValue(functionCall.getArguments());
                 // call the tool (hack to get it around type checks)
-                final IAITool toolInstance = tool.toolInstance();
-                final AbstractAIToolResult result = toolInstance.performToolCall(ctx, requestObject);
+                final IAiTool toolInstance = tool.toolInstance();
+                // log the call (to be completed)
+                // logToolCall(ctx, null, tool.name(), null);
+                final AbstractAiToolResult result = toolInstance.performToolCall(ctx, requestObject);
                 // convert result to JSON
                 if (result == null) {
                     toolResultMessage.setContent("Success! (No data returned by tool.)");
-                } else if (result instanceof AIToolStringResult textResult) {
+                } else if (result instanceof AiToolStringResult textResult) {
                     LOGGER.debug("Output of tool call to {} with arguments {} resulted in string {}",
                       functionCall.getName(), functionCall.getArguments(), textResult.getText());
                     toolResultMessage.setContent(textResult.getText());
@@ -389,6 +398,16 @@ public class OpenAIClient implements IOpenAIClient {
             }
         }
         return toolResponse.getMessage();
+    }
+
+    protected void logToolCall(final RequestContext ctx, final Long conversationRef, final String function, final Map<String, Object> parameters) {
+        // log the input
+        final AiChatLogDTO chatLog = new AiChatLogDTO();
+        chatLog.setConversationRef(new AiConversationRef(conversationRef));
+        chatLog.setRoleType(AiRoleType.SYSTEM);
+        chatLog.setFunctionPqon(function);
+        chatLog.setFunctionParameter(parameters);
+        aiChatLogService.saveAiChatLog(chatLog);
     }
 
     protected String stripJavadoc(final String javadoc) {
@@ -498,13 +517,13 @@ public class OpenAIClient implements IOpenAIClient {
         final List<OpenAITool> tools;
         if (T9tUtil.isEmpty(selection)) {
             // use all available tools
-            tools = new ArrayList<>(AIToolRegistry.size() + 2);
-            AIToolRegistry.forEach(tool -> tools.add(createToolDescriptionFromClassDefinition(tool.name(), tool.requestClass().getMetaData())));
+            tools = new ArrayList<>(AiToolRegistry.size() + 2);
+            AiToolRegistry.forEach(tool -> tools.add(createToolDescriptionFromClassDefinition(tool.name(), tool.requestClass().getMetaData())));
         } else {
             // use only the selected tools
             tools = new ArrayList<>(selection.size() + 2);
             for (final String toolName : selection) {
-                final AIToolDescriptor<?, ?> tool = AIToolRegistry.get(toolName);
+                final AiToolDescriptor<?, ?> tool = AiToolRegistry.get(toolName);
                 if (tool == null) {
                     LOGGER.warn("Tool {} not found in registry - skipping", toolName);
                 } else {

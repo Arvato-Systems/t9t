@@ -21,7 +21,7 @@ import java.util.UUID;
 
 import com.arvatosystems.t9t.ai.AiAssistantDTO;
 import com.arvatosystems.t9t.ai.AiConversationDTO;
-import com.arvatosystems.t9t.ai.service.IAIChatService;
+import com.arvatosystems.t9t.ai.service.IAiChatService;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.bonaparte.pojos.api.media.MediaData;
@@ -34,7 +34,7 @@ import de.jpaw.dp.Singleton;
  */
 @Singleton
 @Named("TestStub")
-public class DummyChatService implements IAIChatService {
+public class DummyChatService implements IAiChatService {
 
     @Override
     public void validateMetadata(final RequestContext ctx, final Map<String, Object> metadata) {

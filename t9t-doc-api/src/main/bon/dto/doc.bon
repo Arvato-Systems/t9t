@@ -82,6 +82,7 @@ package (com.arvatosystems) t9t.doc {
         required boolean                            replaceBcc;                                         // replace the BCC: instead of appending it
         required boolean                            storeEmail;                                         // store email body and attachments in email module for possible resends (leave false for password mails!)
         required boolean                            sendSpooled;                                        // do not send the mail immediately, but via background task (requires storing it). Useful for testing and reviews.
+        optional emailAddress                       returnPath;                                         // Return-Path email address
     }
 
     /** Document template configuration data. The template can depend on subTenant (entity), country and language.
