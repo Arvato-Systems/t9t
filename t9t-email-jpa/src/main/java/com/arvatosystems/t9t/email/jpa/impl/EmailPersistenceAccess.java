@@ -36,7 +36,8 @@ public class EmailPersistenceAccess implements IEmailPersistenceAccess {
     private final IEmailAttachmentsEntityResolver emailAttachmentsEntityResolver = Jdp.getRequired(IEmailAttachmentsEntityResolver.class);
 
     @Override
-    public Long persistEmail(final RequestContext ctx, final UUID myMessageId, final EmailMessage msg, final boolean sendSpooled, final boolean storeEmail) {
+    public Long persistEmail(final RequestContext ctx, final UUID myMessageId, final EmailMessage msg, final boolean sendSpooled, final boolean storeEmail,
+        final String defaultReturnPath) {
         int numAttachments = 0;
         if (msg.getAttachments() != null) {
             numAttachments = msg.getAttachments().size();
@@ -61,6 +62,7 @@ public class EmailPersistenceAccess implements IEmailPersistenceAccess {
         } else {
             email.setEmailStatus(EmailStatus.SENT);
         }
+        email.setReturnPath(msg.getReturnPath() != null ? msg.getReturnPath() : defaultReturnPath);
         emailResolver.save(email);                      // sets shared tenantId and persists
 
         if (sendSpooled || storeEmail) {

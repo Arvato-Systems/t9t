@@ -48,7 +48,7 @@ public class DocEmailDistributor implements IDocEmailDistributor {
     public Long transmit(final RecipientEmail rcpt, final Function<MediaXType, MediaData> toFormatConverter, final MediaXType primaryFormat,
             final String documentTemplateId, final DocumentSelector documentSelector, final MediaData emailSubject, final MediaData emailBody,
             final Map<String, MediaData> cids, final MediaData alternateBody, final List<MediaData> attachments, final boolean storeEmail,
-            final boolean sendSpooled) {
+            final boolean sendSpooled, final String returnPath) {
         final MediaData payload = toFormatConverter.apply(rcpt.getCommunicationFormat() == null ? primaryFormat : rcpt.getCommunicationFormat());
         final SendEmailRequest rq = new SendEmailRequest();
         final EmailMessage emailMessage = new EmailMessage();
@@ -58,6 +58,7 @@ public class DocEmailDistributor implements IDocEmailDistributor {
         emailMessage.setAlternateBody(alternateBody);
         emailMessage.setCids(cids);
         emailMessage.setAttachments(attachments);
+        emailMessage.setReturnPath(returnPath);
         rq.setEmail(emailMessage);
         rq.setStoreEmail(storeEmail);
         rq.setSendSpooled(sendSpooled);

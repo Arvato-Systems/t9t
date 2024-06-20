@@ -95,6 +95,7 @@ public class SendEditedEmailRequestHandler extends AbstractRequestHandler<SendEd
         emailMessage.setRecipient(recipientEmail);
         emailMessage.setAttachments(Collections.emptyList());
         emailMessage.setCids(new HashMap<>());
+        emailMessage.setReturnPath(docEmailReceiverDTO.getReturnPath());
         sendEmailRequest.setEmail(emailMessage);
 
         final RecipientArchive recipientArchive = new RecipientArchive();

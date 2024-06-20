@@ -45,6 +45,7 @@ package (com.arvatosystems) t9t.email.api {
         required (MediaData) List<>                 attachments;        // a list of attachments
         required (MediaData) Map<String>            cids;               // related parts for mailBody
         optional (MediaData)                        alternateBody;      // must be a text based format, usually text/plain as a fallback if the client cannot render HTML
+        optional emailAddress                       returnPath;         // Return-Path email address
     }
 
     /** Low level email transmission without formatting. */

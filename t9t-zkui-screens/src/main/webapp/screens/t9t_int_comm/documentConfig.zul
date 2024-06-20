@@ -46,6 +46,7 @@
                                           id2="emailSettings.replaceBcc"     value2="@load(vm.data.emailSettings.replaceBcc)     @save(vm.data.emailSettings.replaceBcc,before='commandSave')"/>
                                 <cells228 id ="emailSettings.storeEmail"     value ="@load(vm.data.emailSettings.storeEmail)     @save(vm.data.emailSettings.storeEmail,before='commandSave')"
                                           id2="emailSettings.sendSpooled"    value2="@load(vm.data.emailSettings.sendSpooled)    @save(vm.data.emailSettings.sendSpooled,before='commandSave')"/>
+                                <cells28  id ="emailSettings.returnPath"     value ="@load(vm.data.emailSettings.returnPath)     @save(vm.data.emailSettings.returnPath,before='commandSave')"/>
                             </rows>
                         </form28>
                     </tabpanel>

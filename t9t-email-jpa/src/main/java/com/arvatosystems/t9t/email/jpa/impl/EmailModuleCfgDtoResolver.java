@@ -32,7 +32,8 @@ public class EmailModuleCfgDtoResolver extends AbstractModuleConfigResolver<Emai
             25,                            // smtpServerPort
             null,                          // smtpServerUserId;
             null,                          // smtpServerPassword
-            null                           // smtpServerTls
+            null,                          // smtpServerTls
+            null                           // defaultReturnPath
     );
 
     public EmailModuleCfgDtoResolver() {

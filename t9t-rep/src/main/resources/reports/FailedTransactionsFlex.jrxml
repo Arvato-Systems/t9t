@@ -96,7 +96,7 @@
                 order by  date asc]]>
     </queryString>
 
-    <field name="date"                      class="java.sql.Timestamp"/>
+    <field name="date"                      class="java.time.LocalDateTime"/>
     <field name="request_parameter_pqon"    class="java.lang.String"/>
     <field name="object_ref"                class="java.lang.String"/>
     <field name="essential_key"             class="java.lang.String"/>
@@ -208,7 +208,7 @@
         <band height="12" splitType="Prevent">
             <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement stretchType="RelativeToBandHeight" x="000" y="0" width="120" height="12" />
-                <textFieldExpression><![CDATA[$P{timeFormatter}.formatDateTime($F{date}.toLocalDateTime(), $P{timeZone}, $P{REPORT_LOCALE})]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$P{timeFormatter}.formatDateTime($F{date}, $P{timeZone}, $P{REPORT_LOCALE})]]></textFieldExpression>
             </textField>
             <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement stretchType="RelativeToBandHeight" x="120" y="0" width="360" height="12" />

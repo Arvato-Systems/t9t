@@ -43,9 +43,13 @@ public class WorkbenchInit implements Initiator {
     public final void doInit(Page page, @SuppressWarnings("rawtypes") Map arg) throws Exception {
         String pagename = (String)arg.get("pagename");
 
-        if (!ApplicationSession.get().isAuthenticated()) {
+        final ApplicationSession as = ApplicationSession.get();
+        if (!as.isAuthenticated()) {
             LOGGER.info("User is not authenticated, redirecting to login...");
             Executions.getCurrent().sendRedirect(Constants.ZulFiles.LOGIN);
+        } else if (as.isPasswordExpired()) {
+            LOGGER.info("User logged in but password is expired, redirecting to change password...");
+            Executions.sendRedirect(Constants.ZulFiles.LOGIN_SUCCESS_REDIRECT);
         }
         if (pagename == null) {
             LOGGER.info("No current pagename, redirecting to home...");

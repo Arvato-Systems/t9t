@@ -27,7 +27,7 @@ public interface IEmailPersistenceAccess {
 
     // MediaData               getEmailAttachment    (Long emailRef, Integer attachmentNo);
     // List<MediaData>         getEmailAttachments   (Long emailRef);
-    Long persistEmail(RequestContext ctx, UUID messageId, EmailMessage msg, boolean sendSpooled, boolean storeEmail);
+    Long persistEmail(RequestContext ctx, UUID messageId, EmailMessage msg, boolean sendSpooled, boolean storeEmail, String defaultReturnPath);
 
     Long createNewEmailPrimaryKey();
 }

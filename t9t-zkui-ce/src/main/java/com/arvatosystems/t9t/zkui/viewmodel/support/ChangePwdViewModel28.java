@@ -105,6 +105,7 @@ public class ChangePwdViewModel28 extends AbstractViewOnlyVM<ChangePasswordUI, T
             userDAO.changePassword(data.getOldPassword(), data.getNewPassword());
             postProcessHook();
             session.setPasswordExpires(null);
+            session.setPasswordExpired(false);
         } catch (ReturnCodeException rce) {
             showLoginFailError();
         }

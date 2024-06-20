@@ -59,7 +59,7 @@ public class SendEmailBySmtpTest {
         final MediaData mediaData = new MediaData();
         mediaData.setMediaType(MediaTypes.MEDIA_XTYPE_TEXT);
         mediaData.setText("How are you today?\\n\\nBest regards...");
-        final EmailMessage message = new EmailMessage(RECIPIENT, "Hello world", mediaData, null, null, null);
+        final EmailMessage message = new EmailMessage(RECIPIENT, "Hello world", mediaData, null, null, null, null);
         final SmtpEmailService service = new SmtpEmailService();
         service.sendEmail(System.currentTimeMillis(), UUID.randomUUID(), message, MODULE_CONFIG);
     }
@@ -78,7 +78,7 @@ public class SendEmailBySmtpTest {
                 + " </html>";
         mediaData.setMediaType(MediaTypes.MEDIA_XTYPE_HTML);
         mediaData.setText(html);
-        final EmailMessage message = new EmailMessage(RECIPIENT, "Hello John", mediaData, null, null, mediaData);
+        final EmailMessage message = new EmailMessage(RECIPIENT, "Hello John", mediaData, null, null, mediaData, null);
         final SmtpEmailService service = new SmtpEmailService();
         service.sendEmail(System.currentTimeMillis(), UUID.randomUUID(), message, MODULE_CONFIG);
     }

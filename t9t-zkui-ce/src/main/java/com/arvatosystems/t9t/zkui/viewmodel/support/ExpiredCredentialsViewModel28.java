@@ -17,14 +17,20 @@ package com.arvatosystems.t9t.zkui.viewmodel.support;
 
 import java.time.Instant;
 
+import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.Executions;
 
 import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;
+import com.arvatosystems.t9t.zkui.services.IAuthenticationService;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 import com.arvatosystems.t9t.zkui.util.Constants;
 
+import de.jpaw.dp.Jdp;
+
 public class ExpiredCredentialsViewModel28 extends ChangePwdViewModel28 {
+
+    private final IAuthenticationService authenticationService = Jdp.getRequired(IAuthenticationService.class);
 
     private boolean pwdExpired = true;
 
@@ -51,4 +57,9 @@ public class ExpiredCredentialsViewModel28 extends ChangePwdViewModel28 {
     public void postProcessHook() {
         Executions.getCurrent().sendRedirect(Constants.ZulFiles.LOGIN_TENANT_SELECTION);
     };
+
+    @Command
+    public void logout() {
+        authenticationService.logout();
+    }
 }

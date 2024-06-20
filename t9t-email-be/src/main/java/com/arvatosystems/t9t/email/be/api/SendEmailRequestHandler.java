@@ -49,8 +49,11 @@ public class SendEmailRequestHandler extends AbstractRequestHandler<SendEmailReq
         // create a UUID for this message
         final UUID messageId = UUID.randomUUID();
 
+        // read the module configuration
+        final EmailModuleCfgDTO moduleCfg = moduleCfgResolver.getModuleConfiguration();
         // persist the message, and possibly also attachments
-        final Long messageRef = emailPersistenceAccess.persistEmail(ctx, messageId, rq.getEmail(), rq.getSendSpooled(), rq.getStoreEmail());
+        final Long messageRef = emailPersistenceAccess.persistEmail(ctx, messageId, rq.getEmail(), rq.getSendSpooled(), rq.getStoreEmail(),
+            moduleCfg.getDefaultReturnPath());
 
         // generate an OK message
         final SendEmailResponse okResponse = new SendEmailResponse();
@@ -63,8 +66,6 @@ public class SendEmailRequestHandler extends AbstractRequestHandler<SendEmailReq
                 LOGGER.info("email sending inhibited by configuration - skipping it");
                 return okResponse;
             } else {
-                // read the module configuration
-                final EmailModuleCfgDTO moduleCfg = moduleCfgResolver.getModuleConfiguration();
                 final String implementation = moduleCfg == null ? "SMTP" : moduleCfg.getImplementation();
                 final IEmailSender implementingInstance = Jdp.getOptional(IEmailSender.class, implementation);
                 if (implementingInstance == null) {

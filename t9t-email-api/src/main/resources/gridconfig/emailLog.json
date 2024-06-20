@@ -8,7 +8,7 @@
         { "filterType": "W", "fieldName": "emailTo" }
     ],
     "fields": [
-        "cTimestamp", "messageId", "emailSubject", "emailTo", "numberOfAttachments", "emailStatus"
+        "cTimestamp", "messageId", "emailSubject", "emailTo", "numberOfAttachments", "emailStatus", "returnPath"
     ],
-    "fieldWidths": [ 140, 300, 400, 270, 180, 140 ]
+    "fieldWidths": [ 140, 300, 400, 270, 180, 140, 270 ]
 }
