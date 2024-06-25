@@ -1,0 +1,9 @@
+{
+    "viewModel": "aiModuleCfg",
+    "filters": [
+        { "filterType": "E", "fieldName": "tenantId" }
+    ],
+    "fields": [
+        "tenantId"
+    ]
+}

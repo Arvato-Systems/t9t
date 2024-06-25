@@ -1,0 +1,77 @@
+/*
+ * Copyright (c) 2012 - 2023 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import api.*
+import api.media.*
+import t9t.base.types.*
+import t9t.ai.*
+import t9t.auth.*
+
+/**
+ * Some sample tool APIs (temporary, just for testing)
+ */
+package (com.arvatosystems) t9t.ai.tools {
+    default private unsigned trim noControlChars;
+
+    /**
+     * Type definitions for functions / tools.
+     * This serves as a marker to ensure that only enabled classes are fed into the tools structure.
+     */
+    abstract class AbstractAiTool return AbstractAiToolResult {
+    }
+
+    /**
+     * Type definitions for results of functions / tools.
+     * This serves as a marker to ensure that only enabled classes are fed into the tools structure.
+     */
+    abstract class AbstractAiToolResult {
+    }
+
+    /** Result which is used for single values, when a JSON structure is not required. */
+    final class AiToolStringResult extends AbstractAiToolResult {
+        textChunk                                   text;
+    }
+
+    /** Retrieves the current date, giving the day in field today and the weekday in nameOfDayOfTheWeek. */
+    final class AiToolCurrentDate extends AbstractAiTool return AiToolCurrentDateResult {
+    }
+
+    final class AiToolCurrentDateResult extends AbstractAiToolResult {
+        required Day                                today;
+        required Unicode(64)                        nameOfDayOfTheWeek;
+    }
+
+
+    final class AiToolNoResult extends AbstractAiToolResult {
+        required shortText                          message;  // usually "OK"
+    }
+
+    /** Retrieves user data, for a given name, or all users.. */
+    final class AiToolUserList extends AbstractAiTool return AiToolUserListResult {
+        optional shortText                          name;  // The name of the user, or part of it.
+    }
+
+    final class AiToolUserListResult extends AbstractAiToolResult {
+        required (UserDTO) required List<>          users;
+    }
+
+
+    /** Sends an email to user, optionally with attachments */
+    final class AiToolSendEmail extends AbstractAiTool return AiToolNoResult {
+        optional shortText                          subject;                    // The subject line of the email.
+        optional textChunk                          emailText;                  // The message of the email.
+        optional (MediaData)                        attachment;                 // An optional file attachment of the email.
+    }
+}
