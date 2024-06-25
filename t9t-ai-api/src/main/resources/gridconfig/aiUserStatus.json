@@ -1,9 +1,0 @@
-{
-    "viewModel": "aiUserStatus",
-    "filters": [
-        { "filterType": "E", "fieldName": "userId" }
-    ],
-    "fields": [
-        "userId"
-    ]
-}
