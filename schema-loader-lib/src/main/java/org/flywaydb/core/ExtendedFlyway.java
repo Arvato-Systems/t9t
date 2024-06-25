@@ -80,6 +80,6 @@ public class ExtendedFlyway extends Flyway {
                     } finally {
                         database.close();
                     }
-                }, true);
+                }, true, null);
     }
 }

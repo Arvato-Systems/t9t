@@ -136,7 +136,8 @@ public class OpenAIChatService implements IAiChatService {
         final int maxPollDuration = JsonUtil.getZInteger(assistant.getZ(), "maxPollDuration", T9tOpenAIConstants.OPENAI_MAX_POLL_DURATION);
         final OpenAIThreadRunReq runObj = new OpenAIThreadRunReq();
         runObj.setAssistantId(assistant.getAiAssistantId());
-        final OpenAIObjectThreadRun res = openAIClient.createRunAndLoop(ctx, conversation.getProviderThreadId(), runObj, maxTime, maxPollDuration);
+        final OpenAIObjectThreadRun res = openAIClient.createRunAndLoop(ctx, conversation.getProviderThreadId(), runObj, maxTime, maxPollDuration,
+          conversation.getObjectRef());
 
         // obtain results
         final OpenAIObjectListThreadMessages msgs = openAIClient.listThreadMessages(conversation.getProviderThreadId(), null);

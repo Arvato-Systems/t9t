@@ -20,9 +20,8 @@ import com.arvatosystems.t9t.base.misc.Info;
 import com.arvatosystems.t9t.zkui.components.basic.Grid28;
 import com.arvatosystems.t9t.zkui.components.basic.ModalWindows;
 import com.arvatosystems.t9t.zkui.context.IGridContextMenu;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
+import de.jpaw.bonaparte.core.JsonComposerPrettyPrint;
 import de.jpaw.bonaparte.pojos.api.DataWithTracking;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.dp.Named;
@@ -41,13 +40,10 @@ public class AiChatLogShowParameterContextHandler implements IGridContextMenu<Ai
     @Override
     public void selected(final Grid28 lb, final DataWithTracking<AiChatLogDTO, TrackingBase> dwt) {
         final AiChatLogDTO dto = dwt.getData();
-        final Info info = new Info();
         if (dto.getFunctionParameter() != null) {
-            final GsonBuilder gsonBuilder = new GsonBuilder();
-            final Gson gson = gsonBuilder.setPrettyPrinting().create();
-            final String prettyParam = gson.toJson(dto.getFunctionParameter());
-            info.setText(prettyParam);
+            final Info info = new Info();
+            info.setText(JsonComposerPrettyPrint.toJsonString(dto.getFunctionParameter()));
+            ModalWindows.runModal("/context/info28.zul", lb.getParent(), info, false, (d) -> { });
         }
-        ModalWindows.runModal("/context/info28.zul", lb.getParent(), info, false, (d) -> { });
     }
 }

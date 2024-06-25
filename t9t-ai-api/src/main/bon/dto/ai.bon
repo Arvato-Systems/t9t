@@ -24,10 +24,9 @@ import t9t.base.moduleCfg.*
  */
 package (com.arvatosystems) t9t.ai {
     default private unsigned trim noControlChars;
-    properties inherited, qualifierFor, active,
+    properties inherited, qualifierFor, active, length, serialized, compact, compact2,
         tenantCategory is com.arvatosystems.t9t.annotations.TenantCategory(),
         searchprefix is com.arvatosystems.t9t.annotations.SearchPrefix(),
-        serialized is com.arvatosystems.t9t.annotations.StoreSerialized,
         noAutoMap is com.arvatosystems.t9t.annotations.NoAutoMap,
         notupdatable is com.arvatosystems.t9t.annotations.NotUpdatable,
         ref is com.arvatosystems.t9t.annotations.IsObjectRef;
@@ -60,11 +59,12 @@ package (com.arvatosystems) t9t.ai {
 
     class AiChatLogRef RTTI 447 extends Ref {}
     class AiChatLogDTO extends AiChatLogRef {
-        required (AiConversationRef..., AiConversationDTO)  conversationRef properties ref, searchprefix="conversation";
-        required Enum AiRoleType                            roleType;
-        optional textChunk                                  userInput;
-        optional meta.identifier                            functionPqon;
-        optional Json                                       functionParameter;
+        required (AiConversationRef..., AiConversationDTO)  conversationRef      properties ref, searchprefix="conversation";
+        required Enum AiRoleType                            roleType;            // determines whether the entry has been caused by user input or the model's output
+        optional textChunk                                  userInput;           // user's request message
+        optional meta.identifier                            functionPqon;        // PQON of the invoked callback
+        optional Object                                     functionParameter    properties serialized="65535", length="65535", compact, compact2; // parameters for the callback
+        optional Long                                       sinkRef;             // uploaded or generated file
     }
 
     /** User preferences and status. */

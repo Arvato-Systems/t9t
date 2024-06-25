@@ -99,7 +99,7 @@ public interface IOpenAIClient {
     @Nonnull OpenAIObjectThreadRun createThreadAndRun(@Nonnull OpenAIThreadRunReq request);
 
     @Nonnull OpenAIObjectThreadRun loopUntilCompletion(@Nonnull RequestContext ctx, @Nonnull OpenAIObjectThreadRun initialState,
-         int maxSeconds, long pollMillis);
+         int maxSeconds, long pollMillis, Long conversationRef);
 
     /** List existing runs for a given thread. */
     @Nonnull OpenAIObjectListThreadRuns listThreadRuns(@Nonnull String threadId, @Nullable OpenAIQueryParameters queryParameters);
@@ -115,7 +115,7 @@ public interface IOpenAIClient {
 
     /** Starts a prepared thread amd loops until output is available or a problem encountered, or the maximum time exceeded. */
     @Nonnull OpenAIObjectThreadRun createRunAndLoop(@Nonnull RequestContext ctx,  @Nonnull String threadId, @Nonnull OpenAIThreadRunReq request,
-      int maxSeconds, long pollMillis);
+      int maxSeconds, long pollMillis, Long conversationRef);
 
     /** Creates an assistant. */
     @Nonnull OpenAIObjectVectorStore createVectorStore(@Nonnull OpenAICreateVectorStoreReq createVectorStoreReq);

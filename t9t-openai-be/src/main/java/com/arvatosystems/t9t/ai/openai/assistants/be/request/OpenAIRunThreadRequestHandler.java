@@ -19,7 +19,8 @@ public class OpenAIRunThreadRequestHandler extends AbstractRequestHandler<OpenAI
     public OpenAIObjectRunThreadResponse execute(final RequestContext ctx, final OpenAIRunThreadRequest request) throws Exception {
         final OpenAIObjectThreadRun res = openAIClient.createRunAndLoop(ctx, request.getThreadId(), request.getData(),
             T9tUtil.nvl(request.getMaxSeconds(), T9tOpenAIConstants.OPENAI_MAX_TIME),
-            T9tUtil.nvl(request.getPollMillis(), T9tOpenAIConstants.OPENAI_MAX_POLL_DURATION));
+            T9tUtil.nvl(request.getPollMillis(), T9tOpenAIConstants.OPENAI_MAX_POLL_DURATION),
+            null);
         final OpenAIObjectRunThreadResponse resp = new OpenAIObjectRunThreadResponse();
         resp.setResponse(res);
         return resp;

@@ -17,7 +17,8 @@ CREATE TABLE p28_dat_ai_chat_log (
     , role_type varchar(1) NOT NULL
     , user_input varchar(65536)
     , function_pqon varchar(255)
-    , function_parameter text
+    , function_parameter bytea
+    , sink_ref bigint
 );
 
 ALTER TABLE p28_dat_ai_chat_log ADD CONSTRAINT p28_dat_ai_chat_log_pk PRIMARY KEY (
@@ -38,6 +39,11 @@ COMMENT ON COLUMN p28_dat_ai_chat_log.tenant_id IS 'the multitenancy discriminat
 COMMENT ON COLUMN p28_dat_ai_chat_log.object_ref IS 'objectRef, as a primary key it cannot be changed and, if persisted, is never null';
 -- comments for columns of java class AiChatLogRef
 -- comments for columns of java class AiChatLogDTO
+COMMENT ON COLUMN p28_dat_ai_chat_log.role_type IS 'determines whether the entry has been caused by user input or the model''s output';
+COMMENT ON COLUMN p28_dat_ai_chat_log.user_input IS 'user''s request message';
+COMMENT ON COLUMN p28_dat_ai_chat_log.function_pqon IS 'PQON of the invoked callback';
+COMMENT ON COLUMN p28_dat_ai_chat_log.function_parameter IS 'parameters for the callback';
+COMMENT ON COLUMN p28_dat_ai_chat_log.sink_ref IS 'uploaded or generated file';
 
 -- convert a token (as stored in DB tables) of enum t9t.ai.AiRoleType into the more readable symbolic constant string
 CREATE OR REPLACE FUNCTION AiRoleType2s(token VARCHAR) RETURNS VARCHAR

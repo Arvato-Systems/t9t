@@ -50,7 +50,7 @@
         <driver.oracle.version>23.4.0.24.05</driver.oracle.version>
         <driver.postgresql.version>42.7.3</driver.postgresql.version>     <!-- starting with 4.2.15, the driver adds a dependency to checker-qual 3.5.0 which conflicts with 2.5.2 pulled by guava -->
         <driver.sqlserver.version>12.6.1.jre11</driver.sqlserver.version> <!-- not all releases are available on maven central as jre17 builds -->
-        <driver.hana.version>2.20.17</driver.hana.version>
+        <driver.hana.version>2.21.10</driver.hana.version>
         <h2.version>2.2.224</h2.version>
 
         <!-- OR mappers -->
@@ -85,7 +85,7 @@
         <jakarta.jws.version>2.1.0</jakarta.jws.version>                                <!-- 3.0.0 for jakarta namespace -->
         <jakarta.ws.rs-api.version>3.1.0</jakarta.ws.rs-api.version>
         <jakarta.validation-api.version>3.0.2</jakarta.validation-api.version>          <!-- validation API, implemented by hibernate validator -->
-        <jakarta.persistence-api.version>3.2.0</jakarta.persistence-api.version>        <!-- validation API, implemented by hibernate ORM -->
+        <jakarta.persistence-api.version>3.1.0</jakarta.persistence-api.version>        <!-- validation API, implemented by hibernate ORM -->
         <jakarta.transaction-api.version>2.0.1</jakarta.transaction-api.version>
         <jakarta.servlet-api.version>6.0.0</jakarta.servlet-api.version>
 
@@ -109,7 +109,7 @@
         <commons-text.version>1.12.0</commons-text.version>               <!-- not used in t9t, but DM made to cover for transitive dependencies -->
 
         <!-- AWS SDK v2 -->
-        <aws2-bom.version>2.25.69</aws2-bom.version>
+        <aws2-bom.version>2.26.7</aws2-bom.version>
 
         <!-- AWS JDBC wrapper for Aurora -->
         <aws-jdbc-wrapper.version>2.3.7</aws-jdbc-wrapper.version>
@@ -180,11 +180,11 @@
         <reload4j.version>1.2.25</reload4j.version>
 
         <!-- Spring core -->
-        <spring-bom.version>6.1.9</spring-bom.version>
+        <spring-bom.version>6.1.10</spring-bom.version>
         <!-- Spring data -->
         <spring-data-jpa.version>3.3.1</spring-data-jpa.version>
         <!-- Spring boot -->
-        <spring-boot.version>3.3.0</spring-boot.version>
+        <spring-boot.version>3.3.1</spring-boot.version>
 
         <netty.version>4.1.110.Final</netty.version>
         <vertx4.version>4.5.8</vertx4.version>
@@ -195,9 +195,9 @@
 
         <c3p0.version>0.9.5.5</c3p0.version>
         <hikaricp.version>5.0.1</hikaricp.version>
-        <flyway.version>9.21.1</flyway.version>
+        <flyway.version>10.15.0</flyway.version>
         <reflections.version>0.9.10</reflections.version>
-        <maven-plugin-api.version>3.9.7</maven-plugin-api.version>
+        <maven-plugin-api.version>3.9.8</maven-plugin-api.version>
         <jackson.version>2.17.1</jackson.version>
         <jackson-databind.version>2.17.1</jackson-databind.version> <!-- separate version due to frequent CVE updates which do not release the full set -->
         <solr.version>8.11.1</solr.version>
@@ -754,6 +754,11 @@
             <dependency>
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-core</artifactId>
+                <version>${flyway.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-database-postgresql</artifactId>
                 <version>${flyway.version}</version>
             </dependency>
 

@@ -346,7 +346,7 @@ public class OpenAIClient implements IOpenAIClient {
             // construct responses for the tool calls
             for (final OpenAIToolCall toolCall : firstChoice.getMessage().getToolCalls()) {
                 // call the indicated function
-                messages.add(performToolCall(ctx, toolCall));
+                messages.add(performToolCall(ctx, toolCall, null));
                 if (++countToolCalls >= maxToolCalls) {
                     return response;
                 }
@@ -357,7 +357,16 @@ public class OpenAIClient implements IOpenAIClient {
         }
     }
 
-    protected OpenAIMessage performToolCall(final RequestContext ctx, final OpenAIToolCall toolCall) {
+    /**
+     * Performs a callback (function call). In case a conversationRef is provided, the call is logged.
+     *
+     * @param ctx             the RequestContext
+     * @param toolCall        the description of the function
+     * @param conversationRef an optional reference to an assistant conversation
+     *
+     * @return the response message
+     */
+    protected OpenAIMessage performToolCall(@Nonnull final RequestContext ctx, @Nonnull final OpenAIToolCall toolCall, @Nullable final Long conversationRef) {
         final OpenAIFunctionCall functionCall = toolCall.getFunction();
         final OpenAIChatCompletionChoice toolResponse = new OpenAIChatCompletionChoice();
         final OpenAIMessage toolResultMessage = new OpenAIMessage();
@@ -377,8 +386,10 @@ public class OpenAIClient implements IOpenAIClient {
                 objectMapperForToolCalls.readerForUpdating(requestObject).readValue(functionCall.getArguments());
                 // call the tool (hack to get it around type checks)
                 final IAiTool toolInstance = tool.toolInstance();
-                // log the call (to be completed)
-                // logToolCall(ctx, null, tool.name(), null);
+                if (conversationRef != null) {
+                    // log the call (to be completed)
+                    logToolCall(ctx, conversationRef, tool.name(), requestObject);
+                }
                 final AbstractAiToolResult result = toolInstance.performToolCall(ctx, requestObject);
                 // convert result to JSON
                 if (result == null) {
@@ -400,7 +411,7 @@ public class OpenAIClient implements IOpenAIClient {
         return toolResponse.getMessage();
     }
 
-    protected void logToolCall(final RequestContext ctx, final Long conversationRef, final String function, final Map<String, Object> parameters) {
+    protected void logToolCall(final RequestContext ctx, final Long conversationRef, final String function, final BonaPortable parameters) {
         // log the input
         final AiChatLogDTO chatLog = new AiChatLogDTO();
         chatLog.setConversationRef(new AiConversationRef(conversationRef));
@@ -661,18 +672,18 @@ public class OpenAIClient implements IOpenAIClient {
 
     @Override
     public OpenAIObjectThreadRun createRunAndLoop(final RequestContext ctx, final String threadId, final OpenAIThreadRunReq request,
-      final int maxSeconds, final long pollMillis) {
+      final int maxSeconds, final long pollMillis, final Long conversationRef) {
         if (request.getThread() != null) {
             throw new T9tException(T9tOpenAIException.OPENAI_INVALID_REQUEST, "thread field must be null to start an existing thread");
         }
         final String fullPath = THREADS_PATH + "/" + threadId + RUNS_SUFFIX;
         final OpenAIObjectThreadRun initialState = performOpenAIRequest(request, fullPath, ASSISTANTS_BETA, OpenAIObjectThreadRun.class);
-        return loopUntilCompletion(ctx, initialState, maxSeconds, pollMillis);
+        return loopUntilCompletion(ctx, initialState, maxSeconds, pollMillis, conversationRef);
     }
 
     @Override
     public OpenAIObjectThreadRun loopUntilCompletion(final RequestContext ctx, final OpenAIObjectThreadRun initialState,
-      final int maxSeconds, final long pollMillis) {
+      final int maxSeconds, final long pollMillis, final Long conversationRef) {
         final Instant start = Instant.now();
         final Instant deadline = start.plusSeconds(maxSeconds);
         final String runId = initialState.getId();
@@ -698,7 +709,7 @@ public class OpenAIClient implements IOpenAIClient {
                 currentState = getRun(threadId, runId);
                 break;
             case REQUIRES_ACTION:
-                final OpenAIToolOutputReq toolOutputs = computeToolOutputs(ctx, currentState);
+                final OpenAIToolOutputReq toolOutputs = computeToolOutputs(ctx, currentState, conversationRef);
                 currentState = submitToolOutputs(threadId, runId, toolOutputs);
                 break;
             default:
@@ -709,7 +720,7 @@ public class OpenAIClient implements IOpenAIClient {
         return currentState;  // timed out!
     }
 
-    protected OpenAIToolOutputReq computeToolOutputs(final RequestContext ctx, final OpenAIObjectThreadRun currentState) {
+    protected OpenAIToolOutputReq computeToolOutputs(final RequestContext ctx, final OpenAIObjectThreadRun currentState, final Long conversationRef) {
         if (currentState.getRequiredAction() == null || currentState.getRequiredAction().getSubmitToolOutputs() == null) {
             throw new T9tException(T9tOpenAIException.OPENAI_EXPECTED_TOOL_OUTPUTS,
               currentState.getRequiredAction() == null ? "requiredAction" : "submitToolOutputs");
@@ -725,7 +736,7 @@ public class OpenAIClient implements IOpenAIClient {
         final List<OpenAIToolOutput> toolOutputs = new ArrayList<>(toolCalls.size());
         toolOutputReq.setToolOutputs(toolOutputs);
         for (final OpenAIToolCall toolCall : toolCalls) {
-            final OpenAIMessage result = performToolCall(ctx, toolCall);
+            final OpenAIMessage result = performToolCall(ctx, toolCall, conversationRef);
             final OpenAIToolOutput toolOutput = new OpenAIToolOutput();
             toolOutput.setToolCallId(toolCall.getId());
             toolOutput.setOutput(result.getContent());
