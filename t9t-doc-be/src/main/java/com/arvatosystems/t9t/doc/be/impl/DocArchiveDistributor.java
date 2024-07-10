@@ -15,6 +15,14 @@
  */
 package com.arvatosystems.t9t.doc.be.impl;
 
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.base.services.IOutputSession;
@@ -31,15 +39,6 @@ import de.jpaw.bonaparte.pojos.api.media.MediaXType;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 @Singleton
 public class DocArchiveDistributor implements IDocArchiveDistributor {
     private static final Logger LOGGER = LoggerFactory.getLogger(DocArchiveDistributor.class);
@@ -47,6 +46,7 @@ public class DocArchiveDistributor implements IDocArchiveDistributor {
     @Override
     public DocArchiveResult transmit(final RecipientArchive rcpt, final Function<MediaXType, MediaData> data, final MediaXType primaryFormat,
             final String documentTemplateId, final DocumentSelector documentSelector) {
+        boolean outputSessionOpen = false;
         final IOutputSession outputSession = Jdp.getRequired(IOutputSession.class);
         final Map<String, Object> additionalParams = new HashMap<>(8);
         final Map<String, Object> map = MapComposer.marshal(documentSelector, false, false);
@@ -69,10 +69,11 @@ public class DocArchiveDistributor implements IDocArchiveDistributor {
         try {
             // open
             final Long sinkRef = outputSession.open(sessionParams);
+            outputSessionOpen = true;
 
             // check if conversion required
             final MediaXType requestedType = outputSession.getCommunicationFormatType();
-            MediaData documentForStream = data.apply(requestedType);
+            final MediaData documentForStream = data.apply(requestedType);
             outputStream = outputSession.getOutputStream();
 
             if (documentForStream.getRawData() != null) {
@@ -81,11 +82,15 @@ public class DocArchiveDistributor implements IDocArchiveDistributor {
                 outputStream.write(documentForStream.getText().getBytes("UTF-8"));
             }
 
-            final String fileOrQueueName = outputSession.getFileOrQueueName();
             outputStream.close();
             outputStream = null;
-            return new DocArchiveResult(sinkRef, fileOrQueueName);
-        } catch (final IOException e) {
+            outputSession.close();
+            outputSessionOpen = false;
+            // MediaData only available after close
+            final MediaData reference = outputSession.getReferenceMediaData();
+            final String relativePath = outputSession.getFileOrQueueName();
+            return new DocArchiveResult(sinkRef, relativePath, reference, documentForStream);
+        } catch (final Exception e) {
             LOGGER.error("Unable to open the output session or write to it, due to : {} ", e);
             throw new T9tException(T9tDocExtException.DOCUMENT_CREATION_ERROR);
         } finally {
@@ -93,7 +98,7 @@ public class DocArchiveDistributor implements IDocArchiveDistributor {
                 if (outputStream != null) {
                     outputStream.close();
                 }
-                if (outputSession != null) {
+                if (outputSessionOpen) {
                     outputSession.close();
                 }
             } catch (final Exception e) {

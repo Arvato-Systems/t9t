@@ -20,6 +20,7 @@ import java.io.OutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.base.IUploadChecker;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.search.SinkCreatedResponse;
@@ -29,6 +30,7 @@ import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.io.T9tIOException;
 import com.arvatosystems.t9t.io.request.FileUploadRequest;
 
+import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import de.jpaw.bonaparte.pojos.api.media.MediaType;
 import de.jpaw.bonaparte.pojos.api.media.MediaXType;
 import de.jpaw.dp.Jdp;
@@ -40,6 +42,8 @@ import de.jpaw.dp.Jdp;
 public class FileUploadRequestHandler extends AbstractRequestHandler<FileUploadRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(FileUploadRequestHandler.class);
 
+    private final IUploadChecker uploadChecker = Jdp.getRequired(IUploadChecker.class);
+
     @Override
     public ServiceResponse execute(final RequestContext ctx, final FileUploadRequest params) throws Exception {
         Long sinkRef;
@@ -48,6 +52,11 @@ public class FileUploadRequestHandler extends AbstractRequestHandler<FileUploadR
         if ((communicationFormatType == null) || (communicationFormatType.getBaseEnum() == MediaType.UNDEFINED)) {
             throw new T9tException(T9tIOException.OUTPUT_COMM_CHANNEL_REQUIRED);
         }
+
+        MediaData mediaData = new MediaData();
+        mediaData.setMediaType(communicationFormatType);
+        mediaData.setRawData(params.getData());
+        uploadChecker.virusCheck(mediaData);
 
         try (IOutputSession os = Jdp.getRequired(IOutputSession.class)) {
             // open the session (creates the file, if using files)

@@ -21,6 +21,7 @@ import java.nio.charset.StandardCharsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.base.IUploadChecker;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
@@ -40,10 +41,13 @@ import de.jpaw.dp.Jdp;
 public class StoreMediaDataRequestHandler extends AbstractRequestHandler<StoreMediaDataRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(StoreMediaDataRequestHandler.class);
 
+    private final IUploadChecker uploadChecker = Jdp.getRequired(IUploadChecker.class);
+
     @Override
     public ServiceResponse execute(final RequestContext ctx, final StoreMediaDataRequest params) throws Exception {
         Long sinkRef;
         final MediaData m = params.getMediaData();
+        uploadChecker.virusCheck(m);
 
         // create outputSessionParameters
         final OutputSessionParameters osp = new OutputSessionParameters();

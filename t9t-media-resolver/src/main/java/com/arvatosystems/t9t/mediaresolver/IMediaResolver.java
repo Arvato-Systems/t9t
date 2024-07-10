@@ -17,6 +17,7 @@ package com.arvatosystems.t9t.mediaresolver;
 
 import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * Interface for implementations which resolve a lazy MediaData object, i.e. turn a lazy one into one with actual contents.
@@ -27,4 +28,9 @@ public interface IMediaResolver {
 
     /** Resolves the contents of a lazy MediaData structure. */
     @Nonnull MediaData resolveLazy(@Nonnull MediaData in);
+
+    /** Checks if the object is lazy. */
+    default boolean isLazy(@Nullable MediaData in) {
+        return in != null && in.getMediaStorageLocation() != null;
+    }
 }

@@ -41,6 +41,7 @@ import com.arvatosystems.t9t.ai.request.AiChatRequest;
 import com.arvatosystems.t9t.ai.request.AiChatResponse;
 import com.arvatosystems.t9t.ai.service.IAiChatService;
 import com.arvatosystems.t9t.ai.service.IAiChatLogService;
+import com.arvatosystems.t9t.base.IUploadChecker;
 import com.arvatosystems.t9t.base.JsonUtil;
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.T9tConstants;
@@ -63,6 +64,7 @@ public class AiChatRequestHandler extends AbstractRequestHandler<AiChatRequest> 
     private final IAiConversationEntityResolver conversationResolver = Jdp.getRequired(IAiConversationEntityResolver.class);
     private final IAiConversationDTOMapper conversationMapper = Jdp.getRequired(IAiConversationDTOMapper.class);
     private final IAiChatLogService aiChatLogService = Jdp.getRequired(IAiChatLogService.class);
+    private final IUploadChecker uploadChecker = Jdp.getRequired(IUploadChecker.class);
 
     @Override
     public AiChatResponse execute(final RequestContext ctx, final AiChatRequest request) throws Exception {
@@ -92,7 +94,7 @@ public class AiChatRequestHandler extends AbstractRequestHandler<AiChatRequest> 
 
             if (userUpload != null) {
                 // upload a file
-
+                uploadChecker.virusCheck(userUpload);
                 final Map<String, Object> fileRefs = conversationDto.getFileReferences() != null ? conversationDto.getFileReferences() : new HashMap<>();
                 mtd = MediaTypeInfo.getFormatByType(userUpload.getMediaType());
                 String filename = JsonUtil.getZString(userUpload.getZ(), T9tConstants.MEDIA_DATA_Z_KEY_FILENAME, null);

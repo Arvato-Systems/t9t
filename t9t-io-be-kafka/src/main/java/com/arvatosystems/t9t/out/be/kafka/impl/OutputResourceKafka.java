@@ -48,13 +48,13 @@ public class OutputResourceKafka implements IOutputResource {
         final Properties props = new Properties();
         final KafkaConfiguration defaults = ConfigProvider.getConfiguration().getKafkaConfiguration();
         if (defaults == null) {
-            throw new T9tException(T9tIOException.MISSING_KAFKA_CONFIGURAION, "No kafkaConfiguration entry in config.xml");
+            throw new T9tException(T9tIOException.MISSING_KAFKA_CONFIGURATION, "No kafkaConfiguration entry in config.xml");
         }
 
         final String defaultBootstrapServers = defaults == null ? null : defaults.getDefaultBootstrapServers();
         final String bootstrapServers = config.getBootstrapServers() != null ? config.getBootstrapServers() : defaultBootstrapServers;
         if (bootstrapServers == null) {
-            throw new T9tException(T9tIOException.MISSING_KAFKA_CONFIGURAION, "No bootstrap servers defined in DataSink nor config.xml");
+            throw new T9tException(T9tIOException.MISSING_KAFKA_CONFIGURATION, "No bootstrap servers defined in DataSink nor config.xml");
         }
 //        props.put(ProducerConfig.CLIENT_ID_CONFIG, config.getDataSinkId() + ":" + sinkRef.toString());
         props.put(ProducerConfig.LINGER_MS_CONFIG, 100);

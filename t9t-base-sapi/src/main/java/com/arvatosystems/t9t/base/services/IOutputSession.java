@@ -21,7 +21,9 @@ import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 
 import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import de.jpaw.bonaparte.pojos.api.media.MediaXType;
+import jakarta.annotation.Nullable;
 
 /** represents a single session within the executor (which spans multiple requests) */
 
@@ -122,7 +124,13 @@ public interface IOutputSession extends AutoCloseable {
     /** Returns the chunk size as configured. */
     Integer getChunkSize();
 
-    /** Returns the use file of queue name (if applicable). */
+    /**
+     * Returns the use file of queue name (if applicable).
+     * @Deprecated, because it should not be used to write to the output session (use <code>getOutputStream()</code> for that),
+     * and as a reference after writing is complete, the new method getReferenceMediaData() will provide more information,
+     * such as also the actual format type, and the specification of the storage type, if the output is suitable for later retrieval.
+     */
+    @Deprecated
     String getFileOrQueueName();
 
     /** Returns true if the record transformer is known not to support DataWithTracking. Should be used to
@@ -133,4 +141,11 @@ public interface IOutputSession extends AutoCloseable {
 
     /** Returns a generic configuration settings for the output session. */
     Object getZ(String key);
+
+    /**
+     * Returns a MediaData object which can be used for lazy references to the stored data.
+     * Will throw an exception if the output is not yet complete.
+     * Will return null, if the output target is not suitable for later retrieval (for example some queue or topic), or if the output was empty.
+     */
+    @Nullable MediaData getReferenceMediaData();
 }

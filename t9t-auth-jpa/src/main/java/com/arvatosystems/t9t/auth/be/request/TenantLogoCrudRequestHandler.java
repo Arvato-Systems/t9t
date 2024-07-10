@@ -20,6 +20,7 @@ import com.arvatosystems.t9t.auth.jpa.entities.TenantLogoEntity;
 import com.arvatosystems.t9t.auth.jpa.mapping.ITenantLogoDTOMapper;
 import com.arvatosystems.t9t.auth.jpa.persistence.ITenantLogoEntityResolver;
 import com.arvatosystems.t9t.auth.request.TenantLogoCrudRequest;
+import com.arvatosystems.t9t.base.IUploadChecker;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudModuleCfgRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
@@ -31,9 +32,13 @@ public class TenantLogoCrudRequestHandler extends AbstractCrudModuleCfgRequestHa
     private final ITenantLogoDTOMapper mapper = Jdp.getRequired(ITenantLogoDTOMapper.class);
 
     private final ITenantLogoEntityResolver resolver = Jdp.getRequired(ITenantLogoEntityResolver.class);
+    private final IUploadChecker uploadChecker = Jdp.getRequired(IUploadChecker.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final TenantLogoCrudRequest params) {
+        if (params.getData() != null) {
+            uploadChecker.virusCheck(params.getData().getLogo());
+        }
         return execute(ctx, mapper, resolver, params);
     }
 }

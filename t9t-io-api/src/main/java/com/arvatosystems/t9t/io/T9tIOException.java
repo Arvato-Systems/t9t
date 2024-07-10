@@ -27,6 +27,7 @@ public class T9tIOException extends T9tException {
     private static final int CORE_OFFSET = T9tConstants.EXCEPTION_OFFSET_IO;
     private static final int OFFSET                     = CORE_OFFSET + CLASSIFICATION_FACTOR * CL_PARAMETER_ERROR;
     private static final int OFFSET_DENIED              = CORE_OFFSET + CLASSIFICATION_FACTOR * CL_DENIED;
+    private static final int OFFSET_ILE                 = CORE_OFFSET + CLASSIFICATION_FACTOR * CL_INTERNAL_LOGIC_ERROR;
 
     // Decline codes: This is not a technical error in order to allow the status to be written
     public static final int NOT_TRANSFERRED             = OFFSET_DENIED + 333;
@@ -74,8 +75,9 @@ public class T9tIOException extends T9tException {
     public static final int UNDEFINED_CAMEL_FAILURE_DEST_PATH_ERROR = OFFSET + 258;
     public static final int FILE_TOO_BIG = OFFSET + 259;
     public static final int INVALID_DATA_SINK_ATTRIBUTES = OFFSET + 260;
+    public static final int OUTPUT_NOT_YET_CLOSED = OFFSET_ILE + 261;
 
-    public static final int MISSING_KAFKA_CONFIGURAION = OFFSET + 270;
+    public static final int MISSING_KAFKA_CONFIGURATION = OFFSET + 270;
 
     static {
         registerRange(CORE_OFFSET, false, T9tIOException.class, ApplicationLevelType.FRAMEWORK, "t9t enterprise integration module");
@@ -118,7 +120,8 @@ public class T9tIOException extends T9tException {
         registerCode(OUTPUT_COMM_CHANNEL_NO_SRC_HANDLER, "No data source handler available for type");
         registerCode(FILE_TOO_BIG, "The file size is too big to be handled.");
         registerCode(INVALID_DATA_SINK_ATTRIBUTES, "Data sink specified with inconsistent parameters.");
+        registerCode(OUTPUT_NOT_YET_CLOSED, "Cannot provide reference MediaData while OutputSession is not yet closed");
 
-        registerCode(MISSING_KAFKA_CONFIGURAION, "No / missing configuration for kafka");
+        registerCode(MISSING_KAFKA_CONFIGURATION, "No / missing configuration for kafka");
     }
 }

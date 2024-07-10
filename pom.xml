@@ -56,7 +56,7 @@
         <maven-install-plugin.version>3.0.1</maven-install-plugin.version>
         <maven-deploy-plugin.version>3.1.2</maven-deploy-plugin.version>
         <maven-clean-plugin.version>3.4.0</maven-clean-plugin.version>
-        <maven-dependency-plugin.version>3.6.1</maven-dependency-plugin.version>
+        <maven-dependency-plugin.version>3.7.1</maven-dependency-plugin.version>
         <maven-plugin-annotations.version>3.13.1</maven-plugin-annotations.version>
         <maven-project.version>2.2.1</maven-project.version>
         <build-helper-maven-plugin.version>3.4.0</build-helper-maven-plugin.version>
@@ -78,7 +78,7 @@
         <eclipse-lifecycle-mapping.version>1.0.0</eclipse-lifecycle-mapping.version>
         <bundle.plugin.version>5.1.2</bundle.plugin.version> <!-- felix, for pricing RCP -->
         <exec.plugin.version>3.0.0</exec.plugin.version>
-        <jetty-maven-plugin.version>12.0.10</jetty-maven-plugin.version>
+        <jetty-maven-plugin.version>12.0.11</jetty-maven-plugin.version>
         <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
         <cxf-codegen-plugin.version>4.0.4</cxf-codegen-plugin.version>
         <cxf-wadl2java-plugin.version>4.0.4</cxf-wadl2java-plugin.version>
@@ -89,7 +89,7 @@
         <!-- reporting-->
         <maven-checkstyle-plugin.version>3.4.0</maven-checkstyle-plugin.version>
         <maven-site-plugin.version>3.12.1</maven-site-plugin.version>
-        <maven-project-info-reports-plugin.version>3.6.0</maven-project-info-reports-plugin.version>
+        <maven-project-info-reports-plugin.version>3.6.1</maven-project-info-reports-plugin.version>
         <maven-javadoc-plugin.version>3.7.0</maven-javadoc-plugin.version>
 
         <!-- Versions of Xtext & Xtend plugins -->

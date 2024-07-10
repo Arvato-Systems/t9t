@@ -20,7 +20,6 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +43,7 @@ import com.arvatosystems.t9t.io.CamelExecutionScheduleType;
 import com.arvatosystems.t9t.io.CommunicationTargetChannelType;
 import com.arvatosystems.t9t.io.DataSinkDTO;
 import com.arvatosystems.t9t.io.DataSinkRef;
+import com.arvatosystems.t9t.io.IOTools;
 import com.arvatosystems.t9t.io.OutboundMessageDTO;
 import com.arvatosystems.t9t.io.SinkDTO;
 import com.arvatosystems.t9t.io.T9tIOException;
@@ -66,6 +66,8 @@ import com.arvatosystems.t9t.uiprefsv3.request.LeanGridConfigResponse;
 import de.jpaw.bonaparte.api.media.MediaTypeInfo;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.media.EnumOutputType;
+import de.jpaw.bonaparte.pojos.api.media.MediaData;
+import de.jpaw.bonaparte.pojos.api.media.MediaStorageLocation;
 import de.jpaw.bonaparte.pojos.api.media.MediaType;
 import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 import de.jpaw.bonaparte.pojos.api.media.MediaXType;
@@ -105,6 +107,7 @@ public class OutputSession implements IOutputSession {
     protected int                       mappedRecordCounter = 0;
     protected long                      exportStarted       = System.nanoTime();
     protected IInputQueuePartitioner    processingSplitter  = null;  // only set if copyToAsyncChannel != null
+    protected MediaData                 lazyReference       = null;
 
     /**
      * {@inheritDoc}
@@ -306,6 +309,7 @@ public class OutputSession implements IOutputSession {
 
         // Store camel exceptions, throw after sink setup
         Exception outputResourceCloseError = null;
+        String pathOfResource = thisSink.getFileOrQueueName();  // for type FILE, this will be updated
 
         // if LAZY open, skip actual opening, then also closing is not required
         if (currentState != State.LAZY) {
@@ -326,10 +330,11 @@ public class OutputSession implements IOutputSession {
             // close the destination
             try {
                 outputResource.close();
-                if (CommunicationTargetChannelType.FILE == sinkCfg.getCommTargetChannelType() && Boolean.TRUE.equals(sinkCfg.getComputeFileSize())) {
-                    final String absolutePath = fileUtil.getAbsolutePathForTenant(ctx.tenantId, thisSink.getFileOrQueueName());
-                    final Path path = Paths.get(absolutePath);
-                    thisSink.setFileSize(Files.size(path));
+                if (CommunicationTargetChannelType.FILE == sinkCfg.getCommTargetChannelType()) {
+                    pathOfResource = fileUtil.getAbsolutePathForTenant(ctx.tenantId, thisSink.getFileOrQueueName());
+                    if (Boolean.TRUE.equals(sinkCfg.getComputeFileSize())) {
+                        thisSink.setFileSize(Files.size(Paths.get(pathOfResource)));
+                    }
                 }
                 thisSink.setCamelTransferStatus(ExportStatusEnum.RESPONSE_OK);
             } catch (Exception e) {
@@ -360,6 +365,16 @@ public class OutputSession implements IOutputSession {
             thisSink.setNumberOfMappedRecords(mappedRecordCounter);
             thisSink.setProcessingTime((int) ((System.nanoTime() - exportStarted) / 1000_000L));  // compute number of milliseconds
             dpl.storeNewSink(thisSink);
+
+            // now make sink information available as lazy reference, if suitable
+            final MediaStorageLocation msl = IOTools.MEDIA_MAPPING.get(sinkCfg.getCommTargetChannelType());
+            if (msl != null) {
+                // there is a retrievable reference
+                lazyReference = new MediaData();
+                lazyReference.setMediaStorageLocation(msl);
+                lazyReference.setMediaType(thisSink.getCommFormatType());
+                lazyReference.setText(pathOfResource);
+            }
         } // else NO OP: do not store the sink Ref
 
         // cleanup
@@ -537,5 +552,13 @@ public class OutputSession implements IOutputSession {
                 LOGGER.error("Error while storing custom element {}: {}", name, ExceptionUtil.causeChain(e));
             }
         }
+    }
+
+    @Override
+    public MediaData getReferenceMediaData() {
+        if (currentState != State.CLOSED) {
+            throw new T9tException(T9tIOException.OUTPUT_NOT_YET_CLOSED, sinkCfg.getDataSinkId());
+        }
+        return lazyReference;
     }
 }

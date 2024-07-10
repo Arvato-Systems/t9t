@@ -122,7 +122,7 @@ public class SendEditedEmailRequestHandler extends AbstractRequestHandler<SendEd
         final SendEmailResponse res = executor.executeSynchronousAndCheckResult(ctx, sendEmailRequest, SendEmailResponse.class);
         final SendEditedEmailResponse rs = new SendEditedEmailResponse();
         rs.setReturnCode(res.getReturnCode());
-        rs.setArchiveSinkRefs(archiveResult.sinkRef);
+        rs.setArchiveSinkRefs(archiveResult.sinkRef());
         rs.setEmailRef(rs.getEmailRef());
 
         if (res.getReturnCode() != ApplicationException.SUCCESS) {

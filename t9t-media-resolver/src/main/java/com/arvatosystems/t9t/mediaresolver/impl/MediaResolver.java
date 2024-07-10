@@ -29,6 +29,10 @@ public class MediaResolver implements IMediaResolver {
 
     @Override
     public MediaData resolveLazy(final MediaData in) {
+        if (in == null) {
+            // play null-safe
+            return null;
+        }
         if (in.getMediaStorageLocation() == null) {
             return in;  // was already resolved
         }

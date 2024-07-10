@@ -15,12 +15,12 @@
  */
 package com.arvatosystems.t9t.doc.services;
 
-public class DocArchiveResult {
-    public final Long sinkRef;
-    public final String fileOrQueueName;
+import de.jpaw.bonaparte.pojos.api.media.MediaData;
+import jakarta.annotation.Nonnull;
 
-    public DocArchiveResult(final Long sinkRef, final String fileOrQueueName) {
-        this.sinkRef = sinkRef;
-        this.fileOrQueueName = fileOrQueueName;
-    }
+public record DocArchiveResult(
+    @Nonnull Long sinkRef,         // the sink which stores the data
+    @Nonnull String relativePath,  // the relative path of the resource
+    @Nonnull MediaData reference,  // a reference to the data (contains an absolute path for file based resources
+    @Nonnull MediaData data) {     // the full data
 }

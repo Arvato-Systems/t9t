@@ -298,7 +298,7 @@ public class NewDocumentRequestHandler extends AbstractRequestHandler<NewDocumen
             } else if (rcpt instanceof RecipientArchive rcpta) {
                 final DocArchiveResult archiveResult = docArchiveDistributor.transmit(rcpta, toFormatConverter, target.getMediaType(),
                   request.getDocumentId(), request.getDocumentSelector());
-                sinkRefs.add(archiveResult.sinkRef);
+                sinkRefs.add(archiveResult.sinkRef());
                 this.prepareAttachmentName(whereToSetAttachmentFileName, archiveResult);
             } else if (rcpt instanceof RecipientEmail) {
                 // nothing here, emails delayed and sent as last receivers
@@ -380,7 +380,7 @@ public class NewDocumentRequestHandler extends AbstractRequestHandler<NewDocumen
                     final MediaData finalData = data;
                     final DocArchiveResult archiveResult = docArchiveDistributor.transmit(gaRcpta, x -> finalData, data.getMediaType(), ga.getDocumentId(),
                             request.getDocumentSelector());
-                    generalAttachmentSinkRefs.put(ga.getId(), archiveResult.sinkRef);
+                    generalAttachmentSinkRefs.put(ga.getId(), archiveResult.sinkRef());
                     this.prepareAttachmentName(finalData, archiveResult);
                 }
                 // now add it as attachment
@@ -397,8 +397,8 @@ public class NewDocumentRequestHandler extends AbstractRequestHandler<NewDocumen
      * @param archiveResult the result of distributor transmit
      */
     private void prepareAttachmentName(final MediaData mediaData, final DocArchiveResult archiveResult) {
-        if (mediaData != null && archiveResult.fileOrQueueName != null) {
-            final String attachmentFileName = this.getBasename(archiveResult.fileOrQueueName);
+        if (mediaData != null && archiveResult.relativePath() != null) {
+            final String attachmentFileName = this.getBasename(archiveResult.relativePath());
             LOGGER.debug("Setting name of attachment of media type {} to {}", mediaData.getMediaType(), attachmentFileName);
             if (mediaData.getZ() == null) {
                 mediaData.setZ(new HashMap<String, Object>());
