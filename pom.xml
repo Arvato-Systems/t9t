@@ -71,7 +71,7 @@
         <maven-enforcer-plugin.version>3.5.0</maven-enforcer-plugin.version>
         <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
         <owasp-maven-plugin.version>7.2.1</owasp-maven-plugin.version>
-        <spring-boot-maven-plugin.version>3.3.1</spring-boot-maven-plugin.version>
+        <spring-boot-maven-plugin.version>3.3.2</spring-boot-maven-plugin.version>
         <tycho.version>3.0.5</tycho.version>
         <git-commit-id-plugin.version>8.0.2</git-commit-id-plugin.version>
         <jaxws-maven-plugin.version>4.0.1</jaxws-maven-plugin.version>
@@ -80,8 +80,8 @@
         <exec.plugin.version>3.0.0</exec.plugin.version>
         <jetty-maven-plugin.version>12.0.11</jetty-maven-plugin.version>
         <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
-        <cxf-codegen-plugin.version>4.0.4</cxf-codegen-plugin.version>
-        <cxf-wadl2java-plugin.version>4.0.4</cxf-wadl2java-plugin.version>
+        <cxf-codegen-plugin.version>4.0.5</cxf-codegen-plugin.version>
+        <cxf-wadl2java-plugin.version>4.0.5</cxf-wadl2java-plugin.version>
         <cxf-xjc-plugin.version>4.0.1</cxf-xjc-plugin.version>
         <echo-maven-plugin.version>1.0.0</echo-maven-plugin.version>
         <jaxb2-maven-plugin.version>3.1.0</jaxb2-maven-plugin.version>
@@ -89,8 +89,8 @@
         <!-- reporting-->
         <maven-checkstyle-plugin.version>3.4.0</maven-checkstyle-plugin.version>
         <maven-site-plugin.version>3.12.1</maven-site-plugin.version>
-        <maven-project-info-reports-plugin.version>3.6.1</maven-project-info-reports-plugin.version>
-        <maven-javadoc-plugin.version>3.7.0</maven-javadoc-plugin.version>
+        <maven-project-info-reports-plugin.version>3.6.2</maven-project-info-reports-plugin.version>
+        <maven-javadoc-plugin.version>3.8.0</maven-javadoc-plugin.version>
 
         <!-- Versions of Xtext & Xtend plugins -->
         <xtend-maven-plugin.version>${xtext.version}</xtend-maven-plugin.version>

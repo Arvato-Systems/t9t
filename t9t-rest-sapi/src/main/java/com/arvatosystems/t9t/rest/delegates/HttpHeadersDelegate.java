@@ -13,12 +13,12 @@ import java.util.Map;
 /**
  * Delegate to make it possible to add additional header parameters.
  */
-class HttpHeadersDelegate implements HttpHeaders {
+public class HttpHeadersDelegate implements HttpHeaders {
 
     private final HttpHeaders httpHeaders;
     private final MultivaluedMap<String, String> mergedHeaders;
 
-    HttpHeadersDelegate(final HttpHeaders httpHeaders, final MultivaluedMap<String, String> overriddenHeaders) {
+    public HttpHeadersDelegate(final HttpHeaders httpHeaders, final MultivaluedMap<String, String> overriddenHeaders) {
         this.httpHeaders = httpHeaders;
 
         mergedHeaders = new MultivaluedHashMap<>(httpHeaders.getRequestHeaders().size() + overriddenHeaders.size());

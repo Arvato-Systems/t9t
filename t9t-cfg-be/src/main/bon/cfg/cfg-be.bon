@@ -212,6 +212,7 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional Unicode(255)                       callbackUrl;                    // the configuration for callback, in case required
         optional Unicode(255)                       basicAuth;                      // the http BASIC auth to use (in case API keys are not supported by the remote)
         optional Unicode(255)                       clientId;                       // Id used to request access token
+        optional Unicode(2048)                      token;                          // access token
     }
 
     class SearchConfiguration {
