@@ -39,7 +39,7 @@
 
         <!-- jpaw / bonaparte: versions for import of BOM. The plugin version is defined separately in SE/EE -->
         <!-- Note that the version of the bonapart-dsl plugin is set in "global-settings" -->
-        <jpaw-bom.version>3.4.0</jpaw-bom.version>
+        <jpaw-bom.version>3.4.1</jpaw-bom.version>
         <bonaparte-bom.version>6.0.1</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
 
         <!-- Versions of Xtext & Xtend -->
@@ -47,9 +47,9 @@
         <xtend.version>${xtext.version}</xtend.version>
 
         <!-- Database driver versions -->
-        <driver.oracle.version>23.4.0.24.05</driver.oracle.version>
+        <driver.oracle.version>23.5.0.24.07</driver.oracle.version>
         <driver.postgresql.version>42.7.3</driver.postgresql.version>     <!-- starting with 4.2.15, the driver adds a dependency to checker-qual 3.5.0 which conflicts with 2.5.2 pulled by guava -->
-        <driver.sqlserver.version>12.6.1.jre11</driver.sqlserver.version> <!-- not all releases are available on maven central as jre17 builds -->
+        <driver.sqlserver.version>12.8.0.jre11</driver.sqlserver.version> <!-- not all releases are available on maven central as jre17 builds -->
         <driver.hana.version>2.21.11</driver.hana.version>
         <h2.version>2.2.224</h2.version>
 
@@ -59,7 +59,7 @@
         <hibernate-validator.version>8.0.1.Final</hibernate-validator.version>
         <ehcache.version>2.10.9.2</ehcache.version>
         <ehcache3.version>3.10.8</ehcache3.version>
-        <jandex.version>3.2.0</jandex.version>
+        <jandex.version>3.2.1</jandex.version>
 
         <!-- Javax ws / rs implementation versions (com.sun.xml.*), for jakarta 8 -->
         <jaxb-xjc.version>4.0.3</jaxb-xjc.version>                                      <!-- (com.sun.xml.bind:jaxb-xjc) -->
@@ -94,7 +94,7 @@
         <microprofile-smallrye-impl.version>2.4.1</microprofile-smallrye-impl.version>
 
         <!-- Jetty -->
-        <jetty.version>12.0.11</jetty.version>
+        <jetty.version>12.0.12</jetty.version>
 
         <!-- Commons (use with care, only few are regularly updated) -->
         <commons-logging.version>1.1-donotuse</commons-logging.version>   <!-- should not use at all! -->
@@ -138,7 +138,7 @@
 
         <!-- Test support -->
         <junit.version>4.13.2</junit.version>      <!-- groupId is junit -->
-        <hamcrest.version>2.2</hamcrest.version>   <!-- avoid unless required -->
+        <hamcrest.version>3.0</hamcrest.version>   <!-- avoid unless required -->
         <byte-buddy.version>1.14.18</byte-buddy.version>   <!-- 1.12.x requested by mockito 4.2.0, and reuired for Java 17 -->
         <org.mockito-core.version>5.12.0</org.mockito-core.version>
         <archunit.version>1.0.1</archunit.version>
@@ -170,7 +170,7 @@
         <guava.version>32.1.3-jre</guava.version>
         <caffeine.version>3.1.8</caffeine.version>
         <antlr.version>3.2</antlr.version>
-        <resteasy.version>6.2.8.Final</resteasy.version>
+        <resteasy.version>6.2.9.Final</resteasy.version>
         <googlemaps.services.version>2.2.0</googlemaps.services.version>
         <uuid-generator.version>4.2.0</uuid-generator.version>
         <apache-poi.version>5.3.0</apache-poi.version>
@@ -186,8 +186,8 @@
         <!-- Spring boot -->
         <spring-boot.version>3.3.2</spring-boot.version>
 
-        <netty.version>4.1.110.Final</netty.version>
-        <vertx4.version>4.5.8</vertx4.version>
+        <netty.version>4.1.112.Final</netty.version>
+        <vertx4.version>4.5.9</vertx4.version>
         <hazelcast-kubernetes.version>2.2.3</hazelcast-kubernetes.version>
 
         <snakeyaml.version>2.1</snakeyaml.version>
@@ -198,8 +198,7 @@
         <flyway.version>10.15.2</flyway.version>
         <reflections.version>0.9.10</reflections.version>
         <maven-plugin-api.version>3.9.8</maven-plugin-api.version>
-        <jackson.version>2.17.1</jackson.version>
-        <jackson-databind.version>2.17.1</jackson-databind.version> <!-- separate version due to frequent CVE updates which do not release the full set -->
+        <jackson.version>2.17.2</jackson.version>
         <solr.version>8.11.1</solr.version>
         <camel.version>4.7.0</camel.version>
         <jsch.version>0.2.18</jsch.version>
@@ -211,7 +210,7 @@
         <prometheus.version>0.16.0</prometheus.version>
 
         <!-- Swagger -->
-        <swagger.version>2.2.12</swagger.version>
+        <swagger.version>2.2.22</swagger.version>
         <swagger-ui.version>${swagger-ui-webjars.version}</swagger-ui.version>
 
         <!-- Google Services -->
@@ -548,6 +547,16 @@
                 <artifactId>junit</artifactId>
                 <version>${junit.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${jackson.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+
+
             <dependency>
                 <groupId>de.jpaw</groupId>
                 <artifactId>jpaw-bom</artifactId>
@@ -1015,27 +1024,6 @@
             </dependency>
 
             <dependency>
-                <groupId>com.fasterxml.jackson.jakarta.rs</groupId>
-                <artifactId>jackson-jakarta-rs-base</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.jakarta.rs</groupId>
-                <artifactId>jackson-jakarta-rs-json-provider</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.jr</groupId>
-                <artifactId>jackson-jr-objects</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <!-- this is the old javax one. Should not use any more! -->
-                <groupId>com.fasterxml.jackson.jaxrs</groupId>
-                <artifactId>jackson-jaxrs-json-provider</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr-runtime</artifactId>
                 <version>${antlr.version}</version>
@@ -1418,47 +1406,6 @@
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-junit-jupiter</artifactId>
                 <version>${org.mockito-core.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-annotations</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.module</groupId>
-                <artifactId>jackson-module-jaxb-annotations</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-core</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>${jackson-databind.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.datatype</groupId>
-                <artifactId>jackson-datatype-jsr310</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.dataformat</groupId>
-                <artifactId>jackson-dataformat-cbor</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.dataformat</groupId>
-                <artifactId>jackson-dataformat-yaml</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.dataformat</groupId>
-                <artifactId>jackson-dataformat-yaml</artifactId>
-                <version>${jackson.version}</version>
-                <type>bundle</type>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.uuid</groupId>
