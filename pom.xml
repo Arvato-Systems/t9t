@@ -21,7 +21,7 @@
 
     <groupId>com.arvato-systems.t9t</groupId>
     <artifactId>t9t-build</artifactId>
-    <version>7.0-SNAPSHOT</version>
+    <version>7.0.11</version>
     <packaging>pom</packaging>
     <description>Global root POM for the t9t framework</description>
 
@@ -38,7 +38,7 @@
         <min-maven.version>3.8.7</min-maven.version>  <!-- version currently used by github -->
 
         <!-- to be used by dependent projects (same as project.version, but must be provided explicitly so that imports work) -->
-        <t9t.version>7.0-SNAPSHOT</t9t.version>
+        <t9t.version>7.0.11</t9t.version>
         <xtext.version>2.35.0</xtext.version>
 
         <!-- Build specific properties -->
