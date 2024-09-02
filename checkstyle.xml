@@ -247,7 +247,7 @@
     </module>
 
     <module name="IllegalType">
-        <property name="illegalClassNames" value="java.sql.Date, java.sql.Time, java.sql.Timestamp"/>
+        <property name="illegalClassNames" value="java.sql.Date, java.sql.Time"/>  <!-- java.sql.Timestamp unfortunately needed in t9t-base-jdbc -->
     </module>
 
   </module>

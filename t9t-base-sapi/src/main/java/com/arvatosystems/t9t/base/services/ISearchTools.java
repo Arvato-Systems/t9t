@@ -28,6 +28,7 @@ import de.jpaw.bonaparte.pojos.api.FieldFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.SortColumn;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 public interface ISearchTools {
 
@@ -75,17 +76,25 @@ public interface ISearchTools {
      * @param converter
      * @return
      */
-    boolean searchForAndFieldname(SearchCriteria searchCriteria, String fieldname, Function<SearchFilter, SearchFilter> converter);
+    boolean searchForAndFieldname(@Nonnull SearchCriteria searchCriteria, @Nonnull String fieldname, @Nonnull Function<SearchFilter, SearchFilter> converter);
 
     /**
      * Retrieves all FieldFilter fieldNames of the SearchFilter to the set of fieldNames
+     *
      * @param searchFilter
      * @param fieldNames
      * @return
      */
-    Set<String> getAllSearchFilterFieldName(SearchFilter searchFilter, Set<String> fieldNames);
+    @Nullable Set<String> getAllSearchFilterFieldName(@Nullable SearchFilter searchFilter, @Nonnull Set<String> fieldNames);
 
-    FieldFilter getFieldFilterByFieldName(SearchFilter searchFilter, String fieldName);
+    /**
+     * Searches the filter tree for FieldFilters with the given fieldName and returns the first one found.
+     *
+     * @param searchFilter   the input filter tree
+     * @param fieldName      the name the fieldFilter shoudl apply to
+     * @return               the first FieldFilter found, or null if none found
+     */
+    FieldFilter getFieldFilterByFieldName(@Nullable SearchFilter searchFilter, @Nonnull String fieldName);
 
     /**
      * Searches for AsciiFilters or UnicodeFilters which have an equals condition referencing the passed fieldName
@@ -106,4 +115,14 @@ public interface ISearchTools {
      * @param replacer
      */
     void optimizeSearchFiltersUuid(@Nonnull SearchCriteria searchCriteria, String fieldName, Function<UUID, SearchFilter> replacer);
+
+    /**
+     * Replaces all FieldFilters in the tree by the result of applying the replacer function.
+     * Returns a newly constructed tree (the passed in tree can be frozen).
+     *
+     * @param searchFilter   the input tree
+     * @param replacer       the function to replace the FieldFilter by its substitute (the function may return the input parameter)
+     * @return               the new tree, with replaced filters (if any)
+     */
+    SearchFilter replaceFieldFilters(@Nullable SearchFilter searchFilter, @Nonnull Function<FieldFilter, FieldFilter> replacer);
 }

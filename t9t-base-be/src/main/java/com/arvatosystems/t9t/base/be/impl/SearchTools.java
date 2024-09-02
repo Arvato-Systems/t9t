@@ -26,6 +26,7 @@ import java.util.function.Function;
 import com.arvatosystems.t9t.base.search.SearchCriteria;
 import com.arvatosystems.t9t.base.services.ISearchTools;
 
+import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.pojos.api.AndFilter;
 import de.jpaw.bonaparte.pojos.api.AsciiFilter;
 import de.jpaw.bonaparte.pojos.api.FieldFilter;
@@ -200,32 +201,30 @@ public class SearchTools implements ISearchTools {
 
     @Override
     public FieldFilter getFieldFilterByFieldName(final SearchFilter searchFilter, final String fieldName) {
-        if (searchFilter != null) {
-            if (searchFilter instanceof FieldFilter fieldFilter) {
-                if (fieldFilter.getFieldName().equals(fieldName)) {
-                    return fieldFilter;
-                }
-            } else if (searchFilter instanceof NotFilter notFilter) {
-                return getFieldFilterByFieldName(notFilter.getFilter(), fieldName);
-            } else if (searchFilter instanceof AndFilter andFilter) {
-                final FieldFilter fieldFilter = getFieldFilterByFieldName(andFilter.getFilter1(), fieldName);
-                if (fieldFilter != null) {
-                    return fieldFilter;
-                } else {
-                    return getFieldFilterByFieldName(andFilter.getFilter2(), fieldName);
-                }
-            } else if (searchFilter instanceof OrFilter orFilter) {
-                final FieldFilter fieldFilter = getFieldFilterByFieldName(orFilter.getFilter1(), fieldName);
-                if (fieldFilter != null) {
-                    return fieldFilter;
-                } else {
-                    return getFieldFilterByFieldName(orFilter.getFilter2(), fieldName);
-                }
-            } else {
-                throw new RuntimeException("Unimplemented search extension " + searchFilter.getClass().getCanonicalName());
-            }
+        if (searchFilter == null) {
+            return null;  // shortcut
         }
-        return null;
+        if (searchFilter instanceof FieldFilter fieldFilter) {
+            return fieldFilter.getFieldName().equals(fieldName) ? fieldFilter : null;
+        } else if (searchFilter instanceof NotFilter notFilter) {
+            return getFieldFilterByFieldName(notFilter.getFilter(), fieldName);
+        } else if (searchFilter instanceof AndFilter andFilter) {
+            final FieldFilter fieldFilter = getFieldFilterByFieldName(andFilter.getFilter1(), fieldName);
+            if (fieldFilter != null) {
+                return fieldFilter;
+            } else {
+                return getFieldFilterByFieldName(andFilter.getFilter2(), fieldName);
+            }
+        } else if (searchFilter instanceof OrFilter orFilter) {
+            final FieldFilter fieldFilter = getFieldFilterByFieldName(orFilter.getFilter1(), fieldName);
+            if (fieldFilter != null) {
+                return fieldFilter;
+            } else {
+                return getFieldFilterByFieldName(orFilter.getFilter2(), fieldName);
+            }
+        } else {
+            throw new RuntimeException("Unimplemented search extension " + searchFilter.getClass().getCanonicalName());
+        }
     }
 
     protected <T> void descendAndReplace(final SearchFilter searchFilter, final Function<SearchFilter, T> checker,
@@ -275,6 +274,21 @@ public class SearchTools implements ISearchTools {
                 return null;
             };
             descendAndReplace(searchCriteria.getSearchFilter(), checker, replacer, s -> searchCriteria.setSearchFilter(s));
+        }
+    }
+
+    @Override
+    public SearchFilter replaceFieldFilters(final SearchFilter searchFilter, final Function<FieldFilter, FieldFilter> replacer) {
+        if (searchFilter instanceof FieldFilter ff) {
+            return replacer.apply(ff);
+        } else if (searchFilter instanceof NotFilter nf) {
+            return SearchFilters.not(replaceFieldFilters(nf.getFilter(), replacer));
+        } else if (searchFilter instanceof AndFilter af) {
+            return SearchFilters.and(replaceFieldFilters(af.getFilter1(), replacer), replaceFieldFilters(af.getFilter2(), replacer));
+        } else if (searchFilter instanceof OrFilter of) {
+            return SearchFilters.or(replaceFieldFilters(of.getFilter1(), replacer), replaceFieldFilters(of.getFilter2(), replacer));
+        } else {
+            return searchFilter;
         }
     }
 }
