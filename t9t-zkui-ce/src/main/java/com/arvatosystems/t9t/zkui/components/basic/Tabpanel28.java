@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.zkui.components.basic;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.IdSpace;
@@ -30,6 +32,7 @@ import com.arvatosystems.t9t.zkui.components.FilterGenerator;
 import com.arvatosystems.t9t.zkui.components.IDataSelectReceiver;
 import com.arvatosystems.t9t.zkui.components.IFilterGenerator;
 import com.arvatosystems.t9t.zkui.components.IGridIdOwner;
+import com.arvatosystems.t9t.zkui.components.grid.detail.IGridDetailMapper;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 
 import de.jpaw.bonaparte.api.SearchFilters;
@@ -62,6 +65,8 @@ public class Tabpanel28 extends Tabpanel implements IdSpace, IGridIdOwner, IData
     private IFilterGenerator filterGenerator;   // filter to be used if no tab specific filter is provided
     private ITabpanelExtension extension = null;
     private boolean selected28 = false;
+    private String detailMapper;
+    private IGridDetailMapper<DataWithTracking<BonaPortable, TrackingBase>, DataWithTracking<BonaPortable, TrackingBase>> gridDetailMapper;
 
     public Tabpanel28() {
         super();
@@ -87,6 +92,7 @@ public class Tabpanel28 extends Tabpanel implements IdSpace, IGridIdOwner, IData
             extension.onSelect(this);
     }
 
+    @SuppressWarnings("unchecked")
     @Listen("onCreate")
     public void onCreate() {
         LOGGER.debug("Tabpanel28.onCreate({})", getId());
@@ -103,6 +109,10 @@ public class Tabpanel28 extends Tabpanel implements IdSpace, IGridIdOwner, IData
 
         if (extension != null)
             extension.afterOnCreate(this);
+
+        if (detailMapper != null) {
+            gridDetailMapper = Jdp.getRequired(IGridDetailMapper.class, detailMapper);
+        }
     }
 
     @Override
@@ -141,19 +151,29 @@ public class Tabpanel28 extends Tabpanel implements IdSpace, IGridIdOwner, IData
             Events.postEvent(new Event(EventDataSelect28.ON_DATA_SELECT, this, eventData));
         }
         SearchFilter filter = SearchFilters.FALSE;
+        List<DataWithTracking<BonaPortable, TrackingBase>> details = null;
         if (eventData != null) {
             DataWithTracking<BonaPortable, TrackingBase> dwt = eventData.getDwt();
             if (dwt != null && dwt.getData() != null) {
                 BonaPortable d = dwt.getData();
                 Long ref = d instanceof Ref ? ((Ref)d).getObjectRef() : -1L;
                 LOGGER.debug("Tabpanel28 {} received selected event for {}", getId(), ref);
-                filter = filterGenerator.createFilter(d);
+                details = gridDetailMapper != null ? gridDetailMapper.mapDetails(dwt) : null;
+                if (details == null && filterGenerator != null) {
+                    filter = filterGenerator.createFilter(d);
+                }
             }
         }
 
         if (targetGrid != null) {
-            targetGrid.setFilter2(filter);
-            targetGrid.search();
+            if (details != null) {
+                // grid is populated with data
+                targetGrid.setInternalDataModel(details);
+            } else {
+                // grid will use search request with filters to get data
+                targetGrid.setFilter2(filter);
+                targetGrid.search();
+            }
         }
     }
 
@@ -188,5 +208,13 @@ public class Tabpanel28 extends Tabpanel implements IdSpace, IGridIdOwner, IData
 
     public void setSelected28(boolean selected28) {
         this.selected28 = selected28;
+    }
+
+    public String getDetailMapper() {
+        return detailMapper;
+    }
+
+    public void setDetailMapper(final String detailMapper) {
+        this.detailMapper = detailMapper;
     }
 }

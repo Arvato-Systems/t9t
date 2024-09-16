@@ -46,6 +46,7 @@ import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.uiprefs.UIGridPreferences;
 import com.arvatosystems.t9t.zkui.services.IColumnConfigCreator;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
+import com.arvatosystems.t9t.zkui.util.GridConfigUtil;
 
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
@@ -56,7 +57,7 @@ import de.jpaw.dp.ReflectionsPackageCache;
 public class EditGridViewModel {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EditGridViewModel.class);
-    private static final Set<String> TRACKING_FIELDS = getTrackingFields();
+    private static final Set<String> TRACKING_FIELDS = GridConfigUtil.getTrackingFieldNames();
 
     protected Listbox editGridListBox;
     private Window windowComponent = null;

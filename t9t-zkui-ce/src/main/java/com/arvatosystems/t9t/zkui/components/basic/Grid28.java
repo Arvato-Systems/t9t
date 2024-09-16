@@ -37,6 +37,7 @@ import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.FieldComparator;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModel;
@@ -75,6 +76,7 @@ import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;
 import com.arvatosystems.t9t.zkui.services.IT9tMessagingDAO;
 import com.arvatosystems.t9t.zkui.services.IT9tRemoteUtils;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
+import com.arvatosystems.t9t.zkui.util.GridConfigUtil;
 import com.arvatosystems.t9t.zkui.util.T9tConfigConstants;
 import com.arvatosystems.t9t.zkui.util.ZulUtils;
 import com.google.common.base.Strings;
@@ -97,6 +99,7 @@ import de.jpaw.dp.Jdp;
 public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
     private static final long serialVersionUID = -8203405703032080582L;
     private static final Logger LOGGER = LoggerFactory.getLogger(Grid28.class);
+    private static final Set<String> TRACKING_FIELDS = GridConfigUtil.getTrackingFieldNames();
     public static final String PREFIX_GRID28 = "com.grid";
     public static final String ON_SEARCH_COMPLETED = "onSearchCompleted";
 
@@ -141,6 +144,8 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
     protected boolean searchAfterInit;
     protected boolean countTotal;
     protected boolean multiSelect;
+    private boolean clientSidePaging = false;
+    private List<DataWithTracking<BonaPortable, TrackingBase>> dataList;
 
     // a parent to this is only assigned after the constructor is finished, therefore we cannot get the gridId of the outer element now
     public Grid28() {
@@ -194,9 +199,16 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
         // if child of a tabpanel28, register myself for select events
         Component p = getParent();
         while (p != null) {
-            if (p instanceof Tabpanel28) {
+            if (p instanceof Tabpanel28 tabpanel) {
                 LOGGER.debug("registering Grid28({}) as child of Tabpanel28({})", getId(), p.getId());
-                ((Tabpanel28)p).setTargetGrid(this);
+                tabpanel.setTargetGrid(this);
+                if (tabpanel.getDetailMapper() != null) {
+                    // set client side paging
+                    lb.setMold("paging");
+                    clientSidePaging = true;
+                    // remove export button because it can't be used without search request.
+                    exportButton.setVisible(false);
+                }
                 break;
             } else if (p instanceof Direct28) {
                 LOGGER.debug("registering Grid28({}) as child of Direct28({})", getId(), p.getId());
@@ -256,13 +268,15 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
         paging.addEventListener(ZulEvents.ON_PAGING, new EventListener<PagingEvent>() {
             @Override
             public void onEvent(PagingEvent event) throws Exception {
-               activePage = event.getActivePage();  // set the current page
-               if (activePage > maxActivePage) {
-                   maxActivePage = activePage;
-               }
-               initSearch = false;
-               search();
-               initSearch = true;  // TODO: why is this done?
+                if (!clientSidePaging) {
+                    activePage = event.getActivePage(); // set the current page
+                    if (activePage > maxActivePage) {
+                        maxActivePage = activePage;
+                    }
+                    initSearch = false;
+                    search();
+                    initSearch = true; // TODO: why is this done?
+                }
             }
         });
     }
@@ -402,55 +416,85 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
     }
 
     public void search() {
-        SearchCriteria rq = crudViewModel.searchClass.newInstance();
-        rq.setSearchFilter(SearchFilters.and(filter1, filter2));
-        rq.setExpression(solrFilter);
-
-        if (initSearch && countTotal) {
-            rq.setCountTotals(true);
-        }
-
-        // sort stuff
-        rq.setSortColumns(createSortDirective());
-
-        resetPaging();
-
-        rq.setLimit(paging.getPageSize() + 1);
-        rq.setOffset(this.activePage * this.paging.getPageSize());
-        LOGGER.debug("Reading data...");
-
-        // only read the limit set in pageSize
-        List<DataWithTracking<BonaPortable, TrackingBase>> dataListFromServer = readData(rq);
         List<DataWithTracking<BonaPortable, TrackingBase>> dwt = null;
-        if (paging.getPageSize() != 0) {
-            dwt = new ArrayList<>();
-            int innerLooper = 0;
-            // use loop to avoid index OOB
-            while (innerLooper < dataListFromServer.size() && innerLooper < paging.getPageSize()) {
-                dwt.add(dataListFromServer.get(innerLooper));
-                innerLooper += 1;
+        if (dataList != null) {
+            handleInternalDataModel();
+            dwt = dataList;
+        } else if (crudViewModel.searchClass != null) {
+            final SearchCriteria rq = crudViewModel.searchClass.newInstance();
+            rq.setSearchFilter(SearchFilters.and(filter1, filter2));
+            rq.setExpression(solrFilter);
+
+            if (initSearch && countTotal) {
+                rq.setCountTotals(true);
             }
-        } else {
-            dwt = readData(rq);
+
+            // sort stuff
+            rq.setSortColumns(createSortDirective());
+
+            resetPaging();
+
+            rq.setLimit(paging.getPageSize() + 1);
+            rq.setOffset(this.activePage * this.paging.getPageSize());
+            LOGGER.debug("Reading data...");
+
+            // only read the limit set in pageSize
+            final List<DataWithTracking<BonaPortable, TrackingBase>> dataListFromServer = readData(rq);
+            if (paging.getPageSize() != 0) {
+                dwt = new ArrayList<>();
+                int innerLooper = 0;
+                // use loop to avoid index OOB
+                while (innerLooper < dataListFromServer.size() && innerLooper < paging.getPageSize()) {
+                    dwt.add(dataListFromServer.get(innerLooper));
+                    innerLooper += 1;
+                }
+            } else {
+                dwt = readData(rq);
+            }
+            final ListModelList<DataWithTracking<BonaPortable, TrackingBase>> model = new ListModelList<DataWithTracking<BonaPortable, TrackingBase>>(dwt);
+            model.setMultiple(multiSelect);
+            lb.setModel(model);
+
+            if (lb.getModel() != null && lb.getModel().getSize() > 0) {
+                lb.setSelectedIndex(0);
+            }
+
+            setPagingValues();
+
+            LOGGER.debug("Done reading data, got {} entries", dwt.size());
+            lastSearchRequest = rq;
         }
-        final ListModelList<DataWithTracking<BonaPortable, TrackingBase>> model = new ListModelList<DataWithTracking<BonaPortable, TrackingBase>>(dwt);
-        model.setMultiple(multiSelect);
-        lb.setModel(model);
-
-
-        if (lb.getModel() != null && lb.getModel().getSize() > 0) {
-            lb.setSelectedIndex(0);
-        }
-
-        setPagingValues();
-
-
-        LOGGER.debug("Done reading data, got {} entries", dwt.size());
-        lastSearchRequest = rq;
-        exportButton.setDisabled(dwt.isEmpty() || !permissions.contains(OperationType.EXPORT));
-        postSelectedEvent(dwt.isEmpty() ? null : dwt.get(0));
+        exportButton.setDisabled(T9tUtil.isEmpty(dwt) || !permissions.contains(OperationType.EXPORT));
+        postSelectedEvent(T9tUtil.isEmpty(dwt) ? null : dwt.get(0));
         postSearchResultEvent();
 
+    }
+
+    public void setInternalDataModel(final List<DataWithTracking<BonaPortable, TrackingBase>> dwt) {
+        this.dataList = dwt;
+        handleInternalDataModel();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void handleInternalDataModel() {
+        if (dataList != null) {
+            final ListModelList<DataWithTracking<BonaPortable, TrackingBase>> model = new ListModelList<DataWithTracking<BonaPortable, TrackingBase>>(dataList);
+            model.setMultiple(multiSelect);
+            lb.setModel(model);
+            if (lb.getModel() != null && lb.getModel().getSize() > 0) {
+                lb.setSelectedIndex(0);
+            }
+            final List<SortColumn> sortColumns = createSortDirective();
+            if (T9tUtil.isNotEmpty(sortColumns)) {
+                // sort data model
+                final SortColumn sortColumn = sortColumns.get(0); // always have one column
+                final String fieldName = TRACKING_FIELDS.contains(sortColumn.getFieldName())
+                    ? DataWithTracking.meta$$tracking.getName() + "." + sortColumn.getFieldName()
+                    : DataWithTracking.meta$$data.getName() + "." + sortColumn.getFieldName();
+                final FieldComparator fieldComparator = new FieldComparator(fieldName, !sortColumn.getDescending());
+                model.sort(fieldComparator);
+            }
+        }
     }
 
     private void setPagingValues() {

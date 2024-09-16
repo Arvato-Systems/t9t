@@ -3,7 +3,7 @@
      It offers a pagination functionality and an export button. -->
 <vlayout vflex="1" hflex="1" zclass="listbox-external-paging">
     <!-- the listbox itself -->
-    <listbox id="lb" width="100%" autopaging="false" mold="default" paginal="${paging}"  vflex="1"/>
+    <listbox id="lb" width="100%" autopaging="false" mold="default" paginal="@load(paging)"  vflex="1"/>
 
 
     <!-- the custom paging and export bar -->
