@@ -39,13 +39,11 @@ import de.jpaw.dp.Singleton;
 @Singleton
 public class NoopRefGenerator implements IRefGenerator {
     private static final Logger LOGGER = LoggerFactory.getLogger(NoopRefGenerator.class);
-    private static final int NUM_SEQUENCES_UNSCALED = 10; // how many sequences we use to obtain unscaled IDs
 
     private final T9tServerConfiguration configuration = Jdp.getRequired(T9tServerConfiguration.class);
     private final long scaledOffsetForLocation;
     private final Map<String, AtomicLong> generatorMap = new HashMap<>(500);
     private final AtomicLong[] generatorTab = new AtomicLong[OFFSET_BACKUP_LOCATION];
-    private final AtomicLong[] generatorTabUnscaled = new AtomicLong[3 * NUM_SEQUENCES_UNSCALED];
     /** current time minus some offset to keep numbers as small as possible (FT-3222) */
     private final long randomOffset = (System.currentTimeMillis() - 1492_000_000_000L) * 10000;
 
@@ -56,9 +54,6 @@ public class NoopRefGenerator implements IRefGenerator {
         for (int i = 0; i < OFFSET_BACKUP_LOCATION; ++i) {
             generatorTab[i] = new AtomicLong();
         }
-        for (int i = 0; i < 3 * NUM_SEQUENCES_UNSCALED; ++i) {
-            generatorTabUnscaled[i] = new AtomicLong();
-        }
     }
 
     @Override
@@ -67,21 +62,6 @@ public class NoopRefGenerator implements IRefGenerator {
             throw new InvalidParameterException("Bad rtti offset: " + rttiOffset);
         }
         return (generatorTab[rttiOffset].incrementAndGet() * KEY_FACTOR) + scaledOffsetForLocation + rttiOffset + randomOffset;
-    }
-
-    @Override
-    public long generateUnscaledRef(final int rttiOffset) {
-        int ind = 0;
-        if ((rttiOffset >= 5000) && (rttiOffset < (5000 + NUM_SEQUENCES_UNSCALED))) {
-            ind = rttiOffset - 5000;
-        } else if ((rttiOffset >= 6000) && (rttiOffset < (6000 + NUM_SEQUENCES_UNSCALED))) {
-            ind = rttiOffset - 6000;
-        } else if ((rttiOffset >= 7000) && (rttiOffset < (7000 + NUM_SEQUENCES_UNSCALED))) {
-            ind = rttiOffset - 7000;
-        } else {
-            throw new InvalidParameterException("Bad rtti offset: " + rttiOffset);
-        }
-        return (generatorTabUnscaled[ind].incrementAndGet() * 2L) + scaledOffsetForLocation;
     }
 
     @Override

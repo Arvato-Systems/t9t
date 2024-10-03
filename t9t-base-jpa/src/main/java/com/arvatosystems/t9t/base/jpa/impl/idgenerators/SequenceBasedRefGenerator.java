@@ -18,7 +18,6 @@ package com.arvatosystems.t9t.base.jpa.impl.idgenerators;
 import java.security.InvalidParameterException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.IntFunction;
 import java.util.function.LongSupplier;
 
 import org.slf4j.Logger;
@@ -54,11 +53,7 @@ public class SequenceBasedRefGenerator extends AbstractIdGenerator implements IR
     private static final int DEFAULT_CACHE_SIZE          = 500; // how many sequences we generate per single DB-sequence fetch for scaled keys
     private static final int DEFAULT_CACHE_SIZE_UNSCALED =  10; // how many sequences we generate per single DB-sequence fetch for unscaled keys
     private static final int NUM_SEQUENCES               = 100; // how many sequences we use to obtain the IDs
-    private static final int NUM_SEQUENCES_UNSCALED      =  10; // how many sequences we use to obtain unscaled IDs
     private final LongSupplier[] generatorTab            = new LongSupplier[NUM_SEQUENCES];
-    private final LongSupplier[] generatorTab50xx        = new LongSupplier[NUM_SEQUENCES_UNSCALED];
-    private final LongSupplier[] generatorTab60xx        = new LongSupplier[NUM_SEQUENCES_UNSCALED];
-    private final LongSupplier[] generatorTab70xx        = new LongSupplier[NUM_SEQUENCES_UNSCALED];
     private final Map<String, LongSupplier> generatorMap = new ConcurrentHashMap<>(500);
     private final long scaledOffsetForLocation;
     private final boolean useSequencePerTable;
@@ -66,7 +61,6 @@ public class SequenceBasedRefGenerator extends AbstractIdGenerator implements IR
     private final T9tServerConfiguration configuration = Jdp.getRequired(T9tServerConfiguration.class);
     private final DatabaseBrandType dialect = configuration.getDatabaseConfiguration().getDatabaseBrand();
     private final int cacheSize;
-    private final long sequenceReplicationScaleOld;
     private final long sequenceReplicationScale;
     final ISingleRefGenerator refGeneratorFactory;
 
@@ -81,7 +75,6 @@ public class SequenceBasedRefGenerator extends AbstractIdGenerator implements IR
             cacheSizeUnscaled = keyConfig.getCacheSizeUnscaled() == null ? DEFAULT_CACHE_SIZE_UNSCALED : keyConfig.getCacheSizeUnscaled().intValue();
             factoryQualifier = T9tUtil.isBlank(keyConfig.getStrategy()) ? DEFAULT_STRATEGY : keyConfig.getStrategy();
             useSequencePerTable = !Boolean.FALSE.equals(keyConfig.getUseSequencePerTable());
-            sequenceReplicationScaleOld = T9tUtil.nvl(keyConfig.getSequenceReplicationScale(), 2L);
             sequenceReplicationScale = T9tUtil.nvl(keyConfig.getSequenceReplicationScale(), 1L);
         } else {
             scaledOffsetForLocation = 0;
@@ -89,7 +82,6 @@ public class SequenceBasedRefGenerator extends AbstractIdGenerator implements IR
             cacheSizeUnscaled = DEFAULT_CACHE_SIZE_UNSCALED;
             factoryQualifier = DEFAULT_STRATEGY;
             useSequencePerTable = true;
-            sequenceReplicationScaleOld = 2L;  // should be 1 but for backwards compatibility reasons, set to 2
             sequenceReplicationScale = 1L;
         }
         LOGGER.info("Creating object references via sequence per {} for database {} by generator {} with cache sizes {} / {}, locationOffset is {}",
@@ -103,17 +95,6 @@ public class SequenceBasedRefGenerator extends AbstractIdGenerator implements IR
                 final String key = refGeneratorFactory.needSelectStatement() ? selectStatementForSequence(dialect, sequenceName) : sequenceName;
                 generatorTab[i] = new CachingRefSupplier(key, cacheSize, refGeneratorFactory);
             }
-        }
-
-        final IntFunction<LongSupplier> rttiBasedGeneratorUnscaled = i -> {
-            final String sequenceName = sequenceNameForIndex(i);
-            final String key = refGeneratorFactory.needSelectStatement() ? selectStatementForSequence(dialect, sequenceName) : sequenceName;
-            return new CachingRefSupplier(key, cacheSizeUnscaled, refGeneratorFactory);
-        };
-        for (int i = 0; i < NUM_SEQUENCES_UNSCALED; ++i) {
-            generatorTab50xx[i] = rttiBasedGeneratorUnscaled.apply(5000 + i);
-            generatorTab60xx[i] = rttiBasedGeneratorUnscaled.apply(6000 + i);
-            generatorTab70xx[i] = rttiBasedGeneratorUnscaled.apply(7000 + i);
         }
     }
 
@@ -132,21 +113,6 @@ public class SequenceBasedRefGenerator extends AbstractIdGenerator implements IR
                 }
               );
         return supplier.getAsLong() * KEY_FACTOR + scaledOffsetForLocation + rttiOffset;
-    }
-
-    @Override
-    public long generateUnscaledRef(final int rttiOffset) {
-        final LongSupplier g;
-        if ((rttiOffset >= 5000) && (rttiOffset < (5000 + NUM_SEQUENCES_UNSCALED))) {
-            g = generatorTab50xx[rttiOffset - 5000];
-        } else if ((rttiOffset >= 6000) && (rttiOffset < (6000 + NUM_SEQUENCES_UNSCALED))) {
-            g = generatorTab60xx[rttiOffset - 6000];
-        } else if ((rttiOffset >= 7000) && (rttiOffset < (7000 + NUM_SEQUENCES_UNSCALED))) {
-            g = generatorTab70xx[rttiOffset - 7000];
-        } else {
-            throw new InvalidParameterException("Bad rtti offset: " + rttiOffset);
-        }
-        return (g.getAsLong() * sequenceReplicationScaleOld) + (scaledOffsetForLocation > 0 ? 1 : 0);
     }
 
     private static final class CachingRefSupplier implements LongSupplier {
