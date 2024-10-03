@@ -29,20 +29,12 @@ public interface IRefGenerator {
     int OFFSET_BACKUP_LOCATION = 5000;
 
     /** Offsets of sequences which are unscaled (don't contain a RTTI). */
+    @Deprecated
     int OFFSET_UNSCALED_T9T           = 5000;
+    @Deprecated
     int OFFSET_UNSCALED_APPLICATION   = 6000;
+    @Deprecated
     int OFFSET_UNSCALED_CUSTOMIZATION = 7000;
-
-//    /**
-//     * Returns a valid technical Id which is guaranteed to be unique for all keys obtained through this method.
-//     * Deprecated. Use <code>generateRef(String tablename, int rttiOffset)</code> instead.
-//     *
-//     * @param rttiOffset an offset for run time type information
-//     *
-//     * @return The new generated key value
-//     */
-//    @Deprecated
-//    long generateRef(int rttiOffset);
 
     /**
      * Returns a valid technical Id which is guaranteed to be unique for all keys obtained through this method.
@@ -65,6 +57,7 @@ public interface IRefGenerator {
         final int rttiPlusLocation = (int) (id % KEY_FACTOR);
         return rttiPlusLocation >= OFFSET_BACKUP_LOCATION ? rttiPlusLocation - OFFSET_BACKUP_LOCATION : rttiPlusLocation;
     }
+
     /**
      * Returns a valid technical Id which is only scaled by the location offset and does not contain the RTTI. Therefore, Refs returned by this method will
      * overlap. These should be used if counters should be small. A uniform internal caching of 10 is used.
@@ -81,5 +74,15 @@ public interface IRefGenerator {
      *            An offset for run time type information
      * @return The new generated key value
      */
+    @Deprecated
     long generateUnscaledRef(int rttiOffset);
+
+    /**
+     * Returns a valid technical Id which is only scaled by the location offset and does not contain the RTTI. Therefore, Refs returned by this method will
+     * overlap. These should be used if counters should be small. A uniform internal caching of 10 is used.
+     *
+     * @param sequenceName the name of the sequence to use
+     * @return the new generated key value
+     */
+    long generateUnscaledRef(@Nonnull String sequenceName);
 }

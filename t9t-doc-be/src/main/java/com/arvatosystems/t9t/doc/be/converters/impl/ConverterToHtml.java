@@ -27,11 +27,15 @@ import de.jpaw.dp.Singleton;
 public class ConverterToHtml extends ConverterToAnyHtml {
     @Override
     public String convertFrom(final MediaData src) {
-        if (MediaType.TEXT.equals(src.getMediaType().getBaseEnum()) && src.getText() != null) {
+        final Enum<?> baseEnum = src.getMediaType().getBaseEnum();
+        if (MediaType.TEXT == baseEnum && src.getText() != null) {
             return HtmlEscapers.htmlEscaper().escape(src.getText()); // text to HTML: "3 < 4" converted to "3 &lt; 4"
         }
-        if (MediaType.XHTML.equals(src.getMediaType().getBaseEnum()) && src.getText() != null) {
+        if (MediaType.XHTML == baseEnum && src.getText() != null) {
             return src.getText(); // valid XHTML is also valid HTML
+        }
+        if (MediaType.FTL == baseEnum && src.getText() != null) {
+            return src.getText(); // FTL must be accepted "as is"
         }
         return super.convertFrom(src);
     }

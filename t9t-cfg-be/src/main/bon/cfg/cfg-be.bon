@@ -70,6 +70,7 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional Ascii(8)                           eventEnvironment;               // allows to select a subset of event subscriptions - all will be used if null
         optional Ascii(8)                           schedulerEnvironment;           // allows to select a subset of scheduled tasks - all will be used if null
         required Unicode(2000) List<>               z;                              // arbitrary extension parameters, of the form (identifier)=(value)
+        optional Uuid                               startupApiKey;                  // API key to be used during startup, if the faked session is not application / sufficient
     }
 
     class KafkaConfiguration {
@@ -129,6 +130,7 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional Integer                            cacheSize;                      // common default cache size across all RTTIs for the scaled IDs (scaled = * 10000 + RTTI + locationOffset)
         optional Integer                            cacheSizeUnscaled;              // common default cache size for the unscaled sequence results
         optional Boolean                            useSequencePerTable;            // if null or false: use RTTI for sequences, if true: sequences per table
+        optional Long                               sequenceReplicationScale;       // if null, then unscaled refs will be multiplied by this factor (2 if left null)
     }
 
     class Bpm2Configuration {
@@ -208,11 +210,14 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional Unicode(255)                       identityServiceUrl;             // URL for authentication. Request and refresh access tokens.
         optional Enum MediaType                     mediaType;                      // which format to use (JSON, compact, bonaparte, default is compact bonaparte, entry currently ignored)
         optional Uuid                               apiKey;                         // the API key to use
-        optional Integer                            timeoutInMs;                    // if specified, use the timeout given here, otherwise some hardcoded default
+        optional Integer                            timeoutInMs;                    // if specified, use the timeout given here for connect, otherwise some hardcoded default
         optional Unicode(255)                       callbackUrl;                    // the configuration for callback, in case required
         optional Unicode(255)                       basicAuth;                      // the http BASIC auth to use (in case API keys are not supported by the remote)
         optional Unicode(255)                       clientId;                       // Id used to request access token
+        optional Unicode(255)                       extraParam;                     // one additional extra parameter, for example HMAC
         optional Unicode(2048)                      token;                          // access token
+        optional Integer                            requestTimeoutInMs;             // if specified, use this timeout for maximum request duration, otherwise use the connect timeout, otherwise some hardcoded default
+        optional Boolean                            failOnUnknownProperties;        // (only for JACKSON JSON APIs): if TRUE, don't ignore unknown properties, but throw an exception (useful for testing)
     }
 
     class SearchConfiguration {

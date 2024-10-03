@@ -139,9 +139,10 @@ public class OpenAIClient implements IOpenAIClient {
             client = null;
             httpClient = null;
         } else {
-            LOGGER.info("Setting up OpenAI client.");
-            objectMapper = createOpenAIObjectMapper();
-            objectMapperForToolCalls = JacksonTools.createObjectMapper(false, true);
+            final boolean failOnUnknownProperties = Boolean.TRUE.equals(config.getFailOnUnknownProperties());
+            LOGGER.info("Setting up OpenAI client in {} mode.", failOnUnknownProperties ? "STRICT" : "COMPATIBLE");
+            objectMapper = createOpenAIObjectMapper(failOnUnknownProperties);
+            objectMapperForToolCalls = JacksonTools.createObjectMapper(false, failOnUnknownProperties);
             timeoutInMilliseconds = Duration.ofMillis(T9tUtil.nvl(config.getTimeoutInMs(), 1000));
             url = config.getUrl();
             authentication = T9tOpenAIConstants.OPENAI_HTTP_AUTH + config.getBasicAuth();
@@ -153,11 +154,11 @@ public class OpenAIClient implements IOpenAIClient {
     }
 
     @Nonnull
-    private ObjectMapper createOpenAIObjectMapper() {
+    private ObjectMapper createOpenAIObjectMapper(final boolean failOnUnknownProperties) {
         Builder builder = JsonMapper.builder();
         builder.addModules(new JavaTimeModule(), new JpawModule(), new OpenAIModule());
         builder.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        builder.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
+        builder.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, failOnUnknownProperties);
         builder.serializationInclusion(Include.NON_NULL);
         builder.propertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
         return builder.build();

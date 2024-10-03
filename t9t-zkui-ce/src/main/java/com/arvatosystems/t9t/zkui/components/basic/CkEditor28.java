@@ -200,8 +200,8 @@ public class CkEditor28 extends Row {
             return md;
         }
 
-        if (md.getMediaType().getBaseEnum() == MediaType.HTML) {
-            LOGGER.debug("{}.getValue() called, returns HTML", dataFieldId);
+        if (md.getMediaType().getBaseEnum() == MediaType.HTML || md.getMediaType().getBaseEnum() == MediaType.XHTML) {
+            LOGGER.debug("{}.getValue() called, returns HTML or XHTML", dataFieldId);
             md.setText(ckEditor.getValue());
             md.setRawData(null);
         } else if (mediaTypeDescriptor.getIsText()) {
@@ -230,7 +230,7 @@ public class CkEditor28 extends Row {
         final MediaXType mdt =  ((MediaData) getValue()).getMediaType();
         final MediaTypeDescriptor mediaTypeDescriptor = MediaTypeInfo.getFormatByType(mdt);
 
-        if (mdt.getBaseEnum() == MediaType.HTML) {
+        if (mdt.getBaseEnum() == MediaType.HTML || mdt.getBaseEnum() == MediaType.XHTML) {
             ckEditor.setVisible(true);
         } else if (mediaTypeDescriptor.getIsText()) {
             textDataField.getComponent().setVisible(true);

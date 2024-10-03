@@ -6,7 +6,7 @@
         <crud28
             viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.CrudSurrogateKeyVM', vmId='docTemplate')"
             currentMode="@load(vm.currentMode)">
-            <form28 id="docEmailCfgCrud" aspect="2" numColumns="2">
+            <form28 id="docTemplateCrud" aspect="2" numColumns="2">
                 <rows>
                     <cells228 id ="documentId"            value ="@load(vm.data.documentId)      @save(vm.data.documentId,before='commandSave')"
                               id2="entityId"              value2="@load(vm.data.entityId)        @save(vm.data.entityId,before='commandSave')" />

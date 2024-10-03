@@ -16,6 +16,8 @@
 package com.arvatosystems.t9t.base.be.stubs;
 
 import java.security.InvalidParameterException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
@@ -41,6 +43,7 @@ public class NoopRefGenerator implements IRefGenerator {
 
     private final T9tServerConfiguration configuration = Jdp.getRequired(T9tServerConfiguration.class);
     private final long scaledOffsetForLocation;
+    private final Map<String, AtomicLong> generatorMap = new HashMap<>(500);
     private final AtomicLong[] generatorTab = new AtomicLong[OFFSET_BACKUP_LOCATION];
     private final AtomicLong[] generatorTabUnscaled = new AtomicLong[3 * NUM_SEQUENCES_UNSCALED];
     /** current time minus some offset to keep numbers as small as possible (FT-3222) */
@@ -81,4 +84,8 @@ public class NoopRefGenerator implements IRefGenerator {
         return (generatorTabUnscaled[ind].incrementAndGet() * 2L) + scaledOffsetForLocation;
     }
 
+    @Override
+    public long generateUnscaledRef(String sequenceName) {
+        return generatorMap.computeIfAbsent(sequenceName, x -> new AtomicLong()).getAndIncrement();
+    }
 }

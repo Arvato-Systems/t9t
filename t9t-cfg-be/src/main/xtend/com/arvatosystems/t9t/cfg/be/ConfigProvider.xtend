@@ -165,6 +165,7 @@ class ConfigProvider {
             eventEnvironment        = a.eventEnvironment        ?: b.eventEnvironment
             schedulerEnvironment    = a.schedulerEnvironment    ?: b.schedulerEnvironment
             z                       = a.z                       ?: b.z
+            startupApiKey           = a.startupApiKey           ?: b.startupApiKey
         ]
         // replace string fields from environment (for containers)
         val envVarResolver = new CfgFromEnvironmentProvider
@@ -173,6 +174,7 @@ class ConfigProvider {
         // replace UUIDs from environment
         getEnvUuid("SERVER_NODB_PW_RESET_API_KEY", [ myConfiguration.passwordResetApiKey = it ]);
         getEnvUuid("SERVER_NODB_BACKEND_API_KEY",  [ myConfiguration.noDbBackendApiKey   = it ]);
+        getEnvUuid("SERVER_STARTUP_API_KEY",       [ myConfiguration.startupApiKey       = it ]);
         if (myConfiguration.kafkaConfiguration !== null) {
             getEnvUuid("SERVER_KAFKA_IMPORT_API_KEY", [ myConfiguration.kafkaConfiguration.defaultImportApiKey = it ]);
             getEnvUuid("SERVER_KAFKA_CLUSTER_MANAGER_API_KEY", [ myConfiguration.kafkaConfiguration.clusterManagerApiKey = it ]);

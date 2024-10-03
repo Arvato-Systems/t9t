@@ -15,21 +15,27 @@
  */
 package com.arvatosystems.t9t.jetty.init;
 
+import java.util.EnumSet;
+import java.util.Set;
+
+import org.eclipse.jetty.ee10.servlet.DefaultServlet;
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee10.servlet.ServletHolder;
+import org.eclipse.jetty.http.UriCompliance;
+import org.eclipse.jetty.http.UriCompliance.Violation;
 import org.eclipse.jetty.http2.server.HTTP2CServerConnectionFactory;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.StatisticsHandler;
-import org.eclipse.jetty.ee10.servlet.DefaultServlet;
-import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
-import org.eclipse.jetty.ee10.servlet.ServletHolder;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.IKafkaRequestTransmitter;
+import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.jetty.statistics.T9tJettyStatisticsCollector;
 import com.arvatosystems.t9t.rest.utils.RestUtils;
 
@@ -37,6 +43,7 @@ import de.jpaw.dp.Jdp;
 import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.hotspot.DefaultExports;
 import io.prometheus.client.servlet.jakarta.exporter.MetricsServlet;
+import jakarta.annotation.Nonnull;
 
 public class JettyServer {
     private static final Logger LOGGER = LoggerFactory.getLogger(JettyServer.class);
@@ -76,12 +83,14 @@ public class JettyServer {
         final int maxThreads  = RestUtils.CONFIG_READER.getIntProperty("jetty.threadPool.maxThreads",  DEFAULT_MAX_THREADS);
         final int idleTimeout = RestUtils.CONFIG_READER.getIntProperty("jetty.threadPool.idleTimeout", DEFAULT_IDLE_TIMEOUT);  // in millis
         final int stopTimeout = RestUtils.CONFIG_READER.getIntProperty("jetty.stopTimeout",            DEFAULT_STOP_TIMEOUT);  // in millis
-        final String contextRoot     = RestUtils.CONFIG_READER.getProperty("jetty.contextRoot",     DEFAULT_CONTEXT_ROOT);
-        final String applicationPath = RestUtils.CONFIG_READER.getProperty("jetty.applicationPath", DEFAULT_APPLICATION_PATH);
-        final String metricsPath = RestUtils.CONFIG_READER.getProperty("jetty.metricsPath", DEFAULT_METRICS_PATH);
+        final String contextRoot     = RestUtils.CONFIG_READER.getProperty("jetty.contextRoot",        DEFAULT_CONTEXT_ROOT);
+        final String applicationPath = RestUtils.CONFIG_READER.getProperty("jetty.applicationPath",    DEFAULT_APPLICATION_PATH);
+        final String metricsPath     = RestUtils.CONFIG_READER.getProperty("jetty.metricsPath",        DEFAULT_METRICS_PATH);
+        final String uriCompliance   = RestUtils.CONFIG_READER.getProperty("jetty.httpConfig.uriCompliance", null);
 
         LOGGER.info("Using the following configuration values: port {}, min/max threads = {}/{}", port, minThreads, maxThreads);
         LOGGER.info("  idle timeout = {}, context = {}, application path = {}", idleTimeout, contextRoot, applicationPath);
+        LOGGER.info("  URI compliance is {}", uriCompliance == null ? "NOT set" : "set to " + uriCompliance);
 
 //        // no way to pass it in...
 //        final AtomicInteger threadCounter = new AtomicInteger();
@@ -98,6 +107,9 @@ public class JettyServer {
         // code below is for adding http/2 (h2c). Works, but also throws sporadic exceptions
         final HttpConfiguration hconfig = new HttpConfiguration();
         hconfig.setSendServerVersion(false); // remove the Jetty version from the error pages
+        if (!T9tUtil.isBlank(uriCompliance)) {
+            hconfig.setUriCompliance(UriCompliance.from(getAllowedViolations(uriCompliance)));
+        }
 
         // ... configure
         final HttpConnectionFactory http1 = new HttpConnectionFactory(hconfig);
@@ -164,5 +176,48 @@ public class JettyServer {
         });
 
         server.join();
+    }
+
+    private Set<UriCompliance.Violation> getAllowedViolations(@Nonnull final String setting) {
+        final Set<UriCompliance.Violation> violations = EnumSet.noneOf(UriCompliance.Violation.class);
+        final String[] components = setting.split(",");
+        for (int i = 0; i < components.length; ++i) {
+            switch (components[i]) {
+            case "AMBIGUOUS_PATH_SEGMENT":
+                violations.add(Violation.AMBIGUOUS_PATH_SEGMENT);
+                break;
+            case "AMBIGUOUS_EMPTY_SEGMENT":
+                violations.add(Violation.AMBIGUOUS_EMPTY_SEGMENT);
+                break;
+            case "AMBIGUOUS_PATH_SEPARATOR":
+                violations.add(Violation.AMBIGUOUS_PATH_SEPARATOR);
+                break;
+            case "AMBIGUOUS_PATH_PARAMETER":
+                violations.add(Violation.AMBIGUOUS_PATH_PARAMETER);
+                break;
+            case "AMBIGUOUS_PATH_ENCODING":
+                violations.add(Violation.AMBIGUOUS_PATH_ENCODING);
+                break;
+            case "UTF16_ENCODINGS":
+                violations.add(Violation.UTF16_ENCODINGS);
+                break;
+            case "BAD_UTF8_ENCODING":
+                violations.add(Violation.BAD_UTF8_ENCODING);
+                break;
+            case "SUSPICIOUS_PATH_CHARACTERS":
+                violations.add(Violation.SUSPICIOUS_PATH_CHARACTERS);
+                break;
+            case "ILLEGAL_PATH_CHARACTERS":
+                violations.add(Violation.ILLEGAL_PATH_CHARACTERS);
+                break;
+            case "USER_INFO":
+                violations.add(Violation.USER_INFO);
+                break;
+            default:
+                LOGGER.error("Unknown URI compliance violation: {}, ignoring it", components[i]);
+            }
+        }
+        LOGGER.info("%d allowed URI compliance violations parsed", violations.size());
+        return violations;
     }
 }

@@ -65,12 +65,6 @@ public class DropdownConverter implements Converter<Object, Object, Dropdown28Db
         if (d == null)
             return null;
 
-        Object r = dropdown28Db.getFactory().createKey(d);
-
-        if (dropdown28Db.getSelectedItem() == null) {
-            return compAttr;
-        } else {
-            return r;
-        }
+        return dropdown28Db.getFactory().createKey(d);
     }
 }
