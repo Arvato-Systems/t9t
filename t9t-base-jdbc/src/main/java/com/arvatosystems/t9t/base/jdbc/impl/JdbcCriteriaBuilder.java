@@ -59,6 +59,25 @@ public class JdbcCriteriaBuilder implements IJdbcCriteriaBuilder {
             sb.append(" WHERE");
             walkFilterTree(sb, searchCriteria.getSearchFilter(), setters);
         }
+        appendSortColumns(sb, searchCriteria);
+        return setters;
+    }
+
+    @Override
+    public List<Consumer<PreparedStatement>> createWhereClause(final StringBuilder sb, final SearchCriteria searchCriteria, final String tenantId) {
+        final List<Consumer<PreparedStatement>> setters = new ArrayList<>();
+        sb.append(" WHERE tenant_id = ?");
+        setters.add(ps -> wrappedSetString(ps, 1, tenantId));
+        if (searchCriteria.getSearchFilter() != null) {
+            sb.append(" AND ( ");
+            walkFilterTree(sb, searchCriteria.getSearchFilter(), setters);
+            sb.append(" )");
+        }
+        appendSortColumns(sb, searchCriteria);
+        return setters;
+    }
+
+    protected void appendSortColumns(final StringBuilder sb, final SearchCriteria searchCriteria) {
         if (searchCriteria.getSortColumns() != null && !searchCriteria.getSortColumns().isEmpty()) {
             sb.append(" ORDER BY ");
             boolean first = true;
@@ -73,7 +92,6 @@ public class JdbcCriteriaBuilder implements IJdbcCriteriaBuilder {
                 first = false;
             }
         }
-        return setters;
     }
 
     protected String camelCaseToSnakeCase(@Nonnull final String s) {

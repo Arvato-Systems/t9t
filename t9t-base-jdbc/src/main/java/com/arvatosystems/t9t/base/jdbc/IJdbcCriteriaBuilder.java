@@ -33,4 +33,16 @@ public interface IJdbcCriteriaBuilder {
      * @return a list of lambdas which can be used to set the parameters on the prepared statement
      */
     List<Consumer<PreparedStatement>> createWhereClause(@Nonnull StringBuilder sb, @Nonnull SearchCriteria searchCriteria);
+
+    /**
+     * Completes a partially initialized prepared statement with the WHERE clause and ORDER BY clause.
+     * WHERE clause also include condition for specific tenantId.
+     *
+     * @param sb   the partial SQL SELECT statement. It contains the SELECT and FROM clause, but not the WHERE or ORDER BY clause.
+     * @param searchCriteria the search criteria to be used for WHERE and ORDER BY clauses, as well as pagination parameters limit and offset
+     * @param tenantId tenantId to be included in the WHERE clause
+     *
+     * @return a list of lambdas which can be used to set the parameters on the prepared statement
+     */
+    List<Consumer<PreparedStatement>> createWhereClause(@Nonnull StringBuilder sb, @Nonnull SearchCriteria searchCriteria, @Nonnull String tenantId);
 }
