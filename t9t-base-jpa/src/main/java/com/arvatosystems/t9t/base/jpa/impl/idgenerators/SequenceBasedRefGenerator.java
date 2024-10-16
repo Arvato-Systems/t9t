@@ -62,11 +62,11 @@ public class SequenceBasedRefGenerator extends AbstractIdGenerator implements IR
     private final DatabaseBrandType dialect = configuration.getDatabaseConfiguration().getDatabaseBrand();
     private final int cacheSize;
     private final long sequenceReplicationScale;
-    final ISingleRefGenerator refGeneratorFactory;
+    private final int cacheSizeUnscaled;
+    private final ISingleRefGenerator refGeneratorFactory;
 
     public SequenceBasedRefGenerator() {
         final KeyPrefetchConfiguration keyConfig = configuration.getKeyPrefetchConfiguration();
-        final int cacheSizeUnscaled;
         final String factoryQualifier;
 
         if (keyConfig != null) {
@@ -149,7 +149,7 @@ public class SequenceBasedRefGenerator extends AbstractIdGenerator implements IR
         final LongSupplier g = generatorMap.computeIfAbsent(sequenceName,
             tn -> {
                 final String key = refGeneratorFactory.needSelectStatement() ? selectStatementForSequence(dialect, sequenceName) : sequenceName;
-                return new CachingRefSupplier(key, cacheSize, refGeneratorFactory);
+                return new CachingRefSupplier(key, cacheSizeUnscaled, refGeneratorFactory);
             }
         );
         return (g.getAsLong() * sequenceReplicationScale) + (scaledOffsetForLocation > 0 ? 1 : 0);

@@ -28,6 +28,7 @@ public class T9tIOException extends T9tException {
     private static final int OFFSET                     = CORE_OFFSET + CLASSIFICATION_FACTOR * CL_PARAMETER_ERROR;
     private static final int OFFSET_DENIED              = CORE_OFFSET + CLASSIFICATION_FACTOR * CL_DENIED;
     private static final int OFFSET_ILE                 = CORE_OFFSET + CLASSIFICATION_FACTOR * CL_INTERNAL_LOGIC_ERROR;
+    private static final int OFFSET_IOERR               = CORE_OFFSET + CLASSIFICATION_FACTOR * CL_DATABASE_ERROR;
 
     // Decline codes: This is not a technical error in order to allow the status to be written
     public static final int NOT_TRANSFERRED             = OFFSET_DENIED + 333;
@@ -39,6 +40,9 @@ public class T9tIOException extends T9tException {
 
     public static final int WRONG_RECORD_TYPE           = OFFSET + 103;
     public static final int IMPORT_FINISHED_WITH_ERRORS = OFFSET + 104;
+
+    public static final int HTTP_REMOTER_IO_EXCEPTION   = OFFSET_IOERR + 105;
+    public static final int FAILED_TO_SERIALIZE         = OFFSET_IOERR + 106;
 
     // File specific
     public static final int OUTPUT_FILE_IS_DIRECTORY    = OFFSET + 120;
@@ -89,6 +93,8 @@ public class T9tIOException extends T9tException {
         registerCode(IO_EXCEPTION,                 "Input/Output exception");
         registerCode(WRONG_RECORD_TYPE,            "Received record of wrong data type");
         registerCode(IMPORT_FINISHED_WITH_ERRORS,  "Data import finished - not all records successful");
+        registerCode(HTTP_REMOTER_IO_EXCEPTION,    "HTTP remoter exception");
+        registerCode(FAILED_TO_SERIALIZE,          "Failed to serialize object");
 
         registerCode(OUTPUT_FILE_IS_DIRECTORY,     "Specified output file name is a directory");
         registerCode(OUTPUT_FILE_PATH_NOT_ABSOLUTE, "Output file path is not absolute (required for security reasons)");

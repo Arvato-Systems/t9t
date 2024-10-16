@@ -135,6 +135,8 @@ public final class T9tConstants {
     // default name of the kafka topic for single-tenant request transmissions
     public static final String DEFAULT_KAFKA_TOPIC_SINGLE_TENANT_REQUESTS = "t9tRequestTopic";
     public static final String DEFAULT_KAFKA_REQUESTS_GROUP_ID            = "t9tRequestGroup";
+    public static final int DEFAULT_KAFKA_PARTITION_COUNT_SMALL           = 12;
+    public static final int DEFAULT_KAFKA_PARTITION_COUNT_LARGE           = 60;
 
     public static final String PLUGIN_API_ID_REQUEST_HANDLER = "requestHandler";    // ID for plugins implementing IRequestHandlerPlugin
     public static final String PLUGIN_API_ID_WORKFLOW_STEP   = "workflowStep";      // ID for plugins implementing IWorkflowStepPlugin
