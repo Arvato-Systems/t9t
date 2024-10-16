@@ -22,7 +22,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>global-dm</artifactId>
-        <version>7.0-SNAPSHOT</version>
+        <version>7.0.19</version>
         <relativePath>../global-dm</relativePath>
     </parent>
 
