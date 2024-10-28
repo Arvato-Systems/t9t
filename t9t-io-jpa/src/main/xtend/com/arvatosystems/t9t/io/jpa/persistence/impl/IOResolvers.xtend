@@ -40,23 +40,23 @@ import com.arvatosystems.t9t.io.AsyncMessageStatisticsRef
 class IOResolvers {
     @GlobalTenantCanAccessAll   // required for Camel startup
     @AllCanAccessGlobalTenant   // must allow read access to global defaults
-    def CsvConfigurationEntity       getCsvConfigurationEntity          (CsvConfigurationRef entityRef, boolean onlyActive) { return null; }
+    def CsvConfigurationEntity       getCsvConfigurationEntity          (CsvConfigurationRef entityRef) { return null; }
     def List<CsvConfigurationEntity> findByCsvConfigurationIdWithDefault(boolean onlyActive, String csvConfigurationId)     { return null; }
 
     @GlobalTenantCanAccessAll   // required for Camel startup
     @AllCanAccessGlobalTenant   // for DataSinkEntity, everyone can see the global tenant's defaults
-    def DataSinkEntity          getDataSinkEntity           (DataSinkRef  entityRef, boolean onlyActive) { return null; }
+    def DataSinkEntity          getDataSinkEntity           (DataSinkRef  entityRef) { return null; }
     def List<DataSinkEntity>    findByDataSinkIdWithDefault (boolean onlyActive, String dataSinkId) { return null; }
 
-    def SinkEntity              getSinkEntity               (SinkRef      entityRef, boolean onlyActive) { return null; }
+    def SinkEntity              getSinkEntity               (SinkRef      entityRef) { return null; }
 
-    def OutboundMessageEntity   getOutboundMessageEntity    (OutboundMessageRef entityRef, boolean onlyActive) { return null; }
-    def AsyncMessageEntity      getAsyncMessageEntity       (AsyncMessageRef entityRef, boolean onlyActive) { return null; }
-    def AsyncMessageStatisticsEntity getAsyncMessageStatisticsEntity (AsyncMessageStatisticsRef entityRef, boolean onlyActive) { return null; }
+    def OutboundMessageEntity   getOutboundMessageEntity    (OutboundMessageRef entityRef) { return null; }
+    def AsyncMessageEntity      getAsyncMessageEntity       (AsyncMessageRef entityRef) { return null; }
+    def AsyncMessageStatisticsEntity getAsyncMessageStatisticsEntity (AsyncMessageStatisticsRef entityRef) { return null; }
     @GlobalTenantCanAccessAll   // required for Camel startup
     @AllCanAccessGlobalTenant   // for DataSinkEntity, everyone can see the global tenant's defaults
-    def AsyncChannelEntity      getAsyncChannelEntity       (AsyncChannelRef entityRef, boolean onlyActive) { return null; }
+    def AsyncChannelEntity      getAsyncChannelEntity       (AsyncChannelRef entityRef) { return null; }
     @GlobalTenantCanAccessAll   // required for Camel startup
     @AllCanAccessGlobalTenant   // for DataSinkEntity, everyone can see the global tenant's defaults
-    def AsyncQueueEntity        getAsyncQueueEntity         (AsyncQueueRef entityRef, boolean onlyActive) { return null; }
+    def AsyncQueueEntity        getAsyncQueueEntity         (AsyncQueueRef entityRef) { return null; }
 }

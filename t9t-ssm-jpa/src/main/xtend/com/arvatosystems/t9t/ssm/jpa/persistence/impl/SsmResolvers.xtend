@@ -22,5 +22,5 @@ import com.arvatosystems.t9t.ssm.jpa.entities.SchedulerSetupEntity
 @AutoResolver42
 class SsmResolvers {
     // @AllCanAccessGlobalTenant - no, why should they?
-    def SchedulerSetupEntity getSchedulerSetupEntity              (SchedulerSetupRef   entityRef, boolean onlyActive) { return null; }
+    def SchedulerSetupEntity getSchedulerSetupEntity              (SchedulerSetupRef   entityRef) { return null; }
 }

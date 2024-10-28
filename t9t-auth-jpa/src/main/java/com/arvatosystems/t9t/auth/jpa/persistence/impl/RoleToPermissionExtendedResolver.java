@@ -33,7 +33,7 @@ public class RoleToPermissionExtendedResolver extends RoleToPermissionEntityReso
     protected RoleToPermissionRef resolveNestedRefs(final RoleToPermissionRef ref) {
         if (ref instanceof RoleToPermissionKey key) {
             final RoleToPermissionInternalKey inkey = new RoleToPermissionInternalKey();
-            inkey.setRoleRef(roleResolver.getRef(key.getRoleRef(), false));
+            inkey.setRoleRef(roleResolver.getRef(key.getRoleRef()));
             inkey.setPermissionId(key.getPermissionId());
             inkey.setTenantId(getSharedTenantId());
             return inkey;

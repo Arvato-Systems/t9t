@@ -29,7 +29,6 @@ public class UpdateDataRequestHandler extends AbstractDataRequestHandler<UpdateD
         final CrudAnyKeyRequest crudRq = getCrudRequest(request.getDtoClassCanonicalName(), request.getKey());
         crudRq.setCrud(OperationType.MERGE);
         crudRq.setData(request.getData());
-        crudRq.setOnlyActive(false);
         return executor.executeSynchronousAndCheckResult(ctx, crudRq, CrudAnyKeyResponse.class);
     }
 }

@@ -23,6 +23,6 @@ import com.arvatosystems.t9t.event.jpa.entities.ListenerConfigEntity
 
 @AutoResolver42
 class EventResolvers {
-    def SubscriberConfigEntity  getSubscriberConfigEntity(SubscriberConfigRef entityRef, boolean onlyActive) { return null; }
-    def ListenerConfigEntity    getListenerConfigEntity  (ListenerConfigRef   entityRef, boolean onlyActive) { return null; }
+    def SubscriberConfigEntity  getSubscriberConfigEntity(SubscriberConfigRef entityRef) { return null; }
+    def ListenerConfigEntity    getListenerConfigEntity  (ListenerConfigRef   entityRef) { return null; }
 }

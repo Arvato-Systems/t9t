@@ -41,12 +41,11 @@ public class RepPersistenceAccess implements IRepPersistenceAccess {
     @Override
     public ReportConfigDTO getConfigDTO(final ReportConfigRef configRef) throws Exception {
         return reportConfigMapper.mapToDto(
-                reportConfigResolverRestriction.apply(reportConfigResolver.getEntityData(configRef, true)));
+                reportConfigResolverRestriction.apply(reportConfigResolver.getEntityData(configRef)));
     }
 
     @Override
     public ReportParamsDTO getParamsDTO(final ReportParamsRef paramsRef) throws Exception {
-        return reportParamsMapper.mapToDto(reportParamsResolver.getEntityData(paramsRef, true));
+        return reportParamsMapper.mapToDto(reportParamsResolver.getEntityData(paramsRef));
     }
-
 }

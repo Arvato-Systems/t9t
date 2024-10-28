@@ -26,7 +26,7 @@ class EmailModuleCfgEntityMapper {
     IEmailModuleCfgEntityResolver entityResolver
 
     @AutoHandler("SP42")
-    def void d2eEmailModuleCfgDTO(EmailModuleCfgEntity entity, EmailModuleCfgDTO dto, boolean onlyActive) {}
+    def void d2eEmailModuleCfgDTO(EmailModuleCfgEntity entity, EmailModuleCfgDTO dto) {}
     def void e2dEmailModuleCfgDTO(EmailModuleCfgEntity entity, EmailModuleCfgDTO dto) {}
 
 }

@@ -60,7 +60,7 @@ public class CrossModuleRefResolver implements ICrossModuleRefResolver {
 
     @Override
     public <REF extends Ref, DTO extends REF, TRACKING extends TrackingBase, REQ extends CrudSurrogateKeyRequest<REF, DTO, TRACKING>>
-      DTO getData(final REQ req, final Long objectRef, final boolean onlyActive) {
+      DTO getData(final REQ req, final Long objectRef) {
         if (objectRef == null) {
             return null; // play null-safe
         }
@@ -70,20 +70,19 @@ public class CrossModuleRefResolver implements ICrossModuleRefResolver {
         }
         req.setCrud(OperationType.READ);
         req.setKey(objectRef);
-        req.setOnlyActive(onlyActive);
         final CrudSurrogateKeyResponse<DTO, TRACKING> serviceResponse = messaging.executeSynchronousAndCheckResult(req, CrudSurrogateKeyResponse.class);
         return serviceResponse.getData();
     }
 
     @Override
     public <REF extends Ref, DTO extends REF, TRACKING extends TrackingBase, REQ extends CrudSurrogateKeyRequest<REF, DTO, TRACKING>>
-      DTO getData(final REQ req, final REF ref, final boolean onlyActive) {
+      DTO getData(final REQ req, final REF ref) {
         if (ref == null) {
             return null; // play null-safe
         }
         // shortcut! If we have a long already, there's no need to perform the cross module call (and any DB I/O)
         if (ref.getObjectRef() != null) {
-            return getData(req, ref.getObjectRef(), onlyActive);
+            return getData(req, ref.getObjectRef());
         }
 
         if (req == null) {
@@ -92,20 +91,7 @@ public class CrossModuleRefResolver implements ICrossModuleRefResolver {
         }
         req.setCrud(OperationType.READ);
         req.setNaturalKey(ref);
-        req.setOnlyActive(onlyActive);
         final CrudSurrogateKeyResponse<DTO, TRACKING> serviceResponse = messaging.executeSynchronousAndCheckResult(req, CrudSurrogateKeyResponse.class);
         return serviceResponse.getData();
-    }
-
-    @Override
-    public <REF extends Ref, DTO extends REF, TRACKING extends TrackingBase, REQ extends CrudSurrogateKeyRequest<REF, DTO, TRACKING>>
-      DTO getData(final REQ req, final Long objectRef) {
-        return getData(req, objectRef, false);
-    }
-
-    @Override
-    public <REF extends Ref, DTO extends REF, TRACKING extends TrackingBase, REQ extends CrudSurrogateKeyRequest<REF, DTO, TRACKING>>
-      DTO getData(final REQ req, final REF ref) {
-        return getData(req, ref, false);
     }
 }

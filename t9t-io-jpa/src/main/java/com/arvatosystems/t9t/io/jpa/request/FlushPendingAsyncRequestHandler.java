@@ -51,7 +51,7 @@ public class FlushPendingAsyncRequestHandler extends AbstractRequestHandler<Flus
 
     @Override
     public FlushPendingAsyncResponse execute(final RequestContext ctx, final FlushPendingAsyncRequest rq) throws Exception {
-        final Long queueRef = queueResolver.getRef(rq.getOnlyQueue(), false);
+        final Long queueRef = queueResolver.getRef(rq.getOnlyQueue());
         if (rq.getMarkAsDone()) {
             queueImpl.clearQueue(queueRef); // clear any current entries from the in-memory
         }

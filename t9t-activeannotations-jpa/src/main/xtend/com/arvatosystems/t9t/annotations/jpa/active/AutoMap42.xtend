@@ -73,7 +73,7 @@ class AutoMap42Processor extends AbstractClassProcessor {
     static final String REQUEST_RESOLVE = "ResolverRequest"
     static final String REQUEST_SEARCH  = "SearchRequest"
     static final String HANDLER         = "Handler"
-    val mapperRevision = "2022-07-30 22:26 CEST (Xtend 2.27.0, Java 11, handlers in jpa package)"
+    val mapperRevision = "2024-10-18 22:26 CEST (Xtend 2.35.0, Java 17)"
 
     def getMapperClassName(ClassDeclaration m, String r) {
         return m.packageName + "impl." + r + "Mapper"
@@ -376,13 +376,12 @@ class AutoMap42Processor extends AbstractClassProcessor {
                     final = true
                     addAnnotation(overrideAnno)
                     addParameter("dto", dto)
-                    addParameter("onlyActive", primitiveBoolean)
                     docComment = "{@inheritDoc}"
                     body = [ '''
                         if (dto == null)
                             return null;
                         «toJavaCode(entity)» entity = «entityResolver.simpleName».newEntityInstance();
-                        dto2entity(entity, dto, onlyActive);
+                        dto2entity(entity, dto);
                         return entity;
                     ''']
                 ]
@@ -437,7 +436,6 @@ class AutoMap42Processor extends AbstractClassProcessor {
                     } else {
                         addParameter("entity", entity);     // use default names
                         addParameter("dto", dto);
-                        addParameter("onlyActive", primitiveBoolean)
                         body = [ '''''' ]
                     }
                 ]
@@ -448,7 +446,6 @@ class AutoMap42Processor extends AbstractClassProcessor {
                     if (suppliedMapping?.exceptions !== null) exceptions = suppliedMapping?.exceptions
                     addParameter("entity", entity);
                     addParameter("dto", dto);
-                    addParameter("onlyActive", primitiveBoolean)
                     docComment = '''convert '''
                     body = [ '''
                         «IF dtoClass.findFieldRecursively(T9tConstants.TENANT_ID_FIELD_NAME) === null && entityClass.findFieldRecursively(T9tConstants.TENANT_ID_FIELD_NAME) !== null»
@@ -456,7 +453,7 @@ class AutoMap42Processor extends AbstractClassProcessor {
                             entity.setTenantId(«entityResolver.simpleName».getSharedTenantId());
                         «ENDIF»
                         «dto.buildMapping(entityClass, "entity", "dto", true)»
-                        _dto2entity(entity, dto, onlyActive);
+                        _dto2entity(entity, dto);
                     ''' ]
                 ]
                 if (suppliedMapping !== null) {
@@ -517,7 +514,7 @@ class AutoMap42Processor extends AbstractClassProcessor {
                             createHandler(c, rqhPkgName, requestClassTypeRef, AbstractRequestHandler.newTypeReference(requestClassTypeRef), null, context, false) => [ m |
                                 m.returnType = RefResolverResponse.newTypeReference
                                 m.body = [ '''
-                                    Long ref = resolver.getRef(request.getRef(), false);
+                                    Long ref = resolver.getRef(request.getRef());
                                     «toJavaCode(m.returnType)» resp = new «toJavaCode(m.returnType)»();
                                     resp.setKey(ref);
                                     resp.setReturnCode(0);

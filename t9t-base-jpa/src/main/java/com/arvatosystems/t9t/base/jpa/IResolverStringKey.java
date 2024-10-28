@@ -30,7 +30,7 @@ public interface IResolverStringKey<
     ENTITY extends BonaPersistableKey<String> & BonaPersistableTracking<TRACKING>
   > extends IResolverAnyKey<String, TRACKING, ENTITY> {
 
-    default ENTITY getEntityData(final String entityRef, final boolean onlyActive) {
-        return getEntityDataForKey(entityRef, onlyActive);
+    default ENTITY getEntityData(final String entityRef) {
+        return getEntityDataForKey(entityRef);
     }
 }

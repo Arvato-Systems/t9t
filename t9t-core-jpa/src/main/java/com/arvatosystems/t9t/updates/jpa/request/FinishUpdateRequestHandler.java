@@ -41,7 +41,7 @@ public class FinishUpdateRequestHandler extends AbstractRequestHandler<FinishUpd
     @Override
     public ServiceResponse execute(final RequestContext ctx, final FinishUpdateRequest request) {
         final String ticketId = request.getTicketId();
-        final UpdateStatusEntity updateStatus = resolver.getEntityData(new UpdateStatusTicketKey(ticketId), true);
+        final UpdateStatusEntity updateStatus = resolver.getEntityData(new UpdateStatusTicketKey(ticketId));
 
         switch (updateStatus.getUpdateApplyStatus()) {
         case IN_PROGRESS:

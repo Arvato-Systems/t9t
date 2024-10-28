@@ -38,7 +38,7 @@ public class StatisticsService implements IStatisticsService {
 
     @Override
     public void saveStatisticsData(final StatisticsDTO data) {
-        final StatisticsEntity entity = statisticsDataDTOMappers.mapToEntity(data, true);
+        final StatisticsEntity entity = statisticsDataDTOMappers.mapToEntity(data);
         if (entity.getJobRef() == null) {
             entity.setCProcessRef(ctxProvider.get().internalHeaderParameters.getProcessRef());
         }

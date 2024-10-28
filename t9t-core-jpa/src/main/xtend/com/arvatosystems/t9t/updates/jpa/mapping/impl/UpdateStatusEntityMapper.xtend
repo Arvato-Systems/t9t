@@ -28,7 +28,7 @@ class UpdateStatusEntityMapper {
     IUpdateStatusEntityResolver entityResolver
 
     @AutoHandler("S42")
-    def void d2eUpdateStatusDTO(UpdateStatusEntity entity, UpdateStatusDTO dto, boolean onlyActive) {}
+    def void d2eUpdateStatusDTO(UpdateStatusEntity entity, UpdateStatusDTO dto) {}
     def void e2dUpdateStatusDTO(UpdateStatusEntity entity, UpdateStatusDTO dto) {}
 
     @NeedMapping  // required because the DTO is final

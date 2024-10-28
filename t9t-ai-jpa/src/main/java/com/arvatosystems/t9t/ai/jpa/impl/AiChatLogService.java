@@ -17,9 +17,8 @@ public class AiChatLogService implements IAiChatLogService {
 
     @Override
     public void saveAiChatLog(final AiChatLogDTO log) {
-        final AiChatLogEntity entity = aiChatLogMapper.mapToEntity(log, true);
+        final AiChatLogEntity entity = aiChatLogMapper.mapToEntity(log);
         entity.setObjectRef(aiChatLogResolver.createNewPrimaryKey());
         aiChatLogResolver.save(entity);
     }
-
 }

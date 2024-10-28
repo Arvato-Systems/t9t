@@ -41,10 +41,10 @@ class ReportParamsEntityMappers {
             dto.mailingGroupRef = mailingGroupDTOMapper.mapToDto(entity.mailingGroupRef)
         }
     }
-    def void d2eReportParamsDTO(ReportParamsEntity entity, ReportParamsDTO dto, boolean onlyActive) {
-        entity.reportConfigRef = _er.getRef(dto.reportConfigRef, onlyActive)
+    def void d2eReportParamsDTO(ReportParamsEntity entity, ReportParamsDTO dto) {
+        entity.reportConfigRef = _er.getRef(dto.reportConfigRef)
         if (dto.mailingGroupRef !== null) {
-            entity.mailingGroupRef = mailingGroupEntityResolver.getRef(dto.mailingGroupRef, onlyActive)
+            entity.mailingGroupRef = mailingGroupEntityResolver.getRef(dto.mailingGroupRef)
         } else {
             entity.mailingGroupRef = null
         }

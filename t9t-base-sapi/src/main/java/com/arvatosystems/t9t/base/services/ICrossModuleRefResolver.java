@@ -44,23 +44,6 @@ public interface ICrossModuleRefResolver {
 
     /**
      * Method allows to return a DTO when the primary key is known, by making cross module call.
-     * The caller has to provide request object which will be processed by the handler located in module different than the one where caller is located.
-     *
-     * @param req
-     *            request object (extends CrudSurrogateKeyRequest)
-     * @param objectRef
-     *            reference (null is passed through)
-     * @param onlyActive
-     *            if true and the entity has an isActive column in the tracking data, only active records are queried
-     * @return DTO
-     * @throws T9tException
-     *             thrown when no record exists
-     */
-    <REF extends Ref, DTO extends REF, TRACKING extends TrackingBase, REQ extends CrudSurrogateKeyRequest<REF, DTO, TRACKING>>
-      DTO getData(REQ req, Long objectRef, boolean onlyActive);
-
-    /**
-     * Method allows to return a DTO when the primary key is known, by making cross module call.
      * The caller has to provide request object which will be processed bythe  handler located in module different than the one where caller is located.
      *
      * @param req
@@ -73,23 +56,6 @@ public interface ICrossModuleRefResolver {
      */
     <REF extends Ref, DTO extends REF, TRACKING extends TrackingBase, REQ extends CrudSurrogateKeyRequest<REF, DTO, TRACKING>>
       DTO getData(REQ req, Long objectRef);
-
-    /**
-     * Method allows to return a DTO when a natural key is known, by making cross module call.
-     * The caller has to provide request object which will be processed by handler located in module different than the one where caller is located.
-     *
-     * @param req
-     *            request object (extends CrudSurrogateKeyRequest)
-     * @param ref
-     *            reference (null is passed through)
-     * @param onlyActive
-     *            if true and the entity has an isActive column in the tracking data, only active records are queried
-     * @return DTO
-     * @throws T9tException
-     *             thrown when no record exists
-     */
-    <REF extends Ref, DTO extends REF, TRACKING extends TrackingBase, REQ extends CrudSurrogateKeyRequest<REF, DTO, TRACKING>>
-      DTO getData(REQ req, REF ref, boolean onlyActive);
 
     /**
      * Method allows to return a DTO when a natural key is known, by making cross module call.

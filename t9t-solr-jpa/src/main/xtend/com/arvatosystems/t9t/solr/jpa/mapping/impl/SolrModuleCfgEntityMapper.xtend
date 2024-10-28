@@ -26,6 +26,6 @@ class SolrModuleCfgEntityMapper {
     ISolrModuleCfgEntityResolver entityResolver
 
     @AutoHandler("SP42")
-    def void d2eSolrModuleCfgDTO(SolrModuleCfgEntity entity, SolrModuleCfgDTO dto, boolean onlyActive) {}
+    def void d2eSolrModuleCfgDTO(SolrModuleCfgEntity entity, SolrModuleCfgDTO dto) {}
     def void e2dSolrModuleCfgDTO(SolrModuleCfgEntity entity, SolrModuleCfgDTO dto) {}
 }

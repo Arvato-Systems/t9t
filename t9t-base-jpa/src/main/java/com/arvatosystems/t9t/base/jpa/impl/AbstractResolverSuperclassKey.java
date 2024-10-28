@@ -50,7 +50,7 @@ public abstract class AbstractResolverSuperclassKey<
     }
 
     @Override
-    public ENTITY getEntityData(REF entityRef, final boolean onlyActive) {
+    public ENTITY getEntityData(REF entityRef) {
         if (entityRef == null) {
             return null;        // play null-safe
         }
@@ -60,9 +60,8 @@ public abstract class AbstractResolverSuperclassKey<
         if (keyClass.isAssignableFrom(entityRef.getClass())) {
             // access via primary key or supertype of it
             final KEY key = (keyClass != entityRef.getClass()) ? entityRef.copyAs(keyClass) : (KEY) entityRef;  // if it's some supertype: copy it down!
-            return getEntityDataForKey(key, onlyActive);
+            return getEntityDataForKey(key);
         }
-        return getEntityDataByGenericKey(entityRef, onlyActive);
+        return getEntityDataByGenericKey(entityRef);
     }
-
 }

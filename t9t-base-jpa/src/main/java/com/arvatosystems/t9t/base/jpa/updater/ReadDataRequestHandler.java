@@ -28,7 +28,6 @@ public class ReadDataRequestHandler extends AbstractDataRequestHandler<ReadDataR
     public CrudAnyKeyResponse execute(final RequestContext ctx, final ReadDataRequest request) {
         final CrudAnyKeyRequest<?, ?> crudRq = getCrudRequest(request.getDtoClassCanonicalName(), request.getKey());
         crudRq.setCrud(OperationType.READ);
-        crudRq.setOnlyActive(false);
         return executor.executeSynchronousAndCheckResult(ctx, crudRq, CrudAnyKeyResponse.class);
     }
 }

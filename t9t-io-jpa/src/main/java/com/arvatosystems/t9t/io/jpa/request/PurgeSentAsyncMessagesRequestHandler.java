@@ -42,7 +42,7 @@ public class PurgeSentAsyncMessagesRequestHandler extends AbstractRequestHandler
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final PurgeSentAsyncMessagesRequest rq) {
-        final AsyncQueueEntity queue = queueResolver.getEntityData(new AsyncQueueKey(rq.getAsyncQueueId()), false);
+        final AsyncQueueEntity queue = queueResolver.getEntityData(new AsyncQueueKey(rq.getAsyncQueueId()));
         if (!queue.getTenantId().equals(ctx.tenantId)) {
             throw new T9tException(T9tException.WRITE_ACCESS_ONLY_CURRENT_TENANT);
         }

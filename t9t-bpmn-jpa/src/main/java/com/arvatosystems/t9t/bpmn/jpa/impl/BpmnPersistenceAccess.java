@@ -77,7 +77,7 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
     /** Reads a process definition using the usual fallback rule for some general reference. Throws an Exception if none exists. */
     @Override
     public ProcessDefinitionDTO getProcessDefinitionDTO(final ProcessDefinitionRef ref) {
-        return mapper.mapToDto(resolver.getEntityData(ref, true));
+        return mapper.mapToDto(resolver.getEntityData(ref));
     }
 
     /** Reads all process definitions. */
@@ -94,7 +94,7 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
 
     @Override
     public void save(final ProcessDefinitionDTO dto) {
-        final ProcessDefinitionEntity entity = mapper.mapToEntity(dto, true);
+        final ProcessDefinitionEntity entity = mapper.mapToEntity(dto);
         entity.setObjectRef(resolver.createNewPrimaryKey());
 
         resolver.save(entity);
@@ -104,7 +104,7 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
 
     @Override
     public Long persistNewStatus(final ProcessExecutionStatusDTO dto) {
-        final ProcessExecStatusEntity entity = statusMapper.mapToEntity(dto, false);
+        final ProcessExecStatusEntity entity = statusMapper.mapToEntity(dto);
         statusResolver.save(entity);
         return entity.getObjectRef();
     }

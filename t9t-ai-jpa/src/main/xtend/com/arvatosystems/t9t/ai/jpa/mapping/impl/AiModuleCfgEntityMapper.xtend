@@ -24,7 +24,7 @@ import com.arvatosystems.t9t.annotations.jpa.active.AutoMap42
 class AiModuleCfgEntityMapper {
     IAiModuleCfgEntityResolver entityResolver
 
-    def void d2eAiModuleCfgDTO(AiModuleCfgEntity entity, AiModuleCfgDTO dto, boolean onlyActive) {}
+    def void d2eAiModuleCfgDTO(AiModuleCfgEntity entity, AiModuleCfgDTO dto) {}
     def void e2dAiModuleCfgDTO(AiModuleCfgEntity entity, AiModuleCfgDTO dto) {}
 
 }

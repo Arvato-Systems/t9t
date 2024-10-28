@@ -22,6 +22,5 @@ import com.arvatosystems.t9t.bpmn2.jpa.entities.Bpmn2MessageQueueEntity
 @AutoResolver42
 class Bpmn2MessageQueueResolvers {
 
-     def Bpmn2MessageQueueEntity               getBpmn2MessageQueueEntity           (Bpmn2MessageQueueRef ref,            boolean onlyActive) {}
-
+     def Bpmn2MessageQueueEntity getBpmn2MessageQueueEntity(Bpmn2MessageQueueRef ref) {}
 }

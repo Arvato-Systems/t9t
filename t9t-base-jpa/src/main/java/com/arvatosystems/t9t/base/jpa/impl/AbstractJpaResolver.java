@@ -74,7 +74,7 @@ public abstract class AbstractJpaResolver<
 
     @Override
     public void create(final DTO dto) {
-        resolver.save(mapper.mapToEntity(dto, false));
+        resolver.save(mapper.mapToEntity(dto));
     }
 
     @Override
@@ -89,12 +89,12 @@ public abstract class AbstractJpaResolver<
 
     @Override
     public DTO getDTO(final REF ref) {
-        return mapper.mapToDto(resolver.getEntityData(ref, false));
+        return mapper.mapToDto(resolver.getEntityData(ref));
     }
 
     @Override
     public Long getRef(final REF ref) {
-        return resolver.getRef(ref, false);
+        return resolver.getRef(ref);
     }
 
     @Override
@@ -104,7 +104,7 @@ public abstract class AbstractJpaResolver<
 
     @Override
     public void remove(final Long ref) {
-        resolver.remove(resolver.getEntityDataForKey(ref, false));
+        resolver.remove(resolver.getEntityDataForKey(ref));
     }
 
     @Override
@@ -118,7 +118,7 @@ public abstract class AbstractJpaResolver<
             throw new T9tException(T9tException.WRITE_ACCESS_ONLY_CURRENT_TENANT);
         }
 
-        final ENTITY eNew = mapper.mapToEntity(dto, false);
+        final ENTITY eNew = mapper.mapToEntity(dto);
         eOld.mergeFrom(eNew);
     }
 

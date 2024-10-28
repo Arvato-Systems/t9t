@@ -31,7 +31,7 @@ public class GetUpdateStatusRequestHandler extends AbstractRequestHandler<GetUpd
 
     @Override
     public GetUpdateStatusResponse execute(final RequestContext ctx, final GetUpdateStatusRequest request) {
-        final UpdateStatusDTO updateStatus = mapper.mapToDto(resolver.getEntityData(new UpdateStatusTicketKey(request.getTicketId()), true));
+        final UpdateStatusDTO updateStatus = mapper.mapToDto(resolver.getEntityData(new UpdateStatusTicketKey(request.getTicketId())));
         final GetUpdateStatusResponse response = new GetUpdateStatusResponse();
         response.setUpdateStatus(updateStatus);
         return response;

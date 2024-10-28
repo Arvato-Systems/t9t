@@ -26,8 +26,8 @@ import com.arvatosystems.t9t.email.jpa.entities.EmailModuleCfgEntity
 @AutoResolver42
 class EmailResolvers {
     @AllCanAccessGlobalTenant
-    def EmailModuleCfgEntity      getEmailModuleCfgEntity  (String id,               boolean onlyActive) {}
+    def EmailModuleCfgEntity      getEmailModuleCfgEntity  (String id) {}
 
-    def EmailEntity               getEmailEntity           (EmailRef ref,            boolean onlyActive) {}
-    def EmailAttachmentsEntity    getEmailAttachmentsEntity(EmailAttachmentsKey key, boolean onlyActive) {}
+    def EmailEntity               getEmailEntity           (EmailRef ref) {}
+    def EmailAttachmentsEntity    getEmailAttachmentsEntity(EmailAttachmentsKey key) {}
 }

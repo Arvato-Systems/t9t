@@ -39,9 +39,8 @@ public abstract class AbstractRefResolverRequestHandler<
     @Override
     public ServiceResponse execute(final RequestContext ctx, final REQUEST request) throws Exception {
         final RefResolverResponse rs = new RefResolverResponse();
-        rs.setKey(getResolver().getRef(request.getRef(), true));
+        rs.setKey(getResolver().getRef(request.getRef()));
         rs.setReturnCode(0);
         return rs;
     }
-
 }

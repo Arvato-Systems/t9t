@@ -26,5 +26,5 @@ import com.arvatosystems.t9t.solr.jpa.entities.SolrModuleCfgEntity
 class SolrResolvers {
 
     @AllCanAccessGlobalTenant
-    def SolrModuleCfgEntity     getSolrModuleCfgEntity      (String id,       boolean onlyActive) {}
+    def SolrModuleCfgEntity getSolrModuleCfgEntity(String id) {}
 }

@@ -28,7 +28,7 @@ package (com.arvatosystems) t9t.base.crud {
      */
     abstract class CrudAnyKeyRequest<DATA, TRACKING extends TrackingBase> extends RequestParameters return CrudAnyKeyResponse<!DATA, !TRACKING> {
         required enum OperationType     crud;               // specifies the command
-        required boolean                onlyActive;         // work on active records only, fail if record exists, but is inactive
+        required boolean                onlyActive;         // no longer supported
         optional version                version;            // this is a required field for all crud except INSERT and READ
         optional (!DATA...)             data;               // the full data record
     }

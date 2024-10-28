@@ -26,7 +26,7 @@ class DocConfigEntityMapper {
     IDocConfigEntityResolver entityResolver
 
     @AutoHandler("CSP42")
-    def void d2eDocConfigDTO(DocConfigEntity entity, DocConfigDTO dto, boolean onlyActive) {}
+    def void d2eDocConfigDTO(DocConfigEntity entity, DocConfigDTO dto) {}
     def void e2dDocConfigDTO(DocConfigEntity entity, DocConfigDTO dto) {}
 
 }

@@ -44,7 +44,6 @@ public interface IResolverSurrogateKey<
      * Throws a runtime / internal logic error exception if the entity has not a suitable key.
      * Returns null if the parameter entityRef itself is null.
      * Throws an exception (T9tException.RECORD_DOES_NOT_EXIST) if no entity of given key exists.
-     * Throws an exception (T9tException.RECORD_INACTIVE) if the record exists, but has been marked inactive and parameter onlyActive = true.
      *
      * This method only works for primary keys of type Long. Use a different method in some inheriting class for other entities.
      *
@@ -54,21 +53,19 @@ public interface IResolverSurrogateKey<
      * @throws T9tException
      */
     @Nullable
-    Long getRef(@Nullable REF entityRef, boolean onlyActive);
+    Long getRef(@Nullable REF entityRef);
 
     /**
      * Returns the full JPA entity for any given relevant key.
      * Returns null if the parameter entityRef is null.
      * Throws an exception (T9tException.RECORD_DOES_NOT_EXIST) if there is no data record for the specified entityRef.
-     * Throws an exception (T9tException.RECORD_INACTIVE) if the record exists, but has been marked inactive and parameter onlyActive = true.
      *
      * @param entityRef The input DTO, which inherits a suitable reference to the object.
-     * @param onlyActive True if inactive records should be treated as nonexisting.
      * @return ENTITY
      * @throws T9tException
      */
     @Nullable
-    ENTITY getEntityData(@Nullable REF entityRef, boolean onlyActive);
+    ENTITY getEntityData(@Nullable REF entityRef);
 
     /**
      * Returns the full entity, with a chance to use a preloaded child entity.
@@ -85,8 +82,8 @@ public interface IResolverSurrogateKey<
     Long createNewPrimaryKey();
 
     /** Reads a specific field. */
-    <Z> Z getField(REF entityRef, boolean onlyActive, String fieldName, Class<Z> cls);
+    <Z> Z getField(REF entityRef, String fieldName, Class<Z> cls);
 
     /** Reads 2 surrogate key fields. */
-    TwoRefs getRefs(REF entityRef, boolean onlyActive, String fieldName);
+    TwoRefs getRefs(REF entityRef, String fieldName);
 }

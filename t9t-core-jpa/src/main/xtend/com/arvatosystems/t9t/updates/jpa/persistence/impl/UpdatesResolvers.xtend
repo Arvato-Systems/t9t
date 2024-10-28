@@ -24,8 +24,8 @@ import com.arvatosystems.t9t.updates.jpa.entities.UpdateStatusLogEntity
 
 @AutoResolver42
 class UpdatesResolvers {
-    def UpdateStatusEntity       getUpdateStatusEntity        (UpdateStatusRef ref, boolean onlyActive) {}
-    def UpdateStatusLogEntity    getUpdateStatusLogEntity     (UpdateStatusLogRef ref, boolean onlyActive) {}
-    def UpdateStatusEntity       findByTicketId(boolean onlyActive, String ticketId) {}
+    def UpdateStatusEntity       getUpdateStatusEntity              (UpdateStatusRef ref) {}
+    def UpdateStatusLogEntity    getUpdateStatusLogEntity           (UpdateStatusLogRef ref) {}
+    def UpdateStatusEntity       findByTicketId                     (boolean onlyActive, String ticketId) {}
     def List<UpdateStatusEntity> findByTicketIdsAndUpdateApplyStatus(boolean onlyActive, List<String> ticketId, String updateApplyStatus) {}
 }

@@ -71,7 +71,7 @@ public abstract class AbstractJpaScResolver<
 
     @Override
     public void create(final DTO dto) {
-        resolver.save(mapper.mapToEntity(dto, false));
+        resolver.save(mapper.mapToEntity(dto));
     }
 
     @Override
@@ -86,13 +86,8 @@ public abstract class AbstractJpaScResolver<
 
     @Override
     public DTO getDTO(final REF ref) {
-        return mapper.mapToDto(resolver.getEntityData(ref, false));
+        return mapper.mapToDto(resolver.getEntityData(ref));
     }
-
-//  @Override
-//  public KEY getRef(REF ref) {
-//      return resolver.getRef(ref, false);
-//  }
 
     @Override
     public TRACKING getTracking(final KEY pk) {
@@ -101,13 +96,13 @@ public abstract class AbstractJpaScResolver<
 
     @Override
     public void remove(final KEY ref) {
-        resolver.remove(resolver.getEntityDataForKey(ref, false));
+        resolver.remove(resolver.getEntityDataForKey(ref));
     }
 
     @Override
     public void update(final DTO dto) {
         final ENTITY eOld = getEntityForKeyOrThrow(createKey(dto.ret$RefP()));
-        final ENTITY eNew = mapper.mapToEntity(dto, false);
+        final ENTITY eNew = mapper.mapToEntity(dto);
         eOld.mergeFrom(eNew);
     }
 

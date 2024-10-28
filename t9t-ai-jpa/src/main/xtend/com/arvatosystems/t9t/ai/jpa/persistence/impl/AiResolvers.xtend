@@ -31,12 +31,12 @@ import java.util.List
 @AutoResolver42
 class AiResolvers {
     @AllCanAccessGlobalTenant
-    def AiModuleCfgEntity              getAiModuleCfgEntity(String id, boolean onlyActive) { return null; }
+    def AiModuleCfgEntity              getAiModuleCfgEntity(String id) { return null; }
 
-    def AiUserStatusEntity             getAiUserStatusEntity(AiUserStatusRef entityRef, boolean onlyActive) { return null; }
-    def AiAssistantEntity              getAiAssistantEntity(AiAssistantRef entityRef, boolean onlyActive) { return null; }
-    def AiConversationEntity           getAiConversationEntity(AiConversationRef entityRef, boolean onlyActive) { return null; }
-    def AiChatLogEntity                getAiChatLogEntity(AiChatLogRef entityRef, boolean onlyActive) { return null; }
+    def AiUserStatusEntity             getAiUserStatusEntity(AiUserStatusRef entityRef) { return null; }
+    def AiAssistantEntity              getAiAssistantEntity(AiAssistantRef entityRef) { return null; }
+    def AiConversationEntity           getAiConversationEntity(AiConversationRef entityRef) { return null; }
+    def AiChatLogEntity                getAiChatLogEntity(AiChatLogRef entityRef) { return null; }
     def List<AiConversationEntity>     findByUserIdAndSessionRef(boolean onlyActive, String userId, Long createdBySessionRef) { return null; }
     def List<AiUserStatusEntity>       findByUserId(boolean onlyActive, String userId) { return null; }
     def List<AiAssistantEntity>        findByAllAssistants(boolean onlyActive) { return null; }

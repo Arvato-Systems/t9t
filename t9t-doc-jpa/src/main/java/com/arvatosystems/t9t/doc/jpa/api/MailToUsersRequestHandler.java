@@ -49,7 +49,7 @@ public class MailToUsersRequestHandler extends AbstractRequestHandler<MailToUser
     @Override
     public ServiceResponse execute(final RequestContext ctx, final MailToUsersRequest rq) throws Exception {
         // resolve the mailingGroup
-        final MailingGroupEntity mailingGroup = this.resolver.getEntityData(new MailingGroupKey(rq.getMailingGroupId()), false);
+        final MailingGroupEntity mailingGroup = this.resolver.getEntityData(new MailingGroupKey(rq.getMailingGroupId()));
         final List<String> emailAddresses = this.getEmailByUserId(ctx, mailingGroup.getMailingList());
         if (emailAddresses.isEmpty()) {
             LOGGER.info("No email sent to group {} - no users with email addresses found", rq.getMailingGroupId());

@@ -21,7 +21,7 @@ public class ConfigUpdater implements IConfigUpdater {
     @Override
     public void updateConfig(final ConfigDTO configDto) {
 
-        final ConfigEntity configEntity = configMapper.mapToEntity(configDto, true);
+        final ConfigEntity configEntity = configMapper.mapToEntity(configDto);
 
         if (configDto.getObjectRef() == null) {
             configEntity.setObjectRef(configEntityResolver.createNewPrimaryKey());

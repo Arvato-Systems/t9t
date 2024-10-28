@@ -39,7 +39,7 @@ public class PerformAsyncRequestHandler extends AbstractRequestHandler<PerformAs
     @Override
     public ServiceResponse execute(final RequestContext ctx, final PerformAsyncRequest rq) {
         // just a check to see if the channel has been configured
-        final AsyncChannelEntity channel = channelResolver.getEntityData(new AsyncChannelKey(rq.getAsyncChannelId()), true);
+        final AsyncChannelEntity channel = channelResolver.getEntityData(new AsyncChannelKey(rq.getAsyncChannelId()));
         String logQueueId = "NULL";
         if (channel.getAsyncQueue() != null && channel.getAsyncQueue().getAsyncQueueId() != null) {
             logQueueId = channel.getAsyncQueue().getAsyncQueueId();

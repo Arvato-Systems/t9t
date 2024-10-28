@@ -33,5 +33,5 @@ public interface IResolverSuperclassKey<
     ENTITY extends BonaPersistableKey<KEY> & BonaPersistableTracking<TRACKING>
   > extends IResolverAnyKey<KEY, TRACKING, ENTITY> {
 
-    ENTITY getEntityData(REF entityRef, boolean onlyActive);
+    ENTITY getEntityData(REF entityRef);
 }

@@ -32,8 +32,8 @@ class SchedulerSetupEntityMappers {
     def void e2dSchedulerSetupDTO(SchedulerSetupEntity entity, SchedulerSetupDTO dto) {
         dto.request = requestMapper.mapToDto(entity.cannedRequest)
     }
-    def void d2eSchedulerSetupDTO(SchedulerSetupEntity entity, SchedulerSetupDTO dto, boolean onlyActive) {
-        entity.request = requestResolver.getRef(dto.request, onlyActive)
+    def void d2eSchedulerSetupDTO(SchedulerSetupEntity entity, SchedulerSetupDTO dto) {
+        entity.request = requestResolver.getRef(dto.request)
     }
     def void e2dSchedulerSetupKey(SchedulerSetupEntity entity, SchedulerSetupKey dto) {}
 }

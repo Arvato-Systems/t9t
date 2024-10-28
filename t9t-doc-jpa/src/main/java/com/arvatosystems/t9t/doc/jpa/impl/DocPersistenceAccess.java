@@ -71,7 +71,7 @@ public class DocPersistenceAccess implements IDocPersistenceAccess {
 
     @Override
     public DocConfigDTO getDocConfigDTO(final String templateId) {
-        return docConfigMapper.mapToDto(docConfigResolver.getEntityData(new DocConfigKey(templateId), true));
+        return docConfigMapper.mapToDto(docConfigResolver.getEntityData(new DocConfigKey(templateId)));
     }
 
     @Override

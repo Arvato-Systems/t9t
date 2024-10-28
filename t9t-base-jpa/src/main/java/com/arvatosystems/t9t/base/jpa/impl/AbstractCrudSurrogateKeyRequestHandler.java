@@ -71,7 +71,7 @@ public abstract class AbstractCrudSurrogateKeyRequestHandler<
         // step 1: possible resolution of the natural key
         if (crudRequest.getNaturalKey() != null) {
             try {
-                final ENTITY entityFoundByNaturalKeyQuery = resolver.getEntityData(crudRequest.getNaturalKey(), false);
+                final ENTITY entityFoundByNaturalKeyQuery = resolver.getEntityData(crudRequest.getNaturalKey());
                 final boolean entityFoundByNaturalKeyQueryIsOfOtherTenant = resolver.isTenantIsolated()
                   && !resolver.getSharedTenantId().equals(resolver.getTenantId(entityFoundByNaturalKeyQuery));
                 final Long refFromCompositeKey = entityFoundByNaturalKeyQuery.ret$Key();
@@ -132,11 +132,11 @@ public abstract class AbstractCrudSurrogateKeyRequestHandler<
                 rs.setKey(result.ret$Key()); // just copy
                 break;
             case READ:
-                result = resolver.findActive(crudRequest.getKey(), crudRequest.getOnlyActive());
+                result = resolver.getEntityDataForKey(crudRequest.getKey());
                 rs.setKey(crudRequest.getKey()); // just copy
                 break;
             case DELETE:
-                result = resolver.findActive(crudRequest.getKey(), crudRequest.getOnlyActive());
+                result = resolver.getEntityDataForKey(crudRequest.getKey());
                 if (!resolver.writeAllowed(resolver.getTenantId(result))) {
                     throw new T9tException(T9tException.WRITE_ACCESS_ONLY_CURRENT_TENANT);
                 }
@@ -145,14 +145,14 @@ public abstract class AbstractCrudSurrogateKeyRequestHandler<
                 rs.setKey(crudRequest.getKey());
                 break;
             case INACTIVATE:
-                result = resolver.findActive(crudRequest.getKey(), crudRequest.getOnlyActive());
+                result = resolver.getEntityDataForKey(crudRequest.getKey());
                 if (!resolver.writeAllowed(resolver.getTenantId(result))) {
                     throw new T9tException(T9tException.WRITE_ACCESS_ONLY_CURRENT_TENANT);
                 }
                 result.put$Active(false);
                 break;
             case ACTIVATE:
-                result = resolver.findActive(crudRequest.getKey(), crudRequest.getOnlyActive());
+                result = resolver.getEntityDataForKey(crudRequest.getKey());
                 if (!resolver.writeAllowed(resolver.getTenantId(result))) {
                     throw new T9tException(T9tException.WRITE_ACCESS_ONLY_CURRENT_TENANT);
                 }

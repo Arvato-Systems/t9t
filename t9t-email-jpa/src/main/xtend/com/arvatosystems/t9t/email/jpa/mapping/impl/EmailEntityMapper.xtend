@@ -27,7 +27,7 @@ class EmailEntityMapper {
     IEmailEntityResolver entityResolver
 
     @AutoHandler("SC42")
-    def void d2eEmailDTO(EmailEntity entity, EmailDTO dto, boolean onlyActive) {}
+    def void d2eEmailDTO(EmailEntity entity, EmailDTO dto) {}
     def void e2dEmailDTO(EmailEntity entity, EmailDTO dto) {}
     def void e2dEmailDescription(EmailEntity entity, EmailDescription dto) {}
 }

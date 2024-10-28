@@ -214,7 +214,6 @@ class T9tRepSetup {
 
         val crudReq = new DataSinkCrudRequest => [
             crud = OperationType.UPDATE
-            onlyActive = true
             it.data = data
         ]
 

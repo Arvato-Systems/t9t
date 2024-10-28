@@ -37,7 +37,6 @@ public class AidDataRequestHandler extends AbstractDataRequestHandler<AidDataReq
         }
         final CrudAnyKeyRequest<?, ?> crudRq = getCrudRequest(request.getDtoClassCanonicalName(), request.getKey());
         crudRq.setCrud(request.getOperation());
-        crudRq.setOnlyActive(false);
         return executor.executeSynchronousAndCheckResult(ctx, crudRq, CrudAnyKeyResponse.class);
     }
 }

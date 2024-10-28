@@ -52,11 +52,6 @@ public abstract class AbstractCrudSurrogateKeyBERequestHandler<REF extends Ref, 
         return request.getCrud();       // must have permission for the crud operation
     }
 
-    protected void checkActive(final DTO result, final boolean onlyActive) {
-        if (onlyActive && !result.ret$Active())
-            throw new T9tException(T9tException.RECORD_INACTIVE, result.getObjectRef().toString());
-    }
-
     // plausi checks for parameters
     protected void validateParameters(final CrudAnyKeyRequest<DTO, TRACKING> rq, final boolean keyIsNull) {
         // check version if required
@@ -216,12 +211,10 @@ public abstract class AbstractCrudSurrogateKeyBERequestHandler<REF extends Ref, 
             break;
         case READ:
             dto = resolver.getDTO(crudRequest.getKey());
-            checkActive(dto, crudRequest.getOnlyActive());
             rs.setKey(crudRequest.getKey()); // just copy
             break;
         case DELETE:
             dto = resolver.getDTO(crudRequest.getKey());
-            checkActive(dto, crudRequest.getOnlyActive());
             validateDelete(dto);
             resolver.remove(crudRequest.getKey());   // permissions checked by resolver
             rs.setKey(crudRequest.getKey());
@@ -230,7 +223,6 @@ public abstract class AbstractCrudSurrogateKeyBERequestHandler<REF extends Ref, 
         case ACTIVATE:
             final boolean newState = crudRequest.getCrud() == OperationType.ACTIVATE;
             dto = resolver.getDTO(crudRequest.getKey());
-            checkActive(dto, crudRequest.getOnlyActive());
             if (dto.ret$Active() != newState) {
                 // yes, this is a real state change
                 activationChange(dto, newState);
@@ -240,7 +232,6 @@ public abstract class AbstractCrudSurrogateKeyBERequestHandler<REF extends Ref, 
             break;
         case UPDATE:
             final DTO old = resolver.getDTO(crudRequest.getKey());
-            checkActive(old, crudRequest.getOnlyActive());
             validateUpdate(old, dto); // plausibility
             resolver.update(dto);
             rs.setKey(crudRequest.getKey());

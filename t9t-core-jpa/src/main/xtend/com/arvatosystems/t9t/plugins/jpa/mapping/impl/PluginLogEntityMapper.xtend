@@ -26,6 +26,6 @@ class PluginLogEntityMapper {
     IPluginLogEntityResolver entityResolver
 
     @AutoHandler("SC42")
-    def void d2ePluginLogDTO(PluginLogEntity entity, PluginLogDTO dto, boolean onlyActive) {}
+    def void d2ePluginLogDTO(PluginLogEntity entity, PluginLogDTO dto) {}
     def void e2dPluginLogDTO(PluginLogEntity entity, PluginLogDTO dto) {}
 }

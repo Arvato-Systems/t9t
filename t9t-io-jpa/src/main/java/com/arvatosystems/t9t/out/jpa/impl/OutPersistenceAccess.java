@@ -87,7 +87,7 @@ public class OutPersistenceAccess implements IOutPersistenceAccess {
 
     @Override
     public void storeNewSink(final SinkDTO sink) {
-        sinkResolver.save(sinkMapper.mapToEntity(sink, false));
+        sinkResolver.save(sinkMapper.mapToEntity(sink));
     }
 
     @Override
@@ -102,7 +102,7 @@ public class OutPersistenceAccess implements IOutPersistenceAccess {
 
     @Override
     public void storeOutboundMessage(final OutboundMessageDTO sink) {
-        outboundMessageResolver.save(outboundMessageMapper.mapToEntity(sink, false));
+        outboundMessageResolver.save(outboundMessageMapper.mapToEntity(sink));
     }
 
     @Override
@@ -125,7 +125,7 @@ public class OutPersistenceAccess implements IOutPersistenceAccess {
 
     @Override
     public void markAsProcessed(final Long sinkRef) {
-        final SinkEntity sink = sinkResolver.getEntityDataForKey(sinkRef, false);
+        final SinkEntity sink = sinkResolver.getEntityDataForKey(sinkRef);
         sink.setProcessed(Boolean.TRUE);
     }
 }

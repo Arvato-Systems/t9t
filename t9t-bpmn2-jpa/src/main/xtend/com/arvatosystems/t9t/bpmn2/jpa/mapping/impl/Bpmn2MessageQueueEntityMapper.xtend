@@ -26,7 +26,7 @@ class Bpmn2MessageQueueEntityMapper {
     IBpmn2MessageQueueEntityResolver entityResolver
 
     @AutoHandler("SC42")
-    def void d2eBpmn2MessageQueueDTO(Bpmn2MessageQueueEntity entity, Bpmn2MessageQueueDTO dto, boolean onlyActive) {}
+    def void d2eBpmn2MessageQueueDTO(Bpmn2MessageQueueEntity entity, Bpmn2MessageQueueDTO dto) {}
     def void e2dBpmn2MessageQueueDTO(Bpmn2MessageQueueEntity entity, Bpmn2MessageQueueDTO dto) {}
 
 }

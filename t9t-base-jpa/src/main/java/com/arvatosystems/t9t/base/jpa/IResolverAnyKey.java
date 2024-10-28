@@ -224,27 +224,6 @@ public interface IResolverAnyKey<
     ENTITY find(@Nonnull KEY objectRef, @Nullable LockModeType lockMode);
 
     /**
-     * Find an entity given the object reference.
-     * @param objectRef object reference
-     * @param onlyActive if true, but the object is not active, an T9tException.RECORD_INACTIVE exception is thrown
-     * @return the entity
-     * @throws T9tException, also if the object does not exist or is set to inactive and onlyActive is true
-     */
-    @Nonnull
-    ENTITY findActive(@Nonnull KEY objectRef, boolean onlyActive);
-
-    /**
-     * Find an entity given the object reference.
-     * @param objectRef object reference
-     * @param onlyActive if true, but the object is not active, an T9tException.RECORD_INACTIVE exception is thrown
-     * @param lockMode the lock mode. If null if passed, PESSIMISTIC_WRITE is assumed.
-     * @return the entity
-     * @throws T9tException, also if the object does not exist or is set to inactive and onlyActive is true
-     */
-    @Nonnull
-    ENTITY findActive(@Nonnull KEY objectRef, boolean onlyActive, @Nullable LockModeType lockMode);
-
-    /**
      * Saves the entity.
      * @param entity the entity
      */
@@ -273,18 +252,17 @@ public interface IResolverAnyKey<
     @Nonnull
     TypedQuery<ENTITY> constructQuery(@Nonnull String query);
 
-    /** Return the full JPA entity for any given relevant key.
+    /**
+     * Returns the full JPA entity for any given relevant key.
      * Returns null if the parameter entityRef is null.
      * Throws an exception (T9tException.RECORD_DOES_NOT_EXIST) if there is no data record for the specified entityRef.
-     * Throws an exception (T9tException.RECORD_INACTIVE) if the record exists, but has been marked inactive and parameter onlyActive = true.
      *
      * @param key The key
-     * @param onlyActive True if inactive records should be treated as nonexisting.
      * @return ENTITY
      * @throws T9tException
      */
     @Nonnull
-    ENTITY getEntityDataForKey(@Nonnull KEY key, boolean onlyActive);
+    ENTITY getEntityDataForKey(@Nonnull KEY key);
 
     /** Creates a specification for the key object, mainly for logging purposes, also used by the AutoMappers. */
     @Nonnull

@@ -26,6 +26,6 @@ class EmailAttachmentsEntityMapper {
     IEmailAttachmentsEntityResolver entityResolver
 
     @AutoHandler("S42")
-    def void d2eEmailAttachmentsDTO(EmailAttachmentsEntity entity, EmailAttachmentsDTO dto, boolean onlyActive) {}
+    def void d2eEmailAttachmentsDTO(EmailAttachmentsEntity entity, EmailAttachmentsDTO dto) {}
     def void e2dEmailAttachmentsDTO(EmailAttachmentsEntity entity, EmailAttachmentsDTO dto) {}
 }

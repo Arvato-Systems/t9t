@@ -40,8 +40,8 @@ class ApiKeyMappers {
     }
 
     @NeedMapping  // required because the DTO is final
-    def void d2eApiKeyDTO(ApiKeyEntity entity, ApiKeyDTO dto, boolean onlyActive) {
-        entity.roleRef = roleResolver.getRef(dto.roleRef, onlyActive)
-        entity.userRef = userResolver.getRef(dto.userRef, onlyActive)
+    def void d2eApiKeyDTO(ApiKeyEntity entity, ApiKeyDTO dto) {
+        entity.roleRef = roleResolver.getRef(dto.roleRef)
+        entity.userRef = userResolver.getRef(dto.userRef)
     }
 }

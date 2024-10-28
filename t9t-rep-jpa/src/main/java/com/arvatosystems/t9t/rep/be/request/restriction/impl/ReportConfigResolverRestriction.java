@@ -54,7 +54,10 @@ public class ReportConfigResolverRestriction implements IReportConfigResolverRes
      */
     @Override
     public Long apply(final Long ref) {
-        final ReportConfigEntity reportConfigEntity = resolver.findActive(ref, true);
+        final ReportConfigEntity reportConfigEntity = resolver.getEntityDataForKey(ref);
+        if (!reportConfigEntity.getIsActive()) {
+            throw new T9tException(T9tException.RECORD_INACTIVE, ref.toString());
+        }
         checkUserAccessOk(reportConfigEntity.getReportConfigId());
         return ref;
     }

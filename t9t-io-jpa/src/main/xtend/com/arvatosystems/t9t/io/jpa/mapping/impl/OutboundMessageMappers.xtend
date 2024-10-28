@@ -25,6 +25,6 @@ import com.arvatosystems.t9t.io.jpa.persistence.IOutboundMessageEntityResolver
 class OutboundMessageMappers {
     IOutboundMessageEntityResolver resolver
 
-    def void d2eOutboundMessageDTO(OutboundMessageEntity entity, OutboundMessageDTO dto, boolean onlyActive) {}
+    def void d2eOutboundMessageDTO(OutboundMessageEntity entity, OutboundMessageDTO dto) {}
     def void e2dOutboundMessageDTO(OutboundMessageEntity entity, OutboundMessageDTO dto) {}
 }

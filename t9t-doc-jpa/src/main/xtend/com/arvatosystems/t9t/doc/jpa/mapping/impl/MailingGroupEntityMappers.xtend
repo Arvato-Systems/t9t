@@ -29,7 +29,7 @@ class MailingGroupEntityMappers {
     @AutoHandler("CRSP42")
     def void e2dMailingGroupDTO(MailingGroupEntity entity, MailingGroupDTO dto) {}
 
-    def void d2eMailingGroupDTO(MailingGroupEntity entity, MailingGroupDTO dto, boolean onlyActive) {}
+    def void d2eMailingGroupDTO(MailingGroupEntity entity, MailingGroupDTO dto) {}
 
     def void e2dMailingGroupKey(MailingGroupEntity entity, MailingGroupKey dto) {}
 }

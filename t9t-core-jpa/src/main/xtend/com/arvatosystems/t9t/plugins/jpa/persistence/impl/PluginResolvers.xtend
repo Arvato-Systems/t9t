@@ -25,6 +25,6 @@ import com.arvatosystems.t9t.plugins.jpa.entities.PluginLogEntity
 @AutoResolver42
 class PluginResolvers {
     @AllCanAccessGlobalTenant
-    def LoadedPluginEntity     getLoadedPluginEntity        (LoadedPluginRef ref, boolean onlyActive) {}
-    def PluginLogEntity        getPluginLogEntity           (PluginLogRef ref, boolean onlyActive) {}
+    def LoadedPluginEntity     getLoadedPluginEntity        (LoadedPluginRef ref) {}
+    def PluginLogEntity        getPluginLogEntity           (PluginLogRef ref) {}
 }

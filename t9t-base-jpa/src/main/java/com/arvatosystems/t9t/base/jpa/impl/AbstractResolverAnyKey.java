@@ -22,18 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.LockModeType;
-import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Expression;
-import jakarta.persistence.criteria.Order;
-import jakarta.persistence.criteria.Path;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
-import jakarta.persistence.criteria.Selection;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,6 +47,17 @@ import de.jpaw.dp.Alternative;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 import de.jpaw.enums.TokenizableEnum;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Order;
+import jakarta.persistence.criteria.Path;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Selection;
 
 /** base implementation of the IEntityResolver interface, only suitable for simple configuration data tables */
 @Alternative
@@ -248,22 +247,15 @@ public abstract class AbstractResolverAnyKey<
             LOGGER.trace("find({}); requested for resolver class {}", key, getClass().getSimpleName());
     }
 
-    protected ENTITY findInternal(final KEY key, final boolean onlyActive) {
-        nullCheck(key);
-        final ENTITY e = getEntityManager().find(getEntityClass(), key);
-        return findInternalSub(e, key, onlyActive);
-    }
-
-    private ENTITY findInternalSub(final ENTITY e, final KEY key, final boolean onlyActive) {
+    private ENTITY findInternalSub(final ENTITY e, final KEY key, final boolean allowNull) {
         if (e == null) {
+            if (allowNull) {
+                return null;
+            }
             throw new T9tException(T9tException.RECORD_DOES_NOT_EXIST, entityNameAndKey(key));
-        }
-        if (!readAllowed(getTenantId(e))) {
+        } else if (!readAllowed(getTenantId(e))) {
             LOGGER.error("Attempted access violation in {}.findInternal(): {}", this.getClass().getSimpleName(), entityNameAndKey(key));
             throw new T9tException(T9tException.READ_ACCESS_ONLY_CURRENT_TENANT, entityNameAndKey(key));
-        }
-        if (onlyActive && !e.ret$Active()) {
-            throw new T9tException(T9tException.RECORD_INACTIVE, entityNameAndKey(key));
         }
         return e;
     }
@@ -277,11 +269,7 @@ public abstract class AbstractResolverAnyKey<
     public ENTITY find(final KEY key) {
         nullCheck(key);
         final ENTITY e = getEntityManager().find(getEntityClass(), key);
-        if ((e != null) && !readAllowed(getTenantId(e))) {
-            LOGGER.error("Attempted access violation in {}.find(): {}", this.getClass().getSimpleName(), entityNameAndKey(key));
-            throw new T9tException(T9tException.READ_ACCESS_ONLY_CURRENT_TENANT, entityNameAndKey(key));
-        }
-        return e;
+        return findInternalSub(e, key, true);
     }
 
     /**
@@ -293,32 +281,7 @@ public abstract class AbstractResolverAnyKey<
     public ENTITY find(final KEY key, final LockModeType lockMode) {
         nullCheck(key);
         final ENTITY e = getEntityManager().find(getEntityClass(), key, lockMode == null ? LockModeType.PESSIMISTIC_WRITE : lockMode);
-        if (e == null) {
-            return null;
-        }
-        return findInternalSub(e, key, false);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @throws T9tException
-     */
-    @Override
-    public ENTITY findActive(final KEY key, final boolean onlyActive) {
-        return findInternal(key, onlyActive);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @throws T9tException
-     */
-    @Override
-    public ENTITY findActive(final KEY key, final boolean onlyActive, final LockModeType lockMode) {
-        nullCheck(key);
-        final ENTITY e = getEntityManager().find(getEntityClass(), key, lockMode == null ? LockModeType.PESSIMISTIC_WRITE : lockMode);
-        return findInternalSub(e, key, onlyActive);
+        return findInternalSub(e, key, true);
     }
 
     private void logSearch(final Class<ENTITY> derivedEntityClass, final SearchCriteria searchCriteria, final String what) {
@@ -584,19 +547,15 @@ public abstract class AbstractResolverAnyKey<
     }
 
     /** called by subclasses. */
-    protected ENTITY getEntityDataByGenericKey(final BonaPortable entityRef, final boolean onlyActive) {
+    protected ENTITY getEntityDataByGenericKey(final BonaPortable entityRef) {
         if (entityRef == null) {
             return null;        // play null-safe
         }
-        final ENTITY e = getEntityDataByGenericKey(entityRef, getEntityClass(), (t, cb) -> t, false);
-        if (onlyActive && !e.ret$Active()) {
-            throw new T9tException(T9tException.RECORD_INACTIVE, entityNameAndKey(entityRef));
-        }
-        return e;
+        return getEntityDataByGenericKey(entityRef, getEntityClass(), (t, cb) -> t);
     }
 
     protected <ZZ> ZZ getEntityDataByGenericKey(BonaPortable entityRef, final Class<ZZ> clz,
-            final BiFunction<Root<ENTITY>, CriteriaBuilder, Selection<ZZ>> cvter, final boolean addActiveWhereClause) {
+            final BiFunction<Root<ENTITY>, CriteriaBuilder, Selection<ZZ>> cvter) {
         if (LOGGER.isTraceEnabled())
             LOGGER.trace("read by generic key({}) requested for resolver class {}", entityRef, getClass().getSimpleName());
 
@@ -685,10 +644,6 @@ public abstract class AbstractResolverAnyKey<
             LOGGER.error("resolver caused IllegalAccessException", e1);
             throw new T9tException(T9tException.RESOLVE_ACCESS, entityRef.ret$PQON());
         }
-        // add criteria to isActive, if desired
-        if (addActiveWhereClause) {
-            whereList.add(criteriaBuilder.equal(from.<Boolean>get("isActive"), true));
-        }
         // Append restrictions to overall query if any available
         if (whereList.size() > 0) {
             final Predicate[] predicates = new Predicate[whereList.size()];
@@ -749,12 +704,9 @@ public abstract class AbstractResolverAnyKey<
     }
 
     @Override
-    public ENTITY getEntityDataForKey(final KEY key, final boolean onlyActive) {
-        final ENTITY e = find(key);
-        if (e == null)
-            throw new T9tException(T9tException.RECORD_DOES_NOT_EXIST, entityNameAndKey(key));
-        if (onlyActive && !e.ret$Active())
-            throw new T9tException(T9tException.RECORD_INACTIVE, entityNameAndKey(key));
-        return e;
+    public ENTITY getEntityDataForKey(final KEY key) {
+        nullCheck(key);
+        final ENTITY e = getEntityManager().find(getEntityClass(), key);
+        return findInternalSub(e, key, false);
     }
 }

@@ -37,8 +37,8 @@ class AiUserStatusMappers {
         dto.preferredAssistantRef  = assistantMapper.mapToDto(preferredAssistantRef)
         dto.currentConversationRef = if (currentConversationRef !== null) new AiConversationRef(currentConversationRef)
     }
-    def void d2eAiUserStatusDTO(AiUserStatusEntity entity, AiUserStatusDTO it, boolean onlyActive) {
-        entity.preferredAssistantRef  = assistantResolver.getRef(preferredAssistantRef, onlyActive)
-        entity.currentConversationRef = conversationResolver.getRef(currentConversationRef, onlyActive)
+    def void d2eAiUserStatusDTO(AiUserStatusEntity entity, AiUserStatusDTO it) {
+        entity.preferredAssistantRef  = assistantResolver.getRef(preferredAssistantRef)
+        entity.currentConversationRef = conversationResolver.getRef(currentConversationRef)
     }
 }

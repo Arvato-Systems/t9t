@@ -26,6 +26,6 @@ class DocTemplateEntityMapper {
     IDocTemplateEntityResolver entityResolver
 
     @AutoHandler("SP42")
-    def void d2eDocTemplateDTO(DocTemplateEntity entity, DocTemplateDTO dto, boolean onlyActive) {}
+    def void d2eDocTemplateDTO(DocTemplateEntity entity, DocTemplateDTO dto) {}
     def void e2dDocTemplateDTO(DocTemplateEntity entity, DocTemplateDTO dto) {}
 }

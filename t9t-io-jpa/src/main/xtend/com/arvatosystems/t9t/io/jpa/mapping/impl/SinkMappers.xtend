@@ -28,8 +28,8 @@ class SinkMappers {
     IDataSinkEntityResolver sinkResolver
     IDataSinkFilterPropsMapper sinkMapper
 
-    def void d2eSinkDTO(SinkEntity entity, SinkDTO dto, boolean onlyActive) {
-        entity.dataSinkRef = sinkResolver.getRef(dto.dataSinkRef, onlyActive)
+    def void d2eSinkDTO(SinkEntity entity, SinkDTO dto) {
+        entity.dataSinkRef = sinkResolver.getRef(dto.dataSinkRef)
     }
     def void e2dSinkDTO(SinkEntity entity, SinkDTO dto) {
         dto.dataSinkRef = sinkMapper.mapToDto(entity.dataSinkRef)

@@ -37,7 +37,7 @@ public class MergeDataSinkPresetRequestHandler extends AbstractRequestHandler<Me
     public MergeDataSinkPresetResponse execute(final RequestContext ctx, final MergeDataSinkPresetRequest rq) {
         final MergeDataSinkPresetResponse resp = new MergeDataSinkPresetResponse();
         resp.setWasMerged(false);
-        final DataSinkEntity dataSink = resolver.getEntityDataForKey(rq.getDataSinkRef(), false);
+        final DataSinkEntity dataSink = resolver.getEntityDataForKey(rq.getDataSinkRef());
         if (dataSink.getPreTransformerName() != null) {
             final boolean isInput = Boolean.TRUE.equals(dataSink.getIsInput());
             final IDataSinkDefaultConfigurationProvider configPresetProvider = isInput

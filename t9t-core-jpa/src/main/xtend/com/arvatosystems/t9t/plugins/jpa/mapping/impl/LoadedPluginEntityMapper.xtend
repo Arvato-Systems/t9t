@@ -25,7 +25,7 @@ import com.arvatosystems.t9t.plugins.jpa.entities.LoadedPluginEntity
 class LoadedPluginEntityMapper {
     ILoadedPluginEntityResolver entityResolver
 
-    def void d2eLoadedPluginDTO(LoadedPluginEntity entity, LoadedPluginDTO dto, boolean onlyActive) {}
+    def void d2eLoadedPluginDTO(LoadedPluginEntity entity, LoadedPluginDTO dto) {}
     @AutoHandler("SP42")
     def void e2dLoadedPluginDTO(LoadedPluginEntity entity, LoadedPluginDTO dto) {}
 }

@@ -28,7 +28,7 @@ class UpdateStatusLogEntityMapper {
     IUpdateStatusTicketKeyMapper ticketKeyMapper
 
     @AutoHandler("S42")
-    def void d2eUpdateStatusLogDTO(UpdateStatusLogEntity entity, UpdateStatusLogDTO dto, boolean onlyActive) {}
+    def void d2eUpdateStatusLogDTO(UpdateStatusLogEntity entity, UpdateStatusLogDTO dto) {}
     def void e2dUpdateStatusLogDTO(UpdateStatusLogEntity entity, UpdateStatusLogDTO dto) {
         dto.ticketRef = ticketKeyMapper.mapToDto(entity.ticket)
     }

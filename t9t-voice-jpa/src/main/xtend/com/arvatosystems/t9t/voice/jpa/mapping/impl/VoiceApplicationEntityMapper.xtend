@@ -26,7 +26,7 @@ class VoiceApplicationEntityMapper {
     IVoiceApplicationEntityResolver entityResolver
 
     @AutoHandler("CSP42")
-    def void d2eVoiceApplicationDTO(VoiceApplicationEntity entity, VoiceApplicationDTO dto, boolean onlyActive) {}
+    def void d2eVoiceApplicationDTO(VoiceApplicationEntity entity, VoiceApplicationDTO dto) {}
     def void e2dVoiceApplicationDTO(VoiceApplicationEntity entity, VoiceApplicationDTO dto) {}
 
 }

@@ -65,11 +65,11 @@ public abstract class AbstractCrudCompositeRefKeyRequestHandler<
                 rs.setKey(result.ret$Key()); // just copy
                 break;
             case READ:
-                result = resolver.findActive(key, crudRequest.getOnlyActive());
+                result = resolver.getEntityDataForKey(key);
                 rs.setKey(key); // just copy
                 break;
             case DELETE:
-                result = resolver.findActive(key, crudRequest.getOnlyActive());
+                result = resolver.getEntityDataForKey(key);
                 if (!resolver.writeAllowed(resolver.getTenantId(result))) {
                     throw new T9tException(T9tException.WRITE_ACCESS_ONLY_CURRENT_TENANT);
                 }
@@ -77,14 +77,14 @@ public abstract class AbstractCrudCompositeRefKeyRequestHandler<
                 entityManager.remove(result);
                 break;
             case INACTIVATE:
-                result = resolver.findActive(key, crudRequest.getOnlyActive());
+                result = resolver.getEntityDataForKey(key);
                 if (!resolver.writeAllowed(resolver.getTenantId(result))) {
                     throw new T9tException(T9tException.WRITE_ACCESS_ONLY_CURRENT_TENANT);
                 }
                 result.put$Active(false);
                 break;
             case ACTIVATE:
-                result = resolver.findActive(key, crudRequest.getOnlyActive());
+                result = resolver.getEntityDataForKey(key);
                 if (!resolver.writeAllowed(resolver.getTenantId(result))) {
                     throw new T9tException(T9tException.WRITE_ACCESS_ONLY_CURRENT_TENANT);
                 }

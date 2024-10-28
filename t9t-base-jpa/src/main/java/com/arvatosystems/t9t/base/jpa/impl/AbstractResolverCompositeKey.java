@@ -53,8 +53,8 @@ public abstract class AbstractResolverCompositeKey<
     }
 
     @Override
-    public ENTITY getEntityData(final REF entityRef, final boolean onlyActive) {
-        return getEntityDataByGenericKey(resolveNestedRefs(entityRef), onlyActive);
+    public ENTITY getEntityData(final REF entityRef) {
+        return getEntityDataByGenericKey(resolveNestedRefs(entityRef));
     }
 
     /** Convert any REF to a KEY (if supported). */

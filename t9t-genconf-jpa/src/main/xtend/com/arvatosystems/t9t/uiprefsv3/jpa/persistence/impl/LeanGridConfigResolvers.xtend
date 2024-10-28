@@ -25,7 +25,7 @@ import java.util.List
 class LeanGridConfigResolvers {
 
     @AllCanAccessGlobalTenant  // for DataSinkEntity, everyone can see the global tenant's defaults
-    def LeanGridConfigEntity   getLeanGridConfigEntity (LeanGridConfigRef  entityRef, boolean onlyActive) { return null; }
+    def LeanGridConfigEntity   getLeanGridConfigEntity (LeanGridConfigRef  entityRef) { return null; }
     def LeanGridConfigEntity   findByKey(boolean onlyActive, String tenantId, String gridId, Integer variant, Long userRef) { return null; }
     def List<LeanGridConfigEntity> findByAll(boolean onlyActive) { return null; }
     def List<LeanGridConfigEntity> findByGridId(boolean onlyActive, String gridId) { return null; }

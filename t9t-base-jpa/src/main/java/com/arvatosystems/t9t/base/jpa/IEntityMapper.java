@@ -81,14 +81,10 @@ public interface IEntityMapper<KEY extends Serializable, DTO extends BonaPortabl
      * null, the returned entity will be null.
      *
      * @param dto
-     * @param onlyActive
      * @return the entity
      */
     @Nullable
-    ENTITY mapToEntity(@Nullable DTO dto, boolean onlyActive); // convert a DTO into an entity
-
-    // protected void dto2Entity(ENTITY entity, DTO dto, boolean onlyActive);  // helper method which is overridden by extensions / customizations
-    // protected void entity2Dto(ENTITY entity, DTO dto);  // helper method which is overridden by extensions / customizations
+    ENTITY mapToEntity(@Nullable DTO dto); // convert a DTO into an entity
 
     /**
      * Merges the fields of the provided DTO into an existing entity. This is used for updates, i.e. the JPA attachment status of the existing entity is not
@@ -98,10 +94,9 @@ public interface IEntityMapper<KEY extends Serializable, DTO extends BonaPortabl
      *            - an existing instance of a JPA entity
      * @param dto
      *            - a DTO with data to be updated.
-     * @param onlyActive
      */
     @Nonnull
-    void merge2Entity(@Nonnull ENTITY entity, @Nonnull DTO dto, boolean onlyActive); // synonym for protected dto2Entity
+    void merge2Entity(@Nonnull ENTITY entity, @Nonnull DTO dto); // synonym for protected dto2Entity
 
     /**
      * Maps a collection of entities to a list of standard DTOs.
@@ -124,7 +119,7 @@ public interface IEntityMapper<KEY extends Serializable, DTO extends BonaPortabl
      * @param dtoList the input list
      */
     @Nonnull
-    void mapCollectionToEntity(@Nonnull Collection<ENTITY> target, @Nonnull Collection<DTO> dtoList, boolean onlyActive);
+    void mapCollectionToEntity(@Nonnull Collection<ENTITY> target, @Nonnull Collection<DTO> dtoList);
 
     /**
      * Verifies that no field with property "notupdatable" has a different value in the intended entity. Throws a T9tException.FIELD_MAY_NOT_BE_CHANGED if a

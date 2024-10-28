@@ -24,7 +24,7 @@ import com.arvatosystems.t9t.trns.jpa.entities.TrnsModuleCfgEntity
 @AutoResolver42
 class TrnsResolvers {
     @AllCanAccessGlobalTenant
-    def TrnsModuleCfgEntity     getTrnsModuleCfgEntity      (String id,      boolean onlyActive) {}
+    def TrnsModuleCfgEntity     getTrnsModuleCfgEntity      (String id) {}
     @AllCanAccessGlobalTenant
-    def TranslationsEntity      getTranslationsEntity       (TranslationsRef ref,       boolean onlyActive) {}
+    def TranslationsEntity      getTranslationsEntity       (TranslationsRef ref) {}
 }

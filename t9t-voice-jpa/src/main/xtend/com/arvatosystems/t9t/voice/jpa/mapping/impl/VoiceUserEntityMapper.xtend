@@ -29,11 +29,11 @@ class VoiceUserEntityMapper {
     IVoiceApplicationEntityResolver voiceApplicationResolver
 
     @AutoHandler("SP42")
-    def void d2eVoiceUserDTO(VoiceUserEntity entity, VoiceUserDTO it, boolean onlyActive) {
-        entity.applicationRef = voiceApplicationResolver.getRef(applicationRef, false)
+    def void d2eVoiceUserDTO(VoiceUserEntity entity, VoiceUserDTO it) {
+        entity.applicationRef = voiceApplicationResolver.getRef(applicationRef)
     }
     def void e2dVoiceUserDTO(VoiceUserEntity it, VoiceUserDTO dto) {
-        val appl = voiceApplicationResolver.getEntityDataForKey(applicationRef, false)
+        val appl = voiceApplicationResolver.getEntityDataForKey(applicationRef)
         dto.applicationRef = new VoiceApplicationKey(appl.objectRef, appl.applicationId)
     }
 }

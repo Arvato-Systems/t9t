@@ -26,6 +26,6 @@ class VoiceModuleCfgEntityMapper {
     IVoiceModuleCfgEntityResolver entityResolver
 
     @AutoHandler("SP42")
-    def void d2eVoiceModuleCfgDTO(VoiceModuleCfgEntity entity, VoiceModuleCfgDTO dto, boolean onlyActive) {}
+    def void d2eVoiceModuleCfgDTO(VoiceModuleCfgEntity entity, VoiceModuleCfgDTO dto) {}
     def void e2dVoiceModuleCfgDTO(VoiceModuleCfgEntity entity, VoiceModuleCfgDTO dto) {}
 }

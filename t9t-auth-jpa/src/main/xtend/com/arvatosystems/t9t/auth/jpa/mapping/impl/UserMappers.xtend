@@ -32,9 +32,9 @@ class UserMappers {
     IRoleDTOMapper roleMapper
 
     @NeedMapping  // required because the DTO is final
-    def void d2eUserDTO(UserEntity entity, UserDTO dto, boolean onlyActive) {
-        entity.roleRef       = roleResolver.getRef(dto.roleRef,       onlyActive)
-        entity.supervisorRef = userResolver.getRef(dto.supervisorRef, onlyActive)
+    def void d2eUserDTO(UserEntity entity, UserDTO dto) {
+        entity.roleRef       = roleResolver.getRef(dto.roleRef)
+        entity.supervisorRef = userResolver.getRef(dto.supervisorRef)
     }
 
     @NeedMapping  // required because the DTO is final

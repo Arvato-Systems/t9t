@@ -25,5 +25,5 @@ class AsyncQueueMappers {
     IAsyncQueueEntityResolver resolver
 
     def void e2dAsyncQueueDTO(AsyncQueueEntity entity, AsyncQueueDTO dto) {}
-    def void d2eAsyncQueueDTO(AsyncQueueEntity entity, AsyncQueueDTO dto, boolean onlyActive) {}
+    def void d2eAsyncQueueDTO(AsyncQueueEntity entity, AsyncQueueDTO dto) {}
 }

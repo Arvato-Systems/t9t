@@ -26,7 +26,7 @@ class TrnsModuleCfgEntityMapper {
     ITrnsModuleCfgEntityResolver entityResolver
 
     @AutoHandler("SP42")
-    def void d2eTrnsModuleCfgDTO(TrnsModuleCfgEntity entity, TrnsModuleCfgDTO dto, boolean onlyActive) {}
+    def void d2eTrnsModuleCfgDTO(TrnsModuleCfgEntity entity, TrnsModuleCfgDTO dto) {}
     def void e2dTrnsModuleCfgDTO(TrnsModuleCfgEntity entity, TrnsModuleCfgDTO dto) {}
 
 }

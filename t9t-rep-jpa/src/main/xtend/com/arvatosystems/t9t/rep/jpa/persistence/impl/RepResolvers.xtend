@@ -26,9 +26,9 @@ import java.util.List
 @AutoResolver42
 class RepResolvers {
     @AllCanAccessGlobalTenant
-    def ReportConfigEntity getReportConfigEntity (ReportConfigRef   entityRef, boolean onlyActive) { return null; }
+    def ReportConfigEntity getReportConfigEntity (ReportConfigRef   entityRef) { return null; }
     def ReportConfigEntity findByReportIdWithDefault(boolean onlyActive, String reportConfigId) { return null; }
     def List<ReportConfigEntity> findByReportIds(boolean onlyActive, List<String> reportConfigId) { return null; }
-    def ReportParamsEntity getReportParamsEntity (ReportParamsRef   entityRef, boolean onlyActive) { return null; }
+    def ReportParamsEntity getReportParamsEntity (ReportParamsRef   entityRef) { return null; }
     def ReportParamsEntity findByReportRunId(boolean onlyActive, String reportParamsId) { return null; }
 }

@@ -28,8 +28,8 @@ class RoleToPermissionMappers {
     IRoleDTOMapper roleMapper
     IRoleEntityResolver roleResolver
 
-    def void d2eRoleToPermissionDTO(RoleToPermissionEntity entity, RoleToPermissionDTO it, boolean onlyActive) {
-        entity.roleRef = roleResolver.getRef(roleRef, onlyActive)
+    def void d2eRoleToPermissionDTO(RoleToPermissionEntity entity, RoleToPermissionDTO it) {
+        entity.roleRef = roleResolver.getRef(roleRef)
     }
 
     def void e2dRoleToPermissionDTO(RoleToPermissionEntity it, RoleToPermissionDTO dto) {

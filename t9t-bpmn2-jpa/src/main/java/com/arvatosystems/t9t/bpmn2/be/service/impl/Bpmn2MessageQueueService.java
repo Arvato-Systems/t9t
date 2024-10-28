@@ -37,7 +37,7 @@ public class Bpmn2MessageQueueService implements IBpmn2MessageQueueService {
 
     @Override
     public void queueMessage(final Bpmn2MessageQueueDTO message) {
-        final Bpmn2MessageQueueEntity messageEntity = mapper.mapToEntity(message, false);
+        final Bpmn2MessageQueueEntity messageEntity = mapper.mapToEntity(message);
         resolver.save(messageEntity);
 
         LOGGER.debug("Created new message queue entry {} with ref {}", message, messageEntity.getObjectRef());

@@ -24,7 +24,7 @@ import com.arvatosystems.t9t.auth.jpa.persistence.IAuthModuleCfgEntityResolver
 class AuthModuleCfgEntityMapper {
     IAuthModuleCfgEntityResolver entityResolver
 
-    def void d2eAuthModuleCfgDTO(AuthModuleCfgEntity entity, AuthModuleCfgDTO dto, boolean onlyActive) {}
+    def void d2eAuthModuleCfgDTO(AuthModuleCfgEntity entity, AuthModuleCfgDTO dto) {}
     def void e2dAuthModuleCfgDTO(AuthModuleCfgEntity entity, AuthModuleCfgDTO dto) {}
 
 }

@@ -27,9 +27,9 @@ import com.arvatosystems.t9t.batch.jpa.entities.StatisticsEntity
 
 @AutoResolver42
 class BatchResolvers {
-    def StatisticsEntity        getStatisticsEntity   (StatisticsRef    entityRef, boolean onlyActive) { return null; }
-    def StatisticsAggregationEntity getStatisticsAggregationEntity (StatisticsAggregationRef entityRef, boolean onlyActive) { return null; }
-    def SliceTrackingEntity     getSliceTrackingEntity(SliceTrackingRef entityRef, boolean onlyActive) { return null; }
+    def StatisticsEntity        getStatisticsEntity   (StatisticsRef    entityRef) { return null; }
+    def StatisticsAggregationEntity getStatisticsAggregationEntity (StatisticsAggregationRef entityRef) { return null; }
+    def SliceTrackingEntity     getSliceTrackingEntity(SliceTrackingRef entityRef) { return null; }
     def SliceTrackingEntity     findByDataSinkIdAndId(boolean onlyActive, String dataSinkId, String id) {null}
-    def RecordEventsEntity        getRecordEventsEntity(RecordEventsRef    entityRef, boolean onlyActive) { return null; }
+    def RecordEventsEntity        getRecordEventsEntity(RecordEventsRef    entityRef) { return null; }
 }

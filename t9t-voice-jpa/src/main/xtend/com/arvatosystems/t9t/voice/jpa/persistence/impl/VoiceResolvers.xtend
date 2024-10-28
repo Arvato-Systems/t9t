@@ -33,10 +33,10 @@ import com.arvatosystems.t9t.voice.jpa.entities.VoiceUserEntity
 class VoiceResolvers {
 
     @AllCanAccessGlobalTenant
-    def VoiceModuleCfgEntity      getVoiceModuleCfgEntity       (String id,                   boolean onlyActive) {}
+    def VoiceModuleCfgEntity      getVoiceModuleCfgEntity       (String id) {}
     @GlobalTenantCanAccessAll
-    def VoiceApplicationEntity    getVoiceApplicationEntity     (VoiceApplicationRef ref,     boolean onlyActive) {}
+    def VoiceApplicationEntity    getVoiceApplicationEntity     (VoiceApplicationRef ref) {}
     @GlobalTenantCanAccessAll
-    def VoiceUserEntity           getVoiceUserEntity            (VoiceUserRef ref,            boolean onlyActive) {}
-    def VoiceResponseEntity       getVoiceResponseEntity        (VoiceResponseRef ref,        boolean onlyActive) {}
+    def VoiceUserEntity           getVoiceUserEntity            (VoiceUserRef ref) {}
+    def VoiceResponseEntity       getVoiceResponseEntity        (VoiceResponseRef ref) {}
 }

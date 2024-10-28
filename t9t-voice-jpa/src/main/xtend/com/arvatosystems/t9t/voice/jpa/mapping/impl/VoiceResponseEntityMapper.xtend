@@ -29,11 +29,11 @@ class VoiceResponseEntityMapper {
     IVoiceApplicationEntityResolver voiceApplicationResolver
 
     @AutoHandler("CSP42")
-    def void d2eVoiceResponseDTO(VoiceResponseEntity entity, VoiceResponseDTO it, boolean onlyActive) {
-        entity.applicationRef = voiceApplicationResolver.getRef(applicationRef, false)
+    def void d2eVoiceResponseDTO(VoiceResponseEntity entity, VoiceResponseDTO it) {
+        entity.applicationRef = voiceApplicationResolver.getRef(applicationRef)
     }
     def void e2dVoiceResponseDTO(VoiceResponseEntity it, VoiceResponseDTO dto) {
-        val appl = voiceApplicationResolver.getEntityDataForKey(applicationRef, false)
+        val appl = voiceApplicationResolver.getEntityDataForKey(applicationRef)
         dto.applicationRef = new VoiceApplicationKey(appl.objectRef, appl.applicationId)
     }
 }

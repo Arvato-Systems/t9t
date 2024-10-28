@@ -33,7 +33,7 @@ class AsyncMessageMappers {
             dto.latency = entity.lastAttempt.toEpochMilli - entity.whenSent.toEpochMilli
         dto.asyncQueueRef = queueMapper.mapToDto(entity.asyncQueue)
     }
-    def void d2eAsyncMessageDTO(AsyncMessageEntity entity, AsyncMessageDTO dto, boolean onlyActive) {
-        entity.asyncQueueRef = queueResolver.getRef(dto.asyncQueueRef, onlyActive)
+    def void d2eAsyncMessageDTO(AsyncMessageEntity entity, AsyncMessageDTO dto) {
+        entity.asyncQueueRef = queueResolver.getRef(dto.asyncQueueRef)
     }
 }

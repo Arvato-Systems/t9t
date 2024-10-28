@@ -61,7 +61,7 @@ public abstract class AbstractResolverSurrogateKey<
     }
 
     @Override
-    public Long getRef(final REF entityRef, final boolean onlyActive) {
+    public Long getRef(final REF entityRef) {
         if (entityRef == null) {
             return null;        // play null-safe
         }
@@ -69,36 +69,35 @@ public abstract class AbstractResolverSurrogateKey<
             // shortcut: the required information is available already! (ignores onlyActive because we resolved already before)
             return entityRef.getObjectRef();
         }
-        return getEntityDataByGenericKey(resolveNestedRefs(entityRef), Long.class, (t, cb) -> t.<Long>get("objectRef"), onlyActive);
+        return getEntityDataByGenericKey(resolveNestedRefs(entityRef), Long.class, (t, cb) -> t.<Long>get("objectRef"));
     }
 
     @Override
-    public <Z> Z getField(final REF entityRef, final boolean onlyActive, final String fieldName, final Class<Z> cls) {
+    public <Z> Z getField(final REF entityRef, final String fieldName, final Class<Z> cls) {
         if (entityRef == null) {
             return null;        // play null-safe
         }
-        return getEntityDataByGenericKey(resolveNestedRefs(entityRef), cls, (t, cb) -> t.get(fieldName), onlyActive);
+        return getEntityDataByGenericKey(resolveNestedRefs(entityRef), cls, (t, cb) -> t.get(fieldName));
     }
 
     @Override
-    public TwoRefs getRefs(final REF entityRef, final boolean onlyActive, final String fieldName) {
+    public TwoRefs getRefs(final REF entityRef, final String fieldName) {
         return getEntityDataByGenericKey(resolveNestedRefs(entityRef), TwoRefs.class,
-            (t, cb) -> cb.construct(TwoRefs.class, t.get("objectRef"), t.get(fieldName)),
-            onlyActive);
+            (t, cb) -> cb.construct(TwoRefs.class, t.get("objectRef"), t.get(fieldName)));
     }
 
     @Override
-    public ENTITY getEntityData(final REF entityRef, final boolean onlyActive) {
+    public ENTITY getEntityData(final REF entityRef) {
 
         if (entityRef == null) {
             return null;        // play null-safe
         }
         final Long r = entityRef.getObjectRef();
         if (r != null) {
-            return findInternal(r, onlyActive);
+            return getEntityDataForKey(r);
         }
         // preprocess the reference
-        return getEntityDataByGenericKey(resolveNestedRefs(entityRef), onlyActive);
+        return getEntityDataByGenericKey(resolveNestedRefs(entityRef));
     }
 
     @Override
@@ -114,7 +113,7 @@ public abstract class AbstractResolverSurrogateKey<
             return preloaded;
         }
         // the correct one has not been found, must resolve it myself
-        return getEntityDataForKey(entityRef, false);
+        return getEntityDataForKey(entityRef);
     }
 
     /** Sets the default sort order to sort by artificial key. */

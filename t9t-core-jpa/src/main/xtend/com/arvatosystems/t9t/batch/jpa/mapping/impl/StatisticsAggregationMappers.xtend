@@ -28,6 +28,6 @@ class StatisticsAggregationMappers {
     def void e2dStatisticsAggregationDTO(StatisticsAggregationEntity entity, StatisticsAggregationDTO dto) {
     }
 
-    def void d2eStatisticsAggregationDTO(StatisticsAggregationEntity entity, StatisticsAggregationDTO dto, boolean onlyActive) {
+    def void d2eStatisticsAggregationDTO(StatisticsAggregationEntity entity, StatisticsAggregationDTO dto) {
     }
 }

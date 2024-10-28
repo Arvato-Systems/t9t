@@ -67,7 +67,7 @@ public class DataSinkCrudRequestHandler extends AbstractCrudSurrogateKeyRequestH
         DataSinkDTO dataSinkDTO = null;
         if (crudRequest.getCrud() == OperationType.DELETE) {
             // In case of delete, we need to save the key to allow providing a DataSinkKey (with dataSinkId) in the event later on
-            dataSinkDTO = sinksMapper.mapToDto(sinksResolver.findActive(crudRequest.getKey(), false));
+            dataSinkDTO = sinksMapper.mapToDto(sinksResolver.getEntityDataForKey(crudRequest.getKey()));
         }
 
         final CrudSurrogateKeyResponse<DataSinkDTO, FullTrackingWithVersion> response = execute(ctx, sinksMapper, sinksResolver, crudRequest);

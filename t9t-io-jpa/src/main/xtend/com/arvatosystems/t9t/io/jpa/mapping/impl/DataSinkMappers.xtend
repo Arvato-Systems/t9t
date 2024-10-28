@@ -37,9 +37,9 @@ class DataSinkMappers {
         dto.responseDataSinkRef     = keyMapper.mapToDto(entity.responseDataSinkRef)
     }
 
-    def void d2eDataSinkDTO         (DataSinkEntity entity, DataSinkDTO dto, boolean onlyActive) {
-        entity.csvConfigurationRef = csvResolver.getRef(dto.csvConfigurationRef, onlyActive)
-        entity.responseDataSinkRef = entityResolver.getRef(dto.responseDataSinkRef, onlyActive)
+    def void d2eDataSinkDTO         (DataSinkEntity entity, DataSinkDTO dto) {
+        entity.csvConfigurationRef = csvResolver.getRef(dto.csvConfigurationRef)
+        entity.responseDataSinkRef = entityResolver.getRef(dto.responseDataSinkRef)
     }
 
     def void e2dDataSinkKey         (DataSinkEntity entity, DataSinkKey dto) {}

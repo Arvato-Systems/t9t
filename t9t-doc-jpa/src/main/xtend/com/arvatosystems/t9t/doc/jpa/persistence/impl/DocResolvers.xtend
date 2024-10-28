@@ -37,16 +37,16 @@ import java.util.List
 class DocResolvers {
 
     @AllCanAccessGlobalTenant
-    def DocModuleCfgEntity      getDocModuleCfgEntity       (String id,       boolean onlyActive) {}
+    def DocModuleCfgEntity      getDocModuleCfgEntity       (String id) {}
     @AllCanAccessGlobalTenant
-    def DocConfigEntity         getDocConfigEntity          (DocConfigRef ref,          boolean onlyActive) {}
+    def DocConfigEntity         getDocConfigEntity          (DocConfigRef ref) {}
     @AllCanAccessGlobalTenant
-    def DocEmailCfgEntity       getDocEmailCfgEntity        (DocEmailCfgRef ref,        boolean onlyActive) {}
+    def DocEmailCfgEntity       getDocEmailCfgEntity        (DocEmailCfgRef ref) {}
     @AllCanAccessGlobalTenant
-    def DocTemplateEntity       getDocTemplateEntity        (DocTemplateRef ref,        boolean onlyActive) {}
+    def DocTemplateEntity       getDocTemplateEntity        (DocTemplateRef ref) {}
     @AllCanAccessGlobalTenant
-    def DocComponentEntity      getDocComponentEntity       (DocComponentRef ref,       boolean onlyActive) {}
+    def DocComponentEntity      getDocComponentEntity       (DocComponentRef ref) {}
 
-    def MailingGroupEntity      getMailingGroupEntity       (MailingGroupRef ref,       boolean onlyActive) { return null; }
+    def MailingGroupEntity      getMailingGroupEntity       (MailingGroupRef ref) { return null; }
     def List<MailingGroupEntity> findByMailingGroupIds(boolean onlyActive, List<String> mailingGroupId) { return null; }
 }

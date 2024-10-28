@@ -24,6 +24,6 @@ import com.arvatosystems.t9t.auth.jpa.persistence.ITenantLogoEntityResolver
 class TenantLogoEntityMapper {
     ITenantLogoEntityResolver entityResolver
 
-    def void d2eTenantLogoDTO(TenantLogoEntity entity, TenantLogoDTO dto, boolean onlyActive) {}
+    def void d2eTenantLogoDTO(TenantLogoEntity entity, TenantLogoDTO dto) {}
     def void e2dTenantLogoDTO(TenantLogoEntity entity, TenantLogoDTO dto) {}
 }

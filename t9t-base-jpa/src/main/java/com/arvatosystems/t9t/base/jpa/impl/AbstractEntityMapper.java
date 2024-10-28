@@ -97,21 +97,21 @@ public abstract class AbstractEntityMapper<
     }
 
     @Override
-    public final void mapCollectionToEntity(final Collection<ENTITY> target, final Collection<DTO> dtoList, final boolean onlyActive) {
+    public final void mapCollectionToEntity(final Collection<ENTITY> target, final Collection<DTO> dtoList) {
         if (dtoList != null) {
             for (final DTO dto : dtoList) {
-                target.add(mapToEntity(dto, onlyActive));
+                target.add(mapToEntity(dto));
             }
         }
     }
 
     @Override
-    public final void merge2Entity(final ENTITY entity, final DTO dto, final boolean onlyActive) {
-        dto2entity(entity, dto, onlyActive);
+    public final void merge2Entity(final ENTITY entity, final DTO dto) {
+        dto2entity(entity, dto);
     }
 
     /** just a hook not defined in the public interface which allows to jump up to the specific implementation. */
-    protected abstract void dto2entity(ENTITY entity, DTO dto, boolean onlyActive);
+    protected abstract void dto2entity(ENTITY entity, DTO dto);
 
     /**
      * Verifies that no field with property "notupdatable" has a different value in the intended entity. Throws a T9tException.FIELD_MAY_NOT_BE_CHANGED if a

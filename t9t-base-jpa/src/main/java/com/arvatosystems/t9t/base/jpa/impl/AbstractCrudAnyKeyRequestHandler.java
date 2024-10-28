@@ -211,7 +211,7 @@ public abstract class AbstractCrudAnyKeyRequestHandler<
             final REQUEST crudRequest, final EntityManager entityManager) {
         // check
         validateCreate(crudRequest.getData()); // plausibility check
-        final ENTITY result = mapper.mapToEntity(crudRequest.getData(), crudRequest.getOnlyActive());
+        final ENTITY result = mapper.mapToEntity(crudRequest.getData());
         validateCreate(result, crudRequest.getData()); // plausibility
 
         try {
@@ -236,14 +236,10 @@ public abstract class AbstractCrudAnyKeyRequestHandler<
             LOGGER.error("WRITE operation on {} for key {} rejected because other tenant", result.getClass().getSimpleName(), key);
             throw new T9tException(T9tException.WRITE_ACCESS_ONLY_CURRENT_TENANT, result.getClass().getSimpleName() + ": " + key);
         }
-        if (crudRequest.getOnlyActive() && !result.ret$Active()) {
-            LOGGER.error("CRUD on {} for key {} rejected because onlyActive requested", result.getClass().getSimpleName(), key);
-            throw new T9tException(T9tException.RECORD_INACTIVE, result.getClass().getSimpleName() + ": " + key);
-        }
         validateUpdate(result, dto); // plausibility check
         mapper.checkNoUpdateFields(result, dto);
         // now the mapping must go to the resolved entity and not to some new object, because otherwise child entities are not available
-        mapper.merge2Entity(result, dto, crudRequest.getOnlyActive());
+        mapper.merge2Entity(result, dto);
 
         try {
             entityManager.flush();

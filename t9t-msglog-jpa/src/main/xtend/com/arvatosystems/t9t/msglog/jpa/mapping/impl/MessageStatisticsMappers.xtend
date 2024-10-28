@@ -29,5 +29,5 @@ class MessageStatisticsMappers {
         dto.processingDelayAvg = processingDelayTotal as double / (countError + countOk)
     }
 
-    def void d2eMessageStatisticsDTO(MessageStatisticsEntity it, MessageStatisticsDTO dto, boolean onlyActive) {}
+    def void d2eMessageStatisticsDTO(MessageStatisticsEntity it, MessageStatisticsDTO dto) {}
 }

@@ -67,7 +67,7 @@ public class RetryAsyncMessagesRequestHandler extends AbstractRequestHandler<Ret
         }
         addRangeFilter(searchFilters, "attempts", request.getMinRetries(), request.getMaxRetries());
         if (request.getOnlyAsyncQueueRef() != null) {
-            final Long queueRef = queueResolver.getRef(request.getOnlyAsyncQueueRef(), false);
+            final Long queueRef = queueResolver.getRef(request.getOnlyAsyncQueueRef());
             searchFilters.add(SearchFilters.equalsFilter("asyncQueueRef", queueRef));
         }
         if (request.getOnlyAsyncChannelId() != null) {
@@ -99,7 +99,7 @@ public class RetryAsyncMessagesRequestHandler extends AbstractRequestHandler<Ret
         int count = 0;
         for (final Long messageRef: messageRefs) {
             // retrieve the full message entity
-            final AsyncMessageEntity message = messageResolver.getEntityDataForKey(messageRef, false);
+            final AsyncMessageEntity message = messageResolver.getEntityDataForKey(messageRef);
             message.setStatus(ExportStatusEnum.READY_TO_EXPORT);
             if ((++count & 15) == 0) {
                 // every 16th we flush to ensure that fast transmissions do not cause race conditions

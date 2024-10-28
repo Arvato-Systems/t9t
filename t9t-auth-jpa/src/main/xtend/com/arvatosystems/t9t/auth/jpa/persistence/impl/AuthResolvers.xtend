@@ -40,40 +40,40 @@ import java.util.List
 @AutoResolver42
 class AuthResolvers {
     @AllCanAccessGlobalTenant
-    def AuthModuleCfgEntity     getAuthModuleCfgEntity(String id, boolean onlyActive) { return null; }
+    def AuthModuleCfgEntity     getAuthModuleCfgEntity(String id) { return null; }
 
     @AllCanAccessGlobalTenant
-    def TenantLogoEntity        getTenantLogoEntity   (String id, boolean onlyActive) { return null; }
+    def TenantLogoEntity        getTenantLogoEntity   (String id) { return null; }
 
     @GlobalTenantCanAccessAll   // admin access to all tenant's data
-    def SessionEntity           getSessionEntity(SessionRef entityRef, boolean onlyActive) { return null; }
+    def SessionEntity           getSessionEntity(SessionRef entityRef) { return null; }
 
     @GlobalTenantCanAccessAll   // for Users, the admin can manage users of all tenants
     @AllCanAccessGlobalTenant   // if I'm a global user but logged on using a specific tenant, I must see my data as well
-    def UserEntity              getUserEntity(UserRef ref, boolean onlyActive) { return null; }
+    def UserEntity              getUserEntity(UserRef ref) { return null; }
     def UserEntity              findByUserId(boolean onlyActive, String userId) { return null; }
 
 
     @GlobalTenantCanAccessAll   // for Tenants, the admin can manage all
     @AllCanAccessGlobalTenant
-    def TenantEntity            getTenantEntity(String id, boolean onlyActive) { return null; }
+    def TenantEntity            getTenantEntity(String id) { return null; }
 
     @GlobalTenantCanAccessAll
     @AllCanAccessGlobalTenant
-    def RoleEntity              getRoleEntity(RoleRef entityRef, boolean onlyActive) { return null; }
+    def RoleEntity              getRoleEntity(RoleRef entityRef) { return null; }
     def List<RoleEntity>        findByRoleIdWithDefault (boolean onlyActive, String roleId) { return null; }
 
     // UserTenantRoles is category A + D (global access for @, default access for other users)
     @AllCanAccessGlobalTenant
     @GlobalTenantCanAccessAll
-    def UserTenantRoleEntity    getUserTenantRoleEntity(UserTenantRoleRef entityRef, boolean onlyActive) { return null; }
+    def UserTenantRoleEntity    getUserTenantRoleEntity(UserTenantRoleRef entityRef) { return null; }
 
     // RoleToPermissions is category A + D (global access for @, default access for other users)
     @AllCanAccessGlobalTenant
     @GlobalTenantCanAccessAll
-    def RoleToPermissionEntity  getRoleToPermissionEntity(RoleToPermissionRef entityRef, boolean onlyActive) { return null; }
+    def RoleToPermissionEntity  getRoleToPermissionEntity(RoleToPermissionRef entityRef) { return null; }
 
 
-    def ApiKeyEntity            getApiKeyEntity (ApiKeyRef ref,    boolean onlyActive) { return null; }
-    def PasswordEntity          getPasswordEntity(PasswordKey key, boolean onlyActive) { return null; }
+    def ApiKeyEntity            getApiKeyEntity (ApiKeyRef ref) { return null; }
+    def PasswordEntity          getPasswordEntity(PasswordKey key) { return null; }
 }

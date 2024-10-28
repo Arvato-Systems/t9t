@@ -33,7 +33,7 @@ public class UpdateAsyncMessageStatusRequestHandler extends AbstractRequestHandl
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final UpdateAsyncMessageStatusRequest rq) {
-        final AsyncMessageEntity message = messageResolver.getEntityData(new AsyncMessageRef(rq.getAsyncMessageRef()), false);
+        final AsyncMessageEntity message = messageResolver.getEntityData(new AsyncMessageRef(rq.getAsyncMessageRef()));
         final boolean shouldResend = rq.getNewStatus() == ExportStatusEnum.READY_TO_EXPORT;
         message.setStatus(rq.getNewStatus());
         // message.setLastAttempt(ctx.executionStart);  // do not update lastAttempt before it actually has been attempted

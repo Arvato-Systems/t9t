@@ -66,7 +66,7 @@ import com.arvatosystems.t9t.base.jpa.impl.AbstractResolverSurrogateKey
 
 /** The automapper generates data copies for elements of same name and type. It can also apply lookups / resolvers. */
 class AutoResolver42Processor extends AbstractClassProcessor {
-    val resolverRevision = "2023-04-25 10:07 CEST (Xtend 2.29.0)"
+    val resolverRevision = "2024-10-18 22:26 CEST (Xtend 2.35.0, Java 17)"
 
     def getResolverClassName(ClassDeclaration m, MethodDeclaration r) {
         return m.packageName + "impl." + r.simpleName.substring(3) + "Resolver"
@@ -169,9 +169,9 @@ class AutoResolver42Processor extends AbstractClassProcessor {
                     r.addError("Method of name get... must return a JPA entity, found " + rt)
                     return  // stop activity
                 }
-                // ensure the method has exactly two parameters, one which extends Ref, one which is a boolean
-                if (r.parameters === null || r.parameters.size != 2) {
-                    r.addError("Methods of name get... must have exactly two parameters.")
+                // ensure the method has exactly one parameters, which extends Ref
+                if (r.parameters === null || r.parameters.size != 1) {
+                    r.addError("Methods of name get... must have exactly one parameters.")
                     return  // stop activity
                 }
                 val source = r.parameters.get(0)
@@ -186,11 +186,6 @@ class AutoResolver42Processor extends AbstractClassProcessor {
                 val newNatKey = CompositeKey.newTypeReference.isAssignableFrom(myKeyType)
                 if (!bonaType.isAssignableFrom(source.type) && !stringKey && !longKey) {
                     r.parameters.get(0).addError("First parameter of method named get... must be a BonaPortable or a String or Long, found " + source.type)
-                    return  // stop activity
-                }
-                val bool = r.parameters.get(1)
-                if (!bool.type.primitive || bool.type.array || bool.type.name != "boolean") {
-                    r.parameters.get(1).addError("Second parameter of method named get... must be a boolean, found " + bool.type.name)
                     return  // stop activity
                 }
 
@@ -392,7 +387,7 @@ class AutoResolver42Processor extends AbstractClassProcessor {
                     injected(context)
                 ]
                 // refer to the injected resolver for this method's body
-                r.body = [ '''return «injectedFieldName».getEntityData(«source.simpleName», «bool.simpleName»);''' ]
+                r.body = [ '''return «injectedFieldName».getEntityData(«source.simpleName»);''' ]
 
                 if (surrogateKey) {
                     // create an additional method to get the reference only (similar to r)
@@ -402,8 +397,7 @@ class AutoResolver42Processor extends AbstractClassProcessor {
                         returnType = primitiveLong
                         final = true
                         addParameter(source.simpleName, source.type)
-                        addParameter(bool.simpleName, bool.type)
-                        body = [ '''return «injectedFieldName».getRef(«source.simpleName», «bool.simpleName»);''' ]
+                        body = [ '''return «injectedFieldName».getRef(«source.simpleName»);''' ]
                     ]
 
                 } else {

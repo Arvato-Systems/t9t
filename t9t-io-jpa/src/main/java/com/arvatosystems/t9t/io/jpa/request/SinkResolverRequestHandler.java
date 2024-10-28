@@ -29,7 +29,7 @@ public class SinkResolverRequestHandler extends AbstractRequestHandler<SinkResol
 
     @Override
     public RefResolverResponse execute(final RequestContext ctx, final SinkResolverRequest request) throws Exception {
-        final Long ref = resolver.getRef(request.getRef(), false);
+        final Long ref = resolver.getRef(request.getRef());
         final RefResolverResponse resp = new RefResolverResponse();
         resp.setKey(ref);
         resp.setReturnCode(0);

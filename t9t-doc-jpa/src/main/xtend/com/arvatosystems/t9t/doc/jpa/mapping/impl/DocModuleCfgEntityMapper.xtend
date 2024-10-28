@@ -26,6 +26,6 @@ class DocModuleCfgEntityMapper {
     IDocModuleCfgEntityResolver entityResolver
 
     @AutoHandler("SP42")
-    def void d2eDocModuleCfgDTO(DocModuleCfgEntity entity, DocModuleCfgDTO dto, boolean onlyActive) {}
+    def void d2eDocModuleCfgDTO(DocModuleCfgEntity entity, DocModuleCfgDTO dto) {}
     def void e2dDocModuleCfgDTO(DocModuleCfgEntity entity, DocModuleCfgDTO dto) {}
 }

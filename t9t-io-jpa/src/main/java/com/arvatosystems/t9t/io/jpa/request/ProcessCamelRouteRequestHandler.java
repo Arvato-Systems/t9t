@@ -48,7 +48,7 @@ public class ProcessCamelRouteRequestHandler extends AbstractRequestHandler<Proc
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final ProcessCamelRouteRequest rq) throws Exception {
-        final SinkEntity sink = sinkResolver.getEntityDataForKey(rq.getSinkRef(), false);
+        final SinkEntity sink = sinkResolver.getEntityDataForKey(rq.getSinkRef());
         if (sink.getCamelTransferStatus() == ExportStatusEnum.RESPONSE_OK) {
             LOGGER.info("Sink {} for {} was already transferred - skipping", rq.getSinkRef(), sink.getFileOrQueueName());
             return ok();

@@ -31,7 +31,7 @@ class AsyncChannelMappers {
     def void e2dAsyncChannelDTO(AsyncChannelEntity entity, AsyncChannelDTO dto) {
         dto.asyncQueueRef = queueMapper.mapToDto(entity.asyncQueue)
     }
-    def void d2eAsyncChannelDTO(AsyncChannelEntity entity, AsyncChannelDTO dto, boolean onlyActive) {
-        entity.asyncQueueRef = queueResolver.getRef(dto.asyncQueueRef, onlyActive)
+    def void d2eAsyncChannelDTO(AsyncChannelEntity entity, AsyncChannelDTO dto) {
+        entity.asyncQueueRef = queueResolver.getRef(dto.asyncQueueRef)
     }
 }

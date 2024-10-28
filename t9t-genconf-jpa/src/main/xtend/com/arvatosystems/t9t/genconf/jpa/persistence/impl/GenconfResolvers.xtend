@@ -25,7 +25,7 @@ import java.util.List
 class GenconfResolvers {
 
     @AllCanAccessGlobalTenant  // for DataSinkEntity, everyone can see the global tenant's defaults
-    def ConfigEntity   getConfigEntity (ConfigRef  entityRef, boolean onlyActive) { return null; }
+    def ConfigEntity   getConfigEntity (ConfigRef  entityRef) { return null; }
     def ConfigEntity   findByKey(boolean onlyActive, String tenantId, String configGroup, String configKey, Long genericRef1, Long genericRef2) { return null; }
     def List<ConfigEntity> findByGroup(boolean onlyActive, String tenantId, String configGroup) { return null; }
     def List<ConfigEntity> findByKeyWithDefault(boolean onlyActive, String configGroup, String configKey, Long genericRef1, Long genericRef2) { return null; }

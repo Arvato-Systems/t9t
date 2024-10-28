@@ -33,7 +33,7 @@ class AiChatLogMappers {
     def void e2dAiChatLogDTO(AiChatLogEntity it, AiChatLogDTO dto) {
         dto.conversationRef  = conversationDTOMapper.mapToDto(conversationRef)
     }
-    def void d2eAiChatLogDTO(AiChatLogEntity entity, AiChatLogDTO it, boolean onlyActive) {
-        entity.conversationRef = conversationResolver.getRef(conversationRef, onlyActive)
+    def void d2eAiChatLogDTO(AiChatLogEntity entity, AiChatLogDTO it) {
+        entity.conversationRef = conversationResolver.getRef(conversationRef)
     }
 }

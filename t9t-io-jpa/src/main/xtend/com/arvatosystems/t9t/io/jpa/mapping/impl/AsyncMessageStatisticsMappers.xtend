@@ -31,5 +31,5 @@ class AsyncMessageStatisticsMappers {
             dto.averageResponseTime = (entity.responseTime as double) / entity.count
         }
     }
-    def void d2eAsyncMessageStatisticsDTO(AsyncMessageStatisticsEntity entity, AsyncMessageStatisticsDTO dto, boolean onlyActive) {}
+    def void d2eAsyncMessageStatisticsDTO(AsyncMessageStatisticsEntity entity, AsyncMessageStatisticsDTO dto) {}
 }

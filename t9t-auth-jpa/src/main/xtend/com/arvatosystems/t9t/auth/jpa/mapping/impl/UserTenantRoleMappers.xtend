@@ -32,9 +32,9 @@ class UserTenantRoleMappers {
     IUserEntityResolver userResolver
     IRoleEntityResolver roleResolver
 
-    def void d2eUserTenantRoleDTO(UserTenantRoleEntity entity, UserTenantRoleDTO it, boolean onlyActive) {
-        entity.userRef = userResolver.getRef(userRef, onlyActive)
-        entity.roleRef = roleResolver.getRef(roleRef, onlyActive)
+    def void d2eUserTenantRoleDTO(UserTenantRoleEntity entity, UserTenantRoleDTO it) {
+        entity.userRef = userResolver.getRef(userRef)
+        entity.roleRef = roleResolver.getRef(roleRef)
     }
 
     def void e2dUserTenantRoleDTO(UserTenantRoleEntity it, UserTenantRoleDTO dto) {

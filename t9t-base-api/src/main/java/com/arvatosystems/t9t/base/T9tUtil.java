@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import com.arvatosystems.t9t.base.request.AggregationGranularityType;
 
 import de.jpaw.bonaparte.api.media.MediaTypeInfo;
+import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 import de.jpaw.enums.TokenizableEnum;
 import jakarta.annotation.Nonnull;
@@ -381,5 +382,12 @@ public final class T9tUtil {
     public static String getPackageName(@Nonnull final String fullName) {
         final int lastDot = fullName.lastIndexOf('.');
         return lastDot <= 0 ? null : fullName.substring(0, lastDot);
+    }
+
+    /** Validates that the dto, if non null, is not inactive. Throws an exception if it is. */
+    public static void validateActive(@Nullable final BonaPortable dto, @Nullable final Object ref) {
+        if (dto != null && !dto.ret$Active()) {
+            throw new T9tException(T9tException.RECORD_INACTIVE, dto.ret$PQON() + " of key " + ref.toString());
+        }
     }
 }

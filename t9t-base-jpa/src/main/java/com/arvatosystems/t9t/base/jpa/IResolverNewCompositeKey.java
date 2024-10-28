@@ -38,12 +38,10 @@ public interface IResolverNewCompositeKey<
     /** Return the full JPA entity for any given relevant key.
      * Returns null if the parameter entityRef is null.
      * Throws an exception (T9tException.RECORD_DOES_NOT_EXIST) if there is no data record for the specified entityRef.
-     * Throws an exception (T9tException.RECORD_INACTIVE) if the record exists, but has been marked inactive and parameter onlyActive = true.
      *
      * @param entityRef The input DTO, which inherits a suitable reference to the object.
-     * @param onlyActive True if inactive records should be treated as nonexisting.
      * @return ENTITY
      * @throws T9tException
      */
-    ENTITY getEntityData(KEY entityRef, boolean onlyActive);
+    ENTITY getEntityData(KEY entityRef);
 }

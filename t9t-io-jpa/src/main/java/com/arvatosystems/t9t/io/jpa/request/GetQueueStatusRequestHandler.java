@@ -40,7 +40,7 @@ public class GetQueueStatusRequestHandler extends AbstractRequestHandler<GetQueu
     public ServiceResponse execute(final RequestContext ctx, final GetQueueStatusRequest rq) {
         final GetQueueStatusResponse resp = new GetQueueStatusResponse();
         if (rq.getOnlyQueue() != null) {
-            final AsyncQueueEntity queue = queueResolver.getEntityData(rq.getOnlyQueue(), rq.getOnlyActive());
+            final AsyncQueueEntity queue = queueResolver.getEntityData(rq.getOnlyQueue());
             final List<QueueStatus> status = new ArrayList<>(1);
             status.add(queueImpl.getQueueStatus(queue.getObjectRef(), queue.getAsyncQueueId()));
             resp.setStatus(status);

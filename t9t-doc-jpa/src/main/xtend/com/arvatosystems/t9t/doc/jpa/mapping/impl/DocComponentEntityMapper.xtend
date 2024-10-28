@@ -25,10 +25,9 @@ import com.arvatosystems.t9t.doc.jpa.persistence.IDocComponentEntityResolver
 class DocComponentEntityMapper {
     IDocComponentEntityResolver entityResolver
 
-    def void d2eDocComponentDTO(DocComponentEntity entity, DocComponentDTO dto, boolean onlyActive) {}
+    def void d2eDocComponentDTO(DocComponentEntity entity, DocComponentDTO dto) {}
 
     @AutoHandler("SP42")
     def void e2dDocComponentDTO(DocComponentEntity entity, DocComponentDTO dto) {
     }
-
 }

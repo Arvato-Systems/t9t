@@ -42,7 +42,7 @@ public class UpdateErrorStatusRequestHandler extends AbstractRequestHandler<Upda
     @Override
     public ServiceResponse execute(final RequestContext ctx, final UpdateErrorStatusRequest request) throws Exception {
         LOGGER.debug("Received UpdateErrorStatusRequest for status with ref {}", request.getProcessExecStatusRef());
-        final ProcessExecStatusEntity entityData = processExecStatusEntityResolver.getEntityData(request.getProcessExecStatusRef(), true);
+        final ProcessExecStatusEntity entityData = processExecStatusEntityResolver.getEntityData(request.getProcessExecStatusRef());
         entityData.setReturnCode(request.getReturnCode());
         entityData.setErrorDetails(MessagingUtil.truncField(request.getErrorDetails(),
                 ProcessExecutionStatusDTO.meta$$errorDetails.getLength()));

@@ -33,7 +33,7 @@ class AiConversationMappers {
     def void e2dAiConversationDTO(AiConversationEntity it, AiConversationDTO dto) {
         dto.aiAssistantRef  = assistantMapper.mapToDto(aiAssistantRef)
     }
-    def void d2eAiConversationDTO(AiConversationEntity entity, AiConversationDTO it, boolean onlyActive) {
-        entity.aiAssistantRef = assistantResolver.getRef(aiAssistantRef, onlyActive)
+    def void d2eAiConversationDTO(AiConversationEntity entity, AiConversationDTO it) {
+        entity.aiAssistantRef = assistantResolver.getRef(aiAssistantRef)
     }
 }
