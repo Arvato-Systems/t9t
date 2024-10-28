@@ -39,6 +39,7 @@ import com.arvatosystems.t9t.base.request.ProcessEventRequest;
 import com.arvatosystems.t9t.base.services.IAsyncRequestProcessor;
 import com.arvatosystems.t9t.base.services.IEventHandler;
 import com.arvatosystems.t9t.base.services.impl.EventSubscriptionCache;
+import com.arvatosystems.t9t.cfg.be.ApplicationConfiguration;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.server.services.IUnauthenticatedServiceRequestExecutor;
 
@@ -331,7 +332,8 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
             }
         };
 
-        if (asyncExecutorPool != null && msgBody.getRequestHeader() != null && Boolean.FALSE.equals(msgBody.getRequestHeader().getPriorityRequest())) {
+        if (asyncExecutorPool != null && (msgBody.getRequestHeader() == null || !Boolean.TRUE.equals(msgBody.getRequestHeader().getPriorityRequest()))) {
+            // there is a separate pool for async requests, and this is not a priority request
             asyncExecutorPool.executeBlocking(blockingCodeHandler, false, resultHandler);
         } else {
             // no separate pool configured, or priority request
@@ -345,8 +347,8 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
         bus.registerCodec(new CompactMessageCodec());
         serviceRequestExecutor = Jdp.getRequired(IUnauthenticatedServiceRequestExecutor.class);
 
-        Integer asyncPoolSize = ConfigProvider.getConfiguration().getApplicationConfiguration() == null ? null
-                : ConfigProvider.getConfiguration().getApplicationConfiguration().getLocalAsyncPoolSize();
+        final ApplicationConfiguration applicationConfiguration = ConfigProvider.getConfiguration().getApplicationConfiguration();
+        Integer asyncPoolSize = applicationConfiguration == null ? null : applicationConfiguration.getLocalAsyncPoolSize();
         if (asyncPoolSize == null) {
             LOGGER.info("Sharing executor pool with sync requests");
         } else {

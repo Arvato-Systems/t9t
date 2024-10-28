@@ -182,6 +182,9 @@ public class Executor implements IExecutor {
         } catch (final NullPointerException npe) {
             LOGGER.error("NullPointerException: ", npe);  // lists stack trace!
             return MessagingUtil.createServiceResponse(T9tException.NULL_POINTER, null);
+        } catch (final ClassCastException cce) {
+            LOGGER.error("ClassCastException: ", cce);  // lists stack trace!
+            return MessagingUtil.createServiceResponse(T9tException.CLASS_CAST, null);
         } catch (final Throwable e) {
             // provide full stack trace to the log
             final String causeChain = ExceptionUtil.causeChain(e);
