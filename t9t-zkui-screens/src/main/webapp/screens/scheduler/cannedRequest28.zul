@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="cannedRequest"?>
+<?xel-method prefix="l"  name="translate"  class="com.arvatosystems.t9t.zkui.util.ZulUtils" signature="String translate(String, String)"?>
 
 <window28 id="cannedRequestWin">
     <threesections28 gridId="cannedRequest" gridContext="showSchedulers">
@@ -14,13 +15,13 @@
                               id2="jobRequestObjectName"   value2="@load(vm.data.jobRequestObjectName) @save(vm.data.jobRequestObjectName,before='commandSave')"/>
                     <cells28  id ="jobParameters"          value ="@bind(vm.data.jobParameters)"       colspan1="3" rows1="5"/>
                     <cells28  id ="request"                value ="@load(vm.data.request)"             colspan1="3" rows1="5" readonly1="true"/>
-                    <row>
-                        <cell>
-                            <button28 id="executeCannedRequest" onClick="@command('executeCannedRequest')" />
-                        </cell>
-                    </row>
                 </rows>
             </form28>
+            <hlayout sclass="buttons">
+                <button28 id="executeCannedRequest" onClick="@command('executeCannedRequest')" disabled="@load(vm.data eq null || vm.data.objectRef eq null)"/>
+                <button28 forEach="${vm.internalServices}" id="${each}" label="${l:translate('uplink', each)}"
+                    onClick="@command('executeCannedRequest', service=self.id)" disabled="@load(vm.data eq null || vm.data.objectRef eq null)" />
+            </hlayout>
         </crud28>
     </threesections28>
 </window28>

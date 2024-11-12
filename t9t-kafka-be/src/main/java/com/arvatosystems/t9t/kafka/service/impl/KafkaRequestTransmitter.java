@@ -61,9 +61,11 @@ public class KafkaRequestTransmitter implements IKafkaRequestTransmitter {
             LOGGER.error("No configuration found for t9t.kafka.bootstrap.servers, refusing to initialize (set to /dev/null in order to discard messages)");
             // throw new T9tException(T9tException.MISSING_KAFKA_BOOTSTRAP);  // later, currently just warn
         } else {
+            LOGGER.info("Kafka topic {} initializing, bootstrap servers have configured to be <{}>",
+                    kafkaTopic, kafkaBootstrapServers);
             if (kafkaBootstrapServers.equals("/dev/null")) {
                 // create a dummy config
-                LOGGER.info("kafka request queue set to /dev/null - discarding messages");
+                LOGGER.warn("kafka request queue set to /dev/null - discarding messages");
             } else {
                 try {
                     final Properties props = new Properties();
@@ -83,13 +85,13 @@ public class KafkaRequestTransmitter implements IKafkaRequestTransmitter {
                             for (Map.Entry<String, Object> entry: extraProps.entrySet()) {
                                 props.put(entry.getKey(), entry.getValue());
                             }
-                        } catch (Exception e) {
+                        } catch (final Exception e) {
                             LOGGER.error("Could not parse extra properties {} (set to {}", KAFKA_DEFAULT_PROPERTIES_KEY, additionalProperties);
                             LOGGER.error("Ignoring those:", e);
                         }
                     }
                     topicWriter = new KafkaTopicWriter(kafkaBootstrapServers, kafkaTopic, props);
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     LOGGER.error("FATAL: Could not connect to kafka bootstrap servers - messages will be discarded", e);
                     // decide about "throw e", respectively "not catching" in order to have servers fail at startup when no kafka is available
                 }

@@ -35,6 +35,7 @@ package (com.arvatosystems) t9t.core.request {
 
     class ExecuteCannedRequest          extends RequestParameters {
         required (CannedRequestRef...)  requestRef;
+        optional Unicode(36)            uplinkKey; // UplinkConfiguration key of internal services
     }
     /** Similar to ExecuteCannedRequest, but uses a specific permission request. (Intended for external callers via JAX-RS) */
     class ExecutePreparedRequest        extends RequestParameters {
@@ -47,4 +48,11 @@ package (com.arvatosystems) t9t.core.request {
 
     /** Wrapper for the RetrieveComponentInfoRequest, to allow the UI to access it as a standard search request. */
     class ComponentInfoSearchRequest     extends SearchRequest<ComponentInfoDTO, NoTracking> {}
+
+    /** To get list of configuration keys for internal services defined in UplinkConfiguration */
+    class GetInternalServicesRequest     extends RequestParameters return GetInternalServicesResponse {}
+
+    class GetInternalServicesResponse extends ServiceResponse {
+        required Unicode(36) required List<> internalServiceKeys;
+    }
 }

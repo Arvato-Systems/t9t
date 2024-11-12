@@ -138,6 +138,10 @@ public class T9tException extends ApplicationException {
     public static final int ERROR_FILLING_RESTRICTION_CACHE = OFFSET + 123;
     public static final int ILE_UNREACHABLE_CODE = OFFSET_LOGIC_ERROR + 124;
 
+    public static final int NOT_APPLICABLE = OFFSET + 125;
+    public static final int NO_ACTIVE_FLAG = OFFSET + 126;
+
+
     public static final int NO_DATA_CACHED = OFFSET_LOGIC_ERROR + 129;
 
     // Codes specific to sorting
@@ -488,6 +492,8 @@ public class T9tException extends ApplicationException {
         registerCode(ERROR_FILLING_RESTRICTION_CACHE, "Exception while filling the restriction cache");
         registerCode(ILE_UNREACHABLE_CODE, "Executing unreachable code (should not happen!)");
 
+        registerCode(NOT_APPLICABLE, "Operation not applicable");
+        registerCode(NO_ACTIVE_FLAG, "No active flag - activate / deactivate not possible");
         registerCode(NO_DATA_CACHED, "No cached data found for tenant");
 
         registerCode(UNRECOGNIZED_SORT_PARAMETER, "Passed sortring parameter is unknown.");
