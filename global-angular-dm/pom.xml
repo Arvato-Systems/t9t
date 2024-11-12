@@ -22,7 +22,7 @@
     <!-- This project intentionally does not have a parent -->
     <groupId>com.arvato-systems.t9t</groupId>
     <artifactId>global-angular-dm</artifactId>
-    <version>7.0-SNAPSHOT</version>
+    <version>7.0.22</version>
     <packaging>pom</packaging>
 
     <description>Global dependency management for all Angular UI projects</description>
