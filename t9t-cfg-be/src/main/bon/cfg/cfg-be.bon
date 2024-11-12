@@ -218,6 +218,7 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional Unicode(2048)                      token;                          // access token
         optional Integer                            requestTimeoutInMs;             // if specified, use this timeout for maximum request duration, otherwise use the connect timeout, otherwise some hardcoded default
         optional Boolean                            failOnUnknownProperties;        // (only for JACKSON JSON APIs): if TRUE, don't ignore unknown properties, but throw an exception (useful for testing)
+        optional Boolean                            internalService;                // true only if the configuration is for internal server (not 3rd party or external service)
     }
 
     class SearchConfiguration {

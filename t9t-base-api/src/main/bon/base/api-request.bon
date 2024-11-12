@@ -154,6 +154,7 @@ package (com.arvatosystems) t9t.base.request {
     class ExceptionRequest extends RequestParameters {
         required int                                returnCode;                 // if > 0, a T9tException will be generated, otherwise a RuntimeException
         optional Unicode(512)                       errorMessage;               // a data parameter which allows to localize the error condition (offending field / parameter name etc.)
+        optional Ascii(16)                          specialCause;               // initial a special exception, for testing
     }
 
     /**

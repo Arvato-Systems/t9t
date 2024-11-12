@@ -35,6 +35,8 @@ import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;
 
 import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import de.jpaw.util.ByteArray;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 
 
@@ -99,5 +101,5 @@ public interface IT9tMessagingDAO {
 
     MediaData getUploadedData(UploadEvent ev) throws IOException;
 
-    ServiceResponse executeCannedRequest(CannedRequestRef ref) throws ReturnCodeException;
+    ServiceResponse executeCannedRequest(@Nonnull CannedRequestRef ref, @Nullable String uplinkKey) throws ReturnCodeException;
 }

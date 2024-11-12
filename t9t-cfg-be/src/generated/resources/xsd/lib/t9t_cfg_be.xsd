@@ -874,6 +874,7 @@
                         </xs:simpleType>
                     </xs:element>
                     <xs:element name="failOnUnknownProperties" minOccurs="0" nillable="true" type="xs:boolean"/>
+                    <xs:element name="internalService" minOccurs="0" nillable="true" type="xs:boolean"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>

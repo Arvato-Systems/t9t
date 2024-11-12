@@ -49,7 +49,7 @@ public class SchedulerSetupViewModel extends CrudSurrogateKeyVM<SchedulerSetupRe
         if (data == null || data.getRequest() == null)
             return;
         LOGGER.debug("executeCannedRequest with Ref {}", data.getRequest());
-        final ServiceResponse response = t9tRequestDAO.executeCannedRequest(data.getRequest());
+        final ServiceResponse response = t9tRequestDAO.executeCannedRequest(data.getRequest(), data.getSchedulerEnvironment());
         final Info info = new Info();
         if (response != null) {
             info.setText(JsonComposerPrettyPrint.toJsonString(response));
