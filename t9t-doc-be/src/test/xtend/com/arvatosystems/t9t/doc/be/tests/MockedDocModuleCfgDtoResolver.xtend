@@ -31,11 +31,16 @@ class MockedDocModuleCfgDtoResolver implements IDocModuleCfgDtoResolver {
     override getDefaultModuleConfiguration() {
         return DEFAULT_MODULE_CFG
     }
-    /** Updates module configuration with a new one. Writes to the DB and updates the local cache.
+    /**
+     * Updates module configuration with a new one. Writes to the DB and updates the local cache.
      * Default implementation provided only to simplify creation of mocks.
      * @return
      */
     override updateModuleConfiguration(DocModuleCfgDTO newCfg) {
         throw new UnsupportedOperationException();
     }
+	
+	override getUncachedModuleConfiguration() {
+        throw new UnsupportedOperationException();
+	}
 }

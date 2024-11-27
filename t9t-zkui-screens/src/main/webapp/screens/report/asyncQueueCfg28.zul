@@ -2,7 +2,7 @@
 <?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="asyncQueueCfg28"?>
 
 <window28 id="asyncQueueCfgWin">
-    <threesections28 gridId="asyncQueueCfg">
+    <threesections28 gridId="asyncQueueCfg" gridContext="showAsyncChannelCfg">
         <crud28
             viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.CrudSurrogateKeyVM', vmId='asyncQueueCfg')"
             currentMode="@load(vm.currentMode)">

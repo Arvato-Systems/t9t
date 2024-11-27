@@ -28,16 +28,16 @@ import static extension com.arvatosystems.t9t.misc.extensions.MiscExtensions.*
 
 class CannedRequestTest {
 
-    static private ITestConnection dlg
+    static ITestConnection dlg
 
     @BeforeAll
-    def public static void createConnection() {
+    def static void createConnection() {
         // use a single connection for all tests (faster)
         dlg = new InMemoryConnection
     }
 
     @Test
-    def public void helloByDtoWithParametersTest() {
+    def void helloByDtoWithParametersTest() {
         val dto = new CannedRequestDTO => [
             requestId               = "helloTest1"
             name                    = "helloTest1"
@@ -50,7 +50,7 @@ class CannedRequestTest {
     }
 
     @Test
-    def public void helloByDtoWithObjectTest() {
+    def void helloByDtoWithObjectTest() {
         val dto = new CannedRequestDTO => [
             requestId               = "helloTest2"
             name                    = "helloTest2"
@@ -60,9 +60,8 @@ class CannedRequestTest {
         dlg.okIO(new ExecuteCannedRequest(dto))
     }
 
-
     @Test
-    def public void helloWithPersistenceTest() {
+    def void helloWithPersistenceTest() {
         // create a canned request and persist it
         new CannedRequestDTO => [
             requestId               = "helloTestP"
@@ -73,4 +72,40 @@ class CannedRequestTest {
         ]
         dlg.okIO(new ExecuteCannedRequest(new CannedRequestKey("helloTestP")))
     }
+
+    @Test
+    def void objectWithInstantTest() {
+        // create a canned request and persist it
+        new CannedRequestDTO => [
+            requestId               = "rerun"
+            name                    = "Request to rerun some transactions"
+            jobParameters           = #{
+                "fromDate" -> 1732474800,
+                "toDate"   -> 1732484800,
+                "stopOnError" -> false,
+                "pqon" -> "t9t.base.request.PingRequest"
+            }
+            jobRequestObjectName    = "t9t.msglog.request.RerunFailedRequestsRequest"
+            merge(dlg)
+        ]
+        dlg.okIO(new ExecuteCannedRequest(new CannedRequestKey("rerun")))
+    }
+
+//    @Test
+//    def void objectWithInstantStringTest() {
+//        // create a canned request and persist it
+//        new CannedRequestDTO => [
+//            requestId               = "rerunAlnum"
+//            name                    = "Request to rerun some transactions"
+//            jobParameters           = #{
+//                "fromDate" -> "2024-11-24T12:34:56Z",
+//                "toDate"   -> "2024-11-24T23:45:01Z",
+//                "stopOnError" -> false,
+//                "pqon" -> "t9t.base.request.PingRequest"
+//            }
+//            jobRequestObjectName    = "t9t.msglog.request.RerunFailedRequestsRequest"
+//            merge(dlg)
+//        ]
+//        dlg.okIO(new ExecuteCannedRequest(new CannedRequestKey("rerunAlnum")))
+//    }
 }

@@ -102,6 +102,7 @@
                 <configuration>
                     <!-- see http://jira.codehaus.org/browse/MNG-5346 -->
                     <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
+                    <goalPrefix>t9t-dataloader</goalPrefix>
                 </configuration>
                 <executions>
                     <execution>

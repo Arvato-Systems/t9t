@@ -15,6 +15,9 @@
  */
 package com.arvatosystems.t9t.out.be.async;
 
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
@@ -89,11 +92,20 @@ public class AsyncTools implements IAsyncTools {
                     messageUpdater.updateMessage(messageObjectRef, newStatus2, asyncResponse.getHttpReturnCode(), asyncResponse);
                 };
                 return sender.send(channel, timeout, nextMsg, resultProcessor, whenStarted);
+            } catch (SocketException | UnknownHostException | SocketTimeoutException e) {
+                LOGGER.error(
+                        "ASYNC: IO Exception in outbound HTTP call for channel {}, message with ref {}: {}. "
+                        + "Allow retry of async messages as later processing is likely to succeed.",
+                        channel.getAsyncChannelId(), nextMsg.getObjectRef(), ExceptionUtil.causeChain(e));
+                messageUpdater.updateMessage(nextMsg.getObjectRef(), ExportStatusEnum.RESPONSE_TIMEOUT, T9tConstants.HTTP_STATUS_INTERNAL_TIMEOUT, null);
+                return false;   // error, gate to RED
             } catch (final Exception e) {
-                LOGGER.error("ASYNC: Exception in external http for channel {}, ref {}: {}",
-                  channel.getAsyncChannelId(), nextMsg.getObjectRef(), ExceptionUtil.causeChain(e));
+                LOGGER.error(
+                        "ASYNC: Exception in outbound HTTP call for channel {}, message with ref {}: {}. RESPONSE_ABORT will be set as a final state. "
+                        + "No retry will be performed.",
+                        channel.getAsyncChannelId(), nextMsg.getObjectRef(), ExceptionUtil.causeChain(e));
                 messageUpdater.updateMessage(nextMsg.getObjectRef(), ExportStatusEnum.RESPONSE_ABORT, T9tConstants.HTTP_STATUS_ILE_OTHER_EXCEPTION, null);
-                return false;   // error
+                return false;   // error, gate to RED
             }
         }
     }

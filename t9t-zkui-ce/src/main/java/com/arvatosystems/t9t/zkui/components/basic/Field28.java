@@ -66,6 +66,7 @@ public class Field28 extends Cell {
     private String decimals1 = null;
     protected Form28 form = null;
     protected boolean visible = true; // added due to a bug on zk cell. setting visible dynamically on specific custom list will crash
+    private boolean formRegister = true; // if true then only this component will register with the parent Form28
 
     public void setValue(Object t) {
         LOGGER.debug("{}.setValue({}) called", getId(), t);
@@ -171,6 +172,9 @@ public class Field28 extends Cell {
 
     public void setDisabled1(boolean disabled1) {
         this.disabled1 = disabled1;
+        if (idf != null) {
+            idf.setDisabled(disabled1);
+        }
     }
 
     public String getDecimals1() {
@@ -209,5 +213,13 @@ public class Field28 extends Cell {
 
     private boolean isVisibleAllowToSet() {
         return !(this.getParent() instanceof ViewModel28);
+    }
+
+    public boolean getFormRegister() {
+        return formRegister;
+    }
+
+    public void setFormRegister(boolean formRegister) {
+        this.formRegister = formRegister;
     }
 }
