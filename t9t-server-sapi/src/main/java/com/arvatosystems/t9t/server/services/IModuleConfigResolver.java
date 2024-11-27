@@ -17,31 +17,55 @@ package com.arvatosystems.t9t.server.services;
 
 import com.arvatosystems.t9t.base.moduleCfg.ModuleConfigDTO;
 
-/** Implementations of this interface should be singletons to ensure one separate instance per module.
- * They are located in the persistence modules. */
+import jakarta.annotation.Nonnull;
+
+/**
+ * Implementations of this interface should be singletons to ensure one separate instance per module.
+ * They are located in the persistence modules.
+ */
 public interface IModuleConfigResolver<T extends ModuleConfigDTO> {
-    /** Read a module configuration from DB, and return, in the following preference:
+    /**
+     * Reads a module configuration from the database, or a default, in the following preference:
+     * <ul>
+     * <li>the value in the current cache
+     * <li>the value for the specific tenant
+     * <li>the value for the global tenant
+     * <li>a hardcoded default, as provided by getDefaultModuleConfiguration
+     * </ul>
+     *
+     * This method will never return null.
+     * If the result was not taken from the cache, it will be cached for 60 seconds, limiting the number of required database lookups.
+     * @return
+     */
+    @Nonnull
+    T getModuleConfiguration();
+
+    /**
+     * Reads a module configuration from the database, or a default, in the following preference:
      * <ul>
      * <li>the value for the specific tenant
      * <li>the value for the global tenant
      * <li>a hardcoded default, as provided by getDefaultModuleConfiguration
      * </ul>
      *
-     * This method will never return null. The result will be cached for 60 seconds, limiting the number of required database lookups.
+     * This method will never return null.
      * @return
      */
-    T getModuleConfiguration();
+    @Nonnull
+    T getUncachedModuleConfiguration();
 
-    /** Returns a sensible default for the module configuration.
+    /**
+     * Returns a sensible default for the module configuration.
      * It should be possible to use a system without any configuration made, and it should fall back to meaningful defaults then,
      * which are provided by this method.
-     * If a module chooses not to override this method, null will be returned by getModuleConfiguration() if no database configuration has been created.
      * @return
      */
+    @Nonnull
     T getDefaultModuleConfiguration();
 
-    /** Updates module configuration with a new one. Writes to the DB and updates the local cache.
+    /**
+     * Updates module configuration with a new one. Writes to the database and updates the local cache.
      * @return
      */
-    void updateModuleConfiguration(T newCfg);
+    void updateModuleConfiguration(@Nonnull T newCfg);
 }

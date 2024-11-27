@@ -67,6 +67,7 @@ public class Cells228 extends Cells28 {
     private String enums2 = null;
     private String decimals2 = null;
     private String type2 = null;
+    private boolean formRegister2 = true; // if true then only this component will register with the parent Form28
 
     public Cells228() {
         super();
@@ -165,7 +166,7 @@ public class Cells228 extends Cells28 {
                 }
             }
         }
-        if (form != null)
+        if (form != null && formRegister2)
             form.register(idf2);
     }
 
@@ -223,6 +224,9 @@ public class Cells228 extends Cells28 {
 
     public void setDisabled2(Boolean disabled2) {
         this.disabled2 = disabled2;
+        if (idf2 != null) {
+            idf2.setDisabled(disabled2);
+        }
     }
 
     public String getDecimals2() {
@@ -247,5 +251,13 @@ public class Cells228 extends Cells28 {
 
     public void setGroup2(Object group2) {
         setGroup(idf2, group2);
+    }
+
+    public boolean getFormRegister2() {
+        return formRegister2;
+    }
+
+    public void setFormRegister2(boolean formRegister2) {
+        this.formRegister2 = formRegister2;
     }
 }

@@ -34,6 +34,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.jpa.BonaPersistableData;
 import de.jpaw.dp.Jdp;
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
@@ -60,12 +61,27 @@ public abstract class AbstractModuleConfigResolver<D extends ModuleConfigDTO, E 
      * {@inheritDoc }
      */
     @Override
+    public D getUncachedModuleConfiguration() {
+        final String tenantId = resolver.getSharedTenantId();
+        return getModuleConfiguration(tenantId);
+    }
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
     public D getModuleConfiguration() {
         final String tenantId = resolver.getSharedTenantId();
         final D cacheHit = dtoCache.getIfPresent(tenantId);
         if (cacheHit != null) {
             return cacheHit;
         }
+        final D result = getModuleConfiguration(tenantId);
+        dtoCache.put(tenantId, result);
+        return result;
+    }
+
+    protected D getModuleConfiguration(@Nonnull final String tenantId) {
         // not in cache: read database
         final EntityManager em = resolver.getEntityManager();
         final List<String> tenants;
@@ -91,7 +107,6 @@ public abstract class AbstractModuleConfigResolver<D extends ModuleConfigDTO, E 
                 result = getDefaultModuleConfiguration();
             }
             result.freeze(); // make immutable
-            dtoCache.put(tenantId, result);
             return result;
         } catch (final Exception e) {
             LOGGER.error("JPA exception {} while reading module configuration for {} for tenantId {}: {}", e.getClass().getSimpleName(),

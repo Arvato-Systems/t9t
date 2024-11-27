@@ -94,6 +94,7 @@ public class T9tException extends ApplicationException {
     public static final int SHUTDOWN_IN_PROGRESS = OFFSET_TIMEOUT + 52;
     public static final int CANNOT_CLOSE_SINK = OFFSET_DB_ERROR + 55;
 
+    public static final int INDEX_OUT_OF_BOUNDS = OFFSET_LOGIC_ERROR + 92;
     public static final int CLASS_CAST = OFFSET_LOGIC_ERROR + 93;
     public static final int OPTIMISTIC_LOCKING_EXCEPTION = OFFSET_DB_ERROR + 94;  // causes retry!
     public static final int REQUEST_PARAMETER_BAD_INHERITANCE = OFFSET + 95;
@@ -137,6 +138,10 @@ public class T9tException extends ApplicationException {
     public static final int RESOLVE_BAD_CLASS = OFFSET + 122;
     public static final int ERROR_FILLING_RESTRICTION_CACHE = OFFSET + 123;
     public static final int ILE_UNREACHABLE_CODE = OFFSET_LOGIC_ERROR + 124;
+
+    public static final int NOT_APPLICABLE = OFFSET + 125;
+    public static final int NO_ACTIVE_FLAG = OFFSET + 126;
+
 
     public static final int NO_DATA_CACHED = OFFSET_LOGIC_ERROR + 129;
 
@@ -376,6 +381,7 @@ public class T9tException extends ApplicationException {
         registerCode(MALFORMED_REQUEST_PARAMETER_NAME, "The class name of the request parameters did not end with ...Request");
         registerCode(SERVICE_CLASS_NOT_FOUND, "Could not load service class. Configuration or classpath problem?");
         registerCode(TRANSACTION_RETRY_REQUEST, "Additional attempt to run the operation is requierd.");
+        registerCode(INDEX_OUT_OF_BOUNDS, "Index out of bounds exception (see logs)");
         registerCode(CLASS_CAST, "Class cast exception (see logs)");
         registerCode(NULL_POINTER, "Null pointer exception (see logs)");
         registerCode(GENERAL_EXCEPTION, "unhandled general exception");
@@ -488,6 +494,8 @@ public class T9tException extends ApplicationException {
         registerCode(ERROR_FILLING_RESTRICTION_CACHE, "Exception while filling the restriction cache");
         registerCode(ILE_UNREACHABLE_CODE, "Executing unreachable code (should not happen!)");
 
+        registerCode(NOT_APPLICABLE, "Operation not applicable");
+        registerCode(NO_ACTIVE_FLAG, "No active flag - activate / deactivate not possible");
         registerCode(NO_DATA_CACHED, "No cached data found for tenant");
 
         registerCode(UNRECOGNIZED_SORT_PARAMETER, "Passed sortring parameter is unknown.");
