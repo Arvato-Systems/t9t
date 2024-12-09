@@ -127,7 +127,7 @@ public final class RestUtils {
      * @param errorDetails  details describing the error
      */
     public static GenericResult createErrorResult(final ApplicationException e) {
-        final GenericResult result = createErrorResult(e.getErrorCode(), e.getMessage());
+        final GenericResult result = createErrorResult(e.getErrorCode(), e.getDetailedMessage());
         result.setFieldName(e.getFieldName());
         result.setClassName(e.getClassName());
         return result;
@@ -204,7 +204,7 @@ public final class RestUtils {
         if (e instanceof ApplicationException ae) {
             final int errorCode = ae.getErrorCode();
             LOGGER.error("Application exception calling {} {}: {} {} field {}, class {}: {}",
-                    method, uriInfo.getAbsolutePath(), e.getClass().getSimpleName(), errorCode, ae.getFieldName(), ae.getClassName(), e.getMessage());
+                    method, uriInfo.getAbsolutePath(), e.getClass().getSimpleName(), errorCode, ae.getFieldName(), ae.getClassName(), ae.getDetailedMessage());
             return error(mapStatusFromErrorCode(errorCode), acceptHeader, ae);
         }
         if (e instanceof JacksonException) {

@@ -106,7 +106,7 @@ public class Executor implements IExecutor {
                     LOGGER.trace("Also obtained additional permission {}", requiredPermission);
                 }
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             // any exception during permission check must lead to rejection for security reasons. We also want a full stack trace here
             LOGGER.error("Exception during permission check: {}", e);
             return errorResponse(ctx, T9tException.NOT_AUTHORIZED, e.getMessage());
@@ -136,10 +136,10 @@ public class Executor implements IExecutor {
             // log the offending request, plus the process ref (for better DB research later), and the validation error message
             // more info
             LOGGER.error("Synchronous request validation problem for tenantId {} and parameter object type {}: error {}: {}", ctx.tenantId, params.ret$PQON(),
-                    e.getErrorCode(), e.getMessage());
+                    e.getErrorCode(), e.getErrorDetails());
             LOGGER.error("Full request parameters are {}", params);
             return MessagingUtil.createServiceResponse(T9tException.REQUEST_VALIDATION_ERROR,
-                    params.ret$PQON() + "(" + ctx.internalHeaderParameters.getProcessRef() + ":" + e.getMessage());
+                    params.ret$PQON() + "(" + ctx.internalHeaderParameters.getProcessRef() + ":" + e.getErrorDetails());
         }
 
         ServiceResponse response = null;
@@ -178,7 +178,7 @@ public class Executor implements IExecutor {
                 // create a service response that reports about the problem
                 LOGGER.error("Execution problem: internal logic (8xxx) or general error (9xxx): Cause is: ", e);
             }
-            return MessagingUtil.createServiceResponse(e.getErrorCode(), e.getMessage());
+            return MessagingUtil.createServiceResponse(e.getErrorCode(), e.getErrorDetails());
         } catch (final NullPointerException npe) {
             LOGGER.error("NullPointerException: ", npe);  // lists stack trace!
             return MessagingUtil.createServiceResponse(T9tException.NULL_POINTER, null);
@@ -260,10 +260,10 @@ public class Executor implements IExecutor {
             params.validate();
         } catch (ObjectValidationException e) {
             LOGGER.error("Asynchronous request validation problem for tenantId {} and parameter object type {}: error {}: {}", ctx.tenantId, params.ret$PQON(),
-                    e.getErrorCode(), e.getMessage());
+                    e.getErrorCode(), e.getErrorDetails());
             LOGGER.error("Full request parameters are {}", params);
             throw new T9tException(T9tException.REQUEST_VALIDATION_ERROR,
-                    params.ret$PQON() + "(" + ctx.internalHeaderParameters.getProcessRef() + "):" + e.getMessage());
+                    params.ret$PQON() + "(" + ctx.internalHeaderParameters.getProcessRef() + "):" + e.getErrorDetails());
         }
         // create a ServiceRequest (as parameter for the async executor)
         final ServiceRequest srq = new ServiceRequest();

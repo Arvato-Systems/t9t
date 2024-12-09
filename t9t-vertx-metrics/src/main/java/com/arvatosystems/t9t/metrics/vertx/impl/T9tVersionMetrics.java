@@ -27,7 +27,7 @@ import io.micrometer.core.instrument.binder.MeterBinder;
 /**
  * {@link MeterBinder} for exporting t9t version to metrics endpoint.<br>
  * Sample output:
- * <pre>t9t_info{version="6.5-SNAPSHOT",} 1.0</pre>
+ * <pre>t9t_info{version="8.0-SNAPSHOT",} 1.0</pre>
  */
 public class T9tVersionMetrics implements MeterBinder {
 

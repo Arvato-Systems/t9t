@@ -24,7 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.IRemoteDefaultUrlRetriever;
-import com.arvatosystems.t9t.client.init.JndiConfigurationProvider;
 import com.arvatosystems.t9t.client.init.SystemConfigurationProvider;
 import com.arvatosystems.t9t.jdp.Init;
 import com.arvatosystems.t9t.zkui.components.dropdown28.factories.IDropdown28BasicFactory;
@@ -46,15 +45,7 @@ public class T9tInitializer implements ServletContextListener {
         LOGGER.debug("T9tInitializer CONSTRUCTOR (web.xml)");
         // do it here - contextInitialized is called too late
         Init.initializeT9t();
-        try {
-            LOGGER.info("Initializing remote - trying JNDI");
-            Jdp.bindInstanceTo(new JndiConfigurationProvider(), IRemoteDefaultUrlRetriever.class);
-        } catch (Exception e) {
-            LOGGER.error("Error initializing via JNDI: {}: {}, fallback using system",
-                    e.getClass().getSimpleName(),
-                    e.getMessage());
-            Jdp.bindInstanceTo(new SystemConfigurationProvider(), IRemoteDefaultUrlRetriever.class);
-        }
+        Jdp.bindInstanceTo(new SystemConfigurationProvider(), IRemoteDefaultUrlRetriever.class);
         LOGGER.debug("T9tInitializer CONSTRUCTOR (JDP scanning) COMPLETE");
         LOGGER.debug(Jdp.dump());  // list all scanned interfaces / classes
 

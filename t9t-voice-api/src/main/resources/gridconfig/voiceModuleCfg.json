@@ -1,11 +1,9 @@
 {
-    "viewModel": "docModuleCfg",
+    "viewModel": "voiceModuleCfg",
     "filters": [
         { "filterType": "E", "fieldName": "tenantId" }
     ],
     "fields": [
-        "tenantId", "considerGlobalTemplates", "considerGlobalTexts", "considerGlobalBinaries",
-        "weightTenantMatch", "weightLanguageMatch", "weightCurrencyMatch", "weightCountryMatch", "weightEntityMatch"
-    ],
-    "fieldWidths": [ 160, 210, 240, 200, 130, 130, 130, 130, 130 ]
+        "tenantId"
+    ]
 }

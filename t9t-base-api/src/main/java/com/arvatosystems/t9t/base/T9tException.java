@@ -271,10 +271,10 @@ public class T9tException extends ApplicationException {
     public static final int METHOD_ILLEGAL_ACCESS_EXCEPTION = OFFSET + 903;
     public static final int METHOD_INVOCATION_TARGET_EXCEPTION = OFFSET + 904;
     public static final int CLASS_NOT_FOUND_EXCEPTION = OFFSET + 905;
-    public static final int METHOD_INSTANTIATION_EXCEPTION = OFFSET + 906;
+    public static final int METHOD_INSTANTIATION_EXCEPTION = OFFSET_LOGIC_ERROR + 906;
 
-    public static final int CONSTRUCTOR_ILLEGAL_ACCESS_EXCEPTION = OFFSET + 915;
-    public static final int CONSTRUCTOR_INSTANTIATION_EXCEPTION = OFFSET + 917;
+    public static final int CONSTRUCTOR_ILLEGAL_ACCESS_EXCEPTION = OFFSET_LOGIC_ERROR + 915;
+    public static final int CONSTRUCTOR_INSTANTIATION_EXCEPTION = OFFSET_LOGIC_ERROR + 917;
     public static final int INVALID_DATETIME_FORMAT = OFFSET + 918;
 
     // plausi checks

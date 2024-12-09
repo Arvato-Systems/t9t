@@ -50,4 +50,15 @@ class ExceptionTest {
         LOGGER.info("Result (ClassCast expected) is {}: {}, {}", result.returnCode, result.errorDetails, result.errorMessage)
         Assertions.assertEquals(T9tException.CLASS_CAST, result.returnCode, "Class cast exception code")
     }
+
+    @Test
+    def void throwWithDetails() {
+        val rqExcDet = new ExceptionRequest
+        rqExcDet.returnCode = T9tException.RECORD_DOES_NOT_EXIST
+        rqExcDet.errorMessage = "myDetails"
+        val result = dlg.doIO(rqExcDet);
+        LOGGER.info("Result is {}: {} ({})", result.returnCode, result.errorDetails, result.errorMessage)
+        Assertions.assertEquals(T9tException.RECORD_DOES_NOT_EXIST, result.returnCode, "returnCode")
+        Assertions.assertEquals("myDetails", result.errorDetails, "errorDetails")
+    }
 }

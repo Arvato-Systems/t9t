@@ -107,7 +107,7 @@ public class RequestProcessor implements IRequestProcessor {
                 optHdr.validate();
             } catch (final ObjectValidationException e) {
                 LOGGER.error("Request {}({})) rejected due to header validation failure", rp.ret$PQON(), LogSanitizer.sanitize(rp.getEssentialKey()));
-                return MessagingUtil.createServiceResponse(e.getErrorCode(), e.getMessage(), messageId, jwtInfo.getTenantId(), null);
+                return MessagingUtil.createServiceResponse(e.getErrorCode(), e.getErrorDetails(), messageId, jwtInfo.getTenantId(), null);
             }
         }
 
@@ -117,7 +117,7 @@ public class RequestProcessor implements IRequestProcessor {
                 rp.treeWalkString(stringSanitizer, true);
             } catch (final ApplicationException e) {
                 LOGGER.error("Request {}({})) rejected due to exception during sanitizing", rp.ret$PQON(), LogSanitizer.sanitize(rp.getEssentialKey()));
-                return MessagingUtil.createServiceResponse(e.getErrorCode(), e.getMessage(), messageId, jwtInfo.getTenantId(), null);
+                return MessagingUtil.createServiceResponse(e.getErrorCode(), e.getErrorDetails(), messageId, jwtInfo.getTenantId(), null);
             }
         }
 
@@ -389,10 +389,10 @@ public class RequestProcessor implements IRequestProcessor {
                 } catch (final ObjectValidationException e) {
                     // log the offending request, plus the process ref (for better DB research later), and the validation error message more info
                     LOGGER.error("Response validation problem for tenantId {} and response object {}: error {}: {}", ctx.tenantId, resp.ret$PQON(),
-                            e.getErrorCode(), e.getMessage());
+                            e.getErrorCode(), e.getErrorDetails());
                     LOGGER.error("Full response is " + resp.toString());
                     resp = MessagingUtil.createServiceResponse(T9tException.RESPONSE_VALIDATION_ERROR,
-                            rq.ret$PQON() + "(" + ctx.internalHeaderParameters.getProcessRef() + "): " + e.getMessage());
+                            rq.ret$PQON() + "(" + ctx.internalHeaderParameters.getProcessRef() + "): " + e.getErrorDetails());
                 }
 
                 // close the context and clean up resources

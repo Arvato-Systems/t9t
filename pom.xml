@@ -90,7 +90,7 @@
         <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
         <maven-site-plugin.version>3.21.0</maven-site-plugin.version>
         <maven-project-info-reports-plugin.version>3.8.0</maven-project-info-reports-plugin.version>
-        <maven-javadoc-plugin.version>3.11.1</maven-javadoc-plugin.version>
+        <maven-javadoc-plugin.version>3.11.2</maven-javadoc-plugin.version>
 
         <!-- Versions of Xtext & Xtend plugins -->
         <xtend-maven-plugin.version>${xtext.version}</xtend-maven-plugin.version>
@@ -1138,6 +1138,8 @@
                 <module>t9t-zkui-ce</module>
                 <module>t9t-zkui-ee</module>
                 <module>t9t-zkui-screens</module>
+                <module>t9t-zkui-jetty</module>
+                <module>t9t-zkui-jar</module>
             </modules>
         </profile>
 
@@ -1161,7 +1163,8 @@
                 <module>t9t-settings-zkui</module>
                 <module>t9t-zkui-ce</module>
                 <module>t9t-zkui-screens</module>
-                <!-- <module>t9t-zkui-war</module>   not needed, just a sample -->
+                <module>t9t-zkui-jetty</module>
+                <module>t9t-zkui-jar</module>
             </modules>
         </profile>
 
@@ -1374,6 +1377,7 @@
 
                 <module>t9t-zkui-ce</module>
                 <module>t9t-zkui-ee</module>
+                <module>t9t-zkui-jetty</module>
 
                 <module>t9t-tests-auth</module>
                 <module>t9t-tests-misc</module>

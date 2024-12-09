@@ -31,6 +31,7 @@ import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.base.ILeanGridConfigContainer;
 import com.arvatosystems.t9t.base.IViewModelContainer;
 import com.arvatosystems.t9t.base.MessagingUtil;
@@ -226,6 +227,13 @@ public final class InitContainers {
     }
 
     private static void collectLeanGridConfigurations(final Reflections... packages) {
+        // first, process all entries from IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY
+        for (final Map.Entry<String, CrudViewModel<?, ?>> vm: IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.entrySet()) {
+            if (vm.getValue().searchClass != null) {
+                UiGridConfigPrefs.getLeanGridConfigAsObject(vm.getKey());
+            }
+        }
+        // now search for all explicitly listed ILeanGridConfigContainer
         final List<ILeanGridConfigContainer> clses = new ArrayList<>(100);
         for (final Reflections pkg: packages) {
             for (final Class<? extends ILeanGridConfigContainer> cls : pkg.getSubTypesOf(ILeanGridConfigContainer.class)) {
@@ -242,8 +250,12 @@ public final class InitContainers {
 
         for (final ILeanGridConfigContainer cls : clses) {
             final List<String> configs = cls.getResourceNames();
-            LOGGER.debug("Grid config container {} holds {} lean grid configurations", cls.getClass().getCanonicalName(), configs.size());
+            LOGGER.debug("Grid config container {} holds {} lean grid configurations (sort order {})",
+                    cls.getClass().getCanonicalName(), configs.size(), cls.getOrder());
             for (final String resourceId : configs) {
+                if (IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.containsKey(resourceId)) {
+                    LOGGER.warn("Duplicate definition of gridId {}", resourceId);
+                }
                 UiGridConfigPrefs.getLeanGridConfigAsObject(resourceId);
             }
         }

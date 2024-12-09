@@ -274,7 +274,7 @@ public class T9tRestProcessorViaKafka extends T9tRestProcessor implements IT9tRe
                     if (idempotencyHeader != null) {
                         try {
                             defaultIdemPotencyHeader = UUID.fromString(idempotencyHeader);
-                        } catch (Exception e) {
+                        } catch (final Exception e) {
                             LOGGER.error("Cannot parse idempotency UUID despite prior pattern check: {}: {}", idempotencyHeader, e.getMessage());
                         }
                     }
@@ -294,10 +294,11 @@ public class T9tRestProcessorViaKafka extends T9tRestProcessor implements IT9tRe
                     result = Status.OK;
                 }
             } catch (final ApplicationException e) {
-                LOGGER.error("Exception during request conversion for {}: {}: {}", pathInfo, e.getMessage(), ExceptionUtil.causeChain(e));
-                LOGGER.error("Return code = {}, details = {}", e.getErrorCode(), e.getMessage());
+                LOGGER.error("Exception during request conversion for {}: {}", pathInfo, ExceptionUtil.causeChain(e));
+                LOGGER.error("Return code = {}, details = {}", e.getErrorCode(), e.getErrorDetails());
                 payload.setReturnCode(e.getErrorCode());
-                payload.setErrorMessage(e.getMessage());
+                payload.setErrorMessage(ApplicationException.codeToString(e.getErrorCode()));
+                payload.setErrorDetails(e.getErrorDetails());
                 payload.setFieldName(e.getFieldName());
                 payload.setClassName(e.getClassName());
             } catch (final Exception e) {
