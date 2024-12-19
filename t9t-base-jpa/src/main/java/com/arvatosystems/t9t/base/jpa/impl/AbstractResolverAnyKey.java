@@ -16,12 +16,17 @@
 package com.arvatosystems.t9t.base.jpa.impl;
 
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
 
+import com.arvatosystems.t9t.base.T9tUtil;
+import jakarta.persistence.Column;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +43,8 @@ import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
 import de.jpaw.bonaparte.jpa.api.JpaCriteriaBuilder;
 import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
+import de.jpaw.bonaparte.pojos.api.AggregateColumn;
+import de.jpaw.bonaparte.pojos.api.AggregateFunctionType;
 import de.jpaw.bonaparte.pojos.api.BooleanFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.SortColumn;
@@ -311,7 +318,7 @@ public abstract class AbstractResolverAnyKey<
             criteriaQuery = criteriaQuery.distinct(true);
 
         logSearch(derivedEntityClass, searchCriteria, "key of entity");
-        return runSearch(searchCriteria, criteriaBuilder, from, criteriaQuery);
+        return runSearch(searchCriteria, criteriaBuilder, from, criteriaQuery, null);
     }
 
     /**
@@ -329,12 +336,36 @@ public abstract class AbstractResolverAnyKey<
         final Class<ENTITY> derivedEntityClass = getEntityClass();
         CriteriaQuery<ENTITY> criteriaQuery = criteriaBuilder.createQuery(derivedEntityClass);
         final Root<ENTITY> from = criteriaQuery.from(derivedEntityClass);
-        criteriaQuery = criteriaQuery.select(from);
-        if (Boolean.TRUE.equals(searchCriteria.getApplyDistinct()))
-            criteriaQuery = criteriaQuery.distinct(true);
+
+        Map<String, Expression<?>> aggregateMap = null;
+        if (T9tUtil.isEmpty(searchCriteria.getGroupByColumns())) {
+            // no group by columns provided
+            criteriaQuery = criteriaQuery.select(from);
+            if (Boolean.TRUE.equals(searchCriteria.getApplyDistinct())) {
+                criteriaQuery = criteriaQuery.distinct(true);
+            }
+        } else {
+            // group by columns are provided
+            final List<Expression<?>> groupBy = new ArrayList<>(searchCriteria.getGroupByColumns().size());
+            for (String columns: searchCriteria.getGroupByColumns()) {
+                groupBy.add(from.get(columns));
+            }
+            criteriaQuery = criteriaQuery.groupBy(groupBy);
+
+            // handle column aggregation
+            final Field[] allFields = derivedEntityClass.getDeclaredFields();
+            final List<Selection<?>> selections = new ArrayList<>(allFields.length);
+            aggregateMap = new HashMap<>(allFields.length);
+            if (searchCriteria.getAggregateColumns() != null) {
+                populateAggregatedSelections(criteriaBuilder, from, searchCriteria.getAggregateColumns(), selections, aggregateMap);
+            }
+            // populate default aggregated selections for the remaining columns
+            populateDefaultAggregatedSelections(criteriaBuilder, from, allFields, searchCriteria.getGroupByColumns(), aggregateMap, selections);
+            criteriaQuery = criteriaQuery.multiselect(selections);
+        }
 
         logSearch(derivedEntityClass, searchCriteria, "entity");
-        return runSearch(searchCriteria, criteriaBuilder, from, criteriaQuery);
+        return runSearch(searchCriteria, criteriaBuilder, from, criteriaQuery, aggregateMap);
     }
 
     @Override
@@ -422,7 +453,7 @@ public abstract class AbstractResolverAnyKey<
     }
 
     private <R> List<R> runSearch(final SearchCriteria searchCriteria, final CriteriaBuilder criteriaBuilder,
-      final Root<ENTITY> from, final CriteriaQuery<R> select) {
+      final Root<ENTITY> from, final CriteriaQuery<R> select, final Map<String, Expression<?>> aggregateMap) {
 
         createWhereList(searchCriteria.getSearchFilter(), criteriaBuilder, from, select);
 
@@ -463,13 +494,24 @@ public abstract class AbstractResolverAnyKey<
         // Sorting, if supplied
         if (sortColumns != null && !sortColumns.isEmpty()) {
             final PathResolver r = new PathResolver(getEntityClass(), from);
-            final List<Order> orderList = new ArrayList<>();
+            final List<Order> orderList = new ArrayList<>(sortColumns.size());
             // Walk through the list of sort columns if any
             for (final SortColumn column : sortColumns) {
-                final Path<?> path = r.getPath(column.getFieldName());
-                orderList.add(column.getDescending() ? criteriaBuilder.desc(path) : criteriaBuilder.asc(path));
+                final String fieldName = column.getFieldName();
+                if (aggregateMap != null && aggregateMap.containsKey(fieldName)) {
+                    // for now, only first level of fields are supported for sort with aggregation
+                    if (fieldName.indexOf('.') == -1) {
+                        final Expression<?> selection = aggregateMap.get(column.getFieldName());
+                        orderList.add(column.getDescending() ? criteriaBuilder.desc(selection) : criteriaBuilder.asc(selection));
+                    }
+                } else {
+                    final Path<?> path = r.getPath(column.getFieldName());
+                    orderList.add(column.getDescending() ? criteriaBuilder.desc(path) : criteriaBuilder.asc(path));
+                }
             }
-            select.orderBy(orderList);
+            if (!orderList.isEmpty()) {
+                select.orderBy(orderList);
+            }
         }
 
         // Run the query and return the results
@@ -708,5 +750,56 @@ public abstract class AbstractResolverAnyKey<
         nullCheck(key);
         final ENTITY e = getEntityManager().find(getEntityClass(), key);
         return findInternalSub(e, key, false);
+    }
+
+    // populate aggregated selections based on the given aggregate columns
+    private void populateAggregatedSelections(final CriteriaBuilder criteriaBuilder, final Root<ENTITY> from, final List<AggregateColumn> aggregateColumns,
+        final List<Selection<?>> selections, final Map<String, Expression<?>> aggregateMap) {
+        for (AggregateColumn aggregateColumn : aggregateColumns) {
+            final String fieldName = aggregateColumn.getFieldName();
+            final Expression<?> expression = applyAggregateFunction(criteriaBuilder, from, aggregateColumn.getFunction(), fieldName);
+            selections.add(expression.alias(fieldName));
+            aggregateMap.put(fieldName, expression);
+        }
+    }
+
+    // populate default aggregated selections for the remaining columns
+    private void populateDefaultAggregatedSelections(final CriteriaBuilder criteriaBuilder, final Root<ENTITY> from, final Field[] allFields,
+        final List<String> groupByColumns, final Map<String, Expression<?>> aggregateMap, final List<Selection<?>> selections) {
+        for (Field field : allFields) {
+            final Annotation classAnnotation = field.getAnnotation(Column.class);
+            final String fieldName = field.getName();
+            final Expression<?> expression;
+            if (classAnnotation == null || aggregateMap.containsKey(fieldName)) {
+                continue;
+            }
+            if (groupByColumns.contains(fieldName)) {
+                // column is part of group by, no need to aggregate
+                expression = from.get(fieldName);
+            } else {
+                if (field.getType() == boolean.class || field.getType() == Boolean.class) {
+                    // for boolean fields, just use false as default aggregation value
+                    expression = criteriaBuilder.literal(false);
+                } else {
+                    // use max as default aggregation function
+                    expression = criteriaBuilder.max(from.get(fieldName));
+                }
+                aggregateMap.put(fieldName, expression);
+            }
+            selections.add(expression.alias(fieldName));
+        }
+    }
+
+    private Expression<?> applyAggregateFunction(final CriteriaBuilder criteriaBuilder, final Root<ENTITY> from, final AggregateFunctionType functionType,
+        final String fieldName) {
+        return switch (functionType) {
+            case SUM -> criteriaBuilder.sum(from.get(fieldName));
+            case AVG -> criteriaBuilder.avg(from.get(fieldName));
+            case MAX -> criteriaBuilder.max(from.get(fieldName));
+            case MIN -> criteriaBuilder.min(from.get(fieldName));
+            case COUNT -> criteriaBuilder.count(from.get(fieldName));
+            case COUNT_DISTINCT -> criteriaBuilder.countDistinct(from.get(fieldName));
+            default -> throw new T9tException(T9tException.NOT_YET_IMPLEMENTED, functionType.name());
+        };
     }
 }

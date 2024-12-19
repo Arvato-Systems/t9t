@@ -74,6 +74,8 @@ package (com.arvatosystems) t9t.base.search {
      * <p>
      * The SearchOption class just provides functionality to select a subset of the result, for paging views in the UI. As this does only make sense in conjunction with a defined ordering,
      * ordering by the (artificial) primary key column is assumed in case no list of SortColumns is provided (objectRef ascending).
+     * <p>
+     * If groupByColumns are provided then max function will be used by default for all unspecified aggregate columns, except boolean columns, which will be aggregated to False if not defined.
      */
     abstract class SearchCriteria extends RequestParameters {
         required int                                limit;                                  // max rows (0 for unlimited)
@@ -84,6 +86,8 @@ package (com.arvatosystems) t9t.base.search {
         optional queryString                        expression;                             // Lucene / SOLR query expression (requires property documentName)
         optional Boolean                            applyDistinct;                          // return distinct results (apply SQL SELECT DISTINCT). Not supported by all request handlers.
         optional Boolean                            countTotals;                            // return number of total results, in case of searches with limit. Not supported by all request handlers.
+        required identifier List<>                  groupByColumns;                         // list of columns to group by
+        required (AggregateColumn) List<>           aggregateColumns;                       // list of columns to aggregate with specified function
     }
 
     /** allow to instantiate this for internal use. */

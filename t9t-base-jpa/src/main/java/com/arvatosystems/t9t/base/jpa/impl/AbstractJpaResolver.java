@@ -29,6 +29,7 @@ import com.arvatosystems.t9t.base.services.IRefResolver;
 
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
+import de.jpaw.bonaparte.pojos.api.AggregateColumn;
 import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.SortColumn;
@@ -140,25 +141,35 @@ public abstract class AbstractJpaResolver<
     }
 
     // backwards compat workaround
-    private SearchCriteria buildCriteria(final int limit, final int offset, final SearchFilter filter, final List<SortColumn> sortColumns) {
+    private SearchCriteria buildCriteria(final int limit, final int offset, final SearchFilter filter, final List<SortColumn> sortColumns,
+        final List<String> groupByColumns, final List<AggregateColumn> aggregateColumns) {
         final SearchCriteria dummyCriteria = new DummySearchCriteria();
         dummyCriteria.setLimit(limit);
         dummyCriteria.setOffset(offset);
         dummyCriteria.setSearchFilter(filter);
         dummyCriteria.setSortColumns(sortColumns);
+        dummyCriteria.setGroupByColumns(groupByColumns);
+        dummyCriteria.setAggregateColumns(aggregateColumns);
         return dummyCriteria;
     }
 
     @Override
     public List<DataWithTrackingS<DTO, TRACKING>> query(final int limit, final int offset, final SearchFilter filter, final List<SortColumn> sortColumns) {
         mapper.processSearchPrefixForDB(filter, sortColumns);
-        return mapper.mapListToDwt(resolver.search(buildCriteria(limit, offset, filter, sortColumns)));
+        return mapper.mapListToDwt(resolver.search(buildCriteria(limit, offset, filter, sortColumns, null, null)));
+    }
+
+    @Override
+    public List<DataWithTrackingS<DTO, TRACKING>> query(final int limit, final int offset, final SearchFilter filter, final List<SortColumn> sortColumns,
+        final List<String> groupByColumns, final List<AggregateColumn> aggregateColumns) {
+        mapper.processSearchPrefixForDB(filter, sortColumns);
+        return mapper.mapListToDwt(resolver.search(buildCriteria(limit, offset, filter, sortColumns, groupByColumns, aggregateColumns)));
     }
 
     @Override
     public List<Long> queryKeys(final int limit, final int offset, final SearchFilter filter, final List<SortColumn> sortColumns) {
         mapper.processSearchPrefixForDB(filter, sortColumns);
-        return resolver.searchKey(buildCriteria(limit, offset, filter, sortColumns));
+        return resolver.searchKey(buildCriteria(limit, offset, filter, sortColumns, null, null));
     }
 
     @Override

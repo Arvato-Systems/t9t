@@ -15,6 +15,9 @@
  */
 package com.arvatosystems.t9t.base.services;
 
+import jakarta.annotation.Nonnull;
+import java.util.List;
+
 public interface IEnumResolver {
     /** Returns an integer for a NonTokenizableEnum, the token String for a TokenizableEnum (or null if the token was "").
      * Throws a RuntimeException if the enumPqon is not known or that enum does not have an instance of the given name.
@@ -29,4 +32,10 @@ public interface IEnumResolver {
     String getTokenByXEnumPqonAndInstance(String xenumPqon, String instanceName);
 
     String getTokenByXEnumSetPqonAndInstance(String xenumsetPqon, String instanceName);
+
+    Object getTokenByPqonAndOrdinal(@Nonnull String enumPqon, @Nonnull Integer ordinal);
+
+    List<Object> getTokensByPqonAndInstances(@Nonnull String enumPqon, @Nonnull List<String> instanceNames);
+
+    List<Object> getTokensByPqonAndOrdinals(@Nonnull String enumPqon, @Nonnull List<Integer> ordinals);
 }

@@ -141,6 +141,7 @@ public class Filter28 extends Grid implements IGridIdOwner {
         for (IField<?> e: filters) {
             e.clear();
         }
+        Events.postEvent("onResetFilters", this, null);
     }
 
 

@@ -51,6 +51,10 @@ body *:not([class*="z-icon-"]):not([class*="z-comboitem-inner"]) {
     background: #FCFCFC none repeat scroll 0 0;
 }
 
+.z-listitem.has-filter-text td {
+    background-color: yellow !important;
+}
+
 .z-listitem.z-listitem-selected.z-listitem-focus>.z-listcell {
     background: rgba(200,233,244,0.7) repeat scroll 0 0;
     border-color: #cfcfcf;

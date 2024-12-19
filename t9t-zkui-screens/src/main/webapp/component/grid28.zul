@@ -10,6 +10,7 @@
     <hlayout hflex="1" class="paging-external">
         <paging id="paging" hflex="1" detailed="true" pageSize="25"/>
         <image id="info" src="img/questionMark.png"/>
+        <textbox id="textFilterField" visible="false" />
         <button28 id="exportButton" />
         <!-- <div width="8px"/>    align export button with search button -->
     </hlayout>

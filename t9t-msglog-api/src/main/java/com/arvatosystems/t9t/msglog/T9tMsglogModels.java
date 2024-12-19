@@ -42,5 +42,6 @@ public final class T9tMsglogModels implements IViewModelContainer {
     public void register() {
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("requests", MESSAGE_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("messageStatistics", MESSAGE_STATISTICS_VIEW_MODEL);
+        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("messageStatisticsAggregation", MESSAGE_STATISTICS_VIEW_MODEL);
     }
 }

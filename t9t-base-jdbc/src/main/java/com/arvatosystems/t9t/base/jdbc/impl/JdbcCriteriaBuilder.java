@@ -15,22 +15,11 @@
  */
 package com.arvatosystems.t9t.base.jdbc.impl;
 
-import java.math.BigDecimal;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.sql.Types;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.function.Consumer;
-
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.jdbc.IJdbcCriteriaBuilder;
+import com.arvatosystems.t9t.base.search.EnumFilter;
 import com.arvatosystems.t9t.base.search.SearchCriteria;
-
+import com.arvatosystems.t9t.base.services.IEnumResolver;
 import de.jpaw.bonaparte.pojos.api.AndFilter;
 import de.jpaw.bonaparte.pojos.api.AsciiFilter;
 import de.jpaw.bonaparte.pojos.api.BooleanFilter;
@@ -45,12 +34,26 @@ import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.TimestampFilter;
 import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
 import de.jpaw.bonaparte.pojos.api.UuidFilter;
+import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.CharTestsASCII;
 import jakarta.annotation.Nonnull;
+import java.math.BigDecimal;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.sql.Types;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.function.Consumer;
 
 @Singleton
 public class JdbcCriteriaBuilder implements IJdbcCriteriaBuilder {
+
+    protected final IEnumResolver enumResolver = Jdp.getRequired(IEnumResolver.class);
 
     @Override
     public List<Consumer<PreparedStatement>> createWhereClause(final StringBuilder sb, final SearchCriteria searchCriteria) {
@@ -153,6 +156,8 @@ public class JdbcCriteriaBuilder implements IJdbcCriteriaBuilder {
             applyFieldFilter(sb, setters, nextIndex, booleanFilter);
         } else if (ff instanceof UuidFilter uuidFilter) {
             applyFieldFilter(sb, setters, nextIndex, uuidFilter);
+        } else if (ff instanceof EnumFilter enumFilter) {
+            applyFieldFilter(sb, setters, nextIndex, enumFilter);
         } else {
             throw new IllegalArgumentException("Unknown filter type " + ff.getClass().getSimpleName());
         }
@@ -161,7 +166,7 @@ public class JdbcCriteriaBuilder implements IJdbcCriteriaBuilder {
     /** Below just Java boilerplate. It can't get any worse! */
 
     protected void applyFieldFilter(@Nonnull final StringBuilder sb, @Nonnull final List<Consumer<PreparedStatement>> setters, final int nextIndex,
-      @Nonnull final IntFilter ff) {
+        @Nonnull final IntFilter ff) {
         if (ff.getEqualsValue() != null) {
             sb.append(" = ?");
             setters.add(ps -> wrappedSetInt(ps, nextIndex, ff.getEqualsValue()));
@@ -192,7 +197,7 @@ public class JdbcCriteriaBuilder implements IJdbcCriteriaBuilder {
     }
 
     protected void applyFieldFilter(@Nonnull final StringBuilder sb, @Nonnull final List<Consumer<PreparedStatement>> setters, final int nextIndex,
-              @Nonnull final LongFilter ff) {
+        @Nonnull final LongFilter ff) {
         if (ff.getEqualsValue() != null) {
             sb.append(" = ?");
             setters.add(ps -> wrappedSetLong(ps, nextIndex, ff.getEqualsValue()));
@@ -223,7 +228,7 @@ public class JdbcCriteriaBuilder implements IJdbcCriteriaBuilder {
     }
 
     protected void applyFieldFilter(@Nonnull final StringBuilder sb, @Nonnull final List<Consumer<PreparedStatement>> setters, final int nextIndex,
-            @Nonnull final DecimalFilter ff) {
+        @Nonnull final DecimalFilter ff) {
         if (ff.getEqualsValue() != null) {
             sb.append(" = ?");
             setters.add(ps -> wrappedSetDecimal(ps, nextIndex, ff.getEqualsValue()));
@@ -254,7 +259,7 @@ public class JdbcCriteriaBuilder implements IJdbcCriteriaBuilder {
     }
 
     protected void applyFieldFilter(@Nonnull final StringBuilder sb, @Nonnull final List<Consumer<PreparedStatement>> setters, final int nextIndex,
-            @Nonnull final TimestampFilter ff) {
+        @Nonnull final TimestampFilter ff) {
         if (ff.getEqualsValue() != null) {
             sb.append(" = ?");
             setters.add(ps -> wrappedSetTimestamp(ps, nextIndex, ff.getEqualsValue()));
@@ -287,7 +292,7 @@ public class JdbcCriteriaBuilder implements IJdbcCriteriaBuilder {
     }
 
     protected void applyFieldFilter(@Nonnull final StringBuilder sb, @Nonnull final List<Consumer<PreparedStatement>> setters, final int nextIndex,
-            @Nonnull final InstantFilter ff) {
+        @Nonnull final InstantFilter ff) {
         if (ff.getEqualsValue() != null) {
             sb.append(" = ?");
             setters.add(ps -> wrappedSetInstant(ps, nextIndex, ff.getEqualsValue()));
@@ -318,7 +323,7 @@ public class JdbcCriteriaBuilder implements IJdbcCriteriaBuilder {
     }
 
     protected void applyFieldFilter(@Nonnull final StringBuilder sb, @Nonnull final List<Consumer<PreparedStatement>> setters, final int nextIndex,
-            @Nonnull final AsciiFilter ff) {
+        @Nonnull final AsciiFilter ff) {
         if (ff.getEqualsValue() != null) {
             sb.append(" = ?");
             setters.add(ps -> wrappedSetString(ps, nextIndex, ff.getEqualsValue()));
@@ -351,8 +356,16 @@ public class JdbcCriteriaBuilder implements IJdbcCriteriaBuilder {
         }
     }
 
+    protected void wrappedSetStringList(@Nonnull final PreparedStatement ps, final int index, final List<String> values) {
+        try {
+            ps.setArray(index, ps.getConnection().createArrayOf("varchar", values.toArray()));
+        } catch (final SQLException e) {
+            throw new T9tException(T9tException.JDBC_GENERAL_SQL, e);
+        }
+    }
+
     protected void applyFieldFilter(@Nonnull final StringBuilder sb, @Nonnull final List<Consumer<PreparedStatement>> setters, final int nextIndex,
-            @Nonnull final UnicodeFilter ff) {
+        @Nonnull final UnicodeFilter ff) {
         if (ff.getEqualsValue() != null) {
             sb.append(" = ?");
             setters.add(ps -> wrappedSetString(ps, nextIndex, ff.getEqualsValue()));
@@ -378,18 +391,57 @@ public class JdbcCriteriaBuilder implements IJdbcCriteriaBuilder {
     }
 
     protected void applyFieldFilter(@Nonnull final StringBuilder sb, @Nonnull final List<Consumer<PreparedStatement>> setters, final int nextIndex,
-            @Nonnull final BooleanFilter ff) {
+        @Nonnull final BooleanFilter ff) {
         sb.append(ff.getBooleanValue() ? " = TRUE" : " = FALSE");
     }
 
     protected void applyFieldFilter(@Nonnull final StringBuilder sb, @Nonnull final List<Consumer<PreparedStatement>> setters, final int nextIndex,
-            @Nonnull final UuidFilter ff) {
+        @Nonnull final UuidFilter ff) {
         if (ff.getEqualsValue() != null) {
             sb.append(" = ?");
             setters.add(ps -> wrappedSetUUID(ps, nextIndex, ff.getEqualsValue()));
         } else {
             throw new IllegalArgumentException("UnicodeFilter must have at least one of equalsValue, lowerBound, upperBound");
         }
+    }
+
+    protected void applyFieldFilter(@Nonnull final StringBuilder sb, @Nonnull final List<Consumer<PreparedStatement>> setters, final int nextIndex,
+        @Nonnull final EnumFilter ff) {
+        String token = ff.getEqualsToken();
+
+        if (token == null && ff.getEqualsName() != null) {
+            token = String.valueOf(enumResolver.getTokenByPqonAndInstance(ff.getEnumPqon(), ff.getEqualsName()));
+        }
+
+        if (token == null && ff.getEqualsOrdinal() != null) {
+            token = String.valueOf(enumResolver.getTokenByPqonAndOrdinal(ff.getEnumPqon(), ff.getEqualsOrdinal()));
+        }
+
+        if (token != null) {
+            sb.append(" = ?");
+            final String finalToken = token;
+            setters.add(ps -> wrappedSetString(ps, nextIndex, finalToken));
+            return;
+        } else {
+            List<String> tokens = ff.getTokenList();
+
+            if (tokens == null && ff.getOrdinalList() != null) {
+                tokens = enumResolver.getTokensByPqonAndOrdinals(ff.getEnumPqon(), ff.getOrdinalList()).stream().map(Object::toString).toList();
+            }
+
+            if (tokens == null && ff.getNameList() != null) {
+                tokens = enumResolver.getTokensByPqonAndInstances(ff.getEnumPqon(), ff.getNameList()).stream().map(Object::toString).toList();
+            }
+
+            if (tokens != null) {
+                sb.append(" IN (?)");
+                final List<String> finalTokens = tokens;
+                setters.add(ps -> wrappedSetStringList(ps, nextIndex, finalTokens));
+                return;
+            }
+        }
+
+        throw new IllegalArgumentException("EnumFilter must have at least one of equalsName, equalsToken, tokenList, EqualsOrdinal, ordinalList, nameList");
     }
 
     protected void wrappedSetUUID(@Nonnull final PreparedStatement ps, final int index, final UUID value) {

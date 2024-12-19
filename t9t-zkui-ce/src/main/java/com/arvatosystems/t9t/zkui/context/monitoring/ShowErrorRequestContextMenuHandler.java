@@ -64,6 +64,10 @@ public class ShowErrorRequestContextMenuHandler implements IGridContextMenu<Mess
 
         final SearchFilter filter = SearchFilters.and(List.of(userIdFilter, pQONFilter, executionStartedAtFilter, returnCodeFilter));
 
-        JumpTool.jump("screens/monitoring/requests28.zul", filter, "screens/monitoring/messageStatistics.zul");
+        JumpTool.jump("screens/monitoring/requests28.zul", filter, getBackNaviLink());
+    }
+
+    protected String getBackNaviLink() {
+        return "screens/monitoring/messageStatistics.zul";
     }
 }

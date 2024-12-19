@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import com.arvatosystems.t9t.zkui.filters.IResultTextFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
@@ -48,6 +49,7 @@ import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Paging;
 import org.zkoss.zul.Popup;
+import org.zkoss.zul.Textbox;
 import org.zkoss.zul.event.PagingEvent;
 import org.zkoss.zul.event.ZulEvents;
 
@@ -117,6 +119,8 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
     private Paging paging;
     @Wire
     private Button28 exportButton;
+    @Wire
+    private Textbox textFilterField;
     @Wire("#info")
     private Image infoImage;
 
@@ -146,6 +150,7 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
     protected boolean multiSelect;
     private boolean clientSidePaging = false;
     private List<DataWithTracking<BonaPortable, TrackingBase>> dataList;
+    private IResultTextFilter textFilterService;
 
     // a parent to this is only assigned after the constructor is finished, therefore we cannot get the gridId of the outer element now
     public Grid28() {
@@ -247,6 +252,9 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
      // create the grid config resolver
         leanGridConfigResolver = new LeanGridConfigResolver(gridId, session);
         defaultListItemRenderer = new ListItemRenderer28<>(crudViewModel.dtoClass, true, gridRowCssQualifier);
+        if (textFilterService != null) {
+            defaultListItemRenderer.setTextFilter(textFilterService, () -> textFilterField.getValue());
+        }
         defaultListHeadRenderer = new ListHeadRenderer28(defaultListItemRenderer, leanGridConfigResolver, this, lb, permissions, listHeaders,
                 crudViewModel.dtoClass, dynamicColumnSize);
         lb.setItemRenderer(defaultListItemRenderer);
@@ -431,6 +439,10 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
 
             // sort stuff
             rq.setSortColumns(createSortDirective());
+
+            final UILeanGridPreferences gridPreferences = leanGridConfigResolver.getGridPreferences();
+            rq.setGroupByColumns(gridPreferences.getGroupByColumns());
+            rq.setAggregateColumns(gridPreferences.getAggregateColumns());
 
             resetPaging();
 
@@ -756,5 +768,14 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
 
     public void setGridRowCssQualifier(final String gridRowCssQualifier) {
         this.gridRowCssQualifier = gridRowCssQualifier;
+    }
+
+    public void setTextFilterQualifier(final String qualifier) {
+        textFilterService = Jdp.getRequired(IResultTextFilter.class, qualifier);
+        textFilterField.setVisible(textFilterService != null);
+    }
+
+    public void clearTextFilterField() {
+        textFilterField.setValue(null);
     }
 }

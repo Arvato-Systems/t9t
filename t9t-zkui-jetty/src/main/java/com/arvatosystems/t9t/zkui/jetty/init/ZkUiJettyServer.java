@@ -61,6 +61,7 @@ public class ZkUiJettyServer {
         server.addConnector(connector);
 
         final WebAppContext webAppContext = new WebAppContext();
+        webAppContext.clearAliasChecks();
         server.setHandler(webAppContext);
         webAppContext.setContextPath(contextPath);
         final URL webAppDir = ZkUiJettyServer.class.getClassLoader().getResource("/webapp");

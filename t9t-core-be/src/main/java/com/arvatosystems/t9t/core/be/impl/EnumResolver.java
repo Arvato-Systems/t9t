@@ -15,22 +15,20 @@
  */
 package com.arvatosystems.t9t.core.be.impl;
 
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.services.IEnumResolver;
 import com.arvatosystems.t9t.init.InitContainers;
 import com.google.common.base.Strings;
-
 import de.jpaw.bonaparte.pojos.meta.EnumDefinition;
 import de.jpaw.bonaparte.pojos.meta.EnumSetDefinition;
 import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
 import de.jpaw.bonaparte.pojos.meta.XEnumSetDefinition;
 import de.jpaw.dp.Singleton;
 import de.jpaw.enums.XEnumFactory;
+import java.util.ArrayList;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 public class EnumResolver implements IEnumResolver {
@@ -62,12 +60,16 @@ public class EnumResolver implements IEnumResolver {
             LOGGER.error("Enum(set) of PQON {} does not have instance of name {}", pqon, instanceName);
             throw new T9tException(T9tException.NOT_ENUM_INSTANCE, pqon + ":" + instanceName);
         }
+        return getTokenByDefAndOrdinal(def, i);
+    }
+
+    protected Object getTokenByDefAndOrdinal(final EnumDefinition def, final int ordinal) {
         if (def.getTokens() == null) {
             // numeric search
-            return Integer.valueOf(i);
+            return Integer.valueOf(ordinal);
         } else {
             // alphanumeric enum
-            final String token = def.getTokens().get(i);
+            final String token = def.getTokens().get(ordinal);
             if (Strings.isNullOrEmpty(token)) {
                 // use nullfilter
                 return null;
@@ -80,8 +82,9 @@ public class EnumResolver implements IEnumResolver {
     private static int getOrdinalForInstance(final List<String> ids, final String instanceName) {
         int i = 0;
         for (final String inst : ids) {
-            if (inst.equals(instanceName))
+            if (inst.equals(instanceName)) {
                 return i;
+            }
             ++i;
         }
         return -1;  // not found
@@ -106,5 +109,62 @@ public class EnumResolver implements IEnumResolver {
             throw new T9tException(T9tException.NOT_AN_XENUM, xenumPqon);
         }
         return factory.getByName(instanceName).getToken();
+    }
+
+    @Override
+    public Object getTokenByPqonAndOrdinal(String enumPqon, Integer ordinal) {
+        final EnumDefinition def = InitContainers.getEnumByPQON(enumPqon);
+        if (def == null) {
+            LOGGER.error("Not an enum: PQON {}", enumPqon);
+            throw new T9tException(T9tException.NOT_AN_ENUM, enumPqon);
+        }
+
+        if (def.getIds().size() < ordinal) {
+            LOGGER.error("Enum of PQON {} has no ordinal {}", enumPqon, ordinal);
+            throw new T9tException(T9tException.INVALID_ENUM_VALUE, enumPqon + ":" + ordinal);
+        }
+
+        return getTokenByDefAndOrdinal(def, ordinal);
+    }
+
+    @Override
+    public List<Object> getTokensByPqonAndInstances(String enumPqon, List<String> instanceNames) {
+        final EnumDefinition def = InitContainers.getEnumByPQON(enumPqon);
+        if (def == null) {
+            LOGGER.error("Not an enum: PQON {}", enumPqon);
+            throw new T9tException(T9tException.NOT_AN_ENUM, enumPqon);
+        }
+
+        List<Object> tokens = new ArrayList<>(instanceNames.size());
+        for (String instanceName : instanceNames) {
+            tokens.add(getTokenByDefAndInstance(def, instanceName, enumPqon));
+        }
+
+        return tokens;
+    }
+
+    @Override
+    public List<Object> getTokensByPqonAndOrdinals(String enumPqon, List<Integer> ordinals) {
+        final EnumDefinition def = InitContainers.getEnumByPQON(enumPqon);
+        if (def == null) {
+            LOGGER.error("Not an enum: PQON {}", enumPqon);
+            throw new T9tException(T9tException.NOT_AN_ENUM, enumPqon);
+        }
+
+        List<Object> tokens = new ArrayList<>(ordinals.size());
+        for (Integer ordinal : ordinals) {
+            if (def.getIds().size() < ordinal) {
+                LOGGER.error("Enum of PQON {} has no ordinal {}", enumPqon, ordinal);
+                throw new T9tException(T9tException.INVALID_ENUM_VALUE, enumPqon + ":" + ordinal);
+            }
+
+            if (def.getIds().size() < ordinal) {
+                LOGGER.error("Enum of PQON {} has no ordinal {}", enumPqon, ordinal);
+                throw new T9tException(T9tException.INVALID_ENUM_VALUE, enumPqon + ":" + ordinal);
+            }
+            tokens.add(getTokenByDefAndOrdinal(def, ordinal));
+        }
+
+        return tokens;
     }
 }

@@ -15,6 +15,7 @@
  */
 import meta.*               // identifier typedef
 import ui.*                 // UI configuration stuff
+import api.*
 import apiw.*
 import t9t.base.types.*
 import t9t.base.api.*
@@ -57,5 +58,7 @@ package (com.arvatosystems) t9t.base.uiprefs {
         required identifier List<>                  mapColumns;             // a list of predefined map columns to be used in edit columns
         optional gridConfigKey                      overridesGridConfig;    // grid Id to be overridden
         optional gridConfigKey                      extendsGridConfig;      // grid Id to be extended
+        required identifier List<>                  groupByColumns;
+        required (AggregateColumn) List<>           aggregateColumns;
     }
 }

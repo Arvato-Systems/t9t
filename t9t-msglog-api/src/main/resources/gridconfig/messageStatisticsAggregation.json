@@ -1,0 +1,53 @@
+{
+    "viewModel": "messageStatisticsAggregation",
+    "filters": [
+        { "filterType": "R", "fieldName": "slotStart" },
+        { "filterType": "E", "fieldName": "tenantId" },
+        { "filterType": "E", "fieldName": "userId" },
+        { "filterType": "E", "fieldName": "hostname" },
+        { "filterType": "E", "fieldName": "serverType" },
+        { "filterType": "E", "fieldName": "partition" },
+        { "filterType": "E", "fieldName": "transactionOriginType" },
+        { "filterType": "W", "fieldName": "requestParameterPqon" },
+        { "filterType": "R", "fieldName": "countOk" },
+        { "filterType": "R", "fieldName": "countError" },
+        { "filterType": "L", "fieldName": "processingTimeMax" },
+        { "filterType": "L", "fieldName": "processingDelayMax" }
+    ],
+    "fields": [
+        "slotStart", "tenantId", "transactionOriginType", "userId", "requestParameterPqon", "countOk", "countError", "processingTimeMax", "processingTimeAvg",
+        "processingDelayMax", "processingDelayAvg"
+    ],
+    "groupByColumns": [
+        "slotStart",
+        "transactionOriginType",
+        "userId",
+        "requestParameterPqon"
+    ],
+    "aggregateColumns": [
+        {
+            "fieldName": "countOk",
+            "function": "S"
+        },
+        {
+            "fieldName": "countError",
+            "function": "S"
+        },
+        {
+            "fieldName": "processingTimeMax",
+            "function": "S"
+        },
+        {
+            "fieldName": "processingTimeTotal",
+            "function": "S"
+        },
+        {
+            "fieldName": "processingDelayMax",
+            "function": "S"
+        },
+        {
+            "fieldName": "processingDelayTotal",
+            "function": "S"
+        }
+    ]
+}

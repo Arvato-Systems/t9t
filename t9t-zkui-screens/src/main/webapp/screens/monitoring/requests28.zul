@@ -2,6 +2,6 @@
 <?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="requests28"?>
 
 <window28 id="requestWin">
-    <twosections28 pageSize="50" gridId="requests"
+    <twosections28 pageSize="50" gridId="requests" textFilterQualifier="message"
        gridContext="showMessage,toSession,toChilds,toInvoking,,rerun,alwaysRerun,,showRq,showRqAsJson,,showResp,showRespAsJson,,editRerun"/>
 </window28>

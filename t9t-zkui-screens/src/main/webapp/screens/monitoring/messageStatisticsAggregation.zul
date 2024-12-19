@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="messageStatisticsAggregation"?>
+
+<window28 id="messageStatisticsAggregationWin">
+    <twosections28 pageSize="50" gridId="messageStatisticsAggregation" gridContext="showOkRequest,showErrorRequest"/>
+</window28>

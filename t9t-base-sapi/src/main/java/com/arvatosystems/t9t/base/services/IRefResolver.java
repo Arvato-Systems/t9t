@@ -18,6 +18,7 @@ package com.arvatosystems.t9t.base.services;
 import java.util.List;
 
 import de.jpaw.bonaparte.pojos.api.AbstractRef;
+import de.jpaw.bonaparte.pojos.api.AggregateColumn;
 import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.SortColumn;
@@ -56,4 +57,10 @@ public interface IRefResolver<REF extends AbstractRef, DTO extends REF, TRACKING
      * Throws UnsupportedOperationException in case the persistence provider does not support searches.
      */
     List<DataWithTrackingS<DTO, TRACKING>> query(int limit, int offset, SearchFilter filter, List<SortColumn> sortColumns);
+
+    /** Returns a number of records for a query with group by and aggregation if provided.
+     * Throws UnsupportedOperationException in case the persistence provider does not support searches.
+     */
+    List<DataWithTrackingS<DTO, TRACKING>> query(int limit, int offset, SearchFilter filter, List<SortColumn> sortColumns,
+        List<String> groupByColumns, List<AggregateColumn> aggregateColumns);
 }

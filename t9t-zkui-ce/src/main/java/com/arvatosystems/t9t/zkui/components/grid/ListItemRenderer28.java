@@ -19,7 +19,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
+import com.arvatosystems.t9t.base.T9tUtil;
+import com.arvatosystems.t9t.zkui.filters.IResultTextFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zul.Listcell;
@@ -52,7 +55,8 @@ public class ListItemRenderer28<T extends BonaPortable> implements ListitemRende
     protected final BonaPortableClass<T> bclass;
     protected final boolean haveTracking;
     protected final IGridRowCssSelector gridRowCssSelector;
-
+    private IResultTextFilter<T> textFilterService;
+    private Supplier<String> filterTextSource;
     protected String context;
 
 
@@ -92,6 +96,10 @@ public class ListItemRenderer28<T extends BonaPortable> implements ListitemRende
 
         if (gridRowCssSelector != null) {
             listitem.addSclass(gridRowCssSelector.getRowCssSelector(data));
+        }
+        final String filterText = filterTextSource != null ? filterTextSource.get() : null;
+        if (textFilterService != null && T9tUtil.isNotBlank(filterText) && textFilterService.getFilter(filterText).test(data)) {
+            listitem.addSclass("has-filter-text");
         }
 
         metaComposer.reset();  // clear previous data
@@ -142,5 +150,10 @@ public class ListItemRenderer28<T extends BonaPortable> implements ListitemRende
     public boolean isDynField(FieldDefinition meta) {
         final Map<String, String> props = meta.getProperties();
         return props != null && props.get("dynGrid") != null;
+    }
+
+    public void setTextFilter(final IResultTextFilter<T> filterService, final Supplier<String> textSource) {
+        this.textFilterService = filterService;
+        this.filterTextSource = textSource;
     }
 }

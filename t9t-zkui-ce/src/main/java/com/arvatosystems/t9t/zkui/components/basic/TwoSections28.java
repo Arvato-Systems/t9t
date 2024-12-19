@@ -88,6 +88,9 @@ public class TwoSections28 extends Vlayout implements IGridIdOwner, IPermissionO
                 main.search();
             }
         });
+        filters.addEventListener("onResetFilters", (Event ev) -> {
+            main.clearTextFilterField();
+        });
         north.setTitle(ApplicationSession.get().translate(null, "resultsGroup"));
         main.addEventListener(Grid28.ON_SEARCH_COMPLETED, (Event ev) -> {
             long totalRecordSize = (long) ev.getData();
@@ -277,5 +280,9 @@ public class TwoSections28 extends Vlayout implements IGridIdOwner, IPermissionO
 
     public void setGridRowCssQualifier(final String gridRowCssQualifier) {
         main.setGridRowCssQualifier(gridRowCssQualifier);
+    }
+
+    public void setTextFilterQualifier(final String qualifier) {
+        main.setTextFilterQualifier(qualifier);
     }
 }
