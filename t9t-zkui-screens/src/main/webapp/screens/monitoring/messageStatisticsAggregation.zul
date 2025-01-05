@@ -2,5 +2,5 @@
 <?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="messageStatisticsAggregation"?>
 
 <window28 id="messageStatisticsAggregationWin">
-    <twosections28 pageSize="50" gridId="messageStatisticsAggregation" gridContext="showOkRequest,showErrorRequest"/>
+    <twosections28 pageSize="50" gridId="messageStatisticsAggregation" gridContext="showOkRequest,showErrorRequest" columnAggregationAllowed="true"/>
 </window28>

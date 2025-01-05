@@ -21,8 +21,11 @@ import java.util.List;
 import org.apache.kafka.clients.consumer.ConsumerRebalanceListener;
 import org.apache.kafka.common.PartitionInfo;
 
+import jakarta.annotation.Nonnull;
+
 public interface IKafkaRebalancer extends ConsumerRebalanceListener {
-    void init(List<PartitionInfo> partitions);
+    /** Does nothing except some initial logging. */
+    void init(@Nonnull List<PartitionInfo> partitions);
 
     Collection<Integer> getCurrentPartitions();
 }

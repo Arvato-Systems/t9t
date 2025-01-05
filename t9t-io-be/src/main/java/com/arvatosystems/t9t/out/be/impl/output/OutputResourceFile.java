@@ -20,7 +20,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
-import java.util.zip.GZIPOutputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +31,7 @@ import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.io.CamelExecutionScheduleType;
 import com.arvatosystems.t9t.io.DataSinkDTO;
 import com.arvatosystems.t9t.io.T9tIOException;
+import com.arvatosystems.t9t.io.services.IIOHook;
 import com.arvatosystems.t9t.out.services.IFileToCamelProducer;
 import com.arvatosystems.t9t.out.services.IOutputResource;
 import com.google.common.base.Objects;
@@ -50,6 +50,7 @@ public class OutputResourceFile implements IOutputResource {
 
     private final IFileUtil fileUtil = Jdp.getRequired(IFileUtil.class);
     private final Provider<RequestContext> ctxProvider = Jdp.getProvider(RequestContext.class);
+    private final IIOHook ioHook = Jdp.getOptional(IIOHook.class);
 
     protected Charset encoding;
     protected OutputStream os;
@@ -115,12 +116,14 @@ public class OutputResourceFile implements IOutputResource {
 
         try {
             os = new FileOutputStream(myFile);
-            if (config.getCompressed()) {
-                os = new GZIPOutputStream(os);
-            }
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             LOGGER.error(ex.getMessage() + ": " + absolutePath, ex);
             throw new T9tException(T9tIOException.OUTPUT_FILE_OPEN_EXCEPTION, absolutePath);
+        }
+        if (ioHook != null) {
+            // backend available, check for compression and/or encryption
+            os = ioHook.getEncryptionStream(os, sinkCfg);
+            os = ioHook.getCompressionStream(os, sinkCfg);
         }
     }
 

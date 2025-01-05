@@ -70,6 +70,7 @@ package (com.arvatosystems) t9t.msglog {
         optional Integer                            processingDelayInMillisecs; // how long after executionStartedAt was the received (for async messages)
         optional Enum TransactionOriginType         transactionOriginType;      // type of the initiator
         optional defaultExternalId                  essentialKey;               // a request specific key field
+        optional Integer                            retriesDone;                // how many retries have been performed
     }
 
 
@@ -107,5 +108,6 @@ package (com.arvatosystems) t9t.msglog {
         required long                               processingDelayTotal;   // how long after executionStartedAt was the received (for async messages)
         optional Double                             processingTimeAvg  properties noJava, noDDL, noAutoMap; // average processing time
         optional Double                             processingDelayAvg properties noJava, noDDL, noAutoMap; // average processing delay
+        optional Integer                            retriesDone;            // how many retries have been performed for all requests
     }
 }

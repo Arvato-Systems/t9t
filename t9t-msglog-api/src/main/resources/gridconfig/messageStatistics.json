@@ -13,10 +13,11 @@
         { "filterType": "R", "fieldName": "countOk" },
         { "filterType": "R", "fieldName": "countError" },
         { "filterType": "L", "fieldName": "processingTimeMax" },
-        { "filterType": "L", "fieldName": "processingDelayMax" }
+        { "filterType": "L", "fieldName": "processingDelayMax" },
+        { "filterType": "L", "fieldName": "retriesDone" }
     ],
     "fields": [
         "slotStart", "tenantId", "hostname", "serverType", "partition", "transactionOriginType", "userId", "requestParameterPqon",
-        "countOk", "countError", "processingTimeMax", "processingTimeAvg", "processingDelayMax", "processingDelayAvg"
+        "countOk", "countError", "processingTimeMax", "processingTimeAvg", "processingDelayMax", "processingDelayAvg", "retriesDone"
     ]
 }

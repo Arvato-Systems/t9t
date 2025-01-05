@@ -147,6 +147,7 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
     protected boolean dynamicColumnSize;
     protected boolean searchAfterInit;
     protected boolean countTotal;
+    protected boolean columnAggregationAllowed;
     protected boolean multiSelect;
     private boolean clientSidePaging = false;
     private List<DataWithTracking<BonaPortable, TrackingBase>> dataList;
@@ -440,9 +441,11 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
             // sort stuff
             rq.setSortColumns(createSortDirective());
 
-            final UILeanGridPreferences gridPreferences = leanGridConfigResolver.getGridPreferences();
-            rq.setGroupByColumns(gridPreferences.getGroupByColumns());
-            rq.setAggregateColumns(gridPreferences.getAggregateColumns());
+            if (columnAggregationAllowed) {
+                final UILeanGridPreferences gridPreferences = leanGridConfigResolver.getGridPreferences();
+                rq.setGroupByColumns(gridPreferences.getGroupByColumns());
+                rq.setAggregateColumns(gridPreferences.getAggregateColumns());
+            }
 
             resetPaging();
 
@@ -777,5 +780,13 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
 
     public void clearTextFilterField() {
         textFilterField.setValue(null);
+    }
+
+    public void setColumnAggregationAllowed(final boolean columnAggregationAllowed) {
+        this.columnAggregationAllowed = columnAggregationAllowed;
+    }
+
+    public boolean isColumnAggregationAllowed() {
+        return columnAggregationAllowed;
     }
 }

@@ -71,6 +71,7 @@
                     <xs:element name="asyncMsgConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:AsyncTransmitterConfiguration"/>
                     <xs:element name="ldapConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:LdapConfiguration"/>
                     <xs:element name="oidConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:OidConfiguration"/>
+                    <xs:element name="encryptionConfiguration" minOccurs="0" maxOccurs="unbounded" type="t9t_cfg_be:EncryptionConfiguration"/>
                     <xs:element name="passwordResetApiKey" minOccurs="0" nillable="true" type="bon:UUID"/>
                     <xs:element name="noDbBackendApiKey" minOccurs="0" nillable="true" type="bon:UUID"/>
                     <xs:element name="noDbBackendPermittedRequests" minOccurs="0" maxOccurs="unbounded">
@@ -1027,6 +1028,40 @@
                     <xs:element name="updateIdp" type="xs:boolean"/>
                     <xs:element name="updateName" minOccurs="0" nillable="true" type="xs:boolean"/>
                     <xs:element name="updateEmail" minOccurs="0" nillable="true" type="xs:boolean"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="EncryptionConfiguration">
+        <xs:complexContent>
+            <xs:extension base="bon:BONAPORTABLE">
+                <xs:sequence>
+                    <xs:element name="encryptionId" type="t9t_base_types:t9tShortId"/>
+                    <xs:element name="transformation" type="t9t_base_types:defaultExternalId"/>
+                    <xs:element name="provider" minOccurs="0" nillable="true" type="t9t_base_types:defaultExternalId"/>
+                    <xs:element name="secretKeyAlgorithm" type="t9t_base_types:defaultExternalId"/>
+                    <xs:element name="secretKeyData">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="12000"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="secretKeyIsBase64" minOccurs="0" nillable="true" type="xs:boolean"/>
+                    <xs:element name="ivLen" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:unsignedInt">
+                                <xs:maxInclusive value="2147483647"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="gcmTLen" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:unsignedInt">
+                                <xs:maxInclusive value="2147483647"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>

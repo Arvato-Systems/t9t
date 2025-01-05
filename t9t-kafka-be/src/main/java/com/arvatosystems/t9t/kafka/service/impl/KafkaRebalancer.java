@@ -15,7 +15,6 @@
  */
 package com.arvatosystems.t9t.kafka.service.impl;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -33,7 +32,7 @@ import com.arvatosystems.t9t.kafka.service.IKafkaRebalancer;
 public class KafkaRebalancer implements IKafkaRebalancer {
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaRebalancer.class);
 
-    protected final Set<Integer> myIndexes = ConcurrentHashMap.newKeySet(96); // concurrent set
+    protected final Set<Integer> myIndexes = ConcurrentHashMap.newKeySet(60); // concurrent set
     protected final String topic;
     protected final boolean verbose;
 
@@ -49,11 +48,7 @@ public class KafkaRebalancer implements IKafkaRebalancer {
 
     @Override
     public void init(final List<PartitionInfo> partitions) {
-        LOGGER.info("Initially {} partitions have been assigned", partitions.size());
-        for (final PartitionInfo pi : partitions) {
-            myIndexes.add(pi.partition());
-        }
-        dumpPartitions("INITIAL");
+        LOGGER.info("Initially {} partitions are available for topic {}", partitions.size(), topic);
     }
 
     private void dumpPartitions(final String intro) {
@@ -63,9 +58,17 @@ public class KafkaRebalancer implements IKafkaRebalancer {
         }
     }
 
+    private String partitionList(final Collection<TopicPartition> partitions) {
+        final StringBuilder sb = new StringBuilder(40);
+        for (final TopicPartition tp : partitions) {
+            sb.append(' ').append(tp.partition());
+        }
+        return sb.toString();
+    }
+
     @Override
     public void onPartitionsRevoked(final Collection<TopicPartition> partitions) {
-        LOGGER.info("Rebalance! {} partitions ({}) revoked on topic {}", partitions.size(), Arrays.toString(partitions.toArray()), topic);
+        LOGGER.info("Rebalance! {} partitions revoked on topic {}: {}", partitions.size(), topic, partitionList(partitions));
         dumpPartitions("BEFORE");
         for (final TopicPartition tp : partitions) {
             myIndexes.remove(tp.partition());
@@ -75,7 +78,7 @@ public class KafkaRebalancer implements IKafkaRebalancer {
 
     @Override
     public void onPartitionsAssigned(final Collection<TopicPartition> partitions) {
-        LOGGER.info("Rebalance! {} partitions assigned on topic {}", partitions.size(), topic);
+        LOGGER.info("Rebalance! {} partitions assigned on topic {}: {}", partitions.size(), topic, partitionList(partitions));
         dumpPartitions("BEFORE");
         for (final TopicPartition tp : partitions) {
             myIndexes.add(tp.partition());

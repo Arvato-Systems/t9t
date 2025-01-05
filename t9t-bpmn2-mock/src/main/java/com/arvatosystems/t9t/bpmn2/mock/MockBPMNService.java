@@ -22,12 +22,12 @@ import com.arvatosystems.t9t.bpmn.ProcessDefinitionRef;
 import com.arvatosystems.t9t.bpmn.WorkflowReturnCode;
 import com.arvatosystems.t9t.bpmn.pojo.ProcessDefinition;
 import com.arvatosystems.t9t.bpmn.pojo.ProcessOutput;
-import com.arvatosystems.t9t.bpmn.services.IBPMService;
+import com.arvatosystems.t9t.bpmn.services.IBpmTechnicalService;
 
 import de.jpaw.dp.Singleton;
 
 @Singleton
-public class MockBPMNService implements IBPMService {
+public class MockBPMNService implements IBpmTechnicalService {
 
     @Override
     public ProcessDefinitionDTO deployNewProcess(final String comment, final byte[] processDefinitionContent) {

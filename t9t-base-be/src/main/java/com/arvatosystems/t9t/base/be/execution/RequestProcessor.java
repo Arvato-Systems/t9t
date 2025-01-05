@@ -25,6 +25,7 @@ import org.slf4j.MDC;
 
 import com.arvatosystems.t9t.base.LogSanitizer;
 import com.arvatosystems.t9t.base.MessagingUtil;
+import com.arvatosystems.t9t.base.MutableInt;
 import com.arvatosystems.t9t.base.RandomNumberGenerators;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.T9tUtil;
@@ -202,8 +203,9 @@ public class RequestProcessor implements IRequestProcessor {
             final String prioText = Boolean.TRUE == ihdr.getPriorityRequest() ? "priority" : "regular";
             LOGGER.debug("Starting {} request {}@{}:{}, S/R = {}/{}, need authorization={}, messageId={}", prioText, jwtInfo.getUserId(), jwtInfo.getTenantId(),
                     pqon, jwtInfo.getSessionRef(), ihdr.getProcessRef(), !skipAuthorization, effectiveMessageId);
+            final MutableInt retryCounter = new MutableInt(0);
 
-            final ServiceResponse resp = executeSynchronousWithRetries(rp, ihdr, skipAuthorization);
+            final ServiceResponse resp = executeSynchronousWithRetries(rp, ihdr, skipAuthorization, retryCounter);
             final Instant endOfProcessing = Instant.now();
             final long processingDuration = endOfProcessing.toEpochMilli() - ihdr.getExecutionStartedAt().toEpochMilli();
             resp.setTenantId(jwtInfo.getTenantId());
@@ -227,7 +229,7 @@ public class RequestProcessor implements IRequestProcessor {
                 summary.setReturnCode(resp.getReturnCode());
                 summary.setErrorDetails(resp.getErrorDetails());
                 summary.setPartitionUsed(partition);
-                messageLogger.logRequest(ihdr, summary, rp, resp);
+                messageLogger.logRequest(ihdr, summary, rp, resp, retryCounter.getValue());
             }
             return resp;
         } finally {
@@ -250,7 +252,8 @@ public class RequestProcessor implements IRequestProcessor {
             MDC.put(T9tInternalConstants.MDC_SESSION_REF, Objects.toString(ihdr.getJwtInfo().getSessionRef(), null));
             MDC.put(T9tInternalConstants.MDC_PROCESS_REF, Objects.toString(ihdr.getProcessRef(), null));
 
-            final ServiceResponse response = executeSynchronousWithRetries(params, ihdr, skipAuthorization);
+            final MutableInt retryCounter = new MutableInt(0);
+            final ServiceResponse response = executeSynchronousWithRetries(params, ihdr, skipAuthorization, retryCounter);
 
             // the response must be a subclass of the expected one
             if (!requiredType.isAssignableFrom(response.getClass())) {
@@ -271,7 +274,7 @@ public class RequestProcessor implements IRequestProcessor {
     }
 
     /** Performs the retry logic in case of optimistic locking exceptions. */
-    protected ServiceResponse executeSynchronousWithRetries(final RequestParameters rq, final InternalHeaderParameters ihdr, final boolean skipAuthorization) {
+    protected ServiceResponse executeSynchronousWithRetries(final RequestParameters rq, final InternalHeaderParameters ihdr, final boolean skipAuthorization, final MutableInt retryCounter) {
         // initialize the total number of retries outside the loop
         int numberOfRetriesLeftForLocks = numberOfRetriesOptimisticLock;
         int numberOfRetriesLeftForDatabaseConnects = numberOfRetriesDatabaseConnect;
@@ -330,6 +333,7 @@ public class RequestProcessor implements IRequestProcessor {
                 return response;
             } else {
                 if (numberOfRetries > 0) {
+                    retryCounter.add(1);
                     LOGGER.warn("{} exception detected for processRef {}, request {} (ID {}) - retrying ({} attempts left)",
                         shouldRetryCause, ihdr.getProcessRef(), rq.ret$PQON(), ihdr.getMessageId(), numberOfRetries);
                     // fall through / iterate again

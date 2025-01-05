@@ -26,7 +26,7 @@ import com.arvatosystems.t9t.bpmn.ProcessDefinitionDTO;
 import com.arvatosystems.t9t.bpmn.T9tBPMException;
 import com.arvatosystems.t9t.bpmn.request.DeployNewProcessRequest;
 import com.arvatosystems.t9t.bpmn.request.DeployNewProcessResponse;
-import com.arvatosystems.t9t.bpmn.services.IBPMService;
+import com.arvatosystems.t9t.bpmn.services.IBpmTechnicalService;
 
 import de.jpaw.dp.Jdp;
 
@@ -36,13 +36,13 @@ import de.jpaw.dp.Jdp;
  */
 public class DeployNewProcessRequestHandler extends AbstractRequestHandler<DeployNewProcessRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(DeployNewProcessRequestHandler.class);
-    private final IBPMService bpmService = Jdp.getOptional(IBPMService.class);
+    private final IBpmTechnicalService bpmService = Jdp.getOptional(IBpmTechnicalService.class);
 
     @Override
     public DeployNewProcessResponse execute(final RequestContext ctx, final DeployNewProcessRequest request) throws Exception {
         final DeployNewProcessResponse response = new DeployNewProcessResponse();
         if (bpmService == null) {
-            LOGGER.error("Fail to lookup implementation for IBpmService. Please check your deployment package");
+            LOGGER.error("Fail to lookup implementation for IBpmApplicationService. Please check your deployment package");
             throw new T9tException(T9tBPMException.BPM_NO_BPMN_ENGINE);
         }
 

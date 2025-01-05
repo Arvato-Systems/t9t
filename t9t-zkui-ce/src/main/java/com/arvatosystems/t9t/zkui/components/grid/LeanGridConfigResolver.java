@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+import de.jpaw.bonaparte.pojos.api.AggregateColumn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -382,5 +383,12 @@ public class LeanGridConfigResolver implements ILeanGridConfigResolver {
         gridPrefsModified = true;
         gridPrefs.setFilters(filters);
 
+    }
+
+    @Override
+    public void setAggregations(List<AggregateColumn> aggregations, List<String> groupByColumns) {
+        gridPrefsModified = true;
+        gridPrefs.setAggregateColumns(aggregations);
+        gridPrefs.setGroupByColumns(groupByColumns);
     }
 }

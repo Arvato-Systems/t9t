@@ -71,7 +71,7 @@
         <maven-enforcer-plugin.version>3.5.0</maven-enforcer-plugin.version>
         <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
         <owasp-maven-plugin.version>7.2.1</owasp-maven-plugin.version>
-        <spring-boot-maven-plugin.version>3.4.0</spring-boot-maven-plugin.version>
+        <spring-boot-maven-plugin.version>3.4.1</spring-boot-maven-plugin.version>
         <tycho.version>4.0.8</tycho.version>
         <git-commit-id-plugin.version>8.0.2</git-commit-id-plugin.version>
         <jaxws-maven-plugin.version>4.0.3</jaxws-maven-plugin.version>
@@ -103,7 +103,7 @@
         <checkstyle.version>10.20.1</checkstyle.version>
         <spotbugs.version>4.8.6</spotbugs.version>
         <spotbugs-plugin.version>4.8.6.6</spotbugs-plugin.version>
-        <logback.version>1.5.12</logback.version>
+        <logback.version>1.5.15</logback.version>
         <junit5.version>5.11.3</junit5.version>     <!-- groupId is org.junit, therefore is can coexist with junit4 in dependency management -->
 
         <!-- Swagger -->

@@ -47,7 +47,7 @@ public class NoopMsglogWriter implements IRequestLogger {
     }
 
     @Override
-    public void logRequest(final InternalHeaderParameters hdr, final ExecutionSummary summary, final RequestParameters params, final ServiceResponse response) {
+    public void logRequest(final InternalHeaderParameters hdr, final ExecutionSummary summary, final RequestParameters params, final ServiceResponse response, final int retriesDone) {
         // silently discard them (but aggregate data)...
         if (ApplicationException.isOk(summary.getReturnCode()))
             countGood.incrementAndGet();

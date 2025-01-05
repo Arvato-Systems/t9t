@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="configureGridAggregations"?>
+<?xel-method prefix="l" name="translate" class="com.arvatosystems.t9t.zkui.util.ZulUtils" signature="String translate(String, String)"?>
+<zk>
+    <window sizable="true" maximizable="true" mode="modal" width="60%"
+        height="80%" title="${l:translate('columnAggregations', 'title')}"
+        viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.support.ColumnAggregationsViewModel',initParams=arg)">
+        <div class="form" vflex="1">
+            <groupbox vflex="1" contentStyle="padding: 15px;">
+                <vlayout vflex="1">
+                    <listbox id="columnAggregation" sizedByContent="true" vflex="1"
+                             model="@load(vm.columnAggregationsList)"
+                             emptyMessage="${l:translate('com','noDataFound')}">
+                        <listhead>
+                            <listheader  label="${l:translate('columnAggregations','fields')}"/>
+                            <listheader  label="${l:translate('columnAggregations','groupBy')}"/>
+                            <listheader  label="${l:translate('columnAggregations','function')}"/>
+                        </listhead>
+                        <template name="model">
+                            <listitem>
+                                <listcell>
+                                    <div>
+                                        <label value="${l:translate(vm.viewModelId, each.fieldName)}" tooltip="fieldname-tooltip-${forEachStatus.index}"/>
+                                        <popup id="fieldname-tooltip-${forEachStatus.index}"><label value="${each.fieldName}" /></popup>
+                                    </div>
+                                </listcell>
+                                <listcell>
+                                    <checkbox checked="@bind(each.groupBy)" />
+                                </listcell>
+                                <listcell>
+                                    <combobox selectedItem="@bind(each.function)" disabled="@load(each.groupBy || each.allowedFunctions.size() eq 0)">
+                                        <comboitem forEach="${each.allowedFunctions}" label="${vm.translateFunction(each)}" value="${each}" />
+                                    </combobox>
+                                </listcell>
+                            </listitem>
+                        </template>
+                    </listbox>
+                </vlayout>
+                <vlayout style="margin: 20px 10px 20px;text-align:right;" vflex="min">
+                    <hlayout>
+                        <label visible="@bind(vm.groupByEmpty)"  value="${l:translate('columnAggregations','atLeastOneGroupBy')}" />
+                        <button28 id="saveButton" onClick="@command('saveConfig')" />
+                        <button28 id="resetButton" onClick="@command('resetConfig')" />
+                        <button28 id="closeButton" onClick="@command('closeWindow')" />
+                    </hlayout>
+                </vlayout>
+            </groupbox>
+        </div>
+    </window>
+</zk>

@@ -285,4 +285,8 @@ public class TwoSections28 extends Vlayout implements IGridIdOwner, IPermissionO
     public void setTextFilterQualifier(final String qualifier) {
         main.setTextFilterQualifier(qualifier);
     }
+
+    public void setColumnAggregationAllowed(final boolean columnAggregationAllowed) {
+        main.setColumnAggregationAllowed(columnAggregationAllowed);
+    }
 }

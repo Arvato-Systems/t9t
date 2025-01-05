@@ -19,6 +19,7 @@ import java.util.List;
 
 import com.arvatosystems.t9t.base.uiprefs.UILeanGridPreferences;
 
+import de.jpaw.bonaparte.pojos.api.AggregateColumn;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.ui.UIFilter;
 
@@ -59,4 +60,6 @@ public interface ILeanGridConfigResolver {
     int defaultWidth(FieldDefinition f);
 
     void setFilters(List<UIFilter> filters);
+
+    void setAggregations(List<AggregateColumn> aggregations, List<String> groupByColumns);
 }

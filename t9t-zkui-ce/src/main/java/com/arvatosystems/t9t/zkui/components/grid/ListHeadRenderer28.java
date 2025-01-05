@@ -433,8 +433,25 @@ public class ListHeadRenderer28 {
                     }
                 });
             }
-
+            if (grid.isColumnAggregationAllowed()) {
+                final Menuitem columnAggregationMenu = new Menuitem(session.translate(PREFIX_GRIDCONFIG28, "columnAggregations"));
+                columnAggregationMenu.setParent(menupopup);
+                columnAggregationMenu.addEventListener(Events.ON_CLICK, (event) -> configureColumnAggregations());
+            }
         }
+    }
+
+    private void configureColumnAggregations() {
+        final Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("gridId", grid.getGridId());
+        paramMap.put("gridConfigResolver", gridConfigResolver);
+        final Window win = (Window) Executions.createComponents("/screens/common/columnAggregations.zul", null, paramMap);
+        win.addEventListener("onClose", (closeEvent) -> {
+            if (closeEvent.getData() != null && closeEvent.getData() instanceof Boolean) {
+                gridHasChanged();
+                grid.search();
+            }
+        });
     }
 
     private void updateSearchFilters() {

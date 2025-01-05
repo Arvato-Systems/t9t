@@ -55,7 +55,7 @@ public interface IRequestLogger extends Closeable {
      * Logs a single request.
      */
     void logRequest(@Nonnull InternalHeaderParameters hdr, @Nonnull ExecutionSummary summary,
-      @Nullable RequestParameters params, @Nullable ServiceResponse response);
+      @Nullable RequestParameters params, @Nullable ServiceResponse response, int retriesDone);
 
     /** Flushes unwritten buffers. */
     void flush();

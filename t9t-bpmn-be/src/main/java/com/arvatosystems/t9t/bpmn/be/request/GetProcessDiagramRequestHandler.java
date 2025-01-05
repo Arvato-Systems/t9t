@@ -25,7 +25,7 @@ import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.bpmn.T9tBPMException;
 import com.arvatosystems.t9t.bpmn.request.GetProcessDiagramRequest;
 import com.arvatosystems.t9t.bpmn.request.GetProcessDiagramResponse;
-import com.arvatosystems.t9t.bpmn.services.IBPMService;
+import com.arvatosystems.t9t.bpmn.services.IBpmTechnicalService;
 
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ByteArray;
@@ -38,14 +38,14 @@ import de.jpaw.util.ExceptionUtil;
 public class GetProcessDiagramRequestHandler extends AbstractRequestHandler<GetProcessDiagramRequest> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DeployProcessRequestHandler.class);
-    private final IBPMService bpmService = Jdp.getOptional(IBPMService.class);
+    private final IBpmTechnicalService bpmService = Jdp.getOptional(IBpmTechnicalService.class);
 
     @Override
     public GetProcessDiagramResponse execute(final RequestContext requestCtx, final GetProcessDiagramRequest request) throws Exception {
         final GetProcessDiagramResponse response = new GetProcessDiagramResponse();
 
         if (bpmService == null) {
-            LOGGER.error("Fail to lookup implementation for IBpmService. Please check your deployment package");
+            LOGGER.error("Fail to lookup implementation for IBpmApplicationService. Please check your deployment package");
             throw new T9tException(T9tBPMException.BPM_NO_BPMN_ENGINE);
         }
 

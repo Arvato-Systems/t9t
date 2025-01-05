@@ -116,6 +116,8 @@ package (com.arvatosystems) t9t.io.request {
         required f42Ref                             sinkRef;                        // references some existing Sink
         required unsigned long                      offset;                         // offset from start
         required unsigned int                       limit;                          // max number of bytes to transfer
+        optional Boolean                            uncompress;                     // if the data is compressed, uncompress it
+        optional Boolean                            decrypt;                        // if the data is encrypted, decrypt it
     }
 
     class FileDownloadResponse extends ServiceResponse {

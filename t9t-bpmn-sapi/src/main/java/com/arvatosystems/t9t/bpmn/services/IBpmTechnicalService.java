@@ -35,7 +35,7 @@ import com.arvatosystems.t9t.bpmn.pojo.ProcessOutput;
  * and active. Non-existent (or not active) record for the process definition
  * reference will throw {@linkplain T9tBPMN2Exception}.
  */
-public interface IBPMService {
+public interface IBpmTechnicalService {
 
     /**
      * Deploy a new business process.

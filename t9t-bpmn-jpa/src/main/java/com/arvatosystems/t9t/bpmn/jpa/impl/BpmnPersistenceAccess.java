@@ -141,6 +141,15 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
             if (shards.size() < numPartitions) {
                 // we want a subset of the data only
                 nodeCondition = " AND MOD(s.runOnNode, :partitions) IN :listOfPartitions";
+                if (LOGGER.isDebugEnabled()) {
+                    final StringBuilder sb = new StringBuilder(200);
+                    for (final Integer shard : shards) {
+                        sb.append(' ').append(shard);
+                    }
+                    LOGGER.debug("getTasksDue(): only {} of {} partitions assigned to this node, namely {}", numPartitions, shards.size(), sb.toString());
+                }
+            } else {
+                LOGGER.debug("getTasksDue(): all partitions are assigned to this node");
             }
         }
         final String errorCondition;
@@ -156,7 +165,7 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
         final String queryString = "SELECT s" + field + " FROM " + statusResolver.getEntityClass().getSimpleName()
                 + " s WHERE s.tenantId = :tenantId AND s.yieldUntil <= :timeLimit"
                 + pdCondition + errorCondition + nodeCondition + stepCondition + " ORDER BY s.yieldUntil";
-        LOGGER.debug("Now performing query {}", queryString);
+        LOGGER.trace("Now performing query {}", queryString);
 
         final TypedQuery<E> query = statusResolver.getEntityManager().createQuery(queryString, type);
         query.setParameter("tenantId", tenantId);
@@ -199,9 +208,8 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
     @Override
     public Long createOrUpdateNewStatus(final RequestContext ctx, final ProcessExecutionStatusDTO dto, final ExecuteProcessWithRefRequest rq,
       final boolean restart) {
-        Long objectRef = null;
-        final ProcessExecStatusEntity existingEntity
-          = statusResolver.findByProcessDefinitionIdAndTargetObjectRef(true, dto.getProcessDefinitionId(), dto.getTargetObjectRef());
+        final Long objectRef;
+        final ProcessExecStatusEntity existingEntity = statusResolver.findByProcessDefinitionIdAndTargetObjectRef(true, dto.getProcessDefinitionId(), dto.getTargetObjectRef());
         if (existingEntity != null && refresh(existingEntity) != null) { // refresh because it might be removed at another thread
             ctx.lockRef(existingEntity.getObjectRef()); // lock the status ref
             refresh(existingEntity); // refresh again after acquiring the lock to avoid outdated version

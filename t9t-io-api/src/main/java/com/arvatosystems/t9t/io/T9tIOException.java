@@ -48,6 +48,8 @@ public class T9tIOException extends T9tException {
     public static final int OUTPUT_FILE_IS_DIRECTORY    = OFFSET + 120;
     public static final int OUTPUT_FILE_PATH_NOT_ABSOLUTE = OFFSET + 121;
     public static final int OUTPUT_FILE_OPEN_EXCEPTION  = OFFSET + 122;
+    public static final int OUTPUT_FILE_GZIP_EXCEPTION  = OFFSET + 123;
+    public static final int INPUT_FILE_GUNZIP_EXCEPTION = OFFSET + 124;
 
     // Xml specific
     public static final int NO_JAXB_CONTEXT_PATH        = OFFSET + 200;
@@ -99,6 +101,8 @@ public class T9tIOException extends T9tException {
         registerCode(OUTPUT_FILE_IS_DIRECTORY,     "Specified output file name is a directory");
         registerCode(OUTPUT_FILE_PATH_NOT_ABSOLUTE, "Output file path is not absolute (required for security reasons)");
         registerCode(OUTPUT_FILE_OPEN_EXCEPTION,   "Exception during open file");
+        registerCode(OUTPUT_FILE_GZIP_EXCEPTION,   "Exception when opening a Gzip compression stream");
+        registerCode(INPUT_FILE_GUNZIP_EXCEPTION, "Exception when opening a Gzip decompression stream");
 
         registerCode(NO_JAXB_CONTEXT_PATH,         "XML output: No Jaxb context path has been configured for this data sink");
         registerCode(XML_MARSHALLING_ERROR,        "JAXB XML Marshalling error");

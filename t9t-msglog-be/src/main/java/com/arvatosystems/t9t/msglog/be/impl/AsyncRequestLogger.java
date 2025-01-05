@@ -153,7 +153,7 @@ public class AsyncRequestLogger implements IRequestLogger {
     }
 
     @Override
-    public void logRequest(final InternalHeaderParameters hdr, final ExecutionSummary summary, final RequestParameters params, final ServiceResponse response) {
+    public void logRequest(final InternalHeaderParameters hdr, final ExecutionSummary summary, final RequestParameters params, final ServiceResponse response, final int retriesDone) {
 
         final JwtInfo jwt = hdr.getJwtInfo();
         final UserLogLevelType logLevel = calculateLogLevel(jwt, summary.getReturnCode());
@@ -168,6 +168,10 @@ public class AsyncRequestLogger implements IRequestLogger {
         m.setRequestParameterPqon   (hdr.getRequestParameterPqon());
         m.setMessageId              (hdr.getMessageId());
         m.setEssentialKey           (hdr.getEssentialKey());
+        if (retriesDone > 0) {
+            // only set it to nonnull if retries were done
+            m.setRetriesDone(retriesDone);
+        }
 
         final ServiceRequestHeader h = hdr.getRequestHeader();
         if (h != null) {

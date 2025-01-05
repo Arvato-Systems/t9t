@@ -24,7 +24,7 @@
 
                                 <cells228 id ="commTargetChannelType"   value ="@load(vm.data.commTargetChannelType) @save(vm.data.commTargetChannelType,before='commandSave')"
                                           id2="fileOrQueueNamePattern"  value2 ="@load(vm.data.fileOrQueueNamePattern) @save(vm.data.fileOrQueueNamePattern,before='commandSave')"/>
-                                <cells228 id ="gridId"                  value ="@bind(vm.data.gridId)"
+                                <cells228 id ="encryptionId"            value ="@bind(vm.data.encryptionId)"
                                           id2="compressed"              value2="@bind(vm.data.compressed)"/>
 
                                 <cells228 id ="logMessages"             value ="@bind(vm.data.logMessages)"
@@ -76,8 +76,9 @@
                                           id2="nationalNumberFormat"    value2="@bind(vm.data.nationalNumberFormat)"/>
                                 <cells228 id ="linesToSkip"             value ="@bind(vm.data.linesToSkip)"
                                           id2="singleLineComment"       value2="@bind(vm.data.singleLineComment)"/>
-                                          
-                                <cells28  id ="writeHeaderRow"          value ="@bind(vm.data.writeHeaderRow)"/>
+
+                                <cells228 id ="writeHeaderRow"          value ="@bind(vm.data.writeHeaderRow)"
+                                          id2="gridId"                  value2="@bind(vm.data.gridId)"/>
 
                                 <cells228 id ="bufferSize"              value ="@bind(vm.data.bufferSize)"
                                           id2="recordSize"              value2="@bind(vm.data.recordSize)"/>

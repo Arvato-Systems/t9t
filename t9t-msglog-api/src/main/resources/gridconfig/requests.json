@@ -9,10 +9,11 @@
         { "filterType": "R", "fieldName": "returnCode" },
         { "filterType": "W", "fieldName": "requestParameterPqon" },
         { "filterType": "E", "fieldName": "essentialKey" },
-        { "filterType": "L", "fieldName": "processingTimeInMillisecs" }
+        { "filterType": "L", "fieldName": "processingTimeInMillisecs" },
+        { "filterType": "L", "fieldName": "retriesDone" }
     ],
     "fields": [
         "sessionRef", "objectRef", "executionStartedAt", "tenantId", "userId", "messageId", "essentialKey", "requestParameterPqon",
-        "processingTimeInMillisecs", "returnCode", "errorDetails", "rerunByProcessRef"
+        "processingTimeInMillisecs", "returnCode", "errorDetails", "rerunByProcessRef", "retriesDone"
     ]
 }

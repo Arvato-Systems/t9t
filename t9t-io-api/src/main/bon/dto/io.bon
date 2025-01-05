@@ -270,6 +270,7 @@ package (com.arvatosystems) t9t.io {
         optional Boolean                                writeHeaderRow;             // write a header row if available for CSV, XLS, XLSX exporters
         optional Integer                                bufferSize;                 // used for low level buffering (only if supported by the application, about 64 KB if unspecified)
         optional Integer                                recordSize;                 // arbitrary field - format specific (size of a record for fixed formats, or upper bound to size in general)
+        optional t9tShortId                             encryptionId;               // if specified, then the output will be encrypted. The configuration sits in the server.xml file
     }
 
     /** Configuration defaults for DataSinks, provided by the implementation. (Primarily intended to support the complex XML APIs). */

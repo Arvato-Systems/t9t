@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import api.media.*
-
+import t9t.base.types.*
 
 /**
  * Package which contains the definitions of all essential message elements.
@@ -56,6 +56,7 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional (AsyncTransmitterConfiguration...) asyncMsgConfiguration;
         optional (LdapConfiguration...)             ldapConfiguration;              // optional external authentication provider (LDAP)
         optional (OidConfiguration...)              oidConfiguration;               // optional external authentication provider (OpenID Connect, currently only MS-AAD supported)
+        required (EncryptionConfiguration...) List<> encryptionConfiguration;       // a list of encryption parameters and their IDs to access them
         optional Uuid                               passwordResetApiKey;            // API key for the mobile UI "password reset" functionality
         optional Uuid                               noDbBackendApiKey;              // API key for servers running without DB access
         required Unicode(255) List<>                noDbBackendPermittedRequests;   // entries for additional request PQONs to be permitted for the above API key
@@ -251,8 +252,8 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
 
     /** Configuration for OpenID Connect / OAuth2 (via MS AAD). */
     class OidConfiguration {
-        required t9t.base.types.defaultExternalId   audience;           // UUID of the application (client ID, "aud" field)
-        required t9t.base.types.defaultExternalId   tenantId;           // UUID of MS AD tenant within which the application has been created (for "iss" field)
+        required defaultExternalId                  audience;           // UUID of the application (client ID, "aud" field)
+        required defaultExternalId                  tenantId;           // UUID of MS AD tenant within which the application has been created (for "iss" field)
         optional Ascii(80)                          issuer;             // full string for issuer (defaults to "https://sts.windows.net/${tenantId}/")
         optional Ascii(80)                          jwksUri;            // URL to obtain key
         required boolean                            mustMatchOid;       // if a user has a configured userIdExt, it must match the received "oid" field
@@ -261,5 +262,17 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         required boolean                            updateIdp;          // if a user authenticates via upn, and idp/iss is made available in JWT, update UserDTO with it
         optional Boolean                            updateName;         // if a user authenticates, update the name field from JWT into UserDTO
         optional Boolean                            updateEmail;        // if a user authenticates, update the email field from JWT into UserDTO
+    }
+
+    /** Configuration of parameters to construct a Cipher. */
+    class EncryptionConfiguration {
+        required t9tShortId                         encryptionId;       // the ID to access this configuration, for example configured in a DataSinkDTO
+        required defaultExternalId                  transformation;     // for example "AES"
+        optional defaultExternalId                  provider;           // support Java standard providers plus "BC" for BouncyCastle
+        required defaultExternalId                  secretKeyAlgorithm; // algorithm to create the secret key (for example "AES")
+        required Unicode(12000)                     secretKeyData;      // data for the secret key
+        optional Boolean                            secretKeyIsBase64;  // indicates that the secret key must be base64 decoded
+        optional Integer                            ivLen;              // length (in bytes) of initialization vector (if not set, assume 0, i.e. no initialization vector)
+        optional Integer                            gcmTLen;            // for GCM: length (in bits) of authentication tag (if set, enables GCM)
     }
 }

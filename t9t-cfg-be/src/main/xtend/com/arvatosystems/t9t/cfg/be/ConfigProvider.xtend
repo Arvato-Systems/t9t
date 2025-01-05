@@ -34,6 +34,7 @@ class ConfigProvider {
     static final ConcurrentMap<String, String> customParameters = new ConcurrentHashMap<String, String>(16);
     static final char EQUALS_SIGN = '=';
     static final Map<String, UplinkConfiguration> uplinks = new ConcurrentHashMap
+    static final Map<String, EncryptionConfiguration> encryptions = new ConcurrentHashMap
 
     static val postgresConfig = new T9tServerConfiguration => [
         persistenceUnitName         = "t9t-DS"    // hibernate / resourceLocal / postgres
@@ -151,6 +152,7 @@ class ConfigProvider {
             asyncMsgConfiguration   = a.asyncMsgConfiguration   ?: b.asyncMsgConfiguration
             ldapConfiguration       = a.ldapConfiguration       ?: b.ldapConfiguration
             oidConfiguration        = a.oidConfiguration        ?: b.oidConfiguration
+            encryptionConfiguration = a.encryptionConfiguration ?: b.encryptionConfiguration
             passwordResetApiKey     = a.passwordResetApiKey     ?: b.passwordResetApiKey
             noDbBackendApiKey       = a.noDbBackendApiKey       ?: b.noDbBackendApiKey
             noDbBackendPermittedRequests = a.noDbBackendPermittedRequests ?: b.noDbBackendPermittedRequests
@@ -220,6 +222,13 @@ class ConfigProvider {
                 uplinks.put(uplink.key, uplink)
             }
         }
+        // index the encryption entries
+        encryptions.clear();
+        if (myConfiguration.encryptionConfiguration !== null) {
+            for (encryption: myConfiguration.encryptionConfiguration) {
+                encryptions.put(encryption.encryptionId, encryption)
+            }
+        }
         myConfiguration.freeze  // it won't be changed afterwards
     }
 
@@ -236,10 +245,25 @@ class ConfigProvider {
     def static UplinkConfiguration getUplinkOrThrow(String key) {
         val UplinkConfiguration uplinkCfg = uplinks.get(key)
         if (uplinkCfg === null) {
-            LOGGER.error("Missing uplink configuration for {}", key);
+            LOGGER.error("Missing uplink configuration for key {}", key);
             throw new T9tException(T9tException.MISSING_UPLINK_CONFIGURATION, key);
         }
         return uplinkCfg
+    }
+
+    /** Returns the encryption configuration configured for the specific ID, or return null if none exists. */
+    def static EncryptionConfiguration getEncryption(String id) {
+        return encryptions.get(id)
+    }
+
+    /** Returns the uplink configuration configured for the specific key, or throws an exception if none exists. */
+    def static EncryptionConfiguration getEncryptionOrThrow(String id) {
+        val EncryptionConfiguration encryptionCfg = encryptions.get(id)
+        if (encryptionCfg === null) {
+            LOGGER.error("Missing encryption configuration for ID {}", id);
+            throw new T9tException(T9tException.MISSING_ENCRYPTION_CONFIGURATION, id);
+        }
+        return encryptionCfg
     }
 
     def static void readConfiguration(String filename) {

@@ -203,9 +203,19 @@ public class T9tException extends ApplicationException {
     public static final int RESTRICTED_ACCESS = OFFSET_DENIED + 216;
     public static final int ACCESS_DENIED = OFFSET_DENIED + 217;
     public static final int NO_SUITABLE_AUTHENTICATION_PROVIDER_FOUND = OFFSET_LOGIC_ERROR + 218;
-    public static final int GENERAL_AUTH_PROBLEM = OFFSET + 219;
-    public static final int INVALID_EMAIL_FORMAT = OFFSET + 220;
-    public static final int MISSING_UPLINK_CONFIGURATION = OFFSET + 227;
+    public static final int GENERAL_AUTH_PROBLEM             = OFFSET + 219;
+    public static final int INVALID_EMAIL_FORMAT             = OFFSET + 220;
+    public static final int MISSING_UPLINK_CONFIGURATION     = OFFSET + 227;
+    public static final int MISSING_ENCRYPTION_CONFIGURATION = OFFSET + 228;
+    public static final int ENCRYPTION_NO_SUCH_PROVIDER      = OFFSET + 229;
+    public static final int ENCRYPTION_NO_SUCH_ALGORITHM     = OFFSET + 230;
+    public static final int ENCRYPTION_NO_SUCH_PADDING       = OFFSET + 231;
+    public static final int ENCRYPTION_INVALID_KEY           = OFFSET + 232;
+    public static final int ENCRYPTION_NO_IV_DATA            = OFFSET + 233;
+    public static final int ENCRYPTION_BAD_IV_LENGTH         = OFFSET + 234;
+    public static final int ENCRYPTION_BAD_PARAMETER         = OFFSET + 235;
+    public static final int ENCRYPTION_DECRYPTION_FAILED     = OFFSET + 236;
+    public static final int ENCRYPTION_ENCRYPTION_FAILED     = OFFSET + 237;
 
     // http problems
     public static final int HTTP_MULTI_PART_NO_PARTS    = OFFSET_LOGIC_ERROR + 290;
@@ -402,6 +412,16 @@ public class T9tException extends ApplicationException {
         registerCode(ONLY_ONE_ACTIVE_ALLOWED, "Inserting the record would create more than one active rows with the same value of a key column");
         registerCode(MISSING_CONFIGURATION, "No active configuration record found");
         registerCode(MISSING_UPLINK_CONFIGURATION, "No configuration for uplink found in config.xml");
+        registerCode(MISSING_ENCRYPTION_CONFIGURATION, "No configuration for encryption found in config.xml");
+        registerCode(ENCRYPTION_NO_SUCH_PROVIDER, "No provider of requested ID found");
+        registerCode(ENCRYPTION_NO_SUCH_ALGORITHM, "No Cipher for the requested transformation found");
+        registerCode(ENCRYPTION_NO_SUCH_PADDING, "No padding available for the specified cipher");
+        registerCode(ENCRYPTION_INVALID_KEY, "The secret key is invalid");
+        registerCode(ENCRYPTION_NO_IV_DATA, "No data for initialization vector provided");
+        registerCode(ENCRYPTION_BAD_IV_LENGTH, "Bad length of initialization vector specified");
+        registerCode(ENCRYPTION_BAD_PARAMETER, "Bad parameter for encryption transformation");
+        registerCode(ENCRYPTION_DECRYPTION_FAILED, "Decryption failed");
+        registerCode(ENCRYPTION_ENCRYPTION_FAILED, "Encryption failed");
 
         registerCode(HTTP_MULTI_PART_NO_PARTS, "http multipart publishers must see at least one part");
         registerCode(HTTP_MULTI_PART_EMPTY_DATA, "A part of http multipart cannot be null or empty");

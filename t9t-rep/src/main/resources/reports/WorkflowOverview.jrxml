@@ -38,7 +38,8 @@
     </parameter>
 
     <queryString>
-        <![CDATA[select   px.process_definition_id,
+        <![CDATA[select   case when px.yield_until >= '2999-12-31 22:00:00' THEN 'WAITING' ELSE 'DUE' END as category,
+                          px.process_definition_id,
                           px.next_step,
                           px.return_code,
                           min(px.c_timestamp) as min_creation,
@@ -50,10 +51,11 @@
                 where     px.tenant_id   = $P{tenantId}
                 and       px.m_timestamp < now() - interval '15 minutes'
                 and       $P!{includeWfClause}
-                group by  px.process_definition_id, px.next_step, px.return_code
-                order by  px.process_definition_id, px.next_step, px.return_code]]>
+                group by  case when px.yield_until >= '2999-12-31 22:00:00' THEN 'WAITING' ELSE 'DUE' END, px.process_definition_id, px.next_step, px.return_code
+                order by  case when px.yield_until >= '2999-12-31 22:00:00' THEN 'WAITING' ELSE 'DUE' END, px.process_definition_id, px.next_step, px.return_code]]>
     </queryString>
 
+    <field name="category"              class="java.lang.String"/>
     <field name="process_definition_id" class="java.lang.String"/>
     <field name="next_step"             class="java.lang.String"/>
     <field name="return_code"           class="java.lang.Integer"/>
@@ -62,6 +64,23 @@
     <field name="min_yield_until"       class="java.time.LocalDateTime"/>
     <field name="max_yield_until"       class="java.time.LocalDateTime"/>
     <field name="cnt"                   class="java.lang.Integer"/>
+
+    <group name="group_by_cat">
+        <groupExpression><![CDATA[$F{category}]]></groupExpression>
+        <groupHeader>
+            <band height="24" splitType="Stretch">
+                <textField isBlankWhenNull="true">
+                    <reportElement x="0" y="0" width="1500" height="24" />
+                    <textElement textAlignment="Left" verticalAlignment="Bottom">
+                        <font size="10" isBold="true"/>
+                    </textElement>
+                    <textFieldExpression>
+                        <![CDATA["Yield-Category: " + $F{category}]]>
+                    </textFieldExpression>
+                </textField>
+            </band>
+        </groupHeader>
+    </group>
 
     <background>
         <band splitType="Stretch"/>

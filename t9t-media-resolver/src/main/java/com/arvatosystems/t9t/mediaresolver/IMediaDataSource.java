@@ -24,6 +24,8 @@ public interface IMediaDataSource {
         // The default implementation does not depend on a tenant.
         return relativePath;
     }
+
+    /** Open a stream for reading, returning the data as it is stored. */
     InputStream open(String path) throws Exception;
 
     /** Return true if the source was not yet read completely - optional, not supported by most sources. */

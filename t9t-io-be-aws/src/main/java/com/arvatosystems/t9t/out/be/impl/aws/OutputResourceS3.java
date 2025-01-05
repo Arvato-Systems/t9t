@@ -29,11 +29,13 @@ import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.io.CamelExecutionScheduleType;
 import com.arvatosystems.t9t.io.DataSinkDTO;
 import com.arvatosystems.t9t.io.T9tIOException;
+import com.arvatosystems.t9t.io.services.IIOHook;
 import com.arvatosystems.t9t.out.services.IOutputResource;
 import com.google.common.base.Objects;
 
 import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 import de.jpaw.dp.Dependent;
+import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Named;
 import de.jpaw.util.ExceptionUtil;
 import jakarta.annotation.Nullable;
@@ -51,8 +53,11 @@ public class OutputResourceS3 implements IOutputResource {
 
     protected static final String GZIP_EXTENSION = ".gz";
 
+    protected final IIOHook ioHook = Jdp.getOptional(IIOHook.class);
+
     protected Charset encoding;
-    protected ByteArrayOutputStream os;
+    protected ByteArrayOutputStream inMemoryOutputStream;
+    protected OutputStream os;
     protected Charset cs;
     protected DataSinkDTO sinkCfg;
     @Nullable
@@ -80,7 +85,7 @@ public class OutputResourceS3 implements IOutputResource {
         final S3Client s3Client = s3ClientBuilder.build();
 
         try {
-            final byte[] bytes   = os.toByteArray();
+            final byte[] bytes   = inMemoryOutputStream.toByteArray();
             LOGGER.debug("Object upload start: bucket {}, path {}", bucket, path);
             final PutObjectRequest putRq = PutObjectRequest.builder().bucket(bucket).key(path).build();
             final PutObjectResponse result = s3Client.putObject(putRq, RequestBody.fromBytes(bytes));
@@ -126,12 +131,20 @@ public class OutputResourceS3 implements IOutputResource {
 
         effectiveFilename = targetName;
 
-        os = new ByteArrayOutputStream();  // FIXME: there is currently no way to write to S3 via stream. Has to buffer and upload then
+        inMemoryOutputStream = new ByteArrayOutputStream();  // FIXME: there is currently no way to write to S3 via stream. Has to buffer and upload then
+        if (ioHook != null) {
+            os = ioHook.getEncryptionStream(inMemoryOutputStream, config);
+            os = ioHook.getCompressionStream(os, config);
+        }
     }
 
     @Override
     public void write(final String partitionKey, final String recordKey, final byte[] buffer, final int offset, final int len, final boolean isDataRecord) {
-      this.os.write(buffer, offset, len);
+        try {
+            this.os.write(buffer, offset, len);
+        } catch (final IOException e) {
+            throw new T9tException(T9tIOException.IO_EXCEPTION);
+        }
     }
 
     @Override

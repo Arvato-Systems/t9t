@@ -50,7 +50,7 @@
         <driver.oracle.version>23.6.0.24.10</driver.oracle.version>
         <driver.postgresql.version>42.7.4</driver.postgresql.version>     <!-- starting with 4.2.15, the driver adds a dependency to checker-qual 3.5.0 which conflicts with 2.5.2 pulled by guava -->
         <driver.sqlserver.version>12.8.1.jre11</driver.sqlserver.version> <!-- not all releases are available on maven central as jre17 builds -->
-        <driver.hana.version>2.22.12</driver.hana.version>
+        <driver.hana.version>2.23.7</driver.hana.version>
         <h2.version>2.3.232</h2.version>
 
         <!-- OR mappers -->
@@ -109,7 +109,7 @@
         <commons-text.version>1.13.0</commons-text.version>               <!-- not used in t9t, but DM made to cover for transitive dependencies -->
 
         <!-- AWS SDK v2 -->
-        <aws2-bom.version>2.29.23</aws2-bom.version>
+        <aws2-bom.version>2.29.39</aws2-bom.version>
 
         <!-- AWS JDBC wrapper for Aurora -->
         <aws-jdbc-wrapper.version>2.5.3</aws-jdbc-wrapper.version>
@@ -184,7 +184,7 @@
         <!-- Spring data -->
         <spring-data-jpa.version>3.4.1</spring-data-jpa.version>
         <!-- Spring boot -->
-        <spring-boot.version>3.4.0</spring-boot.version>
+        <spring-boot.version>3.4.1</spring-boot.version>
 
         <netty.version>4.1.115.Final</netty.version>
         <vertx4.version>4.5.10</vertx4.version>
@@ -219,7 +219,7 @@
         <firebase-admin.version>9.4.2</firebase-admin.version>
 
         <msal4j.version>1.17.3</msal4j.version>
-        <nimbus.version>9.47</nimbus.version>
+        <nimbus.version>9.48</nimbus.version>
     </properties>
 
 

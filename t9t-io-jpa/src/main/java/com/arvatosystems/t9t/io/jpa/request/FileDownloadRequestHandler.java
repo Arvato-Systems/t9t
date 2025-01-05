@@ -26,13 +26,17 @@ import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.io.DataSinkDTO;
 import com.arvatosystems.t9t.io.SinkDTO;
 import com.arvatosystems.t9t.io.T9tIOException;
 import com.arvatosystems.t9t.io.jpa.entities.SinkEntity;
+import com.arvatosystems.t9t.io.jpa.mapping.IDataSinkDTOMapper;
 import com.arvatosystems.t9t.io.jpa.mapping.ISinkDTOMapper;
+import com.arvatosystems.t9t.io.jpa.persistence.IDataSinkEntityResolver;
 import com.arvatosystems.t9t.io.jpa.persistence.ISinkEntityResolver;
 import com.arvatosystems.t9t.io.request.FileDownloadRequest;
 import com.arvatosystems.t9t.io.request.FileDownloadResponse;
+import com.arvatosystems.t9t.io.services.IIOHook;
 import com.arvatosystems.t9t.mediaresolver.IMediaDataSource;
 
 import de.jpaw.dp.Jdp;
@@ -43,8 +47,11 @@ public class FileDownloadRequestHandler extends AbstractRequestHandler<FileDownl
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileDownloadRequestHandler.class);
 
-    private final ISinkEntityResolver sinkResolver = Jdp.getRequired(ISinkEntityResolver.class);
-    private final ISinkDTOMapper sinksMapper = Jdp.getRequired(ISinkDTOMapper.class);
+    private final IDataSinkEntityResolver dataSinkResolver = Jdp.getRequired(IDataSinkEntityResolver.class);
+    private final IDataSinkDTOMapper      dataSinkMapper   = Jdp.getRequired(IDataSinkDTOMapper.class);
+    private final ISinkEntityResolver     sinkResolver     = Jdp.getRequired(ISinkEntityResolver.class);
+    private final ISinkDTOMapper          sinksMapper      = Jdp.getRequired(ISinkDTOMapper.class);
+    private final IIOHook                 ioHook           = Jdp.getRequired(IIOHook.class);
 
     @Override
     public FileDownloadResponse execute(final RequestContext ctx, final FileDownloadRequest request) throws Exception {
@@ -54,6 +61,7 @@ public class FileDownloadRequestHandler extends AbstractRequestHandler<FileDownl
         }
         final FileDownloadResponse response = new FileDownloadResponse();
         final SinkDTO mySink = sinksMapper.mapToDto(mySinkEntity);
+        final DataSinkDTO myDataSink = dataSinkMapper.mapToDto(dataSinkResolver.getEntityDataForKey(mySinkEntity.getDataSinkRef()));
         // create a response with some default settings
         response.setSink(mySink);
         response.setReturnCode(0);
@@ -67,8 +75,10 @@ public class FileDownloadRequestHandler extends AbstractRequestHandler<FileDownl
         }
 
         final String filePath = srcHandler.getAbsolutePathForTenant(mySinkEntity.getFileOrQueueName(), ctx.tenantId);
+        final boolean doUncompress = Boolean.TRUE.equals(request.getUncompress()) && myDataSink.getCompressed();
+        final boolean doDecrypt = Boolean.TRUE.equals(request.getDecrypt()) && myDataSink.getEncryptionId() != null;
         response.setReturnCode(T9tIOException.OUTPUT_COMM_CHANNEL_IO_ERROR);
-        try (InputStream fis = srcHandler.open(filePath)) {
+        try (InputStream fis = getInputStream(srcHandler, filePath, myDataSink, doUncompress, doDecrypt)) {
             fis.skip(request.getOffset());
             int myMaxsize = request.getLimit();
             if (myMaxsize == 0 || myMaxsize > T9tConstants.MAXIMUM_MESSAGE_LENGTH) {
@@ -106,5 +116,16 @@ public class FileDownloadRequestHandler extends AbstractRequestHandler<FileDownl
         mySinkEntity.setLastDownloadTimestamp(Instant.now());
         sinkResolver.update(mySinkEntity);
         sinkResolver.flush();
+    }
+
+    private InputStream getInputStream(final IMediaDataSource srcHandler, final String filePath, final DataSinkDTO myDataSink, final boolean doUncompress, final boolean doDecrypt) throws Exception {
+        InputStream fis = srcHandler.open(filePath);
+        if (doDecrypt) {
+            fis = ioHook.getDecryptionStream(fis, myDataSink);
+        }
+        if (doUncompress) {
+            fis = ioHook.getDecompressionStream(fis, myDataSink, 8192);
+        }
+        return fis;
     }
 }

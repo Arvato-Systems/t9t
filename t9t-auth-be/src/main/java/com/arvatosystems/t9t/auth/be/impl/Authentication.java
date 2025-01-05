@@ -93,7 +93,7 @@ public class Authentication implements IAuthenticate {
             summary.setProcessingTimeInMillisecs(processingDuration);
             summary.setReturnCode(resp.getReturnCode());
             summary.setErrorDetails(resp.getErrorDetails());
-            messageLogger.logRequest(ihdr, summary, null, null); // always null content, do not log keys or passwords!
+            messageLogger.logRequest(ihdr, summary, null, null, 0); // always null content, do not log keys or passwords!
         }
         return resp;
     }
