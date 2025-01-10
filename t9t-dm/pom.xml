@@ -724,11 +724,6 @@
             </dependency>
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-io-be-jackson</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-io-jpa</artifactId>
                 <version>${project.version}</version>
             </dependency>

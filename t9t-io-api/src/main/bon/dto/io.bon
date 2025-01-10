@@ -227,7 +227,7 @@ package (com.arvatosystems) t9t.io {
         optional Ascii(8)                               environment;                // Camel routes are only processed if "t9t" is entered here (to avoid duplicate triggers with fortytwo)
         optional Boolean                                logMessages;                // log messages (objects) in outboundMessages table. if set, the "outer" DTOs will be stored (after transformer if outbound, before transformer if inbound)
         optional Boolean                                isInput;                    // if true then this is not a data sink but a data source
-        optional (CsvConfigurationRef..., CsvConfigurationDTO) csvConfigurationRef properties ref, dropdown="csvConfigurationId";        // may reference some CSV configuration
+        optional (CsvConfigurationRef..., CsvConfigurationDTO) csvConfigurationRef  properties ref, dropdown="csvConfigurationId";        // may reference some CSV configuration
         optional Unicode(100)                           baseClassPqon;              // for CSV parsers, the BClass PQON of the expected record
         optional Unicode(200)                           xmlDefaultNamespace;        // xml default namespace
         optional Unicode(64)                            xmlRootElementName;         // xml name of root element  (to be derived from object?)
@@ -247,8 +247,7 @@ package (com.arvatosystems) t9t.io {
         optional Enum CamelExecutionScheduleType        camelExecution;             // defines when a camel route should be triggered
         optional Boolean                                checkDuplicateFilename;     // reject sending/receiving duplicate filenames on tenant level
         optional Unicode(255)                           xmlNamespaceMappings;       // xml name space mappings: <namespace-prefix>=<namespace-url> {(; NEWLINE) [namespace-prefix]=[namespace-url]}
-        //optional (AsyncChannelRef..., AsyncChannelDTO)  copyToAsyncChannel properties ref, dropdown="asyncChannelId";        // may reference some async channel to mirror requests to
-        optional t9tShortId                             copyToAsyncChannel;         // may reference some async channel to mirror requests to
+        optional t9tShortId                             copyToAsyncChannel          properties dropdown="asyncChannelId";      // may reference some async channel to mirror requests to
         optional Boolean                                camelFormatIsFmtRoute;      // if the parameter camelRoute contains a valid formatted camel route string instead of only an ID (see parameter camelRoute)
         optional (DataSinkRef..., DataSinkKey)          responseDataSinkRef         properties ref, dropdown="dataSinkId", searchprefix="dataSink";  // only for input data sinks: the output data sink for a response file
         optional Unicode(100)                           xmlHeaderElements;          // scalar header information
@@ -261,7 +260,7 @@ package (com.arvatosystems) t9t.io {
         optional Unicode(1024)                          bootstrapServers;           // Kafka bootstrap servers for data exports
         optional Enum InputProcessingType               inputProcessingType;        // defines how / where to process input records (default is LOCAL)
         optional Integer                                inputProcessingParallel;    // defines the number of parallel threads to use for processing
-        optional customizationQualifier                 inputProcessingSplitter properties qualifierFor="base.services.IInputQueuePartitioner"; // method to determine partition to use (if blank and inputProcessingParallel > 1: use round robin)
+        optional customizationQualifier                 inputProcessingSplitter     properties qualifierFor="base.services.IInputQueuePartitioner"; // method to determine partition to use (if blank and inputProcessingParallel > 1: use round robin)
         optional Unicode(255)                           inputProcessingTarget;      // required for KAFKA or REMOTE: the topic or the remote path to use for processing
         optional Boolean                                computeFileSize;            // compute and store file size after data export
         optional Boolean                                jsonWritePqon;              // write PQON info for Bonaparte JSON serializers (JSON, JSON-Kafka)
@@ -437,7 +436,7 @@ package (com.arvatosystems) t9t.io {
         optional (AsyncQueueRef..., AsyncQueueDTO)      asyncQueueRef  properties ref, searchprefix="asyncQueue", simpleref="getObjectRef()", dropdown="asyncQueueId";
         required Unicode(300)                           url;                                     // remote URL
         optional t9tShortId                             authType;                                // http header name or implementation specific type (Basic, apiKey etc... (for information / documentation in core, can be used by customizations))
-        optional Unicode(255)                           authParam;                               // userID / password or API-Key
+        optional Unicode(255)                           authParam;                               // userID / password or API-Key or client secret
         optional t9tShortId                             idempotencyHeader;                       // the http header variable to use for idempotency
         optional Enum IdempotencyHeaderType             idempotencyHeaderType;                   // which type of header to generate
         optional Integer                                maxRetries;                              // can be used by monitoring to raise an alert after this number of attempts
@@ -448,6 +447,8 @@ package (com.arvatosystems) t9t.io {
         optional Boolean                                parallel;                                // process asynchronously - more than 1 at a time
         optional Unicode(512)                           callbackUrl;                             // any URL for a callback
         optional Json                                   z;                                       // additional custom attributes
+        optional Unicode(255)                           clientId;                                // Id sent to authentication server
+        optional Unicode(255)                           authServerUrl;                           // URL of the authentication server for oAuth2
     }
 
     class AsyncMessageRef RTTI 101 extends Ref {}

@@ -103,8 +103,8 @@
         <checkstyle.version>10.20.1</checkstyle.version>
         <spotbugs.version>4.8.6</spotbugs.version>
         <spotbugs-plugin.version>4.8.6.6</spotbugs-plugin.version>
-        <logback.version>1.5.15</logback.version>
-        <junit5.version>5.11.3</junit5.version>     <!-- groupId is org.junit, therefore is can coexist with junit4 in dependency management -->
+        <logback.version>1.5.16</logback.version>
+        <junit5.version>5.11.4</junit5.version>     <!-- groupId is org.junit, therefore is can coexist with junit4 in dependency management -->
 
         <!-- Swagger -->
         <swagger-maven-plugin.version>2.2.25</swagger-maven-plugin.version>
@@ -1017,7 +1017,6 @@
                 <module>t9t-io-be-kafka</module>
                 <module>t9t-io-be-camel</module>
                 <module>t9t-io-be-camel-k8s</module>
-                <module>t9t-io-be-jackson</module>
                 <module>t9t-io-be-poi</module>
                 <module>t9t-io-be-mfcobol</module>
                 <module>t9t-io-jpa</module>
@@ -1293,7 +1292,6 @@
                 <module>t9t-io-be-kafka</module>
                 <module>t9t-io-be-camel</module>
                 <module>t9t-io-be-camel-k8s</module>
-                <module>t9t-io-be-jackson</module>
                 <module>t9t-io-be-poi</module>
                 <module>t9t-io-be-mfcobol</module>
                 <module>t9t-io-jpa</module>

@@ -108,6 +108,7 @@ public class OutputSession implements IOutputSession {
     protected long                      exportStarted       = System.nanoTime();
     protected IInputQueuePartitioner    processingSplitter  = null;  // only set if copyToAsyncChannel != null
     protected MediaData                 lazyReference       = null;
+    protected String                    asyncCategory       = "SINK";
 
     /**
      * {@inheritDoc}
@@ -127,6 +128,7 @@ public class OutputSession implements IOutputSession {
 
         // read the data sink configuration for this record
         sinkCfg = dpl.getDataSinkDTO(osParams.getDataSinkId());
+        asyncCategory = sinkCfg.getDataSinkId().length() <= 4 ? sinkCfg.getDataSinkId() : sinkCfg.getDataSinkId().substring(0, 4);
 
         if (sinkCfg.getCopyToAsyncChannel() != null) {
             processingSplitter = Jdp.getRequired(IInputQueuePartitioner.class, sinkCfg.getInputProcessingSplitter());
@@ -523,7 +525,7 @@ public class OutputSession implements IOutputSession {
                 // store as async message
                 if (sinkCfg.getCopyToAsyncChannel() != null) {
                     final int partition = processingSplitter.getPreliminaryPartitionKey(partitionKey);
-                    asyncTransmitter.transmitMessage(sinkCfg.getCopyToAsyncChannel(), r, recordRef, "SINK", sinkCfg.getDataSinkId(), partition);
+                    asyncTransmitter.transmitMessage(sinkCfg.getCopyToAsyncChannel(), r, recordRef, asyncCategory, recordKey, partition);
                 }
                 // and write it to file
                 dataGenerator.generateData(sourceRecordCounter, mappedRecordCounter, recRef, partitionKey, recordKey, r);

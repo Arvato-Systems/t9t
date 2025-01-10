@@ -103,7 +103,7 @@ class DateTimeFormatterTest {
                             Datum+Zeit: ${t(d.ts, 'MM')}
                             Tagesdatum: ${t(d.ts, 'M-', 'D')},
                             Uhrzeit:    ${t(d.ts, '-M', 'T')},
-                            Jahr:       ${t(d.ts, 'MM', 'I', 'YYYY')},
+                            Jahr:       ${t(d.ts, 'MM', 'I', 'yyyy')},
                             Wochentag:  ${t(d.ts, 'MM', 'I', 'EEEE MMMM')},
                         ''',
                     "en" ->
@@ -113,7 +113,7 @@ class DateTimeFormatterTest {
                             Timestamp:  ${t(d.ts, 'MM')}
                             Day:        ${t(d.ts, 'M-', 'D')},
                             Time:       ${t(d.ts, '-M', 'T')},
-                            Custom:     ${t(d.ts, 'MM', 'I', 'YYYY')},
+                            Custom:     ${t(d.ts, 'MM', 'I', 'yyyy')},
                             DoW, month: ${t(d.ts, 'MM', 'I', 'EEEE MMMM')},
                         '''
                 }.get(selector.languageCode)

@@ -142,10 +142,6 @@
         </dependency>
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
-            <artifactId>t9t-io-be-jackson</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-io-be-poi</artifactId>
         </dependency>
         <dependency>

@@ -213,13 +213,14 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional Uuid                               apiKey;                         // the API key to use
         optional Integer                            timeoutInMs;                    // if specified, use the timeout given here for connect, otherwise some hardcoded default
         optional Unicode(255)                       callbackUrl;                    // the configuration for callback, in case required
-        optional Unicode(255)                       basicAuth;                      // the http BASIC auth to use (in case API keys are not supported by the remote)
+        optional Unicode(255)                       basicAuth;                      // the http BASIC auth to use (in case API keys are not supported by the remote), or the secret, in case of OAuth2
         optional Unicode(255)                       clientId;                       // Id used to request access token
         optional Unicode(255)                       extraParam;                     // one additional extra parameter, for example HMAC
         optional Unicode(2048)                      token;                          // access token
         optional Integer                            requestTimeoutInMs;             // if specified, use this timeout for maximum request duration, otherwise use the connect timeout, otherwise some hardcoded default
         optional Boolean                            failOnUnknownProperties;        // (only for JACKSON JSON APIs): if TRUE, don't ignore unknown properties, but throw an exception (useful for testing)
         optional Boolean                            internalService;                // true only if the configuration is for internal server (not 3rd party or external service)
+        optional Unicode(255)                       authServerUrl;                  // URL of the authentication server for oAuth2 (a nonnull value enables it for connections which support it)
     }
 
     class SearchConfiguration {

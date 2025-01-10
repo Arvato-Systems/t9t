@@ -876,6 +876,13 @@
                     </xs:element>
                     <xs:element name="failOnUnknownProperties" minOccurs="0" nillable="true" type="xs:boolean"/>
                     <xs:element name="internalService" minOccurs="0" nillable="true" type="xs:boolean"/>
+                    <xs:element name="authServerUrl" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="255"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>

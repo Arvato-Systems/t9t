@@ -109,10 +109,10 @@
         <commons-text.version>1.13.0</commons-text.version>               <!-- not used in t9t, but DM made to cover for transitive dependencies -->
 
         <!-- AWS SDK v2 -->
-        <aws2-bom.version>2.29.39</aws2-bom.version>
+        <aws2-bom.version>2.29.45</aws2-bom.version>
 
         <!-- AWS JDBC wrapper for Aurora -->
-        <aws-jdbc-wrapper.version>2.5.3</aws-jdbc-wrapper.version>
+        <aws-jdbc-wrapper.version>2.5.4</aws-jdbc-wrapper.version>
 
         <!-- Azure -->
         <azure-cosmosdb.version>2.6.16</azure-cosmosdb.version>
@@ -140,7 +140,7 @@
         <junit.version>4.13.2</junit.version>      <!-- groupId is junit -->
         <hamcrest.version>3.0</hamcrest.version>   <!-- avoid unless required -->
         <byte-buddy.version>1.15.11</byte-buddy.version>   <!-- 1.12.x requested by mockito 4.2.0, and reuired for Java 17 -->
-        <org.mockito-core.version>5.14.2</org.mockito-core.version>
+        <org.mockito-core.version>5.15.2</org.mockito-core.version>
         <archunit.version>1.0.1</archunit.version>
         <hdrhistogram.version>2.2.2</hdrhistogram.version>
 
@@ -150,7 +150,7 @@
         <woodstox.version>6.5.1</woodstox.version>
         <stax2-api.version>4.2.1</stax2-api.version>
         <icu4j.version>76.1</icu4j.version>
-        <zxing.version>3.5.2</zxing.version>
+        <zxing.version>3.5.3</zxing.version>
         <quartz.version>2.5.0</quartz.version>
         <jsap.version>2.1</jsap.version>
         <picocli.version>4.7.6</picocli.version>
@@ -198,7 +198,7 @@
         <flyway.version>10.15.2</flyway.version>
         <reflections.version>0.9.10</reflections.version>
         <maven-plugin-api.version>3.9.9</maven-plugin-api.version>
-        <jackson.version>2.18.1</jackson.version>
+        <jackson.version>2.18.2</jackson.version>
         <solr.version>8.11.1</solr.version>
         <camel.version>4.8.1</camel.version>
         <jsch.version>0.2.21</jsch.version>

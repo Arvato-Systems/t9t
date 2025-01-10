@@ -84,6 +84,7 @@ public class T9tIOException extends T9tException {
     public static final int OUTPUT_NOT_YET_CLOSED = OFFSET_ILE + 261;
 
     public static final int MISSING_KAFKA_CONFIGURATION = OFFSET + 270;
+    public static final int ACCESS_TOKEN_ERROR = OFFSET + 271;
 
     static {
         registerRange(CORE_OFFSET, false, T9tIOException.class, ApplicationLevelType.FRAMEWORK, "t9t enterprise integration module");
@@ -133,5 +134,6 @@ public class T9tIOException extends T9tException {
         registerCode(OUTPUT_NOT_YET_CLOSED, "Cannot provide reference MediaData while OutputSession is not yet closed");
 
         registerCode(MISSING_KAFKA_CONFIGURATION, "No / missing configuration for kafka");
+        registerCode(ACCESS_TOKEN_ERROR, "Unable to get access token");
     }
 }

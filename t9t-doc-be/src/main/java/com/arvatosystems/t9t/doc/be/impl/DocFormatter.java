@@ -134,7 +134,7 @@ public class DocFormatter implements IDocFormatter {
             final String isoString       = fmToString(arguments, 0);
             final String style           = fmToString(arguments, 1);
             final String forceConversion = fmToString(arguments, 2);
-            final String jodaFormat      = fmToString(arguments, 3);
+            final String dateTimeFormat  = fmToString(arguments, 3);
 
             if (style.length() != 2) {
                 LOGGER.warn("Bad parameter: argument 2 for TimestampGenerator must be a 2 character string, but is {}", style);
@@ -144,7 +144,7 @@ public class DocFormatter implements IDocFormatter {
                 return "";
             }
 
-            final DateTimeFormatter formatter = jodaFormat == null ? getFormatterForStyle(style) : DateTimeFormatter.ofPattern(jodaFormat);
+            final DateTimeFormatter formatter = dateTimeFormat == null ? getFormatterForStyle(style) : DateTimeFormatter.ofPattern(dateTimeFormat);
             final DateTimeFormatter localFormatter = formatter.withLocale(locale);
 
             if (forceConversion != null) {
@@ -157,7 +157,7 @@ public class DocFormatter implements IDocFormatter {
                         if (l == 10) {
                             // do the same as for 'd'
                             LOGGER.warn("Date/time conversion mismatch: force=\'D\', style={}, format={}, input={}: You should use \'d\' in this case!", style,
-                                    jodaFormat, isoString);
+                                    dateTimeFormat, isoString);
                             final LocalDate timestampDayT = LocalDate.parse(isoString);
                             return localFormatter.format(timestampDayT);
                         } else {
@@ -165,7 +165,7 @@ public class DocFormatter implements IDocFormatter {
                             final boolean gotTimezoneSuffix = isoString.endsWith("Z");
                             if (gotTimezoneSuffix) {
                                 LOGGER.warn("Date/time conversion mismatch: force='D', style={}, format={}, input={}: Dropping time zone suffix."
-                                        + " Bug in data provider?", style, jodaFormat, isoString);
+                                        + " Bug in data provider?", style, dateTimeFormat, isoString);
                             }
                             final LocalDateTime timestampDayT = LocalDateTime.parse(gotTimezoneSuffix ? isoString.substring(0, l - 1) : isoString);
                             // timezone conversion
@@ -192,7 +192,7 @@ public class DocFormatter implements IDocFormatter {
                         break;
                     }
                 } catch (final Exception e) {
-                    LOGGER.error("Date/time conversion error: force={}, style={}, format={}, input={}", forceConversion, style, jodaFormat, isoString);
+                    LOGGER.error("Date/time conversion error: force={}, style={}, format={}, input={}", forceConversion, style, dateTimeFormat, isoString);
                     return "***ERROR***";
                 }
             }
@@ -213,7 +213,7 @@ public class DocFormatter implements IDocFormatter {
                     return tt.format(localFormatter);
                 }
             } catch (Exception e) {
-                LOGGER.error("Date/time conversion error: style={}, format={}, input={}", forceConversion, style, jodaFormat, isoString);
+                LOGGER.error("Date/time conversion error: style={}, format={}, input={}", forceConversion, style, dateTimeFormat, isoString);
                 return "***ERROR***";
             }
         }

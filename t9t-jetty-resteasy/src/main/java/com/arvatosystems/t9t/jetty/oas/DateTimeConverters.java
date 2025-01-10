@@ -28,7 +28,6 @@ import io.swagger.v3.core.converter.AnnotatedType;
 import io.swagger.v3.core.converter.ModelConverter;
 import io.swagger.v3.core.converter.ModelConverterContext;
 import io.swagger.v3.core.util.Json;
-import io.swagger.v3.oas.models.media.IntegerSchema;
 import io.swagger.v3.oas.models.media.NumberSchema;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
@@ -42,10 +41,10 @@ public class DateTimeConverters implements ModelConverter {
             if (myType != null) {
                 final Class<?> cls = myType.getRawClass();
                 if (LocalDateTime.class.isAssignableFrom(cls)) {
-                    return createSchema("2021-01-14T08:25:36", "ISO8601 formatted timestamp, assumed in UTC", "YYYY-MM-ddThh:mm:ss");
+                    return createSchema("2021-01-14T08:25:36", "ISO8601 formatted timestamp, assumed in UTC", "yyyy-MM-ddThh:mm:ss");
                 }
                 if (LocalDate.class.isAssignableFrom(cls)) {
-                    return createSchema("2021-01-14", "ISO8601 formatted date", "YYYY-MM-dd");
+                    return createSchema("2021-01-14", "ISO8601 formatted date", "yyyy-MM-dd");
                 }
                 if (LocalTime.class.isAssignableFrom(cls)) {
                     return createSchema("08:25:36", "ISO8601 formatted local time", "hh:mm:ss");
@@ -66,10 +65,8 @@ public class DateTimeConverters implements ModelConverter {
                     }
                 }
                 if (Instant.class.isAssignableFrom(cls)) {
-                    final IntegerSchema is = new IntegerSchema();
-                    is.setExample("1610612736 (JSON), 2021-01-14T08:25:36Z (XML)");
-                    is.setDescription("Instant in UNIX time (seconds since Jan 1st, 1970, 00:00:00 UTC). Example is morning of January 14th, 2021");
-                    return is;
+                    return createSchema("2021-01-14T08:25:36Z",
+                        "Instant in UNIX time (seconds since Jan 1st, 1970, 00:00:00 UTC). Example is morning of January 14th, 2021", "yyyy-MM-ddThh:mm:ssZ");
                 }
             }
         }

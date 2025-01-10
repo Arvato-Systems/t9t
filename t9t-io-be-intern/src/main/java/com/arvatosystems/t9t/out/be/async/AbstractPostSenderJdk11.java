@@ -30,6 +30,8 @@ import java.util.concurrent.CompletionException;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 
+import com.arvatosystems.t9t.io.oauth.AccessTokenDTO;
+import com.arvatosystems.t9t.out.services.oauth.IAccessTokenClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,6 +62,10 @@ public abstract class AbstractPostSenderJdk11<T> implements IAsyncSender {
     protected AsyncQueueDTO queue;
     protected String lastUrl = "";
     protected HttpClient defaultHttpClient = null;
+    protected IAccessTokenClient<AccessTokenCacheKey> accessTokenClient = Jdp.getRequired(IAccessTokenClient.class);
+
+    protected record AccessTokenCacheKey(String tenantId, String channelId) {
+    }
 
     @Override
     public void init(final AsyncQueueDTO myQueue) {
@@ -102,14 +108,15 @@ public abstract class AbstractPostSenderJdk11<T> implements IAsyncSender {
         addDefaultPublisherForPayload(httpRequestBuilder, payload);
     }
 
-    protected HttpRequest buildRequest(final AsyncChannelDTO channel, final Long messageRef, final BonaPortable payload, int timeout) throws Exception {
+    protected HttpRequest buildRequest(final AsyncChannelDTO channel, final Long messageRef, final BonaPortable payload, int timeout,
+        final String tenantId) throws Exception {
         final HttpRequest.Builder httpRequestBuilder = HttpRequest.newBuilder(new URI(channel.getUrl()))
             .version(Version.HTTP_2)
             .timeout(Duration.ofMillis(timeout));
         httpRequestBuilder.header(T9tConstants.HTTP_HEADER_CHARSET,        T9tConstants.HTTP_CHARSET_UTF8);
         httpRequestBuilder.header(T9tConstants.HTTP_HEADER_ACCEPT_CHARSET, T9tConstants.HTTP_CHARSET_UTF8);
         addPublisherForPayload(httpRequestBuilder, payload);
-        addAuthentication(httpRequestBuilder, channel);
+        addAuthentication(httpRequestBuilder, channel, tenantId);
         addIdempotency(httpRequestBuilder, channel, messageRef, payload);
 
         return httpRequestBuilder.build();
@@ -121,9 +128,14 @@ public abstract class AbstractPostSenderJdk11<T> implements IAsyncSender {
      * @param httpRequestBuilder
      * @param channel
      */
-    protected void addAuthentication(final HttpRequest.Builder httpRequestBuilder, final AsyncChannelDTO channel) {
+    protected void addAuthentication(final HttpRequest.Builder httpRequestBuilder, final AsyncChannelDTO channel, final String tenatId) {
         final String authentication = channel.getAuthParam();
-        if (authentication != null && authentication.length() > 0) {
+        if (T9tUtil.isNotBlank(channel.getAuthServerUrl())) {
+            final AccessTokenCacheKey key = new AccessTokenCacheKey(tenatId, channel.getAsyncChannelId());
+            final AccessTokenDTO token = accessTokenClient.getAccessToken(key, channel.getClientId(), channel.getAuthParam(), channel.getAuthServerUrl(),
+                channel.getAuthType(), channel.getZ());
+            httpRequestBuilder.header("Authorization", token.getTokenType() + " " + token.getAccessToken());
+        } else if (authentication != null && authentication.length() > 0) {
             final String httpHeaderVariable = T9tUtil.nvl(channel.getAuthType(), "Authorization");
             httpRequestBuilder.header(httpHeaderVariable, authentication);
         }
@@ -149,6 +161,11 @@ public abstract class AbstractPostSenderJdk11<T> implements IAsyncSender {
     @Override
     public boolean send(final AsyncChannelDTO channel, final int timeout, final InMemoryMessage msg,
             final Consumer<AsyncHttpResponse> resultProcessor, final long whenStarted) throws Exception {
+        return send(channel, timeout, msg, resultProcessor, whenStarted, true);
+    }
+
+    private boolean send(final AsyncChannelDTO channel, final int timeout, final InMemoryMessage msg,
+        final Consumer<AsyncHttpResponse> resultProcessor, final long whenStarted, final boolean retry) throws Exception {
         // smart throttling, if required
         if (channel.getDelayAfterSend() != null) {
             final long actualDelay = whenStarted - previousSend.get(); // duration from previous to current invocation in ms (huge for initial call)
@@ -166,7 +183,7 @@ public abstract class AbstractPostSenderJdk11<T> implements IAsyncSender {
 
         // do external I/O
         LOGGER.debug("Now sending ref {} of type {} to channel {}", msg.getObjectRef(), msg.getPayload().ret$PQON(), channel.getAsyncChannelId());
-        final HttpRequest httpRq = buildRequest(channel, msg.getObjectRef(), msg.getPayload(), timeout);
+        final HttpRequest httpRq = buildRequest(channel, msg.getObjectRef(), msg.getPayload(), timeout, msg.getTenantId());
         final BodyHandler<T> serializedResponse = getBodyHandler();
         final CompletableFuture<HttpResponse<T>> futureResponse = defaultHttpClient.sendAsync(httpRq, serializedResponse);
         final Consumer<HttpResponse<T>> completeResultProcessor = httpResponse -> {
@@ -196,13 +213,33 @@ public abstract class AbstractPostSenderJdk11<T> implements IAsyncSender {
                     }
                     resultProcessor.accept(asyncResponse);
                 } else {
+                    if (r.statusCode() == 401 && T9tUtil.isNotBlank(channel.getAuthServerUrl())  && retry) {
+                        // 401 Unauthorized with oauth, access token might be invalid. Invalidate token and then retry with new token
+                        LOGGER.error("Received 401 from async request for channelId {} and message ref {}, retrying the request", channel.getAsyncChannelId(),
+                            msg.getObjectRef());
+                        accessTokenClient.invalidateAccessToken(new AccessTokenCacheKey(msg.getTenantId(), channel.getAsyncChannelId()));
+                        try {
+                            send(channel, timeout, msg, resultProcessor, whenStarted, false);
+                        } catch (Exception e) {
+                            LOGGER.error("Error occurred when retrying async request for channelId {} and message ref {}. ", channel.getAsyncChannelId(),
+                                msg.getObjectRef(), e);
+                        }
+                    } else {
                     completeResultProcessor.accept(r);
+                    }
                 }
             });
             return true;
         } else {
             // blocking I/O
             final HttpResponse<T> resp = futureResponse.get();  // this is not asynchronous!
+            if (resp.statusCode() == 401 && T9tUtil.isNotBlank(channel.getAuthServerUrl())  && retry) {
+                // 401 Unauthorized with oauth, access token might be invalid. Invalidate token and then retry with new token
+                LOGGER.error("Received 401 from blocking request for channelId {} and message ref {}, retrying the request.", channel.getAsyncChannelId(),
+                    msg.getObjectRef());
+                accessTokenClient.invalidateAccessToken(new AccessTokenCacheKey(msg.getTenantId(), channel.getAsyncChannelId()));
+                return send(channel, timeout, msg, resultProcessor, whenStarted, false);
+            }
             completeResultProcessor.accept(resp);
             return httpStatusIsOk(resp.statusCode());
         }
