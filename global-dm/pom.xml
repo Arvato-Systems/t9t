@@ -100,7 +100,7 @@
         <commons-logging.version>1.1-donotuse</commons-logging.version>   <!-- should not use at all! -->
         <commons-email.version>99.0-donotuse</commons-email.version>      <!-- no longer used in t9t, because seems to be unmaintained -->
         <commons-cli.version>1.9.0</commons-cli.version>
-        <commons-codec.version>1.17.1</commons-codec.version>
+        <commons-codec.version>1.17.2</commons-codec.version>
         <commons-io.version>2.18.0</commons-io.version>                   <!-- regularly updated again -->
         <commons-lang3.version>3.17.0</commons-lang3.version>             <!-- regularly updated again -->
         <commons-beanutils.version>1.9.4</commons-beanutils.version>      <!-- must be 1.9.2 at least due to CVE-2014-0114, but still pulls in outdated collections3 -->
@@ -109,7 +109,7 @@
         <commons-text.version>1.13.0</commons-text.version>               <!-- not used in t9t, but DM made to cover for transitive dependencies -->
 
         <!-- AWS SDK v2 -->
-        <aws2-bom.version>2.29.45</aws2-bom.version>
+        <aws2-bom.version>2.29.50</aws2-bom.version>
 
         <!-- AWS JDBC wrapper for Aurora -->
         <aws-jdbc-wrapper.version>2.5.4</aws-jdbc-wrapper.version>
@@ -201,7 +201,7 @@
         <jackson.version>2.18.2</jackson.version>
         <solr.version>8.11.1</solr.version>
         <camel.version>4.8.1</camel.version>
-        <jsch.version>0.2.21</jsch.version>
+        <jsch.version>0.2.22</jsch.version>
         <kafka.version>3.9.0</kafka.version>
         <error-prone.version>2.28.0</error-prone.version>
 
@@ -216,7 +216,7 @@
         <!-- Google Services -->
         <google-http-client.version>1.45.3</google-http-client.version>
         <google-auth-library.version>1.17.0</google-auth-library.version>
-        <firebase-admin.version>9.4.2</firebase-admin.version>
+        <firebase-admin.version>9.4.3</firebase-admin.version>
 
         <msal4j.version>1.17.3</msal4j.version>
         <nimbus.version>9.48</nimbus.version>

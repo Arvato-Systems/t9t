@@ -27,6 +27,7 @@ import com.arvatosystems.t9t.zkui.components.dropdown28.nodb.Dropdown28Registry;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 import com.arvatosystems.t9t.zkui.util.Constants;
 
+import de.jpaw.bonaparte.pojos.api.IntFilter;
 import de.jpaw.bonaparte.pojos.api.LongFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
@@ -56,27 +57,35 @@ public class DropdownField extends AbstractField<Combobox> {
         if (empty())
             return null;
         final DataCategory dataCategory = desc.getDataCategory();
-        final String dataType = desc.getBonaparteType();
         final Combobox cb = components.get(0);
         final String v = cb.getValue();
         if (isDb) {
             final Description rec = ((Dropdown28Db) cb).lookupById(v);
             LOGGER.debug("Text {} gives description {}", v, rec);
+            if (rec == null) {
+                return null; // no filter possible without a value to filter by
+            }
             //          IDropdown28DbFactory dbFactory = (IDropdown28DbFactory)factory;
             if (dataCategory == DataCategory.NUMERIC || dataCategory == DataCategory.OBJECT || dataCategory == DataCategory.BASICNUMERIC) {
-                // search by ref
-                final LongFilter f = new LongFilter();
-                f.setFieldName(getFieldName());
-                f.setEqualsValue(rec == null ? null : rec.getObjectRef());
-                return f;
+                // search by ref or integer
+                final String javaType = desc.getDataType().toLowerCase();
+                if (javaType.equals("int") || javaType.equals("integer")) {
+                    final IntFilter f = new IntFilter();
+                    f.setFieldName(getFieldName());
+                    f.setEqualsValue(Integer.valueOf(rec.getId()));
+                    return f;
+                } else {
+                    final LongFilter f = new LongFilter();
+                    f.setFieldName(getFieldName());
+                    f.setEqualsValue(rec.getObjectRef());
+                    return f;
+                }
             }
             // text only, but use displayId
-            if (rec != null) {
-                final UnicodeFilter f = new UnicodeFilter();
-                f.setFieldName(getFieldName());
-                f.setEqualsValue(rec.getId());
-                return f;
-            }
+            final UnicodeFilter f = new UnicodeFilter();
+            f.setFieldName(getFieldName());
+            f.setEqualsValue(rec.getId());
+            return f;
         }
         // text only
         final UnicodeFilter f = new UnicodeFilter();
@@ -89,7 +98,7 @@ public class DropdownField extends AbstractField<Combobox> {
         return f;
     }
 
-    public DropdownField(String fieldname, UIFilter cfg, FieldDefinition desc, String gridId, ApplicationSession session, String dropdownType) {
+    public DropdownField(final String fieldname, final UIFilter cfg, final FieldDefinition desc, final String gridId, final ApplicationSession session, final String dropdownType) {
         super(fieldname, cfg, desc, gridId, session);
         if (cfg.getFilterType() != UIFilterType.EQUALITY && cfg.getFilterType() != UIFilterType.LIKE) {
             LOGGER.error("dropdown {} must have equality or LIKE constraint, but has {}", cfg.getFieldName(), cfg.getFilterType());

@@ -21,6 +21,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.zkui.util.Constants;
+
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.enums.BonaEnum;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
@@ -81,8 +83,8 @@ public class AllItemConverters  implements IItemConverter<Object> {
         // would need to test the metadata object, which is currently not transferred to this method
 //        if (value instanceof EnumSetMarker)
 //            return REGISTRY.get("enumset");
-        if (meta.getProperties() != null && meta.getProperties().containsKey("dropdown")) {
-            return REGISTRY.get("dropdown");
+        if (meta.getProperties() != null && meta.getProperties().containsKey(Constants.UiFieldProperties.DROPDOWN)) {
+            return REGISTRY.get(Constants.UiFieldProperties.DROPDOWN);
         }
         return null;
     }

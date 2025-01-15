@@ -16,14 +16,15 @@
 package com.arvatosystems.t9t.auth.jpa;
 
 import java.time.Instant;
+
 import com.arvatosystems.t9t.auth.jpa.entities.PasswordEntity;
 import com.arvatosystems.t9t.auth.jpa.entities.UserEntity;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
 public interface IPasswordSettingService {
     /** This method is invoked if an administor changes a password for another user. */
-    void setPasswordForUser(RequestContext ctx, UserEntity user, String password);
+    void setPasswordForUser(RequestContext ctx, UserEntity user, String newPassword);
 
     /** This method is invoked when user reset the password. Returns the newly created PasswordEntity */
-    PasswordEntity setPasswordForUser(Instant now, UserEntity user, String password, Long passwordSetByUserRef);
+    PasswordEntity setPasswordForUser(Instant now, UserEntity user, String newPassword, Long passwordSetByUserRef);
 }

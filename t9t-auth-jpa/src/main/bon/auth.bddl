@@ -97,6 +97,11 @@ package (com.arvatosystems) t9t.auth.jpa.entities owner fortytwo prefix p28 {
         pk is PasswordKey
     }
 
+    entity PasswordBlacklistEntity category datnt is PasswordBlacklistDTO tablename p42_dat_password_blacklist {
+        cacheable
+        pk (passwordInBlacklist)
+    }
+
     // use the default mapper here for more flexibility (less requirements on injection) in the log writers
     entity SessionEntity category datsource is SessionDTO {
         pk (objectRef)

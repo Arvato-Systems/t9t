@@ -37,7 +37,7 @@ public class DropdownDataField<T extends BonaPortable> extends AbstractDataField
         return c.getValue() == null;
     }
 
-    public DropdownDataField(DataFieldParameters params, String dropdownType, IDropdown28DbFactory<T> dbFactory) {
+    public DropdownDataField(final DataFieldParameters params, final String dropdownType, final IDropdown28DbFactory<T> dbFactory) {
         super(params);
         factory = dbFactory;
         final String format = params.cfg != null && params.cfg.getProperties() != null
@@ -74,7 +74,7 @@ public class DropdownDataField<T extends BonaPortable> extends AbstractDataField
     }
 
     @Override
-    public void setValue(T data) {
+    public void setValue(final T data) {
         final String id = data == null ? null : factory.getIdFromData(data, c);
         LOGGER.debug("{}.setValue(): setting {} results in {}", getFieldName(), data, id);
         c.setValue(id);

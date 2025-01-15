@@ -16,6 +16,7 @@
 package com.arvatosystems.t9t.auth.jpa.impl;
 
 import java.time.Instant;
+
 import com.arvatosystems.t9t.auth.AuthModuleCfgDTO;
 import com.arvatosystems.t9t.auth.PasswordUtil;
 import com.arvatosystems.t9t.auth.jpa.IPasswordSettingService;
@@ -24,7 +25,6 @@ import com.arvatosystems.t9t.auth.jpa.entities.UserEntity;
 import com.arvatosystems.t9t.auth.jpa.entities.UserStatusEntity;
 import com.arvatosystems.t9t.auth.jpa.persistence.IPasswordEntityResolver;
 import com.arvatosystems.t9t.auth.jpa.persistence.IUserEntityResolver;
-import com.arvatosystems.t9t.auth.services.IAuthModuleCfgDtoResolver;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import de.jpaw.dp.Jdp;
@@ -34,12 +34,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class PasswordSettingService implements IPasswordSettingService {
+public class PasswordSettingService extends AbstractPasswordService implements IPasswordSettingService {
     private static final Logger LOGGER = LoggerFactory.getLogger(PasswordSettingService.class);
 
-    protected final IAuthModuleCfgDtoResolver moduleConfigResolver = Jdp.getRequired(IAuthModuleCfgDtoResolver.class);
-    protected final IUserEntityResolver userEntityResolver = Jdp.getRequired(IUserEntityResolver.class);
     protected final IPasswordEntityResolver passwordResolver = Jdp.getRequired(IPasswordEntityResolver.class);
+    protected final IUserEntityResolver userEntityResolver = Jdp.getRequired(IUserEntityResolver.class);
 
     @Override
     public void setPasswordForUser(final RequestContext ctx, final UserEntity userEntity, final String newPassword) {
@@ -48,8 +47,12 @@ public class PasswordSettingService implements IPasswordSettingService {
 
     @Override
     public PasswordEntity setPasswordForUser(final Instant now, final UserEntity userEntity, final String newPassword, final Long passwordSetByUserRef) {
+
+        // password must be checked against blacklist
+        checkPasswordAgainstBlacklist(newPassword);
+
         int nextPasswordNo = 1;
-        final AuthModuleCfgDTO authModuleCfg = moduleConfigResolver.getModuleConfiguration();
+        final AuthModuleCfgDTO authModuleCfg = authModuleCfgResolver.getModuleConfiguration();
         final EntityManager entityManager = userEntityResolver.getEntityManager();
 
         final UserStatusEntity userStatusEntity = entityManager.find(UserStatusEntity.class, userEntity.getObjectRef());

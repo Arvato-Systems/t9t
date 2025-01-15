@@ -18,12 +18,14 @@ package com.arvatosystems.t9t.zkui.converters.grid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.search.Description;
 import com.arvatosystems.t9t.zkui.components.dropdown28.factories.IDropdown28DbFactory;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
+import com.arvatosystems.t9t.zkui.util.Constants;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
@@ -68,8 +70,8 @@ public class DropdownConverter implements IItemConverter<String> {
 
     @Override
     public String getFormattedLabel(String value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
-        if (meta.getProperties() != null && meta.getProperties().containsKey("dropdown")) {
-            return getLabelByValue(value, meta.getProperties().get("dropdown"));
+        if (meta.getProperties() != null && meta.getProperties().containsKey(Constants.UiFieldProperties.DROPDOWN)) {
+            return getLabelByValue(value, meta.getProperties().get(Constants.UiFieldProperties.DROPDOWN));
         }
         return value;
     }

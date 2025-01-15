@@ -19,6 +19,8 @@ import com.arvatosystems.t9t.auth.request.ApiKeyCrudRequest;
 import com.arvatosystems.t9t.auth.request.ApiKeySearchRequest;
 import com.arvatosystems.t9t.auth.request.AuthModuleCfgCrudRequest;
 import com.arvatosystems.t9t.auth.request.AuthModuleCfgSearchRequest;
+import com.arvatosystems.t9t.auth.request.PasswordBlacklistCrudRequest;
+import com.arvatosystems.t9t.auth.request.PasswordBlacklistSearchRequest;
 import com.arvatosystems.t9t.auth.request.RoleCrudRequest;
 import com.arvatosystems.t9t.auth.request.RoleSearchRequest;
 import com.arvatosystems.t9t.auth.request.RoleToPermissionCrudRequest;
@@ -38,6 +40,7 @@ import com.arvatosystems.t9t.base.IViewModelContainer;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.entities.SessionTracking;
 
+import de.jpaw.bonaparte.pojos.api.NoTracking;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 
 public final class T9tAuthModels implements IViewModelContainer {
@@ -102,18 +105,25 @@ public final class T9tAuthModels implements IViewModelContainer {
         null,
         null,
         null);
+    private static final CrudViewModel<PasswordBlacklistDTO, NoTracking> PASSWORD_BLACKLIST_VIEW_MODEL
+      = new CrudViewModel<>(
+        PasswordBlacklistDTO.BClass.INSTANCE,
+        NoTracking.BClass.INSTANCE,
+        PasswordBlacklistSearchRequest.BClass.INSTANCE,
+        PasswordBlacklistCrudRequest.BClass.INSTANCE);
 
     @Override
     public void register() {
-        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("sessions",         SESSION_VIEW_MODEL);
-        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("tenant",           TENANT_VIEW_MODEL);
-        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("user",             USER_VIEW_MODEL);
-        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("role",             ROLE_VIEW_MODEL);
-        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("apikey",           APIKEY_VIEW_MODEL);
-        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("roleToPermission", ROLE_PERMISSION_VIEW_MODEL);
-        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("userTenantRole",   USER_TENANT_ROLE_VIEW_MODEL);
-        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("authModuleCfg",    AUTH_MODULE_CFG_VIEW_MODEL);
-        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("tenantLogo",       TENANT_LOGO_VIEW_MODEL);
-        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("resetPwd",         RESET_PWD_VIEW_MODEL);
+        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("sessions",          SESSION_VIEW_MODEL);
+        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("tenant",            TENANT_VIEW_MODEL);
+        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("user",              USER_VIEW_MODEL);
+        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("role",              ROLE_VIEW_MODEL);
+        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("apikey",            APIKEY_VIEW_MODEL);
+        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("roleToPermission",  ROLE_PERMISSION_VIEW_MODEL);
+        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("userTenantRole",    USER_TENANT_ROLE_VIEW_MODEL);
+        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("authModuleCfg",     AUTH_MODULE_CFG_VIEW_MODEL);
+        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("tenantLogo",        TENANT_LOGO_VIEW_MODEL);
+        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("resetPwd",          RESET_PWD_VIEW_MODEL);
+        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("passwordBlacklist", PASSWORD_BLACKLIST_VIEW_MODEL);
     }
 }

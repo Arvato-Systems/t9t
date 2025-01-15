@@ -26,8 +26,8 @@ import com.arvatosystems.t9t.zkui.util.Constants;
 
 import de.jpaw.bonaparte.pojos.apiw.Ref;
 
-public class DropdownDbAsStringDataField extends AbstractDataField<Dropdown28Db<Ref>, String> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DropdownDbAsStringDataField.class);
+public class DropdownDbAsIntegerDataField extends AbstractDataField<Dropdown28Db<Ref>, Integer> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DropdownDbAsIntegerDataField.class);
 
     protected final Dropdown28Db<Ref> c;
     protected final IDropdown28DbFactory<Ref> factory;
@@ -37,7 +37,7 @@ public class DropdownDbAsStringDataField extends AbstractDataField<Dropdown28Db<
         return c.getValue() == null;
     }
 
-    public DropdownDbAsStringDataField(final DataFieldParameters params, final String dropdownType, final IDropdown28DbFactory<Ref> dbFactory) {
+    public DropdownDbAsIntegerDataField(final DataFieldParameters params, final String dropdownType, final IDropdown28DbFactory<Ref> dbFactory) {
         super(params);
         factory = dbFactory;
         final String format = params.cfg != null && params.cfg.getProperties() != null
@@ -58,7 +58,7 @@ public class DropdownDbAsStringDataField extends AbstractDataField<Dropdown28Db<
     }
 
     @Override
-    public String getValue() {
+    public Integer getValue() {
         final String res1 = c.getValue(); // is label
         final Comboitem res = c.getSelectedItem();
 
@@ -69,12 +69,12 @@ public class DropdownDbAsStringDataField extends AbstractDataField<Dropdown28Db<
         if (res1 == null)
             return null;
         final Description desc = c.lookupById(res1);
-        return desc == null ? null : desc.getId();
+        return desc == null ? null : Integer.valueOf(desc.getId());
     }
 
     @Override
-    public void setValue(final String data) {
-        final Description desc = data == null ? null : c.lookupByKey(data);
+    public void setValue(final Integer data) {
+        final Description desc = data == null ? null : c.lookupByKey(data.toString());
         LOGGER.debug("{}.setValue(): setting {} results in {}", getFieldName(), data, desc);
         c.setValue(desc == null ? null : c.getFormattedLabel(desc));
     }

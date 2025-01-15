@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import api.*
 import api.media.*
 import t9t.base.types.*
 import t9t.base.api.*
 import t9t.base.entities.*
 import t9t.base.crud.*
+import t9t.base.request.*
 import t9t.base.search.*
 import t9t.base.output.*
 import t9t.auth.*
@@ -65,6 +67,11 @@ package (com.arvatosystems) t9t.auth.request {
     class UserCrudAndSetPasswordRequest         extends CrudSurrogateKeyRequest <UserRef, UserDTO, FullTrackingWithVersion> {
         required Unicode(32)                                password;                   // password
     }
+
+    class PasswordBlacklistCrudRequest          extends CrudStringKeyRequest    <PasswordBlacklistDTO, NoTracking> {}
+    class PasswordBlacklistSearchRequest        extends SearchRequest           <PasswordBlacklistDTO, NoTracking> {}
+
+    class ClearPasswordBlacklistRequest extends RequestParameters {}
 
     class SetDefaultScreenRequest               extends RequestParameters return ServiceResponse {
         optional Unicode(64)                                defaultScreenId;

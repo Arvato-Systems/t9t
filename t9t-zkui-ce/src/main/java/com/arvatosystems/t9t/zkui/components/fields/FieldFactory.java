@@ -46,15 +46,15 @@ public class FieldFactory {
     private final ApplicationSession session;
     private final String gridId;
 
-    public FieldFactory(CrudViewModel<?, ?> viewModel, String gridId, ApplicationSession session)  {
+    public FieldFactory(final CrudViewModel<?, ?> viewModel, final String gridId, final ApplicationSession session)  {
         this.viewModel = viewModel;
         this.gridId = gridId;
         this.session = session;
     }
 
-    public IField createField(String fieldname, UIFilter filter, FieldDefinition desc) {
+    public IField createField(final String fieldname, final UIFilter filter, final FieldDefinition desc) {
         try {
-            String fieldName = filter.getFieldName();
+            final String fieldName = filter.getFieldName();
             LOGGER.debug("creating dynamic field for field name {}", fieldName);
 
             if (filter.getFilterType() == UIFilterType.NULL) {
@@ -62,12 +62,12 @@ public class FieldFactory {
                 return new NullFilterField(fieldname, filter, desc, gridId, session);
             }
 
-            DataCategory dataCategory = desc.getDataCategory();
-            String dataType = desc.getDataType().toLowerCase();  // the java type
-            String bonaparteType = desc.getBonaparteType().toLowerCase();  // the type as described in the bon file
-            Map<String, String> fieldProperties = desc.getProperties();
-            String dropdownType = fieldProperties != null ? fieldProperties.get(Constants.UiFieldProperties.DROPDOWN) : null;
-            String javaType = dataType.toLowerCase();
+            final DataCategory dataCategory = desc.getDataCategory();
+            final String dataType = desc.getDataType().toLowerCase();  // the java type
+            final String bonaparteType = desc.getBonaparteType().toLowerCase();  // the type as described in the bon file
+            final Map<String, String> fieldProperties = desc.getProperties();
+            final String dropdownType = fieldProperties != null ? fieldProperties.get(Constants.UiFieldProperties.DROPDOWN) : null;
+            final String javaType = dataType.toLowerCase();
 
             if (filter.getQualifier() != null) {
                 // use custom
@@ -79,12 +79,16 @@ public class FieldFactory {
                 switch (javaType) {
                 case "int":
                 case "integer":
+                    if (dropdownType != null) {
+                        return new DropdownField(fieldname, filter, desc, gridId, session, dropdownType);
+                    }
                     return new IntField(fieldname, filter, desc, gridId, session);
                 case "long":
-                    if (dropdownType != null)
+                    if (dropdownType != null) {
                         return new DropdownField(fieldname, filter, desc, gridId, session, dropdownType);
-//                    // check for bandboxes
-                    String bandbox = null != fieldProperties ? fieldProperties.get(Constants.UiFieldProperties.BANDBOX) : null;
+                    }
+                    // check for bandboxes
+                    final String bandbox = null != fieldProperties ? fieldProperties.get(Constants.UiFieldProperties.BANDBOX) : null;
                     if (bandbox != null) {
                         return new BandboxField(fieldname, filter, desc, gridId, session, bandbox);
                     }
@@ -101,8 +105,9 @@ public class FieldFactory {
                     return new FixedPointField(fieldName, filter, null, gridId, session);
                 }
             case NUMERIC:
-                if (bonaparteType.equals("decimal"))
+                if (bonaparteType.equals("decimal")) {
                     return new DecimalField(fieldName, filter, null, gridId, session);
+                }
                 break;
             case BINARY:
                 return new BinaryField(fieldname, filter, desc, gridId, session);

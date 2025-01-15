@@ -45,8 +45,9 @@ package (com.arvatosystems) t9t.auth {
         ref is com.arvatosystems.t9t.annotations.IsObjectRef;
 
     type distinguishedName      is Unicode(255);        // common name + issuer, which must match the one in the SSL certificate, if access via X509 is done
-    type roleId                 is Ascii(32);          // role Id
+    type roleId                 is Ascii(32);           // role Id
     type passwordHash           is Binary(64);
+    type passwordInBlacklist    is Unicode(36);
 
     enum AuthenticationIssuerType {
         ISSUER_APIKEY           = "AK",
@@ -78,6 +79,8 @@ package (com.arvatosystems) t9t.auth {
         optional Integer                            passwordMinUppercase                default "1";        // how many uppercase letters must be part of the password?
         optional Integer                            passwordMinLowercase                default "1";        // how many lowercase letters must be part of the password?
         optional Integer                            passwordMaxCommonSubstring          default "0";        // how many identical substring characters found in the password are allowed?
+        optional Boolean                            passwordCheckCaseInsensitive;                           // flag to indicate that password check is case-insensitive
+        optional Boolean                            passwordCheckStartWith;                                 // flag to indicate that password check includes "StartWith" condition
     }
 
     class TenantLogoDTO extends ModuleConfigDTO {
@@ -281,6 +284,14 @@ package (com.arvatosystems) t9t.auth {
     }
 
 
+    final class PasswordBlacklistKey {
+        required passwordInBlacklist                passwordInBlacklist      properties notupdatable, nodropdown;
+    }
+    final class PasswordBlacklistDTO {
+        properties tenantCategory="A";
+        required passwordInBlacklist                passwordInBlacklist      properties notupdatable, nodropdown;
+        required Instant                            passwordCreation;                   // timestamp when the password was included into the blacklist
+    }
 
 
     class SessionRef RTTI 1 extends Ref {

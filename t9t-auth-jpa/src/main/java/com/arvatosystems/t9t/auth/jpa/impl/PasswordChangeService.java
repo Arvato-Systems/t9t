@@ -23,7 +23,6 @@ import com.arvatosystems.t9t.auth.jpa.entities.PasswordEntity;
 import com.arvatosystems.t9t.auth.jpa.entities.UserEntity;
 import com.arvatosystems.t9t.auth.jpa.entities.UserStatusEntity;
 import com.arvatosystems.t9t.auth.jpa.persistence.IPasswordEntityResolver;
-import com.arvatosystems.t9t.auth.services.IAuthModuleCfgDtoResolver;
 import com.arvatosystems.t9t.auth.services.IAuthPersistenceAccess;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
@@ -37,11 +36,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class PasswordChangeService implements IPasswordChangeService {
+public class PasswordChangeService extends AbstractPasswordService implements IPasswordChangeService {
     private static final Logger LOGGER = LoggerFactory.getLogger(PasswordChangeService.class);
 
     protected final IPasswordEntityResolver passwordResolver = Jdp.getRequired(IPasswordEntityResolver.class);
-    protected final IAuthModuleCfgDtoResolver authModuleCfgResolver = Jdp.getRequired(IAuthModuleCfgDtoResolver.class);
 
     @Override
     public void changePassword(String newPassword, UserEntity userEntity, UserStatusEntity userStatusEntity) {
@@ -49,6 +47,9 @@ public class PasswordChangeService implements IPasswordChangeService {
                 : authModuleCfgResolver.getModuleConfiguration();
         // minimum check length
         validatePasswordLength(authModuleCfg.getPasswordMinimumLength(), newPassword);
+
+        // password must be checked against blacklist
+        checkPasswordAgainstBlacklist(newPassword);
 
         // new password must differ from n previous password
         final ByteArray newPasswordHash = PasswordUtil.createPasswordHash(userEntity.getUserId(), newPassword);
@@ -94,8 +95,7 @@ public class PasswordChangeService implements IPasswordChangeService {
             final List<PasswordEntity> results = query.getResultList();
             for (PasswordEntity oldPassword : results) {
                 if (oldPassword.getPasswordHash().equals(newPasswordHash)) {
-                    LOGGER.error("Password should differ from its previous entry for {} times",
-                        passwordDifferPreviousN);
+                    LOGGER.error("Password should differ from its previous entry for {} times", passwordDifferPreviousN);
                     throw new T9tException(T9tAuthException.PASSWORD_VALIDATION_FAILED);
                 }
             }
@@ -109,7 +109,7 @@ public class PasswordChangeService implements IPasswordChangeService {
             query.setParameter(1, userEntity.getObjectRef());
             query.setParameter("passwordHash", newPassswordHash);
 
-            final PasswordEntity  matchedPassword = query.getSingleResult();
+            final PasswordEntity matchedPassword = query.getSingleResult();
             final Instant earliestDatePasswordCanBeUsedAgain = matchedPassword.getPasswordCreation()
                     .plusSeconds(T9tConstants.ONE_DAY_IN_S * passwordBlockingPeriod);
             if (earliestDatePasswordCanBeUsedAgain.isAfter(Instant.now())) {

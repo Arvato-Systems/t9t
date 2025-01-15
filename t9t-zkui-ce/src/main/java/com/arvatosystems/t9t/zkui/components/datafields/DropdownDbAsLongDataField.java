@@ -37,7 +37,7 @@ public class DropdownDbAsLongDataField<T extends BonaPortable> extends AbstractD
         return c.getValue() == null;
     }
 
-    public DropdownDbAsLongDataField(DataFieldParameters params, String dropdownType, IDropdown28DbFactory<T> dbFactory) {
+    public DropdownDbAsLongDataField(final DataFieldParameters params, final String dropdownType, final IDropdown28DbFactory<T> dbFactory) {
         super(params);
         factory = dbFactory;
         final String format = params.cfg != null && params.cfg.getProperties() != null
@@ -70,7 +70,7 @@ public class DropdownDbAsLongDataField<T extends BonaPortable> extends AbstractD
     }
 
     @Override
-    public void setValue(Long data) {
+    public void setValue(final Long data) {
         final Description desc = data == null ? null : c.lookupByRef(data);
         LOGGER.debug("{}.setValue(): setting {} results in {}", getFieldName(), data, desc);
         c.setValue(desc == null ? null : c.getFormattedLabel(desc));

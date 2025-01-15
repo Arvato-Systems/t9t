@@ -27,6 +27,7 @@ import com.arvatosystems.t9t.auth.UserRef
 import com.arvatosystems.t9t.auth.UserTenantRoleRef
 import com.arvatosystems.t9t.auth.jpa.entities.ApiKeyEntity
 import com.arvatosystems.t9t.auth.jpa.entities.AuthModuleCfgEntity
+import com.arvatosystems.t9t.auth.jpa.entities.PasswordBlacklistEntity
 import com.arvatosystems.t9t.auth.jpa.entities.PasswordEntity
 import com.arvatosystems.t9t.auth.jpa.entities.RoleEntity
 import com.arvatosystems.t9t.auth.jpa.entities.RoleToPermissionEntity
@@ -73,7 +74,7 @@ class AuthResolvers {
     @GlobalTenantCanAccessAll
     def RoleToPermissionEntity  getRoleToPermissionEntity(RoleToPermissionRef entityRef) { return null; }
 
-
     def ApiKeyEntity            getApiKeyEntity (ApiKeyRef ref) { return null; }
     def PasswordEntity          getPasswordEntity(PasswordKey key) { return null; }
+    def PasswordBlacklistEntity getPasswordBlacklistEntity(String id) { return null; }
 }

@@ -38,6 +38,7 @@ import com.arvatosystems.t9t.auth.jpa.IPasswordChangeService;
 import com.arvatosystems.t9t.auth.jpa.IPasswordSettingService;
 import com.arvatosystems.t9t.auth.jpa.PermissionEntryInt;
 import com.arvatosystems.t9t.auth.jpa.entities.ApiKeyEntity;
+import com.arvatosystems.t9t.auth.jpa.entities.PasswordBlacklistEntity;
 import com.arvatosystems.t9t.auth.jpa.entities.PasswordEntity;
 import com.arvatosystems.t9t.auth.jpa.entities.RoleEntity;
 import com.arvatosystems.t9t.auth.jpa.entities.SessionEntity;
@@ -72,6 +73,7 @@ import de.jpaw.util.ByteArray;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
+import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 
 @Singleton
@@ -112,12 +114,12 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
             // Requires grouping to avoid having entries for the same resource multiple times (but must be done in Java as SQL does not know bit operations)
             final TypedQuery<PermissionEntryInt> query = em.createQuery(
               "SELECT NEW " + PermissionEntryInt.class.getCanonicalName() + "(rtp.permissionId, rtp.permissionSet)"
-                 + " FROM RoleToPermissionEntity rtp, UserTenantRoleEntity utr"
-                 + " WHERE rtp.roleRef = utr.roleRef"
-                 + " AND rtp.tenantId IN :tenants"
-                 + " AND utr.tenantId IN :tenants"
-                 + " AND utr.userRef = :userRef"
-                 + " ORDER BY rtp.permissionId", PermissionEntryInt.class);
+                  + " FROM RoleToPermissionEntity rtp, UserTenantRoleEntity utr"
+                  + " WHERE rtp.roleRef = utr.roleRef"
+                  + " AND rtp.tenantId IN :tenants"
+                  + " AND utr.tenantId IN :tenants"
+                  + " AND utr.userRef = :userRef"
+                  + " ORDER BY rtp.permissionId", PermissionEntryInt.class);
             final List<String> tenants;
 
             if (T9tConstants.GLOBAL_TENANT_ID.equals(jwtInfo.getTenantId())) {
@@ -166,8 +168,8 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
             // select role to permission only
             query = em.createQuery(
               "SELECT NEW " + PermissionEntryInt.class.getCanonicalName() + "("
-                 + "rtp.permissionId, rtp.permissionSet) FROM RoleToPermissionEntity rtp"
-                 + " WHERE rtp.roleRef = :roleRef", PermissionEntryInt.class);
+                  + "rtp.permissionId, rtp.permissionSet) FROM RoleToPermissionEntity rtp"
+                  + " WHERE rtp.roleRef = :roleRef", PermissionEntryInt.class);
             query.setParameter("roleRef", jwtInfo.getRoleRef());
             List<PermissionEntryInt> results = query.getResultList();
             List<PermissionEntry> permissions = new ArrayList<>(results.size());
@@ -373,7 +375,7 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
     protected UserStatusEntity updateUserStatusEntityForApiKeyLogin(final EntityManager em, final ApiKeyEntity apiKeyEntity, final Instant now) {
         UserStatusEntity userStatus = em.find(UserStatusEntity.class, apiKeyEntity.getUserRef());
         if (apiKeyEntity.getPermissions() != null && UserLogLevelType.STEALTH == apiKeyEntity.getPermissions().getLogLevel()) {
-            return userStatus;  // no updates
+            return userStatus; // no updates
         }
         if (userStatus == null) {
             // create a new one
@@ -480,7 +482,8 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
             return resp;
         } else if (isResetPasswordMatch(passwordEntity, hash, now)) {
             // Password match with the reset password. Set it as a new password.
-            final PasswordEntity newPasswordEntity = passwordSettingService.setPasswordForUser(now, userEntity, password, userEntity.getObjectRef());
+            final PasswordEntity newPasswordEntity = passwordSettingService.setPasswordForUser(now, userEntity, password,
+                    userEntity.getObjectRef());
             if (!newPasswordEntity.getPasswordExpiry().isAfter(now)) {
                 resp.setReturnCode(T9tException.PASSWORD_EXPIRED); // reset password is expired
             }
@@ -693,5 +696,13 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
         userStatus.setPrevLoginByPassword(userStatus.getLastLoginByPassword());
         userStatus.setLastLogin(now);
         userStatus.setLastLoginByPassword(now);
+    }
+
+    @Override
+    public void deletePasswordBlacklist() {
+        final EntityManager em = jpaContextProvider.get().getEntityManager();
+        final Query query = em.createQuery("DELETE FROM " + PasswordBlacklistEntity.class.getSimpleName());
+        final int count = query.executeUpdate();
+        LOGGER.debug("Deletion of passwordBlacklist is done: {} entries were deleted!", count);
     }
 }

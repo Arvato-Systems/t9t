@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.zul.Combobox;
 
 import com.arvatosystems.t9t.base.CrudViewModel;
+import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.types.TenantIsolationCategoryType;
 import com.arvatosystems.t9t.zkui.components.IDataFieldFactory;
 import com.arvatosystems.t9t.zkui.components.dropdown28.factories.IDropdown28BasicFactory;
@@ -48,15 +49,15 @@ public class DataFieldFactory implements IDataFieldFactory {
 
     // ZK edition specific data fields
     // ZK standard edition implementation
-    protected IDataField createEnumsetNumDataField(final DataFieldParameters params, String enumDtoRestrictions) {
+    protected IDataField createEnumsetNumDataField(final DataFieldParameters params, final String enumDtoRestrictions) {
         return new EnumsetNumIntboxDataField(params, enumDtoRestrictions);
     }
 
-    protected IDataField createEnumsetAlphaDataField(final DataFieldParameters params, String enumDtoRestrictions) {
+    protected IDataField createEnumsetAlphaDataField(final DataFieldParameters params, final String enumDtoRestrictions) {
         return new EnumsetAlphaTextboxDataField(params, enumDtoRestrictions);
     }
 
-    protected IDataField createXenumsetDataField(final DataFieldParameters params, String enumDtoRestrictions) {
+    protected IDataField createXenumsetDataField(final DataFieldParameters params, final String enumDtoRestrictions) {
         return new XEnumsetTextboxDataField(params, enumDtoRestrictions);
     }
 
@@ -75,14 +76,14 @@ public class DataFieldFactory implements IDataFieldFactory {
             switch (columnDescriptor.getDataCategory()) {
             case STRING:
                 if (dropdownType != null) {
-                    IDropdown28BasicFactory<Dropdown28Ext> factory = Dropdown28Registry.getFactoryById(dropdownType);
+                    final IDropdown28BasicFactory<Dropdown28Ext> factory = Dropdown28Registry.getFactoryById(dropdownType);
                     if (factory == null) {
                         LOGGER.warn("API specified a dropdown of type {} for {}, but it does not exist", dropdownType, path);
                         throw new RuntimeException("unknown dropdown " + dropdownType);
                     }
                     if (factory instanceof IDropdown28DbFactory) {
                         // DB based
-                        IDropdown28DbFactory dbFactory = (IDropdown28DbFactory)factory;
+                        final IDropdown28DbFactory dbFactory = (IDropdown28DbFactory)factory;
                         return new DropdownDbAsStringDataField(params, dropdownType, dbFactory);
                     }
                     // String based (Currency, Country etc...)
@@ -104,10 +105,24 @@ public class DataFieldFactory implements IDataFieldFactory {
                     return new FloatDataField(params);
                 case "int":
                 case "integer":
+                    if (dropdownType != null) {
+                        IDropdown28BasicFactory<Dropdown28Ext> factory = Dropdown28Registry.getFactoryById(dropdownType);
+                        if (factory == null) {
+                            LOGGER.warn("API specified a dropdown of type {} for {}, but it does not exist", dropdownType, path);
+                            throw new RuntimeException("unknown dropdown " + dropdownType);
+                        }
+                        if (factory instanceof IDropdown28DbFactory) {
+                            // DB based
+                            final IDropdown28DbFactory dbFactory = (IDropdown28DbFactory)factory;
+                            return new DropdownDbAsIntegerDataField(params, dropdownType, dbFactory);
+                        }
+                        // none supported yet
+                        throw new T9tException(T9tException.NOT_YET_IMPLEMENTED, "No known non-DB dropdowns of integer value");
+                    }
                     return new IntDataField(params);
                 case "long":
                     if (dropdownType != null) {
-                        IDropdown28BasicFactory<Combobox> factory = Dropdown28Registry.getFactoryById(dropdownType);
+                        final IDropdown28BasicFactory<Combobox> factory = Dropdown28Registry.getFactoryById(dropdownType);
                         if (factory == null) {
                             LOGGER.warn("API specified a dropdown of type {} for {}, but it does not exist", dropdownType, path);
                             throw new RuntimeException("unknown dropdown " + dropdownType);
@@ -143,7 +158,7 @@ public class DataFieldFactory implements IDataFieldFactory {
             case ENUMALPHA:
                 return new EnumAlphaDataField(params, enumDtoRestrictions);
             case ENUMSET:
-                NumericEnumSetDataItem en = (NumericEnumSetDataItem)columnDescriptor;
+                final NumericEnumSetDataItem en = (NumericEnumSetDataItem)columnDescriptor;
                 if (en.getBaseEnumset().getName().equals("api.auth.Permissionset")) {
                     LOGGER.debug("detected special Permissionset type for field {}", path);
                     return new PermissionsetDataField(params);
@@ -162,7 +177,7 @@ public class DataFieldFactory implements IDataFieldFactory {
                 break;
             case OBJECT:
                 if (dropdownType != null) {
-                    IDropdown28BasicFactory<Combobox> factory = Dropdown28Registry.getFactoryById(dropdownType);
+                    final IDropdown28BasicFactory<Combobox> factory = Dropdown28Registry.getFactoryById(dropdownType);
                     if (factory == null) {
                         LOGGER.warn("API specified a dropdown of type {} for {}, but it does not exist", dropdownType, path);
                         throw new RuntimeException("unknown dropdown " + dropdownType);
@@ -178,8 +193,8 @@ public class DataFieldFactory implements IDataFieldFactory {
                     }
                 }
                 // check for bandboxes
+                final ObjectReference objRef = (ObjectReference)columnDescriptor;
                 String bandbox = fieldProperties.get(Constants.UiFieldProperties.BANDBOX);
-                ObjectReference objRef = (ObjectReference)columnDescriptor;
                 if (bandbox == null && objRef.getLowerBound() != null)
                     bandbox = objRef.getLowerBound().getName();  // use the ref's PQON
                 if (bandbox != null) {
@@ -223,7 +238,7 @@ public class DataFieldFactory implements IDataFieldFactory {
                     "No matches found for {} in {}. Possibly something misconfigured in the grid configuration? (category = {}, java type = {}, "
                     + "bonaparte type = {})",
                     path, crudViewModel.dtoClass.getBonaPortableClass().getCanonicalName(), columnDescriptor.getDataCategory(), javaType, bonaparteType);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.error("Problems in the grid configuration for field {}? {}", params.path, e);
         }
 
