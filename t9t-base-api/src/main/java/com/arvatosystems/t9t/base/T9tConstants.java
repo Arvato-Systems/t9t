@@ -153,6 +153,7 @@ public final class T9tConstants {
 
     public static final String HTTP_HEADER_FORWARDED_FOR    = "X-Forwarded-For";    // The header used to obtain the client's IP behind a reverse proxy
     public static final String HTTP_HEADER_IDEMPOTENCY_KEY  = "Idempotency-Key";    // The header used to provide a unique request ID
+    public static final String HTTP_HEADER_CONTENT_LENGTH   = "Content-Length";     // Just for code which does not have a jakarta-rs API dependency
     public static final String HTTP_HEADER_CONTENT_TYPE     = "Content-Type";       // Just for code which does not have a jakarta-rs API dependency
     public static final String HTTP_HEADER_ACCEPT           = "Accept";             // Just for code which does not have a jakarta-rs API dependency
     public static final String HTTP_HEADER_CHARSET          = "Charset";            // Just for code which does not have a jakarta-rs API dependency

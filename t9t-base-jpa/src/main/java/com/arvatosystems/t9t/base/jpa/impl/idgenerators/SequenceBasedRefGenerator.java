@@ -149,9 +149,14 @@ public class SequenceBasedRefGenerator extends AbstractIdGenerator implements IR
         final LongSupplier g = generatorMap.computeIfAbsent(sequenceName,
             tn -> {
                 final String key = refGeneratorFactory.needSelectStatement() ? selectStatementForSequence(dialect, sequenceName) : sequenceName;
+                LOGGER.info("Creating new CachingRefSupplier for UNSCALED refs of key {} with cache size {}", key, cacheSizeUnscaled);
                 return new CachingRefSupplier(key, cacheSizeUnscaled, refGeneratorFactory);
             }
         );
-        return (g.getAsLong() * sequenceReplicationScale) + (scaledOffsetForLocation > 0 ? 1 : 0);
+        final long value = (g.getAsLong() * sequenceReplicationScale) + (scaledOffsetForLocation > 0 ? 1 : 0);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Generated unscaled ref {} for sequence {}", value, sequenceName);
+        }
+        return value;
     }
 }

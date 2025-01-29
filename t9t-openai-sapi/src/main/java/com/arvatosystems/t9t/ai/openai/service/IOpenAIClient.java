@@ -34,10 +34,11 @@ import com.arvatosystems.t9t.ai.openai.assistants.OpenAIObjectListThreadMessages
 import com.arvatosystems.t9t.ai.openai.assistants.OpenAIObjectListThreadRuns;
 import com.arvatosystems.t9t.ai.openai.assistants.OpenAIObjectThreadRun;
 import com.arvatosystems.t9t.ai.openai.assistants.OpenAIObjectVectorStore;
-import com.arvatosystems.t9t.ai.openai.assistants.OpenAIThreadRunReq;
 import com.arvatosystems.t9t.ai.openai.assistants.OpenAIThread;
 import com.arvatosystems.t9t.ai.openai.assistants.OpenAIThreadMessageReq;
+import com.arvatosystems.t9t.ai.openai.assistants.OpenAIThreadRunReq;
 import com.arvatosystems.t9t.ai.openai.assistants.OpenAIToolOutputReq;
+import com.arvatosystems.t9t.ai.openai.request.AIModel;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.bonaparte.pojos.api.media.MediaData;
@@ -49,6 +50,9 @@ import jakarta.annotation.Nullable;
  * The implementation performs the low level calls to the OpenAI API.
  */
 public interface IOpenAIClient {
+    /** Returns the lit of available models. */
+    @Nonnull List<AIModel> getModels(@Nullable String onlyModel);
+
     /** Validates metadata. */
     void validateMetadata(@Nullable Map<String, Object> metadata);
 

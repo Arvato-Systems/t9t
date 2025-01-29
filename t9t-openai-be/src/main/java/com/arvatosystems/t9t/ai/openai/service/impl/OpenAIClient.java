@@ -31,6 +31,8 @@ import com.arvatosystems.t9t.ai.openai.OpenAIFunction;
 import com.arvatosystems.t9t.ai.openai.OpenAIFunctionCall;
 import com.arvatosystems.t9t.ai.openai.OpenAIFunctionParameters;
 import com.arvatosystems.t9t.ai.openai.OpenAIMessage;
+import com.arvatosystems.t9t.ai.openai.OpenAIModel;
+import com.arvatosystems.t9t.ai.openai.OpenAIModelList;
 import com.arvatosystems.t9t.ai.openai.OpenAIObjectChatCompletion;
 import com.arvatosystems.t9t.ai.openai.OpenAIObjectCreateEmbeddings;
 import com.arvatosystems.t9t.ai.openai.OpenAIObjectFile;
@@ -60,6 +62,7 @@ import com.arvatosystems.t9t.ai.openai.assistants.OpenAIThreadRunReq;
 import com.arvatosystems.t9t.ai.openai.assistants.OpenAIToolOutput;
 import com.arvatosystems.t9t.ai.openai.assistants.OpenAIToolOutputReq;
 import com.arvatosystems.t9t.ai.openai.jackson.OpenAIModule;
+import com.arvatosystems.t9t.ai.openai.request.AIModel;
 import com.arvatosystems.t9t.ai.openai.service.IOpenAIClient;
 import com.arvatosystems.t9t.ai.service.AiToolDescriptor;
 import com.arvatosystems.t9t.ai.service.AiToolRegistry;
@@ -86,6 +89,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper.Builder;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.google.common.base.Charsets;
 
 import de.jpaw.bonaparte.api.media.MediaTypeInfo;
 import de.jpaw.bonaparte.core.BonaPortable;
@@ -214,12 +218,17 @@ public class OpenAIClient implements IOpenAIClient {
             }
             throw new T9tException(T9tOpenAIException.OPENAI_CONNECTION_PROBLEM, resp.statusCode());
         }
-        final U r = objectMapper.readValue(resp.body(), responseClass);
-        if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace("Full response from OpenAI is {}", ToStringHelper.toStringML(r));
+        try {
+            final U r = objectMapper.readValue(resp.body(), responseClass);
+            if (LOGGER.isTraceEnabled()) {
+                LOGGER.trace("Full response from OpenAI is {}", ToStringHelper.toStringML(r));
+            }
+            r.validate();
+            return r;
+        } catch (final Exception e) {
+            LOGGER.error("Cannot construct response: {}: {}", e.getClass().getSimpleName(), new String(resp.body(), Charsets.UTF_8));
+            throw e;
         }
-        r.validate();
-        return r;
     }
 
     /** Perform a POST with a payload, taking path and beta information from properties. */
@@ -784,5 +793,25 @@ public class OpenAIClient implements IOpenAIClient {
     @Override
     public OpenAIObjectVectorStore createVectorStore(final OpenAICreateVectorStoreReq createVectorStoreReq) {
         return performOpenAIRequest(createVectorStoreReq, ASSISTANTS_BETA, OpenAIObjectVectorStore.class);
+    }
+
+    @Override
+    public List<AIModel> getModels(final String onlyModel) {
+        final String path = "/v1/models" + (onlyModel == null ? "" : "/" + onlyModel);
+        final OpenAIModelList rawList = performOpenAIGetRequest(path, null, OpenAIModelList.class);
+        if (T9tUtil.isEmpty(rawList.getData())) {
+            // no result
+            return List.of();
+        }
+        // convert the result
+        final List<AIModel> models = new ArrayList<>(rawList.getData().size());
+        for (final OpenAIModel in: rawList.getData()) {
+            final AIModel out = new AIModel();
+            out.setOwner(in.getOwnedBy());
+            out.setModelId(in.getId());
+            out.setWhenCreated(in.getCreated());
+            models.add(out);
+        }
+        return models;
     }
 }

@@ -16,12 +16,30 @@
 import api.media.*
 import t9t.base.types.*
 import t9t.base.api.*
+import t9t.ai.*
 import t9t.ai.openai.*
 
 package (com.arvatosystems) t9t.ai.openai.request {
     default private unsigned trim noControlChars;
 
-    /** Dummy request for testing */
+    /** Simple request with one optional parameter. */
+    class OpenAIListModelsRequest extends RequestParameters return OpenAIListModelsResponse {
+        optional modelId                            onlyModel;
+        optional Boolean                            sortByName;
+        optional Boolean                            sortByDate;
+    }
+
+    class OpenAIListModelsResponse extends ServiceResponse {
+        required (AIModel) required List<>          models;
+    }
+
+    final class AIModel {
+        required modelId                            modelId;
+        required Instant                            whenCreated;
+        optional shortText                          owner;
+    }
+
+    /** Simple chat completion request for testing. */
     class OpenAIChatCompletionRequest extends RequestParameters return OpenAIObjectChatCompletionResponse {
         required (OpenAIChatCompletionReq)          request;
         required meta.identifier List<>             toolSelection;

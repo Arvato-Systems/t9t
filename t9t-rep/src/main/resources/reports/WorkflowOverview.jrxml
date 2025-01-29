@@ -1,44 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
-              name="Workflow Overview"
-              pageWidth="1500"
-              pageHeight="1200"
-              orientation="Landscape"
-              whenNoDataType="AllSectionsNoDetail"
-              columnWidth="1500"
-              leftMargin="0"
-              rightMargin="0"
-              topMargin="0"
-              bottomMargin="0"
-              whenResourceMissingType="Empty"
-              isIgnorePagination="true"
-              uuid="a6e73654-5723-4c23-8edd-6c59f3c29c6d">
-
-    <property name="net.sf.jasperreports.export.xls.detect.cell.type" value="true"/>
-    <import value="java.time.*"/>
-    <import value="de.jpaw.util.ApplicationException"/>
-
-    <parameter name="translator" class="com.arvatosystems.t9t.translation.be.TranslationProvider"/>
-    <parameter name="currencyFormatter" class="com.arvatosystems.t9t.a28rep.util.NumberFormatterCurrency"/>
-    <parameter name="timeFormatter" class="com.arvatosystems.t9t.rep.be.util.TimeFormatter"/>
-
-    <parameter name="timeZone" class="java.lang.String"/>
-    <parameter name="tenantId" class="java.lang.String"/>
-
-    <parameter name="clientNow" class="java.time.LocalDateTime" isForPrompting="false">
-        <defaultValueExpression><![CDATA[LocalDateTime.now()]]></defaultValueExpression>
-    </parameter>
-
-    <parameter name="includeWfList" class="java.lang.String" />
-
-    <parameter name="includeWfClause" isForPrompting="false">
-        <defaultValueExpression><![CDATA[$P{includeWfList} == null ? "0 = 0" : "px.process_definition_id in ($P!{includeWfList})"]]></defaultValueExpression>
-    </parameter>
-
-    <queryString>
-        <![CDATA[select   case when px.yield_until >= '2999-12-31 22:00:00' THEN 'WAITING' ELSE 'DUE' END as category,
+<!-- Created with Jaspersoft Studio version 7.0.1.final using JasperReports Library version 7.0.1-573496633c2b4074e32f433154b543003f7d2498  -->
+<jasperReport name="Workflow Overview" language="java" pageWidth="1500" pageHeight="1200" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="1500" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" whenResourceMissingType="Empty" uuid="a6e73654-5723-4c23-8edd-6c59f3c29c6d" ignorePagination="true">
+	<property name="net.sf.jasperreports.export.xls.detect.cell.type" value="true"/>
+	<import>de.jpaw.util.ApplicationException</import>
+	<import>java.time.*</import>
+	<parameter name="translator" class="com.arvatosystems.t9t.translation.be.TranslationProvider"/>
+	<parameter name="currencyFormatter" class="com.arvatosystems.t9t.a28rep.util.NumberFormatterCurrency"/>
+	<parameter name="timeFormatter" class="com.arvatosystems.t9t.rep.be.util.TimeFormatter"/>
+	<parameter name="timeZone" class="java.lang.String"/>
+	<parameter name="tenantId" class="java.lang.String"/>
+	<parameter name="clientNow" forPrompting="false" class="java.time.LocalDateTime">
+		<defaultValueExpression><![CDATA[LocalDateTime.now()]]></defaultValueExpression>
+	</parameter>
+	<parameter name="includeWfList" class="java.lang.String"/>
+	<parameter name="includeWfClause" forPrompting="false" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{includeWfList} == null ? "0 = 0" : "px.process_definition_id in ($P!{includeWfList})"]]></defaultValueExpression>
+	</parameter>
+	<query language="sql"><![CDATA[select   case when px.yield_until >= '2999-12-31 22:00:00' THEN 'WAITING' ELSE 'DUE' END as category,
                           px.process_definition_id,
                           px.next_step,
                           px.return_code,
@@ -52,161 +29,90 @@
                 and       px.m_timestamp < now() - interval '15 minutes'
                 and       $P!{includeWfClause}
                 group by  case when px.yield_until >= '2999-12-31 22:00:00' THEN 'WAITING' ELSE 'DUE' END, px.process_definition_id, px.next_step, px.return_code
-                order by  case when px.yield_until >= '2999-12-31 22:00:00' THEN 'WAITING' ELSE 'DUE' END, px.process_definition_id, px.next_step, px.return_code]]>
-    </queryString>
-
-    <field name="category"              class="java.lang.String"/>
-    <field name="process_definition_id" class="java.lang.String"/>
-    <field name="next_step"             class="java.lang.String"/>
-    <field name="return_code"           class="java.lang.Integer"/>
-    <field name="min_creation"          class="java.time.LocalDateTime"/>
-    <field name="max_creation"          class="java.time.LocalDateTime"/>
-    <field name="min_yield_until"       class="java.time.LocalDateTime"/>
-    <field name="max_yield_until"       class="java.time.LocalDateTime"/>
-    <field name="cnt"                   class="java.lang.Integer"/>
-
-    <group name="group_by_cat">
-        <groupExpression><![CDATA[$F{category}]]></groupExpression>
-        <groupHeader>
-            <band height="24" splitType="Stretch">
-                <textField isBlankWhenNull="true">
-                    <reportElement x="0" y="0" width="1500" height="24" />
-                    <textElement textAlignment="Left" verticalAlignment="Bottom">
-                        <font size="10" isBold="true"/>
-                    </textElement>
-                    <textFieldExpression>
-                        <![CDATA["Yield-Category: " + $F{category}]]>
-                    </textFieldExpression>
-                </textField>
-            </band>
-        </groupHeader>
-    </group>
-
-    <background>
-        <band splitType="Stretch"/>
-    </background>
-
-    <title>
-        <band height="20" splitType="Stretch">
-            <textField isBlankWhenNull="true">
-                <reportElement x="0" y="0" width="1500" height="20" />
-                <textElement textAlignment="Center">
-                    <font size="12" isBold="true"/>
-                </textElement>
-                <textFieldExpression>
-                    <![CDATA["As Of: " + $P{timeFormatter}.formatDateTime($P{clientNow}, $P{timeZone}, $P{REPORT_LOCALE})]]>
-                </textFieldExpression>
-            </textField>
-        </band>
-    </title>
-
-    <columnHeader>
-        <band height="20" splitType="Stretch">
-            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="000" y="0" width="120" height="20" />
-                <textElement>
-                    <font isBold="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA["Workflow ID"]]></textFieldExpression>
-            </textField>
-            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="120" y="0" width="200" height="20" />
-                <textElement>
-                    <font isBold="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA["Next Step"]]></textFieldExpression>
-            </textField>
-            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="320" y="0" width="100" height="20" />
-                <textElement>
-                    <font isBold="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA["Return Code"]]></textFieldExpression>
-            </textField>
-            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="420" y="0" width="380" height="20" />
-                <textElement>
-                    <font isBold="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA["Return Code Description"]]></textFieldExpression>
-            </textField>
-            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="800" y="0" width="150" height="20" />
-                <textElement>
-                    <font isBold="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA["Min. Creation"]]></textFieldExpression>
-            </textField>
-            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="950" y="0" width="150" height="20" />
-                <textElement>
-                    <font isBold="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA["Max. Creation"]]></textFieldExpression>
-            </textField>
-            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="1100" y="0" width="150" height="20" />
-                <textElement>
-                    <font isBold="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA["Min. Yield Until"]]></textFieldExpression>
-            </textField>
-            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="1250" y="0" width="150" height="20" />
-                <textElement>
-                    <font isBold="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA["Max. Yield Until"]]></textFieldExpression>
-            </textField>
-            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="1400" y="0" width="100" height="20" />
-                <textElement textAlignment="Right">
-                    <font isBold="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA["Count"]]></textFieldExpression>
-            </textField>
-        </band>
-    </columnHeader>
-
-    <detail>
-        <band height="12" splitType="Prevent">
-            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="000" y="0" width="120" height="12" />
-                <textFieldExpression><![CDATA[$F{process_definition_id}]]></textFieldExpression>
-            </textField>
-            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="120" y="0" width="200" height="12" />
-                <textFieldExpression><![CDATA[$F{next_step}]]></textFieldExpression>
-            </textField>
-            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="320" y="0" width="100" height="12" />
-                <textFieldExpression><![CDATA[$F{return_code}]]></textFieldExpression>
-            </textField>
-            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="420" y="0" width="380" height="12" />
-                <textFieldExpression><![CDATA[ApplicationException.codeToString($F{return_code})]]></textFieldExpression>
-            </textField>
-            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="800" y="0" width="150" height="12" />
-                <textFieldExpression><![CDATA[$P{timeFormatter}.formatDateTime($F{min_creation}, $P{timeZone}, $P{REPORT_LOCALE})]]></textFieldExpression>
-            </textField>
-            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="950" y="0" width="150" height="12" />
-                <textFieldExpression><![CDATA[$P{timeFormatter}.formatDateTime($F{max_creation}, $P{timeZone}, $P{REPORT_LOCALE})]]></textFieldExpression>
-            </textField>
-            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="1100" y="0" width="150" height="12" />
-                <textFieldExpression><![CDATA[$P{timeFormatter}.formatDateTime($F{min_yield_until}, $P{timeZone}, $P{REPORT_LOCALE})]]></textFieldExpression>
-            </textField>
-            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="1250" y="0" width="150" height="12" />
-                <textFieldExpression><![CDATA[$P{timeFormatter}.formatDateTime($F{max_yield_until}, $P{timeZone}, $P{REPORT_LOCALE})]]></textFieldExpression>
-            </textField>
-            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="1400" y="0" width="100" height="12" />
-                <textElement textAlignment="Right" />
-                <textFieldExpression><![CDATA[$F{cnt}]]></textFieldExpression>
-            </textField>
-        </band>
-    </detail>
+                order by  case when px.yield_until >= '2999-12-31 22:00:00' THEN 'WAITING' ELSE 'DUE' END, px.process_definition_id, px.next_step, px.return_code]]></query>
+	<field name="category" class="java.lang.String"/>
+	<field name="process_definition_id" class="java.lang.String"/>
+	<field name="next_step" class="java.lang.String"/>
+	<field name="return_code" class="java.lang.Integer"/>
+	<field name="min_creation" class="java.time.LocalDateTime"/>
+	<field name="max_creation" class="java.time.LocalDateTime"/>
+	<field name="min_yield_until" class="java.time.LocalDateTime"/>
+	<field name="max_yield_until" class="java.time.LocalDateTime"/>
+	<field name="cnt" class="java.lang.Integer"/>
+	<group name="group_by_cat">
+		<expression><![CDATA[$F{category}]]></expression>
+		<groupHeader>
+			<band height="24" splitType="Stretch">
+				<element kind="textField" uuid="e6daaf7c-0fda-42c8-b5ce-03cc041e972d" x="0" y="0" width="1500" height="24" fontSize="10.0" blankWhenNull="true" bold="true" hTextAlign="Left" vTextAlign="Bottom">
+					<expression><![CDATA["Yield-Category: " + $F{category}]]></expression>
+				</element>
+			</band>
+		</groupHeader>
+	</group>
+	<background splitType="Stretch"/>
+	<title height="20" splitType="Stretch">
+		<element kind="textField" uuid="093f3bac-955b-4564-ae59-1bedda85ba78" x="0" y="0" width="1500" height="20" fontSize="12.0" blankWhenNull="true" bold="true" hTextAlign="Center">
+			<expression><![CDATA["As Of: " + $P{timeFormatter}.formatDateTime($P{clientNow}, $P{timeZone}, $P{REPORT_LOCALE})]]></expression>
+		</element>
+	</title>
+	<columnHeader height="20" splitType="Stretch">
+		<element kind="textField" uuid="75a646d1-780d-4899-af37-ec7a9bc6c6e0" stretchType="ContainerHeight" x="0" y="0" width="120" height="20" textAdjust="StretchHeight" blankWhenNull="true" bold="true">
+			<expression><![CDATA["Workflow ID"]]></expression>
+		</element>
+		<element kind="textField" uuid="ff14d5e4-a9c9-4391-b652-a96beb4b9ea2" stretchType="ContainerHeight" x="120" y="0" width="200" height="20" textAdjust="StretchHeight" blankWhenNull="true" bold="true">
+			<expression><![CDATA["Next Step"]]></expression>
+		</element>
+		<element kind="textField" uuid="4584efaa-a8ca-42a1-87c7-62c90faf03c9" stretchType="ContainerHeight" x="320" y="0" width="100" height="20" textAdjust="StretchHeight" blankWhenNull="true" bold="true">
+			<expression><![CDATA["Return Code"]]></expression>
+		</element>
+		<element kind="textField" uuid="d1992193-ca0b-4316-bcea-5a2393326d07" stretchType="ContainerHeight" x="420" y="0" width="380" height="20" textAdjust="StretchHeight" blankWhenNull="true" bold="true">
+			<expression><![CDATA["Return Code Description"]]></expression>
+		</element>
+		<element kind="textField" uuid="a8688165-ae73-4196-88ca-0ab150be6959" stretchType="ContainerHeight" x="800" y="0" width="150" height="20" textAdjust="StretchHeight" blankWhenNull="true" bold="true">
+			<expression><![CDATA["Min. Creation"]]></expression>
+		</element>
+		<element kind="textField" uuid="07c59f7f-6a46-4d55-9d01-8123aa28ddb3" stretchType="ContainerHeight" x="950" y="0" width="150" height="20" textAdjust="StretchHeight" blankWhenNull="true" bold="true">
+			<expression><![CDATA["Max. Creation"]]></expression>
+		</element>
+		<element kind="textField" uuid="09945a87-4e5d-43ff-86da-f370e1954f68" stretchType="ContainerHeight" x="1100" y="0" width="150" height="20" textAdjust="StretchHeight" blankWhenNull="true" bold="true">
+			<expression><![CDATA["Min. Yield Until"]]></expression>
+		</element>
+		<element kind="textField" uuid="29f463d6-5c30-4100-986b-f2914251162b" stretchType="ContainerHeight" x="1250" y="0" width="150" height="20" textAdjust="StretchHeight" blankWhenNull="true" bold="true">
+			<expression><![CDATA["Max. Yield Until"]]></expression>
+		</element>
+		<element kind="textField" uuid="fa52fffa-caed-42d7-86f6-8ac8056ab70d" stretchType="ContainerHeight" x="1400" y="0" width="100" height="20" textAdjust="StretchHeight" blankWhenNull="true" bold="true" hTextAlign="Right">
+			<expression><![CDATA["Count"]]></expression>
+		</element>
+	</columnHeader>
+	<detail>
+		<band height="12" splitType="Prevent">
+			<element kind="textField" uuid="4bee5ed1-b07a-4131-a8e5-b3f9b0f7ab43" stretchType="ContainerHeight" x="0" y="0" width="120" height="12" textAdjust="StretchHeight" blankWhenNull="true">
+				<expression><![CDATA[$F{process_definition_id}]]></expression>
+			</element>
+			<element kind="textField" uuid="7f924f3d-7a0f-405a-9e6c-03aed712d98e" stretchType="ContainerHeight" x="120" y="0" width="200" height="12" textAdjust="StretchHeight" blankWhenNull="true">
+				<expression><![CDATA[$F{next_step}]]></expression>
+			</element>
+			<element kind="textField" uuid="db3d41ac-71e1-451a-8528-6103ad0e287c" stretchType="ContainerHeight" x="320" y="0" width="100" height="12" textAdjust="StretchHeight" blankWhenNull="true">
+				<expression><![CDATA[$F{return_code}]]></expression>
+			</element>
+			<element kind="textField" uuid="bd00eb6e-dfaa-4e01-a8f3-0d19896f5121" stretchType="ContainerHeight" x="420" y="0" width="380" height="12" textAdjust="StretchHeight" blankWhenNull="true">
+				<expression><![CDATA[ApplicationException.codeToString($F{return_code})]]></expression>
+			</element>
+			<element kind="textField" uuid="d02b759e-2add-4db0-b27c-483a83707b68" stretchType="ContainerHeight" x="800" y="0" width="150" height="12" textAdjust="StretchHeight" blankWhenNull="true">
+				<expression><![CDATA[$P{timeFormatter}.formatDateTime($F{min_creation}, $P{timeZone}, $P{REPORT_LOCALE})]]></expression>
+			</element>
+			<element kind="textField" uuid="3c81e9f0-d24b-4ca3-9981-e97ef16ed496" stretchType="ContainerHeight" x="950" y="0" width="150" height="12" textAdjust="StretchHeight" blankWhenNull="true">
+				<expression><![CDATA[$P{timeFormatter}.formatDateTime($F{max_creation}, $P{timeZone}, $P{REPORT_LOCALE})]]></expression>
+			</element>
+			<element kind="textField" uuid="e7e08c63-d7a9-4418-960f-f13c6da82a33" stretchType="ContainerHeight" x="1100" y="0" width="150" height="12" textAdjust="StretchHeight" blankWhenNull="true">
+				<expression><![CDATA[$P{timeFormatter}.formatDateTime($F{min_yield_until}, $P{timeZone}, $P{REPORT_LOCALE})]]></expression>
+			</element>
+			<element kind="textField" uuid="6c4942e5-ec5e-4e85-b8e6-18de64c17321" stretchType="ContainerHeight" x="1250" y="0" width="150" height="12" textAdjust="StretchHeight" blankWhenNull="true">
+				<expression><![CDATA[$P{timeFormatter}.formatDateTime($F{max_yield_until}, $P{timeZone}, $P{REPORT_LOCALE})]]></expression>
+			</element>
+			<element kind="textField" uuid="1ece32be-932a-4273-a7f6-9a9d5a1af9e6" stretchType="ContainerHeight" x="1400" y="0" width="100" height="12" textAdjust="StretchHeight" blankWhenNull="true" hTextAlign="Right">
+				<expression><![CDATA[$F{cnt}]]></expression>
+			</element>
+		</band>
+	</detail>
 </jasperReport>

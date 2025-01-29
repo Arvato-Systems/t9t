@@ -83,6 +83,14 @@
             <artifactId>t9t-core-api</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-ai-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-openai-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <scope>runtime</scope>

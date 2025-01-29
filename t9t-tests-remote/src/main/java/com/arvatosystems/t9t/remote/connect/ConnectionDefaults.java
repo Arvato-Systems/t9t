@@ -25,10 +25,13 @@ import com.arvatosystems.t9t.base.types.SessionParameters;
 
 import de.jpaw.bonaparte.core.BonaPortableFactory;
 import de.jpaw.util.ExceptionUtil;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 public class ConnectionDefaults {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionDefaults.class);
 
+    public static final String DEFAULT_SCHEMA       = "http";
     public static final String DEFAULT_HOST         = "localhost";      // override by system property HOST or environment variable
     public static final String DEFAULT_PORT         = "8024";           // override by system property PORT or environment variable
     public static final String DEFAULT_PORT_TCP     = "8023";           // override by system property PORT or environment variable
@@ -79,8 +82,8 @@ public class ConnectionDefaults {
      * Returns a configuration value, read from system property (highest prio), environment variable (second prio),
      * some property file, or a hardcoded last resort fallback.
      */
-    protected static String getConfigFromVariousSources(final String systemProperty, final String environmentProperty,
-      final String propFileValue, final String fallback) {
+    public static String getConfigFromVariousSources(@Nullable final String systemProperty, @Nullable final String environmentProperty,
+      @Nullable final String propFileValue, @Nullable final String fallback) {
         final String sysPropValue = System.getProperty(systemProperty);
         if (sysPropValue != null) {
             return sysPropValue;
@@ -93,6 +96,29 @@ public class ConnectionDefaults {
             return propFileValue;
         }
         return fallback;
+    }
+
+    /**
+     * Returns a configuration value, read from system property (highest prio), environment variable (second prio), or a hardcoded last resort fallback.
+     * In this case, the name of the environment variable is constructed from the property name.
+     */
+    public static String getConfigFromVariousSources(@Nonnull final String systemProperty, @Nullable final String fallback) {
+        final String environmentName = systemProperty.toUpperCase().replace('.', '_');
+        return getConfigFromVariousSources(systemProperty, environmentName, null, fallback);
+    }
+
+    /** Constructs the property prefix for the given endpoint, for environments with multiple server types / gateways. */
+    public static String getPropertyPrefix(final boolean isRest, @Nonnull final String endpoint) {
+        final String type = isRest ? "gateway." : "server.";
+        return type + endpoint + ".";
+    }
+
+    public static String getUrl(final boolean isRest, @Nonnull final String endpoint, final int defaultPort) {
+        final String prefix = getPropertyPrefix(isRest, endpoint);
+        final String host = getConfigFromVariousSources(prefix + "host", DEFAULT_HOST);
+        final String port = getConfigFromVariousSources(prefix + "port", Integer.toString(defaultPort));
+        final String schema = getConfigFromVariousSources(prefix + "schema", DEFAULT_SCHEMA);
+        return schema + "://" + host + ":" + port;
     }
 
     protected static String getInitialPassword() {

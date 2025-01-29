@@ -1,78 +1,55 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
-              name="Failed Transactions"
-              pageWidth="2100"
-              pageHeight="1200"
-              orientation="Landscape"
-              whenNoDataType="AllSectionsNoDetail"
-              columnWidth="2100"
-              leftMargin="0"
-              rightMargin="0"
-              topMargin="0"
-              bottomMargin="0"
-              whenResourceMissingType="Empty"
-              isIgnorePagination="true"
-              uuid="a6e73654-5723-4c23-8edd-6c59f3c29c6d">
-
-    <property name="net.sf.jasperreports.export.xls.detect.cell.type" value="true"/>
-    <import value="java.time.*"/>
-    <import value="de.jpaw.util.ApplicationException"/>
-
-    <parameter name="translator" class="com.arvatosystems.t9t.translation.be.TranslationProvider"/>
-    <parameter name="currencyFormatter" class="com.arvatosystems.t9t.a28rep.util.NumberFormatterCurrency"/>
-    <parameter name="timeFormatter" class="com.arvatosystems.t9t.rep.be.util.TimeFormatter"/>
-
-    <parameter name="timeZone" class="java.lang.String"/>
-    <parameter name="tenantId" class="java.lang.String"/>
-
-    <parameter name="clientNow" class="java.time.LocalDateTime" isForPrompting="false">
-        <defaultValueExpression><![CDATA[LocalDateTime.now()]]></defaultValueExpression>
-    </parameter>
-    <parameter name="dateFrom" class="java.time.LocalDateTime" isForPrompting="false">
-        <defaultValueExpression><![CDATA[LocalDateTime.of(2018,1,1,0,0)]]></defaultValueExpression>
-    </parameter>
-    <parameter name="dateTo" class="java.time.LocalDateTime" isForPrompting="false">
-        <defaultValueExpression><![CDATA[LocalDateTime.now()]]></defaultValueExpression>
-    </parameter>
-
-    <parameter name="includeRcList" class="java.lang.String" />
-    <parameter name="excludeRcList" class="java.lang.String" />
-    <parameter name="includeCatList" class="java.lang.String" />
-    <parameter name="excludeCatList" class="java.lang.String" />
-    <parameter name="includePqonList" class="java.lang.String" />
-    <parameter name="excludePqonList" class="java.lang.String" />
-    <parameter name="includeOriginList" class="java.lang.String" />
-    <parameter name="excludeOriginList" class="java.lang.String" />
-
-    <parameter name="includeRcClause" isForPrompting="false">
-        <defaultValueExpression><![CDATA[$P{includeRcList} == null ? "0 = 0" : "ms.return_code in ($P!{includeRcList})"]]></defaultValueExpression>
-    </parameter>
-    <parameter name="excludeRcClause" isForPrompting="false">
-        <defaultValueExpression><![CDATA[$P{excludeRcList} == null ? "0 = 0" : "ms.return_code not in ($P!{excludeRcList})"]]></defaultValueExpression>
-    </parameter>
-    <parameter name="includeCatClause" isForPrompting="false">
-        <defaultValueExpression><![CDATA[$P{includeCatList} == null ? "0 = 0" : "div(ms.return_code, 100000000) in ($P!{includeCatList})"]]></defaultValueExpression>
-    </parameter>
-    <parameter name="excludeCatClause" isForPrompting="false">
-        <defaultValueExpression><![CDATA[$P{excludeCatList} == null ? "0 = 0" : "div(ms.return_code, 100000000) not in ($P!{excludeCatList})"]]></defaultValueExpression>
-    </parameter>
-    <parameter name="includePqonClause" isForPrompting="false">
-        <defaultValueExpression><![CDATA[$P{includePqonList} == null ? "0 = 0" : "ms.request_parameter_pqon in ($P!{includePqonList})"]]></defaultValueExpression>
-    </parameter>
-    <parameter name="excludePqonClause" isForPrompting="false">
-        <defaultValueExpression><![CDATA[$P{excludePqonList} == null ? "0 = 0" : "ms.request_parameter_pqon not in ($P!{excludePqonList})"]]></defaultValueExpression>
-    </parameter>
-    <parameter name="includeOriginClause" isForPrompting="false">
-        <defaultValueExpression><![CDATA[$P{includeOriginList} == null ? "0 = 0" : "COALESCE(ms.transaction_origin_type,'-') in ($P!{includeOriginList})"]]></defaultValueExpression>
-    </parameter>
-    <parameter name="excludeOriginClause" isForPrompting="false">
-        <defaultValueExpression><![CDATA[$P{excludeOriginList} == null ? "0 = 0" : "COALESCE(ms.transaction_origin_type,'-') not in ($P!{excludeOriginList})"]]></defaultValueExpression>
-    </parameter>
-
-    <queryString>
-        <![CDATA[select   ms.execution_started_at as date,
+<!-- Created with Jaspersoft Studio version 7.0.1.final using JasperReports Library version 7.0.1-573496633c2b4074e32f433154b543003f7d2498  -->
+<jasperReport name="Failed Transactions" language="java" pageWidth="2100" pageHeight="1200" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="2100" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" whenResourceMissingType="Empty" uuid="a6e73654-5723-4c23-8edd-6c59f3c29c6d" ignorePagination="true">
+	<property name="net.sf.jasperreports.export.xls.detect.cell.type" value="true"/>
+	<import>de.jpaw.util.ApplicationException</import>
+	<import>java.time.*</import>
+	<parameter name="translator" class="com.arvatosystems.t9t.translation.be.TranslationProvider"/>
+	<parameter name="currencyFormatter" class="com.arvatosystems.t9t.a28rep.util.NumberFormatterCurrency"/>
+	<parameter name="timeFormatter" class="com.arvatosystems.t9t.rep.be.util.TimeFormatter"/>
+	<parameter name="timeZone" class="java.lang.String"/>
+	<parameter name="tenantId" class="java.lang.String"/>
+	<parameter name="clientNow" forPrompting="false" class="java.time.LocalDateTime">
+		<defaultValueExpression><![CDATA[LocalDateTime.now()]]></defaultValueExpression>
+	</parameter>
+	<parameter name="dateFrom" forPrompting="false" class="java.time.LocalDateTime">
+		<defaultValueExpression><![CDATA[LocalDateTime.of(2018,1,1,0,0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="dateTo" forPrompting="false" class="java.time.LocalDateTime">
+		<defaultValueExpression><![CDATA[LocalDateTime.now()]]></defaultValueExpression>
+	</parameter>
+	<parameter name="includeRcList" class="java.lang.String"/>
+	<parameter name="excludeRcList" class="java.lang.String"/>
+	<parameter name="includeCatList" class="java.lang.String"/>
+	<parameter name="excludeCatList" class="java.lang.String"/>
+	<parameter name="includePqonList" class="java.lang.String"/>
+	<parameter name="excludePqonList" class="java.lang.String"/>
+	<parameter name="includeOriginList" class="java.lang.String"/>
+	<parameter name="excludeOriginList" class="java.lang.String"/>
+	<parameter name="includeRcClause" forPrompting="false" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{includeRcList} == null ? "0 = 0" : "ms.return_code in ($P!{includeRcList})"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="excludeRcClause" forPrompting="false" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{excludeRcList} == null ? "0 = 0" : "ms.return_code not in ($P!{excludeRcList})"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="includeCatClause" forPrompting="false" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{includeCatList} == null ? "0 = 0" : "div(ms.return_code, 100000000) in ($P!{includeCatList})"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="excludeCatClause" forPrompting="false" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{excludeCatList} == null ? "0 = 0" : "div(ms.return_code, 100000000) not in ($P!{excludeCatList})"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="includePqonClause" forPrompting="false" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{includePqonList} == null ? "0 = 0" : "ms.request_parameter_pqon in ($P!{includePqonList})"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="excludePqonClause" forPrompting="false" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{excludePqonList} == null ? "0 = 0" : "ms.request_parameter_pqon not in ($P!{excludePqonList})"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="includeOriginClause" forPrompting="false" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{includeOriginList} == null ? "0 = 0" : "COALESCE(ms.transaction_origin_type,'-') in ($P!{includeOriginList})"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="excludeOriginClause" forPrompting="false" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{excludeOriginList} == null ? "0 = 0" : "COALESCE(ms.transaction_origin_type,'-') not in ($P!{excludeOriginList})"]]></defaultValueExpression>
+	</parameter>
+	<query language="sql"><![CDATA[select   ms.execution_started_at as date,
                           ms.request_parameter_pqon,
                           ms.object_ref,
                           ms.essential_key,
@@ -93,159 +70,89 @@
                 and       $P!{excludeOriginClause}
                 and       ms.execution_started_at >= $P{dateFrom}
                 and       ms.execution_started_at <  $P{dateTo}
-                order by  date asc]]>
-    </queryString>
-
-    <field name="date"                      class="java.time.LocalDateTime"/>
-    <field name="request_parameter_pqon"    class="java.lang.String"/>
-    <field name="object_ref"                class="java.lang.String"/>
-    <field name="essential_key"             class="java.lang.String"/>
-    <field name="transaction_origin_type"   class="java.lang.String"/>
-    <field name="user_id"                   class="java.lang.String"/>
-    <field name="return_code"               class="java.lang.Integer"/>
-    <field name="error_details"             class="java.lang.String"/>
-    <field name="rerun_by_process_ref"      class="java.lang.String"/>
-
-    <background>
-        <band splitType="Stretch"/>
-    </background>
-
-    <title>
-        <band height="20" splitType="Stretch">
-            <textField isBlankWhenNull="true">
-                <reportElement x="0" y="0" width="2100" height="20" />
-                <textElement textAlignment="Center">
-                    <font size="12" isBold="true"/>
-                </textElement>
-                <textFieldExpression>
-                    <![CDATA["Date From: "
+                order by  date asc]]></query>
+	<field name="date" class="java.time.LocalDateTime"/>
+	<field name="request_parameter_pqon" class="java.lang.String"/>
+	<field name="object_ref" class="java.lang.String"/>
+	<field name="essential_key" class="java.lang.String"/>
+	<field name="transaction_origin_type" class="java.lang.String"/>
+	<field name="user_id" class="java.lang.String"/>
+	<field name="return_code" class="java.lang.Integer"/>
+	<field name="error_details" class="java.lang.String"/>
+	<field name="rerun_by_process_ref" class="java.lang.String"/>
+	<background splitType="Stretch"/>
+	<title height="20" splitType="Stretch">
+		<element kind="textField" uuid="379f1cb4-ffe7-4201-958a-4942ca1dfdc7" x="0" y="0" width="2100" height="20" fontSize="12.0" blankWhenNull="true" bold="true" hTextAlign="Center">
+			<expression><![CDATA["Date From: "
                       + $P{timeFormatter}.formatDateTime($P{dateFrom}, $P{timeZone}, $P{REPORT_LOCALE}) + " - "
                       + "Date To: "
-                      + $P{timeFormatter}.formatDateTime($P{dateTo}, $P{timeZone}, $P{REPORT_LOCALE})
-                    ]]>
-                </textFieldExpression>
-            </textField>
-        </band>
-    </title>
-
-    <columnHeader>
-        <band height="20" splitType="Stretch">
-            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="000" y="0" width="120" height="20" />
-                <textElement>
-                    <font isBold="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA["Record Created"]]></textFieldExpression>
-            </textField>
-            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="120" y="0" width="360" height="20" />
-                <textElement>
-                    <font isBold="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA["Request"]]></textFieldExpression>
-            </textField>
-            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="480" y="0" width="120" height="20" />
-                <textElement>
-                    <font isBold="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA["Process Reference"]]></textFieldExpression>
-            </textField>
-            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="600" y="0" width="120" height="20" />
-                <textElement>
-                    <font isBold="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA["Business Object"]]></textFieldExpression>
-            </textField>
-            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="720" y="0" width="120" height="20" />
-                <textElement>
-                    <font isBold="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA["Initiator"]]></textFieldExpression>
-            </textField>
-            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="840" y="0" width="100" height="20" />
-                <textElement>
-                    <font isBold="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA["User Id"]]></textFieldExpression>
-            </textField>
-            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="940" y="0" width="120" height="20" />
-                <textElement>
-                    <font isBold="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA["Error Code"]]></textFieldExpression>
-            </textField>
-            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="1060" y="0" width="360" height="20" />
-                <textElement>
-                    <font isBold="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA["Error Meaning"]]></textFieldExpression>
-            </textField>
-            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="1420" y="0" width="600" height="20" />
-                <textElement>
-                    <font isBold="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA["Error Details"]]></textFieldExpression>
-            </textField>
-            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="2020" y="0" width="80" height="20" />
-                <textElement>
-                    <font isBold="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA["Rerun?"]]></textFieldExpression>
-            </textField>
-
-        </band>
-    </columnHeader>
-
-    <detail>
-        <band height="12" splitType="Prevent">
-            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="000" y="0" width="120" height="12" />
-                <textFieldExpression><![CDATA[$P{timeFormatter}.formatDateTime($F{date}, $P{timeZone}, $P{REPORT_LOCALE})]]></textFieldExpression>
-            </textField>
-            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="120" y="0" width="360" height="12" />
-                <textFieldExpression><![CDATA[$F{request_parameter_pqon}]]></textFieldExpression>
-            </textField>
-            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="480" y="0" width="120" height="12" />
-                <textFieldExpression><![CDATA[$F{object_ref} != null ? $F{object_ref} : ""]]></textFieldExpression>
-            </textField>
-            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="600" y="0" width="120" height="12" />
-                <textFieldExpression><![CDATA[$F{essential_key}]]></textFieldExpression>
-            </textField>
-            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="720" y="0" width="120" height="12" />
-                <textFieldExpression><![CDATA[$F{transaction_origin_type}]]></textFieldExpression>
-            </textField>
-            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="840" y="0" width="100" height="12" />
-                <textFieldExpression><![CDATA[$F{user_id}]]></textFieldExpression>
-            </textField>
-            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="940" y="0" width="120" height="12" />
-                <textFieldExpression><![CDATA[$F{return_code}]]></textFieldExpression>
-            </textField>
-            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="1060" y="0" width="360" height="12" />
-                <textFieldExpression><![CDATA[ApplicationException.codeToString($F{return_code})]]></textFieldExpression>
-            </textField>
-            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="1420" y="0" width="600" height="12" />
-                <textFieldExpression><![CDATA[$F{error_details}]]></textFieldExpression>
-            </textField>
-            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="2020" y="0" width="80" height="12" />
-                <textFieldExpression><![CDATA[$F{rerun_by_process_ref}]]></textFieldExpression>
-            </textField>
-        </band>
-    </detail>
+                      + $P{timeFormatter}.formatDateTime($P{dateTo}, $P{timeZone}, $P{REPORT_LOCALE})]]></expression>
+		</element>
+	</title>
+	<columnHeader height="20" splitType="Stretch">
+		<element kind="textField" uuid="13e2f5d7-fba6-410f-a33d-a2b4c44e32a8" stretchType="ContainerHeight" x="0" y="0" width="120" height="20" textAdjust="StretchHeight" blankWhenNull="true" bold="true">
+			<expression><![CDATA["Record Created"]]></expression>
+		</element>
+		<element kind="textField" uuid="e5d276a3-05bb-42d3-b93a-a5c87935fc22" stretchType="ContainerHeight" x="120" y="0" width="360" height="20" textAdjust="StretchHeight" blankWhenNull="true" bold="true">
+			<expression><![CDATA["Request"]]></expression>
+		</element>
+		<element kind="textField" uuid="9ef5bc3e-b25a-4c5e-8605-2d5d82107ce0" stretchType="ContainerHeight" x="480" y="0" width="120" height="20" textAdjust="StretchHeight" blankWhenNull="true" bold="true">
+			<expression><![CDATA["Process Reference"]]></expression>
+		</element>
+		<element kind="textField" uuid="600f9d7e-193d-4435-8be2-3be3fe6d3b61" stretchType="ContainerHeight" x="600" y="0" width="120" height="20" textAdjust="StretchHeight" blankWhenNull="true" bold="true">
+			<expression><![CDATA["Business Object"]]></expression>
+		</element>
+		<element kind="textField" uuid="cf67a070-f0f7-4a03-ad50-63cfe5f780ff" stretchType="ContainerHeight" x="720" y="0" width="120" height="20" textAdjust="StretchHeight" blankWhenNull="true" bold="true">
+			<expression><![CDATA["Initiator"]]></expression>
+		</element>
+		<element kind="textField" uuid="e02d8dcf-c3a9-4b79-b899-5f8db6708317" stretchType="ContainerHeight" x="840" y="0" width="100" height="20" textAdjust="StretchHeight" blankWhenNull="true" bold="true">
+			<expression><![CDATA["User Id"]]></expression>
+		</element>
+		<element kind="textField" uuid="7d2df927-6c60-4b57-87fe-396f54984901" stretchType="ContainerHeight" x="940" y="0" width="120" height="20" textAdjust="StretchHeight" blankWhenNull="true" bold="true">
+			<expression><![CDATA["Error Code"]]></expression>
+		</element>
+		<element kind="textField" uuid="dbad0dc9-1ed9-43f4-8310-acd7c972722a" stretchType="ContainerHeight" x="1060" y="0" width="360" height="20" textAdjust="StretchHeight" blankWhenNull="true" bold="true">
+			<expression><![CDATA["Error Meaning"]]></expression>
+		</element>
+		<element kind="textField" uuid="8e259d17-3fda-438b-a1ee-fb8af77f28b0" stretchType="ContainerHeight" x="1420" y="0" width="600" height="20" textAdjust="StretchHeight" blankWhenNull="true" bold="true">
+			<expression><![CDATA["Error Details"]]></expression>
+		</element>
+		<element kind="textField" uuid="75f42772-2e6d-444c-a3a4-0e78ecf87c98" stretchType="ContainerHeight" x="2020" y="0" width="80" height="20" textAdjust="StretchHeight" blankWhenNull="true" bold="true">
+			<expression><![CDATA["Rerun?"]]></expression>
+		</element>
+	</columnHeader>
+	<detail>
+		<band height="12" splitType="Prevent">
+			<element kind="textField" uuid="b04e25a7-523a-47f0-befb-1b27e4f57d1d" stretchType="ContainerHeight" x="0" y="0" width="120" height="12" textAdjust="StretchHeight" blankWhenNull="true">
+				<expression><![CDATA[$P{timeFormatter}.formatDateTime($F{date}, $P{timeZone}, $P{REPORT_LOCALE})]]></expression>
+			</element>
+			<element kind="textField" uuid="81c97926-5776-4e37-9ff0-6917f9b54adc" stretchType="ContainerHeight" x="120" y="0" width="360" height="12" textAdjust="StretchHeight" blankWhenNull="true">
+				<expression><![CDATA[$F{request_parameter_pqon}]]></expression>
+			</element>
+			<element kind="textField" uuid="1ceaef35-eba6-455b-b0c7-0e1b42398436" stretchType="ContainerHeight" x="480" y="0" width="120" height="12" textAdjust="StretchHeight" blankWhenNull="true">
+				<expression><![CDATA[$F{object_ref} != null ? $F{object_ref} : ""]]></expression>
+			</element>
+			<element kind="textField" uuid="df76c7bd-8067-4c6a-a805-29c37b290002" stretchType="ContainerHeight" x="600" y="0" width="120" height="12" textAdjust="StretchHeight" blankWhenNull="true">
+				<expression><![CDATA[$F{essential_key}]]></expression>
+			</element>
+			<element kind="textField" uuid="52a14800-6688-489a-a8ea-4eeef73e95ff" stretchType="ContainerHeight" x="720" y="0" width="120" height="12" textAdjust="StretchHeight" blankWhenNull="true">
+				<expression><![CDATA[$F{transaction_origin_type}]]></expression>
+			</element>
+			<element kind="textField" uuid="1accb04b-c1c1-4432-b8a2-d1e5bfb81e8b" stretchType="ContainerHeight" x="840" y="0" width="100" height="12" textAdjust="StretchHeight" blankWhenNull="true">
+				<expression><![CDATA[$F{user_id}]]></expression>
+			</element>
+			<element kind="textField" uuid="fe693ed3-14b4-4e37-9a12-041fc13c2582" stretchType="ContainerHeight" x="940" y="0" width="120" height="12" textAdjust="StretchHeight" blankWhenNull="true">
+				<expression><![CDATA[$F{return_code}]]></expression>
+			</element>
+			<element kind="textField" uuid="c0850c24-2541-4466-b155-bbf6b4f81da1" stretchType="ContainerHeight" x="1060" y="0" width="360" height="12" textAdjust="StretchHeight" blankWhenNull="true">
+				<expression><![CDATA[ApplicationException.codeToString($F{return_code})]]></expression>
+			</element>
+			<element kind="textField" uuid="4b1c6388-c397-4f96-9ae7-e6e1dddcbd49" stretchType="ContainerHeight" x="1420" y="0" width="600" height="12" textAdjust="StretchHeight" blankWhenNull="true">
+				<expression><![CDATA[$F{error_details}]]></expression>
+			</element>
+			<element kind="textField" uuid="69d80523-da7d-4464-8969-acb051e460e8" stretchType="ContainerHeight" x="2020" y="0" width="80" height="12" textAdjust="StretchHeight" blankWhenNull="true">
+				<expression><![CDATA[$F{rerun_by_process_ref}]]></expression>
+			</element>
+		</band>
+	</detail>
 </jasperReport>

@@ -101,6 +101,7 @@ package (com.arvatosystems) t9t.ai.openai {
         OBJECT                  = "object",
         LIST                    = "list",
         FILE                    = "file",
+        MODEL                   = "model",
         CHAT_COMPLETION         = "chat.completion",
         EMBEDDING               = "embedding",
         ASSISTANT               = "assistant",
@@ -138,6 +139,16 @@ package (com.arvatosystems) t9t.ai.openai {
         HIGH                    = "high"
     }
 
+    final class OpenAIModel {
+        required enum OpenAIObjectType              ^object;    // model
+        required openaiModel                        id;         // gpt-4o
+        required Instant                            created;    // UNIX timestamp
+        optional shortText                          ownedBy;    // openai for internal models, else creator of finetuned one
+    }
+    final class OpenAIModelList extends AbstractOpenAIObject {
+        required (OpenAIModel) List<>              data;       // list of models (no pagination) (if any)
+    }
+
     final class OpenAIQueryParameters {
         optional Integer                           limit;       // maximum number of results to retrieve
         optional Enum OpenAISortOrderType          order;       // ascending or descending (default) by creation date
@@ -162,10 +173,15 @@ package (com.arvatosystems) t9t.ai.openai {
         required enum OpenAIObjectType              ^object;
     }
 
+    /** Result objects of list type have information, variant without pagination. */
+    abstract class OpenAIListObject<T> extends AbstractOpenAIObject {
+        required (!T) List<>                        data;
+    }
+
     /** Common superclass of the newer OpenAI assistants v2 beta. Related objects always provide an ID and a creation timestamp. */
     abstract class AbstractOpenAIObjectWithId extends AbstractOpenAIObject {
         required openaiId                           id;
-        required Instant                            createdAt;
+        required Instant                            createdAt;      // sometimes it's createdAt, sometimes just created :-(
     }
 
     /** Result objects of list type have information for pagination. */
