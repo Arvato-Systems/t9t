@@ -88,6 +88,7 @@ public class T9tException extends ApplicationException {
     public static final int NO_SUCH_REQUEST = OFFSET_DENIED + 44;
     public static final int UPDATE_DECLINED = OFFSET_DENIED + 45;
     public static final int NO_IMPLEMENTATION_FOR_SPECIFIED_QUALIFIER = OFFSET + 46;
+    public static final int ATTEMPT_TO_CHANGE_FROZEN_FIELD = OFFSET_LOGIC_ERROR + 47;
 
     public static final int STALLED_LOG_WRITER = OFFSET_TIMEOUT + 50;
     public static final int REQUEST_HANDLER_RETURNED_NULL = OFFSET_LOGIC_ERROR + 51;
@@ -455,6 +456,7 @@ public class T9tException extends ApplicationException {
         registerCode(NO_SUCH_REQUEST, "Request not received or not yet complete");
         registerCode(UPDATE_DECLINED, "Data record is modified. Update is declined.");
         registerCode(NO_IMPLEMENTATION_FOR_SPECIFIED_QUALIFIER, "There is no implementation for the specified qualifier");
+        registerCode(ATTEMPT_TO_CHANGE_FROZEN_FIELD, "Attempt to change a field which is frozen");
 
         registerCode(JWT_EXPIRED, MSG_JWT_EXPIRED);
         registerCode(JWT_TIMING,  "The JWT has unplausible time information");

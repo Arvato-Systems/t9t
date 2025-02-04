@@ -32,4 +32,5 @@ public interface ICamelService {
 
     /** Invoked to initialize the configured routes. */
     void initializeRoutes(CamelContext camelContext);
+    void initAfterContextCreation(CamelContext camelContext);
 }

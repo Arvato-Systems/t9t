@@ -71,7 +71,7 @@
         <maven-enforcer-plugin.version>3.5.0</maven-enforcer-plugin.version>
         <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
         <owasp-maven-plugin.version>7.2.1</owasp-maven-plugin.version>
-        <spring-boot-maven-plugin.version>3.4.1</spring-boot-maven-plugin.version>
+        <spring-boot-maven-plugin.version>3.4.2</spring-boot-maven-plugin.version>
         <tycho.version>4.0.8</tycho.version>
         <git-commit-id-plugin.version>8.0.2</git-commit-id-plugin.version>
         <jaxws-maven-plugin.version>4.0.3</jaxws-maven-plugin.version>
@@ -1113,6 +1113,7 @@
                 <module>t9t-tests-doc</module>
                 <module>t9t-tests-all</module>
                 <module>t9t-tests-remote</module>
+                <module>t9t-tests-remote-apiext</module>
                 <module>t9t-microbenchmarks</module>
 
 
@@ -1382,7 +1383,7 @@
                 <module>t9t-tests-doc</module>
                 <module>t9t-tests-all</module>
                 <module>t9t-tests-remote</module>
-
+                <module>t9t-tests-remote-apiext</module>
 
                 <module>t9t-tests-embedded</module>
                 <module>t9t-tests-unit</module>

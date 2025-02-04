@@ -136,11 +136,6 @@ public class ConnectionDefaults {
     protected static String getInitialRestUrl() {
         return getConfigFromVariousSources("rest.url",              "RESTURL",      PROPERTY_REST_URL,    DEFAULT_REST_URL);
     }
-    protected static boolean getSSLCertVerification() {
-        return "Y".equals(
-                getConfigFromVariousSources("t9t.restapi.verify",   "VERIFY",       PROPERTY_REST_VERIFY, DEFAULT_REST_VERIFY)
-        );
-    }
 
     /** Checkstyle wants at least one instance method or complains about constructors. */
     public void justToAvoidCheckStyleError() {

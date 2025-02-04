@@ -77,20 +77,4 @@ public final class JacksonTools {
     public static ObjectMapper createObjectMapper() {
         return createObjectMapper(ALSO_NULLS_DEFAULT, FAIL_ON_UNKNOWN_PROPERTIES_DEFAULT);
     }
-
-    @Deprecated(forRemoval = true, since = "6.4")
-    public static ObjectMapper createJacksonMapperForExports(final boolean writeNulls) {
-        return createObjectMapper(writeNulls, FAIL_ON_UNKNOWN_PROPERTIES_DEFAULT);
-    }
-
-    @Deprecated(forRemoval = true, since = "6.4")
-    public static ObjectMapper createJacksonMapperForExports(final boolean writeNulls, final boolean failOnUnkownProperties) {
-        return createObjectMapper(writeNulls, failOnUnkownProperties);
-    }
-
-    @Deprecated(forRemoval = true, since = "6.4")
-    public static ObjectMapper createJacksonMapperForImports() {
-        return createObjectMapper(ALSO_NULLS_DEFAULT, FAIL_ON_UNKNOWN_PROPERTIES_DEFAULT);
-    }
-
 }
