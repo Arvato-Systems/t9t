@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.batch.jpa.mapping.impl
+package com.arvatosystems.t9t.changeRequest.jpa.mapping.impl
 
 import com.arvatosystems.t9t.annotations.jpa.AutoHandler
 import com.arvatosystems.t9t.annotations.jpa.active.AutoMap42
@@ -26,6 +26,6 @@ class ChangeWorkFlowConfigMappers {
 
     IChangeWorkFlowConfigEntityResolver entityResolver
 
-    @AutoHandler("CSP42")
+    @AutoHandler("SP42")
     def void e2dChangeWorkFlowConfigDTO(ChangeWorkFlowConfigEntity entity, ChangeWorkFlowConfigDTO dto) { }
 }

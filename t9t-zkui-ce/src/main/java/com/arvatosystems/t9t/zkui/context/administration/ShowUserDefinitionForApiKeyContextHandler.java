@@ -32,6 +32,6 @@ public class ShowUserDefinitionForApiKeyContextHandler implements IGridContextMe
     @Override
     public void selected(final Grid28 lb, final DataWithTracking<ApiKeyDTO, TrackingBase> dwt) {
         final ApiKeyDTO dto = dwt.getData();
-        JumpTool.jump("screens/user_admin/user28.zul", "objectRef", dto.getUserRef().getObjectRef(), "screens/user_admin/apiKey28.zul");
+        JumpTool.jump("screens/user_admin/user28.zul", "objectRef", dto.getUserRef().getObjectRef(), "screens/user_admin/apikey28.zul");
     }
 }

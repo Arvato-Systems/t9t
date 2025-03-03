@@ -15,6 +15,9 @@
  */
 package com.arvatosystems.t9t.base.jpa.impl;
 
+import com.arvatosystems.t9t.base.types.LongKey;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.EntityManager;
 
 import com.arvatosystems.t9t.base.T9tException;
@@ -30,6 +33,8 @@ import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
 import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.util.ApplicationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractCrudLongKeyRequestHandler<
   DTO extends BonaPortable,
@@ -37,6 +42,7 @@ public abstract class AbstractCrudLongKeyRequestHandler<
   REQUEST extends CrudLongKeyRequest<DTO, TRACKING>,
   ENTITY extends BonaPersistableKey<Long> & BonaPersistableTracking<TRACKING>
 > extends AbstractCrudAnyKeyRequestHandler<Long, DTO, TRACKING, REQUEST, ENTITY> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCrudLongKeyRequestHandler.class);
 
     // execute function of the interface description, but additional parameters
     // required in order to work around type erasure
@@ -49,6 +55,22 @@ public abstract class AbstractCrudLongKeyRequestHandler<
         final CrudLongKeyResponse<DTO, TRACKING> rs = new CrudLongKeyResponse<>();
         rs.setReturnCode(0);
         ENTITY result;
+
+        // If changeRequestRef is not null, it means the request is for activation of a change request which was saved in the approval work flow.
+        if (crudRequest.getChangeRequestRef() != null) {
+            validateChangeRequest(ctx, crudRequest, getLongKey(crudRequest));
+            // If the change request is valid, then just treat as a normal crud request to apply changes...
+        } else {
+            final DTO dto = getRequestDTO(crudRequest, () -> crudRequest.getKey() != null ? mapper.mapToDto(crudRequest.getKey()) : null);
+            final String pqon = dto.ret$PQON();
+            // If the crudRequest requires approval, then create change request and then return the response.
+            if (requestRequiresApproval(crudRequest.getCrud(), pqon)) {
+                LOGGER.debug("Request requires approval, creating change request");
+                requestForApproval(ctx, rs, crudRequest, pqon, crudRequest.getKey() != null ? new LongKey(crudRequest.getKey()) : null, dto);
+                rs.setKey(crudRequest.getKey());
+                return rs;
+            }
+        }
 
         final EntityManager entityManager = jpaContextProvider.get().getEntityManager(); // copy it as we need it several times
 
@@ -113,5 +135,10 @@ public abstract class AbstractCrudLongKeyRequestHandler<
         } catch (final ApplicationException e) {
             throw new T9tException(T9tException.ENTITY_DATA_MAPPING_EXCEPTION, "Tracking columns: " + e.toString());
         }
+    }
+
+    @Nullable
+    protected LongKey getLongKey(@Nonnull final REQUEST crudRequest) {
+        return crudRequest.getKey() != null ? new LongKey(crudRequest.getKey()) : null;
     }
 }

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?page automaticTimeout="true"?>
 <?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="IGNORE"?>
 <?xel-method prefix="l" name="translateDefault" class="com.arvatosystems.t9t.zkui.util.ZulUtils" signature="String translate(String)"?>
 <?xel-method prefix="l" name="translate" class="com.arvatosystems.t9t.zkui.util.ZulUtils" signature="String translate(String, String)"?>

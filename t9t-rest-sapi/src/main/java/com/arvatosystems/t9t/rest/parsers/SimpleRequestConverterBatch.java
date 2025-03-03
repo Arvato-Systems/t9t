@@ -10,15 +10,13 @@ import org.slf4j.LoggerFactory;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.request.AutonomousCollectionRequest;
 
-import de.jpaw.bonaparte.core.BonaPortable;
-
 /**
  * Converts a list of elements with the help of a given request parameter converter into a single request.
  *
- * @param <T> extends {@link BonaPortable} - type of input data
+ * @param <T> the type of input data
  * @param <R> extends {@link RequestParameters} - type of output data
  */
-public class SimpleRequestConverterBatch<T extends BonaPortable, R extends RequestParameters> implements Function<List<T>, R> {
+public class SimpleRequestConverterBatch<T, R extends RequestParameters> implements Function<List<T>, R> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SimpleRequestConverterBatch.class);
 
@@ -44,5 +42,4 @@ public class SimpleRequestConverterBatch<T extends BonaPortable, R extends Reque
         inputData.forEach(input -> requests.add(this.requestParameterConverter.apply(input)));
         return (R) new AutonomousCollectionRequest(requests);
     }
-
 }

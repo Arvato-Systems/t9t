@@ -41,6 +41,11 @@ import com.arvatosystems.t9t.bucket.request.BucketCounterCrudRequest;
 import com.arvatosystems.t9t.bucket.request.BucketCounterSearchRequest;
 import com.arvatosystems.t9t.bucket.request.BucketEntryCrudRequest;
 import com.arvatosystems.t9t.bucket.request.BucketEntrySearchRequest;
+import com.arvatosystems.t9t.changeRequest.ChangeWorkFlowConfigDTO;
+import com.arvatosystems.t9t.changeRequest.DataChangeRequestExtendedDTO;
+import com.arvatosystems.t9t.changeRequest.request.ChangeWorkFlowConfigCrudRequest;
+import com.arvatosystems.t9t.changeRequest.request.ChangeWorkFlowConfigSearchRequest;
+import com.arvatosystems.t9t.changeRequest.request.DataChangeRequestExtendedSearchRequest;
 import com.arvatosystems.t9t.core.request.CannedRequestCrudRequest;
 import com.arvatosystems.t9t.core.request.CannedRequestSearchRequest;
 import com.arvatosystems.t9t.core.request.ComponentInfoSearchRequest;
@@ -58,6 +63,7 @@ import com.arvatosystems.t9t.updates.UpdateStatusDTO;
 import com.arvatosystems.t9t.updates.UpdateStatusLogDTO;
 import com.arvatosystems.t9t.updates.request.UpdateStatusLogSearchRequest;
 import com.arvatosystems.t9t.updates.request.UpdateStatusSearchRequest;
+
 import de.jpaw.bonaparte.pojos.api.NoTracking;
 
 public final class T9tCoreModels implements IViewModelContainer {
@@ -146,6 +152,18 @@ public final class T9tCoreModels implements IViewModelContainer {
         WriteTracking.BClass.INSTANCE,
         RecordEventsSearchRequest.BClass.INSTANCE,
         RecordEventsCrudRequest.BClass.INSTANCE);
+    private static final CrudViewModel<ChangeWorkFlowConfigDTO, FullTrackingWithVersion> CHANGE_WORK_FLOW_CONFIG_VIEW_MODEL
+      = new CrudViewModel<>(
+        ChangeWorkFlowConfigDTO.BClass.INSTANCE,
+        FullTrackingWithVersion.BClass.INSTANCE,
+        ChangeWorkFlowConfigSearchRequest.BClass.INSTANCE,
+        ChangeWorkFlowConfigCrudRequest.BClass.INSTANCE);
+    private static final CrudViewModel<DataChangeRequestExtendedDTO, FullTrackingWithVersion> DATA_CHANGE_REQUEST_EXTENDED_VIEW_MODEL
+      = new CrudViewModel<>(
+        DataChangeRequestExtendedDTO.BClass.INSTANCE,
+        FullTrackingWithVersion.BClass.INSTANCE,
+        DataChangeRequestExtendedSearchRequest.BClass.INSTANCE,
+        null);
 
     @Override
     public void register() {
@@ -163,5 +181,7 @@ public final class T9tCoreModels implements IViewModelContainer {
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("updateStatus",     UPDATE_STATUS_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("updateStatusLog",  UPDATE_STATUS_LOG_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("recordEvents",     RECORD_EVENTS_VIEW_MODEL);
+        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("changeWorkFlowConfig", CHANGE_WORK_FLOW_CONFIG_VIEW_MODEL);
+        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("dataChangeRequestExtended", DATA_CHANGE_REQUEST_EXTENDED_VIEW_MODEL);
     }
 }

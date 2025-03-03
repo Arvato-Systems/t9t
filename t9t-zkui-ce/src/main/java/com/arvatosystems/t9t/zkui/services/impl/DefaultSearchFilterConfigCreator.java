@@ -203,6 +203,12 @@ public class DefaultSearchFilterConfigCreator implements ISearchFilterConfigCrea
             return allowedTypes;
         }
 
+        // LIKE is only allowed for multi dropdown
+        if (hasProperty(column, Constants.UiFieldProperties.MULTI_DROPDOWN)) {
+            allowedTypes.add(UIFilterType.LIKE.name());
+            return allowedTypes;
+        }
+
         for (UIFilterType type : UIFilterType.values()) {
             // all other types except String: "LIKE" filter is not allowed
             if (type.equals(UIFilterType.LIKE) && !isStringType(column)) {

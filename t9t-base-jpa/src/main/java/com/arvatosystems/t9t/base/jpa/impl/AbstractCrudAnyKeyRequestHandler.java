@@ -17,7 +17,16 @@ package com.arvatosystems.t9t.base.jpa.impl;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.function.Supplier;
 
+import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.auth.PermissionType;
+import com.arvatosystems.t9t.base.services.IDataChangeRequestFlow;
+import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.server.services.IAuthorize;
+import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceException;
 
@@ -54,6 +63,8 @@ public abstract class AbstractCrudAnyKeyRequestHandler<
 
     protected final Provider<PersistenceProviderJPA> jpaContextProvider = Jdp.getProvider(PersistenceProviderJPA.class);
     protected final List<IJpaCrudTechnicalExceptionMapper> crudTechnicalExceptionMappers = Jdp.getAll(IJpaCrudTechnicalExceptionMapper.class);
+    protected final IDataChangeRequestFlow changeRequestFlow = Jdp.getRequired(IDataChangeRequestFlow.class);
+    protected final IAuthorize authorizer = Jdp.getRequired(IAuthorize.class);
 
     @Override
     public boolean isReadOnly(final REQUEST params) {
@@ -260,6 +271,87 @@ public abstract class AbstractCrudAnyKeyRequestHandler<
             return entity;
         } else {
             return performUpdate(mapper, resolver, crudRequest, entityManager, key, entity);
+        }
+    }
+
+    /**
+     * Check if the CRUD operation type needed approval before applying the change.
+     *
+     * @param crud {@link OperationType}
+     * @param pqon the PQON of the entity
+     * @return true if the operation needs approval, false otherwise
+     */
+    protected boolean requestRequiresApproval(@Nonnull final OperationType crud, @Nonnull final String pqon) {
+        return T9tConstants.OPERATION_TYPE_WRITE.contains(crud) && changeRequestFlow.requireApproval(pqon, crud);
+    }
+
+    /**
+     * Create a data change request for the CRUD operation.
+     *
+     * @param ctx           the request context
+     * @param response      the response object of the main CRUD request
+     * @param crudRequest   the CRUD request
+     * @param pqon          the PQON of the DTO
+     * @param key           the key for which the data change request is created
+     * @param dto           the data to be changed
+     */
+    @SuppressWarnings("unchecked")
+    protected void requestForApproval(@Nonnull final RequestContext ctx, @Nonnull final CrudAnyKeyResponse<DTO, TRACKING> response,
+        @Nonnull final REQUEST crudRequest, @Nonnull final String pqon, @Nullable final BonaPortable key, @Nonnull final DTO dto) {
+        if (crudRequest.getChangeId() == null) {
+            throw new T9tException(T9tException.MISSING_CHANGE_ID, "ChangeId is required for approval request");
+        }
+        if (OperationType.INACTIVATE == crudRequest.getCrud() || OperationType.ACTIVATE == crudRequest.getCrud()) {
+            // modify the crud request as an UPDATE request for inactivate/activate
+            final DTO data = (DTO) dto.ret$MutableClone(true, false);
+            data.put$Active(OperationType.ACTIVATE == crudRequest.getCrud());
+            crudRequest.setCrud(OperationType.UPDATE);
+            crudRequest.setData(data);
+        }
+        final Long changeRequestRef = changeRequestFlow.createDataChangeRequest(ctx, pqon, crudRequest.getChangeId(), key, crudRequest,
+                crudRequest.getChangeComment(), crudRequest.getSubmitChange());
+        response.setChangeRequestRef(changeRequestRef);
+        if (crudRequest.getCrud() != OperationType.DELETE) {
+            // only send data without tracking fields
+            response.setData(crudRequest.getData());
+        }
+    }
+
+    /**
+     * Get the request DTO from the CRUD request. If the data is not null, return it directly. Otherwise, get the DTO from the supplier.
+     *
+     * @param crudRequest   the CRUD request
+     * @param dtoSupplier   the supplier to get the DTO
+     * @return the request DTO
+     */
+    protected DTO getRequestDTO(@Nonnull final REQUEST crudRequest, @Nonnull final Supplier<DTO> dtoSupplier) {
+        if (crudRequest.getData() != null) {
+            return crudRequest.getData();
+        }
+        DTO dto = dtoSupplier.get();
+        if (dto == null) {
+            LOGGER.error("Unable to found data for the CRUD request!. Request: {}", crudRequest);
+            throw new T9tException(T9tException.MISSING_DATA_FOR_CHANGE_REQUEST, "Unable to found data for the CRUD request!");
+        }
+        return dto;
+    }
+
+    /**
+     * Validate the change request before applying it.
+     *
+     * @param ctx           the request context
+     * @param crudRequest   the CRUD request
+     * @param key           the key of the entity
+     */
+    protected void validateChangeRequest(@Nonnull final RequestContext ctx, @Nonnull final REQUEST crudRequest, @Nullable final BonaPortable key) {
+        final Permissionset permissions = authorizer.getPermissions(ctx.internalHeaderParameters.getJwtInfo(), PermissionType.BACKEND, crudRequest.ret$PQON());
+        if (!permissions.contains(OperationType.ACTIVATE)) {
+            LOGGER.error("No permission to activate change request for {}. key:{}", crudRequest.ret$PQON(), key);
+            throw new T9tException(T9tException.CHANGE_REQUEST_PERMISSION_ERROR, "No permission to activate change request for " + crudRequest.ret$PQON());
+        }
+        if (!changeRequestFlow.isChangeRequestValidToActivate(crudRequest.getChangeRequestRef(), key, crudRequest.getData())) {
+            LOGGER.error("Change request is not valid! ref {}. key:{}", crudRequest.getChangeRequestRef(), key);
+            throw new T9tException(T9tException.INVALID_CHANGE_REQUEST, "Change request not valid for ref: " + crudRequest.getChangeRequestRef());
         }
     }
 

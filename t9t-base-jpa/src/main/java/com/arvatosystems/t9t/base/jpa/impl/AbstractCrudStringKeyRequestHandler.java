@@ -22,13 +22,18 @@ import com.arvatosystems.t9t.base.jpa.IEntityMapper;
 import com.arvatosystems.t9t.base.jpa.IResolverStringKey;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
+import com.arvatosystems.t9t.base.types.StringKey;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
 import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.util.ApplicationException;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.EntityManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractCrudStringKeyRequestHandler<
   DTO extends BonaPortable,
@@ -36,6 +41,7 @@ public abstract class AbstractCrudStringKeyRequestHandler<
   REQUEST extends CrudStringKeyRequest<DTO, TRACKING>,
   ENTITY extends BonaPersistableKey<String> & BonaPersistableTracking<TRACKING>
 > extends AbstractCrudAnyKeyRequestHandler<String, DTO, TRACKING, REQUEST, ENTITY> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCrudStringKeyRequestHandler.class);
 
     // execute function of the interface description, but additional parameters
     // required in order to work around type erasure
@@ -48,6 +54,22 @@ public abstract class AbstractCrudStringKeyRequestHandler<
         final CrudStringKeyResponse<DTO, TRACKING> rs = new CrudStringKeyResponse<>();
         rs.setReturnCode(0);
         ENTITY result;
+
+        // If changeRequestRef is not null, it means the request is for activation of a change request which was saved in the approval work flow.
+        if (crudRequest.getChangeRequestRef() != null) {
+            validateChangeRequest(ctx, crudRequest, getStringKey(crudRequest));
+            // If the change request is valid, then just treat as a normal crud request to apply changes...
+        } else {
+            final DTO dto = getRequestDTO(crudRequest, () -> crudRequest.getKey() != null ? mapper.mapToDto(crudRequest.getKey()) : null);
+            final String pqon = dto.ret$PQON();
+            // If the crudRequest requires approval, then create change request and then return the response.
+            if (requestRequiresApproval(crudRequest.getCrud(), pqon)) {
+                LOGGER.debug("Request requires approval, creating change request");
+                requestForApproval(ctx, rs, crudRequest, pqon, crudRequest.getKey() != null ? new StringKey(crudRequest.getKey()) : null, dto);
+                rs.setKey(crudRequest.getKey());
+                return rs;
+            }
+        }
 
         final EntityManager entityManager = jpaContextProvider.get().getEntityManager(); // copy it as we need it several times
 
@@ -121,5 +143,10 @@ public abstract class AbstractCrudStringKeyRequestHandler<
         } catch (final ApplicationException e) {
             throw new T9tException(T9tException.ENTITY_DATA_MAPPING_EXCEPTION, "Tracking columns: " + e.toString());
         }
+    }
+
+    @Nullable
+    protected StringKey getStringKey(@Nonnull final REQUEST crudRequest) {
+        return crudRequest.getKey() != null ? new StringKey(crudRequest.getKey()) : null;
     }
 }

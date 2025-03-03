@@ -20,6 +20,7 @@ import com.arvatosystems.t9t.base.IViewModelContainer;
 import com.arvatosystems.t9t.base.misc.Info;
 import com.arvatosystems.t9t.bpmn.T9tWorkflowStepCondition;
 import com.arvatosystems.t9t.bpmn.UiOnlyWorkflowStep;
+import com.arvatosystems.t9t.monitoring.SystemParamsDTO;
 
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 
@@ -35,10 +36,15 @@ public final class UIOnlyViewModels implements IViewModelContainer {
     private static final CrudViewModel<T9tWorkflowStepCondition, TrackingBase> WORKFLOW_STEP_CONDITION
       = new CrudViewModel<T9tWorkflowStepCondition, TrackingBase>(T9tWorkflowStepCondition.BClass.INSTANCE, null, null, null);
 
+    private static final CrudViewModel<SystemParamsDTO, TrackingBase> SESSION_INFO_VIEW_MODEL =
+            new CrudViewModel<SystemParamsDTO, TrackingBase>(
+                    SystemParamsDTO.BClass.INSTANCE, null, null, null);
+
     @Override
     public void register() {
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("info",  INFO_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("workflowStepConfig", WORKFLOW_STEP_CONFIGURATION);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("workflowStepCondition", WORKFLOW_STEP_CONDITION);
+        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("sessionInfo",  SESSION_INFO_VIEW_MODEL);
     }
 }

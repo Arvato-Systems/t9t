@@ -15,6 +15,12 @@
  */
 package com.arvatosystems.t9t.base;
 
+import java.util.EnumSet;
+
+import com.arvatosystems.t9t.base.types.NoKey;
+
+import de.jpaw.bonaparte.pojos.api.OperationType;
+
 /**
  * Global constants to used all over the application.
  */
@@ -176,4 +182,11 @@ public final class T9tConstants {
 
     public static final int RESET_PASSWORD_VALIDITY         = 2; // in hours
     public static final int RESET_PASSWORD_REQUEST_LIMIT    = 1; // in minutes
+
+    public static final EnumSet<OperationType> OPERATION_TYPE_WRITE = EnumSet.of(OperationType.CREATE, OperationType.UPDATE, OperationType.MERGE,
+            OperationType.DELETE, OperationType.ACTIVATE, OperationType.INACTIVATE);
+
+    public static final EnumSet<OperationType> OPERATION_TYPE_WRITE_WITH_DTO = EnumSet.of(OperationType.CREATE, OperationType.UPDATE, OperationType.MERGE);
+
+    public static final NoKey NO_KEY = new NoKey();
 }

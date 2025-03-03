@@ -31,6 +31,8 @@ import de.jpaw.bonaparte.pojos.api.CompositeKeyRef;
 import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.util.ApplicationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractCrudCompositeRefKeyRequestHandler<
   REF extends CompositeKeyRef,
@@ -40,6 +42,7 @@ public abstract class AbstractCrudCompositeRefKeyRequestHandler<
   REQUEST extends CrudCompositeKeyRequest<REF, DTO, TRACKING>,
   ENTITY extends BonaPersistableKey<KEY> & BonaPersistableTracking<TRACKING>
 > extends AbstractCrudAnyKeyRequestHandler<KEY, DTO, TRACKING, REQUEST, ENTITY> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCrudCompositeRefKeyRequestHandler.class);
 
     // execute function of the interface description, but additional parameters
     // required in order to work around type erasure
@@ -55,6 +58,22 @@ public abstract class AbstractCrudCompositeRefKeyRequestHandler<
         final CrudCompositeKeyResponse<KEY, DTO, TRACKING> rs = new CrudCompositeKeyResponse<>();
         rs.setReturnCode(0);
         ENTITY result;
+
+        // If changeRequestRef is not null, it means the request is for activation of a change request which was saved in the approval work flow.
+        if (crudRequest.getChangeRequestRef() != null) {
+            validateChangeRequest(ctx, crudRequest, crudRequest.getKey());
+            // If the change request is valid, then just treat as a normal crud request to apply changes...
+        } else {
+            final DTO dto = getRequestDTO(crudRequest, () -> key != null ? mapper.mapToDto(key) : null);
+            final String pqon = dto.ret$PQON();
+            // If the crudRequest requires approval, then create change request and then return the response.
+            if (requestRequiresApproval(crudRequest.getCrud(), pqon)) {
+                LOGGER.debug("Request requires approval, creating change request");
+                requestForApproval(ctx, rs, crudRequest, pqon, crudRequest.getKey(), dto);
+                rs.setKey(key);
+                return rs;
+            }
+        }
 
         final EntityManager entityManager = jpaContextProvider.get().getEntityManager(); // copy it as we need it several times
 

@@ -200,7 +200,7 @@ public class RequestProcessor implements IRequestProcessor {
             ihdr.setEssentialKey(rp.getEssentialKey());
             ihdr.freeze();
 
-            final String prioText = Boolean.TRUE == ihdr.getPriorityRequest() ? "priority" : "regular";
+            final String prioText = Boolean.TRUE.equals(ihdr.getPriorityRequest()) ? "priority" : "regular";
             LOGGER.debug("Starting {} request {}@{}:{}, S/R = {}/{}, need authorization={}, messageId={}", prioText, jwtInfo.getUserId(), jwtInfo.getTenantId(),
                     pqon, jwtInfo.getSessionRef(), ihdr.getProcessRef(), !skipAuthorization, effectiveMessageId);
             final MutableInt retryCounter = new MutableInt(0);

@@ -47,7 +47,7 @@ public interface IT9tRestProcessor {
      * otherwise the second (which may be null, in which case a BAD_REQUEST will be returned).
      * Both request converters are executed in the I/O thread.
      **/
-    <T extends BonaPortable, R extends RequestParameters> void performAsyncBackendRequest(HttpHeaders httpHeaders, AsyncResponse resp, String infoMsg,
+    <T, R extends RequestParameters> void performAsyncBackendRequest(HttpHeaders httpHeaders, AsyncResponse resp, String infoMsg,
         List<T> inputData, Function<T, R> requestConverterSingle, Function<List<T>, R> requestConverterBatch);
 
     /**
@@ -59,10 +59,10 @@ public interface IT9tRestProcessor {
      * @param resp
      * @param infoMsg a message for logging
      * @param inputData the list of input data
-     * @param requestConverterSinglen a function which maps the public data structure (single instance) to an internal request
+     * @param requestConverterSingle a function which maps the public data structure (single instance) to an internal request
      * @param partitionKeyExtractor a function to extract the partition key (the hashcode of the result string will be used as partition)
      */
-    default <T extends BonaPortable, R extends RequestParameters> void performAsyncBackendRequestViaKafka(@Nonnull final HttpHeaders httpHeaders,
+    default <T, R extends RequestParameters> void performAsyncBackendRequestViaKafka(@Nonnull final HttpHeaders httpHeaders,
         @Nonnull final AsyncResponse resp, @Nonnull final String infoMsg, final List<T> inputData, final Function<T, R> requestConverterSingle,
         final Function<R, String> partitionKeyExtractor) {
         performAsyncBackendRequest(httpHeaders, resp, infoMsg, inputData, requestConverterSingle, (Function<List<T>, R>)null);

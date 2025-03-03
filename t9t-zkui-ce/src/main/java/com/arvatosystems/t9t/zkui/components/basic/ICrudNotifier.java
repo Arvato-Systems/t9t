@@ -20,4 +20,6 @@ import com.arvatosystems.t9t.zkui.viewmodel.AbstractCrudVM.CrudMode;
 public interface ICrudNotifier {
     void setRefresher(Object eventData);
     void setCurrentMode(CrudMode currentMode);
+    // CRUD changes are not applied and saved as data change request
+    void dataChangeRequestCreated();
 }

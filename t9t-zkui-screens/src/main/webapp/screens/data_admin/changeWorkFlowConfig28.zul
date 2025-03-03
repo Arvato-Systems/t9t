@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="changeWorkFlowConfig28"?>
+
+<window28 id="changeWorkFlowConfigWin">
+    <threesections28 gridId="changeWorkFlowConfig">
+        <crud28 viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.framework.ChangeWorkFlowConfigVM', vmId='changeWorkFlowConfig')"
+                currentMode="@load(vm.currentMode)">
+            <form28 id="changeWorkFlowConfigCrud" aspect="2" numColumns="2">
+                <rows>
+                    <cells228 id ="pqon"                                value ="@load(vm.data.pqon) @save(vm.data.pqon,before='commandSave')"
+                              id2="approvalRequiredForCreate"           value2="@load(vm.data.approvalRequiredForCreate) @save(vm.data.approvalRequiredForCreate,before='commandSave')"/>
+                    <cells228 id ="approvalRequiredForUpdate"           value ="@load(vm.data.approvalRequiredForUpdate) @save(vm.data.approvalRequiredForUpdate,before='commandSave')"
+                              id2="approvalRequiredForDelete"           value2="@load(vm.data.approvalRequiredForDelete) @save(vm.data.approvalRequiredForDelete,before='commandSave')"/>
+                    <cells228 id ="approvalRequiredForDeactivation"     value ="@load(vm.data.approvalRequiredForDeactivation) @save(vm.data.approvalRequiredForDeactivation,before='commandSave')"
+                              id2="approvalRequiredForActivation"       value2="@load(vm.data.approvalRequiredForActivation) @save(vm.data.approvalRequiredForActivation,before='commandSave')"/>
+                    <cells228 id ="separateActivation"                  value ="@load(vm.data.separateActivation) @save(vm.data.separateActivation,before='commandSave')"
+                              id2="privateChangeIds"                    value2="@load(vm.data.privateChangeIds) @save(vm.data.privateChangeIds,before='commandSave')"/>
+                    <cells228 id ="enforceFourEyes"                     value ="@load(vm.data.enforceFourEyes) @save(vm.data.enforceFourEyes,before='commandSave')"
+                              id2="screenLocation"                      value2="@load(vm.data.screenLocation) @save(vm.data.screenLocation,before='commandSave')"/>
+                    <cells28  id ="viewModelId"                         value ="@load(vm.data.viewModelId) @save(vm.data.viewModelId,before='commandSave')"/>
+                </rows>
+            </form28>
+        </crud28>
+    </threesections28>
+</window28>

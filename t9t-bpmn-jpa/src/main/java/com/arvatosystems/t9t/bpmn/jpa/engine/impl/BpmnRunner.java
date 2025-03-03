@@ -240,6 +240,7 @@ public class BpmnRunner implements IBpmnRunner {
                         return false;
                     case COMMIT_RESTART:
                         // common code executed before...
+                        statusEntity.setCurrentParameters(parameters.isEmpty() ? null : parameters);
                         return true;
                     case PROCEED_NEXT:
                         // common code executed before...

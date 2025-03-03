@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.arvatosystems.t9t.zkui.filters.IResultTextFilter;
+import jakarta.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
@@ -661,11 +662,12 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
 
 
     // called after context menu activity
-    public void refreshCurrentItem() {
+    @Nullable
+    public DataWithTracking<BonaPortable, TrackingBase> refreshCurrentItem() {
         // get the key for the currently selected item.
         int currentIndex = lb.getSelectedIndex();
         if (currentIndex == -1)
-            return;
+            return null;
         ListModel x = lb.getModel();
         DataWithTracking<BonaPortable, TrackingBase> dwt = (DataWithTracking<BonaPortable, TrackingBase>) x.getElementAt(currentIndex);
 
@@ -675,7 +677,7 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
         List<DataWithTracking<BonaPortable, TrackingBase>> dwt2List = readData(srq2);
         if (dwt2List.size() != 1) {
             LOGGER.error("Expected result set of size 1 for {}, got {}", srq2, dwt2List.size());
-            return;
+            return null;
         }
 
         DataWithTracking<BonaPortable, TrackingBase> dwt2 = dwt2List.get(0);
@@ -691,6 +693,7 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
         // force refresh (again)
         lb.setModel(lb.getModel());
         lb.setSelectedIndex(currentIndex);
+        return dwt2;
     }
 
     @Override

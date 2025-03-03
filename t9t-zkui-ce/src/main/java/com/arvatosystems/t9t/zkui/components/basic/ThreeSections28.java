@@ -16,7 +16,11 @@
 package com.arvatosystems.t9t.zkui.components.basic;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 
+import com.arvatosystems.t9t.zkui.util.JumpTool;
+import de.jpaw.bonaparte.core.BonaPortable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Component;
@@ -65,14 +69,25 @@ public class ThreeSections28 extends TwoSections28 {
         List<Component> children = ComponentTools28.moveChilds(this, this.getFirstChild(), detailsGroup);
         if (children != null && !children.isEmpty()) {
             for (Component child : children) {
-                if (child instanceof IDataSelectReceiver) {
-                    final IDataSelectReceiver recv = (IDataSelectReceiver) child;
+                if (child instanceof Crud28 crud28) {
+                    // if the child is crud28 and the data is provided, use it to populate data in crud28 and also us the saveHandler to save the data
+                    final Map<String, Object> requestParams = as.getRequestParams();
+                    final Object data = requestParams.get(JumpTool.DATA);
+                    final Object handler = requestParams.get(JumpTool.SAVE_HANDLER);
+                    if (data instanceof BonaPortable bonaData && handler instanceof Consumer saveHandler) {
+                        crud28.setDataChanges(bonaData, saveHandler);
+                        ((North) resultsGroup.getParent().getParent()).setVisible(false);
+                        ((West)  filterGroup.getParent()).setVisible(false);
+                        break;
+                    }
+                }
+                if (child instanceof IDataSelectReceiver recv) {
                     // wire events
                     main.addEventListener(EventDataSelect28.ON_DATA_SELECT, ev -> {
                         final EventDataSelect28 evData = (EventDataSelect28) ev.getData();
                         LOGGER.debug("Caught DATA_SELECT event of grid");
                         recv.setSelectionData(evData);
-                });
+                    });
                     // wire a changed content of a possible crud section to row refresh
                     child.addEventListener("onCrudUpdate", ev -> {
                         if (Boolean.TRUE.equals(ev.getData()))

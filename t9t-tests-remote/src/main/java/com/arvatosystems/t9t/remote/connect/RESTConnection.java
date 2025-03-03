@@ -20,21 +20,12 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.security.SecureRandom;
-import java.security.cert.X509Certificate;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.T9tException;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.util.IMarshaller;
@@ -47,29 +38,28 @@ import jakarta.annotation.Nullable;
 public class RESTConnection extends ConnectionDefaults {
     private static final Logger LOGGER = LoggerFactory.getLogger(RESTConnection.class);
 
-    protected static SSLSocketFactory sf = RESTConnection.getSocketFactory();
-    protected static HostnameVerifier hv = RESTConnection.getHostnameVerifier();
-
     protected IMarshaller marshaller = new RecordMarshallerJson();
-    protected String authentication = null;
+    protected final boolean marshallerFrozen;
     protected final String baseRestUrl;
+    protected String authentication = null;
     protected RequestMethod requestMethod = RequestMethod.POST;  // the default request method
 
     public RESTConnection() {
         baseRestUrl = getInitialRestUrl();
-
-        if (!getSSLCertVerification()) {
-            ignoreSSLCertificateVerification();
-        }
+        marshallerFrozen = false;
     }
 
     /** Contructs a REST connection for a base REST URL. */
     public RESTConnection(@Nonnull final String baseRestUrl) {
         this.baseRestUrl = baseRestUrl;
+        marshallerFrozen = false;
+    }
 
-        if (!getSSLCertVerification()) {
-            ignoreSSLCertificateVerification();
-        }
+    /** Contructs a REST connection for an optional base REST URL, and frozen marshaller */
+    public RESTConnection(@Nullable final String baseRestUrl, @Nonnull final IMarshaller marshaller) {
+        this.baseRestUrl = baseRestUrl == null ? getInitialRestUrl() : baseRestUrl;
+        this.marshaller = marshaller;
+        marshallerFrozen = true;
     }
 
     public String getBaseRestUrl() {
@@ -81,6 +71,9 @@ public class RESTConnection extends ConnectionDefaults {
     }
 
     public void setMarshaller(@Nonnull final IMarshaller marshaller) {
+        if (marshallerFrozen) {
+            throw new T9tException(T9tException.ATTEMPT_TO_CHANGE_FROZEN_FIELD, "marshaller of type " + this.marshaller.getContentType() + " to " + marshaller.getContentType());
+        }
         this.marshaller = marshaller;
     }
 
@@ -148,9 +141,14 @@ public class RESTConnection extends ConnectionDefaults {
                 is = connection.getErrorStream();
             }
 
-            final ByteBuilder serializedResponse = new ByteBuilder();
-            serializedResponse.readFromInputStream(is, 0);
-            is.close();
+            final ByteBuilder serializedResponse;
+            if (is != null) {
+                serializedResponse = new ByteBuilder();
+                serializedResponse.readFromInputStream(is, 0);
+                is.close();
+            } else {
+                serializedResponse = null;
+            }
 
             if (wr != null) {
                 wr.close();
@@ -206,49 +204,5 @@ public class RESTConnection extends ConnectionDefaults {
             return response.toString();
         }
         return null;
-    }
-
-    /**
-     * Create a trust manager that does not validate certificate chains
-     */
-    public static void ignoreSSLCertificateVerification() {
-        HttpsURLConnection.setDefaultSSLSocketFactory(sf);
-        HttpsURLConnection.setDefaultHostnameVerifier(hv);
-    }
-
-    public static HostnameVerifier getHostnameVerifier() {
-        return new HostnameVerifier() {
-            @Override
-            public boolean verify(final String hostname, final SSLSession session) {
-              return true;
-            }
-          };
-    }
-
-    public static SSLSocketFactory getSocketFactory() {
-        final TrustManager[] trustAllCerts = new TrustManager[1];
-        final X509TrustManager trustManager = new X509TrustManager() {
-            @Override
-            public X509Certificate[] getAcceptedIssuers() {
-              return null;
-            }
-
-            @Override
-            public void checkClientTrusted(final X509Certificate[] certs, final String authType) {
-            }
-
-            @Override
-            public void checkServerTrusted(final X509Certificate[] certs, final String authType) {
-            }
-        };
-        trustAllCerts[0] = trustManager;
-        try {
-            final SSLContext sc = SSLContext.getInstance("SSL");
-            sc.init(null, trustAllCerts, new SecureRandom());
-            return sc.getSocketFactory();
-        } catch (final Exception e) {
-            LOGGER.error("Cannot create SSL context: " + e);
-            throw new RuntimeException(e);
-        }
     }
 }

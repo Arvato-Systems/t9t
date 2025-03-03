@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.zkui.viewmodel;
 
+import jakarta.annotation.Nonnull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.BindingParam;
@@ -43,6 +44,7 @@ public abstract class AbstractViewOnlyVM<DTO extends BonaPortable, TRACKING exte
     protected DTO data;
     protected TRACKING tracking;
     protected String tenantId;
+    protected AbstractViewOnlyVM<DTO, TRACKING> childViewModel;
 
     // to be overridden in case arrays need to be initialized
     protected void clearData() {   // TODO: init child objects if exist, do it via injected class, qualifier to be passed to @Init
@@ -62,6 +64,9 @@ public abstract class AbstractViewOnlyVM<DTO extends BonaPortable, TRACKING exte
                 tenantId = ((DataWithTrackingS)dwt).getTenantId();
             else if (dwt instanceof DataWithTrackingS)
                 tenantId = ((DataWithTrackingS)dwt).getTenantId();
+        }
+        if (childViewModel != null) {
+            childViewModel.loadData(dwt);
         }
     }
 
@@ -94,5 +99,12 @@ public abstract class AbstractViewOnlyVM<DTO extends BonaPortable, TRACKING exte
 
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
+    }
+
+    public void setChildViewModel(@Nonnull final AbstractViewOnlyVM<DTO, TRACKING> childViewModel) {
+        this.childViewModel = childViewModel;
+    }
+
+    protected void enrichData(@Nonnull final DTO dto) {
     }
 }

@@ -1,0 +1,10 @@
+{
+    "viewModel": "changeWorkFlowConfig",
+    "filters": [
+        { "filterType": "E", "fieldName": "pqon" }
+    ],
+    "fields": [
+        "pqon", "approvalRequiredForCreate", "approvalRequiredForUpdate", "approvalRequiredForDelete", "approvalRequiredForDeactivation",
+        "approvalRequiredForActivation", "separateActivation", "privateChangeIds", "enforceFourEyes", "screenLocation"
+    ]
+}

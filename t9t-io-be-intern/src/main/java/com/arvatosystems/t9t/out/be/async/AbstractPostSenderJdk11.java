@@ -225,7 +225,7 @@ public abstract class AbstractPostSenderJdk11<T> implements IAsyncSender {
                                 msg.getObjectRef(), e);
                         }
                     } else {
-                    completeResultProcessor.accept(r);
+                        completeResultProcessor.accept(r);
                     }
                 }
             });
@@ -247,7 +247,12 @@ public abstract class AbstractPostSenderJdk11<T> implements IAsyncSender {
 
     protected void parseResponse(final AsyncHttpResponse myResponse, final HttpResponse<T> resp) {
         myResponse.setHttpStatusMessage(null);
-        myResponse.setClientReference(MessagingUtil.truncField(resp.body(), AsyncHttpResponse.meta$$clientReference.getLength()));
+        if (myResponse.getHttpReturnCode() <= 299) {
+            // OK response
+            myResponse.setClientReference(MessagingUtil.truncField(resp.body(), AsyncHttpResponse.meta$$clientReference.getLength()));
+        } else {
+            myResponse.setErrorDetails(MessagingUtil.truncField(resp.body(), AsyncHttpResponse.meta$$errorDetails.getLength()));
+        }
     }
 
     @Override

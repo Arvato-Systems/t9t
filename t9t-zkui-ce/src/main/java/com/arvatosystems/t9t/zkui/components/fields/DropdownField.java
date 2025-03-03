@@ -84,14 +84,18 @@ public class DropdownField extends AbstractField<Combobox> {
             // text only, but use displayId
             final UnicodeFilter f = new UnicodeFilter();
             f.setFieldName(getFieldName());
-            f.setEqualsValue(rec.getId());
+            if (isMultiDropdown()) {
+                f.setLikeValue("%" + rec.getId() + "%");
+            } else {
+                f.setEqualsValue(rec.getId());
+            }
             return f;
         }
         // text only
         final UnicodeFilter f = new UnicodeFilter();
         f.setFieldName(getFieldName());
-        if (cfg.getFilterType() != UIFilterType.EQUALITY) {
-            f.setLikeValue(v);
+        if (cfg.getFilterType() != UIFilterType.EQUALITY || isMultiDropdown()) {
+            f.setLikeValue("%" + v + "%");
         } else {
             f.setEqualsValue(v);
         }
@@ -118,5 +122,9 @@ public class DropdownField extends AbstractField<Combobox> {
         for (final Combobox e : components) {
             e.setValue(null);
         }
+    }
+
+    protected boolean isMultiDropdown() {
+        return desc.getProperties() != null && desc.getProperties().containsKey(Constants.UiFieldProperties.MULTI_DROPDOWN);
     }
 }

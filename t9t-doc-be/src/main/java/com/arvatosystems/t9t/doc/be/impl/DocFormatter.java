@@ -54,6 +54,7 @@ import com.arvatosystems.t9t.doc.services.IDocComponentConverter;
 import com.arvatosystems.t9t.doc.services.IDocFormatter;
 import com.arvatosystems.t9t.doc.services.IDocModuleCfgDtoResolver;
 import com.arvatosystems.t9t.doc.services.IDocPersistenceAccess;
+import com.arvatosystems.t9t.doc.services.IDocTextReplacer;
 import com.arvatosystems.t9t.doc.services.IImageGenerator;
 import com.arvatosystems.t9t.doc.services.ImageParameter;
 import com.arvatosystems.t9t.translation.services.ITranslationProvider;
@@ -355,6 +356,31 @@ public class DocFormatter implements IDocFormatter {
         }
     }
 
+    /**
+     * Class serves as a character replacer.
+     * The first parameter is the input string (the string to convert).
+     * The second parameter is a qualifier to use when pulling an implementation, to allow using multiple replacers.
+     * The third parameter is a string of characters which should be treated as separator. The first of them will be used as space.
+     */
+    record CharacterReplacerModel(Locale locale) implements TemplateMethodModelEx {
+
+        @Override
+        public Object exec(List args) throws TemplateModelException {
+            if (args.size() < 1 || args.get(0) == null) {
+                throw new TemplateModelException("CharacterReplacerModel must be called with at least one non-null parameter");
+            }
+            final String inputString = args.get(0).toString();
+            final String qualifier = args.size() >= 2 && args.get(1) != null ? args.get(1).toString() : null;
+            final String spaceChars = args.size() >= 3 && args.get(2) != null ? args.get(2).toString() : null;
+            final IDocTextReplacer replacer = Jdp.getOptional(IDocTextReplacer.class, qualifier);
+            if (replacer == null) {
+                LOGGER.error("No implementation found for IDocTextReplacer with qualifier {}", qualifier);
+                throw new TemplateModelException("No implementation found for IDocTextReplacer with qualifier " + qualifier);
+            }
+            return WRAPPER.wrap(replacer.textReplace(locale, inputString, spaceChars));
+        }
+    }
+
     /** Class resolves URLs and creates base64 data from it. */
     record Base64FromUrlGeneratorModel() implements TemplateMethodModelEx {
         // parameters are of type freemarker.template.SimpleScalar / SimpleNumber etc.
@@ -624,6 +650,7 @@ public class DocFormatter implements IDocFormatter {
             map.put("q", new PropertyTranslationsFuncModel(languageCode, languages, translationProvider));
             map.put("i", new ImageGeneratorModel(mediaType, converter));
             map.put("u", new Base64FromUrlGeneratorModel());
+            map.put("r", new CharacterReplacerModel(myLocale));
             map.put("base64",    new EncoderModel(DocumentEncoderType.BASE64));
             map.put("base64url", new EncoderModel(DocumentEncoderType.BASE64URL));
             map.put("t", new TimestampGeneratorModel(myLocale, effectiveTimeZone));

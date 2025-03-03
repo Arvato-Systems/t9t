@@ -1,0 +1,11 @@
+{
+    "viewModel": "dataChangeRequestExtended",
+    "filters": [
+        { "filterType": "E", "fieldName": "change.status" },
+        { "filterType": "E", "fieldName": "change.changeId" },
+        { "filterType": "E", "fieldName": "change.userIdCreated" }
+    ],
+    "fields": [
+        "change.pqon", "change.changeId", "change.status", "change.userIdCreated", "change.whenCreated", "change.textSubmitted", "change.whenSubmitted"
+    ]
+}

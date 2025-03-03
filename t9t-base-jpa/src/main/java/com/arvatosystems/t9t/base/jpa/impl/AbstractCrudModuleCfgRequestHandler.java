@@ -32,6 +32,8 @@ import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ApplicationException;
 import jakarta.persistence.EntityManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 // the request handler assumes a resolver which works with a Long key for historical reasons
 public abstract class AbstractCrudModuleCfgRequestHandler<
@@ -39,6 +41,7 @@ public abstract class AbstractCrudModuleCfgRequestHandler<
   REQUEST extends CrudModuleCfgRequest<DTO>,
   ENTITY extends BonaPersistableKey<String> & BonaPersistableTracking<FullTrackingWithVersion>
 > extends AbstractCrudAnyKeyRequestHandler<String, DTO, FullTrackingWithVersion, REQUEST, ENTITY> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCrudModuleCfgRequestHandler.class);
     private static final ModuleConfigKey FIXED_KEY = new ModuleConfigKey();
     static {
         FIXED_KEY.freeze();
@@ -61,6 +64,22 @@ public abstract class AbstractCrudModuleCfgRequestHandler<
         final CrudModuleCfgResponse<DTO> rs = new CrudModuleCfgResponse<>();
         rs.setReturnCode(0);
         ENTITY result;
+
+        // If changeRequestRef is not null, it means the request is for activation of a change request which was saved in the approval work flow.
+        if (crudRequest.getChangeRequestRef() != null) {
+            validateChangeRequest(ctx, crudRequest, FIXED_KEY);
+            // If the change request is valid, then just treat as a normal crud request to apply changes...
+        } else {
+            final DTO dto = getRequestDTO(crudRequest, () -> mapper.mapToDto(ctx.tenantId));
+            final String pqon = dto.ret$PQON();
+            // If the crudRequest requires approval, then create change request and then return the response.
+            if (requestRequiresApproval(crudRequest.getCrud(), pqon)) {
+                LOGGER.debug("Request requires approval, creating change request");
+                requestForApproval(ctx, rs, crudRequest, pqon, FIXED_KEY, dto);
+                rs.setKey(FIXED_KEY);
+                return rs;
+            }
+        }
 
         final EntityManager entityManager = jpaContextProvider.get().getEntityManager(); // copy it as we need it several times
 

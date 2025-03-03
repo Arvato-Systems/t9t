@@ -20,8 +20,10 @@ import com.arvatosystems.t9t.zkui.components.datafields.DataFieldFactory;
 import com.arvatosystems.t9t.zkui.components.datafields.DataFieldParameters;
 import com.arvatosystems.t9t.zkui.components.datafields.IDataField;
 
+import com.arvatosystems.t9t.zkui.util.Constants;
 import de.jpaw.dp.Singleton;
 import de.jpaw.dp.Specializes;
+import jakarta.annotation.Nonnull;
 
 @Singleton
 @Specializes
@@ -42,5 +44,15 @@ public class EEDataFieldFactory extends DataFieldFactory implements IDataFieldFa
     @Override
     protected IDataField createXenumsetDataField(final DataFieldParameters params, final String enumDtoRestrictions) {
         return new XEnumsetChosenboxDataField(params, enumDtoRestrictions);
+    }
+
+    @Nonnull
+    @Override
+    protected IDataField createMultiStringDropdownDataField(@Nonnull final DataFieldParameters params) {
+        final String multiDropdownType = params.cfg.getProperties() != null ? params.cfg.getProperties().get(Constants.UiFieldProperties.MULTI_DROPDOWN) : null;
+        if (multiDropdownType != null) {
+            return new StringChosenboxDataField(params, multiDropdownType);
+        }
+        return super.createMultiStringDropdownDataField(params);
     }
 }

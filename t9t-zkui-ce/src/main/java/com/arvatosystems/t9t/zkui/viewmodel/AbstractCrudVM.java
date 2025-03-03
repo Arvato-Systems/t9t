@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.zkui.viewmodel;
 
+import com.arvatosystems.t9t.base.T9tUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.BindingParam;
@@ -44,6 +45,9 @@ import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.bonaparte.util.ToStringHelper;
 
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 @Init(superclass = true)
 public abstract class AbstractCrudVM<
     KEY,
@@ -55,6 +59,7 @@ public abstract class AbstractCrudVM<
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCrudVM.class);
     protected ICrudNotifier hardLink = null;
     protected boolean useProtectedView;
+    protected Consumer<BonaPortable> externalSaveHandler;
 
     public void setUseProtectedView(final boolean useProtectedView) {
         this.useProtectedView = useProtectedView;
@@ -75,6 +80,9 @@ public abstract class AbstractCrudVM<
     protected static final String DELETE_CONFIRMATION = "deleteConfirmation";
     protected static final String DELETE_CONFIRMATION_MESSAGE = "deleteConfirmationMessage";
     protected static final String DELETE_CONFIRMATION_DETAIL = "deleteConfirmationDetail";
+    protected Supplier<String> changeIdSupplier;
+    protected Supplier<Boolean> submitChangeSupplier;
+    protected final boolean hideChangeApprovalPopup = ZulUtils.readBooleanConfig("changeApproval.popup.hide");
 
     public void setHardLink(final ICrudNotifier notifier) {
         // link to the crud component to avoid boilerplate caused by @Notifier
@@ -87,10 +95,21 @@ public abstract class AbstractCrudVM<
         super.clearData();
         if (data != null)
             data.put$Active(true);  // if the DTO has an active field, create it as active by default
+        if (childViewModel != null) {
+            childViewModel.clearData();
+        }
     }
 
     @Command
     public void commandSave() {
+        if (childViewModel != null) {
+            childViewModel.enrichData(data);
+        }
+        if (externalSaveHandler != null) {
+            // if external save handler is registered then invoke it and return.
+            externalSaveHandler.accept(data);
+            return;
+        }
         saveHook();
         if (currentMode == CrudMode.UNSAVED_NEW) {
             final CrudAnyKeyRequest<DTO, TRACKING> crudRq = crudViewModel.crudClass.newInstance();
@@ -166,6 +185,12 @@ public abstract class AbstractCrudVM<
     }
 
     protected void runCrud(final CrudAnyKeyRequest<DTO, TRACKING> crudRq, final Object eventData) {
+        if (changeIdSupplier != null) {
+            crudRq.setChangeId(changeIdSupplier.get());
+        }
+        if (submitChangeSupplier != null) {
+            crudRq.setSubmitChange(submitChangeSupplier.get());
+        }
         if (LOGGER.isTraceEnabled()) {
             LOGGER.trace("runCrud {} with key = {}, data = {}",
                 crudRq.getCrud(), crudRq.getData() == null ? "NULL" : ToStringHelper.toStringML(crudRq.getData()));
@@ -183,6 +208,13 @@ public abstract class AbstractCrudVM<
                 });
         } else if (eventData != null) {
             reloadData(eventData, crudRs);
+        }
+        if (crudRs.getChangeRequestRef() != null && !hideChangeApprovalPopup) {
+            // changes are not applied but a data change approval request is created.
+            final String messageLabel = T9tUtil.isTrue(crudRq.getSubmitChange()) ? "approvalRequestSubmitted" : "approvalRequestCreated";
+            Messagebox.show(session.translate(COMMON, messageLabel), session.translate(COMMON, "info"), Messagebox.OK,
+                Messagebox.INFORMATION);
+            hardLink.dataChangeRequestCreated();
         }
     }
 
@@ -223,6 +255,18 @@ public abstract class AbstractCrudVM<
     public void modeNotifier() {
 //      if (hardLink != null)
 //          hardLink.setCurrentMode(currentMode);
+    }
+
+    public void setExternalSaveHandler(final Consumer<BonaPortable> externalSaveHandler) {
+        this.externalSaveHandler = externalSaveHandler;
+    }
+
+    public void setChangeIdSupplier(final Supplier<String> changeIdSupplier) {
+        this.changeIdSupplier = changeIdSupplier;
+    }
+
+    public void setSubmitChangeSupplier(final Supplier<Boolean> submitChangeSupplier) {
+        this.submitChangeSupplier = submitChangeSupplier;
     }
 
     private void reloadData(final Object eventData, final CrudAnyKeyResponse<DTO, TRACKING> crudRs) {

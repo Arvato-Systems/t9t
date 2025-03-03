@@ -229,9 +229,8 @@ public final class InitContainers {
     private static void collectLeanGridConfigurations(final Reflections... packages) {
         // first, process all entries from IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY
         for (final Map.Entry<String, CrudViewModel<?, ?>> vm: IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.entrySet()) {
-            if (vm.getValue().searchClass != null) {
-                UiGridConfigPrefs.getLeanGridConfigAsObject(vm.getKey());
-            }
+            // read the grid config. If a search request has been specified the grid config is required, otherwise it is treated as optional (could be related to a popup)
+            UiGridConfigPrefs.getLeanGridConfigAsObject(vm.getKey(), vm.getValue().searchClass == null);
         }
         // now search for all explicitly listed ILeanGridConfigContainer
         final List<ILeanGridConfigContainer> clses = new ArrayList<>(100);
@@ -256,7 +255,8 @@ public final class InitContainers {
                 if (IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.containsKey(resourceId)) {
                     LOGGER.warn("Duplicate definition of gridId {}", resourceId);
                 }
-                UiGridConfigPrefs.getLeanGridConfigAsObject(resourceId);
+                // read the grid config resource. Because it is mentioned in a lean grid config container, it is mandatory!
+                UiGridConfigPrefs.getLeanGridConfigAsObject(resourceId, false);
             }
         }
         // apply the overrides & extends

@@ -31,6 +31,10 @@ package (com.arvatosystems) t9t.base.crud {
         required boolean                onlyActive;         // no longer supported
         optional version                version;            // this is a required field for all crud except INSERT and READ
         optional (!DATA...)             data;               // the full data record
+        optional t9tShortId             changeId;           // if approval work flow is active, then this changeId is used to create change request for approval.
+        optional Unicode(255) allowControlChars changeComment; // used as a comment if request is directly submitted for review
+        optional Boolean                submitChange;       // if true, the change request is directly submitted for review, else it is saved as work in progress
+        optional f42Ref                 changeRequestRef;   // objectRef of the change request. Required if this request is initiated as part of change request activation process.
     }
     /**
      * The base class to be used for CRUD specific responses.
@@ -38,6 +42,7 @@ package (com.arvatosystems) t9t.base.crud {
     abstract class CrudAnyKeyResponse<DATA, TRACKING extends TrackingBase> extends ServiceResponse {
         optional (!TRACKING...)         ^tracking;          // the tracking columns, returned for READ commands
         optional (!DATA...)             data;               // the full data record
+        optional f42Ref                 changeRequestRef;   // objectRef of the change request entry, if the change is not applied and queued for approval
     }
 
     /**

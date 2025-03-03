@@ -16,6 +16,7 @@
 package com.arvatosystems.t9t.jackson;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -78,19 +79,10 @@ public final class JacksonTools {
         return createObjectMapper(ALSO_NULLS_DEFAULT, FAIL_ON_UNKNOWN_PROPERTIES_DEFAULT);
     }
 
-    @Deprecated(forRemoval = true, since = "6.4")
-    public static ObjectMapper createJacksonMapperForExports(final boolean writeNulls) {
-        return createObjectMapper(writeNulls, FAIL_ON_UNKNOWN_PROPERTIES_DEFAULT);
+    public static String prettyPrint(final ObjectMapper om, final Object o) throws JsonProcessingException {
+        if (o == null) {
+            return "null";
+        }
+        return om.writerWithDefaultPrettyPrinter().writeValueAsString(o);
     }
-
-    @Deprecated(forRemoval = true, since = "6.4")
-    public static ObjectMapper createJacksonMapperForExports(final boolean writeNulls, final boolean failOnUnkownProperties) {
-        return createObjectMapper(writeNulls, failOnUnkownProperties);
-    }
-
-    @Deprecated(forRemoval = true, since = "6.4")
-    public static ObjectMapper createJacksonMapperForImports() {
-        return createObjectMapper(ALSO_NULLS_DEFAULT, FAIL_ON_UNKNOWN_PROPERTIES_DEFAULT);
-    }
-
 }

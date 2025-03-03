@@ -71,7 +71,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
     }
 
     @Override
-    public <T extends BonaPortable, R extends RequestParameters> void performAsyncBackendRequest(final HttpHeaders httpHeaders, final AsyncResponse resp,
+    public <T, R extends RequestParameters> void performAsyncBackendRequest(final HttpHeaders httpHeaders, final AsyncResponse resp,
         final String infoMsg, final List<T> inputData, final Function<T, R> requestConverterSingle,
         final Function<List<T>, R> requestConverterBatch) {
 
@@ -89,7 +89,10 @@ public class T9tRestProcessor implements IT9tRestProcessor {
                 return;
             }
             try {
-                elementToCheck.validate();
+                if (elementToCheck instanceof BonaPortable bon) {
+                    // can use the Bonaparte extended validation
+                    bon.validate();
+                }
             } catch (final ApplicationException e) {
                 LOGGER.error("Exception during request validation: {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
                 returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, e);

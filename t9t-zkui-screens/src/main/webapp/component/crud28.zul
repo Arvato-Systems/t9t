@@ -7,6 +7,17 @@
         <button28 id="copyButton"/>
         <button28 id="activateButton"/>
         <button28 id="deactivateButton"/>
+        <div id="dataChangeApproval" visible="false">
+            <label value="${l:translate('com','changeId')}: "/>
+            <textbox id="changeId"/>
+            <label value="${l:translate('com','submitChange')}: "/>
+            <checkbox id="submitChange"/>
+        </div>
         <label hflex="1"/>
+    </hlayout>
+    <hlayout id="dataChangeRequestButtons" sclass="buttons" visible="false">
+        <button28 id="saveDataChangesButton" />
+        <button28 id="saveDataChangesAndCloseButton" />
+        <button28 id="closeDataChangesButton" />
     </hlayout>
 </zk>

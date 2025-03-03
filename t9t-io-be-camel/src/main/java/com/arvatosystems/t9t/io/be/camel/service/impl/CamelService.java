@@ -237,4 +237,9 @@ public class CamelService implements ICamelService {
             LOGGER.error("CamelContext could not be started... ", e);
         }
     }
+
+    @Override
+    public void initAfterContextCreation(CamelContext camelContext) {
+        // empty by default
+    }
 }

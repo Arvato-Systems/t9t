@@ -154,4 +154,17 @@ package (com.arvatosystems) t9t.base.types {
     final class FloatVector extends AbstractVector {
         required float[]                                    data;                       // the vector's coordinates
     }
+
+    // Used as null key, used mainly in crud requests
+    final class NoKey {}
+
+    // Wrapper for a Long key, used mainly in crud requests
+    final class LongKey {
+        required f42Ref                                      key;
+    }
+
+    // Wrapper for a String key, used mainly in crud requests
+    final class StringKey {
+        required Unicode(80)                                 key;
+    }
 }

@@ -184,7 +184,7 @@ final class UiGridConfigPrefs {
         }
     }
 
-    static void getLeanGridConfigAsObject(final String resourceId) {
+    static void getLeanGridConfigAsObject(final String resourceId, final boolean isOptional) {
         final String gridId = resourceId.replace('$', '/');
         try {
             final URL url = Resources.getResource("gridconfig/" + gridId + ".json");
@@ -317,6 +317,13 @@ final class UiGridConfigPrefs {
 
             // enrich UI meta, validate and store it
             addUiMeta(vm, viewModelId, ui, gridId);
+        } catch (final IllegalArgumentException iae) {
+            if (isOptional) {
+                LOGGER.info("No resource for grid config {} - but it was marked as optional because the IViewmodel did not specify a SearchRequest");
+            } else {
+                ERROR_COUNTER.incrementAndGet();
+                LOGGER.error("Cannot find resource for lean grid config {}: {}", gridId, iae.getMessage());
+            }
         } catch (final Exception e) {
             ERROR_COUNTER.incrementAndGet();
             LOGGER.error("Parsing error for lean grid config {}: {}", gridId, ExceptionUtil.causeChain(e));

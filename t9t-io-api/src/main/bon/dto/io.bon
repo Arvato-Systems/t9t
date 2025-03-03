@@ -466,7 +466,7 @@ package (com.arvatosystems) t9t.io {
         optional f42Ref                                 ref;                                     // for debugging / maintenance: related objectRef for a group of messages (for example sales order reference)
         optional Integer                                httpResponseCode;                        // if the remote returned some http response code
         optional Integer                                returnCode;                              // last return code returned by receiver (in payload)
-        optional Unicode(80)                            reference;                               // a reference to the client object, or text response or additional error code
+        optional Unicode(1024) allowControlChars        reference;                               // a reference to the client object, or text response or additional error code
         optional Long                                   latency properties noJava, noDDL, noAutoMap;  // the time from creation until recent delivery attempt
         optional Unicode(1024) allowControlChars        errorDetails;                            // additional description of the problem
         optional Integer                                lastResponseTime;                        // response time in milliseconds of last attempt (until response received or timeout)
@@ -512,7 +512,7 @@ package (com.arvatosystems) t9t.io {
         optional shortText                              httpStatusMessage;
         optional Element                                responseObject;                          // full response as received by web service
         optional Integer                                clientReturnCode;                        // parsed business return code from the above (or null)
-        optional shortText                              clientReference;                         // parsed business reference / invocation reference
+        optional Unicode(1024) allowControlChars        clientReference;                         // parsed business reference / invocation reference
         optional Unicode(1024) allowControlChars        errorDetails;                            // additional description of the problem
         optional Integer                                responseTime;                            // the time it took (in ms) to obtain the response
     }

@@ -36,12 +36,23 @@ package (com.arvatosystems) t9t.monitoring.request {
      * */
     class QuerySystemParamsRequest extends RequestParameters {
     }
+
     class QuerySystemParamsResponse extends ServiceResponse {
         required long                    currentTimeMillis;
         required int                     availableProcessors;
         required long                    totalMemory;
         required long                    freeMemory;
         required long                    maxMemory;
+        optional Unicode(36)             hostname;
+
+        optional Long                    jvmUptimeInMillis;
+        optional Unicode(255)            name;
+        optional Unicode(255)            vmName;
+        optional Unicode(255)            vmVendor;
+        optional Unicode(255)            vmVersion;
+        optional Unicode(255)            specName;
+        optional Unicode(255)            specVendor;
+        optional Unicode(255)            specVersion;
     }
 
     /**
@@ -54,4 +65,5 @@ package (com.arvatosystems) t9t.monitoring.request {
     class SetJvmDebugFlagsRequest extends RequestParameters {
         optional shortText required Map<String> values;
     }
+
 }

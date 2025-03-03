@@ -142,6 +142,11 @@ public class LoginViewModel {
         lastScreen = lastScreenBuilder.toString();
     }
 
+    @Command
+    public void onInputEvent() {
+        // dummy method to trigger the event for timeout
+    }
+
     @NotifyChange("showLoginErrorMessage")
     @Command("login")
     public void onLogin(@BindingParam("username") String username, @BindingParam("password") String password, @BindingParam("rememberMe") boolean rememberMe) {

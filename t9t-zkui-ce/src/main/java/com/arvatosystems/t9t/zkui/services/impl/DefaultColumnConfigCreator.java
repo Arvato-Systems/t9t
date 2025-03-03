@@ -38,7 +38,6 @@ import com.arvatosystems.t9t.base.uiprefs.UIGridPreferences;
 import com.arvatosystems.t9t.zkui.services.IColumnConfigCreator;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 
-import de.jpaw.bonaparte.pojos.ui.UIColumnConfiguration;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Fallback;
 
@@ -53,6 +52,7 @@ public class DefaultColumnConfigCreator implements IColumnConfigCreator {
     private Set<String>       currentGrid = null;
     private Listbox           listbox = null;
     protected String          viewModelId = null;
+    private final List<String> allAvailableFieldNames = new LinkedList<>();
 
     @Override
     public void createColumnConfigComponent(ApplicationSession session, Div parent, UIGridPreferences xuiGridPreferences, Set<String> xcurrentGrid) {
@@ -61,7 +61,6 @@ public class DefaultColumnConfigCreator implements IColumnConfigCreator {
         this.uiGridPreferences = xuiGridPreferences;
         viewModelId = xuiGridPreferences.getViewModel();
         listbox = new Listbox();
-        List<String> allAvailableFieldNames = new LinkedList<>();
         xuiGridPreferences.getColumns().stream().forEach(uiColumns -> {
             allAvailableFieldNames.add(uiColumns.getFieldName());
         });
@@ -124,15 +123,15 @@ public class DefaultColumnConfigCreator implements IColumnConfigCreator {
         }
 
         for (Listitem listItem : selectedItems) {
-            UIColumnConfiguration uiColumnConfiguration = uiGridPreferences.getColumns().get(listItem.getIndex());
+            final String fieldName = allAvailableFieldNames.get(listItem.getIndex());
 
             if (listItem.isSelected()) {
-                if (!currentGrid.contains(uiColumnConfiguration.getFieldName())) {
-                    addPair.add(uiColumnConfiguration.getFieldName());
+                if (!currentGrid.contains(fieldName)) {
+                    addPair.add(fieldName);
                 }
             } else {
-                if (currentGrid.contains(uiColumnConfiguration.getFieldName())) {
-                    removePair.add(uiColumnConfiguration.getFieldName());
+                if (currentGrid.contains(fieldName)) {
+                    removePair.add(fieldName);
                 }
             }
         }

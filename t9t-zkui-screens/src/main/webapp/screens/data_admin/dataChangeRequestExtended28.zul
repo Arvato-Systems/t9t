@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xel-method prefix="l"  name="translate"  class="com.arvatosystems.t9t.zkui.util.ZulUtils" signature="String translate(String, String)"?>
+<?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="dataChangeRequestExtended28"?>
+
+<window28 id="dataChangeRequestExtendedWin">
+    <threesections28 gridId="dataChangeRequestExtended" gridContext="toOriginal,showRawCrudRequest,showRawKey">
+        <view28 vflex="1" viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.framework.DataChangeRequestExtendedVM', vmId='dataChangeRequest')">
+            <vlayout width="100%" height="100%">
+                <form28 id="changeWorkFlowConfigCrud" aspect="2" numColumns="2">
+                    <rows>
+                        <cells228 id ="change.pqon"                                value ="@load(vm.changeDto.pqon)" disabled1="true"
+                                  id2="change.changeId"                            value2="@load(vm.changeDto.changeId)" disabled2="true"/>
+                        <row>
+                            <cell>
+                                <label value="${l:translate('dataChangeRequestExtended','operationType')}" />
+                            </cell>
+                            <textbox value="@load(vm.operationType)" disabled="true"/>
+                            <label28 id="change.status" />
+                            <field28 id="change.status" value ="@load(vm.changeDto.status)" disabled1="true"/>
+                        </row>
+                        <row>
+                            <cell>
+                                <label value="${l:translate('dataChangeRequestExtended','dataChange')}" />
+                            </cell>
+                            <cell>
+                                <textbox multiline="true" rows="6" cols="160" hflex="1" value="@load(vm.crudRequestJsonStr)" disabled="true"/>
+                            </cell>
+                            <label28 id="change.key"/>
+                            <cell>
+                                <textbox multiline="true" rows="6" cols="160" hflex="1" value="@load(vm.keyJsonStr)" disabled="true"/>
+                            </cell>
+                        </row>
+                        <row>
+                            <label28 id="change.textSubmitted"/>
+                            <cell>
+                                <textbox multiline="true" hflex="1" value="@load(vm.changeDto.textSubmitted)" disabled="true"/>
+                            </cell>
+                            <label28 id="change.textDecision"/>
+                            <cell>
+                                <textbox multiline="true" hflex="1" value="@load(vm.changeDto.textDecision)" disabled="true"/>
+                            </cell>
+                        </row>
+                        <cells228 id ="change.userIdCreated"                       value ="@load(vm.changeDto.userIdCreated)" disabled1="true"
+                                  id2="change.whenCreated"                         value2="@load(vm.changeDto.whenCreated)"  disabled2="true"/>
+                        <cells228 id ="change.userIdModified"                      value ="@load(vm.changeDto.userIdModified)" disabled1="true"
+                                  id2="change.whenLastModified"                    value2="@load(vm.changeDto.whenLastModified)" disabled2="true"/>
+                        <cells228 id ="change.userIdSubmitted"                     value ="@load(vm.changeDto.userIdSubmitted)" disabled1="true"
+                                  id2="change.whenSubmitted"                       value2="@load(vm.changeDto.whenSubmitted)" disabled2="true"/>
+                        <cells228 id ="change.userIdApprove"                       value ="@load(vm.changeDto.userIdApprove)" disabled1="true"
+                                  id2="change.whenDecided"                         value2="@load(vm.changeDto.whenDecided)" disabled2="true"/>
+                        <cells228 id ="change.userIdActivated"                     value ="@load(vm.changeDto.userIdActivated)" disabled1="true"
+                                  id2="change.whenActivated"                       value2="@load(vm.changeDto.whenActivated)" disabled2="true"/>
+                    </rows>
+                </form28>
+                <hlayout id="actionButtons" sclass="buttons" style="padding-top: 20px">
+                    <button28 id="deleteButton" onClick="@command('deleteDataChangeRequest')" disabled="@load(vm.disableDelete)"/>
+                    <button28 id="editButton" onClick="@command('editDataChangeRequest')" disabled="@load(vm.disableEdit)"/>
+                    <button28 id="reviewButton" onClick="@command('reviewDataChangeRequest')" disabled="@load(vm.disableSubmitReview)"/>
+                    <button28 id="rejectButton" onClick="@command('rejectDataChangeRequest')" disabled="@load(vm.disableReject)"/>
+                    <button28 id="approveButton" onClick="@command('approveDataChangeRequest')" disabled="@load(vm.disableApprove)"/>
+                    <button28 id="activateButton" onClick="@command('activateDataChangeRequest')" disabled="@load(vm.disableActivate)"/>
+                    <label value="${l:translate('dataChangeRequestExtended','comment')}: " />
+                    <textbox id="comment" multiline="true" cols="50" value="@bind(vm.comment)" disabled="@load(vm.disableComment)"/>
+                </hlayout>
+            </vlayout>
+        </view28>
+    </threesections28>
+</window28>

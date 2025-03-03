@@ -19,7 +19,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
+import com.arvatosystems.t9t.base.T9tUtil;
+import com.arvatosystems.t9t.changeRequest.ChangeWorkFlowConfigDTO;
+import com.arvatosystems.t9t.changeRequest.DataChangeRequestDTO;
+import com.arvatosystems.t9t.zkui.services.IChangeWorkFlowConfigDAO;
+import com.arvatosystems.t9t.zkui.util.ApplicationUtil;
+import com.arvatosystems.t9t.zkui.util.JumpTool;
+import de.jpaw.dp.Jdp;
+import jakarta.annotation.Nonnull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.Binder;
@@ -32,7 +41,10 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Hlayout;
+import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Vlayout;
 
 import com.arvatosystems.t9t.base.CrudViewModel;
@@ -70,6 +82,14 @@ public class Crud28 extends Vlayout implements IViewModelOwner, IDataSelectRecei
     @Wire("#deactivateButton") protected Button28 deactivateButton;
     @Wire("#editButton")       protected Button28 editButton;
 
+    @Wire("#dataChangeApproval")                protected Div dataChangeApproval;
+    @Wire("#changeId")                          protected Textbox changeIdTextbox;
+    @Wire("#submitChange")                      protected Checkbox submitChangeCheckbox;
+    @Wire("#dataChangeRequestButtons")          protected Hlayout dataChangeRequestButtons;
+    @Wire("#saveDataChangesButton")             protected Button28 saveDataChangesButton;
+    @Wire("#saveDataChangesAndCloseButton")     protected Button28 saveDataChangesAndCloseButton;
+    @Wire("#closeDataChangesButton")            protected Button28 closeDataChangesButton;
+
     protected IDataSelectReceiver detailsSection;  // the data form, which may be a tabbbox with separate panels
     protected Permissionset perms;  // available after onCreate
     protected CrudMode currentMode = CrudMode.NONE;
@@ -78,9 +98,12 @@ public class Crud28 extends Vlayout implements IViewModelOwner, IDataSelectRecei
     protected String viewModelId;
     protected CrudViewModel<BonaPortable, TrackingBase> crudViewModel;  // set when gridId is defined
     protected final ApplicationSession session = ApplicationSession.get();
+    protected final IChangeWorkFlowConfigDAO changeWorkFlowConfigDAO = Jdp.getRequired(IChangeWorkFlowConfigDAO.class);
     protected final List<Form28> childForms = new ArrayList<Form28>(8);
     protected String cachesDropdown = null;  // if set to non null, a DELETE or SAVE will invalidate the cache for this ID
     protected static final Map<String, Object> NO_ARGS = ImmutableMap.<String, Object>of();
+    private AbstractCrudVM viewModelInstance;
+    protected String dataChangesBackNaviLink;
 
     public Crud28() {
         super();
@@ -157,16 +180,19 @@ public class Crud28 extends Vlayout implements IViewModelOwner, IDataSelectRecei
 
         final Binder binder = BinderUtil.getBinder(this);
         if (binder != null) {
-            AbstractCrudVM viewModelInstance = (AbstractCrudVM)binder.getViewModel();
+            viewModelInstance = (AbstractCrudVM) binder.getViewModel();
             LOGGER.debug("viewmodel is of class {}", viewModelInstance.getClass().getCanonicalName());
             viewModelInstance.setHardLink(this);
             viewModelInstance.setUseProtectedView(useProtectedView);
+            viewModelInstance.setChangeIdSupplier(() -> changeIdTextbox.getValue());
+            viewModelInstance.setSubmitChangeSupplier(() -> submitChangeCheckbox.isChecked());
         }
         // move contents and wire events: A row selected event has to be forwarded to the contents of this component
         List<Component> children = ComponentTools28.moveChilds(this, crudButtons, null);
         if (children != null && !children.isEmpty()) {
             // move it up to be the first child
             for (Component child : children) {
+                insertBefore(crudButtons, dataChangeRequestButtons);
                 insertBefore(child, crudButtons);
                 if (child instanceof IDataSelectReceiver) {
                     detailsSection = (IDataSelectReceiver) child;
@@ -196,6 +222,21 @@ public class Crud28 extends Vlayout implements IViewModelOwner, IDataSelectRecei
         activateButton  .addEventListener(Events.ON_CLICK, ev -> binder.sendCommand("commandActivate", NO_ARGS));
         deactivateButton.addEventListener(Events.ON_CLICK, ev -> binder.sendCommand("commandDeactivate", NO_ARGS));
         editButton      .addEventListener(Events.ON_CLICK, ev -> binder.sendCommand("commandEdit", NO_ARGS));
+
+        dataChangesBackNaviLink = session.getRequestParams() != null ? (String) session.getRequestParams().get(JumpTool.BACK_LINK_2) : null;
+        initializeDataChangeComponents(binder);
+
+        changeIdTextbox.setMaxlength(DataChangeRequestDTO.meta$$changeId.getLength());
+        changeIdTextbox.setCols(DataChangeRequestDTO.meta$$changeId.getLength());
+        boolean allowAnyCrud = perms.contains(OperationType.CREATE) || perms.contains(OperationType.UPDATE) || perms.contains(OperationType.DELETE)
+                || perms.contains(OperationType.ACTIVATE) || perms.contains(OperationType.INACTIVATE);
+
+        final ChangeWorkFlowConfigDTO changeWorkFlowConfig = changeWorkFlowConfigDAO.getChangeWorkFlowConfigByPqon(crudViewModel.dtoClass.getPqon());
+        final boolean changesNeedApproval = allowAnyCrud && changeWorkFlowConfig != null && (T9tUtil.isTrue(changeWorkFlowConfig.getApprovalRequiredForCreate())
+                || T9tUtil.isTrue(changeWorkFlowConfig.getApprovalRequiredForUpdate()) || T9tUtil.isTrue(changeWorkFlowConfig.getApprovalRequiredForDelete())
+                || T9tUtil.isTrue(changeWorkFlowConfig.getApprovalRequiredForActivation())
+                || T9tUtil.isTrue((changeWorkFlowConfig.getApprovalRequiredForDeactivation())));
+        dataChangeApproval.setVisible(changesNeedApproval);
     }
 
     protected void invalidateCache() {
@@ -267,6 +308,12 @@ public class Crud28 extends Vlayout implements IViewModelOwner, IDataSelectRecei
         updateCrudButtonStates();
     }
 
+    @Override
+    public void dataChangeRequestCreated() {
+        changeIdTextbox.setValue(null);
+        submitChangeCheckbox.setChecked(false);
+    }
+
     // setter on pseudo-field with the sole purpose to post an event to the grid
     @Override
     public void setRefresher(Object eventData) {
@@ -323,5 +370,35 @@ public class Crud28 extends Vlayout implements IViewModelOwner, IDataSelectRecei
 
     public void setCachesDropdown(String cachesDropdown) {
         this.cachesDropdown = cachesDropdown;
+    }
+
+    /**
+     * Provide data to populate the crud form and set the save handler.
+     * @param data          the {@link BonaPortable} data to populate the form
+     * @param saveHandler   the save handler {@link Consumer<BonaPortable>} to be called when the save button is clicked
+     */
+    @SuppressWarnings("unchecked")
+    public void setDataChanges(@Nonnull final BonaPortable data, @Nonnull final Consumer<BonaPortable> saveHandler) {
+        setSelectionData(new EventDataSelect28(new DataWithTracking<>(data), 0, null));
+        viewModelInstance.setExternalSaveHandler(saveHandler);
+        crudButtons.setVisible(false);
+        dataChangeRequestButtons.setVisible(true);
+    }
+
+    private void initializeDataChangeComponents(@Nonnull final Binder binder) {
+        saveDataChangesButton.addEventListener(Events.ON_CLICK, ev -> saveDataChanges(binder));
+        saveDataChangesAndCloseButton.addEventListener(Events.ON_CLICK, ev -> {
+            saveDataChanges(binder);
+            jumpDataChanges();
+        });
+        closeDataChangesButton.addEventListener(Events.ON_CLICK, ev -> jumpDataChanges());
+    }
+
+    private void saveDataChanges(@Nonnull final Binder binder) {
+        binder.sendCommand("commandSave", NO_ARGS);
+    }
+
+    private void jumpDataChanges() {
+        ApplicationUtil.navBackToScreen(dataChangesBackNaviLink);
     }
 }

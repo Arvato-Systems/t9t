@@ -1,0 +1,50 @@
+<window28 id="sessionInfoWin" viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.framework.SessionInfoVM')">
+    <groupbox28 vflex="1">
+        <form28 id="sessionInfoForm" viewModelId="sessionInfo" vflex="1" numColumns="3">
+            <rows>
+                <cells228 id ="tenantIdForView"              value ="@load(vm.tenantId)"
+                          id2="userId"                       value2="@load(vm.userId)" readonly1 = "true" readonly2 = "true"/>
+                <cells328 id ="currentLocale"                value ="@load(vm.currentLocale)"
+                          id2="currentTimeZone"              value2="@load(vm.currentTimeZone)"
+                          id3="currentDateTime"              value3="@load(vm.currentDateTime)" readonly1 = "true" readonly2 = "true" readonly3 = "true"/>        
+    
+                <row>
+                    <cell colspan="3" height="20px"/>
+                </row>
+    
+                <cells328 id ="uiHostName"                   value ="@load(vm.uiSystemParams.hostname)"
+                          id2="uiAvailableProcessors"        value2="@load(vm.uiSystemParams.availableProcessors)"
+                          id3="uiUptime"                     value3="@load(vm.uiUptime)" readonly1 = "true" readonly2 = "true" readonly3 = "true"/>        
+                <cells328 id ="uiTotalMemory"                value ="@load(vm.uiTotalMemory)"
+                          id2="uiFreeMemory"                 value2="@load(vm.uiFreeMemory)"
+                          id3="uiMaxMemory"                  value3="@load(vm.uiMaxMemory)" readonly1 = "true" readonly2 = "true" readonly3 = "true"/>        
+                <cells328 id ="uiJvmVendor"                  value ="@load(vm.uiSystemParams.vmVendor)"
+                          id2="uiJvmVersion"                 value2="@load(vm.uiSystemParams.vmVersion)"
+                          id3="uiJvmName"                    value3="@load(vm.uiSystemParams.vmName)" readonly1 = "true" readonly2 = "true" readonly3 = "true"/>        
+                <row>
+                    <cell colspan="3" height="20px"/>
+                </row>
+    
+                <cells328 id ="backendHostName"              value ="@load(vm.backendSystemParams.hostname)"
+                          id2="backendAvailableProcessors"   value2="@load(vm.backendSystemParams.availableProcessors)"
+                          id3="backendUptime"                value3="@load(vm.backendUptime)" readonly1 = "true" readonly2 = "true" readonly3 = "true"/>        
+                <cells328 id ="backendTotalMemory"           value ="@load(vm.backendTotalMemory)"
+                          id2="backendFreeMemory"            value2="@load(vm.backendFreeMemory)"
+                          id3="backendMaxMemory"             value3="@load(vm.backendMaxMemory)" readonly1 = "true" readonly2 = "true" readonly3 = "true"/>        
+                <cells328 id ="backendJvmVendor"             value ="@load(vm.backendSystemParams.vmVendor)"
+                          id2="backendJvmVersion"            value2="@load(vm.backendSystemParams.vmVersion)"
+                          id3="backendJvmName"               value3="@load(vm.backendSystemParams.vmName)" readonly1 = "true" readonly2 = "true" readonly3 = "true"/>        
+
+                <row>
+                    <cell colspan="3" height="20px"/>
+                </row>
+                
+                <row>
+                    <cell colspan="3">
+                          <button28 id="refreshButton" onClick="@command('refresh')"></button28>
+                    </cell>
+                </row>
+            </rows>
+        </form28>
+    </groupbox28>
+</window28>

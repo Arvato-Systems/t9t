@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 import apiw.*
+import api.auth.*
+import t9t.base.api.*
 import t9t.base.types.*
 
 package (com.arvatosystems) t9t.changeRequest {
@@ -21,6 +23,30 @@ package (com.arvatosystems) t9t.changeRequest {
         dropdown is com.arvatosystems.t9t.annotations.UseDropDownInUI(),
         notupdatable is com.arvatosystems.t9t.annotations.NotUpdatable;
 
+    /** Status transition for data change requests:
+
+        WORK_IN_PROGRESS: Changes are not finalized yet. Initial status. This status can only be changed to following statuses.
+            - TO_REVIEW -> Submit change for review. Status will change back to WORK_IN_PROGRESS if any further changes are done on this change request data.
+            - CONFLICT  -> If another change request with similar PQON and key is activated while this change is in progress.
+
+        TO_REVIEW: Changes are submitted for review. This status can only be changed to following statuses.
+            - APPROVED -> Once changes are approved by the reviewer. Or can directly change to ACTIVATED if auto activation is enabled in configuration.
+            - REJECTED -> If changes are rejected by the reviewer. User can modify the data in change request to change the status back to WORK_IN_PROGRESS.
+            - CONFLICT -> If another change request with similar PQON and key is activated while this change is in review.
+
+        APPROVED: Changes are approved and can be activated. This status can only be changed to following statuses.
+            - ACTIVATED -> Once changes are activated by the user.
+            - REJECTED  -> If changes are rejected by the reviewer. User can modify the data in change request to change the status back to WORK_IN_PROGRESS.
+            - CONFLICT  -> If another change request with similar PQON and key is activated while this change is not activated yet.
+
+        REJECTED: Changes are rejected. This status can only be changed to following statuses.
+            - WORK_IN_PROGRESS -> If changes are modified after rejection.
+
+        ACTIVATED: Changes are applied to live table. Final status, no more changes after this status.
+
+        CONFLICT: Changes for the similar PQON and key is activated after this change is created but not yet activated or rejected. This status can only be changed to following statuses.
+            - WORK_IN_PROGRESS -> If changes are modified after conflict.
+    */
     enum ChangeWorkFlowStatus {
         WORK_IN_PROGRESS                 = "W",
         TO_REVIEW                        = "R",
@@ -31,41 +57,51 @@ package (com.arvatosystems) t9t.changeRequest {
     }
 
     class DataChangeRequestRef extends Ref {}
-    class DataChangeRequestKey extends DataChangeRequestRef {
+    final class DataChangeRequestKey extends DataChangeRequestRef {
         required pqon                       pqon;
         required shortText                  changeId;
-        required object                     key properties serialized;
+        optional Object                     key;
+    }
+    final class DataChangeRequestInternalKey extends DataChangeRequestRef {
+        required pqon                       pqon;
+        required shortText                  changeId;
+        required byte[]                     key;
     }
 
-    /** Used for approval workflow for data change requests (mainly config data) */
+    /** Used for approval workflow for data change requests (mainly config data). It will store the changes requested by the user and the status of the change*/
     class DataChangeRequestDTO extends DataChangeRequestRef {
         required pqon                               pqon properties notupdatable;               // data (table) class PQON for which the change is requested
         required t9tShortId                         changeId properties notupdatable;           // a unique identifier of the change
-        required object                             key properties notupdatable, serialized, compact2; // primary key of the data object which is being changed
-        optional Object                             data properties serialized, compact2;       // the intended data object after the change (null in case of deletion)
+        optional Object                             key properties notupdatable, serialized, compact2, notNull; // primary key of the data object which is being changed
+        required (RequestParameters...)             crudRequest properties serialized, compact2; // the actual CRUD request which will be used to apply the change
         required enum ChangeWorkFlowStatus          status;                                     // current status of the change work flow
-        required userId                             userIdCreated;                              // user who initiated the change
+        required userId                             userIdCreated properties dropdown="userId"; // user who initiated the change
         required instant                            whenCreated;                                // when the change was initiated
-        required userId                             userIdModified;                             // user who last modified the change
+        required userId                             userIdModified properties dropdown="userId"; // user who last modified the change
         required instant                            whenLastModified;                           // when the change was last modified
-        optional userId                             userIdSubmitted;                            // user who submitted the change for approval
+        optional userId                             userIdSubmitted properties dropdown="userId"; // user who submitted the change for approval
         optional Instant                            whenSubmitted;                              // when the change was submitted for approval
         optional Unicode(255) allowControlChars     textSubmitted;                              // description of the changes, entered by the submitter
-        optional userId                             userIdApprove;                              // user ID who has approved (or rejected) the approval
+        optional userId                             userIdApprove properties dropdown="userId"; // user ID who has approved (or rejected) the approval
         optional Instant                            whenDecided;                                // when the decision was made (approval or rejection)
         optional Unicode(255) allowControlChars     textDecision;                               // additional explanation for the decision
-        optional userId                             userIdActivated;                            // user ID who has activated (move the change to live table) the change
+        optional userId                             userIdActivated properties dropdown="userId"; // user ID who has activated (move the change to live table) the change
         optional Instant                            whenActivated;                              // when the change was activated
     }
 
+    class DataChangeRequestExtendedDTO {
+        required (DataChangeRequestDTO)             change;
+        required enumset Permissionset              permissions;
+    }
+
     class ChangeWorkFlowConfigRef extends Ref {}
-    class ChangeWorkFlowConfigKey extends ChangeWorkFlowConfigRef {
+    final class ChangeWorkFlowConfigKey extends ChangeWorkFlowConfigRef {
         required pqon                       pqon;
     }
 
-    /** Configure the PQON of table which need approval work flow for new changes */
+    /** Configure the PQON of table which need approval work flow for new changes. Also hold other config params need to maintain the approval workflow of that PQON data changes*/
     class ChangeWorkFlowConfigDTO extends ChangeWorkFlowConfigRef {
-        required pqon                       pqon properties notupdatable, dropdown="cfgPqon";   // data (table) class PQON for which change work flow is needed
+        required pqon                       pqon properties notupdatable, dropdown="cfgPQON";   // data (table) class PQON for which change work flow is needed
         required boolean                    approvalRequiredForCreate;                          // if true, approvals are required to create new records
         required boolean                    approvalRequiredForUpdate;                          // if true, approvals are required to update records
         required boolean                    approvalRequiredForDelete;                          // if true, approvals are required to delete records
@@ -74,5 +110,7 @@ package (com.arvatosystems) t9t.changeRequest {
         required boolean                    separateActivation;                                 // If true, activation must be manually triggered
         required boolean                    privateChangeIds;                                   // If true, then only the user who submitted a change can make further changes to it or resubmit it. Otherwise, everyone with change permissions can work on any pending change.
         required boolean                    enforceFourEyes;                                    // If true, then every change must be approved by a different user than the one who submitted it.
+        optional Unicode(100)               screenLocation;                                     // location of UI screen to display and edit the changes
+        optional Unicode(50)                viewModelId;                                        // mainly use to get key from data to search and display original data record
     }
 }

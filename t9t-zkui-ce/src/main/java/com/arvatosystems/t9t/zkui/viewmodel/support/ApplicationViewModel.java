@@ -32,6 +32,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.arvatosystems.t9t.zkui.services.IAuthenticationService;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -479,13 +481,27 @@ public class ApplicationViewModel {
             naviContentMap.remove(previousNaviKey);
         }
 
+        if (params == null) {
+            params = new HashMap<>(2);
+        }
+        // populate additional params needed for back navigation
+        additionalParamsForBackNavigation(params);
+
+        // get cache suffix, which is used to cache the specific navigation content
+        final String cacheSuffix = getCacheSuffix(params);
+        final String key;
+        if (cacheSuffix != null) {
+            params.put(JumpTool.CURRENT_CACHE_SUFFIX, cacheSuffix);
+            key = navi.getNaviId() + cacheSuffix;
+        } else {
+            key = navi.getNaviId();
+        }
+
         as.setRequestParams(params);
 
         Map<String, String> map = new HashMap<String, String>();
         map.put(NaviConfig.PERMISSION, navi.getPermission());
         map.put(NaviConfig.LINK, navi.getLink());
-
-        String key = navi.getNaviId();
 
         if (previouslyCachingTypeWasCreateWithoutCaching) {
             panel.getChildren().clear();
@@ -589,7 +605,7 @@ public class ApplicationViewModel {
         LOGGER.debug("Jump->to:{}:{} with:params={}", naviLink, cachingType, paramsToDisplay);
 
         // menu focus
-        if (navi.isMenuItemVisible()) {
+        if (navi.isMenuItemVisible() && needMenuFocus(params)) {
             setNaviSelection(navi);
         }
 
@@ -838,5 +854,47 @@ public class ApplicationViewModel {
                 sb.append(',').append(' ');
             }
         }
+    }
+
+    /**
+     * Get cahce suffix from the jump params or session request params.
+     * @param params map {@link Map}
+     * @return cache suffix
+     */
+    @Nullable
+    private String getCacheSuffix(@Nullable Map<String, Object> params) {
+        final String cacheSuffix = params != null ? (String) params.get(JumpTool.CACHE_SUFFIX) : null;
+        if (cacheSuffix != null) {
+            if (as.getRequestParams() != null) {
+                as.getRequestParams().remove(JumpTool.CACHE_SUFFIX);
+            }
+            return cacheSuffix;
+        }
+        return as.getRequestParams() != null ? (String) as.getRequestParams().get(JumpTool.BACK_CACHE_SUFFIX) : null;
+    }
+
+    /**
+     * If the navigation sets the back link, then add the current cache suffix as the back cache suffix in jump params.
+     * It will be used for back navigation, together with the back link.
+     * @param params map {@link Map}
+     */
+    private void additionalParamsForBackNavigation(@Nonnull final Map<String, Object> params) {
+        if (params.containsKey(JumpTool.BACK_LINK_2) && as.getRequestParams() != null) {
+            final String currentCacheSuffix = (String) as.getRequestParams().get(JumpTool.CURRENT_CACHE_SUFFIX);
+            if (currentCacheSuffix != null) {
+                params.put(JumpTool.BACK_CACHE_SUFFIX, currentCacheSuffix);
+            }
+        }
+    }
+
+    /**
+     * Check if the menu focus is needed.
+     * @param params map {@link Map}
+     * @return true if the menu focus is needed
+     */
+    private boolean needMenuFocus(@Nullable final Map<String, Object> params) {
+        // Special navigation case, no need menu focus.
+        return (params == null || !params.containsKey(JumpTool.CACHE_SUFFIX))
+                && (as.getRequestParams() == null || !as.getRequestParams().containsKey(JumpTool.BACK_CACHE_SUFFIX));
     }
 }

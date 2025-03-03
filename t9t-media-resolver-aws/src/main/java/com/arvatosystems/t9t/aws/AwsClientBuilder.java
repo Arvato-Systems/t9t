@@ -24,7 +24,12 @@ import de.jpaw.util.ConfigurationReaderFactory;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProviderChain;
+import software.amazon.awssdk.auth.credentials.EnvironmentVariableCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.SystemPropertyCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.WebIdentityTokenFileCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.S3ClientBuilder;
@@ -39,6 +44,7 @@ public final class AwsClientBuilder {
     private static final String S3_KEY = "t9t.s3.key";
     private static final String S3_SECRET = "t9t.s3.secret";
     private static final String S3_REGION = "t9t.s3.region";
+    private static final String S3_IRSA = "t9t.s3.irsa";
 
     private AwsClientBuilder() { }
 
@@ -48,8 +54,9 @@ public final class AwsClientBuilder {
 
         try {
             final String forcePathStyle = CONFIG_READER.getProperty(S3_PATH_SYTLE, null);
-            if (forcePathStyle != null)
+            if (forcePathStyle != null) {
                 s3ClientBuilder.forcePathStyle(true);
+            }
 
             final String uri = CONFIG_READER.getProperty(S3_URI, null);
             if (uri != null) {
@@ -57,6 +64,8 @@ public final class AwsClientBuilder {
                 s3ClientBuilder.endpointOverride(s3Uri);
             }
 
+            // check for Kubernetes IRSA
+            final String needIrsa = CONFIG_READER.getProperty(S3_IRSA, null);
             final String key = CONFIG_READER.getProperty(S3_KEY, null);
             final String secret = CONFIG_READER.getProperty(S3_SECRET, null);
             if (key != null && secret != null) {
@@ -64,11 +73,20 @@ public final class AwsClientBuilder {
                 final AwsCredentialsProvider credentialProvider = StaticCredentialsProvider.create(credentials);
 
                 s3ClientBuilder.credentialsProvider(credentialProvider);
+            } else if (needIrsa != null) {
+                final AwsCredentialsProviderChain.Builder cpc = AwsCredentialsProviderChain.builder();
+
+                cpc.addCredentialsProvider(WebIdentityTokenFileCredentialsProvider.create()); // kubernetes IRSA
+                cpc.addCredentialsProvider(SystemPropertyCredentialsProvider.create());
+                cpc.addCredentialsProvider(EnvironmentVariableCredentialsProvider.create());
+                cpc.addCredentialsProvider(ProfileCredentialsProvider.create());
+
+                s3ClientBuilder.credentialsProvider(cpc.build());
             }
 
             final String region = CONFIG_READER.getProperty(S3_REGION, null);
             if (region != null) {
-                Region s3Region = Region.of(region);
+                final Region s3Region = Region.of(region);
                 s3ClientBuilder.region(s3Region);
             }
 

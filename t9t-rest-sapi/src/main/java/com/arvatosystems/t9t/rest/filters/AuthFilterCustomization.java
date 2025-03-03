@@ -31,7 +31,7 @@ import com.arvatosystems.t9t.base.auth.ApiKeyAuthentication;
 import com.arvatosystems.t9t.base.auth.JwtAuthentication;
 import com.arvatosystems.t9t.base.auth.PasswordAuthentication;
 import com.arvatosystems.t9t.base.types.AuthenticationParameters;
-import com.arvatosystems.t9t.ipblocker.services.impl.IPAddressBlocker;
+import com.arvatosystems.t9t.ipblocker.services.IIPAddressBlocker;
 import com.arvatosystems.t9t.rest.services.IAuthFilterCustomization;
 import com.arvatosystems.t9t.rest.services.IGatewayAuthChecker;
 import com.arvatosystems.t9t.rest.utils.RestUtils;
@@ -73,7 +73,7 @@ public class AuthFilterCustomization implements IAuthFilterCustomization {
     protected final Cache<String, Boolean> goodAuths = Caffeine.newBuilder().maximumSize(MAX_AUTH_ENTRIES).expireAfterWrite(5L, TimeUnit.MINUTES)
       .<String, Boolean>build();
 
-    protected final IPAddressBlocker ipBlockerService = Jdp.getRequired(IPAddressBlocker.class);
+    protected final IIPAddressBlocker ipBlockerService = Jdp.getRequired(IIPAddressBlocker.class);
     protected final IGatewayAuthChecker authCheckerService = Jdp.getRequired(IGatewayAuthChecker.class);
 
 
@@ -213,7 +213,7 @@ public class AuthFilterCustomization implements IAuthFilterCustomization {
     protected boolean filterBasic(final ContainerRequestContext requestContext, final String authHeader, final String authParam) {
         // decompose basic auth into username / password
         // create User+Password Hash
-        final String decoded = new String(Base64.getUrlDecoder().decode(authHeader), StandardCharsets.UTF_8);
+        final String decoded = new String(Base64.getUrlDecoder().decode(authParam), StandardCharsets.UTF_8);
         final int colonPos = decoded.indexOf(':');
         if (colonPos > 0 && colonPos < decoded.length()) {
             final String userId = decoded.substring(0, colonPos);

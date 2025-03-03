@@ -78,7 +78,9 @@ public class View28 extends Div implements IViewModelOwner, IDataSelectReceiver,
 //            ((ViewOnlyVM)viewModelInstance).setSelectionData(eventData.getDwt());
 //        }
         // AbstractCrudVM viewModelInstance = (AbstractCrudVM)binder.getViewModel();
-            binder.sendCommand("setSelectionData", Collections.singletonMap("dwt", eventData.getDwt()));
+            if (binder != null) {
+                binder.sendCommand("setSelectionData", Collections.singletonMap("dwt", eventData.getDwt()));
+            }
         }
     }
 

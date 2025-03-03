@@ -167,6 +167,10 @@ public class FieldFactory {
                     else
                         return new XenumsetField(fieldname, filter, desc, gridId, session, xesd);
                 }
+                final String multiDropdown = fieldProperties.get(Constants.UiFieldProperties.MULTI_DROPDOWN);
+                if (multiDropdown != null) {
+                    return new DropdownField(fieldname, filter, desc, gridId, session, multiDropdown);
+                }
                 return new TextField(fieldname, filter, desc, gridId, session);
             case TEMPORAL:
                 switch (bonaparteType) {

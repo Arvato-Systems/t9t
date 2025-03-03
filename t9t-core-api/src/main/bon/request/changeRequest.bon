@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import t9t.base.api.*
 import t9t.base.entities.*
 import t9t.base.search.*
 import t9t.base.crud.*
@@ -20,10 +21,28 @@ import t9t.changeRequest.*
 
 package (com.arvatosystems) t9t.changeRequest.request {
 
-    class DataChangeRequestCrudRequest            extends CrudSurrogateKeyRequest<DataChangeRequestRef, DataChangeRequestDTO, FullTrackingWithVersion> {}
     class DataChangeRequestSearchRequest          extends SearchRequest<DataChangeRequestDTO, FullTrackingWithVersion> {}
+    class DataChangeRequestExtendedSearchRequest  extends SearchRequest<DataChangeRequestExtendedDTO, FullTrackingWithVersion> {}
 
     class ChangeWorkFlowConfigCrudRequest         extends CrudSurrogateKeyRequest<ChangeWorkFlowConfigRef, ChangeWorkFlowConfigDTO, FullTrackingWithVersion> {}
     class ChangeWorkFlowConfigSearchRequest       extends SearchRequest<ChangeWorkFlowConfigDTO, FullTrackingWithVersion> {}
 
+    /** This request is used to change the status for the approval work flow. Check the comments on ChangeWorkFlowStatus enum for more details of status transition.*/
+    class UpdateDataChangeRequestStatusRequest    extends RequestParameters {
+        required (DataChangeRequestRef...)          dataChangeRequestRef;   // reference of change request
+        required enum ChangeWorkFlowStatus          newStatus;              // new status to be set
+        optional Unicode(255) allowControlChars     comment;                // used for textSubmitted field if newStatus is TO_REVIEW, and textDecision field if newStatus is APPROVED or REJECTED
+    }
+
+    /** This request is used to modify the data in the change request. The status field of change request is changed to WORK_IN_PROGRESS.
+        This request will throw exception if the current status can't change to WORK_IN_PROGRESS. Check the comments on ChangeWorkFlowStatus enum for more details. */
+    class ModifyDataChangeRequestDataRequest      extends RequestParameters {
+        required (DataChangeRequestRef...)          dataChangeRequestRef;
+        required Object                             data;
+    }
+
+    /** This request is used to delete the change request. Change requests with status ACTIVATED, can't be deleted. */
+    class DeleteDataChangeRequestRecordRequest    extends RequestParameters {
+        required (DataChangeRequestRef...)          dataChangeRequestRef;
+    }
 }

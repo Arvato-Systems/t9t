@@ -36,6 +36,11 @@ public final class JumpTool {
     public static final String BACK_LINK_2      = "paramBackNaviLink";
     public static final String SELECTED_PARAM_1 = "selected";
     public static final String SELECTED_PARAM_2 = "setSelectedFromJump";
+    public static final String DATA             = "data";
+    public static final String SAVE_HANDLER     = "saveHandler";
+    public static final String CACHE_SUFFIX     = "cacheSuffix";
+    public static final String CURRENT_CACHE_SUFFIX = "currentCacheSuffix";
+    public static final String BACK_CACHE_SUFFIX = "backCacheSuffix";
 
     public static void jump(final String targetZul, final String fieldName, final String id, final String backNaviLink) {
         final UnicodeFilter f = new UnicodeFilter(fieldName);

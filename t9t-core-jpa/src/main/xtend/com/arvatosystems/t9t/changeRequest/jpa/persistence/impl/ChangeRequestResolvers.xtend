@@ -27,4 +27,5 @@ class ChangeRequestResolvers {
     def DataChangeRequestEntity         getDataChangeRequestEntity(DataChangeRequestRef entityRef) { return null; }
     def ChangeWorkFlowConfigEntity      getChangeWorkFlowConfigEntity(ChangeWorkFlowConfigRef entityRef) { return null; }
 
+    def ChangeWorkFlowConfigEntity      findByPqon(boolean onlyActive, String pqon) { return null; }
 }

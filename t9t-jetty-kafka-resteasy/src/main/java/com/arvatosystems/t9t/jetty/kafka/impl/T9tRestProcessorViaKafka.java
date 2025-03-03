@@ -53,7 +53,6 @@ import com.arvatosystems.t9t.xml.GenericResult;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
-import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.MessageParserException;
 import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.dp.Jdp;
@@ -209,7 +208,7 @@ public class T9tRestProcessorViaKafka extends T9tRestProcessor implements IT9tRe
     }
 
     @Override
-    public <T extends BonaPortable, R extends RequestParameters> void performAsyncBackendRequestViaKafka(final HttpHeaders httpHeaders,
+    public <T, R extends RequestParameters> void performAsyncBackendRequestViaKafka(final HttpHeaders httpHeaders,
         final AsyncResponse resp, final String pathInfo, final List<T> inputData, final Function<T, R> requestParameterConverter,
             final Function<R, String> partitionKeyExtractor) {
         if (!enableKafka || !kafkaTransmitter.initialized()) {

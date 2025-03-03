@@ -88,6 +88,7 @@ public class T9tException extends ApplicationException {
     public static final int NO_SUCH_REQUEST = OFFSET_DENIED + 44;
     public static final int UPDATE_DECLINED = OFFSET_DENIED + 45;
     public static final int NO_IMPLEMENTATION_FOR_SPECIFIED_QUALIFIER = OFFSET + 46;
+    public static final int ATTEMPT_TO_CHANGE_FROZEN_FIELD = OFFSET_LOGIC_ERROR + 47;
 
     public static final int STALLED_LOG_WRITER = OFFSET_TIMEOUT + 50;
     public static final int REQUEST_HANDLER_RETURNED_NULL = OFFSET_LOGIC_ERROR + 51;
@@ -141,7 +142,8 @@ public class T9tException extends ApplicationException {
 
     public static final int NOT_APPLICABLE = OFFSET + 125;
     public static final int NO_ACTIVE_FLAG = OFFSET + 126;
-
+    public static final int MISSING_CHANGE_ID = OFFSET + 127;
+    public static final int MISSING_DATA_FOR_CHANGE_REQUEST = OFFSET + 128;
 
     public static final int NO_DATA_CACHED = OFFSET_LOGIC_ERROR + 129;
 
@@ -155,6 +157,12 @@ public class T9tException extends ApplicationException {
     public static final int MALFORMATTED_FIELDNAME      = OFFSET_LOGIC_ERROR + 136;
     public static final int NOT_ENUM_INSTANCE           = OFFSET_LOGIC_ERROR + 137;
     public static final int TOO_HIGH_RESULT_SIZE_FOR_SORTING = OFFSET_LOGIC_ERROR + 138;
+
+    public static final int CHANGE_REQUEST_PERMISSION_ERROR = OFFSET_VALIDATION_ERROR + 139;
+    public static final int INVALID_CHANGE_REQUEST_STATUS = OFFSET + 140;
+    public static final int CHANGE_REQUEST_FINALIZED = OFFSET + 141;
+    public static final int INVALID_CHANGE_REQUEST = OFFSET + 143;
+    public static final int CHANGE_REQUEST_ACTIVATION_ERROR = OFFSET + 144;
 
     // Codes specific to getting sequence numbers (artificial keys for JPA)
     public static final int JDBC_BAD_TYPE_RETURNED      = OFFSET_DB_ERROR + 150;
@@ -455,6 +463,7 @@ public class T9tException extends ApplicationException {
         registerCode(NO_SUCH_REQUEST, "Request not received or not yet complete");
         registerCode(UPDATE_DECLINED, "Data record is modified. Update is declined.");
         registerCode(NO_IMPLEMENTATION_FOR_SPECIFIED_QUALIFIER, "There is no implementation for the specified qualifier");
+        registerCode(ATTEMPT_TO_CHANGE_FROZEN_FIELD, "Attempt to change a field which is frozen");
 
         registerCode(JWT_EXPIRED, MSG_JWT_EXPIRED);
         registerCode(JWT_TIMING,  "The JWT has unplausible time information");
@@ -483,6 +492,11 @@ public class T9tException extends ApplicationException {
         registerCode(MALFORMATTED_FIELDNAME,       "Badly formatted field name: array index not of form [ (digits) ]");
         registerCode(NOT_ENUM_INSTANCE,            "enum(set) does not have requested instance name");
         registerCode(TOO_HIGH_RESULT_SIZE_FOR_SORTING,  "Too high result size for sorting");
+        registerCode(CHANGE_REQUEST_PERMISSION_ERROR,   "No permission for this action on the change request");
+        registerCode(INVALID_CHANGE_REQUEST_STATUS,     "Invalid status for change request");
+        registerCode(CHANGE_REQUEST_FINALIZED,          "Change request is already finalized");
+        registerCode(INVALID_CHANGE_REQUEST,            "Change request is invalid!");
+        registerCode(CHANGE_REQUEST_ACTIVATION_ERROR,   "Change request activation failed!");
 
 
         // Codes specific to getting sequence numbers (artificial keys for JPA)
@@ -517,6 +531,8 @@ public class T9tException extends ApplicationException {
         registerCode(NOT_APPLICABLE, "Operation not applicable");
         registerCode(NO_ACTIVE_FLAG, "No active flag - activate / deactivate not possible");
         registerCode(NO_DATA_CACHED, "No cached data found for tenant");
+        registerCode(MISSING_CHANGE_ID, "ChangeId is required for approval request");
+        registerCode(MISSING_DATA_FOR_CHANGE_REQUEST, "Unable to found data for the CRUD request!");
 
         registerCode(UNRECOGNIZED_SORT_PARAMETER, "Passed sortring parameter is unknown.");
         registerCode(INCORRECT_RESPONSE_CLASS, "The result class was not of the expected type");

@@ -410,4 +410,10 @@ package (com.arvatosystems) t9t.base.request {
     class GetQualifiersResponse extends ServiceResponse {
         required meta.identifier required Set<>     qualifiers;
     }
+
+    class GetConfigPQONsRequest extends RequestParameters return GetConfigPQONsResponse {}
+
+    class GetConfigPQONsResponse extends ServiceResponse {
+        required pqon required Set<> pqons;
+    }
 }

@@ -18,6 +18,7 @@ package com.arvatosystems.t9t.zkui.components.datafields;
 import java.util.Collections;
 import java.util.Map;
 
+import jakarta.annotation.Nonnull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zul.Combobox;
@@ -61,6 +62,11 @@ public class DataFieldFactory implements IDataFieldFactory {
         return new XEnumsetTextboxDataField(params, enumDtoRestrictions);
     }
 
+    @Nonnull
+    protected IDataField createMultiStringDropdownDataField(@Nonnull final DataFieldParameters params) {
+        return new TextDataField(params);
+    }
+
     @Override
     public IDataField createField(final DataFieldParameters params, final CrudViewModel<BonaPortable, TrackingBase> crudViewModel) {
         try {
@@ -96,6 +102,9 @@ public class DataFieldFactory implements IDataFieldFactory {
                 }
                 if (path.endsWith("tenantId") && !fieldProperties.containsKey("nodropdown"))
                     return new TenantDataField(params, TenantIsolationCategoryType.factory(crudViewModel.dtoClass.getProperty("tenantCategory")));
+                if (fieldProperties.containsKey(Constants.UiFieldProperties.MULTI_DROPDOWN)) {
+                    return createMultiStringDropdownDataField(params);
+                }
                 return new TextDataField(params);
             case BASICNUMERIC:
                 switch (javaType) {

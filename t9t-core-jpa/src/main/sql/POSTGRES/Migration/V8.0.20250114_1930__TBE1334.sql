@@ -29,6 +29,8 @@ CREATE TABLE p28_cfg_change_work_flow_config (
     , separate_activation boolean NOT NULL
     , private_change_ids boolean NOT NULL
     , enforce_four_eyes boolean NOT NULL
+    , screen_location varchar(100)
+    , view_model_id varchar(50)
 );
 
 ALTER TABLE p28_cfg_change_work_flow_config ADD CONSTRAINT p28_cfg_change_work_flow_config_pk PRIMARY KEY (
@@ -59,6 +61,8 @@ COMMENT ON COLUMN p28_cfg_change_work_flow_config.approval_required_for_activati
 COMMENT ON COLUMN p28_cfg_change_work_flow_config.separate_activation IS 'If true, activation must be manually triggered';
 COMMENT ON COLUMN p28_cfg_change_work_flow_config.private_change_ids IS 'If true, then only the user who submitted a change can make further changes to it or resubmit it. Otherwise, everyone with change permissions can work on any pending change.';
 COMMENT ON COLUMN p28_cfg_change_work_flow_config.enforce_four_eyes IS 'If true, then every change must be approved by a different user than the one who submitted it.';
+COMMENT ON COLUMN p28_cfg_change_work_flow_config.screen_location IS 'location of UI screen to display and edit the changes';
+COMMENT ON COLUMN p28_cfg_change_work_flow_config.view_model_id IS 'mainly use to get key from data to search and display original data record';
 
 CREATE TABLE p28_his_change_work_flow_config (
     -- table columns of java class TrackingBase
@@ -90,6 +94,8 @@ CREATE TABLE p28_his_change_work_flow_config (
     , separate_activation boolean NOT NULL
     , private_change_ids boolean NOT NULL
     , enforce_four_eyes boolean NOT NULL
+    , screen_location varchar(100)
+    , view_model_id varchar(50)
 );
 
 ALTER TABLE p28_his_change_work_flow_config ADD CONSTRAINT p28_his_change_work_flow_config_pk PRIMARY KEY (
@@ -119,6 +125,8 @@ COMMENT ON COLUMN p28_his_change_work_flow_config.approval_required_for_activati
 COMMENT ON COLUMN p28_his_change_work_flow_config.separate_activation IS 'If true, activation must be manually triggered';
 COMMENT ON COLUMN p28_his_change_work_flow_config.private_change_ids IS 'If true, then only the user who submitted a change can make further changes to it or resubmit it. Otherwise, everyone with change permissions can work on any pending change.';
 COMMENT ON COLUMN p28_his_change_work_flow_config.enforce_four_eyes IS 'If true, then every change must be approved by a different user than the one who submitted it.';
+COMMENT ON COLUMN p28_his_change_work_flow_config.screen_location IS 'location of UI screen to display and edit the changes';
+COMMENT ON COLUMN p28_his_change_work_flow_config.view_model_id IS 'mainly use to get key from data to search and display original data record';
 
 CREATE TABLE p28_dat_data_change_request (
     -- table columns of java class TrackingBase
@@ -142,7 +150,7 @@ CREATE TABLE p28_dat_data_change_request (
     , pqon varchar(255) NOT NULL
     , change_id varchar(16) NOT NULL
     , key bytea NOT NULL
-    , data bytea
+    , crud_request bytea NOT NULL
     , status varchar(1) NOT NULL
     , user_id_created varchar(16) NOT NULL
     , when_created timestamp(0) NOT NULL
@@ -180,7 +188,7 @@ COMMENT ON COLUMN p28_dat_data_change_request.object_ref IS 'objectRef, as a pri
 COMMENT ON COLUMN p28_dat_data_change_request.pqon IS 'data (table) class PQON for which the change is requested';
 COMMENT ON COLUMN p28_dat_data_change_request.change_id IS 'a unique identifier of the change';
 COMMENT ON COLUMN p28_dat_data_change_request.key IS 'primary key of the data object which is being changed';
-COMMENT ON COLUMN p28_dat_data_change_request.data IS 'the intended data object after the change (null in case of deletion)';
+COMMENT ON COLUMN p28_dat_data_change_request.crud_request IS 'the actual CRUD request which will be used to apply the change';
 COMMENT ON COLUMN p28_dat_data_change_request.status IS 'current status of the change work flow';
 COMMENT ON COLUMN p28_dat_data_change_request.user_id_created IS 'user who initiated the change';
 COMMENT ON COLUMN p28_dat_data_change_request.when_created IS 'when the change was initiated';
@@ -279,6 +287,8 @@ BEGIN
             , separate_activation
             , private_change_ids
             , enforce_four_eyes
+            , screen_location
+            , view_model_id
         ) VALUES (
             next_seq_, 'I'
             , NEW.object_ref
@@ -299,6 +309,8 @@ BEGIN
             , NEW.separate_activation
             , NEW.private_change_ids
             , NEW.enforce_four_eyes
+            , NEW.screen_location
+            , NEW.view_model_id
         );
         RETURN NEW;
     END IF;
@@ -328,6 +340,8 @@ BEGIN
             , separate_activation
             , private_change_ids
             , enforce_four_eyes
+            , screen_location
+            , view_model_id
         ) VALUES (
             next_seq_, 'U'
             , NEW.object_ref
@@ -348,6 +362,8 @@ BEGIN
             , NEW.separate_activation
             , NEW.private_change_ids
             , NEW.enforce_four_eyes
+            , NEW.screen_location
+            , NEW.view_model_id
         );
         RETURN NEW;
     END IF;
@@ -373,6 +389,8 @@ BEGIN
             , separate_activation
             , private_change_ids
             , enforce_four_eyes
+            , screen_location
+            , view_model_id
         ) VALUES (
             next_seq_, 'D'
             , OLD.object_ref
@@ -393,6 +411,8 @@ BEGIN
             , OLD.separate_activation
             , OLD.private_change_ids
             , OLD.enforce_four_eyes
+            , OLD.screen_location
+            , OLD.view_model_id
         );
         RETURN OLD;
     END IF;
@@ -423,6 +443,8 @@ CREATE OR REPLACE VIEW p28_cfg_change_work_flow_config_nt AS SELECT
     , t0.separate_activation AS separate_activation
     , t0.private_change_ids AS private_change_ids
     , t0.enforce_four_eyes AS enforce_four_eyes
+    , t0.screen_location AS screen_location
+    , t0.view_model_id AS view_model_id
 FROM p28_cfg_change_work_flow_config t0;
 
 CREATE OR REPLACE VIEW p28_cfg_change_work_flow_config_v AS SELECT
@@ -453,6 +475,8 @@ CREATE OR REPLACE VIEW p28_cfg_change_work_flow_config_v AS SELECT
     , t0.separate_activation AS separate_activation
     , t0.private_change_ids AS private_change_ids
     , t0.enforce_four_eyes AS enforce_four_eyes
+    , t0.screen_location AS screen_location
+    , t0.view_model_id AS view_model_id
 FROM p28_cfg_change_work_flow_config t0;
 
 CREATE OR REPLACE VIEW p28_dat_data_change_request_nt AS SELECT
@@ -466,7 +490,7 @@ CREATE OR REPLACE VIEW p28_dat_data_change_request_nt AS SELECT
     , t0.pqon AS pqon
     , t0.change_id AS change_id
     , t0.key AS key
-    , t0.data AS data
+    , t0.crud_request AS crud_request
     , ChangeWorkFlowStatus2s(t0.status) AS status
     , t0.user_id_created AS user_id_created
     , t0.when_created AS when_created
@@ -504,7 +528,7 @@ CREATE OR REPLACE VIEW p28_dat_data_change_request_v AS SELECT
     , t0.pqon AS pqon
     , t0.change_id AS change_id
     , t0.key AS key
-    , t0.data AS data
+    , t0.crud_request AS crud_request
     , ChangeWorkFlowStatus2s(t0.status) AS status
     , t0.user_id_created AS user_id_created
     , t0.when_created AS when_created

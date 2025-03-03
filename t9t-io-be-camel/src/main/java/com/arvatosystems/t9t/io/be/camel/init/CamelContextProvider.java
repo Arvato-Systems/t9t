@@ -50,6 +50,7 @@ public class CamelContextProvider implements StartupShutdown, Provider<CamelCont
     public void onStartup() {
         camelService.initBeforeContextCreation();
         camelContext = new DefaultCamelContext();
+        camelService.initAfterContextCreation(camelContext);
         Jdp.registerWithCustomProvider(CamelContext.class, this);
 
         camelContext.setAutoStartup(false); // to allow manually start

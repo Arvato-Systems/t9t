@@ -15,6 +15,16 @@
  */
 package com.arvatosystems.t9t.base.be.impl;
 
+import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.auth.PermissionType;
+import com.arvatosystems.t9t.base.services.IDataChangeRequestFlow;
+import com.arvatosystems.t9t.base.types.LongKey;
+import com.arvatosystems.t9t.server.services.IAuthorize;
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
+import de.jpaw.dp.Jdp;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +51,8 @@ import de.jpaw.util.ApplicationException;
 public abstract class AbstractCrudSurrogateKeyBERequestHandler<REF extends Ref, DTO extends REF, TRACKING extends TrackingBase,
     REQUEST extends CrudSurrogateKeyRequest<REF, DTO, TRACKING>> extends AbstractRequestHandler<REQUEST> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCrudSurrogateKeyBERequestHandler.class);
+    protected final IDataChangeRequestFlow changeRequestFlow = Jdp.getRequired(IDataChangeRequestFlow.class);
+    protected final IAuthorize authorizer = Jdp.getRequired(IAuthorize.class);
 
     @Override
     public boolean isReadOnly(final REQUEST params) {
@@ -200,53 +212,71 @@ public abstract class AbstractCrudSurrogateKeyBERequestHandler<REF extends Ref, 
         // This was not there before, but should be present to avoid NPEs!
         validateParameters(crudRequest, crudRequest.getKey() == null);
 
-        DTO dto = crudRequest.getData();
+        DTO crudData = crudRequest.getData();
+        final OperationType crud = crudRequest.getCrud();
 
-        switch (crudRequest.getCrud()) {
+        // If changeRequestRef is not null, it means the request is for activation of a change request which was saved in the approval work flow.
+        if (crudRequest.getChangeRequestRef() != null) {
+            validateChangeRequest(ctx, crudRequest, getLongKey(crudRequest));
+            // If the change request is valid, then just treat as a normal crud request to apply changes...
+        } else {
+            final DTO data = crudData != null ? crudData : resolver.getDTO(crudRequest.getKey());
+            final String pqon = data.ret$PQON();
+            // If the crudRequest requires approval, then create change request and then return the response.
+            if (T9tConstants.OPERATION_TYPE_WRITE.contains(crud) && changeRequestFlow.requireApproval(pqon, crud)) {
+                LOGGER.debug("Request requires approval, creating change request");
+                requestForApproval(ctx, rs, crudRequest, pqon, getLongKey(crudRequest), data);
+                rs.setKey(crudRequest.getKey());
+                return rs;
+            }
+        }
+
+        switch (crud) {
         case CREATE:
-            validateCreate(dto);    // plausibility check
-            dto.setObjectRef(resolver.createNewPrimaryKey());
-            resolver.create(dto);   // permissions checked by resolver
-            rs.setKey(dto.getObjectRef()); // just copy
+            validateCreate(crudData);    // plausibility check
+            crudData.setObjectRef(resolver.createNewPrimaryKey());
+            resolver.create(crudData);   // permissions checked by resolver
+            rs.setKey(crudData.getObjectRef()); // just copy
             break;
         case READ:
-            dto = resolver.getDTO(crudRequest.getKey());
+            crudData = resolver.getDTO(crudRequest.getKey());
             rs.setKey(crudRequest.getKey()); // just copy
             break;
         case DELETE:
-            dto = resolver.getDTO(crudRequest.getKey());
-            validateDelete(dto);
+            crudData = resolver.getDTO(crudRequest.getKey());
+            validateDelete(crudData);
             resolver.remove(crudRequest.getKey());   // permissions checked by resolver
             rs.setKey(crudRequest.getKey());
             break;
         case INACTIVATE:
         case ACTIVATE:
             final boolean newState = crudRequest.getCrud() == OperationType.ACTIVATE;
-            dto = resolver.getDTO(crudRequest.getKey());
-            if (dto.ret$Active() != newState) {
+            crudData = resolver.getDTO(crudRequest.getKey());
+            if (crudData.ret$Active() != newState) {
                 // yes, this is a real state change
-                activationChange(dto, newState);
-                dto.put$Active(newState);
-                resolver.update(dto);
+                activationChange(crudData, newState);
+                crudData.put$Active(newState);
+                resolver.update(crudData);
             }
             break;
         case UPDATE:
             final DTO old = resolver.getDTO(crudRequest.getKey());
-            validateUpdate(old, dto); // plausibility
-            resolver.update(dto);
+            crudData.setObjectRef(crudRequest.getKey());
+            validateUpdate(old, crudData); // plausibility
+            resolver.update(crudData);
             rs.setKey(crudRequest.getKey());
             break;
         case MERGE:
             // If the key is passed in and result already exist then perform update.
             if (crudRequest.getKey() != null) {
-                dto.setObjectRef(crudRequest.getKey());         // required????
-                validateUpdate(resolver.getDTO(crudRequest.getKey()), dto); // plausibility
-                resolver.update(dto);
+                crudData.setObjectRef(crudRequest.getKey());         // required????
+                validateUpdate(resolver.getDTO(crudRequest.getKey()), crudData); // plausibility
+                resolver.update(crudData);
                 rs.setKey(crudRequest.getKey());
             } else {
-                validateCreate(dto); // plausibility check
-                resolver.create(dto);
-                rs.setKey(dto.getObjectRef()); // just copy
+                validateCreate(crudData); // plausibility check
+                resolver.create(crudData);
+                rs.setKey(crudData.getObjectRef()); // just copy
             }
             break;
         case VERIFY:
@@ -260,14 +290,70 @@ public abstract class AbstractCrudSurrogateKeyBERequestHandler<REF extends Ref, 
             throw new T9tException(T9tException.INVALID_CRUD_COMMAND);
         }
         if (crudRequest.getCrud() != OperationType.DELETE) {
-            postRead(dto);
-            rs.setData(dto); // populate result
-            if (dto != null) {
-                rs.setTracking(resolver.getTracking(dto.getObjectRef())); // populate result
+            postRead(crudData);
+            rs.setData(crudData); // populate result
+            if (crudData != null) {
+                rs.setTracking(resolver.getTracking(crudData.getObjectRef())); // populate result
             }
             // result
         }
         rs.setReturnCode(0);
         return rs;
+    }
+
+    /**
+     * Create a data change request for the CRUD operation.
+     *
+     * @param ctx           the request context
+     * @param response      the response object of the main CRUD request
+     * @param crudRequest   the CRUD request
+     * @param pqon          the PQON of the DTO
+     * @param key           the key for which the data change request is created
+     * @param dto           the data to be changed
+     */
+    @SuppressWarnings("unchecked")
+    protected void requestForApproval(@Nonnull final RequestContext ctx, @Nonnull final CrudSurrogateKeyResponse<DTO, TRACKING> response,
+        @Nonnull final REQUEST crudRequest, @Nonnull final String pqon, @Nullable final BonaPortable key, @Nonnull final DTO dto) {
+        if (crudRequest.getChangeId() == null) {
+            throw new T9tException(T9tException.MISSING_CHANGE_ID, "ChangeId is required for approval request");
+        }
+        if (OperationType.INACTIVATE == crudRequest.getCrud() || OperationType.ACTIVATE == crudRequest.getCrud()) {
+            // modify the crud request as an UPDATE request for inactivate/activate
+            final DTO data = (DTO) dto.ret$MutableClone(true, false);
+            data.put$Active(OperationType.ACTIVATE == crudRequest.getCrud());
+            crudRequest.setCrud(OperationType.UPDATE);
+            crudRequest.setData(data);
+        }
+        final Long changeRequestRef = changeRequestFlow.createDataChangeRequest(ctx, pqon, crudRequest.getChangeId(), key, crudRequest,
+                crudRequest.getChangeComment(), crudRequest.getSubmitChange());
+        response.setChangeRequestRef(changeRequestRef);
+        if (crudRequest.getCrud() != OperationType.DELETE) {
+            // only send data without tracking fields
+            response.setData(crudRequest.getData());
+        }
+    }
+
+    /**
+     * Validate the change request before applying it.
+     *
+     * @param ctx           the request context
+     * @param crudRequest   the CRUD request
+     * @param key           the key of the entity
+     */
+    protected void validateChangeRequest(@Nonnull final RequestContext ctx, @Nonnull final REQUEST crudRequest, @Nullable final BonaPortable key) {
+        final Permissionset permissions = authorizer.getPermissions(ctx.internalHeaderParameters.getJwtInfo(), PermissionType.BACKEND, crudRequest.ret$PQON());
+        if (!permissions.contains(OperationType.ACTIVATE)) {
+            LOGGER.error("No permission to activate change request for {}. key:{}", crudRequest.ret$PQON(), key);
+            throw new T9tException(T9tException.CHANGE_REQUEST_PERMISSION_ERROR, "No permission to activate change request for " + crudRequest.ret$PQON());
+        }
+        if (!changeRequestFlow.isChangeRequestValidToActivate(crudRequest.getChangeRequestRef(), key, crudRequest.getData())) {
+            LOGGER.error("Change request is not valid! ref {}. key:{}", crudRequest.getChangeRequestRef(), key);
+            throw new T9tException(T9tException.INVALID_CHANGE_REQUEST, "Change request not valid for ref: " + crudRequest.getChangeRequestRef());
+        }
+    }
+
+    @Nullable
+    protected LongKey getLongKey(@Nonnull final REQUEST crudRequest) {
+        return crudRequest.getKey() != null ? new LongKey(crudRequest.getKey()) : null;
     }
 }

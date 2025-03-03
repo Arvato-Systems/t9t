@@ -15,9 +15,13 @@
  */
 package com.arvatosystems.t9t.monitoring.be.request;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.monitoring.request.QuerySystemParamsRequest;
@@ -28,13 +32,27 @@ public class QuerySystemParamsRequestHandler extends AbstractRequestHandler<Quer
 
     @Override
     public QuerySystemParamsResponse execute(final RequestContext ctx, final QuerySystemParamsRequest rq) {
-        final Runtime rt = Runtime.getRuntime();
         final QuerySystemParamsResponse rs = new QuerySystemParamsResponse();
+
+        final Runtime rt = Runtime.getRuntime();
         rs.setCurrentTimeMillis(System.currentTimeMillis());
         rs.setAvailableProcessors(rt.availableProcessors());
         rs.setTotalMemory(rt.totalMemory());
         rs.setFreeMemory(rt.freeMemory());
         rs.setMaxMemory(rt.maxMemory());
+        rs.setHostname(MessagingUtil.HOSTNAME);
+
+        // get further data from the MXBean
+        final RuntimeMXBean runtimeBean = ManagementFactory.getRuntimeMXBean();
+        rs.setJvmUptimeInMillis(runtimeBean.getUptime());
+        rs.setName(runtimeBean.getName());
+        rs.setVmName(runtimeBean.getVmName());
+        rs.setVmVendor(runtimeBean.getVmVendor());
+        rs.setVmVersion(runtimeBean.getVmVersion());
+        rs.setSpecName(runtimeBean.getSpecName());
+        rs.setSpecVendor(runtimeBean.getSpecVendor());
+        rs.setSpecVersion(runtimeBean.getSpecVersion());
+
         LOGGER.info("Runtime parameters queried: {}", rs);
         return rs;
     }

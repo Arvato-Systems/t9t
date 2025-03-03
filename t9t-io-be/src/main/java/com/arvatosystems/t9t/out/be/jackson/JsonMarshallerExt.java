@@ -40,12 +40,17 @@ public class JsonMarshallerExt implements IMarshallerExt<Object> {
     }
 
     @Override
-    public ByteArray marshal(BonaPortable obj) throws Exception {
+    public ByteArray marshal(final BonaPortable obj) throws Exception {
         return ByteArray.fromString(objectMapper.writeValueAsString(obj), StandardCharsets.UTF_8);
     }
 
     @Override
-    public BonaPortable unmarshal(ByteBuilder arg0) throws Exception {
+    public BonaPortable unmarshal(ByteBuilder buffer) throws Exception {
         throw new T9tException(T9tException.NOT_YET_IMPLEMENTED);
+    }
+
+    @Override
+    public <T extends BonaPortable> T unmarshal(ByteBuilder buffer, Class<T> resultClass) throws Exception {
+        return objectMapper.readValue(buffer.getBytes(), resultClass);
     }
 }

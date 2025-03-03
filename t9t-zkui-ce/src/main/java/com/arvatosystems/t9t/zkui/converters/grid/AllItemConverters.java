@@ -58,6 +58,14 @@ public class AllItemConverters  implements IItemConverter<Object> {
             // else fall through
             // LOGGER.debug("NO Long converter for {}", fieldName);
         }
+        final boolean isGenericObject = meta.getProperties() != null && meta.getProperties().containsKey(Constants.UiFieldProperties.GENERIC_OBJECT);
+        if (isGenericObject) {
+            @SuppressWarnings("rawtypes")
+            final IItemConverter genericObjectConverter = REGISTRY.get(Constants.UiFieldProperties.GENERIC_OBJECT);
+            if (genericObjectConverter != null) {
+                return genericObjectConverter;
+            }
+        }
         final String className = value.getClass().getName();
         if (meta.getClass() == NumericEnumSetDataItem.class)
             return REGISTRY.get("numericenumset");

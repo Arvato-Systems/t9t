@@ -15,6 +15,9 @@
  */
 package com.arvatosystems.t9t.base.jpa.impl;
 
+import com.arvatosystems.t9t.base.types.LongKey;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.EntityManager;
 
 import com.arvatosystems.t9t.base.T9tException;
@@ -32,6 +35,8 @@ import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ApplicationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractCrudSurrogateKeyRequestHandler<
   REF extends Ref,
@@ -40,7 +45,7 @@ public abstract class AbstractCrudSurrogateKeyRequestHandler<
   REQUEST extends CrudSurrogateKeyRequest<REF, DTO, TRACKING>,
   ENTITY extends BonaPersistableKey<Long> & BonaPersistableTracking<TRACKING>
 > extends AbstractCrudAnyKeyRequestHandler<Long, DTO, TRACKING, REQUEST, ENTITY> {
-    // private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCrudAnyKeyRequestHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCrudSurrogateKeyRequestHandler.class);
 
     protected final IRefGenerator genericRefGenerator = Jdp.getRequired(IRefGenerator.class);
 
@@ -119,6 +124,23 @@ public abstract class AbstractCrudSurrogateKeyRequestHandler<
 
         // This was not there before, but should be present to avoid NPEs!
         validateParameters(crudRequest, crudRequest.getKey() == null);
+
+        // If changeRequestRef is not null, it means the request is for activation of a change request which was saved in the approval work flow.
+        if (crudRequest.getChangeRequestRef() != null) {
+            validateChangeRequest(ctx, crudRequest, getLongKey(crudRequest));
+            // If the change request is valid, then just treat as a normal crud request to apply changes...
+        } else {
+            final DTO dto = getRequestDTO(crudRequest, () -> crudRequest.getKey() != null ? mapper.mapToDto(crudRequest.getKey()) : null);
+            dto.setObjectRef(crudRequest.getKey());
+            final String pqon = dto.ret$PQON();
+            // If the crudRequest requires approval, then create change request and then return the response.
+            if (requestRequiresApproval(crudRequest.getCrud(), pqon)) {
+                LOGGER.debug("Request requires approval, creating change request");
+                requestForApproval(ctx, rs, crudRequest, pqon, getLongKey(crudRequest), dto);
+                rs.setKey(crudRequest.getKey());
+                return rs;
+            }
+        }
 
         try {
 
@@ -215,4 +237,8 @@ public abstract class AbstractCrudSurrogateKeyRequestHandler<
         }
     }
 
+    @Nullable
+    protected LongKey getLongKey(@Nonnull final REQUEST crudRequest) {
+        return crudRequest.getKey() != null ? new LongKey(crudRequest.getKey()) : null;
+    }
 }

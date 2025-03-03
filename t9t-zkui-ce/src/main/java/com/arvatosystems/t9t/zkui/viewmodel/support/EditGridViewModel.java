@@ -84,7 +84,7 @@ public class EditGridViewModel {
             for (final String fieldName: getAvailableFieldNames()) {
                 if (TRACKING_FIELDS.contains(fieldName)) {
                     trackingColumns.add(fieldName);
-                } else if (fieldName.indexOf(".") == -1) {
+                } else if (!fieldName.contains(".") || fieldName.contains("[")) {
                     topLevelDataColumns.add(fieldName);
                 } else {
                     childDataColumns.add(fieldName);
