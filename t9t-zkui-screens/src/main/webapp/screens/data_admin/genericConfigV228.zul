@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="genericConfigV2"?>
+
+<window28 id="genericConfigV2Win">
+    <threesections28 gridId="genericConfigV2">
+        <crud28 viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.CrudSurrogateKeyVM', vmId='genericConfigV2')"
+                currentMode="@load(vm.currentMode)">
+            <form28 id="genericConfigV2Crud" aspect="2" numColumns="2">
+                <rows>
+                    <cells228 id ="configGroup"         value ="@load(vm.data.configGroup)    @save(vm.data.configGroup,   before='commandSave')"
+                              id2="configKey"           value2="@load(vm.data.configKey)      @save(vm.data.configKey,     before='commandSave')"/>
+                    <cells228 id ="name"                value ="@load(vm.data.name)           @save(vm.data.name,          before='commandSave')"
+                              id2="isActive"            value2="@load(vm.data.isActive)       @save(vm.data.isActive,      before='commandSave')"/>
+                    <cells228 id ="str1"                value ="@load(vm.data.str1)           @save(vm.data.str1,          before='commandSave')"
+                              id2 ="str2"               value2="@load(vm.data.str2)           @save(vm.data.str2,          before='commandSave')"/>
+                    <cells228 id ="int1"                value ="@load(vm.data.int1)           @save(vm.data.int1,          before='commandSave')"
+                              id2="int2"                value2="@load(vm.data.int2)           @save(vm.data.int2,          before='commandSave')"/>
+                    <cells228 id ="bool1"               value="@load(vm.data.bool1)           @save(vm.data.bool1,         before='commandSave')"
+                              id2="bool2"               value2="@load(vm.data.bool2)          @save(vm.data.bool2,         before='commandSave')"/>
+                    <cells228 id ="value1"              value="@load(vm.data.value1)          @save(vm.data.value1,        before='commandSave')"
+                              id2="value2"              value2="@load(vm.data.value2)         @save(vm.data.value2,        before='commandSave')"/>
+                    <cells28  id ="z" colspan1="3" rows1="4" value ="@load(vm.data.z)         @save(vm.data.z,             before='commandSave')"/>
+                </rows>
+            </form28>
+        </crud28>
+    </threesections28>
+</window28>

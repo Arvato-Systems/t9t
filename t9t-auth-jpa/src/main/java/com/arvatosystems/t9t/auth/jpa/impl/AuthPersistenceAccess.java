@@ -45,16 +45,19 @@ import com.arvatosystems.t9t.auth.jpa.entities.SessionEntity;
 import com.arvatosystems.t9t.auth.jpa.entities.TenantEntity;
 import com.arvatosystems.t9t.auth.jpa.entities.UserEntity;
 import com.arvatosystems.t9t.auth.jpa.entities.UserStatusEntity;
+import com.arvatosystems.t9t.auth.jpa.mapping.IUserEntity2UserDataMapper;
 import com.arvatosystems.t9t.auth.jpa.persistence.IUserEntityResolver;
 import com.arvatosystems.t9t.auth.services.AuthIntermediateResult;
 import com.arvatosystems.t9t.auth.services.IAuthPersistenceAccess;
 import com.arvatosystems.t9t.auth.services.IExternalTokenValidation;
 import com.arvatosystems.t9t.authc.api.TenantDescription;
+import com.arvatosystems.t9t.authc.api.UserData;
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.auth.ExternalTokenAuthenticationParam;
 import com.arvatosystems.t9t.base.auth.PermissionEntry;
+import com.arvatosystems.t9t.base.auth.PermissionType;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
@@ -63,6 +66,7 @@ import com.google.common.collect.ImmutableList;
 
 import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
 import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
+import de.jpaw.bonaparte.pojos.api.OperationTypes;
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 import de.jpaw.bonaparte.pojos.api.auth.UserLogLevelType;
@@ -81,6 +85,7 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthPersistenceAccess.class);
     private static final List<PermissionEntry> EMPTY_PERMISSION_LIST = ImmutableList.of();
     private static final List<TenantDescription> NO_TENANTS = ImmutableList.of();
+    private static final List<UserData> EMPTY_USER_LIST = ImmutableList.of();
     private static final String GET_CURRENT_PASSWORD = "SELECT pwd FROM " + UserStatusEntity.class.getSimpleName() + " us JOIN "
         + PasswordEntity.class.getSimpleName() + " pwd ON us.objectRef = pwd.objectRef AND us.currentPasswordSerialNumber = pwd.passwordSerialNumber"
         + " WHERE us.objectRef = :userRef";
@@ -92,6 +97,7 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
     protected final IPasswordChangeService passwordChangeService = Jdp.getRequired(IPasswordChangeService.class);
     protected final IPasswordSettingService passwordSettingService = Jdp.getRequired(IPasswordSettingService.class);
     protected final IExternalTokenValidation externalTokenAuthentication = Jdp.getRequired(IExternalTokenValidation.class);
+    protected final IUserEntity2UserDataMapper userEntity2UserDataMapper = Jdp.getRequired(IUserEntity2UserDataMapper.class);
 
     // return the unfiltered permissions from DB, unfiltered means:
     // - permission min/max is not yet applied
@@ -704,5 +710,47 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
         final Query query = em.createQuery("DELETE FROM " + PasswordBlacklistEntity.class.getSimpleName());
         final int count = query.executeUpdate();
         LOGGER.debug("Deletion of passwordBlacklist is done: {} entries were deleted!", count);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<UserData> getUsersWithPermission(final JwtInfo jwtInfo, final PermissionType permissionType, final String resourceId,
+            final OperationTypes operationTypes) {
+
+        final String permissionId = permissionType.getToken() + "." + resourceId;
+
+        final String queryPermission = "SELECT per.role_ref FROM p42_cfg_role_to_permissions per "
+                + " WHERE per.tenant_id IN :tenants AND :permissionId LIKE per.permission_id || '%' AND (per.permission_set &  :bitmap) = :bitmap";
+
+        final String queryUser = "SELECT u FROM UserEntity u, UserTenantRoleEntity utr, RoleEntity r "
+                + " WHERE u.objectRef = utr.userRef AND utr.roleRef =  r.objectRef AND r.objectRef IN :roleRefs"
+                + " AND u.tenantId IN :tenants AND u.isActive = :isActive AND utr.tenantId IN :tenants"
+                + " AND r.tenantId IN :tenants AND r.isActive = :isActive";
+
+        try {
+            final EntityManager em = jpaContextProvider.get().getEntityManager();
+            final List<String> tenants;
+
+            if (T9tConstants.GLOBAL_TENANT_ID.equals(jwtInfo.getTenantId())) {
+                tenants = ImmutableList.of(T9tConstants.GLOBAL_TENANT_ID);
+            } else {
+                tenants = ImmutableList.of(T9tConstants.GLOBAL_TENANT_ID, jwtInfo.getTenantId());
+            }
+
+            final Query permQuery = em.createNativeQuery(queryPermission, Long.class).setParameter("tenants", tenants)
+                    .setParameter("permissionId", permissionId).setParameter("bitmap", operationTypes.getBitmap());
+
+            final List<Long> roleRefs = permQuery.getResultList();
+
+            final List<UserEntity> users = em.createQuery(queryUser, UserEntity.class).setParameter("tenants", tenants).setParameter("isActive", Boolean.TRUE)
+                    .setParameter("roleRefs", roleRefs).getResultList();
+
+            return userEntity2UserDataMapper.mapToUserData(users);
+
+        } catch (final Exception e) {
+            LOGGER.error("JPA exception {} while reading users for tenantId {}, for permissionId {}, operationTypes {}: {}", e.getClass().getSimpleName(),
+                    jwtInfo.getTenantId(), permissionId, operationTypes, e.getMessage());
+            return EMPTY_USER_LIST;
+        }
     }
 }

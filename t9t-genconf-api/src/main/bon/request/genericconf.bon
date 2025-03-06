@@ -32,6 +32,8 @@ package (com.arvatosystems) t9t.genconf.request {
 
     class ConfigSearchRequest           extends SearchRequest<ConfigDTO, FullTrackingWithVersion> {}
     class ConfigCrudRequest             extends CrudSurrogateKeyRequest<ConfigRef, ConfigDTO, FullTrackingWithVersion> {}
+    class GenericConfigSearchRequest    extends SearchRequest<GenericConfigDTO, FullTrackingWithVersion> {}
+    class GenericConfigCrudRequest      extends CrudSurrogateKeyRequest<GenericConfigRef, GenericConfigDTO, FullTrackingWithVersion> {}
 
     /** A service request to read a single configuration value, and to fall back to specific defaults if no entry is found.
      * If no entry is found with the specific key, the fields genericRef2, 1, configKey and tenantId will be set to default values (if configured) as follows:
@@ -68,5 +70,4 @@ package (com.arvatosystems) t9t.genconf.request {
      class ReadConfigMultipleEntriesResponse extends ServiceResponse {
          required (ConfigDTO) required List <>      entries;
      }
-
 }

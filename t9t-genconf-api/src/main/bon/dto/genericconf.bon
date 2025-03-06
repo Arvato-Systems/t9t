@@ -70,4 +70,32 @@ package (com.arvatosystems) t9t.genconf {
         optional Unicode(1024)          stringProperty;         // a string type property
         optional Object                 objectProperty properties serialized;  // any arbitrary object, stored serialized. TODO: specify length
     }
+
+    /** A reference to a single configuration entry. */
+    class GenericConfigRef RTTI 91 extends Ref {
+    }
+
+    /** Defines the natural key for a configuration entry. */
+    final class GenericConfigKey extends GenericConfigRef {
+        required configGroup            configGroup;            // the fixed key (application index)
+        required defaultExternalId      configKey;              // a generic ID
+    }
+
+    /** A configuration record as exchanged with the frontend for a simple administration UI. */
+    final class GenericConfigDTO extends GenericConfigRef {
+        properties tenantCategory="D";
+        required configGroup            configGroup properties notupdatable;  // the fixed key (application index)
+        required defaultExternalId      configKey   properties notupdatable;  // a concatenated key of additional key parameters, "-" if not required.
+        required boolean                isActive    properties active;
+        required shortText              name;                                 // the displayed name of the entry
+        optional t9tShortId             str1;
+        optional t9tShortId             str2;
+        optional Integer                int1;
+        optional Integer                int2;
+        optional Boolean                bool1;
+        optional Boolean                bool2;
+        optional FixedPoint(18,6)       value1;
+        optional FixedPoint(18,6)       value2;
+        optional Json                   z;
+    }
 }

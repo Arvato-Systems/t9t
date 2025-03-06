@@ -65,4 +65,38 @@ public interface IT9tRestEndpoint {
             throw new T9tException(MessageParserException.EMPTY_BUT_REQUIRED_FIELD, name + " can not be blank");
         }
     }
+
+    /**
+     * Validates that a path parameter or query parameter has no control characters (which might produce HTTP 500 server errors).
+     *
+     * @param parameter   the parameter
+     * @param name        name of the parameter, for log output / response message
+     */
+    default void checkValidUnicode(final String parameter, final String name) {
+        if (parameter != null) {
+            for (int i = 0; i < parameter.length(); ++i) {
+                final char c = parameter.charAt(i);
+                if (c < 32) {
+                    throw new T9tException(T9tException.ILLEGAL_CHARACTER, name);
+                }
+            }
+        }
+    }
+
+    /**
+     * Validates that a path parameter or query parameter consists of ASCII characters only.
+     *
+     * @param parameter   the parameter
+     * @param name        name of the parameter, for log output / response message
+     */
+    default void checkValidAscii(final String parameter, final String name) {
+        if (parameter != null) {
+            for (int i = 0; i < parameter.length(); ++i) {
+                final char c = parameter.charAt(i);
+                if (c < 32 || c > 127) {
+                    throw new T9tException(T9tException.ILLEGAL_CHARACTER, name);
+                }
+            }
+        }
+    }
 }

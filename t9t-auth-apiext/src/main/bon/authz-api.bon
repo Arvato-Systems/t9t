@@ -20,6 +20,7 @@ import api.media.*
 import t9t.base.types.*
 import t9t.base.api.*
 import t9t.base.auth.*
+import t9t.authc.api.*
 
 /** External API - Authorization requests. */
 package (com.arvatosystems) t9t.authz.api {
@@ -48,5 +49,16 @@ package (com.arvatosystems) t9t.authz.api {
 
     class QuerySinglePermissionResponse extends ServiceResponse {
         required enumset Permissionset                      permissions;
+    }
+
+    /** Query which users have all of the specified permissions. */
+    class QueryUsersWithPermissionRequest extends RequestParameters return QueryUsersWithPermissionResponse {
+        required enum PermissionType                        permissionType; // the type (category) of the permission (frontend vs backend)
+        required resourceId                                 resourceId;     // the uniquely defined resource to check
+        required Enumset OperationTypes                     operationTypes; // the set of permissions the users must have
+    }
+
+    class QueryUsersWithPermissionResponse extends ServiceResponse {
+        required (UserData) required List<>                 users;
     }
 }

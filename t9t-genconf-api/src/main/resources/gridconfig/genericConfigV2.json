@@ -1,0 +1,14 @@
+{
+    "viewModel": "genericConfigV2",
+    "filters": [
+        { "filterType": "E", "fieldName": "tenantId" },
+        { "filterType": "W", "fieldName": "configGroup" },
+        { "filterType": "W", "fieldName": "configKey" },
+        { "filterType": "E", "fieldName": "isActive" },
+        { "filterType": "W", "fieldName": "name" }
+    ],
+    "fields": [
+        "tenantId", "configGroup", "configKey", "isActive", "name", "str1", "str2",
+        "int1", "int2", "bool1", "bool2", "value1"
+    ]
+}

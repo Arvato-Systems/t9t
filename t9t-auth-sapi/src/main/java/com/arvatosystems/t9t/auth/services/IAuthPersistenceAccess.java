@@ -24,12 +24,15 @@ import com.arvatosystems.t9t.auth.AuthModuleCfgDTO;
 import com.arvatosystems.t9t.auth.SessionDTO;
 import com.arvatosystems.t9t.auth.UserDTO;
 import com.arvatosystems.t9t.authc.api.TenantDescription;
+import com.arvatosystems.t9t.authc.api.UserData;
 import com.arvatosystems.t9t.base.auth.ExternalTokenAuthenticationParam;
 import com.arvatosystems.t9t.base.auth.PermissionEntry;
+import com.arvatosystems.t9t.base.auth.PermissionType;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
+import de.jpaw.bonaparte.pojos.api.OperationTypes;
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -78,4 +81,6 @@ public interface IAuthPersistenceAccess {
     String assignNewPasswordIfEmailMatches(RequestContext ctx, String userId, String emailAddress);
 
     void deletePasswordBlacklist();
+
+    List<UserData> getUsersWithPermission(JwtInfo jwtInfo, PermissionType permissionType, String resourceId, OperationTypes operationTypes);
 }

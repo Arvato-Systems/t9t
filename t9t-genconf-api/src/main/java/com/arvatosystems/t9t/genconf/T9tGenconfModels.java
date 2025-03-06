@@ -20,18 +20,28 @@ import com.arvatosystems.t9t.base.IViewModelContainer;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.genconf.request.ConfigCrudRequest;
 import com.arvatosystems.t9t.genconf.request.ConfigSearchRequest;
+import com.arvatosystems.t9t.genconf.request.GenericConfigCrudRequest;
+import com.arvatosystems.t9t.genconf.request.GenericConfigSearchRequest;
 
 public final class T9tGenconfModels implements IViewModelContainer {
 
-    private static final CrudViewModel<ConfigDTO, FullTrackingWithVersion> GENERIC_CONFIG_VIEW_MODEL
+    private static final CrudViewModel<ConfigDTO, FullTrackingWithVersion> CONFIG_VIEW_MODEL
       = new CrudViewModel<>(
         ConfigDTO.BClass.INSTANCE,
         FullTrackingWithVersion.BClass.INSTANCE,
         ConfigSearchRequest.BClass.INSTANCE,
         ConfigCrudRequest.BClass.INSTANCE);
 
+    private static final CrudViewModel<GenericConfigDTO, FullTrackingWithVersion> GENERIC_CONFIG_V2_VIEW_MODEL
+            = new CrudViewModel<>(
+            GenericConfigDTO.BClass.INSTANCE,
+            FullTrackingWithVersion.BClass.INSTANCE,
+            GenericConfigSearchRequest.BClass.INSTANCE,
+            GenericConfigCrudRequest.BClass.INSTANCE);
+
     @Override
     public void register() {
-        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("genericConfig",        GENERIC_CONFIG_VIEW_MODEL);
+        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("genericConfig", CONFIG_VIEW_MODEL);
+        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("genericConfigV2", GENERIC_CONFIG_V2_VIEW_MODEL);
     }
 }

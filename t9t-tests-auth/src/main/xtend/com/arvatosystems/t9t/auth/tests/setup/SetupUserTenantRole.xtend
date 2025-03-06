@@ -161,4 +161,15 @@ class SetupUserTenantRole {
             dlg.switchUser(apiKey)
         }
     }
+
+    def void createUserWithTenantRole(String id, UUID apiKey) {
+        // create the new user and role
+        val userRef = createUser(id)
+        val roleRef = createRole(id)
+        val apiKeyRef = createApiKey(id, apiKey)
+
+        LOGGER.info("Create user / tenant / role of ID, got refs user {} / role {}, API-Key ref is {}", userRef, roleRef, apiKeyRef)
+        createUserTenantRole(userRef, roleRef)
+    }
+
 }
