@@ -50,6 +50,8 @@
                                   id2="change.whenDecided"                         value2="@load(vm.changeDto.whenDecided)" disabled2="true"/>
                         <cells228 id ="change.userIdActivated"                     value ="@load(vm.changeDto.userIdActivated)" disabled1="true"
                                   id2="change.whenActivated"                       value2="@load(vm.changeDto.whenActivated)" disabled2="true"/>
+                        <cells228 id ="change.count"                               value ="@load(vm.changeDto.count)" disabled1="true"
+                                  id2="change.parameter"                           value2="@load(vm.changeDto.parameter)" disabled2="true"/>
                     </rows>
                 </form28>
                 <hlayout id="actionButtons" sclass="buttons" style="padding-top: 20px">

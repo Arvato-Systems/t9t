@@ -40,8 +40,16 @@ public abstract class AbstractIdGenerator {
 
     @Nonnull
     protected String selectStatementForSequence(@Nonnull final DatabaseBrandType dialect, @Nonnull final String sequenceName) {
+        return selectStatementForSequence(dialect, sequenceName, 0);
+    }
+
+    @Nonnull
+    protected String selectStatementForSequence(@Nonnull final DatabaseBrandType dialect, @Nonnull final String sequenceName, final int eagerCacheSize) {
         switch (dialect) {
         case POSTGRES:
+            if (eagerCacheSize > 1) {
+                return "SELECT setval('" + sequenceName + "', nextval('" + sequenceName + "') + " + eagerCacheSize + ")";
+            }
             return "SELECT nextval('" + sequenceName + "')";
         case H2:
             return "SELECT " + sequenceName + ".NEXTVAL FROM DUAL";

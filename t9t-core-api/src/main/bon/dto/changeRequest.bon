@@ -87,6 +87,8 @@ package (com.arvatosystems) t9t.changeRequest {
         optional Unicode(255) allowControlChars     textDecision;                               // additional explanation for the decision
         optional userId                             userIdActivated properties dropdown="userId"; // user ID who has activated (move the change to live table) the change
         optional Instant                            whenActivated;                              // when the change was activated
+        optional Integer                            count;                                      // Only for special approvals: The number of items to be approved
+        optional defaultExternalId                  parameter;                                  // Only for special approvals: Some descriptive parameter (for example a couponId)
     }
 
     class DataChangeRequestExtendedDTO {

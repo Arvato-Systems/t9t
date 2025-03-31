@@ -445,6 +445,7 @@
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:element>
+                    <xs:element name="postgresGapFix" minOccurs="0" nillable="true" type="xs:boolean"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>

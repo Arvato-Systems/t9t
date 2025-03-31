@@ -24,6 +24,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
+
+import com.arvatosystems.t9t.base.MessagingUtil;
+import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.T9tUtil;
+
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.container.ContainerResponseContext;
@@ -32,10 +42,6 @@ import jakarta.ws.rs.container.ResourceInfo;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.ext.Provider;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 
 /**
  * See: http://jira.esd.arvato-systems.de/browse/FT-2775
@@ -55,16 +61,13 @@ public class CustomLoggingFilter implements ContainerRequestFilter, ContainerRes
     @Override
     public void filter(final ContainerRequestContext requestContext) throws IOException {
         if (LOGGER.isDebugEnabled()) {
-            //execution time
+            // execution time
             MDC.put("start-time", String.valueOf(System.nanoTime() / 1000L));
-            LOGGER.debug("HTTP REQUEST   : {} {}{}", requestContext.getMethod(), requestContext.getUriInfo().getPath(),
-              toStringQueryParams(requestContext.getUriInfo().getQueryParameters()));
+            LOGGER.debug("HTTP REQUEST   : {} {}{}", requestContext.getMethod(), requestContext.getUriInfo().getPath(), toStringQueryParams(requestContext.getUriInfo().getQueryParameters()));
             if (shouldLog(requestContext.getMethod(), requestContext.getUriInfo().getPath())) {
                 LOGGER.debug("   Call        : {}#{} ", resourceInfo.getResourceClass().getSimpleName(), resourceInfo.getResourceMethod().getName());
-                if (!requestContext.getUriInfo().getPathParameters().isEmpty() && LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("   Path Parms  : {}", toString(requestContext.getUriInfo().getPathParameters()));
-                }
-                LOGGER.debug("   Header      : {}", requestContext.getHeaders());
+                logMultiValues("Path Parm", requestContext.getUriInfo().getPathParameters(), false);
+                logMultiValues("Header   ", requestContext.getHeaders(), true);
                 LOGGER.debug("   Content Type: {}", requestContext.getMediaType());
                 final String entityStream = readEntityStream(requestContext);
                 LOGGER.debug("   Body        : {}", (entityStream.isEmpty() ? "#EMPTY#" : entityStream));
@@ -79,7 +82,7 @@ public class CustomLoggingFilter implements ContainerRequestFilter, ContainerRes
             LOGGER.debug("   Return Code : {} {} {}", responseContext.getStatus(), responseContext.getStatusInfo().getFamily().name(),
               responseContext.getStatusInfo().getReasonPhrase());
             if (shouldLog(requestContext.getMethod(), requestContext.getUriInfo().getPath())) {
-                LOGGER.debug("   Header      : {}", responseContext.getHeaders());
+                logMultiValues("Header   ", responseContext.getHeaders(), true);
                 LOGGER.debug("   Content Type: {}", responseContext.getMediaType());
                 LOGGER.debug("   Content     : {}", responseContext.getEntity());
 
@@ -90,7 +93,7 @@ public class CustomLoggingFilter implements ContainerRequestFilter, ContainerRes
                     LOGGER.debug("Total request execution time: {} microseconds", executionTime);
                 }
             }
-            //clear the context on exit
+            // clear the context on exit
             MDC.clear();
         }
     }
@@ -133,18 +136,18 @@ public class CustomLoggingFilter implements ContainerRequestFilter, ContainerRes
         }
     }
 
-    private static String toString(final MultivaluedMap<String, String> map) {
-        final Iterator<Entry<String, List<String>>> i = map.entrySet().iterator();
-        if (!i.hasNext()) return "{}";
-
-        final StringBuilder builder = new StringBuilder();
-        builder.append("{");
-        for (;;) {
-            final Entry<String, List<String>> entry = i.next();
-            builder.append(entry.getKey()).append("=").append(entry.getValue());
-          if (!i.hasNext())
-              return builder.append('}').toString();
-          builder.append(',').append(' ');
+    private static <T> void logMultiValues(@Nonnull String what, @Nullable final MultivaluedMap<String, T> map, boolean maskAuth) {
+        if (map == null) {
+            return;
+        }
+        for (final Entry<String, List<T>> entry : map.entrySet()) {
+            final List<T> values = entry.getValue();
+            if (!T9tUtil.isEmpty(values)) {
+                final boolean mustMask = maskAuth && T9tConstants.HTTP_HEADER_AUTH.equals(entry.getKey());
+                for (final Object value : values) {
+                    LOGGER.debug("   {}   : {}={}", what, entry.getKey(), value == null ? "(null)" : !mustMask ? value :  MessagingUtil.truncField(value.toString(), 10) + "****");
+                }
+            }
         }
     }
 

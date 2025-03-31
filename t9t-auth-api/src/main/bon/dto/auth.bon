@@ -81,6 +81,10 @@ package (com.arvatosystems) t9t.auth {
         optional Integer                            passwordMaxCommonSubstring          default "0";        // how many identical substring characters found in the password are allowed?
         optional Boolean                            passwordCheckCaseInsensitive;                           // flag to indicate that password check is case-insensitive
         optional Boolean                            passwordCheckStartWith;                                 // flag to indicate that password check includes "StartWith" condition
+        optional Boolean                            notifyEmailChange;                                      // flag for user notification about high risk (email change)
+        optional Boolean                            notifyPasswordChange;                                   // flag for user notification about high risk (password change)
+        optional Boolean                            notifyPasswordReset;                                    // flag for user notification about high risk (password reset)
+        optional Boolean                            notifyPasswordForgotten;                                // flag for user notification about high risk (password forgotten)
     }
 
     class TenantLogoDTO extends ModuleConfigDTO {

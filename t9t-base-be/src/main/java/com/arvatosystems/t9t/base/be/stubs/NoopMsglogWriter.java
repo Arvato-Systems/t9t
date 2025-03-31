@@ -37,6 +37,7 @@ import de.jpaw.util.ApplicationException;
 @Singleton
 public class NoopMsglogWriter implements IRequestLogger {
     private static final Logger LOGGER = LoggerFactory.getLogger(NoopMsglogWriter.class);
+
     private final AtomicInteger countGood = new AtomicInteger();
     private final AtomicInteger countErrors = new AtomicInteger();
     private final AtomicLong totalTime = new AtomicLong();

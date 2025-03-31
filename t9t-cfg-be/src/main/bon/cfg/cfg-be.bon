@@ -132,6 +132,7 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional Integer                            cacheSizeUnscaled;              // common default cache size for the unscaled sequence results
         optional Boolean                            useSequencePerTable;            // if null or false: use RTTI for sequences, if true: sequences per table
         optional Long                               sequenceReplicationScale;       // if null, then unscaled refs will be multiplied by this factor (2 if left null)
+        optional Boolean                            postgresGapFix;                 // reduce gap size for postgres based applications: causes sequence value to match internal value
     }
 
     class Bpm2Configuration {

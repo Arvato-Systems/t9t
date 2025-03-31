@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.auth.ApiKeyDTO;
+import com.arvatosystems.t9t.auth.AuthModuleCfgDTO;
 import com.arvatosystems.t9t.auth.AuthenticationIssuerType;
 import com.arvatosystems.t9t.auth.TenantDTO;
 import com.arvatosystems.t9t.auth.UserDTO;
@@ -29,20 +30,24 @@ import com.arvatosystems.t9t.auth.hooks.IJwtEnrichment;
 import com.arvatosystems.t9t.auth.hooks.IOtherAuthentication;
 import com.arvatosystems.t9t.auth.jwt.IJWT;
 import com.arvatosystems.t9t.auth.services.AuthIntermediateResult;
+import com.arvatosystems.t9t.auth.services.IAuthModuleCfgDtoResolver;
 import com.arvatosystems.t9t.auth.services.IAuthPersistenceAccess;
 import com.arvatosystems.t9t.auth.services.IAuthResponseUtil;
 import com.arvatosystems.t9t.auth.services.IExternalAuthentication;
 import com.arvatosystems.t9t.auth.services.ITenantResolver;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.auth.ApiKeyAuthentication;
 import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
 import com.arvatosystems.t9t.base.auth.AuthenticationResponse;
-import com.arvatosystems.t9t.base.auth.JwtAuthentication;
 import com.arvatosystems.t9t.base.auth.ExternalTokenAuthenticationParam;
+import com.arvatosystems.t9t.base.auth.HighRiskNotificationType;
+import com.arvatosystems.t9t.base.auth.JwtAuthentication;
 import com.arvatosystems.t9t.base.auth.PasswordAuthentication;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
+import com.arvatosystems.t9t.base.services.IHighRiskSituationNotificationService;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.base.types.AuthenticationParameters;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
@@ -63,6 +68,8 @@ public class AuthenticationRequestHandler extends AbstractRequestHandler<Authent
     private final IExternalAuthentication externalAuthentication = Jdp.getRequired(IExternalAuthentication.class);
     private final IOtherAuthentication otherAuthentication = Jdp.getRequired(IOtherAuthentication.class);
     private final IJWT jwt = Jdp.getRequired(IJWT.class);
+    private final IHighRiskSituationNotificationService hrSituationNotificationService = Jdp.getRequired(IHighRiskSituationNotificationService.class);
+    private final IAuthModuleCfgDtoResolver moduleCfgResolver = Jdp.getRequired(IAuthModuleCfgDtoResolver.class);
 
     @Override
     public AuthenticationResponse execute(final RequestContext ctx, final AuthenticationRequest rq) throws Exception {
@@ -89,10 +96,11 @@ public class AuthenticationRequestHandler extends AbstractRequestHandler<Authent
         resp.setTenantNotUnique(resp.getJwtInfo().getTenantId().equals(T9tConstants.GLOBAL_TENANT_ID)); // only then the user has access to additional ones
         LOGGER.debug("User {} successfully logged in for tenant {} via {}", resp.getJwtInfo().getUserId(), resp.getJwtInfo().getTenantId(),
           resp.getApiKeyRef() != null ? "API key" : "user/PW");
+
         return resp;
     }
 
-    /** Authenticates a user via username / password. Relevant information for the JWT is taken from the UserDTO, then the TenantDTO. */
+    /** Authenticates a user via userId / password. Relevant information for the JWT is taken from the UserDTO, then the TenantDTO. */
     protected AuthenticationResponse authPasswordAuthentication(final RequestContext ctx,
             final PasswordAuthentication pw, final String locale, final String zoneinfo) {
         // check for external authentication first
@@ -124,6 +132,14 @@ public class AuthenticationRequestHandler extends AbstractRequestHandler<Authent
         final UserDTO userDto = authResult.getUser();
         if (!authResponseUtil.isUserAllowedToLogOn(ctx, userDto))
             return null;
+
+        // only for password change case
+        if (T9tUtil.isNotBlank(pw.getPassword()) && T9tUtil.isNotBlank(pw.getNewPassword())) {
+            final AuthModuleCfgDTO moduleCfg = moduleCfgResolver.getModuleConfiguration();
+            if (Boolean.TRUE.equals(moduleCfg.getNotifyPasswordChange())) {
+                hrSituationNotificationService.notifyChange(ctx, HighRiskNotificationType.PASSWORD_CHANGE.name(), userDto.getUserId(), userDto.getName(), userDto.getEmailAddress(), null);
+            }
+        }
 
         final TenantDTO tenantDto = tenantResolver.getDTO(authResult.getTenantId());
         final AuthenticationResponse resp = new AuthenticationResponse();

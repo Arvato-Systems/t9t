@@ -47,8 +47,18 @@
 
                         <div sclass="col block-field">
                             <div sclass="h6">${l:translate('login', 'password')}</div>
-                            <textbox id="passwordTxb" focus="@init(userName.value ne '')" type="password" name="pass" maxlength="64" onOK="@command('login', username=userName.value, password=passwordTxb.value, rememberMe=rememberMe.checked)"
-                                 onChanging="@command('onInputEvent')" onFocus="@command('onInputEvent')" onBlur="@command('onInputEvent')"></textbox>
+                            <div style="display: flex; align-items: center; align-items: stretch;">
+                                <textbox id="passwordTxb" focus="@init(userName.value ne '')" type="password" name="pass" maxlength="64" onOK="@command('login', username=userName.value, password=passwordTxb.value, rememberMe=rememberMe.checked)"
+                                    onChanging="@command('onInputEvent')" onFocus="@command('onInputEvent')" onBlur="@command('onInputEvent')"
+                                    style="flex-grow: 1"></textbox>
+                                <button id="togglePassword" iconSclass="z-icon-eye" >
+                                    <attribute name="onClick"><![CDATA[
+                                            var type = passwordTxb.getType();
+                                            passwordTxb.setType(type.equals("password") ? "text" : "password");
+                                            togglePassword.setIconSclass(type.equals("password") ? "z-icon-eye-slash" : "z-icon-eye");
+                                    ]]></attribute>
+                                </button>
+                            </div>
                         </div>
 
                         <div sclass="col block-field">

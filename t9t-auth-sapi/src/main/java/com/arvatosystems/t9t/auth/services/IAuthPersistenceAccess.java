@@ -52,7 +52,8 @@ public interface IAuthPersistenceAccess {
         0,
         1,
         1, 2, 1, 1, 1, 0, // additional min requirements for password changes
-        false, true // settings for password checks against blacklist
+        false, true, // settings for password checks against blacklist
+        false, false, false, false // flags for user notification
         );
 
     // returns permission entries from the database which are relevant for the user / tenant as specified by the jwtInfo record, and which are relevant for the

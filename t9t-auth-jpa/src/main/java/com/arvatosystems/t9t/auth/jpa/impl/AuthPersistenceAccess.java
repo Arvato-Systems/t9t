@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.auth.ApiKeyDTO;
+import com.arvatosystems.t9t.auth.AuthModuleCfgDTO;
 import com.arvatosystems.t9t.auth.OidClaims;
 import com.arvatosystems.t9t.auth.PasswordUtil;
 import com.arvatosystems.t9t.auth.RoleRef;
@@ -48,6 +49,7 @@ import com.arvatosystems.t9t.auth.jpa.entities.UserStatusEntity;
 import com.arvatosystems.t9t.auth.jpa.mapping.IUserEntity2UserDataMapper;
 import com.arvatosystems.t9t.auth.jpa.persistence.IUserEntityResolver;
 import com.arvatosystems.t9t.auth.services.AuthIntermediateResult;
+import com.arvatosystems.t9t.auth.services.IAuthModuleCfgDtoResolver;
 import com.arvatosystems.t9t.auth.services.IAuthPersistenceAccess;
 import com.arvatosystems.t9t.auth.services.IExternalTokenValidation;
 import com.arvatosystems.t9t.authc.api.TenantDescription;
@@ -56,9 +58,11 @@ import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.auth.ExternalTokenAuthenticationParam;
+import com.arvatosystems.t9t.base.auth.HighRiskNotificationType;
 import com.arvatosystems.t9t.base.auth.PermissionEntry;
 import com.arvatosystems.t9t.base.auth.PermissionType;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
+import com.arvatosystems.t9t.base.services.IHighRiskSituationNotificationService;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.cfg.be.OidConfiguration;
@@ -98,6 +102,8 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
     protected final IPasswordSettingService passwordSettingService = Jdp.getRequired(IPasswordSettingService.class);
     protected final IExternalTokenValidation externalTokenAuthentication = Jdp.getRequired(IExternalTokenValidation.class);
     protected final IUserEntity2UserDataMapper userEntity2UserDataMapper = Jdp.getRequired(IUserEntity2UserDataMapper.class);
+    protected final IHighRiskSituationNotificationService hrSituationNotificationService = Jdp.getRequired(IHighRiskSituationNotificationService.class);
+    protected final IAuthModuleCfgDtoResolver moduleCfgResolver = Jdp.getRequired(IAuthModuleCfgDtoResolver.class);
 
     // return the unfiltered permissions from DB, unfiltered means:
     // - permission min/max is not yet applied
@@ -666,6 +672,14 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
             throw new T9tException(T9tException.NOT_AUTHENTICATED); // reset password request is throttled
         }
         // checks OK, proceed
+        // first, create high risk notification
+        final AuthModuleCfgDTO moduleCfg = moduleCfgResolver.getModuleConfiguration();
+        if (Boolean.TRUE.equals(moduleCfg.getNotifyPasswordForgotten()) || Boolean.TRUE.equals(moduleCfg.getNotifyPasswordReset())) {
+            // this one is invoked by PASSWORD_RESET (by admin) as well as PASSWORD_FORGOTTEN (user self service)
+            // TODO: should determine which type of notification to send
+            hrSituationNotificationService.notifyChange(ctx, HighRiskNotificationType.PASSWORD_FORGOTTEN.name(), userEntity.getUserId(), userEntity.getName(), userEntity.getEmailAddress(), null);
+        }
+
         // The request creates an initial random password for the specified user, or
         // creates a new password for that user.
         final String newPassword = PasswordUtil.generateRandomPassword(T9tConstants.DEFAULT_RANDOM_PASS_LENGTH);

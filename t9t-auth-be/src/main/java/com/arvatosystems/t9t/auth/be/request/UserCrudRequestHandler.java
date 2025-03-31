@@ -1,4 +1,5 @@
 /*
+        }
  * Copyright (c) 2012 - 2023 Arvato Systems GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,23 +19,28 @@ package com.arvatosystems.t9t.auth.be.request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.auth.AuthModuleCfgDTO;
 import com.arvatosystems.t9t.auth.T9tAuthException;
 import com.arvatosystems.t9t.auth.T9tAuthTools;
 import com.arvatosystems.t9t.auth.UserDTO;
 import com.arvatosystems.t9t.auth.UserKey;
 import com.arvatosystems.t9t.auth.UserRef;
 import com.arvatosystems.t9t.auth.request.UserCrudRequest;
+import com.arvatosystems.t9t.auth.services.IAuthModuleCfgDtoResolver;
 import com.arvatosystems.t9t.auth.services.IUserResolver;
 import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.auth.HighRiskNotificationType;
 import com.arvatosystems.t9t.base.be.impl.AbstractCrudSurrogateKeyBERequestHandler;
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.services.IAuthCacheInvalidation;
+import com.arvatosystems.t9t.base.services.IHighRiskSituationNotificationService;
 import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Provider;
 
 public class UserCrudRequestHandler extends AbstractCrudSurrogateKeyBERequestHandler<UserRef, UserDTO, FullTrackingWithVersion, UserCrudRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserCrudRequestHandler.class);
@@ -42,6 +48,9 @@ public class UserCrudRequestHandler extends AbstractCrudSurrogateKeyBERequestHan
 
     private final IUserResolver resolver = Jdp.getRequired(IUserResolver.class);
     private final IAuthCacheInvalidation cacheInvalidator = Jdp.getRequired(IAuthCacheInvalidation.class);
+    private final IHighRiskSituationNotificationService hrSituationNotificationService = Jdp.getRequired(IHighRiskSituationNotificationService.class);
+    private final IAuthModuleCfgDtoResolver moduleCfgResolver = Jdp.getRequired(IAuthModuleCfgDtoResolver.class);
+    private final Provider<RequestContext> ctxProvider = Jdp.getProvider(RequestContext.class);
 
     @Override
     public CrudSurrogateKeyResponse<UserDTO, FullTrackingWithVersion> execute(final RequestContext ctx, final UserCrudRequest crudRequest) {
@@ -55,6 +64,7 @@ public class UserCrudRequestHandler extends AbstractCrudSurrogateKeyBERequestHan
             final JwtInfo jwt = ctx.internalHeaderParameters.getJwtInfo();
             T9tAuthTools.maskPermissions(userDto.getPermissions(), jwt.getPermissionsMax());
         }
+
         final CrudSurrogateKeyResponse<UserDTO, FullTrackingWithVersion> result = execute(ctx, crudRequest, resolver);
         if (crudRequest.getCrud() != OperationType.READ) {
             final String userId = userDto != null ? userDto.getUserId() : null;
@@ -77,6 +87,17 @@ public class UserCrudRequestHandler extends AbstractCrudSurrogateKeyBERequestHan
             if (FORBIDDEN_CHARS_USER_ID.indexOf(c) >= 0) {
                 LOGGER.error("Attempted to create / update to invalid user ID (illegal character) {}", id);
                 throw new T9tException(T9tAuthException.INVALID_USER_ID);
+            }
+        }
+    }
+
+    @Override
+    protected void validateUpdate(final UserDTO current, final UserDTO intended) {
+        if (current.getEmailAddress() != null && !current.getEmailAddress().equalsIgnoreCase(intended.getEmailAddress())) { // email address change
+            final AuthModuleCfgDTO moduleCfg = moduleCfgResolver.getModuleConfiguration();
+            if (Boolean.TRUE.equals(moduleCfg.getNotifyEmailChange())) {
+                hrSituationNotificationService.notifyChange(ctxProvider.get(), HighRiskNotificationType.EMAIL_ADDRESS_CHANGE.name(), current.getUserId(), current.getName(),
+                        current.getEmailAddress(), intended.getEmailAddress());
             }
         }
     }

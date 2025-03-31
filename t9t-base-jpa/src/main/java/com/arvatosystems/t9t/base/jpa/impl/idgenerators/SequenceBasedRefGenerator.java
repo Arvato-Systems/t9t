@@ -57,6 +57,7 @@ public class SequenceBasedRefGenerator extends AbstractIdGenerator implements IR
     private final Map<String, LongSupplier> generatorMap = new ConcurrentHashMap<>(500);
     private final long scaledOffsetForLocation;
     private final boolean useSequencePerTable;
+    private final boolean postgresGapFix;
 
     private final T9tServerConfiguration configuration = Jdp.getRequired(T9tServerConfiguration.class);
     private final DatabaseBrandType dialect = configuration.getDatabaseConfiguration().getDatabaseBrand();
@@ -76,6 +77,7 @@ public class SequenceBasedRefGenerator extends AbstractIdGenerator implements IR
             factoryQualifier = T9tUtil.isBlank(keyConfig.getStrategy()) ? DEFAULT_STRATEGY : keyConfig.getStrategy();
             useSequencePerTable = !Boolean.FALSE.equals(keyConfig.getUseSequencePerTable());
             sequenceReplicationScale = T9tUtil.nvl(keyConfig.getSequenceReplicationScale(), 1L);
+            postgresGapFix = Boolean.TRUE.equals(keyConfig.getPostgresGapFix());
         } else {
             scaledOffsetForLocation = 0;
             cacheSize = DEFAULT_CACHE_SIZE;
@@ -83,6 +85,7 @@ public class SequenceBasedRefGenerator extends AbstractIdGenerator implements IR
             factoryQualifier = DEFAULT_STRATEGY;
             useSequencePerTable = true;
             sequenceReplicationScale = 1L;
+            postgresGapFix = false;
         }
         LOGGER.info("Creating object references via sequence per {} for database {} by generator {} with cache sizes {} / {}, locationOffset is {}",
             useSequencePerTable ? "table" : "RTTI",
@@ -93,7 +96,7 @@ public class SequenceBasedRefGenerator extends AbstractIdGenerator implements IR
             for (int i = 0; i < NUM_SEQUENCES; ++i) {
                 final String sequenceName = sequenceNameForIndex(i);
                 final String key = refGeneratorFactory.needSelectStatement() ? selectStatementForSequence(dialect, sequenceName) : sequenceName;
-                generatorTab[i] = new CachingRefSupplier(key, cacheSize, refGeneratorFactory);
+                generatorTab[i] = new CachingRefSupplier(key, cacheSize, refGeneratorFactory, false);
             }
         }
     }
@@ -109,7 +112,7 @@ public class SequenceBasedRefGenerator extends AbstractIdGenerator implements IR
                 tn -> {
                     final String sequenceName = sequenceNameForTable(tablename);
                     final String key = refGeneratorFactory.needSelectStatement() ? selectStatementForSequence(dialect, sequenceName) : sequenceName;
-                    return new CachingRefSupplier(key, cacheSize, refGeneratorFactory);
+                    return new CachingRefSupplier(key, cacheSize, refGeneratorFactory, false);
                 }
               );
         return supplier.getAsLong() * KEY_FACTOR + scaledOffsetForLocation + rttiOffset;
@@ -121,13 +124,16 @@ public class SequenceBasedRefGenerator extends AbstractIdGenerator implements IR
         private final int cacheSize;
         private final String sqlCommandForNextValue;
         private final ISingleRefGenerator uncachedRefSupplier;
+        private final boolean eagerCache;
 
-        private CachingRefSupplier(@Nonnull final String sqlCommandForNextValue, final int cacheSize, @Nonnull ISingleRefGenerator uncachedRefSupplier) {
+        private CachingRefSupplier(@Nonnull final String sqlCommandForNextValue, final int cacheSize, @Nonnull ISingleRefGenerator uncachedRefSupplier,
+            final boolean eagerCache) {
             lastProvidedValue = -1L;
             remainingCachedIds = 0;
             this.sqlCommandForNextValue = sqlCommandForNextValue;
             this.cacheSize = cacheSize;
             this.uncachedRefSupplier = uncachedRefSupplier;
+            this.eagerCache = eagerCache;
         }
 
         public synchronized long getAsLong() {
@@ -136,9 +142,18 @@ public class SequenceBasedRefGenerator extends AbstractIdGenerator implements IR
                 ++lastProvidedValue;
             } else {
                 final long nextval = uncachedRefSupplier.getNextSequence(sqlCommandForNextValue);
-                // store data for the next bunch of results
-                lastProvidedValue = nextval * cacheSize;
-                remainingCachedIds = cacheSize - 1;
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Sequence next val is {} with cacheSize:{}, eagerCache:{}. SQL Command [{}]",
+                        nextval, cacheSize, eagerCache, sqlCommandForNextValue);
+                }
+                if (eagerCache) {
+                    lastProvidedValue = nextval - cacheSize;
+                    remainingCachedIds = cacheSize;
+                } else {
+                    // store data for the next bunch of results
+                    lastProvidedValue = nextval * cacheSize;
+                    remainingCachedIds = cacheSize - 1;
+                }
             }
             return lastProvidedValue;
         }
@@ -148,14 +163,18 @@ public class SequenceBasedRefGenerator extends AbstractIdGenerator implements IR
     public long generateUnscaledRef(final String sequenceName) {
         final LongSupplier g = generatorMap.computeIfAbsent(sequenceName,
             tn -> {
-                final String key = refGeneratorFactory.needSelectStatement() ? selectStatementForSequence(dialect, sequenceName) : sequenceName;
-                LOGGER.info("Creating new CachingRefSupplier for UNSCALED refs of key {} with cache size {}", key, cacheSizeUnscaled);
-                return new CachingRefSupplier(key, cacheSizeUnscaled, refGeneratorFactory);
+                final String key = refGeneratorFactory.needSelectStatement()
+                    ? (postgresGapFix ? selectStatementForSequence(dialect, sequenceName, cacheSizeUnscaled) : selectStatementForSequence(dialect, sequenceName))
+                    : sequenceName;
+                LOGGER.info("Creating new CachingRefSupplier for UNSCALED refs of key {} with cache size {} and eagerCache {}",
+                    key, cacheSizeUnscaled, postgresGapFix);
+                return new CachingRefSupplier(key, cacheSizeUnscaled, refGeneratorFactory, postgresGapFix);
             }
         );
-        final long value = (g.getAsLong() * sequenceReplicationScale) + (scaledOffsetForLocation > 0 ? 1 : 0);
+        final long rawValue = g.getAsLong();
+        final long value = (rawValue * sequenceReplicationScale) + (scaledOffsetForLocation > 0 ? 1 : 0);
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Generated unscaled ref {} for sequence {}", value, sequenceName);
+            LOGGER.debug("Generated unscaled ref {} (raw value {}) for sequence {}", value, rawValue, sequenceName);
         }
         return value;
     }

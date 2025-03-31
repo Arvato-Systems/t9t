@@ -248,8 +248,10 @@ package (com.arvatosystems) t9t.io.request {
 
     /** Purge sent messages after a certain age has expired. Should be called by a scheduled job. */
     class PurgeSentAsyncMessagesRequest extends RequestParameters {
-        required t9tShortId                         asyncQueueId;            // purge messages of this queue. Only the current tenant will be affected
-        optional Integer                            overrideAge;             // if set, overrides the age configured in the queue config. If neither is set, 8 days is assumed.
+        optional t9tShortId                         asyncQueueId;            // if set, only purge messages of this queue. Only the current tenant will be affected
+        optional Integer                            overrideAge;             // if set, defines the maximum age of messages in seconds. If not set, but a single queue is defined, that age is used, or 8 days as default.
+        optional t9tShortId                         asyncChannelId;          // if set, only purge messages of this channel
+        optional Boolean                            purgeUnsent;             // if set, also purge unsent messages
     }
 
     /**

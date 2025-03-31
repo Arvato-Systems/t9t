@@ -45,6 +45,14 @@ package (com.arvatosystems) t9t.base.auth {
         TOOL_CALL   = "T"           // access to specific tool calls
     }
 
+    /** Defines the type of user data change which is considered to be of high risk and may require user information. */
+    enum HighRiskNotificationType {
+        EMAIL_ADDRESS_CHANGE  = "E",   // a user's email address has been changed
+        PASSWORD_CHANGE       = "P",   // a password has been changed (regular)
+        PASSWORD_FORGOTTEN    = "F",   // user has initiated a "password forgotten" type reset (self service)
+        PASSWORD_RESET        = "R"    // a password has been reset (admin action)
+    }
+
     /** Class to store cached permissions. */
     final class PermissionEntry {
         required resourceId                                 resourceId;

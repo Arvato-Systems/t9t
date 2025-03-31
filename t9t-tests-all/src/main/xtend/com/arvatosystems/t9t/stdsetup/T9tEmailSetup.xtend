@@ -20,7 +20,9 @@ import com.arvatosystems.t9t.auth.PermissionsDTO
 import com.arvatosystems.t9t.auth.UserDTO
 import com.arvatosystems.t9t.auth.UserKey
 import com.arvatosystems.t9t.base.ITestConnection
+import com.arvatosystems.t9t.base.T9tConstants
 import com.arvatosystems.t9t.doc.DocConfigDTO
+import com.arvatosystems.t9t.doc.DocConstants
 import com.arvatosystems.t9t.doc.DocEmailReceiverDTO
 import com.arvatosystems.t9t.doc.DocTemplateDTO
 import com.arvatosystems.t9t.doc.api.TemplateType
@@ -62,12 +64,31 @@ class T9tEmailSetup {
             ]
             merge(dlg)
         ]
+
+        new DocConfigDTO => [
+            documentId          = T9tConstants.DOCUMENT_ID_HIGH_RISK_SITUATION
+            mappedId            = T9tConstants.DOCUMENT_ID_HIGH_RISK_SITUATION
+            communicationFormat = MediaXType.of(MediaType.HTML)
+            emailBodyTemplateId = T9tConstants.DOCUMENT_ID_HIGH_RISK_SITUATION
+            description         = "Document ID for high-risk situation"
+            emailSettings       = new DocEmailReceiverDTO => [
+                emailSubject    = "High risk situation"
+                subjectType     = TemplateType.INLINE;
+                defaultFrom     = myEmailAddress
+                defaultReplyTo  = myEmailAddress
+            ]
+            merge(dlg)
+        ]
+
     }
 
     def void loadTemplates() {
         LOGGER.info("Loading standard templates")
 
-        #[ 'passwordReset' ].forEach [ name |
+        #[
+            'passwordReset',
+            T9tConstants.DOCUMENT_ID_HIGH_RISK_SITUATION
+        ].forEach [ name |
             LOGGER.info("Loading template resource {}", name)
             val templateData = ("doc/template/standard/" + name + ".ftl").resourceAsHTML
             // store the templates as global defaults

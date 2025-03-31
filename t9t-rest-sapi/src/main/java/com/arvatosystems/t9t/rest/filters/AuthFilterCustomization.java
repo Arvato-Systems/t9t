@@ -61,6 +61,7 @@ public class AuthFilterCustomization implements IAuthFilterCustomization {
     protected final boolean enablePing = enableSwagger || RestUtils.checkIfSet("t9t.restapi.unauthedPing", Boolean.FALSE); // swagger implies ping
     protected final boolean allowApiKey = RestUtils.checkIfSet("t9t.restapi.apikey", Boolean.TRUE);
     protected final boolean allowLogin  = RestUtils.checkIfSet("t9t.restapi.login",  Boolean.FALSE);
+    protected final boolean allowAnyContentType  = RestUtils.checkIfSet("t9t.restapi.any.content.type",  Boolean.FALSE);
     protected final String allowedUserList = RestUtils.getConfigValue("t9t.restapi.allowedUserList");
     protected final String allowedUserRegexp = RestUtils.getConfigValue("t9t.restapi.allowedUserRegexp");
     protected final Set<String> allowedUserIds = T9tUtil.isBlank(allowedUserList) ? null : Sets.newHashSet(allowedUserList.split(","));
@@ -160,6 +161,7 @@ public class AuthFilterCustomization implements IAuthFilterCustomization {
             switch (typeOfAuth) {
             case T9tConstants.HTTP_AUTH_PREFIX_JWT:
                 if (!allowAuthJwt()) {
+                    LOGGER.debug("Rejecting JWT authentication attempt (not enabled)");
                     throwForbidden(requestContext);
                     return true; // filtered
                 }
@@ -171,6 +173,7 @@ public class AuthFilterCustomization implements IAuthFilterCustomization {
                 return filterJwt(requestContext, authHeader, authParam);
             case T9tConstants.HTTP_AUTH_PREFIX_API_KEY:
                 if (!allowAuthApiKey()) {
+                    LOGGER.debug("Rejecting API-Key authentication attempt (not enabled)");
                     throwForbidden(requestContext);
                     return true; // filtered
                 }
@@ -181,12 +184,19 @@ public class AuthFilterCustomization implements IAuthFilterCustomization {
                 }
                 return filterApiKey(requestContext, authHeader, authParam);
             case T9tConstants.HTTP_AUTH_PREFIX_USER_PW:
-                if (!allowAuthBasic() || authLength < 8 || authLength > 80 || !BASE64_PATTERN.matcher(authParam).matches()) {
+                if (!allowAuthBasic()) {
+                    LOGGER.debug("Rejecting Basic authentication attempt (not enabled)");
+                    throwForbidden(requestContext);
+                    return true; // filtered
+                }
+                if (authLength < 8 || authLength > 80 || !BASE64_PATTERN.matcher(authParam).matches()) {
+                    LOGGER.debug("Rejecting Basic authentication (length {} or bad pattern)", authLength);
                     throwForbidden(requestContext);
                     return true; // filtered
                 }
                 return filterBasic(requestContext, authHeader, authParam);
             default:
+                LOGGER.debug("Rejecting unknown authentication type {} with param length {}", typeOfAuth, authLength);
                 throwForbidden(requestContext);
                 return true; // filtered
             }
@@ -320,10 +330,14 @@ public class AuthFilterCustomization implements IAuthFilterCustomization {
 
     @Override
     public boolean filterSupportedMediaType(final ContainerRequestContext requestContext) {
+        if (allowAnyContentType) {
+            return false;
+        }
         final MediaType mediaType = requestContext.getMediaType();
         if (mediaType != null) {
             final String subType = mediaType.getSubtype();
             if (!"application".equals(mediaType.getType()) || !("xml".equals(subType) || "json".equals(subType))) {
+                LOGGER.debug("Rejecting request due to unsupported media type {}", mediaType);
                 abortFilter(requestContext, Response.status(Status.UNSUPPORTED_MEDIA_TYPE).build());
                 return true;
             }

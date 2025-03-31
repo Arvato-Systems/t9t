@@ -17,13 +17,16 @@ package com.arvatosystems.t9t.io.jpa.request;
 
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
+import com.arvatosystems.t9t.base.output.ExportStatusEnum;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.batch.StatisticsDTO;
 import com.arvatosystems.t9t.io.AsyncQueueKey;
 import com.arvatosystems.t9t.io.jpa.entities.AsyncQueueEntity;
 import com.arvatosystems.t9t.io.jpa.persistence.IAsyncMessageEntityResolver;
 import com.arvatosystems.t9t.io.jpa.persistence.IAsyncQueueEntityResolver;
 import com.arvatosystems.t9t.io.request.PurgeSentAsyncMessagesRequest;
+import com.arvatosystems.t9t.statistics.services.IStatisticsService;
 
 import de.jpaw.dp.Jdp;
 
@@ -39,29 +42,74 @@ public class PurgeSentAsyncMessagesRequestHandler extends AbstractRequestHandler
 
     private final IAsyncMessageEntityResolver messageResolver = Jdp.getRequired(IAsyncMessageEntityResolver.class);
     private final IAsyncQueueEntityResolver queueResolver = Jdp.getRequired(IAsyncQueueEntityResolver.class);
+    private final IStatisticsService statisticsService = Jdp.getRequired(IStatisticsService.class);
 
     @Override
     public ServiceResponse execute(final RequestContext ctx, final PurgeSentAsyncMessagesRequest rq) {
-        final AsyncQueueEntity queue = queueResolver.getEntityData(new AsyncQueueKey(rq.getAsyncQueueId()));
-        if (!queue.getTenantId().equals(ctx.tenantId)) {
-            throw new T9tException(T9tException.WRITE_ACCESS_ONLY_CURRENT_TENANT);
-        }
-        final int maxAge;
-        if (rq.getOverrideAge() != null) {
-            maxAge = rq.getOverrideAge();
-        } else if (queue.getPurgeAfterSeconds() != null) {
-            maxAge = queue.getPurgeAfterSeconds();
-        } else {
-            maxAge = 86400 * 8;
-        }
-        final Instant purgeAfter = ctx.executionStart.minusSeconds(maxAge);
-        LOGGER.info("Purging async sent message of age {} seconds for queue {}", maxAge, queue.getAsyncQueueId());
+        final String queueId = rq.getAsyncQueueId();
+        final String channelId = rq.getAsyncChannelId();
+        final boolean purgeAll = Boolean.TRUE.equals(rq.getPurgeUnsent());
+        final Integer overrideAge = rq.getOverrideAge();
+        final Long queueRef;
+        final int defaultAge;
 
-        final String purge = "DELETE FROM AsyncMessageEntity m WHERE m.tenantId = :tenantId AND m.cTimestamp > :purgeAfter";
-        final Query query = messageResolver.getEntityManager().createQuery(purge);
-        query.setParameter("tenantId",   ctx.tenantId);
-        query.setParameter("purgeAfter", purgeAfter);
-        query.executeUpdate();
+        final StringBuilder sb = new StringBuilder(200);
+        // create the default SQL
+        sb.append("DELETE FROM AsyncMessageEntity m WHERE m.tenantId = :tenantId AND m.cTimestamp < :purgeBefore");
+
+        // specific specialization of a queue has been specified
+        if (queueId != null) {
+            final AsyncQueueEntity queue = queueResolver.getEntityData(new AsyncQueueKey(queueId));
+            if (!queue.getTenantId().equals(ctx.tenantId)) {
+                throw new T9tException(T9tException.WRITE_ACCESS_ONLY_CURRENT_TENANT);
+            }
+            sb.append(" AND m.asyncQueueRef = :queueRef");
+            queueRef = queue.getObjectRef();
+            defaultAge = queue.getPurgeAfterSeconds() != null ? queue.getPurgeAfterSeconds() : 8 * 86400;
+        } else {
+            queueRef = null;
+            defaultAge = 8 * 86400;
+        }
+        if (channelId != null) {
+            sb.append(" AND m.asyncChannelId = :channelId");
+        }
+        if (!purgeAll) {
+            sb.append(" AND m.status = '");
+            sb.append(ExportStatusEnum.UNDEFINED.getToken());
+            sb.append("'");
+        }
+
+        // create and execute the query
+        final Query query = messageResolver.getEntityManager().createQuery(sb.toString());
+        final Instant maxAgeToKeep = ctx.executionStart.minusSeconds(overrideAge != null ? overrideAge : defaultAge);  // default is 8 days, no queue specific default
+        query.setParameter("tenantId", ctx.tenantId);
+        query.setParameter("purgeBefore", maxAgeToKeep);
+        // add optional parameters
+        if (queueRef != null) {
+            query.setParameter("queueRef", queueRef);
+        }
+        if (channelId != null) {
+            query.setParameter("channelId", channelId);
+        }
+        final int numDeleted = query.executeUpdate();
+
+        // set parameters
+        LOGGER.info("Purged {} async {}messages older than {} for queue {}, channel {}", numDeleted, purgeAll ? "" : "UNSENT ", maxAgeToKeep,
+                queueId != null ? queueId : "(ALL)", channelId != null ? channelId : "(ALL)");
+
+        // write statistics
+
+        final StatisticsDTO stat = new StatisticsDTO();
+        stat.setCount1(numDeleted);
+        stat.setInfo1(queueId);
+        stat.setInfo2(channelId);
+        stat.setRecordsProcessed(null);
+        stat.setStartTime(ctx.executionStart);
+        stat.setEndTime(Instant.now());
+        stat.setJobRef(ctx.internalHeaderParameters.getProcessRef());
+        stat.setProcessId("PurgeAsyncMessage");
+        statisticsService.saveStatisticsData(stat);
+
         return ok();
     }
 }

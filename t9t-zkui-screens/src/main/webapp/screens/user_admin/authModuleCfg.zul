@@ -26,6 +26,10 @@
                               id2="passwordMinUppercase"            value2="@load(vm.data.passwordMinUppercase)            @save(vm.data.passwordMinUppercase,         before='commandSave')"/>
                     <cells228 id ="passwordMinOtherChars"           value ="@load(vm.data.passwordMinOtherChars)           @save(vm.data.passwordMinOtherChars,        before='commandSave')"
                               id2="passwordMaxCommonSubstring"      value2="@load(vm.data.passwordMaxCommonSubstring)      @save(vm.data.passwordMaxCommonSubstring,   before='commandSave')"/>
+                    <cells228 id ="notifyEmailChange"               value ="@load(vm.data.notifyEmailChange)               @save(vm.data.notifyEmailChange,            before='commandSave')"
+                              id2="notifyPasswordChange"            value2="@load(vm.data.notifyPasswordChange)            @save(vm.data.notifyPasswordChange,         before='commandSave')"/>
+                    <cells228 id ="notifyPasswordReset"             value ="@load(vm.data.notifyPasswordReset)             @save(vm.data.notifyPasswordReset,          before='commandSave')"
+                              id2="notifyPasswordForgotten"         value2="@load(vm.data.notifyPasswordForgotten)         @save(vm.data.notifyPasswordForgotten,      before='commandSave')"/>
                     <cells28  id ="z" colspan1="3" rows1="4"        value ="@load(vm.data.z)                               @save(vm.data.z,                            before='commandSave')"/>
                 </rows>
             </form28>

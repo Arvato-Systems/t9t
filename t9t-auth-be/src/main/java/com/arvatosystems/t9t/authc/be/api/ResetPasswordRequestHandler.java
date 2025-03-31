@@ -34,7 +34,6 @@ public class ResetPasswordRequestHandler extends AbstractRequestHandler<ResetPas
     private final IAuthPersistenceAccess authPersistenceAccess = Jdp.getRequired(IAuthPersistenceAccess.class);
     private final IAuthCacheInvalidation cacheInvalidator = Jdp.getRequired(IAuthCacheInvalidation.class);
 
-
     @Override
     public ServiceResponse execute(final RequestContext ctx, final ResetPasswordRequest request) throws Exception {
         // enabled only for administrators, by permissions - but this one is handled centrally, so we ignore
