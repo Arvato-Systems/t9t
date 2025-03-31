@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!--
 
-    Copyright (c) 2012 - 2023 Arvato Systems GmbH
+    Copyright (c) 2012 - 2025 Arvato Systems GmbH
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -33,6 +33,8 @@
     <!-- useful commands to check current versions:
          mvn dependency:resolve-plugins
          mvn versions:display-plugin-updates
+         recreate license headers:
+         mvn license:format -rf :t9t-build
     -->
     <properties>
         <min-maven.version>3.9.9</min-maven.version>  <!-- version currently used by github -->
@@ -98,7 +100,7 @@
         <jdt.version>3.39.0</jdt.version>
 
         <bonaparte-plugin.version>6.2.0</bonaparte-plugin.version>
-        <license-plugin.version>3.0</license-plugin.version>
+        <license-plugin.version>5.0.0</license-plugin.version>
 
         <checkstyle.version>10.20.1</checkstyle.version>
         <spotbugs.version>4.9.3</spotbugs.version>
@@ -750,30 +752,38 @@
                 <groupId>com.mycila</groupId>
                 <artifactId>license-maven-plugin</artifactId>
                 <configuration>
-                    <header>APACHE-2.txt</header>
+                    <properties>
+                        <owner>Arvato Systems GmbH</owner>
+                        <project.inceptionYear>2012 - 2025</project.inceptionYear>
+                    </properties>
                     <mapping>
                         <xtend>PHP</xtend>
                         <bon>PHP</bon>
                         <bddl>PHP</bddl>
                         <java>PHP</java>
-                     </mapping>
-                     <properties>
-                        <owner>Arvato Systems GmbH</owner>
-                        <project.inceptionYear>2012 - 2023</project.inceptionYear>
-                     </properties>
-                     <excludes>
-                        <exclude>src/main/resources/**</exclude>
-                        <exclude>src/test/resources/**</exclude>
-                        <exclude>src/main/xtend-gen/**</exclude>
-                        <exclude>src/generated/java/**</exclude>
-                     </excludes>
+                    </mapping>
+                    <licenseSets>
+                        <licenseSet>
+                            <header>APACHE-2.txt</header>
+                            <excludes>
+                                <!-- <exclude>src/main/resources/**</exclude> -->
+                                <exclude>src/test/resources/**</exclude>
+                                <exclude>src/main/xtend-gen/**</exclude>
+                                <exclude>src/generated/java/**</exclude>
+                                <exclude>**/Migration/*.sql</exclude>
+                                <exclude>**/*.xsd</exclude>
+                                <exclude>checkstyle.xml</exclude>
+                                <exclude>global-angular-dm</exclude>
+                            </excludes>
+                        </licenseSet>
+                    </licenseSets>
                 </configuration>
                 <executions>
-                     <execution>
-                         <goals>
-                             <goal>format</goal>
-                         </goals>
-                     </execution>
+                    <execution>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>

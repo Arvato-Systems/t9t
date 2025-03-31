@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2012 - 2025 Arvato Systems GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
