@@ -22,7 +22,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-build</artifactId>
-        <version>8.0-SNAPSHOT</version>
+        <version>8.0.42</version>
     </parent>
 
     <artifactId>global-dm</artifactId>
@@ -158,7 +158,7 @@
         <httpcore.version>4.4.16</httpcore.version>
         <httpclient.version>4.5.14</httpclient.version>
         <httpcore5.version>5.3.4</httpcore5.version>
-        <httpclient5.version>5.4.3</httpclient5.version>
+        <httpclient5.version>5.4.2</httpclient5.version>
         <httpmime.version>4.5.14</httpmime.version>
         <pdfbox.version>3.0.4</pdfbox.version>
         <freemarker.version>2.3.32</freemarker.version>
