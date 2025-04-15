@@ -18,9 +18,11 @@ package com.arvatosystems.t9t.zkui.services;
 import java.util.List;
 import java.util.UUID;
 
+import com.arvatosystems.t9t.auth.UserDTO;
 import com.arvatosystems.t9t.auth.request.GetPasswordChangeRequirementsResponse;
 import com.arvatosystems.t9t.base.auth.AuthenticationResponse;
 import com.arvatosystems.t9t.base.auth.PermissionEntry;
+import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;
 
 import jakarta.annotation.Nonnull;
@@ -97,4 +99,11 @@ public interface IUserDAO {
      */
     GetPasswordChangeRequirementsResponse getPasswordChangeRequirements() throws ReturnCodeException;
 
+    /** Setting of user password for testing
+     * @param user
+     * @param password
+     * @return
+     * @throws ReturnCodeException
+     */
+    CrudSurrogateKeyResponse setPassword(@Nonnull UserDTO user, @Nonnull String password) throws ReturnCodeException;
 }

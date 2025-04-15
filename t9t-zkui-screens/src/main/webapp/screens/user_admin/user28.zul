@@ -54,6 +54,9 @@
                                     <cell>
                                        <button28 id="resetPw" onClick="@command('resetPassword')" />
                                     </cell>
+                                    <cell>
+                                        <button28 id="setPassword" onClick="@command('setPassword')" disabled="@load(not(vm.canSetPassword))" />
+                                    </cell>
                                 </row>
                             </rows>
                         </form28>

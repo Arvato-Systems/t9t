@@ -16,6 +16,7 @@
 package com.arvatosystems.t9t.server.services;
 
 import java.io.Closeable;
+import java.util.function.Function;
 
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
@@ -63,4 +64,9 @@ public interface IRequestLogger extends Closeable {
     /** Closes the logger. Shuts down the message writer; last call in regular lifecycle. */
     @Override
     void close();
+
+    /** Registers a business key extractor from a response. */
+    default void registerBusinessKeyExtractor(@Nonnull String pqon, @Nonnull Function<ServiceResponse, String> extractor) {
+        // not supported by default
+    }
 }

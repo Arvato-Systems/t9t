@@ -733,13 +733,17 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
 
         final String permissionId = permissionType.getToken() + "." + resourceId;
 
-        final String queryPermission = "SELECT per.role_ref FROM p42_cfg_role_to_permissions per "
-                + " WHERE per.tenant_id IN :tenants AND :permissionId LIKE per.permission_id || '%' AND (per.permission_set &  :bitmap) = :bitmap";
+        final String queryPermission = "SELECT per.role_ref FROM p42_cfg_role_to_permissions per, p42_cfg_roles r"
+                + " WHERE per.tenant_id IN :tenants"
+                + " AND r.tenant_id IN :tenants"
+                + " AND r.is_active = :isActive"
+                + " AND r.object_ref = per.role_ref"
+                + " AND :permissionId LIKE per.permission_id || '%'"
+                + " AND (per.permission_set & :bitmap) = :bitmap";
 
-        final String queryUser = "SELECT u FROM UserEntity u, UserTenantRoleEntity utr, RoleEntity r "
-                + " WHERE u.objectRef = utr.userRef AND utr.roleRef =  r.objectRef AND r.objectRef IN :roleRefs"
-                + " AND u.tenantId IN :tenants AND u.isActive = :isActive AND utr.tenantId IN :tenants"
-                + " AND r.tenantId IN :tenants AND r.isActive = :isActive";
+        final String queryUser = "SELECT u FROM UserEntity u, UserTenantRoleEntity utr"
+                + " WHERE u.tenantId IN :tenants AND u.isActive = :isActive"
+                + " AND (u.roleRef IN :roleRefs OR (u.objectRef = utr.userRef AND utr.roleRef IN :roleRefs AND utr.tenantId IN :tenants))";
 
         try {
             final EntityManager em = jpaContextProvider.get().getEntityManager();
@@ -751,20 +755,31 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
                 tenants = ImmutableList.of(T9tConstants.GLOBAL_TENANT_ID, jwtInfo.getTenantId());
             }
 
-            final Query permQuery = em.createNativeQuery(queryPermission, Long.class).setParameter("tenants", tenants)
-                    .setParameter("permissionId", permissionId).setParameter("bitmap", operationTypes.getBitmap());
+            final Query permQuery = em.createNativeQuery(queryPermission, Long.class)
+                    .setParameter("tenants", tenants)
+                    .setParameter("isActive", Boolean.TRUE)
+                    .setParameter("permissionId", permissionId)
+                    .setParameter("bitmap", operationTypes.getBitmap());
 
             final List<Long> roleRefs = permQuery.getResultList();
+            // shortcut in case no suitable role identified
+            if (roleRefs.isEmpty()) {
+                return EMPTY_USER_LIST;
+            }
 
-            final List<UserEntity> users = em.createQuery(queryUser, UserEntity.class).setParameter("tenants", tenants).setParameter("isActive", Boolean.TRUE)
-                    .setParameter("roleRefs", roleRefs).getResultList();
+            final List<UserEntity> users = em.createQuery(queryUser, UserEntity.class)
+                    .setParameter("tenants", tenants)
+                    .setParameter("isActive", Boolean.TRUE)
+                    .setParameter("roleRefs", roleRefs)
+                    .getResultList();
 
             return userEntity2UserDataMapper.mapToUserData(users);
 
         } catch (final Exception e) {
             LOGGER.error("JPA exception {} while reading users for tenantId {}, for permissionId {}, operationTypes {}: {}", e.getClass().getSimpleName(),
                     jwtInfo.getTenantId(), permissionId, operationTypes, e.getMessage());
-            return EMPTY_USER_LIST;
+            LOGGER.error("Stack trace is ", e);
+            throw new T9tException(T9tException.GENERAL_EXCEPTION);
         }
     }
 }

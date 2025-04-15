@@ -19,8 +19,18 @@ import java.util.List;
 
 import com.arvatosystems.t9t.msglog.MessageDTO;
 
+import jakarta.annotation.Nonnull;
+
+/**
+ * Interface to persist transaction execution logs.
+ */
 public interface IMsglogPersistenceAccess {
+    /** Opens a request logger backend. */
     void open();
-    void write(List<MessageDTO> entries);
+
+    /** Writes the given entries to the database. */
+    void write(@Nonnull List<MessageDTO> entries);
+
+    /** closes a request logger backend. */
     void close();
 }

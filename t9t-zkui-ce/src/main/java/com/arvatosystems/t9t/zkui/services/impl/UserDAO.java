@@ -25,8 +25,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.util.TimeZones;
 
+import com.arvatosystems.t9t.auth.UserDTO;
+import com.arvatosystems.t9t.auth.UserKey;
 import com.arvatosystems.t9t.auth.request.GetPasswordChangeRequirementsRequest;
 import com.arvatosystems.t9t.auth.request.GetPasswordChangeRequirementsResponse;
+import com.arvatosystems.t9t.auth.request.UserCrudAndSetPasswordRequest;
 import com.arvatosystems.t9t.authc.api.GetTenantsRequest;
 import com.arvatosystems.t9t.authc.api.GetTenantsResponse;
 import com.arvatosystems.t9t.authc.api.ResetPasswordRequest;
@@ -44,6 +47,9 @@ import com.arvatosystems.t9t.base.auth.AuthenticationResponse;
 import com.arvatosystems.t9t.base.auth.ExternalTokenAuthenticationParam;
 import com.arvatosystems.t9t.base.auth.PasswordAuthentication;
 import com.arvatosystems.t9t.base.auth.PermissionEntry;
+import com.arvatosystems.t9t.base.auth.PermissionType;
+import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
+import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.types.SessionParameters;
 import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;
 import com.arvatosystems.t9t.zkui.services.IT9tRemoteUtils;
@@ -53,6 +59,7 @@ import com.arvatosystems.t9t.zkui.util.ZulUtils;
 import com.arvatosystems.t9t.zkui.viewmodel.support.LoginViewModel;
 import com.arvatosystems.t9t.zkui.viewmodel.support.LoginViewModel.UserInfo;
 
+import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ApplicationException;
@@ -123,7 +130,7 @@ public class UserDAO implements IUserDAO {
     public List<PermissionEntry> getPermissions() throws ReturnCodeException {
         try {
             return t9tRemoteUtils.executeAndHandle(
-                new QueryPermissionsRequest(com.arvatosystems.t9t.base.auth.PermissionType.FRONTEND),
+                new QueryPermissionsRequest(PermissionType.FRONTEND),
                 QueryPermissionsResponse.class
             ).getPermissions();
         } catch (Exception e) {
@@ -206,6 +213,26 @@ public class UserDAO implements IUserDAO {
         } catch (Exception e) {
             t9tRemoteUtils.returnCodeExceptionHandler("api-key.bon#SwitchLanguageRequest", e);
         }
+        return response;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public CrudSurrogateKeyResponse<UserDTO, FullTrackingWithVersion> setPassword(final UserDTO user, final String password) throws ReturnCodeException {
+        CrudSurrogateKeyResponse<UserDTO, FullTrackingWithVersion> response = null;
+
+        try {
+            final UserCrudAndSetPasswordRequest request = new UserCrudAndSetPasswordRequest();
+            request.setPassword(password);
+            request.setCrud(OperationType.MERGE);
+            request.setData(user);
+            UserKey userKey = new UserKey(user.getUserId());
+            request.setNaturalKey(userKey);
+            response = t9tRemoteUtils.executeAndHandle(request, CrudSurrogateKeyResponse.class);
+        } catch (Exception e) {
+            t9tRemoteUtils.returnCodeExceptionHandler("security.bon#UserCrudAndSetPasswordRequest", e);
+        }
+
         return response;
     }
 

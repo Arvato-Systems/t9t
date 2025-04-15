@@ -33,8 +33,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class GetConfigPQONsRequestHandler extends AbstractReadOnlyRequestHandler<GetConfigPQONsRequest> {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(GetConfigPQONsRequestHandler.class);
+    public static final Set<String> EXTRA_PQONS = new HashSet<>(16);  // extra PQONs to be added to the list
+
     protected static final String PACKAGE_PREFIX = "com.arvatosystems.t9t";
     protected static final String CFG_ENTITY_IDENTIFIER = "_cfg_";
     protected static final String FIELD_TABLE_NAME = "TABLE_NAME";
@@ -45,9 +46,9 @@ public class GetConfigPQONsRequestHandler extends AbstractReadOnlyRequestHandler
     public GetConfigPQONsResponse execute(@Nonnull final RequestContext ctx, @Nonnull final GetConfigPQONsRequest request) throws Exception {
 
         final Set<String> pqons = new HashSet<>(64);
-        Reflections reflections = new Reflections(PACKAGE_PREFIX);
-        Set<Class<?>> entityClasses = reflections.getTypesAnnotatedWith(Table.class);
-        for (Class<?> entityClass : entityClasses) {
+        final Reflections reflections = new Reflections(PACKAGE_PREFIX);
+        final Set<Class<?>> entityClasses = reflections.getTypesAnnotatedWith(Table.class);
+        for (final Class<?> entityClass : entityClasses) {
             if (isCfgEntity(entityClass)) {
                 final String pqon = getPQON(entityClass);
                 if (pqon != null) {
@@ -55,7 +56,9 @@ public class GetConfigPQONsRequestHandler extends AbstractReadOnlyRequestHandler
                 }
             }
         }
-        LOGGER.debug("Found {} entity classes and {} config PQONs", entityClasses.size(), pqons.size());
+        LOGGER.debug("Found {} entity classes and {} config PQONs, adding {} extra PQONs", entityClasses.size(), pqons.size(), EXTRA_PQONS.size());
+        pqons.addAll(EXTRA_PQONS);
+
         final GetConfigPQONsResponse response = new GetConfigPQONsResponse();
         response.setPqons(pqons);
         return response;

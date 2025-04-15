@@ -33,7 +33,10 @@ public class UniqueConstraintExceptionMapper implements IJpaCrudTechnicalExcepti
 
     @Override
     public boolean handles(final PersistenceException e) {
-        return e.getCause() instanceof ConstraintViolationException;
+        final Throwable cause = e.getCause();
+        return e instanceof ConstraintViolationException
+            || e instanceof jakarta.persistence.EntityExistsException
+            || (cause != null && (cause instanceof ConstraintViolationException || cause instanceof jakarta.persistence.EntityExistsException));
     }
 
     @Override

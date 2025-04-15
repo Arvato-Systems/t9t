@@ -23,6 +23,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
+import de.jpaw.bonaparte.core.DataConverter;
+import de.jpaw.bonaparte.core.ObjectValidationException;
+import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+import de.jpaw.bonaparte.pojos.api.auth.UserLogLevelType;
+import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+import de.jpaw.util.ApplicationException;
+import de.jpaw.util.ExceptionUtil;
+
 import com.arvatosystems.t9t.base.LogSanitizer;
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.MutableInt;
@@ -52,16 +62,6 @@ import com.arvatosystems.t9t.server.ExecutionSummary;
 import com.arvatosystems.t9t.server.InternalHeaderParameters;
 import com.arvatosystems.t9t.server.services.IRequestLogger;
 import com.arvatosystems.t9t.server.services.IRequestProcessor;
-
-import de.jpaw.bonaparte.core.DataConverter;
-import de.jpaw.bonaparte.core.ObjectValidationException;
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
-import de.jpaw.bonaparte.pojos.api.auth.UserLogLevelType;
-import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
-import de.jpaw.util.ApplicationException;
-import de.jpaw.util.ExceptionUtil;
 
 //process requests once the user has been authenticated
 @Singleton
@@ -414,6 +414,11 @@ public class RequestProcessor implements IRequestProcessor {
                         resp = MessagingUtil.createServiceResponse(T9tException.JTA_EXCEPTION, causeChain, ihdr.getMessageId(), ctx.tenantId, null);
                         if (e instanceof NullPointerException) {
                             LOGGER.error("NullPointerException: Stack trace is ", e);
+                        } else if (e.getClass().getCanonicalName().equals("org.hibernate.exception.ConstraintViolationException")
+                                || (e.getCause() != null && e.getCause().getClass().getCanonicalName().equals("org.hibernate.exception.ConstraintViolationException"))) {
+                            final T9tException exception = new T9tException(T9tException.UNIQUE_CONSTRAINT_VIOLATION);
+                            resp.setReturnCode(exception.getErrorCode());
+                            resp.setErrorMessage(exception.getStandardDescription());
                         } else if (e.getClass().getCanonicalName().equals("jakarta.persistence.RollbackException")) {
                             if (e.getCause() != null && e.getCause().getClass().getCanonicalName().equals("jakarta.persistence.OptimisticLockException")) {
                                 resp.setReturnCode(T9tException.OPTIMISTIC_LOCKING_EXCEPTION);

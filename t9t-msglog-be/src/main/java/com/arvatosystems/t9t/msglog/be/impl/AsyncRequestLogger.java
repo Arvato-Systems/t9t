@@ -17,7 +17,9 @@ package com.arvatosystems.t9t.msglog.be.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -25,6 +27,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,6 +76,7 @@ public class AsyncRequestLogger implements IRequestLogger {
 
     private final LinkedTransferQueue<MessageDTO> queue = new LinkedTransferQueue<>();
     private final IMsglogPersistenceAccess persistenceAccess = Jdp.getRequired(IMsglogPersistenceAccess.class);
+    private final Map<String, Function<ServiceResponse, String>> businessKeyExtractorRegistry = new ConcurrentHashMap<>();
 
     @IsLogicallyFinal  // set by open() method
     private ExecutorService executor;
@@ -172,6 +176,13 @@ public class AsyncRequestLogger implements IRequestLogger {
             // only set it to nonnull if retries were done
             m.setRetriesDone(retriesDone);
         }
+        if (m.getEssentialKey() == null) {
+            // try to extract the business key from the response
+            final Function<ServiceResponse, String> extractor = businessKeyExtractorRegistry.get(hdr.getRequestParameterPqon());
+            if (extractor != null) {
+                m.setEssentialKey(extractor.apply(response));
+            }
+        }
 
         final ServiceRequestHeader h = hdr.getRequestHeader();
         if (h != null) {
@@ -248,5 +259,10 @@ public class AsyncRequestLogger implements IRequestLogger {
         LOGGER.info("Queue drained after {} us.", (end - start) / 1000L);
         executor.shutdown();
         persistenceAccess.close();   // close disk channel
+    }
+
+    @Override
+    public void registerBusinessKeyExtractor(final String pqon, final Function<ServiceResponse, String> extractor) {
+        businessKeyExtractorRegistry.put(pqon, extractor);
     }
 }

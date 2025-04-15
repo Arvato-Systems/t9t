@@ -17,6 +17,7 @@ package com.arvatosystems.t9t.zkui.init;
 
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.base.IViewModelContainer;
+import com.arvatosystems.t9t.base.auth.ChangePasswordUI;
 import com.arvatosystems.t9t.base.misc.Info;
 import com.arvatosystems.t9t.bpmn.T9tWorkflowStepCondition;
 import com.arvatosystems.t9t.bpmn.UiOnlyWorkflowStep;
@@ -39,6 +40,9 @@ public final class UIOnlyViewModels implements IViewModelContainer {
     private static final CrudViewModel<SystemParamsDTO, TrackingBase> SESSION_INFO_VIEW_MODEL =
             new CrudViewModel<SystemParamsDTO, TrackingBase>(
                     SystemParamsDTO.BClass.INSTANCE, null, null, null);
+    private static final CrudViewModel<ChangePasswordUI, TrackingBase> SET_PASSWORD_VIEW_MODEL =
+            new CrudViewModel<>(
+                    ChangePasswordUI.BClass.INSTANCE, null, null, null);
 
     @Override
     public void register() {
@@ -46,5 +50,6 @@ public final class UIOnlyViewModels implements IViewModelContainer {
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("workflowStepConfig", WORKFLOW_STEP_CONFIGURATION);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("workflowStepCondition", WORKFLOW_STEP_CONDITION);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("sessionInfo",  SESSION_INFO_VIEW_MODEL);
+        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("setPasswordModal",  SET_PASSWORD_VIEW_MODEL);
     }
 }

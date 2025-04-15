@@ -53,9 +53,9 @@ public class CompactMessageCodec implements MessageCodec<BonaPortable, BonaPorta
             final BonaPortable obj = cbap.readObject(StaticMeta.OUTER_BONAPORTABLE, BonaPortable.class);
             LOGGER.debug("Deserialization of {} received over wire", obj.ret$PQON());
             return obj;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.error("Failed to decode: {}: {}", e.getMessage(), ExceptionUtil.causeChain(e));
-            LOGGER.debug("Buffer contents is\n{}", ByteUtil.dump(buff, Math.min(messageLength, 256)));
+            LOGGER.debug("Buffer contents is\n{}", ByteUtil.dump(buff, Math.min(messageLength, 2048)));
             throw e;
         }
     }
