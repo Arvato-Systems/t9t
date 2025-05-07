@@ -18,7 +18,6 @@ package com.arvatosystems.t9t.changeRequest.service.impl;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.api.RequestParameters;
-import com.arvatosystems.t9t.base.crud.CrudAnyKeyRequest;
 import com.arvatosystems.t9t.base.services.IDataChangeRequestFlow;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.changeRequest.ChangeWorkFlowConfigDTO;
@@ -30,6 +29,7 @@ import com.arvatosystems.t9t.changeRequest.jpa.mapping.IDataChangeRequestDTOMapp
 import com.arvatosystems.t9t.changeRequest.jpa.persistence.IChangeWorkFlowConfigEntityResolver;
 import com.arvatosystems.t9t.changeRequest.jpa.persistence.IDataChangeRequestEntityResolver;
 import com.arvatosystems.t9t.changeRequest.services.IChangeWorkFlowConfigCache;
+import com.arvatosystems.t9t.changeRequest.services.IDataChangeRequestEmailService;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.dp.Jdp;
@@ -50,17 +50,11 @@ public class DataChangeRequestFlow implements IDataChangeRequestFlow {
     protected final IDataChangeRequestEntityResolver resolver = Jdp.getRequired(IDataChangeRequestEntityResolver.class);
     protected final IDataChangeRequestDTOMapper mapper = Jdp.getRequired(IDataChangeRequestDTOMapper.class);
     protected final IChangeWorkFlowConfigDTOMapper configMapper = Jdp.getRequired(IChangeWorkFlowConfigDTOMapper.class);
+    protected final IDataChangeRequestEmailService emailService = Jdp.getRequired(IDataChangeRequestEmailService.class);
 
     @Override
     public boolean requireApproval(@Nonnull final String pqon, @Nonnull final OperationType operationType) {
-        final ChangeWorkFlowConfigDTO config;
-        if (pqon.equals(ChangeWorkFlowConfigDTO.my$PQON)) {
-            // special case: if the checking is for ChangeWorkFlowConfigDTO, then we need to fetch the config from the database to load it with read/write mode.
-            // Cache will load the entity as read-only.
-            config = configMapper.mapToDto(configResolver.findByPqon(true, pqon));
-        } else {
-            config = configCache.getOrNull(pqon);
-        }
+        final ChangeWorkFlowConfigDTO config = getConfig(pqon);
         if (config == null) {
             return false;
         }
@@ -99,18 +93,34 @@ public class DataChangeRequestFlow implements IDataChangeRequestFlow {
         }
         resolver.save(entity);
         LOGGER.debug("Creating data change request for changeId:{}, key:{}, submitChange:{}", changeId, key, submitChange);
+
+        final ChangeWorkFlowConfigDTO config = getConfig(pqon);
+        if (ChangeWorkFlowStatus.TO_REVIEW == entity.getStatus() && config != null && T9tUtil.isTrue(config.getSendEmail())) {
+            final DataChangeRequestDTO data = mapper.mapToDto(entity);
+            emailService.sendReviewEmail(ctx, data);
+        }
         return entity.getObjectRef();
     }
 
     @Override
-    public boolean isChangeRequestValidToActivate(@Nonnull final Long objectRef, @Nullable BonaPortable key, @Nonnull BonaPortable data) {
+    public boolean isChangeRequestValidToActivate(@Nonnull final Long objectRef, @Nullable BonaPortable key) {
         final DataChangeRequestEntity entity = resolver.find(objectRef);
         if (entity == null) {
             return false;
         }
         final DataChangeRequestDTO dto = mapper.mapToDto(entity);
-        // Key and data should match and the change request should be ready to activate
-        final BonaPortable crudData = ((CrudAnyKeyRequest) dto.getCrudRequest()).getData();
-        return Objects.equals(dto.getKey(), key) && Objects.equals(crudData, data) && ChangeWorkFlowStatus.ACTIVATED == dto.getStatus();
+        // Key should match and the change request should be ready to activate
+        return Objects.equals(dto.getKey(), key) && ChangeWorkFlowStatus.ACTIVATED == dto.getStatus();
+    }
+
+    @Nullable
+    protected ChangeWorkFlowConfigDTO getConfig(@Nonnull final String pqon) {
+        if (pqon.equals(ChangeWorkFlowConfigDTO.my$PQON)) {
+            // special case: if the checking is for ChangeWorkFlowConfigDTO, then we need to fetch the config from the database to load it with read/write mode.
+            // Cache will load the entity as read-only.
+            return configMapper.mapToDto(configResolver.findByPqon(true, pqon));
+        } else {
+            return configCache.getOrNull(pqon);
+        }
     }
 }

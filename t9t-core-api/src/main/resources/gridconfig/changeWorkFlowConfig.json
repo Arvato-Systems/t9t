@@ -5,6 +5,6 @@
     ],
     "fields": [
         "pqon", "approvalRequiredForCreate", "approvalRequiredForUpdate", "approvalRequiredForDelete", "approvalRequiredForDeactivation",
-        "approvalRequiredForActivation", "separateActivation", "privateChangeIds", "enforceFourEyes", "screenLocation"
+        "approvalRequiredForActivation", "separateActivation", "privateChangeIds", "enforceFourEyes", "sendEmail", "screenLocation"
     ]
 }

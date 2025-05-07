@@ -176,9 +176,9 @@ public class AsyncRequestLogger implements IRequestLogger {
             // only set it to nonnull if retries were done
             m.setRetriesDone(retriesDone);
         }
-        if (m.getEssentialKey() == null) {
+        if (m.getEssentialKey() == null && response != null) {
             // try to extract the business key from the response
-            final Function<ServiceResponse, String> extractor = businessKeyExtractorRegistry.get(hdr.getRequestParameterPqon());
+            final Function<ServiceResponse, String> extractor = businessKeyExtractorRegistry.get(response.ret$PQON());
             if (extractor != null) {
                 m.setEssentialKey(extractor.apply(response));
             }

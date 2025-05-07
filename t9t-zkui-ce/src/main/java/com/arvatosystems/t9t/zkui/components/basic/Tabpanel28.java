@@ -166,8 +166,8 @@ public class Tabpanel28 extends Tabpanel implements IdSpace, IGridIdOwner, IData
         }
 
         if (targetGrid != null) {
-            if (details != null) {
-                // grid is populated with data
+            if (gridDetailMapper != null) {
+                // mapper is provided to extract data for the grid
                 targetGrid.setInternalDataModel(details);
             } else {
                 // grid will use search request with filters to get data

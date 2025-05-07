@@ -16,6 +16,7 @@
 package com.arvatosystems.t9t.changeRequest.be.request;
 
 import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.auth.PermissionType;
 import com.arvatosystems.t9t.base.crud.CrudAnyKeyRequest;
@@ -26,9 +27,11 @@ import com.arvatosystems.t9t.changeRequest.ChangeWorkFlowConfigDTO;
 import com.arvatosystems.t9t.changeRequest.ChangeWorkFlowStatus;
 import com.arvatosystems.t9t.changeRequest.DataChangeRequestDTO;
 import com.arvatosystems.t9t.changeRequest.jpa.entities.DataChangeRequestEntity;
+import com.arvatosystems.t9t.changeRequest.jpa.mapping.IDataChangeRequestDTOMapper;
 import com.arvatosystems.t9t.changeRequest.jpa.persistence.IDataChangeRequestEntityResolver;
 import com.arvatosystems.t9t.changeRequest.request.UpdateDataChangeRequestStatusRequest;
 import com.arvatosystems.t9t.changeRequest.services.IChangeWorkFlowConfigCache;
+import com.arvatosystems.t9t.changeRequest.services.IDataChangeRequestEmailService;
 import com.arvatosystems.t9t.server.services.IAuthorize;
 import de.jpaw.bonaparte.core.CompactByteArrayComposer;
 import de.jpaw.bonaparte.pojos.api.OperationType;
@@ -53,7 +56,9 @@ public class UpdateDataChangeRequestStatusRequestHandler extends AbstractRequest
 
     protected final IAuthorize authorizer = Jdp.getRequired(IAuthorize.class);
     protected final IDataChangeRequestEntityResolver resolver = Jdp.getRequired(IDataChangeRequestEntityResolver.class);
+    protected final IDataChangeRequestDTOMapper mapper = Jdp.getRequired(IDataChangeRequestDTOMapper.class);
     protected final IChangeWorkFlowConfigCache configCache = Jdp.getRequired(IChangeWorkFlowConfigCache.class);
+    protected final IDataChangeRequestEmailService emailService = Jdp.getRequired(IDataChangeRequestEmailService.class);
     protected final IExecutor executor = Jdp.getRequired(IExecutor.class);
 
     @Nonnull
@@ -66,10 +71,11 @@ public class UpdateDataChangeRequestStatusRequestHandler extends AbstractRequest
         final ChangeWorkFlowConfigDTO config = configCache.getOrNull(changeRequest.getPqon());
         final CrudAnyKeyRequest<?, ?> crudRequest = getCrudRequest(changeRequest);
         final boolean separateActivation = config != null && config.getSeparateActivation();
+        final boolean sendEmail = config != null && T9tUtil.isTrue(config.getSendEmail());
 
         permissionCheck(ctx, crudRequest, newStatus, separateActivation);
         validateStatus(ctx, config, changeRequest, newStatus);
-        updateStatus(ctx, changeRequest, newStatus, updateRequest.getComment(), separateActivation);
+        updateStatus(ctx, changeRequest, newStatus, updateRequest.getComment(), separateActivation, sendEmail);
         LOGGER.debug("Change request status updated from {} to {} for ref: {}", currentStatus, newStatus, updateRequest.getDataChangeRequestRef());
 
         if (ChangeWorkFlowStatus.ACTIVATED == changeRequest.getStatus()) {
@@ -95,7 +101,7 @@ public class UpdateDataChangeRequestStatusRequestHandler extends AbstractRequest
     }
 
     protected void updateStatus(@Nonnull final RequestContext ctx, @Nonnull final DataChangeRequestEntity changeRequest,
-        @Nonnull final ChangeWorkFlowStatus newStatus, @Nullable final String comment, final boolean separateActivation) {
+        @Nonnull final ChangeWorkFlowStatus newStatus, @Nullable final String comment, final boolean separateActivation, final boolean sendEmail) {
         if (ChangeWorkFlowStatus.WORK_IN_PROGRESS == newStatus) {
             // Remove all workflow tracking information and comments because change request is reset to initial status.
             changeRequest.setUserIdSubmitted(null);
@@ -109,6 +115,11 @@ public class UpdateDataChangeRequestStatusRequestHandler extends AbstractRequest
             changeRequest.setUserIdSubmitted(ctx.userId);
             changeRequest.setWhenSubmitted(ctx.executionStart);
             changeRequest.setTextSubmitted(comment);
+            changeRequest.setStatus(newStatus);
+            if (sendEmail) {
+                final DataChangeRequestDTO data = mapper.mapToDto(changeRequest);
+                emailService.sendReviewEmail(ctx, data);
+            }
         } else if (ChangeWorkFlowStatus.APPROVED == newStatus || ChangeWorkFlowStatus.REJECTED == newStatus) {
             // Populate the workflow tracking information for approved or rejected status
             changeRequest.setUserIdApprove(ctx.userId);

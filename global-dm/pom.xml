@@ -40,7 +40,7 @@
         <!-- jpaw / bonaparte: versions for import of BOM. The plugin version is defined separately in SE/EE -->
         <!-- Note that the version of the bonapart-dsl plugin is set in "global-settings" -->
         <jpaw-bom.version>3.6.1</jpaw-bom.version>
-        <bonaparte-bom.version>6.2.2</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
+        <bonaparte-bom.version>6.2.3</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
 
         <!-- Versions of Xtext & Xtend -->
         <!-- Note that the versions of the xtext/xtend plugins are ALSO set in "global-settings", where the variable xtext.version is defined -->
@@ -94,7 +94,7 @@
         <microprofile-smallrye-impl.version>2.4.1</microprofile-smallrye-impl.version>
 
         <!-- Jetty -->
-        <jetty.version>12.0.19</jetty.version>
+        <jetty.version>12.0.20</jetty.version>
 
         <!-- Commons (use with care, only few are regularly updated) -->
         <commons-logging.version>1.3.4-donotuse</commons-logging.version> <!-- should not use at all! -->
@@ -121,7 +121,7 @@
 
         <!-- Vector databases -->
         <pinecone.version>4.0.1</pinecone.version>
-        <qdrant-client.version>1.13.0</qdrant-client.version>
+        <qdrant-client.version>1.14.0</qdrant-client.version>
 
         <!-- More AI stuff & DM for its dependencies -->
         <jsoup.version>1.17.2</jsoup.version>
@@ -154,15 +154,15 @@
         <zxing.version>3.5.3</zxing.version>
         <quartz.version>2.5.0</quartz.version>
         <jsap.version>2.1</jsap.version>
-        <picocli.version>4.7.6</picocli.version>
+        <picocli.version>4.7.7</picocli.version>
         <httpcore.version>4.4.16</httpcore.version>
         <httpclient.version>4.5.14</httpclient.version>
         <httpcore5.version>5.3.4</httpcore5.version>
-        <httpclient5.version>5.4.3</httpclient5.version>
+        <httpclient5.version>5.4.4</httpclient5.version>
         <httpmime.version>4.5.14</httpmime.version>
-        <pdfbox.version>3.0.4</pdfbox.version>
+        <pdfbox.version>3.0.5</pdfbox.version>
         <freemarker.version>2.3.32</freemarker.version>
-        <jasperreports.version>7.0.2</jasperreports.version>
+        <jasperreports.version>7.0.3</jasperreports.version>
         <openpdf.version>1.3.30</openpdf.version>
         <flyingsaucer.version>9.4.0</flyingsaucer.version>
         <jmh.version>1.37</jmh.version>
@@ -181,11 +181,11 @@
         <reload4j.version>1.2.26</reload4j.version>
 
         <!-- Spring core -->
-        <spring-bom.version>6.2.5</spring-bom.version>
+        <spring-bom.version>6.2.6</spring-bom.version>
         <!-- Spring data -->
-        <spring-data-jpa.version>3.4.4</spring-data-jpa.version>
+        <spring-data-jpa.version>3.4.5</spring-data-jpa.version>
         <!-- Spring boot -->
-        <spring-boot.version>3.4.4</spring-boot.version>
+        <spring-boot.version>3.4.5</spring-boot.version>
 
         <netty.version>4.1.118.Final</netty.version>
         <vertx4.version>4.5.13</vertx4.version>
@@ -202,12 +202,12 @@
         <jackson.version>2.18.3</jackson.version>
         <solr.version>8.11.1</solr.version>
         <camel.version>4.10.3</camel.version>
-        <jsch.version>0.2.24</jsch.version>
+        <jsch.version>0.2.26</jsch.version>
         <kafka.version>3.9.0</kafka.version>
         <error-prone.version>2.28.0</error-prone.version>
 
         <!-- Monitoring -->
-        <micrometer.version>1.14.5</micrometer.version>
+        <micrometer.version>1.14.6</micrometer.version>
         <prometheus.version>0.16.0</prometheus.version>
 
         <!-- Swagger -->
@@ -215,7 +215,7 @@
         <swagger-ui.version>${swagger-ui-webjars.version}</swagger-ui.version>
 
         <!-- Google Services -->
-        <google-http-client.version>1.46.3</google-http-client.version>
+        <google-http-client.version>1.47.0</google-http-client.version>
         <google-auth-library.version>1.17.0</google-auth-library.version>
         <firebase-admin.version>9.4.3</firebase-admin.version>
 

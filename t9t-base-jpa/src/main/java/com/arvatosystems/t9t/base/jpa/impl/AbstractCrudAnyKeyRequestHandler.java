@@ -349,7 +349,7 @@ public abstract class AbstractCrudAnyKeyRequestHandler<
             LOGGER.error("No permission to activate change request for {}. key:{}", crudRequest.ret$PQON(), key);
             throw new T9tException(T9tException.CHANGE_REQUEST_PERMISSION_ERROR, "No permission to activate change request for " + crudRequest.ret$PQON());
         }
-        if (!changeRequestFlow.isChangeRequestValidToActivate(crudRequest.getChangeRequestRef(), key, crudRequest.getData())) {
+        if (!changeRequestFlow.isChangeRequestValidToActivate(crudRequest.getChangeRequestRef(), key)) {
             LOGGER.error("Change request is not valid! ref {}. key:{}", crudRequest.getChangeRequestRef(), key);
             throw new T9tException(T9tException.INVALID_CHANGE_REQUEST, "Change request not valid for ref: " + crudRequest.getChangeRequestRef());
         }

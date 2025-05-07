@@ -121,6 +121,18 @@ public class DataChangeRequestExtendedVM extends ViewOnlyVM<DataChangeRequestExt
         updateButtonAndCommentState(dwt.getData().getPermissions());
     }
 
+    @Override
+    @NotifyChange({ "disableDelete", "disableEdit", "disableSubmitReview", "disableReject", "disableApprove", "disableActivate", "disableComment" })
+    protected void clearData() {
+        disableDelete = true;
+        disableEdit = true;
+        disableSubmitReview = true;
+        disableReject = true;
+        disableApprove = true;
+        disableActivate = true;
+        disableComment = true;
+    }
+
     @Command
     public void deleteDataChangeRequest() {
         if (changeDto != null) {
@@ -294,8 +306,10 @@ public class DataChangeRequestExtendedVM extends ViewOnlyVM<DataChangeRequestExt
                 this.data = data;
                 this.changeDto = data.getChange();
                 this.tracking = (FullTrackingWithVersion) dwt.getTracking();
-                crudRequest.setData(data);
-                dataJsonStr = JsonComposerPrettyPrint.toJsonString(data);
+                if (this.changeDto.getCrudRequest() instanceof CrudAnyKeyRequest<?, ?> crudAnyKeyReq) {
+                    this.crudRequest.setData(crudAnyKeyReq.getData());
+                    this.dataJsonStr = JsonComposerPrettyPrint.toJsonString(this.crudRequest.getData());
+                }
                 updateButtonAndCommentState(data.getPermissions());
             } else {
                 LOGGER.error("Unable to get data after refresh of current item in Grid28");

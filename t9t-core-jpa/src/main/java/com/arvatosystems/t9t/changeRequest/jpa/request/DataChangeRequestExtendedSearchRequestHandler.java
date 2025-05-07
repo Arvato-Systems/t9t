@@ -159,7 +159,8 @@ public class DataChangeRequestExtendedSearchRequestHandler extends AbstractSearc
             crudRequest.ret$PQON());
         final Permissionset permissions = new Permissionset();
         final boolean isPrivate = config != null && config.getPrivateChangeIds() && !entity.getUserIdCreated().equals(ctx.userId);
-        final boolean enforceFourEyes = config != null && config.getEnforceFourEyes() && entity.getUserIdCreated().equals(ctx.userId);
+        final boolean enforceFourEyes = config != null && config.getEnforceFourEyes() && entity.getUserIdSubmitted() != null
+            && entity.getUserIdSubmitted().equals(ctx.userId);
 
         if (!isPrivate && authPermissions.contains(crudRequest.getCrud())) {
             // user can edit the request data and also delete the whole request

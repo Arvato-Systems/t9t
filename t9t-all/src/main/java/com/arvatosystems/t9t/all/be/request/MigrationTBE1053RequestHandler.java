@@ -38,7 +38,7 @@ public class MigrationTBE1053RequestHandler extends AbstractMigrationRequestHand
     private final IDataSinkEntityResolver dataSinkResolver = Jdp.getRequired(IDataSinkEntityResolver.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, MigrationTBE1053Request request) throws Exception {
+    public ServiceResponse execute(final RequestContext ctx, final MigrationTBE1053Request request) throws Exception {
         startUpdate(ctx, TICKET_ID, SEQUENCE_ID, false, "Use specific fields for data sink configuration instead of genericParameter1/2");
         convertDataSinks();
         finishUpdate(ctx, TICKET_ID);

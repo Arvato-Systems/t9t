@@ -44,9 +44,9 @@ package (com.arvatosystems) t9t.email {
         properties                                  tenantCategory="D";                                 // if entry missing, get the global one
         optional Ascii(8)                           implementation         default "SMTP" properties qualifierFor="email.services.IEmailSender"; // currently supported: SMTP, SES, VERTX
         optional Ascii(8)                           smtpServerTransport    default "smtp";              // default to "smtp"
-        optional Unicode(100)                       smtpServerAddress;
+        optional Unicode(255)                       smtpServerAddress;
         optional Integer                            smtpServerPort;
-        optional Unicode(32)                        smtpServerUserId;
+        optional defaultExternalId                  smtpServerUserId;
         optional Unicode(64)                        smtpServerPassword;
         optional Boolean                            smtpServerTls;
         optional emailAddress                       defaultReturnPath;

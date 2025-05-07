@@ -16,8 +16,9 @@
                     <cells228 id ="separateActivation"                  value ="@load(vm.data.separateActivation) @save(vm.data.separateActivation,before='commandSave')"
                               id2="privateChangeIds"                    value2="@load(vm.data.privateChangeIds) @save(vm.data.privateChangeIds,before='commandSave')"/>
                     <cells228 id ="enforceFourEyes"                     value ="@load(vm.data.enforceFourEyes) @save(vm.data.enforceFourEyes,before='commandSave')"
-                              id2="screenLocation"                      value2="@load(vm.data.screenLocation) @save(vm.data.screenLocation,before='commandSave')"/>
-                    <cells28  id ="viewModelId"                         value ="@load(vm.data.viewModelId) @save(vm.data.viewModelId,before='commandSave')"/>
+                              id2="sendEmail"                           value2="@load(vm.data.sendEmail) @save(vm.data.sendEmail,before='commandSave')"/>
+                    <cells228 id ="screenLocation"                      value ="@load(vm.data.screenLocation) @save(vm.data.screenLocation,before='commandSave')"
+                              id2="viewModelId"                         value2="@load(vm.data.viewModelId) @save(vm.data.viewModelId,before='commandSave')"/>
                 </rows>
             </form28>
         </crud28>

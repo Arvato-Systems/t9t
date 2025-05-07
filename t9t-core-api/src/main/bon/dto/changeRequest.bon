@@ -114,5 +114,6 @@ package (com.arvatosystems) t9t.changeRequest {
         required boolean                    enforceFourEyes;                                    // If true, then every change must be approved by a different user than the one who submitted it.
         optional Unicode(100)               screenLocation;                                     // location of UI screen to display and edit the changes
         optional Unicode(50)                viewModelId;                                        // mainly use to get key from data to search and display original data record
+        optional Boolean                    sendEmail;                                          // If true, then send email for status change
     }
 }

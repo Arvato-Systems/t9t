@@ -150,6 +150,8 @@ public final class T9tConstants {
     public static final String DATA_SINK_ID_UI_EXPORT                   = "UIExport";
     public static final String DOCUMENT_ID_UI_EXPORT                    = "UIExportEmail";
     public static final String DOCUMENT_ID_HIGH_RISK_SITUATION          = "highRiskSituation";
+    public static final String DOCUMENT_ID_APPROVAL_REQUEST             = "approvalRequest";
+    public static final String DOC_PREFIX_APPROVAL_REQUEST              = "approval";
 
     public static final Integer SCHEDULER_RUN_ON_ALL_NODES = Integer.valueOf(411);  // l33t for All
 

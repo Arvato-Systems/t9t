@@ -48,11 +48,10 @@ public interface IDataChangeRequestFlow {
         @Nonnull RequestParameters crudRequest, @Nullable String changeComment, @Nullable Boolean submitChange);
 
     /**
-     * Verify if the change request for the given objectRef matches with the key and data. And also if the status of the change request is ACTIVATED
+     * Verify if the change request for the given objectRef matches with the key. And also if the status of the change request is ACTIVATED
      * @param objectRef     objectRef of the change request
      * @param key           key of the DTO
-     * @param data          data of the DTO
      * @return true if the change request is valid to activate, false otherwise
      */
-    boolean isChangeRequestValidToActivate(@Nonnull Long objectRef, @Nullable BonaPortable key, @Nonnull BonaPortable data);
+    boolean isChangeRequestValidToActivate(@Nonnull Long objectRef, @Nullable BonaPortable key);
 }

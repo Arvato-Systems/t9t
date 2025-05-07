@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.jpaw.bonaparte.pojos.meta.DataCategory;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -123,7 +124,7 @@ public class ListHeadRenderer28 {
                 // check if this is a special dynamic width column
                 isDynGridColumn = defaultListItemRenderer.isDynField(meta);
                 final String fieldNoDdl = fieldname.concat(".noDDL");
-                isUnsortable = (isUnsortable || bclass.getPropertyMap().containsKey(fieldNoDdl));
+                isUnsortable = (isUnsortable || bclass.getPropertyMap().containsKey(fieldNoDdl) || DataCategory.OBJECT == meta.getDataCategory());
             } catch (final ApplicationException ue) {
                 LOGGER.warn("Could not determine field definition for {}", fieldname);
             }

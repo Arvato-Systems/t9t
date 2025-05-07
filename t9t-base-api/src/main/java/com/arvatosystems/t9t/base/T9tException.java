@@ -332,6 +332,7 @@ public class T9tException extends ApplicationException {
     public static final int BAD_S3_BUCKET_NAME = OFFSET + 255;
     public static final int S3_WRITE_ERROR = OFFSET + 256;
     public static final int SQS_WRITE_ERROR = OFFSET + 257;
+    public static final int INVALID_ELEMENT_ERROR = OFFSET + 258;
 
     // General event handling errors
     public static final int INVALID_EVENT_TYPE = OFFSET + 980;
@@ -643,6 +644,7 @@ public class T9tException extends ApplicationException {
         registerCode(BAD_S3_BUCKET_NAME, "Bad S3 Bucket name (must be bucket:path)");
         registerCode(S3_WRITE_ERROR, "Exception writing to S3 bucket");
         registerCode(SQS_WRITE_ERROR, "Exception writing to SQS bucket");
+        registerCode(INVALID_ELEMENT_ERROR, "Invalid element in the value list");
 
         registerCode(INVALID_PROCESSING, "Logic error: cannot route to different server in single node environment");
 

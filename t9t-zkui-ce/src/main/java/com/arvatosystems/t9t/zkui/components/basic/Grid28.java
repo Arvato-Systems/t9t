@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Set;
 
 import com.arvatosystems.t9t.zkui.filters.IResultTextFilter;
+import de.jpaw.bonaparte.pojos.meta.DataCategory;
+import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import jakarta.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -399,8 +401,12 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
             UILeanGridPreferences gridPreferences = leanGridConfigResolver.getGridPreferences();
             String sortColumnName = computeFieldForUnrolledListSorting(gridPreferences.getSortColumn());
             boolean isDescending = T9tUtil.isTrue(gridPreferences.getSortDescending());
-            if (sortColumnName != null)
-                return Collections.singletonList(new SortColumn(sortColumnName, isDescending));
+            if (sortColumnName != null) {
+                final FieldDefinition fieldDef = leanGridConfigResolver.getFieldDefinitionForPath(sortColumnName);
+                if (fieldDef == null || DataCategory.OBJECT != fieldDef.getDataCategory()) {
+                    return Collections.singletonList(new SortColumn(sortColumnName, isDescending));
+                }
+            }
         } catch (IllegalArgumentException e) {
             LOGGER.debug("No enrichment of GenericSearchCriteria with default sorting");
         }
@@ -510,6 +516,8 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
                 final FieldComparator fieldComparator = new FieldComparator(fieldName, !sortColumn.getDescending());
                 model.sort(fieldComparator);
             }
+        } else {
+            lb.setModel(new ListModelList<DataWithTracking<BonaPortable, TrackingBase>>(Collections.EMPTY_LIST));
         }
     }
 

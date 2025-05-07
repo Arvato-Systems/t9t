@@ -46,7 +46,7 @@ public class ExportAndEmailResultRequestHandler extends AbstractRequestHandler<E
     private final IExecutor executor = Jdp.getRequired(IExecutor.class);
 
     @Override
-    public ServiceResponse execute(RequestContext ctx, ExportAndEmailResultRequest request) throws Exception {
+    public ServiceResponse execute(final RequestContext ctx, final ExportAndEmailResultRequest request) throws Exception {
         // obtain the user data
         final GetUserDataResponse userData = executor.executeSynchronousAndCheckResult(ctx, new GetMyUserDataRequest(), GetUserDataResponse.class);
 
