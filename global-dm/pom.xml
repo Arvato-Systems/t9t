@@ -103,7 +103,7 @@
         <commons-codec.version>1.18.0</commons-codec.version>
         <commons-io.version>2.19.0</commons-io.version>                   <!-- regularly updated again -->
         <commons-lang3.version>3.17.0</commons-lang3.version>             <!-- regularly updated again -->
-        <commons-beanutils.version>1.10.1</commons-beanutils.version>     <!-- must be 1.9.2 at least due to CVE-2014-0114, but still pulls in outdated collections3 -->
+        <commons-beanutils.version>1.11.0</commons-beanutils.version>     <!-- must be 1.9.2 at least due to CVE-2014-0114, but still pulls in outdated collections3 -->
         <commons-collections4.version>4.4</commons-collections4.version>
         <commons-fileupload.version>1.5</commons-fileupload.version>      <!-- must be 1.3.3 at least due to CVE-2016-1000031 -->
         <commons-text.version>1.13.1</commons-text.version>               <!-- not used in t9t, but DM made to cover for transitive dependencies -->
