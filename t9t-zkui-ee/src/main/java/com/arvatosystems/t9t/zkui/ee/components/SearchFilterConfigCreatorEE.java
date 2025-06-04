@@ -44,6 +44,7 @@ import com.arvatosystems.t9t.zkui.viewmodel.support.SearchFilterRowVM;
 
 import de.jpaw.bonaparte.pojos.ui.UIColumnConfiguration;
 import de.jpaw.bonaparte.pojos.ui.UIFilter;
+import de.jpaw.bonaparte.util.FreezeTools;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Specializes;
 
@@ -72,7 +73,7 @@ public class SearchFilterConfigCreatorEE extends DefaultSearchFilterConfigCreato
 
     public void initUiFilters(final List<UIColumnConfiguration> uiColumns, final List<UIFilter> selectedUiFilters,
             final List<SearchFilterUiModel> firstLevelColumns) {
-        final Map<String, SearchFilterRowVM> activeUIFilterMap = new HashMap<>(uiColumns.size());
+        final Map<String, SearchFilterRowVM> activeUIFilterMap = new HashMap<>(FreezeTools.getInitialHashMapCapacity(uiColumns.size()));
 
         for (final UIFilter uiFilter : selectedUiFilters) {
             final SearchFilterRowVM row = new SearchFilterRowVM(uiFilter);

@@ -44,6 +44,7 @@ import de.jpaw.bonaparte.pojos.ui.UIColumnConfiguration;
 import de.jpaw.bonaparte.pojos.ui.UIFilter;
 import de.jpaw.bonaparte.pojos.ui.UIFilterType;
 import de.jpaw.bonaparte.pojos.ui.UIMeta;
+import de.jpaw.bonaparte.util.FreezeTools;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Fallback;
 
@@ -62,7 +63,7 @@ public class DefaultSearchFilterConfigCreator implements ISearchFilterConfigCrea
         viewModelId = uiGridPreferences.getViewModel();
         rows = new ArrayList<>(uiColumns.size());
         selectedFilters = new ArrayList<>(selectedUiFilters.size() * 2);
-        Map<String, SearchFilterRowVM> activeUIFilterMap = new HashMap<>(uiColumns.size());
+        Map<String, SearchFilterRowVM> activeUIFilterMap = new HashMap<>(FreezeTools.getInitialHashMapCapacity(uiColumns.size()));
 
         for (UIFilter uiFilter : selectedUiFilters) {
             SearchFilterRowVM row = new SearchFilterRowVM(uiFilter);

@@ -50,6 +50,7 @@ import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.SortColumn;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
+import de.jpaw.bonaparte.util.FreezeTools;
 import de.jpaw.dp.Alternative;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
@@ -355,7 +356,7 @@ public abstract class AbstractResolverAnyKey<
             // handle column aggregation
             final Field[] allFields = derivedEntityClass.getDeclaredFields();
             final List<Selection<?>> selections = new ArrayList<>(allFields.length);
-            aggregateMap = new HashMap<>(allFields.length);
+            aggregateMap = new HashMap<>(FreezeTools.getInitialHashMapCapacity(allFields.length));
             if (searchCriteria.getAggregateColumns() != null) {
                 populateAggregatedSelections(criteriaBuilder, from, searchCriteria.getAggregateColumns(), selections, aggregateMap);
             }

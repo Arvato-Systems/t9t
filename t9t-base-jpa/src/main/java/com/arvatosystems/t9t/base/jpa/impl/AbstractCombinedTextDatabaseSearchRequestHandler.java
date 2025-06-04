@@ -58,6 +58,7 @@ import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.SortColumn;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
+import de.jpaw.bonaparte.util.FreezeTools;
 import de.jpaw.bonaparte.util.ToStringHelper;
 import de.jpaw.dp.Jdp;
 
@@ -462,7 +463,7 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<
             finalResultList.addAll(temp);
         else {
             // build a map
-            final Map<Long, ENTITY> indexMap = new HashMap<>(temp.size());
+            final Map<Long, ENTITY> indexMap = new HashMap<>(FreezeTools.getInitialHashMapCapacity(temp.size()));
             for (final ENTITY e : temp) {
                 indexMap.put(e.ret$Key(), e);
             }

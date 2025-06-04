@@ -36,6 +36,7 @@ import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.util.FieldGetter;
+import de.jpaw.bonaparte.util.FreezeTools;
 
 /**
  * Utility methods to perform field mapping (path root mapping when using the foldingComposer with the DataWithTracking object.
@@ -186,7 +187,7 @@ public final class FieldMappers {
 
     /** Indexes a DTO list into a new map. */
     public static <D extends Ref> Map<Long, D> index(final Collection<D> data) {
-        final Map<Long, D> result = new HashMap<>(data.size());
+        final Map<Long, D> result = new HashMap<>(FreezeTools.getInitialHashMapCapacity(data.size()));
         index(result, data);
         return result;
     }

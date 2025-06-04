@@ -32,6 +32,9 @@ import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.dp.Jdp;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @SuppressWarnings("rawtypes")
 public abstract class AbstractViewOnlyVM<DTO extends BonaPortable, TRACKING extends TrackingBase> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractViewOnlyVM.class);
@@ -44,7 +47,7 @@ public abstract class AbstractViewOnlyVM<DTO extends BonaPortable, TRACKING exte
     protected DTO data;
     protected TRACKING tracking;
     protected String tenantId;
-    protected AbstractViewOnlyVM<DTO, TRACKING> childViewModel;
+    protected List<AbstractViewOnlyVM<DTO, TRACKING>> childViewModels = new ArrayList<>();
 
     // to be overridden in case arrays need to be initialized
     protected void clearData() {   // TODO: init child objects if exist, do it via injected class, qualifier to be passed to @Init
@@ -65,7 +68,7 @@ public abstract class AbstractViewOnlyVM<DTO extends BonaPortable, TRACKING exte
             else if (dwt instanceof DataWithTrackingS)
                 tenantId = ((DataWithTrackingS)dwt).getTenantId();
         }
-        if (childViewModel != null) {
+        for (AbstractViewOnlyVM<DTO, TRACKING> childViewModel : childViewModels) {
             childViewModel.loadData(dwt);
         }
     }
@@ -102,7 +105,27 @@ public abstract class AbstractViewOnlyVM<DTO extends BonaPortable, TRACKING exte
     }
 
     public void setChildViewModel(@Nonnull final AbstractViewOnlyVM<DTO, TRACKING> childViewModel) {
-        this.childViewModel = childViewModel;
+        childViewModels.add(childViewModel);
+    }
+
+    public void attachChildViewModel(@Nonnull final AbstractViewOnlyVM<DTO, TRACKING> childViewModel) {
+        childViewModels.add(childViewModel);
+    }
+
+    public void removeChildViewModel(@Nonnull final AbstractViewOnlyVM<DTO, TRACKING> childViewModel) {
+        childViewModels.remove(childViewModel);
+    }
+
+    protected void clearChildViewModelData() {
+        for (AbstractViewOnlyVM<DTO, TRACKING> childViewModel : childViewModels) {
+            childViewModel.clearData();
+        }
+    }
+
+    protected void enrichChildViewModelData(@Nonnull final DTO dto) {
+        for (AbstractViewOnlyVM<DTO, TRACKING> childViewModel : childViewModels) {
+            childViewModel.enrichData(dto);
+        }
     }
 
     protected void enrichData(@Nonnull final DTO dto) {

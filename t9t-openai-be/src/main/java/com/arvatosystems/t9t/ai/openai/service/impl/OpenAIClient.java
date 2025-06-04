@@ -114,6 +114,7 @@ import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.Multiplicity;
+import de.jpaw.bonaparte.util.FreezeTools;
 import de.jpaw.bonaparte.util.ToStringHelper;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
@@ -508,7 +509,7 @@ public class OpenAIClient implements IOpenAIClient {
     }
 
     protected Map<String, OpenAISingleParameter> buildPropertiesFromFields(final List<FieldDefinition> fields) {
-        final Map<String, OpenAISingleParameter> properties = new HashMap<>(fields.size());
+        final Map<String, OpenAISingleParameter> properties = new HashMap<>(FreezeTools.getInitialHashMapCapacity(fields.size()));
         for (final FieldDefinition field : fields) {
             final OpenAISingleParameter fieldProperties = new OpenAISingleParameter();
             fieldProperties.setType(buildTypeFromField(field));

@@ -39,18 +39,18 @@
 
         <!-- jpaw / bonaparte: versions for import of BOM. The plugin version is defined separately in SE/EE -->
         <!-- Note that the version of the bonapart-dsl plugin is set in "global-settings" -->
-        <jpaw-bom.version>3.6.1</jpaw-bom.version>
-        <bonaparte-bom.version>6.2.3</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
+        <jpaw-bom.version>3.6.2</jpaw-bom.version>
+        <bonaparte-bom.version>6.2.4</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
 
         <!-- Versions of Xtext & Xtend -->
         <!-- Note that the versions of the xtext/xtend plugins are ALSO set in "global-settings", where the variable xtext.version is defined -->
         <xtend.version>${xtext.version}</xtend.version>
 
         <!-- Database driver versions -->
-        <driver.oracle.version>23.7.0.25.01</driver.oracle.version>
+        <driver.oracle.version>23.8.0.25.04</driver.oracle.version>
         <driver.postgresql.version>42.7.5</driver.postgresql.version>     <!-- starting with 4.2.15, the driver adds a dependency to checker-qual 3.5.0 which conflicts with 2.5.2 pulled by guava -->
         <driver.sqlserver.version>12.10.0.jre11</driver.sqlserver.version> <!-- not all releases are available on maven central as jre17 builds -->
-        <driver.hana.version>2.24.7</driver.hana.version>
+        <driver.hana.version>2.24.8</driver.hana.version>
         <h2.version>2.3.232</h2.version>
 
         <!-- OR mappers -->
@@ -94,7 +94,7 @@
         <microprofile-smallrye-impl.version>2.4.1</microprofile-smallrye-impl.version>
 
         <!-- Jetty -->
-        <jetty.version>12.0.20</jetty.version>
+        <jetty.version>12.0.21</jetty.version>
 
         <!-- Commons (use with care, only few are regularly updated) -->
         <commons-logging.version>1.3.4-donotuse</commons-logging.version> <!-- should not use at all! -->
@@ -103,7 +103,7 @@
         <commons-codec.version>1.18.0</commons-codec.version>
         <commons-io.version>2.19.0</commons-io.version>                   <!-- regularly updated again -->
         <commons-lang3.version>3.17.0</commons-lang3.version>             <!-- regularly updated again -->
-        <commons-beanutils.version>1.10.1</commons-beanutils.version>     <!-- must be 1.9.2 at least due to CVE-2014-0114, but still pulls in outdated collections3 -->
+        <commons-beanutils.version>1.11.0</commons-beanutils.version>     <!-- must be 1.9.2 at least due to CVE-2014-0114, but still pulls in outdated collections3 -->
         <commons-collections4.version>4.4</commons-collections4.version>
         <commons-fileupload.version>1.5</commons-fileupload.version>      <!-- must be 1.3.3 at least due to CVE-2016-1000031 -->
         <commons-text.version>1.13.1</commons-text.version>               <!-- not used in t9t, but DM made to cover for transitive dependencies -->
@@ -117,15 +117,15 @@
 
         <!-- Azure -->
         <azure-cosmosdb.version>2.6.16</azure-cosmosdb.version>
-        <azure-cosmos-sdk.version>4.68.0</azure-cosmos-sdk.version>
+        <azure-cosmos-sdk.version>4.70.0</azure-cosmos-sdk.version>
 
         <!-- Vector databases -->
-        <pinecone.version>4.0.1</pinecone.version>
+        <pinecone.version>5.0.0</pinecone.version>
         <qdrant-client.version>1.14.0</qdrant-client.version>
 
         <!-- More AI stuff & DM for its dependencies -->
         <jsoup.version>1.17.2</jsoup.version>
-        <langchain4j.version>0.36.2</langchain4j.version>
+        <langchain4j.version>1.0.1</langchain4j.version>
         <grpc.version>1.68.1</grpc.version>
         <kotlin-stdlib.version>1.9.25</kotlin-stdlib.version>
         <okio.version>3.9.1</okio.version>          <!-- used by pinecone -->
@@ -181,7 +181,7 @@
         <reload4j.version>1.2.26</reload4j.version>
 
         <!-- Spring core -->
-        <spring-bom.version>6.2.6</spring-bom.version>
+        <spring-bom.version>6.2.7</spring-bom.version>
         <!-- Spring data -->
         <spring-data-jpa.version>3.4.5</spring-data-jpa.version>
         <!-- Spring boot -->
@@ -201,9 +201,9 @@
         <maven-plugin-api.version>3.9.9</maven-plugin-api.version>
         <jackson.version>2.18.3</jackson.version>
         <solr.version>8.11.1</solr.version>
-        <camel.version>4.10.3</camel.version>
+        <camel.version>4.10.5</camel.version>
         <jsch.version>0.2.26</jsch.version>
-        <kafka.version>3.9.0</kafka.version>
+        <kafka.version>3.9.1</kafka.version>
         <error-prone.version>2.28.0</error-prone.version>
 
         <!-- Monitoring -->

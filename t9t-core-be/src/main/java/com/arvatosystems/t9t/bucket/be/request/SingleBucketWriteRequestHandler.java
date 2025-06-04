@@ -27,6 +27,7 @@ import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.bucket.request.SingleBucketWriteRequest;
 
+import de.jpaw.bonaparte.util.FreezeTools;
 import de.jpaw.dp.Jdp;
 
 public class SingleBucketWriteRequestHandler extends AbstractRequestHandler<SingleBucketWriteRequest> {
@@ -36,7 +37,7 @@ public class SingleBucketWriteRequestHandler extends AbstractRequestHandler<Sing
     @Override
     public ServiceResponse execute(final RequestContext ctx, final SingleBucketWriteRequest rq) {
         if (!rq.getAsync()) {
-            final Map<BucketWriteKey, Integer> cmds = new HashMap<>(rq.getValues().size());
+            final Map<BucketWriteKey, Integer> cmds = new HashMap<>(FreezeTools.getInitialHashMapCapacity(rq.getValues().size()));
             for (final Map.Entry<String, Integer> me: rq.getValues().entrySet()) {
                 cmds.put(new BucketWriteKey(ctx.tenantId, rq.getObjectRef(), me.getKey()), me.getValue());
             }

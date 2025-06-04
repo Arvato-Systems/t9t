@@ -42,6 +42,7 @@ import com.arvatosystems.t9t.cfg.be.KafkaConfiguration;
 import com.arvatosystems.t9t.cfg.be.StatusProvider;
 import com.arvatosystems.t9t.kafka.service.IKafkaTopicReader;
 import com.arvatosystems.t9t.kafka.service.impl.KafkaTopicReader;
+import de.jpaw.bonaparte.util.FreezeTools;
 
 /**
  * Kafka prossing implementation with following key features:
@@ -101,9 +102,9 @@ final class KafkaPartitionOrderedRequestProcessor implements KafkaProcessor {
         this.commitSync = T9tUtil.isTrue(config.getCommitSync());
 
         final int numberOfPartitions = consumer.getNumberOfPartitions();
-        this.activeProcessors = new HashMap<>(numberOfPartitions);
-        this.offsetsToCommit = new HashMap<>(numberOfPartitions);
-        this.partitionStatusTable = new HashMap<>(numberOfPartitions);
+        this.activeProcessors = new HashMap<>(FreezeTools.getInitialHashMapCapacity(numberOfPartitions));
+        this.offsetsToCommit = new HashMap<>(FreezeTools.getInitialHashMapCapacity(numberOfPartitions));
+        this.partitionStatusTable = new HashMap<>(FreezeTools.getInitialHashMapCapacity(numberOfPartitions));
         this.lastCommitTime = System.currentTimeMillis();
         this.lastMonitorTime = System.currentTimeMillis();
 
@@ -323,7 +324,7 @@ final class KafkaPartitionOrderedRequestProcessor implements KafkaProcessor {
         });
 
         // remove revoked partitions from active processor and commit separately
-        final Map<TopicPartition, OffsetAndMetadata> revokedOffsets = new HashMap<>(partitions.size());
+        final Map<TopicPartition, OffsetAndMetadata> revokedOffsets = new HashMap<>(FreezeTools.getInitialHashMapCapacity(partitions.size()));
         partitions.forEach(partition -> {
             final OffsetAndMetadata revokedOffset = offsetsToCommit.remove(partition);
             if (revokedOffset != null) {

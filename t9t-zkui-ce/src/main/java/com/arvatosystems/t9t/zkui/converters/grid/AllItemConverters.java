@@ -18,6 +18,7 @@ package com.arvatosystems.t9t.zkui.converters.grid;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import de.jpaw.bonaparte.pojos.meta.AlphanumericEnumSetDataItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,6 +70,9 @@ public class AllItemConverters  implements IItemConverter<Object> {
         final String className = value.getClass().getName();
         if (meta.getClass() == NumericEnumSetDataItem.class)
             return REGISTRY.get("numericenumset");
+        if (meta instanceof AlphanumericEnumSetDataItem) {
+            return REGISTRY.get("stringenumset");
+        }
         @SuppressWarnings("rawtypes")
         IItemConverter classConverter = REGISTRY.get(className);
         if (classConverter != null)

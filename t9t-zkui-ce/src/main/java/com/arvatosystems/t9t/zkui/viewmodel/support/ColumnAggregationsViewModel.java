@@ -27,6 +27,7 @@ import de.jpaw.bonaparte.pojos.api.AggregateFunctionType;
 import de.jpaw.bonaparte.pojos.meta.DataCategory;
 import de.jpaw.bonaparte.pojos.ui.UIColumnConfiguration;
 import de.jpaw.bonaparte.pojos.ui.UIMeta;
+import de.jpaw.bonaparte.util.FreezeTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.BindingParam;
@@ -121,7 +122,7 @@ public class ColumnAggregationsViewModel {
 
     private List<ColumnAggregationRowVM> getConfiguredAggregations() {
 
-        final Map<String, ColumnAggregationRowVM> aggregationConfigMap = new HashMap<>(uiGridPreferences.getColumns().size());
+        final Map<String, ColumnAggregationRowVM> aggregationConfigMap = new HashMap<>(FreezeTools.getInitialHashMapCapacity(uiGridPreferences.getColumns().size()));
 
         for (UIColumnConfiguration columnConfig : uiGridPreferences.getColumns()) {
             if (allowedColumn(columnConfig)) {

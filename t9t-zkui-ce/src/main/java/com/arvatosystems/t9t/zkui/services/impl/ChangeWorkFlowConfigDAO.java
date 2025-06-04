@@ -25,6 +25,7 @@ import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import de.jpaw.bonaparte.pojos.api.DataWithTracking;
+import de.jpaw.bonaparte.util.FreezeTools;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 import jakarta.annotation.Nonnull;
@@ -55,7 +56,7 @@ public class ChangeWorkFlowConfigDAO implements IChangeWorkFlowConfigDAO {
         return configCache.get(ApplicationSession.get().getTenantId(), key -> {
             final ChangeWorkFlowConfigSearchRequest request = new ChangeWorkFlowConfigSearchRequest();
             final ReadAllResponse<ChangeWorkFlowConfigDTO, FullTrackingWithVersion> response = t9tRemoteUtils.executeExpectOk(request, ReadAllResponse.class);
-            final Map<String, ChangeWorkFlowConfigDTO> configMap = new HashMap<>(response.getDataList().size());
+            final Map<String, ChangeWorkFlowConfigDTO> configMap = new HashMap<>(FreezeTools.getInitialHashMapCapacity(response.getDataList().size()));
             for (final DataWithTracking<ChangeWorkFlowConfigDTO, FullTrackingWithVersion> dwt : response.getDataList()) {
                 configMap.put(dwt.getData().getPqon(), dwt.getData());
             }

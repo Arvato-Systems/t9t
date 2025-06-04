@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.jpaw.api.ConfigurationReader;
+import de.jpaw.bonaparte.util.FreezeTools;
 import de.jpaw.json.JsonException;
 import de.jpaw.util.ConfigurationReaderFactory;
 import jakarta.annotation.Nonnull;
@@ -203,7 +204,7 @@ public final class JsonUtil {
         if (T9tUtil.isEmpty(src)) {
             return dst;
         }
-        final Map<String, Object> result = T9tUtil.isEmpty(dst) ? new HashMap<>(src.size()) : dst;
+        final Map<String, Object> result = T9tUtil.isEmpty(dst) ? new HashMap<>(FreezeTools.getInitialHashMapCapacity(src.size())) : dst;
         result.putAll(src);
         return result;
     }
@@ -220,7 +221,7 @@ public final class JsonUtil {
             return;
         }
         final Map<String, Object> dst = dstGetter.get();
-        final Map<String, Object> result = T9tUtil.isEmpty(dst) ? new HashMap<>(src.size()) : dst;
+        final Map<String, Object> result = T9tUtil.isEmpty(dst) ? new HashMap<>(FreezeTools.getInitialHashMapCapacity(src.size())) : dst;
         result.putAll(src);
         dstSetter.accept(result);
     }
@@ -236,7 +237,7 @@ public final class JsonUtil {
             return;
         }
         final Map<String, Object> dst = destObj.getZ();
-        final Map<String, Object> result = T9tUtil.isEmpty(dst) ? new HashMap<>(src.size()) : dst;
+        final Map<String, Object> result = T9tUtil.isEmpty(dst) ? new HashMap<>(FreezeTools.getInitialHashMapCapacity(src.size())) : dst;
         result.putAll(src);
         destObj.setZ(result);
     }

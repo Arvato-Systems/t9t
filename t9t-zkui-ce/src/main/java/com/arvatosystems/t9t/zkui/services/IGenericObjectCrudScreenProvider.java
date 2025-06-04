@@ -17,6 +17,8 @@ package com.arvatosystems.t9t.zkui.services;
 
 import jakarta.annotation.Nonnull;
 
+import java.util.List;
+
 public interface IGenericObjectCrudScreenProvider {
 
     /**
@@ -25,4 +27,13 @@ public interface IGenericObjectCrudScreenProvider {
      */
     @Nonnull
     String getScreenURI();
+
+    /**
+     * Return list of locations of the .zul file of the CRUD screen
+     * @return list screen URI
+     */
+    @Nonnull
+    default List<String> getScreenURIs() {
+        return List.of(getScreenURI());
+    }
 }

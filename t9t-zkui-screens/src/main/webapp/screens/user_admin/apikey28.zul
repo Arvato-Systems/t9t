@@ -10,6 +10,7 @@
                 <rows>
                     <cells228 id ="apiKey"                          value ="@load(vm.data.apiKey)      @save(vm.data.apiKey,before='commandSave')"
                               id2="name"                            value2="@load(vm.data.name)        @save(vm.data.name,before='commandSave')"/>
+                    <row><button label="Generate API Key" onClick="@command('generateApiKey')" /></row>
                     <cells228 id= "userRef"                         value ="@load(vm.data.userRef)     @save(vm.data.userRef,before='commandSave')"
                               id2="isActive"                        value2="@load(vm.data.isActive)    @save(vm.data.isActive,before='commandSave')"/>
                     <cells228 id= "roleRef"                         value ="@load(vm.data.roleRef)                         @save(vm.data.roleRef,                        before='commandSave')"

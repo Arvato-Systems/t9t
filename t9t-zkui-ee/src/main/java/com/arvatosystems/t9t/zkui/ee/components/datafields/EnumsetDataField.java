@@ -24,8 +24,10 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zkmax.zul.Chosenbox;
+import org.zkoss.zul.ItemRenderer;
 import org.zkoss.zul.ListModelList;
 
 import com.arvatosystems.t9t.zkui.components.datafields.AbstractCoreDataField;
@@ -65,15 +67,21 @@ public class EnumsetDataField<E extends Enum<E>, T extends GenericEnumSetMarker<
         final List<E> instances = new ArrayList<>(ed.getIds().size());
         for (final String s: ed.getIds()) {
             if (enumRestrictions == null || enumRestrictions.contains(s)) {
-                final String xlation = translations.get(s);
                 final E e = (E) Enum.valueOf(enumClass, s);
                 instances.add(e);
-                // newComboItem((T)e, xlation == null ? s : xlation);
             }
         }
         c.setModel(new ListModelList<>(instances));
         // chosenbox does not generate onChange events, in order to update the viewmodel, onSelect must be mapped to it
         c.addEventListener(Events.ON_SELECT, (ev) -> Events.postEvent(Events.ON_CHANGE, c, null));
+
+        c.setItemRenderer(new ItemRenderer<E>() {
+            @Override
+            public String render(final Component owner, final E data, final int index) throws Exception {
+                final String xlation = translations.get(data.name());
+                return xlation != null ? xlation : data.name();
+            }
+        });
     }
 
     @Override
@@ -114,14 +122,6 @@ public class EnumsetDataField<E extends Enum<E>, T extends GenericEnumSetMarker<
             c.setSelectedObjects(data);
         }
     }
-
-//    protected void newComboItem(T value, String text) {
-//        Comboitem ci = new Comboitem();
-//        ci.setLabel(text);
-//        ci.setValue(value);
-//        ci.setParent(c);
-//        cbItems.put(value, ci);
-//    }
 
     @Override
     public void setDisabled(final boolean disabled) {

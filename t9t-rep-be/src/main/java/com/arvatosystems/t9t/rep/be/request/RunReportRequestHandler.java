@@ -51,6 +51,7 @@ import com.google.common.base.Strings;
 
 import de.jpaw.bonaparte.pojos.api.media.MediaType;
 import de.jpaw.bonaparte.pojos.api.media.MediaXType;
+import de.jpaw.bonaparte.util.FreezeTools;
 import de.jpaw.dp.Jdp;
 import net.sf.jasperreports.crosstabs.JRCrosstab;
 import net.sf.jasperreports.engine.JRBreak;
@@ -205,7 +206,7 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
 
     // filter parameters suitable for slim debugging (do not output whole objects)
     private Map<String, Object> filterBasic(final Map<String, Object> parameters) {
-        final Map<String, Object> mapForOutput = new HashMap<>(parameters.size());
+        final Map<String, Object> mapForOutput = new HashMap<>(FreezeTools.getInitialHashMapCapacity(parameters.size()));
         for (final String k : parameters.keySet()) {
             final Object val = parameters.get(k);
             if ((val != null) && ((val instanceof String) || (val instanceof Integer) || (val instanceof Long) || (val instanceof LocalDate)

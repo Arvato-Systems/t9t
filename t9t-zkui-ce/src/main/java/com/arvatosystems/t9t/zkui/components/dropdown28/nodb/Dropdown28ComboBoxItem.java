@@ -23,6 +23,7 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 
 import com.arvatosystems.t9t.zkui.viewmodel.beans.ComboBoxItem;
+import de.jpaw.bonaparte.util.FreezeTools;
 
 public class Dropdown28ComboBoxItem extends Combobox {
     private static final long serialVersionUID = 391144627872732669L;
@@ -37,7 +38,7 @@ public class Dropdown28ComboBoxItem extends Combobox {
         this.setSclass("dropdown");
         // this.modelData = initialModels;
 
-        lookupByValues = new HashMap<>(initialModels.size());
+        lookupByValues = new HashMap<>(FreezeTools.getInitialHashMapCapacity(initialModels.size()));
 
         for (ComboBoxItem cbi : initialModels) {
             Comboitem item = new Comboitem(cbi.getName());

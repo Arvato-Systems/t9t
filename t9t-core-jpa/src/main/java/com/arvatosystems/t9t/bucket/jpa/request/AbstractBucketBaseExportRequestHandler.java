@@ -32,6 +32,7 @@ import com.arvatosystems.t9t.bucket.jpa.persistence.IBucketCounterEntityResolver
 import com.arvatosystems.t9t.bucket.jpa.persistence.IBucketEntryEntityResolver;
 import com.arvatosystems.t9t.bucket.request.AbstractBucketExportRequest;
 
+import de.jpaw.bonaparte.util.FreezeTools;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 
@@ -66,7 +67,7 @@ public abstract class AbstractBucketBaseExportRequestHandler<T extends AbstractB
         query.setParameter("bucketNo",  bucketNoToSelect);
         query.setParameter("refs",      refs);
         final List<BucketEntryEntity> result = query.getResultList();
-        final Map<Long, BucketEntryEntity> indexedResult = new HashMap<>(result.size());
+        final Map<Long, BucketEntryEntity> indexedResult = new HashMap<>(FreezeTools.getInitialHashMapCapacity(result.size()));
         for (final BucketEntryEntity e : result) {
             indexedResult.put(e.getRef(), e);
         }
@@ -84,7 +85,7 @@ public abstract class AbstractBucketBaseExportRequestHandler<T extends AbstractB
         query.setParameter("bucketNo",  bucketNoToSelect);
         query.setParameter("refs",      refs);
         final List<BucketEntryEntity> result = query.getResultList();
-        final Map<Long, Integer> indexedResult = new HashMap<>(result.size());
+        final Map<Long, Integer> indexedResult = new HashMap<>(FreezeTools.getInitialHashMapCapacity(result.size()));
         for (final BucketEntryEntity e : result) {
             indexedResult.put(e.getRef(), e.getModes());
         }

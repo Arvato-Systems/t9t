@@ -42,6 +42,7 @@ import com.arvatosystems.t9t.updates.services.IFeatureUpdate;
 
 import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
+import de.jpaw.bonaparte.util.FreezeTools;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ApplicationException;
 
@@ -124,7 +125,7 @@ public class PerformReleaseUpdateRequestHandler extends AbstractRequestHandler<P
         if (dwts.isEmpty()) {
             return Collections.emptyMap();
         }
-        final Map<String, UpdateStatusDTO> indexed = new HashMap<>(dwts.size());
+        final Map<String, UpdateStatusDTO> indexed = new HashMap<>(FreezeTools.getInitialHashMapCapacity(dwts.size()));
         for (final DataWithTrackingS<UpdateStatusDTO, FullTracking> dwt: dwts) {
             final UpdateStatusDTO dto = dwt.getData();
             indexed.put(dto.getTicketId(), dto);

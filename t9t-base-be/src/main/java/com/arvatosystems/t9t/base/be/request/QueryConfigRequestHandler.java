@@ -23,6 +23,7 @@ import com.arvatosystems.t9t.base.request.QueryConfigResponse;
 import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
+import de.jpaw.bonaparte.util.FreezeTools;
 
 /**
  * A request handler to query backend configuration values.
@@ -32,7 +33,7 @@ public class QueryConfigRequestHandler extends AbstractReadOnlyRequestHandler<Qu
 
     @Override
     public QueryConfigResponse execute(final RequestContext ctx, final QueryConfigRequest rq) {
-        final Map<String, String> mappings = new HashMap<>(rq.getVariables().size());
+        final Map<String, String> mappings = new HashMap<>(FreezeTools.getInitialHashMapCapacity(rq.getVariables().size()));
         final QueryConfigResponse resp = new QueryConfigResponse();
         resp.setKeyValuePairs(mappings);
         for (String variable: rq.getVariables()) {

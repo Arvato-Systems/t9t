@@ -15,15 +15,20 @@
  */
 package com.arvatosystems.t9t.zkui.viewmodel.framework;
 
+import java.util.UUID;
+
+import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
+import org.zkoss.bind.annotation.NotifyChange;
+import org.zkoss.zul.Messagebox;
+
+import de.jpaw.bonaparte.pojos.api.DataWithTracking;
 
 import com.arvatosystems.t9t.auth.ApiKeyDTO;
 import com.arvatosystems.t9t.auth.ApiKeyRef;
 import com.arvatosystems.t9t.auth.PermissionsDTO;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.zkui.viewmodel.CrudSurrogateKeyVM;
-
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
 
 @Init(superclass = true)
 public class ApiKeyVM extends CrudSurrogateKeyVM<ApiKeyRef, ApiKeyDTO, FullTrackingWithVersion> {
@@ -42,5 +47,13 @@ public class ApiKeyVM extends CrudSurrogateKeyVM<ApiKeyRef, ApiKeyDTO, FullTrack
         super.loadData(dwt);
         if (data.getPermissions() == null)
             data.setPermissions(new PermissionsDTO());
+    }
+
+    @Command
+    @NotifyChange("data")
+    public void generateApiKey() {
+        final UUID uuid = UUID.randomUUID();
+        Messagebox.show(String.valueOf(uuid), "Generate API Key", Messagebox.OK, Messagebox.INFORMATION);
+        data.setApiKey(uuid);
     }
 }

@@ -59,6 +59,7 @@ import com.google.common.collect.ImmutableList;
 
 import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import de.jpaw.bonaparte.pojos.api.media.MediaXType;
+import de.jpaw.bonaparte.util.FreezeTools;
 import de.jpaw.dp.Jdp;
 
 //some comparison of image storing methods in on https://sendgrid.com/blog/embedding-images-emails-facts/
@@ -352,7 +353,7 @@ public class NewDocumentRequestHandler extends AbstractRequestHandler<NewDocumen
         if (attachments == null) {
             return null;
         }
-        final Map<String, Long> generalAttachmentSinkRefs = new HashMap<>(attachments.size());
+        final Map<String, Long> generalAttachmentSinkRefs = new HashMap<>(FreezeTools.getInitialHashMapCapacity(attachments.size()));
         for (GeneralizedAttachment ga: attachments) {
             MediaData data = ga.getProvidedAttachment();
             if (data == null && ga.getDocumentId() != null) {

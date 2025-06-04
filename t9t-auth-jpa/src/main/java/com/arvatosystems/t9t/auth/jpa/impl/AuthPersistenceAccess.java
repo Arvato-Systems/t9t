@@ -616,7 +616,7 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
             // construction" with no roles / tenants assigned yet
             return NO_TENANTS;
         }
-        final TypedQuery<TenantEntity> query2 = em.createQuery("SELECT t FROM TenantEntity t WHERE t.objectRef IN :tenants", TenantEntity.class);
+        final TypedQuery<TenantEntity> query2 = em.createQuery("SELECT t FROM TenantEntity t WHERE t.tenantId IN :tenants", TenantEntity.class);
         query2.setParameter("tenants", allValidTenantIds);
         final List<TenantEntity> result = query2.getResultList();
         final List<TenantDescription> tenantDescriptions = new ArrayList<>(result.size());

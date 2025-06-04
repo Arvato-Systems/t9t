@@ -118,6 +118,7 @@ public final class Constants {
     static {
         Stream<String> s = Arrays.stream(Locale.getISOCountries());
         COUNTRY_MODEL_DATA.add("XX");  // used for wildcards in t9t doc module
+        COUNTRY_MODEL_DATA.add("XK");  // inofficial code for Kosovo
         COUNTRY_MODEL_DATA.add("EU");  // sometimes used for European Union, will be mapped to specific code by the backend
         COUNTRY_MODEL_DATA.addAll(s.sorted().collect(Collectors.toList()));
     }

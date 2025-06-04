@@ -57,13 +57,12 @@ public class DealWithPriorJobInstancesRequestHandler extends AbstractRequestHand
             return resp;
         }
         final SchedulerConcurrencyType concTypeFresh = dto.getConcurrencyType() == null ? SchedulerConcurrencyType.RUN_PARALLEL : dto.getConcurrencyType();
-        final SchedulerConcurrencyType concTypeStale = dto.getConcurrencyTypeStale() == null
-          ? SchedulerConcurrencyType.RUN_PARALLEL : dto.getConcurrencyTypeStale();
+        final SchedulerConcurrencyType concTypeStale = dto.getConcurrencyTypeStale() == null ? concTypeFresh : dto.getConcurrencyTypeStale();
         final long ageWhenStale = dto.getTimeLimit() == null ? 0L : dto.getTimeLimit() * 1000L;
         int numStale = 0;
         for (final ProcessStatusDTO priorInstance: prior) {
             final SchedulerConcurrencyType concType;
-            if (priorInstance.getAgeInMs() < ageWhenStale) {
+            if (ageWhenStale <= 0L || priorInstance.getAgeInMs() < ageWhenStale) {
                 concType = concTypeFresh;
             } else {
                 ++numStale;

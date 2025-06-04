@@ -34,6 +34,7 @@ import com.arvatosystems.t9t.translation.services.ITranslationProvider;
 
 import de.jpaw.bonaparte.enums.BonaTokenizableEnum;
 import de.jpaw.bonaparte.pojos.meta.EnumDefinition;
+import de.jpaw.bonaparte.util.FreezeTools;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ApplicationException;
 
@@ -292,7 +293,7 @@ public class TranslationProvider implements ITranslationProvider {
         if (ed == null)
             throw new ApplicationException(T9tException.NOT_AN_ENUM, enumPQON);
 
-        final Map<String, String> translations = new HashMap<>(ed.getIds().size());
+        final Map<String, String> translations = new HashMap<>(FreezeTools.getInitialHashMapCapacity(ed.getIds().size()));
 
         for (final String instanceName : ed.getIds()) {
             final String instanceTranslated = getTranslation(tenantId, langs, enumPQON, instanceName);

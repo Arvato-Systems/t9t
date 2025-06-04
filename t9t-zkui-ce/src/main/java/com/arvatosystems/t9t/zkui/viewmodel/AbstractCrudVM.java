@@ -95,16 +95,12 @@ public abstract class AbstractCrudVM<
         super.clearData();
         if (data != null)
             data.put$Active(true);  // if the DTO has an active field, create it as active by default
-        if (childViewModel != null) {
-            childViewModel.clearData();
-        }
+        clearChildViewModelData();
     }
 
     @Command
     public void commandSave() {
-        if (childViewModel != null) {
-            childViewModel.enrichData(data);
-        }
+        enrichChildViewModelData(data);
         if (externalSaveHandler != null) {
             // if external save handler is registered then invoke it and return.
             externalSaveHandler.accept(data);
