@@ -64,7 +64,7 @@ public class DefaultRequestHandlerResolver implements IRequestHandlerResolver {
                     }
                 } catch (final ClassNotFoundException e) {
                     LOGGER.debug("Class {} not found - trying next candidate", handlerClassNameCandidate);
-                } catch (final Exception e) {
+                } catch (final Throwable e) {
                     // track causes
                     LOGGER.error("Cannot instantiate RequestHandler " + handlerClassNameCandidate, e);
                     cause = (cause.length() == 0 ? "" : cause + "; ") + handlerClassNameCandidate + ": " + ExceptionUtil.causeChain(e);

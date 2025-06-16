@@ -173,7 +173,7 @@ public class PluginManager implements IPluginManager {
                 registerPluginMethods(tenantId, loadedPlugin, false);
             }
             return info;
-        } catch (final Exception e) {
+        } catch (final Throwable e) {
             throw new T9tException(T9tException.PLUGIN_INSTANTIATION_ERROR, ExceptionUtil.causeChain(e));
         }
     }

@@ -41,6 +41,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 import static java.time.format.FormatStyle.*
+import com.arvatosystems.t9t.doc.DocConstants
 
 /** Note: Java 10 and Java 8 differ in day and timestamp formatting (space vs - for GB, and additional commas separating day and time for timestamp. **/
 @AddLogger
@@ -103,8 +104,8 @@ class DateTimeFormatterTest {
                             Datum+Zeit: ${t(d.ts, 'MM')}
                             Tagesdatum: ${t(d.ts, 'M-', 'D')},
                             Uhrzeit:    ${t(d.ts, '-M', 'T')},
-                            Jahr:       ${t(d.ts, 'MM', 'I', 'yyyy')},
-                            Wochentag:  ${t(d.ts, 'MM', 'I', 'EEEE MMMM')},
+                            Jahr:       ${t(d.ts, 'MM', 'i', 'yyyy')},
+                            Wochentag:  ${t(d.ts, 'MM', 'i', 'EEEE MMMM')},
                         ''',
                     "en" ->
                         '''
@@ -113,8 +114,8 @@ class DateTimeFormatterTest {
                             Timestamp:  ${t(d.ts, 'MM')}
                             Day:        ${t(d.ts, 'M-', 'D')},
                             Time:       ${t(d.ts, '-M', 'T')},
-                            Custom:     ${t(d.ts, 'MM', 'I', 'yyyy')},
-                            DoW, month: ${t(d.ts, 'MM', 'I', 'EEEE MMMM')},
+                            Custom:     ${t(d.ts, 'MM', 'i', 'yyyy')},
+                            DoW, month: ${t(d.ts, 'MM', 'i', 'EEEE MMMM')},
                         '''
                 }.get(selector.languageCode)
             ]
@@ -243,7 +244,8 @@ class DateTimeFormatterTest {
             Custom:     2016,
             DoW, month: Monday August,
         '''
-        LOGGER.info("Generated text is {}", actual.text)
-        Assertions.assertEquals(expected, actual.text)
+        val actualPostprocessed = actual.text.replace(DocConstants.NONBREAKING_SPACE, DocConstants.REGULAR_SPACE)
+        LOGGER.info("Generated text is {}", actualPostprocessed)
+        Assertions.assertEquals(expected, actualPostprocessed)
     }
 }

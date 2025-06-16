@@ -219,7 +219,7 @@ public final class InitContainers {
                     LOGGER.debug("Found viewModel container {}", cls.getCanonicalName());
                     // create an instance of the class and use it to invoke the registration method
                     cls.getDeclaredConstructor().newInstance().register();
-                } catch (final Exception e) {
+                } catch (final Throwable e) {
                     LOGGER.warn("Cannot initialize viewModelContainer {}: {}", cls.getCanonicalName(), ExceptionUtil.causeChain(e));
                 }
             }
@@ -238,7 +238,7 @@ public final class InitContainers {
             for (final Class<? extends ILeanGridConfigContainer> cls : pkg.getSubTypesOf(ILeanGridConfigContainer.class)) {
                 try {
                     clses.add(cls.getDeclaredConstructor().newInstance());
-                } catch (final Exception e) {
+                } catch (final Throwable e) {
                     LOGGER.warn("Cannot initialize leanGridConfigContainer {}: {}", cls.getCanonicalName(), ExceptionUtil.causeChain(e));
                 }
             }

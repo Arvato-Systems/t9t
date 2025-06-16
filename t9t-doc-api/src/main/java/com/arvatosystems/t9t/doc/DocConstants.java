@@ -20,6 +20,9 @@ import com.arvatosystems.t9t.doc.api.DocumentSelector;
 public final class DocConstants {
     private DocConstants() { }
 
+    public static final char NONBREAKING_SPACE = 0x202f;   // some locales use this instead of a regular space before AM and PM
+    public static final char REGULAR_SPACE     = 0x20;
+
     public static final String DEFAULT_LANGUAGE_CODE = "xx";
     public static final String DEFAULT_COUNTRY_CODE  = "XX";
     public static final String DEFAULT_CURRENCY_CODE = "XXX";
