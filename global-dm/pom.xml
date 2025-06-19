@@ -39,8 +39,8 @@
 
         <!-- jpaw / bonaparte: versions for import of BOM. The plugin version is defined separately in SE/EE -->
         <!-- Note that the version of the bonapart-dsl plugin is set in "global-settings" -->
-        <jpaw-bom.version>3.6.3</jpaw-bom.version>
-        <bonaparte-bom.version>6.2.5</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
+        <jpaw-bom.version>3.6.4</jpaw-bom.version>
+        <bonaparte-bom.version>6.2.6</bonaparte-bom.version>   <!-- this is the version of bonaparte-java -->
 
         <!-- Versions of Xtext & Xtend -->
         <!-- Note that the versions of the xtext/xtend plugins are ALSO set in "global-settings", where the variable xtext.version is defined -->
@@ -120,7 +120,7 @@
         <azure-cosmos-sdk.version>4.71.0</azure-cosmos-sdk.version>
 
         <!-- Vector databases -->
-        <pinecone.version>5.0.0</pinecone.version>
+        <pinecone.version>5.1.0</pinecone.version>
         <qdrant-client.version>1.14.0</qdrant-client.version>
 
         <!-- More AI stuff & DM for its dependencies -->
