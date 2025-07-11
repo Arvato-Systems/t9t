@@ -38,8 +38,8 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 
 class PermissionsTest {
-    static private ITestConnection dlg
-    static private final String myPermissionId = "U.testperm-id.x"
+    static ITestConnection dlg
+    static final String myPermissionId = "U.testperm-id.x"
 
     static private class MySetup extends SetupUserTenantRole {
         new(ITestConnection dlg) {
@@ -58,7 +58,7 @@ class PermissionsTest {
     }
 
     @BeforeAll
-    def public static void createConnection() {
+    def static void createConnection() {
         // use a single connection for all tests (faster)
         dlg = new InMemoryConnection;
         (new MySetup(dlg)).createUserTenantRole("testPerm", UUID.randomUUID, true)
@@ -76,7 +76,7 @@ class PermissionsTest {
     }
 
     @Test
-    def public void QueryPermissionsTest() {
+    def void QueryPermissionsTest() {
         val result = dlg.typeIO(new QueryPermissionsRequest(PermissionType.FRONTEND), QueryPermissionsResponse)
         println('''Result is «ToStringHelper.toStringML(result)»''')
         Assertions.assertEquals(result.permissions.size, 1)
@@ -84,14 +84,14 @@ class PermissionsTest {
     }
 
     @Test
-    def public void QuerySinglePermissionTest() {
+    def void QuerySinglePermissionTest() {
         val result = dlg.typeIO(new QuerySinglePermissionRequest(PermissionType.FRONTEND, "testperm-id.x"), QuerySinglePermissionResponse)
         println('''Result is «ToStringHelper.toStringML(result)»''')
         Assertions.assertEquals(Permissionset.ofTokens(OperationType.CONTEXT, OperationType.LOOKUP), result.permissions)
     }
 
     @Test
-    def public void QueryAnotherSinglePermissionTest() {
+    def void QueryAnotherSinglePermissionTest() {
         val result = dlg.typeIO(new QuerySinglePermissionRequest(PermissionType.FRONTEND, "no-perm"), QuerySinglePermissionResponse)
         println('''Result is «ToStringHelper.toStringML(result)»''')
         Assertions.assertEquals(Permissionset.ofTokens(), result.permissions)

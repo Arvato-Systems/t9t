@@ -19,6 +19,7 @@ import com.arvatosystems.t9t.auth.PermissionsDTO
 import com.arvatosystems.t9t.auth.UserDTO
 import com.arvatosystems.t9t.auth.UserKey
 import com.arvatosystems.t9t.auth.request.UserCrudAndSetPasswordRequest
+import com.arvatosystems.t9t.auth.tests.setup.SetupUserTenantRole
 import com.arvatosystems.t9t.base.ITestConnection
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse
 import com.arvatosystems.t9t.embedded.connect.InMemoryConnection
@@ -31,6 +32,7 @@ import org.junit.jupiter.api.Test
 @AddLogger
 class CreateUserTwiceTest {
     public static val ALL_PERMISSIONS = new Permissionset(0xfffff)  // .fromStringMap("XSLCRUDIAVMP")
+    static val randomPw = SetupUserTenantRole.createRandomSimplePWForTests();
 
     def getPermissionDTO() {
         return new PermissionsDTO => [
@@ -55,7 +57,7 @@ class CreateUserTwiceTest {
                 permissions  = permissionDTO
             ]
             naturalKey = new UserKey(myUserId)
-            password   = "secret1234"
+            password   = randomPw
             validate
         ]
     }

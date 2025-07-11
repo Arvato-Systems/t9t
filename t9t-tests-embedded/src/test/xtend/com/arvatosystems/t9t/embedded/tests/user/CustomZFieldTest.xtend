@@ -38,6 +38,7 @@ class CustomZFieldTest {
 
     static final String TEST_USER_ID = "testZ"
     static final String TEST_EMAIL = "test@nowhere.com"
+    static final String TEST_PW = SetupUserTenantRole.createRandomSimplePWForTests
 
     @BeforeAll
     def static void createConnection() {
@@ -70,7 +71,7 @@ class CustomZFieldTest {
                 crud       = OperationType.MERGE
                 data       = user
                 naturalKey = new UserKey(TEST_USER_ID)
-                password   = "secret12345"
+                password   = TEST_PW
                 validate
             ]
             dlg.okIO(rq)
@@ -85,7 +86,7 @@ class CustomZFieldTest {
         tenant.z = #{ "tenantField" -> "test2" }
         tenant.merge(dlg)
 
-        val dlgx = new InMemoryConnection(TEST_USER_ID, "secret12345")
+        val dlgx = new InMemoryConnection(TEST_USER_ID, TEST_PW)
         val info = dlgx.lastJwtInfo
         println('''The z field of the login is «info.z»''')
         Assertions.assertNotNull(info.z, "There should be a z field in the JWT")

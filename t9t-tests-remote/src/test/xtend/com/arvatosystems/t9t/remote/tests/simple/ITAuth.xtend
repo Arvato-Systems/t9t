@@ -38,6 +38,7 @@ import java.util.List
 import com.arvatosystems.t9t.base.T9tConstants
 
 class ITAuth {
+    val String initial = "changeMe"
     val String testUU1D = "896d22d1-a1b2-488e-b2f8-2a539c29b8ca"
     val String testUUID = "896d22d1-a332-438e-b2f8-2a539c29b8ca"
 
@@ -64,14 +65,16 @@ class ITAuth {
 
     @Test
     def void changePasswordFirstScenario() {
-        val dlg = new Connection("userId", "changeMe", "changeMe2")
-        dlg.changePassword("userId", "changeMe2", "changeMe3")
-        dlg.changePassword("userId", "changeMe3", "changeMe")
+        val pw2 = SetupUserTenantRole.createRandomSimplePWForTests();
+        val pw3 = SetupUserTenantRole.createRandomSimplePWForTests();
+        val dlg = new Connection("userId", initial, pw2)
+        dlg.changePassword("userId", pw2, pw3)
+        dlg.changePassword("userId", pw3, initial)
     }
 
     @Test
     def void changePasswordSecondScenario() {
-        val dlg = new Connection("userId", "changeMe")
+        val dlg = new Connection("userId", initial)
 
         new AuthModuleCfgDTO => [
             passwordBlockingPeriod = 1
@@ -83,10 +86,10 @@ class ITAuth {
         ]
 
         // checking length validation error
-        dlg.errIO(authWithError("userId", "changeMe", "err"), T9tAuthException.PASSWORD_VALIDATION_FAILED)
+        dlg.errIO(authWithError("userId", initial, "err"), T9tAuthException.PASSWORD_VALIDATION_FAILED)
 
         //checking password differ validation error
-        dlg.errIO(authWithError("userId", "changeMe", "changeMe"), T9tAuthException.PASSWORD_VALIDATION_FAILED)
+        dlg.errIO(authWithError("userId", initial, initial), T9tAuthException.PASSWORD_VALIDATION_FAILED)
 
         new AuthModuleCfgDTO => [
             passwordBlockingPeriod = 0
@@ -98,14 +101,16 @@ class ITAuth {
         ]
 
         // change back to the normal password
-        dlg.changePassword("userId", "changeMe", "changeMe2")
-        dlg.changePassword("userId", "changeMe2", "changeMe3")
-        dlg.changePassword("userId", "changeMe3", "changeMe")
+        val pw2 = SetupUserTenantRole.createRandomSimplePWForTests();
+        val pw3 = SetupUserTenantRole.createRandomSimplePWForTests();
+        dlg.changePassword("userId", initial, pw2)
+        dlg.changePassword("userId", pw2, pw3)
+        dlg.changePassword("userId", pw3, initial)
     }
 
     @Test
     def void resetPasswordTest() {
-        val dlg = new Connection("userId", "changeMe")
+        val dlg = new Connection("userId", initial)
 
         new AuthModuleCfgDTO => [
             passwordBlockingPeriod = 1
@@ -200,7 +205,6 @@ class ITAuth {
                 it.name         = "test template " + name
                 merge(dlg)
             ]
-                   ]
+        ]
     }
-
 }

@@ -21,6 +21,8 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.UUID;
 
+import com.arvatosystems.t9t.zkui.session.UserInfo;
+import jakarta.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.util.TimeZones;
@@ -57,7 +59,6 @@ import com.arvatosystems.t9t.zkui.services.IUserDAO;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 import com.arvatosystems.t9t.zkui.util.ZulUtils;
 import com.arvatosystems.t9t.zkui.viewmodel.support.LoginViewModel;
-import com.arvatosystems.t9t.zkui.viewmodel.support.LoginViewModel.UserInfo;
 
 import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.dp.Jdp;
@@ -78,21 +79,24 @@ public class UserDAO implements IUserDAO {
     protected static final String UI_VERSION = IUserDAO.class.getPackage().getImplementationVersion();
 
     protected SessionParameters makeSessionParameters(String userName) {
+        // get userInfo from internal cache to make session params
+        return makeSessionParameters(LoginViewModel.getUserInfo(userName));
+    }
+
+    protected SessionParameters makeSessionParameters(@Nullable final UserInfo infos) {
         // currently the session is a new one, the attributes as set in login form are lost
         String mainAgent = "t9t ZK UI" + (UI_VERSION != null ? ", " + UI_VERSION : "");
-        //LOGGER.debug("ZK user agent is {}", Executions.getCurrent().getUserAgent());
         final SessionParameters sp = new SessionParameters();
 
         Locale   l = null;
         TimeZone z = null;
         String   realZoneId = null;
-        final UserInfo infos = LoginViewModel.getUserInfo(userName);
         if (infos != null) {
-            l = infos.locale;
-            z = infos.zkTz;
-            realZoneId = infos.browserTz;
-            if (infos.screenInfo != null)
-                mainAgent = mainAgent + " @ " + infos.screenInfo;
+            l = infos.locale();
+            z = infos.zkTz();
+            realZoneId = infos.browserTz();
+            if (infos.screenInfo() != null)
+                mainAgent = mainAgent + " @ " + infos.screenInfo();
         }
         if (mainAgent.length() > 255)
             mainAgent = mainAgent.substring(0, 255);
@@ -105,7 +109,7 @@ public class UserDAO implements IUserDAO {
     @Override
     public AuthenticationResponse getApiKeyAuthenticationResponse(final UUID apiKey) throws ReturnCodeException {
         final AuthenticationRequest authenticationRequest = new AuthenticationRequest(new ApiKeyAuthentication(apiKey));
-        return getAuthenticationResponse(authenticationRequest, T9tConstants.ANONYMOUS_USER_ID);
+        return getAuthenticationResponse(authenticationRequest, T9tConstants.ANONYMOUS_USER_ID, true);
     }
 
     @Override
@@ -117,13 +121,15 @@ public class UserDAO implements IUserDAO {
             authenticationParameters.setPassword(pwd);
             authenticationRequest.setAuthenticationParameters(authenticationParameters);
         }
-        return getAuthenticationResponse(authenticationRequest, username);
+        return getAuthenticationResponse(authenticationRequest, username, true);
     }
 
     @Override
-    public final AuthenticationResponse getExternalTokenAuthenticationResponse(final String accessToken, final String username) throws ReturnCodeException {
+    public final AuthenticationResponse getExternalTokenAuthenticationResponse(final String accessToken, final String username, final UserInfo userSessionInfo)
+        throws ReturnCodeException {
         final AuthenticationRequest authenticationRequest = new AuthenticationRequest(new ExternalTokenAuthenticationParam(accessToken));
-        return getAuthenticationResponse(authenticationRequest, username);
+        authenticationRequest.setSessionParameters(makeSessionParameters(userSessionInfo));
+        return getAuthenticationResponse(authenticationRequest, username, false);
     }
 
     @Override
@@ -236,10 +242,12 @@ public class UserDAO implements IUserDAO {
         return response;
     }
 
-    private AuthenticationResponse getAuthenticationResponse(final AuthenticationRequest authenticationRequest, final String username)
-        throws ReturnCodeException {
+    private AuthenticationResponse getAuthenticationResponse(final AuthenticationRequest authenticationRequest, final String username,
+        final boolean populateSession) throws ReturnCodeException {
         try {
-            authenticationRequest.setSessionParameters(makeSessionParameters(username));
+            if (populateSession) {
+                authenticationRequest.setSessionParameters(makeSessionParameters(username));
+            }
             final AuthenticationResponse resp = t9tRemoteUtils.executeAndHandle(authenticationRequest, AuthenticationResponse.class);
             if (ApplicationException.isOk(resp.getReturnCode()) || resp.getReturnCode() == T9tException.PASSWORD_EXPIRED) {
                 final ApplicationSession as = ApplicationSession.get();

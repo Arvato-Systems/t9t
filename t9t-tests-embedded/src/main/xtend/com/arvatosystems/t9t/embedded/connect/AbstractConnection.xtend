@@ -211,4 +211,9 @@ abstract class AbstractConnection implements ITestConnection {
     override getLastJwtInfo() {
         return jwtInfo
     }
+
+    def protected String createRandomPW() {
+        val s = UUID.randomUUID.toString
+        return s.substring(0, 16)
+    }
 }

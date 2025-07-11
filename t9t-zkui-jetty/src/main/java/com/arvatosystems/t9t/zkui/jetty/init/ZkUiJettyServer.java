@@ -60,8 +60,9 @@ public class ZkUiJettyServer {
         final int connectionIdleTimeout = CONFIG_READER.getIntProperty("jetty.connection.idleTimeout", DEFAULT_CONNECTION_IDLE_TIMEOUT);  // in millis
         final int stopTimeout = CONFIG_READER.getIntProperty("jetty.stopTimeout", DEFAULT_STOP_TIMEOUT);  // in millis
         final String contextPath = CONFIG_READER.getProperty("jetty.contextPath", DEFAULT_CONTEXT_ROOT);
-        LOGGER.info("Using configuration values: port {}, min/max threads = {}/{}, threadPool idle timeout = {}, connection idle timeout = {},"
-                + " stopTimeout = {}, context = {}", port, minThreads, maxThreads, idleTimeout, connectionIdleTimeout, stopTimeout, contextPath);
+
+        LOGGER.info("Web server: port {}, context path {}, connection idle timeout {} ms", port, contextPath, connectionIdleTimeout);
+        LOGGER.info("Threadpool: {} min threads, {} max threads, idle timeout {} ms", minThreads, maxThreads, idleTimeout);
 
         final QueuedThreadPool threadPool = new QueuedThreadPool(maxThreads, minThreads, idleTimeout);
         final Server server = new Server(threadPool);
@@ -81,7 +82,7 @@ public class ZkUiJettyServer {
         webAppContext.setContextPath(contextPath);
         final URL webAppDir = ZkUiJettyServer.class.getClassLoader().getResource("/webapp");
         final String descriptor = webAppDir + "/WEB-INF/web.xml";
-        LOGGER.info("webapp location: {}. Descriptor location: {} ", webAppDir, descriptor);
+        LOGGER.info("webapp location: {}, descriptor location: {}, stopTimeout: {}", webAppDir, descriptor, stopTimeout);
         webAppContext.setDescriptor(descriptor);
         final Resource resource = ResourceFactory.of(new ResourceHandler()).newResource(webAppDir);
         webAppContext.setBaseResource(resource);
@@ -89,7 +90,7 @@ public class ZkUiJettyServer {
         server.setStopTimeout(stopTimeout);
         server.setStopAtShutdown(true);
         server.start();
-        LOGGER.info("ZK UI Jetty server started on port {} with contextPath {}", port, contextPath);
+        LOGGER.info("ZK UI Jetty server started");
         server.join();
     }
 }

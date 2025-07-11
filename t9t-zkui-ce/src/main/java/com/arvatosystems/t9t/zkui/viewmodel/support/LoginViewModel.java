@@ -27,6 +27,8 @@ import java.util.TimeZone;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import com.arvatosystems.t9t.zkui.session.UserInfo;
+import jakarta.annotation.Nonnull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.BindingParam;
@@ -79,6 +81,7 @@ public class LoginViewModel {
     private static final Logger LOGGER                     = LoggerFactory.getLogger(LoginViewModel.class);
     protected final IUserDAO userDAO = Jdp.getRequired(IUserDAO.class);
     protected final IAuthenticationService authenticationService = Jdp.getRequired(IAuthenticationService.class);
+
 //    private static final ConcurrentMap<String, String>   screen = new ConcurrentHashMap<String, String>(100);
 //    private static final ConcurrentMap<String, TimeZone> zones = new ConcurrentHashMap<String, TimeZone>(100);
 //    private static final ConcurrentMap<String, Locale> locales = new ConcurrentHashMap<String, Locale>(100);
@@ -93,19 +96,6 @@ public class LoginViewModel {
 //    public static Locale getLocale(String username) {
 //        return locales.get(username);
 //    }
-    public static class UserInfo {
-        public final String screenInfo;
-        public final String browserTz;
-        public final Locale locale;
-        public final TimeZone zkTz;
-        public UserInfo(String screenInfo, String browserTz, Locale locale, TimeZone zkTz) {
-            super();
-            this.screenInfo = screenInfo;
-            this.browserTz = browserTz;
-            this.locale = locale;
-            this.zkTz = zkTz;
-        }
-    }
 
     private static final Cache<String, UserInfo> USER_INFO_CACHE = Caffeine.newBuilder()
             .expireAfterWrite(5, TimeUnit.MINUTES).build();
@@ -117,11 +107,14 @@ public class LoginViewModel {
     private String lastRealTz;
     private boolean microsoftAuthEnabled = false;
     private boolean showLoginErrorMessage = false;
+    private boolean realTimezonePopulated = false;
 
+    @NotifyChange("realTimezonePopulated")
     @Command("realTimezone")
     public void realTimezone(@BindingParam("tzid") String zoneId) {
         LOGGER.debug("received time zone ID {}", zoneId);
         lastRealTz = zoneId;
+        realTimezonePopulated = true;
     }
 
     @Command("onClientInfo")
@@ -163,9 +156,7 @@ public class LoginViewModel {
             }
 
             ApplicationUtil.setCookie(LANGUAGE_COOKIE, selected.getValue());
-            USER_INFO_CACHE.put(username, new UserInfo(lastScreen, lastRealTz,
-                    (Locale)(Sessions.getCurrent().getAttribute(org.zkoss.web.Attributes.PREFERRED_LOCALE)),
-                    lastZone));
+            USER_INFO_CACHE.put(username, getUserInfo());
         }
 
         // Attempt to login
@@ -191,6 +182,7 @@ public class LoginViewModel {
             final String nonce = UUID.randomUUID().toString();
             aadContextData.setState(state);
             aadContextData.setNonce(nonce);
+            aadContextData.setUserInfo(getUserInfo());
             applicationSession.setSessionValue(AadConstants.SESSION_PARAM, aadContextData);
 
             final ConfidentialClientApplication client = AadAuthUtil.getConfidentialClientInstance();
@@ -368,5 +360,14 @@ public class LoginViewModel {
 
     public boolean isMicrosoftAuthEnabled() {
         return microsoftAuthEnabled;
+    }
+
+    public boolean isRealTimezonePopulated() {
+        return realTimezonePopulated;
+    }
+
+    @Nonnull
+    private UserInfo getUserInfo() {
+        return new UserInfo(lastScreen, lastRealTz, (Locale)(Sessions.getCurrent().getAttribute(org.zkoss.web.Attributes.PREFERRED_LOCALE)), lastZone);
     }
 }

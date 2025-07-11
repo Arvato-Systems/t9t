@@ -18,6 +18,7 @@ package com.arvatosystems.t9t.embedded.tests.user
 import com.arvatosystems.t9t.auth.UserDTO
 import com.arvatosystems.t9t.auth.UserKey
 import com.arvatosystems.t9t.auth.request.UserCrudAndSetPasswordRequest
+import com.arvatosystems.t9t.auth.tests.setup.SetupUserTenantRole
 import com.arvatosystems.t9t.base.ITestConnection
 import com.arvatosystems.t9t.embedded.connect.InMemoryConnection
 import de.jpaw.bonaparte.pojos.api.OperationType
@@ -26,16 +27,16 @@ import org.junit.jupiter.api.Test
 
 class PasswordTest {
 
-    static private ITestConnection dlg
+    static ITestConnection dlg
 
     @BeforeAll
-    def public static void createConnection() {
+    def static void createConnection() {
         // use a single connection for all tests (faster)
         dlg = new InMemoryConnection
     }
 
     @Test
-    def public void createUserAndSetInitialPasswordTest() {
+    def void createUserAndSetInitialPasswordTest() {
         val userDTO = new UserDTO => [
             userId      = "testUser"
             name        = "John Doe"
@@ -55,7 +56,7 @@ class PasswordTest {
     }
 
     @Test
-    def public void createUserAndChangeExistingPasswordTest() {
+    def void createUserAndChangeExistingPasswordTest() {
         val userDTO = new UserDTO => [
             userId      = "testUser"
             name        = "John Doe"
@@ -66,7 +67,7 @@ class PasswordTest {
             crud       = OperationType.MERGE
             data       = userDTO
             naturalKey = new UserKey(userDTO.userId)
-            password   = "predefined"
+            password   = SetupUserTenantRole.createRandomSimplePWForTests();
             validate
         ]
 //      dlg.okIO(new ResetPasswordRequest => [ userId = ])

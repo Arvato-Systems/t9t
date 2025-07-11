@@ -25,6 +25,7 @@ import com.arvatosystems.t9t.base.auth.PermissionEntry;
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;
 
+import com.arvatosystems.t9t.zkui.session.UserInfo;
 import jakarta.annotation.Nonnull;
 
 public interface IUserDAO {
@@ -48,9 +49,12 @@ public interface IUserDAO {
      * Authenticates the user via external access token
      * @param accessToken   token received from external identity provider.
      * @param username preliminary guess of user identification
+     * @param userSessionInfo additional information about the user session, e.g. timezone, locale, etc.
      * @return AuthenticationResponse user and user details.
      */
-    AuthenticationResponse getExternalTokenAuthenticationResponse(@Nonnull String accessToken, @Nonnull String username) throws ReturnCodeException;
+    @Nonnull
+    AuthenticationResponse getExternalTokenAuthenticationResponse(@Nonnull String accessToken, @Nonnull String username, @Nonnull UserInfo userSessionInfo)
+        throws ReturnCodeException;
 
     List<PermissionEntry> getPermissions() throws ReturnCodeException;
 

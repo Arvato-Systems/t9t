@@ -17,6 +17,7 @@ package com.arvatosystems.t9t.zkui.components.grid;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -40,10 +41,10 @@ import de.jpaw.bonaparte.core.FoldingComposer;
 import de.jpaw.bonaparte.core.ListMetaComposer;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.FoldingStrategy;
-import de.jpaw.bonaparte.pojos.meta.Multiplicity;
 import de.jpaw.dp.Jdp;
 
 public class ListItemRenderer28<T extends BonaPortable> implements ListitemRenderer<T> {
+    public static final int LIMIT = 20;
     private static final Logger LOGGER = LoggerFactory.getLogger(ListItemRenderer28.class);
 
     protected final IItemConverter<Object> itemConverter = Jdp.getRequired(IItemConverter.class, "all");
@@ -84,7 +85,7 @@ public class ListItemRenderer28<T extends BonaPortable> implements ListitemRende
     private static final String NUMERIC_LISTCELL_STYLE = "text-align:right;";
 
     @Override
-    public void render(Listitem listitem, T data, int index) throws Exception {
+    public void render(final Listitem listitem, final T data, final int index) throws Exception {
 //        if (listitem instanceof Listgroup) {
 //            LOGGER.debug("Rendering row {} as group", index);
 //            addListgroup(listitem, data, bclass.getBonaPortableClass());
@@ -108,15 +109,42 @@ public class ListItemRenderer28<T extends BonaPortable> implements ListitemRende
         int numDescriptions = visibleFieldnames.size();  // just for sanity checks...
         int column = 0;
         List<DataAndMeta> row = metaComposer.getStorage();
-        if (numDescriptions != row.size())
+        if (numDescriptions != row.size()) {
             LOGGER.error("column description count {} differs from element count {}", numDescriptions, row.size());
-        for (DataAndMeta field : row) {
-            if (column < numDescriptions) { // sanity check!
-                addListcell(listitem, data, visibleFieldnames.get(column), bclass.getBonaPortableClass(), field.data, field.meta);
-                ++column;
-                if (isDynField(field.meta) && field.meta.getMultiplicity() == Multiplicity.LIST && column != row.size()) {
-                    --column;  // for dyn fields, only do this for the last column
+
+            final Map<String, List<DataAndMeta>> dataByFieldName = new HashMap<>();
+            for (final DataAndMeta field : row) {
+                dataByFieldName.computeIfAbsent(field.meta.getName(), k -> new ArrayList<>())
+                        .add(field);
+            }
+
+            for (final String fieldName : visibleFieldnames) {
+                final String visibleFieldname = fieldName.substring(fieldName.lastIndexOf('.') + 1);
+                final List<DataAndMeta> fields = dataByFieldName.get(visibleFieldname);
+                if (fields != null && !fields.isEmpty()) {
+                    // handling for dynamic fields
+                    if (isDynField(fields.get(0).meta)) {
+                        for (final DataAndMeta dynamicField : fields) {
+                            addListcell(listitem, data, fieldName, bclass.getBonaPortableClass(), dynamicField.data, dynamicField.meta);
+                        }
+                        continue;
+                    }
+                    if (fields.size() == 1) {
+                        addListcell(listitem, data, fieldName, bclass.getBonaPortableClass(), fields.get(0).data, fields.get(0).meta);
+                    } else {
+                        // handling for 1:n fields (list, set, map) with limit
+                        final String joined = joinIntoSingleField(fields);
+                        addListcell(listitem, data, fieldName, bclass.getBonaPortableClass(), joined, fields.get(0).meta);
+                    }
+                    continue;
                 }
+                // some field only exists in visibleFieldnames, thus no fields were added from "row"
+                addListcell(listitem, data, fieldName, bclass.getBonaPortableClass(), null, null);
+            }
+        } else {
+            // for simple grid, just add the cells for each field
+            for (final DataAndMeta field : row) {
+                addListcell(listitem, data, visibleFieldnames.get(column++), bclass.getBonaPortableClass(), field.data, field.meta);
             }
         }
 
@@ -124,11 +152,30 @@ public class ListItemRenderer28<T extends BonaPortable> implements ListitemRende
         LOGGER.trace("Data was {}", data);
     }
 
+    private static String joinIntoSingleField(final List<DataAndMeta> dynamicFields) {
+        final StringBuilder sb = new StringBuilder(60);
+        int count = 0;
+        for (final DataAndMeta field : dynamicFields) {
+            if (count >= LIMIT) {
+                sb.append(", ...");
+                break;
+            }
+            final Object val = field.data;
+            if (count > 0) {
+                sb.append(", ");
+            }
+            sb.append(val == null ? "" : val.toString());
+            count++;
+        }
+        return sb.toString();
+    }
+
     private void addListcell(Listitem listitem, T data, String fieldName, Class<T> beanClass, Object value, FieldDefinition meta) {
         Listcell listcell = new Listcell();
         listcell.setParent(listitem);
 
         LOGGER.trace("Listcell for {} has value {}", fieldName, value);
+
         if (value != null) {
             // obtain a converter
             IItemConverter classConverter = AllItemConverters.getConverter(value, data, fieldName, meta);
@@ -140,7 +187,6 @@ public class ListItemRenderer28<T extends BonaPortable> implements ListitemRende
                 // use the converter to convert
                 String converted = classConverter.getFormattedLabel(value, data, fieldName, meta);
                 listcell.setLabel(converted);
-
                 if (classConverter.isRightAligned())
                     listcell.setStyle(NUMERIC_LISTCELL_STYLE);
             }

@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.arvatosystems.t9t.zkui.session.UserInfo;
 import com.microsoft.aad.msal4j.IAccount;
 import com.microsoft.aad.msal4j.IAuthenticationResult;
 import com.nimbusds.jwt.SignedJWT;
@@ -37,6 +38,7 @@ public class IdentityContextData implements Serializable {
     private IAccount account = null;
     private Map<String, Object> idTokenClaims = new HashMap<>();
     private Map<String, Object> accessTokenClaims = new HashMap<>();
+    private UserInfo userInfo;
 
     public IAccount getAccount() {
         return account;
@@ -81,6 +83,14 @@ public class IdentityContextData implements Serializable {
     public void setState(final String state) {
         this.state = state;
         this.stateDate = LocalDateTime.now();
+    }
+
+    public UserInfo getUserInfo() {
+        return userInfo;
+    }
+
+    public void setUserInfo(final UserInfo userInfo) {
+        this.userInfo = userInfo;
     }
 
     public void populateIdTokenAndClaims(final String token) throws ParseException {

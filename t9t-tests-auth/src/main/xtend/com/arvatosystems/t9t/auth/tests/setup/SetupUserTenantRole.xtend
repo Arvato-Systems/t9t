@@ -22,25 +22,24 @@ import com.arvatosystems.t9t.auth.RoleDTO
 import com.arvatosystems.t9t.auth.RoleKey
 import com.arvatosystems.t9t.auth.RoleRef
 import com.arvatosystems.t9t.auth.TenantDTO
-import com.arvatosystems.t9t.auth.TenantKey
 import com.arvatosystems.t9t.auth.UserDTO
 import com.arvatosystems.t9t.auth.UserKey
 import com.arvatosystems.t9t.auth.UserRef
 import com.arvatosystems.t9t.auth.UserTenantRoleDTO
+import com.arvatosystems.t9t.auth.UserTenantRoleKey
 import com.arvatosystems.t9t.auth.request.ApiKeyCrudRequest
 import com.arvatosystems.t9t.auth.request.RoleCrudRequest
 import com.arvatosystems.t9t.auth.request.TenantCrudRequest
 import com.arvatosystems.t9t.auth.request.UserCrudRequest
 import com.arvatosystems.t9t.auth.request.UserTenantRoleCrudRequest
 import com.arvatosystems.t9t.base.ITestConnection
+import com.arvatosystems.t9t.base.crud.CrudStringKeyResponse
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse
 import de.jpaw.annotations.AddLogger
 import de.jpaw.bonaparte.pojos.api.OperationType
 import de.jpaw.bonaparte.pojos.api.auth.Permissionset
 import de.jpaw.bonaparte.pojos.api.auth.UserLogLevelType
 import java.util.UUID
-import com.arvatosystems.t9t.auth.UserTenantRoleKey
-import com.arvatosystems.t9t.base.crud.CrudStringKeyResponse
 
 // utility class to create a new tenant for a test suite. A user, a tenant and a role is created, all with the same ID
 // extend this class and override methods to change the behaviour
@@ -66,6 +65,12 @@ class SetupUserTenantRole {
             resourceIsWildcard  = Boolean.TRUE
             resourceRestriction = ""
         ]
+    }
+
+    /** Creates a random password for tests (not a good one). */
+    def static String createRandomSimplePWForTests() {
+        val s = UUID.randomUUID.toString
+        return s.substring(0, 16)
     }
 
     // this method is performed while operating under the "@" tenant
@@ -171,5 +176,4 @@ class SetupUserTenantRole {
         LOGGER.info("Create user / tenant / role of ID, got refs user {} / role {}, API-Key ref is {}", userRef, roleRef, apiKeyRef)
         createUserTenantRole(userRef, roleRef)
     }
-
 }

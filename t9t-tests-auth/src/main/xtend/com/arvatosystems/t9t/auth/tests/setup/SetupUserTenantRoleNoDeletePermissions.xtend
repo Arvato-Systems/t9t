@@ -21,7 +21,7 @@ import de.jpaw.bonaparte.pojos.api.auth.Permissionset
 
 // sets up a user who cannot delete anything
 class SetupUserTenantRoleNoDeletePermissions extends SetupUserTenantRole {
-    private static val ALL_PERMISSIONS_EXCEPT_DELETE = {
+    static val ALL_PERMISSIONS_EXCEPT_DELETE = {
         val all = new Permissionset(0xfffff)
         all.remove(OperationType.DELETE)
         all.freeze

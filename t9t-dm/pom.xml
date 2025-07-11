@@ -1023,6 +1023,16 @@
                 <version>${project.version}</version>
                 <classifier>sql</classifier>
             </dependency>
+            <dependency>
+                <groupId>com.arvato-systems.t9t</groupId>
+                <artifactId>t9t-ariba-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.arvato-systems.t9t</groupId>
+                <artifactId>t9t-ariba-connector</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- Dependencies for the ZK UI projects -->
             <dependency>

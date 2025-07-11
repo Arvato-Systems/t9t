@@ -81,7 +81,7 @@ public class AadRedirectViewModel {
             }
             aadContextData.setAuthResult(result);
 
-            authenticationService.loginWithExternalToken(aadContextData.getAccessToken(), aadContextData.getUsername());
+            authenticationService.loginWithExternalToken(aadContextData.getAccessToken(), aadContextData.getUsername(), aadContextData.getUserInfo());
 
         } catch (final Exception ex) {
             LOGGER.error("Unable to process AAD auth redirect. Cause {}", ex);

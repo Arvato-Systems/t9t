@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.zkui.services.impl;
 
+import com.arvatosystems.t9t.zkui.session.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
@@ -55,10 +56,10 @@ public class AuthenticationService implements IAuthenticationService {
     }
 
     @Override
-    public void loginWithExternalToken(final String accessToken, final String username) {
+    public void loginWithExternalToken(final String accessToken, final String username, final UserInfo userSessionInfo) {
         LOGGER.debug("Login user with external token '{}'", username);
         try {
-            userDAO.getExternalTokenAuthenticationResponse(accessToken, username);
+            userDAO.getExternalTokenAuthenticationResponse(accessToken, username, userSessionInfo);
             LOGGER.debug("Login successful, redirect to login success page");
             Executions.getCurrent().sendRedirect(Constants.ZulFiles.LOGIN_TENANT_SELECTION);
         } catch (final ReturnCodeException e) {

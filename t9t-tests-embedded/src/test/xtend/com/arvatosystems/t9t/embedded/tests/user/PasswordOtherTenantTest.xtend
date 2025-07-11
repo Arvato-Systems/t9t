@@ -37,13 +37,14 @@ import de.jpaw.annotations.AddLogger
 
 @AddLogger
 class PasswordOtherTenantTest {
-    static private ITestConnection dlg
+    static ITestConnection dlg
 
-    static private final String TEST_USER_ID = "userOT"
-    static private final String TEST_EMAIL = "test@nowhere.com"
+    static final String TEST_USER_ID = "userOT"
+    static final String TEST_EMAIL = "test@nowhere.com"
+    static val randomPw = SetupUserTenantRole.createRandomSimplePWForTests();
 
     @BeforeAll
-    def public static void createConnection() {
+    def static void createConnection() {
         try {
             // use a single connection for all tests (faster)
             dlg = new InMemoryConnection
@@ -71,7 +72,7 @@ class PasswordOtherTenantTest {
                 crud       = OperationType.MERGE
                 data       = user
                 naturalKey = new UserKey(TEST_USER_ID)
-                password   = "secret12345"
+                password   = randomPw
                 validate
             ]
             dlg.okIO(rq)
@@ -82,14 +83,14 @@ class PasswordOtherTenantTest {
     }
 
     @Test
-    def public void loginViaPresetPasswordTest() {
-        new InMemoryConnection(TEST_USER_ID, "secret12345")
+    def void loginViaPresetPasswordTest() {
+        new InMemoryConnection(TEST_USER_ID, randomPw)
     }
 
     @Test
-    def public void loginViaBadPasswordTest() {
+    def void loginViaBadPasswordTest() {
         try {
-            new InMemoryConnection(TEST_USER_ID, "secret12344")
+            new InMemoryConnection(TEST_USER_ID, SetupUserTenantRole.createRandomSimplePWForTests()) // assumes that the random PW is different every time!
             throw new RuntimeException("exception expected")
         } catch (ApplicationException e) {
             if (e.errorCode != T9tException.T9T_ACCESS_DENIED) {
@@ -101,9 +102,9 @@ class PasswordOtherTenantTest {
     }
 
     @Test
-    def public void loginViaBadUserTest() {
+    def void loginViaBadUserTest() {
         try {
-            new InMemoryConnection("NoRealUser", "secret12344")
+            new InMemoryConnection("NoRealUser", SetupUserTenantRole.createRandomSimplePWForTests())
             throw new RuntimeException("exception expected")
         } catch (ApplicationException e) {
             if (e.errorCode != T9tException.USER_NOT_FOUND) {

@@ -15,8 +15,10 @@
  */
 package com.arvatosystems.t9t.zkui.services;
 
+import com.arvatosystems.t9t.zkui.session.UserInfo;
+
 public interface IAuthenticationService {
     void login(String username, String password);
-    void loginWithExternalToken(String accessToken, String username);
+    void loginWithExternalToken(String accessToken, String username, UserInfo userSessionInfo);
     void logout();
 }
