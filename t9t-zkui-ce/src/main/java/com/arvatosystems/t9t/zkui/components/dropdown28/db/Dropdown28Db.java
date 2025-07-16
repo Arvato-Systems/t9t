@@ -16,12 +16,14 @@
 package com.arvatosystems.t9t.zkui.components.dropdown28.db;
 
 import java.text.MessageFormat;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.lang.Objects;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.ComboitemRenderer;
@@ -31,21 +33,27 @@ import com.arvatosystems.t9t.base.search.Description;
 import com.arvatosystems.t9t.base.search.LeanSearchRequest;
 import com.arvatosystems.t9t.zkui.components.dropdown28.ComboBoxEntry;
 import com.arvatosystems.t9t.zkui.components.dropdown28.ComboBoxEntryComboitemRenderer;
-import com.arvatosystems.t9t.zkui.components.dropdown28.SimpleListModelExt;
 import com.arvatosystems.t9t.zkui.components.dropdown28.factories.IDropdown28DbFactory;
 import com.arvatosystems.t9t.zkui.components.dropdown28.nodb.Dropdown28Registry;
 import com.arvatosystems.t9t.zkui.fixedFilters.IFixedFilter;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 import com.arvatosystems.t9t.zkui.util.T9tConfigConstants;
+import com.arvatosystems.t9t.zkui.util.UiConfigurationProvider;
 import com.arvatosystems.t9t.zkui.util.ZulUtils;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.dp.Jdp;
+import org.zkoss.zul.ListModels;
 
 public class Dropdown28Db<REF extends BonaPortable> extends Combobox {
     private static final Logger LOGGER = LoggerFactory.getLogger(Dropdown28Db.class);
     private static final long serialVersionUID = 3911446278727438869L;
     private static final String DEFAULT_DISPLAY_FORMAT = "{0} - {1}";
+    private static final int MAX_ROWS = getMaxItems();
+    private static final Comparator STRING_COMPARATOR = (key, value) -> {
+        final String idx = Objects.toString(key);
+        return idx != null && value != null && !idx.isEmpty() && Objects.toString(value).toLowerCase().startsWith(idx.toLowerCase()) ? 0 : 1;
+    };
 
     // instance fields and methods
 
@@ -88,7 +96,7 @@ public class Dropdown28Db<REF extends BonaPortable> extends Combobox {
         final String currentValue = getValue();
         if (!lookupById.containsKey(currentValue.toLowerCase())) {
             setRawValue("");  // clearing raw data is not always what we want, it kills the ability to search with LIKE criteria...
-            setModel(new SimpleListModelExt<>(allIds));
+            setDropdownModel();
         }
     }
 
@@ -167,7 +175,8 @@ public class Dropdown28Db<REF extends BonaPortable> extends Combobox {
             final ComboBoxEntry comboBoxEntry = new ComboBoxEntry(id, label, "", null);
             allIds.add(comboBoxEntry);
         }
-        setModel(new SimpleListModelExt<>(allIds));
+        allIds.sort(Comparator.comparing(ComboBoxEntry::getValue));
+        setDropdownModel();
     }
 
     protected String getDisplayFormat() {
@@ -185,5 +194,20 @@ public class Dropdown28Db<REF extends BonaPortable> extends Combobox {
         }
         final Object[] args = {desc.getId(), desc.getName()};
         return messageFormat.format(args);
+    }
+
+    private void setDropdownModel() {
+        if (allIds.getSize() > MAX_ROWS) {
+            setModel(ListModels.toListSubModel(allIds, STRING_COMPARATOR, MAX_ROWS));
+        } else {
+            setModel(new ListModelList<>(allIds));
+        }
+    }
+
+    private static int getMaxItems() {
+        final String configKey = "dropdown.item.max";
+        final String valueByPropertyFile = UiConfigurationProvider.getProperty(configKey);
+        final String configValue = valueByPropertyFile == null ? ZulUtils.readConfig(configKey) : valueByPropertyFile;
+        return configValue == null ? 50 : Integer.parseInt(configValue);
     }
 }

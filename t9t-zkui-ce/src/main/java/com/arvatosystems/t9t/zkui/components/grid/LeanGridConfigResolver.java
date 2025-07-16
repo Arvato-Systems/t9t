@@ -274,9 +274,15 @@ public class LeanGridConfigResolver implements ILeanGridConfigResolver {
     public boolean reload() {
         boolean wasDescending = T9tUtil.isTrue(gridPrefs.getSortDescending());
         String oldSortColumn = gridPrefs.getSortColumn();
+        final List<String> oldFields = new ArrayList<>(gridPrefs.getFields());
         loadConfig();
         boolean isNowDescending = T9tUtil.isTrue(gridPrefs.getSortDescending());
-        return isNowDescending != wasDescending || !Objects.equal(oldSortColumn, gridPrefs.getSortColumn());
+        final List<String> newFields = gridPrefs.getFields();
+
+        final boolean sortChanged = isNowDescending != wasDescending || !Objects.equal(oldSortColumn, gridPrefs.getSortColumn());
+        final boolean fieldsChanged = !Objects.equal(oldFields, newFields);
+
+        return sortChanged || fieldsChanged;
     }
 
     @Override
