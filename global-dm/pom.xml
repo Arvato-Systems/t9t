@@ -61,10 +61,9 @@
         <ehcache3.version>3.10.8</ehcache3.version>
         <jandex.version>3.2.7</jandex.version>
 
-        <!-- Javax ws / rs implementation versions (com.sun.xml.*), for jakarta 8 -->
+        <!-- Javax ws / rs implementation versions (com.sun.xml.*) -->
         <jaxb-xjc.version>4.0.5</jaxb-xjc.version>                                      <!-- (com.sun.xml.bind:jaxb-xjc) -->
-        <jaxws-rt.version>4.0.3</jaxws-rt.version>
-        <jaxws-api.version>2.3.1-do-not-use</jaxws-api.version>  <!-- use jakarta.xml.ws-api instead -->
+        <jaxws-rt.version>4.0.3</jaxws-rt.version>                                      <!-- (com.sun.xml.ws) -->
 
         <!-- new Jakarta stuff (versions in comment denote jakarta namespace)-->
         <jakarta.xml-bind-api.version>4.0.2</jakarta.xml-bind-api.version>              <!-- 3.0.1 for jakarta namespace -->
@@ -221,6 +220,7 @@
 
         <msal4j.version>1.19.1</msal4j.version>
         <nimbus.version>10.0.2</nimbus.version>
+        <cxf.version>4.1.2</cxf.version>
     </properties>
 
 
@@ -350,12 +350,6 @@
                 <version>${jakarta.ws.rs-api.version}</version>
             </dependency>
 
-            <!-- SOAP is still the old API (JAX-WS) -->
-            <dependency>
-                <groupId>javax.xml.ws</groupId>
-                <artifactId>jaxws-api</artifactId>
-                <version>${jaxws-api.version}</version>
-            </dependency>
             <dependency>
                 <groupId>com.sun.xml.ws</groupId>
                 <artifactId>rt</artifactId>
@@ -364,7 +358,6 @@
             <dependency>
                 <groupId>com.sun.xml.ws</groupId>
                 <artifactId>jaxws-rt</artifactId>
-                <type>pom</type>
                 <version>${jaxws-rt.version}</version>
             </dependency>
 
@@ -1591,6 +1584,23 @@
                 <version>${langchain4j.version}</version>
                 <scope>import</scope>
                 <type>pom</type>
+            </dependency>
+
+            <!-- Apache CXF -->
+            <dependency>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-rt-frontend-jaxws</artifactId>
+                <version>${cxf.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-rt-features-logging</artifactId>
+                <version>${cxf.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-rt-transports-http</artifactId>
+                <version>${cxf.version}</version>
             </dependency>
 
         </dependencies>

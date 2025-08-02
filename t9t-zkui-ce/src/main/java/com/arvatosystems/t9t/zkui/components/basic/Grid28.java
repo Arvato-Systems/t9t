@@ -800,4 +800,8 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
     public boolean isColumnAggregationAllowed() {
         return columnAggregationAllowed;
     }
+
+    public SearchCriteria getSearchRequest() {
+        return lastSearchRequest == null ? null : lastSearchRequest.ret$MutableClone(true, false);
+    }
 }
