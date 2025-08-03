@@ -22,7 +22,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-build</artifactId>
-        <version>8.0-SNAPSHOT</version>
+        <version>8.0.70</version>
     </parent>
 
     <artifactId>global-dm</artifactId>
