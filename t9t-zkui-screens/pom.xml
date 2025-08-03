@@ -29,15 +29,12 @@
     <artifactId>t9t-zkui-screens</artifactId>
     <packaging>war</packaging>
 
+    <!--- Do not define any dependencies here (or only "provided" ones). -->
     <dependencies>
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-zkui-ce</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.zkoss.theme</groupId>
-            <artifactId>silvertail</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
-
 </project>

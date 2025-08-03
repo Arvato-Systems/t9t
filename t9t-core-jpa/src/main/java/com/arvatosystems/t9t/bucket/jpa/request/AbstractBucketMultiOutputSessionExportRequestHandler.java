@@ -31,6 +31,7 @@ import com.arvatosystems.t9t.bucket.jpa.entities.BucketCounterEntity;
 import com.arvatosystems.t9t.bucket.request.AbstractBucketExportRequest;
 import com.arvatosystems.t9t.bucket.request.DeleteBucketRequest;
 import com.arvatosystems.t9t.bucket.request.SwitchCurrentBucketNoRequest;
+import com.arvatosystems.t9t.bucket.request.ResetBucketNoInProgressRequest;
 
 import de.jpaw.util.ApplicationException;
 
@@ -53,6 +54,17 @@ public abstract class AbstractBucketMultiOutputSessionExportRequestHandler<T ext
         final boolean switchBucket = !Boolean.FALSE.equals(rp.getSwitchBucket());  // switch unless explicitly told not to do so
         final boolean deleteBucket = !Boolean.FALSE.equals(rp.getDeleteBeforeSwitch());  // delete target bucket unless explicitly told not to do so
         final BucketCounterEntity counterEntity = counterResolver.findByQualifier(false, qualifier);
+
+        // Self-healing logic: if a bucket export was in progress, re-export and reset the flag
+        if (counterEntity.getBucketNoInProgress() != null) {
+            // something happened during last export, reexport everything from bucket in progress
+            final int oldBucketNo = counterEntity.getBucketNoInProgress();
+            ctx.statusText = "Bucket in progress found at " + qualifier + ":" + oldBucketNo;
+            exportAndClose(ctx, rp, qualifier, oldBucketNo);
+            // reset "in progress" and return response of that
+            return resetBucketNoInProgress(ctx, qualifier);
+        }
+
         final int oldBucketNo = counterEntity.getCurrentVal();
         int newBucketNo = oldBucketNo + 1;  // new number - but only valid if switching
         if (newBucketNo >= counterEntity.getMaxVal())
@@ -87,6 +99,11 @@ public abstract class AbstractBucketMultiOutputSessionExportRequestHandler<T ext
         }
 
         ctx.statusText = "Selecting bucket refs for bucket " + qualifier + ":" + bucketNoToSelect;
+        return exportAndClose(ctx, rp, qualifier, bucketNoToSelect);
+    }
+
+    // Helper method to export and close output sessions, similar to the main logic
+    private ServiceResponse exportAndClose(final RequestContext ctx, final T rp, final String qualifier, final int bucketNoToSelect) throws Exception {
         final List<Long> refsToExport = getRefs(qualifier, bucketNoToSelect);
         final EntityManager em = entryResolver.getEntityManager();
         em.clear();
@@ -140,5 +157,13 @@ public abstract class AbstractBucketMultiOutputSessionExportRequestHandler<T ext
         }
 
         return ok();
+    }
+
+    // Reset the "in progress" flag, same as in AbstractBucketExportRequestHandler
+    private ServiceResponse resetBucketNoInProgress(final RequestContext ctx, final String qualifier) {
+        final ResetBucketNoInProgressRequest sbniprq = new ResetBucketNoInProgressRequest();
+        sbniprq.setQualifier(qualifier);
+        final ServiceResponse response = autoExecutor.execute(ctx, sbniprq);
+        return response;
     }
 }

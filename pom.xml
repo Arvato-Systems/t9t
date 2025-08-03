@@ -84,6 +84,7 @@
         <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
         <cxf-codegen-plugin.version>4.1.2</cxf-codegen-plugin.version>
         <cxf-wadl2java-plugin.version>4.1.2</cxf-wadl2java-plugin.version>
+        <cxf-java2ws-plugin.version>4.1.2</cxf-java2ws-plugin.version>
         <cxf-xjc-plugin.version>4.1.0</cxf-xjc-plugin.version>
         <echo-maven-plugin.version>1.0.0</echo-maven-plugin.version>
         <jaxb2-maven-plugin.version>3.2.0</jaxb2-maven-plugin.version>
@@ -703,6 +704,11 @@
                     <groupId>org.apache.cxf</groupId>
                     <artifactId>cxf-wadl2java-plugin</artifactId>
                     <version>${cxf-wadl2java-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.cxf</groupId>
+                    <artifactId>cxf-java2ws-plugin</artifactId>
+                    <version>${cxf-java2ws-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.cxf</groupId>
