@@ -20,17 +20,26 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-settings-java</artifactId>
-        <version>8.0-SNAPSHOT</version>
+        <version>9.0-SNAPSHOT</version>
         <relativePath>../t9t-settings-java</relativePath>
     </parent>
 
     <artifactId>t9t-io-be-intern</artifactId>
+    <description>This is code which resides only in the backend servers</description>
 
     <dependencies>
         <!-- compile dependencies -->
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-io-be</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-io-sapi-intern</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-io-sapi</artifactId>
         </dependency>
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>

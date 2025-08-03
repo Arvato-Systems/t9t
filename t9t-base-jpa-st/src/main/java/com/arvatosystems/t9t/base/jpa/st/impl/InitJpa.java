@@ -15,10 +15,19 @@
  */
 package com.arvatosystems.t9t.base.jpa.st.impl;
 
+import com.arvatosystems.t9t.base.jpa.ormspecific.IJpaJdbcConnectionProvider;
+import com.arvatosystems.t9t.base.jpa.st.IDataSourceFactory;
+import com.arvatosystems.t9t.base.jpa.st.IEMFBeanCustomizer;
+import com.arvatosystems.t9t.base.jpa.st.util.DiagnoseDataSourceProxy;
+import com.arvatosystems.t9t.base.services.IJdbcConnectionProvider;
+import com.arvatosystems.t9t.cfg.be.RelationalDatabaseConfiguration;
+import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration;
+import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Startup;
+import de.jpaw.dp.StartupOnly;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
-import javax.sql.DataSource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
@@ -27,18 +36,7 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.SharedEntityManagerCreator;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.arvatosystems.t9t.base.jpa.ormspecific.IJpaJdbcConnectionProvider;
-import com.arvatosystems.t9t.base.jpa.st.IDataSourceFactory;
-import com.arvatosystems.t9t.base.jpa.st.IEMFBeanCustomizer;
-import com.arvatosystems.t9t.base.jpa.st.util.DiagnoseDataSourceProxy;
-import com.arvatosystems.t9t.base.services.IJdbcConnectionProvider;
-import com.arvatosystems.t9t.cfg.be.RelationalDatabaseConfiguration;
-import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration;
-
-import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Startup;
-import de.jpaw.dp.StartupOnly;
+import javax.sql.DataSource;
 
 @Startup(12000)
 public class InitJpa implements StartupOnly {

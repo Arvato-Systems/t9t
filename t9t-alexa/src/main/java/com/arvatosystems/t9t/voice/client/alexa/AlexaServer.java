@@ -89,7 +89,7 @@ public class AlexaServer extends AbstractVerticle {
             router.route().handler(BodyHandler.create().setBodyLimit(16777100));
             router.route(context).handler((final RoutingContext it) -> {
                 final String ct = stripCharset(it.request().headers().get(HttpHeaders.CONTENT_TYPE));
-                final String rqBody = it.getBody().toString();
+                final String rqBody = it.body().toString();
                 final HttpServerRequest request = it.request();
                 LOGGER.info("\n");
                 LOGGER.info("Received {} request to {} with type {} and content <<{}>>", request.method(), request.path(), ct, rqBody);

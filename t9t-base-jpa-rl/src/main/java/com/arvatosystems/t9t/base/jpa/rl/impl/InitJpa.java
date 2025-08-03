@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.base.jpa.rl.impl;
 
+import com.arvatosystems.t9t.cfg.be.HibernateSearchConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +43,7 @@ public class InitJpa implements StartupOnly {
         IEMFCustomizer cst = null;
         final T9tServerConfiguration cfg = Jdp.getRequired(T9tServerConfiguration.class);
         final String defaultPuName = cfg.getPersistenceUnitName();
+        final HibernateSearchConfiguration hibernateSearchConfiguration = cfg.getHibernateSearchConfiguration();
 
         // main persistence unit
         final RelationalDatabaseConfiguration dbConfig = cfg.getDatabaseConfiguration();
@@ -50,7 +52,7 @@ public class InitJpa implements StartupOnly {
             LOGGER.info("Creating customized JPA EMF for PU name {}", puName);
             cst = Jdp.getRequired(IEMFCustomizer.class);
             try {
-                emf = cst.getCustomizedEmf(puName, dbConfig);
+                emf = cst.getCustomizedEmf(puName, dbConfig, hibernateSearchConfiguration);
             } catch (final Exception e1) {
                 LOGGER.error("Exception calling EMF customizer: ", e1);
                 throw new RuntimeException(e1);
@@ -72,7 +74,7 @@ public class InitJpa implements StartupOnly {
             LOGGER.info("Creating customized SHADOW JPA EMF for PU name {}", puName);
             cst = cst != null ? cst : Jdp.getRequired(IEMFCustomizer.class);
             try {
-                shadowEmf = cst.getCustomizedEmf(puName, shadowDbConfig);
+                shadowEmf = cst.getCustomizedEmf(puName, shadowDbConfig, hibernateSearchConfiguration);
             } catch (final Exception e1) {
                 LOGGER.error("Exception calling EMF customizer for shadow EMF: ", e1);
                 throw new RuntimeException(e1);

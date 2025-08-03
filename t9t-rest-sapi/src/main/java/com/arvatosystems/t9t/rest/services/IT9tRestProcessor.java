@@ -34,6 +34,9 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 public interface IT9tRestProcessor {
+    /** Performs the request synchronously (just for authentication checks). */
+    ServiceResponse performSyncBackendRequest(@Nonnull RequestParameters requestParameters, String authHeader, String infoMsg);
+
     /** Performs the request asynchronously, using a generic response mapper. */
     void performAsyncBackendRequest(HttpHeaders httpHeaders, AsyncResponse resp, RequestParameters requestParameters, String infoMsg);
 

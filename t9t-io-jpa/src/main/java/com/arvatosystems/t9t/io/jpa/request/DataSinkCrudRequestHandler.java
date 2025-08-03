@@ -22,13 +22,13 @@ import java.nio.charset.UnsupportedCharsetException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.base.IInputQueuePartitioner;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKeyRequestHandler;
 import com.arvatosystems.t9t.base.services.IExecutor;
-import com.arvatosystems.t9t.base.services.IInputQueuePartitioner;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.in.services.IInputDataTransformer;
 import com.arvatosystems.t9t.in.services.IInputFormatConverter;

@@ -126,10 +126,8 @@ public class RequestProcessor implements IRequestProcessor {
         try {
             MDC.put(T9tInternalConstants.MDC_MESSAGE_ID, effectiveMessageId.toString());
             MDC.put(T9tInternalConstants.MDC_REQUEST_PQON, pqon);
-            MDC.put(T9tInternalConstants.MDC_TENANT_ID, jwtInfo.getTenantId());
-            MDC.put(T9tInternalConstants.MDC_USER_ID, jwtInfo.getUserId());
-            MDC.put(T9tInternalConstants.MDC_SESSION_REF, Objects.toString(jwtInfo.getSessionRef(), null));
             MDC.put(T9tInternalConstants.MDC_PROCESS_REF, null);
+            T9tInternalConstants.initMDC(jwtInfo);
 
             // check if we are just shutting down - only for external requests
             if (!skipAuthorization && StatusProvider.isShutdownInProgress()) {
@@ -247,10 +245,8 @@ public class RequestProcessor implements IRequestProcessor {
         final String oldMdcRequestPqon = MDC.get(T9tInternalConstants.MDC_REQUEST_PQON);
         try {
             MDC.put(T9tInternalConstants.MDC_REQUEST_PQON, params.ret$PQON());
-            MDC.put(T9tInternalConstants.MDC_TENANT_ID, ihdr.getJwtInfo().getTenantId());
-            MDC.put(T9tInternalConstants.MDC_USER_ID, ihdr.getJwtInfo().getUserId());
-            MDC.put(T9tInternalConstants.MDC_SESSION_REF, Objects.toString(ihdr.getJwtInfo().getSessionRef(), null));
             MDC.put(T9tInternalConstants.MDC_PROCESS_REF, Objects.toString(ihdr.getProcessRef(), null));
+            T9tInternalConstants.initMDC(ihdr.getJwtInfo());
 
             final MutableInt retryCounter = new MutableInt(0);
             final ServiceResponse response = executeSynchronousWithRetries(params, ihdr, skipAuthorization, retryCounter);

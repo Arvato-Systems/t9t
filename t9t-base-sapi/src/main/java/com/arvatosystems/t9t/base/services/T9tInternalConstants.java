@@ -15,6 +15,12 @@
  */
 package com.arvatosystems.t9t.base.services;
 
+import java.util.Objects;
+
+import org.slf4j.MDC;
+
+import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+
 /**
  * Global constants to used all over the application, but values which should not be used by API callers.
  */
@@ -49,4 +55,12 @@ public final class T9tInternalConstants {
     public static final String MDC_BPMN_PROCESS = "bpmnProcess";
     public static final String MDC_BPMN_PROCESS_INSTANCE = "bpmnProcessInstance";
     public static final String MDC_BPMN_STEP = "bpmnStep";
+
+    /** Initializes basic fields of a new MDC. */
+    public static void initMDC(final JwtInfo jwtInfo) {
+        // Clear all old MDC data, since a completely new request is now processed
+        MDC.put(T9tInternalConstants.MDC_USER_ID, jwtInfo.getUserId());
+        MDC.put(T9tInternalConstants.MDC_TENANT_ID, jwtInfo.getTenantId());
+        MDC.put(T9tInternalConstants.MDC_SESSION_REF, Objects.toString(jwtInfo.getSessionRef(), null));
+    }
 }

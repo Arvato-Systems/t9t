@@ -20,7 +20,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-settings-java</artifactId>
-        <version>8.0-SNAPSHOT</version>
+        <version>9.0-SNAPSHOT</version>
         <relativePath>../t9t-settings-java</relativePath>
     </parent>
 
@@ -34,7 +34,7 @@
         </dependency>
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
-            <artifactId>t9t-io-be</artifactId>
+            <artifactId>t9t-io-sapi-intern</artifactId>
         </dependency>
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
@@ -67,18 +67,10 @@
             <artifactId>jaxb-runtime</artifactId>
             <scope>runtime</scope>
         </dependency>
-        <!-- not yet jakarta compatible
         <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-mail</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.sun.activation</groupId>
-                    <artifactId>javax.activation</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
-        -->
         <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-jsch</artifactId>

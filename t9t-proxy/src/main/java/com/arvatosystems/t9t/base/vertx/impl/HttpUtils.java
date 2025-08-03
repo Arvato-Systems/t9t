@@ -103,7 +103,7 @@ public final class HttpUtils {
     }
 
     public static void proxy(HttpClient client, HttpServerRequest req, String host, int port, boolean mapContentType, String uriPrefix) {
-        client.request(req.method(), port, host, uriPrefix + req.uri(), (AsyncResult<HttpClientRequest> a_req) -> {
+        client.request(req.method(), port, host, uriPrefix + req.uri()).onComplete((AsyncResult<HttpClientRequest> a_req) -> {
             final HttpClientRequest cReq = a_req.result();
             if (cReq == null) {
                 return;

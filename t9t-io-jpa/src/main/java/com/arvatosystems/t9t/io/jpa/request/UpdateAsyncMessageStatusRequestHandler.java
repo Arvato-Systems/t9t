@@ -18,12 +18,12 @@ package com.arvatosystems.t9t.io.jpa.request;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.output.ExportStatusEnum;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
+import com.arvatosystems.t9t.base.services.IAsyncTransmitter;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.io.AsyncMessageRef;
 import com.arvatosystems.t9t.io.jpa.entities.AsyncMessageEntity;
 import com.arvatosystems.t9t.io.jpa.persistence.IAsyncMessageEntityResolver;
 import com.arvatosystems.t9t.io.request.UpdateAsyncMessageStatusRequest;
-import com.arvatosystems.t9t.out.services.IAsyncTransmitter;
 
 import de.jpaw.dp.Jdp;
 

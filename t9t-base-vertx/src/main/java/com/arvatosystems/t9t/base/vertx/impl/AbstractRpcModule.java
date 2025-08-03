@@ -15,8 +15,6 @@
  */
 package com.arvatosystems.t9t.base.vertx.impl;
 
-import java.util.Objects;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -42,7 +40,6 @@ import de.jpaw.util.ApplicationException;
 import de.jpaw.util.ByteUtil;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.MultiMap;
-import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpHeaders;
@@ -91,9 +88,7 @@ public abstract class AbstractRpcModule implements IServiceModule {
             }
             final String ct = HttpUtils.stripCharset(contentType);
             final String authHeader = headers.get(HttpHeaders.AUTHORIZATION);
-            if (authHeader == null || authHeader.length() < 8) {
-                LOGGER.debug("Request without authorization header (length = {})", authHeader == null ? -1 : authHeader.length());
-                IServiceModule.error(ctx, 401, "HTTP Authorization header missing or too short");
+            if (IServiceModule.badOrMissingAuthHeader(ctx, authHeader, LOGGER)) {
                 return;
             }
 
@@ -107,23 +102,20 @@ public abstract class AbstractRpcModule implements IServiceModule {
                 return;
             }
 
-            vertx.<byte[]>executeBlocking((final Promise<byte[]> promise) -> {
+            vertx.<byte[]>executeBlocking(() -> {
                 try {
                     final long startInWorkerThread = System.nanoTime();
                     // get the authentication info
                     final AuthenticationInfo authInfo = authenticationProcessor.getCachedJwt(authHeader);
                     if (authInfo.getEncodedJwt() == null) {
                         // handle error
-                        promise.fail(new T9tException(T9tException.HTTP_ERROR + authInfo.getHttpStatusCode(), authInfo.getMessage()));
-                        return;
+                        throw new T9tException(T9tException.HTTP_ERROR + authInfo.getHttpStatusCode(), authInfo.getMessage());
                     }
                     // Authentication is valid. Now populate the MDC and start processing the request.
                     final JwtInfo jwtInfo = authInfo.getJwtInfo();
                     // Clear all old MDC data, since a completely new request is now processed
                     MDC.clear();
-                    MDC.put(T9tInternalConstants.MDC_USER_ID, jwtInfo.getUserId());
-                    MDC.put(T9tInternalConstants.MDC_TENANT_ID, jwtInfo.getTenantId());
-                    MDC.put(T9tInternalConstants.MDC_SESSION_REF, Objects.toString(jwtInfo.getSessionRef(), null));
+                    T9tInternalConstants.initMDC(jwtInfo);
                     final Buffer buffer = ctx.body().buffer();
                     final RequestParameters request;
                     final ServiceResponse response;
@@ -173,12 +165,12 @@ public abstract class AbstractRpcModule implements IServiceModule {
                                 response.getErrorDetails() == null ? "(null)" : response.getErrorDetails(),
                                 ApplicationException.codeToString(response.getReturnCode()));
                     }
-                    promise.complete(respMsg);
+                    return respMsg;
                 } catch (Exception e) {
                     LOGGER.error(e.getClass().getSimpleName() + " in request: " + e.getMessage(), e);
-                    promise.fail(e);
+                    throw e;
                 }
-            }, false, (final AsyncResult<byte[]> asyncResult) -> {
+            }, false).onComplete((final AsyncResult<byte[]> asyncResult) -> {
                 if (asyncResult.succeeded()) {
                     if (origin != null) {
                         ctx.response().putHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);

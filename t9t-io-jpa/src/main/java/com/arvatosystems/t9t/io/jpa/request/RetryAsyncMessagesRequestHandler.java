@@ -27,6 +27,7 @@ import com.arvatosystems.t9t.base.output.ExportStatusEnum;
 import com.arvatosystems.t9t.base.search.DummySearchCriteria;
 import com.arvatosystems.t9t.base.search.SearchCriteria;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
+import com.arvatosystems.t9t.base.services.IAsyncTransmitter;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.batch.StatisticsDTO;
 import com.arvatosystems.t9t.io.jpa.entities.AsyncMessageEntity;
@@ -34,7 +35,6 @@ import com.arvatosystems.t9t.io.jpa.persistence.IAsyncMessageEntityResolver;
 import com.arvatosystems.t9t.io.jpa.persistence.IAsyncQueueEntityResolver;
 import com.arvatosystems.t9t.io.request.RetryAsyncMessagesRequest;
 import com.arvatosystems.t9t.io.request.RetryAsyncMessagesResponse;
-import com.arvatosystems.t9t.out.services.IAsyncTransmitter;
 import com.arvatosystems.t9t.statistics.services.IStatisticsService;
 
 import de.jpaw.bonaparte.api.SearchFilters;

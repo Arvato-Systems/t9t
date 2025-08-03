@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 import com.arvatosystems.t9t.ai.AiChatLogDTO;
 import com.arvatosystems.t9t.ai.AiConversationRef;
 import com.arvatosystems.t9t.ai.AiRoleType;
+import com.arvatosystems.t9t.ai.T9tAiTools;
 import com.arvatosystems.t9t.ai.openai.AbstractOpenAIObject;
 import com.arvatosystems.t9t.ai.openai.OpenAIBetaSpecifier;
 import com.arvatosystems.t9t.ai.openai.OpenAIChatCompletionChoice;
@@ -406,7 +407,7 @@ public class OpenAIClient implements IOpenAIClient {
             toolResultMessage.setContent("ERROR! Tool not found in registry");
         } else {
             LOGGER.debug("Calling {} with parameters {}", functionCall.getName(), functionCall.getArguments());
-            // determine parameters as bonaparte object from JSOn representation
+            // determine parameters as bonaparte object from JSON representation
             try {
                 final AbstractAiTool requestObject = tool.requestClass().newInstance();
                 objectMapperForToolCalls.readerForUpdating(requestObject).readValue(functionCall.getArguments());
@@ -447,37 +448,6 @@ public class OpenAIClient implements IOpenAIClient {
         aiChatLogService.saveAiChatLog(chatLog);
     }
 
-    protected String stripJavadoc(final String javadoc) {
-        if (javadoc == null) {
-            return "";
-        }
-        final int len = javadoc.length();
-        final StringBuilder sb = new StringBuilder(len);
-        int i = skipSpacesAndStars(javadoc, 3, len, true);
-        // loop. End if the previous was a '*' and the current is a '/'
-        while (i < len) {
-            final char c = javadoc.charAt(i);
-            if (c == '/' && javadoc.charAt(i - 1) == '*') {
-                break;  // we're done!
-            }
-            // transfer until new line, then again skip initial spaces and stars
-            sb.append(c);
-            if (c == '\n') {
-                i = skipSpacesAndStars(javadoc, i + 1, len, false);
-            } else {
-                ++i;
-            }
-        }
-        return sb.toString();
-    }
-
-    protected int skipSpacesAndStars(final String javadoc, int pos, final int len, final boolean alsoNewline) {
-        while (pos < len && (javadoc.charAt(pos) == ' ' || javadoc.charAt(pos) == '*'
-                || (alsoNewline && (javadoc.charAt(pos) == '\n' || javadoc.charAt(pos) == '\r')))) {
-            ++pos;
-        }
-        return pos;
-    }
 
     protected OpenAITool createToolDescriptionFromClassDefinition(final String id, final ClassDefinition cd) {
         final OpenAITool tool = new OpenAITool();
@@ -486,26 +456,16 @@ public class OpenAIClient implements IOpenAIClient {
         final OpenAIFunction function = new OpenAIFunction();
         tool.setFunction(function);
         function.setName(id);
-        function.setDescription(T9tUtil.nvl(cd.getRegularComment(), stripJavadoc(cd.getJavaDoc())));
+        function.setDescription(T9tAiTools.getToolDescription(cd));
         if (!T9tUtil.isEmpty(cd.getFields())) {
             // define the parameters
             final OpenAIFunctionParameters parameters = new OpenAIFunctionParameters();
             parameters.setType(OpenAIParameterType.OBJECT);
             parameters.setProperties(buildPropertiesFromFields(cd.getFields()));
-            parameters.setRequired(buildRequiredFromFields(cd.getFields()));
+            parameters.setRequired(T9tAiTools.buildRequiredFromFields(cd.getFields()));
             function.setParameters(parameters);
         }
         return tool;
-    }
-
-    protected List<String> buildRequiredFromFields(final List<FieldDefinition> fields) {
-        final List<String> required = new ArrayList<>(fields.size());
-        for (final FieldDefinition field : fields) {
-            if (field.getIsRequired()) {
-                required.add(field.getName());
-            }
-        }
-        return required;
     }
 
     protected Map<String, OpenAISingleParameter> buildPropertiesFromFields(final List<FieldDefinition> fields) {

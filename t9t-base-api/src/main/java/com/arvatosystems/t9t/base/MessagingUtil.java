@@ -43,7 +43,7 @@ public final class MessagingUtil {
 
     public static final boolean IS_MS_WINDOWS             = System.getProperty("os.name").toLowerCase().indexOf("win") >= 0;
     public static final String HOSTNAME                   = stripHostname(System.getenv(IS_MS_WINDOWS ? "COMPUTERNAME" : "HOSTNAME"));
-    public static final String JPAW_PACKAGE_PREFIX        = "de.jpaw";                          // all jpaw classes (some are needed for JSOn)
+    public static final String JPAW_PACKAGE_PREFIX        = "de.jpaw";                          // all jpaw classes (some are needed for JSON)
     public static final String BONAPARTE_PACKAGE_PREFIX   = "de.jpaw.bonaparte";                // just the bonaparte libraries
     public static final String TWENTYEIGHT_PACKAGE_PREFIX = "com.arvatosystems.t9t";            // prefix for t9t and a28
 

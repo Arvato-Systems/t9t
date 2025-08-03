@@ -64,7 +64,13 @@ public class StaticResourcesResource implements IT9tRestEndpoint {
             return Response.status(Status.FORBIDDEN).entity("bad path argument").build();
         }
 
-        final String absolutePath = "/" + path;
+        final String sanitizedPath = path.substring(11); // Extract the file name after "swagger-ui/"
+        if (sanitizedPath.contains("..") || sanitizedPath.contains("/") || sanitizedPath.contains("\\")) {
+            LOGGER.info("Refusing to serve potentially malicious path {}", LogSanitizer.sanitize(path));
+            return Response.status(Status.FORBIDDEN).entity("bad path argument").build();
+        }
+
+        final String absolutePath = "/swagger-ui/" + sanitizedPath;
         LOGGER.debug("handling swaggerUi, absolutePath={}", absolutePath);
 
         final InputStream resource = StaticResourcesResource.class.getResourceAsStream(absolutePath);

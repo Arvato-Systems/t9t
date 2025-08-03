@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.base.vertx;
 
+import org.slf4j.Logger;
+
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 
 import de.jpaw.bonaparte.api.codecs.IMessageCoderFactory;
@@ -24,6 +26,8 @@ import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /** A ServiceModule is a microservice like portion which owns its own
  * UI and provides http based paths.
@@ -33,18 +37,19 @@ import io.vertx.ext.web.RoutingContext;
  *
  */
 public interface IServiceModule extends Comparable<IServiceModule> {
+
     int getExceptionOffset();
     String getModuleName();
     void mountRouters(Router router, Vertx vertx, IMessageCoderFactory<BonaPortable, ServiceResponse, byte[]> coderFactory);
 
     @Override
-    default int compareTo(IServiceModule that) {
-        int num = getExceptionOffset() - that.getExceptionOffset();
+    default int compareTo(final IServiceModule that) {
+        final int num = getExceptionOffset() - that.getExceptionOffset();
         return num != 0 ? num : getModuleName().compareTo(that.getModuleName());
     }
 
-    static String asciiSubString(String s, int maxLength) {
-        int max = s.length() < maxLength ? s.length() : maxLength;
+    static String asciiSubString(@Nonnull final String s, final int maxLength) {
+        final int max = s.length() < maxLength ? s.length() : maxLength;
         for (int i = 0; i < max; ++i) {
             if (!CharTestsASCII.isAsciiPrintable(s.charAt(i)))
                 return s.substring(0, i);
@@ -52,14 +57,26 @@ public interface IServiceModule extends Comparable<IServiceModule> {
         return s;   // whole string is printable ASCII
     }
 
-    static void error(RoutingContext ctx, int errorCode) {
-        HttpServerResponse r = ctx.response();
-        r.setStatusCode(errorCode);
-        r.end();
+    static boolean badOrMissingAuthHeader(@Nonnull final RoutingContext ctx, @Nullable final String authHeader, @Nonnull final Logger logger) {
+        if (authHeader == null) {
+            logger.debug("Request without authorization header");
+            final HttpServerResponse r = ctx.response();
+            r.putHeader("WWW-Authenticate", "Basic realm=\"t9t\", charset=\"UTF-8\"");
+            r.setStatusCode(401);
+            r.setStatusMessage("Unauthorized");
+            r.end();
+            return true;
+        }
+        if (authHeader.length() < 8) {
+            logger.debug("Request authorization header  too short (length = {})", authHeader.length());
+            IServiceModule.error(ctx, 403, "HTTP Authorization header too short");
+            return true;
+        }
+        return false;
     }
 
-    static void error(RoutingContext ctx, int errorCode, String msg) {
-        HttpServerResponse r = ctx.response();
+    static void error(@Nonnull final RoutingContext ctx, final int errorCode, @Nullable final String msg) {
+        final HttpServerResponse r = ctx.response();
         r.setStatusCode(errorCode);
         if (msg != null)
             r.setStatusMessage(asciiSubString(msg, 200));

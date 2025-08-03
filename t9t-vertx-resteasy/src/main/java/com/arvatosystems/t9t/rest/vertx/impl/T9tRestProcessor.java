@@ -16,7 +16,6 @@
 package com.arvatosystems.t9t.rest.vertx.impl;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 
 import org.slf4j.Logger;
@@ -65,6 +64,29 @@ public class T9tRestProcessor implements IT9tRestProcessor {
     protected final IPAddressBlocker ipBlockerService = Jdp.getRequired(IPAddressBlocker.class);
 
     @Override
+    public ServiceResponse performSyncBackendRequest(final RequestParameters requestParameters, final String authHeader, final String infoMsg) {
+        // Clear all old MDC data, since a completely new request is now processed
+        MDC.clear();
+        // get the authentication info
+        final AuthenticationInfo authInfo = authenticationProcessor.getCachedJwt(authHeader);
+        if (authInfo.getEncodedJwt() == null) {
+            // promise.fail("Not authenticated");
+            final ServiceResponse errorResp = new ServiceResponse();
+            errorResp.setReturnCode(authInfo.getHttpStatusCode() + T9tException.HTTP_ERROR);
+            errorResp.setErrorDetails(authInfo.getMessage());
+            return errorResp;
+        }
+        // Authentication is valid. Now populate the MDC and start processing the request.
+        final JwtInfo jwtInfo = authInfo.getJwtInfo();
+        T9tInternalConstants.initMDC(jwtInfo);
+
+        LOGGER.trace("{}: processing start", infoMsg);
+        final ServiceResponse response = requestProcessor.execute(null, requestParameters, jwtInfo, authInfo.getEncodedJwt(), false, null);
+        LOGGER.trace("{}: processing end", infoMsg);
+        return response;
+    }
+
+    @Override
     public <T extends ServiceResponse> void performAsyncBackendRequest(final HttpHeaders httpHeaders, final AsyncResponse resp,
             final RequestParameters requestParameters, final String infoMsg, final Class<T> backendResponseClass,
             final Function<T, BonaPortable> responseMapper) {
@@ -93,34 +115,14 @@ public class T9tRestProcessor implements IT9tRestProcessor {
         LOGGER.debug("Starting {} with assigned messageId {}", infoMsg, requestParameters.getMessageId());
 
         vertx.<ServiceResponse>executeBlocking(
-            promise -> {
+            () -> {
                 try {
-                    // Clear all old MDC data, since a completely new request is now processed
-                    MDC.clear();
-                    // get the authentication info
-                    final AuthenticationInfo authInfo = authenticationProcessor.getCachedJwt(authHeader);
-                    if (authInfo.getEncodedJwt() == null) {
-                        // promise.fail("Not authenticated");
-                        final ServiceResponse errorResp = new ServiceResponse();
-                        errorResp.setReturnCode(authInfo.getHttpStatusCode() + T9tException.HTTP_ERROR);
-                        errorResp.setErrorDetails(authInfo.getMessage());
-                        promise.complete(errorResp);
-                        return;
-                    }
-                    // Authentication is valid. Now populate the MDC and start processing the request.
-                    final JwtInfo jwtInfo = authInfo.getJwtInfo();
-                    MDC.put(T9tInternalConstants.MDC_USER_ID, jwtInfo.getUserId());
-                    MDC.put(T9tInternalConstants.MDC_TENANT_ID, jwtInfo.getTenantId());
-                    MDC.put(T9tInternalConstants.MDC_SESSION_REF, Objects.toString(jwtInfo.getSessionRef(), null));
-
-                    LOGGER.debug("{}: processing start", infoMsg);
-                    promise.complete(requestProcessor.execute(null, requestParameters, jwtInfo, authInfo.getEncodedJwt(), false, null));
-                    LOGGER.debug("{}: processing end", infoMsg);
+                    return performSyncBackendRequest(requestParameters, authHeader, infoMsg);
                 } catch (final Exception e) {
                     LOGGER.debug("{}: processing exception", infoMsg);
-                    promise.fail(e);
+                    throw e;
                 }
-            }, false, ar -> {
+            }, false).onComplete(ar -> {
                 if (ar.succeeded()) {
                     final ServiceResponse sr = ar.result();
                     if (!ApplicationException.isOk(sr.getReturnCode())) {

@@ -18,12 +18,12 @@ package com.arvatosystems.t9t.io.jpa.request;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
+import com.arvatosystems.t9t.base.services.IAsyncTransmitter;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.io.AsyncChannelKey;
 import com.arvatosystems.t9t.io.jpa.entities.AsyncChannelEntity;
 import com.arvatosystems.t9t.io.jpa.persistence.IAsyncChannelEntityResolver;
 import com.arvatosystems.t9t.io.request.PerformAsyncRequest;
-import com.arvatosystems.t9t.out.services.IAsyncTransmitter;
 
 import de.jpaw.dp.Jdp;
 

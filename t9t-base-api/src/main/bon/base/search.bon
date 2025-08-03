@@ -30,7 +30,7 @@ package (com.arvatosystems) t9t.base.search {
         ref is com.arvatosystems.t9t.annotations.IsObjectRef;
 
     type fieldName                  is Ascii(64);       // can contain entity.fieldname pattern
-    type queryString                is Unicode(255);    // "google-like" query string, for Lucene / SOLR based searches.
+    type queryString                is Unicode(255);    // "google-like" query string, for HibernateSearch / SOLR based searches.
 
     /** filter types (for search filters) to indicate which type of constraint is defined by the field. */
     enum SearchBoundType {
@@ -83,7 +83,7 @@ package (com.arvatosystems) t9t.base.search {
         optional (SearchFilter...)                  searchFilter;                           // optional restriction of the result set
         required (SortColumn) List<>                sortColumns;                            // optional list of sorting columns
         optional (OutputSessionParameters...)       searchOutputTarget;                     // if supplied, then the results will be redirected to a data sink
-        optional queryString                        expression;                             // Lucene / SOLR query expression (requires property documentName)
+        optional queryString                        expression;                             // HibernateSearch / SOLR query expression (requires property documentName)
         optional Boolean                            applyDistinct;                          // return distinct results (apply SQL SELECT DISTINCT). Not supported by all request handlers.
         optional Boolean                            countTotals;                            // return number of total results, in case of searches with limit. Not supported by all request handlers.
         required identifier List<>                  groupByColumns;                         // list of columns to group by
@@ -161,7 +161,7 @@ package (com.arvatosystems) t9t.base.search {
      */
     abstract class SearchRequest<DATA, TRACKING extends TrackingBase> extends SearchCriteria return ReadAllResponse<!DATA, !TRACKING> {}
 
-    /** A wrapper around the low level SOLR access */
+    /** A wrapper around the low level SOLR / HibernateSearch access */
     class GenericTextSearchRequest extends SearchCriteria return GenericTextSearchResponse {
         required identifier                     documentName;
         required identifier                     resultFieldName;

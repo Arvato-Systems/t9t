@@ -32,6 +32,7 @@ import io.vertx.core.http.HttpServer;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.CorsHandler;
+import io.vertx.ext.web.handler.FileSystemAccess;
 import io.vertx.ext.web.handler.StaticHandler;
 import java.util.ArrayList;
 import java.util.List;
@@ -88,25 +89,23 @@ public class T9tServer extends AbstractVerticle {
                     HttpUtils.proxy(t9tClient, ctx.request(), "localhost", port28, false, "");
                 });
 
-                final StaticHandler handler = StaticHandler.create();
-                handler.setWebRoot("web");
+                final StaticHandler handler = StaticHandler.create("web");
                 handler.setFilesReadOnly(true);
                 handler.setMaxAgeSeconds(12 * 60 * 60); // 12 hours (1 working day)
                 router.route("/static/*").handler(handler);
 
                 if (filePath != null) {
-                    final StaticHandler fsHandler = StaticHandler.create();
-                    fsHandler.setWebRoot(filePath);
+                    final StaticHandler fsHandler = StaticHandler.create(FileSystemAccess.ROOT, filePath);
                     fsHandler.setFilesReadOnly(false);
                     fsHandler.setCachingEnabled(false);
-                    fsHandler.setAllowRootFileSystemAccess(true);
                     fsHandler.setMaxAgeSeconds(5); // no caching while testing
                     router.route("/fs/*").handler(fsHandler);
                 }
 
                 if (cors) {
                     LOGGER.info("Setting up cors handler for origin {}", corsParm);
-                    router.route().handler(CorsHandler.create(corsParm)
+                    router.route().handler(CorsHandler.create()
+                            .addOriginWithRegex(regexFilter(corsParm))
                             .allowedMethod(HttpMethod.GET)
                             .allowedMethod(HttpMethod.POST)
                             .allowedMethod(HttpMethod.OPTIONS)
@@ -158,5 +157,12 @@ public class T9tServer extends AbstractVerticle {
                 }
             }
         }).start(); // wait in some other thread
+    }
+
+    private String regexFilter(String regex) {
+        if ("*".equals(regex)) {
+            return ".*";
+        }
+        return regex;
     }
 }

@@ -96,12 +96,15 @@ public class AuthFilterCustomization implements IAuthFilterCustomization {
     public void abortFilter(final ContainerRequestContext requestContext, final Response errorStatus) {
         // throw new WebApplicationException(errorStatus);
         requestContext.abortWith(errorStatus);
-        return;
     }
 
     /** Constructs a new Response object for the current request and throw a WebApplicationException of code 401. */
     protected void throwUnauthorized(final ContainerRequestContext requestContext) {
-        abortFilter(requestContext, Response.status(Status.UNAUTHORIZED).build());
+        final Response response = Response.status(Response.Status.UNAUTHORIZED)
+            .header("WWW-Authenticate", "Basic realm=\"t9t\", charset=\"UTF-8\"")
+            .entity("Unauthorized")
+            .build();
+        abortFilter(requestContext, response);
     }
 
     /** Constructs a new Response object for the current request and throw a WebApplicationException of code 403. */

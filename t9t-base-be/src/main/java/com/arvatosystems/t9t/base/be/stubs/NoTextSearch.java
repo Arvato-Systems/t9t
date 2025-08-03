@@ -43,7 +43,7 @@ public class NoTextSearch implements ITextSearch {
     private static final Logger LOGGER = LoggerFactory.getLogger(NoTextSearch.class);
 
     public NoTextSearch() {
-        LOGGER.warn("NoTextSearch execution stub selected - SOLR searches will not work");
+        LOGGER.warn("NoTextSearch execution stub selected - SOLR / HibernateSearch searches will not work");
     }
 
     @Override

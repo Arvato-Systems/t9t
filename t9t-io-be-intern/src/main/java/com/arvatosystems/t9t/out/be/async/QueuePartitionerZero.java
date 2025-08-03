@@ -15,8 +15,8 @@
  */
 package com.arvatosystems.t9t.out.be.async;
 
+import com.arvatosystems.t9t.base.IInputQueuePartitioner;
 import com.arvatosystems.t9t.base.api.RequestParameters;
-import com.arvatosystems.t9t.base.services.IInputQueuePartitioner;
 
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;

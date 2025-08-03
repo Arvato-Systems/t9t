@@ -81,9 +81,19 @@ class ConfigProvider {
             waitAfterExtError       = 10000
             waitAfterDbErrors       = 60000
         ]
+        hibernateSearchConfiguration    = new HibernateSearchConfiguration => [
+            searchType                  = "lucene"
+            schemaManagementStrategy    = "none"
+            mappingConfigurer           = "com.arvatosystems.t9t.hs.configurate.be.core.impl.EntityConfigurer"
+            luceneConfiguration         = new LuceneConfiguration => [
+                directoryType               = "local-filesystem"
+                directoryRoot               = "./lucene-indexes"
+            ]
+        ]
     ]
 
     static T9tServerConfiguration myConfiguration = postgresConfig
+
 
     def private static getContext() {
         return JAXBContext.newInstance("com.arvatosystems.t9t.cfg.be")
@@ -138,6 +148,7 @@ class ConfigProvider {
             databaseConfiguration   = a.databaseConfiguration   ?: b.databaseConfiguration
             secondaryDatabaseConfig = a.secondaryDatabaseConfig ?: b.secondaryDatabaseConfig ?: databaseConfiguration
             shadowDatabaseConfig    = a.shadowDatabaseConfig    ?: b.shadowDatabaseConfig
+            hibernateSearchConfiguration = a.hibernateSearchConfiguration ?: b.hibernateSearchConfiguration
             noSqlConfiguration      = a.noSqlConfiguration      ?: b.noSqlConfiguration
             keyPrefetchConfiguration= a.keyPrefetchConfiguration?: b.keyPrefetchConfiguration
             logWriterConfiguration  = a.logWriterConfiguration  ?: b.logWriterConfiguration

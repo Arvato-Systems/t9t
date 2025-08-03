@@ -19,7 +19,7 @@ import java.util.List;
 
 import com.arvatosystems.t9t.base.search.SearchCriteria;
 
-/** Interface which allows the extension of text search using an engine like SOLR or ElasticSearch.
+/** Interface which allows the extension of text search using an engine like SOLR or Hibernate Search.
  *
  * @author BISC02
  *

@@ -18,6 +18,7 @@ package com.arvatosystems.t9t.base.vertx.impl;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -51,7 +52,6 @@ import de.jpaw.dp.Singleton;
 import de.jpaw.util.ApplicationException;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
-import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.WorkerExecutor;
 import io.vertx.core.eventbus.DeliveryOptions;
@@ -86,7 +86,7 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
                     final String eventTenantId = eventData.getHeader().getTenantId();
                     final JwtAuthentication authJwt = new JwtAuthentication(eventData.getHeader().getEncodedJwt());
 
-                    if (eventData.getData() instanceof GenericEvent genericEvent) {
+                    if (eventData.getData() instanceof GenericEvent) {
                         final String qualifier = getQualifierForTenant(eventTenantId);
                         if (!theEventId.equals(eventID)) {
                             LOGGER.error("eventID of received message differs: {} != {}", theEventId, eventID);
@@ -249,7 +249,7 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
         final EventMessageHandler handler = REGISTERED_HANDLER.computeIfAbsent(toBusAddress(eventID), (final String busAddress) -> {
             final EventMessageHandler eventMessageHandler = new EventMessageHandler(eventID);
             final MessageConsumer<Object> consumer = bus.consumer(busAddress);
-            consumer.completionHandler((final AsyncResult<Void> asyncResult) -> {
+            consumer.completion().onComplete((final AsyncResult<Void> asyncResult) -> {
                 if (asyncResult.succeeded()) {
                     LOGGER.info("vertx async event42 handler successfully registered on eventbus address {}", busAddress);
                 } else {
@@ -317,8 +317,8 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
     }
 
     public static void runInWorkerThread(final Vertx vertx, final ServiceRequest msgBody) {
-        final Handler<Promise<ServiceResponse>> blockingCodeHandler = (final Promise<ServiceResponse> promise) -> {
-            promise.complete(serviceRequestExecutor.executeTrusted(msgBody));
+        final Callable<ServiceResponse> blockingCodeHandler = () -> {
+            return serviceRequestExecutor.executeTrusted(msgBody);
         };
         final Handler<AsyncResult<ServiceResponse>> resultHandler = (final AsyncResult<ServiceResponse> asyncResult) -> {
             if (asyncResult.succeeded()) {
@@ -334,10 +334,10 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
 
         if (asyncExecutorPool != null && (msgBody.getRequestHeader() == null || !Boolean.TRUE.equals(msgBody.getRequestHeader().getPriorityRequest()))) {
             // there is a separate pool for async requests, and this is not a priority request
-            asyncExecutorPool.executeBlocking(blockingCodeHandler, false, resultHandler);
+            asyncExecutorPool.executeBlocking(blockingCodeHandler, false).onComplete(resultHandler);
         } else {
             // no separate pool configured, or priority request
-            vertx.executeBlocking(blockingCodeHandler, false, resultHandler);
+            vertx.executeBlocking(blockingCodeHandler, false).onComplete(resultHandler);
         }
     }
 
@@ -370,7 +370,7 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
 
     private static void registerOnBus(final String address, final String what) {
         final MessageConsumer<Object> consumer = bus.consumer(address);
-        consumer.completionHandler((final AsyncResult<Void> asyncResult) -> {
+        consumer.completion().onComplete((final AsyncResult<Void> asyncResult) -> {
             if (asyncResult.succeeded()) {
                 LOGGER.info("vertx async request processor successfully registered on {} eventbus address {}", what, address);
             } else {

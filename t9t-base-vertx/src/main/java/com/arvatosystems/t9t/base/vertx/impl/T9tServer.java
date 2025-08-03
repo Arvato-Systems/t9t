@@ -57,6 +57,7 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.CorsHandler;
+import io.vertx.ext.web.handler.FileSystemAccess;
 import io.vertx.ext.web.handler.StaticHandler;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
@@ -168,21 +169,17 @@ public class T9tServer extends AbstractVerticle {
 
             if (allowStatic) {
                 LOGGER.info("Activating static file handler from /static to path web");
-                final StaticHandler staticHandler = StaticHandler.create();
-                staticHandler.setWebRoot("web");
+                final StaticHandler staticHandler = StaticHandler.create("web");
                 staticHandler.setFilesReadOnly(true);
-                staticHandler.setAllowRootFileSystemAccess(false);
                 staticHandler.setMaxAgeSeconds(12 * 60 * 60); // 12 hours (1 working day)
                 router.route("/static/*").handler(staticHandler);
             }
 
             if (filePath != null) {
                 LOGGER.info("Also serving static files from {}", filePath);
-                final StaticHandler filePathHandler = StaticHandler.create();
-                filePathHandler.setWebRoot(filePath);
+                final StaticHandler filePathHandler = StaticHandler.create(FileSystemAccess.ROOT, filePath);
                 filePathHandler.setFilesReadOnly(false);
                 filePathHandler.setCachingEnabled(false);
-                filePathHandler.setAllowRootFileSystemAccess(true);
                 filePathHandler.setMaxAgeSeconds(5); // no caching while testing
                 router.route("/fs/*").handler(filePathHandler);
             }
@@ -193,7 +190,8 @@ public class T9tServer extends AbstractVerticle {
 
             if (cors) {
                 LOGGER.info("Setting up CORS handler for origin {}", corsParm);
-                router.route().handler(CorsHandler.create(corsParm)
+                router.route().handler(CorsHandler.create()
+                        .addOriginWithRegex(regexFilter(corsParm))
                         .allowedMethod(HttpMethod.GET)
                         .allowedMethod(HttpMethod.POST)
                         .allowedMethod(HttpMethod.OPTIONS)
@@ -309,7 +307,7 @@ public class T9tServer extends AbstractVerticle {
                 final Set<String> idsToUndeploy = myVertx.deploymentIDs();
                 LOGGER.info("Undeploying {} verticles", idsToUndeploy.size());
                 for (final String id : idsToUndeploy) {
-                    myVertx.undeploy(id, (final AsyncResult<Void> it) -> {
+                    myVertx.undeploy(id).onComplete((final AsyncResult<Void> it) -> {
                         if (it.succeeded()) {
                             LOGGER.debug("Undeployment of ID {} completed", id);
                         } else {
@@ -333,7 +331,7 @@ public class T9tServer extends AbstractVerticle {
     public void deployAndRun(final Vertx myVertx, final Consumer<Vertx> additionalInits) {
         Jdp.bindInstanceTo(myVertx, Vertx.class);  // make the Vertx instance available to other services (required by email client)
         portAutoDetect();
-        myVertx.deployVerticle(this, (final AsyncResult<String> it) -> {
+        myVertx.deployVerticle(this).onComplete((final AsyncResult<String> it) -> {
             if (it.succeeded()) {
                 LOGGER.info("Successfully deploy single instance verticle");
                 if (additionalInits != null) {
@@ -448,5 +446,12 @@ public class T9tServer extends AbstractVerticle {
             server.checkForMetricsAndInitialize(options);
             server.deployAndRun(Vertx.vertx(options), null);
         });
+    }
+
+    private String regexFilter(String regex) {
+        if ("*".equals(regex)) {
+            return ".*";
+        }
+        return regex;
     }
 }

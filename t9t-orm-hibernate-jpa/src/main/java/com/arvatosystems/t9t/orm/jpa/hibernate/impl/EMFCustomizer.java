@@ -22,9 +22,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.arvatosystems.t9t.cfg.be.HibernateSearchConfiguration;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.dialect.H2Dialect;
-import org.hibernate.dialect.HANARowStoreDialect;
+import org.hibernate.dialect.HANADialect;
 import org.hibernate.dialect.OracleDialect;
 import org.hibernate.dialect.PostgreSQLDialect;
 import org.hibernate.dialect.SQLServerDialect;
@@ -63,7 +64,7 @@ public class EMFCustomizer implements IEMFCustomizer {
         if (dbName != null) {
             switch (dbName) {
             case HANA:
-                myProps.put(AvailableSettings.DIALECT, HANARowStoreDialect.class.getCanonicalName());
+                myProps.put(AvailableSettings.DIALECT, HANADialect.class.getCanonicalName());
                 break;
             case MS_SQL_SERVER:
                 myProps.put(AvailableSettings.DIALECT, SQLServerDialect.class.getCanonicalName());
@@ -108,7 +109,7 @@ public class EMFCustomizer implements IEMFCustomizer {
     }
 
     @Override
-    public EntityManagerFactory getCustomizedEmf(final String puName, final RelationalDatabaseConfiguration settings) throws Exception {
+    public EntityManagerFactory getCustomizedEmf(final String puName, final RelationalDatabaseConfiguration settings, HibernateSearchConfiguration hibernateSearchConfiguration) throws Exception {
         final Map<String, Object> myProps = new HashMap<>();
 
         configureProperties(myProps);
@@ -117,6 +118,23 @@ public class EMFCustomizer implements IEMFCustomizer {
         putOpt(myProps, "jakarta.persistence.jdbc.url",      settings.getJdbcConnectString());
         putOpt(myProps, "jakarta.persistence.jdbc.user",     settings.getUsername());
         putOpt(myProps, "jakarta.persistence.jdbc.password", settings.getPassword());
+
+        if (hibernateSearchConfiguration != null) {
+            putOpt(myProps, "hibernate.search.enabled",                     "true");
+            putOpt(myProps, "hibernate.search.backend.type",                hibernateSearchConfiguration.getSearchType());
+            putOpt(myProps, "hibernate.search.schema_management.strategy",  hibernateSearchConfiguration.getSchemaManagementStrategy());
+            putOpt(myProps, "hibernate.search.mapping.configurer",          hibernateSearchConfiguration.getMappingConfigurer());
+            if (hibernateSearchConfiguration.getSearchType().equals("lucene")) {
+                putOpt(myProps, "hibernate.search.backend.directory.type", hibernateSearchConfiguration.getLuceneConfiguration().getDirectoryType());
+                putOpt(myProps, "hibernate.search.backend.directory.root", hibernateSearchConfiguration.getLuceneConfiguration().getDirectoryRoot());
+            } else if (hibernateSearchConfiguration.getSearchType().equals("elasticsearch")) {
+                putOpt(myProps, "hibernate.search.backend.hosts", hibernateSearchConfiguration.getElasticSearchConfiguration().getHosts());
+                putOpt(myProps, "hibernate.search.backend.username", hibernateSearchConfiguration.getElasticSearchConfiguration().getUsername());
+                putOpt(myProps, "hibernate.search.backend.password", hibernateSearchConfiguration.getElasticSearchConfiguration().getPassword());
+            }
+        } else {
+            putOpt(myProps, "hibernate.search.enabled",                     "false");
+        }
 
         // see http://docs.jboss.org/hibernate/orm/4.3/javadocs/org/hibernate/dialect/package-summary.html
         configureBrand(myProps, settings.getDatabaseBrand());

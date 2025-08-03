@@ -42,6 +42,7 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional (RelationalDatabaseConfiguration...) databaseConfiguration;         // references access to the main database (which can be read/only). This is the link used by JPA
         optional (RelationalDatabaseConfiguration...) secondaryDatabaseConfig;       // references access to a database for read/write operations by JDBC. If blank, the main database will be used.
         optional (RelationalDatabaseConfiguration...) shadowDatabaseConfig;          // references a possible separate link to a readonly database, which possibly has some latency because it is a replica of the main
+        optional (HibernateSearchConfiguration...)  hibernateSearchConfiguration;    // configuration for Hibernate Search, which is used for text search in entities
         optional (NoSqlDatabaseConfiguration...)    noSqlConfiguration;
         optional (KeyPrefetchConfiguration...)      keyPrefetchConfiguration;
         optional (LogWriterConfiguration...)        logWriterConfiguration;
@@ -115,6 +116,25 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional Boolean                            fwSkipDefaultCallbacks;           // Whether Flyway should skip the default callbacks. If true, only custom callbacks are used.
     }
 
+    class HibernateSearchConfiguration {
+        required Ascii(30)                          searchType;                 // Hibernate Search backend type, e.g. "lucene", "elasticsearch"
+        optional Ascii(30)                          schemaManagementStrategy;   // how to handle schema management, e.g. "none", "drop-and-create"
+        optional Ascii(150)                         mappingConfigurer;          // the class name of the mapping configurer to use, e.g. "com.arvatosystems.t9t.hs.configurate.be.core.impl.EntityConfigurer"
+        optional (LuceneConfiguration...)           luceneConfiguration;
+        optional (ElasticSearchConfiguration...)    elasticSearchConfiguration;
+    }
+
+    class LuceneConfiguration {
+        optional Ascii(30)                          directoryType;              // Hibernate Search directory type, e.g. "local-filesystem", "ram", "jgroups"
+        optional Ascii(150)                         directoryRoot;              // the root directory for the local filesystem directory type
+   }
+
+    class ElasticSearchConfiguration {
+        optional Ascii(255)                         hosts;                      // hosts for the Elasticsearch cluster
+        optional Ascii(150)                         username;                   // the username for basic authentication
+        optional Ascii(150)                         password;                   // the password for basic authentication
+    }
+
     class NoSqlDatabaseConfiguration {
         optional namedQualifier                     strategy;                       // select the implementation
         optional Ascii(100)                         hostname;
@@ -182,6 +202,7 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional Boolean                            enablePlugins;                  // allow plugins to be uploaded (must be true in order to allow LoadPluginRequest)
         optional Boolean                            enableGenericCallouts;          // allow callouts to other instances for arbitrary requests (must be true in order to allow ExecuteRemoteRequest)
         optional Boolean                            sharedFilesystem;               // all servers, gateways and the ZK UI share the same file system (allows lazy loading of media data)
+        optional Boolean                            supportMcpSse;                  // if set to true, then /sse will be a valid path next to /rpc, to accept MCP requests
     }
 
     class ApplicationConfiguration {
@@ -225,8 +246,8 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
     }
 
     class SearchConfiguration {
-        required namedQualifier                     strategy;                       // select the implementation (SOLR, Elastic etc...)
-        required Unicode(255)                       defaultUrl;                     // default URL, for example of a SOLR server. Providers can override by DB
+        required namedQualifier                     strategy;                       // select the implementation (SOLR, HIBERNATE-SEARCH...)
+        optional Unicode(255)                       defaultUrl;                     // default URL, for example of a SOLR server. Providers can override by DB
     }
 
     class AsyncTransmitterConfiguration {

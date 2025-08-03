@@ -66,13 +66,13 @@ public final class VertxCluster {
 
                 Init.initializeT9t();
 
-                final VertxOptions options = new VertxOptions().setClusterManager(mgr);
+                final VertxOptions options = new VertxOptions();
                 final EventBusOptions busOptions = options.getEventBusOptions();
                 busOptions.setHost(hostAddress);
 
                 server.checkForMetricsAndInitialize(options);
 
-                Vertx.clusteredVertx(options, new Handler<AsyncResult<Vertx>>() {
+                Vertx.builder().with(options).withClusterManager(mgr).buildClustered().onComplete(x -> new Handler<AsyncResult<Vertx>>() {
                     @Override public void handle(final AsyncResult<Vertx> event) {
                         if (event.succeeded()) {
                             server.deployAndRun(event.result(), null);

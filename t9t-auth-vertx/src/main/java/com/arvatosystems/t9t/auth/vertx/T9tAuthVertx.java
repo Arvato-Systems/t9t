@@ -144,7 +144,7 @@ public class T9tAuthVertx implements IServiceModule {
             LOGGER.debug("Connection info is: remote address {}, user agent {}", session.getDataUri(), session.getUserAgent());
 
             vertx.<Void>executeBlocking(
-                promise -> {
+                () -> {
                     try {
                         final long startTs = System.nanoTime();
                         final AuthenticationRequest request
@@ -188,9 +188,8 @@ public class T9tAuthVertx implements IServiceModule {
                     } catch (final Exception e) {
                         IServiceModule.error(ctx, 500, e.getMessage());
                     }
-                    promise.complete();
-                },
-                asyncResult -> { }
+                    return null;
+                }
             );
         };
     }
@@ -201,35 +200,32 @@ public class T9tAuthVertx implements IServiceModule {
             LOGGER.debug("GET /api/authc/tenantLogo");
 
             final String authHeader = rc.request().headers().get(HttpHeaders.AUTHORIZATION);
-            if (authHeader == null || authHeader.length() < 8) {
-                LOGGER.debug("Request without authorization header (length = {})", authHeader == null ? -1 : authHeader.length());
-                IServiceModule.error(rc, 401, "HTTP Authorization header missing or too short");
-                return;
+            if (IServiceModule.badOrMissingAuthHeader(rc, authHeader, LOGGER)) {
+                 return;
             }
 
             final String origin = rc.request().headers().get(HttpHeaders.ORIGIN);
             final RoutingContext ctx = rc;
 
-            vertx.<ServiceResponse>executeBlocking(
-                promise -> {
+            vertx.<ServiceResponse>executeBlocking(() -> {
                     try {
                         // get the authentication info
                         final AuthenticationInfo authInfo = this.authenticationProcessor.getCachedJwt(authHeader);
                         if (authInfo.getEncodedJwt() == null) {
                             // handle error
                             IServiceModule.error(ctx, authInfo.getHttpStatusCode(), authInfo.getMessage());
-                            return;
+                            return null;
                         }
 
                         // Authentication is valid. Now populate the MDC and start processing the request.
                         final JwtInfo jwtInfo = authInfo.getJwtInfo();
-                        promise.complete(this.requestProcessor.execute(null, new GetTenantLogoRequest(), jwtInfo, authInfo.getEncodedJwt(), false, null));
+                        return this.requestProcessor.execute(null, new GetTenantLogoRequest(), jwtInfo, authInfo.getEncodedJwt(), false, null);
 
                     } catch (final Exception e) {
                         LOGGER.info("{} in request: {}", e.getClass().getSimpleName(), e.getMessage());
-                        promise.fail(e);
+                        throw e;
                     }
-                },
+                }).onComplete(
                 asyncResult -> {
                     if (asyncResult.succeeded()) {
                         if (asyncResult.result() instanceof GetTenantLogoResponse r) {
@@ -245,7 +241,7 @@ public class T9tAuthVertx implements IServiceModule {
                                     ctx.response().end(Buffer.buffer(r.getTenantLogo().getRawData().getBytes()));
                                 }
                             } else {
-                                IServiceModule.error(ctx, 404);
+                                IServiceModule.error(ctx, 404, null);
                             }
                         } else {
                             IServiceModule.error(ctx, 500, asyncResult.result().getErrorMessage());

@@ -20,6 +20,9 @@ import com.arvatosystems.t9t.cfg.be.ConfigProvider
 import com.arvatosystems.t9t.cfg.be.DatabaseBrandType
 import com.arvatosystems.t9t.cfg.be.KeyPrefetchConfiguration
 import com.arvatosystems.t9t.cfg.be.RelationalDatabaseConfiguration
+import com.arvatosystems.t9t.cfg.be.HibernateSearchConfiguration
+import com.arvatosystems.t9t.cfg.be.LuceneConfiguration
+import com.arvatosystems.t9t.cfg.be.ElasticSearchConfiguration
 import com.arvatosystems.t9t.orm.jpa.hibernate.impl.EMFCustomizer
 import com.arvatosystems.t9t.ssm.be.impl.IQuartzPropertyProvider
 import java.util.Map
@@ -77,6 +80,15 @@ class InMemoryConnection extends AbstractConnection {
             secondaryDatabaseConfig = databaseConfiguration
             keyPrefetchConfiguration = new KeyPrefetchConfiguration => [
                 strategy                = ""    // Use fallback NoopRefGenerator
+            ]
+            hibernateSearchConfiguration    = new HibernateSearchConfiguration => [
+                searchType                  = "lucene"
+                schemaManagementStrategy    = "none"
+                mappingConfigurer           = "com.arvatosystems.t9t.hs.configurate.be.core.impl.EntityConfigurer"
+                luceneConfiguration         = new LuceneConfiguration => [
+                    directoryType               = "local-filesystem"
+                    directoryRoot               = "./lucene-indexes"
+                ]
             ]
         ]
 

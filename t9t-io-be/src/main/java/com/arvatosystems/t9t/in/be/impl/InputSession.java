@@ -15,43 +15,6 @@
  */
 package com.arvatosystems.t9t.in.be.impl;
 
-import com.arvatosystems.t9t.base.StringTrimmer;
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.base.api.RequestParameters;
-import com.arvatosystems.t9t.base.api.ServiceResponse;
-import com.arvatosystems.t9t.base.auth.ApiKeyAuthentication;
-import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
-import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
-import com.arvatosystems.t9t.base.output.ExportStatusEnum;
-import com.arvatosystems.t9t.base.request.ErrorRequest;
-import com.arvatosystems.t9t.base.services.IInputQueuePartitioner;
-import com.arvatosystems.t9t.base.types.SessionParameters;
-import com.arvatosystems.t9t.in.services.IInputDataTransformer;
-import com.arvatosystems.t9t.in.services.IInputFormatConverter;
-import com.arvatosystems.t9t.in.services.IInputSession;
-import com.arvatosystems.t9t.io.DataSinkDTO;
-import com.arvatosystems.t9t.io.DataSinkKey;
-import com.arvatosystems.t9t.io.DataSinkRef;
-import com.arvatosystems.t9t.io.SinkDTO;
-import com.arvatosystems.t9t.io.request.CheckSinkFilenameUsedRequest;
-import com.arvatosystems.t9t.io.request.CheckSinkFilenameUsedResponse;
-import com.arvatosystems.t9t.io.request.DataSinkCrudRequest;
-import com.arvatosystems.t9t.io.request.ImportStatusResponse;
-import com.arvatosystems.t9t.io.request.StoreSinkRequest;
-import com.arvatosystems.t9t.io.request.WriteRecordsToDataSinkRequest;
-import com.arvatosystems.t9t.server.services.IStatefulServiceSession;
-
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.core.BonaPortableClass;
-import de.jpaw.bonaparte.core.BonaPortableFactory;
-import de.jpaw.bonaparte.core.DataConverter;
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.media.MediaType;
-import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
-import de.jpaw.dp.Dependent;
-import de.jpaw.dp.Jdp;
-import de.jpaw.util.ApplicationException;
-
 import java.io.InputStream;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -67,6 +30,43 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.arvatosystems.t9t.base.IInputQueuePartitioner;
+import com.arvatosystems.t9t.base.IStatefulServiceSession;
+import com.arvatosystems.t9t.base.StringTrimmer;
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.api.RequestParameters;
+import com.arvatosystems.t9t.base.api.ServiceResponse;
+import com.arvatosystems.t9t.base.auth.ApiKeyAuthentication;
+import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
+import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
+import com.arvatosystems.t9t.base.output.ExportStatusEnum;
+import com.arvatosystems.t9t.base.request.ErrorRequest;
+import com.arvatosystems.t9t.base.types.SessionParameters;
+import com.arvatosystems.t9t.in.services.IInputDataTransformer;
+import com.arvatosystems.t9t.in.services.IInputFormatConverter;
+import com.arvatosystems.t9t.in.services.IInputSession;
+import com.arvatosystems.t9t.io.DataSinkDTO;
+import com.arvatosystems.t9t.io.DataSinkKey;
+import com.arvatosystems.t9t.io.DataSinkRef;
+import com.arvatosystems.t9t.io.SinkDTO;
+import com.arvatosystems.t9t.io.request.CheckSinkFilenameUsedRequest;
+import com.arvatosystems.t9t.io.request.CheckSinkFilenameUsedResponse;
+import com.arvatosystems.t9t.io.request.DataSinkCrudRequest;
+import com.arvatosystems.t9t.io.request.ImportStatusResponse;
+import com.arvatosystems.t9t.io.request.StoreSinkRequest;
+import com.arvatosystems.t9t.io.request.WriteRecordsToDataSinkRequest;
+
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.core.BonaPortableClass;
+import de.jpaw.bonaparte.core.BonaPortableFactory;
+import de.jpaw.bonaparte.core.DataConverter;
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.bonaparte.pojos.api.media.MediaType;
+import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.dp.Dependent;
+import de.jpaw.dp.Jdp;
+import de.jpaw.util.ApplicationException;
 
 //this class operates outside of a RequestContext!
 @Dependent

@@ -21,13 +21,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.output.ExportStatusEnum;
+import com.arvatosystems.t9t.base.services.IAsyncTransmitter;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.io.AsyncChannelDTO;
 import com.arvatosystems.t9t.io.jpa.entities.AsyncMessageEntity;
 import com.arvatosystems.t9t.io.jpa.persistence.IAsyncMessageEntityResolver;
 import com.arvatosystems.t9t.out.services.IAsyncQueue;
 import com.arvatosystems.t9t.out.services.IAsyncTools;
-import com.arvatosystems.t9t.out.services.IAsyncTransmitter;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.dp.Jdp;

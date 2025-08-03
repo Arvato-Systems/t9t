@@ -32,7 +32,7 @@ public class Proxy extends AbstractVerticle {
         final HttpClient client = vertx.createHttpClient(new HttpClientOptions());
         vertx.createHttpServer().requestHandler(req -> {
             System.out.println("Proxying request: " + req.uri());
-            client.request(req.method(), 8282, "localhost", req.uri(), asyncRequestHandler -> {
+            client.request(req.method(), 8282, "localhost", req.uri()).onComplete(asyncRequestHandler -> {
 
                 final HttpClientRequest cReq = asyncRequestHandler.result();
                 if (cReq == null) {

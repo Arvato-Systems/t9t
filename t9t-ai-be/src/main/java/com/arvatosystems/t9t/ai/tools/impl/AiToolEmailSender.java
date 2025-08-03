@@ -27,10 +27,12 @@ import com.arvatosystems.t9t.authc.api.GetUserDataByUserIdRequest;
 import com.arvatosystems.t9t.authc.api.GetUserDataResponse;
 import com.arvatosystems.t9t.authc.api.UserData;
 import com.arvatosystems.t9t.base.T9tUtil;
+import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.email.api.EmailMessage;
 import com.arvatosystems.t9t.email.api.RecipientEmail;
+import com.arvatosystems.t9t.email.api.SendTestEmailRequest;
 
 import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import de.jpaw.bonaparte.pojos.api.media.MediaType;
@@ -48,20 +50,31 @@ public class AiToolEmailSender implements IAiTool<AiToolSendEmail, AiToolNoResul
 
     @Override
     public AiToolNoResult performToolCall(final RequestContext ctx, final AiToolSendEmail request) {
-        LOGGER.debug("Email tool called with subject {}", T9tUtil.nvl(request.getSubject(), "(none)"));
 
         final UserData userData = getUserData(ctx);
+        final String subject = T9tUtil.nvl(request.getSubject(), "The data you requested");
 
         final RecipientEmail recipient = new RecipientEmail();
         recipient.setCommunicationFormat(MediaXType.of(MediaType.TEXT));
         recipient.setTo(List.of(userData.getEmailAddress()));
 
+        LOGGER.debug("Email tool called with subject {}, sending to {}", subject, userData.getEmailAddress());
+
         final EmailMessage msg = new EmailMessage();
         msg.setRecipient(recipient);
-        msg.setMailSubject(T9tUtil.nvl(request.getSubject(), "The data you requested"));
+        msg.setMailSubject(subject);
         msg.setMailBody(wrapText(T9tUtil.nvl(request.getEmailText(),
           "Hello " + userData.getName() + ",\nHere is the data you requested.\n\nBest regards,\n    Your AI assistant")));
-        msg.setAttachments(List.of(request.getAttachment()));
+        if (request.getAttachment() != null) {
+            msg.setAttachments(List.of(request.getAttachment()));
+        }
+
+        // test: cannot do attachments yet
+        final SendTestEmailRequest rq = new SendTestEmailRequest();
+        rq.setEmailAddress(userData.getEmailAddress());
+        rq.setEmailSubject(subject);
+        rq.setEmailBody(msg.getMailBody());
+        executor.executeSynchronousAndCheckResult(ctx, rq, ServiceResponse.class);
 
         final AiToolNoResult result = new AiToolNoResult();
         result.setMessage("Success");

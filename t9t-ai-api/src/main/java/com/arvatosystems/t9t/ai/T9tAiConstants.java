@@ -21,4 +21,10 @@ package com.arvatosystems.t9t.ai;
 public final class T9tAiConstants {
     private T9tAiConstants() { }
 
+    // Define MCP error codes (standardized)
+    public static final int MCP_PARSE_ERROR         = -32700;
+    public static final int MCP_INVALID_REQUEST     = -32600;
+    public static final int MCP_METHOD_NOT_FOUND    = -32601;
+    public static final int MCP_INVALID_PARAMS      = -32602;
+    public static final int MCP_INTERNAL_ERROR      = -32603;
 }

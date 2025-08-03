@@ -1,0 +1,7 @@
+import t9t.base.types.*
+import t9t.base.api.*
+import t9t.base.event.*
+
+package (com.arvatosystems) t9t.hs.configurate.request {
+
+}

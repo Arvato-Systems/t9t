@@ -65,6 +65,11 @@ public class T9tRestProcessor implements IT9tRestProcessor {
     protected final IPAddressBlocker ipBlockerService = Jdp.getRequired(IPAddressBlocker.class);
 
     @Override
+    public ServiceResponse performSyncBackendRequest(final RequestParameters requestParameters, final String authHeader, final String infoMsg) {
+        return connection.execute(authHeader, requestParameters);
+    }
+
+    @Override
     public void performAsyncBackendRequest(final HttpHeaders httpHeaders, final AsyncResponse resp, final RequestParameters requestParameters,
       final String infoMsg) {
         performAsyncBackendRequest(httpHeaders, resp, requestParameters, infoMsg, ServiceResponse.class, sr -> createResultFromServiceResponse(sr));

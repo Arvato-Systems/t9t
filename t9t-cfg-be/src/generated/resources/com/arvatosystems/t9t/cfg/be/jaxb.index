@@ -1,6 +1,9 @@
 T9tServerConfiguration
 KafkaConfiguration
 RelationalDatabaseConfiguration
+HibernateSearchConfiguration
+LuceneConfiguration
+ElasticSearchConfiguration
 NoSqlDatabaseConfiguration
 KeyPrefetchConfiguration
 Bpm2Configuration

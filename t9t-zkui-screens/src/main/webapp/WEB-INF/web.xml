@@ -45,7 +45,7 @@ it does not start any more, see https://forum.zkoss.org/question/95682/jetty-9-a
     <!-- The following servlet entry is needed to disable the possibility to browser through the code folders via the UI -->
     <servlet>
         <servlet-name>default</servlet-name>
-        <servlet-class>org.eclipse.jetty.ee10.servlet.DefaultServlet</servlet-class>
+        <servlet-class>org.eclipse.jetty.ee11.servlet.DefaultServlet</servlet-class>
         <init-param>
             <param-name>dirAllowed</param-name>
             <param-value>false</param-value>

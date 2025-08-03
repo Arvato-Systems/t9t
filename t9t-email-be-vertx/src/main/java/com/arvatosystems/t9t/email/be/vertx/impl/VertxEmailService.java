@@ -111,7 +111,7 @@ public class VertxEmailService implements IEmailSender {
         }
 
         final MailClient mailClient = createClient(configuration);
-        mailClient.sendMail(emailMessage, (AsyncResult<MailResult> result) -> {
+        mailClient.sendMail(emailMessage).onComplete((AsyncResult<MailResult> result) -> {
             if (result.succeeded()) {
                 LOGGER.debug("Email of ref {}, UUID {} has been sent, result = {}", messageRef, messageId, result.result());
             } else {

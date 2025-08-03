@@ -21,6 +21,7 @@ import t9t.base.entities.*
 import t9t.base.crud.*
 import t9t.base.search.*
 import t9t.ai.*
+import t9t.ai.mcp.*
 
 /**
  * Core AI request definitions, draft 1
@@ -60,7 +61,26 @@ package (com.arvatosystems) t9t.ai.request {
         optional (MediaData)                        mediaOutput;
     }
 
-//    /** API to start a fresh new conversation). Returns the greeting. */
-//    class AiStartNewChatRequest extends RequestParameters return AiChatResponse {
-//    }
+    /** A no op request, just done to check if we have permissions to establish a connection. */
+    class AiGetSseRequest extends RequestParameters return AiGetToolsResponse {}
+
+    /** t9t currently does not provide prompts nor resources, therefore we just return tools. */
+    class AiGetToolsRequest extends RequestParameters return AiGetToolsResponse {}
+
+    class AiGetToolsResponse extends ServiceResponse {
+        required (AiToolSpecification) required List<>      tools;
+    }
+
+    /** Run the specified tool. */
+    class AiRunToolRequest extends RequestParameters   return AiRunToolResponse {
+        required defaultExternalId                          name;               // ID of the tool
+        optional Json                                       parameters;         // parameters in structured form
+        optional Unicode(64000)                             arguments;          // parameters as string
+    }
+
+    class AiRunToolResponse extends ServiceResponse {
+        optional Object                                     response;           // response as MediaData, or structured object
+//        optional (MediaData)                            response;             // response if it is a single text, image or document
+//        optional Json                                   structuredResponse;   // response if it is a data structure
+    }
 }

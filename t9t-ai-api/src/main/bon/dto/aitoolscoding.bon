@@ -70,7 +70,7 @@ package (com.arvatosystems) t9t.ai.tools.coding {
         optional meta.identifier                    packageName;    // The java package name in which the class is located
         optional meta.identifier                    parentClass;    // The name of the parent class, in case the class is a subclass
         optional meta.identifier                    responseClass;  // The name of the response class, in case the class represents a request
-        required textChunk                          description;    // A high level description of the class
+        optional textChunk                          description;    // A high level description of the class
         required (AiToolFieldDescription) List<>    fields;         // the fields in this class
     }
     final class AiToolFieldDescription {

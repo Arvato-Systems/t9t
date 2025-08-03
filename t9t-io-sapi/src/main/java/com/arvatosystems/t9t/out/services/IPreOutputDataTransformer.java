@@ -19,7 +19,6 @@ import java.util.List;
 
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
-import com.arvatosystems.t9t.base.services.IOutputSession;
 import com.arvatosystems.t9t.io.DataSinkDTO;
 import com.arvatosystems.t9t.io.services.IDataSinkDefaultConfigurationProvider;
 

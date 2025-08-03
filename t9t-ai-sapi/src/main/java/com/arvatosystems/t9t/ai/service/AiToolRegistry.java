@@ -36,7 +36,7 @@ public final class AiToolRegistry {
 
     /** Registers a tool, currently needs to be fed with the request class. */
     public static <R extends AbstractAiTool, U extends AbstractAiToolResult> void register(final IAiTool<R, U> tool, BonaPortableClass<R> requestClass) {
-        // final String modifiedName = requestClass.getPqon().replace(".", "-");  // path names are garbled by sime LLMs
+        // final String modifiedName = requestClass.getPqon().replace(".", "-");  // path names are garbled by some LLMs
         final String modifiedName = T9tUtil.getSimpleName(requestClass.getPqon());
         TOOLS.put(modifiedName, new AiToolDescriptor(modifiedName, tool, requestClass, requestClass.getReturns()));
     }

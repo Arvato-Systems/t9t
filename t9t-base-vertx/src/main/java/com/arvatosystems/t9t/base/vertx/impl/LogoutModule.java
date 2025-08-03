@@ -56,7 +56,7 @@ public class LogoutModule implements IServiceModule {
         router.post("/logout").handler((final RoutingContext ctx) -> {
             LOGGER.debug("POST /logout received");
             ctx.response().end();
-            ctx.response().close();
+            ctx.request().connection().close();
         });
     }
 }

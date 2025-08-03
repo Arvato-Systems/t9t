@@ -21,7 +21,7 @@
 
     <groupId>com.arvato-systems.t9t</groupId>
     <artifactId>t9t-build</artifactId>
-    <version>8.0-SNAPSHOT</version>
+    <version>9.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>Global root POM for the t9t framework</description>
 
@@ -40,7 +40,7 @@
         <min-maven.version>3.9.9</min-maven.version>  <!-- version currently used by github -->
 
         <!-- to be used by dependent projects (same as project.version, but must be provided explicitly so that imports work) -->
-        <t9t.version>8.0-SNAPSHOT</t9t.version>
+        <t9t.version>9.0-SNAPSHOT</t9t.version>
         <xtext.version>2.38.0</xtext.version>
 
         <!-- Build specific properties -->
@@ -57,7 +57,7 @@
         <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
         <maven-install-plugin.version>3.0.1</maven-install-plugin.version>
         <maven-deploy-plugin.version>3.1.4</maven-deploy-plugin.version>
-        <maven-clean-plugin.version>3.4.1</maven-clean-plugin.version>
+        <maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
         <maven-dependency-plugin.version>3.8.1</maven-dependency-plugin.version>
         <maven-plugin-annotations.version>3.15.1</maven-plugin-annotations.version>
         <maven-project.version>2.2.1</maven-project.version>
@@ -70,17 +70,17 @@
         <maven-war-plugin.version>3.4.0</maven-war-plugin.version>
         <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
         <maven-jarjar-plugin.version>1.9</maven-jarjar-plugin.version>
-        <maven-enforcer-plugin.version>3.5.0</maven-enforcer-plugin.version>
+        <maven-enforcer-plugin.version>3.6.1</maven-enforcer-plugin.version>
         <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
         <owasp-maven-plugin.version>7.2.1</owasp-maven-plugin.version>
-        <spring-boot-maven-plugin.version>3.4.5</spring-boot-maven-plugin.version>
+        <spring-boot-maven-plugin.version>3.5.4</spring-boot-maven-plugin.version>
         <tycho.version>4.0.8</tycho.version>
         <git-commit-id-plugin.version>9.0.2</git-commit-id-plugin.version>
         <jaxws-maven-plugin.version>4.0.3</jaxws-maven-plugin.version>
         <eclipse-lifecycle-mapping.version>1.0.0</eclipse-lifecycle-mapping.version>
         <bundle.plugin.version>5.1.2</bundle.plugin.version> <!-- felix, for pricing RCP -->
         <exec.plugin.version>3.0.0</exec.plugin.version>
-        <jetty-maven-plugin.version>12.0.22</jetty-maven-plugin.version>
+        <jetty-maven-plugin.version>12.1.0.beta2</jetty-maven-plugin.version>
         <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
         <cxf-codegen-plugin.version>4.1.2</cxf-codegen-plugin.version>
         <cxf-wadl2java-plugin.version>4.1.2</cxf-wadl2java-plugin.version>
@@ -98,7 +98,7 @@
         <!-- Versions of Xtext & Xtend plugins -->
         <xtend-maven-plugin.version>${xtext.version}</xtend-maven-plugin.version>
         <xtext-maven-plugin.version>${xtext.version}</xtext-maven-plugin.version>
-        <jdt.version>3.39.0</jdt.version>
+        <jdt.version>3.42.0</jdt.version>
 
         <bonaparte-plugin.version>6.2.0</bonaparte-plugin.version>
         <license-plugin.version>5.0.0</license-plugin.version>
@@ -118,7 +118,7 @@
         <openapi-generator.version>7.5.0</openapi-generator.version>
 
         <!-- ASCIIDoctor -->
-        <asciidoctor-maven-plugin.version>2.2.6</asciidoctor-maven-plugin.version>
+        <asciidoctor-maven-plugin.version>3.2.0</asciidoctor-maven-plugin.version>
         <asciidoctorj.version>2.5.10</asciidoctorj.version>
         <jruby.version>9.4.12.1</jruby.version>
     </properties>
@@ -469,8 +469,8 @@
 
                 <!-- jetty -->
                 <plugin>
-                    <groupId>org.eclipse.jetty.ee10</groupId>
-                    <artifactId>jetty-ee10-maven-plugin</artifactId>
+                    <groupId>org.eclipse.jetty.ee11</groupId>
+                    <artifactId>jetty-ee11-maven-plugin</artifactId>
                     <version>${jetty-maven-plugin.version}</version>
                     <dependencies>
                         <dependency>
@@ -1021,6 +1021,7 @@
 
                 <module>t9t-orm-eclipselink-jpa</module>
                 <module>t9t-orm-hibernate-jpa</module>
+                <module>t9t-orm-hibernate-cluster</module>
 
                 <module>t9t-genconf-api</module>
                 <module>t9t-genconf-sapi</module>
@@ -1029,6 +1030,7 @@
 
                 <module>t9t-io-api</module>
                 <module>t9t-io-sapi</module>
+                <module>t9t-io-sapi-intern</module>
                 <module>t9t-io-be</module>
                 <module>t9t-io-be-intern</module>
                 <module>t9t-io-be-kafka</module>
@@ -1044,6 +1046,11 @@
                 <module>t9t-solr-sapi</module>
                 <module>t9t-solr-be</module>
                 <module>t9t-solr-jpa</module>
+
+                <module>t9t-hibernate-search-api</module>
+                <module>t9t-hibernate-search-be</module>
+                <module>t9t-hibernate-search-be-lucene</module>
+                <module>t9t-hibernate-search-be-elasticsearch</module>
 
                 <module>t9t-ssm-api</module>
                 <module>t9t-ssm-sapi</module>
@@ -1093,6 +1100,7 @@
                 <module>t9t-ai-sapi</module>
                 <module>t9t-ai-be</module>
                 <module>t9t-ai-be-langchain</module>
+                <module>t9t-ai-mcp</module>
                 <module>t9t-ai-jpa</module>
                 <module>t9t-ollama-api</module>
                 <module>t9t-ollama-sapi</module>
@@ -1109,10 +1117,12 @@
                 <module>t9t-sql</module>
                 <module>t9t-sql-migration-executor</module>
 
+                <module>t9t-mcp-restapi</module>
                 <module>t9t-tests-arch</module>
                 <module>t9t-tests-arch-be</module>
                 <module>t9t-vertx-cluster</module>
                 <module>t9t-vertx-metrics</module>
+                <module>t9t-vertx-mcp</module>
                 <module>t9t-vertx-resteasy</module>
                 <module>t9t-jetty-resteasy</module>
                 <module>t9t-jetty-kafka-resteasy</module>
@@ -1301,6 +1311,7 @@
 
                 <module>t9t-orm-eclipselink-jpa</module>
                 <module>t9t-orm-hibernate-jpa</module>
+                <module>t9t-orm-hibernate-cluster</module>
 
                 <module>t9t-genconf-api</module>
                 <module>t9t-genconf-sapi</module>
@@ -1308,6 +1319,7 @@
                 <module>t9t-genconf-jpa</module>
                 <module>t9t-io-api</module>
                 <module>t9t-io-sapi</module>
+                <module>t9t-io-sapi-intern</module>
                 <module>t9t-io-be</module>
                 <module>t9t-io-be-intern</module>
                 <module>t9t-io-be-kafka</module>
@@ -1323,6 +1335,11 @@
                 <module>t9t-solr-sapi</module>
                 <module>t9t-solr-be</module>
                 <module>t9t-solr-jpa</module>
+
+                <module>t9t-hibernate-search-api</module>
+                <module>t9t-hibernate-search-be</module>
+                <module>t9t-hibernate-search-be-lucene</module>
+                <module>t9t-hibernate-search-be-elasticsearch</module>
 
                 <module>t9t-ssm-api</module>
                 <module>t9t-ssm-sapi</module>
@@ -1367,6 +1384,7 @@
                 <module>t9t-ai-sapi</module>
                 <module>t9t-ai-be</module>
                 <module>t9t-ai-be-langchain</module>
+                <module>t9t-ai-mcp</module>
                 <module>t9t-ai-jpa</module>
                 <module>t9t-ollama-api</module>
                 <module>t9t-ollama-sapi</module>
@@ -1382,8 +1400,10 @@
                 <module>t9t-sql</module>
                 <module>t9t-sql-migration-executor</module>
 
+                <module>t9t-mcp-restapi</module>
                 <module>t9t-vertx-cluster</module>
                 <module>t9t-vertx-metrics</module>
+                <module>t9t-vertx-mcp</module>
                 <module>t9t-vertx-resteasy</module>
                 <module>t9t-jetty-resteasy</module>
                 <module>t9t-jetty-restgateway</module>

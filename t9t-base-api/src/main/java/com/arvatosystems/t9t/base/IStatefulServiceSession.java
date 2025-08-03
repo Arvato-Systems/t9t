@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.server.services;
+package com.arvatosystems.t9t.base;
 
 import java.io.Closeable;
 import java.time.Instant;

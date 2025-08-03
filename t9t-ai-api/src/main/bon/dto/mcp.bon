@@ -1,0 +1,137 @@
+/*
+ * Copyright (c) 2012 - 2025 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import apiw.*
+import api.media.*
+import t9t.base.types.*
+import t9t.base.api.*
+import t9t.base.entities.*
+import t9t.base.crud.*
+import t9t.base.search.*
+import t9t.ai.*
+
+/**
+ * Core AI request definitions, draft 1
+ */
+package (com.arvatosystems) t9t.ai.mcp {
+    default private unsigned trim noControlChars;
+
+    /**
+     * Specification of a single tool, suitable for MCP.
+     * See https://modelcontextprotocol.io/specification/2025-06-18/server/tools for an example.
+     */
+    final class AiToolSpecification {
+        required defaultExternalId                          name;
+        optional shortText                                  title;
+        required Unicode(64000) allowControlChars           description;
+        required (JsonSchemaObject)                         inputSchema;        // JSON schema of the tool parameters
+        optional (JsonSchemaObject)                         outputSchema;       // JSON schema of the tool result (optional)
+    }
+
+    /** Information to describe a single field of any type (common superclass). */
+    abstract class AbstractJsonSchemaField {
+        required Ascii(16)                                  ^type;
+        optional Unicode(255)                               description;        // missing on top level element, because part of header
+    }
+
+    /** Information to describe an object. */
+    final class JsonSchemaObject extends AbstractJsonSchemaField {
+        required (AbstractJsonSchemaField...) Map<String>   ^properties;
+        required defaultExternalId List<>                   ^required;
+    }
+
+    /** Information to describe a string field (this includes temporal types). */
+    final class JsonSchemaString extends AbstractJsonSchemaField {
+        optional Integer                                    minLength;
+        optional Integer                                    maxLength;
+        optional Unicode(255)                               pattern;
+        optional Unicode(255)                               format;
+    }
+
+    /** Information to describe an enum field. */
+    final class JsonSchemaEnum extends AbstractJsonSchemaField {
+        required defaultExternalId required List<>          enums;              // enum causes compile error
+    }
+
+    /** Information to describe a boolean field. */
+    final class JsonSchemaBoolean extends AbstractJsonSchemaField {
+    }
+
+    /** Information to describe a numeric field. None additional fields because the defined properties are not supported in bonaparte. */
+    final class JsonSchemaNumber extends AbstractJsonSchemaField {
+    }
+
+    /** Information to describe an array field. */
+    final class JsonSchemaArray extends AbstractJsonSchemaField {
+        optional Integer                                    minItems;           // minimum number of entries
+        optional Integer                                    maxItems;           // maximum number of entries
+        optional (AbstractJsonSchemaField...)               items;              // type of the items
+    }
+
+    /** Information to describe a set field. */
+    final class JsonSchemaSet extends AbstractJsonSchemaField {
+        required boolean                                    uniqueItems;        // must be true!
+        optional (AbstractJsonSchemaField...)               items;              // type of the items
+    }
+
+    /** Top level data structure for MCP responses. */
+    final class McpResult {
+        required Ascii(8)                                   jsonrpc;            // the version (2.0)
+        required Element                                    id;                 // ID as provided by the caller
+        optional (McpError)                                 error;              // top level error with predefined codes
+        optional Object                                     result;             // usually of type McpResultPayload
+    }
+    final class McpResultPayload {
+        required (AiToolSpecification) List<>               tools;              // result in case of a tools query
+        required (McpContentElement) List<>                 content;            // unstructured content must be a list
+        optional Element                                    structuredContent;  // data object as specified by outputSchema
+        optional Boolean                                    isError;            // if an error should be returned as result
+    }
+    final class McpContentElement {
+        required Ascii(16)                                  ^type;              // text, image, audio
+        optional Ascii(255)                                 mimeType;           // recommended for everything which isn't plain text
+        optional textChunk                                  text;               // textual response
+        optional Unicode(1000000) allowControlChars         data;               // text, or base64 encoded binary data
+    }
+
+    /** Structure for MCP error returns. */
+    final class McpError {
+        required signed int                                 code;
+        required Unicode(64000) allowControlChars           message;
+        optional Element                                    data;
+    }
+
+    final class McpInitializeResult {
+        required Ascii(16)                                  protocolVersion;
+        required (McpCapabilities)                          capabilities;
+        required (McpServerInfo)                            serverInfo;
+    }
+    final class McpCapabilities {
+        optional (McpCapabilityTools)                       tools;
+        optional Object                                     resources;
+        optional Object                                     prompts;
+    }
+    final class McpServerInfo {
+        required Unicode(80)                                name;
+        required Ascii(16)                                  version;
+    }
+    final class McpCapabilityTools {
+        optional Boolean                                    unused;   // avoid Jackson serializer problem
+    }
+
+    final class McpToolsResult {
+        required (AiToolSpecification) required List<>      tools;
+    }
+}

@@ -15,10 +15,11 @@
  */
 package com.arvatosystems.t9t.base.jpa.ormspecific;
 
+import com.arvatosystems.t9t.cfg.be.HibernateSearchConfiguration;
 import jakarta.persistence.EntityManagerFactory;
 
 import com.arvatosystems.t9t.cfg.be.RelationalDatabaseConfiguration;
 
 public interface IEMFCustomizer {
-    EntityManagerFactory getCustomizedEmf(String puName, RelationalDatabaseConfiguration settings) throws Exception;
+    EntityManagerFactory getCustomizedEmf(String puName, RelationalDatabaseConfiguration settings, HibernateSearchConfiguration hibernateSearchConfiguration) throws Exception;
 }

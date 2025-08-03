@@ -17,7 +17,7 @@ package com.arvatosystems.t9t.zkui.jetty.init;
 
 import de.jpaw.api.ConfigurationReader;
 import de.jpaw.util.ConfigurationReaderFactory;
-import org.eclipse.jetty.ee10.webapp.WebAppContext;
+import org.eclipse.jetty.ee11.webapp.WebAppContext;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Server;

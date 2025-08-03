@@ -18,6 +18,7 @@ package com.arvatosystems.t9t.orm.jpa.eclipselink.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.arvatosystems.t9t.cfg.be.HibernateSearchConfiguration;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 
@@ -41,13 +42,17 @@ public class EMFCustomizer implements IEMFCustomizer {
     }
 
     @Override
-    public EntityManagerFactory getCustomizedEmf(final String puName, final RelationalDatabaseConfiguration settings) throws Exception {
+    public EntityManagerFactory getCustomizedEmf(final String puName, final RelationalDatabaseConfiguration settings, HibernateSearchConfiguration hibernateSearchConfiguration) throws Exception {
         final Map<String, Object> myProps = new HashMap<>();
 
         putOpt(myProps, "jakarta.persistence.jdbc.driver",   settings.getJdbcDriverClass());
         putOpt(myProps, "jakarta.persistence.jdbc.url",      settings.getJdbcConnectString());
         putOpt(myProps, "jakarta.persistence.jdbc.user",     settings.getUsername());
         putOpt(myProps, "jakarta.persistence.jdbc.password", settings.getPassword());
+
+        // unused properties in this implementation
+        hibernateSearchConfiguration = null;
+        putOpt(myProps, "hibernate.search.enabled", "false");
 
         final DatabaseBrandType dbName = settings.getDatabaseBrand();
         if (dbName != null) {

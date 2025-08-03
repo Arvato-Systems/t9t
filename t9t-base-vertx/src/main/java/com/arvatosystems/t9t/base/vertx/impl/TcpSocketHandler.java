@@ -34,6 +34,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.vertx.core.Future;
 import io.vertx.core.buffer.Buffer;
+import io.vertx.core.internal.buffer.BufferInternal;
 import io.vertx.core.net.NetSocket;
 
 import java.nio.charset.StandardCharsets;
@@ -154,6 +155,6 @@ public class TcpSocketHandler {
         final ByteArrayComposer cbac = new ByteArrayComposer(); // TODO Resource leak: 'cbac' is never closed
         cbac.writeRecord(rs);
         final ByteBuf bb = Unpooled.wrappedBuffer(cbac.getBuffer(), 0, cbac.getLength());
-        return socket.write(Buffer.buffer(bb));
+        return socket.write(BufferInternal.buffer(bb));
     }
 }

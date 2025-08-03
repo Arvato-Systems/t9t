@@ -25,17 +25,24 @@ import com.arvatosystems.t9t.base.T9tException;
 public class T9tAiException extends T9tException {
     private static final long serialVersionUID = -866589612331210L;
 
-    private static final int CORE_OFFSET            = T9tConstants.EXCEPTION_OFFSET_AI;
-    private static final int OFFSET = (CL_PARAMETER_ERROR * CLASSIFICATION_FACTOR) + CORE_OFFSET;
-    private static final int OFFSET_TIMEOUT = (CL_TIMEOUT * CLASSIFICATION_FACTOR) + CORE_OFFSET;
-    private static final int OFFSET_ILE = (CL_INTERNAL_LOGIC_ERROR * CLASSIFICATION_FACTOR) + CORE_OFFSET;
+    private static final int CORE_OFFSET    = T9tConstants.EXCEPTION_OFFSET_AI;
+    private static final int OFFSET         = CORE_OFFSET + CLASSIFICATION_FACTOR * CL_PARAMETER_ERROR;
+    private static final int OFFSET_TIMEOUT = CORE_OFFSET + CLASSIFICATION_FACTOR * CL_TIMEOUT;
+    private static final int OFFSET_ILE     = CORE_OFFSET + CLASSIFICATION_FACTOR * CL_INTERNAL_LOGIC_ERROR;
+    private static final int OFFSET_ERR     = CORE_OFFSET + CLASSIFICATION_FACTOR * CL_DATABASE_ERROR;
 
     // Error codes
-    public static final int NO_ASSISTANT               = OFFSET + 100;
+    public static final int NO_ASSISTANT                = OFFSET + 100;
+    public static final int UNKNOWN_AI_TOOL             = OFFSET + 101;
+    public static final int AI_TOOL_NO_PERMISSION       = OFFSET + 102;
+    public static final int MCP_SERIALIZATION_ERROR     = OFFSET_ERR + 103;
 
     static {
         registerRange(CORE_OFFSET, false, T9tAiException.class, ApplicationLevelType.FRAMEWORK, "t9t general AI integration layer");
 
-        registerCode(NO_ASSISTANT, "No asistant configured");
+        registerCode(NO_ASSISTANT,              "No assistant configured");
+        registerCode(UNKNOWN_AI_TOOL,           "No AI tool of such name");
+        registerCode(AI_TOOL_NO_PERMISSION,     "No permission to run specified AI tool");
+        registerCode(MCP_SERIALIZATION_ERROR,   "Problem serializing MCP result to JSON");
     }
 }

@@ -57,6 +57,7 @@
                     <xs:element name="databaseConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:RelationalDatabaseConfiguration"/>
                     <xs:element name="secondaryDatabaseConfig" minOccurs="0" nillable="true" type="t9t_cfg_be:RelationalDatabaseConfiguration"/>
                     <xs:element name="shadowDatabaseConfig" minOccurs="0" nillable="true" type="t9t_cfg_be:RelationalDatabaseConfiguration"/>
+                    <xs:element name="hibernateSearchConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:HibernateSearchConfiguration"/>
                     <xs:element name="noSqlConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:NoSqlDatabaseConfiguration"/>
                     <xs:element name="keyPrefetchConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:KeyPrefetchConfiguration"/>
                     <xs:element name="logWriterConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:LogWriterConfiguration"/>
@@ -354,6 +355,96 @@
                     </xs:element>
                     <xs:element name="fwDropBeforeMigrate" minOccurs="0" nillable="true" type="xs:boolean"/>
                     <xs:element name="fwSkipDefaultCallbacks" minOccurs="0" nillable="true" type="xs:boolean"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="HibernateSearchConfiguration">
+        <xs:complexContent>
+            <xs:extension base="bon:BONAPORTABLE">
+                <xs:sequence>
+                    <xs:element name="searchType">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="30"/>
+                                <xs:pattern value="\p{IsBasicLatin}*"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="schemaManagementStrategy" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="30"/>
+                                <xs:pattern value="\p{IsBasicLatin}*"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="mappingConfigurer" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="150"/>
+                                <xs:pattern value="\p{IsBasicLatin}*"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="luceneConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:LuceneConfiguration"/>
+                    <xs:element name="elasticSearchConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:ElasticSearchConfiguration"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="LuceneConfiguration">
+        <xs:complexContent>
+            <xs:extension base="bon:BONAPORTABLE">
+                <xs:sequence>
+                    <xs:element name="directoryType" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="30"/>
+                                <xs:pattern value="\p{IsBasicLatin}*"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="directoryRoot" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="150"/>
+                                <xs:pattern value="\p{IsBasicLatin}*"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="ElasticSearchConfiguration">
+        <xs:complexContent>
+            <xs:extension base="bon:BONAPORTABLE">
+                <xs:sequence>
+                    <xs:element name="hosts" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="255"/>
+                                <xs:pattern value="\p{IsBasicLatin}*"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="username" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="150"/>
+                                <xs:pattern value="\p{IsBasicLatin}*"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="password" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="150"/>
+                                <xs:pattern value="\p{IsBasicLatin}*"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
@@ -684,6 +775,7 @@
                     <xs:element name="enablePlugins" minOccurs="0" nillable="true" type="xs:boolean"/>
                     <xs:element name="enableGenericCallouts" minOccurs="0" nillable="true" type="xs:boolean"/>
                     <xs:element name="sharedFilesystem" minOccurs="0" nillable="true" type="xs:boolean"/>
+                    <xs:element name="supportMcpSse" minOccurs="0" nillable="true" type="xs:boolean"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
@@ -893,7 +985,7 @@
             <xs:extension base="bon:BONAPORTABLE">
                 <xs:sequence>
                     <xs:element name="strategy" type="t9t_cfg_be:namedQualifier"/>
-                    <xs:element name="defaultUrl">
+                    <xs:element name="defaultUrl" minOccurs="0" nillable="true">
                         <xs:simpleType>
                             <xs:restriction base="xs:normalizedString">
                                 <xs:maxLength value="255"/>

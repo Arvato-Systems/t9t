@@ -34,7 +34,7 @@ package (com.arvatosystems) t9t.base.entities {
 
     // internal class to define an additional JPA column for multitenancy
     class InternalTenantId {
-        required tenantId                   tenantId        properties noupdate, notupdatable, unify;      // the multitenancy discriminator
+        required tenantId                   tenantId        properties noupdate, notupdatable;      // the multitenancy discriminator
     }
 
     /** Special tracking class for the Source. Here we have no processRef, and the user is part of the DTO.

@@ -39,10 +39,22 @@ package (com.arvatosystems) t9t.ai.tools {
     abstract class AbstractAiToolResult {
     }
 
+    final class AiToolNoResult extends AbstractAiToolResult {
+        optional shortText                          message;  // usually "OK"
+    }
+
     /** Result which is used for single values, when a JSON structure is not required. */
     final class AiToolStringResult extends AbstractAiToolResult {
-        textChunk                                   text;
+        required textChunk                          text;
     }
+
+    /** Result which is used for single values like images or PDFs. */
+    final class AiToolMediaDataResult extends AbstractAiToolResult {
+        required (MediaData)                        mediaData;
+    }
+
+
+
 
     /** Retrieves the current date, giving the day in field today and the weekday in nameOfDayOfTheWeek. */
     final class AiToolCurrentDate extends AbstractAiTool return AiToolCurrentDateResult {
@@ -53,10 +65,6 @@ package (com.arvatosystems) t9t.ai.tools {
         required Unicode(64)                        nameOfDayOfTheWeek;
     }
 
-
-    final class AiToolNoResult extends AbstractAiToolResult {
-        required shortText                          message;  // usually "OK"
-    }
 
     /** Retrieves user data, for a given name, or all users.. */
     final class AiToolUserList extends AbstractAiTool return AiToolUserListResult {

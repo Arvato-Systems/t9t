@@ -22,7 +22,7 @@
     <parent>
         <groupId>com.arvato-systems.t9t</groupId>
         <artifactId>t9t-build</artifactId>
-        <version>8.0-SNAPSHOT</version>
+        <version>9.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>global-dm</artifactId>
@@ -47,19 +47,21 @@
         <xtend.version>${xtext.version}</xtend.version>
 
         <!-- Database driver versions -->
-        <driver.oracle.version>23.8.0.25.04</driver.oracle.version>
+        <driver.oracle.version>23.9.0.25.07</driver.oracle.version>
         <driver.postgresql.version>42.7.7</driver.postgresql.version>     <!-- starting with 4.2.15, the driver adds a dependency to checker-qual 3.5.0 which conflicts with 2.5.2 pulled by guava -->
         <driver.sqlserver.version>12.10.1.jre11</driver.sqlserver.version> <!-- not all releases are available on maven central as jre17 builds -->
-        <driver.hana.version>2.24.8</driver.hana.version>
+        <driver.hana.version>2.25.9</driver.hana.version>
         <h2.version>2.3.232</h2.version>
 
         <!-- OR mappers -->
         <eclipselink.version>4.0.3</eclipselink.version>
-        <hibernate.version>6.5.3.Final</hibernate.version>
-        <hibernate-validator.version>8.0.1.Final</hibernate-validator.version>
-        <ehcache.version>2.10.9.2</ehcache.version>
+        <hibernate.version>7.0.4.Final</hibernate.version>
+        <hibernate-validator.version>9.0.1.Final</hibernate-validator.version>
+        <hibernate-search.version>8.0.0.Final</hibernate-search.version>
+
+        <hazelcast.version>5.5.0</hazelcast.version>
         <ehcache3.version>3.10.8</ehcache3.version>
-        <jandex.version>3.2.7</jandex.version>
+        <jandex.version>3.4.0</jandex.version>
 
         <!-- Javax ws / rs implementation versions (com.sun.xml.*) -->
         <jaxb-xjc.version>4.0.5</jaxb-xjc.version>                                      <!-- (com.sun.xml.bind:jaxb-xjc) -->
@@ -69,66 +71,70 @@
         <jakarta.xml-bind-api.version>4.0.2</jakarta.xml-bind-api.version>              <!-- 3.0.1 for jakarta namespace -->
         <jakarta.xml-bind.version>4.0.5</jakarta.xml-bind.version>                      <!-- 3.0.1 for jakarta namespace -->
         <jakarta.xml-jaxb-core.version>4.0.5</jakarta.xml-jaxb-core.version>            <!-- 3.0.1 for jakarta namespace (skip for javax!) -->
-        <jakarta.annotation-api.version>3.0.0</jakarta.annotation-api.version>          <!-- 2.0.0 for jakarta namespace -->
+        <jakarta.annotation-api.version>3.0.0</jakarta.annotation-api.version>          <!-- 3.0.0 for EE 11 core -->
 
-        <jakarta.activation-api.version>2.1.3</jakarta.activation-api.version>          <!-- 2.1.0 for jakarta EE 10 -->
+        <jakarta.activation-api.version>2.1.3</jakarta.activation-api.version>          <!-- 2.1.3 for EE 11 core -->
         <jakarta.activation.version>2.0.2</jakarta.activation.version>                  <!-- this is now angus-activation -->
-        <jakarta.mail-api.version>2.1.3</jakarta.mail-api.version>                      <!-- 2.1.0 for jakarta EE 10 -->
+        <jakarta.mail-api.version>2.1.3</jakarta.mail-api.version>                      <!-- 2.1.3 for EE 11 core -->
         <jakarta.mail.version>2.0.3</jakarta.mail.version>                              <!-- this is now angus-mail -->
-        <jakarta.el-api.version>5.0.1</jakarta.el-api.version>
+        <jakarta.el-api.version>5.0.1</jakarta.el-api.version>                          <!-- 6.0.1 for EE 11 core (TODO) -->
         <jakarta.el.version>4.0.2</jakarta.el.version>                                  <!-- (org.glassfish:jakarta.el) -->
         <jakarta.xml.ws-api.version>4.0.2</jakarta.xml.ws-api.version>
         <jakarta.xml.soap-api.version>3.0.2</jakarta.xml.soap-api.version>
         <jakarta.xml.soap.version>3.0.4</jakarta.xml.soap.version>                      <!-- (com.sun.xml.messaging.saaj:saaj-impl) -->
         <jakarta.jws-api.version>3.0.0</jakarta.jws-api.version>                        <!-- 3.0.0 for jakarta namespace -->
-        <jakarta.jws.version>2.1.0</jakarta.jws.version>                                <!-- 3.0.0 for jakarta namespace -->
-        <jakarta.ws.rs-api.version>3.1.0</jakarta.ws.rs-api.version>
-        <jakarta.validation-api.version>3.0.2</jakarta.validation-api.version>          <!-- validation API, implemented by hibernate validator -->
-        <jakarta.persistence-api.version>3.1.0</jakarta.persistence-api.version>        <!-- validation API, implemented by hibernate ORM -->
-        <jakarta.transaction-api.version>2.0.1</jakarta.transaction-api.version>
-        <jakarta.servlet-api.version>6.0.0</jakarta.servlet-api.version>
+        <jakarta.ws.rs-api.version>4.0.0</jakarta.ws.rs-api.version>                    <!-- 4.0.0 for EE 11 core -->
+        <jakarta.validation-api.version>3.1.1</jakarta.validation-api.version>
+        <jakarta.persistence-api.version>3.2.0</jakarta.persistence-api.version>
+        <jakarta.transaction-api.version>2.0.1</jakarta.transaction-api.version>        <!-- 2.0.1 for EE 11 web (unchanged) -->
+        <jakarta.servlet-api.version>6.1.0</jakarta.servlet-api.version>                <!-- 6.1.0 for EE 11 web -->
 
         <!-- Microprofile -->
         <microprofile-api.version>3.0.2</microprofile-api.version>
         <microprofile-smallrye-impl.version>2.4.1</microprofile-smallrye-impl.version>
 
         <!-- Jetty -->
-        <jetty.version>12.0.22</jetty.version>
+        <jetty.version>12.1.0.beta2</jetty.version>
 
         <!-- Commons (use with care, only few are regularly updated) -->
         <commons-logging.version>1.3.4-donotuse</commons-logging.version> <!-- should not use at all! -->
         <commons-email.version>99.0-donotuse</commons-email.version>      <!-- no longer used in t9t, because seems to be unmaintained -->
         <commons-cli.version>1.9.0</commons-cli.version>
-        <commons-codec.version>1.18.0</commons-codec.version>
-        <commons-io.version>2.19.0</commons-io.version>                   <!-- regularly updated again -->
+        <commons-codec.version>1.19.0</commons-codec.version>
+        <commons-io.version>2.20.0</commons-io.version>                   <!-- regularly updated again -->
         <commons-lang3.version>3.18.0</commons-lang3.version>             <!-- regularly updated again -->
         <commons-beanutils.version>1.11.0</commons-beanutils.version>     <!-- must be 1.9.2 at least due to CVE-2014-0114, but still pulls in outdated collections3 -->
-        <commons-collections4.version>4.4</commons-collections4.version>
-        <commons-fileupload.version>1.6.0</commons-fileupload.version>    <!-- must be 1.3.3 at least due to CVE-2016-1000031 -->
-        <commons-text.version>1.13.1</commons-text.version>               <!-- not used in t9t, but DM made to cover for transitive dependencies -->
+        <commons-collections4.version>4.5.0</commons-collections4.version>
+        <commons-fileupload.version>1.6.0</commons-fileupload.version>      <!-- must be 1.3.3 at least due to CVE-2016-1000031 -->
+        <commons-text.version>1.14.0</commons-text.version>               <!-- not used in t9t, but DM made to cover for transitive dependencies -->
         <commons-csv.version>1.14.0</commons-csv.version>                 <!-- not used in t9t, but DM made for downstream projects -->
 
         <!-- AWS SDK v2 -->
-        <aws2-bom.version>2.29.52</aws2-bom.version>
+        <aws2-bom.version>2.32.12</aws2-bom.version>
 
         <!-- AWS JDBC wrapper for Aurora -->
-        <aws-jdbc-wrapper.version>2.5.4</aws-jdbc-wrapper.version>
+        <aws-jdbc-wrapper.version>2.6.1</aws-jdbc-wrapper.version>
 
         <!-- Azure -->
         <azure-cosmosdb.version>2.6.16</azure-cosmosdb.version>
-        <azure-cosmos-sdk.version>4.72.0</azure-cosmos-sdk.version>
+        <azure-cosmos-sdk.version>4.73.1</azure-cosmos-sdk.version>
 
         <!-- Vector databases -->
         <pinecone.version>5.1.0</pinecone.version>
-        <qdrant-client.version>1.14.1</qdrant-client.version>
+        <qdrant-client.version>1.15.0</qdrant-client.version>
 
         <!-- More AI stuff & DM for its dependencies -->
         <jsoup.version>1.17.2</jsoup.version>
-        <langchain4j.version>1.1.0</langchain4j.version>
-        <grpc.version>1.68.1</grpc.version>
+        <langchain4j.version>1.2.0</langchain4j.version>
+        <grpc.version>1.74.0</grpc.version>
         <kotlin-stdlib.version>1.9.25</kotlin-stdlib.version>
         <okio.version>3.9.1</okio.version>          <!-- used by pinecone -->
         <okhttp.version>4.12.0</okhttp.version>     <!-- used by pinecone -->
+
+        <!-- needed for MCP -->
+        <reactor-core.version>3.7.8</reactor-core.version>
+        <reactor-netty.version>1.2.8</reactor-netty.version>
+        <mcp-sdk.version>0.11.0</mcp-sdk.version>
 
         <!-- Camunda BPMN: still linked to pre-jakarta spring version, removing -->
         <!-- <camunda-bom.version>7.18.0</camunda-bom.version> -->
@@ -140,8 +146,8 @@
         <junit.version>4.13.2</junit.version>      <!-- groupId is junit -->
         <hamcrest.version>3.0</hamcrest.version>   <!-- avoid unless required -->
         <byte-buddy.version>1.17.6</byte-buddy.version>   <!-- 1.12.x requested by mockito 4.2.0, and reuired for Java 17 -->
-        <org.mockito.version>5.17.0</org.mockito.version>
-        <archunit.version>1.4.0</archunit.version>
+        <org.mockito.version>5.18.0</org.mockito.version>
+        <archunit.version>1.4.1</archunit.version>
         <hdrhistogram.version>2.2.2</hdrhistogram.version>
 
         <!-- Others -->
@@ -157,10 +163,10 @@
         <httpcore.version>4.4.16</httpcore.version>
         <httpclient.version>4.5.14</httpclient.version>
         <httpcore5.version>5.3.4</httpcore5.version>
-        <httpclient5.version>5.4.4</httpclient5.version>
+        <httpclient5.version>5.5</httpclient5.version>
         <httpmime.version>4.5.14</httpmime.version>
         <pdfbox.version>3.0.5</pdfbox.version>
-        <freemarker.version>2.3.32</freemarker.version>
+        <freemarker.version>2.3.34</freemarker.version>
         <jasperreports.version>7.0.3</jasperreports.version>
         <openpdf.version>1.3.30</openpdf.version>
         <flyingsaucer.version>9.4.0</flyingsaucer.version>
@@ -168,26 +174,26 @@
 
         <javassist.version>3.30.2-GA</javassist.version>
         <guava.version>33.4.8-jre</guava.version>
-        <caffeine.version>3.1.8</caffeine.version>
+        <caffeine.version>3.2.2</caffeine.version>
         <antlr.version>3.2</antlr.version>
-        <resteasy.version>6.2.10.Final</resteasy.version>
+        <resteasy.version>7.0.0.Beta1</resteasy.version>
         <googlemaps.services.version>2.2.0</googlemaps.services.version>
         <uuid-generator.version>4.2.0</uuid-generator.version>
         <apache-poi.version>5.4.1</apache-poi.version>
         <xmlbeans.version>5.3.0</xmlbeans.version>
-        <gson.version>2.12.1</gson.version>
-        <log4j2.version>2.25.0</log4j2.version>     <!-- see comment below -->
+        <gson.version>2.13.1</gson.version>
+        <log4j2.version>2.25.1</log4j2.version>     <!-- see comment below -->
         <reload4j.version>1.2.26</reload4j.version>
 
         <!-- Spring core -->
-        <spring-bom.version>6.2.8</spring-bom.version>
+        <spring-bom.version>6.2.9</spring-bom.version>
         <!-- Spring data -->
-        <spring-data-jpa.version>3.4.5</spring-data-jpa.version>
+        <spring-data-jpa.version>3.5.2</spring-data-jpa.version>
         <!-- Spring boot -->
-        <spring-boot.version>3.4.5</spring-boot.version>
+        <spring-boot.version>3.5.4</spring-boot.version>
 
-        <netty.version>4.1.122.Final</netty.version>
-        <vertx4.version>4.5.15</vertx4.version>
+        <netty.version>4.2.3.Final</netty.version>
+        <vertx4.version>5.0.1</vertx4.version>
         <hazelcast-kubernetes.version>2.2.3</hazelcast-kubernetes.version>
 
         <snakeyaml.version>2.3</snakeyaml.version>
@@ -197,16 +203,16 @@
         <hikaricp.version>5.0.1</hikaricp.version>
         <flyway.version>10.15.2</flyway.version>
         <reflections.version>0.9.10</reflections.version>
-        <maven-plugin-api.version>3.9.10</maven-plugin-api.version>
-        <jackson.version>2.18.3</jackson.version>
+        <maven-plugin-api.version>3.9.11</maven-plugin-api.version>
+        <jackson.version>2.19.2</jackson.version>
         <solr.version>8.11.1</solr.version>
         <camel.version>4.10.6</camel.version>
         <jsch.version>2.27.2</jsch.version>
         <kafka.version>3.9.1</kafka.version>
-        <error-prone.version>2.28.0</error-prone.version>
+        <error-prone.version>2.41.0</error-prone.version>
 
         <!-- Monitoring -->
-        <micrometer.version>1.14.6</micrometer.version>
+        <micrometer.version>1.15.2</micrometer.version>
         <prometheus.version>0.16.0</prometheus.version>
 
         <!-- Swagger -->
@@ -216,10 +222,11 @@
         <!-- Google Services -->
         <google-http-client.version>1.47.1</google-http-client.version>
         <google-auth-library.version>1.17.0</google-auth-library.version>
-        <firebase-admin.version>9.4.3</firebase-admin.version>
+        <firebase-admin.version>9.5.0</firebase-admin.version>
 
-        <msal4j.version>1.19.1</msal4j.version>
-        <nimbus.version>10.0.2</nimbus.version>
+        <msal4j.version>1.22.0</msal4j.version>
+        <nimbus.version>10.4</nimbus.version>
+        <jboss-logging.version>3.6.1.Final</jboss-logging.version>
         <cxf.version>4.1.2</cxf.version>
     </properties>
 
@@ -593,6 +600,14 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>org.hibernate.search</groupId>
+                <artifactId>hibernate-search-bom</artifactId>
+                <version>${hibernate-search.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
             <!-- Camunda BPMN: still linked to pre-jakarta spring version, removing
             <dependency>
                 <groupId>org.camunda.bpm</groupId>
@@ -713,12 +728,6 @@
             <!-- In-memory providers -->
             <!-- OR mappers -->
             <dependency>
-                <groupId>net.sf.ehcache</groupId>
-                <artifactId>ehcache</artifactId>
-                <classifier>jakarta</classifier>
-                <version>${ehcache.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.hibernate.orm</groupId>  <!-- does not exist after alpha7. Deprecated? -->
                 <artifactId>hibernate-ehcache</artifactId>
                 <version>${hibernate.version}</version>
@@ -737,6 +746,11 @@
                 <groupId>org.hibernate.orm</groupId>
                 <artifactId>hibernate-vector</artifactId>
                 <version>${hibernate.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hazelcast</groupId>
+                <artifactId>hazelcast</artifactId>
+                <version>${hazelcast.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate.validator</groupId>
@@ -1096,13 +1110,6 @@
                 <artifactId>micrometer-registry-prometheus</artifactId>
                 <version>${micrometer.version}</version>
             </dependency>
-            <!-- micrometer-registry-prometheus-simpleclient (deprecated) is added as an interim solution
-            and should be removed once vertx-micrometer-metrics is upgraded to Micrometer 1.13.x (use vertx 5) -->
-            <dependency>
-                <groupId>io.micrometer</groupId>
-                <artifactId>micrometer-registry-prometheus-simpleclient</artifactId>
-                <version>${micrometer.version}</version>
-            </dependency>
 
             <!-- microprofile -->
             <dependency>
@@ -1267,8 +1274,8 @@
 
             <!-- Jetty (embeddable) -->
             <dependency>
-                <groupId>org.eclipse.jetty.ee10</groupId>
-                <artifactId>jetty-ee10-servlet</artifactId>
+                <groupId>org.eclipse.jetty.ee11</groupId>
+                <artifactId>jetty-ee11-servlet</artifactId>
                 <version>${jetty.version}</version>
             </dependency>
             <dependency>
@@ -1292,13 +1299,13 @@
                 <version>${jetty.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.eclipse.jetty.ee10</groupId>
-                <artifactId>jetty-ee10-servlets</artifactId>
+                <groupId>org.eclipse.jetty.ee11</groupId>
+                <artifactId>jetty-ee11-servlets</artifactId>
                 <version>${jetty.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.eclipse.jetty.ee10</groupId>
-                <artifactId>jetty-ee10-webapp</artifactId>
+                <groupId>org.eclipse.jetty.ee11</groupId>
+                <artifactId>jetty-ee11-webapp</artifactId>
                 <version>${jetty.version}</version>
             </dependency>
 
@@ -1586,6 +1593,12 @@
                 <type>pom</type>
             </dependency>
 
+            <dependency>
+                <groupId>org.jboss.logging</groupId>
+                <artifactId>jboss-logging</artifactId>
+                <version>${jboss-logging.version}</version>
+            </dependency>
+
             <!-- Apache CXF -->
             <dependency>
                 <groupId>org.apache.cxf</groupId>
@@ -1601,6 +1614,23 @@
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-rt-transports-http</artifactId>
                 <version>${cxf.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.projectreactor</groupId>
+                <artifactId>reactor-core</artifactId>
+                <version>${reactor-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.projectreactor.netty</groupId>
+                <artifactId>reactor-netty-http</artifactId>
+                <version>${reactor-netty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.modelcontextprotocol.sdk</groupId>
+                <artifactId>mcp-bom</artifactId>
+                <version>${mcp-sdk.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
             </dependency>
 
         </dependencies>
