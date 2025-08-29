@@ -62,13 +62,14 @@ public class AuthFilterCustomization implements IAuthFilterCustomization {
     protected final boolean allowApiKey = RestUtils.checkIfSet("t9t.restapi.apikey", Boolean.TRUE);
     protected final boolean allowLogin  = RestUtils.checkIfSet("t9t.restapi.login",  Boolean.FALSE);
     protected final boolean allowAnyContentType  = RestUtils.checkIfSet("t9t.restapi.any.content.type",  Boolean.FALSE);
-    protected final String allowedUserList = RestUtils.getConfigValue("t9t.restapi.allowedUserList");
-    protected final String allowedUserRegexp = RestUtils.getConfigValue("t9t.restapi.allowedUserRegexp");
-    protected final Set<String> allowedUserIds = T9tUtil.isBlank(allowedUserList) ? null : Sets.newHashSet(allowedUserList.split(","));
-    protected final Pattern allowedUserPattern = T9tUtil.isBlank(allowedUserRegexp) ? null : Pattern.compile(allowedUserRegexp);
-    protected final Boolean allowUserPwDefault = Boolean.valueOf(allowedUserIds != null || allowedUserPattern != null);
-    protected final boolean allowUserPw = RestUtils.checkIfSet("t9t.restapi.userpw", allowUserPwDefault);
-    protected final String allowedApiKeyRegexp = RestUtils.getConfigValue("t9t.restapi.allowedApiKeyRegexp");
+    protected final String allowedUserList       = RestUtils.getConfigValue("t9t.restapi.allowedUserList");
+    protected final String allowedUserRegexp     = RestUtils.getConfigValue("t9t.restapi.allowedUserRegexp");
+    protected final Set<String> allowedUserIds   = T9tUtil.isBlank(allowedUserList) ? null : Sets.newHashSet(allowedUserList.split(","));
+    protected final Pattern allowedUserPattern   = T9tUtil.isBlank(allowedUserRegexp) ? null : Pattern.compile(allowedUserRegexp);
+    protected final Boolean allowUserPwDefault   = Boolean.valueOf(allowedUserIds != null || allowedUserPattern != null);
+    protected final boolean allowUserPw          = RestUtils.checkIfSet("t9t.restapi.userpw", allowUserPwDefault);
+    protected final boolean allowHttpOptions     = RestUtils.checkIfSet("t9t.restapi.allowHttpOptions", Boolean.FALSE);
+    protected final String allowedApiKeyRegexp   = RestUtils.getConfigValue("t9t.restapi.allowedApiKeyRegexp");
     protected final Pattern allowedApiKeyPattern = T9tUtil.isBlank(allowedApiKeyRegexp) ? null : Pattern.compile(allowedApiKeyRegexp);
 
     protected final Cache<String, Boolean> goodAuths = Caffeine.newBuilder().maximumSize(MAX_AUTH_ENTRIES).expireAfterWrite(5L, TimeUnit.MINUTES)
@@ -115,11 +116,12 @@ public class AuthFilterCustomization implements IAuthFilterCustomization {
     @Override
     public boolean filterUnauthenticated(final ContainerRequestContext requestContext) {
         final String path = requestContext.getUriInfo().getPath();
-        LOGGER.debug("filterUnauthenticated for method {}, type {}, path {}", requestContext.getMethod(), requestContext.getMediaType(), path);
-        switch (requestContext.getMethod()) {
+        final String httpMethod = requestContext.getMethod();
+        LOGGER.debug("filterUnauthenticated for method {}, type {}, path {}", httpMethod, requestContext.getMediaType(), path);
+        switch (httpMethod) {
         case HttpMethod.POST:
             // allow login, but only if JWT is enabled
-            if (!isValidLogin(path, requestContext.getMethod())) {
+            if (!isValidLogin(path, httpMethod)) {
                 throwUnauthorized(requestContext);
                 return true;  // filtered
             }
@@ -131,7 +133,7 @@ public class AuthFilterCustomization implements IAuthFilterCustomization {
             if (enablePing && isValidPing(path)) {
                 return false; // OK
             }
-            if (allowLogin && isValidLogin(path, requestContext.getMethod())) {  // deprecated, currently forbidden by default
+            if (allowLogin && isValidLogin(path, httpMethod)) {  // deprecated, currently forbidden by default
                 return false; // OK
             }
             throwUnauthorized(requestContext);
@@ -329,6 +331,18 @@ public class AuthFilterCustomization implements IAuthFilterCustomization {
     /** Invoked for GET requests: Check for allowed GET paths. */
     protected boolean isValidPing(final String path) {
         return "/ping".equals(path);
+    }
+
+    @Override
+    public boolean filterHttpMethod(final ContainerRequestContext requestContext) {
+        if (!allowHttpOptions) {
+            final String getMethod = requestContext.getMethod();
+            if (HttpMethod.OPTIONS.equals(getMethod)) {
+                abortFilter(requestContext, Response.status(Status.METHOD_NOT_ALLOWED).build());
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

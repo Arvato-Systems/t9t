@@ -36,6 +36,11 @@ public class T9tAiException extends T9tException {
     public static final int UNKNOWN_AI_TOOL             = OFFSET + 101;
     public static final int AI_TOOL_NO_PERMISSION       = OFFSET + 102;
     public static final int MCP_SERIALIZATION_ERROR     = OFFSET_ERR + 103;
+    public static final int INVALID_PROMPT_NAME         = OFFSET + 104;
+    public static final int MISSING_REQUIRED_ARGUMENT   = OFFSET + 105;
+    public static final int AI_PROMPT_NO_PERMISSION     = OFFSET + 106;
+    public static final int TOOLS_NOT_AVAILABLE         = OFFSET + 107;
+    public static final int PROMPTS_NOT_AVAILABLE       = OFFSET + 108;
 
     static {
         registerRange(CORE_OFFSET, false, T9tAiException.class, ApplicationLevelType.FRAMEWORK, "t9t general AI integration layer");
@@ -44,5 +49,10 @@ public class T9tAiException extends T9tException {
         registerCode(UNKNOWN_AI_TOOL,           "No AI tool of such name");
         registerCode(AI_TOOL_NO_PERMISSION,     "No permission to run specified AI tool");
         registerCode(MCP_SERIALIZATION_ERROR,   "Problem serializing MCP result to JSON");
+        registerCode(INVALID_PROMPT_NAME,       "Invalid prompt name");
+        registerCode(MISSING_REQUIRED_ARGUMENT, "Required argument is missing");
+        registerCode(AI_PROMPT_NO_PERMISSION,   "No permission to get specific AI prompt");
+        registerCode(TOOLS_NOT_AVAILABLE,       "Tools cannot be fetched");
+        registerCode(PROMPTS_NOT_AVAILABLE,     "Prompts cannot be fetched");
     }
 }

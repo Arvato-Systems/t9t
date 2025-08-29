@@ -36,6 +36,6 @@ public class ToolsListMcpRestRequestHandler implements IMcpRestRequestHandler {
                 LOGGER.debug("Retrieved {} tools", aiGetToolsResponse.getTools().size());
                 final McpResultPayload mcpToolsResult = mcpService.mapGetToolsResponse(aiGetToolsResponse);
                 return McpRestUtils.getJsonMediaData(mcpService.out(id, mcpToolsResult));
-            });
+            }, sr -> mcpService.createMcpError(sr, id));
     }
 }

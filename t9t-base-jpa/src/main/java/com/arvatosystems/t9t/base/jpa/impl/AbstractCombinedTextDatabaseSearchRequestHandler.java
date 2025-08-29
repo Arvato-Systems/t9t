@@ -23,9 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import jakarta.persistence.EntityManager;
-
-import org.eclipse.xtext.xbase.lib.util.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +39,7 @@ import com.arvatosystems.t9t.base.services.AbstractSearchRequestHandler;
 import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.ISearchTools;
 import com.arvatosystems.t9t.base.services.ITextSearch;
+import com.arvatosystems.t9t.base.services.ITextSearch.DocumentTypeNeeded;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.cfg.be.ApplicationConfiguration;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
@@ -61,6 +59,7 @@ import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.bonaparte.util.FreezeTools;
 import de.jpaw.bonaparte.util.ToStringHelper;
 import de.jpaw.dp.Jdp;
+import jakarta.persistence.EntityManager;
 
 /**
  * The combined search evaluates if we have filter and/or sort criteria for DB and SOLR,
@@ -106,14 +105,15 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<
     public AbstractCombinedTextDatabaseSearchRequestHandler(final IResolverSurrogateKey<REF, TRACKING, ENTITY> resolver,
             final IEntityMapper<Long, DTO, TRACKING, ENTITY> mapper,
             final List<AbstractCombinedTextDatabaseSearchRequestHandler.SearchTypeMappingEntry> textSearchPathElements,
-            final Map<String, String> textSearchFieldMappings, final String documentName, final String keyFieldName,
+            final Map<String, String> textSearchFieldMappings, final String documentName, final String entityName, final String keyFieldName,
             final BonaPortableClass<SearchRequest<DTO, TRACKING>> bclass) {
         super();
         this.resolver = resolver;
         this.mapper = mapper;
         this.textSearchPathElements = textSearchPathElements;
         this.textSearchFieldMappings = textSearchFieldMappings;
-        this.documentName = documentName;
+        final String configKey = this.getClass().getSimpleName();  // use the name of the specific request handler as key (as before, just with an appended "Handler")
+        this.documentName = textSearch.getDocumentTypeNeeded() == DocumentTypeNeeded.KEYWORD ? documentName : ConfigProvider.getSearchRequestParameter(configKey, entityName);
         this.keyFieldName = keyFieldName;
         this.bclass = bclass;
     }
@@ -528,7 +528,7 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<
     protected SearchFilterTypeEnum filterTypeForField(final String path) {
         for (final SearchTypeMappingEntry stme: textSearchPathElements) {
             if (thatMatches(stme, path)) {
-                return stme.getSearchType();
+                return stme.searchType;
             }
         }
         return SearchFilterTypeEnum.DB_ONLY;  // default
@@ -553,74 +553,10 @@ public abstract class AbstractCombinedTextDatabaseSearchRequestHandler<
     /**
      * List entry for a prefix which defines if a field is SOLR only, DB only, or
      * both search engines can evaluate the field.
-     * FIXME: All boilerplate, use record once we have Java 17!!!
      */
-    public static class SearchTypeMappingEntry {
-        protected final String name; // the path prefix (or substring)
-        protected final SearchFilterTypeEnum searchType; // defines which search type can filter by this expression
-        protected final SearchFilterMatchTypeEnum matchType; // if true, then the pattern may occur anywhere, normally the path must start
-
-        public SearchTypeMappingEntry(final String name, final SearchFilterTypeEnum searchType, final SearchFilterMatchTypeEnum matchType) {
-            this.name = name;
-            this.searchType = searchType;
-            this.matchType = matchType;
-        }
-
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
-            result = prime * result + ((this.searchType == null) ? 0 : this.searchType.hashCode());
-            return prime * result + ((this.matchType == null) ? 0 : this.matchType.hashCode());
-        }
-
-        @Override
-        public boolean equals(final Object obj) {
-            if (this == obj)
-                return true;
-            if (obj == null)
-                return false;
-            if (getClass() != obj.getClass())
-                return false;
-            final SearchTypeMappingEntry other = (SearchTypeMappingEntry) obj;
-            if (this.name == null) {
-                if (other.name != null)
-                    return false;
-            } else if (!this.name.equals(other.name))
-                return false;
-            if (this.searchType == null) {
-                if (other.searchType != null)
-                    return false;
-            } else if (!this.searchType.equals(other.searchType))
-                return false;
-            if (this.matchType == null) {
-                if (other.matchType != null)
-                    return false;
-            } else if (!this.matchType.equals(other.matchType))
-                return false;
-            return true;
-        }
-
-        @Override
-        public String toString() {
-            final ToStringBuilder b = new ToStringBuilder(this);
-            b.add("name", this.name);
-            b.add("searchType", this.searchType);
-            b.add("matchType", this.matchType);
-            return b.toString();
-        }
-
-        public String getName() {
-            return this.name;
-        }
-
-        public SearchFilterTypeEnum getSearchType() {
-            return this.searchType;
-        }
-
-        public SearchFilterMatchTypeEnum getMatchType() {
-            return this.matchType;
-        }
+    public record SearchTypeMappingEntry(
+        String name,                                // the path prefix (or substring)
+        SearchFilterTypeEnum searchType,            // defines which search type can filter by this expression
+        SearchFilterMatchTypeEnum matchType) {      // if true, then the pattern may occur anywhere, normally the path must start
     }
 }

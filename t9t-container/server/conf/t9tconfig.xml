@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<T9tServerConfiguration xmlns="http://arvatosystems.com/schema/t9t_cfg_be.xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://arvatosystems.com/schema/t9t_cfg_be.xsd">
+    <serverIdSelf>SERVER-MAIN</serverIdSelf>
+    <persistenceUnitName>t9t-DS</persistenceUnitName>
+
+    <databaseConfiguration>
+        <databaseBrand>POSTGRES</databaseBrand>
+        <jdbcDriverClass>software.amazon.jdbc.Driver</jdbcDriverClass>
+        <jdbcConnectString>$env:POSTGRES_MAIN_URL</jdbcConnectString>
+        <username>$env:POSTGRES_MAIN_USER</username>
+        <password>$env:POSTGRES_MAIN_PASSWORD</password>
+
+        <migrations>filesystem:./migration/t9t-sql=fw_t9t-sql-sql</migrations>
+
+        <!-- Maximum DB connections -->
+        <z>hibernate.c3p0.max_size=15</z>
+        <z>hibernate.c3p0.max_statements=15</z>
+        <!-- Minimum DB connections (always active connections) -->
+        <z>hibernate.c3p0.min_size=10</z>
+        <!-- Check connection every 60 sec -->
+        <z>hibernate.c3p0.idle_test_period=60</z>
+
+        <!-- AWS-wrapper-specific -->
+        <z>hibernate.connection.failoverTimeoutMs=60000</z>
+        <z>hibernate.connection.wrapperPlugins=auroraConnectionTracker,failover,efm2</z>
+    </databaseConfiguration>
+
+    <secondaryDatabaseConfig>
+        <databaseBrand>POSTGRES</databaseBrand>
+        <jdbcDriverClass>software.amazon.jdbc.Driver</jdbcDriverClass>
+        <jdbcConnectString>$env:POSTGRES_MAIN_URL</jdbcConnectString>
+        <username>$env:POSTGRES_MAIN_USER</username>
+        <password>$env:POSTGRES_MAIN_PASSWORD</password>
+
+        <hikariMinimumIdle>5</hikariMinimumIdle>
+        <hikariMaximumPoolSize>20</hikariMaximumPoolSize>
+        <hikariMaxLifetime>240000</hikariMaxLifetime>
+
+        <hikariExceptionOverrideClassName>software.amazon.jdbc.util.HikariCPSQLException</hikariExceptionOverrideClassName>
+        <z>keepSessionStateOnFailover=true</z>
+        <z>failoverTimeoutMs=60000</z>
+        <z>wrapperPlugins=auroraConnectionTracker,failover,efm2</z>
+    </secondaryDatabaseConfig>
+
+    <shadowDatabaseConfig> <!-- READ-ONLY/SHADOW managed by hikari -->
+        <persistenceUnitName>t9t-DS-SHADOW</persistenceUnitName>
+        <databaseBrand>POSTGRES</databaseBrand>
+        <jdbcDriverClass>software.amazon.jdbc.Driver</jdbcDriverClass>
+        <jdbcConnectString>$env:POSTGRES_MAIN_URL</jdbcConnectString>
+        <username>$env:POSTGRES_MAIN_USER</username>
+        <password>$env:POSTGRES_MAIN_PASSWORD</password>
+
+        <z>hibernate.hikari.maximumPoolSize=40</z>
+        <z>hibernate.hikari.maxLifetime=240000</z> <!-- 4 minutes -->
+
+        <!-- AWS-wrapper-specific -->
+        <z>hibernate.hikari.exceptionOverrideClassName=software.amazon.jdbc.util.HikariCPSQLException</z>
+        <z>hibernate.connection.keepSessionStateOnFailover=true</z>
+        <z>hibernate.connection.failoverTimeoutMs=60000</z>
+        <z>hibernate.connection.wrapperPlugins=auroraConnectionTracker,failover,efm2</z>
+    </shadowDatabaseConfig>
+
+    <serverConfiguration>
+        <filesystemPathRoot>/home/fortytwo</filesystemPathRoot>
+        <keyStorePath>/conf/t9tkeystore.jceks</keyStorePath>
+        <keyStorePassword>$env:KEYSTORE_PASSWORD</keyStorePassword>
+    </serverConfiguration>
+
+    <applicationConfiguration>
+        <workerPoolSize>10</workerPoolSize>
+        <autonomousPoolSize>8</autonomousPoolSize>
+        <useShadowDatabaseForMonitoringQueries>true</useShadowDatabaseForMonitoringQueries>
+        <useShadowDatabaseForCombinedTextSearch>true</useShadowDatabaseForCombinedTextSearch>
+    </applicationConfiguration>
+
+     <asyncMsgConfiguration>
+        <strategy>NOOP</strategy>
+        <maxMessageAtStartup>100</maxMessageAtStartup>
+        <timeoutIdleGreen>500</timeoutIdleGreen>
+        <timeoutIdleRed>5000</timeoutIdleRed>
+        <timeoutShutdown>10000</timeoutShutdown>
+        <timeoutExternal>10000</timeoutExternal>
+        <waitAfterExtError>120000</waitAfterExtError>
+        <waitAfterDbErrors>120000</waitAfterDbErrors>
+    </asyncMsgConfiguration>
+
+    <disableScheduler>false</disableScheduler>
+    <runInCluster>true</runInCluster>
+    <importEnvironment>t9t</importEnvironment>
+    <schedulerEnvironment>main</schedulerEnvironment>
+
+    <mocks>SMTP</mocks>
+
+</T9tServerConfiguration>

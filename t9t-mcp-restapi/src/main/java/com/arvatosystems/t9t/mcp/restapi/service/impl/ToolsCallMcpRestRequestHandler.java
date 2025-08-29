@@ -1,8 +1,6 @@
 package com.arvatosystems.t9t.mcp.restapi.service.impl;
 
-import com.arvatosystems.t9t.ai.T9tAiConstants;
 import com.arvatosystems.t9t.ai.mcp.IMcpService;
-import com.arvatosystems.t9t.ai.mcp.McpResultPayload;
 import com.arvatosystems.t9t.ai.mcp.McpUtils;
 import com.arvatosystems.t9t.ai.request.AiRunToolRequest;
 import com.arvatosystems.t9t.ai.request.AiRunToolResponse;
@@ -39,7 +37,7 @@ public class ToolsCallMcpRestRequestHandler implements IMcpRestRequestHandler {
         LOGGER.debug("Received tools call request with toolName={}, arguments={}", toolName, arguments);
         if (T9tUtil.isBlank(toolName)) {
             LOGGER.error("Tool name is missing in the request body");
-            McpRestUtils.sendResponse(resp, Response.Status.BAD_REQUEST, mcpService.error(id, T9tAiConstants.MCP_INVALID_PARAMS, "Tool name is missing"));
+            McpRestUtils.sendResponse(resp, Response.Status.BAD_REQUEST, mcpService.error(id, McpUtils.MCP_INVALID_PARAMS, "Tool name is missing"));
             return;
         }
         final AiRunToolRequest runRq = new AiRunToolRequest();
@@ -47,9 +45,8 @@ public class ToolsCallMcpRestRequestHandler implements IMcpRestRequestHandler {
         runRq.setArguments(arguments);
         restProcessor.performAsyncBackendRequest(httpHeaders, resp, runRq, McpUtils.METHOD_TOOLS_CALL, AiRunToolResponse.class,
             aiRunToolResponse -> {
-                final McpResultPayload mcpToolsResult = mcpService.mapRunToolsResponse(aiRunToolResponse);
-                return McpRestUtils.getJsonMediaData(mcpService.out(id, mcpToolsResult));
-            });
+                return McpRestUtils.getJsonMediaData(mcpService.out(id, mcpService.mapRunToolResponse(aiRunToolResponse)));
+            }, sr -> mcpService.createMcpError(sr, id));
     }
 
 }

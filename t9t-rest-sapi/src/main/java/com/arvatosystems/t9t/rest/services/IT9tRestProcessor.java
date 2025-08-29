@@ -44,6 +44,9 @@ public interface IT9tRestProcessor {
     <T extends ServiceResponse> void performAsyncBackendRequest(HttpHeaders httpHeaders, AsyncResponse resp, RequestParameters requestParameters,
             String infoMsg, Class<T> backendResponseClass, Function<T, BonaPortable> responseMapper);
 
+    <T extends ServiceResponse> void performAsyncBackendRequest(HttpHeaders httpHeaders, AsyncResponse resp, RequestParameters requestParameters,
+            String infoMsg, Class<T> backendResponseClass, Function<T, BonaPortable> responseMapper,
+            Function<ServiceResponse, BonaPortable> errorResponseMapper);
     /**
      * Performs the request asynchronously, with a specific request mapper.
      * If the provided list has a single element, the first converter is applied,
@@ -86,7 +89,8 @@ public interface IT9tRestProcessor {
      * Adds a result entity of type GenericResult, but only if the return code is not an error which suggests unauthorized access.
      * Could be static, but declared in the interface to allow overriding.
      */
-    default void createGenericResultEntity(final ServiceResponse sr, final AsyncResponse resp, final String acceptHeader, final Runnable ipBlocker) {
+    default void createGenericResultEntity(final ServiceResponse sr, final AsyncResponse resp, final String acceptHeader,
+        final Runnable ipBlocker, final Function<ServiceResponse, BonaPortable> responseMapper) {
         final Response.ResponseBuilder responseBuilder = RestUtils.createResponseBuilder(sr.getReturnCode());
         switch (sr.getReturnCode()) {
         case T9tException.HTTP_ERROR_NOT_AUTHENTICATED:
@@ -100,7 +104,7 @@ public interface IT9tRestProcessor {
         default:
             // produce a proper response with additional information
             responseBuilder.type(acceptHeader == null || acceptHeader.length() == 0 ? MediaType.APPLICATION_JSON : acceptHeader);
-            responseBuilder.entity(createResultFromServiceResponse(sr));
+            responseBuilder.entity(responseMapper.apply(sr));
         }
         addSecurityHeader(responseBuilder);
         resp.resume(responseBuilder.build());

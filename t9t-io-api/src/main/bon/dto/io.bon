@@ -260,7 +260,7 @@ package (com.arvatosystems) t9t.io {
         optional Unicode(1024)                          bootstrapServers;           // Kafka bootstrap servers for data exports
         optional Enum InputProcessingType               inputProcessingType;        // defines how / where to process input records (default is LOCAL)
         optional Integer                                inputProcessingParallel;    // defines the number of parallel threads to use for processing
-        optional customizationQualifier                 inputProcessingSplitter     properties qualifierFor="base.services.IInputQueuePartitioner"; // method to determine partition to use (if blank and inputProcessingParallel > 1: use round robin)
+        optional customizationQualifier                 inputProcessingSplitter     properties qualifierFor="base.IInputQueuePartitioner"; // method to determine partition to use (if blank and inputProcessingParallel > 1: use round robin)
         optional Unicode(255)                           inputProcessingTarget;      // required for KAFKA or REMOTE: the topic or the remote path to use for processing
         optional Boolean                                computeFileSize;            // compute and store file size after data export
         optional Boolean                                jsonWritePqon;              // write PQON info for Bonaparte JSON serializers (JSON, JSON-Kafka)

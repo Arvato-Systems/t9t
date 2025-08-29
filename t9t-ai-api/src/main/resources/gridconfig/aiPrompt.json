@@ -1,0 +1,9 @@
+{
+    "viewModel": "aiPrompt",
+    "filters": [
+        { "filterType": "W", "fieldName": "promptId" }
+    ],
+    "fields": [
+        "promptId", "title"
+    ]
+}

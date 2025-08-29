@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-28([%thread]) %-40.40logger{40} %-5level - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.apache.camel" level="INFO"/>
+
+    <logger name="org.hibernate.engine.internal.StatisticalLoggingSessionEventListener" level="WARN"/>
+    <logger name="com.hazelcast.nio.tcp.iobalancer.IOBalancer" level="INFO"/>
+
+    <logger name="de.jpaw" level="INFO"/>
+    <logger name="de.jpaw.dp.JdpEntry" level="DEBUG"/>
+    <logger name="com.arvatosystems" level="DEBUG"/>
+
+    <root level="WARN">
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>

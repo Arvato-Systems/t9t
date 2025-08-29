@@ -16,6 +16,7 @@
 package com.arvatosystems.t9t.mcp.restapi;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -24,8 +25,8 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.ai.T9tAiConstants;
 import com.arvatosystems.t9t.ai.mcp.IMcpService;
+import com.arvatosystems.t9t.ai.mcp.McpProtocolVersion;
 import com.arvatosystems.t9t.ai.mcp.McpUtils;
 import com.arvatosystems.t9t.ai.request.AiGetSseRequest;
 import com.arvatosystems.t9t.base.T9tUtil;
@@ -61,6 +62,10 @@ import jakarta.ws.rs.sse.SseEventSink;
 public class McpRestResource implements IT9tRestEndpoint {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(McpRestResource.class);
+    private static final List<String> SUPPORTED_PROTOCOL_VERSIONS = List.of(
+        McpProtocolVersion.INITIAL.getToken(),
+        McpProtocolVersion.UPDATE1.getToken(),
+        McpProtocolVersion.UPDATE2.getToken());
 
     private static final ScheduledExecutorService SHARED_SCHEDULER = Executors.newSingleThreadScheduledExecutor(
         r -> {
@@ -98,6 +103,10 @@ public class McpRestResource implements IT9tRestEndpoint {
         if (authHeader == null) {
             throw new WebApplicationException("Unauthorized", Response.Status.UNAUTHORIZED);
         }
+        final String protocolVersion = httpHeaders.getHeaderString(McpUtils.HTTP_HEADER_MCP_PROTOCOL);
+        final String acceptHeader = httpHeaders.getHeaderString(HttpHeaders.ACCEPT);
+        LOGGER.debug("SSE GET request received. Protocol Version: {}, Accept: {}", protocolVersion, acceptHeader);
+
         final UUID connectionId = UUID.randomUUID();
         final AiGetSseRequest permCheck = new AiGetSseRequest();
         permCheck.setEssentialKey(connectionId.toString());
@@ -136,19 +145,32 @@ public class McpRestResource implements IT9tRestEndpoint {
     @Consumes({ MediaType.APPLICATION_JSON })
     @POST
     public void ssePost(@Context final HttpHeaders httpHeaders, @Suspended final AsyncResponse resp, final JsonNode body) {
-        LOGGER.debug("SSE POST request received. {}", body);
+        final String protocolVersion = httpHeaders.getHeaderString(McpUtils.HTTP_HEADER_MCP_PROTOCOL);
+        final String acceptHeader = httpHeaders.getHeaderString(HttpHeaders.ACCEPT);
         final String id = McpRestUtils.getId(body);
         final String method = McpRestUtils.getMethod(body);
-        LOGGER.debug("Received notification with id={}, method={}", id, method);
-        if (T9tUtil.isBlank(id) || T9tUtil.isBlank(method)) {
-            LOGGER.error("Key parameters are null, ignoring the message.");
+        LOGGER.debug("SSE POST request received. Protocol Version: {}, Accept: {}, Id {}, Method {}", protocolVersion, acceptHeader, id, method);
+        // validate the method and protocol version. We have to respond with 400 if we do not support the requested protocol version.
+        if (T9tUtil.isBlank(method)) {
+            // method is required
+            McpRestUtils.sendResponse(resp, Response.Status.BAD_REQUEST, "No method specified in request body");
+            return;
+        }
+        if (protocolVersion != null && !SUPPORTED_PROTOCOL_VERSIONS.contains(protocolVersion)) {
+            // we do not support the requested protocol version
+            McpRestUtils.sendResponse(resp, Response.Status.BAD_REQUEST, "Unsupported MCP protocol version");
+            return;
+        }
+
+        if (T9tUtil.isBlank(id)) {
+            // is a notification
             McpRestUtils.sendResponse(resp, Response.Status.NO_CONTENT, null);
             return;
         }
         final IMcpRestRequestHandler mcpRestRequestHandler = Jdp.getOptional(IMcpRestRequestHandler.class, method.toLowerCase());
         if (mcpRestRequestHandler == null) {
             LOGGER.error("No handler found for method: {}", method);
-            McpRestUtils.sendResponse(resp, Response.Status.NOT_FOUND, mcpService.error(id, T9tAiConstants.MCP_METHOD_NOT_FOUND, "Method not found: " + method));
+            McpRestUtils.sendResponse(resp, Response.Status.NOT_FOUND, mcpService.error(id, McpUtils.MCP_METHOD_NOT_FOUND, "Method not found: " + method));
             return;
         }
         mcpRestRequestHandler.handleRequest(httpHeaders, resp, id, body);

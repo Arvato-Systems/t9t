@@ -1,19 +1,16 @@
 package com.arvatosystems.t9t.mcp.vertx.impl;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.BiFunction;
-
-import com.arvatosystems.t9t.ai.mcp.IMcpService;
-import com.arvatosystems.t9t.ai.mcp.McpUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
-
-import com.arvatosystems.t9t.ai.T9tAiConstants;
 import com.arvatosystems.t9t.ai.T9tAiException;
+import com.arvatosystems.t9t.ai.mcp.IMcpService;
+import com.arvatosystems.t9t.ai.mcp.McpPromptResult;
+import com.arvatosystems.t9t.ai.mcp.McpPromptsResult;
 import com.arvatosystems.t9t.ai.mcp.McpResult;
 import com.arvatosystems.t9t.ai.mcp.McpResultPayload;
+import com.arvatosystems.t9t.ai.mcp.McpUtils;
+import com.arvatosystems.t9t.ai.request.AiGetPromptRequest;
+import com.arvatosystems.t9t.ai.request.AiGetPromptResponse;
+import com.arvatosystems.t9t.ai.request.AiGetPromptsRequest;
+import com.arvatosystems.t9t.ai.request.AiGetPromptsResponse;
 import com.arvatosystems.t9t.ai.request.AiGetToolsRequest;
 import com.arvatosystems.t9t.ai.request.AiGetToolsResponse;
 import com.arvatosystems.t9t.ai.request.AiRunToolRequest;
@@ -27,21 +24,31 @@ import com.arvatosystems.t9t.jackson.JacksonTools;
 import com.arvatosystems.t9t.server.services.IRequestProcessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.dp.Jdp;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RequestBody;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 
 public class McpEndpointHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(McpEndpointHandler.class);
 
     private static final String JSONRPC_VERSION = "2.0";
-    private static final String PROTOCOL_VERSION = "2025-03-26";  // latest is "2025-06-18", but Eclipse refused working with it, and VSCode silently ignores structuredContent
 
-    private final Map<String, BiFunction<JsonObject, AuthenticationInfo, BonaPortable>> dispatcher = new ConcurrentHashMap<>();
+    // This interface is used to define the type of handlers in the dispatcher map
+    @FunctionalInterface
+    private interface McpHandler {
+        BonaPortable handle(@Nonnull JsonObject obj, @Nonnull AuthenticationInfo auth, @Nullable String protocolVersion);
+    }
+    private final Map<String, McpHandler> dispatcher = new ConcurrentHashMap<>();
 
     private final IRequestProcessor requestProcessor = Jdp.getRequired(IRequestProcessor.class);
     private final ObjectMapper objectMapper = JacksonTools.createObjectMapper();
@@ -53,6 +60,8 @@ public class McpEndpointHandler {
         dispatcher.put("initialize", this::initialize);
         dispatcher.put("tools/list", this::toolsList);
         dispatcher.put("tools/call", this::toolsCall);
+        dispatcher.put("prompts/list", this::promptsList);
+        dispatcher.put("prompts/get", this::promptsGet);
     }
 
 
@@ -90,9 +99,13 @@ public class McpEndpointHandler {
         }
     }
 
-    private BonaPortable initialize(final JsonObject request, final AuthenticationInfo authInfo) {
+    private BonaPortable initialize(final JsonObject request, final AuthenticationInfo authInfo, final String protocolVersionOfHeader) {
+        // get the parameters of the client
+        final String clientInfo = request.getString("clientInfo");
+        final String protocolVersionOfClient = request.getString("protocolVersion");
+        LOGGER.debug("Initialize request from client: {}, protocol version: {}", clientInfo, protocolVersionOfClient);
         // construct the response
-        return mcpService.getInitializeResult();
+        return mcpService.getInitializeResult(protocolVersionOfClient);
     }
 
     /**
@@ -102,25 +115,26 @@ public class McpEndpointHandler {
      * @param authInfo the authentication information
      * @return the response, serialized as a string (logically a JSON object)
      */
-    public String handleRequest(final RequestBody body, final AuthenticationInfo authInfo) {
+    public String handleRequest(final RequestBody body, final AuthenticationInfo authInfo, final String protocolVersion) {
         final JsonObject request = body.asJsonObject();
         final Object id = request.getValue(McpUtils.KEY_ID);
+        final String method = request.getString(McpUtils.KEY_METHOD);
         // check for notification (no response expected)
         if (id == null) {
-            LOGGER.debug("received notification: {} (ignored)", request.getString(McpUtils.KEY_METHOD));
+            LOGGER.debug("received notification: {} (ignored)", method);
             return null;
         }
         // check if there is a valid handler
-        final BiFunction<JsonObject, AuthenticationInfo, BonaPortable> handler = dispatcher.get(request.getString(McpUtils.KEY_METHOD));
+        final McpHandler handler = dispatcher.get(method);
         if (handler == null) {
-            return error(id, T9tAiConstants.MCP_METHOD_NOT_FOUND, "Method not found: " + request.getString(McpUtils.KEY_METHOD));
+            return error(id, McpUtils.MCP_METHOD_NOT_FOUND, "Method not found: " + method);
         }
         final JsonObject params = request.getJsonObject(McpUtils.KEY_PARAMS);
-        final BonaPortable response = handler.apply(params, authInfo);
+        final BonaPortable response = handler.handle(params, authInfo, protocolVersion);
         return response == null ? null : out(request, response);
     }
 
-    public McpResultPayload toolsList(final JsonObject request, final AuthenticationInfo authInfo) {
+    public McpResultPayload toolsList(final JsonObject request, final AuthenticationInfo authInfo, final String protocolVersion) {
         // obtain current tools list for the given user
         final AiGetToolsResponse aiGetToolsResponse = processRequest(new AiGetToolsRequest(), authInfo, AiGetToolsResponse.class);
         // transfer list of tools
@@ -128,7 +142,7 @@ public class McpEndpointHandler {
         return mcpService.mapGetToolsResponse(aiGetToolsResponse);
     }
 
-    public McpResultPayload toolsCall(final JsonObject request, final AuthenticationInfo authInfo) {
+    public McpResultPayload toolsCall(final JsonObject request, final AuthenticationInfo authInfo, final String protocolVersion) {
         // execute specified tool for the given user
         final String toolName = request.getString(McpUtils.KEY_NAME);
         final JsonObject arguments = request.getJsonObject(McpUtils.KEY_ARGUMENTS);
@@ -140,9 +154,8 @@ public class McpEndpointHandler {
         }
         final AiRunToolResponse aiRunToolResponse = processRequest(runRq, authInfo, AiRunToolResponse.class);
         // transfer result object
-        final BonaPortable result = aiRunToolResponse.getResponse();
-        LOGGER.debug("tool call {} returned result of type {} for user {}", toolName, result == null ? "(null)" : result.ret$PQON(), authInfo.getJwtInfo().getUserId());
-        return mcpService.mapRunToolsResponse(aiRunToolResponse);
+        LOGGER.debug("tool call {} returned result for user {}", toolName, authInfo.getJwtInfo().getUserId());
+        return mcpService.mapRunToolResponse(aiRunToolResponse);
     }
 
     protected <T extends ServiceResponse> T processRequest(final RequestParameters rq, final AuthenticationInfo authInfo, final Class<T> responseClass) {
@@ -156,5 +169,39 @@ public class McpEndpointHandler {
             LOGGER.error("Unexpected response type: expected {}, got {}", responseClass.getName(), resp.getClass().getName());
             throw new T9tException(resp.getReturnCode(), resp.getErrorMessage());
         }
+    }
+
+    public McpPromptsResult promptsList(final JsonObject request, final AuthenticationInfo authInfo, final String protocolVersion) {
+        // obtain current prompts list for the given user
+        final AiGetPromptsResponse aiGetPromptsResponse = processRequest(new AiGetPromptsRequest(), authInfo, AiGetPromptsResponse.class);
+        // transfer list of prompts
+        LOGGER.debug("retrieved {} prompts for user {}", aiGetPromptsResponse.getPrompts().size(), authInfo.getJwtInfo().getUserId());
+        return mcpService.mapGetPromptsResponse(aiGetPromptsResponse);
+    }
+
+    public McpPromptResult promptsGet(final JsonObject request, final AuthenticationInfo authInfo, final String protocolVersion) {
+        // obtain specific prompt
+        final AiGetPromptRequest rq = new AiGetPromptRequest();
+
+        final JsonObject params = request.getJsonObject(McpUtils.KEY_PARAMS);
+        // we need that data
+        if (params == null) {
+            LOGGER.error("Received prompts get request without parameters");
+            throw new T9tException(McpUtils.MCP_INVALID_PARAMS, "Missing parameters for prompts get request");
+        }
+        final String promptName = params.getString(McpUtils.KEY_NAME);
+        final JsonObject arguments = params.getJsonObject(McpUtils.KEY_PARAMS);
+        rq.setName(promptName);
+        if (arguments == null) {
+            LOGGER.debug("Received prompts get request for {} without arguments", promptName);
+            rq.setArguments(Map.of());
+        } else {
+            LOGGER.debug("Received prompts get request for {} with arguments {}", promptName, arguments.encode());
+            final Map untyped = arguments.getMap();
+            rq.setArguments(untyped);
+        }
+        final AiGetPromptResponse aiGetPromptResponse = processRequest(rq, authInfo, AiGetPromptResponse.class);
+        // transfer assembled prompt
+        return mcpService.mapGetPromptResponse(aiGetPromptResponse);
     }
 }

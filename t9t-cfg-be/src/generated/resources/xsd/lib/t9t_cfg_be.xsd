@@ -387,6 +387,13 @@
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:element>
+                    <xs:element name="indexConfigurationFile" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="255"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
                     <xs:element name="luceneConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:LuceneConfiguration"/>
                     <xs:element name="elasticSearchConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:ElasticSearchConfiguration"/>
                 </xs:sequence>
@@ -776,6 +783,7 @@
                     <xs:element name="enableGenericCallouts" minOccurs="0" nillable="true" type="xs:boolean"/>
                     <xs:element name="sharedFilesystem" minOccurs="0" nillable="true" type="xs:boolean"/>
                     <xs:element name="supportMcpSse" minOccurs="0" nillable="true" type="xs:boolean"/>
+                    <xs:element name="sendHeartbeat" minOccurs="0" nillable="true" type="xs:boolean"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
@@ -986,6 +994,13 @@
                 <xs:sequence>
                     <xs:element name="strategy" type="t9t_cfg_be:namedQualifier"/>
                     <xs:element name="defaultUrl" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="255"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="searchRequestConfiguration" minOccurs="0" maxOccurs="unbounded">
                         <xs:simpleType>
                             <xs:restriction base="xs:normalizedString">
                                 <xs:maxLength value="255"/>

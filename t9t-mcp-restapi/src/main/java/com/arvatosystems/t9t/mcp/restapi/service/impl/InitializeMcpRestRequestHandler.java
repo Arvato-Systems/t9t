@@ -3,8 +3,10 @@ package com.arvatosystems.t9t.mcp.restapi.service.impl;
 import com.arvatosystems.t9t.ai.mcp.IMcpService;
 import com.arvatosystems.t9t.ai.mcp.McpInitializeResult;
 import com.arvatosystems.t9t.ai.mcp.McpUtils;
+import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.mcp.restapi.service.IMcpRestRequestHandler;
 import com.fasterxml.jackson.databind.JsonNode;
+
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
@@ -22,7 +24,8 @@ public class InitializeMcpRestRequestHandler implements IMcpRestRequestHandler {
     @Override
     public void handleRequest(@Nonnull final HttpHeaders httpHeaders, @Nonnull final AsyncResponse resp, @Nonnull final String id,
         @Nonnull final JsonNode body) {
-        final McpInitializeResult result = mcpService.getInitializeResult();
+        final String protocolVersion = httpHeaders.getHeaderString(McpUtils.HTTP_HEADER_MCP_PROTOCOL);
+        final McpInitializeResult result = mcpService.getInitializeResult(T9tUtil.nvl(protocolVersion, McpUtils.FALLBACK_MCP_PROTOCOL_VERSION));
         final String output = mcpService.out(id, result);
         resp.resume(Response.ok(output).build());
     }

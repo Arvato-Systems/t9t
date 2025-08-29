@@ -1,11 +1,15 @@
 package com.arvatosystems.t9t.hs.configurate.be.core.impl;
 
+import com.arvatosystems.t9t.cfg.be.HibernateSearchConfiguration;
+import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration;
 import com.arvatosystems.t9t.hs.configurate.be.core.model.EmbeddedIndexEntityConfig;
 import com.arvatosystems.t9t.hs.configurate.be.core.model.EntityConfig;
 import com.arvatosystems.t9t.hs.configurate.be.core.model.EntitySearchConfiguration;
 import com.arvatosystems.t9t.hs.configurate.be.core.model.FieldConfig;
 import com.arvatosystems.t9t.hs.configurate.be.core.util.ConfigurationLoader;
+import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
+import org.hibernate.search.engine.backend.types.Sortable;
 import org.hibernate.search.mapper.orm.mapping.HibernateOrmMappingConfigurationContext;
 import org.hibernate.search.mapper.orm.mapping.HibernateOrmSearchMappingConfigurer;
 import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
@@ -31,10 +35,21 @@ public class EntityConfigurer implements HibernateOrmSearchMappingConfigurer {
 
         LOGGER.info("Starting Hibernate Search entity configuration");
 
+        final HibernateSearchConfiguration hibernateSearchConfiguration = Jdp.getRequired(T9tServerConfiguration.class).getHibernateSearchConfiguration();
+
         // Load configuration
-        EntitySearchConfiguration configuration = ConfigurationLoader.loadConfiguration();
+        EntitySearchConfiguration configuration;
+        if (hibernateSearchConfiguration == null
+                || hibernateSearchConfiguration.getIndexConfigurationFile() == null
+                || hibernateSearchConfiguration.getIndexConfigurationFile().isEmpty()) {
+            LOGGER.info("No custom configuration file specified, using default configuration");
+            configuration = ConfigurationLoader.loadConfiguration();
+        } else {
+            LOGGER.info("Loading Hibernate Search configuration from file: {}", hibernateSearchConfiguration.getIndexConfigurationFile());
+            configuration = ConfigurationLoader.loadConfiguration(hibernateSearchConfiguration.getIndexConfigurationFile());
+        }
         if (configuration == null || configuration.getEntities() == null) {
-            LOGGER.warn("No configuration found, using fallback configuration");
+            LOGGER.warn("No configuration found. Hibernate Search entity configuration will be skipped.");
             return;
         }
 
@@ -102,10 +117,10 @@ public class EntityConfigurer implements HibernateOrmSearchMappingConfigurer {
                 }
                 break;
             case "keywordfield":
-                propertyStep.keywordField();
+                propertyStep.keywordField().sortable(Sortable.YES);
                 break;
             case "genericfield":
-                propertyStep.genericField();
+                propertyStep.genericField().sortable(Sortable.YES);
                 break;
             default:
                 LOGGER.warn("Unknown field type '{}' for field '{}', using fullTextField as default",

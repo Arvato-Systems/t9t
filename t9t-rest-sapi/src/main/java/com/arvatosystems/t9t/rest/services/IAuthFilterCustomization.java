@@ -87,6 +87,14 @@ public interface IAuthFilterCustomization {
     boolean filterSupportedMediaType(@Nonnull ContainerRequestContext requestContext);
 
     /**
+     * Filter allowed HTTP Methods.
+     * Use to block the http OPTIONS method.
+     *
+     * @return false if processing can continue (no problem), true if the filter has aborted with an error code
+     */
+    boolean filterHttpMethod(@Nonnull ContainerRequestContext requestContext);
+
+    /**
      * Checks for correct UUID in case an idempotency header has been provided.
      *
      * @return false if processing can continue (no problem), true if the filter has aborted with an error code

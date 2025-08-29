@@ -68,7 +68,7 @@ public class ServiceRequestExecutor implements IUnauthenticatedServiceRequestExe
             throw new T9tException(T9tException.NOT_AUTHENTICATED);
         }
         AuthData adata = AUTH_CACHE.getIfPresent(ap);
-        if (adata != null && adata.getJwtInfo() != null && adata.getJwtInfo().getExpiresAt().isBefore(Instant.now())) {
+        if (adata != null && adata.jwtInfo() != null && adata.jwtInfo().getExpiresAt().isBefore(Instant.now())) {
             adata = null; // force reauth due to expiry of previous JWT
         }
         if (adata == null) {
@@ -106,7 +106,7 @@ public class ServiceRequestExecutor implements IUnauthenticatedServiceRequestExe
 
             return sr;
         }
-        return requestProcessor.execute(srq.getRequestHeader(), srq.getRequestParameters(), adata.getJwtInfo(), adata.getJwtToken(),
+        return requestProcessor.execute(srq.getRequestHeader(), srq.getRequestParameters(), adata.jwtInfo(), adata.jwtToken(),
             isTrusted, srq.getPartitionUsed());
     }
 }

@@ -1,10 +1,5 @@
 package com.arvatosystems.t9t.ai.be.request;
 
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.arvatosystems.t9t.ai.AiChatLogDTO;
 import com.arvatosystems.t9t.ai.AiConversationRef;
 import com.arvatosystems.t9t.ai.AiRoleType;
@@ -18,15 +13,19 @@ import com.arvatosystems.t9t.ai.service.IAiTool;
 import com.arvatosystems.t9t.ai.tools.AbstractAiTool;
 import com.arvatosystems.t9t.ai.tools.AbstractAiToolResult;
 import com.arvatosystems.t9t.ai.tools.AiToolMediaDataResult;
+import com.arvatosystems.t9t.ai.tools.AiToolNoResult;
 import com.arvatosystems.t9t.ai.tools.AiToolStringResult;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.auth.PermissionType;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.jackson.JacksonTools;
 import com.arvatosystems.t9t.server.services.IAuthorize;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.core.MapComposer;
 import de.jpaw.bonaparte.core.MapParser;
 import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
@@ -35,11 +34,19 @@ import de.jpaw.bonaparte.pojos.api.media.MediaType;
 import de.jpaw.dp.Jdp;
 import de.jpaw.json.JsonParser;
 import de.jpaw.util.ApplicationException;
+import java.util.ArrayList;
+import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AiRunToolRequestHandler extends AbstractRequestHandler<AiRunToolRequest> {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(AiRunToolRequestHandler.class);
+    private final ObjectMapper objectMapper = JacksonTools.createObjectMapper();
+
     private final IAuthorize authorizer = Jdp.getRequired(IAuthorize.class);
     private final IAiChatLogService aiChatLogService = Jdp.getRequired(IAiChatLogService.class);
+
 
     @Override
     public AiRunToolResponse execute(final RequestContext ctx, final AiRunToolRequest request) {
@@ -71,13 +78,13 @@ public class AiRunToolRequestHandler extends AbstractRequestHandler<AiRunToolReq
             }
             // call the tool (hack to get it around type checks)
             final IAiTool toolInstance = tool.toolInstance();
-//                if (conversationRef != null) {
-//                    // log the call (to be completed)
-//                    logToolCall(ctx, conversationRef, tool.name(), requestObject);
-//                }
+            //                if (conversationRef != null) {
+            //                    // log the call (to be completed)
+            //                    logToolCall(ctx, conversationRef, tool.name(), requestObject);
+            //                }
             final AbstractAiToolResult result = toolInstance.performToolCall(ctx, requestObject);
             // convert result to JSON
-            if (result == null) {
+            if (result == null || result instanceof AiToolNoResult) {
                 LOGGER.debug("Output of tool call to {} returned null (OK)", request.getName());
                 setText(toolResponse, "Success! (No data returned by tool.)");
             } else if (result instanceof AiToolStringResult textResult) {
@@ -85,10 +92,10 @@ public class AiRunToolRequestHandler extends AbstractRequestHandler<AiRunToolReq
                 setText(toolResponse, textResult.getText());
             } else if (result instanceof AiToolMediaDataResult mediaDataResult) {
                 LOGGER.debug("Output of tool call to {} resulted in MediaData of type {}", request.getName(), mediaDataResult.getMediaData().getMediaType());
-                toolResponse.setResponse(mediaDataResult.getMediaData());
+                addMediaData(toolResponse, mediaDataResult.getMediaData());
             } else {
                 LOGGER.debug("Output of tool call to {} returned object of type {}", request.getName(), result.ret$PQON());
-                toolResponse.setResponse(result);
+                addStructuredContent(toolResponse, result);
             }
         } catch (final Exception e) {
             LOGGER.error("Exception in tool call", e);
@@ -99,11 +106,36 @@ public class AiRunToolRequestHandler extends AbstractRequestHandler<AiRunToolReq
 
     }
 
+    private void addStructuredContent(AiRunToolResponse toolResponse, AbstractAiToolResult result) {
+        toolResponse.setStructuredResponse(MapComposer.marshal(result, false, false));
+
+        // since it's very new and VS Code (1.102) and Eclipse do not yet understand it,
+        // also provide the classical format
+        try {
+            setText(toolResponse, objectMapper.writeValueAsString(result));
+        } catch (JsonProcessingException e) {
+            LOGGER.error("Jackson exception: ", e);
+            setText(toolResponse, "Internal error. Check logs for details.");
+            toolResponse.setIsError(Boolean.TRUE);
+        }
+    }
+
+    private void addMediaData(AiRunToolResponse toolResponse, MediaData mediaData) {
+        if (toolResponse.getContents() == null) {
+            toolResponse.setContents(new ArrayList<>());
+        }
+        if (mediaData != null) {
+            toolResponse.getContents().add(mediaData);
+        } else {
+            LOGGER.warn("Tool returned null MediaData, ignoring");
+        }
+    }
+
     private void setText(final AiRunToolResponse toolResultMessage, final String text) {
         final MediaData mediaData = new MediaData();
         mediaData.setMediaType(MediaType.TEXT);
         mediaData.setText(text);
-        toolResultMessage.setResponse(mediaData);
+        addMediaData(toolResultMessage, mediaData);
     }
 
     private void logToolCall(final RequestContext ctx, final Long conversationRef, final String function, final BonaPortable parameters) {

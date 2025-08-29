@@ -137,4 +137,30 @@ package (com.arvatosystems) t9t.ai {
         optional f42Ref                                 businessRef;                        // for example an order ref
         optional Json                                   z;                                  // project specific extensions
     }
+
+    /**
+     * Configuration of MCP prompts.
+     */
+    class AiPromptRef RTTI 448 extends Ref {}
+    final class AiPromptKey extends AiPromptRef {
+        required defaultExternalId                      promptId;
+    }
+    class AiPromptDTO extends AiPromptRef {
+        required defaultExternalId                      promptId        properties notupdatable;  // the MCP name
+        required boolean                                isActive        properties active;        // set inactive to hide this prompt
+        required shortText                              title;                                    // the title sent to the LLM
+        required Unicode(4000) allowControlChars        description;                              // a slightly longer description of the prompt
+        required Unicode(64000) allowControlChars       prompt;                                   // the prompt itself, with parameters
+        required (AiPromptParameterDTO)                 parameters      properties serialized, compact2;                             // parameters to the prompt
+    }
+
+    /** Wrapper object, only required because Bonaparte cannot currently store Maps or Lists directly serialized. */
+    class AiPromptParameterDTO {
+        required (AiPromptParameter) required Map<String> parameters;                             // parameters to the prompt
+    }
+
+    class AiPromptParameter {
+        required boolean                                isRequired;                               // true if the prompt is a required parameter
+        required Unicode(4000) allowControlChars        description;                              // description of the parameter
+    }
 }

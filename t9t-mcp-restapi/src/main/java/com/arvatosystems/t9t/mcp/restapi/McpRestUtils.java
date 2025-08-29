@@ -17,6 +17,7 @@ public final class McpRestUtils {
         response.resume(Response.status(status).entity(message).build());
     }
 
+    @Nonnull
     public static MediaData getJsonMediaData(@Nonnull final String data) {
         final MediaData mediaData = new MediaData();
         mediaData.setMediaType(MediaType.JSON);
@@ -24,23 +25,28 @@ public final class McpRestUtils {
         return mediaData;
     }
 
+    @Nullable
     public static String getId(@Nonnull final JsonNode json) {
         return getTextValue(json, McpUtils.KEY_ID);
     }
 
+    @Nullable
     public static String getMethod(@Nonnull final JsonNode json) {
         return getTextValue(json, McpUtils.KEY_METHOD);
     }
 
+    @Nullable
     public static String getName(@Nonnull final JsonNode json) {
         return getTextValue(json, McpUtils.KEY_NAME);
     }
 
+    @Nullable
     public static String getArgumentValue(@Nonnull final JsonNode json) {
         final JsonNode valueNode = json.get(McpUtils.KEY_ARGUMENTS);
         return valueNode != null ? valueNode.toString() : null;
     }
 
+    @Nullable
     public static String getTextValue(@Nonnull final JsonNode json, @Nonnull final String key) {
         final JsonNode valueNode = json.get(key);
         return valueNode != null ? valueNode.asText() : null;

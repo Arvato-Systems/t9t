@@ -22,6 +22,8 @@ import com.arvatosystems.t9t.ai.request.AiConversationCrudRequest;
 import com.arvatosystems.t9t.ai.request.AiConversationSearchRequest;
 import com.arvatosystems.t9t.ai.request.AiModuleCfgCrudRequest;
 import com.arvatosystems.t9t.ai.request.AiModuleCfgSearchRequest;
+import com.arvatosystems.t9t.ai.request.AiPromptCrudRequest;
+import com.arvatosystems.t9t.ai.request.AiPromptSearchRequest;
 import com.arvatosystems.t9t.ai.request.AiUserStatusCrudRequest;
 import com.arvatosystems.t9t.ai.request.AiUserStatusSearchRequest;
 import com.arvatosystems.t9t.base.CrudViewModel;
@@ -56,6 +58,11 @@ public final class T9tAiModels implements IViewModelContainer {
         FullTrackingWithVersion.BClass.INSTANCE,
         AiModuleCfgSearchRequest.BClass.INSTANCE,
         AiModuleCfgCrudRequest.BClass.INSTANCE);
+    private static final CrudViewModel<AiPromptDTO, FullTrackingWithVersion> AI_PROMPT_VIEW_MODEL = new CrudViewModel<>(
+        AiPromptDTO.BClass.INSTANCE,
+        FullTrackingWithVersion.BClass.INSTANCE,
+        AiPromptSearchRequest.BClass.INSTANCE,
+        AiPromptCrudRequest.BClass.INSTANCE);
 
     @Override
     public void register() {
@@ -64,5 +71,6 @@ public final class T9tAiModels implements IViewModelContainer {
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("aiUserStatus",      AI_USER_STATUS_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("aiChatLog",         AI_CHAT_LOG_VIEW_MODEL);
         IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("aiModuleCfg",       AI_MODULE_CFG_VIEW_MODEL);
+        IViewModelContainer.CRUD_VIEW_MODEL_REGISTRY.putIfAbsent("aiPrompt",          AI_PROMPT_VIEW_MODEL);
     }
 }

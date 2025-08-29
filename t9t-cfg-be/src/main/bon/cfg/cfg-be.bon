@@ -120,6 +120,7 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         required Ascii(30)                          searchType;                 // Hibernate Search backend type, e.g. "lucene", "elasticsearch"
         optional Ascii(30)                          schemaManagementStrategy;   // how to handle schema management, e.g. "none", "drop-and-create"
         optional Ascii(150)                         mappingConfigurer;          // the class name of the mapping configurer to use, e.g. "com.arvatosystems.t9t.hs.configurate.be.core.impl.EntityConfigurer"
+        optional Unicode(255)                       indexConfigurationFile;     // the path to the index configuration file, e.g. "classpath:hibernate-search-entities.json"
         optional (LuceneConfiguration...)           luceneConfiguration;
         optional (ElasticSearchConfiguration...)    elasticSearchConfiguration;
     }
@@ -203,6 +204,7 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional Boolean                            enableGenericCallouts;          // allow callouts to other instances for arbitrary requests (must be true in order to allow ExecuteRemoteRequest)
         optional Boolean                            sharedFilesystem;               // all servers, gateways and the ZK UI share the same file system (allows lazy loading of media data)
         optional Boolean                            supportMcpSse;                  // if set to true, then /sse will be a valid path next to /rpc, to accept MCP requests
+        optional Boolean                            sendHeartbeat;                  // if set to true, then /sse will send heartbeat events to GET requests
     }
 
     class ApplicationConfiguration {
@@ -248,6 +250,7 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
     class SearchConfiguration {
         required namedQualifier                     strategy;                       // select the implementation (SOLR, HIBERNATE-SEARCH...)
         optional Unicode(255)                       defaultUrl;                     // default URL, for example of a SOLR server. Providers can override by DB
+        required Unicode(255) List<>                searchRequestConfiguration;     // configuration of search requests, which can be used to search for entities
     }
 
     class AsyncTransmitterConfiguration {

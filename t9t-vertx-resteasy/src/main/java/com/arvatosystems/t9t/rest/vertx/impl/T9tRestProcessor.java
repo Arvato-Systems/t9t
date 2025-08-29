@@ -88,8 +88,15 @@ public class T9tRestProcessor implements IT9tRestProcessor {
 
     @Override
     public <T extends ServiceResponse> void performAsyncBackendRequest(final HttpHeaders httpHeaders, final AsyncResponse resp,
+           final RequestParameters requestParameters, final String infoMsg, final Class<T> backendResponseClass,
+           final Function<T, BonaPortable> responseMapper) {
+        performAsyncBackendRequest(httpHeaders, resp, requestParameters, infoMsg, backendResponseClass, responseMapper, this::createResultFromServiceResponse);
+    }
+
+    @Override
+    public <T extends ServiceResponse> void performAsyncBackendRequest(final HttpHeaders httpHeaders, final AsyncResponse resp,
             final RequestParameters requestParameters, final String infoMsg, final Class<T> backendResponseClass,
-            final Function<T, BonaPortable> responseMapper) {
+            final Function<T, BonaPortable> responseMapper, Function<ServiceResponse, BonaPortable> errorResponseMapper) {
         // must evaluate httpHeaders now, because httpHeaders is a proxy and no longer valid in the other thread
         final String acceptHeader = determineResponseType(httpHeaders);
         try {
@@ -126,7 +133,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
                 if (ar.succeeded()) {
                     final ServiceResponse sr = ar.result();
                     if (!ApplicationException.isOk(sr.getReturnCode())) {
-                        createGenericResultEntity(sr, resp, acceptHeader,  () -> ipBlockerService.registerBadAuthFromIp(remoteIp));
+                        createGenericResultEntity(sr, resp, acceptHeader,  () -> ipBlockerService.registerBadAuthFromIp(remoteIp), errorResponseMapper);
                         return;
                     }
                     if (backendResponseClass.isAssignableFrom(sr.getClass())) {

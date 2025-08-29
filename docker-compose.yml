@@ -1,0 +1,22 @@
+services:
+  mcp-gateway:
+    image: ${REGISTRY:-localhost:6000}/t9t-gateway-mcp:latest
+    build:
+      context: ./t9t-container
+      dockerfile: Dockerfile
+      target: t9t-gateway-mcp
+    environment:
+      # Backend connection
+      HOST: host.docker.internal
+      PORT: 8024
+      # Gateway config
+      JETTY_HTTP_PORT: 9094
+      T9T_MCP_APIKEY: f5916def-b209-434d-ba8c-7e87ded2595a #your-api-key-here
+    ports:
+      - "9094:9094"
+    networks:
+      - t9t-network
+
+networks:
+  t9t-network:
+    driver: bridge

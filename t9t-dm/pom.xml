@@ -176,7 +176,12 @@
             </dependency>
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-jetty-restgateway</artifactId>
+                <artifactId>t9t-gateway-rest</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.arvato-systems.t9t</groupId>
+                <artifactId>t9t-gateway-mcp</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -808,6 +813,11 @@
 
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
+                <artifactId>t9t-server</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-server-sapi</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -1099,12 +1109,17 @@
             </dependency>
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
-                <artifactId>t9t-zkui-jar</artifactId>
+                <artifactId>t9t-zkui</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.arvato-systems.t9t</groupId>
                 <artifactId>t9t-zkui-jetty</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.arvato-systems.t9t</groupId>
+                <artifactId>t9t-container</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

@@ -15,7 +15,6 @@
  */
 package com.arvatosystems.t9t.auth.vertx;
 
-import org.eclipse.xtend2.lib.StringConcatenation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -116,17 +115,14 @@ public class T9tAuthVertx implements IServiceModule {
             final IMessageDecoder<BonaPortable, byte[]> decoder = coderFactory.getDecoderInstance(ct);
             final IMessageEncoder<ServiceResponse, byte[]> encoder = coderFactory.getEncoderInstance(ct);
             if (decoder == null || encoder == null) {
-                final StringConcatenation builder = new StringConcatenation();
-                builder.append("Content-Type ");
-                builder.append(ct);
-                builder.append(" not supported for path /login");
-                IServiceModule.error(rc, 415, builder.toString());
+                final String msg = "Content-Type " + ct + " not supported for /login";
+                IServiceModule.error(rc, 415, msg);
                 return;
             }
 
             final RoutingContext ctx = rc;
 
-            String locale = null;
+            final String locale;
             if (ctx.preferredLanguage() != null && ctx.preferredLanguage().tag() != null) {
                 locale = rc.preferredLanguage().tag();
             } else {

@@ -28,6 +28,12 @@ import t9t.ai.*
 package (com.arvatosystems) t9t.ai.mcp {
     default private unsigned trim noControlChars;
 
+    enum McpProtocolVersion {
+        INITIAL = "2024-11-05", // initial version of the MCP protocol for AI integrations
+        UPDATE1 = "2025-03-26", // first update to the MCP protocol for AI integrations
+        UPDATE2 = "2025-06-18"  // second update to the MCP protocol for AI integrations
+    }
+
     /**
      * Specification of a single tool, suitable for MCP.
      * See https://modelcontextprotocol.io/specification/2025-06-18/server/tools for an example.
@@ -40,6 +46,17 @@ package (com.arvatosystems) t9t.ai.mcp {
         optional (JsonSchemaObject)                         outputSchema;       // JSON schema of the tool result (optional)
     }
 
+    /**
+     * Specification of a single prompt, suitable for MCP.
+     * See https://modelcontextprotocol.io/specification/2025-06-18/server/prompts for an example.
+     */
+    final class AiPromptSpecification {
+        required defaultExternalId                          name;
+        optional shortText                                  title;
+        required Unicode(64000) allowControlChars           description;
+        required (PromptParameter) required List<>          arguments;
+    }
+
     /** Information to describe a single field of any type (common superclass). */
     abstract class AbstractJsonSchemaField {
         required Ascii(16)                                  ^type;
@@ -50,6 +67,12 @@ package (com.arvatosystems) t9t.ai.mcp {
     final class JsonSchemaObject extends AbstractJsonSchemaField {
         required (AbstractJsonSchemaField...) Map<String>   ^properties;
         required defaultExternalId List<>                   ^required;
+    }
+
+    final class PromptParameter {
+        required defaultExternalId                          name;
+        required boolean                                    isRequired;
+        required Unicode(64000) allowControlChars           description;
     }
 
     /** Information to describe a string field (this includes temporal types). */
@@ -130,8 +153,26 @@ package (com.arvatosystems) t9t.ai.mcp {
     final class McpCapabilityTools {
         optional Boolean                                    unused;   // avoid Jackson serializer problem
     }
+    final class McpCapabilityPrompts {
+        optional Boolean                                    listChanged;
+    }
 
     final class McpToolsResult {
         required (AiToolSpecification) required List<>      tools;
+    }
+
+    final class McpPromptsResult {
+        required (AiPromptSpecification) required List<>    prompts;
+        optional Ascii(1..5)                                nextCursor;
+    }
+
+    final class McpPromptResult {
+        required Unicode(4000) allowControlChars            description;
+        required (PromptMessage) required List<>            messages;
+    }
+
+    final class PromptMessage {
+        required defaultExternalId                          role;
+        required (McpContentElement)                        content;
     }
 }

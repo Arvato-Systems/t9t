@@ -1,0 +1,18 @@
+{
+  "entities": [
+    {
+      "className": "com.arvatosystems.t9t.auth.jpa.entities.TenantEntity",
+      "fields": [
+        {
+          "name": "tenantId",
+          "type": "fulltextfield"
+        },
+        {
+          "name": "isActive",
+          "type": "genericField"
+        }
+      ],
+      "embeddedIndexEntities": []
+    }
+  ]
+}

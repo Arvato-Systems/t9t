@@ -17,6 +17,7 @@ package com.arvatosystems.t9t.auth.jpa.impl;
 
 import com.arvatosystems.t9t.auth.TenantLogoDTO;
 import com.arvatosystems.t9t.auth.jpa.entities.TenantLogoEntity;
+import com.arvatosystems.t9t.auth.jpa.mapping.ITenantLogoDTOMapper;
 import com.arvatosystems.t9t.auth.jpa.persistence.ITenantLogoEntityResolver;
 import com.arvatosystems.t9t.auth.services.ITenantLogoDtoResolver;
 import com.arvatosystems.t9t.core.jpa.impl.AbstractModuleConfigResolver;
@@ -41,7 +42,7 @@ public class TenantLogoDtoResolver extends AbstractModuleConfigResolver<TenantLo
     }
 
     public TenantLogoDtoResolver() {
-        super(ITenantLogoEntityResolver.class);
+        super(ITenantLogoEntityResolver.class, ITenantLogoDTOMapper.class);
     }
 
     @Override

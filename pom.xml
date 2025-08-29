@@ -37,11 +37,19 @@
          mvn license:format -rf :t9t-build
     -->
     <properties>
+        <java.version>21</java.version>               <!-- Used by spring boot -->
+
+        <!-- used for container -->
+        <java.image>amazoncorretto</java.image>
+        <java.tag>21-alpine-full</java.tag>
+        <jprofiler.version>15_0_3</jprofiler.version>
+        <jmx.exporter.version>1.0.1</jmx.exporter.version>
+
         <min-maven.version>3.9.9</min-maven.version>  <!-- version currently used by github -->
 
         <!-- to be used by dependent projects (same as project.version, but must be provided explicitly so that imports work) -->
         <t9t.version>9.0-SNAPSHOT</t9t.version>
-        <xtext.version>2.38.0</xtext.version>
+        <xtext.version>2.40.0</xtext.version>
 
         <!-- Build specific properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -73,18 +81,18 @@
         <maven-enforcer-plugin.version>3.6.1</maven-enforcer-plugin.version>
         <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
         <owasp-maven-plugin.version>7.2.1</owasp-maven-plugin.version>
-        <spring-boot-maven-plugin.version>3.5.4</spring-boot-maven-plugin.version>
+        <spring-boot-maven-plugin.version>3.5.5</spring-boot-maven-plugin.version>
         <tycho.version>4.0.8</tycho.version>
         <git-commit-id-plugin.version>9.0.2</git-commit-id-plugin.version>
         <jaxws-maven-plugin.version>4.0.3</jaxws-maven-plugin.version>
         <eclipse-lifecycle-mapping.version>1.0.0</eclipse-lifecycle-mapping.version>
         <bundle.plugin.version>5.1.2</bundle.plugin.version> <!-- felix, for pricing RCP -->
         <exec.plugin.version>3.0.0</exec.plugin.version>
-        <jetty-maven-plugin.version>12.1.0.beta2</jetty-maven-plugin.version>
+        <jetty-maven-plugin.version>12.1.0</jetty-maven-plugin.version>
         <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
-        <cxf-codegen-plugin.version>4.1.2</cxf-codegen-plugin.version>
-        <cxf-wadl2java-plugin.version>4.1.2</cxf-wadl2java-plugin.version>
-        <cxf-java2ws-plugin.version>4.1.2</cxf-java2ws-plugin.version>
+        <cxf-codegen-plugin.version>4.1.3</cxf-codegen-plugin.version>
+        <cxf-wadl2java-plugin.version>4.1.3</cxf-wadl2java-plugin.version>
+        <cxf-java2ws-plugin.version>4.1.3</cxf-java2ws-plugin.version>
         <cxf-xjc-plugin.version>4.1.0</cxf-xjc-plugin.version>
         <echo-maven-plugin.version>1.0.0</echo-maven-plugin.version>
         <jaxb2-maven-plugin.version>3.2.0</jaxb2-maven-plugin.version>
@@ -93,14 +101,14 @@
         <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
         <maven-site-plugin.version>3.21.0</maven-site-plugin.version>
         <maven-project-info-reports-plugin.version>3.9.0</maven-project-info-reports-plugin.version>
-        <maven-javadoc-plugin.version>3.11.2</maven-javadoc-plugin.version>
+        <maven-javadoc-plugin.version>3.11.3</maven-javadoc-plugin.version>
 
         <!-- Versions of Xtext & Xtend plugins -->
         <xtend-maven-plugin.version>${xtext.version}</xtend-maven-plugin.version>
         <xtext-maven-plugin.version>${xtext.version}</xtext-maven-plugin.version>
         <jdt.version>3.42.0</jdt.version>
 
-        <bonaparte-plugin.version>6.2.0</bonaparte-plugin.version>
+        <bonaparte-plugin.version>6.3.0</bonaparte-plugin.version>
         <license-plugin.version>5.0.0</license-plugin.version>
 
         <checkstyle.version>10.20.1</checkstyle.version>
@@ -121,6 +129,10 @@
         <asciidoctor-maven-plugin.version>3.2.0</asciidoctor-maven-plugin.version>
         <asciidoctorj.version>2.5.10</asciidoctorj.version>
         <jruby.version>9.4.12.1</jruby.version>
+
+        <!-- Angular related versions -->
+        <typescript.version>~5.8.2</typescript.version>
+        <rxjs.version>~7.8.1</rxjs.version>
     </properties>
 
     <prerequisites>
@@ -136,9 +148,9 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>${maven-compiler-plugin.version}</version>
                     <configuration>
-                        <source>17</source>
-                        <target>17</target>
-                        <release>17</release>
+                        <source>21</source>
+                        <target>21</target>
+                        <release>21</release>
                         <encoding>${project.build.sourceEncoding}</encoding>
                     </configuration>
                 </plugin>
@@ -214,8 +226,8 @@
                                 <goal>generate</goal>
                             </goals>
                             <configuration>
-                                <compilerSourceLevel>17</compilerSourceLevel>
-                                <compilerTargetLevel>17</compilerTargetLevel>
+                                <compilerSourceLevel>21</compilerSourceLevel>
+                                <compilerTargetLevel>21</compilerTargetLevel>
                                 <addOutputDirectoriesToCompileSourceRoots>false</addOutputDirectoriesToCompileSourceRoots>
                                 <sourceRoots>
                                     <sourceRoot>${project.basedir}/src/main/bon</sourceRoot>
@@ -267,7 +279,7 @@
 
                 <!-- xtend -->
                 <plugin>
-                    <groupId>org.eclipse.xtend</groupId>
+                    <groupId>org.eclipse.xtext</groupId>
                     <artifactId>xtend-maven-plugin</artifactId>
                     <version>${xtend-maven-plugin.version}</version>
                     <executions>
@@ -554,7 +566,7 @@
                                     <pluginExecutionFilter>
                                         <groupId>org.eclipse.xtext</groupId>
                                         <artifactId>xtext-maven-plugin</artifactId>
-                                        <versionRange>[2.8.0,]</versionRange>
+                                        <versionRange>[2.40.0,]</versionRange>
                                         <goals>
                                             <goal>generate</goal>
                                         </goals>
@@ -780,7 +792,6 @@
                                 <exclude>**/Migration/*.sql</exclude>
                                 <exclude>**/*.xsd</exclude>
                                 <exclude>checkstyle.xml</exclude>
-                                <exclude>global-angular-dm</exclude>
                             </excludes>
                         </licenseSet>
                     </licenseSets>
@@ -907,7 +918,6 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>global-angular-dm</module>
                 <module>global-dm</module>
                 <module>global-zk-dm</module>
                 <module>global-sql-assembly</module>
@@ -1118,6 +1128,7 @@
                 <module>t9t-sql-migration-executor</module>
 
                 <module>t9t-mcp-restapi</module>
+                <module>t9t-gateway-mcp</module>
                 <module>t9t-tests-arch</module>
                 <module>t9t-tests-arch-be</module>
                 <module>t9t-vertx-cluster</module>
@@ -1126,15 +1137,13 @@
                 <module>t9t-vertx-resteasy</module>
                 <module>t9t-jetty-resteasy</module>
                 <module>t9t-jetty-kafka-resteasy</module>
-                <module>t9t-jetty-restgateway</module>
+                <module>t9t-gateway-rest</module>
                 <module>t9t-proxy</module>
                 <module>t9t-all-api</module>
                 <module>t9t-all</module>  <!-- t9t-all is t9t-all-be + t9t-all-jpa -->
                 <module>t9t-all-vertx</module>
 
-                <!-- <module>t9t-server-build-vertx-eclipselink</module> not used right now, skip in build to save time -->
-                <module>t9t-server-build-vertx-hibernate</module>
-                <module>t9t-server-build-vertx-hibernate-st</module>
+                <module>t9t-server</module>
                 <module>t9t-tests-auth</module>
                 <module>t9t-tests-misc</module>
                 <module>t9t-tests-doc</module>
@@ -1169,7 +1178,7 @@
                 <module>t9t-zkui-ee</module>
                 <module>t9t-zkui-screens</module>
                 <module>t9t-zkui-jetty</module>
-                <module>t9t-zkui-jar</module>
+                <module>t9t-zkui</module>
             </modules>
         </profile>
 
@@ -1194,7 +1203,7 @@
                 <module>t9t-zkui-ce</module>
                 <module>t9t-zkui-screens</module>
                 <module>t9t-zkui-jetty</module>
-                <module>t9t-zkui-jar</module>
+                <module>t9t-zkui</module>
             </modules>
         </profile>
 
@@ -1401,12 +1410,13 @@
                 <module>t9t-sql-migration-executor</module>
 
                 <module>t9t-mcp-restapi</module>
+                <module>t9t-gateway-mcp</module>
                 <module>t9t-vertx-cluster</module>
                 <module>t9t-vertx-metrics</module>
                 <module>t9t-vertx-mcp</module>
                 <module>t9t-vertx-resteasy</module>
                 <module>t9t-jetty-resteasy</module>
-                <module>t9t-jetty-restgateway</module>
+                <module>t9t-gateway-rest</module>
                 <module>t9t-jetty-kafka-resteasy</module>
                 <module>t9t-proxy</module>
                 <module>t9t-all-api</module>
@@ -1434,3 +1444,4 @@
         </profile>
     </profiles>
 </project>
+

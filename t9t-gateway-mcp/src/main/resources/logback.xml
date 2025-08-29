@@ -1,0 +1,19 @@
+<configuration>
+    <jmxConfigurator />
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-28([%thread]) %-5level %-40.40logger{40} - %msg%n</pattern>
+               <!-- %d %5.5p [%12.12t]  (%35.35c:%L) - %m%n  -->
+        </encoder>
+    </appender>
+
+    <logger name="de.jpaw" level="INFO"/>
+    <logger name="org.eclipse.jetty" level="INFO"/>
+
+    <!-- this is where we are interested in -->
+    <logger name="com.arvatosystems" level="DEBUG"/>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>

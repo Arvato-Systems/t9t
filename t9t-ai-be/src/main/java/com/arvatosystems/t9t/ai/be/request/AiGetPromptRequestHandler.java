@@ -1,0 +1,72 @@
+package com.arvatosystems.t9t.ai.be.request;
+
+import com.arvatosystems.t9t.ai.AiPromptDTO;
+import com.arvatosystems.t9t.ai.AiPromptParameter;
+import com.arvatosystems.t9t.ai.T9tAiException;
+import com.arvatosystems.t9t.ai.request.AiGetPromptRequest;
+import com.arvatosystems.t9t.ai.request.AiGetPromptResponse;
+import com.arvatosystems.t9t.ai.request.AiPromptSearchRequest;
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.auth.PermissionType;
+import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
+import com.arvatosystems.t9t.base.search.ReadAllResponse;
+import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;
+import com.arvatosystems.t9t.base.services.IExecutor;
+import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.server.services.IAuthorize;
+import de.jpaw.bonaparte.pojos.api.AsciiFilter;
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
+import de.jpaw.dp.Jdp;
+import jakarta.annotation.Nonnull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Map;
+
+public class AiGetPromptRequestHandler extends AbstractReadOnlyRequestHandler<AiGetPromptRequest> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AiGetPromptRequestHandler.class);
+
+    private final IExecutor executor = Jdp.getRequired(IExecutor.class);
+    private final IAuthorize authorizer = Jdp.getRequired(IAuthorize.class);
+
+    @Nonnull
+    @Override
+    public AiGetPromptResponse execute(@Nonnull final RequestContext ctx, @Nonnull final AiGetPromptRequest request) throws Exception {
+
+        final Permissionset permissions = authorizer.getPermissions(ctx.internalHeaderParameters.getJwtInfo(), PermissionType.PROMPT, request.getName());
+        if (!permissions.contains(OperationType.EXECUTE)) {
+            throw new T9tException(T9tAiException.AI_PROMPT_NO_PERMISSION, OperationType.EXECUTE.name() + " on " + request.getName());
+        }
+
+        final AiPromptSearchRequest searchRequest = new AiPromptSearchRequest();
+        final AsciiFilter filter = new AsciiFilter();
+        filter.setFieldName(AiPromptDTO.meta$$promptId.getName());
+        filter.setEqualsValue(request.getName());
+        searchRequest.setSearchFilter(filter);
+        final ReadAllResponse<AiPromptDTO, FullTrackingWithVersion> searchResponse = executor.executeSynchronousAndCheckResult(ctx, searchRequest, ReadAllResponse.class);
+        if (searchResponse.getDataList().isEmpty()) {
+            throw new T9tException(T9tAiException.INVALID_PROMPT_NAME, "Prompt with name '" + request.getName() + "' not found.");
+        }
+        final AiPromptDTO prompt = searchResponse.getDataList().getFirst().getData();
+        String promptText = prompt.getPrompt();
+        for (Map.Entry<String, AiPromptParameter> entry: prompt.getParameters().getParameters().entrySet()) {
+            final String paramName = entry.getKey();
+            final AiPromptParameter param = entry.getValue();
+            final String paramValue = request.getArguments().get(paramName);
+            if (paramValue != null) {
+                promptText = promptText.replace("${" + paramName + "}", paramValue);
+            } else if (!param.getIsRequired()) {
+                // just replace with empty string
+                promptText = promptText.replace("${" + paramName + "}", "");
+            } else {
+                throw new T9tException(T9tAiException.MISSING_REQUIRED_ARGUMENT, "Required argument '" + paramName + "' is missing for prompt '"
+                    + request.getName());
+            }
+        }
+        final AiGetPromptResponse response = new AiGetPromptResponse();
+        response.setPrompt(promptText);
+        response.setDescription(prompt.getDescription());
+        return response;
+    }
+}

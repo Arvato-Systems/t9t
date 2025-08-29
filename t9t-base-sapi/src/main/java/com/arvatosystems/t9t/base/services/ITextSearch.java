@@ -19,12 +19,20 @@ import java.util.List;
 
 import com.arvatosystems.t9t.base.search.SearchCriteria;
 
-/** Interface which allows the extension of text search using an engine like SOLR or Hibernate Search.
- *
- * @author BISC02
- *
+/**
+ * Interface which allows the extension of text search using an engine like SOLR or Hibernate Search.
  */
 public interface ITextSearch {
+    enum DocumentTypeNeeded {
+        KEYWORD,      // SOLR needs a short keywords to specify the search target
+        ENTITY_NAME  // hibernate search needs the entity name of the target class
+    }
+
+    /** Specifies which type of target specification is needed by this implementation. */
+    default DocumentTypeNeeded getDocumentTypeNeeded() {
+        return DocumentTypeNeeded.KEYWORD;
+    }
+
     /** Method provides the list of primary keys to data objects. */
     List<Long> search(RequestContext ctx, SearchCriteria sc, String documentName, String resultFieldName);
 }

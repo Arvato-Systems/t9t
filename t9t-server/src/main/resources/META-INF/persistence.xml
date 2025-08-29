@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2012 - 2018 Arvato Systems GmbH
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_2.xsd"
+        version="3.2">
+    <persistence-unit name="t9t-DS" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
+        <properties>
+            <!-- Common properties (most likely to be overwritten by values from the configuration file t9t-config.xml or its hardcoded fallback in project t9t-cfg-be) -->
+            <property name="jakarta.persistence.jdbc.driver"            value="org.postgresql.Driver" />
+            <property name="jakarta.persistence.jdbc.url"               value="jdbc:postgresql://10.6.237.202:8432/fortytwo" />
+            <property name="jakarta.persistence.jdbc.user"              value="fortytwo" />
+            <property name="jakarta.persistence.jdbc.password"          value="secret/changeMe" />
+
+            <!-- Properties for Hibernate -->
+            <!-- C3P0 settings -->
+            <property name="hibernate.connection.provider_class"        value="org.hibernate.connection.C3P0ConnectionProvider" />
+            <property name="hibernate.c3p0.dataSourceName"              value="t9t-jdbc" />
+            <property name="hibernate.c3p0.min_size"                    value="5" />
+            <property name="hibernate.c3p0.max_size"                    value="96" />
+            <property name="hibernate.c3p0.max_statements"              value="96" />
+            <property name="hibernate.c3p0.acquire_increment"           value="2" />
+            <!-- C3P0 debugging settings - not required for production -->
+            <!-- <property name="hibernate.c3p0.unreturnedConnectionTimeout" value="60" />              -->     <!-- self healing of leaks -->
+            <!-- <property name="hibernate.c3p0.debugUnreturnedConnectionStackTraces" value="true" />   -->     <!-- stack traces for debugging (EXPENSIVE!) -->
+
+            <property name="hibernate.connection.release_mode"          value="after_transaction" />   <!-- required for C3P0? -->
+            <property name="hibernate.connection.autocommit"            value="false" />
+            <property name="hibernate.archive.autodetection"            value="class" />  <!-- default in EE environments -->
+            <property name="hibernate.show_sql"                         value="false" />  <!-- activate for intense testing. Do not use (will use stdout), better way is to activate it in logback.xml -->
+            <property name="hibernate.generate_statistics"              value="true" />
+            <property name="hibernate.use_sql_comments"                 value="true" />
+            <!-- the next one speeds up connection time with remote DBs a lot -->
+            <property name="hibernate.temp.use_jdbc_metadata_defaults"  value="true" />  <!--  requires the dialect to be set explicitly! -->
+
+            <!-- <property name="hibernate.hbm2ddl.auto"                     value="create" />    -->   <!-- none / create-drop: set up and clean up tables -->
+
+            <!-- disable hibernate 2nd level cache ATM -->
+            <property name="hibernate.cache.use_second_level_cache"     value="false"/>
+            <!-- disable hibernate 2nd level cache ATM
+            <property name="hibernate.cache.use_query_cache"            value="false"/>
+            <property name="hibernate.cache.region.factory_class"       value="org.hibernate.cache.jcache.JCacheRegionFactory"/>
+            <property name="hibernate.javax.cache.provider"             value="org.ehcache.jsr107.EhcacheCachingProvider"/>
+            -->
+
+            <!-- Ordering of inserts / updates. Provides some tuning (less roundtrips to the DB). -->
+            <property name="hibernate.order_inserts"                    value="false" />
+            <property name="hibernate.order_updates"                    value="false" />
+            <property name="hibernate.jdbc.batch_versioned_data"        value="true" />
+            <property name="hibernate.jdbc.batch_size"                  value="25" />
+
+            <property name="hibernate.proc.param_null_passing"          value="true" />
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="t9t-DS-SHADOW" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
+        <properties>
+            <!-- Common properties (most likely to be overwritten by values from the configuration file t9t-config.xml or its hardcoded fallback in project t9t-cfg-be) -->
+            <property name="jakarta.persistence.jdbc.driver"            value="org.postgresql.Driver" />
+            <property name="jakarta.persistence.jdbc.url"               value="jdbc:postgresql://localhost/fortytwo" />
+            <property name="jakarta.persistence.jdbc.user"              value="fortytwo" />
+            <property name="jakarta.persistence.jdbc.password"          value="secret/changeMe" />
+
+            <!-- HikariCP settings -->
+            <property name="hibernate.connection.provider_class"        value="org.hibernate.hikaricp.internal.HikariCPConnectionProvider" />
+            <property name="hibernate.hikari.readOnly"                  value="true" />
+            <property name="hibernate.hikari.autoCommit"                value="false" />
+            <property name="hibernate.hikari.minimumIdle"               value="5" />
+            <property name="hibernate.hikari.maximumPoolSize"           value="10" />
+            <property name="hibernate.hikari.maxLifetime"               value="240000" />
+
+            <!-- Properties for Hibernate -->
+            <property name="hibernate.connection.release_mode"                  value="after_transaction" />   <!-- required for C3P0? -->
+            <property name="hibernate.connection.provider_disables_autocommit"  value="true" /> <!-- HikariCP controls 'autoCommit' for better performance -->
+            <property name="hibernate.archive.autodetection"                    value="class" />  <!-- default in EE environments -->
+            <property name="hibernate.show_sql"                                 value="false" />  <!-- activate for intense testing. Do not use (will use stdout), better way is to activate it in logback.xml -->
+            <property name="hibernate.generate_statistics"                      value="true" />
+            <property name="hibernate.use_sql_comments"                         value="true" />
+            <!-- the next one speeds up connection time with remote DBs a lot -->
+            <property name="hibernate.temp.use_jdbc_metadata_defaults"          value="true" />  <!--  requires the dialect to be set explicitly! -->
+
+            <!-- disable hibernate 2nd level cache ATM -->
+            <property name="hibernate.cache.use_second_level_cache"     value="false"/>
+
+            <!-- Ordering of inserts / updates. Provides some tuning (less roundtrips to the DB). -->
+            <property name="hibernate.order_inserts"                    value="false" />
+            <property name="hibernate.order_updates"                    value="false" />
+            <property name="hibernate.jdbc.batch_versioned_data"        value="true" />
+            <property name="hibernate.jdbc.batch_size"                  value="25" />
+
+            <property name="hibernate.proc.param_null_passing"          value="true" />
+        </properties>
+    </persistence-unit>
+</persistence>

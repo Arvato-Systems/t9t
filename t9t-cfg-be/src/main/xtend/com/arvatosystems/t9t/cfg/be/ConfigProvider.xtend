@@ -32,6 +32,7 @@ import java.util.UUID
 class ConfigProvider {
     static final String DEFAULT_CFG_FILENAME = System.getProperty("user.home") + "/.t9tconfig.xml"
     static final ConcurrentMap<String, String> customParameters = new ConcurrentHashMap<String, String>(16);
+    static final ConcurrentMap<String, String> searchRequestParams = new ConcurrentHashMap<String, String>(16);
     static final char EQUALS_SIGN = '=';
     static final Map<String, UplinkConfiguration> uplinks = new ConcurrentHashMap
     static final Map<String, EncryptionConfiguration> encryptions = new ConcurrentHashMap
@@ -217,6 +218,28 @@ class ConfigProvider {
         if (customizer !== null) {
             customizer.accept(myConfiguration)
         }
+
+        if (myConfiguration.searchConfiguration !== null) {
+            // preprocess search request mappings (list of 'key = value' lines) into a map
+            searchRequestParams.clear
+            val srList = myConfiguration.searchConfiguration.searchRequestConfiguration
+            if (srList !== null) {
+                srList.forEach[
+                    val equalsPos = indexOf(EQUALS_SIGN)
+                    if (equalsPos > 0) {
+                        val k = substring(0, equalsPos).trim
+                        val v = envVarResolver.convert(substring(equalsPos + 1).trim, null)
+                        if (!k.isEmpty && v !== null) {
+                            searchRequestParams.put(k, v)
+                        }
+                    } else {
+                        LOGGER.warn("SearchRequestConfiguration entry {} has no '=' delimiter, ignoring entry", it)
+                    }
+                ]
+                LOGGER.info("Read {} search request mappings from config file", searchRequestParams.size)
+            }
+        }
+
         // may need to set some defaults
         if (myConfiguration.applicationConfiguration !== null) {
             val it = myConfiguration.applicationConfiguration
@@ -245,6 +268,11 @@ class ConfigProvider {
 
     def static String getCustomParameter(String key) {
         return customParameters.get(key)
+    }
+
+    def static String getSearchRequestParameter(String key, String defaultValue) {
+        val v = searchRequestParams.get(key)
+        return if (v !== null) v else defaultValue
     }
 
     /** Returns the uplink configuration configured for the specific key, or return null if none exists. */

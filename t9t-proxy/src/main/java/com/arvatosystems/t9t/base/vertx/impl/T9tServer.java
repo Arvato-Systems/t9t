@@ -15,6 +15,12 @@
  */
 package com.arvatosystems.t9t.base.vertx.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
@@ -22,6 +28,7 @@ import com.martiansoftware.jsap.JSAPResult;
 import com.martiansoftware.jsap.Parameter;
 import com.martiansoftware.jsap.SimpleJSAP;
 import com.martiansoftware.jsap.Switch;
+
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
@@ -34,11 +41,6 @@ import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.CorsHandler;
 import io.vertx.ext.web.handler.FileSystemAccess;
 import io.vertx.ext.web.handler.StaticHandler;
-import java.util.ArrayList;
-import java.util.List;
-import org.eclipse.xtext.xbase.lib.Exceptions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class T9tServer extends AbstractVerticle {
     private static final Logger LOGGER = LoggerFactory.getLogger(T9tServer.class);
@@ -58,7 +60,7 @@ public class T9tServer extends AbstractVerticle {
                         'T', "port28", "listener port for t9t server"));
         options.add(new FlaggedOption("corsParm", JSAP.STRING_PARSER, "*", JSAP.NOT_REQUIRED, 'C', "corsParm", "parameter to the CORS handler"));
         options.add(new Switch("cors", 'X', "cors", "activate CORS handler"));
-        Parameter[] array = options.toArray(new Parameter[options.size()]);
+        final Parameter[] array = options.toArray(new Parameter[options.size()]);
         try {
             final SimpleJSAP commandLineOptions = new SimpleJSAP("t9t server", "Runs a simple vert.x / t9t based server", options.toArray(array));
             final JSAPResult cmd = commandLineOptions.parse(args);
@@ -71,7 +73,7 @@ public class T9tServer extends AbstractVerticle {
             port28   = cmd.getInt("port28");
             cors     = cmd.getBoolean("cors");
             corsParm = cmd.getString("corsParm");
-        } catch (JSAPException e) {
+        } catch (final JSAPException e) {
             LOGGER.error("Error while reading the command line options: {}", e.getMessage());
         }
     }
@@ -132,11 +134,11 @@ public class T9tServer extends AbstractVerticle {
                 });
             }
 
-            HttpServer httpServer = vertx.createHttpServer();
+            final HttpServer httpServer = vertx.createHttpServer();
             httpServer.listen(port);
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (final Exception e) {
+            LOGGER.error("Error in server: ", e);
         }
     }
 
@@ -152,14 +154,15 @@ public class T9tServer extends AbstractVerticle {
             public void run() {
                 try {
                     Thread.sleep(MORE_THAN_ONE_YEAR);
-                } catch (InterruptedException e) {
-                    throw Exceptions.sneakyThrow(e);
+                } catch (final InterruptedException e) {
+                    LOGGER.warn("Interrupted: {}", e.getMessage());
+                    throw new RuntimeException(e);
                 }
             }
         }).start(); // wait in some other thread
     }
 
-    private String regexFilter(String regex) {
+    private String regexFilter(final String regex) {
         if ("*".equals(regex)) {
             return ".*";
         }

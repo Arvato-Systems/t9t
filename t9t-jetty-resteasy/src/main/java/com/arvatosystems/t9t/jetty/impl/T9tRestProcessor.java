@@ -146,8 +146,16 @@ public class T9tRestProcessor implements IT9tRestProcessor {
      **/
     @Override
     public <T extends ServiceResponse> void performAsyncBackendRequest(final HttpHeaders httpHeaders,
+           final AsyncResponse resp, final RequestParameters requestParameters, final String infoMsg,
+           final Class<T> backendResponseClass, final Function<T, BonaPortable> responseMapper) {
+        performAsyncBackendRequest(httpHeaders, resp, requestParameters, infoMsg, backendResponseClass, responseMapper, this::createResultFromServiceResponse);
+    }
+
+    @Override
+    public <T extends ServiceResponse> void performAsyncBackendRequest(final HttpHeaders httpHeaders,
             final AsyncResponse resp, final RequestParameters requestParameters, final String infoMsg,
-            final Class<T> backendResponseClass, final Function<T, BonaPortable> responseMapper) {
+            final Class<T> backendResponseClass, final Function<T, BonaPortable> responseMapper,
+            final Function<ServiceResponse, BonaPortable> errorResponseMapper) {
         final String acceptHeader = determineResponseType(httpHeaders);
         final String remoteIp = httpHeaders.getHeaderString(T9tConstants.HTTP_HEADER_FORWARDED_FOR);
         try {
@@ -207,14 +215,14 @@ public class T9tRestProcessor implements IT9tRestProcessor {
                     // this is a coding issue!
                     LOGGER.error("Coding bug: expected response of class {} to {}, but got {} (return code {})", backendResponseClass.getSimpleName(),
                             requestParameters.getClass().getSimpleName(), sr.getClass().getSimpleName(), sr.getReturnCode());
-                    responseBuilder.entity(createResultFromServiceResponse(sr));  // this is like the error result
+                    responseBuilder.entity(errorResponseMapper.apply(sr));  // this is like the error result
                 }
                 addSecurityHeader(responseBuilder);
                 final Response responseObj = responseBuilder.build();
                 resp.resume(responseObj);
             } else {
                 // map error report
-                createGenericResultEntity(sr, resp, acceptHeader, () -> ipBlockerService.registerBadAuthFromIp(remoteIp));
+                createGenericResultEntity(sr, resp, acceptHeader, () -> ipBlockerService.registerBadAuthFromIp(remoteIp), errorResponseMapper);
             }
         }).exceptionally(e -> {
             final int errorCode = e instanceof ApplicationException ae ? ae.getErrorCode() : T9tException.GENERAL_EXCEPTION;
@@ -258,7 +266,8 @@ public class T9tRestProcessor implements IT9tRestProcessor {
                 resp.resume(responseObj);
             } else {
                 // map error report
-                createGenericResultEntity(sr, resp, acceptHeader, () -> ipBlockerService.registerBadAuthFromIp(remoteIp));
+                createGenericResultEntity(sr, resp, acceptHeader, () -> ipBlockerService.registerBadAuthFromIp(remoteIp),
+                    this::createResultFromServiceResponse);
             }
         }).exceptionally(e -> {
             final int errorCode = e instanceof ApplicationException ae ? ae.getErrorCode() : T9tException.GENERAL_EXCEPTION;

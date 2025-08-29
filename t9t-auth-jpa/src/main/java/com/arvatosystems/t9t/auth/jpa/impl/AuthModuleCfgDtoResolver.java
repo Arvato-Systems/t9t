@@ -17,6 +17,7 @@ package com.arvatosystems.t9t.auth.jpa.impl;
 
 import com.arvatosystems.t9t.auth.AuthModuleCfgDTO;
 import com.arvatosystems.t9t.auth.jpa.entities.AuthModuleCfgEntity;
+import com.arvatosystems.t9t.auth.jpa.mapping.IAuthModuleCfgDTOMapper;
 import com.arvatosystems.t9t.auth.jpa.persistence.IAuthModuleCfgEntityResolver;
 import com.arvatosystems.t9t.auth.services.IAuthModuleCfgDtoResolver;
 import com.arvatosystems.t9t.core.jpa.impl.AbstractModuleConfigResolver;
@@ -43,7 +44,7 @@ public class AuthModuleCfgDtoResolver extends AbstractModuleConfigResolver<AuthM
         );
 
     public AuthModuleCfgDtoResolver() {
-        super(IAuthModuleCfgEntityResolver.class);
+        super(IAuthModuleCfgEntityResolver.class, IAuthModuleCfgDTOMapper.class);
     }
 
     @Override

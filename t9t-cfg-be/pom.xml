@@ -55,7 +55,7 @@
             <artifactId>t9t-base-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.xtend</groupId>
+            <groupId>org.eclipse.xtext</groupId>
             <artifactId>org.eclipse.xtend.lib</artifactId>
         </dependency>
         <dependency>

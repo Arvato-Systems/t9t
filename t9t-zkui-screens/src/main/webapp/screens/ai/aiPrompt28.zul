@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="aiPrompt28"?>
+
+<window28 id="aiConversationWin">
+    <threesections28 gridId="aiPrompt">
+        <crud28 viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.framework.AiPromptViewModel', vmId='aiPrompt')"
+            currentMode="@load(vm.currentMode)">
+            <form28 id="aiPromptCrudMain" aspect="1" numColumns="2">
+                <rows>
+                    <cells228 id ="promptId"                    value ="@load(vm.data.promptId)             @save(vm.data.promptId,before='commandSave')"
+                              id2="title"                       value2="@load(vm.data.title)                @save(vm.data.title,before='commandSave')"/>
+                    <cells28  id ="isActive"                    value ="@load(vm.data.isActive)             @save(vm.data.isActive,before='commandSave')"/>
+                    <cells28  id ="description"                 value ="@load(vm.data.description)          @save(vm.data.description,before='commandSave')" colspan1="3" rows1="4"/>
+                    <cells28  id ="prompt"                      value ="@load(vm.data.prompt)               @save(vm.data.prompt,before='commandSave')" colspan1="3" rows1="4"/>
+
+                    <row>
+                        <label28 id="parameters"/>
+                        <cell colspan="3">
+                            <hbox hflex="1" vflex="1" align="center" >
+                                <listbox span="true" model="@load(vm.parameters)" emptyMessage="${l:translate('com','noDataFound')}"
+                                         hflex="true" pagingPosition="bottom" rows="4" nonselectableTags="" selectedItem="@bind(vm.selectedParameter)">
+
+                                    <listhead menupopup="auto" sizable="true" columnsgroup="false" >
+                                        <listheader label="${l:translate('aiPrompt.parameters','parameter')}" width="200px" sort="auto(key)"/>
+                                        <listheader label="${l:translate('aiPrompt.parameters','isRequired')}" width="80px"/>
+                                        <listheader label="${l:translate('aiPrompt.parameters','description')}"/>
+
+                                    </listhead>
+                                    <template name="model" var="item">
+                                        <listitem>
+
+                                            <listcell>
+                                                <textbox hflex="1" value="@bind(item.key)" onChange="@command('onParameterChange')"/>
+                                            </listcell>
+
+                                            <listcell>
+                                                <checkbox hflex="1" checked="@bind(item.value.isRequired)"/>
+                                            </listcell>
+
+                                            <listcell>
+                                                <textbox multiline="true" rows="2" maxlength="4000" hflex="1"  value="@bind(item.value.description)"/>
+                                            </listcell>
+                                        </listitem>
+
+                                    </template>
+                                </listbox>
+
+                                <vbox>
+                                    <button28
+                                            image="/img/drop-add.png"
+                                            id="addParameterTextButton"
+                                            autodisable="self"
+                                            onClick="@command('addParameter')"
+                                            width="44px" />
+                                    <button28
+                                            image="/img/delete.png"
+                                            autodisable="self"
+                                            disabled="@load(empty vm.selectedParameter)"
+                                            onClick="@command('removeParameter')"
+                                            width="44px" />
+                                </vbox>
+                            </hbox>
+                        </cell>
+                    </row>
+                </rows>
+            </form28>
+        </crud28>
+    </threesections28>
+</window28>

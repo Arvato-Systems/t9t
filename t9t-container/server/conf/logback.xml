@@ -1,0 +1,21 @@
+<configuration debug="${log.debug:-false}" scan="true" scanPeriod="30 seconds">
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-28([%thread]) %-5level %-40.40logger{40} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- show server started message-->
+    <logger name="com.arvatosystems.t9t.base.vertx.impl.T9tServer" level="${log.level.t9tserver:-INFO}"/>
+
+    <logger name="com.mchange.v2.c3p0" level="${log.level.c3p0:-ERROR}"/>
+    <logger name="com.hazelcast" level="${log.level.hazelcast:-ERROR}"/>
+    <logger name="org.apache.camel" level="${log.level.camel:-ERROR}"/>
+    <logger name="com.arvatosystems.t9t" level="${log.level.t9t:-ERROR}"/>
+
+    <root level="${log.level.root:-ERROR}">
+        <appender-ref ref="STDOUT" />
+    </root>
+
+</configuration>

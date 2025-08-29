@@ -42,6 +42,10 @@ public class T9tRestAuthenticationFilter implements ContainerRequestFilter {
     @Override
     public void filter(final ContainerRequestContext requestContext) throws IOException {
         LOGGER.trace("Starting filter");
+        if (authFilterCustomization.filterHttpMethod(requestContext)) {
+            LOGGER.debug("aborting due to not enabled OPTIONS method");
+            return;  // aborted
+        }
         final String remoteIpHeader = requestContext.getHeaderString(T9tConstants.HTTP_HEADER_FORWARDED_FOR);
         if (authFilterCustomization.filterBlockedIpAddress(requestContext, remoteIpHeader)) {
             LOGGER.debug("aborting due to blocked IP address {}", remoteIpHeader);

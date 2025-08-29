@@ -72,8 +72,12 @@ public class McpSseModule implements IServiceModule {
 
 
     private void mcpMessage(final McpConnection connection, String event, JsonObject data) {
+        mcpMessage(connection, event, data.encode());
+    }
+
+    private void mcpMessage(final McpConnection connection, String event, String data) {
         try {
-            final String message = "event: " + event + "\ndata: " + data.encode() + "\n\n";
+            final String message = "event: " + event + "\ndata: " + data + "\n\n";
             connection.response.write(message);
         } catch (final Exception e) {
             LOGGER.error("Error sending SSE message: {}", e.getMessage());
@@ -88,6 +92,7 @@ public class McpSseModule implements IServiceModule {
             LOGGER.info("SSE endpoint is not enabled in server configuration, skipping module sse.");
             return;
         }
+        final boolean heartbeat = Boolean.TRUE.equals(serverConfiguration.getSendHeartbeat());
         LOGGER.info("Registering module {}", getModuleName());
         endpointHandler = new McpEndpointHandler(vertx);
 
@@ -105,6 +110,9 @@ public class McpSseModule implements IServiceModule {
                 IServiceModule.error(ctx, 401, "HTTP Authorization header missing or too short");
                 return;
             }
+            final String protocolVersion = headers.get(McpUtils.HTTP_HEADER_MCP_PROTOCOL);
+            final String accept = headers.get(HttpHeaders.ACCEPT);
+            LOGGER.debug("Received SSE GET request with protocol version: {}, accept: {}", protocolVersion, accept);
 
             final UUID connectionId = UUID.randomUUID();
             final AiGetSseRequest permCheck = new AiGetSseRequest();
@@ -125,18 +133,26 @@ public class McpSseModule implements IServiceModule {
             LOGGER.info("SSE connection opened for: {} (by GET /sse)", connectionId);
 
             // Acknowledge connection
-            mcpMessage(connection, McpUtils.EVENT_CONNECTED, new JsonObject().put(McpUtils.KEY_CONNECTION_ID, connectionId));
+            // mcpMessage(connection, McpUtils.EVENT_CONNECTED, new JsonObject().put(McpUtils.KEY_CONNECTION_ID, connectionId));
+            mcpMessage(connection, McpUtils.EVENT_ENDPOINT, "/sse");
 
             // keep connection alive
-            final long heartbeatId = vertx.setPeriodic(30000, id -> {
-                if (mcpConnections.containsKey(connectionId)) {
-                    mcpMessage(connection, McpUtils.EVENT_HEARTBEAT, new JsonObject().put(McpUtils.KEY_TIMESTAMP, System.currentTimeMillis()));
-                }
-            });
+            final long heartbeatId;
+            if (heartbeat) {
+                heartbeatId = vertx.setPeriodic(30000, id -> {
+                    if (mcpConnections.containsKey(connectionId)) {
+                        mcpMessage(connection, McpUtils.EVENT_HEARTBEAT, new JsonObject().put(McpUtils.KEY_TIMESTAMP, System.currentTimeMillis()));
+                    }
+                });
+            } else {
+                heartbeatId = -1L; // No heartbeat timer
+            }
 
             // Handle connection close
             response.closeHandler(v -> {
-                vertx.cancelTimer(heartbeatId);
+                if (heartbeatId != -1L) {
+                    vertx.cancelTimer(heartbeatId);
+                }
                 mcpConnections.remove(connectionId);
                 LOGGER.info("SSE connection closed: {}", connectionId);
             });
@@ -156,6 +172,9 @@ public class McpSseModule implements IServiceModule {
             if (IServiceModule.badOrMissingAuthHeader(ctx, authHeader, LOGGER)) {
                 return;
             }
+            final String protocolVersion = headers.get(McpUtils.HTTP_HEADER_MCP_PROTOCOL);
+            final String accept = headers.get(HttpHeaders.ACCEPT);
+            LOGGER.debug("Received SSE POST request with protocol version: {}, accept: {}", protocolVersion, accept);
 
             vertx.<String>executeBlocking(() -> {
                 try {
@@ -172,7 +191,7 @@ public class McpSseModule implements IServiceModule {
                     MDC.clear();
                     T9tInternalConstants.initMDC(jwtInfo);
 
-                    final String response = endpointHandler.handleRequest(ctx.body(), authInfo);
+                    final String response = endpointHandler.handleRequest(ctx.body(), authInfo, protocolVersion);
                     LOGGER.debug("Returning MCP response {}", response);
                     return response;
                 } catch (final Exception e) {

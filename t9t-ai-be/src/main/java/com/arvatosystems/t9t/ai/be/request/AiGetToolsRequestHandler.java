@@ -1,13 +1,5 @@
 package com.arvatosystems.t9t.ai.be.request;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.arvatosystems.t9t.ai.T9tAiTools;
 import com.arvatosystems.t9t.ai.mcp.AbstractJsonSchemaField;
 import com.arvatosystems.t9t.ai.mcp.AiToolSpecification;
@@ -30,7 +22,6 @@ import com.arvatosystems.t9t.base.auth.PermissionType;
 import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.server.services.IAuthorize;
-
 import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
@@ -40,6 +31,12 @@ import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.dp.Jdp;
 import jakarta.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AiGetToolsRequestHandler extends AbstractReadOnlyRequestHandler<AiGetToolsRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AiGetToolsRequestHandler.class);
@@ -115,7 +112,8 @@ public class AiGetToolsRequestHandler extends AbstractReadOnlyRequestHandler<AiG
             return buildFieldNoArray(metaData, comment);
         case ARRAY:
         case LIST:
-            return new JsonSchemaArray("array", comment, metaData.getMinCount(), metaData.getMaxCount(), buildFieldNoArray(metaData, null));
+            return new JsonSchemaArray("array", comment, metaData.getMinCount(), metaData.getMaxCount() > 0 ? metaData.getMaxCount() : null,
+                buildFieldNoArray(metaData, null));
         case MAP:
             return buildObject(null, comment); // maps are represented as objects in JSON schema
         case SET:

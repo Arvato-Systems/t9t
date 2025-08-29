@@ -47,6 +47,9 @@ package (com.arvatosystems) t9t.ai.request {
 
     class AiChatLogSearchRequest                    extends SearchRequest           <AiChatLogDTO, WriteTracking> {}
 
+    class AiPromptCrudRequest                       extends CrudSurrogateKeyRequest <AiPromptRef, AiPromptDTO, FullTrackingWithVersion> {}
+    class AiPromptSearchRequest                     extends SearchRequest           <AiPromptDTO, FullTrackingWithVersion> {}
+
     /** API to submit user input (initial call without parameters to get the greeting). */
     class AiChatRequest extends RequestParameters return AiChatResponse {
         optional (AiAssistantRef...)                aiAssistantRef;
@@ -64,7 +67,7 @@ package (com.arvatosystems) t9t.ai.request {
     /** A no op request, just done to check if we have permissions to establish a connection. */
     class AiGetSseRequest extends RequestParameters return AiGetToolsResponse {}
 
-    /** t9t currently does not provide prompts nor resources, therefore we just return tools. */
+    /** Request to return the list of available tools. */
     class AiGetToolsRequest extends RequestParameters return AiGetToolsResponse {}
 
     class AiGetToolsResponse extends ServiceResponse {
@@ -75,12 +78,33 @@ package (com.arvatosystems) t9t.ai.request {
     class AiRunToolRequest extends RequestParameters   return AiRunToolResponse {
         required defaultExternalId                          name;               // ID of the tool
         optional Json                                       parameters;         // parameters in structured form
-        optional Unicode(64000)                             arguments;          // parameters as string
+        optional Unicode(64000) allowControlChars           arguments;          // parameters as string
     }
 
     class AiRunToolResponse extends ServiceResponse {
-        optional Object                                     response;           // response as MediaData, or structured object
-//        optional (MediaData)                            response;             // response if it is a single text, image or document
-//        optional Json                                   structuredResponse;   // response if it is a data structure
+        required (MediaData) List<>                         contents;             // List of contents of type MediaData, may be null
+        optional Json                                       structuredResponse;   // response if it is a data structure
+        optional Boolean                                    isError;              // in case of error during tool execution
+    }
+
+    /** Request to return the list of available prompts. */
+    class AiGetPromptsRequest extends RequestParameters return AiGetPromptsResponse {
+        required int                                        offset;             // offset for pagination. If -1 then no pagination, return all
+    }
+
+    class AiGetPromptsResponse extends ServiceResponse {
+        required (AiPromptDTO) required List<>              prompts;
+        optional Integer                                    nextOffset;
+    }
+
+    /** Request to get a specific prompt. */
+    class AiGetPromptRequest extends RequestParameters return AiGetPromptResponse {
+        required defaultExternalId                                     name; // ID of the prompt
+        required Unicode(64000) allowControlChars required Map<String> arguments; // key: parameter name, value: parameter value
+    }
+
+    class AiGetPromptResponse extends ServiceResponse {
+        required Unicode(64000) allowControlChars           prompt;             // the prompt with populated parameters
+        required Unicode(4000) allowControlChars            description;        // a slightly longer description of the prompt
     }
 }

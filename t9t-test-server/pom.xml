@@ -30,7 +30,7 @@
     <description>Start vertx server and jetty</description>
 
     <properties>
-        <vertx.artifactId>t9t-server-build-vertx-hibernate</vertx.artifactId>
+        <vertx.artifactId>t9t-server</vertx.artifactId>
         <vertx.filename>t9t-server.jar</vertx.filename>
         <vertx.rt.cfgFilename>rt-cfgfile-vertx.xml</vertx.rt.cfgFilename>
         <server-logfile.name>server.log</server-logfile.name>

@@ -18,6 +18,7 @@ package com.arvatosystems.t9t.trns.jpa.impl
 import com.arvatosystems.t9t.core.jpa.impl.AbstractModuleConfigResolver
 import com.arvatosystems.t9t.trns.TrnsModuleCfgDTO
 import com.arvatosystems.t9t.trns.jpa.entities.TrnsModuleCfgEntity
+import com.arvatosystems.t9t.trns.jpa.mapping.ITrnsModuleCfgDTOMapper;
 import com.arvatosystems.t9t.trns.jpa.persistence.ITrnsModuleCfgEntityResolver
 import com.arvatosystems.t9t.trns.services.ITrnsModuleCfgDtoResolver
 import de.jpaw.dp.Singleton
@@ -31,7 +32,7 @@ class TrnsModuleCfgDtoResolver extends AbstractModuleConfigResolver<TrnsModuleCf
     )
 
     public new() {
-        super(ITrnsModuleCfgEntityResolver)
+        super(ITrnsModuleCfgEntityResolver, ITrnsModuleCfgDTOMapper)
     }
 
     override public TrnsModuleCfgDTO getDefaultModuleConfiguration() {

@@ -34,15 +34,17 @@
             <artifactId>t9t-hibernate-search-be</artifactId>
         </dependency>
         <!-- Lucene 9 -->
+        <!--
         <dependency>
             <groupId>org.hibernate.search</groupId>
             <artifactId>hibernate-search-backend-lucene</artifactId>
         </dependency>
+        -->
         <!-- Lucene 10 (needs JDK 21+) -->
-        <!--dependency>
+        <dependency>
             <groupId>org.hibernate.search</groupId>
             <artifactId>hibernate-search-backend-lucene-next</artifactId>
-        </dependency-->
+        </dependency>
 
         <!-- JUnit Test -->
         <dependency>

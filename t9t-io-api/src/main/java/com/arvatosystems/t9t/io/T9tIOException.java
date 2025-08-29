@@ -111,14 +111,16 @@ public class T9tIOException extends T9tException {
         registerCode(XML_SET_PROPERTY_ERROR,       "Exception during JAXB property setting");
 
         // old stuff
+        registerCode(FORMAT_UNSPECIFIED,           "Output format is not specified");
+        registerCode(FORMAT_MISMATCH,              "Output format does not match the expected format");
+        registerCode(FORMAT_NO_STRUCTURED,         "Output format does not support structured data");
+
         registerCode(OUTPUT_FILE_EXCEPTION, "Failed to output records to a file. Please make sure the file path is correct and it's writable");
         registerCode(OUTPUT_JMS_EXCEPTION, "Failed to output records to a JMS destination. Please make sure the queue/topic is accessible");
         registerCode(OUTPUT_XML_EXCEPTION, "Error while serializing output records to XML format");
         registerCode(OUTPUT_JSON_EXCEPTION, "Error while serializing output records to JSON format");
         registerCode(OUTPUT_PRE_TRANSFORMER_NOT_FOUND, "Unable to lookup output session pre-transformer");
         registerCode(OUTPUT_COMM_FORMAT_GENERATOR_NOT_FOUND, "Unable to lookup communication format generator");
-        registerCode(DATASINK_UNSUPPORTED_FORMAT, "The requested format is not available for the category.");
-        registerCode(DATASINK_UNSUPPORTED_ENCODING, "Unsupported datasink encoding.");
         registerCode(OUTPUT_COMM_CHANNEL_NOT_FILE, "Requested a download for a sink which does not correspond to a file");
         registerCode(OUTPUT_COMM_CHANNEL_IO_ERROR, "I/O error during file read");
         registerCode(OUTPUT_COMM_CHANNEL_REQUIRED, "explicit communication format channel required for uploads");

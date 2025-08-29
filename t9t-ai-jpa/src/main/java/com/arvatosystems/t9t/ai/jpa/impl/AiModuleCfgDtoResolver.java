@@ -17,6 +17,7 @@ package com.arvatosystems.t9t.ai.jpa.impl;
 
 import com.arvatosystems.t9t.ai.AiModuleCfgDTO;
 import com.arvatosystems.t9t.ai.jpa.entities.AiModuleCfgEntity;
+import com.arvatosystems.t9t.ai.jpa.mapping.IAiModuleCfgDTOMapper;
 import com.arvatosystems.t9t.ai.jpa.persistence.IAiModuleCfgEntityResolver;
 import com.arvatosystems.t9t.ai.service.IAiModuleCfgDtoResolver;
 import com.arvatosystems.t9t.core.jpa.impl.AbstractModuleConfigResolver;
@@ -31,7 +32,7 @@ public class AiModuleCfgDtoResolver extends AbstractModuleConfigResolver<AiModul
         );
 
     public AiModuleCfgDtoResolver() {
-        super(IAiModuleCfgEntityResolver.class);
+        super(IAiModuleCfgEntityResolver.class, IAiModuleCfgDTOMapper.class);
     }
 
     @Override

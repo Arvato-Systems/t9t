@@ -3,6 +3,8 @@ package com.arvatosystems.t9t.hs.search.be.impl;
 import com.arvatosystems.t9t.base.search.SearchCriteria;
 import com.arvatosystems.t9t.base.services.ITextSearch;
 import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.base.services.ITextSearch.DocumentTypeNeeded;
+
 import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
 import de.jpaw.bonaparte.pojos.api.SortColumn;
 import de.jpaw.dp.Jdp;
@@ -34,6 +36,11 @@ public class HibernateSearchEngine implements ITextSearch {
     protected final Provider<PersistenceProviderJPA> jpaContextProvider = Jdp.getProvider(PersistenceProviderJPA.class);
 
     @Override
+    public DocumentTypeNeeded getDocumentTypeNeeded() {
+        return DocumentTypeNeeded.ENTITY_NAME;
+    }
+
+    @Override
     public List<Long> search(RequestContext ctx, SearchCriteria sc, String documentName, String resultFieldName) {
 
         final EntityManager em = jpaContextProvider.get().getEntityManager();
@@ -55,9 +62,9 @@ public class HibernateSearchEngine implements ITextSearch {
             throw new IllegalArgumentException("Unknown entity: " + documentName);
         } catch (SearchException e) {
             LOGGER.warn("Entity {} search exception", documentName);
-            throw new IllegalArgumentException("Entity not indexed: " + documentName, e);
+            throw new IllegalArgumentException("Entity search exception: " + documentName, e);
         } catch (Exception e) {
-            LOGGER.error("HibernateEngine: Search error", e);
+            LOGGER.error("HibernateEngine: Exception", e);
             throw new RuntimeException(e);
         }
     }

@@ -18,6 +18,7 @@ package com.arvatosystems.t9t.voice.jpa.impl;
 import com.arvatosystems.t9t.core.jpa.impl.AbstractModuleConfigResolver;
 import com.arvatosystems.t9t.voice.VoiceModuleCfgDTO;
 import com.arvatosystems.t9t.voice.jpa.entities.VoiceModuleCfgEntity;
+import com.arvatosystems.t9t.voice.jpa.mapping.IVoiceModuleCfgDTOMapper;
 import com.arvatosystems.t9t.voice.jpa.persistence.IVoiceModuleCfgEntityResolver;
 import com.arvatosystems.t9t.voice.services.IVoiceModuleCfgDtoResolver;
 import de.jpaw.dp.Singleton;
@@ -25,7 +26,7 @@ import de.jpaw.dp.Singleton;
 @Singleton
 public class VoiceModuleCfgDtoResolver extends AbstractModuleConfigResolver<VoiceModuleCfgDTO, VoiceModuleCfgEntity> implements IVoiceModuleCfgDtoResolver {
     public VoiceModuleCfgDtoResolver() {
-        super(IVoiceModuleCfgEntityResolver.class);
+        super(IVoiceModuleCfgEntityResolver.class, IVoiceModuleCfgDTOMapper.class);
     }
 
     @Override

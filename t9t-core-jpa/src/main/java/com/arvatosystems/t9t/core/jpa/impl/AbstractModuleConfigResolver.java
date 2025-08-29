@@ -18,6 +18,7 @@ package com.arvatosystems.t9t.core.jpa.impl;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import com.arvatosystems.t9t.base.jpa.IEntityMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,9 +47,16 @@ public abstract class AbstractModuleConfigResolver<D extends ModuleConfigDTO, E 
     private final IResolverStringKey<FullTrackingWithVersion, E> resolver;
     private final Cache<String, D> dtoCache;
     private final ICacheInvalidationRegistry cacheInvalidationRegistry = Jdp.getRequired(ICacheInvalidationRegistry.class);
+    private final IEntityMapper<String, D, FullTrackingWithVersion, E> mapper;
 
     protected AbstractModuleConfigResolver(final Class<? extends IResolverStringKey<FullTrackingWithVersion, E>> resolverClass) {
+        this(resolverClass, null);
+    }
+
+    protected AbstractModuleConfigResolver(final Class<? extends IResolverStringKey<FullTrackingWithVersion, E>> resolverClass,
+        final Class<? extends IEntityMapper<String, D, FullTrackingWithVersion, E>> mapperClass) {
         resolver = Jdp.getRequired(resolverClass);
+        mapper = mapperClass != null ? Jdp.getOptional(mapperClass) : null;
         dtoCache = Caffeine.newBuilder().expireAfterWrite(1, TimeUnit.MINUTES).build();
         cacheInvalidationRegistry.registerInvalidator(resolver.getBaseJpaEntityClass().getSimpleName(), (final BonaPortable it) -> {
             LOGGER.info("Invalidating ModuleCfg cache for {}", this.getClass().getSimpleName());  // will expand to the specific class name
@@ -136,7 +144,7 @@ public abstract class AbstractModuleConfigResolver<D extends ModuleConfigDTO, E 
      * @return the mapped DTO
      */
     protected D e2d(final E entity) {
-        return entity.ret$Data();
+        return mapper != null ? mapper.mapToDto(entity) : entity.ret$Data();
     }
 
     /**
@@ -147,6 +155,10 @@ public abstract class AbstractModuleConfigResolver<D extends ModuleConfigDTO, E 
      * @param src the source DTO
      */
     protected void d2e(final E dst, final D src) {
-        dst.put$Data(src);
+        if (mapper != null) {
+            mapper.merge2Entity(dst, src);
+        } else {
+            dst.put$Data(src);
+        }
     }
 }

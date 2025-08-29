@@ -56,4 +56,12 @@ package (com.arvatosystems) t9t.ai.jpa.entities owner fortytwo prefix p28 {
         pk (objectRef)
         @ManyToOne AiAssistantEntity aiAssistant EAGER for (aiAssistantRef)
     }
+
+    entity AiPromptEntity category datv is AiPromptDTO inheritance tablePerClass {
+        forceSetters
+        cacheable
+        tenantClass InternalTenantId
+        pk (objectRef)
+        index unique (tenantId, promptId)
+    }
 }

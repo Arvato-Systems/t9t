@@ -42,7 +42,9 @@ package (com.arvatosystems) t9t.base.auth {
         CHANNEL     = "C",          // permission to write to certain targets like queues or topics
         EXTERNAL    = "X",          // permission to invoke requests on a remote server
         ASSISTANT   = "A",          // permission on AI assistants
-        TOOL_CALL   = "T"           // access to specific tool calls
+        TOOL_CALL   = "T",          // access to specific tool calls (MCP tools)
+        RESOURCE    = "E",          // access to resources via MCP
+        PROMPT      = "O"           // access to MCP prompts
     }
 
     /** Defines the type of user data change which is considered to be of high risk and may require user information. */

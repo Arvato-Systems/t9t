@@ -15,14 +15,15 @@
  */
 package com.arvatosystems.t9t.out.be.impl.output;
 
+import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.io.DataSinkDTO;
+import com.arvatosystems.t9t.io.T9tIOException;
 import com.arvatosystems.t9t.out.services.IOutputResource;
 import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
-import org.eclipse.xtext.xbase.lib.Exceptions;
 
 /**
  * This implementation is used for testing only, and for that reason is not
@@ -58,8 +59,8 @@ public class OutputResourceInMemory implements IOutputResource {
     public void write(final String partitionKey, final String recordKey, final String data) {
         try {
             baos.write(data.getBytes(encoding));
-        } catch (Throwable _e) {
-            throw Exceptions.sneakyThrow(_e);
+        } catch (final Throwable t) {
+            throw new T9tException(T9tIOException.IO_EXCEPTION, t);
         }
     }
 
@@ -71,8 +72,8 @@ public class OutputResourceInMemory implements IOutputResource {
     public String toString() {
         try {
             return baos.toString(encoding.name());
-        } catch (Throwable _e) {
-            throw Exceptions.sneakyThrow(_e);
+        } catch (final Throwable t) {
+            throw new T9tException(T9tIOException.IO_EXCEPTION, t);
         }
     }
 }
