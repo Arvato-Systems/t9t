@@ -21,7 +21,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.eclipse.xtext.xbase.lib.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,6 +61,8 @@ import io.vertx.core.eventbus.MessageConsumer;
 @Singleton
 @Default
 public class AsyncProcessor implements IAsyncRequestProcessor {
+    private record EventAddress(String eventID, String tenantId) { }
+
     private static final class EventMessageHandler implements Handler<Message<Object>> {
         private final Map<String, String> qualifierByTenantId = new ConcurrentHashMap<>();
         private final String eventID;
@@ -125,7 +126,7 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
     private static final String ASYNC_EVENTBUS_ADDRESS       = "t9tasync";
     private static final String ASYNC_EVENTBUS_ADDRESS_LOCAL = "t9tasync-" + MessagingUtil.HOSTNAME;
     private static final String EVENTBUS_BASE_42             = "event42.";
-    private static final ConcurrentMap<Pair<String, String>, Set<IEventHandler>> SUBSCRIBERS = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<EventAddress, Set<IEventHandler>> SUBSCRIBERS = new ConcurrentHashMap<>();
     private static final ConcurrentMap<String, EventMessageHandler> REGISTERED_HANDLER = new ConcurrentHashMap<>();
 
     // set a long enough timeout (30 minutes) to allow for concurrent batches
@@ -217,7 +218,7 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
 
         boolean isNewSubscriber = true;
 
-        final Pair<String, String> key = new Pair<>(eventID, tenantId);
+        final EventAddress key = new EventAddress(eventID, tenantId);
         final Set<IEventHandler> currentEventHandlers = SUBSCRIBERS.get(key);
 
         if (currentEventHandlers == null) {
@@ -285,10 +286,10 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
 
     private static void executeAllEvents(final String tenantId, final String eventId, final JwtAuthentication authenticationJwt,
             final EventParameters eventParams, final Long invokingProcessRef) {
-        final Pair<String, String> key = new Pair<>(eventId, tenantId);
+        final EventAddress key = new EventAddress(eventId, tenantId);
         Set<IEventHandler> subscribers = SUBSCRIBERS.get(key);
         if ((subscribers == null || subscribers.isEmpty()) && !T9tConstants.GLOBAL_TENANT_ID.equals(tenantId)) {
-            subscribers = SUBSCRIBERS.get(new Pair<>(eventId, T9tConstants.GLOBAL_TENANT_ID));
+            subscribers = SUBSCRIBERS.get(new EventAddress(eventId, T9tConstants.GLOBAL_TENANT_ID));
         }
         if (subscribers == null) {
             LOGGER.debug("No subscribers registered for event ID {} - nothing to do", eventId);
@@ -360,10 +361,10 @@ public class AsyncProcessor implements IAsyncRequestProcessor {
         registerOnBus(ASYNC_EVENTBUS_ADDRESS_LOCAL, "LOCAL");
 
         // now also register any preregistered event handlers
-        for (final Map.Entry<Pair<String, String>, Set<IEventHandler>> q : SUBSCRIBERS.entrySet()) {
+        for (final Map.Entry<EventAddress, Set<IEventHandler>> q : SUBSCRIBERS.entrySet()) {
             final Set<IEventHandler> value = q.getValue();
             for (final IEventHandler eh : value) {
-                addConsumer(q.getKey().getKey(), q.getKey().getValue(), eh);
+                addConsumer(q.getKey().eventID(), q.getKey().tenantId(), eh);
             }
         }
     }

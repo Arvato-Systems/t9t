@@ -19,8 +19,7 @@ import java.time.Instant;
 import java.util.Random;
 import java.util.UUID;
 
-import org.eclipse.xtend2.lib.StringConcatenation;
-
+@Deprecated  // use a28 class instead - this is not required in t9t
 public final class IdCreationHelper {
 
     private IdCreationHelper() {
@@ -43,22 +42,12 @@ public final class IdCreationHelper {
 
     public static String createRandomEMail() {
         final String uuid = UUID.randomUUID().toString();
-        final StringConcatenation emailBuilder = new StringConcatenation();
-        emailBuilder.append("random-email-");
-        emailBuilder.append(uuid.substring(0, 20));
-        emailBuilder.append("@domain-");
-        emailBuilder.append(uuid.substring(20, 30));
-        emailBuilder.append(".com");
-        return emailBuilder.toString();
+        return "random-email-" + uuid.substring(0, 20) + "@domain-" + uuid.substring(20, 30) + ".com";
     }
 
     public static String createRandomPhoneNumber() {
         final String uuid = UUID.randomUUID().toString();
-        final StringConcatenation phoneNoBuilder = new StringConcatenation();
-        phoneNoBuilder.append(uuid.substring(0, 5));
-        phoneNoBuilder.append("/");
-        phoneNoBuilder.append(uuid.substring(5, 10));
-        return phoneNoBuilder.toString();
+        return uuid.substring(0, 5) + "/" + uuid.substring(5, 10);
     }
 
     /**

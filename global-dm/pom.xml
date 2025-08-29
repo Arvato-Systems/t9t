@@ -93,7 +93,7 @@
         <microprofile-smallrye-impl.version>2.4.1</microprofile-smallrye-impl.version>
 
         <!-- Jetty -->
-        <jetty.version>12.0.22</jetty.version>
+        <jetty.version>12.0.25</jetty.version>
 
         <!-- Commons (use with care, only few are regularly updated) -->
         <commons-logging.version>1.3.4-donotuse</commons-logging.version> <!-- should not use at all! -->
@@ -186,8 +186,8 @@
         <!-- Spring boot -->
         <spring-boot.version>3.4.5</spring-boot.version>
 
-        <netty.version>4.1.122.Final</netty.version>
-        <vertx4.version>4.5.15</vertx4.version>
+        <netty.version>4.1.124.Final</netty.version>
+        <vertx4.version>4.5.18</vertx4.version>
         <hazelcast-kubernetes.version>2.2.3</hazelcast-kubernetes.version>
 
         <snakeyaml.version>2.3</snakeyaml.version>

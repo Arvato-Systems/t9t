@@ -106,7 +106,7 @@ public final class RestUtils {
      */
     public static String determineResponseType(final HttpHeaders httpHeaders) {
         final String accept = httpHeaders.getHeaderString(HttpHeaders.ACCEPT);
-        return accept != null ? accept : httpHeaders.getHeaderString(HttpHeaders.CONTENT_TYPE);
+        return accept != null && !accept.contains(",") ? accept : httpHeaders.getHeaderString(HttpHeaders.CONTENT_TYPE);
     }
 
     /**

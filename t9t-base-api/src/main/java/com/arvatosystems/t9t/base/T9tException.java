@@ -673,6 +673,9 @@ public class T9tException extends ApplicationException {
         registerCode(INVALID_LAZY_MEDIADATA_PARAMETERS, "Lazy MediaData without appropriate URL");
         registerCode(FAILED_TO_RESOLVE_MEDIADATA, "Could not resolve lazy MediaData");
 
+        registerCode(DATASINK_UNSUPPORTED_FORMAT, "The requested format is not available for the category.");
+        registerCode(DATASINK_UNSUPPORTED_ENCODING, "Unsupported datasink encoding.");
+
         registerCode(HTTP_ERROR + 400, "Bad request");
         registerCode(HTTP_ERROR + 401, "Not authorized");
         registerCode(HTTP_ERROR + 403, "Forbidden");
