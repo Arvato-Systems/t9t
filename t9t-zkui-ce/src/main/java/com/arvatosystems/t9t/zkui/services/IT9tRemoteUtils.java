@@ -20,19 +20,21 @@ import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;
 import com.arvatosystems.t9t.zkui.exceptions.ServiceResponseException;
 
+import jakarta.annotation.Nonnull;
+
 /**
  * RemoteUtils interface definition.
  */
 public interface IT9tRemoteUtils {
-    <T extends ServiceResponse> T executeAndHandle(RequestParameters requestParameters, Class<T> serviceResponseClass) throws ReturnCodeException;
+    <T extends ServiceResponse> T executeAndHandle(@Nonnull RequestParameters requestParameters, @Nonnull Class<T> serviceResponseClass) throws ReturnCodeException;
 
-    void executeExpectOk(RequestParameters requestParameters) throws ServiceResponseException;
+    void executeExpectOk(@Nonnull RequestParameters requestParameters) throws ServiceResponseException;
 
-    int executeReturnOkCode(RequestParameters requestParameters) throws ServiceResponseException;
+    int executeReturnOkCode(@Nonnull RequestParameters requestParameters) throws ServiceResponseException;
 
-    void executeIgnoreErr(RequestParameters requestParameters, int errorToIgnore);
+    void executeIgnoreErr(@Nonnull RequestParameters requestParameters, int errorToIgnore);
 
-    <T extends ServiceResponse> T executeExpectOk(RequestParameters requestParameters, Class<T> serviceResponseClass) throws ServiceResponseException;
+    <T extends ServiceResponse> T executeExpectOk(@Nonnull RequestParameters requestParameters, @Nonnull Class<T> serviceResponseClass) throws ServiceResponseException;
 
     void returnCodeExceptionHandler(String message, Exception e) throws ReturnCodeException;
 }

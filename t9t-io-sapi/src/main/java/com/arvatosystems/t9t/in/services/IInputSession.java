@@ -24,6 +24,7 @@ import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.io.DataSinkDTO;
 
 import de.jpaw.bonaparte.core.BonaPortable;
+import jakarta.annotation.Nonnull;
 
 /**
  * A processor for input records.
@@ -62,8 +63,20 @@ public interface IInputSession {
      * The record will be pushed through a configured transformer, if one exists. */
     void process(BonaPortable dto);
 
-    /** executes a transformed request. */
-    ServiceResponse process(RequestParameters rp);
+    /** Executes a transformed request. This is strictly for data record processing, because it increments counters. */
+    ServiceResponse process(@Nonnull RequestParameters rp);
+
+    /**
+     * Executes a service request. Throws an exception if the session is not authenticated / open.
+     * This method can be used to perform additional requests, e.g. lookups, during initialization or before closing.
+     */
+    ServiceResponse execute(@Nonnull RequestParameters request);
+
+    /**
+     * Executes a service request. Throws an exception if the session is not authenticated / open.
+     * This method can be used to perform additional requests, e.g. lookups, during initialization or before closing.
+     */
+    <T extends ServiceResponse> T executeAndCheckResult(@Nonnull RequestParameters request, @Nonnull Class<T> expectedClass);
 
     /** Ends processing, writes a summary into the sink table. */
     void close();

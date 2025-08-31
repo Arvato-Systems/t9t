@@ -79,33 +79,37 @@ public class T9tRemoteUtils implements IT9tRemoteUtils {
     protected final IRemoteConnection statelessServiceSession = Jdp.getRequired(IRemoteConnection.class);
 
     @SuppressWarnings("unchecked")
+    @Override
     public <T extends ServiceResponse> T executeAndHandle(
-        RequestParameters requestParameters,
-        Class<T> serviceResponseClass) throws ReturnCodeException {
+        final RequestParameters requestParameters,
+        final Class<T> serviceResponseClass) throws ReturnCodeException {
 
         try {
-            ServiceResponse response = execute(requestParameters);
+            final ServiceResponse response = execute(requestParameters);
             handleServiceResponseErrorCode(response);
             return (T)response;
-        } catch (ApplicationException e) {
-            String causeChain = ExceptionUtil.causeChain(e);
+        } catch (final ApplicationException e) {
+            final String causeChain = ExceptionUtil.causeChain(e);
             LOGGER.error("Execution exception: {}", causeChain);
             throw new ReturnCodeException(e.getErrorCode(), e.getMessage(), null);
         }
     }
 
-    public void executeExpectOk(RequestParameters requestParameters) throws ServiceResponseException {
+    @Override
+    public void executeExpectOk(final RequestParameters requestParameters) throws ServiceResponseException {
         executeExpectOk(requestParameters, ServiceResponse.class);
     }
 
-    public int executeReturnOkCode(RequestParameters requestParameters) throws ServiceResponseException {
-        ServiceResponse resp = executeExpectOk(requestParameters, ServiceResponse.class);
+    @Override
+    public int executeReturnOkCode(final RequestParameters requestParameters) throws ServiceResponseException {
+        final ServiceResponse resp = executeExpectOk(requestParameters, ServiceResponse.class);
         return resp.getReturnCode();  // this could be 0 or 1 or 2...
     }
 
-    public void executeIgnoreErr(RequestParameters requestParameters, int errorToIgnore) {
+    @Override
+    public void executeIgnoreErr(final RequestParameters requestParameters, final int errorToIgnore) {
         try {
-            ServiceResponse response = execute(requestParameters);
+            final ServiceResponse response = execute(requestParameters);
             if (response.getReturnCode() != 0) {
                 if (response.getReturnCode() == errorToIgnore) {
                     LOGGER.debug("return code {} (expected and ignored", errorToIgnore);
@@ -116,25 +120,29 @@ public class T9tRemoteUtils implements IT9tRemoteUtils {
                             response.getErrorDetails(), response.getErrorMessage());
                 }
             }
-        } catch (ApplicationException e) {
-            String causeChain = ExceptionUtil.causeChain(e);
-            LOGGER.error("Execution application exception {}, caused by {}",
-                    e.getErrorCode(), causeChain);
+        } catch (final ApplicationException e) {
+            final String causeChain = ExceptionUtil.causeChain(e);
+            LOGGER.error("Execution application exception {}, caused by {}", e.getErrorCode(), causeChain);
             // TODO: alert popup
-        } catch (Exception e) {
+        } catch (final Exception e) {
             String causeChain = ExceptionUtil.causeChain(e);
             LOGGER.error("Execution exception: {}", causeChain);
             // TODO: alert popup
         }
     }
 
+    protected void treeWalkParameters(final RequestParameters requestParameters) {
+        requestParameters.treeWalkString(STRING_TRIMMER, true);  // trim fields, then convert empty data to nulls
+    }
+
+    @Override
     public <T extends ServiceResponse> T executeExpectOk(
-        RequestParameters requestParameters,
-        Class<T> serviceResponseClass) throws ServiceResponseException {
+        final RequestParameters requestParameters,
+        final Class<T> serviceResponseClass) throws ServiceResponseException {
         try {
-            requestParameters.treeWalkString(STRING_TRIMMER, true);  // trim fields, then convert empty data to nulls
+            treeWalkParameters(requestParameters);  // trim fields, then convert empty data to nulls
             requestParameters.validate();
-            ServiceResponse response = execute(requestParameters);
+            final ServiceResponse response = execute(requestParameters);
             if (!ApplicationException.isOk(response.getReturnCode()) && response.getReturnCode() != T9tException.UPDATE_DECLINED) {
                 LOGGER.error("Bad return code {} for {}: {} {}",
                         response.getReturnCode(),
@@ -145,14 +153,15 @@ public class T9tRemoteUtils implements IT9tRemoteUtils {
                     exposeDetails ? response.getErrorDetails() : null);
             }
             return (T)response;
-        } catch (ServiceResponseException e) {
+        } catch (final ServiceResponseException e) {
             throw e;
-        } catch (ApplicationException e) {
+        } catch (final ApplicationException e) {
             String causeChain = ExceptionUtil.causeChain(e);
             LOGGER.error("Execution application exception {}, caused by {}", e.getErrorCode(), causeChain);
             throw new ServiceResponseException(e.getErrorCode(), null, null);  // do not expose stack traces to the user!
-        } catch (Exception e) {
-            String causeChain = ExceptionUtil.causeChain(e);
+        } catch (final Exception e) {
+            final String causeChain = ExceptionUtil.causeChain(e);
+            LOGGER.error("Execution exception {}", causeChain);
             throw new ServiceResponseException(Constants.ErrorCodes.GENERAL_EXCEPTION, null, null);  // do not expose stack traces to the user!
         }
     }
@@ -160,7 +169,7 @@ public class T9tRemoteUtils implements IT9tRemoteUtils {
     /**
      * Performs a remote call to the backend.
      */
-    private ServiceResponse execute(final RequestParameters requestParameters) {
+    protected ServiceResponse execute(final RequestParameters requestParameters) {
         final ApplicationSession session = ApplicationSession.get();
 
         final String clientIp = getClientIpAddress();
@@ -171,7 +180,7 @@ public class T9tRemoteUtils implements IT9tRemoteUtils {
 
         requestParameters.treeWalkString(new StringConverterEmptyToNull(), true);  // convert empty data to nulls
         requestParameters.validate();  // then check if it is a valid request
-        ServiceResponse resp = null;
+        final ServiceResponse resp;
         if (requestParameters instanceof AuthenticationRequest) {
             AuthenticationRequest ar = (AuthenticationRequest)requestParameters;
             LOGGER.debug("Sending t9t AuthenticationRequest of type {} - session params {}",
@@ -215,7 +224,7 @@ public class T9tRemoteUtils implements IT9tRemoteUtils {
         return resp;
     }
 
-    private String getClientIpAddress() {
+    protected String getClientIpAddress() {
         final Execution currentExecution = Executions.getCurrent();
         String clientIp = currentExecution.getHeader(T9tConstants.HTTP_HEADER_FORWARDED_FOR);
         if (clientIp == null) {
@@ -236,7 +245,7 @@ public class T9tRemoteUtils implements IT9tRemoteUtils {
         return resp;
     }
 
-    private void logRequest(RequestParameters requestParameters) {
+    protected void logRequest(final RequestParameters requestParameters) {
         if (LOGGER.isTraceEnabled()) {
             // extensive output
             LOGGER.trace(">>>Request  {}: {}", requestParameters.ret$PQON(), ToStringHelper.toStringML(requestParameters));
@@ -245,7 +254,8 @@ public class T9tRemoteUtils implements IT9tRemoteUtils {
             LOGGER.debug(">>>Request  {}", requestParameters);
         }
     }
-    private void logResponse(ServiceResponse resp) {
+
+    protected void logResponse(final ServiceResponse resp) {
         if (LOGGER.isTraceEnabled()) {
             // extensive output
             LOGGER.trace("<<<Response  {}: {}", resp.ret$PQON(), ToStringHelper.toStringML(resp));
@@ -274,7 +284,7 @@ public class T9tRemoteUtils implements IT9tRemoteUtils {
         }
     }
 
-    private boolean isExposeDetailAllowed(final int returnCode) {
+    protected boolean isExposeDetailAllowed(final int returnCode) {
         if (ApplicationException.isOk(returnCode)) {
             return true;
         }

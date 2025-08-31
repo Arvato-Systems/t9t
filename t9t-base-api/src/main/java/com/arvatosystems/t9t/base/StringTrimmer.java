@@ -24,10 +24,14 @@ public final class StringTrimmer extends DataConverterAbstract<String, Alphanume
 
     @Override
     public String convert(final String oldValue, final AlphanumericElementaryDataItem meta) {
-        if (oldValue == null || meta.getAllowControlCharacters() || meta.getRegexp() != null) {
-            // no change for these fields / values
-            return oldValue;
+        if (oldValue == null || oldValue.length() == 0) {
+            // no trimming required, just empty to null conversion
+            return null;
         }
+//        if (meta.getAllowControlCharacters() || meta.getRegexp() != null) {
+//            // no change for these fields / values.
+//            return oldValue;
+//        }
         // trim and return, but if now the empty string, return null instead
         final String newValue = oldValue.trim();
         return newValue.isEmpty() ? null : newValue;
