@@ -314,6 +314,30 @@ public class InputSession implements IInputSession {
         }
     }
 
+
+    @Override
+    public ServiceResponse execute(final RequestParameters rp) {
+        // simple delegate to the session - no counting, no pooling
+        return session.execute(rp);
+    }
+
+    @Override
+    public <T extends ServiceResponse> T executeAndCheckResult(final RequestParameters params, final Class<T> requiredType) {
+        final ServiceResponse response = session.execute(params);
+        if (!ApplicationException.isOk(response.getReturnCode())) {
+            LOGGER.error("Error during request handler execution for {} (returnCode={}, errorMsg={}, errorDetails={})", params.ret$PQON(),
+                    response.getReturnCode(), response.getErrorMessage(), response.getErrorDetails());
+            throw new T9tException(response.getReturnCode(), response.getErrorDetails());
+        }
+        // the response must be a subclass of the expected one
+        if (!requiredType.isAssignableFrom(response.getClass())) {
+            LOGGER.error("Error during request handler execution for {}, expected response class {} but got {}", params.ret$PQON(),
+                    requiredType.getSimpleName(), response.ret$PQON());
+            throw new T9tException(T9tException.INCORRECT_RESPONSE_CLASS, requiredType.getSimpleName());
+        }
+        return requiredType.cast(response); // all OK
+    }
+
     @Override
     public String getSourceURI() {
         return sinkDTO.getFileOrQueueName();
