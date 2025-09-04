@@ -192,8 +192,8 @@
         <!-- Spring boot -->
         <spring-boot.version>3.5.5</spring-boot.version>
 
-        <netty.version>4.2.4.Final</netty.version>
-        <vertx4.version>5.0.3</vertx4.version>
+        <netty.version>4.2.5.Final</netty.version>
+        <vertx4.version>5.0.4</vertx4.version>
         <hazelcast-kubernetes.version>2.2.3</hazelcast-kubernetes.version>
 
         <snakeyaml.version>2.3</snakeyaml.version>
