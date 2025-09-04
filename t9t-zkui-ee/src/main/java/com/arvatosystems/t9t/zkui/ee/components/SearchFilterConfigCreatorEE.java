@@ -37,7 +37,7 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 
 import com.arvatosystems.t9t.base.uiprefs.UIGridPreferences;
-import com.arvatosystems.t9t.zkui.components.dropdown28.SimpleListModelExt;
+import com.arvatosystems.t9t.zkui.components.dropdown28.SimpleListModelFullList;
 import com.arvatosystems.t9t.zkui.services.impl.DefaultSearchFilterConfigCreator;
 import com.arvatosystems.t9t.zkui.util.Constants;
 import com.arvatosystems.t9t.zkui.viewmodel.support.SearchFilterRowVM;
@@ -222,7 +222,7 @@ public class SearchFilterConfigCreatorEE extends DefaultSearchFilterConfigCreato
                 });
                 combobox.setVflex("1");
                 combobox.setDisabled(!searchFilter.getSelected());
-                combobox.setModel(new SimpleListModelExt<>(searchFilter.getFilterTypes()));
+                combobox.setModel(new SimpleListModelFullList<>(searchFilter.getFilterTypes()));
                 combobox.setValue(searchFilter.getCurrentSelection());
                 combobox.setParent(row);
 

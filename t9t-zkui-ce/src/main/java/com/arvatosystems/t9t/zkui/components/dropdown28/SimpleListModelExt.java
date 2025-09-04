@@ -15,7 +15,6 @@
  */
 package com.arvatosystems.t9t.zkui.components.dropdown28;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -31,30 +30,36 @@ public class SimpleListModelExt<E> extends SimpleListModel<E> {
      */
     private static final long serialVersionUID = -848831378739903090L;
 
-    public SimpleListModelExt(List<E> data) {
+    public SimpleListModelExt(final List<E> data) {
         super(data);
         LOGGER.debug("created SimpleListModelExt for {} entries", data.size());
     }
 
+    /**
+     * Returns a submodel containing at most nRows elements that match the given value.
+     */
     @Override
-    public ListModel<E> getSubModel(Object value, int nRows) {
-        LOGGER.debug("getSubModel {} for {} rows", value, nRows);
-        @SuppressWarnings("deprecation")
-        final String idx = value == null ? "" : objectToString(value);
-        if (nRows < 0)
-            nRows = 10;
-        final LinkedList<E> data = new LinkedList<E>();
-        for (int i = 0; i < getSize(); i++) {
-            if (idx.equals("") || entryMatchesText(getElementAt(i).toString(), idx)) {
-                data.add(getElementAt(i));
-                if (--nRows <= 0)
-                    break; // done
-            }
-        }
-        return new SimpleListModelExt<E>(data);
+    public ListModel<E> getSubModel(final Object value, final int nRows) {
+        LOGGER.debug("getSubModel {} for {} rows for value {}", value, nRows, value);
+        final String filter = value == null ? "" : value.toString().toLowerCase(); // avoid doing toLowerCase multiple times
+        return super.getSubModel(filter, nRows);
     }
 
-    public boolean entryMatchesText(String entry, String text) {
-        return entry.toLowerCase().startsWith(text.toLowerCase());
+    /**
+     * Compares if the given value shall belong to the submodel represented by the key.
+     *
+     * Default: converts both key and value to String objects and then return true if the String object of value starts with the String object (or the key is
+     * empty). The comparison is case insensitive.
+     *
+     * @param key   the key representing the submodel. In autocomplete, it is the value entered by user. This has been converted to lowercase already.
+     * @param value the value in this model.
+     */
+    @Override
+    protected boolean inSubModel(final Object key, final Object value) {
+        if (key == null) {
+            return true;
+        }
+        final String sKey = key.toString();
+        return sKey.length() == 0 || value.toString().toLowerCase().startsWith(sKey);
     }
 }
