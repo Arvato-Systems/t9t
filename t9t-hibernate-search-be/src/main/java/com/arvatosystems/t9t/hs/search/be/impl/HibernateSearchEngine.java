@@ -3,8 +3,7 @@ package com.arvatosystems.t9t.hs.search.be.impl;
 import com.arvatosystems.t9t.base.search.SearchCriteria;
 import com.arvatosystems.t9t.base.services.ITextSearch;
 import com.arvatosystems.t9t.base.services.RequestContext;
-import com.arvatosystems.t9t.base.services.ITextSearch.DocumentTypeNeeded;
-
+import com.arvatosystems.t9t.hs.configurate.be.core.impl.EntityConfigurer;
 import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
 import de.jpaw.bonaparte.pojos.api.SortColumn;
 import de.jpaw.dp.Jdp;
@@ -26,6 +25,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Objects;
+
+import static com.arvatosystems.t9t.hs.search.be.impl.HibernateSearchHelper.getBool;
 
 @Singleton
 @Named("HIBERNATE-SEARCH")
@@ -77,26 +78,14 @@ public class HibernateSearchEngine implements ITextSearch {
             LOGGER.debug("Specific search with SearchFilter on {}", entityClass.getName());
             SearchScope<?> scope = searchSession.scope(entityClass);
             FilterToHibernateSearchConverter converter = new FilterToHibernateSearchConverter();
-            SearchPredicate predicate = converter.convertSearchFilterToPredicate(scope.predicate(), sc.getSearchFilter());
+            SearchPredicate predicate = converter.convertSearchFilterToPredicate(entityClass.getName(), scope.predicate(), sc.getSearchFilter());
             query = searchSession.search(entityClass)
                     .where(predicate);
 
         } else if (sc.getExpression() != null && !sc.getExpression().isEmpty()) {
-            /**
-             * "John"              // simple search
-             * "John + Doe"        // AND
-             * "John | Jane"       // OR
-             * "John -Doe"         // Exclude Doe
-             * "John*"             // Wildcard (starting with John)
-             * "\"John Doe\""      // Exact phrase
-             * "+John -Doe"        // has to contain John, but not Doe
-             */
-            String[] fields = sc.getExpression().split(":", 2);
-            if (fields.length == 2) {
-                LOGGER.debug("Performing search with expression '{}' on {}", sc.getExpression(), entityClass.getName());
-                query = searchSession.search(entityClass)
-                        .where(f -> f.simpleQueryString().fields(fields[0].trim()).matching(fields[1].trim()));
-            }
+            LOGGER.debug("Performing expression search '{}' on {}", sc.getExpression(), entityClass.getName());
+            query = searchSession.search(entityClass)
+                    .where(factory -> getBool(factory, entityClass.getName(), null, sc.getExpression()));
         }
 
         if (query == null) {
@@ -120,13 +109,15 @@ public class HibernateSearchEngine implements ITextSearch {
         }
         for (SortColumn sortCriteria : sc.getSortColumns()) {
             if (sortCriteria.getFieldName() != null) {
-                query = query.sort(f -> {
-                    if (sortCriteria.getDescending()) {
-                        return f.field(sortCriteria.getFieldName()).desc();
-                    } else {
-                        return f.field(sortCriteria.getFieldName()).asc();
-                    }
-                });
+                final String originalField = sortCriteria.getFieldName();
+                final String sortField = EntityConfigurer.getCachedSortFields().get(originalField);
+                boolean descending = sortCriteria.getDescending();
+                try {
+                    query = query.sort(f -> descending ? f.field(sortField).desc() : f.field(sortField).asc());
+                } catch (Exception e) {
+                    LOGGER.debug("Sort field '{}' not usable ({}), falling back to '{}'", sortField, e.getMessage(), originalField);
+                    query = query.sort(f -> descending ? f.field(originalField).desc() : f.field(originalField).asc());
+                }
             }
         }
         return query;

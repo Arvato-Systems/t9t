@@ -45,51 +45,53 @@ import org.hibernate.search.engine.search.predicate.dsl.SearchPredicateFactory;
 
 import java.util.List;
 
+import static com.arvatosystems.t9t.hs.search.be.impl.HibernateSearchHelper.getBool;
+
 @Singleton
 public class FilterToHibernateSearchConverter implements IFilterToHibernateSearchConverter {
 
     private final IEnumResolver enumResolver = Jdp.getRequired(IEnumResolver.class);
 
     @Override
-    public SearchPredicate convertSearchFilterToPredicate(final SearchPredicateFactory factory, final SearchFilter searchFilter) {
+    public SearchPredicate convertSearchFilterToPredicate(String entityName, final SearchPredicateFactory factory, final SearchFilter searchFilter) {
 
         if (searchFilter == null) {
             return factory.matchAll().toPredicate();
         }
 
         if (searchFilter instanceof AndFilter andFilter) {
-            return convertAndToPredicate(factory, andFilter);
+            return convertAndToPredicate(entityName, factory, andFilter);
 
         } else if (searchFilter instanceof OrFilter orFilter) {
-            return convertOrToPredicate(factory, orFilter);
+            return convertOrToPredicate(entityName, factory, orFilter);
 
         } else if (searchFilter instanceof NullFilter nullFilter) {
             return convertNullToPredicate(factory, nullFilter);
 
         } else if (searchFilter instanceof NotFilter notFilter) {
-            return convertNotFilterToPredicate(factory, notFilter);
+            return convertNotFilterToPredicate(entityName, factory, notFilter);
 
         } else if (searchFilter instanceof FieldFilter fieldFilter) {
-            return convertFieldFilterToPredicate(factory, fieldFilter);
+            return convertFieldFilterToPredicate(entityName, factory, fieldFilter);
 
         } else {
             throw new IllegalArgumentException("Unhandled parameter types: " + searchFilter.getClass().getSimpleName());
         }
     }
 
-    private SearchPredicate convertAndToPredicate(final SearchPredicateFactory factory, final AndFilter filter) {
+    private SearchPredicate convertAndToPredicate(String entityName, final SearchPredicateFactory factory, final AndFilter filter) {
 
         return factory.and(
-                convertSearchFilterToPredicate(factory, filter.getFilter1()),
-                convertSearchFilterToPredicate(factory, filter.getFilter2())
+                convertSearchFilterToPredicate(entityName, factory, filter.getFilter1()),
+                convertSearchFilterToPredicate(entityName, factory, filter.getFilter2())
         ).toPredicate();
     }
 
-    private SearchPredicate convertOrToPredicate(final SearchPredicateFactory factory, final OrFilter filter) {
+    private SearchPredicate convertOrToPredicate(String entityName, final SearchPredicateFactory factory, final OrFilter filter) {
 
         return factory.or(
-                convertSearchFilterToPredicate(factory, filter.getFilter1()),
-                convertSearchFilterToPredicate(factory, filter.getFilter2())
+                convertSearchFilterToPredicate(entityName, factory, filter.getFilter1()),
+                convertSearchFilterToPredicate(entityName, factory, filter.getFilter2())
         ).toPredicate();
     }
 
@@ -99,7 +101,7 @@ public class FilterToHibernateSearchConverter implements IFilterToHibernateSearc
         return factory.bool().mustNot(factory.exists().field(filter.getFieldName())).toPredicate();
     }
 
-    private SearchPredicate convertNotFilterToPredicate(final SearchPredicateFactory factory, final NotFilter filter) {
+    private SearchPredicate convertNotFilterToPredicate(String entityName, final SearchPredicateFactory factory, final NotFilter filter) {
 
         if (filter.getFilter() instanceof NullFilter f) {
             // Special case: NOT NULL
@@ -108,19 +110,19 @@ public class FilterToHibernateSearchConverter implements IFilterToHibernateSearc
 
         if (filter.getFilter() instanceof NotFilter f) {
             // Double negation: just return the inner filter
-            return convertSearchFilterToPredicate(factory, f.getFilter());
+            return convertSearchFilterToPredicate(entityName, factory, f.getFilter());
         }
 
-        return factory.bool().mustNot(convertSearchFilterToPredicate(factory, filter.getFilter())).toPredicate();
+        return factory.bool().mustNot(convertSearchFilterToPredicate(entityName, factory, filter.getFilter())).toPredicate();
     }
 
-    private SearchPredicate convertFieldFilterToPredicate(final SearchPredicateFactory factory, final FieldFilter filter) {
+    private SearchPredicate convertFieldFilterToPredicate(String entityName, final SearchPredicateFactory factory, final FieldFilter filter) {
 
         if (filter instanceof AsciiFilter f) {
-            return convertStringToPredicate(factory, f.getFieldName(), f.getValueList(), f.getEqualsValue(), f.getLikeValue());
+            return convertStringToPredicate(entityName, factory, f.getFieldName(), f.getValueList(), f.getEqualsValue(), f.getLikeValue());
 
         } else if (filter instanceof UnicodeFilter f) {
-            return convertStringToPredicate(factory, f.getFieldName(), f.getValueList(), f.getEqualsValue(), f.getLikeValue());
+            return convertStringToPredicate(entityName, factory, f.getFieldName(), f.getValueList(), f.getEqualsValue(), f.getLikeValue());
 
         } else if (filter instanceof BooleanFilter bf) {
             return convertBooleanToPredicate(factory, bf);
@@ -166,7 +168,8 @@ public class FilterToHibernateSearchConverter implements IFilterToHibernateSearc
         }
     }
 
-    private SearchPredicate convertStringToPredicate(final SearchPredicateFactory factory,
+    private SearchPredicate convertStringToPredicate(String entityName,
+                                                     final SearchPredicateFactory factory,
                                                      String fieldName,
                                                      List<String> valueList,
                                                      String equalsValue,
@@ -176,11 +179,13 @@ public class FilterToHibernateSearchConverter implements IFilterToHibernateSearc
         }
 
         if (equalsValue != null) {
-            return factory.match().field(fieldName).matching(equalsValue).toPredicate();
+            return getBool(factory, entityName, fieldName, equalsValue).toPredicate();
         }
 
         if (likeValue != null) {
-            // Convert SQL-like wildcards to Hibernate Search wildcards
+            if (!likeValue.contains("%") && !likeValue.contains("_")) {
+                return getBool(factory, entityName, fieldName, likeValue).toPredicate();
+            }
             String wildcardValue = likeValue.replace("%", "*").replace("_", "?");
             return factory.wildcard().field(fieldName).matching(wildcardValue).toPredicate();
         }

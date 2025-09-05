@@ -210,7 +210,7 @@
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>docker-build-t9t-gateway</id>
+                                <id>docker-build-t9t-gateway-rest</id>
                                 <phase>install</phase>
                                 <goals><goal>exec</goal></goals>
                                 <configuration>
@@ -218,9 +218,9 @@
                                     <arguments>
                                         <argument>build</argument>
                                         <argument>-t</argument>
-                                        <argument>${registry}${rs}t9t-gateway:${project.version}</argument>
+                                        <argument>${registry}${rs}t9t-gateway-rest:${project.version}</argument>
                                         <argument>--target</argument>
-                                        <argument>t9t-gateway</argument>
+                                        <argument>t9t-gateway-rest</argument>
                                         <argument>--build-arg</argument>
                                         <argument>REGISTRY=${registry}</argument>
                                         <argument>--build-arg</argument>
@@ -387,33 +387,6 @@
                                         <argument>${registry}${rs}t9t-server-main:${project.version}</argument>
                                         <argument>--target</argument>
                                         <argument>t9t-server-main</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>REGISTRY=${registry}</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>JAVA_IMAGE=${java.image}</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>JAVA_TAG=${java.tag}</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>JPROFILER_VERSION=${jprofiler.version}</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>JMX_EXPORTER_VERSION=${jmx.exporter.version}</argument>
-                                        <argument>.</argument>
-                                    </arguments>
-                                    <workingDirectory>${project.basedir}</workingDirectory>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>docker-build-t9t-gateway-main</id>
-                                <phase>install</phase>
-                                <goals><goal>exec</goal></goals>
-                                <configuration>
-                                    <executable>docker</executable>
-                                    <arguments>
-                                        <argument>build</argument>
-                                        <argument>-t</argument>
-                                        <argument>${registry}${rs}t9t-gateway-main:${project.version}</argument>
-                                        <argument>--target</argument>
-                                        <argument>t9t-gateway-main</argument>
                                         <argument>--build-arg</argument>
                                         <argument>REGISTRY=${registry}</argument>
                                         <argument>--build-arg</argument>

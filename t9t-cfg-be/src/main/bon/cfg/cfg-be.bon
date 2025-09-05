@@ -121,6 +121,7 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional Ascii(30)                          schemaManagementStrategy;   // how to handle schema management, e.g. "none", "drop-and-create"
         optional Ascii(150)                         mappingConfigurer;          // the class name of the mapping configurer to use, e.g. "com.arvatosystems.t9t.hs.configurate.be.core.impl.EntityConfigurer"
         optional Unicode(255)                       indexConfigurationFile;     // the path to the index configuration file, e.g. "classpath:hibernate-search-entities.json"
+        optional Integer                            fuzzySearchLevel;           // 0 = off, 1 = low, 2 = high
         optional (LuceneConfiguration...)           luceneConfiguration;
         optional (ElasticSearchConfiguration...)    elasticSearchConfiguration;
     }

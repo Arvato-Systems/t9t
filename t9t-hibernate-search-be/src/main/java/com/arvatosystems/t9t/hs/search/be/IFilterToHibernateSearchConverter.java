@@ -6,5 +6,5 @@ import org.hibernate.search.engine.search.predicate.dsl.SearchPredicateFactory;
 
 public interface IFilterToHibernateSearchConverter {
 
-    SearchPredicate convertSearchFilterToPredicate(SearchPredicateFactory factory, SearchFilter searchFilter);
+    SearchPredicate convertSearchFilterToPredicate(String entityName, SearchPredicateFactory factory, SearchFilter searchFilter);
 }

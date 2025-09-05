@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.arvatosystems.t9t.cfg.be.HibernateSearchConfiguration;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.dialect.H2Dialect;
 import org.hibernate.dialect.HANADialect;
@@ -34,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.jpa.ormspecific.IEMFCustomizer;
 import com.arvatosystems.t9t.cfg.be.DatabaseBrandType;
+import com.arvatosystems.t9t.cfg.be.HibernateSearchConfiguration;
 import com.arvatosystems.t9t.cfg.be.RelationalDatabaseConfiguration;
 import com.arvatosystems.t9t.init.InitContainers;
 
@@ -109,7 +109,7 @@ public class EMFCustomizer implements IEMFCustomizer {
     }
 
     @Override
-    public EntityManagerFactory getCustomizedEmf(final String puName, final RelationalDatabaseConfiguration settings, HibernateSearchConfiguration hibernateSearchConfiguration) throws Exception {
+    public EntityManagerFactory getCustomizedEmf(final String puName, final RelationalDatabaseConfiguration settings, HibernateSearchConfiguration hibernateSearchConfiguration) {
         final Map<String, Object> myProps = new HashMap<>();
 
         configureProperties(myProps);
@@ -123,14 +123,16 @@ public class EMFCustomizer implements IEMFCustomizer {
             putOpt(myProps, "hibernate.search.enabled",                     "true");
             putOpt(myProps, "hibernate.search.backend.type",                hibernateSearchConfiguration.getSearchType());
             putOpt(myProps, "hibernate.search.schema_management.strategy",  hibernateSearchConfiguration.getSchemaManagementStrategy());
-            putOpt(myProps, "hibernate.search.mapping.configurer",          hibernateSearchConfiguration.getMappingConfigurer());
+            putOpt(myProps, "hibernate.search.mapping.configurer", "com.arvatosystems.t9t.hs.configurate.be.core.impl.EntityConfigurer");
             if (hibernateSearchConfiguration.getSearchType().equals("lucene")) {
                 putOpt(myProps, "hibernate.search.backend.directory.type", hibernateSearchConfiguration.getLuceneConfiguration().getDirectoryType());
                 putOpt(myProps, "hibernate.search.backend.directory.root", hibernateSearchConfiguration.getLuceneConfiguration().getDirectoryRoot());
+                putOpt(myProps, "hibernate.search.backend.analysis.configurer", "com.arvatosystems.t9t.hs.be.lucene.configurate.impl.T9tLuceneAnalysisConfigurer");
             } else if (hibernateSearchConfiguration.getSearchType().equals("elasticsearch")) {
                 putOpt(myProps, "hibernate.search.backend.hosts", hibernateSearchConfiguration.getElasticSearchConfiguration().getHosts());
                 putOpt(myProps, "hibernate.search.backend.username", hibernateSearchConfiguration.getElasticSearchConfiguration().getUsername());
                 putOpt(myProps, "hibernate.search.backend.password", hibernateSearchConfiguration.getElasticSearchConfiguration().getPassword());
+                putOpt(myProps, "hibernate.search.backend.analysis.configurer", "com.arvatosystems.t9t.hs.be.elasticsearch.configurate.impl.T9tElasticsearchAnalysisConfigurer");
             }
         } else {
             putOpt(myProps, "hibernate.search.enabled",                     "false");

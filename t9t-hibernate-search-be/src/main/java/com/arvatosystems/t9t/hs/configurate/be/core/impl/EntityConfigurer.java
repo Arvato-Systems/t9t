@@ -19,10 +19,36 @@ import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.TypeMapp
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import static com.arvatosystems.t9t.hs.configurate.be.core.constants.HsProperties.ANALYSER_FULLTEXT_STANDARD_TOKENIZER;
+import static com.arvatosystems.t9t.hs.configurate.be.core.constants.HsProperties.IS_FUZZY;
+import static com.arvatosystems.t9t.hs.configurate.be.core.constants.HsProperties.ANALYSER_FUZZINESS;
+import static com.arvatosystems.t9t.hs.configurate.be.core.constants.HsProperties.ANALYSER_KEYWORD_NORMALIZER;
+
 @Singleton
 public class EntityConfigurer implements HibernateOrmSearchMappingConfigurer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EntityConfigurer.class);
+    private static Map<String, String> cachedSortFields;
+    private static Map<String, Map<Boolean, Set<String>>> cachedFullTextFields = new HashMap<>();
+    private static Map<String, Set<String>> cachedKeywordFields;
+    private static final String SORT = "_sort";
+
+    public static Map<String, String> getCachedSortFields() {
+        return cachedSortFields;
+    }
+
+    public static Map<String, Map<Boolean, Set<String>>> getCachedFullTextFields() {
+        return cachedFullTextFields;
+    }
+
+    public static Map<String, Set<String>> getCachedKeywordFields() {
+        return cachedKeywordFields;
+    }
 
     /**
      * This method configures the Hibernate Search mapping for entity classes.
@@ -34,6 +60,10 @@ public class EntityConfigurer implements HibernateOrmSearchMappingConfigurer {
     public void configure(HibernateOrmMappingConfigurationContext context) {
 
         LOGGER.info("Starting Hibernate Search entity configuration");
+
+        cachedSortFields = new HashMap<>();
+        cachedFullTextFields = new HashMap<>();
+        cachedKeywordFields = new HashMap<>();
 
         final HibernateSearchConfiguration hibernateSearchConfiguration = Jdp.getRequired(T9tServerConfiguration.class).getHibernateSearchConfiguration();
 
@@ -81,18 +111,25 @@ public class EntityConfigurer implements HibernateOrmSearchMappingConfigurer {
             typeMapping.indexed();
             LOGGER.debug("Applied @Indexed to entity: {}", config.getClassName());
 
-            // Configure fields
+            // Configure fields && collect search fields for full text search with expression
+            Set<String> searchKeywordNames = new HashSet<>();
+            Map<Boolean, Set<String>> searchFullTextFieldNames = new HashMap<>();
             if (config.getFields() != null) {
                 for (FieldConfig fieldConfig : config.getFields()) {
-                    configureField(typeMapping, fieldConfig);
+                    configureField(typeMapping, fieldConfig, searchKeywordNames, searchFullTextFieldNames);
                 }
             }
-
-            // Configure embedded fields
+            // Embedded entities: collect includePaths into same caches
             if (config.getEmbeddedIndexEntities() != null) {
                 for (EmbeddedIndexEntityConfig embeddedConfig : config.getEmbeddedIndexEntities()) {
-                    configureEmbeddedIndexEntity(typeMapping, embeddedConfig);
+                    configureEmbeddedIndexEntity(typeMapping, embeddedConfig, searchKeywordNames, searchFullTextFieldNames);
                 }
+            }
+            if (!searchFullTextFieldNames.isEmpty()) {
+                cachedFullTextFields.put(config.getClassName(), searchFullTextFieldNames);
+            }
+            if (!searchKeywordNames.isEmpty()) {
+                cachedKeywordFields.put(config.getClassName(), searchKeywordNames);
             }
 
         } catch (Exception e) {
@@ -103,40 +140,80 @@ public class EntityConfigurer implements HibernateOrmSearchMappingConfigurer {
     /**
      * Configures a field based on the field configuration.
      */
-    private void configureField(TypeMappingStep typeMapping, FieldConfig config) {
+    private void configureField(TypeMappingStep typeMapping, FieldConfig config, Set<String> searchKeywordNames, Map<Boolean, Set<String>> searchFullTextFieldNames) {
 
         LOGGER.debug("Configuring field: {} with type: {}", config.getName(), config.getType());
         PropertyMappingStep propertyStep = typeMapping.property(config.getName());
 
         switch (config.getType().toLowerCase()) {
-            case "fulltextfield":
-                if (config.getAnalyzer() != null) {
-                    propertyStep.fullTextField().analyzer(config.getAnalyzer());
-                } else {
-                    propertyStep.fullTextField();
-                }
-                break;
             case "keywordfield":
-                propertyStep.keywordField().sortable(Sortable.YES);
+                cachedSortFields.computeIfAbsent(config.getName(), k -> config.getName());
+                searchKeywordNames.add(config.getName());
+                propertyStep
+                        .keywordField()
+                        .normalizer(ANALYSER_KEYWORD_NORMALIZER)
+                        .sortable(Sortable.YES);
                 break;
             case "genericfield":
-                propertyStep.genericField().sortable(Sortable.YES);
+                cachedSortFields.computeIfAbsent(config.getName(), k -> config.getName());
+                propertyStep.genericField()
+                        .sortable(Sortable.YES);
                 break;
+            case "fulltextfield":
             default:
-                LOGGER.warn("Unknown field type '{}' for field '{}', using fullTextField as default",
-                        config.getType(), config.getName());
-                propertyStep.fullTextField();
+                String sortField = config.getName() + SORT;
+                String analyser = config.getAnalyzer() != null ? config.getAnalyzer() : ANALYSER_FULLTEXT_STANDARD_TOKENIZER;
+
+                cachedSortFields.computeIfAbsent(config.getName(), k -> config.getName() + SORT);
+                searchKeywordNames.add(sortField);
+                searchFullTextFieldNames
+                        .computeIfAbsent(ANALYSER_FUZZINESS.getOrDefault(analyser, IS_FUZZY), k -> new HashSet<>())
+                        .add(config.getName());
+
+                propertyStep.fullTextField()
+                        .analyzer(analyser);
+                propertyStep
+                        .keywordField(sortField)
+                        .normalizer(ANALYSER_KEYWORD_NORMALIZER)
+                        .sortable(Sortable.YES);
         }
     }
 
     /**
      * Configures an embedded field based on the embedded field configuration.
      */
-    private void configureEmbeddedIndexEntity(TypeMappingStep typeMapping, EmbeddedIndexEntityConfig config) {
+    private void configureEmbeddedIndexEntity(TypeMappingStep typeMapping, EmbeddedIndexEntityConfig config,
+                                              Set<String> searchKeywordNames, Map<Boolean, Set<String>> searchFullTextFieldNames) {
 
         LOGGER.debug("Configuring embedded field: {}", config.getTargetEntity());
-        typeMapping.property(config.getTargetEntity())
-                .indexedEmbedded()
-                .indexingDependency().reindexOnUpdate(ReindexOnUpdate.SHALLOW);
+        try {
+            var embedded = typeMapping.property(config.getTargetEntity()).indexedEmbedded();
+            if (config.getIncludePaths() != null && !config.getIncludePaths().isEmpty()) {
+                // apply includePaths for indexing
+                embedded.includePaths(config.getIncludePaths().stream().map(p -> p.getName()).toArray(String[]::new));
+                // also populate caches according to declared type
+                for (var includePath : config.getIncludePaths()) {
+                    if (includePath.getName() == null || includePath.getName().isEmpty()) continue;
+                    String fieldname = config.getTargetEntity() + "." + includePath.getName();
+                    switch (includePath.getType().toLowerCase()) {
+                        case "keywordfield":
+                            searchKeywordNames.add(fieldname);
+                            break;
+                        case "genericfield":
+                            break;
+                        case "fulltextfield":
+                        default:
+                            String analyzer = includePath.getAnalyzer() != null ? includePath.getAnalyzer() : ANALYSER_FULLTEXT_STANDARD_TOKENIZER;
+                            searchFullTextFieldNames
+                                    .computeIfAbsent(ANALYSER_FUZZINESS.getOrDefault(analyzer, IS_FUZZY), k -> new HashSet<>())
+                                    .add(fieldname);
+                            break;
+                    }
+                }
+            }
+            embedded.indexingDependency().reindexOnUpdate(ReindexOnUpdate.SHALLOW);
+        } catch (Exception e) {
+            LOGGER.error("Failed to configure embedded field {}: {}", config.getTargetEntity(), e.getMessage(), e);
+        }
     }
 }

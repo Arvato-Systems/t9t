@@ -140,7 +140,7 @@ CMD dumb-init java ${AGENT_PATH} \
     ${RESTPORT}
 
 # === T9T GATEWAY Stage ===
-FROM t9t-java AS t9t-gateway
+FROM t9t-java AS t9t-gateway-rest
 ENV HOST=server-main \
   PORT=8024 \
   T9T_RESTAPI_SWAGGER="Y" \

@@ -394,6 +394,13 @@
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:element>
+                    <xs:element name="fuzzySearchLevel" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:unsignedInt">
+                                <xs:maxInclusive value="2147483647"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
                     <xs:element name="luceneConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:LuceneConfiguration"/>
                     <xs:element name="elasticSearchConfiguration" minOccurs="0" nillable="true" type="t9t_cfg_be:ElasticSearchConfiguration"/>
                 </xs:sequence>
