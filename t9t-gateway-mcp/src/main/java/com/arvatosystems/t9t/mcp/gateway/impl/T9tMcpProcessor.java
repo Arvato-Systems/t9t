@@ -15,8 +15,8 @@
  */
 package com.arvatosystems.t9t.mcp.gateway.impl;
 
+import com.arvatosystems.t9t.ai.T9tAiMcpConstants;
 import com.arvatosystems.t9t.ai.T9tAiException;
-import com.arvatosystems.t9t.ai.mcp.McpUtils;
 import com.arvatosystems.t9t.ai.request.AiGetPromptRequest;
 import com.arvatosystems.t9t.ai.request.AiGetPromptResponse;
 import com.arvatosystems.t9t.ai.request.AiGetPromptsRequest;
@@ -77,7 +77,7 @@ public class T9tMcpProcessor implements IT9tMcpProcessor {
     public AiGetToolsResponse getTools(final String authorizationHeader) {
         final AiGetToolsRequest toolsRequest = new AiGetToolsRequest();
 
-        ServiceResponse response = performAsyncBackendRequest(toolsRequest, McpUtils.METHOD_TOOLS_LIST, authorizationHeader);
+        final ServiceResponse response = performAsyncBackendRequest(toolsRequest, T9tAiMcpConstants.METHOD_TOOLS_LIST, authorizationHeader);
         if (response.getReturnCode() > 0) {
             throw new T9tException(T9tAiException.TOOLS_NOT_AVAILABLE, response.getErrorMessage());
         }
@@ -92,7 +92,7 @@ public class T9tMcpProcessor implements IT9tMcpProcessor {
 
     @Override
     public CallToolResult runTool(final AiRunToolRequest request, final String authorizationHeader) {
-        ServiceResponse response = performAsyncBackendRequest(request, McpUtils.METHOD_TOOLS_CALL, authorizationHeader);
+        final ServiceResponse response = performAsyncBackendRequest(request, T9tAiMcpConstants.METHOD_TOOLS_CALL, authorizationHeader);
         if (response.getReturnCode() > 0) {
             return new CallToolResult.Builder().addTextContent(response.getErrorDetails()).isError(true).build();
         }
@@ -111,7 +111,7 @@ public class T9tMcpProcessor implements IT9tMcpProcessor {
         final AiGetPromptsRequest promptsRequest = new AiGetPromptsRequest();
         promptsRequest.setOffset(-1); // no pagination, get all prompts
 
-        final ServiceResponse response = performAsyncBackendRequest(promptsRequest, McpUtils.METHOD_PROMPTS_LIST, authorizationHeader);
+        final ServiceResponse response = performAsyncBackendRequest(promptsRequest, T9tAiMcpConstants.METHOD_PROMPTS_LIST, authorizationHeader);
         if (response.getReturnCode() > 0) {
             throw new T9tException(T9tAiException.PROMPTS_NOT_AVAILABLE, response.getErrorMessage());
         }
@@ -127,7 +127,7 @@ public class T9tMcpProcessor implements IT9tMcpProcessor {
     @Override
     @Nonnull
     public GetPromptResult getPrompt(@Nonnull final AiGetPromptRequest request, @Nonnull final String authorizationHeader) {
-        final ServiceResponse response = performAsyncBackendRequest(request, McpUtils.METHOD_PROMPTS_GET, authorizationHeader);
+        final ServiceResponse response = performAsyncBackendRequest(request, T9tAiMcpConstants.METHOD_PROMPTS_GET, authorizationHeader);
         if (response.getReturnCode() > 0) {
             return new GetPromptResult(null, Collections.emptyList());
         }

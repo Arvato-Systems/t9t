@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.ai.mcp;
+package com.arvatosystems.t9t.ai;
 
-public final class McpUtils {
+import com.arvatosystems.t9t.ai.mcp.McpProtocolVersion;
 
-    private McpUtils() { }
+public final class T9tAiMcpConstants {
+
+    private T9tAiMcpConstants() { }
 
     // Define MCP error codes (standardized)
     public static final int MCP_PARSE_ERROR         = -32700;
@@ -26,11 +28,14 @@ public final class McpUtils {
     public static final int MCP_INVALID_PARAMS      = -32602;
     public static final int MCP_INTERNAL_ERROR      = -32603;
 
-    public static final String HTTP_HEADER_MCP_PROTOCOL = "MCP-Protocol-Version"; // HTTP header which should contain the requested version by the client
+    public static final String HTTP_HEADER_MCP_PROTOCOL     = "MCP-Protocol-Version";   // HTTP header which should contain the requested version by the client
+    public static final String HTTP_HEADER_MCP_SESSION_ID   = "MCP-Session-ID";         // HTTP header which should contain the current session ID (if required)
+
     public static final String FALLBACK_MCP_PROTOCOL_VERSION = McpProtocolVersion.UPDATE1.getToken(); // by spec this version should be assumed if the client does not specify any
 
-    public static final int HEARTBEAT_INTERVAL = 30000; // milliseconds
+    public static final int DEFAULT_HEARTBEAT_INTERVAL = 30000; // milliseconds
     public static final String ENDPOINT_SSE = "sse";
+    public static final String ENDPOINT_MCP = "mcp";
 
     public static final String EVENT_ENDPOINT  = "endpoint";
     public static final String EVENT_CONNECTED = "connected";
@@ -47,20 +52,16 @@ public final class McpUtils {
     public static final String KEY_CURSOR = "cursor";
 
     public static final String JSONRPC_VERSION = "2.0";
-    public static final String PROTOCOL_VERSION = McpProtocolVersion.UPDATE1.getToken();  // default, as requested by specification
     public static final String SERVER_NAME = "t9t embedded MCP Server";
     public static final String SERVER_VERSION = "9.0-SNAPSHOT";
 
-    public static final String METHOD_INITIALIZE = "initialize";
-    public static final String METHOD_TOOLS_LIST = "tools/list";
-    public static final String METHOD_TOOLS_CALL = "tools/call";
-    public static final String METHOD_PROMPTS_LIST = "prompts/list";
-    public static final String METHOD_PROMPTS_GET = "prompts/get";
+    public static final String METHOD_INITIALIZE    = "initialize";
+    public static final String METHOD_TOOLS_LIST    = "tools/list";
+    public static final String METHOD_TOOLS_CALL    = "tools/call";
+    public static final String METHOD_PROMPTS_LIST  = "prompts/list";
+    public static final String METHOD_PROMPTS_GET   = "prompts/get";
 
-    public static final int PROMPT_LIST_PAGE_SIZE = 500; // page size for prompt listing
+    public static final int PROMPT_LIST_PAGE_SIZE = 50; // page size for prompt listing
     public static final String ROLE_USER = "user";
     public static final String CONTENT_TYPE_TEXT = "text";
-    public static final String CONTENT_TYPE_IMAGE = "image";
-    public static final String CONTENT_TYPE_AUDIO = "audio";
-
 }

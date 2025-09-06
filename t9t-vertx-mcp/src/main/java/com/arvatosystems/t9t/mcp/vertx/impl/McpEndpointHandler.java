@@ -15,13 +15,13 @@
  */
 package com.arvatosystems.t9t.mcp.vertx.impl;
 
+import com.arvatosystems.t9t.ai.T9tAiMcpConstants;
 import com.arvatosystems.t9t.ai.T9tAiException;
 import com.arvatosystems.t9t.ai.mcp.IMcpService;
 import com.arvatosystems.t9t.ai.mcp.McpPromptResult;
 import com.arvatosystems.t9t.ai.mcp.McpPromptsResult;
 import com.arvatosystems.t9t.ai.mcp.McpResult;
 import com.arvatosystems.t9t.ai.mcp.McpResultPayload;
-import com.arvatosystems.t9t.ai.mcp.McpUtils;
 import com.arvatosystems.t9t.ai.request.AiGetPromptRequest;
 import com.arvatosystems.t9t.ai.request.AiGetPromptResponse;
 import com.arvatosystems.t9t.ai.request.AiGetPromptsRequest;
@@ -69,9 +69,11 @@ public class McpEndpointHandler {
     private final ObjectMapper objectMapper = JacksonTools.createObjectMapper();
     private final IMcpService mcpService = Jdp.getRequired(IMcpService.class);
     private final Vertx vertx;
+    private final String maxMcpVersion;
 
-    public McpEndpointHandler(final Vertx vertx) {
+    public McpEndpointHandler(final Vertx vertx, final String maxMcpVersion) {
         this.vertx = vertx;
+        this.maxMcpVersion = maxMcpVersion;
         dispatcher.put("initialize", this::initialize);
         dispatcher.put("tools/list", this::toolsList);
         dispatcher.put("tools/call", this::toolsCall);
@@ -118,9 +120,17 @@ public class McpEndpointHandler {
         // get the parameters of the client
         final String clientInfo = request.getString("clientInfo");
         final String protocolVersionOfClient = request.getString("protocolVersion");
-        LOGGER.debug("Initialize request from client: {}, protocol version: {}", clientInfo, protocolVersionOfClient);
+        final String protocolVersionToUse;
+        if (maxMcpVersion != null) {
+            protocolVersionToUse = protocolVersionOfClient == null
+                    ? maxMcpVersion
+                    : protocolVersionOfClient.compareTo(maxMcpVersion) > 0 ? maxMcpVersion : protocolVersionOfClient;
+        } else {
+            protocolVersionToUse = protocolVersionOfClient;  // there's another nvl in the service
+        }
+        LOGGER.debug("Initialize request from client: {}, protocol version: {}, will use {}", clientInfo, protocolVersionOfClient, protocolVersionToUse);
         // construct the response
-        return mcpService.getInitializeResult(protocolVersionOfClient);
+        return mcpService.getInitializeResult(protocolVersionToUse, "t9t vert.x embedded MCP Server");
     }
 
     /**
@@ -132,20 +142,23 @@ public class McpEndpointHandler {
      */
     public String handleRequest(final RequestBody body, final AuthenticationInfo authInfo, final String protocolVersion) {
         final JsonObject request = body.asJsonObject();
-        final Object id = request.getValue(McpUtils.KEY_ID);
-        final String method = request.getString(McpUtils.KEY_METHOD);
+        final Object id = request.getValue(T9tAiMcpConstants.KEY_ID);
+        final String method = request.getString(T9tAiMcpConstants.KEY_METHOD);
         // check for notification (no response expected)
         if (id == null) {
             LOGGER.debug("received notification: {} (ignored)", method);
             return null;
+        } else {
+            LOGGER.debug("received request: {} with id {}", method, id);
         }
         // check if there is a valid handler
         final McpHandler handler = dispatcher.get(method);
         if (handler == null) {
-            return error(id, McpUtils.MCP_METHOD_NOT_FOUND, "Method not found: " + method);
+            return error(id, T9tAiMcpConstants.MCP_METHOD_NOT_FOUND, "Method not found: " + method);
         }
-        final JsonObject params = request.getJsonObject(McpUtils.KEY_PARAMS);
+        final JsonObject params = request.getJsonObject(T9tAiMcpConstants.KEY_PARAMS);
         final BonaPortable response = handler.handle(params, authInfo, protocolVersion);
+        LOGGER.debug("Processing response is of class {}", response == null ? "null" : response.ret$PQON());
         return response == null ? null : out(request, response);
     }
 
@@ -159,8 +172,8 @@ public class McpEndpointHandler {
 
     public McpResultPayload toolsCall(final JsonObject request, final AuthenticationInfo authInfo, final String protocolVersion) {
         // execute specified tool for the given user
-        final String toolName = request.getString(McpUtils.KEY_NAME);
-        final JsonObject arguments = request.getJsonObject(McpUtils.KEY_ARGUMENTS);
+        final String toolName = request.getString(T9tAiMcpConstants.KEY_NAME);
+        final JsonObject arguments = request.getJsonObject(T9tAiMcpConstants.KEY_ARGUMENTS);
         final AiRunToolRequest runRq = new AiRunToolRequest();
         runRq.setName(toolName);
         if (arguments != null) {
@@ -198,14 +211,14 @@ public class McpEndpointHandler {
         // obtain specific prompt
         final AiGetPromptRequest rq = new AiGetPromptRequest();
 
-        final JsonObject params = request.getJsonObject(McpUtils.KEY_PARAMS);
+        final JsonObject params = request.getJsonObject(T9tAiMcpConstants.KEY_PARAMS);
         // we need that data
         if (params == null) {
             LOGGER.error("Received prompts get request without parameters");
-            throw new T9tException(McpUtils.MCP_INVALID_PARAMS, "Missing parameters for prompts get request");
+            throw new T9tException(T9tAiMcpConstants.MCP_INVALID_PARAMS, "Missing parameters for prompts get request");
         }
-        final String promptName = params.getString(McpUtils.KEY_NAME);
-        final JsonObject arguments = params.getJsonObject(McpUtils.KEY_PARAMS);
+        final String promptName = params.getString(T9tAiMcpConstants.KEY_NAME);
+        final JsonObject arguments = params.getJsonObject(T9tAiMcpConstants.KEY_PARAMS);
         rq.setName(promptName);
         if (arguments == null) {
             LOGGER.debug("Received prompts get request for {} without arguments", promptName);

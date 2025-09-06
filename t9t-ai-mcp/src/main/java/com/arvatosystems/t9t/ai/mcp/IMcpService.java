@@ -27,7 +27,7 @@ import jakarta.annotation.Nullable;
 public interface IMcpService {
 
     @Nonnull
-    McpInitializeResult getInitializeResult(@Nullable String protocolVersion);
+    McpInitializeResult getInitializeResult(@Nullable String protocolVersion, @Nonnull String serverName);
 
     @Nonnull
     McpResultPayload mapGetToolsResponse(@Nonnull AiGetToolsResponse response);

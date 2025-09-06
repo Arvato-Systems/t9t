@@ -15,13 +15,13 @@
  */
 package com.arvatosystems.t9t.mcp.restapi.service.impl;
 
+import com.arvatosystems.t9t.ai.T9tAiMcpConstants;
 import com.arvatosystems.t9t.ai.mcp.IMcpService;
 import com.arvatosystems.t9t.ai.mcp.McpPromptResult;
-import com.arvatosystems.t9t.ai.mcp.McpUtils;
 import com.arvatosystems.t9t.ai.request.AiGetPromptRequest;
 import com.arvatosystems.t9t.ai.request.AiGetPromptResponse;
 import com.arvatosystems.t9t.mcp.restapi.McpRestUtils;
-import com.arvatosystems.t9t.mcp.restapi.service.IMcpRestRequestHandler;
+import com.arvatosystems.t9t.mcp.restapi.service.IMcpRestEndpointHandler;
 import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
 import com.fasterxml.jackson.databind.JsonNode;
 import de.jpaw.bonaparte.util.FreezeTools;
@@ -39,10 +39,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Singleton
-@Named(McpUtils.METHOD_PROMPTS_GET)
-public class PromptsGetMcpRestRequestHandler implements IMcpRestRequestHandler {
+@Named(T9tAiMcpConstants.METHOD_PROMPTS_GET)
+public class PromptsGetMcpRestEndpointHandler implements IMcpRestEndpointHandler {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PromptsGetMcpRestRequestHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PromptsGetMcpRestEndpointHandler.class);
 
     protected final IMcpService mcpService = Jdp.getRequired(IMcpService.class);
     protected final IT9tRestProcessor restProcessor = Jdp.getRequired(IT9tRestProcessor.class);
@@ -50,16 +50,16 @@ public class PromptsGetMcpRestRequestHandler implements IMcpRestRequestHandler {
     @Override
     public void handleRequest(@Nonnull final HttpHeaders httpHeaders, @Nonnull final AsyncResponse resp, @Nonnull final String id,
         @Nonnull final JsonNode body) {
-        final JsonNode paramNode = body.get(McpUtils.KEY_PARAMS);
+        final JsonNode paramNode = body.get(T9tAiMcpConstants.KEY_PARAMS);
         final String promptName = paramNode != null ? McpRestUtils.getName(paramNode) : null;
-        final JsonNode argNode = paramNode != null ? paramNode.get(McpUtils.KEY_ARGUMENTS) : null;
+        final JsonNode argNode = paramNode != null ? paramNode.get(T9tAiMcpConstants.KEY_ARGUMENTS) : null;
         final int argCount = argNode != null ? argNode.size() : 0;
         LOGGER.debug("Received prompts get request for {} with {} arguments", promptName, argCount);
         final Map<String, String> arguments = convertArgumentsToMap(argNode);
         final AiGetPromptRequest promptRequest = new AiGetPromptRequest();
         promptRequest.setName(promptName);
         promptRequest.setArguments(arguments);
-        restProcessor.performAsyncBackendRequest(httpHeaders, resp, promptRequest, McpUtils.METHOD_PROMPTS_GET, AiGetPromptResponse.class,
+        restProcessor.performAsyncBackendRequest(httpHeaders, resp, promptRequest, T9tAiMcpConstants.METHOD_PROMPTS_GET, AiGetPromptResponse.class,
             aiGetPromptResponse -> {
                 final McpPromptResult result = mcpService.mapGetPromptResponse(aiGetPromptResponse);
                 return McpRestUtils.getJsonMediaData(mcpService.out(id, result));

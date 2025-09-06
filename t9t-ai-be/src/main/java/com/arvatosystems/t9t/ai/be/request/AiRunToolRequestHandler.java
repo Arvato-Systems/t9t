@@ -15,6 +15,12 @@
  */
 package com.arvatosystems.t9t.ai.be.request;
 
+import java.util.ArrayList;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.arvatosystems.t9t.ai.AiChatLogDTO;
 import com.arvatosystems.t9t.ai.AiConversationRef;
 import com.arvatosystems.t9t.ai.AiRoleType;
@@ -39,8 +45,8 @@ import com.arvatosystems.t9t.jackson.JacksonTools;
 import com.arvatosystems.t9t.server.services.IAuthorize;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.core.MapComposer;
 import de.jpaw.bonaparte.core.MapParser;
 import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
@@ -49,10 +55,6 @@ import de.jpaw.bonaparte.pojos.api.media.MediaType;
 import de.jpaw.dp.Jdp;
 import de.jpaw.json.JsonParser;
 import de.jpaw.util.ApplicationException;
-import java.util.ArrayList;
-import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class AiRunToolRequestHandler extends AbstractRequestHandler<AiRunToolRequest> {
 
@@ -110,7 +112,11 @@ public class AiRunToolRequestHandler extends AbstractRequestHandler<AiRunToolReq
                 addMediaData(toolResponse, mediaDataResult.getMediaData());
             } else {
                 LOGGER.debug("Output of tool call to {} returned object of type {}", request.getName(), result.ret$PQON());
-                addStructuredContent(toolResponse, result);
+                if (Boolean.TRUE.equals(request.getStructuredResultAsString())) {
+                    addStructuredResponseAsString(toolResponse, result);
+                } else {
+                    toolResponse.setStructuredResponse(result);
+                }
             }
         } catch (final Exception e) {
             LOGGER.error("Exception in tool call", e);
@@ -118,16 +124,15 @@ public class AiRunToolRequestHandler extends AbstractRequestHandler<AiRunToolReq
             throw new T9tException(e instanceof ApplicationException ae ? ae.getErrorCode() : T9tException.GENERAL_EXCEPTION, e.getMessage());
         }
         return toolResponse;
-
     }
 
-    private void addStructuredContent(AiRunToolResponse toolResponse, AbstractAiToolResult result) {
-        toolResponse.setStructuredResponse(MapComposer.marshal(result, false, false));
+    private void addStructuredResponseAsString(final AiRunToolResponse toolResponse, AbstractAiToolResult result) {
+        //toolResponse.setStructuredResponseAsString(MapComposer.marshal(result, false, false));
 
         // since it's very new and VS Code (1.102) and Eclipse do not yet understand it,
         // also provide the classical format
         try {
-            setText(toolResponse, objectMapper.writeValueAsString(result));
+            toolResponse.setStructuredResponseAsString(objectMapper.writeValueAsString(result));
         } catch (JsonProcessingException e) {
             LOGGER.error("Jackson exception: ", e);
             setText(toolResponse, "Internal error. Check logs for details.");
@@ -135,7 +140,7 @@ public class AiRunToolRequestHandler extends AbstractRequestHandler<AiRunToolReq
         }
     }
 
-    private void addMediaData(AiRunToolResponse toolResponse, MediaData mediaData) {
+    private void addMediaData(final AiRunToolResponse toolResponse, final MediaData mediaData) {
         if (toolResponse.getContents() == null) {
             toolResponse.setContents(new ArrayList<>());
         }

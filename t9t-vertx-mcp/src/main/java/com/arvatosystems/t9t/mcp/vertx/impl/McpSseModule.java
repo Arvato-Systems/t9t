@@ -22,9 +22,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import com.arvatosystems.t9t.ai.mcp.McpUtils;
+import com.arvatosystems.t9t.ai.T9tAiMcpConstants;
 import com.arvatosystems.t9t.ai.request.AiGetSseRequest;
 import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.auth.AuthenticationInfo;
 import com.arvatosystems.t9t.base.services.T9tInternalConstants;
@@ -49,7 +50,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 
 @Dependent
-@Named(McpUtils.ENDPOINT_SSE)
+@Named(T9tAiMcpConstants.ENDPOINT_SSE)
 public class McpSseModule implements IServiceModule {
     private static final Logger LOGGER = LoggerFactory.getLogger(McpSseModule.class);
 
@@ -83,7 +84,14 @@ public class McpSseModule implements IServiceModule {
             LOGGER.error("Error sending SSE message: {}", e.getMessage());
             mcpConnections.remove(connection.id);
         }
-      }
+    }
+
+    protected String massageAuthHeader(final String authHeader) {
+        // LOGGER.debug("Authorization header: <{}>", authHeader);
+        return authHeader.startsWith("Bearer ") && authHeader.length() == 7 + 36
+                ? "API-Key " + authHeader.substring(7)
+                : authHeader;
+    }
 
     @Override
     public void mountRouters(final Router router, final Vertx vertx, final IMessageCoderFactory<BonaPortable, ServiceResponse, byte[]> coderFactory) {
@@ -92,25 +100,41 @@ public class McpSseModule implements IServiceModule {
             LOGGER.info("SSE endpoint is not enabled in server configuration, skipping module sse.");
             return;
         }
-        final boolean heartbeat = Boolean.TRUE.equals(serverConfiguration.getSendHeartbeat());
+        final Long heartbeat = serverConfiguration.getSendHeartbeat();
+        final String maxMcpVersion = serverConfiguration.getMaxMcpVersion() == null ? null : serverConfiguration.getMaxMcpVersion().toString();
+        final boolean noSessionId = Boolean.TRUE.equals(serverConfiguration.getNoSessionId());
+        final int httpCodeEmptyMcpResponse = T9tUtil.nvl(serverConfiguration.getHttpCodeEmptyMcpResponse(), 202);
+        final String httpBodyEmptyMcpResponse = T9tUtil.nvl(serverConfiguration.getHttpBodyEmptyMcpResponse(), "");
         LOGGER.info("Registering module {}", getModuleName());
-        endpointHandler = new McpEndpointHandler(vertx);
+        endpointHandler = new McpEndpointHandler(vertx, maxMcpVersion);
+
+        // Add CORS preflight handling for SSE endpoint
+        router.options("/" + T9tAiMcpConstants.ENDPOINT_SSE).handler(ctx -> {
+            ctx.response()
+                .putHeader("Access-Control-Allow-Origin", "*")
+                .putHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                .putHeader("Access-Control-Allow-Headers", "Authorization, Content-Type, " + T9tAiMcpConstants.HTTP_HEADER_MCP_PROTOCOL)
+                .putHeader("Access-Control-Max-Age", "86400")
+                .setStatusCode(204)
+                .end();
+        });
 
         // support for http GET method
-        router.get("/" + McpUtils.ENDPOINT_SSE).handler(ctx -> {
+        router.get("/" + T9tAiMcpConstants.ENDPOINT_SSE).handler(ctx -> {
             final MultiMap headers = ctx.request().headers();
             final String authHeader = headers.get(HttpHeaders.AUTHORIZATION);
             if (IServiceModule.badOrMissingAuthHeader(ctx, authHeader, LOGGER)) {
                 return;
             }
-            final AuthenticationInfo authInfo = authenticationProcessor.getCachedJwt(authHeader);
+            // workaround: Some send "Bearer" with API key (MCP inspector)
+            final AuthenticationInfo authInfo = authenticationProcessor.getCachedJwt(massageAuthHeader(authHeader));
             if (authInfo.getEncodedJwt() == null) {
                 // handle error
                 LOGGER.debug("Not authenticated - JWT is null");
                 IServiceModule.error(ctx, 401, "HTTP Authorization header missing or too short");
                 return;
             }
-            final String protocolVersion = headers.get(McpUtils.HTTP_HEADER_MCP_PROTOCOL);
+            final String protocolVersion = headers.get(T9tAiMcpConstants.HTTP_HEADER_MCP_PROTOCOL);
             final String accept = headers.get(HttpHeaders.ACCEPT);
             LOGGER.debug("Received SSE GET request with protocol version: {}, accept: {}", protocolVersion, accept);
 
@@ -134,14 +158,14 @@ public class McpSseModule implements IServiceModule {
 
             // Acknowledge connection
             // mcpMessage(connection, McpUtils.EVENT_CONNECTED, new JsonObject().put(McpUtils.KEY_CONNECTION_ID, connectionId));
-            mcpMessage(connection, McpUtils.EVENT_ENDPOINT, "/sse");
+            mcpMessage(connection, T9tAiMcpConstants.EVENT_ENDPOINT, noSessionId ? "/sse" : ("/sse?sessionId=" + connectionId.toString()));
 
             // keep connection alive
             final long heartbeatId;
-            if (heartbeat) {
-                heartbeatId = vertx.setPeriodic(30000, id -> {
+            if (heartbeat != null && heartbeat > 0L) {
+                heartbeatId = vertx.setPeriodic(heartbeat, id -> {
                     if (mcpConnections.containsKey(connectionId)) {
-                        mcpMessage(connection, McpUtils.EVENT_HEARTBEAT, new JsonObject().put(McpUtils.KEY_TIMESTAMP, System.currentTimeMillis()));
+                        mcpMessage(connection, T9tAiMcpConstants.EVENT_HEARTBEAT, new JsonObject().put(T9tAiMcpConstants.KEY_TIMESTAMP, System.currentTimeMillis()));
                     }
                 });
             } else {
@@ -165,14 +189,14 @@ public class McpSseModule implements IServiceModule {
             });
         });
 
-        router.post("/" + McpUtils.ENDPOINT_SSE).handler(ctx -> {
+        router.post("/" + T9tAiMcpConstants.ENDPOINT_SSE).handler(ctx -> {
             //final long startInIoThread = System.nanoTime();
             final MultiMap headers = ctx.request().headers();
             final String authHeader = headers.get(HttpHeaders.AUTHORIZATION);
             if (IServiceModule.badOrMissingAuthHeader(ctx, authHeader, LOGGER)) {
                 return;
             }
-            final String protocolVersion = headers.get(McpUtils.HTTP_HEADER_MCP_PROTOCOL);
+            final String protocolVersion = headers.get(T9tAiMcpConstants.HTTP_HEADER_MCP_PROTOCOL);
             final String accept = headers.get(HttpHeaders.ACCEPT);
             LOGGER.debug("Received SSE POST request with protocol version: {}, accept: {}", protocolVersion, accept);
 
@@ -180,7 +204,7 @@ public class McpSseModule implements IServiceModule {
                 try {
                     //final long startInWorkerThread = System.nanoTime();
                     // get the authentication info
-                    final AuthenticationInfo authInfo = authenticationProcessor.getCachedJwt(authHeader);
+                    final AuthenticationInfo authInfo = authenticationProcessor.getCachedJwt(massageAuthHeader(authHeader));
                     if (authInfo.getEncodedJwt() == null) {
                         // handle error
                         throw new T9tException(T9tException.HTTP_ERROR + authInfo.getHttpStatusCode(), authInfo.getMessage());
@@ -209,11 +233,12 @@ public class McpSseModule implements IServiceModule {
                             .putHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                             .end(result);
                     } else {
-                        // notification do not want a response, so we return 204
-                        LOGGER.debug("No response content for request, returning 204 No Content");
+                        // notification do not want a response, so we return 202 (not 204, which is "no content"!)
+                        LOGGER.debug("No response content for request, returning 202");
                         ctx.response()
-                            .setStatusCode(204)
-                            .end();
+                            .putHeader(HttpHeaders.CONTENT_TYPE, "application/json")  // test
+                            .setStatusCode(httpCodeEmptyMcpResponse)
+                            .end(); // .end(httpBodyEmptyMcpResponse);
                     }
                 } else {
                     final Throwable cause = asyncResult.cause();

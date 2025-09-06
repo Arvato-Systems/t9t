@@ -790,7 +790,29 @@
                     <xs:element name="enableGenericCallouts" minOccurs="0" nillable="true" type="xs:boolean"/>
                     <xs:element name="sharedFilesystem" minOccurs="0" nillable="true" type="xs:boolean"/>
                     <xs:element name="supportMcpSse" minOccurs="0" nillable="true" type="xs:boolean"/>
-                    <xs:element name="sendHeartbeat" minOccurs="0" nillable="true" type="xs:boolean"/>
+                    <xs:element name="sendHeartbeat" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:unsignedLong">
+                                <xs:maxInclusive value="9223372036854775807"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="maxMcpVersion" minOccurs="0" nillable="true" type="xs:date"/>
+                    <xs:element name="noSessionId" minOccurs="0" nillable="true" type="xs:boolean"/>
+                    <xs:element name="httpCodeEmptyMcpResponse" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:unsignedInt">
+                                <xs:maxInclusive value="2147483647"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="httpBodyEmptyMcpResponse" minOccurs="0" nillable="true">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:normalizedString">
+                                <xs:maxLength value="255"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>

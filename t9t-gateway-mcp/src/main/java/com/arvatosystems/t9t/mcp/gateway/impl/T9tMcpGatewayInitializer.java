@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.mcp.gateway;
+package com.arvatosystems.t9t.mcp.gateway.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,6 +38,7 @@ import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.client.init.SystemConfigurationProvider;
 import com.arvatosystems.t9t.jackson.JacksonTools;
 import com.arvatosystems.t9t.jdp.Init;
+import com.arvatosystems.t9t.mcp.gateway.IT9tMcpProcessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -59,15 +60,15 @@ import jakarta.annotation.Nonnull;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 
-public class T9tInitializer implements ServletContextListener {
-    private static final Logger LOGGER = LoggerFactory.getLogger(T9tInitializer.class);
+public class T9tMcpGatewayInitializer implements ServletContextListener {
+    private static final Logger LOGGER = LoggerFactory.getLogger(T9tMcpGatewayInitializer.class);
     private static final ObjectMapper MAPPER = JacksonTools.createObjectMapper();
 
     private static final ConfigurationReader CONFIG_READER = ConfigurationReaderFactory.getConfigReaderForName("t9t.mcp", null);
 
     private final IT9tMcpProcessor mcpProcessor;
 
-    public T9tInitializer() {
+    public T9tMcpGatewayInitializer() {
         MessagingUtil.initializeBonaparteParsers();
         Init.initializeT9t();
 
@@ -129,12 +130,13 @@ public class T9tInitializer implements ServletContextListener {
                             final AiRunToolRequest runRq = new AiRunToolRequest();
                             runRq.setName(toolName);
                             runRq.setParameters(params);
+                            runRq.setStructuredResultAsString(Boolean.TRUE);
 
                             return mcpProcessor.runTool(runRq, authHeader);
                         });
 
                 syncServer.addTool(toolSpec);
-            } catch (JsonProcessingException e) {
+            } catch (final JsonProcessingException e) {
                 LOGGER.error("Error converting tool specification to MCP Tool, skipping: {}", tool.getName());
                 LOGGER.error("Error details: ", e);
             }

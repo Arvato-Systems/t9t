@@ -15,13 +15,13 @@
  */
 package com.arvatosystems.t9t.mcp.restapi.service.impl;
 
+import com.arvatosystems.t9t.ai.T9tAiMcpConstants;
 import com.arvatosystems.t9t.ai.mcp.IMcpService;
 import com.arvatosystems.t9t.ai.mcp.McpResultPayload;
-import com.arvatosystems.t9t.ai.mcp.McpUtils;
 import com.arvatosystems.t9t.ai.request.AiGetToolsRequest;
 import com.arvatosystems.t9t.ai.request.AiGetToolsResponse;
 import com.arvatosystems.t9t.mcp.restapi.McpRestUtils;
-import com.arvatosystems.t9t.mcp.restapi.service.IMcpRestRequestHandler;
+import com.arvatosystems.t9t.mcp.restapi.service.IMcpRestEndpointHandler;
 import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
 import com.fasterxml.jackson.databind.JsonNode;
 import de.jpaw.dp.Jdp;
@@ -34,10 +34,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-@Named(McpUtils.METHOD_TOOLS_LIST)
-public class ToolsListMcpRestRequestHandler implements IMcpRestRequestHandler {
+@Named(T9tAiMcpConstants.METHOD_TOOLS_LIST)
+public class ToolsListMcpRestEndpointHandler implements IMcpRestEndpointHandler {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ToolsListMcpRestRequestHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ToolsListMcpRestEndpointHandler.class);
 
     protected final IMcpService mcpService = Jdp.getRequired(IMcpService.class);
     protected final IT9tRestProcessor restProcessor = Jdp.getRequired(IT9tRestProcessor.class);
@@ -46,7 +46,7 @@ public class ToolsListMcpRestRequestHandler implements IMcpRestRequestHandler {
     public void handleRequest(@Nonnull final HttpHeaders httpHeaders, @Nonnull final AsyncResponse resp, @Nonnull final String id,
         @Nonnull final JsonNode body) {
         final AiGetToolsRequest toolsRequest = new AiGetToolsRequest();
-        restProcessor.performAsyncBackendRequest(httpHeaders, resp, toolsRequest, McpUtils.METHOD_TOOLS_LIST, AiGetToolsResponse.class,
+        restProcessor.performAsyncBackendRequest(httpHeaders, resp, toolsRequest, T9tAiMcpConstants.METHOD_TOOLS_LIST, AiGetToolsResponse.class,
             aiGetToolsResponse -> {
                 LOGGER.debug("Retrieved {} tools", aiGetToolsResponse.getTools().size());
                 final McpResultPayload mcpToolsResult = mcpService.mapGetToolsResponse(aiGetToolsResponse);

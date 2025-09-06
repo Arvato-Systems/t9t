@@ -21,6 +21,7 @@ import t9t.base.entities.*
 import t9t.base.crud.*
 import t9t.base.search.*
 import t9t.ai.*
+import t9t.ai.tools.*
 import t9t.ai.mcp.*
 
 /**
@@ -79,11 +80,13 @@ package (com.arvatosystems) t9t.ai.request {
         required defaultExternalId                          name;               // ID of the tool
         optional Json                                       parameters;         // parameters in structured form
         optional Unicode(64000) allowControlChars           arguments;          // parameters as string
+        optional Boolean                                    structuredResultAsString;  // set this to true if the receiver does not know all possible result objects (gateway use)
     }
 
     class AiRunToolResponse extends ServiceResponse {
         required (MediaData) List<>                         contents;             // List of contents of type MediaData, may be null
-        optional Json                                       structuredResponse;   // response if it is a data structure
+        optional (AbstractAiToolResult...)                  structuredResponse;   // response if it is a data structure
+        optional Unicode(64000) allowControlChars           structuredResponseAsString;  // result as a JSON formatted string, if requested
         optional Boolean                                    isError;              // in case of error during tool execution
     }
 

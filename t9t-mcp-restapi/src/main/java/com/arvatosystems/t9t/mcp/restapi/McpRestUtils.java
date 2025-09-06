@@ -15,7 +15,7 @@
  */
 package com.arvatosystems.t9t.mcp.restapi;
 
-import com.arvatosystems.t9t.ai.mcp.McpUtils;
+import com.arvatosystems.t9t.ai.T9tAiMcpConstants;
 import com.fasterxml.jackson.databind.JsonNode;
 import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import de.jpaw.bonaparte.pojos.api.media.MediaType;
@@ -42,22 +42,22 @@ public final class McpRestUtils {
 
     @Nullable
     public static String getId(@Nonnull final JsonNode json) {
-        return getTextValue(json, McpUtils.KEY_ID);
+        return getTextValue(json, T9tAiMcpConstants.KEY_ID);
     }
 
     @Nullable
     public static String getMethod(@Nonnull final JsonNode json) {
-        return getTextValue(json, McpUtils.KEY_METHOD);
+        return getTextValue(json, T9tAiMcpConstants.KEY_METHOD);
     }
 
     @Nullable
     public static String getName(@Nonnull final JsonNode json) {
-        return getTextValue(json, McpUtils.KEY_NAME);
+        return getTextValue(json, T9tAiMcpConstants.KEY_NAME);
     }
 
     @Nullable
     public static String getArgumentValue(@Nonnull final JsonNode json) {
-        final JsonNode valueNode = json.get(McpUtils.KEY_ARGUMENTS);
+        final JsonNode valueNode = json.get(T9tAiMcpConstants.KEY_ARGUMENTS);
         return valueNode != null ? valueNode.toString() : null;
     }
 

@@ -15,8 +15,17 @@
  */
 package com.arvatosystems.t9t.ai.mcp.impl;
 
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.arvatosystems.t9t.ai.AiPromptDTO;
 import com.arvatosystems.t9t.ai.AiPromptParameter;
+import com.arvatosystems.t9t.ai.T9tAiMcpConstants;
 import com.arvatosystems.t9t.ai.mcp.AiPromptSpecification;
 import com.arvatosystems.t9t.ai.mcp.IMcpService;
 import com.arvatosystems.t9t.ai.mcp.McpCapabilities;
@@ -30,28 +39,26 @@ import com.arvatosystems.t9t.ai.mcp.McpPromptsResult;
 import com.arvatosystems.t9t.ai.mcp.McpResult;
 import com.arvatosystems.t9t.ai.mcp.McpResultPayload;
 import com.arvatosystems.t9t.ai.mcp.McpServerInfo;
-import com.arvatosystems.t9t.ai.mcp.McpUtils;
 import com.arvatosystems.t9t.ai.mcp.PromptMessage;
 import com.arvatosystems.t9t.ai.mcp.PromptParameter;
 import com.arvatosystems.t9t.ai.request.AiGetPromptResponse;
 import com.arvatosystems.t9t.ai.request.AiGetPromptsResponse;
 import com.arvatosystems.t9t.ai.request.AiGetToolsResponse;
 import com.arvatosystems.t9t.ai.request.AiRunToolResponse;
+import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.jackson.JacksonTools;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import de.jpaw.bonaparte.api.media.MediaTypeInfo;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.media.MediaData;
+import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ApplicationException;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Singleton
 public class McpService implements IMcpService {
@@ -62,13 +69,13 @@ public class McpService implements IMcpService {
 
     @Nonnull
     @Override
-    public McpInitializeResult getInitializeResult(final String protocolVersion) {
-        final McpServerInfo serverInfo = new McpServerInfo(McpUtils.SERVER_NAME, McpUtils.SERVER_VERSION);
+    public McpInitializeResult getInitializeResult(final String protocolVersion, final String serverName) {
+        final McpServerInfo serverInfo = new McpServerInfo(serverName, T9tAiMcpConstants.SERVER_VERSION);
         final McpCapabilities capabilities = new McpCapabilities();
         capabilities.setTools(new McpCapabilityTools()); // tools are supported
         capabilities.setPrompts(new McpCapabilityPrompts());
         final McpInitializeResult result = new McpInitializeResult();
-        result.setProtocolVersion(protocolVersion);
+        result.setProtocolVersion(T9tUtil.nvl(protocolVersion, T9tAiMcpConstants.FALLBACK_MCP_PROTOCOL_VERSION));
         result.setCapabilities(capabilities);
         result.setServerInfo(serverInfo);
         return result;
@@ -84,15 +91,52 @@ public class McpService implements IMcpService {
 
     @Nonnull
     @Override
-    public McpResultPayload mapRunToolResponse(AiRunToolResponse response) {
-        List<McpContentElement> contentElements = null;
-        if (response.getContents() != null) {
-            contentElements = new ArrayList<>(response.getContents().size());
-            for (MediaData content : response.getContents()) {
-                contentElements.add(new McpContentElement(null, content.getMediaType().getToken(), content.getText(), content.getRawData().asString()));
+    public McpResultPayload mapRunToolResponse(final AiRunToolResponse response) {
+        final boolean haveRegularContent = response.getContents() != null && !response.getContents().isEmpty();
+        final List<McpContentElement> contentElements = new ArrayList<>(haveRegularContent ? 1 + response.getContents().size() : 1);
+        if (haveRegularContent) {
+            for (final MediaData md : response.getContents()) {
+                final McpContentElement mediaContent = new McpContentElement();
+                if (md.getText() != null) {
+                    mediaContent.setType(T9tAiMcpConstants.CONTENT_TYPE_TEXT);
+                    mediaContent.setText(md.getText());
+                } else if (md.getRawData() != null) {
+                    // obtain the classification from media type
+                    final MediaTypeDescriptor mtd = MediaTypeInfo.getFormatByType(md.getMediaType());
+                    final String type = mtd.getFormatCategory().name().toLowerCase();  // text, audio, video, image
+                    mediaContent.setType(type);
+                    mediaContent.setMimeType(mtd.getMimeType());
+                    // convert raw data to base64 string
+                    mediaContent.setData(Base64.getEncoder().encodeToString(md.getRawData().getBytes()));
+                }
+                contentElements.add(mediaContent);
             }
         }
-        final McpResultPayload mcpToolsResult = new McpResultPayload(null, contentElements, response.getStructuredResponse(), response.getIsError());
+        final McpResultPayload mcpToolsResult = new McpResultPayload();
+        mcpToolsResult.setContent(contentElements);
+        mcpToolsResult.setIsError(response.getIsError());
+
+        // possible convert structured response to JSON string
+        if (response.getStructuredResponseAsString() != null) {
+            mcpToolsResult.setStructuredContent(response.getStructuredResponseAsString());
+            // also duplicate it for older clients
+            final McpContentElement mediaContent = new McpContentElement();
+            mediaContent.setType(T9tAiMcpConstants.CONTENT_TYPE_TEXT);
+            mediaContent.setText(response.getStructuredResponseAsString());
+            contentElements.add(mediaContent);
+        } else if (response.getStructuredResponse() != null) {
+            mcpToolsResult.setStructuredContent(response.getStructuredResponse());
+            // also duplicate it for older clients
+            final McpContentElement mediaContent = new McpContentElement();
+            mediaContent.setType(T9tAiMcpConstants.CONTENT_TYPE_TEXT);
+            try {
+                mediaContent.setText(objectMapper.writeValueAsString(response.getStructuredResponse()));
+                contentElements.add(mediaContent);
+            } catch (final JsonProcessingException e) {
+                LOGGER.error("Error serializing structured response: {}", e.getMessage(), e);
+                mcpToolsResult.setIsError(true);
+            }
+        }
         return mcpToolsResult;
     }
 
@@ -130,9 +174,9 @@ public class McpService implements IMcpService {
         final McpPromptResult result = new McpPromptResult();
         result.setDescription(response.getDescription());
         final PromptMessage message = new PromptMessage();
-        message.setRole(McpUtils.ROLE_USER); // TODO:
+        message.setRole(T9tAiMcpConstants.ROLE_USER); // TODO:
         final McpContentElement content = new McpContentElement();
-        content.setType(McpUtils.CONTENT_TYPE_TEXT);
+        content.setType(T9tAiMcpConstants.CONTENT_TYPE_TEXT);
         content.setText(response.getPrompt());
         message.setContent(content);
         result.setMessages(List.of(message));
@@ -143,14 +187,14 @@ public class McpService implements IMcpService {
     @Override
     public String out(@Nonnull final String id, @Nonnull final BonaPortable result) {
         final McpResult mcpResult = new McpResult();
-        mcpResult.setJsonrpc(McpUtils.JSONRPC_VERSION);
+        mcpResult.setJsonrpc(T9tAiMcpConstants.JSONRPC_VERSION);
         mcpResult.setId(id);
         mcpResult.setResult(result);
         try {
             return objectMapper.writeValueAsString(mcpResult);
         } catch (final JsonProcessingException e) {
             LOGGER.error("Error serializing result for id {}. Error: {}", id, e.getMessage(), e);
-            return rawErrorResponse(McpUtils.MCP_PARSE_ERROR, e.getMessage());
+            return rawErrorResponse(T9tAiMcpConstants.MCP_PARSE_ERROR, e.getMessage());
         }
     }
 
@@ -161,7 +205,7 @@ public class McpService implements IMcpService {
         mcpError.setCode(code);
         mcpError.setMessage(message);
         final McpResult mcpResult = new McpResult();
-        mcpResult.setJsonrpc(McpUtils.JSONRPC_VERSION);
+        mcpResult.setJsonrpc(T9tAiMcpConstants.JSONRPC_VERSION);
         mcpResult.setId(id);
         mcpResult.setError(mcpError);
         try {
@@ -176,23 +220,23 @@ public class McpService implements IMcpService {
     @Override
     public McpResult createMcpError(@Nonnull final ServiceResponse serviceResponse, @Nullable final String id) {
         final McpResult errorResult = new McpResult();
-        errorResult.setJsonrpc(McpUtils.JSONRPC_VERSION);
+        errorResult.setJsonrpc(T9tAiMcpConstants.JSONRPC_VERSION);
         errorResult.setId(id);
         final McpError mcpError = new McpError();
         errorResult.setError(mcpError);
         mcpError.setMessage(serviceResponse.getErrorMessage());
         switch (serviceResponse.getReturnCode() / ApplicationException.CLASSIFICATION_FACTOR) {
         case ApplicationException.CL_PARAMETER_ERROR:
-            mcpError.setCode(McpUtils.MCP_INVALID_PARAMS);
+            mcpError.setCode(T9tAiMcpConstants.MCP_INVALID_PARAMS);
             break;
         case ApplicationException.CL_VALIDATION_ERROR:
-            mcpError.setCode(McpUtils.MCP_INVALID_REQUEST);
+            mcpError.setCode(T9tAiMcpConstants.MCP_INVALID_REQUEST);
             break;
         case ApplicationException.CL_PARSER_ERROR:
-            mcpError.setCode(McpUtils.MCP_PARSE_ERROR);
+            mcpError.setCode(T9tAiMcpConstants.MCP_PARSE_ERROR);
             break;
         default:
-            mcpError.setCode(McpUtils.MCP_INTERNAL_ERROR);
+            mcpError.setCode(T9tAiMcpConstants.MCP_INTERNAL_ERROR);
         }
         return errorResult;
     }
@@ -200,6 +244,6 @@ public class McpService implements IMcpService {
     private String rawErrorResponse(final int code, final String message) {
         // fallback to do it "by hand"
         LOGGER.warn("Returning raw error response with code {} and message: {}", code, message);
-        return "{\"jsonrpc\":\"" + McpUtils.JSONRPC_VERSION + "\", \"error\":{\"code\":" + code + ", \"message\":\"" + message + "\"}}";
+        return "{\"jsonrpc\":\"" + T9tAiMcpConstants.JSONRPC_VERSION + "\", \"error\":{\"code\":" + code + ", \"message\":\"" + message + "\"}}";
     }
 }

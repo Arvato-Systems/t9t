@@ -25,13 +25,13 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.ai.T9tAiMcpConstants;
 import com.arvatosystems.t9t.ai.mcp.IMcpService;
 import com.arvatosystems.t9t.ai.mcp.McpProtocolVersion;
-import com.arvatosystems.t9t.ai.mcp.McpUtils;
 import com.arvatosystems.t9t.ai.request.AiGetSseRequest;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
-import com.arvatosystems.t9t.mcp.restapi.service.IMcpRestRequestHandler;
+import com.arvatosystems.t9t.mcp.restapi.service.IMcpRestEndpointHandler;
 import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
 import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -58,7 +58,7 @@ import jakarta.ws.rs.sse.Sse;
 import jakarta.ws.rs.sse.SseEventSink;
 
 @Singleton
-@Path("/" + McpUtils.ENDPOINT_SSE)
+@Path("/" + T9tAiMcpConstants.ENDPOINT_SSE)
 public class McpRestResource implements IT9tRestEndpoint {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(McpRestResource.class);
@@ -103,7 +103,7 @@ public class McpRestResource implements IT9tRestEndpoint {
         if (authHeader == null) {
             throw new WebApplicationException("Unauthorized", Response.Status.UNAUTHORIZED);
         }
-        final String protocolVersion = httpHeaders.getHeaderString(McpUtils.HTTP_HEADER_MCP_PROTOCOL);
+        final String protocolVersion = httpHeaders.getHeaderString(T9tAiMcpConstants.HTTP_HEADER_MCP_PROTOCOL);
         final String acceptHeader = httpHeaders.getHeaderString(HttpHeaders.ACCEPT);
         LOGGER.debug("SSE GET request received. Protocol Version: {}, Accept: {}", protocolVersion, acceptHeader);
 
@@ -120,9 +120,11 @@ public class McpRestResource implements IT9tRestEndpoint {
         LOGGER.info("SSE connection opened for: {} (by GET /sse)", connectionId);
 
         try {
-            eventSink.send(sse.newEvent(McpUtils.EVENT_CONNECTED, toJson(McpUtils.KEY_CONNECTION_ID, connectionId)));
-            SHARED_SCHEDULER.scheduleAtFixedRate(getHeartBeatTask(eventSink, sse, connectionId.toString()), McpUtils.HEARTBEAT_INTERVAL,
-                McpUtils.HEARTBEAT_INTERVAL, TimeUnit.MILLISECONDS);
+            eventSink.send(sse.newEvent(T9tAiMcpConstants.EVENT_CONNECTED, toJson(T9tAiMcpConstants.KEY_CONNECTION_ID, connectionId)));
+            SHARED_SCHEDULER.scheduleAtFixedRate(getHeartBeatTask(eventSink, sse, connectionId.toString()),
+                T9tAiMcpConstants.DEFAULT_HEARTBEAT_INTERVAL,
+                T9tAiMcpConstants.DEFAULT_HEARTBEAT_INTERVAL,
+                TimeUnit.MILLISECONDS);
         } catch (final Exception e) {
             LOGGER.error("Failed to establish SSE connection: {}", e.getMessage());
             if (!eventSink.isClosed()) {
@@ -145,7 +147,7 @@ public class McpRestResource implements IT9tRestEndpoint {
     @Consumes({ MediaType.APPLICATION_JSON })
     @POST
     public void ssePost(@Context final HttpHeaders httpHeaders, @Suspended final AsyncResponse resp, final JsonNode body) {
-        final String protocolVersion = httpHeaders.getHeaderString(McpUtils.HTTP_HEADER_MCP_PROTOCOL);
+        final String protocolVersion = httpHeaders.getHeaderString(T9tAiMcpConstants.HTTP_HEADER_MCP_PROTOCOL);
         final String acceptHeader = httpHeaders.getHeaderString(HttpHeaders.ACCEPT);
         final String id = McpRestUtils.getId(body);
         final String method = McpRestUtils.getMethod(body);
@@ -167,10 +169,10 @@ public class McpRestResource implements IT9tRestEndpoint {
             McpRestUtils.sendResponse(resp, Response.Status.NO_CONTENT, null);
             return;
         }
-        final IMcpRestRequestHandler mcpRestRequestHandler = Jdp.getOptional(IMcpRestRequestHandler.class, method.toLowerCase());
+        final IMcpRestEndpointHandler mcpRestRequestHandler = Jdp.getOptional(IMcpRestEndpointHandler.class, method.toLowerCase());
         if (mcpRestRequestHandler == null) {
             LOGGER.error("No handler found for method: {}", method);
-            McpRestUtils.sendResponse(resp, Response.Status.NOT_FOUND, mcpService.error(id, McpUtils.MCP_METHOD_NOT_FOUND, "Method not found: " + method));
+            McpRestUtils.sendResponse(resp, Response.Status.NOT_FOUND, mcpService.error(id, T9tAiMcpConstants.MCP_METHOD_NOT_FOUND, "Method not found: " + method));
             return;
         }
         mcpRestRequestHandler.handleRequest(httpHeaders, resp, id, body);
@@ -187,7 +189,7 @@ public class McpRestResource implements IT9tRestEndpoint {
                 } else {
                     try {
                         LOGGER.debug("SSE Client {} is still open", connectionId);
-                        eventSink.send(sse.newEvent(McpUtils.EVENT_HEARTBEAT, toJson(McpUtils.KEY_TIMESTAMP, System.currentTimeMillis())))
+                        eventSink.send(sse.newEvent(T9tAiMcpConstants.EVENT_HEARTBEAT, toJson(T9tAiMcpConstants.KEY_TIMESTAMP, System.currentTimeMillis())))
                             .thenAccept(result -> {
                                 LOGGER.debug("Heartbeat sent to connection: {}", connectionId);
                             }).exceptionally(ex -> {

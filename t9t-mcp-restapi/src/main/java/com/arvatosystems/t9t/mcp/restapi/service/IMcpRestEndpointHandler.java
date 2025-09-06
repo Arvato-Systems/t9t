@@ -20,7 +20,7 @@ import jakarta.annotation.Nonnull;
 import jakarta.ws.rs.container.AsyncResponse;
 import jakarta.ws.rs.core.HttpHeaders;
 
-public interface IMcpRestRequestHandler {
+public interface IMcpRestEndpointHandler {
 
     void handleRequest(@Nonnull HttpHeaders httpHeaders, @Nonnull AsyncResponse resp, @Nonnull String id, @Nonnull JsonNode body);
 }

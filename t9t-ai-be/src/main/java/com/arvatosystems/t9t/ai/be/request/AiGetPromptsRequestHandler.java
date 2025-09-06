@@ -16,7 +16,7 @@
 package com.arvatosystems.t9t.ai.be.request;
 
 import com.arvatosystems.t9t.ai.AiPromptDTO;
-import com.arvatosystems.t9t.ai.mcp.McpUtils;
+import com.arvatosystems.t9t.ai.T9tAiMcpConstants;
 import com.arvatosystems.t9t.ai.request.AiGetPromptsRequest;
 import com.arvatosystems.t9t.ai.request.AiGetPromptsResponse;
 import com.arvatosystems.t9t.ai.request.AiPromptSearchRequest;
@@ -51,7 +51,7 @@ public class AiGetPromptsRequestHandler extends AbstractReadOnlyRequestHandler<A
         final AiPromptSearchRequest searchRequest = new AiPromptSearchRequest();
         if (request.getOffset() != -1) {
             searchRequest.setOffset(request.getOffset());
-            searchRequest.setLimit(McpUtils.PROMPT_LIST_PAGE_SIZE + 1); // +1 to detect if there are more results than requested
+            searchRequest.setLimit(T9tAiMcpConstants.PROMPT_LIST_PAGE_SIZE + 1); // +1 to detect if there are more results than requested
         }
         final List<String> allowedPromptIds = getAllowedPromptIds(ctx);
         if (!allowedPromptIds.isEmpty()) {
@@ -62,14 +62,14 @@ public class AiGetPromptsRequestHandler extends AbstractReadOnlyRequestHandler<A
         }
         final ReadAllResponse<AiPromptDTO, FullTrackingWithVersion> searchResponse = executor.executeSynchronousAndCheckResult(ctx, searchRequest, ReadAllResponse.class);
         final List<AiPromptDTO> prompts = new ArrayList<>(searchResponse.getDataList().size());
-        for (int i = 0; i < searchResponse.getDataList().size() && i < McpUtils.PROMPT_LIST_PAGE_SIZE; i++) {
+        for (int i = 0; i < searchResponse.getDataList().size() && i < T9tAiMcpConstants.PROMPT_LIST_PAGE_SIZE; i++) {
             final DataWithTrackingS<AiPromptDTO, FullTrackingWithVersion> dwt = searchResponse.getDataList().get(i);
             prompts.add(dwt.getData());
         }
         final AiGetPromptsResponse response = new AiGetPromptsResponse();
         response.setPrompts(prompts);
-        if (searchResponse.getDataList().size() > McpUtils.PROMPT_LIST_PAGE_SIZE) {
-            response.setNextOffset(request.getOffset() + McpUtils.PROMPT_LIST_PAGE_SIZE);
+        if (searchResponse.getDataList().size() > T9tAiMcpConstants.PROMPT_LIST_PAGE_SIZE) {
+            response.setNextOffset(request.getOffset() + T9tAiMcpConstants.PROMPT_LIST_PAGE_SIZE);
         }
         return response;
     }

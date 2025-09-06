@@ -15,14 +15,13 @@
  */
 package com.arvatosystems.t9t.mcp.restapi.service.impl;
 
+import com.arvatosystems.t9t.ai.T9tAiMcpConstants;
 import com.arvatosystems.t9t.ai.mcp.IMcpService;
-import com.arvatosystems.t9t.ai.mcp.McpPromptsResult;
-import com.arvatosystems.t9t.ai.mcp.McpUtils;
-import com.arvatosystems.t9t.ai.request.AiGetPromptsRequest;
-import com.arvatosystems.t9t.ai.request.AiGetPromptsResponse;
+import com.arvatosystems.t9t.ai.request.AiRunToolRequest;
+import com.arvatosystems.t9t.ai.request.AiRunToolResponse;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.mcp.restapi.McpRestUtils;
-import com.arvatosystems.t9t.mcp.restapi.service.IMcpRestRequestHandler;
+import com.arvatosystems.t9t.mcp.restapi.service.IMcpRestEndpointHandler;
 import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
 import com.fasterxml.jackson.databind.JsonNode;
 import de.jpaw.dp.Jdp;
@@ -31,14 +30,15 @@ import de.jpaw.dp.Singleton;
 import jakarta.annotation.Nonnull;
 import jakarta.ws.rs.container.AsyncResponse;
 import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-@Named(McpUtils.METHOD_PROMPTS_LIST)
-public class PromptsListMcpRestRequestHandler implements IMcpRestRequestHandler {
+@Named(T9tAiMcpConstants.METHOD_TOOLS_CALL)
+public class ToolsCallMcpRestEndpointHandler implements IMcpRestEndpointHandler {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PromptsListMcpRestRequestHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ToolsCallMcpRestEndpointHandler.class);
 
     protected final IMcpService mcpService = Jdp.getRequired(IMcpService.class);
     protected final IT9tRestProcessor restProcessor = Jdp.getRequired(IT9tRestProcessor.class);
@@ -46,21 +46,22 @@ public class PromptsListMcpRestRequestHandler implements IMcpRestRequestHandler 
     @Override
     public void handleRequest(@Nonnull final HttpHeaders httpHeaders, @Nonnull final AsyncResponse resp, @Nonnull final String id,
         @Nonnull final JsonNode body) {
-        final AiGetPromptsRequest promptsRequest = new AiGetPromptsRequest();
-        final JsonNode paramNode = body.get(McpUtils.KEY_PARAMS);
-        final String cursor = paramNode != null ? McpRestUtils.getTextValue(paramNode, McpUtils.KEY_CURSOR) : null;
-        if (T9tUtil.isNotBlank(cursor)) {
-            try {
-                promptsRequest.setOffset(Integer.parseInt(cursor));
-            } catch (NumberFormatException ex) {
-                LOGGER.warn("Unable to parse cursor value {}. Only numeric cursor is supported. Error: {}. Ignoring cursor!", cursor, ex.getMessage());
-            }
+        final JsonNode paramNode = body.get(T9tAiMcpConstants.KEY_PARAMS);
+        final String toolName = paramNode != null ? McpRestUtils.getName(paramNode) : null;
+        final String arguments = paramNode != null ? McpRestUtils.getArgumentValue(paramNode) : null;
+        LOGGER.debug("Received tools call request with toolName={}, arguments={}", toolName, arguments);
+        if (T9tUtil.isBlank(toolName)) {
+            LOGGER.error("Tool name is missing in the request body");
+            McpRestUtils.sendResponse(resp, Response.Status.BAD_REQUEST, mcpService.error(id, T9tAiMcpConstants.MCP_INVALID_PARAMS, "Tool name is missing"));
+            return;
         }
-        restProcessor.performAsyncBackendRequest(httpHeaders, resp, promptsRequest, McpUtils.METHOD_PROMPTS_LIST, AiGetPromptsResponse.class,
-            aiGetPromptsResponse -> {
-                LOGGER.debug("Retrieved {} prompts", aiGetPromptsResponse.getPrompts().size());
-                final McpPromptsResult mcpPromptsResult = mcpService.mapGetPromptsResponse(aiGetPromptsResponse);
-                return McpRestUtils.getJsonMediaData(mcpService.out(id, mcpPromptsResult));
+        final AiRunToolRequest runRq = new AiRunToolRequest();
+        runRq.setName(toolName);
+        runRq.setArguments(arguments);
+        restProcessor.performAsyncBackendRequest(httpHeaders, resp, runRq, T9tAiMcpConstants.METHOD_TOOLS_CALL, AiRunToolResponse.class,
+            aiRunToolResponse -> {
+                return McpRestUtils.getJsonMediaData(mcpService.out(id, mcpService.mapRunToolResponse(aiRunToolResponse)));
             }, sr -> mcpService.createMcpError(sr, id));
     }
+
 }

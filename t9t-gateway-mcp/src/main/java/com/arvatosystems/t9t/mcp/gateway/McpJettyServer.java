@@ -16,6 +16,7 @@
 package com.arvatosystems.t9t.mcp.gateway;
 
 import com.arvatosystems.t9t.jackson.JacksonTools;
+import com.arvatosystems.t9t.mcp.gateway.impl.T9tMcpGatewayInitializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.jpaw.api.ConfigurationReader;
 import de.jpaw.dp.Jdp;
@@ -118,7 +119,7 @@ public class McpJettyServer {
         final HttpServletSseServerTransportProvider transportProvider = new HttpServletSseServerTransportProvider(mapper, "/sse");
 
         context.addServlet(new ServletHolder(transportProvider), "/*");
-        final T9tInitializer initializer = new T9tInitializer();
+        final T9tMcpGatewayInitializer initializer = new T9tMcpGatewayInitializer();
         context.addEventListener(initializer);
 
         if (enableMetrics) {

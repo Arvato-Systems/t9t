@@ -205,7 +205,11 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional Boolean                            enableGenericCallouts;          // allow callouts to other instances for arbitrary requests (must be true in order to allow ExecuteRemoteRequest)
         optional Boolean                            sharedFilesystem;               // all servers, gateways and the ZK UI share the same file system (allows lazy loading of media data)
         optional Boolean                            supportMcpSse;                  // if set to true, then /sse will be a valid path next to /rpc, to accept MCP requests
-        optional Boolean                            sendHeartbeat;                  // if set to true, then /sse will send heartbeat events to GET requests
+        optional Long                               sendHeartbeat;                  // if set, then /sse will send heartbeat events to GET requests, using this number of milliseconds as interval (30000)
+        optional Day                                maxMcpVersion;                  // do not respond with an MCP version newer than this one
+        optional Boolean                            noSessionId;                    // do not add a query parameter ?sessionId=.... to the MCP GET request response
+        optional Integer                            httpCodeEmptyMcpResponse;       // 204...
+        optional Unicode(255)                       httpBodyEmptyMcpResponse;       // "{}"
     }
 
     class ApplicationConfiguration {
