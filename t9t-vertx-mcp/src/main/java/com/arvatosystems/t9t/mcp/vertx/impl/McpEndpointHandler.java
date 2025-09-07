@@ -15,9 +15,17 @@
  */
 package com.arvatosystems.t9t.mcp.vertx.impl;
 
-import com.arvatosystems.t9t.ai.T9tAiMcpConstants;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
+
 import com.arvatosystems.t9t.ai.T9tAiException;
+import com.arvatosystems.t9t.ai.T9tAiMcpConstants;
 import com.arvatosystems.t9t.ai.mcp.IMcpService;
+import com.arvatosystems.t9t.ai.mcp.McpPingResult;
 import com.arvatosystems.t9t.ai.mcp.McpPromptResult;
 import com.arvatosystems.t9t.ai.mcp.McpPromptsResult;
 import com.arvatosystems.t9t.ai.mcp.McpResult;
@@ -39,24 +47,17 @@ import com.arvatosystems.t9t.jackson.JacksonTools;
 import com.arvatosystems.t9t.server.services.IRequestProcessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.dp.Jdp;
-import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RequestBody;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 
 
 public class McpEndpointHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(McpEndpointHandler.class);
-
-    private static final String JSONRPC_VERSION = "2.0";
 
     // This interface is used to define the type of handlers in the dispatcher map
     @FunctionalInterface
@@ -68,17 +69,17 @@ public class McpEndpointHandler {
     private final IRequestProcessor requestProcessor = Jdp.getRequired(IRequestProcessor.class);
     private final ObjectMapper objectMapper = JacksonTools.createObjectMapper();
     private final IMcpService mcpService = Jdp.getRequired(IMcpService.class);
-    private final Vertx vertx;
     private final String maxMcpVersion;
 
-    public McpEndpointHandler(final Vertx vertx, final String maxMcpVersion) {
-        this.vertx = vertx;
+    public McpEndpointHandler(@Nullable final String maxMcpVersion) {
         this.maxMcpVersion = maxMcpVersion;
-        dispatcher.put("initialize", this::initialize);
-        dispatcher.put("tools/list", this::toolsList);
-        dispatcher.put("tools/call", this::toolsCall);
+        dispatcher.put("initialize",   this::initialize);
+        dispatcher.put("ping",         this::ping);
+        dispatcher.put("completion/complete", this::dummyComplete);  // returns an empty list, but returning a error hangs VS Code (as of 1.103)
+        dispatcher.put("tools/list",   this::toolsList);
+        dispatcher.put("tools/call",   this::toolsCall);
         dispatcher.put("prompts/list", this::promptsList);
-        dispatcher.put("prompts/get", this::promptsGet);
+        dispatcher.put("prompts/get",  this::promptsGet);
     }
 
 
@@ -95,7 +96,7 @@ public class McpEndpointHandler {
             .put("message", message);
 
         return new JsonObject()
-            .put("jsonrpc", JSONRPC_VERSION)
+            .put("jsonrpc", T9tAiMcpConstants.JSONRPC_VERSION)
             .put("id", id)
             .put("error", error)
             .encode();
@@ -105,7 +106,7 @@ public class McpEndpointHandler {
         // construct the full response object, including the header
         final Object id = body.getValue("id");
         final McpResult mcpResult = new McpResult();
-        mcpResult.setJsonrpc(JSONRPC_VERSION);
+        mcpResult.setJsonrpc(T9tAiMcpConstants.JSONRPC_VERSION);
         mcpResult.setId(id);
         mcpResult.setResult(result);
         try {
@@ -131,6 +132,16 @@ public class McpEndpointHandler {
         LOGGER.debug("Initialize request from client: {}, protocol version: {}, will use {}", clientInfo, protocolVersionOfClient, protocolVersionToUse);
         // construct the response
         return mcpService.getInitializeResult(protocolVersionToUse, "t9t vert.x embedded MCP Server");
+    }
+
+    private BonaPortable ping(final JsonObject request, final AuthenticationInfo authInfo, final String protocolVersionOfHeader) {
+        LOGGER.debug("Ping request from client");
+        // construct the response
+        return new McpPingResult();
+    }
+
+    private BonaPortable dummyComplete(final JsonObject request, final AuthenticationInfo authInfo, final String protocolVersionOfHeader) {
+        return mcpService.createDummyCompletionsCompleteResult();
     }
 
     /**
@@ -207,26 +218,29 @@ public class McpEndpointHandler {
         return mcpService.mapGetPromptsResponse(aiGetPromptsResponse);
     }
 
-    public McpPromptResult promptsGet(final JsonObject request, final AuthenticationInfo authInfo, final String protocolVersion) {
+    public McpPromptResult promptsGet(final JsonObject params, final AuthenticationInfo authInfo, final String protocolVersion) {
         // obtain specific prompt
         final AiGetPromptRequest rq = new AiGetPromptRequest();
 
-        final JsonObject params = request.getJsonObject(T9tAiMcpConstants.KEY_PARAMS);
         // we need that data
         if (params == null) {
             LOGGER.error("Received prompts get request without parameters");
-            throw new T9tException(T9tAiMcpConstants.MCP_INVALID_PARAMS, "Missing parameters for prompts get request");
+            throw new T9tException(T9tAiException.PROMPTS_MISSING_PARAMETERS, "Missing parameters for prompts get request");
         }
         final String promptName = params.getString(T9tAiMcpConstants.KEY_NAME);
-        final JsonObject arguments = params.getJsonObject(T9tAiMcpConstants.KEY_PARAMS);
+        // we need that data
+        if (promptName == null) {
+            LOGGER.error("Received prompts get request without prompt name");
+            throw new T9tException(T9tAiException.PROMPTS_MISSING_PARAMETERS, "Missing prompt name for prompts get request");
+        }
+        final JsonObject arguments = params.getJsonObject(T9tAiMcpConstants.KEY_ARGUMENTS);
         rq.setName(promptName);
         if (arguments == null) {
             LOGGER.debug("Received prompts get request for {} without arguments", promptName);
             rq.setArguments(Map.of());
         } else {
             LOGGER.debug("Received prompts get request for {} with arguments {}", promptName, arguments.encode());
-            final Map untyped = arguments.getMap();
-            rq.setArguments(untyped);
+            rq.setArguments(arguments.getMap());
         }
         final AiGetPromptResponse aiGetPromptResponse = processRequest(rq, authInfo, AiGetPromptResponse.class);
         // transfer assembled prompt

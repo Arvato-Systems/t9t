@@ -15,17 +15,10 @@
  */
 package com.arvatosystems.t9t.mcp.restapi.service.impl;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.arvatosystems.t9t.ai.T9tAiMcpConstants;
 import com.arvatosystems.t9t.ai.mcp.IMcpService;
-import com.arvatosystems.t9t.ai.mcp.McpResultPayload;
-import com.arvatosystems.t9t.ai.request.AiGetToolsRequest;
-import com.arvatosystems.t9t.ai.request.AiGetToolsResponse;
-import com.arvatosystems.t9t.mcp.restapi.McpRestUtils;
+import com.arvatosystems.t9t.ai.mcp.McpPingResult;
 import com.arvatosystems.t9t.mcp.restapi.service.IMcpRestEndpointHandler;
-import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import de.jpaw.dp.Jdp;
@@ -33,24 +26,17 @@ import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 import jakarta.ws.rs.container.AsyncResponse;
 import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.Response;
 
 @Singleton
-@Named(T9tAiMcpConstants.METHOD_TOOLS_LIST)
-public class ToolsListMcpRestEndpointHandler implements IMcpRestEndpointHandler {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ToolsListMcpRestEndpointHandler.class);
+@Named(T9tAiMcpConstants.METHOD_PING)
+public class PingMcpRestEndpointHandler implements IMcpRestEndpointHandler {
 
     protected final IMcpService mcpService = Jdp.getRequired(IMcpService.class);
-    protected final IT9tRestProcessor restProcessor = Jdp.getRequired(IT9tRestProcessor.class);
 
     @Override
     public void handleRequest(final HttpHeaders httpHeaders, final AsyncResponse resp, final Object id, final JsonNode body) {
-        final AiGetToolsRequest toolsRequest = new AiGetToolsRequest();
-        restProcessor.performAsyncBackendRequest(httpHeaders, resp, toolsRequest, T9tAiMcpConstants.METHOD_TOOLS_LIST, AiGetToolsResponse.class,
-            aiGetToolsResponse -> {
-                LOGGER.debug("Retrieved {} tools", aiGetToolsResponse.getTools().size());
-                final McpResultPayload mcpToolsResult = mcpService.mapGetToolsResponse(aiGetToolsResponse);
-                return McpRestUtils.getJsonMediaData(mcpService.out(id, mcpToolsResult));
-            }, sr -> mcpService.createMcpError(sr, id));
+        final String output = mcpService.out(id, new McpPingResult());
+        resp.resume(Response.ok(output).build());
     }
 }

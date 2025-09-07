@@ -30,6 +30,7 @@ public final class T9tAiMcpConstants {
 
     public static final String HTTP_HEADER_MCP_PROTOCOL     = "MCP-Protocol-Version";   // HTTP header which should contain the requested version by the client
     public static final String HTTP_HEADER_MCP_SESSION_ID   = "MCP-Session-ID";         // HTTP header which should contain the current session ID (if required)
+    public static final String HTTP_HEADER_MCP_JSON         = "application/json";       // HTTP header returned as content type for MCP JSON responses
 
     public static final String FALLBACK_MCP_PROTOCOL_VERSION = McpProtocolVersion.UPDATE1.getToken(); // by spec this version should be assumed if the client does not specify any
 
@@ -56,6 +57,7 @@ public final class T9tAiMcpConstants {
     public static final String SERVER_VERSION = "9.0-SNAPSHOT";
 
     public static final String METHOD_INITIALIZE    = "initialize";
+    public static final String METHOD_PING          = "ping";
     public static final String METHOD_TOOLS_LIST    = "tools/list";
     public static final String METHOD_TOOLS_CALL    = "tools/call";
     public static final String METHOD_PROMPTS_LIST  = "prompts/list";

@@ -22,5 +22,5 @@ import jakarta.ws.rs.core.HttpHeaders;
 
 public interface IMcpRestEndpointHandler {
 
-    void handleRequest(@Nonnull HttpHeaders httpHeaders, @Nonnull AsyncResponse resp, @Nonnull String id, @Nonnull JsonNode body);
+    void handleRequest(@Nonnull HttpHeaders httpHeaders, @Nonnull AsyncResponse resp, @Nonnull Object id, @Nonnull JsonNode body);
 }

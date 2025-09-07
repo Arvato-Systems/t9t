@@ -169,7 +169,7 @@ public class T9tMcpGatewayInitializer implements ServletContextListener {
                             return new GetPromptResult(null, Collections.emptyList());
                         }
 
-                        final Map<String, String> arguments = new HashMap<>(FreezeTools.getInitialHashMapCapacity(getPromptRequest.arguments() != null
+                        final Map<String, Object> arguments = new HashMap<>(FreezeTools.getInitialHashMapCapacity(getPromptRequest.arguments() != null
                             ? getPromptRequest.arguments().size() : 0));
                         if (getPromptRequest.arguments() != null) {
                             for (Map.Entry<String, Object> entry : getPromptRequest.arguments().entrySet()) {

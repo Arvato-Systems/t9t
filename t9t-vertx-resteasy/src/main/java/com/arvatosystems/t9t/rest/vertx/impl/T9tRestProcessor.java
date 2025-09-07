@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
+import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.RandomNumberGenerators;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
@@ -106,7 +107,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
             returnAsyncResult(acceptHeader, resp, Status.BAD_REQUEST, e);  // missing parameter
             return;
         }
-        final String authHeader = httpHeaders.getHeaderString(HttpHeaders.AUTHORIZATION);
+        final String authHeader = MessagingUtil.massageAuthHeader(httpHeaders.getHeaderString(HttpHeaders.AUTHORIZATION));
         if (authHeader == null || authHeader.length() < 8) {
             returnAsyncResult(acceptHeader, resp, Status.UNAUTHORIZED, "Missing or too short Authorization header");  // missing auth header
             return;

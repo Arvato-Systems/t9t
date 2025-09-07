@@ -141,10 +141,21 @@ package (com.arvatosystems) t9t.ai.mcp {
         required (McpCapabilities)                          capabilities;
         required (McpServerInfo)                            serverInfo;
     }
+    final class McpPingResult {
+        optional Boolean                                    unused;   // avoid Jackson serializer problem
+    }
+    final class McpCompleteResult {
+        optional (McpCompleteEntry)                         completion;
+    }
+    final class McpCompleteEntry {
+        required Element List<>                             values;
+        optional Integer                                    total;
+        optional Boolean                                    hasMore;
+    }
     final class McpCapabilities {
         optional (McpCapabilityTools)                       tools;
         optional Object                                     resources;
-        optional Object                                     prompts;
+        optional (McpCapabilityPrompts)                     prompts;
     }
     final class McpServerInfo {
         required Unicode(80)                                name;

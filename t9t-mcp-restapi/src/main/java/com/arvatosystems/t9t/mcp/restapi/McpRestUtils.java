@@ -15,7 +15,10 @@
  */
 package com.arvatosystems.t9t.mcp.restapi;
 
+import java.util.List;
+
 import com.arvatosystems.t9t.ai.T9tAiMcpConstants;
+import com.arvatosystems.t9t.ai.mcp.McpProtocolVersion;
 import com.fasterxml.jackson.databind.JsonNode;
 import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import de.jpaw.bonaparte.pojos.api.media.MediaType;
@@ -27,6 +30,11 @@ import jakarta.ws.rs.core.Response;
 public final class McpRestUtils {
 
     private McpRestUtils() { }
+
+    public static final List<String> SUPPORTED_PROTOCOL_VERSIONS = List.of(
+            McpProtocolVersion.INITIAL.getToken(),
+            McpProtocolVersion.UPDATE1.getToken(),
+            McpProtocolVersion.UPDATE2.getToken());
 
     public static void sendResponse(@Nonnull final AsyncResponse response, @Nonnull final Response.Status status, @Nullable String message) {
         response.resume(Response.status(status).entity(message).build());
@@ -41,8 +49,27 @@ public final class McpRestUtils {
     }
 
     @Nullable
-    public static String getId(@Nonnull final JsonNode json) {
-        return getTextValue(json, T9tAiMcpConstants.KEY_ID);
+    public static Object getId(@Nonnull final JsonNode json) {
+        return getValue(json.get(T9tAiMcpConstants.KEY_ID));
+    }
+
+    @Nullable
+    public static Object getValue(@Nullable final JsonNode valueNode) {
+        if (valueNode == null) {
+            return null;
+        }
+        if (valueNode.isNumber()) {
+            if (valueNode.isFloatingPointNumber()) {
+                return valueNode.asDouble();
+            } else {
+                return valueNode.asLong();
+            }
+        } else if (valueNode.isBoolean()) {
+            return valueNode.asBoolean();
+        } else if (valueNode.isNull()) {
+            return null;
+        }
+        return valueNode.asText();
     }
 
     @Nullable
@@ -65,5 +92,19 @@ public final class McpRestUtils {
     public static String getTextValue(@Nonnull final JsonNode json, @Nonnull final String key) {
         final JsonNode valueNode = json.get(key);
         return valueNode != null ? valueNode.asText() : null;
+    }
+
+    @Nonnull
+    public static String toJson(@Nonnull String key, Object value) {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("{\"").append(key).append("\":");
+        if (value instanceof String) {
+            sb.append("\"").append(value).append("\"");
+        } else if (value instanceof Number || value instanceof Boolean) {
+            sb.append(value);
+        } else if (value == null) {
+            sb.append("null");
+        }
+        return sb.append("}").toString();
     }
 }

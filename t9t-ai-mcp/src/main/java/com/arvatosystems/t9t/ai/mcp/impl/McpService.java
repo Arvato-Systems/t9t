@@ -17,6 +17,7 @@ package com.arvatosystems.t9t.ai.mcp.impl;
 
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +32,8 @@ import com.arvatosystems.t9t.ai.mcp.IMcpService;
 import com.arvatosystems.t9t.ai.mcp.McpCapabilities;
 import com.arvatosystems.t9t.ai.mcp.McpCapabilityPrompts;
 import com.arvatosystems.t9t.ai.mcp.McpCapabilityTools;
+import com.arvatosystems.t9t.ai.mcp.McpCompleteEntry;
+import com.arvatosystems.t9t.ai.mcp.McpCompleteResult;
 import com.arvatosystems.t9t.ai.mcp.McpContentElement;
 import com.arvatosystems.t9t.ai.mcp.McpError;
 import com.arvatosystems.t9t.ai.mcp.McpInitializeResult;
@@ -49,6 +52,8 @@ import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.jackson.JacksonTools;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.jpaw.bonaparte.api.media.MediaTypeInfo;
@@ -58,11 +63,9 @@ import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ApplicationException;
 import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 
 @Singleton
 public class McpService implements IMcpService {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(McpService.class);
 
     protected final ObjectMapper objectMapper = JacksonTools.createObjectMapper();
@@ -83,7 +86,7 @@ public class McpService implements IMcpService {
 
     @Nonnull
     @Override
-    public McpResultPayload mapGetToolsResponse(@Nonnull final AiGetToolsResponse response) {
+    public McpResultPayload mapGetToolsResponse(final AiGetToolsResponse response) {
         final McpResultPayload mcpToolsResult = new McpResultPayload();
         mcpToolsResult.setTools(response.getTools());
         return mcpToolsResult;
@@ -142,7 +145,7 @@ public class McpService implements IMcpService {
 
     @Nonnull
     @Override
-    public McpPromptsResult mapGetPromptsResponse(@Nonnull final AiGetPromptsResponse response) {
+    public McpPromptsResult mapGetPromptsResponse(final AiGetPromptsResponse response) {
         final McpPromptsResult result = new McpPromptsResult();
         final List<AiPromptSpecification> specList = new ArrayList<>(response.getPrompts().size());
         result.setPrompts(specList);
@@ -170,7 +173,7 @@ public class McpService implements IMcpService {
 
     @Nonnull
     @Override
-    public McpPromptResult mapGetPromptResponse(@Nonnull final AiGetPromptResponse response) {
+    public McpPromptResult mapGetPromptResponse(final AiGetPromptResponse response) {
         final McpPromptResult result = new McpPromptResult();
         result.setDescription(response.getDescription());
         final PromptMessage message = new PromptMessage();
@@ -185,7 +188,7 @@ public class McpService implements IMcpService {
 
     @Nonnull
     @Override
-    public String out(@Nonnull final String id, @Nonnull final BonaPortable result) {
+    public String out(final Object id, final BonaPortable result) {
         final McpResult mcpResult = new McpResult();
         mcpResult.setJsonrpc(T9tAiMcpConstants.JSONRPC_VERSION);
         mcpResult.setId(id);
@@ -200,7 +203,7 @@ public class McpService implements IMcpService {
 
     @Nonnull
     @Override
-    public String error(@Nonnull final String id, final int code, @Nonnull final String message) {
+    public String error(final Object id, final int code, final String message) {
         final McpError mcpError = new McpError();
         mcpError.setCode(code);
         mcpError.setMessage(message);
@@ -218,7 +221,7 @@ public class McpService implements IMcpService {
 
     @Nonnull
     @Override
-    public McpResult createMcpError(@Nonnull final ServiceResponse serviceResponse, @Nullable final String id) {
+    public McpResult createMcpError(final ServiceResponse serviceResponse, final Object id) {
         final McpResult errorResult = new McpResult();
         errorResult.setJsonrpc(T9tAiMcpConstants.JSONRPC_VERSION);
         errorResult.setId(id);
@@ -245,5 +248,18 @@ public class McpService implements IMcpService {
         // fallback to do it "by hand"
         LOGGER.warn("Returning raw error response with code {} and message: {}", code, message);
         return "{\"jsonrpc\":\"" + T9tAiMcpConstants.JSONRPC_VERSION + "\", \"error\":{\"code\":" + code + ", \"message\":\"" + message + "\"}}";
+    }
+
+    @Override
+    public Map<String, Object> convertArgumentsToMap(final JsonNode argNode) {
+        return  objectMapper.convertValue(argNode, new TypeReference<Map<String, Object>>() { });
+    }
+
+    @Override
+    public McpCompleteResult createDummyCompletionsCompleteResult() {
+        final McpCompleteEntry entry = new McpCompleteEntry();
+        entry.setValues(Collections.emptyList());
+        entry.setHasMore(Boolean.FALSE);
+        return new McpCompleteResult(entry);
     }
 }

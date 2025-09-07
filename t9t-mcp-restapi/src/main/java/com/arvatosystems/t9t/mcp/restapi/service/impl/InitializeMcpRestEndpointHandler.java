@@ -25,7 +25,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
-import jakarta.annotation.Nonnull;
 import jakarta.ws.rs.container.AsyncResponse;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
@@ -37,8 +36,7 @@ public class InitializeMcpRestEndpointHandler implements IMcpRestEndpointHandler
     protected final IMcpService mcpService = Jdp.getRequired(IMcpService.class);
 
     @Override
-    public void handleRequest(@Nonnull final HttpHeaders httpHeaders, @Nonnull final AsyncResponse resp, @Nonnull final String id,
-        @Nonnull final JsonNode body) {
+    public void handleRequest(final HttpHeaders httpHeaders, final AsyncResponse resp, final Object id, final JsonNode body) {
         final String protocolVersion = httpHeaders.getHeaderString(T9tAiMcpConstants.HTTP_HEADER_MCP_PROTOCOL);
         final McpInitializeResult result = mcpService.getInitializeResult(T9tUtil.nvl(protocolVersion, T9tAiMcpConstants.FALLBACK_MCP_PROTOCOL_VERSION), "t9t jetty REST gateway");
         final String output = mcpService.out(id, result);

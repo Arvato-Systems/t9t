@@ -18,6 +18,7 @@ package com.arvatosystems.t9t.base;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -130,6 +131,22 @@ public final class MessagingUtil {
     /** Normalize the line end characters (\r\n or \r to \n) so they can be compared in unit tests cross platform. */
     public static String normalizeEOLs(final String in) {
         return in.replaceAll("\\r\\n?", "\n");
+    }
+
+    private static final Pattern UUID_REGEX = Pattern.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
+
+    /** Replaces a Bearer prefix with API-Key, if the remainder looks like a UUID. Used for MCP messages, where Bearer is often hardcoded (MCP inspector). */
+    public static String massageAuthHeader(@Nullable final String authHeader) {
+        // LOGGER.debug("Authorization header: <{}>", authHeader);
+        if (authHeader != null && authHeader.startsWith("Bearer ") && authHeader.length() == 7 + 36) {
+            // all simple checks passed, for safety do a full regexp check
+            final String potentialUuid = authHeader.substring(7);
+            if (UUID_REGEX.matcher(potentialUuid).matches()) {
+                return "API-Key " + potentialUuid;
+            }
+        }
+        // some check failed, return original
+        return authHeader;
     }
 
     /**

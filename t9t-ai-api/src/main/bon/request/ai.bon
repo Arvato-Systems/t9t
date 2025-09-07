@@ -102,8 +102,8 @@ package (com.arvatosystems) t9t.ai.request {
 
     /** Request to get a specific prompt. */
     class AiGetPromptRequest extends RequestParameters return AiGetPromptResponse {
-        required defaultExternalId                                     name; // ID of the prompt
-        required Unicode(64000) allowControlChars required Map<String> arguments; // key: parameter name, value: parameter value
+        required defaultExternalId                          name;               // ID of the prompt
+        required Json                                       arguments;          // key: parameter name, value: parameter value
     }
 
     class AiGetPromptResponse extends ServiceResponse {

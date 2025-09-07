@@ -41,6 +41,7 @@ public class T9tAiException extends T9tException {
     public static final int AI_PROMPT_NO_PERMISSION     = OFFSET + 106;
     public static final int TOOLS_NOT_AVAILABLE         = OFFSET + 107;
     public static final int PROMPTS_NOT_AVAILABLE       = OFFSET + 108;
+    public static final int PROMPTS_MISSING_PARAMETERS  = OFFSET + 109;
 
     static {
         registerRange(CORE_OFFSET, false, T9tAiException.class, ApplicationLevelType.FRAMEWORK, "t9t general AI integration layer");
@@ -54,5 +55,6 @@ public class T9tAiException extends T9tException {
         registerCode(AI_PROMPT_NO_PERMISSION,   "No permission to get specific AI prompt");
         registerCode(TOOLS_NOT_AVAILABLE,       "Tools cannot be fetched");
         registerCode(PROMPTS_NOT_AVAILABLE,     "Prompts cannot be fetched");
+        registerCode(PROMPTS_MISSING_PARAMETERS, "Prompt parameters missing");
     }
 }

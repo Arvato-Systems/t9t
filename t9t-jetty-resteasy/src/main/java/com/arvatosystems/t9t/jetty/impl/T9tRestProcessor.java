@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.IRemoteConnection;
+import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.RandomNumberGenerators;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
@@ -166,7 +167,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
             return;
         }
         final int invocationNo = COUNTER.incrementAndGet();
-        final String authorizationHeader = httpHeaders.getHeaderString(HttpHeaders.AUTHORIZATION);
+        final String authorizationHeader = MessagingUtil.massageAuthHeader(httpHeaders.getHeaderString(HttpHeaders.AUTHORIZATION));
         // assign a message ID unless there is one already provided
         if (requestParameters.getMessageId() == null) {
             requestParameters.setMessageId(RandomNumberGenerators.randomFastUUID());

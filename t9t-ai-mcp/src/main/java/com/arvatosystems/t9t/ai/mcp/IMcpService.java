@@ -15,11 +15,15 @@
  */
 package com.arvatosystems.t9t.ai.mcp;
 
+import java.util.Map;
+
 import com.arvatosystems.t9t.ai.request.AiGetPromptResponse;
 import com.arvatosystems.t9t.ai.request.AiGetPromptsResponse;
 import com.arvatosystems.t9t.ai.request.AiGetToolsResponse;
 import com.arvatosystems.t9t.ai.request.AiRunToolResponse;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
+import com.fasterxml.jackson.databind.JsonNode;
+
 import de.jpaw.bonaparte.core.BonaPortable;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -42,11 +46,17 @@ public interface IMcpService {
     McpPromptResult mapGetPromptResponse(@Nonnull AiGetPromptResponse response);
 
     @Nonnull
-    String out(@Nonnull String id, @Nonnull BonaPortable result);
+    String out(@Nonnull Object id, @Nonnull BonaPortable result);
 
     @Nonnull
-    String error(@Nonnull String id, int code, @Nonnull String message);
+    String error(@Nonnull Object id, int code, @Nonnull String message);
 
     @Nonnull
-    McpResult createMcpError(@Nonnull ServiceResponse serviceResponse, @Nullable String id);
+    McpResult createMcpError(@Nonnull ServiceResponse serviceResponse, @Nullable Object id);
+
+    @Nonnull
+    Map<String, Object> convertArgumentsToMap(@Nonnull JsonNode argNode);
+
+    @Nonnull
+    McpCompleteResult createDummyCompletionsCompleteResult();
 }

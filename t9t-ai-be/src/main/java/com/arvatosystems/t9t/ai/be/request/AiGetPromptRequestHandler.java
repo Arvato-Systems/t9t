@@ -61,22 +61,24 @@ public class AiGetPromptRequestHandler extends AbstractReadOnlyRequestHandler<Ai
         searchRequest.setSearchFilter(filter);
         final ReadAllResponse<AiPromptDTO, FullTrackingWithVersion> searchResponse = executor.executeSynchronousAndCheckResult(ctx, searchRequest, ReadAllResponse.class);
         if (searchResponse.getDataList().isEmpty()) {
-            throw new T9tException(T9tAiException.INVALID_PROMPT_NAME, "Prompt with name '" + request.getName() + "' not found.");
+            LOGGER.error("Prompt with name {} not found", request.getName());
+            throw new T9tException(T9tAiException.INVALID_PROMPT_NAME, "Prompt with name " + request.getName() + " not found.");
         }
         final AiPromptDTO prompt = searchResponse.getDataList().getFirst().getData();
+        LOGGER.debug("Processing prompt {} with {} parameters ({} supplied by request)", prompt.getPromptId(), prompt.getParameters().getParameters().size(), request.getArguments() != null ? request.getArguments().size() : 0);
         String promptText = prompt.getPrompt();
-        for (Map.Entry<String, AiPromptParameter> entry: prompt.getParameters().getParameters().entrySet()) {
+        for (final Map.Entry<String, AiPromptParameter> entry: prompt.getParameters().getParameters().entrySet()) {
             final String paramName = entry.getKey();
             final AiPromptParameter param = entry.getValue();
-            final String paramValue = request.getArguments().get(paramName);
+            final Object paramValue = request.getArguments().get(paramName);
             if (paramValue != null) {
-                promptText = promptText.replace("${" + paramName + "}", paramValue);
+                promptText = promptText.replace("${" + paramName + "}", paramValue.toString());
             } else if (!param.getIsRequired()) {
                 // just replace with empty string
                 promptText = promptText.replace("${" + paramName + "}", "");
             } else {
-                throw new T9tException(T9tAiException.MISSING_REQUIRED_ARGUMENT, "Required argument '" + paramName + "' is missing for prompt '"
-                    + request.getName());
+                LOGGER.error("Required argument {} is missing for prompt {}", paramName, request.getName());
+                throw new T9tException(T9tAiException.MISSING_REQUIRED_ARGUMENT, "Required argument " + paramName + " is missing for prompt " + request.getName());
             }
         }
         final AiGetPromptResponse response = new AiGetPromptResponse();

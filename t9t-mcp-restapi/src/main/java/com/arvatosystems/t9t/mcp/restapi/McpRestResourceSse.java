@@ -16,7 +16,6 @@
 package com.arvatosystems.t9t.mcp.restapi;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -27,7 +26,6 @@ import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.ai.T9tAiMcpConstants;
 import com.arvatosystems.t9t.ai.mcp.IMcpService;
-import com.arvatosystems.t9t.ai.mcp.McpProtocolVersion;
 import com.arvatosystems.t9t.ai.request.AiGetSseRequest;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
@@ -59,13 +57,8 @@ import jakarta.ws.rs.sse.SseEventSink;
 
 @Singleton
 @Path("/" + T9tAiMcpConstants.ENDPOINT_SSE)
-public class McpRestResource implements IT9tRestEndpoint {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(McpRestResource.class);
-    private static final List<String> SUPPORTED_PROTOCOL_VERSIONS = List.of(
-        McpProtocolVersion.INITIAL.getToken(),
-        McpProtocolVersion.UPDATE1.getToken(),
-        McpProtocolVersion.UPDATE2.getToken());
+public class McpRestResourceSse implements IT9tRestEndpoint {
+    private static final Logger LOGGER = LoggerFactory.getLogger(McpRestResourceSse.class);
 
     private static final ScheduledExecutorService SHARED_SCHEDULER = Executors.newSingleThreadScheduledExecutor(
         r -> {
@@ -77,19 +70,6 @@ public class McpRestResource implements IT9tRestEndpoint {
 
     protected final IMcpService mcpService = Jdp.getRequired(IMcpService.class);
     protected final IT9tRestProcessor restProcessor = Jdp.getRequired(IT9tRestProcessor.class);
-
-    private String toJson(@Nonnull String key, Object value) {
-        final StringBuilder sb = new StringBuilder();
-        sb.append("{\"").append(key).append("\":");
-        if (value instanceof String) {
-            sb.append("\"").append(value).append("\"");
-        } else if (value instanceof Number || value instanceof Boolean) {
-            sb.append(value);
-        } else if (value == null) {
-            sb.append("null");
-        }
-        return sb.append("}").toString();
-    }
 
     @Operation(summary = "SSE event stream",
             description = "Creates a connection for server-side events",
@@ -120,7 +100,7 @@ public class McpRestResource implements IT9tRestEndpoint {
         LOGGER.info("SSE connection opened for: {} (by GET /sse)", connectionId);
 
         try {
-            eventSink.send(sse.newEvent(T9tAiMcpConstants.EVENT_CONNECTED, toJson(T9tAiMcpConstants.KEY_CONNECTION_ID, connectionId)));
+            eventSink.send(sse.newEvent(T9tAiMcpConstants.EVENT_CONNECTED, McpRestUtils.toJson(T9tAiMcpConstants.KEY_CONNECTION_ID, connectionId)));
             SHARED_SCHEDULER.scheduleAtFixedRate(getHeartBeatTask(eventSink, sse, connectionId.toString()),
                 T9tAiMcpConstants.DEFAULT_HEARTBEAT_INTERVAL,
                 T9tAiMcpConstants.DEFAULT_HEARTBEAT_INTERVAL,
@@ -138,10 +118,11 @@ public class McpRestResource implements IT9tRestEndpoint {
         }
     }
 
-    @Operation(summary = "MCP tools request",
-            description = "Initialize, list or call tools via MCP",
+    @Operation(summary = "MCP request - SSE",
+            description = "Initialize, list or call tools or prompts via MCP",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Request processed successfully."),
+                    @ApiResponse(responseCode = "202", description = "Confirm notifications."),
                     @ApiResponse(responseCode = "default", description = "Error processing request") })
     @Produces({ MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_JSON })
@@ -149,7 +130,7 @@ public class McpRestResource implements IT9tRestEndpoint {
     public void ssePost(@Context final HttpHeaders httpHeaders, @Suspended final AsyncResponse resp, final JsonNode body) {
         final String protocolVersion = httpHeaders.getHeaderString(T9tAiMcpConstants.HTTP_HEADER_MCP_PROTOCOL);
         final String acceptHeader = httpHeaders.getHeaderString(HttpHeaders.ACCEPT);
-        final String id = McpRestUtils.getId(body);
+        final Object id = McpRestUtils.getId(body);
         final String method = McpRestUtils.getMethod(body);
         LOGGER.debug("SSE POST request received. Protocol Version: {}, Accept: {}, Id {}, Method {}", protocolVersion, acceptHeader, id, method);
         // validate the method and protocol version. We have to respond with 400 if we do not support the requested protocol version.
@@ -158,24 +139,25 @@ public class McpRestResource implements IT9tRestEndpoint {
             McpRestUtils.sendResponse(resp, Response.Status.BAD_REQUEST, "No method specified in request body");
             return;
         }
-        if (protocolVersion != null && !SUPPORTED_PROTOCOL_VERSIONS.contains(protocolVersion)) {
+        if (protocolVersion != null && !McpRestUtils.SUPPORTED_PROTOCOL_VERSIONS.contains(protocolVersion)) {
             // we do not support the requested protocol version
             McpRestUtils.sendResponse(resp, Response.Status.BAD_REQUEST, "Unsupported MCP protocol version");
             return;
         }
 
-        if (T9tUtil.isBlank(id)) {
+        if (id == null) {
             // is a notification
+            LOGGER.debug("SSE notification received for method {}", method);
             McpRestUtils.sendResponse(resp, Response.Status.NO_CONTENT, null);
             return;
         }
-        final IMcpRestEndpointHandler mcpRestRequestHandler = Jdp.getOptional(IMcpRestEndpointHandler.class, method.toLowerCase());
-        if (mcpRestRequestHandler == null) {
+        final IMcpRestEndpointHandler mcpRestEndpointHandler = Jdp.getOptional(IMcpRestEndpointHandler.class, method.toLowerCase());
+        if (mcpRestEndpointHandler == null) {
             LOGGER.error("No handler found for method: {}", method);
             McpRestUtils.sendResponse(resp, Response.Status.NOT_FOUND, mcpService.error(id, T9tAiMcpConstants.MCP_METHOD_NOT_FOUND, "Method not found: " + method));
             return;
         }
-        mcpRestRequestHandler.handleRequest(httpHeaders, resp, id, body);
+        mcpRestEndpointHandler.handleRequest(httpHeaders, resp, id, body);
     }
 
     private Runnable getHeartBeatTask(@Nonnull final SseEventSink eventSink, @Nonnull final Sse sse, @Nonnull final String connectionId) {
@@ -189,7 +171,7 @@ public class McpRestResource implements IT9tRestEndpoint {
                 } else {
                     try {
                         LOGGER.debug("SSE Client {} is still open", connectionId);
-                        eventSink.send(sse.newEvent(T9tAiMcpConstants.EVENT_HEARTBEAT, toJson(T9tAiMcpConstants.KEY_TIMESTAMP, System.currentTimeMillis())))
+                        eventSink.send(sse.newEvent(T9tAiMcpConstants.EVENT_HEARTBEAT, McpRestUtils.toJson(T9tAiMcpConstants.KEY_TIMESTAMP, System.currentTimeMillis())))
                             .thenAccept(result -> {
                                 LOGGER.debug("Heartbeat sent to connection: {}", connectionId);
                             }).exceptionally(ex -> {
