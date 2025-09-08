@@ -110,14 +110,14 @@
         <commons-csv.version>1.14.1</commons-csv.version>                 <!-- not used in t9t, but DM made for downstream projects -->
 
         <!-- AWS SDK v2 -->
-        <aws2-bom.version>2.33.0</aws2-bom.version>
+        <aws2-bom.version>2.33.4</aws2-bom.version>
 
         <!-- AWS JDBC wrapper for Aurora -->
         <aws-jdbc-wrapper.version>2.6.3</aws-jdbc-wrapper.version>
 
         <!-- Azure -->
         <azure-cosmosdb.version>2.6.16</azure-cosmosdb.version>
-        <azure-cosmos-sdk.version>4.73.1</azure-cosmos-sdk.version>
+        <azure-cosmos-sdk.version>4.74.0</azure-cosmos-sdk.version>
 
         <!-- Vector databases -->
         <pinecone.version>5.1.0</pinecone.version>
@@ -134,7 +134,7 @@
         <!-- needed for MCP -->
         <reactor-core.version>3.7.9</reactor-core.version>
         <reactor-netty.version>1.2.9</reactor-netty.version>
-        <mcp-sdk.version>0.11.3</mcp-sdk.version>
+        <mcp-sdk.version>0.12.0</mcp-sdk.version>
 
         <!-- Camunda BPMN: still linked to pre-jakarta spring version, removing -->
         <!-- <camunda-bom.version>7.18.0</camunda-bom.version> -->

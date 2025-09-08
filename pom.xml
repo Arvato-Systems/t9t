@@ -80,7 +80,7 @@
         <maven-jarjar-plugin.version>1.9</maven-jarjar-plugin.version>
         <maven-enforcer-plugin.version>3.6.1</maven-enforcer-plugin.version>
         <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
-        <maven-exec-plugin.version>3.5.0</maven-exec-plugin.version>
+        <maven-exec-plugin.version>3.5.1</maven-exec-plugin.version>
         <owasp-maven-plugin.version>7.2.1</owasp-maven-plugin.version>
         <spring-boot-maven-plugin.version>3.5.5</spring-boot-maven-plugin.version>
         <tycho.version>4.0.8</tycho.version>
@@ -106,7 +106,7 @@
         <!-- Versions of Xtext & Xtend plugins -->
         <xtend-maven-plugin.version>${xtext.version}</xtend-maven-plugin.version>
         <xtext-maven-plugin.version>${xtext.version}</xtext-maven-plugin.version>
-        <jdt.version>3.42.0</jdt.version>
+        <jdt.version>3.43.0</jdt.version>
 
         <bonaparte-plugin.version>6.3.0</bonaparte-plugin.version>
         <license-plugin.version>5.0.0</license-plugin.version>
