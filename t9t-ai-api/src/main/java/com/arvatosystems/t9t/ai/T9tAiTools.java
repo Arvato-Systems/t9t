@@ -20,6 +20,7 @@ import java.util.List;
 
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
+import de.jpaw.bonaparte.pojos.meta.Multiplicity;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
@@ -72,7 +73,7 @@ public final class T9tAiTools {
     public static List<String> buildRequiredFromFields(final List<FieldDefinition> fields) {
         final List<String> required = new ArrayList<>(fields.size());
         for (final FieldDefinition field : fields) {
-            if (field.getIsRequired()) {
+            if (field.getMultiplicity() == Multiplicity.SCALAR ? field.getIsRequired() : field.getIsAggregateRequired()) {
                 required.add(field.getName());
             }
         }
