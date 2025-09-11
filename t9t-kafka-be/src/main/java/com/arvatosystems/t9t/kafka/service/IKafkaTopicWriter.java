@@ -16,6 +16,8 @@
 package com.arvatosystems.t9t.kafka.service;
 
 import de.jpaw.bonaparte.core.BonaPortable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * Low level API to transfer any BonaPortable object via kafka.
@@ -24,10 +26,10 @@ import de.jpaw.bonaparte.core.BonaPortable;
  */
 public interface IKafkaTopicWriter {
     /** Serializes the data object using the compact bonaparte serializer and writes it to the topic. */
-    void write(BonaPortable data, int partition, String partitionKey);
+    void write(@Nonnull BonaPortable data, int partition, @Nullable String partitionKey);
 
     /** Writes binary data to the topic. */
-    void write(byte[] dataToWrite, int partitionIn, String recordKey);
+    void write(@Nonnull byte[] dataToWrite, int partitionIn, @Nullable String recordKey);
 
     /** Flushes any pending requests of the topic writer. */
     void flush();

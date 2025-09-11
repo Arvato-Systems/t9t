@@ -26,12 +26,12 @@ import de.jpaw.dp.Singleton;
 public class QueuePartitionerZero implements IInputQueuePartitioner {
 
     @Override
-    public int determinePartitionKey(RequestParameters rq) {
+    public int determinePartitionKey(final RequestParameters rq) {
         return 0;
     }
 
     @Override
-    public int getPreliminaryPartitionKey(String value) {
+    public int getPreliminaryPartitionKey(final String value) {
         return 0;
     }
 }

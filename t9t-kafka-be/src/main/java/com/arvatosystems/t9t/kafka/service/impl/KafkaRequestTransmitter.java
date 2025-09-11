@@ -34,6 +34,8 @@ import de.jpaw.api.ConfigurationReader;
 import de.jpaw.dp.Singleton;
 import de.jpaw.json.JsonParser;
 import de.jpaw.util.ConfigurationReaderFactory;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 @Singleton
 public class KafkaRequestTransmitter implements IKafkaRequestTransmitter {
@@ -100,16 +102,17 @@ public class KafkaRequestTransmitter implements IKafkaRequestTransmitter {
     }
 
     @Override
-    public void write(ServiceRequest srq, int partition, Object recordKey) {
+    public void write(final ServiceRequest srq, final int partition, final Object recordKey) {
         write(srq, partition, recordKey == null ? null : recordKey.toString() + ":" + partition);
     }
 
     @Override
     public void write(final ServiceRequest srq, final String partitionKey, final Object recordKey) {
-        write(srq, partitionKey.hashCode(), recordKey == null ? null : recordKey.toString() + ":" + partitionKey);
+        final int partition = partitionKey == null ? 0 : (partitionKey.hashCode() & Integer.MAX_VALUE);
+        write(srq, partition, recordKey == null ? null : recordKey.toString() + ":" + partition);
     }
 
-    protected void write(final ServiceRequest srq, final int partition, final String recordKey) {
+    protected void write(@Nonnull final ServiceRequest srq, final int partition, @Nullable final String recordKey) {
         if (!initialized()) {
             // redirect to /dev/null (but complain)
             LOGGER.warn("write called but no topic writer initialized");

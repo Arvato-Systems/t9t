@@ -29,12 +29,12 @@ public class QueuePartitionerRoundRobin implements IInputQueuePartitioner {
     private final AtomicInteger counter = new AtomicInteger(-1);
 
     @Override
-    public int determinePartitionKey(RequestParameters rq) {
+    public int determinePartitionKey(final RequestParameters rq) {
         return getPreliminaryPartitionKey(null);
     }
 
     @Override
-    public int getPreliminaryPartitionKey(String value) {
+    public int getPreliminaryPartitionKey(final String value) {
         return counter.incrementAndGet() % INITIAL_PARTITION_MODULUS;
     }
 }

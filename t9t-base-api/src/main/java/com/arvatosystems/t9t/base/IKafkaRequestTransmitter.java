@@ -32,7 +32,7 @@ public interface IKafkaRequestTransmitter {
     boolean initialized();
 
     /** Writes a message with a given partition key and record key. */
-    void write(@Nonnull ServiceRequest srq, @Nonnull String partitionKey, @Nullable Object recordKey);
+    void write(@Nonnull ServiceRequest srq, @Nullable String partitionKey, @Nullable Object recordKey);
 
     /** Writes a message to a defined partition, given a record key. */
     void write(@Nonnull ServiceRequest srq, int partition, @Nullable Object recordKey);

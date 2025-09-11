@@ -49,8 +49,7 @@ public class DefaultAsyncTransmitter implements IAsyncTransmitter {
         LOGGER.info("Created an asynchronous message sender");
     }
 
-    private void persistInDb(final Long objectRef, final Long queueRef, final String asyncChannelId, final BonaPortable payload, final Long ref,
-      final String category, final String identifier) {
+    private void persistInDb(final Long objectRef, final Long queueRef, final String asyncChannelId, final BonaPortable payload, final Long ref, final String category, final String identifier) {
         final AsyncMessageEntity m = asyncMessageResolver.newEntityInstance();
         m.setObjectRef(objectRef);
         m.setAsyncChannelId(asyncChannelId);
@@ -66,8 +65,7 @@ public class DefaultAsyncTransmitter implements IAsyncTransmitter {
     }
 
     @Override
-    public void retransmitMessage(final RequestContext ctx, final String asyncChannelId, final BonaPortable payload, final Long objectRef,
-      final int partition, final String recordKey) {
+    public void retransmitMessage(final RequestContext ctx, final String asyncChannelId, final BonaPortable payload, final Long objectRef, final int partition, final String recordKey) {
         // redundant check to see if the channel exists (to get exception in sync thread already). Should not cost too much time due to caching
         final AsyncChannelDTO cfg = asyncTools.getCachedAsyncChannelDTO(ctx.tenantId, asyncChannelId);
         if (!cfg.getIsActive() || cfg.getAsyncQueueRef() == null) {
@@ -81,8 +79,7 @@ public class DefaultAsyncTransmitter implements IAsyncTransmitter {
     }
 
     @Override
-    public Long transmitMessage(final String asyncChannelId, final BonaPortable payload, final Long ref, final String category, final String identifier,
-      final int partition) {
+    public Long transmitMessage(final String asyncChannelId, final BonaPortable payload, final Long ref, final String category, final String identifier, final int partition) {
         final RequestContext ctx = ctxProvider.get();
         // check if the message is valid (due to the asynchronous nature, invalid messages would cause hard to detect problems)
         payload.validate();

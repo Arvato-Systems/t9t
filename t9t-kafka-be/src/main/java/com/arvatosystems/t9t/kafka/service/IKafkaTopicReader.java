@@ -27,6 +27,7 @@ import org.apache.kafka.common.PartitionInfo;
 import org.apache.kafka.common.TopicPartition;
 
 import de.jpaw.bonaparte.core.BonaPortable;
+import jakarta.annotation.Nullable;
 
 public interface IKafkaTopicReader {
 
@@ -63,8 +64,9 @@ public interface IKafkaTopicReader {
      *
      * @param pollIntervalInMs poll interval
      *
-     * @return the list of {@link ConsumerRecords}
+     * @return the list of {@link ConsumerRecords}, or null if polling was interrupted
      */
+    @Nullable
     ConsumerRecords<String, byte[]> poll(long pollIntervalInMs);
 
     /**

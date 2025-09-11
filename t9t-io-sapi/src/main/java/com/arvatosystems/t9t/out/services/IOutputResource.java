@@ -23,6 +23,7 @@ import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.io.DataSinkDTO;
 
 import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
+import jakarta.annotation.Nullable;
 
 /**
  * Represents an output destination. An output destination can be a file, a JMS queue, a socket server etc.
@@ -41,6 +42,7 @@ public interface IOutputResource {
      * Returns a possible replacement of the file name, or null if not supported. Used to return modified file names,
      * for example when writing to compressed targets.
      */
+    @Nullable
     default String getEffectiveFilename() {
         return null;
     }
@@ -54,17 +56,24 @@ public interface IOutputResource {
     /**
      * Write bytes of data to this output resource, which corresponds to a data record, or to header / trailer data.
      * Some resources may decide to ignore header / trailer data.
-     * @param data output data in bytes
+     * @param partitionKey partition key for the data (nullable)
+     * @param recordKey record key for the data (nullable)
+     * @param buffer output data buffer
+     * @param offset offset within buffer
+     * @param len length of data to write
+     * @param isDataRecord true if this is a data record, false for header/trailer
      * @throws T9tException if there is an error writing output data
      */
-    void write(String partitionKey, String recordKey, byte[] buffer, int offset, int len, boolean isDataRecord);
+    void write(@Nullable String partitionKey, @Nullable String recordKey, byte[] buffer, int offset, int len, boolean isDataRecord);
 
     /**
      * Write string of data to this output resource. The encoding as specified in the DataSink is respected.
+     * @param partitionKey partition key for the data (nullable)
+     * @param recordKey record key for the data (nullable)
      * @param data output data in string
      * @throws T9tException if there is an error writing output data
      */
-    void write(String partitionKey, String recordKey, String data);
+    void write(@Nullable String partitionKey, @Nullable String recordKey, String data);
 
     /**
      * Close this output resource for cleanup.

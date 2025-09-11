@@ -17,6 +17,9 @@ package com.arvatosystems.t9t.base;
 
 import com.arvatosystems.t9t.base.api.RequestParameters;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
 @FunctionalInterface
 public interface IInputQueuePartitioner {
     int INITIAL_PARTITION_MODULUS = 60; // 60 is a good choice because it can be divided without remainder by 1..6
@@ -29,7 +32,7 @@ public interface IInputQueuePartitioner {
      * @param some request parameters
      * @return the partition index
      */
-    int determinePartitionKey(RequestParameters rq);
+    int determinePartitionKey(@Nonnull RequestParameters rq);
 
     /**
      * Determines a preliminary partition key, based on the key.
@@ -40,7 +43,10 @@ public interface IInputQueuePartitioner {
      * @param value the partition key
      * @return the partition index
      */
-    default int getPreliminaryPartitionKey(String value) {
+    default int getPreliminaryPartitionKey(final @Nullable String value) {
+        if (value == null) {
+            return 0;
+        }
         final int hashCode = value.hashCode();
         return (hashCode & Integer.MAX_VALUE) % INITIAL_PARTITION_MODULUS;   // ensure return value in range 0..59
     }

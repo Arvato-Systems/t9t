@@ -93,7 +93,7 @@ public class OutputResourceKafka implements IOutputResource {
     public void write(final String partitionKey, final String recordKey, final byte[] buffer, final int offset, final int len, final boolean isDataRecord) {
         final byte[] data = (offset == 0 && (len < 0 || len == buffer.length))
           ? buffer : Arrays.copyOfRange(buffer, offset, offset + len);
-        final int partition = partitionKey.hashCode();
+        final int partition = partitionKey != null ? partitionKey.hashCode() : 0;
         writer.write(data, partition, recordKey);
     }
 

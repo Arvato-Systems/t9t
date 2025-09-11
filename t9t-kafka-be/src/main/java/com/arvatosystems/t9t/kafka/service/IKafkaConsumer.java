@@ -15,6 +15,9 @@
  */
 package com.arvatosystems.t9t.kafka.service;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
 /**
  * Functional interface for consumers of messages which receive also key and partition information.
  */
@@ -27,7 +30,7 @@ public interface IKafkaConsumer<T> {
      * @param payload   the main argument
      * @param partition the message partition
      * @param offset    the offset within the partition, for per-partition partial commits
-     * @param key       the message key
+     * @param key       the message key (nullable)
      */
-    void accept(T payload, int partition, long offset, String key);
+    void accept(@Nonnull T payload, int partition, long offset, @Nullable String key);
 }

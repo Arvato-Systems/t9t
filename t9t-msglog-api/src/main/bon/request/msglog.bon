@@ -106,7 +106,10 @@ package (com.arvatosystems) t9t.msglog.request {
     class AggregateMessageStatisticsRequest extends AbstractAggregationRequest {
         optional userId                             userId;                 // if null, aggregate for all users, else for the specified user
         optional pqon                               requestParameterPqon;   // if null, aggregate data for this PQON only, else for all
-    }
+        optional Integer                            cutoffLong1;            // minimum time to count as long running transactions, step 1 (by default >= 1 second)
+        optional Integer                            cutoffLong2;            // minimum time to count as long running transactions, step 2 (by default >= 2 seconds)
+        optional Integer                            cutoffLong3;            // minimum time to count as long running transactions, step 3 (by default >= 5 seconds)
+   }
 
     /**
      * Request to clean the transaction log table.

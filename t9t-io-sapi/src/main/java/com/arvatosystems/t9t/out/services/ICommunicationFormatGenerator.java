@@ -24,6 +24,8 @@ import com.arvatosystems.t9t.io.DataSinkDTO;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.media.MediaXType;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * Communication format generators convert structured records into byte or character streams.
@@ -38,7 +40,7 @@ public interface ICommunicationFormatGenerator {
      * @param outputSessionParameters output session parameters
      * @throws IOException if there is an issue generating header data
      */
-    void open(DataSinkDTO sinkCfg, OutputSessionParameters outputSessionParameters, MediaXType effectiveType, FoldableParams fp, IOutputResource destination,
+    void open(@Nonnull DataSinkDTO sinkCfg, @Nonnull OutputSessionParameters outputSessionParameters, MediaXType effectiveType, FoldableParams fp, IOutputResource destination,
       Charset encoding, String tenantId) throws IOException;
 
     /**
@@ -46,10 +48,12 @@ public interface ICommunicationFormatGenerator {
      * @param recordNo source record no (counts records submitted by the application)
      * @param mappedRecordNo mapped record no (after preoutput transformer step)
      * @param recordId unique record id
+     * @param partitionKey the partition key (may be null)
+     * @param recordKey the record key (may be null)
      * @param record the record
      * @throws IOException if there is an issue generating record data
      */
-    void generateData(int recordNo, int mappedRecordNo, long recordId, String partitionKey, String recordKey, BonaPortable record) throws IOException;
+    void generateData(int recordNo, int mappedRecordNo, long recordId, @Nullable String partitionKey, @Nullable String recordKey, @Nonnull BonaPortable record) throws IOException;
 
     /**
      * Generate footer datas in a specific format. Does not close the underlying OutputStream.
@@ -66,7 +70,7 @@ public interface ICommunicationFormatGenerator {
      *
      * @throws IOException
      */
-    default <T> void storeCustomElement(String name, Class<T> valueClass, Object value) throws IOException {
+    default <T> void storeCustomElement(@Nonnull String name, @Nonnull Class<T> valueClass, Object value) throws IOException {
         throw new T9tException(T9tException.NOT_YET_IMPLEMENTED, "Custom element for format " + this.getClass().getCanonicalName());
     }
 }

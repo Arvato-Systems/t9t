@@ -56,7 +56,7 @@ public interface IAsyncTransmitter {
      * @param partition the partition in clustered environments
      * @param recordKey
      */
-    void retransmitMessage(RequestContext ctx, String asyncChannelId, BonaPortable payload, Long objectRef, int partition, String recordKey);
+    void retransmitMessage(@Nonnull RequestContext ctx, @Nonnull String asyncChannelId, @Nonnull BonaPortable payload, @Nullable Long objectRef, int partition, @Nullable String recordKey);
 
     /**
      * Cancels further retry attempts of the specified message (if supported by the implementation).

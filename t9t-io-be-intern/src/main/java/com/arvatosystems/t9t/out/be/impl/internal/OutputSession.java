@@ -265,17 +265,17 @@ public class OutputSession implements IOutputSession {
     }
 
     @Override
-    public void store(BonaPortable record) {
+    public void store(final BonaPortable record) {
         store(null, record);
     }
 
     @Override
-    public void store(Long recordRef, BonaPortable record) {
-        store(recordRef, "", "", record);
+    public void store(final Long recordRef, final BonaPortable record) {
+        store(recordRef, IOutputSession.NO_PARTITION_KEY, IOutputSession.NO_RECORD_KEY, record);
     }
 
     @Override
-    public void store(Long recordRef, String partitionKey, String recordKey, BonaPortable record) {
+    public void store(final Long recordRef, final String partitionKey, final String recordKey, final BonaPortable record) {
         // see if LAZY
         if (State.LAZY.equals(currentState))
             openStream();
@@ -403,9 +403,6 @@ public class OutputSession implements IOutputSession {
     @Override
     public String getFileOrQueueName() {
         if (State.LAZY.equals(currentState)) {
-            // LOGGER.warn("LAZY opening with getFilename forces eager opening! DS = {}",
-            // sinkCfg.dataSinkId)
-            // openStream(); // possibly alters file name
             LOGGER.warn("getFilename on LAZY opened (and not yet opened) dataSink {}, result possibly incorrect (for example if writing compressed)",
                     sinkCfg.getDataSinkId());
         }
@@ -413,14 +410,14 @@ public class OutputSession implements IOutputSession {
     }
 
     @Override
-    public boolean getUnwrapTracking(Boolean ospSetting) {
+    public boolean getUnwrapTracking(final Boolean ospSetting) {
         if (Boolean.TRUE.equals(sinkCfg.getUnwrapTracking()))  // first, examine a configured setting
             return true;
         return Boolean.TRUE.equals(ospSetting);
     }
 
     @Override
-    public Object getZ(String key) {
+    public Object getZ(final String key) {
         return sinkCfg.getZ() == null ? null : sinkCfg.getZ().get(key);
     }
 
@@ -448,7 +445,7 @@ public class OutputSession implements IOutputSession {
         return dataTransformer;
     }
 
-    protected FoldableParams getFoldableParams(final String gridId, final OutputSessionParameters osParams, final MediaXType communicationFormatType) {
+    protected FoldableParams getFoldableParams(@Nonnull final String gridId, @Nonnull final OutputSessionParameters osParams, @Nullable final MediaXType communicationFormatType) {
         final LeanGridConfigRequest req = new LeanGridConfigRequest();
         req.setGridId(gridId);
         req.setSelection(osParams.getSelection());
@@ -501,7 +498,7 @@ public class OutputSession implements IOutputSession {
         }
     }
 
-    protected ICommunicationFormatGenerator createDataGenerator(final MediaXType formatType) {
+    protected ICommunicationFormatGenerator createDataGenerator(@Nonnull final MediaXType formatType) {
         if (MediaType.USER_DEFINED.equals(formatType.getBaseEnum())) {
             // format is free text, implementation must exist
             return Jdp.getRequired(ICommunicationFormatGenerator.class, sinkCfg.getCommFormatName());
@@ -512,10 +509,9 @@ public class OutputSession implements IOutputSession {
         }
     }
 
-    protected void storeListOfMappedRecords(final Long recordRef, final String partitionKey, final String recordKey,
-            final List<BonaPortable> records) throws IOException {
+    protected void storeListOfMappedRecords(@Nullable final Long recordRef, @Nullable final String partitionKey, @Nullable final String recordKey, @Nullable final List<BonaPortable> records) throws IOException {
         if (records != null) {
-            for (BonaPortable r : records) {
+            for (final BonaPortable r : records) {
                 final long recRef = recordRef == null ? 0L :  recordRef.longValue();
                 mappedRecordCounter += 1;
                 // persist the data in the DB interface table
@@ -533,7 +529,7 @@ public class OutputSession implements IOutputSession {
         }
     }
 
-    protected void writeOutboundMessage(Long recordRef, BonaPortable record) {
+    protected void writeOutboundMessage(@Nullable final Long recordRef, @Nonnull final BonaPortable record) {
         // persist the data in the DB interface table
         final OutboundMessageDTO om = new OutboundMessageDTO();
         om.setObjectRef(dpl.getNewOutboundMessageKey());
@@ -546,7 +542,7 @@ public class OutputSession implements IOutputSession {
     }
 
     @Override
-    public void storeCustomElement(String name, Object value) {
+    public void storeCustomElement(final String name, final Object value) {
         if (value != null) {
             try {
                 dataGenerator.storeCustomElement(name, value.getClass(), value);

@@ -76,10 +76,13 @@ public class AggregateMessageStatisticsRequestHandler extends AbstractRequestHan
 
     private int createMessageStatistics(final AggregateMessageStatisticsRequest request, final Instant start, final Instant end,
             final AggregationGranularityType precision) {
+        final int cutoffLong1 = T9tUtil.nvl(request.getCutoffLong1(), 1000);
+        final int cutoffLong2 = T9tUtil.nvl(request.getCutoffLong2(), 2000);
+        final int cutoffLong3 = T9tUtil.nvl(request.getCutoffLong3(), 5000);
         final StringBuilder sb = new StringBuilder();
         sb.append("INSERT INTO " + MessageStatisticsEntity.TABLE_NAME + " ("
             + "object_ref, slot_start, tenant_id, hostname, server_type, partition, transaction_origin_type, user_id, request_parameter_pqon, "
-            + "count_ok, count_error, processing_time_max, processing_time_total, processing_delay_max, processing_delay_total, retries_done"
+            + "count_ok, count_error, processing_time_max, processing_time_total, processing_delay_max, processing_delay_total, retries_done, count_long1, count_long2, count_long3"
             + ") SELECT "
             + "MAX(m.object_ref), "
             + "DATE_TRUNC('" + precision.getToken() + "', m.execution_started_at), "
@@ -96,7 +99,10 @@ public class AggregateMessageStatisticsRequestHandler extends AbstractRequestHan
             + "SUM(COALESCE(m.processing_time_in_millisecs, 0)), "
             + "MAX(COALESCE(m.processing_delay_in_millisecs, 0)), "
             + "SUM(COALESCE(m.processing_delay_in_millisecs, 0)), "
-            + "SUM(COALESCE(m.retries_done, 0)) "
+            + "SUM(COALESCE(m.retries_done, 0)), "
+            + "SUM(CASE WHEN m.processing_time_in_millisecs >= :cutoffLong1 THEN 1 ELSE 0 END), "
+            + "SUM(CASE WHEN m.processing_time_in_millisecs >= :cutoffLong2 THEN 1 ELSE 0 END), "
+            + "SUM(CASE WHEN m.processing_time_in_millisecs >= :cutoffLong3 THEN 1 ELSE 0 END) "
             + "FROM " + MessageEntity.TABLE_NAME + " m "
             + "WHERE m.return_code IS NOT NULL AND  m.execution_started_at >= :fromDate AND m.execution_started_at < :toDate");
 
@@ -114,6 +120,9 @@ public class AggregateMessageStatisticsRequestHandler extends AbstractRequestHan
         final Query query = resolver.getEntityManager().createNativeQuery(sb.toString());
         query.setParameter("fromDate", start);
         query.setParameter("toDate", end);
+        query.setParameter("cutoffLong1", cutoffLong1);
+        query.setParameter("cutoffLong2", cutoffLong2);
+        query.setParameter("cutoffLong3", cutoffLong3);
 
         if (request.getUserId() != null) {
             query.setParameter("userId", request.getUserId());

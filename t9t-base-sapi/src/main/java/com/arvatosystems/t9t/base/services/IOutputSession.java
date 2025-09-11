@@ -23,13 +23,14 @@ import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import de.jpaw.bonaparte.pojos.api.media.MediaXType;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
 /** represents a single session within the executor (which spans multiple requests) */
 
 public interface IOutputSession extends AutoCloseable {
-    String NO_PARTITION_KEY = "";
-    String NO_RECORD_KEY = "";
+    String NO_PARTITION_KEY = null;
+    String NO_RECORD_KEY = null;
 
     /**
      * open() must be called exactly once, immediately after instancing a new object of type IOutputSession. The productive implementation creates an entry in
@@ -41,7 +42,8 @@ public interface IOutputSession extends AutoCloseable {
      * @return the artificial primary key of the new entry in table p42_dat_sinks
      * @throws T9tException
      */
-    Long open(OutputSessionParameters params);
+    @Nonnull
+    Long open(@Nonnull OutputSessionParameters params);
 
     /**
      * Method to return the created OutputStream in case of file based output. If this method is used, binary data such as PDF or XLS documents can be written
@@ -83,7 +85,7 @@ public interface IOutputSession extends AutoCloseable {
      *            the data record to be written.
      * @throws T9tException
      */
-    void store(BonaPortable record);
+    void store(@Nonnull BonaPortable record);
 
     /**
      * store() is called for every record of structured data to be written. It creates a logging entry into table base_int_outbound_messages and then writes the
@@ -95,7 +97,7 @@ public interface IOutputSession extends AutoCloseable {
      *            the data record to be written.
      * @throws T9tException
      */
-    void store(Long recordRef, BonaPortable record);
+    void store(@Nullable Long recordRef, @Nonnull BonaPortable record);
 
     /**
      * store() is called for every record of structured data to be written. It creates a logging entry into table base_int_outbound_messages and then writes the
@@ -107,7 +109,7 @@ public interface IOutputSession extends AutoCloseable {
      *            the data record to be written.
      * @throws T9tException
      */
-    void store(Long recordRef, String partitionKey, String recordKey, BonaPortable record);
+    void store(@Nullable Long recordRef, @Nullable String partitionKey, @Nullable String recordKey, @Nonnull BonaPortable record);
 
     /**
      * Method to terminate the output.
@@ -119,9 +121,11 @@ public interface IOutputSession extends AutoCloseable {
     void close() throws Exception;
 
     /** Returns the maximum number of records for a single output batch, or null if no limit has been configured. */
+    @Nullable
     Integer getMaxNumberOfRecords();
 
     /** Returns the chunk size as configured. */
+    @Nullable
     Integer getChunkSize();
 
     /**
@@ -140,7 +144,7 @@ public interface IOutputSession extends AutoCloseable {
     boolean getUnwrapTracking(Boolean ospSetting);
 
     /** Returns a generic configuration settings for the output session. */
-    Object getZ(String key);
+    Object getZ(@Nonnull String key);
 
     /**
      * Returns a MediaData object which can be used for lazy references to the stored data.
