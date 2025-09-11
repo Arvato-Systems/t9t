@@ -59,7 +59,7 @@ public class DefaultAsyncTransmitter implements IAsyncTransmitter {
         m.setAttempts(0);
         m.setPayload(payload);
         m.setRef(ref);
-        m.setRefIdentifier(identifier);
+        m.setRefIdentifier(identifier == null || identifier.isEmpty() ? null : identifier);
         m.setRefType(category);
         m.setAsyncQueueRef(queueRef);
         asyncMessageResolver.save(m);

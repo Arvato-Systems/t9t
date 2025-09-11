@@ -109,5 +109,8 @@ package (com.arvatosystems) t9t.msglog {
         optional Double                             processingTimeAvg  properties noJava, noDDL, noAutoMap; // average processing time
         optional Double                             processingDelayAvg properties noJava, noDDL, noAutoMap; // average processing delay
         optional Integer                            retriesDone;            // how many retries have been performed for all requests
+        optional Integer                            countLong1;             // counter for long running transactions, step 1 (by default >= 1 second)
+        optional Integer                            countLong2;             // counter for long running transactions, step 2 (by default >= 2 seconds)
+        optional Integer                            countLong3;             // counter for long running transactions, step 3 (by default >= 5 seconds)
     }
 }
