@@ -1,82 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-
-    Copyright (c) 2012 - 2025 Arvato Systems GmbH
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-
--->
 <zk>
-    <!-- Defines the application's name -->
     <preference>
         <name>org.zkoss.zk.ui.WebApp.name</name>
         <value>t9t-zkui</value>
     </preference>
-
-    <!-- Turn on if you want to debug JavaScript. Once turned on, the uncompressed JavaScript files will be loaded.     -->
-    <client-config>
-        <debug-js>true</debug-js>
-    </client-config>
 
     <library-property>
         <name>org.zkoss.theme.preferred</name>
         <value>silvertail</value>
     </library-property>
 
-    <!-- <library-property>
-        <name>org.zkoss.web.preferred.locale</name>
-        <value>en</value>
-    </library-property> -->
-
-    <!-- Turn on the following if you want to use the trendy mold as default for all buttons. -->
     <library-property>
         <name>org.zkoss.zul.Button.mold</name>
         <value>trendy</value>
     </library-property>
 
-    <!-- Turn off CSS3 flex implementation and fallback to ZK Flex -->
     <library-property>
         <name>org.zkoss.zul.css.flex</name>
         <value>false</value>
     </library-property>
 
     <library-property>
+        <name>org.zkoss.zul.borderlayout.animation.disabled</name>
+        <value>true</value>
+    </library-property>
+
+    <library-property>
+        <name>org.zkoss.zul.grid.rod</name>
+        <value>false</value>
+    </library-property>
+
+    <library-property>
+        <name>org.zkoss.zul.listbox.rod</name>
+        <value>false</value>
+    </library-property>
+
+    <library-property>
         <name>org.zkoss.bind.appConverters</name>
         <value>
-            nanos=de.jpaw.fixedpoint.types.NanoUnitsConverter,
-            millis=de.jpaw.fixedpoint.types.MilliUnitsConverter,
-            micros=de.jpaw.fixedpoint.types.MicroUnitsConverter,
-            day=de.jpaw.fixedpoint.types.LocalDateConverter,
-            time=de.jpaw.fixedpoint.types.LocalTimeConverter,
-            timestamp=de.jpaw.fixedpoint.types.LocalDateTimeConverter,
-            instant=de.jpaw.fixedpoint.types.InstantConverter,
-            uuid=de.jpaw.fixedpoint.types.UUIDConverter,
-            json=de.jpaw.fixedpoint.types.JsonConverter
+            enumAlpha=com.arvatosystems.t9t.zkui.converters.EnumAlphaConverter,
+            fixedpoint=com.arvatosystems.t9t.zkui.converters.FixedPointToStringConverter,
+            nanos=com.arvatosystems.t9t.zkui.converters.NanoUnitsConverter,
+            millis=com.arvatosystems.t9t.zkui.converters.MilliUnitsConverter,
+            micros=com.arvatosystems.t9t.zkui.converters.MicroUnitsConverter,
+            day=com.arvatosystems.t9t.zkui.converters.LocalDateConverter,
+            time=com.arvatosystems.t9t.zkui.converters.LocalTimeConverter,
+            timestamp=com.arvatosystems.t9t.zkui.converters.LocalDateTimeConverter,
+            instant=com.arvatosystems.t9t.zkui.converters.InstantConverter,
+            uuid=com.arvatosystems.t9t.zkui.converters.UUIDConverter,
+            json=com.arvatosystems.t9t.zkui.converters.JsonConverter
         </value>
     </library-property>
 
-    <!-- Turn on if you want to use language addons.-->
     <language-config>
         <addon-uri>/WEB-INF/t9t-lang-addon.xml</addon-uri>
     </language-config>
-
-    <!-- Turn on if the processing time is longer than 9000 miliseconds. Default: -1 (turned off)
-        http://books.zkoss.org/wiki/ZK_Configuration_Reference/zk.xml/The_client-config_Element#The_resend-delay_Element
-    <client-config>
-        <resend-delay>9000</resend-delay>
-    </client-config>
-    -->
-
 
     <system-config>
         <label-location>/WEB-INF/resources/translations/t9t-zkui.properties</label-location>
@@ -84,29 +62,10 @@
     </system-config>
 
     <session-config>
-        <!-- Turn on the following if you want a different timeout
-            Note: The unit is seconds (while that of web.xml is minute)
-            (Switching on because web.xmls timeout seems not to work correctly)
-        -->
         <session-timeout>3600</session-timeout>
-    </session-config>
-    <session-config>
-        <!-- Comment it out if you prefer to show a message instead of redirecting
-            Note: an empty URL can cause the browser to reload the same URL
-        -->
         <timeout-uri>/timeout.zul</timeout-uri>
-
     </session-config>
 
-    <!-- Turn on the following if you want to use ZK with a clustering server
-        or cloud environment (such as Google App Engine)
-    <system-config>
-        <disable-event-thread/>
-        <ui-factory-class>org.zkoss.zk.ui.http.SerializableUiFactory</ui-factory-class>
-    </system-config>
-    -->
-
-    <!-- Configure the error page -->
     <error-page>
         <exception-type>java.lang.Throwable</exception-type>
         <location>/screens/common/error.zul</location>
@@ -115,14 +74,4 @@
     <listener>
         <listener-class>com.arvatosystems.t9t.zkui.init.SessionListener</listener-class>
     </listener>
-    <!--  not required
-    <listener>
-        <listener-class>com.arvatosystems.t9t.zkui.init.ApplicationListener</listener-class>
-    </listener>
-     -->
-
-    <library-property>
-        <name>org.zkoss.zul.borderlayout.animation.disabled</name>
-        <value>true</value>
-    </library-property>
 </zk>

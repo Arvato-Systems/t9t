@@ -133,10 +133,14 @@ public final class T9tConstants {
     public static final String CFG_FILE_KEY_ENVIRONMENT_CSS  = "environment_css";  // the CSS class to use for the display (in case of non default)
 
     // System property which triggers flyway SQL migration
-    public static final String START_MIGRATION_PROPERTY = "t9t.run.flyway.migration";
+    public static final String START_MIGRATION_PROPERTY                 = "t9t.run.flyway.migration";
 
     // qualifier to use when getting alternate DB connection
-    public static final String QUALIFIER_JDBC_SECONDARY = "JDBC2";
+    public static final String QUALIFIER_JDBC_SECONDARY                 = "JDBC2";
+
+    // IDs of implementations of ITextSearch
+    public static final String TEXT_SEARCH_ID_SOLR                      = "SOLR";
+    public static final String TEXT_SEARCH_ID_HIBERNATE_SEARCH          = "HIBERNATE-SEARCH";
 
     // default name of the kafka topic for single-tenant request transmissions
     public static final String DEFAULT_KAFKA_TOPIC_SINGLE_TENANT_REQUESTS = "t9tRequestTopic";
@@ -153,12 +157,12 @@ public final class T9tConstants {
     public static final String DOCUMENT_ID_APPROVAL_REQUEST             = "approvalRequest";
     public static final String DOC_PREFIX_APPROVAL_REQUEST              = "approval";
 
-    public static final Integer SCHEDULER_RUN_ON_ALL_NODES = Integer.valueOf(411);  // l33t for All
+    public static final Integer SCHEDULER_RUN_ON_ALL_NODES  = Integer.valueOf(411);  // l33t for All
 
     /**
      * Key for the zMap of a MediaData to put/get the assigned attachment name.
      */
-    public static final String DOC_MEDIA_ATTACHMENT_NAME = "attachmentName";
+    public static final String DOC_MEDIA_ATTACHMENT_NAME    = "attachmentName";
 
     public static final String HTTP_HEADER_FORWARDED_FOR    = "X-Forwarded-For";    // The header used to obtain the client's IP behind a reverse proxy
     public static final String HTTP_HEADER_IDEMPOTENCY_KEY  = "Idempotency-Key";    // The header used to provide a unique request ID

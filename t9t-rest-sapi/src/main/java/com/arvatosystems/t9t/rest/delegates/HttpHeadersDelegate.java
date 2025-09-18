@@ -15,16 +15,16 @@
  */
 package com.arvatosystems.t9t.rest.delegates;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import jakarta.ws.rs.core.Cookie;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.function.Predicate;
 
 /**
  * Delegate to make it possible to add additional header parameters.
@@ -96,8 +96,9 @@ public class HttpHeadersDelegate implements HttpHeaders {
         return httpHeaders.getLength();
     }
 
-    @Override
-    public boolean containsHeaderString(final String name, final String valueSeparatorRegex, final Predicate<String> valuePredicate) {
-        return httpHeaders.containsHeaderString(name, valueSeparatorRegex, valuePredicate);
-    }
+    // new method with JAKARTA-WS-RS 4.0.0
+//    @Override
+//    public boolean containsHeaderString(final String name, final String valueSeparatorRegex, final Predicate<String> valuePredicate) {
+//        return httpHeaders.containsHeaderString(name, valueSeparatorRegex, valuePredicate);
+//    }
 }

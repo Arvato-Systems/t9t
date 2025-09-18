@@ -70,11 +70,11 @@
         <maven-plugin-annotations.version>3.15.1</maven-plugin-annotations.version>
         <maven-project.version>2.2.1</maven-project.version>
         <build-helper-maven-plugin.version>3.6.1</build-helper-maven-plugin.version>
-        <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
         <maven-plugin-plugin.version>3.15.1</maven-plugin-plugin.version>
         <maven-assembly-plugin.version>3.7.1</maven-assembly-plugin.version>
         <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
-        <maven-shade-plugin.version>3.6.0</maven-shade-plugin.version>
+        <maven-shade-plugin.version>3.6.1</maven-shade-plugin.version>
         <maven-war-plugin.version>3.4.0</maven-war-plugin.version>
         <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
         <maven-jarjar-plugin.version>1.9</maven-jarjar-plugin.version>
@@ -124,11 +124,6 @@
 
         <!-- OpenApi -->
         <openapi-generator.version>7.15.0</openapi-generator.version>
-
-        <!-- ASCIIDoctor -->
-        <asciidoctor-maven-plugin.version>3.2.0</asciidoctor-maven-plugin.version>
-        <asciidoctorj.version>2.5.10</asciidoctorj.version>
-        <jruby.version>9.4.12.1</jruby.version>
 
         <!-- Angular related versions -->
         <typescript.version>~5.8.2</typescript.version>
@@ -498,60 +493,6 @@
                     <groupId>com.sun.xml.ws</groupId>
                     <artifactId>jaxws-maven-plugin</artifactId>
                     <version>${jaxws-maven-plugin.version}</version>
-                </plugin>
-
-                <!-- ASCIIDoctor lifecycle -->
-                <plugin>
-                    <groupId>org.asciidoctor</groupId>
-                    <artifactId>asciidoctor-maven-plugin</artifactId>
-                    <version>${asciidoctor-maven-plugin.version}</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.jruby</groupId>
-                            <artifactId>jruby</artifactId>
-                            <version>${jruby.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.asciidoctor</groupId>
-                            <artifactId>asciidoctorj</artifactId>
-                            <version>${asciidoctorj.version}</version>
-                        </dependency>
-                    </dependencies>
-                    <configuration>
-                        <sourceDirectory>src/main/asciidoc</sourceDirectory>
-                        <imagesDir>.</imagesDir>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <id>generate-html-doc</id>
-                            <phase>compile</phase>
-                            <goals>
-                                <goal>process-asciidoc</goal>
-                            </goals>
-                            <configuration>
-                                <backend>html5</backend>
-                                <doctype>book</doctype>
-                                <sourceHighlighter>coderay</sourceHighlighter>
-                                <preserveDirectories>true</preserveDirectories>
-                                <attributes>
-                                    <pageLayout>false</pageLayout>
-                                    <toc>left</toc>
-                                    <toclevels>3</toclevels>
-                                    <sectanchors>true</sectanchors>
-                                    <sectlinks>true</sectlinks>
-                                    <sectnums>true</sectnums>
-                                    <linkattrs>true</linkattrs>
-                                    <icons>font</icons>
-                                    <sourceLanguage>asciidoc</sourceLanguage>
-                                    <stem>true</stem>
-                                    <idprefix></idprefix>
-                                    <idseparator>-</idseparator>
-                                    <revnumber>${project.version}</revnumber>
-                                    <author>Arvato Systems GmbH</author>
-                                </attributes>
-                            </configuration>
-                        </execution>
-                    </executions>
                 </plugin>
 
                 <!-- eclipse lifecycle -->
@@ -1165,7 +1106,6 @@
                 <module>t9t-test-server</module>
 
                 <module>t9t-alexa</module>
-                <module>t9t-manual</module>
 
                 <module>t9t-ariba-api</module>
                 <module>t9t-ariba-connector</module>

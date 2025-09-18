@@ -62,20 +62,28 @@ public final class HibernateSearchHelper {
         // Retrieve keyword fulltext fields for the entity
         final Set<String> fuzzyFulltextFields;
         final Set<String> exactFulltextFields;
-        if (fieldName != null && !fieldName.isEmpty()) {
-            // Determine which fulltext fields to use based on the fieldName
-            fuzzyFulltextFields = (fulltextFields.get(Boolean.TRUE) != null && fulltextFields.get(Boolean.TRUE)
-                    .contains(fieldName))
-                    ? Set.of(fieldName)
-                    : null;
-            exactFulltextFields = (fulltextFields.get(Boolean.FALSE) != null && fulltextFields.get(Boolean.FALSE)
-                    .contains(fieldName))
-                    ? Set.of(fieldName)
-                    : null;
+        if (fulltextFields != null && !fulltextFields.isEmpty()) {
+            // Cache the fulltext field sets to avoid repeated map lookups
+            final Set<String> fuzzyFields = fulltextFields.get(Boolean.TRUE);
+            final Set<String> exactFields = fulltextFields.get(Boolean.FALSE);
+            final boolean hasFieldName = fieldName != null && !fieldName.isEmpty();
+
+            if (hasFieldName) {
+                // Determine which fulltext fields to use based on the fieldName
+                fuzzyFulltextFields = (fuzzyFields != null && fuzzyFields.contains(fieldName))
+                        ? Set.of(fieldName)
+                        : null;
+                exactFulltextFields = (exactFields != null && exactFields.contains(fieldName))
+                        ? Set.of(fieldName)
+                        : null;
+            } else {
+                // Use all fulltext fields if no specific fieldName is provided
+                fuzzyFulltextFields = fuzzyFields;
+                exactFulltextFields = exactFields;
+            }
         } else {
-            // Use all fulltext fields if no specific fieldName is provided
-            fuzzyFulltextFields = fulltextFields.get(Boolean.TRUE);
-            exactFulltextFields = fulltextFields.get(Boolean.FALSE);
+            fuzzyFulltextFields = null;
+            exactFulltextFields = null;
         }
 
         // Preprocess the value string by replacing '%' and '_' before splitting into terms
@@ -109,12 +117,13 @@ public final class HibernateSearchHelper {
                         if (fieldnames != null && fieldnames.length > 0) {
                             // Wildcard-Match (Boost 3.0)
                             inner.should(factory.wildcard().fields(fieldnames).matching(term).boost(3.0f));
-                            // Fuzzy-Match (Boost 1.0)
+                            // Fuzzy-Match (Boost 1.0) - cache fuzziness value to avoid repeated calculation
                             var m = factory.match()
                                     .fields(fieldnames)
                                     .matching(term);
-                            if (getFuzziness(term) > 0) {
-                                m = m.minimumShouldMatchNumber(Math.min(term.length(), 3)).fuzzy(getFuzziness(term));
+                            final int fuzziness = getFuzziness(term);
+                            if (fuzziness > 0) {
+                                m = m.minimumShouldMatchNumber(Math.min(term.length(), 3)).fuzzy(fuzziness);
                             }
                             inner.should(m);
                             added = true;
@@ -143,11 +152,11 @@ public final class HibernateSearchHelper {
     }
 
     private static String[] findFieldnames(String fieldName, Set<String> fields) {
-        return (fieldName != null && !fieldName.isEmpty() && fields.contains(fieldName))
+        return fieldName == null || fieldName.isEmpty()
+            ? fields.toArray(String[]::new)
+            : fields.contains(fieldName)
                 ? new String[]{fieldName}
-                : (fieldName == null || fieldName.isEmpty()
-                    ? fields.toArray(String[]::new)
-                    : null);
+                : null;
     }
 
     static <T> Long extractId(T entity, String resultFieldName) {
@@ -177,10 +186,10 @@ public final class HibernateSearchHelper {
     }
 
     private static Long getLongValue(Object value) {
-        if (value instanceof Long) {
-            return (Long) value;
-        } else if (value instanceof Number) {
-            return ((Number) value).longValue();
+        if (value instanceof Long l) {
+            return l;
+        } else if (value instanceof Number n) {
+            return n.longValue();
         }
         return null;
     }

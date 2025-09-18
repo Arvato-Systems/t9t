@@ -27,6 +27,7 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
 import java.util.function.Consumer
 import java.util.UUID
+import com.arvatosystems.t9t.base.T9tConstants
 
 @AddLogger
 class ConfigProvider {
@@ -130,6 +131,10 @@ class ConfigProvider {
            return false
         }
         return myConfiguration.mocks.contains(what)
+    }
+
+    def static boolean isHibernateSearch() {
+        return myConfiguration.searchConfiguration !== null && T9tConstants.TEXT_SEARCH_ID_HIBERNATE_SEARCH == myConfiguration.searchConfiguration.strategy
     }
 
     /** Returns true of the shadow database should be used for queries of a specific module, if possible. */
