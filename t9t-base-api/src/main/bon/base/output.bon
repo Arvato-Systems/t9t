@@ -49,6 +49,7 @@ package (com.arvatosystems) t9t.base.output {
         optional Boolean                            unwrapTracking;                 // removes the tracking columns - only for export
         optional defaultExternalId                  genericId1;                     // some alphanumeric ID
         optional defaultExternalId                  genericId2;                     // some alphanumeric ID
+        optional Boolean                            rawMode;                        // pass directly without using internal data generator
     }
 
     // specific leaner types for the UI data export

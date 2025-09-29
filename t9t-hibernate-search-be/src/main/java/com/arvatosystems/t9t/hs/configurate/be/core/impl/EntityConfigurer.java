@@ -25,6 +25,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.arvatosystems.t9t.base.T9tUtil;
+import com.arvatosystems.t9t.hs.configurate.be.core.service.EntityConfigCache;
+import de.jpaw.bonaparte.util.FreezeTools;
+import jakarta.annotation.Nonnull;
 import org.hibernate.search.engine.backend.types.Sortable;
 import org.hibernate.search.mapper.orm.mapping.HibernateOrmMappingConfigurationContext;
 import org.hibernate.search.mapper.orm.mapping.HibernateOrmSearchMappingConfigurer;
@@ -37,10 +41,9 @@ import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.cfg.be.HibernateSearchConfiguration;
-import com.arvatosystems.t9t.hs.configurate.be.core.model.EmbeddedIndexEntityConfig;
-import com.arvatosystems.t9t.hs.configurate.be.core.model.EntityConfig;
-import com.arvatosystems.t9t.hs.configurate.be.core.model.EntitySearchConfiguration;
-import com.arvatosystems.t9t.hs.configurate.be.core.model.FieldConfig;
+import com.arvatosystems.t9t.hs.configurate.model.EmbeddedIndexEntityConfig;
+import com.arvatosystems.t9t.hs.configurate.model.EntityConfig;
+import com.arvatosystems.t9t.hs.configurate.model.FieldConfig;
 import com.arvatosystems.t9t.hs.configurate.be.core.util.ConfigurationLoader;
 
 import jakarta.annotation.Nullable;
@@ -75,23 +78,21 @@ public class EntityConfigurer implements HibernateOrmSearchMappingConfigurer {
      * (see: com.arvatosystems.t9t.orm.jpa.hibernate.impl.EMFCustomizer).
      */
     @Override
-    public void configure(HibernateOrmMappingConfigurationContext context) {
+    public void configure(@Nonnull final HibernateOrmMappingConfigurationContext context) {
 
         LOGGER.info("Starting Hibernate Search entity configuration");
 
 
         // Load configuration
-        final EntitySearchConfiguration configuration;
-        if (hibernateSearchConfiguration == null
-                || hibernateSearchConfiguration.getIndexConfigurationFile() == null
-                || hibernateSearchConfiguration.getIndexConfigurationFile().isEmpty()) {
+        final EntityConfigCache configuration;
+        if (hibernateSearchConfiguration == null || T9tUtil.isBlank(hibernateSearchConfiguration.getIndexConfigurationFile())) {
             LOGGER.info("No custom configuration file specified, using default configuration");
             configuration = ConfigurationLoader.loadConfiguration();
         } else {
             LOGGER.info("Loading Hibernate Search configuration from file: {}", hibernateSearchConfiguration.getIndexConfigurationFile());
             configuration = ConfigurationLoader.loadConfiguration(hibernateSearchConfiguration.getIndexConfigurationFile());
         }
-        if (configuration == null || configuration.getEntities() == null) {
+        if (T9tUtil.isEmpty(configuration.getEntities())) {
             LOGGER.warn("No configuration found. Hibernate Search entity configuration will be skipped.");
             return;
         }
@@ -111,7 +112,7 @@ public class EntityConfigurer implements HibernateOrmSearchMappingConfigurer {
     /**
      * Configures a single entity based on the provided configuration.
      */
-    private void configureEntity(final ProgrammaticMappingConfigurationContext mapping, final EntityConfig config) {
+    private void configureEntity(@Nonnull final ProgrammaticMappingConfigurationContext mapping, @Nonnull final EntityConfig config) {
 
         LOGGER.debug("Configuring entity: {}", config.getClassName());
 
@@ -124,8 +125,11 @@ public class EntityConfigurer implements HibernateOrmSearchMappingConfigurer {
             LOGGER.debug("Applied @Indexed to entity: {}", config.getClassName());
 
             // Configure fields && collect search fields for full text search with expression
-            final Set<String> searchKeywordNames = new HashSet<>();
-            final Map<Boolean, Set<String>> searchFullTextFieldNames = new HashMap<>();
+            final int fieldSize = config.getFields() != null ? config.getFields().size() : 0;
+            final int embeddedIndexSize = config.getEmbeddedIndexEntities() != null ? config.getEmbeddedIndexEntities().size() : 0;
+            final int mapSize = FreezeTools.getInitialHashMapCapacity(fieldSize + embeddedIndexSize);
+            final Set<String> searchKeywordNames = new HashSet<>(mapSize);
+            final Map<Boolean, Set<String>> searchFullTextFieldNames = new HashMap<>(mapSize);
             if (config.getFields() != null) {
                 for (FieldConfig fieldConfig : config.getFields()) {
                     configureField(typeMapping, fieldConfig, searchKeywordNames, searchFullTextFieldNames);
@@ -152,10 +156,11 @@ public class EntityConfigurer implements HibernateOrmSearchMappingConfigurer {
     /**
      * Configures a field based on the field configuration.
      */
-    private void configureField(final TypeMappingStep typeMapping, final FieldConfig config, final Set<String> searchKeywordNames, final Map<Boolean, Set<String>> searchFullTextFieldNames) {
+    private void configureField(@Nonnull final TypeMappingStep typeMapping, @Nonnull final FieldConfig config, @Nonnull final Set<String> searchKeywordNames,
+        @Nonnull final Map<Boolean, Set<String>> searchFullTextFieldNames) {
 
         LOGGER.debug("Configuring field: {} with type: {}", config.getName(), config.getType());
-        PropertyMappingStep propertyStep = typeMapping.property(config.getName());
+        final PropertyMappingStep propertyStep = typeMapping.property(config.getName());
 
         switch (config.getType().toLowerCase()) {
             case "keywordfield":
@@ -173,8 +178,8 @@ public class EntityConfigurer implements HibernateOrmSearchMappingConfigurer {
                 break;
             case "fulltextfield":
             default:
-                String sortField = config.getName() + SORT;
-                String analyser = config.getAnalyzer() != null ? config.getAnalyzer() : ANALYSER_FULLTEXT_STANDARD_TOKENIZER;
+                final String sortField = config.getName() + SORT;
+                final String analyser = config.getAnalyzer() != null ? config.getAnalyzer() : ANALYSER_FULLTEXT_STANDARD_TOKENIZER;
 
                 CACHED_SORT_FIELDS.computeIfAbsent(config.getName(), k -> config.getName() + SORT);
                 searchKeywordNames.add(sortField);
@@ -194,8 +199,8 @@ public class EntityConfigurer implements HibernateOrmSearchMappingConfigurer {
     /**
      * Configures an embedded field based on the embedded field configuration.
      */
-    private void configureEmbeddedIndexEntity(final TypeMappingStep typeMapping, final EmbeddedIndexEntityConfig config,
-                                              final Set<String> searchKeywordNames, final Map<Boolean, Set<String>> searchFullTextFieldNames) {
+    private void configureEmbeddedIndexEntity(@Nonnull final TypeMappingStep typeMapping, @Nonnull final EmbeddedIndexEntityConfig config,
+        @Nonnull final Set<String> searchKeywordNames, @Nonnull final Map<Boolean, Set<String>> searchFullTextFieldNames) {
 
         LOGGER.debug("Configuring embedded field: {}", config.getTargetEntity());
         try {
@@ -224,7 +229,7 @@ public class EntityConfigurer implements HibernateOrmSearchMappingConfigurer {
                 }
             }
             embedded.indexingDependency().reindexOnUpdate(ReindexOnUpdate.SHALLOW);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.error("Failed to configure embedded field {}: {}", config.getTargetEntity(), e.getMessage(), e);
         }
     }

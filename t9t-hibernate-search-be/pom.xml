@@ -38,6 +38,10 @@
             <artifactId>t9t-base-sapi</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-core-sapi</artifactId>
+        </dependency>
+        <dependency>
             <groupId>de.jpaw</groupId>
             <artifactId>jdp-core</artifactId>
         </dependency>

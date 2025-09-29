@@ -15,17 +15,36 @@
  */
 package com.arvatosystems.t9t.hs.configurate.be.core.service;
 
+import com.arvatosystems.t9t.base.services.RequestContext;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
 public interface IConfigurationService {
 
     /**
-     * Initializes the indexes for all entities that are annotated with @Indexed.
-     * This method should be called at application startup to ensure that all
-     * necessary indexes are created and up-to-date.
+     * Create the indexes for given entity.
      * Note: This operation erases all existing indexes for the entity class!
+     *
+     * @param ctx {@link RequestContext}
+     * @param entityClass the entity class to create indexes for
+     * @throws InterruptedException if the thread is interrupted
      */
-    <T> void createIndexesFromScratch(Class<T> entityClass) throws InterruptedException;
+    <T> void createIndexesFromScratch(@Nonnull RequestContext ctx, @Nonnull Class<T> entityClass) throws InterruptedException;
 
-    <T> void updateIndexes(Class<T> entityClass) throws InterruptedException;
+    /**
+     * Update the indexes for given entity.
+     *
+     * @param entityClass the entity class to update indexes for
+     * @throws InterruptedException if the thread is interrupted
+     */
+    <T> void updateIndexes(@Nonnull Class<T> entityClass) throws InterruptedException;
 
-    <T> void checkIndexStatus(Class<T> entityClass) throws InterruptedException;
+    /**
+     * Check the index status for given entity.
+     *
+     * @param entityClass the entity class to check index status for
+     * @return null if index is valid, error message otherwise
+     */
+    @Nullable
+    <T> String checkIndexStatus(@Nonnull Class<T> entityClass);
 }

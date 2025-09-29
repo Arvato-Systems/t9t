@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.hs.be.elasticsearch.configurate.impl;
 
+import jakarta.annotation.Nonnull;
 import org.hibernate.search.backend.elasticsearch.analysis.ElasticsearchAnalysisConfigurationContext;
 import org.hibernate.search.backend.elasticsearch.analysis.ElasticsearchAnalysisConfigurer;
 
@@ -30,7 +31,7 @@ import com.arvatosystems.t9t.hs.configurate.be.core.constants.HsProperties;
  */
 public class T9tElasticsearchAnalysisConfigurer implements ElasticsearchAnalysisConfigurer {
     @Override
-    public void configure(ElasticsearchAnalysisConfigurationContext context) {
+    public void configure(@Nonnull final ElasticsearchAnalysisConfigurationContext context) {
         context.analyzer(HsProperties.ANALYSER_FULLTEXT_STANDARD_TOKENIZER).custom()
                 .tokenizer("standard")
                 .tokenFilters("lowercase", "asciifolding");

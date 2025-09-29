@@ -251,7 +251,8 @@ package (com.arvatosystems) t9t.io.request {
         optional t9tShortId                         asyncQueueId;            // if set, only purge messages of this queue. Only the current tenant will be affected
         optional Integer                            overrideAge;             // if set, defines the maximum age of messages in seconds. If not set, but a single queue is defined, that age is used, or 8 days as default.
         optional t9tShortId                         asyncChannelId;          // if set, only purge messages of this channel
-        optional Boolean                            purgeUnsent;             // if set, also purge unsent messages
+        optional Boolean                            purgeUnsent;             // if set, also purge unsent messages (status READY_TO_EXPORT)
+        optional Boolean                            onlySuccessful;          // if set, only purge messages which have been transmitted successfully (status RESPONSE_OK)
     }
 
     /**

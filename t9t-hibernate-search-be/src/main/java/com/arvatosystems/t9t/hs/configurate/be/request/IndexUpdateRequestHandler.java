@@ -15,11 +15,13 @@
  */
 package com.arvatosystems.t9t.hs.configurate.be.request;
 
+import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.cfg.be.HibernateSearchConfiguration;
+import com.arvatosystems.t9t.hs.T9tHibernateSearchException;
 import com.arvatosystems.t9t.hs.configurate.be.core.service.IConfigurationService;
 import com.arvatosystems.t9t.hs.configurate.request.IndexUpdateRequest;
 import de.jpaw.dp.Jdp;
@@ -38,26 +40,20 @@ public class IndexUpdateRequestHandler extends AbstractRequestHandler<IndexUpdat
 
     @Nonnull
     @Override
-    public ServiceResponse execute(@Nonnull RequestContext ctx, @Nonnull IndexUpdateRequest request) throws Exception {
+    public ServiceResponse execute(@Nonnull final RequestContext ctx, @Nonnull final IndexUpdateRequest request) throws Exception {
 
+        if (sc == null) {
+            throw new T9tException(T9tHibernateSearchException.HIBERNATE_SEARCH_CONFIG_NOT_FOUND, "Missing hibernate search configuration");
+        }
         LOGGER.info("Update index for entity: {} and strategy: {}", request.getEntityName(), sc.getSearchType());
 
-        try {
-            // Get entity class by name
-            Class<?> entityClass = Class.forName(request.getEntityName());
+        // Get entity class by name
+        final Class<?> entityClass = Class.forName(request.getEntityName());
 
-            // Recreate the index
-            service.updateIndexes(entityClass);
+        // Recreate the index
+        service.updateIndexes(entityClass);
 
-            LOGGER.info("Successfully created index for entity: {}", request.getEntityName());
-            return ok();
-
-        } catch (ClassNotFoundException e) {
-            LOGGER.error("Entity class not found: {}", request.getEntityName(), e);
-            throw new RuntimeException("Entity class not found: " + request.getEntityName(), e);
-        } catch (Exception e) {
-            LOGGER.error("Error creating index for entity {}: {}", request.getEntityName(), e.getMessage(), e);
-            throw new RuntimeException("Failed to create index for entity: " + request.getEntityName(), e);
-        }
+        LOGGER.info("Successfully updated index for entity: {}", request.getEntityName());
+        return ok();
     }
 }

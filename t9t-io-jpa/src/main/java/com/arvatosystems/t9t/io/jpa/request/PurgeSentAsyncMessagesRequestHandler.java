@@ -39,6 +39,8 @@ import org.slf4j.LoggerFactory;
 
 public class PurgeSentAsyncMessagesRequestHandler extends AbstractRequestHandler<PurgeSentAsyncMessagesRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(PurgeSentAsyncMessagesRequestHandler.class);
+    private static final int SECONDS_IN_A_DAY = 86400;
+    private static final int DEFAULT_AGE = 8 * SECONDS_IN_A_DAY;  // by default 8 days
 
     private final IAsyncMessageEntityResolver messageResolver = Jdp.getRequired(IAsyncMessageEntityResolver.class);
     private final IAsyncQueueEntityResolver queueResolver = Jdp.getRequired(IAsyncQueueEntityResolver.class);
@@ -49,6 +51,7 @@ public class PurgeSentAsyncMessagesRequestHandler extends AbstractRequestHandler
         final String queueId = rq.getAsyncQueueId();
         final String channelId = rq.getAsyncChannelId();
         final boolean purgeAll = Boolean.TRUE.equals(rq.getPurgeUnsent());
+        final boolean purgeOnlySuccessful = Boolean.TRUE.equals(rq.getOnlySuccessful());
         final Integer overrideAge = rq.getOverrideAge();
         final Long queueRef;
         final int defaultAge;
@@ -68,15 +71,21 @@ public class PurgeSentAsyncMessagesRequestHandler extends AbstractRequestHandler
             defaultAge = queue.getPurgeAfterSeconds() != null ? queue.getPurgeAfterSeconds() : 8 * 86400;
         } else {
             queueRef = null;
-            defaultAge = 8 * 86400;
+            defaultAge = DEFAULT_AGE;
         }
         if (channelId != null) {
             sb.append(" AND m.asyncChannelId = :channelId");
         }
-        if (!purgeAll) {
-            sb.append(" AND m.status = '");
-            sb.append(ExportStatusEnum.UNDEFINED.getToken());
-            sb.append("'");
+
+        // variants, specified by option flags
+        if (purgeOnlySuccessful) {
+            // successfully sent records have a NULL status (to keep the index small)
+            sb.append(" AND m.status IS NULL");
+        } else if (!purgeAll) {
+            // by default, keep records which have never been attempted to send
+            sb.append(" AND (status IS NULL OR m.status != '");
+            sb.append(ExportStatusEnum.READY_TO_EXPORT.getToken());
+            sb.append("')");
         }
 
         // create and execute the query
@@ -94,8 +103,11 @@ public class PurgeSentAsyncMessagesRequestHandler extends AbstractRequestHandler
         final int numDeleted = query.executeUpdate();
 
         // set parameters
-        LOGGER.info("Purged {} async {}messages older than {} for queue {}, channel {}", numDeleted, purgeAll ? "" : "UNSENT ", maxAgeToKeep,
-                queueId != null ? queueId : "(ALL)", channelId != null ? channelId : "(ALL)");
+        LOGGER.info("Purged {} async {}messages older than {} for queue {}, channel {}", numDeleted,
+                purgeOnlySuccessful ? "SUCCESSFULLY SENT " : !purgeAll ? "EXCLUDING NOT YET SENT " : "",
+                maxAgeToKeep,
+                queueId != null ? queueId : "(ALL)",
+                channelId != null ? channelId : "(ALL)");
 
         // write statistics
 

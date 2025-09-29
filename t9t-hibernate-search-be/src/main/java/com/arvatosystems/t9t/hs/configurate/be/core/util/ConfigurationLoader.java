@@ -15,8 +15,13 @@
  */
 package com.arvatosystems.t9t.hs.configurate.be.core.util;
 
-import com.arvatosystems.t9t.hs.configurate.be.core.model.EntitySearchConfiguration;
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.hs.T9tHibernateSearchException;
+import com.arvatosystems.t9t.hs.configurate.model.EntitySearchConfiguration;
+import com.arvatosystems.t9t.hs.configurate.be.core.service.EntityConfigCache;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +31,7 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 
 /**
  * Utility class for loading Hibernate Search configuration.
@@ -39,48 +45,52 @@ public final class ConfigurationLoader {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationLoader.class);
     private static final String DEFAULT_CONFIG_FILE = "hibernate-search-entities.json";
 
-    private static EntitySearchConfiguration cachedConfiguration;
+    private static EntityConfigCache entityConfigCache;
+
+
+    @Nonnull
+    public static EntityConfigCache getEntityConfigCache() {
+        return entityConfigCache;
+    }
 
     /**
      * Loads the entity search configuration.
      */
-    public static EntitySearchConfiguration loadConfiguration() {
+    @Nonnull
+    public static EntityConfigCache loadConfiguration() {
         return loadConfiguration(DEFAULT_CONFIG_FILE);
     }
 
     /**
      * Loads the entity search configuration from the specified JSON file.
      */
-    public static EntitySearchConfiguration loadConfiguration(final String configFileName) {
+    @Nonnull
+    public static EntityConfigCache loadConfiguration(@Nonnull final String configFileName) {
         try {
             // Return cached configuration if available
-            if (cachedConfiguration != null) {
+            if (entityConfigCache != null) {
                 LOGGER.debug("Returning cached configuration");
-                return cachedConfiguration;
+                return entityConfigCache;
             }
             // Try to load from filesystem
-            EntitySearchConfiguration loaded = tryLoadFromFileSystem(configFileName);
+            EntitySearchConfiguration config = tryLoadFromFileSystem(configFileName);
 
             // If not found, try to load from classpath
-            if (loaded == null) {
-                loaded = tryLoadFromClasspath(configFileName);
+            if (config == null) {
+                config = tryLoadFromClasspath(configFileName);
             }
-            cachedConfiguration = loaded;
-            return loaded;
-        } catch (Exception e) {
-            LOGGER.debug("Not a readable configuration '{}': {}", configFileName, e.toString());
+            entityConfigCache = new EntityConfigCache(config != null ? config.getEntities() : Collections.emptyList());
+            return entityConfigCache;
+        } catch (final Exception e) {
+            LOGGER.debug("Not a readable configuration '{}'", configFileName, e);
+            throw new T9tException(T9tHibernateSearchException.HIBERNATE_SEARCH_INVALID_CONFIG, e.getMessage());
         }
-        return null;
     }
 
-    private static EntitySearchConfiguration tryLoadFromFileSystem(String configFileName) throws IOException {
+    @Nullable
+    private static EntitySearchConfiguration tryLoadFromFileSystem(@Nonnull final String configFileName) throws IOException {
 
-        Path path;
-        if (configFileName.startsWith("file:")) {
-            path = Paths.get(URI.create(configFileName));
-        } else {
-            path = Paths.get(configFileName);
-        }
+        final Path path = configFileName.startsWith("file:") ? Paths.get(URI.create(configFileName)) : Paths.get(configFileName);
         if (path.isAbsolute()) {
             if (!Files.exists(path)) {
                 LOGGER.warn("Configuration file {} not found on filesystem", path);
@@ -93,7 +103,8 @@ public final class ConfigurationLoader {
         return null;
     }
 
-    private static EntitySearchConfiguration tryLoadFromClasspath(String configFileName) throws IOException {
+    @Nullable
+    private static EntitySearchConfiguration tryLoadFromClasspath(@Nonnull final String configFileName) throws IOException {
         try (InputStream inputStream = ConfigurationLoader.class.getClassLoader().getResourceAsStream(configFileName)) {
             if (inputStream == null) {
                 LOGGER.warn("Configuration file {} not found in classpath", configFileName);
@@ -103,19 +114,12 @@ public final class ConfigurationLoader {
         }
     }
 
-    private static EntitySearchConfiguration getEntitySearchConfiguration(InputStream inputStream) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        EntitySearchConfiguration configuration = objectMapper.readValue(inputStream, EntitySearchConfiguration.class);
+    @Nonnull
+    private static EntitySearchConfiguration getEntitySearchConfiguration(@Nonnull final InputStream inputStream) throws IOException {
+        final ObjectMapper objectMapper = new ObjectMapper();
+        final EntitySearchConfiguration configuration = objectMapper.readValue(inputStream, EntitySearchConfiguration.class);
         LOGGER.info("Loaded Hibernate Search configuration successfully.");
         LOGGER.debug("Loaded {} entities from configuration", configuration.getEntities() != null ? configuration.getEntities().size() : 0);
         return configuration;
-    }
-
-    /**
-     * Clears the cached configuration (useful for testing).
-     */
-    public static void clearCache() {
-        cachedConfiguration = null;
-        LOGGER.debug("Configuration cache cleared");
     }
 }

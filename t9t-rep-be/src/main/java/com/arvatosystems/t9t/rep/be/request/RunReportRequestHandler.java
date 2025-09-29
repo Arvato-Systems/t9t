@@ -84,6 +84,7 @@ import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleHtmlExporterOutput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimpleWriterExporterOutput;
+import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 
 /** No new functionality, just an extension in order to avoid conflicts of CDI. */
 public class RunReportRequestHandler extends AbstractRequestHandler<RunReportRequest> {
@@ -275,6 +276,7 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
             outputSessionParameters.setAsOf(relevantDate);
             outputSessionParameters.setDataSinkId(reportParamsDTO.getDataSinkId());
             outputSessionParameters.setCommunicationFormatType(outputFileType); // might be overwritten by main configuration -- PDF, etc
+            outputSessionParameters.setRawMode(true);
             sinkRef = outputSession.open(outputSessionParameters);
 
             // fill additional parameters
@@ -320,6 +322,11 @@ public class RunReportRequestHandler extends AbstractRequestHandler<RunReportReq
             case XLSX:
                 final JRXlsxExporter exporterXlsx = new JRXlsxExporter();
                 exporterXlsx.setExporterOutput(new SimpleOutputStreamExporterOutput(outputSession.getOutputStream()));
+                SimpleXlsxReportConfiguration configuration = new SimpleXlsxReportConfiguration();
+                configuration.setDetectCellType(true);
+                configuration.setCollapseRowSpan(false);
+                configuration.setOnePagePerSheet(false); // Added to ensure single sheet and avoid broken XLSX
+                exporterXlsx.setConfiguration(configuration);
                 exporter = exporterXlsx;
                 break;
             default:

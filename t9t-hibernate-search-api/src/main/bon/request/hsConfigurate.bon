@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import meta.identifier
 import t9t.base.types.*
 import t9t.base.api.*
 import t9t.base.event.*
@@ -20,14 +21,40 @@ import t9t.base.event.*
 package (com.arvatosystems) t9t.hs.configurate.request {
 
     class IndexCreationFromScratchRequest extends RequestParameters {
-        optional Ascii(300) entityName;
+        required identifier                         entityName;
     }
 
     class IndexUpdateRequest extends RequestParameters {
-        optional Ascii(300) entityName;
+        required identifier                         entityName;
     }
 
-    class CheckIndexStatusRequest extends RequestParameters {
-        optional Ascii(300) entityName;
+    class CheckIndexStatusRequest extends RequestParameters return CheckIndexStatusResponse {
+        required identifier                         entityName;
+    }
+
+    class CheckIndexStatusResponse extends ServiceResponse {
+        optional Unicode(1000)                      validationError;
+    }
+
+    // Create index for all configured entities
+    class IndexCreationForEntitiesRequest extends RequestParameters {
+    }
+
+    // Update index for all configured entities
+    class IndexUpdateForEntitiesRequest extends RequestParameters {
+    }
+
+    // Check index status for all configured entities
+    class CheckIndexStatusForEntitiesRequest extends RequestParameters return CheckIndexStatusForEntitiesResponse {
+    }
+
+    class CheckIndexStatusForEntitiesResponse extends ServiceResponse {
+        required (EntityIndexStatus...) required List<>     results;
+    }
+
+    class EntityIndexStatus {
+        required identifier                                 entityName;
+        optional Boolean                                    indexValid;
+        optional Unicode(1000)                              errorMessage;
     }
 }

@@ -92,6 +92,7 @@ public final class T9tConstants {
     public static final int EXCEPTION_OFFSET_CORE           = 30_000;   // The range for t9t-core exception codes starts here
     public static final int EXCEPTION_OFFSET_DOC            = 34_000;   // The range for t9t-doc exception codes starts here - internal (admin) API
     public static final int EXCEPTION_OFFSET_VOICE          = 41_000;   // The range for t9t-voice exception codes starts here
+    public static final int EXCEPTION_OFFSET_HIBERNATE_SEARCH = 42_000;   // The range for t9t-hibernate-search exception codes starts here
 
     public static final int EXCEPTION_OFFSET_VDB            = 50_000;   // The range for t9t-vdb exception codes starts here (vector DB exceptions)
     public static final int EXCEPTION_OFFSET_VDB_PGVECTOR   = 51_000;   // The range for t9t-vdb exception codes related to Postgres pgvector ext. starts here

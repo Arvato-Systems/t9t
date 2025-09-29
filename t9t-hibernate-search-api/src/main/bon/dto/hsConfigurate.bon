@@ -1,0 +1,64 @@
+/*
+ * Copyright (c) 2012 - 2025 Arvato Systems GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import meta.identifier
+
+package (com.arvatosystems) t9t.hs.configurate.model {
+
+    /**
+     * Configuration class for Hibernate Search entity mapping.
+     */
+    class EntitySearchConfiguration {
+        required (EntityConfig...) List<>                   entities;
+    }
+
+    /**
+     * Configuration class for a single entity.
+     */
+    class EntityConfig {
+        required identifier                                 className;
+        required (FieldConfig...) List<>                    fields;
+        required (EmbeddedIndexEntityConfig...) List<>      embeddedIndexEntities;
+    }
+
+    /**
+     * Configuration class for entity field mapping.
+     */
+    class FieldConfig {
+        required identifier                                 name;
+        required Unicode(100)                               ^type; // "fullTextField", "keywordField", etc.
+        required Unicode(200)                               analyzer;
+    }
+
+    /**
+     * Configuration class for embedded fields.
+     */
+    class EmbeddedIndexEntityConfig {
+        required identifier                                 targetEntity;
+        required (EmbeddedIncludePathConfig...) List<>      includePaths;
+    }
+
+    /**
+     * Defines a single includePath inside an embedded entity indexing configuration.
+     * name:    relative field name inside the embedded entity
+     * type:    keywordfield | fulltextfield | genericfield
+     * analyzer: optional analyzer name (only relevant for fulltextfield)
+     */
+    class EmbeddedIncludePathConfig {
+        required identifier                                 name;
+        required Unicode(100)                               ^type;
+        required Unicode(200)                               analyzer; // only used when type == fulltextfield
+    }
+}

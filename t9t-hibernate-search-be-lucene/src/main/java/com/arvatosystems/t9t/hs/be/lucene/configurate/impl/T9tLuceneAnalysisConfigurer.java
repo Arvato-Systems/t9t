@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.hs.be.lucene.configurate.impl;
 
+import jakarta.annotation.Nonnull;
 import org.hibernate.search.backend.lucene.analysis.LuceneAnalysisConfigurationContext;
 import org.hibernate.search.backend.lucene.analysis.LuceneAnalysisConfigurer;
 
@@ -28,7 +29,7 @@ import com.arvatosystems.t9t.hs.configurate.be.core.constants.HsProperties;
  */
 public class T9tLuceneAnalysisConfigurer implements LuceneAnalysisConfigurer {
     @Override
-    public void configure(LuceneAnalysisConfigurationContext context) {
+    public void configure(@Nonnull final LuceneAnalysisConfigurationContext context) {
         context.analyzer(HsProperties.ANALYSER_FULLTEXT_STANDARD_TOKENIZER).custom()
                 .tokenizer("standard")
                 .tokenFilter("lowercase")
