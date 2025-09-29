@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.FieldMappers;
 import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.output.ExportStatusEnum;
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.base.services.IExecutor;
@@ -501,8 +502,11 @@ public class OutputSession implements IOutputSession {
         }
     }
 
-    protected ICommunicationFormatGenerator createDataGenerator(final MediaXType formatType) {
-        if (MediaType.USER_DEFINED.equals(formatType.getBaseEnum())) {
+    protected ICommunicationFormatGenerator createDataGenerator(@Nonnull final MediaXType formatType) {
+        if (T9tUtil.isTrue(params.getRawMode())) {
+            // raw mode requested, ignore format type
+            return new FormatGeneratorDumb();
+        } else if (MediaType.USER_DEFINED.equals(formatType.getBaseEnum())) {
             // format is free text, implementation must exist
             return Jdp.getRequired(ICommunicationFormatGenerator.class, sinkCfg.getCommFormatName());
         } else {
