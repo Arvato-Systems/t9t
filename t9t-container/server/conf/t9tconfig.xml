@@ -6,12 +6,12 @@
 
     <databaseConfiguration>
         <databaseBrand>POSTGRES</databaseBrand>
-        <jdbcDriverClass>software.amazon.jdbc.Driver</jdbcDriverClass>
-        <jdbcConnectString>$env:POSTGRES_MAIN_URL</jdbcConnectString>
-        <username>$env:POSTGRES_MAIN_USER</username>
-        <password>$env:POSTGRES_MAIN_PASSWORD</password>
+        <jdbcDriverClass>org.postgresql.Driver</jdbcDriverClass>
+        <jdbcConnectString>$env:POSTGRES_MAIN_WRITE_URL</jdbcConnectString>
+        <username>$env:POSTGRES_MAIN_WRITE_USER</username>
+        <password>$env:POSTGRES_MAIN_WRITE_PASSWORD</password>
 
-        <migrations>filesystem:./migration/t9t-sql=fw_t9t-sql-sql</migrations>
+        <migrations>filesystem:./migration/t9t=fw_t9t-sql</migrations>
 
         <!-- Maximum DB connections -->
         <z>hibernate.c3p0.max_size=15</z>
@@ -28,16 +28,15 @@
 
     <secondaryDatabaseConfig>
         <databaseBrand>POSTGRES</databaseBrand>
-        <jdbcDriverClass>software.amazon.jdbc.Driver</jdbcDriverClass>
-        <jdbcConnectString>$env:POSTGRES_MAIN_URL</jdbcConnectString>
-        <username>$env:POSTGRES_MAIN_USER</username>
-        <password>$env:POSTGRES_MAIN_PASSWORD</password>
+        <jdbcDriverClass>org.postgresql.Driver</jdbcDriverClass>
+        <jdbcConnectString>$env:POSTGRES_MAIN_WRITE_URL</jdbcConnectString>
+        <username>$env:POSTGRES_MAIN_WRITE_USER</username>
+        <password>$env:POSTGRES_MAIN_WRITE_PASSWORD</password>
 
         <hikariMinimumIdle>5</hikariMinimumIdle>
         <hikariMaximumPoolSize>20</hikariMaximumPoolSize>
         <hikariMaxLifetime>240000</hikariMaxLifetime>
 
-        <hikariExceptionOverrideClassName>software.amazon.jdbc.util.HikariCPSQLException</hikariExceptionOverrideClassName>
         <z>keepSessionStateOnFailover=true</z>
         <z>failoverTimeoutMs=60000</z>
         <z>wrapperPlugins=auroraConnectionTracker,failover,efm2</z>
@@ -46,23 +45,22 @@
     <shadowDatabaseConfig> <!-- READ-ONLY/SHADOW managed by hikari -->
         <persistenceUnitName>t9t-DS-SHADOW</persistenceUnitName>
         <databaseBrand>POSTGRES</databaseBrand>
-        <jdbcDriverClass>software.amazon.jdbc.Driver</jdbcDriverClass>
-        <jdbcConnectString>$env:POSTGRES_MAIN_URL</jdbcConnectString>
-        <username>$env:POSTGRES_MAIN_USER</username>
-        <password>$env:POSTGRES_MAIN_PASSWORD</password>
+        <jdbcDriverClass>org.postgresql.Driver</jdbcDriverClass>
+        <jdbcConnectString>$env:POSTGRES_MAIN_READ_URL</jdbcConnectString>
+        <username>$env:POSTGRES_MAIN_READ_USER</username>
+        <password>$env:POSTGRES_MAIN_READ_PASSWORD</password>
 
         <z>hibernate.hikari.maximumPoolSize=40</z>
         <z>hibernate.hikari.maxLifetime=240000</z> <!-- 4 minutes -->
 
         <!-- AWS-wrapper-specific -->
-        <z>hibernate.hikari.exceptionOverrideClassName=software.amazon.jdbc.util.HikariCPSQLException</z>
         <z>hibernate.connection.keepSessionStateOnFailover=true</z>
         <z>hibernate.connection.failoverTimeoutMs=60000</z>
         <z>hibernate.connection.wrapperPlugins=auroraConnectionTracker,failover,efm2</z>
     </shadowDatabaseConfig>
 
     <serverConfiguration>
-        <filesystemPathRoot>/home/fortytwo</filesystemPathRoot>
+        <filesystemPathRoot>$env:FORTYTWO</filesystemPathRoot>
         <keyStorePath>/conf/t9tkeystore.jceks</keyStorePath>
         <keyStorePassword>$env:KEYSTORE_PASSWORD</keyStorePassword>
     </serverConfiguration>
@@ -75,7 +73,7 @@
     </applicationConfiguration>
 
      <asyncMsgConfiguration>
-        <strategy>NOOP</strategy>
+        <strategy>noop</strategy>
         <maxMessageAtStartup>100</maxMessageAtStartup>
         <timeoutIdleGreen>500</timeoutIdleGreen>
         <timeoutIdleRed>5000</timeoutIdleRed>

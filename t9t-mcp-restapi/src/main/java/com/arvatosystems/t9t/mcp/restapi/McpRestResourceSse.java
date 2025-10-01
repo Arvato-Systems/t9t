@@ -110,7 +110,7 @@ public class McpRestResourceSse implements IT9tRestEndpoint {
             if (!eventSink.isClosed()) {
                 try {
                     eventSink.close();
-                } catch (final Exception e1) {
+                } catch (final IOException e1) {
                     LOGGER.error("Failed to close SSE connection: {}", e1.getMessage());
                 }
             }

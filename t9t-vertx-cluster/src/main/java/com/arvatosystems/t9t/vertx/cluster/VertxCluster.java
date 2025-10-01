@@ -26,8 +26,6 @@ import com.arvatosystems.t9t.base.vertx.impl.T9tServer;
 import com.arvatosystems.t9t.jdp.Init;
 import com.hazelcast.config.XmlConfigBuilder;
 
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.eventbus.EventBusOptions;
@@ -72,16 +70,22 @@ public final class VertxCluster {
 
                 server.checkForMetricsAndInitialize(options);
 
-                Vertx.builder().with(options).withClusterManager(mgr).buildClustered().onComplete(x -> new Handler<AsyncResult<Vertx>>() {
-                    @Override public void handle(final AsyncResult<Vertx> event) {
+                LOGGER.info("Initializing clustered Vert.x instance...");
+                Vertx.builder()
+                    .with(options)
+                    .withClusterManager(mgr)
+                    .buildClustered()
+                    .onComplete(event -> {
                         if (event.succeeded()) {
+                            LOGGER.info("Clustered Vert.x instance created successfully.");
                             server.deployAndRun(event.result(), null);
                         } else {
-                            // failed!
-                            LOGGER.error("Could not create clustered vert.x", event.cause());
+                            LOGGER.error("Could not create clustered Vert.x", event.cause());
                         }
-                    }
-                });
+                    })
+                    .onFailure(throwable -> {
+                        LOGGER.error("Cluster startup failed", throwable);
+                    });
             });
         } catch (final UnknownHostException e) {
             LOGGER.error(T9tServer.PRINTED_NAME + " (cluster based) failed to start, host not found.", e);

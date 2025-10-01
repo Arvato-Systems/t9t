@@ -1,20 +1,17 @@
 
-# === Globale ARGs ===
 ARG JAVA_IMAGE=amazoncorretto
 ARG JAVA_TAG=21-alpine-full
-
 ARG JPROFILER_VERSION=15_0_3
 ARG JPROFILER_HOME=/opt/jprofiler
-
-ARG JMX_EXPORTER_VERSION=1.0.1
+ARG T9T_PATH=.
 
 # === T9T JAVA Stage (common ENVs) ===
-FROM ${JAVA_IMAGE}:${JAVA_TAG} AS t9t-java
+FROM ${JAVA_IMAGE}:${JAVA_TAG} AS java-base
 ENV MIN_RAM_P=95 \
     MAX_RAM_P=95 \
     INIT_RAM_P=95 \
     USERNAME=javauser \
-    LOGBACK_PATH=./logback.xml \
+    LOGBACK_PATH=./conf/logback.xml \
     APP=/app \
     JAR=/app/app.jar \
     log.debug=false \
@@ -46,8 +43,7 @@ USER ${USERNAME}
 WORKDIR ${APP}
 
 # === T9T UI Stage ===
-FROM t9t-java AS t9t-zkui
-ARG JMX_EXPORTER_VERSION
+FROM java-base AS zkui-base
 ENV APP=/app \
     CONF=/conf \
     BASE_PROPERTIES_PATH=/conf/base.properties \
@@ -55,7 +51,7 @@ ENV APP=/app \
     PORT=8024 \
     METRICS="--metrics"
 COPY --chown=${USERNAME}:${USERNAME} ./ui/conf ${CONF}
-EXPOSE ${JMX_EXPORTER_PORT} 8080 8849
+EXPOSE 8080 8849
 CMD dumb-init java ${AGENT_PATH} \
     -Dlogback.configurationFile=${LOGBACK_PATH} \
     -DbasePropertyFile=${BASE_PROPERTIES_PATH} \
@@ -66,29 +62,30 @@ CMD dumb-init java ${AGENT_PATH} \
     -jar ${JAR}
 
 # === T9T SETUP Stage ===
-FROM t9t-java AS t9t-setup
+FROM java-base AS setup-base
+ARG T9T_PATH
 ENV SETUP=/setup \
-    DB_URL=jdbc:postgresql://db:5432/fortytwo \
+    DB_URL=jdbc:postgresql://host.docker.internal:5432/fortytwo \
     DB_USER=fortytwo \
     # DB_PASSWORD=changeMe \
     ACTION=install
 USER root
 RUN mkdir -p "${SETUP}" && \
-    touch ${SETUP}/schemaLoader.yml && \
-    chown -R 1001:1001 ${SETUP}
-RUN touch ${SETUP}/schemaLoader.yml
-COPY --chown=${USERNAME}:${USERNAME} ./setup/bin ${SETUP}
-COPY --chown=${USERNAME}:${USERNAME} ./target/dependency/postgresql.jar ${SETUP}/postgresql.jar
-COPY --chown=${USERNAME}:${USERNAME} ./target/dependency/schema-loader-cmdline.jar ${SETUP}/schema-loader-cmdline.jar
-COPY --chown=${USERNAME}:${USERNAME} ./target/dependency/t9t-sql.jar ${SETUP}/t9t-sql.jar
+    chmod -R u+w "${SETUP}" && \
+    chown -R ${USERNAME}:${USERNAME} "${SETUP}"
+COPY --chown=${USERNAME}:${USERNAME} \
+    ${T9T_PATH}/setup/bin \
+    ${T9T_PATH}/target/dependency/postgresql.jar \
+    ${T9T_PATH}/target/dependency/schema-loader-cmdline.jar \
+    ${SETUP}/
 USER ${USERNAME}
 
 WORKDIR ${SETUP}
-USER ${USERNAME}
 CMD ["bash", "setup.sh"]
 
 # === T9T SERVER Stage ===
-FROM t9t-java AS t9t-server
+FROM java-base AS server-base
+ARG T9T_PATH
 ENV APP=/app \
     CONF=/conf \
     CONF_DEFAULT=/conf_default \
@@ -102,7 +99,8 @@ ENV APP=/app \
     T9T_RESTAPI_KAFKA=Y \
     T9T_KAFKA_BOOTSTRAP_SERVERS="/dev/null" \
     T9T_KAFKA_REQUEST_TOPIC="requestToMAIN" \
-    MAIN_CLASS=com.arvatosystems.t9t.vertx.cluster.VertxCluster \
+    # Not clustered, standalone server, can be changed to com.arvatosystems.t9t.vertx.cluster.VertxCluster
+    MAIN_CLASS=com.arvatosystems.t9t.base.vertx.impl.T9tServer \
     POSTGRES_MAIN_URL=jdbc:aws-wrapper:postgresql://db:5432/main \
     POSTGRES_MAIN_USER=fortytwo \
     # POSTGRES_MAIN_PASSWORD=changeMe
@@ -118,11 +116,18 @@ RUN chown -R ${USERNAME}:${USERNAME} "${APP}" "${CONF}" "${CONF_DEFAULT}" "${FOR
 USER ${USERNAME}
 
 # Add default config
-COPY --chown=${USERNAME}:${USERNAME} ./server/conf ${CONF}
+COPY --chown=${USERNAME}:${USERNAME} ${T9T_PATH}/server/conf ${CONF}
+
+COPY --chown=${USERNAME}:${USERNAME} ${T9T_PATH}/target/dependency/t9t-sql.jar ${MIG}/t9t-sql.jar
+# Extract migration scripts
+RUN mkdir -p ${MIG}/t9t-sql && \
+    unzip -o ${MIG}/t9t-sql.jar "*/POSTGRES/Migration/*" -d ${MIG}/t9t-sql
 
 EXPOSE 8025 8024 5701 8849
 VOLUME ${FORTYTWO}
 CMD dumb-init java ${AGENT_PATH} \
+    --add-modules jdk.incubator.vector \
+    --enable-native-access=ALL-UNNAMED \
     -Dlogback.configurationFile=${LOGBACK_PATH} \
     -XX:MinRAMPercentage=${MIN_RAM_P} \
     -XX:MaxRAMPercentage=${MAX_RAM_P} \
@@ -140,7 +145,8 @@ CMD dumb-init java ${AGENT_PATH} \
     ${RESTPORT}
 
 # === T9T GATEWAY Stage ===
-FROM t9t-java AS t9t-gateway-rest
+FROM java-base AS gateway-base
+ARG T9T_PATH
 ENV HOST=server-main \
   PORT=8024 \
   T9T_RESTAPI_SWAGGER="Y" \
@@ -160,13 +166,19 @@ CMD dumb-init java ${AGENT_PATH} \
     -jar ${JAR} \
     ${METRICS}
 EXPOSE 8090
+
+# === DATABASE BASE FOR MULTI-DB-SETUP ===
+FROM postgres:16-alpine AS postgres
+COPY --chown=postgres:postgres ./postgres/init.sh /docker-entrypoint-initdb.d/
+
   
 #######################################
 ### PRODUCTIVE IMAGES FROM HERE --> ###
 #######################################
 
 # === MCP GATEWAY Stage ===
-FROM t9t-java AS t9t-gateway-mcp
+FROM java-base AS gateway-mcp
+ARG T9T_PATH
 ENV \
   HOST=server-main \
   PORT=8024 \
@@ -188,8 +200,25 @@ CMD dumb-init java ${AGENT_PATH} \
     -jar ${JAR} \
     ${METRICS}
 EXPOSE 9094
-COPY --chown=${USERNAME}:${USERNAME} ./target/dependency/t9t-gateway-mcp.jar ${JAR}
+COPY --chown=${USERNAME}:${USERNAME} ${T9T_PATH}/target/dependency/t9t-gateway-mcp.jar ${JAR}
 
 # === T9T SERVER MAIN Stage ===
-FROM t9t-server AS t9t-server-main
-COPY --chown=${USERNAME}:${USERNAME} ./target/dependency/t9t-server.jar ${JAR}
+FROM server-base AS server-main
+ARG T9T_PATH
+COPY --chown=${USERNAME}:${USERNAME} \
+    ${T9T_PATH}/target/dependency/t9t-server.jar \
+    ${T9T_PATH}/target/dependency/t9t-sql.jar \
+    ${MIG}/
+# Extract migration scripts
+RUN mkdir -p ${MIG}/t9t && \
+    unzip -o ${MIG}/t9t-sql.jar "*/POSTGRES/Migration/*" -d ${MIG}/t9t
+
+# === T9T SERVER SETUP MAIN Stage ===
+FROM setup-base AS setup-main
+ARG T9T_PATH
+COPY --chown=${USERNAME}:${USERNAME} ${T9T_PATH}/target/dependency/t9t-sql.jar ${SETUP}/t9t-sql.jar
+
+# === T9T UI Stage ===
+FROM zkui-base AS zkui
+ARG T9T_PATH
+COPY --chown=${USERNAME}:${USERNAME} ${T9T_PATH}/target/dependency/t9t-zkui.jar ${JAR}

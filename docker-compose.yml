@@ -4,7 +4,7 @@ services:
     build:
       context: ./t9t-container
       dockerfile: Dockerfile
-      target: t9t-gateway-mcp
+      target: gateway-mcp
     environment:
       # Backend connection
       HOST: host.docker.internal
@@ -17,6 +17,52 @@ services:
     networks:
       - t9t-network
 
+  server-main:
+    image: ${REGISTRY:-localhost:6000}/t9t-server-main:latest
+    build:
+      context: ./t9t-container
+      dockerfile: Dockerfile
+      target: server-main
+    environment:
+      # Backend connection
+      POSTGRES_MAIN_WRITE_URL: jdbc:postgresql://host.docker.internal:5432/fortytwo
+      POSTGRES_MAIN_WRITE_USER: fortytwo
+      POSTGRES_MAIN_WRITE_PASSWORD: changeMe
+      POSTGRES_MAIN_READ_URL: jdbc:postgresql://host.docker.internal:5432/fortytwo
+      POSTGRES_MAIN_READ_USER: fortytwo
+      POSTGRES_MAIN_READ_PASSWORD: changeMe
+      KEYSTORE_PASSWORD: BNpGofE5p02EoWhEXdMg
+    ports:
+      - "8024:8024"
+    networks:
+      - t9t-network
+
+  postgres:
+    image: ${REGISTRY:-localhost:6000}/t9t-postgres:latest
+    environment:
+      - POSTGRES_MULTIPLE_DATABASES=fortytwo
+      - POSTGRES_PASSWORD=changeMe
+      - POSTGRES_USER=fortytwo
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      - t9t-network
+  setup-main:
+    image: ${REGISTRY:-localhost:6000}/t9t-setup-main:latest
+    build:
+      context: ./t9t-container
+      dockerfile: Dockerfile
+      target: t9t-setup-main
+    environment:
+      DB_URL: jdbc:postgresql://host.docker.internal:5432/fortytwo
+      DB_USER: fortytwo
+      DB_PASSWORD: changeMe
+
+volumes:
+  postgres:
+    driver: local
 networks:
   t9t-network:
     driver: bridge

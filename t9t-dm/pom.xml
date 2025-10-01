@@ -1122,6 +1122,12 @@
                 <artifactId>t9t-container</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.arvato-systems.t9t</groupId>
+                <artifactId>t9t-container-scripts</artifactId>
+                <version>${project.version}</version>
+                <classifier>scripts</classifier>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

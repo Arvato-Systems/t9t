@@ -33,9 +33,20 @@
         <env.basedir>${project.basedir}</env.basedir>
         <registry>localhost:6000</registry>
         <rs>/</rs>
+        <docker.targets>java-base gateway-mcp setup-base zkui-base gateway-base server-base postgres</docker.targets>
+        <target.registry>${registry}</target.registry>
+        <target.rs>${rs}</target.rs>
+        <docker.platforms>linux/arm64,linux/amd64</docker.platforms>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-container-scripts</artifactId>
+            <version>${project.version}</version>
+            <classifier>scripts</classifier>
+            <type>jar</type>
+        </dependency>
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-gateway-mcp</artifactId>
@@ -101,6 +112,20 @@
                             <overWriteSnapshots>true</overWriteSnapshots>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>unpack-scripts</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeArtifactIds>t9t-container-scripts</includeArtifactIds>
+                            <includeClassifiers>scripts</includeClassifiers>
+                            <outputDirectory>${project.basedir}</outputDirectory>
+                            <overWriteReleases>true</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>
@@ -108,174 +133,32 @@
 
     <profiles>
         <profile>
-            <id>build</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
+            <id>containerize</id>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
                         <executions>
-                        <execution>
-                                <id>docker-build-t9t-java</id>
-                                <phase>install</phase>
-                                <goals><goal>exec</goal></goals>
-                                <configuration>
-                                    <executable>docker</executable>
-                                    <arguments>
-                                        <argument>build</argument>
-                                        <argument>-t</argument>
-                                        <argument>${registry}${rs}t9t-java:${project.version}</argument>
-                                        <argument>--target</argument>
-                                        <argument>t9t-java</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>REGISTRY=${registry}</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>JAVA_IMAGE=${java.image}</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>JAVA_TAG=${java.tag}</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>JPROFILER_VERSION=${jprofiler.version}</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>JMX_EXPORTER_VERSION=${jmx.exporter.version}</argument>
-                                        <argument>.</argument>
-                                    </arguments>
-                                    <workingDirectory>${project.basedir}</workingDirectory>
-                                </configuration>
-                            </execution>
                             <execution>
-                                <id>docker-build-t9t-gateway-mcp</id>
+                                <id>docker-build-all</id>
                                 <phase>install</phase>
-                                <goals><goal>exec</goal></goals>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
                                 <configuration>
-                                    <executable>docker</executable>
+                                    <executable>bash</executable>
                                     <arguments>
-                                        <argument>build</argument>
-                                        <argument>-t</argument>
-                                        <argument>${registry}${rs}t9t-gateway-mcp:${project.version}</argument>
-                                        <argument>--target</argument>
-                                        <argument>t9t-gateway-mcp</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>REGISTRY=${registry}</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>JAVA_IMAGE=${java.image}</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>JAVA_TAG=${java.tag}</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>JPROFILER_VERSION=${jprofiler.version}</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>JMX_EXPORTER_VERSION=${jmx.exporter.version}</argument>
-                                        <argument>.</argument>
-                                    </arguments>
-                                    <workingDirectory>${project.basedir}</workingDirectory>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>docker-build-t9t-setup</id>
-                                <phase>install</phase>
-                                <goals><goal>exec</goal></goals>
-                                <configuration>
-                                    <executable>docker</executable>
-                                    <arguments>
-                                        <argument>build</argument>
-                                        <argument>-t</argument>
-                                        <argument>${registry}${rs}t9t-setup:${project.version}</argument>
-                                        <argument>--target</argument>
-                                        <argument>t9t-setup</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>REGISTRY=${registry}</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>JAVA_IMAGE=${java.image}</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>JAVA_TAG=${java.tag}</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>JPROFILER_VERSION=${jprofiler.version}</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>JMX_EXPORTER_VERSION=${jmx.exporter.version}</argument>
-                                        <argument>.</argument>
-                                    </arguments>
-                                    <workingDirectory>${project.basedir}</workingDirectory>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>docker-build-t9t-zkui</id>
-                                <phase>install</phase>
-                                <goals><goal>exec</goal></goals>
-                                <configuration>
-                                    <executable>docker</executable>
-                                    <arguments>
-                                        <argument>build</argument>
-                                        <argument>-t</argument>
-                                        <argument>${registry}${rs}t9t-zkui:${project.version}</argument>
-                                        <argument>--target</argument>
-                                        <argument>t9t-zkui</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>REGISTRY=${registry}</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>JAVA_IMAGE=${java.image}</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>JAVA_TAG=${java.tag}</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>JPROFILER_VERSION=${jprofiler.version}</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>JMX_EXPORTER_VERSION=${jmx.exporter.version}</argument>
-                                        <argument>.</argument>
-                                    </arguments>
-                                    <workingDirectory>${project.basedir}</workingDirectory>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>docker-build-t9t-gateway-rest</id>
-                                <phase>install</phase>
-                                <goals><goal>exec</goal></goals>
-                                <configuration>
-                                    <executable>docker</executable>
-                                    <arguments>
-                                        <argument>build</argument>
-                                        <argument>-t</argument>
-                                        <argument>${registry}${rs}t9t-gateway-rest:${project.version}</argument>
-                                        <argument>--target</argument>
-                                        <argument>t9t-gateway-rest</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>REGISTRY=${registry}</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>JAVA_IMAGE=${java.image}</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>JAVA_TAG=${java.tag}</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>JPROFILER_VERSION=${jprofiler.version}</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>JMX_EXPORTER_VERSION=${jmx.exporter.version}</argument>
-                                        <argument>.</argument>
-                                    </arguments>
-                                    <workingDirectory>${project.basedir}</workingDirectory>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>docker-build-t9t-server</id>
-                                <phase>install</phase>
-                                <goals><goal>exec</goal></goals>
-                                <configuration>
-                                    <executable>docker</executable>
-                                    <arguments>
-                                        <argument>build</argument>
-                                        <argument>-t</argument>
-                                        <argument>${registry}${rs}t9t-server:${project.version}</argument>
-                                        <argument>--target</argument>
-                                        <argument>t9t-server</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>REGISTRY=${registry}</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>JAVA_IMAGE=${java.image}</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>JAVA_TAG=${java.tag}</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>JPROFILER_VERSION=${jprofiler.version}</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>JMX_EXPORTER_VERSION=${jmx.exporter.version}</argument>
-                                        <argument>.</argument>
+                                        <argument>containerize.sh</argument>
+                                        <argument>--registry=${registry}</argument>
+                                        <argument>--rs=${rs}</argument>
+                                        <argument>--version=${project.version}</argument>
+                                        <argument>--java-image=${java.image}</argument>
+                                        <argument>--java-tag=${java.tag}</argument>
+                                        <argument>--jprofiler-version=${jprofiler.version}</argument>
+                                        <argument>--targets=${docker.targets}</argument>
+                                        <argument>--platforms=${docker.platforms}</argument>
+                                        <argument>--prefix=t9t-</argument>
                                     </arguments>
                                     <workingDirectory>${project.basedir}</workingDirectory>
                                 </configuration>
@@ -294,127 +177,18 @@
                         <artifactId>exec-maven-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>docker-push-t9t-java</id>
+                                <id>docker-push-all</id>
                                 <phase>install</phase>
-                                <goals><goal>exec</goal></goals>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
                                 <configuration>
-                                    <executable>docker</executable>
+                                    <executable>bash</executable>
                                     <arguments>
-                                        <argument>push</argument>
-                                        <argument>${registry}${rs}t9t-java:${project.version}</argument>
-                                    </arguments>
-                                    <workingDirectory>${project.basedir}</workingDirectory>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>docker-push-t9t-gateway-mcp</id>
-                                <phase>install</phase>
-                                <goals><goal>exec</goal></goals>
-                                <configuration>
-                                    <executable>docker</executable>
-                                    <arguments>
-                                        <argument>push</argument>
+                                        <argument>push-images.sh</argument>
+                                        <argument>${docker.platforms}</argument>
                                         <argument>${registry}${rs}t9t-gateway-mcp:${project.version}</argument>
-                                    </arguments>
-                                    <workingDirectory>${project.basedir}</workingDirectory>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>docker-push-t9t-setup</id>
-                                <phase>install</phase>
-                                <goals><goal>exec</goal></goals>
-                                <configuration>
-                                    <executable>docker</executable>
-                                    <arguments>
-                                        <argument>push</argument>
-                                        <argument>${registry}${rs}t9t-setup:${project.version}</argument>
-                                    </arguments>
-                                    <workingDirectory>${project.basedir}</workingDirectory>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>docker-push-t9t-ui</id>
-                                <phase>install</phase>
-                                <goals><goal>exec</goal></goals>
-                                <configuration>
-                                    <executable>docker</executable>
-                                    <arguments>
-                                        <argument>push</argument>
-                                        <argument>${registry}${rs}t9t-ui:${project.version}</argument>
-                                    </arguments>
-                                    <workingDirectory>${project.basedir}</workingDirectory>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>docker-push-t9t-rest</id>
-                                <phase>install</phase>
-                                <goals><goal>exec</goal></goals>
-                                <configuration>
-                                    <executable>docker</executable>
-                                    <arguments>
-                                        <argument>push</argument>
-                                        <argument>${registry}${rs}t9t-rest:${project.version}</argument>
-                                    </arguments>
-                                    <workingDirectory>${project.basedir}</workingDirectory>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>docker-push-t9t-server</id>
-                                <phase>install</phase>
-                                <goals><goal>exec</goal></goals>
-                                <configuration>
-                                    <executable>docker</executable>
-                                    <arguments>
-                                        <argument>push</argument>
-                                        <argument>${registry}${rs}t9t-server:${project.version}</argument>
-                                    </arguments>
-                                    <workingDirectory>${project.basedir}</workingDirectory>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <!-- for completeness t9t server -->
-        <profile>
-            <id>t9t-server-demo</id>
-            <dependencies>
-                <dependency>
-                    <groupId>com.arvatosystems.t9t</groupId>
-                    <artifactId>t9t-server</artifactId>
-                    <version>${project.version}</version>
-                </dependency>
-            </dependencies>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <executions>
-                        <execution>
-                                <id>docker-build-t9t-server-main</id>
-                                <phase>install</phase>
-                                <goals><goal>exec</goal></goals>
-                                <configuration>
-                                    <executable>docker</executable>
-                                    <arguments>
-                                        <argument>build</argument>
-                                        <argument>-t</argument>
-                                        <argument>${registry}${rs}t9t-server-main:${project.version}</argument>
-                                        <argument>--target</argument>
-                                        <argument>t9t-server-main</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>REGISTRY=${registry}</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>JAVA_IMAGE=${java.image}</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>JAVA_TAG=${java.tag}</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>JPROFILER_VERSION=${jprofiler.version}</argument>
-                                        <argument>--build-arg</argument>
-                                        <argument>JMX_EXPORTER_VERSION=${jmx.exporter.version}</argument>
-                                        <argument>.</argument>
+                                        <argument>${target.registry}${rs}aroma2-t9t-gateway-mcp:${project.version}</argument>
                                     </arguments>
                                     <workingDirectory>${project.basedir}</workingDirectory>
                                 </configuration>
