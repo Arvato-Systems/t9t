@@ -144,7 +144,6 @@
         <groovy.version>2.4.21</groovy.version>
 
         <!-- Test support -->
-        <junit.version>4.13.2</junit.version>      <!-- groupId is junit -->
         <hamcrest.version>3.0</hamcrest.version>   <!-- avoid unless required -->
         <byte-buddy.version>1.17.8</byte-buddy.version>   <!-- 1.12.x requested by mockito 4.2.0, and reuired for Java 17 -->
         <org.mockito.version>5.20.0</org.mockito.version>
@@ -558,14 +557,9 @@
             <dependency>
                 <groupId>org.junit</groupId>
                 <artifactId>junit-bom</artifactId>
-                <version>${junit5.version}</version>
+                <version>${junit.version}</version>
                 <scope>import</scope>
                 <type>pom</type>
-            </dependency>
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
             </dependency>
 
             <dependency>
@@ -694,11 +688,6 @@
             <dependency>
                 <groupId>com.tngtech.archunit</groupId>
                 <artifactId>archunit</artifactId>
-                <version>${archunit.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.tngtech.archunit</groupId>
-                <artifactId>archunit-junit4</artifactId>
                 <version>${archunit.version}</version>
             </dependency>
             <dependency>
