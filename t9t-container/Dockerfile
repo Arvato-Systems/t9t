@@ -13,6 +13,8 @@ ENV MIN_RAM_P=95 \
     USERNAME=javauser \
     LOGBACK_PATH=./conf/logback.xml \
     APP=/app \
+    CONF=/conf \
+    CONF_DEFAULT=/conf_default \
     JAR=/app/app.jar \
     log.debug=false \
     log.level.jettyserver=INFO \
@@ -46,6 +48,7 @@ WORKDIR ${APP}
 FROM java-base AS zkui-base
 ENV APP=/app \
     CONF=/conf \
+    CONF_DEFAULT=/conf_default \
     BASE_PROPERTIES_PATH=/conf/base.properties \
     HOST=server-main \
     PORT=8024 \

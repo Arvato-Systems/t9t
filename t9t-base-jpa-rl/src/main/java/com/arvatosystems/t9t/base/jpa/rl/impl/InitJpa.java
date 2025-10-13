@@ -15,13 +15,13 @@
  */
 package com.arvatosystems.t9t.base.jpa.rl.impl;
 
-import com.arvatosystems.t9t.cfg.be.HibernateSearchConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.jpa.IPersistenceProviderJPAShadow;
 import com.arvatosystems.t9t.base.jpa.ormspecific.IEMFCustomizer;
+import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.cfg.be.RelationalDatabaseConfiguration;
 import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration;
 
@@ -41,18 +41,18 @@ public class InitJpa implements StartupOnly {
         final EntityManagerFactory emf;
         EntityManagerFactory shadowEmf = null;
         IEMFCustomizer cst = null;
-        final T9tServerConfiguration cfg = Jdp.getRequired(T9tServerConfiguration.class);
+        final T9tServerConfiguration cfg = ConfigProvider.getConfiguration();
         final String defaultPuName = cfg.getPersistenceUnitName();
-        final HibernateSearchConfiguration hibernateSearchConfiguration = cfg.getHibernateSearchConfiguration();
+        final RelationalDatabaseConfiguration dbConfig = cfg.getDatabaseConfiguration(); // the config for the default database (could be R/O for some servers!)
+        final RelationalDatabaseConfiguration shadowDbConfig = cfg.getShadowDatabaseConfig(); // an optional config for a R/O shadow database
 
         // main persistence unit
-        final RelationalDatabaseConfiguration dbConfig = cfg.getDatabaseConfiguration();
         if (dbConfig != null) {
             final String puName = T9tUtil.nvl(dbConfig.getPersistenceUnitName(), defaultPuName);
             LOGGER.info("Creating customized JPA EMF for PU name {}", puName);
             cst = Jdp.getRequired(IEMFCustomizer.class);
             try {
-                emf = cst.getCustomizedEmf(puName, dbConfig, hibernateSearchConfiguration);
+                emf = cst.getCustomizedEmf(puName, dbConfig, true);
             } catch (final Exception e1) {
                 LOGGER.error("Exception calling EMF customizer: ", e1);
                 throw new RuntimeException(e1);
@@ -63,7 +63,6 @@ public class InitJpa implements StartupOnly {
         }
 
         // shadow persistence unit
-        final RelationalDatabaseConfiguration shadowDbConfig = cfg.getShadowDatabaseConfig();
         if (shadowDbConfig != null) {
             if (T9tUtil.isBlank(shadowDbConfig.getPersistenceUnitName())) {
                 // field is optional to not produce conflict with legacy configuration, but here it is required
@@ -74,7 +73,7 @@ public class InitJpa implements StartupOnly {
             LOGGER.info("Creating customized SHADOW JPA EMF for PU name {}", puName);
             cst = cst != null ? cst : Jdp.getRequired(IEMFCustomizer.class);
             try {
-                shadowEmf = cst.getCustomizedEmf(puName, shadowDbConfig, hibernateSearchConfiguration);
+                shadowEmf = cst.getCustomizedEmf(puName, shadowDbConfig, false); // no hibernate search: we do not want to configure it twice!
             } catch (final Exception e1) {
                 LOGGER.error("Exception calling EMF customizer for shadow EMF: ", e1);
                 throw new RuntimeException(e1);

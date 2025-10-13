@@ -53,6 +53,7 @@ public class JettyServer {
     static final int DEFAULT_MAX_THREADS = 20;
     static final int DEFAULT_IDLE_TIMEOUT = 5000;
     static final int DEFAULT_STOP_TIMEOUT = 5000;
+    static final int DEFAULT_CONNECTION_IDLE_TIMEOUT = 300000;
     static final String DEFAULT_CONTEXT_ROOT = "/rest";
     static final String DEFAULT_METRICS_PATH = "/metrics";
     static final String DEFAULT_APPLICATION_PATH = "";
@@ -82,6 +83,7 @@ public class JettyServer {
         final int minThreads  = RestUtils.CONFIG_READER.getIntProperty("jetty.threadPool.minThreads",  DEFAULT_MIN_THREADS);
         final int maxThreads  = RestUtils.CONFIG_READER.getIntProperty("jetty.threadPool.maxThreads",  DEFAULT_MAX_THREADS);
         final int idleTimeout = RestUtils.CONFIG_READER.getIntProperty("jetty.threadPool.idleTimeout", DEFAULT_IDLE_TIMEOUT);  // in millis
+        final int connectionIdleTimeout = RestUtils.CONFIG_READER.getIntProperty("jetty.connection.idleTimeout", DEFAULT_CONNECTION_IDLE_TIMEOUT); // in millis
         final int stopTimeout = RestUtils.CONFIG_READER.getIntProperty("jetty.stopTimeout",            DEFAULT_STOP_TIMEOUT);  // in millis
         final String contextRoot     = RestUtils.CONFIG_READER.getProperty("jetty.contextRoot",        DEFAULT_CONTEXT_ROOT);
         final String applicationPath = RestUtils.CONFIG_READER.getProperty("jetty.applicationPath",    DEFAULT_APPLICATION_PATH);
@@ -89,7 +91,7 @@ public class JettyServer {
         final String uriCompliance   = RestUtils.CONFIG_READER.getProperty("jetty.httpConfig.uriCompliance", null);
 
         LOGGER.info("Using the following configuration values: port {}, min/max threads = {}/{}", port, minThreads, maxThreads);
-        LOGGER.info("  idle timeout = {}, context = {}, application path = {}", idleTimeout, contextRoot, applicationPath);
+        LOGGER.info("  idle timeout = {}, connection idle timeout = {}, context = {}, application path = {}", idleTimeout, connectionIdleTimeout, contextRoot, applicationPath);
         LOGGER.info("  URI compliance is {}", uriCompliance == null ? "NOT set" : "set to " + uriCompliance);
 
 //        // no way to pass it in...
@@ -115,6 +117,7 @@ public class JettyServer {
         final HttpConnectionFactory http1 = new HttpConnectionFactory(hconfig);
         final HTTP2CServerConnectionFactory http2c = new HTTP2CServerConnectionFactory(hconfig);
         final ServerConnector connector = new ServerConnector(server, http1, http2c);
+        connector.setIdleTimeout(connectionIdleTimeout);
         connector.setPort(port);
         server.addConnector(connector);
 

@@ -18,6 +18,8 @@ package com.arvatosystems.t9t.zkui.components.datafields;
 import java.util.Date;
 
 import java.time.Instant;
+
+import com.arvatosystems.t9t.zkui.util.ApplicationUtil;
 import org.zkoss.zul.Datebox;
 
 public class InstantDataField extends AbstractDataField<Datebox, Instant> {
@@ -31,7 +33,7 @@ public class InstantDataField extends AbstractDataField<Datebox, Instant> {
     public InstantDataField(DataFieldParameters params) {
         super(params);
         setConstraints(c, null);
-        c.setFormat("medium+medium");
+        c.setFormat(ApplicationUtil.getDateTimeFormat(as.getUserLocale()));
     }
 
     @Override

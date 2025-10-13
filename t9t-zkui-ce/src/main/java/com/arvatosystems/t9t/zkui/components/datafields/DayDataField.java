@@ -20,6 +20,7 @@ import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.TimeZone;
 
+import com.arvatosystems.t9t.zkui.util.ApplicationUtil;
 import org.zkoss.zul.Datebox;
 
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
@@ -35,7 +36,7 @@ public class DayDataField extends AbstractDataField<Datebox, LocalDate> {
     public DayDataField(DataFieldParameters params, boolean withToday) {
         super(params);
         setConstraints(c, null);
-        c.setFormat("medium");
+        c.setFormat(ApplicationUtil.getDateFormat(as.getUserLocale()));
         c.setTimeZone(TimeZone.getDefault());  // do not convert between user's time zone and UTC here
         if (withToday) {
             c.setShowTodayLink(withToday);

@@ -15,11 +15,23 @@
  */
 package com.arvatosystems.t9t.base.jpa.ormspecific;
 
-import com.arvatosystems.t9t.cfg.be.HibernateSearchConfiguration;
-import jakarta.persistence.EntityManagerFactory;
-
 import com.arvatosystems.t9t.cfg.be.RelationalDatabaseConfiguration;
 
+import jakarta.annotation.Nonnull;
+import jakarta.persistence.EntityManagerFactory;
+
 public interface IEMFCustomizer {
-    EntityManagerFactory getCustomizedEmf(String puName, RelationalDatabaseConfiguration settings, HibernateSearchConfiguration hibernateSearchConfiguration) throws Exception;
+    /**
+     * Create a customized EntityManagerFactory for the given persistence unit name and settings.
+     *
+     * @param puName the name of the persistence unit as defined in persistence.xml
+     * @param settings either the primary or the shadow database settings
+     * @param configureTextSearch flag which decides if additional configuration for full text search (for example Hibernate Search) should be applied
+     * @return a configured {@link EntityManagerFactory} instance for the specified persistence unit, customized according to the provided settings and text search configuration
+     * @throws jakarta.persistence.PersistenceException if the EntityManagerFactory cannot be created due to persistence or database connection failures
+     * @throws java.lang.IllegalArgumentException if the provided configuration is invalid
+     * @throws Exception for other unexpected errors during factory creation or configuration
+     */
+    @Nonnull
+    EntityManagerFactory getCustomizedEmf(@Nonnull String puName, @Nonnull RelationalDatabaseConfiguration settings, boolean configureTextSearch) throws Exception;
 }

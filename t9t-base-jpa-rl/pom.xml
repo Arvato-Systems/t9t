@@ -35,5 +35,9 @@
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-base-jpa</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.arvato-systems.t9t</groupId>
+            <artifactId>t9t-cfg-be</artifactId>
+        </dependency>
     </dependencies>
 </project>

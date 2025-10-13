@@ -35,7 +35,7 @@
         <zk.version>9.6.6-jakarta</zk.version>
         <zk-themes.version>9.6.6</zk-themes.version>
         <zk-ckez.version>4.21.0.0-jakarta</zk-ckez.version>  <!-- https://github.com/zkoss/zkckeditor -->
-        <closure-compiler.version>v20230502</closure-compiler.version>
+        <closure-compiler.version>v20250820</closure-compiler.version>
     </properties>
 
 

@@ -31,10 +31,14 @@ import org.hibernate.dialect.SQLServerDialect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.jpa.ormspecific.IEMFCustomizer;
+import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.cfg.be.DatabaseBrandType;
 import com.arvatosystems.t9t.cfg.be.HibernateSearchConfiguration;
 import com.arvatosystems.t9t.cfg.be.RelationalDatabaseConfiguration;
+import com.arvatosystems.t9t.cfg.be.SearchConfiguration;
+import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration;
 import com.arvatosystems.t9t.init.InitContainers;
 
 import de.jpaw.dp.Singleton;
@@ -109,7 +113,7 @@ public class EMFCustomizer implements IEMFCustomizer {
     }
 
     @Override
-    public EntityManagerFactory getCustomizedEmf(final String puName, final RelationalDatabaseConfiguration settings, HibernateSearchConfiguration hibernateSearchConfiguration) {
+    public EntityManagerFactory getCustomizedEmf(final String puName, final RelationalDatabaseConfiguration settings, final boolean configureTextSearch) {
         final Map<String, Object> myProps = new HashMap<>();
 
         configureProperties(myProps);
@@ -119,22 +123,34 @@ public class EMFCustomizer implements IEMFCustomizer {
         putOpt(myProps, "jakarta.persistence.jdbc.user",     settings.getUsername());
         putOpt(myProps, "jakarta.persistence.jdbc.password", settings.getPassword());
 
-        if (hibernateSearchConfiguration != null) {
+        final T9tServerConfiguration cfg = ConfigProvider.getConfiguration();
+        final SearchConfiguration searchConfiguration = cfg.getSearchConfiguration(); // configuration for the text search strategy
+        final boolean useHibernateSearch = searchConfiguration != null && T9tConstants.TEXT_SEARCH_ID_HIBERNATE_SEARCH.equals(searchConfiguration.getStrategy());
+        final HibernateSearchConfiguration hibernateSearchConfiguration = cfg.getHibernateSearchConfiguration();
+
+        // Plausibility check: if hibernate search is to be used, the configuration must be present
+        if (useHibernateSearch && hibernateSearchConfiguration == null) {
+            LOGGER.warn("Hibernate search is configured as text search strategy, but no hibernate search configuration is present");
+        }
+
+        if (configureTextSearch && useHibernateSearch && hibernateSearchConfiguration != null) {
+            LOGGER.info("Enabling Hibernate Search for persistence unit {} with backend type {}", puName, hibernateSearchConfiguration.getSearchType());
             putOpt(myProps, "hibernate.search.enabled",                     "true");
             putOpt(myProps, "hibernate.search.backend.type",                hibernateSearchConfiguration.getSearchType());
             putOpt(myProps, "hibernate.search.schema_management.strategy",  hibernateSearchConfiguration.getSchemaManagementStrategy());
-            putOpt(myProps, "hibernate.search.mapping.configurer", "com.arvatosystems.t9t.hs.configurate.be.core.impl.EntityConfigurer");
+            putOpt(myProps, "hibernate.search.mapping.configurer",          "com.arvatosystems.t9t.hs.configurate.be.core.impl.EntityConfigurer");
             if (hibernateSearchConfiguration.getSearchType().equals("lucene")) {
-                putOpt(myProps, "hibernate.search.backend.directory.type", hibernateSearchConfiguration.getLuceneConfiguration().getDirectoryType());
-                putOpt(myProps, "hibernate.search.backend.directory.root", hibernateSearchConfiguration.getLuceneConfiguration().getDirectoryRoot());
+                putOpt(myProps, "hibernate.search.backend.directory.type",  hibernateSearchConfiguration.getLuceneConfiguration().getDirectoryType());
+                putOpt(myProps, "hibernate.search.backend.directory.root",  hibernateSearchConfiguration.getLuceneConfiguration().getDirectoryRoot());
                 putOpt(myProps, "hibernate.search.backend.analysis.configurer", "com.arvatosystems.t9t.hs.be.lucene.configurate.impl.T9tLuceneAnalysisConfigurer");
             } else if (hibernateSearchConfiguration.getSearchType().equals("elasticsearch")) {
-                putOpt(myProps, "hibernate.search.backend.hosts", hibernateSearchConfiguration.getElasticSearchConfiguration().getHosts());
-                putOpt(myProps, "hibernate.search.backend.username", hibernateSearchConfiguration.getElasticSearchConfiguration().getUsername());
-                putOpt(myProps, "hibernate.search.backend.password", hibernateSearchConfiguration.getElasticSearchConfiguration().getPassword());
+                putOpt(myProps, "hibernate.search.backend.hosts",           hibernateSearchConfiguration.getElasticSearchConfiguration().getHosts());
+                putOpt(myProps, "hibernate.search.backend.username",        hibernateSearchConfiguration.getElasticSearchConfiguration().getUsername());
+                putOpt(myProps, "hibernate.search.backend.password",        hibernateSearchConfiguration.getElasticSearchConfiguration().getPassword());
                 putOpt(myProps, "hibernate.search.backend.analysis.configurer", "com.arvatosystems.t9t.hs.be.elasticsearch.configurate.impl.T9tElasticsearchAnalysisConfigurer");
             }
         } else {
+            LOGGER.info("No Hibernate Search will be used for persistence unit {}", puName);
             putOpt(myProps, "hibernate.search.enabled",                     "false");
         }
 
