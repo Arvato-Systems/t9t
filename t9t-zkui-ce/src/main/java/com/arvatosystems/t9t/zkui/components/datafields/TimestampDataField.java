@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
 
+import com.arvatosystems.t9t.zkui.util.ApplicationUtil;
 import org.zkoss.zul.Datebox;
 
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
@@ -34,7 +35,7 @@ public class TimestampDataField extends AbstractDataField<Datebox, LocalDateTime
     public TimestampDataField(DataFieldParameters params) {
         super(params);
         setConstraints(c, null);
-        c.setFormat("medium+medium");
+        c.setFormat(ApplicationUtil.getDateTimeFormat(as.getUserLocale()));
     }
 
     @Override

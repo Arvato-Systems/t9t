@@ -15,10 +15,14 @@
  */
 package com.arvatosystems.t9t.zkui.util;
 
+import java.text.DateFormat;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,6 +30,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.BindUtils;
+import org.zkoss.text.DateFormats;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Events;
@@ -238,5 +243,49 @@ public final class ApplicationUtil {
         cookie.setMaxAge(THIRTY_DAYS);
         cookie.setSecure(true);
         resp.addCookie(cookie);
+    }
+
+    /**
+     * Returns the date time format for the given locale. If locale is null, the default locale is used.
+     * The format is modified to replace Narrow No-Break Spaces (NNBSP) with regular spaces.
+     * This is a workaround for a bug in Java 21. See https://bugs.openjdk.org/browse/JDK-8304925
+     *
+     * @param locale the locale to use, or null for the default locale
+     * @return the date time format string
+     */
+    @Nonnull
+    public static String getDateTimeFormat(@Nullable final Locale locale) {
+        return replaceNnbsp(DateFormats.getDateTimeFormat(DateFormat.MEDIUM, DateFormat.MEDIUM, locale, null));
+    }
+
+    /**
+     * Returns the time format for the given locale. If locale is null, the default locale is used.
+     * The format is modified to replace Narrow No-Break Spaces (NNBSP) with regular spaces.
+     * This is a workaround for a bug in Java 21. See https://bugs.openjdk.org/browse/JDK-8304925
+     *
+     * @param locale the locale to use, or null for the default locale
+     * @return the time format string
+     */
+    @Nonnull
+    public static String getTimeFormat(@Nullable final Locale locale) {
+        return replaceNnbsp(DateFormats.getTimeFormat(DateFormat.MEDIUM, locale, null));
+    }
+
+    /**
+     * Returns the date format for the given locale. If locale is null, the default locale is used.
+     * The format is modified to replace Narrow No-Break Spaces (NNBSP) with regular spaces.
+     * This is a workaround for a bug in Java 21. See https://bugs.openjdk.org/browse/JDK-8304925
+     *
+     * @param locale the locale to use, or null for the default locale
+     * @return the date format string
+     */
+    @Nonnull
+    public static String getDateFormat(@Nullable final Locale locale) {
+        return replaceNnbsp(DateFormats.getDateFormat(DateFormat.MEDIUM, locale, null));
+    }
+
+    @Nonnull
+    private static String replaceNnbsp(@Nonnull final String s) {
+        return s.replace("\u202F", " ");
     }
 }

@@ -21,6 +21,7 @@ import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.TimeZone;
 
+import com.arvatosystems.t9t.zkui.util.ApplicationUtil;
 import org.zkoss.zul.Timebox;
 
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
@@ -36,7 +37,7 @@ public class TimeDataField extends AbstractDataField<Timebox, LocalTime> {
     public TimeDataField(DataFieldParameters params) {
         super(params);
         setConstraints(c, null);
-        c.setFormat("medium");
+        c.setFormat(ApplicationUtil.getTimeFormat(as.getUserLocale()));
         c.setTimeZone(TimeZone.getDefault());  // do not convert between user's time zone and UTC here
     }
 
