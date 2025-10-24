@@ -17,6 +17,7 @@ package com.arvatosystems.t9t.zkui.components.dropdown28.factories;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -35,16 +36,15 @@ import de.jpaw.dp.Jdp;
 
 public final class Dropdown28FactoryForQualifiers {
     private static final Logger LOGGER = LoggerFactory.getLogger(Dropdown28FactoryForQualifiers.class);
-    private static final ConcurrentMap<String, List<String>> CACHE = new ConcurrentHashMap<>(64);
+    private static final ConcurrentMap<String, List<ComboBoxItem>> COMBO_BOX_CACHE = new ConcurrentHashMap<>(64);
 
     private Dropdown28FactoryForQualifiers() { }
 
     public static Dropdown28ForQualifier createInstance(final String pqon) {
-        List<String> values = CACHE.get(pqon);
-        final List<ComboBoxItem> comboBoxItems = new ArrayList<>(values == null ? 20 : values.size());
-        if (values == null) {
+        List<ComboBoxItem> comboBoxItems = COMBO_BOX_CACHE.get(pqon);
+        if (comboBoxItems == null) {
             LOGGER.info("No cached data for qualifiers of {}, asking backend", pqon);
-            IT9tRemoteUtils remote = Jdp.getRequired(IT9tRemoteUtils.class);
+            final IT9tRemoteUtils remote = Jdp.getRequired(IT9tRemoteUtils.class);
             final GetQualifiersRequest rq = new GetQualifiersRequest();
             if (pqon.indexOf(',') < 0) {
                 // single path - no need to split
@@ -57,13 +57,14 @@ public final class Dropdown28FactoryForQualifiers {
                     rq.getFullyQualifiedClassNames().add(getFullyQualifiedClassName(p));
                 }
             }
-            GetQualifiersResponse resp = remote.executeExpectOk(rq, GetQualifiersResponse.class);
-            values = CACHE.computeIfAbsent(pqon, (k) -> new ArrayList<String>(resp.getQualifiers()));
-        }
-        final ApplicationSession as = ApplicationSession.get();
-        for (final String qualifier : values) {
-            // translations
-            comboBoxItems.add(getComboBoxItem(as, pqon, qualifier));
+            final GetQualifiersResponse resp = remote.executeExpectOk(rq, GetQualifiersResponse.class);
+            comboBoxItems = new ArrayList<>(resp.getQualifiers().size());
+            final ApplicationSession as = ApplicationSession.get();
+            for (final String qualifier: resp.getQualifiers()) {
+                comboBoxItems.add(getComboBoxItem(as, pqon, qualifier));
+            }
+            comboBoxItems.sort(Comparator.comparing(ComboBoxItem::getName, String.CASE_INSENSITIVE_ORDER));
+            COMBO_BOX_CACHE.put(pqon, comboBoxItems);
         }
         return new Dropdown28ForQualifier(comboBoxItems);
     }

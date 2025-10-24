@@ -80,16 +80,17 @@ public class CamelDataSinkChangeListener implements IEventHandler {
     }
 
     private void add(final DataSinkDTO dataSink) {
-
-        if (Boolean.FALSE.equals(dataSink.getIsInput())
-            && dataSink.getCamelRoute() != null) {
-            // If an camelRoute (which is loaded from camelEndpoint.properties) exist, also reload this config
-            CamelOutputProcessor.flushConfig();
-        }
-
-        if (Boolean.TRUE.equals(dataSink.getIsInput())) {
+        final boolean isInput = Boolean.TRUE.equals(dataSink.getIsInput());
+        if (isInput) {
+            // import data route (always using camel)
             camelService.addRoutes(dataSink);
             camelService.startRoute(dataSink); // start manually
+        } else {
+            // export data sink (may or may not use camel)
+            if (dataSink.getCamelRoute() != null) {
+                // If an camelRoute (which is loaded from camelEndpoint.properties) exist, also reload this config
+                CamelOutputProcessor.flushConfig();
+            }
         }
     }
 }

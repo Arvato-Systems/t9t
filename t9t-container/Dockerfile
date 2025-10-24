@@ -102,8 +102,6 @@ ENV APP=/app \
     T9T_RESTAPI_KAFKA=Y \
     T9T_KAFKA_BOOTSTRAP_SERVERS="/dev/null" \
     T9T_KAFKA_REQUEST_TOPIC="requestToMAIN" \
-    # Not clustered, standalone server, can be changed to com.arvatosystems.t9t.vertx.cluster.VertxCluster
-    MAIN_CLASS=com.arvatosystems.t9t.base.vertx.impl.T9tServer \
     POSTGRES_MAIN_URL=jdbc:aws-wrapper:postgresql://db:5432/main \
     POSTGRES_MAIN_USER=fortytwo \
     # POSTGRES_MAIN_PASSWORD=changeMe
@@ -129,7 +127,13 @@ RUN mkdir -p ${MIG}/t9t-sql && \
 EXPOSE 8025 8024 5701 8849
 VOLUME ${FORTYTWO}
 CMD dumb-init java ${AGENT_PATH} \
+    --add-modules java.se \
     --add-modules jdk.incubator.vector \
+    --add-exports java.base/jdk.internal.ref=ALL-UNNAMED \
+    --add-opens java.base/java.lang=ALL-UNNAMED \
+    --add-opens java.base/sun.nio.ch=ALL-UNNAMED \
+    --add-opens java.management/sun.management=ALL-UNNAMED \
+    --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED \
     --enable-native-access=ALL-UNNAMED \
     -Dlogback.configurationFile=${LOGBACK_PATH} \
     -XX:MinRAMPercentage=${MIN_RAM_P} \
@@ -138,9 +142,7 @@ CMD dumb-init java ${AGENT_PATH} \
     -XX:+PrintFlagsFinal \
     -Dhazelcast.jmx=true \
     -Dvertx.hazelcast.config=${HAZELCAST_PATH} \
-    -cp ${JAR} \
-    -Dloader.main=${MAIN_CLASS} \
-    org.springframework.boot.loader.launch.PropertiesLauncher \
+    -jar ${JAR} \
     --cfg=${CONFIG_PATH} \
     ${METRICS} \
     ${CORS} \
@@ -158,10 +160,10 @@ ENV HOST=server-main \
   T9T_RESTAPI_KAFKA="Y" \
   T9T_KAFKA_BOOTSTRAP_SERVERS="/dev/null" \
   T9T_KAFKA_REQUEST_TOPIC="requestToMAIN" \
-  MAIN_CLASS=com.arvatosystems.t9t.jetty.init.JettyServer\
   METRICS="--metrics"
 CMD dumb-init java ${AGENT_PATH} \
     -Dlogback.configurationFile=${LOGBACK_PATH} \
+    -Djetty.contextRoot=/ \
     -XX:MinRAMPercentage=${MIN_RAM_P} \
     -XX:MaxRAMPercentage=${MAX_RAM_P} \
     -XX:InitialRAMPercentage=${INIT_RAM_P} \
@@ -171,7 +173,7 @@ CMD dumb-init java ${AGENT_PATH} \
 EXPOSE 8090
 
 # === DATABASE BASE FOR MULTI-DB-SETUP ===
-FROM postgres:16-alpine AS postgres
+FROM postgres:18-alpine AS postgres
 COPY --chown=postgres:postgres ./postgres/init.sh /docker-entrypoint-initdb.d/
 
   

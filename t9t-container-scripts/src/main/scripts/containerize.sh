@@ -1,5 +1,4 @@
 #!/bin/bash
-
 containerize() {
   set -e
 

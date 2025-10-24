@@ -1,5 +1,4 @@
 #!/bin/bash
-
 push-images() {
   set -e
 
