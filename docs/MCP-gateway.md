@@ -8,6 +8,8 @@ This document introduces the MCP Gateway developed as part of **TBE-1473**, deta
 
 The `t9t-gateway-mcp` is a standalone module designed as a JAX-RS/Jetty-based application. It leverages the MCP Java SDK to facilitate communication between external tools and the t9t backend, supporting dynamic tool and prompt registration as specified by the MCP protocol.
 
+For a complete list of available MCP tools, see the [MCP Tools Reference](./MCP-tools.md).
+
 ### ✨ Key Features
 
 - **🏗️ Standalone Gateway Module:** The gateway operates independently, allowing flexible deployment and configuration.
@@ -336,4 +338,12 @@ like this (not working yet):
         "type": "stdio"
     }
 }
+
+---
+
+## 🔗 Related Documentation
+
+- **[MCP Tools Reference](./MCP-tools.md)** - Complete list of available MCP tools with descriptions and usage examples
+- [Model Context Protocol Specification](https://modelcontextprotocol.io/) - Official MCP specification
+- t9t AI API Documentation - API definitions in `t9t-ai-api` module
 ```

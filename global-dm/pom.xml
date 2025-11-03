@@ -48,10 +48,10 @@
         <xtend.version>${xtext.version}</xtend.version>
 
         <!-- Database driver versions -->
-        <driver.oracle.version>23.9.0.25.07</driver.oracle.version>
+        <driver.oracle.version>23.26.0.0.0</driver.oracle.version>
         <driver.postgresql.version>42.7.8</driver.postgresql.version>     <!-- starting with 4.2.15, the driver adds a dependency to checker-qual 3.5.0 which conflicts with 2.5.2 pulled by guava -->
         <driver.sqlserver.version>13.2.1.jre11</driver.sqlserver.version> <!-- not all releases are available on maven central as jre17 builds -->
-        <driver.hana.version>2.26.6</driver.hana.version>
+        <driver.hana.version>2.26.11</driver.hana.version>
         <h2.version>2.3.232</h2.version>
 
         <!-- OR mappers -->
@@ -111,7 +111,7 @@
         <commons-csv.version>1.14.1</commons-csv.version>                 <!-- not used in t9t, but DM made for downstream projects -->
 
         <!-- AWS SDK v2 -->
-        <aws2-bom.version>2.35.10</aws2-bom.version>
+        <aws2-bom.version>2.37.3</aws2-bom.version>
 
         <!-- AWS JDBC wrapper for Aurora -->
         <aws-jdbc-wrapper.version>2.6.5</aws-jdbc-wrapper.version>
@@ -155,9 +155,9 @@
         <bouncycastle-tsp.version>1.46-donotuse</bouncycastle-tsp.version>     <!--  is older than the others! Is it still required? -->
         <woodstox.version>7.1.1</woodstox.version>
         <stax2-api.version>4.2.2</stax2-api.version>
-        <icu4j.version>77.1</icu4j.version>
+        <icu4j.version>78.1</icu4j.version>
         <zxing.version>3.5.3</zxing.version>
-        <quartz.version>2.5.0</quartz.version>
+        <quartz.version>2.5.1</quartz.version>
         <jsap.version>2.1</jsap.version>
         <picocli.version>4.7.7</picocli.version>
         <httpcore.version>4.4.16</httpcore.version>
@@ -174,7 +174,7 @@
 
         <javassist.version>3.30.2-GA</javassist.version>
         <guava.version>33.5.0-jre</guava.version>
-        <caffeine.version>3.2.2</caffeine.version>
+        <caffeine.version>3.2.3</caffeine.version>
         <antlr.version>3.2</antlr.version>
         <resteasy.version>7.0.0.Final</resteasy.version>
         <resteasy-vertx.version>2.0.0.Beta1</resteasy-vertx.version>
@@ -187,11 +187,11 @@
         <reload4j.version>1.2.26</reload4j.version>
 
         <!-- Spring core -->
-        <spring-bom.version>6.2.12</spring-bom.version>
+        <spring-bom.version>7.0.0-RC3</spring-bom.version>
         <!-- Spring data -->
-        <spring-data-jpa.version>3.5.5</spring-data-jpa.version>
+        <spring-data-jpa.version>4.0.0-RC2</spring-data-jpa.version>
         <!-- Spring boot -->
-        <spring-boot.version>3.5.7</spring-boot.version>
+        <spring-boot.version>4.0.0-RC1</spring-boot.version>
 
         <netty.version>4.2.7.Final</netty.version>
         <vertx4.version>5.0.5</vertx4.version>
@@ -205,10 +205,10 @@
         <flyway.version>11.14.1</flyway.version>
         <reflections.version>0.9.10</reflections.version>
         <maven-plugin-api.version>3.9.11</maven-plugin-api.version>
-        <jackson.version>2.20.0</jackson.version>
+        <jackson.version>2.20.1</jackson.version>
         <solr.version>8.11.1</solr.version>
         <camel.version>4.14.1</camel.version>
-        <jsch.version>2.27.4</jsch.version>
+        <jsch.version>2.27.5</jsch.version>
         <kafka.version>3.9.1</kafka.version>
         <error-prone.version>2.43.0</error-prone.version>
 
@@ -217,7 +217,7 @@
         <prometheus.version>0.16.0</prometheus.version>
 
         <!-- Swagger -->
-        <swagger.version>2.2.39</swagger.version>
+        <swagger.version>2.2.40</swagger.version>
         <swagger-ui.version>${swagger-ui-webjars.version}</swagger-ui.version>
 
         <!-- Google Services -->
