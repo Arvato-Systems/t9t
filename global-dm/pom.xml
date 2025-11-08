@@ -157,7 +157,7 @@
         <stax2-api.version>4.2.2</stax2-api.version>
         <icu4j.version>78.1</icu4j.version>
         <zxing.version>3.5.3</zxing.version>
-        <quartz.version>2.5.1</quartz.version>
+        <quartz.version>2.5.0</quartz.version>
         <jsap.version>2.1</jsap.version>
         <picocli.version>4.7.7</picocli.version>
         <httpcore.version>4.4.16</httpcore.version>

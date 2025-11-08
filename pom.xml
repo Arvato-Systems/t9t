@@ -124,7 +124,7 @@
         <swagger-ui-webjars.version>5.30.1</swagger-ui-webjars.version>
 
         <!-- OpenApi -->
-        <openapi-generator.version>7.17.0</openapi-generator.version>
+        <openapi-generator.version>7.16.0</openapi-generator.version>
 
         <!-- Angular related versions -->
         <typescript.version>~5.8.2</typescript.version>
