@@ -43,19 +43,69 @@ public final class Main {
 
     private static void hexdump(final InputStream input) throws IOException {
         final byte[] buffer = new byte[BYTES_PER_LINE];
+        final byte[] previousBuffer = new byte[BYTES_PER_LINE];
         int offset = 0;
         int bytesRead;
+        int previousBytesRead = -1;
+        boolean previousWasIdentical = false;
 
         while ((bytesRead = input.read(buffer)) != -1) {
-            printLine(buffer, bytesRead, offset);
+            final boolean currentLineAllSame = isAllSameBytes(buffer, bytesRead);
+            final boolean linesAreIdentical = bytesRead == previousBytesRead && bytesRead == BYTES_PER_LINE
+                    && arraysEqual(buffer, previousBuffer, bytesRead);
+
+            if (linesAreIdentical) {
+                // This is 2nd, 3rd, 4th... identical line
+                if (!previousWasIdentical) {
+                    // This is the 2nd identical line - print dots
+                    System.out.println("...");
+                }
+                // For 3rd+ identical lines, print nothing
+            } else {
+                // Different line - print it normally
+                printLine(buffer, bytesRead, offset, currentLineAllSame);
+            }
+
+            // Update state for next iteration
+            System.arraycopy(buffer, 0, previousBuffer, 0, bytesRead);
+            previousBytesRead = bytesRead;
+            previousWasIdentical = linesAreIdentical;
             offset += bytesRead;
         }
     }
 
-    private static void printLine(final byte[] buffer, final int length, final int offset) {
+    private static boolean isAllSameBytes(final byte[] buffer, final int length) {
+        if (length != BYTES_PER_LINE) {
+            return false;
+        }
+        final byte first = buffer[0];
+        for (int i = 1; i < length; i++) {
+            if (buffer[i] != first) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static boolean arraysEqual(final byte[] a, final byte[] b, final int length) {
+        for (int i = 0; i < length; i++) {
+            if (a[i] != b[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static void printLine(final byte[] buffer, final int length, final int offset, final boolean allSame) {
         // Print offset (6 hex digits)
         System.out.printf("%06x ", offset);
 
+        if (allSame) {
+            // Print "(all xx)" format
+            final byte b = buffer[0];
+            System.out.printf("(all %02x / %c)", b, b >= 32 && b < 127 ? (char)b : '.');
+            return;
+        }
         // Print first 8 bytes as hex pairs
         for (int i = 0; i < 8; i++) {
             if (i < length) {
@@ -79,7 +129,7 @@ public final class Main {
 
         // Print ASCII representation
         for (int i = 0; i < length; i++) {
-            byte b = buffer[i];
+            final byte b = buffer[i];
             if (b >= 32 && b < 127) {
                 System.out.print((char) b);
             } else {

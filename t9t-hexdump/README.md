@@ -44,6 +44,30 @@ Example output:
 000000 48 65 6c 6c 6f 2c 20 57  6f 72 6c 64 21 20 0a    Hello, World! .
 ```
 
+### Compression Features
+
+To make output more readable for files with repetitive data, the hexdump tool automatically compresses the output:
+
+1. **Lines with identical bytes**: When a line contains exactly 16 identical bytes, the output shows `(all xx / b)` instead of displaying all hex values:
+   ```
+   000000 (all ff / .)
+   ```
+
+2. **Consecutive identical lines**: When multiple consecutive lines are identical:
+   - The first line is shown normally
+   - The second identical line is replaced with `...`
+   - Subsequent identical lines (3rd, 4th, etc.) are omitted completely
+   - Normal output resumes when a different line is encountered
+
+   Example with 5 identical lines:
+   ```
+   000000 (all 41 / A)
+   ...
+   000050 41 42 43 44 45 46 47 48  49 4a 4b 4c 4d 4e 4f 50 ABCDEFGHIJKLMNOP
+   ```
+
+This compression significantly reduces output size for files with large blocks of repeated data while preserving all essential information.
+
 ## Examples
 
 ### Example 1: Dump a text file
@@ -72,6 +96,27 @@ Output:
 ```bash
 cat /etc/hostname | java -jar target/t9t-hexdump-9.0-SNAPSHOT.jar
 ```
+
+### Example 4: Files with repetitive data (demonstrating compression)
+```bash
+# Create a file with repetitive blocks
+printf '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' > zeros.bin
+printf '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' >> zeros.bin
+printf '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' >> zeros.bin
+printf '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' >> zeros.bin
+printf '\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF' >> zeros.bin
+
+java -jar target/t9t-hexdump-9.0-SNAPSHOT.jar zeros.bin
+```
+
+Output (compressed):
+```
+000000 (all 00 / .)
+...
+000040 (all ff / .)
+```
+
+Without compression, this would display 5 separate lines. The improved output shows just 3 lines while preserving all information.
 
 ## Error Handling
 
