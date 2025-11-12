@@ -901,6 +901,8 @@
                 <module>schema-loader-cmdline</module>
                 <module>schema-loader-maven-plugin</module>
 
+                <module>t9t-hexdump</module>
+
                 <module>t9t-annotations-api</module>
                 <module>t9t-cfg-api</module>
                 <module>t9t-base-api</module>
@@ -1123,6 +1125,8 @@
                 <module>t9t-test-server</module>
 
                 <module>t9t-alexa</module>
+
+                <module>t9t-hexdump</module>
 
                 <module>t9t-ariba-api</module>
                 <module>t9t-ariba-connector</module>
@@ -1401,6 +1405,8 @@
 
                 <module>t9t-tests-embedded</module>
                 <module>t9t-tests-unit</module>
+
+                <module>t9t-hexdump</module>
 
                 <module>t9t-ariba-api</module>
                 <module>t9t-ariba-connector</module>
