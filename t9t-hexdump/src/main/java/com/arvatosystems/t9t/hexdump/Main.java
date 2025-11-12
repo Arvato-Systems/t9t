@@ -103,7 +103,12 @@ public final class Main {
         if (allSame) {
             // Print "(all xx)" format
             final byte b = buffer[0];
-            System.out.printf("(all %02x / %c)", b, b >= 32 && b < 127 ? (char)b : '.');
+            if (b >= 32 && b < 127) {
+                // print with ASCII char
+                System.out.printf("(all %02x / '%c')\n", b, (char)b);
+            } else {
+                System.out.printf("(all %02x)\n", b);
+            }
             return;
         }
         // Print first 8 bytes as hex pairs

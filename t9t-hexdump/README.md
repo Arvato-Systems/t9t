@@ -48,9 +48,9 @@ Example output:
 
 To make output more readable for files with repetitive data, the hexdump tool automatically compresses the output:
 
-1. **Lines with identical bytes**: When a line contains exactly 16 identical bytes, the output shows `(all xx / b)` instead of displaying all hex values:
+1. **Lines with identical bytes**: When a line contains exactly 16 identical bytes, the output shows `(all xx)` instead of displaying all hex values:
    ```
-   000000 (all ff / .)
+   000000 (all ff)
    ```
 
 2. **Consecutive identical lines**: When multiple consecutive lines are identical:
@@ -61,7 +61,7 @@ To make output more readable for files with repetitive data, the hexdump tool au
 
    Example with 5 identical lines:
    ```
-   000000 (all 41 / A)
+   000000 (all 41 / 'A')
    ...
    000050 41 42 43 44 45 46 47 48  49 4a 4b 4c 4d 4e 4f 50 ABCDEFGHIJKLMNOP
    ```
@@ -111,9 +111,9 @@ java -jar target/t9t-hexdump-9.0-SNAPSHOT.jar zeros.bin
 
 Output (compressed):
 ```
-000000 (all 00 / .)
+000000 (all 00)
 ...
-000040 (all ff / .)
+000040 (all ff)
 ```
 
 Without compression, this would display 5 separate lines. The improved output shows just 3 lines while preserving all information.
