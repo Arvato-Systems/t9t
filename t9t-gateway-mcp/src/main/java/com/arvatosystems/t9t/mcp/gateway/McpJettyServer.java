@@ -21,8 +21,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.jpaw.api.ConfigurationReader;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ConfigurationReaderFactory;
+import io.modelcontextprotocol.json.McpJsonMapper;
+import io.modelcontextprotocol.json.jackson.JacksonMcpJsonMapper;
 import io.modelcontextprotocol.server.McpSyncServer;
-import io.modelcontextprotocol.server.transport.HttpServletSseServerTransportProvider;
+import io.modelcontextprotocol.server.transport.HttpServletStreamableServerTransportProvider;
 import org.eclipse.jetty.ee11.servlet.ServletContextHandler;
 import org.eclipse.jetty.ee11.servlet.ServletHolder;
 import org.eclipse.jetty.server.HttpConfiguration;
@@ -113,10 +115,12 @@ public class McpJettyServer {
         server.addConnector(connector);
 
         final ServletContextHandler context = new ServletContextHandler();
-        context.setContextPath("/");
+        context.setContextPath(contextPath);
 
         final ObjectMapper mapper = JacksonTools.createObjectMapper();
-        final HttpServletSseServerTransportProvider transportProvider = new HttpServletSseServerTransportProvider(mapper, "/sse");
+        final McpJsonMapper jsonMapper = new JacksonMcpJsonMapper(mapper);
+        final HttpServletStreamableServerTransportProvider transportProvider = HttpServletStreamableServerTransportProvider.builder().mcpEndpoint("/sse")
+            .jsonMapper(jsonMapper).build();
 
         context.addServlet(new ServletHolder(transportProvider), "/*");
         final T9tMcpGatewayInitializer initializer = new T9tMcpGatewayInitializer();

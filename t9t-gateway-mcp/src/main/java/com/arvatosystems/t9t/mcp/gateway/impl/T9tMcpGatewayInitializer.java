@@ -21,6 +21,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import io.modelcontextprotocol.json.McpJsonMapper;
+import io.modelcontextprotocol.json.jackson.JacksonMcpJsonMapper;
+import io.modelcontextprotocol.spec.McpStreamableServerTransportProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +43,6 @@ import com.arvatosystems.t9t.client.init.SystemConfigurationProvider;
 import com.arvatosystems.t9t.jackson.JacksonTools;
 import com.arvatosystems.t9t.jdp.Init;
 import com.arvatosystems.t9t.mcp.gateway.IT9tMcpProcessor;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.jpaw.api.ConfigurationReader;
@@ -55,7 +58,6 @@ import io.modelcontextprotocol.spec.McpSchema.Prompt;
 import io.modelcontextprotocol.spec.McpSchema.PromptArgument;
 import io.modelcontextprotocol.spec.McpSchema.ServerCapabilities;
 import io.modelcontextprotocol.spec.McpSchema.Tool;
-import io.modelcontextprotocol.spec.McpServerTransportProvider;
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
@@ -63,6 +65,7 @@ import jakarta.servlet.ServletContextListener;
 public class T9tMcpGatewayInitializer implements ServletContextListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(T9tMcpGatewayInitializer.class);
     private static final ObjectMapper MAPPER = JacksonTools.createObjectMapper();
+    private static final McpJsonMapper MCP_MAPPER = new JacksonMcpJsonMapper(MAPPER);
 
     private static final ConfigurationReader CONFIG_READER = ConfigurationReaderFactory.getConfigReaderForName("t9t.mcp", null);
 
@@ -78,7 +81,7 @@ public class T9tMcpGatewayInitializer implements ServletContextListener {
         Jdp.bindInstanceTo(new SystemConfigurationProvider(), IRemoteDefaultUrlRetriever.class);
     }
 
-    public McpSyncServer initMcpServer(final McpServerTransportProvider transportProvider) {
+    public McpSyncServer initMcpServer(final McpStreamableServerTransportProvider transportProvider) {
         final String apiKey = CONFIG_READER.getProperty("t9t.mcp.apiKey");
         if (T9tUtil.isBlank(apiKey)) {
             LOGGER.error("Missing system property t9t.mcp.apiKey or corresponding environment variable T9T_MCP_APIKEY");
@@ -111,7 +114,9 @@ public class T9tMcpGatewayInitializer implements ServletContextListener {
         for (final AiToolSpecification tool : aiGetToolsResponse.getTools()) {
             try {
                 final Tool mcpTool = new Tool.Builder().name(tool.getName()).description(tool.getDescription())
-                        .inputSchema(MAPPER.writeValueAsString(tool.getInputSchema())).outputSchema(MAPPER.writeValueAsString(tool.getOutputSchema())).build();
+                    .inputSchema(MCP_MAPPER, MAPPER.writeValueAsString(tool.getInputSchema()))
+                    .outputSchema(MCP_MAPPER, MAPPER.writeValueAsString(tool.getOutputSchema()))
+                    .build();
 
                 McpServerFeatures.SyncToolSpecification toolSpec = new McpServerFeatures.SyncToolSpecification(mcpTool, null,
                         (mcpAsyncServerExchange, callToolRequest) -> {

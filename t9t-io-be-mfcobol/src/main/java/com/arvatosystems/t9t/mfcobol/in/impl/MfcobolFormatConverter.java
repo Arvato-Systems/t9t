@@ -99,6 +99,11 @@ public class MfcobolFormatConverter extends AbstractBufferedFormatConverter {
             setIdxFormatAndEvaluateHeaderSize();
             varAlignmentSize = 8;
             break;
+        case "ODX2":
+            // magic number 0x30 0x7e 0x00 0x00 indicates a system record of 126 bytes (plus 2 padding).
+            setIdxFormatAndEvaluateHeaderSize();
+            varAlignmentSize = 4;
+            break;
         default:
             LOGGER.error("Unsupported genericParameter1 {} for data sink {}", importDataSinkDTO.getGenericParameter1(), importDataSinkDTO.getDataSinkId());
             throw new T9tException(T9tException.NOT_YET_IMPLEMENTED);
@@ -122,9 +127,10 @@ public class MfcobolFormatConverter extends AbstractBufferedFormatConverter {
         }
     }
 
-    protected int recordCounter = 0;  // number of undeleted records
-    protected int deletedRecords = 0; // number of deleted entries
-    protected int otherRecords = 0;   // other records (only IDX)
+    protected int recordCounter  = 0;   // number of undeleted records
+    protected int deletedRecords = 0;   // number of deleted entries
+    protected int otherRecords   = 0;   // other records (only IDX)
+    protected int systemRecords  = 0;   // system records (for example the first in ODX2 files, only IDX)
 
     @Override
     public void processBuffered(final InputStream is) {
@@ -186,6 +192,9 @@ public class MfcobolFormatConverter extends AbstractBufferedFormatConverter {
                     case 2:
                         ++deletedRecords;
                         break;
+                    case 3:
+                        ++systemRecords;
+                        break;
                     case 4:
                         processSingleRecord(buffer, recordSize);
                         ++recordCounter;
@@ -195,8 +204,8 @@ public class MfcobolFormatConverter extends AbstractBufferedFormatConverter {
                     }
                 }
             }
-            LOGGER.info("Processed file for DataSink {}: {} data records, {} deleted, {} other, record type selector was {}",
-                    importDataSinkDTO.getDataSinkId(), recordCounter, deletedRecords, otherRecords,
+            LOGGER.info("Processed file for DataSink {}: {} data records, {} deleted, {} system, {} other, record type selector was {}",
+                    importDataSinkDTO.getDataSinkId(), recordCounter, deletedRecords, systemRecords, otherRecords,
                     formatSelector == null ? "NULL" : formatSelector.getClass().getCanonicalName());
         } catch (final IOException e) {
             LOGGER.error("Error when reading line from input stream.", e);

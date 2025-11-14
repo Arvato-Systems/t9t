@@ -36,9 +36,11 @@ import com.arvatosystems.t9t.mcp.gateway.IT9tMcpProcessor;
 import com.arvatosystems.t9t.rest.services.IGatewayStringSanitizerFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.jpaw.bonaparte.api.media.MediaTypeInfo;
 import de.jpaw.bonaparte.core.DataConverter;
 import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import de.jpaw.bonaparte.pojos.api.media.MediaType;
+import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
@@ -154,11 +156,15 @@ public class T9tMcpProcessor implements IT9tMcpProcessor {
                 b.isError(true);
                 return b.build();
             }
+        } else if (src.getStructuredResponseAsString() != null) {
+            b.structuredContent(src.getStructuredResponseAsString());
         }
 
         if (src.getContents() != null && !src.getContents().isEmpty()) {
             for (MediaData mediaData : src.getContents()) {
-                MediaType mediaType = MediaType.factory(mediaData.getMediaType().getToken());
+                final MediaType mediaType = MediaType.factory(mediaData.getMediaType().getToken());
+                final MediaTypeDescriptor mediaTypeDesc = MediaTypeInfo.getFormatByType(mediaData.getMediaType());
+                final String mimeType = mediaTypeDesc != null ? mediaTypeDesc.getMimeType() : mediaData.getMediaType().getToken();
                 switch (mediaType) {
                 case MediaType.TEXT:
                     b.addTextContent(mediaData.getText());
@@ -169,12 +175,12 @@ public class T9tMcpProcessor implements IT9tMcpProcessor {
                 case MediaType.PNG:
                 case MediaType.TIFF:
                 case MediaType.WEBP:
-                    b.addContent(new ImageContent(null, mediaData.getRawData().asString(), mediaData.getMediaType().getToken()));
+                    b.addContent(new ImageContent(null, mediaData.getRawData().asBase64(), mimeType));
                     break;
                 case MediaType.MP3:
                 case MediaType.MP4:
                 case MediaType.WAV:
-                    b.addContent(new AudioContent(null, mediaData.getRawData().asString(), mediaData.getMediaType().getToken()));
+                    b.addContent(new AudioContent(null, mediaData.getRawData().asBase64(), mimeType));
                     break;
                 default:
                     LOGGER.warn("Unknown content type: {}", mediaData.getMediaType());
