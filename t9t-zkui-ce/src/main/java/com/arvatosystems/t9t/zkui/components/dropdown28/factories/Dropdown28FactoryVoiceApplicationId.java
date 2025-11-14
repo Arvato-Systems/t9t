@@ -56,10 +56,10 @@ public class Dropdown28FactoryVoiceApplicationId  implements IDropdown28DbFactor
 
     @Override
     public String getIdFromKey(VoiceApplicationRef key) {
-        if (key instanceof VoiceApplicationKey)
-            return ((VoiceApplicationKey) key).getApplicationId();
-        if (key instanceof VoiceApplicationDTO)
-            return ((VoiceApplicationDTO) key).getApplicationId();
+        if (key instanceof VoiceApplicationKey voiceApplicationKey)
+            return voiceApplicationKey.getApplicationId();
+        if (key instanceof VoiceApplicationDTO voiceApplicationDTO)
+            return voiceApplicationDTO.getApplicationId();
         return null;
     }
 

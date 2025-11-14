@@ -56,10 +56,10 @@ public class Dropdown28FactoryDataSink implements IDropdown28DbFactory<DataSinkR
 
     @Override
     public String getIdFromKey(DataSinkRef key) {
-        if (key instanceof DataSinkKey)
-            return ((DataSinkKey)key).getDataSinkId();
-        if (key instanceof DataSinkDTO)
-            return ((DataSinkDTO)key).getDataSinkId();
+        if (key instanceof DataSinkKey dataSinkKey)
+            return dataSinkKey.getDataSinkId();
+        if (key instanceof DataSinkDTO dataSinkDTO)
+            return dataSinkDTO.getDataSinkId();
         return null;
     }
 }

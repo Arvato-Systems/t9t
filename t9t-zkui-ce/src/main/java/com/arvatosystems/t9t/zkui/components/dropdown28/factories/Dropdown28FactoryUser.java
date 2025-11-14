@@ -61,10 +61,10 @@ public class Dropdown28FactoryUser implements IDropdown28DbFactory<UserRef> {
 
     @Override
     public String getIdFromKey(UserRef key) {
-        if (key instanceof UserKey)
-            return ((UserKey)key).getUserId();
-        if (key instanceof UserDTO)
-            return ((UserDTO)key).getUserId();
+        if (key instanceof UserKey userKey)
+            return userKey.getUserId();
+        if (key instanceof UserDTO userDTO)
+            return userDTO.getUserId();
         return null;
     }
 }

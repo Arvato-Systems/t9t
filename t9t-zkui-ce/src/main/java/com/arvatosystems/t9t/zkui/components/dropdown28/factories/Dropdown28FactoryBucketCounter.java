@@ -56,10 +56,10 @@ public class Dropdown28FactoryBucketCounter implements IDropdown28DbFactory<Buck
 
     @Override
     public String getIdFromKey(BucketCounterRef key) {
-        if (key instanceof BucketCounterKey)
-            return ((BucketCounterKey)key).getQualifier();
-        if (key instanceof BucketCounterDTO)
-            return ((BucketCounterDTO)key).getQualifier();
+        if (key instanceof BucketCounterKey bucketCounterKey)
+            return bucketCounterKey.getQualifier();
+        if (key instanceof BucketCounterDTO bucketCounterDTO)
+            return bucketCounterDTO.getQualifier();
         return null;
     }
 }

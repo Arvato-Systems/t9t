@@ -56,10 +56,10 @@ public class Dropdown28FactoryReportConfig implements IDropdown28DbFactory<Repor
 
     @Override
     public String getIdFromKey(ReportConfigRef key) {
-        if (key instanceof ReportConfigKey)
-            return ((ReportConfigKey) key).getReportConfigId();
-        if (key instanceof ReportConfigDTO)
-            return ((ReportConfigDTO) key).getReportConfigId();
+        if (key instanceof ReportConfigKey reportConfigKey)
+            return reportConfigKey.getReportConfigId();
+        if (key instanceof ReportConfigDTO reportConfigDTO)
+            return reportConfigDTO.getReportConfigId();
         return null;
     }
 }

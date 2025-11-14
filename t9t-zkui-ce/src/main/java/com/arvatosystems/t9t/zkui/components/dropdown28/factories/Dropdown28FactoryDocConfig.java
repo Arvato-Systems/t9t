@@ -56,10 +56,10 @@ public class Dropdown28FactoryDocConfig implements IDropdown28DbFactory<DocConfi
 
     @Override
     public String getIdFromKey(DocConfigRef key) {
-        if (key instanceof DocConfigKey)
-            return ((DocConfigKey)key).getDocumentId();
-        if (key instanceof DocConfigDTO)
-            return ((DocConfigDTO)key).getDocumentId();
+        if (key instanceof DocConfigKey docConfigKey)
+            return docConfigKey.getDocumentId();
+        if (key instanceof DocConfigDTO docConfigDTO)
+            return docConfigDTO.getDocumentId();
         return null;
     }
 }

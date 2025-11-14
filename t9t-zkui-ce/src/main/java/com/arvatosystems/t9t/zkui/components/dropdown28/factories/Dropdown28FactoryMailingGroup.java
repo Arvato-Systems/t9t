@@ -55,10 +55,10 @@ public class Dropdown28FactoryMailingGroup implements IDropdown28DbFactory<Maili
 
     @Override
     public String getIdFromKey(MailingGroupRef key) {
-        if (key instanceof MailingGroupKey)
-            return ((MailingGroupKey)key).getMailingGroupId();
-        if (key instanceof MailingGroupDTO)
-            return ((MailingGroupDTO)key).getMailingGroupId();
+        if (key instanceof MailingGroupKey mailingGroupKey)
+            return mailingGroupKey.getMailingGroupId();
+        if (key instanceof MailingGroupDTO mailingGroupDTO)
+            return mailingGroupDTO.getMailingGroupId();
         return null;
     }
 }

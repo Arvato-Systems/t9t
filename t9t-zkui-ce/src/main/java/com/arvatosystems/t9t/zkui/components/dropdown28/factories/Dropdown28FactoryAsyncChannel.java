@@ -56,10 +56,10 @@ public class Dropdown28FactoryAsyncChannel implements IDropdown28DbFactory<Async
 
     @Override
     public String getIdFromKey(AsyncChannelRef key) {
-        if (key instanceof AsyncChannelKey)
-            return ((AsyncChannelKey)key).getAsyncChannelId();
-        if (key instanceof AsyncChannelDTO)
-            return ((AsyncChannelDTO)key).getAsyncChannelId();
+        if (key instanceof AsyncChannelKey asyncChannelKey)
+            return asyncChannelKey.getAsyncChannelId();
+        if (key instanceof AsyncChannelDTO asyncChannelDTO)
+            return asyncChannelDTO.getAsyncChannelId();
         return null;
     }
 }

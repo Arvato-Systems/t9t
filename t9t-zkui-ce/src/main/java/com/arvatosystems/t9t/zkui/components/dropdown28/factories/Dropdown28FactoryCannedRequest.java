@@ -56,10 +56,10 @@ public class Dropdown28FactoryCannedRequest implements IDropdown28DbFactory<Cann
 
     @Override
     public String getIdFromKey(CannedRequestRef key) {
-        if (key instanceof CannedRequestKey)
-            return ((CannedRequestKey)key).getRequestId();
-        if (key instanceof CannedRequestDTO)
-            return ((CannedRequestDTO)key).getRequestId();
+        if (key instanceof CannedRequestKey cannedRequestKey)
+            return cannedRequestKey.getRequestId();
+        if (key instanceof CannedRequestDTO cannedRequestDTO)
+            return cannedRequestDTO.getRequestId();
         return null;
     }
 }

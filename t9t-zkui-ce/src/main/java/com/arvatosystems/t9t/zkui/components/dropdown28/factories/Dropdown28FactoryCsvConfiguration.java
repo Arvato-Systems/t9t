@@ -56,10 +56,10 @@ public class Dropdown28FactoryCsvConfiguration implements IDropdown28DbFactory<C
 
     @Override
     public String getIdFromKey(CsvConfigurationRef key) {
-        if (key instanceof CsvConfigurationKey)
-            return ((CsvConfigurationKey)key).getCsvConfigurationId();
-        if (key instanceof CsvConfigurationDTO)
-            return ((CsvConfigurationDTO)key).getCsvConfigurationId();
+        if (key instanceof CsvConfigurationKey csvConfigurationKey)
+            return csvConfigurationKey.getCsvConfigurationId();
+        if (key instanceof CsvConfigurationDTO csvConfigurationDTO)
+            return csvConfigurationDTO.getCsvConfigurationId();
         return null;
     }
 }

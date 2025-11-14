@@ -10,6 +10,8 @@ The documentation describes the essential changes, java files will need addition
    - fields for one or more natural keys
    - fields of the DTO
    The issue to create the DTOs must provide this information. In case it is missing or incomplete, reject the task, or ask for the missing input.
+   
+   **Note:** If the DTO and its natural key are already defined, this is not an error. In this case, skip this step and consider the existing definitions as part of the specification.
 
    The structure to generate is:
     ```
@@ -103,12 +105,13 @@ The documentation describes the essential changes, java files will need addition
     ```
    This method should be added inside the class annotated with `@AutoResolver42`. The method body remains empty as the actual implementation is generated.
    
-   Optionally, if the entity can be accessed globally (e.g., configuration data), add the `@AllCanAccessGlobalTenant` annotation:
+   **Important:** The annotations `@AllCanAccessGlobalTenant` and `@GlobalTenantCanAccessAll` are normally **NOT** used. These annotations should only be added if explicitly specified by the requester. If the requirement specifies their use:
+   - Use `@AllCanAccessGlobalTenant` if the entity can be accessed globally (e.g., configuration data accessible by all tenants):
     ```
     @AllCanAccessGlobalTenant
     def ExampleEntity getExampleEntity(ExampleRef ref) {}
     ```
-   Or if the global tenant should have access to all tenant's data, use `@GlobalTenantCanAccessAll`:
+   - Use `@GlobalTenantCanAccessAll` if the global tenant should have access to all tenant's data:
     ```
     @GlobalTenantCanAccessAll
     def ExampleEntity getExampleEntity(ExampleRef ref) {}
@@ -140,7 +143,93 @@ The documentation describes the essential changes, java files will need addition
    - `d2eExampleDTO`: maps from DTO to Entity (database to entity)
    - `e2dExampleDTO`: maps from Entity to DTO (entity to database)
    
-   Optionally, you can add the `@AutoHandler` annotation to one of the methods if special handling is required (e.g., `@AutoHandler("CSP42")` for create/store/persist or `@AutoHandler("SP42")` for store/persist operations).
+   Additionally, you need to create 2 or 3 Java request handler classes in the same JPA maven module. Create these in the `src/main/java/.../jpa/request/` directory, using the existing request handlers for `CsvConfiguration` (in maven module `t9t-io-jpa`) as a template:
+   
+   **8.1. Create the Search request handler** (`ExampleSearchRequestHandler.java`):
+    ```java
+    package com.arvatosystems.t9t.{module}.jpa.request;
+    
+    import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
+    import com.arvatosystems.t9t.base.jpa.impl.AbstractSearchWithTotalsRequestHandler;
+    import com.arvatosystems.t9t.base.search.ReadAllResponse;
+    import com.arvatosystems.t9t.base.services.RequestContext;
+    import com.arvatosystems.t9t.{module}.ExampleDTO;
+    import com.arvatosystems.t9t.{module}.jpa.entities.ExampleEntity;
+    import com.arvatosystems.t9t.{module}.jpa.mapping.IExampleDTOMapper;
+    import com.arvatosystems.t9t.{module}.jpa.persistence.IExampleEntityResolver;
+    import com.arvatosystems.t9t.{module}.request.ExampleSearchRequest;
+    
+    import de.jpaw.dp.Jdp;
+    
+    public class ExampleSearchRequestHandler extends
+            AbstractSearchWithTotalsRequestHandler<Long, ExampleDTO, FullTrackingWithVersion, ExampleSearchRequest, ExampleEntity> {
+    
+        private final IExampleEntityResolver resolver = Jdp.getRequired(IExampleEntityResolver.class);
+        private final IExampleDTOMapper mapper = Jdp.getRequired(IExampleDTOMapper.class);
+    
+        @Override
+        public ReadAllResponse<ExampleDTO, FullTrackingWithVersion> execute(final RequestContext ctx,
+                final ExampleSearchRequest request) throws Exception {
+            return execute(ctx, request, resolver, mapper);
+        }
+    }
+    ```
+   
+   **8.2. Create the CRUD request handler** (`ExampleCrudRequestHandler.java`):
+    ```java
+    package com.arvatosystems.t9t.{module}.jpa.request;
+    
+    import com.arvatosystems.t9t.base.api.ServiceResponse;
+    import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
+    import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKeyRequestHandler;
+    import com.arvatosystems.t9t.base.services.RequestContext;
+    import com.arvatosystems.t9t.{module}.ExampleDTO;
+    import com.arvatosystems.t9t.{module}.ExampleRef;
+    import com.arvatosystems.t9t.{module}.jpa.entities.ExampleEntity;
+    import com.arvatosystems.t9t.{module}.jpa.mapping.IExampleDTOMapper;
+    import com.arvatosystems.t9t.{module}.jpa.persistence.IExampleEntityResolver;
+    import com.arvatosystems.t9t.{module}.request.ExampleCrudRequest;
+    
+    import de.jpaw.dp.Jdp;
+    
+    public class ExampleCrudRequestHandler extends AbstractCrudSurrogateKeyRequestHandler<ExampleRef, ExampleDTO,
+      FullTrackingWithVersion, ExampleCrudRequest, ExampleEntity> {
+    
+        private final IExampleEntityResolver resolver = Jdp.getRequired(IExampleEntityResolver.class);
+        private final IExampleDTOMapper mapper = Jdp.getRequired(IExampleDTOMapper.class);
+    
+        @Override
+        public ServiceResponse execute(final RequestContext ctx, final ExampleCrudRequest crudRequest) throws Exception {
+            return execute(ctx, mapper, resolver, crudRequest);
+        }
+    }
+    ```
+   
+   **8.3. Create the Lean Search request handler (optional)** (`LeanExampleSearchRequestHandler.java`):
+   
+   This handler is only needed if the `ExampleLeanSearchRequest` was defined in step 2 (i.e., when the natural key consists of a single field).
+    ```java
+    package com.arvatosystems.t9t.{module}.jpa.request;
+    
+    import com.arvatosystems.t9t.base.jpa.impl.AbstractLeanSearchRequestHandler;
+    import com.arvatosystems.t9t.base.search.Description;
+    import com.arvatosystems.t9t.{module}.jpa.entities.ExampleEntity;
+    import com.arvatosystems.t9t.{module}.jpa.persistence.IExampleEntityResolver;
+    import com.arvatosystems.t9t.{module}.request.LeanExampleSearchRequest;
+    
+    import de.jpaw.dp.Jdp;
+    
+    public class LeanExampleSearchRequestHandler extends AbstractLeanSearchRequestHandler<LeanExampleSearchRequest, ExampleEntity> {
+        public LeanExampleSearchRequestHandler() {
+            super(Jdp.getRequired(IExampleEntityResolver.class), (final ExampleEntity it) -> {
+                final String description = it.getDescription() == null ? "?" : it.getDescription();
+                return new Description(null, it.getExampleId(), description, false, false);
+            });
+        }
+    }
+    ```
+   
+   In all the code above, replace `{module}` with the actual module name (e.g., `voice`, `doc`, `io`, etc.) and `Example` with the actual entity name.
 
 9. Create the SQL migration file.
    After completing the previous steps and successfully compiling the project, SQL files will be automatically generated into the `src/generated/sql` folder of the JPA maven module.
@@ -222,4 +311,175 @@ The documentation describes the essential changes, java files will need addition
     ```
     
     This extension method allows you to easily test CRUD operations in integration tests by calling `dto.merge(testConnection)` using Xtend's extension method syntax.
+
+11. Create a screen ZUL file for the user interface.
+    If your entity requires a user interface screen, you need to create a ZUL (ZK UI) file in the repository's UI project.
+    
+    **Location:** The ZUL file should be created in `src/main/webapp/screens/<subfolder>/` within the UI project (typically `t9t-zkui-screens` or similar).
+    
+    **File naming convention:** The file should be named `<viewModelName>28.zul`, where `<viewModelName>` is the view model name you registered in step 3 (e.g., `example28.zul` for view model name `example`).
+    
+    **Choosing the subfolder:**
+    Common subfolders include:
+    - `data_admin` - for administrative and configuration screens
+    - `user_admin` - for user and authentication management screens
+    - `monitoring` - for monitoring and statistics screens
+    - `report` - for reporting and data I/O screens
+    - `ai` - for AI-related screens
+    - `voice_setup` - for voice and AI assistant configuration
+    - `t9t_int_comm` - for communication and document screens
+    - `session` - for user session-related screens
+    
+    Choose the subfolder that best fits the purpose of your entity. If you're unsure, use `data_admin` for configuration entities.
+    
+    **Structure of the ZUL file:**
+    
+    Use `genericConfig28.zul` as a template. The basic structure is:
+    ```xml
+    <?xml version="1.0" encoding="UTF-8"?>
+    <?init class="com.arvatosystems.t9t.zkui.init.WorkbenchInit" pagename="<viewModelName>"?>
+    
+    <window28 id="<viewModelName>Win">
+        <threesections28 gridId="<viewModelName>">
+            <crud28 viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.CrudSurrogateKeyVM', vmId='<viewModelName>')"
+                    currentMode="@load(vm.currentMode)">
+                <form28 id="<viewModelName>Crud" aspect="2" numColumns="2">
+                    <rows>
+                        <cells228 id ="field1"         value ="@load(vm.data.field1)    @save(vm.data.field1,   before='commandSave')"
+                                  id2="field2"         value2="@load(vm.data.field2)    @save(vm.data.field2,   before='commandSave')"/>
+                        <cells228 id ="field3"         value ="@bind(vm.data.field3)"
+                                  id2="field4"         value2="@bind(vm.data.field4)"/>
+                        <!-- Add more rows for additional fields -->
+                    </rows>
+                </form28>
+            </crud28>
+        </threesections28>
+    </window28>
+    ```
+    
+    Replace `<viewModelName>` with your actual view model name (e.g., `example`).
+    Replace `field1`, `field2`, etc. with the actual field names from your DTO.
+    
+    **Field binding patterns:**
+    - For fields that should NOT be updatable (like natural key fields): Use `@load(vm.data.fieldName) @save(vm.data.fieldName, before='commandSave')`
+    - For regular editable fields: Use `@bind(vm.data.fieldName)`
+    - For multi-line text fields: Add `rows1="4"` (or another number) to the cells28 element
+    - For fields with conditional visibility: Add `visible="@load(vm.data.someCondition)"`
+    
+    **Layout options:**
+    - `cells228` - displays two fields side by side in a row
+    - `cells28` - displays a single field spanning the full width (use `colspan1="3"` to span across columns)
+    - `aspect="2"` - controls the aspect ratio of form cells (1 for square, 2 for wider)
+    - `numColumns="2"` - defines the number of columns in the form
+    
+    **For entities with multiple tabs:**
+    If your entity has many fields that logically group into categories, you can use a tabbed layout similar to `aiAssistant28.zul`:
+    ```xml
+    <crud28 viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.CrudSurrogateKeyVM', vmId='<viewModelName>')"
+            currentMode="@load(vm.currentMode)">
+        <tabbox id="tabboxDetail" vflex="1">
+            <tabs>
+                <tab28 id="mainTab"/>
+                <tab28 id="additionalTab"/>
+            </tabs>
+            <tabpanels vflex="1" id="tabpanelsDetail">
+                <tabpanel vflex="1" id="<viewModelName>.main.panel">
+                    <form28 id="<viewModelName>CrudMain" aspect="1" numColumns="2">
+                        <!-- Main fields here -->
+                    </form28>
+                </tabpanel>
+                <tabpanel vflex="1" id="<viewModelName>.additional.panel">
+                    <form28 id="<viewModelName>CrudAdditional" aspect="1" numColumns="2">
+                        <!-- Additional fields here -->
+                    </form28>
+                </tabpanel>
+            </tabpanels>
+        </tabbox>
+    </crud28>
+    ```
+
+12. Create a dummy icon file for the new screen.
+    Every screen requires an associated icon file for display in the menu. The actual icon design will be added later, but a dummy placeholder is needed immediately.
+    
+    **Location:** `src/main/webapp/img/menu/` within the UI project (typically `t9t-zkui-screens`).
+    
+    **File naming convention:** The icon must be named `<viewModelName>Screen.png`, where `<viewModelName>` is the view model name you registered in step 3.
+    
+    For example, if your view model name is `example`, the icon file should be named `exampleScreen.png`.
+    
+    **Creating the dummy icon:**
+    1. Navigate to the icon directory:
+       ```bash
+       cd <ui-project>/src/main/webapp/img/menu/
+       ```
+    
+    2. Copy any existing icon file as a placeholder:
+       ```bash
+       cp genericConfigScreen.png <viewModelName>Screen.png
+       ```
+       
+       For example:
+       ```bash
+       cp genericConfigScreen.png exampleScreen.png
+       ```
+    
+    **Note:** The actual icon design will typically be provided by a designer or UI team later. The dummy icon ensures the screen can be displayed in the menu immediately without breaking the UI.
+
+13. Register the new screen in the configuration properties file.
+    The new screen must be registered in the ZK UI configuration file to make it accessible through the application menu.
+    
+    **Location:** `src/main/webapp/WEB-INF/resources/t9t-zkui-configuration.properties` within the UI project (typically `t9t-zkui-screens`).
+    
+    **Note:** If you're using this documentation for a different repository (not `t9t`), the file might be named differently (e.g., `<prefix>-zkui-configuration.properties` where `<prefix>` is your project prefix).
+    
+    **Configuration format:**
+    Each menu section in the file follows this format:
+    ```properties
+    menu.<section>= {
+      <iconName>,                         <category>,               <name>,                             <zul-file-path>,                                      <menuItemVisible>
+    }
+    ```
+    
+    Where:
+    - `<iconName>` - The icon file name WITHOUT the `.png` extension (e.g., `exampleScreen`)
+    - `<category>` - The menu category (e.g., `systemAdmin`, `monitoring`, `communication`)
+    - `<name>` - The view model name (e.g., `example`)
+    - `<zul-file-path>` - The relative path to the ZUL file (e.g., `screens/data_admin/example28.zul`)
+    - `<menuItemVisible>` - Always set to `true` to make the menu item visible
+    
+    **Available menu sections:**
+    - `menu.job_report` - For jobs, reports, data I/O, and scheduling screens
+    - `menu.sysadmin` - For system administration and configuration screens
+    - `menu.monitor` - For monitoring, statistics, and logging screens
+    - `menu.communication` - For document and email management screens
+    - `menu.voice` - For voice and AI-related screens
+    - `menu.session` - For user session-related screens
+    
+    **Steps to add your screen:**
+    1. Identify the appropriate menu section for your screen. **If this information is not provided in the issue, ask the requester to specify which menu section (e.g., `menu.sysadmin`) and at which position the new screen should be added.**
+    
+    2. Open the configuration file and locate the appropriate `menu.<section>` block.
+    
+    3. Add your screen entry at the specified position within that section. For example, to add an `example` screen to `menu.sysadmin`:
+       ```properties
+       menu.sysadmin= {
+         tenantScreen,                           systemAdmin,              tenant,                             screens/user_admin/tenant28.zul,                      true
+         userScreen,                             systemAdmin,              user,                               screens/user_admin/user28.zul,                        true
+         exampleScreen,                          systemAdmin,              example,                            screens/data_admin/example28.zul,                     true
+         roleScreen,                             systemAdmin,              role,                               screens/user_admin/role28.zul,                        true
+         ...
+       }
+       ```
+    
+    4. Ensure proper formatting:
+       - Maintain consistent column alignment with other entries in the section
+       - Each entry must end with a comma (except the last entry)
+       - Use appropriate spacing to align the columns for readability
+    
+    **Example entry:**
+    ```properties
+    exampleScreen,                          systemAdmin,              example,                            screens/data_admin/example28.zul,                     true
+    ```
+    
+    After adding the configuration entry, the screen will appear in the application menu under the specified section.
 

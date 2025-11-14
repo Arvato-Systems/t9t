@@ -57,10 +57,10 @@ public class Dropdown28FactoryProcessDefinition implements IDropdown28DbFactory<
 
     @Override
     public String getIdFromKey(ProcessDefinitionRef key) {
-        if (key instanceof ProcessDefinitionKey)
-            return ((ProcessDefinitionKey)key).getProcessDefinitionId();
-        if (key instanceof ProcessDefinitionDTO)
-            return ((ProcessDefinitionDTO)key).getProcessDefinitionId();
+        if (key instanceof ProcessDefinitionKey processDefinitionKey)
+            return processDefinitionKey.getProcessDefinitionId();
+        if (key instanceof ProcessDefinitionDTO processDefinitionDTO)
+            return processDefinitionDTO.getProcessDefinitionId();
         return null;
     }
 }

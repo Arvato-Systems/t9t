@@ -56,10 +56,10 @@ public class Dropdown28FactoryAsyncQueue implements IDropdown28DbFactory<AsyncQu
 
     @Override
     public String getIdFromKey(AsyncQueueRef key) {
-        if (key instanceof AsyncQueueKey)
-            return ((AsyncQueueKey)key).getAsyncQueueId();
-        if (key instanceof AsyncQueueDTO)
-            return ((AsyncQueueDTO)key).getAsyncQueueId();
+        if (key instanceof AsyncQueueKey asyncQueueKey)
+            return asyncQueueKey.getAsyncQueueId();
+        if (key instanceof AsyncQueueDTO asyncQueueDTO)
+            return asyncQueueDTO.getAsyncQueueId();
         return null;
     }
 }

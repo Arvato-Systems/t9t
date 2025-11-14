@@ -56,10 +56,10 @@ public class Dropdown28FactorySchedulerSetup implements IDropdown28DbFactory<Sch
 
     @Override
     public String getIdFromKey(SchedulerSetupRef key) {
-        if (key instanceof SchedulerSetupKey)
-            return ((SchedulerSetupKey)key).getSchedulerId();
-        if (key instanceof SchedulerSetupDTO)
-            return ((SchedulerSetupDTO)key).getSchedulerId();
+        if (key instanceof SchedulerSetupKey schedulerSetupKey)
+            return schedulerSetupKey.getSchedulerId();
+        if (key instanceof SchedulerSetupDTO schedulerSetupDTO)
+            return schedulerSetupDTO.getSchedulerId();
         return null;
     }
 }

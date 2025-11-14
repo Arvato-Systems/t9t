@@ -61,10 +61,10 @@ public class Dropdown28FactoryRole implements IDropdown28DbFactory<RoleRef> {
 
     @Override
     public String getIdFromKey(RoleRef key) {
-        if (key instanceof RoleKey)
-            return ((RoleKey)key).getRoleId();
-        if (key instanceof RoleDTO)
-            return ((RoleDTO)key).getRoleId();
+        if (key instanceof RoleKey roleKey)
+            return roleKey.getRoleId();
+        if (key instanceof RoleDTO roleDTO)
+            return roleDTO.getRoleId();
         return null;
     }
 }
