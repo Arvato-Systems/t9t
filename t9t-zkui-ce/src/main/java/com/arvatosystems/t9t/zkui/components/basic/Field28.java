@@ -105,18 +105,17 @@ public class Field28 extends Cell {
                     Events.postEvent(new Event(Events.ON_CHANGE, this, null));
             });
 
-            if ((dataField instanceof Textbox) && rows1 > 1) {
-                Textbox tb = (Textbox)dataField;
+            if (dataField instanceof Textbox tb && rows1 > 1) {
                 tb.setRows(rows1);
                 tb.setMultiline(true);
             }
 
             if (dataField != null) {
-                if (dataField instanceof InputElement) {
-                    ((InputElement) dataField).setDisabled(disabled1);
+                if (dataField instanceof InputElement inputElement) {
+                    inputElement.setDisabled(disabled1);
                 }
-                if (dataField instanceof Checkbox) {
-                    ((Checkbox) dataField).setDisabled(disabled1);
+                if (dataField instanceof Checkbox checkbox) {
+                    checkbox.setDisabled(disabled1);
                 }
             }
         }
@@ -144,8 +143,8 @@ public class Field28 extends Cell {
         if (idf != null) {
             // post creation
             Component c = idf.getComponent();
-            if (c != null && c instanceof InputElement) {
-                ((InputElement)c).setReadonly(readonly1);
+            if (c != null && c instanceof InputElement inputElement) {
+                inputElement.setReadonly(readonly1);
             }
         }
     }
@@ -183,15 +182,14 @@ public class Field28 extends Cell {
 
     public void setDecimals1(String decimals1) {
         this.decimals1 = decimals1;  // set initial number of decimals
-        if (idf != null && idf instanceof DecimalDataField)
-            ((DecimalDataField)idf).setDecimals(decimals1);  // updates after creation
+        if (idf != null && idf instanceof DecimalDataField decimalField)
+            decimalField.setDecimals(decimals1);  // updates after creation
         else
             LOGGER.warn("Setting decimals1 property for a field which is not a Decimal");
     }
 
     public void setGroup(Object ref) {
-        if (idf instanceof GroupedDropdownDataField) {
-            GroupedDropdownDataField field = (GroupedDropdownDataField) idf;
+        if (idf instanceof GroupedDropdownDataField field) {
             field.setGroup(ref);
         }
     }

@@ -194,8 +194,8 @@ public class Crud28 extends Vlayout implements IViewModelOwner, IDataSelectRecei
             for (Component child : children) {
                 insertBefore(crudButtons, dataChangeRequestButtons);
                 insertBefore(child, crudButtons);
-                if (child instanceof IDataSelectReceiver) {
-                    detailsSection = (IDataSelectReceiver) child;
+                if (child instanceof IDataSelectReceiver receiver) {
+                    detailsSection = receiver;
                     // wire events
                     // avoid NPE
                     DataWithTracking<BonaPortable, TrackingBase> initialDwt = new DataWithTracking<BonaPortable, TrackingBase>();

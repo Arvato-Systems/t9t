@@ -28,6 +28,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.ComboitemRenderer;
 import org.zkoss.zul.ListModelList;
+import org.zkoss.zul.ListModels;
 
 import com.arvatosystems.t9t.base.search.Description;
 import com.arvatosystems.t9t.base.search.LeanSearchRequest;
@@ -41,9 +42,10 @@ import com.arvatosystems.t9t.zkui.util.T9tConfigConstants;
 import com.arvatosystems.t9t.zkui.util.UiConfigurationProvider;
 import com.arvatosystems.t9t.zkui.util.ZulUtils;
 
+import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.dp.Jdp;
-import org.zkoss.zul.ListModels;
 
 public class Dropdown28Db<REF extends BonaPortable> extends Combobox {
     private static final Logger LOGGER = LoggerFactory.getLogger(Dropdown28Db.class);
@@ -66,6 +68,8 @@ public class Dropdown28Db<REF extends BonaPortable> extends Combobox {
     private final Map<Long,   Description>          lookupByRef;
     protected IFixedFilter                          fixedFilter = null;        // a fixed search filter provider
     protected IDescriptionFilter                    descriptionFilter = null;  // a filter on results
+    protected SearchFilter                          additionalFilter  = null;   // primary runtime filter (e.g., from dropdown filter field)
+    protected SearchFilter                          additionalFilter2 = null;   // secondary runtime filter (e.g., from dropdown filter field)
     protected final String                          dropdownDisplayFormat;
     protected final MessageFormat                   messageFormat;
 
@@ -147,14 +151,27 @@ public class Dropdown28Db<REF extends BonaPortable> extends Combobox {
         reloadDropDownData();
     }
 
+    /** Sets an additional runtime filter (e.g., from dropdown filter field). */
+    public void setAdditionalFilter(SearchFilter filter) {
+        additionalFilter = filter;
+        reloadDropDownData();
+    }
+
+    /** Sets an additional runtime filter (e.g., from dropdown filter field). */
+    public void setAdditionalFilter2(SearchFilter filter) {
+        additionalFilter2 = filter;
+        reloadDropDownData();
+    }
+
     // query the backend, no caching (reloads are done only if caching does not apply)
     public void reloadDropDownData() {
         final LeanSearchRequest srq = factory.getSearchRequest();
-        if (fixedFilter != null)
-            srq.setSearchFilter(fixedFilter.get());
+        final SearchFilter adds = SearchFilters.and(additionalFilter, additionalFilter2);
+        srq.setSearchFilter(fixedFilter == null ? adds : SearchFilters.and(fixedFilter.get(), adds));
         entries = session.getDropDownData(srq);  // read uncached....
-        if (descriptionFilter != null)
+        if (descriptionFilter != null) {
             entries = descriptionFilter.filter(entries);
+        }
         LOGGER.debug("Reloaded dropdown DB {} (uncached), got {} entries", factory.getDropdownId(), entries.size());
         getDropDownData();
     }

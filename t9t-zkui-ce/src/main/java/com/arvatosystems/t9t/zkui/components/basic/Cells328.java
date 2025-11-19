@@ -139,8 +139,7 @@ public class Cells328 extends Cells228 {
 
         Component dataField3 = idf3.getComponent();
         if (dataField3 != null) {
-            if (dataField3 instanceof InputElement) {
-                InputElement iE = (InputElement) dataField3;
+            if (dataField3 instanceof InputElement iE) {
                 iE.setReadonly(readonly3);
                 iE.setDisabled(getDisabled3());
                 LOGGER.debug("InputElement3 {} space owner is {}, dataField space owner {}", dataFieldId3, iE.getSpaceOwner(), dataField3.getSpaceOwner());
@@ -158,8 +157,7 @@ public class Cells328 extends Cells228 {
                 Events.postEvent(new Event(Events.ON_CHANGE, this, null));
             });
 
-            if (dataField3 instanceof Textbox) {
-                Textbox tb = (Textbox)dataField3;
+            if (dataField3 instanceof Textbox tb) {
                 if (rows3 > 1) {
                      tb.setRows(rows3);
                      tb.setMultiline(true);
@@ -200,8 +198,8 @@ public class Cells328 extends Cells228 {
         if (idf3 != null) {
             // post creation
             Component c = idf3.getComponent();
-            if (c != null && c instanceof InputElement) {
-                ((InputElement)c).setReadonly(readonly3);
+            if (c != null && c instanceof InputElement inputElement) {
+                inputElement.setReadonly(readonly3);
             }
         }
     }
@@ -239,8 +237,8 @@ public class Cells328 extends Cells228 {
 
     public void setDecimals3(String decimals3) {
         this.decimals3 = decimals3;  // set initial number of decimals
-        if (idf3 != null && idf3 instanceof DecimalDataField)
-            ((DecimalDataField)idf3).setDecimals(decimals3);  // updates after creation
+        if (idf3 != null && idf3 instanceof DecimalDataField decimalField)
+            decimalField.setDecimals(decimals3);  // updates after creation
         else
             LOGGER.warn("Setting decimals3 property for a field which is not a Decimal ({})", dataFieldId3);
     }

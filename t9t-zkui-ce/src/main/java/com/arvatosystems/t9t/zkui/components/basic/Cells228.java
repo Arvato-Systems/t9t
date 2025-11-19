@@ -135,8 +135,7 @@ public class Cells228 extends Cells28 {
 
         Component dataField2 = idf2.getComponent();
         if (dataField2 != null) {
-            if (dataField2 instanceof InputElement) {
-                InputElement iE = (InputElement) dataField2;
+            if (dataField2 instanceof InputElement iE) {
                 iE.setReadonly(readonly2);
                 iE.setDisabled(getDisabled2());
                 LOGGER.debug("InputElement2 {} space owner is {}, dataField space owner {}", dataFieldId2, iE.getSpaceOwner(), dataField2.getSpaceOwner());
@@ -154,8 +153,7 @@ public class Cells228 extends Cells28 {
                 Events.postEvent(new Event(Events.ON_CHANGE, this, null));
             });
 
-            if (dataField2 instanceof Textbox) {
-                Textbox tb = (Textbox)dataField2;
+            if (dataField2 instanceof Textbox tb) {
                 if (rows2 > 1) {
                      tb.setRows(rows2);
                      tb.setMultiline(true);
@@ -196,8 +194,8 @@ public class Cells228 extends Cells28 {
         if (idf2 != null) {
             // post creation
             Component c = idf2.getComponent();
-            if (c != null && c instanceof InputElement) {
-                ((InputElement)c).setReadonly(readonly2);
+            if (c != null && c instanceof InputElement inputElement) {
+                inputElement.setReadonly(readonly2);
             }
         }
     }
@@ -235,8 +233,8 @@ public class Cells228 extends Cells28 {
 
     public void setDecimals2(String decimals2) {
         this.decimals2 = decimals2;  // set initial number of decimals
-        if (idf2 != null && idf2 instanceof DecimalDataField)
-            ((DecimalDataField)idf2).setDecimals(decimals2);  // updates after creation
+        if (idf2 != null && idf2 instanceof DecimalDataField decimalField)
+            decimalField.setDecimals(decimals2);  // updates after creation
         else
             LOGGER.warn("Setting decimals2 property for a field which is not a Decimal ({})", dataFieldId2);
     }

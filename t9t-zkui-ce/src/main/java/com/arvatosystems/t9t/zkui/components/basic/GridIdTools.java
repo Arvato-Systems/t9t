@@ -70,8 +70,10 @@ public final class GridIdTools {
             p = p.getParent();
             if (p == null)
                 throw new RuntimeException("No gridId provided in component nor any anchestor");
-        } while (!(p instanceof IGridIdOwner));
-        return (IGridIdOwner)p;
+            if (p instanceof IGridIdOwner gridIdOwner) {
+                return gridIdOwner;
+            }
+        } while (true);
     }
 
 
@@ -101,8 +103,10 @@ public final class GridIdTools {
             p = p.getParent();
             if (p == null)
                 throw new RuntimeException("No viewModelId provided in component nor any anchestor");
-        } while (!(p instanceof IViewModelOwner));
-        return (IViewModelOwner)p;
+            if (p instanceof IViewModelOwner viewModelOwner) {
+                return viewModelOwner;
+            }
+        } while (true);
     }
 
 

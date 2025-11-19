@@ -199,12 +199,12 @@ public class T9tMessagingDAO implements IT9tMessagingDAO {
 
     protected Long findSinkRefInReponse(ServiceResponse serviceResponse) {
         Long sinkRef = null;
-        if (serviceResponse instanceof SinkCreatedResponse) {
-            sinkRef = ((SinkCreatedResponse) serviceResponse).getSinkRef();
+        if (serviceResponse instanceof SinkCreatedResponse sinkCreatedResponse) {
+            sinkRef = sinkCreatedResponse.getSinkRef();
             LOGGER.debug("Response is instanceof {} - returning sinkObjectRef={}", SinkCreatedResponse.class.getSimpleName(), sinkRef);
             return sinkRef;
-        } else if (serviceResponse instanceof ReadAllResponse) {
-            sinkRef = ((ReadAllResponse<?, ?>) serviceResponse).getSinkRef();
+        } else if (serviceResponse instanceof ReadAllResponse<?, ?> readAllResponse) {
+            sinkRef = readAllResponse.getSinkRef();
             LOGGER.debug("Response is instanceof {} - returning sinkObjectRef={}", ReadAllResponse.class.getSimpleName(), sinkRef);
             return sinkRef;
         }

@@ -31,8 +31,7 @@ public class ErrorViewModel {
     public ErrorViewModel() {
         Exception exception = (Exception) Executions.getCurrent().getAttribute("jakarta.servlet.error.exception");
 
-        if (exception instanceof UiException) {
-            UiException e = (UiException) exception;
+        if (exception instanceof UiException e) {
             if (e.getCause() instanceof ReturnCodeException) {
                 paramGeneralErrorMessage = ZulUtils.getErrorPopupInfo((ReturnCodeException) e.getCause());
             } else {
@@ -47,8 +46,7 @@ public class ErrorViewModel {
             }
         } else {
             ReturnCodeException rce = null;
-            if (exception instanceof ServiceResponseException) {
-                ServiceResponseException sre = (ServiceResponseException) exception;
+            if (exception instanceof ServiceResponseException sre) {
                 rce = new ReturnCodeException(sre.getReturnCode(), sre.getReturnMessage(), sre.getErrorDetails());
             } else {
                 rce = new ReturnCodeException(Constants.ErrorCodes.GENERAL_EXCEPTION, exception.getMessage(), null);

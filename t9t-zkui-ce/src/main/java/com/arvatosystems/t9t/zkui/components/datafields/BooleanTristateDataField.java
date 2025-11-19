@@ -51,6 +51,6 @@ public class BooleanTristateDataField extends AbstractEnumDataField<Boolean> {
             return null;
         Object val = ci.getValue();
         LOGGER.debug("GetValue: ci.value = {} of class {}", val, val == null ? "NULL" : val.getClass().getSimpleName());
-        return val != null && val instanceof Boolean && ((Boolean)val).booleanValue();
+        return val != null && val instanceof Boolean boolVal && boolVal.booleanValue();
     }
 }

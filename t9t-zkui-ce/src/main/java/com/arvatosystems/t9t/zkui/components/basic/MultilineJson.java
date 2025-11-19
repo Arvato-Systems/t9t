@@ -52,8 +52,8 @@ public class MultilineJson extends Textbox implements IdSpace, AfterCompose  {
         public void validate(Component comp, Object value) throws WrongValueException {
             if (value != null) {
                 String componentValue = null;
-                if (comp instanceof Textbox && value instanceof String) {
-                    componentValue = (String) value;
+                if (comp instanceof Textbox && value instanceof String strValue) {
+                    componentValue = strValue;
                 }
                 if (componentValue != null && !componentValue.equals("")) {
                     try {

@@ -488,8 +488,8 @@ public class ListHeadRenderer28 {
         Filter28 f = null;
 
         for (final Component c : parent.getChildren()) {
-            if (c instanceof TwoSections28) {
-                f = ((TwoSections28) c).getFilters();
+            if (c instanceof TwoSections28 twoSections) {
+                f = twoSections.getFilters();
                 break;
             } else {
                 final Filter28 nf = findFilter28Component(c);

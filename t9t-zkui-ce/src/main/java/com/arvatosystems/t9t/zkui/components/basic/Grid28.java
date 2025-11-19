@@ -219,9 +219,9 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
                     exportButton.setVisible(false);
                 }
                 break;
-            } else if (p instanceof Direct28) {
+            } else if (p instanceof Direct28 direct28) {
                 LOGGER.debug("registering Grid28({}) as child of Direct28({})", getId(), p.getId());
-                ((Direct28)p).setTargetGrid(this);
+                direct28.setTargetGrid(this);
                 break;
             }
             p = p.getParent();
@@ -656,11 +656,11 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
                 if (li != null) {
                     DataWithTracking<BonaPortable, TrackingBase> dwt = li.getValue();
                     for (Component c : contextMenu.getChildren()) {
-                        if (c instanceof Menuitem) {
+                        if (c instanceof Menuitem menuitem) {
                             String itemId = c.getId();
                             IGridContextMenu handler = Jdp.getRequired(IGridContextMenu.class, itemId);
                             final Permissionset perms = session.getPermissions(itemId);
-                            ((Menuitem) c).setDisabled(!handler.isEnabled(dwt, perms));
+                            menuitem.setDisabled(!handler.isEnabled(dwt, perms));
                         }
                     }
                 }

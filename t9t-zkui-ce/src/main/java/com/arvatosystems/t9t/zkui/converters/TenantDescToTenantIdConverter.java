@@ -29,8 +29,8 @@ public class TenantDescToTenantIdConverter implements Converter<Object, Object, 
     @Override
     public Object coerceToUi(Object beanProp, Combobox box, BindContext ctx) {
         String beanPropRef = null;
-        if (beanProp instanceof TenantDescription) {
-            beanPropRef = ((TenantDescription) beanProp).getTenantId();
+        if (beanProp instanceof TenantDescription tenantDesc) {
+            beanPropRef = tenantDesc.getTenantId();
         }
 
         List<Comboitem> listitems = box.getItems();

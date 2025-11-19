@@ -60,8 +60,8 @@ public abstract class AbstractShowParametersContextHandler implements IGridConte
             if (rerunOnOK) {
                 Map<String, Object> jsonAsMap = (new JsonParser(d.getText(), false)).parseObject();
                 BonaPortable rp = MapParser.asBonaPortable(jsonAsMap, ServiceRequest.meta$$requestParameters);
-                if (rp instanceof RequestParameters) {
-                    remoteUtils.executeExpectOk((RequestParameters)rp);
+                if (rp instanceof RequestParameters requestParams) {
+                    remoteUtils.executeExpectOk(requestParams);
                 }
             }
         });

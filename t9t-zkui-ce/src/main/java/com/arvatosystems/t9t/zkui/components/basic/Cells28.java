@@ -48,8 +48,8 @@ import de.jpaw.bonaparte.util.FieldGetter;
 import de.jpaw.dp.Jdp;
 
 /**
- * A row with 2 cells, a label and a field. The row has a generic getValue()
- * method and therefore we can use any object type.
+ * A row with 2 cells, a label and a field. The row has a generic getValue() method and therefore we can use any object type.
+ * The class is inherited by Cells228 for 4 cells and Cells328 for 6 cells.
  */
 // the @ComponentAnnotation annotation informs ZK to invoke getValue() and
 // update the viewmodel after the onChange event
@@ -129,15 +129,14 @@ public class Cells28 extends Row {
         }
         deferredValue = t;
         if (idf != null) {
-            if (t == null && idf.getComponent() instanceof InputElement) {
+            if (t == null && idf.getComponent() instanceof InputElement iE) {
                 if (idf.getComponent() instanceof Dropdown28ComboBoxItem) {
                     // Update selected item to null
                     idf.setValue(null);
                 }
 
                 // Update value to null
-                InputElement tb = (InputElement) idf.getComponent();
-                tb.setRawValue(null);
+                iE.setRawValue(null);
             } else {
                 idf.setValue(t);
             }
@@ -180,8 +179,7 @@ public class Cells28 extends Row {
         Component dataField = idf.getComponent();
 
         if (dataField != null) {
-            if (dataField instanceof InputElement) {
-                InputElement iE = (InputElement) dataField;
+            if (dataField instanceof InputElement iE) {
                 iE.setReadonly(readonly1);
                 iE.setDisabled(getDisabled1());
                 LOGGER.debug("InputElement {} space owner is {}, dataField space owner {}", dataFieldId, iE.getSpaceOwner(), dataField.getSpaceOwner());
@@ -199,8 +197,7 @@ public class Cells28 extends Row {
                 Events.postEvent(new Event(Events.ON_CHANGE, this, null));
             });
 
-            if (dataField instanceof Textbox) {
-                Textbox tb = (Textbox)dataField;
+            if (dataField instanceof Textbox tb) {
                 if (rows1 > 1) {
                      tb.setRows(rows1);
                      tb.setMultiline(true);
@@ -241,8 +238,8 @@ public class Cells28 extends Row {
         if (idf != null) {
             // post creation
             Component c = idf.getComponent();
-            if (c != null && c instanceof InputElement) {
-                ((InputElement)c).setReadonly(readonly1);
+            if (c instanceof InputElement iE) {
+                iE.setReadonly(readonly1);
             }
         }
     }
@@ -280,8 +277,8 @@ public class Cells28 extends Row {
 
     public void setDecimals1(String decimals1) {
         this.decimals1 = decimals1;  // set initial number of decimals
-        if (idf != null && idf instanceof DecimalDataField)
-            ((DecimalDataField)idf).setDecimals(decimals1);  // updates after creation
+        if (idf != null && idf instanceof DecimalDataField decimalField)
+            decimalField.setDecimals(decimals1);  // updates after creation
         else
             LOGGER.warn("Setting decimals1 property for a field which is not a Decimal ({})", dataFieldId);
     }
@@ -299,8 +296,7 @@ public class Cells28 extends Row {
     }
 
     protected void setGroup(IDataField df, Object object) {
-        if (df instanceof GroupedDropdownDataField) {
-            GroupedDropdownDataField groupedDropdownDF = (GroupedDropdownDataField) df;
+        if (df instanceof GroupedDropdownDataField groupedDropdownDF) {
             groupedDropdownDF.setGroup(object);
         }
     }

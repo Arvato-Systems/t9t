@@ -152,23 +152,22 @@ public class ProcessDefinitionVM
             uiStep.setLabel(step.getLabel());
             uiStep.setComment(step.getComment());
 
-            if (step instanceof T9tWorkflowStepJavaTask) {
+            if (step instanceof T9tWorkflowStepJavaTask javaTask) {
                 uiStep.setWorkflowStepType(WorkflowStepType.JAVA_TASK);
-                uiStep.setStepName(((T9tWorkflowStepJavaTask) step).getStepName());
-            } else if (step instanceof T9tWorkflowStepAddParameters) {
+                uiStep.setStepName(javaTask.getStepName());
+            } else if (step instanceof T9tWorkflowStepAddParameters addParams) {
                 uiStep.setWorkflowStepType(WorkflowStepType.ADD_PARAMETER);
-                uiStep.setParameters(((T9tWorkflowStepAddParameters) step).getParameters());
-            } else if (step instanceof T9tWorkflowStepGoto) {
+                uiStep.setParameters(addParams.getParameters());
+            } else if (step instanceof T9tWorkflowStepGoto gotoStep) {
                 uiStep.setWorkflowStepType(WorkflowStepType.STEP_GOTO);
-                uiStep.setToLabel(((T9tWorkflowStepGoto) step).getToLabel());
+                uiStep.setToLabel(gotoStep.getToLabel());
             } else if (step instanceof T9tWorkflowStepRestart) {
                 uiStep.setWorkflowStepType(WorkflowStepType.RESTART);
-            } else if (step instanceof T9tWorkflowStepYield) {
+            } else if (step instanceof T9tWorkflowStepYield yieldStep) {
                 uiStep.setWorkflowStepType(WorkflowStepType.YIELD);
-                uiStep.setWaitSeconds(((T9tWorkflowStepYield) step).getWaitSeconds());
-            } else if (step instanceof T9tWorkflowStepCondition) {
+                uiStep.setWaitSeconds(yieldStep.getWaitSeconds());
+            } else if (step instanceof T9tWorkflowStepCondition condition) {
                 uiStep.setWorkflowStepType(WorkflowStepType.CONDITION);
-                T9tWorkflowStepCondition condition = (T9tWorkflowStepCondition) step;
                 uiStep.setCondition(condition.getCondition());
                 uiStep.setThenDo(condition.getThenDo());
                 uiStep.setElseDo(condition.getElseDo());
@@ -326,8 +325,8 @@ public class ProcessDefinitionVM
         ModalWindows.runModal("/context/info28.zul", lb.getParent(), info, false, (d) -> {
             Map<String, Object> objectInMap = new JsonParser(d.getText(), false).parseObject();
             BonaPortable bp = MapParser.asBonaPortable(objectInMap, MapParser.OUTER_BONAPORTABLE_FOR_JSON);
-            if (bp instanceof T9tAbstractWorkflowCondition) {
-                uiOnlyWorkflowStep.setCondition((T9tAbstractWorkflowCondition) bp);
+            if (bp instanceof T9tAbstractWorkflowCondition condition) {
+                uiOnlyWorkflowStep.setCondition(condition);
             }
         });
     }
@@ -341,8 +340,8 @@ public class ProcessDefinitionVM
             List<T9tAbstractWorkflowStep> steps = new ArrayList<>(objectList.size());
             for (Object obj : objectList) {
                 Object parsed = MapParser.asBonaPortable((Map<String, Object>) obj, MapParser.OUTER_BONAPORTABLE_FOR_JSON);
-                if (parsed instanceof T9tAbstractWorkflowStep) {
-                    steps.add((T9tAbstractWorkflowStep) parsed);
+                if (parsed instanceof T9tAbstractWorkflowStep workflowStep) {
+                    steps.add(workflowStep);
                 }
             }
 
@@ -359,8 +358,8 @@ public class ProcessDefinitionVM
             List<T9tAbstractWorkflowStep> steps = new ArrayList<>(objectList.size());
             for (Object obj : objectList) {
                 Object parsed = MapParser.asBonaPortable((Map<String, Object>) obj, MapParser.OUTER_BONAPORTABLE_FOR_JSON);
-                if (parsed instanceof T9tAbstractWorkflowStep) {
-                    steps.add((T9tAbstractWorkflowStep) parsed);
+                if (parsed instanceof T9tAbstractWorkflowStep workflowStep) {
+                    steps.add(workflowStep);
                 }
             }
 

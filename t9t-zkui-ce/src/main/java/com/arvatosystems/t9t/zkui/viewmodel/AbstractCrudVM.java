@@ -293,8 +293,8 @@ public abstract class AbstractCrudVM<
 
     protected void showDeleteConfirmationDialog(final EventListener<Event> eventListener) {
 
-        if (data instanceof Ref) {
-            final ResolveAnyRefRequest rq = new ResolveAnyRefRequest(((Ref) data).getObjectRef());
+        if (data instanceof Ref ref) {
+            final ResolveAnyRefRequest rq = new ResolveAnyRefRequest(ref.getObjectRef());
             final ResolveAnyRefResponse res = remoteUtil.executeExpectOk(rq, ResolveAnyRefResponse.class);
             if (res.getEntityClass() != null || res.getDescription() != null) {
                 final Description desc = res.getDescription();

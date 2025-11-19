@@ -181,8 +181,7 @@ public class T9tRemoteUtils implements IT9tRemoteUtils {
         requestParameters.treeWalkString(new StringConverterEmptyToNull(), true);  // convert empty data to nulls
         requestParameters.validate();  // then check if it is a valid request
         final ServiceResponse resp;
-        if (requestParameters instanceof AuthenticationRequest) {
-            AuthenticationRequest ar = (AuthenticationRequest)requestParameters;
+        if (requestParameters instanceof AuthenticationRequest ar) {
             LOGGER.debug("Sending t9t AuthenticationRequest of type {} - session params {}",
                     ar.getAuthenticationParameters() == null ? "NO AUTHPARAMS (Bug!)" : ar.getAuthenticationParameters().ret$PQON(),
                     ar.getSessionParameters()        == null ? "null"                 : ar.getSessionParameters()
@@ -195,8 +194,7 @@ public class T9tRemoteUtils implements IT9tRemoteUtils {
         } else {
             // regular request - can log without disclosing details
             logRequest(requestParameters);
-            if (requestParameters instanceof SearchCriteria) {
-                SearchCriteria sc = (SearchCriteria)requestParameters;
+            if (requestParameters instanceof SearchCriteria sc) {
                 // first, check for "always false" condition, then never send it to the BE
                 if (sc.getSearchFilter() != null && sc.getSearchFilter() instanceof FalseFilter) {
                     // no results desired
@@ -216,8 +214,7 @@ public class T9tRemoteUtils implements IT9tRemoteUtils {
             resp = statelessServiceSession.execute(session.getAuthorizationHeader(), requestParameters);
         }
         // resp.treeWalkString(new StringConverterNullToEmpty(), true);   // ZK can deal with nulls now
-        if (resp instanceof AuthenticationResponse) {
-            final AuthenticationResponse ar = (AuthenticationResponse) resp;
+        if (resp instanceof AuthenticationResponse ar) {
             session.setJwt(ar.getEncodedJwt());
         }
         logResponse(resp);

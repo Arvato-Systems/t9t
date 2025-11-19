@@ -44,12 +44,11 @@ public class GenericVM {
         Map<?, ?> arg = Executions.getCurrent().getArg(); // the 3rd parameter to Executions.createObjects() is available via getArg()
         Object pojo = arg == null ? null : arg.get("inst");
         LOGGER.debug("Setting initial VM as {}", arg == null ? "NULL" : pojo);
-        if (pojo instanceof DataWithTracking) {
-            DataWithTracking<BonaPortable, TrackingBase> dwt = (DataWithTracking)pojo;
+        if (pojo instanceof DataWithTracking dwt) {
             data = dwt.getData();
             tracking = dwt.getTracking();
-            if (dwt instanceof DataWithTrackingS)
-                tenantId = ((DataWithTrackingS)dwt).getTenantId();
+            if (dwt instanceof DataWithTrackingS dwtS)
+                tenantId = dwtS.getTenantId();
         } else {
             data = (BonaPortable)pojo;
             tracking = null;

@@ -108,7 +108,7 @@ public class DataChangeRequestExtendedVM extends ViewOnlyVM<DataChangeRequestExt
         dataJsonStr = crudRequest.getData() != null ? JsonComposerPrettyPrint.toJsonString(crudRequest.getData()) : null;
         operationType = session.translate("t9t.OperationType", crudRequest.getCrud().name());
         final BonaPortable key = changeDto.getKey();
-        if (key instanceof NoKey) {
+        if (key instanceof NoKey noKey) {
             keyJsonStr = null;
         } else if (key instanceof LongKey longKey) {
             keyJsonStr = longKey.getKey().toString();

@@ -54,11 +54,11 @@ public class Groupbox28 extends Groupbox {
         Component parent = event.getTarget().getParent();
 
         Window window = (Window) getRoot();
-        if (parent instanceof ThreeSections28) {
-            threeSectionHandler(event, (ThreeSections28) parent);
+        if (parent instanceof ThreeSections28 threeSections) {
+            threeSectionHandler(event, threeSections);
             window.invalidate();
-        } else if (parent instanceof TwoSections28) {
-            twoSectionHandler(event, (TwoSections28) parent);
+        } else if (parent instanceof TwoSections28 twoSections) {
+            twoSectionHandler(event, twoSections);
             window.invalidate();
         } else {
             LOGGER.error("No handler found");

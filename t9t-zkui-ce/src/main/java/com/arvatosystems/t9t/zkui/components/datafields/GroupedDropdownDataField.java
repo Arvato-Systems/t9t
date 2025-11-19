@@ -83,17 +83,16 @@ public class GroupedDropdownDataField extends AbstractDataField<GroupedDropdown2
     public void setGroup(Object object) {
         if (object == null) {
             setGroupValue(null);
-        } else if (object instanceof Ref) {
-            Ref ref = (Ref) object;
+        } else if (object instanceof Ref ref) {
             setGroupValue(ref.getObjectRef());
-        } else if (object instanceof Long) {
-            setGroupValue((Long) object);
-        } else if (object instanceof Boolean) {
-            setGroup(((Boolean) object).booleanValue());
-        } else if (object instanceof Integer) {
-            setGroup(((Integer) object).longValue());
-        } else if (object instanceof BonaEnum) {
-            setGroup(Long.valueOf(((BonaEnum) object).ordinal()));
+        } else if (object instanceof Long longValue) {
+            setGroupValue(longValue);
+        } else if (object instanceof Boolean boolValue) {
+            setGroup(boolValue.booleanValue());
+        } else if (object instanceof Integer intValue) {
+            setGroup(intValue.longValue());
+        } else if (object instanceof BonaEnum bonaEnum) {
+            setGroup(Long.valueOf(bonaEnum.ordinal()));
         } else {
             LOGGER.debug("Unsupported type {} for group, only Integer, Long, Boolean or Ref is supported. ", object);
         }

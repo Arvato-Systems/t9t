@@ -359,8 +359,7 @@ public class CkEditor28 extends Row {
         uploadButton.addEventListener(Events.ON_UPLOAD, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                if (event instanceof UploadEvent) {
-                    UploadEvent uEvent = (UploadEvent) event;
+                if (event instanceof UploadEvent uEvent) {
                     Media image = uEvent.getMedia();
                     if (isValidRestrictMediaType(image.getFormat())) {
                         org.zkoss.image.Image imageUploaded = new AImage(DEFAULT_FILE_NAME + "." + image.getFormat(), image.getByteData());

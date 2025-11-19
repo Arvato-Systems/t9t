@@ -46,16 +46,16 @@ public class FormatConverter implements IItemConverter {
         if (value == null) return null;
         if (value instanceof String) return null; // when ZK not able to get the field name in object. It will return a string of error.
 
-        if (value instanceof Number) {
-            return getLocalizedDecimalFormat(this.format).format((Number) value);
-        } else if (value instanceof Date) {
-            return getDateFormat(this.format).format((Date) value);
-        } else if (value instanceof LocalDateTime) {
-            return ((LocalDateTime) value).format(DateTimeFormatter.ofPattern(this.format));
-        } else if (value instanceof LocalTime) {
-            return ((LocalTime) value).format(DateTimeFormatter.ofPattern(this.format));
-        } else if (value instanceof LocalDate) {
-            return ((LocalDate) value).format(DateTimeFormatter.ofPattern(this.format));
+        if (value instanceof Number numValue) {
+            return getLocalizedDecimalFormat(this.format).format(numValue);
+        } else if (value instanceof Date dateValue) {
+            return getDateFormat(this.format).format(dateValue);
+        } else if (value instanceof LocalDateTime localDateTime) {
+            return localDateTime.format(DateTimeFormatter.ofPattern(this.format));
+        } else if (value instanceof LocalTime localTime) {
+            return localTime.format(DateTimeFormatter.ofPattern(this.format));
+        } else if (value instanceof LocalDate localDate) {
+            return localDate.format(DateTimeFormatter.ofPattern(this.format));
         } else {
             throw new UnsupportedOperationException("Instance " + value.getClass().getName() + " is not supported. Field:" + fieldName + "->" + value);
         }

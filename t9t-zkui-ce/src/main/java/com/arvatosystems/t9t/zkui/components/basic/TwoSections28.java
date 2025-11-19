@@ -83,8 +83,11 @@ public class TwoSections28 extends Vlayout implements IGridIdOwner, IPermissionO
                     o == null ? "NULL" : o.getClass().getCanonicalName(),
                     fixedFilter == null ? "NULL" : fixedFilter
             );
-            if (o == null || o instanceof SearchFilter) {
-                main.setFilter1(SearchFilters.and(fixedFilter, (SearchFilter) o));
+            if (o == null) {
+                main.setFilter1(fixedFilter);
+                main.search();
+            } else if (o instanceof SearchFilter searchFilter) {
+                main.setFilter1(SearchFilters.and(fixedFilter, searchFilter));
                 main.search();
             }
         });
@@ -184,8 +187,11 @@ public class TwoSections28 extends Vlayout implements IGridIdOwner, IPermissionO
             toggleFilter.addEventListener("onSearch", ev -> {
                 Object o = ev.getData();
                 LOGGER.debug("Got onSearch event from SOLR! data is {}", o == null ? "NULL" : o.getClass().getCanonicalName());
-                if (o == null || o instanceof String) {
-                    main.setFilter1((String) o);  // SOLR type search
+                if (o == null) {
+                    main.setFilter1((String)null);  // SOLR type search
+                    main.search();
+                } else if (o instanceof String strFilter) {
+                    main.setFilter1(strFilter);  // SOLR type search
                     main.search();
                 }
             });

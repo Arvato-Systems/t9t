@@ -73,9 +73,13 @@ public class Bandpopup28 extends Bandpopup implements IdSpace, IGridIdOwner {
             filters.addEventListener("onSearch", (Event ev) -> {
                 Object o = ev.getData();
                 LOGGER.debug("Got onSearch event from filter28! data is {}", o == null ? "NULL" : o.getClass().getCanonicalName());
-                if (o == null || o instanceof SearchFilter)
-                    main.setFilter1((SearchFilter) o);
+                if (o == null) {
+                    main.setFilter1((SearchFilter)null);
                     main.search();
+                } else if (o instanceof SearchFilter searchFilter) {
+                    main.setFilter1(searchFilter);
+                    main.search();
+                }
             });
         }
 
@@ -170,8 +174,11 @@ public class Bandpopup28 extends Bandpopup implements IdSpace, IGridIdOwner {
             toggleFilter.addEventListener("onSearch", ev -> {
                 Object o = ev.getData();
                 LOGGER.debug("Got onSearch event from SOLR! data is {}", o == null ? "NULL" : o.getClass().getCanonicalName());
-                if (o == null || o instanceof String) {
-                    main.setFilter1((String) o);  // SOLR type search
+                if (o == null) {
+                    main.setFilter1((String)null);  // SOLR type search
+                    main.search();
+                } else if (o instanceof String strFilter) {
+                    main.setFilter1(strFilter);  // SOLR type search
                     main.search();
                 }
             });

@@ -266,8 +266,8 @@ public class DefaultNavBarCreator implements INavBarCreator {
     private void createContextMenuOnEachMenu(final Menupopup menu) {
         menu.addEventListener(Events.ON_OPEN, ev -> {
             for (final Component comp2 : ev.getTarget().getChildren()) {
-                if (comp2 instanceof Menuitem) {
-                    ((Menuitem) comp2).setContext(CONTEXT_MENU_ID);
+                if (comp2 instanceof Menuitem menuitem) {
+                    menuitem.setContext(CONTEXT_MENU_ID);
                 }
             }
         });

@@ -17,60 +17,38 @@ package com.arvatosystems.t9t.zkui.components.datafields;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.zul.Comboitem;
 
 import com.arvatosystems.t9t.base.search.Description;
 import com.arvatosystems.t9t.zkui.components.dropdown28.db.Dropdown28Db;
 import com.arvatosystems.t9t.zkui.components.dropdown28.factories.IDropdown28DbFactory;
-import com.arvatosystems.t9t.zkui.util.Constants;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 
-public class DropdownDataField<T extends BonaPortable> extends AbstractDataField<Dropdown28Db<T>, T> {
+public class DropdownDataField<T extends BonaPortable> extends AbstractDropdownDataField<T, T> {
     private static final Logger LOGGER = LoggerFactory.getLogger(DropdownDataField.class);
 
-    protected final Dropdown28Db<T> c;
-    protected final IDropdown28DbFactory<T> factory;
-
-    @Override
-    public boolean empty() {
-        return c.getValue() == null;
-    }
-
     public DropdownDataField(final DataFieldParameters params, final String dropdownType, final IDropdown28DbFactory<T> dbFactory) {
-        super(params);
-        factory = dbFactory;
-        final String format = params.cfg != null && params.cfg.getProperties() != null
-                ? params.cfg.getProperties().get(Constants.UiFieldProperties.DROPDOWN_FORMAT)
-                : null;
-        c = dbFactory.createInstance(format);
-        c.setHflex("1");
-        setConstraints(c, null);
+        super(params, dbFactory);
     }
 
     @Override
-    public void clear() {
-        c.setValue(null);
+    protected void configureComponent(final Dropdown28Db<T> component) {
+        component.setHflex("1");
+        setConstraints(component, null);
     }
 
     @Override
-    public Dropdown28Db<T> getComponent() {
-        return c;
+    protected T extractValue(final Description desc) {
+        return factory.createRef(desc.getObjectRef());
     }
 
     @Override
-    public T getValue() {
-        final String res1 = c.getValue(); // should be the label
-        final Comboitem res = c.getSelectedItem();
-
-        LOGGER.debug("getValue({}) called, value is {}, item is {}: {}",
-                getFieldName(),
-                res1,
-                res == null ? "NULL" : res.getClass().getCanonicalName(), res);
-        if (res1 == null)
-            return null;
-        final Description desc = c.lookupById(res1);
-        return desc == null ? null : factory.createRef(desc.getObjectRef());
+    protected Description lookupDescription(final T data) {
+        final String id = factory.getIdFromData(data, c);
+        LOGGER.debug("{}.lookupDescription(): data {} results in id {}", getFieldName(), data, id);
+        // For DropdownDataField, we need to use setValue directly with the ID
+        // This is handled specially by overriding setValue
+        return null;
     }
 
     @Override

@@ -15,64 +15,24 @@
  */
 package com.arvatosystems.t9t.zkui.components.datafields;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.zkoss.zul.Comboitem;
-
 import com.arvatosystems.t9t.base.search.Description;
-import com.arvatosystems.t9t.zkui.components.dropdown28.db.Dropdown28Db;
 import com.arvatosystems.t9t.zkui.components.dropdown28.factories.IDropdown28DbFactory;
-import com.arvatosystems.t9t.zkui.util.Constants;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 
-public class DropdownDbAsLongDataField<T extends BonaPortable> extends AbstractDataField<Dropdown28Db<T>, Long> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DropdownDbAsLongDataField.class);
-
-    protected final Dropdown28Db<T> c;
-    protected final IDropdown28DbFactory<T> factory;
-
-    @Override
-    public boolean empty() {
-        return c.getValue() == null;
-    }
+public class DropdownDbAsLongDataField<T extends BonaPortable> extends AbstractDropdownDataField<T, Long> {
 
     public DropdownDbAsLongDataField(final DataFieldParameters params, final String dropdownType, final IDropdown28DbFactory<T> dbFactory) {
-        super(params);
-        factory = dbFactory;
-        final String format = params.cfg != null && params.cfg.getProperties() != null
-                ? params.cfg.getProperties().get(Constants.UiFieldProperties.DROPDOWN_FORMAT)
-                        : null;
-        c = dbFactory.createInstance(format);
-        setConstraints(c, null);
+        super(params, dbFactory);
     }
 
     @Override
-    public void clear() {
-        c.setValue(null);
+    protected Long extractValue(final Description desc) {
+        return desc.getObjectRef();
     }
 
     @Override
-    public Dropdown28Db<T> getComponent() {
-        return c;
-    }
-
-    @Override
-    public Long getValue() {
-        final String res1 = c.getValue();
-        final Comboitem res = c.getSelectedItem();
-
-        LOGGER.debug("getValue({}) called, value is {}, item is {}: {}", getFieldName(), res1, res == null ? "NULL" : res.getClass().getCanonicalName(), res);
-        if (res1 == null)
-            return null;
-        final Description desc = c.lookupById(res1);
-        return desc == null ? null : desc.getObjectRef();
-    }
-
-    @Override
-    public void setValue(final Long data) {
-        final Description desc = data == null ? null : c.lookupByRef(data);
-        LOGGER.debug("{}.setValue(): setting {} results in {}", getFieldName(), data, desc);
-        c.setValue(desc == null ? null : c.getFormattedLabel(desc));
+    protected Description lookupDescription(final Long data) {
+        return c.lookupByRef(data);
     }
 }

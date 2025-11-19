@@ -18,9 +18,12 @@ package com.arvatosystems.t9t.zkui.components.basic;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Columns;
@@ -31,10 +34,11 @@ import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.zkui.components.IDataFactoryOwner;
 import com.arvatosystems.t9t.zkui.components.IDataFieldFactory;
 import com.arvatosystems.t9t.zkui.components.IViewModelOwner;
+import com.arvatosystems.t9t.zkui.components.datafields.AbstractDropdownDataField;
 import com.arvatosystems.t9t.zkui.components.datafields.IDataField;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
-import com.arvatosystems.t9t.zkui.viewmodel.AbstractCrudVM.CrudMode;
 import com.arvatosystems.t9t.zkui.util.Constants;
+import com.arvatosystems.t9t.zkui.viewmodel.AbstractCrudVM.CrudMode;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
@@ -114,6 +118,57 @@ public class Form28 extends Grid implements IDataFactoryOwner, IViewModelOwner {
         }
         LOGGER.debug("I'm {}inside a Crud28, {} fields have been registered",
                 inCrud == null ? "NOT " : "", myFields.size());
+
+        // Automatically wire up dropdown filters based on dropdownFilterField property
+        setupAutoFilters();
+    }
+
+    /**
+     * Automatically sets up filter event wiring for dropdown fields that have a dropdownFilterField property.
+     * This method is called after all fields have been registered in onCreate().
+     */
+    private void setupAutoFilters() {
+        // Find all dropdown fields that have a filter field specified
+        for (IDataField dropdownField : myFields) {
+            if (dropdownField instanceof AbstractDropdownDataField addf) {
+                setupAutoFilter(addf, addf.getFilterFieldName(), true);
+                setupAutoFilter(addf, addf.getFilterFieldName2(), false);
+            }
+        }
+    }
+
+    private void setupAutoFilter(final AbstractDropdownDataField addf, final String filterFieldName, final boolean primary) {
+        if (filterFieldName == null) {
+            return; // no filter: nothing to do
+        }
+        final IDataField sourceField = findFieldByName(filterFieldName);
+        if (sourceField != null) {
+            final Consumer<Event> setter = primary ? e -> addf.setFilterValue(sourceField.getValue()) : e -> addf.setFilterValue2(sourceField.getValue());
+            // First: Initial filter setup based on current value
+            setter.accept(null);  // contents of the event is unused, therefore null is fine
+
+            // Then: Listen for changes in the source field and update the dropdown filter
+            if (sourceField.getComponent() != null) {
+                sourceField.getComponent().addEventListener(Events.ON_CHANGE, e -> setter.accept(e));
+                LOGGER.debug("Auto filter setup for dropdown field {} based on source field {}", addf.getFieldName(), sourceField.getFieldName());
+            }
+        } else {
+            LOGGER.warn("Cannot autowire dropdown filter for field {}: filter field {} not found", addf.getFieldName(), filterFieldName);
+        }
+    }
+
+    /**
+     * Finds a field by its field name.
+     * @param fieldName the field name to search for
+     * @return the field with the given name, or null if not found
+     */
+    private IDataField findFieldByName(final String fieldName) {
+        for (IDataField field : myFields) {
+            if (fieldName.equals(field.getFieldName())) {
+                return field;
+            }
+        }
+        return null;
     }
 
     /** Called by Crud28 parent, in order to enable / disable fields on this form. */

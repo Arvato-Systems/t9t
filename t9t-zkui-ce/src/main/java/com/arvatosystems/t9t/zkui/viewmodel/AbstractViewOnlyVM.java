@@ -63,10 +63,10 @@ public abstract class AbstractViewOnlyVM<DTO extends BonaPortable, TRACKING exte
         } else {
             data = (DTO) dwt.getData().ret$MutableClone(true, true);
             tracking = dwt.getTracking();
-            if (dwt instanceof DataWithTrackingS)
-                tenantId = ((DataWithTrackingS)dwt).getTenantId();
-            else if (dwt instanceof DataWithTrackingS)
-                tenantId = ((DataWithTrackingS)dwt).getTenantId();
+            if (dwt instanceof DataWithTrackingS dwtS)
+                tenantId = dwtS.getTenantId();
+            else if (dwt instanceof DataWithTrackingS dwtS2)
+                tenantId = dwtS2.getTenantId();
         }
         for (AbstractViewOnlyVM<DTO, TRACKING> childViewModel : childViewModels) {
             childViewModel.loadData(dwt);

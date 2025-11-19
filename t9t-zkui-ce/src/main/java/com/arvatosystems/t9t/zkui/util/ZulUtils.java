@@ -74,8 +74,7 @@ public final class ZulUtils {
     private ZulUtils() { }
 
     public static void findErrorMessages(final Component component) {
-        if (component instanceof InputElement) {
-            final InputElement element = (InputElement) component;
+        if (component instanceof InputElement element) {
             if (StringUtils.isNotBlank(element.getErrorMessage())) {
                 LOGGER.debug("Component:{} - ErrorMessage:{}", component, element.getErrorMessage());
             }

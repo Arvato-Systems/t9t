@@ -40,15 +40,15 @@ public class FixedPointToStringConverter implements Converter<String, FixedPoint
         if (decimals == null) {
             return fp.toString();
         }
-        if (decimals instanceof Number) {
-            final int digits = ((Number)decimals).intValue();
+        if (decimals instanceof Number number) {
+            final int digits = number.intValue();
             if (digits >= 0 && digits <= 18) {
                 return fp.toString(digits);
             }
             LOGGER.warn("{} is not a valid number of decimal digits", digits);
-        } else if (decimals instanceof String) {
+        } else if (decimals instanceof String strDecimals) {
             // interpret as currency and obtain the decimals from that
-            final Integer digits = CurrencyUtil.getFractionalDigits((String)decimals, "FixedPointToStringConverter");
+            final Integer digits = CurrencyUtil.getFractionalDigits(strDecimals, "FixedPointToStringConverter");
             if (digits != null) {
                 return fp.toString(digits);
             }

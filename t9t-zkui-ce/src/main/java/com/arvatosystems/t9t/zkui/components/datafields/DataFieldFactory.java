@@ -87,9 +87,8 @@ public class DataFieldFactory implements IDataFieldFactory {
                         LOGGER.warn("API specified a dropdown of type {} for {}, but it does not exist", dropdownType, path);
                         throw new RuntimeException("unknown dropdown " + dropdownType);
                     }
-                    if (factory instanceof IDropdown28DbFactory) {
+                    if (factory instanceof IDropdown28DbFactory dbFactory) {
                         // DB based
-                        final IDropdown28DbFactory dbFactory = (IDropdown28DbFactory)factory;
                         return new DropdownDbAsStringDataField(params, dropdownType, dbFactory);
                     }
                     // String based (Currency, Country etc...)
@@ -120,9 +119,8 @@ public class DataFieldFactory implements IDataFieldFactory {
                             LOGGER.warn("API specified a dropdown of type {} for {}, but it does not exist", dropdownType, path);
                             throw new RuntimeException("unknown dropdown " + dropdownType);
                         }
-                        if (factory instanceof IDropdown28DbFactory) {
+                        if (factory instanceof IDropdown28DbFactory dbFactory) {
                             // DB based
-                            final IDropdown28DbFactory dbFactory = (IDropdown28DbFactory)factory;
                             return new DropdownDbAsIntegerDataField(params, dropdownType, dbFactory);
                         }
                         // none supported yet
@@ -191,12 +189,10 @@ public class DataFieldFactory implements IDataFieldFactory {
                         LOGGER.warn("API specified a dropdown of type {} for {}, but it does not exist", dropdownType, path);
                         throw new RuntimeException("unknown dropdown " + dropdownType);
                     }
-                    if (factory instanceof IDropdown28DbFactory) {
-                        IDropdown28DbFactory dbFactory = (IDropdown28DbFactory)factory;
+                    if (factory instanceof IDropdown28DbFactory dbFactory) {
                         return new DropdownDataField(params, dropdownType, dbFactory);
-                    } else if (factory instanceof IGroupedDropdown28DbFactory) {
-                        IGroupedDropdown28DbFactory dbFactory = (IGroupedDropdown28DbFactory) factory;
-                        return new GroupedDropdownDataField(params, dropdownType, dbFactory);
+                    } else if (factory instanceof IGroupedDropdown28DbFactory groupedDbFactory) {
+                        return new GroupedDropdownDataField(params, dropdownType, groupedDbFactory);
                     } else {
                         LOGGER.error("Unsupported type of IDropdown28BasicFactory, implementation is needed in DataFieldLFactory");
                     }

@@ -80,6 +80,7 @@ import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 import de.jpaw.dp.Jdp;
+import de.jpaw.util.ApplicationException;
 import de.jpaw.util.ExceptionUtil;
 import jakarta.servlet.http.HttpSession;
 
@@ -298,19 +299,21 @@ public final class ApplicationSession {
         return list;
     }
 
-    /** Retrieves data for a dropdown without caching.
+    /**
+     * Retrieves data for a dropdown without caching.
      * @param rq
      * @return
      */
-    public List<Description> getDropDownData(LeanSearchRequest rq) {
+    public List<Description> getDropDownData(final LeanSearchRequest rq) {
         try {
             // certain dropdowns (retail stores) can have lots of entries (> 1000 at least)
             rq.setLimit(5000);
-            LeanSearchResponse dropdowndataResponse = Jdp.getRequired(IT9tRemoteUtils.class).executeAndHandle(rq, LeanSearchResponse.class);
-            if (dropdowndataResponse.getReturnCode() != 0)
+            final LeanSearchResponse dropdowndataResponse = Jdp.getRequired(IT9tRemoteUtils.class).executeAndHandle(rq, LeanSearchResponse.class);
+            if (!ApplicationException.isOk(dropdowndataResponse.getReturnCode())) {
                 return Collections.<Description>emptyList();
+            }
             return dropdowndataResponse.getDescriptions();
-        } catch (ReturnCodeException e) {
+        } catch (final ReturnCodeException e) {
             LOGGER.error("could not query DB for search request {}", rq.ret$PQON());
             return Collections.<Description>emptyList();
         }
