@@ -187,11 +187,11 @@
         <reload4j.version>1.2.26</reload4j.version>
 
         <!-- Spring core -->
-        <spring-bom.version>7.0.0</spring-bom.version>
+        <spring-bom.version>7.0.1</spring-bom.version>
         <!-- Spring data -->
         <spring-data-jpa.version>4.0.0</spring-data-jpa.version>
         <!-- Spring boot -->
-        <spring-boot.version>4.0.0-RC2</spring-boot.version>
+        <spring-boot.version>4.0.0</spring-boot.version>
 
         <netty.version>4.2.7.Final</netty.version>
         <vertx4.version>5.0.5</vertx4.version>
