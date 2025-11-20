@@ -20,6 +20,8 @@ import java.util.Map;
 import org.zkoss.zk.ui.Component;
 
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /** Interface for the dynamically created fields. */
 public interface IDataField<E extends Component, T> {
@@ -28,6 +30,12 @@ public interface IDataField<E extends Component, T> {
 
     /** Returns the metadata. */
     FieldDefinition getFieldDefintion();
+
+    /** Returns the value of a property of the field definition, or null if it does not exist. */
+    @Nullable String getFieldProperty(@Nonnull String propertyName);
+
+    /** Checks if a given property of the field definition is set. */
+    boolean hasFieldProperty(@Nonnull String propertyName);
 
     /** Returns the ZK component(s) associated with the field. These are 2 in case of range filters. */
     E getComponent();

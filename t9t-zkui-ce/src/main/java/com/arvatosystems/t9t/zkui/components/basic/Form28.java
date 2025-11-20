@@ -134,26 +134,78 @@ public class Form28 extends Grid implements IDataFactoryOwner, IViewModelOwner {
                 setupAutoFilter(addf, addf.getFilterFieldName(), true);
                 setupAutoFilter(addf, addf.getFilterFieldName2(), false);
             }
+            // check for filters originating from this source field.
+            // In case one source field filters multiple dropdowns, configuring it by the below properties is more convenient, and also efficient because only a single event listener is created.
+            final List<AbstractDropdownDataField> dropdownsToFilter = new ArrayList<>();
+            boolean complainIfEmptyDropdowns = false;
+            final String filters = dropdownField.getFieldProperty(Constants.UiFieldProperties.FILTERS);
+            if (filters != null) {
+                complainIfEmptyDropdowns = true;
+                final String[] filterFieldNames = filters.split(",");
+                for (final String filterFieldName : filterFieldNames) {
+                    final IDataField df = findFieldByName(filterFieldName.trim());
+                    if (df == null) {
+                        LOGGER.error("Cannot autowire dropdown filter for field {}: filter field {} not found", dropdownField.getFieldName(), filterFieldName.trim());
+                        continue;
+                    }
+                    if (df instanceof AbstractDropdownDataField addf) {
+                        dropdownsToFilter.add(addf);
+                    } else {
+                        LOGGER.error("Cannot autowire dropdown filter for field {}: filter field {} is not a dropdown field", dropdownField.getFieldName(), filterFieldName);
+                    }
+                }
+            }
+            final String filtersId = dropdownField.getFieldProperty(Constants.UiFieldProperties.FILTERS_ID);
+            if (filtersId != null) {
+                complainIfEmptyDropdowns = true;
+                // find all dropdowns of the given ID
+                for (IDataField candidate : myFields) {
+                    if (candidate instanceof AbstractDropdownDataField addf) {
+                        if (filtersId.equals(candidate.getFieldProperty(Constants.UiFieldProperties.DROPDOWN))) {
+                            dropdownsToFilter.add(addf);
+                        }
+                    }
+                }
+            }
+            if (!dropdownsToFilter.isEmpty()) {
+                setupMultiFilter(dropdownField, dropdownsToFilter);
+            } else if (complainIfEmptyDropdowns) {
+                LOGGER.error("Cannot autowire dropdown filter for field {}: no valid dropdowns to filter found, despite properties set", dropdownField.getFieldName());
+            }
         }
+    }
+
+    private void setupMultiFilter(final IDataField source, final List<AbstractDropdownDataField> dropdownsToFilter) {
+        source.getComponent().addEventListener(Events.ON_CHANGE, e -> {
+            final Object newValue = source.getValue();
+            for (final AbstractDropdownDataField ddToFilter : dropdownsToFilter) {
+                ddToFilter.setFilterValue(newValue);
+            }
+        });
+        LOGGER.debug("Auto filter setup for field {} to {} dropdowns", source.getFieldName(), dropdownsToFilter.size());
     }
 
     private void setupAutoFilter(final AbstractDropdownDataField addf, final String filterFieldName, final boolean primary) {
         if (filterFieldName == null) {
             return; // no filter: nothing to do
         }
-        final IDataField sourceField = findFieldByName(filterFieldName);
-        if (sourceField != null) {
-            final Consumer<Event> setter = primary ? e -> addf.setFilterValue(sourceField.getValue()) : e -> addf.setFilterValue2(sourceField.getValue());
-            // First: Initial filter setup based on current value
-            setter.accept(null);  // contents of the event is unused, therefore null is fine
+        try {
+            final IDataField sourceField = findFieldByName(filterFieldName);
+            if (sourceField != null) {
+                final Consumer<Event> setter = primary ? e -> addf.setFilterValue(sourceField.getValue()) : e -> addf.setFilterValue2(sourceField.getValue());
+                // First: Initial filter setup based on current value
+                // setter.accept(null);  // contents of the event is unused, therefore null is fine. But contents of field is not yet initialized at this time!
 
-            // Then: Listen for changes in the source field and update the dropdown filter
-            if (sourceField.getComponent() != null) {
-                sourceField.getComponent().addEventListener(Events.ON_CHANGE, e -> setter.accept(e));
-                LOGGER.debug("Auto filter setup for dropdown field {} based on source field {}", addf.getFieldName(), sourceField.getFieldName());
+                // Then: Listen for changes in the source field and update the dropdown filter
+                if (sourceField.getComponent() != null) {
+                    sourceField.getComponent().addEventListener(Events.ON_CHANGE, e -> setter.accept(e));
+                    LOGGER.debug("Auto filter setup for dropdown field {} based on source field {}", addf.getFieldName(), sourceField.getFieldName());
+                }
+            } else {
+                LOGGER.error("Cannot autowire dropdown filter for field {}: filter field {} not found", addf.getFieldName(), filterFieldName);
             }
-        } else {
-            LOGGER.warn("Cannot autowire dropdown filter for field {}: filter field {} not found", addf.getFieldName(), filterFieldName);
+        } catch (Exception e) {
+            LOGGER.error("Exception setting up auto filter for dropdown field {}", addf.getFieldName(), e);
         }
     }
 

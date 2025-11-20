@@ -16,6 +16,7 @@
 package com.arvatosystems.t9t.zkui.components.datafields;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,7 @@ import com.arvatosystems.t9t.zkui.util.Constants;
 import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
+import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.enums.TokenizableEnum;
 import de.jpaw.enums.XEnum;
 
@@ -41,25 +43,21 @@ import de.jpaw.enums.XEnum;
  */
 public abstract class AbstractDropdownDataField<T extends BonaPortable, V> extends AbstractDataField<Dropdown28Db<T>, V> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractDropdownDataField.class);
+    private static final Double UNIQUE_DUMMY_VALUE = Double.valueOf(55.62626); // some dummy initial value to ensure it's different to anything we feed in
 
     protected final Dropdown28Db<T> c;
     protected final IDropdown28DbFactory<T> factory;
     protected final String filterFieldName;
     protected final String filterFieldName2;
+    protected Object previousFilterValue  = UNIQUE_DUMMY_VALUE;
+    protected Object previousFilterValue2 = UNIQUE_DUMMY_VALUE;
 
     protected AbstractDropdownDataField(final DataFieldParameters params, final IDropdown28DbFactory<T> dbFactory) {
         super(params);
         factory = dbFactory;
-        final String format;
-        if (params.cfg != null && params.cfg.getProperties() != null) {
-            format = params.cfg.getProperties().get(Constants.UiFieldProperties.DROPDOWN_FORMAT);
-            filterFieldName = params.cfg.getProperties().get(Constants.UiFieldProperties.DROPDOWN_FILTER_FIELD);
-            filterFieldName2 = params.cfg.getProperties().get(Constants.UiFieldProperties.DROPDOWN_FILTER_FIELD2);
-        } else {
-            format = null;
-            filterFieldName = null;
-            filterFieldName2 = null;
-        }
+        final String format = getFieldProperty(Constants.UiFieldProperties.DROPDOWN_FORMAT);
+        filterFieldName = getFieldProperty(Constants.UiFieldProperties.DROPDOWN_FILTER_FIELD);
+        filterFieldName2 = getFieldProperty(Constants.UiFieldProperties.DROPDOWN_FILTER_FIELD2);
         c = dbFactory.createInstance(format);
         configureComponent(c);
     }
@@ -129,7 +127,10 @@ public abstract class AbstractDropdownDataField<T extends BonaPortable, V> exten
      * @param fieldValue the value to filter by
      */
     public void setFilterValue(final Object fieldValue) {
-        c.setAdditionalFilter(makeFilter(filterFieldName, fieldValue));
+        if (!Objects.equals(previousFilterValue, fieldValue)) {
+            c.setAdditionalFilter(makeFilter(filterFieldName, fieldValue));  // will cause a reload
+            previousFilterValue = fieldValue;
+        }
     }
 
     /**
@@ -137,7 +138,10 @@ public abstract class AbstractDropdownDataField<T extends BonaPortable, V> exten
      * @param fieldValue the value to filter by
      */
     public void setFilterValue2(final Object fieldValue) {
-        c.setAdditionalFilter2(makeFilter(filterFieldName2, fieldValue));
+        if (!Objects.equals(previousFilterValue2, fieldValue)) {
+            c.setAdditionalFilter2(makeFilter(filterFieldName2, fieldValue));  // will cause a reload
+            previousFilterValue2 = fieldValue;
+        }
     }
 
     private SearchFilter makeFilter(final String field, final Object value) {
@@ -148,6 +152,8 @@ public abstract class AbstractDropdownDataField<T extends BonaPortable, V> exten
             return SearchFilters.equalsFilter(field, stringValue);
         } else if (value instanceof Long longValue) {
             return SearchFilters.equalsFilter(field, longValue);
+        } else if (value instanceof Ref refValue) {
+            return SearchFilters.equalsFilter(field, refValue.getObjectRef());
         } else if (value instanceof Integer intValue) {
             return SearchFilters.equalsFilter(field, intValue);
         } else if (value instanceof TokenizableEnum alphaEnumValue) {
