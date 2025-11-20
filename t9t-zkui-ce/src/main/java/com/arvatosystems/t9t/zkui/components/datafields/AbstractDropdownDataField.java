@@ -15,24 +15,17 @@
  */
 package com.arvatosystems.t9t.zkui.components.datafields;
 
-import java.time.LocalDate;
-import java.util.Objects;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zul.Comboitem;
 
+import com.arvatosystems.t9t.base.IdAndName;
 import com.arvatosystems.t9t.base.search.Description;
 import com.arvatosystems.t9t.zkui.components.dropdown28.db.Dropdown28Db;
 import com.arvatosystems.t9t.zkui.components.dropdown28.factories.IDropdown28DbFactory;
 import com.arvatosystems.t9t.zkui.util.Constants;
 
-import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.apiw.Ref;
-import de.jpaw.enums.TokenizableEnum;
-import de.jpaw.enums.XEnum;
 
 /**
  * Abstract base class for dropdown data fields to eliminate duplicate code.
@@ -43,21 +36,18 @@ import de.jpaw.enums.XEnum;
  */
 public abstract class AbstractDropdownDataField<T extends BonaPortable, V> extends AbstractDataField<Dropdown28Db<T>, V> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractDropdownDataField.class);
-    private static final Double UNIQUE_DUMMY_VALUE = Double.valueOf(55.62626); // some dummy initial value to ensure it's different to anything we feed in
 
     protected final Dropdown28Db<T> c;
     protected final IDropdown28DbFactory<T> factory;
-    protected final String filterFieldName;
-    protected final String filterFieldName2;
-    protected Object previousFilterValue  = UNIQUE_DUMMY_VALUE;
-    protected Object previousFilterValue2 = UNIQUE_DUMMY_VALUE;
+    protected final IdAndName filterFieldName;
+    protected final IdAndName filterFieldName2;
 
     protected AbstractDropdownDataField(final DataFieldParameters params, final IDropdown28DbFactory<T> dbFactory) {
         super(params);
         factory = dbFactory;
         final String format = getFieldProperty(Constants.UiFieldProperties.DROPDOWN_FORMAT);
-        filterFieldName = getFieldProperty(Constants.UiFieldProperties.DROPDOWN_FILTER_FIELD);
-        filterFieldName2 = getFieldProperty(Constants.UiFieldProperties.DROPDOWN_FILTER_FIELD2);
+        filterFieldName = IdAndName.of(getFieldProperty(Constants.UiFieldProperties.DROPDOWN_FILTER_FIELD));
+        filterFieldName2 = IdAndName.of(getFieldProperty(Constants.UiFieldProperties.DROPDOWN_FILTER_FIELD2));
         c = dbFactory.createInstance(format);
         configureComponent(c);
     }
@@ -111,63 +101,15 @@ public abstract class AbstractDropdownDataField<T extends BonaPortable, V> exten
     /**
      * Returns the name of the primary field to use for filtering the dropdown, or null if no filter field is specified.
      */
-    public String getFilterFieldName() {
+    public IdAndName getFilterFieldName() {
         return filterFieldName;
     }
 
     /**
      * Returns the name of the secondary field to use for filtering the dropdown, or null if no filter field is specified.
      */
-    public String getFilterFieldName2() {
+    public IdAndName getFilterFieldName2() {
         return filterFieldName2;
-    }
-
-    /**
-     * Sets the primary filter on the dropdown based on a field value.
-     * @param fieldValue the value to filter by
-     */
-    public void setFilterValue(final Object fieldValue) {
-        if (!Objects.equals(previousFilterValue, fieldValue)) {
-            c.setAdditionalFilter(makeFilter(filterFieldName, fieldValue));  // will cause a reload
-            previousFilterValue = fieldValue;
-        }
-    }
-
-    /**
-     * Sets the secondary filter on the dropdown based on a field value.
-     * @param fieldValue the value to filter by
-     */
-    public void setFilterValue2(final Object fieldValue) {
-        if (!Objects.equals(previousFilterValue2, fieldValue)) {
-            c.setAdditionalFilter2(makeFilter(filterFieldName2, fieldValue));  // will cause a reload
-            previousFilterValue2 = fieldValue;
-        }
-    }
-
-    private SearchFilter makeFilter(final String field, final Object value) {
-        if (value == null) {
-            return null;
-        }
-        if (value instanceof String stringValue) {
-            return SearchFilters.equalsFilter(field, stringValue);
-        } else if (value instanceof Long longValue) {
-            return SearchFilters.equalsFilter(field, longValue);
-        } else if (value instanceof Ref refValue) {
-            return SearchFilters.equalsFilter(field, refValue.getObjectRef());
-        } else if (value instanceof Integer intValue) {
-            return SearchFilters.equalsFilter(field, intValue);
-        } else if (value instanceof TokenizableEnum alphaEnumValue) {
-            return SearchFilters.equalsFilter(field, alphaEnumValue.getToken());
-        } else if (value instanceof Enum<?> enumValue) {
-            return SearchFilters.equalsFilter(field, enumValue.ordinal());
-        } else if (value instanceof XEnum<?> xenumValue) {
-            return SearchFilters.equalsFilter(field, xenumValue.getToken());
-        } else if (value instanceof LocalDate dayValue) {
-            return SearchFilters.equalsFilter(field, dayValue);
-        } else {
-            LOGGER.warn("Unsupported filter value type for field {}: {}", field, value.getClass());
-            return null;
-        }
     }
 
     /**

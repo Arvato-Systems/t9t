@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.base;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -29,11 +30,17 @@ import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.auth.PermissionType;
 import com.arvatosystems.t9t.cfg.Packages;
 
+import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.BonaPortableFactory;
 import de.jpaw.bonaparte.core.DataConverter;
+import de.jpaw.bonaparte.pojos.api.SearchFilter;
+import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.enums.TokenizableEnum;
+import de.jpaw.enums.XEnum;
 import de.jpaw.util.ApplicationException;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
 /**
@@ -164,7 +171,7 @@ public final class MessagingUtil {
     }
 
     /**
-     * Methods handles the creation of error related {@link ServiceResponse} objects based on the given input parameters.
+     * Handles the creation of error related {@link ServiceResponse} objects based on the given input parameters.
      * This method is to be used ONLY outside the context of the Messaging class.
      * The reason is that fields like ErrorMessage, TenantId, RequestId and ProcessRef are normally set centrally by that class
      * and manual setting is discouraged (and even leads to a warning message)
@@ -181,7 +188,7 @@ public final class MessagingUtil {
         return response;
     }
 
-    /** Create a ServiceResponse, using a provided error code (or OK). */
+    /** Creates a ServiceResponse, using a provided error code (or OK). */
     public static ServiceResponse createServiceResponse(final int errorCode, final String errorDetails) {
         final ServiceResponse response = new ServiceResponse();
         if (errorCode > T9tConstants.MAX_OK_RETURN_CODE) {
@@ -196,11 +203,39 @@ public final class MessagingUtil {
         return response;
     }
 
-    /** Create a ServiceResponse, using a provided error code (or OK). */
+    /** Creates a ServiceResponse, using a provided error code (or OK). */
     public static ServiceResponse createOk(final int returnCode) {
         final ServiceResponse response = new ServiceResponse();
         response.setReturnCode(returnCode);
         return response;
+    }
+
+    /** Creates a SearchFilter with equals condition, for the most often used types. */
+    @Nullable
+    public static SearchFilter createEqualitySearchFilter(@Nonnull final String field, @Nullable final Object value) {
+        if (value == null) {
+            return null;
+        }
+        if (value instanceof String stringValue) {
+            return SearchFilters.equalsFilter(field, stringValue);
+        } else if (value instanceof Long longValue) {
+            return SearchFilters.equalsFilter(field, longValue);
+        } else if (value instanceof Ref refValue) {
+            return SearchFilters.equalsFilter(field, refValue.getObjectRef());
+        } else if (value instanceof Integer intValue) {
+            return SearchFilters.equalsFilter(field, intValue);
+        } else if (value instanceof TokenizableEnum alphaEnumValue) {
+            return SearchFilters.equalsFilter(field, alphaEnumValue.getToken());
+        } else if (value instanceof Enum<?> enumValue) {
+            return SearchFilters.equalsFilter(field, enumValue.ordinal());
+        } else if (value instanceof XEnum<?> xenumValue) {
+            return SearchFilters.equalsFilter(field, xenumValue.getToken());
+        } else if (value instanceof LocalDate dayValue) {
+            return SearchFilters.equalsFilter(field, dayValue);
+        } else {
+            LOGGER.warn("Unsupported filter value type for field {}: {}", field, value.getClass());
+            return null;
+        }
     }
 
     private static final DataConverter<String, AlphanumericElementaryDataItem> STRING_TRIMMER = new StringTrimmer();

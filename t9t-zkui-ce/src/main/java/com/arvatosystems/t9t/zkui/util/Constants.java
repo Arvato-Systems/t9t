@@ -104,7 +104,7 @@ public final class Constants {
         public static final String DROPDOWN_FILTER_FIELD  = "dropdownFilterField";  // primary field name to use for filtering dropdown results
         public static final String DROPDOWN_FILTER_FIELD2 = "dropdownFilterField2"; // secondary field name to use for filtering dropdown results
         public static final String FILTERS                = "filters";              // comma-separated list of field names to filter when this field changes
-        public static final String FILTERS_ID             = "filtersId";            // filter all dropdowns with this dropdown ID when this field changes
+        public static final String FILTERS_IDS            = "filtersIds";           // filter all dropdowns with these dropdown IDs when this field changes. Format is dropdownId[:fieldname]
         public static final String BANDBOX          = "bandbox";                // use a bandbox (search popup for bigger data sets) instead of entry field
         public static final String TRISTATE         = "tristate";               // use a dropdown with TRUE / FALSE / NULL instead of checkbox for this boolean
         public static final String ENUMS            = "enums";                  // use a restricted set of enums
