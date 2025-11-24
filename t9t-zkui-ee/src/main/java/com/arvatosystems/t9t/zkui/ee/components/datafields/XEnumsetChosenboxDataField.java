@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -46,7 +47,7 @@ public class XEnumsetChosenboxDataField<E extends AbstractXEnumBase<E>, S extend
     protected final XEnumSetDefinition xesd;
     protected final XEnumDefinition xed;
     protected final Map<E, ComboBoxItem2<E>> cbItems = new HashMap<>();
-    protected final Set<String> enumRestrictions;
+    protected final Predicate<String> enumRestrictions;
 
     public XEnumsetChosenboxDataField(final DataFieldParameters params, final String enumDtoRestrictions) {
         super(params);
@@ -55,16 +56,12 @@ public class XEnumsetChosenboxDataField<E extends AbstractXEnumBase<E>, S extend
         xed = xesd.getBaseXEnum();
 
         this.enumRestrictions = as.enumRestrictions(xed.getName(), enumDtoRestrictions, params.enumZulRestrictions);
-        if (enumRestrictions != null)
-            LOGGER.debug("xenumset {} for field {} restricted to {} instances", xed.getName(), getFieldName(), enumRestrictions.size());
 
         final XEnumFactory factory = XEnumFactory.getFactoryByPQON(xed.getName());
 
         c.setHflex("1");
         List<AbstractXEnumBase<E>> instances = factory.valuesAsList();
-        if (enumRestrictions != null) {
-            instances = instances.stream().filter(e -> enumRestrictions.contains(e.name())).collect(Collectors.toList());
-        }
+        instances = instances.stream().filter(e -> enumRestrictions.test(e.name())).collect(Collectors.toList());
         c.setModel(new ListModelList<>(instances));
     }
 

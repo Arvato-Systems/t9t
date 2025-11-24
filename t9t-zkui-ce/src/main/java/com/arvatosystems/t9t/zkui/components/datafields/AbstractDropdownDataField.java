@@ -15,22 +15,17 @@
  */
 package com.arvatosystems.t9t.zkui.components.datafields;
 
-import java.time.LocalDate;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zul.Comboitem;
 
+import com.arvatosystems.t9t.base.IdAndName;
 import com.arvatosystems.t9t.base.search.Description;
 import com.arvatosystems.t9t.zkui.components.dropdown28.db.Dropdown28Db;
 import com.arvatosystems.t9t.zkui.components.dropdown28.factories.IDropdown28DbFactory;
 import com.arvatosystems.t9t.zkui.util.Constants;
 
-import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.enums.TokenizableEnum;
-import de.jpaw.enums.XEnum;
 
 /**
  * Abstract base class for dropdown data fields to eliminate duplicate code.
@@ -44,22 +39,15 @@ public abstract class AbstractDropdownDataField<T extends BonaPortable, V> exten
 
     protected final Dropdown28Db<T> c;
     protected final IDropdown28DbFactory<T> factory;
-    protected final String filterFieldName;
-    protected final String filterFieldName2;
+    protected final IdAndName filterFieldName;
+    protected final IdAndName filterFieldName2;
 
     protected AbstractDropdownDataField(final DataFieldParameters params, final IDropdown28DbFactory<T> dbFactory) {
         super(params);
         factory = dbFactory;
-        final String format;
-        if (params.cfg != null && params.cfg.getProperties() != null) {
-            format = params.cfg.getProperties().get(Constants.UiFieldProperties.DROPDOWN_FORMAT);
-            filterFieldName = params.cfg.getProperties().get(Constants.UiFieldProperties.DROPDOWN_FILTER_FIELD);
-            filterFieldName2 = params.cfg.getProperties().get(Constants.UiFieldProperties.DROPDOWN_FILTER_FIELD2);
-        } else {
-            format = null;
-            filterFieldName = null;
-            filterFieldName2 = null;
-        }
+        final String format = getFieldProperty(Constants.UiFieldProperties.DROPDOWN_FORMAT);
+        filterFieldName = IdAndName.of(getFieldProperty(Constants.UiFieldProperties.DROPDOWN_FILTER_FIELD));
+        filterFieldName2 = IdAndName.of(getFieldProperty(Constants.UiFieldProperties.DROPDOWN_FILTER_FIELD2));
         c = dbFactory.createInstance(format);
         configureComponent(c);
     }
@@ -113,55 +101,15 @@ public abstract class AbstractDropdownDataField<T extends BonaPortable, V> exten
     /**
      * Returns the name of the primary field to use for filtering the dropdown, or null if no filter field is specified.
      */
-    public String getFilterFieldName() {
+    public IdAndName getFilterFieldName() {
         return filterFieldName;
     }
 
     /**
      * Returns the name of the secondary field to use for filtering the dropdown, or null if no filter field is specified.
      */
-    public String getFilterFieldName2() {
+    public IdAndName getFilterFieldName2() {
         return filterFieldName2;
-    }
-
-    /**
-     * Sets the primary filter on the dropdown based on a field value.
-     * @param fieldValue the value to filter by
-     */
-    public void setFilterValue(final Object fieldValue) {
-        c.setAdditionalFilter(makeFilter(filterFieldName, fieldValue));
-    }
-
-    /**
-     * Sets the secondary filter on the dropdown based on a field value.
-     * @param fieldValue the value to filter by
-     */
-    public void setFilterValue2(final Object fieldValue) {
-        c.setAdditionalFilter2(makeFilter(filterFieldName2, fieldValue));
-    }
-
-    private SearchFilter makeFilter(final String field, final Object value) {
-        if (value == null) {
-            return null;
-        }
-        if (value instanceof String stringValue) {
-            return SearchFilters.equalsFilter(field, stringValue);
-        } else if (value instanceof Long longValue) {
-            return SearchFilters.equalsFilter(field, longValue);
-        } else if (value instanceof Integer intValue) {
-            return SearchFilters.equalsFilter(field, intValue);
-        } else if (value instanceof TokenizableEnum alphaEnumValue) {
-            return SearchFilters.equalsFilter(field, alphaEnumValue.getToken());
-        } else if (value instanceof Enum<?> enumValue) {
-            return SearchFilters.equalsFilter(field, enumValue.ordinal());
-        } else if (value instanceof XEnum<?> xenumValue) {
-            return SearchFilters.equalsFilter(field, xenumValue.getToken());
-        } else if (value instanceof LocalDate dayValue) {
-            return SearchFilters.equalsFilter(field, dayValue);
-        } else {
-            LOGGER.warn("Unsupported filter value type for field {}: {}", field, value.getClass());
-            return null;
-        }
     }
 
     /**

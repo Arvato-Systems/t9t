@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +48,7 @@ public class EnumsetDataField<E extends Enum<E>, T extends GenericEnumSetMarker<
     protected final EnumSetDefinition baseEnumset;
     protected final Class<T> enumsetClass;
     protected final Map<E, ComboBoxItem2<E>> cbItems = new HashMap<>();
-    protected final Set<String> enumRestrictions;
+    protected final Predicate<String> enumRestrictions;
 
     public EnumsetDataField(final DataFieldParameters params, final String enumDtoRestrictions) {
         super(params);
@@ -58,15 +59,13 @@ public class EnumsetDataField<E extends Enum<E>, T extends GenericEnumSetMarker<
         ed = baseEnumset.getBaseEnum();
 
         enumRestrictions = as.enumRestrictions(ed.getName(), enumDtoRestrictions, params.enumZulRestrictions);
-        if (enumRestrictions != null)
-            LOGGER.debug("enumset {} for field {} restricted to {} instances", ed.getName(), getFieldName(), enumRestrictions.size());
 
         c.setHflex("1");
         final Map<String, String> translations = as.translateEnum(ed.getName());
         final Class<Enum> enumClass = ed.getClassRef();
         final List<E> instances = new ArrayList<>(ed.getIds().size());
         for (final String s: ed.getIds()) {
-            if (enumRestrictions == null || enumRestrictions.contains(s)) {
+            if (enumRestrictions.test(s)) {
                 final E e = (E) Enum.valueOf(enumClass, s);
                 instances.add(e);
             }

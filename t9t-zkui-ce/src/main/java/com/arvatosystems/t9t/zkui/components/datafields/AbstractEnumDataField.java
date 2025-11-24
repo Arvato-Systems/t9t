@@ -17,7 +17,7 @@ package com.arvatosystems.t9t.zkui.components.datafields;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
+import java.util.function.Predicate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +26,6 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 
 import de.jpaw.bonaparte.pojos.meta.EnumDefinition;
-import de.jpaw.bonaparte.util.ToStringHelper;
 
 public abstract class AbstractEnumDataField<T> extends AbstractDataField<Combobox, T> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractEnumDataField.class);
@@ -34,16 +33,11 @@ public abstract class AbstractEnumDataField<T> extends AbstractDataField<Combobo
     protected final Map<T, Comboitem> cbItems = new HashMap<T, Comboitem>();
     protected final Map<T, Integer> cbIndexes = new HashMap<T, Integer>();
     protected int indexCount = 0;
-    protected final Set<String> enumRestrictions;
+    protected final Predicate<String> enumRestrictions;
 
     public AbstractEnumDataField(DataFieldParameters params, String pqon, String enumDtoRestriction) {
         super(params);
         this.enumRestrictions = as.enumRestrictions(pqon, enumDtoRestriction, params.enumZulRestrictions);
-        if (enumRestrictions != null) {
-            LOGGER.debug("enum {} for field {} restricted to {} instances", pqon, getFieldName(), enumRestrictions.size());
-            LOGGER.debug("instances are {}", ToStringHelper.toStringML(enumRestrictions));
-
-        }
     }
 
     @Override
@@ -106,7 +100,7 @@ public abstract class AbstractEnumDataField<T> extends AbstractDataField<Combobo
         Map<String, String> translations = as.translateEnum(ed.getName());
         Class<Enum> enumClass = ed.getClassRef();
         for (String s: ed.getIds()) {
-            if (enumRestrictions == null || enumRestrictions.contains(s)) {
+            if (enumRestrictions.test(s)) {
                 String xlation = translations.get(s);
                 Enum e = Enum.valueOf(enumClass, s);
                 newComboItem((T)e, xlation == null ? s : xlation);

@@ -30,7 +30,7 @@ public abstract class AbstractCoreDataField<E extends Component, T> implements I
     protected final ApplicationSession as;
     protected final boolean isRequired;
 
-    protected AbstractCoreDataField(DataFieldParameters params) {
+    protected AbstractCoreDataField(final DataFieldParameters params) {
         this.cfg = params.cfg;
         this.path = params.path;
         this.as = params.as;
@@ -46,6 +46,21 @@ public abstract class AbstractCoreDataField<E extends Component, T> implements I
     @Override
     public FieldDefinition getFieldDefintion() {
         return cfg;
+    }
+
+    /** Returns the value of a property of the field definition, or null if it does not exist. */
+    @Override
+    public String getFieldProperty(final String propertyName) {
+        if (cfg.getProperties() != null) {
+            return cfg.getProperties().get(propertyName);
+        }
+        return null;
+    }
+
+    /** Checks if a given property of the field definition is set. */
+    @Override
+    public boolean hasFieldProperty(final String propertyName) {
+        return cfg.getProperties() != null && cfg.getProperties().containsKey(propertyName);
     }
 
     @Override

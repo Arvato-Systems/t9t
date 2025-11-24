@@ -30,10 +30,34 @@
     <packaging>pom</packaging>
     <description>Global dependency management for all ZK based UI projects</description>
 
+    <profiles>
+        <profile>
+            <id>ZKCE</id>
+            <activation>
+                <property>
+                    <name>ZKCE</name>
+                </property>
+            </activation>
+            <properties>
+                <!-- ZK libraries, Community edition -->
+                <zk.version>9.6.0.2-jakarta</zk.version>
+                <zk-themes.version>9.6.0.2</zk-themes.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>ZKEE</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <!-- ZK libraries, COMMERCIAL !!! -->
+                <zk.version>9.6.6-jakarta</zk.version>
+                <zk-themes.version>9.6.6</zk-themes.version>
+            </properties>
+        </profile>
+    </profiles>
+
     <properties>
-        <!-- ZK libraries, COMMERCIAL !!! -->
-        <zk.version>9.6.6-jakarta</zk.version>
-        <zk-themes.version>9.6.6</zk-themes.version>
         <zk-ckez.version>4.21.0.0-jakarta</zk-ckez.version>  <!-- https://github.com/zkoss/zkckeditor -->
         <closure-compiler.version>v20250820</closure-compiler.version>
     </properties>

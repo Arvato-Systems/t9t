@@ -30,17 +30,22 @@ import org.zkoss.zul.Columns;
 import org.zkoss.zul.Grid;
 
 import com.arvatosystems.t9t.base.CrudViewModel;
+import com.arvatosystems.t9t.base.IdAndName;
+import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.zkui.components.IDataFactoryOwner;
 import com.arvatosystems.t9t.zkui.components.IDataFieldFactory;
 import com.arvatosystems.t9t.zkui.components.IViewModelOwner;
 import com.arvatosystems.t9t.zkui.components.datafields.AbstractDropdownDataField;
 import com.arvatosystems.t9t.zkui.components.datafields.IDataField;
+import com.arvatosystems.t9t.zkui.components.dropdown28.db.Dropdown28Db;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 import com.arvatosystems.t9t.zkui.util.Constants;
 import com.arvatosystems.t9t.zkui.viewmodel.AbstractCrudVM.CrudMode;
 
 import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.dp.Jdp;
 
@@ -134,26 +139,91 @@ public class Form28 extends Grid implements IDataFactoryOwner, IViewModelOwner {
                 setupAutoFilter(addf, addf.getFilterFieldName(), true);
                 setupAutoFilter(addf, addf.getFilterFieldName2(), false);
             }
+            // check for filters originating from this source field.
+            // In case one source field filters multiple dropdowns, configuring it by the below properties is more convenient, and also efficient because only a single event listener is created.
+            final List<Consumer<Object>> dropdownsToFilter = new ArrayList<>();
+            boolean complainIfEmptyDropdowns = false;
+            final String filters = dropdownField.getFieldProperty(Constants.UiFieldProperties.FILTERS);
+            if (filters != null) {
+                complainIfEmptyDropdowns = true;
+                final List<IdAndName> parts = parseFilterIdsProperty(filters);
+                for (final IdAndName ian : parts) {
+                    final IDataField df = findFieldByName(ian.id());
+                    if (df == null) {
+                        LOGGER.error("Cannot autowire dropdown filter for field {}: filter field {} not found", dropdownField.getFieldName(), ian.id());
+                        continue;
+                    }
+                    if (df instanceof AbstractDropdownDataField addf) {
+                        final String filterFieldName = T9tUtil.nvl(ian.name(), dropdownField.getFieldName());
+                        dropdownsToFilter.add(s -> addf.getComponent().setAdditionalFilter(MessagingUtil.createEqualitySearchFilter(filterFieldName, s)));
+                    } else {
+                        LOGGER.error("Cannot autowire dropdown filter for field {}: filter field {} is not a dropdown field", dropdownField.getFieldName(), ian.id());
+                    }
+                }
+            }
+            final String filtersIds = dropdownField.getFieldProperty(Constants.UiFieldProperties.FILTERS_IDS);
+            if (filtersIds != null) {
+                complainIfEmptyDropdowns = true;
+                final List<IdAndName> parts = parseFilterIdsProperty(filtersIds);
+                // find all dropdowns of one of the given IDs, except the ones which have their own filter defined
+                for (IDataField candidate : myFields) {
+                    if (candidate instanceof AbstractDropdownDataField addf) {
+                        if (addf.getFilterFieldName() == null) {
+                            for (final IdAndName ian : parts) {
+                                if (ian.id().equals(candidate.getFieldProperty(Constants.UiFieldProperties.DROPDOWN))) {
+                                    final String filterFieldName = T9tUtil.nvl(ian.name(), dropdownField.getFieldName());
+                                    dropdownsToFilter.add(o -> addf.getComponent().setAdditionalFilter(MessagingUtil.createEqualitySearchFilter(filterFieldName, o)));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (!dropdownsToFilter.isEmpty()) {
+                setupMultiFilter(dropdownField, dropdownsToFilter);
+            } else if (complainIfEmptyDropdowns) {
+                LOGGER.error("Cannot autowire dropdown filter for field {}: no valid dropdowns to filter found, despite properties set", dropdownField.getFieldName());
+            }
         }
     }
 
-    private void setupAutoFilter(final AbstractDropdownDataField addf, final String filterFieldName, final boolean primary) {
-        if (filterFieldName == null) {
+    private List<IdAndName> parseFilterIdsProperty(final String filtersIds) {
+        final String[] filterIdNames = filtersIds.split(",");
+        final List<IdAndName> result = new ArrayList<>(filterIdNames.length);
+        for (final String filterIdName : filterIdNames) {
+            result.add(IdAndName.of(filterIdName.trim()));
+        }
+        return result;
+    }
+
+    private void setupMultiFilter(final IDataField source, final List<Consumer<Object>> consumers) {
+        source.getComponent().addEventListener(Events.ON_CHANGE, e -> {
+            final Object newValue = source.getValue();
+            for (final Consumer<Object> c : consumers) {
+                c.accept(newValue);
+            }
+        });
+        LOGGER.debug("Auto filter setup for field {} to {} dropdowns", source.getFieldName(), consumers.size());
+    }
+
+    private void setupAutoFilter(final AbstractDropdownDataField addf, final IdAndName ian, final boolean primary) {
+        if (ian == null) {
             return; // no filter: nothing to do
         }
-        final IDataField sourceField = findFieldByName(filterFieldName);
-        if (sourceField != null) {
-            final Consumer<Event> setter = primary ? e -> addf.setFilterValue(sourceField.getValue()) : e -> addf.setFilterValue2(sourceField.getValue());
-            // First: Initial filter setup based on current value
-            setter.accept(null);  // contents of the event is unused, therefore null is fine
-
-            // Then: Listen for changes in the source field and update the dropdown filter
-            if (sourceField.getComponent() != null) {
+        try {
+            final IDataField sourceField = findFieldByName(ian.id());
+            if (sourceField != null) {
+                final String filterFieldName = T9tUtil.nvl(ian.name(), sourceField.getFieldName());
+                final SearchFilter filter = MessagingUtil.createEqualitySearchFilter(filterFieldName, sourceField.getValue());
+                final Dropdown28Db<?> component = addf.getComponent();
+                final Consumer<Event> setter = primary ? e -> component.setAdditionalFilter(filter) : e -> component.setAdditionalFilter2(filter);
                 sourceField.getComponent().addEventListener(Events.ON_CHANGE, e -> setter.accept(e));
                 LOGGER.debug("Auto filter setup for dropdown field {} based on source field {}", addf.getFieldName(), sourceField.getFieldName());
+            } else {
+                LOGGER.error("Cannot autowire dropdown filter for field {}: filter field {} not found", addf.getFieldName(), ian.id());
             }
-        } else {
-            LOGGER.warn("Cannot autowire dropdown filter for field {}: filter field {} not found", addf.getFieldName(), filterFieldName);
+        } catch (Exception e) {
+            LOGGER.error("Exception setting up auto filter for dropdown field {}", addf.getFieldName(), e);
         }
     }
 

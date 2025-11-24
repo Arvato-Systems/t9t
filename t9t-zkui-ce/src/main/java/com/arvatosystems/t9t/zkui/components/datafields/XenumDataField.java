@@ -34,7 +34,7 @@ public class XenumDataField extends AbstractEnumDataField<AbstractXEnumBase<?>> 
         @SuppressWarnings("unchecked")
         List<AbstractXEnumBase<?>> instances = (List<AbstractXEnumBase<?>>) factory.valuesAsList();
         for (AbstractXEnumBase<?> e: instances) {
-            if (enumRestrictions == null || enumRestrictions.contains(e.name()))
+            if (enumRestrictions.test(e.name()))
                 newComboItem(e, as.translateEnum((BonaEnum)e.getBaseEnum()));
         }
     }

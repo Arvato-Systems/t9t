@@ -66,8 +66,8 @@ public class Dropdown28Db<REF extends BonaPortable> extends Combobox {
     private final Map<String, Description>          lookupById;    // lookup with formatted id and description/name of DTO
     private final Map<String, Description>          lookupByKey;   // lookup with DTO id only
     private final Map<Long,   Description>          lookupByRef;
-    protected IFixedFilter                          fixedFilter = null;        // a fixed search filter provider
-    protected IDescriptionFilter                    descriptionFilter = null;  // a filter on results
+    protected IFixedFilter                          fixedFilter       = null;   // a fixed search filter provider
+    protected IDescriptionFilter                    descriptionFilter = null;   // a filter on results
     protected SearchFilter                          additionalFilter  = null;   // primary runtime filter (e.g., from dropdown filter field)
     protected SearchFilter                          additionalFilter2 = null;   // secondary runtime filter (e.g., from dropdown filter field)
     protected final String                          dropdownDisplayFormat;
@@ -153,14 +153,18 @@ public class Dropdown28Db<REF extends BonaPortable> extends Combobox {
 
     /** Sets an additional runtime filter (e.g., from dropdown filter field). */
     public void setAdditionalFilter(SearchFilter filter) {
-        additionalFilter = filter;
-        reloadDropDownData();
+        if (!Objects.equals(additionalFilter, filter)) {
+            additionalFilter = filter;
+            reloadDropDownData();
+        }
     }
 
     /** Sets an additional runtime filter (e.g., from dropdown filter field). */
     public void setAdditionalFilter2(SearchFilter filter) {
-        additionalFilter2 = filter;
-        reloadDropDownData();
+        if (!Objects.equals(additionalFilter2, filter)) {
+            additionalFilter2 = filter;
+            reloadDropDownData();
+        }
     }
 
     // query the backend, no caching (reloads are done only if caching does not apply)
