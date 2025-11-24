@@ -42,6 +42,7 @@ import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -349,39 +350,108 @@ public final class ApplicationSession {
     }
 
     // direct lookup for a non-null key, such as PQON, for derived key after indirection
-    private Set<String> lookupEnumsForKey(String key) {
+    private Predicate<String> lookupEnumsForKey(final String key) {
         String setting = translationProvider.getTranslation(getTenantId(), STD_LANGS, key, ENUM_RESTRICTIONS_FIELD_NAME);
-        return csv2Set(setting);
+        return lookupEnums(setting);
     }
 
-    // lookup for possibly null key, or one with indirection (parameter to bon file or in zul)
-    private Set<String> lookupEnums(String key) {
-        if (key == null)
-            return null;
+    /**
+     * Parses enum restriction syntax and returns a predicate for filtering enum values.
+     * Supported formats:
+     * <ul>
+     *   <li><b>null</b> or empty after trim: no restriction (returns null) or no values allowed</li>
+     *   <li><b>#key</b>: indirect lookup via translation provider</li>
+     *   <li><b>~VAL1,VAL2</b>: allow only these comma-separated values</li>
+     *   <li><b>^VAL1,VAL2</b>: exclude these comma-separated values (allow all others)</li>
+     *   <li><b>!VAL1,VAL2</b>: exclude these comma-separated values (allow all others)</li>
+     *   <li><b>VAL1,VAL2</b>: allow only these comma-separated values (default)</li>
+     * </ul>
+     * @param key the restriction string, possibly with special syntax
+     * @return a predicate for filtering enum values according to the restriction, or null for no restriction
+     */
+    private Predicate<String> lookupEnums(String key) {
+        if (key == null) {
+            return null; // temporarily no restriction
+        }
+        key = key.trim();
+        if (key.isEmpty()) {
+            return NO_ENUM_ALLOWED; // empty restriction
+        }
         if (key.charAt(0) == '#') { // indirection:
             key = translationProvider.getTranslation(getTenantId(), STD_LANGS, key.substring(1), ENUM_RESTRICTIONS_FIELD_NAME);
-            if (key == null)
+            if (key == null) {
                 return null;
+            }
+            key = key.trim();
+            if (key.isEmpty()) {
+                return NO_ENUM_ALLOWED; // empty restriction
+            }
         }
-        return csv2Set(key);
+        // if there is a restriction, check first character for meaning
+        final char firstChar = key.charAt(0);
+        final String trailer = key.substring(1);
+        switch (firstChar) {
+        case '~':
+            return s -> trailer.contains(s);
+        case '^':
+            return s -> !trailer.contains(s);
+        case '!':
+            final Set<String> forbiddenValues = csv2Set(trailer);
+            return s -> !forbiddenValues.contains(s);
+        default:
+            final Set<String> allowedValues = csv2Set(key); // include first char!
+            return s -> allowedValues.contains(s);
+        }
     }
 
-    // intersect 2 sets, but with null mapping to the full set. Modifies s1
-    private Set<String> intersect(Set<String> s1, Set<String> s2) {
+    // intersect 2 predicates, but allow for nulls in case of "always true"
+    private Predicate<String> intersect(Predicate<String> s1, Predicate<String> s2) {
         if (s1 == null)
             return s2;
         if (s2 == null)
             return s1;
-        s1.retainAll(s2);
-        return s1;
+        return s1.and(s2);
     }
 
-    /** Computes the intersection of 3 restrictions, where null means no restriction, but the empty set means no possible instance. */
-    public Set<String> enumRestrictions(String enumPqon, String dtoRestrictions, String zulRestrictions) {
-        final Set<String> s1 = lookupEnumsForKey(enumPqon);
-        final Set<String> s2 = lookupEnums(dtoRestrictions);
-        final Set<String> s3 = lookupEnums(zulRestrictions);
-        return intersect(intersect(s1, s2), s3);
+    public static final Predicate<String> NO_ENUM_RESTRICTION = s -> true;
+    public static final Predicate<String> NO_ENUM_ALLOWED = s -> false;
+
+    /**
+     * Computes the intersection of 3 restrictions for enum values, where null means no restriction,
+     * but the empty set means no possible instance.
+     *
+     * <p>The restriction strings support the following syntax patterns:</p>
+     * <ul>
+     *   <li><b>Default (CSV list of allowed values)</b>: A comma-separated list of enum tokens that are allowed.
+     *       Example: {@code "A,B,C"} allows only values A, B, or C.</li>
+     *   <li><b>Empty string</b>: No enum values are allowed (results in NO_ENUM_ALLOWED predicate).</li>
+     *   <li><b>{@code ~} prefix (substring contains)</b>: Values are allowed if they are contained as a substring
+     *       within the restriction string (after the {@code ~} prefix). Example: {@code "~ABC"} allows values A, B, and C.</li>
+     *   <li><b>{@code ^} prefix (substring negation)</b>: Values are allowed if they are NOT contained as a substring
+     *       within the restriction string (after the {@code ^} prefix). Example: {@code "^ABC"} allows all values except A, B, and C.</li>
+     *   <li><b>{@code !} prefix (CSV list of forbidden values)</b>: A comma-separated list of enum tokens that are
+     *       forbidden. Example: {@code "!A,B,C"} forbids values A, B, and C but allows all others.</li>
+     *   <li><b>{@code #} prefix (indirection)</b>: The string following {@code #} is treated as a translation key,
+     *       and the actual restriction is looked up from the translation provider. The resolved value can use
+     *       any of the above syntax patterns. Example: {@code "#myRestrictionKey"} looks up the key and applies
+     *       the resolved restriction.</li>
+     * </ul>
+     *
+     * @param enumPqon the partially qualified object name of the enum, used to look up default restrictions
+     * @param dtoRestrictions restriction specification from the DTO level (can be null)
+     * @param zulRestrictions restriction specification from the ZUL level (can be null)
+     * @return a Predicate that tests whether a given enum token is allowed, or NO_ENUM_RESTRICTION if no restrictions apply
+     */
+    public Predicate<String> enumRestrictions(String enumPqon, String dtoRestrictions, String zulRestrictions) {
+        final Predicate<String> s1 = lookupEnumsForKey(enumPqon);
+        final Predicate<String> s2 = lookupEnums(dtoRestrictions);
+        final Predicate<String> s3 = lookupEnums(zulRestrictions);
+        final Predicate<String> result = intersect(s1, intersect(s2, s3));
+        if (result == null) {
+            return NO_ENUM_RESTRICTION;
+        }
+        LOGGER.debug("Configured enum restrictions for {}", enumPqon);
+        return result;
     }
 
     private String userLanguage = "en";  // never null

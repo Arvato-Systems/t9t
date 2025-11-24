@@ -69,7 +69,7 @@ public class XenumsetField extends EnumBaseField {
         XEnumFactory factory = XEnumFactory.getFactoryByPQON(xed.getName());
         List<AbstractXEnumBase> instances = factory.valuesAsList();
         for (AbstractXEnumBase e: instances) {
-            if (enumRestrictions == null || enumRestrictions.contains(e.name())) {
+            if (enumRestrictions.test(e.name())) {
                 LOGGER.debug("XenumsetField asks for translation of {}", (BonaEnum)e.getBaseEnum());
                 newComboItem(e.name(), session.translateEnum((BonaEnum)e.getBaseEnum()));
             }
