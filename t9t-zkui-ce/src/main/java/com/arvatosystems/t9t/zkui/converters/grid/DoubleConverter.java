@@ -23,23 +23,17 @@ import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 
 @Singleton
-@Named("java.lang.Double")
-@Named("java.lang.Float")
+@Named("double")
+@Named("float")
 public class DoubleConverter extends AbstractDecimalFormatConverter<Number> implements IItemConverter<Number> {
-
-    private static final String DEFAULT_PATTERN = "##0.0000";
 
     @Override
     protected String getPattern() {
-        return DEFAULT_PATTERN;
+        return "##0.0000"; // Default pattern for double/float
     }
 
     @Override
     public String getFormattedLabel(Number value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
-        if (value == null) {
-            return null;
-        }
-
         final DecimalFormat df = getLocalizedDecimalFormat(this.format);
         return df.format(value.doubleValue());
     }

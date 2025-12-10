@@ -25,7 +25,7 @@ import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 
 @Singleton
-@Named("java.time.LocalDate")
+@Named("day")
 public class JavaLocalDateConverter implements IItemConverter<LocalDate> {
 
     /**

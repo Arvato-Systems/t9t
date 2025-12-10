@@ -15,7 +15,8 @@
  */
 package com.arvatosystems.t9t.zkui.converters.grid;
 
-import com.arvatosystems.t9t.zkui.util.Constants;
+import java.util.List;
+
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.DataAndMeta;
 import de.jpaw.bonaparte.core.FoldingComposer;
@@ -27,11 +28,9 @@ import de.jpaw.dp.Singleton;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
-import java.util.List;
-
 @Singleton
-@Named(Constants.UiFieldProperties.GENERIC_OBJECT)
-public class GenericObjectConverter implements IItemConverter<BonaPortable> {
+@Named("object")
+public class BonaPortableConverter implements IItemConverter<BonaPortable> {
 
     protected final ListMetaComposer metaComposer = new ListMetaComposer(false, true, true);
 
@@ -50,12 +49,8 @@ public class GenericObjectConverter implements IItemConverter<BonaPortable> {
             if (dataAndMeta.data == null) {
                 return null;
             }
-            final IItemConverter valueConverter = AllItemConverters.getConverter(dataAndMeta.data, wholeDataObject, fname, dataAndMeta.meta);
-            if (valueConverter != null) {
-                return valueConverter.getFormattedLabel(dataAndMeta.data, wholeDataObject, fname, dataAndMeta.meta);
-            } else {
-                return dataAndMeta.data.toString();
-            }
+            final IItemConverter valueConverter = ItemConverterRegistry.getConverter(fname, dataAndMeta.meta);
+            return valueConverter.getFormattedLabel(dataAndMeta.data, wholeDataObject, fname, dataAndMeta.meta);
         }
         return data.toString();
     }

@@ -26,7 +26,7 @@ import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 
 @Singleton
-@Named("java.time.Instant")
+@Named("instant")
 public class JavaInstantConverter implements IItemConverter<Instant> {
 
     /**

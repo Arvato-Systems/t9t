@@ -144,7 +144,7 @@ public final class HibernateSearchHelper {
                                     .matching(term);
                             final int fuzziness = getFuzziness(term);
                             if (fuzziness > 0) {
-                                m = m.minimumShouldMatchNumber(Math.min(term.length(), 3)).fuzzy(fuzziness);
+                                m = m.fuzzy(fuzziness);
                             }
                             inner.should(m);
                             added = true;

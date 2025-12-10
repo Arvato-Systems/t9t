@@ -20,7 +20,6 @@ import java.math.BigDecimal;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.lang.Generics;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.DataWithTracking;
@@ -30,9 +29,9 @@ import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 
 @Singleton
-@Named("java.math.BigDecimal")
-public class DecimalConverter extends AbstractDecimalFormatConverter<BigDecimal> implements IItemConverter<BigDecimal> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DecimalConverter.class);
+@Named("decimal")  // java.math.BigDecimal
+public class BigDecimalConverter extends AbstractDecimalFormatConverter<BigDecimal> implements IItemConverter<BigDecimal> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(BigDecimalConverter.class);
     private static final String DEFAULT_PATTERN = "###,##0.00";
 
     @Override
@@ -42,22 +41,14 @@ public class DecimalConverter extends AbstractDecimalFormatConverter<BigDecimal>
 
     @Override
     public String getFormattedLabel(BigDecimal value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
-        if (value == null) {
-            return null;
+        BonaPortable root = getObjectWithoutDataOrTracking(wholeDataObject);
+        String path = getPathWithoutDataOrTracking(fieldName);
+        BigDecimal scaledValue = BigDecimalTools.retrieveScaled(root, path);
+        if (scaledValue == null) {
+            LOGGER.warn("Can't find BigDecimal value in {}#{}. Please check decimal property in bon file.", root.ret$PQON(), path);
+            scaledValue = setDefaultMinScale(value);
         }
-
-        if (value instanceof BigDecimal) {
-            BonaPortable root = getObjectWithoutDataOrTracking(wholeDataObject);
-            String path = getPathWithoutDataOrTracking(fieldName);
-            BigDecimal scaledValue = BigDecimalTools.retrieveScaled(root, path);
-            if (scaledValue == null) {
-                LOGGER.warn("Can't find BigDecimal value in {}#{}. Pleased check decimal property in bon file.", root.ret$PQON(), path);
-                scaledValue = setDefaultMinScale(value);
-            }
-            return getLocalizedDecimalFormat(this.format, scaledValue.scale()).format(scaledValue);
-        } else {
-            throw new UnsupportedOperationException("Instance " + value.getClass().getName() + " is not supported. Field:" + fieldName + "->" + value);
-        }
+        return getLocalizedDecimalFormat(this.format, scaledValue.scale()).format(scaledValue);
 
     }
 
@@ -69,15 +60,15 @@ public class DecimalConverter extends AbstractDecimalFormatConverter<BigDecimal>
                 return clearedField;
     }
 
-    private BonaPortable getObjectWithoutDataOrTracking(Object wholeDataObject) {
-        if (wholeDataObject instanceof DataWithTracking<?, ?>)
-            return ((DataWithTracking<?, ?>)wholeDataObject).getData();
-        return (BonaPortable)wholeDataObject;
+    private BonaPortable getObjectWithoutDataOrTracking(BonaPortable wholeDataObject) {
+        if (wholeDataObject instanceof DataWithTracking<?, ?> dwt) {
+            return dwt.getData();
+        }
+        return wholeDataObject;
     }
 
-    private BigDecimal setDefaultMinScale(Object value) {
-        BigDecimal tmp = Generics.cast(value);
-        tmp = tmp.stripTrailingZeros();
+    private BigDecimal setDefaultMinScale(BigDecimal value) {
+        BigDecimal tmp = value.stripTrailingZeros();
         if (tmp.scale() < 0) {
             tmp = tmp.setScale(0);
         }

@@ -15,6 +15,11 @@
  */
 package com.arvatosystems.t9t.zkui.converters.grid;
 
-/** Marker interface to register conversions from Long to an ID or name, such as userRef... */
-public interface ILongItemConverter extends IItemConverter<Long> {
+public abstract class AbstractIconConverter<T> implements IItemConverter<T> {
+
+    /** Returns if the converter produces icons or text. */
+    @Override
+    public boolean isIcon() {
+        return true;
+    }
 }

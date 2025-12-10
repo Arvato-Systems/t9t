@@ -15,19 +15,46 @@
  */
 package com.arvatosystems.t9t.zkui.converters.grid;
 
-import com.arvatosystems.t9t.zkui.util.ZulUtils;
+import com.arvatosystems.t9t.zkui.session.ApplicationSession;
+import com.arvatosystems.t9t.zkui.util.Constants;
 
 import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.enums.BonaEnum;
+import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 
 @Singleton
 @Named("enum")
-public class EnumTranslationConverter implements IItemConverter<Enum<?>> {
+public class EnumTranslationConverter implements IItemConverter<BonaEnum> {
+
+    private static final class EnumIconConverter extends AbstractIconConverter<BonaEnum> implements IItemConverter<BonaEnum> {
+        private final String prefix;
+
+        private EnumIconConverter(String prefix) {
+            this.prefix = prefix;
+        }
+
+        @Override
+        public String iconPath(BonaEnum value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
+            return prefix + value.name() + ".png";
+        }
+    }
 
     @Override
-    public String getFormattedLabel(Enum<?> value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
-        return ZulUtils.getLabelByKey(value.getClass().getName(), value.name());
+    public IItemConverter<BonaEnum> getInstance(final String fieldName, final FieldDefinition meta) {
+        if (meta.getProperties() != null && meta instanceof EnumDataItem edi) {
+            if (meta.getProperties().containsKey(Constants.UiFieldProperties.ICON)) {
+                final String iconPathPrefix = "icon/" + edi.getBaseEnum().getName().replace('.', '/') + "/";
+                return new EnumIconConverter(iconPathPrefix);
+            }
+        }
+        return this;
+    }
+
+    @Override
+    public String getFormattedLabel(BonaEnum value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
+        return ApplicationSession.get().translateEnum(value);
     }
 }

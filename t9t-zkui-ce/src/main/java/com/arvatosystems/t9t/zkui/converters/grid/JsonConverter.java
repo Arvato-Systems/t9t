@@ -21,22 +21,26 @@ import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-@Named("java.util.Map")
-public class MapConverter implements IItemConverter<Map> {
+@Named("json")
+public class JsonConverter implements IItemConverter<Map<String, Object>> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MapConverter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JsonConverter.class);
 
     @Override
     public boolean isRightAligned() {
         return false; // The z field itself should be left aligned. For indexed entries, it could be either left or right, the majority is assumed to be left.
     }
 
+    @Nullable
     @Override
-    public String getFormattedLabel(final Map value, final BonaPortable wholeDataObject, final String fieldName, final FieldDefinition d) {
+    public String getFormattedLabel(@Nonnull final Map<String, Object> value, @Nonnull final BonaPortable wholeDataObject,
+            @Nonnull final String fieldName, @Nonnull final FieldDefinition d) {
         final Object convertedValue = getConvertedValue(value, fieldName);
         if (convertedValue != null) {
             return convertedValue.toString();
@@ -46,7 +50,8 @@ public class MapConverter implements IItemConverter<Map> {
         }
     }
 
-    private String extractKeyName(final String fieldName) {
+    @Nullable
+    private String extractKeyName(@Nonnull final String fieldName) {
         final int startPos = fieldName.lastIndexOf("[");
         if (startPos != -1) {
             final int endPos = fieldName.lastIndexOf("]");
@@ -57,7 +62,8 @@ public class MapConverter implements IItemConverter<Map> {
         return null;
     }
 
-    private Object getConvertedValue(final Map value, final String fieldName) {
+    @Nullable
+    private Object getConvertedValue(@Nonnull final Map<String, Object> value, @Nonnull final String fieldName) {
         final String keyName = extractKeyName(fieldName);
 
         //no key for subfield provided (e.g. "data.z" -> return self

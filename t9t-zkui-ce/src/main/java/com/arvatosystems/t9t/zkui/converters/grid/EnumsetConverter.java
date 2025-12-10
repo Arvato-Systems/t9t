@@ -22,7 +22,9 @@ import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.enums.BonaEnum;
+import de.jpaw.bonaparte.pojos.meta.AlphanumericEnumSetDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
+import de.jpaw.bonaparte.pojos.meta.NumericEnumSetDataItem;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 import de.jpaw.enums.AbstractStringXEnumSet;
@@ -31,22 +33,38 @@ import de.jpaw.enums.EnumSetMarker;
 
 @Singleton
 @Named("enumset")
-public class EnumsetConverter implements IItemConverter<EnumSetMarker> {
+@Named("xenumset")
+public class EnumsetConverter implements IItemConverter<Object> {
+
+    private static final NumericEnumsetConverter NUMERIC_ENUMSET_CONVERTER = new NumericEnumsetConverter();
+    private static final StringEnumsetConverter STRING_ENUMSET_CONVERTER = new StringEnumsetConverter();
 
     @Override
-    public String getFormattedLabel(EnumSetMarker value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
+    public IItemConverter getInstance(final String fieldName, final FieldDefinition meta) {
+        if (meta instanceof NumericEnumSetDataItem)
+            return NUMERIC_ENUMSET_CONVERTER;
+        if (meta instanceof AlphanumericEnumSetDataItem) {
+            return STRING_ENUMSET_CONVERTER;
+        }
+        return this;
+    }
+
+    @Override
+    public String getFormattedLabel(Object value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
         final ApplicationSession as = ApplicationSession.get();
 
         // create a comma separated list of names
-        StringJoiner sj = new StringJoiner(",");
+        final StringJoiner sj = new StringJoiner(",");
         if (value instanceof AbstractStringXEnumSet) {
             for (AbstractXEnumBase<?> xe : (Set<AbstractXEnumBase<?>>) value) {
                 sj.add(as.translateEnum((BonaEnum) xe.getBaseEnum()));
             }
-        } else {
+        } else if (value instanceof EnumSetMarker) {
             for (BonaEnum be : (Set<BonaEnum>) value) {
                 sj.add(as.translateEnum(be));
             }
+        } else {
+            sj.add(value.toString());
         }
         return sj.toString();
     }

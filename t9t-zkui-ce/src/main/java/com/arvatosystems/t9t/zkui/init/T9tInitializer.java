@@ -28,7 +28,7 @@ import com.arvatosystems.t9t.client.init.SystemConfigurationProvider;
 import com.arvatosystems.t9t.jdp.Init;
 import com.arvatosystems.t9t.zkui.components.dropdown28.factories.IDropdown28BasicFactory;
 import com.arvatosystems.t9t.zkui.components.dropdown28.nodb.Dropdown28Registry;
-import com.arvatosystems.t9t.zkui.converters.grid.AllItemConverters;
+import com.arvatosystems.t9t.zkui.converters.grid.ItemConverterRegistry;
 import com.arvatosystems.t9t.zkui.converters.grid.IItemConverter;
 
 import de.jpaw.dp.Jdp;
@@ -72,7 +72,7 @@ public class T9tInitializer implements ServletContextListener {
         Map<String, IItemConverter> converters = Jdp.getInstanceMapPerQualifier(IItemConverter.class);
         for (Map.Entry<String, IItemConverter> df : converters.entrySet()) {
             LOGGER.debug("Registering item converter {} for {}", df.getValue().getClass().getSimpleName(), df.getKey());
-            AllItemConverters.register(df.getKey(), df.getValue());
+            ItemConverterRegistry.register(df.getKey(), df.getValue());
         }
         LOGGER.info("Found {} item value converters", converters.size());
         LOGGER.debug("T9tInitializer contextInitialized() ends");

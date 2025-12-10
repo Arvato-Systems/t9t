@@ -21,8 +21,12 @@ import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 
 @Singleton
-@Named("java.lang.Integer")
-public class IntConverter implements IItemConverter<Integer> {
+@Named("long")
+@Named("integer")
+@Named("int")
+@Named("short")
+@Named("byte")
+public class IntConverter implements IItemConverter<Number> {
 
     @Override
     public boolean isRightAligned() {
@@ -30,7 +34,7 @@ public class IntConverter implements IItemConverter<Integer> {
     }
 
     @Override
-    public String getFormattedLabel(Integer value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
+    public String getFormattedLabel(Number value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
         return value.toString();
     }
 }

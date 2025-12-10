@@ -104,6 +104,13 @@ public class DataFieldFactory implements IDataFieldFactory {
                 if (fieldProperties.containsKey(Constants.UiFieldProperties.MULTI_DROPDOWN)) {
                     return createMultiStringDropdownDataField(params);
                 }
+                final String bandboxProp = fieldProperties.get(Constants.UiFieldProperties.BANDBOX);
+                if (bandboxProp != null) {
+                    final IBandboxFactory bbFactory = Jdp.getOptional(IBandboxFactory.class, bandboxProp);
+                    if (bbFactory != null) {
+                        return bbFactory.createBandbox(params);
+                    }
+                }
                 return new TextDataField(params);
             case BASICNUMERIC:
                 switch (javaType) {

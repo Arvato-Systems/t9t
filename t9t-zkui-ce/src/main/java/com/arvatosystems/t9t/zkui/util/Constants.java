@@ -114,8 +114,10 @@ public final class Constants {
         public static final String NO_JAVA          = "noJava";
         public static final String NO_DDL           = "noDDL";
         public static final String NO_AUTO_MAP      = "noAutoMap";
-        public static final String GENERIC_OBJECT   = "genericobject";          // the field is a generic bona portable object
         public static final String MULTI_DROPDOWN   = "multidropdown";          // dropdown with multiple selection
+        public static final String ICON             = "icon";                   // display field value as icon from specified path
+        public static final String ICON_EMPTY       = "iconEmpty";              // icon to use for empty values (if the property value is an empty string, then EMPTY is used)
+        public static final String ICON_CORE_PATH   = "icon/core/";             // resource path prefix for core icons
     }
 
     public static final List<String> COUNTRY_MODEL_DATA = new ArrayList<>();

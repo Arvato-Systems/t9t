@@ -21,10 +21,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import com.arvatosystems.t9t.zkui.filters.IResultTextFilter;
-import de.jpaw.bonaparte.pojos.meta.DataCategory;
-import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
-import jakarta.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
@@ -78,6 +74,7 @@ import com.arvatosystems.t9t.zkui.components.grid.ListHeadRenderer28;
 import com.arvatosystems.t9t.zkui.components.grid.ListItemRenderer28;
 import com.arvatosystems.t9t.zkui.context.IGridContextMenu;
 import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;
+import com.arvatosystems.t9t.zkui.filters.IResultTextFilter;
 import com.arvatosystems.t9t.zkui.services.IT9tMessagingDAO;
 import com.arvatosystems.t9t.zkui.services.IT9tRemoteUtils;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
@@ -96,7 +93,10 @@ import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 import de.jpaw.bonaparte.pojos.api.media.EnumOutputType;
 import de.jpaw.bonaparte.pojos.api.media.MediaXType;
+import de.jpaw.bonaparte.pojos.meta.DataCategory;
+import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.dp.Jdp;
+import jakarta.annotation.Nullable;
 
 /** Class which creates a listbox with a configuration grid and a paging bar and export button.
  * The widget emits the select events of the listbox.
@@ -134,8 +134,8 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
     private String gridRowCssQualifier;
     private CrudViewModel<BonaPortable, TrackingBase> crudViewModel;  // set when gridId is defined
     private ILeanGridConfigResolver    leanGridConfigResolver;        // set when gridId is defined
-    private ListHeadRenderer28         defaultListHeadRenderer;
-    private ListItemRenderer28<?>      defaultListItemRenderer;
+    private ListHeadRenderer28         listHeadRenderer;
+    private ListItemRenderer28<?>      listItemRenderer;
     private List<String>               listHeaders = new ArrayList<>(0);  // extra headers for Lists
 
     private String solrFilter;                  // at least one of solrFilter and filter1 is null
@@ -255,17 +255,17 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
     private void initializeGrid() {
      // create the grid config resolver
         leanGridConfigResolver = new LeanGridConfigResolver(gridId, session);
-        defaultListItemRenderer = new ListItemRenderer28<>(crudViewModel.dtoClass, true, gridRowCssQualifier);
+        listItemRenderer = new ListItemRenderer28<>(crudViewModel.dtoClass, true, gridRowCssQualifier);
         if (textFilterService != null) {
-            defaultListItemRenderer.setTextFilter(textFilterService, () -> textFilterField.getValue());
+            listItemRenderer.setTextFilter(textFilterService, () -> textFilterField.getValue());
         }
-        defaultListHeadRenderer = new ListHeadRenderer28(defaultListItemRenderer, leanGridConfigResolver, this, lb, permissions, listHeaders,
+        listHeadRenderer = new ListHeadRenderer28(listItemRenderer, leanGridConfigResolver, this, lb, permissions, listHeaders,
                 crudViewModel.dtoClass, dynamicColumnSize);
-        lb.setItemRenderer(defaultListItemRenderer);
+        lb.setItemRenderer(listItemRenderer);
         lb.setEmptyMessage(ZulUtils.translate("com", "noDataFound"));
 
-        defaultListHeadRenderer.createListhead(lb);
-        defaultListHeadRenderer.redrawListbox();
+        listHeadRenderer.createListhead(lb);
+        listHeadRenderer.redrawListbox();
 
 
 
@@ -720,8 +720,8 @@ public class Grid28 extends Div implements IGridIdOwner, IPermissionOwner {
 
     public void setListHeaders(List<String> listHeaders) {
         this.listHeaders = listHeaders == null ? new ArrayList<>(0) : listHeaders;
-        if (defaultListHeadRenderer != null)
-            defaultListHeadRenderer.setListHeaders(this.listHeaders);
+        if (listHeadRenderer != null)
+            listHeadRenderer.setListHeaders(this.listHeaders);
     }
 
     public boolean isHeaderConsistList() {

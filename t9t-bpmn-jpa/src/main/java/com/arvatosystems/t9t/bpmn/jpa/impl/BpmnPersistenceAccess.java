@@ -126,7 +126,7 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
 
     protected <E> List<E> getQueryForDueTasks(final Class<E> type, final String field, final String onlyForProcessDefinitionId, final Instant whenDue,
       final boolean includeErrorStatus, final boolean allClusterNodes, final String onlyForNextStep, final Collection<Integer> returnCodes,
-      final Integer maxTasks) {
+      final Integer maxTasks, final boolean ignoreDueDate) {
         String nodeCondition = "";
         int numPartitions = 1;
         Collection<Integer> shards = Collections.emptyList();
@@ -157,19 +157,26 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
             errorCondition = includeErrorStatus ? "" : " AND s.returnCode IS NULL";
         } else {
             errorCondition = includeErrorStatus
-                ? " AND s.returnCode IS NOT NULL AND a.returnCode NOT IN :returnCodes"
+                ? " AND s.returnCode IS NOT NULL AND s.returnCode NOT IN :returnCodes"
                 : " AND s.returnCode IN :returnCodes";
         }
         final String pdCondition = onlyForProcessDefinitionId == null ? "" : " AND s.processDefinitionId = :pdId";
         final String stepCondition = onlyForNextStep == null ? "" : " AND s.nextStep = :step";
+        final String dueDateCondition = ignoreDueDate ? "" : " AND s.yieldUntil <= :timeLimit";
+        final String mTimestampCondition = ignoreDueDate ? " AND s.mTimestamp <= :mTimestampLimit" : "";
         final String queryString = "SELECT s" + field + " FROM " + statusResolver.getEntityClass().getSimpleName()
-                + " s WHERE s.tenantId = :tenantId AND s.yieldUntil <= :timeLimit"
+                + " s WHERE s.tenantId = :tenantId"
+                + dueDateCondition + mTimestampCondition
                 + pdCondition + errorCondition + nodeCondition + stepCondition + " ORDER BY s.yieldUntil";
         LOGGER.trace("Now performing query {}", queryString);
 
         final TypedQuery<E> query = statusResolver.getEntityManager().createQuery(queryString, type);
         query.setParameter("tenantId", tenantId);
-        query.setParameter("timeLimit", whenDue);
+        if (!ignoreDueDate) {
+            query.setParameter("timeLimit", whenDue);
+        } else {
+            query.setParameter("mTimestampLimit", Instant.now().minusSeconds(30));
+        }
         if (onlyForProcessDefinitionId != null) {
             query.setParameter("pdId", onlyForProcessDefinitionId);
         }
@@ -194,15 +201,15 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
       final boolean includeErrorStatus, final boolean allClusterNodes, final String onlyForNextStep, final Collection<Integer> returnCodes) {
         return statusMapper.mapListToDto(getQueryForDueTasks(ProcessExecStatusEntity.class, "",
           onlyForProcessDefinitionId, whenDue, includeErrorStatus, allClusterNodes,
-          onlyForNextStep, returnCodes, null));
+          onlyForNextStep, returnCodes, null, false));
     }
 
     @Override
     public List<Long> getTaskRefsDue(final String onlyForProcessDefinitionId, final Instant whenDue, final boolean includeErrorStatus,
-      final boolean allClusterNodes, final String onlyForNextStep, final Collection<Integer> returnCodes, final Integer maxTasks) {
+      final boolean allClusterNodes, final String onlyForNextStep, final Collection<Integer> returnCodes, final Integer maxTasks, final boolean ignoreDueDate) {
         return getQueryForDueTasks(Long.class, ".objectRef",
           onlyForProcessDefinitionId, whenDue, includeErrorStatus, allClusterNodes,
-          onlyForNextStep, returnCodes, maxTasks);
+          onlyForNextStep, returnCodes, maxTasks, ignoreDueDate);
     }
 
     @Override

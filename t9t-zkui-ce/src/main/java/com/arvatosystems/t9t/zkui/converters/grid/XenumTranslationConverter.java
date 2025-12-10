@@ -16,10 +16,12 @@
 package com.arvatosystems.t9t.zkui.converters.grid;
 
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
+import com.arvatosystems.t9t.zkui.util.Constants;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.enums.BonaEnum;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
+import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 import de.jpaw.enums.XEnum;
@@ -27,6 +29,30 @@ import de.jpaw.enums.XEnum;
 @Singleton
 @Named("xenum")
 public class XenumTranslationConverter implements IItemConverter<XEnum<?>> {
+
+    private static final class XenumIconConverter extends AbstractIconConverter<XEnum<?>> implements IItemConverter<XEnum<?>> {
+        private final String prefix;
+
+        private XenumIconConverter(String prefix) {
+            this.prefix = prefix;
+        }
+
+        @Override
+        public String iconPath(XEnum<?> value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
+            return prefix + value.name() + ".png";
+        }
+    }
+
+    @Override
+    public IItemConverter<XEnum<?>> getInstance(final String fieldName, final FieldDefinition meta) {
+        if (meta.getProperties() != null && meta instanceof XEnumDataItem xedi) {
+            if (meta.getProperties().containsKey(Constants.UiFieldProperties.ICON)) {
+                final String iconPathPrefix = "icon/" + xedi.getBaseXEnum().getName().replace('.', '/') + "/";
+                return new XenumIconConverter(iconPathPrefix);
+            }
+        }
+        return this;
+    }
 
     @Override
     public String getFormattedLabel(XEnum<?> value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {

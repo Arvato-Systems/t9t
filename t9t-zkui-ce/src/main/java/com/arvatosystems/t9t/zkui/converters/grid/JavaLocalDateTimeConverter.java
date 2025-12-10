@@ -26,7 +26,7 @@ import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 
 @Singleton
-@Named("java.time.LocalDateTime")
+@Named("timestamp")
 public class JavaLocalDateTimeConverter implements IItemConverter<LocalDateTime> {
 
     /**
