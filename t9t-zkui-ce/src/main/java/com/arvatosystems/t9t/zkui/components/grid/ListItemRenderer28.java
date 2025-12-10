@@ -20,19 +20,21 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
-import com.arvatosystems.t9t.base.T9tUtil;
-import com.arvatosystems.t9t.zkui.filters.IResultTextFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.zul.Image;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 
 import com.arvatosystems.t9t.base.FieldMappers;
-import com.arvatosystems.t9t.zkui.converters.grid.AllItemConverters;
+import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.zkui.converters.grid.IItemConverter;
+import com.arvatosystems.t9t.zkui.converters.grid.ItemConverterRegistry;
+import com.arvatosystems.t9t.zkui.filters.IResultTextFilter;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.BonaPortableClass;
@@ -42,20 +44,20 @@ import de.jpaw.bonaparte.core.ListMetaComposer;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.FoldingStrategy;
 import de.jpaw.dp.Jdp;
+import jakarta.annotation.Nonnull;
 
 public class ListItemRenderer28<T extends BonaPortable> implements ListitemRenderer<T> {
     public static final int LIMIT = 20;
     private static final Logger LOGGER = LoggerFactory.getLogger(ListItemRenderer28.class);
 
-    protected final IItemConverter<Object> itemConverter = Jdp.getRequired(IItemConverter.class, "all");
-
-    //protected List<String> visibleHeaders;
     protected List<String> visibleFieldnames;
     protected FoldingComposer<RuntimeException> foldingComposer;
     protected final ListMetaComposer metaComposer = new ListMetaComposer(false, true, true);
-    protected final BonaPortableClass<T> bclass;
+    protected final BonaPortableClass<T> bclass;  // currently unused
     protected final boolean haveTracking;
     protected final IGridRowCssSelector gridRowCssSelector;
+    protected final Map<String, IItemConverter<?>> itemConverterMap = new ConcurrentHashMap<>(60);   // caches the item converter by field name (i.e. one per column)
+
     private IResultTextFilter<T> textFilterService;
     private Supplier<String> filterTextSource;
     protected String context;
@@ -81,16 +83,10 @@ public class ListItemRenderer28<T extends BonaPortable> implements ListitemRende
         this.context = context;
     }
 
-    private static final String GROUPED_EMPTY_LISTCELL_STYLE = "padding-left: 16px;";
     private static final String NUMERIC_LISTCELL_STYLE = "text-align:right;";
 
     @Override
     public void render(final Listitem listitem, final T data, final int index) throws Exception {
-//        if (listitem instanceof Listgroup) {
-//            LOGGER.debug("Rendering row {} as group", index);
-//            addListgroup(listitem, data, bclass.getBonaPortableClass());
-//            return;
-//        }
         LOGGER.trace("Rendering row {} (data)", index);
         listitem.setValue(data);
         listitem.setContext(context);
@@ -125,26 +121,26 @@ public class ListItemRenderer28<T extends BonaPortable> implements ListitemRende
                     // handling for dynamic fields
                     if (isDynField(fields.get(0).meta)) {
                         for (final DataAndMeta dynamicField : fields) {
-                            addListcell(listitem, data, fieldName, bclass.getBonaPortableClass(), dynamicField.data, dynamicField.meta);
+                            addListcell(listitem, data, fieldName, dynamicField.data, dynamicField.meta);
                         }
                         continue;
                     }
                     if (fields.size() == 1) {
-                        addListcell(listitem, data, fieldName, bclass.getBonaPortableClass(), fields.get(0).data, fields.get(0).meta);
+                        addListcell(listitem, data, fieldName, fields.get(0).data, fields.get(0).meta);
                     } else {
                         // handling for 1:n fields (list, set, map) with limit
                         final String joined = joinIntoSingleField(fields);
-                        addListcell(listitem, data, fieldName, bclass.getBonaPortableClass(), joined, fields.get(0).meta);
+                        addListcell(listitem, data, fieldName, joined, fields.get(0).meta);
                     }
                     continue;
                 }
                 // some field only exists in visibleFieldnames, thus no fields were added from "row"
-                addListcell(listitem, data, fieldName, bclass.getBonaPortableClass(), null, null);
+                addListcell(listitem, data, fieldName, null, null);
             }
         } else {
             // for simple grid, just add the cells for each field
             for (final DataAndMeta field : row) {
-                addListcell(listitem, data, visibleFieldnames.get(column++), bclass.getBonaPortableClass(), field.data, field.meta);
+                addListcell(listitem, data, visibleFieldnames.get(column++), field.data, field.meta);
             }
         }
 
@@ -170,30 +166,47 @@ public class ListItemRenderer28<T extends BonaPortable> implements ListitemRende
         return sb.toString();
     }
 
-    private void addListcell(Listitem listitem, T data, String fieldName, Class<T> beanClass, Object value, FieldDefinition meta) {
+    private <X> void addListcell(final Listitem listitem, final T data, final String fieldName, final X value, final FieldDefinition meta) {
         Listcell listcell = new Listcell();
         listcell.setParent(listitem);
 
         LOGGER.trace("Listcell for {} has value {}", fieldName, value);
 
-        if (value != null) {
-            // obtain a converter
-            IItemConverter classConverter = AllItemConverters.getConverter(value, data, fieldName, meta);
-//            LOGGER.debug("Converter for field {} of class {} is {}",
-//                    fieldName, meta.getClass().getSimpleName(), classConverter == null ? "NULL" : classConverter.getClass().getSimpleName());
-            if (classConverter == null || isDynField(meta)) {
-                listcell.setLabel(value.toString());
-            } else {
-                // use the converter to convert
-                String converted = classConverter.getFormattedLabel(value, data, fieldName, meta);
+        if (value == null) {
+            return; // empty cell
+        }
+        if (isDynField(meta)) {
+            // Display as text - no converter or dynamic field
+            listcell.setLabel(value.toString());
+            return;
+        }
+        // obtain a converter
+        final IItemConverter<X> classConverter = (IItemConverter<X>) itemConverterMap.computeIfAbsent(fieldName, k -> ItemConverterRegistry.getConverter(fieldName, meta));
+
+        // Check if converter provides an icon path
+        if (classConverter.isIcon()) {
+            final String iconPath = classConverter.iconPath(value, data, fieldName, meta);
+            if (iconPath != null) {
+                // Display as icon - path is already validated by the converter
+                Image iconImage = new Image(iconPath);
+                iconImage.setParent(listcell);
+                // Set tooltip as fallback
+                iconImage.setTooltip(value.toString());
+                LOGGER.trace("Rendering icon for field {} with path {}", fieldName, iconPath);
+            }
+        } else {
+            // Display as text using converter
+            String converted = classConverter.getFormattedLabel(value, data, fieldName, meta);
+            if (converted != null) {
                 listcell.setLabel(converted);
-                if (classConverter.isRightAligned())
+                if (classConverter.isRightAligned()) {
                     listcell.setStyle(NUMERIC_LISTCELL_STYLE);
+                }
             }
         }
     }
 
-    public boolean isDynField(FieldDefinition meta) {
+    public static boolean isDynField(@Nonnull final FieldDefinition meta) {
         final Map<String, String> props = meta.getProperties();
         return props != null && props.get("dynGrid") != null;
     }

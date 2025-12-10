@@ -25,19 +25,17 @@ import de.jpaw.bonaparte.pojos.meta.EnumDefinition;
 import de.jpaw.bonaparte.pojos.meta.EnumSetDefinition;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.NumericEnumSetDataItem;
-import de.jpaw.dp.Named;
-import de.jpaw.dp.Singleton;
 
 // converts an enumset back to a list of tokens
-@Singleton
-@Named("numericenumset")
 public class NumericEnumsetConverter implements IItemConverter<Number> {
 
     @Override
     public String getFormattedLabel(Number value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
         final ApplicationSession as = ApplicationSession.get();
 
-        NumericEnumSetDataItem di = (NumericEnumSetDataItem)meta;
+        if (!(meta instanceof NumericEnumSetDataItem di)) {
+            return value.toString();
+        }
         EnumSetDefinition esd = di.getBaseEnumset();
         EnumDefinition ed = esd.getBaseEnum();
         Map<String, String> enumXlation = as.translateEnum(ed.getName());

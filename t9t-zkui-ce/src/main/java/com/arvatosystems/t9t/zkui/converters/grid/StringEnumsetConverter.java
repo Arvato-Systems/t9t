@@ -15,22 +15,20 @@
  */
 package com.arvatosystems.t9t.zkui.converters.grid;
 
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
+
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericEnumSetDataItem;
 import de.jpaw.bonaparte.pojos.meta.EnumDefinition;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
-import de.jpaw.dp.Named;
-import de.jpaw.dp.Singleton;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Map;
 
 // converts an enumset back to a list of tokens
-@Singleton
-@Named("stringenumset")
 public class StringEnumsetConverter implements IItemConverter<String> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StringEnumsetConverter.class);

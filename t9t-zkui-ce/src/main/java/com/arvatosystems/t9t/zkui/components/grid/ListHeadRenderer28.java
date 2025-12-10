@@ -67,7 +67,7 @@ public class ListHeadRenderer28 {
     private static final String GRID_CHANGE_STYLE   = "border:1px solid #DD4B39;";
     public  static final String PREFIX_GRIDCONFIG28 = "com.gridconfig";
     private final ApplicationSession session = ApplicationSession.get();
-    private final ListItemRenderer28<?> defaultListItemRenderer;
+    private final ListItemRenderer28<?> listItemRenderer;
     private final ILeanGridConfigResolver gridConfigResolver;
     private final Listbox lb;
     private final Grid28 grid;
@@ -76,12 +76,12 @@ public class ListHeadRenderer28 {
     private List<String> listHeaders;  // extra headers for Lists
     private boolean dynamicColumnSize;
 
-    public ListHeadRenderer28(final ListItemRenderer28<?> defaultListItemRenderer,
+    public ListHeadRenderer28(final ListItemRenderer28<?> listItemRenderer,
             final ILeanGridConfigResolver gridConfigResolver,
             final Grid28 grid, final Listbox lb, final Permissionset permissions,
             final List<String> listHeaders,
             final BonaPortableClass<?> bclass, final boolean dynamicColumnSize) {
-        this.defaultListItemRenderer = defaultListItemRenderer;
+        this.listItemRenderer = listItemRenderer;
         this.gridConfigResolver = gridConfigResolver;
         this.grid = grid;
         this.lb = lb;
@@ -100,8 +100,7 @@ public class ListHeadRenderer28 {
         listhead.setSizable(true);
         // listeners
         listhead.addEventListener(ZulEvents.ON_COL_SIZE, (final ColSizeEvent event) -> {
-            LOGGER.atDebug().log("--> event:{} - col:{} - width:{} - id:{}", event.getName(), event.getColIndex(), event.getWidth(),
-                    event.getColumn().getId());
+            LOGGER.debug("--> event:{} - col:{} - width:{} - id:{}", event.getName(), event.getColIndex(), event.getWidth(), event.getColumn().getId());
 
             onColSizeListHeader(event);
         });
@@ -112,7 +111,7 @@ public class ListHeadRenderer28 {
     private void createAllListheaders(final Listhead listhead) {
         // loop over all configured columns in the gridConfig
         final UILeanGridPreferences gridPreferences = gridConfigResolver.getGridPreferences();
-        defaultListItemRenderer.setGridPreferences(gridPreferences.getFields()); // TODO: move to the context menu object?
+        listItemRenderer.setGridPreferences(gridPreferences.getFields()); // TODO: move to the context menu object?
 
         final int nFields = gridPreferences.getFields().size();
         for (int i = 0; i < nFields; ++i) {
@@ -122,7 +121,7 @@ public class ListHeadRenderer28 {
             try {
                 final FieldDefinition meta = FieldGetter.getFieldDefinitionForPathname(bclass.getMetaData(), fieldname);
                 // check if this is a special dynamic width column
-                isDynGridColumn = defaultListItemRenderer.isDynField(meta);
+                isDynGridColumn = ListItemRenderer28.isDynField(meta);
                 final String fieldNoDdl = fieldname.concat(".noDDL");
                 isUnsortable = (isUnsortable || bclass.getPropertyMap().containsKey(fieldNoDdl) || DataCategory.OBJECT == meta.getDataCategory());
             } catch (final ApplicationException ue) {

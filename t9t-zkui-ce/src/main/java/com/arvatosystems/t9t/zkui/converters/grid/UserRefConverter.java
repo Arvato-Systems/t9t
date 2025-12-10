@@ -31,13 +31,11 @@ import de.jpaw.dp.Singleton;
 import de.jpaw.util.ExceptionUtil;
 
 @Singleton
-@Named("data.userRef")
-public class UserRefConverter implements IItemConverter<Long>, ILongItemConverter {
+@Named("long:data.userRef")
+public class UserRefConverter implements IItemConverter<Long> {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserRefConverter.class);
 
     private String getUserIdByUserRef(Long ref) {
-        if (ref == null)
-            return "";
         try {
             // the below call caches users, we do not do a separate backend call per row.
             List<Description> users = ApplicationSession.get().getDropDownData("userId", new LeanUserSearchRequest());
@@ -55,6 +53,6 @@ public class UserRefConverter implements IItemConverter<Long>, ILongItemConverte
 
     @Override
     public String getFormattedLabel(Long value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
-        return getUserIdByUserRef((Long) value);
+        return getUserIdByUserRef(value);
     }
 }

@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.zkui.converters.grid;
 
+import java.nio.charset.StandardCharsets;
+
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.dp.Named;
@@ -22,7 +24,7 @@ import de.jpaw.dp.Singleton;
 import de.jpaw.util.ByteArray;
 
 @Singleton
-@Named("de.jpaw.util.ByteArray")
+@Named("binary")
 public class ByteArrayConverter implements IItemConverter<ByteArray> {
 
     @Override
@@ -39,8 +41,8 @@ public class ByteArrayConverter implements IItemConverter<ByteArray> {
             }
         }
         if (lengthToCheck == 32)
-            return "'" + new String(value.getBytes(0, lengthToCheck)) + "...";  // partial string
+            return "'" + new String(value.getBytes(0, lengthToCheck), StandardCharsets.UTF_8) + "...";  // partial string
         else
-            return "'" + new String(value.getBytes()) + "'";  // full string
+            return "'" + new String(value.getBytes(), StandardCharsets.UTF_8) + "'";  // full string
     }
 }

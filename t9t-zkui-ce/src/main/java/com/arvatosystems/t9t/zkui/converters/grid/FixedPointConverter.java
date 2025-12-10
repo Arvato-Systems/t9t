@@ -24,24 +24,16 @@ import de.jpaw.dp.Singleton;
 import de.jpaw.fixedpoint.FixedPointBase;
 
 @Singleton
-@Named("de.jpaw.fixedpoint.types.MicroUnits")
-@Named("de.jpaw.fixedpoint.types.MilliUnits")
-@Named("de.jpaw.fixedpoint.types.NanoUnits")
+@Named("fixedpoint")
 public class FixedPointConverter extends AbstractDecimalFormatConverter<FixedPointBase<?>> implements IItemConverter<FixedPointBase<?>> {
-
-    private static final String DEFAULT_PATTERN = "0.00";
 
     @Override
     protected String getPattern() {
-        return DEFAULT_PATTERN;
+        return "0.00";  // default pattern for fixed point
     }
 
     @Override
     public String getFormattedLabel(FixedPointBase<?> value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
-        if (value == null) {
-            return null;
-        }
-
         final DecimalFormat df = getLocalizedDecimalFormat(this.format, value.scale());
         return df.format(value.doubleValue());
     }

@@ -47,7 +47,7 @@ public class RestartAllActiveProcessesRequestHandler extends AbstractRequestHand
         final Instant dueWhen = rq.getMinAgeInSeconds() == null ? ctx.executionStart : ctx.executionStart.minusSeconds(rq.getMinAgeInSeconds());
         final List<Long> taskRefs = persistenceAccess.getTaskRefsDue(rq.getOnlyThisProcessId(), dueWhen,
             Boolean.TRUE.equals(rq.getIncludeErrorStatus()), Boolean.TRUE.equals(rq.getRunProcessesOfAnyNode()), null, rq.getReturnCodes(),
-            rq.getMaxTasks());
+            rq.getMaxTasks(), Boolean.TRUE.equals(rq.getIgnoreDueDate()));
 
         final int numRecords = taskRefs.size();
         LOGGER.debug("Found {} active tasks for workflow {} for restart", numRecords, displayId);

@@ -15,19 +15,24 @@
  */
 package com.arvatosystems.t9t.zkui.converters.grid;
 
-import com.arvatosystems.t9t.zkui.util.ZulUtils;
+import java.time.LocalTime;
+
+import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 
-@Named("java.lang.Boolean")
 @Singleton
-public class BooleanTranslationConverter implements IItemConverter<Boolean> {
+@Named("time")
+public class JavaLocalTimeConverter implements IItemConverter<LocalTime> {
 
+    /**
+     * Returns a formatted string for a given time.
+     */
     @Override
-    public String getFormattedLabel(final Boolean value, final BonaPortable wholeDataObject, final String fieldName, final FieldDefinition meta) {
-        return ZulUtils.readConfig("com.boolean." + value + ".format");
+    public String getFormattedLabel(final LocalTime value, final BonaPortable wholeDataObject, final String fieldName, final FieldDefinition meta) {
+        return ApplicationSession.get().format(value);
     }
 }
