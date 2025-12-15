@@ -193,7 +193,7 @@
         <!-- Spring boot -->
         <spring-boot.version>4.0.0</spring-boot.version>
 
-        <netty.version>4.2.7.Final</netty.version>
+        <netty.version>4.2.8.Final</netty.version>
         <vertx4.version>5.0.5</vertx4.version>
         <hazelcast-kubernetes.version>2.2.3</hazelcast-kubernetes.version>
 
