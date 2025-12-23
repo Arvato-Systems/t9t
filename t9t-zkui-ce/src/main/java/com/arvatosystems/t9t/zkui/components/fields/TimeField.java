@@ -23,6 +23,7 @@ import java.util.TimeZone;
 import org.zkoss.zul.Timebox;
 
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
+import com.arvatosystems.t9t.zkui.util.ApplicationUtil;
 
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.TimeFilter;
@@ -36,7 +37,7 @@ public class TimeField extends AbstractField<Timebox> {
         Timebox t = new Timebox();
         t.setId(cfg.getFieldName() + suffix);
         t.setHflex("1");
-        t.setFormat("medium");
+        t.setFormat(ApplicationUtil.getTimeFormat(session.getUserLocale()));
         t.setPlaceholder(label);
         t.setTimeZone(TimeZone.getDefault());  // do not convert between user's time zone and UTC here
         return t;
