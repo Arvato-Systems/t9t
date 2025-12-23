@@ -110,4 +110,13 @@ public interface IUserDAO {
      * @throws ReturnCodeException
      */
     CrudSurrogateKeyResponse setPassword(@Nonnull UserDTO user, @Nonnull String password) throws ReturnCodeException;
+
+    /**
+     * Logs out the current user session on the backend server side.
+     *
+     * @param encodedJwt the JWT token representing the session to be logged out
+     * @return true if logout was successful, false otherwise
+     * @throws ReturnCodeException in case of communication or processing errors
+     */
+    boolean sessionLogout(@Nonnull String encodedJwt) throws ReturnCodeException;
 }

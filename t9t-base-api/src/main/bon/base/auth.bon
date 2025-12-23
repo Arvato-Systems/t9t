@@ -121,4 +121,6 @@ package (com.arvatosystems) t9t.base.auth {
         required Unicode(32)                                newPassword;                // if set, then this is a change password request
         optional Unicode(32)                                retypePassword;                // if set, then this is a change password request
     }
+
+    class LogoutRequest extends RequestParameters {}
 }

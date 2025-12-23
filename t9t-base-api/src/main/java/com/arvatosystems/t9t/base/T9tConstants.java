@@ -197,4 +197,6 @@ public final class T9tConstants {
     public static final EnumSet<OperationType> OPERATION_TYPE_WRITE_WITH_DTO = EnumSet.of(OperationType.CREATE, OperationType.UPDATE, OperationType.MERGE);
 
     public static final NoKey NO_KEY = new NoKey();
+
+    public static final String API_KEY_JWT_KEY = "akr";
 }

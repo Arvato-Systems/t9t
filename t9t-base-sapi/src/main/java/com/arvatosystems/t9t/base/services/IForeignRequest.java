@@ -17,6 +17,7 @@ package com.arvatosystems.t9t.base.services;
 
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
+import jakarta.annotation.Nonnull;
 
 /**
  * This interface provides access to remote instances of t9t based servers.
@@ -26,6 +27,15 @@ public interface IForeignRequest {
      * Executes a remote request with the same credentials as the current request.
      */
     ServiceResponse execute(RequestContext ctx, RequestParameters rp);
+
+    /**
+     * Executes a remote request, using the provided authorization header as credentials.
+     *
+     * @param authHeader The full authorization header
+     * @param rp The request parameters to send
+     */
+    @Nonnull
+    ServiceResponse execute(@Nonnull String authHeader, @Nonnull RequestParameters rp);
 
     /**
      * Executes a remote request, using an API key as credentials.

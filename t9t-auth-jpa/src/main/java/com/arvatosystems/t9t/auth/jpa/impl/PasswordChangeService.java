@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.auth.jpa.impl;
 
+import com.arvatosystems.t9t.annotations.IsLogicallyFinal;
 import com.arvatosystems.t9t.auth.AuthModuleCfgDTO;
 import com.arvatosystems.t9t.auth.PasswordUtil;
 import com.arvatosystems.t9t.auth.T9tAuthException;
@@ -26,7 +27,10 @@ import com.arvatosystems.t9t.auth.jpa.persistence.IPasswordEntityResolver;
 import com.arvatosystems.t9t.auth.services.IAuthPersistenceAccess;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.services.IAuthSessionService;
+import com.arvatosystems.t9t.base.services.RequestContext;
 import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Provider;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ByteArray;
 import java.time.Instant;
@@ -40,6 +44,10 @@ public class PasswordChangeService extends AbstractPasswordService implements IP
     private static final Logger LOGGER = LoggerFactory.getLogger(PasswordChangeService.class);
 
     protected final IPasswordEntityResolver passwordResolver = Jdp.getRequired(IPasswordEntityResolver.class);
+    protected final Provider<RequestContext> contextProvider = Jdp.getProvider(RequestContext.class);
+
+    @IsLogicallyFinal
+    protected IAuthSessionService authSessionService;
 
     @Override
     public void changePassword(String newPassword, UserEntity userEntity, UserStatusEntity userStatusEntity) {
@@ -73,6 +81,7 @@ public class PasswordChangeService extends AbstractPasswordService implements IP
                 .plusSeconds(T9tConstants.ONE_DAY_IN_S * T9tConstants.DEFAULT_MAXIUM_NUMBER_OF_DAYS_IN_BETWEEN_USER_ACTIVITIES));
         newPasswordEntity.setPasswordSerialNumber(userStatusEntity.getCurrentPasswordSerialNumber());
         passwordResolver.save(newPasswordEntity);
+        getAuthSessionService().userSessionInvalidationOnCurrentServer(contextProvider.get(), userEntity.getUserId(), false);
 
         LOGGER.debug("User {} password has successfully been changed", userEntity.getUserId());
     }
@@ -117,5 +126,12 @@ public class PasswordChangeService extends AbstractPasswordService implements IP
                 throw new T9tException(T9tAuthException.PASSWORD_VALIDATION_FAILED);
             }
         }
+    }
+
+    private IAuthSessionService getAuthSessionService() {
+        if (authSessionService == null) {
+            authSessionService = Jdp.getRequired(IAuthSessionService.class);
+        }
+        return authSessionService;
     }
 }

@@ -94,7 +94,7 @@ public final class ApplicationSession {
     private static final Permissionset NO_PERMISSIONS = Permissionset.ofTokens();
 
     private static Object                    lock                          = new Object();
-    private static final String              SESSION_ATTRIBUTE_APPLICATIOM = "applicationSession";
+    public static final String              SESSION_ATTRIBUTE_APPLICATION = "applicationSession";
 
     private final ITranslationProvider translationProvider = Jdp.getRequired(ITranslationProvider.class);
 
@@ -159,15 +159,15 @@ public final class ApplicationSession {
      */
     public static ApplicationSession get() {
         Session session = Sessions.getCurrent();
-        ApplicationSession applicationSession = (ApplicationSession) session.getAttribute(SESSION_ATTRIBUTE_APPLICATIOM);
+        ApplicationSession applicationSession = (ApplicationSession) session.getAttribute(SESSION_ATTRIBUTE_APPLICATION);
         if (applicationSession == null) {
             synchronized (lock) {
-                applicationSession = (ApplicationSession) session.getAttribute(SESSION_ATTRIBUTE_APPLICATIOM);
+                applicationSession = (ApplicationSession) session.getAttribute(SESSION_ATTRIBUTE_APPLICATION);
                 if (applicationSession == null) {
                     HttpSession httpSession = (HttpSession) session.getNativeSession();
                     LOGGER.debug("Creating new ApplicationSession for session with id: {}", httpSession.getId());
-                    session.setAttribute(SESSION_ATTRIBUTE_APPLICATIOM, new ApplicationSession());
-                    applicationSession = (ApplicationSession) session.getAttribute(SESSION_ATTRIBUTE_APPLICATIOM);
+                    session.setAttribute(SESSION_ATTRIBUTE_APPLICATION, new ApplicationSession());
+                    applicationSession = (ApplicationSession) session.getAttribute(SESSION_ATTRIBUTE_APPLICATION);
                 }
             }
         }

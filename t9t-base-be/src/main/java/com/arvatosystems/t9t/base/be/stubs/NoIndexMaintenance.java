@@ -13,20 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.zkui.converters.grid;
+package com.arvatosystems.t9t.base.be.stubs;
 
-import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
-import de.jpaw.dp.Named;
+import com.arvatosystems.t9t.base.services.IIndexMaintenance;
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.dp.Any;
+import de.jpaw.dp.Fallback;
 import de.jpaw.dp.Singleton;
 import jakarta.annotation.Nonnull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+@Fallback
+@Any
 @Singleton
-@Named("double")
-@Named("float")
-public class DoubleConverter implements IItemConverter<Number> {
+public class NoIndexMaintenance implements IIndexMaintenance {
+    private static final Logger LOGGER = LoggerFactory.getLogger(NoIndexMaintenance.class);
+
+    public NoIndexMaintenance() {
+        LOGGER.warn("NoIndexMaintenance execution selected");
+    }
 
     @Override
-    public IItemConverter<Number> getInstance(@Nonnull final String fieldName, @Nonnull final FieldDefinition meta) {
-        return new NumberConverter<Number>(meta, "##0.0000", null);
+    public <T> void addOrUpdateIndexedEntity(@Nonnull String relatedEntity, @Nonnull Long objetRef, @Nonnull OperationType operationType) {
     }
 }

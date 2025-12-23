@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.auth.be.request;
 
+import com.arvatosystems.t9t.base.services.IAuthSessionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,6 +51,7 @@ public class UserCrudRequestHandler extends AbstractCrudSurrogateKeyBERequestHan
     private final IHighRiskSituationNotificationService hrSituationNotificationService = Jdp.getRequired(IHighRiskSituationNotificationService.class);
     private final IAuthModuleCfgDtoResolver moduleCfgResolver = Jdp.getRequired(IAuthModuleCfgDtoResolver.class);
     private final Provider<RequestContext> ctxProvider = Jdp.getProvider(RequestContext.class);
+    private final IAuthSessionService authSessionService = Jdp.getRequired(IAuthSessionService.class);
 
     @Override
     public CrudSurrogateKeyResponse<UserDTO, FullTrackingWithVersion> execute(final RequestContext ctx, final UserCrudRequest crudRequest) {
@@ -68,6 +70,11 @@ public class UserCrudRequestHandler extends AbstractCrudSurrogateKeyBERequestHan
         if (crudRequest.getCrud() != OperationType.READ) {
             final String userId = userDto != null ? userDto.getUserId() : null;
             cacheInvalidator.invalidateAuthCache(ctx, UserDTO.class.getSimpleName(), result.getKey(), userId);
+        }
+        if (OperationType.ACTIVATE == crudRequest.getCrud()) {
+            authSessionService.userSessionInvalidation(ctx, result.getData().getUserId(), true);
+        } else if (OperationType.INACTIVATE == crudRequest.getCrud()) {
+            authSessionService.userSessionInvalidation(ctx, result.getData().getUserId(), false);
         }
         return result;
     }

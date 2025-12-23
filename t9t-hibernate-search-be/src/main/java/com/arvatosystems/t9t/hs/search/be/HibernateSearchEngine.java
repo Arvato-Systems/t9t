@@ -15,11 +15,23 @@
  */
 package com.arvatosystems.t9t.hs.search.be;
 
-import static com.arvatosystems.t9t.hs.search.be.HibernateSearchHelper.getBool;
-
-import java.util.List;
-import java.util.Objects;
-
+import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.T9tUtil;
+import com.arvatosystems.t9t.base.search.SearchCriteria;
+import com.arvatosystems.t9t.base.services.ITextSearch;
+import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.hs.T9tHibernateSearchException;
+import com.arvatosystems.t9t.hs.configurate.be.core.impl.EntityConfigurer;
+import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
+import de.jpaw.bonaparte.pojos.api.SortColumn;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Named;
+import de.jpaw.dp.Provider;
+import de.jpaw.dp.Singleton;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import jakarta.persistence.EntityManager;
 import org.hibernate.search.engine.search.common.NonStaticMetamodelScope;
 import org.hibernate.search.engine.search.predicate.SearchPredicate;
 import org.hibernate.search.engine.search.predicate.dsl.TypedSearchPredicateFactory;
@@ -31,24 +43,10 @@ import org.hibernate.search.mapper.orm.session.SearchSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.T9tConstants;
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.base.T9tUtil;
-import com.arvatosystems.t9t.base.search.SearchCriteria;
-import com.arvatosystems.t9t.base.services.ITextSearch;
-import com.arvatosystems.t9t.base.services.RequestContext;
-import com.arvatosystems.t9t.hs.T9tHibernateSearchException;
-import com.arvatosystems.t9t.hs.configurate.be.core.impl.EntityConfigurer;
+import java.util.List;
+import java.util.Objects;
 
-import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
-import de.jpaw.bonaparte.pojos.api.SortColumn;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Named;
-import de.jpaw.dp.Provider;
-import de.jpaw.dp.Singleton;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
-import jakarta.persistence.EntityManager;
+import static com.arvatosystems.t9t.hs.search.be.HibernateSearchHelper.getBool;
 
 @Singleton
 @Named(T9tConstants.TEXT_SEARCH_ID_HIBERNATE_SEARCH)

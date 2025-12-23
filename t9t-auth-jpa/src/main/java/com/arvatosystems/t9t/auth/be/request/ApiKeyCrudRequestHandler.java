@@ -22,6 +22,7 @@ import com.arvatosystems.t9t.auth.jpa.entities.ApiKeyEntity;
 import com.arvatosystems.t9t.auth.jpa.mapping.IApiKeyDTOMapper;
 import com.arvatosystems.t9t.auth.jpa.persistence.IApiKeyEntityResolver;
 import com.arvatosystems.t9t.auth.request.ApiKeyCrudRequest;
+import com.arvatosystems.t9t.base.services.IAuthSessionService;
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKeyRequestHandler;
@@ -38,6 +39,7 @@ public class ApiKeyCrudRequestHandler extends
     private final IApiKeyDTOMapper mapper = Jdp.getRequired(IApiKeyDTOMapper.class);
     private final IApiKeyEntityResolver resolver = Jdp.getRequired(IApiKeyEntityResolver.class);
     private final IAuthCacheInvalidation cacheInvalidator = Jdp.getRequired(IAuthCacheInvalidation.class);
+    private final IAuthSessionService authSessionService = Jdp.getRequired(IAuthSessionService.class);
 
     @Override
     public CrudSurrogateKeyResponse<ApiKeyDTO, FullTrackingWithVersion> execute(final RequestContext ctx, final ApiKeyCrudRequest crudRequest) {
@@ -52,6 +54,11 @@ public class ApiKeyCrudRequestHandler extends
         if (crudRequest.getCrud() != OperationType.READ) {
             final String apiKey = result.getData() != null ? result.getData().getApiKey().toString() : null;
             cacheInvalidator.invalidateAuthCache(ctx, ApiKeyDTO.class.getSimpleName(), result.getKey(), apiKey);
+        }
+        if (OperationType.ACTIVATE == crudRequest.getCrud()) {
+            authSessionService.apiKeySessionInvalidation(ctx, result.getData().getObjectRef(), true);
+        } else if (OperationType.INACTIVATE == crudRequest.getCrud()) {
+            authSessionService.apiKeySessionInvalidation(ctx, result.getData().getObjectRef(), false);
         }
         return result;
     }

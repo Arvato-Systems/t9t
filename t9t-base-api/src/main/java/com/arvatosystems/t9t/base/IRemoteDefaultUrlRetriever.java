@@ -37,4 +37,10 @@ public interface IRemoteDefaultUrlRetriever {
         final int lastSlash = mainUrl.lastIndexOf('/');
         return mainUrl.substring(0, lastSlash) + "/login";
     }
+
+    /** Get the path for session logout endpoint. This is derived from the regular path. */
+    static String getDefaultRemoteUrlSessionLogout(final String mainUrl) {
+        final int lastSlash = mainUrl.lastIndexOf('/');
+        return mainUrl.substring(0, lastSlash) + "/session/logout";
+    }
 }

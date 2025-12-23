@@ -25,6 +25,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.arvatosystems.t9t.annotations.IsLogicallyFinal;
+import com.arvatosystems.t9t.base.services.IAuthSessionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,6 +106,9 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
     protected final IUserEntity2UserDataMapper userEntity2UserDataMapper = Jdp.getRequired(IUserEntity2UserDataMapper.class);
     protected final IHighRiskSituationNotificationService hrSituationNotificationService = Jdp.getRequired(IHighRiskSituationNotificationService.class);
     protected final IAuthModuleCfgDtoResolver moduleCfgResolver = Jdp.getRequired(IAuthModuleCfgDtoResolver.class);
+
+    @IsLogicallyFinal
+    protected IAuthSessionService authSessionService;
 
     // return the unfiltered permissions from DB, unfiltered means:
     // - permission min/max is not yet applied
@@ -687,6 +692,7 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
         if (passwordEntity != null) {
             passwordEntity.setResetPasswordHash(PasswordUtil.createPasswordHash(userEntity.getUserId(), newPassword));
             passwordEntity.setWhenLastPasswordReset(ctx.executionStart);
+            getAuthSessionService().userSessionInvalidation(ctx, userEntity.getUserId(), false);
         } else {
             passwordSettingService.setPasswordForUser(ctx, userEntity, newPassword);
         }
@@ -781,5 +787,12 @@ public class AuthPersistenceAccess implements IAuthPersistenceAccess {
             LOGGER.error("Stack trace is ", e);
             throw new T9tException(T9tException.GENERAL_EXCEPTION);
         }
+    }
+
+    private IAuthSessionService getAuthSessionService() {
+        if (authSessionService == null) {
+            authSessionService = Jdp.getRequired(IAuthSessionService.class);
+        }
+        return authSessionService;
     }
 }

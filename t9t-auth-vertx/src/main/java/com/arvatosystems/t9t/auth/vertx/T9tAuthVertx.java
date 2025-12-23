@@ -15,6 +15,14 @@
  */
 package com.arvatosystems.t9t.auth.vertx;
 
+import com.arvatosystems.t9t.auth.jwt.IJWT;
+import com.arvatosystems.t9t.auth.jwt.T9tJwtException;
+import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.auth.LogoutRequest;
+import com.arvatosystems.t9t.base.services.T9tInternalConstants;
+import io.vertx.core.MultiMap;
+import io.vertx.core.http.HttpServerResponse;
+import jakarta.annotation.Nonnull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,6 +57,7 @@ import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
+import org.slf4j.MDC;
 
 @Named("auth")
 @Dependent
@@ -58,6 +67,7 @@ public class T9tAuthVertx implements IServiceModule {
     protected final IAuthenticate authModule = Jdp.getRequired(IAuthenticate.class);
     protected final ICachingAuthenticationProcessor authenticationProcessor = Jdp.getRequired(ICachingAuthenticationProcessor.class);
     protected final IRequestProcessor requestProcessor = Jdp.getRequired(IRequestProcessor.class);
+    protected final IJWT jwt = Jdp.getRequired(IJWT.class);
 
     @Override
     public int getExceptionOffset() {
@@ -83,6 +93,8 @@ public class T9tAuthVertx implements IServiceModule {
         router.post("/login").handler(getLoginHandler(vertx, coderFactory));
 
         router.get("/api/authc/tenantLogo").handler(getTenantLogoHandler(vertx));
+
+        router.route("/session/logout").handler(getSessionLogoutHandler(vertx));
     }
 
     protected String stripCharset(final String s) {
@@ -259,6 +271,53 @@ public class T9tAuthVertx implements IServiceModule {
                     }
                 }
             );
+        };
+    }
+
+    @Nonnull
+    private Handler<RoutingContext> getSessionLogoutHandler(@Nonnull final Vertx vertx) {
+        return (final RoutingContext rc) -> {
+            LOGGER.debug("POST /session/logout received");
+
+            final MultiMap headers = rc.request().headers();
+            final String authHeader = headers.get(HttpHeaders.AUTHORIZATION);
+            if (IServiceModule.badOrMissingAuthHeader(rc, authHeader, LOGGER)) {
+                return;
+            }
+            if (!authHeader.startsWith(T9tConstants.HTTP_AUTH_PREFIX_JWT)) {
+                LOGGER.debug("Request with invalid authorization header");
+                final HttpServerResponse r = rc.response();
+                r.putHeader("WWW-Authenticate", "Basic realm=\"t9t\", charset=\"UTF-8\"");
+                r.setStatusCode(401);
+                r.setStatusMessage("Unauthorized");
+                r.end();
+                return;
+            }
+
+            vertx.<Void>executeBlocking(
+                () -> {
+                    try {
+                        final String jwtToken = authHeader.substring(7).trim();
+                        // validate the JWT
+                        final JwtInfo jwtInfo = jwt.decode(jwtToken);
+                        MDC.clear();
+                        T9tInternalConstants.initMDC(jwtInfo);
+                        final LogoutRequest logoutRequest = new LogoutRequest();
+                        final ServiceResponse serviceResponse = requestProcessor.execute(null, logoutRequest, jwtInfo, jwtToken, false, null);
+                        if (serviceResponse.getReturnCode() != 0) {
+                            IServiceModule.error(rc, 500, serviceResponse.getErrorMessage());
+                            return null;
+                        }
+                        rc.response().end();
+                    } catch (final T9tJwtException e) {
+                        LOGGER.info("JWT rejected: {}: {}", e.getClass().getSimpleName(), e.getMessage());
+                        IServiceModule.error(rc, 401, "Unauthorized");
+                    } catch (final Exception e) {
+                        LOGGER.error("Session logout fail: {}: {}", e.getClass().getSimpleName(), e.getMessage());
+                        IServiceModule.error(rc, 500, e.getMessage());
+                    }
+                    return null;
+                });
         };
     }
 }

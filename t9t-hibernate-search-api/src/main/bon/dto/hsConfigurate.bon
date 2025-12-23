@@ -40,6 +40,7 @@ package (com.arvatosystems) t9t.hs.configurate.model {
         required identifier                                 name;
         required Unicode(100)                               ^type; // "fullTextField", "keywordField", etc.
         required Unicode(200)                               analyzer;
+        optional Unicode(100)                               relatedEntity;
     }
 
     /**

@@ -18,6 +18,7 @@ package com.arvatosystems.t9t.base.be.impl;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import jakarta.annotation.Nonnull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,6 +58,13 @@ public final class SimpleCallOutExecutor implements IForeignRequest {
         public ServiceResponse execute(final RequestContext ctx, final RequestParameters rp) {
             return executor.executeSynchronous(ctx, rp);
         }
+
+        @Nonnull
+        @Override
+        public ServiceResponse execute(@Nonnull final String authHeader, @Nonnull final RequestParameters rp) {
+            return executor.executeSynchronous(rp);
+        }
+
         @Override
         public ServiceResponse execute(final RequestParameters rp, final String apiKey) {
             throw new T9tException(T9tException.NO_LONGER_SUPPORTED);
@@ -90,7 +98,9 @@ public final class SimpleCallOutExecutor implements IForeignRequest {
         return new SimpleCallOutExecutor(key, url);
     }
 
-    protected ServiceResponse execute(final String authHeader, final RequestParameters rp) {
+    @Nonnull
+    @Override
+    public ServiceResponse execute(@Nonnull final String authHeader, @Nonnull final RequestParameters rp) {
         final ServiceResponse response = remoteConnection.execute(authHeader, rp);
         if (response == null) {
             final ServiceResponse resp2 = new ServiceResponse();

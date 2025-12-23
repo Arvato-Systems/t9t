@@ -17,6 +17,9 @@ package com.arvatosystems.t9t.base.be.execution;
 
 import java.util.Set;
 
+import com.arvatosystems.t9t.base.T9tUtil;
+import com.arvatosystems.t9t.base.auth.AuthenticationResponse;
+import jakarta.annotation.Nonnull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -276,6 +279,7 @@ public class Executor implements IExecutor {
         srq.setRequestParameters(params);
         srq.setAuthentication(new JwtAuthentication(ctx.internalHeaderParameters.getEncodedJwt()));
         ctx.addPostCommitHook((final RequestContext previousRequestContext, final RequestParameters rq, final ServiceResponse rs) -> {
+            enrichServiceRequest(srq, rs);
             asyncProcessor.submitTask(srq, true, allNodes);
         });
     }
@@ -335,5 +339,21 @@ public class Executor implements IExecutor {
     @Override
     public void clearCache(final RequestContext ctx, final String cacheId, final BonaPortable key) {
         publishEvent(ctx, new InvalidateCacheEvent(cacheId, key));
+    }
+
+    /**
+     * Enriches the ServiceRequest with data from the ServiceResponse.
+     *
+     * @param serviceRequest the service request to be enriched with data from the response
+     * @param serviceResponse the service response providing data (for example, JWT) to enrich the request
+     */
+    private void enrichServiceRequest(@Nonnull final ServiceRequest serviceRequest, @Nonnull final ServiceResponse serviceResponse) {
+        // propagate JWT from response to request if needed
+        if (serviceRequest.getAuthentication() instanceof JwtAuthentication jwtAuth
+            && (T9tUtil.isBlank(jwtAuth.getEncodedJwt()) || jwtAuth.getEncodedJwt().equalsIgnoreCase(T9tInternalConstants.EMPTY_JWT))
+            && serviceResponse instanceof AuthenticationResponse authResp && T9tUtil.isNotBlank(authResp.getEncodedJwt())
+            && !authResp.getEncodedJwt().equalsIgnoreCase(T9tInternalConstants.EMPTY_JWT)) {
+            jwtAuth.setEncodedJwt(authResp.getEncodedJwt());
+        }
     }
 }

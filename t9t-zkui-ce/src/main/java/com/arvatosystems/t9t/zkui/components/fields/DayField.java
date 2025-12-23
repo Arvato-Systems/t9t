@@ -23,6 +23,7 @@ import java.time.ZoneOffset;
 import org.zkoss.zul.Datebox;
 
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
+import com.arvatosystems.t9t.zkui.util.ApplicationUtil;
 
 import de.jpaw.bonaparte.pojos.api.DayFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
@@ -38,7 +39,7 @@ public class DayField extends AbstractField<Datebox> {
         Datebox d = new Datebox();
         d.setId(cfg.getFieldName() + suffix);
         d.setHflex("1");
-        d.setFormat("medium");
+        d.setFormat(ApplicationUtil.getDateFormat(session.getUserLocale()));
         d.setPlaceholder(label);
         d.setTimeZone("UTC"); // no conversion between user time zone and UTC for dates
         if (withToday) {

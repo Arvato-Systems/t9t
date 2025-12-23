@@ -13,20 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.arvatosystems.t9t.zkui.converters.grid;
+package com.arvatosystems.t9t.base.services;
 
-import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
-import de.jpaw.dp.Named;
-import de.jpaw.dp.Singleton;
+import de.jpaw.bonaparte.pojos.api.OperationType;
 import jakarta.annotation.Nonnull;
 
-@Singleton
-@Named("double")
-@Named("float")
-public class DoubleConverter implements IItemConverter<Number> {
+public interface IIndexMaintenance {
 
-    @Override
-    public IItemConverter<Number> getInstance(@Nonnull final String fieldName, @Nonnull final FieldDefinition meta) {
-        return new NumberConverter<Number>(meta, "##0.0000", null);
-    }
+    <T> void addOrUpdateIndexedEntity(@Nonnull String relatedEntity, @Nonnull Long objectRef, @Nonnull OperationType operationType);
 }

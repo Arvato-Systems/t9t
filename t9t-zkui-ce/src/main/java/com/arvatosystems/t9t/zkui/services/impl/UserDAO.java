@@ -15,13 +15,22 @@
  */
 package com.arvatosystems.t9t.zkui.services.impl;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.UUID;
 
+import com.arvatosystems.t9t.base.IRemoteDefaultUrlRetriever;
 import com.arvatosystems.t9t.zkui.session.UserInfo;
+import de.jpaw.util.ExceptionUtil;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,6 +86,24 @@ public class UserDAO implements IUserDAO {
 
     protected final IT9tRemoteUtils t9tRemoteUtils = Jdp.getRequired(IT9tRemoteUtils.class);
     protected static final String UI_VERSION = IUserDAO.class.getPackage().getImplementationVersion();
+
+    protected final IRemoteDefaultUrlRetriever cfgRetriever = Jdp.getRequired(IRemoteDefaultUrlRetriever.class);
+    protected final HttpClient httpClient = HttpClient.newBuilder()
+            .version(HttpClient.Version.HTTP_2)
+            .connectTimeout(Duration.ofSeconds(20))
+            .build();
+
+    protected final URI sessionLogoutUri;
+
+    public UserDAO() {
+        final String regularPath = cfgRetriever.getDefaultRemoteUrl();
+        try {
+            sessionLogoutUri = new URI(IRemoteDefaultUrlRetriever.getDefaultRemoteUrlSessionLogout(regularPath));
+        } catch (final URISyntaxException e) {
+            LOGGER.error("FATAL: Cannot construct remote authentication URI: {}", ExceptionUtil.causeChain(e));
+            throw new RuntimeException(e);
+        }
+    }
 
     protected SessionParameters makeSessionParameters(String userName) {
         // get userInfo from internal cache to make session params
@@ -275,6 +302,29 @@ public class UserDAO implements IUserDAO {
         } catch (Exception e) {
             t9tRemoteUtils.returnCodeExceptionHandler("security.bon#AuthenticationRequest", e);
             return null; // just for the compiler
+        }
+    }
+
+    @Override
+    public boolean sessionLogout(@Nonnull final String encodedJwt) throws ReturnCodeException {
+        try {
+            final HttpRequest httpRequest = HttpRequest.newBuilder()
+                    .uri(sessionLogoutUri)
+                    .timeout(Duration.ofSeconds(20))
+                    .POST(HttpRequest.BodyPublishers.noBody())
+                    .setHeader("Authorization", T9tConstants.HTTP_AUTH_PREFIX_JWT + encodedJwt)
+                    .build();
+            final HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+            if (httpResponse.statusCode() == 200) {
+                LOGGER.info("Successfully logged out session at server");
+                return true;
+            } else {
+                LOGGER.error("Unable to logout server session, return code {}", httpResponse.statusCode());
+            }
+            return false;
+        } catch (Exception e) {
+            t9tRemoteUtils.returnCodeExceptionHandler("Unable to logout server session", e);
+            return false;
         }
     }
 }

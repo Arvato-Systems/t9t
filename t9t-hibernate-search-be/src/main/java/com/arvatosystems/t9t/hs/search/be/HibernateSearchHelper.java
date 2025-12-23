@@ -153,7 +153,6 @@ public final class HibernateSearchHelper {
                     if (exactFulltextFields != null) {
                         final String[] fieldnames = findFieldnames(fieldName, exactFulltextFields);
                         if (fieldnames != null && fieldnames.length > 0) {
-                            // Wildcard-Match (Boost 3.0)
                             inner.should(
                                     factory.wildcard()
                                             .fields(fieldnames)

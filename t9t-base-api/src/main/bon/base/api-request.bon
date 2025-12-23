@@ -416,4 +416,24 @@ package (com.arvatosystems) t9t.base.request {
     class GetConfigPQONsResponse extends ServiceResponse {
         required pqon required Set<> pqons;
     }
+
+    abstract class AbstractSessionInvalidationRequest extends RequestParameters {
+        required boolean                            removeInvalidation; // if true, removes the invalidation
+        required boolean                            executeOnCurrentNode; // if true, executes on current node only, otherwise check for cluster-wide execution
+    }
+
+    /** Invalidate a JWT login session, so that further requests using this session will be denied. */
+    class LoginSessionInvalidationRequest extends AbstractSessionInvalidationRequest {
+        required long                               sessionRef;
+    }
+
+    /** Invalidate or remove invalidation of a user, so that the user cannot login (or can login again). */
+    class UserSessionInvalidationRequest extends AbstractSessionInvalidationRequest {
+        required userId                             userId;
+    }
+
+    /** Invalidate or remove invalidation of an API key, so that the API key cannot be used (or can be used again). */
+    class ApiKeySessionInvalidationRequest extends AbstractSessionInvalidationRequest {
+        required long                               apiKeyRef;
+    }
 }

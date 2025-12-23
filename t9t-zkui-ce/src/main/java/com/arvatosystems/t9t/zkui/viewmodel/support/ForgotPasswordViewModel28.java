@@ -41,6 +41,8 @@ import de.jpaw.dp.Jdp;
 
 public class ForgotPasswordViewModel28 extends AbstractViewOnlyVM<ResetPasswordRequest, TrackingBase> {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ForgotPasswordViewModel28.class);
+
     private final IUserDAO userDAO = Jdp.getRequired(IUserDAO.class);
     private final ApplicationConfigurationInitializer initializer = new ApplicationConfigurationInitializer();
 
@@ -60,7 +62,17 @@ public class ForgotPasswordViewModel28 extends AbstractViewOnlyVM<ResetPasswordR
                 userDAO.getApiKeyAuthenticationResponse(forgetPasswordApiKey);
                 userDAO.resetPassword(data.getUserId(), data.getEmailAddress());
             } finally {
-                ApplicationSession.get().setJwt(null);
+                final ApplicationSession applicationSession = ApplicationSession.get();
+                // if session has a JWT, clear it
+                if (applicationSession.getEncodedJwt() != null) {
+                    try {
+                        // inform server about session logout
+                        userDAO.sessionLogout(applicationSession.getEncodedJwt());
+                    } catch (ReturnCodeException e) {
+                        LOGGER.warn("Forgot password API key session logout failed: {}", e.getMessage());
+                    }
+                }
+                applicationSession.setJwt(null);
             }
             postProcessHook();
         }

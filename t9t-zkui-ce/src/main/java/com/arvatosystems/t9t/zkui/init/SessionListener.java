@@ -15,6 +15,10 @@
  */
 package com.arvatosystems.t9t.zkui.init;
 
+import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;
+import com.arvatosystems.t9t.zkui.services.IUserDAO;
+import de.jpaw.dp.Jdp;
+import jakarta.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Session;
@@ -30,22 +34,41 @@ import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 public class SessionListener implements SessionInit, SessionCleanup {
     private static final Logger LOGGER = LoggerFactory.getLogger(SessionListener.class);
 
+    private final IUserDAO userDAO = Jdp.getRequired(IUserDAO.class);
+
     public SessionListener() {
         LOGGER.debug("SessionListener CONSTRUCTOR: [{}]", this.hashCode());
     }
 
     @Override
-    public void cleanup(Session sess) throws Exception {
+    public void cleanup(final Session session) throws Exception {
         LOGGER.debug("SessionListener cleanup: [{}]", this.hashCode());
-        if (ApplicationSession.isSessionValid()) {
-            ApplicationSession.get().setJwt(null);
+        final ApplicationSession applicationSession = getApplicationSession(session);
+        if (applicationSession != null && applicationSession.getEncodedJwt() != null) {
+            // if session is still valid and has a JWT, clear it
+            LOGGER.debug("Cleaning JWT from session");
+            try {
+                // inform server about session logout
+                userDAO.sessionLogout(applicationSession.getEncodedJwt());
+            } catch (ReturnCodeException e) {
+                LOGGER.warn("Server session logout failed: {}", e.getMessage());
+            }
+            applicationSession.setJwt(null);
         } else {
-            LOGGER.debug("Session is not longer valid. Skip cleanup");
+            LOGGER.debug("Session is no longer valid. Skip cleanup");
         }
     }
 
     @Override
     public void init(Session sess, Object request) throws Exception {
         LOGGER.info("** SessionListener init()...");
+    }
+
+    @Nullable
+    private ApplicationSession getApplicationSession(@Nullable final Session session) {
+        if (session == null) {
+            return null;
+        }
+        return (ApplicationSession) session.getAttribute(ApplicationSession.SESSION_ATTRIBUTE_APPLICATION);
     }
 }

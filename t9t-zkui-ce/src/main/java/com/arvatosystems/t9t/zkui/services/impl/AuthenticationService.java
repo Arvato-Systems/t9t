@@ -77,6 +77,11 @@ public class AuthenticationService implements IAuthenticationService {
         final ApplicationSession applicationSession = ApplicationSession.get();
         final boolean msLogin = applicationSession.getSessionValue(AadConstants.SESSION_PARAM) != null;   // Login with Microsoft
         if (applicationSession.isAuthenticated()) {
+            try {
+                userDAO.sessionLogout(applicationSession.getEncodedJwt());
+            } catch (ReturnCodeException e) {
+                LOGGER.warn("Server session logout failed: {}", e.getMessage());
+            }
             LOGGER.debug("Logout user '{}'", applicationSession.getJwtInfo().getUserId());
             applicationSession.invalidateSession();
         }

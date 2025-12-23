@@ -18,6 +18,8 @@ package com.arvatosystems.t9t.base.be.auth;
 import java.time.Instant;
 import java.util.Arrays;
 
+import com.arvatosystems.t9t.base.JsonUtil;
+import com.arvatosystems.t9t.base.services.IAuthSessionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,6 +72,7 @@ public class AuthenticationRequestHandler extends AbstractRequestHandler<Authent
     private final IJWT jwt = Jdp.getRequired(IJWT.class);
     private final IHighRiskSituationNotificationService hrSituationNotificationService = Jdp.getRequired(IHighRiskSituationNotificationService.class);
     private final IAuthModuleCfgDtoResolver moduleCfgResolver = Jdp.getRequired(IAuthModuleCfgDtoResolver.class);
+    private final IAuthSessionService authSessionService = Jdp.getRequired(IAuthSessionService.class);
 
     @Override
     public AuthenticationResponse execute(final RequestContext ctx, final AuthenticationRequest rq) throws Exception {
@@ -96,6 +99,11 @@ public class AuthenticationRequestHandler extends AbstractRequestHandler<Authent
         resp.setTenantNotUnique(resp.getJwtInfo().getTenantId().equals(T9tConstants.GLOBAL_TENANT_ID)); // only then the user has access to additional ones
         LOGGER.debug("User {} successfully logged in for tenant {} via {}", resp.getJwtInfo().getUserId(), resp.getJwtInfo().getTenantId(),
           resp.getApiKeyRef() != null ? "API key" : "user/PW");
+
+        // on password change invalidate all other sessions on uplink server with internal services
+        if (ap instanceof PasswordAuthentication pwdAuth && T9tUtil.isNotBlank(pwdAuth.getPassword()) && T9tUtil.isNotBlank(pwdAuth.getNewPassword())) {
+            authSessionService.userSessionInvalidationOnUplinkServer(pwdAuth.getUserId(), false, resp.getEncodedJwt());
+        }
 
         return resp;
     }
@@ -187,6 +195,7 @@ public class AuthenticationRequestHandler extends AbstractRequestHandler<Authent
         resp.getJwtInfo().setLocale(locale);
         resp.getJwtInfo().setZoneinfo(zoneinfo);
         resp.setApiKeyRef(apiKeyDto.getObjectRef());
+        resp.getJwtInfo().setZ(JsonUtil.addZ(resp.getJwtInfo().getZ(), T9tConstants.API_KEY_JWT_KEY, apiKeyDto.getObjectRef()));
         jwtEnrichment.enrichJwt(resp.getJwtInfo(), tenantDto, userDto, apiKeyDto);
 
         resp.setTenantName(tenantDto.getName());

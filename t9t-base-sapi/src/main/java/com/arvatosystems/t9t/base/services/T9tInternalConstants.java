@@ -55,6 +55,7 @@ public final class T9tInternalConstants {
     public static final String MDC_BPMN_PROCESS = "bpmnProcess";
     public static final String MDC_BPMN_PROCESS_INSTANCE = "bpmnProcessInstance";
     public static final String MDC_BPMN_STEP = "bpmnStep";
+    public static final String EMPTY_JWT = "N/A";
 
     /** Initializes basic fields of a new MDC. */
     public static void initMDC(final JwtInfo jwtInfo) {

@@ -137,6 +137,10 @@ class ConfigProvider {
         return myConfiguration.searchConfiguration !== null && T9tConstants.TEXT_SEARCH_ID_HIBERNATE_SEARCH == myConfiguration.searchConfiguration.strategy
     }
 
+    def static String getSearchStrategy() {
+        return myConfiguration.searchConfiguration !== null ? myConfiguration.searchConfiguration.strategy : "none"
+    }
+
     /** Returns true of the shadow database should be used for queries of a specific module, if possible. */
     def static boolean useShadowDatabase(String moduleName) {
         val applConfig = myConfiguration.applicationConfiguration;

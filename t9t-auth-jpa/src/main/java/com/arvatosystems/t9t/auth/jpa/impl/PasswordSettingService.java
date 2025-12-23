@@ -17,6 +17,7 @@ package com.arvatosystems.t9t.auth.jpa.impl;
 
 import java.time.Instant;
 
+import com.arvatosystems.t9t.annotations.IsLogicallyFinal;
 import com.arvatosystems.t9t.auth.AuthModuleCfgDTO;
 import com.arvatosystems.t9t.auth.PasswordUtil;
 import com.arvatosystems.t9t.auth.jpa.IPasswordSettingService;
@@ -26,8 +27,10 @@ import com.arvatosystems.t9t.auth.jpa.entities.UserStatusEntity;
 import com.arvatosystems.t9t.auth.jpa.persistence.IPasswordEntityResolver;
 import com.arvatosystems.t9t.auth.jpa.persistence.IUserEntityResolver;
 import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.services.IAuthSessionService;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Provider;
 import de.jpaw.dp.Singleton;
 import jakarta.persistence.EntityManager;
 import org.slf4j.Logger;
@@ -39,6 +42,10 @@ public class PasswordSettingService extends AbstractPasswordService implements I
 
     protected final IPasswordEntityResolver passwordResolver = Jdp.getRequired(IPasswordEntityResolver.class);
     protected final IUserEntityResolver userEntityResolver = Jdp.getRequired(IUserEntityResolver.class);
+    protected final Provider<RequestContext> contextProvider = Jdp.getProvider(RequestContext.class);
+
+    @IsLogicallyFinal
+    protected IAuthSessionService authSessionService;
 
     @Override
     public void setPasswordForUser(final RequestContext ctx, final UserEntity userEntity, final String newPassword) {
@@ -77,7 +84,15 @@ public class PasswordSettingService extends AbstractPasswordService implements I
         newPwdEntity.setUserExpiry(now.plusSeconds(T9tConstants.ONE_DAY_IN_S * T9tConstants.DEFAULT_MAXIUM_NUMBER_OF_DAYS_IN_BETWEEN_USER_ACTIVITIES));
         newPwdEntity.setPasswordSerialNumber(nextPasswordNo);
         passwordResolver.save(newPwdEntity);
+        getAuthSessionService().userSessionInvalidation(contextProvider.get(), userEntity.getUserId(), false);
         LOGGER.info("Password for user {} has been successfully reset", userEntity.getUserId());
         return newPwdEntity;
+    }
+
+    private IAuthSessionService getAuthSessionService() {
+        if (authSessionService == null) {
+            authSessionService = Jdp.getRequired(IAuthSessionService.class);
+        }
+        return authSessionService;
     }
 }

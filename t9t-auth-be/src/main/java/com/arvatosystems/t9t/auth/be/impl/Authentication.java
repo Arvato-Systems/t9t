@@ -116,7 +116,7 @@ public class Authentication implements IAuthenticate {
         jwtInfo.setPermissionsMax(EXEC_PERMISSIONS);
         final InternalHeaderParameters internalHeaderParameters = new InternalHeaderParameters();
         internalHeaderParameters.setExecutionStartedAt(now);
-        internalHeaderParameters.setEncodedJwt("N/A");
+        internalHeaderParameters.setEncodedJwt(T9tInternalConstants.EMPTY_JWT);
         internalHeaderParameters.setJwtInfo(jwtInfo);
         internalHeaderParameters.setProcessRef(
           Long.valueOf(refGenerator.generateRef(T9tInternalConstants.TABLENAME_MESSAGE_LOG, T9tInternalConstants.RTTI_MESSAGE_LOG)));

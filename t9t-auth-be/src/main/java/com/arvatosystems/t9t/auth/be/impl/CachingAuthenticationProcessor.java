@@ -21,6 +21,7 @@ import java.util.Base64;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import com.arvatosystems.t9t.base.services.SessionInvalidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -109,6 +110,10 @@ public class CachingAuthenticationProcessor implements ICachingAuthenticationPro
         final String jwtToken = header.substring(7).trim();
         try {
             final JwtInfo info = jwt.decode(jwtToken);
+            if (SessionInvalidation.isSessionInvalidated(info)) {
+                AUTH_CACHE.put(header, ACCESS_DENIED_DUE_TO_EXCEPTION);
+                return ACCESS_DENIED_DUE_TO_EXCEPTION;
+            }
             return storeSuccessful(header, jwtToken, info);
         } catch (Exception e) {
             LOGGER.info("JWT rejected: {}: {}", e.getClass().getSimpleName(), e.getMessage());
@@ -163,6 +168,10 @@ public class CachingAuthenticationProcessor implements ICachingAuthenticationPro
                 if (isStillValid(cachedUser)) {
                     LOGGER.debug("Found cached authentication entry for user {}, method {}",
                       cachedUser.getJwtInfo().getUserId(), authorizationHeader.substring(0, 7));
+                    if (SessionInvalidation.isSessionInvalidated(cachedUser.getJwtInfo())) {
+                        LOGGER.debug("But session for user {} has been invalidated or logged out", cachedUser.getJwtInfo().getUserId());
+                        return ACCESS_DENIED_DUE_TO_EXCEPTION;
+                    }
                     return cachedUser;
                 } else {
                     LOGGER.debug("Authentication: cached JWT for {} has expired, performing new authentication",
