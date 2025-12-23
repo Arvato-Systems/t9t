@@ -15,26 +15,18 @@
  */
 package com.arvatosystems.t9t.zkui.converters.grid;
 
-import java.text.DecimalFormat;
-
-import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
+import jakarta.annotation.Nonnull;
 
 @Singleton
 @Named("double")
 @Named("float")
-public class DoubleConverter extends AbstractDecimalFormatConverter<Number> implements IItemConverter<Number> {
+public class DoubleConverter implements IItemConverter<Number> {
 
     @Override
-    protected String getPattern() {
-        return "##0.0000"; // Default pattern for double/float
-    }
-
-    @Override
-    public String getFormattedLabel(Number value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
-        final DecimalFormat df = getLocalizedDecimalFormat(this.format);
-        return df.format(value.doubleValue());
+    public IItemConverter<Number> getInstance(@Nonnull final String fieldName, @Nonnull final FieldDefinition meta) {
+        return new NumberConverter<Number>(meta, "##0.0000", null);
     }
 }

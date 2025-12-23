@@ -18,9 +18,11 @@ package com.arvatosystems.t9t.zkui.components.fields;
 import java.util.Date;
 
 import java.time.Instant;
+
 import org.zkoss.zul.Datebox;
 
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
+import com.arvatosystems.t9t.zkui.util.ApplicationUtil;
 
 import de.jpaw.bonaparte.pojos.api.InstantFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
@@ -34,7 +36,7 @@ public class InstantField extends AbstractField<Datebox> {
         Datebox d = new Datebox();
         d.setId(cfg.getFieldName() + suffix);
         d.setHflex("1");
-        d.setFormat("medium+medium");
+        d.setFormat(ApplicationUtil.getDateTimeFormat(session.getUserLocale()));
         d.setPlaceholder(label);
         return d;
     }

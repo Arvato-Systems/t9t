@@ -115,6 +115,7 @@ public final class Constants {
         public static final String NO_DDL           = "noDDL";
         public static final String NO_AUTO_MAP      = "noAutoMap";
         public static final String MULTI_DROPDOWN   = "multidropdown";          // dropdown with multiple selection
+        public static final String DECIMALS         = "decimals";               // specifies the number of decimals to show for fixed point fields
         public static final String ICON             = "icon";                   // display field value as icon from specified path
         public static final String ICON_EMPTY       = "iconEmpty";              // icon to use for empty values (if the property value is an empty string, then EMPTY is used)
         public static final String ICON_CORE_PATH   = "icon/core/";             // resource path prefix for core icons

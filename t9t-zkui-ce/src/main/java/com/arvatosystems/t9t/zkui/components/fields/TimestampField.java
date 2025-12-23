@@ -22,6 +22,7 @@ import java.util.Date;
 import org.zkoss.zul.Datebox;
 
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
+import com.arvatosystems.t9t.zkui.util.ApplicationUtil;
 
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.TimestampFilter;
@@ -35,7 +36,7 @@ public class TimestampField extends AbstractField<Datebox> {
         Datebox d = new Datebox();
         d.setId(cfg.getFieldName() + suffix);
         d.setHflex("1");
-        d.setFormat("medium+medium");
+        d.setFormat(ApplicationUtil.getDateTimeFormat(session.getUserLocale()));
         d.setPlaceholder(label);
         return d;
     }

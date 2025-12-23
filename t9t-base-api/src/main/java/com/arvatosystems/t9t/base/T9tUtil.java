@@ -36,6 +36,7 @@ import com.arvatosystems.t9t.base.request.AggregationGranularityType;
 import de.jpaw.bonaparte.api.media.MediaTypeInfo;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
+import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.enums.TokenizableEnum;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -389,5 +390,12 @@ public final class T9tUtil {
         if (dto != null && !dto.ret$Active()) {
             throw new T9tException(T9tException.RECORD_INACTIVE, dto.ret$PQON() + " of key " + ref.toString());
         }
+    }
+
+    /** Returns a field property, or null if not found. A field property without a value is returned as empty string. */
+    @Nullable
+    public static String getFieldProperty(@Nonnull final FieldDefinition meta, @Nonnull final String propertyName) {
+        final Map<String, String> props = meta.getProperties();
+        return props == null ? null : props.get(propertyName);
     }
 }

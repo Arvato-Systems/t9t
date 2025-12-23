@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.zkui.converters.grid;
 
+import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 import com.arvatosystems.t9t.zkui.util.Constants;
 
@@ -45,8 +46,8 @@ public class XenumTranslationConverter implements IItemConverter<XEnum<?>> {
 
     @Override
     public IItemConverter<XEnum<?>> getInstance(final String fieldName, final FieldDefinition meta) {
-        if (meta.getProperties() != null && meta instanceof XEnumDataItem xedi) {
-            if (meta.getProperties().containsKey(Constants.UiFieldProperties.ICON)) {
+        if (meta instanceof XEnumDataItem xedi) {
+            if (T9tUtil.getFieldProperty(meta, Constants.UiFieldProperties.ICON) != null) {
                 final String iconPathPrefix = "icon/" + xedi.getBaseXEnum().getName().replace('.', '/') + "/";
                 return new XenumIconConverter(iconPathPrefix);
             }

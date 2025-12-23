@@ -110,10 +110,19 @@
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-hibernate-search-api</artifactId>
         </dependency>
-
         <dependency>
             <groupId>com.arvato-systems.t9t</groupId>
             <artifactId>t9t-xml-apiext</artifactId>
+        </dependency>
+
+        <!-- archUnit is provided as compile time dependency -->
+        <dependency>
+            <groupId>com.tngtech.archunit</groupId>
+            <artifactId>archunit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.tngtech.archunit</groupId>
+            <artifactId>archunit-junit5</artifactId>
         </dependency>
     </dependencies>
 

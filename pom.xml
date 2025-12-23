@@ -78,7 +78,7 @@
         <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
         <maven-plugin-plugin.version>3.15.2</maven-plugin-plugin.version>
         <maven-assembly-plugin.version>3.7.1</maven-assembly-plugin.version>
-        <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
+        <maven-resources-plugin.version>3.4.0</maven-resources-plugin.version>
         <maven-shade-plugin.version>3.6.1</maven-shade-plugin.version>
         <maven-war-plugin.version>3.5.0</maven-war-plugin.version>
         <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
@@ -377,6 +377,10 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>${maven-resources-plugin.version}</version>
+                    <configuration>
+                        <encoding>UTF-8</encoding>
+                        <propertiesEncoding>UTF-8</propertiesEncoding>
+                    </configuration>
                     <executions>
                         <execution>
                             <id>copy-resources</id>
@@ -385,7 +389,6 @@
                                 <goal>copy-resources</goal>
                             </goals>
                             <configuration>
-                                <encoding>UTF-8</encoding>
                                 <outputDirectory>${project.build.outputDirectory}</outputDirectory>
                                 <resources>
                                     <resource>
