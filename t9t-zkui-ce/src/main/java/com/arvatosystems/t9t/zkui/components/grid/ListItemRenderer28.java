@@ -52,7 +52,7 @@ public class ListItemRenderer28<T extends BonaPortable> implements ListitemRende
 
     protected List<String> visibleFieldnames;
     protected FoldingComposer<RuntimeException> foldingComposer;
-    protected final ListMetaComposer metaComposer = new ListMetaComposer(false, true, true);
+    protected final ListMetaComposer metaComposer = new ListMetaComposer();
     protected final BonaPortableClass<T> bclass;  // currently unused
     protected final boolean haveTracking;
     protected final IGridRowCssSelector gridRowCssSelector;

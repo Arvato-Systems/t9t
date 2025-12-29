@@ -16,6 +16,8 @@
 package com.arvatosystems.t9t.zkui.util;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -287,5 +289,19 @@ public final class ApplicationUtil {
     @Nonnull
     private static String replaceNnbsp(@Nonnull final String s) {
         return s.replace("\u202F", " ");
+    }
+
+    /**
+     * Creates a {@link DecimalFormat} instance using the current user's locale and applies the given pattern.
+     *
+     * @param format the decimal format pattern to apply, expressed in {@link java.text.DecimalFormat} pattern syntax
+     * @return a {@link DecimalFormat} configured for the current user's locale with the given pattern applied
+     */
+    @Nonnull
+    public static DecimalFormat getLocalizedDecimalFormat(@Nonnull final String format) {
+        final Locale userLocale = ApplicationSession.get().getUserLocale();
+        final DecimalFormat df = (DecimalFormat) NumberFormat.getInstance(userLocale);
+        df.applyPattern(format);
+        return df;
     }
 }

@@ -32,8 +32,6 @@ import jakarta.annotation.Nullable;
 @Named("object")
 public class BonaPortableConverter implements IItemConverter<BonaPortable> {
 
-    protected final ListMetaComposer metaComposer = new ListMetaComposer(false, true, true);
-
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Nullable
     @Override
@@ -41,6 +39,7 @@ public class BonaPortableConverter implements IItemConverter<BonaPortable> {
         @Nonnull final FieldDefinition d) {
         final String fname = extractKeyName(fieldName);
         final ParsedFoldingComponent pfc = FoldingComposer.createRecursiveFoldingComponent(fname);
+        final ListMetaComposer metaComposer = new ListMetaComposer();
         metaComposer.reset();
         data.foldedOutput(metaComposer, pfc);
         final List<DataAndMeta> storage = metaComposer.getStorage();
