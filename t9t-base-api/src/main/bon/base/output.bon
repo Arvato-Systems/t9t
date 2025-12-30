@@ -27,6 +27,9 @@ package (com.arvatosystems) t9t.base.output {
 
     type dataSinkId                                     is t9tShortId;                      // a token to specify OutputSession parameters
 
+    enum EnumOutputType {
+        DEFAULT="D", TOKEN="T", NAME="N", DESCRIPTION="O"  // description is translated text
+    }
 
     /** The OutputSessionParameters are provided once per outbound file / communication.
      * They provide information required by the output processor in order to select the physical transport. */

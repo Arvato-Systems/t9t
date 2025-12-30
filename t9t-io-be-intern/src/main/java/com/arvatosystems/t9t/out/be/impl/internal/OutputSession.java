@@ -33,6 +33,7 @@ import com.arvatosystems.t9t.base.FieldMappers;
 import com.arvatosystems.t9t.base.IInputQueuePartitioner;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.T9tUtil;
+import com.arvatosystems.t9t.base.output.EnumOutputType;
 import com.arvatosystems.t9t.base.output.ExportStatusEnum;
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.base.services.IAsyncTransmitter;
@@ -66,7 +67,6 @@ import com.arvatosystems.t9t.uiprefsv3.request.LeanGridConfigResponse;
 
 import de.jpaw.bonaparte.api.media.MediaTypeInfo;
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.media.EnumOutputType;
 import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import de.jpaw.bonaparte.pojos.api.media.MediaStorageLocation;
 import de.jpaw.bonaparte.pojos.api.media.MediaType;
