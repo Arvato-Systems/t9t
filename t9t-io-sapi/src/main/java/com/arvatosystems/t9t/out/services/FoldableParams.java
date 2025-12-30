@@ -17,48 +17,15 @@ package com.arvatosystems.t9t.out.services;
 
 import java.util.List;
 
-import de.jpaw.bonaparte.pojos.api.media.EnumOutputType;
+import com.arvatosystems.t9t.base.output.EnumOutputType;
+
 import jakarta.annotation.Nullable;
 
 /** Immutable data class, mostly boilerplate code. */
-public class FoldableParams {
-    private final List<String> selectedFields;
-    private final List<String> headers;
-    private final EnumOutputType relevantEnumType;
-    private final ISpecificTranslationProvider enumTranslator;
-    private final boolean applyVariantFilter;
-
-    public FoldableParams(
-      @Nullable final List<String> selectedFields,                  // if not null and not empty: a subset of the fields we want. Else all fields are selected
-      @Nullable final List<String> headers,                         // if not null and not empty: header data
-      @Nullable final EnumOutputType relevantEnumType,              // a directive for enum conversion (no conversion done if null)
-      @Nullable final ISpecificTranslationProvider enumTranslator,  // a translation provider, non null iff relevantEnumType == EnumOutputType.DESCRIPTION
-      final boolean applyVariantFilter) {
-        super();
-        this.selectedFields = selectedFields;
-        this.headers = headers;
-        this.relevantEnumType = relevantEnumType;
-        this.enumTranslator = enumTranslator;
-        this.applyVariantFilter = applyVariantFilter;
-    }
-
-    public List<String> getSelectedFields() {
-        return this.selectedFields;
-    }
-
-    public List<String> getHeaders() {
-        return this.headers;
-    }
-
-    public EnumOutputType getRelevantEnumType() {
-        return this.relevantEnumType;
-    }
-
-    public ISpecificTranslationProvider getEnumTranslator() {
-        return this.enumTranslator;
-    }
-
-    public boolean isApplyVariantFilter() {
-        return this.applyVariantFilter;
-    }
+public record FoldableParams(
+      @Nullable List<String> selectedFields,                  // if not null and not empty: a subset of the fields we want. Else all fields are selected
+      @Nullable List<String> headers,                         // if not null and not empty: header data
+      @Nullable EnumOutputType relevantEnumType,              // a directive for enum conversion (no conversion done if null)
+      @Nullable ISpecificTranslationProvider enumTranslator,  // a translation provider, non null iff relevantEnumType == EnumOutputType.DESCRIPTION
+      boolean applyVariantFilter) {
 }

@@ -87,7 +87,7 @@
         <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
         <maven-exec-plugin.version>3.6.2</maven-exec-plugin.version>
         <owasp-maven-plugin.version>12.1.9</owasp-maven-plugin.version>
-        <spring-boot-maven-plugin.version>4.0.0</spring-boot-maven-plugin.version>
+        <spring-boot-maven-plugin.version>4.0.1</spring-boot-maven-plugin.version>
         <git-commit-id-plugin.version>9.0.2</git-commit-id-plugin.version>
         <jaxws-maven-plugin.version>4.0.3</jaxws-maven-plugin.version>
         <eclipse-lifecycle-mapping.version>1.0.0</eclipse-lifecycle-mapping.version>

@@ -1,14 +1,12 @@
 package com.arvatosystems.t9t.zkui.converters.grid;
 
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.Locale;
 import java.util.function.BiConsumer;
 
+import com.arvatosystems.t9t.zkui.util.ApplicationUtil;
 import org.zkoss.util.resource.Labels;
 
 import com.arvatosystems.t9t.base.T9tUtil;
-import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 import com.arvatosystems.t9t.zkui.util.Constants;
 
 import de.jpaw.bonaparte.core.BonaPortable;
@@ -51,9 +49,7 @@ public class NumberConverter<T extends Number> implements IItemConverter<T> {
      */
     @Override
     public String getFormattedLabel(final T value, final BonaPortable wholeDataObject, final String fieldName, final FieldDefinition meta) {
-        final Locale userLocale = ApplicationSession.get().getUserLocale();
-        final DecimalFormat df = (DecimalFormat) NumberFormat.getInstance(userLocale);
-        df.applyPattern(format);
+        final DecimalFormat df = ApplicationUtil.getLocalizedDecimalFormat(format);
         if (minFractionSetter != null) {
             minFractionSetter.accept(df, value);
         }

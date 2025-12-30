@@ -33,4 +33,9 @@ public class T9tAllApiArchTests {
     protected final ArchRule apiProjectsShouldNotDependOnBackendUsingRequestContext =
         noClasses().should().dependOnClassesThat().haveFullyQualifiedName("com.arvatosystems.t9t.base.services.RequestContext")
             .because("API projects should be purely for interface definitions and not depend on backend using class RequestContext");
+
+    @ArchTest
+    protected final ArchRule apiProjectsShouldNotDependOnBackendT9tServerConfiguration =
+        noClasses().should().dependOnClassesThat().haveFullyQualifiedName("com.arvatosystems.t9t.cfg.be.T9tServerConfiguration")
+            .because("API projects should be purely for interface definitions and not depend on backend configuration class T9tServerConfiguration, which contains sensitive information");
 }

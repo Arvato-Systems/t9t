@@ -25,26 +25,26 @@ import org.slf4j.LoggerFactory;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.meta.AlphanumericEnumSetDataItem;
-import de.jpaw.bonaparte.pojos.meta.EnumDefinition;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
-import de.jpaw.bonaparte.pojos.meta.NumericEnumSetDataItem;
+import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
+import de.jpaw.bonaparte.pojos.meta.XEnumSetDataItem;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
+import de.jpaw.enums.XEnum;
 import jakarta.annotation.Nonnull;
 
 @Singleton
-@Named("enumset")
-public class EnumsetConverter implements IItemConverter<Set<Enum<?>>> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(EnumsetConverter.class);
+@Named("xenumset")
+public class XenumsetConverter implements IItemConverter<Set<XEnum<?>>> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(XenumsetConverter.class);
 
-    private record LocalEnumsetConverter(Map<String, String> enumXlation) implements IItemConverter<Set<Enum<?>>> {
+    private record LocalXEnumsetConverter(Map<String, String> enumXlation) implements IItemConverter<Set<XEnum<?>>> {
         @Override
-        public String getFormattedLabel(final Set<Enum<?>> value, final BonaPortable wholeDataObject, final String fieldName, final FieldDefinition meta) {
+        public String getFormattedLabel(final Set<XEnum<?>> value, final BonaPortable wholeDataObject, final String fieldName, final FieldDefinition meta) {
             // create a comma separated list of names
             final StringJoiner sj = new StringJoiner(",");
 
-            for (final Enum<?> e: value) {
+            for (final XEnum<?> e: value) {
                 final String instanceName = e.name();
                 final String xlate = enumXlation.get(instanceName);
                 sj.add(xlate != null ? xlate : instanceName);
@@ -55,19 +55,14 @@ public class EnumsetConverter implements IItemConverter<Set<Enum<?>>> {
 
     @Override
     @Nonnull
-    public IItemConverter<Set<Enum<?>>> getInstance(@Nonnull final String fieldName, @Nonnull final FieldDefinition meta) {
+    public IItemConverter<Set<XEnum<?>>> getInstance(@Nonnull final String fieldName, @Nonnull final FieldDefinition meta) {
         final ApplicationSession as = ApplicationSession.get();
-        final EnumDefinition ed;
-        if (meta instanceof NumericEnumSetDataItem nes) {
-            ed = nes.getBaseEnumset().getBaseEnum();
-        } else if (meta instanceof AlphanumericEnumSetDataItem aes) {
-            ed = aes.getBaseEnumset().getBaseEnum();
-        } else {
-            ed = null;
-            LOGGER.error("EnumsetConverter invoked for field {} of type {}", fieldName, meta.getClass().getCanonicalName());
+        if (!(meta instanceof XEnumSetDataItem xes)) {
+            LOGGER.error("XenumsetConverter invoked for field {} of type {}", fieldName, meta.getClass().getCanonicalName());
             return this;
         }
+        final XEnumDefinition ed = xes.getBaseXEnumset().getBaseXEnum();
         final Map<String, String> enumXlation = as.translateEnum(ed.getName());
-        return new LocalEnumsetConverter(enumXlation);
+        return new LocalXEnumsetConverter(enumXlation);
     }
 }

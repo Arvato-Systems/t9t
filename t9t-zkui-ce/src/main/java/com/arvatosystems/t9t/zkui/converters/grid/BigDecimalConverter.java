@@ -17,6 +17,9 @@ package com.arvatosystems.t9t.zkui.converters.grid;
 
 import java.math.BigDecimal;
 
+import java.text.DecimalFormat;
+import com.arvatosystems.t9t.zkui.util.ApplicationUtil;
+import jakarta.annotation.Nonnull;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,51 +30,71 @@ import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.util.BigDecimalTools;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
+import org.zkoss.util.resource.Labels;
 
 @Singleton
 @Named("decimal")  // java.math.BigDecimal
-public class BigDecimalConverter extends AbstractDecimalFormatConverter<BigDecimal> implements IItemConverter<BigDecimal> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(BigDecimalConverter.class);
-    private static final String DEFAULT_PATTERN = "###,##0.00";
+public class BigDecimalConverter implements IItemConverter<BigDecimal> {
+    private static final String DEFAULT_FORMAT = "###,##0.00";
 
-    @Override
-    protected String getPattern() {
-        return DEFAULT_PATTERN;
+    private final String format;
+
+    public BigDecimalConverter() {
+        this.format = Labels.getLabel("com.decimal.format", DEFAULT_FORMAT);
     }
 
-    @Override
-    public String getFormattedLabel(BigDecimal value, BonaPortable wholeDataObject, String fieldName, FieldDefinition meta) {
-        BonaPortable root = getObjectWithoutDataOrTracking(wholeDataObject);
-        String path = getPathWithoutDataOrTracking(fieldName);
-        BigDecimal scaledValue = BigDecimalTools.retrieveScaled(root, path);
-        if (scaledValue == null) {
-            LOGGER.warn("Can't find BigDecimal value in {}#{}. Please check decimal property in bon file.", root.ret$PQON(), path);
-            scaledValue = setDefaultMinScale(value);
+    private record DecimalFormatConverter(@Nonnull String format, @Nonnull String path) implements IItemConverter<BigDecimal> {
+        private static final Logger LOGGER = LoggerFactory.getLogger(DecimalFormatConverter.class);
+
+        @Nonnull
+        @Override
+        public String getFormattedLabel(@Nonnull final BigDecimal value, @Nonnull final BonaPortable wholeDataObject, @Nonnull final String fieldName,
+            @Nonnull final FieldDefinition meta) {
+            final BonaPortable root = getObjectWithoutDataOrTracking(wholeDataObject);
+            BigDecimal scaledValue = BigDecimalTools.retrieveScaled(root, path);
+            if (scaledValue == null) {
+                LOGGER.warn("Can't find BigDecimal value in {}#{}. Please check decimal property in bon file.", root.ret$PQON(), path);
+                scaledValue = setDefaultMinScale(value);
+            }
+            final DecimalFormat df = ApplicationUtil.getLocalizedDecimalFormat(format);
+            df.setMinimumFractionDigits(scaledValue.scale());
+            return df.format(scaledValue);
         }
-        return getLocalizedDecimalFormat(this.format, scaledValue.scale()).format(scaledValue);
 
+        @Nonnull
+        private BonaPortable getObjectWithoutDataOrTracking(@Nonnull final BonaPortable wholeDataObject) {
+            if (wholeDataObject instanceof DataWithTracking<?, ?> dwt) {
+                return dwt.getData();
+            }
+            return wholeDataObject;
+        }
+
+        @Nonnull
+        private BigDecimal setDefaultMinScale(@Nonnull final BigDecimal value) {
+            final BigDecimal tmp = value.stripTrailingZeros();
+            if (tmp.scale() < 0) {
+                return tmp.setScale(0);
+            }
+            return tmp;
+        }
+
+        @Override
+        public boolean isRightAligned() {
+            return true;
+        }
     }
 
-    private String getPathWithoutDataOrTracking(String fullPath) {
+    @Nonnull
+    @Override
+    public IItemConverter<BigDecimal> getInstance(@Nonnull final String fieldName, @Nonnull final FieldDefinition d) {
+        return new DecimalFormatConverter(format, getPathWithoutDataOrTracking(fieldName));
+    }
+
+    @Nonnull
+    private String getPathWithoutDataOrTracking(@Nonnull final String fullPath) {
         // check if fullPath starts with "data.", this means we use DataWithTracking
         // -> remove the data.
-        String clearedField = fullPath.startsWith("data.") || fullPath.startsWith("tracking.")
+        return fullPath.startsWith("data.") || fullPath.startsWith("tracking.")
                 ? StringUtils.substringAfter(fullPath, ".") : fullPath;
-                return clearedField;
-    }
-
-    private BonaPortable getObjectWithoutDataOrTracking(BonaPortable wholeDataObject) {
-        if (wholeDataObject instanceof DataWithTracking<?, ?> dwt) {
-            return dwt.getData();
-        }
-        return wholeDataObject;
-    }
-
-    private BigDecimal setDefaultMinScale(BigDecimal value) {
-        BigDecimal tmp = value.stripTrailingZeros();
-        if (tmp.scale() < 0) {
-            tmp = tmp.setScale(0);
-        }
-        return tmp;
     }
 }

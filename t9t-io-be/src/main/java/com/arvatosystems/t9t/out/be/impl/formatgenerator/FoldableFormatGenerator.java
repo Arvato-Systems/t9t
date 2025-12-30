@@ -50,24 +50,24 @@ public abstract class FoldableFormatGenerator<E extends Exception> extends Abstr
     @Override
     protected void openHook() throws IOException {
         MessageComposer<E> baseComposer = getMessageComposer();
-        if (foldableParams == null || T9tUtil.isEmpty(foldableParams.getSelectedFields())) {
+        if (foldableParams == null || T9tUtil.isEmpty(foldableParams.selectedFields())) {
             map = null;
         } else {
             map = new HashMap<>();
-            map.put(BonaPortable.class, foldableParams.getSelectedFields());
-            if (foldableParams.getRelevantEnumType() != null) {
-                switch (foldableParams.getRelevantEnumType()) {
+            map.put(BonaPortable.class, foldableParams.selectedFields());
+            if (foldableParams.relevantEnumType() != null) {
+                switch (foldableParams.relevantEnumType()) {
                 case NAME:
                     baseComposer = new EnumAsTokenComposerFilter<>(baseComposer);
                     break;
                 case DESCRIPTION:
-                    baseComposer = new EnumTranslatorComposerFilter<>(baseComposer, foldableParams.getEnumTranslator());
+                    baseComposer = new EnumTranslatorComposerFilter<>(baseComposer, foldableParams.enumTranslator());
                     break;
                 default:
                     // intentionally no activity
                 }
             }
-            if (foldableParams.isApplyVariantFilter()) {
+            if (foldableParams.applyVariantFilter()) {
                 // insert a mapper from the Variant to one of its member types
                 baseComposer = new VariantComposerFilter<>(baseComposer);
             }
@@ -80,11 +80,11 @@ public abstract class FoldableFormatGenerator<E extends Exception> extends Abstr
         if (!Boolean.TRUE.equals(sinkCfg.getWriteHeaderRow())) {
             return;  // no header row requested
         }
-        if (foldableParams == null || T9tUtil.isEmpty(foldableParams.getHeaders())) {
+        if (foldableParams == null || T9tUtil.isEmpty(foldableParams.headers())) {
             return;
         }
         try {
-            getMessageComposer().writeRecord(new OutputHeading(foldableParams.getHeaders()));
+            getMessageComposer().writeRecord(new OutputHeading(foldableParams.headers()));
         } catch (final Exception e) {
             LOGGER.error("Failed to write header to output.", e);
         }

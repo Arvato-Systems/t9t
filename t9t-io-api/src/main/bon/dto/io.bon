@@ -211,7 +211,6 @@ package (com.arvatosystems) t9t.io {
         // 42: this is a ref there. in 28, it cannot be, because callbacks are defined in a different module
         optional f42Ref                                 callbackRef     properties dropdown="cannedRequestId";                // link to CannedRequestRef   ...  the request handler to call for operation results (when an entry is finished or aborted with an error)
         optional Unicode(64)                            gridId;                     // grid ID which initiated data output (output only)
-        // optional Enum EnumOutputType                    enumOutputType;             // for custom exports: defines which output method to use for enums
         optional Ascii(24)                              outputEncoding  properties dropdown="charsetEncoding";             // encoding of the produced output
         optional Ascii(64)                              genericParameter1;
         optional Unicode(255)                           genericParameter2;
