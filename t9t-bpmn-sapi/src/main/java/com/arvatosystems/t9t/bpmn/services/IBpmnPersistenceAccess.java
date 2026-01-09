@@ -64,4 +64,22 @@ public interface IBpmnPersistenceAccess {
 
     /** Find existing process execution status, or return null if non existing. */
     ProcessExecutionStatusDTO getProcessExecutionStatusOpt(String processDefinitionId, Long targetObjectRef);
+
+    /**
+     * Checks whether an existing workflow status record for the given workflow and data object exists.
+     * Returns true if found, false if not.
+     *
+     * In addition, dependent on server configuration settings, sets the "yieldUntil" setting to null if
+     * ServerConfiguration.updateYieldUntilIfFarFuture is set to true and the existing value is FAR_FUTURE,
+     * or if ServerConfiguration.updateYieldUntil is set and the existing value is anywhere in the future.
+     *
+     * The synchronous update costs performance, but is recommended because in case of an asynchronous restart of the workflow,
+     * the retrigger event could be lost in case of a server restart.
+     *
+     * @param ctx the current context
+     * @param ref the object ref of the workflow's data object
+     * @param workflowId the ID of the workflow
+     * @return true if the entry existed, false if not
+     */
+    boolean removeWaitFlag(@Nonnull RequestContext ctx, @Nonnull Long ref, @Nonnull String workflowId);
 }

@@ -799,6 +799,8 @@
                     </xs:element>
                     <xs:element name="maxMcpVersion" minOccurs="0" nillable="true" type="xs:date"/>
                     <xs:element name="noSessionId" minOccurs="0" nillable="true" type="xs:boolean"/>
+                    <xs:element name="updateYieldUntil" minOccurs="0" nillable="true" type="xs:boolean"/>
+                    <xs:element name="updateYieldUntilIfFarFuture" minOccurs="0" nillable="true" type="xs:boolean"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>

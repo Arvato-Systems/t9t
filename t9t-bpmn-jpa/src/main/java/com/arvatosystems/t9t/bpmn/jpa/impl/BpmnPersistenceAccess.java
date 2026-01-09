@@ -21,9 +21,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.TypedQuery;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +30,7 @@ import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.services.IClusterEnvironment;
 import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.bpmn.IWorkflowStep;
 import com.arvatosystems.t9t.bpmn.ProcessDefinitionDTO;
 import com.arvatosystems.t9t.bpmn.ProcessDefinitionRef;
 import com.arvatosystems.t9t.bpmn.ProcessExecutionStatusDTO;
@@ -47,11 +45,15 @@ import com.arvatosystems.t9t.bpmn.request.ExecuteProcessWithRefRequest;
 import com.arvatosystems.t9t.bpmn.request.TriggerSingleProcessNowRequest;
 import com.arvatosystems.t9t.bpmn.request.WorkflowActionEnum;
 import com.arvatosystems.t9t.bpmn.services.IBpmnPersistenceAccess;
+import com.arvatosystems.t9t.cfg.be.ConfigProvider;
+import com.arvatosystems.t9t.cfg.be.ServerConfiguration;
 import com.google.common.base.Objects;
 
 import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.TypedQuery;
 
 @Singleton
 public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
@@ -63,6 +65,9 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
     protected final IProcessExecutionStatusDTOMapper statusMapper = Jdp.getRequired(IProcessExecutionStatusDTOMapper.class);
     protected final IExecutor executor = Jdp.getRequired(IExecutor.class);
     protected final IClusterEnvironment clusterEnvironment = Jdp.getRequired(IClusterEnvironment.class);
+    protected final ServerConfiguration serverConfiguration = ConfigProvider.getConfiguration().getServerConfiguration();
+    protected final boolean updateYieldUntil = serverConfiguration != null && Boolean.TRUE.equals(serverConfiguration.getUpdateYieldUntil());
+    protected final boolean updateYieldUntilIfFarFuture = serverConfiguration != null && Boolean.TRUE.equals(serverConfiguration.getUpdateYieldUntilIfFarFuture());
 
     @Override
     public ProcessDefinitionDTO getProcessDefinitionDTO(final String processDefinitionId) {
@@ -272,5 +277,35 @@ public class BpmnPersistenceAccess implements IBpmnPersistenceAccess {
             return null;
         }
         return statusEntity;
+    }
+
+    @Override
+    public boolean removeWaitFlag(final RequestContext ctx, final Long ref, final String workflowId) {
+        final List<ProcessExecStatusEntity> entities = statusResolver.findByTargetObjectRefAndProcessDefinitionId(true, ref, workflowId);
+        if (entities.isEmpty()) {
+            // no record exists -> nothing to do
+            return false;
+        }
+        // check that there is an actual wait flag, only update the record if required
+        final ProcessExecStatusEntity entity = entities.get(0);
+        if (entity.getYieldUntil() == null || entity.getYieldUntil().isBefore(ctx.executionStart)) {
+            // no wait flag set, or it is old enough -> nothing to do
+            return true;
+        }
+        if (updateYieldUntil || updateYieldUntilIfFarFuture) {
+            // very likely need to update: first do a JVM lock
+            ctx.lockRef(entity.getObjectRef());
+            final ProcessExecStatusEntity refreshed = refresh(entity);
+            if (refreshed == null) {
+                // entity was removed concurrently, nothing to update
+                return false;
+            }
+            if (updateYieldUntil || (updateYieldUntilIfFarFuture && IWorkflowStep.YIELD_UNTIL_FAR_FUTURE.equals(refreshed.getYieldUntil()))) {
+                // now update the record
+                refreshed.setYieldUntil(null);
+                LOGGER.trace("Removing wait flag for workflow {} / {}", workflowId, ref);
+            }
+        }
+        return true;
     }
 }

@@ -15,6 +15,7 @@
  */
 package com.arvatosystems.t9t.bpmn;
 
+import java.time.Instant;
 import java.util.Map;
 
 import jakarta.annotation.Nonnull;
@@ -22,6 +23,7 @@ import jakarta.annotation.Nullable;
 
 /** Defines the interface of an abstract base class used for all kinds of generation 2 workflows (workflows which do not persist the object as a first step). */
 public interface IWorkflowStep<T> {
+    Instant YIELD_UNTIL_FAR_FUTURE           = Instant.ofEpochSecond(3_2503_676_400L); // Wed Jan 01 3000 00:00:00 GMT+0100
     String PROCESS_VARIABLE_VARIANT          = "variant";       // the name in the parameters map used to transfer additional numeric configuration
     String PROCESS_VARIABLE_YIELD_UNTIL      = "yieldUntil";    // the name in the parameters map used to denote a pause
     String PROCESS_VARIABLE_RETURN_CODE      = "returnCode";    // the name in the parameters map used to denote the return code

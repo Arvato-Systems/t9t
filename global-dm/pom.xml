@@ -226,6 +226,14 @@
         <nimbus.version>10.5</nimbus.version>
         <jboss-logging.version>3.6.1.Final</jboss-logging.version>
         <cxf.version>4.1.4</cxf.version>
+
+        <!-- Scripting engines -->
+        <!-- Jython -->
+        <jython.version>2.7.4</jython.version>
+        <!-- Groovy -->
+        <groovy.version>5.0.3</groovy.version>
+        <!-- Apache JEXL -->
+        <jexl.version>3.6.1</jexl.version>
     </properties>
 
 
@@ -1659,6 +1667,23 @@
                 <version>${mcp-sdk.version}</version>
                 <scope>import</scope>
                 <type>pom</type>
+            </dependency>
+
+            <!-- scripting engines -->
+            <dependency>
+                <groupId>org.apache.groovy</groupId>
+                <artifactId>groovy</artifactId>
+                <version>${groovy.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.python</groupId>
+                <artifactId>jython</artifactId>
+                <version>${jython.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-jexl3</artifactId>
+                <version>${jexl.version}</version>
             </dependency>
 
         </dependencies>
