@@ -61,20 +61,6 @@ public class BpmApplicationService implements IBpmApplicationService {
         return Integer.valueOf(hash % getPartitionCount());
     }
 
-    /**
-     * Removes the "yieldUntil" FAR_FUTURE setting from the workflow status entity, in case present
-     * This is required because in case of an asynchronous restart of the workflow, the retrigger event could be lost
-     * in case of a server restart.
-     *
-     * @param ctx the current context
-     * @param ref the object ref of the workflow's data object
-     * @param workflowId the ID of the workflow
-     * @return true if the entry existed, false if not
-     */
-    protected boolean removeWaitFlag(final RequestContext ctx, final Long ref, final String workflowId) {
-        return true;  // still TODO
-    }
-
     @Override
     public void startBusinessProcess(final RequestContext ctx, final String workflowId,
       final Long targetObjectRef, final Long refToLock, final String partitionKey) {
@@ -146,7 +132,7 @@ public class BpmApplicationService implements IBpmApplicationService {
     private void startExistingBusinessProcess(final Long ref, final String workflowId, final Boolean restartAtBeginning,
             final WorkflowActionEnum workflowActionEnum, final String workflowStep) {
         final RequestContext ctx = ctxProvider.get();
-        final boolean workflowExisted = removeWaitFlag(ctx, ref, workflowId);
+        final boolean workflowExisted = persistenceAccess.removeWaitFlag(ctx, ref, workflowId);
         if (!workflowExisted && workflowActionEnum == WorkflowActionEnum.NO_ACTIVITY) {
             // no need to trigger the asynchronous process, because no entry was there
             return;

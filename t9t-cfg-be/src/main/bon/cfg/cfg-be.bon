@@ -208,6 +208,8 @@ package (com.arvatosystems) t9t.cfg.be XML PROPERTY {
         optional Long                               sendHeartbeat;                  // if set, then /sse will send heartbeat events to GET requests, using this number of milliseconds as interval (30000)
         optional Day                                maxMcpVersion;                  // do not respond with an MCP version newer than this one
         optional Boolean                            noSessionId;                    // do not add a query parameter ?sessionId=.... to the MCP GET request response
+        optional Boolean                            updateYieldUntil;               // if set, synchronously sets the "yieldUntil" field of the workflow status to null if it was anywhere in the future before, to avoid lost async tasks in a stricter setting
+        optional Boolean                            updateYieldUntilIfFarFuture;    // if set, synchronously sets the "yieldUntil" field of the workflow status to null if it was FAR_FUTURE before, to avoid lost async tasks (recommended to set)
     }
 
     class ApplicationConfiguration {

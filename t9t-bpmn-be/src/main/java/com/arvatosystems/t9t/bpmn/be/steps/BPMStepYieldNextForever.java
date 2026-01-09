@@ -15,7 +15,6 @@
  */
 package com.arvatosystems.t9t.bpmn.be.steps;
 
-import java.time.Instant;
 import java.util.Map;
 
 import com.arvatosystems.t9t.bpmn.WorkflowReturnCode;
@@ -26,11 +25,10 @@ import de.jpaw.dp.Singleton;
 @Singleton
 @Named("yieldNextForever")
 public class BPMStepYieldNextForever extends AbstractAlwaysRunnableNoFactoryWorkflowStep {
-    public static final Instant FAR_FUTURE = Instant.ofEpochSecond(3_2503_676_400L); // Wed Jan 01 3000 00:00:00 GMT+0100
 
     @Override
     public WorkflowReturnCode execute(final Object data, final Map<String, Object> parameters) {
-        parameters.put(PROCESS_VARIABLE_YIELD_UNTIL, FAR_FUTURE);
+        parameters.put(PROCESS_VARIABLE_YIELD_UNTIL, YIELD_UNTIL_FAR_FUTURE);
         return WorkflowReturnCode.YIELD_NEXT;
     }
 }
