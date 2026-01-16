@@ -40,9 +40,31 @@ public class T9tLuceneAnalysisConfigurer implements LuceneAnalysisConfigurer {
                 .tokenFilter("lowercase")
                 .tokenFilter("asciifolding");
 
+        context.analyzer(HsProperties.ANALYSER_FULLTEXT_KEYWORD_TOKENIZER_FUZZY).custom()
+                .tokenizer("keyword")
+                .tokenFilter("lowercase")
+                .tokenFilter("asciifolding");
+
+        context.analyzer(HsProperties.ANALYSER_FULLTEXT_KEYWORD_TOKENIZER_EMAIL).custom()
+                .tokenizer("keyword")
+                .tokenFilter("lowercase")
+                .tokenFilter("asciifolding")
+                .tokenFilter("patternReplace")
+                    .param("pattern", "@.*")
+                    .param("replacement", "")
+                    .param("replace", "first")
+                .tokenFilter("wordDelimiterGraph")
+                    .param("generateWordParts", "1")
+                    .param("generateNumberParts", "0")
+                    .param("splitOnCaseChange", "0")
+                    .param("splitOnNumerics", "1")
+                    .param("preserveOriginal", "1")
+                    .param("catenateAll", "1")
+                    .param("catenateWords", "1")
+                    .param("catenateNumbers", "0");
+
         context.normalizer(HsProperties.ANALYSER_KEYWORD_NORMALIZER).custom()
                 .tokenFilter("lowercase")
                 .tokenFilter("asciifolding");
     }
 }
-

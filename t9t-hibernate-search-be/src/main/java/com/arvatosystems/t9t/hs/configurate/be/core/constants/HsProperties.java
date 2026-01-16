@@ -27,10 +27,17 @@ public final class HsProperties {
 
     public static final String ANALYSER_FULLTEXT_STANDARD_TOKENIZER = "t9t_fulltext_standard_tokenizer";
     public static final String ANALYSER_FULLTEXT_KEYWORD_TOKENIZER = "t9t_fulltext_keyword_tokenizer";
+    public static final String ANALYSER_FULLTEXT_KEYWORD_TOKENIZER_FUZZY = "t9t_fulltext_keyword_tokenizer_fuzzy";
+    public static final String ANALYSER_FULLTEXT_KEYWORD_TOKENIZER_EMAIL = "t9t_fulltext_keyword_tokenizer_email";
 
     public static final boolean IS_FUZZY = true;
     public static final boolean IS_NOT_FUZZY = false;
 
     public static final Map<String, Boolean> ANALYSER_FUZZINESS =
-            Map.of(ANALYSER_FULLTEXT_STANDARD_TOKENIZER, IS_FUZZY, ANALYSER_FULLTEXT_KEYWORD_TOKENIZER, IS_NOT_FUZZY);
+            Map.of(
+                ANALYSER_FULLTEXT_STANDARD_TOKENIZER, IS_FUZZY,
+                ANALYSER_FULLTEXT_KEYWORD_TOKENIZER, IS_NOT_FUZZY,
+                ANALYSER_FULLTEXT_KEYWORD_TOKENIZER_FUZZY, IS_FUZZY,
+                ANALYSER_FULLTEXT_KEYWORD_TOKENIZER_EMAIL, IS_FUZZY
+            );
 }
