@@ -453,11 +453,23 @@ public class RequestProcessor implements IRequestProcessor {
             }
         } catch (final NullPointerException npe) {
             LOGGER.error("NullPointerException (outer scope): ", npe);  // lists stack trace!
-            return MessagingUtil.createServiceResponse(T9tException.NULL_POINTER, null);
-        } catch (final Exception ee) {
-            final String causeChain = ExceptionUtil.causeChain(ee);
-            LOGGER.error("Unhandled exception (outer scope): {}", causeChain);
-            return MessagingUtil.createServiceResponse(T9tException.GENERAL_EXCEPTION, causeChain, ihdr.getMessageId(), null, null);
+            return createServiceResponse(T9tException.NULL_POINTER, null, ihdr);
+        } catch (final ClassCastException cce) {
+            LOGGER.error("ClassCastException (outer scope): ", cce);  // lists stack trace!
+            return createServiceResponse(T9tException.CLASS_CAST, null, ihdr);
+        } catch (final IndexOutOfBoundsException ioobe) {
+            LOGGER.error("IndexOutOfBoundsException (outer scope): ", ioobe);  // lists stack trace!
+            return createServiceResponse(T9tException.INDEX_OUT_OF_BOUNDS, null, ihdr);
+        } catch (final Throwable e) {
+            final String causeChain = ExceptionUtil.causeChain(e);
+            final boolean isRegularException = e instanceof Exception;
+            LOGGER.error("Execution problem{} (outer scope): General error cause is: {}", isRegularException ? "" : " (THROWABLE!)", causeChain);
+            return createServiceResponse(T9tException.GENERAL_EXCEPTION, causeChain, ihdr);
         }
+    }
+
+    /** Proxy to create an error response with some parameters from InternalHeaderParameters. */
+    private ServiceResponse createServiceResponse(final int errorCode, final String errorDetails, final InternalHeaderParameters ihdr) {
+        return MessagingUtil.createServiceResponse(errorCode, errorDetails, ihdr.getMessageId(), ihdr.getJwtInfo().getTenantId(), null);
     }
 }

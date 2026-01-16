@@ -1,4 +1,3 @@
-# empty file to ensure that the directory is checked in (Eclipse otherwise complains)
 swagger-ui/*
 !swagger-ui/application_logo.png
 !swagger-ui/company_logo.png

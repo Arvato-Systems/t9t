@@ -191,8 +191,8 @@ public class Executor implements IExecutor {
         } catch (final Throwable e) {
             // provide full stack trace to the log
             final String causeChain = ExceptionUtil.causeChain(e);
-            final boolean notThrowable = e instanceof Exception;
-            LOGGER.error("Execution problem{}: General error cause is: ", notThrowable ? "" : " (THROWABLE!)");
+            final boolean isRegularException = e instanceof Exception;
+            LOGGER.error("Execution problem{}: General error cause is: {}", isRegularException ? "" : " (THROWABLE!)", causeChain);
             // create a service response that reports about the problem
             return MessagingUtil.createServiceResponse(T9tException.GENERAL_EXCEPTION, causeChain);
         } finally {
