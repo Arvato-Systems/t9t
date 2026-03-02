@@ -17,11 +17,11 @@ package com.arvatosystems.t9t.zkui.components.datafields;
 
 import java.math.RoundingMode;
 
-import com.arvatosystems.t9t.zkui.inputelements.NanoUnitsBox;
-import com.arvatosystems.t9t.zkui.util.CurrencyUtil;
-
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.fixedpoint.types.NanoUnits;
+
+import com.arvatosystems.t9t.zkui.inputelements.NanoUnitsBox;
+import com.arvatosystems.t9t.zkui.util.CurrencyUtil;
 
 public class NanoUnitsDataField extends AbstractDataField<NanoUnitsBox, NanoUnits> {
     protected final NanoUnitsBox c = new NanoUnitsBox();

@@ -18,16 +18,12 @@ package com.arvatosystems.t9t.doc.be.pdf.impl;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.pdf.BaseFont;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xhtmlrenderer.pdf.ITextFontResolver;
 import org.xhtmlrenderer.pdf.ITextRenderer;
-
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.doc.T9tDocException;
-import com.arvatosystems.t9t.doc.services.IDocConverter;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.pdf.BaseFont;
 
 import de.jpaw.bonaparte.api.media.MediaTypes;
 import de.jpaw.bonaparte.pojos.api.media.MediaData;
@@ -36,6 +32,10 @@ import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ExceptionUtil;
+
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.doc.T9tDocException;
+import com.arvatosystems.t9t.doc.services.IDocConverter;
 
 @Singleton
 @Named("PDF")

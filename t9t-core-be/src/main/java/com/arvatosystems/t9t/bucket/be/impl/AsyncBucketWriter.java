@@ -30,14 +30,14 @@ import java.util.concurrent.LinkedTransferQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+import de.jpaw.util.ExceptionUtil;
+
 import com.arvatosystems.t9t.annotations.IsLogicallyFinal;
 import com.arvatosystems.t9t.base.event.BucketWriteKey;
 import com.arvatosystems.t9t.base.services.IBucketWriter;
 import com.arvatosystems.t9t.bucket.services.IBucketPersistenceAccess;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
-import de.jpaw.util.ExceptionUtil;
 
 @Singleton
 public class AsyncBucketWriter implements IBucketWriter {

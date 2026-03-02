@@ -23,12 +23,12 @@ import java.util.function.BiFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.search.Description;
 import com.arvatosystems.t9t.base.search.ResolveAnyRefResponse;
 import com.arvatosystems.t9t.base.services.IAnyKeySearchRegistry;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class AnyKeySearchRegistry implements IAnyKeySearchRegistry {

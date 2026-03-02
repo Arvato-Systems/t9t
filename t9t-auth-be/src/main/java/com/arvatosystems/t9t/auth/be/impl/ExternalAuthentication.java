@@ -25,6 +25,10 @@ import javax.naming.directory.SearchControls;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.auth.UserDTO;
 import com.arvatosystems.t9t.auth.services.AuthIntermediateResult;
 import com.arvatosystems.t9t.auth.services.IAuthPersistenceAccess;
@@ -35,10 +39,6 @@ import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.cfg.be.LdapConfiguration;
-
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
 
 /** This implementation provides LDAP authentication. */
 @Singleton

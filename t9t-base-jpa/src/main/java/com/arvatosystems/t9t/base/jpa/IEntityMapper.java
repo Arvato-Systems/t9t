@@ -20,9 +20,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import com.arvatosystems.t9t.base.output.OutputSessionParameters;
-import com.arvatosystems.t9t.base.search.ReadAllResponse;
-import com.arvatosystems.t9t.base.search.SearchCriteria;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
@@ -32,8 +31,10 @@ import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.SortColumn;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+
+import com.arvatosystems.t9t.base.output.OutputSessionParameters;
+import com.arvatosystems.t9t.base.search.ReadAllResponse;
+import com.arvatosystems.t9t.base.search.SearchCriteria;
 
 /** Defines a set of conversion methods between DTO and JPA entity classes.
  * The interface is parameterized and should be specialized for every DTO, using the name I(DTOname)Mapper (because the entity is implied by the DTO).

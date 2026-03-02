@@ -16,6 +16,7 @@
 package com.arvatosystems.t9t.base.be.execution;
 
 import java.time.Instant;
+import java.util.ConcurrentModificationException;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -460,6 +461,15 @@ public class RequestProcessor implements IRequestProcessor {
         } catch (final IndexOutOfBoundsException ioobe) {
             LOGGER.error("IndexOutOfBoundsException (outer scope): ", ioobe);  // lists stack trace!
             return createServiceResponse(T9tException.INDEX_OUT_OF_BOUNDS, null, ihdr);
+        } catch (final NumberFormatException nfe) {
+            LOGGER.error("NumberFormatException: ", nfe);  // lists stack trace!
+            return createServiceResponse(T9tException.NUMBER_FORMAT, null, ihdr);
+        } catch (final IllegalArgumentException iae) {
+            LOGGER.error("IllegalArgumentException: ", iae);  // lists stack trace!
+            return createServiceResponse(T9tException.ILLEGAL_ARGUMENT, null, ihdr);
+        } catch (final ConcurrentModificationException cme) {
+            LOGGER.error("ConcurrentModificationException: ", cme);  // lists stack trace!
+            return createServiceResponse(T9tException.CONCURRENT_MODIFICATION, null, ihdr);
         } catch (final Throwable e) {
             final String causeChain = ExceptionUtil.causeChain(e);
             final boolean isRegularException = e instanceof Exception;

@@ -16,9 +16,8 @@
 package com.arvatosystems.t9t.doc.services;
 
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
+import com.arvatosystems.t9t.base.services.IRefResolver;
 import com.arvatosystems.t9t.doc.DocComponentDTO;
 import com.arvatosystems.t9t.doc.DocComponentRef;
-
-import com.arvatosystems.t9t.base.services.IRefResolver;
 
 public interface IDocComponentResolver extends IRefResolver<DocComponentRef, DocComponentDTO, FullTrackingWithVersion> { }

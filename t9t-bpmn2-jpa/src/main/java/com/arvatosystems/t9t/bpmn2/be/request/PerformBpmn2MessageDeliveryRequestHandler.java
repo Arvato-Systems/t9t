@@ -27,6 +27,8 @@ import jakarta.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.IExecutor;
@@ -36,8 +38,6 @@ import com.arvatosystems.t9t.bpmn2.jpa.entities.Bpmn2MessageQueueEntity;
 import com.arvatosystems.t9t.bpmn2.jpa.persistence.IBpmn2MessageQueueEntityResolver;
 import com.arvatosystems.t9t.bpmn2.request.DeliverMessageRequest;
 import com.arvatosystems.t9t.bpmn2.request.PerformBpmn2MessageDeliveryRequest;
-
-import de.jpaw.dp.Jdp;
 
 public class PerformBpmn2MessageDeliveryRequestHandler extends AbstractRequestHandler<PerformBpmn2MessageDeliveryRequest> {
 

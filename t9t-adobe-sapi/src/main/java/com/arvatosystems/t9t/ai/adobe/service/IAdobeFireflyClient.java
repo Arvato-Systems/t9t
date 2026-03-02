@@ -15,11 +15,11 @@
  */
 package com.arvatosystems.t9t.ai.adobe.service;
 
+import jakarta.annotation.Nonnull;
+
 import com.arvatosystems.t9t.ai.adobe.request.AdobeFireflyGenerateImageRequest;
 import com.arvatosystems.t9t.ai.adobe.request.AdobeFireflyGenerateImageResponse;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import jakarta.annotation.Nonnull;
 
 /**
  * Interface for the Adobe Firefly client.

@@ -24,8 +24,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
+import com.google.common.collect.ImmutableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.pojos.api.media.MediaData;
+import de.jpaw.bonaparte.pojos.api.media.MediaXType;
+import de.jpaw.bonaparte.util.FreezeTools;
+import de.jpaw.dp.Jdp;
 
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
@@ -55,12 +61,6 @@ import com.arvatosystems.t9t.doc.services.IDocUnknownDistributor;
 import com.arvatosystems.t9t.email.api.RecipientEmail;
 import com.arvatosystems.t9t.server.services.IAsyncRequestSender;
 import com.arvatosystems.t9t.server.services.IEvent;
-import com.google.common.collect.ImmutableList;
-
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaXType;
-import de.jpaw.bonaparte.util.FreezeTools;
-import de.jpaw.dp.Jdp;
 
 //some comparison of image storing methods in on https://sendgrid.com/blog/embedding-images-emails-facts/
 //also a good read: https://sendgrid.com/blog/keep-email-looking-great-in-any-inbox/

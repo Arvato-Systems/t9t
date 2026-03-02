@@ -23,6 +23,11 @@ import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.pojos.api.media.MediaData;
+import de.jpaw.bonaparte.pojos.api.media.MediaXType;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.doc.api.DocumentSelector;
@@ -31,11 +36,6 @@ import com.arvatosystems.t9t.email.api.EmailMessage;
 import com.arvatosystems.t9t.email.api.RecipientEmail;
 import com.arvatosystems.t9t.email.api.SendEmailRequest;
 import com.arvatosystems.t9t.email.api.SendEmailResponse;
-
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaXType;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class DocEmailDistributor implements IDocEmailDistributor {

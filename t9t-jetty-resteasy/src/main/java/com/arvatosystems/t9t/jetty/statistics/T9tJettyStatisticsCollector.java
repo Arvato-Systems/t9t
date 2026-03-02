@@ -19,9 +19,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.jetty.server.handler.StatisticsHandler;
-
 import io.prometheus.client.jetty.JettyStatisticsCollector;
+import org.eclipse.jetty.server.handler.StatisticsHandler;
 
 public class T9tJettyStatisticsCollector extends JettyStatisticsCollector {
     private final StatisticsHandler statisticsHandler;

@@ -20,9 +20,9 @@ import jakarta.persistence.Query;
 import org.eclipse.persistence.config.HintValues;
 import org.eclipse.persistence.config.QueryHints;
 
-import com.arvatosystems.t9t.base.jpa.ormspecific.IQueryHintSetter;
-
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.base.jpa.ormspecific.IQueryHintSetter;
 
 @Singleton
 public class QueryHintSetter implements IQueryHintSetter {

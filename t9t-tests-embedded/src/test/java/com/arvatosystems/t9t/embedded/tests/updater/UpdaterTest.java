@@ -24,6 +24,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
+
 import com.arvatosystems.t9t.annotations.IsLogicallyFinal;
 import com.arvatosystems.t9t.base.ITestConnection;
 import com.arvatosystems.t9t.base.request.LogMessageRequest;
@@ -33,9 +36,6 @@ import com.arvatosystems.t9t.core.CannedRequestDTO;
 import com.arvatosystems.t9t.core.CannedRequestKey;
 import com.arvatosystems.t9t.core.request.CannedRequestCrudRequest;
 import com.arvatosystems.t9t.embedded.connect.InMemoryConnection;
-
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
 
 public class UpdaterTest {
     private static final CannedRequestKey KEY1 = new CannedRequestKey("ping12");

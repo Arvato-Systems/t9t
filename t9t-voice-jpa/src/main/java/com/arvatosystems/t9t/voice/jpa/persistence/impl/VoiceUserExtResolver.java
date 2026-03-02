@@ -15,13 +15,14 @@
  */
 package com.arvatosystems.t9t.voice.jpa.persistence.impl;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+import de.jpaw.dp.Specializes;
+
 import com.arvatosystems.t9t.voice.VoiceUserInternalKey;
 import com.arvatosystems.t9t.voice.VoiceUserKey;
 import com.arvatosystems.t9t.voice.VoiceUserRef;
 import com.arvatosystems.t9t.voice.jpa.persistence.IVoiceApplicationEntityResolver;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
-import de.jpaw.dp.Specializes;
 
 @Singleton
 @Specializes

@@ -23,8 +23,8 @@ import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.api.DataWithTracking;
+import de.jpaw.bonaparte.pojos.api.TrackingBase;
 
 @Init(superclass = true)
 public class ViewOnlyVM<DTO extends BonaPortable, TRACKING extends TrackingBase> extends AbstractViewOnlyVM<DTO, TRACKING> {

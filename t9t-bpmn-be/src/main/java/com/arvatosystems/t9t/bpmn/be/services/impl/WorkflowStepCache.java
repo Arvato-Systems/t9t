@@ -21,15 +21,15 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.annotations.IsLogicallyFinal;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.bpmn.IBPMObjectFactory;
 import com.arvatosystems.t9t.bpmn.IWorkflowStep;
 import com.arvatosystems.t9t.bpmn.T9tBPMException;
 import com.arvatosystems.t9t.bpmn.services.IWorkflowStepCache;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class WorkflowStepCache implements IWorkflowStepCache {

@@ -15,6 +15,9 @@
  */
 package com.arvatosystems.t9t.batch.jpa.request;
 
+import de.jpaw.bonaparte.pojos.api.NoTracking;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.jpa.impl.AbstractSearchWithTotalsRequestHandler;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.base.services.RequestContext;
@@ -23,9 +26,6 @@ import com.arvatosystems.t9t.batch.jpa.entities.StatisticsAggregationEntity;
 import com.arvatosystems.t9t.batch.jpa.mapping.IStatisticsAggregationDTOMapper;
 import com.arvatosystems.t9t.batch.jpa.persistence.IStatisticsAggregationEntityResolver;
 import com.arvatosystems.t9t.batch.request.StatisticsAggregationSearchRequest;
-
-import de.jpaw.bonaparte.pojos.api.NoTracking;
-import de.jpaw.dp.Jdp;
 
 public class StatisticsAggregationSearchRequestHandler extends
     AbstractSearchWithTotalsRequestHandler<Long, StatisticsAggregationDTO, NoTracking, StatisticsAggregationSearchRequest, StatisticsAggregationEntity> {

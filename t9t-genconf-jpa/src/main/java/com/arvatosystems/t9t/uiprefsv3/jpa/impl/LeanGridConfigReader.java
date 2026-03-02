@@ -15,19 +15,19 @@
  */
 package com.arvatosystems.t9t.uiprefsv3.jpa.impl;
 
+import java.util.List;
+
+import jakarta.persistence.TypedQuery;
+
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.uiprefsv3.LeanGridConfigDTO;
 import com.arvatosystems.t9t.uiprefsv3.jpa.entities.LeanGridConfigEntity;
 import com.arvatosystems.t9t.uiprefsv3.jpa.mapping.ILeanGridConfigDTOMapper;
 import com.arvatosystems.t9t.uiprefsv3.jpa.persistence.ILeanGridConfigEntityResolver;
 import com.arvatosystems.t9t.uiprefsv3.services.ILeanGridConfigRead;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
-
-import java.util.List;
-
-import jakarta.persistence.TypedQuery;
 
 @Singleton
 public class LeanGridConfigReader implements ILeanGridConfigRead {

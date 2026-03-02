@@ -15,6 +15,9 @@
  */
 package com.arvatosystems.t9t.io.jpa.request;
 
+import de.jpaw.bonaparte.pojos.api.NoTracking;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKeyRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
@@ -24,9 +27,6 @@ import com.arvatosystems.t9t.io.jpa.entities.AsyncMessageStatisticsEntity;
 import com.arvatosystems.t9t.io.jpa.mapping.IAsyncMessageStatisticsDTOMapper;
 import com.arvatosystems.t9t.io.jpa.persistence.IAsyncMessageStatisticsEntityResolver;
 import com.arvatosystems.t9t.io.request.AsyncMessageStatisticsCrudRequest;
-
-import de.jpaw.bonaparte.pojos.api.NoTracking;
-import de.jpaw.dp.Jdp;
 
 public class AsyncMessageStatisticsCrudRequestHandler extends
     AbstractCrudSurrogateKeyRequestHandler<AsyncMessageStatisticsRef, AsyncMessageStatisticsDTO, NoTracking, AsyncMessageStatisticsCrudRequest,

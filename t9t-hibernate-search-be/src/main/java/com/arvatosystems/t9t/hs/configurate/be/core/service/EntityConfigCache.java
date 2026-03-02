@@ -1,16 +1,18 @@
 package com.arvatosystems.t9t.hs.configurate.be.core.service;
 
-import com.arvatosystems.t9t.hs.configurate.model.EmbeddedIndexEntityConfig;
-import com.arvatosystems.t9t.hs.configurate.model.EntityConfig;
-import com.arvatosystems.t9t.hs.configurate.model.FieldConfig;
-import de.jpaw.bonaparte.util.FreezeTools;
-import jakarta.annotation.Nonnull;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import jakarta.annotation.Nonnull;
+
+import de.jpaw.bonaparte.util.FreezeTools;
+
+import com.arvatosystems.t9t.hs.configurate.model.EmbeddedIndexEntityConfig;
+import com.arvatosystems.t9t.hs.configurate.model.EntityConfig;
+import com.arvatosystems.t9t.hs.configurate.model.FieldConfig;
 
 public class EntityConfigCache {
 

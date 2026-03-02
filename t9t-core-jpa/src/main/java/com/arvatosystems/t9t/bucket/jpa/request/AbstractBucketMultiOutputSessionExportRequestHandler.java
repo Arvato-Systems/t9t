@@ -23,6 +23,8 @@ import jakarta.persistence.EntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.util.ApplicationException;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.IOutputSession;
@@ -30,10 +32,8 @@ import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.bucket.jpa.entities.BucketCounterEntity;
 import com.arvatosystems.t9t.bucket.request.AbstractBucketExportRequest;
 import com.arvatosystems.t9t.bucket.request.DeleteBucketRequest;
-import com.arvatosystems.t9t.bucket.request.SwitchCurrentBucketNoRequest;
 import com.arvatosystems.t9t.bucket.request.ResetBucketNoInProgressRequest;
-
-import de.jpaw.util.ApplicationException;
+import com.arvatosystems.t9t.bucket.request.SwitchCurrentBucketNoRequest;
 
 public abstract class AbstractBucketMultiOutputSessionExportRequestHandler<T extends AbstractBucketExportRequest>
   extends AbstractBucketBaseExportRequestHandler<T> {
@@ -99,7 +99,9 @@ public abstract class AbstractBucketMultiOutputSessionExportRequestHandler<T ext
         }
 
         ctx.statusText = "Selecting bucket refs for bucket " + qualifier + ":" + bucketNoToSelect;
-        return exportAndClose(ctx, rp, qualifier, bucketNoToSelect);
+        exportAndClose(ctx, rp, qualifier, bucketNoToSelect);
+        // reset "in progress" and return response of that
+        return resetBucketNoInProgress(ctx, qualifier);
     }
 
     // Helper method to export and close output sessions, similar to the main logic

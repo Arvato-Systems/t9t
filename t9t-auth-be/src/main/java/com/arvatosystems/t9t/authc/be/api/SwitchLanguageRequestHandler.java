@@ -15,6 +15,11 @@
  */
 package com.arvatosystems.t9t.authc.be.api;
 
+import java.util.List;
+
+import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.auth.hooks.IJwtEnrichment;
 import com.arvatosystems.t9t.auth.services.IAuthPersistenceAccess;
 import com.arvatosystems.t9t.auth.services.IAuthResponseUtil;
@@ -24,9 +29,6 @@ import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.auth.AuthenticationResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
-import de.jpaw.dp.Jdp;
-import java.util.List;
 
 public class SwitchLanguageRequestHandler extends AbstractRequestHandler<SwitchLanguageRequest> {
 

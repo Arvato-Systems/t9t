@@ -40,6 +40,12 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Window;
 
+import de.jpaw.bonaparte.pojos.api.TrackingBase;
+import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
+import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.ReflectionsPackageCache;
+
 import com.arvatosystems.t9t.base.IGridConfigContainer;
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.T9tException;
@@ -47,12 +53,6 @@ import com.arvatosystems.t9t.base.uiprefs.UIGridPreferences;
 import com.arvatosystems.t9t.zkui.services.IColumnConfigCreator;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 import com.arvatosystems.t9t.zkui.util.GridConfigUtil;
-
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
-import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.ReflectionsPackageCache;
 
 public class EditGridViewModel {
 

@@ -17,13 +17,13 @@ package com.arvatosystems.t9t.out.be.impl.poi.formatgenerator;
 
 import java.io.IOException;
 
-import com.arvatosystems.t9t.out.be.impl.formatgenerator.FoldableFormatGenerator;
-
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.MessageComposer;
 import de.jpaw.bonaparte.poi.ExcelXComposer;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Named;
+
+import com.arvatosystems.t9t.out.be.impl.formatgenerator.FoldableFormatGenerator;
 
 @Dependent
 @Named("XLSX")

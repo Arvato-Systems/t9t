@@ -17,14 +17,11 @@ package com.arvatosystems.t9t.base.be.impl;
 
 import java.util.Set;
 
+import com.google.common.collect.Sets;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import com.arvatosystems.t9t.base.services.ISearchFilterUtil;
-import com.arvatosystems.t9t.base.services.ISearchTools;
-import com.google.common.collect.Sets;
 
 import de.jpaw.bonaparte.pojos.api.AndFilter;
 import de.jpaw.bonaparte.pojos.api.AsciiFilter;
@@ -35,6 +32,9 @@ import de.jpaw.bonaparte.pojos.api.NotFilter;
 import de.jpaw.bonaparte.pojos.api.OrFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.dp.Jdp;
+
+import com.arvatosystems.t9t.base.services.ISearchFilterUtil;
+import com.arvatosystems.t9t.base.services.ISearchTools;
 
 public class SearchFilterToSpecificSearchFilterTest {
 

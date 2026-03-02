@@ -23,8 +23,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import jakarta.persistence.EntityManager;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.api.SearchFilters;
+import de.jpaw.bonaparte.core.BonaPortableClass;
+import de.jpaw.bonaparte.jpa.BonaPersistableKey;
+import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
+import de.jpaw.bonaparte.pojos.api.AndFilter;
+import de.jpaw.bonaparte.pojos.api.FieldFilter;
+import de.jpaw.bonaparte.pojos.api.LongFilter;
+import de.jpaw.bonaparte.pojos.api.NotFilter;
+import de.jpaw.bonaparte.pojos.api.SearchFilter;
+import de.jpaw.bonaparte.pojos.api.SortColumn;
+import de.jpaw.bonaparte.pojos.api.TrackingBase;
+import de.jpaw.bonaparte.pojos.apiw.Ref;
+import de.jpaw.bonaparte.util.FreezeTools;
+import de.jpaw.bonaparte.util.ToStringHelper;
+import de.jpaw.dp.Jdp;
 
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.jpa.IEntityMapper;
@@ -43,23 +61,6 @@ import com.arvatosystems.t9t.base.services.ITextSearch.DocumentTypeNeeded;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.cfg.be.ApplicationConfiguration;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
-
-import de.jpaw.bonaparte.api.SearchFilters;
-import de.jpaw.bonaparte.core.BonaPortableClass;
-import de.jpaw.bonaparte.jpa.BonaPersistableKey;
-import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
-import de.jpaw.bonaparte.pojos.api.AndFilter;
-import de.jpaw.bonaparte.pojos.api.FieldFilter;
-import de.jpaw.bonaparte.pojos.api.LongFilter;
-import de.jpaw.bonaparte.pojos.api.NotFilter;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.api.SortColumn;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.apiw.Ref;
-import de.jpaw.bonaparte.util.FreezeTools;
-import de.jpaw.bonaparte.util.ToStringHelper;
-import de.jpaw.dp.Jdp;
-import jakarta.persistence.EntityManager;
 
 /**
  * The combined search evaluates if we have filter and/or sort criteria for DB and SOLR,

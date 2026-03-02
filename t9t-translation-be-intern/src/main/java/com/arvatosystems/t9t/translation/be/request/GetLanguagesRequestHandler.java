@@ -15,13 +15,14 @@
  */
 package com.arvatosystems.t9t.translation.be.request;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.translation.request.GetLanguagesRequest;
 import com.arvatosystems.t9t.translation.request.GetLanguagesResponse;
 import com.arvatosystems.t9t.translation.request.UILanguageDTO;
-import java.util.ArrayList;
-import java.util.List;
 
 public class GetLanguagesRequestHandler extends AbstractReadOnlyRequestHandler<GetLanguagesRequest> {
     private static final List<UILanguageDTO> LANGUAGES;

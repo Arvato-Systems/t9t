@@ -15,6 +15,15 @@
  */
 package com.arvatosystems.t9t.hs.configurate.be.request;
 
+import java.util.List;
+
+import jakarta.annotation.Nonnull;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.IAutonomousExecutor;
@@ -23,12 +32,6 @@ import com.arvatosystems.t9t.hs.configurate.be.core.util.ConfigurationLoader;
 import com.arvatosystems.t9t.hs.configurate.model.EntityConfig;
 import com.arvatosystems.t9t.hs.configurate.request.IndexUpdateForEntitiesRequest;
 import com.arvatosystems.t9t.hs.configurate.request.IndexUpdateRequest;
-import de.jpaw.dp.Jdp;
-import jakarta.annotation.Nonnull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 public class IndexUpdateForEntitiesRequestHandler extends AbstractRequestHandler<IndexUpdateForEntitiesRequest> {
 

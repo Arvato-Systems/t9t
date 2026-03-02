@@ -15,13 +15,15 @@
  */
 package com.arvatosystems.t9t.base.be.request;
 
-import com.arvatosystems.t9t.base.request.ApiKeySessionInvalidationRequest;
-import com.arvatosystems.t9t.base.services.SessionInvalidation;
+import java.time.Instant;
+
 import jakarta.annotation.Nonnull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.Instant;
+import com.arvatosystems.t9t.base.request.ApiKeySessionInvalidationRequest;
+import com.arvatosystems.t9t.base.services.SessionInvalidation;
 
 public class ApiKeySessionInvalidationRequestHandler extends AbstractSessionInvalidationRequestHandler<ApiKeySessionInvalidationRequest> {
 

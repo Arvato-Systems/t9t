@@ -34,6 +34,12 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Messagebox;
 
+import de.jpaw.bonaparte.api.media.MediaTypeInfo;
+import de.jpaw.bonaparte.pojos.api.media.MediaData;
+import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
+import de.jpaw.dp.Jdp;
+import de.jpaw.util.ByteArray;
+
 import com.arvatosystems.t9t.ai.request.AiChatRequest;
 import com.arvatosystems.t9t.ai.request.AiChatResponse;
 import com.arvatosystems.t9t.base.JsonUtil;
@@ -41,12 +47,6 @@ import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.zkui.services.IT9tRemoteUtils;
 import com.arvatosystems.t9t.zkui.util.ZulUtils;
-
-import de.jpaw.bonaparte.api.media.MediaTypeInfo;
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
-import de.jpaw.dp.Jdp;
-import de.jpaw.util.ByteArray;
 
 public class AiChatViewModel {
     private static final Logger LOGGER = LoggerFactory.getLogger(AiChatViewModel.class);

@@ -20,12 +20,18 @@ import java.util.List;
 
 import jakarta.ws.rs.Path;
 
+import io.vertx.core.Handler;
+import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpServerRequest;
 import org.jboss.resteasy.plugins.server.vertx.VertxRegistry;
 import org.jboss.resteasy.plugins.server.vertx.VertxRequestHandler;
 import org.jboss.resteasy.plugins.server.vertx.VertxResteasyDeployment;
 import org.jboss.resteasy.spi.Registry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
 
 import com.arvatosystems.t9t.base.vertx.IRestModule;
 import com.arvatosystems.t9t.rest.converters.JakartarsParamConverterProvider;
@@ -36,12 +42,6 @@ import com.arvatosystems.t9t.rest.utils.JacksonObjectMapperProvider;
 import com.arvatosystems.t9t.rest.utils.RestUtils;
 import com.arvatosystems.t9t.rest.xml.XmlMediaTypeDecoder;
 import com.arvatosystems.t9t.rest.xml.XmlMediaTypeEncoder;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
-import io.vertx.core.Handler;
-import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpServerRequest;
 
 @Singleton
 public class T9tVertxRestModule implements IRestModule {

@@ -15,14 +15,14 @@
  */
 package com.arvatosystems.t9t.ai.jpa.impl;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.ai.AiChatLogDTO;
 import com.arvatosystems.t9t.ai.jpa.entities.AiChatLogEntity;
 import com.arvatosystems.t9t.ai.jpa.mapping.IAiChatLogDTOMapper;
 import com.arvatosystems.t9t.ai.jpa.persistence.IAiChatLogEntityResolver;
 import com.arvatosystems.t9t.ai.service.IAiChatLogService;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class AiChatLogService implements IAiChatLogService {

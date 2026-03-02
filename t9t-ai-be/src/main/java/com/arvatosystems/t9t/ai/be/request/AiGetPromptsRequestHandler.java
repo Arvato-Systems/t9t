@@ -15,6 +15,19 @@
  */
 package com.arvatosystems.t9t.ai.be.request;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.annotation.Nonnull;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.pojos.api.AsciiFilter;
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.ai.AiPromptDTO;
 import com.arvatosystems.t9t.ai.T9tAiMcpConstants;
 import com.arvatosystems.t9t.ai.request.AiGetPromptsRequest;
@@ -28,16 +41,6 @@ import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;
 import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.server.services.IAuthorize;
-import de.jpaw.bonaparte.pojos.api.AsciiFilter;
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.dp.Jdp;
-import jakarta.annotation.Nonnull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class AiGetPromptsRequestHandler extends AbstractReadOnlyRequestHandler<AiGetPromptsRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AiGetPromptsRequestHandler.class);

@@ -15,6 +15,9 @@
  */
 package com.arvatosystems.t9t.rep.jpa.impl;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.rep.ReportConfigDTO;
 import com.arvatosystems.t9t.rep.ReportConfigRef;
 import com.arvatosystems.t9t.rep.ReportParamsDTO;
@@ -25,9 +28,6 @@ import com.arvatosystems.t9t.rep.jpa.mapping.IReportParamsDTOMapper;
 import com.arvatosystems.t9t.rep.jpa.persistence.IReportConfigEntityResolver;
 import com.arvatosystems.t9t.rep.jpa.persistence.IReportParamsEntityResolver;
 import com.arvatosystems.t9t.rep.services.IRepPersistenceAccess;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class RepPersistenceAccess implements IRepPersistenceAccess {

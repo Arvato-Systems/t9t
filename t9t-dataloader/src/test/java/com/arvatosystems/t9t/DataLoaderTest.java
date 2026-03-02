@@ -73,22 +73,22 @@ public class DataLoaderTest {
         String value = "${ENV.USERNAME}";
         String changed = value.replaceFirst("^\\$\\{ENV\\.", "").replaceFirst("}$", "");
         System.out.println(value + "\t\t --> " + changed);
-        Assertions.assertEquals(changed, "USERNAME");
+        Assertions.assertEquals("USERNAME", changed);
 
         value = "${ENV.US{}ERNAME}";
         changed = value.replaceFirst("^\\$\\{ENV\\.", "").replaceFirst("}$", "");
         System.out.println(value + "\t --> " + changed);
-        Assertions.assertEquals(changed, "US{}ERNAME");
+        Assertions.assertEquals("US{}ERNAME", changed);
 
         value = "${ENV_US{}ERNAME}";
         changed = value.replaceFirst("^\\$\\{ENV\\.", "").replaceFirst("}$", "");
         System.out.println(value + "\t --> " + changed);
-        Assertions.assertEquals(changed, "${ENV_US{}ERNAME");
+        Assertions.assertEquals("${ENV_US{}ERNAME", changed);
 
         value = "${ENV.USERNAME}X}";
         changed = value.replaceFirst("^\\$\\{ENV\\.", "").replaceFirst("}$", "");
         System.out.println(value + "\t --> " + changed);
-        Assertions.assertEquals(changed, "USERNAME}X");
+        Assertions.assertEquals("USERNAME}X", changed);
 
     }
 
@@ -103,19 +103,19 @@ public class DataLoaderTest {
         Map<String, String> matchedConf;
         matchedConf = this.matchKeyValue(PATTERN_CONFIG, conf1);
         System.out.println(matchedConf);
-        Assertions.assertEquals(matchedConf.toString(), "{table=pg_cfg_client_infos_t}");
+        Assertions.assertEquals("{table=pg_cfg_client_infos_t}", matchedConf.toString());
 
         matchedConf = this.matchKeyValue(PATTERN_CONFIG, conf2);
         System.out.println(matchedConf);
-        Assertions.assertEquals(matchedConf.toString(), "{where=s_user_id_created     = 'test'}");
+        Assertions.assertEquals("{where=s_user_id_created     = 'test'}", matchedConf.toString());
 
         matchedConf = this.matchKeyValue(PATTERN_CONFIG, conf3);
         System.out.println(matchedConf);
-        Assertions.assertEquals(matchedConf.toString(), "{order_by=s_client_id,s_merchant_id,s_name}");
+        Assertions.assertEquals("{order_by=s_client_id,s_merchant_id,s_name}", matchedConf.toString());
 
         matchedConf = this.matchKeyValue(PATTERN_CONFIG, conf4);
         System.out.println(matchedConf);
-        Assertions.assertEquals(matchedConf.toString(), "{}");
+        Assertions.assertEquals("{}", matchedConf.toString());
 
     }
 
@@ -135,35 +135,35 @@ public class DataLoaderTest {
 
         matchedConf = this.matchKeyValue(PATTERN_CONFIG_COL, conf1);
         System.out.println(matchedConf);
-        Assertions.assertEquals(matchedConf.toString(), "{s_user_id_created= ':FB'         }");
+        Assertions.assertEquals("{s_user_id_created= ':FB'         }", matchedConf.toString());
 
         matchedConf = this.matchKeyValue(PATTERN_CONFIG_COL, conf2);
         System.out.println(matchedConf);
-        Assertions.assertEquals(matchedConf.toString(), "{d_timestamp_created= SYSTIMESTAMP}");
+        Assertions.assertEquals("{d_timestamp_created= SYSTIMESTAMP}", matchedConf.toString());
 
         matchedConf = this.matchKeyValue(PATTERN_CONFIG_COL, conf3);
         System.out.println(matchedConf);
-        Assertions.assertEquals(matchedConf.toString(), "{s_user_id= ':FB'                 }");
+        Assertions.assertEquals("{s_user_id= ':FB'                 }", matchedConf.toString());
 
         matchedConf = this.matchKeyValue(PATTERN_CONFIG_COL, conf4);
         System.out.println(matchedConf);
-        Assertions.assertEquals(matchedConf.toString(), "{d_timestamp= SYSTIMESTAMP        }");
+        Assertions.assertEquals("{d_timestamp= SYSTIMESTAMP        }", matchedConf.toString());
 
         matchedConf = this.matchKeyValue(PATTERN_CONFIG_COL, conf5);
         System.out.println(matchedConf);
-        Assertions.assertEquals(matchedConf.toString(), "{n_sequence_no= 0                 }");
+        Assertions.assertEquals("{n_sequence_no= 0                 }", matchedConf.toString());
 
         matchedConf = this.matchKeyValue(PATTERN_CONFIG_COL, conf6);
         System.out.println(matchedConf);
-        Assertions.assertEquals(matchedConf.toString(), "{s_name=}");
+        Assertions.assertEquals("{s_name=}", matchedConf.toString());
 
         matchedConf = this.matchKeyValue(PATTERN_CONFIG_COL, conf7);
         System.out.println(matchedConf);
-        Assertions.assertEquals(matchedConf.toString(), "{s_value= 'testxx' }");
+        Assertions.assertEquals("{s_value= 'testxx' }", matchedConf.toString());
 
         matchedConf = this.matchKeyValue(PATTERN_CONFIG_COL, conf8);
         System.out.println(matchedConf);
-        Assertions.assertEquals(matchedConf.toString(), "{c_type=}");
+        Assertions.assertEquals("{c_type=}", matchedConf.toString());
 
     }
 

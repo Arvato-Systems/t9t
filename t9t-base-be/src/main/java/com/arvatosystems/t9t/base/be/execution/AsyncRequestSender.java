@@ -18,15 +18,6 @@ package com.arvatosystems.t9t.base.be.execution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.api.RequestParameters;
-import com.arvatosystems.t9t.base.api.ServiceRequest;
-import com.arvatosystems.t9t.base.api.ServiceRequestHeader;
-import com.arvatosystems.t9t.base.auth.JwtAuthentication;
-import com.arvatosystems.t9t.base.services.RequestContext;
-import com.arvatosystems.t9t.base.types.XTargetChannelType;
-import com.arvatosystems.t9t.server.services.IAsyncRequestSender;
-import com.arvatosystems.t9t.server.services.IEvent;
-
 import de.jpaw.bonaparte.api.media.MediaTypes;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.BonaparteJsonEscaper;
@@ -39,6 +30,15 @@ import de.jpaw.bonaparte.pojos.api.media.MediaXType;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.base.api.RequestParameters;
+import com.arvatosystems.t9t.base.api.ServiceRequest;
+import com.arvatosystems.t9t.base.api.ServiceRequestHeader;
+import com.arvatosystems.t9t.base.auth.JwtAuthentication;
+import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.base.types.XTargetChannelType;
+import com.arvatosystems.t9t.server.services.IAsyncRequestSender;
+import com.arvatosystems.t9t.server.services.IEvent;
 
 //send a request to an external arbitrary address (not the vert.x eventBus)
 @Singleton

@@ -15,16 +15,15 @@
  */
 package com.arvatosystems.t9t.zkui.viewmodel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.annotation.Nonnull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Init;
-
-import com.arvatosystems.t9t.base.CrudViewModel;
-import com.arvatosystems.t9t.base.IViewModelContainer;
-import com.arvatosystems.t9t.zkui.services.IT9tRemoteUtils;
-import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.DataWithTracking;
@@ -32,8 +31,10 @@ import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.dp.Jdp;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.arvatosystems.t9t.base.CrudViewModel;
+import com.arvatosystems.t9t.base.IViewModelContainer;
+import com.arvatosystems.t9t.zkui.services.IT9tRemoteUtils;
+import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 
 @SuppressWarnings("rawtypes")
 public abstract class AbstractViewOnlyVM<DTO extends BonaPortable, TRACKING extends TrackingBase> {

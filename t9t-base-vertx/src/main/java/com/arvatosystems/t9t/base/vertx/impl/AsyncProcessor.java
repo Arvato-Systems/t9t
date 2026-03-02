@@ -22,8 +22,23 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Handler;
+import io.vertx.core.Vertx;
+import io.vertx.core.WorkerExecutor;
+import io.vertx.core.eventbus.DeliveryOptions;
+import io.vertx.core.eventbus.EventBus;
+import io.vertx.core.eventbus.Message;
+import io.vertx.core.eventbus.MessageConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.dp.Default;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Named;
+import de.jpaw.dp.Singleton;
+import de.jpaw.util.ApplicationException;
 
 import com.arvatosystems.t9t.annotations.IsLogicallyFinal;
 import com.arvatosystems.t9t.base.MessagingUtil;
@@ -42,21 +57,6 @@ import com.arvatosystems.t9t.base.services.impl.EventSubscriptionCache;
 import com.arvatosystems.t9t.cfg.be.ApplicationConfiguration;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.server.services.IUnauthenticatedServiceRequestExecutor;
-
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.dp.Default;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Named;
-import de.jpaw.dp.Singleton;
-import de.jpaw.util.ApplicationException;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Handler;
-import io.vertx.core.Vertx;
-import io.vertx.core.WorkerExecutor;
-import io.vertx.core.eventbus.DeliveryOptions;
-import io.vertx.core.eventbus.EventBus;
-import io.vertx.core.eventbus.Message;
-import io.vertx.core.eventbus.MessageConsumer;
 
 @Singleton
 @Default

@@ -19,9 +19,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import de.jpaw.bonaparte.enums.BonaTokenizableEnum;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+
+import de.jpaw.bonaparte.enums.BonaTokenizableEnum;
 
 public interface ITranslationProvider {
     /** Returns an array of primary and possible fallback language for translation lookup.

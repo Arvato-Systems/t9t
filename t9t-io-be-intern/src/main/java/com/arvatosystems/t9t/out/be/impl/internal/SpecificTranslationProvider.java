@@ -18,11 +18,11 @@ package com.arvatosystems.t9t.out.be.impl.internal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.out.services.ISpecificTranslationProvider;
-import com.arvatosystems.t9t.translation.services.ITranslationProvider;
-
 import de.jpaw.bonaparte.enums.BonaTokenizableEnum;
 import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
+
+import com.arvatosystems.t9t.out.services.ISpecificTranslationProvider;
+import com.arvatosystems.t9t.translation.services.ITranslationProvider;
 
 /**
  * Holds the generic translation provider, but each instance of this class holds the tenant and language as well, in order to avoid passing lots of parameters

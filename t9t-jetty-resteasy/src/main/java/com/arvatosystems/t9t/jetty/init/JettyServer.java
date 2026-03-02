@@ -18,6 +18,11 @@ package com.arvatosystems.t9t.jetty.init;
 import java.util.EnumSet;
 import java.util.Set;
 
+import jakarta.annotation.Nonnull;
+
+import io.prometheus.client.CollectorRegistry;
+import io.prometheus.client.hotspot.DefaultExports;
+import io.prometheus.client.servlet.jakarta.exporter.MetricsServlet;
 import org.eclipse.jetty.ee11.servlet.DefaultServlet;
 import org.eclipse.jetty.ee11.servlet.ServletContextHandler;
 import org.eclipse.jetty.ee11.servlet.ServletHolder;
@@ -34,16 +39,12 @@ import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.IKafkaRequestTransmitter;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.jetty.statistics.T9tJettyStatisticsCollector;
 import com.arvatosystems.t9t.rest.utils.RestUtils;
-
-import de.jpaw.dp.Jdp;
-import io.prometheus.client.CollectorRegistry;
-import io.prometheus.client.hotspot.DefaultExports;
-import io.prometheus.client.servlet.jakarta.exporter.MetricsServlet;
-import jakarta.annotation.Nonnull;
 
 public class JettyServer {
     private static final Logger LOGGER = LoggerFactory.getLogger(JettyServer.class);
@@ -61,6 +62,9 @@ public class JettyServer {
     public static void main(final String[] args) throws Exception {
         // do not access the "internal" ContextFactory (essential for Jakarta 8, fatal for Jakarta 9.1ff)
         // System.setProperty("jakarta.xml.bind.JAXBContextFactory", "com.sun.xml.bind.v2.ContextFactory");
+
+        // Diagnose JAXB runtime visibility early (prints clean error if classloader can't see ContextFactory)
+        // JaxbRuntimeSelfTest.run();
 
         try {
             new JettyServer().run();
@@ -220,7 +224,7 @@ public class JettyServer {
                 LOGGER.error("Unknown URI compliance violation: {}, ignoring it", components[i]);
             }
         }
-        LOGGER.info("%d allowed URI compliance violations parsed", violations.size());
+        LOGGER.info("{} allowed URI compliance violations parsed", violations.size());
         return violations;
     }
 }

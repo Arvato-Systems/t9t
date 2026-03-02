@@ -15,6 +15,13 @@
  */
 package com.arvatosystems.t9t.hs.configurate.be.request;
 
+import jakarta.annotation.Nonnull;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
@@ -24,10 +31,6 @@ import com.arvatosystems.t9t.cfg.be.HibernateSearchConfiguration;
 import com.arvatosystems.t9t.hs.T9tHibernateSearchException;
 import com.arvatosystems.t9t.hs.configurate.be.core.service.IConfigurationService;
 import com.arvatosystems.t9t.hs.configurate.request.IndexCreationFromScratchRequest;
-import de.jpaw.dp.Jdp;
-import jakarta.annotation.Nonnull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Handler for creating/recreating hibernate search indexes

@@ -33,13 +33,6 @@ import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Popup;
 
-import com.arvatosystems.t9t.base.uiprefs.UIGridPreferences;
-import com.arvatosystems.t9t.zkui.components.dropdown28.SimpleListModelExt;
-import com.arvatosystems.t9t.zkui.services.ISearchFilterConfigCreator;
-import com.arvatosystems.t9t.zkui.session.ApplicationSession;
-import com.arvatosystems.t9t.zkui.util.Constants;
-import com.arvatosystems.t9t.zkui.viewmodel.support.SearchFilterRowVM;
-
 import de.jpaw.bonaparte.pojos.ui.UIColumnConfiguration;
 import de.jpaw.bonaparte.pojos.ui.UIFilter;
 import de.jpaw.bonaparte.pojos.ui.UIFilterType;
@@ -47,6 +40,13 @@ import de.jpaw.bonaparte.pojos.ui.UIMeta;
 import de.jpaw.bonaparte.util.FreezeTools;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Fallback;
+
+import com.arvatosystems.t9t.base.uiprefs.UIGridPreferences;
+import com.arvatosystems.t9t.zkui.components.dropdown28.SimpleListModelExt;
+import com.arvatosystems.t9t.zkui.services.ISearchFilterConfigCreator;
+import com.arvatosystems.t9t.zkui.session.ApplicationSession;
+import com.arvatosystems.t9t.zkui.util.Constants;
+import com.arvatosystems.t9t.zkui.viewmodel.support.SearchFilterRowVM;
 
 @Dependent
 @Fallback

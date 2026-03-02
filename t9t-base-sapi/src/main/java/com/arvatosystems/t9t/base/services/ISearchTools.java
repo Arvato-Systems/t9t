@@ -22,13 +22,14 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 
-import com.arvatosystems.t9t.base.search.SearchCriteria;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 import de.jpaw.bonaparte.pojos.api.FieldFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.SortColumn;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+
+import com.arvatosystems.t9t.base.search.SearchCriteria;
 
 public interface ISearchTools {
 

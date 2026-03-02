@@ -26,17 +26,17 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.MessagingUtil;
-import com.arvatosystems.t9t.base.T9tConstants;
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.init.InitContainers;
-import com.arvatosystems.t9t.translation.services.ITranslationProvider;
-
 import de.jpaw.bonaparte.enums.BonaTokenizableEnum;
 import de.jpaw.bonaparte.pojos.meta.EnumDefinition;
 import de.jpaw.bonaparte.util.FreezeTools;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ApplicationException;
+
+import com.arvatosystems.t9t.base.MessagingUtil;
+import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.init.InitContainers;
+import com.arvatosystems.t9t.translation.services.ITranslationProvider;
 
 /**
  * Component storing translations of headers, enums, reports.

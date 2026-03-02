@@ -15,15 +15,16 @@
  */
 package com.arvatosystems.t9t.zkui.components.dropdown28;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
 import com.arvatosystems.t9t.base.search.Description;
 import com.arvatosystems.t9t.base.search.LeanSearchRequest;
 import com.arvatosystems.t9t.zkui.components.IStringListModel;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class AbstractDropdownStringListModel implements IStringListModel {
 

@@ -15,6 +15,20 @@
  */
 package com.arvatosystems.t9t.hs.search.be;
 
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
+
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
+import org.hibernate.search.engine.search.predicate.SearchPredicate;
+import org.hibernate.search.engine.search.predicate.dsl.PredicateFinalStep;
+import org.hibernate.search.engine.search.predicate.dsl.SearchPredicateFactory;
+
+import de.jpaw.bonaparte.pojos.api.SearchFilter;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
@@ -22,17 +36,6 @@ import com.arvatosystems.t9t.cfg.be.HibernateSearchConfiguration;
 import com.arvatosystems.t9t.hs.T9tHibernateSearchException;
 import com.arvatosystems.t9t.hs.configurate.be.core.impl.EntityConfigurer;
 import com.arvatosystems.t9t.hs.search.be.converter.ISearchFilterToPredicate;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.dp.Jdp;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
-import org.hibernate.search.engine.search.predicate.SearchPredicate;
-import org.hibernate.search.engine.search.predicate.dsl.PredicateFinalStep;
-import org.hibernate.search.engine.search.predicate.dsl.SearchPredicateFactory;
-
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
 
 public final class HibernateSearchHelper {
 

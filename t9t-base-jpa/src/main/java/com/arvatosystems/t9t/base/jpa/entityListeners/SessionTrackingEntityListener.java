@@ -20,9 +20,9 @@ import java.time.Instant;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 
-import com.arvatosystems.t9t.base.entities.SessionTracking;
-
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
+
+import com.arvatosystems.t9t.base.entities.SessionTracking;
 
 public class SessionTrackingEntityListener extends AbstractEntityListener<SessionTracking> {
 

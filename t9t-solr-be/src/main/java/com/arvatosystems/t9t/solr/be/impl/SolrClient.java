@@ -27,17 +27,17 @@ import java.net.http.HttpResponse.BodyHandler;
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.core.MimeTypes;
+import de.jpaw.dp.Singleton;
 
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.jackson.JacksonTools;
 import com.arvatosystems.t9t.solr.be.ISolrClient;
 import com.arvatosystems.t9t.solr.be.impl.response.QueryResponse;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import de.jpaw.bonaparte.core.MimeTypes;
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class SolrClient implements ISolrClient {

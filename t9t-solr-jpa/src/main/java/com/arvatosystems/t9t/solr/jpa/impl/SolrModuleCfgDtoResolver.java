@@ -15,13 +15,14 @@
  */
 package com.arvatosystems.t9t.solr.jpa.impl;
 
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.core.jpa.impl.AbstractModuleConfigResolver;
 import com.arvatosystems.t9t.solr.SolrModuleCfgDTO;
 import com.arvatosystems.t9t.solr.jpa.entities.SolrModuleCfgEntity;
 import com.arvatosystems.t9t.solr.jpa.mapping.ISolrModuleCfgDTOMapper;
 import com.arvatosystems.t9t.solr.jpa.persistence.ISolrModuleCfgEntityResolver;
 import com.arvatosystems.t9t.solr.services.ISolrModuleCfgDtoResolver;
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class SolrModuleCfgDtoResolver extends AbstractModuleConfigResolver<SolrModuleCfgDTO, SolrModuleCfgEntity> implements ISolrModuleCfgDtoResolver {

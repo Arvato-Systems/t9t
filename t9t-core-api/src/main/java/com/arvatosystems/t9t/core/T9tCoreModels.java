@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.core;
 
+import de.jpaw.bonaparte.pojos.api.NoTracking;
+
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.base.IViewModelContainer;
 import com.arvatosystems.t9t.base.entities.BucketTracking;
@@ -63,8 +65,6 @@ import com.arvatosystems.t9t.updates.UpdateStatusDTO;
 import com.arvatosystems.t9t.updates.UpdateStatusLogDTO;
 import com.arvatosystems.t9t.updates.request.UpdateStatusLogSearchRequest;
 import com.arvatosystems.t9t.updates.request.UpdateStatusSearchRequest;
-
-import de.jpaw.bonaparte.pojos.api.NoTracking;
 
 public final class T9tCoreModels implements IViewModelContainer {
 

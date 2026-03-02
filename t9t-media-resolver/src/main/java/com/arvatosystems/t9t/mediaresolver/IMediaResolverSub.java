@@ -15,8 +15,9 @@
  */
 package com.arvatosystems.t9t.mediaresolver;
 
-import de.jpaw.util.ByteArray;
 import jakarta.annotation.Nonnull;
+
+import de.jpaw.util.ByteArray;
 
 /**
  * Interface for implementations which resolve a lazy MediaData object for a given source.

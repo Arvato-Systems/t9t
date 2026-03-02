@@ -15,11 +15,20 @@
  */
 package com.arvatosystems.t9t.base.jdbc.impl;
 
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.base.jdbc.IJdbcCriteriaBuilder;
-import com.arvatosystems.t9t.base.search.EnumFilter;
-import com.arvatosystems.t9t.base.search.SearchCriteria;
-import com.arvatosystems.t9t.base.services.IEnumResolver;
+import java.math.BigDecimal;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.sql.Types;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.function.Consumer;
+
+import jakarta.annotation.Nonnull;
+
 import de.jpaw.bonaparte.pojos.api.AndFilter;
 import de.jpaw.bonaparte.pojos.api.AsciiFilter;
 import de.jpaw.bonaparte.pojos.api.BooleanFilter;
@@ -37,18 +46,12 @@ import de.jpaw.bonaparte.pojos.api.UuidFilter;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.CharTestsASCII;
-import jakarta.annotation.Nonnull;
-import java.math.BigDecimal;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.sql.Types;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.function.Consumer;
+
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.jdbc.IJdbcCriteriaBuilder;
+import com.arvatosystems.t9t.base.search.EnumFilter;
+import com.arvatosystems.t9t.base.search.SearchCriteria;
+import com.arvatosystems.t9t.base.services.IEnumResolver;
 
 @Singleton
 public class JdbcCriteriaBuilder implements IJdbcCriteriaBuilder {

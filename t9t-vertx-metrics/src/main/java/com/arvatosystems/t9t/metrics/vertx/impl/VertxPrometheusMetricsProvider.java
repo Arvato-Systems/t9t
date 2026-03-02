@@ -21,14 +21,6 @@ import java.util.Collections;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.base.services.IAutonomousExecutor;
-import com.arvatosystems.t9t.base.vertx.IVertxMetricsProvider;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.binder.MeterBinder;
 import io.micrometer.core.instrument.binder.jvm.ClassLoaderMetrics;
@@ -50,6 +42,14 @@ import io.vertx.micrometer.MicrometerMetricsOptions;
 import io.vertx.micrometer.PrometheusScrapingHandler;
 import io.vertx.micrometer.VertxPrometheusOptions;
 import io.vertx.micrometer.backends.BackendRegistries;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.base.services.IAutonomousExecutor;
+import com.arvatosystems.t9t.base.vertx.IVertxMetricsProvider;
 
 @Singleton
 public class VertxPrometheusMetricsProvider implements IVertxMetricsProvider {

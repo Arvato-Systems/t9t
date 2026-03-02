@@ -18,9 +18,9 @@ package com.arvatosystems.t9t.io;
 import java.util.EnumMap;
 import java.util.Map;
 
-import com.arvatosystems.t9t.base.T9tException;
-
 import de.jpaw.bonaparte.pojos.api.media.MediaStorageLocation;
+
+import com.arvatosystems.t9t.base.T9tException;
 
 public final class IOTools {
     private IOTools() { }

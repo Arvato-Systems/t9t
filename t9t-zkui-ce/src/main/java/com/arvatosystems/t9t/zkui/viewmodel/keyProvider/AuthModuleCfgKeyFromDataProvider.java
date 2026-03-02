@@ -15,10 +15,10 @@
  */
 package com.arvatosystems.t9t.zkui.viewmodel.keyProvider;
 
-import com.arvatosystems.t9t.auth.AuthModuleCfgDTO;
-
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.auth.AuthModuleCfgDTO;
 
 @Singleton
 @Named("authModuleCfg")

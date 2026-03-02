@@ -15,9 +15,9 @@
  */
 package com.arvatosystems.t9t.zkui.components;
 
-import jakarta.annotation.Nonnull;
-
 import java.util.List;
+
+import jakarta.annotation.Nonnull;
 
 public interface IStringListModel {
 

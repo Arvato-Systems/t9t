@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.ai.jpa.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.ai.AiModuleCfgDTO;
 import com.arvatosystems.t9t.ai.jpa.entities.AiModuleCfgEntity;
 import com.arvatosystems.t9t.ai.jpa.mapping.IAiModuleCfgDTOMapper;
@@ -23,8 +25,6 @@ import com.arvatosystems.t9t.ai.request.AiModuleCfgCrudRequest;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudModuleCfgRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.dp.Jdp;
 
 public class AiModuleCfgCrudRequestHandler extends AbstractCrudModuleCfgRequestHandler<AiModuleCfgDTO, AiModuleCfgCrudRequest, AiModuleCfgEntity> {
 

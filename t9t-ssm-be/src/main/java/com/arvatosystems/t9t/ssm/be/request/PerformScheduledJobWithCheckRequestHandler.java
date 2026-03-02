@@ -20,6 +20,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.be.execution.RequestContextScope;
 import com.arvatosystems.t9t.base.request.ProcessStatusDTO;
@@ -30,8 +32,6 @@ import com.arvatosystems.t9t.ssm.SchedulerConcurrencyType;
 import com.arvatosystems.t9t.ssm.request.DealWithPriorJobInstancesRequest;
 import com.arvatosystems.t9t.ssm.request.DealWithPriorJobInstancesResponse;
 import com.arvatosystems.t9t.ssm.request.PerformScheduledJobWithCheckRequest;
-
-import de.jpaw.dp.Jdp;
 
 public class PerformScheduledJobWithCheckRequestHandler extends AbstractRequestHandler<PerformScheduledJobWithCheckRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(PerformScheduledJobWithCheckRequestHandler.class);

@@ -21,19 +21,20 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.base.T9tConstants;
-import com.arvatosystems.t9t.base.T9tException;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.util.IMarshaller;
 import de.jpaw.bonaparte.util.impl.RecordMarshallerJson;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ByteBuilder;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+
+import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.T9tException;
 
 public class RESTConnection extends ConnectionDefaults {
     private static final Logger LOGGER = LoggerFactory.getLogger(RESTConnection.class);

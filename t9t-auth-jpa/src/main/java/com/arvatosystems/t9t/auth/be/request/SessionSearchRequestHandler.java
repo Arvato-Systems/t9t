@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.auth.be.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.auth.SessionDTO;
 import com.arvatosystems.t9t.auth.jpa.entities.SessionEntity;
 import com.arvatosystems.t9t.auth.jpa.mapping.ISessionDTOMapper;
@@ -24,8 +26,6 @@ import com.arvatosystems.t9t.base.entities.SessionTracking;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractSearchWithTotalsRequestHandler;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.dp.Jdp;
 
 public class SessionSearchRequestHandler extends AbstractSearchWithTotalsRequestHandler<Long, SessionDTO, SessionTracking, SessionSearchRequest,
     SessionEntity> {

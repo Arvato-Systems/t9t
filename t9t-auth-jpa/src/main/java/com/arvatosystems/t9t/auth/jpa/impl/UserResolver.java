@@ -18,6 +18,9 @@ package com.arvatosystems.t9t.auth.jpa.impl;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.auth.UserDTO;
 import com.arvatosystems.t9t.auth.UserRef;
 import com.arvatosystems.t9t.auth.jpa.entities.UserEntity;
@@ -26,9 +29,6 @@ import com.arvatosystems.t9t.auth.jpa.persistence.IUserEntityResolver;
 import com.arvatosystems.t9t.auth.services.IUserResolver;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractJpaResolver;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class UserResolver extends AbstractJpaResolver<UserRef, UserDTO, FullTrackingWithVersion, UserEntity> implements IUserResolver {

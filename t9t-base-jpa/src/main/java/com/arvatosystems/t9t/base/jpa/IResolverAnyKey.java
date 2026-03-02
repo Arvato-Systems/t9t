@@ -18,21 +18,22 @@ package com.arvatosystems.t9t.base.jpa;
 import java.io.Serializable;
 import java.util.List;
 
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.base.search.CountCriteria;
-import com.arvatosystems.t9t.base.search.CountResponse;
-import com.arvatosystems.t9t.base.search.SearchCriteria;
-import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.bonaparte.jpa.BonaPersistableKey;
-import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.TypedQuery;
+
+import de.jpaw.bonaparte.jpa.BonaPersistableKey;
+import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
+import de.jpaw.bonaparte.pojos.api.SearchFilter;
+import de.jpaw.bonaparte.pojos.api.TrackingBase;
+
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.search.CountCriteria;
+import com.arvatosystems.t9t.base.search.CountResponse;
+import com.arvatosystems.t9t.base.search.SearchCriteria;
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 /** Defines methods to return either the artificial key (via any key) or the full JPA entity (via some key).
  *

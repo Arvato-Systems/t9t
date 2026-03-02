@@ -15,14 +15,15 @@
  */
 package com.arvatosystems.t9t.auth.jpa.persistence.impl;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+import de.jpaw.dp.Specializes;
+
 import com.arvatosystems.t9t.auth.UserTenantRoleInternalKey;
 import com.arvatosystems.t9t.auth.UserTenantRoleKey;
 import com.arvatosystems.t9t.auth.UserTenantRoleRef;
 import com.arvatosystems.t9t.auth.jpa.persistence.IRoleEntityResolver;
 import com.arvatosystems.t9t.auth.jpa.persistence.IUserEntityResolver;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
-import de.jpaw.dp.Specializes;
 
 @Specializes
 @Singleton

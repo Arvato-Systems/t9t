@@ -15,12 +15,13 @@
  */
 package com.arvatosystems.t9t.auth.jpa.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.auth.jpa.entities.UserEntity;
 import com.arvatosystems.t9t.auth.jpa.persistence.IUserEntityResolver;
 import com.arvatosystems.t9t.auth.request.LeanUserSearchRequest;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractLeanSearchRequestHandler;
 import com.arvatosystems.t9t.base.search.Description;
-import de.jpaw.dp.Jdp;
 
 public class LeanUserSearchRequestHandler extends AbstractLeanSearchRequestHandler<LeanUserSearchRequest, UserEntity> {
 

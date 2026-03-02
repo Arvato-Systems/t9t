@@ -20,15 +20,15 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.auth.request.LeanUserSearchRequest;
-import com.arvatosystems.t9t.base.search.Description;
-import com.arvatosystems.t9t.zkui.session.ApplicationSession;
-
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ExceptionUtil;
+
+import com.arvatosystems.t9t.auth.request.LeanUserSearchRequest;
+import com.arvatosystems.t9t.base.search.Description;
+import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 
 @Singleton
 @Named("long:data.userRef")

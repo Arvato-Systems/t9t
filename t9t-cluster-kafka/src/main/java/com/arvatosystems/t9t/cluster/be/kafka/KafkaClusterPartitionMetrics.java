@@ -17,13 +17,12 @@ package com.arvatosystems.t9t.cluster.be.kafka;
 
 import java.util.Map;
 
-import org.apache.kafka.common.TopicPartition;
-
-import com.arvatosystems.t9t.cluster.be.kafka.KafkaPartitionOrderedRequestProcessor.PartitionMonitor;
-
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
+import org.apache.kafka.common.TopicPartition;
+
+import com.arvatosystems.t9t.cluster.be.kafka.KafkaPartitionOrderedRequestProcessor.PartitionMonitor;
 
 /**
  * {@link MeterBinder} for exporting partition monitor information of {@link KafkaPartitionOrderedRequestProcessor}.<br>

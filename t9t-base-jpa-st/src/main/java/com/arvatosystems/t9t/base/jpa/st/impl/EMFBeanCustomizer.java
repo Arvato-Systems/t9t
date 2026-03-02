@@ -17,19 +17,20 @@ package com.arvatosystems.t9t.base.jpa.st.impl;
 
 import java.util.Properties;
 
-import jakarta.persistence.SharedCacheMode;
 import javax.sql.DataSource;
+
+import jakarta.persistence.SharedCacheMode;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.jpa.st.IEMFBeanCustomizer;
 import com.arvatosystems.t9t.cfg.be.DatabaseBrandType;
 import com.arvatosystems.t9t.cfg.be.RelationalDatabaseConfiguration;
-
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class EMFBeanCustomizer implements IEMFBeanCustomizer {

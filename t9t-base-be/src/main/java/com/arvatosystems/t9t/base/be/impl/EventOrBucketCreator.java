@@ -20,6 +20,10 @@ import java.util.concurrent.ConcurrentMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Provider;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.event.BucketDataMode;
 import com.arvatosystems.t9t.base.event.GeneralRefCreatedEvent;
@@ -30,10 +34,6 @@ import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.base.services.impl.ListenerConfigCache;
 import com.arvatosystems.t9t.base.types.ListenerConfig;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Provider;
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class EventOrBucketCreator implements IEventOrBucketCreator {

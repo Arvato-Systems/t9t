@@ -15,12 +15,12 @@
  */
 package com.arvatosystems.t9t.server.services;
 
+import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceRequestHeader;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.server.InternalHeaderParameters;
-
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 
 /**
  * Interface between a specific server implementation (for example servlet, netty, or vert.x based) and the execution backend.

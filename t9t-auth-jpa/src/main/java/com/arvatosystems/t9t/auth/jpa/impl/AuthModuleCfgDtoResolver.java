@@ -15,13 +15,14 @@
  */
 package com.arvatosystems.t9t.auth.jpa.impl;
 
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.auth.AuthModuleCfgDTO;
 import com.arvatosystems.t9t.auth.jpa.entities.AuthModuleCfgEntity;
 import com.arvatosystems.t9t.auth.jpa.mapping.IAuthModuleCfgDTOMapper;
 import com.arvatosystems.t9t.auth.jpa.persistence.IAuthModuleCfgEntityResolver;
 import com.arvatosystems.t9t.auth.services.IAuthModuleCfgDtoResolver;
 import com.arvatosystems.t9t.core.jpa.impl.AbstractModuleConfigResolver;
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class AuthModuleCfgDtoResolver extends AbstractModuleConfigResolver<AuthModuleCfgDTO, AuthModuleCfgEntity> implements IAuthModuleCfgDtoResolver {

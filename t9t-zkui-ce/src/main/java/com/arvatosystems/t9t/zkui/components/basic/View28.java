@@ -25,15 +25,15 @@ import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zul.Div;
 
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.pojos.api.TrackingBase;
+import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
+
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.zkui.components.EventDataSelect28;
 import com.arvatosystems.t9t.zkui.components.IDataSelectReceiver;
 import com.arvatosystems.t9t.zkui.components.IViewModelOwner;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
-
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 
 /** The View28 component also serves as the ViewModel for view only screens (a subset of CRUD, without any buttons).
  */

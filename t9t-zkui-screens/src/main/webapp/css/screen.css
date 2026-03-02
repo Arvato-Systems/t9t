@@ -1435,3 +1435,8 @@ body {
 .pwdRequirements span {
     display: block;
 }
+
+/** Groupbox content padding for modal dialogs **/
+.groupbox-content-padded {
+    padding: 15px;
+}

@@ -15,12 +15,12 @@
  */
 package com.arvatosystems.t9t.base.vertx;
 
-import com.arvatosystems.t9t.metrics.IMetricsProvider;
-
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.ext.web.RoutingContext;
+
+import com.arvatosystems.t9t.metrics.IMetricsProvider;
 
 /**
  * Metrics providers must implement this interface.

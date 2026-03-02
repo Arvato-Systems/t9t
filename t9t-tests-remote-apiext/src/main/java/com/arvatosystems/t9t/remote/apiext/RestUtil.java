@@ -15,8 +15,14 @@
  */
 package com.arvatosystems.t9t.remote.apiext;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.util.ByteArray;
 
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.T9tUtil;
@@ -24,11 +30,6 @@ import com.arvatosystems.t9t.remote.connect.RESTConnection;
 import com.arvatosystems.t9t.remote.connect.RESTResult;
 import com.arvatosystems.t9t.remote.connect.RequestMethod;
 import com.arvatosystems.t9t.xml.GenericResult;
-
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.util.ByteArray;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 
 public final class RestUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(RestUtil.class);

@@ -15,13 +15,13 @@
  */
 package com.arvatosystems.t9t.bpmn.be.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.bpmn.request.PerformSingleStepRequest;
 import com.arvatosystems.t9t.bpmn.request.PerformSingleStepResponse;
 import com.arvatosystems.t9t.bpmn.services.IBpmnRunner;
-
-import de.jpaw.dp.Jdp;
 
 public class PerformSingleStepRequestHandler extends AbstractRequestHandler<PerformSingleStepRequest> {
     private final IBpmnRunner bpmService = Jdp.getRequired(IBpmnRunner.class);

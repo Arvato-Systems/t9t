@@ -15,10 +15,12 @@
  */
 package com.arvatosystems.t9t.email.be.vertx.impl;
 
+import java.util.Map;
+
+import io.vertx.core.buffer.Buffer;
+
 import de.jpaw.bonaparte.api.media.MediaTypeInfo;
 import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import io.vertx.core.buffer.Buffer;
-import java.util.Map;
 
 public class MediaDataSource {
     private final MediaData data;

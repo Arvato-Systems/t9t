@@ -20,16 +20,16 @@ import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Named;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.event.EventParameters;
 import com.arvatosystems.t9t.base.event.InvalidateCacheEvent;
 import com.arvatosystems.t9t.base.services.ICacheInvalidationRegistry;
 import com.arvatosystems.t9t.base.services.IEventHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Named;
-import de.jpaw.dp.Singleton;
 
 @Singleton
 @Named("cacheInvalidation")

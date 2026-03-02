@@ -15,12 +15,12 @@
  */
 package com.arvatosystems.t9t.out.be.impl.output;
 
-import com.arvatosystems.t9t.base.misc.Variant;
-
 import de.jpaw.bonaparte.core.BonaCustom;
 import de.jpaw.bonaparte.core.DelegatingBaseComposer;
 import de.jpaw.bonaparte.core.MessageComposer;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
+
+import com.arvatosystems.t9t.base.misc.Variant;
 
 /**
  * Composer which replaces the contents of a base.api.Variant object by its non-null value. Used for OMS typesafe history.

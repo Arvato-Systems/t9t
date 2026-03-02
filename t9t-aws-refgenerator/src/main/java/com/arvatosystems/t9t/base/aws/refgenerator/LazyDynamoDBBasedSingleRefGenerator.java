@@ -19,18 +19,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import jakarta.annotation.Nonnull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.base.services.ISingleRefGenerator;
-import com.arvatosystems.t9t.cfg.be.AWSConfiguration;
-import com.arvatosystems.t9t.cfg.be.ConfigProvider;
-
-import de.jpaw.dp.Named;
-import de.jpaw.dp.Singleton;
-import de.jpaw.util.ExceptionUtil;
-import jakarta.annotation.Nonnull;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeAction;
@@ -45,6 +37,15 @@ import software.amazon.awssdk.services.dynamodb.model.TableDescription;
 import software.amazon.awssdk.services.dynamodb.model.UpdateItemRequest;
 import software.amazon.awssdk.services.dynamodb.model.UpdateItemResponse;
 import software.amazon.awssdk.utils.ImmutableMap;
+
+import de.jpaw.dp.Named;
+import de.jpaw.dp.Singleton;
+import de.jpaw.util.ExceptionUtil;
+
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.services.ISingleRefGenerator;
+import com.arvatosystems.t9t.cfg.be.AWSConfiguration;
+import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 
 @Singleton
 @Named("lazyDynamoDB")

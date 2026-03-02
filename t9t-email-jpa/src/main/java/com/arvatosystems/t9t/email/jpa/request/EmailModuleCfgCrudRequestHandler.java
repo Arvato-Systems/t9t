@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.email.jpa.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudModuleCfgRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
@@ -23,7 +25,6 @@ import com.arvatosystems.t9t.email.jpa.entities.EmailModuleCfgEntity;
 import com.arvatosystems.t9t.email.jpa.mapping.IEmailModuleCfgDTOMapper;
 import com.arvatosystems.t9t.email.jpa.persistence.IEmailModuleCfgEntityResolver;
 import com.arvatosystems.t9t.email.request.EmailModuleCfgCrudRequest;
-import de.jpaw.dp.Jdp;
 
 public class EmailModuleCfgCrudRequestHandler extends
     AbstractCrudModuleCfgRequestHandler<EmailModuleCfgDTO, EmailModuleCfgCrudRequest, EmailModuleCfgEntity> {

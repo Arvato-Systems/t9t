@@ -18,14 +18,14 @@ package com.arvatosystems.t9t.out.be.impl.formatgenerator;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
-import com.arvatosystems.t9t.io.CSVTools;
-import com.arvatosystems.t9t.io.CsvConfigurationDTO;
-
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.CSVComposer3;
 import de.jpaw.bonaparte.core.MessageComposer;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Named;
+
+import com.arvatosystems.t9t.io.CSVTools;
+import com.arvatosystems.t9t.io.CsvConfigurationDTO;
 
 @Dependent
 @Named("CSV")

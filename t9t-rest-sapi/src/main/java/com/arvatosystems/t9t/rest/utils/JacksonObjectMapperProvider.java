@@ -15,16 +15,16 @@
  */
 package com.arvatosystems.t9t.rest.utils;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.jackson.JacksonTools;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.ext.ContextResolver;
 import jakarta.ws.rs.ext.Provider;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.arvatosystems.t9t.jackson.JacksonTools;
 
 /**
  * Encode / decoder to parse requests and send responses in JSON format (using jackson, plus addon modules).

@@ -18,14 +18,14 @@ package com.arvatosystems.t9t.ai.tools.coding.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Named;
+import de.jpaw.dp.Singleton;
+import de.jpaw.util.ApplicationException;
+
 import com.arvatosystems.t9t.ai.service.IAiTool;
 import com.arvatosystems.t9t.ai.tools.coding.AiToolExplainErrorCode;
 import com.arvatosystems.t9t.ai.tools.coding.AiToolExplainErrorCodeResult;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.dp.Named;
-import de.jpaw.dp.Singleton;
-import de.jpaw.util.ApplicationException;
 
 @Named(AiToolExplainErrorCode.my$PQON)
 @Singleton

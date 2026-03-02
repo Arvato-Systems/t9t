@@ -15,6 +15,22 @@
  */
 package com.arvatosystems.t9t.doc.jpa.impl;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+
+import com.google.common.collect.ImmutableMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.pojos.api.media.MediaData;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
@@ -38,22 +54,6 @@ import com.arvatosystems.t9t.doc.jpa.persistence.IDocConfigEntityResolver;
 import com.arvatosystems.t9t.doc.jpa.persistence.IDocEmailCfgEntityResolver;
 import com.arvatosystems.t9t.doc.jpa.persistence.IDocTemplateEntityResolver;
 import com.arvatosystems.t9t.doc.services.IDocPersistenceAccess;
-import com.google.common.collect.ImmutableMap;
-
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Singleton
 public class DocPersistenceAccess implements IDocPersistenceAccess {

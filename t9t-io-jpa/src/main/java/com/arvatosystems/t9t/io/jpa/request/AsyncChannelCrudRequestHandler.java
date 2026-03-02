@@ -21,6 +21,8 @@ import java.util.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
@@ -32,8 +34,6 @@ import com.arvatosystems.t9t.io.jpa.entities.AsyncChannelEntity;
 import com.arvatosystems.t9t.io.jpa.mapping.IAsyncChannelDTOMapper;
 import com.arvatosystems.t9t.io.jpa.persistence.IAsyncChannelEntityResolver;
 import com.arvatosystems.t9t.io.request.AsyncChannelCrudRequest;
-
-import de.jpaw.dp.Jdp;
 
 public class AsyncChannelCrudRequestHandler extends
         AbstractCrudSurrogateKeyRequestHandler<AsyncChannelRef, AsyncChannelDTO, FullTrackingWithVersion, AsyncChannelCrudRequest, AsyncChannelEntity> {

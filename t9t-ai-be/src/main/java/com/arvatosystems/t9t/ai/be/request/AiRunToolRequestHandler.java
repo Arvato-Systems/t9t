@@ -18,8 +18,20 @@ package com.arvatosystems.t9t.ai.be.request;
 import java.util.ArrayList;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.core.MapParser;
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
+import de.jpaw.bonaparte.pojos.api.media.MediaData;
+import de.jpaw.bonaparte.pojos.api.media.MediaType;
+import de.jpaw.dp.Jdp;
+import de.jpaw.json.JsonParser;
+import de.jpaw.util.ApplicationException;
 
 import com.arvatosystems.t9t.ai.AiChatLogDTO;
 import com.arvatosystems.t9t.ai.AiConversationRef;
@@ -43,18 +55,6 @@ import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.jackson.JacksonTools;
 import com.arvatosystems.t9t.server.services.IAuthorize;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.core.MapParser;
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaType;
-import de.jpaw.dp.Jdp;
-import de.jpaw.json.JsonParser;
-import de.jpaw.util.ApplicationException;
 
 public class AiRunToolRequestHandler extends AbstractRequestHandler<AiRunToolRequest> {
 

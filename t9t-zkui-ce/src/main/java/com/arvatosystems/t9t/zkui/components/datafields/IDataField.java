@@ -17,11 +17,12 @@ package com.arvatosystems.t9t.zkui.components.datafields;
 
 import java.util.Map;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
 import org.zkoss.zk.ui.Component;
 
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 
 /** Interface for the dynamically created fields. */
 public interface IDataField<E extends Component, T> {

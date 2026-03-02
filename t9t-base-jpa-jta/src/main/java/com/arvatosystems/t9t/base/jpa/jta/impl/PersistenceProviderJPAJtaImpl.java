@@ -17,6 +17,7 @@ package com.arvatosystems.t9t.base.jpa.jta.impl;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.NotSupportedException;
 import jakarta.transaction.Status;

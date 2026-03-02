@@ -21,20 +21,24 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.time.ZoneId;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.TimeZone;
 import java.util.UUID;
 
-import com.arvatosystems.t9t.base.IRemoteDefaultUrlRetriever;
-import com.arvatosystems.t9t.zkui.session.UserInfo;
-import de.jpaw.util.ExceptionUtil;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.util.TimeZones;
+
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+import de.jpaw.util.ApplicationException;
+import de.jpaw.util.ExceptionUtil;
 
 import com.arvatosystems.t9t.auth.UserDTO;
 import com.arvatosystems.t9t.auth.UserKey;
@@ -49,6 +53,7 @@ import com.arvatosystems.t9t.authc.api.SwitchTenantRequest;
 import com.arvatosystems.t9t.authc.api.TenantDescription;
 import com.arvatosystems.t9t.authz.api.QueryPermissionsRequest;
 import com.arvatosystems.t9t.authz.api.QueryPermissionsResponse;
+import com.arvatosystems.t9t.base.IRemoteDefaultUrlRetriever;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
@@ -66,13 +71,9 @@ import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;
 import com.arvatosystems.t9t.zkui.services.IT9tRemoteUtils;
 import com.arvatosystems.t9t.zkui.services.IUserDAO;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
+import com.arvatosystems.t9t.zkui.session.UserInfo;
 import com.arvatosystems.t9t.zkui.util.ZulUtils;
 import com.arvatosystems.t9t.zkui.viewmodel.support.LoginViewModel;
-
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
-import de.jpaw.util.ApplicationException;
 
 
 /**
@@ -116,11 +117,11 @@ public class UserDAO implements IUserDAO {
         final SessionParameters sp = new SessionParameters();
 
         Locale   l = null;
-        TimeZone z = null;
+        ZoneId   z = null;
         String   realZoneId = null;
         if (infos != null) {
             l = infos.locale();
-            z = infos.zkTz();
+            z = infos.zoneId();
             realZoneId = infos.browserTz();
             if (infos.screenInfo() != null)
                 mainAgent = mainAgent + " @ " + infos.screenInfo();
@@ -128,7 +129,7 @@ public class UserDAO implements IUserDAO {
         if (mainAgent.length() > 255)
             mainAgent = mainAgent.substring(0, 255);
         sp.setLocale   (l == null ? ZulUtils.getDefaultLanguageCode() : l.toString());
-        sp.setZoneinfo(realZoneId != null ? realZoneId : (z == null ? TimeZones.getCurrent() : z).toZoneId().toString());
+        sp.setZoneinfo(realZoneId != null ? realZoneId : (z == null ? TimeZones.getCurrent().toZoneId() : z).toString());
         sp.setUserAgent(mainAgent);
         return sp;
     }

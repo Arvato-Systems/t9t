@@ -15,8 +15,9 @@
  */
 package com.arvatosystems.t9t.out.services;
 
-import de.jpaw.bonaparte.core.BonaPortable;
 import jakarta.annotation.Nonnull;
+
+import de.jpaw.bonaparte.core.BonaPortable;
 
 public interface IGenericRemoter {
     /** Sends an object to the remote system. */

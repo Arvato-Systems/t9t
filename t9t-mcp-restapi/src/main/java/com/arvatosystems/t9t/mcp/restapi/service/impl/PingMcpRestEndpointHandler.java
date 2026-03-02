@@ -15,18 +15,20 @@
  */
 package com.arvatosystems.t9t.mcp.restapi.service.impl;
 
-import com.arvatosystems.t9t.ai.T9tAiMcpConstants;
-import com.arvatosystems.t9t.ai.mcp.IMcpService;
-import com.arvatosystems.t9t.ai.mcp.McpPingResult;
-import com.arvatosystems.t9t.mcp.restapi.service.IMcpRestEndpointHandler;
+import jakarta.ws.rs.container.AsyncResponse;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.Response;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
-import jakarta.ws.rs.container.AsyncResponse;
-import jakarta.ws.rs.core.HttpHeaders;
-import jakarta.ws.rs.core.Response;
+
+import com.arvatosystems.t9t.ai.T9tAiMcpConstants;
+import com.arvatosystems.t9t.ai.mcp.IMcpService;
+import com.arvatosystems.t9t.ai.mcp.McpPingResult;
+import com.arvatosystems.t9t.mcp.restapi.service.IMcpRestEndpointHandler;
 
 @Singleton
 @Named(T9tAiMcpConstants.METHOD_PING)

@@ -15,11 +15,12 @@
  */
 package com.arvatosystems.t9t.jetty.gateway;
 
-import com.arvatosystems.t9t.jetty.impl.SwaggerInit;
+import io.swagger.v3.oas.models.info.Info;
 
 import de.jpaw.dp.Singleton;
 import de.jpaw.dp.Specializes;
-import io.swagger.v3.oas.models.info.Info;
+
+import com.arvatosystems.t9t.jetty.impl.SwaggerInit;
 
 @Specializes
 @Singleton

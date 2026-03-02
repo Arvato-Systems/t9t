@@ -15,6 +15,12 @@
  */
 package com.arvatosystems.t9t.translation.be.request;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import de.jpaw.bonaparte.pojos.meta.EnumDefinition;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
@@ -24,10 +30,6 @@ import com.arvatosystems.t9t.translation.request.EnumTranslationDTO;
 import com.arvatosystems.t9t.translation.request.GetEnumsTranslationRequest;
 import com.arvatosystems.t9t.translation.request.GetEnumsTranslationResponse;
 import com.arvatosystems.t9t.translation.services.ITranslationProvider;
-import de.jpaw.bonaparte.pojos.meta.EnumDefinition;
-import de.jpaw.dp.Jdp;
-import java.util.ArrayList;
-import java.util.List;
 
 public class GetEnumsTranslationRequestHandler extends AbstractReadOnlyRequestHandler<GetEnumsTranslationRequest> {
 

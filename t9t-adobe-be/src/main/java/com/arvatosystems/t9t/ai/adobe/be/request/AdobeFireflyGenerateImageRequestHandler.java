@@ -15,13 +15,13 @@
  */
 package com.arvatosystems.t9t.ai.adobe.be.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.ai.adobe.request.AdobeFireflyGenerateImageRequest;
 import com.arvatosystems.t9t.ai.adobe.request.AdobeFireflyGenerateImageResponse;
 import com.arvatosystems.t9t.ai.adobe.service.IAdobeFireflyClient;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.dp.Jdp;
 
 public class AdobeFireflyGenerateImageRequestHandler extends AbstractRequestHandler<AdobeFireflyGenerateImageRequest> {
     private final IAdobeFireflyClient adobeFireflyClient = Jdp.getRequired(IAdobeFireflyClient.class);

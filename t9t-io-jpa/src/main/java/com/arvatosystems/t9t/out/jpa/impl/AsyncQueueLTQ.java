@@ -26,8 +26,18 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.TypedQuery;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Named;
+import de.jpaw.dp.Singleton;
+import de.jpaw.util.ExceptionUtil;
 
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
@@ -43,15 +53,6 @@ import com.arvatosystems.t9t.out.services.IAsyncMessageUpdater;
 import com.arvatosystems.t9t.out.services.IAsyncQueue;
 import com.arvatosystems.t9t.out.services.IAsyncSender;
 import com.arvatosystems.t9t.out.services.IAsyncTools;
-
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Named;
-import de.jpaw.dp.Singleton;
-import de.jpaw.util.ExceptionUtil;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.TypedQuery;
 
 @Singleton
 @Named("LTQ")

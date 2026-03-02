@@ -17,15 +17,12 @@ package com.arvatosystems.t9t.base.jpa.impl;
 
 import java.util.List;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.TypedQuery;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.base.jpa.IEntityMapper;
-import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey;
-import com.arvatosystems.t9t.base.search.DummySearchCriteria;
-import com.arvatosystems.t9t.base.search.SearchCriteria;
-import com.arvatosystems.t9t.base.services.IRefResolver;
 
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
@@ -37,9 +34,13 @@ import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.bonaparte.refs.PersistenceException;
 import de.jpaw.dp.Jdp;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.TypedQuery;
+
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.jpa.IEntityMapper;
+import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey;
+import com.arvatosystems.t9t.base.search.DummySearchCriteria;
+import com.arvatosystems.t9t.base.search.SearchCriteria;
+import com.arvatosystems.t9t.base.services.IRefResolver;
 
 public abstract class AbstractJpaResolver<
   REF extends Ref,

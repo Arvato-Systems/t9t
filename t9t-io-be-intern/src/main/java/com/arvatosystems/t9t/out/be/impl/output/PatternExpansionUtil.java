@@ -20,11 +20,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
+
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.base.services.SimplePatternEvaluator;
-
-import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 
 public final class PatternExpansionUtil {
 

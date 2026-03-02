@@ -15,10 +15,10 @@
  */
 package com.arvatosystems.t9t.be.auth.nodb;
 
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.auth.jwt.BaseJWTPool;
 import com.arvatosystems.t9t.auth.jwt.IJWT;
-
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class JWTPool extends BaseJWTPool implements IJWT {

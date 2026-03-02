@@ -21,17 +21,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import jakarta.persistence.TypedQuery;
 
-import com.arvatosystems.t9t.base.T9tConstants;
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.base.jpa.IResolverAnyKey;
-import com.arvatosystems.t9t.base.jpa.ormspecific.IQueryHintSetter;
-import com.arvatosystems.t9t.base.services.ICacheInvalidationRegistry;
-import com.arvatosystems.t9t.base.services.RequestContext;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
@@ -40,7 +35,13 @@ import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 import de.jpaw.util.ExceptionUtil;
-import jakarta.persistence.TypedQuery;
+
+import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.jpa.IResolverAnyKey;
+import com.arvatosystems.t9t.base.jpa.ormspecific.IQueryHintSetter;
+import com.arvatosystems.t9t.base.services.ICacheInvalidationRegistry;
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 public abstract class AbstractConfigCache<
   DTO extends Ref,

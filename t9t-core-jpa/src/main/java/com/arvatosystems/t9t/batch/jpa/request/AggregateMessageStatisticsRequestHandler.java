@@ -17,8 +17,12 @@ package com.arvatosystems.t9t.batch.jpa.request;
 
 import java.time.Instant;
 
+import jakarta.persistence.Query;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.dp.Jdp;
 
 import com.arvatosystems.t9t.base.request.AggregationGranularityType;
 import com.arvatosystems.t9t.base.services.AbstractAggregationRequestHandler;
@@ -26,9 +30,6 @@ import com.arvatosystems.t9t.batch.jpa.entities.StatisticsAggregationEntity;
 import com.arvatosystems.t9t.batch.jpa.entities.StatisticsEntity;
 import com.arvatosystems.t9t.batch.jpa.persistence.IStatisticsAggregationEntityResolver;
 import com.arvatosystems.t9t.batch.request.AggregateMessageStatisticsRequest;
-
-import de.jpaw.dp.Jdp;
-import jakarta.persistence.Query;
 
 public class AggregateMessageStatisticsRequestHandler extends AbstractAggregationRequestHandler<AggregateMessageStatisticsRequest> {
 

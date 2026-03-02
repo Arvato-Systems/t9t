@@ -19,17 +19,16 @@ import java.io.FileNotFoundException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import com.hazelcast.config.XmlConfigBuilder;
+import io.vertx.core.Vertx;
+import io.vertx.core.VertxOptions;
+import io.vertx.core.eventbus.EventBusOptions;
+import io.vertx.spi.cluster.hazelcast.HazelcastClusterManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.arvatosystems.t9t.base.vertx.impl.T9tServer;
 import com.arvatosystems.t9t.jdp.Init;
-import com.hazelcast.config.XmlConfigBuilder;
-
-import io.vertx.core.Vertx;
-import io.vertx.core.VertxOptions;
-import io.vertx.core.eventbus.EventBusOptions;
-import io.vertx.spi.cluster.hazelcast.HazelcastClusterManager;
 
 public final class VertxCluster {
     private static final Logger LOGGER = LoggerFactory.getLogger(VertxCluster.class);

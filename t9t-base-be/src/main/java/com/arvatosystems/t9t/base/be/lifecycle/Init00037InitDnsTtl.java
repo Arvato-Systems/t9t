@@ -19,11 +19,11 @@ package com.arvatosystems.t9t.base.be.lifecycle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.cfg.be.ApplicationConfiguration;
-import com.arvatosystems.t9t.cfg.be.ConfigProvider;
-
 import de.jpaw.dp.Startup;
 import de.jpaw.dp.StartupOnly;
+
+import com.arvatosystems.t9t.cfg.be.ApplicationConfiguration;
+import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 
 /**
  * Framework initialization class.

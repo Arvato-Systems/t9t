@@ -24,6 +24,11 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.api.media.MediaTypeInfo;
+import de.jpaw.bonaparte.api.media.MediaTypes;
+import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.base.services.IOutputSession;
@@ -33,11 +38,6 @@ import com.arvatosystems.t9t.out.be.impl.formatgenerator.StandardT9tNamespaceWri
 import com.arvatosystems.t9t.out.be.impl.output.OutputResourceInMemory;
 import com.arvatosystems.t9t.xml.User001;
 import com.arvatosystems.t9t.xml.namespaces.IStandardNamespaceWriter;
-
-import de.jpaw.bonaparte.api.media.MediaTypeInfo;
-import de.jpaw.bonaparte.api.media.MediaTypes;
-import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
-import de.jpaw.dp.Jdp;
 
 public class OutputWithZTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(OutputWithZTest.class);

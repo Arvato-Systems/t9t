@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.batch.be.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.be.impl.AbstractCrudSurrogateKeyBERequestHandler;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
@@ -23,8 +25,6 @@ import com.arvatosystems.t9t.batch.SliceTrackingDTO;
 import com.arvatosystems.t9t.batch.SliceTrackingRef;
 import com.arvatosystems.t9t.batch.request.SliceTrackingCrudRequest;
 import com.arvatosystems.t9t.batch.services.ISliceTrackingResolver;
-
-import de.jpaw.dp.Jdp;
 
 public class SliceTrackingCrudRequestHandler
         extends AbstractCrudSurrogateKeyBERequestHandler<SliceTrackingRef, SliceTrackingDTO, FullTrackingWithVersion, SliceTrackingCrudRequest> {

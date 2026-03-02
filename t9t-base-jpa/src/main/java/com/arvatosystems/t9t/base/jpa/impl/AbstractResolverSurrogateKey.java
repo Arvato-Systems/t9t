@@ -19,10 +19,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
-import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey;
-import com.arvatosystems.t9t.base.search.TwoRefs;
-import com.arvatosystems.t9t.base.services.IRefGenerator;
-
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
 import de.jpaw.bonaparte.pojos.api.SortColumn;
@@ -30,6 +26,10 @@ import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.dp.Alternative;
 import de.jpaw.dp.Jdp;
+
+import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey;
+import com.arvatosystems.t9t.base.search.TwoRefs;
+import com.arvatosystems.t9t.base.services.IRefGenerator;
 
 /** Base implementation of the IEntityResolver interface, suitable for entities with an artificial "Long" key. */
 @Alternative

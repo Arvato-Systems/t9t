@@ -15,13 +15,15 @@
  */
 package com.arvatosystems.t9t.zkui.viewmodel;
 
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import jakarta.annotation.Nonnull;
+
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
+
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.pojos.api.DataWithTracking;
+import de.jpaw.bonaparte.pojos.api.TrackingBase;
 
 public abstract class AbstractGenericObjectVM<GENERICOBJ extends BonaPortable, DTO extends BonaPortable, TRACKING extends TrackingBase,
     PARENT extends AbstractViewOnlyVM<DTO, TRACKING>> extends AbstractViewOnlyVM<DTO, TRACKING> {

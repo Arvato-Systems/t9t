@@ -22,15 +22,15 @@ import jakarta.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.plugins.jpa.entities.LoadedPluginEntity;
-import com.arvatosystems.t9t.plugins.services.IPluginManager;
-
 import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 import de.jpaw.dp.Startup;
 import de.jpaw.dp.StartupOnly;
 import de.jpaw.util.ExceptionUtil;
+
+import com.arvatosystems.t9t.plugins.jpa.entities.LoadedPluginEntity;
+import com.arvatosystems.t9t.plugins.services.IPluginManager;
 
 @Startup(50083) // must be run after the static workflow steps have been initialized (50080), because plugins could contribute with additional steps
 public class InitialPluginsLoader implements StartupOnly {

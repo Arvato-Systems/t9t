@@ -17,18 +17,19 @@ package com.arvatosystems.t9t.out.be.impl.formatgenerator;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.xml.namespaces.IStandardNamespaceWriter;
-
 import de.jpaw.dp.Fallback;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.xml.namespaces.IStandardNamespaceWriter;
 
 @Fallback
 @Singleton

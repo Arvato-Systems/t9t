@@ -18,9 +18,9 @@ package com.arvatosystems.t9t.bpmn.services;
 import java.util.List;
 import java.util.Map;
 
-import com.arvatosystems.t9t.bpmn.WorkflowReturnCode;
-
 import jakarta.annotation.Nonnull;
+
+import com.arvatosystems.t9t.bpmn.WorkflowReturnCode;
 
 public interface IBpmnRetryLogic {
     /** Checks if a retry applies. If yes, then sets appropriate delay and return YIELD, otherwise sets error condition. */

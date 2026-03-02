@@ -19,8 +19,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import jakarta.annotation.Nonnull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.pojos.api.media.MediaData;
+import de.jpaw.dp.Jdp;
 
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.T9tUtil;
@@ -37,10 +42,6 @@ import com.arvatosystems.t9t.email.services.IEmailModuleCfgDtoResolver;
 import com.arvatosystems.t9t.email.services.IEmailPersistenceAccess;
 import com.arvatosystems.t9t.email.services.IEmailSender;
 import com.arvatosystems.t9t.mediaresolver.IMediaResolver;
-
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.dp.Jdp;
-import jakarta.annotation.Nonnull;
 
 public class SendEmailRequestHandler extends AbstractRequestHandler<SendEmailRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(SendEmailRequestHandler.class);

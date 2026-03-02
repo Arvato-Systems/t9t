@@ -17,6 +17,9 @@ package com.arvatosystems.t9t.doc.be.api;
 
 import java.util.HashMap;
 
+import de.jpaw.bonaparte.pojos.api.media.MediaData;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.doc.DocComponentDTO;
@@ -24,9 +27,6 @@ import com.arvatosystems.t9t.doc.api.FormatDocumentRequest;
 import com.arvatosystems.t9t.doc.api.FormatDocumentResponse;
 import com.arvatosystems.t9t.doc.api.TemplateType;
 import com.arvatosystems.t9t.doc.services.IDocFormatter;
-
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.dp.Jdp;
 
 public class FormatDocumentRequestHandler extends AbstractRequestHandler<FormatDocumentRequest> {
     private final IDocFormatter docFormatter = Jdp.getRequired(IDocFormatter.class);

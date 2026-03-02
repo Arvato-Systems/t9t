@@ -21,14 +21,14 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Named;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.services.IFileUtil;
 import com.arvatosystems.t9t.base.services.SimplePatternEvaluator;
 import com.arvatosystems.t9t.mediaresolver.IMediaDataSource;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Named;
-import de.jpaw.dp.Singleton;
 
 // file download handler implementation for FILE
 @Singleton

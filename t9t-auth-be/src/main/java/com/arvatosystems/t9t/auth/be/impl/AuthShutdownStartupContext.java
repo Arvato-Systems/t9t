@@ -15,13 +15,15 @@
  */
 package com.arvatosystems.t9t.auth.be.impl;
 
-import com.arvatosystems.t9t.base.be.execution.RequestContextScope;
-import com.arvatosystems.t9t.base.services.RequestContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Startup;
 import de.jpaw.dp.StartupOnly;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import com.arvatosystems.t9t.base.be.execution.RequestContextScope;
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 /**
  * Upon server start, there is a RequestContext created for the initial thread.

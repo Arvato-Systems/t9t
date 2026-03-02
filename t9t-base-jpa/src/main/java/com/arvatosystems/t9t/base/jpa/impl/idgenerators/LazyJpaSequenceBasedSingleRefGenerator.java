@@ -15,20 +15,21 @@
  */
 package com.arvatosystems.t9t.base.jpa.impl.idgenerators;
 
+import jakarta.annotation.Nonnull;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Query;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.base.services.ISingleRefGenerator;
 
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ExceptionUtil;
-import jakarta.annotation.Nonnull;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Query;
+
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.services.ISingleRefGenerator;
 
 @Singleton
 @Named("lazySequenceJPA")  // only acquires an ID once the first request has been seen

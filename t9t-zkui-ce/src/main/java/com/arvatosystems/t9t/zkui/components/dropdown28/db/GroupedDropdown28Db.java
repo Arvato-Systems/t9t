@@ -25,6 +25,9 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Combobox;
 
+import de.jpaw.bonaparte.pojos.apiw.Ref;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.search.Description;
 import com.arvatosystems.t9t.base.search.DescriptionList;
 import com.arvatosystems.t9t.base.search.LeanGroupedSearchRequest;
@@ -33,9 +36,6 @@ import com.arvatosystems.t9t.zkui.components.dropdown28.factories.IGroupedDropdo
 import com.arvatosystems.t9t.zkui.components.dropdown28.nodb.Dropdown28Registry;
 import com.arvatosystems.t9t.zkui.fixedFilters.IFixedFilter;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
-
-import de.jpaw.bonaparte.pojos.apiw.Ref;
-import de.jpaw.dp.Jdp;
 
 public class GroupedDropdown28Db<REF extends Ref> extends Combobox {
     private static final Logger LOGGER = LoggerFactory.getLogger(GroupedDropdown28Db.class);

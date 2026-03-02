@@ -15,11 +15,12 @@
  */
 package com.arvatosystems.t9t.auth.jpa.persistence.impl;
 
+import java.util.Collections;
+import java.util.List;
+
 import de.jpaw.bonaparte.pojos.api.SortColumn;
 import de.jpaw.dp.Singleton;
 import de.jpaw.dp.Specializes;
-import java.util.Collections;
-import java.util.List;
 
 @Specializes
 @Singleton

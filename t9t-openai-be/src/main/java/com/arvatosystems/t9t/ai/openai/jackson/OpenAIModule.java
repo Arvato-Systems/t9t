@@ -17,6 +17,10 @@ package com.arvatosystems.t9t.ai.openai.jackson;
 
 import java.time.Instant;
 
+import com.fasterxml.jackson.databind.module.SimpleModule;
+
+import de.jpaw.enums.TokenizableEnum;
+
 import com.arvatosystems.t9t.ai.openai.OpenAIFileStatusType;
 import com.arvatosystems.t9t.ai.openai.OpenAIFinishReasonType;
 import com.arvatosystems.t9t.ai.openai.OpenAIImageDetailType;
@@ -30,9 +34,6 @@ import com.arvatosystems.t9t.ai.openai.OpenAIToolChoiceType;
 import com.arvatosystems.t9t.ai.openai.OpenAIToolType;
 import com.arvatosystems.t9t.ai.openai.OpenAIVectorStoreStatusType;
 import com.arvatosystems.t9t.ai.openai.assistants.OpenAIRunStatusType;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-
-import de.jpaw.enums.TokenizableEnum;
 
 public class OpenAIModule extends SimpleModule {
     private static final long serialVersionUID = -5852568871709312156L;

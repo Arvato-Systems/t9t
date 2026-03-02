@@ -15,15 +15,17 @@
  */
 package com.arvatosystems.t9t.email.be.smtp.impl;
 
-import de.jpaw.bonaparte.api.media.MediaTypeInfo;
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+
 import jakarta.activation.DataSource;
+
+import de.jpaw.bonaparte.api.media.MediaTypeInfo;
+import de.jpaw.bonaparte.pojos.api.media.MediaData;
 
 public class MediaDataSource implements DataSource {
     private final MediaData data;

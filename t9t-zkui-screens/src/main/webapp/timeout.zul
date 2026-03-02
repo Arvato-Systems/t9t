@@ -2,7 +2,7 @@
 <?xel-method prefix="l" name="translate" class="com.arvatosystems.t9t.zkui.util.ZulUtils" signature="String translate(String, String)"?>
 <?link rel="icon" type="image/x-icon" href="/favicon.ico"?>
 
-<window  title="Session Timeout" border="normal"
+<window  title="Session Timeout"
     width="450px" position="center,center"  mode="overlapped">
         <style src="/css/screen.css" />
         <style src="/css/body.css" />

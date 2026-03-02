@@ -18,15 +18,15 @@ package com.arvatosystems.t9t.zkui.services;
 import java.util.List;
 import java.util.UUID;
 
+import jakarta.annotation.Nonnull;
+
 import com.arvatosystems.t9t.auth.UserDTO;
 import com.arvatosystems.t9t.auth.request.GetPasswordChangeRequirementsResponse;
 import com.arvatosystems.t9t.base.auth.AuthenticationResponse;
 import com.arvatosystems.t9t.base.auth.PermissionEntry;
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;
-
 import com.arvatosystems.t9t.zkui.session.UserInfo;
-import jakarta.annotation.Nonnull;
 
 public interface IUserDAO {
 

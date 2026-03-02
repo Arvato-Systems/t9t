@@ -24,6 +24,8 @@ import jakarta.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
@@ -36,8 +38,6 @@ import com.arvatosystems.t9t.io.jpa.entities.SinkEntity;
 import com.arvatosystems.t9t.io.jpa.persistence.IDataSinkEntityResolver;
 import com.arvatosystems.t9t.io.jpa.persistence.ISinkEntityResolver;
 import com.arvatosystems.t9t.io.request.PurgeOutdatedSinksAndFilesRequest;
-
-import de.jpaw.dp.Jdp;
 
 public class PurgeOutdatedSinksAndFilesRequestHandler extends AbstractRequestHandler<PurgeOutdatedSinksAndFilesRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(PurgeOutdatedSinksAndFilesRequestHandler.class);

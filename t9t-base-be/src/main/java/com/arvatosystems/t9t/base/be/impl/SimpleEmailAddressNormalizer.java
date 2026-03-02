@@ -21,11 +21,11 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.services.ISimpleEmailAddressNormalizer;
-
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class SimpleEmailAddressNormalizer implements ISimpleEmailAddressNormalizer {

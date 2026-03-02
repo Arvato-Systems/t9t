@@ -15,19 +15,21 @@
  */
 package com.arvatosystems.t9t.auth.be.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+import de.jpaw.dp.Fallback;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Provider;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.auth.TenantDTO;
 import com.arvatosystems.t9t.auth.UserDTO;
 import com.arvatosystems.t9t.auth.hooks.IJwtEnrichment;
 import com.arvatosystems.t9t.auth.services.ITenantResolver;
 import com.arvatosystems.t9t.auth.services.IUserResolver;
 import com.arvatosystems.t9t.base.services.RequestContext;
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
-import de.jpaw.dp.Fallback;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Provider;
-import de.jpaw.dp.Singleton;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /** The default enrichment populates desired elements of the z field. */
 @Singleton

@@ -19,9 +19,17 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.api.ConfigurationReader;
+import de.jpaw.dp.Singleton;
+import de.jpaw.json.JsonParser;
+import de.jpaw.util.ConfigurationReaderFactory;
 
 import com.arvatosystems.t9t.annotations.IsLogicallyFinal;
 import com.arvatosystems.t9t.base.IKafkaRequestTransmitter;
@@ -29,13 +37,6 @@ import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceRequest;
 import com.arvatosystems.t9t.kafka.service.IKafkaTopicWriter;
-
-import de.jpaw.api.ConfigurationReader;
-import de.jpaw.dp.Singleton;
-import de.jpaw.json.JsonParser;
-import de.jpaw.util.ConfigurationReaderFactory;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 
 @Singleton
 public class KafkaRequestTransmitter implements IKafkaRequestTransmitter {

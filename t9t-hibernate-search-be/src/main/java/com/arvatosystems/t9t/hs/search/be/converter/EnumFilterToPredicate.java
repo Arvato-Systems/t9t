@@ -1,17 +1,20 @@
 package com.arvatosystems.t9t.hs.search.be.converter;
 
-import com.arvatosystems.t9t.base.T9tUtil;
-import com.arvatosystems.t9t.base.search.EnumFilter;
-import com.arvatosystems.t9t.base.services.IEnumResolver;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Named;
-import de.jpaw.dp.Singleton;
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.annotation.Nonnull;
+
 import org.hibernate.search.engine.search.predicate.SearchPredicate;
 import org.hibernate.search.engine.search.predicate.dsl.SearchPredicateFactory;
 
-import java.util.ArrayList;
-import java.util.List;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Named;
+import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.base.T9tUtil;
+import com.arvatosystems.t9t.base.search.EnumFilter;
+import com.arvatosystems.t9t.base.services.IEnumResolver;
 
 @Singleton
 @Named(EnumFilter.my$PQON)

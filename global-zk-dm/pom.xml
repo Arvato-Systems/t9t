@@ -40,8 +40,8 @@
             </activation>
             <properties>
                 <!-- ZK libraries, Community edition -->
-                <zk.version>9.6.0.2-jakarta</zk.version>
-                <zk-themes.version>9.6.0.2</zk-themes.version>
+                <zk.version>10.1.0-jakarta</zk.version>
+                <zk-themes.version>10.0.0</zk-themes.version>
             </properties>
         </profile>
         <profile>
@@ -51,8 +51,8 @@
             </activation>
             <properties>
                 <!-- ZK libraries, COMMERCIAL !!! -->
-                <zk.version>9.6.6-jakarta</zk.version>
-                <zk-themes.version>9.6.6</zk-themes.version>
+                <zk.version>10.3.0.1-jakarta</zk.version>
+                <zk-themes.version>10.0.0</zk-themes.version>
             </properties>
         </profile>
     </profiles>

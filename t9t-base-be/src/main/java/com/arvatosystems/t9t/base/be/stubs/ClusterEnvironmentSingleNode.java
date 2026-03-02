@@ -21,12 +21,12 @@ import java.util.Collections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Fallback;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceRequest;
 import com.arvatosystems.t9t.base.services.IClusterEnvironment;
-
-import de.jpaw.dp.Fallback;
-import de.jpaw.dp.Singleton;
 
 @Singleton
 @Fallback

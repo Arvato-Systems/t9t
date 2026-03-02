@@ -18,6 +18,10 @@ package com.arvatosystems.t9t.ai.tools.doc.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Named;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.ai.service.IAiTool;
 import com.arvatosystems.t9t.ai.tools.AiToolMediaDataResult;
 import com.arvatosystems.t9t.ai.tools.doc.AiToolCreateQRCode;
@@ -26,10 +30,6 @@ import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.doc.services.IImageGenerator;
 import com.arvatosystems.t9t.doc.services.ImageParameter;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Named;
-import de.jpaw.dp.Singleton;
 
 @Named(AiToolCreateQRCode.my$PQON)
 @Singleton

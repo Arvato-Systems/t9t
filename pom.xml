@@ -32,13 +32,16 @@
 
     <!-- useful commands to check current versions:
          check for outdated plugins:
-         mvn -N versions:display-plugin-updates
+         mvn -N versions:display-plugin-updates -Dmaven.version.ignore=".*-(alpha|beta|rc|cr|M|milestone).*,4\\..*" -DallowMajorUpdates=false
 
          run OWASP dependency check:
          mvn dependency-check:check
 
          recreate license headers:
          mvn license:format -rf :t9t-build
+
+        reorder imports (from within a given maven module):
+         mvn -Pfiximports spotless:apply
     -->
     <properties>
         <java.version>21</java.version>               <!-- Used by spring boot -->
@@ -53,8 +56,8 @@
 
         <!-- to be used by dependent projects (same as project.version, but must be provided explicitly so that imports work) -->
         <t9t.version>9.1-SNAPSHOT</t9t.version>
-        <xtext.version>2.40.0</xtext.version>
-        <jetty.version>12.1.5</jetty.version>
+        <xtext.version>2.42.0</xtext.version>
+        <jetty.version>12.1.6</jetty.version>
 
         <!-- Build specific properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -85,7 +88,8 @@
         <maven-jarjar-plugin.version>1.9</maven-jarjar-plugin.version>
         <maven-enforcer-plugin.version>3.6.2</maven-enforcer-plugin.version>
         <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
-        <maven-exec-plugin.version>3.6.2</maven-exec-plugin.version>
+        <maven-versions-plugin.version>2.21.0</maven-versions-plugin.version>
+        <maven-exec-plugin.version>3.6.3</maven-exec-plugin.version>
         <owasp-maven-plugin.version>12.2.0</owasp-maven-plugin.version>
         <spring-boot-maven-plugin.version>4.0.1</spring-boot-maven-plugin.version>
         <git-commit-id-plugin.version>9.0.2</git-commit-id-plugin.version>
@@ -96,7 +100,7 @@
         <cxf-codegen-plugin.version>4.1.4</cxf-codegen-plugin.version>
         <cxf-wadl2java-plugin.version>4.1.4</cxf-wadl2java-plugin.version>
         <cxf-java2ws-plugin.version>4.1.4</cxf-java2ws-plugin.version>
-        <cxf-xjc-plugin.version>4.1.1</cxf-xjc-plugin.version>
+        <cxf-xjc-plugin.version>4.1.2</cxf-xjc-plugin.version>
         <echo-maven-plugin.version>1.0.0</echo-maven-plugin.version>
         <jaxb2-maven-plugin.version>3.3.0</jaxb2-maven-plugin.version>
 
@@ -111,21 +115,22 @@
         <xtext-maven-plugin.version>${xtext.version}</xtext-maven-plugin.version>
         <jdt.version>3.44.0</jdt.version>
 
-        <bonaparte-plugin.version>6.3.0</bonaparte-plugin.version>
+        <bonaparte-plugin.version>6.4.0</bonaparte-plugin.version>
         <license-plugin.version>5.0.0</license-plugin.version>
 
         <checkstyle.version>12.2.0</checkstyle.version>
+        <spotless.version>3.2.1</spotless.version>
         <spotbugs.version>4.9.8</spotbugs.version>
         <spotbugs-plugin.version>4.9.8.2</spotbugs-plugin.version>
-        <logback.version>1.5.21</logback.version>
+        <logback.version>1.5.32</logback.version>
         <logstash-logback.version>8.1</logstash-logback.version>
-        <junit.version>6.0.1</junit.version>
+        <junit.version>6.0.3</junit.version>
         <!-- Swagger -->
-        <swagger-maven-plugin.version>2.2.41</swagger-maven-plugin.version>
-        <swagger-ui-webjars.version>5.30.3</swagger-ui-webjars.version>
+        <swagger-maven-plugin.version>2.2.43</swagger-maven-plugin.version>
+        <swagger-ui-webjars.version>5.32.0</swagger-ui-webjars.version>
 
         <!-- OpenApi -->
-        <openapi-generator.version>7.16.0</openapi-generator.version>
+        <openapi-generator.version>7.20.0</openapi-generator.version>
 
         <!-- Angular related versions -->
         <typescript.version>~5.8.2</typescript.version>
@@ -135,6 +140,37 @@
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>com.diffplug.spotless</groupId>
+                    <artifactId>spotless-maven-plugin</artifactId>
+                    <version>${spotless.version}</version>
+
+                    <configuration>
+                        <java>
+                            <!-- Import order definition -->
+                            <importOrder>
+                                <order>java,javax,jakarta,,de.jpaw,com.arvatosystems</order>
+                            </importOrder>
+
+                            <!-- Remove unused imports -->
+                            <removeUnusedImports />
+
+                            <!-- Optional: Use Eclipse formatter -->
+                            <!-- <eclipse>
+                              <version>4.29</version>
+                            </eclipse> -->
+                        </java>
+                    </configuration>
+
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>apply</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
                 <!-- java compiler -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -481,13 +517,6 @@
                     </dependencies>
                 </plugin>
 
-                <!-- jax-ws -->
-                <plugin>
-                    <groupId>com.sun.xml.ws</groupId>
-                    <artifactId>jaxws-maven-plugin</artifactId>
-                    <version>${jaxws-maven-plugin.version}</version>
-                </plugin>
-
                 <!-- reporting-->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -563,6 +592,11 @@
                 </plugin>
 
                 <!-- miscellaneous -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>versions-maven-plugin</artifactId>
+                    <version>${maven-versions-plugin.version}</version>
+                </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>exec-maven-plugin</artifactId>
@@ -847,6 +881,17 @@
             </build>
         </profile>
 
+        <profile>
+            <id>fiximports</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.diffplug.spotless</groupId>
+                        <artifactId>spotless-maven-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
 
         <profile>
             <id>build</id>

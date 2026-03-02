@@ -17,11 +17,11 @@ package com.arvatosystems.t9t.zkui.components.grid;
 
 import java.util.List;
 
-import com.arvatosystems.t9t.base.uiprefs.UILeanGridPreferences;
-
 import de.jpaw.bonaparte.pojos.api.AggregateColumn;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.ui.UIFilter;
+
+import com.arvatosystems.t9t.base.uiprefs.UILeanGridPreferences;
 
 /** Class which supports dynamic screen building. An instance is created for a specific gridId,
  * and upon initialization it loads the config relevant for the current user.

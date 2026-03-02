@@ -24,10 +24,10 @@ import jakarta.xml.bind.Unmarshaller;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import de.jpaw.bonaparte.api.media.MediaDataUtil;
+
 import com.arvatosystems.t9t.xml.User001;
 import com.arvatosystems.t9t.xml.UserMaster;
-
-import de.jpaw.bonaparte.api.media.MediaDataUtil;
 
 /**
  * Imports a user from an XML file.

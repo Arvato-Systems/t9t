@@ -20,13 +20,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jakarta.annotation.Nonnull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.base.T9tUtil;
-import com.arvatosystems.t9t.io.OutputHeading;
-import com.arvatosystems.t9t.out.be.impl.output.EnumTranslatorComposerFilter;
-import com.arvatosystems.t9t.out.be.impl.output.VariantComposerFilter;
 
 import de.jpaw.bonaparte.core.BonaCustom;
 import de.jpaw.bonaparte.core.BonaPortable;
@@ -34,7 +31,11 @@ import de.jpaw.bonaparte.core.EnumAsTokenComposerFilter;
 import de.jpaw.bonaparte.core.FoldingComposer;
 import de.jpaw.bonaparte.core.MessageComposer;
 import de.jpaw.bonaparte.pojos.meta.FoldingStrategy;
-import jakarta.annotation.Nonnull;
+
+import com.arvatosystems.t9t.base.T9tUtil;
+import com.arvatosystems.t9t.io.OutputHeading;
+import com.arvatosystems.t9t.out.be.impl.output.EnumTranslatorComposerFilter;
+import com.arvatosystems.t9t.out.be.impl.output.VariantComposerFilter;
 
 public abstract class FoldableFormatGenerator<E extends Exception> extends AbstractFormatGenerator {
     private static final Logger LOGGER = LoggerFactory.getLogger(FoldableFormatGenerator.class);

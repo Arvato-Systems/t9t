@@ -17,12 +17,12 @@ package com.arvatosystems.t9t.zkui.viewmodel.framework;
 
 import org.zkoss.bind.annotation.Init;
 
+import de.jpaw.bonaparte.pojos.api.TrackingBase;
+
 import com.arvatosystems.t9t.doc.DocConfigDTO;
 import com.arvatosystems.t9t.doc.DocConfigRef;
 import com.arvatosystems.t9t.doc.DocEmailReceiverDTO;
 import com.arvatosystems.t9t.zkui.viewmodel.CrudSurrogateKeyVM;
-
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
 
 /**
  * @author NGTZ001

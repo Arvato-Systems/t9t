@@ -15,9 +15,10 @@
  */
 package com.arvatosystems.t9t.xml.namespaces;
 
-import jakarta.xml.bind.JAXBContext;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+
+import jakarta.xml.bind.JAXBContext;
 
 public interface IStandardNamespaceWriter {
     void writeApplicationNamespaces(XMLStreamWriter writer) throws XMLStreamException;

@@ -15,9 +15,10 @@
  */
 package com.arvatosystems.t9t.changeRequest.services;
 
+import jakarta.annotation.Nonnull;
+
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.changeRequest.DataChangeRequestDTO;
-import jakarta.annotation.Nonnull;
 
 public interface IDataChangeRequestEmailService {
 

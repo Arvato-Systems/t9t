@@ -21,6 +21,9 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 
+import de.jpaw.bonaparte.core.JsonComposerPrettyPrint;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.misc.Info;
@@ -32,9 +35,6 @@ import com.arvatosystems.t9t.zkui.components.basic.ModalWindows;
 import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;
 import com.arvatosystems.t9t.zkui.services.IT9tMessagingDAO;
 import com.arvatosystems.t9t.zkui.viewmodel.CrudSurrogateKeyVM;
-
-import de.jpaw.bonaparte.core.JsonComposerPrettyPrint;
-import de.jpaw.dp.Jdp;
 
 // viewModel only required for the button command. This could be done via context menu as well!
 

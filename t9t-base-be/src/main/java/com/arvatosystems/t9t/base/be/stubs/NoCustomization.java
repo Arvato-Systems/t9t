@@ -18,13 +18,13 @@ package com.arvatosystems.t9t.base.be.stubs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.services.ICustomization;
-import com.arvatosystems.t9t.base.services.ITenantCustomization;
-import com.arvatosystems.t9t.base.services.ITenantMapping;
-
 import de.jpaw.dp.Any;
 import de.jpaw.dp.Fallback;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.base.services.ICustomization;
+import com.arvatosystems.t9t.base.services.ITenantCustomization;
+import com.arvatosystems.t9t.base.services.ITenantMapping;
 
 @Fallback
 @Any

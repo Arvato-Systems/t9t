@@ -15,12 +15,13 @@
  */
 package com.arvatosystems.t9t.auth.be.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.auth.request.ClearPasswordBlacklistRequest;
 import com.arvatosystems.t9t.auth.services.IAuthPersistenceAccess;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
-import de.jpaw.dp.Jdp;
 
 public class ClearPasswordBlacklistRequestHandler extends AbstractRequestHandler<ClearPasswordBlacklistRequest> {
 

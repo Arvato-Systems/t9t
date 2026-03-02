@@ -15,16 +15,16 @@
  */
 package com.arvatosystems.t9t.in.be.impl;
 
-import com.arvatosystems.t9t.in.services.IInputSession;
-
-import de.jpaw.dp.Jdp;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.UUID;
+
+import de.jpaw.dp.Jdp;
+
+import com.arvatosystems.t9t.in.services.IInputSession;
 
 /** Utility class to test an import. */
 public final class ImportTools {

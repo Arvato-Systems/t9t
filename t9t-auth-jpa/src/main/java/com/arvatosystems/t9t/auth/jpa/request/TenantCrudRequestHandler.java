@@ -20,6 +20,9 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.auth.T9tAuthException;
 import com.arvatosystems.t9t.auth.TenantDTO;
 import com.arvatosystems.t9t.auth.jpa.entities.TenantEntity;
@@ -33,9 +36,6 @@ import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudStringKeyRequestHandler;
 import com.arvatosystems.t9t.base.services.IAuthCacheInvalidation;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.dp.Jdp;
 
 public class TenantCrudRequestHandler extends AbstractCrudStringKeyRequestHandler<TenantDTO, FullTrackingWithVersion, TenantCrudRequest, TenantEntity> {
     private static final Logger LOGGER = LoggerFactory.getLogger(TenantCrudRequestHandler.class);

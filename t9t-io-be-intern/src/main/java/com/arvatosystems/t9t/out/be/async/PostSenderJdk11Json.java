@@ -15,10 +15,10 @@
  */
 package com.arvatosystems.t9t.out.be.async;
 
-import com.arvatosystems.t9t.out.services.IAsyncSender;
-
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Named;
+
+import com.arvatosystems.t9t.out.services.IAsyncSender;
 
 /**
  * The PostSender implements a simple client invocation via http POST of the JDK 11 HttpClient, using JSON serialization.

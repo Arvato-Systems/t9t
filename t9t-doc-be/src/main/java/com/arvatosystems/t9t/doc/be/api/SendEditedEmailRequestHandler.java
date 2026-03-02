@@ -23,6 +23,11 @@ import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.pojos.api.media.MediaData;
+import de.jpaw.bonaparte.pojos.api.media.MediaXType;
+import de.jpaw.dp.Jdp;
+import de.jpaw.util.ApplicationException;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.IExecutor;
@@ -44,11 +49,6 @@ import com.arvatosystems.t9t.email.api.EmailMessage;
 import com.arvatosystems.t9t.email.api.RecipientEmail;
 import com.arvatosystems.t9t.email.api.SendEmailRequest;
 import com.arvatosystems.t9t.email.api.SendEmailResponse;
-
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaXType;
-import de.jpaw.dp.Jdp;
-import de.jpaw.util.ApplicationException;
 
 public class SendEditedEmailRequestHandler extends AbstractRequestHandler<SendEditedEmailRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(SendEditedEmailRequestHandler.class);

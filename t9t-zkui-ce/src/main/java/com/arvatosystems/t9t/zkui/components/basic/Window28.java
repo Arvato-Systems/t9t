@@ -34,8 +34,7 @@ public class Window28 extends Window { // implements IGridIdOwner {
     public Window28() {
         super();
         setVflex("1");
-        setBorder(false);
-        setBorder("none");
+        // Border styling removed - use CSS/sclass instead for ZK 10 compatibility
         LOGGER.debug("Creating new Window28");
     }
 

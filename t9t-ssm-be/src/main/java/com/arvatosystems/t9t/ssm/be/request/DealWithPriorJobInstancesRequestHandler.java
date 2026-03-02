@@ -22,6 +22,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.be.execution.RequestContextScope;
 import com.arvatosystems.t9t.base.request.ProcessStatusDTO;
 import com.arvatosystems.t9t.base.request.TerminateProcessRequest;
@@ -35,8 +37,6 @@ import com.arvatosystems.t9t.ssm.request.DealWithPriorJobInstancesRequest;
 import com.arvatosystems.t9t.ssm.request.DealWithPriorJobInstancesResponse;
 import com.arvatosystems.t9t.ssm.services.ISchedulerHook;
 import com.arvatosystems.t9t.ssm.services.ISchedulerSetupResolver;
-
-import de.jpaw.dp.Jdp;
 
 public class DealWithPriorJobInstancesRequestHandler extends AbstractRequestHandler<DealWithPriorJobInstancesRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(DealWithPriorJobInstancesRequestHandler.class);

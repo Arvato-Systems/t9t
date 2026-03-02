@@ -20,13 +20,13 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.search.Description;
-import com.arvatosystems.t9t.zkui.components.dropdown28.factories.IDropdown28DbFactory;
-import com.arvatosystems.t9t.zkui.session.ApplicationSession;
-
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.util.ExceptionUtil;
+
+import com.arvatosystems.t9t.base.search.Description;
+import com.arvatosystems.t9t.zkui.components.dropdown28.factories.IDropdown28DbFactory;
+import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 
 /** Instances of this class are created via constructor. */
 public class DropdownConverter implements IItemConverter<String> {

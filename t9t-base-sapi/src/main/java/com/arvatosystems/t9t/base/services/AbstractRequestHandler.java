@@ -15,13 +15,13 @@
  */
 package com.arvatosystems.t9t.base.services;
 
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.pojos.api.OperationType;
+
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
-
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.OperationType;
 
 /**
  * The base class for most common request handlers. Provides common utilities such as a default "read-only" response to the isReadOnly method, and the

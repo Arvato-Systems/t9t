@@ -15,6 +15,9 @@
  */
 package com.arvatosystems.t9t.core.jpa.request;
 
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractSearchWithTotalsRequestHandler;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
@@ -24,9 +27,6 @@ import com.arvatosystems.t9t.core.jpa.entities.CannedRequestEntity;
 import com.arvatosystems.t9t.core.jpa.mapping.ICannedRequestDTOMapper;
 import com.arvatosystems.t9t.core.jpa.persistence.ICannedRequestEntityResolver;
 import com.arvatosystems.t9t.core.request.CannedRequestSearchRequest;
-
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
-import de.jpaw.dp.Jdp;
 
 public class CannedRequestSearchRequestHandler extends AbstractSearchWithTotalsRequestHandler<Long, CannedRequestDTO, FullTrackingWithVersion,
   CannedRequestSearchRequest, CannedRequestEntity> {

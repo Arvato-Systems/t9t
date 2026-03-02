@@ -18,11 +18,12 @@ package com.arvatosystems.t9t.ai;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.Multiplicity;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 
 public final class T9tAiTools {
     private T9tAiTools() { }

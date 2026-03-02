@@ -19,6 +19,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.jpaw.bonaparte.util.FreezeTools;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.event.BucketWriteKey;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
@@ -26,9 +29,6 @@ import com.arvatosystems.t9t.base.services.IBucketWriter;
 import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.bucket.request.SingleBucketWriteRequest;
-
-import de.jpaw.bonaparte.util.FreezeTools;
-import de.jpaw.dp.Jdp;
 
 public class SingleBucketWriteRequestHandler extends AbstractRequestHandler<SingleBucketWriteRequest> {
     private final IBucketWriter bucketWriter = Jdp.getRequired(IBucketWriter.class);

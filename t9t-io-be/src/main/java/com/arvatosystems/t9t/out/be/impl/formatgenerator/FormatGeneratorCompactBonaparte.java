@@ -17,12 +17,12 @@ package com.arvatosystems.t9t.out.be.impl.formatgenerator;
 
 import java.io.IOException;
 
-import com.arvatosystems.t9t.out.be.IThreadSafeFormatGenerator;
-
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.CompactByteArrayComposer;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Named;
+
+import com.arvatosystems.t9t.out.be.IThreadSafeFormatGenerator;
 
 @Dependent
 @Named("COMPACT_BONAPARTE")

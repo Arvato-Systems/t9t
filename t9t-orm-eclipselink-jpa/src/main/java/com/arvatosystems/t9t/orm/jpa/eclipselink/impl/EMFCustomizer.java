@@ -18,16 +18,17 @@ package com.arvatosystems.t9t.orm.jpa.eclipselink.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.dp.Singleton;
 
 import com.arvatosystems.t9t.base.jpa.ormspecific.IEMFCustomizer;
 import com.arvatosystems.t9t.cfg.be.DatabaseBrandType;
 import com.arvatosystems.t9t.cfg.be.RelationalDatabaseConfiguration;
-
-import de.jpaw.dp.Singleton;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 
 @Singleton
 public class EMFCustomizer implements IEMFCustomizer {

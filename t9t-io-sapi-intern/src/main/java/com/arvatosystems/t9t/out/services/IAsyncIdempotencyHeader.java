@@ -15,13 +15,14 @@
  */
 package com.arvatosystems.t9t.out.services;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
+import de.jpaw.bonaparte.core.BonaPortable;
+
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.io.AsyncChannelDTO;
-
-import de.jpaw.bonaparte.core.BonaPortable;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 
 /** Provides methods to determine an idempotency header. */
 public interface IAsyncIdempotencyHeader {

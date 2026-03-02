@@ -20,13 +20,13 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.event.BucketWriteKey;
-import com.arvatosystems.t9t.base.services.IBucketWriter;
-
 import de.jpaw.bonaparte.util.ToStringHelper;
 import de.jpaw.dp.Any;
 import de.jpaw.dp.Fallback;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.base.event.BucketWriteKey;
+import com.arvatosystems.t9t.base.services.IBucketWriter;
 
 @Fallback
 @Any

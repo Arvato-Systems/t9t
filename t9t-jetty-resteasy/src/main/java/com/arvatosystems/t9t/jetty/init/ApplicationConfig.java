@@ -23,9 +23,13 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.core.Context;
 
+import com.google.common.base.Splitter;
+import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import org.jboss.resteasy.plugins.interceptors.CorsFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.dp.Jdp;
 
 import com.arvatosystems.t9t.base.MessagingUtil;
 import com.arvatosystems.t9t.jdp.Init;
@@ -41,10 +45,6 @@ import com.arvatosystems.t9t.rest.utils.RestUtils;
 import com.arvatosystems.t9t.rest.xml.FormUrlEncodedMessageBodyWriter;
 import com.arvatosystems.t9t.rest.xml.XmlMediaTypeDecoder;
 import com.arvatosystems.t9t.rest.xml.XmlMediaTypeEncoder;
-import com.google.common.base.Splitter;
-
-import de.jpaw.dp.Jdp;
-import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 
 public class ApplicationConfig extends Application {
     private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationConfig.class);

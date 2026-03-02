@@ -18,16 +18,16 @@ package com.arvatosystems.t9t.ai.ollama.service.impl;
 import java.util.List;
 import java.util.Map;
 
+import de.jpaw.bonaparte.pojos.api.media.MediaData;
+import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
+import de.jpaw.dp.Named;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.ai.AiAssistantDTO;
 import com.arvatosystems.t9t.ai.AiConversationDTO;
 import com.arvatosystems.t9t.ai.service.IAiChatService;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
-import de.jpaw.dp.Named;
-import de.jpaw.dp.Singleton;
 
 @Singleton
 @Named("Ollama")

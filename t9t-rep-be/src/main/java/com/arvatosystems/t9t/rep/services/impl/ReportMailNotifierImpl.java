@@ -21,8 +21,14 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.pojos.api.media.MediaData;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+import de.jpaw.util.ByteArray;
 
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
@@ -38,12 +44,6 @@ import com.arvatosystems.t9t.rep.ReportConfigDTO;
 import com.arvatosystems.t9t.rep.ReportParamsDTO;
 import com.arvatosystems.t9t.rep.T9tRepException;
 import com.arvatosystems.t9t.rep.services.IReportMailNotifier;
-import com.google.common.collect.Lists;
-
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
-import de.jpaw.util.ByteArray;
 
 @Singleton
 public class ReportMailNotifierImpl implements IReportMailNotifier {

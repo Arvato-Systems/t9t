@@ -20,14 +20,6 @@ import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.xml.namespaces.IStandardNamespaceWriter;
-
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
@@ -37,6 +29,15 @@ import jakarta.ws.rs.ext.Provider;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
 import jakarta.xml.bind.annotation.XmlRootElement;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.xml.namespaces.IStandardNamespaceWriter;
 
 /**
  * Decoder to parse requests in XML format (using JAXB / jakarta.xml.bind).

@@ -15,6 +15,18 @@
  */
 package com.arvatosystems.t9t.out.be.tests;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import de.jpaw.bonaparte.api.media.MediaTypeInfo;
+import de.jpaw.bonaparte.api.media.MediaTypes;
+import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.base.services.IOutputSession;
@@ -22,15 +34,6 @@ import com.arvatosystems.t9t.io.DataSinkDTO;
 import com.arvatosystems.t9t.out.be.impl.formatgenerator.FormatGeneratorCsv;
 import com.arvatosystems.t9t.out.be.impl.formatgenerator.FormatGeneratorJson;
 import com.arvatosystems.t9t.out.be.impl.output.OutputResourceInMemory;
-import de.jpaw.bonaparte.api.media.MediaTypeInfo;
-import de.jpaw.bonaparte.api.media.MediaTypes;
-import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
-import de.jpaw.dp.Jdp;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 
 public class OutputTest {
     private static final String NL = System.lineSeparator();

@@ -17,12 +17,12 @@ package com.arvatosystems.t9t.zkui.components.fields;
 
 import org.zkoss.zul.Longbox;
 
-import com.arvatosystems.t9t.zkui.session.ApplicationSession;
-
 import de.jpaw.bonaparte.pojos.api.LongFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.ui.UIFilter;
+
+import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 
 
 public class LongField extends AbstractField<Longbox> {

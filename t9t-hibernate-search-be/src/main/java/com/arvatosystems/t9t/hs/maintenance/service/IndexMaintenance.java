@@ -15,24 +15,27 @@
  */
 package com.arvatosystems.t9t.hs.maintenance.service;
 
-import com.arvatosystems.t9t.hs.configurate.be.core.util.ConfigurationLoader;
-import com.arvatosystems.t9t.hs.configurate.model.EntityConfig;
-import com.arvatosystems.t9t.hs.configurate.model.FieldConfig;
-import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Provider;
-import de.jpaw.dp.Singleton;
+import java.util.List;
+
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
+
 import org.hibernate.search.mapper.orm.Search;
 import org.hibernate.search.mapper.orm.session.SearchSession;
 import org.hibernate.search.mapper.orm.work.SearchIndexingPlan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
+import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Provider;
+import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.hs.configurate.be.core.util.ConfigurationLoader;
+import com.arvatosystems.t9t.hs.configurate.model.EntityConfig;
+import com.arvatosystems.t9t.hs.configurate.model.FieldConfig;
 
 @Singleton
 public class IndexMaintenance {

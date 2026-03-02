@@ -15,12 +15,13 @@
  */
 package com.arvatosystems.t9t.ssm.be.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.jpa.impl.AbstractLeanSearchRequestHandler;
 import com.arvatosystems.t9t.base.search.Description;
 import com.arvatosystems.t9t.ssm.jpa.entities.SchedulerSetupEntity;
 import com.arvatosystems.t9t.ssm.jpa.persistence.ISchedulerSetupEntityResolver;
 import com.arvatosystems.t9t.ssm.request.LeanSchedulerSetupSearchRequest;
-import de.jpaw.dp.Jdp;
 
 public class LeanSchedulerSetupSearchRequestHandler extends AbstractLeanSearchRequestHandler<LeanSchedulerSetupSearchRequest, SchedulerSetupEntity> {
     public LeanSchedulerSetupSearchRequestHandler() {

@@ -18,10 +18,13 @@ package com.arvatosystems.t9t.base.be.auth;
 import java.time.Instant;
 import java.util.Arrays;
 
-import com.arvatosystems.t9t.base.JsonUtil;
-import com.arvatosystems.t9t.base.services.IAuthSessionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
+import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+import de.jpaw.dp.Jdp;
+import de.jpaw.util.ApplicationException;
 
 import com.arvatosystems.t9t.auth.ApiKeyDTO;
 import com.arvatosystems.t9t.auth.AuthModuleCfgDTO;
@@ -37,6 +40,7 @@ import com.arvatosystems.t9t.auth.services.IAuthPersistenceAccess;
 import com.arvatosystems.t9t.auth.services.IAuthResponseUtil;
 import com.arvatosystems.t9t.auth.services.IExternalAuthentication;
 import com.arvatosystems.t9t.auth.services.ITenantResolver;
+import com.arvatosystems.t9t.base.JsonUtil;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.T9tUtil;
@@ -49,16 +53,12 @@ import com.arvatosystems.t9t.base.auth.JwtAuthentication;
 import com.arvatosystems.t9t.base.auth.PasswordAuthentication;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
+import com.arvatosystems.t9t.base.services.IAuthSessionService;
 import com.arvatosystems.t9t.base.services.IHighRiskSituationNotificationService;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.base.types.AuthenticationParameters;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.cfg.be.LdapConfiguration;
-
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
-import de.jpaw.dp.Jdp;
-import de.jpaw.util.ApplicationException;
 
 public class AuthenticationRequestHandler extends AbstractRequestHandler<AuthenticationRequest> {
 

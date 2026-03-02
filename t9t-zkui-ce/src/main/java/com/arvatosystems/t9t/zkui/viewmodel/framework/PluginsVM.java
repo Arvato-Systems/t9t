@@ -16,7 +16,6 @@
 package com.arvatosystems.t9t.zkui.viewmodel.framework;
 
 import java.io.IOException;
-
 import java.time.Instant;
 
 import org.slf4j.Logger;
@@ -30,13 +29,13 @@ import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.Messagebox;
 
+import de.jpaw.bonaparte.pojos.api.DataWithTracking;
+import de.jpaw.util.ByteArray;
+
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.plugins.LoadedPluginDTO;
 import com.arvatosystems.t9t.plugins.LoadedPluginRef;
 import com.arvatosystems.t9t.zkui.viewmodel.CrudSurrogateKeyVM;
-
-import de.jpaw.util.ByteArray;
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
 
 @Init(superclass = true)
 public class PluginsVM extends CrudSurrogateKeyVM<LoadedPluginRef, LoadedPluginDTO, FullTrackingWithVersion> {

@@ -15,14 +15,16 @@
  */
 package com.arvatosystems.t9t.zkui.viewmodel.framework;
 
+import org.zkoss.bind.annotation.Command;
+import org.zkoss.bind.annotation.Init;
+
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.changeRequest.ChangeWorkFlowConfigDTO;
 import com.arvatosystems.t9t.changeRequest.ChangeWorkFlowConfigRef;
 import com.arvatosystems.t9t.zkui.services.IChangeWorkFlowConfigDAO;
 import com.arvatosystems.t9t.zkui.viewmodel.CrudSurrogateKeyVM;
-import de.jpaw.dp.Jdp;
-import org.zkoss.bind.annotation.Command;
-import org.zkoss.bind.annotation.Init;
 
 @Init(superclass = true)
 public class ChangeWorkFlowConfigVM extends CrudSurrogateKeyVM<ChangeWorkFlowConfigRef, ChangeWorkFlowConfigDTO, FullTrackingWithVersion> {

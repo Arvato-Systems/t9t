@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.auth.be.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.auth.RoleToPermissionDTO;
 import com.arvatosystems.t9t.auth.RoleToPermissionInternalKey;
 import com.arvatosystems.t9t.auth.jpa.entities.RoleToPermissionEntity;
@@ -25,8 +27,6 @@ import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractSearchWithTotalsRequestHandler;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.dp.Jdp;
 
 public class RoleToPermissionSearchRequestHandler extends AbstractSearchWithTotalsRequestHandler<RoleToPermissionInternalKey, RoleToPermissionDTO,
   FullTrackingWithVersion, RoleToPermissionSearchRequest, RoleToPermissionEntity> {

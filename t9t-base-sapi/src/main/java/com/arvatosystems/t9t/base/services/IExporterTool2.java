@@ -18,12 +18,12 @@ package com.arvatosystems.t9t.base.services;
 import java.util.List;
 import java.util.function.Function;
 
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
+import de.jpaw.bonaparte.pojos.api.TrackingBase;
+
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
-
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
 
 /** An extended version of the exporter tool, which can convert DTOs. */
 public interface IExporterTool2<DTO extends BonaPortable, EXTDTO extends DTO, TRACKING extends TrackingBase> {

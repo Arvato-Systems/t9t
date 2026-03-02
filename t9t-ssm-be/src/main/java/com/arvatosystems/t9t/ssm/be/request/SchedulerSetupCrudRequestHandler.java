@@ -19,8 +19,14 @@ import java.util.EnumSet;
 import java.util.Objects;
 import java.util.UUID;
 
+import com.google.common.base.Joiner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Provider;
 
 import com.arvatosystems.t9t.auth.ApiKeyDTO;
 import com.arvatosystems.t9t.auth.PermissionsDTO;
@@ -52,12 +58,6 @@ import com.arvatosystems.t9t.ssm.event.SchedulerChangedEvent;
 import com.arvatosystems.t9t.ssm.request.SchedulerSetupCrudRequest;
 import com.arvatosystems.t9t.ssm.request.UpdateSchedulerDataRequest;
 import com.arvatosystems.t9t.ssm.services.ISchedulerSetupResolver;
-import com.google.common.base.Joiner;
-
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Provider;
 
 public class SchedulerSetupCrudRequestHandler extends
   AbstractCrudSurrogateKeyBERequestHandler<SchedulerSetupRef, SchedulerSetupDTO, FullTrackingWithVersion, SchedulerSetupCrudRequest> {

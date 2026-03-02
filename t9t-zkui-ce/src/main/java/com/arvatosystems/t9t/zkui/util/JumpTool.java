@@ -21,13 +21,13 @@ import java.util.UUID;
 
 import org.zkoss.bind.BindUtils;
 
-import com.arvatosystems.t9t.zkui.session.ApplicationSession;
-import com.arvatosystems.t9t.zkui.viewmodel.beans.Navi;
-
 import de.jpaw.bonaparte.pojos.api.LongFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
 import de.jpaw.bonaparte.pojos.api.UuidFilter;
+
+import com.arvatosystems.t9t.zkui.session.ApplicationSession;
+import com.arvatosystems.t9t.zkui.viewmodel.beans.Navi;
 
 public final class JumpTool {
     private JumpTool() { }

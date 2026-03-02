@@ -15,17 +15,18 @@
  */
 package com.arvatosystems.t9t.base.jpa.jta.impl;
 
-import com.arvatosystems.t9t.base.services.RequestContext;
+import jakarta.persistence.EntityManager;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
 import de.jpaw.bonaparte.pojos.api.PersistenceProviders;
 import de.jpaw.dp.CustomScope;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
-import jakarta.persistence.EntityManager;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 /**
  * The provider for the JPA persistence context. This implementation hooks into

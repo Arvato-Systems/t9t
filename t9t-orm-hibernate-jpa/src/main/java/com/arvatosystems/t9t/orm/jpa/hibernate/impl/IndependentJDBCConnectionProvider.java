@@ -23,15 +23,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.mchange.v2.c3p0.C3P0Registry;
+import com.mchange.v2.c3p0.PooledDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.services.IJdbcConnectionProvider;
-import com.mchange.v2.c3p0.C3P0Registry;
-import com.mchange.v2.c3p0.PooledDataSource;
-
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.base.services.IJdbcConnectionProvider;
 
 @Singleton
 @Named("independent")

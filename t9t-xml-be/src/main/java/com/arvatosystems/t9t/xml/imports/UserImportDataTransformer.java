@@ -15,6 +15,10 @@
  */
 package com.arvatosystems.t9t.xml.imports;
 
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.dp.Dependent;
+import de.jpaw.dp.Named;
+
 import com.arvatosystems.t9t.auth.RoleKey;
 import com.arvatosystems.t9t.auth.RoleRef;
 import com.arvatosystems.t9t.auth.UserDTO;
@@ -25,10 +29,6 @@ import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.in.be.impl.AbstractInputDataTransformer;
 import com.arvatosystems.t9t.io.DataSinkPresets;
 import com.arvatosystems.t9t.xml.User001;
-
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.dp.Dependent;
-import de.jpaw.dp.Named;
 
 @Named("xmlUser001Import")
 @Dependent

@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.auth.be.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.auth.AuthModuleCfgDTO;
 import com.arvatosystems.t9t.auth.jpa.entities.AuthModuleCfgEntity;
 import com.arvatosystems.t9t.auth.jpa.mapping.IAuthModuleCfgDTOMapper;
@@ -24,8 +26,6 @@ import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractSearchWithTotalsRequestHandler;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.dp.Jdp;
 
 public class AuthModuleCfgSearchRequestHandler extends
   AbstractSearchWithTotalsRequestHandler<String, AuthModuleCfgDTO, FullTrackingWithVersion, AuthModuleCfgSearchRequest, AuthModuleCfgEntity> {

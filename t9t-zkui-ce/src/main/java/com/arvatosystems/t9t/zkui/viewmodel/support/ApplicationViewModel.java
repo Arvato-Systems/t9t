@@ -31,9 +31,10 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 
-import com.arvatosystems.t9t.zkui.services.IAuthenticationService;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+
+import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,6 +66,11 @@ import org.zkoss.zul.Panelchildren;
 import org.zkoss.zul.Style;
 import org.zkoss.zul.Window;
 
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
+import de.jpaw.bonaparte.pojos.meta.ObjectReference;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.auth.request.GetDefaultScreenRequest;
 import com.arvatosystems.t9t.auth.request.GetDefaultScreenResponse;
 import com.arvatosystems.t9t.authc.api.TenantDescription;
@@ -74,6 +80,7 @@ import com.arvatosystems.t9t.base.request.QueryConfigResponse;
 import com.arvatosystems.t9t.zkui.components.fields.IField;
 import com.arvatosystems.t9t.zkui.exceptions.ServiceResponseException;
 import com.arvatosystems.t9t.zkui.services.IApplicationDAO;
+import com.arvatosystems.t9t.zkui.services.IAuthenticationService;
 import com.arvatosystems.t9t.zkui.services.INavBarCreator;
 import com.arvatosystems.t9t.zkui.services.IT9tRemoteUtils;
 import com.arvatosystems.t9t.zkui.services.ITitleBarSearch;
@@ -85,12 +92,6 @@ import com.arvatosystems.t9t.zkui.util.JumpTool;
 import com.arvatosystems.t9t.zkui.util.T9tConfigConstants;
 import com.arvatosystems.t9t.zkui.util.ZulUtils;
 import com.arvatosystems.t9t.zkui.viewmodel.beans.Navi;
-import com.google.common.collect.ImmutableMap;
-
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
-import de.jpaw.bonaparte.pojos.meta.ObjectReference;
-import de.jpaw.dp.Jdp;
 /**
  * index View Model build the whole application.
  *

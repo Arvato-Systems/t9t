@@ -18,16 +18,16 @@ package com.arvatosystems.t9t.base.jdbc.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Startup;
+import de.jpaw.dp.StartupOnly;
+
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.jdbc.IJdbcDataSourceBuilder;
 import com.arvatosystems.t9t.base.services.IJdbcDataSource;
 import com.arvatosystems.t9t.base.services.IPersistenceProviderJdbc;
 import com.arvatosystems.t9t.cfg.be.RelationalDatabaseConfiguration;
 import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Startup;
-import de.jpaw.dp.StartupOnly;
 
 @Startup(12033)
 public class InitJdbc implements StartupOnly {

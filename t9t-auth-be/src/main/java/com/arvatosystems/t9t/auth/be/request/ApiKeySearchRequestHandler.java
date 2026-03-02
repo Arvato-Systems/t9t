@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.auth.be.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.auth.ApiKeyDTO;
 import com.arvatosystems.t9t.auth.request.ApiKeySearchRequest;
 import com.arvatosystems.t9t.auth.services.IApiKeyResolver;
@@ -22,8 +24,6 @@ import com.arvatosystems.t9t.base.be.impl.AbstractSearchBERequestHandler;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.dp.Jdp;
 
 public class ApiKeySearchRequestHandler extends AbstractSearchBERequestHandler<ApiKeyDTO, FullTrackingWithVersion, ApiKeySearchRequest> {
 

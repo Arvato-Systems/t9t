@@ -15,14 +15,17 @@
  */
 package com.arvatosystems.t9t.base.be.stubs;
 
-import com.arvatosystems.t9t.base.services.IIndexMaintenance;
+import jakarta.annotation.Nonnull;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.jpaw.bonaparte.pojos.api.OperationType;
 import de.jpaw.dp.Any;
 import de.jpaw.dp.Fallback;
 import de.jpaw.dp.Singleton;
-import jakarta.annotation.Nonnull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import com.arvatosystems.t9t.base.services.IIndexMaintenance;
 
 @Fallback
 @Any

@@ -21,6 +21,8 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.annotations.IsLogicallyFinal;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.cfg.be.KafkaConfiguration;
@@ -29,8 +31,6 @@ import com.arvatosystems.t9t.kafka.service.IKafkaTopicWriter;
 import com.arvatosystems.t9t.kafka.service.impl.KafkaTopicWriter;
 import com.arvatosystems.t9t.msglog.MessageDTO;
 import com.arvatosystems.t9t.msglog.services.IMsglogPersistenceAccess;
-
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class RequestLoggerToKafka implements IMsglogPersistenceAccess {

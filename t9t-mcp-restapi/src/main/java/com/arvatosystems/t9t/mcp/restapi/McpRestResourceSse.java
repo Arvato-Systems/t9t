@@ -21,24 +21,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.ai.T9tAiMcpConstants;
-import com.arvatosystems.t9t.ai.mcp.IMcpService;
-import com.arvatosystems.t9t.ai.request.AiGetSseRequest;
-import com.arvatosystems.t9t.base.T9tUtil;
-import com.arvatosystems.t9t.base.api.ServiceResponse;
-import com.arvatosystems.t9t.mcp.restapi.service.IMcpRestEndpointHandler;
-import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
-import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
-import com.fasterxml.jackson.databind.JsonNode;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
-import de.jpaw.util.ApplicationException;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.annotation.Nonnull;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
@@ -54,6 +36,25 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.sse.Sse;
 import jakarta.ws.rs.sse.SseEventSink;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+import de.jpaw.util.ApplicationException;
+
+import com.arvatosystems.t9t.ai.T9tAiMcpConstants;
+import com.arvatosystems.t9t.ai.mcp.IMcpService;
+import com.arvatosystems.t9t.ai.request.AiGetSseRequest;
+import com.arvatosystems.t9t.base.T9tUtil;
+import com.arvatosystems.t9t.base.api.ServiceResponse;
+import com.arvatosystems.t9t.mcp.restapi.service.IMcpRestEndpointHandler;
+import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
+import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
 
 @Singleton
 @Path("/" + T9tAiMcpConstants.ENDPOINT_SSE)

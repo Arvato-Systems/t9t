@@ -17,13 +17,13 @@ package com.arvatosystems.t9t.zkui.converters.grid;
 
 import java.util.Map;
 
-import com.arvatosystems.t9t.zkui.util.Constants;
-import com.arvatosystems.t9t.zkui.util.ZulUtils;
-
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.zkui.util.Constants;
+import com.arvatosystems.t9t.zkui.util.ZulUtils;
 
 @Named("boolean")
 @Singleton

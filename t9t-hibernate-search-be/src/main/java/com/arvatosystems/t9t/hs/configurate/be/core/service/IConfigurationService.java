@@ -15,9 +15,10 @@
  */
 package com.arvatosystems.t9t.hs.configurate.be.core.service;
 
-import com.arvatosystems.t9t.base.services.RequestContext;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 public interface IConfigurationService {
 

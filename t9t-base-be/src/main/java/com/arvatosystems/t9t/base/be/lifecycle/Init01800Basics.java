@@ -16,12 +16,12 @@
 package com.arvatosystems.t9t.base.be.lifecycle;
 
 
-import com.arvatosystems.t9t.base.be.execution.RequestContextScope;
-import com.arvatosystems.t9t.base.services.RequestContext;
-
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Startup;
 import de.jpaw.dp.StartupOnly;
+
+import com.arvatosystems.t9t.base.be.execution.RequestContextScope;
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 /**
  * Framework initialization class.

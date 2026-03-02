@@ -17,11 +17,11 @@ package com.arvatosystems.t9t.httppool.be.tests;
 
 import org.junit.jupiter.api.Test;
 
+import de.jpaw.bonaparte.util.impl.RecordMarshallerBonaparte;
+
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.request.PingRequest;
 import com.arvatosystems.t9t.httppool.be.HttpClientPool;
-
-import de.jpaw.bonaparte.util.impl.RecordMarshallerBonaparte;
 
 public class ITHttpPool {
 

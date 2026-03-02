@@ -15,6 +15,20 @@
  */
 package com.arvatosystems.t9t.core.be.request;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.function.Function;
+
+import de.jpaw.bonaparte.pojos.api.AndFilter;
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
+import de.jpaw.bonaparte.pojos.api.NoTracking;
+import de.jpaw.bonaparte.pojos.api.SearchFilter;
+import de.jpaw.bonaparte.pojos.api.SortColumn;
+import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.request.ComponentInfoDTO;
 import com.arvatosystems.t9t.base.request.RetrieveComponentInfoRequest;
 import com.arvatosystems.t9t.base.request.RetrieveComponentInfoResponse;
@@ -24,20 +38,6 @@ import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.IExporterTool;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.core.request.ComponentInfoSearchRequest;
-
-import de.jpaw.bonaparte.pojos.api.AndFilter;
-import de.jpaw.bonaparte.pojos.api.NoTracking;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.api.SortColumn;
-import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
-import de.jpaw.dp.Jdp;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.function.Function;
 
 public class ComponentInfoSearchRequestHandler extends AbstractSearchRequestHandler<ComponentInfoSearchRequest> {
     private static final String FIELD_NAME_GROUP_ID = "groupId";

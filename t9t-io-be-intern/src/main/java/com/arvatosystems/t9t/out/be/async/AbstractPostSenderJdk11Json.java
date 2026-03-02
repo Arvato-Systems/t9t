@@ -20,17 +20,17 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Charsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.core.MimeTypes;
 
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.io.AsyncQueueDTO;
 import com.arvatosystems.t9t.jackson.JacksonTools;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Charsets;
-
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.core.MimeTypes;
 
 public abstract class AbstractPostSenderJdk11Json extends AbstractPostSenderJdk11<String> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractPostSenderJdk11Json.class);

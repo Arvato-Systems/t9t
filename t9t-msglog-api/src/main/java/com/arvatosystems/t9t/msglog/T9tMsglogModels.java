@@ -15,12 +15,12 @@
  */
 package com.arvatosystems.t9t.msglog;
 
+import de.jpaw.bonaparte.pojos.api.NoTracking;
+
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.base.IViewModelContainer;
 import com.arvatosystems.t9t.msglog.request.MessageSearchRequest;
 import com.arvatosystems.t9t.msglog.request.MessageStatisticsSearchRequest;
-
-import de.jpaw.bonaparte.pojos.api.NoTracking;
 
 public final class T9tMsglogModels implements IViewModelContainer {
 

@@ -18,6 +18,10 @@ package com.arvatosystems.t9t.bpmn.be.services.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Provider;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.services.IBpmApplicationService;
 import com.arvatosystems.t9t.base.services.IExecutor;
@@ -28,10 +32,6 @@ import com.arvatosystems.t9t.bpmn.request.ExecuteProcessWithRefRequest;
 import com.arvatosystems.t9t.bpmn.request.WorkflowActionEnum;
 import com.arvatosystems.t9t.bpmn.services.IBpmnPersistenceAccess;
 import com.arvatosystems.t9t.bpmn.services.IProcessDefinitionCache;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Provider;
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class BpmApplicationService implements IBpmApplicationService {

@@ -1,4 +1,4 @@
-<window  border="none" viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.framework.OnlineUserVM', inst=inst)">
+<window viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.framework.OnlineUserVM', inst=inst)">
     <grid >
         <columns>
             <column hflex="2">${l:translate('systemInfo','name')}</column>

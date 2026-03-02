@@ -18,14 +18,14 @@ package com.arvatosystems.t9t.bpmn2.be.service.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.bpmn2.Bpmn2MessageQueueDTO;
 import com.arvatosystems.t9t.bpmn2.be.service.IBpmn2MessageQueueService;
 import com.arvatosystems.t9t.bpmn2.jpa.entities.Bpmn2MessageQueueEntity;
 import com.arvatosystems.t9t.bpmn2.jpa.mapping.IBpmn2MessageQueueDTOMapper;
 import com.arvatosystems.t9t.bpmn2.jpa.persistence.IBpmn2MessageQueueEntityResolver;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class Bpmn2MessageQueueService implements IBpmn2MessageQueueService {

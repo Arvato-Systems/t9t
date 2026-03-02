@@ -22,16 +22,16 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 
-import com.arvatosystems.t9t.authc.api.TenantDescription;
-import com.arvatosystems.t9t.base.T9tConstants;
-import com.arvatosystems.t9t.base.types.TenantIsolationCategoryType;
-import com.arvatosystems.t9t.zkui.session.ApplicationSession;
-
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.ui.UIFilter;
 import de.jpaw.bonaparte.pojos.ui.UIFilterType;
+
+import com.arvatosystems.t9t.authc.api.TenantDescription;
+import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.types.TenantIsolationCategoryType;
+import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 
 public class TenantField extends AbstractField<Combobox> {
     private static final Logger LOGGER = LoggerFactory.getLogger(TenantField.class);

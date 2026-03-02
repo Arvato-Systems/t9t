@@ -19,10 +19,10 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
-import com.arvatosystems.t9t.doc.services.IImageCustomizer;
-
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.doc.services.IImageCustomizer;
 
 /**
  * Special variant of the QR code, used by the Swiss payment slip.

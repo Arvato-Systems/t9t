@@ -15,6 +15,24 @@
  */
 package com.arvatosystems.t9t.base.vertx.impl;
 
+import java.nio.charset.StandardCharsets;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.vertx.core.Future;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.internal.buffer.BufferInternal;
+import io.vertx.core.net.NetSocket;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.core.ByteArrayComposer;
+import de.jpaw.bonaparte.core.ByteArrayParser;
+import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+import de.jpaw.dp.Jdp;
+import de.jpaw.util.ApplicationException;
+import de.jpaw.util.ByteBuilder;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
@@ -23,24 +41,6 @@ import com.arvatosystems.t9t.base.auth.AuthenticationResponse;
 import com.arvatosystems.t9t.base.request.ErrorRequest;
 import com.arvatosystems.t9t.server.services.IAuthenticate;
 import com.arvatosystems.t9t.server.services.IRequestProcessor;
-
-import de.jpaw.bonaparte.core.ByteArrayComposer;
-import de.jpaw.bonaparte.core.ByteArrayParser;
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
-import de.jpaw.dp.Jdp;
-import de.jpaw.util.ApplicationException;
-import de.jpaw.util.ByteBuilder;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import io.vertx.core.Future;
-import io.vertx.core.buffer.Buffer;
-import io.vertx.core.internal.buffer.BufferInternal;
-import io.vertx.core.net.NetSocket;
-
-import java.nio.charset.StandardCharsets;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class TcpSocketHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(TcpSocketHandler.class);

@@ -18,11 +18,11 @@ package com.arvatosystems.t9t.zkui.components.datafields;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.core.BonaPortable;
+
 import com.arvatosystems.t9t.base.search.Description;
 import com.arvatosystems.t9t.zkui.components.dropdown28.db.Dropdown28Db;
 import com.arvatosystems.t9t.zkui.components.dropdown28.factories.IDropdown28DbFactory;
-
-import de.jpaw.bonaparte.core.BonaPortable;
 
 public class DropdownDataField<T extends BonaPortable> extends AbstractDropdownDataField<T, T> {
     private static final Logger LOGGER = LoggerFactory.getLogger(DropdownDataField.class);

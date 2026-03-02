@@ -15,6 +15,21 @@
  */
 package com.arvatosystems.t9t.changeRequest.be.request;
 
+import java.util.EnumSet;
+import java.util.List;
+
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import jakarta.persistence.Query;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.core.CompactByteArrayComposer;
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
@@ -33,18 +48,6 @@ import com.arvatosystems.t9t.changeRequest.request.UpdateDataChangeRequestStatus
 import com.arvatosystems.t9t.changeRequest.services.IChangeWorkFlowConfigCache;
 import com.arvatosystems.t9t.changeRequest.services.IDataChangeRequestEmailService;
 import com.arvatosystems.t9t.server.services.IAuthorize;
-import de.jpaw.bonaparte.core.CompactByteArrayComposer;
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
-import de.jpaw.dp.Jdp;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
-import jakarta.persistence.Query;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.EnumSet;
-import java.util.List;
 
 public class UpdateDataChangeRequestStatusRequestHandler extends AbstractRequestHandler<UpdateDataChangeRequestStatusRequest> {
 

@@ -23,6 +23,13 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zul.Div;
 
+import de.jpaw.bonaparte.api.SearchFilters;
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.pojos.api.DataWithTracking;
+import de.jpaw.bonaparte.pojos.api.SearchFilter;
+import de.jpaw.bonaparte.pojos.api.TrackingBase;
+import de.jpaw.bonaparte.pojos.apiw.Ref;
+
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.zkui.components.EventDataSelect28;
 import com.arvatosystems.t9t.zkui.components.FilterGenerator;
@@ -30,13 +37,6 @@ import com.arvatosystems.t9t.zkui.components.IDataSelectReceiver;
 import com.arvatosystems.t9t.zkui.components.IFilterGenerator;
 import com.arvatosystems.t9t.zkui.components.IGridIdOwner;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
-
-import de.jpaw.bonaparte.api.SearchFilters;
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.SearchFilter;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
-import de.jpaw.bonaparte.pojos.apiw.Ref;
 
 /** A direct link from detail section to sub grid, where Tabbox28 and Tabpanel is not required because
  * a single page exists. This can be used to link 2 grids with each other. */

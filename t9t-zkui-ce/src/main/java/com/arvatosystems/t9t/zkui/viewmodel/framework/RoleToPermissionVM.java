@@ -17,6 +17,9 @@ package com.arvatosystems.t9t.zkui.viewmodel.framework;
 
 import org.zkoss.bind.annotation.Init;
 
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
+
 import com.arvatosystems.t9t.auth.RoleToPermissionDTO;
 import com.arvatosystems.t9t.auth.RoleToPermissionInternalKey;
 import com.arvatosystems.t9t.auth.RoleToPermissionKey;
@@ -26,9 +29,6 @@ import com.arvatosystems.t9t.base.crud.CrudCompositeKeyRequest;
 import com.arvatosystems.t9t.base.crud.CrudCompositeKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.zkui.viewmodel.AbstractCrudVM;
-
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 
 @Init(superclass = true)
 public class RoleToPermissionVM extends AbstractCrudVM<RoleToPermissionInternalKey, RoleToPermissionDTO, FullTrackingWithVersion,

@@ -15,6 +15,10 @@
  */
 package com.arvatosystems.t9t.msglog.jpa.request;
 
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.auth.PermissionType;
@@ -24,10 +28,6 @@ import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.msglog.jpa.entities.MessageEntity;
 import com.arvatosystems.t9t.msglog.jpa.persistence.IMessageEntityResolver;
 import com.arvatosystems.t9t.server.services.IAuthorize;
-
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
-import de.jpaw.dp.Jdp;
 
 public abstract class AbstractRerunRequestHandler<T extends RequestParameters> extends AbstractRequestHandler<T> {
     protected final IExecutor executor = Jdp.getRequired(IExecutor.class);

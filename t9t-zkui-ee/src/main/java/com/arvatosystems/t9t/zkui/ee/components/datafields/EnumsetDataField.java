@@ -31,15 +31,15 @@ import org.zkoss.zkmax.zul.Chosenbox;
 import org.zkoss.zul.ItemRenderer;
 import org.zkoss.zul.ListModelList;
 
-import com.arvatosystems.t9t.zkui.components.datafields.AbstractCoreDataField;
-import com.arvatosystems.t9t.zkui.components.datafields.DataFieldParameters;
-import com.arvatosystems.t9t.zkui.viewmodel.beans.ComboBoxItem2;
-
 import de.jpaw.bonaparte.pojos.meta.AlphanumericEnumSetDataItem;
 import de.jpaw.bonaparte.pojos.meta.EnumDefinition;
 import de.jpaw.bonaparte.pojos.meta.EnumSetDefinition;
 import de.jpaw.bonaparte.pojos.meta.NumericEnumSetDataItem;
 import de.jpaw.enums.GenericEnumSetMarker;
+
+import com.arvatosystems.t9t.zkui.components.datafields.AbstractCoreDataField;
+import com.arvatosystems.t9t.zkui.components.datafields.DataFieldParameters;
+import com.arvatosystems.t9t.zkui.viewmodel.beans.ComboBoxItem2;
 
 public class EnumsetDataField<E extends Enum<E>, T extends GenericEnumSetMarker<E>> extends AbstractCoreDataField<Chosenbox, T> {
     private static final Logger LOGGER = LoggerFactory.getLogger(EnumsetDataField.class);

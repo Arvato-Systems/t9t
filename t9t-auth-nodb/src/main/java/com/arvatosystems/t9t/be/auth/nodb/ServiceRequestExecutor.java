@@ -18,11 +18,11 @@ package com.arvatosystems.t9t.be.auth.nodb;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.api.ServiceRequest;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.server.services.IUnauthenticatedServiceRequestExecutor;
-
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class ServiceRequestExecutor implements IUnauthenticatedServiceRequestExecutor {

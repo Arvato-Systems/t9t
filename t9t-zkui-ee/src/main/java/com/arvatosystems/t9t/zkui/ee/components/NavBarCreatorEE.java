@@ -24,15 +24,15 @@ import org.zkoss.zkmax.zul.Nav;
 import org.zkoss.zkmax.zul.Navbar;
 import org.zkoss.zkmax.zul.Navitem;
 
+import de.jpaw.dp.Singleton;
+import de.jpaw.dp.Specializes;
+
 import com.arvatosystems.t9t.zkui.services.INavBarCreator;
 import com.arvatosystems.t9t.zkui.services.impl.DefaultNavBarCreator;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 import com.arvatosystems.t9t.zkui.viewmodel.beans.Navi;
 import com.arvatosystems.t9t.zkui.viewmodel.support.ApplicationViewModel;
 import com.arvatosystems.t9t.zkui.viewmodel.support.NaviGroupingViewModel;
-
-import de.jpaw.dp.Singleton;
-import de.jpaw.dp.Specializes;
 
 @Singleton
 @Specializes

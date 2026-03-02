@@ -15,15 +15,17 @@
  */
 package com.arvatosystems.t9t.out.be.impl.output;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
+
+import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.io.DataSinkDTO;
 import com.arvatosystems.t9t.io.T9tIOException;
 import com.arvatosystems.t9t.out.services.IOutputResource;
-import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
-import java.nio.charset.Charset;
 
 /**
  * This implementation is used for testing only, and for that reason is not

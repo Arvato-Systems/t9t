@@ -15,11 +15,12 @@
  */
 package com.arvatosystems.t9t.ai.service;
 
-import com.arvatosystems.t9t.ai.tools.AbstractAiTool;
-import com.arvatosystems.t9t.ai.tools.AbstractAiToolResult;
+import jakarta.annotation.Nonnull;
 
 import de.jpaw.bonaparte.core.BonaPortableClass;
-import jakarta.annotation.Nonnull;
+
+import com.arvatosystems.t9t.ai.tools.AbstractAiTool;
+import com.arvatosystems.t9t.ai.tools.AbstractAiToolResult;
 
 /** Descriptor for an AI tool. */
 public record AiToolDescriptor<R extends  AbstractAiTool, U extends AbstractAiToolResult>(

@@ -15,17 +15,19 @@
  */
 package com.arvatosystems.t9t.auth.be.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Startup;
+import de.jpaw.dp.StartupOnly;
+
 import com.arvatosystems.t9t.auth.services.IAuthenticator;
 import com.arvatosystems.t9t.base.be.execution.RequestContextScope;
 import com.arvatosystems.t9t.base.services.ICustomization;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.server.InternalHeaderParameters;
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Startup;
-import de.jpaw.dp.StartupOnly;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Upon server start, there is a RequestContext created for the initial thread.

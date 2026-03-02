@@ -18,11 +18,11 @@ package com.arvatosystems.t9t.rest.xml;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.xml.namespaces.IStandardNamespaceWriter;
-
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Startup;
 import de.jpaw.dp.StartupOnly;
+
+import com.arvatosystems.t9t.xml.namespaces.IStandardNamespaceWriter;
 
 @Startup(90001)
 public class XmlContextEagerInitialization implements StartupOnly {

@@ -22,9 +22,22 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-import de.jpaw.bonaparte.pojos.api.AggregateColumn;
+import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.pojos.api.AggregateColumn;
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.bonaparte.pojos.api.TrackingBase;
+import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
+import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
+import de.jpaw.bonaparte.pojos.ui.UIDefaults;
+import de.jpaw.bonaparte.pojos.ui.UIFilter;
+import de.jpaw.dp.Jdp;
 
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.base.FieldMappers;
@@ -42,19 +55,6 @@ import com.arvatosystems.t9t.zkui.components.basic.GridIdTools;
 import com.arvatosystems.t9t.zkui.services.IT9tRemoteUtils;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 import com.arvatosystems.t9t.zkui.util.ZulUtils;
-import com.google.common.base.Objects;
-import com.google.common.collect.ImmutableList;
-
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
-import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
-import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
-import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
-import de.jpaw.bonaparte.pojos.ui.UIDefaults;
-import de.jpaw.bonaparte.pojos.ui.UIFilter;
-import de.jpaw.dp.Jdp;
 
 public class LeanGridConfigResolver implements ILeanGridConfigResolver {
     private static final Logger LOGGER = LoggerFactory.getLogger(LeanGridConfigResolver.class);

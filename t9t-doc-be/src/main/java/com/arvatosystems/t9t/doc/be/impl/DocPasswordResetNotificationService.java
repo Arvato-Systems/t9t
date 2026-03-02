@@ -20,15 +20,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.IPasswordResetNotificationService;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.doc.api.DocumentSelector;
 import com.arvatosystems.t9t.doc.api.NewDocumentRequest;
 import com.arvatosystems.t9t.email.api.RecipientEmail;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class DocPasswordResetNotificationService implements IPasswordResetNotificationService {

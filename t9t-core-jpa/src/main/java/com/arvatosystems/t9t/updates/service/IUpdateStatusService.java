@@ -15,11 +15,11 @@
  */
 package com.arvatosystems.t9t.updates.service;
 
-import com.arvatosystems.t9t.updates.UpdateApplyStatusType;
-import com.arvatosystems.t9t.updates.jpa.entities.UpdateStatusEntity;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+
+import com.arvatosystems.t9t.updates.UpdateApplyStatusType;
+import com.arvatosystems.t9t.updates.jpa.entities.UpdateStatusEntity;
 
 public interface IUpdateStatusService {
     void logUpdateStatus(@Nonnull UpdateStatusEntity updateStatus);

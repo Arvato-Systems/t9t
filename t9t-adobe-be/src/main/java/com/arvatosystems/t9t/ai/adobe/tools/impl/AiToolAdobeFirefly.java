@@ -18,6 +18,10 @@ package com.arvatosystems.t9t.ai.adobe.tools.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Named;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.ai.adobe.request.AdobeFireflyGenerateImageRequest;
 import com.arvatosystems.t9t.ai.adobe.request.AdobeFireflyGenerateImageResponse;
 import com.arvatosystems.t9t.ai.adobe.service.IAdobeFireflyClient;
@@ -25,10 +29,6 @@ import com.arvatosystems.t9t.ai.service.IAiTool;
 import com.arvatosystems.t9t.ai.tools.adobe.AiToolAdobeFireflyGenerateImage;
 import com.arvatosystems.t9t.ai.tools.adobe.AiToolAdobeFireflyGenerateImageResult;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Named;
-import de.jpaw.dp.Singleton;
 
 @Named(AiToolAdobeFireflyGenerateImage.my$PQON)
 @Singleton

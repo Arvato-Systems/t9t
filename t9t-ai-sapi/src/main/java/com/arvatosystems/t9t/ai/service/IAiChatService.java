@@ -18,14 +18,15 @@ package com.arvatosystems.t9t.ai.service;
 import java.util.List;
 import java.util.Map;
 
-import com.arvatosystems.t9t.ai.AiAssistantDTO;
-import com.arvatosystems.t9t.ai.AiConversationDTO;
-import com.arvatosystems.t9t.base.services.RequestContext;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+
+import com.arvatosystems.t9t.ai.AiAssistantDTO;
+import com.arvatosystems.t9t.ai.AiConversationDTO;
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 /**
  * Interface defining the interaction with a generic chat service.

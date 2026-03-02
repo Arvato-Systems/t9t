@@ -15,14 +15,14 @@
  */
 package com.arvatosystems.t9t.doc.be.converters.impl;
 
-import com.arvatosystems.t9t.doc.services.IDocComponentConverter;
+import java.util.Map;
 
 import de.jpaw.bonaparte.api.media.MediaTypeInfo;
 import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 import de.jpaw.dp.Jdp;
 
-import java.util.Map;
+import com.arvatosystems.t9t.doc.services.IDocComponentConverter;
 
 //converter which references images using CID: (for email use)
 //this class is instance per use due to the attachments instance variable

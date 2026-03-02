@@ -10,7 +10,7 @@
     <window id="main" height="100%"
         width="100%" apply="org.zkoss.bind.BindComposer"
         viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.support.TenantSelectionViewModel')"
-        border="normal" mode="overlapped" position="center,center"
+        mode="overlapped" position="center,center"
         xmlns:h="native" sclass="white-window">
 
         <style src="/css/login.css"/>

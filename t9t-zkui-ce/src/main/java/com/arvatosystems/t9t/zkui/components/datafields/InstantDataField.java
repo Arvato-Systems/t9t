@@ -15,12 +15,12 @@
  */
 package com.arvatosystems.t9t.zkui.components.datafields;
 
+import java.time.Instant;
 import java.util.Date;
 
-import java.time.Instant;
+import org.zkoss.zul.Datebox;
 
 import com.arvatosystems.t9t.zkui.util.ApplicationUtil;
-import org.zkoss.zul.Datebox;
 
 public class InstantDataField extends AbstractDataField<Datebox, Instant> {
     protected final Datebox c = new Datebox();

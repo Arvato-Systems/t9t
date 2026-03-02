@@ -21,12 +21,12 @@ import java.time.ZoneOffset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Fallback;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.services.ITimeZoneProvider;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.cfg.be.ServerConfiguration;
-
-import de.jpaw.dp.Fallback;
-import de.jpaw.dp.Singleton;
 
 /**
  * Provides a time zone.

@@ -15,11 +15,11 @@
  */
 package com.arvatosystems.t9t.plugins.be.impl;
 
-import com.arvatosystems.t9t.plugins.services.IPluginMethodLifecycle;
-
 import de.jpaw.dp.Any;
 import de.jpaw.dp.Fallback;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.plugins.services.IPluginMethodLifecycle;
 
 @Singleton
 @Fallback

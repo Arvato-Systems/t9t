@@ -15,16 +15,19 @@
  */
 package com.arvatosystems.t9t.email.be.smtp.tests;
 
+import java.util.UUID;
+
+import com.google.common.collect.ImmutableList;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
+import de.jpaw.bonaparte.api.media.MediaTypes;
+import de.jpaw.bonaparte.pojos.api.media.MediaData;
+
 import com.arvatosystems.t9t.email.EmailModuleCfgDTO;
 import com.arvatosystems.t9t.email.api.EmailMessage;
 import com.arvatosystems.t9t.email.api.RecipientEmail;
 import com.arvatosystems.t9t.email.be.smtp.impl.SmtpEmailService;
-import com.google.common.collect.ImmutableList;
-import de.jpaw.bonaparte.api.media.MediaTypes;
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import java.util.UUID;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
 
 public class SendEmailBySmtpTest {
     private static final String DEFAULT_USER = "xxx@online.de";

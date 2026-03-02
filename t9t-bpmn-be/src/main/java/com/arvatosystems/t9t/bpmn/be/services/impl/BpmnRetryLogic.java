@@ -19,12 +19,12 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.JsonUtil;
 import com.arvatosystems.t9t.bpmn.IWorkflowStep;
 import com.arvatosystems.t9t.bpmn.WorkflowReturnCode;
 import com.arvatosystems.t9t.bpmn.services.IBpmnRetryLogic;
-
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class BpmnRetryLogic implements IBpmnRetryLogic {

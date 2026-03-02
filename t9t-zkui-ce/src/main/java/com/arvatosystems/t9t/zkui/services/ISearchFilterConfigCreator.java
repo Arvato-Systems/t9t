@@ -19,10 +19,10 @@ import java.util.List;
 
 import org.zkoss.zul.Div;
 
+import de.jpaw.bonaparte.pojos.ui.UIFilter;
+
 import com.arvatosystems.t9t.base.uiprefs.UIGridPreferences;
 import com.arvatosystems.t9t.zkui.viewmodel.support.SearchFilterRowVM;
-
-import de.jpaw.bonaparte.pojos.ui.UIFilter;
 
 public interface ISearchFilterConfigCreator {
 

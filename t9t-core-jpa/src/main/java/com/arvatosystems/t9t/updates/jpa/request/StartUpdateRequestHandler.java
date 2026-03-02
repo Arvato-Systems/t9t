@@ -16,8 +16,11 @@
 package com.arvatosystems.t9t.updates.jpa.request;
 
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.dp.Jdp;
 
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.T9tUtil;
@@ -30,7 +33,6 @@ import com.arvatosystems.t9t.updates.jpa.entities.UpdateStatusEntity;
 import com.arvatosystems.t9t.updates.jpa.persistence.IUpdateStatusEntityResolver;
 import com.arvatosystems.t9t.updates.request.StartUpdateRequest;
 import com.arvatosystems.t9t.updates.service.IUpdateStatusService;
-import de.jpaw.dp.Jdp;
 
 public class StartUpdateRequestHandler extends AbstractRequestHandler<StartUpdateRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(StartUpdateRequestHandler.class);

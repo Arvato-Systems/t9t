@@ -25,8 +25,24 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
+import jakarta.annotation.Nullable;
+import jakarta.ws.rs.container.AsyncResponse;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
+
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.core.MessageParserException;
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+import de.jpaw.dp.Specializes;
+import de.jpaw.util.ApplicationException;
+import de.jpaw.util.ExceptionUtil;
 
 import com.arvatosystems.t9t.authz.api.QuerySinglePermissionRequest;
 import com.arvatosystems.t9t.authz.api.QuerySinglePermissionResponse;
@@ -50,21 +66,6 @@ import com.arvatosystems.t9t.rest.parsers.SimpleRequestConverterBatch;
 import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
 import com.arvatosystems.t9t.rest.utils.RestUtils;
 import com.arvatosystems.t9t.xml.GenericResult;
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-
-import de.jpaw.bonaparte.core.MessageParserException;
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
-import de.jpaw.dp.Specializes;
-import de.jpaw.util.ApplicationException;
-import de.jpaw.util.ExceptionUtil;
-import jakarta.annotation.Nullable;
-import jakarta.ws.rs.container.AsyncResponse;
-import jakarta.ws.rs.core.HttpHeaders;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
 
 @Singleton
 @Specializes

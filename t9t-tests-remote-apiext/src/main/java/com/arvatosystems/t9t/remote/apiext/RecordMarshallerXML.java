@@ -17,18 +17,19 @@ package com.arvatosystems.t9t.remote.apiext;
 
 import java.io.ByteArrayOutputStream;
 
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.xml.GenericResult;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.util.IMarshaller;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ByteBuilder;
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Marshaller;
+
+import com.arvatosystems.t9t.xml.GenericResult;
 
 public class RecordMarshallerXML implements IMarshaller {
     private static final Logger LOGGER = LoggerFactory.getLogger(RecordMarshallerXML.class);

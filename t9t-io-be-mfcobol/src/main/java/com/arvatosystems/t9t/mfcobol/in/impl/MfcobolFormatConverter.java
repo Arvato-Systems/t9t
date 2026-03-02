@@ -22,19 +22,19 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.base.T9tUtil;
-import com.arvatosystems.t9t.in.be.impl.AbstractBufferedFormatConverter;
-import com.arvatosystems.t9t.in.services.IInputSession;
-import com.arvatosystems.t9t.io.T9tIOException;
-import com.arvatosystems.t9t.mfcobol.in.IRecordTypeSelector;
-
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.BonaPortableClass;
 import de.jpaw.bonaparte.mfcobol.MfcobolParser;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Named;
+
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.T9tUtil;
+import com.arvatosystems.t9t.in.be.impl.AbstractBufferedFormatConverter;
+import com.arvatosystems.t9t.in.services.IInputSession;
+import com.arvatosystems.t9t.io.T9tIOException;
+import com.arvatosystems.t9t.mfcobol.in.IRecordTypeSelector;
 
 /**
  * Format converter for binary formats with a fixed record length.

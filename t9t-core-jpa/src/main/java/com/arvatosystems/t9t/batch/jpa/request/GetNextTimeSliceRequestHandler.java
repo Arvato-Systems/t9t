@@ -15,14 +15,14 @@
  */
 package com.arvatosystems.t9t.batch.jpa.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.batch.SliceTrackingInterval;
 import com.arvatosystems.t9t.batch.request.GetNextTimeSliceRequest;
 import com.arvatosystems.t9t.batch.request.GetNextTimeSliceResponse;
 import com.arvatosystems.t9t.batch.services.IGetNextTimeSliceService;
-
-import de.jpaw.dp.Jdp;
 
 public class GetNextTimeSliceRequestHandler extends AbstractRequestHandler<GetNextTimeSliceRequest> {
 

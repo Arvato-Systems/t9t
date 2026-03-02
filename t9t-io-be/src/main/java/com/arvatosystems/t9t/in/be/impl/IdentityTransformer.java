@@ -15,11 +15,11 @@
  */
 package com.arvatosystems.t9t.in.be.impl;
 
+import de.jpaw.bonaparte.core.BonaPortable;
+
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.request.ErrorRequest;
 import com.arvatosystems.t9t.io.T9tIOException;
-
-import de.jpaw.bonaparte.core.BonaPortable;
 
 /** Implementation which just validates that the received data is of type RequestParameters. */
 public class IdentityTransformer extends AbstractInputDataTransformer<BonaPortable> {

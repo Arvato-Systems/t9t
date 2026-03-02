@@ -18,12 +18,12 @@ package com.arvatosystems.t9t.out.be.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.services.IOutputSession;
-import com.arvatosystems.t9t.base.services.ISplittingOutputSessionProvider;
-
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.base.services.IOutputSession;
+import com.arvatosystems.t9t.base.services.ISplittingOutputSessionProvider;
 
 @Singleton
 public class SplittingOutputSessionProvider implements ISplittingOutputSessionProvider {

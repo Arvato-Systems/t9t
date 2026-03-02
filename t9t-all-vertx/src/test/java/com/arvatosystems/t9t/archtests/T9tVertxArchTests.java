@@ -15,8 +15,9 @@
  */
 package com.arvatosystems.t9t.archtests;
 
-import com.arvatosystems.t9t.be.arch.testlib.BackendArchTests;
 import com.tngtech.archunit.junit.AnalyzeClasses;
+
+import com.arvatosystems.t9t.be.arch.testlib.BackendArchTests;
 
 @AnalyzeClasses(packages = "com.arvatosystems.t9t")
 public class T9tVertxArchTests extends BackendArchTests {

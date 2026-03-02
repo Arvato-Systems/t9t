@@ -15,9 +15,10 @@
  */
 package com.arvatosystems.t9t.base.services;
 
+import jakarta.annotation.Nonnull;
+
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
-import jakarta.annotation.Nonnull;
 
 /**
  * This interface provides access to remote instances of t9t based servers.

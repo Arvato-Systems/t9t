@@ -15,13 +15,13 @@
  */
 package com.arvatosystems.t9t.auth.jpa.impl;
 
+import de.jpaw.dp.Singleton;
+import de.jpaw.dp.Specializes;
+
 import com.arvatosystems.t9t.auth.TenantDTO;
 import com.arvatosystems.t9t.auth.jpa.entities.TenantEntity;
 import com.arvatosystems.t9t.auth.jpa.persistence.impl.TenantEntityResolver;
 import com.arvatosystems.t9t.auth.services.ITenantResolver;
-
-import de.jpaw.dp.Singleton;
-import de.jpaw.dp.Specializes;
 
 @Singleton
 @Specializes

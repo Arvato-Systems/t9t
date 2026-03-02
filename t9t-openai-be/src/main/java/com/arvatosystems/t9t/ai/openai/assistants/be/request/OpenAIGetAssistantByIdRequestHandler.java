@@ -15,14 +15,14 @@
  */
 package com.arvatosystems.t9t.ai.openai.assistants.be.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.ai.openai.assistants.OpenAIObjectAssistant;
 import com.arvatosystems.t9t.ai.openai.assistants.request.OpenAIAssistantResponse;
 import com.arvatosystems.t9t.ai.openai.assistants.request.OpenAIGetAssistantByIdRequest;
 import com.arvatosystems.t9t.ai.openai.service.IOpenAIClient;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.dp.Jdp;
 
 public class OpenAIGetAssistantByIdRequestHandler extends AbstractRequestHandler<OpenAIGetAssistantByIdRequest> {
 

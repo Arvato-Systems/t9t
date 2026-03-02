@@ -15,21 +15,6 @@
  */
 package com.arvatosystems.t9t.mcp.restapi;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.ai.T9tAiMcpConstants;
-import com.arvatosystems.t9t.ai.mcp.IMcpService;
-import com.arvatosystems.t9t.base.T9tUtil;
-import com.arvatosystems.t9t.mcp.restapi.service.IMcpRestEndpointHandler;
-import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
-import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
-import com.fasterxml.jackson.databind.JsonNode;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -44,6 +29,22 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.sse.Sse;
 import jakarta.ws.rs.sse.SseEventSink;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.ai.T9tAiMcpConstants;
+import com.arvatosystems.t9t.ai.mcp.IMcpService;
+import com.arvatosystems.t9t.base.T9tUtil;
+import com.arvatosystems.t9t.mcp.restapi.service.IMcpRestEndpointHandler;
+import com.arvatosystems.t9t.rest.services.IT9tRestEndpoint;
+import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
 
 @Singleton
 @Path("/" + T9tAiMcpConstants.ENDPOINT_MCP)

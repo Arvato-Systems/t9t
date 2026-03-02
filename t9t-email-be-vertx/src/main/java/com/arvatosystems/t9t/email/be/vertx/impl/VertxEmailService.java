@@ -15,18 +15,11 @@
  */
 package com.arvatosystems.t9t.email.be.vertx.impl;
 
-import com.arvatosystems.t9t.base.T9tConstants;
-import com.arvatosystems.t9t.base.api.ServiceResponse;
-import com.arvatosystems.t9t.email.EmailModuleCfgDTO;
-import com.arvatosystems.t9t.email.api.EmailMessage;
-import com.arvatosystems.t9t.email.api.RecipientEmail;
-import com.arvatosystems.t9t.email.services.IEmailSender;
-import de.jpaw.bonaparte.api.media.MediaTypes;
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Named;
-import de.jpaw.dp.Singleton;
-import de.jpaw.util.ExceptionUtil;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Vertx;
 import io.vertx.ext.mail.MailAttachment;
@@ -36,12 +29,22 @@ import io.vertx.ext.mail.MailMessage;
 import io.vertx.ext.mail.MailResult;
 import io.vertx.ext.mail.StartTLSOptions;
 import io.vertx.ext.mail.impl.MailAttachmentImpl;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.api.media.MediaTypes;
+import de.jpaw.bonaparte.pojos.api.media.MediaData;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Named;
+import de.jpaw.dp.Singleton;
+import de.jpaw.util.ExceptionUtil;
+
+import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.base.api.ServiceResponse;
+import com.arvatosystems.t9t.email.EmailModuleCfgDTO;
+import com.arvatosystems.t9t.email.api.EmailMessage;
+import com.arvatosystems.t9t.email.api.RecipientEmail;
+import com.arvatosystems.t9t.email.services.IEmailSender;
 
 /**
  * Implementation of IEmailSender using the vert.x client. This is an

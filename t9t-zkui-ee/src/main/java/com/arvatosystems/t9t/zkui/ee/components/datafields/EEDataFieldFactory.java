@@ -15,15 +15,16 @@
  */
 package com.arvatosystems.t9t.zkui.ee.components.datafields;
 
+import jakarta.annotation.Nonnull;
+
+import de.jpaw.dp.Singleton;
+import de.jpaw.dp.Specializes;
+
 import com.arvatosystems.t9t.zkui.components.IDataFieldFactory;
 import com.arvatosystems.t9t.zkui.components.datafields.DataFieldFactory;
 import com.arvatosystems.t9t.zkui.components.datafields.DataFieldParameters;
 import com.arvatosystems.t9t.zkui.components.datafields.IDataField;
-
 import com.arvatosystems.t9t.zkui.util.Constants;
-import de.jpaw.dp.Singleton;
-import de.jpaw.dp.Specializes;
-import jakarta.annotation.Nonnull;
 
 @Singleton
 @Specializes

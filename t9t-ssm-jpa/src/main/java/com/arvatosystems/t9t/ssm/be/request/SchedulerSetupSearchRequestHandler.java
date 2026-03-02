@@ -15,6 +15,9 @@
  */
 package com.arvatosystems.t9t.ssm.be.request;
 
+import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractSearchWithTotalsRequestHandler;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
@@ -26,9 +29,6 @@ import com.arvatosystems.t9t.ssm.jpa.entities.SchedulerSetupEntity;
 import com.arvatosystems.t9t.ssm.jpa.mapping.ISchedulerSetupDTOMapper;
 import com.arvatosystems.t9t.ssm.jpa.persistence.ISchedulerSetupEntityResolver;
 import com.arvatosystems.t9t.ssm.request.SchedulerSetupSearchRequest;
-
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
-import de.jpaw.dp.Jdp;
 
 public class SchedulerSetupSearchRequestHandler extends AbstractSearchWithTotalsRequestHandler<Long, SchedulerSetupDTO, FullTrackingWithVersion,
   SchedulerSetupSearchRequest, SchedulerSetupEntity> {

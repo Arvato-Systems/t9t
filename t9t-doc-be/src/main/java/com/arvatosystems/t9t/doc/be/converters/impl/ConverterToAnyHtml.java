@@ -17,13 +17,14 @@ package com.arvatosystems.t9t.doc.be.converters.impl;
 
 import java.util.Map;
 
-import com.arvatosystems.t9t.doc.services.IDocComponentConverter;
 import com.google.common.html.HtmlEscapers;
 
 import de.jpaw.bonaparte.api.media.MediaTypeInfo;
 import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import de.jpaw.bonaparte.pojos.api.media.MediaType;
 import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
+
+import com.arvatosystems.t9t.doc.services.IDocComponentConverter;
 
 //extend this class to add conversions from additional format types
 public abstract class ConverterToAnyHtml implements IDocComponentConverter {

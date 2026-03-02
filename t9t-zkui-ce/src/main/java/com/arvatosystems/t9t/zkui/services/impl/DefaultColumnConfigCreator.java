@@ -34,12 +34,12 @@ import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Popup;
 
+import de.jpaw.dp.Dependent;
+import de.jpaw.dp.Fallback;
+
 import com.arvatosystems.t9t.base.uiprefs.UIGridPreferences;
 import com.arvatosystems.t9t.zkui.services.IColumnConfigCreator;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
-
-import de.jpaw.dp.Dependent;
-import de.jpaw.dp.Fallback;
 
 /**
  * CE version of column configuration component that list out all the fields available on a specific grid id

@@ -21,8 +21,16 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 
+import com.google.common.base.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
+import de.jpaw.dp.Dependent;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Named;
+import de.jpaw.dp.Provider;
+import de.jpaw.util.ExceptionUtil;
 
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
@@ -34,14 +42,6 @@ import com.arvatosystems.t9t.io.T9tIOException;
 import com.arvatosystems.t9t.io.services.IIOHook;
 import com.arvatosystems.t9t.out.services.IFileToCamelProducer;
 import com.arvatosystems.t9t.out.services.IOutputResource;
-import com.google.common.base.Objects;
-
-import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
-import de.jpaw.dp.Dependent;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Named;
-import de.jpaw.dp.Provider;
-import de.jpaw.util.ExceptionUtil;
 
 @Named("FILE")
 @Dependent

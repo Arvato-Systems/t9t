@@ -16,9 +16,9 @@
 package com.arvatosystems.t9t.zkui;
 
 import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.pojos.api.DataWithTracking;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
 
 public interface IKeyFromDataProvider<DTO extends BonaPortable, TRACKING extends TrackingBase> {
     /** Given an object with tracking, return a suitable search filter which selects the unique record

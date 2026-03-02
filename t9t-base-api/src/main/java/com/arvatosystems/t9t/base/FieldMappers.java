@@ -28,15 +28,15 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.entities.InternalTenantId;
-import com.arvatosystems.t9t.base.misc.Variant;
-
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.util.FieldGetter;
 import de.jpaw.bonaparte.util.FreezeTools;
+
+import com.arvatosystems.t9t.base.entities.InternalTenantId;
+import com.arvatosystems.t9t.base.misc.Variant;
 
 /**
  * Utility methods to perform field mapping (path root mapping when using the foldingComposer with the DataWithTracking object.

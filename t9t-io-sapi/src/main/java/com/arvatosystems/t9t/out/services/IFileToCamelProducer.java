@@ -15,9 +15,9 @@
  */
 package com.arvatosystems.t9t.out.services;
 
-import com.arvatosystems.t9t.io.DataSinkDTO;
-
 import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
+
+import com.arvatosystems.t9t.io.DataSinkDTO;
 
 public interface IFileToCamelProducer {
     void sendFileOverCamel(String fileName, MediaTypeDescriptor fileType, DataSinkDTO sinkCfg);

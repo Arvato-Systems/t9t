@@ -22,6 +22,10 @@ import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+import de.jpaw.util.ApplicationException;
+
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.services.IAutonomousExecutor;
 import com.arvatosystems.t9t.base.services.RequestContext;
@@ -29,10 +33,6 @@ import com.arvatosystems.t9t.batch.StatisticsDTO;
 import com.arvatosystems.t9t.cfg.be.StatusProvider;
 import com.arvatosystems.t9t.statistics.services.IAutonomousRunner;
 import com.arvatosystems.t9t.statistics.services.IStatisticsService;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
-import de.jpaw.util.ApplicationException;
 
 @Singleton
 public class AutonomousRunner implements IAutonomousRunner {

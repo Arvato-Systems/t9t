@@ -15,12 +15,12 @@
  */
 package com.arvatosystems.t9t.base.services;
 
+import de.jpaw.bonaparte.pojos.api.TrackingBase;
+import de.jpaw.bonaparte.pojos.apiw.Ref;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyRequest;
 import com.arvatosystems.t9t.base.crud.RefResolverRequest;
-
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.apiw.Ref;
 
 /**
  * Interface for component responsible for resolving entity reference. Entity may be defined in different module than caller.

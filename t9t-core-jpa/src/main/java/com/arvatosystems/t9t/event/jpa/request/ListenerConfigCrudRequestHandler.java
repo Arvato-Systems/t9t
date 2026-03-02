@@ -18,6 +18,8 @@ package com.arvatosystems.t9t.event.jpa.request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKeyRequestHandler;
@@ -30,8 +32,6 @@ import com.arvatosystems.t9t.event.jpa.mapping.IListenerConfigDTOMapper;
 import com.arvatosystems.t9t.event.jpa.persistence.IListenerConfigEntityResolver;
 import com.arvatosystems.t9t.event.request.ListenerConfigCrudRequest;
 import com.arvatosystems.t9t.event.services.ListenerConfigConverter;
-
-import de.jpaw.dp.Jdp;
 
 public class ListenerConfigCrudRequestHandler extends
   AbstractCrudSurrogateKeyRequestHandler<ListenerConfigRef, ListenerConfigDTO, FullTrackingWithVersion, ListenerConfigCrudRequest, ListenerConfigEntity> {

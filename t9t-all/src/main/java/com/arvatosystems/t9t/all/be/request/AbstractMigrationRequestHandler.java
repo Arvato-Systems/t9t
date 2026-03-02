@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.all.be.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
@@ -22,8 +24,6 @@ import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.updates.request.FinishUpdateRequest;
 import com.arvatosystems.t9t.updates.request.StartUpdateRequest;
-
-import de.jpaw.dp.Jdp;
 
 public abstract class AbstractMigrationRequestHandler<R extends RequestParameters> extends AbstractRequestHandler<R> {
     protected final IExecutor executor = Jdp.getRequired(IExecutor.class);

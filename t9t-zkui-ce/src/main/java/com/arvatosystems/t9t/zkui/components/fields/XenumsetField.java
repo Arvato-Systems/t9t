@@ -17,12 +17,9 @@ package com.arvatosystems.t9t.zkui.components.fields;
 
 import java.util.List;
 
-import org.zkoss.zul.Comboitem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.base.search.XenumsetFilter;
-import com.arvatosystems.t9t.zkui.session.ApplicationSession;
+import org.zkoss.zul.Comboitem;
 
 import de.jpaw.bonaparte.enums.BonaEnum;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
@@ -34,6 +31,9 @@ import de.jpaw.bonaparte.pojos.ui.UIFilter;
 import de.jpaw.bonaparte.pojos.ui.UIFilterType;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
+
+import com.arvatosystems.t9t.base.search.XenumsetFilter;
+import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 
 public class XenumsetField extends EnumBaseField {
     private static final Logger LOGGER = LoggerFactory.getLogger(XenumsetField.class);

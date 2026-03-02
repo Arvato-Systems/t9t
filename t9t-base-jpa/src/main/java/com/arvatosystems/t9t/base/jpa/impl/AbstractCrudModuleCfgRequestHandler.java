@@ -15,6 +15,17 @@
  */
 package com.arvatosystems.t9t.base.jpa.impl;
 
+import jakarta.persistence.EntityManager;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.jpa.BonaPersistableKey;
+import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.dp.Jdp;
+import de.jpaw.util.ApplicationException;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.crud.CrudModuleCfgRequest;
 import com.arvatosystems.t9t.base.crud.CrudModuleCfgResponse;
@@ -25,15 +36,6 @@ import com.arvatosystems.t9t.base.moduleCfg.ModuleConfigDTO;
 import com.arvatosystems.t9t.base.moduleCfg.ModuleConfigKey;
 import com.arvatosystems.t9t.base.services.IExecutor;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.bonaparte.jpa.BonaPersistableKey;
-import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.dp.Jdp;
-import de.jpaw.util.ApplicationException;
-import jakarta.persistence.EntityManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 // the request handler assumes a resolver which works with a Long key for historical reasons
 public abstract class AbstractCrudModuleCfgRequestHandler<

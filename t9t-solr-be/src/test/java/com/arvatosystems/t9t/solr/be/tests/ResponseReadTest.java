@@ -15,11 +15,11 @@
  */
 package com.arvatosystems.t9t.solr.be.tests;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import org.junit.jupiter.api.Test;
 
 import com.arvatosystems.t9t.solr.be.impl.response.QueryResponse;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 
 public class ResponseReadTest {
 

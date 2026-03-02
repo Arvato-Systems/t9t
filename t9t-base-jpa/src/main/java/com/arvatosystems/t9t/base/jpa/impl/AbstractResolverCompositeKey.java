@@ -17,14 +17,14 @@ package com.arvatosystems.t9t.base.jpa.impl;
 
 import java.io.Serializable;
 
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.base.jpa.IResolverCompositeKey;
-
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
 import de.jpaw.bonaparte.pojos.api.CompositeKeyRef;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.dp.Alternative;
+
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.jpa.IResolverCompositeKey;
 
 /** Base implementation of the IEntityResolver interface, suitable for tables with a natural key. */
 @Alternative

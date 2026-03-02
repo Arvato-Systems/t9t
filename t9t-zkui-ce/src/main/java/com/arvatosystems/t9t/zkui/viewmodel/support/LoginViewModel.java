@@ -16,6 +16,7 @@
 package com.arvatosystems.t9t.zkui.viewmodel.support;
 
 import java.net.MalformedURLException;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -23,12 +24,19 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.TimeZone;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import com.arvatosystems.t9t.zkui.session.UserInfo;
 import jakarta.annotation.Nonnull;
+import jakarta.servlet.http.HttpServletRequest;
+
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.google.common.base.Strings;
+import com.microsoft.aad.msal4j.AuthorizationRequestUrlParameters;
+import com.microsoft.aad.msal4j.ConfidentialClientApplication;
+import com.microsoft.aad.msal4j.Prompt;
+import com.microsoft.aad.msal4j.ResponseMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.BindingParam;
@@ -42,6 +50,8 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.ClientInfoEvent;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.auth.PermissionEntry;
 import com.arvatosystems.t9t.zkui.azure.ad.AadAuthUtil;
@@ -51,20 +61,11 @@ import com.arvatosystems.t9t.zkui.exceptions.ReturnCodeException;
 import com.arvatosystems.t9t.zkui.services.IAuthenticationService;
 import com.arvatosystems.t9t.zkui.services.IUserDAO;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
+import com.arvatosystems.t9t.zkui.session.UserInfo;
 import com.arvatosystems.t9t.zkui.util.ApplicationUtil;
 import com.arvatosystems.t9t.zkui.util.Constants;
 import com.arvatosystems.t9t.zkui.util.ZulUtils;
 import com.arvatosystems.t9t.zkui.viewmodel.beans.ComboBoxItem;
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.google.common.base.Strings;
-import com.microsoft.aad.msal4j.AuthorizationRequestUrlParameters;
-import com.microsoft.aad.msal4j.ConfidentialClientApplication;
-import com.microsoft.aad.msal4j.Prompt;
-import com.microsoft.aad.msal4j.ResponseMode;
-
-import de.jpaw.dp.Jdp;
-import jakarta.servlet.http.HttpServletRequest;
 
 
 
@@ -103,7 +104,7 @@ public class LoginViewModel {
     private ComboBoxItem selected;
 
     private String lastScreen;
-    private TimeZone lastZone;
+    private ZoneId lastZoneId;
     private String lastRealTz;
     private boolean microsoftAuthEnabled = false;
     private boolean showLoginErrorMessage = false;
@@ -120,13 +121,13 @@ public class LoginViewModel {
     @Command("onClientInfo")
     public void onClientInfo(@BindingParam("eventData") ClientInfoEvent evt) {
         LOGGER.debug("received info event: tz={}, display={}, desktop size={}*{}, screen size={}*{}",
-                evt.getTimeZone(), evt.getTimeZone().getDisplayName(),
+                evt.getZoneId(), evt.getZoneId().getDisplayName(null, getLocale()),
                 evt.getDesktopWidth(), evt.getDesktopHeight(),
                 evt.getScreenWidth(), evt.getScreenHeight());
         final StringBuilder lastScreenBuilder = new StringBuilder("desktop: ").append(evt.getDesktopWidth()).append("*").append(evt.getDesktopHeight())
                 .append(", screen: ").append(evt.getScreenWidth()).append("*").append(evt.getScreenHeight());
 
-        lastZone = evt.getTimeZone();
+        lastZoneId = evt.getZoneId();
         if (Executions.getCurrent() != null) {
             String ua = Executions.getCurrent().getUserAgent();
             LOGGER.debug("ZK user agent is {}", ua);
@@ -368,6 +369,6 @@ public class LoginViewModel {
 
     @Nonnull
     private UserInfo getUserInfo() {
-        return new UserInfo(lastScreen, lastRealTz, (Locale)(Sessions.getCurrent().getAttribute(org.zkoss.web.Attributes.PREFERRED_LOCALE)), lastZone);
+        return new UserInfo(lastScreen, lastRealTz, (Locale)(Sessions.getCurrent().getAttribute(org.zkoss.web.Attributes.PREFERRED_LOCALE)), lastZoneId);
     }
 }

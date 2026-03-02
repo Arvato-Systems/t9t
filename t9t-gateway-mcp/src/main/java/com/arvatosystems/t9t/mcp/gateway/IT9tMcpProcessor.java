@@ -15,13 +15,15 @@
  */
 package com.arvatosystems.t9t.mcp.gateway;
 
+import jakarta.annotation.Nonnull;
+
+import io.modelcontextprotocol.spec.McpSchema.CallToolResult;
+import io.modelcontextprotocol.spec.McpSchema.GetPromptResult;
+
 import com.arvatosystems.t9t.ai.request.AiGetPromptRequest;
 import com.arvatosystems.t9t.ai.request.AiGetPromptsResponse;
 import com.arvatosystems.t9t.ai.request.AiGetToolsResponse;
 import com.arvatosystems.t9t.ai.request.AiRunToolRequest;
-import io.modelcontextprotocol.spec.McpSchema.GetPromptResult;
-import io.modelcontextprotocol.spec.McpSchema.CallToolResult;
-import jakarta.annotation.Nonnull;
 
 public interface IT9tMcpProcessor {
 

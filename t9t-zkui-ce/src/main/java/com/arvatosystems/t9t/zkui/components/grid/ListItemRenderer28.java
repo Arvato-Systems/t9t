@@ -23,18 +23,14 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
+import jakarta.annotation.Nonnull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
-
-import com.arvatosystems.t9t.base.FieldMappers;
-import com.arvatosystems.t9t.base.T9tUtil;
-import com.arvatosystems.t9t.zkui.converters.grid.IItemConverter;
-import com.arvatosystems.t9t.zkui.converters.grid.ItemConverterRegistry;
-import com.arvatosystems.t9t.zkui.filters.IResultTextFilter;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.BonaPortableClass;
@@ -44,7 +40,12 @@ import de.jpaw.bonaparte.core.ListMetaComposer;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.FoldingStrategy;
 import de.jpaw.dp.Jdp;
-import jakarta.annotation.Nonnull;
+
+import com.arvatosystems.t9t.base.FieldMappers;
+import com.arvatosystems.t9t.base.T9tUtil;
+import com.arvatosystems.t9t.zkui.converters.grid.IItemConverter;
+import com.arvatosystems.t9t.zkui.converters.grid.ItemConverterRegistry;
+import com.arvatosystems.t9t.zkui.filters.IResultTextFilter;
 
 public class ListItemRenderer28<T extends BonaPortable> implements ListitemRenderer<T> {
     public static final int LIMIT = 20;

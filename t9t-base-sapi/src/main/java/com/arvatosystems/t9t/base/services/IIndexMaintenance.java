@@ -15,8 +15,9 @@
  */
 package com.arvatosystems.t9t.base.services;
 
-import de.jpaw.bonaparte.pojos.api.OperationType;
 import jakarta.annotation.Nonnull;
+
+import de.jpaw.bonaparte.pojos.api.OperationType;
 
 public interface IIndexMaintenance {
 

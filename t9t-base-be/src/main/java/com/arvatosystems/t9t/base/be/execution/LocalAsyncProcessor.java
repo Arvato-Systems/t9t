@@ -15,6 +15,16 @@
  */
 package com.arvatosystems.t9t.base.be.execution;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.annotations.IsLogicallyFinal;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.api.ServiceRequest;
@@ -24,16 +34,6 @@ import com.arvatosystems.t9t.base.services.IEventHandler;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration;
 import com.arvatosystems.t9t.server.services.IUnauthenticatedServiceRequestExecutor;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 //async processor without cross-server scaling. For vert.x please see AsyncProcessor which uses the event bus
 @Singleton

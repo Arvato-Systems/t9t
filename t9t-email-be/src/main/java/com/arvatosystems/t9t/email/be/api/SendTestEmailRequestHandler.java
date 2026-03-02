@@ -22,6 +22,8 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
@@ -36,8 +38,6 @@ import com.arvatosystems.t9t.email.api.SendTestEmailResponse;
 import com.arvatosystems.t9t.email.services.IEmailModuleCfgDtoResolver;
 import com.arvatosystems.t9t.email.services.IEmailPersistenceAccess;
 import com.arvatosystems.t9t.email.services.IEmailSender;
-
-import de.jpaw.dp.Jdp;
 
 public class SendTestEmailRequestHandler extends AbstractRequestHandler<SendTestEmailRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(SendTestEmailRequestHandler.class);

@@ -18,14 +18,14 @@ package com.arvatosystems.t9t.out.be.impl;
 import java.io.OutputStream;
 import java.util.HashMap;
 
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.base.output.OutputSessionParameters;
-import com.arvatosystems.t9t.base.services.IOutputSession;
-
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import de.jpaw.bonaparte.pojos.api.media.MediaXType;
 import de.jpaw.dp.Jdp;
+
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.output.OutputSessionParameters;
+import com.arvatosystems.t9t.base.services.IOutputSession;
 
 /**
  * Proxy to class outputSession, but this one will not be found using Jdp, but rather

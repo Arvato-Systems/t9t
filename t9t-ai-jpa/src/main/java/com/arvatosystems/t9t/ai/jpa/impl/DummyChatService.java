@@ -19,15 +19,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import com.arvatosystems.t9t.ai.AiAssistantDTO;
-import com.arvatosystems.t9t.ai.AiConversationDTO;
-import com.arvatosystems.t9t.ai.service.IAiChatService;
-import com.arvatosystems.t9t.base.services.RequestContext;
-
 import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.ai.AiAssistantDTO;
+import com.arvatosystems.t9t.ai.AiConversationDTO;
+import com.arvatosystems.t9t.ai.service.IAiChatService;
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 /**
  * Dummy chat service implementation, used for testing, in order to avoid cost.

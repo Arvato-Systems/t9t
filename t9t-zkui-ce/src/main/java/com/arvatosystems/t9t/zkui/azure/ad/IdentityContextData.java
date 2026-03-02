@@ -21,10 +21,11 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.arvatosystems.t9t.zkui.session.UserInfo;
 import com.microsoft.aad.msal4j.IAccount;
 import com.microsoft.aad.msal4j.IAuthenticationResult;
 import com.nimbusds.jwt.SignedJWT;
+
+import com.arvatosystems.t9t.zkui.session.UserInfo;
 
 public class IdentityContextData implements Serializable {
     private static final long serialVersionUID = 2L;

@@ -15,19 +15,20 @@
  */
 package com.arvatosystems.t9t.base.vertx;
 
-import org.slf4j.Logger;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
-import com.arvatosystems.t9t.base.api.ServiceResponse;
-
-import de.jpaw.bonaparte.api.codecs.IMessageCoderFactory;
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.util.CharTestsASCII;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+import org.slf4j.Logger;
+
+import de.jpaw.bonaparte.api.codecs.IMessageCoderFactory;
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.util.CharTestsASCII;
+
+import com.arvatosystems.t9t.base.api.ServiceResponse;
 
 /** A ServiceModule is a microservice like portion which owns its own
  * UI and provides http based paths.

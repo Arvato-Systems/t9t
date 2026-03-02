@@ -17,8 +17,12 @@ package com.arvatosystems.t9t.all.be.request;
 
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.dp.Jdp;
 
 import com.arvatosystems.t9t.all.request.ExportAndEmailResultRequest;
 import com.arvatosystems.t9t.authc.api.GetMyUserDataRequest;
@@ -35,10 +39,6 @@ import com.arvatosystems.t9t.doc.api.NewDocumentResponse;
 import com.arvatosystems.t9t.email.api.RecipientEmail;
 import com.arvatosystems.t9t.io.request.RetrieveMediaDataRequest;
 import com.arvatosystems.t9t.io.request.RetrieveMediaDataResponse;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-
-import de.jpaw.dp.Jdp;
 
 public class ExportAndEmailResultRequestHandler extends AbstractRequestHandler<ExportAndEmailResultRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExportAndEmailResultRequestHandler.class);

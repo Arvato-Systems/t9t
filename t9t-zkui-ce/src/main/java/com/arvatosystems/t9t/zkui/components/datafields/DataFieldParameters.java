@@ -15,9 +15,9 @@
  */
 package com.arvatosystems.t9t.zkui.components.datafields;
 
-import com.arvatosystems.t9t.zkui.session.ApplicationSession;
-
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
+
+import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 
 public class DataFieldParameters {
     public final FieldDefinition cfg;

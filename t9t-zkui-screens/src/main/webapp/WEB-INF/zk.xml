@@ -5,6 +5,10 @@
         <value>t9t-zkui</value>
     </preference>
 
+    <!-- WARNING: The 'silvertail' theme is deprecated in ZK 10.
+         Recommended migration: Change to 'iceblue' (default) or 'iceblue_c' (compact).
+         See ZK 10 migration guide: https://www.zkoss.org/wiki/ZK_Developer's_Reference/Theming_and_Styling/ZK_Official_Themes
+         For compact themes, add Maven dependency: org.zkoss.theme:iceblue_c:10.0.0 -->
     <library-property>
         <name>org.zkoss.theme.preferred</name>
         <value>silvertail</value>

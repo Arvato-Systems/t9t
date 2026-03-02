@@ -17,16 +17,10 @@ package com.arvatosystems.t9t.base.jpa.impl;
 
 import java.util.concurrent.TimeUnit;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.base.jpa.IResolverAnyKey;
-import com.arvatosystems.t9t.base.jpa.ormspecific.IQueryHintSetter;
-import com.arvatosystems.t9t.base.misc.SomeCacheKey;
-import com.arvatosystems.t9t.base.services.ICacheInvalidationRegistry;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
@@ -34,6 +28,12 @@ import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.dp.Jdp;
 import de.jpaw.util.ExceptionUtil;
+
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.jpa.IResolverAnyKey;
+import com.arvatosystems.t9t.base.jpa.ormspecific.IQueryHintSetter;
+import com.arvatosystems.t9t.base.misc.SomeCacheKey;
+import com.arvatosystems.t9t.base.services.ICacheInvalidationRegistry;
 
 public abstract class AbstractConfigCacheFieldwiseInvalidation<
   DTO extends Ref,

@@ -21,16 +21,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import com.arvatosystems.t9t.base.search.EnumFilter;
-import com.arvatosystems.t9t.base.search.XenumFilter;
-import com.arvatosystems.t9t.base.services.IEnumResolver;
-import com.arvatosystems.t9t.solr.be.impl.FilterToSolrConverter;
 
 import de.jpaw.bonaparte.pojos.api.AndFilter;
 import de.jpaw.bonaparte.pojos.api.AsciiFilter;
@@ -40,6 +34,11 @@ import de.jpaw.bonaparte.pojos.api.NotFilter;
 import de.jpaw.bonaparte.pojos.api.NullFilter;
 import de.jpaw.bonaparte.pojos.api.OrFilter;
 import de.jpaw.dp.Jdp;
+
+import com.arvatosystems.t9t.base.search.EnumFilter;
+import com.arvatosystems.t9t.base.search.XenumFilter;
+import com.arvatosystems.t9t.base.services.IEnumResolver;
+import com.arvatosystems.t9t.solr.be.impl.FilterToSolrConverter;
 
 public class FilterToSolrConverterTest {
 

@@ -15,14 +15,15 @@
  */
 package com.arvatosystems.t9t.zkui.components.dropdown28.factories;
 
+import de.jpaw.dp.Named;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.search.LeanSearchRequest;
 import com.arvatosystems.t9t.updates.UpdateStatusDTO;
 import com.arvatosystems.t9t.updates.UpdateStatusRef;
 import com.arvatosystems.t9t.updates.UpdateStatusTicketKey;
 import com.arvatosystems.t9t.updates.request.LeanUpdateStatusSearchRequest;
 import com.arvatosystems.t9t.zkui.components.dropdown28.db.Dropdown28Db;
-import de.jpaw.dp.Named;
-import de.jpaw.dp.Singleton;
 
 @Named("ticketId")
 @Singleton

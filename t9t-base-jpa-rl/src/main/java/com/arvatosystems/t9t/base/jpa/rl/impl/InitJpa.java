@@ -15,8 +15,16 @@
  */
 package com.arvatosystems.t9t.base.jpa.rl.impl;
 
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Startup;
+import de.jpaw.dp.StartupOnly;
 
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.jpa.IPersistenceProviderJPAShadow;
@@ -24,13 +32,6 @@ import com.arvatosystems.t9t.base.jpa.ormspecific.IEMFCustomizer;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.cfg.be.RelationalDatabaseConfiguration;
 import com.arvatosystems.t9t.cfg.be.T9tServerConfiguration;
-
-import de.jpaw.bonaparte.jpa.refs.PersistenceProviderJPA;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Startup;
-import de.jpaw.dp.StartupOnly;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 
 @Startup(12000)
 public class InitJpa implements StartupOnly {

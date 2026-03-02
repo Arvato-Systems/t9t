@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.io.jpa.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractSearchWithTotalsRequestHandler;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
@@ -24,8 +26,6 @@ import com.arvatosystems.t9t.io.jpa.entities.DataSinkEntity;
 import com.arvatosystems.t9t.io.jpa.mapping.IDataSinkDTOMapper;
 import com.arvatosystems.t9t.io.jpa.persistence.IDataSinkEntityResolver;
 import com.arvatosystems.t9t.io.request.DataSinkSearchRequest;
-
-import de.jpaw.dp.Jdp;
 
 public class DataSinkSearchRequestHandler extends
         AbstractSearchWithTotalsRequestHandler<Long, DataSinkDTO, FullTrackingWithVersion, DataSinkSearchRequest, DataSinkEntity> {

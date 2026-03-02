@@ -18,10 +18,10 @@ package com.arvatosystems.t9t.kafka.service;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import jakarta.annotation.Nonnull;
+
 import com.arvatosystems.t9t.base.IKafkaRequestTransmitter;
 import com.arvatosystems.t9t.kafka.service.impl.KafkaRequestTransmitter;
-
-import jakarta.annotation.Nonnull;
 
 public final class KafkaRequestTransmitterFactory {
     private KafkaRequestTransmitterFactory() {

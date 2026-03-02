@@ -20,14 +20,14 @@ import java.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.batch.SliceTrackingInterval;
 import com.arvatosystems.t9t.batch.jpa.entities.SliceTrackingEntity;
 import com.arvatosystems.t9t.batch.jpa.persistence.ISliceTrackingEntityResolver;
 import com.arvatosystems.t9t.batch.services.IGetNextTimeSliceService;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class GetNextTimeSliceService implements IGetNextTimeSliceService {

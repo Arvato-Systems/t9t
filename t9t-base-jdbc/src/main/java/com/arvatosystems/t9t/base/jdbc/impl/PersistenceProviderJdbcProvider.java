@@ -18,14 +18,14 @@ package com.arvatosystems.t9t.base.jdbc.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.services.IJdbcDataSource;
-import com.arvatosystems.t9t.base.services.IPersistenceProviderJdbc;
-import com.arvatosystems.t9t.base.services.RequestContext;
-
 import de.jpaw.bonaparte.pojos.api.PersistenceProviders;
 import de.jpaw.dp.CustomScope;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
+
+import com.arvatosystems.t9t.base.services.IJdbcDataSource;
+import com.arvatosystems.t9t.base.services.IPersistenceProviderJdbc;
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 /**
  * The provider for the JDBC persistence context.

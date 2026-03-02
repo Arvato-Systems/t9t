@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.batch.jpa.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
@@ -22,8 +24,6 @@ import com.arvatosystems.t9t.batch.jpa.entities.StatisticsEntity;
 import com.arvatosystems.t9t.batch.jpa.mapping.IStatisticsDTOMapper;
 import com.arvatosystems.t9t.batch.jpa.persistence.IStatisticsEntityResolver;
 import com.arvatosystems.t9t.batch.request.LogStatisticsRequest;
-
-import de.jpaw.dp.Jdp;
 
 public class LogStatisticsRequestHandler extends AbstractRequestHandler<LogStatisticsRequest> {
 

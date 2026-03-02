@@ -15,10 +15,10 @@
  */
 package com.arvatosystems.t9t.zkui.components.dropdown28.factories;
 
+import de.jpaw.bonaparte.pojos.apiw.Ref;
+
 import com.arvatosystems.t9t.base.search.LeanGroupedSearchRequest;
 import com.arvatosystems.t9t.zkui.components.dropdown28.db.GroupedDropdown28Db;
-
-import de.jpaw.bonaparte.pojos.apiw.Ref;
 
 /** Describes a factory for a Grouped Dropdown Combobox which is populated via a DB query.
  * By convention, LeanSearchRequests are used.

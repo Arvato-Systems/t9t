@@ -15,10 +15,10 @@
  */
 package com.arvatosystems.t9t.zkui.viewmodel.keyProvider;
 
-import com.arvatosystems.t9t.auth.TenantLogoDTO;
-
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.auth.TenantLogoDTO;
 
 @Singleton
 @Named("tenantLogo")

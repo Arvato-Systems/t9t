@@ -15,15 +15,16 @@
  */
 package com.arvatosystems.t9t.zkui.viewmodel.keyProvider;
 
-import com.arvatosystems.t9t.changeRequest.DataChangeRequestDTO;
-import com.arvatosystems.t9t.changeRequest.DataChangeRequestExtendedDTO;
-import com.arvatosystems.t9t.zkui.IKeyFromDataProvider;
 import de.jpaw.bonaparte.pojos.api.DataWithTracking;
 import de.jpaw.bonaparte.pojos.api.LongFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.changeRequest.DataChangeRequestDTO;
+import com.arvatosystems.t9t.changeRequest.DataChangeRequestExtendedDTO;
+import com.arvatosystems.t9t.zkui.IKeyFromDataProvider;
 
 @Singleton
 @Named("dataChangeRequestExtended")

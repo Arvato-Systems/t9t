@@ -17,14 +17,14 @@ package com.arvatosystems.t9t.out.be.kafka.impl;
 
 import java.util.function.BiConsumer;
 
+import de.jpaw.dp.Named;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.annotations.IsLogicallyFinal;
 import com.arvatosystems.t9t.base.event.EventParameters;
 import com.arvatosystems.t9t.base.services.IEventHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.io.event.DataSinkChangedEvent;
-
-import de.jpaw.dp.Named;
-import de.jpaw.dp.Singleton;
 
 @Singleton
 @Named("IOKafkaDataSinkChange")

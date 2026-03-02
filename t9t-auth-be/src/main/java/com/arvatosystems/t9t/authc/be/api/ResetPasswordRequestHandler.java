@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.authc.be.api;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.auth.T9tAuthException;
 import com.arvatosystems.t9t.auth.UserDTO;
 import com.arvatosystems.t9t.auth.services.IAuthPersistenceAccess;
@@ -25,8 +27,6 @@ import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.IAuthCacheInvalidation;
 import com.arvatosystems.t9t.base.services.IPasswordResetNotificationService;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.dp.Jdp;
 
 //ADMIN functionality: reset the password of another user, or self service
 public class ResetPasswordRequestHandler extends AbstractRequestHandler<ResetPasswordRequest> {

@@ -17,13 +17,14 @@ package com.arvatosystems.t9t.out.jpa.impl;
 
 import java.io.Closeable;
 
-import com.arvatosystems.t9t.base.services.IAsyncTransmitter;
-import com.arvatosystems.t9t.out.services.IGenericRemoter;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.dp.Jdp;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+
+import com.arvatosystems.t9t.base.services.IAsyncTransmitter;
+import com.arvatosystems.t9t.out.services.IGenericRemoter;
 
 /**
  * Implements to sync of stock values to a remote system.

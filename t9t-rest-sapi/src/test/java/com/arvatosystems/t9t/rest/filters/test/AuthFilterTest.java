@@ -23,14 +23,14 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.ipblocker.services.IIPAddressBlocker;
 import com.arvatosystems.t9t.ipblocker.services.impl.IPAddressBlocker;
 import com.arvatosystems.t9t.rest.filters.AuthFilterCustomization;
 import com.arvatosystems.t9t.rest.services.IAuthFilterCustomization;
 import com.arvatosystems.t9t.rest.services.IGatewayAuthChecker;
-
-import de.jpaw.dp.Jdp;
 
 public class AuthFilterTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthFilterTest.class);

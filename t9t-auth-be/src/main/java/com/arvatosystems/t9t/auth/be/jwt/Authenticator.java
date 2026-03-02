@@ -15,13 +15,13 @@
  */
 package com.arvatosystems.t9t.auth.be.jwt;
 
-import com.arvatosystems.t9t.auth.jwt.IJWT;
-import com.arvatosystems.t9t.auth.services.IAuthenticator;
-
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Fallback;
 import de.jpaw.dp.Jdp;
+
+import com.arvatosystems.t9t.auth.jwt.IJWT;
+import com.arvatosystems.t9t.auth.services.IAuthenticator;
 
 @Fallback
 @Dependent

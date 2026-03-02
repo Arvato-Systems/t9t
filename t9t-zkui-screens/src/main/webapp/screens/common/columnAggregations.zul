@@ -6,7 +6,7 @@
         height="80%" title="${l:translate('columnAggregations', 'title')}"
         viewModel="@id('vm') @init('com.arvatosystems.t9t.zkui.viewmodel.support.ColumnAggregationsViewModel',initParams=arg)">
         <div class="form" vflex="1">
-            <groupbox vflex="1" contentStyle="padding: 15px;">
+            <groupbox vflex="1" sclass="groupbox-content-padded">
                 <vlayout vflex="1">
                     <listbox id="columnAggregation" sizedByContent="true" vflex="1"
                              model="@load(vm.columnAggregationsList)"

@@ -19,11 +19,11 @@ import java.math.RoundingMode;
 
 import org.zkoss.zk.ui.WrongValueException;
 
-import com.arvatosystems.t9t.zkui.util.CurrencyUtil;
-
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.fixedpoint.types.MicroUnits;
+
+import com.arvatosystems.t9t.zkui.util.CurrencyUtil;
 
 public class MicroUnitsBox extends Fixedpointbox<MicroUnits, MicroUnitsBox> {
     private static final long serialVersionUID = 437573760456243476L;

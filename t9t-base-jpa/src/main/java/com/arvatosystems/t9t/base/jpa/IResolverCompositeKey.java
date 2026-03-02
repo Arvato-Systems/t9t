@@ -17,12 +17,12 @@ package com.arvatosystems.t9t.base.jpa;
 
 import java.io.Serializable;
 
-import com.arvatosystems.t9t.base.T9tException;
-
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.jpa.BonaPersistableKey;
 import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
+
+import com.arvatosystems.t9t.base.T9tException;
 
 /** Defines methods to return either the artificial key (via any key) or the full JPA entity (via some key).
  *

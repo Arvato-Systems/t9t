@@ -17,17 +17,17 @@ package com.arvatosystems.t9t.base.jpa.impl;
 
 import java.io.Serializable;
 
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.jpa.BonaPersistableKey;
+import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
+import de.jpaw.bonaparte.pojos.api.TrackingBase;
+
 import com.arvatosystems.t9t.base.jpa.IEntityMapper;
 import com.arvatosystems.t9t.base.jpa.IResolverAnyKey;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.base.search.SearchRequest;
 import com.arvatosystems.t9t.base.services.AbstractSearchRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.jpa.BonaPersistableKey;
-import de.jpaw.bonaparte.jpa.BonaPersistableTracking;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
 
 /** An implementation of a search request handler which also provides count capabilities. */
 public abstract class AbstractSearchWithTotalsRequestHandler<

@@ -19,10 +19,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringJoiner;
 
+import jakarta.annotation.Nonnull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericEnumSetDataItem;
@@ -31,7 +31,8 @@ import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.NumericEnumSetDataItem;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
-import jakarta.annotation.Nonnull;
+
+import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 
 @Singleton
 @Named("enumset")

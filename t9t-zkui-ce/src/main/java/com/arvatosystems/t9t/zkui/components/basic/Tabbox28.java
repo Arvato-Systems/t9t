@@ -26,6 +26,10 @@ import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Tabpanel;
 import org.zkoss.zul.Tabs;
 
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.pojos.api.TrackingBase;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.zkui.ITabboxExtension;
 import com.arvatosystems.t9t.zkui.components.EventDataSelect28;
@@ -34,10 +38,6 @@ import com.arvatosystems.t9t.zkui.components.IDataSelectReceiver;
 import com.arvatosystems.t9t.zkui.components.IFilterGenerator;
 import com.arvatosystems.t9t.zkui.components.IViewModelOwner;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
-
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.dp.Jdp;
 
 /** A tab box which distributes any received onSelect event to the currently active tab.
  * It also provides automated setting of the tabs headers.

@@ -15,9 +15,9 @@
  */
 package com.arvatosystems.t9t.out.jpa.impl;
 
-import com.arvatosystems.t9t.out.services.IGenericRemoter;
-
 import de.jpaw.bonaparte.core.BonaPortable;
+
+import com.arvatosystems.t9t.out.services.IGenericRemoter;
 
 public class GenericRemoterNoop implements IGenericRemoter {
     private int counter = 0;

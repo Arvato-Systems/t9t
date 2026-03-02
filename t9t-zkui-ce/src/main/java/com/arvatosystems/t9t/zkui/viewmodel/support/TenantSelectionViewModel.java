@@ -24,9 +24,11 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
-import org.zkoss.zul.Messagebox;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zul.Messagebox;
+
+import de.jpaw.dp.Jdp;
 
 import com.arvatosystems.t9t.authc.api.TenantDescription;
 import com.arvatosystems.t9t.base.auth.PermissionEntry;
@@ -36,8 +38,6 @@ import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 import com.arvatosystems.t9t.zkui.util.ApplicationUtil;
 import com.arvatosystems.t9t.zkui.util.Constants;
 import com.arvatosystems.t9t.zkui.util.ZulUtils;
-
-import de.jpaw.dp.Jdp;
 
 /**
  * TenantDescription selection ViewModel.

@@ -15,10 +15,10 @@
  */
 package com.arvatosystems.t9t.zkui.components.datafields;
 
+import de.jpaw.bonaparte.pojos.apiw.Ref;
+
 import com.arvatosystems.t9t.base.search.Description;
 import com.arvatosystems.t9t.zkui.components.dropdown28.factories.IDropdown28DbFactory;
-
-import de.jpaw.bonaparte.pojos.apiw.Ref;
 
 public class DropdownDbAsStringDataField extends AbstractDropdownDataField<Ref, String> {
 

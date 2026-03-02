@@ -17,11 +17,11 @@ package com.arvatosystems.t9t.zkui.components;
 
 import org.zkoss.zk.ui.Component;
 
-import com.arvatosystems.t9t.base.CrudViewModel;
-import com.arvatosystems.t9t.zkui.session.ApplicationSession;
-
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
+
+import com.arvatosystems.t9t.base.CrudViewModel;
+import com.arvatosystems.t9t.zkui.session.ApplicationSession;
 
 /** Interface to add to custom components if they understand the concept of view models.
  * This is used to get the view model from parents.

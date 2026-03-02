@@ -15,6 +15,10 @@
  */
 package com.arvatosystems.t9t.auth.be.request;
 
+import de.jpaw.bonaparte.api.SearchFilters;
+import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.auth.UserTenantRoleDTO;
 import com.arvatosystems.t9t.auth.jpa.mapping.IUserTenantRoleDTOMapper;
 import com.arvatosystems.t9t.auth.jpa.persistence.IUserTenantRoleEntityResolver;
@@ -23,10 +27,6 @@ import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.search.ReadAllResponse;
 import com.arvatosystems.t9t.base.services.AbstractSearchRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.bonaparte.api.SearchFilters;
-import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
-import de.jpaw.dp.Jdp;
 
 /**
  * This search request has to add conditions on the tenant of the child entities of user and role:

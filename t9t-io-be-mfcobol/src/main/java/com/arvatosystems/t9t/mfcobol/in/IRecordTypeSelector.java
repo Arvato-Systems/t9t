@@ -15,10 +15,11 @@
  */
 package com.arvatosystems.t9t.mfcobol.in;
 
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.core.BonaPortableClass;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.core.BonaPortableClass;
 
 /**
  * Implementations allow to select various subformats based on some header.

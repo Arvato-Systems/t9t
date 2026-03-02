@@ -18,10 +18,6 @@ package com.arvatosystems.t9t.base.services.impl;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import com.arvatosystems.t9t.base.search.SearchCriteria;
-import com.arvatosystems.t9t.base.services.IRestrictionRefReader;
-import com.arvatosystems.t9t.base.services.ISearchRestriction;
-import com.arvatosystems.t9t.base.services.RequestContext;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.collect.ImmutableList;
@@ -29,6 +25,11 @@ import com.google.common.collect.ImmutableList;
 import de.jpaw.bonaparte.api.SearchFilters;
 import de.jpaw.bonaparte.pojos.api.LongFilter;
 import de.jpaw.bonaparte.pojos.api.NullFilter;
+
+import com.arvatosystems.t9t.base.search.SearchCriteria;
+import com.arvatosystems.t9t.base.services.IRestrictionRefReader;
+import com.arvatosystems.t9t.base.services.ISearchRestriction;
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 public abstract class AbstractSearchRestriction implements ISearchRestriction {
     private final Cache<Long, List<Long>> allowedRefsCache = Caffeine.newBuilder().expireAfterWrite(15L, TimeUnit.MINUTES).<Long, List<Long>>build();

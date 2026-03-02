@@ -15,13 +15,14 @@
  */
 package com.arvatosystems.t9t.batch.jpa.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.batch.jpa.entities.RecordEventsEntity;
 import com.arvatosystems.t9t.batch.jpa.persistence.IRecordEventsEntityResolver;
 import com.arvatosystems.t9t.batch.request.RecordEventsRequest;
-import de.jpaw.dp.Jdp;
 
 public class RecordEventsRequestHandler extends AbstractRequestHandler<RecordEventsRequest> {
 

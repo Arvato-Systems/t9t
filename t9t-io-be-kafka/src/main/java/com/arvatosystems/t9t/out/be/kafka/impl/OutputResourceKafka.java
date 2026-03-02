@@ -26,6 +26,10 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
+import de.jpaw.dp.Dependent;
+import de.jpaw.dp.Named;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
@@ -34,10 +38,6 @@ import com.arvatosystems.t9t.io.DataSinkDTO;
 import com.arvatosystems.t9t.io.T9tIOException;
 import com.arvatosystems.t9t.kafka.service.impl.KafkaTopicWriter;
 import com.arvatosystems.t9t.out.services.IOutputResource;
-
-import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
-import de.jpaw.dp.Dependent;
-import de.jpaw.dp.Named;
 
 @Dependent
 @Named("KAFKA")

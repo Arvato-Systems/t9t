@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.batch.be.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.be.impl.AbstractCrudSurrogateKeyBERequestHandler;
 import com.arvatosystems.t9t.base.entities.WriteTracking;
@@ -23,8 +25,6 @@ import com.arvatosystems.t9t.batch.StatisticsDTO;
 import com.arvatosystems.t9t.batch.StatisticsRef;
 import com.arvatosystems.t9t.batch.request.StatisticsCrudRequest;
 import com.arvatosystems.t9t.batch.services.IStatisticsResolver;
-
-import de.jpaw.dp.Jdp;
 
 public class StatisticsCrudRequestHandler extends AbstractCrudSurrogateKeyBERequestHandler<StatisticsRef, StatisticsDTO, WriteTracking, StatisticsCrudRequest> {
     private final IStatisticsResolver resolver = Jdp.getRequired(IStatisticsResolver.class);

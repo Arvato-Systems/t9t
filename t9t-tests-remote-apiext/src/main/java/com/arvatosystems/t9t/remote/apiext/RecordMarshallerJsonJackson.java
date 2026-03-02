@@ -17,18 +17,18 @@ package com.arvatosystems.t9t.remote.apiext;
 
 import java.io.IOException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.jackson.JacksonTools;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.MimeTypes;
 import de.jpaw.bonaparte.util.IMarshaller;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ByteBuilder;
+
+import com.arvatosystems.t9t.jackson.JacksonTools;
 
 public class RecordMarshallerJsonJackson implements IMarshaller {
     private static final Logger LOGGER = LoggerFactory.getLogger(RecordMarshallerJsonJackson.class);

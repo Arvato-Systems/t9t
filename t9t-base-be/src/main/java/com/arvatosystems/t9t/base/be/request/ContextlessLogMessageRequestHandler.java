@@ -18,12 +18,12 @@ package com.arvatosystems.t9t.base.be.request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.util.ToStringHelper;
+
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.request.ContextlessLogMessageRequest;
 import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.bonaparte.util.ToStringHelper;
 
 public class ContextlessLogMessageRequestHandler extends AbstractReadOnlyRequestHandler<ContextlessLogMessageRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ContextlessLogMessageRequestHandler.class);

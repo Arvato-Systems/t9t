@@ -17,9 +17,9 @@ package com.arvatosystems.t9t.base;
 
 import java.util.EnumSet;
 
-import com.arvatosystems.t9t.base.types.NoKey;
-
 import de.jpaw.bonaparte.pojos.api.OperationType;
+
+import com.arvatosystems.t9t.base.types.NoKey;
 
 /**
  * Global constants to used all over the application.

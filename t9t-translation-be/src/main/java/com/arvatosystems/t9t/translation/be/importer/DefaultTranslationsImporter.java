@@ -26,11 +26,11 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.T9tConstants;
-import com.arvatosystems.t9t.translation.be.TranslationsStack;
-
 import de.jpaw.dp.Startup;
 import de.jpaw.dp.StartupOnly;
+
+import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.translation.be.TranslationsStack;
 
 /**
  * Imports translations from property files located on the classpath. <br/>

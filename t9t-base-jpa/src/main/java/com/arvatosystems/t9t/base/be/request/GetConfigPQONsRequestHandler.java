@@ -15,22 +15,24 @@
  */
 package com.arvatosystems.t9t.base.be.request;
 
-import com.arvatosystems.t9t.base.request.GetConfigPQONsRequest;
-import com.arvatosystems.t9t.base.request.GetConfigPQONsResponse;
-import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;
-import com.arvatosystems.t9t.base.services.RequestContext;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
-import jakarta.persistence.Table;
-import org.reflections.Reflections;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
+
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import jakarta.persistence.Table;
+
+import org.reflections.Reflections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.arvatosystems.t9t.base.request.GetConfigPQONsRequest;
+import com.arvatosystems.t9t.base.request.GetConfigPQONsResponse;
+import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 public class GetConfigPQONsRequestHandler extends AbstractReadOnlyRequestHandler<GetConfigPQONsRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(GetConfigPQONsRequestHandler.class);

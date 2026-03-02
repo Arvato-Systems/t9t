@@ -15,19 +15,20 @@
  */
 package com.arvatosystems.t9t.base.jpa.rl.impl;
 
+import jakarta.persistence.EntityManagerFactory;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.base.jpa.IPersistenceProviderJPAShadow;
-import com.arvatosystems.t9t.base.jpa.ormspecific.IQueryHintSetter;
-import com.arvatosystems.t9t.base.services.RequestContext;
 
 import de.jpaw.bonaparte.pojos.api.PersistenceProviders;
 import de.jpaw.dp.CustomScope;
 import de.jpaw.dp.Default;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
-import jakarta.persistence.EntityManagerFactory;
+
+import com.arvatosystems.t9t.base.jpa.IPersistenceProviderJPAShadow;
+import com.arvatosystems.t9t.base.jpa.ormspecific.IQueryHintSetter;
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 /**
  * The provider for a secondary JPA persistence context in readonly mode, which could be the shadow database connection.

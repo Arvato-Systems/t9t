@@ -18,6 +18,11 @@ package com.arvatosystems.t9t.ai.openai.service;
 import java.util.List;
 import java.util.Map;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
+import de.jpaw.bonaparte.pojos.api.media.MediaData;
+
 import com.arvatosystems.t9t.ai.openai.OpenAIChatCompletionReq;
 import com.arvatosystems.t9t.ai.openai.OpenAICreateEmbeddingsReq;
 import com.arvatosystems.t9t.ai.openai.OpenAIObjectChatCompletion;
@@ -40,10 +45,6 @@ import com.arvatosystems.t9t.ai.openai.assistants.OpenAIThreadRunReq;
 import com.arvatosystems.t9t.ai.openai.assistants.OpenAIToolOutputReq;
 import com.arvatosystems.t9t.ai.openai.request.AIModel;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 
 /**
  * Interface for the OpenAI client.

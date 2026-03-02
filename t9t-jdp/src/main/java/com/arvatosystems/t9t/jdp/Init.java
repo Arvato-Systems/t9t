@@ -19,10 +19,10 @@ import java.util.function.Consumer;
 
 import org.reflections.Reflections;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.cfg.Packages;
 import com.arvatosystems.t9t.init.InitContainers;
-
-import de.jpaw.dp.Jdp;
 
 public final class Init {
     private Init() {

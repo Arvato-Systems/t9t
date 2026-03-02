@@ -15,13 +15,14 @@
  */
 package com.arvatosystems.t9t.authz.be.api;
 
+import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.authz.api.QuerySinglePermissionRequest;
 import com.arvatosystems.t9t.authz.api.QuerySinglePermissionResponse;
 import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.server.services.IAuthorize;
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
-import de.jpaw.dp.Jdp;
 
 public class QuerySinglePermissionRequestHandler extends AbstractReadOnlyRequestHandler<QuerySinglePermissionRequest> {
 

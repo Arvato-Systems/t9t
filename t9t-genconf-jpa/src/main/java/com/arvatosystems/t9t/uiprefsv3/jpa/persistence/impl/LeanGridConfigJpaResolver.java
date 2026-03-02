@@ -15,6 +15,10 @@
  */
 package com.arvatosystems.t9t.uiprefsv3.jpa.persistence.impl;
 
+import de.jpaw.dp.Default;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractJpaResolver;
 import com.arvatosystems.t9t.uiprefsv3.LeanGridConfigDTO;
@@ -23,10 +27,6 @@ import com.arvatosystems.t9t.uiprefsv3.jpa.entities.LeanGridConfigEntity;
 import com.arvatosystems.t9t.uiprefsv3.jpa.mapping.ILeanGridConfigDTOMapper;
 import com.arvatosystems.t9t.uiprefsv3.jpa.persistence.ILeanGridConfigEntityResolver;
 import com.arvatosystems.t9t.uiprefsv3.services.ILeanGridConfigResolver;
-
-import de.jpaw.dp.Default;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
 
 @Default
 @Singleton

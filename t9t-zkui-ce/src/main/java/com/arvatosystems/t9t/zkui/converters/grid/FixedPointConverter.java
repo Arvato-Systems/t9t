@@ -15,11 +15,12 @@
  */
 package com.arvatosystems.t9t.zkui.converters.grid;
 
+import jakarta.annotation.Nonnull;
+
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
 import de.jpaw.fixedpoint.FixedPointBase;
-import jakarta.annotation.Nonnull;
 
 /**
  * A converter for FixedPointBase values that formats them as decimal numbers

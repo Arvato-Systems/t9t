@@ -15,10 +15,11 @@
  */
 package com.arvatosystems.t9t.zkui.filters;
 
-import de.jpaw.bonaparte.core.BonaPortable;
+import java.util.function.Predicate;
+
 import jakarta.annotation.Nonnull;
 
-import java.util.function.Predicate;
+import de.jpaw.bonaparte.core.BonaPortable;
 
 public interface IResultTextFilter<DWT extends BonaPortable> {
 

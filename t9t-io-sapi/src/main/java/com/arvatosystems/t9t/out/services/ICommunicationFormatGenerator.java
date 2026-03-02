@@ -18,14 +18,15 @@ package com.arvatosystems.t9t.out.services;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.base.output.OutputSessionParameters;
-import com.arvatosystems.t9t.io.DataSinkDTO;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.api.media.MediaXType;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
+
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.output.OutputSessionParameters;
+import com.arvatosystems.t9t.io.DataSinkDTO;
 
 /**
  * Communication format generators convert structured records into byte or character streams.

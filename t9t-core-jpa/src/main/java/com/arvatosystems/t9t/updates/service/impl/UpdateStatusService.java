@@ -15,13 +15,14 @@
  */
 package com.arvatosystems.t9t.updates.service.impl;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.updates.UpdateApplyStatusType;
 import com.arvatosystems.t9t.updates.jpa.entities.UpdateStatusEntity;
 import com.arvatosystems.t9t.updates.jpa.entities.UpdateStatusLogEntity;
 import com.arvatosystems.t9t.updates.jpa.persistence.IUpdateStatusLogEntityResolver;
 import com.arvatosystems.t9t.updates.service.IUpdateStatusService;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class UpdateStatusService implements IUpdateStatusService {

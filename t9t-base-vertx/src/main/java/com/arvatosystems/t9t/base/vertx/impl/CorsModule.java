@@ -15,18 +15,18 @@
  */
 package com.arvatosystems.t9t.base.vertx.impl;
 
-import com.arvatosystems.t9t.base.api.ServiceResponse;
-import com.arvatosystems.t9t.base.vertx.IServiceModule;
+import io.vertx.core.Vertx;
+import io.vertx.ext.web.Router;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.api.codecs.IMessageCoderFactory;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Named;
-import io.vertx.core.Vertx;
-import io.vertx.ext.web.Router;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.arvatosystems.t9t.base.api.ServiceResponse;
+import com.arvatosystems.t9t.base.vertx.IServiceModule;
 
 @Named("cors")
 @Dependent

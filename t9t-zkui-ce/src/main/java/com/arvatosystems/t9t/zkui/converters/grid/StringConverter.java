@@ -18,14 +18,14 @@ package com.arvatosystems.t9t.zkui.converters.grid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.zkui.components.dropdown28.factories.IDropdown28DbFactory;
-import com.arvatosystems.t9t.zkui.util.Constants;
-
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.zkui.components.dropdown28.factories.IDropdown28DbFactory;
+import com.arvatosystems.t9t.zkui.util.Constants;
 
 @Singleton
 @Named("ascii")

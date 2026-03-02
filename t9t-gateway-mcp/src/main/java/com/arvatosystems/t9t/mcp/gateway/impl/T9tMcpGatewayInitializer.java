@@ -21,12 +21,31 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jakarta.annotation.Nonnull;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.modelcontextprotocol.json.McpJsonMapper;
 import io.modelcontextprotocol.json.jackson.JacksonMcpJsonMapper;
+import io.modelcontextprotocol.server.McpServer;
+import io.modelcontextprotocol.server.McpServerFeatures;
+import io.modelcontextprotocol.server.McpSyncServer;
+import io.modelcontextprotocol.spec.McpSchema.CallToolResult;
+import io.modelcontextprotocol.spec.McpSchema.GetPromptResult;
+import io.modelcontextprotocol.spec.McpSchema.Prompt;
+import io.modelcontextprotocol.spec.McpSchema.PromptArgument;
+import io.modelcontextprotocol.spec.McpSchema.ServerCapabilities;
+import io.modelcontextprotocol.spec.McpSchema.Tool;
 import io.modelcontextprotocol.spec.McpStreamableServerTransportProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.api.ConfigurationReader;
+import de.jpaw.bonaparte.util.FreezeTools;
+import de.jpaw.dp.Jdp;
+import de.jpaw.util.ConfigurationReaderFactory;
 
 import com.arvatosystems.t9t.ai.AiPromptDTO;
 import com.arvatosystems.t9t.ai.AiPromptParameter;
@@ -43,24 +62,6 @@ import com.arvatosystems.t9t.client.init.SystemConfigurationProvider;
 import com.arvatosystems.t9t.jackson.JacksonTools;
 import com.arvatosystems.t9t.jdp.Init;
 import com.arvatosystems.t9t.mcp.gateway.IT9tMcpProcessor;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import de.jpaw.api.ConfigurationReader;
-import de.jpaw.bonaparte.util.FreezeTools;
-import de.jpaw.dp.Jdp;
-import de.jpaw.util.ConfigurationReaderFactory;
-import io.modelcontextprotocol.server.McpServer;
-import io.modelcontextprotocol.server.McpServerFeatures;
-import io.modelcontextprotocol.server.McpSyncServer;
-import io.modelcontextprotocol.spec.McpSchema.CallToolResult;
-import io.modelcontextprotocol.spec.McpSchema.GetPromptResult;
-import io.modelcontextprotocol.spec.McpSchema.Prompt;
-import io.modelcontextprotocol.spec.McpSchema.PromptArgument;
-import io.modelcontextprotocol.spec.McpSchema.ServerCapabilities;
-import io.modelcontextprotocol.spec.McpSchema.Tool;
-import jakarta.annotation.Nonnull;
-import jakarta.servlet.ServletContextEvent;
-import jakarta.servlet.ServletContextListener;
 
 public class T9tMcpGatewayInitializer implements ServletContextListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(T9tMcpGatewayInitializer.class);

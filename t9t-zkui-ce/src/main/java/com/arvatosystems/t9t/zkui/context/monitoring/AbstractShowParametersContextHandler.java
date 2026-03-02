@@ -17,6 +17,11 @@ package com.arvatosystems.t9t.zkui.context.monitoring;
 
 import java.util.Map;
 
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.core.MapParser;
+import de.jpaw.dp.Jdp;
+import de.jpaw.json.JsonParser;
+
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceRequest;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
@@ -28,11 +33,6 @@ import com.arvatosystems.t9t.zkui.components.basic.Grid28;
 import com.arvatosystems.t9t.zkui.components.basic.ModalWindows;
 import com.arvatosystems.t9t.zkui.context.IGridContextMenu;
 import com.arvatosystems.t9t.zkui.services.IT9tRemoteUtils;
-
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.core.MapParser;
-import de.jpaw.dp.Jdp;
-import de.jpaw.json.JsonParser;
 
 public abstract class AbstractShowParametersContextHandler implements IGridContextMenu<MessageDTO> {
     protected final IT9tRemoteUtils remoteUtils = Jdp.getRequired(IT9tRemoteUtils.class);

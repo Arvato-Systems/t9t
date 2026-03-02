@@ -15,13 +15,14 @@
  */
 package com.arvatosystems.t9t.authc.be.api;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.auth.TenantDTO;
 import com.arvatosystems.t9t.auth.services.ITenantResolver;
 import com.arvatosystems.t9t.authc.api.GetCurrentJwtRequest;
 import com.arvatosystems.t9t.base.auth.AuthenticationResponse;
 import com.arvatosystems.t9t.base.services.AbstractReadOnlyRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
-import de.jpaw.dp.Jdp;
 
 public class GetCurrentJwtRequestHandler extends AbstractReadOnlyRequestHandler<GetCurrentJwtRequest> {
 

@@ -19,10 +19,10 @@ import jakarta.persistence.PersistenceException;
 
 import org.hibernate.exception.ConstraintViolationException;
 
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.jpa.ormspecific.IJpaCrudTechnicalExceptionMapper;
-
-import de.jpaw.dp.Singleton;
 
 
 /**

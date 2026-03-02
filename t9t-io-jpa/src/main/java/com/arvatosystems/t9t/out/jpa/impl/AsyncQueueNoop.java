@@ -20,13 +20,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.services.RequestContext;
-import com.arvatosystems.t9t.io.AsyncChannelDTO;
-import com.arvatosystems.t9t.out.services.IAsyncQueue;
-
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.io.AsyncChannelDTO;
+import com.arvatosystems.t9t.out.services.IAsyncQueue;
 
 @Named("noop")
 @Singleton

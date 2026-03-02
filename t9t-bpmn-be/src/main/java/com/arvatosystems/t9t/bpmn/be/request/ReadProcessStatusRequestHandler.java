@@ -15,13 +15,13 @@
  */
 package com.arvatosystems.t9t.bpmn.be.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.bpmn.request.ReadProcessStatusRequest;
 import com.arvatosystems.t9t.bpmn.request.ReadProcessStatusResponse;
 import com.arvatosystems.t9t.bpmn.services.IBpmnPersistenceAccess;
-
-import de.jpaw.dp.Jdp;
 
 public class ReadProcessStatusRequestHandler extends AbstractRequestHandler<ReadProcessStatusRequest> {
     private final IBpmnPersistenceAccess persistenceAccess = Jdp.getRequired(IBpmnPersistenceAccess.class);

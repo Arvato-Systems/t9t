@@ -17,15 +17,9 @@ package com.arvatosystems.t9t.jetty.impl;
 
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import jakarta.servlet.ServletConfig;
+import jakarta.ws.rs.core.Application;
 
-import com.arvatosystems.t9t.jetty.ISwaggerInit;
-import com.arvatosystems.t9t.jetty.init.JettyServer;
-import com.arvatosystems.t9t.jetty.oas.DateTimeConverters;
-import com.arvatosystems.t9t.jetty.oas.JsonSchemaOpenApiUtil;
-
-import de.jpaw.dp.Singleton;
 import io.swagger.v3.core.converter.ModelConverters;
 import io.swagger.v3.jaxrs2.integration.JaxrsOpenApiContextBuilder;
 import io.swagger.v3.oas.integration.OpenApiConfigurationException;
@@ -40,8 +34,15 @@ import io.swagger.v3.oas.models.security.SecurityScheme.Type;
 import io.swagger.v3.oas.models.servers.Server;
 import io.swagger.v3.oas.models.servers.ServerVariable;
 import io.swagger.v3.oas.models.servers.ServerVariables;
-import jakarta.servlet.ServletConfig;
-import jakarta.ws.rs.core.Application;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.jetty.ISwaggerInit;
+import com.arvatosystems.t9t.jetty.init.JettyServer;
+import com.arvatosystems.t9t.jetty.oas.DateTimeConverters;
+import com.arvatosystems.t9t.jetty.oas.JsonSchemaOpenApiUtil;
 
 @Singleton
 public class SwaggerInit implements ISwaggerInit {

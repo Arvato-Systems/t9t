@@ -19,17 +19,17 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.dp.Singleton;
 
 import com.arvatosystems.t9t.base.T9tUtil;
 import com.arvatosystems.t9t.base.jdbc.IJdbcDataSourceBuilder;
 import com.arvatosystems.t9t.base.services.IJdbcDataSource;
 import com.arvatosystems.t9t.cfg.be.RelationalDatabaseConfiguration;
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
-
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class JdbcDataSourceBuilder implements IJdbcDataSourceBuilder {

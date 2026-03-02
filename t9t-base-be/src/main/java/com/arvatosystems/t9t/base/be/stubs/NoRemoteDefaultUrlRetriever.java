@@ -18,12 +18,12 @@ package com.arvatosystems.t9t.base.be.stubs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.IRemoteDefaultUrlRetriever;
-import com.arvatosystems.t9t.base.T9tException;
-
 import de.jpaw.dp.Any;
 import de.jpaw.dp.Fallback;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.base.IRemoteDefaultUrlRetriever;
+import com.arvatosystems.t9t.base.T9tException;
 
 @Fallback
 @Any

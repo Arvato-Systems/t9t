@@ -17,9 +17,9 @@ package com.arvatosystems.t9t.msglog.services;
 
 import java.util.List;
 
-import com.arvatosystems.t9t.msglog.MessageDTO;
-
 import jakarta.annotation.Nonnull;
+
+import com.arvatosystems.t9t.msglog.MessageDTO;
 
 /**
  * Interface to persist transaction execution logs.

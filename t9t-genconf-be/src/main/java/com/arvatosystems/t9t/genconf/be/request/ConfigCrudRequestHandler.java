@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.genconf.be.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.be.impl.AbstractCrudSurrogateKeyBERequestHandler;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
@@ -23,8 +25,6 @@ import com.arvatosystems.t9t.genconf.ConfigDTO;
 import com.arvatosystems.t9t.genconf.ConfigRef;
 import com.arvatosystems.t9t.genconf.request.ConfigCrudRequest;
 import com.arvatosystems.t9t.genconf.services.IConfigResolver;
-
-import de.jpaw.dp.Jdp;
 
 public class ConfigCrudRequestHandler extends AbstractCrudSurrogateKeyBERequestHandler<ConfigRef, ConfigDTO, FullTrackingWithVersion, ConfigCrudRequest> {
 

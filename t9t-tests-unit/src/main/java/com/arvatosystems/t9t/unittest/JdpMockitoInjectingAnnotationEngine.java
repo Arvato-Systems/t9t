@@ -15,12 +15,13 @@
  */
 package com.arvatosystems.t9t.unittest;
 
-import de.jpaw.dp.Jdp;
+import java.lang.reflect.Field;
+
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.internal.configuration.InjectingAnnotationEngine;
 
-import java.lang.reflect.Field;
+import de.jpaw.dp.Jdp;
 
 /**
  * Annotation injection bridge to combine JDP with Mockito

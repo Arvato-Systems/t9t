@@ -19,10 +19,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zul.Div;
 
+import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
+
 import com.arvatosystems.t9t.zkui.components.IPermissionOwner;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
-
-import de.jpaw.bonaparte.pojos.api.auth.Permissionset;
 
 public class Div28 extends Div implements IPermissionOwner {
     private static final Logger LOGGER = LoggerFactory.getLogger(Div28.class);

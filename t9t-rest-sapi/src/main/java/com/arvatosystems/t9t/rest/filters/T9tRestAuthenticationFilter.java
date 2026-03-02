@@ -17,19 +17,20 @@ package com.arvatosystems.t9t.rest.filters;
 
 import java.io.IOException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.base.T9tConstants;
-import com.arvatosystems.t9t.ipblocker.services.impl.IPAddressBlocker;
-import com.arvatosystems.t9t.rest.services.IAuthFilterCustomization;
-
-import de.jpaw.dp.Jdp;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.container.PreMatching;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.ext.Provider;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.jpaw.dp.Jdp;
+
+import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.ipblocker.services.impl.IPAddressBlocker;
+import com.arvatosystems.t9t.rest.services.IAuthFilterCustomization;
 
 @Provider
 @PreMatching

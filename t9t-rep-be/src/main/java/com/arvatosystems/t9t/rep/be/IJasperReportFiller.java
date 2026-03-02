@@ -17,11 +17,11 @@ package com.arvatosystems.t9t.rep.be;
 
 import java.util.Map;
 
-import com.arvatosystems.t9t.rep.ReportParamsDTO;
-
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+
+import com.arvatosystems.t9t.rep.ReportParamsDTO;
 
 /**
  * Interface to hook implementations which perform filling the report with data.

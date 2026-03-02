@@ -23,8 +23,15 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 
+import jakarta.annotation.Nonnull;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.dp.Singleton;
 
 import com.arvatosystems.t9t.ai.adobe.T9tAdobeConstants;
 import com.arvatosystems.t9t.ai.adobe.T9tAdobeException;
@@ -38,12 +45,6 @@ import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.cfg.be.ConfigProvider;
 import com.arvatosystems.t9t.cfg.be.UplinkConfiguration;
 import com.arvatosystems.t9t.jackson.JacksonTools;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import de.jpaw.dp.Singleton;
-import jakarta.annotation.Nonnull;
 
 @Singleton
 public class AdobeFireflyClient implements IAdobeFireflyClient {

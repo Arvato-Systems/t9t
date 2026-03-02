@@ -15,14 +15,14 @@
  */
 package com.arvatosystems.t9t.doc.be.pdf.tests;
 
-import com.arvatosystems.t9t.doc.services.IDocConverter;
-import com.arvatosystems.t9t.jdp.Init;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import de.jpaw.bonaparte.pojos.api.media.MediaType;
 import de.jpaw.dp.Jdp;
 
-import org.junit.jupiter.api.Test;
+import com.arvatosystems.t9t.doc.services.IDocConverter;
+import com.arvatosystems.t9t.jdp.Init;
 
 public class HtmlToPdfTest {
 

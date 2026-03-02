@@ -16,6 +16,7 @@
 package com.arvatosystems.t9t.hs.be.lucene.configurate.impl;
 
 import jakarta.annotation.Nonnull;
+
 import org.hibernate.search.backend.lucene.analysis.LuceneAnalysisConfigurationContext;
 import org.hibernate.search.backend.lucene.analysis.LuceneAnalysisConfigurer;
 

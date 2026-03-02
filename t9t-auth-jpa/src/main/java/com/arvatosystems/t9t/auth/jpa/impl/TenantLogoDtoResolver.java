@@ -15,17 +15,19 @@
  */
 package com.arvatosystems.t9t.auth.jpa.impl;
 
+import java.nio.charset.StandardCharsets;
+
+import de.jpaw.bonaparte.api.media.MediaTypes;
+import de.jpaw.bonaparte.pojos.api.media.MediaData;
+import de.jpaw.dp.Singleton;
+import de.jpaw.util.ByteArray;
+
 import com.arvatosystems.t9t.auth.TenantLogoDTO;
 import com.arvatosystems.t9t.auth.jpa.entities.TenantLogoEntity;
 import com.arvatosystems.t9t.auth.jpa.mapping.ITenantLogoDTOMapper;
 import com.arvatosystems.t9t.auth.jpa.persistence.ITenantLogoEntityResolver;
 import com.arvatosystems.t9t.auth.services.ITenantLogoDtoResolver;
 import com.arvatosystems.t9t.core.jpa.impl.AbstractModuleConfigResolver;
-import de.jpaw.bonaparte.api.media.MediaTypes;
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.dp.Singleton;
-import de.jpaw.util.ByteArray;
-import java.nio.charset.StandardCharsets;
 
 @Singleton
 public class TenantLogoDtoResolver extends AbstractModuleConfigResolver<TenantLogoDTO, TenantLogoEntity> implements ITenantLogoDtoResolver {

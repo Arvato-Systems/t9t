@@ -15,6 +15,9 @@
  */
 package com.arvatosystems.t9t.updates.be.request;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.util.ApplicationException;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
@@ -27,9 +30,6 @@ import com.arvatosystems.t9t.updates.request.FinishUpdateRequest;
 import com.arvatosystems.t9t.updates.request.PerformSingleUpdateRequest;
 import com.arvatosystems.t9t.updates.request.StartUpdateRequest;
 import com.arvatosystems.t9t.updates.services.IFeatureUpdate;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.util.ApplicationException;
 
 public class PerformSingleUpdateRequestHandler extends AbstractRequestHandler<PerformSingleUpdateRequest> {
 

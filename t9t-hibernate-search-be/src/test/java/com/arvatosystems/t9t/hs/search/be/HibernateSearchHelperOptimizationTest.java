@@ -15,8 +15,9 @@
  */
 package com.arvatosystems.t9t.hs.search.be;
 
-import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Test class to validate HibernateSearchHelper optimizations maintain expected behavior.

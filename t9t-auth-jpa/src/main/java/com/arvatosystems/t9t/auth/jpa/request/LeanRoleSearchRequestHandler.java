@@ -15,12 +15,13 @@
  */
 package com.arvatosystems.t9t.auth.jpa.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.auth.jpa.entities.RoleEntity;
 import com.arvatosystems.t9t.auth.jpa.persistence.IRoleEntityResolver;
 import com.arvatosystems.t9t.auth.request.LeanRoleSearchRequest;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractLeanSearchRequestHandler;
 import com.arvatosystems.t9t.base.search.Description;
-import de.jpaw.dp.Jdp;
 
 public class LeanRoleSearchRequestHandler extends AbstractLeanSearchRequestHandler<LeanRoleSearchRequest, RoleEntity> {
 

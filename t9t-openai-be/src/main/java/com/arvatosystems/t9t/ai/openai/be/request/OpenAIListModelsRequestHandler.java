@@ -17,14 +17,14 @@ package com.arvatosystems.t9t.ai.openai.be.request;
 
 import java.util.List;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.ai.openai.request.AIModel;
 import com.arvatosystems.t9t.ai.openai.request.OpenAIListModelsRequest;
 import com.arvatosystems.t9t.ai.openai.request.OpenAIListModelsResponse;
 import com.arvatosystems.t9t.ai.openai.service.IOpenAIClient;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.dp.Jdp;
 
 public class OpenAIListModelsRequestHandler extends AbstractRequestHandler<OpenAIListModelsRequest> {
 

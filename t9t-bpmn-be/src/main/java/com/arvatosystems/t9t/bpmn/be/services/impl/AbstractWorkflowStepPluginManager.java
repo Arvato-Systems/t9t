@@ -18,6 +18,8 @@ package com.arvatosystems.t9t.bpmn.be.services.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.bpmn.IWorkflowStep;
 import com.arvatosystems.t9t.bpmn.T9tBPMException;
@@ -27,8 +29,6 @@ import com.arvatosystems.t9t.plugins.services.IPluginManager;
 import com.arvatosystems.t9t.plugins.services.IPluginMethodLifecycle;
 import com.arvatosystems.t9t.plugins.services.Plugin;
 import com.arvatosystems.t9t.plugins.services.PluginMethod;
-
-import de.jpaw.dp.Jdp;
 
 /**
  * For workflow steps, an additional plugin manager is required, which registers newly loaded plugins.

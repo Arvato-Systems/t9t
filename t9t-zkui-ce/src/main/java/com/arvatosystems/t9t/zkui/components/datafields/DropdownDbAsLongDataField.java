@@ -15,10 +15,10 @@
  */
 package com.arvatosystems.t9t.zkui.components.datafields;
 
+import de.jpaw.bonaparte.core.BonaPortable;
+
 import com.arvatosystems.t9t.base.search.Description;
 import com.arvatosystems.t9t.zkui.components.dropdown28.factories.IDropdown28DbFactory;
-
-import de.jpaw.bonaparte.core.BonaPortable;
 
 public class DropdownDbAsLongDataField<T extends BonaPortable> extends AbstractDropdownDataField<T, Long> {
 

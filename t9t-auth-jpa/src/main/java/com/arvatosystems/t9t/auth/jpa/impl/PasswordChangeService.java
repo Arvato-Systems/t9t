@@ -15,6 +15,19 @@
  */
 package com.arvatosystems.t9t.auth.jpa.impl;
 
+import java.time.Instant;
+import java.util.List;
+
+import jakarta.persistence.TypedQuery;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Provider;
+import de.jpaw.dp.Singleton;
+import de.jpaw.util.ByteArray;
+
 import com.arvatosystems.t9t.annotations.IsLogicallyFinal;
 import com.arvatosystems.t9t.auth.AuthModuleCfgDTO;
 import com.arvatosystems.t9t.auth.PasswordUtil;
@@ -29,15 +42,6 @@ import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.services.IAuthSessionService;
 import com.arvatosystems.t9t.base.services.RequestContext;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Provider;
-import de.jpaw.dp.Singleton;
-import de.jpaw.util.ByteArray;
-import java.time.Instant;
-import java.util.List;
-import jakarta.persistence.TypedQuery;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Singleton
 public class PasswordChangeService extends AbstractPasswordService implements IPasswordChangeService {

@@ -15,6 +15,15 @@
  */
 package com.arvatosystems.t9t.io.be.request;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+
+import de.jpaw.util.ApplicationException;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
@@ -25,13 +34,6 @@ import com.arvatosystems.t9t.io.request.ImportFromFile;
 import com.arvatosystems.t9t.io.request.ImportFromRaw;
 import com.arvatosystems.t9t.io.request.ImportFromString;
 import com.arvatosystems.t9t.io.request.ImportInputSessionRequest;
-import de.jpaw.util.ApplicationException;
-import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 public class ImportInputSessionRequestHandler extends AbstractRequestHandler<ImportInputSessionRequest> {
 

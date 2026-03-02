@@ -15,13 +15,13 @@
  */
 package com.arvatosystems.t9t.out.services;
 
+import de.jpaw.bonaparte.core.BonaPortable;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.io.AsyncChannelDTO;
 import com.arvatosystems.t9t.io.AsyncQueueDTO;
 import com.arvatosystems.t9t.io.request.QueueStatus;
-
-import de.jpaw.bonaparte.core.BonaPortable;
 
 /**
  * Defines methods for an async queue implementation.

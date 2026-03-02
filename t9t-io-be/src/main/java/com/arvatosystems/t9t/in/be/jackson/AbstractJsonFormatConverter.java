@@ -17,12 +17,13 @@ package com.arvatosystems.t9t.in.be.jackson;
 
 import java.util.Map;
 
-import com.arvatosystems.t9t.in.be.impl.AbstractInputFormatConverter;
-import com.arvatosystems.t9t.in.services.IInputSession;
-import com.arvatosystems.t9t.jackson.JacksonTools;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.jpaw.bonaparte.core.BonaPortableClass;
+
+import com.arvatosystems.t9t.in.be.impl.AbstractInputFormatConverter;
+import com.arvatosystems.t9t.in.services.IInputSession;
+import com.arvatosystems.t9t.jackson.JacksonTools;
 
 public abstract class AbstractJsonFormatConverter extends AbstractInputFormatConverter {
     protected ObjectMapper objectMapper;

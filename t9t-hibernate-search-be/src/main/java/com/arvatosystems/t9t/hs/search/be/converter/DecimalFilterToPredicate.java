@@ -1,13 +1,15 @@
 package com.arvatosystems.t9t.hs.search.be.converter;
 
-import de.jpaw.bonaparte.pojos.api.DecimalFilter;
-import de.jpaw.dp.Named;
-import de.jpaw.dp.Singleton;
+import java.math.BigDecimal;
+
 import jakarta.annotation.Nonnull;
+
 import org.hibernate.search.engine.search.predicate.SearchPredicate;
 import org.hibernate.search.engine.search.predicate.dsl.SearchPredicateFactory;
 
-import java.math.BigDecimal;
+import de.jpaw.bonaparte.pojos.api.DecimalFilter;
+import de.jpaw.dp.Named;
+import de.jpaw.dp.Singleton;
 
 @Singleton
 @Named(DecimalFilter.my$PQON)

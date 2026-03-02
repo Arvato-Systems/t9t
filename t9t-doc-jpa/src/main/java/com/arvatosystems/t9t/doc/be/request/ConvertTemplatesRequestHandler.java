@@ -17,8 +17,14 @@ package com.arvatosystems.t9t.doc.be.request;
 
 import java.util.List;
 
+import jakarta.persistence.EntityManager;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.api.SearchFilters;
+import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
+import de.jpaw.dp.Jdp;
 
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
@@ -40,11 +46,6 @@ import com.arvatosystems.t9t.doc.jpa.persistence.IDocEmailCfgEntityResolver;
 import com.arvatosystems.t9t.doc.jpa.persistence.IDocTemplateEntityResolver;
 import com.arvatosystems.t9t.doc.request.ConvertTemplatesRequest;
 import com.arvatosystems.t9t.doc.services.ITemplateConversion;
-
-import de.jpaw.bonaparte.api.SearchFilters;
-import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
-import de.jpaw.dp.Jdp;
-import jakarta.persistence.EntityManager;
 
 public class ConvertTemplatesRequestHandler extends AbstractRequestHandler<ConvertTemplatesRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConvertTemplatesRequestHandler.class);

@@ -18,13 +18,13 @@ package com.arvatosystems.t9t.out.be.impl.output;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 
-import com.arvatosystems.t9t.base.output.OutputSessionParameters;
-import com.arvatosystems.t9t.io.DataSinkDTO;
-import com.arvatosystems.t9t.out.services.IOutputResource;
-
 import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Named;
+
+import com.arvatosystems.t9t.base.output.OutputSessionParameters;
+import com.arvatosystems.t9t.io.DataSinkDTO;
+import com.arvatosystems.t9t.out.services.IOutputResource;
 
 @Named("NULL")
 @Dependent

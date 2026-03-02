@@ -20,13 +20,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Map;
 
+import com.google.common.io.CharStreams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.in.services.IInputSession;
-import com.arvatosystems.t9t.io.T9tIOException;
-import com.google.common.io.CharStreams;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.BonaPortableClass;
@@ -39,6 +35,10 @@ import de.jpaw.bonaparte.pojos.meta.Visibility;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Named;
 import de.jpaw.json.JsonParser;
+
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.in.services.IInputSession;
+import com.arvatosystems.t9t.io.T9tIOException;
 
 /**
  * JSON format converter which allows import of arbitrary data in JSON format, using the Bonaparte encoder.

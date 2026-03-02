@@ -17,14 +17,14 @@ package com.arvatosystems.t9t.out.services;
 
 import java.util.function.Consumer;
 
+import jakarta.annotation.Nonnull;
+
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.output.ExportStatusEnum;
 import com.arvatosystems.t9t.io.AsyncChannelDTO;
 import com.arvatosystems.t9t.io.AsyncHttpResponse;
 import com.arvatosystems.t9t.io.AsyncQueueDTO;
 import com.arvatosystems.t9t.io.InMemoryMessage;
-
-import jakarta.annotation.Nonnull;
 
 /**
  * Describes an implementation of a REST POST or SOAP WS endpoint.

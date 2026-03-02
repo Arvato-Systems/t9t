@@ -22,9 +22,9 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Comboitem;
 
-import com.arvatosystems.t9t.base.types.BooleanEnum;
-
 import de.jpaw.bonaparte.pojos.meta.EnumDefinition;
+
+import com.arvatosystems.t9t.base.types.BooleanEnum;
 
 public class BooleanTristateDataField extends AbstractEnumDataField<Boolean> {
     private static final Logger LOGGER = LoggerFactory.getLogger(BooleanTristateDataField.class);

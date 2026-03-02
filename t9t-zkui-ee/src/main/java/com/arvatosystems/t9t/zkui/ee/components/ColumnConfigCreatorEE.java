@@ -40,12 +40,12 @@ import org.zkoss.zul.Popup;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 
+import de.jpaw.dp.Dependent;
+import de.jpaw.dp.Specializes;
+
 import com.arvatosystems.t9t.base.uiprefs.UIGridPreferences;
 import com.arvatosystems.t9t.zkui.services.impl.DefaultColumnConfigCreator;
 import com.arvatosystems.t9t.zkui.session.ApplicationSession;
-
-import de.jpaw.dp.Dependent;
-import de.jpaw.dp.Specializes;
 
 /**
  * EE version of column configuration component that turn all available fields

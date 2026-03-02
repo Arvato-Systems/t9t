@@ -20,8 +20,25 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
+import jakarta.ws.rs.container.AsyncResponse;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.api.media.MediaTypeInfo;
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.core.DataConverter;
+import de.jpaw.bonaparte.pojos.api.media.MediaData;
+import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
+import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+import de.jpaw.util.ApplicationException;
+import de.jpaw.util.ExceptionUtil;
 
 import com.arvatosystems.t9t.base.IRemoteConnection;
 import com.arvatosystems.t9t.base.MessagingUtil;
@@ -39,26 +56,39 @@ import com.arvatosystems.t9t.rest.services.IT9tRestProcessor;
 import com.arvatosystems.t9t.rest.utils.RestUtils;
 import com.arvatosystems.t9t.xml.auth.AuthenticationResult;
 
-import de.jpaw.bonaparte.api.media.MediaTypeInfo;
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.core.DataConverter;
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
-import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
-import de.jpaw.util.ApplicationException;
-import de.jpaw.util.ExceptionUtil;
-import jakarta.ws.rs.container.AsyncResponse;
-import jakarta.ws.rs.core.HttpHeaders;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
-
 @Singleton
 public class T9tRestProcessor implements IT9tRestProcessor {
     private static final Logger LOGGER = LoggerFactory.getLogger(T9tRestProcessor.class);
     private static final AtomicInteger COUNTER = new AtomicInteger();
+
+    /**
+     * Class loader used by Spring Boot to load classes/resources from a repackaged boot jar.
+     *
+     * When the gateway is started using the Spring Boot launcher, the application is loaded using a
+     * org.springframework.boot.loader.launch.LaunchedClassLoader (exact subclass depends on the
+     * Spring Boot version). Many libraries (including JAXB via java.util.ServiceLoader) rely on the
+     * thread context class loader (TCCL) to discover provider implementations.
+     *
+     * Problem:
+     *   Async callbacks in this gateway are executed on worker threads (typically ForkJoinPool.commonPool).
+     *   Those threads are not created by the Boot launcher and therefore do NOT necessarily have
+     *   the Boot class loader set as their TCCL.
+     *   As a consequence, provider discovery may fail at runtime, e.g. JAXB cannot locate the
+     *   ContextFactory implementation which results in jakarta.xml.bind.JAXBException:
+     *   Implementation of Jakarta XML Binding-API has not been found...
+     *
+     * Solution:
+     * Capture the Boot class loader once during class initialization and explicitly set it as the
+     * TCCL for all async callback code paths. This keeps behavior stable regardless of how the executing
+     * threads were created.
+     *
+     * Notes:
+     * This is intentionally implemented as a small, local utility instead of introducing a global executor wrapper,
+     * because only specific callbacks require the correct TCCL (JAXB / RESTEasy provider).
+     * The previous TCCL is always restored to avoid side effects on unrelated code that might run
+     * on the same worker thread afterwards.
+     */
+    private static final ClassLoader BOOT_CLASSLOADER = T9tRestProcessor.class.getClassLoader();
 
     protected final IRemoteConnection connection = Jdp.getRequired(IRemoteConnection.class);
     protected final IGatewayStringSanitizerFactory gatewayStringSanitizerFactory = Jdp.getRequired(IGatewayStringSanitizerFactory.class);
@@ -185,7 +215,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
         requestParameters.setTransactionOriginType(TransactionOriginType.GATEWAY_EXTERNAL);
 
         final CompletableFuture<ServiceResponse> readResponse = connection.executeAsync(authorizationHeader, requestParameters);
-        readResponse.thenAccept(sr -> {
+        readResponse.thenAccept(withBootTccl(sr -> {
             LOGGER.debug("Response obtained {}: {}", invocationNo, infoMsg);
             if (ApplicationException.isOk(sr.getReturnCode())) {
                 final Response.ResponseBuilder responseBuilder = RestUtils.createResponseBuilder(sr.getReturnCode());
@@ -225,12 +255,12 @@ public class T9tRestProcessor implements IT9tRestProcessor {
                 // map error report
                 createGenericResultEntity(sr, resp, acceptHeader, () -> ipBlockerService.registerBadAuthFromIp(remoteIp), errorResponseMapper);
             }
-        }).exceptionally(e -> {
+        })).exceptionally(withBootTcclThrowable(e -> {
             final int errorCode = e instanceof ApplicationException ae ? ae.getErrorCode() : T9tException.GENERAL_EXCEPTION;
             resp.resume(RestUtils.error(Response.Status.INTERNAL_SERVER_ERROR, errorCode, e.getMessage(), acceptHeader));
             e.printStackTrace();
             return null;
-        });
+        }));
     }
 
     @Override
@@ -241,7 +271,7 @@ public class T9tRestProcessor implements IT9tRestProcessor {
         requestParameters.setWhenSent(System.currentTimeMillis());  // assumes all server clocks are sufficiently synchronized
         requestParameters.setTransactionOriginType(TransactionOriginType.GATEWAY_EXTERNAL);
         final CompletableFuture<ServiceResponse> readResponse = connection.executeAuthenticationAsync(requestParameters);
-        readResponse.thenAccept(sr -> {
+        readResponse.thenAccept(withBootTccl(sr -> {
             if (ApplicationException.isOk(sr.getReturnCode())) {
                 final Response.ResponseBuilder responseBuilder = RestUtils.createResponseBuilder(sr.getReturnCode());
                 responseBuilder.type(acceptHeader == null || acceptHeader.length() == 0 ? "application/json" : acceptHeader);
@@ -270,11 +300,70 @@ public class T9tRestProcessor implements IT9tRestProcessor {
                 createGenericResultEntity(sr, resp, acceptHeader, () -> ipBlockerService.registerBadAuthFromIp(remoteIp),
                     this::createResultFromServiceResponse);
             }
-        }).exceptionally(e -> {
+        })).exceptionally(withBootTcclThrowable(e -> {
             final int errorCode = e instanceof ApplicationException ae ? ae.getErrorCode() : T9tException.GENERAL_EXCEPTION;
             resp.resume(RestUtils.error(Response.Status.INTERNAL_SERVER_ERROR, errorCode, e.getMessage(), acceptHeader));
             e.printStackTrace();
             return null;
-        });
+        }));
+    }
+
+    /**
+     * Wraps a Runnable so it runs with the Spring Boot class loader as thread context class loader (TCCL).
+     *
+     * Use this for asynchronous callbacks which may be executed on threads where the TCCL is not set to the
+     * Spring Boot BOOT_CLASSLOADER. This is particularly important for JAXB usage, because JAXB discovers
+     * its runtime implementation via java.util.ServiceLoader using the TCCL.
+     *
+     * Implementation details:
+     * If the current TCCL is already BOOT_CLASSLOADER, we run the callback directly (fast path).
+     * Otherwise we temporarily set the TCCL to BOOT_CLASSLOADER, run the callback, and restore the previous TCCL
+     * in a finally block.
+     *
+     */
+    private static Runnable withBootTccl(final Runnable r) {
+        return () -> {
+            final Thread t = Thread.currentThread();
+            final ClassLoader prev = t.getContextClassLoader();
+            if (prev == BOOT_CLASSLOADER) {
+                r.run();
+                return;
+            }
+            t.setContextClassLoader(BOOT_CLASSLOADER);
+            try {
+                r.run();
+            } finally {
+                t.setContextClassLoader(prev);
+            }
+        };
+    }
+
+    /**
+     * Wraps a java.util.function.Consumer so it runs with the Boot class loader as TCCL.
+     * This is mainly used with CompletableFuture#thenAccept(java.util.function.Consumer)
+     */
+    private static <T> java.util.function.Consumer<T> withBootTccl(final java.util.function.Consumer<T> c) {
+        return (t) -> withBootTccl(() -> c.accept(t)).run();
+    }
+
+    /**
+     * Wraps a java.util.function.Function (typically used as an exception handler) so it runs with the
+     * Boot class loader as TCCL.
+     * This is mainly used with CompletableFuture#exceptionally(java.util.function.Function).
+     */
+    private static <T> java.util.function.Function<Throwable, T> withBootTcclThrowable(final java.util.function.Function<Throwable, T> f) {
+        return (thr) -> {
+            final Thread th = Thread.currentThread();
+            final ClassLoader prev = th.getContextClassLoader();
+            if (prev == BOOT_CLASSLOADER) {
+                return f.apply(thr);
+            }
+            th.setContextClassLoader(BOOT_CLASSLOADER);
+            try {
+                return f.apply(thr);
+            } finally {
+                th.setContextClassLoader(prev);
+            }
+        };
     }
 }

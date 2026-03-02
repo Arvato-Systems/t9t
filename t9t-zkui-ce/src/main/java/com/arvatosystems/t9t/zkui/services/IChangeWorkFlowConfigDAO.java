@@ -15,8 +15,9 @@
  */
 package com.arvatosystems.t9t.zkui.services;
 
-import com.arvatosystems.t9t.changeRequest.ChangeWorkFlowConfigDTO;
 import jakarta.annotation.Nonnull;
+
+import com.arvatosystems.t9t.changeRequest.ChangeWorkFlowConfigDTO;
 
 public interface IChangeWorkFlowConfigDAO {
 

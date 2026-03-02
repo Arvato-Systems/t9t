@@ -15,10 +15,17 @@
  */
 package com.arvatosystems.t9t.embedded.tests.updater;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.util.Arrays;
 import java.util.List;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import de.jpaw.bonaparte.pojos.api.LongFilter;
 
 import com.arvatosystems.t9t.base.ITestConnection;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
@@ -31,10 +38,6 @@ import com.arvatosystems.t9t.updates.request.GetUpdateStatusRequest;
 import com.arvatosystems.t9t.updates.request.GetUpdateStatusResponse;
 import com.arvatosystems.t9t.updates.request.StartUpdateRequest;
 import com.arvatosystems.t9t.updates.request.UpdateStatusLogSearchRequest;
-import de.jpaw.bonaparte.pojos.api.LongFilter;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class UpdateStatusTest {
     private static ITestConnection dlg;

@@ -15,16 +15,16 @@
  */
 package com.arvatosystems.t9t.statistics.service.impl;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Provider;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.batch.StatisticsDTO;
 import com.arvatosystems.t9t.batch.jpa.entities.StatisticsEntity;
 import com.arvatosystems.t9t.batch.jpa.mapping.IStatisticsDTOMapper;
 import com.arvatosystems.t9t.batch.jpa.persistence.IStatisticsEntityResolver;
 import com.arvatosystems.t9t.statistics.services.IStatisticsService;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Provider;
-import de.jpaw.dp.Singleton;
 
 /**
  * Default implementation of {@linkplain IStatisticsService}.

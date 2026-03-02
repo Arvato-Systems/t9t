@@ -23,6 +23,13 @@ import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.api.media.MediaTypes;
+import de.jpaw.bonaparte.core.MapComposer;
+import de.jpaw.bonaparte.pojos.api.media.MediaData;
+import de.jpaw.bonaparte.pojos.api.media.MediaXType;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.base.services.IOutputSession;
@@ -31,13 +38,6 @@ import com.arvatosystems.t9t.doc.api.DocumentSelector;
 import com.arvatosystems.t9t.doc.recipients.RecipientArchive;
 import com.arvatosystems.t9t.doc.services.DocArchiveResult;
 import com.arvatosystems.t9t.doc.services.IDocArchiveDistributor;
-
-import de.jpaw.bonaparte.api.media.MediaTypes;
-import de.jpaw.bonaparte.core.MapComposer;
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaXType;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class DocArchiveDistributor implements IDocArchiveDistributor {

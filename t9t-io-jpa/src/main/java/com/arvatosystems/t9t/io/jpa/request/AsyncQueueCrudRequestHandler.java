@@ -18,6 +18,8 @@ package com.arvatosystems.t9t.io.jpa.request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKeyRequestHandler;
@@ -29,8 +31,6 @@ import com.arvatosystems.t9t.io.jpa.mapping.IAsyncQueueDTOMapper;
 import com.arvatosystems.t9t.io.jpa.persistence.IAsyncQueueEntityResolver;
 import com.arvatosystems.t9t.io.request.AsyncQueueCrudRequest;
 import com.arvatosystems.t9t.out.services.IAsyncQueue;
-
-import de.jpaw.dp.Jdp;
 
 public class AsyncQueueCrudRequestHandler extends AbstractCrudSurrogateKeyRequestHandler<AsyncQueueRef, AsyncQueueDTO,
   FullTrackingWithVersion, AsyncQueueCrudRequest, AsyncQueueEntity> {

@@ -17,13 +17,14 @@ package com.arvatosystems.t9t.out.services;
 
 import java.util.List;
 
+import jakarta.annotation.Nonnull;
+
+import de.jpaw.bonaparte.core.BonaPortable;
+
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.output.OutputSessionParameters;
 import com.arvatosystems.t9t.io.DataSinkDTO;
 import com.arvatosystems.t9t.io.services.IDataSinkDefaultConfigurationProvider;
-
-import de.jpaw.bonaparte.core.BonaPortable;
-import jakarta.annotation.Nonnull;
 
 /**
  * An {@linkplain IOutputSession} hook which allow transformation of output data before it gets stored.

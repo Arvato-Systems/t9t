@@ -22,11 +22,11 @@ import jakarta.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.auth.jpa.entities.TenantEntity;
-
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Startup;
 import de.jpaw.dp.StartupOnly;
+
+import com.arvatosystems.t9t.auth.jpa.entities.TenantEntity;
 
 /**
  * Performs a query on the tenants table.

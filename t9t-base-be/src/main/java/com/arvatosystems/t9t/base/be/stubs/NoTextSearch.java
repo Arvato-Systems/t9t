@@ -20,15 +20,15 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.base.search.SearchCriteria;
-import com.arvatosystems.t9t.base.services.ITextSearch;
-import com.arvatosystems.t9t.base.services.RequestContext;
-
 import de.jpaw.dp.Any;
 import de.jpaw.dp.Fallback;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ApplicationException;
+
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.search.SearchCriteria;
+import com.arvatosystems.t9t.base.services.ITextSearch;
+import com.arvatosystems.t9t.base.services.RequestContext;
 
 /**
  * Stub implementation of the ITextSearch interface, just here to avoid cyclic dependencies. It is expected that a real implementation prioritizes over this

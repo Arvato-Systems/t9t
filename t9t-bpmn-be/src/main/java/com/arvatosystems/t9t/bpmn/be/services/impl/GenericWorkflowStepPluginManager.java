@@ -15,11 +15,11 @@
  */
 package com.arvatosystems.t9t.bpmn.be.services.impl;
 
-import com.arvatosystems.t9t.base.T9tConstants;
-import com.arvatosystems.t9t.bpmn.IWorkflowStep;
-
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.base.T9tConstants;
+import com.arvatosystems.t9t.bpmn.IWorkflowStep;
 
 @Singleton
 @Named(T9tConstants.PLUGIN_API_ID_WORKFLOW_STEP)

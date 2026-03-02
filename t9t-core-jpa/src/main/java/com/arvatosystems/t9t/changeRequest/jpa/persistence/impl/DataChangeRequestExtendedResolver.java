@@ -15,16 +15,18 @@
  */
 package com.arvatosystems.t9t.changeRequest.jpa.persistence.impl;
 
+import jakarta.annotation.Nonnull;
+
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.core.CompactByteArrayComposer;
+import de.jpaw.dp.Singleton;
+import de.jpaw.dp.Specializes;
+
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.changeRequest.DataChangeRequestDTO;
 import com.arvatosystems.t9t.changeRequest.DataChangeRequestInternalKey;
 import com.arvatosystems.t9t.changeRequest.DataChangeRequestKey;
 import com.arvatosystems.t9t.changeRequest.DataChangeRequestRef;
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.core.CompactByteArrayComposer;
-import de.jpaw.dp.Singleton;
-import de.jpaw.dp.Specializes;
-import jakarta.annotation.Nonnull;
 
 @Specializes
 @Singleton

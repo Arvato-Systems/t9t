@@ -15,12 +15,12 @@
  */
 package com.arvatosystems.t9t.rest.vertx.impl;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Singleton;
+
 import com.arvatosystems.t9t.base.types.AuthenticationParameters;
 import com.arvatosystems.t9t.rest.services.IGatewayAuthChecker;
 import com.arvatosystems.t9t.server.services.ICachingAuthenticationProcessor;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Singleton;
 
 @Singleton
 public class GatewayAuthChecker implements IGatewayAuthChecker {

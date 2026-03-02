@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.zkui.init;
 
+import de.jpaw.bonaparte.pojos.api.TrackingBase;
+
 import com.arvatosystems.t9t.base.CrudViewModel;
 import com.arvatosystems.t9t.base.IViewModelContainer;
 import com.arvatosystems.t9t.base.auth.ChangePasswordUI;
@@ -22,8 +24,6 @@ import com.arvatosystems.t9t.base.misc.Info;
 import com.arvatosystems.t9t.bpmn.T9tWorkflowStepCondition;
 import com.arvatosystems.t9t.bpmn.UiOnlyWorkflowStep;
 import com.arvatosystems.t9t.monitoring.SystemParamsDTO;
-
-import de.jpaw.bonaparte.pojos.api.TrackingBase;
 
 // pseudo-viewmodels for popups / modal windows
 public final class UIOnlyViewModels implements IViewModelContainer {

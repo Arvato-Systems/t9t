@@ -15,13 +15,13 @@
  */
 package com.arvatosystems.t9t.core.jpa.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.jpa.impl.AbstractLeanSearchRequestHandler;
 import com.arvatosystems.t9t.base.search.Description;
 import com.arvatosystems.t9t.core.jpa.entities.CannedRequestEntity;
 import com.arvatosystems.t9t.core.jpa.persistence.ICannedRequestEntityResolver;
 import com.arvatosystems.t9t.core.request.LeanCannedRequestSearchRequest;
-
-import de.jpaw.dp.Jdp;
 
 public class LeanCannedRequestSearchRequestHandler extends AbstractLeanSearchRequestHandler<LeanCannedRequestSearchRequest, CannedRequestEntity> {
     public LeanCannedRequestSearchRequestHandler() {

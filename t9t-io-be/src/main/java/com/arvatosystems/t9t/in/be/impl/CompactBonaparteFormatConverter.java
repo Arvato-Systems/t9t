@@ -22,10 +22,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.in.services.IInputSession;
-import com.arvatosystems.t9t.io.T9tIOException;
-
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.BonaPortableClass;
 import de.jpaw.bonaparte.core.CompactByteArrayParser;
@@ -33,6 +29,10 @@ import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Named;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ExceptionUtil;
+
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.in.services.IInputSession;
+import com.arvatosystems.t9t.io.T9tIOException;
 
 /**
  * Binary format converter which allows import of arbitrary binary data.

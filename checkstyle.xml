@@ -95,6 +95,22 @@
   </module>
 
   <module name="TreeWalker">
+    <module name="ImportOrder">
+      <!-- Enforce groups in this exact order -->
+      <property name="groups" value="/^java\./,javax,jakarta,/^(?!(com\.arvatosystems\.|de\.jpaw\.))./,de.jpaw,com.arvatosystems"/>
+
+      <!-- Static imports go first -->
+      <property name="option" value="top"/>
+
+      <!-- Enforce blank line between groups -->
+      <property name="separated" value="true"/>
+
+      <!-- Sort imports alphabetically inside each group -->
+      <!-- <property name="ordered" value="true"/> -->
+
+      <!-- Ensure static imports are grouped separately -->
+      <property name="sortStaticImportsAlphabetically" value="true"/>
+    </module>
 
     <!-- Checks for Javadoc comments.                     -->
     <!-- See https://checkstyle.org/config_javadoc.html -->

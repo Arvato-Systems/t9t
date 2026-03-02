@@ -18,13 +18,13 @@ package com.arvatosystems.t9t.rest.services.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.StringSanitizer;
-import com.arvatosystems.t9t.rest.services.IGatewayStringSanitizerFactory;
-import com.arvatosystems.t9t.rest.utils.RestUtils;
-
 import de.jpaw.bonaparte.core.DataConverter;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.base.StringSanitizer;
+import com.arvatosystems.t9t.rest.services.IGatewayStringSanitizerFactory;
+import com.arvatosystems.t9t.rest.utils.RestUtils;
 
 @Singleton
 public class GatewayStringSanitizerFactory implements IGatewayStringSanitizerFactory {

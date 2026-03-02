@@ -18,6 +18,8 @@ package com.arvatosystems.t9t.bucket.jpa.request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.IAutonomousExecutor;
@@ -26,8 +28,6 @@ import com.arvatosystems.t9t.bucket.jpa.entities.BucketCounterEntity;
 import com.arvatosystems.t9t.bucket.jpa.persistence.IBucketCounterEntityResolver;
 import com.arvatosystems.t9t.bucket.jpa.persistence.IBucketEntryEntityResolver;
 import com.arvatosystems.t9t.bucket.request.ResetBucketNoInProgressRequest;
-
-import de.jpaw.dp.Jdp;
 
 public class ResetBucketNoInProgressRequestHandler extends AbstractRequestHandler<ResetBucketNoInProgressRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ResetBucketNoInProgressRequestHandler.class);

@@ -25,21 +25,21 @@ import java.util.function.BiConsumer;
 import jakarta.persistence.EntityGraph;
 import jakarta.persistence.TypedQuery;
 
+import com.google.common.collect.Iterables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.base.jpa.IDataGetter;
-import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey;
-import com.arvatosystems.t9t.base.jpa.ormspecific.IQueryHintSetter;
-import com.arvatosystems.t9t.base.search.GetDataResponse;
-import com.google.common.collect.Iterables;
 
 import de.jpaw.bonaparte.jpa.BonaData;
 import de.jpaw.bonaparte.jpa.BonaKey;
 import de.jpaw.bonaparte.pojos.apiw.Ref;
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.jpa.IDataGetter;
+import com.arvatosystems.t9t.base.jpa.IResolverSurrogateKey;
+import com.arvatosystems.t9t.base.jpa.ormspecific.IQueryHintSetter;
+import com.arvatosystems.t9t.base.search.GetDataResponse;
 
 @Singleton
 public class DataGetter implements IDataGetter {

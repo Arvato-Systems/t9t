@@ -19,14 +19,17 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
 
-import com.arvatosystems.t9t.base.JsonUtil;
-import com.arvatosystems.t9t.base.T9tConstants;
+import jakarta.annotation.Nonnull;
+
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
-import jakarta.annotation.Nonnull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+
+import com.arvatosystems.t9t.base.JsonUtil;
+import com.arvatosystems.t9t.base.T9tConstants;
 
 public final class SessionInvalidation {
     private SessionInvalidation() { }

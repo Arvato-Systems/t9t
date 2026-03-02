@@ -20,17 +20,17 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.base.services.RequestContext;
-import com.arvatosystems.t9t.monitoring.services.IDebugFlags;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Provider;
 import de.jpaw.dp.Singleton;
+
+import com.arvatosystems.t9t.base.services.RequestContext;
+import com.arvatosystems.t9t.monitoring.services.IDebugFlags;
 
 @Singleton
 public class DebugFlags implements IDebugFlags {

@@ -15,13 +15,13 @@
  */
 package com.arvatosystems.t9t.doc.jpa.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.jpa.impl.AbstractLeanSearchRequestHandler;
 import com.arvatosystems.t9t.base.search.Description;
 import com.arvatosystems.t9t.doc.jpa.entities.DocConfigEntity;
 import com.arvatosystems.t9t.doc.jpa.persistence.IDocConfigEntityResolver;
 import com.arvatosystems.t9t.doc.request.LeanDocConfigSearchRequest;
-
-import de.jpaw.dp.Jdp;
 
 public class LeanDocConfigSearchRequestHandler extends AbstractLeanSearchRequestHandler<LeanDocConfigSearchRequest, DocConfigEntity> {
     public LeanDocConfigSearchRequestHandler() {

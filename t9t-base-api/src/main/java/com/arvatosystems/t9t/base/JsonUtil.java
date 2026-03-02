@@ -22,6 +22,9 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,8 +32,6 @@ import de.jpaw.api.ConfigurationReader;
 import de.jpaw.bonaparte.util.FreezeTools;
 import de.jpaw.json.JsonException;
 import de.jpaw.util.ConfigurationReaderFactory;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 
 public final class JsonUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonUtil.class);

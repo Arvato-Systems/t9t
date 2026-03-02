@@ -15,6 +15,16 @@
  */
 package com.arvatosystems.t9t.hs.configurate.be.request;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.annotation.Nonnull;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.IAutonomousExecutor;
 import com.arvatosystems.t9t.base.services.RequestContext;
@@ -25,13 +35,6 @@ import com.arvatosystems.t9t.hs.configurate.request.CheckIndexStatusForEntitiesR
 import com.arvatosystems.t9t.hs.configurate.request.CheckIndexStatusRequest;
 import com.arvatosystems.t9t.hs.configurate.request.CheckIndexStatusResponse;
 import com.arvatosystems.t9t.hs.configurate.request.EntityIndexStatus;
-import de.jpaw.dp.Jdp;
-import jakarta.annotation.Nonnull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CheckIndexStatusForEntitiesRequestHandler extends AbstractRequestHandler<CheckIndexStatusForEntitiesRequest> {
 

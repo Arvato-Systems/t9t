@@ -16,11 +16,9 @@
 package com.arvatosystems.t9t.aws;
 
 import java.net.URI;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import de.jpaw.api.ConfigurationReader;
-import de.jpaw.util.ConfigurationReaderFactory;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
@@ -33,6 +31,9 @@ import software.amazon.awssdk.auth.credentials.WebIdentityTokenFileCredentialsPr
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.S3ClientBuilder;
+
+import de.jpaw.api.ConfigurationReader;
+import de.jpaw.util.ConfigurationReaderFactory;
 
 public final class AwsClientBuilder {
     private static final Logger LOGGER = LoggerFactory.getLogger(AwsClientBuilder.class);

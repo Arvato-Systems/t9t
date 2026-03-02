@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.Future;
 
+import com.google.common.base.Strings;
 import org.apache.http.ConnectionReuseStrategy;
 import org.apache.http.HttpClientConnection;
 import org.apache.http.HttpHost;
@@ -48,16 +49,15 @@ import org.apache.http.protocol.RequestUserAgent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.util.IMarshaller;
+import de.jpaw.util.ByteArray;
+import de.jpaw.util.ByteBuilder;
+
 import com.arvatosystems.t9t.base.IConnection;
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.api.RequestParameters;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
-import com.google.common.base.Strings;
-
-import de.jpaw.bonaparte.util.IMarshaller;
-import de.jpaw.util.ByteArray;
-import de.jpaw.util.ByteBuilder;
 
 /**
  * @author GOET015

@@ -15,9 +15,13 @@
  */
 package com.arvatosystems.t9t.auth.be.request;
 
-import com.arvatosystems.t9t.base.services.IAuthSessionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.pojos.api.OperationType;
+import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
+import de.jpaw.dp.Jdp;
+import de.jpaw.dp.Provider;
 
 import com.arvatosystems.t9t.auth.AuthModuleCfgDTO;
 import com.arvatosystems.t9t.auth.T9tAuthException;
@@ -34,13 +38,9 @@ import com.arvatosystems.t9t.base.be.impl.AbstractCrudSurrogateKeyBERequestHandl
 import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.services.IAuthCacheInvalidation;
+import com.arvatosystems.t9t.base.services.IAuthSessionService;
 import com.arvatosystems.t9t.base.services.IHighRiskSituationNotificationService;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.bonaparte.pojos.api.OperationType;
-import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
-import de.jpaw.dp.Jdp;
-import de.jpaw.dp.Provider;
 
 public class UserCrudRequestHandler extends AbstractCrudSurrogateKeyBERequestHandler<UserRef, UserDTO, FullTrackingWithVersion, UserCrudRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserCrudRequestHandler.class);

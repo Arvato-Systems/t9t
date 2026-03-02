@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.io.jpa.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.in.services.IInputDataTransformer;
@@ -26,8 +28,6 @@ import com.arvatosystems.t9t.io.request.MergeDataSinkPresetRequest;
 import com.arvatosystems.t9t.io.request.MergeDataSinkPresetResponse;
 import com.arvatosystems.t9t.io.services.IDataSinkDefaultConfigurationProvider;
 import com.arvatosystems.t9t.out.services.IPreOutputDataTransformer;
-
-import de.jpaw.dp.Jdp;
 
 public class MergeDataSinkPresetRequestHandler extends AbstractRequestHandler<MergeDataSinkPresetRequest> {
     private final IDataSinkEntityResolver resolver = Jdp.getRequired(IDataSinkEntityResolver.class);

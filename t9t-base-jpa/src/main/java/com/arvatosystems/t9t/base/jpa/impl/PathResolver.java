@@ -26,9 +26,9 @@ import jakarta.persistence.criteria.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.T9tException;
-
 import de.jpaw.bonaparte.jpa.api.JpaPathResolver;
+
+import com.arvatosystems.t9t.base.T9tException;
 
 public class PathResolver implements JpaPathResolver {
     private static final Logger LOGGER = LoggerFactory.getLogger(PathResolver.class);

@@ -17,11 +17,12 @@ package com.arvatosystems.t9t.base.be.stubs;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import com.arvatosystems.t9t.base.services.ISingleRefGenerator;
+import jakarta.annotation.Nonnull;
 
 import de.jpaw.dp.Named;
 import de.jpaw.dp.Singleton;
-import jakarta.annotation.Nonnull;
+
+import com.arvatosystems.t9t.base.services.ISingleRefGenerator;
 
 @Singleton
 @Named("noop")

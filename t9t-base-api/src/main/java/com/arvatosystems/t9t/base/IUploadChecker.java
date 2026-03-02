@@ -15,8 +15,9 @@
  */
 package com.arvatosystems.t9t.base;
 
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
 import jakarta.annotation.Nonnull;
+
+import de.jpaw.bonaparte.pojos.api.media.MediaData;
 
 public interface IUploadChecker {
 

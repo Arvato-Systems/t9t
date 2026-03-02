@@ -15,15 +15,16 @@
  */
 package com.arvatosystems.t9t.orm.jpa.hibernate.impl;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
+
 import org.hibernate.FlushMode;
 import org.hibernate.Session;
 import org.hibernate.jpa.HibernateHints;
 
-import com.arvatosystems.t9t.base.jpa.ormspecific.IQueryHintSetter;
-
 import de.jpaw.dp.Singleton;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.Query;
+
+import com.arvatosystems.t9t.base.jpa.ormspecific.IQueryHintSetter;
 
 @Singleton
 public class QueryHintSetter implements IQueryHintSetter {

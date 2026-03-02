@@ -15,11 +15,13 @@
  */
 package com.arvatosystems.t9t.zkui.converters;
 
-import de.jpaw.fixedpoint.types.MilliUnits;
 import java.math.BigDecimal;
+
 import org.zkoss.bind.BindContext;
 import org.zkoss.bind.Converter;
 import org.zkoss.zul.Decimalbox;
+
+import de.jpaw.fixedpoint.types.MilliUnits;
 
 /**
  * This is ZK Data binding converter that is ONLY needed by custom decimal field that required on a custom page.

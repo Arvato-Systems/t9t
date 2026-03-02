@@ -15,6 +15,9 @@
  */
 package com.arvatosystems.t9t.auth.be.request;
 
+import de.jpaw.dp.Jdp;
+import de.jpaw.util.ApplicationException;
+
 import com.arvatosystems.t9t.auth.UserDTO;
 import com.arvatosystems.t9t.auth.UserRef;
 import com.arvatosystems.t9t.auth.jpa.IPasswordSettingService;
@@ -27,9 +30,6 @@ import com.arvatosystems.t9t.base.crud.CrudSurrogateKeyResponse;
 import com.arvatosystems.t9t.base.entities.FullTrackingWithVersion;
 import com.arvatosystems.t9t.base.jpa.impl.AbstractCrudSurrogateKeyRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
-
-import de.jpaw.dp.Jdp;
-import de.jpaw.util.ApplicationException;
 
 public class UserCrudAndSetPasswordRequestHandler extends AbstractCrudSurrogateKeyRequestHandler<UserRef, UserDTO,
   FullTrackingWithVersion, UserCrudAndSetPasswordRequest, UserEntity> {

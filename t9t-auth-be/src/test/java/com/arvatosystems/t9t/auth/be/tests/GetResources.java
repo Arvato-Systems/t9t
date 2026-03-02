@@ -16,6 +16,7 @@
 package com.arvatosystems.t9t.auth.be.tests;
 
 import java.net.URL;
+
 import org.junit.jupiter.api.Test;
 
 public class GetResources {

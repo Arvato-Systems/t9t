@@ -30,15 +30,6 @@ import java.util.concurrent.CompletableFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.arvatosystems.t9t.base.IRemoteConnection;
-import com.arvatosystems.t9t.base.IRemoteDefaultUrlRetriever;
-import com.arvatosystems.t9t.base.MessagingUtil;
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.base.api.RequestParameters;
-import com.arvatosystems.t9t.base.api.ServiceResponse;
-import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
-import com.arvatosystems.t9t.base.auth.AuthenticationResponse;
-
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.CompactByteArrayComposer;
 import de.jpaw.bonaparte.core.CompactByteArrayParser;
@@ -47,6 +38,15 @@ import de.jpaw.dp.Jdp;
 import de.jpaw.dp.Singleton;
 import de.jpaw.util.ApplicationException;
 import de.jpaw.util.ExceptionUtil;
+
+import com.arvatosystems.t9t.base.IRemoteConnection;
+import com.arvatosystems.t9t.base.IRemoteDefaultUrlRetriever;
+import com.arvatosystems.t9t.base.MessagingUtil;
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.base.api.RequestParameters;
+import com.arvatosystems.t9t.base.api.ServiceResponse;
+import com.arvatosystems.t9t.base.auth.AuthenticationRequest;
+import com.arvatosystems.t9t.base.auth.AuthenticationResponse;
 
 @Singleton
 public class RemoteConnection implements IRemoteConnection {

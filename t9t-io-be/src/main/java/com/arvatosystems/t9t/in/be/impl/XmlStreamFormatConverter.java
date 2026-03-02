@@ -22,17 +22,18 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import jakarta.xml.bind.JAXBElement;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.arvatosystems.t9t.base.T9tException;
-import com.arvatosystems.t9t.io.T9tIOException;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.dp.Dependent;
 import de.jpaw.dp.Named;
 import de.jpaw.util.ExceptionUtil;
-import jakarta.xml.bind.JAXBElement;
+
+import com.arvatosystems.t9t.base.T9tException;
+import com.arvatosystems.t9t.io.T9tIOException;
 
 @Dependent
 @Named("XML") // generic XML reader

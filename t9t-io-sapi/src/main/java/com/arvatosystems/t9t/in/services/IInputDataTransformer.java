@@ -17,11 +17,11 @@ package com.arvatosystems.t9t.in.services;
 
 import java.util.Map;
 
-import com.arvatosystems.t9t.base.api.RequestParameters;
-import com.arvatosystems.t9t.io.services.IDataSinkDefaultConfigurationProvider;
-
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.BonaPortableClass;
+
+import com.arvatosystems.t9t.base.api.RequestParameters;
+import com.arvatosystems.t9t.io.services.IDataSinkDefaultConfigurationProvider;
 
 @FunctionalInterface
 public interface IInputDataTransformer<T extends BonaPortable> extends IDataSinkDefaultConfigurationProvider {

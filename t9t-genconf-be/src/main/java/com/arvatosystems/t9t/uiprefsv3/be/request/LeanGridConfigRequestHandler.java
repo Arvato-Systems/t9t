@@ -18,6 +18,9 @@ package com.arvatosystems.t9t.uiprefsv3.be.request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.util.ToStringHelper;
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.ILeanGridConfigContainer;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
@@ -29,9 +32,6 @@ import com.arvatosystems.t9t.uiprefsv3.LeanGridConfigDTO;
 import com.arvatosystems.t9t.uiprefsv3.request.LeanGridConfigRequest;
 import com.arvatosystems.t9t.uiprefsv3.request.LeanGridConfigResponse;
 import com.arvatosystems.t9t.uiprefsv3.services.ILeanGridConfigRead;
-
-import de.jpaw.bonaparte.util.ToStringHelper;
-import de.jpaw.dp.Jdp;
 
 public class LeanGridConfigRequestHandler extends AbstractRequestHandler<LeanGridConfigRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(LeanGridConfigRequestHandler.class);

@@ -15,6 +15,8 @@
  */
 package com.arvatosystems.t9t.embedded.tests.core;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -25,8 +27,6 @@ import com.arvatosystems.t9t.embedded.connect.InMemoryConnection;
 import com.arvatosystems.t9t.jackson.JacksonTools;
 import com.arvatosystems.t9t.monitoring.request.QuerySystemParamsRequest;
 import com.arvatosystems.t9t.monitoring.request.QuerySystemParamsResponse;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class SystemParametersTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(SystemParametersTest.class);

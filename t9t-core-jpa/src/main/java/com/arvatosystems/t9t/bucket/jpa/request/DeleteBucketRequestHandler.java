@@ -18,13 +18,13 @@ package com.arvatosystems.t9t.bucket.jpa.request;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.api.ServiceResponse;
 import com.arvatosystems.t9t.base.services.AbstractRequestHandler;
 import com.arvatosystems.t9t.base.services.RequestContext;
 import com.arvatosystems.t9t.bucket.jpa.persistence.IBucketEntryEntityResolver;
 import com.arvatosystems.t9t.bucket.request.DeleteBucketRequest;
-
-import de.jpaw.dp.Jdp;
 
 public class DeleteBucketRequestHandler extends AbstractRequestHandler<DeleteBucketRequest> {
     private final IBucketEntryEntityResolver resolver = Jdp.getRequired(IBucketEntryEntityResolver.class);

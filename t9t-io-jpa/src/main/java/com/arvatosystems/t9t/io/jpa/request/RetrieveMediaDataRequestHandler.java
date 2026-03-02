@@ -21,6 +21,15 @@ import java.io.InputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.api.media.MediaTypeInfo;
+import de.jpaw.bonaparte.pojos.api.media.MediaData;
+import de.jpaw.bonaparte.pojos.api.media.MediaStorageLocation;
+import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
+import de.jpaw.bonaparte.pojos.api.media.MediaXStorageLocation;
+import de.jpaw.dp.Jdp;
+import de.jpaw.util.ApplicationException;
+import de.jpaw.util.ByteArray;
+
 import com.arvatosystems.t9t.base.T9tConstants;
 import com.arvatosystems.t9t.base.T9tException;
 import com.arvatosystems.t9t.base.T9tUtil;
@@ -37,15 +46,6 @@ import com.arvatosystems.t9t.io.request.LazyType;
 import com.arvatosystems.t9t.io.request.RetrieveMediaDataRequest;
 import com.arvatosystems.t9t.io.request.RetrieveMediaDataResponse;
 import com.arvatosystems.t9t.mediaresolver.IMediaDataSource;
-
-import de.jpaw.bonaparte.api.media.MediaTypeInfo;
-import de.jpaw.bonaparte.pojos.api.media.MediaData;
-import de.jpaw.bonaparte.pojos.api.media.MediaStorageLocation;
-import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
-import de.jpaw.bonaparte.pojos.api.media.MediaXStorageLocation;
-import de.jpaw.dp.Jdp;
-import de.jpaw.util.ApplicationException;
-import de.jpaw.util.ByteArray;
 
 public class RetrieveMediaDataRequestHandler extends AbstractRequestHandler<RetrieveMediaDataRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(RetrieveMediaDataRequestHandler.class);

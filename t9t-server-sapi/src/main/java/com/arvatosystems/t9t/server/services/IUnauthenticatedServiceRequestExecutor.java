@@ -15,10 +15,10 @@
  */
 package com.arvatosystems.t9t.server.services;
 
+import jakarta.annotation.Nonnull;
+
 import com.arvatosystems.t9t.base.api.ServiceRequest;
 import com.arvatosystems.t9t.base.api.ServiceResponse;
-
-import jakarta.annotation.Nonnull;
 
 /**
  * Implementations process unauthenticated ServiceRequests.

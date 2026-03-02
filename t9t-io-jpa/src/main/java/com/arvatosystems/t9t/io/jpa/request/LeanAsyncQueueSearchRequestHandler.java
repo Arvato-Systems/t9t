@@ -15,13 +15,13 @@
  */
 package com.arvatosystems.t9t.io.jpa.request;
 
+import de.jpaw.dp.Jdp;
+
 import com.arvatosystems.t9t.base.jpa.impl.AbstractLeanSearchRequestHandler;
 import com.arvatosystems.t9t.base.search.Description;
 import com.arvatosystems.t9t.io.jpa.entities.AsyncQueueEntity;
 import com.arvatosystems.t9t.io.jpa.persistence.IAsyncQueueEntityResolver;
 import com.arvatosystems.t9t.io.request.LeanAsyncQueueSearchRequest;
-
-import de.jpaw.dp.Jdp;
 
 public class LeanAsyncQueueSearchRequestHandler extends AbstractLeanSearchRequestHandler<LeanAsyncQueueSearchRequest, AsyncQueueEntity> {
     public LeanAsyncQueueSearchRequestHandler() {
